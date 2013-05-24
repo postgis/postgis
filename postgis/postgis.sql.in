@@ -75,13 +75,13 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
 	RETURNS integer
 	AS 'MODULE_PATHNAME','geometry_typmod_in'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','postgis_typmod_out'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
@@ -118,7 +118,7 @@ CREATE TYPE geometry (
 CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geometry_enforce_typmod'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.0.0
 CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boolean) AS IMPLICIT;
@@ -128,37 +128,37 @@ CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boo
 CREATE OR REPLACE FUNCTION geometry(point)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','point_to_geometry'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION point(geometry)
 	RETURNS point
 	AS 'MODULE_PATHNAME','geometry_to_point'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(path)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','path_to_geometry'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION path(geometry)
 	RETURNS path
 	AS 'MODULE_PATHNAME','geometry_to_path'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(polygon)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','polygon_to_geometry'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION polygon(geometry)
 	RETURNS polygon
 	AS 'MODULE_PATHNAME','geometry_to_polygon'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 CREATE CAST (geometry AS point) WITH FUNCTION point(geometry);
 CREATE CAST (point AS geometry) WITH FUNCTION geometry(point);
@@ -240,20 +240,20 @@ CREATE TYPE box2d (
 --  BOX2DF TYPE (INTERNAL ONLY)
 -------------------------------------------------------------------
 --
--- Box2Df type is used by the GiST index bindings.
+-- Box2Df type is used by the GiST index bindings. 
 -- In/out functions are stubs, as all access should be internal.
 ---
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_in(cstring)
 	RETURNS box2df
 	AS 'MODULE_PATHNAME','box2df_in'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_out(box2df)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','box2df_out'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 2.0.0
 CREATE TYPE box2df (
@@ -269,7 +269,7 @@ CREATE TYPE box2df (
 --  GIDX TYPE (INTERNAL ONLY)
 -------------------------------------------------------------------
 --
--- GIDX type is used by the N-D and GEOGRAPHY GiST index bindings.
+-- GIDX type is used by the N-D and GEOGRAPHY GiST index bindings. 
 -- In/out functions are stubs, as all access should be internal.
 ---
 
@@ -277,13 +277,13 @@ CREATE TYPE box2df (
 CREATE OR REPLACE FUNCTION gidx_in(cstring)
 	RETURNS gidx
 	AS 'MODULE_PATHNAME','gidx_in'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION gidx_out(gidx)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','gidx_out'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
 CREATE TYPE gidx (
@@ -380,50 +380,50 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4)
-	RETURNS float8
+CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4) 
+	RETURNS float8 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_distance_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4)
-	RETURNS bool
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4) 
+	RETURNS bool 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_compress_2d(internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_compress_2d(internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME','gserialized_gist_compress_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_penalty_2d(internal,internal,internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_penalty_2d(internal,internal,internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_picksplit_2d(internal, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_picksplit_2d(internal, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_union_2d(bytea, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_union_2d(bytea, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_union_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_same_2d(geom1 geometry, geom2 geometry, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_same_2d(geom1 geometry, geom2 geometry, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_same_2d'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c';
 
@@ -450,7 +450,7 @@ CREATE OR REPLACE FUNCTION _postgis_join_selectivity(regclass, text, regclass, t
 	LANGUAGE 'c' STRICT;
 
 -- Availability: 2.1.0
--- Given a table and a column, returns the statistics information stored by
+-- Given a table and a column, returns the statistics information stored by 
 -- PostgreSQL, in a JSON text form. Mode determines whether the 2D statistics
 -- or the ND statistics are returned.
 CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text default '2')
@@ -492,21 +492,21 @@ CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal,
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
-	RETURNS boolean
+CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry) 
+	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
 	COMMUTATOR = '&&',
- 	RESTRICT = gserialized_gist_sel_2d,
-	JOIN = gserialized_gist_joinsel_2d
+ 	RESTRICT = gserialized_gist_sel_2d, 
+	JOIN = gserialized_gist_joinsel_2d	
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry)
-	RETURNS boolean
+CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry) 
+	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
@@ -516,14 +516,14 @@ CREATE OPERATOR ~= (
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry)
-	RETURNS float8
+CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry) 
+	RETURNS float8 
 	AS 'MODULE_PATHNAME' ,'gserialized_distance_centroid_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
-	RETURNS float8
+CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry) 
+	RETURNS float8 
 	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
@@ -698,44 +698,44 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4)
-	RETURNS bool
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4) 
+	RETURNS bool 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME','gserialized_gist_compress'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
 	LANGUAGE 'c';
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
-	RETURNS internal
+CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal) 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'c';
 
@@ -745,8 +745,8 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry)
-	RETURNS boolean
+CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry) 
+	RETURNS boolean 
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
@@ -755,7 +755,7 @@ CREATE OPERATOR &&& (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps_nd,
 	COMMUTATOR = '&&&',
 	RESTRICT = gserialized_gist_sel_nd,
-	JOIN = gserialized_gist_joinsel_nd
+	JOIN = gserialized_gist_joinsel_nd	
 );
 
 -- Availability: 2.0.0
@@ -943,10 +943,10 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 1.2.2
--- Deprecation in 2.1.0
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- We use security invoker instead of security definer
+    -- We use security invoker instead of security definer 
     -- to prevent malicious injection of a different same named function
     SELECT ST_EstimatedExtent($1, $2, $3);
   $$
@@ -962,10 +962,10 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 1.2.2
--- Deprecation in 2.1.0
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- We use security invoker instead of security definer
+    -- We use security invoker instead of security definer 
     -- to prevent malicious injection of a same named different function
     -- that would be run under elevated permissions
     SELECT ST_EstimatedExtent($1, $2);
@@ -1324,7 +1324,7 @@ CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
 	LANGUAGE 'c' VOLATILE STRICT;
-
+	
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
 	RETURNS smallint
@@ -1454,7 +1454,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
@@ -1556,15 +1556,15 @@ DECLARE
   i integer;
   j integer;
   g geometry;
-
+  
 BEGIN
-
+  
   -- RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
 
   -- Special case collections : iterate and return the DumpPoints of the geometries
 
   IF (ST_IsCollection(the_geom)) THEN
-
+ 
     i = 1;
     FOR tmp2 IN SELECT (ST_Dump(the_geom)).* LOOP
 
@@ -1572,12 +1572,12 @@ BEGIN
 	    RETURN NEXT tmp;
       END LOOP;
       i = i + 1;
-
+      
     END LOOP;
 
     RETURN;
   END IF;
-
+  
 
   -- Special case (POLYGON) : return the points of the rings of a polygon
   IF (ST_GeometryType(the_geom) = 'ST_Polygon') THEN
@@ -1585,14 +1585,14 @@ BEGIN
     FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
       RETURN NEXT tmp;
     END LOOP;
-
+    
     j := ST_NumInteriorRings(the_geom);
     FOR i IN 1..j LOOP
         FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_InteriorRingN(the_geom, i), cur_path || ARRAY[i+1]) LOOP
           RETURN NEXT tmp;
         END LOOP;
     END LOOP;
-
+    
     RETURN;
   END IF;
 
@@ -1602,11 +1602,11 @@ BEGIN
     FOR tmp IN SELECT * FROM _ST_DumpPoints(ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
       RETURN NEXT tmp;
     END LOOP;
-
+    
     RETURN;
   END IF;
 
-
+    
   -- Special case (POINT) : return the point
   IF (ST_GeometryType(the_geom) = 'ST_Point') THEN
 
@@ -1633,14 +1633,14 @@ BEGIN
     tmp.geom := ST_PointN(the_geom, i);
     RETURN NEXT tmp;
   END LOOP;
-
+   
 END
 $$ LANGUAGE plpgsql;
 
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function
+-- This function mimicks that of ST_Dump for collections, but this function 
 -- that returns a path and all the points that make up a particular geometry.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
@@ -1673,7 +1673,7 @@ CREATE TABLE spatial_ref_sys (
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
--- Has new use_typmod option that defaults to true.
+-- Has new use_typmod option that defaults to true.  
 -- If use typmod is  set to false will use old constraint behavior.
 -- Will only touch table missing typmod or geometry constraints
 -----------------------------------------------------------------------
@@ -1726,7 +1726,7 @@ BEGIN
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns'
+		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns' 
 	LOOP
 
 		inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
@@ -1802,20 +1802,20 @@ BEGIN
 	LOOP
 
         RAISE DEBUG 'Processing column %.%.%', gcs.nspname, gcs.relname, gcs.attname;
-
+    
         gc_is_valid := true;
         -- Find the srid, coord_dimension, and type of current geometry
         -- in geometry_columns -- which is now a view
-
-        SELECT type, srid, coord_dimension INTO gc_old
-            FROM geometry_columns
-            WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname;
-
+        
+        SELECT type, srid, coord_dimension INTO gc_old 
+            FROM geometry_columns 
+            WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname; 
+            
         IF upper(gc_old.type) = 'GEOMETRY' THEN
         -- This is an unconstrained geometry we need to do something
         -- We need to figure out what to set the type by inspecting the data
             EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid, GeometryType(' || quote_ident(gcs.attname) || ') As type, ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
-                     ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
+                     ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
                      ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
                 INTO gc;
             IF gc IS NULL THEN -- there is no data so we can not determine geometry type
@@ -1823,10 +1823,10 @@ BEGIN
             	RETURN 0;
             END IF;
             gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
-
+            	
             IF use_typmod THEN
                 BEGIN
-                    EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) ||
+                    EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) || 
                         ' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
                     inserted := inserted + 1;
                 EXCEPTION
@@ -1834,14 +1834,14 @@ BEGIN
                         RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
                             gc_is_valid := false;
                 END;
-
+                
             ELSE
                 -- Try to apply srid check to column
             	constraint_successful = false;
                 IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
-                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) ||
-                                 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) ||
+                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
+                                 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || 
                                  ' CHECK (st_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
                         constraint_successful := true;
                     EXCEPTION
@@ -1850,7 +1850,7 @@ BEGIN
                             gc_is_valid := false;
                     END;
                 END IF;
-
+                
                 -- Try to apply ndims check to column
                 IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
@@ -1864,7 +1864,7 @@ BEGIN
                             gc_is_valid := false;
                     END;
                 END IF;
-
+    
                 -- Try to apply geometrytype check to column
                 IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
@@ -1882,7 +1882,7 @@ BEGIN
                 IF constraint_successful THEN
                 	inserted := inserted + 1;
                 END IF;
-            END IF;
+            END IF;	        
 	    END IF;
 
 	END LOOP;
@@ -2033,7 +2033,7 @@ BEGIN
             ') = ' || new_srid::text || ')' ;
         RAISE DEBUG '%', sql;
         EXECUTE sql;
-
+    
         sql := 'ALTER TABLE ' ||
             quote_ident(real_schema) || '.' || quote_ident(table_name)
             || ' ADD CONSTRAINT '
@@ -2042,7 +2042,7 @@ BEGIN
             ') = ' || new_dim::text || ')' ;
         RAISE DEBUG '%', sql;
         EXECUTE sql;
-
+    
         IF ( NOT (new_type = 'GEOMETRY')) THEN
             sql := 'ALTER TABLE ' ||
                 quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
@@ -2333,34 +2333,34 @@ BEGIN
 		END IF;
 	END IF;
 
-	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN
+	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN 
 	-- srid was enforced with constraints before, keep it that way.
         -- Make up constraint name
         cname = 'enforce_srid_'  || column_name;
-
+    
         -- Drop enforce_srid constraint
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
             '.' || quote_ident(table_name) ||
             ' DROP constraint ' || quote_ident(cname);
-
+    
         -- Update geometries SRID
         EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
             '.' || quote_ident(table_name) ||
             ' SET ' || quote_ident(column_name) ||
             ' = ST_SetSRID(' || quote_ident(column_name) ||
             ', ' || new_srid::text || ')';
-
+            
         -- Reset enforce_srid constraint
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
             '.' || quote_ident(table_name) ||
             ' ADD constraint ' || quote_ident(cname) ||
             ' CHECK (st_srid(' || quote_ident(column_name) ||
             ') = ' || new_srid::text || ')';
-    ELSE
+    ELSE 
         -- We will use typmod to enforce if no srid constraints
-        -- We are using postgis_type_name to lookup the new name
-        -- (in case Paul changes his mind and flips geometry_columns to return old upper case name)
-        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) ||
+        -- We are using postgis_type_name to lookup the new name 
+        -- (in case Paul changes his mind and flips geometry_columns to return old upper case name) 
+        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) || 
         ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
     END IF;
 
@@ -2648,7 +2648,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 ---------------------------------------------------------------
 -- CASTS
 ---------------------------------------------------------------
-
+		
 CREATE OR REPLACE FUNCTION box2d(geometry)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2D'
@@ -2720,7 +2720,7 @@ CREATE OR REPLACE FUNCTION bytea(geometry)
 CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT;
 
--- ticket: 2262 changed 2.1.0 to assignment to prevent PostGIS
+-- ticket: 2262 changed 2.1.0 to assignment to prevent PostGIS 
 -- from misusing PostgreSQL geometric functions
 CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS ASSIGNMENT;
 
@@ -2790,7 +2790,7 @@ CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
--- Deprecation in 2.1.0
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
 	RETURNS geometry AS
   $$ SELECT _postgis_deprecate('ST_Line_Interpolate_Point', 'ST_LineInterpolatePoint', '2.1.0');
@@ -2805,7 +2805,7 @@ CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
--- Deprecation in 2.1.0
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
 	RETURNS geometry AS
   $$ SELECT _postgis_deprecate('ST_Line_Substring', 'ST_LineSubstring', '2.1.0');
@@ -2820,7 +2820,7 @@ CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
--- Deprecation in 2.1.0
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
 	RETURNS float8 AS
   $$ SELECT _postgis_deprecate('ST_Line_Locate_Point', 'ST_LineLocatePoint', '2.1.0');
@@ -2841,11 +2841,11 @@ CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_AddMeasure'
+CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8) 
+	RETURNS geometry 
+	AS 'MODULE_PATHNAME', 'ST_AddMeasure' 
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+    
 ---------------------------------------------------------------
 -- GEOS
 ---------------------------------------------------------------
@@ -3068,13 +3068,13 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 -- 	- Simple (lineal components)
 --	- Valid (polygonal components)
 --	- Obeying the RHR (if polygonal)
---	- Simplified of consecutive duplicated points
+--	- Simplified of consecutive duplicated points 
 -- Ensuring:
 --	- No input vertexes are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
 -- Returns NULL on failure.
---
+-- 
 -- Requires: GEOS-3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
@@ -3094,7 +3094,7 @@ CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
 --
 -- Note that multi-part geometries will be returned exploded,
 -- no matter relation to blade.
---
+-- 
 -- Availability: 2.0.0
 --
 CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
@@ -3116,7 +3116,7 @@ CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
 --
 -- The paths themselves are given in the direction of the
 -- first geometry.
---
+-- 
 -- Availability: 2.0.0
 -- Requires GEOS >= 3.3.0
 --
@@ -3192,7 +3192,7 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 --
 -- If a tolerance is given it will be used to snap the input points
 -- each-other.
---
+-- 
 --
 -- Availability: 2.1.0
 -- Requires GEOS >= 3.4.0
@@ -3429,7 +3429,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_Intersects($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
-
+	
 -- PostGIS equivalent function: crosses(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
@@ -3539,7 +3539,7 @@ CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'centroid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent function: IsRing(geometry)
 CREATE OR REPLACE FUNCTION ST_IsRing(geometry)
 	RETURNS boolean
@@ -3578,11 +3578,11 @@ CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	AS 'SELECT $1 ~= $2 AND _ST_Equals($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
--- Deprecation in 1.2.3
--- TODO: drop in 2.0.0 !
-CREATE OR REPLACE FUNCTION Equals(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','ST_Equals'
+-- Deprecation in 1.2.3 
+-- TODO: drop in 2.0.0 ! 
+CREATE OR REPLACE FUNCTION Equals(geom1 geometry, geom2 geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME','ST_Equals' 
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -3638,15 +3638,16 @@ CREATE OR REPLACE FUNCTION postgis_libjson_version()
 	AS 'MODULE_PATHNAME','postgis_libjson_version'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
------------------------------------------------------------------------
+----------------------------------------------------------------------
 -- ENCODED POLYLINE INPUT
 -----------------------------------------------------------------------
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(text)
-  RETURNS geometry
-  AS 'MODULE_PATHNAME','line_from_encoded_polyline'
-  LANGUAGE 'c' IMMUTABLE STRICT;
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','line_from_encoded_polyline'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
+------------------------------------------------------------------------
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
@@ -3666,7 +3667,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 	AS 'MODULE_PATHNAME','LWGEOM_asGML'
 	LANGUAGE 'c' IMMUTABLE;
 
--- ST_AsGML(version, geom) / precision=15
+-- ST_AsGML(version, geom) / precision=15 
 -- Availability: 1.3.2
 -- ST_AsGML(version, geom, precision)
 -- Availability: 1.3.2
@@ -3896,19 +3897,19 @@ CREATE OR REPLACE FUNCTION ST_SetSRID(geometry,int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent of old function: AsBinary(geometry)
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent function: AsText(geometry)
 CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	RETURNS TEXT
@@ -3938,13 +3939,13 @@ CREATE OR REPLACE FUNCTION ST_GeomFromText(text, int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- PostGIS equivalent function: ST_GeometryFromText(text)
 -- SQL/MM alias for ST_GeomFromText
 CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
@@ -4396,13 +4397,13 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 CREATE OR REPLACE FUNCTION _ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+	
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'SELECT _ST_MaxDistance(ST_ConvexHull($1), ST_ConvexHull($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
 
 CREATE OR REPLACE FUNCTION ST_ClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
@@ -4422,22 +4423,22 @@ CREATE OR REPLACE FUNCTION _ST_LongestLine(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'SELECT _ST_LongestLine(ST_ConvexHull($1), ST_ConvexHull($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
 
 CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DFullyWithin(ST_ConvexHull($1), ST_ConvexHull($2), $3)'
-	LANGUAGE 'sql' IMMUTABLE;
-
+	LANGUAGE 'sql' IMMUTABLE; 
+	
 CREATE OR REPLACE FUNCTION ST_FlipCoordinates(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_FlipCoordinates'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 --
 -- SFSQL 1.1
@@ -4551,12 +4552,12 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
 -- New helper function so we can keep list of valid geometry types in one place --
 -- Maps old names to pramsey beautiful names but can take old name or new name as input
 -- By default returns new name but can be overridden to return old name for old constraint like support
-CREATE OR REPLACE FUNCTION postgis_type_name(geomname varchar, coord_dimension integer, use_new_name boolean DEFAULT true)
+CREATE OR REPLACE FUNCTION postgis_type_name(geomname varchar, coord_dimension integer, use_new_name boolean DEFAULT true) 
 	RETURNS varchar
 AS
 $$
  SELECT CASE WHEN $3 THEN new_name ELSE old_name END As geomname
- 	FROM
+ 	FROM 
  	( VALUES
  		 ('GEOMETRY', 'Geometry', 2) ,
  		 	('GEOMETRY', 'GeometryZ', 3) ,
@@ -4565,67 +4566,67 @@ $$
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZ', 3) ,
 			('GEOMETRYCOLLECTIONM', 'GeometryCollectionM', 3) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZM', 4) ,
-
+			
 			('POINT', 'Point',2) ,
 			('POINTM','PointM',3) ,
 			('POINT', 'PointZ',3) ,
 			('POINT', 'PointZM',4) ,
-
+			
 			('MULTIPOINT','MultiPoint',2) ,
 			('MULTIPOINT','MultiPointZ',3) ,
 			('MULTIPOINTM','MultiPointM',3) ,
 			('MULTIPOINT','MultiPointZM',4) ,
-
+			
 			('POLYGON', 'Polygon',2) ,
 			('POLYGON', 'PolygonZ',3) ,
 			('POLYGONM', 'PolygonM',3) ,
 			('POLYGON', 'PolygonZM',4) ,
-
+			
 			('MULTIPOLYGON', 'MultiPolygon',2) ,
 			('MULTIPOLYGON', 'MultiPolygonZ',3) ,
 			('MULTIPOLYGONM', 'MultiPolygonM',3) ,
 			('MULTIPOLYGON', 'MultiPolygonZM',4) ,
-
+			
 			('MULTILINESTRING', 'MultiLineString',2) ,
 			('MULTILINESTRING', 'MultiLineStringZ',3) ,
 			('MULTILINESTRINGM', 'MultiLineStringM',3) ,
 			('MULTILINESTRING', 'MultiLineStringZM',4) ,
-
+			
 			('LINESTRING', 'LineString',2) ,
 			('LINESTRING', 'LineStringZ',3) ,
 			('LINESTRINGM', 'LineStringM',3) ,
 			('LINESTRING', 'LineStringZM',4) ,
-
+			
 			('CIRCULARSTRING', 'CircularString',2) ,
 			('CIRCULARSTRING', 'CircularStringZ',3) ,
 			('CIRCULARSTRINGM', 'CircularStringM',3) ,
 			('CIRCULARSTRING', 'CircularStringZM',4) ,
-
+			
 			('COMPOUNDCURVE', 'CompoundCurve',2) ,
 			('COMPOUNDCURVE', 'CompoundCurveZ',3) ,
 			('COMPOUNDCURVEM', 'CompoundCurveM',3) ,
 			('COMPOUNDCURVE', 'CompoundCurveZM',4) ,
-
+			
 			('CURVEPOLYGON', 'CurvePolygon',2) ,
 			('CURVEPOLYGON', 'CurvePolygonZ',3) ,
 			('CURVEPOLYGONM', 'CurvePolygonM',3) ,
 			('CURVEPOLYGON', 'CurvePolygonZM',4) ,
-
+			
 			('MULTICURVE', 'MultiCurve',2 ) ,
 			('MULTICURVE', 'MultiCurveZ',3 ) ,
 			('MULTICURVEM', 'MultiCurveM',3 ) ,
 			('MULTICURVE', 'MultiCurveZM',4 ) ,
-
+			
 			('MULTISURFACE', 'MultiSurface', 2) ,
 			('MULTISURFACE', 'MultiSurfaceZ', 3) ,
 			('MULTISURFACEM', 'MultiSurfaceM', 3) ,
 			('MULTISURFACE', 'MultiSurfaceZM', 4) ,
-
+			
 			('POLYHEDRALSURFACE', 'PolyhedralSurface',2) ,
 			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZ',3) ,
 			('POLYHEDRALSURFACEM', 'PolyhedralSurfaceM',3) ,
 			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZM',4) ,
-
+			
 			('TRIANGLE', 'Triangle',2) ,
 			('TRIANGLE', 'TriangleZ',3) ,
 			('TRIANGLEM', 'TriangleM',3) ,
@@ -4675,7 +4676,7 @@ LANGUAGE 'sql' STABLE STRICT;
 -- will return pretty name instead of ugly name
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
-SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
+SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar		
 		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
@@ -4688,17 +4689,17 @@ SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
-CREATE OR REPLACE VIEW geometry_columns AS
-  SELECT current_database()::varchar(256) AS f_table_catalog,
-    n.nspname::varchar(256) AS f_table_schema,
-    c.relname::varchar(256) AS f_table_name,
-    a.attname::varchar(256) AS f_geometry_column,
+CREATE OR REPLACE VIEW geometry_columns AS 
+  SELECT current_database()::varchar(256) AS f_table_catalog, 
+    n.nspname::varchar(256) AS f_table_schema, 
+    c.relname::varchar(256) AS f_table_name, 
+    a.attname::varchar(256) AS f_geometry_column, 
     COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2),
              postgis_constraint_dims(n.nspname, c.relname, a.attname),
-             2) AS coord_dimension,
+             2) AS coord_dimension, 
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0),
              postgis_constraint_srid(n.nspname, c.relname, a.attname),
-             0) AS srid,
+             0) AS srid, 
     -- force to be uppercase with no ZM so is backwards compatible
     -- with old geometry_columns
     replace(
@@ -4711,11 +4712,11 @@ CREATE OR REPLACE VIEW geometry_columns AS
       ), 'Z', ''
     )::varchar(30) AS type
   FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n
-  WHERE t.typname = 'geometry'::name
-    AND a.attisdropped = false
-    AND a.atttypid = t.oid
-    AND a.attrelid = c.oid
-    AND c.relnamespace = n.oid
+  WHERE t.typname = 'geometry'::name 
+    AND a.attisdropped = false 
+    AND a.atttypid = t.oid 
+    AND a.attrelid = c.oid 
+    AND c.relnamespace = n.oid 
     AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
     AND NOT pg_is_other_temp_schema(c.relnamespace)
     AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
@@ -4746,12 +4747,12 @@ CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'distance3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION ST_3DMaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 100;
+	COST 100;	
 
 CREATE OR REPLACE FUNCTION ST_3DClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
@@ -4770,25 +4771,25 @@ CREATE OR REPLACE FUNCTION ST_3DLongestLine(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_longestline3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION _ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_3DDWithin($1, $2, $3)'
 	LANGUAGE 'sql' IMMUTABLE
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_3DDFullyWithin($1, $2, $3)'
@@ -4800,14 +4801,14 @@ CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME','intersects3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
+	
 CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 && $2 AND _ST_3DIntersects($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE
 	COST 100;
-
-
+	
+	
 ---------------------------------------------------------------
 -- SQL-MM
 ---------------------------------------------------------------
@@ -4815,7 +4816,7 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 --
 -- SQL-MM
 --
@@ -4849,7 +4850,7 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
 	RETURNS boolean
@@ -4860,11 +4861,11 @@ CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geom
 -- Availability: 1.3.0
 CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
 	RETURNS boolean
-	AS $$
+	AS $$ 
 	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
-	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
+	$$	
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------
@@ -4873,23 +4874,23 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geome
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+	
 -- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
-	AS $$
+	AS $$ 
 	SELECT ST_SetSRID(ST_MakePolygon($1), $2)
-	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
+	$$	
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	
 -- PostGIS equivalent function: GeomFromWKB(WKB bytea))
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+	
 ---
 -- Linear referencing functions
 ---
@@ -4898,7 +4899,7 @@ CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, FromMeasure float
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_LocateBetween'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+	
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
@@ -5037,7 +5038,7 @@ $BODY$
 $BODY$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-
+ 
 -- ST_ConcaveHull and Helper functions starts here --
 -----------------------------------------------------------------------
 -- Contributed by Regina Obe and Leo Hsu
@@ -5046,7 +5047,7 @@ $BODY$
 CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
   RETURNS geometry AS
 $$
-	DECLARE
+	DECLARE     
 	vexhull GEOMETRY;
 	var_resultgeom geometry;
 	var_inputgeom geometry;
@@ -5057,7 +5058,7 @@ $$
 	var_tempgeom geometry;
 	scale_factor integer := 1;
 	i integer;
-
+	
 	BEGIN
 
 		-- First compute the ConvexHull of the geometry
@@ -5083,20 +5084,20 @@ $$
 		cavering := ST_Collect(
 			ARRAY(
 
-				SELECT
+				SELECT 
 					ST_ClosestPoint(var_inputgeom, pt ) As the_geom
 					FROM (
 						SELECT  ST_PointN(vexring, n ) As pt, n
-							FROM
+							FROM 
 							generate_series(1, ST_NPoints(vexring) ) As n
 						) As pt
-
+				
 				)
 			)
-		;
+		; 
+		
 
-
-		var_resultgeom := ST_MakeLine(geom)
+		var_resultgeom := ST_MakeLine(geom) 
 			FROM ST_Dump(cavering) As foo;
 
 		IF ST_IsSimple(var_resultgeom) THEN
@@ -5106,16 +5107,16 @@ $$
 			--RAISE NOTICE 'is not Simple: %', var_resultgeom;
 			var_resultgeom := ST_ConvexHull(var_resultgeom);
 		END IF;
-
+		
 		IF scale_factor > 1 THEN -- scale the result back
 			var_resultgeom := ST_Scale(var_resultgeom, 1/scale_factor, 1/scale_factor);
 		END IF;
 		RETURN var_resultgeom;
-
+	
 	END;
 $$
   LANGUAGE plpgsql IMMUTABLE STRICT;
-
+  
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
 	DECLARE
@@ -5135,7 +5136,7 @@ $$
 	BEGIN
 		-- We start with convex hull as our base
 		var_resultgeom := var_convhull;
-
+		
 		IF param_pctconvex = 1 THEN
 			return var_resultgeom;
 		ELSIF ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
@@ -5151,7 +5152,7 @@ $$
 			var_enline := ST_Boundary(ST_Envelope(var_param_geom));
 			var_buf := ST_Length(var_enline)/1000.0;
 			IF ST_GeometryType(var_param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(var_param_geom) BETWEEN 4 and 200 THEN
-			-- we make polygons out of points since they are easier to cave in.
+			-- we make polygons out of points since they are easier to cave in. 
 			-- Note we limit to between 4 and 200 points because this process is slow and gets quadratically slow
 				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(var_param_geom)*ST_NumGeometries(var_param_geom)));
 				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(var_param_geom));
@@ -5161,7 +5162,7 @@ $$
 						-- fuse near neighbors together
 						SELECT DISTINCT ON (i) i,  ST_Distance(var_atempgeoms[i],var_atempgeoms[j]), ST_Buffer(ST_MakeLine(var_atempgeoms[i], var_atempgeoms[j]) , var_buf*5, 'quad_segs=3') As geom
 								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
-									INNER JOIN generate_series(1,array_upper(var_atempgeoms, 1)) As j
+									INNER JOIN generate_series(1,array_upper(var_atempgeoms, 1)) As j 
 										ON (
 								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
 									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10)
@@ -5170,10 +5171,10 @@ $$
 						-- catch the ones with no near neighbors
 								SELECT i, 0, ST_Buffer(var_atempgeoms[i] , var_buf*10, 'quad_segs=3') As geom
 								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
-									LEFT JOIN generate_series(ceiling(array_upper(var_atempgeoms,1)/2)::integer,array_upper(var_atempgeoms, 1)) As j
+									LEFT JOIN generate_series(ceiling(array_upper(var_atempgeoms,1)/2)::integer,array_upper(var_atempgeoms, 1)) As j 
 										ON (
 								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
-									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10)
+									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10) 
 									)
 									WHERE j IS NULL
 								ORDER BY 1, 2
@@ -5187,7 +5188,7 @@ $$
 					END IF;
 					return var_param_geom;
 				ELSIF ST_IsValid(var_tempgeom) THEN
-					var_param_geom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));
+					var_param_geom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));	
 				END IF;
 			END IF;
 
@@ -5213,16 +5214,16 @@ $$
                     FOR i in 1 .. 4 LOOP
                        var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
                        var_geoms[i] := ST_ForceSFS(ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf)));
-                       IF ST_IsValid(var_geoms[i]) THEN
-
+                       IF ST_IsValid(var_geoms[i]) THEN 
+                            
                        ELSE
                             var_geoms[i] := ST_BuildArea(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-                       END IF;
+                       END IF; 
                     END LOOP;
-                    var_tempgeom := ST_Union(ARRAY[ST_ConvexHull(var_geoms[1]), ST_ConvexHull(var_geoms[2]) , ST_ConvexHull(var_geoms[3]), ST_ConvexHull(var_geoms[4])]);
+                    var_tempgeom := ST_Union(ARRAY[ST_ConvexHull(var_geoms[1]), ST_ConvexHull(var_geoms[2]) , ST_ConvexHull(var_geoms[3]), ST_ConvexHull(var_geoms[4])]); 
                     --RAISE NOTICE 'Curr vex % ', ST_AsText(var_tempgeom);
                     IF ST_Area(var_tempgeom) <= var_newarea AND ST_IsValid(var_tempgeom)  THEN --AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon'
-
+                        
                         var_tempgeom := ST_Buffer(ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=2');
                         FOR i IN 1 .. 4 LOOP
                             var_geoms[i] := ST_Buffer(ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=2');
@@ -5231,7 +5232,7 @@ $$
                             ELSE
                                 RAISE NOTICE 'Not valid % %', i, ST_AsText(var_tempgeom);
                                 var_tempgeom := ST_Union(var_tempgeom, ST_ConvexHull(var_geoms[i]));
-                            END IF;
+                            END IF; 
                         END LOOP;
 
                         --RAISE NOTICE 'Curr concave % ', ST_AsText(var_tempgeom);
@@ -5251,7 +5252,7 @@ $$
                             var_resultgeom := ST_Buffer(var_tempgeom,var_buf, 'quad_segs=2');
                         END IF;
                     END IF;
-                    IF param_allow_holes = false THEN
+                    IF param_allow_holes = false THEN 
                     -- only keep exterior ring since we do not want holes
                         var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_resultgeom));
                     END IF;
@@ -5277,7 +5278,7 @@ CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asX3D'
 	LANGUAGE 'c' IMMUTABLE;
-
+	
 -- ST_AsX3D(geom, precision, options)
 CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS TEXT
