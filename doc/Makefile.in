@@ -377,7 +377,7 @@ requirements_not_met_xslbase:
 	@echo "with the --with-xsldir option."
 	@echo "Alternatively refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_imagemagick:
