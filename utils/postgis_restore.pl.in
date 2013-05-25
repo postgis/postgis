@@ -59,13 +59,19 @@ my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
 while (@ARGV && $ARGV[0] =~ /-/) {
-  if ( $ARGV[0] eq '-v' ) {
+  my $arg = shift(@ARGV);
+  if ( $arg eq '-v' ) {
     $DEBUG = 1;
-    shift(@ARGV);
   }
-  elsif ( $ARGV[0] eq '-s' ) {
-    shift(@ARGV);
+  elsif ( $arg eq '-s' ) {
     $POSTGIS_SCHEMA = shift(@ARGV);
+  }
+  elsif ( $arg eq '--' ) {
+    last;
+  }
+  else {
+    print STDERR "Unknown switch " . $arg;
+    die $usage;
   }
 }
 
