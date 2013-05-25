@@ -5,4 +5,4 @@ my $REGDIR = abs_path(dirname($0));
 my $RASTERDIR = abs_path($REGDIR . "/../raster/test/regress");
 
 unlink $RASTERDIR . '/' . $TEST . '-pre.sql';
-unlink $RASTERDIR . '/' . $TEST . '-post.sql';
+#unlink $RASTERDIR . '/' . $TEST . '-post.sql';

@@ -1,7 +1,8 @@
 PostGIS 2.1.0
 2013/MM/DD
 
-* Important / Breaking Changes  *
+ * Important / Breaking Changes  *
+
   - #1962 ST_Segmentize - As a result of the introduction of geography support: 
 		The construct SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5); 
 		will result in ambiguous function error
@@ -20,7 +21,7 @@ PostGIS 2.1.0
     instead of radians.
   - ST_Slope and ST_Aspect return pixel values in degrees instead of radians.
 
-* Deprecated signatures
+ * Deprecated signatures *
 
   - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
            ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
@@ -38,7 +39,8 @@ PostGIS 2.1.0
   - 1 and 2 raster variants of ST_MapAlgebraExpr.
     Use expression variants of ST_MapAlgebra instead
 
-* New Features *
+ * New Features *
+
   - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - toTopoGeom with TopoGeometry sink (Sandro Santilli / Vizzuality)
   - clearTopoGeom (Sandro Santilli / Vizzuality)
@@ -100,9 +102,7 @@ PostGIS 2.1.0
            New function available in PostGIS: ST_ForceSFS
            (Olivier Courtin and Hugo Mercier / Oslandia)
 
-    
-
-* Enhancements *
+ * Enhancements *
 
   - #823,  tiger geocoder: Make loader_generate_script download portion 
            less greedy
@@ -161,7 +161,7 @@ PostGIS 2.1.0
   - #1823, add parameter in ST_AsGML to use id column for GML 3 output 
            (become mandatory since GML 3.2.1)
 
-* Fixes *
+ * Fixes *
 
   - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
   - #1840, fix logic of when to compute # of tiles in raster2pgsql.

@@ -84,7 +84,7 @@
 			<term>Nicklas Avén</term>
 			
 			<listitem>
-			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, TinyWKB and general user support</para>
+			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB output format (TWKB) (in development) and general user support</para>
 			</listitem>
 		</varlistentry>
 		
@@ -105,7 +105,7 @@
 		<varlistentry>
 			<term>David Zwarg</term>
 			<listitem>
-			  <para>Raster development</para>
+			  <para>Raster development (mostly map algebra analytic functions)</para>
 			</listitem>
 		</varlistentry>
 	</variablelist>
@@ -123,7 +123,7 @@
 		<varlistentry>
 		<term>Kevin Neufeld</term>
 		<listitem>
-		  <para>Prior PSC Member. Documentation and documentation support tools, advanced user support
+		  <para>Prior PSC Member. Documentation and documentation support tools, buildbot maintenance, advanced user support
 		  on PostGIS newsgroup, and PostGIS maintenance function enhancements.</para>
 		</listitem>
 		</varlistentry>
@@ -163,6 +163,7 @@
 </sect1>
 
 <sect1 id="credits_other_contributors"><title>Other Contributors</title>
+	<variablelist>
 	  <varlistentry>
 		<term>Individual Contributors</term>
 
@@ -250,6 +251,7 @@ Lidwala Consulting Engineers,
 LisaSoft,
 Logical Tracking &amp; Tracing International AG,
 Michigan Tech Research Institute,
+Natural Resources Canada,
 Norwegian Forest and Landscape Institute,
 OpenGeo,
 OSGeo,
