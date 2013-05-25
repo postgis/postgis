@@ -1191,7 +1191,7 @@ sub uninstall_spatial
 
 sub diff
 {
-	my ($obtained_file, $expected_file) = @_;
+	my ($expected_file, $obtained_file) = @_;
 	my $diffstr = '';
 
 	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
