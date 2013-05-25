@@ -35,7 +35,7 @@ our $REGDIR = abs_path(dirname($0));
 our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
 our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
 our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
-
+our $sysdiff = `which diff 2>/dev/null`;
 
 ##################################################################
 # Parse command line opts
@@ -1193,6 +1193,11 @@ sub diff
 {
 	my ($expected_file, $obtained_file) = @_;
 	my $diffstr = '';
+
+	if ( $sysdiff ) {
+		$diffstr = `diff -u $expected_file $obtained_file`;
+		return $diffstr;
+	}
 
 	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
 	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
