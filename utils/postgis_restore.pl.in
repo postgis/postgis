@@ -58,7 +58,7 @@ my $POSTGIS_SCHEMA;
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
-while (@ARGV && $ARGV[0] =~ /-/) {
+while (@ARGV && $ARGV[0] =~ /^-/) {
   my $arg = shift(@ARGV);
   if ( $arg eq '-v' ) {
     $DEBUG = 1;
