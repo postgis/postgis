@@ -1195,7 +1195,7 @@ sub diff
 	my $diffstr = '';
 
 	if ( $sysdiff ) {
-		$diffstr = `diff -u $expected_file $obtained_file`;
+		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file`;
 		return $diffstr;
 	}
 
