@@ -10457,48 +10457,38 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 		<sect2 id="Raster_Processing_MapAlgebra_Callbacks">
 			<title>Built-in Map Algebra Callback Functions</title>
 			
-		<refentry id="RT_ST_Min4ma">
+        <refentry id="RT_ST_Distinct4ma">
 			<refnamediv>
-				<refname>ST_Min4ma</refname>
-				<refpurpose>
-					Raster processing function that calculates the minimum pixel value in a neighborhood.
-				</refpurpose>
+				<refname>ST_Distinct4ma</refname>
+				<refpurpose>Raster processing function that calculates the number of unique pixel values in a neighborhood.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-					<funcprototype>
-						<funcdef>float8 <function>ST_Min4ma</function></funcdef>
-						<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
-					</funcprototype>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Distinct4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
 
 					<funcprototype>
-						<funcdef>double precision <function>ST_Min4ma</function></funcdef>
+						<funcdef>double precision <function>ST_Distinct4ma</function></funcdef>
 						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
 						<paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-
+		
 			<refsection>
 				<title>Description</title>
 
-				<para>
-					Calculate the minimum pixel value in a neighborhood of pixels.
-				</para>
-
-				<para>
-					For Variant 2, a substitution value for NODATA pixels can be specified by passing that value to userargs.
-				</para>
-
-				<note>
-					<para>
-						Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.
-					</para>
-				</note>
+                <para>Calculate the number of unique pixel values in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
 
 				<note>
 					<para>
@@ -10512,26 +10502,26 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 					</para>
 				</warning>
 
-				<para>Availability: 2.0.0</para>
+                <para>Availability: 2.0.0</para>
 				<para>Enhanced: 2.1.0 Addition of Variant 2</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-
-				<programlisting>
-SELECT 
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
     rid,
     st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
     ) 
 FROM dummy_rast 
 WHERE rid = 2;
  rid | st_value
 -----+----------
-   2 |      250
+   2 |        3
 (1 row)
 				</programlisting>
+			
 			</refsection>
 		
 			<refsection>
@@ -10539,12 +10529,78 @@ WHERE rid = 2;
 				<para>
 					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
 					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Min4ma" />, 
 					<xref linkend="RT_ST_Max4ma" />, 
-					<xref linkend="RT_ST_Sum4ma" />,
+					<xref linkend="RT_ST_Sum4ma" />, 
 					<xref linkend="RT_ST_Mean4ma" />, 
-					<xref linkend="RT_ST_Range4ma" />, 
 					<xref linkend="RT_ST_Distinct4ma" />, 
 					<xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_InvDistWeight4ma">
+			<refnamediv>
+				<refname>ST_InvDistWeight4ma</refname>
+				<refpurpose>Raster processing function that interpolates a pixel's value from the pixel's neighborhood.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef>
+						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Calculate an interpolated value for a pixel using the Inverse Distance Weighted method.</para>
+
+				<para>
+					There are two optional parameters that can be passed through <varname>userargs</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
+				</para>
+
+				<para>
+					The basic inverse distance weight equation is:
+
+					<informalfigure>
+						<mediaobject>
+							<imageobject>
+								<imagedata fileref="images/st_invdistweight4ma_equation.png" />
+							</imageobject>
+							<caption>
+								<para>
+									k = power factor, a real number between 0 and 1
+								</para>
+							</caption>
+						</mediaobject>
+					</informalfigure>
+				</para>
+
+				<note>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
+				</note>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- NEEDS EXAMPLE
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_MinDist4ma" />
 				</para>
 			</refsection>
 		</refentry>
@@ -10627,92 +10683,6 @@ WHERE rid = 2;
 					<xref linkend="RT_ST_MapAlgebra" />, 
 					<xref linkend="RT_ST_Min4ma" />, 
 					<xref linkend="RT_ST_Sum4ma" />, 
-					<xref linkend="RT_ST_Mean4ma" />, 
-					<xref linkend="RT_ST_Range4ma" />, 
-					<xref linkend="RT_ST_Distinct4ma" />, 
-					<xref linkend="RT_ST_StdDev4ma" />
-				</para>
-			</refsection>
-		</refentry>
-
-        <refentry id="RT_ST_Sum4ma">
-			<refnamediv>
-				<refname>ST_Sum4ma</refname>
-				<refpurpose>Raster processing function that calculates the sum of all pixel values in a neighborhood.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>float8 <function>ST_Sum4ma</function></funcdef>
-					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
-                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
-				  </funcprototype>
-
-					<funcprototype>
-						<funcdef>double precision <function>ST_Sum4ma</function></funcdef>
-						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
-						<paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-
-                <para>Calculate the sum of all pixel values in a neighborhood of pixels.</para>
-			
-				<para>
-					For Variant 2, a substitution value for NODATA pixels can be specified by passing that value to userargs.
-				</para>
-
-                <note>
-                    <para>Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
-                </note>
-
-				<note>
-					<para>
-						Variant 2 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.
-					</para>
-				</note>
-
-				<warning>
-					<para>
-						Use of Variant 1 is discouraged since <xref linkend="RT_ST_MapAlgebraFctNgb" /> has been deprecated as of 2.1.0.
-					</para>
-				</warning>
-
-                <para>Availability: 2.0.0</para>
-				<para>Enhanced: 2.1.0 Addition of Variant 2</para>
-            </refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>SELECT 
-    rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
-    ) 
-FROM dummy_rast 
-WHERE rid = 2;
- rid | st_value
------+----------
-   2 |     2279
-(1 row)
-				</programlisting>
-			
-			</refsection>
-		
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_Min4ma" />, 
-					<xref linkend="RT_ST_Max4ma" />, 
 					<xref linkend="RT_ST_Mean4ma" />, 
 					<xref linkend="RT_ST_Range4ma" />, 
 					<xref linkend="RT_ST_Distinct4ma" />, 
@@ -10806,6 +10776,149 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
+		<refentry id="RT_ST_Min4ma">
+			<refnamediv>
+				<refname>ST_Min4ma</refname>
+				<refpurpose>
+					Raster processing function that calculates the minimum pixel value in a neighborhood.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>float8 <function>ST_Min4ma</function></funcdef>
+						<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>double precision <function>ST_Min4ma</function></funcdef>
+						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+						<paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Calculate the minimum pixel value in a neighborhood of pixels.
+				</para>
+
+				<para>
+					For Variant 2, a substitution value for NODATA pixels can be specified by passing that value to userargs.
+				</para>
+
+				<note>
+					<para>
+						Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Variant 2 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.
+					</para>
+				</note>
+
+				<warning>
+					<para>
+						Use of Variant 1 is discouraged since <xref linkend="RT_ST_MapAlgebraFctNgb" /> has been deprecated as of 2.1.0.
+					</para>
+				</warning>
+
+				<para>Availability: 2.0.0</para>
+				<para>Enhanced: 2.1.0 Addition of Variant 2</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |      250
+(1 row)
+				</programlisting>
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Max4ma" />, 
+					<xref linkend="RT_ST_Sum4ma" />,
+					<xref linkend="RT_ST_Mean4ma" />, 
+					<xref linkend="RT_ST_Range4ma" />, 
+					<xref linkend="RT_ST_Distinct4ma" />, 
+					<xref linkend="RT_ST_StdDev4ma" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_MinDist4ma">
+			<refnamediv>
+				<refname>ST_MinDist4ma</refname>
+				<refpurpose>Raster processing function that returns the minimum distance (in number of pixels) between the pixel of interest and a neighboring pixel with value.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>double precision <function>ST_MinDist4ma</function></funcdef>
+						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Return the shortest distance (in number of pixels) between the pixel of interest and the closest pixel with value in the neighborhood.</para>
+
+				<note>
+					<para>
+						The intent of this function is to provide an informative data point that helps infer the usefulness of the pixel of interest's interpolated value from <xref linkend="RT_ST_InvDistWeight4ma" />. This function is particularly useful when the neighborhood is sparsely populated.
+					</para>
+				</note>
+
+				<note>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
+				</note>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- NEEDS EXAMPLE
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_InvDistWeight4ma" />
+				</para>
+			</refsection>
+		</refentry>
+
         <refentry id="RT_ST_Range4ma">
 			<refnamediv>
 				<refname>ST_Range4ma</refname>
@@ -10892,88 +11005,6 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
         
-        <refentry id="RT_ST_Distinct4ma">
-			<refnamediv>
-				<refname>ST_Distinct4ma</refname>
-				<refpurpose>Raster processing function that calculates the number of unique pixel values in a neighborhood.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>float8 <function>ST_Distinct4ma</function></funcdef>
-					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
-                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
-				  </funcprototype>
-
-					<funcprototype>
-						<funcdef>double precision <function>ST_Distinct4ma</function></funcdef>
-						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
-						<paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-
-                <para>Calculate the number of unique pixel values in a neighborhood of pixels.</para>
-			
-                <note>
-                    <para>Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
-                </note>
-
-				<note>
-					<para>
-						Variant 2 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.
-					</para>
-				</note>
-
-				<warning>
-					<para>
-						Use of Variant 1 is discouraged since <xref linkend="RT_ST_MapAlgebraFctNgb" /> has been deprecated as of 2.1.0.
-					</para>
-				</warning>
-
-                <para>Availability: 2.0.0</para>
-				<para>Enhanced: 2.1.0 Addition of Variant 2</para>
-            </refsection>
-				
-				<refsection>
-					<title>Examples</title>
-				
-					<programlisting>SELECT 
-    rid,
-    st_value(
-        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
-    ) 
-FROM dummy_rast 
-WHERE rid = 2;
- rid | st_value
------+----------
-   2 |        3
-(1 row)
-				</programlisting>
-			
-			</refsection>
-		
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_Min4ma" />, 
-					<xref linkend="RT_ST_Max4ma" />, 
-					<xref linkend="RT_ST_Sum4ma" />, 
-					<xref linkend="RT_ST_Mean4ma" />, 
-					<xref linkend="RT_ST_Distinct4ma" />, 
-					<xref linkend="RT_ST_StdDev4ma" />
-                </para>
-			</refsection>
-		</refentry>
-
         <refentry id="RT_ST_StdDev4ma">
 			<refnamediv>
 				<refname>ST_StdDev4ma</refname>
@@ -11056,119 +11087,88 @@ WHERE rid = 2;
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_InvDistWeight4ma">
+        <refentry id="RT_ST_Sum4ma">
 			<refnamediv>
-				<refname>ST_InvDistWeight4ma</refname>
-				<refpurpose>Raster processing function that interpolates a pixel's value from the pixel's neighborhood.</refpurpose>
+				<refname>ST_Sum4ma</refname>
+				<refpurpose>Raster processing function that calculates the sum of all pixel values in a neighborhood.</refpurpose>
 			</refnamediv>
-
+		
 			<refsynopsisdiv>
 				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Sum4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+
 					<funcprototype>
-						<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef>
+						<funcdef>double precision <function>ST_Sum4ma</function></funcdef>
 						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
-						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>integer[][] </type> <parameter>pos</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-
+		
 			<refsection>
 				<title>Description</title>
 
-				<para>Calculate an interpolated value for a pixel using the Inverse Distance Weighted method.</para>
-
+                <para>Calculate the sum of all pixel values in a neighborhood of pixels.</para>
+			
 				<para>
-					There are two optional parameters that can be passed through <varname>userargs</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
+					For Variant 2, a substitution value for NODATA pixels can be specified by passing that value to userargs.
 				</para>
 
-				<para>
-					The basic inverse distance weight equation is:
-
-					<informalfigure>
-						<mediaobject>
-							<imageobject>
-								<imagedata fileref="images/st_invdistweight4ma_equation.png" />
-							</imageobject>
-							<caption>
-								<para>
-									k = power factor, a real number between 0 and 1
-								</para>
-							</caption>
-						</mediaobject>
-					</informalfigure>
-				</para>
-
-				<note>
-					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
-				</note>
-
-				<para>Availability: 2.1.0</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- NEEDS EXAMPLE
-				</programlisting>
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_MinDist4ma" />
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry id="RT_ST_MinDist4ma">
-			<refnamediv>
-				<refname>ST_MinDist4ma</refname>
-				<refpurpose>Raster processing function that returns the minimum distance (in number of pixels) between the pixel of interest and a neighboring pixel with value.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>double precision <function>ST_MinDist4ma</function></funcdef>
-						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
-						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-
-				<para>Return the shortest distance (in number of pixels) between the pixel of interest and the closest pixel with value in the neighborhood.</para>
+                <note>
+                    <para>Variant 1 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
 
 				<note>
 					<para>
-						The intent of this function is to provide an informative data point that helps infer the usefulness of the pixel of interest's interpolated value from <xref linkend="RT_ST_InvDistWeight4ma" />. This function is particularly useful when the neighborhood is sparsely populated.
+						Variant 2 is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.
 					</para>
 				</note>
 
-				<note>
-					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
-				</note>
+				<warning>
+					<para>
+						Use of Variant 1 is discouraged since <xref linkend="RT_ST_MapAlgebraFctNgb" /> has been deprecated as of 2.1.0.
+					</para>
+				</warning>
 
-				<para>Availability: 2.1.0</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- NEEDS EXAMPLE
+                <para>Availability: 2.0.0</para>
+				<para>Enhanced: 2.1.0 Addition of Variant 2</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |     2279
+(1 row)
 				</programlisting>
+			
 			</refsection>
-
+		
 			<refsection>
 				<title>See Also</title>
 				<para>
+					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
 					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_InvDistWeight4ma" />
+					<xref linkend="RT_ST_Min4ma" />, 
+					<xref linkend="RT_ST_Max4ma" />, 
+					<xref linkend="RT_ST_Mean4ma" />, 
+					<xref linkend="RT_ST_Range4ma" />, 
+					<xref linkend="RT_ST_Distinct4ma" />, 
+					<xref linkend="RT_ST_StdDev4ma" />
 				</para>
 			</refsection>
 		</refentry>
