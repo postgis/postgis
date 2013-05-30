@@ -245,7 +245,7 @@ SELECT * FROM ValidateTopology('city_data');
 DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
 DELETE FROM city_data.face where face_id > 0; 
 
-SELECT '#1714.1', 'N', AddNode('city_data', 'POINT(10 0)');
+SELECT '#1714.1', 'N', AddNode('city_data', 'POINT(10 0)', false, true);
 SELECT check_changes();
 
 SELECT '#1714.2', 'E*', TopoGeo_addLineString('city_data',
