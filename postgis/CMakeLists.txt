@@ -14,6 +14,8 @@ set(HEADERS
   lwgeom_rtree.h)
 
 add_library(postgis SHARED
+  $<TARGET_OBJECTS:libpgcommon>
+  $<TARGET_OBJECTS:liblwgeom>
   postgis_module.c
   lwgeom_accum.c
 	lwgeom_spheroid.c
@@ -50,9 +52,7 @@ add_library(postgis SHARED
 	geometry_estimate.c
   ${HEADERS})
 
-target_link_libraries(postgis
-  $<TARGET_OBJECTS:libpgcommon>
-  $<TARGET_OBJECTS:liblwgeom>)
+target_link_libraries(postgis)
 
 add_custom_command(OUTPUT postgis.sql.in
   COMMAND
