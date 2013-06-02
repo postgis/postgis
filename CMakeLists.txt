@@ -172,15 +172,16 @@ elseif(UNIX)
         OUTPUT_VARIABLE POSTGIS_BUILD_DATE)
 endif()
 
-# Determine Git revision
-# TODO: Subversion revision
-include(GetGitRevisionDescription)
-get_git_head_revision(GIT_REFSPEC POSTGIS_GIT_REVISION)
-if (POSTGIS_GIT_REVISION)
-  set(POSTGIS_SVN_REVISION 1)
+# Determine SVN/Git revision
+find_package(Perl)
+if (PERL_FOUND)
+  execute_process(COMMAND sh -c 
+    "cd ${CMAKE_SOURCE_DIR} && ${PERL_EXECUTABLE} utils/svn_repo_revision.pl")
+
+  file(RENAME "${CMAKE_SOURCE_DIR}/postgis_svn_revision.h"
+    "${CMAKE_BINARY_DIR}/postgis_svn_revision.h")
 endif()
-configure_file("postgis_svn_revision.h.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/postgis_svn_revision.h")
+
 
 ################################################################################
 # Predefined constants
@@ -225,8 +226,3 @@ postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_WITH_RASTER)
 postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_PGSQL_VERSION)
-if (POSTGIS_GIT_REVISION)
-  postgis_report_value(POSTGIS_GIT_REVISION)
-else()
-  postgis_report_value(POSTGIS_SVN_REVISION)
-endif()

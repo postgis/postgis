@@ -69,7 +69,7 @@
 #cmakedefine POSTGIS_GEOS_VERSION @POSTGIS_GEOS_VERSION@
 
 /* PostGIS library version */
-#cmakedefine POSTGIS_LIB_VERSION @POSTGIS_LIB_VERSION@
+#cmakedefine POSTGIS_LIB_VERSION "@POSTGIS_LIB_VERSION@"
 
 /* Enable GEOS profiling (0=disabled) */
 #cmakedefine POSTGIS_PROFILE @POSTGIS_PROFILE@
