@@ -13,14 +13,26 @@
 #define _LWGEODETIC_H 1
 
 /* For NAN */
-#ifdef __GNUC__
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
 #endif
 
 #include <math.h>
+
+#ifndef NAN
+#ifdef _MSC_VER
+static union
+{
+    unsigned long nan[2];
+    double d;
+} internal_postgis_nan = { 0xffffffff, 0x7fffffff };
+#define NAN (internal_postgis_nan.d);
+#endif
+#endif
 
 #ifndef NAN
 #ifdef _MSC_VER
