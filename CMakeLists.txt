@@ -172,6 +172,16 @@ elseif(UNIX)
         OUTPUT_VARIABLE POSTGIS_BUILD_DATE)
 endif()
 
+# Determine Git revision
+# TODO: Subversion revision
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC POSTGIS_GIT_REVISION)
+if (POSTGIS_GIT_REVISION)
+  set(POSTGIS_SVN_REVISION 1)
+endif()
+configure_file("postgis_svn_revision.h.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/postgis_svn_revision.h")
+
 ################################################################################
 # Predefined constants
 set(SRID_MAX 999999)
@@ -179,7 +189,8 @@ set(SRID_USR_MAX 998999)
 
 ################################################################################
 # Generate config header
-configure_file("postgis_config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/postgis_config.h")
+configure_file("postgis_config.h.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/postgis_config.h")
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ################################################################################
@@ -214,3 +225,8 @@ postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_WITH_RASTER)
 postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_PGSQL_VERSION)
+if (POSTGIS_GIT_REVISION)
+  postgis_report_value(POSTGIS_GIT_REVISION)
+else()
+  postgis_report_value(POSTGIS_SVN_REVISION)
+endif()
