@@ -860,12 +860,15 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode)
 	{
 		/* Get the attribute number */
 		att_num = get_attnum(table_oid, att_name);
-		if  ( ! att_num )
+		if  ( ! att_num ) {
 			elog(ERROR, "attribute \"%s\" does not exist", att_name);
+			return NULL;
+		}
 	}
 	else 
 	{
 		elog(ERROR, "attribute name is null");
+		return NULL;
 	}
 	
 	return pg_get_nd_stats(table_oid, att_num, mode);
@@ -1889,7 +1892,7 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	ND_STATS *nd_stats;
 	char *str;
 	text *json;
-	int mode;
+	int mode = 2; /* default to 2D mode */
 	
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(2) )
