@@ -79,7 +79,7 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
 char* lwgeom_backend_name;
 struct lwgeom_backend_definition* lwgeom_backend = &lwgeom_backends[0];
 
-void lwgeom_backend_switch( const char* newvalue, void* extra )
+static void lwgeom_backend_switch( const char* newvalue, void* extra )
 {
     int i;
 
