@@ -82,7 +82,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 			delta[i] = ~(delta[i]);
 		}
 	}
-	
+
 	for (i=0; i<pa->npoints*2; i++)
 	{
 		int numberToEncode = delta[i];
@@ -91,18 +91,18 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 			/* Place the 5-bit chunks into reverse order or 
 			 each value with 0x20 if another bit chunk follows and add 63*/
 			int nextValue = (0x20 | (numberToEncode & 0x1f)) + 63;
-			encoded_polyline += sprintf(encoded_polyline, "%c", (char)nextValue);
+			encoded_polyline += sprintf(encoded_polyline, "%c", nextValue);
 			if(92 == nextValue)
-				encoded_polyline += sprintf(encoded_polyline, "%c", (char)nextValue);
+				encoded_polyline += sprintf(encoded_polyline, "%c", nextValue);
 
 			/* Break the binary value out into 5-bit chunks */
 			numberToEncode >>= 5;
 		}
 
 		numberToEncode += 63;
-		encoded_polyline += sprintf(encoded_polyline, "%c", (char)numberToEncode);
+		encoded_polyline += sprintf(encoded_polyline, "%c", numberToEncode);
 		if(92 == numberToEncode)
-			encoded_polyline += sprintf(encoded_polyline, "%c", (char)numberToEncode);
+			encoded_polyline += sprintf(encoded_polyline, "%c", numberToEncode);
 	}
 
 	free(delta);
