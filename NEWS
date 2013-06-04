@@ -201,6 +201,7 @@ PostGIS 2.1.0
   - #2271, Prevent parallel make of raster
   - #2282, Fix call to undefined function nd_stats_to_grid() in debug mode
   - #2309, Remove confusing INFO message when trying to get SRS info
+  - #2348, Provide raster upgrade path for 2.0 to 2.1
 
 PostGIS 2.0.3
 2013/03/01

@@ -81,12 +81,10 @@ raster/Makefile
 raster/raster_config.h
 raster/rt_core/Makefile
 raster/rt_pg/Makefile
+raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis_drop.sql
 raster/rt_pg/rtpostgis_legacy.sql
-raster/rt_pg/rtpostgis.sql
-raster/rt_pg/rtpostgis_upgrade_20_minor.sql
-raster/rt_pg/rtpostgis_upgrade_cleanup.sql
-raster/rt_pg/rtpostgis_upgrade.sql
+raster/rt_pg/rtpostgis_upgrade*.sql
 raster/rt_pg/uninstall_rtpostgis.sql
 raster/scripts/Makefile
 raster/scripts/python/Makefile

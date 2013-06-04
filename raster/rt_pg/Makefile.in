@@ -14,7 +14,7 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_upgrade_20_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA_built=rtpostgis.sql rtpostgis_upgrade_20_21.sql rtpostgis_upgrade_21_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
 # SQL preprocessor
@@ -103,7 +103,11 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 rtpostgis_upgrade.sql: rtpostgis.sql
 	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-rtpostgis_upgrade_20_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+	cat $^ > $@
+
+# same as 20_21 until 2.1.0 is released
+rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
