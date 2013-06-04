@@ -78,6 +78,10 @@ SELECT 'kml_prefix_02', ST_AsKML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 'km
 -- National Astronomical Observatory of Colombia - Bogota, Colombia (Placemark)
 SELECT 'kml_projection_01', ST_AsKML(ST_GeomFromEWKT('SRID=102189;POINT(1000000 1000000)'), 3);
 
+--
+-- Encoded Polyline
+--
+SELECT 'encoded_polyline_01', ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
 
 --
 -- SVG
