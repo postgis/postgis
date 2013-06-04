@@ -10,7 +10,7 @@
  *
  **********************************************************************/
 
-#include <string.h>
+#include "stringbuffer.h"
 #include "liblwgeom_internal.h"
 
 static char * lwline_to_encoded_polyline(const LWLINE*);
@@ -54,9 +54,10 @@ static
 char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 {
 	int i;
-	const POINT2D *prevPoint;
+	POINT2D *prevPoint;
 	int *delta = malloc(2*sizeof(int)*pa->npoints);
-	char *encoded_polyline;
+	char *encoded_polyline = NULL;
+	stringbuffer_t *sb;
 
 	/* Take the double value and multiply it by 1e5, rounding the result */
 	prevPoint = getPoint2d_cp(pa, 0);
@@ -83,6 +84,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 		}
 	}
 
+	sb = stringbuffer_create();
 	for (i=0; i<pa->npoints*2; i++)
 	{
 		int numberToEncode = delta[i];
@@ -91,20 +93,23 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 			/* Place the 5-bit chunks into reverse order or 
 			 each value with 0x20 if another bit chunk follows and add 63*/
 			int nextValue = (0x20 | (numberToEncode & 0x1f)) + 63;
-			encoded_polyline += sprintf(encoded_polyline, "%c", nextValue);
+			stringbuffer_aprintf(sb, "%c", (char)nextValue);
 			if(92 == nextValue)
-				encoded_polyline += sprintf(encoded_polyline, "%c", nextValue);
+				stringbuffer_aprintf(sb, "%c", (char)nextValue);
 
 			/* Break the binary value out into 5-bit chunks */
 			numberToEncode >>= 5;
 		}
 
 		numberToEncode += 63;
-		encoded_polyline += sprintf(encoded_polyline, "%c", numberToEncode);
+		stringbuffer_aprintf(sb, "%c", (char)numberToEncode);
 		if(92 == numberToEncode)
-			encoded_polyline += sprintf(encoded_polyline, "%c", numberToEncode);
+			stringbuffer_aprintf(sb, "%c", (char)numberToEncode);
 	}
 
 	free(delta);
+	encoded_polyline = stringbuffer_getstringcopy(sb);
+	stringbuffer_destroy(sb);
+
 	return encoded_polyline;
 }

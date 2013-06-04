@@ -61,13 +61,13 @@ static void out_encoded_polyline_test_geoms(void)
 {
 	/* Linestring */
 	do_encoded_polyline_test(
-	    "LINESTRING(0 1,2 3,4 5)",
-	    "M 0 -1 L 2 -3 4 -5");
+	    "LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)",
+	    "_p~iF~ps|U_ulLnnqC_mqNvxq`@");
 
 	/* MultiPoint */
 	do_encoded_polyline_test(
-	    "MULTIPOINT(0 1,2 3)",
-	    "cx=\"0\" cy=\"-1\",cx=\"2\" cy=\"-3\"");
+	    "MULTIPOINT(-120.2 38.5,-120.95 40.7)",
+	    "_p~iF~ps|U_ulLnnqC");
 }
 
 static void out_encoded_polyline_test_srid(void)
@@ -76,12 +76,12 @@ static void out_encoded_polyline_test_srid(void)
 	/* SRID - with PointArray */
 	do_encoded_polyline_test(
 	    "SRID=4326;LINESTRING(0 1,2 3)",
-	    "M 0 -1 L 2 -3");
+	    "_ibE?_seK_seK");
 
-	/* SRID - with relative PointArray */
+	/* wrong SRID */
 	do_encoded_polyline_test(
 	    "SRID=4327;LINESTRING(0 1,2 3)",
-	    "M 0 -1 l 2 -2");
+	    "_ibE?_seK_seK");
 }
 
 /*
