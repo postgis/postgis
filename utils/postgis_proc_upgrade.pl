@@ -195,6 +195,16 @@ while(<INPUT>)
 		}
 	}
 
+	if ( /^do *language .*\$\$/i )
+	{
+		print;
+		while(<INPUT>)
+		{
+			print;
+			last if /\$\$/;
+		}
+	}
+
 	# This code handles casts by dropping and recreating them.
 	if ( /^create cast\s+\(\s*(\w+)\s+as\s+(\w+)\)/i )
 	{
