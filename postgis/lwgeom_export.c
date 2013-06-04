@@ -28,6 +28,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
+Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
 
 /*
  * Retrieve an SRS from a given SRID
@@ -554,6 +555,37 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 
 	result = cstring2text(x3d);
 	lwfree(x3d);
+
+	PG_RETURN_TEXT_P(result);
+}
+
+/**
+ * Encode feature as Encoded Polyline
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asX3D);
+Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom;
+	LWGEOM *lwgeom;
+	char *encodedpolyline;
+	text *result;
+	
+	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if (gserialized_get_srid(geom) != 4326) {
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR, "Only SRID 4326 is supported.");
+		PG_RETURN_NULL();
+	}
+	lwgeom = lwgeom_from_gserialized(geom);
+	PG_FREE_IF_COPY(geom, 0);
+
+	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom);
+	lwgeom_free(lwgeom);
+
+  result = cstring2text(encodedpolyline);
+	lwfree(encodedpolyline);
 
 	PG_RETURN_TEXT_P(result);
 }
