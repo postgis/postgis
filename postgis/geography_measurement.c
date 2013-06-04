@@ -678,7 +678,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	GBOX gbox, gbox1, gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	int type1, type2;
 	int empty1 = LW_FALSE;
 	int empty2 = LW_FALSE;
 	double xwidth, ywidth;
@@ -691,8 +690,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
 	/* Synchronize our box types */
 	gbox1.flags = g1->flags;
-	/* Read our types */
-	type1 = gserialized_get_type(g1);
 	/* Calculate if the geometry is empty. */
 	empty1 = gserialized_is_empty(g1);
 	/* Calculate a geocentric bounds for the objects */
@@ -705,7 +702,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	if ( d1 != d2 )
 	{
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
-		type2 = gserialized_get_type(g2);
 		gbox2.flags = g2->flags;
 		empty2 = gserialized_is_empty(g2);
 		if ( ! empty1 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )

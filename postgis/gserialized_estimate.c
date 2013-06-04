@@ -274,21 +274,6 @@ range_quintile(int *vals, int nvals)
 }
 
 /**
-* Given int array, return sum of values.
-*/
-static int 
-total_int(const int *vals, int nvals)
-{
-	int i;
-	int total = 0;
-	/* Calculate total */
-	for ( i = 0; i < nvals; i++ )
-		total += vals[i];
-
-	return total;
-}
-
-/**
 * Given double array, return sum of values.
 */
 static double 
@@ -296,6 +281,23 @@ total_double(const double *vals, int nvals)
 {
 	int i;
 	float total = 0;
+	/* Calculate total */
+	for ( i = 0; i < nvals; i++ )
+		total += vals[i];
+
+	return total;
+}
+
+#if POSTGIS_DEBUG_LEVEL >= 3
+
+/**
+* Given int array, return sum of values.
+*/
+static int 
+total_int(const int *vals, int nvals)
+{
+	int i;
+	int total = 0;
 	/* Calculate total */
 	for ( i = 0; i < nvals; i++ )
 		total += vals[i];
@@ -331,6 +333,7 @@ stddev(const int *vals, int nvals)
 	}
 	return sqrt(sigma2 / nvals);
 }
+#endif /* POSTGIS_DEBUG_LEVEL >= 3 */
 
 /**
 * Given a position in the n-d histogram (i,j,k) return the
@@ -691,7 +694,9 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 	int counts[num_bins];
 	double smin, smax;   /* Spatial min, spatial max */
 	double swidth;       /* Spatial width of dimension */
+#if POSTGIS_DEBUG_LEVEL >= 3
 	double average, sdev, sdev_ratio;
+#endif
 	int   bmin, bmax;   /* Bin min, bin max */
 	const ND_BOX *ndb; 
 	
@@ -748,9 +753,11 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 
 		/* How dispersed is the distribution of features across bins? */
 		range = range_quintile(counts, num_bins);
+#if POSTGIS_DEBUG_LEVEL >= 3
 		average = avg(counts, num_bins);
 		sdev = stddev(counts, num_bins);
 		sdev_ratio = sdev/average;
+#endif
 		
 		POSTGIS_DEBUGF(3, " dimension %d: range = %d", d, range);
 		POSTGIS_DEBUGF(3, " dimension %d: average = %.6g", d, average);
@@ -853,12 +860,15 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode)
 	{
 		/* Get the attribute number */
 		att_num = get_attnum(table_oid, att_name);
-		if  ( ! att_num )
+		if  ( ! att_num ) {
 			elog(ERROR, "attribute \"%s\" does not exist", att_name);
+			return NULL;
+		}
 	}
 	else 
 	{
 		elog(ERROR, "attribute name is null");
+		return NULL;
 	}
 	
 	return pg_get_nd_stats(table_oid, att_num, mode);
@@ -1882,7 +1892,7 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	ND_STATS *nd_stats;
 	char *str;
 	text *json;
-	int mode;
+	int mode = 2; /* default to 2D mode */
 	
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(2) )
