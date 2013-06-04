@@ -3648,6 +3648,18 @@ CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(text)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------
+
+----------------------------------------------------------------------
+-- ENCODED POLYLINE OUTPUT
+-----------------------------------------------------------------------
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEncodedPolyline'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+------------------------------------------------------------------------
+
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------

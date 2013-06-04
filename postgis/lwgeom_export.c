@@ -562,7 +562,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 /**
  * Encode feature as Encoded Polyline
  */
-PG_FUNCTION_INFO_V1(LWGEOM_asX3D);
+PG_FUNCTION_INFO_V1(LWGEOM_asEncodedPolyline);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 {
   GSERIALIZED *geom;

@@ -82,6 +82,7 @@ SA_OBJS = \
 	lwout_geojson.o \
 	lwout_svg.o \
 	lwout_x3d.o \
+	lwout_encoded_polyline.o \
 	lwgeom_debug.o \
 	lwgeom_geos.o \
 	lwgeom_geos_clean.o \

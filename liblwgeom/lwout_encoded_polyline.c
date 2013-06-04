@@ -60,15 +60,15 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 
 	/* Take the double value and multiply it by 1e5, rounding the result */
 	prevPoint = getPoint2d_cp(pa, 0);
-	delta[0] = (int)(prevPoint.y*1e5);
-	delta[1] = (int)(prevPoint.x*1e5);
+	delta[0] = (int)(prevPoint->y*1e5);
+	delta[1] = (int)(prevPoint->x*1e5);
 
 	/*  points only include the offset from the previous point */
 	for (i=1; i<pa->npoints; i++)
 	{
 		const POINT2D *point = getPoint2d_cp(pa, i);
-		delta[2*i] = (int)(point.y*1e5) - (int)(prevPoint.y*1e5);
-		delta[(2*i)+1] = (int)(point.x*1e5) - (int)(prevPoint.x*1e5);
+		delta[2*i] = (int)(point->y*1e5) - (int)(prevPoint->y*1e5);
+		delta[(2*i)+1] = (int)(point->x*1e5) - (int)(prevPoint->x*1e5);
 		prevPoint = point;
 	}
 	
