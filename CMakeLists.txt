@@ -173,6 +173,7 @@ elseif(UNIX)
 endif()
 
 # Determine SVN/Git revision
+message(STATUS "Generating revision header ${CMAKE_SOURCE_DIR}/postgis_svn_revision.h")
 find_package(Perl)
 if (PERL_FOUND)
   execute_process(COMMAND sh -c 
@@ -180,6 +181,10 @@ if (PERL_FOUND)
 
   file(RENAME "${CMAKE_SOURCE_DIR}/postgis_svn_revision.h"
     "${CMAKE_BINARY_DIR}/postgis_svn_revision.h")
+else()
+  message("*** Perl not found, cannot create postgis_svn_revision.h")
+  message("*** Check SVN revision and create revision header manually:")
+  message("*** echo '#define POSTGIS_SVN_REVISION XYZ' > ${CMAKE_SOURCE_DIR}/postgis_svn_revision.h")
 endif()
 
 
