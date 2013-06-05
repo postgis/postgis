@@ -15,7 +15,7 @@ ERROR:  lwgeom_longitude_shift: unsupported geom type: CircularString
 #73|GEOMETRYCOLLECTION(CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6))
 #80|MULTILINESTRING((0 0,1 1))
 #83|MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406))
-ERROR:  Unsupported geometry type: CircularString
+#85|0
 #112|GEOMETRYCOLLECTION(POINT(-10 50))
 NOTICE:  ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.
 ERROR:  Geometry argument does not have an 'M' ordinate
@@ -143,19 +143,17 @@ ERROR:  First argument must be a LINESTRING
 #1060|FFFFFFFF2
 #1273|t
 #1273.1|t
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#877.1|
-NOTICE:  "public"."t"."g" is empty or not analyzed
-#877.2|
-NOTICE:  "public"."t"."g" is empty or not analyzed
-#877.2.deprecated|
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#877.3|
-#877.4|BOX(-10 -50,20 30)
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#818.1|
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#818.1.deprecated|
+ERROR:  stats for "t.g" do not exist
+ERROR:  stats for "t.g" do not exist
+WARNING:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
+ERROR:  stats for "t.g" do not exist
+ERROR:  stats for "t.g" do not exist
+#877.4|-10.15000|20.15000|-50.40000|30.40000
+#877.5|-10.15000|20.15000|-50.40000|30.40000
+#1292|GEOMETRYCOLLECTION(POINT(180 90),POLYGON((140 50,150 50,180 50,140 50),(140 60,150 60,180 60,140 60)))
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY
+NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY
+#1292.1|POINT(180 85)|POINT(-175 90)
 <#1320>
 #1320.geog.1|MULTIPOLYGON|4326
 #1320.geom.1|MULTIPOLYGON|4326
@@ -198,16 +196,15 @@ ERROR:  MultiSurface cannot contain MultiPoint element at character 8
 ERROR:  AddToPROJ4SRSCache: could not parse proj4 string '' 
 #1038|
 #1042|2
-NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY
 #1170|90
 #1264|t
 #1398a|POINT(-119.093153 45.632669)
 #1398b|POINT(-160.137654 77.091608)
 #1543|MULTILINESTRING((0 0,10 0,10 10,0 0),(0 0))|POLYGON((0 0,10 10,10 0,0 0))
 #1578|f|f
-#1580.1|Point[B]
+#1580.1|Point[BS]
 ERROR:  transform: couldn't project point (180 90 0): tolerance condition error (-20)
-#1580.3|Point[B]
+#1580.3|Point[BS]
 #1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1596.3|3395
@@ -216,7 +213,7 @@ ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0
-#1596|Point[BG]
+#1596|Point[BGS]
 #1695|MULTIPOLYGON EMPTY
 #1697.1|0
 #1697.2|0
@@ -242,3 +239,7 @@ ERROR:  invalid GML representation
 #2112b|1|LINESTRING(1 1 1,1 0 1)
 #2108|SRID=3395;POINTM EMPTY
 #2117|SRID=3395;POINTM EMPTY
+#2110.1|f
+#2110.2|t
+#2110.3|t
+#2145|6792004

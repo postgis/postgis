@@ -317,8 +317,10 @@ circ_tree_new(const POINTARRAY* pa)
 	}
 	
 	/* Special case: only zero-length edges. Make a point node. */
-	if ( j == 0 )
+	if ( j == 0 ) {
+		lwfree(nodes);
 		return circ_node_leaf_point_new(pa);
+	}
 
 	/* Merge the node list pairwise up into a tree */
 	tree = circ_nodes_merge(nodes, j);
@@ -496,10 +498,10 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	double min_dist = MAXFLOAT;
 	double max_dist = MAXFLOAT;
 	GEOGRAPHIC_POINT closest1, closest2;
-	double distance1, distance2;
+	double distance2;
 	double threshold_radians = threshold / spheroid->radius;
 	
-	distance1 = circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
+	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
 	distance2 = spheroid_distance(&closest1, &closest2, spheroid);
 
 	return distance2;

@@ -49,6 +49,16 @@ char* gidx_to_string(GIDX *a)
 #endif
 
 
+static uint8_t
+gserialized_datum_get_flags(Datum gsdatum)
+{
+	GSERIALIZED *gpart;
+	POSTGIS_DEBUG(4, "entered function");
+	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
+	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
+	return gpart->flags;
+}
+
 /**
 * Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
 * of the memory) return the gbox extents. Does not deserialize the geometry,
@@ -66,6 +76,8 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 		return LW_FAILURE;
 		
 	gbox_from_gidx(gidx, gbox);
+	gbox->flags = gserialized_datum_get_flags(gsdatum);
+	
 	return LW_SUCCESS;
 }
 

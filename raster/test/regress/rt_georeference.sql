@@ -464,4 +464,12 @@ SELECT
 FROM rt_properties_test 
 WHERE id = 2;
 
+-----------------------------------------------------------------------
+-- ST_SetGeoReference(raster, double precision, ...)
+-----------------------------------------------------------------------
+
+SELECT id, ST_Metadata(rast), ST_Metadata(ST_SetGeoReference(rast, 0, 0, 1, -1, 0, 0)) FROM rt_properties_test ORDER BY id;
+SELECT id, ST_Metadata(rast), ST_Metadata(ST_SetGeoReference(rast, 1, 1, 0.1, -0.1, 0, 0)) FROM rt_properties_test ORDER BY id;
+SELECT id, ST_Metadata(rast), ST_Metadata(ST_SetGeoReference(rast, 0, 0.1, 1, 1, 0, 0)) FROM rt_properties_test ORDER BY id;
+
 DROP TABLE rt_properties_test;

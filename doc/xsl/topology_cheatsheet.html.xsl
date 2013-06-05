@@ -9,16 +9,20 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>2.0</xsl:variable>
+	<xsl:variable name='postgis_version'>2.1</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://www.postgis.org/documentation/manual-svn/</xsl:variable>
+	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-dev/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Topology Cheat Sheet</title>
 	<style type="text/css">
 <!--
+table { page-break-inside:avoid; page-break-after:auto }
+tr    { page-break-inside:avoid; page-break-after:avoid }
+thead { display:table-header-group }
+tfoot { display:table-footer-group }
 body {
 	font-family: Arial, sans-serif;
 	font-size: 8.5pt;
@@ -85,7 +89,7 @@ h1 {
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Topology Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup>&nbsp; Enhanced in this release <sup>2</sup>&nbsp;Requires GEOS 3.3 or higher<sup>3.3</sup></span><div id="content_functions">]]></xsl:text>
+		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup>&nbsp; Enhanced in this release <sup>2</sup>&nbsp;Requires GEOS 3.4 or higher<sup>3.4</sup></span><div id="content_functions">]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='Topology']" name="function_list" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
@@ -113,7 +117,7 @@ h1 {
 		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
-		 		<xsl:if test="contains(.,'GEOS &gt;= 3.3')"><![CDATA[<sup>g3.3</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'GEOS &gt;= 3.4')"><![CDATA[<sup>g3.4</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3D</sup> ]]></xsl:if>
 		 		<!-- if only one proto just dispaly it on first line -->
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">

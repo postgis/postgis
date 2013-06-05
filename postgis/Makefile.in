@@ -15,14 +15,29 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
-DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade_20_21.sql postgis_upgrade_21_minor.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
+SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade_20_21.sql postgis_upgrade_21_minor.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql uninstall_sfcgal.sql
 DATA=../spatial_ref_sys.sql
+
+# SQL objects (files requiring pre-processing)
+SQL_objs=postgis.sql legacy.sql legacy_minimal.sql
+
+GEOM_BACKEND_OBJ = lwgeom_geos.o
+SFCGAL_BACKEND_OBJ = lwgeom_sfcgal.o
+
+ifeq (@SFCGAL@,sfcgal)
+DATA_built=$(SQL_built) sfcgal.sql
+SQL_OBJS=$(SQL_objs) sfcgal.sql
+BACKEND_OBJ=$(GEOM_BACKEND_OBJ) $(SFCGAL_BACKEND_OBJ)
+else
+BACKEND_OBJ=$(GEOM_BACKEND_OBJ)
+DATA_built=$(SQL_built)
+SQL_OBJS=$(SQL_objs)
+endif
+
+
 
 # SQL preprocessor
 SQLPP = @SQLPP@
-
-# SQL objects (files requiring pre-processing)
-SQL_OBJS=postgis.sql.in legacy.sql.in legacy_minimal.sql.in 
 
 # PostgreSQL objects
 PG_OBJS= \
@@ -36,13 +51,15 @@ PG_OBJS= \
 	lwgeom_btree.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
-	lwgeom_geos.o \
+	$(BACKEND_OBJ) \
+	lwgeom_backend_api.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
 	lwgeom_geos_relatematch.o \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
+	lwgeom_in_geohash.o \
 	lwgeom_in_geojson.o \
 	lwgeom_triggers.o \
 	lwgeom_dump.o \
@@ -55,12 +72,11 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \
-	geography_estimate.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
-	geometry_estimate.o \
 	geometry_inout.o
 
 # Objects to build using PGXS
@@ -73,14 +89,26 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom -I../libpgcommon
-SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@ 
+PG_CPPFLAGS += -I../liblwgeom -I../libpgcommon @CPPFLAGS@ -fPIC
+SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@
+
+# Add SFCGAL Flags if defined
+ifeq (@SFCGAL@,sfcgal)
+PG_CPPFLAGS += @SFCGAL_CPPFLAGS@
+SHLIB_LINK_F += @SFCGAL_LDFLAGS@
+endif
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) legacy_uninstall.sql
+EXTRA_CLEAN=$(SQL_OBJS) \
+	uninstall_postgis.sql \
+	uninstall_legacy.sql \
+	uninstall_sfcgal.sql \
+	postgis_upgrade_20_21.sql.in \
+	postgis_upgrade_20_21.sql \
+	postgis_upgrade_21_minor.sql 
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 
@@ -130,9 +158,11 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 ../libpgcommon/libpgcommon.a:
 	make -C ../libpgcommon libpgcommon.a
 
-# Borrow the $libdir substitution from PGXS but customise by adding the version number
+# Borrow the $libdir substitution from PGXS but customise by running the preprocessor
+# and adding the version number
 %.sql: %.sql.in
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" $< > $@
+	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
 postgis_upgrade_20_21.sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
 	cat $^ > $@
@@ -144,19 +174,21 @@ postgis_upgrade_21_minor.sql: postgis_upgrade_20_21.sql
 	cp $< $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-$(SQL_OBJS): %.in: %.in.c
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' > $@
+#$(SQL_OBJS): %.in: %.in.c
+# $(SQLPP) -I../libpgcommon $< | grep -v '^#' > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
 $(SQL_OBJS): ../postgis_config.h ../postgis_svn_revision.h
 
-postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c 
+#postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c 
 
-#uninstall_postgis.sql.in: sqldefines.h uninstall_sqlmm.sql.in.c uninstall_long_xact.sql.in.c uninstall_geography.sql.in.c
 uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl 
+	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+
+uninstall_sfcgal.sql: sfcgal.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean

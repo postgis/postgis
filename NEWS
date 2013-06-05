@@ -1,34 +1,49 @@
 PostGIS 2.1.0
 2013/MM/DD
 
-* Important / Breaking Changes  *
+ * Important / Breaking Changes  *
 
+  - #1962 ST_Segmentize - As a result of the introduction of geography support: 
+		The construct SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5); 
+		will result in ambiguous function error
+  - #2089, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.
+  - #1653, Removed srid parameter from ST_Resample(raster) and variants
+           with reference raster no longer apply reference raster's SRID.
+  - #2026, ST_Union(raster) now unions all bands of all rasters
+  - #2150, regular_blocking is no longer a constraint. column of same name
+           in raster_columns now checks for existance of spatially_unique
+           and coverage_tile constraints
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
-  - #2026, ST_Union(raster) now unions all bands of all rasters
   - point variant of ST_SetValue(raster) previously did not check SRID
     of input geometry and raster.
   - ST_Hillshade parameters azimuth and altitude are now in degrees
     instead of radians.
   - ST_Slope and ST_Aspect return pixel values in degrees instead of radians.
-  - #1653, Removed srid parameter from ST_Resample(raster) and variants
-    with reference raster no longer apply reference raster's SRID.
 
-* Deprecated signatures
+ * Deprecated signatures *
 
+  - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
+           ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
+           ST_WorldToRasterCoordX and ST_WorldToRasterCoordY.
+           ST_Raster2WorldCoord, ST_Raster2WorldCoordX and
+           ST_Raster2WorldCoordY renamed to ST_RasterToWorldCoord,
+           ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
   - ST_Estimated_Extent renamed to ST_EstimatedExtent
+  - ST_Line_Interpolate_Point renamed to ST_LineInterpolatePoint
+  - ST_Line_Substring renamed to ST_LineSubstring
+  - ST_Line_Locate_Point renamed to ST_LineLocatePoint
+  - ST_Force_XXX renamed to ST_ForceXXX
   - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
     Use ST_MapAlgebra instead
   - 1 and 2 raster variants of ST_MapAlgebraExpr.
     Use expression variants of ST_MapAlgebra instead
-  - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
-    ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
-    ST_WorldToRasterCoordX and ST_WorldToRasterCoordY. ST_Raster2WorldCoord,
-    ST_Raster2WorldCoordX and ST_Raster2WorldCoordY renamed to
-    ST_RasterToWorldCoord, ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
 
-* New Features *
+ * New Features *
 
+  - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
+  - toTopoGeom with TopoGeometry sink (Sandro Santilli / Vizzuality)
+  - clearTopoGeom (Sandro Santilli / Vizzuality)
   - ST_Segmentize(geography) (Paul Ramsey / OpenGeo)
   - ST_DelaunayTriangles (Sandro Santilli / Vizzuality)
   - ST_NearestValue, ST_Neighborhood (Bborie Park / UC Davis)
@@ -41,13 +56,16 @@ PostGIS 2.1.0
     (Bborie Park / UC Davis)
   - Added array variants of ST_SetValues() to set many pixel values of a band
     in one call (Bborie Park / UC Davis)
-  - #1643, Tiger Geocoder - Tiger 2011 loader 
+  - #1627, package tiger_geocoder as a PostgreSQL extension
+  - #1643, #2076, Upgrade tiger geocoder to support loading tiger 2011 and 2012 
     (Regina Obe / Paragon Corporation) Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
+  - #1818, ST_GeomFromGeoHash and friends (Jason Smith (darkpanda))
   - ST_PixelOfValue (Bborie Park / UC Davis)
   - Casts to/from PostgreSQL geotypes (point/path/polygon).
-  - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - #2011, ST_DumpValues to output raster as array (Bborie Park / UC Davis)
+  - #2018, ST_Distance support for CircularString, CurvePolygon, MultiCurve,
+    MultiSurface, CompoundCurve 
   - #2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)
   - Added geomval array variant of ST_SetValues() to set many pixel values of
     a band using a set of geometries and corresponding values in one call
@@ -56,12 +74,43 @@ PostGIS 2.1.0
   - #739, UpdateRasterSRID()
   - #1895, new r-tree node splitting algorithm (Alex Korotkov)
   - #1709, ST_NotSameAlignmentReason(raster, raster)
+  - #1293, ST_Resize(raster) to resize rasters based upon width/height
+  - #945, improved join selectivity, N-D selectivity calculations, 
+    user accessible selectivity and stats reader functions for 
+    testing (Paul Ramsey / OpenGeo)
+  - #2210, ST_MinConvexHull(raster)
+  - lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)
+  - #1687, ST_Simplify for TopoGeometry (Sandro Santilli / Vizzuality)
+  - #2228, TopoJSON output for TopoGeometry (Sandro Santilli / Vizzuality)
+  - #2123, ST_FromGDALRaster
+  - #613, ST_SetGeoReference with numerical parameters instead of text
+  - #2276, ST_AddBand(raster) variant for out-db bands
+  - #2280, ST_Summary(raster)
+  - #2163, ST_TPI for raster (Nathaniel Clay)
+  - #2164, ST_TRI for raster (Nathaniel Clay)
+  - #2302, ST_Roughness for raster (Nathaniel Clay)
+  - #2290, ST_ColorMap(raster) to generate RGBA bands
+  - #2254, Add SFCGAL backend support. 
+           (Backend selection throught postgis.backend var)
+           Functions available both throught GEOS or SFCGAL: 
+            ST_Intersects, ST_3DIntersects, ST_Intersection, ST_Area, 
+            ST_Distance, ST_3DDistance
+           New functions available only with SFCGAL backend:
+            ST_3DIntersection, ST_Tesselate, ST_3DArea, ST_Extrude, ST_ForceLHR
+            ST_Orientation, ST_Minkowski, ST_StraightSkeleton
+            postgis_sfcgal_version
+           New function available in PostGIS: ST_ForceSFS
+           (Olivier Courtin and Hugo Mercier / Oslandia)
 
-* Enhancements *
+ * Enhancements *
+
   - #823,  tiger geocoder: Make loader_generate_script download portion 
            less greedy
+  - #826,  raster2pgsql no longer defaults to padding tiles. Flag -P
+           can be used to pad tiles
   - #1363, ST_AddBand(raster, ...) array version rewritten in C
   - #1364, ST_Union(raster, ...) aggregate function rewritten in C
+  - #1655, Additional default values for parameters of ST_Slope
   - #1661, Add aggregate variant of ST_SameAlignment
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
   - #1780, support ST_GeoHash for geography
@@ -77,24 +126,42 @@ PostGIS 2.1.0
   - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
   - #2006, better support of ST_Area(geography) over poles and dateline
   - #2065, ST_Clip(raster, ...) now a C function
-  - TopologySummary output now includes unregistered layers and a count
-    of missing TopoGeometry objects from their natural layer.
-  - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
-    parameter to interpolate NODATA pixels before running the operation.
-  - Point variant of ST_SetValue(raster) is now a wrapper around geomval 
-    variant of ST_SetValues(rast).
-  - Proper support for raster band's isnodata flag in core API and loader.
-  - #1655, Additional default values for parameters of ST_Slope
-  - Additional default values for parameters of ST_Aspect and ST_HillShade
+  - #2069, Added parameters to ST_Tile(raster) to control padding of tiles
   - #2078, New variants of ST_Slope, ST_Aspect and ST_HillShade to provide
-    solution to handling tiles in a coverage
+           solution to handling tiles in a coverage
   - #2097, Added RANGE uniontype option for ST_Union(raster)
   - #2105, Added ST_Transform(raster) variant for aligning output to
-    reference raster
+           reference raster
   - #2119, Rasters passed to ST_Resample(), ST_Rescale(), ST_Reskew(),
-    and ST_SnapToGrid() no longer require an SRID
+           and ST_SnapToGrid() no longer require an SRID
+  - #2141, More verbose output when constraints fail to be added
+           to a raster column
+  - #2143, Changed blocksize constraint of raster to allow multiple values
+  - #2148, Addition of coverage_tile constraint for raster
+  - #2149, Addition of spatially_unique constraint for raster
+  - TopologySummary output now includes unregistered layers and a count
+           of missing TopoGeometry objects from their natural layer.
+  - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
+           parameter to interpolate NODATA pixels before running the
+           operation.
+  - Point variant of ST_SetValue(raster) is now a wrapper around geomval 
+           variant of ST_SetValues(rast).
+  - Proper support for raster band's isnodata flag in core API and loader.
+  - Additional default values for parameters of ST_Aspect and ST_HillShade
+  - #2178, ST_Summary now advertises presence of known srid with an [S] flag
+  - #2202, Make libjson-c optional (--without-json configure switch)
+  - #2231, raster2pgsql supports user naming of filename column with -n
+  - #2200, ST_Union(raster, uniontype) unions all bands of all rasters
+  - #2264, postgis_restore.pl support for restoring into databases
+           with postgis in a custom schema
+  - #2244, emit warning when changing raster's georeference if raster has
+           out-db bands
+  - #2222, add parameter OutAsIn to flag whether ST_AsBinary should
+           return out-db bands as in-db bands
+  - #1823, add parameter in ST_AsGML to use id column for GML 3 output 
+           (become mandatory since GML 3.2.1)
 
-* Fixes *
+ * Fixes *
 
   - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
   - #1840, fix logic of when to compute # of tiles in raster2pgsql.
@@ -116,7 +183,97 @@ PostGIS 2.1.0
   - #2077, Fixed incorrect values returning from ST_Hillshade()
   - #2019, ST_FlipCoordinates does not update bbox
   - #2100, ST_AsRaster may not return raster with specified pixel type
+  - #2126, Better handling of empty rasters from ST_ConvexHull()
+  - #2165, ST_NumPoints regression failure with CircularString
+  - #2168, ST_Distance is not always commutative
+  - #2182, Fix issue with outdb rasters with no SRID and ST_Resize
+  - #2188, Fix function parameter value overflow that caused problems
+           when copying data from a GDAL dataset
+  - #2198, Fix incorrect dimensions used when generating bands of out-db
+           rasters in ST_Tile()
+  - #2201, ST_GeoHash wrong on boundaries
+  - #2203, Changed how rasters with unknown SRID and default geotransform
+           are handled when passing to GDAL Warp API
+  - #2215, Fixed raster exclusion constraint for conflicting name of
+           implicit index
+  - #2251, Fix bad dimensions when rescaling rasters with default
+           geotransform matrix
+  - #2133, Fix performance regression in expression variant of ST_MapAlgebra
+  - #2257, GBOX variables not initialized when testing with empty geometries
+  - #2271, Prevent parallel make of raster
+  - #2282, Fix call to undefined function nd_stats_to_grid() in debug mode
+  - #2307, ST_MakeValid outputs invalid geometries
+  - #2309, Remove confusing INFO message when trying to get SRS info
+  - #2348, Provide raster upgrade path for 2.0 to 2.1
 
+PostGIS 2.0.3
+2013/03/01
+
+ * Bug Fixes *
+  - #2134, Fixed handling of SRS strings as they are passed to GDAL functions
+
+PostGIS 2.0.2
+2012/12/03
+
+ * Bug Fixes *
+  - #1287, Drop of "gist_geometry_ops" broke a few clients
+           package of legacy_gist.sql for these cases
+  - #1391, Errors during upgrade from 1.5
+  - #1828, Poor selectivity estimate on ST_DWithin
+  - #1838, error importing tiger/line data
+  - #1869, ST_AsBinary is not unique - 
+           added to legacy_minor/legacy.sql scripts
+  - #1885, Missing field from tabblock table in tiger2010 census_loader.sql
+  - #1891, Use LDFLAGS environment when building liblwgeom
+  - #1899, Enhance toTopoGeom error on unsupported input
+  - #1900, Fix pgsql2shp for big-endian systems 
+  - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
+  - #1936, ST_GeomFromGML on CurvePolygon causes server crash
+  - #1955, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges
+  - #1957, ST_Distance to a one-point LineString returns NULL
+  - #1976, Geography point-in-ring code overhauled for more reliability
+  - #1978, wrong answer calculating length of closed circular arc (circle)
+  - #1981, Remove unused but set variables as found with gcc 4.6+
+  - #1987, Restore 1.5.x behaviour of ST_Simplify 
+  - #1989, Preprocess input geometry to just intersection with raster
+           to be clipped
+  - #1991, geocode really slow on PostgreSQL 9.2
+  - #1996, support POINT EMPTY in GeoJSON output
+  - #1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints
+  - #2001, ST_CurveToLine has no effect if the geometry doesn't actually
+           contain an arc
+  - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
+  - #2019, ST_FlipCoordinates does not update bbox
+  - #2025, Fix side location conflict at TopoGeo_AddLineString 
+  - #2062, improve performance of distance calculations
+  - #2033, Fix adding a splitting point into a 2.5d topology 
+  - #2051, Fix excess of precision in ST_AsGeoJSON output
+  - #2052, Fix buffer overflow in lwgeom_to_geojson
+  - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
+  - #2057, Fixed linking issue for raster2psql to libpq
+  - #2060, Fix "dimension" check violation by GetTopoGeomElementArray
+  - #2072, Removed outdated checks preventing ST_Intersects(raster) from
+           working on out-db bands
+  - #2077, Fixed incorrect answers from ST_Hillshade(raster) 
+  - #2092, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+
+  - #2099, Fix double free on exception in ST_OffsetCurve 
+  - #2100, ST_AsRaster() may not return raster with specified pixel type
+  - #2108, Ensure ST_Line_Interpolate_Point always returns POINT
+  - #2109, Ensure ST_Centroid always returns POINT
+  - #2117, Ensure ST_PointOnSurface always returns POINT
+  - #2129, Fix SRID in ST_Homogenize output with collection input
+  - #2130, Fix memory error in MultiPolygon GeoJson parsing 
+
+  - Update URL of Maven jar
+  
+
+ * Enhancements *
+  - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
+           corresponding band from the source raster did not have NODATA
+  - #1928, Accept array properties in GML input multi-geom input
+    (Kashif Rasul and Shoaib Burq / SpacialDB)
+  - #2082, Add indices on start_node and end_node of topology edge tables
+  - #2087, Speedup topology.GetRingEdges using a recursive CTE 
 
 PostGIS 2.0.1
 2012/06/22
@@ -176,7 +333,7 @@ PostGIS 2.0.1
   - #1786, improved build dependencies 
   - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
   - #1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.
-  
+	  
 PostGIS 2.0.0
 2012/04/03
    

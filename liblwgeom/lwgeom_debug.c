@@ -17,16 +17,17 @@
 #include <string.h>
 
 /* Place to hold the ZM string used in other summaries */
-static char tflags[5];
+static char tflags[6];
 
 static char *
-lwtype_flagchars(uint8_t flags)
+lwgeom_flagchars(LWGEOM *lwg)
 {
 	int flagno = 0;
-	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
-	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
-	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
-	if ( FLAGS_GET_GEODETIC(flags) ) tflags[flagno++] = 'G';
+	if ( FLAGS_GET_Z(lwg->flags) ) tflags[flagno++] = 'Z';
+	if ( FLAGS_GET_M(lwg->flags) ) tflags[flagno++] = 'M';
+	if ( FLAGS_GET_BBOX(lwg->flags) ) tflags[flagno++] = 'B';
+	if ( FLAGS_GET_GEODETIC(lwg->flags) ) tflags[flagno++] = 'G';
+	if ( lwg->srid != SRID_UNKNOWN ) tflags[flagno++] = 'S';
 	tflags[flagno] = '\0';
 
 	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
@@ -42,7 +43,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
 	char *pad="";
-	char *zmflags = lwtype_flagchars(point->flags);
+	char *zmflags = lwgeom_flagchars((LWGEOM*)point);
 
 	result = (char *)lwalloc(128+offset);
 
@@ -57,7 +58,7 @@ lwline_summary(LWLINE *line, int offset)
 {
 	char *result;
 	char *pad="";
-	char *zmflags = lwtype_flagchars(line->flags);
+	char *zmflags = lwgeom_flagchars((LWGEOM*)line);
 
 	result = (char *)lwalloc(128+offset);
 
@@ -78,7 +79,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	int i;
 	static char *nl = "\n";
 	char *pad="";
-	char *zmflags = lwtype_flagchars(col->flags);
+	char *zmflags = lwgeom_flagchars((LWGEOM*)col);
 
 	LWDEBUG(2, "lwcollection_summary called");
 
@@ -116,7 +117,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	int i;
 	char *pad="";
 	static char *nl = "\n";
-	char *zmflags = lwtype_flagchars(poly->flags);
+	char *zmflags = lwgeom_flagchars((LWGEOM*)poly);
 
 	LWDEBUG(2, "lwpoly_summary called");
 

@@ -15,6 +15,10 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
+/* Internal funcs */
+static void 
+cu_error_reporter(const char *fmt, va_list ap);
+
 /* ADD YOUR SUITE HERE (1 of 2) */
 extern CU_SuiteInfo pixtype_suite;
 extern CU_SuiteInfo raster_basics_suite;
@@ -27,6 +31,7 @@ extern CU_SuiteInfo band_stats_suite;
 extern CU_SuiteInfo band_misc_suite;
 extern CU_SuiteInfo mapalgebra_suite;
 extern CU_SuiteInfo spatial_relationship_suite;
+extern CU_SuiteInfo misc_suite;
 
 /*
 ** The main() function for setting up and running the tests.
@@ -49,6 +54,7 @@ int main(int argc, char *argv[])
 		band_misc_suite,
 		spatial_relationship_suite,
 		mapalgebra_suite,
+		misc_suite,
 		CU_SUITE_INFO_NULL
 	};
 
@@ -61,6 +67,9 @@ int main(int argc, char *argv[])
 	CU_pTestRegistry registry;
 	int num_run;
 	int num_failed;
+
+	/* install the custom error handler */
+	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
 
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
@@ -204,10 +213,6 @@ void cu_free_raster(rt_raster raster) {
 
 	for (i = 0; i < nbands; ++i) {
 		rt_band band = rt_raster_get_band(raster, i);
-		if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
-			void* mem = rt_band_get_data(band);
-			if (mem) rtdealloc(mem);
-		}
 		rt_band_destroy(band);
 	}
 
@@ -230,6 +235,11 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	mem = rtalloc(datasize);
 	CU_ASSERT(mem != NULL);
 
+	if (hasnodata)
+		memset(mem, nodataval, datasize);
+	else
+		memset(mem, 0, datasize);
+
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
@@ -238,14 +248,6 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	CU_ASSERT(bandNum >= 0);
 
 	return band;
-}
-
-void lwgeom_init_allocators(void) {
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwnotice_var = default_noticereporter;
-	lwerror_var = cu_error_reporter;
 }
 
 void rt_init_allocators(void) {

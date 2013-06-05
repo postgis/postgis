@@ -28,82 +28,167 @@ static LWGEOM* lwgeom_from_text(const char *str)
 	return r.geom;
 }
 
-static void do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res)
+#define DIST2DTEST(str1, str2, res) do_test_mindistance2d_tolerance(str1, str2, res, __LINE__)
+
+static void do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res, int line)
 {
 	LWGEOM *lw1;
 	LWGEOM *lw2;
 	double distance;
+	char *msg1 = "test_mindistance2d_tolerance failed (got %g expected %g) at line %d\n";
+	char *msg2 = "\n\ndo_test_mindistance2d_tolerance: NULL lwgeom generated from WKT\n  %s\n\n";
 
 	lw1 = lwgeom_from_wkt(in1, LW_PARSER_CHECK_NONE);
 	lw2 = lwgeom_from_wkt(in2, LW_PARSER_CHECK_NONE);
 
+	if ( ! lw1 )
+	{
+		printf(msg2, in1);
+		exit(1);
+	}
+	if ( ! lw2 )
+	{
+		printf(msg2, in2);
+		exit(1);
+	}
+
 	distance = lwgeom_mindistance2d_tolerance(lw1, lw2, 0.0);
-	CU_ASSERT_EQUAL(distance, expected_res);
 	lwgeom_free(lw1);
 	lwgeom_free(lw2);
 
+	if ( fabs(distance - expected_res) > 0.00001 )
+	{
+		printf(msg1, distance, expected_res, line);
+		CU_FAIL();
+	}
+	else
+	{
+		CU_PASS();
+	}
+
 }
+
 static void test_mindistance2d_tolerance(void)
 {
 	/*
 	** Simple case.
 	*/
-	do_test_mindistance2d_tolerance("POINT(0 0)", "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
+	DIST2DTEST("POINT(0 0)", "MULTIPOINT(0 1.5,0 2,0 2.5)", 1.5);
 
 	/*
 	** Point vs Geometry Collection.
 	*/
-	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
+	DIST2DTEST("POINT(0 0)", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection.
 	*/
-	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
+	DIST2DTEST("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection Collection.
 	*/
-	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", 5.0);
+	DIST2DTEST("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4))))", 5.0);
 
 	/*
 	** Point vs Geometry Collection Collection Collection Multipoint.
 	*/
-	do_test_mindistance2d_tolerance("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", 5.0);
+	DIST2DTEST("POINT(0 0)", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4))))", 5.0);
 
 	/*
 	** Geometry Collection vs Geometry Collection
 	*/
-	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(POINT(0 0))", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
+	DIST2DTEST("GEOMETRYCOLLECTION(POINT(0 0))", "GEOMETRYCOLLECTION(POINT(3 4))", 5.0);
 
 	/*
 	** Geometry Collection Collection vs Geometry Collection Collection
 	*/
-	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
+	DIST2DTEST("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(3 4)))", 5.0);
 
 	/*
 	** Geometry Collection Collection Multipoint vs Geometry Collection Collection Multipoint
 	*/
-	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
+	DIST2DTEST("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
 
 	/*
 	** Linestring vs its start point 
 	*/
-	do_test_mindistance2d_tolerance("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
+	DIST2DTEST("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
 
 	/*
 	** Linestring vs its end point 
 	*/
-	do_test_mindistance2d_tolerance("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
+	DIST2DTEST("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
 
 	/*
 	** Linestring vs its start point (tricky number, see #1459)
 	*/
-	do_test_mindistance2d_tolerance("LINESTRING(-1e-8 0, -0.2 0)", "POINT(-1e-8 0)", 0);
+	DIST2DTEST("LINESTRING(-1e-8 0, -0.2 0)", "POINT(-1e-8 0)", 0);
 
 	/*
 	** Linestring vs its end point (tricky number, see #1459)
 	*/
-	do_test_mindistance2d_tolerance("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
+	DIST2DTEST("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
+
+	/*
+	* Circular string and point 
+	*/
+	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "POINT(0 0)", 1);
+	DIST2DTEST("CIRCULARSTRING(-3 0, -2 0, -1 0, 0 1, 1 0)", "POINT(0 0)", 1);
+
+	/*
+	* Circular string and Circular string 
+	*/
+	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "CIRCULARSTRING(0 0, 1 -1, 2 0)", 1);
+
+	/*
+	* CurvePolygon and Point
+	*/
+	static char *cs1 = "CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(1 6, 6 1, 9 7),(9 7, 3 13, 1 6)),COMPOUNDCURVE((3 6, 5 4, 7 4, 7 6),CIRCULARSTRING(7 6,5 8,3 6)))";
+	DIST2DTEST(cs1, "POINT(3 14)", 1);
+	DIST2DTEST(cs1, "POINT(3 8)", 0);
+	DIST2DTEST(cs1, "POINT(6 5)", 1);
+	DIST2DTEST(cs1, "POINT(6 4)", 0);
+
+	/*
+	* CurvePolygon and Linestring
+	*/
+	DIST2DTEST(cs1, "LINESTRING(0 0, 50 0)", 0.917484);
+	DIST2DTEST(cs1, "LINESTRING(6 0, 10 7)", 0);
+	DIST2DTEST(cs1, "LINESTRING(4 4, 4 8)", 0);
+	DIST2DTEST(cs1, "LINESTRING(4 7, 5 6, 6 7)", 0.585786);
+	DIST2DTEST(cs1, "LINESTRING(10 0, 10 2, 10 0)", 1.52913);
+
+	/*
+	* CurvePolygon and Polygon
+	*/
+	DIST2DTEST(cs1, "POLYGON((10 4, 10 8, 13 8, 13 4, 10 4))", 0.58415);
+	DIST2DTEST(cs1, "POLYGON((9 4, 9 8, 12 8, 12 4, 9 4))", 0);
+	DIST2DTEST(cs1, "POLYGON((1 4, 1 8, 4 8, 4 4, 1 4))", 0);
+
+	/*
+	* CurvePolygon and CurvePolygon
+	*/
+	DIST2DTEST(cs1, "CURVEPOLYGON(CIRCULARSTRING(-1 4, 0 5, 1 4, 0 3, -1 4))", 0.0475666);
+	DIST2DTEST(cs1, "CURVEPOLYGON(CIRCULARSTRING(1 4, 2 5, 3 4, 2 3, 1 4))", 0.0);
+
+	/*
+	* MultiSurface and CurvePolygon 
+	*/
+	static char *cs2 = "MULTISURFACE(POLYGON((0 0,0 4,4 4,4 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(8 2,10 4,12 2,10 0,8 2)))";
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5 2,6 3,7 2,6 1,5 2))", 1);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(4 2,5 3,6 2,5 1,4 2))", 0);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5 3,6 2,5 1,4 2,5 3))", 0);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(4.5 3,5.5 2,4.5 1,3.5 2,4.5 3))", 0);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5.5 3,6.5 2,5.5 1,4.5 2,5.5 3))", 0.5);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(10 3,11 2,10 1,9 2,10 3))", 0);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(2 3,3 2,2 1,1 2,2 3))", 0);
+	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5 7,6 8,7 7,6 6,5 7))", 2.60555);
+
+	/*
+	* MultiCurve and Linestring
+	*/
+	DIST2DTEST("LINESTRING(0.5 1,0.5 3)", "MULTICURVE(CIRCULARSTRING(2 3,3 2,2 1,1 2,2 3),(0 0, 0 5))", 0.5);
 
 }
 

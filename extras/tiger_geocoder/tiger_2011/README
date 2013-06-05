@@ -6,7 +6,7 @@ This is a customized version of Steve Frost's tiger geocoder revisions
 (http://www.snowman.net/git/tiger_geocoder/).
 
 This version includes a loader that is portable between Linux and
-Windows but loads a full state of data.  The loader helper tables and
+Windows but loads a full state of data at a time.  The loader helper tables and
 functions are prefixed with loader and stored in the tiger schema.  If
 you only want to load a county, revise the wget call that is generated
 for the state to just download the statewide and specific counties or
@@ -19,9 +19,9 @@ http://gnuwin32.sourceforge.net/packages/wget.htm
 
 Tiger Geocoder is now part of the PostGIS documentation
 for further details about function use, refer to:
-http://www.postgis.org/documentation/manual-svn/Extras.html#Tiger_Geocoder
+http://www.postgis.net/docs/manual-dev/Extras.html#Tiger_Geocoder
 
-Steps to install and load:
+Steps to install and load (without using extensions)
 
 1.  Create a PostGIS enabled db if you don't have one already
 
@@ -35,14 +35,23 @@ Steps to install and load:
 something like: 
 ALTER DATABASE geocoder SET search_path=public, tiger;
 
-6. Create a folder called gisdata on root of server or your local pc
+Steps using extensions:
+1. Create a PostGIS enabled db make sure you installed postgis with:
+CREATE EXTENSION postgis;
+
+2) Next:
+CREATE EXTENSION postgis_tiger_geocoder;
+
+Loading up data:
+
+1. Create a folder called gisdata on root of server or your local pc
 if you have a fast network connection to the server. This folder is
 where the tiger files will be downloaded to.
 
-7. Create a folder called temp in the gisdata folder.  This will be
+2. Create a folder called temp in the gisdata folder.  This will be
 the folder where we extract the downloaded tiger data.
 
-8. Run the following commands at psql or pgAdmin III query window to
+3. Run the following commands at psql or pgAdmin III query window to
 generate the script, replacing 'DC', 'RI' with list of states you want
 and save contents to a .bat or sh file in YOUR CURRENT DIRECTORY. This
 will generate CODE for each state and append it to the script.

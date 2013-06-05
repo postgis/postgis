@@ -193,6 +193,7 @@ static void test_raster_replace_band() {
 	mem = rtalloc(datasize);
 	band = rt_band_new_inline(width, height, PT_8BUI, 1, 1, mem);
 	CU_ASSERT(band != NULL);
+	rt_band_set_ownsdata_flag(band, 1);
 
 	rband = rt_raster_replace_band(raster, band, 0);
 	CU_ASSERT(rband != NULL);

@@ -139,12 +139,13 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		if ( outcol->ngeoms == 1 )
 		{
 			outgeom = outcol->geoms[0];
-			lwfree(outcol);
+			outcol->ngeoms=0; lwcollection_free(outcol);
 		}
 		else
 		{
 			outgeom = lwcollection_as_lwgeom(outcol);
 		}
+		outgeom->srid = col->srid;
 	}
 	/* Bah, more than out type, return anonymous collection */
 	else if ( ntypes > 1 )
@@ -160,7 +161,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 				if ( bcol->ngeoms == 1 )
 				{
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
-					lwfree(bcol);
+					bcol->ngeoms=0; lwcollection_free(bcol);
 				}
 				else 
 				{
@@ -170,7 +171,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		}
 		outgeom = lwcollection_as_lwgeom(outcol);
 	}
-	
+
 	return outgeom;
 }
 

@@ -47,7 +47,7 @@ XSLTPROC_COMMONOPTS= \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 \
-	--param generate.section.toc.level 1 \
+	--param generate.section.toc.level 2 \
 	--param funcsynopsis.style kr \
 	--param admon.graphics 1 \
 	--param admon.textlabel 0 \
@@ -73,6 +73,9 @@ MSGMERGE=msgmerge
 
 # XML gettext tools
 XML2POT=xml2pot
+
+# DOCBOOK to EPUB
+DBTOEPUB=dbtoepub
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
@@ -105,7 +108,7 @@ XML_SOURCES = \
 	installation.xml \
 	introduction.xml \
 	performance_tips.xml \
-  postgis.xml \
+	postgis.xml \
 	reference_accessor.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
@@ -113,6 +116,7 @@ XML_SOURCES = \
 	reference_lrs.xml \
 	reference_management.xml \
 	reference_measure.xml \
+	reference_sfcgal.xml \
 	reference_misc.xml \
 	reference_operator.xml \
 	reference_output.xml \
@@ -157,32 +161,38 @@ ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml Makefile
-	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
 endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
 	
 postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
 	
 raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
 	
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
 	
 topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
 	
 topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	
+sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
+	
+sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
 	
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
 	
 tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
@@ -226,6 +236,19 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P latex.output.revhistory=0 \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
+	
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
+	if test x"$(DBTOEPUB)" = x; then \
+	   echo "Error: dbtoepub not found, can't build epub"; \
+	   echo "       try installing dbtoepub"; \
+	   false; \
+	else \
+		$(DBTOEPUB) -c "${PWD}/html/style.css" \
+		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
+		  $<; \
+	fi
+
+epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
 
@@ -250,6 +273,7 @@ images-clean:
 clean: 
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -f *.epub
 	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
 
@@ -263,16 +287,17 @@ maintainer-clean: clean images-clean
 ifeq ($(XSLTPROC),)
 comments: requirements_not_met_xsltproc
 else
-comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
 endif
 
-cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
+cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
 
 ifeq ($(XSLTPROC),)
 comments-install: 
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
 	        -e topology_comments.sql -a \
+	        -e sfcgal_comments.sql -a \
 	        -e tiger_geocoder_comments.sql; then \
 	  $(MAKE) -f Makefile.comments install; \
 	fi
@@ -331,7 +356,7 @@ requirements_not_met_xsltproc:
 	@echo "Install xsltproc and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_xmllint:
@@ -341,7 +366,7 @@ requirements_not_met_xmllint:
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_xslbase:
@@ -352,7 +377,7 @@ requirements_not_met_xslbase:
 	@echo "with the --with-xsldir option."
 	@echo "Alternatively refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_imagemagick:
@@ -361,6 +386,6 @@ requirements_not_met_imagemagick:
 	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo 
 	

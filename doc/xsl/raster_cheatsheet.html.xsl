@@ -9,16 +9,20 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>2.0</xsl:variable>
+	<xsl:variable name='postgis_version'>2.1</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://www.postgis.org/documentation/manual-svn/</xsl:variable>
+	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-dev/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Raster Cheat Sheet</title>
 	<style type="text/css">
 <!--
+table { page-break-inside:avoid; page-break-after:auto }
+tr    { page-break-inside:avoid; page-break-after:avoid }
+thead { display:table-header-group }
+tfoot { display:table-footer-group }
 body {
 	font-family: Arial, sans-serif;
 	font-size: 8.5pt;

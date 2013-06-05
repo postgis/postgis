@@ -1,0 +1,226 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2013-05-12 08:39+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_sfcgal.xml:4
+#, no-c-format
+msgid "Using SFCGAL Advanced 2D/3D functions"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:5
+#, no-c-format
+msgid "TODO Introduction part"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:8
+#, no-c-format
+msgid "TODO Install part"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:14
+#, no-c-format
+msgid "ST_Extrude"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:16
+#, no-c-format
+msgid "Extrude a surface to a related volume"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:21
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_sfcgal.xml:32 reference_sfcgal.xml:61 reference_sfcgal.xml:90
+#: reference_sfcgal.xml:119 reference_sfcgal.xml:148 reference_sfcgal.xml:177
+#: reference_sfcgal.xml:206
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:34 reference_sfcgal.xml:63 reference_sfcgal.xml:92
+#: reference_sfcgal.xml:121 reference_sfcgal.xml:150 reference_sfcgal.xml:179
+#: reference_sfcgal.xml:208
+#, no-c-format
+msgid "Availability"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:35 reference_sfcgal.xml:64 reference_sfcgal.xml:93
+#: reference_sfcgal.xml:122 reference_sfcgal.xml:151 reference_sfcgal.xml:180
+#: reference_sfcgal.xml:209
+#, no-c-format
+msgid "&sfcgal_required;"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:36 reference_sfcgal.xml:65 reference_sfcgal.xml:94
+#: reference_sfcgal.xml:123 reference_sfcgal.xml:152 reference_sfcgal.xml:181
+#: reference_sfcgal.xml:210
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:37 reference_sfcgal.xml:66 reference_sfcgal.xml:95
+#: reference_sfcgal.xml:124 reference_sfcgal.xml:153 reference_sfcgal.xml:182
+#: reference_sfcgal.xml:211
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_sfcgal.xml:38 reference_sfcgal.xml:67 reference_sfcgal.xml:96
+#: reference_sfcgal.xml:125 reference_sfcgal.xml:154 reference_sfcgal.xml:183
+#: reference_sfcgal.xml:212
+#, no-c-format
+msgid "&T_support;"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:46
+#, no-c-format
+msgid "ST_StraightSkeleton"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:48
+#, no-c-format
+msgid "Compute a straight skeleton from a geometry"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:53
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:75
+#, no-c-format
+msgid "ST_IsPlanar"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:77
+#, no-c-format
+msgid "Check if a surface is or not planar"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:82
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:104
+#, no-c-format
+msgid "ST_Orientation"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:106
+#, no-c-format
+msgid "Determine surface orientation"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:111
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_Orientation</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:133
+#, no-c-format
+msgid "ST_ForceLHR"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:135
+#, no-c-format
+msgid "Force LHR orientation"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:140
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:161
+#, no-c-format
+msgid "ST_MinkowskiSum"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:163
+#, no-c-format
+msgid "Perform Minkowski sum"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:168
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Minkowski</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: refname
+#: reference_sfcgal.xml:191
+#, no-c-format
+msgid "ST_Tesselate"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:193
+#, no-c-format
+msgid "Perform surface Tesselation"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:198
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""

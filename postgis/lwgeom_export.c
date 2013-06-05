@@ -487,8 +487,6 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	char *srs;
 	int srid;
 	int option = 0;
-	int is_deegree = 0;
-	int is_dims = 1;
 	int precision = DBL_DIG;
 	static const char* default_defid = "x3d:"; /* default defid */
 	char *defidbuf;
@@ -547,11 +545,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
 
-	if (option & 2)  is_dims = 0;
-	if (option & 16) is_deegree = 1;
-
 	lwgeom = lwgeom_from_gserialized(geom);
-
 
 	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
 

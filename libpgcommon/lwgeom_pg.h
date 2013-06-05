@@ -22,12 +22,8 @@
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 
-void *pg_alloc(size_t size);
-void *pg_realloc(void *ptr, size_t size);
-void pg_free(void *ptr);
-void pg_error(const char *msg, va_list vp);
-void pg_notice(const char *msg, va_list vp);
-
+/* Install PosgreSQL handlers for liblwgeom use */
+void pg_install_lwgeom_handlers(void);
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0

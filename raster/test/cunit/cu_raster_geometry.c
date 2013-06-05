@@ -2,7 +2,7 @@
  * PostGIS Raster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2012 Regents of the University of California
+ * Copyright (C) 2012-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,11 +26,43 @@
 
 static void test_raster_convex_hull() {
 	rt_raster raster = NULL;
-	LWPOLY *convexhull = NULL;
+	LWGEOM *hull = NULL;
+	LWPOLY *poly = NULL;
 	POINTARRAY *ring = NULL;
 	POINT4D pt;
 
-	/* create raster */
+	/* NULL raster */
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(NULL, &hull), ES_NONE);
+	CU_ASSERT(hull == NULL);
+
+	/* width = 0, height = 0 */
+	raster = rt_raster_new(0, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, POINTTYPE);
+	lwgeom_free(hull);
+	cu_free_raster(raster);
+
+	/* width = 0 */
+	raster = rt_raster_new(0, 256);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	lwgeom_free(hull);
+	cu_free_raster(raster);
+
+	/* height = 0 */
+	raster = rt_raster_new(256, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	lwgeom_free(hull);
+	cu_free_raster(raster);
+
+	/* normal raster */
 	raster = rt_raster_new(256, 256);
 	CU_ASSERT(raster != NULL);
 
@@ -38,11 +70,12 @@ static void test_raster_convex_hull() {
 	rt_raster_set_scale(raster, 1, 1);
 	rt_raster_set_skews(raster, 4, 5);
 
-	convexhull = rt_raster_get_convex_hull(raster);
-	CU_ASSERT_EQUAL(convexhull->srid, rt_raster_get_srid(raster));
-	CU_ASSERT_EQUAL(convexhull->nrings, 1);
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	poly = lwgeom_as_lwpoly(hull);
+	CU_ASSERT_EQUAL(poly->srid, rt_raster_get_srid(raster));
+	CU_ASSERT_EQUAL(poly->nrings, 1);
 
-	ring = convexhull->rings[0];
+	ring = poly->rings[0];
 	CU_ASSERT(ring != NULL);
 	CU_ASSERT_EQUAL(ring->npoints, 5);
 
@@ -66,7 +99,7 @@ static void test_raster_convex_hull() {
 	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.5, DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.5, DBL_EPSILON);
 
-	lwpoly_free(convexhull);
+	lwgeom_free(hull);
 	cu_free_raster(raster);
 }
 
@@ -200,11 +233,164 @@ static void test_raster_surface() {
 	cu_free_raster(rast);
 }
 
+static void test_raster_perimeter() {
+	rt_raster rast;
+	rt_band band;
+	const int maxX = 5;
+	const int maxY = 5;
+	int x, y;
+	char *wkt = NULL;
+	LWGEOM *geom = NULL;
+	int err;
+
+	rast = rt_raster_new(maxX, maxY);
+	CU_ASSERT(rast != NULL);
+
+	rt_raster_set_offsets(rast, 0, 0);
+	rt_raster_set_scale(rast, 1, -1);
+
+	band = cu_add_band(rast, PT_32BUI, 1, 0);
+	CU_ASSERT(band != NULL);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++) {
+			rt_band_set_pixel(band, x, y, 1, NULL);
+		}
+	}
+
+	err = rt_raster_get_perimeter(rast, -1, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,5 0,5 -5,0 -5,0 0))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* row 0 is NODATA */
+	rt_band_set_pixel(band, 0, 0, 0, NULL);
+	rt_band_set_pixel(band, 1, 0, 0, NULL);
+	rt_band_set_pixel(band, 2, 0, 0, NULL);
+	rt_band_set_pixel(band, 3, 0, 0, NULL);
+	rt_band_set_pixel(band, 4, 0, 0, NULL);
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 -1,5 -1,5 -5,0 -5,0 -1))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* column 4 is NODATA */
+	/* pixel 4, 0 already set to NODATA */
+	rt_band_set_pixel(band, 4, 1, 0, NULL);
+	rt_band_set_pixel(band, 4, 2, 0, NULL);
+	rt_band_set_pixel(band, 4, 3, 0, NULL);
+	rt_band_set_pixel(band, 4, 4, 0, NULL);
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 -1,4 -1,4 -5,0 -5,0 -1))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* row 4 is NODATA */
+	rt_band_set_pixel(band, 0, 4, 0, NULL);
+	rt_band_set_pixel(band, 1, 4, 0, NULL);
+	rt_band_set_pixel(band, 2, 4, 0, NULL);
+	rt_band_set_pixel(band, 3, 4, 0, NULL);
+	/* pixel 4, 4 already set to NODATA */
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 -1,4 -1,4 -4,0 -4,0 -1))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* column 0 is NODATA */
+	/* pixel 0, 0 already set to NODATA*/
+	rt_band_set_pixel(band, 0, 1, 0, NULL);
+	rt_band_set_pixel(band, 0, 2, 0, NULL);
+	rt_band_set_pixel(band, 0, 3, 0, NULL);
+	/* pixel 0, 4 already set to NODATA*/
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((1 -1,4 -1,4 -4,1 -4,1 -1))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* columns 1 and 3 are NODATA */
+	/* pixel 1, 0 already set to NODATA */
+	rt_band_set_pixel(band, 1, 1, 0, NULL);
+	rt_band_set_pixel(band, 1, 2, 0, NULL);
+	rt_band_set_pixel(band, 1, 3, 0, NULL);
+	/* pixel 1, 4 already set to NODATA */
+	/* pixel 3, 0 already set to NODATA */
+	rt_band_set_pixel(band, 3, 1, 0, NULL);
+	rt_band_set_pixel(band, 3, 2, 0, NULL);
+	rt_band_set_pixel(band, 3, 3, 0, NULL);
+	/* pixel 3, 4 already set to NODATA */
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((2 -1,3 -1,3 -4,2 -4,2 -1))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* more pixels are NODATA */
+	rt_band_set_pixel(band, 2, 1, 0, NULL);
+	rt_band_set_pixel(band, 2, 3, 0, NULL);
+
+	err = rt_raster_get_perimeter(rast, 0, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((2 -2,3 -2,3 -3,2 -3,2 -2))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	/* second band */
+	band = cu_add_band(rast, PT_32BUI, 1, 0);
+	CU_ASSERT(band != NULL);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++) {
+			rt_band_set_pixel(band, x, y, 1, NULL);
+		}
+	}
+
+	err = rt_raster_get_perimeter(rast, -1, &geom);
+	CU_ASSERT_EQUAL(err, ES_NONE);
+	CU_ASSERT(geom != NULL);
+	wkt = lwgeom_to_text(geom);
+	CU_ASSERT_STRING_EQUAL(wkt, "POLYGON((0 0,5 0,5 -5,0 -5,0 0))");
+	rtdealloc(wkt);
+	lwgeom_free(geom);
+	geom = NULL;
+
+	cu_free_raster(rast);
+}
+
 static void test_raster_pixel_as_polygon() {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
-	int rtn;
 	const int maxX = 10;
 	const int maxY = 10;
 	LWPOLY *poly = NULL;
@@ -217,7 +403,7 @@ static void test_raster_pixel_as_polygon() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
+			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
 
@@ -253,6 +439,7 @@ CU_TestInfo raster_geometry_tests[] = {
 	*/
 	PG_TEST(test_raster_convex_hull),
 	PG_TEST(test_raster_surface),
+	PG_TEST(test_raster_perimeter),
 	PG_TEST(test_raster_pixel_as_polygon),
 	CU_TEST_INFO_NULL
 };

@@ -74,6 +74,39 @@ class RasterReader(object):
     def get_value(self, band, x, y):
         return self._query_value(band, x, y)
 
+    def copy_to(self, file, raster_format='TIFF', output_format='HEX', sep='\t'):
+        """
+        Proxy for SQL command COPY TO,
+        Converts selected rasters to specified raster_format with output sent either to 
+        single hex-based plain text file or one or more binary files in raster_format,
+        one raster binary file per tuple from the raster table.
+        The BIN output uses HEX output as intermediate stage.
+        raster_format - TIFF|JPEG|PNG
+        output_format - HEX|BIN; BIN is a binary file in raster_format
+        sep - if output_format=HEX, separates rid value from hex-encoded binary.
+        """
+        import os.path
+        filehex = file # No extension added, may be user-defiened
+        with open(filehex, 'w') as f:
+            select = "SELECT rid, encode(ST_As%s(%s), 'hex') As rt FROM %s" % (raster_format, self._column, self._table)
+            if self._where is not None and len(self._where) > 0:
+                select += ' WHERE %s' % self._where
+            sql = "COPY (%s) TO STDOUT (DELIMITER '%s')" % (select, sep)        
+            cur = self._conn.cursor()
+            cur.copy_expert(sql, f)
+
+        if output_format == 'BIN':
+            import binascii
+            with open(filehex, 'r') as f:
+                dirname = os.path.dirname(file)
+                ext = raster_format.lower()
+                for line in f.readlines():
+                    rid, raster = line.split()
+                    filebin = self._table + '_' + self._column + '_' + rid + '.' + ext
+                    filebin = os.path.join(dirname, filebin)
+                    with open(filebin, 'w+') as fbin:
+                        fbin.write(binascii.unhexlify(raster))
+
     # Private methods
 
     def _log(self, m):
@@ -103,7 +136,7 @@ class RasterReader(object):
         try:
             if self._conn is None:
                 self._conn = psycopg2.connect(self._connstr)
-        except Exception, e:
+        except Exception as e:
             raise RasterError("Falied to connect to %s: %s" % (self._connstr, e))
 
     def _query_single_row(self, sql):
@@ -113,9 +146,8 @@ class RasterReader(object):
         try:
             cur = self._conn.cursor()
             cur.execute(sql)
-        except Exception, e:
-            raise RasterError("Failed to execute query %s: %s" % (sql,
-                        e))
+        except Exception as e:
+            raise RasterError("Failed to execute query %s: %s" % (sql, e))
 
         row = cur.fetchone()
         if row is None:

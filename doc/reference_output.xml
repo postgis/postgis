@@ -931,7 +931,7 @@ x3dfrag
 	  <refnamediv>
 		<refname>ST_GeoHash</refname>
 
-		<refpurpose>Return a GeoHash representation (geohash.org) of the geometry.</refpurpose>
+		<refpurpose>Return a GeoHash representation of the geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -947,7 +947,7 @@ x3dfrag
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a GeoHash representation (geohash.org) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
+		<para>Return a GeoHash representation (<ulink url="http://en.wikipedia.org/wiki/Geohash">http://en.wikipedia.org/wiki/Geohash</ulink>) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
 
 		<para>If no <varname>maxchars</varname> is specficified ST_GeoHash returns a GeoHash based on full precision of the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
 
@@ -981,10 +981,9 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	 <refsection>
 		<title>See Also</title>
 
-		<para></para>
+		<para><xref linkend="ST_GeomFromGeoHash" /></para>
 	  </refsection>
 	</refentry>
-
 
 	<refentry id="ST_AsText">
 		  <refnamediv>

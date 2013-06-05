@@ -170,3 +170,45 @@ SELECT * FROM ST_BandMetadata(
 
 -- raster array version test
 SELECT (ST_DumpAsPolygons(newrast,3)).val As b3val FROM (SELECT ST_AddBand(NULL, array_agg(rast)) AS newrast FROM (SELECT ST_AsRaster(ST_Buffer(ST_Point(10,10), 34),200,200, '8BUI',i*30) As rast FROM generate_series(1,3) As i ) As foo ) As foofoo;
+
+-- out-db variants
+SELECT
+	1,
+	bandnum,
+	isoutdb,
+	CASE
+		WHEN isoutdb IS TRUE
+			THEN strpos(path, 'testraster.tif') > 0
+		ELSE NULL
+	END
+FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 1), ARRAY[]::int[]);
+SELECT
+	2,
+	bandnum,
+	isoutdb,
+	CASE
+		WHEN isoutdb IS TRUE
+			THEN strpos(path, 'testraster.tif') > 0
+		ELSE NULL
+	END
+FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 2), ARRAY[]::int[]);
+SELECT
+	3,
+	bandnum,
+	isoutdb,
+	CASE
+		WHEN isoutdb IS TRUE
+			THEN strpos(path, 'testraster.tif') > 0
+		ELSE NULL
+	END
+FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 3), ARRAY[]::int[]);
+SELECT
+	4,
+	bandnum,
+	isoutdb,
+	CASE
+		WHEN isoutdb IS TRUE
+			THEN strpos(path, 'testraster.tif') > 0
+		ELSE NULL
+	END
+FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 4), ARRAY[]::int[]);

@@ -349,13 +349,33 @@ INSERT INTO raster_union_in
 
 INSERT INTO raster_union_out
 	SELECT
-		'LAST',
+		'LAST-1',
 		ST_Union(rast) AS rast
 	FROM raster_union_in;
 
+INSERT INTO raster_union_out
+	SELECT
+		'LAST-2',
+		ST_Union(rast, 'last') AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'FIRST-2',
+		ST_Union(rast, 'first') AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'MEAN-2',
+		ST_Union(rast, 'mean') AS rast
+	FROM raster_union_in;
+
 SELECT
+	uniontype,
 	(ST_Metadata(rast)).*
-FROM raster_union_out;
+FROM raster_union_out
+ORDER BY uniontype;
 
 SELECT
 	uniontype,
@@ -392,6 +412,40 @@ FROM (
 	SELECT
 		uniontype,
 		(ST_PixelAsPoints(rast, 3)).*
+	FROM raster_union_out
+) foo
+ORDER BY uniontype, y, x;
+
+TRUNCATE raster_union_out;
+TRUNCATE raster_union_in;
+
+INSERT INTO raster_union_in
+	SELECT 60, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -2, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0) AS rast UNION ALL
+	SELECT 61, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0) AS rast UNION ALL
+	SELECT 62, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, 0, 1, -1, 0, 0, 0), 1, '8BUI', 3, 0) AS rast UNION ALL
+	SELECT 63, ST_AddBand(ST_MakeEmptyRaster(2, 2, -1, -3, 1, -1, 0, 0, 0), 1, '8BUI', 4, 0) AS rast UNION ALL
+	SELECT 64, ST_AddBand(ST_MakeEmptyRaster(2, 2, -2, 4, 1, -1, 0, 0, 0), 1, '8BUI', 5, 0) AS rast
+;
+
+INSERT INTO raster_union_out
+	SELECT
+		'LAST',
+		ST_Union(rast) AS rast
+	FROM raster_union_in;
+
+SELECT
+	(ST_Metadata(rast)).*
+FROM raster_union_out;
+
+SELECT
+	uniontype,
+	x,
+	y,
+	val
+FROM (
+	SELECT
+		uniontype,
+		(ST_PixelAsPoints(rast)).*
 	FROM raster_union_out
 ) foo
 ORDER BY uniontype, y, x;

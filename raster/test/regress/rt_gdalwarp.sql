@@ -244,10 +244,33 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	) FROM raster_gdalwarp_src)
 ), (
 	0.25, (SELECT _st_gdalwarp(
-		ST_SetSRID(rast, 0),
+		ST_SetGeoReference(ST_SetSRID(rast, 0), '1 0 0 -1 0 0'),
 		'NearestNeighbor', 0.125,
 		NULL,
-		500., 500.
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		5, 5
+	) FROM raster_gdalwarp_src)
+), (
+	0.26, (SELECT _st_gdalwarp(
+		ST_SetGeoReference(ST_SetSRID(rast, 0), '1 0 0 -1 0 0'),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		2, 2
+	) FROM raster_gdalwarp_src)
+), (
+	0.27, (SELECT _st_gdalwarp(
+		ST_SetGeoReference(ST_SetSRID(rast, 0), '1 0 0 -1 0 0'),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		100, 100
 	) FROM raster_gdalwarp_src)
 );
 
@@ -782,3 +805,58 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 993310;
 DELETE FROM "spatial_ref_sys" WHERE srid = 994269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 984269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 974269;
+
+-- ST_Resize()
+WITH foo AS(
+SELECT
+	1 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+		, '50%', '500'
+	) AS rast
+UNION ALL
+SELECT
+	2 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+		, 500, 100
+	) AS rast
+UNION ALL
+SELECT
+	3 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+		, 0.25, 0.9
+	) AS rast
+UNION ALL
+SELECT -- ticket #2188
+	4 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1024, 768, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+		, 0.5, 0.5
+	) AS rast
+), bar AS (
+	SELECT rid, ST_Metadata(rast) AS meta, ST_SummaryStats(rast) AS stats FROM foo
+)
+SELECT rid, (meta).*, (stats).* FROM bar;
+
+-- edge case
+WITH foo AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0) AS rast
+)
+SELECT
+	ST_Metadata(ST_Rescale(rast, 2, 2)) AS rescale,
+	ST_Metadata(ST_Resize(rast, 0.5, 0.5)) AS resize
+FROM foo;

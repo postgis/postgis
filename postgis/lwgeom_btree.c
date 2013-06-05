@@ -168,6 +168,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	GBOX box1;
 	GBOX box2;
+  bool empty1, empty2;
 	bool result;
 
 	POSTGIS_DEBUG(2, "lwgeom_eq called");
@@ -181,12 +182,19 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	gbox_init(&box1);
+	gbox_init(&box2);
+	
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
-	if  ( ! (FPeq(box1.xmin, box2.xmin) && FPeq(box1.ymin, box2.ymin) &&
+	if  ( empty1 != empty2 ) 
+	{
+    result = FALSE;
+	}
+  else if  ( ! (FPeq(box1.xmin, box2.xmin) && FPeq(box1.ymin, box2.ymin) &&
 	         FPeq(box1.xmax, box2.xmax) && FPeq(box1.ymax, box2.ymax)) )
 	{
 		result = FALSE;

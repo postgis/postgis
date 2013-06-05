@@ -260,6 +260,7 @@ LWCOLLECTION *lwpoint_clip_to_ordinate_range(const LWPOINT *mpoint, char ordinat
 */
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
 char *geohash_point(double longitude, double latitude, int precision);
+void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
 
 /*
 * Point comparisons
@@ -381,7 +382,11 @@ double lw_seg_length(const POINT2D *A1, const POINT2D *A2);
 double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
-int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt);
+int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt);
+int ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number);
+int ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number);
+int lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt);
+int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
 
 /**
 * Split a line by a point and push components to the provided multiline.

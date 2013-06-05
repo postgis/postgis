@@ -30,12 +30,12 @@ if ( @ARGV < 1 )
 # Global configuration items
 ##################################################################
 
-my $DB = "postgis_reg";
-my $REGDIR = abs_path(dirname($0));
-my $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-my $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-my $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
-
+our $DB = "postgis_reg";
+our $REGDIR = abs_path(dirname($0));
+our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
+our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
+our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+our $sysdiff = !system("diff --strip-trailing-cr $0 $0 2> /dev/null");
 
 ##################################################################
 # Parse command line opts
@@ -47,6 +47,7 @@ my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
+my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $VERBOSE = 0;
@@ -59,10 +60,10 @@ GetOptions (
 	'nocreate' => \$OPT_NOCREATE,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
+	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS
 	);
-
 
 ##################################################################
 # Set the locale to "C" so error messages match
@@ -225,11 +226,13 @@ my $svnrev = sql("select postgis_svn_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
+my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 
 print "$pgsqlver\n";
 print "  Postgis $libver - r${svnrev} - $libbuilddate\n";
 print "  GEOS: $geosver\n" if $geosver;
 print "  PROJ: $projver\n" if $projver;
+print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
 
@@ -305,7 +308,6 @@ foreach $TEST (@ARGV)
 }
 
 
-
 ################################################################### 
 # Uninstall postgis (serves as an uninstall test)
 ##################################################################
@@ -365,6 +367,7 @@ Options:
   --nodrop     do not drop the regression database on exit
   --raster     load also raster extension
   --topology   load also topology extension
+  --sfcgal     use also sfcgal backend
   --clean      cleanup test logs on exit
   --expect     save obtained output as expected
 };
@@ -493,10 +496,11 @@ sub eval_file
     my $pl;
     if ( -r $file )
     {
-        open(PL, $file);
-        $pl = <PL>;
-        close(PL);
-        eval($pl);
+        #open(PL, $file);
+        #$pl = <PL>;
+        #close(PL);
+        #eval($pl);
+				do $file;
     }
 }
 
@@ -767,7 +771,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options -C -f the_rast ${TEST}.tif $tblname > $outfile 2> $errfile";
+		$cmd = "$RASTER2PGSQL $loader_options ${TEST}.tif $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 		
 		if ( $rv )
@@ -1035,14 +1039,23 @@ sub prepare_spatial
 	
 	if ( $OPT_WITH_TOPO )
 	{
+		print "Loading Topology into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology_comments.sql", 0);
 	}
 	
 	if ( $OPT_WITH_RASTER )
 	{
+		print "Loading Raster into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
+	}
+
+	if ( $OPT_WITH_SFCGAL )
+	{
+		print "Loading SFCGAL into '${DB}'\n";
+		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal.sql", 1);
+		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql", 0);
 	}
 
 	return 1;
@@ -1110,6 +1123,10 @@ sub drop_spatial
 	{
 		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_rtpostgis.sql");
 	}
+	if ( $OPT_WITH_SFCGAL )
+	{
+		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_sfcgal.sql");
+	}
 	load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_postgis.sql");
 
   	return 1;
@@ -1174,8 +1191,13 @@ sub uninstall_spatial
 
 sub diff
 {
-	my ($obtained_file, $expected_file) = @_;
+	my ($expected_file, $obtained_file) = @_;
 	my $diffstr = '';
+
+	if ( $sysdiff ) {
+		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file`;
+		return $diffstr;
+	}
 
 	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
 	open(EXP, $expected_file) || die "Cannot open $expected_file\n";

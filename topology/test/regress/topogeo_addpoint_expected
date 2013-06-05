@@ -19,6 +19,9 @@ N|24|3|POINT(16 18)
 N|25||POINT(26 30)
 E|2|2|25
 E|27|25|2
+prec1|N23
+prec2|N26
+prec3|N27
 Topology 'city_data' dropped
 tt2033.start|t
 tt2033|E1

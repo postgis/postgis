@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011-2012 Regents of the University of California
+ * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -52,18 +52,35 @@
 #include "rt_pg.h"
 #include "pgsql_compat.h"
 
-#include <utils/lsyscache.h> /* for get_typlenbyvalalign */
-#include <utils/array.h> /* for ArrayType */
-#include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include "utils/lsyscache.h" /* for get_typlenbyvalalign */
+#include "utils/array.h" /* for ArrayType */
+#include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+
+#if POSTGIS_PGSQL_VERSION > 92
+#include "access/htup_details.h"
+#endif
 
 /* maximum char length required to hold any double or long long value */
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
 /*
- * This is required for builds against pgsql 
+ * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
+
+/*
+ * Module load callback
+ */
+void _PG_init(void);
+void
+_PG_init(void)
+{
+    /* Install liblwgeom handlers */
+    pg_install_lwgeom_handlers();
+
+    /* TODO: Install raster callbacks (see rt_init_allocators) */
+}
 
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
@@ -269,6 +286,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addBand(PG_FUNCTION_ARGS);
 Datum RASTER_copyBand(PG_FUNCTION_ARGS);
 Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS);
+Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS);
 Datum RASTER_tile(PG_FUNCTION_ARGS);
 
 /* create new raster from existing raster's bands */
@@ -292,6 +310,12 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS);
 
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
+
+/* apply colormap to specified band of a raster */
+Datum RASTER_colorMap(PG_FUNCTION_ARGS);
+
+/* convert GDAL raster to raster */
+Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
 
 /* convert raster to GDAL raster */
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
@@ -358,6 +382,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 
 /* n-raster MapAlgebra */
 Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS);
+Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS);
 
 /* raster union aggregate */
 Datum RASTER_union_transfn(PG_FUNCTION_ARGS);
@@ -560,6 +585,7 @@ rtpg_trim(const char *input) {
 	char *rtn;
 	char *ptr;
 	uint32_t offset = 0;
+	int inputlen = 0;
 
 	if (!input)
 		return NULL;
@@ -567,21 +593,24 @@ rtpg_trim(const char *input) {
 		return (char *) input;
 
 	/* trim left */
-	while (isspace(*input))
+	while (isspace(*input) && *input != '\0')
 		input++;
 
 	/* trim right */
-	ptr = ((char *) input) + strlen(input);
-	while (isspace(*--ptr))
-		offset++;
+	inputlen = strlen(input);
+	if (inputlen) {
+		ptr = ((char *) input) + inputlen;
+		while (isspace(*--ptr))
+			offset++;
+	}
 
-	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
+	rtn = palloc(sizeof(char) * (inputlen - offset + 1));
 	if (rtn == NULL) {
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
-	strncpy(rtn, input, strlen(input) - offset);
-	rtn[strlen(input) - offset] = '\0';
+	strncpy(rtn, input, inputlen - offset);
+	rtn[inputlen - offset] = '\0';
 
 	return rtn;
 }
@@ -791,23 +820,23 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_in);
 Datum RASTER_in(PG_FUNCTION_ARGS)
 {
-    rt_raster raster;
-    char *hexwkb = PG_GETARG_CSTRING(0);
-    void *result = NULL;
+	rt_raster raster;
+	char *hexwkb = PG_GETARG_CSTRING(0);
+	void *result = NULL;
 
-		POSTGIS_RT_DEBUG(3, "Starting");
+	POSTGIS_RT_DEBUG(3, "Starting");
 
-    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
-    result = rt_raster_serialize(raster);
+	raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
+	if (raster == NULL)
+		PG_RETURN_NULL();
 
-    SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	result = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (result == NULL)
+		PG_RETURN_NULL();
 
-    rt_raster_destroy(raster);
-
-    if ( NULL != result )
-        PG_RETURN_POINTER(result);
-    else
-        PG_RETURN_NULL();
+	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -833,7 +862,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	hexwkb = rt_raster_to_hexwkb(raster, &hexwkbsize);
+	hexwkb = rt_raster_to_hexwkb(raster, FALSE, &hexwkbsize);
 	if (!hexwkb) {
 		elog(ERROR, "RASTER_out: Could not HEX-WKBize raster");
 		rt_raster_destroy(raster);
@@ -873,7 +902,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	}
 
 	/* Parse raster to wkb object */
-	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	wkb = rt_raster_to_wkb(raster, FALSE, &wkb_size);
 	if (!wkb) {
 		elog(ERROR, "RASTER_to_bytea: Could not allocate and generate WKB data");
 		rt_raster_destroy(raster);
@@ -896,7 +925,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return bytea object with raster requested using ST_AsBinary function.
+ * Return bytea object with raster in Well-Known-Binary form requested using ST_AsBinary function.
  */
 PG_FUNCTION_INFO_V1(RASTER_to_binary);
 Datum RASTER_to_binary(PG_FUNCTION_ARGS)
@@ -907,6 +936,7 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 	uint32_t wkb_size = 0;
 	char *result = NULL;
 	int result_size = 0;
+	int outasin = FALSE;
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -919,8 +949,11 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	if (!PG_ARGISNULL(1))
+		outasin = PG_GETARG_BOOL(1);
+
 	/* Parse raster to wkb object */
-	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	wkb = rt_raster_to_wkb(raster, outasin, &wkb_size);
 	if (!wkb) {
 		elog(ERROR, "RASTER_to_binary: Could not allocate and generate WKB data");
 		rt_raster_destroy(raster);
@@ -943,50 +976,80 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return the convex hull of this raster as a 4-vertices POLYGON.
+ * Return the convex hull of this raster
  */
 PG_FUNCTION_INFO_V1(RASTER_convex_hull);
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster;
-    rt_raster raster;
-    LWPOLY* convexhull = NULL;
-    GSERIALIZED* gser = NULL;
+	rt_pgraster *pgraster;
+	rt_raster raster;
+	LWGEOM *geom = NULL;
+	GSERIALIZED* gser = NULL;
+	size_t gser_size;
+	int err = ES_NONE;
 
-    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+	bool minhull = FALSE;
 
-    {
-        raster = rt_raster_deserialize(pgraster, TRUE);
-        if ( ! raster ) {
-            elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
-						PG_FREE_IF_COPY(pgraster, 0);
-            PG_RETURN_NULL();
-        }
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
-        convexhull = rt_raster_get_convex_hull(raster);
-        if ( ! convexhull ) {
-            elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
-            rt_raster_destroy(raster);
-						PG_FREE_IF_COPY(pgraster, 0);
-            PG_RETURN_NULL();
-        }
-    }
+	/* # of args */
+	if (PG_NARGS() > 1)
+		minhull = TRUE;
 
-    {
-        size_t gser_size;
-        gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
-        SET_VARSIZE(gser, gser_size);
-    }
+	if (!minhull) {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+		raster = rt_raster_deserialize(pgraster, TRUE);
+	}
+	else {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		raster = rt_raster_deserialize(pgraster, FALSE);
+	}
 
-    /* Free raster and lwgeom memory */
-    rt_raster_destroy(raster);
-    pfree(convexhull);
+	if (!raster) {
+		elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
 		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
 
-    PG_RETURN_POINTER(gser);
+	if (!minhull)
+		err = rt_raster_get_convex_hull(raster, &geom);
+	else {
+		int nband = -1;
+
+		/* get arg 1 */
+		if (!PG_ARGISNULL(1)) {
+			nband = PG_GETARG_INT32(1);
+			if (!rt_raster_has_band(raster, nband - 1)) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+			nband = nband - 1;
+		}
+
+		err = rt_raster_get_perimeter(raster, nband, &geom);
+	}
+
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
+		PG_RETURN_NULL();
+	}
+	else if (geom == NULL) {
+		elog(NOTICE, "Raster's convex hull is NULL");
+		PG_RETURN_NULL();
+	}
+
+	gser = gserialized_from_lwgeom(geom, 0, &gser_size);
+	lwgeom_free(geom);
+
+	SET_VARSIZE(gser, gser_size);
+	PG_RETURN_POINTER(gser);
 }
-
 
 PG_FUNCTION_INFO_V1(RASTER_dumpAsPolygons);
 Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
@@ -1193,9 +1256,8 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 		skewx, skewy, srid);
 
 	raster = rt_raster_new(width, height);
-	if (!raster) {
+	if (raster == NULL)
 		PG_RETURN_NULL(); /* error was supposedly printed already */
-	}
 
 	rt_raster_set_scale(raster, scalex, scaley);
 	rt_raster_set_offsets(raster, ipx, ipy);
@@ -2154,8 +2216,6 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 	}
 
 	if (!skipset) {
-		assert(0 <= (bandindex - 1));
-
 		/* Fetch requested band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
@@ -3064,7 +3124,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		default:
 			elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for new values");
 			rt_raster_destroy(raster);
-			pfree(pgraster);
+			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 			break;
 	}
@@ -3104,7 +3164,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			pfree(nulls);
 		}
 		rt_raster_destroy(raster);
-		pfree(pgraster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
 
@@ -3116,7 +3176,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(elements);
 		pfree(nulls);
 		rt_raster_destroy(raster);
-		pfree(pgraster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
 
@@ -3165,7 +3225,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for noset flags");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				pfree(pgraster);
+				PG_FREE_IF_COPY(pgraster, 0);
 				PG_RETURN_NULL();
 				break;
 		}
@@ -3207,7 +3267,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				pfree(nulls);
 			}
 			rt_raster_destroy(raster);
-			pfree(pgraster);
+			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
 
@@ -3316,7 +3376,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				pfree(pgraster);
+				PG_FREE_IF_COPY(pgraster, 0);
 				PG_RETURN_NULL();
 			}
 
@@ -3337,7 +3397,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	/* serialize new raster */
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	pfree(pgraster);
+	PG_FREE_IF_COPY(pgraster, 0);
 	if (!pgrtn)
 		PG_RETURN_NULL();
 
@@ -4685,7 +4745,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	bool exclude_nodata_value = TRUE;
 	double pixval;
 	int isnodata = 0;
-	int inextent = 0;
 
 	rt_pixel npixels = NULL;
 	int count;
@@ -4809,7 +4868,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
-		inextent = 1;
 	}
 	/* outside band extent, set to NODATA */
 	else {
@@ -4819,7 +4877,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		/* no NODATA, use min possible value */
 		else
 			pixval = rt_band_get_min_value(band);
-		inextent = 0;
 		isnodata = 1;
 	}
 	POSTGIS_RT_DEBUGF(4, "pixval: %f", pixval);
@@ -5354,6 +5411,364 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 }
 
 /**
+ * Add out-db band to the given raster at the given position
+ */
+PG_FUNCTION_INFO_V1(RASTER_addBandOutDB);
+Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int numbands = 0;
+	int dstnband = 1; /* 1-based */
+	int appendband = FALSE;
+	char *outdbfile = NULL;
+	int *srcnband = NULL; /* 1-based */
+	int numsrcnband = 0;
+	int allbands = FALSE;
+	int hasnodata = FALSE;
+	double nodataval = 0.;
+	uint16_t width = 0;
+	uint16_t height = 0;
+	char *authname = NULL;
+	char *authcode = NULL;
+
+	int i = 0;
+	int j = 0;
+
+	GDALDatasetH hdsOut;
+	GDALRasterBandH hbandOut;
+	GDALDataType gdpixtype;
+
+	rt_pixtype pt = PT_END;
+	double gt[6] = {0.};
+	double ogt[6] = {0.};
+	rt_raster _rast = NULL;
+	int aligned = 0;
+	int err = 0;
+
+	/* destination raster */
+	if (!PG_ARGISNULL(0)) {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		/* raster */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_addBandOutDB: Could not deserialize destination raster");
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		POSTGIS_RT_DEBUG(4, "destination raster isn't NULL");
+	}
+
+	/* destination band index (1) */
+	if (!PG_ARGISNULL(1))
+		dstnband = PG_GETARG_INT32(1);
+	else
+		appendband = TRUE;
+
+	/* outdb file (2) */
+	if (PG_ARGISNULL(2)) {
+		elog(NOTICE, "Out-db raster file not provided. Returning original raster");
+		if (pgraster != NULL) {
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+		else
+			PG_RETURN_NULL();
+	}
+	else {
+		outdbfile = text_to_cstring(PG_GETARG_TEXT_P(2));
+		if (!strlen(outdbfile)) {
+			elog(NOTICE, "Out-db raster file not provided. Returning original raster");
+			if (pgraster != NULL) {
+				rt_raster_destroy(raster);
+				PG_RETURN_POINTER(pgraster);
+			}
+			else
+				PG_RETURN_NULL();
+		}
+	}
+
+	/* outdb band index (3) */
+	if (!PG_ARGISNULL(3)) {
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+
+		allbands = FALSE;
+
+		array = PG_GETARG_ARRAYTYPE_P(3);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case INT2OID:
+			case INT4OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_addBandOutDB: Invalid data type for band indexes");
+				if (pgraster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+				}
+				PG_RETURN_NULL();
+				break;
+		}
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &numsrcnband);
+
+		srcnband = palloc(sizeof(int) * numsrcnband);
+		if (srcnband == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			if (pgraster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+			}
+			PG_RETURN_NULL();
+		}
+
+		for (i = 0, j = 0; i < numsrcnband; i++) {
+			if (nulls[i]) continue;
+
+			switch (etype) {
+				case INT2OID:
+					srcnband[j] = DatumGetInt16(e[i]);
+					break;
+				case INT4OID:
+					srcnband[j] = DatumGetInt32(e[i]);
+					break;
+			}
+			j++;
+		}
+
+		if (j < numsrcnband) {
+			srcnband = repalloc(srcnband, sizeof(int) * j);
+			if (srcnband == NULL) {
+				elog(ERROR, "RASTER_addBandOutDB: Unable to reallocate memory for band indexes");
+				if (pgraster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+				}
+				PG_RETURN_NULL();
+			}
+
+			numsrcnband = j;
+		}
+	}
+	else
+		allbands = TRUE;
+
+	/* nodataval (4) */
+	if (!PG_ARGISNULL(4)) {
+		hasnodata = TRUE;
+		nodataval = PG_GETARG_FLOAT8(4);
+	}
+	else
+		hasnodata = FALSE;
+
+	/* validate input */
+
+	/* make sure dstnband is valid */
+	if (raster != NULL) {
+		numbands = rt_raster_get_num_bands(raster);
+		if (!appendband) {
+			if (dstnband < 1) {
+				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
+				dstnband = 1;
+			}
+			else if (dstnband > numbands) {
+				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
+				dstnband = numbands + 1; 
+			}
+		}
+		else
+			dstnband = numbands + 1; 
+	}
+
+	/* open outdb raster file */
+	rt_util_gdal_register_all();
+	hdsOut = GDALOpenShared(outdbfile, GA_ReadOnly);
+	if (hdsOut == NULL) {
+		elog(ERROR, "RASTER_addBandOutDB: Could not open out-db file with GDAL");
+		if (pgraster != NULL) {
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+		}
+		PG_RETURN_NULL();
+	}
+
+	/* get offline raster's geotransform */
+	if (GDALGetGeoTransform(hdsOut, ogt) != CE_None) {
+		ogt[0] = 0;
+		ogt[1] = 1;
+		ogt[2] = 0;
+		ogt[3] = 0;
+		ogt[4] = 0;
+		ogt[5] = -1;
+	}
+
+	/* raster doesn't exist, create it now */
+	if (raster == NULL) {
+		raster = rt_raster_new(GDALGetRasterXSize(hdsOut), GDALGetRasterYSize(hdsOut));
+		if (rt_raster_is_empty(raster)) {
+			elog(ERROR, "RASTER_addBandOutDB: Could not create new raster");
+			PG_RETURN_NULL();
+		}
+		rt_raster_set_geotransform_matrix(raster, ogt);
+		rt_raster_get_geotransform_matrix(raster, gt);
+
+		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE) {
+			if (
+				authname != NULL &&
+				strcmp(authname, "EPSG") == 0 &&
+				authcode != NULL
+			) {
+				rt_raster_set_srid(raster, atoi(authcode));
+			}
+			else
+				elog(INFO, "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+		}
+		else
+			elog(INFO, "Unable to get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+	}
+
+	/* some raster info */
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_width(raster);
+
+	/* are rasters aligned? */
+	_rast = rt_raster_new(1, 1);
+	rt_raster_set_geotransform_matrix(_rast, ogt);
+	rt_raster_set_srid(_rast, rt_raster_get_srid(raster));
+	err = rt_raster_same_alignment(raster, _rast, &aligned, NULL);
+	rt_raster_destroy(_rast);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_addBandOutDB: Could not test alignment of out-db file");
+		GDALClose(hdsOut);
+		if (raster != NULL)
+			rt_raster_destroy(raster);
+		if (pgraster != NULL)
+			PG_FREE_IF_COPY(pgraster, 0);
+		return ES_ERROR;
+	}
+	else if (!aligned)
+		elog(WARNING, "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
+
+	numbands = GDALGetRasterCount(hdsOut);
+
+	/* build up srcnband */
+	if (allbands) {
+		numsrcnband = numbands;
+		srcnband = palloc(sizeof(int) * numsrcnband);
+		if (srcnband == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		for (i = 0, j = 1; i < numsrcnband; i++, j++)
+			srcnband[i] = j;
+	}
+
+	/* check band properties and add band */
+	for (i = 0, j = dstnband - 1; i < numsrcnband; i++, j++) {
+		/* valid index? */
+		if (srcnband[i] < 1 || srcnband[i] > numbands) {
+			elog(NOTICE, "Out-db file does not have a band at index %d. Returning original raster", srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_RETURN_POINTER(pgraster);
+			else
+				PG_RETURN_NULL();
+		}
+
+		/* get outdb band */
+		hbandOut = NULL;
+		hbandOut = GDALGetRasterBand(hdsOut, srcnband[i]);
+		if (NULL == hbandOut) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to get band %d from GDAL dataset", srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* supported pixel type */
+		gdpixtype = GDALGetRasterDataType(hbandOut);
+		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
+		if (pt == PT_END) {
+			elog(NOTICE, "Pixel type %s of band %d from GDAL dataset is not supported. Returning original raster", GDALGetDataTypeName(gdpixtype), srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_RETURN_POINTER(pgraster);
+			else
+				PG_RETURN_NULL();
+		}
+
+		/* use out-db band's nodata value if nodataval not already set */
+		if (!hasnodata)
+			nodataval = GDALGetRasterNoDataValue(hbandOut, &hasnodata);
+
+		/* add band */
+		band = rt_band_new_offline(
+			width, height,
+			pt,
+			hasnodata, nodataval,
+			srcnband[i] - 1, outdbfile
+		);
+		if (band == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to create new out-db band");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		if (rt_raster_add_band(raster, band, j) < 0) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to add new out-db band to raster");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+	}
+
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (pgraster != NULL)
+		PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
+}
+
+/**
  * Break up a raster into smaller tiles. SRF function
  */
 PG_FUNCTION_INFO_V1(RASTER_tile);
@@ -5385,6 +5800,12 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		int numbands;
 		int *nbands;
+
+		struct {
+			int pad;
+			double hasnodata;
+			double nodataval;
+		} pad;
 	};
 	struct tile_arg_t *arg1 = NULL;
 	struct tile_arg_t *arg2 = NULL;
@@ -5440,6 +5861,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		/* raster has bands */
 		numbands = rt_raster_get_num_bands(arg1->raster.raster); 
+		/*
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(arg1->raster.raster);
@@ -5448,6 +5870,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
+		*/
 
 		/* width (1) */
 		if (PG_ARGISNULL(1)) {
@@ -5488,7 +5911,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* nband, array (3) */
-		if (!PG_ARGISNULL(3)) {
+		if (numbands && !PG_ARGISNULL(3)) {
 			array = PG_GETARG_ARRAYTYPE_P(3);
 			etype = ARR_ELEMTYPE(array);
 			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
@@ -5563,21 +5986,43 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 		else {
 			arg1->numbands = numbands;
-			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
-			if (arg1->nbands == NULL) {
-				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
-				rt_raster_destroy(arg1->raster.raster);
-				pfree(arg1);
-				PG_FREE_IF_COPY(pgraster, 0);
-				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
-			}
+			if (numbands) {
+				arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
-			for (i = 0; i < arg1->numbands; i++) {
-				arg1->nbands[i] = i;
-				POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+				if (arg1->nbands == NULL) {
+					elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+					rt_raster_destroy(arg1->raster.raster);
+					pfree(arg1);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				for (i = 0; i < arg1->numbands; i++) {
+					arg1->nbands[i] = i;
+					POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+				}
 			}
+		}
+
+		/* pad (4) and padnodata (5) */
+		if (!PG_ARGISNULL(4)) {
+			arg1->pad.pad = PG_GETARG_BOOL(4) ? 1 : 0;
+
+			if (arg1->pad.pad && !PG_ARGISNULL(5)) {
+				arg1->pad.hasnodata = 1;
+				arg1->pad.nodataval = PG_GETARG_FLOAT8(5);
+			}
+			else {
+				arg1->pad.hasnodata = 0;
+				arg1->pad.nodataval = 0;
+			}
+		}
+		else {
+			arg1->pad.pad = 0;
+			arg1->pad.hasnodata = 0;
+			arg1->pad.nodataval = 0;
 		}
 
 		/* store some additional metadata */
@@ -5616,12 +6061,16 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_pixtype pixtype = PT_END;
 		int hasnodata = 0;
 		double nodataval = 0;
+		int width = 0;
+		int height = 0;
 
 		int k = 0;
 		int tx = 0;
 		int ty = 0;
 		int rx = 0;
 		int ry = 0;
+		int ex = 0; /* edge tile on right */
+		int ey = 0; /* edge tile on bottom */
 		double ulx = 0;
 		double uly = 0;
 		uint16_t len = 0;
@@ -5629,11 +6078,6 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		uint16_t nvals;
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
-
-		/* create empty raster */
-		tile = rt_raster_new(arg2->tile.width, arg2->tile.height);
-		rt_raster_set_geotransform_matrix(tile, arg2->raster.gt);
-		rt_raster_set_srid(tile, arg2->raster.srid);
 
 		/*
 			find offset based upon tile #
@@ -5646,26 +6090,56 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		tx = call_cntr % arg2->tile.nx;
 		POSTGIS_RT_DEBUGF(4, "tile (x, y) = (%d, %d)", tx, ty);
 
-		/* upper-left of tile */
+		/* edge tile? only important if padding is false */
+		if (!arg2->pad.pad) {
+			if (ty + 1 == arg2->tile.ny)
+				ey = 1;
+			if (tx + 1 == arg2->tile.nx)
+				ex = 1;
+		}
+
+		/* upper-left of tile in raster coordinates */
 		rx = tx * arg2->tile.width;
 		ry = ty * arg2->tile.height;
 		POSTGIS_RT_DEBUGF(4, "raster coordinates = %d, %d", rx, ry);
+
+		/* determine tile width and height */
+		/* default to user-defined */
+		width = arg2->tile.width;
+		height = arg2->tile.height;
+
+		/* override user-defined if edge tile (only possible if padding is false */
+		if (ex || ey) {
+			/* right edge */
+			if (ex)
+				width = arg2->raster.width - rx;
+			/* bottom edge */
+			if (ey)
+				height = arg2->raster.height - ry;
+		}
+
+		/* create empty raster */
+		tile = rt_raster_new(width, height);
+		rt_raster_set_geotransform_matrix(tile, arg2->raster.gt);
+		rt_raster_set_srid(tile, arg2->raster.srid);
+
+		/* upper-left of tile in spatial coordinates */
 		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE) {
 			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
 			rt_raster_destroy(tile);
 			rt_raster_destroy(arg2->raster.raster);
-			pfree(arg2->nbands);
+			if (arg2->numbands) pfree(arg2->nbands);
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
-		POSTGIS_RT_DEBUGF(4, "spatial coordinates = %f, %f", ulx, uly);
 		rt_raster_set_offsets(tile, ulx, uly);
+		POSTGIS_RT_DEBUGF(4, "spatial coordinates = %f, %f", ulx, uly);
 
 		/* compute length of pixel line to read */
 		len = arg2->tile.width;
 		if (rx + arg2->tile.width >= arg2->raster.width)
 			len = arg2->raster.width - rx;
-		POSTGIS_RT_DEBUGF(3, "len = %d", len);
+		POSTGIS_RT_DEBUGF(3, "read line len = %d", len);
 
 		/* copy bands to tile */
 		for (i = 0; i < arg2->numbands; i++) {
@@ -5676,7 +6150,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_tile: Unable to get band %d from source raster", arg2->nbands[i] + 1);
 				rt_raster_destroy(tile);
 				rt_raster_destroy(arg2->raster.raster);
-				pfree(arg2->nbands);
+				if (arg2->numbands) pfree(arg2->nbands);
 				pfree(arg2);
 				SRF_RETURN_DONE(funcctx);
 			}
@@ -5685,6 +6159,10 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			hasnodata = rt_band_get_hasnodata_flag(_band);
 			if (hasnodata)
 				rt_band_get_nodata(_band, &nodataval);
+			else if (arg2->pad.pad && arg2->pad.hasnodata) {
+				hasnodata = 1;
+				nodataval = arg2->pad.nodataval;
+			}
 			else
 				nodataval = rt_band_get_min_value(_band);
 
@@ -5703,7 +6181,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5728,7 +6206,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						pfree(arg2->nbands);
+						if (arg2->numbands) pfree(arg2->nbands);
 						pfree(arg2);
 						SRF_RETURN_DONE(funcctx);
 					}
@@ -5737,7 +6215,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						pfree(arg2->nbands);
+						if (arg2->numbands) pfree(arg2->nbands);
 						pfree(arg2);
 						SRF_RETURN_DONE(funcctx);
 					}
@@ -5749,7 +6227,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				rt_band_get_ext_band_num(_band, &bandnum);
 
 				band = rt_band_new_offline(
-					arg2->raster.width, arg2->raster.height,
+					width, height,
 					pixtype,
 					hasnodata, nodataval,
 					bandnum, rt_band_get_ext_path(_band)
@@ -5759,7 +6237,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					elog(ERROR, "RASTER_tile: Unable to create new offline band for output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5769,7 +6247,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5780,7 +6258,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_raster_destroy(tile);
 		if (!pgtile) {
 			rt_raster_destroy(arg2->raster.raster);
-			pfree(arg2->nbands);
+			if (arg2->numbands) pfree(arg2->nbands);
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -5791,7 +6269,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 	/* do when there is no more left */
 	else {
 		rt_raster_destroy(arg2->raster.raster);
-		pfree(arg2->nbands);
+		if (arg2->numbands) pfree(arg2->nbands);
 		pfree(arg2);
 		SRF_RETURN_DONE(funcctx);
 	}
@@ -8484,7 +8962,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
-		assert(0 <= (bandindex - 1));
 
 		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
@@ -9163,7 +9640,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
-		assert(0 <= (bandindex - 1));
 
 		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
@@ -10269,6 +10745,529 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	PG_RETURN_POINTER(pgrtn);
 }
 
+/* ---------------------------------------------------------------- */
+/* apply colormap to specified band of a raster                     */
+/* ---------------------------------------------------------------- */
+
+typedef struct rtpg_colormap_arg_t *rtpg_colormap_arg;
+struct rtpg_colormap_arg_t {
+	rt_raster raster;
+	int nband; /* 1-based */
+	rt_band band;
+	rt_bandstats bandstats;
+
+	rt_colormap colormap;
+	int nodataentry;
+
+	char **entry;
+	int nentry;
+	char **element;
+	int nelement;
+};
+
+static rtpg_colormap_arg
+rtpg_colormap_arg_init() {
+	rtpg_colormap_arg arg = NULL;
+
+	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
+	if (arg == NULL) {
+		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		return NULL;
+	}
+
+	arg->raster = NULL;
+	arg->nband = 1;
+	arg->band = NULL;
+	arg->bandstats = NULL;
+
+	arg->colormap = palloc(sizeof(struct rt_colormap_t));
+	if (arg->colormap == NULL) {
+		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		return NULL;
+	}
+	arg->colormap->nentry = 0;
+	arg->colormap->entry = NULL;
+	arg->colormap->ncolor = 4; /* assume RGBA */
+	arg->colormap->method = CM_INTERPOLATE;
+	arg->nodataentry = -1;
+
+	arg->entry = NULL;
+	arg->nentry = 0;
+	arg->element = NULL;
+	arg->nelement = 0;
+
+	return arg;
+}
+
+static void
+rtpg_colormap_arg_destroy(rtpg_colormap_arg arg) {
+	int i = 0;
+	if (arg->raster != NULL)
+		rt_raster_destroy(arg->raster);
+
+	if (arg->bandstats != NULL)
+		pfree(arg->bandstats);
+
+	if (arg->colormap != NULL) {
+		if (arg->colormap->entry != NULL)
+			pfree(arg->colormap->entry);
+		pfree(arg->colormap);
+	}
+
+	if (arg->nentry) {
+		for (i = 0; i < arg->nentry; i++) {
+			if (arg->entry[i] != NULL)
+				pfree(arg->entry[i]);
+		}
+		pfree(arg->entry);
+	}
+
+	if (arg->nelement) {
+		for (i = 0; i < arg->nelement; i++)
+			pfree(arg->element[i]);
+		pfree(arg->element);
+	}
+
+	pfree(arg);
+	arg = NULL;
+}
+
+PG_FUNCTION_INFO_V1(RASTER_colorMap);
+Datum RASTER_colorMap(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rtpg_colormap_arg arg = NULL;
+	char *junk = NULL;
+	rt_raster raster = NULL;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_colorMap: Starting");
+
+	/* pgraster is NULL, return NULL */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* init arg */
+	arg = rtpg_colormap_arg_init();
+	if (arg == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to initialize argument structure");
+		PG_RETURN_NULL();
+	}
+
+	/* raster (0) */
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* raster object */
+	arg->raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!arg->raster) {
+		elog(ERROR, "RASTER_colorMap: Could not deserialize raster");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* nband (1) */
+	if (!PG_ARGISNULL(1))
+		arg->nband = PG_GETARG_INT32(1);
+	POSTGIS_RT_DEBUGF(4, "nband = %d", arg->nband);
+
+	/* check that band works */
+	if (!rt_raster_has_band(arg->raster, arg->nband - 1)) {
+		elog(NOTICE, "Raster does not have band at index %d. Returning empty raster", arg->nband);
+
+		raster = rt_raster_clone(arg->raster, 0);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_colorMap: Unable to create empty raster");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		pgraster = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (pgraster == NULL)
+			PG_RETURN_NULL();
+
+		SET_VARSIZE(pgraster, ((rt_pgraster*) pgraster)->size);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* get band */
+	arg->band = rt_raster_get_band(arg->raster, arg->nband - 1);
+	if (arg->band == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to get band at index %d", arg->nband);
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* method (3) */
+	if (!PG_ARGISNULL(3)) {
+		char *method = NULL;
+		char *tmp = text_to_cstring(PG_GETARG_TEXT_P(3));
+		POSTGIS_RT_DEBUGF(4, "raw method = %s", tmp);
+
+		method = rtpg_trim(tmp);
+		pfree(tmp);
+		method = rtpg_strtoupper(method);
+
+		if (strcmp(method, "INTERPOLATE") == 0)
+			arg->colormap->method = CM_INTERPOLATE;
+		else if (strcmp(method, "EXACT") == 0)
+			arg->colormap->method = CM_EXACT;
+		else if (strcmp(method, "NEAREST") == 0)
+			arg->colormap->method = CM_NEAREST;
+		else {
+			elog(NOTICE, "Unknown value provided for method. Defaulting to INTERPOLATE");
+			arg->colormap->method = CM_INTERPOLATE;
+		}
+	}
+	/* default to INTERPOLATE */
+	else
+		arg->colormap->method = CM_INTERPOLATE;
+	POSTGIS_RT_DEBUGF(4, "method = %d", arg->colormap->method);
+
+	/* colormap (2) */
+	if (PG_ARGISNULL(2)) {
+		elog(ERROR, "RASTER_colorMap: Value must be provided for colormap");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+	else {
+		char *tmp = NULL;
+		char *colormap = text_to_cstring(PG_GETARG_TEXT_P(2));
+		char *_entry;
+		char *_element;
+		int i = 0;
+		int j = 0;
+
+		POSTGIS_RT_DEBUGF(4, "colormap = %s", colormap);
+
+		/* empty string */
+		if (!strlen(colormap)) {
+			elog(ERROR, "RASTER_colorMap: Value must be provided for colormap");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		arg->entry = rtpg_strsplit(colormap, "\n", &(arg->nentry));
+		pfree(colormap);
+		if (arg->nentry < 1) {
+			elog(ERROR, "RASTER_colorMap: Unable to process the value provided for colormap");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* allocate the max # of colormap entries */
+		arg->colormap->entry = palloc(sizeof(struct rt_colormap_entry_t) * arg->nentry);
+		if (arg->colormap->entry == NULL) {
+			elog(ERROR, "RASTER_colorMap: Unable to allocate memory for colormap entries");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+		memset(arg->colormap->entry, 0, sizeof(struct rt_colormap_entry_t) * arg->nentry);
+
+		/* each entry */
+		for (i = 0; i < arg->nentry; i++) {
+			/* substitute space for other delimiters */
+			tmp = rtpg_strreplace(arg->entry[i], ":", " ", NULL);
+			_entry = rtpg_strreplace(tmp, ",", " ", NULL);
+			pfree(tmp);
+			tmp = rtpg_strreplace(_entry, "\t", " ", NULL);
+			pfree(_entry);
+			_entry = rtpg_trim(tmp);
+			pfree(tmp);
+
+			POSTGIS_RT_DEBUGF(4, "Processing entry[%d] = %s", i, arg->entry[i]);
+			POSTGIS_RT_DEBUGF(4, "Cleaned entry[%d] = %s", i, _entry);
+
+			/* empty entry, continue */
+			if (!strlen(_entry)) {
+				POSTGIS_RT_DEBUGF(3, "Skipping empty entry[%d]", i);
+				pfree(_entry);
+				continue;
+			}
+
+			arg->element = rtpg_strsplit(_entry, " ", &(arg->nelement));
+			pfree(_entry);
+			if (arg->nelement < 2) {
+				elog(ERROR, "RASTER_colorMap: Unable to process colormap entry %d", i + 1);
+				rtpg_colormap_arg_destroy(arg);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+			else if (arg->nelement > 5) {
+				elog(NOTICE, "More than five elements in colormap entry %d. Using at most five elements", i + 1);
+				arg->nelement = 5;
+			}
+
+			/* smallest # of colors */
+			if ((arg->nelement - 1) < arg->colormap->ncolor)
+				arg->colormap->ncolor = arg->nelement - 1;
+
+			/* each element of entry */
+			for (j = 0; j < arg->nelement; j++) {
+
+				_element = rtpg_trim(arg->element[j]);
+				_element = rtpg_strtoupper(_element);
+				POSTGIS_RT_DEBUGF(4, "Processing entry[%d][%d] = %s", i, j, arg->element[j]);
+				POSTGIS_RT_DEBUGF(4, "Cleaned entry[%d][%d] = %s", i, j, _element);
+
+				/* first element is ALWAYS a band value, percentage OR "nv" string */
+				if (j == 0) {
+					char *percent = NULL;
+
+					/* NODATA */
+					if (
+						strcmp(_element, "NV") == 0 ||
+						strcmp(_element, "NULL") == 0 ||
+						strcmp(_element, "NODATA") == 0
+					) {
+						POSTGIS_RT_DEBUG(4, "Processing NODATA string");
+
+						if (arg->nodataentry > -1) {
+							elog(NOTICE, "More than one NODATA entry found. Using only the first one");
+						}
+						else {
+							arg->colormap->entry[arg->colormap->nentry].isnodata = 1;
+							/* no need to set value as value comes from band's NODATA */
+							arg->colormap->entry[arg->colormap->nentry].value = 0;
+						}
+					}
+					/* percent value */
+					else if ((percent = strchr(_element, '%')) != NULL) {
+						double value;
+						POSTGIS_RT_DEBUG(4, "Processing percent string");
+
+						/* get the band stats */
+						if (arg->bandstats == NULL) {
+							POSTGIS_RT_DEBUG(4, "Getting band stats");
+							
+							arg->bandstats = rt_band_get_summary_stats(arg->band, 1, 1, 0, NULL, NULL, NULL);
+							if (arg->bandstats == NULL) {
+								elog(ERROR, "RASTER_colorMap: Unable to get band's summary stats to process percentages");
+								pfree(_element);
+								rtpg_colormap_arg_destroy(arg);
+								PG_FREE_IF_COPY(pgraster, 0);
+								PG_RETURN_NULL();
+							}
+						}
+
+						/* get the string before the percent char */
+						tmp = palloc(sizeof(char) * (percent - _element + 1));
+						if (tmp == NULL) {
+							elog(ERROR, "RASTER_colorMap: Unable to allocate memory for value of percentage");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+
+						memcpy(tmp, _element, percent - _element);
+						tmp[percent - _element] = '\0';
+						POSTGIS_RT_DEBUGF(4, "Percent value = %s", tmp);
+
+						/* get percentage value */
+						errno = 0;
+						value = strtod(tmp, NULL);
+						pfree(tmp);
+						if (errno != 0 || _element == junk) {
+							elog(ERROR, "RASTER_colorMap: Unable to process percent string to value");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+
+						/* check percentage */
+						if (value < 0.) {
+							elog(NOTICE, "Percentage values cannot be less than zero. Defaulting to zero");
+							value = 0.;
+						}
+						else if (value > 100.) {
+							elog(NOTICE, "Percentage values cannot be greater than 100. Defaulting to 100");
+							value = 100.;
+						}
+
+						/* get the true pixel value */
+						/* TODO: should the percentage be quantile based? */
+						arg->colormap->entry[arg->colormap->nentry].value = ((value / 100.) * (arg->bandstats->max - arg->bandstats->min)) + arg->bandstats->min;
+					}
+					/* straight value */
+					else {
+						errno = 0;
+						arg->colormap->entry[arg->colormap->nentry].value = strtod(_element, &junk);
+						if (errno != 0 || _element == junk) {
+							elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+					}
+
+				}
+				/* RGB values (0 - 255) */
+				else {
+					int value = 0;
+
+					errno = 0;
+					value = (int) strtod(_element, &junk);
+					if (errno != 0 || _element == junk) {
+						elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+						pfree(_element);
+						rtpg_colormap_arg_destroy(arg);
+						PG_FREE_IF_COPY(pgraster, 0);
+						PG_RETURN_NULL();
+					}
+
+					if (value > 255) {
+						elog(NOTICE, "RGBA value cannot be greater than 255. Defaulting to 255");
+						value = 255;
+					}
+					else if (value < 0) {
+						elog(NOTICE, "RGBA value cannot be less than zero. Defaulting to zero");
+						value = 0;
+					}
+					arg->colormap->entry[arg->colormap->nentry].color[j - 1] = value;
+				}
+
+				pfree(_element);
+			}
+
+			POSTGIS_RT_DEBUGF(4, "colormap->entry[%d] (isnodata, value, R, G, B, A) = (%d, %f, %d, %d, %d, %d)",
+				arg->colormap->nentry,
+				arg->colormap->entry[arg->colormap->nentry].isnodata,
+				arg->colormap->entry[arg->colormap->nentry].value,
+				arg->colormap->entry[arg->colormap->nentry].color[0],
+				arg->colormap->entry[arg->colormap->nentry].color[1],
+				arg->colormap->entry[arg->colormap->nentry].color[2],
+				arg->colormap->entry[arg->colormap->nentry].color[3]
+			);
+
+			arg->colormap->nentry++;
+		}
+
+		POSTGIS_RT_DEBUGF(4, "colormap->nentry = %d", arg->colormap->nentry);
+		POSTGIS_RT_DEBUGF(4, "colormap->ncolor = %d", arg->colormap->ncolor);
+	}
+
+	/* call colormap */
+	raster = rt_raster_colormap(arg->raster, arg->nband - 1, arg->colormap);
+	if (raster == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to create new raster with applied colormap");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	rtpg_colormap_arg_destroy(arg);
+	PG_FREE_IF_COPY(pgraster, 0);
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+
+	POSTGIS_RT_DEBUG(3, "RASTER_colorMap: Done");
+
+	if (pgraster == NULL)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, ((rt_pgraster*) pgraster)->size);
+	PG_RETURN_POINTER(pgraster);
+}
+
+/* ---------------------------------------------------------------- */
+/* Returns raster from GDAL raster                                  */
+/* ---------------------------------------------------------------- */
+PG_FUNCTION_INFO_V1(RASTER_fromGDALRaster);
+Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
+{
+	bytea *bytea_data;
+	uint8_t *data;
+	int data_len = 0;
+	VSILFILE *vsifp = NULL;
+	GDALDatasetH hdsSrc;
+	int srid = -1; /* -1 for NULL */
+
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster;
+
+	/* NULL if NULL */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* get data */
+	bytea_data = (bytea *) PG_GETARG_BYTEA_P(0);
+	data = (uint8_t *) VARDATA(bytea_data);
+	data_len = VARSIZE(bytea_data) - VARHDRSZ;
+
+	/* process srid */
+	/* NULL srid means try to determine SRID from bytea */
+	if (!PG_ARGISNULL(1))
+		srid = clamp_srid(PG_GETARG_INT32(1));
+
+	/* create memory "file" */
+	vsifp = VSIFileFromMemBuffer("/vsimem/in.dat", data, data_len, FALSE);
+	if (vsifp == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not load bytea into memory file for use by GDAL");
+		PG_FREE_IF_COPY(bytea_data, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* register all GDAL drivers */
+	rt_util_gdal_register_all();
+
+	/* open GDAL raster */
+	hdsSrc = GDALOpenShared("/vsimem/in.dat", GA_ReadOnly);
+	if (hdsSrc == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format");
+		VSIFCloseL(vsifp);
+		PG_FREE_IF_COPY(bytea_data, 0);
+		PG_RETURN_NULL();
+	}
+	
+#if POSTGIS_DEBUG_LEVEL > 3
+	{
+		GDALDriverH hdrv = GDALGetDatasetDriver(hdsSrc);
+
+		POSTGIS_RT_DEBUGF(4, "Input GDAL Raster info: %s, (%d x %d)",
+			GDALGetDriverShortName(hdrv),
+			GDALGetRasterXSize(hdsSrc),
+			GDALGetRasterYSize(hdsSrc)
+		);
+	}
+#endif
+
+	/* convert GDAL raster to raster */
+	raster = rt_raster_from_gdal_dataset(hdsSrc);
+
+	GDALClose(hdsSrc);
+	VSIFCloseL(vsifp);
+	PG_FREE_IF_COPY(bytea_data, 0);
+
+	if (raster == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not convert GDAL raster to raster");
+		PG_RETURN_NULL();
+	}
+
+	/* apply SRID if set */
+	if (srid != -1)
+		rt_raster_set_srid(raster, srid);
+ 
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (!pgraster)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
+}
+
 /**
  * Returns formatted GDAL raster as bytea object of raster
  */
@@ -11259,17 +12258,15 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 		dst_srid = src_srid;
 	POSTGIS_RT_DEBUGF(4, "destination SRID: %d", dst_srid);
 
-	/* source SRID = SRID_UNKNOWN */
-	if (src_srid == SRID_UNKNOWN) {
-		/* target SRID != src SRID, error */
-		if (dst_srid != src_srid) {
-			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
-			rt_raster_destroy(raster);
-			PG_FREE_IF_COPY(pgraster, 0);
-			PG_RETURN_NULL();
-		}
-
-		/* target SRID == src SRID, special */
+	/* target SRID != src SRID, error */
+	if (src_srid == SRID_UNKNOWN && dst_srid != src_srid) {
+		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+	/* target SRID == src SRID, no reprojection */
+	else if (dst_srid == src_srid) {
 		no_srid = 1;
 	}
 
@@ -11368,12 +12365,8 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 
 	/* get srses from srids */
-	/* source srs */
-	/* no SRID, use EPSG:4326 (WGS84) */
-	if (no_srid)
-		src_srs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-	/* legitimate SRID */
-	else {
+	if (!no_srid) {
+		/* source srs */
 		src_srs = rtpg_getSR(src_srid);
 		if (NULL == src_srs) {
 			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown SRID (%d)", src_srid);
@@ -11381,19 +12374,12 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
-	}
-	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
+		POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
-	/* target srs */
-	/* no SRID, use src_srs */
-	if (no_srid)
-		dst_srs = src_srs;
-	/* legitimate SRID */
-	else if (dst_srid != SRID_UNKNOWN) {
 		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_GDALWarp: Target SRID (%d) is unknown", dst_srid);
-			if (!no_srid && NULL != src_srs) pfree(src_srs);
+			if (!no_srid) pfree(src_srs);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -11413,17 +12399,16 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (!no_srid) {
-		if (NULL != src_srs) pfree(src_srs);
-		if (NULL != dst_srs) pfree(dst_srs);
+		pfree(src_srs);
+		pfree(dst_srs);
 	}
 	if (!rast) {
 		elog(ERROR, "RASTER_band: Could not create transformed raster");
 		PG_RETURN_NULL();
 	}
 
-	/* add target SRID but only if we're not using a no SRID */
-	if (!no_srid)
-		rt_raster_set_srid(rast, dst_srid);
+	/* add target SRID */
+	rt_raster_set_srid(rast, dst_srid);
 
 	pgrast = rt_raster_serialize(rast);
 	rt_raster_destroy(rast);
@@ -13172,7 +14157,8 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (reason != NULL)
+	/* only output reason if not aligned */
+	if (reason != NULL && !aligned)
 		elog(NOTICE, "%s", reason);
 
 	PG_RETURN_BOOL(aligned);
@@ -14998,7 +15984,7 @@ struct rtpg_nmapalgebra_arg_t {
 
 	int distance[2]; /* distance in X and Y axis */
 
-	rt_extenttype extenttype; /* oupt raster's extent type */
+	rt_extenttype extenttype; /* ouput raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
 
@@ -15165,7 +16151,7 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 
 		/* see if this is a copy of an existing pgraster */
 		for (j = 0; j < i; j++) {
-			if (arg->pgraster[i] == arg->pgraster[j]) {
+			if (!arg->isempty[j] && (arg->pgraster[i] == arg->pgraster[j])) {
 				POSTGIS_RT_DEBUG(4, "raster matching existing same raster found");
 				arg->raster[i] = arg->raster[j];
 				arg->ownsdata[i] = 0;
@@ -15610,6 +16596,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			if (arg->hasband[i])
 				break;
 		}
+		if (i >= arg->numraster)
+			i = arg->numraster - 1;
 	}
 	band = rt_raster_get_band(arg->raster[i], arg->nband[i]);
 
@@ -15677,6 +16665,700 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 }
 
 /* ---------------------------------------------------------------- */
+/* expression ST_MapAlgebra for n rasters                           */
+/* ---------------------------------------------------------------- */
+
+typedef struct {
+	int exprcount;
+
+	struct {
+		SPIPlanPtr spi_plan;
+		uint32_t spi_argcount;
+		uint8_t *spi_argpos;
+
+		int hasval;
+		double val;
+	} expr[3];
+
+	struct {
+		int hasval;
+		double val;
+	} nodatanodata;
+
+	struct {
+		int count;
+		char **val;
+	} kw;
+
+} rtpg_nmapalgebraexpr_callback_arg;
+
+typedef struct rtpg_nmapalgebraexpr_arg_t *rtpg_nmapalgebraexpr_arg;
+struct rtpg_nmapalgebraexpr_arg_t {
+	rtpg_nmapalgebra_arg bandarg;
+
+	rtpg_nmapalgebraexpr_callback_arg	callback;
+};
+
+static rtpg_nmapalgebraexpr_arg rtpg_nmapalgebraexpr_arg_init(int cnt, char **kw) {
+	rtpg_nmapalgebraexpr_arg arg = NULL;
+	int i = 0;
+
+	arg = palloc(sizeof(struct rtpg_nmapalgebraexpr_arg_t));
+	if (arg == NULL) {
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arguments");
+		return NULL;
+	}
+
+	arg->bandarg = rtpg_nmapalgebra_arg_init();
+	if (arg->bandarg == NULL) {
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arg->bandarg");
+		return NULL;
+	}
+
+	arg->callback.kw.count = cnt;
+	arg->callback.kw.val = kw;
+
+	arg->callback.exprcount = 3;
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		arg->callback.expr[i].spi_plan = NULL;
+		arg->callback.expr[i].spi_argcount = 0;
+		arg->callback.expr[i].spi_argpos = palloc(cnt * sizeof(uint8_t));
+		if (arg->callback.expr[i].spi_argpos == NULL) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for spi_argpos");
+			return NULL;
+		}
+		memset(arg->callback.expr[i].spi_argpos, 0, sizeof(uint8_t) * cnt);
+		arg->callback.expr[i].hasval = 0;
+		arg->callback.expr[i].val = 0;
+	}
+
+	arg->callback.nodatanodata.hasval = 0;
+	arg->callback.nodatanodata.val = 0;
+
+	return arg;
+}
+
+static void rtpg_nmapalgebraexpr_arg_destroy(rtpg_nmapalgebraexpr_arg arg) {
+	int i = 0;
+
+	rtpg_nmapalgebra_arg_destroy(arg->bandarg);
+
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		if (arg->callback.expr[i].spi_plan)
+			SPI_freeplan(arg->callback.expr[i].spi_plan);
+		if (arg->callback.kw.count)
+			pfree(arg->callback.expr[i].spi_argpos);
+	}
+
+	pfree(arg);
+}
+
+static int rtpg_nmapalgebraexpr_callback(
+	rt_iterator_arg arg, void *userarg,
+	double *value, int *nodata
+) {
+	rtpg_nmapalgebraexpr_callback_arg *callback = (rtpg_nmapalgebraexpr_callback_arg *) userarg;
+	SPIPlanPtr plan = NULL;
+	int i = 0;
+	int id = -1;
+
+	if (arg == NULL)
+		return 0;
+
+	*value = 0;
+	*nodata = 0;
+
+	/* 2 raster */
+	if (arg->rasters > 1) {
+		/* nodata1 = 1 AND nodata2 = 1, nodatanodataval */
+		if (arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			if (callback->nodatanodata.hasval)
+				*value = callback->nodatanodata.val;
+			else
+				*nodata = 1;
+		}
+		/* nodata1 = 1 AND nodata2 != 1, nodata1expr */
+		else if (arg->nodata[0][0][0] && !arg->nodata[1][0][0]) {
+			id = 1;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* nodata1 != 1 AND nodata2 = 1, nodata2expr */
+		else if (!arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			id = 2;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* expression */
+		else {
+			id = 0;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else {
+				if (callback->nodatanodata.hasval)
+					*value = callback->nodatanodata.val;
+				else
+					*nodata = 1;
+			}
+		}
+	}
+	/* 1 raster */
+	else {
+		/* nodata = 1, nodata1expr */
+		if (arg->nodata[0][0][0]) {
+			id = 1;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* expression */
+		else {
+			id = 0;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else {
+				/* see if nodata1expr is available */
+				id = 1;
+				if (callback->expr[id].hasval)
+					*value = callback->expr[id].val;
+				else if (callback->expr[id].spi_plan)
+					plan = callback->expr[id].spi_plan;
+				else
+					*nodata = 1;
+			}
+		}
+	}
+
+	/* run prepared plan */
+	if (plan != NULL) {
+		Datum values[12];
+		bool nulls[12];
+		int err = 0;
+
+		TupleDesc tupdesc;
+		SPITupleTable *tuptable = NULL;
+		HeapTuple tuple;
+		Datum datum;
+		bool isnull = FALSE;
+
+		POSTGIS_RT_DEBUGF(4, "Running plan %d", id);
+
+		/* init values and nulls */
+		memset(values, (Datum) NULL, sizeof(Datum) * callback->kw.count);
+		memset(nulls, FALSE, sizeof(bool) * callback->kw.count);
+
+		if (callback->expr[id].spi_argcount) {
+			int idx = 0;
+
+			for (i = 0; i < callback->kw.count; i++) {
+				idx = callback->expr[id].spi_argpos[i];
+				if (idx < 1) continue;
+				idx--; /* 1-based now 0-based */
+
+				switch (i) {
+					/* [rast.x] */
+					case 0:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
+						break;
+					/* [rast.y] */
+					case 1:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
+						break;
+					/* [rast.val] */
+					case 2:
+					/* [rast] */
+					case 3:
+						if (!arg->nodata[0][0][0])
+							values[idx] = Float8GetDatum(arg->values[0][0][0]);
+						else
+							nulls[idx] = TRUE;
+						break;
+
+					/* [rast1.x] */
+					case 4:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
+						break;
+					/* [rast1.y] */
+					case 5:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
+						break;
+					/* [rast1.val] */
+					case 6:
+					/* [rast1] */
+					case 7:
+						if (!arg->nodata[0][0][0])
+							values[idx] = Float8GetDatum(arg->values[0][0][0]);
+						else
+							nulls[idx] = TRUE;
+						break;
+
+					/* [rast2.x] */
+					case 8:
+						values[idx] = Int32GetDatum(arg->src_pixel[1][0] + 1);
+						break;
+					/* [rast2.y] */
+					case 9:
+						values[idx] = Int32GetDatum(arg->src_pixel[1][1] + 1);
+						break;
+					/* [rast2.val] */
+					case 10:
+					/* [rast2] */
+					case 11:
+						if (!arg->nodata[1][0][0])
+							values[idx] = Float8GetDatum(arg->values[1][0][0]);
+						else
+							nulls[idx] = TRUE;
+						break;
+				}
+
+			}
+		}
+
+		/* run prepared plan */
+		err = SPI_execute_plan(plan, values, nulls, TRUE, 1);
+		if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Unexpected error when running prepared statement %d", id);
+			return 0;
+		}
+
+		/* get output of prepared plan */
+		tupdesc = SPI_tuptable->tupdesc;
+		tuptable = SPI_tuptable;
+		tuple = tuptable->vals[0];
+
+		datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+		if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Unable to get result of prepared statement %d", id);
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			return 0;
+		}
+
+		if (!isnull) {
+			*value = DatumGetFloat8(datum);
+			POSTGIS_RT_DEBUG(4, "Getting value from Datum");
+		}
+		else {
+			/* 2 raster, check nodatanodataval */
+			if (arg->rasters > 1) {
+				if (callback->nodatanodata.hasval)
+					*value = callback->nodatanodata.val;
+				else
+					*nodata = 1;
+			}
+			/* 1 raster, check nodataval */
+			else {
+				if (callback->expr[1].hasval)
+					*value = callback->expr[1].val;
+				else
+					*nodata = 1;
+			}
+		}
+
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+	}
+
+	POSTGIS_RT_DEBUGF(4, "(value, nodata) = (%f, %d)", *value, *nodata);
+	return 1;
+}
+
+PG_FUNCTION_INFO_V1(RASTER_nMapAlgebraExpr);
+Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
+{
+	MemoryContext mainMemCtx = CurrentMemoryContext;
+	rtpg_nmapalgebraexpr_arg arg = NULL;
+	rt_iterator itrset;
+	uint16_t exprpos[3] = {1, 4, 5};
+
+	int i = 0;
+	int j = 0;
+	int k = 0;
+
+	int numraster = 0;
+	int err = 0;
+	int allnull = 0;
+	int allempty = 0;
+	int noband = 0;
+	int len = 0;
+
+	TupleDesc tupdesc;
+	SPITupleTable *tuptable = NULL;
+	HeapTuple tuple;
+	Datum datum;
+	bool isnull = FALSE;
+
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	rt_pgraster *pgraster = NULL;
+
+	const int argkwcount = 12;
+	char *argkw[] = {
+		"[rast.x]",
+		"[rast.y]",
+		"[rast.val]",
+		"[rast]",
+		"[rast1.x]",
+		"[rast1.y]",
+		"[rast1.val]",
+		"[rast1]",
+		"[rast2.x]",
+		"[rast2.y]",
+		"[rast2.val]",
+		"[rast2]"
+	};
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* init argument struct */
+	arg = rtpg_nmapalgebraexpr_arg_init(argkwcount, argkw);
+	if (arg == NULL) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to initialize argument structure");
+		PG_RETURN_NULL();
+	}
+
+	/* let helper function process rastbandarg (0) */
+	if (!rtpg_nmapalgebra_rastbandarg_process(arg->bandarg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
+		elog(ERROR, "RASTER_nMapAlgebra: Unable to process rastbandarg");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_RT_DEBUGF(4, "allnull, allempty, noband = %d, %d, %d", allnull, allempty, noband);
+
+	/* all rasters are NULL, return NULL */
+	if (allnull == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters are NULL. Returning NULL");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	/* only work on one or two rasters */
+	if (arg->bandarg->numraster > 1)
+		numraster = 2;
+	else
+		numraster = 1;
+
+	/* pixel type (2) */
+	if (!PG_ARGISNULL(2)) {
+		char *pixtypename = text_to_cstring(PG_GETARG_TEXT_P(2));
+
+		/* Get the pixel type index */
+		arg->bandarg->pixtype = rt_pixtype_index_from_name(pixtypename);
+		if (arg->bandarg->pixtype == PT_END) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Invalid pixel type: %s", pixtypename);
+			rtpg_nmapalgebraexpr_arg_destroy(arg);
+			PG_RETURN_NULL();
+		}
+	}
+	POSTGIS_RT_DEBUGF(4, "pixeltype: %d", arg->bandarg->pixtype);
+
+	/* extent type (3) */
+	if (!PG_ARGISNULL(3)) {
+		char *extenttypename = rtpg_strtoupper(rtpg_trim(text_to_cstring(PG_GETARG_TEXT_P(3))));
+		arg->bandarg->extenttype = rt_util_extent_type(extenttypename);
+	}
+
+	if (arg->bandarg->extenttype == ET_CUSTOM) {
+		if (numraster < 2) {
+			elog(NOTICE, "CUSTOM extent type not supported. Defaulting to FIRST");
+			arg->bandarg->extenttype = ET_FIRST;
+		}
+		else {
+			elog(NOTICE, "CUSTOM extent type not supported. Defaulting to INTERSECTION");
+			arg->bandarg->extenttype = ET_INTERSECTION;
+		}
+	}
+	else if (numraster < 2)
+		arg->bandarg->extenttype = ET_FIRST;
+
+	POSTGIS_RT_DEBUGF(4, "extenttype: %d", arg->bandarg->extenttype);
+
+	/* nodatanodataval (6) */
+	if (!PG_ARGISNULL(6)) {
+		arg->callback.nodatanodata.hasval = 1;
+		arg->callback.nodatanodata.val = PG_GETARG_FLOAT8(6);
+	}
+
+	err = 0;
+	/* all rasters are empty, return empty raster */
+	if (allempty == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters are empty. Returning empty raster");
+		err = 1;
+	}
+	/* all rasters don't have indicated band, return empty raster */
+	else if (noband == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters do not have bands at indicated indexes. Returning empty raster");
+		err = 1;
+	}
+	if (err) {
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+
+		raster = rt_raster_new(0, 0);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create empty raster");
+			PG_RETURN_NULL();
+		}
+
+		pgraster = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (!pgraster) PG_RETURN_NULL();
+
+		SET_VARSIZE(pgraster, pgraster->size);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* connect SPI */
+	if (SPI_connect() != SPI_OK_CONNECT) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to connect to the SPI manager");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	/*
+		process expressions
+
+		exprpos elements are:
+			1 - expression => spi_plan[0]
+			4 - nodata1expr => spi_plan[1]
+			5 - nodata2expr => spi_plan[2]
+	*/
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		char *expr = NULL;
+		char *tmp = NULL;
+		char *sql = NULL;
+		char place[5] = "$1";
+
+		if (PG_ARGISNULL(exprpos[i]))
+			continue;
+
+		expr = text_to_cstring(PG_GETARG_TEXT_P(exprpos[i]));
+		POSTGIS_RT_DEBUGF(3, "raw expr of argument #%d: %s", exprpos[i], expr);
+
+		for (j = 0, k = 1; j < argkwcount; j++) {
+			/* attempt to replace keyword with placeholder */
+			len = 0;
+			tmp = rtpg_strreplace(expr, argkw[j], place, &len);
+			pfree(expr);
+			expr = tmp;
+
+			if (len) {
+				POSTGIS_RT_DEBUGF(4, "kw #%d (%s) at pos $%d", j, argkw[j], k);
+				arg->callback.expr[i].spi_argcount++;
+				arg->callback.expr[i].spi_argpos[j] = k++;
+
+				sprintf(place, "$%d", k);
+			}
+			else
+				arg->callback.expr[i].spi_argpos[j] = 0;
+		}
+
+		len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
+		sql = (char *) palloc(len + 1);
+		if (sql == NULL) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for expression parameter %d", exprpos[i]);
+			rtpg_nmapalgebraexpr_arg_destroy(arg);
+			SPI_finish();
+			PG_RETURN_NULL();
+		}
+
+		strncpy(sql, "SELECT (", strlen("SELECT ("));
+		strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
+		strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+		sql[len] = '\0';
+
+		POSTGIS_RT_DEBUGF(3, "sql #%d: %s", exprpos[i], sql);
+
+		/* prepared plan */
+		if (arg->callback.expr[i].spi_argcount) {
+			Oid *argtype = (Oid *) palloc(arg->callback.expr[i].spi_argcount * sizeof(Oid));
+			POSTGIS_RT_DEBUGF(3, "expression parameter %d is a prepared plan", exprpos[i]);
+			if (argtype == NULL) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
+				pfree(sql);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			/* specify datatypes of parameters */
+			for (j = 0, k = 0; j < argkwcount; j++) {
+				if (arg->callback.expr[i].spi_argpos[j] < 1) continue;
+
+				/* positions are INT4 */
+				if (
+					(strstr(argkw[j], "[rast.x]") != NULL) ||
+					(strstr(argkw[j], "[rast.y]") != NULL) ||
+					(strstr(argkw[j], "[rast1.x]") != NULL) ||
+					(strstr(argkw[j], "[rast1.y]") != NULL) ||
+					(strstr(argkw[j], "[rast2.x]") != NULL) ||
+					(strstr(argkw[j], "[rast2.y]") != NULL)
+				)
+					argtype[k] = INT4OID;
+				/* everything else is FLOAT8 */
+				else
+					argtype[k] = FLOAT8OID;
+
+				k++;
+			}
+
+			arg->callback.expr[i].spi_plan = SPI_prepare(sql, arg->callback.expr[i].spi_argcount, argtype);
+			pfree(argtype);
+			pfree(sql);
+
+			if (arg->callback.expr[i].spi_plan == NULL) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create prepared plan of expression parameter %d", exprpos[i]);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+		}
+		/* no args, just execute query */
+		else {
+			POSTGIS_RT_DEBUGF(3, "expression parameter %d has no args, simply executing", exprpos[i]);
+			err = SPI_execute(sql, TRUE, 0);
+			pfree(sql);
+
+			if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to evaluate expression parameter %d", exprpos[i]);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			/* get output of prepared plan */
+			tupdesc = SPI_tuptable->tupdesc;
+			tuptable = SPI_tuptable;
+			tuple = tuptable->vals[0];
+
+			datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to get result of expression parameter %d", exprpos[i]);
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			if (!isnull) {
+				arg->callback.expr[i].hasval = 1;
+				arg->callback.expr[i].val = DatumGetFloat8(datum);
+			} 
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+		}
+	}
+
+	/* determine nodataval and possibly pixtype */
+	/* band to check */
+	switch (arg->bandarg->extenttype) {
+		case ET_LAST:
+		case ET_SECOND:
+			if (numraster > 1)
+				i = 1;
+			else
+				i = 0;
+			break;
+		default:
+			i = 0;
+			break;
+	}
+	/* find first viable band */
+	if (!arg->bandarg->hasband[i]) {
+		for (i = 0; i < numraster; i++) {
+			if (arg->bandarg->hasband[i])
+				break;
+		}
+		if (i >= numraster)
+			i = numraster - 1;
+	}
+	band = rt_raster_get_band(arg->bandarg->raster[i], arg->bandarg->nband[i]);
+
+	/* set pixel type if PT_END */
+	if (arg->bandarg->pixtype == PT_END)
+		arg->bandarg->pixtype = rt_band_get_pixtype(band);
+
+	/* set hasnodata and nodataval */
+	arg->bandarg->hasnodata = 1;
+	if (rt_band_get_hasnodata_flag(band))
+		rt_band_get_nodata(band, &(arg->bandarg->nodataval));
+	else
+		arg->bandarg->nodataval = rt_band_get_min_value(band);
+
+	POSTGIS_RT_DEBUGF(4, "pixtype, hasnodata, nodataval: %s, %d, %f", rt_pixtype_name(arg->bandarg->pixtype), arg->bandarg->hasnodata, arg->bandarg->nodataval);
+
+	/* init itrset */
+	itrset = palloc(sizeof(struct rt_iterator_t) * numraster);
+	if (itrset == NULL) {
+		elog(ERROR, "RASTER_nMapAlgebra: Unable to allocate memory for iterator arguments");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	/* set itrset */
+	for (i = 0; i < numraster; i++) {
+		itrset[i].raster = arg->bandarg->raster[i];
+		itrset[i].nband = arg->bandarg->nband[i];
+		itrset[i].nbnodata = 1;
+	}
+
+	/* pass everything to iterator */
+	err = rt_raster_iterator(
+		itrset, numraster,
+		arg->bandarg->extenttype, arg->bandarg->cextent,
+		arg->bandarg->pixtype,
+		arg->bandarg->hasnodata, arg->bandarg->nodataval,
+		0, 0,
+		&(arg->callback),
+		rtpg_nmapalgebraexpr_callback,
+		&raster
+	);
+
+	pfree(itrset);
+	rtpg_nmapalgebraexpr_arg_destroy(arg);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to run raster iterator function");
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+	else if (raster == NULL) {
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	/* switch to prior memory context to ensure memory allocated in correct context */
+	MemoryContextSwitchTo(mainMemCtx);
+
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+
+	/* finish SPI */
+	SPI_finish();
+
+	if (!pgraster)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
+}
+
+/* ---------------------------------------------------------------- */
 /*  ST_Union aggregate functions                                    */
 /* ---------------------------------------------------------------- */
 
@@ -15733,6 +17415,7 @@ struct rtpg_union_arg_t {
 static void rtpg_union_arg_destroy(rtpg_union_arg arg) {
 	int i = 0;
 	int j = 0;
+	int k = 0;
 
 	if (arg->bandarg != NULL) {
 		for (i = 0; i < arg->numband; i++) {
@@ -15742,6 +17425,9 @@ static void rtpg_union_arg_destroy(rtpg_union_arg arg) {
 			for (j = 0; j < arg->bandarg[i].numraster; j++) {
 				if (arg->bandarg[i].raster[j] == NULL)
 					continue;
+
+				for (k = rt_raster_get_num_bands(arg->bandarg[i].raster[j]) - 1; k >= 0; k--)
+					rt_band_destroy(rt_raster_get_band(arg->bandarg[i].raster[j], k));
 				rt_raster_destroy(arg->bandarg[i].raster[j]);
 			}
 
@@ -16064,7 +17750,7 @@ static int rtpg_union_noarg(rtpg_union_arg arg, rt_raster raster) {
 
 		/* add new working rt_raster but only if working raster already exists */
 		if (!rt_raster_is_empty(arg->bandarg[0].raster[0])) {
-			arg->bandarg[i].raster[0] = rt_raster_clone(arg->bandarg[0].raster[0], 0);
+			arg->bandarg[i].raster[0] = rt_raster_clone(arg->bandarg[0].raster[0], 0); /* shallow clone */
 			if (arg->bandarg[i].raster[0] == NULL) {
 				elog(ERROR, "rtpg_union_noarg: Unable to create working raster");
 				return 0;
@@ -16093,9 +17779,12 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	int isempty[2] = {0};
 	int hasband[2] = {0};
 	int nargs = 0;
+	double _offset[4] = {0.};
+	int nbnodata = 0; /* 1 if adding bands */
 
 	int i = 0;
 	int j = 0;
+	int k = 0;
 
 	rt_iterator itrset;
 	char *utypename = NULL;
@@ -16103,6 +17792,14 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	rt_pixtype pixtype = PT_END;
 	int hasnodata = 1;
 	double nodataval = 0;
+
+	rt_raster iraster = NULL;
+	rt_band iband = NULL;
+	int reuserast = 0;
+	int y = 0;
+	uint16_t _dim[2] = {0};
+	void *vals = NULL;
+	uint16_t nvals = 0;
 
 	POSTGIS_RT_DEBUG(3, "Starting...");
 
@@ -16157,24 +17854,60 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	/* process additional args if needed */
 	nargs = PG_NARGS();
 	POSTGIS_RT_DEBUGF(4, "nargs = %d", nargs);
-	if (!skiparg && nargs > 2) {
+	if (nargs > 2) {
 		POSTGIS_RT_DEBUG(4, "processing additional arguments");
 
 		/* if more than 2 arguments, determine the type of argument 3 */
 		/* band number, UNION type or unionarg */
-		if (nargs > 2 && !PG_ARGISNULL(2)) {
+		if (!PG_ARGISNULL(2)) {
 			Oid calltype = get_fn_expr_argtype(fcinfo->flinfo, 2);
 
 			switch (calltype) {
 				/* UNION type */
-				case TEXTOID:
+				case TEXTOID: {
+					int idx = 0;
+					int numband = 0;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as UNION type");
+					nbnodata = 1;
+
 					utypename = text_to_cstring(PG_GETARG_TEXT_P(2));
 					utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
+					POSTGIS_RT_DEBUGF(4, "Union type: %s", utypename);
 
-					iwr->numband = 1;
+					POSTGIS_RT_DEBUGF(4, "iwr->numband: %d", iwr->numband);
+					/* see if we need to append new bands */
+					if (raster) {
+						idx = iwr->numband;
+						numband = rt_raster_get_num_bands(raster);
+						POSTGIS_RT_DEBUGF(4, "numband: %d", numband);
 
-					iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+						/* only worry about appended bands */
+						if (numband > iwr->numband)
+							iwr->numband = numband;
+					}
+
+					if (!iwr->numband)
+						iwr->numband = 1;
+					POSTGIS_RT_DEBUGF(4, "iwr->numband: %d", iwr->numband);
+					POSTGIS_RT_DEBUGF(4, "numband, idx: %d, %d", numband, idx);
+
+					/* bandarg set. only possible after the first call to function */
+					if (iwr->bandarg) {
+						/* only reallocate if new bands need to be added */
+						if (numband > idx) {
+							POSTGIS_RT_DEBUG(4, "Reallocating iwr->bandarg");
+							iwr->bandarg = repalloc(iwr->bandarg, sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+						}
+						/* prevent initial values step happening below */
+						else
+							idx = iwr->numband;
+					}
+					/* bandarg not set, first call to function */
+					else {
+						POSTGIS_RT_DEBUG(4, "Allocating iwr->bandarg");
+						iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+					}
 					if (iwr->bandarg == NULL) {
 						elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for band information");
 
@@ -16188,22 +17921,30 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 
-					iwr->bandarg[0].uniontype = utype;
-					iwr->bandarg[0].nband = 0;
+					/* set initial values for bands that are "new" */
+					for (i = idx; i < iwr->numband; i++) {
+						iwr->bandarg[i].uniontype = utype;
+						iwr->bandarg[i].nband = i;
 
-					if (
-						iwr->bandarg[0].uniontype == UT_MEAN ||
-						iwr->bandarg[0].uniontype == UT_RANGE
-					) {
-						iwr->bandarg[0].numraster = 2;
+						if (
+							utype == UT_MEAN ||
+							utype == UT_RANGE
+						) {
+							iwr->bandarg[i].numraster = 2;
+						}
+						else
+							iwr->bandarg[i].numraster = 1;
+						iwr->bandarg[i].raster = NULL;
 					}
-					else
-						iwr->bandarg[0].numraster = 1;
-					iwr->bandarg[0].raster = NULL;
+
 					break;
+				}
 				/* band number */
 				case INT2OID:
 				case INT4OID:
+					if (skiparg)
+						break;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as band number");
 					nband = PG_GETARG_INT32(2);
 					if (nband < 1) {
@@ -16242,6 +17983,9 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					break;
 				/* only other type allowed is unionarg */
 				default: 
+					if (skiparg)
+						break;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as unionarg");
 					if (!rtpg_union_unionarg_process(iwr, PG_GETARG_ARRAYTYPE_P(2))) {
 						elog(ERROR, "RASTER_union_transfn: Unable to process unionarg");
@@ -16265,6 +18009,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			utypename = text_to_cstring(PG_GETARG_TEXT_P(3));
 			utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
 			iwr->bandarg[0].uniontype = utype;
+			POSTGIS_RT_DEBUGF(4, "Union type: %s", utypename);
 
 			if (
 				utype == UT_MEAN ||
@@ -16276,6 +18021,14 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 		/* allocate space for pointers to rt_raster */
 		for (i = 0; i < iwr->numband; i++) {
+			POSTGIS_RT_DEBUGF(4, "iwr->bandarg[%d].raster @ %p", i, iwr->bandarg[i].raster);
+
+			/* no need to allocate */
+			if (iwr->bandarg[i].raster != NULL)
+				continue;
+
+			POSTGIS_RT_DEBUGF(4, "Allocating space for working rasters of band %d", i);
+
 			iwr->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
 			if (iwr->bandarg[i].raster == NULL) {
 				elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for working raster(s)");
@@ -16291,12 +18044,32 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			}
 
 			memset(iwr->bandarg[i].raster, 0, sizeof(rt_raster) * iwr->bandarg[i].numraster);
+
+			/* add new working rt_raster but only if working raster already exists */
+			if (i > 0 && !rt_raster_is_empty(iwr->bandarg[0].raster[0])) {
+				for (j = 0; j < iwr->bandarg[i].numraster; j++) {
+					iwr->bandarg[i].raster[j] = rt_raster_clone(iwr->bandarg[0].raster[0], 0); /* shallow clone */
+					if (iwr->bandarg[i].raster[j] == NULL) {
+						elog(ERROR, "RASTER_union_transfn: Unable to create working raster");
+
+						rtpg_union_arg_destroy(iwr);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+				}
+			}
 		}
 	}
 	/* only raster, no additional args */
 	/* only do this if raster isn't empty */
-	else if (nargs < 3) {
+	else {
 		POSTGIS_RT_DEBUG(4, "no additional args, checking input raster");
+		nbnodata = 1;
 		if (!rtpg_union_noarg(iwr, raster)) {
 			elog(ERROR, "RASTER_union_transfn: Unable to check and balance number of bands");
 
@@ -16331,6 +18104,9 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 		/* by raster */
 		for (j = 0; j < iwr->bandarg[i].numraster; j++) {
+			reuserast = 0;
+
+			/* type of union */
 			utype = iwr->bandarg[i].uniontype;
 
 			/* raster flags */
@@ -16395,48 +18171,263 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			itrset[1].raster = raster;
 			itrset[1].nband = iwr->bandarg[i].nband;
 
-			/* no additional arguments in aggregate, allow use NODATA to replace missing bands */
-			if (nargs < 3) {
+			/* allow use NODATA to replace missing bands */
+			if (nbnodata) {
 				itrset[0].nbnodata = 1;
 				itrset[1].nbnodata = 1;
 			}
-			/* additional arguments in aggregate, missing bands are not ignored */
+			/* missing bands are not ignored */
 			else {
 				itrset[0].nbnodata = 0;
 				itrset[1].nbnodata = 0;
 			}
 
-			/* pass everything to iterator */
-			noerr = rt_raster_iterator(
-				itrset, 2,
-				ET_UNION, NULL,
-				pixtype,
-				hasnodata, nodataval,
-				0, 0,
-				&utype,
-				rtpg_union_callback,
-				&_raster
-			);
+			/* if rasters AND bands are present, use copy approach */
+			if (!isempty[0] && !isempty[1] && hasband[0] && hasband[1]) {
+				POSTGIS_RT_DEBUG(3, "using line method");
 
-			if (noerr != ES_NONE) {
-				elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
+				/* generate empty out raster */
+				if (rt_raster_from_two_rasters(
+					iwr->bandarg[i].raster[j], raster,
+					ET_UNION,
+					&iraster, _offset 
+				) != ES_NONE) {
+					elog(ERROR, "RASTER_union_transfn: Unable to create internal raster");
 
-				pfree(itrset);
-				rtpg_union_arg_destroy(iwr);
-				if (raster != NULL) {
-					rt_raster_destroy(raster);
-					PG_FREE_IF_COPY(pgraster, 1);
+					pfree(itrset);
+					rtpg_union_arg_destroy(iwr);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					PG_RETURN_NULL();
+				}
+				POSTGIS_RT_DEBUGF(4, "_offset = %f, %f, %f, %f",
+					_offset[0], _offset[1], _offset[2], _offset[3]);
+
+				/* rasters are spatially the same? */
+				if (
+					rt_raster_get_width(iwr->bandarg[i].raster[j]) == rt_raster_get_width(iraster) &&
+					rt_raster_get_height(iwr->bandarg[i].raster[j]) == rt_raster_get_height(iraster)
+				) {
+					double igt[6] = {0};
+					double gt[6] = {0};
+
+					rt_raster_get_geotransform_matrix(iwr->bandarg[i].raster[j], gt);
+					rt_raster_get_geotransform_matrix(iraster, igt);
+
+					reuserast = rt_util_same_geotransform_matrix(gt, igt);
 				}
 
-				MemoryContextSwitchTo(oldcontext);
-				PG_RETURN_NULL();
+				/* use internal raster */
+				if (!reuserast) {
+					/* create band of same type */
+					if (rt_raster_generate_new_band(
+						iraster,
+						pixtype,
+						nodataval,
+						hasnodata, nodataval,
+						0
+					) == -1) {
+						elog(ERROR, "RASTER_union_transfn: Unable to add new band to internal raster");
+
+						pfree(itrset);
+						rtpg_union_arg_destroy(iwr);
+						rt_raster_destroy(iraster);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+					iband = rt_raster_get_band(iraster, 0);
+
+					/* copy working raster to output raster */
+					_dim[0] = rt_raster_get_width(iwr->bandarg[i].raster[j]);
+					_dim[1] = rt_raster_get_height(iwr->bandarg[i].raster[j]);
+					for (y = 0; y < _dim[1]; y++) {
+						POSTGIS_RT_DEBUGF(4, "Getting pixel line of working raster at (x, y, length) = (0, %d, %d)", y, _dim[0]);
+						if (rt_band_get_pixel_line(
+							_band,
+							0, y,
+							_dim[0],
+							&vals, &nvals
+						) != ES_NONE) {
+							elog(ERROR, "RASTER_union_transfn: Unable to get pixel line from band of working raster");
+
+							pfree(itrset);
+							rtpg_union_arg_destroy(iwr);
+							rt_band_destroy(iband);
+							rt_raster_destroy(iraster);
+							if (raster != NULL) {
+								rt_raster_destroy(raster);
+								PG_FREE_IF_COPY(pgraster, 1);
+							}
+
+							MemoryContextSwitchTo(oldcontext);
+							PG_RETURN_NULL();
+						}
+
+						POSTGIS_RT_DEBUGF(4, "Setting pixel line at (x, y, length) = (%d, %d, %d)", (int) _offset[0], (int) _offset[1] + y, nvals);
+						if (rt_band_set_pixel_line(
+							iband,
+							(int) _offset[0], (int) _offset[1] + y,
+							vals, nvals
+						) != ES_NONE) {
+							elog(ERROR, "RASTER_union_transfn: Unable to set pixel line to band of internal raster");
+
+							pfree(itrset);
+							rtpg_union_arg_destroy(iwr);
+							rt_band_destroy(iband);
+							rt_raster_destroy(iraster);
+							if (raster != NULL) {
+								rt_raster_destroy(raster);
+								PG_FREE_IF_COPY(pgraster, 1);
+							}
+
+							MemoryContextSwitchTo(oldcontext);
+							PG_RETURN_NULL();
+						}
+					}
+				}
+				else {
+					rt_raster_destroy(iraster);
+					iraster = iwr->bandarg[i].raster[j];
+					iband = rt_raster_get_band(iraster, 0);
+				}
+
+				/* run iterator for extent of input raster */
+				noerr = rt_raster_iterator(
+					itrset, 2,
+					ET_LAST, NULL,
+					pixtype,
+					hasnodata, nodataval,
+					0, 0,
+					&utype,
+					rtpg_union_callback,
+					&_raster
+				);
+				if (noerr != ES_NONE) {
+					elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
+
+					pfree(itrset);
+					rtpg_union_arg_destroy(iwr);
+					if (!reuserast) {
+						rt_band_destroy(iband);
+						rt_raster_destroy(iraster);
+					}
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					PG_RETURN_NULL();
+				}
+
+				/* with iterator raster, copy data to output raster */
+				_band = rt_raster_get_band(_raster, 0);
+				_dim[0] = rt_raster_get_width(_raster);
+				_dim[1] = rt_raster_get_height(_raster);
+				for (y = 0; y < _dim[1]; y++) {
+					POSTGIS_RT_DEBUGF(4, "Getting pixel line of iterator raster at (x, y, length) = (0, %d, %d)", y, _dim[0]);
+					if (rt_band_get_pixel_line(
+						_band,
+						0, y,
+						_dim[0],
+						&vals, &nvals
+					) != ES_NONE) {
+						elog(ERROR, "RASTER_union_transfn: Unable to get pixel line from band of working raster");
+
+						pfree(itrset);
+						rtpg_union_arg_destroy(iwr);
+						if (!reuserast) {
+							rt_band_destroy(iband);
+							rt_raster_destroy(iraster);
+						}
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+
+					POSTGIS_RT_DEBUGF(4, "Setting pixel line at (x, y, length) = (%d, %d, %d)", (int) _offset[2], (int) _offset[3] + y, nvals);
+					if (rt_band_set_pixel_line(
+						iband,
+						(int) _offset[2], (int) _offset[3] + y,
+						vals, nvals
+					) != ES_NONE) {
+						elog(ERROR, "RASTER_union_transfn: Unable to set pixel line to band of internal raster");
+
+						pfree(itrset);
+						rtpg_union_arg_destroy(iwr);
+						if (!reuserast) {
+							rt_band_destroy(iband);
+							rt_raster_destroy(iraster);
+						}
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+				}
+
+				/* free _raster */
+				rt_band_destroy(_band);
+				rt_raster_destroy(_raster);
+
+				/* replace working raster with output raster */
+				_raster = iraster;
+			}
+			else {
+				POSTGIS_RT_DEBUG(3, "using pixel method");
+
+				/* pass everything to iterator */
+				noerr = rt_raster_iterator(
+					itrset, 2,
+					ET_UNION, NULL,
+					pixtype,
+					hasnodata, nodataval,
+					0, 0,
+					&utype,
+					rtpg_union_callback,
+					&_raster
+				);
+
+				if (noerr != ES_NONE) {
+					elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
+
+					pfree(itrset);
+					rtpg_union_arg_destroy(iwr);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					PG_RETURN_NULL();
+				}
 			}
 
 			/* replace working raster */
-			if (iwr->bandarg[i].raster[j] != NULL)
+			if (iwr->bandarg[i].raster[j] != NULL && !reuserast) {
+				for (k = rt_raster_get_num_bands(iwr->bandarg[i].raster[j]) - 1; k >= 0; k--)
+					rt_band_destroy(rt_raster_get_band(iwr->bandarg[i].raster[j], k));
 				rt_raster_destroy(iwr->bandarg[i].raster[j]);
+			}
 			iwr->bandarg[i].raster[j] = _raster;
 		}
+
 	}
 
 	pfree(itrset);
@@ -16787,8 +18778,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		arg->extenttype = ET_FIRST;
 
 	/* get intersection geometry of input raster and input geometry */
-	rastgeom = lwpoly_as_lwgeom(rt_raster_get_convex_hull(arg->raster));
-	if (rastgeom == NULL) {
+	if (rt_raster_get_convex_hull(arg->raster, &rastgeom) != ES_NONE) {
 		elog(ERROR, "RASTER_clip: Unable to get convex hull of raster");
 
 		rtpg_clip_arg_destroy(arg);
@@ -17144,6 +19134,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
+/*  TODO: reuse the ones in libpgcommon ?                           */
 /* ---------------------------------------------------------------- */
 
 static void *

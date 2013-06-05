@@ -47,7 +47,7 @@ int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 /*
 * Brute force functions
 */
-int lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa, DISTPTS *dl);
+int lw_dist2d_pt_ptarray(const POINT2D *p, POINTARRAY *pa, DISTPTS *dl);
 int lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl);
 int lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl);
 int lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl);
@@ -55,10 +55,19 @@ int lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, 
 int lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl);
 int lw_dist2d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS *dl);
 int lw_dist2d_point_line(LWPOINT *point, LWLINE *line, DISTPTS *dl);
-int lw_dist2d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS *dl);
+int lw_dist2d_point_circstring(LWPOINT *point, LWCIRCSTRING *circ, DISTPTS *dl);
 int lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl);
-int lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl);
+int lw_dist2d_point_curvepoly(LWPOINT *point, LWCURVEPOLY *poly, DISTPTS *dl);
+int lw_dist2d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS *dl);
+int lw_dist2d_line_circstring(LWLINE *line1, LWCIRCSTRING *line2, DISTPTS *dl);
 int lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl);
+int lw_dist2d_line_curvepoly(LWLINE *line, LWCURVEPOLY *poly, DISTPTS *dl);
+int lw_dist2d_circstring_circstring(LWCIRCSTRING *line1, LWCIRCSTRING *line2, DISTPTS *dl);
+int lw_dist2d_circstring_poly(LWCIRCSTRING *circ, LWPOLY *poly, DISTPTS *dl);
+int lw_dist2d_circstring_curvepoly(LWCIRCSTRING *circ, LWCURVEPOLY *poly, DISTPTS *dl);
+int lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl);
+int lw_dist2d_poly_curvepoly(LWPOLY *poly1, LWCURVEPOLY *curvepoly2, DISTPTS *dl);
+int lw_dist2d_curvepoly_curvepoly(LWCURVEPOLY *poly1, LWCURVEPOLY *poly2, DISTPTS *dl);
 
 /*
 * New faster distance calculations

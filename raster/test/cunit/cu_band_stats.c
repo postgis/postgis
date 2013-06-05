@@ -41,7 +41,6 @@ static void test_band_stats() {
 	uint32_t ymax = 100;
 	uint32_t max_run;
 	double nodata;
-	int rtn;
 
 	uint32_t values[] = {0, 91, 55, 86, 76, 41, 36, 97, 25, 63, 68, 2, 78, 15, 82, 47};
 	struct quantile_llist *qlls = NULL;
@@ -54,7 +53,7 @@ static void test_band_stats() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, x + y, NULL);
+			rt_band_set_pixel(band, x, y, x + y, NULL);
 		}
 	}
 
@@ -150,7 +149,7 @@ static void test_band_stats() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, values[(x * ymax) + y], NULL);
+			rt_band_set_pixel(band, x, y, values[(x * ymax) + y], NULL);
 		}
 	}
 
@@ -183,7 +182,7 @@ static void test_band_stats() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 
@@ -231,7 +230,7 @@ static void test_band_value_count() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, NULL, &rtn);

@@ -40,7 +40,7 @@ usage()
 	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statements).\n" ));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
-	printf(_( "  -G  Use geography type (requires lon/lat data or -r to reproject).\n" ));
+	printf(_( "  -G  Use geography type (requires lon/lat data or -s to reproject).\n" ));
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
@@ -285,12 +285,20 @@ main (int argc, char **argv)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
+		
+		/* Remove the extension, if present */
 		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{
 			if ( *ptr == '.' )
 			{
 				*ptr = '\0';
+				break;
 			}
+		}
+
+		/* The remaining non-path section is the table name */
+		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
+		{
 			if ( *ptr == '/' || *ptr == '\\' )
 			{
 				ptr++;

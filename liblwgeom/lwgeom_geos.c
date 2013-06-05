@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 
+LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d);
+
 #undef LWGEOM_PROFILE_BUILDAREA
 
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
@@ -1298,15 +1300,83 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 #endif /* POSTGIS_GEOS_VERSION < 32 */
 }
 
-LWGEOM*
-lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edgeOnly)
-{
+LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d) {
+	int type = GEOSGeomTypeId(geom);
+	int hasZ;
+	int SRID = GEOSGetSRID(geom);
+
+	/* GEOS's 0 is equivalent to our unknown as for SRID values */
+	if ( SRID == 0 ) SRID = SRID_UNKNOWN;
+
+	if ( want3d ) {
+		hasZ = GEOSHasZ(geom);
+		if ( ! hasZ ) {
+			LWDEBUG(3, "Geometry has no Z, won't provide one");
+			want3d = 0;
+		}
+	}
+
+	switch (type) {
+		LWTRIANGLE **geoms;
+		uint32_t i, ngeoms;
+	case GEOS_GEOMETRYCOLLECTION:
+		LWDEBUG(4, "lwgeom_from_geometry: it's a Collection or Multi");
+
+		ngeoms = GEOSGetNumGeometries(geom);
+		geoms = NULL;
+		if ( ngeoms ) {
+			geoms = lwalloc(ngeoms * sizeof *geoms);
+			if (!geoms) {
+				lwerror("lwtin_from_geos: can't allocate geoms");
+				return NULL;
+			}
+			for (i=0; i<ngeoms; i++) {
+				const GEOSGeometry *poly, *ring;
+				const GEOSCoordSequence *cs;
+				POINTARRAY *pa;
+
+				poly = GEOSGetGeometryN(geom, i);
+				ring = GEOSGetExteriorRing(poly);
+				cs = GEOSGeom_getCoordSeq(ring);
+				pa = ptarray_from_GEOSCoordSeq(cs, want3d);
+
+				geoms[i] = lwtriangle_construct(SRID, NULL, pa);
+			}
+		}
+		return (LWTIN *)lwcollection_construct(TINTYPE, SRID, NULL, ngeoms, (LWGEOM **)geoms);
+	case GEOS_POLYGON:
+	case GEOS_MULTIPOINT:
+	case GEOS_MULTILINESTRING:
+	case GEOS_MULTIPOLYGON:
+	case GEOS_LINESTRING:
+	case GEOS_LINEARRING:
+	case GEOS_POINT:
+		lwerror("lwtin_from_geos: invalid geometry type for tin: %d", type);
+		break;
+
+	default:
+		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
+		return NULL;
+	}
+
+	/* shouldn't get here */
+	return NULL;
+}
+/*
+ * output = 1 for edges, 2 for TIN, 0 for polygons
+ */
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int output) {
 #if POSTGIS_GEOS_VERSION < 34
 	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
 	return NULL;
 #else
 	GEOSGeometry *g1, *g3;
 	LWGEOM *lwgeom_result;
+
+	if (output < 0 || output > 2) {
+		lwerror("lwgeom_delaunay_triangulation: invalid output type specified %d", output);
+		return NULL;
+	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -1317,7 +1387,8 @@ lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edg
 		return NULL;
 	}
 
-	g3 = GEOSDelaunayTriangulation(g1, tolerance, edgeOnly);
+	/* if output != 1 we want polys */
+	g3 = GEOSDelaunayTriangulation(g1, tolerance, output == 1);
 
 	/* Don't need input geometry anymore */
 	GEOSGeom_destroy(g1);
@@ -1331,12 +1402,21 @@ lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edg
 	/* LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3)); */
 
 	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
-	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
+
+	if (output == 2) {
+		lwgeom_result = (LWGEOM *)lwtin_from_geos(g3, lwgeom_has_z(lwgeom_in));
+	} else {
+		lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
+	}
+
 	GEOSGeom_destroy(g3);
 
-	if (lwgeom_result == NULL)
-	{
-		lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
+	if (lwgeom_result == NULL) {
+		if (output != 2) {
+			lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
+		} else {
+			lwerror("lwgeom_delaunay_triangulation: lwtin_from_geos returned null");
+		}
 		return NULL;
 	}
 

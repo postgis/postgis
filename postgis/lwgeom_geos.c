@@ -41,7 +41,7 @@ Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
-Datum intersects(PG_FUNCTION_ARGS);
+Datum geos_intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
@@ -51,7 +51,7 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
-Datum intersection(PG_FUNCTION_ARGS);
+Datum geos_intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
 Datum difference(PG_FUNCTION_ARGS);
@@ -892,6 +892,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GSERIALIZED	*geom1;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
+	LWGEOM *lwgeom;
 	int srid;
 
 
@@ -903,9 +904,24 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	srid = gserialized_get_srid(geom1);
 
+	lwgeom = lwgeom_from_gserialized(geom1);
+	if ( ! lwgeom ) {
+		lwerror("POSTGIS2GEOS: unable to deserialize input");
+		PG_RETURN_NULL();
+	}
+
+	/* GEOS doesn't do triangle type, so we special case that here */
+	if (lwgeom->type == TRIANGLETYPE) {
+		lwgeom->type = LINETYPE;
+		result = geometry_serialize(lwgeom);
+		lwgeom_free(lwgeom);
+		PG_RETURN_POINTER(result);
+	}
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
+	g1 = LWGEOM2GEOS(lwgeom);
+	lwgeom_free(lwgeom);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -1428,8 +1444,8 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(intersection);
-Datum intersection(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_intersection);
+Datum geos_intersection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -1494,7 +1510,6 @@ Datum difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwg;
 	GSERIALIZED *geom;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
@@ -1504,9 +1519,12 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	/* Empty.PointOnSurface == Point Empty */
 	if ( gserialized_is_empty(geom) )
 	{
-		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
-		lwgeom_free(lwg);
+		LWPOINT *lwp = lwpoint_construct_empty(
+		                   gserialized_get_srid(geom),
+		                   gserialized_has_z(geom), 
+		                   gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
+		lwpoint_free(lwp);
 		PG_RETURN_POINTER(result);
 	}
 
@@ -1554,18 +1572,20 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwg;
 	GSERIALIZED *geom, *result;
 	GEOSGeometry *geosgeom, *geosresult;
 
-	geom = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.Centroid() == Point Empty */
 	if ( gserialized_is_empty(geom) )
 	{
-		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
-		lwgeom_free(lwg);
+		LWPOINT *lwp = lwpoint_construct_empty(
+		                    gserialized_get_srid(geom), 
+		                    gserialized_has_z(geom), 
+		                    gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
+		lwpoint_free(lwp);
 		PG_RETURN_POINTER(result);
 	}
 
@@ -2535,8 +2555,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(intersects);
-Datum intersects(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_intersects);
+Datum geos_intersects(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;

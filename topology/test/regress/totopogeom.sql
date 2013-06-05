@@ -9,7 +9,7 @@ select totopogeom('POINT(0 0)'::geometry, 'tt', 1);
 select totopogeom(null, 'tt', 1);
 select totopogeom('POINT(0 0)'::geometry, '', 1);
 select totopogeom('POINT(0 0)'::geometry, null, 1);
-select totopogeom('POINT(0 0)'::geometry, 'tt', null);
+select totopogeom('POINT(0 0)'::geometry, 'tt', null::integer);
 
 -- Create simple puntual layer (will be layer 1)
 CREATE TABLE tt.f_puntal(id serial);
@@ -90,7 +90,6 @@ inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select St_AsText(inp.g), st_astext(tg.g::geometry) from inp, tg;
 
-
 -- Convert some empties
 SELECT ST_AsText(toTopoGeom('POINT EMPTY', 'tt', 1)::geometry);
 SELECT ST_AsText(toTopoGeom('MULTIPOINT EMPTY', 'tt', 1)::geometry);
@@ -169,6 +168,37 @@ with inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
 
+-- http://trac.osgeo.org/postgis/ticket/1968
+with inp as ( select
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5))'
+::geometry as g ),
+tg as ( select totopogeom(g, 'tt', 3) as g from inp )
+SELECT '#1968.1', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+with inp as ( select
+ST_Translate(
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5),(0 0, 5 0),(5 0, 10 0))'
+::geometry, 20, 0) as g ),
+tg as ( select totopogeom(g, 'tt', 3) as g from inp )
+SELECT '#1968.2', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+
+-- Test adding portions to an existing TopoGeometry
+INSERT INTO tt.f_areal (id, g)
+ SELECT -1, toTopoGeom('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 'tt', 4);
+SELECT 'tgup1.1', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
+UPDATE tt.f_areal SET g = toTopoGeom(st_translate(g, st_xmax(g::geometry)+1, 0), g);
+SELECT 'tgup1.2', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
+-- now add a smaller area
+UPDATE tt.f_areal SET g = toTopoGeom(st_buffer(g, -1), g);
+SELECT 'tgup1.3', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;

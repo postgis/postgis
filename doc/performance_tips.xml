@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="performance_tips">
   <title>Performance tips</title>
 
-  <sect1>
+  <sect1 id="small_tables_large_objects">
     <title>Small tables of large geometries</title>
 
     <sect2>
@@ -59,7 +59,7 @@
       example, the commands are like:</para>
 
       <programlisting>SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); 
-UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));</programlisting>
+UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));</programlisting>
 
       <para>Now change your query to use the &amp;&amp; operator against bbox
       instead of geom_column, like:</para>
@@ -76,7 +76,7 @@ WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
     </sect2>
   </sect1>
 
-  <sect1>
+  <sect1 id="database_clustering">
     <title>CLUSTERing on geometry indices</title>
 
     <para>For tables that are mostly read-only, and where a single index is
@@ -109,17 +109,17 @@ ALTER TABLE</programlisting>
     (geometry is not null);" will not work.</para>
   </sect1>
 
-  <sect1>
+  <sect1 id="avoiding_dimension_conversion">
     <title>Avoiding dimension conversion</title>
 
     <para>Sometimes, you happen to have 3D or 4D data in your table, but
     always access it using OpenGIS compliant ST_AsText() or ST_AsBinary()
     functions that only output 2D geometries. They do this by internally
-    calling the ST_Force_2d() function, which introduces a significant
+    calling the ST_Force2D() function, which introduces a significant
     overhead for large geometries. To avoid this overhead, it may be feasible
     to pre-drop those additional dimensions once and forever:</para>
 
-    <programlisting>UPDATE mytable SET the_geom = ST_Force_2d(the_geom); 
+    <programlisting>UPDATE mytable SET the_geom = ST_Force2D(the_geom); 
 VACUUM FULL ANALYZE mytable;</programlisting>
 
     <para>Note that if you added your geometry column using
@@ -139,7 +139,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
   </sect1>
 
-  <sect1>
+  <sect1 id="database_tuning_configuration">
     <title>Tuning your configuration</title>
 
     <para>These tips are taken from Kevin Neufeld's presentation "Tips for the

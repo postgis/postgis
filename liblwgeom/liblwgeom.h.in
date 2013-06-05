@@ -32,10 +32,9 @@
 * units tests at cunit/cu_tester.c and the loader/dumper programs at
 * ../loader/shp2pgsql.c are examples of non-PostGIS applications using liblwgeom.
 *
-* Programs using this library should set up the default memory managers and error
-* handlers by implementing an lwgeom_init_allocators() function, which can be as
-* a wrapper around the lwgeom_install_default_allocators() function if you want
-* no special handling for memory management and error reporting.
+* Programs using this library can install their custom memory managers and error
+* handlers by calling the lwgeom_set_handlers() function, otherwise the default 
+* ones will be used.
 */
 
 /**
@@ -177,25 +176,16 @@ typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
 typedef void (*lwreporter)(const char* fmt, va_list ap);
-extern lwreallocator lwrealloc_var;
-extern lwallocator lwalloc_var;
-extern lwfreeor lwfree_var;
-extern lwreporter lwerror_var;
-extern lwreporter lwnotice_var;
 
 /**
-* Supply the memory management and error handling functions you want your
+* Install custom memory management and error handling functions you want your
 * application to use.
 * @ingroup system
+* @todo take a structure ?
 */
-extern void lwgeom_init_allocators(void);
-
-/**
-* Apply the default memory management (malloc() and free()) and error handlers.
-* Called inside lwgeom_init_allocators() generally.
-* @ingroup system
-*/
-extern void lwgeom_install_default_allocators(void);
+extern void lwgeom_set_handlers(lwallocator allocator, 
+        lwreallocator reallocator, lwfreeor freeor, lwreporter errorreporter,
+        lwreporter noticereporter);
 
 /**
  * Write a notice out to the notice handler.
@@ -217,16 +207,8 @@ void lwnotice(const char *fmt, ...);
  */
 void lwerror(const char *fmt, ...);
 
-/**
- * The default memory/logging handlers installed by
- * lwgeom_install_default_allocators()
- */
-void *default_allocator(size_t size);
-void *default_reallocator(void *mem, size_t size);
-void default_freeor(void *ptr);
-void default_errorreporter(const char *fmt, va_list ap);
-void default_noticereporter(const char *fmt, va_list ap);
 
+/* TODO: move these elsewhere */
 extern int lw_vasprintf (char **result, const char *format, va_list args);
 extern int lw_asprintf
 #if defined(__STDC__) || defined(_MSC_VER)
@@ -891,6 +873,12 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
+/* 
+ * Force to use SFS 1.1 geometry type
+ * (rather than SFS 1.2 and/or SQL/MM)
+ */
+extern LWGEOM* lwgeom_force_sfs(LWGEOM *geom, int version);
+
 
 /*--------------------------------------------------------
  * all the base types (point/line/polygon) will have a
@@ -937,9 +925,11 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
 
-
-
-
+/**
+* Construct an equivalent curve polygon from a polygon. Curve polygons
+* can have linear rings as their rings, so this works fine (in theory?)
+*/
+extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
 
 
 /******************************************************************
@@ -1081,6 +1071,7 @@ extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
 extern LWPOINT* lwline_get_lwpoint(LWLINE *line, int where);
+extern LWPOINT* lwcircstring_get_lwpoint(LWCIRCSTRING *circ, int where);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);
@@ -1368,6 +1359,17 @@ extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
 extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
 
 /**
+ * Create an LWGEOM object from a GeoJSON representation
+ *
+ * @param geojson the GeoJSON input
+ * @param srs output parameter. Will be set to a newly allocated
+ *            string holding the spatial reference string, or NULL
+ *            if no such parameter is found in input.
+ *            If not null, the pointer must be freed with lwfree.
+ */
+extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
+
+/**
 * Initialize a spheroid object for use in geodetic functions.
 */
 extern void spheroid_init(SPHEROID *s, double a, double b);
@@ -1625,6 +1627,11 @@ extern int gbox_same(const GBOX *g1, const GBOX *g2);
  * after a serialize/deserialize round trip.
  */
 extern void gbox_float_round(GBOX *gbox);
+
+/**
+* Return false if any of the dimensions is NaN or infinite
+*/
+extern int gbox_is_valid(const GBOX *gbox);
 
 /**
 * Utility function to get type number from string. For example, a string 'POINTZ' 

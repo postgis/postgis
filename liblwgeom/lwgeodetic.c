@@ -947,6 +947,7 @@ double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, do
 	return heading;
 }
 
+#if 0 /* unused */
 /**
 * Computes the spherical excess of a spherical triangle defined by
 * the three vectices A, B, C. Computes on the unit sphere (i.e., divides
@@ -970,6 +971,7 @@ static double sphere_excess(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b
 	double E = tan(ss/2.0)*tan((ss-a_dist)/2.0)*tan((ss-b_dist)/2.0)*tan((ss-c_dist)/2.0);
 	return 4.0 * atan(sqrt(fabs(E))) * sign;
 }
+#endif
 
 
 /**
@@ -1540,7 +1542,13 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 		
 		/* Skip duplicate points (except in case of 2-point lines!) */
 		if ( (pa_in->npoints > 2) && p4d_same(&p1, &p2) )
+		{
+			/* Move one offset forward */
+			p1 = p2;
+			g1 = g2;
+			pa_in_offset++;
 			continue;
+		}
 
 		/* How long is this edge? */
 		d = sphere_distance(&g1, &g2);
@@ -3161,7 +3169,7 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 {
 	POINT3D S1, S2; /* Stab line end points */
 	POINT3D E1, E2; /* Edge end points (3-space) */
-	POINT2D p, q;   /* Edge end points (lon/lat) */
+	POINT2D p; /* Edge end points (lon/lat) */
 	int count = 0, i, inter;
 
 	/* Null input, not enough points for a ring? You ain't closed! */
@@ -3175,7 +3183,6 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 	/* Initialize first point */
 	getPoint2d_p(pa, 0, &p);
 	ll2cart(&p, &E1);
-	q = p;
 
 	/* Walk every edge and see if the stab line hits it */
 	for ( i = 1; i < pa->npoints; i++ )
@@ -3233,7 +3240,6 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 		
 		/* Increment to next edge */
 		E1 = E2;
-		q = p;
 	}
 
 	LWDEBUGF(4,"final count == %d", count);

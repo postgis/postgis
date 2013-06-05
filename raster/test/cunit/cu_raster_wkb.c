@@ -65,7 +65,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_EQUAL(rt_raster_get_width(raster), 7);
 	CU_ASSERT_EQUAL(rt_raster_get_height(raster), 8);
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %d\n", strlen(hexwkb));
 	printf("out hexwkb len: %d\n", len);
@@ -85,11 +85,11 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* No bands, 7x8 - big endian                             */
@@ -123,7 +123,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_EQUAL(rt_raster_get_width(raster), 7);
 	CU_ASSERT_EQUAL(rt_raster_get_height(raster), 8);
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -135,7 +135,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -187,7 +187,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -197,7 +197,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -276,7 +276,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -295,12 +295,12 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* 3x2, little endian, band0(16BSI)                       */
@@ -375,7 +375,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -385,7 +385,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -461,7 +461,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -471,7 +471,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -525,7 +525,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_EQUAL(bandnum, 3);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -535,7 +535,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -598,7 +598,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 431, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %d\n", strlen(hexwkb));
 	printf("out hexwkb len: %d\n", len);
@@ -618,11 +618,11 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* 5x5, little endian, 3 x band 8BUI (RGB),               */
@@ -768,7 +768,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 161, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -786,10 +786,10 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	} /* for-loop running car5 tests */
 

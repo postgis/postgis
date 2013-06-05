@@ -71,7 +71,7 @@ SELECT '#69', ST_AsText(ST_Translate(ST_GeomFromText('CIRCULARSTRING(220268 1504
 SELECT '#70', ST_NPoints(ST_LinetoCurve(ST_Buffer('POINT(1 2)',3)));
 
 -- #73 --
-SELECT '#73', ST_AsText(ST_Force_Collection(ST_GeomFromEWKT('CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)')));
+SELECT '#73', ST_AsText(ST_ForceCollection(ST_GeomFromEWKT('CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)')));
 
 -- #80 --
 SELECT '#80', ST_AsText(ST_Multi('MULTILINESTRING((0 0,1 1))'));
@@ -455,13 +455,33 @@ analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
 select '#877.2.deprecated', ST_Estimated_Extent('public', 't','g');
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
-select '#877.3', ST_EstimatedExtent('t','g');
+
+-- #877.3
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.3', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
+
+-- #877.4
 analyze t;
-select '#877.4', ST_EstimatedExtent('t','g');
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.4', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
+
+-- #877.5
 truncate t;
-select '#818.1', ST_EstimatedExtent('t','g');
-select '#818.1.deprecated', ST_Estimated_Extent('t','g');
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.5', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
 drop table t;
+
+-- #1292
+SELECT '#1292', ST_AsText(ST_SnapToGrid(ST_GeomFromText(
+	'GEOMETRYCOLLECTION(POINT(180 90),POLYGON((140 50,150 50,180 50,140 50),(140 60,150 60,180 60,140 60)))'
+	, 4326), 0.00001)::geography);
+
+-- #1292.1
+SELECT '#1292.1', ST_AsText(ST_GeomFromText('POINT(180.00000000001 95)')::geography),
+	ST_AsText(ST_GeomFromText('POINT(185 90.00000000001)')::geography);
 
 -- #1320
 SELECT '<#1320>';
@@ -533,7 +553,7 @@ with inp as ( select 'MULTILINESTRING((0 0, 2 0))'::geometry as g )
 SELECT '#1454', st_orderingequals(g,g) from inp;
 
 -- #1414
-SELECT '#1414', st_astext(st_force_3dz('CURVEPOLYGON EMPTY'));
+SELECT '#1414', st_astext(st_Force3DZ('CURVEPOLYGON EMPTY'));
 
 -- #1478
 SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
@@ -788,8 +808,17 @@ FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINES
      ) as foo;
 -- 2112 -- End
 
-SELECT '#2108', ST_AsEWKT(ST_Line_Interpolate_Point('SRID=3395;LINESTRING M EMPTY'::geometry, 0.5));
+SELECT '#2108', ST_AsEWKT(ST_LineInterpolatePoint('SRID=3395;LINESTRING M EMPTY'::geometry, 0.5));
 SELECT '#2117', ST_AsEWKT(ST_PointOnSurface('SRID=3395;MULTIPOLYGON M EMPTY'::geometry));
+
+SELECT '#2110.1', 'POINT(0 0)'::geometry = 'POINT EMPTY'::geometry;
+SELECT '#2110.2', 'POINT EMPTY'::geometry = 'POINT EMPTY'::geometry;
+SELECT '#2110.3', 'POINT(0 0)'::geometry = 'POINT(0 0)'::geometry;
+
+
+SELECT '#2145',
+round(ST_Length(St_Segmentize(ST_GeographyFromText('LINESTRING(-89.3000030518 28.2000007629,-89.1999969482 89.1999969482,-89.1999969482 89.1999969482)'), 10000))::numeric,0);
+
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

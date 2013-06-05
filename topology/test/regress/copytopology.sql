@@ -50,4 +50,11 @@ SELECT * from "CITY_data_UP_down".topogeo_s_3;
 SELECT topology.DropTopology('CITY_data_UP_down');
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
+
+-- See http://trac.osgeo.org/postgis/ticket/2184
+select '#2184.1', topology.createTopology('t3d', 0, 0, true) > 0;
+select '#2184.2', st_addisonode('t3d', NULL, 'POINT(1 2 3)');
+select '#2184.3', topology.copyTopology('t3d', 't3d-bis') > 0;
+select '#2184.4', length(topology.dropTopology('t3d')) > 0, length(topology.dropTopology('t3d-bis')) > 0;
+
 DELETE FROM spatial_ref_sys where srid = 4326;

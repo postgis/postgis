@@ -172,7 +172,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 
 	<refentry id="ST_Force_2D">
 	  <refnamediv>
-		<refname>ST_Force_2D</refname>
+		<refname>ST_Force2D</refname>
 
 		<refpurpose>Forces the geometries into a "2-dimensional mode" so that
 		all output representations will only have the X and Y coordinates.</refpurpose>
@@ -181,7 +181,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_2D</function></funcdef>
+			<funcdef>geometry <function>ST_Force2D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -196,6 +196,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 		specifies 2-D geometries).</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D.</para>
 	  	<para>&curve_support;</para>
 	  	<para>&P_support;</para>
 	  	<para>&Z_support;</para>
@@ -205,12 +206,12 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsEWKT(ST_Force_2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+		<programlisting>SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 		st_asewkt
 -------------------------------------
 CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)
 
-SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));
+SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));
 
 				  st_asewkt
 ----------------------------------------------
@@ -229,15 +230,15 @@ SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 
 
 	<refentry id="ST_Force_3D">
 	  <refnamediv>
-		<refname>ST_Force_3D</refname>
+		<refname>ST_Force3D</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ.</refpurpose>
+		<refpurpose>Forces the geometries into XYZ mode.  This is an alias for ST_Force3DZ.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_3D</function></funcdef>
+			<funcdef>geometry <function>ST_Force3D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -249,6 +250,7 @@ SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 
 		<para>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D.</para>
 		<para>&P_support;</para>
 	  	<para>&curve_support;</para>
 	  	<para>&Z_support;</para>
@@ -260,13 +262,13 @@ SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 
 
 		<programlisting>
 		--Nothing happens to an already 3D geometry
-		SELECT ST_AsEWKT(ST_Force_3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+		SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
 -----------------------------------------------
  CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)
 
 
-SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
+SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 						 st_asewkt
 --------------------------------------------------------------
@@ -284,15 +286,15 @@ SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 	<refentry id="ST_Force_3DZ">
 	  <refnamediv>
-		<refname>ST_Force_3DZ</refname>
+		<refname>ST_Force3DZ</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is a synonym for ST_Force_3D.</refpurpose>
+		<refpurpose>Forces the geometries into XYZ mode.  This is a synonym for ST_Force3D.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_3DZ</function></funcdef>
+			<funcdef>geometry <function>ST_Force3DZ</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -301,9 +303,10 @@ SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refsection>
 		<title>Description</title>
 
-		<para>Forces the geometries into XYZ mode.  This is a synonym for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
+		<para>Forces the geometries into XYZ mode.  This is a synonym for ST_Force3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ.</para>
 		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
@@ -315,13 +318,13 @@ SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 		<programlisting>
 --Nothing happens to an already 3D geometry
-SELECT ST_AsEWKT(ST_Force_3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
 -----------------------------------------------
  CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)
 
 
-SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
+SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 						 st_asewkt
 --------------------------------------------------------------
@@ -339,7 +342,7 @@ SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 	<refentry id="ST_Force_3DM">
 	  <refnamediv>
-		<refname>ST_Force_3DM</refname>
+		<refname>ST_Force3DM</refname>
 
 		<refpurpose>Forces the geometries into XYM mode.</refpurpose>
 	  </refnamediv>
@@ -347,7 +350,7 @@ SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_3DM</function></funcdef>
+			<funcdef>geometry <function>ST_Force3DM</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -359,6 +362,7 @@ SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 		<para>Forces the geometries into XYM mode.  If a geometry has no M component, then a 0 M coordinate is tacked on.  If it has a Z component, then Z is removed</para>
 
 
+		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM.</para>
 	  	<para>&curve_support;</para>
 	  </refsection>
 
@@ -368,13 +372,13 @@ SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 
 		<programlisting>
 --Nothing happens to an already 3D geometry
-SELECT ST_AsEWKT(ST_Force_3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 				   st_asewkt
 ------------------------------------------------
  CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)
 
 
-SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
 
 						  st_asewkt
 ---------------------------------------------------------------
@@ -393,7 +397,7 @@ SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1
 
 	<refentry id="ST_Force_4D">
 	  <refnamediv>
-		<refname>ST_Force_4D</refname>
+		<refname>ST_Force4D</refname>
 
 		<refpurpose>Forces the geometries into XYZM mode.  </refpurpose>
 	  </refnamediv>
@@ -401,7 +405,7 @@ SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_4D</function></funcdef>
+			<funcdef>geometry <function>ST_Force4D</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -412,6 +416,7 @@ SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1
 
 		<para>Forces the geometries into XYZM mode.  0 is tacked on for missing Z and M dimensions. </para>
 
+		  <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D.</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  </refsection>
@@ -422,14 +427,14 @@ SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1
 
 		<programlisting>
 --Nothing happens to an already 3D geometry
-SELECT ST_AsEWKT(ST_Force_4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
 						st_asewkt
 ---------------------------------------------------------
  CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)
 
 
 
-SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));
 
 									  st_asewkt
 --------------------------------------------------------------------------------------
@@ -448,7 +453,7 @@ SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1
 
 	<refentry id="ST_Force_Collection">
 	  <refnamediv>
-		<refname>ST_Force_Collection</refname>
+		<refname>ST_ForceCollection</refname>
 
 		<refpurpose>Converts the geometry into a GEOMETRYCOLLECTION.</refpurpose>
 	  </refnamediv>
@@ -456,7 +461,7 @@ SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_Collection</function></funcdef>
+			<funcdef>geometry <function>ST_ForceCollection</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -470,6 +475,7 @@ SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
 		<para>Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves.  This is fixed in 1.3.4+</para>
+		<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection.</para>
 		
 		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
@@ -482,14 +488,14 @@ SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1
 
 		<programlisting>
 
-SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
 
 								   st_asewkt
 ----------------------------------------------------------------------------------
  GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))
 
 
-  SELECT ST_AsText(ST_Force_Collection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));
+  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));
 								   st_astext
 --------------------------------------------------------------------------------
  GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
@@ -499,7 +505,7 @@ SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,
 		
 		<programlisting>
 -- POLYHEDRAL example --
-SELECT ST_AsEWKT(ST_Force_Collection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
+SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),
  ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),
  ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),
  ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),
@@ -524,6 +530,38 @@ GEOMETRYCOLLECTION(
 		<title>See Also</title>
 
 		<para><xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/>, <xref linkend="ST_GeomFromEWKT"/></para>
+	  </refsection>
+	</refentry>
+
+
+	<refentry id="ST_ForceSFS">
+	  <refnamediv>
+		<refname>ST_ForceSFS</refname>
+
+		<refpurpose>Forces the geometries to use SFS 1.1 geometry types only.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ForceSFS</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ForceSFS</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>version</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  	<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
 	  </refsection>
 	</refentry>
 

@@ -9,7 +9,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.0.0</xsl:variable>
+	<xsl:variable name='testversion'>2.1.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -24,17 +24,21 @@
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
+	<xsl:variable name='var_options'>NULL</xsl:variable>
+	<xsl:variable name="var_onerasteruserfunc">'monkey_oneuserfunc(float,integer[],text[])'::regprocedure</xsl:variable> 
 	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
 	<xsl:variable name='var_pixeltypenoq'>8BUI</xsl:variable>
 	<xsl:variable name='var_pixelvalue'>0</xsl:variable>
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log21</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
 	<xsl:variable name='var_pt'>ST_Centroid(rast1.rast::geometry)</xsl:variable>
+	<xsl:variable name='var_addbandarg'>ROW(NULL, '8BUI', 255, 0)::addbandarg</xsl:variable>
+	<xsl:variable name='var_addbandargset'>ARRAY[ROW(1, '1BB'::text, 0, NULL),ROW(2, '4BUI'::text, 0, NULL)]::addbandarg[]</xsl:variable>
 	
 	<xsl:variable name='var_reclassarg'>ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)</xsl:variable>
 	<xsl:variable name='var_georefcoords'>'2 0 0 3 0.5 0.5'</xsl:variable>
@@ -126,6 +130,11 @@ CREATE TABLE <xsl:value-of select="$var_logtable" />_output(logid integer PRIMAR
 <!-- define a table we call pgis_rgarden_mega that will contain a raster column with a band for all types of pixels we support -->
 DROP TABLE IF EXISTS pgis_rgarden_mega;
 CREATE TABLE pgis_rgarden_mega(rid serial PRIMARY KEY, rast raster);
+<!--define map algebra functions -->
+CREATE OR REPLACE FUNCTION monkey_oneuserfunc(pixel FLOAT, pos INTEGER[], VARIADIC args TEXT[])RETURNS FLOAT
+    AS $$ BEGIN
+        RETURN 0.0;
+    END; $$ LANGUAGE plpgsql IMMUTABLE;
 <!--Start Test table creation -->
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
 			<xsl:variable name='log_label'>create table Test <xsl:value-of select="@PixType" /></xsl:variable>
@@ -406,6 +415,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'format')">
 						<xsl:value-of select="$var_format" />
 					</xsl:when>
+					<xsl:when test="contains(parameter, 'options')">
+						<xsl:value-of select="$var_options" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'pt')">
 						<xsl:value-of select="$var_pt" />
 					</xsl:when>
@@ -424,8 +436,14 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'NDR')">
 						'<xsl:value-of select="$var_NDRXDR" />'
 					</xsl:when>
+					<xsl:when test="contains(parameter, 'onerasteruserfunc')">
+						<xsl:value-of select="$var_onerasteruserfunc" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'version') and position() = 2">
 						<xsl:value-of select="$var_version1" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'addbandargset')">
+						<xsl:value-of select="$var_addbandargset" />
 					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>rast1.rast::geometry</xsl:text>
@@ -449,6 +467,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') ) and (position() = 1) ">
 						<xsl:text>rast1.rast</xsl:text>
+					</xsl:when>
+					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
+						<xsl:text>rast2.rast</xsl:text>
 					</xsl:when>
 					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
 						<xsl:text>rast2.rast</xsl:text>
@@ -486,6 +507,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type,'reclassarg')">
 						<xsl:value-of select="$var_reclassarg" />
 					</xsl:when>
+					
 					<xsl:when test="contains(type, 'text')">
 						<xsl:value-of select="$var_text" />
 					</xsl:when>

@@ -93,10 +93,10 @@ SELECT id,wkt FROM test_data WHERE
 
 SELECT ST_extent(geometry(wkb_ndr)) from test_data;
 SELECT ST_3DExtent(geometry(wkb_ndr)) from test_data WHERE ST_NDims(wkb_ndr) > 2;
-SELECT ST_mem_size(ST_collect(ST_force_2d(geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_3dz(geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_4d(ST_force_2d(geometry(wkb_ndr))))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_3dm(geometry(wkb_ndr)))) from test_data;
-SELECT ST_mem_size(ST_collect(ST_force_2d(ST_force_4d(ST_force_3dm(ST_force_3dz(ST_force_2d(geometry(wkb_ndr)))))))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_Force2d(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_Force3dz(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_Force4d(ST_force2d(geometry(wkb_ndr))))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_Force3dm(geometry(wkb_ndr)))) from test_data;
+SELECT ST_mem_size(ST_collect(ST_Force2d(ST_force4d(ST_force3dm(ST_force3dz(ST_force2d(geometry(wkb_ndr)))))))) from test_data;
 
 DROP TABLE test_data;

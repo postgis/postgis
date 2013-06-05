@@ -261,6 +261,9 @@ SELECT create_census_base_tables();
 -- Normalization API, called by geocode mainly.
 \i normalize/normalize_address.sql
 \i normalize/pprint_addy.sql
+\i pagc_normalize/pagc_tables.sql
+\i pagc_normalize/pagc_normalize_address.sql
+
 
 ---- Geocoder functions
 -- General helpers

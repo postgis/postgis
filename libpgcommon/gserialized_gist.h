@@ -64,13 +64,16 @@ void gidx_expand(GIDX *a, float d);
 char* gidx_to_string(GIDX *a) ; 
 #endif
 
+/* typedef to correct array-bounds checking for casts to GIDX - do not
+   use this ANYWHERE except in the casts below */
+typedef float _gidx_float_array[sizeof(float) * 2 * 4];
 
 /* Returns number of dimensions for this GIDX */
 #define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
 /* Minimum accessor. */
-#define GIDX_GET_MIN(gidx, dimension) ((gidx)->c[2*(dimension)])
+#define GIDX_GET_MIN(gidx, dimension) (*((_gidx_float_array *)(&(gidx)->c)))[2*(dimension)] 
 /* Maximum accessor. */
-#define GIDX_GET_MAX(gidx, dimension) ((gidx)->c[2*(dimension)+1])
+#define GIDX_GET_MAX(gidx, dimension) (*((_gidx_float_array *)(&(gidx)->c)))[2*(dimension)+1]
 /* Minimum setter. */
 #define GIDX_SET_MIN(gidx, dimension, value) ((gidx)->c[2*(dimension)] = (value))
 /* Maximum setter. */

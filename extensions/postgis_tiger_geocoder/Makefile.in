@@ -19,21 +19,27 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
-PG_CONFIG    =  @PGCONFIG@
+PG_CONFIG    =  @PG_CONFIG@
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
+EXTRA_CLEAN += sql/*.sql ${SQL_BITS} 
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
 	
 sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
 	cat $^ > $@
+	
+#this is a cludge to allow upgrading from same SVN to same SVN
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
+	cp $< $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
 #strip CREATE SCHEMA since we force extension 
@@ -54,6 +60,8 @@ sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/uti
 	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/pprint_addy.sql \
+	../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_tables.sql \
+    ../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/includes_address.sql \
@@ -70,7 +78,8 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_2011/tables/tiger_loader_2011.sql \
+	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2012.sql \
+	../../extras/tiger_geocoder/tiger_2011/census_loader.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
@@ -87,6 +96,8 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/pprint_addy.sql \
+	../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_tables.sql \
+    ../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/includes_address.sql \
@@ -96,11 +107,18 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_intersection.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql \
-	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql
+	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql \
+	../../extras/tiger_geocoder/tiger_2011/topology/tiger_topology_loader.sql \
+	../postgis_extension_helper.sql \
+	sql_bits/add_search_path.sql \
+	../postgis_extension_helper_uninstall.sql 
 	cat $^ > $@
 	
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
+	
+sql_bits/add_search_path.sql: sql_bits/add_search_path.sql.in
+	cp $< $@
 	
 ../../doc/tiger_geocoder_comments.sql:
 	$(MAKE) -C ../../doc comments
@@ -144,7 +162,7 @@ sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extensio
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
-
+	
 DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif

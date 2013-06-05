@@ -3,7 +3,7 @@
 #
 # Copyright (c) 2009 Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
-# Copyright (c) 2011-2012 Regents of the University of California
+# Copyright (c) 2011-2013 Regents of the University of California
 #   <bkpark@ucdavis.edu>
 #
 # This is free software; you can redistribute and/or modify it under
@@ -30,7 +30,11 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 TEST_FIRST = \
-	check_gdal
+	check_gdal \
+	load_outdb
+
+TEST_LAST = \
+	clean
 
 TEST_METADATA = \
 	check_raster_columns \
@@ -58,7 +62,8 @@ TEST_PROPS = \
 	rt_hasnoband \
 	rt_metadata \
 	rt_rastertoworldcoord \
-	rt_worldtorastercoord
+	rt_worldtorastercoord \
+	rt_convexhull
 
 TEST_BANDPROPS = \
 	rt_band_properties \
@@ -82,6 +87,7 @@ TEST_BANDPROPS = \
 
 TEST_UTILITY = \
 	rt_utility \
+	rt_fromgdalraster \
 	rt_asgdalraster \
 	rt_astiff \
 	rt_asjpeg \
@@ -106,13 +112,15 @@ TEST_MAPALGEBRA = \
 	rt_invdistweight4ma \
 	rt_4ma \
 	rt_setvalues_geomval \
-	rt_elevation_functions
+	rt_elevation_functions \
+	rt_colormap
 
 TEST_SREL = \
 	rt_gist_relationships \
 	rt_intersects \
 	rt_samealignment \
-	rt_geos_relationships
+	rt_geos_relationships \
+	rt_iscoveragetile
 	
 TEST_BUGS = \
 	bug_test_car5 \
@@ -121,14 +129,19 @@ TEST_BUGS = \
 TEST_LOADER = \
 	loader/Basic \
 	loader/BasicCopy \
+	loader/BasicFilename \
+	loader/BasicOutDB \
 	loader/Tiled10x10 \
-	loader/Tiled10x10Copy
+	loader/Tiled10x10Copy \
+	loader/Tiled8x8
 
-TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
-		$(TEST_PROPS) $(TEST_BANDPROPS) \
-		$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
-		$(TEST_BUGS) \
-		$(TEST_LOADER)
+TESTS = $(TEST_FIRST) \
+	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
+	$(TEST_PROPS) $(TEST_BANDPROPS) \
+	$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
+	$(TEST_BUGS) \
+	$(TEST_LOADER) \
+	$(TEST_LAST)
 
 all:
 	@echo "Use 'make check' to run all tests"
@@ -147,8 +160,3 @@ check:
 	$(MAKE) -C ../../../regress staged-install
 	$(PERL) ../../../regress/run_test.pl --raster $(RUNTESTFLAGS) $(TESTS)
 	$(PERL) ../../../regress/run_test.pl --upgrade --raster $(RUNTESTFLAGS) $(TESTS)
-
-testgdalraster:
-	chmod +x $@
-	chmod +x ../../scripts/python/rtgdalraster.py
-	./testgdalraster

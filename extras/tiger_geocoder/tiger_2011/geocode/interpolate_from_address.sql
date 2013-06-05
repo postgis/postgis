@@ -1,3 +1,4 @@
+--$Id$
 -- interpolate_from_address(local_address, from_address_l, to_address_l, from_address_r, to_address_r, local_road)
 -- This function returns a point along the given geometry (must be linestring)
 -- corresponding to the given address.  If the given address is not within
@@ -92,3 +93,7 @@ BEGIN
     RETURN result;
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE COST 10;
+-- needed to ban stupid warning about how we are using deprecated functions 
+-- yada yada yada need this to work in 2.0 too bah
+ALTER FUNCTION interpolate_from_address(integer, character varying, character varying, geometry, character varying, double precision)
+  SET client_min_messages='ERROR';

@@ -36,6 +36,26 @@ lwcurvepoly_construct_empty(int srid, char hasz, char hasm)
 	return ret;
 }
 
+LWCURVEPOLY *
+lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
+{
+	LWCURVEPOLY *ret;
+	int i;
+	ret = lwalloc(sizeof(LWCURVEPOLY));
+	ret->type = CURVEPOLYTYPE;
+	ret->flags = lwpoly->flags;
+	ret->srid = lwpoly->srid;
+	ret->nrings = lwpoly->nrings;
+	ret->maxrings = lwpoly->nrings; /* Allocate room for sub-members, just in case. */
+	ret->rings = lwalloc(ret->maxrings * sizeof(LWGEOM*));
+	ret->bbox = lwpoly->bbox;
+	for ( i = 0; i < ret->nrings; i++ )
+	{
+		ret->rings[i] = lwline_as_lwgeom(lwline_construct(ret->srid, NULL, ptarray_clone_deep(lwpoly->rings[i])));
+	}
+	return ret;
+}
+
 int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 {
 	int i;

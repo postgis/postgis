@@ -12,6 +12,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <stdlib.h>
+#include <math.h>
 
 GBOX* gbox_new(uint8_t flags)
 {
@@ -140,6 +141,37 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 		return LW_FALSE;
 
 	return LW_TRUE;
+}
+
+int gbox_is_valid(const GBOX *gbox)
+{
+	/* X */
+	if ( ! finite(gbox->xmin) || isnan(gbox->xmin) ||
+	     ! finite(gbox->xmax) || isnan(gbox->xmax) )
+		return LW_FALSE;
+		
+	/* Y */
+	if ( ! finite(gbox->ymin) || isnan(gbox->ymin) ||
+	     ! finite(gbox->ymax) || isnan(gbox->ymax) )
+		return LW_FALSE;
+		
+	/* Z */
+	if ( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
+	{
+		if ( ! finite(gbox->zmin) || isnan(gbox->zmin) ||
+		     ! finite(gbox->zmax) || isnan(gbox->zmax) )
+			return LW_FALSE;
+	}
+
+	/* M */
+	if ( FLAGS_GET_M(gbox->flags) )
+	{
+		if ( ! finite(gbox->mmin) || isnan(gbox->mmin) ||
+		     ! finite(gbox->mmax) || isnan(gbox->mmax) )
+			return LW_FALSE;
+	}
+	
+	return LW_TRUE;		
 }
 
 int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)

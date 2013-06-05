@@ -10,7 +10,7 @@
 			test more geometries but only against one function.  Useful for intro of new functions or comparing major changes from function of one version of PostGIS to the other
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>1.5.0</xsl:variable>
+	<xsl:variable name='testversion'>2.1.0</xsl:variable>
 	<xsl:variable name="fninclude"><xsl:value-of select="$inputfninclude"/></xsl:variable>
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>

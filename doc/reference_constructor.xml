@@ -102,6 +102,63 @@
 			</refsection>
 	</refentry>
 	
+		<refentry id="ST_Box2dFromGeoHash">
+	  <refnamediv>
+		<refname>ST_Box2dFromGeoHash</refname>
+
+		<refpurpose>Return a BOX2D from a GeoHash string.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>box2d <function>ST_Box2dFromGeoHash</function></funcdef>
+				<paramdef><type>text </type> <parameter>geohash</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=full_precision_of_geohash</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return a BOX2D from a GeoHash string.</para>
+
+		<para>If no <varname>precision</varname> is specficified ST_Box2dFromGeoHash returns a BOX2D based on full precision of the input GeoHash string.</para>
+
+		<para>If <varname>precision</varname> is specified ST_Box2dFromGeoHash will use that many characters from the GeoHash to create the BOX2D. Lower precision values results in larger BOX2Ds and larger values increase the precision.</para>
+
+		<para>Availability: 2.1.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0');
+
+                st_geomfromgeohash
+--------------------------------------------------
+ BOX(-115.172816 36.114646,-115.172816 36.114646)
+
+SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
+
+ st_box2dfromgeohash
+----------------------
+ BOX(-180 -90,180 90)
+
+ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10);
+                            st_box2dfromgeohash
+---------------------------------------------------------------------------
+ BOX(-115.17282128334 36.1146408319473,-115.172810554504 36.1146461963654)
+		]]>
+		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeoHash" />, <xref linkend="ST_GeomFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_GeogFromText">
 		  <refnamediv>
 			<refname>ST_GeogFromText</refname>
@@ -439,7 +496,63 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			<para><xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
-	
+
+
+	<refentry id="ST_GeomFromGeoHash">
+	  <refnamediv>
+		<refname>ST_GeomFromGeoHash</refname>
+
+		<refpurpose>Return a geometry from a GeoHash string.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_GeomFromGeoHash</function></funcdef>
+				<paramdef><type>text </type> <parameter>geohash</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=full_precision_of_geohash</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return a geometry from a GeoHash string. The geometry will be a polygon representing the GeoHash bounds.</para>
+
+		<para>If no <varname>precision</varname> is specficified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string.</para>
+
+		<para>If <varname>precision</varname> is specified ST_GeomFromGeoHash will use that many characters from the GeoHash to create the polygon.</para>
+
+		<para>Availability: 2.1.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+                                                        st_astext
+--------------------------------------------------------------------------------------------------------------------------
+ POLYGON((-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646,-115.172816 36.114646))
+
+SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));
+                                                          st_astext
+------------------------------------------------------------------------------------------------------------------------------
+ POLYGON((-115.3125 36.03515625,-115.3125 36.2109375,-114.9609375 36.2109375,-114.9609375 36.03515625,-115.3125 36.03515625))
+
+SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
+                                                                                       st_astext
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ POLYGON((-115.17282128334 36.1146408319473,-115.17282128334 36.1146461963654,-115.172810554504 36.1146461963654,-115.172810554504 36.1146408319473,-115.17282128334 36.1146408319473))
+		]]>
+		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeoHash" />,<xref linkend="ST_Box2dFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_GeomFromGML">
 	  <refnamediv>
 		<refname>ST_GeomFromGML</refname>
@@ -1882,6 +1995,61 @@ SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography
 		<title>See Also</title>
 
 		<para><xref linkend="Geography_Basics" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
+	
+		<refentry id="ST_PointFromGeoHash">
+	  <refnamediv>
+		<refname>ST_PointFromGeoHash</refname>
+
+		<refpurpose>Return a point from a GeoHash string.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>point <function>ST_PointFromGeoHash</function></funcdef>
+				<paramdef><type>text </type> <parameter>geohash</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=full_precision_of_geohash</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return a point from a GeoHash string. The point represents the center point of the GeoHash.</para>
+
+		<para>If no <varname>precision</varname> is specficified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string.</para>
+
+		<para>If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point.</para>
+
+		<para>Availability: 2.1.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));
+          st_astext
+------------------------------
+ POINT(-115.172816 36.114646)
+
+SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 4));
+             st_astext
+-----------------------------------
+ POINT(-115.13671875 36.123046875)
+
+SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
+                 st_astext
+-------------------------------------------
+ POINT(-115.172815918922 36.1146435141563)
+		]]>
+		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+
+		<para> <xref linkend="ST_GeoHash" />, <xref linkend="ST_Box2dFromGeoHash" />, <xref linkend="ST_GeomFromGeoHash" /></para>
 	  </refsection>
 	</refentry>
 

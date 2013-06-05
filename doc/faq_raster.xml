@@ -43,7 +43,7 @@
         	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
-            url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-compiled
+            url="http://postgis.net/windows_downloads">pre-compiled
             PostGIS Raster windows binaries</ulink>.
 			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
@@ -117,11 +117,11 @@
 		 For example floating point band types and 32 bit unsigned ints
 		 	will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
-		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
+		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
 		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string. 
 		 	Below are some using a where clause</para>
-		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where="owner='jimmy'" " C:\somefile.png</programlisting>
-		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
+		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='filename=\'abcd.sid\''" " C:\somefile.png</programlisting>
+		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingrasterdatafromthedatabase">Reading Raster Data of PostGIS Raster section</ulink></para>
       </answer>
     </qandaentry>
@@ -247,8 +247,6 @@ END
       </answer>
     </qandaentry>
     
-   
-    
     <qandaentry>
       <question>
         <para>How is PostGIS Raster different from Oracle GeoRaster (SDO_GEORASTER) and SDO_RASTER types?</para>
@@ -269,5 +267,23 @@ END
        	We think it is a big advantage that raster structure should benefit as well. </para>
       </answer>
     </qandaentry> 
-  </qandaset>
+  
+  <qandaentry  id="qa_raster_fails_encoding_conversion">
+      <question>
+        <para>raster2pgsql load of large file fails with String of N bytes is too long for encoding conversion?</para>
+      </question>
+
+      <answer>
+      	<para>raster2pgsql doesn't make any connections to your database when generating the file to load. If your database has set an explicit client encoding different
+      	from your database encoding, then when loading large raster files (above 30 MB in size), you may run into a <code>bytes is too long for encoding conversion</code>.</para>
+      	<para>This generally happens if for example you have your database in UTF8, but to support windows apps, you have the client encoding set to <code>WIN1252</code>.</para>
+      	<para>To work around this make sure the client encoding is the same as your database encoding during load.  You can do this by explicitly setting the encoding in your load script.  Example, if you are on windows:
+      		<programlisting>set PGCLIENTENCODING=UTF8</programlisting></para>
+      	<para>If you are on Unix/Linux
+      	<programlisting>export PGCLIENTENCODING=UTF8</programlisting></para>
+      	<para>Gory details of this issue are detailed in <ulink url="http://trac.osgeo.org/postgis/ticket/2209">http://trac.osgeo.org/postgis/ticket/2209</ulink></para>
+      </answer>
+  </qandaentry> 
+  
+ </qandaset>
 </chapter>

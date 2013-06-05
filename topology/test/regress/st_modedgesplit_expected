@@ -8,11 +8,11 @@ max|node|22
 max|edge|26
 ERROR:  geometry has too many points at character 53
 ERROR:  SQL/MM Spatial exception - point not on edge
-ERROR:  zero-length delimited identifier at or near """" at character 15
+ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
-ERROR:  schema "fake" does not exist at character 15
+ERROR:  SQL/MM Spatial exception - invalid topology name
 noniso|23
 N|23||POINT(28 14)
 E|10|sn13|en23|nl27|nr17|lf7|rf4

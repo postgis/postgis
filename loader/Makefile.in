@@ -15,14 +15,14 @@
 # the DESTDIR variable so we can get the correct install paths. 
 # Hence we include the PGXS Makefile here, but ensure that we override the
 # 'all' and 'install' targets with the ones we really want to use below.
-PG_CONFIG = @PGCONFIG@
+PG_CONFIG = @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want. 
 CC=@CC@
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
+CFLAGS=-I ../liblwgeom @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 INSTALL = $(SHELL) ../install-sh

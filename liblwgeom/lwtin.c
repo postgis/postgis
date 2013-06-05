@@ -13,16 +13,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-
 
 
 LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 {
 	return (LWTIN*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
-
 
 void lwtin_free(LWTIN *tin)
 {

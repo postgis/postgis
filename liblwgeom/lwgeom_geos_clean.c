@@ -317,6 +317,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
+    ret->maxgeoms = g->ngeoms;
 
 	for (i=0; i<g->ngeoms; i++)
 	{
@@ -324,7 +325,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
 		if ( newg ) new_geoms[new_ngeoms++] = newg;
 	}
 
-	ret->bbox = 0; /* recompute later... */
+	ret->bbox = NULL; /* recompute later... */
 
 	ret->ngeoms = new_ngeoms;
 	if ( new_ngeoms )
@@ -334,7 +335,8 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
 	else
 	{
 		free(new_geoms);
-		ret->geoms = 0;
+		ret->geoms = NULL;
+        ret->maxgeoms = 0;
 	}
 
 	return (LWGEOM*)ret;
@@ -994,7 +996,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
-	LWGEOM *lwgeom_out;
+	LWGEOM *lwgeom_out, *lwgeom_tmp;
 
 	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -1045,13 +1047,15 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	}
 
 	lwgeom_out = GEOS2LWGEOM(geosout, is3d);
+	GEOSGeom_destroy(geosout);
+
 	if ( lwgeom_is_collection(lwgeom_in) && ! lwgeom_is_collection(lwgeom_out) )
 	{
 		LWDEBUG(3, "lwgeom_make_valid: forcing multi");
-		lwgeom_out = lwgeom_as_multi(lwgeom_out);
+		lwgeom_tmp = lwgeom_as_multi(lwgeom_out);
+        // lwgeom_free(lwgeom_out);
+		lwgeom_out = lwgeom_tmp;
 	}
-
-	GEOSGeom_destroy(geosout);
 
 	lwgeom_out->srid = lwgeom_in->srid;
 	return lwgeom_out;

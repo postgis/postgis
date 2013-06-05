@@ -780,14 +780,14 @@ An existing edge may be split by the snapped point.
 				<refname>TopoGeo_AddLineString</refname>
 			
 				<refpurpose>
-Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces.
+Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers
 				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddLineString</function></funcdef>
+						<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
@@ -835,7 +835,7 @@ Adds a polygon to an existing topology using a tolerance and possibly splitting 
 					<funcprototype>
 						<funcdef>integer <function>TopoGeo_AddPolygon</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>atolerance</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -1939,7 +1939,7 @@ ERROR:  Two or more faces found</programlisting>
 			<refnamediv>
 				<refname>ST_GetFaceEdges</refname>
 			
-				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.</refpurpose>
+				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname>.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1955,10 +1955,11 @@ ERROR:  Two or more faces found</programlisting>
 			<refsection>
                 <title>Description</title>
             
-                <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
+                <para>Returns a set of ordered edges that bound <varname>aface</varname>. Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
 
 		<para>
 Enumeration of each ring edges start from the edge with smallest identifier.
+Order of edges follows a left-hand-rule (bound face is on the left of each directed edge).
 		</para>
 
                 <!-- use this format if new function -->
@@ -2444,6 +2445,41 @@ faceid
 			</refsection>
 		</refentry>
 
+	<refentry id="TP_ST_Simplify">
+	  <refnamediv>
+		<refname>ST_Simplify</refname>
+		<refpurpose>Returns a "simplified" geometry version of the given TopoGeometry using
+				the Douglas-Peucker algorithm.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Simplify</function></funcdef>
+			<paramdef><type>TopoGeometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" geometry version of the given TopoGeometry using
+				the Douglas-Peucker algorithm on each component edge.</para>
+
+		<note><para>The returned geometry may be non-simple or non-valid.</para>
+    <para>Splitting component edges may help retaining simplicity/validity.</para></note>
+
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 2.1.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>Geometry <xref linkend="ST_Simplify" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_IsValid" />, <xref linkend="ST_ModEdgeSplit" /></para>
+		  </refsection>
+	</refentry>
+
 		
 	</sect1>
 
@@ -2574,7 +2610,9 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<refnamediv>
 				<refname>toTopoGeom</refname>
 			
-				<refpurpose>Creates a new topo geometry from a simple geometry</refpurpose>
+				<refpurpose>
+Converts a simple Geometry into a topo geometry
+        </refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2586,6 +2624,13 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
 					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+
+					<funcprototype>
+					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -2593,20 +2638,41 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
                 <title>Description</title>
             
                 <para>
-Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.
+Converts a simple Geometry into a <xref linkend="topogeometry" />.
                 </para>
 
                 <para>
-Topological primitives required to represent the input geometry will be added, possibly splitting existing ones.
-Pre-existing TopoGeometry objects will retain their shapes.
+Topological primitives required to represent the input geometry will be
+added to the underlying topology, possibly splitting existing ones,
+and they will be associated with the output TopoGeometry in the
+<varname>relation</varname> table.
                 </para>
 
                 <para>
-When <varname>tolerance</varname> is given it will be used to snap the input geometry to existing primitives.
+Existing TopoGeometry objects (with the possible exception of
+<varname>topogeom</varname>, if given) will retain their shapes.
+                </para>
+
+                <para>
+When <varname>tolerance</varname> is given it will be used to snap the
+input geometry to existing primitives.
+                </para>
+
+                <para>
+In the first form a new TopoGeometry will be created for the given
+layer (<varname>layer_id</varname>) of the given topology (<varname>toponame</varname>).
+                </para>
+
+                <para>
+In the second form the primitives resulting from the conversion will be
+added to the pre-existing TopoGeometry (<varname>topogeom</varname>),
+possibly adding space to its final shape. To have the new shape completely
+replace the old one see <xref linkend="clearTopoGeom" />.
                 </para>
 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0</para>
+                <para>Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -2638,16 +2704,36 @@ Topology topo_boston_test (5), SRID 2249, precision 0
 61 nodes, 87 edges, 35 faces, 15 topogeoms in 1 layers
 Layer 1, type Polygonal (3), 15 topogeoms
  Deploy: public.nei_topo.topo</programlisting>
+
+        <programlisting>
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+
+-- Get the no-one-lands left by the above operation
+-- I think GRASS calls this "polygon0 layer"
+SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id) 
+  FROM topo_boston_test.face f
+  WHERE f.face_id > 0 -- don't consider the universe face
+  AND NOT EXISTS ( -- check that no TopoGeometry references the face
+    SELECT * FROM topo_boston_test.relation
+    WHERE layer_id = 1 AND element_id = f.face_id
+  );
+        </programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para> <xref linkend="CreateTopology" />,<xref linkend="AddTopoGeometryColumn"/>,
-<xref linkend="CreateTopoGeom" />, <xref linkend="TopologySummary" /></para>
+        <para>
+<xref linkend="CreateTopology" />,
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopoGeom" />,
+<xref linkend="TopologySummary" />,
+<xref linkend="clearTopoGeom" />
+        </para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="TopoElementArray_Agg">
           <refnamediv>
             <refname>TopoElementArray_Agg</refname>
@@ -2686,6 +2772,76 @@ Layer 1, type Polygonal (3), 15 topogeoms
 				<para><xref linkend="topoelement"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
           </refentry>
+	</sect1>
+
+	<sect1 id="TopoGeometry_Editors">
+    <sect1info>
+        <abstract>
+            <para>This section covers the topology functions for editing existing topogeometries.</para>
+        </abstract>
+    </sect1info>
+	  <title>TopoGeometry Editors</title>
+
+	  	<refentry id="clearTopoGeom">
+			<refnamediv>
+				<refname>clearTopoGeom</refname>
+			
+				<refpurpose>Clears the content of a topo geometry</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>clearTopoGeom</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Clears the content a <xref linkend="topogeometry" />
+turning it into an empty one. Mostly useful in conjunction with <xref
+linkend="toTopoGeom" /> to replace the shape of existing
+objects and any dependent object in higher hierarchical levels.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.1</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+				</programlisting> 
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="toTopoGeom" />
+        </para>
+			</refsection>
+		</refentry>
+
+    <refentry id="toTopoGeom_editor_proxy">
+			<refnamediv>
+        <refname>toTopoGeom</refname>
+				<refpurpose>Adds a geometry shape to an existing topo geometry</refpurpose>
+			</refnamediv>
+			<refsection>
+                <title>Description</title>
+<para>
+Refer to <xref linkend="toTopoGeom" />  
+</para>
+      </refsection>
+    </refentry>
+
+		
 	</sect1>
 	
 	<sect1 id="TopoGeom_Accessors">
@@ -2786,6 +2942,7 @@ Layer 1, type Polygonal (3), 15 topogeoms
 				<para><xref linkend="GetTopoGeomElementArray"/>, <xref linkend="topoelement"/></para>
 			</refsection>
 		</refentry>
+
 	</sect1>
 	
 	
@@ -2962,6 +3119,91 @@ CREATE TABLE visited (
 				<title>See Also</title>
 				<para><xref linkend="CreateTopoGeom"/>, <xref linkend="ST_CreateTopoGeo" /></para>
 			</refsection>
+	  </refentry>
+	  <refentry id="AsTopoJSON">
+	  	    <refnamediv>
+				<refname>AsTopoJSON</refname>
+			
+				<refpurpose>Returns the TopoJSON representation of a topogeometry.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				    	<funcprototype>
+                        <funcdef>text <function>AsTopoJSON</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the TopoJSON representation of a topogeometry. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
+</para>
+
+<para>
+The table, if given, is expected to have an "arc_id" field of type "serial" and an "edge_id" of type integer; the code will query the table for "edge_id" so it is recommended to add an index on that field.
+</para>
+
+		<note>
+<para>
+Arc indices in the TopoJSONjoutput are 0-based but they are 1-based
+in the "edgeMapTable" table.
+</para>
+    </note>
+
+		<para>
+A full TopoJSON document will be need to contain, in addition to the snippets returned by this function, the actual arcs plus some headers. See the <ulink url="http://github.com/mbostock/topojson/wiki/Specification">TopoJSON specification</ulink>.
+		</para>
+              
+                <!-- use this format if new function -->
+                <para>Availability: 2.1.0 </para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AsGeoJSON" /></para>
+			</refsection>
+
+            <refsection>
+                <title>Examples</title>
+<programlisting>
+CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);
+
+-- header
+SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {';
+
+-- objects
+SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
+FROM features.big_parcels WHERE feature_name = 'P3P4';
+
+-- arcs
+SELECT '}, "arcs": ['
+  UNION ALL
+SELECT (regexp_matches(ST_AsGEOJSON(ST_SnapToGrid(e.geom,1)), '\[.*\]'))[1] as t
+FROM edgemap m, city_data.edge e WHERE e.edge_id = m.edge_id;
+
+-- footer
+SELECT ']}'::text as t
+
+-- Result:
+{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {
+"P3P4": { "type": "MultiPolygon", "arcs": [[[-1]],[[6,5,-5,-4,-3,1]]]}
+}, "arcs": [
+[[25,30],[31,30],[31,40],[17,40],[17,30],[25,30]]
+[[35,6],[35,14]]
+[[35,6],[47,6]]
+[[47,6],[47,14]]
+[[47,14],[47,22]]
+[[35,22],[47,22]]
+[[35,14],[35,22]]
+]}
+</programlisting>
+            </refsection>
 	  </refentry>
 </sect1>
 </chapter>

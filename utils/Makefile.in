@@ -22,7 +22,7 @@ MODULEDIR=contrib/$(MODULE_doc)
 DATA_built=postgis_restore.pl
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 

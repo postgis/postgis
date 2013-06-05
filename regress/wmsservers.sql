@@ -1,4 +1,4 @@
-SET client_min_messages TO warning;
+SET client_min_messages TO error;
 SELECT 'Starting up MapServer/Geoserver tests...';
 -- Set up the data table
 SELECT 'Setting up the data table...';

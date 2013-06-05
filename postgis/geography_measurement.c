@@ -55,7 +55,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	double tolerance;
+	/* double tolerance; */
 	bool use_spheroid;
 	SPHEROID s;
 
@@ -64,8 +64,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
-
+	/* tolerance = PG_GETARG_FLOAT8(2); */
+    
 	/* Read our calculation type. */
 	use_spheroid = PG_GETARG_BOOL(3);
 
@@ -168,6 +168,9 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
 	}
+
+    /* Knock off any funny business at the micrometer level, ticket #2168 */
+    distance = round(distance * 10e8) / 10e8;
 
 	PG_RETURN_FLOAT8(distance);
 }
@@ -678,7 +681,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	GBOX gbox, gbox1, gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	int type1, type2;
 	int empty1 = LW_FALSE;
 	int empty2 = LW_FALSE;
 	double xwidth, ywidth;
@@ -691,8 +693,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(d1);
 	/* Synchronize our box types */
 	gbox1.flags = g1->flags;
-	/* Read our types */
-	type1 = gserialized_get_type(g1);
 	/* Calculate if the geometry is empty. */
 	empty1 = gserialized_is_empty(g1);
 	/* Calculate a geocentric bounds for the objects */
@@ -705,7 +705,6 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	if ( d1 != d2 )
 	{
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
-		type2 = gserialized_get_type(g2);
 		gbox2.flags = g2->flags;
 		empty2 = gserialized_is_empty(g2);
 		if ( ! empty1 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )

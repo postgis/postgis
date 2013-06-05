@@ -17,7 +17,6 @@
 #include "utils/geo_decls.h"
 
 #include "liblwgeom_internal.h"
-#include "libtgeom.h"
 #include "lwgeom_pg.h"
 
 #include <math.h>
@@ -70,6 +69,7 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_sfs(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS);
@@ -501,6 +501,40 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_as_multi(lwgeom);
+
+	result = geometry_serialize(ogeom);
+
+	PG_FREE_IF_COPY(geom, 0);
+
+	PG_RETURN_POINTER(result);
+}
+
+/** transform input geometry to a SFS 1.1 geometry type compliant */
+PG_FUNCTION_INFO_V1(LWGEOM_force_sfs);
+Datum LWGEOM_force_sfs(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *result;
+	LWGEOM *lwgeom;
+	LWGEOM *ogeom;
+	text * ver;
+	int version = 110; /* default version is SFS 1.1 */
+
+	POSTGIS_DEBUG(2, "LWGEOM_force_sfs called");
+
+        /* If user specified version, respect it */
+        if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+        {
+                ver = PG_GETARG_TEXT_P(1);
+
+                if  ( ! strncmp(VARDATA(ver), "1.2", 3))
+                {
+                        version = 120;
+                }
+        }
+
+	lwgeom = lwgeom_from_gserialized(geom);
+	ogeom = lwgeom_force_sfs(lwgeom, version);
 
 	result = geometry_serialize(ogeom);
 

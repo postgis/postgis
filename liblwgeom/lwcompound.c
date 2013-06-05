@@ -24,19 +24,31 @@ lwcompound_is_closed(const LWCOMPOUND *compound)
 	size_t size;
 	int npoints=0;
 
-	if (!FLAGS_GET_Z(compound->flags))
+	if ( lwgeom_has_z((LWGEOM*)compound) )
+	{
+		size = sizeof(POINT3D);
+	}
+	else
+	{
 		size = sizeof(POINT2D);
-	else    size = sizeof(POINT3D);
+	}
 
-	if      (compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE)
+	if ( compound->geoms[compound->ngeoms - 1]->type == CIRCSTRINGTYPE )
+	{
 		npoints = ((LWCIRCSTRING *)compound->geoms[compound->ngeoms - 1])->points->npoints;
+	}
 	else if (compound->geoms[compound->ngeoms - 1]->type == LINETYPE)
+	{
 		npoints = ((LWLINE *)compound->geoms[compound->ngeoms - 1])->points->npoints;
+	}
 
 	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
 	            getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
 	                               npoints - 1),
-	            size) ) return LW_FALSE;
+	            size) ) 
+	{
+		return LW_FALSE;
+	}
 
 	return LW_TRUE;
 }
@@ -106,3 +118,76 @@ lwcompound_construct_empty(int srid, char hasz, char hasm)
         return ret;
 }
 
+int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
+{
+	switch( geom->type )
+	{
+		case LINETYPE:
+			return ptarray_contains_point(((LWLINE*)geom)->points, pt);
+		case CIRCSTRINGTYPE:
+			return ptarrayarc_contains_point(((LWCIRCSTRING*)geom)->points, pt);
+		case COMPOUNDTYPE:
+			return lwcompound_contains_point((LWCOMPOUND*)geom, pt);
+	}
+	lwerror("lwgeom_contains_point failed");
+	return LW_FAILURE;
+}
+
+int 
+lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
+{
+	int i;
+	LWLINE *lwline;
+	LWCIRCSTRING *lwcirc;
+	int wn = 0;
+	int winding_number = 0;
+	int result;
+
+	for ( i = 0; i < comp->ngeoms; i++ )
+	{
+		LWGEOM *lwgeom = comp->geoms[i];
+		if ( lwgeom->type == LINETYPE )
+		{
+			lwline = lwgeom_as_lwline(lwgeom);
+			if ( comp->ngeoms == 1 )
+			{
+				return ptarray_contains_point(lwline->points, pt); 
+			}
+			else
+			{
+				/* Don't check closure while doing p-i-p test */
+				result = ptarray_contains_point_partial(lwline->points, pt, LW_FALSE, &winding_number);
+			}
+		}
+		else
+		{
+			lwcirc = lwgeom_as_lwcircstring(lwgeom);
+			if ( ! lwcirc ) {
+				lwerror("Unexpected component of type %s in compound curve", lwtype_name(lwgeom->type));
+				return 0;
+			}
+			if ( comp->ngeoms == 1 )
+			{
+				return ptarrayarc_contains_point(lwcirc->points, pt); 				
+			}
+			else
+			{
+				/* Don't check closure while doing p-i-p test */
+				result = ptarrayarc_contains_point_partial(lwcirc->points, pt, LW_FALSE, &winding_number);
+			}
+		}
+
+		/* Propogate boundary condition */
+		if ( result == LW_BOUNDARY ) 
+			return LW_BOUNDARY;
+
+		wn += winding_number;
+	}
+
+	/* Outside */
+	if (wn == 0)
+		return LW_OUTSIDE;
+	
+	/* Inside */
+	return LW_INSIDE;
+}	

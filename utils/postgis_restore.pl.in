@@ -34,7 +34,7 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me [-v] <dumpfile>
+Usage:	$me [-v] [-s schema] <dumpfile>
         Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
         First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
         Then create a new database: createdb NEWDB
@@ -46,19 +46,33 @@ Usage:	$me [-v] <dumpfile>
         Finally, pass the dump to this script and feed output to psql:
            $me MYDB.dmp | psql NEWDB
         The -v switch writes detailed report on stderr.
+        Use -s if you installed PostGIS in a custom schema.
 
 };
 
 my $DEBUG = 0;
+my $POSTGIS_SCHEMA;
 
 # NOTE: the SRID limits here are being discussed:
 # http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
-if ( @ARGV && $ARGV[0] eq '-v' ) {
-  $DEBUG = 1;
-  shift(@ARGV);
+while (@ARGV && $ARGV[0] =~ /^-/) {
+  my $arg = shift(@ARGV);
+  if ( $arg eq '-v' ) {
+    $DEBUG = 1;
+  }
+  elsif ( $arg eq '-s' ) {
+    $POSTGIS_SCHEMA = shift(@ARGV);
+  }
+  elsif ( $arg eq '--' ) {
+    last;
+  }
+  else {
+    print STDERR "Unknown switch " . $arg;
+    die $usage;
+  }
 }
 
 die $usage if (@ARGV < 1);
@@ -119,6 +133,10 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 #
 print STDERR "  Writing ASCII to stdout...\n";
 open( INPUT, "pg_restore -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
+
+if ( defined $POSTGIS_SCHEMA ) {
+  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
+}
 
 #
 # Disable topology metadata tables triggers to allow for population
@@ -224,15 +242,25 @@ while( my $l = <INPUT> ) {
   #     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 2249))
   # );
   # 
+  # Example 3:
+  # CREATE TABLE "PIANIFICAZIONE__ELEMENTO_LINEA" (
+  #     soft_gis_serial integer NOT NULL,
+  #     "G" public.geometry,
+  #     CONSTRAINT "enforce_dims_G" CHECK ((public.st_ndims("G") = 2)),
+  #     CONSTRAINT "enforce_geotype_G" CHECK (((public.geometrytype("G") = 'MULTICURVE'::text) OR ("G" IS NULL))),
+  #     CONSTRAINT "enforce_srid_G" CHECK ((public.st_srid("G") = (-1)))
+  # );
+  # 
+  # 
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
   {
     my @sublines = ($l);
     while( my $subline = <INPUT>)
     {
-      if ( $subline =~ /CONSTRAINT enforce_dims_/i ) {
+      if ( $subline =~ /CONSTRAINT "?enforce_dims_/i ) {
         $subline =~ s/\bndims\(/st_ndims(/;
       }
-      if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
+      if ( $subline =~ /CONSTRAINT "?enforce_srid_/i ) {
         $subline =~ s/\bsrid\(/st_srid(/;
         if ( $subline =~ /=\s\(?([-0-9][0-9]*)\)/ ) {
           my $oldsrid = $1;
@@ -268,6 +296,10 @@ while( my $l = <INPUT> ) {
 
   print STDOUT $l;
 
+}
+
+if ( defined $POSTGIS_SCHEMA ) {
+  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
 }
 
 if ( $hasTopology ) {
@@ -751,6 +783,8 @@ COMMENT FUNCTION st_bdmpolyfromtext(text, integer)
 COMMENT FUNCTION st_bdpolyfromtext(text, integer)
 COMMENT FUNCTION st_boundary(geometry)
 COMMENT FUNCTION st_box2d(geometry)
+COMMENT FUNCTION st_box2dfromgeohash(text)
+COMMENT FUNCTION st_box2dfromgeohash(text, integer)
 COMMENT FUNCTION st_box3d(geometry)
 COMMENT FUNCTION st_buffer(geography, double precision)
 COMMENT FUNCTION st_buffer(geometry, double precision)
@@ -854,6 +888,8 @@ COMMENT FUNCTION st_geometrytype(geometry)
 COMMENT FUNCTION st_geomfromewkb(bytea)
 COMMENT FUNCTION st_geomfromewkt(text)
 COMMENT FUNCTION st_geomfromgeojson(text)
+COMMENT FUNCTION st_geomfromgeohash(text)
+COMMENT FUNCTION st_geomfromgeohash(text, integer)
 COMMENT FUNCTION st_geomfromgml(text)
 COMMENT FUNCTION st_geomfromgml(text, integer)
 COMMENT FUNCTION st_geomfromkml(text)
@@ -1024,6 +1060,8 @@ COMMENT FUNCTION st_pixelaspolygon(rast raster, xinteger, yinteger)
 COMMENT FUNCTION st_pixelheight(raster)
 COMMENT FUNCTION st_pixelwidth(raster)
 COMMENT FUNCTION st_point(double precision, double precision)
+COMMENT FUNCTION st_pointfromgeohash(text)
+COMMENT FUNCTION st_pointfromgeohash(text, integer)
 COMMENT FUNCTION st_pointfromtext(text)
 COMMENT FUNCTION st_pointfromtext(text, integer)
 COMMENT FUNCTION st_point_inside_circle(geometry, double precision, double precision, double precision)

@@ -12,6 +12,7 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include <ctype.h> /* for tolower */
 
 
 /**
@@ -592,7 +593,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 		if (is_even)
 		{
 			mid = (lon[0] + lon[1]) / 2;
-			if (longitude > mid)
+			if (longitude >= mid)
 			{
 				ch |= bits[bit];
 				lon[0] = mid;
@@ -605,7 +606,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 		else
 		{
 			mid = (lat[0] + lat[1]) / 2;
-			if (latitude > mid)
+			if (latitude >= mid)
 			{
 				ch |= bits[bit];
 				lat[0] = mid;
@@ -685,6 +686,52 @@ unsigned int geohash_point_as_int(POINT2D *pt)
 		is_even = !is_even;
 	}
 	return ch;
+}
+
+/*
+** Decode a GeoHash into a bounding box. The lat and lon arguments should
+** both be passed as double arrays of length 2 at a minimum where the values
+** set in them will be the southwest and northeast coordinates of the bounding
+** box accordingly. A precision less than 0 indicates that the entire length
+** of the GeoHash should be used.
+*/
+void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision)
+{
+	int i, j, hashlen;
+	char c, cd, mask, is_even = 1;
+	static char bits[] = {16, 8, 4, 2, 1};
+
+	lat[0] = -90.0;
+	lat[1] = 90.0;
+	lon[0] = -180.0;
+	lon[1] = 180.0;
+
+	hashlen = strlen(geohash);
+
+	if (precision < 0 || precision > hashlen)
+	{
+		precision = hashlen;
+	}
+
+	for (i = 0; i < precision; i++)
+	{
+		c = tolower(geohash[i]);
+		cd = strchr(base32, c) - base32;
+
+		for (j = 0; j < 5; j++)
+		{
+			mask = bits[j];
+			if (is_even)
+			{
+				lon[!(cd & mask)] = (lon[0] + lon[1]) / 2;
+			}
+			else
+			{
+				lat[!(cd & mask)] = (lat[0] + lat[1]) / 2;
+			}
+			is_even = !is_even;
+		}
+	}
 }
 
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)

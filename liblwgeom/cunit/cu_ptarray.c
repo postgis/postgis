@@ -199,6 +199,7 @@ static void test_ptarray_append_ptarray(void)
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
 	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
 	lwfree(wkt);
+	FLAGS_SET_READONLY(line2->points->flags, 0); /* for lwline_free */
 	lwline_free(line2);
 	lwline_free(line1);
 
@@ -209,6 +210,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_FAILURE);
 	lwline_free(line2);
+	FLAGS_SET_READONLY(line1->points->flags, 0); /* for lwline_free */
 	lwline_free(line1);
 
 }
@@ -391,7 +393,10 @@ static void test_ptarray_desegmentize()
 	lwgeom_free(out);
 	lwfree(str);	
 	
-	in = lwgeom_segmentize(lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))"),8);
+	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
+	out = lwgeom_segmentize(in,8);
+	lwgeom_free(in);
+  in = out;
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1,1 1),CIRCULARSTRING(1 1,1.8049097 1.9807853,3 1),(3 1,4 4))");
@@ -404,7 +409,7 @@ static void test_ptarray_desegmentize()
 
 static void test_ptarray_contains_point() 
 {
-/* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
+/* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt, int *winding_number) */
 
 	LWLINE *lwline;
 	POINTARRAY *pa;
@@ -491,119 +496,140 @@ static void test_ptarray_contains_point()
 	lwline_free(lwline);
 }
 
-
-static void test_ptarray_contains_point_arc() 
+static void test_ptarrayarc_contains_point() 
 {
-	/* int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt) */
+	/* int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
 
 	LWLINE *lwline;
 	POINTARRAY *pa;
 	POINT2D pt;
 	int rv;
 
-	/* Collection of semi-circles surrounding unit square */
+	/*** Collection of semi-circles surrounding unit square ***/
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
 	pa = lwline->points;
 
 	/* Point in middle of square */
 	pt.x = 0;
 	pt.y = 0;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 	
 	/* Point in left lobe */
 	pt.x = -1.1;
 	pt.y = 0.1;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on boundary of left lobe */
 	pt.x = -1;
 	pt.y = 0;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on boundary vertex */
 	pt.x = -1;
 	pt.y = 1;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* Point outside */
 	pt.x = -1.5;
 	pt.y = 1.5;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
-	/* Two-edge ring made up of semi-circles (really, a circle) */
-	lwfree(lwline);
-
+	/*** Two-edge ring made up of semi-circles (really, a circle) ***/
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
 	pa = lwline->points;
 
 	/* Point outside */
 	pt.x = -1.5;
 	pt.y = 1.5;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+
+	/* Point more outside */
+	pt.x = 2.5;
+	pt.y = 1.5;
+	rv = ptarrayarc_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+
+	/* Point more outside */
+	pt.x = 2.5;
+	pt.y = 2.5;
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Point inside at middle */
 	pt.x = 0;
 	pt.y = 0;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point inside offset from middle */
 	pt.x = 0.01;
 	pt.y = 0.01;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on edge vertex */
 	pt.x = 0;
 	pt.y = 1;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
-	/* One-edge ring, closed circle */
-	lwfree(lwline);
+	/*** Two-edge ring, closed ***/
+	lwline_free(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(1 6, 6 1, 9 7, 6 10, 1 6)"));
+	pa = lwline->points;
+
+	/* Point to left of ring */
+	pt.x = 20;
+	pt.y = 4;
+	rv = ptarrayarc_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+
+	/*** One-edge ring, closed circle ***/
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, -1 0)"));
 	pa = lwline->points;
 
 	/* Point inside */
 	pt.x = 0;
 	pt.y = 0;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point outside */
 	pt.x = 0;
 	pt.y = 2;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Point on boundary */
 	pt.x = 0;
 	pt.y = 1;
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
-	/* Overshort ring */
-	lwfree(lwline);
+	/*** Overshort ring ***/
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0)"));
 	pa = lwline->points;
 	cu_error_msg_reset();
-	rv = ptarray_contains_point_arc(pa, &pt);
+	rv = ptarrayarc_contains_point(pa, &pt);
 	//printf("%s\n", cu_error_msg);
-	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called with even number of points", cu_error_msg);
+	CU_ASSERT_STRING_EQUAL("ptarrayarc_contains_point called with even number of points", cu_error_msg);
 
-	/* Unclosed ring */
-	lwfree(lwline);
-	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, 1 0)"));
+	/*** Unclosed ring ***/
+	lwline_free(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, 2 0)"));
 	pa = lwline->points;
 	cu_error_msg_reset();
-	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called on unclosed ring", cu_error_msg);
+	rv = ptarrayarc_contains_point(pa, &pt);
+	CU_ASSERT_STRING_EQUAL("ptarrayarc_contains_point called on unclosed ring", cu_error_msg);
 
 	lwline_free(lwline);
 }
@@ -622,7 +648,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_desegmentize),
 	PG_TEST(test_ptarray_insert_point),
 	PG_TEST(test_ptarray_contains_point),
-	PG_TEST(test_ptarray_contains_point_arc),
+	PG_TEST(test_ptarrayarc_contains_point),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };

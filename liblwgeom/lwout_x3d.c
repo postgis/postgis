@@ -312,10 +312,7 @@ asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 {
 	int i;
 	char *ptr=output;
-	int dimension=2;
 
-	if (FLAGS_GET_Z(poly->flags))
-		dimension = 3;
 	ptr += pointArray_toX3D3(poly->rings[0], ptr, precision, opts, 1);
 	for (i=1; i<poly->nrings; i++)
 	{

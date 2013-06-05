@@ -21,7 +21,7 @@ MODULEDIR=contrib/$(MODULE_doc)
 DATA_built=postgis_comments.sql raster_comments.sql topology_comments.sql
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 

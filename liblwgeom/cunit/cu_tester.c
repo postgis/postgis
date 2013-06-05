@@ -15,6 +15,11 @@
 #include "CUnit/Basic.h"
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
+#include "../postgis_config.h"
+
+/* Internal funcs */
+static void
+cu_errorreporter(const char *fmt, va_list ap);
 
 /* ADD YOUR SUITE HERE (1 of 2) */
 extern CU_SuiteInfo print_suite;
@@ -33,9 +38,12 @@ extern CU_SuiteInfo libgeom_suite;
 extern CU_SuiteInfo split_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo geos_suite;
+extern CU_SuiteInfo sfcgal_suite;
 extern CU_SuiteInfo tree_suite;
 extern CU_SuiteInfo triangulate_suite;
 extern CU_SuiteInfo homogenize_suite;
+extern CU_SuiteInfo force_sfs_suite;
+extern CU_SuiteInfo in_geojson_suite;
 extern CU_SuiteInfo stringbuffer_suite;
 extern CU_SuiteInfo surface_suite;
 extern CU_SuiteInfo out_gml_suite;
@@ -70,11 +78,18 @@ int main(int argc, char *argv[])
 		split_suite,
 		geodetic_suite,
 		geos_suite,
+#if HAVE_SFCGAL
+		sfcgal_suite,
+#endif
 		tree_suite,
 		triangulate_suite,
 		stringbuffer_suite,
 		surface_suite,
 		homogenize_suite,
+		force_sfs_suite,
+#if HAVE_JSON
+		in_geojson_suite,
+#endif
 		out_gml_suite,
 		out_kml_suite,
 		out_geojson_suite,
@@ -92,6 +107,9 @@ int main(int argc, char *argv[])
 	CU_pTestRegistry registry;
 	int num_run;
 	int num_failed;
+
+	/* install the custom error handler */
+	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0);
 
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
@@ -232,17 +250,3 @@ cu_error_msg_reset()
 {
 	memset(cu_error_msg, '\0', MAX_CUNIT_ERROR_LENGTH);
 }
-
-/*
-** Set up liblwgeom to run in stand-alone mode using the
-** usual system memory handling functions.
-*/
-void lwgeom_init_allocators(void)
-{
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwnotice_var = default_noticereporter;
-	lwerror_var = cu_errorreporter;
-}
-

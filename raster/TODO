@@ -7,34 +7,3 @@ yet to be ticketed in PostGIS trac and lack specifics.
 == Simple Projects ==
 
 == Larger Projects ==
-
--- Spatial Relationships functions --
-
-In addition to the existing or ticketed spatial relationship functions, it may
-be worth implementing the following functions.
-
-  - ST_Equals (?)
-  - ST_Relate (?)
-  - ST_RelateMatch (?)
-
-Like the ST_Intersects() function and its variants, these functions will need
-to support both raster/raster and raster/geometry.  It may be easier for these
-functions to be done in vector-space where the rasters' bands are converted to
-pixels and then spatially tested.  This should permit the quick delivery of
-useful functions though it may not be the fastest solution.
-
--- n-raster Iterator --
-
-To properly handle aggregate and n-raster mapalgebra operations (mapalgebra,
-union, etc), a generic iterator function is needed.  This also pushes the
-core mapalgebra functionality down to rt_core instead of rt_pg.
-
--- neighborhood tile support --
-
-When processing a tile's pixel in a neighborhood calculation, there needs to
-be a way to get the neighboring tiles so as to provide the neighboring pixels
-of the pixel being processed.  This is a difficult question because rasters
-are passed to functions with no information about context.  Simply passing
-a tablename and raster column is inappropriate as the table and raster column
-could be more complex, such as when a table contains daily observations of a
-temperature surface.

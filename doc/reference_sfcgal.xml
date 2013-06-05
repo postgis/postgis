@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <sect1 id="reference_sfcgal">
+	<title>Using SFCGAL Advanced 2D/3D functions</title>
+        <para> 
+          TODO Introduction part
+        </para>
+        <para> 
+          TODO Install part
+        </para>
+
+	<refentry id="ST_Extrude">
+	  <refnamediv>
+		<refname>ST_Extrude</refname>
+
+		<refpurpose>Extrude a surface to a related volume</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Extrude</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>z</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
+	<refentry id="ST_StraightSkeleton">
+	  <refnamediv>
+		<refname>ST_StraightSkeleton</refname>
+
+		<refpurpose>Compute a straight skeleton from a geometry</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
+	<refentry id="ST_IsPlanar">
+	  <refnamediv>
+		<refname>ST_IsPlanar</refname>
+
+		<refpurpose>Check if a surface is or not planar</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsPlanar</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
+	<refentry id="ST_Orientation">
+	  <refnamediv>
+		<refname>ST_Orientation</refname>
+
+		<refpurpose>Determine surface orientation</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_Orientation</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
+	<refentry id="ST_ForceLHR">
+	  <refnamediv>
+		<refname>ST_ForceLHR</refname>
+
+		<refpurpose>Force LHR orientation</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ForceLHR</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_MinkowskiSum">
+	  <refnamediv>
+		<refname>ST_MinkowskiSum</refname>
+
+		<refpurpose>Perform Minkowski sum</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Minkowski</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
+	<refentry id="ST_Tesselate">
+	  <refnamediv>
+		<refname>ST_Tesselate</refname>
+
+		<refpurpose>Perform surface Tesselation</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Tesselate</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+  </sect1>

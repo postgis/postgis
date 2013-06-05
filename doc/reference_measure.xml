@@ -127,6 +127,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
+                <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
@@ -661,6 +662,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		 	<para>&P_support;</para>
 		 	<note><para>For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D).  For 2.5D, may give a non-zero answer, but only for the faces that
 		 	sit completely in XY plane.</para></note>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>
@@ -803,7 +805,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" /></para>
+			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		</refsection>
 
   </refentry>
@@ -1970,13 +1972,16 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
+		<para>&curve_support;</para>
+                <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Basic Geometry Examples</title>
 
 		<programlisting>
 --Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
@@ -2006,8 +2011,11 @@ SELECT ST_Distance(
 st_distance
 ------------------
 126.664256056812
-
--- Geography example -- same but note units in meters - use sphere for slightly faster less accurate
+</programlisting>
+	</refsection>
+	  <refsection>
+		<title>Geography Examples</title>
+<programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
 SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist 
 FROM (SELECT
 	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
@@ -2017,9 +2025,10 @@ FROM (SELECT
   spheroid_dist   |   sphere_dist
 ------------------+------------------
  123.802076746848 | 123.475736916397
-
 </programlisting>
-	  </refsection>
+	</refsection>
+
+	  
 
 	  <refsection>
 		<title>See Also</title>
@@ -2428,6 +2437,7 @@ FROM
 		<para>&sfs_compliant;</para>
 		<para>Availability: 1.5.0 support for geography was introduced</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
 	  </refsection>
 
 	  <refsection>
@@ -2636,6 +2646,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			  - ST_Intersects(g1, g2 ) --&gt; Not (ST_Disjoint(g1, g2 ))
 			</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.27</para>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 		<refsection>
 		<title>Geometry Examples</title>
@@ -2701,6 +2712,7 @@ t
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>
@@ -3367,8 +3379,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
 			</funcprototype>
-		  </funcsynopsis>
-		   <funcsynopsis>
+
 			<funcprototype>
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
@@ -3607,11 +3618,11 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_Project">
+	<refentry id="ST_Project">
 		  <refnamediv>
 			<refname>ST_Project</refname>
 
-			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a bearing and distance.</refpurpose>
+			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a distance in meters and bearing (azimuth) in radians.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -3632,30 +3643,43 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) and distance.</para>
+			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) measured in radians and distance measured in meters.</para>
 			<para>Distance, azimuth and projection are all aspects of the same operation, describing (or in the case of projection, constructing) the relationship between two points on the world.</para>
-			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90, south is azimuth 180, west is azimuth 270.</para>
+			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (<varname>pi/2</varname>), south is azimuth 180 (<varname>pi</varname>), west is azimuth 270 (<varname>pi*1.5</varname>).</para>
 			<para>The distance is given in meters.</para>
+			
+			<para>Availability: 2.0.0</para>
 
 		  </refsection>
 
 		  <refsection>
-			<title>Examples</title>
+			<title>Example: Using degrees - projected point 100,000 meters and bearing 45 degrees </title>
 
-			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, 45));
-                  st_astext
-	------------------------------------------
-	 POINT(0.63523102912532 0.63947233472882)
-	(1 row)
+			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
+			  st_astext
+------------------------------------------
+ POINT(0.63523102912532 0.63947233472882)
+(1 row)
+	</programlisting>
+		  </refsection>
+		  
+		  <refsection>
+			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 (45 degrees) </title>
+
+			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, pi()/4));
+			  st_astext
+------------------------------------------
+ POINT(0.63523102912532 0.63947233472882)
+(1 row)
 	</programlisting>
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" /></para>
+			<para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		  </refsection>
-		</refentry>
+	</refentry>
 
 	<refentry id="ST_Relate">
 		<refnamediv>

@@ -286,7 +286,6 @@ static void
 pgui_raise_error_dialogue(void)
 {
 	GtkWidget *dialog, *label;
-	gint result;
 
 	label = gtk_label_new(pgui_errmsg);
 	dialog = gtk_dialog_new_with_buttons(_("Error"), GTK_WINDOW(window_main),
@@ -297,7 +296,7 @@ pgui_raise_error_dialogue(void)
 	gtk_container_set_border_width(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
 	gtk_widget_show_all(dialog);
-	result = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
 	return;
 }
@@ -677,7 +676,7 @@ update_table_chooser_from_database()
 	PGresult *result, *geocol_result;
 	GtkTreeIter iter, geocol_iter;
 	GtkListStore *dumper_geocol_combo_list;
-	char *connection_string, *sql_form, *query, *schema, *table, *geocol_query, *geocol_name;
+	char *connection_string, *sql_form, *query, *schema, *table, *geocol_query, *geocol_name=NULL;
 	int hasgeo, i, j;
 	
 	/* Open a connection to the database */
@@ -932,9 +931,6 @@ create_new_file_config(const char *filename)
 	table_end = loader_file_config->shp_file + strlen(loader_file_config->shp_file);
 	while (*table_end != '.' && table_end > loader_file_config->shp_file && table_end > table_start )
 		table_end--;
-	
-	/* Sneakily remove .shp from shp_file */
-	*table_end = '\0';
 
 	/* Copy the table name */
 	loader_file_config->table = malloc(table_end - table_start + 1);
@@ -1426,7 +1422,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *sql_form, *query, *connection_string, *progress_text = NULL, *progress_shapefile = NULL;
 	PGresult *result;
 	
-	int ret, success, i = 0;
+	int ret, i = 0;
 	char *header, *footer, *record;
 	
 	/* Get the first row of the import list */
@@ -1514,7 +1510,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		 * Loop through the items in the shapefile
 		 */
 		is_running = TRUE;
-		success = FALSE;
 		
 		/* One connection per file, otherwise error handling becomes tricky... */
 		pg_connection = PQconnectdb(connection_string);
@@ -1580,6 +1575,12 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		/* If we are in prepare mode, we need to skip the actual load. */
 		if (state->config->opt != 'p')
 		{
+            int numrecords = ShpLoaderGetRecordCount(state);
+            int records_per_tick = (numrecords / 200) - 1;
+            
+            if ( records_per_tick < 1 ) 
+                records_per_tick = 1;
+		    
 			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 			if (state->config->dump_format)
 			{
@@ -1602,7 +1603,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			}
 
 			/* Main loop: iterate through all of the records and send them to stdout */
-			for (i = 0; i < ShpLoaderGetRecordCount(state) && is_running; i++)
+			for (i = 0; i < numrecords && is_running; i++)
 			{
 				ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
@@ -1654,7 +1655,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				}
 
 				/* Update the progress bar */
-				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / ShpLoaderGetRecordCount(state));
+				if ( i % records_per_tick == 0 )
+				    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / numrecords);
 
 				/* Allow GTK events to get a look in */
 				while (gtk_events_pending())
@@ -1708,9 +1710,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				goto import_cleanup;
 		}
 		
-		/* Indicate success */
-		success = TRUE;
-
 import_cleanup:
 		/* Import has definitely stopped running */
 		is_running = FALSE;
@@ -2554,7 +2553,7 @@ pgui_create_about_dialog(void)
 	dialog_about = gtk_about_dialog_new();
 	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog_about), _("PostGIS Shapefile Import/Export Manager"));
 	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog_about), POSTGIS_LIB_VERSION);
-	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog_about), "http://postgis.org/");
+	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog_about), "http://postgis.net/");
 	gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dialog_about), authors);
 }
 
@@ -2787,7 +2786,6 @@ pgui_create_tablechooser_dialog()
 	GtkWidget *vbox_tree, *table_progress;
 	GtkWidget *sw, *label;
 	GtkTreeSelection *chooser_selection;
-	gint *column_indexes;
 
 	/* Create the main top level window with a 10px border */
 	dialog_tablechooser = gtk_dialog_new_with_buttons(_("Table selection"), GTK_WINDOW(window_main),
@@ -2816,13 +2814,6 @@ pgui_create_tablechooser_dialog()
 	chooser_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(chooser_filtered_table_list_store));
 	chooser_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(chooser_tree));
 	gtk_tree_selection_set_mode(chooser_selection, GTK_SELECTION_MULTIPLE);
-	
-	/* GTK has a slightly brain-dead API in that you can't directly find
-	   the column being used by a GtkCellRenderer when using the same
-	   callback to handle multiple fields; hence we manually store this
-	   information here and pass a pointer to the column index into
-	   the signal handler */
-	column_indexes = g_malloc(sizeof(gint) * TABLECHOOSER_N_COLUMNS);
 	
 	/* Make the tree view in a scrollable window */
 	sw = gtk_scrolled_window_new(NULL, NULL);

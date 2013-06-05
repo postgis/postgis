@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011-2012 Regents of the University of California
+ * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -144,6 +144,9 @@ typedef struct rt_reclassexpr_t* rt_reclassexpr;
 
 typedef struct rt_iterator_t* rt_iterator;
 typedef struct rt_iterator_arg_t* rt_iterator_arg;
+
+typedef struct rt_colormap_entry_t* rt_colormap_entry;
+typedef struct rt_colormap_t* rt_colormap;
 
 /* envelope information */
 typedef struct {
@@ -638,7 +641,7 @@ rt_errorstate rt_band_get_nodata(rt_band band, double *nodata);
 rt_errorstate rt_band_set_pixel_line(
 	rt_band band,
 	int x, int y,
-	void *vals, uint16_t len
+	void *vals, uint32_t len
 );
 
 /**
@@ -959,8 +962,7 @@ rt_raster rt_raster_new(uint32_t width, uint32_t height);
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_wkb(const uint8_t* wkb,
-                             uint32_t wkbsize);
+rt_raster rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize);
 
 /**
  * Construct an rt_raster from a text HEXWKB representation
@@ -972,31 +974,30 @@ rt_raster rt_raster_from_wkb(const uint8_t* wkb,
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_hexwkb(const char* hexwkb,
-                             uint32_t hexwkbsize);
+rt_raster rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize);
 
 /**
  * Return this raster in WKB form
  *
  * @param raster : the raster
+ * @param outasin : if TRUE, out-db bands are treated as in-db
  * @param wkbsize : will be set to the size of returned wkb form
  *
  * @return WKB of raster or NULL on error
  */
-uint8_t *rt_raster_to_wkb(rt_raster raster,
-                                    uint32_t *wkbsize);
+uint8_t *rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize);
 
 /**
  * Return this raster in HEXWKB form (null-terminated hex)
  *
  * @param raster : the raster
+ * @param outasin : if TRUE, out-db bands are treated as in-db
  * @param hexwkbsize : will be set to the size of returned wkb form,
  *                     not including the null termination
  *
  * @return HEXWKB of raster or NULL on error
  */
-char *rt_raster_to_hexwkb(rt_raster raster,
-                                    uint32_t *hexwkbsize);
+char *rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize);
 
 /**
  * Release memory associated to a raster
@@ -1311,17 +1312,18 @@ rt_errorstate rt_raster_geopoint_to_cell(
 );
 
 /**
- * Get raster's polygon convex hull.
+ * Get raster's convex hull.
  *
- * The convex hull is a 4 vertices (5 to be closed) single
- * ring polygon bearing the raster's rotation
- * and using projection coordinates
+ * The convex hull is a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
  *
  * @param raster : the raster to get info from
+ * @param **hull : pointer to convex hull
  *
- * @return the convex hull, or NULL on error.
+ * @return ES_NONE if success, ES_ERROR if error
  */
-LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
+rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
 
 /**
  * Get raster's envelope.
@@ -1336,6 +1338,24 @@ LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
 rt_errorstate rt_raster_get_envelope(
 	rt_raster raster,
 	rt_envelope *env
+);
+
+/**
+ * Get raster perimeter
+ *
+ * The perimeter is a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
+ *
+ * @param raster : the raster to get info from
+ * @param nband : the band for the perimeter. 0-based
+ * @param **perimeter : pointer to perimeter
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_get_perimeter(
+	rt_raster raster, int nband,
+	LWGEOM **perimeter
 );
 
 /*
@@ -1594,8 +1614,9 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  *
  * @return the warped raster or NULL
  */
-rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
-	const char *dst_srs,
+rt_raster rt_raster_gdal_warp(
+	rt_raster raster,
+	const char *src_srs, const char *dst_srs,
 	double *scale_x, double *scale_y,
 	int *width, int *height,
 	double *ul_xw, double *ul_yw,
@@ -1937,6 +1958,22 @@ rt_raster_iterator(
 	rt_raster *rtnraster
 );
 
+/**
+ * Returns a new raster with up to four 8BUI bands (RGBA) from
+ * applying a colormap to the user-specified band of the
+ * input raster.
+ *
+ * @param raster: input raster
+ * @param nband: 0-based index of the band to process with colormap
+ * @param colormap: rt_colormap object of colormap to apply to band
+ *
+ * @return new raster or NULL on error
+ */
+rt_raster rt_raster_colormap(
+	rt_raster raster, int nband,
+	rt_colormap colormap
+);
+
 /*- utilities -------------------------------------------------------*/
 
 /*
@@ -2051,6 +2088,18 @@ rt_util_gdal_convert_sr(const char *srs, int proj4);
 int
 rt_util_gdal_supported_sr(const char *srs);
 
+/**
+ * Get auth name and code
+ *
+ * @param authname: authority organization of code. calling function
+ * is expected to free the memory allocated for value
+ * @param authcode: code assigned by authority organization. calling function
+ * is expected to free the memory allocated for value
+ *
+ * @return ES_NONE on success, ES_ERROR on error
+ */
+rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+
 /*
 	is GDAL configured correctly?
 */
@@ -2084,6 +2133,26 @@ rt_util_to_ogr_envelope(
 LWPOLY *
 rt_util_envelope_to_lwpoly(
 	rt_envelope ext
+);
+
+int
+rt_util_same_geotransform_matrix(
+	double *gt1,
+	double *gt2
+);
+
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_rgb_to_hsv(
+	double rgb[3],
+	double hsv[3]
+);
+
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_hsv_to_rgb(
+	double hsv[3],
+	double rgb[3]
 );
 
 /*
@@ -2165,7 +2234,7 @@ struct rt_raster_t {
 
 struct rt_extband_t {
     uint8_t bandNum; /* 0-based */
-    char* path; /* externally owned ? */
+    char* path; /* internally owned */
 		void *mem; /* loaded external band data, internally owned */
 };
 
@@ -2324,6 +2393,25 @@ struct rt_gdaldriver_t {
 	char *short_name;
 	char *long_name;
 	char *create_options;
+};
+
+/* raster colormap entry */
+struct rt_colormap_entry_t {
+	int isnodata;
+	double value;
+	uint8_t color[4]; /* RGBA */
+};
+
+struct rt_colormap_t {
+	enum {
+		CM_INTERPOLATE,
+		CM_EXACT,
+		CM_NEAREST
+	} method;
+
+	int ncolor;
+	uint16_t nentry;
+	rt_colormap_entry entry;
 };
 
 #endif /* RT_API_H_INCLUDED */

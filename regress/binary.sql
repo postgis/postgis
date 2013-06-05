@@ -21,11 +21,11 @@ INSERT INTO tm.geoms(g) values ('TIN EMPTY');
 
 -- all zm flags
 INSERT INTO tm.geoms(g)
-SELECT st_force_3dz(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
+SELECT st_force3dz(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
 INSERT INTO tm.geoms(g)
-SELECT st_force_3dm(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
+SELECT st_force3dm(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
 INSERT INTO tm.geoms(g)
-SELECT st_force_4d(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
+SELECT st_force4d(g) FROM tm.geoms WHERE id < 15 ORDER BY id;
 
 -- known srid
 INSERT INTO tm.geoms(g)

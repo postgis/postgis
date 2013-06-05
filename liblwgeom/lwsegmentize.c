@@ -110,7 +110,6 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 	double increment; /* Angle per segment */
 	double a1, a2, a3, angle;
 	POINTARRAY *pa;
-	int result;
 	int is_circle = LW_FALSE;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
@@ -179,7 +178,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 		pt.y = center.y + radius * sin(angle);
 		pt.z = interpolate_arc(angle, a1, a2, a3, p1->z, p2->z, p3->z);
 		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
-		result = ptarray_append_point(pa, &pt, LW_FALSE);
+		ptarray_append_point(pa, &pt, LW_FALSE);
 	}	
 	return pa;
 }
@@ -648,6 +647,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 			edge_type = edges_in_arcs[i];
 		}
 	}
+	lwfree(edges_in_arcs); /* not needed anymore */
+
 	/* Roll out last item */
 	end = num_edges - 1;
 	lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
@@ -656,7 +657,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	if ( outcol->ngeoms == 1 )
 	{
 		LWGEOM *outgeom = outcol->geoms[0];
-		lwfree(outcol);
+		outcol->ngeoms = 0; lwcollection_free(outcol);
 		return outgeom;
 	}
 	return lwcollection_as_lwgeom(outcol);
