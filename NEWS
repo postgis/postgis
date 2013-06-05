@@ -5,6 +5,7 @@ PostGIS 1.5.9
  filed since the 1.5.8 release.
 
  - Bug Fixes
+   - #2191, segfault when calculating bounding box of empty
 
 
 PostGIS 1.5.8

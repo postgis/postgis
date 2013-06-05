@@ -2599,11 +2599,17 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pg_lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX3D *box3d;
-	BOX *result = (BOX *)lwalloc(sizeof(BOX));
+    BOX *result;
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pg_lwgeom));
 
 	/* Calculate the BOX3D of the geometry */
 	box3d = lwgeom_compute_box3d(lwgeom);
+	/* Empty geometries have no boxes */
+
+	if ( ! box3d )
+        PG_RETURN_NULL();
+	
+    result = (BOX*)lwalloc(sizeof(BOX));
 	box3d_to_box_p(box3d, result);
 	lwfree(box3d);
 	lwfree(lwgeom);
