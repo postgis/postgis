@@ -200,6 +200,7 @@ PostGIS 2.1.0
   - #2257, GBOX variables not initialized when testing with empty geometries
   - #2271, Prevent parallel make of raster
   - #2282, Fix call to undefined function nd_stats_to_grid() in debug mode
+  - #2307, ST_MakeValid outputs invalid geometries
   - #2309, Remove confusing INFO message when trying to get SRS info
   - #2348, Provide raster upgrade path for 2.0 to 2.1
 
