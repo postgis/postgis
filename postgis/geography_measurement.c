@@ -55,7 +55,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	double tolerance;
+	/* double tolerance; */
 	bool use_spheroid;
 	SPHEROID s;
 
@@ -64,8 +64,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
-
+	/* tolerance = PG_GETARG_FLOAT8(2); */
+    
 	/* Read our calculation type. */
 	use_spheroid = PG_GETARG_BOOL(3);
 
