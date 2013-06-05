@@ -169,6 +169,9 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+    /* Knock off any funny business at the micrometer level, ticket #2168 */
+    distance = round(distance * 10e8) / 10e8;
+
 	PG_RETURN_FLOAT8(distance);
 }
 
