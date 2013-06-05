@@ -10,6 +10,7 @@ PostGIS 2.0.4
   - #2271, Prevent parallel make of raster
   - #2267, Server crash from analyze table
   - #2277, potential segfault removed
+  - #2307, ST_MakeValid outputs invalid geometries
   - Fix build with systemwide liblwgeom installed
 
  * Enhancements *
