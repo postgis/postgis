@@ -184,6 +184,7 @@ PostGIS 2.1.0
   - #2019, ST_FlipCoordinates does not update bbox
   - #2100, ST_AsRaster may not return raster with specified pixel type
   - #2126, Better handling of empty rasters from ST_ConvexHull()
+  - #2165, ST_NumPoints regression failure with CircularString
   - #2182, Fix issue with outdb rasters with no SRID and ST_Resize
   - #2188, Fix function parameter value overflow that caused problems
            when copying data from a GDAL dataset

@@ -204,7 +204,7 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	int count = -1;
 	
-	if ( lwgeom->type == LINETYPE )
+	if ( lwgeom->type == LINETYPE || lwgeom->type == CIRCSTRINGTYPE )
 		count = lwgeom_count_vertices(lwgeom);
 
 	lwgeom_free(lwgeom);
