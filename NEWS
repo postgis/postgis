@@ -5,12 +5,14 @@ PostGIS 2.0.4
   - #2110, Equality operator between EMPTY and point on origin
   - Allow adding points at precision distance with TopoGeo_addPoint
   - #1968, Fix missing edge from toTopoGeom return
+  - #2165, ST_NumPoints regression failure with CircularString
   - #2201, ST_GeoHash wrong on boundaries
   - #2257, GBOX variables not initialized when testing with empty geometries
   - #2271, Prevent parallel make of raster
   - #2267, Server crash from analyze table
   - #2277, potential segfault removed
   - #2307, ST_MakeValid outputs invalid geometries
+
   - Fix build with systemwide liblwgeom installed
 
  * Enhancements *
