@@ -6,6 +6,7 @@ PostGIS 1.5.9
 
  - Bug Fixes
    - #2191, segfault when calculating bounding box of empty
+   - #2351, st_distance between geographies wrong
 
 
 PostGIS 1.5.8
