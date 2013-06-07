@@ -565,11 +565,12 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asEncodedPolyline);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 {
-  GSERIALIZED *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *encodedpolyline;
+	int precision = 5;
 	text *result;
-	
+
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -580,8 +581,14 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	}
 	lwgeom = lwgeom_from_gserialized(geom);
 	PG_FREE_IF_COPY(geom, 0);
+	
+	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	{
+		precision = PG_GETARG_INT32(2);
+		if ( precision < 0 ) precision = 5;
+	}
 
-	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom);
+	encodedpolyline = lwgeom_to_encoded_polyline(lwgeom, precision);
 	lwgeom_free(lwgeom);
 
   result = cstring2text(encodedpolyline);

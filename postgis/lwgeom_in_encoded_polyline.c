@@ -25,13 +25,20 @@ Datum line_from_encoded_polyline(PG_FUNCTION_ARGS)
   LWGEOM *lwgeom;
   text *encodedpolyline_input;
   char *encodedpolyline;
+  int precision = 5;
 
   if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 
   encodedpolyline_input = PG_GETARG_TEXT_P(0);
   encodedpolyline = text2cstring(encodedpolyline_input);
 
-  lwgeom = lwgeom_from_encoded_polyline(encodedpolyline);
+  if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+  {
+    precision = PG_GETARG_INT32(2);
+    if ( precision < 0 ) precision = 5;
+  }
+
+  lwgeom = lwgeom_from_encoded_polyline(encodedpolyline, precision);
   if ( ! lwgeom ) {
     /* Shouldn't get here */
     elog(ERROR, "lwgeom_from_encoded_polyline returned NULL");

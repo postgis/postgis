@@ -1357,7 +1357,7 @@ extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefi
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);
 extern char* lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const char *defid);
-extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom);
+extern char* lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision);
 
 /**
  * Create an LWGEOM object from a GeoJSON representation
@@ -1375,7 +1375,7 @@ extern LWGEOM* lwgeom_from_geojson(const char *geojson, char **srs);
  *
  * @param encodedpolyline the Encoded Polyline input
  */
-extern LWGEOM* lwgeom_from_encoded_polyline(const char *encodedpolyline);
+extern LWGEOM* lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision);
 
 /**
 * Initialize a spheroid object for use in geodetic functions.

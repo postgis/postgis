@@ -13,45 +13,45 @@
 #include "stringbuffer.h"
 #include "liblwgeom_internal.h"
 
-static char * lwline_to_encoded_polyline(const LWLINE*);
-static char * lwmmpoint_to_encoded_polyline(const LWMPOINT*);
-static char * pointarray_to_encoded_polyline(const POINTARRAY*);
+static char * lwline_to_encoded_polyline(const LWLINE*, int precision);
+static char * lwmmpoint_to_encoded_polyline(const LWMPOINT*, int precision);
+static char * pointarray_to_encoded_polyline(const POINTARRAY*, int precision);
 
 /* takes a GEOMETRY and returns an Encoded Polyline representation */
 extern char *
-lwgeom_to_encoded_polyline(const LWGEOM *geom)
+lwgeom_to_encoded_polyline(const LWGEOM *geom, int precision)
 {
 	int type = geom->type;
 	switch (type)
 	{
 	case LINETYPE:
-		return lwline_to_encoded_polyline((LWLINE*)geom);
+		return lwline_to_encoded_polyline((LWLINE*)geom, precision);
 	case MULTIPOINTTYPE:
-		return lwmmpoint_to_encoded_polyline((LWMPOINT*)geom);
+		return lwmmpoint_to_encoded_polyline((LWMPOINT*)geom, precision);
 	default:
 		lwerror("lwgeom_to_encoded_polyline: '%s' geometry type not supported", lwtype_name(type));
 		return NULL;
 	}
 }
 
-static 
-char * lwline_to_encoded_polyline(const LWLINE *line)
+static
+char * lwline_to_encoded_polyline(const LWLINE *line, int precision)
 {
-	return pointarray_to_encoded_polyline(line->points);
+	return pointarray_to_encoded_polyline(line->points, precision);
 }
 
 static
-char * lwmmpoint_to_encoded_polyline(const LWMPOINT *mpoint)
+char * lwmmpoint_to_encoded_polyline(const LWMPOINT *mpoint, int precision)
 {
 	LWLINE *line = lwline_from_lwmpoint(mpoint->srid, mpoint);
-	char *encoded_polyline = lwline_to_encoded_polyline(line);
+	char *encoded_polyline = lwline_to_encoded_polyline(line, precision);
 
 	lwline_free(line);
 	return encoded_polyline;
 }
 
 static
-char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
+char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 {
 	int i;
 	POINT2D *prevPoint;
@@ -72,7 +72,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 		delta[(2*i)+1] = (int)(point->x*1e5) - (int)(prevPoint->x*1e5);
 		prevPoint = point;
 	}
-	
+
 	/* value to binary: a negative value must be calculated using its two's complement */
 	for (i=0; i<pa->npoints*2; i++)
 	{
@@ -90,7 +90,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa)
 		int numberToEncode = delta[i];
 
 		while (numberToEncode >= 0x20) {
-			/* Place the 5-bit chunks into reverse order or 
+			/* Place the 5-bit chunks into reverse order or
 			 each value with 0x20 if another bit chunk follows and add 63*/
 			int nextValue = (0x20 | (numberToEncode & 0x1f)) + 63;
 			stringbuffer_aprintf(sb, "%c", (char)nextValue);

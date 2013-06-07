@@ -20,13 +20,13 @@
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
-static void do_encoded_polyline_test(char * in, char * out)
+static void do_encoded_polyline_test(char * in, int precision, char * out)
 {
 	LWGEOM *g;
 	char * h;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_encoded_polyline(g);
+	h = lwgeom_to_encoded_polyline(g, precision);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -38,13 +38,13 @@ static void do_encoded_polyline_test(char * in, char * out)
 }
 
 
-static void do_encoded_polyline_unsupported(char * in, char * out)
+static void do_encoded_polyline_unsupported(char * in, int precision, char * out)
 {
 	LWGEOM *g;
 	char *h;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_encoded_polyline(g);
+	h = lwgeom_to_encoded_polyline(g, precision);
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
@@ -62,11 +62,13 @@ static void out_encoded_polyline_test_geoms(void)
 	/* Linestring */
 	do_encoded_polyline_test(
 	    "LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)",
+	    5,
 	    "_p~iF~ps|U_ulLnnqC_mqNvxq`@");
 
 	/* MultiPoint */
 	do_encoded_polyline_test(
 	    "MULTIPOINT(-120.2 38.5,-120.95 40.7)",
+	    5,
 	    "_p~iF~ps|U_ulLnnqC");
 }
 
@@ -76,11 +78,13 @@ static void out_encoded_polyline_test_srid(void)
 	/* SRID - with PointArray */
 	do_encoded_polyline_test(
 	    "SRID=4326;LINESTRING(0 1,2 3)",
+	    5,
 	    "_ibE?_seK_seK");
 
 	/* wrong SRID */
 	do_encoded_polyline_test(
 	    "SRID=4327;LINESTRING(0 1,2 3)",
+	    5,
 	    "_ibE?_seK_seK");
 }
 

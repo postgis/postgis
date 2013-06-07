@@ -16,7 +16,7 @@
 #include "../postgis_config.h"
 
 LWGEOM*
-lwgeom_from_encoded_polyline(const char *encodedpolyline)
+lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
 {
   LWGEOM *geom = NULL;
   POINTARRAY *pa = NULL;
