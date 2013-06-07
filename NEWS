@@ -205,6 +205,7 @@ PostGIS 2.1.0
   - #2307, ST_MakeValid outputs invalid geometries
   - #2309, Remove confusing INFO message when trying to get SRS info
   - #2348, Provide raster upgrade path for 2.0 to 2.1
+  - #2351, st_distance between geographies wrong
 
 PostGIS 2.0.3
 2013/03/01

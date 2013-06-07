@@ -1170,7 +1170,10 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 
 	/* Zero length edge, */
 	if ( geographic_point_equals(&(e->start), &(e->end)) )
+	{
+        *closest = e->start;
 		return sphere_distance(&(e->start), gp);
+	}
 
 	robust_cross_product(&(e->start), &(e->end), &n);
 	normalize(&n);

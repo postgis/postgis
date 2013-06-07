@@ -702,6 +702,15 @@ static void test_edge_distance_to_point(void)
 	CU_ASSERT_DOUBLE_EQUAL(closest.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(closest.lon, 0.0, 0.00001);
 
+	/* Ticket #2351 */
+     edge_set(149.386990599235, -26.3567415843982, 149.386990599247, -26.3567415843965, &e);
+	point_set(149.386990599235, -26.3567415843982, &g);
+	d = edge_distance_to_point(&e, &g, &closest);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+    // printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
+    // printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, closest.lat, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		 
 }
 
 static void test_edge_distance_to_edge(void)
@@ -1175,6 +1184,14 @@ static void test_lwgeom_distance_sphere(void)
 	lwg2 = lwgeom_from_hexwkb("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 23630.8003, 0.1);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+    /* Ticket #2351 */
+	lwg1 = lwgeom_from_wkt("LINESTRING(149.386990599235 -26.3567415843982,149.386990599247 -26.3567415843965)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(149.386990599235 -26.3567415843982)", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
