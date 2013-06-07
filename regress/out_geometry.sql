@@ -84,6 +84,7 @@ SELECT 'kml_projection_01', ST_AsKML(ST_GeomFromEWKT('SRID=102189;POINT(1000000 
 SELECT 'encoded_polyline_01', ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
 SELECT 'encoded_polyline_02', ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;MULTIPOINT(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
 SELECT 'encoded_polyline_03', ST_AsEncodedPolyline(GeomFromEWKT('LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
+SELECT 'encoded_polyline_04', ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.234467 38.5,-120.95 40.7343495,-126.453 43.252)'), 6);
 
 --
 -- SVG

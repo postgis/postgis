@@ -58,18 +58,19 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	int *delta = malloc(2*sizeof(int)*pa->npoints);
 	char *encoded_polyline = NULL;
 	stringbuffer_t *sb;
+	double scale = pow(10,precision);
 
 	/* Take the double value and multiply it by 1e5, rounding the result */
 	prevPoint = getPoint2d_cp(pa, 0);
-	delta[0] = (int)(prevPoint->y*1e5);
-	delta[1] = (int)(prevPoint->x*1e5);
+	delta[0] = (int)(prevPoint->y*scale);
+	delta[1] = (int)(prevPoint->x*scale);
 
 	/*  points only include the offset from the previous point */
 	for (i=1; i<pa->npoints; i++)
 	{
 		const POINT2D *point = getPoint2d_cp(pa, i);
-		delta[2*i] = (int)(point->y*1e5) - (int)(prevPoint->y*1e5);
-		delta[(2*i)+1] = (int)(point->x*1e5) - (int)(prevPoint->x*1e5);
+		delta[2*i] = (int)(point->y*scale) - (int)(prevPoint->y*scale);
+		delta[(2*i)+1] = (int)(point->x*scale) - (int)(prevPoint->x*scale);
 		prevPoint = point;
 	}
 

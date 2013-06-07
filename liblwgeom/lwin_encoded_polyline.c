@@ -22,6 +22,7 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
   POINTARRAY *pa = NULL;
   int length = strlen(encodedpolyline);
   int idx = 0;
+	double scale = pow(10,precision);
 
   float latitude = 0.0f;
   float longitude = 0.0f;
@@ -52,8 +53,8 @@ lwgeom_from_encoded_polyline(const char *encodedpolyline, int precision)
     longitude += deltaLon;
 
     POINT2D pt;
-    pt.x = longitude * 1E-5;
-    pt.y = latitude * 1E-5;
+    pt.x = longitude/scale;
+    pt.y = latitude/scale;
     ptarray_append_point(pa, &pt, LW_FALSE);
   }
 

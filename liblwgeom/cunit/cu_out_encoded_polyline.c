@@ -88,6 +88,22 @@ static void out_encoded_polyline_test_srid(void)
 	    "_ibE?_seK_seK");
 }
 
+static void out_encoded_polyline_test_precision(void)
+{
+
+	/* Linestring */
+	do_encoded_polyline_test(
+	    "LINESTRING(-120.2 38.53354789,-120.95446664 40.7,-126.45322 -120.954466644666)",
+	    7,
+	    "kj_~}U_wvjjw@sohih@rtnkMke}ts^zod{gB");
+
+	/* MultiPoint */
+	do_encoded_polyline_test(
+	    "MULTIPOINT(-120.2 38.5,-120.95 40.7)",
+	    3,
+	    "gejAnwiFohCzm@");
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -95,6 +111,7 @@ CU_TestInfo out_encoded_polyline_tests[] =
 {
 	PG_TEST(out_encoded_polyline_test_geoms),
 	PG_TEST(out_encoded_polyline_test_srid),
+	PG_TEST(out_encoded_polyline_test_precision),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_encoded_polyline_suite = {"Encoded Polyline Out Suite",  NULL,  NULL, out_encoded_polyline_tests};
