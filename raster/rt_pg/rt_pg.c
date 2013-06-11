@@ -647,7 +647,7 @@ LIMIT 1
 	len = sizeof(char) * (strlen("SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
-		elog(ERROR, "rtpg_getSR: Unable to allocate memory for sql\n");
+		elog(ERROR, "rtpg_getSR: Could not allocate memory for sql\n");
 		return NULL;
 	}
 
@@ -691,7 +691,7 @@ LIMIT 1
 			len = strlen(tmp) + 1;
 			srs = SPI_palloc(sizeof(char) * len);
 			if (NULL == srs) {
-				elog(ERROR, "rtpg_getSR: Unable to allocate memory for spatial reference text\n");
+				elog(ERROR, "rtpg_getSR: Could not allocate memory for spatial reference text\n");
 				pfree(tmp);
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_finish();
@@ -713,7 +713,7 @@ LIMIT 1
 
 	/* unable to get SR info */
 	if (srs == NULL) {
-		elog(ERROR, "rtpg_getSR: Unable to find a viable spatial reference for SRID (%d)", srid);
+		elog(ERROR, "rtpg_getSR: Could not find a viable spatial reference for SRID (%d)", srid);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		return NULL;
@@ -2509,7 +2509,7 @@ static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init() {
 
 	arg = palloc(sizeof(struct rtpg_dumpvalues_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_dumpvalues_arg_init: Unable to allocate memory for arguments");
+		elog(ERROR, "rtpg_dumpvalues_arg_init: Could not allocate memory for arguments");
 		return NULL;
 	}
 
@@ -2633,7 +2633,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		/* initialize arg1 */
 		arg1 = rtpg_dumpvalues_arg_init();
 		if (arg1 == NULL) {
-			elog(ERROR, "RASTER_dumpValues: Unable to initialize argument structure");
+			elog(ERROR, "RASTER_dumpValues: Could not initialize argument structure");
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -2664,7 +2664,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 			if (arg1->nbands == NULL) {
-				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for band indexes");
+				elog(ERROR, "RASTER_dumpValues: Could not allocate memory for band indexes");
 				rtpg_dumpvalues_arg_destroy(arg1);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -2690,7 +2690,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			if (j < arg1->numbands) {
 				arg1->nbands = repalloc(arg1->nbands, sizeof(int) * j);
 				if (arg1->nbands == NULL) {
-					elog(ERROR, "RASTER_dumpValues: Unable to reallocate memory for band indexes");
+					elog(ERROR, "RASTER_dumpValues: Could not reallocate memory for band indexes");
 					rtpg_dumpvalues_arg_destroy(arg1);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -2719,7 +2719,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
 			if (arg1->nbands == NULL) {
-				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for band indexes");
+				elog(ERROR, "RASTER_dumpValues: Could not allocate memory for band indexes");
 				rtpg_dumpvalues_arg_destroy(arg1);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -2745,7 +2745,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		arg1->values = palloc(sizeof(Datum *) * arg1->numbands);
 		arg1->nodata = palloc(sizeof(bool *) * arg1->numbands);
 		if (arg1->values == NULL || arg1->nodata == NULL) {
-			elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+			elog(ERROR, "RASTER_dumpValues: Could not allocate memory for pixel values");
 			rtpg_dumpvalues_arg_destroy(arg1);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -2759,7 +2759,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		for (z = 0; z < arg1->numbands; z++) {
 			band = rt_raster_get_band(raster, arg1->nbands[z]);
 			if (!band) {
-				elog(ERROR, "RASTER_dumpValues: Unable to get band at index %d", arg1->nbands[z] + 1);
+				elog(ERROR, "RASTER_dumpValues: Could not get band at index %d", arg1->nbands[z] + 1);
 				rtpg_dumpvalues_arg_destroy(arg1);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -2771,7 +2771,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			arg1->values[z] = palloc(sizeof(Datum) * arg1->rows * arg1->columns);
 			arg1->nodata[z] = palloc(sizeof(bool) * arg1->rows * arg1->columns);
 			if (arg1->values[z] == NULL || arg1->nodata[z] == NULL) {
-				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+				elog(ERROR, "RASTER_dumpValues: Could not allocate memory for pixel values");
 				rtpg_dumpvalues_arg_destroy(arg1);
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -2794,7 +2794,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 				for (x = 0; x < arg1->columns; x++) {
 					/* get pixel */
 					if (rt_band_get_pixel(band, x, y, &val, &isnodata) != ES_NONE) {
-						elog(ERROR, "RASTER_dumpValues: Unable to pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
+						elog(ERROR, "RASTER_dumpValues: Could not pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
 						rtpg_dumpvalues_arg_destroy(arg1);
 						rt_raster_destroy(raster);
 						PG_FREE_IF_COPY(pgraster, 0);
@@ -3172,7 +3172,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	numpixval = num;
 	pixval = palloc(sizeof(struct pixelvalue) * numpixval);
 	if (pixval == NULL) {
-		elog(ERROR, "RASTER_setPixelValuesArray: Unable to allocate memory for new pixel values");
+		elog(ERROR, "RASTER_setPixelValuesArray: Could not allocate memory for new pixel values");
 		pfree(elements);
 		pfree(nulls);
 		rt_raster_destroy(raster);
@@ -3432,7 +3432,7 @@ struct rtpg_setvaluesgv_geomval_t {
 static rtpg_setvaluesgv_arg rtpg_setvaluesgv_arg_init() {
 	rtpg_setvaluesgv_arg arg = palloc(sizeof(struct rtpg_setvaluesgv_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_setvaluesgv_arg_init: Unable to allocate memory for function arguments");
+		elog(ERROR, "rtpg_setvaluesgv_arg_init: Could not allocate memory for function arguments");
 		return NULL;
 	}
 
@@ -3624,7 +3624,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	/* init arg */
 	arg = rtpg_setvaluesgv_arg_init();
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to intialize argument structure");
+		elog(ERROR, "RASTER_setPixelValuesGeomval: Could not intialize argument structure");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -3632,7 +3632,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 	arg->gv = palloc(sizeof(struct rtpg_setvaluesgv_geomval_t) * n);
 	if (arg->gv == NULL) {
-		elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to allocate memory for geomval array");
+		elog(ERROR, "RASTER_setPixelValuesGeomval: Could not allocate memory for geomval array");
 		rtpg_setvaluesgv_arg_destroy(arg);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -3671,7 +3671,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		gser = (GSERIALIZED *) PG_DETOAST_DATUM(tupv);
 		arg->gv[arg->ngv].geom = lwgeom_from_gserialized(gser);
 		if (arg->gv[arg->ngv].geom == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to deserialize geometry of geomval at index %d", i);
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not deserialize geometry of geomval at index %d", i);
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -3732,7 +3732,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		}
 
 		if (arg->gv[arg->ngv].mask == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to rasterize geometry of geomval at index %d", i);
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not rasterize geometry of geomval at index %d", i);
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -3759,7 +3759,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	if (arg->ngv < n) {
 		arg->gv = repalloc(arg->gv, sizeof(struct rtpg_setvaluesgv_geomval_t) * arg->ngv);
 		if (arg->gv == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to reallocate memory for geomval array");
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not reallocate memory for geomval array");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -3803,7 +3803,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				getPoint2d_p(point->point, 0, &p);
 
 				if (rt_raster_geopoint_to_cell(raster, p.x, p.y, &(xy[0]), &(xy[1]), igt) != ES_NONE) {
-					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to process coordinates of point");
+					elog(ERROR, "RASTER_setPixelValuesGeomval: Could not process coordinates of point");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -3821,7 +3821,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 				/* get pixel value */
 				if (rt_band_get_pixel(band, xy[0], xy[1], &value, &isnodata) != ES_NONE) {
-					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to get pixel value");
+					elog(ERROR, "RASTER_setPixelValuesGeomval: Could not get pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -3839,7 +3839,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 					noerr = rt_band_set_pixel(band, xy[0], xy[1], arg->gv[i].pixval.value, NULL);
 
 				if (noerr != ES_NONE) {
-					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to set pixel value");
+					elog(ERROR, "RASTER_setPixelValuesGeomval: Could not set pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -3857,7 +3857,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		/* init itrset */
 		itrset = palloc(sizeof(struct rt_iterator_t) * (arg->ngv + 1));
 		if (itrset == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to allocate memory for iterator arguments");
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not allocate memory for iterator arguments");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -3890,7 +3890,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		pfree(itrset);
 
 		if (noerr != ES_NONE) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to run raster iterator function");
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not run raster iterator function");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -3900,7 +3900,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		/* copy band from _raster to raster */
 		_band = rt_raster_get_band(_raster, 0);
 		if (_band == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to get band from working raster");
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not get band from working raster");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(_raster);
 			rt_raster_destroy(raster);
@@ -3910,7 +3910,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 		_band = rt_raster_replace_band(raster, _band, nband - 1);
 		if (_band == NULL) {
-			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to replace band in output raster");
+			elog(ERROR, "RASTER_setPixelValuesGeomval: Could not replace band in output raster");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(_raster);
 			rt_raster_destroy(raster);
@@ -4443,7 +4443,7 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 		if (count < 1) {
 			/* error */
 			if (count < 0)
-				elog(NOTICE, "Unable to get the pixels of search values for band at index %d", nband);
+				elog(NOTICE, "Could not get the pixels of search values for band at index %d", nband);
 			/* no nearest pixel */
 			else
 				elog(NOTICE, "No pixels of search values found for band at index %d", nband);
@@ -4621,7 +4621,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		&x, &y,
 		NULL
 	) != ES_NONE) {
-		elog(ERROR, "RASTER_nearestValue: Unable to compute pixel coordinates from spatial coordinates");
+		elog(ERROR, "RASTER_nearestValue: Could not compute pixel coordinates from spatial coordinates");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		lwgeom_free(lwgeom);
@@ -4635,7 +4635,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		(y >= 0 && y < rt_raster_get_height(raster))
 	) {
 		if (rt_band_get_pixel(band, x, y, &value, &isnodata) != ES_NONE) {
-			elog(ERROR, "RASTER_nearestValue: Unable to get pixel value for band at index %d", bandindex);
+			elog(ERROR, "RASTER_nearestValue: Could not get pixel value for band at index %d", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			lwgeom_free(lwgeom);
@@ -4667,7 +4667,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 	if (count < 1) {
 		/* error */
 		if (count < 0)
-			elog(NOTICE, "Unable to get the nearest value for band at index %d", bandindex);
+			elog(NOTICE, "Could not get the nearest value for band at index %d", bandindex);
 		/* no nearest pixel */
 		else
 			elog(NOTICE, "No nearest value found for band at index %d", bandindex);
@@ -4690,7 +4690,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 			/* convex-hull of pixel */
 			poly = rt_raster_pixel_as_polygon(raster, npixels[i].x, npixels[i].y);
 			if (!poly) {
-				elog(ERROR, "RASTER_nearestValue: Unable to get polygon of neighboring pixel");
+				elog(ERROR, "RASTER_nearestValue: Could not get polygon of neighboring pixel");
 				lwgeom_free(lwgeom);
 				PG_FREE_IF_COPY(geom, 2);
 				rt_raster_destroy(raster);
@@ -4841,7 +4841,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		);
 		/* error */
 		if (count < 0) {
-			elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
+			elog(NOTICE, "Could not get the pixel's neighborhood for band at index %d", bandindex);
 			
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
@@ -4862,7 +4862,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			&pixval,
 			&isnodata
 		) != ES_NONE) {
-			elog(NOTICE, "Unable to get the pixel of band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Could not get the pixel of band at index %d. Returning NULL", bandindex);
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -4889,7 +4889,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	else
 		npixels = (rt_pixel) palloc(sizeof(struct rt_pixel_t));
 	if (npixels == NULL) {
-		elog(ERROR, "RASTER_neighborhood: Unable to reallocate memory for neighborhood");
+		elog(ERROR, "RASTER_neighborhood: Could not reallocate memory for neighborhood");
 
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
@@ -4924,7 +4924,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	);
 	pfree(npixels);
 	if (count != ES_NONE) {
-		elog(NOTICE, "Unable to create 2D array of neighborhood");
+		elog(NOTICE, "Could not create 2D array of neighborhood");
 		PG_RETURN_NULL();
 	}
 
@@ -4933,7 +4933,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	nodata1D = palloc(sizeof(bool) * dim[0] * dim[1]);
 
 	if (value1D == NULL || nodata1D == NULL) {
-		elog(ERROR, "RASTER_neighborhood: Unable to allocate memory for return 2D array");
+		elog(ERROR, "RASTER_neighborhood: Could not allocate memory for return 2D array");
 
 		for (i = 0; i < dim[0]; i++) {
 			pfree(value2D[i]);
@@ -5058,7 +5058,7 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 	/* allocate addbandarg */
 	arg = (struct addbandarg *) palloc(sizeof(struct addbandarg) * n);
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_addBand: Unable to allocate memory for addbandarg");
+		elog(ERROR, "RASTER_addBand: Could not allocate memory for addbandarg");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -5528,7 +5528,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 
 		srcnband = palloc(sizeof(int) * numsrcnband);
 		if (srcnband == NULL) {
-			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			elog(ERROR, "RASTER_addBandOutDB: Could not allocate memory for band indexes");
 			if (pgraster != NULL) {
 				rt_raster_destroy(raster);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -5553,7 +5553,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		if (j < numsrcnband) {
 			srcnband = repalloc(srcnband, sizeof(int) * j);
 			if (srcnband == NULL) {
-				elog(ERROR, "RASTER_addBandOutDB: Unable to reallocate memory for band indexes");
+				elog(ERROR, "RASTER_addBandOutDB: Could not reallocate memory for band indexes");
 				if (pgraster != NULL) {
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -5638,7 +5638,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 				elog(INFO, "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
 		}
 		else
-			elog(INFO, "Unable to get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+			elog(INFO, "Could not get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
 	}
 
 	/* some raster info */
@@ -5671,7 +5671,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		numsrcnband = numbands;
 		srcnband = palloc(sizeof(int) * numsrcnband);
 		if (srcnband == NULL) {
-			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			elog(ERROR, "RASTER_addBandOutDB: Could not allocate memory for band indexes");
 			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
@@ -5702,7 +5702,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		hbandOut = NULL;
 		hbandOut = GDALGetRasterBand(hdsOut, srcnband[i]);
 		if (NULL == hbandOut) {
-			elog(ERROR, "RASTER_addBandOutDB: Unable to get band %d from GDAL dataset", srcnband[i]);
+			elog(ERROR, "RASTER_addBandOutDB: Could not get band %d from GDAL dataset", srcnband[i]);
 			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
@@ -5737,7 +5737,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 			srcnband[i] - 1, outdbfile
 		);
 		if (band == NULL) {
-			elog(ERROR, "RASTER_addBandOutDB: Unable to create new out-db band");
+			elog(ERROR, "RASTER_addBandOutDB: Could not create new out-db band");
 			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
@@ -5747,7 +5747,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 		}
 
 		if (rt_raster_add_band(raster, band, j) < 0) {
-			elog(ERROR, "RASTER_addBandOutDB: Unable to add new out-db band to raster");
+			elog(ERROR, "RASTER_addBandOutDB: Could not add new out-db band to raster");
 			GDALClose(hdsOut);
 			if (raster != NULL)
 				rt_raster_destroy(raster);
@@ -5841,7 +5841,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		/* allocate arg1 */
 		arg1 = palloc(sizeof(struct tile_arg_t));
 		if (arg1 == NULL) {
-			elog(ERROR, "RASTER_tile: Unable to allocate memory for arguments");
+			elog(ERROR, "RASTER_tile: Could not allocate memory for arguments");
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -5934,7 +5934,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 			if (arg1->nbands == NULL) {
-				elog(ERROR, "RASTER_tile: Unable to allocate memory for band indexes");
+				elog(ERROR, "RASTER_tile: Could not allocate memory for band indexes");
 				rt_raster_destroy(arg1->raster.raster);
 				pfree(arg1);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -5960,7 +5960,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			if (j < arg1->numbands) {
 				arg1->nbands = repalloc(arg1->nbands, sizeof(int) * j);
 				if (arg1->nbands == NULL) {
-					elog(ERROR, "RASTER_tile: Unable to reallocate memory for band indexes");
+					elog(ERROR, "RASTER_tile: Could not reallocate memory for band indexes");
 					rt_raster_destroy(arg1->raster.raster);
 					pfree(arg1);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -5991,7 +5991,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
 				if (arg1->nbands == NULL) {
-					elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+					elog(ERROR, "RASTER_dumpValues: Could not allocate memory for pixel values");
 					rt_raster_destroy(arg1->raster.raster);
 					pfree(arg1);
 					PG_FREE_IF_COPY(pgraster, 0);
@@ -6125,7 +6125,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		/* upper-left of tile in spatial coordinates */
 		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE) {
-			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
+			elog(ERROR, "RASTER_tile: Could not compute the coordinates of the upper-left corner of the output tile");
 			rt_raster_destroy(tile);
 			rt_raster_destroy(arg2->raster.raster);
 			if (arg2->numbands) pfree(arg2->nbands);
@@ -6147,7 +6147,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 			_band = rt_raster_get_band(arg2->raster.raster, arg2->nbands[i]);
 			if (_band == NULL) {
-				elog(ERROR, "RASTER_tile: Unable to get band %d from source raster", arg2->nbands[i] + 1);
+				elog(ERROR, "RASTER_tile: Could not get band %d from source raster", arg2->nbands[i] + 1);
 				rt_raster_destroy(tile);
 				rt_raster_destroy(arg2->raster.raster);
 				if (arg2->numbands) pfree(arg2->nbands);
@@ -6169,7 +6169,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			/* inline band */
 			if (!rt_band_is_offline(_band)) {
 				if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
-					elog(ERROR, "RASTER_tile: Unable to add new band to output tile");
+					elog(ERROR, "RASTER_tile: Could not add new band to output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);
@@ -6178,7 +6178,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				}
 				band = rt_raster_get_band(tile, i);
 				if (band == NULL) {
-					elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
+					elog(ERROR, "RASTER_tile: Could not get newly added band from output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					if (arg2->numbands) pfree(arg2->nbands);
@@ -6203,7 +6203,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 					POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
 					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != ES_NONE) {
-						elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
+						elog(ERROR, "RASTER_tile: Could not get pixel line from source raster");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
 						if (arg2->numbands) pfree(arg2->nbands);
@@ -6212,7 +6212,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					}
 
 					if (nvals && rt_band_set_pixel_line(band, 0, j, vals, nvals) != ES_NONE) {
-						elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
+						elog(ERROR, "RASTER_tile: Could not set pixel line of output tile");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
 						if (arg2->numbands) pfree(arg2->nbands);
@@ -6234,7 +6234,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				);
 
 				if (band == NULL) {
-					elog(ERROR, "RASTER_tile: Unable to create new offline band for output tile");
+					elog(ERROR, "RASTER_tile: Could not create new offline band for output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					if (arg2->numbands) pfree(arg2->nbands);
@@ -6243,7 +6243,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				}
 
 				if (rt_raster_add_band(tile, band, i) < 0) {
-					elog(ERROR, "RASTER_tile: Unable to add new offline band to output tile");
+					elog(ERROR, "RASTER_tile: Could not add new offline band to output tile");
 					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
@@ -6761,7 +6761,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     if (initexpr != NULL && strstr(initexpr, "[rast") == NULL) {
         ret = SPI_connect();
         if (ret != SPI_OK_CONNECT) {
-            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to connect to the SPI manager."
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not connect to the SPI manager."
                 " Aborting");
             PG_FREE_IF_COPY(pgraster, 0);
             PG_RETURN_NULL();
@@ -6910,7 +6910,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         /* define values */
         values = (Datum *) palloc(sizeof(Datum) * argcount);
         if (values == NULL) {
-            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for value parameters of prepared statement");
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not allocate memory for value parameters of prepared statement");
 
             SPI_finish();
 
@@ -6924,7 +6924,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         /* define nulls */
         nulls = (char *)palloc(argcount);
         if (nulls == NULL) {
-            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for null parameters of prepared statement");
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not allocate memory for null parameters of prepared statement");
 
             SPI_finish();
 
@@ -6938,7 +6938,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         /* Connect to SPI and prepare the expression */
         ret = SPI_connect();
         if (ret != SPI_OK_CONNECT) {
-            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to connect to the SPI manager."
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not connect to the SPI manager."
                 " Aborting");
 
             if (initexpr)
@@ -7733,7 +7733,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (NULL == stats) {
-		elog(NOTICE, "Unable to compute summary statistics for band at index %d. Returning NULL", bandindex);
+		elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
 		PG_RETURN_NULL();
 	}
 
@@ -7878,7 +7878,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
-		elog(ERROR, "RASTER_summaryStatsCoverage: Unable to allocate memory for sql\n");
+		elog(ERROR, "RASTER_summaryStatsCoverage: Could not allocate memory for sql\n");
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		PG_RETURN_NULL();
@@ -7904,7 +7904,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 		datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 		if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-			elog(ERROR, "RASTER_summaryStatsCoverage: Unable to get raster of coverage\n");
+			elog(ERROR, "RASTER_summaryStatsCoverage: Could not get raster of coverage\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_cursor_close(portal);
@@ -7969,7 +7969,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 
 		if (NULL == stats) {
-			elog(NOTICE, "Unable to compute summary statistics for band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_cursor_close(portal);
@@ -7984,7 +7984,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			if (NULL == rtn) {
 				rtn = (rt_bandstats) SPI_palloc(sizeof(struct rt_bandstats_t));
 				if (NULL == rtn) {
-					elog(ERROR, "RASTER_summaryStatsCoverage: Unable to allocate memory for summary stats of coverage\n");
+					elog(ERROR, "RASTER_summaryStatsCoverage: Could not allocate memory for summary stats of coverage\n");
 
 					if (SPI_tuptable) SPI_freetuptable(tuptable);
 					SPI_cursor_close(portal);
@@ -8026,7 +8026,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	SPI_finish();
 
 	if (NULL == rtn) {
-		elog(ERROR, "RASTER_summaryStatsCoverage: Unable to compute coverage summary stats\n");
+		elog(ERROR, "RASTER_summaryStatsCoverage: Could not compute coverage summary stats\n");
 		PG_RETURN_NULL();
 	}
 
@@ -8272,12 +8272,12 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == stats || NULL == stats->values) {
-			elog(NOTICE, "Unable to compute summary statistics for band at index %d", bandindex);
+			elog(NOTICE, "Could not compute summary statistics for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
-			elog(NOTICE, "Unable to compute histogram for band at index %d as the band has no values", bandindex);
+			elog(NOTICE, "Could not compute histogram for band at index %d as the band has no values", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -8287,7 +8287,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (bin_width_count) pfree(bin_width);
 		pfree(stats);
 		if (NULL == hist || !count) {
-			elog(NOTICE, "Unable to compute histogram for band at index %d", bandindex);
+			elog(NOTICE, "Could not compute histogram for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -8560,7 +8560,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		len = sizeof(char) * (strlen("SELECT min, max FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for sql\n");
+			elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for sql\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
@@ -8629,7 +8629,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for sql\n");
+			elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for sql\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
@@ -8661,7 +8661,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-				elog(ERROR, "RASTER_histogramCoverage: Unable to get raster of coverage\n");
+				elog(ERROR, "RASTER_histogramCoverage: Could not get raster of coverage\n");
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -8738,7 +8738,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 
 			if (NULL == stats) {
-				elog(NOTICE, "Unable to compute summary statistics for band at index %d. Returning NULL", bandindex);
+				elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -8756,7 +8756,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, min, max, &count);
 				pfree(stats);
 				if (NULL == hist || !count) {
-					elog(NOTICE, "Unable to compute histogram for band at index %d", bandindex);
+					elog(NOTICE, "Could not compute histogram for band at index %d", bandindex);
 
 					if (SPI_tuptable) SPI_freetuptable(tuptable);
 					SPI_cursor_close(portal);
@@ -8775,7 +8775,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (NULL == covhist) {
 					covhist = (rt_histogram) SPI_palloc(sizeof(struct rt_histogram_t) * count);
 					if (NULL == covhist) {
-						elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for histogram of coverage");
+						elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for histogram of coverage");
 
 						pfree(hist);
 						if (SPI_tuptable) SPI_freetuptable(tuptable);
@@ -9060,7 +9060,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
-			elog(NOTICE, "Unable to compute quantiles for band at index %d as the band has no values", bandindex);
+			elog(NOTICE, "Could not compute quantiles for band at index %d as the band has no values", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -9070,7 +9070,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (quantiles_count) pfree(quantiles);
 		pfree(stats);
 		if (NULL == quant || !count) {
-			elog(NOTICE, "Unable to compute quantiles for band at index %d", bandindex);
+			elog(NOTICE, "Could not compute quantiles for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -9324,7 +9324,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		len = sizeof(char) * (strlen("SELECT count FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
+			elog(ERROR, "RASTER_quantileCoverage: Could not allocate memory for sql\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
@@ -9371,7 +9371,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
+			elog(ERROR, "RASTER_quantileCoverage: Could not allocate memory for sql\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
@@ -9403,7 +9403,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-				elog(ERROR, "RASTER_quantileCoverage: Unable to get raster of coverage\n");
+				elog(ERROR, "RASTER_quantileCoverage: Could not get raster of coverage\n");
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -9473,7 +9473,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 
 			if (NULL == covquant || !count) {
-				elog(NOTICE, "Unable to compute quantiles for band at index %d", bandindex);
+				elog(NOTICE, "Could not compute quantiles for band at index %d", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -9713,7 +9713,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == vcnts || !count) {
-			elog(NOTICE, "Unable to count the values for band at index %d", bandindex);
+			elog(NOTICE, "Could not count the values for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -9950,7 +9950,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
-			elog(ERROR, "RASTER_valueCountCoverage: Unable to allocate memory for sql\n");
+			elog(ERROR, "RASTER_valueCountCoverage: Could not allocate memory for sql\n");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
@@ -9982,7 +9982,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-				elog(ERROR, "RASTER_valueCountCoverage: Unable to get raster of coverage\n");
+				elog(ERROR, "RASTER_valueCountCoverage: Could not get raster of coverage\n");
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -10057,7 +10057,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 			if (NULL == vcnts || !count) {
-				elog(NOTICE, "Unable to count the values for band at index %d", bandindex);
+				elog(NOTICE, "Could not count the values for band at index %d", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -10075,7 +10075,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (NULL == covvcnts) {
 				covvcnts = (rt_valuecount) SPI_palloc(sizeof(struct rt_valuecount_t) * count);
 				if (NULL == covvcnts) {
-					elog(ERROR, "RASTER_valueCountCoverage: Unable to allocate memory for value counts of coverage");
+					elog(ERROR, "RASTER_valueCountCoverage: Could not allocate memory for value counts of coverage");
 
 					if (SPI_tuptable) SPI_freetuptable(tuptable);
 					SPI_cursor_close(portal);
@@ -10113,7 +10113,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 						covcount++;
 						covvcnts = SPI_repalloc(covvcnts, sizeof(struct rt_valuecount_t) * covcount);
 						if (NULL == covvcnts) {
-							elog(ERROR, "RASTER_valueCountCoverage: Unable to change allocated memory for value counts of coverage");
+							elog(ERROR, "RASTER_valueCountCoverage: Could not change allocated memory for value counts of coverage");
 
 							if (SPI_tuptable) SPI_freetuptable(tuptable);
 							SPI_cursor_close(portal);
@@ -10771,7 +10771,7 @@ rtpg_colormap_arg_init() {
 
 	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		elog(ERROR, "rtpg_colormap_arg: Could not allocate memory for function arguments");
 		return NULL;
 	}
 
@@ -10782,7 +10782,7 @@ rtpg_colormap_arg_init() {
 
 	arg->colormap = palloc(sizeof(struct rt_colormap_t));
 	if (arg->colormap == NULL) {
-		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		elog(ERROR, "rtpg_colormap_arg: Could not allocate memory for function arguments");
 		return NULL;
 	}
 	arg->colormap->nentry = 0;
@@ -10849,7 +10849,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 	/* init arg */
 	arg = rtpg_colormap_arg_init();
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_colorMap: Unable to initialize argument structure");
+		elog(ERROR, "RASTER_colorMap: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
 
@@ -10876,7 +10876,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 
 		raster = rt_raster_clone(arg->raster, 0);
 		if (raster == NULL) {
-			elog(ERROR, "RASTER_colorMap: Unable to create empty raster");
+			elog(ERROR, "RASTER_colorMap: Could not create empty raster");
 			rtpg_colormap_arg_destroy(arg);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -10897,7 +10897,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 	/* get band */
 	arg->band = rt_raster_get_band(arg->raster, arg->nband - 1);
 	if (arg->band == NULL) {
-		elog(ERROR, "RASTER_colorMap: Unable to get band at index %d", arg->nband);
+		elog(ERROR, "RASTER_colorMap: Could not get band at index %d", arg->nband);
 		rtpg_colormap_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -10957,7 +10957,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 		arg->entry = rtpg_strsplit(colormap, "\n", &(arg->nentry));
 		pfree(colormap);
 		if (arg->nentry < 1) {
-			elog(ERROR, "RASTER_colorMap: Unable to process the value provided for colormap");
+			elog(ERROR, "RASTER_colorMap: Could not process the value provided for colormap");
 			rtpg_colormap_arg_destroy(arg);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -10966,7 +10966,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 		/* allocate the max # of colormap entries */
 		arg->colormap->entry = palloc(sizeof(struct rt_colormap_entry_t) * arg->nentry);
 		if (arg->colormap->entry == NULL) {
-			elog(ERROR, "RASTER_colorMap: Unable to allocate memory for colormap entries");
+			elog(ERROR, "RASTER_colorMap: Could not allocate memory for colormap entries");
 			rtpg_colormap_arg_destroy(arg);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -10997,7 +10997,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 			arg->element = rtpg_strsplit(_entry, " ", &(arg->nelement));
 			pfree(_entry);
 			if (arg->nelement < 2) {
-				elog(ERROR, "RASTER_colorMap: Unable to process colormap entry %d", i + 1);
+				elog(ERROR, "RASTER_colorMap: Could not process colormap entry %d", i + 1);
 				rtpg_colormap_arg_destroy(arg);
 				PG_FREE_IF_COPY(pgraster, 0);
 				PG_RETURN_NULL();
@@ -11051,7 +11051,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 							
 							arg->bandstats = rt_band_get_summary_stats(arg->band, 1, 1, 0, NULL, NULL, NULL);
 							if (arg->bandstats == NULL) {
-								elog(ERROR, "RASTER_colorMap: Unable to get band's summary stats to process percentages");
+								elog(ERROR, "RASTER_colorMap: Could not get band's summary stats to process percentages");
 								pfree(_element);
 								rtpg_colormap_arg_destroy(arg);
 								PG_FREE_IF_COPY(pgraster, 0);
@@ -11062,7 +11062,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 						/* get the string before the percent char */
 						tmp = palloc(sizeof(char) * (percent - _element + 1));
 						if (tmp == NULL) {
-							elog(ERROR, "RASTER_colorMap: Unable to allocate memory for value of percentage");
+							elog(ERROR, "RASTER_colorMap: Could not allocate memory for value of percentage");
 							pfree(_element);
 							rtpg_colormap_arg_destroy(arg);
 							PG_FREE_IF_COPY(pgraster, 0);
@@ -11078,7 +11078,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 						value = strtod(tmp, NULL);
 						pfree(tmp);
 						if (errno != 0 || _element == junk) {
-							elog(ERROR, "RASTER_colorMap: Unable to process percent string to value");
+							elog(ERROR, "RASTER_colorMap: Could not process percent string to value");
 							pfree(_element);
 							rtpg_colormap_arg_destroy(arg);
 							PG_FREE_IF_COPY(pgraster, 0);
@@ -11104,7 +11104,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 						errno = 0;
 						arg->colormap->entry[arg->colormap->nentry].value = strtod(_element, &junk);
 						if (errno != 0 || _element == junk) {
-							elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+							elog(ERROR, "RASTER_colorMap: Could not process string to value");
 							pfree(_element);
 							rtpg_colormap_arg_destroy(arg);
 							PG_FREE_IF_COPY(pgraster, 0);
@@ -11120,7 +11120,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 					errno = 0;
 					value = (int) strtod(_element, &junk);
 					if (errno != 0 || _element == junk) {
-						elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+						elog(ERROR, "RASTER_colorMap: Could not process string to value");
 						pfree(_element);
 						rtpg_colormap_arg_destroy(arg);
 						PG_FREE_IF_COPY(pgraster, 0);
@@ -11161,7 +11161,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 	/* call colormap */
 	raster = rt_raster_colormap(arg->raster, arg->nband - 1, arg->colormap);
 	if (raster == NULL) {
-		elog(ERROR, "RASTER_colorMap: Unable to create new raster with applied colormap");
+		elog(ERROR, "RASTER_colorMap: Could not create new raster with applied colormap");
 		rtpg_colormap_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -13094,7 +13094,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_intersects: Unable to test for intersection on the two rasters");
+		elog(ERROR, "RASTER_intersects: Could not test for intersection on the two rasters");
 		PG_RETURN_NULL();
 	}
 
@@ -13213,7 +13213,7 @@ Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_overlaps: Unable to test for overlap on the two rasters");
+		elog(ERROR, "RASTER_overlaps: Could not test for overlap on the two rasters");
 		PG_RETURN_NULL();
 	}
 
@@ -13332,7 +13332,7 @@ Datum RASTER_touches(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_touches: Unable to test for touch on the two rasters");
+		elog(ERROR, "RASTER_touches: Could not test for touch on the two rasters");
 		PG_RETURN_NULL();
 	}
 
@@ -13451,7 +13451,7 @@ Datum RASTER_contains(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_contains: Unable to test that the first raster contains the second raster");
+		elog(ERROR, "RASTER_contains: Could not test that the first raster contains the second raster");
 		PG_RETURN_NULL();
 	}
 
@@ -13570,7 +13570,7 @@ Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_containsProperly: Unable to test that the first raster contains properly the second raster");
+		elog(ERROR, "RASTER_containsProperly: Could not test that the first raster contains properly the second raster");
 		PG_RETURN_NULL();
 	}
 
@@ -13689,7 +13689,7 @@ Datum RASTER_covers(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_covers: Unable to test that the first raster covers the second raster");
+		elog(ERROR, "RASTER_covers: Could not test that the first raster covers the second raster");
 		PG_RETURN_NULL();
 	}
 
@@ -13808,7 +13808,7 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_coveredby: Unable to test that the first raster is covered by the second raster");
+		elog(ERROR, "RASTER_coveredby: Could not test that the first raster is covered by the second raster");
 		PG_RETURN_NULL();
 	}
 
@@ -13949,7 +13949,7 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_dwithin: Unable to test that the two rasters are within the specified distance of each other");
+		elog(ERROR, "RASTER_dwithin: Could not test that the two rasters are within the specified distance of each other");
 		PG_RETURN_NULL();
 	}
 
@@ -14090,7 +14090,7 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_dfullywithin: Unable to test that the two rasters are fully within the specified distance of each other");
+		elog(ERROR, "RASTER_dfullywithin: Could not test that the two rasters are fully within the specified distance of each other");
 		PG_RETURN_NULL();
 	}
 
@@ -14153,7 +14153,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_sameAlignment: Unable to test for alignment on the two rasters");
+		elog(ERROR, "RASTER_sameAlignment: Could not test for alignment on the two rasters");
 		PG_RETURN_NULL();
 	}
 
@@ -14221,7 +14221,7 @@ Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS)
 	}
 
 	if (rtn != ES_NONE) {
-		elog(ERROR, "RASTER_notSameAlignmentReason: Unable to test for alignment on the two rasters");
+		elog(ERROR, "RASTER_notSameAlignmentReason: Could not test for alignment on the two rasters");
 		PG_RETURN_NULL();
 	}
 
@@ -14363,7 +14363,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 		raster = rt_raster_new(0, 0);
 		if (raster == NULL) {
-			elog(ERROR, "RASTER_mapAlgebra2: Unable to create empty raster");
+			elog(ERROR, "RASTER_mapAlgebra2: Could not create empty raster");
 			for (k = 0; k < set_count; k++) {
 				if (rast[k] != NULL)
 					rt_raster_destroy(rast[k]);
@@ -14415,7 +14415,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			_dim[j][1]
 		);
 		if (_rast[i] == NULL) {
-			elog(ERROR, "RASTER_mapAlgebra2: Unable to create nodata raster");
+			elog(ERROR, "RASTER_mapAlgebra2: Could not create nodata raster");
 			rt_raster_destroy(_rast[j]);
 			for (k = 0; k < set_count; k++)	{
 				if (pgrastpos[k] != -1)
@@ -14454,7 +14454,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	/* same alignment */
 	if (rt_raster_same_alignment(_rast[0], _rast[1], &aligned, NULL) != ES_NONE) {
-		elog(ERROR, "RASTER_mapAlgebra2: Unable to test for alignment on the two rasters");
+		elog(ERROR, "RASTER_mapAlgebra2: Could not test for alignment on the two rasters");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
@@ -14505,7 +14505,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		&raster, _offset
 	);
 	if (err != ES_NONE) {
-		elog(ERROR, "RASTER_mapAlgebra2: Unable to get output raster of correct extent");
+		elog(ERROR, "RASTER_mapAlgebra2: Could not get output raster of correct extent");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
@@ -14588,7 +14588,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 					raster = rt_raster_new(0, 0);
 					if (raster == NULL) {
-						elog(ERROR, "RASTER_mapAlgebra2: Unable to create no band raster");
+						elog(ERROR, "RASTER_mapAlgebra2: Could not create no band raster");
 						for (k = 0; k < set_count; k++) {
 							if (_rast[k] != NULL)
 								rt_raster_destroy(_rast[k]);
@@ -14663,7 +14663,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 		_band[i] = rt_raster_get_band(_rast[i], bandindex[i] - 1);
 		if (_band[i] == NULL) {
-			elog(ERROR, "RASTER_mapAlgebra2: Unable to get band %d of the %s raster",
+			elog(ERROR, "RASTER_mapAlgebra2: Could not get band %d of the %s raster",
 				bandindex[i],
 				(i < 1 ? "FIRST" : "SECOND")
 			);
@@ -14713,7 +14713,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		1, nodataval,
 		0
 	) < 0) {
-		elog(ERROR, "RASTER_mapAlgebra2: Unable to add new band to output raster");
+		elog(ERROR, "RASTER_mapAlgebra2: Could not add new band to output raster");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
@@ -14727,7 +14727,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* get output band */
 	band = rt_raster_get_band(raster, 0);
 	if (band == NULL) {
-		elog(ERROR, "RASTER_mapAlgebra2: Unable to get newly added band of output raster");
+		elog(ERROR, "RASTER_mapAlgebra2: Could not get newly added band of output raster");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
@@ -14770,7 +14770,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 			/* connect SPI */
 			if (SPI_connect() != SPI_OK_CONNECT) {
-				elog(ERROR, "RASTER_mapAlgebra2: Unable to connect to the SPI manager");
+				elog(ERROR, "RASTER_mapAlgebra2: Could not connect to the SPI manager");
 				for (k = 0; k < set_count; k++) {
 					if (_rast[k] != NULL)
 						rt_raster_destroy(_rast[k]);
@@ -14819,7 +14819,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
 					sql = (char *) palloc(len + 1);
 					if (sql == NULL) {
-						elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for expression parameter %d", spi_exprpos[i]);
+						elog(ERROR, "RASTER_mapAlgebra2: Could not allocate memory for expression parameter %d", spi_exprpos[i]);
 
 						for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 						SPI_finish();
@@ -14846,7 +14846,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					if (spi_argcount[i]) {
 						argtype = (Oid *) palloc(spi_argcount[i] * sizeof(Oid));
 						if (argtype == NULL) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for prepared plan argtypes of expression parameter %d", spi_exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Could not allocate memory for prepared plan argtypes of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -14888,7 +14888,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						pfree(argtype);
 
 						if (spi_plan[i] == NULL) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to create prepared plan of expression parameter %d", spi_exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Could not create prepared plan of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -14909,7 +14909,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					else {
 						err = SPI_execute(sql, TRUE, 0);
 						if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to evaluate expression parameter %d", spi_exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Could not evaluate expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -14933,7 +14933,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 						datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 						if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to get result of expression parameter %d", spi_exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Could not get result of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							if (SPI_tuptable) SPI_freetuptable(tuptable);
@@ -15091,7 +15091,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					) {
 						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]), &isnodata);
 						if (err != ES_NONE) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
+							elog(ERROR, "RASTER_mapAlgebra2: Could not get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
 
 							if (calltype == TEXTOID) {
 								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -15231,7 +15231,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 							datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 							if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-								elog(ERROR, "RASTER_mapAlgebra2: Unable to get result of prepared statement %d", i);
+								elog(ERROR, "RASTER_mapAlgebra2: Could not get result of prepared statement %d", i);
 
 								if (SPI_tuptable) SPI_freetuptable(tuptable);
 								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -15312,7 +15312,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				/* burn pixel if haspixel != 0 */
 				if (haspixel) {
 					if (rt_band_set_pixel(band, x, y, pixel, NULL) != ES_NONE) {
-						elog(ERROR, "RASTER_mapAlgebra2: Unable to set pixel value of output raster");
+						elog(ERROR, "RASTER_mapAlgebra2: Could not set pixel value of output raster");
 
 						if (calltype == TEXTOID) {
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
@@ -15996,7 +15996,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 
 	arg = palloc(sizeof(struct rtpg_nmapalgebra_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_nmapalgebra_arg_init: Unable to allocate memory for arguments");
+		elog(ERROR, "rtpg_nmapalgebra_arg_init: Could not allocate memory for arguments");
 		return 0;
 	}
 
@@ -16102,7 +16102,7 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 		arg->nband == NULL ||
 		arg->hasband == NULL
 	) {
-		elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Unable to allocate memory for processing rastbandarg");
+		elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Could not allocate memory for processing rastbandarg");
 		return 0;
 	}
 
@@ -16215,7 +16215,7 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 			arg->nband == NULL ||
 			arg->hasband == NULL
 		) {
-			elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Unable to reallocate memory for processed rastbandarg");
+			elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Could not reallocate memory for processed rastbandarg");
 			return 0;
 		}
 	}
@@ -16267,7 +16267,7 @@ static int rtpg_nmapalgebra_callback(
 	_values = palloc(sizeof(Datum) * arg->rasters * arg->rows * arg->columns);
 	_nodata = palloc(sizeof(bool) * arg->rasters * arg->rows * arg->columns);
 	if (_values == NULL || _nodata == NULL) {
-		elog(ERROR, "rtpg_nmapalgebra_callback: Unable to allocate memory for values array");
+		elog(ERROR, "rtpg_nmapalgebra_callback: Could not allocate memory for values array");
 		return 0;
 	}
 
@@ -16309,7 +16309,7 @@ static int rtpg_nmapalgebra_callback(
 	_pos = palloc(sizeof(Datum) * (arg->rasters + 1) * 2);
 	_null = palloc(sizeof(bool) * (arg->rasters + 1) * 2);
 	if (_pos == NULL || _null == NULL) {
-		elog(ERROR, "rtpg_nmapalgebra_callback: Unable to allocate memory for position array");
+		elog(ERROR, "rtpg_nmapalgebra_callback: Could not allocate memory for position array");
 		pfree(mdValues);
 		return 0;
 	}
@@ -16402,13 +16402,13 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	/* init argument struct */
 	arg = rtpg_nmapalgebra_arg_init();
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to initialize argument structure");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
 
 	/* let helper function process rastbandarg (0) */
 	if (!rtpg_nmapalgebra_rastbandarg_process(arg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to process rastbandarg");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not process rastbandarg");
 		rtpg_nmapalgebra_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
@@ -16478,7 +16478,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 			raster = rt_raster_new(0, 0);
 			if (raster == NULL) {
-				elog(ERROR, "RASTER_nMapAlgebra: Unable to create empty raster");
+				elog(ERROR, "RASTER_nMapAlgebra: Could not create empty raster");
 				PG_RETURN_NULL();
 			}
 
@@ -16507,7 +16507,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 		raster = rt_raster_new(0, 0);
 		if (raster == NULL) {
-			elog(ERROR, "RASTER_nMapAlgebra: Unable to create empty raster");
+			elog(ERROR, "RASTER_nMapAlgebra: Could not create empty raster");
 			PG_RETURN_NULL();
 		}
 
@@ -16617,7 +16617,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	/* init itrset */
 	itrset = palloc(sizeof(struct rt_iterator_t) * arg->numraster);
 	if (itrset == NULL) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not allocate memory for iterator arguments");
 		rtpg_nmapalgebra_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
@@ -16646,7 +16646,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	rtpg_nmapalgebra_arg_destroy(arg);
 
 	if (noerr != ES_NONE) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to run raster iterator function");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not run raster iterator function");
 		PG_RETURN_NULL();
 	}
 	else if (raster == NULL)
@@ -16705,13 +16705,13 @@ static rtpg_nmapalgebraexpr_arg rtpg_nmapalgebraexpr_arg_init(int cnt, char **kw
 
 	arg = palloc(sizeof(struct rtpg_nmapalgebraexpr_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arguments");
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Could not allocate memory for arguments");
 		return NULL;
 	}
 
 	arg->bandarg = rtpg_nmapalgebra_arg_init();
 	if (arg->bandarg == NULL) {
-		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arg->bandarg");
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Could not allocate memory for arg->bandarg");
 		return NULL;
 	}
 
@@ -16724,7 +16724,7 @@ static rtpg_nmapalgebraexpr_arg rtpg_nmapalgebraexpr_arg_init(int cnt, char **kw
 		arg->callback.expr[i].spi_argcount = 0;
 		arg->callback.expr[i].spi_argpos = palloc(cnt * sizeof(uint8_t));
 		if (arg->callback.expr[i].spi_argpos == NULL) {
-			elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for spi_argpos");
+			elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Could not allocate memory for spi_argpos");
 			return NULL;
 		}
 		memset(arg->callback.expr[i].spi_argpos, 0, sizeof(uint8_t) * cnt);
@@ -16943,7 +16943,7 @@ static int rtpg_nmapalgebraexpr_callback(
 
 		datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 		if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Unable to get result of prepared statement %d", id);
+			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Could not get result of prepared statement %d", id);
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			return 0;
 		}
@@ -17027,13 +17027,13 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	/* init argument struct */
 	arg = rtpg_nmapalgebraexpr_arg_init(argkwcount, argkw);
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to initialize argument structure");
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
 
 	/* let helper function process rastbandarg (0) */
 	if (!rtpg_nmapalgebra_rastbandarg_process(arg->bandarg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to process rastbandarg");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not process rastbandarg");
 		rtpg_nmapalgebraexpr_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
@@ -17110,7 +17110,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 
 		raster = rt_raster_new(0, 0);
 		if (raster == NULL) {
-			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create empty raster");
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Could not create empty raster");
 			PG_RETURN_NULL();
 		}
 
@@ -17124,7 +17124,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 
 	/* connect SPI */
 	if (SPI_connect() != SPI_OK_CONNECT) {
-		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to connect to the SPI manager");
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Could not connect to the SPI manager");
 		rtpg_nmapalgebraexpr_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
@@ -17170,7 +17170,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 		len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
 		sql = (char *) palloc(len + 1);
 		if (sql == NULL) {
-			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for expression parameter %d", exprpos[i]);
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Could not allocate memory for expression parameter %d", exprpos[i]);
 			rtpg_nmapalgebraexpr_arg_destroy(arg);
 			SPI_finish();
 			PG_RETURN_NULL();
@@ -17188,7 +17188,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 			Oid *argtype = (Oid *) palloc(arg->callback.expr[i].spi_argcount * sizeof(Oid));
 			POSTGIS_RT_DEBUGF(3, "expression parameter %d is a prepared plan", exprpos[i]);
 			if (argtype == NULL) {
-				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Could not allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
 				pfree(sql);
 				rtpg_nmapalgebraexpr_arg_destroy(arg);
 				SPI_finish();
@@ -17221,7 +17221,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 			pfree(sql);
 
 			if (arg->callback.expr[i].spi_plan == NULL) {
-				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create prepared plan of expression parameter %d", exprpos[i]);
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Could not create prepared plan of expression parameter %d", exprpos[i]);
 				rtpg_nmapalgebraexpr_arg_destroy(arg);
 				SPI_finish();
 				PG_RETURN_NULL();
@@ -17234,7 +17234,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 			pfree(sql);
 
 			if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to evaluate expression parameter %d", exprpos[i]);
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Could not evaluate expression parameter %d", exprpos[i]);
 				rtpg_nmapalgebraexpr_arg_destroy(arg);
 				SPI_finish();
 				PG_RETURN_NULL();
@@ -17247,7 +17247,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 
 			datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to get result of expression parameter %d", exprpos[i]);
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Could not get result of expression parameter %d", exprpos[i]);
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				rtpg_nmapalgebraexpr_arg_destroy(arg);
 				SPI_finish();
@@ -17304,7 +17304,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	/* init itrset */
 	itrset = palloc(sizeof(struct rt_iterator_t) * numraster);
 	if (itrset == NULL) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not allocate memory for iterator arguments");
 		rtpg_nmapalgebraexpr_arg_destroy(arg);
 		SPI_finish();
 		PG_RETURN_NULL();
@@ -17333,7 +17333,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	rtpg_nmapalgebraexpr_arg_destroy(arg);
 
 	if (err != ES_NONE) {
-		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to run raster iterator function");
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Could not run raster iterator function");
 		SPI_finish();
 		PG_RETURN_NULL();
 	}
@@ -17640,7 +17640,7 @@ static int rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array) {
 	arg->numband = n;
 	arg->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * arg->numband);
 	if (arg->bandarg == NULL) {
-		elog(ERROR, "rtpg_union_unionarg_process: Unable to allocate memory for band information");
+		elog(ERROR, "rtpg_union_unionarg_process: Could not allocate memory for band information");
 		return 0;
 	}
 
@@ -17702,7 +17702,7 @@ static int rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array) {
 	if (arg->numband < n) {
 		arg->bandarg = repalloc(arg->bandarg, sizeof(struct rtpg_union_band_arg_t) * arg->numband);
 		if (arg->bandarg == NULL) {
-			elog(ERROR, "rtpg_union_unionarg_process: Unable to reallocate memory for band information");
+			elog(ERROR, "rtpg_union_unionarg_process: Could not reallocate memory for band information");
 			return 0;
 		}
 	}
@@ -17729,7 +17729,7 @@ static int rtpg_union_noarg(rtpg_union_arg arg, rt_raster raster) {
 	else
 		arg->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * numbands);
 	if (arg->bandarg == NULL) {
-		elog(ERROR, "rtpg_union_noarg: Unable to reallocate memory for band information");
+		elog(ERROR, "rtpg_union_noarg: Could not reallocate memory for band information");
 		return 0;
 	}
 
@@ -17743,7 +17743,7 @@ static int rtpg_union_noarg(rtpg_union_arg arg, rt_raster raster) {
 
 		arg->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * arg->bandarg[i].numraster);
 		if (arg->bandarg[i].raster == NULL) {
-			elog(ERROR, "rtpg_union_noarg: Unable to allocate memory for working rasters");
+			elog(ERROR, "rtpg_union_noarg: Could not allocate memory for working rasters");
 			return 0;
 		}
 		memset(arg->bandarg[i].raster, 0, sizeof(rt_raster) * arg->bandarg[i].numraster);
@@ -17752,7 +17752,7 @@ static int rtpg_union_noarg(rtpg_union_arg arg, rt_raster raster) {
 		if (!rt_raster_is_empty(arg->bandarg[0].raster[0])) {
 			arg->bandarg[i].raster[0] = rt_raster_clone(arg->bandarg[0].raster[0], 0); /* shallow clone */
 			if (arg->bandarg[i].raster[0] == NULL) {
-				elog(ERROR, "rtpg_union_noarg: Unable to create working raster");
+				elog(ERROR, "rtpg_union_noarg: Could not create working raster");
 				return 0;
 			}
 		}
@@ -17817,7 +17817,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 		/* allocate container in aggcontext */
 		iwr = palloc(sizeof(struct rtpg_union_arg_t));
 		if (iwr == NULL) {
-			elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for state variable");
+			elog(ERROR, "RASTER_union_transfn: Could not allocate memory for state variable");
 			MemoryContextSwitchTo(oldcontext);
 			PG_RETURN_NULL();
 		}
@@ -17909,7 +17909,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
 					}
 					if (iwr->bandarg == NULL) {
-						elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for band information");
+						elog(ERROR, "RASTER_union_transfn: Could not allocate memory for band information");
 
 						rtpg_union_arg_destroy(iwr);
 						if (raster != NULL) {
@@ -17963,7 +17963,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					iwr->numband = 1;
 					iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
 					if (iwr->bandarg == NULL) {
-						elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for band information");
+						elog(ERROR, "RASTER_union_transfn: Could not allocate memory for band information");
 
 						rtpg_union_arg_destroy(iwr);
 						if (raster != NULL) {
@@ -17988,7 +17988,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as unionarg");
 					if (!rtpg_union_unionarg_process(iwr, PG_GETARG_ARRAYTYPE_P(2))) {
-						elog(ERROR, "RASTER_union_transfn: Unable to process unionarg");
+						elog(ERROR, "RASTER_union_transfn: Could not process unionarg");
 
 						rtpg_union_arg_destroy(iwr);
 						if (raster != NULL) {
@@ -18031,7 +18031,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 			iwr->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
 			if (iwr->bandarg[i].raster == NULL) {
-				elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for working raster(s)");
+				elog(ERROR, "RASTER_union_transfn: Could not allocate memory for working raster(s)");
 
 				rtpg_union_arg_destroy(iwr);
 				if (raster != NULL) {
@@ -18050,7 +18050,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				for (j = 0; j < iwr->bandarg[i].numraster; j++) {
 					iwr->bandarg[i].raster[j] = rt_raster_clone(iwr->bandarg[0].raster[0], 0); /* shallow clone */
 					if (iwr->bandarg[i].raster[j] == NULL) {
-						elog(ERROR, "RASTER_union_transfn: Unable to create working raster");
+						elog(ERROR, "RASTER_union_transfn: Could not create working raster");
 
 						rtpg_union_arg_destroy(iwr);
 						if (raster != NULL) {
@@ -18071,7 +18071,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUG(4, "no additional args, checking input raster");
 		nbnodata = 1;
 		if (!rtpg_union_noarg(iwr, raster)) {
-			elog(ERROR, "RASTER_union_transfn: Unable to check and balance number of bands");
+			elog(ERROR, "RASTER_union_transfn: Could not check and balance number of bands");
 
 			rtpg_union_arg_destroy(iwr);
 			if (raster != NULL) {
@@ -18087,7 +18087,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	/* init itrset */
 	itrset = palloc(sizeof(struct rt_iterator_t) * 2);
 	if (itrset == NULL) {
-		elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_union_transfn: Could not allocate memory for iterator arguments");
 
 		rtpg_union_arg_destroy(iwr);
 		if (raster != NULL) {
@@ -18192,7 +18192,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					ET_UNION,
 					&iraster, _offset 
 				) != ES_NONE) {
-					elog(ERROR, "RASTER_union_transfn: Unable to create internal raster");
+					elog(ERROR, "RASTER_union_transfn: Could not create internal raster");
 
 					pfree(itrset);
 					rtpg_union_arg_destroy(iwr);
@@ -18231,7 +18231,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						hasnodata, nodataval,
 						0
 					) == -1) {
-						elog(ERROR, "RASTER_union_transfn: Unable to add new band to internal raster");
+						elog(ERROR, "RASTER_union_transfn: Could not add new band to internal raster");
 
 						pfree(itrset);
 						rtpg_union_arg_destroy(iwr);
@@ -18257,7 +18257,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 							_dim[0],
 							&vals, &nvals
 						) != ES_NONE) {
-							elog(ERROR, "RASTER_union_transfn: Unable to get pixel line from band of working raster");
+							elog(ERROR, "RASTER_union_transfn: Could not get pixel line from band of working raster");
 
 							pfree(itrset);
 							rtpg_union_arg_destroy(iwr);
@@ -18278,7 +18278,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 							(int) _offset[0], (int) _offset[1] + y,
 							vals, nvals
 						) != ES_NONE) {
-							elog(ERROR, "RASTER_union_transfn: Unable to set pixel line to band of internal raster");
+							elog(ERROR, "RASTER_union_transfn: Could not set pixel line to band of internal raster");
 
 							pfree(itrset);
 							rtpg_union_arg_destroy(iwr);
@@ -18312,7 +18312,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					&_raster
 				);
 				if (noerr != ES_NONE) {
-					elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
+					elog(ERROR, "RASTER_union_transfn: Could not run raster iterator function");
 
 					pfree(itrset);
 					rtpg_union_arg_destroy(iwr);
@@ -18341,7 +18341,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						_dim[0],
 						&vals, &nvals
 					) != ES_NONE) {
-						elog(ERROR, "RASTER_union_transfn: Unable to get pixel line from band of working raster");
+						elog(ERROR, "RASTER_union_transfn: Could not get pixel line from band of working raster");
 
 						pfree(itrset);
 						rtpg_union_arg_destroy(iwr);
@@ -18364,7 +18364,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						(int) _offset[2], (int) _offset[3] + y,
 						vals, nvals
 					) != ES_NONE) {
-						elog(ERROR, "RASTER_union_transfn: Unable to set pixel line to band of internal raster");
+						elog(ERROR, "RASTER_union_transfn: Could not set pixel line to band of internal raster");
 
 						pfree(itrset);
 						rtpg_union_arg_destroy(iwr);
@@ -18405,7 +18405,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				);
 
 				if (noerr != ES_NONE) {
-					elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
+					elog(ERROR, "RASTER_union_transfn: Could not run raster iterator function");
 
 					pfree(itrset);
 					rtpg_union_arg_destroy(iwr);
@@ -18480,7 +18480,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 	/* init itrset */
 	itrset = palloc(sizeof(struct rt_iterator_t) * 2);
 	if (itrset == NULL) {
-		elog(ERROR, "RASTER_union_finalfn: Unable to allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_union_finalfn: Could not allocate memory for iterator arguments");
 		rtpg_union_arg_destroy(iwr);
 		PG_RETURN_NULL();
 	}
@@ -18531,7 +18531,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 			}
 
 			if (noerr != ES_NONE) {
-				elog(ERROR, "RASTER_union_finalfn: Unable to run raster iterator function");
+				elog(ERROR, "RASTER_union_finalfn: Could not run raster iterator function");
 				pfree(itrset);
 				rtpg_union_arg_destroy(iwr);
 				if (_rtn != NULL)
@@ -18569,7 +18569,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 		}
 
 		if (status < 0) {
-			elog(ERROR, "RASTER_union_finalfn: Unable to add band to final raster");
+			elog(ERROR, "RASTER_union_finalfn: Could not add band to final raster");
 			rtpg_union_arg_destroy(iwr);
 			rt_raster_destroy(_rtn);
 			PG_RETURN_NULL();
@@ -18618,7 +18618,7 @@ static rtpg_clip_arg rtpg_clip_arg_init() {
 
 	arg = palloc(sizeof(struct rtpg_clip_arg_t));
 	if (arg == NULL) {
-		elog(ERROR, "rtpg_clip_arg_init: Unable to allocate memory for function arguments");
+		elog(ERROR, "rtpg_clip_arg_init: Could not allocate memory for function arguments");
 		return NULL;
 	}
 
@@ -18708,7 +18708,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	/* init arg */
 	arg = rtpg_clip_arg_init();
 	if (arg == NULL) {
-		elog(ERROR, "RASTER_clip: Unable to initialize argument structure");
+		elog(ERROR, "RASTER_clip: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
 
@@ -18733,7 +18733,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 		rtn = rt_raster_new(0, 0);
 		if (rtn == NULL) {
-			elog(ERROR, "RASTER_clip: Unable to create empty raster");
+			elog(ERROR, "RASTER_clip: Could not create empty raster");
 			PG_RETURN_NULL();
 		}
 
@@ -18779,7 +18779,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	/* get intersection geometry of input raster and input geometry */
 	if (rt_raster_get_convex_hull(arg->raster, &rastgeom) != ES_NONE) {
-		elog(ERROR, "RASTER_clip: Unable to get convex hull of raster");
+		elog(ERROR, "RASTER_clip: Could not get convex hull of raster");
 
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -18805,7 +18805,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 		rtn = rt_raster_new(0, 0);
 		if (rtn == NULL) {
-			elog(ERROR, "RASTER_clip: Unable to create empty raster");
+			elog(ERROR, "RASTER_clip: Could not create empty raster");
 			PG_RETURN_NULL();
 		}
 
@@ -18845,7 +18845,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 		arg->band = palloc(sizeof(struct rtpg_clip_band_t) * arg->numbands);
 		if (arg->band == NULL) {
-			elog(ERROR, "RASTER_clip: Unable to allocate memory for band arguments");
+			elog(ERROR, "RASTER_clip: Could not allocate memory for band arguments");
 			rtpg_clip_arg_destroy(arg);
 			PG_FREE_IF_COPY(pgraster, 0);
 			lwgeom_free(geom);
@@ -18870,7 +18870,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		if (j < arg->numbands) {
 			arg->band = repalloc(arg->band, sizeof(struct rtpg_clip_band_t) * j);
 			if (arg->band == NULL) {
-				elog(ERROR, "RASTER_clip: Unable to reallocate memory for band arguments");
+				elog(ERROR, "RASTER_clip: Could not reallocate memory for band arguments");
 				rtpg_clip_arg_destroy(arg);
 				PG_FREE_IF_COPY(pgraster, 0);
 				lwgeom_free(geom);
@@ -18901,7 +18901,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		if (arg->numbands) {
 			arg->band = palloc(sizeof(struct rtpg_clip_band_t) * arg->numbands);
 			if (arg->band == NULL) {
-				elog(ERROR, "RASTER_clip: Unable to allocate memory for band arguments");
+				elog(ERROR, "RASTER_clip: Could not allocate memory for band arguments");
 
 
 				rtpg_clip_arg_destroy(arg);
@@ -18987,7 +18987,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	pfree(wkb);
 	if (arg->mask == NULL) {
-		elog(ERROR, "RASTER_clip: Unable to rasterize intersection geometry");
+		elog(ERROR, "RASTER_clip: Could not rasterize intersection geometry");
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -19001,7 +19001,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	/* init itrset */
 	itrset = palloc(sizeof(struct rt_iterator_t) * 2);
 	if (itrset == NULL) {
-		elog(ERROR, "RASTER_clip: Unable to allocate memory for iterator arguments");
+		elog(ERROR, "RASTER_clip: Could not allocate memory for iterator arguments");
 		rtpg_clip_arg_destroy(arg);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -19036,7 +19036,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			if (rtn == NULL) {
 				noerr = rt_raster_from_two_rasters(arg->raster, arg->mask, arg->extenttype, &rtn, NULL);
 				if (noerr != ES_NONE) {
-					elog(ERROR, "RASTER_clip: Unable to create output raster");
+					elog(ERROR, "RASTER_clip: Could not create output raster");
 					rtpg_clip_arg_destroy(arg);
 					PG_FREE_IF_COPY(pgraster, 0);
 					PG_RETURN_NULL();
@@ -19045,7 +19045,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 			/* create NODATA band */
 			if (rt_raster_generate_new_band(rtn, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
-				elog(ERROR, "RASTER_clip: Unable to add NODATA band to output raster");
+				elog(ERROR, "RASTER_clip: Could not add NODATA band to output raster");
 				rt_raster_destroy(rtn);
 				rtpg_clip_arg_destroy(arg);
 				PG_FREE_IF_COPY(pgraster, 0);
@@ -19078,7 +19078,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		);
 
 		if (noerr != ES_NONE) {
-			elog(ERROR, "RASTER_clip: Unable to run raster iterator function");
+			elog(ERROR, "RASTER_clip: Could not run raster iterator function");
 			pfree(itrset);
 			rtpg_clip_arg_destroy(arg);
 			if (rtn != NULL) rt_raster_destroy(rtn);
@@ -19093,7 +19093,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		else {
 			band = rt_raster_get_band(_raster, 0);
 			if (band == NULL) {
-				elog(ERROR, "RASTER_clip: Unable to get band from working raster");
+				elog(ERROR, "RASTER_clip: Could not get band from working raster");
 				pfree(itrset);
 				rtpg_clip_arg_destroy(arg);
 				rt_raster_destroy(_raster);
@@ -19103,7 +19103,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			}
 
 			if (rt_raster_add_band(rtn, band, i) < 0) {
-				elog(ERROR, "RASTER_clip: Unable to add new band to output raster");
+				elog(ERROR, "RASTER_clip: Could not add new band to output raster");
 				pfree(itrset);
 				rtpg_clip_arg_destroy(arg);
 				rt_raster_destroy(_raster);
