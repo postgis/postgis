@@ -1251,7 +1251,7 @@ add_overview_constraints(
 		rtdealloc(_tmp);
 		_tmp = strreplace(_ovschema, "'", "''", NULL);
 		rtdealloc(_ovschema);
-		_schema = _tmp;
+		_ovschema = _tmp;
 	}
 
 	/* overview table */
