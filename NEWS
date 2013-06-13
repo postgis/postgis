@@ -14,6 +14,7 @@ PostGIS 2.0.4
   - #2277, potential segfault removed
   - #2307, ST_MakeValid outputs invalid geometries
   - #2351, st_distance between geographies wrong
+  - #2359, Incorrect handling of schema for overview constraints
 
   - Fix build with systemwide liblwgeom installed
 
