@@ -23,7 +23,7 @@ psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisti
 	
 	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
 	
-	<para>For those running PostgreSQL 9.0 or who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
+	<para>For those who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
 	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_minor_version; folder
 		of your PostgreSQL install</para>
 
