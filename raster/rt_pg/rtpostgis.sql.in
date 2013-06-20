@@ -4234,6 +4234,14 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_tpi(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_tpi($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 -----------------------------------------------------------------------
 -- ST_Roughness
 -----------------------------------------------------------------------
@@ -4356,6 +4364,14 @@ CREATE OR REPLACE FUNCTION st_roughness(
 			1, 1);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_roughness(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_roughness($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_TRI
@@ -4499,6 +4515,14 @@ CREATE OR REPLACE FUNCTION st_tri(
 			1, 1);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_tri(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_tri($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

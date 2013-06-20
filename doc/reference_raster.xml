@@ -11476,7 +11476,7 @@ GROUP BY t1.rast;
 							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 							<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter> </paramdef>
 							<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
 						</funcprototype>
 					</funcsynopsis>
@@ -11659,7 +11659,7 @@ GROUP BY t1.rast;
 							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 							<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter> </paramdef>
 							<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
 						</funcprototype>
 					</funcsynopsis>
@@ -11709,7 +11709,7 @@ GROUP BY t1.rast;
 							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 							<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter> </paramdef>
 							<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef> 
 						</funcprototype>
 					</funcsynopsis>

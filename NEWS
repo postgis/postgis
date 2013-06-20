@@ -9,6 +9,8 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
+
  * Bug Fixes *
 
 PostGIS 2.1.0
