@@ -485,6 +485,9 @@ Available GDAL raster formats:
 				<listitem>
 					<para><varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to run the <xref linkend="RT_DropRasterConstraints" /> function before load and then reapply constraints with <xref linkend="RT_AddRasterConstraints"  /> after load. </para>
 				</listitem>
+				<listitem>
+					<para><varname>spatial_index</varname> A boolean that is true if raster column has a spatial index.</para>
+				</listitem>
 			 </itemizedlist>
         </sect2>
         <sect2 id="RT_Raster_Overviews">
