@@ -150,6 +150,7 @@ PostGIS 2.1.0
   - Additional default values for parameters of ST_Aspect and ST_HillShade
   - #2178, ST_Summary now advertises presence of known srid with an [S] flag
   - #2202, Make libjson-c optional (--without-json configure switch)
+  - #2213, Add support libjson-c 0.10+
   - #2231, raster2pgsql supports user naming of filename column with -n
   - #2200, ST_Union(raster, uniontype) unions all bands of all rasters
   - #2264, postgis_restore.pl support for restoring into databases
