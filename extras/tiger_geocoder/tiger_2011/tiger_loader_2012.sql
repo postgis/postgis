@@ -290,7 +290,7 @@ SELECT
 ' ||
 	-- State level files - if an override website is specified we use that instead of variable one
 	array_to_string( ARRAY(SELECT 'cd ' || replace(variables.staging_fold,'/', platform.path_sep) || '
-' || platform.wget || ' ' || COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  ) || '/*_' || s.state_fips || '* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html 
+' || platform.wget || ' ' || COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  ) || '/tl_*_' || s.state_fips || '_* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html 
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name) ), 'http://', ''),'ftp://','')    || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '.zip ') || '
