@@ -48,6 +48,7 @@
 
 #include "../../postgis_config.h"
 
+#include "utils/guc.h"
 #include "lwgeom_pg.h"
 #include "rt_pg.h"
 #include "pgsql_compat.h"
@@ -69,18 +70,8 @@
  */
 PG_MODULE_MAGIC;
 
-/*
- * Module load callback
- */
+/* Module load callback */
 void _PG_init(void);
-void
-_PG_init(void)
-{
-    /* Install liblwgeom handlers */
-    pg_install_lwgeom_handlers();
-
-    /* TODO: Install raster callbacks (see rt_init_allocators) */
-}
 
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
@@ -99,6 +90,9 @@ static char **rtpg_strsplit(const char *str, const char *delimiter, int *n);
 static char *rtpg_removespaces(char *str);
 static char *rtpg_trim(const char* input);
 static char *rtpg_getSR(int srid);
+
+static char *gdaldatapath;
+static void rtpg_assignHookGDALDataPath(const char *newpath, void *extra);
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -393,6 +387,31 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS);
 /* raster clip */
 Datum RASTER_clip(PG_FUNCTION_ARGS);
 
+/* Module load callback */
+void
+_PG_init(void) {
+	/* Install liblwgeom handlers */
+	pg_install_lwgeom_handlers();
+
+	/* TODO: Install raster callbacks (see rt_init_allocators)??? */
+
+	/* Define custom GUC variables. */
+	DefineCustomStringVariable(
+		"postgis.gdal.datapath", /* name */
+		"Path to GDAL data files.", /* short_desc */
+		"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
+		&gdaldatapath, /* valueAddr */
+		NULL, /* bootValue */
+		PGC_SUSET, /* GucContext context */
+		0, /* int flags */
+#if POSTGIS_PGSQL_VERSION >= 91
+		NULL, /* GucStringCheckHook check_hook */
+#endif
+		rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
+		NULL  /* GucShowHook show_hook */
+	);
+}
+
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -618,8 +637,7 @@ rtpg_trim(const char *input) {
 }
 
 static char*
-rtpg_getSR(int srid)
-{
+rtpg_getSR(int srid) {
 	int i = 0;
 	int len = 0;
 	char *sql = NULL;
@@ -722,6 +740,21 @@ LIMIT 1
 	}
 
 	return srs;
+}
+
+static void
+rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
+	POSTGIS_RT_DEBUGF(4, "newpath = %s", newpath);
+
+	/* clear finder cache */
+	CPLFinderClean();
+
+	/* clear cached OSR */
+	OSRCleanup();
+
+	/* set GDAL_DATA */
+	CPLSetConfigOption("GDAL_DATA", newpath);
+	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", NULL));
 }
 
 PG_FUNCTION_INFO_V1(RASTER_lib_version);

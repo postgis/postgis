@@ -10,6 +10,8 @@ PostGIS 2.2.0
  * Enhancements *
 
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
+  - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
+    variable GDAL_DATA
   - #2361, Added spatial_index column to raster_columns view
 
  * Bug Fixes *
