@@ -11,8 +11,8 @@
 # **********************************************************************
 
 CC = @CC@
-CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ @JSON_CPPFLAGS@
-LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LDFLAGS@
+CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ @JSON_CFLAGS@
+LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LIBS@
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
 prefix = @prefix@

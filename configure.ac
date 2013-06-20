@@ -743,66 +743,12 @@ dnl ===========================================================================
 dnl Detect if json-c installed
 dnl ===========================================================================
 
-CHECK_JSON=yes
-HAVE_JSON=no
-AC_SUBST([HAVE_JSON])
+PKG_CHECK_MODULES(JSON, [ json-c >= 0.11 ], [HAVE_JSON=yes],
+                        [PKG_CHECK_MODULES(JSON, [ json >= 0.9 ], [HAVE_JSON=yes], [HAVE_JSON=no])])
 
-AC_ARG_WITH([json],
-	[AS_HELP_STRING([--without-json], [build without json-c support])],
-	[CHECK_JSON="$withval"], [])
-
-if test "$CHECK_JSON" != "no"; then dnl {
-
-AC_ARG_WITH([jsondir],
-	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
-	[JSONDIR="$withval"], [JSONDIR=])
-
-if test ! "x$JSONDIR" = "x"; then
-	dnl Make sure that the directory exists
-	if test "x$JSONDIR" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
-	else
-		dnl We need (libjson.so OR libjson.a OR libjson.dll) AND json/json.h
-		if test ! -e "${JSONDIR}/include/json/json.h" -o \
-		        ! \( -e "${JSONDIR}/lib/libjson.so" -o \
-		            -e "${JSONDIR}/lib/libjson.dll" -o \
-		            -e "${JSONDIR}/lib/libjson.dylib" -o \
-		            -e "${JSONDIR}/bin/libjson.dll" -o \
-		            -e "${JSONDIR}/lib/libjson.a" \) 
-		then
-			AC_MSG_ERROR([Cannot find json dev files in "$JSONDIR"])
-		fi
-		AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
-
-		dnl Add the include directory to JSON_CPPFLAGS
-		JSON_CPPFLAGS="-I$JSONDIR/include"
-		JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
-	fi
-fi
-
-dnl Check that we can find the json/json.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [])	
-CPPFLAGS="$CPPFLAGS_SAVE"
-
-dnl Ensure we can link against libjson
-LIBS_SAVE="$LIBS"
-LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes], [], [])
-LIBS="$LIBS_SAVE"
-
-if test "$HAVE_JSON" = "yes"; then
-	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-    if test "x$JSON_LDFLAGS" = "x"; then
-        JSON_LDFLAGS="-ljson"
-    fi
-fi
-
-AC_SUBST([JSON_CPPFLAGS])
-AC_SUBST([JSON_LDFLAGS])
-
-fi dnl }
+AC_SUBST([HAVE_JSON]) 
+AC_SUBST([JSON_CFLAGS])
+AC_SUBST([JSON_LIBS])
 
 dnl ===========================================================================
 dnl Detect GTK+2.0 for GUI
