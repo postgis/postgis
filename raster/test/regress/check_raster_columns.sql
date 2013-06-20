@@ -2,7 +2,7 @@
 -- $Id$
 --
 -- Copyright (c) 2010 Mateusz Loskot <mateusz@loskot.net>
--- Copyright (C) 2011 Regents of the University of California
+-- Copyright (C) 2011 - 2013 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -105,6 +105,26 @@ SELECT make_test_raster(0, 3, 3, 1, 0);
 
 SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
 SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+
+-- check spatial_index
+SELECT
+	CASE
+		WHEN spatial_index IS FALSE
+			THEN NULL
+		ELSE FALSE
+	END
+FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+CREATE INDEX test_raster_columns_rast_gist
+	ON test_raster_columns
+	USING gist
+	(st_convexhull(rast));
+SELECT
+	CASE
+		WHEN spatial_index IS FALSE
+			THEN FALSE
+		ELSE NULL
+	END
+FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 -- ticket #2215
 CREATE TABLE test_raster_columns_2 AS
