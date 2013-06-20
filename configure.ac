@@ -789,7 +789,9 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 dnl Ensure we can link against libjson
 LIBS_SAVE="$LIBS"
 LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes], [], [])
+AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="-ljson-c"], [
+  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="-ljson"], [], [])
+], [])
 LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "yes"; then
