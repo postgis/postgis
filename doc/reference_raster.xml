@@ -335,6 +335,68 @@ VALUES (1,
 
   </sect1>
 
+	<sect1 id="Raster_Config">
+		<sect1info>
+			<abstract>
+				<para>
+					This section lists the configuration variables available to control the behavior of raster functions. 
+				</para>	
+			</abstract>
+		</sect1info>
+
+		<title>Raster Configuration Options</title>
+
+		<refentry id="postgis_gdal_datapath">
+			<refnamediv>
+				<refname>postgis.gdal.datapath</refname>
+				<refpurpose>
+					A configuration option to assign the value of GDAL's GDAL_DATA option.
+				</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A PostgreSQL GUC variable for setting the value of GDAL's GDAL_DATA option. The <varname>postgis.gdal.datapath</varname> value should be the complete physical path to GDAL's data files.
+				</para>
+				<para>
+					This configuration option is of most use for Windows platforms where GDAL's data files path is not hard-coded. This option should also be set when GDAL's data files are not located in GDAL's expected path.
+				</para>
+
+				<note>
+					<para>
+						This option can be set in PostgreSQL's configuration file postgresql.conf. It can also be set by connection or transaction.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Additional information about GDAL_DATA is available at GDAL's <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</ulink>.
+					</para>
+				</note>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>Set and reset <varname>postgis.gdal.datapath</varname></para>
+
+				<programlisting>
+SET postgis.gdal.datapath TO '/usr/local/share/gdal.hidden';
+SET postgis.gdal.datapath TO default;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_PostGIS_GDAL_Version" />
+				</para>
+			</refsection>
+		</refentry>
+
+  </sect1>
+
   <sect1 id="Raster_Management_Functions">
   	<title>Raster Management</title>
   	<refentry id="RT_AddRasterConstraints">
@@ -704,6 +766,44 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 	  </refsection>
 	</refentry>
 	
+		<refentry id="RT_PostGIS_GDAL_Version">
+			<refnamediv>
+				<refname>PostGIS_GDAL_Version</refname>
+				<refpurpose>Reports the version of the GDAL library in use by PostGIS.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> 
+						<paramdef></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Reports the version of the GDAL library in use by PostGIS. Will also check and report if GDAL can find its data files.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT PostGIS_GDAL_Version();
+       postgis_gdal_version        
+-----------------------------------
+ GDAL 1.11dev, released 2013/04/13
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="postgis_gdal_datapath" />
+				</para>
+			</refsection>
+		</refentry>
+
 	<refentry id="RT_PostGIS_Raster_Lib_Build_Date">
 	  <refnamediv>
 		<refname>PostGIS_Raster_Lib_Build_Date</refname>
@@ -787,7 +887,7 @@ postgis_raster_lib_version
 	  </refsection>
 	  
 	</refentry>
-	
+
 	<refentry id="RT_ST_GDALDrivers">
 	  <refnamediv>
 		<refname>ST_GDALDrivers</refname>
