@@ -776,7 +776,7 @@ if test ! "x$JSONDIR" = "x"; then
 
 		dnl Add the include directory to JSON_CPPFLAGS
 		JSON_CPPFLAGS="-I$JSONDIR/include"
-		JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
+		JSON_LDFLAGS="-L$JSONDIR/lib"
 	fi
 fi
 
@@ -789,16 +789,13 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 dnl Ensure we can link against libjson
 LIBS_SAVE="$LIBS"
 LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="-ljson-c"], [
-  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="-ljson"], [], [])
+AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"], [
+  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"], [], [])
 ], [])
 LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "yes"; then
 	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-    if test "x$JSON_LDFLAGS" = "x"; then
-        JSON_LDFLAGS="-ljson"
-    fi
 fi
 
 AC_SUBST([JSON_CPPFLAGS])
