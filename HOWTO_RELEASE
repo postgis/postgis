@@ -47,8 +47,8 @@ Release procedure
       postgis/sql_bits/postgis--unpackages.sql.in
       postgis_topology/sql_bits/topology_unpackaged.sql.in
       postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
-6) Tag trunk:  
-   svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
+6) Tag branch:  
+   svn copy http://svn.osgeo.org/postgis/branch/x.x http://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
 8) Update Version.config as specified in Versioning Scheme above.
@@ -80,7 +80,7 @@ Release procedure
     - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
 
-16) Push the revision number in trunk forward if necessary
+16) Push the revision number forward if necessary
 17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
 
 

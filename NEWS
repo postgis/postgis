@@ -205,6 +205,7 @@ PostGIS 2.1.0
   - #2282, Fix call to undefined function nd_stats_to_grid() in debug mode
   - #2307, ST_MakeValid outputs invalid geometries
   - #2309, Remove confusing INFO message when trying to get SRS info
+  - #2336, FIPS 20 (KS) causes wildcard expansion to wget all files
   - #2348, Provide raster upgrade path for 2.0 to 2.1
   - #2351, st_distance between geographies wrong
   - #2359, Fix handling of schema name when adding overview constraints
