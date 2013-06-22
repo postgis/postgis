@@ -94,6 +94,13 @@
 			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
+		
+		<varlistentry>
+			<term>Mateusz Loskot</term>
+			<listitem>
+			  <para>CMake support for PostGIS, built original raster loader in python and low level raster api functions</para>
+			</listitem>
+		</varlistentry>	
 				
 		<varlistentry>
 			<term>Pierre Racine</term>
@@ -137,13 +144,6 @@
 		  functions.</para>
 		</listitem>
 		</varlistentry>
-		
-		<varlistentry>
-			<term>Mateusz Loskot</term>
-			<listitem>
-			  <para>Raster loader, low level raster api functions</para>
-			</listitem>
-		</varlistentry>	  
 		
 		<varlistentry>
 		<term>Jeff Lounsbury</term>
