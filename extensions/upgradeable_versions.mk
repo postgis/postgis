@@ -6,4 +6,4 @@ UPGRADEABLE_VERSIONS = \
     2.1.0SVN \
 	2.1.0beta1 \
 	2.1.0beta2 \
-	2.1.0beta3dev
+	2.1.0beta3
