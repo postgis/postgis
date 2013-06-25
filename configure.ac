@@ -1055,7 +1055,7 @@ if test "x$with_raster" != "xno"; then
 
 		dnl Extract the linker and include flags 
 		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
-		LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
+		dnl LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
 		LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
 
 		CPPFLAGS_SAVE="$CPPFLAGS"
