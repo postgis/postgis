@@ -48,7 +48,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_simplify.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
-	regress/topogeo_addlinestring \
+	regress/topogeo_addlinestring.sql \
 	regress/topogeo_addpoint.sql \
 	regress/topogeo_addpolygon.sql \
 	regress/topogeometry_type.sql \
@@ -68,7 +68,9 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/layertrigger.sql \
 	regress/validatetopology.sql
 
-regress/topogeo_addlinestring: Makefile
+TESTS_EXPECTED = $(TESTS:.sql=_expected)
+
+regress/topogeo_addlinestring_expected: Makefile
 ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 338),1)
 	cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
 else
@@ -76,7 +78,7 @@ else
 endif
 	
 
-check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS)
+check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
 	$(MAKE) -C ../../regress staged-install
 	$(PERL) ../../regress/run_test.pl --topology $(RUNTESTFLAGS) $(TESTS)
 	$(PERL) ../../regress/run_test.pl --upgrade --topology $(RUNTESTFLAGS) $(TESTS)
