@@ -3,6 +3,10 @@ ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 point_1|SRID=4326;POINT(1 2)
+point_1a|SRID=4326;POINT(1 2)
+point_1b|SRID=4326;POINT(1 2)
+point_1c|SRID=4326;POINT(1 2)
+point_1d|SRID=4326;POINT(1 2)
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 linestring_1|SRID=4326;LINESTRING(1 2,3 4)
@@ -47,7 +51,7 @@ ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 coordinates_12|SRID=4326;LINESTRING(1 2,3 4)
 coordinates_13|SRID=4326;LINESTRING(1 2,3 4)
-ERROR:  invalid KML representation
+coordinates_14|SRID=4326;LINESTRING(1 2,3 4)
 coordinates_15|SRID=4326;LINESTRING(1 2,3 4)
 coordinates_16|SRID=4326;LINESTRING(1 2,3 4)
 ERROR:  invalid KML representation
@@ -72,8 +76,8 @@ double_6|SRID=4326;POINT(1 1.2)
 double_7|SRID=4326;POINT(1 1.23)
 double_8|SRID=4326;POINT(1 1)
 ERROR:  invalid KML representation
-ERROR:  invalid KML representation
-ERROR:  invalid KML representation
+double_10|SRID=4326;POINT(1 0.1)
+double_11|SRID=4326;POINT(1 -0.1)
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation

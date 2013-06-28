@@ -37,11 +37,17 @@ SELECT 'xml_3', ST_AsEWKT(ST_GeomFromKML('<foo/>'));
 -- 1 Point
 SELECT 'point_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
 
+-- See http://trac.osgeo.org/postgis/ticket/2372
+SELECT 'point_1a', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1 ,2</kml:coordinates></kml:Point>'));
+SELECT 'point_1b', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1, 2</kml:coordinates></kml:Point>'));
+SELECT 'point_1c', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates> 1,2</kml:coordinates></kml:Point>'));
+SELECT 'point_1d', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates> 1,2 </kml:coordinates></kml:Point>'));
+
 -- ERROR: 2 points
-SELECT 'point_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2 3,4</kml:coordinates></kml:Point>'));
+SELECT 'point_error_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2 3,4</kml:coordinates></kml:Point>'));
 
 -- ERROR: empty point
-SELECT 'point_3', ST_AsEWKT(ST_GeomFromKML('<kml:Point></kml:Point>'));
+SELECT 'point_error_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point></kml:Point>'));
 
 
 
