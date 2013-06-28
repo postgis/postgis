@@ -27,13 +27,14 @@
 **********************************************************************/
 
 
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <errno.h>
+#include <string.h>
+
 #include "postgres.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-
-
-#include <libxml/tree.h>
-#include <libxml/parser.h>
 
 
 /*
@@ -176,6 +177,7 @@ static xmlChar *kmlGetProp(xmlNodePtr xnode, xmlChar *prop)
 #endif
 
 
+#if 0 /* unused */
 /**
  * Parse a string supposed to be a double
  */
@@ -206,6 +208,8 @@ static double parse_kml_double(char *d, bool space_before, bool space_after)
 	if (space_before) while (isspace(*d)) d++;
 	for (st = INIT, p = d ; *p ; p++)
 	{
+
+lwnotice("State: %d, *p=%c", st, *p);
 
 		if (isdigit(*p))
 		{
@@ -247,6 +251,7 @@ static double parse_kml_double(char *d, bool space_before, bool space_after)
 
 	return atof(d);
 }
+#endif /* unused */
 
 
 /**
@@ -255,13 +260,14 @@ static double parse_kml_double(char *d, bool space_before, bool space_after)
 static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 {
 	xmlChar *kml_coord;
-	bool digit, found;
+	bool found;
 	DYNPTARRAY *dpa;
 	POINTARRAY *pa;
 	int kml_dims;
 	char *p, *q;
 	POINT4D pt;
 	uchar dims=0;
+  double d;
 
 	if (xnode == NULL) lwerror("invalid KML representation");
 
@@ -288,47 +294,44 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	TYPE_SETZM(dims, 1, 0);
 	dpa = dynptarray_create(1, dims);
 
-	for (q = p, kml_dims=0, digit = false ; *p ; p++)
+  while (*p && isspace(*p)) ++p;
+	for (kml_dims=0; *p ; p++)
 	{
+//lwnotice("*p:%c, kml_dims:%d", *p, kml_dims);
+    if ( isdigit(*p) || *p == '+' || *p == '-' || *p == '.' ) {
+			  kml_dims++;
+        errno = 0; d = strtod(p, &q);
+        if ( errno != 0 ) {
+          // TODO: destroy dpa, return NULL
+          lwerror("invalid KML representation"); /*: %s", strerror(errno));*/
+        }
+        if      (kml_dims == 1) pt.x = d;
+        else if (kml_dims == 2) pt.y = d;
+        else if (kml_dims == 3) pt.z = d;
+        else {
+          lwerror("invalid KML representation"); /* (more than 3 dimensions)"); */
+          // TODO: destroy dpa, return NULL
+        }
 
-		if (isdigit(*p)) digit = true;  /* One state parser */
+//lwnotice("after strtod d:%f, *q:%c, kml_dims:%d", d, *q, kml_dims);
 
-		/* Coordinate Separator */
-		if (*p == ',')
-		{
-			*p = '\0';
-			kml_dims++;
+        if ( *q && ! isspace(*q) && *q != ',' ) {
+          lwerror("invalid KML representation"); /* (invalid character %c follows ordinate value)", *q); */
+        }
 
-			if (*(p+1) == '\0') lwerror("invalid KML representation");
-
-			if      (kml_dims == 1) pt.x = parse_kml_double(q, true, true);
-			else if (kml_dims == 2) pt.y = parse_kml_double(q, true, true);
-			q = p+1;
-
-			/* Tuple Separator (or end string) */
-		}
-		else if (digit && (isspace(*p) || *(p+1) == '\0'))
-		{
-			if (isspace(*p)) *p = '\0';
-			kml_dims++;
-
-			if (kml_dims < 2 || kml_dims > 3)
-				lwerror("invalid KML representation");
-
-			if (kml_dims == 3)
-				pt.z = parse_kml_double(q, true, true);
-			else
-			{
-				pt.y = parse_kml_double(q, true, true);
-				*hasz = false;
-			}
-
-			dynptarray_addPoint4d(dpa, &pt, 0);
-			digit = false;
-			q = p+1;
-			kml_dims = 0;
-
-		}
+        /* Look-ahead to see if we're done reading */
+        while (*q && isspace(*q)) ++q;
+        if ( isdigit(*q) || *q == '+' || *q == '-' || *q == '.' || ! *q ) {
+          if ( kml_dims < 2 ) lwerror("invalid KML representation"); /* (not enough ordinates)"); */
+          if ( kml_dims < 3 ) *hasz = false;
+          dynptarray_addPoint4d(dpa, &pt, 0);
+          kml_dims = 0;
+        }
+        p = q-1; /* will be incrementedon next iteration */
+//lwnotice("after look-ahead *p:%c, kml_dims:%d", *p, kml_dims);
+    } else if ( *p != ',' && ! isspace(*p) ) {
+          lwerror("invalid KML representation"); /* (unexpected character %c)", *p); */
+    }
 	}
 
 	xmlFree(kml_coord);

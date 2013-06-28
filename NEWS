@@ -1,3 +1,12 @@
+PostGIS 1.5.10
+2013/MM/DD
+
+ This is a bug fix release, addressing issues that have been
+ filed since the 1.5.9 release.
+
+ - Bug Fixes
+   - #2372, Cannot parse space-padded KML coordinates
+
 PostGIS 1.5.9
 2012/11/15
 
