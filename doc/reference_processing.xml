@@ -2723,11 +2723,11 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 		from a set of geometries. The ST_Union() function is an "aggregate"
 		function in the terminology of PostgreSQL. That means that it
 		operates on rows of data, in the same way the SUM() and AVG()
-		functions do.</para>
+		functions do and like most aggregates, it also ignores NULL geometries.</para>
 
 	<para>Non-Aggregate version: This function returns a geometry being a union of two
 		input geometries. Output type can be a MULTI*, NON-MULTI or
-		GEOMETRYCOLLECTION.</para>
+		GEOMETRYCOLLECTION.  If any are NULL, then NULL is returned.</para>
 
 	<note><para>ST_Collect and ST_Union are often interchangeable.
 		ST_Union is in general orders of magnitude slower than ST_Collect
