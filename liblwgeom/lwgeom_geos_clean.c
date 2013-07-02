@@ -317,7 +317,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
-    ret->maxgeoms = g->ngeoms;
+	ret->maxgeoms = g->ngeoms;
 
 	for (i=0; i<g->ngeoms; i++)
 	{
@@ -336,7 +336,7 @@ lwcollection_make_geos_friendly(LWCOLLECTION *g)
 	{
 		free(new_geoms);
 		ret->geoms = NULL;
-        ret->maxgeoms = 0;
+		ret->maxgeoms = 0;
 	}
 
 	return (LWGEOM*)ret;
@@ -987,7 +987,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	{
 		LWDEBUG(3, "lwgeom_make_valid: forcing multi");
 		lwgeom_tmp = lwgeom_as_multi(lwgeom_out);
-        // lwgeom_free(lwgeom_out);
+		/* Don't free lwgeom_out, or you'll free memory underneath lwgeom_tmp */
+		/* lwgeom_free(lwgeom_out); */
 		lwgeom_out = lwgeom_tmp;
 	}
 
