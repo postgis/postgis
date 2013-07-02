@@ -2149,11 +2149,11 @@ The current implementation supports only vertices as the discrete locations. Thi
   </refsection>
   <refsection>
     <title>Examples</title>
-    	<para>For each building, find the parcel that best covers it. The answer will return at most one record per building
-and will return the parcel that it intersects where  parts of building that don't intersect the parcel, the furthest part of building is closest to this parcel.</para>
+    <!--	<para>For each building, find the parcel that best covers it. First we prefer the parcel first that completely covers.
+    	Then for those that only partially cover we prefer the parcel whose furthest part from the building closer than any other parcel.</para>
 		<programlisting>SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id 
    FROM buildings INNER JOIN parcels ON ST_Intersects(buildings.geom,parcels.geom) 
-     ORDER BY buildings.gid, ST_MaxDistance(buildings.geom, parcels.geom);</programlisting>
+     ORDER BY buildings.gid, ST_MaxDistance(buildings.geom, parcels.geom);</programlisting> -->
      <para>Basic furthest distance the point is to any part of the line</para>
 		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
    st_maxdistance
