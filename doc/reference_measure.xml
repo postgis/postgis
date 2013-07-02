@@ -2150,7 +2150,7 @@ The current implementation supports only vertices as the discrete locations. Thi
   <refsection>
     <title>Examples</title>
     	<para>For each building, find the parcel that best covers it. The answer will return at most one record per building
-and will return the parcel that it intersects and parts of building that don't intersect the furthest part of building is closest to this parcel.</para>
+and will return the parcel that it intersects where  parts of building that don't intersect the parcel, the furthest part of building is closest to this parcel.</para>
 		<programlisting>SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id 
    FROM buildings INNER JOIN parcels ON ST_Intersects(buildings.geom,parcels.geom) 
      ORDER BY buildings.gid, ST_MaxDistance(buildings.geom, parcels.geom);</programlisting>
