@@ -16,6 +16,8 @@ PostGIS 2.2.0
 
  * Bug Fixes *
 
+  - #2371, Support GEOS versions with more than 1 digit in micro
+
 PostGIS 2.1.0
 2013/MM/DD
 
