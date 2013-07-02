@@ -2098,8 +2098,13 @@ The current implementation supports only vertices as the discrete locations. Thi
 
 	  <refsection>
 		<title>Examples</title>
+		    <para>For each building, find the parcel that best represents it. First we require the parcel intersect with the geometry.
+    	DISTINCT ON guarantees we get each building listed only once, the ORDER BY .. ST_HausdorffDistance gives us a preference of parcel that is most similar to the building.</para>
+		<programlisting>SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id 
+   FROM buildings INNER JOIN parcels ON ST_Intersects(buildings.geom,parcels.geom) 
+     ORDER BY buildings.gid, ST_HausdorffDistance(buildings.geom, parcels.geom);</programlisting> 
 
-				<programlisting>postgis=# SELECT st_HausdorffDistance(
+				<programlisting>postgis=# SELECT ST_HausdorffDistance(
 				'LINESTRING (0 0, 2 0)'::geometry,
 				'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
  st_hausdorffdistance
@@ -2149,11 +2154,7 @@ The current implementation supports only vertices as the discrete locations. Thi
   </refsection>
   <refsection>
     <title>Examples</title>
-    <!--	<para>For each building, find the parcel that best covers it. First we prefer the parcel first that completely covers.
-    	Then for those that only partially cover we prefer the parcel whose furthest part from the building closer than any other parcel.</para>
-		<programlisting>SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id 
-   FROM buildings INNER JOIN parcels ON ST_Intersects(buildings.geom,parcels.geom) 
-     ORDER BY buildings.gid, ST_MaxDistance(buildings.geom, parcels.geom);</programlisting> -->
+
      <para>Basic furthest distance the point is to any part of the line</para>
 		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
    st_maxdistance
