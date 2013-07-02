@@ -576,11 +576,13 @@ if test "x$GEOS_PATCH_VERSION" = "x"; then
 fi
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
-GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION$GEOS_PATCH_VERSION"
+GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
+GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
+GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
 
 dnl Ensure that we are using GEOS >= 3.3.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$GEOS_NUMERIC_VERSION" -ge 330; then
+if test ! "$GEOS_NUMERIC_VERSION" -ge 30300; then
 	AC_MSG_ERROR([PostGIS requires GEOS >= 3.3.0])
 fi
 
@@ -912,7 +914,7 @@ if test "x$with_topology" != "xno"; then
 
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
-	if test "$GEOS_NUMERIC_VERSION" -lt 332; then
+	if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
 		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
 	fi
 else
@@ -1243,7 +1245,7 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 332; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
 AC_MSG_RESULT([ --------- GEOS VERSION NOTICE ------------ ])
 AC_MSG_RESULT([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_RESULT([  To take advantage of all the features of ])

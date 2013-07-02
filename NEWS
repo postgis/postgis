@@ -209,6 +209,7 @@ PostGIS 2.1.0
   - #2348, Provide raster upgrade path for 2.0 to 2.1
   - #2351, st_distance between geographies wrong
   - #2359, Fix handling of schema name when adding overview constraints
+  - #2371, Support GEOS versions with more than 1 digit in micro
 
 PostGIS 2.0.3
 2013/03/01
