@@ -16,6 +16,7 @@ PostGIS 2.0.4
   - #2307, ST_MakeValid outputs invalid geometries
   - #2351, st_distance between geographies wrong
   - #2359, Incorrect handling of schema for overview constraints
+  - #2371, Support GEOS versions with more than 1 digit in micro
   - #2372, Cannot parse space-padded KML coordinates
   - Fix build with systemwide liblwgeom installed
 
