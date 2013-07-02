@@ -1053,7 +1053,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	{
 		LWDEBUG(3, "lwgeom_make_valid: forcing multi");
 		lwgeom_tmp = lwgeom_as_multi(lwgeom_out);
-        // lwgeom_free(lwgeom_out);
+		/* Don't free lwgeom_out, or you'll free memory underneath lwgeom_tmp */
+		/* lwgeom_free(lwgeom_out); */
 		lwgeom_out = lwgeom_tmp;
 	}
 
