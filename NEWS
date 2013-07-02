@@ -6,6 +6,7 @@ PostGIS 1.5.10
 
  - Bug Fixes
    - #2372, Cannot parse space-padded KML coordinates
+   - #2371, Support GEOS versions with more than 1 digit in micro
 
 PostGIS 1.5.9
 2012/11/15
