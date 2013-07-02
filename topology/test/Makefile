@@ -1,6 +1,8 @@
 DATABASE=postgis_topo_regress
 
 PSQL=psql
+PERL=@PERL@
+GEOS_NUMERIC_VERSION=@GEOS_NUMERIC_VERSION@
 
 all: 
 	@echo "Use 'make check' to run all tests"
@@ -20,7 +22,7 @@ load_topology-4326.sql: load_topology.sql.in
 	@cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:4326:g' > load_topology-4326.sql
 
 clean distclean:
-	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql
+	rm -f topo_predicates.sql load_topology.sql load_topology-4326.sql regress/topogeo_addlinestring_expected
 
 TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_invalid.sql regress/sqlmm.sql \
@@ -45,7 +47,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_remedgemodface.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
-	regress/topogeo_addlinestring \
+	regress/topogeo_addlinestring.sql \
 	regress/topogeo_addpoint.sql \
 	regress/topogeo_addpolygon.sql \
 	regress/topogeometry_type.sql \
@@ -64,7 +66,17 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/layertrigger.sql \
 	regress/validatetopology.sql
 
-check: topo_predicates.sql load_topology.sql load_topology-4326.sql
+TESTS_EXPECTED = $(TESTS:.sql=_expected)
+
+regress/topogeo_addlinestring_expected: Makefile
+ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 303080),1)
+	cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
+else
+	cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
+endif
+	
+
+check: topo_predicates.sql load_topology.sql load_topology-4326.sql $(TESTS) $(TESTS_EXPECTED)
 	$(MAKE) -C ../../regress staged-install
 	../../regress/run_test --topology $(RUNTESTFLAGS) $(TESTS)
 	../../regress/run_test --upgrade --topology $(RUNTESTFLAGS) $(TESTS)

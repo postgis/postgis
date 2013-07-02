@@ -606,6 +606,7 @@ LIBS="$LIBS_SAVE"
 
 AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])	
 AC_SUBST([POSTGIS_GEOS_VERSION])
+AC_SUBST([GEOS_NUMERIC_VERSION])
 
 
 dnl ===========================================================================
