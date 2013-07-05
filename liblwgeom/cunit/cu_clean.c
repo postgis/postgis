@@ -65,6 +65,24 @@ static void test_lwgeom_make_valid(void)
 	lwgeom_free(gout);
 	lwgeom_free(gin);
 
+  /* Test for http://trac.osgeo.org/postgis/ticket/2307 */
+
+  gin = lwgeom_from_hexwkb("0106000020E6100000010000000103000000010000000A0000004B7DA956B99844C0DB0790FE8B4D1DC010BA74A9AF9444C049AFFC5B8C4D1DC03FC6CC690D9844C0DD67E5628C4D1DC07117B56B0D9844C0C80ABA67C45E1DC0839166ABAF9444C0387D4568C45E1DC010BA74A9AF9444C049AFFC5B8C4D1DC040C3CD74169444C0362EC0608C4D1DC07C1A3B77169444C0DC3ADB40B2641DC03AAE5F68B99844C0242948DEB1641DC04B7DA956B99844C0DB0790FE8B4D1DC0", LW_PARSER_CHECK_NONE);
+	CU_ASSERT(gin != NULL);
+
+	gout = lwgeom_make_valid(gin);
+	CU_ASSERT(gout != NULL);
+	lwgeom_free(gin);
+
+	/* We're really only interested in avoiding memory problems.
+   * Convertion to ewkt ensures full scan of coordinates thus
+   * triggering the error, if any
+   */
+	ewkt = lwgeom_to_ewkt(gout);
+	lwgeom_free(gout);
+	lwfree(ewkt);
+
+
 	/* Test collection */
 
 	gin = lwgeom_from_wkt(
