@@ -713,6 +713,9 @@ Prior to 1.5.3 this function returned non-collection inputs untouched, no matter
 In 1.5.3 non-matching single geometries result in a NULL return. 
 In of 2.0.0 every case of missing match results in a typed EMPTY return.
 			</para></note>
+			
+			<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
+			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
 
 		</refsection>
 
@@ -763,9 +766,13 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 				<para>
 					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
 				</para>
+				
+				<warning><para>When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared.  This results in an invalid multipolygon for many cases
+			such as applying this function on an <xref linkend="ST_Split" /> result.</para></warning>
+
 
 				<para>Availability: 2.0.0</para>
-
+				
 			</refsection>
 
 			<refsection>
