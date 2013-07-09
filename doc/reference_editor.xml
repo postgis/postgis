@@ -705,6 +705,8 @@ Given a (multi)geometry, returns a (multi)geometry consisting only of elements o
 Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
 Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
 			</para>
+			
+			<warning><para>When a multipolygon is returned the multipolygon may have shared edges.  This results in an invalid multipolygon.</para></warning>
 
 			<para>Availability: 1.5.0</para>
 
@@ -763,6 +765,8 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 				<para>
 					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
 				</para>
+				
+			    <warning><para>When a multipolygon is returned the multipolygon may have shared edges.  This results in an invalid multipolygon.</para></warning>
 
 				<para>Availability: 2.0.0</para>
 
