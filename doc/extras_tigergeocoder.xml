@@ -12,7 +12,7 @@
 			<para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
 			for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
 			
-			<para>
+		
 			  <note><para>
 If you are using tiger geocoder (tiger_2010),
 you can upgrade the scripts using the accompanying upgrade_geocoder.bat
@@ -21,7 +21,9 @@ until release.  If you have data from tiger_2010 and want replace with tiger_201
 			  </para></note>
 			  
 			  <note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
-			</para>
+			  
+			  <para>Also new in PostGIS 2.1.0 is integration with pagc address standardizer C library which source can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL address standardizer extension</ulink> and after install and install of the libraray in your PostGIS database, you can use the <xref linkend="pagc_normalize_address" /> function as a drop in replacement for in-built <xref linkend="normalize_address" />.</para> 
+		
 
 
 			<para>Design:</para>
