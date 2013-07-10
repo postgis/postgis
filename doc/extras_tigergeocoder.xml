@@ -984,9 +984,9 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 	  </refsection>
 	</refentry>
 	
-		<refentry id="Normalize_Address">
+		<refentry id="Pagc_Normalize_Address">
 	  <refnamediv>
-		<refname>Normalize_Address</refname>
+		<refname>Pagc_Normalize_Address</refname>
 
 		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
 		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
@@ -1010,6 +1010,8 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
 		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
+		<para>This version uses the PAGC address standardizer</para>
+		<para>Availability: 2.1.0</para>
 		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
          <orderedlist>
           <listitem>
