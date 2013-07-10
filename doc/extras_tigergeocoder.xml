@@ -22,7 +22,7 @@ until release.  If you have data from tiger_2010 and want replace with tiger_201
 			  
 			  <note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
 			  </para>
-			  <para>Also new in PostGIS 2.1.0 is integration with pagc address standardizer C library which source can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL address standardizer extension</ulink> and after install and install of the libraray in your PostGIS database, you can use the <xref linkend="pagc_normalize_address" /> function as a drop in replacement for in-built <xref linkend="normalize_address" />.</para> 
+			  <para>Also new in PostGIS 2.1.0 is integration with pagc address standardizer C library which source can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL address standardizer extension</ulink> and after install and install of the libraray in your PostGIS database, you can use the <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />.</para> 
 		
 
 
@@ -981,6 +981,78 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 	  <refsection>
 		<title>See Also</title>
 		<para><xref linkend="Geocode"/>, <xref linkend="Pprint_Addy"/></para>
+	  </refsection>
+	</refentry>
+	
+		<refentry id="Pagc_Normalize_Address">
+	  <refnamediv>
+		<refname>Pagc_Normalize_Address</refname>
+
+		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
+		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>norm_addy <function>normalize_address</function></funcdef>
+			<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
+		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+		<para>This function just uses the various direction/state/suffix lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
+		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
+		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
+		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
+		<para>This version uses the PAGC address standardizer</para>
+		<para>Availability: 2.1.0</para>
+		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
+         <orderedlist>
+          <listitem>
+            <para><varname>address</varname> is an integer:  The street number</para>
+          </listitem>
+          <listitem>
+            <para><varname>predirAbbrev</varname> is varchar: Directional prefix of road such as N, S, E, W etc.  These are controlled using the <varname>direction_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>streetName</varname> varchar</para>
+          </listitem>
+          <listitem>
+            <para><varname>streetTypeAbbrev</varname> varchar abbreviated version of street type: e.g. St, Ave, Cir.  These are controlled using the <varname>street_type_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>postdirAbbrev</varname> varchar abbreviated directional suffice of road N, S, E, W etc. These are controlled using the <varname>direction_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>internal</varname> varchar internal address such as an apartment or suite number.</para>
+          </listitem>
+          <listitem>
+            <para><varname>location</varname> varchar usually a city or governing province.</para>
+          </listitem>
+           <listitem>
+            <para><varname>stateAbbrev</varname> varchar two character US State.  e.g MA, NY, MI.  These are controlled by the <varname>state_lookup</varname> table.</para>
+          </listitem>
+          <listitem>
+            <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
+          </listitem>
+          <listitem>
+            <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+          </listitem>
+        </orderedlist>
+
+	  </refsection>
+
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Normalize_Address"/></para>
 	  </refsection>
 	</refentry>
 	
