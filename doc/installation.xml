@@ -1235,11 +1235,11 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		</sect3>
 		
 		<sect3 id="installing_pagc_address_standardizer"><title>Using PAGC address standardizer</title>
-			<para>One of the many complaints of folks is the address normalizer function <xref linkend="normalize_address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
+			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
 			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database with:</para>
 			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
 			
-			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="pagc_normalize_address" /> can be used instead of <xref linkend="normalize_address" />. The other nice thing about this extension is that its tiger agnostic, so can be used with other data sources such as international addresses.</para>
+			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. The other nice thing about this extension is that its tiger agnostic, so can be used with other data sources such as international addresses.</para>
 
 		</sect3>
 	</sect2>
