@@ -1,7 +1,7 @@
 $Id$
 TIGER Geocoder
 
-  2011/01/23
+  2013/07/09
 
   A plpgsql based geocoder written for TIGER census data.
 
@@ -23,7 +23,7 @@ produce a point geometry reflecting the location of the given address.
 
 Installation:
 
-	Refer to the README in the respective year tiger folder for installation and example usage.  The latest scripts as of this writing are for tiger_2010.
+	Refer to the README in the respective year tiger folder for installation and example usage.  The latest scripts as of this writing are for tiger_2012.
 	
 
 Usage:
@@ -59,4 +59,4 @@ Usage:
 	
 	 address | predirabbrev |      streetname       | streettypeabbrev | postdirabbrev | internal | location | stateabbrev |  zip  | parsed
 	 ---------+-------------+-----------------------+------------------+---------------+----------+----------+-------------+-------+--------
-     29645 |               | 7th Street SW Federal  | Way              |               |          |          |             | 98023 | 
+     29645 |               | 7th Street SW Federal  | Way            |               |          |          |             | 98023 | 
