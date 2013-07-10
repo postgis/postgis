@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="postgis_installation">
-  <title>Installation</title>
+  <title>PostGIS Installation</title>
 
   <para>
 	This chapter details the steps required to install PostGIS.
   </para>
 
-  <sect1>
+  <sect1 id="install_short_version">
 	<title>Short Version</title>
-	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model it is required.
-	Please refer to <xref linkend="make_install_postgis_extensions" /> if you are using PostgreSQL 9.1+.</para></note>
-	<para>All the .sql files once installed will be installed in <code>share/contrib/postgis-&last_minor_version;</code> folder
-		of your PostgreSQL install</para>
-	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
-		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
+	<para>To compile assuming you have all the dependencies in your search path:</para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
-./configure --with-raster --with-topology --with-gui
+./configure
 make
-make install
-createdb yourdatabase
+make install</programlisting>
+	<para>Once postgis is installed, it needs to be enabled in each individual database you want to use it in.</para>
+	<note><para>The raster support is currently optional, but installed by default. For enabling using the PostgreSQL 9.1+ extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
+	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
+psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
+psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisting>
+	
+	
+	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
+	
+	<para>For those running PostgreSQL 9.0 or who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
+	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_minor_version; folder
+		of your PostgreSQL install</para>
+
+	<programlisting>createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
@@ -27,12 +35,7 @@ psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
 psql -d yourdatabase -f topology/topology.sql
-psql -d yourdatabase -f doc/topology_comments.sql
-
-</programlisting>
-<note><para>topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if
-you do a <varname>make comments</varname> or <varname>make topology_comments.sql</varname>, it will be generated in the docs folder</para>
-</note>
+psql -d yourdatabase -f topology_comments.sql</programlisting>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
@@ -40,8 +43,8 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	</para>
   </sect1>
 
-  <sect1>
-	<title>Requirements</title>
+  <sect1 id="install_requirements">
+	<title>Install Requirements</title>
 
 	<para>
 	  PostGIS has the following requirements for building and usage:
@@ -54,7 +57,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  PostgreSQL &min_postgres_version; - 9.2 minor. A complete installation
+		  PostgreSQL &min_postgres_version; or higher. A complete installation
 		  of PostgreSQL (including server headers) is required. PostgreSQL
 		  is available from
 		  <ulink url="http://www.postgresql.org">
@@ -99,12 +102,12 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.2.2 or greater, but GEOS 3.3.2+ is recommended.  Without GEOS 3.3,
-			you will be missing some major enhancements with handling of topological exceptions and improvements to geometry validation and
+		  GEOS geometry library, version 3.3 or greater, but GEOS 3.4+ is recommended to take full advantage of all the new functions and features.  Without GEOS 3.4,
+			you will be missing some major enhancements such as ST_Triangles and long-running function interruption, and improvements to geometry validation and
 			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS 3.3.2+ is also required for topology support.  GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
-		  </ulink> and 3.3+ is backward-compatible with older versions so fairly safe to upgrade.
+		  </ulink> and 3.4+ is backward-compatible with older versions so fairly safe to upgrade.
 		</para>
 	  </listitem>
 	  <listitem>
@@ -124,7 +127,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	  
 	  <listitem>
 		<para>
-		  GDAL, version 1.6 or higher (1.9 or higher is preferable since some things will not work well with lower versions).  This is required for raster support and to be able to install with <code>CREATE EXTENSION postgis</code> so highly recommended for those running 9.1+ even if you don't need raster.
+		  GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since some things will not work well or behavior differently with lower versions).  This is required for raster support and to be able to install with <code>CREATE EXTENSION postgis</code> so highly recommended for those running 9.1+.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
@@ -140,10 +143,10 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 		  GDAL (pseudo optional) only if you don't want raster and don't care about installing with <code>CREATE EXTENSION postgis</code> can you leave it out.
 		  Keep in mind other extensions may have a requires postgis extension which will prevent you from installing them unless you install postgis as an extension. So it is highly recommended you compile with GDAL support.
 		</para>
-	  </listitem>
+	  </listitem>	
 	  <listitem>
 		<para>
-		  GTK (requires GTK+2.0 (2.8+)) to compile the shp2pgsql-gui shape file loader.
+		  GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader.
 		  <ulink url="http://www.gtk.org/">
 			http://www.gtk.org/
 		  </ulink>
@@ -151,6 +154,14 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 		</para>
 	  </listitem>
 	  
+	  <listitem>
+		<para>
+                  SFCGAL, version 0.2 (or higher) could be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 0.2 require at least CGAL 4.1.
+
+		  <ulink url="https://github.com/Oslandia/SFCGAL">https://github.com/Oslandia/SFCGAL</ulink>.
+		</para>
+	  </listitem>
+
 	  <listitem>
 		<para>
 		 CUnit (<filename>CUnit</filename>). This is needed for regression testing. <ulink url="http://cunit.sourceforge.net/">http://cunit.sourceforge.net/</ulink>
@@ -204,7 +215,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	</itemizedlist>
   </sect1>
 
-  <sect1>
+  <sect1 id="install_getting_source">
 	<title>Getting the Source</title>
 
 	<para>
@@ -229,13 +240,13 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		svn
 	  </ulink>
 	  repository
-	  <ulink url="http://svn.osgeo.org/postgis/branches/&last_minor_version;">
-		http://svn.osgeo.org/postgis/branches/&last_minor_version;
+	  <ulink url="http://svn.osgeo.org/postgis/trunk/">
+		http://svn.osgeo.org/postgis/trunk/
 	  </ulink>
 	  .
 	</para>
 
-	<programlisting>svn checkout http://svn.osgeo.org/postgis/branches/&last_minor_version;/ postgis-&last_release_version;</programlisting>
+	<programlisting>svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
 
 	<para>
 	  Change into the newly created
@@ -245,7 +256,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
   </sect1>
 
   <sect1 id="PGInstall">
-	<title>Installation</title>
+	<title>Compiling and Install from Source: Detailed</title>
 
 	<note>
 	  <para>
@@ -254,8 +265,8 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		bleeding edge versions or you are a package maintainer.
 	  </para>
 	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
-	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile/install guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
-	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink>.</para>
+	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
+	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
 	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="http://www.postgis.org/download/windows/">PostGIS Windows download site</ulink>
 	  We also have <ulink url="http://www.postgis.org/download/windows/experimental.php">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
 	  use these to experiment with the in progress releases of PostGIS</para>
@@ -557,8 +568,11 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>
 		The PostGIS extensions are built and installed automatically if you are using PostgreSQL 9.1+. 
 	  </para>
-	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:</para>
-	  <programlisting>make comments</programlisting>
+	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:
+    </para>
+	  <para>
+	  <command>make comments</command>
+    </para>
 	  <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
 	  <para>If you are building against PostgreSQL 9.1, the extensions should automatically build as part of the make install process.  You can if needed build from the extensions
 	  folders or copy files if you need them on a different server. </para>
@@ -609,7 +623,33 @@ in the <varname>extensions</varname> section of the database browser tree and wi
 
 <para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
 <programlisting>CREATE EXTENSION postgis;
-CREATE EXTENSION postgis_topology;</programlisting>
+CREATE EXTENSION postgis_topology;
+CREATE EXTENSION postgis_tiger_geocoder;</programlisting>
+
+<para>In psql you can use to see what versions you have installed and also what schema they are installed. </para>
+<programlisting>\connect mygisdb
+\x 
+\dx postgis*</programlisting>
+
+<screen>List of installed extensions
+-[ RECORD 1 ]-------------------------------------------------
+-
+Name        | postgis
+Version     | &last_release_version;
+Schema      | public
+Description | PostGIS geometry, geography, and raster spat..
+-[ RECORD 2 ]-------------------------------------------------
+-
+Name        | postgis_tiger_geocoder
+Version     | &last_release_version;
+Schema      | tiger
+Description | PostGIS tiger geocoder and reverse geocoder
+-[ RECORD 3 ]-------------------------------------------------
+-
+Name        | postgis_topology
+Version     | &last_release_version;
+Schema      | topology
+Description | PostGIS topology spatial types and functions</screen>
 
 <warning><para>Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</varname>, <varname>topology</varname> can not be explicitly backed up.  They can only 
 be backed up when the respective <varname>postgis</varname> or <varname>postgis_topology</varname> extension is backed up, which only seems to happen when you backup the whole database. 
@@ -618,9 +658,10 @@ and assumed to be the same for a given version of an extension. These behaviors 
 
 <para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_20_minor.sql</filename>,<filename>raster_upgrade_20_minor.sql</filename>,<filename>topology_upgrade_20_minor.sql</filename>.</para>
 <para>If you installed postgis without raster support, you'll need to install raster support first (using the full <filename>rtpostgis.sql</filename></para>
-<para>Then you can run teh below commands to package the functions in their respective extension.</para>
+<para>Then you can run the below commands to package the functions in their respective extension.</para>
 <programlisting>CREATE EXTENSION postgis FROM unpackaged;
-CREATE EXTENSION postgis_topology FROM unpackaged;</programlisting>
+CREATE EXTENSION postgis_topology FROM unpackaged;
+CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
 
 	</sect2>
 
@@ -667,8 +708,9 @@ CREATE EXTENSION postgis_topology FROM unpackaged;</programlisting>
 		following:
 	  </para>
 
-	  <programlisting>     CUnit - A Unit testing framework for C - Version 2.1-0
-	 http://cunit.sourceforge.net/
+	  <programlisting>
+     CUnit - A Unit testing framework for C - Version 2.1-0
+     http://cunit.sourceforge.net/
 
 
 Suite: print_suite
@@ -677,15 +719,22 @@ Suite: print_suite
   Test: test_lwprint_optional_format ... passed
   Test: test_lwprint_oddball_formats ... passed
   Test: test_lwprint_bad_formats ... passed
-Suite: Misc Suite
+Suite: misc
   Test: test_misc_force_2d ... passed
   Test: test_misc_simplify ... passed
   Test: test_misc_count_vertices ... passed
   Test: test_misc_area ... passed
   Test: test_misc_wkb ... passed
-Suite: PointArray Suite
+Suite: ptarray
   Test: test_ptarray_append_point ... passed
   Test: test_ptarray_append_ptarray ... passed
+  Test: test_ptarray_locate_point ... passed
+  Test: test_ptarray_isccw ... passed
+  Test: test_ptarray_signed_area ... passed
+  Test: test_ptarray_desegmentize ... passed
+  Test: test_ptarray_insert_point ... passed
+  Test: test_ptarray_contains_point ... passed
+  Test: test_ptarrayarc_contains_point ... passed
 Suite: PostGIS Computational Geometry Suite
   Test: test_lw_segment_side ... passed
   Test: test_lw_segment_intersects ... passed
@@ -701,92 +750,248 @@ Suite: PostGIS Computational Geometry Suite
   Test: test_geohash_point ... passed
   Test: test_geohash_precision ... passed
   Test: test_geohash ... passed
+  Test: test_geohash_point_as_int ... passed
   Test: test_isclosed ... passed
+Suite: buildarea
+  Test: buildarea1 ... passed
+  Test: buildarea2 ... passed
+  Test: buildarea3 ... passed
+  Test: buildarea4 ... passed
+  Test: buildarea4b ... passed
+  Test: buildarea5 ... passed
+  Test: buildarea6 ... passed
+  Test: buildarea7 ... passed
+Suite: clean
+  Test: test_lwgeom_make_valid ... passed
 Suite: PostGIS Measures Suite
   Test: test_mindistance2d_tolerance ... passed
   Test: test_rect_tree_contains_point ... passed
   Test: test_rect_tree_intersects_tree ... passed
   Test: test_lwgeom_segmentize2d ... passed
+  Test: test_lwgeom_locate_along ... passed
+  Test: test_lw_dist2d_pt_arc ... passed
+  Test: test_lw_dist2d_seg_arc ... passed
+  Test: test_lw_dist2d_arc_arc ... passed
+  Test: test_lw_arc_length ... passed
+  Test: test_lw_dist2d_pt_ptarrayarc ... passed
+  Test: test_lw_dist2d_ptarray_ptarrayarc ... passed
+Suite: node
+  Test: test_lwgeom_node ... passed
 Suite: WKT Out Suite
   Test: test_wkt_out_point ... passed
   Test: test_wkt_out_linestring ... passed
   Test: test_wkt_out_polygon ... passed
   Test: test_wkt_out_multipoint ... passed
   Test: test_wkt_out_multilinestring ... passed
+  Test: test_wkt_out_multipolygon ... passed
+  Test: test_wkt_out_collection ... passed
+  Test: test_wkt_out_circularstring ... passed
+  Test: test_wkt_out_compoundcurve ... passed
+  Test: test_wkt_out_curvpolygon ... passed
+  Test: test_wkt_out_multicurve ... passed
+  Test: test_wkt_out_multisurface ... passed
+Suite: WKT In Suite
+  Test: test_wkt_in_point ... passed
+  Test: test_wkt_in_linestring ... passed
+  Test: test_wkt_in_polygon ... passed
+  Test: test_wkt_in_multipoint ... passed
+  Test: test_wkt_in_multilinestring ... passed
+  Test: test_wkt_in_multipolygon ... passed
+  Test: test_wkt_in_collection ... passed
+  Test: test_wkt_in_circularstring ... passed
+  Test: test_wkt_in_compoundcurve ... passed
+  Test: test_wkt_in_curvpolygon ... passed
+  Test: test_wkt_in_multicurve ... passed
+  Test: test_wkt_in_multisurface ... passed
+  Test: test_wkt_in_tin ... passed
+  Test: test_wkt_in_polyhedralsurface ... passed
+  Test: test_wkt_in_errlocation ... passed
+Suite: WKB Out Suite
+  Test: test_wkb_out_point ... passed
+  Test: test_wkb_out_linestring ... passed
+  Test: test_wkb_out_polygon ... passed
+  Test: test_wkb_out_multipoint ... passed
+  Test: test_wkb_out_multilinestring ... passed
+  Test: test_wkb_out_multipolygon ... passed
+  Test: test_wkb_out_collection ... passed
+  Test: test_wkb_out_circularstring ... passed
+  Test: test_wkb_out_compoundcurve ... passed
+  Test: test_wkb_out_curvpolygon ... passed
+  Test: test_wkb_out_multicurve ... passed
+  Test: test_wkb_out_multisurface ... passed
+  Test: test_wkb_out_polyhedralsurface ... passed
 :
+Suite: Geodetic Suite
+  Test: test_sphere_direction ... passed
+  Test: test_sphere_project ... passed
+  Test: test_lwgeom_area_sphere ... passed
+  Test: test_signum ... passed
+  Test: test_gbox_from_spherical_coordinates ... passed
 :
+  Test: test_geos_noop ... passed
+Suite: Internal Spatial Trees
+  Test: test_tree_circ_create ... passed
+  Test: test_tree_circ_pip ... passed
+  Test: test_tree_circ_pip2 ... passed
+  Test: test_tree_circ_distance ... passed
+Suite: triangulate
+  Test: test_lwgeom_delaunay_triangulation ... passed
+Suite: stringbuffer
+  Test: test_stringbuffer_append ... passed
+  Test: test_stringbuffer_aprintf ... passed
+Suite: surface
+  Test: triangle_parse ... passed
+  Test: tin_parse ... passed
+  Test: polyhedralsurface_parse ... passed
+  Test: surface_dimension ... passed
+Suite: homogenize
+  Test: test_coll_point ... passed
+  Test: test_coll_line ... passed
+  Test: test_coll_poly ... passed
+  Test: test_coll_coll ... passed
+  Test: test_geom ... passed
+  Test: test_coll_curve ... passed
+Suite: force_sfs
+  Test: test_sfs_11 ... passed
+  Test: test_sfs_12 ... passed
+  Test: test_sqlmm ... passed
+Suite: out_gml
+  Test: out_gml_test_precision ... passed
+  Test: out_gml_test_srid ... passed
+  Test: out_gml_test_dims ... passed
+  Test: out_gml_test_geodetic ... passed
+  Test: out_gml_test_geoms ... passed
+  Test: out_gml_test_geoms_prefix ... passed
+  Test: out_gml_test_geoms_nodims ... passed
+  Test: out_gml2_extent ... passed
+  Test: out_gml3_extent ... passed
+Suite: KML Out Suite
+  Test: out_kml_test_precision ... passed
+  Test: out_kml_test_dims ... passed
+  Test: out_kml_test_geoms ... passed
+  Test: out_kml_test_prefix ... passed
+Suite: GeoJson Out Suite
+  Test: out_geojson_test_precision ... passed
+  Test: out_geojson_test_dims ... passed
+  Test: out_geojson_test_srid ... passed
+  Test: out_geojson_test_bbox ... passed
+  Test: out_geojson_test_geoms ... passed
+Suite: SVG Out Suite
+  Test: out_svg_test_precision ... passed
+  Test: out_svg_test_dims ... passed
+  Test: out_svg_test_relative ... passed
+  Test: out_svg_test_geoms ... passed
+  Test: out_svg_test_srid ... passed
+Suite: X3D Out Suite
+  Test: out_x3d3_test_precision ... passed
+  Test: out_x3d3_test_geoms ... passed
+
 --Run Summary: Type      Total     Ran  Passed  Failed
-               suites       17      17     n/a       0
-               tests       143     143     143       0
-               asserts    1228    1228    1228       0
+               suites       27      27     n/a       0
+               tests       198     198     198       0
+               asserts    1728    1728    1728       0
 
-
-Creating spatial db postgis_reg
- Postgis 2.0.0SVN - 2011-01-11 15:33:37
-   GEOS: 3.3.0-CAPI-1.7.0
-   PROJ: Rel. 4.6.1, 21 August 2008
+Creating database 'postgis_reg' 
+Loading PostGIS into 'postgis_reg' 
+PostgreSQL 9.3beta1 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.4.5-8) 4.4.5, 64-bit
+  Postgis 2.1.0SVN - r11415 - 2013-05-11 02:48:21
+  GEOS: 3.4.0dev-CAPI-1.8.0 r3797
+  PROJ: Rel. 4.7.1, 23 September 2009
 
 Running tests
 
- loader/Point.............. ok
- loader/PointM.............. ok
- loader/PointZ.............. ok
- loader/MultiPoint.............. ok
- loader/MultiPointM.............. ok
- loader/MultiPointZ.............. ok
- loader/Arc.............. ok
- loader/ArcM.............. ok
- loader/ArcZ.......... ok
- loader/Polygon.............. ok
- loader/PolygonM.............. ok
- loader/PolygonZ.............. ok
- regress. ok
- regress_index. ok
- regress_index_nulls. ok
- lwgeom_regress. ok
- regress_lrs. ok
- removepoint. ok
- setpoint. ok
- simplify. ok
- snaptogrid. ok
- affine. ok
- measures. ok
- long_xact. ok
- ctors. ok
- sql-mm-serialize. ok
- sql-mm-circularstring. ok
- sql-mm-compoundcurve. ok
- sql-mm-curvepoly. ok
- sql-mm-general. ok
- sql-mm-multicurve. ok
- sql-mm-multisurface. ok
- polyhedralsurface. ok
- out_geometry. ok
- out_geography. ok
- in_gml. ok
- in_kml. ok
- iscollection. ok
- regress_ogc. ok
- regress_ogc_cover. ok
- regress_ogc_prep. ok
- regress_bdpoly. ok
- regress_proj. ok
- dump. ok
- dumppoints. ok
- wmsservers_new. ok
- tickets. ok
- remove_repeated_points. ok
- split. ok
- relatematch. ok
- regress_buffer_params. ok
- hausdorff. ok
- clean. ok
- sharedpaths. ok
- snap. ok
+ loader/Point .............. ok 
+ loader/PointM .............. ok 
+ loader/PointZ .............. ok 
+ loader/MultiPoint .............. ok 
+ loader/MultiPointM .............. ok 
+ loader/MultiPointZ .............. ok 
+ loader/Arc .............. ok 
+ loader/ArcM .............. ok 
+ loader/ArcZ .............. ok 
+ loader/Polygon .............. ok 
+ loader/PolygonM .............. ok 
+ loader/PolygonZ .............. ok 
+ loader/TSTPolygon ......... ok 
+ loader/TSIPolygon ......... ok 
+ loader/TSTIPolygon ......... ok 
+ loader/PointWithSchema ..... ok 
+ loader/NoTransPoint ......... ok 
+ loader/NotReallyMultiPoint ......... ok 
+ loader/MultiToSinglePoint ......... ok 
+ loader/ReprojectPts ........ ok 
+ loader/ReprojectPtsGeog ........ ok 
+ loader/Latin1 .... ok 
+ binary .. ok 
+ regress .. ok 
+ regress_index .. ok 
+ regress_index_nulls .. ok 
+ regress_selectivity .. ok 
+ lwgeom_regress .. ok 
+ regress_lrs .. ok 
+ removepoint .. ok 
+ setpoint .. ok 
+ simplify .. ok 
+ snaptogrid .. ok 
+ summary .. ok 
+ affine .. ok 
+ empty .. ok 
+ measures .. ok 
+ legacy .. ok 
+ long_xact .. ok 
+ ctors .. ok 
+ sql-mm-serialize .. ok 
+ sql-mm-circularstring .. ok 
+ sql-mm-compoundcurve .. ok 
+ sql-mm-curvepoly .. ok 
+ sql-mm-general .. ok 
+ sql-mm-multicurve .. ok 
+ sql-mm-multisurface .. ok 
+ polyhedralsurface .. ok 
+ polygonize .. ok 
+ postgis_type_name .. ok 
+ geography .. ok 
+ out_geometry .. ok 
+ out_geography .. ok 
+ in_geohash .. ok 
+ in_gml .. ok 
+ in_kml .. ok 
+ iscollection .. ok 
+ regress_ogc .. ok 
+ regress_ogc_cover .. ok 
+ regress_ogc_prep .. ok 
+ regress_bdpoly .. ok 
+ regress_proj .. ok 
+ regress_management .. ok 
+ dump .. ok 
+ dumppoints .. ok 
+ boundary .. ok 
+ wmsservers .. ok 
+ wkt .. ok 
+ wkb .. ok 
+ tickets .. ok 
+ typmod .. ok 
+ remove_repeated_points .. ok 
+ split .. ok 
+ relate .. ok 
+ bestsrid .. ok 
+ concave_hull .. ok 
+ hausdorff .. ok 
+ regress_buffer_params .. ok 
+ offsetcurve .. ok 
+ relatematch .. ok 
+ isvaliddetail .. ok 
+ sharedpaths .. ok 
+ snap .. ok 
+ node .. ok 
+ unaryunion .. ok 
+ clean .. ok 
+ relate_bnr .. ok 
+ delaunaytriangles .. ok 
+ in_geojson .. ok 
+ uninstall .. ok (4112)
 
-Run tests: 55
-Failed: 0
-</programlisting>
+Run tests: 90</programlisting>
 	</sect2>
 
 	<sect2>
@@ -984,11 +1189,62 @@ Failed: 0
   <sect1 id="loading_extras_tiger_geocoder">
   	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
   	
-	<para>The Tiger geocoder does not get installed / upgraded with the core PostGIS scripts because it is only of regional use.  In fact nothing located
-	in the extras folder is installed by default with the regular PostGIS install / upgrade.  Extras like Tiger geocoder may also not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2010/README</filename> </para>
+	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2011/README</filename> </para>
 	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
+	<sect2 id="install_tiger_geocoder_extension">
+		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>	
+		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
+		<orderedlist>
+			<listitem><para>First get binaries for PostGIS 2.1.0 or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
+			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
+			<para><programlisting>CREATE EXTENSION postgis;		
+CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para></listitem>
+			<listitem><para>To confirm your install is working correctly, run this sql in your database:</para>
+				<programlisting>SELECT na.address, na.streetname,na.streettypeabbrev, na.zip
+	FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;</programlisting>
+				<para>Which should output</para>
+				<para><screen> address | streetname | streettypeabbrev |  zip
+---------+------------+------------------+-------
+	   1 | Devonshire | Pl               | 02109</screen></para>
+			</listitem>
+			<listitem><para>Create a new record in <varname>tiger.loader_platform</varname> table with the paths of your executables and server. </para>  
+				<para>So for example to create a profile called debbie that follows <code>sh</code> convention. You would do:</para>
+				<programlisting>INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep, 
+		   loader, environ_set_command, county_process_command)
+SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep, 
+	   loader, environ_set_command, county_process_command
+  FROM tiger.loader_platform
+  WHERE os = 'sh';</programlisting>
+				<para>And then edit the paths in the <emphasis>declare_sect</emphasis> column to those that fit Debbie's pg, unzip,shp2pgsql, psql, etc path locations.</para>
+			
+				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
+			</listitem>
+			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile.  So for example to do the nation load using our new profile we would:</para>
+					<programlisting>SELECT Loader_Generate_Nation_Script('debbie');</programlisting>
+			</listitem>
+		</orderedlist>
+		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
+			<para>If you installed the tiger geocoder without using the extension model, you can convert to the extension model as follows:</para>
+			<orderedlist>
+				<listitem><para>Follow instructions in <xref linkend="upgrade_tiger_geocoder" /> for the non-extension model upgrade.</para></listitem>
+				<listitem><para>Connect to your database with psql or pgAdmin and run the following command:</para>
+					<programlisting>CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
+				</listitem>
+			</orderedlist>
+		</sect3>
+		
+		<sect3 id="installing_pagc_address_standardizer"><title>Using PAGC address standardizer</title>
+			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
+			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database with:</para>
+			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
+			
+			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. The other nice thing about this extension is that its tiger agnostic, so can be used with other data sources such as international addresses.</para>
+
+		</sect3>
+	</sect2>
 	<sect2 id="install_tiger_geocoder">
-		<title>Tiger Geocoder Enabling your PostGIS database</title>
+		<title>Tiger Geocoder Enabling your PostGIS database: Not Using Extensions</title>
 		<para>
 		  First install PostGIS using the prior instructions.
 		</para>
@@ -1002,13 +1258,15 @@ Failed: 0
 		</para>
 	
 		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
 		</para>
 	
-		<para>Edit the <filename>tiger_loader.sql</filename> to the paths of your executables server etc.</para>
-		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
-			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. If you don't edit this file, it will just contain common case locations of items.  You can edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Script" />  command.
+		<para>Edit the <filename>tiger_loader_2012.sql</filename> to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
 		</para>
+		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
+			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>
+			
+		
 		<para>Verify that you now have a <varname>tiger</varname> schema in your database and that it is part of your database search_path.  If it is not, add it with a command something along the line of: <programlisting>ALTER DATABASE geocoder SET search_path=public, tiger;</programlisting></para>
 		<para>The normalizing address functionality works more or less without any data except for tricky addresses.  Run this test and verify things look like this: 
 			<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
@@ -1018,33 +1276,10 @@ pretty_address
 			</programlisting>
 		</para>
 	</sect2>
-	<sect2 id="upgrade_tiger_geocoder">
-		<title>Upgrading your Tiger Geocoder Install</title>
-		<para>
-		  If you have Tiger Geocoder packaged with 2.0 already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.
-		</para>
-	
-		<para>
-		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
-		</para>
-	
-		<para>
-		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
-		</para>
-	
-		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
-		</para>
-	
-		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
-			or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/Unix/Mac OSX.  Edit the file to have your postgis database credientials and run then corresponding script from the commandline.
-		</para>
-	
-	</sect2>
 	<sect2 id="tiger_geocoder_loading_data">
 		<title>Loading Tiger Data</title>
-		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2010/README</filename>.  This just includes the general steps.</para>	
-		<para>The load process downloads data from the census website for the respective states requested, extracts the files, and then loads each state into its own separate
+		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2011/README</filename>.  This just includes the general steps.</para>	
+		<para>The load process downloads data from the census website for the respective nation files, states requested, extracts the files, and then loads each state into its own separate
 		set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script" /> if you need to reload a state or just don't need a state anymore.</para>
 		<para>In order to be able to load data you'll need the following tools:</para>
 		<itemizedlist>
@@ -1057,13 +1292,53 @@ pretty_address
 				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> </para>
 			</listitem>
 		</itemizedlist>
-		<para>To load data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.  
+		<para>If you are upgrading from tiger_2010, you'll need to first generate and run <xref linkend="Drop_Nation_Tables_Generate_Script" />. Before you load any state data, you need to load the nation wide data which you do with  <xref linkend="Loader_Generate_Nation_Script" />. Which will
+		generate a loader script for you.   <xref linkend="Loader_Generate_Nation_Script" /> is a one-time step that should be done for upgrading (from 2010) and for new installs.</para>
+		<para>To load state data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.  
 			Note that you can install these piecemeal. You don't have to load all the states you want all at once.  You can load them as you need them.</para>
 			
 		<para>After the states you desire have been loaded, make sure to run the:
 		<programlisting>SELECT install_missing_indexes();</programlisting> as described in  <xref linkend="Install_Missing_Indexes" />.</para>
 		<para>To test that things are working as they should, try to run a geocode on an address in your state using <xref linkend="Geocode" /> </para>
 	</sect2>
+	<sect2 id="upgrade_tiger_geocoder">
+		<title>Upgrading your Tiger Geocoder Install</title>
+		<para>
+		  If you have Tiger Geocoder packaged with 2.0+ already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.  This will only work for Tiger geocoder not installed with extensions. 
+		</para>
+	
+		<para>
+		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
+		</para>
+	
+		<para>
+		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
+		</para>
+	
+		<para>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
+		</para>
+	
+		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
+			or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/Unix/Mac OSX.  Edit the file to have your postgis database credentials.</para>
+			
+		<para>If you are upgrading from 2010 or 2011, make sure to unremark out the loader script line so you get the latest script for loading 2012 data.</para>
+		<para>	
+			Then run th corresponding script from the commandline.
+		</para>
+		
+		<para>Next drop all nation tables and load up the new ones. Generate a drop script with this SQL statement as detailed in <xref linkend="Drop_Nation_Tables_Generate_Script" /></para>
+			<programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
+		<para>Run the generated drop SQL statements.</para>
+		<para>Generate a nation load script with this SELECT statement as detailed in <xref linkend="Loader_Generate_Nation_Script" /></para>
+		<para><emphasis role="bold">For windows</emphasis></para>
+		<programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
+		<para><emphasis role="bold">For unix/linux</emphasis></para>
+		<programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
+		<para>Refer to <xref linkend="tiger_geocoder_loading_data" /> for instructions on how to run the generate script. This only needs to be done once.</para>
+		<note><para>You can have a mix of 2010/2011 state tables and can upgrade each state separately.  Before you upgrade a state to 2011, you first need to drop the 2010 tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>
+	</sect2>
+	
   </sect1>
 
   <sect1 id="templatepostgis">
@@ -1165,10 +1440,19 @@ pretty_address
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.
-		You might get a message that <code>postgis extension</code> already installed which you can safely ignore.</para>
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.</para>
+    <para>If you get a notice message like:</para>
+    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <para>
+Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
+you're attempting to upgrade from an SVN version to the next (which
+doesn't get a new version number); in that case you can append "next" to the version
+string, and next time you'll need to drop the "next" suffix again:
+    </para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
-		picks up the newest latest version during restore. .</para></note>
+		picks up the newest latest version during restore.</para></note>
 	</sect3>
 
 	</sect2>
@@ -1318,7 +1602,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlis
   </sect1>
 
   <sect1>
-	<title>Common Problems</title>
+	<title>Common Problems during installation</title>
 	<para>
 	  There are several things to check when your installation or upgrade
 	  doesn't go as you expected.
