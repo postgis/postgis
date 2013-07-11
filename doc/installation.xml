@@ -1262,7 +1262,7 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		</para>
 	
 		<para>Edit the <filename>tiger_loader_2012.sql</filename> to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
-		</para>
+		 </para>
 		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
 			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>
 			
