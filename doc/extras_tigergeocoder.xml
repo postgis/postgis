@@ -989,13 +989,13 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 		<refname>Pagc_Normalize_Address</refname>
 
 		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
-		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
+		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data). Requires address_standardizer extension.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>norm_addy <function>normalize_address</function></funcdef>
+			<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef>
 			<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -1006,13 +1006,16 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 
 		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
 		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
-		<para>This function just uses the various direction/state/suffix lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
+		<para>This function just uses the various pagc_* lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
 		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
 		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-		<para>This version uses the PAGC address standardizer</para>
+		<para>This version uses the PAGC address standardizer C extension which you can download. There are slight variations in casing and formatting and also provides a richer breakout.</para>
 		<para>Availability: 2.1.0</para>
 		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
+		<para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
+		<para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>
+		
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
@@ -1048,7 +1051,40 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 
 	  </refsection>
 
+		<refsection>
+			<title>Examples</title>
+			<para>Single call example</para>
+			<programlisting>
+SELECT addy.*
+FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;</programlisting>
 
+        
+<screen> address | predirabbrev | streetname | streettypeabbrev | postdirabbrev | internal  |  location   | stateabbrev | zip | parsed
+ --------+--------------+------------+------------------+---------------+-----------+-------------+-------------+-----+--------
+    9000 | E            | ROO        | St               |               | SUITE 999 | SPRINGFIELD | CO          |     | t</screen>
+    
+    		<para>Batch call.  There are currently speed issues with the way postgis_tiger_geocoder wraps the address_standardizer.  These will hopefully
+be resolved in later editions.  To work around them, if you need speed for batch geocoding to call generate a normaddy  in batch mode, you are encouraged
+to directly call the address_standardizer standardize_address function as shown below which is similar exercise to what we did in <xref linkend="Normalize_Address" />.</para>
+    
+    <programlisting>WITH g AS (SELECT address, ROW((sa).house_num, (sa).predir, (sa).name
+  , (sa).suftype, (sa).sufdir, (sa).unit , (sa).city, (sa).state, (sa).postcode, true)::norm_addy As na
+ FROM (SELECT address, standardize_address('tiger.pagc_lex'
+       , 'tiger.pagc_gaz'
+       , 'tiger.pagc_rules', address) As sa
+        FROM addresses_to_geocode) As g)
+SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
+ FROM  g;
+</programlisting>
+<screen>                        orig                         |  streetname   | streettypeabbrev
+-----------------------------------------------------+---------------+------------------
+ 529 Main Street, Boston MA, 02129                   | MAIN          | St
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | MASSACHUSETTS | Ave
+ 25 Wizard of Oz, Walaford, KS 99912323              | WIZARD OF     |
+ 26 Capen Street, Medford, MA                        | CAPEN         | St
+ 124 Mount Auburn St, Cambridge, Massachusetts 02138 | MOUNT AUBURN  | St
+ 950 Main Street, Worcester, MA 01610                | MAIN          | St</screen>
+		</refsection>
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
