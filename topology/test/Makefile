@@ -69,7 +69,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 TESTS_EXPECTED = $(TESTS:.sql=_expected)
 
 regress/topogeo_addlinestring_expected: Makefile
-ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 303080),1)
+ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">" 303080),1)
 	cp regress/topogeo_addlinestring_expected_newsnap regress/topogeo_addlinestring_expected
 else
 	cp regress/topogeo_addlinestring_expected_oldsnap regress/topogeo_addlinestring_expected
