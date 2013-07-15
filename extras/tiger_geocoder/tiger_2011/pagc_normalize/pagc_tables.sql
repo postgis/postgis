@@ -873,6 +873,9 @@ INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (446, 1, 
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (448, 3, 'WY', 'WY', 6, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (449, 1, 'WYOMING', 'WY', 11, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (835, 1, 'ST LOUIS', 'SAINT LOUIS', 7, false);
+
+SELECT pg_catalog.setval('pagc_gaz_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_gaz),50000)), true);
+
 -- start pagc_lex --
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2934, 1, 'BAY STATE', 'BAY STATE', 5, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2389, 2, 'STAT', 'STA', 24, false);
