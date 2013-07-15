@@ -1056,12 +1056,12 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 			<para>Single call example</para>
 			<programlisting>
 SELECT addy.*
-FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;</programlisting>
+FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;
 
         
-<screen> address | predirabbrev | streetname | streettypeabbrev | postdirabbrev | internal  |  location   | stateabbrev | zip | parsed
- --------+--------------+------------+------------------+---------------+-----------+-------------+-------------+-----+--------
-    9000 | E            | ROO        | St               |               | SUITE 999 | SPRINGFIELD | CO          |     | t</screen>
+ address | predirabbrev | streetname | streettypeabbrev | postdirabbrev | internal  |  location   | stateabbrev | zip | parsed
+---------+--------------+------------+------------------+---------------+-----------+-------------+-------------+-----+--------
+    9000 | E            | ROO        | St               |               | SUITE 999 | SPRINGFIELD | CO          |     | t</programlisting>
     
     		<para>Batch call.  There are currently speed issues with the way postgis_tiger_geocoder wraps the address_standardizer.  These will hopefully
 be resolved in later editions.  To work around them, if you need speed for batch geocoding to call generate a normaddy  in batch mode, you are encouraged
@@ -1075,20 +1075,20 @@ to directly call the address_standardizer standardize_address function as shown 
         FROM addresses_to_geocode) As g)
 SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
  FROM  g;
-</programlisting>
-<screen>                        orig                         |  streetname   | streettypeabbrev
+ 
+ orig                                                |  streetname   | streettypeabbrev
 -----------------------------------------------------+---------------+------------------
  529 Main Street, Boston MA, 02129                   | MAIN          | St
  77 Massachusetts Avenue, Cambridge, MA 02139        | MASSACHUSETTS | Ave
  25 Wizard of Oz, Walaford, KS 99912323              | WIZARD OF     |
  26 Capen Street, Medford, MA                        | CAPEN         | St
  124 Mount Auburn St, Cambridge, Massachusetts 02138 | MOUNT AUBURN  | St
- 950 Main Street, Worcester, MA 01610                | MAIN          | St</screen>
+ 950 Main Street, Worcester, MA 01610                | MAIN          | St</programlisting>
 		</refsection>
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Normalize_Address"/></para>
+		<para><xref linkend="Normalize_Address"/>, <xref linkend="Geocode"/></para>
 	  </refsection>
 	</refentry>
 	
