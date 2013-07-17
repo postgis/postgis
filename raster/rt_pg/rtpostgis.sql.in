@@ -6585,8 +6585,8 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	RETURNS double precision[][]
 	AS $$
 	DECLARE
-		wx int;
-		wy int;
+		wx double precision;
+		wy double precision;
 		rtn double precision[][];
 	BEGIN
 		IF (st_geometrytype($3) != 'ST_Point') THEN
