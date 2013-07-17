@@ -19,6 +19,7 @@ PostGIS 2.0.4
   - #2371, Support GEOS versions with more than 1 digit in micro
   - #2372, Cannot parse space-padded KML coordinates
   - Fix build with systemwide liblwgeom installed
+  - #2383, Fix unsafe use of \' in warning message
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE

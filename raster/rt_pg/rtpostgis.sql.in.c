@@ -2350,7 +2350,7 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
                                    params[6]::float8 - (params[4]::float8 * 0.5));
         ELSE
             IF format != 'GDAL' THEN
-                RAISE WARNING E'Format \'%\' is not recognized, defaulting to GDAL format.', format;
+                RAISE WARNING 'Format ''%'' is not recognized, defaulting to GDAL format.', format;
             END IF;
             -- params array is now:
             -- {scalex, skewy, skewx, scaley, upperleftx, upperlefty}
