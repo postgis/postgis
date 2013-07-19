@@ -1236,7 +1236,19 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		
 		<sect3 id="installing_pagc_address_standardizer"><title>Using PAGC address standardizer</title>
 			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
-			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database with:</para>
+			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database.</para>
+			<para>The PAGC project and standardizer portion in particular, relies on PCRE which is usually already installed on most Nix systems, 
+but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> </para>
+			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+			<para>Compiling</para>
+			<programlisting>svn co svn://svn.code.sf.net/p/pagc/code/branches/sew-refactor/postgresql address_standardizer
+cd address_standardizer
+make
+#if you have in non-standard location pcre try
+# make SHLIB_LINK="-L/path/pcre/lib -lpostgres -lpgport -lpcre" CPPFLAGS="-I.  -I/path/pcre/include" 
+make install</programlisting>
+
+      <para>Once you have installed, you can connect to your database and run the SQL:</para>
 			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
 			
 			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. The other nice thing about this extension is that its tiger agnostic, so can be used with other data sources such as international addresses.</para>
@@ -1262,7 +1274,7 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		</para>
 	
 		<para>Edit the <filename>tiger_loader_2012.sql</filename> to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
-		</para>
+		 </para>
 		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
 			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>
 			
