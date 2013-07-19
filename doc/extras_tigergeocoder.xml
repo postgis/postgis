@@ -22,7 +22,7 @@ until release.  If you have data from tiger_2010 and want replace with tiger_201
 			  
 			  <note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
 			  </para>
-			  <para>Also new in PostGIS 2.1.0 is integration with pagc address standardizer C library which source can be downloaded from <ulink url="http://pagc.svn.sourceforge.net/viewvc/pagc/branches/sew-refactor/postgresql">PAGC PostgreSQL address standardizer extension</ulink> and after install and install of the libraray in your PostGIS database, you can use the <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />.</para> 
+			  <para>Also new in PostGIS 2.1.0 is integration with pagc address standardizer PostgreSQL extension which source can be downloaded from <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL address standardizer extension</ulink> and after install and install of the library in your PostGIS database, you can use the <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />.</para> 
 		
 
 
