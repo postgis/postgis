@@ -92,7 +92,7 @@ SELECT id,wkt FROM test_data WHERE
 
 
 SELECT ST_extent(geometry(wkb_ndr)) from test_data;
-SELECT ST_3DExtent(geometry(wkb_ndr)) from test_data;
+SELECT ST_3DExtent(geometry(wkb_ndr)) from test_data WHERE ST_NDims(wkb_ndr) > 2;
 SELECT ST_mem_size(ST_collect(ST_force_2d(geometry(wkb_ndr)))) from test_data;
 SELECT ST_mem_size(ST_collect(ST_force_3dz(geometry(wkb_ndr)))) from test_data;
 SELECT ST_mem_size(ST_collect(ST_force_4d(ST_force_2d(geometry(wkb_ndr))))) from test_data;
