@@ -130,8 +130,6 @@ main(int argc, char **argv)
 	   it's a user-defined query then set that instead */
 	if (pgis_optind < argc)
 	{
-		char *ptr;
-
 		/* User-defined queries begin with SELECT */
 		if (!strncmp(argv[pgis_optind], "SELECT ", 7) ||
 			!strncmp(argv[pgis_optind], "select ", 7))
@@ -141,21 +139,28 @@ main(int argc, char **argv)
 		else
 		{
 			/* Schema qualified table name */
-			ptr = strchr(argv[pgis_optind], '.');
-	
-			if (ptr)
-			{
-				config->schema = malloc(strlen(argv[pgis_optind]) + 1);
-				snprintf(config->schema, ptr - argv[pgis_optind] + 1, "%s", argv[pgis_optind]);
-	
-				config->table = malloc(strlen(argv[pgis_optind]));
-				snprintf(config->table, strlen(argv[pgis_optind]) - strlen(config->schema), "%s", ptr + 1);
-			}
-			else
-			{
-				config->table = malloc(strlen(argv[pgis_optind]) + 1);
-				strcpy(config->table, argv[pgis_optind]);
-			}
+			char *strptr = argv[pgis_optind];
+			char *chrptr = strchr(strptr, '.');
+			
+				/* OK, this is a schema-qualified table name... */
+      if (chrptr)
+      {
+        if ( chrptr == strptr ) 
+        {
+          /* table is ".something" display help  */
+          usage(0);
+          exit(0);
+        }
+        /* Null terminate at the '.' */
+        *chrptr = '\0';
+        /* Copy in the parts */
+        config->schema = strdup(strptr);
+        config->table = strdup(chrptr+1);
+      }
+      else
+      {
+        config->table = strdup(strptr);
+      }
 		}
 	}
 
