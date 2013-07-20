@@ -22,8 +22,10 @@
 
 
 static void
-usage()
+usage(int status)
 {
+  /* TODO: if status != 0 print all to stderr */
+
 	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
@@ -47,6 +49,7 @@ usage()
 	         "         COLUMNNAME DBFFIELD1\n"
 	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
+	exit(status);
 }
 
 int
@@ -60,8 +63,7 @@ main(int argc, char **argv)
 	/* If no options are specified, display usage */
 	if (argc == 1)
 	{
-		usage();
-		exit(0);
+		usage(0); /* TODO: should this exit with error ? */
 	}
 
 	/* Parse command line options and set configuration */
@@ -106,12 +108,8 @@ main(int argc, char **argv)
 		case 'k':
 			config->keep_fieldname_case = 1;
 			break;
-		case '?':
-			usage();
-			exit(0);
 		default:
-			usage();
-			exit(0);
+			usage(pgis_optopt == '?' ? 0 : 1);
 		}
 	}
 
@@ -124,8 +122,7 @@ main(int argc, char **argv)
 	}
 	else
 	{
-		usage();
-		exit(0);
+		usage(1);
 	}
 
 
@@ -133,8 +130,6 @@ main(int argc, char **argv)
 	   it's a user-defined query then set that instead */
 	if (pgis_optind < argc)
 	{
-		char *ptr;
-
 		/* User-defined queries begin with SELECT */
 		if (!strncmp(argv[pgis_optind], "SELECT ", 7) ||
 			!strncmp(argv[pgis_optind], "select ", 7))
@@ -144,21 +139,28 @@ main(int argc, char **argv)
 		else
 		{
 			/* Schema qualified table name */
-			ptr = strchr(argv[pgis_optind], '.');
-	
-			if (ptr)
-			{
-				config->schema = malloc(strlen(argv[pgis_optind]) + 1);
-				snprintf(config->schema, ptr - argv[pgis_optind] + 1, "%s", argv[pgis_optind]);
-	
-				config->table = malloc(strlen(argv[pgis_optind]));
-				snprintf(config->table, strlen(argv[pgis_optind]) - strlen(config->schema), "%s", ptr + 1);
-			}
-			else
-			{
-				config->table = malloc(strlen(argv[pgis_optind]) + 1);
-				strcpy(config->table, argv[pgis_optind]);
-			}
+			char *strptr = argv[pgis_optind];
+			char *chrptr = strchr(strptr, '.');
+			
+				/* OK, this is a schema-qualified table name... */
+      if (chrptr)
+      {
+        if ( chrptr == strptr ) 
+        {
+          /* table is ".something" display help  */
+          usage(0);
+          exit(0);
+        }
+        /* Null terminate at the '.' */
+        *chrptr = '\0';
+        /* Copy in the parts */
+        config->schema = strdup(strptr);
+        config->table = strdup(chrptr+1);
+      }
+      else
+      {
+        config->table = strdup(strptr);
+      }
 		}
 	}
 
