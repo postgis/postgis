@@ -13,6 +13,7 @@ PostGIS 2.2.0
   - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
     variable GDAL_DATA
   - #2361, Added spatial_index column to raster_columns view
+  - #2397, read encoding info automatically in loader
 
  * Bug Fixes *
 
