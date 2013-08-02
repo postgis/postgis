@@ -462,6 +462,7 @@
 				<note><para>Tiger Geocoder upgraded to work with TIGER 2012 census data.  <varname>geocode_settings</varname> added for debugging and tweaking rating preferences, loader made less greedy, now only downloads tables to be loaded.
 					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
 					
+				<note><para>Raster bands can only reference the first 256 bands of out-db rasters.</para></note>
 				<para>Functions new in PostGIS 2.1</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->

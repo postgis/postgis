@@ -56,6 +56,10 @@
 		 	<title>Bug Fixes</title>
 		 	<para>#2126, Better handling of empty rasters from ST_ConvexHull()</para>
 		</simplesect>
+		<simplesect>
+		 	<title>Known Issues</title>
+		 	<para>#2111, Raster bands can only reference the first 256 bands of out-db rasters</para>
+		</simplesect>
 	  </sect1>
 	  
        <sect1>

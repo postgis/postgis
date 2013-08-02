@@ -213,6 +213,9 @@ PostGIS 2.1.0
   - #2383, Remove unsafe use of \' from raster warning message
   - #2384, Incorrect variable datatypes for ST_Neighborhood
 
+ * Known Issues *
+  - #2111, Raster bands can only reference the first 256 bands of out-db rasters
+
 PostGIS 2.0.3
 2013/03/01
 
