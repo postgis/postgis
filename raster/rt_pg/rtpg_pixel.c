@@ -35,6 +35,12 @@
 #include "utils/array.h" /* for ArrayType */
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 
+#include "../../postgis_config.h"
+
+#if POSTGIS_PGSQL_VERSION > 92
+#include "access/htup_details.h" /* for heap_form_tuple() */
+#endif
+
 #include "rtpostgis.h"
 
 /* Get pixel value */
