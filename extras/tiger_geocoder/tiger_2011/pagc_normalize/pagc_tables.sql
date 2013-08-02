@@ -18,7 +18,7 @@ BEGIN
 		GRANT SELECT ON pagc_lex TO public;
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules')  THEN
-		CREATE TABLE pagc_rules (id serial NOT NULL primary key,rule text);
+		CREATE TABLE pagc_rules (id serial NOT NULL primary key,rule text, is_custom boolean DEFAULT true);
 		GRANT SELECT ON pagc_rules TO public;
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz' AND data_type='text')  THEN
@@ -28,6 +28,10 @@ BEGIN
 		ALTER TABLE tiger.pagc_gaz ALTER COLUMN word TYPE text;
 		ALTER TABLE tiger.pagc_gaz ALTER COLUMN stdword TYPE text;
 	END IF;
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules' AND column_name = 'is_custom' )  THEN
+	-- its probably old table structure add column
+		ALTER TABLE tiger.pagc_rules ADD COLUMN is_custom TYPE boolean NOT NULL DEFAULT true;
+	END IF;
 END;
 $$
 language plpgsql;
@@ -36,7 +40,7 @@ language plpgsql;
 SELECT install_pagc_tables();
 DELETE FROM pagc_gaz WHERE is_custom = false;
 DELETE FROM pagc_lex WHERE is_custom = false;
-DELETE FROM pagc_rules;
+DELETE FROM pagc_rules WHERE is_custom = false;
 
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (1, 1, 'AB', 'ALBERTA', 11, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (2, 2, 'AB', 'ALBERTA', 1, false);
@@ -3816,6 +3820,8 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2418, 2,
 SELECT pg_catalog.setval('pagc_lex_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_lex),50000)), true);
 
 
+-- set default to false so all we input will be treated as no custom -- 
+ALTER TABLE tiger.pagc_lex ALTER COLUMN is_custom SET DEFAULT false;
 INSERT INTO pagc_rules (id, rule) VALUES (1, '1 -1 5 -1 2 7');
 INSERT INTO pagc_rules (id, rule) VALUES (2, '1 3 -1 5 3 -1 2 7');
 INSERT INTO pagc_rules (id, rule) VALUES (3, '1 22 -1 5 7 -1 2 7');
@@ -8167,6 +8173,10 @@ INSERT INTO pagc_rules (id, rule) VALUES (4348, '1 2 11 28 -1 10 10 11 13 -1 0 1
 INSERT INTO pagc_rules (id, rule) VALUES (4349, '1 2 11 28 12 -1 10 10 11 13 12 -1 0 17');
 INSERT INTO pagc_rules (id, rule) VALUES (4350, '1 2 11 28 29 -1 10 10 11 13 13 -1 0 16');
 INSERT INTO pagc_rules (id, rule) VALUES (4351, '1 2 11 28 29 12 -1 10 10 11 13 13 12 -1 0 17');
-INSERT INTO pagc_rules (id, rule) VALUES (4352, '-1');
+INSERT INTO pagc_rules (id, rule) values (4352, '16 0 22 -1 16 17 17 -1 4 7');
+INSERT INTO pagc_rules (id, rule) VALUES (4355, '-1');
 
+-- after insert we need to set back to true so all 
+-- user inputs are treated as custom 
+ALTER TABLE tiger.pagc_lex ALTER COLUMN is_custom SET DEFAULT true;
 SELECT pg_catalog.setval('pagc_rules_id_seq', 10000, true);
