@@ -8178,5 +8178,5 @@ INSERT INTO pagc_rules (id, rule) VALUES (4355, '-1');
 
 -- after insert we need to set back to true so all 
 -- user inputs are treated as custom 
-ALTER TABLE tiger.pagc_lex ALTER COLUMN is_custom SET DEFAULT true;
+ALTER TABLE tiger.pagc_rules ALTER COLUMN is_custom SET DEFAULT true;
 SELECT pg_catalog.setval('pagc_rules_id_seq', 10000, true);
