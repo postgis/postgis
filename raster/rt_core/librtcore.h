@@ -28,8 +28,36 @@
  *
  */
 
-#ifndef RT_API_H_INCLUDED
-#define RT_API_H_INCLUDED
+/**
+ * @file librtcore.h
+ *
+ * This library is the generic raster handling section of PostGIS. The raster
+ * objects, constructors, destructors, and a set of spatial processing functions
+ * are implemented here.
+ *
+ * The library is designed for use in non-PostGIS applications if necessary. The
+ * units tests at test/core (and the future loader/dumper programs) are examples
+ * of non-PostGIS applications using rt_core.
+ *
+ * Programs using this library should set up the default memory managers and error
+ * handlers by implementing an rt_init_allocators() function, which can be as
+ * a wrapper around the rt_install_default_allocators() function if you want
+ * no special handling for memory management and error reporting.
+ *
+ **/
+
+/******************************************************************************
+* Some rules for *.(c|h) files in rt_core
+*
+* All functions in rt_core that receive a band index parameter
+*   must be 0-based
+*
+* Variables and functions internal for a public function should be prefixed
+*   with _rti_, e.g. _rti_iterator_arg.
+******************************************************************************/
+
+#ifndef LIBRTCORE_H_INCLUDED
+#define LIBRTCORE_H_INCLUDED
 
 /* define the systems */
 #if defined(__linux__)  /* (predefined) */
@@ -90,43 +118,23 @@
 #endif
 #endif
 
+#include <stdio.h> /* for printf, sprintf */
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
+#include <string.h> /* for memcpy, strlen, etc */
 #include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
-#include <math.h>
 
-#include "lwgeom_geos.h"
 #include "liblwgeom.h"
 
 #include "gdal_alg.h"
 #include "gdal_frmts.h"
 #include "gdal.h"
 #include "gdalwarper.h"
-#include "ogr_api.h"
-#include "ogr_srs_api.h"
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
-#include "../../postgis_config.h"
-#include "../raster_config.h"
-
-/**
- * @file rt_api.h
- *
- * This library is the generic raster handling section of PostGIS. The raster
- * objects, constructors, destructors, and a set of spatial processing functions
- * are implemented here.
- *
- * The library is designed for use in non-PostGIS applications if necessary. The
- * units tests at test/core (and the future loader/dumper programs) are examples
- * of non-PostGIS applications using rt_core.
- *
- * Programs using this library should set up the default memory managers and error
- * handlers by implementing an rt_init_allocators() function, which can be as
- * a wrapper around the rt_install_default_allocators() function if you want
- * no special handling for memory management and error reporting.
- *
- **/
+#include "ogr_api.h"
+#include "ogr_srs_api.h"
 
 /**
  * Types definitions
@@ -2414,4 +2422,4 @@ struct rt_colormap_t {
 	rt_colormap_entry entry;
 };
 
-#endif /* RT_API_H_INCLUDED */
+#endif /* LIBRTCORE_H_INCLUDED */

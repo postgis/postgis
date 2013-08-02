@@ -8,22 +8,38 @@
 #
 #############################################################################
 
-AR=ar rs
+AR = ar rs
 
-CC=@CC@
-LIBLWGEOM_LDFLAGS=../../liblwgeom/.libs/liblwgeom.a
-LIBLWGEOM_CFLAGS=-I../../liblwgeom
-LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
-LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
-GEOS_LDFLAGS=@GEOS_LDFLAGS@ -lgeos_c
-PROJ_LDFLAGS=@PROJ_LDFLAGS@ -lproj
-LDFLAGS=$(LIBLWGEOM_LDFLAGS) $(LIBGDAL_LDFLAGS) $(PROJ_LDFLAGS) $(GEOS_LDFLAGS)
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) @PROJ_CPPFLAGS@ @GEOS_CPPFLAGS@
+CC = @CC@
+LIBLWGEOM_LDFLAGS = ../../liblwgeom/.libs/liblwgeom.a
+LIBLWGEOM_CFLAGS = -I../../liblwgeom
+LIBGDAL_CFLAGS = @LIBGDAL_CFLAGS@
+LIBGDAL_LDFLAGS = @LIBGDAL_LDFLAGS@
+GEOS_LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
+PROJ_LDFLAGS = @PROJ_LDFLAGS@ -lproj
+LDFLAGS = $(LIBLWGEOM_LDFLAGS) $(LIBGDAL_LDFLAGS) $(PROJ_LDFLAGS) $(GEOS_LDFLAGS)
+CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) @PROJ_CPPFLAGS@ @GEOS_CPPFLAGS@
 
 # Standalone RTCORE objects
-RT_OBJS=rt_api.o
-RT_LIB=librtcore.a
-RT_HEADERS=rt_api.h
+RT_OBJS = \
+	rt_util.o \
+	rt_spatial_relationship.o \
+	rt_mapalgebra.o \
+	rt_geometry.o \
+	rt_statistics.o \
+	rt_pixel.o \
+	rt_warp.o \
+	rt_band.o \
+	rt_raster.o \
+	rt_serialize.o \
+	rt_wkb.o \
+	rt_context.o
+
+RT_LIB = librtcore.a
+RT_HEADERS = \
+	rt_serialize.h \
+	librtcore.h \
+	librtcore_internal.h
 
 all: $(RT_LIB)
 

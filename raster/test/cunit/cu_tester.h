@@ -9,7 +9,10 @@
  *
  **********************************************************************/
 
-#include "rt_api.h"
+#include "librtcore.h"
+
+#include "../../../postgis_config.h"
+#include "../../raster_config.h"
 
 #define PG_TEST(test_func) { #test_func, test_func }
 #define MAX_CUNIT_MSG_LENGTH 512

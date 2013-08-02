@@ -41,7 +41,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../rt_core/rt_api.h"
+#include "librtcore.h"
+
+#include "../../postgis_config.h"
+#include "../raster_config.h"
 
 #define CSEQUAL(a,b) (strcmp(a,b)==0)
 
