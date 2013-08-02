@@ -448,6 +448,7 @@
 					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available. Earlier pre-2.0 versions had raster_columns/raster_overviews as real tables. These were changed to views before release.  Functions such as <varname>ST_AddRasterColumn</varname> were removed and replaced with <xref linkend="RT_AddRasterConstraints"/>, <xref linkend="RT_DropRasterConstraints"/> as a result some apps that created raster tables may need changing.</para></note>
 				<note><para>Tiger Geocoder upgraded to work with TIGER 2010 census data and now included in the core PostGIS documentation.  A reverse geocoder function was also added.
 					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
+				<note><para>Raster bands can only reference the first 256 bands of out-db rasters.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='//refentry'>

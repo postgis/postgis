@@ -4,6 +4,22 @@
     <subtitle>Release Notes</subtitle>
 
        <sect1>
+		<title>Release 2.0.4</title>
+		<para>Release date: 2013/MM/DD</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.3 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
+		<simplesect>
+		 	<title>Bug Fixes</title>
+		</simplesect>
+		<simplesect>
+			 <title>Enhancements</title>
+		</simplesect>
+		<simplesect>
+		 	<title>Known Issues</title>
+			<para>#2111, Raster bands can only reference the first 256 bands of out-db rasters</para>
+		</simplesect>
+	  </sect1>
+
+       <sect1>
 		<title>Release 2.0.3</title>
 		<para>Release date: 2013/03/01</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>

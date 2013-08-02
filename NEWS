@@ -24,6 +24,9 @@ PostGIS 2.0.4
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE
 
+ * Known Issues *
+  - #2111, Raster bands can only reference the first 256 bands of out-db rasters
+
 PostGIS 2.0.3
 2013/03/01
 
