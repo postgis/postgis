@@ -30,7 +30,7 @@ BEGIN
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules' AND column_name = 'is_custom' )  THEN
 	-- its probably old table structure add column
-		ALTER TABLE tiger.pagc_rules ADD COLUMN is_custom boolean NOT NULL DEFAULT true;
+		ALTER TABLE tiger.pagc_rules ADD COLUMN is_custom boolean NOT NULL DEFAULT false;
 	END IF;
 END;
 $$
