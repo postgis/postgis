@@ -5,5 +5,5 @@ UPGRADEABLE_VERSIONS = \
     2.0.3 \
     2.0.4 \
 	2.1.0beta3 \
-	2.1.0rc1dev \
 	2.1.0rc1 \
+	2.1.0rc2
