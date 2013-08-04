@@ -1343,6 +1343,37 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+		
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+		
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int4)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+		
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int4,text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int4,text,int)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	RETURNS BYTEA
@@ -3313,6 +3344,35 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
+
+--Availability: 2.2.0
+
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int,text)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+  
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int,text,int)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
+  RETURNS bytea
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+
+CREATE AGGREGATE st_astwkb_agg(geometry,int,int,text) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
+
+CREATE AGGREGATE st_astwkb_agg(geometry,int,int,text,int) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (

@@ -544,6 +544,27 @@ typedef struct
 }
 LWTIN;
 
+
+typedef struct
+{
+	int id;	//Id, from function parameter
+	LWGEOM* geom;	//the geometry from function parameter
+}
+lwgeom_id;
+
+typedef struct
+{
+	lwgeom_id* points;
+	int n_points;
+	lwgeom_id* linestrings;
+	int n_linestrings;
+	lwgeom_id* polygons;
+	int n_polygons;
+	lwgeom_id* collections;
+	int n_collections;
+}
+twkb_geom_arrays;
+
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
 extern LWMLINE *lwgeom_as_lwmline(const LWGEOM *lwgeom);
@@ -1771,6 +1792,9 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision,
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
 */
 extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+
+extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, uint32_t id,int method);
+extern uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t variant , size_t *size_out,int8_t prec, int method);
 
 /**
 * @param lwgeom geometry to convert to HEXWKB
