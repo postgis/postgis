@@ -83,11 +83,11 @@ INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (64, 2, '
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (66, 2, 'CONN', 'CONNECTICUT', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (69, 2, 'CONNECTICUT', 'CONNECTICUT', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (71, 2, 'CT', 'CONNECTICUT', 1, false);
-INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (74, 2, 'DC', 'DISTRICT OF COLUMBIA', 1, false);
+INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (74, 2, 'DC', 'DC', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (77, 3, 'DE', 'DELAWARE', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (79, 2, 'DEL', 'DELAWARE', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (82, 2, 'DELAWARE', 'DELAWARE', 1, false);
-INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (84, 2, 'DISTRICT OF COLUMBIA', 'DISTRICT OF COLUMBIA', 1, false);
+INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (84, 2, 'DC', 'DISTRICT OF COLUMBIA', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (85, 2, 'EL PASO', 'EL PASO', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (87, 2, 'FL', 'FLORIDA', 1, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (90, 2, 'FLA', 'FLORIDA', 1, false);
@@ -705,7 +705,7 @@ INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (76, 1, '
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (78, 1, 'DEL', 'DE', 11, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (80, 3, 'DEL', 'DE', 6, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (81, 1, 'DELAWARE', 'DE', 11, false);
-INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (83, 1, 'DISTRICT OF COLUMBIA', 'DC', 11, false);
+INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (83, 1, 'DC', 'DC', 11, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (86, 1, 'FL', 'FL', 11, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (88, 3, 'FL', 'FL', 6, false);
 INSERT INTO pagc_gaz (id, seq, word, stdword, token, is_custom) VALUES (89, 1, 'FLA', 'FL', 11, false);
