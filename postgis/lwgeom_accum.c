@@ -173,7 +173,6 @@ pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 	int32 newlen;
 	text *endianess;
 	GSERIALIZED *geom;
-	int i;
 	uint8_t variant = 0;
 
 if (!AggCheckCallContext(fcinfo, &aggcontext))
@@ -221,7 +220,7 @@ oldcontext = MemoryContextSwitchTo(aggcontext);
 	}
 	else
 	{
-		state = PG_GETARG_POINTER(0);
+		state = (twkb_state*) PG_GETARG_POINTER(0);
 		
 		if(!((state->n_rows)<(state->max_rows)))
 		{
@@ -361,7 +360,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 	size_t twkb_size;	
 	uint8_t *twkb;
 	bytea *result;
-	state = PG_GETARG_POINTER(0);
+	state =  (twkb_state*)  PG_GETARG_POINTER(0);
 	lwgeom_arrays.n_points=lwgeom_arrays.n_linestrings=lwgeom_arrays.n_polygons=lwgeom_arrays.n_collections=0;
 	geom_array=state->geoms;
 

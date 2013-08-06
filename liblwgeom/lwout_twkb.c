@@ -217,7 +217,9 @@ static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int pre
 		/* Unknown method! */
 		default:
 			lwerror("Unsupported compression method: %d",method );
-	}		
+	}	
+	/*Just to make the compiler quiet*/
+		return 0;
 }
 
 
@@ -358,7 +360,9 @@ static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t 
 		/* Unknown method! */
 		default:
 			lwerror("Unsupported compression method: %d",method );
-	}		
+	}	
+	/*Just to make the compiler quiet*/
+	return 0;	
 }
 static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[])
 {
