@@ -76,8 +76,9 @@ set PSQL="%PGBIN%psql"
 set SHP2PGSQL="%PGBIN%shp2pgsql"
 cd ${staging_fold}
 ', E'del %TMPDIR%\\*.* /Q
-%PSQL% -c "DROP SCHEMA ${staging_schema} CASCADE;"
-%PSQL% -c "CREATE SCHEMA ${staging_schema};"
+%PSQL% -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
+%PSQL% -c "CREATE SCHEMA IF NOT EXISTS ${staging_schema};"
+%PSQL% -c "CREATE SCHEMA IF NOT EXISTS ${data_schema};"
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
 cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ', 
 'for /r %%z in (*${table_name}.dbf) do (${loader}  -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
@@ -99,8 +100,9 @@ PSQL=${PGBIN}/psql
 SHP2PGSQL=${PGBIN}/shp2pgsql
 cd ${staging_fold}
 ', E'rm -f ${TMPDIR}/*.*
-${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
-${PSQL} -c "CREATE SCHEMA tiger_staging;"
+${PSQL} -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
+${PSQL} -c "CREATE SCHEMA IF NOT EXISTS ${staging_schema};"
+${PSQL} -c "CREATE SCHEMA IF NOT EXISTS ${data_schema};"
 
 for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
