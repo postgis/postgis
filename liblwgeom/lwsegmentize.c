@@ -220,7 +220,7 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32_t perQuad)
 		{
 			LWDEBUG(3, "lwcircstring_segmentize: points are colinear, returning curve points as line");
 
-			for (j = i - 1 ; j <= i ; j++)
+			for (j = i - 2 ; j < i ; j++)
 			{
 				getPoint4d_p(icurve->points, j, &p4);
 				ptarray_append_point(ptarray, &p4, LW_TRUE);
