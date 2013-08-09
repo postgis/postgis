@@ -289,15 +289,6 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	GBOX *box = NULL;
 	int type;
 
-	/*
-	** This funx is a no-op only if a bbox cache is already present
-	** in input.
-	*/
-	if ( lwgeom_is_collection(lwgeom) )
-	{
-		return lwgeom_clone(lwgeom);
-	}
-
 	type = lwgeom->type;
 
 	if ( ! MULTITYPE[type] ) return lwgeom_clone(lwgeom);

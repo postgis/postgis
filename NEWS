@@ -21,6 +21,7 @@ PostGIS 2.0.4
   - Fix build with systemwide liblwgeom installed
   - #2383, Fix unsafe use of \' in warning message
   - #2410, Fix segmentize of collinear curve
+  - #2415, ST_Multi support for COMPOUNDCURVE and CURVEPOLYGON
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE
