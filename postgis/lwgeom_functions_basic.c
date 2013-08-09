@@ -492,10 +492,20 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** in input. If bbox cache is not there we'll need to handle
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
-	if ( lwtype_is_collection(gserialized_get_type(geom)) && 
-	     gserialized_has_bbox(geom) )
-	{
-		PG_RETURN_POINTER(geom);
+	if ( gserialized_has_bbox(geom) ) {
+		switch (gserialized_get_type(geom)) 
+		{
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTIPOLYGONTYPE:
+			case COLLECTIONTYPE:
+			case MULTICURVETYPE:
+			case MULTISURFACETYPE:
+			case TINTYPE:
+				PG_RETURN_POINTER(geom);
+			default:
+				break;
+		}
 	}
 
 	/* deserialize into lwgeoms[0] */
