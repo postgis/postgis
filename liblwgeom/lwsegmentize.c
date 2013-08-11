@@ -669,7 +669,8 @@ lwline_desegmentize(LWLINE *line)
 {
 	LWDEBUG(2, "lwline_desegmentize called.");
 
-	return pta_desegmentize(line->points, line->flags, line->srid);
+	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone(line));
+	else return pta_desegmentize(line->points, line->flags, line->srid);
 }
 
 LWGEOM *
