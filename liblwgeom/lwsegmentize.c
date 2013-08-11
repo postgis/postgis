@@ -16,6 +16,9 @@
 #include <string.h>
 
 #include "liblwgeom_internal.h"
+
+//#define POSTGIS_DEBUG_LEVEL 4
+
 #include "lwgeom_log.h"
 
 
@@ -551,9 +554,11 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	int found_arc = LW_FALSE;
 	int current_arc = 1;
 	int num_edges;
-	int edge_type = -1;
+	int edge_type; /* non-zero if edge is part of an arc */
 	int start, end;
 	LWCOLLECTION *outcol;
+	/* Minimum number of edges, per quadrant, required to define an arc */
+	const unsigned int min_quad_edges = 2;
 
 	/* Die on null input */
 	if ( ! points )
@@ -579,6 +584,9 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	/* And then see if the next edge follows it */
 	while( i < num_edges-2 )
 	{
+		unsigned int arc_edges;
+		unsigned int num_quadrants;
+
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
 		getPoint4d_p(points, i  , &a1);
@@ -608,6 +616,23 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 		/* Jump past all the edges that were added to the arc */
 		if ( found_arc )
 		{
+			/* Check if an arc was composed by enough edges to be
+			 * really considered an arc
+			 * See http://trac.osgeo.org/postgis/ticket/2420
+			 */
+			arc_edges = j - 1 - i;
+			num_quadrants = 1; /* silly guess, TODO: compute */
+			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
+			if ( a1.x == b.x && a1.y == b.y ) {
+				LWDEBUG(4, "arc is a circle");
+				num_quadrants = 4;
+			}
+			/* a1 is first point, b is last point */
+			if ( arc_edges < min_quad_edges * num_quadrants ) {
+				LWDEBUGF(4, "Not enough edges for a %d quadrants arc", num_quadrants);
+				for ( k = j-1; k >= i; k-- )
+					edges_in_arcs[k] = 0;
+			}
 			i = j-1;
 		}
 		else
