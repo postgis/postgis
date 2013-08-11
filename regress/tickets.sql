@@ -754,5 +754,7 @@ SELECT '#2415.2', ST_AsText(ST_Multi(
   'CURVEPOLYGON(CIRCULARSTRING(10 0,15 1,20 0,18 5,20 10,10 10,10 0))'
 ));
 
+SELECT '#2412', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,20 0)'));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

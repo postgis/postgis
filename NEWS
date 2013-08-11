@@ -22,6 +22,7 @@ PostGIS 2.0.4
   - #2383, Fix unsafe use of \' in warning message
   - #2410, Fix segmentize of collinear curve
   - #2415, ST_Multi support for COMPOUNDCURVE and CURVEPOLYGON
+  - #2412, ST_LineToCurve support for lines with less than 4 vertices
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE
