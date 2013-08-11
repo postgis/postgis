@@ -584,6 +584,9 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	/* And then see if the next edge follows it */
 	while( i < num_edges-2 )
 	{
+		unsigned int arc_edges;
+		unsigned int num_quadrants;
+
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
 		getPoint4d_p(points, i  , &a1);
@@ -617,8 +620,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 			 * really considered an arc
 			 * See http://trac.osgeo.org/postgis/ticket/2420
 			 */
-			unsigned int arc_edges = j - 1 - i;
-			unsigned int num_quadrants = 1; /* silly guess, TODO: compute */
+			arc_edges = j - 1 - i;
+			num_quadrants = 1; /* silly guess, TODO: compute */
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
 			if ( a1.x == b.x && a1.y == b.y ) {
 				LWDEBUG(4, "arc is a circle");
