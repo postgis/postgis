@@ -831,7 +831,7 @@ SELECT '#2415.2', ST_AsText(ST_Multi(
 
 SELECT '#2412', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,20 0)'));
 
-SELECT '#2430', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10,0 0)'));
+SELECT '#2420', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10,0 0)'));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
