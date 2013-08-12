@@ -523,6 +523,28 @@ lwgeom_segmentize(LWGEOM *geom, uint32_t perQuad)
 	return ogeom;
 }
 
+/**
+ * Return ABC angle in radians
+ * TODO: move to lwalgorithm
+ */
+static double
+lw_arc_angle(const POINT2D *a, const POINT2D *b, const POINT2D *c)
+{
+  POINT2D ab, cb;
+
+  ab.x = b->x - a->x;
+  ab.y = b->y - a->y;
+
+  cb.x = b->x - c->x;
+  cb.y = b->y - c->y;
+
+  double dot = (ab.x * cb.x + ab.y * cb.y); /* dot product */
+  double cross = (ab.x * cb.y - ab.y * cb.x); /* cross product */
+
+  double alpha = atan2(cross, dot);
+
+  return alpha;
+}
 
 /**
 * Returns LW_TRUE if b is on the arc formed by a1/a2/a3, but not within
@@ -548,7 +570,17 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 	{
 		int a2_side = signum(lw_segment_side((POINT2D*)a1, (POINT2D*)a3, (POINT2D*)a2));
 		int b_side = signum(lw_segment_side((POINT2D*)a1, (POINT2D*)a3, (POINT2D*)b));
-		
+		double angle1 = lw_arc_angle((POINT2D*)a1, (POINT2D*)a2, (POINT2D*)a3);
+		double angle2 = lw_arc_angle((POINT2D*)a2, (POINT2D*)a3, (POINT2D*)b);
+
+		/* Is the angle similar to the previous one ? */
+		diff = fabs(angle1 - angle2);
+		LWDEBUGF(4, " angle1: %g, angle2: %g, diff:%g", angle1, angle2, diff);
+		if ( diff > EPSILON_SQLMM ) 
+		{
+			return LW_FALSE;
+		}
+
 		/* Is the point b on the same side of a1/a3 as the mid-point a2 is? */
 		/* If not, it's in the unbounded part of the circle, so it continues the arc, return true. */
 		if ( b_side != a2_side )
@@ -603,6 +635,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
+	POINT4D first;
 	char *edges_in_arcs;
 	int found_arc = LW_FALSE;
 	int current_arc = 1;
@@ -645,6 +678,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 		getPoint4d_p(points, i  , &a1);
 		getPoint4d_p(points, i+1, &a2);
 		getPoint4d_p(points, i+2, &a3);
+		memcpy(&first, &a1, sizeof(POINT4D));
+
 		for( j = i+3; j < num_edges+1; j++ )
 		{
 			LWDEBUGF(4, "i=%d, j=%d", i, j);
@@ -665,6 +700,10 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				current_arc++;
 				break;
 			}
+
+			memcpy(&a1, &a2, sizeof(POINT4D));
+			memcpy(&a2, &a3, sizeof(POINT4D));
+			memcpy(&a3,  &b, sizeof(POINT4D));
 		}
 		/* Jump past all the edges that were added to the arc */
 		if ( found_arc )
@@ -676,7 +715,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 			arc_edges = j - 1 - i;
 			num_quadrants = 1; /* silly guess, TODO: compute */
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
-			if ( a1.x == b.x && a1.y == b.y ) {
+			if ( first.x == b.x && first.y == b.y ) {
 				LWDEBUG(4, "arc is a circle");
 				num_quadrants = 4;
 			}
