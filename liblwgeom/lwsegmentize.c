@@ -17,7 +17,7 @@
 
 #include "liblwgeom_internal.h"
 
-//#define POSTGIS_DEBUG_LEVEL 4
+/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 #include "lwgeom_log.h"
 
@@ -667,8 +667,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	
 	/* Allocate our result array of vertices that are part of arcs */
 	num_edges = points->npoints - 1;
-	edges_in_arcs = lwalloc(num_edges);
-	memset(edges_in_arcs, 0, num_edges);
+	edges_in_arcs = lwalloc(num_edges + 1);
+	memset(edges_in_arcs, 0, num_edges + 1);
 	
 	/* We make a candidate arc of the first two edges, */
 	/* And then see if the next edge follows it */
