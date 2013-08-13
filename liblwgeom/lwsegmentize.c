@@ -587,7 +587,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
-	POINT4D first;
+	POINT4D first, center;
 	char *edges_in_arcs;
 	int found_arc = LW_FALSE;
 	int current_arc = 1;
@@ -623,7 +623,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	while( i < num_edges-2 )
 	{
 		unsigned int arc_edges;
-		unsigned int num_quadrants;
+		double num_quadrants;
+		double angle;
 
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
@@ -665,15 +666,24 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 			 * See http://trac.osgeo.org/postgis/ticket/2420
 			 */
 			arc_edges = j - 1 - i;
-			num_quadrants = 1; /* silly guess, TODO: compute */
 			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
 			if ( first.x == b.x && first.y == b.y ) {
 				LWDEBUG(4, "arc is a circle");
 				num_quadrants = 4;
 			}
+			else {
+				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
+				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
+        int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
+        if ( p2_side != -1 ) angle = -angle; 
+
+				if ( angle < 0 ) angle = 2 * M_PI + angle;
+				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
+				LWDEBUGF(4, "arc angle is %g, quandrants:%g", angle, num_quadrants);
+			}
 			/* a1 is first point, b is last point */
 			if ( arc_edges < min_quad_edges * num_quadrants ) {
-				LWDEBUGF(4, "Not enough edges for a %d quadrants arc", num_quadrants);
+				LWDEBUGF(4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants);
 				for ( k = j-1; k >= i; k-- )
 					edges_in_arcs[k] = 0;
 			}
