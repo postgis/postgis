@@ -405,7 +405,17 @@ static void test_ptarray_desegmentize()
 //	printf("%s\n", str);
 	lwfree(str);		
 	
-  // See http://trac.osgeo.org/postgis/ticket/2412
+	// See http://trac.osgeo.org/postgis/ticket/2425 
+	// and http://trac.osgeo.org/postgis/ticket/2420 
+	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10,0 0)");
+	out = lwgeom_desegmentize(in);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10,0 0)");
+	lwgeom_free(in);
+	lwgeom_free(out);
+	lwfree(str);	
+
+	// See http://trac.osgeo.org/postgis/ticket/2412
 	in = lwgeom_from_text("LINESTRING(0 0, 1 1)");
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
@@ -414,6 +424,7 @@ static void test_ptarray_desegmentize()
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);		
+
 }
 
 static void test_ptarray_contains_point() 
