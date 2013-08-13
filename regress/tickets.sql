@@ -831,7 +831,8 @@ SELECT '#2415.2', ST_AsText(ST_Multi(
 
 SELECT '#2412', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,20 0)'));
 
-SELECT '#2420', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10,0 0)'));
+SELECT '#2420.1', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10,0 0)'));
+SELECT '#2420.2', ST_AsText(ST_LineToCurve('LINESTRING(0 0,10 0,10 10,0 10)'));
 
 SELECT '#2423', ST_AsText(ST_SnapToGrid(ST_CurveToLine(ST_LineToCurve(
   ST_Intersection(ST_Buffer(ST_Point(0,0),10),ST_MakeEnvelope(-10,0,10,10))
