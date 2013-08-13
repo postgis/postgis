@@ -231,7 +231,8 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 	pa = ptarray_construct_empty(1, 1, 32);
 
 	/* Sweep from a1 to a3 */
-	for ( angle = a1; clockwise ? angle > a3 : angle < a3; angle += increment ) 
+	ptarray_append_point(pa, p1, LW_FALSE);
+	for ( angle = a1 + increment; clockwise ? angle > a3 : angle < a3; angle += increment ) 
 	{
 		pt.x = center.x + radius * cos(angle);
 		pt.y = center.y + radius * sin(angle);

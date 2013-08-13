@@ -26,6 +26,7 @@ PostGIS 2.0.4
   - #2420, ST_LineToCurve: require at least 8 edges to define a full circle
   - #2423, ST_LineToCurve: require all arc edges to form the same angle
   - #2424, ST_CurveToLine: add support for COMPOUNDCURVE in MULTICURVE
+  - #2427, Make sure to retain first point of curves on ST_CurveToLine
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE

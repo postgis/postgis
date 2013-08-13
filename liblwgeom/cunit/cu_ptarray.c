@@ -371,7 +371,7 @@ static void test_ptarray_desegmentize()
   in = out;
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1,1 1),CIRCULARSTRING(1 1,1.8049097 1.9807853,3 1),(3 1,4 4))");
+	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,1.8049097 1.9807853,3 1),(3 1,4 4))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 //	printf("%s\n", str);
