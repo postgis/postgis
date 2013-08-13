@@ -618,7 +618,7 @@ circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
 	getPoint4d_p(pa, start, &p0);
 	ptarray_set_point4d(pao, 0, &p0);	
-	getPoint4d_p(pa, (start+end)/2, &p1);
+	getPoint4d_p(pa, (start+end+1)/2, &p1);
 	ptarray_set_point4d(pao, 1, &p1);	
 	getPoint4d_p(pa, end+1, &p2);
 	ptarray_set_point4d(pao, 2, &p2);	
