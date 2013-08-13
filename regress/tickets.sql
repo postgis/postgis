@@ -841,5 +841,7 @@ SELECT '#2424', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
   'MULTICURVE(COMPOUNDCURVE((0 0, 10 0),CIRCULARSTRING(10 0, 20 1, 30 10)))',
 2),1));
 
+SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1)'),1));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
