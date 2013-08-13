@@ -352,6 +352,10 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad)
 		{
 			lines[i] = (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone_deep(((LWLINE *)tmp)->points));
 		}
+		else if (tmp->type == COMPOUNDTYPE)
+		{
+			lines[i] = (LWGEOM *)lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
+		}
 		else
 		{
 			lwerror("Unsupported geometry found in MultiCurve.");
