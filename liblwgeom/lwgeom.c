@@ -261,7 +261,7 @@ LWGEOM *lwpoint_as_lwgeom(const LWPOINT *obj)
 /**
 ** Look-up for the correct MULTI* type promotion for singleton types.
 */
-static uint8_t MULTITYPE[17] =
+static uint8_t MULTITYPE[NUMTYPES] =
 {
 	0,
 	MULTIPOINTTYPE,        /*  1 */
@@ -274,7 +274,7 @@ static uint8_t MULTITYPE[17] =
 	POLYHEDRALSURFACETYPE, /* 11 */
 	0, 0,
 	TINTYPE,               /* 14 */
-	0,0
+	0
 };
 
 /**
@@ -315,6 +315,50 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	}
 
 	return ogeom;
+}
+
+/**
+* Create a new LWGEOM of the appropriate CURVE* type.
+*/
+LWGEOM *
+lwgeom_as_curve(const LWGEOM *lwgeom)
+{
+	LWGEOM *ogeom;
+	int type = lwgeom->type;
+/*
+  int hasz = FLAGS_GET_Z(lwgeom->flags);
+  int hasm = FLAGS_GET_M(lwgeom->flags);
+  int srid = lwgeom->srid;
+*/
+
+	switch(type)
+	{
+		case LINETYPE:
+      /* turn to COMPOUNDCURVE */
+      ogeom = (LWGEOM*)lwcompound_construct_from_lwline((LWLINE*)lwgeom);
+      break;
+		case POLYGONTYPE:
+      ogeom = (LWGEOM*)lwcurvepoly_construct_from_lwpoly(lwgeom_as_lwpoly(lwgeom));
+      break;
+		case MULTILINETYPE:
+      /* turn to MULTICURVE */
+      ogeom = lwgeom_clone(lwgeom);
+      ogeom->type = MULTICURVETYPE;
+      break;
+		case MULTIPOLYGONTYPE:
+      /* turn to MULTISURFACE */
+      ogeom = lwgeom_clone(lwgeom);
+      ogeom->type = MULTISURFACETYPE;
+      break;
+		case COLLECTIONTYPE:
+		default:
+      ogeom = lwgeom_clone(lwgeom);
+      break;
+  }
+
+  /* TODO: copy bbox from input geom ? */
+
+  return ogeom;
 }
 
 

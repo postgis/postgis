@@ -81,6 +81,7 @@ TESTS = \
 	summary \
 	affine \
 	empty \
+  forcecurve \
 	measures \
 	legacy \
 	long_xact \

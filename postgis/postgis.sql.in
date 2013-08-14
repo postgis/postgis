@@ -1277,6 +1277,12 @@ CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ForceCurve(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_curve'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry)
 	RETURNS geometry

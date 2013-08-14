@@ -580,6 +580,7 @@ extern LWPSURFACE *lwgeom_as_lwpsurface(const LWGEOM *lwgeom);
 extern LWTRIANGLE *lwgeom_as_lwtriangle(const LWGEOM *lwgeom);
 extern LWTIN *lwgeom_as_lwtin(const LWGEOM *lwgeom);
 extern LWGEOM *lwgeom_as_multi(const LWGEOM *lwgeom);
+extern LWGEOM *lwgeom_as_curve(const LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
 extern LWGEOM *lwtin_as_lwgeom(const LWTIN *obj);
@@ -945,6 +946,12 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 * takes owership of the passed geometry.
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
+
+/**
+* Construct an equivalent compound curve from a linestring. 
+* Compound curves can have linear components, so this works fine 
+*/
+extern LWCOMPOUND* lwcompound_construct_from_lwline(const LWLINE *lwpoly);
 
 /**
 * Construct an equivalent curve polygon from a polygon. Curve polygons

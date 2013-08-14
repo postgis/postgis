@@ -10,6 +10,8 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #2430, ST_ForceCurve
+
  * Enhancements *
 
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
