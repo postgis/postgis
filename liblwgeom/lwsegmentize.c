@@ -675,11 +675,11 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
 				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
         int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
-        if ( p2_side != -1 ) angle = -angle; 
+        if ( p2_side >= 0 ) angle = -angle; 
 
 				if ( angle < 0 ) angle = 2 * M_PI + angle;
 				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
-				LWDEBUGF(4, "arc angle is %g, quandrants:%g", angle, num_quadrants);
+				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quandrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
 			}
 			/* a1 is first point, b is last point */
 			if ( arc_edges < min_quad_edges * num_quadrants ) {
