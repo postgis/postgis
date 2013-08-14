@@ -725,7 +725,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				num_quadrants = 4;
 			}
 			else {
-				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
+				lwcircle_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
 				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
         int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
         if ( p2_side != -1 ) angle = -angle; 
