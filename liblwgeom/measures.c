@@ -222,6 +222,7 @@ lw_dist2d_is_collection(const LWGEOM *g)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case COMPOUNDTYPE:
+	case POLYHEDRALSURFACETYPE:
 		return LW_TRUE;
 		break;
 
