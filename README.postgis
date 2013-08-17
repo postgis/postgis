@@ -2,7 +2,7 @@ PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
 :Version: 2.1.0
-:Date: 2013-07-DD
+:Date: 2013-08-17
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -46,7 +46,7 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.3.0 or higher 
+* GEOS (Required, Version 3.3.3 or higher 
   - 3.4+ is strongly recommended and needed for full features):
 
   The GEOS library provides support for exact topological tests such as
