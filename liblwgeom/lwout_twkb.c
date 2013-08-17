@@ -17,6 +17,7 @@
 */
 static uint8_t lwgeom_twkb_type(const LWGEOM *geom, uint8_t variant)
 {
+	LWDEBUGF(2, "Entered  lwgeom_twkb_type",0);
 	uint8_t wkb_type = 0;
 	uint8_t type_flag = 0;
 	int dims;
@@ -92,6 +93,7 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom, uint8_t variant)
 */
 static inline int wkb_swap_bytes(uint8_t variant)
 {
+	LWDEBUGF(2, "Entered  wkb_swap_bytes",0);
 	/* If requested variant matches machine arch, we don't have to swap! */
 	if ( ((variant & WKB_NDR) && (getMachineEndian() == NDR)) ||
 	     ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
@@ -101,51 +103,60 @@ static inline int wkb_swap_bytes(uint8_t variant)
 	return LW_TRUE;
 }
 
-/*
-* Integer32
-*/
-static uint8_t* int32_to_twkb_buf(const int ival, uint8_t *buf, uint8_t variant)
-{
-	char *iptr = (char*)(&ival);
-	int i = 0;
-
-	if ( sizeof(int) != WKB_INT_SIZE )
-	{
-		lwerror("Machine int size is not %d bytes!", WKB_INT_SIZE);
-	}
-	LWDEBUGF(4, "Writing value '%u'", ival);
-
-		/* Machine/request arch mismatch, so flip byte order */
-		if ( wkb_swap_bytes(variant) )
-		{
-			for ( i = 0; i < WKB_INT_SIZE; i++ )
-			{
-				buf[i] = iptr[WKB_INT_SIZE - 1 - i];
-			}
-		}
-		/* If machine arch and requested arch match, don't flip byte order */
-		else
-		{
-			memcpy(buf, iptr, WKB_INT_SIZE);
-		}
-		return buf + WKB_INT_SIZE;	
-}
-
-/*
-* Byte
+/**
+Function for putting a Byte value into the buffer
 */
 static uint8_t* uint8_to_twkb_buf(const uint8_t ival, uint8_t *buf)
 {
+	LWDEBUGF(2, "Entered  uint8_to_twkb_buf",0);
 		memcpy(buf, &ival, WKB_BYTE_SIZE);
 		return buf + 1;
 }
 
-/*
-* All sizes of integers
-* This is for copying the different storaze sizes of the coordinates to the buffer.
+/** 
+Encodes a value as varInt described here:
+https://developers.google.com/protocol-buffers/docs/encoding#varints
+*/
+int s_getvarint_size(long val)
+{
+	LWDEBUGF(2, "Entered  s_getvarint_size",0);
+	unsigned long q;
+	int n=0;
+	
+	q = (val << 1) ^ (val >> 63);
+	
+	while ((q>>(7*(n+1))) >0)
+	{
+		n++;
+	}
+	n++;
+	return n;
+}
+
+/** 
+Encodes a value as signed varInt
+https://developers.google.com/protocol-buffers/docs/encoding#varints
+*/
+int u_getvarint_size(unsigned long val)
+{
+	LWDEBUGF(2, "Entered  u_getvarint_size",0);
+	unsigned long q;
+	int n=0;
+		q =val;
+	while ((q>>(7*(n+1))) >0)
+	{
+		n++;
+	}
+	n++;
+	return n;
+}
+
+/** 
+Function for copying a variable length value into the buffer
 */
 static uint8_t* to_twkb_buf(uint8_t *iptr, uint8_t *buf, uint8_t variant, int the_size)
 {
+	LWDEBUGF(2, "Entered  to_twkb_buf",0);
 	int i = 0;
 
 	/* Machine/request arch mismatch, so flip byte order */
@@ -164,20 +175,63 @@ static uint8_t* to_twkb_buf(uint8_t *iptr, uint8_t *buf, uint8_t variant, int th
 	return buf + the_size;
 }
 
+/**
+Function for encoding a value as varInt and putting it in the buffer
+*/
+static uint8_t* u_varint_to_twkb_buf(unsigned long val, uint8_t *buf)
+{
+	LWDEBUGF(2, "Entered  u_varint_to_twkb_buf",0);
+	unsigned long q;
+	int n,grp;
+	q =val;
+	n=0;
+	
+	while ((q>>(7*(n+1))) >0)
+	{
+		grp=128^(127&(q>>(7*n)));
+		buf[n]=grp;	
+		n++;
+	}
+	grp=127&(q>>(7*n));
+	buf[n]=grp;	
+	n++;
+
+	return buf+=n;
+}
+
+/**
+Function for encoding a varInt value as signed
+*/
+static uint8_t* s_varint_to_twkb_buf(long val, uint8_t *buf)
+{
+	LWDEBUGF(2, "Entered  s_varint_to_twkb_buf",0);
+	unsigned long q;
+	q = (val << 1) ^ (val >> 63);
+
+	return u_varint_to_twkb_buf(q, buf);
+}
+
+
 /*
 * Empty
 */
-static size_t empty_to_twkb_size(const LWGEOM *geom, uint8_t variant)
+static size_t empty_to_twkb_size(const LWGEOM *geom, uint8_t variant, uint32_t id) 
 {
+	LWDEBUGF(2, "Entered  empty_to_twkb_size",0);
 
 	/* Endian flag/precision + id + type number + npoints*/
-	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_BYTE_SIZE + WKB_INT_SIZE;
+	size_t size = WKB_BYTE_SIZE + WKB_BYTE_SIZE;
+	/*size of ID*/
+	size += u_getvarint_size((unsigned long) id);
+	/*size of npoints*/
+	size += u_getvarint_size((unsigned long) 0);
 
 	return size;
 }
 
 static uint8_t* empty_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id)
 {
+	LWDEBUGF(2, "Entered  empty_to_twkb_buf",0);
 	uint32_t wkb_type = lwgeom_twkb_type(geom, variant);
 	if ( geom->type == POINTTYPE )
 	{
@@ -195,25 +249,32 @@ static uint8_t* empty_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 	/*Copy the flag to the buffer*/
 	buf = uint8_to_twkb_buf(flag,buf);
 	
-	/* Set the geometry id */
-	buf = int32_to_twkb_buf(id, buf, variant);	
+	/* Set the geometry id */	
+	buf = u_varint_to_twkb_buf(id, buf);
 	
 	/* Set the geometry type */	
 	buf = uint8_to_twkb_buf(wkb_type,buf);	
 	
 
 	/* Set nrings/npoints/ngeoms to zero */
-	buf = int32_to_twkb_buf(0, buf, variant);
+	buf = u_varint_to_twkb_buf(0, buf);
 	return buf;
 }
 
+/**
+Chooses between encoding/compression methods for calculating the needed space
+*/
 static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[],int method)
 {
+	LWDEBUGF(2, "Entered ptarray_to_twkb_size",0);
 	switch (method)
 	{
 		case 0:
 		return ptarray_to_twkb_size_m0(pa, variant,prec,accum_rel);
 			break;
+		case 1:
+		return ptarray_to_twkb_size_m1(pa, variant,prec,accum_rel);
+			break;		
 		/* Unknown method! */
 		default:
 			lwerror("Unsupported compression method: %d",method );
@@ -225,8 +286,65 @@ static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int pre
 
 
 
-/*
-* POINTARRAY
+/**
+Calculates the needed space for storing a specific pointarray as varInt-encoded
+*/
+static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[])
+{
+	LWDEBUGF(2, "Entered ptarray_to_twkb_size_m1",0);
+	long r;
+	int dims = FLAGS_NDIMS(pa->flags);
+	size_t size = 0;
+	int j, factor,i;
+	double *dbl_ptr;
+	int start=0;
+	/*The variable factor is used to "shift" the double float coordinate to keep enough significant digits, 
+	for demanded precision, when cast to integer*/
+	factor=pow(10,prec);
+	/* Include the npoints size if it's not a POINT type) */
+	if ( ! ( variant & WKB_NO_NPOINTS ) )
+	{
+		LWDEBUGF(4, "We add space for npoints",0);
+		size+=u_getvarint_size(pa->npoints);
+	}
+	LWDEBUGF(4, "Refvalue dim 1 is %d",accum_rel[0]);
+	if(accum_rel[0]==INT32_MIN)
+	{
+		LWDEBUGF(4, "We don't have a ref-point yet so we give space for full coordinates",0);
+		/*Get a pointer to the first point of the point array*/
+		dbl_ptr = (double*)getPoint_internal(pa, 0);
+				
+		LWDEBUGF(4, "Our geom have %d dims",dims);
+		/*Load the accum_rel aray with the first points dimmension*/
+		for ( j = 0; j < dims; j++ )
+		{	
+			
+			LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
+			r = round(factor*dbl_ptr[j]);
+			accum_rel[j]=r;
+			LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);
+			size += s_getvarint_size((long) r);
+			
+		}	
+		start=1;
+	}
+	for ( i = start; i < pa->npoints; i++ )
+	{
+		dbl_ptr = (double*)getPoint_internal(pa, i);
+		for ( j = 0; j < dims; j++ )
+		{
+			LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
+			r=round(factor*dbl_ptr[j]-accum_rel[j]);
+			accum_rel[j]+=r;			
+			size += s_getvarint_size((long) r);
+			LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);
+		}
+	}
+	return size;
+}
+
+/**
+Calculates the needed space for storing a specific pointarray as encoded with "method0"
 */
 static size_t ptarray_to_twkb_size_m0(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[])
 {
@@ -250,31 +368,26 @@ static size_t ptarray_to_twkb_size_m0(const POINTARRAY *pa, uint8_t variant,int 
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
 	{
 		LWDEBUGF(2, "We add space for npoints",0);
-		size += WKB_INT_SIZE;
+		size += u_getvarint_size(pa->npoints);
 	}
 	/*if we don't have a ref-point yet*/
-	if(accum_rel[1]==INT32_MIN)
+	if(accum_rel[0]==INT32_MIN)
 	{
 		LWDEBUGF(2, "We don't have a ref-point yet so we give space for full coordinates",0);
 		/*Get a pointer to the first point of the point array*/
 		dbl_ptr = (double*)getPoint_internal(pa, 0);
 		
-		/*Register the size of the first point
-		it is 4 bytes per dimmension*/
-		size += dims*WKB_INT_SIZE;
+
 		
 		LWDEBUGF(2, "Our geom have %d dims",dims);
 		/*Load the accum_rel aray with the first points dimmension*/
 		for ( j = 0; j < dims; j++ )
 		{	
-			LWDEBUGF(4, "dim nr %d",j);
+			LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
 			r = round(factor*dbl_ptr[j]);
-			LWDEBUGF(4, "found value %d",r);
 			accum_rel[j]=r;
-			
-			if(fabs(factor*dbl_ptr[j])>size_array[2][1])
-				lwerror("The first coordinate exceeds the max_value (%d):%f",size_array[2][1],factor*dbl_ptr[j]);
-			
+			LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);
+			size += s_getvarint_size((long) r);
 		}	
 		start=1;
 	}
@@ -349,12 +462,20 @@ static size_t ptarray_to_twkb_size_m0(const POINTARRAY *pa, uint8_t variant,int 
 	return size;
 }
 
+/**
+Chooses between encoding/compression methods for storing the pointarray
+*/
 static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[],int method)
 {
+	LWDEBUGF(2, "Entered ptarray_to_twkb_buf",0);
 	switch (method)
 	{
 		case 0:
 			buf = ptarray_to_twkb_buf_m0(pa, buf, variant,prec,accum_rel);
+		return buf;
+		break;
+		case 1:
+			buf = ptarray_to_twkb_buf_m1(pa, buf, variant,prec,accum_rel);
 		return buf;
 		break;
 		/* Unknown method! */
@@ -364,8 +485,77 @@ static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t 
 	/*Just to make the compiler quiet*/
 	return 0;	
 }
+
+/**
+Stores a pointarray as varInts in the buffer
+*/
+static uint8_t* ptarray_to_twkb_buf_m1(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[])
+{
+	LWDEBUGF(2, "entered ptarray_to_twkb_buf_m1\n",0);
+	long r;
+	int dims = FLAGS_NDIMS(pa->flags);
+	int i, j, factor;
+	double *dbl_ptr;
+	factor=pow(10,prec);
+	int start=0;
+	
+	
+		
+	/* Set the number of points (if it's not a POINT type) */
+	if ( ! ( variant & WKB_NO_NPOINTS ) )
+	{
+		buf = u_varint_to_twkb_buf(pa->npoints,buf);
+		LWDEBUGF(4, "Register npoints:%d",pa->npoints);	
+	}
+
+	/*if we don't have a ref-point yet*/
+	if(accum_rel[0]==INT32_MIN)
+	{	
+		LWDEBUGF(2, "We don't have a ref-point yet so we store the full coordinates",0);
+		/*Get a pointer do the first point of the point array*/
+		dbl_ptr = (double*)getPoint_internal(pa, 0);
+		
+		/*the first coordinate for each dimension is copied to the buffer
+		and registered in accum_rel array*/
+			for ( j = 0; j < dims; j++ )
+			{	
+				LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
+				r = round(factor*dbl_ptr[j]);
+				accum_rel[j]=r;
+				LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);	
+				buf = s_varint_to_twkb_buf(r,buf);
+			}
+		start=1;
+	}
+	for ( i = start; i < pa->npoints; i++ )
+	{
+		LWDEBUGF(4, "Writing point #%d", i);
+		dbl_ptr = (double*)getPoint_internal(pa, i);
+		for ( j = 0; j < dims; j++ )
+		{
+			/*To get the relative coordinate we don't get the distance from the last point
+			but instead the distance from our accumulated last point
+			This is important to not build up a accumulated error when rounding the coordinates*/				
+			r=round(factor*dbl_ptr[j]-accum_rel[j]);		
+LWDEBUGF(4, "deltavalue: %d, ",r );				
+			accum_rel[j]+=r;
+			//add the actual coordinate
+			//s= getvarint((long) r, &ret, LW_TRUE);
+			//memcpy(buf, &ret, s);	
+			//buf+=s;
+			buf = s_varint_to_twkb_buf(r,buf);
+		}
+	}	
+	//LWDEBUGF(4, "Done (buf = %p)", buf);
+	return buf;
+}
+
+/**
+Stores a pointarray with "method0" in the buffer
+*/
 static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[])
 {
+	LWDEBUGF(2, "entered ptarray_to_twkb_buf_m0\n",0);
 	int dims = FLAGS_NDIMS(pa->flags);
 	int i, j, r, last_size,factor,test_size,r_test,j_test;
 	double *dbl_ptr;
@@ -379,7 +569,7 @@ static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8
 	/* Set the number of points (if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
 	{
-		buf = int32_to_twkb_buf(pa->npoints, buf, variant);
+		buf = u_varint_to_twkb_buf(pa->npoints,buf);
 		LWDEBUGF(4, "Regiter npoints:%d",pa->npoints);	
 	}
 
@@ -393,10 +583,11 @@ static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8
 		and registered in accum_rel array*/
 			for ( j = 0; j < dims; j++ )
 			{	
+				LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
 				r = round(factor*dbl_ptr[j]);
 				accum_rel[j]=r;
-				LWDEBUGF(4, "Writing dimension #%d (buf = %p)", j, buf);				
-				buf = int32_to_twkb_buf(r, buf, variant);
+				LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);	
+				buf = s_varint_to_twkb_buf(r,buf);
 			}
 		start=1;
 	}
@@ -482,40 +673,43 @@ static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8
 	return buf;
 }
 
-
-
+/**
+Calculates needed storage size for aggregated points
+*/
 static size_t  lwgeom_agg_to_twkbpoint_size(lwgeom_id *geom_array,uint8_t variant,int n,int8_t prec,int refpoint[],int method)
 {
+	lwgeom_id *li;
 	/*One byte for type declaration*/
 	size_t size = WKB_BYTE_SIZE;
-	/*One integer holding number of points*/
-	size += WKB_INT_SIZE;
+	/*One integer holding number of geometries*/
+	size += u_getvarint_size((unsigned long) 2);
 
 	int i;
-	LWPOINT *p;
 	for (i=0;i<n;i++)
 	{
-		p=(LWPOINT *) ((geom_array+i)->geom);
-		size += lwpoint_to_twkb_size(p,variant,prec,refpoint,method);
+		li=(geom_array+i);
+		size += lwpoint_to_twkb_size((LWPOINT*) (li->geom),variant,prec,li->id,refpoint,method);
 	}
 	return size;
 }
-/*
-* POINT
+/**
+Calculates needed storage size for a point
 */
-static size_t lwpoint_to_twkb_size(const LWPOINT *pt,uint8_t variant, int8_t prec,int refpoint[],int method)
+static size_t lwpoint_to_twkb_size(const LWPOINT *pt,uint8_t variant, int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-	size	 += WKB_INT_SIZE;
+	size	 += u_getvarint_size((unsigned long) id);
 
 	/* Points */
 	size += ptarray_to_twkb_size(pt->point, variant | WKB_NO_NPOINTS, prec,refpoint,method);
 	return size;
 }
 
-
+/**
+Iterates an aggregation of points
+*/
 static uint8_t* lwgeom_agg_to_twkbpoint_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int refpoint[],int method)
 {
 
@@ -535,24 +729,27 @@ static uint8_t* lwgeom_agg_to_twkbpoint_buf(lwgeom_id* geom_array,int n, uint8_t
 	buf = uint8_to_twkb_buf(type_flag,buf);
 	
 	/* Set number of geometries */
-	buf = int32_to_twkb_buf(n, buf, variant);
-
+	buf = u_varint_to_twkb_buf(n, buf);
 	
 	for (i=0;i<n;i++)
 	{
 		li=(geom_array+i);
 		buf = lwpoint_to_twkb_buf((LWPOINT*) (li->geom),buf,variant,prec,li->id,refpoint,method);
+
 	}
 	return buf;
 }
 
+/**
+Sends a point to the buffer
+*/
 static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id,int refpoint[],int method)
 {
 
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-		buf = int32_to_twkb_buf(id, buf, variant);	
+		buf = u_varint_to_twkb_buf(id, buf);	
 	
 		
 	/* Set the coordinates */
@@ -561,34 +758,41 @@ static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t var
 	return buf;
 }
 
+/**
+Calculates needed storage size for aggregated lines
+*/
 static size_t  lwgeom_agg_to_twkbline_size(lwgeom_id* geom_array,uint8_t variant,int n,int8_t prec,int refpoint[],int method)
 {
+	lwgeom_id *li;
 	/*One byte for type declaration*/
 	size_t size = WKB_BYTE_SIZE;
-	/*One integer holding number of collections*/
-	size += WKB_INT_SIZE;
+	/*One integer holding number of lines*/
+	size += u_getvarint_size((unsigned long) n);
 	int i;
 	for (i=0;i<n;i++)
 	{
-		size += lwline_to_twkb_size((LWLINE*)((geom_array+i)->geom),variant,prec,refpoint,method);
+		li=(geom_array+i);
+		size += lwline_to_twkb_size((LWLINE*) (li->geom),variant,prec,li->id,refpoint,method);
 	}
 	return size;
 }
-/*
-* LINESTRING, CIRCULARSTRING
+/**
+Calculates needed storage size for a line
 */
-static size_t lwline_to_twkb_size(const LWLINE *line,uint8_t variant, int8_t prec,int refpoint[],int method)
+static size_t lwline_to_twkb_size(const LWLINE *line,uint8_t variant, int8_t prec, uint32_t id,int refpoint[],int method)
 {	
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-	size	 += WKB_INT_SIZE;
+	size	 += u_getvarint_size((unsigned long) id);
 
 	/* Size of point array */
 	size += ptarray_to_twkb_size(line->points,variant,prec,refpoint,method);
 	return size;
 }
-
+/**
+Iterates an aggregation of lines
+*/
 static uint8_t* lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int refpoint[],int method)
 {
 
@@ -608,8 +812,7 @@ static uint8_t* lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t 
 	buf = uint8_to_twkb_buf(type_flag,buf);
 	
 	/* Set number of geometries */
-	buf = int32_to_twkb_buf(n, buf, variant);
-	
+	buf = u_varint_to_twkb_buf(n, buf);
 	for (i=0;i<n;i++)
 	{
 		li=(geom_array+i);
@@ -618,13 +821,15 @@ static uint8_t* lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t 
 	return buf;
 }
 
-
+/**
+Sends a line to the buffer
+*/
 static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id,int refpoint[],int method)
 {
 
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-		buf = int32_to_twkb_buf(id, buf, variant);			
+		buf = u_varint_to_twkb_buf(id, buf);				
 	
 	
 	/* Set the coordinates */
@@ -632,24 +837,29 @@ static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t var
 	return buf;
 }
 
-
+/**
+Calculates needed storage size for aggregated polygon
+*/
 static size_t  lwgeom_agg_to_twkbpoly_size(lwgeom_id* geom_array,uint8_t variant,int n,int8_t prec,int refpoint[],int method)
 {
+	lwgeom_id *li;
 	/*One byte for type declaration*/
 	size_t size = WKB_BYTE_SIZE;
 	/*One integer holding number of collections*/
-	size += WKB_INT_SIZE;
+	size +=u_getvarint_size((unsigned long) n);
 	int i;
 	for (i=0;i<n;i++)
 	{
-		size += lwpoly_to_twkb_size((LWPOLY*)((geom_array+i)->geom),variant,prec,refpoint,method);
+		li=(geom_array+i);
+		size += lwpoly_to_twkb_size((LWPOLY*) (li->geom),variant,prec,li->id,refpoint,method);
 	}
 	return size;
 }
-/*
-* POLYGON
+
+/**
+Calculates needed storage size for a polygon
 */
-static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t prec,int refpoint[],int method)
+static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	LWDEBUGF(2, "lwpoly_to_twkb_size entered%d",0);
 	int i;	
@@ -657,10 +867,10 @@ static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t pre
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-		size	 += WKB_INT_SIZE;
+	size	 += u_getvarint_size((unsigned long) id);
 	
 	/*nrings*/
-	size += WKB_INT_SIZE;
+	size += u_getvarint_size((unsigned long) poly->nrings);
 	
 	LWDEBUGF(2, "we have %d rings to iterate",poly->nrings);
 	for ( i = 0; i < poly->nrings; i++ )
@@ -672,6 +882,9 @@ static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t pre
 	return size;
 }
 
+/**
+Iterates an aggregation of polygons
+*/
 static uint8_t* lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int refpoint[],int method)
 {
 
@@ -690,7 +903,7 @@ static uint8_t* lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t 
 	LWDEBUGF(4, "Writing ndims '%d'", dims);
 	buf = uint8_to_twkb_buf(type_flag,buf);
 	/* Set number of geometries */
-	buf = int32_to_twkb_buf(n, buf, variant);
+	buf = u_varint_to_twkb_buf(n, buf);
 	
 	for (i=0;i<n;i++)
 	{
@@ -700,17 +913,20 @@ static uint8_t* lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t 
 	return buf;
 }
 
+/**
+Sends a polygon to the buffer
+*/
 static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	int i;
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
 	if (!(variant & WKB_NO_ID))
-		buf = int32_to_twkb_buf(id, buf, variant);		
+		buf = u_varint_to_twkb_buf(id, buf);	
 
 	/* Set the number of rings */
-	buf = int32_to_twkb_buf(poly->nrings, buf, variant);
-
+	buf = u_varint_to_twkb_buf(poly->nrings, buf);
+	
 	for ( i = 0; i < poly->nrings; i++ )
 	{
 		buf = ptarray_to_twkb_buf(poly->rings[i], buf, variant,prec,refpoint,method);
@@ -719,44 +935,50 @@ static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t var
 	return buf;
 }
 
-
+/**
+Calculates needed storage size for aggregated collection
+*/
 static size_t  lwgeom_agg_to_twkbcollection_size(lwgeom_id* geom_array,uint8_t variant,int n,int8_t prec,int refpoint[],int method)
 {
+	lwgeom_id *li;
 	LWDEBUGF(4, "lwgeom_agg_to_twkbcollection_size entered with %d collections",n);
 	/*One byte for type declaration*/
 	size_t size = WKB_BYTE_SIZE;
 	/*One integer holding number of collections*/
-	size += WKB_INT_SIZE;
+	size += u_getvarint_size((unsigned long) n);
 	int i;
 	for (i=0;i<n;i++)
 	{
-		size += lwcollection_to_twkb_size((LWCOLLECTION*)((geom_array+i)->geom),variant,prec,refpoint,method);
+		li=(geom_array+i);
+		size += lwcollection_to_twkb_size((LWCOLLECTION*) (li->geom),variant,prec,li->id,refpoint,method);
 	}
 	return size;
 }
-/*
-* MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION
-* MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON, TIN, 
-* POLYHEDRALSURFACE
+
+/**
+Calculates needed storage size for a collection
 */
-static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col,uint8_t variant, int8_t prec,int refpoint[],int method)
+static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col,uint8_t variant, int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	LWDEBUGF(2, "lwcollection_to_twkb_size entered, %d",0);
 	/* id*/
-	size_t size = WKB_INT_SIZE;
+	size_t size	 = u_getvarint_size((unsigned long) id);
 	/* size of geoms */
-	size += WKB_INT_SIZE; 
+	size += u_getvarint_size((unsigned long) col->ngeoms); 
 	int i = 0;
 
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		/* size of subgeom */
-		size += lwgeom_to_twkb_size((LWGEOM*)col->geoms[i],variant | WKB_NO_ID, prec,refpoint,method);
+		size += lwgeom_to_twkb_size((LWGEOM*)col->geoms[i],variant | WKB_NO_ID, prec,id,refpoint,method);
 	}
 
 	return size;
 }
 
+/**
+Iterates an aggregation of collections
+*/
 static uint8_t* lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int refpoint[],int method)
 {
 
@@ -775,7 +997,7 @@ static uint8_t* lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, ui
 	LWDEBUGF(4, "Writing ndims '%d'", dims);
 	buf = uint8_to_twkb_buf(type_flag,buf);
 	/* Set number of geometries */
-	buf = int32_to_twkb_buf(n, buf, variant);
+	buf = u_varint_to_twkb_buf(n, buf);
 	
 	for (i=0;i<n;i++)
 	{
@@ -785,17 +1007,20 @@ static uint8_t* lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, ui
 	return buf;
 }
 
+/**
+Iterates a collection
+*/
 static uint8_t* lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	int i;
 
 	
 	/* Set the geometry id */
-	buf = int32_to_twkb_buf(id, buf, variant);	
+	buf = u_varint_to_twkb_buf(id, buf);	
 
 	/* Set the number of rings */
-	buf = int32_to_twkb_buf(col->ngeoms, buf, variant);
-
+	buf = u_varint_to_twkb_buf(col->ngeoms, buf);
+	
 	/* Write the sub-geometries. Sub-geometries do not get SRIDs, they
 	   inherit from their parents. */
 	for ( i = 0; i < col->ngeoms; i++ )
@@ -806,10 +1031,10 @@ static uint8_t* lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t *buf, 
 	return buf;
 }
 
-/*
-* GEOMETRY
+/**
+Calculates the needed space for a geometry as twkb
 */
-static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t prec,int refpoint[],int method)
+static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t prec, uint32_t id,int refpoint[],int method)
 {
 	LWDEBUGF(2, "lwgeom_to_twkb_size entered %d",0);
 	size_t size = 0;
@@ -819,7 +1044,7 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 	/* Short circuit out empty geometries */
 	if ( lwgeom_is_empty(geom) )
 	{
-		return empty_to_twkb_size(geom, variant);
+		return empty_to_twkb_size(geom, variant,id);
 	}
 	/*add size of type-declaration*/
 	if (!(variant &  WKB_NO_TYPE))
@@ -827,18 +1052,18 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 	switch ( geom->type )
 	{
 		case POINTTYPE:
-			size += lwpoint_to_twkb_size((LWPOINT*)geom, variant, prec,refpoint,method);
+			size += lwpoint_to_twkb_size((LWPOINT*)geom, variant, prec,id,refpoint,method);
 			break;
 
 		/* LineString and CircularString both have points elements */
 		case CIRCSTRINGTYPE:
 		case LINETYPE:
-			size += lwline_to_twkb_size((LWLINE*)geom, variant, prec,refpoint,method);
+			size += lwline_to_twkb_size((LWLINE*)geom, variant, prec,id,refpoint,method);
 			break;
 
 		/* Polygon has nrings and rings elements */
 		case POLYGONTYPE:
-			size += lwpoly_to_twkb_size((LWPOLY*)geom, variant, prec,refpoint,method);
+			size += lwpoly_to_twkb_size((LWPOLY*)geom, variant, prec,id,refpoint,method);
 			break;
 
 		/* Triangle has one ring of three points 
@@ -850,10 +1075,10 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
-			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant | WKB_NO_TYPE, prec,refpoint,method);
+			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant | WKB_NO_TYPE, prec,id,refpoint,method);
 			break;
 		case COLLECTIONTYPE:
-			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant, prec,refpoint,method);
+			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant, prec,id,refpoint,method);
 			break;
 
 		/* Unknown type! */
@@ -864,7 +1089,6 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 	return size;
 }
 
-/* TODO handle the TRIANGLE type properly */
 
 static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant,int8_t prec, uint32_t id,int refpoint[],int method)
 {
@@ -950,7 +1174,7 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	
 	/*Adding the size for the first byte*/
 	buf_size = 1;
-	buf_size += lwgeom_to_twkb_size(geom,variant,prec,refpoint,method);
+	buf_size += lwgeom_to_twkb_size(geom,variant,prec,id,refpoint,method);
 	LWDEBUGF(4, "WKB output size: %d", buf_size);
 
 	if ( buf_size == 0 )
@@ -969,10 +1193,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 		else
 			variant = variant | WKB_XDR;
 	}
-
 	/* Allocate the buffer */
 	buf = lwalloc(buf_size);
-
 	if ( buf == NULL )
 	{
 		LWDEBUGF(4,"Unable to allocate %d bytes for WKB output buffer.", buf_size);
@@ -1126,7 +1348,7 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 		buf = uint8_to_twkb_buf(type_flag,buf);
 		
 		/* Set number of geometries */
-		buf = int32_to_twkb_buf(chk_homogenity, buf, variant);
+		buf = u_varint_to_twkb_buf(chk_homogenity, buf);
 	}
 	
 	/* Write the WKB into the output buffer 
@@ -1161,14 +1383,3 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	return wkb_out;
 	
 }
-
-
-
-
-
-
-
-
-
-
-
