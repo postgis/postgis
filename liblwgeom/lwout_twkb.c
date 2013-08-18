@@ -93,7 +93,6 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom, uint8_t variant)
 */
 static inline int wkb_swap_bytes(uint8_t variant)
 {
-	LWDEBUGF(2, "Entered  wkb_swap_bytes",0);
 	/* If requested variant matches machine arch, we don't have to swap! */
 	if ( ((variant & WKB_NDR) && (getMachineEndian() == NDR)) ||
 	     ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
@@ -1272,7 +1271,7 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	if(chk_homogenity==0)
 		return NULL;
 	if(chk_homogenity>1)
-		buf_size=6;
+		buf_size = 2+u_getvarint_size((unsigned long) chk_homogenity);
 	else
 		buf_size=1;
 	
