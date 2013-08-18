@@ -42,7 +42,8 @@ Release procedure
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Commit all your changes
-  a) make sure to run the extensions/make_unpackaged.sql and copy contents to  
+  a) make sure to run the extensions/make_unpackaged.sql on 
+    about to release version  and copy contents to  
     (TODO: we need to automate this) 
       postgis/sql_bits/postgis--unpackages.sql.in
       postgis_topology/sql_bits/topology_unpackaged.sql.in
