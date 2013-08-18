@@ -100,7 +100,7 @@
    <para>#2164, ST_TRI for raster (Nathaniel Clay)</para>
    <para>#2302, ST_Roughness for raster (Nathaniel Clay)</para>
    <para>#2290, ST_ColorMap(raster) to generate RGBA bands</para>
-   <para>#2254, Add SFCGAL backend support. </para>
+   <para>#2254, Add SFCGAL backend support.
              (Backend selection throught postgis.backend var)
              Functions available both throught GEOS or SFCGAL: 
               ST_Intersects, ST_3DIntersects, ST_Intersection, ST_Area, 
