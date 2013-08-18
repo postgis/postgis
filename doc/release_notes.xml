@@ -2,12 +2,12 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-      <sect1>
-		<title>Release 2.1.0</title>
-		<para>Release date: 2013/08/17</para>
-		<para>This is a minor release addressing both bug fixes and performance and functionality enhancements addressing issues since 2.0.3 release.
+    <sect1>
+		  <title>Release 2.1.0</title>
+		  <para>Release date: 2013/08/17</para>
+		  <para>This is a minor release addressing both bug fixes and performance and functionality enhancements addressing issues since 2.0.3 release.
 		If you are upgrading from 2.0+, only a soft upgrade is required.  If you are upgrading from 1.5 or earlier, a hard upgrade is required.</para>
-		<simplesect>		
+		<simplesect>	
     <title>Important / Breaking Changes</title>
      <para>#1653, Removed srid parameter from ST_Resample(raster) and variants
                with reference raster no longer apply reference raster's SRID.</para>
@@ -85,7 +85,7 @@
    <para>#2011, ST_DumpValues to output raster as array (Bborie Park / UC Davis)</para>
    <para>#2018, ST_Distance support for CircularString, CurvePolygon, MultiCurve,
       MultiSurface, CompoundCurve </para>
-   <para>#2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)
+   <para>#2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)</para>
    <para>#2193, Utilize PAGC parser as drop in replacement for tiger normalizer 
               (Steve Woodbridge, Regina Obe)</para>
    <para>#2210, ST_MinConvexHull(raster)</para>
@@ -231,7 +231,7 @@
     <simplesect><title>Known Issues</title>
       <para>#2111, Raster bands can only reference the first 256 bands of out-db rasters</para>
 		</simplesect>
-	  </sect1>
+	 </sect1>
 	  
        <sect1>
 		<title>Release 2.0.3</title>
