@@ -32,7 +32,7 @@
                ST_WorldToRasterCoordX and ST_WorldToRasterCoordY.
                ST_Raster2WorldCoord, ST_Raster2WorldCoordX and
                ST_Raster2WorldCoordY renamed to ST_RasterToWorldCoord,
-               ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
+               ST_RasterToWorldCoordX and ST_RasterToWorldCoordY</para>
      <para>ST_Estimated_Extent renamed to ST_EstimatedExtent</para>
      <para>ST_Line_Interpolate_Point renamed to ST_LineInterpolatePoint</para>
      <para>ST_Line_Substring renamed to ST_LineSubstring</para>
