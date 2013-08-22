@@ -63,6 +63,16 @@ BEGIN
 END 
 $$ LANGUAGE 'plpgsql';
 
+DO 
+$$
+BEGIN
+  IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'tiger_data') THEN
+       CREATE SCHEMA tiger_data;     
+  END IF;   
+END 
+$$ LANGUAGE 'plpgsql';
+
+
 DELETE FROM loader_platform WHERE os IN ('sh', 'windows');
 GRANT SELECT ON TABLE loader_platform TO public;
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)
@@ -80,7 +90,7 @@ set PSQL="%PGBIN%psql"
 set SHP2PGSQL="%PGBIN%shp2pgsql"
 cd ${staging_fold}
 ', E'del %TMPDIR%\\*.* /Q
-%PSQL% -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE; CREATE SCHEMA ${staging_schema};"
+%PSQL% -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
 %PSQL% -c "CREATE SCHEMA ${staging_schema};"
 %PSQL% -c "DO language ''plpgsql'' $$ BEGIN IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = ''${data_schema}'' ) THEN CREATE SCHEMA ${data_schema}; END IF;  END $$"
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
@@ -104,10 +114,8 @@ PSQL=${PGBIN}/psql
 SHP2PGSQL=${PGBIN}/shp2pgsql
 cd ${staging_fold}
 ', E'rm -f ${TMPDIR}/*.*
-%PSQL% -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE; CREATE SCHEMA ${staging_schema};"
-%PSQL% -c "CREATE SCHEMA ${staging_schema};"
-%PSQL% -c "DO language ''plpgsql'' $$ BEGIN IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = ''${data_schema}'' ) THEN CREATE SCHEMA ${data_schema}; END IF;  END $$"
-
+${PSQL} -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
+${PSQL} -c "CREATE SCHEMA ${staging_schema};"
 for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
