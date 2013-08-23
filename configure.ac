@@ -379,8 +379,8 @@ AC_SUBST([PGXS])
 dnl Extract the version information from pg_config
 dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
 dnl the final version. This is to guard against user error... 
-PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 | sed 's/[[^0-9]]//g'`	
-PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
+PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
+PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
 PGSQL_FULL_VERSION=`$PG_CONFIG --version`
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
