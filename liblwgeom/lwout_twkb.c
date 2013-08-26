@@ -88,19 +88,6 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom, uint8_t variant)
 	return type_flag;
 }
 
-/*
-* SwapBytes?
-*/
-static inline int wkb_swap_bytes(uint8_t variant)
-{
-	/* If requested variant matches machine arch, we don't have to swap! */
-	if ( ((variant & WKB_NDR) && (getMachineEndian() == NDR)) ||
-	     ((! (variant & WKB_NDR)) && (getMachineEndian() == XDR)) )
-	{
-		return LW_FALSE;
-	}
-	return LW_TRUE;
-}
 
 /**
 Function for putting a Byte value into the buffer
@@ -148,30 +135,6 @@ int u_getvarint_size(unsigned long val)
 	}
 	n++;
 	return n;
-}
-
-/** 
-Function for copying a variable length value into the buffer
-*/
-static uint8_t* to_twkb_buf(uint8_t *iptr, uint8_t *buf, uint8_t variant, int the_size)
-{
-	LWDEBUGF(2, "Entered  to_twkb_buf",0);
-	int i = 0;
-
-	/* Machine/request arch mismatch, so flip byte order */
-	if ( wkb_swap_bytes(variant)&&the_size>1 )
-	{
-		for ( i = 0; i < the_size; i++ )
-		{
-			buf[i] = iptr[the_size - 1 - i];
-		}
-	}
-	/* If machine arch and requested arch match, don't flip byte order */
-	else
-	{
-		memcpy(buf, iptr, the_size);
-	}
-	return buf + the_size;
 }
 
 /**
@@ -240,10 +203,10 @@ static uint8_t* empty_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 	}
 	uint8_t flag=0;
 	
-	/* Set the endian flag */
-	END_PREC_SET__ENDIANESS(flag, ((variant & WKB_NDR) ? 1 : 0));
+	/* Set the id flag */
+	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
 	/* Tell what precision to use*/
-	END_PREC_SET__PRECISION(flag,prec);
+	END_PREC_SET_PRECISION(flag,prec);
 	
 	/*Copy the flag to the buffer*/
 	buf = uint8_to_twkb_buf(flag,buf);
@@ -268,9 +231,6 @@ static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int pre
 	LWDEBUGF(2, "Entered ptarray_to_twkb_size",0);
 	switch (method)
 	{
-		case 0:
-		return ptarray_to_twkb_size_m0(pa, variant,prec,accum_rel);
-			break;
 		case 1:
 		return ptarray_to_twkb_size_m1(pa, variant,prec,accum_rel);
 			break;		
@@ -343,125 +303,6 @@ static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int 
 }
 
 /**
-Calculates the needed space for storing a specific pointarray as encoded with "method0"
-*/
-static size_t ptarray_to_twkb_size_m0(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[])
-{
-	LWDEBUGF(2, "ptarray_to_twkb_size entered%d",0);
-	int dims = FLAGS_NDIMS(pa->flags);
-	int i, j, r, last_size,factor,test_size,r_test,j_test;
-	double *dbl_ptr;
-	size_t size = 0;	
-	last_size=0;
-	int start=0;
-	
-	/*The variable factor is used to "shift" the double float coordinate to keep enough significant digits, 
-	for demanded precision, when cast to integer*/
-	factor=pow(10,prec);	
-	
-	/*This is a multidimmenstional array keeping trac of the three different storage sizes.
-	It holds number of bytes, max-value and min-value*/
-	static int size_array[3][3] = {{1,INT8_MAX,INT8_MIN},{2,INT16_MAX,INT16_MIN},{4,INT32_MAX,INT32_MIN}};
-	
-	/* Include the npoints size if it's not a POINT type) */
-	if ( ! ( variant & WKB_NO_NPOINTS ) )
-	{
-		LWDEBUGF(2, "We add space for npoints",0);
-		size += u_getvarint_size(pa->npoints);
-	}
-	/*if we don't have a ref-point yet*/
-	if(accum_rel[0]==INT32_MIN)
-	{
-		LWDEBUGF(2, "We don't have a ref-point yet so we give space for full coordinates",0);
-		/*Get a pointer to the first point of the point array*/
-		dbl_ptr = (double*)getPoint_internal(pa, 0);
-		
-
-		
-		LWDEBUGF(2, "Our geom have %d dims",dims);
-		/*Load the accum_rel aray with the first points dimmension*/
-		for ( j = 0; j < dims; j++ )
-		{	
-			LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
-			r = round(factor*dbl_ptr[j]);
-			accum_rel[j]=r;
-			LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);
-			size += s_getvarint_size((long) r);
-		}	
-		start=1;
-	}
-
-	LWDEBUGF(2, "We have %d points to iterate ",pa->npoints);
-	for ( i = start; i < pa->npoints; i++ )
-	{
-		dbl_ptr = (double*)getPoint_internal(pa, i);
-		for ( j = 0; j < dims; j++ )
-		{
-			/*To get the relative coordinate we don't get teh distance from the last point
-			but instead the distance from our accumulated last point
-			This is important to not build up a accumulated error when rounding the coordinates*/
-			r=round(factor*dbl_ptr[j]-accum_rel[j]);
-			
-			
-			/*last used size is too small so we have to increase*/
-			if(fabs(r)>size_array[last_size][1])
-			{
-				/*A little ugly, but we sacrify the last possible value fitting into a INT4, just to detect too big values without the need to do the substraction again with a double float instead*/
-				if(fabs(r)>=size_array[2][1])
-					lwerror("The relative coordinate coordinate exceeds the max_value (%d):%d",size_array[2][1],r);
-				/*minimum value for last used size, used to flag a change in size*/
-				size +=  size_array[last_size][0];
-				
-				/*Find how much space we actually need */
-				while ( fabs(r)>size_array[(++last_size)][1] && last_size<3) {}
-				
-				/*register the one byte needed to tell what size we need*/
-				size ++;	
-			}
-			
-			/*We don't need that much space so let's investigate if we should decrease*/
-			else if(last_size>0 && fabs(r)<size_array[last_size-1][1])
-			{
-				/*We don't care to change to smaller size if we don't see all dimensions 
-				in a coordinate fits in that size, so we don't even test if it isn't the first dimension*/
-				if(j==0)
-				{
-					test_size=0;
-					/*Here we test if we can decrease the size for all dimmensions*/
-					for ( j_test = 0; j_test < dims;j_test++ )
-					{
-						r_test=round(factor*dbl_ptr[j_test]-accum_rel[j_test]);
-						while ( fabs(r_test)>size_array[(test_size)][1] && test_size<=last_size) 
-							{
-								LWDEBUGF(4, "testing %d bytes for value %d, dim: %d",size_array[test_size][0],r_test,j_test );
-								test_size++;
-							}
-					}
-					if(test_size<last_size)
-					{		
-						/*
-						OK, we decide to actually do the decrease in size
-						minimum value for last used size, to flag a change in size*/
-						size +=  size_array[last_size][0];
-						
-						/*We decrease to the biggest size needed for all dimmensions in the point*/
-						last_size=test_size;						
-						
-						/*register the one byte needed to tell what size we need*/
-						size++;
-					}
-				}
-									
-			}
-			accum_rel[j]+=r;
-			//add the size of the coordinate
-			size +=  size_array[last_size][0];
-		}
-	}
-	return size;
-}
-
-/**
 Chooses between encoding/compression methods for storing the pointarray
 */
 static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[],int method)
@@ -469,10 +310,6 @@ static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t 
 	LWDEBUGF(2, "Entered ptarray_to_twkb_buf",0);
 	switch (method)
 	{
-		case 0:
-			buf = ptarray_to_twkb_buf_m0(pa, buf, variant,prec,accum_rel);
-		return buf;
-		break;
 		case 1:
 			buf = ptarray_to_twkb_buf_m1(pa, buf, variant,prec,accum_rel);
 		return buf;
@@ -549,129 +386,9 @@ LWDEBUGF(4, "deltavalue: %d, ",r );
 	return buf;
 }
 
-/**
-Stores a pointarray with "method0" in the buffer
-*/
-static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[])
-{
-	LWDEBUGF(2, "entered ptarray_to_twkb_buf_m0\n",0);
-	int dims = FLAGS_NDIMS(pa->flags);
-	int i, j, r, last_size,factor,test_size,r_test,j_test;
-	double *dbl_ptr;
-	factor=pow(10,prec);
-	last_size=0;
-	int start=0;
-	/*This is a multidimmenstional array keeping trac of the three different storage sizes.
-	It holds number of bytes, max-value and min-value*/
-	static int size_array[3][3] = {{1,INT8_MAX,INT8_MIN},{2,INT16_MAX,INT16_MIN},{4,INT32_MAX,INT32_MIN}};
-		
-	/* Set the number of points (if it's not a POINT type) */
-	if ( ! ( variant & WKB_NO_NPOINTS ) )
-	{
-		buf = u_varint_to_twkb_buf(pa->npoints,buf);
-		LWDEBUGF(4, "Regiter npoints:%d",pa->npoints);	
-	}
-
-	/*if we don't have a ref-point yet*/
-	if(accum_rel[0]==INT32_MIN)
-	{	
-		/*Get a pointer do the first point of the point array*/
-		dbl_ptr = (double*)getPoint_internal(pa, 0);
-		
-		/*the first coordinate for each dimension is copied to the buffer
-		and registered in accum_rel array*/
-			for ( j = 0; j < dims; j++ )
-			{	
-				LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[j]);
-				r = round(factor*dbl_ptr[j]);
-				accum_rel[j]=r;
-				LWDEBUGF(4, "deltavalue = %d and resulting refvalue is %d",r,accum_rel[j]);	
-				buf = s_varint_to_twkb_buf(r,buf);
-			}
-		start=1;
-	}
-		for ( i = start; i < pa->npoints; i++ )
-		{
-			LWDEBUGF(4, "Writing point #%d", i);
-			dbl_ptr = (double*)getPoint_internal(pa, i);
-			for ( j = 0; j < dims; j++ )
-			{
-				/*To get the relative coordinate we don't get the distance from the last point
-				but instead the distance from our accumulated last point
-				This is important to not build up a accumulated error when rounding the coordinates*/				
-				r=round(factor*dbl_ptr[j]-accum_rel[j]);
-				//accum_rel[j]+=r;
-				//LWDEBUGF(4, "delta value for dim %d is %d, real coordiinate is %f and accumulated coordinate is%d", j, r,dbl_ptr[j],accum_rel[j]  );
-				LWDEBUGF(4, "size:%d,dim: %d deltavalue: %d, coordinate: %f accumulated coordinate %d",last_size, j, r,dbl_ptr[j],accum_rel[j]  );
-				
-				
-
-				/*last used size is too small so we have to increase*/				
-				if(fabs(r)>size_array[last_size][1])
-				{
-					
-				LWDEBUGF(4, "increasing size from %d bytes",size_array[last_size][0]);
-					/*minimum value for last used size, used to flag a change in size*/
-					buf = to_twkb_buf((uint8_t *) &(size_array[last_size][2]),buf,  variant, size_array[last_size][0]);
-					
-					/*Find how much space we actually need */
-					while ( fabs(r)>size_array[(++last_size)][1] && last_size<3) {}
-					LWDEBUGF(4, "to size %d bytes",size_array[last_size][0]);
-						
-					/*register needed space*/
-					memcpy( buf, &(size_array[last_size][0]), 1);
-					buf++;
-				}				
-				/*We don't need that much space so let's investigate if we should decrease
-				But if it is just a horizontal or vertical line, one dimmension will have short steps but another will still need bigger steps
-				So, to avoid size changes up and down for every point we don't decrease size if it is not possible for all dimmensions
-				We could here look even further forward to find out what is most optimal, but that will cost in computing instead*/
-				else if (last_size>0 && fabs(r)<size_array[last_size-1][1])
-				{
-					/*We don't care to change to smaller size if we don't see all dimensions 
-					in a coordinate fits in that size, so we don't even test if it isn't the first dimension*/
-					if(j==0)
-					{
-						test_size=0;
-						/*Here we test if we can decrease the size for all dimmensions*/
-						for ( j_test = 0; j_test < dims;j_test++ )
-						{
-							r_test=round(factor*dbl_ptr[j_test]-accum_rel[j_test]);
-							LWDEBUGF(4, "r_test = %d against size %d ; %d",r_test, test_size,size_array[(test_size)][1]  );	
-							while ( fabs(r_test)>size_array[(test_size)][1] && test_size<=last_size) 
-								{
-									LWDEBUGF(4, "testing %d bytes for value %d, dim: %d",size_array[test_size][0],r_test,j_test );
-									test_size++;
-								}
-						}
-						if(test_size<last_size)
-						{
-							/*
-							OK, we decide to actually do the decrease in size
-							minimum value for last used size, to flag a change in size*/					
-							buf = to_twkb_buf((uint8_t *) &(size_array[last_size][2]), buf,variant, size_array[last_size][0]);
-														
-							LWDEBUGF(4, "decreasing size from %d bytes",size_array[last_size][0]);	
-							
-							/*We decrease to the biggest size needed for all dimmensions in the point*/
-							last_size=test_size;									
-							LWDEBUGF(4, "to size %d bytes",size_array[last_size][0]);
-							
-							/*register how many bytes we need*/
-							memcpy( buf, &(size_array[last_size][0]), 1);
-							buf++;
-						}
-					}										
-				}			
-				accum_rel[j]+=r;
-				//add the actual coordinate
-				buf = to_twkb_buf((uint8_t *) &r,buf, variant, size_array[last_size][0]);
-			}
-		}	
-	//LWDEBUGF(4, "Done (buf = %p)", buf);
-	return buf;
-}
-
+/******************************************************************
+POINTS
+*******************************************************************/
 /**
 Calculates needed storage size for aggregated points
 */
@@ -698,7 +415,7 @@ static size_t lwpoint_to_twkb_size(const LWPOINT *pt,uint8_t variant, int8_t pre
 {
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 	size	 += u_getvarint_size((unsigned long) id);
 
 	/* Points */
@@ -747,7 +464,7 @@ static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t var
 
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);	
 	
 		
@@ -757,6 +474,9 @@ static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t var
 	return buf;
 }
 
+/******************************************************************
+LINESTRINGS
+*******************************************************************/
 /**
 Calculates needed storage size for aggregated lines
 */
@@ -782,7 +502,7 @@ static size_t lwline_to_twkb_size(const LWLINE *line,uint8_t variant, int8_t pre
 {	
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 	size	 += u_getvarint_size((unsigned long) id);
 
 	/* Size of point array */
@@ -827,7 +547,7 @@ static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t var
 {
 
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);				
 	
 	
@@ -836,6 +556,9 @@ static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t var
 	return buf;
 }
 
+/******************************************************************
+POLYGONS
+*******************************************************************/
 /**
 Calculates needed storage size for aggregated polygon
 */
@@ -865,7 +588,7 @@ static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t pre
 	
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 	size	 += u_getvarint_size((unsigned long) id);
 	
 	/*nrings*/
@@ -920,7 +643,7 @@ static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t var
 	int i;
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (!(variant & WKB_NO_ID))
+	if (variant & WKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);	
 
 	/* Set the number of rings */
@@ -934,6 +657,9 @@ static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t var
 	return buf;
 }
 
+/******************************************************************
+COLLECTIONS
+*******************************************************************/
 /**
 Calculates needed storage size for aggregated collection
 */
@@ -1183,15 +909,6 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 		return NULL;
 	}
 
-	/* If neither or both variants are specified, choose the native order */
-	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
-	       (variant & WKB_NDR && variant & WKB_XDR) )
-	{
-		if ( getMachineEndian() == NDR ) 
-			variant = variant | WKB_NDR;
-		else
-			variant = variant | WKB_XDR;
-	}
 	/* Allocate the buffer */
 	buf = lwalloc(buf_size);
 	if ( buf == NULL )
@@ -1203,13 +920,15 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 
 	/* Retain a pointer to the front of the buffer for later */
 	wkb_out = buf;		
+
+
 	
-	/* Set the endian flag */
-	END_PREC_SET__ENDIANESS(flag, ((variant & WKB_NDR) ? 1 : 0));
+	/* set ID bit if ID*/
+	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
 	/* Tell what method to use*/
-	END_PREC_SET__METHOD(flag, method);
+	END_PREC_SET_METHOD(flag, method);
 	/* Tell what precision to use*/
-	END_PREC_SET__PRECISION(flag,prec);
+	END_PREC_SET_PRECISION(flag,prec);
 	
 	/*Copy the flag to the buffer*/
 	buf = uint8_to_twkb_buf(flag,buf);
@@ -1298,16 +1017,6 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 		return NULL;
 	}
 
-	/* If neither or both variants are specified, choose the native order */
-	if ( ! (variant & WKB_NDR || variant & WKB_XDR) ||
-	       (variant & WKB_NDR && variant & WKB_XDR) )
-	{
-		if ( getMachineEndian() == NDR ) 
-			variant = variant | WKB_NDR;
-		else
-			variant = variant | WKB_XDR;
-	}
-
 	/* Allocate the buffer */
 	buf = lwalloc(buf_size);
 
@@ -1323,11 +1032,11 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 		
 	
 	/* Set the endian flag */
-	END_PREC_SET__ENDIANESS(flag, ((variant & WKB_NDR) ? 1 : 0));
+	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
 	/* Tell what method to use*/
-	END_PREC_SET__METHOD(flag, method);
+	END_PREC_SET_METHOD(flag, method);
 	/* Tell what precision to use*/
-	END_PREC_SET__PRECISION(flag,prec);
+	END_PREC_SET_PRECISION(flag,prec);
 	
 	/*Copy the flag to the buffer*/
 	buf = uint8_to_twkb_buf(flag,buf);

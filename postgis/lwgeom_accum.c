@@ -171,7 +171,6 @@ pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 	MemoryContext oldcontext;	
 	twkb_state* state;
 	int32 newlen;
-	text *endianess;
 	GSERIALIZED *geom;
 	uint8_t variant = 0;
 
@@ -181,13 +180,11 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		elog(ERROR, "array_agg_transfn called in non-aggregate context");
 		aggcontext = NULL;  /* keep compiler quiet */
 	}
-oldcontext = MemoryContextSwitchTo(aggcontext);
+	oldcontext = MemoryContextSwitchTo(aggcontext);
 	if ( PG_ARGISNULL(0) )
 	{
 		/*state gets palloced and 10 geometry elements too
 		don't forget to free*/
-			
-
 	 
 		state=palloc(sizeof(twkb_state));
 		state->geoms = palloc(10*sizeof(geom_id));
@@ -196,26 +193,19 @@ oldcontext = MemoryContextSwitchTo(aggcontext);
 	
 		/* If user specified precision, respect it */
 		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2); 
-		
-		
-		/* If user specified endianness, respect it */
-		//endianess  = PG_ARGISNULL(4) ? 0 : PG_GETARG_TEXT_P(4); 	
-
-		endianess = PG_GETARG_TEXT_P(4);
-		if  ( ! strncmp(VARDATA(endianess), "xdr", 3) ||
-		      ! strncmp(VARDATA(endianess), "XDR", 3) )
+				
+		/* If user specified method, respect it
+		This will probably be taken away when we can decide which compression method that is best	*/
+		if ((PG_NARGS()>5) && (!PG_ARGISNULL(5)))
 		{
-			variant = variant | WKB_XDR;
+			state->method = PG_GETARG_INT32(5); 
 		}
 		else
 		{
-			variant = variant | WKB_NDR;
+			state->method = 1;
 		}
-		state->variant=variant;
-		
-		/* If user specified method, respect it
-		This will probably be taken away when we can decide which compression method that is best	*/
-		state->method = PG_ARGISNULL(5) ? (int) 0 : PG_GETARG_INT32(5); 
+	
+		//state->method = ((PG_NARGS()>5) && PG_ARGISNULL(5)) ? (int) 1 : PG_GETARG_INT32(5); 
 
 	}
 	else
@@ -237,10 +227,21 @@ oldcontext = MemoryContextSwitchTo(aggcontext);
 	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
-	((state->geoms)+state->n_rows)->id = PG_ARGISNULL(3) ? (int) 0 : PG_GETARG_INT32(3); 
-
-		(state->n_rows)++;	
-MemoryContextSwitchTo(oldcontext); 
+	
+	
+	if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
+	{
+		variant = variant | (WKB_ID);
+		((state->geoms)+state->n_rows)->id = PG_GETARG_INT32(3); 
+	}
+	else
+	{
+		variant = variant & WKB_NO_ID;
+		((state->geoms)+state->n_rows)->id = 0;
+	}
+	state->variant=variant;
+	(state->n_rows)++;	
+	MemoryContextSwitchTo(oldcontext); 
 	
 	PG_RETURN_POINTER(state);
 }
@@ -424,7 +425,6 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 		}
 	
 	}		
-	
 	twkb = lwgeom_agg_to_twkb(&lwgeom_arrays, state->variant , &twkb_size,(int8_t) state->precision,state->method);
 
 

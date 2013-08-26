@@ -1160,17 +1160,21 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>geometryID</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>NDR_or_XDR</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
-
 			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
-
+			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
+			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
 			<note>
 			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">here</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">here</ulink></para>
 			</note>
@@ -1183,10 +1187,10 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  <refsection>
 			<title>Examples</title>
 <programlisting>
-SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1,'NDR');
+SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
                  st_astwkb                  
 --------------------------------------------
- \x0142010000000200000001000000010000000404
+\x0342010202020808
 </programlisting>
 		  </refsection>
 
@@ -1208,8 +1212,12 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1,'NDR');
 				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>geometryID</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>NDR_or_XDR</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -1219,7 +1227,8 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1,'NDR');
 
 			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
 			<para>This is the aggregate version of ST_AsTWKB. It aggregates and returns the geoemtry in TWKB-format. In the resulting TWKB-geometry each individual ID of the input geometries is stored. </para>
-
+			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
+			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
 			<note>
 			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">here</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">here</ulink></para>
 			</note>
@@ -1232,13 +1241,13 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1,'NDR');
 		  <refsection>
 			<title>Examples</title>
 <programlisting>
-SELECT ST_AsTWKB_agg(geom,0,id,'NDR') FROM
+SELECT ST_AsTWKB_agg(geom,0,id) FROM
 (SELECT 'LINESTRING(1 1,5 5)'::geometry geom, 1 AS id
 UNION ALL
-SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id;
+SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
                                st_astwkb_agg                                
 ----------------------------------------------------------------------------
- \x01560200000001000000020000000100000001000000040402000000020000000100fb02
+\x035602010202020808020202000904
 </programlisting>
 </refsection>
 		  <!-- Optionally add a "See Also" section -->

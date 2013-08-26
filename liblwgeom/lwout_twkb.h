@@ -22,9 +22,9 @@
 * Precision  4 bits
 */
 
-#define END_PREC_SET__ENDIANESS(flag, endianess) ((flag) = (flag & 0xFE) | ((endianess & 0x01)))
-#define END_PREC_SET__METHOD(flag, method) ((flag) = (flag & 0xF1) | ((method<<1) & 0x0E))
-#define END_PREC_SET__PRECISION(flag, prec) ((flag) = (flag & 0x0F) | ((prec<<4) & 0xF0))
+#define END_PREC_SET_ID(flag, id) ((flag) = (flag & 0xFE) | ((id & 0x01)))
+#define END_PREC_SET_METHOD(flag, method) ((flag) = (flag & 0xF1) | ((method<<1) & 0x0E))
+#define END_PREC_SET_PRECISION(flag, prec) ((flag) = (flag & 0x0F) | ((prec<<4) & 0xF0))
 
 
 /**
@@ -36,18 +36,12 @@
 #define TYPE_DIM_SET_TYPE(flag, type) ((flag) = (flag & 0xE0) | ((type & 0x1F)))
 #define TYPE_DIM_SET_DIM(flag, dim) ((flag) = (flag & 0x1F) | ((dim & 0x07)<<5))
 
-/*For variant variable that holds options when building the twkb*/
-#define WKB_NO_ID 0x01 /* This position has another meaning when building wkb! */
-#define WKB_NO_TYPE 0x02 /* This position has another meaning when building wkb! */
-
 int s_getvarint_size(long val);
 int u_getvarint_size(unsigned long val);
 
 static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[],int method);
 static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[],int method);
 
-static size_t ptarray_to_twkb_size_m0(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[]);
-static uint8_t* ptarray_to_twkb_buf_m0(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[]);
 static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int prec,int accum_rel[]);
 static uint8_t* ptarray_to_twkb_buf_m1(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int accum_rel[]);
 

@@ -412,7 +412,6 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	size_t twkb_size;
 	uint8_t variant = 0;
  	bytea *result;
-	text *type;
 	int id,prec,method;
 	
 	/* If user specified precision, respect it */
@@ -428,26 +427,15 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 		/* If user specified id, respect it */
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
 	{
+		variant = variant | (WKB_ID);
 		id = PG_GETARG_INT32(2);
 	}
 	else
-		id=0;
-	
-	/* If user specified endianness, respect it */
-	if ( (PG_NARGS()>3) && (!PG_ARGISNULL(3)) )
 	{
-		type = PG_GETARG_TEXT_P(3);
-
-		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
-		      ! strncmp(VARDATA(type), "XDR", 3) )
-		{
-			variant = variant | WKB_XDR;
-		}
-		else
-		{
-			variant = variant | WKB_NDR;
-		}
+		variant = variant & WKB_NO_ID;
+		id=0;
 	}
+	
 		/* If user specified method, respect it
 		This will probably be taken away when we can decide which compression method that is best	*/
 	if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) )
@@ -455,7 +443,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 		method = PG_GETARG_INT32(4);
 	}
 	else 
-		method=0;
+		method=1;
 	
 	/* Create TWKB bin string */
 	lwgeom = lwgeom_from_gserialized(geom);
