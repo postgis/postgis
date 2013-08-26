@@ -1356,7 +1356,7 @@ CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int4)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -3339,7 +3339,7 @@ CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int)
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
   
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int)
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8)
   RETURNS internal
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
@@ -3355,7 +3355,7 @@ CREATE AGGREGATE st_astwkb_agg(geometry,int) (
   FINALFUNC=pgis_twkb_accum_finalfn
 );
 
-CREATE AGGREGATE st_astwkb_agg(geometry,int,int) (
+CREATE AGGREGATE st_astwkb_agg(geometry,int,int8) (
   SFUNC=pgis_twkb_accum_transfn,
   STYPE=internal,
   FINALFUNC=pgis_twkb_accum_finalfn

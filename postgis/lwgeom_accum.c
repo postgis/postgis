@@ -232,7 +232,7 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 	if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
 	{
 		variant = variant | (WKB_ID);
-		((state->geoms)+state->n_rows)->id = PG_GETARG_INT32(3); 
+		((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
 	}
 	else
 	{

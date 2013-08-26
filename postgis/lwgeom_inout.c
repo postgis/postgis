@@ -412,7 +412,8 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	size_t twkb_size;
 	uint8_t variant = 0;
  	bytea *result;
-	int id,prec,method;
+	int64_t id;
+	int prec,method;
 	
 	/* If user specified precision, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
@@ -428,7 +429,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
 	{
 		variant = variant | (WKB_ID);
-		id = PG_GETARG_INT32(2);
+		id = PG_GETARG_INT64(2);
 	}
 	else
 	{
@@ -447,7 +448,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	
 	/* Create TWKB bin string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	twkb = lwgeom_to_twkb(lwgeom, variant , &twkb_size,(int8_t) prec,(int32_t) id,method);
+	twkb = lwgeom_to_twkb(lwgeom, variant , &twkb_size,(int8_t) prec,(int64_t) id,method);
 	lwgeom_free(lwgeom);
 	
 	/* Prepare the PgSQL text return type */
