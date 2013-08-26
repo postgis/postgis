@@ -1165,7 +1165,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>geometryID</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -1217,7 +1217,7 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>geometryID</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
