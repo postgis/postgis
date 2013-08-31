@@ -3608,9 +3608,15 @@ WHERE rid=2;
 						ST_PixelAsPolygons returns one polygon geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
 					</para>
 				</note>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as polygons.
+					</para>
+				</note>
 
 				<para>Availability: 2.0.0</para>
 				<para>Enhanced: 2.1.0 exclude_nodata_value optional argument was added.</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 				
 			<refsection>
@@ -3721,7 +3727,13 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
 				</para>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+					</para>
+				</note>
 				<para>Availability: 2.1.0</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 
 			<refsection>
@@ -3845,7 +3857,13 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
 				</para>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+					</para>
+				</note>
 				<para>Availability: 2.1.0</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 
 			<refsection>

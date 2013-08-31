@@ -1,3 +1,13 @@
+PostGIS 2.1.1
+2013/MM/DD
+
+ * Bug Fixes *
+
+  - #2454, Fix behavior of ST_PixelAsXXX functions regarding
+           exclude_nodata_value parameter
+
+ * Enhancements *
+
 PostGIS 2.1.0
 2013/08/17
 

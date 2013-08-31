@@ -3963,7 +3963,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		rt_band band = NULL;
 		int nband = 1;
 		int numbands;
-		bool noband = FALSE;
+		bool hasband = TRUE;
 		bool exclude_nodata_value = TRUE;
 		bool nocolumnx = FALSE;
 		bool norowy = FALSE;
@@ -3971,9 +3971,12 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		int y = 0;
 		int bounds[4] = {0};
 		int pixcount = 0;
+		double value = 0;
 		int isnodata = 0;
 
 		LWPOLY *poly;
+
+		POSTGIS_RT_DEBUG(3, "RASTER_getPixelPolygons first call");
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -3989,10 +3992,10 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 		/* band */
 		if (PG_ARGISNULL(1))
-			noband = TRUE;
+			hasband = FALSE;
 		else {
 			nband = PG_GETARG_INT32(1);
-			noband = FALSE;
+			hasband = TRUE;
 		}
 
 		/* column */
@@ -4036,29 +4039,30 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		}
 
 		/* band specified, load band and info */
-		if (!noband) {
-			do {
-				numbands = rt_raster_get_num_bands(raster);
-				POSTGIS_RT_DEBUGF(3, "band %d", nband);
-				POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
+		if (hasband) {
+			numbands = rt_raster_get_num_bands(raster);
+			POSTGIS_RT_DEBUGF(3, "band %d", nband);
+			POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
 
-				if (nband < 1 || nband > numbands) {
-					elog(NOTICE, "Invalid band index (must use 1-based). Returning pixel values will be NULL");
-					noband = TRUE;
-					break;
-				}
-
-				band = rt_raster_get_band(raster, nband - 1);
-				if (!band) {
-					elog(NOTICE, "Could not find band at index %d. Returning pixel values will be NULL", nband);
-					noband = TRUE;
-					break;
-				}
-
-				if (!rt_band_get_hasnodata_flag(band))
-					exclude_nodata_value = FALSE;
+			if (nband < 1 || nband > numbands) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
 			}
-			while (0);
+
+			band = rt_raster_get_band(raster, nband - 1);
+			if (!band) {
+				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			if (!rt_band_get_hasnodata_flag(band))
+				exclude_nodata_value = FALSE;
 		}
 
 		/* set bounds if columnx, rowy not set */
@@ -4078,6 +4082,33 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		for (y = bounds[2]; y <= bounds[3]; y++) {
 			/* columnx */
 			for (x = bounds[0]; x <= bounds[1]; x++) {
+
+				value = 0;
+				isnodata = TRUE;
+
+				if (hasband) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &value, &isnodata) != ES_NONE) {
+
+						for (i = 0; i < pixcount; i++)
+							lwgeom_free(pix[i].geom);
+						if (pixcount) pfree(pix);
+
+						rt_band_destroy(band);
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 0);
+
+						MemoryContextSwitchTo(oldcontext);
+						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
+						SRF_RETURN_DONE(funcctx);
+					}
+
+					/* don't continue if pixel is NODATA and to exclude NODATA */
+					if (isnodata && exclude_nodata_value) {
+						POSTGIS_RT_DEBUG(5, "pixel value is NODATA and exclude_nodata_value = TRUE");
+						continue;
+					}
+				}
+
 				/* geometry */
 				poly = rt_raster_pixel_as_polygon(raster, x - 1, y - 1);
 				if (!poly) {
@@ -4085,7 +4116,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 						lwgeom_free(pix[i].geom);
 					if (pixcount) pfree(pix);
 
-					if (!noband) rt_band_destroy(band);
+					if (hasband) rt_band_destroy(band);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
 
@@ -4101,7 +4132,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 				if (pix == NULL) {
 
 					lwpoly_free(poly);
-					if (!noband) rt_band_destroy(band);
+					if (hasband) rt_band_destroy(band);
 					rt_raster_destroy(raster);
 					PG_FREE_IF_COPY(pgraster, 0);
 
@@ -4110,56 +4141,48 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 				pix[pixcount].geom = (LWGEOM *) poly;
-				/*
-				POSTGIS_RT_DEBUGF(4, "poly @ %p", poly);
-				POSTGIS_RT_DEBUGF(4, "geom @ %p", pix[pixcount].geom);
-				*/
+				POSTGIS_RT_DEBUGF(5, "poly @ %p", poly);
+				POSTGIS_RT_DEBUGF(5, "geom @ %p", pix[pixcount].geom);
 
 				/* x, y */
 				pix[pixcount].x = x;
 				pix[pixcount].y = y;
 
-				/* value, NODATA flag */
-				if (!noband) {
-					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), &isnodata) != ES_NONE) {
+				/* value */
+				pix[pixcount].value = value;
 
-						for (i = 0; i < pixcount; i++)
-							lwgeom_free(pix[i].geom);
-						if (pixcount) pfree(pix);
-
-						if (!noband) rt_band_destroy(band);
-						rt_raster_destroy(raster);
-						PG_FREE_IF_COPY(pgraster, 0);
-
-						MemoryContextSwitchTo(oldcontext);
-						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
-						SRF_RETURN_DONE(funcctx);
-					}
-
-					if (!exclude_nodata_value || !isnodata) {
-						pix[pixcount].nodata = 0;
-					}
-					else {
-						pix[pixcount].nodata = 1;
-					}
+				/* NODATA */
+				if (hasband) {
+					if (exclude_nodata_value)
+						pix[pixcount].nodata = isnodata;
+					else
+						pix[pixcount].nodata = FALSE;
 				}
 				else {
-					pix[pixcount].nodata = 1;
+					pix[pixcount].nodata = isnodata;
 				}
 
 				pixcount++;
 			}
 		}
 
-		if (!noband) rt_band_destroy(band);
+		if (hasband) rt_band_destroy(band);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
+
+		/* shortcut if no pixcount */
+		if (pixcount < 1) {
+			elog(NOTICE, "No pixels found for band %d", nband);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 
 		/* Store needed information */
 		funcctx->user_fctx = pix;
 
 		/* total number of tuples to be returned */
 		funcctx->max_calls = pixcount;
+		POSTGIS_RT_DEBUGF(3, "pixcount = %d", pixcount);
 
 		/* Build a tuple descriptor for our result type */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
