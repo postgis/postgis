@@ -25,6 +25,8 @@ PostGIS 2.2.0
   - #2371, Support GEOS versions with more than 1 digit in micro
   - #2383, Removed unsafe use of \' from raster warning message
   - #2384, Fixed variable datatype in ST_Neighborhood
+  - #2454, Fix behavior of ST_PixelAsXXX functions regarding
+           exclude_nodata_value parameter
 
 PostGIS 2.1.0
 2013/MM/DD

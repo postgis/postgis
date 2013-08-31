@@ -68,6 +68,9 @@ TEST_PROPS = \
 TEST_BANDPROPS = \
 	rt_band_properties \
 	rt_set_band_properties \
+	rt_pixelaspolygons \
+	rt_pixelaspoints \
+	rt_pixelascentroids \
 	rt_setvalues_array \
 	rt_summarystats \
 	rt_count \
@@ -80,9 +83,6 @@ TEST_BANDPROPS = \
 	rt_neighborhood \
 	rt_nearestvalue \
 	rt_pixelofvalue \
-	rt_pixelaspolygons \
-	rt_pixelaspoints \
-	rt_pixelascentroids \
 	rt_polygon
 
 TEST_UTILITY = \
