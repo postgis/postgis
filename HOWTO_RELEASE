@@ -65,7 +65,7 @@ Release procedure
     - osgeo-discuss
 14) Update web sites
     - PostGIS News
-     - https://svn.osgeo.org/postgis/web/_content_posts
+     - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
        b) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
@@ -73,11 +73,17 @@ Release procedure
        -- http://debbie.postgis.net:8080 (log in)
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
-       Oh just be lazy and bug Regina Obe do this.
+       Or just be lazy and bug Regina Obe to do this.
+    - if creating a new branch
+       edit apache config (currently on debbie) in /etc/apache2/sites-available/postgis.net 
+       and flip the docs alias to new branch docs
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
-    - PlanetPostGIS
+    - PlanetPostGIS and other planets
+      (this now automatically happens if you do the post
+      since postgis.net blog is carried by PlanetPostGIS, PlanetGeospatial, and PlanetOSGeo
+       hopefully soon PlanetPostgreSQL)
 15) Update Trac and make old Milestone as completed
 
 16) Push the revision number in trunk forward if necessary
