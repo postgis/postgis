@@ -707,7 +707,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
 		gbox2.flags = g2->flags;
 		empty2 = gserialized_is_empty(g2);
-		if ( ! empty1 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
+		if ( ! empty2 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g2, &gbox2)");
 	}
 	/*
