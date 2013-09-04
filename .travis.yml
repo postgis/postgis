@@ -30,9 +30,14 @@ compiler:
   - gcc
 notifications:
   email: false
+  irc:
+    channels:
+      - "irc.freenode.org#postgis"
+    on_success: always
+    on_failure: always
+    use_notice: true
 script:
   - make
-  #- make check RUNTESTFLAGS=-v
-  - make check
+  - make check RUNTESTFLAGS=-v
 after_failure:
   - cat /tmp/pgis_reg/*
