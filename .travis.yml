@@ -33,7 +33,7 @@ notifications:
   irc:
     channels:
       - "irc.freenode.org#postgis"
-    on_success: always
+    on_success: change
     on_failure: always
     use_notice: true
 script:
