@@ -2,7 +2,7 @@
 -- Regression tests that were filed as cases in bug tickets,
 -- referenced by bug number for historical interest.
 --
-
+SET client_min_messages TO NOTICE;
 -- NOTE: some tests _require_ spatial_ref_sys entries.
 -- In particular, the GML output ones want auth_name and auth_srid too,
 -- so we provide one for EPSG:4326

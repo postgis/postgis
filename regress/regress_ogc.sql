@@ -3,6 +3,7 @@
 ---
 ---
 -- Repeat all tests with new function names.
+SET client_min_messages TO NOTICE;
 SELECT 'buffer', ST_astext(ST_SnapToGrid(ST_buffer('POINT(0 0)', 1, 2), 1.0e-6));
 
 SELECT 'geomunion', ST_astext(ST_union('POINT(0 0)', 'POINT(1 1)'));
