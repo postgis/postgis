@@ -4234,6 +4234,14 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_tpi(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_tpi($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 -----------------------------------------------------------------------
 -- ST_Roughness
 -----------------------------------------------------------------------
@@ -4356,6 +4364,14 @@ CREATE OR REPLACE FUNCTION st_roughness(
 			1, 1);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_roughness(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_roughness($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_TRI
@@ -4499,6 +4515,14 @@ CREATE OR REPLACE FUNCTION st_tri(
 			1, 1);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_tri(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_tri($1, $2, NULL::raster, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster
@@ -4798,7 +4822,7 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
                                    params[6]::float8 - (params[4]::float8 * 0.5));
         ELSE
             IF format != 'GDAL' THEN
-                RAISE WARNING E'Format \'%\' is not recognized, defaulting to GDAL format.', format;
+                RAISE WARNING 'Format ''%'' is not recognized, defaulting to GDAL format.', format;
             END IF;
             -- params array is now:
             -- {scalex, skewy, skewx, scaley, upperleftx, upperlefty}
@@ -6585,8 +6609,8 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	RETURNS double precision[][]
 	AS $$
 	DECLARE
-		wx int;
-		wy int;
+		wx double precision;
+		wy double precision;
 		rtn double precision[][];
 	BEGIN
 		IF (st_geometrytype($3) != 'ST_Point') THEN
@@ -7480,6 +7504,31 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_out_db(rastschema name, rastt
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+CREATE OR REPLACE FUNCTION _raster_constraint_info_index(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+		SELECT
+			TRUE
+		FROM pg_catalog.pg_class c
+		JOIN pg_catalog.pg_index i
+			ON i.indexrelid = c.oid
+		JOIN pg_catalog.pg_class c2
+			ON i.indrelid = c2.oid
+		JOIN pg_catalog.pg_namespace n
+			ON n.oid = c.relnamespace
+		JOIN pg_am am
+			ON c.relam = am.oid
+		JOIN pg_attribute att
+			ON att.attrelid = c2.oid
+				AND pg_catalog.format_type(att.atttypid, att.atttypmod) = 'raster'
+		WHERE c.relkind IN ('i')
+			AND n.nspname = $1
+			AND c2.relname = $2
+			AND att.attname = $3
+			AND am.amname = 'gist'
+			AND strpos(pg_catalog.pg_get_expr(i.indexprs, i.indrelid), att.attname) > 0;
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
 ------------------------------------------------------------------------------
 -- AddRasterConstraints
 ------------------------------------------------------------------------------
@@ -7995,7 +8044,8 @@ CREATE OR REPLACE VIEW raster_columns AS
 		_raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
 		_raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
 		_raster_constraint_info_out_db(n.nspname, c.relname, a.attname) AS out_db,
-		_raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent
+		_raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent,
+		COALESCE(_raster_constraint_info_index(n.nspname, c.relname, a.attname), FALSE) AS spatial_index
 	FROM
 		pg_class c,
 		pg_attribute a,

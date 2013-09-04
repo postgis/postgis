@@ -1,3 +1,33 @@
+PostGIS 2.2.0
+2014/MM/DD
+
+ * Important / Breaking Changes  *
+
+  - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
+    smaller files for ease of long-term maintenance and development
+
+ * Deprecated signatures *
+
+ * New Features *
+
+  - #2430, ST_ForceCurve
+
+ * Enhancements *
+
+  - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
+  - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
+    variable GDAL_DATA
+  - #2361, Added spatial_index column to raster_columns view
+  - #2397, read encoding info automatically in loader
+
+ * Bug Fixes *
+
+  - #2371, Support GEOS versions with more than 1 digit in micro
+  - #2383, Removed unsafe use of \' from raster warning message
+  - #2384, Fixed variable datatype in ST_Neighborhood
+  - #2454, Fix behavior of ST_PixelAsXXX functions regarding
+           exclude_nodata_value parameter
+
 PostGIS 2.1.0
 2013/MM/DD
 
@@ -161,7 +191,7 @@ PostGIS 2.1.0
   - #1823, add parameter in ST_AsGML to use id column for GML 3 output 
            (become mandatory since GML 3.2.1)
 
- * Fixes *
+ * Bug Fixes *
 
   - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
   - #1840, fix logic of when to compute # of tiles in raster2pgsql.
@@ -205,6 +235,8 @@ PostGIS 2.1.0
   - #2307, ST_MakeValid outputs invalid geometries
   - #2309, Remove confusing INFO message when trying to get SRS info
   - #2348, Provide raster upgrade path for 2.0 to 2.1
+  - #2351, st_distance between geographies wrong
+  - #2359, Fix handling of schema name when adding overview constraints
 
 PostGIS 2.0.3
 2013/03/01

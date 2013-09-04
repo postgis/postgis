@@ -694,6 +694,7 @@ static void test_lwgeom_clone(void)
 static void test_lwgeom_force_clockwise(void)
 {
 	LWGEOM *geom;
+	LWGEOM *geom2;
 	char *in_ewkt, *out_ewkt;
 
 	/* counterclockwise, must be reversed */
@@ -744,13 +745,14 @@ static void test_lwgeom_force_clockwise(void)
 	/* NOTE: this is a narrow ring, see ticket #1302 */
 	in_ewkt  = "0103000000010000000500000000917E9BA468294100917E9B8AEA2841C976BE1FA4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA284137894120A4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841";
 	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
-	lwgeom_force_clockwise(geom);
-	out_ewkt = lwgeom_to_hexwkb(geom, WKB_ISO, NULL);
-	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:   %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-	lwfree(out_ewkt);
+	geom2 = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
+	lwgeom_force_clockwise(geom2);
+	
+	/** use same check instead of strcmp to account 
+	  for difference in endianness **/
+	CU_ASSERT( lwgeom_same(geom, geom2) );
 	lwgeom_free(geom);
+	lwgeom_free(geom2);
 }
 
 /*
@@ -890,6 +892,61 @@ static void test_lwgeom_same(void)
 }
 
 /*
+ * Test lwgeom_force_curve
+ */
+static void test_lwgeom_as_curve(void)
+{
+	LWGEOM *geom;
+	LWGEOM *geom2;
+	char *in_ewkt, *out_ewkt;
+
+	geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_as_curve(geom);
+	in_ewkt = "COMPOUNDCURVE((0 0,10 0))";
+	out_ewkt = lwgeom_to_ewkt(geom2);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 10 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_as_curve(geom);
+	in_ewkt = "MULTICURVE((0 0,10 0))";
+	out_ewkt = lwgeom_to_ewkt(geom2);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_as_curve(geom);
+	in_ewkt = "CURVEPOLYGON((0 0,10 0,10 10,0 10,0 0))";
+	out_ewkt = lwgeom_to_ewkt(geom2);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+	geom = lwgeom_from_wkt("MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_as_curve(geom);
+	in_ewkt = "MULTISURFACE(((0 0,10 0,10 10,0 10,0 0)))";
+	out_ewkt = lwgeom_to_ewkt(geom2);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+}
+
+/*
 ** Used by test harness to register the tests in this file.
 */
 CU_TestInfo libgeom_tests[] =
@@ -912,6 +969,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
 	PG_TEST(test_lwgeom_same),
+	PG_TEST(test_lwgeom_as_curve),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};

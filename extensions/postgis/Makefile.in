@@ -71,20 +71,13 @@ sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 # for casts that are being dropped we need to drop them 
 # from extension only if they are in the existension so we use our postgis_extension_drop..
 # so that it will silently fail if cast is not in extension
-sql_bits/rtpostgis_upgrade_20_minor.sql: ../../raster/rt_pg/rtpostgis_upgrade_20_minor.sql
+sql_bits/rtpostgis_upgrade_20_21.sql: ../../raster/rt_pg/rtpostgis_upgrade_20_21.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
 		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
 		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
 	$< > $@
 
-#can't use the one built because can't drop the postgis_version function
-#leave out all casts, operators, types, tables, schemas
-# sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis.sql 
-# 		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
-# 	 	 	-e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
-# 	 	 	-e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-# 	 	 $< > $@
 #don't drop casts just yet since we don't have provision to remove from extension yet
 #need to also drop temporary functions from extenions since it gets auto-added
 sql_bits/postgis_upgrade_20_21.sql: ../../postgis/postgis_upgrade_20_21.sql 
@@ -104,7 +97,7 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 #postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: come up with a better name
 #TODO: what about postgis_drop_after.sql ? where does it fit ??
-sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_minor.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_21.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 

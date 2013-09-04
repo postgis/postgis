@@ -264,6 +264,25 @@ static void test_tree_circ_distance(void)
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 	CU_ASSERT_DOUBLE_EQUAL(d1, d2, 0.00001);
+
+
+	/* Ticket #2351 */
+	lwg1 = lwgeom_from_wkt("LINESTRING(149.386990599235 -26.3567415843982,149.386990599247 -26.3567415843965)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(149.386990599235 -26.3567415843982)", LW_PARSER_CHECK_NONE);
+	c1 = lwgeom_calculate_circ_tree(lwg1);
+	c2 = lwgeom_calculate_circ_tree(lwg2);
+	d1 = circ_tree_distance_tree(c1, c2, &s, threshold);
+	d2 = lwgeom_distance_spheroid(lwg1, lwg2, &s, threshold);
+    // printf("d1 = %g   d2 = %g\n", d1 * WGS84_RADIUS, d2 * WGS84_RADIUS);
+    // printf("line\n");
+    // circ_tree_print(c1, 0);
+    // printf("point\n");
+    // circ_tree_print(c2, 0);
+	circ_tree_free(c1);
+	circ_tree_free(c2);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	CU_ASSERT_DOUBLE_EQUAL(d1, d2, 0.0000001);
 }
 
 

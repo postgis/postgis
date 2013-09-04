@@ -227,7 +227,16 @@ while(<INPUT>)
 			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
 			last if /\);/;
 		}
-		print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
+		if ($aggtype eq "unknown")
+		{
+		#For the new aggregate syntax where the parameters is defined like a common function
+			print "DROP AGGREGATE IF EXISTS $aggname;\n";
+		}
+		else
+		{
+		#For the old syntax when the parameter is defined through "basetype"
+			print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
+		}
 		print $def;
 	}
 	

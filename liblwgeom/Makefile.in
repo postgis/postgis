@@ -60,6 +60,7 @@ SA_OBJS = \
 	lwin_geojson.o \
 	lwin_wkb.o \
 	lwout_wkt.o \
+	lwout_twkb.o \
 	lwin_wkt_parse.o \
 	lwin_wkt_lex.o \
 	lwin_wkt.o \

@@ -403,6 +403,66 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 }
 
 
+PG_FUNCTION_INFO_V1(TWKBFromLWGEOM);
+Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom;
+	uint8_t *twkb;
+	size_t twkb_size;
+	uint8_t variant = 0;
+ 	bytea *result;
+	int64_t id;
+	int prec,method;
+	
+	/* If user specified precision, respect it */
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+	{
+		prec = PG_GETARG_INT32(1);
+		if  (fabs(prec)>7)
+			lwerror("precision cannot be more than 7");
+	}
+	else
+		prec=0;
+	
+		/* If user specified id, respect it */
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	{
+		variant = variant | (WKB_ID);
+		id = PG_GETARG_INT64(2);
+	}
+	else
+	{
+		variant = variant & WKB_NO_ID;
+		id=0;
+	}
+	
+		/* If user specified method, respect it
+		This will probably be taken away when we can decide which compression method that is best	*/
+	if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) )
+	{
+		method = PG_GETARG_INT32(4);
+	}
+	else 
+		method=1;
+	
+	/* Create TWKB bin string */
+	lwgeom = lwgeom_from_gserialized(geom);
+	twkb = lwgeom_to_twkb(lwgeom, variant , &twkb_size,(int8_t) prec,(int64_t) id,method);
+	lwgeom_free(lwgeom);
+	
+	/* Prepare the PgSQL text return type */
+	result = palloc(twkb_size + VARHDRSZ);
+	memcpy(VARDATA(result), twkb, twkb_size);
+
+	SET_VARSIZE(result, twkb_size+VARHDRSZ);
+	
+	/* Clean up and return */
+	pfree(twkb);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_BYTEA_P(result);
+}
+
 /* puts a bbox inside the geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)

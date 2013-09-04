@@ -1148,4 +1148,112 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  <!-- Optionally add a "See Also" section -->
 	</refentry>
 
+	<refentry id="ST_AsTWKB">
+		  <refnamediv>
+			<refname>ST_AsTWKB</refname>
+			<refpurpose>Returns the geometry as TWKB, Tiny WKB</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
+			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
+			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
+			<note>
+			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">here</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">here</ulink></para>
+			</note>
+				
+
+			<para>Availability: 2.2</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
+                 st_astwkb                  
+--------------------------------------------
+\x0342010202020808
+</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsTWKB_agg" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_AsTWKB_agg">
+		  <refnamediv>
+			<refname>ST_AsTWKB_agg</refname>
+			<refpurpose>Aggregates the geometries and returns as TWKB</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
+			<para>This is the aggregate version of ST_AsTWKB. It aggregates and returns the geoemtry in TWKB-format. In the resulting TWKB-geometry each individual ID of the input geometries is stored. </para>
+			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
+			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
+			<note>
+			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">here</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">here</ulink></para>
+			</note>
+				
+
+			<para>Availability: 2.2</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+SELECT ST_AsTWKB_agg(geom,0,id) FROM
+(SELECT 'LINESTRING(1 1,5 5)'::geometry geom, 1 AS id
+UNION ALL
+SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
+                               st_astwkb_agg                                
+----------------------------------------------------------------------------
+\x035602010202020808020202000904
+</programlisting>
+</refsection>
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsTWKB" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
+</refentry>
   </sect1>

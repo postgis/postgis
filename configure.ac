@@ -379,8 +379,8 @@ AC_SUBST([PGXS])
 dnl Extract the version information from pg_config
 dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
 dnl the final version. This is to guard against user error... 
-PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 | sed 's/[[^0-9]]//g'`	
-PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
+PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
+PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
 PGSQL_FULL_VERSION=`$PG_CONFIG --version`
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
@@ -576,11 +576,13 @@ if test "x$GEOS_PATCH_VERSION" = "x"; then
 fi
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
-GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION$GEOS_PATCH_VERSION"
+GEOS_NUMERIC_PATCH_VERSION=`printf "%02d" $GEOS_PATCH_VERSION`
+GEOS_NUMERIC_MINOR_VERSION=`printf "%02d" $GEOS_MINOR_VERSION`
+GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_NUMERIC_MINOR_VERSION$GEOS_NUMERIC_PATCH_VERSION"
 
 dnl Ensure that we are using GEOS >= 3.3.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$GEOS_NUMERIC_VERSION" -ge 330; then
+if test ! "$GEOS_NUMERIC_VERSION" -ge 30300; then
 	AC_MSG_ERROR([PostGIS requires GEOS >= 3.3.0])
 fi
 
@@ -607,6 +609,7 @@ LIBS="$LIBS_SAVE"
 
 AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])	
 AC_SUBST([POSTGIS_GEOS_VERSION])
+AC_SUBST([GEOS_NUMERIC_VERSION])
 
 
 dnl ===========================================================================
@@ -776,7 +779,7 @@ if test ! "x$JSONDIR" = "x"; then
 
 		dnl Add the include directory to JSON_CPPFLAGS
 		JSON_CPPFLAGS="-I$JSONDIR/include"
-		JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
+		JSON_LDFLAGS="-L$JSONDIR/lib"
 	fi
 fi
 
@@ -789,14 +792,13 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 dnl Ensure we can link against libjson
 LIBS_SAVE="$LIBS"
 LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes], [], [])
+AC_CHECK_LIB([json-c], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson-c"], [
+  AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes; JSON_LDFLAGS="${JSON_LDFLAGS} -ljson"], [], [])
+], [])
 LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "yes"; then
 	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
-    if test "x$JSON_LDFLAGS" = "x"; then
-        JSON_LDFLAGS="-ljson"
-    fi
 fi
 
 AC_SUBST([JSON_CPPFLAGS])
@@ -893,7 +895,7 @@ dnl Always enable use of ANALYZE statistics by default
 AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
 SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS"
@@ -912,7 +914,7 @@ if test "x$with_topology" != "xno"; then
 
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
-	if test "$GEOS_NUMERIC_VERSION" -lt 332; then
+	if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
 		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
 	fi
 else
@@ -1055,7 +1057,7 @@ if test "x$with_raster" != "xno"; then
 
 		dnl Extract the linker and include flags 
 		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
-		LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
+		dnl LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
 		LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
 
 		CPPFLAGS_SAVE="$CPPFLAGS"
@@ -1243,7 +1245,7 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 332; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
 AC_MSG_RESULT([ --------- GEOS VERSION NOTICE ------------ ])
 AC_MSG_RESULT([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_RESULT([  To take advantage of all the features of ])

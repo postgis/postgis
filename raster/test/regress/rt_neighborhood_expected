@@ -15,3 +15,5 @@ NOTICE:  table "raster_neighborhood" does not exist, skipping
 {{1,1,1,1,1},{NULL,1,1,NULL,1},{1,1,1,1,1},{1,NULL,1,1,NULL},{1,1,1,1,1}}
 {{1,1,1},{1,1,NULL},{1,1,1},{NULL,1,1},{1,1,1}}
 {{1,1,1}}
+{{NULL,NULL,NULL},{NULL,NULL,1},{NULL,1,1}}
+{{1,1,1,1,1},{NULL,1,1,NULL,1},{1,1,1,1,1},{1,NULL,1,1,NULL},{1,1,1,1,1}}

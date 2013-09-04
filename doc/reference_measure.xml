@@ -726,7 +726,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 
-		  <refpurpose>Returns the angle in radians from the horizontal of the vector defined by pointA and pointB. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/2.</refpurpose>
+		  <refpurpose>Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on pointA to pointB.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -745,9 +745,8 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the azimuth of the segment defined by the given
-			Point geometries, or NULL if the two points are coincident. Return
-			value is in radians. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/2 </para>
+			<para>Returns the azimuth in radians of the segment defined by the given
+			point-geometries, or NULL if the two points are coincident. The azimuth is north-based and is measured clockwise: North = 0; East = PI/2; South = PI; West = 3PI/2.</para>
 
 			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
 				and a point. </para>
@@ -762,15 +761,15 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		<title>Examples</title>
 		<para>Geometry Azimuth in degrees </para>
 <programlisting>
-SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degAz,
-	ST_Azimuth(ST_Point(75,100), ST_Point(25,45))/(2*pi())*360 As degAzrev;
+SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degA_B,
+	ST_Azimuth(ST_Point(75,100), ST_Point(25,45))/(2*pi())*360 As degB_A;
 	
 -- NOTE easier to remember syntax using PostgreSQL built-in degrees function --
 -- Both yield same answer --
-SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
-	degrees( ST_Azimuth(ST_Point(75,100), ST_Point(25,45)) ) As degAzrev;
+SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degA_B,
+	degrees( ST_Azimuth(ST_Point(75,100), ST_Point(25,45)) ) As degB_A;
 
-      degaz       |     degazrev
+      dega_b       |     degb_a
 ------------------+------------------
  42.2736890060937 | 222.273689006094
 </programlisting>
@@ -783,8 +782,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 					  <imageobject>
 						<imagedata fileref="images/st_azimuth01.png" />
 					  </imageobject>
-					  <caption><para>degAz is path to travel (azimuth), horizontal line (which starts at the start point and ends where we want the end point to fall)
-					      and points (start point: 25,45 is in green)</para></caption>
+					  <caption><para>Green: the start Point(25,45) with its vertical. Yellow: degA_B as the path to travel (azimuth).</para></caption>
 					</mediaobject>
 				  </informalfigure>
 				</para></entry>
@@ -793,8 +791,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 					  <imageobject>
 						<imagedata fileref="images/st_azimuth02.png" />
 					  </imageobject>
-					  <caption><para>degAzrev is azimuth curve shown, horizontal line (which starts at the start point and ends where we want the end point to fall)
-					      and points (start point: 75,100 is in green)</para></caption>
+					  <caption><para>Green: the start Point(75,100) with its vertical. Yellow: degB_A as the path to travel (azimuth).</para></caption>
 					</mediaobject>
 				  </informalfigure>
 				</para></entry>
@@ -2098,8 +2095,13 @@ The current implementation supports only vertices as the discrete locations. Thi
 
 	  <refsection>
 		<title>Examples</title>
+		    <para>For each building, find the parcel that best represents it. First we require the parcel intersect with the geometry.
+    	DISTINCT ON guarantees we get each building listed only once, the ORDER BY .. ST_HausdorffDistance gives us a preference of parcel that is most similar to the building.</para>
+		<programlisting>SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id 
+   FROM buildings INNER JOIN parcels ON ST_Intersects(buildings.geom,parcels.geom) 
+     ORDER BY buildings.gid, ST_HausdorffDistance(buildings.geom, parcels.geom);</programlisting> 
 
-				<programlisting>postgis=# SELECT st_HausdorffDistance(
+				<programlisting>postgis=# SELECT ST_HausdorffDistance(
 				'LINESTRING (0 0, 2 0)'::geometry,
 				'MULTIPOINT (0 1, 1 0, 2 1)'::geometry);
  st_hausdorffdistance
@@ -2138,11 +2140,9 @@ The current implementation supports only vertices as the discrete locations. Thi
   <refsection>
     <title>Description</title>
 
-    <para>Some useful description here.</para>
-
     <!-- optionally mention that this function uses indexes if appropriate -->
     <note>
-      <para>Returns the 2-dimensional maximum distance between two linestrings in
+      <para>Returns the 2-dimensional maximum distance between two geometries in
 		projected units. If g1 and g2 is the same geometry the function will return the distance between
 		the two vertices most far from each other in that geometry.</para>
     </note>
@@ -2152,6 +2152,7 @@ The current implementation supports only vertices as the discrete locations. Thi
   <refsection>
     <title>Examples</title>
 
+     <para>Basic furthest distance the point is to any part of the line</para>
 		<programlisting>postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
    st_maxdistance
 -----------------
@@ -2168,7 +2169,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
   <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
-<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/></para>
+<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_DFullyWithin" /></para>
   </refsection>
 </refentry>
 

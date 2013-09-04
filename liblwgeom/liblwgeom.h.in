@@ -544,6 +544,27 @@ typedef struct
 }
 LWTIN;
 
+
+typedef struct
+{
+	int64_t id;	//Id, from function parameter
+	LWGEOM* geom;	//the geometry from function parameter
+}
+lwgeom_id;
+
+typedef struct
+{
+	lwgeom_id* points;
+	int n_points;
+	lwgeom_id* linestrings;
+	int n_linestrings;
+	lwgeom_id* polygons;
+	int n_polygons;
+	lwgeom_id* collections;
+	int n_collections;
+}
+twkb_geom_arrays;
+
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
 extern LWMLINE *lwgeom_as_lwmline(const LWGEOM *lwgeom);
@@ -559,6 +580,7 @@ extern LWPSURFACE *lwgeom_as_lwpsurface(const LWGEOM *lwgeom);
 extern LWTRIANGLE *lwgeom_as_lwtriangle(const LWGEOM *lwgeom);
 extern LWTIN *lwgeom_as_lwtin(const LWGEOM *lwgeom);
 extern LWGEOM *lwgeom_as_multi(const LWGEOM *lwgeom);
+extern LWGEOM *lwgeom_as_curve(const LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
 extern LWGEOM *lwtin_as_lwgeom(const LWTIN *obj);
@@ -924,6 +946,12 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 * takes owership of the passed geometry.
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
+
+/**
+* Construct an equivalent compound curve from a linestring. 
+* Compound curves can have linear components, so this works fine 
+*/
+extern LWCOMPOUND* lwcompound_construct_from_lwline(const LWLINE *lwpoly);
 
 /**
 * Construct an equivalent curve polygon from a polygon. Curve polygons
@@ -1755,6 +1783,15 @@ LWGEOM_UNPARSER_RESULT;
 #define WKT_SFSQL 0x02
 #define WKT_EXTENDED 0x04
 
+
+/*
+** Variants available for TWKB, conflicting with corresponding bits for WKB and WKT
+*/
+#define WKB_ID 0x01 /* This position has another meaning when building wkb! */
+#define WKB_NO_ID ~(1 << 1) 
+#define WKB_NO_TYPE 0x02 /* This position has another meaning when building wkb! */
+
+
 /*
 ** New parsing and unparsing functions.
 */
@@ -1771,6 +1808,9 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision,
 *                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
 */
 extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
+
+extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, uint64_t id,int method);
+extern uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t variant , size_t *size_out,int8_t prec, int method);
 
 /**
 * @param lwgeom geometry to convert to HEXWKB

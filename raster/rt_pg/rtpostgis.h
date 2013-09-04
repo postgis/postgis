@@ -26,14 +26,10 @@
  *
  */
 
-#ifndef RT_PG_H_INCLUDED
-#define RT_PG_H_INCLUDED
+#ifndef RTPOSTGIS_H_INCLUDED
+#define RTPOSTGIS_H_INCLUDED
 
-#include <stdint.h> /* for int16_t and friends */
-
-#include "rt_api.h"
-#include "../../postgis_config.h"
-#include "../raster_config.h"
+#include "librtcore.h"
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -64,39 +60,12 @@
 
 #endif
 
-
-typedef struct rt_pgband8_t {
-    uint8_t pixtype;
-    uint8_t data[1];
-} rt_pgband8;
-
-typedef struct rt_pgband16_t {
-    uint8_t pixtype;
-    uint8_t pad;
-    uint8_t data[1];
-} rt_pgband16;
-
-typedef struct rt_pgband32_t {
-    uint8_t pixtype;
-    uint8_t pad0;
-    uint8_t pad1;
-    uint8_t pad2;
-    uint8_t data[1];
-} rt_pgband32;
-
-typedef struct rt_pgband64_t {
-    uint8_t pixtype;
-    uint8_t pad[7];
-    uint8_t data[1];
-} rt_pgband64;
-
-typedef struct rt_pgband_t {
-    uint8_t pixtype;
-    uint8_t data[1];
-} rt_pgband;
-
 /* Header of PostgreSQL-stored RASTER value,
  * and binary representation of it */
 typedef struct rt_raster_serialized_t rt_pgraster;
 
-#endif /* RT_PG_H_INCLUDED */
+/* maximum char length required to hold any double or long long value */
+#define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
+#define MAX_INT_CHARLEN 32
+
+#endif /* RTPOSTGIS_H_INCLUDED */

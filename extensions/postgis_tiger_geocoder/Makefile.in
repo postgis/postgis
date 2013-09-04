@@ -45,6 +45,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to tiger_geocoder in control
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
+  ../../extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/nullable_levenshtein.sql \
@@ -61,7 +62,7 @@ sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/uti
 	../../extras/tiger_geocoder/tiger_2011/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/pprint_addy.sql \
 	../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_tables.sql \
-    ../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_normalize_address.sql \
+  ../../extras/tiger_geocoder/tiger_2011/pagc_normalize/pagc_normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/rate_attributes.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/includes_address.sql \
@@ -78,7 +79,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2012.sql \
+	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql \
 	../../extras/tiger_geocoder/tiger_2011/census_loader.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
@@ -153,11 +154,12 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #aggregates are special 
 #they can be dropped but we need to remove
 #them from the extension first
-sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in
+sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in 
 	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
+	 	 -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 	 	 $< > $@
-	
+	 	 	
 sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql ../postgis_extension_helper_uninstall.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \

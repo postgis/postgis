@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION raster_summarystatsstate(ss summarystats, rast raster
         newstats summarystats;
         ret summarystats;
     BEGIN
-        IF rast IS NULL THEN
+        IF rast IS NULL OR ST_HasNoBand(rast) OR ST_IsEmpty(rast) THEN
             RETURN ss;
         END IF;
         newstats := _ST_SummaryStats(rast, nband, exclude_nodata_value, sample_percent);
@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION raster_summarystatsstate(ss summarystats, rast raster
                     newstats.min, 
                     newstats.max)::summarystats;
         ELSE
-            ret := (ss.count + newstats.count, 
+            ret := (COALESCE(ss.count,0) + COALESCE(newstats.count, 0),
                     COALESCE(ss.sum,0) + COALESCE(newstats.sum, 0),
                     null,
                     null,

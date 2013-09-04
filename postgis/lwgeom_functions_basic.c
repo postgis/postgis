@@ -492,15 +492,48 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** in input. If bbox cache is not there we'll need to handle
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
-	if ( lwtype_is_collection(gserialized_get_type(geom)) && 
-	     gserialized_has_bbox(geom) )
-	{
-		PG_RETURN_POINTER(geom);
+	if ( gserialized_has_bbox(geom) ) {
+		switch (gserialized_get_type(geom)) 
+		{
+			case MULTIPOINTTYPE:
+			case MULTILINETYPE:
+			case MULTIPOLYGONTYPE:
+			case COLLECTIONTYPE:
+			case MULTICURVETYPE:
+			case MULTISURFACETYPE:
+			case TINTYPE:
+				PG_RETURN_POINTER(geom);
+			default:
+				break;
+		}
 	}
 
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_as_multi(lwgeom);
+
+	result = geometry_serialize(ogeom);
+
+	PG_FREE_IF_COPY(geom, 0);
+
+	PG_RETURN_POINTER(result);
+}
+
+/** transform input geometry to a curved type */
+PG_FUNCTION_INFO_V1(LWGEOM_force_curve);
+Datum LWGEOM_force_curve(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *result;
+	LWGEOM *lwgeom;
+	LWGEOM *ogeom;
+
+	POSTGIS_DEBUG(2, "LWGEOM_force_curve called");
+
+  /* TODO: early out if input is already a curve */
+
+	lwgeom = lwgeom_from_gserialized(geom);
+	ogeom = lwgeom_as_curve(lwgeom);
 
 	result = geometry_serialize(ogeom);
 

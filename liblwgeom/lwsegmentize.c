@@ -16,6 +16,9 @@
 #include <string.h>
 
 #include "liblwgeom_internal.h"
+
+/* #define POSTGIS_DEBUG_LEVEL 4 */
+
 #include "lwgeom_log.h"
 
 
@@ -172,7 +175,8 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 	pa = ptarray_construct_empty(1, 1, 32);
 
 	/* Sweep from a1 to a3 */
-	for ( angle = a1; clockwise ? angle > a3 : angle < a3; angle += increment ) 
+	ptarray_append_point(pa, p1, LW_FALSE);
+	for ( angle = a1 + increment; clockwise ? angle > a3 : angle < a3; angle += increment ) 
 	{
 		pt.x = center.x + radius * cos(angle);
 		pt.y = center.y + radius * sin(angle);
@@ -220,7 +224,7 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32_t perQuad)
 		{
 			LWDEBUG(3, "lwcircstring_segmentize: points are colinear, returning curve points as line");
 
-			for (j = i - 1 ; j <= i ; j++)
+			for (j = i - 2 ; j < i ; j++)
 			{
 				getPoint4d_p(icurve->points, j, &p4);
 				ptarray_append_point(ptarray, &p4, LW_TRUE);
@@ -349,6 +353,10 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad)
 		{
 			lines[i] = (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone_deep(((LWLINE *)tmp)->points));
 		}
+		else if (tmp->type == COMPOUNDTYPE)
+		{
+			lines[i] = (LWGEOM *)lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
+		}
 		else
 		{
 			lwerror("Unsupported geometry found in MultiCurve.");
@@ -464,6 +472,28 @@ lwgeom_segmentize(LWGEOM *geom, uint32_t perQuad)
 	return ogeom;
 }
 
+/**
+ * Return ABC angle in radians
+ * TODO: move to lwalgorithm
+ */
+static double
+lw_arc_angle(const POINT2D *a, const POINT2D *b, const POINT2D *c)
+{
+  POINT2D ab, cb;
+
+  ab.x = b->x - a->x;
+  ab.y = b->y - a->y;
+
+  cb.x = b->x - c->x;
+  cb.y = b->y - c->y;
+
+  double dot = (ab.x * cb.x + ab.y * cb.y); /* dot product */
+  double cross = (ab.x * cb.y - ab.y * cb.x); /* cross product */
+
+  double alpha = atan2(cross, dot);
+
+  return alpha;
+}
 
 /**
 * Returns LW_TRUE if b is on the arc formed by a1/a2/a3, but not within
@@ -492,7 +522,17 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 	{
 		int a2_side = lw_segment_side(t1, t3, t2);
 		int b_side  = lw_segment_side(t1, t3, tb);
-		
+		double angle1 = lw_arc_angle(t1, t2, t3);
+		double angle2 = lw_arc_angle(t2, t3, tb);
+
+		/* Is the angle similar to the previous one ? */
+		diff = fabs(angle1 - angle2);
+		LWDEBUGF(4, " angle1: %g, angle2: %g, diff:%g", angle1, angle2, diff);
+		if ( diff > EPSILON_SQLMM ) 
+		{
+			return LW_FALSE;
+		}
+
 		/* Is the point b on the same side of a1/a3 as the mid-point a2 is? */
 		/* If not, it's in the unbounded part of the circle, so it continues the arc, return true. */
 		if ( b_side != a2_side )
@@ -525,7 +565,7 @@ circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
 	getPoint4d_p(pa, start, &p0);
 	ptarray_set_point4d(pao, 0, &p0);	
-	getPoint4d_p(pa, (start+end)/2, &p1);
+	getPoint4d_p(pa, (start+end+1)/2, &p1);
 	ptarray_set_point4d(pao, 1, &p1);	
 	getPoint4d_p(pa, end+1, &p2);
 	ptarray_set_point4d(pao, 2, &p2);	
@@ -547,13 +587,16 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
+	POINT4D first, center;
 	char *edges_in_arcs;
 	int found_arc = LW_FALSE;
 	int current_arc = 1;
 	int num_edges;
-	int edge_type = -1;
+	int edge_type; /* non-zero if edge is part of an arc */
 	int start, end;
 	LWCOLLECTION *outcol;
+	/* Minimum number of edges, per quadrant, required to define an arc */
+	const unsigned int min_quad_edges = 2;
 
 	/* Die on null input */
 	if ( ! points )
@@ -572,18 +615,24 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	
 	/* Allocate our result array of vertices that are part of arcs */
 	num_edges = points->npoints - 1;
-	edges_in_arcs = lwalloc(num_edges);
-	memset(edges_in_arcs, 0, num_edges);
+	edges_in_arcs = lwalloc(num_edges + 1);
+	memset(edges_in_arcs, 0, num_edges + 1);
 	
 	/* We make a candidate arc of the first two edges, */
 	/* And then see if the next edge follows it */
 	while( i < num_edges-2 )
 	{
+		unsigned int arc_edges;
+		double num_quadrants;
+		double angle;
+
 		found_arc = LW_FALSE;
 		/* Make candidate arc */
 		getPoint4d_p(points, i  , &a1);
 		getPoint4d_p(points, i+1, &a2);
 		getPoint4d_p(points, i+2, &a3);
+		memcpy(&first, &a1, sizeof(POINT4D));
+
 		for( j = i+3; j < num_edges+1; j++ )
 		{
 			LWDEBUGF(4, "i=%d, j=%d", i, j);
@@ -604,10 +653,41 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				current_arc++;
 				break;
 			}
+
+			memcpy(&a1, &a2, sizeof(POINT4D));
+			memcpy(&a2, &a3, sizeof(POINT4D));
+			memcpy(&a3,  &b, sizeof(POINT4D));
 		}
 		/* Jump past all the edges that were added to the arc */
 		if ( found_arc )
 		{
+			/* Check if an arc was composed by enough edges to be
+			 * really considered an arc
+			 * See http://trac.osgeo.org/postgis/ticket/2420
+			 */
+			arc_edges = j - 1 - i;
+			LWDEBUGF(4, "arc defined by %d edges found", arc_edges);
+			if ( first.x == b.x && first.y == b.y ) {
+				LWDEBUG(4, "arc is a circle");
+				num_quadrants = 4;
+			}
+			else {
+				lw_arc_center((POINT2D*)&first, (POINT2D*)&b, (POINT2D*)&a1, (POINT2D*)&center);
+				angle = lw_arc_angle((POINT2D*)&first, (POINT2D*)&center, (POINT2D*)&b);
+        int p2_side = lw_segment_side((POINT2D*)&first, (POINT2D*)&a1, (POINT2D*)&b);
+        if ( p2_side >= 0 ) angle = -angle; 
+
+				if ( angle < 0 ) angle = 2 * M_PI + angle;
+				num_quadrants = ( 4 * angle ) / ( 2 * M_PI );
+				LWDEBUGF(4, "arc angle (%g %g, %g %g, %g %g) is %g (side is %d), quandrants:%g", first.x, first.y, center.x, center.y, b.x, b.y, angle, p2_side, num_quadrants);
+			}
+			/* a1 is first point, b is last point */
+			if ( arc_edges < min_quad_edges * num_quadrants ) {
+				LWDEBUGF(4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants);
+				for ( k = j-1; k >= i; k-- )
+					edges_in_arcs[k] = 0;
+			}
+
 			i = j-1;
 		}
 		else
@@ -669,7 +749,8 @@ lwline_desegmentize(LWLINE *line)
 {
 	LWDEBUG(2, "lwline_desegmentize called.");
 
-	return pta_desegmentize(line->points, line->flags, line->srid);
+	if ( line->points->npoints < 4 ) return lwline_as_lwgeom(lwline_clone(line));
+	else return pta_desegmentize(line->points, line->flags, line->srid);
 }
 
 LWGEOM *
