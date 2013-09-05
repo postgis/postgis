@@ -1,0 +1,43 @@
+---
+env:
+  global:
+    - PGUSER=postgres
+  matrix:
+    #- GEOS_VERSION=3.4.1 
+    #- GEOS_VERSION=3.3.8
+    #- GDAL_VERSION=1.10.0
+before_install:
+  - rm .travis.yml
+  - sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update
+  - sudo apt-get install -qq build-essential flex autoconf libtool gfortran postgresql-server-dev-all xsltproc libjson0-dev libproj-dev dblatex xsltproc libcunit1-dev libcunit1 docbook-xsl docbook-mathml libgdal-dev libgeos-dev
+  - git config --global user.name "PostGIS Travis CI"
+  - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
+install:
+  - export LSB_RELEASE=$( lsb_release -rs )
+  #- wget -q http://stardestroyer.de/travis/geos-$GEOS_VERSION.travis.$LSB_RELEASE.tar.gz
+  #- tar xvzf geos-$GEOS_VERSION.travis.$LSB_RELEASE.tar.gz -C / 
+  #- sudo ln -s /home/travis/geos-$GEOS_VERSION/lib/libgeos_c.so.1.8.0 /usr/lib/libgeos_c.so.1
+  #- wget -q http://stardestroyer.de/travis/gdal-$GDAL_VERSION.travis.$LSB_RELEASE.tar.gz
+  #- tar xvzf gdal-$GDAL_VERSION.travis.$LSB_RELEASE.tar.gz -C / 
+  #- LD_LIBRARY_PATH="/home/travis/geos-$GEOS_VERSION/lib:/home/travis/gdal-$GDAL_VERSION/lib"
+  #- LD_RUN_PATH="/home/travis/geos-$GEOS_VERSION/lib:/home/travis/gdal-$GDAL_VERSION/lib"
+  - ./autogen.sh
+  # - ./configure --with-geosconfig=/home/travis/geos-$GEOS_VERSION/bin/geos-config --with-gdalconfig=/home/travis/gdal-$GDAL_VERSION/bin/gdal-config
+  - ./configure
+language: c
+compiler:
+  - gcc
+notifications:
+  email: false
+  irc:
+    channels:
+      - "irc.freenode.org#postgis"
+    on_success: change
+    on_failure: always
+    use_notice: true
+script:
+  - make
+  - make check RUNTESTFLAGS=-v
+after_failure:
+  - cat /tmp/pgis_reg/*
