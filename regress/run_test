@@ -33,7 +33,7 @@ ORIG_LANG=$LANG
 export LC_ALL=C
 export LANG=C
 
-PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
+PGOPTIONS="${PGOPTIONS} -c lc_messages=C -c client_min_messages=NOTICE"
 export PGOPTIONS
 
 REGDIR=`dirname $0`
