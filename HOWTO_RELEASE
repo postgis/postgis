@@ -78,7 +78,7 @@ Release procedure
     - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
 
-16) Push the revision number in trunk forward if necessary
+16) Push the revision number forward
 17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
 
 
