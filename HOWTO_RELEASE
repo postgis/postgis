@@ -43,16 +43,18 @@ Release procedure
 4) Add release notes in doc/release_notes.xml
 5) Check version in Version.config as specified in Versioning Scheme above.
 6) Commit all your changes
-7) Tag trunk:  
-   svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
+7) Tag the release:
+   $ base=http://svn.osgeo.org/postgis/
+   $ rev=2.0.PATCH
+   $ svn copy -m "Tagged release $rev" $base/branches/2.0 $base/tags/$rev
 8) Checkout tag:
-   svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
+   svn checkout $base/tags/$rev
 9) a) Update Version.config as specified in Versioning Scheme above.
   b) Update doc/postgis.xml to download.osgeo.org link 
   (note: unreleased are on postgis.net, and released download.osgeo.org )
    Also make sure the correct minimum and lastest geos etc are noted.
 10) Commit your version number change to the tag.
-11) Run: sh make_dist.sh x.x.x
+11) Run: sh make_dist.sh $rev
 12) Copy tarball to web site and edit downloads page
 13) Announce on e-mail 
     - postgis-users
