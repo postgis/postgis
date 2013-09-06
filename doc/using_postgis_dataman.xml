@@ -751,7 +751,7 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', 0, 'GEOMETRY', 3 );</programlis
 		<para>The AddGeometryColumn() approach creates a geometry column and also registers the new
 		column in the geometry_columns table.  If your software utilizes geometry_columns, then
 		any geometry columns you need to query by must be registered in this view.  
-		Starting with PoastGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered.</para>
+		Starting with PostGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered.</para>
 		<para>However they may be registered as a generic geometry column if the column was not defined as a specific type during creation.</para>
 		
 		<para>Two of the cases
