@@ -1,5 +1,5 @@
 PostGIS 2.0.4
-2013/08/DD
+2013/09/06
 
  * Bug Fixes *
   - #2110, Equality operator between EMPTY and point on origin
@@ -29,7 +29,7 @@ PostGIS 2.0.4
   - #2427, Make sure to retain first point of curves on ST_CurveToLine
 
  * Enhancements *
-  - #2269, Avoid uselessly detoasting full geometries on ANALYZE
+  - #2269, Avoid uselessly de-toasting full geometries on ANALYZE
 
  * Known Issues *
   - #2111, Raster bands can only reference the first 256 bands of out-db rasters

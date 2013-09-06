@@ -1,3 +1,524 @@
+2013-09-06 16:45  strk
+
+	* liblwgeom/lwgeom_geos.c: Enhance error messages in
+	  lwgeom_intersection and lwgeom_normalize
+
+2013-09-06 15:55  strk
+
+	* .gitignore: Ignore generated file
+
+2013-09-06 10:16  strk
+
+	* configure.ac, topology/test/Makefile, topology/test/Makefile.in:
+	  Fix GEOS version dependent testing (#2379)
+
+2013-09-05 20:02  robe
+
+	* .travis.yml, regress/run_test: #2469: add min messages so travis
+	  doesn't scream, #2436 provide .travis.yml so travis doesn't fail
+	  looking for it on build
+
+2013-09-05 19:04  strk
+
+	* HOWTO_RELEASE: pushing the release number forward is mandatory,
+	  after release
+
+2013-09-05 19:02  strk
+
+	* HOWTO_RELEASE: Improve tagging step doc (valid for 2.0 branch
+	  only)
+
+2013-09-05 08:25  robe
+
+	* extensions/upgradeable_versions.mk: add upgrade path from 2.0.3
+	  and get rid of alphas and early betas (no one should be updating
+	  from alphss or early betas)
+
+2013-09-05 08:05  robe
+
+	* regress/tickets.sql, regress/tickets_expected: #2168 test to test
+	  non-commutative fix of geog ST_Distance
+
+2013-08-14 07:26  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c:
+	  lw_segment_side may return any negative number, not just -1
+	  (#2420)
+	  
+	  Adds other unit tests for cases exposing the bug (only exposing
+	  in 2.0, maybe for lw_segment_side having changed implementation?)
+
+2013-08-14 07:26  strk
+
+	* liblwgeom/lwsegmentize.c: Fix backport of quadrant segment
+	  computation
+
+2013-08-13 23:49  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c,
+	  regress/tickets.sql, regress/tickets_expected: Fix computation of
+	  number of quadrants per arc (#2420)
+	  
+	  Note: I had to change some tests that expected 3-quadrant curves
+	  to be accepted as curvey input to rely on round-trip instead
+
+2013-08-13 23:49  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c,
+	  regress/tickets_expected: Pick curve control point farther than
+	  in the middle
+	  
+	  Seems to get a good point when doing manual tests...
+
+2013-08-13 22:56  strk
+
+	* NEWS, liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c,
+	  regress/tickets.sql, regress/tickets_expected: Make sure to
+	  retain first point of curves on linearization (#2427)
+
+2013-08-13 07:25  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c: Fix short
+	  allocation of edge to curves store (#2425)
+
+2013-08-13 07:03  strk
+
+	* NEWS, liblwgeom/lwsegmentize.c, regress/tickets.sql,
+	  regress/tickets_expected: Add COMPOUNDCURVE in MULTICURVE support
+	  for ST_CurveToLine (#2424)
+
+2013-08-12 18:43  strk
+
+	* NEWS: Add NEWS items about #2420 and #2423
+
+2013-08-12 18:40  strk
+
+	* liblwgeom/lwsegmentize.c, regress/tickets.sql,
+	  regress/tickets_expected: Require all arc edges to form the same
+	  angle (#2423)
+	  
+	  Note: gives expected result for #183
+
+2013-08-12 18:40  strk
+
+	* liblwgeom/lwsegmentize.c, regress/tickets.sql,
+	  regress/tickets_expected: Require at least 8 edges to define a
+	  full circle (#2420)
+
+2013-08-11 08:56  strk
+
+	* NEWS, liblwgeom/lwsegmentize.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix ST_LineToCurve with input having
+	  less than 4 vertices (#2412)
+
+2013-08-10 14:46  robe
+
+	* NEWS, doc/release_notes.xml: #2416 element simplesect content
+	  does not follow the DTD. Also put month in news.
+
+2013-08-09 07:01  strk
+
+	* NEWS, liblwgeom/lwgeom.c, postgis/lwgeom_functions_basic.c,
+	  regress/tickets.sql, regress/tickets_expected: Fix ST_Multi with
+	  COMPOUNDCURVE and CURVEPOLYGON types (#2415)
+
+2013-08-08 21:18  robe
+
+	* liblwgeom/cunit/cu_libgeom.c: #2396: liblwgeom CUnit tests fail
+	  on big-endian architectures.
+
+2013-08-08 06:23  strk
+
+	* NEWS, liblwgeom/lwsegmentize.c,
+	  regress/sql-mm-circularstring.sql,
+	  regress/sql-mm-circularstring_expected: Fix segmentize of
+	  collinear curve (#2410)
+
+2013-08-02 01:16  dustymugs
+
+	* NEWS, doc/release_notes.xml, doc/using_raster_dataman.xml,
+	  doc/xsl/postgis_aggs_mm.xml.xsl: Add note regarding limitation of
+	  raster bands only being able to
+	  reference the first 256 bands of an out-db raster. Ticket #2111.
+
+2013-07-20 03:11  robe
+
+	* loader/pgsql2shp-cli.c: #2230 can't dump on windows 64 if schema
+	  qualified. Fix by replacing with more modern code (follow same
+	  pattern and standardiz naming of variable as shp2pgsql)
+
+2013-07-20 01:41  robe
+
+	* loader/shp2pgsql-gui.1: #2389 man page for shp2pgsql-gui provided
+	  by Mònica Ramírez Arceda and mwanner
+
+2013-07-19 12:19  robe
+
+	* regress/lwgeom_regress.sql: #2388 Backport of #2020 regress test
+	  to not try to compute a 3D extent of mixed dimensions
+
+2013-07-17 14:03  dustymugs
+
+	* NEWS, raster/rt_pg/rtpostgis.sql.in.c: Changed warning message to
+	  not use \'. Ticket #2383
+
+2013-07-14 18:40  strk
+
+	* topology/test/Makefile: GEOS 3.3.8 uses old snapping (#2379)
+
+2013-07-10 11:33  robe
+
+	* doc/extras_tigergeocoder.xml, doc/installation.xml: revert last
+	  commit
+
+2013-07-10 11:29  robe
+
+	* doc/extras_tigergeocoder.xml, doc/installation.xml:
+
+2013-07-09 16:34  robe
+
+	* doc/reference_editor.xml: #2378, document that
+	  ST_CollectionExtract and ST_CollectionHomegenize are flawed when
+	  dealing with polygons with shared edges
+
+2013-07-05 11:37  strk
+
+	* liblwgeom/cunit/cu_clean.c, liblwgeom/lwgeom_geos_clean.c:
+	  Backport ST_MakeValid memory leak fix (#2307)
+
+2013-07-02 22:31  pramsey
+
+	* liblwgeom/lwgeom_geos_clean.c, regress/tickets.sql,
+	  regress/tickets_expected: Add comment for strk and ticket test
+	  (#2307)
+
+2013-07-02 21:59  robe
+
+	* doc/reference_processing.xml: #2242 clarify the behavior of
+	  ST_Union (agg) that it is like other aggs ignoring nulls and
+	  ST_Union(geom1,geom2) that is alike string concat any element
+	  that is null will force the whole output to be null.
+
+2013-07-02 21:45  robe
+
+	* doc/html/image_src/st_azimuth01.wkt,
+	  doc/html/image_src/st_azimuth02.wkt, doc/reference_measure.xml:
+	  #876 ST_Azimuth doc patch - close my eyes and accept this patch
+
+2013-07-02 21:18  strk
+
+	* configure.ac, topology/test/Makefile,
+	  topology/test/regress/topogeo_addlinestring_expected,
+	  topology/test/regress/topogeo_addlinestring_expected_newsnap,
+	  topology/test/regress/topogeo_addlinestring_expected_oldsnap:
+	  Base expected TopoGeo_addLinestring output on GEOS version
+	  (#2368)
+
+2013-07-02 20:06  pramsey
+
+	* NEWS, configure.ac: #2371, Support GEOS versions with more than 1
+	  digit in micro
+
+2013-06-28 14:00  strk
+
+	* NEWS, postgis/lwgeom_in_kml.c, regress/in_kml.sql,
+	  regress/in_kml_expected: Support parsing KML with space between
+	  digits and comma (#2372)
+
+2013-06-25 22:34  pramsey
+
+	* NEWS: Add entry about gui bar
+
+2013-06-13 15:25  dustymugs
+
+	* NEWS, raster/loader/raster2pgsql.c: Fixed handling of schema name
+	  when adding overview constraints.
+	  Ticket #2359
+
+2013-06-07 17:39  pramsey
+
+	* NEWS, liblwgeom/lwgeodetic.c: #2351, st_distance between
+	  geographies wrong
+
+2013-06-05 21:01  pramsey
+
+	* NEWS, postgis/geography_measurement.c: #2168, ST_Distance is not
+	  always commutative
+
+2013-06-05 20:38  pramsey
+
+	* NEWS, postgis/lwgeom_ogc.c, regress/sql-mm-circularstring.sql,
+	  regress/sql-mm-circularstring_expected: #2165, ST_NumPoints
+	  regression failure with CircularString
+
+2013-06-05 18:12  pramsey
+
+	* NEWS, liblwgeom/lwgeom_geos_clean.c: #2307, ST_MakeValid outputs
+	  invalid geometries
+
+2013-06-04 16:28  strk
+
+	* doc/reference_processing.xml: Fix spelling errors in st_makevalid
+	  documentation
+	  
+	  Fixes a couple of spelling errors, and use the full word
+	  'without'
+	  instead of the contraction 'w/out'.
+
+2013-06-04 16:23  strk
+
+	* COPYING: Renew the COPYING gpl-2.0 with last version from gnu.org
+
+2013-05-30 22:00  strk
+
+	* topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Update
+	  expectances after GEOSSnap fixes (#2346)
+
+2013-05-20 05:15  robe
+
+	* postgis/lwgeom_inout.c: #2185: failure on 64-bit windows edb. In
+	  event of parse error return PG_RETURN_NULL();
+
+2013-05-20 00:05  robe
+
+	* doc/introduction.xml: move Bborie Park up to PSC section and
+	  augment bio on all the work he's been doing
+
+2013-05-19 15:39  robe
+
+	* postgis/lwgeom_ogc.c: #2332 windows 64 EDB crasher on invalid wkb
+	  using ST_GeomFromWKB - fix by using similar logic to good
+	  ST_GeomFromEWKB and skipping intermediary call to pg lwgeom
+	  function
+
+2013-05-18 21:21  strk
+
+	* NEWS, postgis/Makefile.in: Ensure local liblwgeom and libpgcommon
+	  includes are scanned first
+	  
+	  Fixes build with systemwide liblwgeom of another version
+	  installed
+
+2013-05-16 12:38  robe
+
+	* doc/release_notes.xml: clarify soft upgrade requirement for
+	  PostGIS 2.0
+
+2013-05-09 07:23  robe
+
+	* loader/cunit/Makefile.in: #2158 backport fix from 2.1 to 2.0 to
+	  see if it prevents crashing of cunit on shp2pgsql-gui tests on
+	  winnie
+
+2013-05-04 01:39  robe
+
+	* doc/reference_processing.xml: #2295: take out note that
+	  ST_DumpPoints supports curved geometries and not it throws an
+	  error for unsupported geometries
+
+2013-05-02 02:17  robe
+
+	* doc/installation.xml: update docs to reflect support only goes
+	  thru 9.2
+
+2013-04-30 03:39  robe
+
+	* doc/installation.xml: clarify under what conditions you can do
+	  without installing GDAL
+
+2013-04-24 07:49  strk
+
+	* NEWS: Note potential segfault fix in NEWS file
+
+2013-04-23 21:04  pramsey
+
+	* postgis/lwgeom_geos_prepared.c: #2277, potential segfault removed
+
+2013-04-13 18:27  mcayland
+
+	* loader/shp2pgsql-cli.c: Associated CLI fix for #2272:
+	  shp2pgsql-gui crashes when given filenames with dots.
+	  
+	  After some experimentation, the best solution seems to be to use
+	  a separate scan to
+	  remove the extension before finding the non-path section when
+	  deriving the table
+	  name.
+
+2013-04-13 17:36  mcayland
+
+	* loader/shp2pgsql-core.c, loader/shp2pgsql-gui.c: Fix for bug
+	  #2272: shp2pgsql-gui crashes when given filenames with dots.
+	  
+	  This was a combination of two bugs: firstly, we weren't
+	  initialising the
+	  state variable field_names to NULL, and so if the variable
+	  happened to
+	  be filled with junk and we were unable to import a shape file, we
+	  would
+	  end up freeing a random pointer.
+	  
+	  Secondly, shapelib tries to be clever and strip off any file
+	  extension
+	  by searching for a "." character from the end of the filename,
+	  hence
+	  causing the truncation of the filename. Resolve this by leaving
+	  the
+	  .shp/.dbf extension from the file selector in the filename string
+	  so
+	  that shapelib does the right thing.
+
+2013-04-13 16:51  pramsey
+
+	* postgis/lwgeom_functions_analytic.c, postgis/lwgeom_geos.c: Quiet
+	  compile warnings
+
+2013-04-12 17:20  pramsey
+
+	* NEWS, postgis/geography_estimate.c: #2267, Server crash from
+	  analyze table, where data is
+	  very very nearly on a single line.
+
+2013-04-11 20:08  dustymugs
+
+	* NEWS, raster/Makefile.in: Prevent parallel make of raster. Ticket
+	  2271
+
+2013-04-09 22:42  strk
+
+	* postgis/geometry_estimate.c: Fix access to random memory during
+	  ANALYZE
+	  
+	  The bug was introduced with previous commit, see #2269
+	  
+	  As part of this fix, the stawidth field of pg_statistics is
+	  changed to represent the average _compressed_ size rather
+	  than the average _uncompressed_ size of non-null geometry
+	  values. This may have some consequence on the planner (not
+	  known at time of commit).
+
+2013-04-09 18:34  strk
+
+	* NEWS, postgis/geometry_estimate.c: Avoid uselessly detoasting
+	  full geometries on ANALYZE (#2269)
+
+2013-04-06 23:38  dustymugs
+
+	* NEWS, postgis/lwgeom_btree.c: GBOX variables not initialized when
+	  testing with empty geometries.
+	  Ticket #2257
+
+2013-04-04 06:46  robe
+
+	* doc/reference_processing.xml: #2192: doco patch
+
+2013-03-31 01:30  robe
+
+	* liblwgeom/stringbuffer.c: #1668 mingw64 conditional fix for
+	  string buffer handling.
+
+2013-03-29 15:54  robe
+
+	* doc/faq_raster.xml: fix old link
+
+2013-03-26 15:23  pramsey
+
+	* NEWS: #2201
+
+2013-03-26 15:22  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c, liblwgeom/lwalgorithm.c: #2201,
+	  ST_GeoHash wrong on boundaries
+
+2013-03-26 13:12  pramsey
+
+	* loader/shp2pgsql-gui.c: #2186, gui progress bar update is slowing
+	  loads
+
+2013-03-19 06:00  robe
+
+	* doc/reference_raster.xml: #2238 clarify our definition of
+	  neighborhood width and height
+
+2013-03-16 15:31  robe
+
+	* doc/reference_raster.xml: fix typo in ST_AsGDALRaster example
+
+2013-03-08 13:55  strk
+
+	* regress/regress_ogc.sql, regress/regress_ogc_expected: Make test
+	  for ST_PointOnSurface accept any contained point as valid
+	  
+	  This is to support a change in GEOS 3.3.9 / 3.4.0 that started
+	  giving different (but still valid) results.
+	  See http://trac.osgeo.org/geos/ticket/623
+
+2013-03-07 07:46  strk
+
+	* topology/test/regress/totopogeom.sql,
+	  topology/test/regress/totopogeom_expected: Split test for #1968
+	  in two parts, to avoid false negative
+
+2013-03-06 18:35  strk
+
+	* topology/sql/topogeometry/totopogeom.sql.in.c,
+	  topology/test/regress/totopogeom.sql: Do not assume TopoGeometry
+	  definition only changes by our own calls
+	  
+	  Fixes the original case in #1968
+
+2013-03-06 18:13  strk
+
+	* NEWS, topology/sql/topogeometry/totopogeom.sql.in.c,
+	  topology/test/regress/totopogeom.sql,
+	  topology/test/regress/totopogeom_expected: Fix missing edge from
+	  toTopoGeom return (#1968)
+
+2013-03-06 15:22  strk
+
+	* NEWS, topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addpoint.sql,
+	  topology/test/regress/topogeo_addpoint_expected: Allow adding
+	  points at precision distance with TopoGeo_addPoint
+
+2013-03-04 17:43  strk
+
+	* NEWS, postgis/lwgeom_btree.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix equality operator between EMPTY and
+	  point on origin (#2110)
+
+2013-03-03 18:44  robe
+
+	* HOWTO_RELEASE, Version.config: why can't we ever get this right.
+	  Version number has to be bumped up after tagging.
+
+2013-03-03 17:01  robe
+
+	* doc/postgis.xml: update latest release geos version
+
+2013-03-03 16:49  robe
+
+	* HOWTO_RELEASE: oops slightly different from trunk
+
+2013-03-03 16:47  robe
+
+	* HOWTO_RELEASE: #2219 -- back port how to release details from
+	  trunk to 2.0
+
+2013-03-01 14:50  strk
+
+	* HOWTO_RELEASE: Add version checking step
+
+2013-03-01 14:49  strk
+
+	* Version.config: Fix version to 2.0.3
+
+2013-03-01 14:47  strk
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Release
+	  2.0.3
+
 2013-02-28 18:35  strk
 
 	* NEWS, postgis/lwgeom_in_geojson.c: Fix memory leak in GeoJSON
