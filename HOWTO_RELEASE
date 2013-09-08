@@ -64,14 +64,15 @@ Release procedure
     - pgsql-announce
     - osgeo-discuss
 14) Update web sites
-    - PostGIS News
-     - https://svn.osgeo.org/postgis/web/_content/posts
+   - PostGIS News
+    - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) commit and wait 5 minutes to see changes on website
+       b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
+       c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
      (For building pdf, debbie has tagged jobs 
        -- http://debbie.postgis.net:8080 (log in)
-       Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
+       (if new branch) Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
        Or just be lazy and bug Regina Obe to do this.
     - if creating a new branch
