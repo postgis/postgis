@@ -31,7 +31,8 @@ documentation -- that means having the required software:
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
-  - ImageMagick
+  - ImageMagic
+  - DbLatex (for PDF)
 
 Release procedure
 -----------------
@@ -52,7 +53,7 @@ Release procedure
    svn copy http://svn.osgeo.org/postgis/branch/x.x http://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
-8) Update Version.config as specified in Versioning Scheme above.
+8) Update Version.config as specified in Versioning Scheme above. See also 17
 9) Update doc/postgis.xml to download.osgeo.org link 
   (note: unreleased are on postgis.net, and released download.osgeo.org )
    Also make sure the correct minimum and lastest geos etc are noted.
@@ -66,9 +67,10 @@ Release procedure
     - osgeo-discuss
 14) Update web sites
     - PostGIS News
-     - https://svn.osgeo.org/postgis/web/_content_posts
+    - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) commit and wait 5 minutes to see changes on website
+       b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
+       c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
      (For building pdf, debbie has tagged jobs 
        -- http://debbie.postgis.net:8080 (log in)
