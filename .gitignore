@@ -111,6 +111,7 @@ regress/postgis.sql
 st_*.png
 .svn
 topology/Makefile
+topology/test/Makefile
 topology/test/load_topology-4326.sql
 topology/test/load_topology.sql
 topology/test/topo_predicates.sql
