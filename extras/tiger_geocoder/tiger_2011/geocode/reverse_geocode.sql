@@ -166,7 +166,7 @@ BEGIN
             var_addy.address := var_nstrnum;
             IF  var_redge.fromhn IS NOT NULL THEN
                 --interpolate the number -- note that if fromhn > tohn we will be subtracting which is what we want
-                var_nstrnum := (var_redge.fromhn + ST_Line_Locate_Point(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
+                var_nstrnum := (var_redge.fromhn + ST_LineLocatePoint(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
                 -- The odd even street number side of street rule
                 IF (var_nstrnum  % 2)  != (var_redge.tohn % 2) THEN
                     var_nstrnum := CASE WHEN var_nstrnum + 1 NOT BETWEEN var_redge.fromhn AND var_redge.tohn THEN var_nstrnum - 1 ELSE var_nstrnum + 1 END;
