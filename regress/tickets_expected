@@ -145,7 +145,7 @@ ERROR:  First argument must be a LINESTRING
 #1273.1|t
 ERROR:  stats for "t.g" do not exist
 ERROR:  stats for "t.g" do not exist
-WARNING:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
+DEBUG:  ST_Estimated_Extent signature was deprecated in 2.1.0. Please use ST_EstimatedExtent
 ERROR:  stats for "t.g" do not exist
 ERROR:  stats for "t.g" do not exist
 #877.4|-10.15000|20.15000|-50.40000|30.40000
