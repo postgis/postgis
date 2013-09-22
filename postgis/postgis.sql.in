@@ -34,7 +34,7 @@ CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, versio
 RETURNS void AS
 $$
 BEGIN
-    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+    RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
