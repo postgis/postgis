@@ -3,7 +3,7 @@
 -- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 -- Copyright 2001-2003 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -34,7 +34,7 @@ CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, versio
 RETURNS void AS
 $$
 BEGIN
-    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+    RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
