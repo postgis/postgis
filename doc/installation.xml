@@ -121,7 +121,7 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 		<para>
 		  JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON via the
 		  function ST_GeomFromGeoJson. JSON-C is available for download from
-		  <ulink url="http://oss.metaparadigm.com/json-c/">http://oss.metaparadigm.com/json-c/</ulink>.
+		  <ulink url="https://github.com/json-c/json-c/releases">https://github.com/json-c/json-c/releases</ulink>.
 		</para>
 	  </listitem>
 	  
