@@ -234,18 +234,18 @@ select '141', ST_AsEWKT(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)
 select '142', ST_AsEWKT(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
 select '143', ST_AsEWKT(ST_multi(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 select '143c1', ST_AsEWKT(ST_multi('CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry));
-select '144', ST_AsEWKT(ST_Force3DM('POINT(1 2 3)'));
-select '145', ST_AsEWKT(ST_Force3DZ('POINTM(1 2 3)'));
-select '146', ST_AsEWKT(ST_Force4D('POINTM(1 2 3)'));
-select '147', ST_AsEWKT(ST_Force4D('POINT(1 2 3)'));
+select '144', ST_AsEWKT(ST_force_3dm('POINT(1 2 3)'));
+select '145', ST_AsEWKT(ST_force_3dz('POINTM(1 2 3)'));
+select '146', ST_AsEWKT(ST_force_4d('POINTM(1 2 3)'));
+select '147', ST_AsEWKT(ST_force_4d('POINT(1 2 3)'));
 
 select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)'::geometry, 5));
 
 select '149', ST_AsText(ST_segmentize('GEOMETRYCOLLECTION EMPTY'::geometry, 0.5));
 
-select '150', ST_AsEWKT(ST_ForceCollection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
+select '150', ST_AsEWKT(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
-select '151', ST_MakeEnvelope(0, 0, 1, 1, 4326);
+select '151', encode(ST_AsBinary(ST_MakeEnvelope(0, 0, 1, 1, 4326),'ndr'),'hex');
 select '152', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, 4326));
 select '152.1', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1)) = ST_SRID('POINT(0 0)'::geometry);
 select '152.2', ST_SRID(ST_SetSRID(ST_MakeEnvelope(0, 0, 1, 1), 4326));
@@ -259,7 +259,7 @@ select '158', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECT
 select '159', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), POINT(1 1)),LINESTRING(2 2, 3 3))',3));
 select '160', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), POINT(1 1)),LINESTRING(2 2, 3 3))',1));
 select '161', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), GEOMETRYCOLLECTION(POINT(1 1))),LINESTRING(2 2, 3 3))',2));
-select '162', ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'),ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
+select '162', encode(ST_AsBinary(ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'),ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')),'ndr'),'hex') As result;
 select '163', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))');
 select '164', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 1))');
 select '165', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0.1 1))');
