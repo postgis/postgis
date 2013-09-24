@@ -685,7 +685,7 @@ SELECT '#1734.1', count(*) FROM eg;
 DROP table eg;
 
 -- #1755 --
-select '#1755', st_geographyFromText('SRID=4326;Point(85 35 0)');
+select '#1755', encode(ST_AsBinary(ST_GeographyFromText('SRID=4326;Point(85 35 0)'),'ndr'),'hex');
 
 -- #1776 --
 with inp as ( SELECT 
@@ -848,6 +848,7 @@ SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1
 
 SELECT '#2168',  ST_Distance(g1,g2) As dist_g1_g2, ST_Distance(g2,g1) AS dist_g2_g1
   FROM (SELECT 'POINT(18.5107234 54.7587757)'::geography As g1, 'POINT(18.58218 54.7344227)'::geography As g2) As a;
+
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
