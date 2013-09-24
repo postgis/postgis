@@ -99,7 +99,7 @@ SELECT '#124a', ST_AsText(ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,
 SELECT '#124b', ST_AsText(ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,30 6),CIRCULARSTRING(30 5,34 56,67 89))'));
 
 -- #145 --
-SELECT '#145a', ST_Buffer(ST_GeomFromText('LINESTRING(-116.93414544665981 34.16033385105459,-116.87777514700957 34.10831080544884,-116.86972224705954 34.086748622072776,-116.9327074288116 34.08458099517253,-117.00216369088065 34.130329331330216,-117.00216369088065 34.130329331330216)', 4326), 0);
+SELECT '#145a', encode(ST_AsEWKB(ST_Buffer(ST_GeomFromText('LINESTRING(-116.93414544665981 34.16033385105459,-116.87777514700957 34.10831080544884,-116.86972224705954 34.086748622072776,-116.9327074288116 34.08458099517253,-117.00216369088065 34.130329331330216,-117.00216369088065 34.130329331330216)', 4326), 0),'ndr'),'hex');
 SELECT '#145b', ST_Area(ST_Buffer(ST_GeomFromText('LINESTRING(-116.93414544665981 34.16033385105459,-116.87777514700957 34.10831080544884,-116.86972224705954 34.086748622072776,-116.9327074288116 34.08458099517253,-117.00216369088065 34.130329331330216,-117.00216369088065 34.130329331330216)', 4326), 0));
 
 -- #146 --
@@ -163,7 +163,7 @@ SELECT '#241', sum(ST_LineCrossingDirection(the_geom, ST_GeomFromText('LINESTRIN
 DROP TABLE c;
 
 -- #254 --
-SELECT '#254', ST_Segmentize(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'), 0.5);
+SELECT '#254', encode(ST_AsEWKB(ST_Segmentize(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY'), 0.5),'ndr'),'hex');
 
 -- #259 --
 SELECT '#259', ST_Distance(ST_GeographyFromText('SRID=4326;POLYGON EMPTY'), ST_GeographyFromText('SRID=4326;POINT(1 2)'));
@@ -328,7 +328,7 @@ SELECT '#667', ST_AsEWKT(ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326)
 SELECT '#677',round(ST_Distance_Spheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
 
 -- #680 --
-SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom)),'hex') As result FROM ((SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(50,70, 20) AS j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, i*j*m)) As foo1 LIMIT 1;
+SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom),'ndr'),'hex') As result FROM ((SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(50,70, 20) AS j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, i*j*m)) As foo1 LIMIT 1;
 
 -- #681 --
 SELECT '#681a', ST_AsGML(ST_GeomFromText('POINT EMPTY', 4326));
@@ -341,20 +341,20 @@ SELECT '#681g', ST_AsGML(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY', 4326));
 
 
 -- #682 --
-SELECT '#682', ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5);
+SELECT '#682', encode(ST_AsEWKB(ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5), 'ndr'),'hex');
 
 -- #683 --
-SELECT '#683', ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326));
+SELECT '#683', encode(ST_AsEWKB(ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326)),'ndr'),'hex');
 
 -- #684,#2109 --
 SELECT '#684,#2109', ST_AsEWKT(ST_Centroid(ST_GeomFromText('POLYGON EMPTY',4326)));
 SELECT '#2109', ST_AsEWKT(ST_Centroid(ST_GeomFromText('MULTILINESTRING ZM EMPTY',3395)));
 
 -- #685 --
-SELECT '#685', ST_ConvexHull(ST_GeomFromText('POLYGON EMPTY',4326));
+SELECT '#685', encode(ST_AsEWKB(ST_ConvexHull(ST_GeomFromText('POLYGON EMPTY',4326)),'ndr'),'hex');
 
 -- #686 --
-SELECT '#686', ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326));
+SELECT '#686', encode(ST_AsEWKB(ST_COLLECT(ST_GeomFromText('POLYGON EMPTY',4326),ST_GeomFromText('TRIANGLE EMPTY',4326)),'ndr'),'hex');
 
 -- #687 --
 SELECT '#687', ST_DFullyWithin(ST_GeomFromText('LINESTRING(-10 50,50 -10)',4326), ST_GeomFromText('POLYGON EMPTY',4326),5);
@@ -367,8 +367,8 @@ SELECT '#690';
 SELECT ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
 
 -- #693 --
-SELECT '#693a', ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))');
-SELECT '#693b', ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))');
+SELECT '#693a', encode(ST_AsEWKB(ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))'),'ndr'),'hex');
+SELECT '#693b', encode(ST_AsEWKB(ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))'),'ndr'),'hex');
 
 -- #694 --
 SELECT '#694';
@@ -379,14 +379,14 @@ SELECT '#695';
 SELECT ST_RemovePoint('POINT(-11.1111111 40)'::geometry, 1);
 
 -- #696 --
-SELECT '#696',ST_Segmentize(ST_GeomFromEWKT('PolyhedralSurface( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'), 0.5);
+SELECT '#696', encode(ST_AsEWKB(ST_Segmentize(ST_GeomFromEWKT('PolyhedralSurface( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'), 0.5),'ndr'),'hex');
 
 -- #720 --
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
 -- #723 --
 SELECT '#723',
- ST_SnapToGrid( ST_Intersection(a.geog, b.geog)::geometry, 0.00001)
+ encode(ST_AsEWKB(ST_SnapToGrid( ST_Intersection(a.geog, b.geog)::geometry, 0.00001),'ndr'),'hex')
 FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);
 
 -- #729 --
@@ -558,7 +558,7 @@ SELECT '#1454', st_orderingequals(g,g) from inp;
 SELECT '#1414', st_astext(st_Force3DZ('CURVEPOLYGON EMPTY'));
 
 -- #1478
-SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
+SELECT '#1478', encode(ST_AsEWKB('SRID=1;POINT EMPTY'::geometry::text::geometry,'ndr'),'hex');
 
 -- #745 
 SELECT '#745', ST_AsEWKT(ST_Split('POLYGON((-72 42 1,-70 43 1,-71 41 1,-72 42 1))',
@@ -685,7 +685,7 @@ SELECT '#1734.1', count(*) FROM eg;
 DROP table eg;
 
 -- #1755 --
-select '#1755', st_geographyFromText('SRID=4326;Point(85 35 0)');
+select '#1755', encode(ST_AsBinary(ST_GeographyFromText('SRID=4326;Point(85 35 0)'),'ndr'),'hex');
 
 -- #1776 --
 with inp as ( SELECT 
