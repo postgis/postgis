@@ -239,9 +239,9 @@ select '145', ST_AsEWKT(ST_force_3dz('POINTM(1 2 3)'));
 select '146', ST_AsEWKT(ST_force_4d('POINTM(1 2 3)'));
 select '147', ST_AsEWKT(ST_force_4d('POINT(1 2 3)'));
 
-select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)', 5));
+select '148', ST_AsText(ST_segmentize('LINESTRING(0 0, 10 0)'::geometry, 5));
 
-select '149', ST_AsText(ST_segmentize('GEOMETRYCOLLECTION EMPTY', 0.5));
+select '149', ST_AsText(ST_segmentize('GEOMETRYCOLLECTION EMPTY'::geometry, 0.5));
 
 select '150', ST_AsEWKT(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
