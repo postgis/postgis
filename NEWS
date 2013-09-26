@@ -7,12 +7,14 @@ PostGIS 2.1.1
            exclude_nodata_value parameter
 
  * Enhancements *
- - #2478, support for tiger 2013
+
+  - #2478, support for tiger 2013
 
 PostGIS 2.1.0
 2013/08/17
 
  * Important / Breaking Changes  *
+
   - #1653, Removed srid parameter from ST_Resample(raster) and variants
            with reference raster no longer apply reference raster's SRID.
   - #1962 ST_Segmentize - As a result of 
@@ -51,8 +53,10 @@ PostGIS 2.1.0
     Use expression variants of ST_MapAlgebra instead
 
  * New Features *
- - Refer to http://postgis.net/docs/manual-2.1/PostGIS_Special_Functions_Index.html#NewFunctions_2_1
-   for complete list of new functions
+
+ Refer to http://postgis.net/docs/manual-2.1/PostGIS_Special_Functions_Index.html#NewFunctions_2_1
+ for complete list of new functions
+
   - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - #739, UpdateRasterSRID()
   - #945, improved join selectivity, N-D selectivity calculations, 
@@ -235,12 +239,14 @@ PostGIS 2.0.3
 2013/03/01
 
  * Bug Fixes *
+
   - #2134, Fixed handling of SRS strings as they are passed to GDAL functions
 
 PostGIS 2.0.2
 2012/12/03
 
  * Bug Fixes *
+
   - #1287, Drop of "gist_geometry_ops" broke a few clients
            package of legacy_gist.sql for these cases
   - #1391, Errors during upgrade from 1.5
@@ -288,11 +294,10 @@ PostGIS 2.0.2
   - #2117, Ensure ST_PointOnSurface always returns POINT
   - #2129, Fix SRID in ST_Homogenize output with collection input
   - #2130, Fix memory error in MultiPolygon GeoJson parsing 
-
   - Update URL of Maven jar
-  
 
  * Enhancements *
+
   - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
            corresponding band from the source raster did not have NODATA
   - #1928, Accept array properties in GML input multi-geom input
