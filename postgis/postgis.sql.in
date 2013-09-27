@@ -27,9 +27,6 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
--------------------------------------------------------------------
---  SPHEROID TYPE
--------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
 $$
