@@ -27,11 +27,26 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
+-- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
 $$
+DECLARE
+  curver_text text;
 BEGIN
-    RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
+  --
+  -- Raises a NOTICE if it was deprecated in this version,
+  -- a WARNING if in a previous version (only up to minor version checked)
+  --
+    curver_text := POSTGIS_LIB_VERSION;
+    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
+       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
+         split_part(curver_text,'.',2) != split_part(version,'.',2) )
+    THEN
+      RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+    ELSE
+      RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
+    END IF;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
