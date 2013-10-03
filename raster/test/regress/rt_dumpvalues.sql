@@ -97,3 +97,7 @@ WHERE rid > 20
 ORDER BY rid;
 
 DROP TABLE IF EXISTS raster_dumpvalues;
+
+
+-- ticket #2493
+SELECT (ST_DumpValues(ST_AddBand(ST_MakeEmptyRaster(0, 0, 0, 0, 1), ARRAY[ROW(NULL, '8BUI', 255, 0),ROW(NULL, '16BUI', 1, 2)]::addbandarg[]))).*
