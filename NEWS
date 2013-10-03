@@ -5,6 +5,7 @@ PostGIS 2.1.1
 
   - #2454, Fix behavior of ST_PixelAsXXX functions regarding
            exclude_nodata_value parameter
+  - #2493, Fix behavior of ST_DumpValues when passed an empty raster
 
  * Enhancements *
 
