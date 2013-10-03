@@ -257,6 +257,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		}
 
 		/* check that raster is not empty */
+		/*
 		if (rt_raster_is_empty(raster)) {
 			elog(NOTICE, "Raster provided is empty");
 			rt_raster_destroy(raster);
@@ -264,6 +265,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
+		*/
 
 		/* raster has bands */
 		numbands = rt_raster_get_num_bands(raster); 
@@ -402,6 +404,10 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 		/* get each band and dump data */
 		for (z = 0; z < arg1->numbands; z++) {
+			/* shortcut if raster is empty */
+			if (rt_raster_is_empty(raster))
+				break;
+
 			band = rt_raster_get_band(raster, arg1->nbands[z]);
 			if (!band) {
 				int nband = arg1->nbands[z] + 1;
@@ -509,6 +515,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		HeapTuple tuple;
 		Datum result;
 		ArrayType *mdValues = NULL;
+		int ndim = 2;
 		int dim[2] = {arg2->rows, arg2->columns};
 		int lbound[2] = {1, 1};
 
@@ -522,10 +529,14 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		/* info about the type of item in the multi-dimensional array (float8). */
 		get_typlenbyvalalign(FLOAT8OID, &typlen, &typbyval, &typalign);
 
+		/* if values is NULL, return empty array */
+		if (arg2->values[call_cntr] == NULL)
+			ndim = 0;
+
 		/* assemble 3-dimension array of values */
 		mdValues = construct_md_array(
 			arg2->values[call_cntr], arg2->nodata[call_cntr],
-			2, dim, lbound,
+			ndim, dim, lbound,
 			FLOAT8OID,
 			typlen, typbyval, typalign
 		);
