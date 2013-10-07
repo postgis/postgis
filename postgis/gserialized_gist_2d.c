@@ -131,11 +131,15 @@ static void box2df_merge(BOX2DF *b_union, BOX2DF *b_new)
 
 	POSTGIS_DEBUGF(5, "merging %s with %s", box2df_to_string(b_union), box2df_to_string(b_new));
 	/* Adjust minimums */
-	b_union->xmin = Min(b_union->xmin, b_new->xmin);
-	b_union->ymin = Min(b_union->ymin, b_new->ymin);
+	if (b_union->xmin > b_new->xmin || isnan(b_union->xmin))
+		b_union->xmin = b_new->xmin;
+	if (b_union->ymin > b_new->ymin || isnan(b_union->ymin))
+		b_union->ymin = b_new->ymin;
 	/* Adjust maximums */
-	b_union->xmax = Max(b_union->xmax, b_new->xmax);
-	b_union->ymax = Max(b_union->ymax, b_new->ymax);
+	if (b_union->xmax < b_new->xmax || isnan(b_union->xmax))
+		b_union->xmax = b_new->xmax;
+	if (b_union->ymax < b_new->ymax || isnan(b_union->ymax))
+		b_union->ymax = b_new->ymax;
 
 	POSTGIS_DEBUGF(5, "merge complete %s", box2df_to_string(b_union));
 	return;
@@ -1184,13 +1188,13 @@ Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS)
 static void
 adjustBox(BOX2DF *b, BOX2DF *addon)
 {
-	if (b->xmax < addon->xmax)
+	if (b->xmax < addon->xmax || isnan(b->xmax))
 		b->xmax = addon->xmax;
-	if (b->xmin > addon->xmin)
+	if (b->xmin > addon->xmin || isnan(b->xmin))
 		b->xmin = addon->xmin;
-	if (b->ymax < addon->ymax)
+	if (b->ymax < addon->ymax || isnan(b->ymax))
 		b->ymax = addon->ymax;
-	if (b->ymin > addon->ymin)
+	if (b->ymin > addon->ymin || isnan(b->ymin))
 		b->ymin = addon->ymin;
 }
 
@@ -1310,13 +1314,28 @@ interval_cmp_lower(const void *i1, const void *i2)
 	float		lower1 = ((const SplitInterval *) i1)->lower,
 				lower2 = ((const SplitInterval *) i2)->lower;
 
-	if (lower1 < lower2)
+	if (isnan(lower1))
+	{
+		if (isnan(lower2))
+			return 0;
+		else
+			return 1;
+	}
+	else if (isnan(lower2))
+	{
 		return -1;
-	else if (lower1 > lower2)
-		return 1;
+	}
 	else
-		return 0;
+	{
+		if (lower1 < lower2)
+			return -1;
+		else if (lower1 > lower2)
+			return 1;
+		else
+			return 0;
+	}
 }
+
 
 /*
  * Interval comparison function by upper bound of the interval;
@@ -1327,12 +1346,26 @@ interval_cmp_upper(const void *i1, const void *i2)
 	float		upper1 = ((const SplitInterval *) i1)->upper,
 				upper2 = ((const SplitInterval *) i2)->upper;
 
-	if (upper1 < upper2)
-		return -1;
-	else if (upper1 > upper2)
+	if (isnan(upper1))
+	{
+		if (isnan(upper2))
+			return 0;
+		else
+			return -1;
+	}
+	else if (isnan(upper2))
+	{
 		return 1;
+	}
 	else
-		return 0;
+	{
+		if (upper1 < upper2)
+			return -1;
+		else if (upper1 > upper2)
+			return 1;
+		else
+			return 0;
+	}
 }
 
 /*
@@ -1645,7 +1678,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			/*
 			 * Find next lower bound of right group.
 			 */
-			while (i1 < nentries && rightLower == intervalsLower[i1].lower)
+			while (i1 < nentries && (rightLower == intervalsLower[i1].lower ||
+					isnan(intervalsLower[i1].lower)))
 			{
 				leftUpper = Max(leftUpper, intervalsLower[i1].upper);
 				i1++;
@@ -1680,7 +1714,8 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			/*
 			 * Find next upper bound of left group.
 			 */
-			while (i2 >= 0 && leftUpper == intervalsUpper[i2].upper)
+			while (i2 >= 0 && (leftUpper == intervalsUpper[i2].upper ||
+					isnan(intervalsUpper[i2].upper)))
 			{
 				rightLower = Min(rightLower, intervalsUpper[i2].lower);
 				i2--;
@@ -1784,10 +1819,10 @@ Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS)
 			upper = box->ymax;
 		}
 
-		if (upper <= context.leftUpper)
+		if (upper <= context.leftUpper || isnan(upper))
 		{
 			/* Fits to the left group */
-			if (lower >= context.rightLower)
+			if (lower >= context.rightLower || isnan(lower))
 			{
 				/* Fits also to the right group, so "common entry" */
 				commonEntries[commonEntriesCount++].index = i;
