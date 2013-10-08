@@ -486,3 +486,13 @@ DROP FUNCTION IF EXISTS _add_raster_constraint_regular_blocking(name, name, name
 
 -- function signature changed
 DROP FUNCTION IF EXISTS st_asbinary(raster);
+
+DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
+DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
