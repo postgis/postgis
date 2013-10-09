@@ -20,12 +20,6 @@ use strict;
 #  Check output against <testname>_expected
 ##################################################################
 
-if ( @ARGV < 1 )
-{
-	usage();
-}
-
-
 ##################################################################
 # Global configuration items
 ##################################################################
@@ -64,6 +58,13 @@ GetOptions (
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS
 	);
+
+if ( @ARGV < 1 )
+{
+	usage();
+}
+
+
 
 ##################################################################
 # Set the locale to "C" so error messages match
