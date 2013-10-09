@@ -239,6 +239,42 @@ PostGIS 2.1.0
   - #2351, st_distance between geographies wrong
   - #2359, Fix handling of schema name when adding overview constraints
 
+PostGIS 2.0.4
+2013/09/06
+
+ * Bug Fixes *
+  - #2110, Equality operator between EMPTY and point on origin
+  - Allow adding points at precision distance with TopoGeo_addPoint
+  - #1968, Fix missing edge from toTopoGeom return
+  - #2165, ST_NumPoints regression failure with CircularString
+  - #2168, ST_Distance is not always commutative
+  - #2186, gui progress bar updates too frequent
+  - #2201, ST_GeoHash wrong on boundaries
+  - #2257, GBOX variables not initialized when testing with empty geometries
+  - #2271, Prevent parallel make of raster
+  - #2267, Server crash from analyze table
+  - #2277, potential segfault removed
+  - #2307, ST_MakeValid outputs invalid geometries
+  - #2351, st_distance between geographies wrong
+  - #2359, Incorrect handling of schema for overview constraints
+  - #2371, Support GEOS versions with more than 1 digit in micro
+  - #2372, Cannot parse space-padded KML coordinates
+  - Fix build with systemwide liblwgeom installed
+  - #2383, Fix unsafe use of \' in warning message
+  - #2410, Fix segmentize of collinear curve
+  - #2415, ST_Multi support for COMPOUNDCURVE and CURVEPOLYGON
+  - #2412, ST_LineToCurve support for lines with less than 4 vertices
+  - #2420, ST_LineToCurve: require at least 8 edges to define a full circle
+  - #2423, ST_LineToCurve: require all arc edges to form the same angle
+  - #2424, ST_CurveToLine: add support for COMPOUNDCURVE in MULTICURVE
+  - #2427, Make sure to retain first point of curves on ST_CurveToLine
+
+ * Enhancements *
+  - #2269, Avoid uselessly de-toasting full geometries on ANALYZE
+
+ * Known Issues *
+  - #2111, Raster bands can only reference the first 256 bands of out-db rasters
+
 PostGIS 2.0.3
 2013/03/01
 
