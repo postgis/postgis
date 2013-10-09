@@ -14,8 +14,12 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
+# Update PREV_big manually on branching
+PREV_big=21
+CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
+
 # Files to be copied to the contrib/ directory
-SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade_20_21.sql postgis_upgrade_21_minor.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql uninstall_sfcgal.sql
+SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade_$(PREV_big)_$(CURV_big).sql postgis_upgrade_$(CURV_big)_minor.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql uninstall_sfcgal.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
@@ -103,9 +107,9 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_postgis.sql \
 	uninstall_legacy.sql \
 	uninstall_sfcgal.sql \
-	postgis_upgrade_20_21.sql.in \
-	postgis_upgrade_20_21.sql \
-	postgis_upgrade_21_minor.sql 
+	postgis_upgrade_$(PREV_big)_$(CURV_big).sql.in \
+	postgis_upgrade_$(PREV_big)_$(CURV_big).sql \
+	postgis_upgrade_$(CURV_big)_minor.sql 
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@ 
@@ -164,13 +168,13 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
-postgis_upgrade_20_21.sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
+postgis_upgrade_$(PREV_big)_$(CURV_big).sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
 	cat $^ > $@
-postgis_upgrade_20_21.sql: postgis_upgrade_20_21.sql.in ../utils/postgis_proc_upgrade.pl 
+postgis_upgrade_$(PREV_big)_$(CURV_big).sql: postgis_upgrade_$(PREV_big)_$(CURV_big).sql.in ../utils/postgis_proc_upgrade.pl 
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< 2.0 > $@
 	
-#this is same as 20_21 until we release a 2.1.0	
-postgis_upgrade_21_minor.sql: postgis_upgrade_20_21.sql
+#this is same as $(PREV_big)_$(CURV_big) until we release a 2.1.0	
+postgis_upgrade_$(CURV_big)_minor.sql: postgis_upgrade_$(PREV_big)_$(CURV_big).sql
 	cp $< $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
