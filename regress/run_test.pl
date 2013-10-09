@@ -359,7 +359,7 @@ exit($FAIL);
 sub usage 
 {
 	die qq{
-Usage: $0 <testname> [<testname>]
+Usage: $0 [<options>] <testname> [<testname>]
 Options:
   --verbose    be verbose about failures
   --nocreate   do not create the regression database on start
