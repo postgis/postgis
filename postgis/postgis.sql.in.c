@@ -2380,9 +2380,9 @@ BEGIN
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
 	BEGIN
-		SELECT postgis_topology_scripts_installed() INTO topo_scr_ver;
+		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
-		WHEN undefined_function THEN
+		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
 	END;

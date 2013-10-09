@@ -2000,7 +2000,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --general management --
 #include "sql/manage/ManageHelper.sql.in.c"
 
-CREATE OR REPLACE FUNCTION postgis_topology_scripts_installed() RETURNS text
+CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
 	LANGUAGE 'sql' IMMUTABLE;
 

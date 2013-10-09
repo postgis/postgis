@@ -2,6 +2,7 @@ PostGIS 2.0.5
 YYYY/MM/DD
 
  * Bug Fixes *
+  - #2502, Fix postgis_topology_scripts_installed() install schema
 
 PostGIS 2.0.4
 2013/09/06
