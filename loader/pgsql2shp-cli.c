@@ -163,6 +163,10 @@ main(int argc, char **argv)
       }
 		}
 	}
+	else
+	{
+		usage(1);
+	}
 
 	state = ShpDumperCreate(config);
 
