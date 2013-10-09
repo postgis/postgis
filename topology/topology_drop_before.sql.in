@@ -15,3 +15,6 @@
 -- I don't think too many people installed the bad name
 DROP FUNCTION IF EXISTS topology.toTopoGeom(Geometry, varchar, int, float8);
 
+-- used to be in public, will now be moved to topology
+DROP FUNCTION IF EXISTS postgis_topology_scripts_installed();
+
