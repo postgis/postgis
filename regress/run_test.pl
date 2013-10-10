@@ -287,9 +287,13 @@ foreach $TEST (@ARGV)
 		my $rv = run_simple_test("${TEST}.sql", "${TEST}_expected");
 		pass() if $rv;
 	}
+	elsif ( -r "${TEST}.dmp" )
+	{
+		pass() if run_dumper_test();
+	}
 	else
 	{
-		print " skipped (can't read ${TEST}.sql)\n";
+		print " skipped (can't read any ${TEST}.{sql,dbf,tif,dmp})\n";
 		$SKIP++;
 		next;
 	}
@@ -582,7 +586,7 @@ sub run_simple_test
 	
 	if ( $OPT_EXPECT )
 	{
-		print " expected\n";
+		print " (expected)";
 		copy($outfile, $expected);
 	}
 	else
@@ -901,6 +905,88 @@ sub run_loader_test
 	return 1;
 }
 
+##################################################################
+#  run_dumper_test 
+#
+#  Run dumper and compare output with various expectances
+#  test and run simple test with provided expected output. 
+#
+# input is ${TEST}.dmp, where last line is considered to be the
+# [table|query] argument for pgsql2shp and all the previous lines,
+# if any are 
+#
+##################################################################
+sub run_dumper_test 
+{
+  my $dump_file  = "${TEST}.dmp";
+
+  # ON_ERROR_STOP is used by psql to return non-0 on an error
+  my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
+
+	my $shpfile = "${TMPDIR}/dumper-shp";
+	my $outfile = "${TMPDIR}/dumper.out";
+	my $errfile = "${TMPDIR}/dumper.err";
+
+  # Produce the output SHP file.
+  open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
+  my @dumplines = <DUMPFILE>;
+  my $dumpstring = join '', @dumplines;
+  chop($dumpstring);
+  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile}, ${DB}, ${dumpstring});
+  open my $stdout_save, '>&', *STDOUT or die "Cannot dup stdout\n";
+  open my $stderr_save, '>&', *STDERR or die "Cannot dup stdout\n";
+  open STDOUT, ">${outfile}" or die "Cannot write to ${outfile}\n";
+  open STDERR, ">${errfile}" or die "Cannot write to ${errfile}\n";
+  my $rv = system(@cmd);
+  open STDERR, '>&', $stderr_save;
+  open STDOUT, '>&', $stdout_save;
+
+  show_progress();
+
+  if ( $rv )
+  {
+    fail("dumping", "$errfile");
+    return 0;
+  }
+
+  my $diffile = sprintf("%s/test_%s_diff", $TMPDIR, $RUN);
+
+  my $numtests = 0;
+  foreach my $ext ("shp","prj","dbf","shx") {
+    my $obtained = ${shpfile}.".".$ext;
+    my $expected = ${TEST}."_expected.".$ext;
+    if ( $OPT_EXPECT )
+    {
+      copy($obtained, $expected);
+    }
+    elsif ( -r ${expected} ) {
+      show_progress();
+      $numtests++;
+      my $diff = diff($expected,  $obtained);
+      if ( $diff )
+      {
+        open(FILE, ">$diffile");
+        print FILE $diff;
+        close(FILE);
+        fail("diff expected obtained", $diffile);
+        return 0;
+      }
+    }
+  }
+
+  #show_progress();
+
+  if ( $OPT_EXPECT ) {
+    print " (expected)";
+  }
+  elsif ( ! $numtests ) {
+    fail("no expectances!");
+    return 0;
+  }
+
+	return 1;
+}
+
 
 ##################################################################
 #  run_raster_loader_test 
@@ -1182,7 +1268,7 @@ sub uninstall_spatial
 		}
 		else
 		{
-            pass("($OBJ_COUNT_PRE)");
+			pass("($OBJ_COUNT_PRE)");
 			return 1;
 		}
 	}
