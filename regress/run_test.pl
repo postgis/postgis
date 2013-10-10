@@ -171,7 +171,7 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/$DB/, split(/\n/, `psql -l`));
+my @dblist = grep(/$DB/, split(/\n/, `psql -Xl`));
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
@@ -362,15 +362,15 @@ sub usage
 	die qq{
 Usage: $0 [<options>] <testname> [<testname>]
 Options:
-  --verbose    be verbose about failures
-  --nocreate   do not create the regression database on start
-  --upgrade    source the upgrade scripts on start
-  --nodrop     do not drop the regression database on exit
-  --raster     load also raster extension
-  --topology   load also topology extension
-  --sfcgal     use also sfcgal backend
-  --clean      cleanup test logs on exit
-  --expect     save obtained output as expected
+  -v, --verbose   be verbose about failures
+  --nocreate      do not create the regression database on start
+  --upgrade       source the upgrade scripts on start
+  --nodrop        do not drop the regression database on exit
+  --raster        load also raster extension
+  --topology      load also topology extension
+  --sfcgal        use also sfcgal backend
+  --clean         cleanup test logs on exit
+  --expect        save obtained output as expected
 };
 
 }
