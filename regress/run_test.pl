@@ -1282,12 +1282,12 @@ sub diff
 	my $diffstr = '';
 
 	if ( $sysdiff ) {
-		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file`;
+		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file 2>&1`;
 		return $diffstr;
 	}
 
-	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
-	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
+	open(OBT, $obtained_file) || return "Cannot open $obtained_file\n";
+	open(EXP, $expected_file) || return "Cannot open $expected_file\n";
 	my $lineno = 0;
 	while (!eof(OBT) or !eof(EXP)) {
 		# TODO: check for premature end of one or the other ?
