@@ -923,9 +923,9 @@ sub run_dumper_test
   # ON_ERROR_STOP is used by psql to return non-0 on an error
   my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
 
-	my $shpfile = "${TMPDIR}/dumper-shp";
-	my $outfile = "${TMPDIR}/dumper.out";
-	my $errfile = "${TMPDIR}/dumper.err";
+	my $shpfile = "${TMPDIR}/dumper-" . basename(${TEST}) . "-shp";
+	my $outfile = "${TMPDIR}/dumper-" . basename(${TEST}) . ".out";
+	my $errfile = "${TMPDIR}/dumper-" . basename(${TEST}) . ".err";
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
