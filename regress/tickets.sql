@@ -846,7 +846,7 @@ SELECT '#2424', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
 
 SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1)'),1));
 
-SELECT '#2168',  ST_Distance(g1,g2) As dist_g1_g2, ST_Distance(g2,g1) AS dist_g2_g1
+SELECT '#2168',  ST_Distance(g1,g2)::numeric(16,8)  As dist_g1_g2, ST_Distance(g2,g1)::numeric(16,8) AS dist_g2_g1,ST_Distance(g1,g2) - ST_Distance(g2,g1) 
   FROM (SELECT 'POINT(18.5107234 54.7587757)'::geography As g1, 'POINT(18.58218 54.7344227)'::geography As g2) As a;
 
 
