@@ -15,6 +15,7 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
 # Update PREV_big manually on branching
+# TODO: move this definition in ../../Version.config
 PREV_big=21
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
