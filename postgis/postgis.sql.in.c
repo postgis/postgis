@@ -4444,7 +4444,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND a.atttypid = t.oid 
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
-    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char" OR c.relkind = 'm'::"char")
     AND NOT pg_is_other_temp_schema(c.relnamespace)
     AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
     AND has_table_privilege( c.oid, 'SELECT'::text );
