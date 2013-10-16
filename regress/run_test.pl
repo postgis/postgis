@@ -467,6 +467,7 @@ sub run_simple_sql
 	# Check for ERROR lines
 	open FILE, "$tmpfile";
 	my @lines = <FILE>;
+	close FILE;
 	my @errors = grep(/^ERROR/, @lines);
 	
 	if ( @errors > 0 )
@@ -930,6 +931,7 @@ sub run_dumper_test
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
   my @dumplines = <DUMPFILE>;
+  close DUMPFILE;
   my $dumpstring = join '', @dumplines;
   chop($dumpstring);
   my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile}, ${DB}, ${dumpstring});
