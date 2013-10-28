@@ -5,8 +5,19 @@ dnl * PostGIS - Spatial Types for PostgreSQL
 dnl * http://postgis.refractions.net
 dnl * Copyright 2008 Mark Cave-Ayland
 dnl *
-dnl * This is free software; you can redistribute and/or modify it under
-dnl * the terms of the GNU General Public Licence. See the COPYING file.
+dnl * This program is free software; you can redistribute it and/or
+dnl * modify it under the terms of the GNU General Public License
+dnl * as published by the Free Software Foundation; either version 2
+dnl * of the License, or (at your option) any later version.
+dnl *
+dnl * This program is distributed in the hope that it will be useful,
+dnl * but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl * GNU General Public License for more details.
+dnl *
+dnl * You should have received a copy of the GNU General Public License
+dnl * along with this program; if not, write to the Free Software Foundation,
+dnl * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 dnl *
 dnl **********************************************************************
 

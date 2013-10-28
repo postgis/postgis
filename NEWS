@@ -1,6 +1,10 @@
 PostGIS 2.1.1
 2013/MM/DD
 
+ * Important / Breaking Changes *
+
+  - #2516, Change raster license from GPL v3+ to v2+
+
  * Bug Fixes *
 
   - #2454, Fix behavior of ST_PixelAsXXX functions regarding
