@@ -3,7 +3,7 @@ PostGIS 2.1.1
 
  * Important / Breaking Changes *
 
-  - #2516, Change raster license from GPL v3+ to v2+
+  - #2514, Change raster license from GPL v3+ to v2+
 
  * Bug Fixes *
 
