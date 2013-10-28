@@ -5,6 +5,7 @@ PostGIS 2.2.0
 
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
+  - #2514, Change raster license from GPL v3+ to v2+
 
  * Deprecated signatures *
 
