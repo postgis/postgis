@@ -1,9 +1,10 @@
 PostGIS 2.0.5
 YYYY/MM/DD
 
- * Important / Breaking Changes  *
+ * Important Changes *
 
-  - #2514, Change raster license from GPL v3+ to v2+
+  - #2514, Change raster license from GPL v3+ to v2+, allowing 
+           distribution of PostGIS Extension as GPLv2.
 
  * Bug Fixes *
   - #2502, Fix postgis_topology_scripts_installed() install schema
