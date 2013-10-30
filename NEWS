@@ -3,23 +3,19 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes  *
 
-  - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
-    smaller files for ease of long-term maintenance and development
-  - #2514, Change raster license from GPL v3+ to v2+
-
  * Deprecated signatures *
 
  * New Features *
 
   - #2430, ST_ForceCurve
-
- * Enhancements *
-
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
   - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
     variable GDAL_DATA
+  - #2397, read encoding info automatically in shapefile loader
+
+ * Enhancements *
+
   - #2361, Added spatial_index column to raster_columns view
-  - #2397, read encoding info automatically in loader
   - #2390, Testsuite for pgsql2shp
 
  * Bug Fixes *
@@ -32,6 +28,11 @@ PostGIS 2.2.0
   - #2493, Fix behavior of ST_DumpValues when passed an empty raster
   - #2512, Support for foreign tables and materialized views in
            raster_columns and raster_overviews
+
+ * Code refactoring *
+
+  - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
+    smaller files for ease of long-term maintenance and development
 
 PostGIS 2.1.0
 2013/08/17
