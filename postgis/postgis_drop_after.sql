@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- $Id$
+-- $Id: postgis_drop_after.sql 11289 2013-04-12 18:46:39Z pramsey $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
@@ -61,15 +61,11 @@ DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default arg
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4);  -- changed to use default args
-DROP FUNCTION IF EXISTS st_asgml(int4, geography, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geometry, int4,int4,text); -- changed to use default args
-DROP FUNCTION IF EXISTS _st_asgml(int4, geography, int4,int4,text); -- changed to use default args
 DROP FUNCTION IF EXISTS ST_AsKML(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS ST_AsKML(geography); -- changed to use default args
 DROP FUNCTION IF EXISTS ST_AsKML(int4, geometry, int4); -- changed to use default args

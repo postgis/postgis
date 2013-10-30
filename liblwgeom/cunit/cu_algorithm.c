@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_algorithm.c 11212 2013-03-26 15:24:19Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

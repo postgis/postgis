@@ -1,8 +1,8 @@
 RFC2: Well Known Binary format for RASTER type
 ----------------------------------------------
-$Author$
-$Date$
-$Revision$
+$Author: chodgson $
+$Date: 2011-06-23 16:50:13 -0700 (Thu, 23 Jun 2011) $
+$Revision: 7461 $
 ------------------------------------------------------
 
 The WKB format for RASTER is meant for transport.

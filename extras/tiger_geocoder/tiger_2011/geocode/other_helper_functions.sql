@@ -1,4 +1,4 @@
---$Id$
+--$Id: other_helper_functions.sql 9324 2012-02-27 22:08:12Z pramsey $
  /*** 
  * 
  * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)

@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwsegmentize.c 11802 2013-08-14 07:42:48Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -687,7 +687,6 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 				for ( k = j-1; k >= i; k-- )
 					edges_in_arcs[k] = 0;
 			}
-
 			i = j-1;
 		}
 		else

@@ -1,44 +1,7 @@
-PostGIS 2.2.0
-2014/MM/DD
-
- * Important / Breaking Changes  *
-
- * Deprecated signatures *
-
- * New Features *
-
-  - #2430, ST_ForceCurve
-  - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
-  - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
-    variable GDAL_DATA
-  - #2397, read encoding info automatically in shapefile loader
-
- * Enhancements *
-
-  - #2361, Added spatial_index column to raster_columns view
-  - #2390, Testsuite for pgsql2shp
-
- * Bug Fixes *
-
-  - #2371, Support GEOS versions with more than 1 digit in micro
-  - #2383, Removed unsafe use of \' from raster warning message
-  - #2384, Fixed variable datatype in ST_Neighborhood
-  - #2454, Fix behavior of ST_PixelAsXXX functions regarding
-           exclude_nodata_value parameter
-  - #2493, Fix behavior of ST_DumpValues when passed an empty raster
-  - #2512, Support for foreign tables and materialized views in
-           raster_columns and raster_overviews
-
- * Code refactoring *
-
-  - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
-    smaller files for ease of long-term maintenance and development
-
 PostGIS 2.1.0
 2013/08/17
 
  * Important / Breaking Changes  *
-
   - #1653, Removed srid parameter from ST_Resample(raster) and variants
            with reference raster no longer apply reference raster's SRID.
   - #1962 ST_Segmentize - As a result of 
@@ -77,10 +40,8 @@ PostGIS 2.1.0
     Use expression variants of ST_MapAlgebra instead
 
  * New Features *
-
- Refer to http://postgis.net/docs/manual-2.1/PostGIS_Special_Functions_Index.html#NewFunctions_2_1
- for complete list of new functions
-
+ - Refer to http://postgis.net/docs/manual-2.1/PostGIS_Special_Functions_Index.html#NewFunctions_2_1
+   for complete list of new functions
   - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - #739, UpdateRasterSRID()
   - #945, improved join selectivity, N-D selectivity calculations, 
@@ -255,42 +216,6 @@ PostGIS 2.1.0
   - #2371, Support GEOS versions with more than 1 digit in micro
   - #2383, Remove unsafe use of \' from raster warning message
   - #2384, Incorrect variable datatypes for ST_Neighborhood
-
- * Known Issues *
-  - #2111, Raster bands can only reference the first 256 bands of out-db rasters
-
-PostGIS 2.0.4
-2013/09/06
-
- * Bug Fixes *
-  - #2110, Equality operator between EMPTY and point on origin
-  - Allow adding points at precision distance with TopoGeo_addPoint
-  - #1968, Fix missing edge from toTopoGeom return
-  - #2165, ST_NumPoints regression failure with CircularString
-  - #2168, ST_Distance is not always commutative
-  - #2186, gui progress bar updates too frequent
-  - #2201, ST_GeoHash wrong on boundaries
-  - #2257, GBOX variables not initialized when testing with empty geometries
-  - #2271, Prevent parallel make of raster
-  - #2267, Server crash from analyze table
-  - #2277, potential segfault removed
-  - #2307, ST_MakeValid outputs invalid geometries
-  - #2351, st_distance between geographies wrong
-  - #2359, Incorrect handling of schema for overview constraints
-  - #2371, Support GEOS versions with more than 1 digit in micro
-  - #2372, Cannot parse space-padded KML coordinates
-  - Fix build with systemwide liblwgeom installed
-  - #2383, Fix unsafe use of \' in warning message
-  - #2410, Fix segmentize of collinear curve
-  - #2415, ST_Multi support for COMPOUNDCURVE and CURVEPOLYGON
-  - #2412, ST_LineToCurve support for lines with less than 4 vertices
-  - #2420, ST_LineToCurve: require at least 8 edges to define a full circle
-  - #2423, ST_LineToCurve: require all arc edges to form the same angle
-  - #2424, ST_CurveToLine: add support for COMPOUNDCURVE in MULTICURVE
-  - #2427, Make sure to retain first point of curves on ST_CurveToLine
-
- * Enhancements *
-  - #2269, Avoid uselessly de-toasting full geometries on ANALYZE
 
  * Known Issues *
   - #2111, Raster bands can only reference the first 256 bands of out-db rasters

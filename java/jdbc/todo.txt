@@ -1,5 +1,5 @@
 Todo for PostGIS 1.0 compatible JDBC classes
-$Id$
+$Id: todo.txt 9324 2012-02-27 22:08:12Z pramsey $
 
 - even more Testing, especialy against different postgis, 
   pgjdbc and postgresql releases.

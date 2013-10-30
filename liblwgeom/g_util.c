@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: g_util.c 10680 2012-11-15 00:15:24Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>

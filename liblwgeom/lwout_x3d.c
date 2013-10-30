@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwout_x3d.c 11511 2013-06-03 08:26:51Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://www.postgis.org

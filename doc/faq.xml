@@ -9,7 +9,7 @@
       </question>
 
       <answer>
-        <para>OpenGeo has a step by step tutorial guide workshop <ulink url="http://workshops.boundlessgeo.com/postgis-intro/">Introduction to PostGIS</ulink>.  It includes packaged data as well as intro to working with OpenGeo Suite. It is probably the best tutorial on PostGIS.</para>
+        <para>OpenGeo has a step by step tutorial guide workshop <ulink url="http://workshops.opengeo.org/postgis-intro/">Introduction to PostGIS</ulink>.  It includes packaged data as well as intro to working with OpenGeo Suite. It is probably the best tutorial on PostGIS.</para>
         <para>BostonGIS also has a <ulink url="http://www.bostongis.com/PrinterFriendly.aspx?content_name=postgis_tut01">PostGIS almost idiot's guide on getting started</ulink>. That one is more focused on the windows user.</para>
       </answer>
     </qandaentry>
@@ -51,7 +51,7 @@
       </answer>
     </qandaentry>
 
-    <qandaentry id="legacy_faq_read_view">
+    <qandaentry>
       <question>
         <para>I'm running PostgreSQL 9.0 and I can no longer read/view geometries in OpenJump, Safe FME, and some other tools?</para>
       </question>
@@ -73,7 +73,7 @@
       </answer>
     </qandaentry>
     
-    <qandaentry id="pgadmin_shows_no_data_in_geom">
+    <qandaentry>
       <question>
         <para>I tried to use PgAdmin to view my geometry column and it is blank, what gives?</para>
       </question>

@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_tester.h 10860 2012-12-19 18:06:17Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

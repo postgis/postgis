@@ -1,4 +1,4 @@
---$Id$
+--$Id: geocode_settings.sql 11241 2013-04-02 14:43:52Z robe $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org

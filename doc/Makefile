@@ -1,0 +1,391 @@
+#
+# PostGIS - Spatial Types for PostgreSQL
+# http://www.postgis.net
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+# PostGIS documentation build Makefile
+#
+# Copyright 2003-2012 Sandro Santilli <strk@keybit.net>
+# Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
+# Copyright 2009-2011 Regina Obe <lr@pcorp.us>
+# Copyright 2008-2010 Mark Cave-Ayland
+# Copyright 2008-2010 Kevin Neufeld <kneufeld.ca@gmail.com>
+# Copyright 2009-2010 Olivier Courtin <olivier.courtin@camptocamp.com>
+# Copyright 2005-2006 Markus Schaber <markus@schabi.de>
+#
+# NOTE: We don't use a standard PGXS Makefile here since the DOCS target
+# only allows files to be stored within contrib/ and we currently
+# store documentation under contrib/postgis due to the possibility
+# that we could produce a large number of files (think chunked HTML)
+#
+
+translations = it_IT pt_BR 
+
+POSTGIS_MAJOR_VERSION=2
+POSTGIS_MINOR_VERSION=1
+POSTGIS_MICRO_VERSION=0
+
+INSTALL=/usr/bin/install -c
+INSTALL_DATA=${INSTALL} -m 644
+
+XSLTPROC=/usr/bin/xsltproc
+XSLBASE=/usr/share/xml/docbook/stylesheet/nwalsh
+XMLLINT=/usr/bin/xmllint
+PERL=/usr/bin/perl
+
+# To allow network access use:
+#
+# make html XSLTPROCFLAGS=
+#
+ifeq ($(XSLTPROCFLAGS),)
+	XSLTPROCFLAGS=--nonet
+endif
+
+XSLTPROC_COMMONOPTS= \
+	--param section.autolabel 1 \
+	--param section.label.includes.component.label 1 \
+	--param chunk.section.depth 0 \
+	--param generate.section.toc.level 2 \
+	--param funcsynopsis.style kr \
+	--param admon.graphics 1 \
+	--param admon.textlabel 0 \
+	--param simplesect.in.toc 0 \
+	--param use.id.as.filename 1 \
+	--param chunk.quietly 1 \
+	$(XSLTPROCFLAGS)
+
+XSLTPROC_HTMLOPTS= \
+	--stringparam html.stylesheet style.css \
+
+HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
+
+# DBLatex's dblatex script for PDF generation from DocBook
+DBLATEX=
+
+# Imagemagick's convert utility program for generated images used in the documentation
+IMAGEMAGICK=/usr/bin/convert
+
+# Gettext for translated documentation
+MSGMERGE=msgmerge
+
+# XML gettext tools
+XML2POT=xml2pot
+
+# DOCBOOK to EPUB
+DBTOEPUB=dbtoepub
+
+# Directories for postgresql subdirectories
+PGSQL_DOCDIR=/usr/share/doc/postgresql-doc-9.1
+PGSQL_MANDIR=/usr/share/postgresql/9.1/man
+PGSQL_SHAREDIR=/usr/share/postgresql/9.1
+
+# If XSLTPROC or XSLBASE were not found during configure, we cannot
+# build the documentation
+ifeq ($(XSLTPROC),)
+all: requirements_not_met_xsltproc
+else
+ifeq ($(XSLBASE),)
+all: requirements_not_met_xslbase
+else
+ifeq ($(IMAGEMAGICK),)
+all: requirements_not_met_imagemagick
+else
+all: comments
+endif
+endif
+endif
+
+XML_SOURCES = \
+	extras_historytable.xml \
+	extras_tigergeocoder.xml \
+	extras_topology.xml \
+	extras.xml \
+	faq_raster.xml \
+	faq.xml \
+	installation.xml \
+	introduction.xml \
+	performance_tips.xml \
+	postgis.xml \
+	reference_accessor.xml \
+	reference_constructor.xml \
+	reference_editor.xml \
+	reference_exception.xml \
+	reference_lrs.xml \
+	reference_management.xml \
+	reference_measure.xml \
+	reference_sfcgal.xml \
+	reference_misc.xml \
+	reference_operator.xml \
+	reference_output.xml \
+	reference_processing.xml \
+	reference_raster.xml \
+	reference_transaction.xml \
+	reference_type.xml \
+	reference.xml \
+	release_notes.xml \
+	reporting.xml \
+	using_postgis_app.xml \
+	using_postgis_dataman.xml \
+	using_raster_dataman.xml 
+
+XML_GENERATED_SOURCES = \
+	postgis_aggs_mm.xml \
+	postgis-out.xml \
+
+XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
+
+XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
+
+$(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
+	$(XML2POT) $< > $@
+
+# Creates or updates translation files
+update-po: $(XML_INPUTS_POT)
+	@for lang in $(translations); do \
+    echo "Creating po files for language $$lang..." ; \
+    for pot in $(XML_INPUTS_POT); do \
+      mkdir -p po/$$lang; \
+      po=po/$$lang/`basename $$pot .pot`.po; \
+      if test -f $$po; then \
+        $(MSGMERGE) --update $$po $$pot; \
+      else \
+        cp $$pot $$po; \
+      fi; \
+    done; \
+  done
+
+ifeq ($(XSLTPROC),)
+postgis_aggs_mm.xml: requirements_not_met_xsltproc
+else
+postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml Makefile
+	$(XSLTPROC) --novalid ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+endif
+
+postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
+	
+postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
+	
+raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
+	
+raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
+	
+topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
+	
+topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	
+sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
+	
+sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
+	
+tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
+	
+tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
+
+postgis-out.xml: postgis.xml Makefile
+	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
+
+chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
+		--output html/ \
+		--stringparam saxon.character.representation decimal \
+		$(CHUNK_HTML_DOCBOOK_XSL) \
+		$<
+
+html: html/postgis$(DOCSUFFIX).html
+
+html-localized:
+	@for lang in $(translations); do \
+    echo "Creating html for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-html; \
+  done
+
+html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
+		--output html/postgis$(DOCSUFFIX).html \
+		$(HTML_DOCBOOK_XSL) \
+		$<
+
+
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml images $(XML_INPUTS)
+	if test x"$(DBLATEX)" = x; then \
+	   echo "Error: dblatex not found, can't build pdf"; \
+	   echo "       try installing dblatex and then re-run configure"; \
+	   false; \
+	else \
+		dblatex -T native -t pdf \
+		   -I "${PWD}/html" \
+		   -P doc.collab.show=0 \
+		   -P figure.note="${PWD}/html/images/note" \
+		   -P figure.tip="${PWD}/html/images/tip" \
+		   -P figure.important="${PWD}/html/images/important" \
+		   -P figure.warning="${PWD}/html/images/warning" \
+		   -P figure.caution="${PWD}/html/images/caution" \
+		   -P latex.output.revhistory=0 \
+		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
+	fi
+	
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
+	if test x"$(DBTOEPUB)" = x; then \
+	   echo "Error: dbtoepub not found, can't build epub"; \
+	   echo "       try installing dbtoepub"; \
+	   false; \
+	else \
+		$(DBTOEPUB) -c "${PWD}/html/style.css" \
+		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
+		  $<; \
+	fi
+
+epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
+
+pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
+
+pdf-localized:
+	@for lang in $(translations); do \
+    echo "Creating pdf for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-pdf; \
+  done
+
+doxygen.cfg: doxygen.cfg.in
+	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
+
+doxygen: doxygen.cfg
+	doxygen $<
+
+images: 
+	$(MAKE) -C html/image_src images
+
+images-clean:
+	$(MAKE) -C html/image_src images-clean
+	
+clean: 
+	rm -f html/*.html
+	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -f *.epub
+	$(MAKE) -C html/image_src clean
+	rm -f $(XML_GENERATED_SOURCES)
+
+distclean: clean
+	$(MAKE) -C html/image_src distclean
+	rm -f Makefile
+
+maintainer-clean: clean images-clean
+	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+
+ifeq ($(XSLTPROC),)
+comments: requirements_not_met_xsltproc
+else
+comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
+endif
+
+cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
+
+ifeq ($(XSLTPROC),)
+comments-install: 
+	if test -e postgis_comments.sql  -a \
+	        -e raster_comments.sql   -a \
+	        -e topology_comments.sql -a \
+	        -e sfcgal_comments.sql -a \
+	        -e tiger_geocoder_comments.sql; then \
+	  $(MAKE) -f Makefile.comments install; \
+	fi
+else
+comments-install: comments
+	$(MAKE) -f Makefile.comments install
+endif
+
+comments-uninstall:
+	$(MAKE) -f Makefile.comments uninstall
+
+man-install: man/shp2pgsql.1 man/pgsql2shp.1
+	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
+	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
+
+man-uninstall:
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+
+docs-install: html/postgis.html
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
+	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+
+docs-uninstall: 
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+
+install: comments-install
+
+uninstall: comments-uninstall
+
+ifeq ($(XSLTPROC),)
+garden: requirements_not_met_xsltproc
+else
+garden:	xsl/postgis_gardentest.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis-out.xml
+endif
+
+
+
+ifeq ($(XMLLINT),)
+check: requirements_not_met_xmllint
+else
+check: $(XML_INPUTS)
+	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
+endif
+
+
+requirements_not_met_xsltproc:
+	@echo
+	@echo "configure was unable to find 'xsltproc' which is required"
+	@echo "to build the documentation."
+	@echo "Install xsltproc and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.net/documentation"
+	@echo
+
+requirements_not_met_xmllint:
+	@echo
+	@echo "configure was unable to find 'xmllint' which is required"
+	@echo "to test the documentation."
+	@echo "Install xmllint and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.net/documentation"
+	@echo
+
+requirements_not_met_xslbase:
+	@echo
+	@echo "configure was unable to find the Docbook XSL stylesheet directory"
+	@echo "which is required to build the documentation."
+	@echo "Install the Docbook XSL stylesheets and/or re-run configure "
+	@echo "with the --with-xsldir option."
+	@echo "Alternatively refer to online manual:"
+	@echo
+	@echo "  http://postgis.net/documentation"
+	@echo
+
+requirements_not_met_imagemagick:
+	@echo 
+	@echo "configure was unable to find the ImageMagick's 'convert' utility program."
+	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.net/documentation"
+	@echo 
+	

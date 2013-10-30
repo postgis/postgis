@@ -1,4 +1,4 @@
---$Id$
+--$Id: geocode.sql 9324 2012-02-27 22:08:12Z pramsey $
 CREATE OR REPLACE FUNCTION geocode(
     input VARCHAR, max_results integer DEFAULT 10,
     restrict_geom geometry DEFAULT NULL,

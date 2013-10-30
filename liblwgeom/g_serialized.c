@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: g_serialized.c 10667 2012-11-13 22:48:31Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  *

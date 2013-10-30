@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_geodetic.c 11535 2013-06-07 17:39:43Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

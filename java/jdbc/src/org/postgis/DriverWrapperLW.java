@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id$
+ * $Id: DriverWrapperLW.java 9324 2012-02-27 22:08:12Z pramsey $
  */
 
 package org.postgis;
@@ -49,7 +49,7 @@ import java.util.logging.Level;
 public class DriverWrapperLW extends DriverWrapper {
 
     public static final String POSTGIS_LWPROTOCOL = "jdbc:postgresql_lwgis:";
-    public static final String REVISIONLW = "$Revision$";
+    public static final String REVISIONLW = "$Revision: 9324 $";
 
     /**
      * Default constructor.

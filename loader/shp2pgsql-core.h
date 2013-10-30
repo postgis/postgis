@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: shp2pgsql-core.h 9548 2012-03-26 16:23:58Z mcayland $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -29,7 +29,7 @@
 
 #include "../liblwgeom/stringbuffer.h"
 
-#define S2P_RCSID "$Id$"
+#define S2P_RCSID "$Id: shp2pgsql-core.h 9548 2012-03-26 16:23:58Z mcayland $"
 
 
 /* Number of digits of precision in WKT produced. */

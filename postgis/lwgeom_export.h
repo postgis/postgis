@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwgeom_export.h 9324 2012-02-27 22:08:12Z pramsey $
  *
  * PostGIS - Export functions for PostgreSQL/PostGIS
  * Copyright 2009 Olivier Courtin <olivier.courtin@oslandia.com>

@@ -1,0 +1,117 @@
+#############################################################################
+# $Id: Makefile.in 11523 2013-06-04 19:18:17Z dustymugs $
+#
+# Copyright (c) 2009-2011 Sandro Santilli <strk@keybit.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+
+POSTGIS_PGSQL_VERSION=91
+
+MODULE_big=rtpostgis-2.1
+MODULEDIR=contrib/postgis-2.1
+
+# Files to be copied to the contrib/ directory
+DATA_built=rtpostgis.sql rtpostgis_upgrade_20_21.sql rtpostgis_upgrade_21_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA=
+
+# SQL preprocessor
+SQLPP = /usr/bin/cpp -traditional-cpp -P
+
+# SQL objects (files requiring pre-processing)
+SQL_OBJS=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_legacy.sql
+
+# Objects to build using PGXS
+OBJS=rt_pg.o
+
+# Libraries to link into the module (proj, geos)
+#
+# Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
+# -L... -l options to prevent issues with some platforms trying to link
+# to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
+# older version of PostGIS, rather than with the static liblwgeom.a 
+# supplied with newer versions of PostGIS
+#
+LIBLWGEOM_LDFLAGS=../../liblwgeom/.libs/liblwgeom.a
+LIBLWGEOM_CFLAGS="-I../../liblwgeom"
+LIBPGCOMMON_CFLAGS="-I../../libpgcommon"
+LIBPGCOMMON_LDFLAGS=../../libpgcommon/libpgcommon.a
+LIBGDAL_CFLAGS=-I/usr/include/gdal
+LIBGDAL_LDFLAGS=-L/usr/lib -lgdal
+LIBPROJ_CFLAGS=
+
+PG_CPPFLAGS+= -I/usr/include  -I/usr/include/libxml2 -I/usr/local/include -DHAVE_SFCGAL  $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
+SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS)  -L/usr/lib  -lgeos_c -lproj  -ljson-c -lxml2 -L/usr/local/lib -lSFCGAL 
+
+# Extra files to remove during 'make clean'
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql
+
+# PGXS information
+PG_CONFIG = /usr/bin/pg_config 
+PGXS := /usr/lib/postgresql/9.1/lib/pgxs/src/makefiles/pgxs.mk
+include $(PGXS)
+
+# Set PERL _after_ the include of PGXS
+PERL=/usr/bin/perl
+
+# This is to workaround a bug in PGXS 8.4 win32 link line,
+# see http://trac.osgeo.org/postgis/ticket/1158#comment:57
+SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = 0
+ifeq ($(PGXSOVERRIDE),1)
+	include Makefile.pgxs
+endif
+
+# If REGRESS=1 passed as a parameter, change the default install paths
+# so that no prefix is included. This allows us to relocate to a temporary
+# directory for regression testing.
+ifeq ($(REGRESS),1)
+        bindir=/bin
+        pkglibdir=/lib
+        datadir=/share
+        datamoduledir=contrib/postgis
+endif
+
+# Borrow the $libdir substitution from PGXS but customise by running the preprocessor
+# and adding the version number
+%.sql: %.sql.in
+	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-2.1'g" > $@
+
+
+# Objects dependencies
+$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
+
+# Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
+#$(SQL_OBJS): %.in: %.in.c
+#	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' > $@
+
+# SQL objects deps here
+$(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
+
+#remove all create object types since these can't be done cleanly in an upgrade
+rtpostgis_upgrade.sql: rtpostgis.sql
+	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
+
+rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+	cat $^ > $@
+
+# same as 20_21 until 2.1.0 is released
+rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+	cat $^ > $@
+
+uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
+	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+
+distclean: clean
+	rm -f Makefile

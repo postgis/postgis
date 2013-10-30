@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwhomogenize.c 10896 2012-12-21 10:53:12Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

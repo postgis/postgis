@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #
-# $Id$
+# $Id: raster2pgsql.py 9324 2012-02-27 22:08:12Z pramsey $
 #
 # This is a simple utility used to dump GDAL dataset into HEX WKB stream.
 # It's considered as a prototype of raster2pgsql tool planned to develop
@@ -16,19 +16,19 @@
 # Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (C) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 # 
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+# 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+# 
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ################################################################################
 #
 from osgeo import gdal
@@ -79,7 +79,7 @@ def is_nan(x):
 def parse_command_line():
     """Collects, parses and validates command line arguments."""
 
-    prs = OptionParser(version="%prog $Revision$")
+    prs = OptionParser(version="%prog $Revision: 9324 $")
 
     # Mandatory parameters
     grp0 = OptionGroup(prs, "Source and destination",

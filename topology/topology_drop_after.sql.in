@@ -1,4 +1,4 @@
--- $Id$
+-- $Id: topology_drop_after.sql.in 11180 2013-03-19 09:53:17Z strk $
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org
 --

@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_measures.c 11219 2013-03-28 22:11:09Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

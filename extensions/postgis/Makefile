@@ -1,0 +1,155 @@
+include ../upgradeable_versions.mk
+
+EXTENSION     = postgis
+EXTVERSION    = 2.1.0
+MINORVERSION  = 2.1
+GREP = /bin/grep
+
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(GREP) "[a-zA-Z]" | \
+                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
+PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
+
+PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(GREP) "[a-zA-Z]" | \
+                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
+
+DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+
+#DOCS         = $(wildcard ../../doc/html/*.html)
+PG_CONFIG    = /usr/bin/pg_config
+
+PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo no || echo yes)
+SQL_BITS     = $(wildcard sql_bits/*.sql)
+EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
+
+
+ifeq ($(PG91),yes)
+sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
+	mkdir -p sql
+	cat $^ > $@
+	
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
+	mkdir -p sql
+	cp $< $@
+
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
+	mkdir -p sql
+	cp $< $@
+	
+#this is a cludge to allow upgrading from same SVN to same SVN
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
+
+#strip BEGIN/COMMIT since these are not allowed in extensions
+sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+
+#strip BEGIN/COMMIT since these are not allowed in extensions
+sql_bits/postgis.sql: ../../postgis/postgis.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+
+../../doc/postgis_comments.sql:
+	$(MAKE) -C ../../doc comments
+
+sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
+	cp $< $@
+
+#strip BEGIN/COMMIT since these are not allowed in extensions
+sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+
+# we need to also drop this temporary function from the extension
+# for casts that are being dropped we need to drop them 
+# from extension only if they are in the existension so we use our postgis_extension_drop..
+# so that it will silently fail if cast is not in extension
+sql_bits/rtpostgis_upgrade_20_21.sql: ../../raster/rt_pg/rtpostgis_upgrade_20_21.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
+		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
+		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
+	$< > $@
+
+#don't drop casts just yet since we don't have provision to remove from extension yet
+#need to also drop temporary functions from extenions since it gets auto-added
+sql_bits/postgis_upgrade_20_21.sql: ../../postgis/postgis_upgrade_20_21.sql 
+		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
+		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
+	 	 $< > $@
+
+
+../../doc/raster_comments.sql:
+	$(MAKE) -C ../../doc comments
+
+sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
+	cp $< $@
+
+#postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
+#TODO: come up with a better name
+#TODO: what about postgis_drop_after.sql ? where does it fit ??
+sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_21.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+
+# sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
+# 	sed -e 's/^[\t]*//' \
+# 		-e :a -e '$!N; s/,\n/,/; ta' \
+# 	$< > $@
+#remove leading white space and tabs
+#remove line break from a line if it ends in ,
+
+sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
+		sed \
+		-e 's/^[\t]*//' \
+		$< > $@
+
+## we are going to hard code for now using sql script to generate unpackage script
+# sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
+# 		sed \
+# 		-e 's/^[\t]*//' \
+# 		-e '$!N; s/(\n/(/g' \
+# 		-e '/^CREATE \(OR REPLACE FUNCTION\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
+# 		-e 's/OR REPLACE//g' \
+# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+# 		-e 's/DEFAULT [^()]\+//g' \
+# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
+# 		-e 's/(;/;/' \
+# 		-e 's/\\(;/;/' \
+# 		-e 's/;;/;/g' $< > $@
+
+# sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
+# 	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
+# 		-e 's/OR REPLACE//g' \
+# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
+# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
+# 		-e 's/(;/;/' \
+# 		-e 's/\\(;/;/' \
+# 		-e 's/;;/;/g' $< > $@
+
+
+sql/postgis--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
+
+sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
+  	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+	done
+
+DATA = $(wildcard sql/*--*.sql)
+EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
+endif
+
+distclean: clean
+	rm -f Makefile
+
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)

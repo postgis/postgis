@@ -2,7 +2,7 @@
 <sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
 	
-		<refentry id="ST_Line_Interpolate_Point">
+	<refentry id="ST_Line_Interpolate_Point">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
 

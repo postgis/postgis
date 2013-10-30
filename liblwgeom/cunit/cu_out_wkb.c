@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_out_wkb.c 10630 2012-11-02 21:14:44Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

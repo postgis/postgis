@@ -1,0 +1,58 @@
+#############################################################################
+# $Id: Makefile 3940 2009-03-30 09:30:43Z mloskot $
+#
+# Master makefile used to build WKT Raster
+#
+# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+#############################################################################
+
+.NOTPARALLEL:
+
+all: corelib pglib rtloader rtpostgis.sql 
+
+corelib:
+	$(MAKE) -C rt_core
+
+pglib:
+	$(MAKE) -C rt_pg
+
+rtloader:
+	$(MAKE) -C loader
+
+rtpostgis.sql:
+	$(MAKE) -C rt_pg rtpostgis.sql
+
+install: all
+	$(MAKE) -C rt_pg install
+	$(MAKE) -C loader install
+	$(MAKE) -C scripts install
+
+uninstall:
+	$(MAKE) -C rt_pg uninstall
+	$(MAKE) -C loader uninstall
+	$(MAKE) -C scripts uninstall
+
+clean:
+	$(MAKE) -C rt_core $@
+	$(MAKE) -C rt_pg $@
+	$(MAKE) -C loader $@
+	$(MAKE) -C test $@
+	$(MAKE) -C scripts $@
+
+distclean: clean
+	$(MAKE) -C rt_core $@
+	$(MAKE) -C rt_pg $@
+	$(MAKE) -C loader $@
+	$(MAKE) -C test $@
+	$(MAKE) -C scripts $@
+	rm -f raster_config.h Makefile
+
+core-check:
+	$(MAKE) -C test $@
+
+check:
+	$(MAKE) -C test $@

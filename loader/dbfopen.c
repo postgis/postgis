@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id$
+ * $Id: dbfopen.c 9324 2012-02-27 22:08:12Z pramsey $
  *
  * Project:  Shapelib
  * Purpose:  Implementation of .dbf access API documented in dbf_api.html.
@@ -163,7 +163,7 @@
 #include <ctype.h>
 #include <string.h>
 
-SHP_CVSID("$Id$")
+SHP_CVSID("$Id: dbfopen.c 9324 2012-02-27 22:08:12Z pramsey $")
 
 #ifndef FALSE
 #  define FALSE		0
@@ -505,7 +505,7 @@ DBFOpenLL( const char * pszFilename, const char * pszAccess, SAHooks *psHooks )
         }
 		psDBF->sHooks.FClose( pfCPG );
     }
-    if( (psDBF->pszCodePage == NULL) && (psDBF->iLanguageDriver != 0) )
+    if( psDBF->pszCodePage == NULL && pabyBuf[29] != 0 )
     {
         sprintf( (char *) pabyBuf, "LDID/%d", psDBF->iLanguageDriver );
         psDBF->pszCodePage = (char *) malloc(strlen((char*)pabyBuf) + 1);

@@ -1,4 +1,4 @@
---$Id$
+--$Id: rate_attributes.sql 9324 2012-02-27 22:08:12Z pramsey $
 -- rate_attributes(dirpA, dirpB, streetNameA, streetNameB, streetTypeA,
 -- streetTypeB, dirsA, dirsB, locationA, locationB)
 -- Rates the street based on the given attributes.  The locations must be
@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetN
     streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR, prequalabr VARCHAR) RETURNS INTEGER
 AS $_$
 DECLARE
---$Id$
+--$Id: rate_attributes.sql 9324 2012-02-27 22:08:12Z pramsey $
   result INTEGER := 0;
   locationWeight INTEGER := 14;
   var_verbose BOOLEAN := FALSE;

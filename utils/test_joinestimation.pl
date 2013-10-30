@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# $Id$
+# $Id: test_joinestimation.pl 9324 2012-02-27 22:08:12Z pramsey $
 # 
 # TODO:
 #

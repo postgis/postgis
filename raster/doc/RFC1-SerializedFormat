@@ -1,8 +1,8 @@
 RFC1: serialized format (storage) for RASTER type
 ------------------------------------------------------
-$Author$
-$Date$
-$Revision$
+$Author: jorgearevalo $
+$Date: 2011-01-24 07:06:02 -0800 (Mon, 24 Jan 2011) $
+$Revision: 6716 $
 ------------------------------------------------------
 
 The goals of the serialized version for RASTER type are:

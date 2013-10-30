@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_homogenize.c 10783 2012-12-03 14:10:18Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

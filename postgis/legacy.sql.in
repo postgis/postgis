@@ -1,4 +1,4 @@
--- $Id$
+-- $Id: legacy.sql.in 11175 2013-03-18 17:20:18Z strk $
 -- Legacy functions without chip functions --
 -- This is the full list including the legacy_minimal.sql (minimal)
 -- so no need to install both legacy and the minimal 

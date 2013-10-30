@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id$
+ * $Id: DriverWrapperAutoprobe.java 9324 2012-02-27 22:08:12Z pramsey $
  */
 
 package org.postgis;
@@ -54,7 +54,7 @@ import java.util.logging.Level;
 public class DriverWrapperAutoprobe extends DriverWrapper {
 
     public static final String POSTGIS_AUTOPROTOCOL = "jdbc:postgresql_autogis:";
-    public static final String REVISIONAUTO = "$Revision$";
+    public static final String REVISIONAUTO = "$Revision: 9324 $";
 
     /**
      * Default constructor.

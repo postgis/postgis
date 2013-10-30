@@ -351,10 +351,6 @@ SELECT 'double_30', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,-1.2
 -- ERROR: Junk 
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,$0%@#$^%#</kml:coordinates></kml:Point>'));
 
--- ERROR: mixed coordinate dimension
-SELECT 'mixed_dims_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2 1,2,3</kml:coordinates></kml:Point>'));
-SELECT 'mixed_dims_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point><kml:coordinates>1,2,3 1,2</kml:coordinates></kml:Point>'));
-
 
 
 

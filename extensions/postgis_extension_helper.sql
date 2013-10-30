@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id$
+-- $Id: postgis_extension_helper.sql 10934 2012-12-26 13:44:51Z robe $
 ----
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org

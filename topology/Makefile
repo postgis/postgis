@@ -1,0 +1,97 @@
+# **********************************************************************
+# * $Id$
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * 
+# * Copyright (C) 2010-2011 Sandro Santilli <strk@keybit.net>
+# * Copyright (C) 2008 Mark Cave-Ayland
+# * Copyright (C) 2005 Refractions Research Inc.
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+#
+# PostGIS PGXS build system
+#
+
+POSTGIS_PGSQL_VERSION=91
+
+# NOTE: we can't use MODULE_big or PGXS insists in building a library...
+PGIS_MODULE_big=postgis-2.1
+MODULEDIR=contrib/$(PGIS_MODULE_big)
+
+PGIS_MAJ_MIN=21
+
+# Files to be copied to the contrib/ directory
+DATA_built=topology.sql topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql uninstall_topology.sql
+
+# SQL preprocessor
+SQLPP = /usr/bin/cpp -traditional-cpp -P
+
+# SQL objects (files requiring pre-processing)
+SQL_OBJS = \
+  topology.sql \
+  topology_upgrade.sql \
+  topology_drop_before.sql \
+  topology_drop_after.sql
+
+# Extra files to remove during 'make clean'
+EXTRA_CLEAN=$(SQL_OBJS)
+
+# PGXS information
+PG_CONFIG = /usr/bin/pg_config 
+PGXS := /usr/lib/postgresql/9.1/lib/pgxs/src/makefiles/pgxs.mk
+include $(PGXS)
+
+# Set PERL _after_ the include of PGXS
+PERL=/usr/bin/perl
+
+# PGXS override feature. The ability to allow PostGIS to install itself
+# in a versioned directory is only available in PostgreSQL >= 8.5. To
+# do this by default on older PostgreSQL versions, we need to override
+# the existing PGXS targets.
+#
+# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
+# section and its associated Makefile.pgxs should be removed.
+PGXSOVERRIDE = 0
+ifeq ($(PGXSOVERRIDE),1)
+	include ../postgis/Makefile.pgxs
+endif
+
+# If REGRESS=1 passed as a parameter, change the default install paths
+# so that no prefix is included. This allows us to relocate to a temporary
+# directory for regression testing.
+ifeq ($(REGRESS),1)
+        bindir=/bin
+        pkglibdir=/lib
+        datadir=/share
+        datamoduledir=contrib/postgis
+endif
+
+
+
+# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor 
+%.sql: %.sql.in
+	$(SQLPP) $< | grep -v '^#' > $@
+
+#Generate upgrade script by stripping things that can't be reinstalled
+#e.g. don't bother with tables, types, triggers, and domains
+topology_upgrade.sql:  topology.sql
+	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
+
+topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
+	cat $^ > $@
+
+topology.sql: sql/sqlmm.sql.in sql/populate.sql.in sql/polygonize.sql.in sql/export/gml.sql.in sql/export/TopoJSON.sql.in sql/query/getnodebypoint.sql.in sql/query/getedgebypoint.sql.in sql/query/getfacebypoint.sql.in sql/query/GetRingEdges.sql.in sql/query/GetNodeEdges.sql.in sql/manage/TopologySummary.sql.in sql/manage/CopyTopology.sql.in sql/manage/ManageHelper.sql.in sql/topoelement/topoelement_agg.sql.in sql/topogeometry/type.sql.in sql/topogeometry/totopogeom.sql.in sql/topogeometry/cleartopogeom.sql.in sql/topogeometry/simplify.sql.in sql/predicates.sql.in ../postgis/sqldefines.h ../postgis_svn_revision.h
+
+uninstall_topology.sql: topology.sql ../utils/create_undef.pl 
+	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+
+check: topology.sql
+	$(MAKE) -C test $@
+
+distclean: clean
+	rm -f Makefile

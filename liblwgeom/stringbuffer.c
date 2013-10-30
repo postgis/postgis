@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: stringbuffer.c 11218 2013-03-28 13:32:44Z robe $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2002 Thamer Alharbash

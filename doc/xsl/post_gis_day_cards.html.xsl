@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id$
+     $Id: post_gis_day_cards.html.xsl 10693 2012-11-16 12:35:23Z robe $
      ********************************************************************
 	 Copyright 2011, Regina Obe
      License: BSD

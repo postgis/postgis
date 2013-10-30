@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: geography_btree.c 9324 2012-02-27 22:08:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>

@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_geodetic_data.h 10547 2012-10-24 21:14:47Z dustymugs $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

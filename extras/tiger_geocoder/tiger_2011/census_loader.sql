@@ -1,4 +1,4 @@
---$Id$
+--$Id: census_loader.sql 11760 2013-08-10 06:25:55Z robe $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org
@@ -43,7 +43,7 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
 	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 	);
-	COMMENT ON TABLE tiger.tract IS 'census tracts - $Id$';
+	COMMENT ON TABLE tiger.tract IS 'census tracts - $Id: census_loader.sql 11760 2013-08-10 06:25:55Z robe $';
 	
 	DROP TABLE IF EXISTS tiger.tabblock;
 	CREATE TABLE tabblock
@@ -68,7 +68,7 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  CONSTRAINT enforce_geotype_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
 	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 	);
-	COMMENT ON TABLE tiger.tabblock IS 'census blocks - $Id$';
+	COMMENT ON TABLE tiger.tabblock IS 'census blocks - $Id: census_loader.sql 11760 2013-08-10 06:25:55Z robe $';
 
 	DROP TABLE IF EXISTS tiger.bg;
 	CREATE TABLE bg
@@ -92,7 +92,7 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  CONSTRAINT enforce_srid_geom CHECK (st_srid(the_geom) = 4269)
 	);
 	COMMENT ON TABLE tiger.bg IS 'block groups';
-	RETURN 'Done creating census tract base tables - $Id$';
+	RETURN 'Done creating census tract base tables - $Id: census_loader.sql 11760 2013-08-10 06:25:55Z robe $';
 END IF;
 
 IF EXISTS(SELECT * FROM information_schema.columns WHERE table_schema = 'tiger' AND column_name = 'tabblock_id' AND table_name = 'tabblock' AND character_maximum_length < 16)  THEN -- size of name and tabblock_id fields need to be increased

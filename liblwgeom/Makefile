@@ -1,0 +1,172 @@
+# **********************************************************************
+# * $Id: Makefile.in 
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+CC = gcc
+CFLAGS = -g -O2  -fPIC -DPIC  -Wall -Wmissing-prototypes -I/usr/include  
+LDFLAGS =  -L/usr/lib -lgeos_c  -lproj  -ljson-c
+NUMERICFLAGS =  -ffloat-store
+top_builddir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
+libdir = ${exec_prefix}/lib
+includedir = ${prefix}/include
+SHELL = /bin/bash
+INSTALL = $(SHELL) ../install-sh
+LIBTOOL = $(SHELL) $(top_builddir)/libtool
+
+SOVER = 2.1.0
+
+
+YACC=yacc
+LEX=:
+
+%c: %l
+	@echo "WARNING: Lexer not generated. Run 'make parse' to manually build lexer/parser."
+
+# Standalone LWGEOM objects
+SA_OBJS = \
+	stringbuffer.o \
+	measures.o \
+	measures3d.o \
+	box2d.o \
+	ptarray.o \
+	lwgeom_api.o \
+	lwgeom.o \
+	lwpoint.o \
+	lwline.o \
+	lwpoly.o \
+	lwtriangle.o \
+	lwmpoint.o \
+	lwmline.o \
+	lwmpoly.o \
+	lwcollection.o \
+	lwcircstring.o \
+	lwcompound.o \
+	lwcurvepoly.o \
+	lwmcurve.o \
+	lwmsurface.o \
+	lwpsurface.o \
+	lwtin.o \
+	lwout_wkb.o \
+	lwin_geojson.o \
+	lwin_wkb.o \
+	lwout_wkt.o \
+	lwin_wkt_parse.o \
+	lwin_wkt_lex.o \
+	lwin_wkt.o \
+	lwutil.o \
+	lwhomogenize.o \
+	lwalgorithm.o \
+	lwsegmentize.o \
+	lwlinearreferencing.o \
+	lwprint.o \
+	vsprintf.o \
+	g_box.o \
+	g_serialized.o \
+	g_util.o \
+	lwgeodetic.o \
+	lwgeodetic_tree.o \
+	lwtree.o \
+	lwout_gml.o \
+	lwout_kml.o \
+	lwout_geojson.o \
+	lwout_svg.o \
+	lwout_x3d.o \
+	lwgeom_debug.o \
+	lwgeom_geos.o \
+	lwgeom_geos_clean.o \
+	lwgeom_geos_node.o \
+	lwgeom_geos_split.o \
+	lwgeom_transform.o
+
+NM_OBJS = \
+	lwspheroid.o 
+
+ifeq (sfcgal,sfcgal)
+CFLAGS += -I/usr/local/include -DHAVE_SFCGAL
+LDFLAGS += -L/usr/local/lib -lSFCGAL
+SA_OBJS += lwgeom_sfcgal.o
+endif
+
+LT_SA_OBJS = $(SA_OBJS:.o=.lo)
+LT_NM_OBJS = $(NM_OBJS:.o=.lo)
+LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
+
+SA_HEADERS = \
+	liblwgeom.h \
+	liblwgeom_internal.h \
+	lwgeom_log.h \
+	lwgeom_geos.h
+
+all: liblwgeom.la
+
+install: install-liblwgeom
+
+uninstall: uninstall-liblwgeom
+
+install-liblwgeom: liblwgeom.la
+	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la "$(DESTDIR)$(libdir)/liblwgeom.la"
+	$(INSTALL) liblwgeom.h "$(DESTDIR)$(includedir)/liblwgeom.h"
+
+uninstall-liblwgeom: 
+	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/liblwgeom.la"
+
+# Make all objects depend upon postgis_config.h and postgis_svn_revision.h
+$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h
+
+../postgis_svn_revision.h:
+	$(MAKE) -C .. postgis_svn_revision.h
+
+#liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
+#ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
+
+liblwgeom.la: $(LT_OBJS) $(SA_HEADERS)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) -release $(SOVER) $(LDFLAGS) -o $@
+
+maintainer-clean: clean
+	rm -f lwin_wkt_lex.c
+	rm -f lwin_wkt_parse.h
+	rm -f lwin_wkt_parse.c
+
+clean: 
+	$(MAKE) -C cunit clean
+	rm -f $(LT_OBJS) $(SA_OBJS) $(NM_OBJS)
+	rm -f liblwgeom.la
+	rm -rf .libs
+
+distclean: clean
+	$(MAKE) -C cunit distclean
+	rm -f liblwgeom.h Makefile
+	rm -f Makefile
+
+check: liblwgeom.la
+	$(MAKE) -C cunit check
+
+# Command to build each of the .lo files
+$(LT_SA_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
+
+$(LT_NM_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+
+# Manually generate WKT parser from Flex/Bison inputs
+# Bison 2.5, Flex 2.5.35
+parser:
+	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
+	$(LEX) -i lwin_wkt_lex.l
+#	$(YACC) --debug --verbose -o'$@' -d $<
+#	$(YACC) -o'$@' -d $^
+#	$(LEX) -i $<
+
+
+liblwgeom.h: liblwgeom.h.in
+	cd .. && ./config.status

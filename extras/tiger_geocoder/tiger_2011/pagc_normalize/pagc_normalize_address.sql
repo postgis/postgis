@@ -1,4 +1,4 @@
---$Id$-
+--$Id: pagc_normalize_address.sql 11332 2013-05-01 05:05:16Z robe $-
 -- pagc_normalize_address(addressString)
 -- This takes an address string and parses it into address (internal/street)
 -- street name, type, direction prefix and suffix, location, state and
@@ -17,7 +17,7 @@ DECLARE
   rawInput VARCHAR;
 
 BEGIN
---$Id$-
+--$Id: pagc_normalize_address.sql 11332 2013-05-01 05:05:16Z robe $-
   result.parsed := FALSE;
 
   rawInput := trim(in_rawinput);

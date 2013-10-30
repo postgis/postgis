@@ -1,4 +1,4 @@
--- $Id$
+-- $Id: legacy_minimal.sql.in 11175 2013-03-18 17:20:18Z strk $
 -- Bare minimum Legacy functions --
 -- This file that contains what we have determined are
 -- the most common functions used by older apps

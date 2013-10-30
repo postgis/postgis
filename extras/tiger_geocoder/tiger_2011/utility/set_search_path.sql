@@ -1,4 +1,4 @@
---$Id$
+--$Id: set_search_path.sql 9690 2012-04-29 01:06:06Z robe $
  /*** 
  * 
  * Copyright (C) 2012 Regina Obe and Leo Hsu (Paragon Corporation)

@@ -1,4 +1,4 @@
---$Id$
+--$Id: interpolate_from_address.sql 11334 2013-05-01 13:48:41Z robe $
 -- interpolate_from_address(local_address, from_address_l, to_address_l, from_address_r, to_address_r, local_road)
 -- This function returns a point along the given geometry (must be linestring)
 -- corresponding to the given address.  If the given address is not within
@@ -52,7 +52,7 @@ BEGIN
         part := 0.5;
     END IF;
 
-    center_pt = ST_LineInterpolatePoint(road, part);
+    center_pt = ST_Line_Interpolate_Point(road, part);
     IF in_side > '' AND in_offset_m > 0 THEN
     /** Compute point the point to the in_side of the geometry **/
     /**Take into consideration non-straight so we consider azimuth 
@@ -66,7 +66,7 @@ BEGIN
     			This will be the start of our azimuth calc **/
     		SELECT i INTO npos
     			FROM generate_series(1,ST_NPoints(road)) As i 
-    					WHERE part > ST_LineLocatePoint(road,ST_PointN(road,i)) 
+    					WHERE part > ST_Line_Locate_Point(road,ST_PointN(road,i)) 
     					ORDER BY i DESC;
     		IF npos < ST_NPoints(road) THEN				
     			az := ST_Azimuth (ST_PointN(road,npos), ST_PointN(road, npos + 1));

@@ -1,4 +1,4 @@
-$Id$
+$Id: README 9324 2012-02-27 22:08:12Z pramsey $
 This folder will contain functions for converting tiger data to 
 PostGIS topology format. It assumes tiger data has already been loaded using
 the tiger loader.

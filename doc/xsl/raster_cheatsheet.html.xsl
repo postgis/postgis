@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id$
+     $Id: raster_cheatsheet.html.xsl 11089 2013-02-09 05:16:39Z robe $
      ********************************************************************
 	 Copyright 2011, Regina Obe
      License: BSD

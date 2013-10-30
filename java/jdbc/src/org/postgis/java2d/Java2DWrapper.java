@@ -20,7 +20,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id$
+ * $Id: Java2DWrapper.java 10206 2012-08-28 04:08:23Z robe $
  */
 
 package org.postgis.java2d;
@@ -53,7 +53,7 @@ public class Java2DWrapper extends Driver {
 
     private static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
     public static final String POSTGIS_PROTOCOL = "jdbc:postgis_j2d:";
-    public static final String REVISION = "$Revision$";
+    public static final String REVISION = "$Revision: 10206 $";
 
     public Java2DWrapper() {
         super();

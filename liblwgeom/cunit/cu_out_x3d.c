@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_out_x3d.c 9324 2012-02-27 22:08:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://www.postgis.org

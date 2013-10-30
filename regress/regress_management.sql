@@ -1,4 +1,4 @@
--- $Id$
+-- $Id: regress_management.sql 10326 2012-09-25 02:45:28Z robe $
 -- Test the populate_geometry_columns,DropGeometryTable etc --
 \set VERBOSITY terse
 SET client_min_messages TO warning;

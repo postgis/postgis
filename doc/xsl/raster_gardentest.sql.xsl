@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://www.postgis.org/pgis">
 <!-- ********************************************************************
- * $Id$
+ * $Id: raster_gardentest.sql.xsl 11385 2013-05-09 06:34:22Z robe $
  ********************************************************************
 	 Copyright 2010, Regina Obe
 	 License: BSD

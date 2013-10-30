@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwgeom_functions_basic.c 11755 2013-08-09 07:00:25Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -511,29 +511,6 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_as_multi(lwgeom);
-
-	result = geometry_serialize(ogeom);
-
-	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_POINTER(result);
-}
-
-/** transform input geometry to a curved type */
-PG_FUNCTION_INFO_V1(LWGEOM_force_curve);
-Datum LWGEOM_force_curve(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *result;
-	LWGEOM *lwgeom;
-	LWGEOM *ogeom;
-
-	POSTGIS_DEBUG(2, "LWGEOM_force_curve called");
-
-  /* TODO: early out if input is already a curve */
-
-	lwgeom = lwgeom_from_gserialized(geom);
-	ogeom = lwgeom_as_curve(lwgeom);
 
 	result = geometry_serialize(ogeom);
 

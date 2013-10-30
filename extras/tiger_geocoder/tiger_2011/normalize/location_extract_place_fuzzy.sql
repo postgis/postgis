@@ -1,4 +1,4 @@
---$Id$-
+--$Id: location_extract_place_fuzzy.sql 9324 2012-02-27 22:08:12Z pramsey $-
 -- location_extract_place_fuzzy(string, stateAbbrev)
 -- This function checks the place_lookup table to find a potential match to
 -- the location described at the end of the given string.  If an exact match
@@ -19,7 +19,7 @@ DECLARE
   test BOOLEAN;
   lstate VARCHAR;
 BEGIN
---$Id$-
+--$Id: location_extract_place_fuzzy.sql 9324 2012-02-27 22:08:12Z pramsey $-
   ws := E'[ ,.\n\f\t]';
 
   tempString := substring(fullStreet, '(?i)' || ws

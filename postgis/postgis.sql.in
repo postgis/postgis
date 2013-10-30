@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- $Id$
+-- $Id: postgis.sql.in 11409 2013-05-10 17:17:18Z colivier $
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.net
+-- http://postgis.refractions.net
 -- Copyright 2001-2003 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -27,26 +27,14 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
--- Let the user know about a deprecated signature and its new name, if any
+-------------------------------------------------------------------
+--  SPHEROID TYPE
+-------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
 $$
-DECLARE
-  curver_text text;
 BEGIN
-  --
-  -- Raises a NOTICE if it was deprecated in this version,
-  -- a WARNING if in a previous version (only up to minor version checked)
-  --
-    curver_text := POSTGIS_LIB_VERSION;
-    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
-       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
-         split_part(curver_text,'.',2) != split_part(version,'.',2) )
-    THEN
-      RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
-    ELSE
-      RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
-    END IF;
+    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
@@ -1289,12 +1277,6 @@ CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_ForceCurve(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_curve'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry)
 	RETURNS geometry
@@ -1360,19 +1342,7 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-		
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-	
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-	
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	RETURNS BYTEA
@@ -2590,9 +2560,9 @@ BEGIN
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
 	BEGIN
-		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
+		SELECT postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
-		WHEN undefined_function OR invalid_schema_name THEN
+		WHEN undefined_function THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
 	END;
@@ -3343,35 +3313,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
-
---Availability: 2.2.0
-
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-  
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
-  RETURNS bytea
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
-CREATE AGGREGATE st_astwkb_agg(geometry,int) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
-
-CREATE AGGREGATE st_astwkb_agg(geometry,int,int8) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (
@@ -4766,7 +4707,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND a.atttypid = t.oid 
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
-    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char" OR c.relkind = 'm'::"char" OR c.relkind = 'f'::"char")
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
     AND NOT pg_is_other_temp_schema(c.relnamespace)
     AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
     AND has_table_privilege( c.oid, 'SELECT'::text );

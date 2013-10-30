@@ -66,9 +66,6 @@ TESTS = \
 	loader/ReprojectPts \
 	loader/ReprojectPtsGeog \
 	loader/Latin1 \
-	loader/Latin1-implicit \
-  dumper/literalsrid \
-  dumper/realtable \
 	binary \
 	regress \
 	regress_index \
@@ -83,7 +80,6 @@ TESTS = \
 	summary \
 	affine \
 	empty \
-  forcecurve \
 	measures \
 	legacy \
 	long_xact \

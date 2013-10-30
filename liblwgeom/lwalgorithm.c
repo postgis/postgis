@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwalgorithm.c 11396 2013-05-10 07:06:46Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -132,9 +132,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	/* Co-linear! Return linear distance! */
 	if ( radius_A < 0 ) 
 	{
-        double dx = A1->x - A3->x;
-        double dy = A1->y - A3->y;
-		return sqrt(dx*dx + dy*dy);
+		return sqrt((A1->x-A3->x)*(A1->x-A3->x) + (A1->y-A3->y)*(A1->y-A3->y));
 	}
 	
 	/* Closed circle! Return the circumference! */

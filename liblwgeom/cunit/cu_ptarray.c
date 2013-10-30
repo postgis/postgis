@@ -458,7 +458,6 @@ static void test_ptarray_desegmentize()
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);		
-
 }
 
 static void test_ptarray_contains_point() 

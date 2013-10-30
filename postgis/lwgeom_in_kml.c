@@ -269,7 +269,6 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	xmlChar *kml_coord;
 	bool found;
 	POINTARRAY *dpa;
-	int seen_kml_dims = 0;
 	int kml_dims;
 	char *p, *q;
 	POINT4D pt;
@@ -329,11 +328,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
         while (*q && isspace(*q)) ++q;
         if ( isdigit(*q) || *q == '+' || *q == '-' || *q == '.' || ! *q ) {
           if ( kml_dims < 2 ) lwerror("invalid KML representation"); /* (not enough ordinates)"); */
-          else if ( kml_dims < 3 ) *hasz = false;
-          if ( ! seen_kml_dims ) seen_kml_dims = kml_dims;
-          else if ( seen_kml_dims != kml_dims ) {
-            lwerror("invalid KML representation: mixed coordinates dimension");
-          }
+          if ( kml_dims < 3 ) *hasz = false;
           ptarray_append_point(dpa, &pt, LW_FALSE);
           kml_dims = 0;
         }

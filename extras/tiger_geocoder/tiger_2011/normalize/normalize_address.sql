@@ -1,4 +1,4 @@
---$Id$-
+--$Id: normalize_address.sql 11246 2013-04-02 22:22:59Z robe $-
 -- normalize_address(addressString)
 -- This takes an address string and parses it into address (internal/street)
 -- street name, type, direction prefix and suffix, location, state and
@@ -76,7 +76,7 @@ DECLARE
   -- (we treat these differently since the road name often comes after the streetType)
   isHighway boolean := false; 
 BEGIN
---$Id$-
+--$Id: normalize_address.sql 11246 2013-04-02 22:22:59Z robe $-
   result.parsed := FALSE;
   IF use_pagc THEN
   	result := pagc_normalize_address(in_rawinput);

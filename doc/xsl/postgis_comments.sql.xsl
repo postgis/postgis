@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id$
+     $Id: postgis_comments.sql.xsl 11389 2013-05-09 19:38:17Z colivier $
      ********************************************************************
 	 Copyright 2008, Regina Obe
      License: BSD
@@ -18,7 +18,7 @@
         <xsl:template match="chapter">
 		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-		<xsl:for-each select="sect1[not(contains(@id,'Operator') or contains(@id,'sfcgal') or contains(@id,'GUC') )]/refentry">
+		<xsl:for-each select="sect1[not(contains(@id,'Operator') or contains(@id,'sfcgal'))]/refentry">
 		  <xsl:variable name='plaincomment'>
 		  	<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 		  </xsl:variable>

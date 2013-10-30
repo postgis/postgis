@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id$
+-- $Id: uninstall_geography.sql.in 11175 2013-03-18 17:20:18Z strk $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.org/

@@ -1,0 +1,6 @@
+# postgis tiger geocoder extension
+comment = 'PostGIS tiger geocoder and reverse geocoder'
+default_version = '2.1.0'
+relocatable = false
+schema = tiger
+requires = 'postgis,fuzzystrmatch'

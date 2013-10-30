@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: stringbuffer.h 9916 2012-06-15 22:51:57Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2002 Thamer Alharbash

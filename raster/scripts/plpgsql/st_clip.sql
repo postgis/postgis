@@ -1,6 +1,6 @@
 ﻿----------------------------------------------------------------------
 --
--- $Id$
+-- $Id: st_clip.sql 9324 2012-02-27 22:08:12Z pramsey $
 --
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --

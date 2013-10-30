@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwgeom_in_gml.c 10767 2012-11-29 22:33:21Z colivier $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

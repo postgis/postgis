@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: geography_inout.c 11384 2013-05-08 20:37:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>

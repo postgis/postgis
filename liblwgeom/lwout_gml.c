@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwout_gml.c 9772 2012-05-21 21:17:59Z colivier $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

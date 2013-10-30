@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id$
+# $Id: autogen.sh 9324 2012-02-27 22:08:12Z pramsey $
 #
 # PostGIS Bootstrapping Script
 #

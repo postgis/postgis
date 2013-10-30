@@ -227,16 +227,7 @@ while(<INPUT>)
 			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
 			last if /\);/;
 		}
-		if ($aggtype eq "unknown")
-		{
-		#For the new aggregate syntax where the parameters is defined like a common function
-			print "DROP AGGREGATE IF EXISTS $aggname;\n";
-		}
-		else
-		{
-		#For the old syntax when the parameter is defined through "basetype"
-			print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
-		}
+		print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
 		print $def;
 	}
 	
@@ -345,12 +336,7 @@ BEGIN
 	-- postgis_lib_version() and postgis_scripts_installed()
 	-- would both return actual PostGIS release number.
 	-- 
-	BEGIN
-		SELECT into old_scripts postgis_lib_version();
-	EXCEPTION WHEN OTHERS THEN
-		RAISE DEBUG ''Got %'', SQLERRM;
-		SELECT into old_scripts postgis_scripts_installed();
-	END;
+	SELECT into old_scripts postgis_lib_version();
 	SELECT into new_scripts ''NEWVERSION'';
 	SELECT into old_maj substring(old_scripts from 1 for 2);
 	SELECT into new_maj substring(new_scripts from 1 for 2);

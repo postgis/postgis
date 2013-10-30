@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id$
+ * $Id: DriverWrapper.java 10206 2012-08-28 04:08:23Z robe $
  */
 
 package org.postgis;
@@ -76,7 +76,7 @@ public class DriverWrapper extends Driver {
     
     public static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
     public static final String POSTGIS_PROTOCOL = "jdbc:postgresql_postGIS:";
-    public static final String REVISION = "$Revision$";
+    public static final String REVISION = "$Revision: 10206 $";
     protected static TypesAdder ta72 = null;
     protected static TypesAdder ta74 = null;
     protected static TypesAdder ta80 = null;

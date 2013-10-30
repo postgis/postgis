@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_tester.c 11389 2013-05-09 19:38:17Z colivier $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

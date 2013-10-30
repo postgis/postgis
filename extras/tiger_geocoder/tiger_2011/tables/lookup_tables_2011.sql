@@ -1,4 +1,4 @@
---$Id$
+--$Id: lookup_tables_2011.sql 10394 2012-10-10 22:30:55Z robe $
 --SET search_path TO tiger, public;
 SELECT tiger.SetSearchPathForInstall('tiger');
 -- Create direction lookup table

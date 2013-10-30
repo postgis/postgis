@@ -1,0 +1,104 @@
+include ../upgradeable_versions.mk
+
+EXTENSION    = postgis_topology
+EXTVERSION    = 2.1.0
+MINORVERSION  = 2.1
+PGIS_MAJ_MIN=21
+GREP=/bin/grep
+
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(GREP) "[a-zA-Z]" | \
+                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
+PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
+
+PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(GREP) "[a-zA-Z]" | \
+                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
+
+DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+
+PG_CONFIG    = /usr/bin/pg_config
+
+PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo no || echo yes)
+SQL_BITS     = $(wildcard sql_bits/*.sql)
+EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
+
+
+ifeq ($(PG91),yes)
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+
+sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
+	mkdir -p sql
+	cp $< $@
+	
+sql/$(EXTENSION).sql: sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
+	mkdir -p sql
+	cat $^ > $@
+	
+#this is a cludge to allow upgrading from same SVN to same SVN
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+	
+#strip BEGIN/COMMIT since these are not allowed in extensions
+#strip CREATE SCHEMA since we force extension 
+# to create schema by setting schema to topology in control
+sql_bits/topology.sql: ../../topology/topology.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
+	
+../../doc/topology_comments.sql:
+	$(MAKE) -C ../../doc comments
+	
+sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
+	cp $< $@
+	
+#grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
+#then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
+#then remove default values and extra junk
+# sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
+# 	sed -e '/^CREATE \(OR REPLACE\|TYPE\|TABLE\|VIEW\|CAST\)/!d;' \
+# 		-e 's/OR REPLACE//g' \
+# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
+# 		-e 's/\(BEFORE\|WITH FUNCTION\)\(.*\)/;/' \
+# 		-e 's/[ \t]+;/;/' \
+# 		-e 's/(;/;/' \
+# 		-e 's/\\(;/;/' \
+# 		-e 's/;;/;/g' $< > $@
+
+#hardcode for now using 
+#the extensions/make_unpackaged.sql script form an install
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/topology--unpackaged.sql.in
+	mkdir -p sql
+	cp $< $@
+
+#upgrade script should have everything but table, schema, type creation/alter
+#NOTE: we assume all object definitions end in ;
+#first expression deletes all non-removable objects defined on same line
+#second deletes all non-removable defined on multiple lines 
+#  the end of the body of object we assume ends in ;
+#aggregates are special 
+#they can be dropped but we need to remove
+#them from the extension first
+sql/topology_upgrade_minor.sql:  ../../topology/topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql
+	 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
+	
+sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
+  	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+	done
+
+DATA = $(wildcard sql/*--*.sql)
+EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
+endif
+
+distclean: clean
+	rm Makefile
+
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)

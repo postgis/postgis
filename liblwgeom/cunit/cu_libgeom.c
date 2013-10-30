@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: cu_libgeom.c 11738 2013-08-06 16:01:10Z robe $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -892,61 +892,6 @@ static void test_lwgeom_same(void)
 }
 
 /*
- * Test lwgeom_force_curve
- */
-static void test_lwgeom_as_curve(void)
-{
-	LWGEOM *geom;
-	LWGEOM *geom2;
-	char *in_ewkt, *out_ewkt;
-
-	geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
-	geom2 = lwgeom_as_curve(geom);
-	in_ewkt = "COMPOUNDCURVE((0 0,10 0))";
-	out_ewkt = lwgeom_to_ewkt(geom2);
-	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-	lwfree(out_ewkt);
-	lwgeom_free(geom);
-	lwgeom_free(geom2);
-
-	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 10 0))", LW_PARSER_CHECK_NONE);
-	geom2 = lwgeom_as_curve(geom);
-	in_ewkt = "MULTICURVE((0 0,10 0))";
-	out_ewkt = lwgeom_to_ewkt(geom2);
-	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-	lwfree(out_ewkt);
-	lwgeom_free(geom);
-	lwgeom_free(geom2);
-
-	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
-	geom2 = lwgeom_as_curve(geom);
-	in_ewkt = "CURVEPOLYGON((0 0,10 0,10 10,0 10,0 0))";
-	out_ewkt = lwgeom_to_ewkt(geom2);
-	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-	lwfree(out_ewkt);
-	lwgeom_free(geom);
-	lwgeom_free(geom2);
-
-	geom = lwgeom_from_wkt("MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))", LW_PARSER_CHECK_NONE);
-	geom2 = lwgeom_as_curve(geom);
-	in_ewkt = "MULTISURFACE(((0 0,10 0,10 10,0 10,0 0)))";
-	out_ewkt = lwgeom_to_ewkt(geom2);
-	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
-	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-	lwfree(out_ewkt);
-	lwgeom_free(geom);
-	lwgeom_free(geom2);
-
-}
-
-/*
 ** Used by test harness to register the tests in this file.
 */
 CU_TestInfo libgeom_tests[] =
@@ -969,7 +914,6 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
 	PG_TEST(test_lwgeom_same),
-	PG_TEST(test_lwgeom_as_curve),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};

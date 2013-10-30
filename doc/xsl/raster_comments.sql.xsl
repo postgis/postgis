@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id$
+     $Id: raster_comments.sql.xsl 9237 2012-02-20 13:16:05Z strk $
      ********************************************************************
 	 Copyright 2008, Regina Obe
      License: BSD
