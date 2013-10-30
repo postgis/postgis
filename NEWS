@@ -1,9 +1,10 @@
 PostGIS 2.1.1
 2013/MM/DD
 
- * Important / Breaking Changes *
+ * Important Changes *
 
-  - #2514, Change raster license from GPL v3+ to v2+
+  - #2514, Change raster license from GPL v3+ to v2+, allowing 
+           distribution of PostGIS Extension as GPLv2.
 
  * Bug Fixes *
 
