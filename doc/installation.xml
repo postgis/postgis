@@ -1193,7 +1193,7 @@ Run tests: 90</programlisting>
 	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
 	<sect2 id="install_tiger_geocoder_extension">
 		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>	
-		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
+		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0+, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
 		<orderedlist>
 			<listitem><para>First get binaries for PostGIS 2.1.0 or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
@@ -1238,8 +1238,12 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
 			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database.</para>
 			<para>The PAGC project and standardizer portion in particular, relies on PCRE which is usually already installed on most Nix systems, 
-but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> </para>
+but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. It also requires Perl with the <code>Regexp::Assemble</code> installed </para>
 			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+			<para>Installing Regex::Assemble</para>
+			<programlisting>cpan Regexp::Assemble</programlisting>
+			or if you are on Ubuntu / Debian you might need to do
+			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
 			<para>Compiling</para>
 			<programlisting>svn co svn://svn.code.sf.net/p/pagc/code/branches/sew-refactor/postgresql address_standardizer
 cd address_standardizer
