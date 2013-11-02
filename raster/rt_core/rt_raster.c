@@ -4,6 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
+ * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com> 
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -2401,6 +2402,8 @@ struct _rti_rasterize_arg_t {
 
 	uint32_t numbands; 
 
+	OGRSpatialReferenceH src_sr;
+
 	rt_pixtype *pixtype;
 	double *init;
 	double *nodata;
@@ -2422,6 +2425,9 @@ _rti_rasterize_arg_init() {
 	arg->noband = 0;
 
 	arg->numbands = 0;
+
+	arg->src_sr = NULL;
+
 	arg->pixtype = NULL;
 	arg->init = NULL;
 	arg->nodata = NULL;
@@ -2449,6 +2455,9 @@ _rti_rasterize_arg_destroy(_rti_rasterize_arg arg) {
 
 	if (arg->bandlist != NULL)
 		rtdealloc(arg->bandlist);
+
+	if (arg->src_sr != NULL)
+		OSRDestroySpatialReference(arg->src_sr);
 
 	rtdealloc(arg);
 }
@@ -2504,7 +2513,6 @@ rt_raster_gdal_rasterize(
 	double _skew[2] = {0};
 
 	OGRErr ogrerr;
-	OGRSpatialReferenceH src_sr = NULL;
 	OGRGeometryH src_geom;
 	OGREnvelope src_env;
 	rt_envelope extent;
@@ -2566,8 +2574,8 @@ rt_raster_gdal_rasterize(
 
 	/* OGR spatial reference */
 	if (NULL != srs && strlen(srs)) {
-		src_sr = OSRNewSpatialReference(NULL);
-		if (OSRSetFromUserInput(src_sr, srs) != OGRERR_NONE) {
+		arg->src_sr = OSRNewSpatialReference(NULL);
+		if (OSRSetFromUserInput(arg->src_sr, srs) != OGRERR_NONE) {
 			rterror("rt_raster_gdal_rasterize: Could not create OSR spatial reference using the provided srs: %s", srs);
 			_rti_rasterize_arg_destroy(arg);
 			return NULL;
@@ -2575,13 +2583,11 @@ rt_raster_gdal_rasterize(
 	}
 
 	/* convert WKB to OGR Geometry */
-	ogrerr = OGR_G_CreateFromWkb((unsigned char *) wkb, src_sr, &src_geom, wkb_len);
+	ogrerr = OGR_G_CreateFromWkb((unsigned char *) wkb, arg->src_sr, &src_geom, wkb_len);
 	if (ogrerr != OGRERR_NONE) {
 		rterror("rt_raster_gdal_rasterize: Could not create OGR Geometry from WKB");
 
 		_rti_rasterize_arg_destroy(arg);
-
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -2591,10 +2597,8 @@ rt_raster_gdal_rasterize(
 	if (OGR_G_IsEmpty(src_geom)) {
 		rtinfo("Geometry provided is empty. Returning empty raster");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return rt_raster_new(0, 0);
@@ -2641,10 +2645,8 @@ rt_raster_gdal_rasterize(
 	else {
 		rterror("rt_raster_gdal_rasterize: Values must be provided for width and height or X and Y of scale");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -2721,10 +2723,8 @@ rt_raster_gdal_rasterize(
 		if (epoly == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not create envelope's geometry to test if geometry is properly contained by extent");
 
-			_rti_rasterize_arg_destroy(arg);
-
 			OGR_G_DestroyGeometry(src_geom);
-			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -2746,10 +2746,8 @@ rt_raster_gdal_rasterize(
 		if (result == 2) {
 			rterror("rt_raster_gdal_rasterize: Could not test if geometry is properly contained by extent for geometry within extent");
 
-			_rti_rasterize_arg_destroy(arg);
-
 			OGR_G_DestroyGeometry(src_geom);
-			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -2852,10 +2850,8 @@ rt_raster_gdal_rasterize(
 		if (skewedrast == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not compute skewed raster");
 
-			_rti_rasterize_arg_destroy(arg);
-
 			OGR_G_DestroyGeometry(src_geom);
-			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -2881,10 +2877,8 @@ rt_raster_gdal_rasterize(
 	if (rast == NULL) {
 		rterror("rt_raster_gdal_rasterize: Out of memory allocating temporary raster");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -2922,10 +2916,8 @@ rt_raster_gdal_rasterize(
 		rterror("rt_raster_gdal_rasterize: Both X and Y upper-left corner values must be provided");
 
 		rt_raster_destroy(rast);
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -2945,10 +2937,8 @@ rt_raster_gdal_rasterize(
 			rterror("rt_raster_gdal_rasterize: Both X and Y alignment values must be provided");
 
 			rt_raster_destroy(rast);
-			_rti_rasterize_arg_destroy(arg);
-
 			OGR_G_DestroyGeometry(src_geom);
-			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -2980,10 +2970,8 @@ rt_raster_gdal_rasterize(
 				rterror("rt_raster_gdal_rasterize: Could not compute raster pixel for spatial coordinates");
 
 				rt_raster_destroy(rast);
-				_rti_rasterize_arg_destroy(arg);
-
 				OGR_G_DestroyGeometry(src_geom);
-				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+				_rti_rasterize_arg_destroy(arg);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -2998,10 +2986,8 @@ rt_raster_gdal_rasterize(
 				rterror("rt_raster_gdal_rasterize: Could not compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-				_rti_rasterize_arg_destroy(arg);
-
 				OGR_G_DestroyGeometry(src_geom);
-				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+				_rti_rasterize_arg_destroy(arg);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -3026,10 +3012,8 @@ rt_raster_gdal_rasterize(
 						rterror("rt_raster_gdal_rasterize: Could not compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
-						_rti_rasterize_arg_destroy(arg);
-
 						OGR_G_DestroyGeometry(src_geom);
-						if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+						_rti_rasterize_arg_destroy(arg);
 						/* OGRCleanupAll(); */
 
 						return NULL;
@@ -3056,10 +3040,8 @@ rt_raster_gdal_rasterize(
 						rterror("rt_raster_gdal_rasterize: Could not compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
-						_rti_rasterize_arg_destroy(arg);
-
 						OGR_G_DestroyGeometry(src_geom);
-						if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+						_rti_rasterize_arg_destroy(arg);
 						/* OGRCleanupAll(); */
 
 						return NULL;
@@ -3107,10 +3089,8 @@ rt_raster_gdal_rasterize(
 				rterror("rt_raster_gdal_rasterize: Could not compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-				_rti_rasterize_arg_destroy(arg);
-
 				OGR_G_DestroyGeometry(src_geom);
-				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+				_rti_rasterize_arg_destroy(arg);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -3139,10 +3119,8 @@ rt_raster_gdal_rasterize(
 				rterror("rt_raster_gdal_rasterize: Could not compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-				_rti_rasterize_arg_destroy(arg);
-
 				OGR_G_DestroyGeometry(src_geom);
-				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+				_rti_rasterize_arg_destroy(arg);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -3172,10 +3150,8 @@ rt_raster_gdal_rasterize(
 	if (NULL == _drv) {
 		rterror("rt_raster_gdal_rasterize: Could not load the MEM GDAL driver");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -3185,10 +3161,8 @@ rt_raster_gdal_rasterize(
 	if (NULL == _ds) {
 		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -3199,10 +3173,8 @@ rt_raster_gdal_rasterize(
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_rasterize: Could not set geotransform on GDALDataset");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
@@ -3211,19 +3183,17 @@ rt_raster_gdal_rasterize(
 	}
 
 	/* set SRS */
-	if (NULL != src_sr) {
+	if (NULL != arg->src_sr) {
 		char *_srs = NULL;
-		OSRExportToWkt(src_sr, &_srs);
+		OSRExportToWkt(arg->src_sr, &_srs);
 
 		cplerr = GDALSetProjection(_ds, _srs);
 		CPLFree(_srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 
-			_rti_rasterize_arg_destroy(arg);
-
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
@@ -3275,10 +3245,10 @@ rt_raster_gdal_rasterize(
 		while (0);
 
 		if (err) {
-			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+			_rti_rasterize_arg_destroy(arg);
+
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
@@ -3289,7 +3259,6 @@ rt_raster_gdal_rasterize(
 
 	arg->bandlist = (int *) rtalloc(sizeof(int) * arg->numbands);
 	for (i = 0; i < arg->numbands; i++) arg->bandlist[i] = i + 1;
-
 
 	/* burn geometry */
 	cplerr = GDALRasterizeGeometries(
@@ -3304,10 +3273,8 @@ rt_raster_gdal_rasterize(
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_rasterize: Could not rasterize geometry");
 
-		_rti_rasterize_arg_destroy(arg);
-
 		OGR_G_DestroyGeometry(src_geom);
-		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
+		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
@@ -3321,7 +3288,6 @@ rt_raster_gdal_rasterize(
 	rast = rt_raster_from_gdal_dataset(_ds);
 
 	OGR_G_DestroyGeometry(src_geom);
-	if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 	/* OGRCleanupAll(); */
 
 	GDALClose(_ds);

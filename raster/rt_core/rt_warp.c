@@ -272,12 +272,9 @@ rt_raster rt_raster_gdal_warp(
 
 		/* substitute spatial info (lack of) with a real one EPSG:32731 (WGS84/UTM zone 31s) */
 		if (
-			FLT_EQ(gt[0], 0) &&
-			FLT_EQ(gt[1], 1) &&
-			FLT_EQ(gt[2], 0) &&
-			FLT_EQ(gt[3], 0) &&
-			FLT_EQ(gt[4], 0) &&
-			FLT_EQ(gt[5], -1)
+			FLT_EQ(gt[0], 0) && FLT_EQ(gt[3], 0) &&
+			FLT_EQ(gt[1], 1) && FLT_EQ(gt[5], -1) &&
+			FLT_EQ(gt[2], 0) && FLT_EQ(gt[4], 0)
 		) {
 			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
