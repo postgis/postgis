@@ -1264,4 +1264,3 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
 }
-

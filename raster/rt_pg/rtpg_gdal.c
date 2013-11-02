@@ -595,14 +595,10 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	/* check that at least something is to be done */
 	if (
 		(dst_srid == SRID_UNKNOWN) &&
-		(scale_x == NULL) &&
-		(scale_y == NULL) &&
-		(grid_xw == NULL) &&
-		(grid_yw == NULL) &&
-		(skew_x == NULL) &&
-		(skew_y == NULL) &&
-		(dim_x == NULL) &&
-		(dim_y == NULL)
+		(scale_x == NULL) && (scale_y == NULL) &&
+		(grid_xw == NULL) && (grid_yw == NULL) &&
+		(skew_x == NULL) && (skew_y == NULL) &&
+		(dim_x == NULL) && (dim_y == NULL)
 	) {
 		elog(NOTICE, "No resampling parameters provided.  Returning original raster");
 		rt_raster_destroy(raster);
