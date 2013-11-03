@@ -1242,7 +1242,7 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
 			<para>Installing Regex::Assemble</para>
 			<programlisting>cpan Regexp::Assemble</programlisting>
-			or if you are on Ubuntu / Debian you might need to do
+			<para>or if you are on Ubuntu / Debian you might need to do</para>
 			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
 			<para>Compiling</para>
 			<programlisting>svn co svn://svn.code.sf.net/p/pagc/code/branches/sew-refactor/postgresql address_standardizer
