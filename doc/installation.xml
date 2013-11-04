@@ -656,7 +656,7 @@ be backed up when the respective <varname>postgis</varname> or <varname>postgis_
 As of PostGIS 2.0.1, only srid records not packaged with PostGIS are backed up when the database is backed up so don't go around changing srids we package and expect your changes to be there. Put in a ticket if you find an issue.  The structures of extension tables are never backed up since they are created with <code>CREATE EXTENSION</code>
 and assumed to be the same for a given version of an extension. These behaviors are built into the current PostgreSQL extension model, so nothing we can do about it.</para></warning>
 
-<para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_20_minor.sql</filename>,<filename>raster_upgrade_20_minor.sql</filename>,<filename>topology_upgrade_20_minor.sql</filename>.</para>
+<para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_22_minor.sql</filename>,<filename>raster_upgrade_22_minor.sql</filename>,<filename>topology_upgrade_22_minor.sql</filename>.</para>
 <para>If you installed postgis without raster support, you'll need to install raster support first (using the full <filename>rtpostgis.sql</filename></para>
 <para>Then you can run the below commands to package the functions in their respective extension.</para>
 <programlisting>CREATE EXTENSION postgis FROM unpackaged;
@@ -1419,11 +1419,11 @@ pretty_address
 	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
 	  <para>
 		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
-		for your version of PostGIS.  For example <filename>postgis_upgrade_13_to_15.sql</filename> should be used if you are upgrading 
-		from PostGIS 1.3 to 1.5.  If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
+		for your version of PostGIS.  For example <filename>postgis_upgrade_21_to_22.sql</filename> should be used if you are upgrading 
+		from PostGIS 2.1 to 2.2.  If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
 	  </para>
 
-	  <programlisting>psql -f postgis_upgrade_20_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f postgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
 
 	  <para>
 		The same procedure applies to raster and
@@ -1433,8 +1433,8 @@ pretty_address
 		If you need them:
 	  </para>
 
-	  <programlisting>psql -f rtpostgis_upgrade_20_minor.sql -d your_spatial_database</programlisting>
-	  <programlisting>psql -f topology_upgrade_20_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f rtpostgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f topology_upgrade_22_minor.sql -d your_spatial_database</programlisting>
 
 	  <note>
 		<para>
