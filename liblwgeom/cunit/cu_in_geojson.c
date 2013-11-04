@@ -26,12 +26,10 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
   char * srs = NULL;
   size_t size;
 
-  has_bbox = has_bbox; /* unused */
-
 	g = lwgeom_from_geojson(in, &srs);
   if ( ! g ) {
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, cu_error_msg);
-	  CU_ASSERT(g);
+	  CU_ASSERT(g != NULL);
     return;
   }
 
@@ -61,7 +59,7 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
   if ( srs ) lwfree(srs);
 }
 
-
+#if 0
 static void do_geojson_unsupported(char * in, char * exp)
 {
 	LWGEOM *g;
@@ -90,6 +88,7 @@ static void do_geojson_unsupported(char * in, char * exp)
   if ( h ) lwfree(h);
 	lwgeom_free(g);
 }
+#endif 
 
 static void in_geojson_test_srid(void)
 {

@@ -16,8 +16,8 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
-#include "lwgeodetic.h";
-#include "lwgeodetic_tree.h";
+#include "lwgeodetic.h"
+#include "lwgeodetic_tree.h"
 #include "cu_tester.h"
 
 

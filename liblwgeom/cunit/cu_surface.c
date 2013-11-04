@@ -12,8 +12,6 @@
 
 #include "cu_surface.h"
 
-static void check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid);
-
 void triangle_parse(void)
 {
 	LWGEOM *geom;
@@ -313,7 +311,7 @@ void polyhedralsurface_parse(void)
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
-	tmp = lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
+	tmp = (char*)lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
 	CU_ASSERT_STRING_EQUAL("010F00000000000000", tmp);
 	lwfree(tmp);
 	tmp = lwgeom_to_ewkt(geom);
