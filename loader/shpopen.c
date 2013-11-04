@@ -233,7 +233,7 @@
  *
  * Revision 1.7  1995/10/21 03:15:58  warmerda
  * Added support for binary file access, the magic cookie 9997
- * and tried to improve the int32 selection logic for 16bit systems.
+ * and tried to improve the uint32 selection logic for 16bit systems.
  *
  * Revision 1.6  1995/09/04  04:19:41  warmerda
  * Added fix for file bounds.
@@ -269,9 +269,9 @@ SHP_CVSID("$Id$")
 typedef unsigned char uchar;
 
 #if UINT_MAX == 65535
-typedef unsigned long	      int32;
+typedef unsigned long	      uint32;
 #else
-typedef unsigned int	      int32;
+typedef unsigned int	      uint32;
 #endif
 
 #ifndef FALSE
@@ -342,9 +342,9 @@ void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
 {
     uchar     	abyHeader[100];
     int		i;
-    int32	i32;
+    uint32	i32;
     double	dValue;
-    int32	*panSHX;
+    uint32	*panSHX;
     
     if (psSHP->fpSHX == NULL)
     {
@@ -418,7 +418,7 @@ void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
 /* -------------------------------------------------------------------- */
 /*      Prepare, and write .shx file header.                            */
 /* -------------------------------------------------------------------- */
-    i32 = (psSHP->nRecords * 2 * sizeof(int32) + 100)/2;   /* file size */
+    i32 = (psSHP->nRecords * 2 * sizeof(uint32) + 100)/2;   /* file size */
     ByteCopy( &i32, abyHeader+24, 4 );
     if( !bBigEndian ) SwapWord( 4, abyHeader+24 );
     
@@ -432,7 +432,7 @@ void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
 /* -------------------------------------------------------------------- */
 /*      Write out the .shx contents.                                    */
 /* -------------------------------------------------------------------- */
-    panSHX = (int32 *) malloc(sizeof(int32) * 2 * psSHP->nRecords);
+    panSHX = (uint32 *) malloc(sizeof(uint32) * 2 * psSHP->nRecords);
 
     for( i = 0; i < psSHP->nRecords; i++ )
     {
@@ -442,7 +442,7 @@ void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
         if( !bBigEndian ) SwapWord( 4, panSHX+i*2+1 );
     }
 
-    if( (int)psSHP->sHooks.FWrite( panSHX, sizeof(int32)*2, psSHP->nRecords, psSHP->fpSHX ) 
+    if( (int)psSHP->sHooks.FWrite( panSHX, sizeof(uint32)*2, psSHP->nRecords, psSHP->fpSHX ) 
         != psSHP->nRecords )
     {
         psSHP->sHooks.Error( "Failure writing .shx contents" );
@@ -734,7 +734,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 
     for( i = 0; i < psSHP->nRecords; i++ )
     {
-        int32		nOffset, nLength;
+        uint32		nOffset, nLength;
 
         memcpy( &nOffset, pabyBuf + i * 8, 4 );
         if( !bBigEndian ) SwapWord( 4, &nOffset );
@@ -851,7 +851,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     int		i;
     SAFile	fpSHP = NULL, fpSHX = NULL;
     uchar     	abyHeader[100];
-    int32	i32;
+    uint32	i32;
     double	dValue;
     
 /* -------------------------------------------------------------------- */
@@ -1174,7 +1174,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
     unsigned int	       	nRecordOffset, nRecordSize=0;
     int i;
     uchar	*pabyRec;
-    int32	i32;
+    uint32	i32;
 
     psSHP->bUpdated = TRUE;
 
@@ -1226,7 +1226,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
         || psObject->nSHPType == SHPT_ARCM
         || psObject->nSHPType == SHPT_MULTIPATCH )
     {
-        int32		nPoints, nParts;
+        uint32		nPoints, nParts;
         int    		i;
 
         nPoints = psObject->nVertices;
@@ -1343,7 +1343,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
              || psObject->nSHPType == SHPT_MULTIPOINTZ
              || psObject->nSHPType == SHPT_MULTIPOINTM )
     {
-        int32		nPoints;
+        uint32		nPoints;
         int    		i;
 
         nPoints = psObject->nVertices;
@@ -1668,7 +1668,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
         || psShape->nSHPType == SHPT_ARCM
         || psShape->nSHPType == SHPT_MULTIPATCH )
     {
-        int32		nPoints, nParts;
+        uint32		nPoints, nParts;
         int    		i, nOffset;
 
         if ( 40 + 8 + 4 > nEntitySize )
@@ -1703,8 +1703,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
         if( bBigEndian ) SwapWord( 4, &nPoints );
         if( bBigEndian ) SwapWord( 4, &nParts );
 
-        if (nPoints < 0 || nParts < 0 ||
-            nPoints > 50 * 1000 * 1000 || nParts > 10 * 1000 * 1000)
+        if ( nPoints > 50 * 1000 * 1000 || nParts > 10 * 1000 * 1000 )
         {
             snprintf(szErrorMsg, sizeof(szErrorMsg),
                      "Corrupted .shp file : shape %d, nPoints=%d, nParts=%d.",
@@ -1886,7 +1885,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
              || psShape->nSHPType == SHPT_MULTIPOINTM
              || psShape->nSHPType == SHPT_MULTIPOINTZ )
     {
-        int32		nPoints;
+        uint32		nPoints;
         int    		i, nOffset;
 
         if ( 44 + 4 > nEntitySize )
@@ -1902,7 +1901,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
 
         if( bBigEndian ) SwapWord( 4, &nPoints );
 
-        if (nPoints < 0 || nPoints > 50 * 1000 * 1000)
+        if ( nPoints > 50 * 1000 * 1000)
         {
             snprintf(szErrorMsg, sizeof(szErrorMsg),
                      "Corrupted .shp file : shape %d : nPoints = %d",

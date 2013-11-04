@@ -34,13 +34,13 @@ dnl SQL Preprocessor
 dnl
 AC_PATH_PROG([CPPBIN], [cpp], [])
 if test "x$CPPBIN" != "x"; then
-  SQLPP="${CPPBIN} -traditional-cpp -P"
+  SQLPP="${CPPBIN} -w -traditional-cpp -P"
 else
   AC_PATH_PROG([GPP], [gpp_], [])
   if test "x$GPP" != "x"; then
     SQLPP="${GPP} -C -s \'" dnl Use better string support
   else
-    SQLPP="${CPP} -traditional-cpp"
+    SQLPP="${CPP} -w -traditional-cpp"
   fi
 fi
 AC_SUBST([SQLPP])

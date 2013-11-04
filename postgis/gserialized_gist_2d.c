@@ -806,8 +806,8 @@ Datum gserialized_gist_compress_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, "[GIST] got entry_in->key: %s", box2df_to_string(&bbox_out));
 
 	/* Check all the dimensions for finite values */
-	if ( ! finite(bbox_out.xmax) || ! finite(bbox_out.xmin) ||
-	     ! finite(bbox_out.ymax) || ! finite(bbox_out.ymin) )
+	if ( ! isfinite(bbox_out.xmax) || ! isfinite(bbox_out.xmin) ||
+	     ! isfinite(bbox_out.ymax) || ! isfinite(bbox_out.ymin) )
 	{
 		POSTGIS_DEBUG(4, "[GIST] infinite geometry!");
 		PG_RETURN_POINTER(entry_in);

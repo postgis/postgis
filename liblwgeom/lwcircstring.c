@@ -274,7 +274,6 @@ double lwcircstring_length(const LWCIRCSTRING *circ)
 
 double lwcircstring_length_2d(const LWCIRCSTRING *circ)
 {
-	double length = 0.0;
 	if ( lwcircstring_is_empty(circ) )
 		return 0.0;
 	

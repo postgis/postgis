@@ -585,8 +585,8 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	 * If not, use the "unknown" GIDX as a key */
 	for ( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
 	{
-		if ( ! finite(GIDX_GET_MAX(bbox_out, i))
-		     || ! finite(GIDX_GET_MIN(bbox_out, i)) )
+		if ( ! isfinite(GIDX_GET_MAX(bbox_out, i)) ||
+		     ! isfinite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			gidx_set_unknown(bbox_out);
 			gistentryinit(*entry_out, 
