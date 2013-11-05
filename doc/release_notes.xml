@@ -3,6 +3,33 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.1.1</title>
+      <para>Release date: 2013/11/06</para>
+      <para>This is a bug fix release, addressing issues that have been filed since the 2.1.0 release.</para>
+      <simplesect>
+        <title>Important Changes</title>
+        <para>#2514, Change raster license from GPL v3+ to v2+, allowing distribution of PostGIS Extension as GPLv2.</para>
+      </simplesect>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#2396, Make regression tests more endian-agnostic</para>
+        <para>#2434, Fix ST_Intersection(geog,geog) regression in rare cases</para>
+        <para>#2454, Fix behavior of ST_PixelAsXXX functions regarding exclude_nodata_value parameter</para>
+        <para>#2489, Fix upgrades from 2.0 leaving stale function signatures</para>
+        <para>#2525, Fix handling of SRID in nested collections</para>
+        <para>#2449, Fix potential infinite loop in index building</para>
+        <para>#2493, Fix behavior of ST_DumpValues when passed an empty raster</para>
+        <para>#2502, Fix postgis_topology_scripts_installed() install schema</para>
+        <para>#2504, Fix segfault on bogus pgsql2shp call </para>
+        <para>#2512, Support for foreign tables and materialized views in raster_columns and raster_overviews</para>
+      </simplesect>
+      <simplesect>
+        <title>Enhancements</title>
+        <para>#2478, support for tiger 2013</para>
+        <para>#2463, support for exact length calculations on arc geometries</para>
+      </simplesect>
+    </sect1>    
+    <sect1>
 		  <title>Release 2.1.0</title>
 		  <para>Release date: 2013/08/17</para>
 		  <para>This is a minor release addressing both bug fixes and performance and functionality enhancements addressing issues since 2.0.3 release.
