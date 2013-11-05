@@ -2,7 +2,7 @@
 
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://postgis.refractions.net
+# http://postgis.net
 #
 # Copyright (C) 2011 OpenGeo.org
 # Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -54,7 +54,7 @@ my $DEBUG = 0;
 my $POSTGIS_SCHEMA;
 
 # NOTE: the SRID limits here are being discussed:
-# http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
+# http://lists.osgeo.org/pipermail/postgis-devel/2012-February/018440.html
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 

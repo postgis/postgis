@@ -2,7 +2,7 @@
 
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://postgis.refractions.net
+# http://postgis.net
 #
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
