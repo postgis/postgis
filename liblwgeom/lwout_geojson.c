@@ -11,6 +11,13 @@
  *
  **********************************************************************/
 
+ /*********************************************************************
+ *
+ * Modified by Cubee team to add Polyhedral Surface
+ * Contact : lp_vizitown@googlegroups.com
+ *
+ **********************************************************************/
+
 #include "liblwgeom_internal.h"
 #include <string.h>	/* strlen */
 #include <assert.h>
@@ -311,7 +318,7 @@ asgeojson_poly(const LWPOLY *poly, char *srs, GBOX *bbox, int precision)
 
 /**
  * PSURFACE Geometry
- * Modified by Cubee team for Vizitown Project
+ * Implemented by Cubee team for Vizitown Project
  * Contact : lp_vizitown@googlegroups.com
  */
 
@@ -694,6 +701,10 @@ asgeojson_geom_size(const LWGEOM *geom, GBOX *bbox, int precision)
 		size = asgeojson_multipolygon_size((LWMPOLY*)geom, NULL, bbox, precision);
 		break;
 
+	case POLYHEDRALSURFACETYPE:
+		size = asgeojson_psurface_size((LWPSURFACE*)geom, NULL, bbox, precision);
+		break;
+
 	default:
 		lwerror("GeoJson: geometry not supported.");
 	}
@@ -732,6 +743,10 @@ asgeojson_geom_buf(const LWGEOM *geom, char *output, GBOX *bbox, int precision)
 
 	case MULTIPOLYGONTYPE:
 		ptr += asgeojson_multipolygon_buf((LWMPOLY*)geom, NULL, ptr, bbox, precision);
+		break;
+	
+	case POLYHEDRALSURFACETYPE:
+		ptr += asgeojson_psurface_buf((LWPSURFACE*)geom, NULL, ptr, bbox, precision);
 		break;
 
 	default:

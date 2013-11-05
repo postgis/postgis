@@ -17,6 +17,14 @@
 #include "lwgeom_log.h"
 
 
+LWPSURFACE*
+lwpsurface_construct_empty(int srid, char hasz, char hasm)
+{
+	LWPSURFACE *ret = (LWPSURFACE*)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, srid, hasz, hasm);
+	return ret;
+
+}
+
 LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
 {
 	return (LWPSURFACE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);

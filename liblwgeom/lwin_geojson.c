@@ -10,6 +10,13 @@
  *
  **********************************************************************/
 
+/*********************************************************************
+ *
+ * Modified by Cubee team to add Polyhedral Surface
+ * Contact : lp_vizitown@googlegroups.com
+ *
+ **********************************************************************/
+
 #include <assert.h>
 #include "liblwgeom.h"
 #include "lwgeom_log.h"
@@ -236,6 +243,12 @@ parse_geojson_polygon(json_object *geojson, int *hasz,  int root_srid)
 	return geom;
 }
 
+/**
+ * PSURFACE Geometry
+ * Implemented by Cubee team for Vizitown Project
+ * Contact : lp_vizitown@googlegroups.com
+ */
+
 static LWGEOM*
 parse_geojson_multipoint(json_object *geojson, int *hasz,  int root_srid)
 {
@@ -405,6 +418,88 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
 	return geom;
 }
 
+
+/**
+ * PSURFACE Geometry
+ * Implemented by Cubee team for Vizitown Project
+ * Contact : lp_vizitown@googlegroups.com
+ */
+static LWGEOM*
+parse_geojson_psurface(json_object *geojson, int *hasz,  int root_srid)
+{
+	LWGEOM *geom = NULL;
+	int i, j, k;
+	json_object* poObjPsurf = NULL;
+
+	if (!root_srid)
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, root_srid, 1, 0);
+	}
+	else
+	{
+		geom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, -1, 1, 0);
+	}
+
+	poObjPsurf = findMemberByName( geojson, "coordinates" );
+	if ( ! poObjPsurf ) {
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+    	return NULL;
+  	}
+
+	if( json_type_array == json_object_get_type( poObjPsurf ) )
+	{
+		const int nPolys = json_object_array_length( poObjPsurf );
+
+		for(i = 0; i < nPolys; ++i)
+		{
+			POINTARRAY **ppa;
+			json_object* poObjPsurf = NULL;
+			poObjPsurf = json_object_array_get_idx( poObjPsurf, i );
+
+			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
+
+			if( json_type_array == json_object_get_type( poObjPsurf ) )
+			{
+				int nPoints;
+				json_object* points = NULL;
+				int ring = json_object_array_length( poObjPsurf );
+				ppa[0] = ptarray_construct_empty(1, 0, 1);
+
+				points = json_object_array_get_idx( poObjPsurf, 0 );
+				nPoints = json_object_array_length( points );
+
+				for (j=0; j < nPoints; j++ )
+				{
+					json_object* coords = NULL;
+					coords = json_object_array_get_idx( points, j );
+					parse_geojson_coord(coords, hasz, ppa[0]);
+				}
+
+				for(j = 1; j < ring; ++j)
+				{
+					int nPoints;
+					ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa, sizeof(POINTARRAY*) * (j + 1));
+					ppa[j] = ptarray_construct_empty(1, 0, 1);
+					points = json_object_array_get_idx( poObjPoly, j );
+
+					nPoints = json_object_array_length( points );
+					for (k=0; k < nPoints; k++ )
+					{
+						json_object* coords = NULL;
+						coords = json_object_array_get_idx( points, k );
+						parse_geojson_coord(coords, hasz, ppa[j]);
+					}
+				}
+
+				geom = (LWGEOM*)lwpsurface_add_lwpoly((LWPSURFACE*)geom,
+				                                   (LWPOLY*)lwpoly_construct(root_srid, NULL, ring, ppa));
+			}
+		}
+	}
+
+	return geom;
+}
+
 static LWGEOM*
 parse_geojson_geometrycollection(json_object *geojson, int *hasz,  int root_srid)
 {
@@ -482,6 +577,9 @@ parse_geojson(json_object *geojson, int *hasz,  int root_srid)
 	if( strcasecmp( name, "GeometryCollection" )==0 )
 		return parse_geojson_geometrycollection(geojson, hasz, root_srid);
 
+	if( strcasecmp (name, "PolyhedralSurface" )==0 )
+		return parse_geojson_psurface(geojson, hasz, root_srid);
+
 	lwerror("invalid GeoJson representation");
 	return NULL; /* Never reach */
 }
@@ -551,5 +649,3 @@ lwgeom_from_geojson(const char *geojson, char **srs)
   return lwgeom;
 #endif /* HAVE_LIBJSON  */
 }
-
-
