@@ -4130,12 +4130,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT ST_MPointFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
