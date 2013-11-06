@@ -5643,7 +5643,7 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
     
@@ -5656,7 +5656,7 @@ CREATE OPERATOR && (
 -- geometry/raster operators
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
     
