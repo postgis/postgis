@@ -21,6 +21,7 @@ PostGIS 2.1.1
   - #2512, Support for foreign tables and materialized views in
            raster_columns and raster_overviews
   - #2528, Fix memory leak in ST_Split / lwline_split_by_line
+  - #2533, Remove duplicated signatures
 
  * Enhancements *
 
