@@ -142,6 +142,9 @@ typedef struct raster_loader_config {
 	/* nodata value for bands with no nodata value */
 	double nodataval;
 
+	/* skip NODATA value check for bands */
+	int skip_nodataval_check;
+
 	/* endianness of binary output, 0 = XDR, 1 = NDR (default) */
 	int endian;
 
