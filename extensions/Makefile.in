@@ -18,7 +18,7 @@ endif
 all clean distclean install uninstall:
 	for DIR in $(SUBDIRS); do \
 		echo "---- Making $@ in $${DIR}"; \
-		$(MAKE) -C "$${DIR}" $@; \
+		$(MAKE) -C "$${DIR}" $@ || exit 1; \
 	done
 
 distclean: distclean-local
