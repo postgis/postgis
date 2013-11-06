@@ -29,6 +29,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
+
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
@@ -57,25 +58,9 @@ sql_bits/topology.sql: ../../topology/topology.sql
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 	
-#grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
-#then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
-#then remove default values and extra junk
-# sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
-# 	sed -e '/^CREATE \(OR REPLACE\|TYPE\|TABLE\|VIEW\|CAST\)/!d;' \
-# 		-e 's/OR REPLACE//g' \
-# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
-# 		-e 's/\(BEFORE\|WITH FUNCTION\)\(.*\)/;/' \
-# 		-e 's/[ \t]+;/;/' \
-# 		-e 's/(;/;/' \
-# 		-e 's/\\(;/;/' \
-# 		-e 's/;;/;/g' $< > $@
-
-#hardcode for now using 
-#the extensions/make_unpackaged.sql script form an install
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/topology--unpackaged.sql.in
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cp $< $@
+	cat $< | ../../utils/create_unpackaged.pl postgis_topology > $@
 
 #upgrade script should have everything but table, schema, type creation/alter
 #NOTE: we assume all object definitions end in ;

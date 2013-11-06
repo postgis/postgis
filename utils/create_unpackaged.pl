@@ -267,14 +267,17 @@ foreach my $type (@types)
 }
 
 
-print "-- Register all schemas.\n";
-if (@schemas)
-{
-  foreach my $schema (@schemas)
-  {
-    print "$addprefix SCHEMA \"$schema\";\n";
-  }
-}
+# NOTE:  cannot add schema "topology" to extension "postgis_topology"
+#        because the schema contains the extension
+#
+#print "-- Register all schemas.\n";
+#if (@schemas)
+#{
+#  foreach my $schema (@schemas)
+#  {
+#    print "$addprefix SCHEMA \"$schema\";\n";
+#  }
+#}
 
 
 print "\n";
