@@ -3809,12 +3809,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT ST_MPointFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
@@ -4262,16 +4256,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
 	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 300;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
-	RETURNS FLOAT8
-	AS $$
-	select st_distance(geography($1),geography($2),false)
-	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT
-	COST 300;
-
 
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
