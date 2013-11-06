@@ -33,19 +33,20 @@ PREV_big=21
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 ifeq ($(PG91),yes)
+	
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	mkdir -p sql
 	cat $^ > $@
-	
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cp $< $@
+	cat ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql | ../../utils/create_unpackaged.pl postgis > $@
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_raster_upgrade_minor.sql
@@ -103,45 +104,6 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 #TODO: what about postgis_drop_after.sql ? where does it fit ??
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql_bits/postgis_upgrade_$(PREV_big)_$(CURV_big).sql sql_bits/rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
-
-# sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
-# 	sed -e 's/^[\t]*//' \
-# 		-e :a -e '$!N; s/,\n/,/; ta' \
-# 	$< > $@
-#remove leading white space and tabs
-#remove line break from a line if it ends in ,
-
-sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
-		sed \
-		-e 's/^[\t]*//' \
-		$< > $@
-
-## we are going to hard code for now using sql script to generate unpackage script
-# sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
-# 		sed \
-# 		-e 's/^[\t]*//' \
-# 		-e '$!N; s/(\n/(/g' \
-# 		-e '/^CREATE \(OR REPLACE FUNCTION\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
-# 		-e 's/OR REPLACE//g' \
-# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-# 		-e 's/DEFAULT [^()]\+//g' \
-# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
-# 		-e 's/(;/;/' \
-# 		-e 's/\\(;/;/' \
-# 		-e 's/;;/;/g' $< > $@
-
-# sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
-# 	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
-# 		-e 's/OR REPLACE//g' \
-# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
-# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
-# 		-e 's/(;/;/' \
-# 		-e 's/\\(;/;/' \
-# 		-e 's/;;/;/g' $< > $@
-
-
-sql/postgis--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
 
 sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
