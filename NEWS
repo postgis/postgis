@@ -25,7 +25,7 @@ PostGIS 2.1.1
 
   - #2478, support for tiger 2013
   - #2463, support for exact length calculations on arc geometries
-	- #2527, Added -k flag to raster2pgsql to skip checking that
+  - #2527, Added -k flag to raster2pgsql to skip checking that
            band is NODATA
 
 PostGIS 2.1.0
