@@ -30,6 +30,7 @@ PostGIS 2.2.0
   - #2493, Fix behavior of ST_DumpValues when passed an empty raster
   - #2512, Support for foreign tables and materialized views in
            raster_columns and raster_overviews
+  - #2532, Add missing raster/geometry commutator operators
 
  * Code refactoring *
 
