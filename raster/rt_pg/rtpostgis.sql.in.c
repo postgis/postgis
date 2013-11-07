@@ -2800,6 +2800,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     AS 'select $1::geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
+    RETURNS bool
+    AS 'select $1::geometry @ $2'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
@@ -2809,6 +2814,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
+    RETURNS bool
+    AS 'select $1 @ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
@@ -2898,7 +2908,13 @@ CREATE OPERATOR ~ (
     COMMUTATOR = '@',
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -2911,7 +2927,13 @@ CREATE OPERATOR ~ (
     COMMUTATOR = '@',
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',

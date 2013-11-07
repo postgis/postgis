@@ -10,6 +10,7 @@ YYYY/MM/DD
   - #2502, Fix postgis_topology_scripts_installed() install schema
   - #2504, Fix segfault on bogus pgsql2shp call 
   - #2528, Fix memory leak in ST_Split / lwline_split_by_line
+  - #2532, Add missing raster/geometry commutator operators
   - #2533, Remove duplicated signatures
 
 PostGIS 2.0.4
