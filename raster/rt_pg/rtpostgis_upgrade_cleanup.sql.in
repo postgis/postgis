@@ -144,3 +144,54 @@ END$$;
 DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
+
+-- add missing OPERATORs
+DO LANGUAGE 'plpgsql' $$
+BEGIN
+	IF NOT EXISTS (
+			SELECT
+				proname
+			FROM pg_proc f
+			JOIN pg_type r
+				ON r.typname = 'raster'
+					AND (f.proargtypes::oid[])[0] = r.oid
+			JOIN pg_type g
+				ON g.typname = 'geometry'
+					AND (f.proargtypes::oid[])[1] = g.oid
+			WHERE proname = 'raster_contained_by_geometry'
+		) THEN
+		CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
+			RETURNS bool
+	    AS 'select $1::geometry @ $2'
+	    LANGUAGE 'sql' IMMUTABLE STRICT;
+		CREATE OPERATOR @ (
+			LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
+	    COMMUTATOR = '~',
+		  RESTRICT = contsel, JOIN = contjoinsel
+		);
+	END IF;
+
+	IF NOT EXISTS (
+			SELECT
+				proname
+			FROM pg_proc f
+			JOIN pg_type r
+				ON r.typname = 'raster'
+					AND (f.proargtypes::oid[])[1] = r.oid
+			JOIN pg_type g
+				ON g.typname = 'geometry'
+					AND (f.proargtypes::oid[])[0] = g.oid
+			WHERE proname = 'geometry_contained_by_raster'
+		) THEN
+		CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
+	    RETURNS bool
+		  AS 'select $1 @ $2::geometry'
+	    LANGUAGE 'sql' IMMUTABLE STRICT;
+		CREATE OPERATOR @ (
+	    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
+		  COMMUTATOR = '~',
+			RESTRICT = contsel, JOIN = contjoinsel
+    );
+	END IF;
+END;
+$$;

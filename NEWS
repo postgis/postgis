@@ -22,6 +22,7 @@ PostGIS 2.1.1
            raster_columns and raster_overviews
   - #2528, Fix memory leak in ST_Split / lwline_split_by_line
   - #2533, Remove duplicated signatures
+  - #2532, Add missing raster/geometry commutator operators
 
  * Enhancements *
 
