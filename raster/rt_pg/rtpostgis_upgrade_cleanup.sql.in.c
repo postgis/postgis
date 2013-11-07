@@ -116,7 +116,9 @@ CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
     
 -- add missing OPERATORs
-DO LANGUAGE 'plpgsql' $$
+CREATE OR REPLACE FUNCTION _add_missing_raster_operators()
+RETURNS void
+AS $$
 BEGIN
 	IF NOT EXISTS (
 			SELECT
@@ -164,4 +166,6 @@ BEGIN
     );
 	END IF;
 END;
-$$;
+$$ LANGUAGE plpgsql VOLATILE;
+SELECT _add_missing_raster_operators();
+DROP FUNCTION IF EXISTS _add_missing_raster_operators();
