@@ -31,6 +31,7 @@ PostGIS 2.2.0
   - #2512, Support for foreign tables and materialized views in
            raster_columns and raster_overviews
   - #2532, Add missing raster/geometry commutator operators
+  - #2540, Change GUC name for GDAL_DATA to postgis.gdal_datapath
 
  * Code refactoring *
 

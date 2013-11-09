@@ -174,7 +174,7 @@ _PG_init(void) {
 
 	/* Define custom GUC variables. */
 	DefineCustomStringVariable(
-		"postgis.gdal.datapath", /* name */
+		"postgis.gdal_datapath", /* name */
 		"Path to GDAL data files.", /* short_desc */
 		"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
 		&gdaldatapath, /* valueAddr */
