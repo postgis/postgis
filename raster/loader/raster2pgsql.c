@@ -10,10 +10,10 @@
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,8 +21,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -414,6 +414,9 @@ usage() {
 		"  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
 	));
 	printf(_(
+		"  -k  Skip NODATA value checks for each raster band.\n"
+	));
+	printf(_(
 		"  -E <endian> Control endianness of generated binary output of\n"
 		"      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
 		"      is supported at this time.\n"
@@ -706,6 +709,7 @@ init_config(RTLOADERCFG *config) {
 	config->idx_tablespace = NULL;
 	config->hasnodata = 0;
 	config->nodataval = 0;
+	config->skip_nodataval_check = 0;
 	config->endian = 1;
 	config->version = 0;
 	config->transaction = 1;
@@ -1814,7 +1818,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					}
 
 					/* inspect each band of raster where band is NODATA */
-					rt_band_check_is_nodata(band);
+					if (!config->skip_nodataval_check)
+						rt_band_check_is_nodata(band);
 				}
 
 				/* convert rt_raster to hexwkb */
@@ -1931,7 +1936,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				numbands = rt_raster_get_num_bands(rast);
 				for (i = 0; i < numbands; i++) {
 					band = rt_raster_get_band(rast, i);
-					if (band != NULL)
+					if (band != NULL && !config->skip_nodataval_check)
 						rt_band_check_is_nodata(band);
 				}
 
@@ -2578,6 +2583,10 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-N") && i < argc - 1) {
 			config->hasnodata = 1;
 			config->nodataval = atof(argv[++i]);
+		}
+		/* skip NODATA value check for bands */
+		else if (CSEQUAL(argv[i], "-k")) {
+			config->skip_nodataval_check = 1;
 		}
 		/* endianness */
 		else if (CSEQUAL(argv[i], "-E") && i < argc - 1) {

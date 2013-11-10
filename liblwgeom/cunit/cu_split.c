@@ -122,6 +122,38 @@ static void test_lwgeom_split(void)
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 	lwgeom_free(blade);
+
+  /* See #2528 (1) -- memory leak test, needs valgrind to check */
+  geom = lwgeom_from_wkt("SRID=1;LINESTRING(0 1,10 1)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT(geom != NULL);
+  blade = lwgeom_from_wkt("LINESTRING(7 0,7 3)", LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  CU_ASSERT(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+	in_wkt = "SRID=1;GEOMETRYCOLLECTION(LINESTRING(0 1,7 1),LINESTRING(7 1,10 1))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+  /* See #2528 (2) -- memory leak test, needs valgrind to check */
+  geom = lwgeom_from_wkt("SRID=1;POLYGON((0 1, 10 1, 10 10, 0 10, 0 1))", LW_PARSER_CHECK_NONE);
+  CU_ASSERT(geom != NULL);
+  blade = lwgeom_from_wkt("LINESTRING(7 0,7 20)", LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  CU_ASSERT(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+	in_wkt = "SRID=1;GEOMETRYCOLLECTION(POLYGON((7 1,0 1,0 10,7 10,7 1)),POLYGON((7 10,10 10,10 1,7 1,7 10)))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
 }
 
 

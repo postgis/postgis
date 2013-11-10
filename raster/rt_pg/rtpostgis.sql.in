@@ -12,8 +12,19 @@
 -- Copyright (C) 2011-2013 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software Foundation,
+-- Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -5537,6 +5548,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     AS 'select $1::geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
+    RETURNS bool
+    AS 'select $1::geometry @ $2'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
@@ -5546,6 +5562,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
+    RETURNS bool
+    AS 'select $1 @ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
@@ -5632,10 +5653,16 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -5645,10 +5672,16 @@ CREATE OPERATOR && (
 -- geometry/raster operators
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+ 
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',
@@ -5870,130 +5903,25 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	RETURNS boolean AS $$
 	DECLARE
 		hasnodata boolean := TRUE;
-		nodata float8 := 0.0;
-		convexhull geometry;
-		geomintersect geometry;
-		x1w double precision := 0.0;
-		x2w double precision := 0.0;
-		y1w double precision := 0.0;
-		y2w double precision := 0.0;
-		x1 integer := 0;
-		x2 integer := 0;
-		x3 integer := 0;
-		x4 integer := 0;
-		y1 integer := 0;
-		y2 integer := 0;
-		y3 integer := 0;
-		y4 integer := 0;
-		x integer := 0;
-		y integer := 0;
-		xinc integer := 0;
-		yinc integer := 0;
-		pixelval double precision;
-		bintersect boolean := FALSE;
-		gtype text;
-		scale float8;
-		w int;
-		h int;
+		_geom geometry;
 	BEGIN
 		IF ST_SRID(rast) != ST_SRID(geom) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
-		convexhull := ST_ConvexHull(rast);
+		_geom := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
-		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN
+		IF ST_Intersects(geom, _geom) IS NOT TRUE THEN
 			RETURN FALSE;
 		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
 			RETURN TRUE;
 		END IF;
 
-		-- Get the intersection between with the geometry.
-		-- We will search for withvalue pixel only in this area.
-		geomintersect := st_intersection(geom, convexhull);
-
---RAISE NOTICE 'geomintersect=%', st_astext(geomintersect);
-
-		-- If the intersection is empty, return false
-		IF st_isempty(geomintersect) THEN
-			RETURN FALSE;
-		END IF;
-
-		-- We create a minimalistic buffer around the intersection in order to scan every pixels
-		-- that would touch the edge or intersect with the geometry
-		SELECT sqrt(scalex * scalex + skewy * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
-		IF scale != 0 THEN
-			geomintersect := st_buffer(geomintersect, scale / 1000000);
-		END IF;
-
---RAISE NOTICE 'geomintersect2=%', st_astext(geomintersect);
-
-		-- Find the world coordinates of the bounding box of the intersecting area
-		x1w := st_xmin(geomintersect);
-		y1w := st_ymin(geomintersect);
-		x2w := st_xmax(geomintersect);
-		y2w := st_ymax(geomintersect);
-		nodata := st_bandnodatavalue(rast, nband);
-
---RAISE NOTICE 'x1w=%, y1w=%, x2w=%, y2w=%', x1w, y1w, x2w, y2w;
-
-		-- Convert world coordinates to raster coordinates
-		x1 := st_worldtorastercoordx(rast, x1w, y1w);
-		y1 := st_worldtorastercoordy(rast, x1w, y1w);
-		x2 := st_worldtorastercoordx(rast, x2w, y1w);
-		y2 := st_worldtorastercoordy(rast, x2w, y1w);
-		x3 := st_worldtorastercoordx(rast, x1w, y2w);
-		y3 := st_worldtorastercoordy(rast, x1w, y2w);
-		x4 := st_worldtorastercoordx(rast, x2w, y2w);
-		y4 := st_worldtorastercoordy(rast, x2w, y2w);
-
---RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%, x3=%, y3=%, x4=%, y4=%', x1, y1, x2, y2, x3, y3, x4, y4;
-
-		-- Order the raster coordinates for the upcoming FOR loop.
-		x1 := int4smaller(int4smaller(int4smaller(x1, x2), x3), x4);
-		y1 := int4smaller(int4smaller(int4smaller(y1, y2), y3), y4);
-		x2 := int4larger(int4larger(int4larger(x1, x2), x3), x4);
-		y2 := int4larger(int4larger(int4larger(y1, y2), y3), y4);
-
-		-- Make sure the range is not lower than 1.
-		-- This can happen when world coordinate are exactly on the left border
-		-- of the raster and that they do not span on more than one pixel.
-		x1 := int4smaller(int4larger(x1, 1), w);
-		y1 := int4smaller(int4larger(y1, 1), h);
-
-		-- Also make sure the range does not exceed the width and height of the raster.
-		-- This can happen when world coordinate are exactly on the lower right border
-		-- of the raster.
-		x2 := int4smaller(x2, w);
-		y2 := int4smaller(y2, h);
-
---RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%', x1, y1, x2, y2;
-
-		-- Search exhaustively for withvalue pixel on a moving 3x3 grid
-		-- (very often more efficient than searching on a mere 1x1 grid)
-		FOR xinc in 0..2 LOOP
-			FOR yinc in 0..2 LOOP
-				FOR x IN x1+xinc..x2 BY 3 LOOP
-					FOR y IN y1+yinc..y2 BY 3 LOOP
-						-- Check first if the pixel intersects with the geometry. Often many won't.
-						bintersect := NOT st_isempty(st_intersection(st_pixelaspolygon(rast, x, y), geom));
-
-						IF bintersect THEN
-							-- If the pixel really intersects, check its value. Return TRUE if with value.
-							pixelval := st_value(rast, nband, x, y);
-							IF pixelval != nodata THEN
-								RETURN TRUE;
-							END IF;
-						END IF;
-					END LOOP;
-				END LOOP;
-			END LOOP;
-		END LOOP;
-
-		RETURN FALSE;
+		SELECT ST_Collect(t.geom) INTO _geom FROM ST_PixelAsPolygons(rast, nband) AS t;
+		RETURN ST_Intersects(geom, _geom);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE
 	COST 1000;
@@ -8056,7 +7984,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
 		AND NOT pg_is_other_temp_schema(c.relnamespace);
 
 ------------------------------------------------------------------------------
@@ -8156,7 +8084,7 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND s.consrc LIKE '%_overview_constraint(%'

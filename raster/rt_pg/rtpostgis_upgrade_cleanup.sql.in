@@ -9,8 +9,19 @@
 -- Copyright (C) 2011 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software Foundation,
+-- Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -133,3 +144,54 @@ END$$;
 DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
+
+-- add missing OPERATORs
+DO LANGUAGE 'plpgsql' $$
+BEGIN
+	IF NOT EXISTS (
+			SELECT
+				proname
+			FROM pg_proc f
+			JOIN pg_type r
+				ON r.typname = 'raster'
+					AND (f.proargtypes::oid[])[0] = r.oid
+			JOIN pg_type g
+				ON g.typname = 'geometry'
+					AND (f.proargtypes::oid[])[1] = g.oid
+			WHERE proname = 'raster_contained_by_geometry'
+		) THEN
+		CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
+			RETURNS bool
+	    AS 'select $1::geometry @ $2'
+	    LANGUAGE 'sql' IMMUTABLE STRICT;
+		CREATE OPERATOR @ (
+			LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
+	    COMMUTATOR = '~',
+		  RESTRICT = contsel, JOIN = contjoinsel
+		);
+	END IF;
+
+	IF NOT EXISTS (
+			SELECT
+				proname
+			FROM pg_proc f
+			JOIN pg_type r
+				ON r.typname = 'raster'
+					AND (f.proargtypes::oid[])[1] = r.oid
+			JOIN pg_type g
+				ON g.typname = 'geometry'
+					AND (f.proargtypes::oid[])[0] = g.oid
+			WHERE proname = 'geometry_contained_by_raster'
+		) THEN
+		CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
+	    RETURNS bool
+		  AS 'select $1 @ $2::geometry'
+	    LANGUAGE 'sql' IMMUTABLE STRICT;
+		CREATE OPERATOR @ (
+	    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
+		  COMMUTATOR = '~',
+			RESTRICT = contsel, JOIN = contjoinsel
+    );
+	END IF;
+END;
+$$;

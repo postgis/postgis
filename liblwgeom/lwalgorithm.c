@@ -132,7 +132,9 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	/* Co-linear! Return linear distance! */
 	if ( radius_A < 0 ) 
 	{
-		return sqrt((A1->x-A3->x)*(A1->x-A3->x) + (A1->y-A3->y)*(A1->y-A3->y));
+        double dx = A1->x - A3->x;
+        double dy = A1->y - A3->y;
+		return sqrt(dx*dx + dy*dy);
 	}
 	
 	/* Closed circle! Return the circumference! */

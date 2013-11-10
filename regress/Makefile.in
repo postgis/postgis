@@ -67,6 +67,8 @@ TESTS = \
 	loader/ReprojectPtsGeog \
 	loader/Latin1 \
 	loader/Latin1-implicit \
+  dumper/literalsrid \
+  dumper/realtable \
 	binary \
 	regress \
 	regress_index \

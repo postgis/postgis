@@ -12,6 +12,7 @@
 -- Author: Regina Obe and Leo Hsu <lr@pcorp.us>
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SELECT tiger.SetSearchPathForInstall('tiger');
 BEGIN;
 CREATE OR REPLACE FUNCTION loader_macro_replace(param_input text, param_keys text[],param_values text[]) 
