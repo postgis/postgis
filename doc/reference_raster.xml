@@ -12470,28 +12470,29 @@ a_rid | b_rid | overleft
 		  </refsynopsisdiv>
 
 		  <refsection>
-			<title>Description</title>
-
-			<para>The <varname>~=</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
-			is the same as the bounding box of raster B.</para>
-
-			<note><para>This operand will make use of any indexes that may be available on the
-			  rasters.</para></note>
-
-			 <para>Availability: 2.0.0</para>
+        <title>Description</title>
+  
+        <para>The <varname>~=</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+        is the same as the bounding box of raster B.</para>
+  
+        <note><para>This operand will make use of any indexes that may be available on the
+          rasters.</para></note>
+  
+         <para>Availability: 2.0.0</para>
 
 		  </refsection>
 
 		  <refsection>
-			<title>Examples</title>
-			<para>Very useful usecase is for taking two sets of single band rasters that are of the same chunk but represent different themes and creating a multi-band raster
-<programlisting>SELECT ST_AddBand(prec.rast, alt.rast) As new_rast
-  FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
- 			</programlisting>
+        <title>Examples</title>
+        <para>Very useful usecase is for taking two sets of single band rasters that are of the same chunk but represent different themes and creating a multi-band raster</para>
+  <programlisting>SELECT ST_AddBand(prec.rast, alt.rast) As new_rast
+    FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
+        </programlisting>
 		  </refsection>
+		  
 		  <refsection>
-			<title>See Also</title>
-			<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_Raster_EQ" /></para>
+        <title>See Also</title>
+        <para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_Raster_EQ" /></para>
 		  </refsection>
 		</refentry>
 	</sect1>
