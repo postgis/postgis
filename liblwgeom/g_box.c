@@ -9,6 +9,10 @@
  *
  **********************************************************************/
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <stdlib.h>
