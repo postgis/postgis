@@ -113,6 +113,9 @@ AC_DEFINE([HAVE_VASPRINTF])
 AC_CHECK_FUNC(asprintf, [HAVE_ASPRINTF=1], [HAVE_ASPRINTF=0])
 AC_DEFINE([HAVE_ASPRINTF])
 AC_FUNC_FSEEKO()
+AC_CHECK_FUNC(isfinite, [HAVE_ISFINITE=1], [HAVE_ISFINITE=0])
+AC_DEFINE([HAVE_ISFINITE])
+
 
 dnl 
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
