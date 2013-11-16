@@ -9,6 +9,7 @@ Release version is composed by POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION
 and POSTGIS_MICRO_VERSION components.
 
 By default only [POSTGIS_MICRO_VERSION] increments between releases.
+Starting at PostGIS 2.1 in development  POSTGIS_MICRO_VERSION should have a dev at the end
 
 [POSTGIS_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
 additions have been introduced (one or two functions can be considered
@@ -83,7 +84,9 @@ Release procedure
     - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
 
-16) Push the revision number forward if necessary
-17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
+16) Push the revision number forward.  All POSTGIS_MICRO_VERSION that are in branch or trunk should end in
+dev.  So for example if you just release 2.1.1, then the 2.1 branch should have POSTGIS_MICRO_VERSION set to 2dev 
+so that the full version is 2.1.2dev.
+17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk including the one you just released
 
 
