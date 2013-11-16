@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2009-07-01
+  Date: 2013-11-16
 
 Versioning Scheme
 -----------------
@@ -29,6 +29,8 @@ documentation -- that means having the required software:
   - PostgreSQL 
   - GEOS
   - Proj4
+  - GDAL (for raster)
+  - json-c (for GeoJSON load support)
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
@@ -77,7 +79,7 @@ Release procedure
        -- http://debbie.postgis.net:8080 (log in)
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
-       Oh just be lazy and bug Regina Obe do this.
+       Or just be lazy and bug Regina Obe do this.
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
