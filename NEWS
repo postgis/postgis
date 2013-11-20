@@ -7,6 +7,7 @@ YYYY/MM/DD
            distribution of PostGIS Extension as GPLv2.
 
  * Bug Fixes *
+  - #2494, avoid memcpy in GIST index
   - #2502, Fix postgis_topology_scripts_installed() install schema
   - #2504, Fix segfault on bogus pgsql2shp call 
   - #2528, Fix memory leak in ST_Split / lwline_split_by_line
