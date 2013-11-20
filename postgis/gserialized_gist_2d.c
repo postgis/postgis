@@ -530,7 +530,15 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	** The most info we need is the 8 bytes of serialized header plus the 
 	** of floats necessary to hold the bounding box.
 	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 8 + sizeof(BOX2DF));
+	if (VARATT_IS_EXTENDED(gsdatum)) 
+	{ 
+		gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 8 + sizeof(BOX2DF)); 
+	} 
+	else 
+	{ 
+		gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum); 
+	} 
+
 	flags = gpart->flags;
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);

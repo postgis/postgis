@@ -8,6 +8,8 @@ PostGIS 2.1.2
 
  * Enhancements *
 
+  - #2494, avoid memcopy in GiST index (hayamiz)
+
 
 
 PostGIS 2.1.1
