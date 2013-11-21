@@ -162,7 +162,10 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
             <!-- Optionally add a "See Also" section -->
             <refsection>
                 <title>See Also</title>
-                <para><xref linkend="GetTopoGeomElements"/></para>
+                <para>
+                  <xref linkend="GetTopoGeomElements"/>,
+                  <xref linkend="topoelementarray" />
+                </para>
             </refsection>
 		</refentry>
 		
