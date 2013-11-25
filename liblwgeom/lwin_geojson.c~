@@ -492,7 +492,7 @@ parse_geojson_psurface(json_object *geojson, int *hasz,  int root_srid)
 				}
 
 				geom = (LWGEOM*)lwpsurface_add_lwpoly((LWPSURFACE*)geom,
-				                                   (LWPOLY*)lwpoly_construct(root_srid, NULL, ring, ppa));
+				                                   (LWPOLY*)lwpo_construct(root_srid, NULL, ring, ppa));
 			}
 		}
 	}

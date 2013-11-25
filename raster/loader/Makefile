@@ -32,8 +32,8 @@ LIBGDAL_CFLAGS=-I/usr/include/gdal
 LIBGDAL_LDFLAGS=-L/usr/lib -lgdal
 LIBGDAL_DEPLIBS_LDFLAGS=
 PROJ_CFLAGS=
-GEOS_CFLAGS=-I/usr/include
-GEOS_LDFLAGS=-L/usr/lib -lgeos_c
+GEOS_CFLAGS=-I/usr/local/include
+GEOS_LDFLAGS=-L/usr/local/lib -lgeos_c
 
 RTCORE_CFLAGS=-I$(RT_CORE)
 RTCORE_LDFLAGS=$(RT_CORE)/librtcore.a

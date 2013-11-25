@@ -110,7 +110,7 @@
 #define POSTGIS_AUTOCACHE_BBOX 1
 
 /* PostGIS build date */
-#define POSTGIS_BUILD_DATE "2013-10-30 17:44:27"
+#define POSTGIS_BUILD_DATE "2013-11-05 20:24:46"
 
 /* PostGIS library debug level (0=disabled) */
 #define POSTGIS_DEBUG_LEVEL 0
@@ -119,7 +119,7 @@
 #define POSTGIS_GDAL_VERSION 19
 
 /* GEOS library version */
-#define POSTGIS_GEOS_VERSION 33
+#define POSTGIS_GEOS_VERSION 34
 
 /* PostGIS libxml2 version */
 #define POSTGIS_LIBXML2_VERSION "2.9.1"
@@ -143,10 +143,10 @@
 #define POSTGIS_PROFILE 0
 
 /* PROJ library version */
-#define POSTGIS_PROJ_VERSION 48
+#define POSTGIS_PROJ_VERSION 47
 
 /* PostGIS Raster build date */
-#define POSTGIS_RASTER_BUILD_DATE "2013-10-30 17:44:27"
+#define POSTGIS_RASTER_BUILD_DATE "2013-11-05 20:24:46"
 
 /* PostGIS Raster library version */
 #define POSTGIS_RASTER_LIB_VERSION "0.1.6d"

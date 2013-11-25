@@ -42,8 +42,8 @@ LIBGDAL_CFLAGS=-I/usr/include/gdal
 LIBGDAL_LDFLAGS=-L/usr/lib -lgdal
 LIBPROJ_CFLAGS=
 
-PG_CPPFLAGS+= -I/usr/include  -I/usr/include/libxml2 -I/usr/local/include -DHAVE_SFCGAL  $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
-SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS)  -L/usr/lib  -lgeos_c -lproj  -ljson-c -lxml2 -L/usr/local/lib -lSFCGAL 
+PG_CPPFLAGS+= -I/usr/local/include  -I/usr/include/libxml2 -I/usr/local/include -DHAVE_SFCGAL  $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
+SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS)  -L/usr/local/lib  -lgeos_c -lproj  -ljson-c -lxml2 -L/usr/local/lib -lSFCGAL 
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql

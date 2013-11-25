@@ -43,7 +43,7 @@
 #define LIBLWGEOM_VERSION "2.1.0"
 #define LIBLWGEOM_VERSION_MAJOR "2"
 #define LIBLWGEOM_VERSION_MINOR "1"
-#define LIBLWGEOM_GEOS_VERSION "33"
+#define LIBLWGEOM_GEOS_VERSION "34"
 
 /**
 * Return types for functions with status returns.

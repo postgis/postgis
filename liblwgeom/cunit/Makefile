@@ -11,8 +11,8 @@
 # **********************************************************************
 
 CC=gcc
-CFLAGS=-g -O2  -Wall -Wmissing-prototypes -I/usr/include  
-LDFLAGS = -L/usr/lib -lgeos_c
+CFLAGS=-g -O2  -Wall -Wmissing-prototypes -I/usr/local/include  
+LDFLAGS = -L/usr/local/lib -lgeos_c
 top_builddir = ../..
 SHELL = /bin/bash
 LIBTOOL = $(SHELL) $(top_builddir)/libtool

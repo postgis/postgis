@@ -2,7 +2,7 @@ DATABASE=postgis_topo_regress
 
 PSQL=psql
 PERL=/usr/bin/perl
-GEOS_NUMERIC_VERSION=30303
+GEOS_NUMERIC_VERSION=30402
 
 all: 
 	@echo "Use 'make check' to run all tests"

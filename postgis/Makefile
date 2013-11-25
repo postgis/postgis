@@ -89,8 +89,8 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += -I../liblwgeom -I../libpgcommon  -I/usr/include  -I/usr/include/libxml2 -I/usr/local/include -DHAVE_SFCGAL  -fPIC
-SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a  -L/usr/lib  -lgeos_c -lproj  -ljson-c -lxml2 -L/usr/local/lib -lSFCGAL
+PG_CPPFLAGS += -I../liblwgeom -I../libpgcommon  -I/usr/local/include  -I/usr/include/libxml2 -I/usr/local/include -DHAVE_SFCGAL  -fPIC
+SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a  -L/usr/local/lib  -lgeos_c -lproj  -ljson-c -lxml2 -L/usr/local/lib -lSFCGAL
 
 # Add SFCGAL Flags if defined
 ifeq (sfcgal,sfcgal)

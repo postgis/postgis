@@ -30,8 +30,8 @@ POSTGIS_MICRO_VERSION=0
 INSTALL=/usr/bin/install -c
 INSTALL_DATA=${INSTALL} -m 644
 
-XSLTPROC=/usr/bin/xsltproc
-XSLBASE=/usr/share/xml/docbook/stylesheet/nwalsh
+XSLTPROC=
+XSLBASE=
 XMLLINT=/usr/bin/xmllint
 PERL=/usr/bin/perl
 
@@ -66,7 +66,7 @@ CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 DBLATEX=
 
 # Imagemagick's convert utility program for generated images used in the documentation
-IMAGEMAGICK=/usr/bin/convert
+IMAGEMAGICK=
 
 # Gettext for translated documentation
 MSGMERGE=msgmerge

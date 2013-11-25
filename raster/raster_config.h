@@ -2,7 +2,7 @@
 /* raster_config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* PostGIS Raster build date */
-#define POSTGIS_RASTER_BUILD_DATE "2013-10-30 17:44:27"
+#define POSTGIS_RASTER_BUILD_DATE "2013-11-05 20:24:46"
 
 /* PostGIS Raster library version */
 #define POSTGIS_RASTER_LIB_VERSION "0.1.6d"

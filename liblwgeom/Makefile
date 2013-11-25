@@ -11,8 +11,8 @@
 # **********************************************************************
 
 CC = gcc
-CFLAGS = -g -O2  -fPIC -DPIC  -Wall -Wmissing-prototypes -I/usr/include  
-LDFLAGS =  -L/usr/lib -lgeos_c  -lproj  -ljson-c
+CFLAGS = -g -O2  -fPIC -DPIC  -Wall -Wmissing-prototypes -I/usr/local/include  
+LDFLAGS =  -L/usr/local/lib -lgeos_c  -lproj  -ljson-c
 NUMERICFLAGS =  -ffloat-store
 top_builddir = ..
 prefix = /usr/local
