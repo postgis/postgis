@@ -32,6 +32,8 @@ PostGIS 2.2.0
            raster_columns and raster_overviews
   - #2532, Add missing raster/geometry commutator operators
   - #2540, Change GUC name for GDAL_DATA to postgis.gdal_datapath
+  - #2552, Fix handling of NULL raster in ST_AsTIFF, ST_AsPNG
+           and ST_AsJPEG
 
  * Code refactoring *
 
