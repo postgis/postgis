@@ -13,6 +13,7 @@ YYYY/MM/DD
   - #2528, Fix memory leak in ST_Split / lwline_split_by_line
   - #2532, Add missing raster/geometry commutator operators
   - #2533, Remove duplicated signatures
+  - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and ST_AsJPEG
 
 PostGIS 2.0.4
 2013/09/06

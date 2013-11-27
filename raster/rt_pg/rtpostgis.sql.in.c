@@ -1102,6 +1102,10 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL, s
 		nodata double precision;
 		last_nodata double precision;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- TIFF only allows one NODATA value for ALL bands
@@ -1136,6 +1140,10 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 		num_bands int;
 		options text[];
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		compression2 := trim(both from upper(compression));
 
 		IF length(compression2) > 0 THEN
@@ -1223,6 +1231,10 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 		num_bands int;
 		i int;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- JPEG allows 1 or 3 bands
@@ -1298,6 +1310,10 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 		i int;
 		pt text;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- PNG allows 1, 3 or 4 bands
