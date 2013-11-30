@@ -5,7 +5,7 @@
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
  * Copyright (C) 2011-2013 Regents of the University of California
- *   <bkpark@ucdavis.edu>
+ <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -142,6 +142,7 @@
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_pixel_t* rt_pixel;
+typedef struct rt_mask_t* rt_mask;
 typedef struct rt_geomval_t* rt_geomval;
 typedef struct rt_bandstats_t* rt_bandstats;
 typedef struct rt_histogram_t* rt_histogram;
@@ -395,7 +396,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, int count,
+	rt_pixel npixel, rt_mask mask, int count,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -2275,6 +2276,14 @@ struct rt_pixel_t {
 
 	LWGEOM *geom;
 };
+
+struct rt_mask_t {
+  uint16_t width;
+  uint16_t height;
+  double *values;
+  double *nodata;
+  int weighted; /* 0 if not weighted values 1 if weighted values */
+}
 
 /* polygon as LWPOLY with associated value */
 struct rt_geomval_t {
