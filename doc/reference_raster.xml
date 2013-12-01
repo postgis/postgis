@@ -12393,6 +12393,108 @@ a_rid | b_rid | overleft
 </programlisting>
 		  </refsection>
 		 </refentry>
+		 
+		<refentry id="RT_Raster_EQ">
+		  <refnamediv>
+			<refname>&#61;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&#61;</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+			is the same as the bounding box of raster B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for rasters  to
+			perform internal orderings and comparison of rasters (ie. in a GROUP BY or ORDER BY clause).</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+				rasters. Use <xref linkend="RT_Raster_Same" /> instead.  This operator exists mostly so one can group by the raster column.</para></caution>
+				
+			<para>Availability:  2.1.0 </para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Same" /></para>
+		  </refsection>
+		</refentry>
+		 
+		<refentry id="RT_Raster_Same">
+		  <refnamediv>
+			<refname>~=</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~=</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+        <title>Description</title>
+  
+        <para>The <varname>~=</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+        is the same as the bounding box of raster B.</para>
+  
+        <note><para>This operand will make use of any indexes that may be available on the
+          rasters.</para></note>
+  
+         <para>Availability: 2.0.0</para>
+
+		  </refsection>
+
+		  <refsection>
+        <title>Examples</title>
+        <para>Very useful usecase is for taking two sets of single band rasters that are of the same chunk but represent different themes and creating a multi-band raster</para>
+  <programlisting>SELECT ST_AddBand(prec.rast, alt.rast) As new_rast
+    FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
+        </programlisting>
+		  </refsection>
+		  
+		  <refsection>
+        <title>See Also</title>
+        <para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_Raster_EQ" /></para>
+		  </refsection>
+		</refentry>
 	</sect1>
 	
 	<sect1 id="Raster_Relationships">
