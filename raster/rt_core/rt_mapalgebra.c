@@ -811,7 +811,7 @@ rt_errorstate
 rt_raster_iterator(
 	rt_iterator itrset, uint16_t itrcount,
 	rt_extenttype extenttype, rt_raster customextent,
-	rt_pixtype pixtype,
+	rt_pixtype pixtype, rt_mask mask,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
 	void *userarg,
@@ -1346,7 +1346,7 @@ rt_raster_iterator(
 
 				/* convert set of rt_pixel to 2D array */
 				status = rt_pixel_set_to_array(
-					npixels, status,
+					npixels, mask, status,
 					x, y,
 					distancex, distancey,
 					&(_param->arg->values[i]),
