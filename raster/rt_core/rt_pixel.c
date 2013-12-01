@@ -283,7 +283,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, int count,
+	rt_pixel npixel, rt_mask mask,int count,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -308,6 +308,13 @@ rt_errorstate rt_pixel_set_to_array(
 	dim[1] = distancey * 2 + 1;
 	RASTER_DEBUGF(4, "dimensions = %d x %d", dim[0], dim[1]);
 
+	/* make sure that the dimx and dimy match mask */
+	if( mask != NULL) {
+	  assert( mask->dimx == dim[0] );
+	  assert( mask->dimy == dim[1] );
+	  assert( mask->values != NULL);
+	  assert( mask->nodata != NULL);
+	}
 	/* establish 2D arrays (Y axis) */
 	values = rtalloc(sizeof(double *) * dim[1]);
 	nodatas = rtalloc(sizeof(int *) * dim[1]);
@@ -368,8 +375,23 @@ rt_errorstate rt_pixel_set_to_array(
 		RASTER_DEBUGF(4, "absolute x,y: %d x %d", npixel[i].x, npixel[i].y);
 		RASTER_DEBUGF(4, "relative x,y: %d x %d", _x, _y);
 
-		values[_y][_x] = npixel[i].value;
-		nodatas[_y][_x] = 0;
+		if ( mask == NULL ) {
+		  values[_y][_x] = npixel[i].value;
+		  nodatas[_y][_x] = 0;
+		}else{ 
+		  if( mask->weighted == 0 ){
+		    if( FLT_EQ( mask->values[_y][_x],0) ){
+		      values[_y][_x] = 0;
+		      nodatas[_y][_x] = 1;
+		    }else{
+		      values[_y][_x] = npixel[i].value;
+		      nodatas[_y][_x] = 0;
+		    }
+		  }else{
+		    values[_y][_x] = npixel[i].value * mask->values[_y][_x];
+		    nodatas[_y][_x] = 0;
+		  }
+		}
 
 		RASTER_DEBUGF(4, "(x, y, nodata, value) = (%d, %d, %d, %f)", _x, _y, nodatas[_y][_x], values[_y][_x]);
 	}
