@@ -1953,7 +1953,7 @@ rt_errorstate
 rt_raster_iterator(
 	rt_iterator itrset, uint16_t itrcount,
 	rt_extenttype extenttype, rt_raster customextent,
-	rt_pixtype pixtype,
+	rt_pixtype pixtype, rt_mask mask,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
 	void *userarg,
@@ -2279,8 +2279,8 @@ struct rt_pixel_t {
 struct rt_mask_t {
   uint16_t dimx;
   uint16_t dimy;
-  double *values;
-  double *nodata;
+  double **values;
+  double **nodata;
   int weighted; /* 0 if not weighted values 1 if weighted values */
 };
 
