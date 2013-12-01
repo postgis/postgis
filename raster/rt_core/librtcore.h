@@ -4,8 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011-2013 Regents of the University of California
- <bkpark@ucdavis.edu>
+ * Copyright (C) 2011-2013 Regents of the University of California  <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -2278,12 +2277,12 @@ struct rt_pixel_t {
 };
 
 struct rt_mask_t {
-  uint16_t width;
-  uint16_t height;
+  uint16_t dimx;
+  uint16_t dimy;
   double *values;
   double *nodata;
   int weighted; /* 0 if not weighted values 1 if weighted values */
-}
+};
 
 /* polygon as LWPOLY with associated value */
 struct rt_geomval_t {
