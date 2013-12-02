@@ -508,6 +508,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	bool typebyval;
 	char typealign;
 	int ndims = 0;
+	int num;
 	int *maskDims;
 	
 
@@ -620,8 +621,46 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 	noerr = 1;
 	
-	/* mask */
+	/* mask (7) */
        
+	if( PG_ARGISNULL(7) ){
+	  mask = NULL;
+	}else{
+	maskArray = PG_GETARG_ARRAYTYPE_P(7);
+	etype = ARR_ELEMTYPE(maskArray);
+	get_typlenbyvalalign(etype,&typlen,&typbyval,&typalign);
+	
+	switch(etype){
+	      case FLOAT4OID:
+	      case FLOAT8OID:
+		break;
+	      default:
+		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
+		PG_RETURN_NULL();
+	}
+
+	ndims = ARR_NDIM(maskArray);
+	
+	if( ndims != 2 ){ 
+	  elog(ERROR, "RASTER_nMapAlgerbra: Mask Must be a 2D array.");
+	  PG_RETRUN_NULL();
+	}
+	
+	dims = ARR_DIMS(maskArray);
+	
+	if( maskDims[0] != maskDims[1] ){
+	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must match.");
+	  PG_RETURN_NULL();
+	}
+	
+	deconstruct_array(
+			  maskArray,
+			  etype,
+			  typlen, typbyval,typalign,
+			  &maskElements,&maskNulls,&num
+			  );
+	
+	}
 
 
 	/* all rasters are empty, return empty raster */
