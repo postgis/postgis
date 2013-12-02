@@ -499,6 +499,18 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 {
 	rtpg_nmapalgebra_arg arg = NULL;
 	rt_iterator itrset;
+	rt_mask mask;
+	ArrayType *maskArray;
+	Oid etype;
+	Datum *maskElements;
+	bool *maskNulls;
+	int16 typelen;
+	bool typebyval;
+	char typealign;
+	int ndims = 0;
+	int *maskDims;
+	
+
 	int i = 0;
 	int noerr = 0;
 	int allnull = 0;
@@ -607,6 +619,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	noerr = 1;
+	
+	/* mask */
+       
+
+
 	/* all rasters are empty, return empty raster */
 	if (allempty == arg->numraster) {
 		elog(NOTICE, "All input rasters are empty. Returning empty raster");
