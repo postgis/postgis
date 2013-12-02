@@ -510,6 +510,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	int ndims = 0;
 	int num;
 	int *maskDims;
+	int x,y;
 	
 
 	int i = 0;
@@ -668,7 +669,12 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_nMapAlgerbra: Could not deconstruct new values array.");
                 PG_RETURN_NULL();
 	}
-	
+
+	/* allocate mem for mask array */
+	mask->values = palloc(sizeof(double) * num);
+	mask->nulls  = palloc(sizeof(int) *num);
+	for( y = 0; y < maskDims[0]; y++ ){
+	  for( x = 0; x < maskDims[1]; x++){
       }
 
 

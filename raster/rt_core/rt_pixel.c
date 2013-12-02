@@ -380,7 +380,7 @@ rt_errorstate rt_pixel_set_to_array(
 		  nodatas[_y][_x] = 0;
 		}else{ 
 		  if( mask->weighted == 0 ){
-		    if( FLT_EQ( mask->values[_y][_x],0) ){
+		    if( FLT_EQ( mask->values[_y][_x],0) || mask->nodata == 1 ){
 		      values[_y][_x] = 0;
 		      nodatas[_y][_x] = 1;
 		    }else{
@@ -388,8 +388,13 @@ rt_errorstate rt_pixel_set_to_array(
 		      nodatas[_y][_x] = 0;
 		    }
 		  }else{
-		    values[_y][_x] = npixel[i].value * mask->values[_y][_x];
-		    nodatas[_y][_x] = 0;
+		    if( mask->nodata[_y][_x] == 1 ){
+		      values[_y][_x] = 0;
+		      nodatas[_y][_x] = 1;
+		    }else{
+		      values[_y][_x] = npixel[i].value * mask->values[_y][_x];
+		      nodatas[_y][_x] = 0;
+		    }
 		  }
 		}
 

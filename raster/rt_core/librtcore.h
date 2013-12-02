@@ -2280,7 +2280,7 @@ struct rt_mask_t {
   uint16_t dimx;
   uint16_t dimy;
   double **values;
-  double **nodata;
+  int **nodata;
   int weighted; /* 0 if not weighted values 1 if weighted values */
 };
 
