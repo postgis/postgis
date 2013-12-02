@@ -82,29 +82,19 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 
 		// Read X coordinate
 		poObjCoord = json_object_array_get_idx( poObj, 0 );
-		iType = json_object_get_type(poObjCoord);
-		if (iType == json_type_double)
-			pt.x = json_object_get_double( poObjCoord );
-		else
-			pt.x = json_object_get_int( poObjCoord );
+		pt.x = json_object_get_double( poObjCoord );
 		LWDEBUGF(3, "parse_geojson_coord pt.x = %f.", pt.x );
 
-		// Read Y coordiante
+		// Read Y coordinate
 		poObjCoord = json_object_array_get_idx( poObj, 1 );
-		if (iType == json_type_double)
-			pt.y = json_object_get_double( poObjCoord );
-		else
-			pt.y = json_object_get_int( poObjCoord );
+		pt.y = json_object_get_double( poObjCoord );
 		LWDEBUGF(3, "parse_geojson_coord pt.y = %f.", pt.y );
 
 		if( nSize == 3 ) /* should this be >= 3 ? */
 		{
-			// Read Z coordiante
+			// Read Z coordinate
 			poObjCoord = json_object_array_get_idx( poObj, 2 );
-			if (iType == 3)
-				pt.z = json_object_get_double( poObjCoord );
-			else
-				pt.z = json_object_get_int( poObjCoord );
+			pt.z = json_object_get_double( poObjCoord );
 			LWDEBUGF(3, "parse_geojson_coord pt.z = %f.", pt.z );
 			*hasz = LW_TRUE;
 		}
