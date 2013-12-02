@@ -2501,7 +2501,11 @@ SELECT s.gid, s.school_name
 			points are the same).</para>
 
 		<important>
-		  <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+	        <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+		</important>
+
+		<important>
+          <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
 		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
