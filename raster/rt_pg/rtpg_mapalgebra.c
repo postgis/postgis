@@ -646,7 +646,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	  PG_RETRUN_NULL();
 	}
 	
-	dims = ARR_DIMS(maskArray);
+	maskDims = ARR_DIMS(maskArray);
 	
 	if( maskDims[0] != maskDims[1] ){
 	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must match.");
@@ -659,8 +659,17 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			  typlen, typbyval,typalign,
 			  &maskElements,&maskNulls,&num
 			  );
-	
+
+	if (num < 1 || num != (maskDims[0] * maskDims[1])) {
+                if (num) {
+                        pfree(maskElements);
+                        pfree(maskNulls);
+                }
+		elog(ERROR, "RASTER_nMapAlgerbra: Could not deconstruct new values array.");
+                PG_RETURN_NULL();
 	}
+	
+      }
 
 
 	/* all rasters are empty, return empty raster */
