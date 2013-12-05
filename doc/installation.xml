@@ -483,6 +483,14 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
+		  <term><command>--with-sfcgal=DIR</command></term>
+		  <listitem>
+			<para>
+			  Compile with SFCGAL support.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
 		  <term><command>--with-gettext=no</command></term>
 		  <listitem>
 			<para>
