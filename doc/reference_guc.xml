@@ -58,16 +58,16 @@
 
 			<refsection>
 				<title>Examples</title>
-				<para>Set and reset <varname>postgis.gdal.datapath</varname></para>
+				<para>Set and reset <varname>postgis.gdal_datapath</varname></para>
 
 				<programlisting>
-SET postgis.gdal.datapath TO '/usr/local/share/gdal.hidden';
-SET postgis.gdal.datapath TO default;
+SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';
+SET postgis.gdal_datapath TO default;
 				</programlisting>
 				
 				<para>Setting on windows for a particular database</para>
 				<programlisting>ALTER DATABASE gisdb
-SET postgis.gdal.datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</programlisting>
+SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</programlisting>
 			</refsection>
 
 			<refsection>

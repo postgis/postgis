@@ -10801,7 +10801,7 @@ WHERE rid = 2;
             </refsection>
 				
 				<refsection>
-					<title>Examples</title>
+					<title>Examples: Variant 1</title>
 				
 					<programlisting>SELECT 
     rid,
@@ -10815,6 +10815,23 @@ WHERE rid = 2;
    2 | 253.222229003906
 (1 row)
 				</programlisting>
+			
+			</refsection>
+			
+			<refsection>
+					<title>Examples: Variant 2</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)
+       ,  2, 2)
+  FROM dummy_rast 
+   WHERE rid = 2;
+ rid |     st_value
+-----+------------------
+   2 | 253.222229003906
+(1 row)</programlisting>
 			
 			</refsection>
 		
