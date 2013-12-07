@@ -9,6 +9,7 @@ PostGIS 2.1.2
   - #2547, Fix ST_Simplify(TopoGeometry) for hierarchical topogeoms
   - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and
            ST_AsJPEG
+  - #2555, Fix parsing issue of range arguments of ST_Reclass
 
  * Enhancements *
 
