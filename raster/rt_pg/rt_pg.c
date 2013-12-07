@@ -81,6 +81,7 @@ static char	*rtpg_chartrim(const char* input, char *remove);
 static char **rtpg_strsplit(const char *str, const char *delimiter, int *n);
 static char *rtpg_removespaces(char *str);
 static char *rtpg_trim(const char* input);
+static char *rtpg_strrstr(const char *s1, const char *s2);
 static char *rtpg_getSR(int srid);
 
 /***************************************************************
@@ -485,6 +486,27 @@ rtpg_trim(const char *input) {
 	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
+}
+
+/*
+* reverse string search function from
+* http://stackoverflow.com/a/1634398
+*/
+static char *
+rtpg_strrstr(const char *s1, const char *s2) {
+	int s1len = strlen(s1);
+	int s2len = strlen(s2);
+	char *s;
+
+	if (s2len > s1len)
+		return NULL;
+
+	s = (char *) (s1 + s1len - s2len);
+	for (; s >= s1; --s)
+		if (strncmp(s, s2, s2len) == 0)
+			return s;
+
+	return NULL;
 }
 
 static char*
@@ -6727,7 +6749,10 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
 
 					/* strsplit removes dash (a.k.a. negative sign), compare now to restore */
-					junk = strstr(colon_set[b], dash_set[c]);
+					if (c < 1)
+						junk = strstr(colon_set[b], dash_set[c]);
+					else
+						junk = rtpg_strrstr(colon_set[b], dash_set[c]);
 					/* not beginning of string */
 					if (junk != colon_set[b]) {
 						/* prior is a dash */

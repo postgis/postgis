@@ -14,6 +14,7 @@ YYYY/MM/DD
   - #2532, Add missing raster/geometry commutator operators
   - #2533, Remove duplicated signatures
   - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and ST_AsJPEG
+  - #2555, Fix parsing issue of range arguments of ST_Reclass
 
 PostGIS 2.0.4
 2013/09/06

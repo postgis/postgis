@@ -168,3 +168,27 @@ FROM (
 		ROW(2, '-10000--100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
 	) AS rast
 ) AS t;
+
+-- ticket #2555
+SELECT
+	ST_Value(rast, 1, 2, 2),
+ 	ST_Value(rast, 1, 3, 3),
+ 	ST_Value(rast, 1, 4, 4)
+FROM (
+ 	SELECT ST_Reclass(
+	 	ST_SetValue(
+			ST_SetValue(
+			 	ST_SetValue(
+				 	ST_AddBand(
+						ST_MakeEmptyRaster(5, 5, 10, 10, 2, 2, 0, 0, 0),
+					 	1, '32BF', 1, -9999
+					),
+					1, 2, 2, 9000
+				),
+				1, 3, 3, -9000
+			),
+			1, 4, 4, 9000
+		),
+	 	1, '[-9000-9000]:[-900-900]', '32BF'
+	) AS rast
+) AS t;
