@@ -258,6 +258,27 @@ rtpg_trim(const char *input) {
 	return rtn;
 }
 
+/*
+ * reverse string search function from
+ * http://stackoverflow.com/a/1634398
+ */
+char *
+rtpg_strrstr(const char *s1, const char *s2) {
+	int s1len = strlen(s1);
+	int s2len = strlen(s2);
+	char *s;
+
+	if (s2len > s1len)
+		return NULL;
+
+	s = (char *) (s1 + s1len - s2len);
+	for (; s >= s1; --s)
+		if (strncmp(s, s2, s2len) == 0)
+			return s;
+
+	return NULL;
+}
+
 char*
 rtpg_getSR(int srid) {
 	int i = 0;

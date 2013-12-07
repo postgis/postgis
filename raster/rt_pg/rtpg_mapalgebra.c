@@ -3316,7 +3316,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		PG_RETURN_NULL();
 	}
 	numBands = rt_raster_get_num_bands(raster);
-	POSTGIS_RT_DEBUGF(3, "RASTER_reclass: %d possible bands to be reclassified", n);
+	POSTGIS_RT_DEBUGF(3, "RASTER_reclass: %d possible bands to be reclassified", numBands);
 
 	/* process set of reclassarg */
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Processing Arg 1 (reclassargset)");
@@ -3422,9 +3422,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			PG_RETURN_POINTER(pgrtn);
 		}
 		expr = text_to_cstring(exprtext);
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (raw) %s", expr);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: expr (raw) %s", expr);
 		expr = rtpg_removespaces(expr);
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (clean) %s", expr);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: expr (clean) %s", expr);
 
 		/* split string to its components */
 		/* comma (,) separating rangesets */
@@ -3443,11 +3443,11 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		}
 
 		/* set of reclass expressions */
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: %d possible expressions", comma_n);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: %d possible expressions", comma_n);
 		exprset = palloc(comma_n * sizeof(rt_reclassexpr));
 
 		for (a = 0, j = 0; a < comma_n; a++) {
-			POSTGIS_RT_DEBUGF(5, "RASTER_reclass: map %s", comma_set[a]);
+			POSTGIS_RT_DEBUGF(4, "RASTER_reclass: map %s", comma_set[a]);
 
 			/* colon (:) separating range "src" and "dst" */
 			colon_set = rtpg_strsplit(comma_set[a], ":", &colon_n);
@@ -3470,7 +3470,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			exprset[j] = palloc(sizeof(struct rt_reclassexpr_t));
 
 			for (b = 0; b < colon_n; b++) {
-				POSTGIS_RT_DEBUGF(5, "RASTER_reclass: range %s", colon_set[b]);
+				POSTGIS_RT_DEBUGF(4, "RASTER_reclass: range %s", colon_set[b]);
 
 				/* dash (-) separating "min" and "max" */
 				dash_set = rtpg_strsplit(colon_set[b], "-", &dash_n);
@@ -3582,11 +3582,11 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							}
 						}
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
 
 					/* remove interval flags */
 					dash_set[c] = rtpg_chartrim(dash_set[c], "()[]");
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (char) %s", dash_set[c]);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (char) %s", dash_set[c]);
 
 					/* value from string to double */
 					errno = 0;
@@ -3605,10 +3605,18 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						SET_VARSIZE(pgrtn, pgrtn->size);
 						PG_RETURN_POINTER(pgrtn);
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (double) %f", val);
 
 					/* strsplit removes dash (a.k.a. negative sign), compare now to restore */
-					junk = strstr(colon_set[b], dash_set[c]);
+					if (c < 1)
+						junk = strstr(colon_set[b], dash_set[c]);
+					else
+						junk = rtpg_strrstr(colon_set[b], dash_set[c]);
+					POSTGIS_RT_DEBUGF(
+						4,
+						"(colon_set[%d], dash_set[%d], junk) = (%s, %s, %s)",
+						b, c, colon_set[b], dash_set[c], junk
+					);
 					/* not beginning of string */
 					if (junk != colon_set[b]) {
 						/* prior is a dash */
@@ -3624,7 +3632,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							}
 						}
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (double) %f", val);
 
 					/* src */
 					if (b < 1) {

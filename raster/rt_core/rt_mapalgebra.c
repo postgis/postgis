@@ -241,6 +241,7 @@ rt_band_reclass(
 				RASTER_DEBUGF(3, "Cannot get value at %d, %d", x, y);
 				continue;
 			}
+			RASTER_DEBUGF(4, "(x, y, ov, isnodata) = (%d, %d, %f, %d)", x, y, ov, isnodata);
 
 			do {
 				do_nv = 0;

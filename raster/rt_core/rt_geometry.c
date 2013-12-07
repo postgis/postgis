@@ -30,6 +30,7 @@
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
+#include "rt_serialize.h"
 
 /******************************************************************************
 * rt_raster_perimeter()
