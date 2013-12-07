@@ -26,7 +26,7 @@
   
   <refentry id="postgis_gdal_datapath">
 			<refnamediv>
-				<refname>postgis.gdal.datapath</refname>
+				<refname>postgis.gdal_datapath</refname>
 				<refpurpose>
 					A configuration option to assign the value of GDAL's GDAL_DATA option. If not set, the environmentally set GDAL_DATA variable is used.
 				</refpurpose>
@@ -35,7 +35,7 @@
 			<refsection>
 				<title>Description</title>
 				<para>
-					A PostgreSQL GUC variable for setting the value of GDAL's GDAL_DATA option. The <varname>postgis.gdal.datapath</varname> value should be the complete physical path to GDAL's data files.
+					A PostgreSQL GUC variable for setting the value of GDAL's GDAL_DATA option. The <varname>postgis.gdal_datapath</varname> value should be the complete physical path to GDAL's data files.
 				</para>
 				<para>
 					This configuration option is of most use for Windows platforms where GDAL's data files path is not hard-coded. This option should also be set when GDAL's data files are not located in GDAL's expected path.
