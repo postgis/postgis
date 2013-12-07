@@ -136,6 +136,9 @@
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
+#include "../../postgis_config.h"
+#include "../raster_config.h"
+
 /**
  * Types definitions
  */
