@@ -1542,7 +1542,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	err = rt_raster_iterator(
 		itrset, numraster,
 		arg->bandarg->extenttype, arg->bandarg->cextent,
-		arg->bandarg->pixtype,
+		arg->bandarg->pixtype, NULL,
 		arg->bandarg->hasnodata, arg->bandarg->nodataval,
 		0, 0,
 		&(arg->callback),
@@ -2525,7 +2525,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_LAST, NULL,
-					pixtype,
+					pixtype,NULL,
 					hasnodata, nodataval,
 					0, 0,
 					&utype,
@@ -2617,7 +2617,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,
+					pixtype,NULL,
 					hasnodata, nodataval,
 					0, 0,
 					&utype,
@@ -2730,7 +2730,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,
+					pixtype,NULL,
 					hasnodata, nodataval,
 					0, 0,
 					NULL,
@@ -2742,7 +2742,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,
+					pixtype,NULL,
 					hasnodata, nodataval,
 					0, 0,
 					NULL,
@@ -3289,7 +3289,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		noerr = rt_raster_iterator(
 			itrset, 2,
 			arg->extenttype, NULL,
-			pixtype,
+			pixtype,NULL,
 			hasnodata, nodataval,
 			0, 0,
 			NULL,
