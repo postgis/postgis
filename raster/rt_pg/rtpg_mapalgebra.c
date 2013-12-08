@@ -696,7 +696,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	    i++;
 	  }
 	}
-
+	//set mask dimenstions 
 	mask->dimx = maskDims[0];
 	mask->dimy = maskDims[1];
 	}//end if else argisnull
