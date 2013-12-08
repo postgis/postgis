@@ -671,11 +671,37 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	/* allocate mem for mask array */
-	mask->values = palloc(sizeof(double) * num);
-	mask->nulls  = palloc(sizeof(int) *num);
+	for(i = 0; i < maskDims[0]; i++){
+	  (*mask->values)[i] = (*double) palloc(sizeof(double) * maskDims[1]);
+	  (*mask->nodata)[i] = (*int) palloc(sizeof(int) * maskDims[1]);
+	}
+	/* place values in to mask */
+	i = 0;
 	for( y = 0; y < maskDims[0]; y++ ){
 	  for( x = 0; x < maskDims[1]; x++){
-      }
+	    if(maskNulls[i]){
+	      mask->values[y][x] = 0;
+	      mask->nodata[y][x] = 1;
+	    }else{
+	      switch(etype){
+	      case FLOAT4OID:
+		mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
+		mask->nodata[y][x] = 0;
+		break;
+	      case FLOAT8OID:
+		mask-values[y][x] = (double) DatumGetFloat8(maskElements[i]);
+		mask-nodata[y][x] = 0;
+	      }
+	    }
+	    i++;
+	  }
+	}
+
+	mask->dimx = maskDims[0];
+	mask->dimy = maskDims[1];
+	}//end if else argisnull
+
+	/* (8) weighted boolean */
 
 
 	/* all rasters are empty, return empty raster */
@@ -821,7 +847,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	noerr = rt_raster_iterator(
 		itrset, arg->numraster,
 		arg->extenttype, arg->cextent,
-		arg->pixtype,
+		arg->pixtype, mask,
 		arg->hasnodata, arg->nodataval,
 		arg->distance[0], arg->distance[1],
 		&(arg->callback),
