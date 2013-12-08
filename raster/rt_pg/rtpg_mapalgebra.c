@@ -702,7 +702,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}//end if else argisnull
 
 	/* (8) weighted boolean */
-
+	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
+	  mask->weighted = 0;
+	}else{
+	  mask->weighted = 1;
+	}
 
 	/* all rasters are empty, return empty raster */
 	if (allempty == arg->numraster) {
