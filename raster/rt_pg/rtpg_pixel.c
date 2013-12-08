@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * WKTRaster - Raster Types for PostGIS
+ * WKTRaster - Raster Types for Pos-tGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
  * Copyright (C) 2011-2013 Regents of the University of California
@@ -1538,7 +1538,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		noerr = rt_raster_iterator(
 			itrset, arg->ngv + 1,
 			ET_FIRST, NULL,
-			pixtype,
+			pixtype,NULL,
 			hasnodata, nodataval,
 			0, 0,
 			arg,
@@ -2223,7 +2223,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	/* convert set of rt_pixel to 2D array */
 	/* dim is passed with element 0 being Y-axis and element 1 being X-axis */
 	count = rt_pixel_set_to_array(
-		npixels, count,
+		npixels,NULL, count,
 		_x, _y,
 		distance[0], distance[1],
 		&value2D,
