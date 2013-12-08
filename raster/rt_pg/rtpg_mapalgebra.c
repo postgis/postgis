@@ -504,9 +504,9 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	Oid etype;
 	Datum *maskElements;
 	bool *maskNulls;
-	int16 typelen;
-	bool typebyval;
-	char typealign;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
 	int ndims = 0;
 	int num;
 	int *maskDims;
@@ -670,10 +670,13 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
                 PG_RETURN_NULL();
 	}
 
+
 	/* allocate mem for mask array */
+	mask->values = palloc(sizeof(double*)* maskDims[0]);
+	mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
 	for(i = 0; i < maskDims[0]; i++){
-	  (*mask->values)[i] = (*double) palloc(sizeof(double) * maskDims[1]);
-	  (*mask->nodata)[i] = (*int) palloc(sizeof(int) * maskDims[1]);
+	  mask->values[i] = (double *) palloc(sizeof(double) * maskDims[1]);
+	  mask->nodata[i] = (int *) palloc(sizeof(int) * maskDims[1]);
 	}
 	/* place values in to mask */
 	i = 0;
@@ -689,8 +692,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		mask->nodata[y][x] = 0;
 		break;
 	      case FLOAT8OID:
-		mask-values[y][x] = (double) DatumGetFloat8(maskElements[i]);
-		mask-nodata[y][x] = 0;
+		mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
+		mask->nodata[y][x] = 0;
 	      }
 	    }
 	    i++;
