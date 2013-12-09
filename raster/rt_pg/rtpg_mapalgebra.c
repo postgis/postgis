@@ -784,8 +784,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		memset(arg->callback.ufc_info.argnull, FALSE, sizeof(bool) * arg->callback.ufl_info.fn_nargs);
 
 		/* userargs (7) */
-		if (!PG_ARGISNULL(7))
-			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(7);
+		if (!PG_ARGISNULL(9))
+			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(9);
 		else {
 			arg->callback.ufc_info.arg[2] = (Datum) NULL;
 			arg->callback.ufc_info.argnull[2] = TRUE;
