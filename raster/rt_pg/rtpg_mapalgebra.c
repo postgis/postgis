@@ -644,7 +644,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	
 	if( ndims != 2 ){ 
 	  elog(ERROR, "RASTER_nMapAlgerbra: Mask Must be a 2D array.");
-	  PG_RETRUN_NULL();
+	  PG_RETURN_NULL();
 	}
 	
 	maskDims = ARR_DIMS(maskArray);
@@ -706,9 +706,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 	/* (8) weighted boolean */
 	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
-	  mask->weighted = 0;
+	  if ( mask != NULL ) 
+	    mask->weighted = 0;
 	}else{
-	  mask->weighted = 1;
+	  if(mask !=NULL )
+	    mask->weighted = 1;
 	}
 
 	/* all rasters are empty, return empty raster */
