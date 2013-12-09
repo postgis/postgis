@@ -2850,6 +2850,8 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebra'
 	LANGUAGE 'c' STABLE;
 
+
+
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rastbandargset rastbandarg[],
 	callbackfunc regprocedure,
@@ -2859,7 +2861,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5, VARIADIC $8) $$
+	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5,NULL,NULL, VARIADIC $8) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
