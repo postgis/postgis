@@ -2843,6 +2843,7 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 	pixeltype text DEFAULT NULL,
 	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
 	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	mask double presision [][] DEFAULT NULL, weighted integer DEFAULT NULL,
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
