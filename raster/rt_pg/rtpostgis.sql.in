@@ -2896,7 +2896,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 			RETURN NULL;
 		END IF;
 
-		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6, VARIADIC $9);
+		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6,NULL,NULL, VARIADIC $9);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
@@ -2909,7 +2909,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6, VARIADIC $9) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6,NULL,NULL, VARIADIC $9) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
@@ -2922,7 +2922,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8,NULL,NULL, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
