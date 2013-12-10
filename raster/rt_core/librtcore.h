@@ -2294,7 +2294,6 @@ struct rt_geomval_t {
 struct rt_bandstats_t {
 	double sample;
 	uint32_t count;
-
 	double min;
 	double max;
 	double sum;
