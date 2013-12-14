@@ -284,6 +284,103 @@ VALUES (1,
            </refsection>
 		</refentry>
 
+		<refentry id="summarystats">
+			<refnamediv>
+				<refname>summarystats</refname>
+				<refpurpose>A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg functions.</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A composite type returned by the <xref linkend="RT_ST_SummaryStats"/> and <xref linkend="RT_ST_SummaryStatsAgg"/> functions.
+
+					<variablelist>
+						<varlistentry>
+							<term>
+								<parameter>count </parameter>
+								<type>integer</type>
+							</term>
+							<listitem>
+								<para>
+									Number of pixels counted for the summary statistics.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>sum </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Sum of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>mean </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Arithmetic mean of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>stddev </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Standard deviation of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>min </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Minimum value of counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>max </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Maximum value of counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+					</variablelist>
+
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />
+				</para>
+			</refsection>
+		</refentry>
 		<refentry id="unionarg">
 			<refnamediv>
 				<refname>unionarg</refname>
@@ -6735,7 +6832,8 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_Count" />, 
-					<xref linkend="RT_ST_SummaryStats" />
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />
 				</para>
 			</refsection>
 		</refentry>
@@ -6886,46 +6984,51 @@ ORDER BY value, quantile,rid
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SetBandNoDataValue" /></para>
+				<para>
+					<xref linkend="RT_ST_Count" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
 			</refsection>
 		</refentry>
 		
 		<refentry id="RT_ST_SummaryStats">
 			<refnamediv>
 				<refname>ST_SummaryStats</refname>
-				<refpurpose>Returns record consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
+				<refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+
+				 <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-				  				  
-				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  
-				 <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-
 				
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -6933,12 +7036,20 @@ ORDER BY value, quantile,rid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns record consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+				<para>Returns <xref linkend="summarystats"/> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
 
 				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value. Set <varname>exclude_nodata_value</varname> to false to get count of all pixels.</para></note>
 				
 				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</para></note>
+
 				<para>Availability: 2.0.0 </para>
+
+				<warning>
+					<para>
+						The ST_SummaryStats(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead.
+					</para>
+				</warning>
+
 			</refsection>
 				
 			<refsection>
@@ -7023,12 +7134,115 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 			<refsection>
 				<title>See Also</title>
 				<para>
-<xref linkend="RT_ST_Count" />,
-<xref linkend="RT_ST_Clip" />
+					<xref linkend="summarystats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />, 
+					<xref linkend="RT_ST_Count" />, 
+				 	<xref linkend="RT_ST_Clip" />
 				</para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_SummaryStatsAgg">
+			<refnamediv>
+				<refname>ST_SummaryStatsAgg</refname>
+				<refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed is no band is specified.</refpurpose>
+			</refnamediv>
 		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+				  
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+				  				  
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				 	</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns <xref linkend="summarystats"/> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+
+				<note><para>By default only considers pixel values not equal to the <varname>NODATA</varname> value. Set <varname>exclude_nodata_value</varname> to False to get count of all pixels.</para></note>
+				
+				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between 0 and 1</para></note>
+
+				<para>Availability: 2.2.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		rast.rast
+	FROM (
+		SELECT ST_SetValue(
+			ST_SetValue(
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
+				)
+				, 1, 5, 4, 0
+			)
+			, 1, 5, 5, 3.14159
+		) AS rast
+	) AS rast
+	FULL JOIN (
+		SELECT generate_series(1, 10) AS id
+	) AS id
+		ON 1 = 1
+)
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
+	FROM foo
+) bar;
+
+ count |  round  | round  | round |  round  | round 
+-------+---------+--------+-------+---------+-------
+    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142
+(1 row)
+				</programlisting>	
+			</refsection>
+			
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="summarystats" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_Count" />, 
+				 	<xref linkend="RT_ST_Clip" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_ValueCount">
 			<refnamediv>
 				<refname>ST_ValueCount</refname>

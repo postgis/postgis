@@ -8,6 +8,8 @@ PostGIS 2.2.0
 
  * Deprecated signatures *
 
+  - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
+
  * New Features *
 
   - #2430, ST_ForceCurve
