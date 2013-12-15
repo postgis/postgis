@@ -152,6 +152,18 @@ BEGIN
 			);
     END IF;
 
+    -- create agg_count type if it does not exist
+	IF NOT EXISTS(SELECT typname 
+		FROM pg_type 
+        	WHERE typname = 'agg_count') THEN
+			CREATE TYPE agg_count AS (
+			 	count bigint,
+			 	nband integer,
+			 	exclude_nodata_value boolean,
+			 	sample_percent double precision
+			);
+    END IF;
+
 END$$;	
 
 -- make geometry cast ASSIGNMENT
