@@ -499,7 +499,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 {
 	rtpg_nmapalgebra_arg arg = NULL;
 	rt_iterator itrset;
-	rt_mask mask;
+	rt_mask mask = NULL;
 	ArrayType *maskArray;
 	Oid etype;
 	Datum *maskElements;
@@ -534,7 +534,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_nMapAlgebra: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
-
+        mask = palloc(sizeof(struct rt_mask_t));
+        if  (mask == NULL ){
+	    elog(ERROR,"RASTER_nMapAlgebra: Could not allocate memory for mask struct.");
+	    PG_RETURN_NULL();
+	}
 	/* let helper function process rastbandarg (0) */
 	if (!rtpg_nmapalgebra_rastbandarg_process(arg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
 		rtpg_nmapalgebra_arg_destroy(arg);
@@ -565,12 +569,17 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	/* distancex (3) */
-	if (!PG_ARGISNULL(3))
+	if (!PG_ARGISNULL(3)){
 		arg->distance[0] = PG_GETARG_INT32(3);
-	/* distancey (4) */
-	if (!PG_ARGISNULL(4))
+	}else{
+	        arg->distance[0] = 0;
+	}
+        /* distancey (4) */
+	if (!PG_ARGISNULL(4)){
 		arg->distance[1] = PG_GETARG_INT32(4);
-
+	}else{
+	        arg->distance[1] = 0;
+	}
 	if (arg->distance[0] < 0 || arg->distance[1] < 0) {
 		rtpg_nmapalgebra_arg_destroy(arg);
 		elog(ERROR, "RASTER_nMapAlgebra: Distance for X and Y axis must be greater than or equal to zero");
@@ -625,6 +634,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	/* mask (7) */
        
 	if( PG_ARGISNULL(7) ){
+	  pfree(mask);
 	  mask = NULL;
 	}else{
 	maskArray = PG_GETARG_ARRAYTYPE_P(7);
@@ -675,8 +685,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	mask->values = palloc(sizeof(double*)* maskDims[0]);
 	mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
 	for(i = 0; i < maskDims[0]; i++){
-	  mask->values[i] = (double *) palloc(sizeof(double) * maskDims[1]);
-	  mask->nodata[i] = (int *) palloc(sizeof(int) * maskDims[1]);
+	  mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
+	  mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
 	}
 	/* place values in to mask */
 	i = 0;
@@ -702,6 +712,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	//set mask dimenstions 
 	mask->dimx = maskDims[0];
 	mask->dimy = maskDims[1];
+	arg->distance[0] = maskDims[0] % 2;
+	arg->distance[1] = maskDims[1] % 2;
 	}//end if else argisnull
 
 	/* (8) weighted boolean */
