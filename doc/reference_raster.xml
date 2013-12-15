@@ -6593,6 +6593,7 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 	
 	<sect1 id="RasterBand_Stats">
 	    <title>Raster Band Statistics and Analytics</title>
+
 	    	<refentry id="RT_ST_Count">
 			<refnamediv>
 				<refname>ST_Count</refname>
@@ -6634,6 +6635,13 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
 				<para>Availability: 2.0.0 </para>
+
+				<warning>
+					<para>
+						The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_CountAgg" /> instead.
+					</para>
+				</warning>
+
 			</refsection>
 				
 			<refsection>
@@ -6653,7 +6661,104 @@ rid | exclude_nodata | include_nodata
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetBandNoDataValue" /></para>
+				<para>
+					<xref linkend="RT_ST_CountAgg" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
+			</refsection>
+		</refentry>
+		
+	  <refentry id="RT_ST_CountAgg">
+			<refnamediv>
+				<refname>ST_CountAgg</refname>
+				<refpurpose>
+					Aggregate. Returns the number of pixels in a given band of a set of rasters. If no band is specified defaults to band 1. If exclude_nodata_value is set to true, will only count pixels that are not equal to the NODATA value.
+				</refpurpose>
+		 	</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the number of pixels in a given band of a set of rasters.  If no band is specified <varname>nband</varname> defaults to 1.</para> 
+				<para>
+					If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>NODATA</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels
+			 	</para>
+				<para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between zero (0) and one (1)</para>
+
+				<para>Availability: 2.2.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		rast.rast
+	FROM (
+		SELECT ST_SetValue(
+			ST_SetValue(
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
+				)
+				, 1, 5, 4, 0
+			)
+			, 1, 5, 5, 3.14159
+		) AS rast
+	) AS rast
+	FULL JOIN (
+		SELECT generate_series(1, 10) AS id
+	) AS id
+		ON 1 = 1
+)
+SELECT
+	ST_CountAgg(rast, 1, TRUE)
+FROM foo;
+
+ st_countagg 
+-------------
+          20
+(1 row)
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Count" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
 			</refsection>
 		</refentry>
 		

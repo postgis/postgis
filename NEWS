@@ -5,10 +5,12 @@ PostGIS 2.2.0
 
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
+  - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
 
  * Deprecated signatures *
 
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
+  - #2567, ST_Count(tablename, rastercolumn, ...)
 
  * New Features *
 
@@ -18,6 +20,7 @@ PostGIS 2.2.0
     variable GDAL_DATA
   - #2397, read encoding info automatically in shapefile loader
   - #2565, ST_SummaryStatsAgg()
+  - #2567, ST_CountAgg()
 
  * Enhancements *
 

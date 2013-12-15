@@ -511,3 +511,8 @@ DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
 DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean, double precision);
 DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, boolean, double precision);
 DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean);
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, boolean);
