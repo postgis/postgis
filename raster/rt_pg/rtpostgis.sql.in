@@ -2843,7 +2843,7 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 	pixeltype text DEFAULT NULL,
 	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
 	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
-	mask double precision[][] DEFAULT NULL, weighted integer DEFAULT NULL,
+	mask double precision[][] DEFAULT NULL, weighted boolean DEFAULT NULL,
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
@@ -2861,7 +2861,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5,NULL,NULL, VARIADIC $8) $$
+	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5,NULL::double precision [],NULL::boolean, VARIADIC $8) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
@@ -2896,7 +2896,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 			RETURN NULL;
 		END IF;
 
-		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6,NULL,NULL, VARIADIC $9);
+		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
@@ -2909,7 +2909,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6,NULL,NULL, VARIADIC $9) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
@@ -2922,31 +2922,22 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8,NULL,NULL, VARIADIC $11) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8,NULL::double precision [],NULL::boolean, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband int,
 	callbackfunc regprocedure,
+	mask double precision [][], weighted boolean,
 	pixeltype text DEFAULT NULL,
 	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
-	mask double precision [][] DEFAULT NULL, weighted boolean DEFAULT NULL,
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
 	AS $$
-	DECLARE
-		dimx integer;
-	        dimy integer;
-	BEGIN
-		dimx := array_length( mask , 1 );
-		dimy := array_length( mask , 2 );
+	select _st_mapalgebra(ARRAY[ROW($1,$2)]::rastbandarg[],$3,$6,NULL::integer,NULL::integer,$7,$8,$4,$5,VARIADIC $9)
+	$$ LANGUAGE 'sql' STABLE;
 
-		dimx := (dimx/2)-1;
-		dimy := (dimy/2)-1;
-		RETURN _st_mapalgebra(ARRAY[ROW($1,$2)]::rastbandarg[],$3,$4,dimx,dimy,$5,$6,$7,$8,VARIADIC $9);
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
 -----------------------------------------------------------------------
 -- 1 or 2-Raster ST_MapAlgebra with expressions
 -----------------------------------------------------------------------
