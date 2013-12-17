@@ -663,6 +663,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must match.");
 	  PG_RETURN_NULL();
 	}
+
+	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
+	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must be odd.");
+	  PG_RETURN_NULL();
+	} 
 	
 	deconstruct_array(
 			  maskArray,
@@ -712,8 +717,13 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	//set mask dimenstions 
 	mask->dimx = maskDims[0];
 	mask->dimy = maskDims[1];
-	arg->distance[0] = maskDims[0] % 2;
-	arg->distance[1] = maskDims[1] % 2;
+	if ( maskDims[0] == 1 && maskDims[1] == 1){
+	  arg->distance[0] = 0;
+	  arg->distance[1] = 0;
+	}else{
+	  arg->distance[0] = maskDims[0] % 2;
+	  arg->distance[1] = maskDims[1] % 2;
+	}
 	}//end if else argisnull
 
 	/* (8) weighted boolean */
