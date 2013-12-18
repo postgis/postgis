@@ -27,6 +27,22 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
+-- Check that no other postgis is installed
+DO $$
+DECLARE
+  rec RECORD;
+BEGIN
+  FOR rec IN
+    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    WHERE p.proname = 'postgis_version'
+    AND p.pronamespace = n.oid
+  LOOP
+    RAISE EXCEPTION 'PostGIS is already installed in schema ''%'', uninstall it first', rec.nspname;
+  END LOOP;
+END
+$$ LANGUAGE 'plpgsql';
+
+
 -- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS

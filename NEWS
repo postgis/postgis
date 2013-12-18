@@ -10,6 +10,7 @@ PostGIS 2.1.2
   - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and
            ST_AsJPEG
   - #2555, Fix parsing issue of range arguments of ST_Reclass
+  - #2580, Do not allow installing postgis twice in the same database
 
  * Enhancements *
 
