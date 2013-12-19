@@ -30,15 +30,19 @@ ifeq ($(PG91),yes)
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
+	mkdir -p sql
 	cp $< $@
 	
 sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
+	mkdir -p sql
 	cat $^ > $@
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql ../postgis_extension_helper_uninstall.sql
+	mkdir -p sql
 	cat $^ > $@
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
+	mkdir -p sql
 	cp $< $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -144,6 +148,7 @@ sql_bits/tiger_geocoder_comments.sql: ../../doc/tiger_geocoder_comments.sql
 #hardcode for now using 
 #the extensions/make_unpackaged.sql script form an install
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpackaged.sql.in
+	mkdir -p sql
 	cp $< $@
 
 #upgrade script should have everything but table, schema, type creation/alter
@@ -155,6 +160,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #they can be dropped but we need to remove
 #them from the extension first
 sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in 
+	mkdir -p sql
 	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
