@@ -3678,6 +3678,39 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
+
+CREATE OR REPLACE FUNCTION ST_WEDGE( rast raster, nband integer, intr integer, extR integer, thetaStart double precision, thetaEnd double precision, operation text, pixeltype text default null, extenttype text default 'INTERSECTION', coustomextent raster default null) 
+RETURNS RASTER  
+AS $$
+DECLARE
+	mask double precision [][];
+	operationText text;
+BEGIN
+	CASE UPPER($5)
+	WHEN 'MAX' THEN
+		operationText := 'st_max4ma(double precision [][][], integer [][], text[])';
+	WHEN 'MEAN' THEN
+		operationText := 'st_mean4ma(double precision [][][], integer [][], text[])';
+	WHEN 'MIN' THEN
+		operationText := 'st_min4ma(double precision [][][], integer [][], text[])';
+	WHEN 'RANGE' THEN
+		operationText := 'st_range4ma(double precision [][][], integer [][], text[])';
+	WHEN 'STDDEV' THEN
+		operationText := 'st_stddev4ma(double precision [][][], integer [][], text[])';
+	WHEN 'SUM' THEN
+		operationText := 'st_sum4ma(double precision [][][], integer [][], text[])';
+	WHEN 'DISTINCT' THEN
+		operationText  := 'st_distinct4ma(double precision [][][], integer [][], text[])';
+	ELSE
+		RAISE EXCEPTION 'Operation not supported';
+		RETURN NULL;
+	END CASE;
+
+	mask := _st_wedge(1.0,$3,$4,$5,$6);
+
+	RETURN st_mapalgerbra($1,$2,operationText,mask,false,$7,$8,$9);
+END;
+$$ LANGUAGE 'plpgsql';
 -----------------------------------------------------------------------
 -- ST_Slope
 -- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
