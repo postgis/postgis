@@ -2294,6 +2294,7 @@ struct rt_geomval_t {
 struct rt_bandstats_t {
 	double sample;
 	uint32_t count;
+
 	double min;
 	double max;
 	double sum;
@@ -2424,7 +2425,7 @@ struct rt_colormap_t {
 		CM_NEAREST
 	} method;
 
-	int ncolor;
+gg	int ncolor;
 	uint16_t nentry;
 	rt_colormap_entry entry;
 };
