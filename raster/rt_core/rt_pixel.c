@@ -311,10 +311,16 @@ rt_errorstate rt_pixel_set_to_array(
 
 	/* make sure that the dimx and dimy match mask */
 	if( mask != NULL) {
-	  assert( mask->dimx == dim[0] );
-	  assert( mask->dimy == dim[1] );
-	  assert( mask->values != NULL);
-	  assert( mask->nodata != NULL);
+	  if ( dim[0] != mask-> dimx || dim[1] != mask->dimy ){
+	    rterror("rt_pixel_set_array: mask dimentions do not match given dims");
+	    return ES_ERROR;
+	  }
+	  
+	  if ( mask->values == NULL || mask->nodata == NULL ) {
+	    rterror("rt_pixel_set_array: was not properly setup");
+	    return ES_ERROR;
+	  }
+
 	}
 	/* establish 2D arrays (Y axis) */
 	values = rtalloc(sizeof(double *) * dim[1]);
