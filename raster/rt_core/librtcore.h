@@ -1956,9 +1956,10 @@ rt_errorstate
 rt_raster_iterator(
 	rt_iterator itrset, uint16_t itrcount,
 	rt_extenttype extenttype, rt_raster customextent,
-	rt_pixtype pixtype, rt_mask mask,
+	rt_pixtype pixtype,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
+	rt_mask mask,
 	void *userarg,
 	int (*callback)(
 		rt_iterator_arg arg,
