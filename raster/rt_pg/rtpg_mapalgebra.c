@@ -721,8 +721,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	  }
 	}
 	//set mask dimenstions 
-	mask->dimx = maskDims[0];
-	mask->dimy = maskDims[1];
+	arg->mask->dimx = maskDims[0];
+	arg->mask->dimy = maskDims[1];
 	if ( maskDims[0] == 1 && maskDims[1] == 1){
 	  arg->distance[0] = 0;
 	  arg->distance[1] = 0;
@@ -734,10 +734,10 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 	/* (8) weighted boolean */
 	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
-	  if ( mask != NULL ) 
+	  if ( arg->mask != NULL ) 
 	    arg->mask->weighted = 0;
 	}else{
-	  if(mask !=NULL )
+	  if(arg->mask !=NULL )
 	    arg->mask->weighted = 1;
 	}
 
@@ -2557,9 +2557,10 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_LAST, NULL,
-					pixtype,NULL,
+					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					&utype,
 					rtpg_union_callback,
 					&_raster
