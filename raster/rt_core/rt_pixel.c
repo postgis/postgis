@@ -269,6 +269,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @param npixel : array of rt_pixel objects
  * @param count : number of elements in npixel
+ * @param mask : mask to be respected when retruning array
  * @param x : the column of the center pixel (0-based)
  * @param y : the line of the center pixel (0-based)
  * @param distancex : the number of pixels around the specified pixel
@@ -283,7 +284,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, rt_mask mask, int count,
+	rt_pixel npixel, int count, rt_mask mask,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -380,7 +381,7 @@ rt_errorstate rt_pixel_set_to_array(
 		  nodatas[_y][_x] = 0;
 		}else{ 
 		  if( mask->weighted == 0 ){
-		    if( FLT_EQ( mask->values[_y][_x],0) || mask->nodata == 1 ){
+		    if( FLT_EQ( mask->values[_y][_x],0) || mask->nodata[_y][_x] == 1 ){
 		      values[_y][_x] = 0;
 		      nodatas[_y][_x] = 1;
 		    }else{
