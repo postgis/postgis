@@ -2223,7 +2223,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	/* convert set of rt_pixel to 2D array */
 	/* dim is passed with element 0 being Y-axis and element 1 being X-axis */
 	count = rt_pixel_set_to_array(
-		npixels,NULL, count,
+		npixels, count, NULL,
 		_x, _y,
 		distance[0], distance[1],
 		&value2D,

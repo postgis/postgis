@@ -102,6 +102,7 @@ struct rtpg_nmapalgebra_arg_t {
 	rt_extenttype extenttype; /* ouput raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
+        rt_mask mask; /* mask for the nmapalgebra operation */
 
 	rtpg_nmapalgebra_callback_arg	callback;
 };
@@ -133,6 +134,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 	arg->extenttype = ET_INTERSECTION;
 	arg->pgcextent = NULL;
 	arg->cextent = NULL;
+	arg->mask = NULL;
 
 	arg->callback.ufc_noid = InvalidOid;
 	arg->callback.ufc_nullcount = 0;
@@ -160,6 +162,8 @@ static void rtpg_nmapalgebra_arg_destroy(rtpg_nmapalgebra_arg arg) {
 
 	if (arg->cextent != NULL)
 		rt_raster_destroy(arg->cextent);
+	if( arg->mask != NULL )
+	  pfree(arg->mask);
 
 	pfree(arg);
 }
@@ -209,13 +213,15 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 	arg->ownsdata = palloc(sizeof(uint8_t) * arg->numraster);
 	arg->nband = palloc(sizeof(int) * arg->numraster);
 	arg->hasband = palloc(sizeof(uint8_t) * arg->numraster);
+	arg->mask = palloc(sizeof(struct rt_mask_t));
 	if (
 		arg->pgraster == NULL ||
 		arg->raster == NULL ||
 		arg->isempty == NULL ||
 		arg->ownsdata == NULL ||
 		arg->nband == NULL ||
-		arg->hasband == NULL
+		arg->hasband == NULL ||
+		arg->mask == NULL
 	) {
 		elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Could not allocate memory for processing rastbandarg");
 		return 0;
@@ -499,7 +505,6 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 {
 	rtpg_nmapalgebra_arg arg = NULL;
 	rt_iterator itrset;
-	rt_mask mask = NULL;
 	ArrayType *maskArray;
 	Oid etype;
 	Datum *maskElements;
@@ -534,11 +539,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_nMapAlgebra: Could not initialize argument structure");
 		PG_RETURN_NULL();
 	}
-        mask = palloc(sizeof(struct rt_mask_t));
-        if  (mask == NULL ){
-	    elog(ERROR,"RASTER_nMapAlgebra: Could not allocate memory for mask struct.");
-	    PG_RETURN_NULL();
-	}
+
 	/* let helper function process rastbandarg (0) */
 	if (!rtpg_nmapalgebra_rastbandarg_process(arg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
 		rtpg_nmapalgebra_arg_destroy(arg);
@@ -632,10 +633,10 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	noerr = 1;
 	
 	/* mask (7) */
-       
+
 	if( PG_ARGISNULL(7) ){
-	  pfree(mask);
-	  mask = NULL;
+	  pfree(arg->mask);
+	  arg->mask = NULL;
 	}else{
 	maskArray = PG_GETARG_ARRAYTYPE_P(7);
 	etype = ARR_ELEMTYPE(maskArray);
@@ -647,6 +648,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		break;
 	      default:
 		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
+		rtpg_nmapalgebra_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
 
@@ -654,6 +656,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	
 	if( ndims != 2 ){ 
 	  elog(ERROR, "RASTER_nMapAlgerbra: Mask Must be a 2D array.");
+	  rtpg_nmapalgebra_arg_destroy(arg);
 	  PG_RETURN_NULL();
 	}
 	
@@ -661,11 +664,13 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	
 	if( maskDims[0] != maskDims[1] ){
 	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must match.");
+	  rtpg_nmapalgebra_arg_destroy(arg);
 	  PG_RETURN_NULL();
 	}
 
 	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
 	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must be odd.");
+	  rtpg_nmapalgebra_arg_destroy(arg);
 	  PG_RETURN_NULL();
 	} 
 	
@@ -682,33 +687,34 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
                         pfree(maskNulls);
                 }
 		elog(ERROR, "RASTER_nMapAlgerbra: Could not deconstruct new values array.");
-                PG_RETURN_NULL();
+                rtpg_nmapalgebra_arg_destroy(arg);
+		PG_RETURN_NULL();
 	}
 
 
 	/* allocate mem for mask array */
-	mask->values = palloc(sizeof(double*)* maskDims[0]);
-	mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
+	arg->mask->values = palloc(sizeof(double*)* maskDims[0]);
+	arg->mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
 	for(i = 0; i < maskDims[0]; i++){
-	  mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
-	  mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
+	  arg->mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
+	  arg->mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
 	}
 	/* place values in to mask */
 	i = 0;
 	for( y = 0; y < maskDims[0]; y++ ){
 	  for( x = 0; x < maskDims[1]; x++){
 	    if(maskNulls[i]){
-	      mask->values[y][x] = 0;
-	      mask->nodata[y][x] = 1;
+	      arg->mask->values[y][x] = 0;
+	      arg->mask->nodata[y][x] = 1;
 	    }else{
 	      switch(etype){
 	      case FLOAT4OID:
-		mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
-		mask->nodata[y][x] = 0;
+		arg->mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
+		arg->mask->nodata[y][x] = 0;
 		break;
 	      case FLOAT8OID:
-		mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
-		mask->nodata[y][x] = 0;
+		arg->mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
+		arg->mask->nodata[y][x] = 0;
 	      }
 	    }
 	    i++;
@@ -729,10 +735,10 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	/* (8) weighted boolean */
 	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
 	  if ( mask != NULL ) 
-	    mask->weighted = 0;
+	    arg->mask->weighted = 0;
 	}else{
 	  if(mask !=NULL )
-	    mask->weighted = 1;
+	    arg->mask->weighted = 1;
 	}
 
 	/* all rasters are empty, return empty raster */
@@ -878,9 +884,10 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	noerr = rt_raster_iterator(
 		itrset, arg->numraster,
 		arg->extenttype, arg->cextent,
-		arg->pixtype, mask,
+		arg->pixtype,
 		arg->hasnodata, arg->nodataval,
 		arg->distance[0], arg->distance[1],
+		arg->mask,
 		&(arg->callback),
 		rtpg_nmapalgebra_callback,
 		&raster
@@ -1566,9 +1573,10 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 	err = rt_raster_iterator(
 		itrset, numraster,
 		arg->bandarg->extenttype, arg->bandarg->cextent,
-		arg->bandarg->pixtype, NULL,
+		arg->bandarg->pixtype,
 		arg->bandarg->hasnodata, arg->bandarg->nodataval,
 		0, 0,
+		NULL,
 		&(arg->callback),
 		rtpg_nmapalgebraexpr_callback,
 		&raster
@@ -2641,9 +2649,10 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,NULL,
+					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					&utype,
 					rtpg_union_callback,
 					&_raster
@@ -2754,9 +2763,10 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,NULL,
+					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					NULL,
 					rtpg_union_mean_callback,
 					&_raster
@@ -2766,9 +2776,10 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
-					pixtype,NULL,
+					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					NULL,
 					rtpg_union_range_callback,
 					&_raster
@@ -3313,9 +3324,10 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		noerr = rt_raster_iterator(
 			itrset, 2,
 			arg->extenttype, NULL,
-			pixtype,NULL,
+			pixtype,
 			hasnodata, nodataval,
 			0, 0,
+			NULL,
 			NULL,
 			rtpg_clip_callback,
 			&_raster
