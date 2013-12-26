@@ -1538,9 +1538,10 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		noerr = rt_raster_iterator(
 			itrset, arg->ngv + 1,
 			ET_FIRST, NULL,
-			pixtype,NULL,
+			pixtype,
 			hasnodata, nodataval,
 			0, 0,
+			NULL,
 			arg,
 			rtpg_setvalues_geomval_callback,
 			&_raster
