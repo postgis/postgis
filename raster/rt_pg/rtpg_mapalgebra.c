@@ -662,12 +662,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 	
 	maskDims = ARR_DIMS(maskArray);
-	
-	if( maskDims[0] != maskDims[1] ){
-	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must match.");
-	  rtpg_nmapalgebra_arg_destroy(arg);
-	  PG_RETURN_NULL();
-	}
+
 
 	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
 	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must be odd.");
