@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * WKTRaster - Raster Types for Pos-tGIS
+ * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
  * Copyright (C) 2011-2013 Regents of the University of California
