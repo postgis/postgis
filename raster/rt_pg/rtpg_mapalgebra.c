@@ -716,7 +716,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	    i++;
 	  }
 	}
-	//set mask dimenstions 
+	/*set mask dimenstions*/ 
 	arg->mask->dimx = maskDims[0];
 	arg->mask->dimy = maskDims[1];
 	if ( maskDims[0] == 1 && maskDims[1] == 1){
@@ -726,7 +726,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	  arg->distance[0] = maskDims[0] % 2;
 	  arg->distance[1] = maskDims[1] % 2;
 	}
-	}//end if else argisnull
+	}/*end if else argisnull*/
 
 	/* (8) weighted boolean */
 	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
