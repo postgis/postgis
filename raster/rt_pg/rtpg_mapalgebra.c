@@ -648,8 +648,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	      case FLOAT8OID:
 		break;
 	      default:
-		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
 		rtpg_nmapalgebra_arg_destroy(arg);
+		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
 		PG_RETURN_NULL();
 	}
 
