@@ -570,6 +570,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator1_callback,
 		&rtn
@@ -599,6 +600,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator1_callback,
 		&rtn
@@ -628,6 +630,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator2_callback,
 		&rtn
@@ -653,6 +656,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator3_callback,
 		&rtn
@@ -678,6 +682,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator4_callback,
 		&rtn
@@ -703,6 +708,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator5_callback,
 		&rtn
@@ -728,6 +734,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		0, 0,
+		NULL,
 		userargs,
 		testRasterIterator6_callback,
 		&rtn
@@ -757,6 +764,7 @@ static void test_raster_iterator() {
 		PT_32BUI,
 		1, 0,
 		1, 1,
+		NULL,
 		userargs,
 		testRasterIterator7_callback,
 		&rtn

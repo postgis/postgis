@@ -27,6 +27,7 @@
 static void test_band_get_nearest_pixel() {
 	rt_raster rast;
 	rt_band band;
+	rt_mask mask;
 	uint32_t x, y;
 	int rtn;
 	const int maxX = 10;
@@ -175,7 +176,7 @@ static void test_band_get_nearest_pixel() {
 	CU_ASSERT_EQUAL(rtn, 2);
 
 	rtn = rt_pixel_set_to_array(
-		npixels, rtn,
+		npixels, rtn, NULL,
 		-1, 1, 
 		1, 1,
 		&value,
