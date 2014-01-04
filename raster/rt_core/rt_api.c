@@ -2709,7 +2709,6 @@ rt_band_get_histogram(rt_bandstats stats,
 	double tmp;
 	double value;
 	int sum = 0;
-	int user_minmax = 0;
 	double qmin;
 	double qmax;
 
@@ -2746,7 +2745,6 @@ rt_band_get_histogram(rt_bandstats stats,
 		qmax = stats->max;
 	}
 	else {
-		user_minmax = 1;
 		qmin = min;
 		qmax = max;
 		if (qmin > qmax) {
