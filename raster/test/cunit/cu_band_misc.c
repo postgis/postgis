@@ -561,7 +561,10 @@ static void test_pixel_set_to_array(){
 
 	rtdealloc(nodata);
 	rtdealloc(value);
-
+	rtdealloc(mask->values);
+	rtdealloc(mask->nodata);
+	rtdealloc(mask);
+	
 	if (rtn)
 	  rtdealloc(npixels);
 	
