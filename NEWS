@@ -44,6 +44,7 @@ PostGIS 2.2.0
   - #2552, Fix handling of NULL raster in ST_AsTIFF, ST_AsPNG
            and ST_AsJPEG
   - #2555, Fix parsing issue of range arguments of ST_Reclass
+  - #2589, Remove use of unnecessary void pointers
 
  * Code refactoring *
 
