@@ -11,6 +11,7 @@ PostGIS 2.1.2
            ST_AsJPEG
   - #2555, Fix parsing issue of range arguments of ST_Reclass
   - #2580, Do not allow installing postgis twice in the same database
+  - #2589, Remove use of unnecessary void pointers
 
  * Enhancements *
 
