@@ -1541,6 +1541,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 			pixtype,
 			hasnodata, nodataval,
 			0, 0,
+			NULL,
 			arg,
 			rtpg_setvalues_geomval_callback,
 			&_raster
@@ -2223,7 +2224,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	/* convert set of rt_pixel to 2D array */
 	/* dim is passed with element 0 being Y-axis and element 1 being X-axis */
 	count = rt_pixel_set_to_array(
-		npixels, count,
+		npixels, count, NULL,
 		_x, _y,
 		distance[0], distance[1],
 		&value2D,

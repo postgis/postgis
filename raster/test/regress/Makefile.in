@@ -121,6 +121,7 @@ TEST_MAPALGEBRA = \
 	rt_clip \
 	rt_mapalgebra \
 	rt_mapalgebra_expr \
+	rt_mapalgebra_mask \
 	rt_union \
 	rt_invdistweight4ma \
 	rt_4ma \

@@ -14,11 +14,12 @@ PostGIS 2.2.0
 
  * New Features *
 
-  - #2430, ST_ForceCurve
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
   - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
     variable GDAL_DATA
+  - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
+  - #2430, ST_ForceCurve
   - #2565, ST_SummaryStatsAgg()
   - #2567, ST_CountAgg()
 
