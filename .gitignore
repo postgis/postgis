@@ -115,8 +115,7 @@ topology/topology_drop_before.sql
 topology/topology_drop_before.sql.in
 topology/topology.sql
 topology/topology.sql.in
-topology/topology_upgrade_20_minor.sql
-topology/topology_upgrade_21_minor.sql
+topology/topology_upgrade_*_minor.sql
 topology/topology_upgrade.sql
 topology/uninstall_topology.sql
 libpgcommon/Makefile

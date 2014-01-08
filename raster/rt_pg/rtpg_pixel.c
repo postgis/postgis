@@ -12,10 +12,10 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +23,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -257,6 +257,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		}
 
 		/* check that raster is not empty */
+		/*
 		if (rt_raster_is_empty(raster)) {
 			elog(NOTICE, "Raster provided is empty");
 			rt_raster_destroy(raster);
@@ -264,6 +265,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
+		*/
 
 		/* raster has bands */
 		numbands = rt_raster_get_num_bands(raster); 
@@ -402,6 +404,10 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 		/* get each band and dump data */
 		for (z = 0; z < arg1->numbands; z++) {
+			/* shortcut if raster is empty */
+			if (rt_raster_is_empty(raster))
+				break;
+
 			band = rt_raster_get_band(raster, arg1->nbands[z]);
 			if (!band) {
 				int nband = arg1->nbands[z] + 1;
@@ -509,6 +515,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		HeapTuple tuple;
 		Datum result;
 		ArrayType *mdValues = NULL;
+		int ndim = 2;
 		int dim[2] = {arg2->rows, arg2->columns};
 		int lbound[2] = {1, 1};
 
@@ -522,10 +529,14 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		/* info about the type of item in the multi-dimensional array (float8). */
 		get_typlenbyvalalign(FLOAT8OID, &typlen, &typbyval, &typalign);
 
+		/* if values is NULL, return empty array */
+		if (arg2->values[call_cntr] == NULL)
+			ndim = 0;
+
 		/* assemble 3-dimension array of values */
 		mdValues = construct_md_array(
 			arg2->values[call_cntr], arg2->nodata[call_cntr],
-			2, dim, lbound,
+			ndim, dim, lbound,
 			FLOAT8OID,
 			typlen, typbyval, typalign
 		);
@@ -1530,6 +1541,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 			pixtype,
 			hasnodata, nodataval,
 			0, 0,
+			NULL,
 			arg,
 			rtpg_setvalues_geomval_callback,
 			&_raster
@@ -2212,7 +2224,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	/* convert set of rt_pixel to 2D array */
 	/* dim is passed with element 0 being Y-axis and element 1 being X-axis */
 	count = rt_pixel_set_to_array(
-		npixels, count,
+		npixels, count, NULL,
 		_x, _y,
 		distance[0], distance[1],
 		&value2D,

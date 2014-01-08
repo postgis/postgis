@@ -118,7 +118,8 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 		return NULL;
 	}
 
-	if ( ! lwtype_is_collection(diff->type) )
+	out = lwgeom_as_lwcollection(diff);
+	if ( ! out )
 	{
 		components = lwalloc(sizeof(LWGEOM*)*1);
 		components[0] = diff;
@@ -127,9 +128,10 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 	}
 	else
 	{
-		out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid,
-		                             NULL, ((LWCOLLECTION*)diff)->ngeoms,
-		                             ((LWCOLLECTION*)diff)->geoms);
+	  /* Set SRID */
+		lwgeom_set_srid((LWGEOM*)out, lwline_in->srid);
+	  /* Force collection type */
+	  out->type = COLLECTIONTYPE;
 	}
 
 
@@ -337,7 +339,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 	out = lwcollection_construct_empty(COLLECTIONTYPE, lwpoly_in->srid,
 				     hasZ, 0);
 	/* Allocate space for all polys */
-	out->geoms = lwalloc(sizeof(LWGEOM*)*n);
+	out->geoms = lwrealloc(out->geoms, sizeof(LWGEOM*)*n);
 	assert(0 == out->ngeoms);
 	for (i=0; i<n; ++i)
 	{

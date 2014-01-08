@@ -269,26 +269,15 @@ int lwcircstring_is_empty(const LWCIRCSTRING *circ)
 
 double lwcircstring_length(const LWCIRCSTRING *circ)
 {
-	double length = 0.0;
-	LWLINE *line;
-	if ( lwcircstring_is_empty(circ) )
-		return 0.0;
-	line = lwcircstring_segmentize(circ, 32);
-	length = lwline_length(line);
-	lwline_free(line);
-	return length;
+	return lwcircstring_length_2d(circ);
 }
 
 double lwcircstring_length_2d(const LWCIRCSTRING *circ)
 {
-	double length = 0.0;
-	LWLINE *line;
 	if ( lwcircstring_is_empty(circ) )
 		return 0.0;
-	line = lwcircstring_segmentize(circ, 32);
-	length = lwline_length_2d(line);
-	lwline_free(line);
-	return length;
+	
+	return ptarray_arc_length_2d(circ->points);
 }
 
 /*

@@ -11,11 +11,12 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2013  Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +24,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -269,6 +270,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @param npixel : array of rt_pixel objects
  * @param count : number of elements in npixel
+ * @param mask : mask to be respected when retruning array
  * @param x : the column of the center pixel (0-based)
  * @param y : the line of the center pixel (0-based)
  * @param distancex : the number of pixels around the specified pixel
@@ -283,7 +285,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, int count,
+	rt_pixel npixel, int count, rt_mask mask,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -308,6 +310,19 @@ rt_errorstate rt_pixel_set_to_array(
 	dim[1] = distancey * 2 + 1;
 	RASTER_DEBUGF(4, "dimensions = %d x %d", dim[0], dim[1]);
 
+	/* make sure that the dimx and dimy match mask */
+	if( mask != NULL) {
+	  if ( dim[0] != mask-> dimx || dim[1] != mask->dimy ){
+	    rterror("rt_pixel_set_array: mask dimentions do not match given dims");
+	    return ES_ERROR;
+	  }
+	  
+	  if ( mask->values == NULL || mask->nodata == NULL ) {
+	    rterror("rt_pixel_set_array: was not properly setup");
+	    return ES_ERROR;
+	  }
+
+	}
 	/* establish 2D arrays (Y axis) */
 	values = rtalloc(sizeof(double *) * dim[1]);
 	nodatas = rtalloc(sizeof(int *) * dim[1]);
@@ -368,8 +383,28 @@ rt_errorstate rt_pixel_set_to_array(
 		RASTER_DEBUGF(4, "absolute x,y: %d x %d", npixel[i].x, npixel[i].y);
 		RASTER_DEBUGF(4, "relative x,y: %d x %d", _x, _y);
 
-		values[_y][_x] = npixel[i].value;
-		nodatas[_y][_x] = 0;
+		if ( mask == NULL ) {
+		  values[_y][_x] = npixel[i].value;
+		  nodatas[_y][_x] = 0;
+		}else{ 
+		  if( mask->weighted == 0 ){
+		    if( FLT_EQ( mask->values[_y][_x],0) || mask->nodata[_y][_x] == 1 ){
+		      values[_y][_x] = 0;
+		      nodatas[_y][_x] = 1;
+		    }else{
+		      values[_y][_x] = npixel[i].value;
+		      nodatas[_y][_x] = 0;
+		    }
+		  }else{
+		    if( mask->nodata[_y][_x] == 1 ){
+		      values[_y][_x] = 0;
+		      nodatas[_y][_x] = 1;
+		    }else{
+		      values[_y][_x] = npixel[i].value * mask->values[_y][_x];
+		      nodatas[_y][_x] = 0;
+		    }
+		  }
+		}
 
 		RASTER_DEBUGF(4, "(x, y, nodata, value) = (%d, %d, %d, %f)", _x, _y, nodatas[_y][_x], values[_y][_x]);
 	}

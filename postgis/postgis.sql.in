@@ -3,7 +3,7 @@
 -- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 -- Copyright 2001-2003 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -27,14 +27,42 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
--------------------------------------------------------------------
---  SPHEROID TYPE
--------------------------------------------------------------------
+-- Check that no other postgis is installed
+DO $$
+DECLARE
+  rec RECORD;
+BEGIN
+  FOR rec IN
+    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    WHERE p.proname = 'postgis_version'
+    AND p.pronamespace = n.oid
+  LOOP
+    RAISE EXCEPTION 'PostGIS is already installed in schema ''%'', uninstall it first', rec.nspname;
+  END LOOP;
+END
+$$ LANGUAGE 'plpgsql';
+
+
+-- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
 $$
+DECLARE
+  curver_text text;
 BEGIN
-    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+  --
+  -- Raises a NOTICE if it was deprecated in this version,
+  -- a WARNING if in a previous version (only up to minor version checked)
+  --
+    curver_text := POSTGIS_LIB_VERSION;
+    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
+       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
+         split_part(curver_text,'.',2) != split_part(version,'.',2) )
+    THEN
+      RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+    ELSE
+      RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
+    END IF;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
@@ -2578,9 +2606,9 @@ BEGIN
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
 	BEGIN
-		SELECT postgis_topology_scripts_installed() INTO topo_scr_ver;
+		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
-		WHEN undefined_function THEN
+		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
 	END;
@@ -4118,12 +4146,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT ST_MPointFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
@@ -4573,16 +4595,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 300;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
-	RETURNS FLOAT8
-	AS $$
-	select st_distance(geography($1),geography($2),false)
-	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT
-	COST 300;
-
-
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
 ---------------------------------------------------------------
@@ -4754,7 +4766,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND a.atttypid = t.oid 
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
-    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char" OR c.relkind = 'm'::"char" OR c.relkind = 'f'::"char")
     AND NOT pg_is_other_temp_schema(c.relnamespace)
     AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
     AND has_table_privilege( c.oid, 'SELECT'::text );

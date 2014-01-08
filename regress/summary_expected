@@ -9,7 +9,7 @@ T1ZMBS|Point[ZMBS]
 T3|MultiPoint[B] with 1 elements
   Point[]
 T4|MultiPoint[BS] with 1 elements
-  Point[]
+  Point[S]
 T5|GeometryCollection[B] with 2 elements
   MultiLineString[] with 2 elements
     LineString[] with 2 points
@@ -17,8 +17,8 @@ T5|GeometryCollection[B] with 2 elements
   MultiPoint[] with 1 elements
     Point[]
 T6|GeometryCollection[BS] with 2 elements
-  MultiLineString[] with 2 elements
-    LineString[] with 2 points
-    LineString[] with 2 points
-  MultiPoint[] with 1 elements
-    Point[]
+  MultiLineString[S] with 2 elements
+    LineString[S] with 2 points
+    LineString[S] with 2 points
+  MultiPoint[S] with 1 elements
+    Point[S]

@@ -1103,6 +1103,7 @@ extern LWPOINT* lwcircstring_get_lwpoint(LWCIRCSTRING *circ, int where);
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);
+extern double ptarray_arc_length_2d(const POINTARRAY *pts);
 
 
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);

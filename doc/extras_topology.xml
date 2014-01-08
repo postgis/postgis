@@ -162,7 +162,10 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
             <!-- Optionally add a "See Also" section -->
             <refsection>
                 <title>See Also</title>
-                <para><xref linkend="GetTopoGeomElements"/></para>
+                <para>
+                  <xref linkend="GetTopoGeomElements"/>,
+                  <xref linkend="topoelementarray" />
+                </para>
             </refsection>
 		</refentry>
 		
@@ -3224,5 +3227,112 @@ UNION ALL SELECT ']}'::text as t;
 </programlisting>
             </refsection>
 	  </refentry>
+</sect1>
+
+<sect1 id="Topology_Relationships">
+	     <sect1info>
+            <abstract>
+                <para>This section lists the Topology functions used to check relationships between topogeometries and topology primitives</para>
+            </abstract>
+        </sect1info>
+	    <title>Topology Spatial Relationships</title>
+	    <refentry id="TG_Equals">
+        <refnamediv>
+          <refname>Equals</refname>
+      
+          <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>boolean <function>Equals</function></funcdef>
+              <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+              <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+          <para>Returns true if two topogeometries are composed of the same topology primitives: faces, edges, nodes.</para>
+      
+          <!-- optionally mention that this function uses indexes if appropriate -->
+          <note>
+            <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.</para>
+          </note>
+          <!-- use this format if new function -->
+        <para>Availability: 1.? </para>
+        
+       
+        <!-- Optionally mention 3d support -->
+        <para>&Z_support;</para>
+        </refsection>
+      
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting><!--TODO: Need example --></programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="GetTopoGeomElements" />, <xref linkend="ST_Equals" /></para>
+        </refsection>
+      </refentry>
+      
+      <refentry id="TG_Intersects">
+        <refnamediv>
+          <refname>Intersects</refname>
+      
+          <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>boolean <function>Equals</function></funcdef>
+              <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+              <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+          <para>Returns true if two topogeometries share primitives or primitives intersect</para>
+      
+          <!-- optionally mention that this function uses indexes if appropriate -->
+          <note>
+            <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.
+            Also not currently supported for hierarchichal topogeometries (topogeometries composed of other topogeometries).</para>
+          </note>
+          <!-- use this format if new function -->
+        <para>Availability: 1.? </para>
+        
+       
+        <!-- Optionally mention 3d support -->
+        <para>&Z_support;</para>
+        </refsection>
+      
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting><!--TODO: Need example --></programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="ST_Intersects" /></para>
+        </refsection>
+      </refentry>
 </sect1>
 </chapter>

@@ -20,12 +20,6 @@ use strict;
 #  Check output against <testname>_expected
 ##################################################################
 
-if ( @ARGV < 1 )
-{
-	usage();
-}
-
-
 ##################################################################
 # Global configuration items
 ##################################################################
@@ -64,6 +58,13 @@ GetOptions (
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS
 	);
+
+if ( @ARGV < 1 )
+{
+	usage();
+}
+
+
 
 ##################################################################
 # Set the locale to "C" so error messages match
@@ -170,7 +171,7 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/$DB/, split(/\n/, `psql -l`));
+my @dblist = grep(/$DB/, split(/\n/, `psql -Xl`));
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
@@ -286,9 +287,13 @@ foreach $TEST (@ARGV)
 		my $rv = run_simple_test("${TEST}.sql", "${TEST}_expected");
 		pass() if $rv;
 	}
+	elsif ( -r "${TEST}.dmp" )
+	{
+		pass() if run_dumper_test();
+	}
 	else
 	{
-		print " skipped (can't read ${TEST}.sql)\n";
+		print " skipped (can't read any ${TEST}.{sql,dbf,tif,dmp})\n";
 		$SKIP++;
 		next;
 	}
@@ -359,17 +364,17 @@ exit($FAIL);
 sub usage 
 {
 	die qq{
-Usage: $0 <testname> [<testname>]
+Usage: $0 [<options>] <testname> [<testname>]
 Options:
-  --verbose    be verbose about failures
-  --nocreate   do not create the regression database on start
-  --upgrade    source the upgrade scripts on start
-  --nodrop     do not drop the regression database on exit
-  --raster     load also raster extension
-  --topology   load also topology extension
-  --sfcgal     use also sfcgal backend
-  --clean      cleanup test logs on exit
-  --expect     save obtained output as expected
+  -v, --verbose   be verbose about failures
+  --nocreate      do not create the regression database on start
+  --upgrade       source the upgrade scripts on start
+  --nodrop        do not drop the regression database on exit
+  --raster        load also raster extension
+  --topology      load also topology extension
+  --sfcgal        use also sfcgal backend
+  --clean         cleanup test logs on exit
+  --expect        save obtained output as expected
 };
 
 }
@@ -462,6 +467,7 @@ sub run_simple_sql
 	# Check for ERROR lines
 	open FILE, "$tmpfile";
 	my @lines = <FILE>;
+	close FILE;
 	my @errors = grep(/^ERROR/, @lines);
 	
 	if ( @errors > 0 )
@@ -553,7 +559,7 @@ sub run_simple_test
 	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
-	@lines = grep(!/^(SET|TRUNCATE)/, @lines);
+	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
 	@lines = grep(!/^LINE \d/, @lines);
 	@lines = grep(!/^\s+$/, @lines);
 
@@ -581,7 +587,7 @@ sub run_simple_test
 	
 	if ( $OPT_EXPECT )
 	{
-		print " expected\n";
+		print " (expected)";
 		copy($outfile, $expected);
 	}
 	else
@@ -900,6 +906,88 @@ sub run_loader_test
 	return 1;
 }
 
+##################################################################
+#  run_dumper_test 
+#
+#  Run dumper and compare output with various expectances
+#  test and run simple test with provided expected output. 
+#
+# input is ${TEST}.dmp, where last line is considered to be the
+# [table|query] argument for pgsql2shp and all the previous lines,
+# if any are 
+#
+##################################################################
+sub run_dumper_test 
+{
+  my $dump_file  = "${TEST}.dmp";
+
+  # ON_ERROR_STOP is used by psql to return non-0 on an error
+  my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
+
+  my $shpfile = "${TMPDIR}/dumper-" . basename(${TEST}) . "-shp";
+  my $outfile = "${TMPDIR}/dumper-" . basename(${TEST}) . ".out";
+  my $errfile = "${TMPDIR}/dumper-" . basename(${TEST}) . ".err";
+
+  # Produce the output SHP file.
+  open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
+  my @dumplines = <DUMPFILE>;
+  close DUMPFILE;
+  my $dumpstring = join '', @dumplines;
+  chop($dumpstring);
+  my @cmd = ("${PGSQL2SHP}", "-f", ${shpfile}, ${DB}, ${dumpstring});
+  open my $stdout_save, '>&', *STDOUT or die "Cannot dup stdout\n";
+  open my $stderr_save, '>&', *STDERR or die "Cannot dup stdout\n";
+  open STDOUT, ">${outfile}" or die "Cannot write to ${outfile}\n";
+  open STDERR, ">${errfile}" or die "Cannot write to ${errfile}\n";
+  my $rv = system(@cmd);
+  open STDERR, '>&', $stderr_save;
+  open STDOUT, '>&', $stdout_save;
+
+  show_progress();
+
+  if ( $rv )
+  {
+    fail("dumping", "$errfile");
+    return 0;
+  }
+
+  my $numtests = 0;
+  foreach my $ext ("shp","prj","dbf","shx") {
+    my $obtained = ${shpfile}.".".$ext;
+    my $expected = ${TEST}."_expected.".$ext;
+    if ( $OPT_EXPECT )
+    {
+      copy($obtained, $expected);
+    }
+    elsif ( -r ${expected} ) {
+      show_progress();
+      $numtests++;
+      my $diff = diff($expected,  $obtained);
+      if ( $diff )
+      {
+        my $diffile = sprintf("%s/dumper_test_%s_diff", $TMPDIR, $ext);
+        open(FILE, ">$diffile");
+        print FILE $diff;
+        close(FILE);
+        fail("diff expected obtained", $diffile);
+        return 0;
+      }
+    }
+  }
+
+  #show_progress();
+
+  if ( $OPT_EXPECT ) {
+    print " (expected)";
+  }
+  elsif ( ! $numtests ) {
+    fail("no expectances!");
+    return 0;
+  }
+
+	return 1;
+}
+
 
 ##################################################################
 #  run_raster_loader_test 
@@ -1181,7 +1269,7 @@ sub uninstall_spatial
 		}
 		else
 		{
-            pass("($OBJ_COUNT_PRE)");
+			pass("($OBJ_COUNT_PRE)");
 			return 1;
 		}
 	}
@@ -1195,12 +1283,12 @@ sub diff
 	my $diffstr = '';
 
 	if ( $sysdiff ) {
-		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file`;
+		$diffstr = `diff --strip-trailing-cr -u $expected_file $obtained_file 2>&1`;
 		return $diffstr;
 	}
 
-	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
-	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
+	open(OBT, $obtained_file) || return "Cannot open $obtained_file\n";
+	open(EXP, $expected_file) || return "Cannot open $expected_file\n";
 	my $lineno = 0;
 	while (!eof(OBT) or !eof(EXP)) {
 		# TODO: check for premature end of one or the other ?

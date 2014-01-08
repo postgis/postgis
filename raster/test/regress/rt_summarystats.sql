@@ -229,4 +229,140 @@ SELECT
 FROM ST_SummaryStats('test_summarystats', 'rast1');
 ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, TRUE, 1) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, TRUE) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, FALSE, 1) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, FALSE, 1) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, FALSE) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, TRUE, 2) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 2, TRUE, 1) AS stats
+	FROM test_summarystats
+) foo;
+
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
 ROLLBACK;

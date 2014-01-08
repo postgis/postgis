@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2009-07-01
+  Date: 2013-11-16
 
 Versioning Scheme
 -----------------
@@ -9,6 +9,7 @@ Release version is composed by POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION
 and POSTGIS_MICRO_VERSION components.
 
 By default only [POSTGIS_MICRO_VERSION] increments between releases.
+Starting at PostGIS 2.1 in development  POSTGIS_MICRO_VERSION should have a dev at the end
 
 [POSTGIS_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
 additions have been introduced (one or two functions can be considered
@@ -28,30 +29,34 @@ documentation -- that means having the required software:
   - PostgreSQL 
   - GEOS
   - Proj4
+  - GDAL (for raster)
+  - json-c (for GeoJSON load support)
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
-  - ImageMagick
+  - ImageMagic
+  - DbLatex (for PDF)
 
 Release procedure
 -----------------
 
-1) Re-generate the ChangeLog using svn2cl.
+1) Re-generate the ChangeLog using svn2cl and truncate old legacy junk
 2) Edit NEWS: set release date and check all notable changes have
    been reported (extract from ChangeLog).
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Commit all your changes
-  a) make sure to run the extensions/make_unpackaged.sql and copy contents to  
+  a) make sure to run the extensions/make_unpackaged.sql on 
+    about to release version  and copy contents to  
     (TODO: we need to automate this) 
       postgis/sql_bits/postgis--unpackages.sql.in
       postgis_topology/sql_bits/topology_unpackaged.sql.in
       postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
-6) Tag trunk:  
-   svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
+6) Tag branch:  
+   svn copy http://svn.osgeo.org/postgis/branch/x.x http://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
-8) Update Version.config as specified in Versioning Scheme above.
+8) Update Version.config as specified in Versioning Scheme above. See also 17
 9) Update doc/postgis.xml to download.osgeo.org link 
   (note: unreleased are on postgis.net, and released download.osgeo.org )
    Also make sure the correct minimum and lastest geos etc are noted.
@@ -65,28 +70,25 @@ Release procedure
     - osgeo-discuss
 14) Update web sites
     - PostGIS News
-     - https://svn.osgeo.org/postgis/web/_content/posts
+    - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) commit and wait 5 minutes to see changes on website
+       b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
+       c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
      (For building pdf, debbie has tagged jobs 
        -- http://debbie.postgis.net:8080 (log in)
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
-       Or just be lazy and bug Regina Obe to do this.
-    - if creating a new branch
-       edit apache config (currently on debbie) in /etc/apache2/sites-available/postgis.net 
-       and flip the docs alias to new branch docs
+       Or just be lazy and bug Regina Obe do this.
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
-    - PlanetPostGIS and other planets
-      (this now automatically happens if you do the post
-      since postgis.net blog is carried by PlanetPostGIS, PlanetGeospatial, and PlanetOSGeo
-       hopefully soon PlanetPostgreSQL)
+    - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
 
-16) Push the revision number in trunk forward if necessary
-17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
+16) Push the revision number forward.  All POSTGIS_MICRO_VERSION that are in branch or trunk should end in
+dev.  So for example if you just release 2.1.1, then the 2.1 branch should have POSTGIS_MICRO_VERSION set to 2dev 
+so that the full version is 2.1.2dev.
+17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk including the one you just released
 
 

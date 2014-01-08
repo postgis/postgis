@@ -11,9 +11,21 @@
 -- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
 -- Copyright (C) 2011-2013 Regents of the University of California
 --   <bkpark@ucdavis.edu>
+-- Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
 --
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software Foundation,
+-- Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -397,45 +409,40 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFA
 -----------------------------------------------------------------------
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
+
+CREATE TYPE summarystats AS (
+	count bigint,
+	sum double precision,
+	mean double precision,
+	stddev double precision,
+	min double precision,
+	max double precision
+);
+
 CREATE OR REPLACE FUNCTION _st_summarystats(
 	rast raster,
 	nband int DEFAULT 1,
 	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 1,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision DEFAULT 1
 )
+	RETURNS summarystats
 	AS 'MODULE_PATHNAME','RASTER_summaryStats'
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_summarystats(
 	rast raster,
 	nband int DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(
 	rast raster,
-	exclude_nodata_value boolean,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	exclude_nodata_value boolean
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
@@ -443,100 +450,134 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rast raster,
 	nband int DEFAULT 1,
 	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 0.1,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision DEFAULT 0.1
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rast raster,
 	nband int,
-	sample_percent double precision,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rast raster,
 	exclude_nodata_value boolean,
-	sample_percent double precision DEFAULT 0.1,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision DEFAULT 0.1
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rast raster,
-	sample_percent double precision,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_SummaryStatsAgg
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_summarystats_finalfn(internal)
+	RETURNS summarystats
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_finalfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
+	internal,
+	raster, integer,
+	boolean, double precision
+)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_summarystatsagg(raster, integer, boolean, double precision) (
+	SFUNC = _st_summarystats_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_summarystats_finalfn
+);
+
+CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
+	internal,
+	raster, boolean, double precision
+)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_summarystatsagg(raster, boolean, double precision) (
+	SFUNC = _st_summarystats_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_summarystats_finalfn
+);
+
+CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
+	internal,
+	raster, int, boolean
+)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_summarystatsagg(raster, int, boolean) (
+	SFUNC = _st_summarystats_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_summarystats_finalfn
+);
+
+-----------------------------------------------------------------------
+-- ST_SummaryStats for table
+-----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION _st_summarystats(
 	rastertable text,
 	rastercolumn text,
 	nband integer DEFAULT 1,
 	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 1,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision DEFAULT 1
 )
-	AS 'MODULE_PATHNAME','RASTER_summaryStatsCoverage'
-	LANGUAGE 'c' IMMUTABLE;
+	RETURNS summarystats
+	AS $$ 
+	DECLARE
+		stats summarystats;
+	BEGIN
+		EXECUTE 'SELECT (stats).* FROM (SELECT ST_SummaryStatsAgg('
+			|| quote_ident($2) || ', '
+			|| $3 || ', '
+			|| $4 || ', '
+			|| $5 || ') AS stats '
+			|| 'FROM ' || quote_ident($1)
+			|| ') foo'
+			INTO stats;
+		RETURN stats;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_summarystats(
 	rastertable text,
 	rastercolumn text,
 	nband integer DEFAULT 1,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4, 1) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(
 	rastertable text,
 	rastercolumn text,
-	exclude_nodata_value boolean,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	exclude_nodata_value boolean
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
@@ -545,14 +586,9 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rastercolumn text,
 	nband integer DEFAULT 1,
 	exclude_nodata_value boolean DEFAULT TRUE,
-	sample_percent double precision DEFAULT 0.1,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision DEFAULT 0.1
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
@@ -560,48 +596,34 @@ CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rastertable text,
 	rastercolumn text,
 	nband integer,
-	sample_percent double precision,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rastertable text,
 	rastercolumn text,
-	exclude_nodata_value boolean,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	exclude_nodata_value boolean
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 0.1) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(
 	rastertable text,
 	rastercolumn text,
-	sample_percent double precision,
-	OUT count bigint,
-	OUT sum double precision,
-	OUT mean double precision,
-	OUT stddev double precision,
-	OUT min double precision,
-	OUT max double precision
+	sample_percent double precision
 )
+	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, TRUE, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
 -----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION _st_count(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS bigint
 	AS $$
@@ -648,69 +670,190 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 	AS $$ SELECT _st_count($1, 1, TRUE, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-----------------------------------------------------------------------
+-- ST_CountAgg
+-----------------------------------------------------------------------
+
+CREATE TYPE agg_count AS (
+	count bigint,
+	nband integer,
+	exclude_nodata_value boolean,
+	sample_percent double precision
+);
+
+CREATE OR REPLACE FUNCTION _st_countagg_finalfn(agg agg_count)
+	RETURNS bigint
+	AS $$
+	BEGIN
+		IF agg IS NULL THEN
+			RAISE EXCEPTION 'Cannot count coverage';
+		END IF;
+
+		RETURN agg.count;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION __st_countagg_transfn(
+	agg agg_count,
+	rast raster,
+ 	nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE,
+	sample_percent double precision DEFAULT 1
+)
+	RETURNS agg_count
+	AS $$
+	DECLARE
+		_count bigint;
+		rtn_agg agg_count;
+	BEGIN
+
+		-- only process parameter args once
+		IF agg IS NULL THEN
+			rtn_agg.count := 0;
+
+			IF nband < 1 THEN
+				RAISE EXCEPTION 'Band index must be greater than zero (1-based)';
+			ELSE
+				rtn_agg.nband := nband;
+			END IF;
+
+			IF exclude_nodata_value IS FALSE THEN
+				rtn_agg.exclude_nodata_value := FALSE;
+			ELSE
+				rtn_agg.exclude_nodata_value := TRUE;
+			END IF;
+
+			IF sample_percent < 0. OR sample_percent > 1. THEN
+				RAISE EXCEPTION 'Sample percent must be between zero and one';
+			ELSE
+				rtn_agg.sample_percent := sample_percent;
+			END IF;
+		ELSE
+			rtn_agg := agg;
+		END IF;
+
+		IF rast IS NOT NULL THEN
+			IF rtn_agg.exclude_nodata_value IS FALSE THEN
+				SELECT width * height INTO _count FROM ST_Metadata(rast);
+			ELSE
+				SELECT count INTO _count FROM _st_summarystats(
+					rast,
+				 	rtn_agg.nband, rtn_agg.exclude_nodata_value,
+					rtn_agg.sample_percent
+				);
+			END IF;
+		END IF;
+
+		rtn_agg.count := rtn_agg.count + _count;
+		RETURN rtn_agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION _st_countagg_transfn(
+	agg agg_count,
+	rast raster,
+ 	nband integer, exclude_nodata_value boolean,
+	sample_percent double precision
+)
+	RETURNS agg_count
+	AS $$
+	DECLARE
+		rtn_agg agg_count;
+	BEGIN
+		rtn_agg := __st_countagg_transfn(
+			agg,
+			rast,
+			nband, exclude_nodata_value,
+			sample_percent
+		);
+		RETURN rtn_agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE AGGREGATE st_countagg(
+	raster,
+ 	integer, boolean,
+	double precision
+) (
+	SFUNC = _st_countagg_transfn,
+	STYPE = agg_count,
+	FINALFUNC = _st_countagg_finalfn
+);
+
+CREATE OR REPLACE FUNCTION _st_countagg_transfn(
+	agg agg_count,
+	rast raster,
+ 	nband integer, exclude_nodata_value boolean
+)
+	RETURNS agg_count
+	AS $$
+	DECLARE
+		rtn_agg agg_count;
+	BEGIN
+		rtn_agg := __st_countagg_transfn(
+			agg,
+			rast,
+			nband, exclude_nodata_value,
+			1
+		);
+		RETURN rtn_agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE AGGREGATE st_countagg(
+	raster,
+	integer, boolean
+) (
+	SFUNC = _st_countagg_transfn,
+	STYPE = agg_count,
+	FINALFUNC = _st_countagg_finalfn
+);
+
+CREATE OR REPLACE FUNCTION _st_countagg_transfn(
+	agg agg_count,
+	rast raster,
+ 	exclude_nodata_value boolean
+)
+	RETURNS agg_count
+	AS $$
+	DECLARE
+		rtn_agg agg_count;
+	BEGIN
+		rtn_agg := __st_countagg_transfn(
+			agg,
+			rast,
+			1, exclude_nodata_value,
+			1
+		);
+		RETURN rtn_agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE AGGREGATE st_countagg(raster, boolean) (
+	SFUNC = _st_countagg_transfn,
+	STYPE = agg_count,
+	FINALFUNC = _st_countagg_finalfn
+);
+
+-----------------------------------------------------------------------
+-- ST_Count for table
+-----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS bigint
 	AS $$
 	DECLARE
-		curs refcursor;
-
-		ctable text;
-		ccolumn text;
-		rast raster;
-
-		rtn bigint;
-		tmp bigint;
+		count bigint;
 	BEGIN
-		-- nband
-		IF nband < 1 THEN
-			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
-			RETURN NULL;
-		END IF;
-
-		-- sample percent
-		IF sample_percent < 0 OR sample_percent > 1 THEN
-			RAISE WARNING 'Invalid sample percentage (must be between 0 and 1). Returning NULL';
-			RETURN NULL;
-		END IF;
-
-		-- exclude_nodata_value IS TRUE
-		IF exclude_nodata_value IS TRUE THEN
-			SELECT count INTO rtn FROM _st_summarystats($1, $2, $3, $4, $5);
-			RETURN rtn;
-		END IF;
-
-		-- clean rastertable and rastercolumn
-		ctable := quote_ident(rastertable);
-		ccolumn := quote_ident(rastercolumn);
-
-		BEGIN
-			OPEN curs FOR EXECUTE 'SELECT '
-					|| ccolumn
-					|| ' FROM '
-					|| ctable
-					|| ' WHERE '
-					|| ccolumn
-					|| ' IS NOT NULL';
-		EXCEPTION
-			WHEN OTHERS THEN
-				RAISE WARNING 'Invalid table or column name. Returning NULL';
-				RETURN NULL;
-		END;
-
-		rtn := 0;
-		LOOP
-			FETCH curs INTO rast;
-			EXIT WHEN NOT FOUND;
-
-			SELECT (width * height) INTO tmp FROM ST_Metadata(rast);
-			rtn := rtn + tmp;
-		END LOOP;
-
-		CLOSE curs;
-
-		RETURN rtn;
+		EXECUTE 'SELECT ST_CountAgg('
+			|| quote_ident($2) || ', '
+			|| $3 || ', '
+			|| $4 || ', '
+			|| $5 || ') '
+			|| 'FROM ' || quote_ident($1)
+	 	INTO count;
+		RETURN count;
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+ 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
@@ -745,6 +888,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, s
 -----------------------------------------------------------------------
 -- ST_Histogram and ST_ApproxHistogram
 -----------------------------------------------------------------------
+
 -- Cannot be strict as "width", "min" and "max" can be NULL
 CREATE OR REPLACE FUNCTION _st_histogram(
 	rast raster, nband int DEFAULT 1,
@@ -1735,6 +1879,10 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL, s
 		nodata double precision;
 		last_nodata double precision;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- TIFF only allows one NODATA value for ALL bands
@@ -1769,6 +1917,10 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 		num_bands int;
 		options text[];
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		compression2 := trim(both from upper(compression));
 
 		IF length(compression2) > 0 THEN
@@ -1856,6 +2008,10 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 		num_bands int;
 		i int;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- JPEG allows 1 or 3 bands
@@ -1931,6 +2087,10 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 		i int;
 		pt text;
 	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+
 		num_bands := st_numbands($1);
 
 		-- PNG allows 1, 3 or 4 bands
@@ -2816,11 +2976,14 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 	pixeltype text DEFAULT NULL,
 	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
 	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	mask double precision[][] DEFAULT NULL, weighted boolean DEFAULT NULL,
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebra'
 	LANGUAGE 'c' STABLE;
+
+
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rastbandargset rastbandarg[],
@@ -2831,7 +2994,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5, VARIADIC $8) $$
+	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5,NULL::double precision [],NULL::boolean, VARIADIC $8) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
@@ -2866,7 +3029,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 			RETURN NULL;
 		END IF;
 
-		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6, VARIADIC $9);
+		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
@@ -2879,7 +3042,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6, VARIADIC $9) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
@@ -2892,8 +3055,21 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	VARIADIC userargs text[] DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8,NULL::double precision [],NULL::boolean, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast raster, nband int,
+	callbackfunc regprocedure,
+	mask double precision [][], weighted boolean,
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	select _st_mapalgebra(ARRAY[ROW($1,$2)]::rastbandarg[],$3,$6,NULL::integer,NULL::integer,$7,$8,$4,$5,VARIADIC $9)
+	$$ LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- 1 or 2-Raster ST_MapAlgebra with expressions
@@ -5537,6 +5713,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     AS 'select $1::geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
+    RETURNS bool
+    AS 'select $1::geometry @ $2'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
@@ -5546,6 +5727,11 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
+    LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
+    RETURNS bool
+    AS 'select $1 @ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
@@ -5632,10 +5818,16 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -5645,10 +5837,16 @@ CREATE OPERATOR && (
 -- geometry/raster operators
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
-    COMMUTATOR = '@',
+    -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
-    
+
+CREATE OPERATOR @ (
+    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
+    COMMUTATOR = '~',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+ 
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',
@@ -5870,130 +6068,25 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	RETURNS boolean AS $$
 	DECLARE
 		hasnodata boolean := TRUE;
-		nodata float8 := 0.0;
-		convexhull geometry;
-		geomintersect geometry;
-		x1w double precision := 0.0;
-		x2w double precision := 0.0;
-		y1w double precision := 0.0;
-		y2w double precision := 0.0;
-		x1 integer := 0;
-		x2 integer := 0;
-		x3 integer := 0;
-		x4 integer := 0;
-		y1 integer := 0;
-		y2 integer := 0;
-		y3 integer := 0;
-		y4 integer := 0;
-		x integer := 0;
-		y integer := 0;
-		xinc integer := 0;
-		yinc integer := 0;
-		pixelval double precision;
-		bintersect boolean := FALSE;
-		gtype text;
-		scale float8;
-		w int;
-		h int;
+		_geom geometry;
 	BEGIN
 		IF ST_SRID(rast) != ST_SRID(geom) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
-		convexhull := ST_ConvexHull(rast);
+		_geom := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
-		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN
+		IF ST_Intersects(geom, _geom) IS NOT TRUE THEN
 			RETURN FALSE;
 		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
 			RETURN TRUE;
 		END IF;
 
-		-- Get the intersection between with the geometry.
-		-- We will search for withvalue pixel only in this area.
-		geomintersect := st_intersection(geom, convexhull);
-
---RAISE NOTICE 'geomintersect=%', st_astext(geomintersect);
-
-		-- If the intersection is empty, return false
-		IF st_isempty(geomintersect) THEN
-			RETURN FALSE;
-		END IF;
-
-		-- We create a minimalistic buffer around the intersection in order to scan every pixels
-		-- that would touch the edge or intersect with the geometry
-		SELECT sqrt(scalex * scalex + skewy * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
-		IF scale != 0 THEN
-			geomintersect := st_buffer(geomintersect, scale / 1000000);
-		END IF;
-
---RAISE NOTICE 'geomintersect2=%', st_astext(geomintersect);
-
-		-- Find the world coordinates of the bounding box of the intersecting area
-		x1w := st_xmin(geomintersect);
-		y1w := st_ymin(geomintersect);
-		x2w := st_xmax(geomintersect);
-		y2w := st_ymax(geomintersect);
-		nodata := st_bandnodatavalue(rast, nband);
-
---RAISE NOTICE 'x1w=%, y1w=%, x2w=%, y2w=%', x1w, y1w, x2w, y2w;
-
-		-- Convert world coordinates to raster coordinates
-		x1 := st_worldtorastercoordx(rast, x1w, y1w);
-		y1 := st_worldtorastercoordy(rast, x1w, y1w);
-		x2 := st_worldtorastercoordx(rast, x2w, y1w);
-		y2 := st_worldtorastercoordy(rast, x2w, y1w);
-		x3 := st_worldtorastercoordx(rast, x1w, y2w);
-		y3 := st_worldtorastercoordy(rast, x1w, y2w);
-		x4 := st_worldtorastercoordx(rast, x2w, y2w);
-		y4 := st_worldtorastercoordy(rast, x2w, y2w);
-
---RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%, x3=%, y3=%, x4=%, y4=%', x1, y1, x2, y2, x3, y3, x4, y4;
-
-		-- Order the raster coordinates for the upcoming FOR loop.
-		x1 := int4smaller(int4smaller(int4smaller(x1, x2), x3), x4);
-		y1 := int4smaller(int4smaller(int4smaller(y1, y2), y3), y4);
-		x2 := int4larger(int4larger(int4larger(x1, x2), x3), x4);
-		y2 := int4larger(int4larger(int4larger(y1, y2), y3), y4);
-
-		-- Make sure the range is not lower than 1.
-		-- This can happen when world coordinate are exactly on the left border
-		-- of the raster and that they do not span on more than one pixel.
-		x1 := int4smaller(int4larger(x1, 1), w);
-		y1 := int4smaller(int4larger(y1, 1), h);
-
-		-- Also make sure the range does not exceed the width and height of the raster.
-		-- This can happen when world coordinate are exactly on the lower right border
-		-- of the raster.
-		x2 := int4smaller(x2, w);
-		y2 := int4smaller(y2, h);
-
---RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%', x1, y1, x2, y2;
-
-		-- Search exhaustively for withvalue pixel on a moving 3x3 grid
-		-- (very often more efficient than searching on a mere 1x1 grid)
-		FOR xinc in 0..2 LOOP
-			FOR yinc in 0..2 LOOP
-				FOR x IN x1+xinc..x2 BY 3 LOOP
-					FOR y IN y1+yinc..y2 BY 3 LOOP
-						-- Check first if the pixel intersects with the geometry. Often many won't.
-						bintersect := NOT st_isempty(st_intersection(st_pixelaspolygon(rast, x, y), geom));
-
-						IF bintersect THEN
-							-- If the pixel really intersects, check its value. Return TRUE if with value.
-							pixelval := st_value(rast, nband, x, y);
-							IF pixelval != nodata THEN
-								RETURN TRUE;
-							END IF;
-						END IF;
-					END LOOP;
-				END LOOP;
-			END LOOP;
-		END LOOP;
-
-		RETURN FALSE;
+		SELECT ST_Collect(t.geom) INTO _geom FROM ST_PixelAsPolygons(rast, nband) AS t;
+		RETURN ST_Intersects(geom, _geom);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE
 	COST 1000;
@@ -8056,7 +8149,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
 		AND NOT pg_is_other_temp_schema(c.relnamespace);
 
 ------------------------------------------------------------------------------
@@ -8156,7 +8249,7 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND s.consrc LIKE '%_overview_constraint(%'

@@ -4,6 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
+ * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -12,10 +13,10 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +24,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -48,6 +49,9 @@
 /* Get summary stats */
 Datum RASTER_summaryStats(PG_FUNCTION_ARGS);
 Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS);
+
+Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS);
+Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS);
 
 /* get histogram */
 Datum RASTER_histogram(PG_FUNCTION_ARGS);
@@ -91,7 +95,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		PG_FREE_IF_COPY(pgraster, 0);
-		elog(ERROR, "RASTER_summaryStats: Could not deserialize raster");
+		elog(ERROR, "RASTER_summaryStats: Cannot deserialize raster");
 		PG_RETURN_NULL();
 	}
 
@@ -128,7 +132,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	/* get band */
 	band = rt_raster_get_band(raster, bandindex - 1);
 	if (!band) {
-		elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+		elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -140,7 +144,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (NULL == stats) {
-		elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
+		elog(NOTICE, "Cannot compute summary statistics for band at index %d. Returning NULL", bandindex);
 		PG_RETURN_NULL();
 	}
 
@@ -277,7 +281,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT) {
 		pfree(sql);
-		elog(ERROR, "RASTER_summaryStatsCoverage: Could not connect to database using SPI");
+		elog(ERROR, "RASTER_summaryStatsCoverage: Cannot connect to database using SPI");
 		PG_RETURN_NULL();
 	}
 
@@ -287,7 +291,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	if (NULL == sql) {
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
-		elog(ERROR, "RASTER_summaryStatsCoverage: Could not allocate memory for sql");
+		elog(ERROR, "RASTER_summaryStatsCoverage: Cannot allocate memory for sql");
 		PG_RETURN_NULL();
 	}
 
@@ -317,7 +321,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (NULL != rtn) pfree(rtn);
-			elog(ERROR, "RASTER_summaryStatsCoverage: Could not get raster of coverage");
+			elog(ERROR, "RASTER_summaryStatsCoverage: Cannot get raster of coverage");
 			PG_RETURN_NULL();
 		}
 		else if (isNull) {
@@ -335,7 +339,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (NULL != rtn) pfree(rtn);
-			elog(ERROR, "RASTER_summaryStatsCoverage: Could not deserialize raster");
+			elog(ERROR, "RASTER_summaryStatsCoverage: Cannot deserialize raster");
 			PG_RETURN_NULL();
 		}
 
@@ -357,7 +361,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		/* get band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
-			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 
 			rt_raster_destroy(raster);
 
@@ -376,7 +380,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 
 		if (NULL == stats) {
-			elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Cannot compute summary statistics for band at index %d. Returning NULL", bandindex);
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_cursor_close(portal);
@@ -396,7 +400,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 					SPI_cursor_close(portal);
 					SPI_finish();
 
-					elog(ERROR, "RASTER_summaryStatsCoverage: Could not allocate memory for summary stats of coverage");
+					elog(ERROR, "RASTER_summaryStatsCoverage: Cannot allocate memory for summary stats of coverage");
 					PG_RETURN_NULL();
 				}
 
@@ -433,7 +437,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	SPI_finish();
 
 	if (NULL == rtn) {
-		elog(ERROR, "RASTER_summaryStatsCoverage: Could not compute coverage summary stats");
+		elog(ERROR, "RASTER_summaryStatsCoverage: Cannot compute coverage summary stats");
 		PG_RETURN_NULL();
 	}
 
@@ -485,6 +489,426 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 	/* clean up */
 	pfree(rtn);
+
+	PG_RETURN_DATUM(result);
+}
+
+/* ---------------------------------------------------------------- */
+/* Aggregate ST_SummaryStats                                        */
+/* ---------------------------------------------------------------- */
+
+typedef struct rtpg_summarystats_arg_t *rtpg_summarystats_arg;
+struct rtpg_summarystats_arg_t {
+	rt_bandstats stats;
+
+	/* coefficients for one-pass standard deviation */
+	uint64_t cK;
+	double cM;
+	double cQ;
+
+	int32_t band_index; /* one-based */
+	bool exclude_nodata_value;
+	double sample; /* value between 0 and 1 */
+};
+
+static void
+rtpg_summarystats_arg_destroy(rtpg_summarystats_arg arg) {
+	if (arg->stats != NULL)
+		pfree(arg->stats);
+
+	pfree(arg);
+}
+
+static rtpg_summarystats_arg
+rtpg_summarystats_arg_init() {
+	rtpg_summarystats_arg arg = NULL;
+
+	arg = palloc(sizeof(struct rtpg_summarystats_arg_t));
+	if (arg == NULL) {
+		elog(
+			ERROR,
+			"rtpg_summarystats_arg_init: Cannot allocate memory for function arguments"
+		);
+		return NULL;
+	}
+
+	arg->stats = (rt_bandstats) palloc(sizeof(struct rt_bandstats_t));
+	if (arg->stats == NULL) {
+		rtpg_summarystats_arg_destroy(arg);
+		elog(
+			ERROR,
+			"rtpg_summarystats_arg_init: Cannot allocate memory for stats function argument"
+		);
+		return NULL;
+	}
+
+	arg->stats->sample = 0;
+	arg->stats->count = 0;
+	arg->stats->min = 0;
+	arg->stats->max = 0;
+	arg->stats->sum = 0;
+	arg->stats->mean = 0;
+	arg->stats->stddev = -1;
+	arg->stats->values = NULL;
+	arg->stats->sorted = 0;
+
+	arg->cK = 0;
+	arg->cM = 0;
+	arg->cQ = 0;
+
+	arg->band_index = 1;
+	arg->exclude_nodata_value = TRUE;
+	arg->sample = 1;
+
+	return arg;
+}
+
+PG_FUNCTION_INFO_V1(RASTER_summaryStats_transfn);
+Datum RASTER_summaryStats_transfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext;
+	MemoryContext oldcontext;
+	rtpg_summarystats_arg state = NULL;
+	bool skiparg = FALSE;
+
+	int i = 0;
+
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int num_bands = 0;
+	rt_bandstats stats = NULL;
+
+	POSTGIS_RT_DEBUG(3, "Starting...");
+
+	/* cannot be called directly as this is exclusive aggregate function */
+	if (!AggCheckCallContext(fcinfo, &aggcontext)) {
+		elog(
+			ERROR,
+			"RASTER_summaryStats_transfn: Cannot be called in a non-aggregate context"
+		);
+		PG_RETURN_NULL();
+	}
+
+	/* switch to aggcontext */
+	oldcontext = MemoryContextSwitchTo(aggcontext);
+
+	if (PG_ARGISNULL(0)) {
+		POSTGIS_RT_DEBUG(3, "Creating state variable");
+
+		state = rtpg_summarystats_arg_init();
+		if (state == NULL) {
+			MemoryContextSwitchTo(oldcontext);
+			elog(
+				ERROR,
+				"RASTER_summaryStats_transfn: Cannot allocate memory for state variable"
+			);
+			PG_RETURN_NULL();
+		}
+
+		skiparg = FALSE;
+	}
+	else {
+		POSTGIS_RT_DEBUG(3, "State variable already exists");
+		state = (rtpg_summarystats_arg) PG_GETARG_POINTER(0);
+		skiparg = TRUE;
+	}
+
+	/* raster arg is NOT NULL */
+	if (!PG_ARGISNULL(1)) {
+		/* deserialize raster */
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+		/* Get raster object */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (raster == NULL) {
+
+			rtpg_summarystats_arg_destroy(state);
+			PG_FREE_IF_COPY(pgraster, 1);
+
+			MemoryContextSwitchTo(oldcontext);
+			elog(ERROR, "RASTER_summaryStats_transfn: Cannot deserialize raster");
+			PG_RETURN_NULL();
+		}
+	}
+
+	do {
+		Oid calltype;
+		int nargs = 0;
+
+		if (skiparg)
+			break;
+
+		/* 4 or 5 total possible args */
+		nargs = PG_NARGS();
+		POSTGIS_RT_DEBUGF(4, "nargs = %d", nargs);
+
+		for (i = 2; i < nargs; i++) {
+			if (PG_ARGISNULL(i))
+				continue;
+
+			calltype = get_fn_expr_argtype(fcinfo->flinfo, i);
+
+			/* band index */
+			if (
+				(calltype == INT2OID || calltype == INT4OID) &&
+				i == 2
+			) {
+				if (calltype == INT2OID)
+					state->band_index = PG_GETARG_INT16(i);
+				else
+					state->band_index = PG_GETARG_INT32(i);
+
+				/* basic check, > 0 */
+				if (state->band_index < 1) {
+
+					rtpg_summarystats_arg_destroy(state);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					elog(
+						ERROR,
+						"RASTER_summaryStats_transfn: Invalid band index (must use 1-based). Returning NULL"
+					);
+					PG_RETURN_NULL();
+				}
+			}
+			/* exclude_nodata_value */
+			else if (
+				calltype == BOOLOID && (
+					i == 2 || i == 3
+				)
+			) {
+				state->exclude_nodata_value = PG_GETARG_BOOL(i);
+			}
+			/* sample rate */
+			else if (
+				(calltype == FLOAT4OID || calltype == FLOAT8OID) &&
+				(i == 3 || i == 4)
+			) {
+				if (calltype == FLOAT4OID)
+					state->sample = PG_GETARG_FLOAT4(i);
+				else
+					state->sample = PG_GETARG_FLOAT8(i);
+
+				/* basic check, 0 <= sample <= 1 */
+				if (state->sample < 0. || state->sample > 1.) {
+
+					rtpg_summarystats_arg_destroy(state);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					elog(
+						ERROR,
+						"Invalid sample percentage (must be between 0 and 1). Returning NULL"
+					);
+
+					PG_RETURN_NULL();
+				}
+				else if (FLT_EQ(state->sample, 0.0))
+					state->sample = 1;
+			}
+			/* unknown arg */
+			else {
+				rtpg_summarystats_arg_destroy(state);
+				if (raster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 1);
+				}
+
+				MemoryContextSwitchTo(oldcontext);
+				elog(
+					ERROR,
+					"RASTER_summaryStats_transfn: Unknown function parameter at index %d",
+					i
+				);
+				PG_RETURN_NULL();
+			}
+		}
+	}
+	while (0);
+
+	/* null raster, return */
+	if (PG_ARGISNULL(1)) {
+		POSTGIS_RT_DEBUG(4, "NULL raster so processing required");
+		MemoryContextSwitchTo(oldcontext);
+		PG_RETURN_POINTER(state);
+	}
+
+	/* inspect number of bands */
+	num_bands = rt_raster_get_num_bands(raster);
+	if (state->band_index > num_bands) {
+		elog(
+			NOTICE,
+			"Raster does not have band at index %d. Skipping raster",
+			state->band_index
+		);
+
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 1);
+
+		MemoryContextSwitchTo(oldcontext);
+		PG_RETURN_POINTER(state);
+	}
+
+	/* get band */
+	band = rt_raster_get_band(raster, state->band_index - 1);
+	if (!band) {
+		elog(
+			NOTICE, "Cannot find band at index %d. Skipping raster",
+			state->band_index
+		);
+
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 1);
+
+		MemoryContextSwitchTo(oldcontext);
+		PG_RETURN_POINTER(state);
+	}
+
+	/* we don't need the raw values, hence the zero parameter */
+	stats = rt_band_get_summary_stats(
+		band, (int) state->exclude_nodata_value,
+		state->sample, 0,
+		&(state->cK), &(state->cM), &(state->cQ)
+	);
+
+	rt_band_destroy(band);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 1);
+
+	if (NULL == stats) {
+		elog(
+			NOTICE,
+			"Cannot compute summary statistics for band at index %d. Returning NULL",
+			state->band_index
+		);
+
+		rtpg_summarystats_arg_destroy(state);
+
+		MemoryContextSwitchTo(oldcontext);
+		PG_RETURN_NULL();
+	}
+
+	if (stats->count > 0) {
+		if (state->stats->count < 1) {
+			state->stats->sample = stats->sample;
+			state->stats->count = stats->count;
+			state->stats->min = stats->min;
+			state->stats->max = stats->max;
+			state->stats->sum = stats->sum;
+			state->stats->mean = stats->mean;
+			state->stats->stddev = -1;
+		}
+		else {
+			state->stats->count += stats->count;
+			state->stats->sum += stats->sum;
+
+			if (stats->min < state->stats->min)
+				state->stats->min = stats->min;
+			if (stats->max > state->stats->max)
+				state->stats->max = stats->max;
+		}
+	}
+
+	pfree(stats);
+
+	/* switch back to local context */
+	MemoryContextSwitchTo(oldcontext);
+
+	POSTGIS_RT_DEBUG(3, "Finished");
+
+	PG_RETURN_POINTER(state);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_summaryStats_finalfn);
+Datum RASTER_summaryStats_finalfn(PG_FUNCTION_ARGS)
+{
+	rtpg_summarystats_arg state = NULL;
+
+	TupleDesc tupdesc;
+	HeapTuple tuple;
+	int values_length = 6;
+	Datum values[values_length];
+	bool nulls[values_length];
+	Datum result;
+
+	POSTGIS_RT_DEBUG(3, "Starting...");
+
+	/* cannot be called directly as this is exclusive aggregate function */
+	if (!AggCheckCallContext(fcinfo, NULL)) {
+		elog(ERROR, "RASTER_summaryStats_finalfn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	/* NULL, return null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	state = (rtpg_summarystats_arg) PG_GETARG_POINTER(0);
+
+	if (NULL == state) {
+		elog(ERROR, "RASTER_summaryStats_finalfn: Cannot compute coverage summary stats");
+		PG_RETURN_NULL();
+	}
+
+	/* coverage mean and deviation */
+	if (state->stats->count > 0) {
+		state->stats->mean = state->stats->sum / state->stats->count;
+		/* sample deviation */
+		if (state->stats->sample > 0 && state->stats->sample < 1)
+			state->stats->stddev = sqrt(state->cQ / (state->stats->count - 1));
+		/* standard deviation */
+		else
+			state->stats->stddev = sqrt(state->cQ / state->stats->count);
+	}
+
+	/* Build a tuple descriptor for our result type */
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+		rtpg_summarystats_arg_destroy(state);
+		ereport(ERROR, (
+			errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg(
+				"function returning record called in context "
+				"that cannot accept type record"
+			)
+		));
+	}
+
+	BlessTupleDesc(tupdesc);
+
+	memset(nulls, FALSE, sizeof(bool) * values_length);
+
+	values[0] = Int64GetDatum(state->stats->count);
+	if (state->stats->count > 0) {
+		values[1] = Float8GetDatum(state->stats->sum);
+		values[2] = Float8GetDatum(state->stats->mean);
+		values[3] = Float8GetDatum(state->stats->stddev);
+		values[4] = Float8GetDatum(state->stats->min);
+		values[5] = Float8GetDatum(state->stats->max);
+	}
+	else {
+		nulls[1] = TRUE;
+		nulls[2] = TRUE;
+		nulls[3] = TRUE;
+		nulls[4] = TRUE;
+		nulls[5] = TRUE;
+	}
+
+	/* build a tuple */
+	tuple = heap_form_tuple(tupdesc, values, nulls);
+
+	/* make the tuple into a datum */
+	result = HeapTupleGetDatum(tuple);
+
+	/* clean up */
+	rtpg_summarystats_arg_destroy(state);
 
 	PG_RETURN_DATUM(result);
 }
@@ -555,7 +979,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
+			elog(ERROR, "RASTER_histogram: Cannot deserialize raster");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -666,7 +1090,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		/* get band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
-			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -679,12 +1103,12 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == stats || NULL == stats->values) {
-			elog(NOTICE, "Could not compute summary statistics for band at index %d", bandindex);
+			elog(NOTICE, "Cannot compute summary statistics for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
-			elog(NOTICE, "Could not compute histogram for band at index %d as the band has no values", bandindex);
+			elog(NOTICE, "Cannot compute histogram for band at index %d as the band has no values", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -694,7 +1118,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (bin_width_count) pfree(bin_width);
 		pfree(stats);
 		if (NULL == hist || !count) {
-			elog(NOTICE, "Could not compute histogram for band at index %d", bandindex);
+			elog(NOTICE, "Cannot compute histogram for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -959,7 +1383,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not connect to database using SPI");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot connect to database using SPI");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -974,7 +1398,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for sql");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot allocate memory for sql");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -991,7 +1415,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not get summary stats of coverage");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot get summary stats of coverage");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1008,7 +1432,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not get summary stats of coverage");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot get summary stats of coverage");
 			SRF_RETURN_DONE(funcctx);
 		}
 		min = strtod(tmp, NULL);
@@ -1024,7 +1448,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not get summary stats of coverage");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot get summary stats of coverage");
 			SRF_RETURN_DONE(funcctx);
 		}
 		max = strtod(tmp, NULL);
@@ -1043,7 +1467,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			if (bin_width_count) pfree(bin_width);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for sql");
+			elog(ERROR, "RASTER_histogramCoverage: Cannot allocate memory for sql");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1077,7 +1501,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (bin_width_count) pfree(bin_width);
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_histogramCoverage: Could not get raster of coverage");
+				elog(ERROR, "RASTER_histogramCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -1098,7 +1522,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (bin_width_count) pfree(bin_width);
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_histogramCoverage: Could not deserialize raster");
+				elog(ERROR, "RASTER_histogramCoverage: Cannot deserialize raster");
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -1123,7 +1547,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			/* get band */
 			band = rt_raster_get_band(raster, bandindex - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+				elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 
 				rt_raster_destroy(raster);
 
@@ -1145,7 +1569,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 
 			if (NULL == stats) {
-				elog(NOTICE, "Could not compute summary statistics for band at index %d. Returning NULL", bandindex);
+				elog(NOTICE, "Cannot compute summary statistics for band at index %d. Returning NULL", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -1163,7 +1587,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				hist = rt_band_get_histogram(stats, bin_count, bin_width, bin_width_count, right, min, max, &count);
 				pfree(stats);
 				if (NULL == hist || !count) {
-					elog(NOTICE, "Could not compute histogram for band at index %d", bandindex);
+					elog(NOTICE, "Cannot compute histogram for band at index %d", bandindex);
 
 					if (SPI_tuptable) SPI_freetuptable(tuptable);
 					SPI_cursor_close(portal);
@@ -1191,7 +1615,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 						if (bin_width_count) pfree(bin_width);
 
 						MemoryContextSwitchTo(oldcontext);
-						elog(ERROR, "RASTER_histogramCoverage: Could not allocate memory for histogram of coverage");
+						elog(ERROR, "RASTER_histogramCoverage: Cannot allocate memory for histogram of coverage");
 						SRF_RETURN_DONE(funcctx);
 					}
 
@@ -1355,7 +1779,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantile: Could not deserialize raster");
+			elog(ERROR, "RASTER_quantile: Cannot deserialize raster");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1449,7 +1873,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		/* get band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
-			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -1462,12 +1886,12 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == stats || NULL == stats->values) {
-			elog(NOTICE, "Could not retrieve summary statistics for band at index %d", bandindex);
+			elog(NOTICE, "Cannot retrieve summary statistics for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
-			elog(NOTICE, "Could not compute quantiles for band at index %d as the band has no values", bandindex);
+			elog(NOTICE, "Cannot compute quantiles for band at index %d as the band has no values", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -1477,7 +1901,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (quantiles_count) pfree(quantiles);
 		pfree(stats);
 		if (NULL == quant || !count) {
-			elog(NOTICE, "Could not compute quantiles for band at index %d", bandindex);
+			elog(NOTICE, "Cannot compute quantiles for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -1724,7 +2148,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		spi_result = SPI_connect();
 		if (spi_result != SPI_OK_CONNECT) {
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantileCoverage: Could not connect to database using SPI");
+			elog(ERROR, "RASTER_quantileCoverage: Cannot connect to database using SPI");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1736,7 +2160,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantileCoverage: Could not allocate memory for sql");
+			elog(ERROR, "RASTER_quantileCoverage: Cannot allocate memory for sql");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1751,7 +2175,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantileCoverage: Could not get summary stats of coverage");
+			elog(ERROR, "RASTER_quantileCoverage: Cannot get summary stats of coverage");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1766,7 +2190,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantileCoverage: Could not get summary stats of coverage");
+			elog(ERROR, "RASTER_quantileCoverage: Cannot get summary stats of coverage");
 			SRF_RETURN_DONE(funcctx);
 		}
 		cov_count = strtol(tmp, NULL, 10);
@@ -1783,7 +2207,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_quantileCoverage: Could not allocate memory for sql");
+			elog(ERROR, "RASTER_quantileCoverage: Cannot allocate memory for sql");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -1816,7 +2240,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_finish();
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_quantileCoverage: Could not get raster of coverage");
+				elog(ERROR, "RASTER_quantileCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -1834,7 +2258,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_finish();
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_quantileCoverage: Could not deserialize raster");
+				elog(ERROR, "RASTER_quantileCoverage: Cannot deserialize raster");
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -1856,7 +2280,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			/* get band */
 			band = rt_raster_get_band(raster, bandindex - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find raster band of index %d. Returning NULL", bandindex);
+				elog(NOTICE, "Cannot find raster band of index %d. Returning NULL", bandindex);
 
 				rt_raster_destroy(raster);
 
@@ -1880,7 +2304,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 
 			if (NULL == covquant || !count) {
-				elog(NOTICE, "Could not compute quantiles for band at index %d", bandindex);
+				elog(NOTICE, "Cannot compute quantiles for band at index %d", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -2033,7 +2457,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		if (!raster) {
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_valueCount: Could not deserialize raster");
+			elog(ERROR, "RASTER_valueCount: Cannot deserialize raster");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -2107,7 +2531,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		/* get band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
-			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+			elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
@@ -2120,7 +2544,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == vcnts || !count) {
-			elog(NOTICE, "Could not count the values for band at index %d", bandindex);
+			elog(NOTICE, "Cannot count the values for band at index %d", bandindex);
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -2349,7 +2773,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (search_values_count) pfree(search_values);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_valueCountCoverage: Could not connect to database using SPI");
+			elog(ERROR, "RASTER_valueCountCoverage: Cannot connect to database using SPI");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -2364,7 +2788,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (search_values_count) pfree(search_values);
 
 			MemoryContextSwitchTo(oldcontext);
-			elog(ERROR, "RASTER_valueCountCoverage: Could not allocate memory for sql");
+			elog(ERROR, "RASTER_valueCountCoverage: Cannot allocate memory for sql");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -2398,7 +2822,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (search_values_count) pfree(search_values);
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_valueCountCoverage: Could not get raster of coverage");
+				elog(ERROR, "RASTER_valueCountCoverage: Cannot get raster of coverage");
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -2419,7 +2843,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (search_values_count) pfree(search_values);
 
 				MemoryContextSwitchTo(oldcontext);
-				elog(ERROR, "RASTER_valueCountCoverage: Could not deserialize raster");
+				elog(ERROR, "RASTER_valueCountCoverage: Cannot deserialize raster");
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -2444,7 +2868,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			/* get band */
 			band = rt_raster_get_band(raster, bandindex - 1);
 			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+				elog(NOTICE, "Cannot find band at index %d. Returning NULL", bandindex);
 
 				rt_raster_destroy(raster);
 
@@ -2464,7 +2888,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 			if (NULL == vcnts || !count) {
-				elog(NOTICE, "Could not count the values for band at index %d", bandindex);
+				elog(NOTICE, "Cannot count the values for band at index %d", bandindex);
 
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
@@ -2490,7 +2914,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 					if (search_values_count) pfree(search_values);
 
 					MemoryContextSwitchTo(oldcontext);
-					elog(ERROR, "RASTER_valueCountCoverage: Could not allocate memory for value counts of coverage");
+					elog(ERROR, "RASTER_valueCountCoverage: Cannot allocate memory for value counts of coverage");
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -2529,7 +2953,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 							if (NULL != covvcnts) free(covvcnts);
 
 							MemoryContextSwitchTo(oldcontext);
-							elog(ERROR, "RASTER_valueCountCoverage: Could not change allocated memory for value counts of coverage");
+							elog(ERROR, "RASTER_valueCountCoverage: Cannot change allocated memory for value counts of coverage");
 							SRF_RETURN_DONE(funcctx);
 						}
 

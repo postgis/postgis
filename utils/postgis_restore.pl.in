@@ -2,7 +2,7 @@
 
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://postgis.refractions.net
+# http://postgis.net
 #
 # Copyright (C) 2011 OpenGeo.org
 # Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -54,7 +54,7 @@ my $DEBUG = 0;
 my $POSTGIS_SCHEMA;
 
 # NOTE: the SRID limits here are being discussed:
-# http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
+# http://lists.osgeo.org/pipermail/postgis-devel/2012-February/018440.html
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
@@ -1759,6 +1759,7 @@ FUNCTION postgis_jts_version()
 FUNCTION postgis_lib_build_date()
 FUNCTION postgis_lib_version()
 FUNCTION postgis_libxml_version()
+FUNCTION postgis_libjson_version()
 FUNCTION postgis_noop(geometry)
 FUNCTION postgis_proj_version()
 FUNCTION postgis_raster_lib_build_date()
@@ -1938,6 +1939,7 @@ FUNCTION st_asewkb(geometry)
 FUNCTION st_asewkb(geometry, text)
 FUNCTION st_asewkt(geography)
 FUNCTION st_asewkt(geometry)
+FUNCTION st_asewkt(text)
 FUNCTION st_asgdalraster(raster, text, text[], integer)
 FUNCTION st_asgeojson(geography)
 FUNCTION st_asgeojson(geography, integer)
@@ -2810,6 +2812,8 @@ OPERATOR &&(geometry, geometry)
 OPERATOR &&&(geometry, geometry)
 OPERATOR ~(geometry, raster)
 OPERATOR &&(geometry, raster)
+OPERATOR <#>(geometry, geometry)
+OPERATOR <->(geometry, geometry)
 OPERATOR ~(raster, geometry)
 OPERATOR &&(raster, geometry)
 OPERATOR ~=(raster, raster)

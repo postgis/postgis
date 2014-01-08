@@ -12,10 +12,10 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +23,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -256,6 +256,27 @@ rtpg_trim(const char *input) {
 	rtn[inputlen - offset] = '\0';
 
 	return rtn;
+}
+
+/*
+ * reverse string search function from
+ * http://stackoverflow.com/a/1634398
+ */
+char *
+rtpg_strrstr(const char *s1, const char *s2) {
+	int s1len = strlen(s1);
+	int s2len = strlen(s2);
+	char *s;
+
+	if (s2len > s1len)
+		return NULL;
+
+	s = (char *) (s1 + s1len - s2len);
+	for (; s >= s1; --s)
+		if (strncmp(s, s2, s2len) == 0)
+			return s;
+
+	return NULL;
 }
 
 char*

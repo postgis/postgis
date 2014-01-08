@@ -80,7 +80,7 @@ cd ${staging_fold}
 %PSQL% -c "CREATE SCHEMA ${staging_schema};"
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
 cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ', 
-'for /r %%z in (*${table_name}.dbf) do (${loader}  -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
+'for /r %%z in (*${table_name}.dbf) do (${loader} -D -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
 );
 
 
@@ -106,7 +106,7 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
 'for z in *${table_name}.dbf; do 
-${loader} -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
+${loader} -D -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
 ${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
 

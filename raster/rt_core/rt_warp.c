@@ -4,6 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
+ * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
@@ -12,10 +13,10 @@
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +24,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -194,7 +195,8 @@ rt_raster rt_raster_gdal_warp(
 	int i = 0;
 	int numBands = 0;
 
-	int subgt = 0;
+	/* flag indicating that the spatial info is being substituted */
+	int subspatial = 0;
 
 	RASTER_DEBUG(3, "starting");
 
@@ -251,7 +253,10 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
 
 	/* special case when src_srs and dst_srs is NULL and raster's geotransform matrix is default */
-	if (src_srs == NULL && dst_srs == NULL && rt_raster_get_srid(raster) == SRID_UNKNOWN) {
+	if (
+		src_srs == NULL && dst_srs == NULL &&
+		rt_raster_get_srid(raster) == SRID_UNKNOWN
+	) {
 		double gt[6];
 
 #if POSTGIS_DEBUG_LEVEL > 3
@@ -265,22 +270,24 @@ rt_raster rt_raster_gdal_warp(
 		RASTER_DEBUGF(3, "raster geotransform: %f, %f, %f, %f, %f, %f",
 			gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
+		/* substitute spatial info (lack of) with a real one EPSG:32731 (WGS84/UTM zone 31s) */
 		if (
-			FLT_EQ(gt[0], 0) &&
-			FLT_EQ(gt[1], 1) &&
-			FLT_EQ(gt[2], 0) &&
-			FLT_EQ(gt[3], 0) &&
-			FLT_EQ(gt[4], 0) &&
-			FLT_EQ(gt[5], -1)
+			FLT_EQ(gt[0], 0) && FLT_EQ(gt[3], 0) &&
+			FLT_EQ(gt[1], 1) && FLT_EQ(gt[5], -1) &&
+			FLT_EQ(gt[2], 0) && FLT_EQ(gt[4], 0)
 		) {
-			double ngt[6] = {0, 10, 0, 0, 0, -10};
+			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
 			rtinfo("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
+
+			subspatial = 1;
 
 			GDALSetGeoTransform(arg->src.ds, ngt);
 			GDALFlushCache(arg->src.ds);
 
-			subgt = 1;
+			/* EPSG:32731 */
+			arg->src.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
+			arg->dst.srs = rt_util_gdal_convert_sr("EPSG:32731", 0);
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			GDALGetGeoTransform(arg->src.ds, gt);
@@ -425,10 +432,14 @@ rt_raster rt_raster_gdal_warp(
 		_scale[0] = fabs(*scale_x);
 		_scale[1] = fabs(*scale_y);
 
-		/* special override */
-		if (subgt) {
+		/* special override since we changed the original GT scales */
+		if (subspatial) {
+			/*
 			_scale[0] *= 10;
 			_scale[1] *= 10;
+			*/
+			_scale[0] /= 10;
+			_scale[1] /= 10;
 		}
 	}
 	else if (
@@ -960,11 +971,12 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 
-	/* substitute geotransform matrix, reset back to default */
-	if (subgt) {
+	/* substitute spatial, reset back to default */
+	if (subspatial) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
 
 		rt_raster_set_geotransform_matrix(rast, gt);
+		rt_raster_set_srid(rast, SRID_UNKNOWN);
 	}
 
 	RASTER_DEBUG(3, "done");

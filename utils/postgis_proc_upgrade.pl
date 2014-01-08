@@ -2,7 +2,7 @@
 
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://postgis.refractions.net
+# http://postgis.net
 #
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
@@ -345,7 +345,12 @@ BEGIN
 	-- postgis_lib_version() and postgis_scripts_installed()
 	-- would both return actual PostGIS release number.
 	-- 
-	SELECT into old_scripts postgis_lib_version();
+	BEGIN
+		SELECT into old_scripts postgis_lib_version();
+	EXCEPTION WHEN OTHERS THEN
+		RAISE DEBUG ''Got %'', SQLERRM;
+		SELECT into old_scripts postgis_scripts_installed();
+	END;
 	SELECT into new_scripts ''NEWVERSION'';
 	SELECT into old_maj substring(old_scripts from 1 for 2);
 	SELECT into new_maj substring(new_scripts from 1 for 2);

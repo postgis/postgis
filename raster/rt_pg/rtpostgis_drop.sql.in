@@ -9,8 +9,19 @@
 -- Copyright (C) 2011-2012 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software Foundation,
+-- Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
@@ -207,7 +218,6 @@ DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
 DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
 DROP FUNCTION IF EXISTS _st_summarystats(raster,int, boolean, double precision);
 DROP FUNCTION IF EXISTS _st_summarystats(text, text,integer, boolean, double precision);
-DROP TYPE IF EXISTS summarystats;
 
 -- remove TYPE quantile
 DROP FUNCTION IF EXISTS st_quantile(raster, int, boolean, double precision[]);
@@ -486,3 +496,23 @@ DROP FUNCTION IF EXISTS _add_raster_constraint_regular_blocking(name, name, name
 
 -- function signature changed
 DROP FUNCTION IF EXISTS st_asbinary(raster);
+
+DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
+DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
+DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean);
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, boolean);

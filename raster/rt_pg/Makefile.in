@@ -1,10 +1,21 @@
-#############################################################################
+############################################################################
 # $Id$
 #
 # Copyright (c) 2009-2011 Sandro Santilli <strk@keybit.net>
 #
-# This is free software; you can redistribute and/or modify it under
-# the terms of the GNU General Public Licence. See the COPYING file.
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 #############################################################################
 
@@ -13,8 +24,13 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
+# Update PREV_big manually on branching
+# TODO: move this definition in ../../Version.config
+PREV_big=21
+CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
+
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_upgrade_20_21.sql rtpostgis_upgrade_21_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
+DATA_built=rtpostgis.sql rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql rtpostgis_upgrade_$(CURV_big)_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
 # SQL preprocessor
@@ -116,11 +132,11 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 rtpostgis_upgrade.sql: rtpostgis.sql
 	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
-# same as 20_21 until 2.1.0 is released
-rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+# same as $(PREV_big)_$(CURV_big) until next .0 is released
+rtpostgis_upgrade_$(CURV_big)_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 

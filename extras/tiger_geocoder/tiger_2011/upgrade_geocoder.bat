@@ -10,7 +10,7 @@ set PGCONTRIB=C:\Program Files\PostgreSQL\8.4\share\contrib
 
 REM unremark the loader line to update your loader scripts
 REM note this wipes out your custom settings in loader_* tables
-REM "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2012.sql"
+REM "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2013.sql"
 cd regress
 REM "%PGBIN%\psql"  -d "%THEDB%" -t -f regress.sql
 pause
