@@ -3079,11 +3079,12 @@ BEGIN
        )::text )
     || ') AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
-  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text)
+  sql := sql || '( ' || quote_literal(fan.shell::text)
+    || ' && geom AND _ST_Contains(' || quote_literal(fan.shell::text)
     -- We only need to check a single point, but must not be an endpoint
-    || '::geometry, ST_Line_Interpolate_Point(geom, 0.2))';
+    || '::geometry, ST_Line_Interpolate_Point(geom, 0.2)) )';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating edges bounding the old face';
+  RAISE DEBUG 'Updating edges bounding the old face: %', sql;
 #endif
   EXECUTE sql;
 
