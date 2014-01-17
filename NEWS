@@ -46,6 +46,7 @@ PostGIS 2.2.0
            and ST_AsJPEG
   - #2555, Fix parsing issue of range arguments of ST_Reclass
   - #2589, Remove use of unnecessary void pointers
+  - #2607, Cannot open more than 1024 out-db files in one process
 
  * Code refactoring *
 
