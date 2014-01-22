@@ -228,6 +228,7 @@ PostGIS 2.0.0
     is now a view.
   - 3D analysis functions are now named with "3D" as a prefix 
     instead of a suffix (eg ST_Length3D has become ST_3DLength)
+  - Operator && does not check for SRID mismatch anymore
 
 * New Features *
   
