@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2013 Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -102,6 +103,7 @@ struct rtpg_nmapalgebra_arg_t {
 	rt_extenttype extenttype; /* ouput raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
+        rt_mask mask; /* mask for the nmapalgebra operation */
 
 	rtpg_nmapalgebra_callback_arg	callback;
 };
@@ -133,6 +135,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 	arg->extenttype = ET_INTERSECTION;
 	arg->pgcextent = NULL;
 	arg->cextent = NULL;
+	arg->mask = NULL;
 
 	arg->callback.ufc_noid = InvalidOid;
 	arg->callback.ufc_nullcount = 0;
@@ -160,6 +163,8 @@ static void rtpg_nmapalgebra_arg_destroy(rtpg_nmapalgebra_arg arg) {
 
 	if (arg->cextent != NULL)
 		rt_raster_destroy(arg->cextent);
+	if( arg->mask != NULL )
+	  pfree(arg->mask);
 
 	pfree(arg);
 }
@@ -209,13 +214,15 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 	arg->ownsdata = palloc(sizeof(uint8_t) * arg->numraster);
 	arg->nband = palloc(sizeof(int) * arg->numraster);
 	arg->hasband = palloc(sizeof(uint8_t) * arg->numraster);
+	arg->mask = palloc(sizeof(struct rt_mask_t));
 	if (
 		arg->pgraster == NULL ||
 		arg->raster == NULL ||
 		arg->isempty == NULL ||
 		arg->ownsdata == NULL ||
 		arg->nband == NULL ||
-		arg->hasband == NULL
+		arg->hasband == NULL ||
+		arg->mask == NULL
 	) {
 		elog(ERROR, "rtpg_nmapalgebra_rastbandarg_process: Could not allocate memory for processing rastbandarg");
 		return 0;
@@ -499,6 +506,19 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 {
 	rtpg_nmapalgebra_arg arg = NULL;
 	rt_iterator itrset;
+	ArrayType *maskArray;
+	Oid etype;
+	Datum *maskElements;
+	bool *maskNulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 0;
+	int num;
+	int *maskDims;
+	int x,y;
+	
+
 	int i = 0;
 	int noerr = 0;
 	int allnull = 0;
@@ -551,12 +571,17 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	/* distancex (3) */
-	if (!PG_ARGISNULL(3))
+	if (!PG_ARGISNULL(3)){
 		arg->distance[0] = PG_GETARG_INT32(3);
-	/* distancey (4) */
-	if (!PG_ARGISNULL(4))
+	}else{
+	        arg->distance[0] = 0;
+	}
+        /* distancey (4) */
+	if (!PG_ARGISNULL(4)){
 		arg->distance[1] = PG_GETARG_INT32(4);
-
+	}else{
+	        arg->distance[1] = 0;
+	}
 	if (arg->distance[0] < 0 || arg->distance[1] < 0) {
 		rtpg_nmapalgebra_arg_destroy(arg);
 		elog(ERROR, "RASTER_nMapAlgebra: Distance for X and Y axis must be greater than or equal to zero");
@@ -607,6 +632,111 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	noerr = 1;
+	
+	/* mask (7) */
+
+	if( PG_ARGISNULL(7) ){
+	  pfree(arg->mask);
+	  arg->mask = NULL;
+	}else{
+	maskArray = PG_GETARG_ARRAYTYPE_P(7);
+	etype = ARR_ELEMTYPE(maskArray);
+	get_typlenbyvalalign(etype,&typlen,&typbyval,&typalign);
+	
+	switch(etype){
+	      case FLOAT4OID:
+	      case FLOAT8OID:
+		break;
+	      default:
+		rtpg_nmapalgebra_arg_destroy(arg);
+		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
+		PG_RETURN_NULL();
+	}
+
+	ndims = ARR_NDIM(maskArray);
+	
+	if( ndims != 2 ){ 
+	  elog(ERROR, "RASTER_nMapAlgerbra: Mask Must be a 2D array.");
+	  rtpg_nmapalgebra_arg_destroy(arg);
+	  PG_RETURN_NULL();
+	}
+	
+	maskDims = ARR_DIMS(maskArray);
+
+
+	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
+	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must be odd.");
+	  rtpg_nmapalgebra_arg_destroy(arg);
+	  PG_RETURN_NULL();
+	} 
+	
+	deconstruct_array(
+			  maskArray,
+			  etype,
+			  typlen, typbyval,typalign,
+			  &maskElements,&maskNulls,&num
+			  );
+
+	if (num < 1 || num != (maskDims[0] * maskDims[1])) {
+                if (num) {
+                        pfree(maskElements);
+                        pfree(maskNulls);
+                }
+		elog(ERROR, "RASTER_nMapAlgerbra: Could not deconstruct new values array.");
+                rtpg_nmapalgebra_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+
+	/* allocate mem for mask array */
+	arg->mask->values = palloc(sizeof(double*)* maskDims[0]);
+	arg->mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
+	for(i = 0; i < maskDims[0]; i++){
+	  arg->mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
+	  arg->mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
+	}
+	/* place values in to mask */
+	i = 0;
+	for( y = 0; y < maskDims[0]; y++ ){
+	  for( x = 0; x < maskDims[1]; x++){
+	    if(maskNulls[i]){
+	      arg->mask->values[y][x] = 0;
+	      arg->mask->nodata[y][x] = 1;
+	    }else{
+	      switch(etype){
+	      case FLOAT4OID:
+		arg->mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
+		arg->mask->nodata[y][x] = 0;
+		break;
+	      case FLOAT8OID:
+		arg->mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
+		arg->mask->nodata[y][x] = 0;
+	      }
+	    }
+	    i++;
+	  }
+	}
+	/*set mask dimenstions*/ 
+	arg->mask->dimx = maskDims[0];
+	arg->mask->dimy = maskDims[1];
+	if ( maskDims[0] == 1 && maskDims[1] == 1){
+	  arg->distance[0] = 0;
+	  arg->distance[1] = 0;
+	}else{
+	  arg->distance[0] = maskDims[0] % 2;
+	  arg->distance[1] = maskDims[1] % 2;
+	}
+	}/*end if else argisnull*/
+
+	/* (8) weighted boolean */
+	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
+	  if ( arg->mask != NULL ) 
+	    arg->mask->weighted = 0;
+	}else{
+	  if(arg->mask !=NULL )
+	    arg->mask->weighted = 1;
+	}
+
 	/* all rasters are empty, return empty raster */
 	if (allempty == arg->numraster) {
 		elog(NOTICE, "All input rasters are empty. Returning empty raster");
@@ -678,8 +808,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		memset(arg->callback.ufc_info.argnull, FALSE, sizeof(bool) * arg->callback.ufl_info.fn_nargs);
 
 		/* userargs (7) */
-		if (!PG_ARGISNULL(7))
-			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(7);
+		if (!PG_ARGISNULL(9))
+			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(9);
 		else {
 			arg->callback.ufc_info.arg[2] = (Datum) NULL;
 			arg->callback.ufc_info.argnull[2] = TRUE;
@@ -753,6 +883,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		arg->pixtype,
 		arg->hasnodata, arg->nodataval,
 		arg->distance[0], arg->distance[1],
+		arg->mask,
 		&(arg->callback),
 		rtpg_nmapalgebra_callback,
 		&raster
@@ -1441,6 +1572,7 @@ Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
 		arg->bandarg->pixtype,
 		arg->bandarg->hasnodata, arg->bandarg->nodataval,
 		0, 0,
+		NULL,
 		&(arg->callback),
 		rtpg_nmapalgebraexpr_callback,
 		&raster
@@ -2424,6 +2556,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					&utype,
 					rtpg_union_callback,
 					&_raster
@@ -2516,6 +2649,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					&utype,
 					rtpg_union_callback,
 					&_raster
@@ -2630,6 +2764,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 					hasnodata, nodataval,
 					0, 0,
 					NULL,
+					NULL,
 					rtpg_union_mean_callback,
 					&_raster
 				);
@@ -2641,6 +2776,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 					pixtype,
 					hasnodata, nodataval,
 					0, 0,
+					NULL,
 					NULL,
 					rtpg_union_range_callback,
 					&_raster
@@ -3189,6 +3325,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			hasnodata, nodataval,
 			0, 0,
 			NULL,
+			NULL,
 			rtpg_clip_callback,
 			&_raster
 		);
@@ -3316,7 +3453,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		PG_RETURN_NULL();
 	}
 	numBands = rt_raster_get_num_bands(raster);
-	POSTGIS_RT_DEBUGF(3, "RASTER_reclass: %d possible bands to be reclassified", n);
+	POSTGIS_RT_DEBUGF(3, "RASTER_reclass: %d possible bands to be reclassified", numBands);
 
 	/* process set of reclassarg */
 	POSTGIS_RT_DEBUG(3, "RASTER_reclass: Processing Arg 1 (reclassargset)");
@@ -3422,9 +3559,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			PG_RETURN_POINTER(pgrtn);
 		}
 		expr = text_to_cstring(exprtext);
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (raw) %s", expr);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: expr (raw) %s", expr);
 		expr = rtpg_removespaces(expr);
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (clean) %s", expr);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: expr (clean) %s", expr);
 
 		/* split string to its components */
 		/* comma (,) separating rangesets */
@@ -3443,11 +3580,11 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		}
 
 		/* set of reclass expressions */
-		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: %d possible expressions", comma_n);
+		POSTGIS_RT_DEBUGF(4, "RASTER_reclass: %d possible expressions", comma_n);
 		exprset = palloc(comma_n * sizeof(rt_reclassexpr));
 
 		for (a = 0, j = 0; a < comma_n; a++) {
-			POSTGIS_RT_DEBUGF(5, "RASTER_reclass: map %s", comma_set[a]);
+			POSTGIS_RT_DEBUGF(4, "RASTER_reclass: map %s", comma_set[a]);
 
 			/* colon (:) separating range "src" and "dst" */
 			colon_set = rtpg_strsplit(comma_set[a], ":", &colon_n);
@@ -3470,7 +3607,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			exprset[j] = palloc(sizeof(struct rt_reclassexpr_t));
 
 			for (b = 0; b < colon_n; b++) {
-				POSTGIS_RT_DEBUGF(5, "RASTER_reclass: range %s", colon_set[b]);
+				POSTGIS_RT_DEBUGF(4, "RASTER_reclass: range %s", colon_set[b]);
 
 				/* dash (-) separating "min" and "max" */
 				dash_set = rtpg_strsplit(colon_set[b], "-", &dash_n);
@@ -3582,11 +3719,11 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							}
 						}
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
 
 					/* remove interval flags */
 					dash_set[c] = rtpg_chartrim(dash_set[c], "()[]");
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (char) %s", dash_set[c]);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (char) %s", dash_set[c]);
 
 					/* value from string to double */
 					errno = 0;
@@ -3605,10 +3742,18 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						SET_VARSIZE(pgrtn, pgrtn->size);
 						PG_RETURN_POINTER(pgrtn);
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (double) %f", val);
 
 					/* strsplit removes dash (a.k.a. negative sign), compare now to restore */
-					junk = strstr(colon_set[b], dash_set[c]);
+					if (c < 1)
+						junk = strstr(colon_set[b], dash_set[c]);
+					else
+						junk = rtpg_strrstr(colon_set[b], dash_set[c]);
+					POSTGIS_RT_DEBUGF(
+						4,
+						"(colon_set[%d], dash_set[%d], junk) = (%s, %s, %s)",
+						b, c, colon_set[b], dash_set[c], junk
+					);
 					/* not beginning of string */
 					if (junk != colon_set[b]) {
 						/* prior is a dash */
@@ -3624,7 +3769,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							}
 						}
 					}
-					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
+					POSTGIS_RT_DEBUGF(4, "RASTER_reclass: min/max (double) %f", val);
 
 					/* src */
 					if (b < 1) {

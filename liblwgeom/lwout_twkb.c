@@ -94,7 +94,8 @@ Function for putting a Byte value into the buffer
 */
 static uint8_t* uint8_to_twkb_buf(const uint8_t ival, uint8_t *buf)
 {
-	LWDEBUGF(2, "Entered  uint8_to_twkb_buf",0);
+	LWDEBUGF(2, "Entered  uint8_to_twkb_buf",0);	
+	LWDEBUGF(4, "Writing value %d",ival);
 		memcpy(buf, &ival, WKB_BYTE_SIZE);
 		return buf + 1;
 }
@@ -144,6 +145,7 @@ Function for encoding a value as varInt and putting it in the buffer
 static uint8_t* u_varint_to_twkb_buf(uint64_t val, uint8_t *buf)
 {
 	LWDEBUGF(2, "Entered  u_varint_to_twkb_buf",0);
+	LWDEBUGF(4, "Writing value %d",val);
 	uint64_t q;
 	int n,grp;
 	q =val;
@@ -168,6 +170,7 @@ Function for encoding a varInt value as signed
 static uint8_t* s_varint_to_twkb_buf(int64_t val, uint8_t *buf)
 {
 	LWDEBUGF(2, "Entered  s_varint_to_twkb_buf",0);
+	LWDEBUGF(4, "Writing value %d",val);
 	uint64_t q;
 	q = (val << 1) ^ (val >> 63);
 
@@ -205,7 +208,7 @@ static uint8_t* empty_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t vari
 	uint8_t flag=0;
 	
 	/* Set the id flag */
-	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
+	END_PREC_SET_ID(flag, ((variant & TWKB_ID) ? 1 : 0));
 	/* Tell what precision to use*/
 	END_PREC_SET_PRECISION(flag,prec);
 	
@@ -416,7 +419,7 @@ static size_t lwpoint_to_twkb_size(const LWPOINT *pt,uint8_t variant, int8_t pre
 {
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
+	if (variant & TWKB_ID)
 	size	 += u_getvarint_size((uint64_t) id);
 
 	/* Points */
@@ -465,7 +468,7 @@ static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t var
 
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
+	if (variant & TWKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);	
 	
 		
@@ -503,7 +506,7 @@ static size_t lwline_to_twkb_size(const LWLINE *line,uint8_t variant, int8_t pre
 {	
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
+	if (variant & TWKB_ID)
 	size	 += u_getvarint_size((uint64_t) id);
 
 	/* Size of point array */
@@ -548,7 +551,7 @@ static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t var
 {
 
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
+	if (variant & TWKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);				
 	
 	
@@ -589,8 +592,8 @@ static size_t lwpoly_to_twkb_size(const LWPOLY *poly,uint8_t variant, int8_t pre
 	
 	size_t size = 0;
 	/* geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
-	size	 += u_getvarint_size((uint64_t) id);
+	if (variant & TWKB_ID)
+		size	 += u_getvarint_size((uint64_t) id);
 	
 	/*nrings*/
 	size += u_getvarint_size((uint64_t) poly->nrings);
@@ -644,7 +647,7 @@ static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t var
 	int i;
 	
 	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
-	if (variant & WKB_ID)
+	if (variant & TWKB_ID)
 		buf = u_varint_to_twkb_buf(id, buf);	
 
 	/* Set the number of rings */
@@ -687,8 +690,10 @@ Calculates needed storage size for a collection
 static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col,uint8_t variant, int8_t prec, uint64_t id,int64_t refpoint[],int method)
 {
 	LWDEBUGF(2, "lwcollection_to_twkb_size entered, %d",0);
-	/* id*/
-	size_t size	 = u_getvarint_size((uint64_t) id);
+	size_t size = 0;
+	/* geometry id, if not subgeometry in type 4,5 or 6*/
+	if (variant & TWKB_ID)
+		size	 += u_getvarint_size((uint64_t) id);
 	/* size of geoms */
 	size += u_getvarint_size((uint64_t) col->ngeoms); 
 	int i = 0;
@@ -696,7 +701,7 @@ static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col,uint8_t variant,
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		/* size of subgeom */
-		size += lwgeom_to_twkb_size((LWGEOM*)col->geoms[i],variant | WKB_NO_ID, prec,id,refpoint,method);
+		size += lwgeom_to_twkb_size((LWGEOM*)col->geoms[i],variant & ~TWKB_ID, prec,id,refpoint,method);
 	}
 
 	return size;
@@ -741,17 +746,17 @@ static uint8_t* lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t *buf, 
 	int i;
 
 	
-	/* Set the geometry id */
-	buf = u_varint_to_twkb_buf(id, buf);	
+	/* Set the geometry id, if not subgeometry in type 4,5 or 6*/
+	if (variant & TWKB_ID)
+		buf = u_varint_to_twkb_buf(id, buf);	
 
 	/* Set the number of rings */
 	buf = u_varint_to_twkb_buf(col->ngeoms, buf);
-	
 	/* Write the sub-geometries. Sub-geometries do not get SRIDs, they
 	   inherit from their parents. */
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
-		buf = lwgeom_to_twkb_buf(col->geoms[i], buf, variant | WKB_NO_ID,prec,id,refpoint,method);
+		buf = lwgeom_to_twkb_buf(col->geoms[i], buf, variant & ~TWKB_ID,prec,id,refpoint,method);
 	}
 
 	return buf;
@@ -773,7 +778,7 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 		return empty_to_twkb_size(geom, variant,id);
 	}
 	/*add size of type-declaration*/
-	if (!(variant &  WKB_NO_TYPE))
+	if (!(variant &  TWKB_NO_TYPE))
 		size += WKB_BYTE_SIZE;
 	switch ( geom->type )
 	{
@@ -801,7 +806,7 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t variant, int8_t pre
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
-			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant | WKB_NO_TYPE, prec,id,refpoint,method);
+			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant | TWKB_NO_TYPE, prec,id,refpoint,method);
 			break;
 		case COLLECTIONTYPE:
 			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom, variant, prec,id,refpoint,method);
@@ -826,7 +831,8 @@ static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t var
 	{
 		case POINTTYPE:
 		{
-			if (!(variant &  WKB_NO_TYPE))
+			LWDEBUGF(4,"Type found is Point, %d",geom->type);
+			if (!(variant &  TWKB_NO_TYPE))
 				buf = uint8_to_twkb_buf(lwgeom_twkb_type(geom, variant),buf);
 			return lwpoint_to_twkb_buf((LWPOINT*)geom, buf, variant,prec,id,refpoint,method);
 		}
@@ -834,14 +840,16 @@ static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t var
 		case CIRCSTRINGTYPE:
 		case LINETYPE:
 		{
-			if (!(variant &  WKB_NO_TYPE))
+			LWDEBUGF(4,"Type found is Linestring, %d",geom->type);
+			if (!(variant &  TWKB_NO_TYPE))
 				buf = uint8_to_twkb_buf(lwgeom_twkb_type(geom, variant),buf);
 			return lwline_to_twkb_buf((LWLINE*)geom, buf, variant,prec,id,refpoint,method);
 		}
 		/* Polygon has 'nrings' and 'rings' elements */
 		case POLYGONTYPE:
 		{
-			if (!(variant &  WKB_NO_TYPE))
+			LWDEBUGF(4,"Type found is Polygon, %d",geom->type);
+			if (!(variant &  TWKB_NO_TYPE))
 				buf = uint8_to_twkb_buf(lwgeom_twkb_type(geom, variant),buf);
 			return lwpoly_to_twkb_buf((LWPOLY*)geom, buf, variant,prec,id,refpoint,method);
 		}
@@ -854,11 +862,13 @@ static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t var
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		{
+			LWDEBUGF(4,"Type found is Multi, %d",geom->type);
 			buf = uint8_to_twkb_buf(lwgeom_twkb_type(geom, variant),buf);
-			return lwcollection_to_twkb_buf((LWCOLLECTION*)geom, buf, variant | WKB_NO_TYPE,prec,id,refpoint,method);
+			return lwcollection_to_twkb_buf((LWCOLLECTION*)geom, buf, variant | TWKB_NO_TYPE,prec,id,refpoint,method);
 		}			
 		case COLLECTIONTYPE:
 		{
+			LWDEBUGF(4,"Type found is collection, %d",geom->type);
 			buf = uint8_to_twkb_buf(lwgeom_twkb_type(geom, variant),buf);
 			return lwcollection_to_twkb_buf((LWCOLLECTION*)geom, buf, variant,prec,id,refpoint,method);
 		}
@@ -925,7 +935,7 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 
 	
 	/* set ID bit if ID*/
-	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
+	END_PREC_SET_ID(flag, ((variant & TWKB_ID) ? 1 : 0));
 	/* Tell what method to use*/
 	END_PREC_SET_METHOD(flag, method);
 	/* Tell what precision to use*/
@@ -1032,8 +1042,8 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	wkb_out = buf;	
 		
 	
-	/* Set the endian flag */
-	END_PREC_SET_ID(flag, ((variant & WKB_ID) ? 1 : 0));
+	/* Set the id flag */
+	END_PREC_SET_ID(flag, ((variant & TWKB_ID) ? 1 : 0));
 	/* Tell what method to use*/
 	END_PREC_SET_METHOD(flag, method);
 	/* Tell what precision to use*/

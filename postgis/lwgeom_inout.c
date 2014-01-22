@@ -428,12 +428,12 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 		/* If user specified id, respect it */
 	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
 	{
-		variant = variant | (WKB_ID);
+		variant = variant | (TWKB_ID);
 		id = PG_GETARG_INT64(2);
 	}
 	else
 	{
-		variant = variant & WKB_NO_ID;
+		variant = variant & ~TWKB_ID;
 		id=0;
 	}
 	

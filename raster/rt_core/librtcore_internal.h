@@ -33,9 +33,6 @@
 
 #include <assert.h>
 
-#include "../../postgis_config.h"
-#include "../raster_config.h"
-
 #include "lwgeom_geos.h"
 
 #include "librtcore.h"

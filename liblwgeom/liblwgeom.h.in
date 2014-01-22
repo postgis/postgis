@@ -1786,11 +1786,10 @@ LWGEOM_UNPARSER_RESULT;
 
 
 /*
-** Variants available for TWKB, conflicting with corresponding bits for WKB and WKT
+** Variants available for TWKB
 */
-#define WKB_ID 0x01 /* This position has another meaning when building wkb! */
-#define WKB_NO_ID ~(1 << 1) 
-#define WKB_NO_TYPE 0x02 /* This position has another meaning when building wkb! */
+#define TWKB_ID 0x01
+#define TWKB_NO_TYPE 0x02
 
 
 /*

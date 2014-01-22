@@ -2164,9 +2164,9 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	int nXValid, nYValid;
 	int iY;
 
-	void *values = NULL;
+	uint8_t *values = NULL;
 	uint32_t valueslen = 0;
-	void *ptr = NULL;
+	uint8_t *ptr = NULL;
 
 	assert(NULL != ds);
 
@@ -2290,34 +2290,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 		/* allocate memory for values */
 		valueslen = ptlen * nXBlockSize * nYBlockSize;
-		switch (gdpixtype) {
-			case GDT_Byte:
-				values = (uint8_t *) rtalloc(valueslen);
-				break;
-			case GDT_UInt16:
-				values = (uint16_t *) rtalloc(valueslen);
-				break;
-			case GDT_Int16:
-				values = (int16_t *) rtalloc(valueslen);
-				break;
-			case GDT_UInt32:
-				values = (uint32_t *) rtalloc(valueslen);
-				break;
-			case GDT_Int32:
-				values = (int32_t *) rtalloc(valueslen);
-				break;
-			case GDT_Float32:
-				values = (float *) rtalloc(valueslen);
-				break;
-			case GDT_Float64:
-				values = (double *) rtalloc(valueslen);
-				break;
-			default:
-				/* should NEVER get here */
-				rterror("rt_raster_from_gdal_dataset: Could not allocate memory for unknown pixel type");
-				rt_raster_destroy(rast);
-				return NULL;
-		}
+		values = rtalloc(valueslen);
 		if (values == NULL) {
 			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for GDAL band pixel values");
 			rt_raster_destroy(rast);

@@ -11,6 +11,7 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2013 Nathaneil Hunter Clay <clay.nathaniel@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -136,12 +137,16 @@
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
+#include "../../postgis_config.h"
+#include "../raster_config.h"
+
 /**
  * Types definitions
  */
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_pixel_t* rt_pixel;
+typedef struct rt_mask_t* rt_mask;
 typedef struct rt_geomval_t* rt_geomval;
 typedef struct rt_bandstats_t* rt_bandstats;
 typedef struct rt_histogram_t* rt_histogram;
@@ -381,6 +386,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @param npixel : array of rt_pixel objects
  * @param count : number of elements in npixel
+ * @param mask : mask to be respected when returning array
  * @param x : the column of the center pixel (0-based)
  * @param y : the line of the center pixel (0-based)
  * @param distancex : the number of pixels around the specified pixel
@@ -395,7 +401,8 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, int count,
+	rt_pixel npixel,int count,
+	rt_mask mask,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -1956,6 +1963,7 @@ rt_raster_iterator(
 	rt_pixtype pixtype,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
+	rt_mask mask,
 	void *userarg,
 	int (*callback)(
 		rt_iterator_arg arg,
@@ -2274,6 +2282,14 @@ struct rt_pixel_t {
 	double value;
 
 	LWGEOM *geom;
+};
+
+struct rt_mask_t {
+  uint16_t dimx;
+  uint16_t dimy;
+  double **values;
+  int **nodata;
+  int weighted; /* 0 if not weighted values 1 if weighted values */
 };
 
 /* polygon as LWPOLY with associated value */

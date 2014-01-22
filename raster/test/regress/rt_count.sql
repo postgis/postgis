@@ -90,4 +90,24 @@ SELECT ST_Count('test', 'rast', 1, FALSE);
 SELECT ST_Count('test', 'rast', 1);
 SELECT ST_Count('test', 'rast', FALSE);
 SELECT ST_Count('test', 'rast');
+
+SELECT ST_CountAgg(rast, 1, TRUE, 1) FROM test;
+SELECT ST_CountAgg(rast, 1, TRUE, 0) FROM test;
+SELECT ST_CountAgg(rast, 1, FALSE, 1) FROM test;
+SELECT ST_CountAgg(rast, 1, FALSE, 0) FROM test;
+SELECT ST_CountAgg(rast, 1, TRUE) FROM test;
+SELECT ST_CountAgg(rast, 1, FALSE) FROM test;
+SELECT ST_CountAgg(rast, TRUE) FROM test;
+SELECT ST_CountAgg(rast, FALSE) FROM test;
+
+SAVEPOINT test;
+SELECT ST_CountAgg(rast, 2, TRUE) FROM test;
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+
+SAVEPOINT test;
+SELECT ST_CountAgg(rast, 1, TRUE, 2) FROM test;
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+
 ROLLBACK;

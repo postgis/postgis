@@ -241,6 +241,7 @@ rt_band_reclass(
 				RASTER_DEBUGF(3, "Cannot get value at %d, %d", x, y);
 				continue;
 			}
+			RASTER_DEBUGF(4, "(x, y, ov, isnodata) = (%d, %d, %f, %d)", x, y, ov, isnodata);
 
 			do {
 				do_nv = 0;
@@ -788,6 +789,7 @@ _rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
  * along the X axis
  * @param distancey : the number of pixels around the specified pixel
  * along the Y axis
+ * @param mask : the object of mask
  * @param userarg : pointer to any argument that is passed as-is to callback.
  * @param callback : callback function for actual processing of pixel values.
  * @param *rtnraster : return one band raster from iterator process
@@ -814,6 +816,7 @@ rt_raster_iterator(
 	rt_pixtype pixtype,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
+	rt_mask mask,
 	void *userarg,
 	int (*callback)(
 		rt_iterator_arg arg,
@@ -1346,7 +1349,7 @@ rt_raster_iterator(
 
 				/* convert set of rt_pixel to 2D array */
 				status = rt_pixel_set_to_array(
-					npixels, status,
+					npixels, status,mask,
 					x, y,
 					distancex, distancey,
 					&(_param->arg->values[i]),

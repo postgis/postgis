@@ -218,7 +218,6 @@ DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
 DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
 DROP FUNCTION IF EXISTS _st_summarystats(raster,int, boolean, double precision);
 DROP FUNCTION IF EXISTS _st_summarystats(text, text,integer, boolean, double precision);
-DROP TYPE IF EXISTS summarystats;
 
 -- remove TYPE quantile
 DROP FUNCTION IF EXISTS st_quantile(raster, int, boolean, double precision[]);
@@ -507,3 +506,13 @@ DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text);
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, int4, text);
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionstate(raster, raster, text, text, text, float8, text, text, text, float8);
 DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_SummaryStatsAgg(raster, integer, boolean);
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean, double precision);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, integer, boolean);
+DROP AGGREGATE IF EXISTS ST_CountAgg(raster, boolean);

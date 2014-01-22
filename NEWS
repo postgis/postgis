@@ -1,17 +1,27 @@
 PostGIS 2.2.0
 2014/MM/DD
 
- * Important / Breaking Changes  *
+ * Important / Breaking Changes *
+
+  - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
+           ST_SummaryStatsAgg()
+  - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
 
  * Deprecated signatures *
 
+  - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
+  - #2567, ST_Count(tablename, rastercolumn, ...)
+
  * New Features *
 
-  - #2430, ST_ForceCurve
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
   - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
     variable GDAL_DATA
+  - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
+  - #2430, ST_ForceCurve
+  - #2565, ST_SummaryStatsAgg()
+  - #2567, ST_CountAgg()
 
  * Enhancements *
 
@@ -34,6 +44,9 @@ PostGIS 2.2.0
   - #2540, Change GUC name for GDAL_DATA to postgis.gdal_datapath
   - #2552, Fix handling of NULL raster in ST_AsTIFF, ST_AsPNG
            and ST_AsJPEG
+  - #2555, Fix parsing issue of range arguments of ST_Reclass
+  - #2589, Remove use of unnecessary void pointers
+  - #2607, Cannot open more than 1024 out-db files in one process
 
  * Code refactoring *
 
