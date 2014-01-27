@@ -116,9 +116,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
 		|| quote_ident(atopology) || '.node ' ||
-		'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-		||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
-		||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
+		'WHERE geom && $1 AND ST_X(geom) = ST_X($1) AND ST_Y(geom) = ST_Y($1)'
+    USING apoint
 	LOOP
 		RETURN  rec.node_id;
 	END LOOP;
@@ -129,13 +128,10 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT edge_id FROM '
 		|| quote_ident(atopology) || '.edge ' 
-		|| 'WHERE ST_DWithin('
-		|| quote_literal(apoint::text) 
-		|| ', geom, 0) AND NOT ST_Equals('
-		|| quote_literal(apoint::text)
-		|| ', ST_StartPoint(geom)) AND NOT ST_Equals('
-		|| quote_literal(apoint::text)
-		|| ', ST_EndPoint(geom))'
+		|| 'WHERE ST_DWithin($1, geom, 0) AND '
+    || 'NOT ST_Equals($1, ST_StartPoint(geom)) AND '
+    || 'NOT ST_Equals($1, ST_EndPoint(geom))'
+    USING apoint
 	LOOP
     IF allowEdgeSplitting THEN
       RETURN ST_ModEdgeSplit(atopology, rec.edge_id, apoint);
@@ -169,8 +165,8 @@ BEGIN
 	--
 	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
 		|| '.node(node_id, containing_face, geom) 
-		VALUES(' || nodeid || ',' || coalesce(containing_face::text, 'NULL') || ','
-    || quote_literal(apoint::text) || ')';
+		VALUES(' || nodeid || ',' || coalesce(containing_face::text, 'NULL')
+    || ',$1)' USING apoint;
 
 	RETURN nodeid;
 	
@@ -255,9 +251,8 @@ BEGIN
 	--
 	FOR rec IN EXECUTE 'SELECT node_id FROM '
 		|| quote_ident(atopology) || '.node '
-		|| 'WHERE ST_Crosses('
-		|| quote_literal(aline::text) || '::geometry, geom'
-		|| ')'
+		|| 'WHERE ST_Crosses($1, geom)'
+    USING aline
 	LOOP
 		RAISE EXCEPTION 'Edge crosses node %', rec.node_id;
 	END LOOP;
@@ -281,14 +276,9 @@ BEGIN
 	--    FF1 F0F 1F2
 	--    FF1 F** 1*2 <-- our match
 	--
-	FOR rec IN EXECUTE 'SELECT edge_id, geom, ST_Relate('
-		|| quote_literal(aline::text)
-		|| '::geometry, geom, 2) as im'
-		|| ' FROM '
-		|| quote_ident(atopology) || '.edge '
-		|| 'WHERE '
-		|| quote_literal(aline::text) || '::geometry && geom'
-
+	FOR rec IN EXECUTE 'SELECT edge_id, geom, ST_Relate($1, geom, 2) as im FROM '
+		|| quote_ident(atopology) || '.edge WHERE $1 && geom'
+    USING aline
 	LOOP
 
 	  IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
@@ -343,16 +333,12 @@ BEGIN
 		-- start_node
 		|| 'topology.addNode('
 		|| quote_literal(atopology)
-		|| ', ST_StartPoint('
-		|| quote_literal(aline::text)
-		|| ')) ,'
+		|| ', ST_StartPoint($1)), '
 
 		-- end_node
 		|| 'topology.addNode('
 		|| quote_literal(atopology)
-		|| ', ST_EndPoint('
-		|| quote_literal(aline::text)
-		|| ')) ,'
+		|| ', ST_EndPoint($1)), '
 
 		-- next_left_edge
 		|| -edgeid ||','
@@ -367,8 +353,8 @@ BEGIN
 		|| '0,'
 
 		-- geom
-		||quote_literal(aline::text)
-		|| ')';
+		|| '$1)'
+    USING aline;
 
 	RETURN edgeid;
 	
@@ -459,15 +445,12 @@ BEGIN
     --
     bounds = ST_Boundary(rrec.geom);
 
-    sql := 'SELECT e.geom, e.edge_id, '
-      || 'e.left_face, e.right_face FROM '
-      || quote_ident(atopology) || '.edge e, (SELECT '
-      || quote_literal(bounds::text)
-      || '::geometry as geom) r WHERE '
-      || 'r.geom && e.geom'
+    sql := 'SELECT e.geom, e.edge_id, e.left_face, e.right_face FROM '
+      || quote_ident(atopology)
+      || '.edge e, (SELECT $1 as geom) r WHERE r.geom && e.geom'
     ;
     -- RAISE DEBUG 'SQL: %', sql;
-    FOR rec IN EXECUTE sql
+    FOR rec IN EXECUTE sql USING bounds
     LOOP -- {
       --RAISE DEBUG 'Edge % has bounding box intersection', rec.edge_id;
 
@@ -612,8 +595,8 @@ BEGIN
     -- face_id
     || faceid || ','
     -- minimum bounding rectangle
-    || quote_literal(ST_Envelope(apoly)::text)
-    || ')';
+    || '$1)'
+    USING ST_Envelope(apoly);
 
   --
   -- Update all edges having this face on the left
@@ -651,9 +634,8 @@ BEGIN
     || quote_literal(faceid)
     || ', left_face = '
     || quote_literal(faceid)
-    || ' WHERE ST_Contains('
-    || quote_literal(apoly::text)
-    || ', geom)';
+    || ' WHERE ST_Contains($1, geom)'
+    USING apoly;
 
   -- 
   -- Set containing_face of any contained node 
@@ -662,9 +644,8 @@ BEGIN
     || quote_ident(atopology)
     || '.node SET containing_face = '
     || quote_literal(faceid)
-    || ' WHERE containing_face IS NOT NULL AND ST_Contains('
-    || quote_literal(apoly::text)
-    || ', geom)';
+    || ' WHERE containing_face IS NOT NULL AND ST_Contains($1, geom)'
+    USING apoly;
 
   RETURN faceid;
 	
@@ -710,17 +691,13 @@ BEGIN
   --    and if so pick the closest
   sql := 'SELECT a.node_id FROM ' 
     || quote_ident(atopology) 
-    || '.node as a WHERE ST_DWithin(a.geom,'
-    || quote_literal(apoint::text) || '::geometry,'
-    || tol || ') AND ST_Distance('
-    || quote_literal(apoint::text)
-    || '::geometry, a.geom) < ' || tol || ' ORDER BY ST_Distance('
-    || quote_literal(apoint::text)
-    || '::geometry, a.geom) LIMIT 1;';
+    || '.node as a WHERE ST_DWithin(a.geom,$1,'
+    || tol || ') AND ST_Distance($1, a.geom) < ' || tol
+    || ' ORDER BY ST_Distance($1, a.geom) LIMIT 1';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO id;
+  EXECUTE sql INTO id USING apoint;
   IF id IS NOT NULL THEN
     RETURN id;
   END IF;
@@ -733,15 +710,12 @@ BEGIN
   --    and if so split it by a point projected on it
   sql := 'SELECT a.edge_id, a.geom FROM ' 
     || quote_ident(atopology) 
-    || '.edge as a WHERE ST_DWithin(a.geom,'
-    || quote_literal(apoint::text) || '::geometry,'
-    || tol || ') ORDER BY ST_Distance('
-    || quote_literal(apoint::text)
-    || '::geometry, a.geom) LIMIT 1;';
+    || '.edge as a WHERE ST_DWithin(a.geom,$1,'
+    || tol || ') ORDER BY ST_Distance($1, a.geom) LIMIT 1';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO rec;
+  EXECUTE sql INTO rec USING apoint;
   IF rec IS NOT NULL THEN
     -- project point to line, split edge by point
     prj := ST_ClosestPoint(rec.geom, apoint);
@@ -841,14 +815,12 @@ BEGIN
   -- 2. Node to edges falling within tol distance
   sql := 'WITH nearby AS ( SELECT e.geom FROM '
     || quote_ident(atopology) 
-    || '.edge e WHERE ST_DWithin(e.geom, '
-    || quote_literal(noded::text)
-    || '::geometry, '
-    || tol || ') ) SELECT st_collect(geom) FROM nearby;';
+    || '.edge e WHERE ST_DWithin(e.geom, $1,'
+    || tol || ') ) SELECT st_collect(geom) FROM nearby';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO iedges;
+  EXECUTE sql INTO iedges USING noded;
   IF iedges IS NOT NULL THEN
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -886,14 +858,12 @@ BEGIN
   -- TODO: check if we should be only considering _isolated_ nodes!
   sql := 'WITH nearby AS ( SELECT n.geom FROM '
     || quote_ident(atopology) 
-    || '.node n WHERE ST_DWithin(n.geom, '
-    || quote_literal(noded::text)
-    || '::geometry, '
+    || '.node n WHERE ST_DWithin(n.geom, $1, '
     || tol || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO inodes;
+  EXECUTE sql INTO inodes USING noded;
 
   IF inodes IS NOT NULL THEN -- {
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -986,12 +956,11 @@ BEGIN
 
     -- Check if the so-snapped edge _now_ exists
     sql := 'SELECT edge_id FROM ' || quote_ident(atopology)
-      || '.edge_data WHERE ST_Equals(geom, ' || quote_literal(snapped::text)
-      || '::geometry)';
+      || '.edge_data WHERE ST_Equals(geom, $1)';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG '%', sql;
 #endif
-    EXECUTE sql INTO id;
+    EXECUTE sql INTO id USING snapped;
     IF id IS NULL THEN
       id := topology.ST_AddEdgeModFace(atopology, start_node, end_node,
                                        snapped);
@@ -1057,13 +1026,11 @@ BEGIN
   -- 3. Find faces covered by input polygon
   --    NOTE: potential snapping changed polygon edges
   sql := 'SELECT DISTINCT f.face_id FROM ' || quote_ident(atopology)
-    || '.face f WHERE f.mbr && '
-    || quote_literal(apoly::text)
-    || '::geometry';
+    || '.face f WHERE f.mbr && $1';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  FOR rec IN EXECUTE sql LOOP
+  FOR rec IN EXECUTE sql USING apoly LOOP
     -- check for actual containment
     fgeom := ST_PointOnSurface(ST_GetFaceGeometry(atopology, rec.face_id));
     IF NOT ST_Covers(apoly, fgeom) THEN
