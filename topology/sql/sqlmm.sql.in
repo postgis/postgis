@@ -2980,26 +2980,26 @@ BEGIN
   EXECUTE sql INTO STRICT newface USING ST_Envelope(fan.shell);
 
   -- Update forward edges
-  sql := 'UPDATE '
-    || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
-    || ' WHERE left_face = ' || oface || ' AND edge_id = ANY ('
-    || quote_literal(array( select +(x) from unnest(fan.newring_edges) u(x) )::text)
-    || ')';
+  sql := 'UPDATE ' || quote_ident(atopology) ||
+    '.edge_data SET left_face = $1 WHERE edge_id = ANY($3)'
+  ;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating forward edges in new ring';
+  RAISE DEBUG 'Updating backward and forward edges in new ring: %', sql;
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING newface, oface,
+    array(select +x from unnest(fan.newring_edges) u(x) where x > 0)
+  ;
 
   -- Update backward edges
-  sql := 'UPDATE '
-    || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
-    || ' WHERE right_face = ' || oface || ' AND edge_id = ANY ('
-    || quote_literal(array( select -(x) from unnest(fan.newring_edges) u(x) )::text)
-    || ')';
+  sql := 'UPDATE ' || quote_ident(atopology) ||
+    '.edge_data SET right_face = $1 WHERE edge_id = ANY($3)'
+  ;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating backward edges in new ring';
+  RAISE DEBUG 'Updating backward edges in new ring: %', sql;
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING newface, oface,
+    array(select -x from unnest(fan.newring_edges) u(x) where x < 0)
+  ;
 
   IF oface != 0 AND NOT isccw THEN -- {
     -- face shrinked, must update all non-contained edges and nodes
@@ -3017,17 +3017,10 @@ BEGIN
   -- Update edges bounding the old face
   sql := 'UPDATE '
     || quote_ident(atopology)
-    || '.edge_data SET left_face = CASE WHEN left_face = '
-    || oface || ' THEN ' || newface
-    || ' ELSE left_face END, right_face = CASE WHEN right_face = '
-    || oface || ' THEN ' || newface
-    || ' ELSE right_face END WHERE ( left_face = ' || oface
-    || ' OR right_face = ' || oface
-    || ') AND NOT edge_id = ANY ('
-    || quote_literal( array(
-        select abs(x) from unnest(fan.newring_edges) u(x)
-       )::text )
-    || ') AND ';
+    || '.edge_data SET left_face = CASE WHEN left_face = $2 THEN $3'
+    || ' ELSE left_face END, right_face = CASE WHEN right_face = $2 '
+    || ' THEN $3 ELSE right_face END WHERE ( left_face = $2 '
+    || ' OR right_face = $2 ) AND NOT edge_id = ANY ($4) AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
   sql := sql || '($1 && geom AND _ST_Contains($1'
     -- We only need to check a single point, but must not be an endpoint
@@ -3035,19 +3028,19 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Updating edges bounding the old face: %', sql;
 #endif
-  EXECUTE sql USING fan.shell;
+  EXECUTE sql USING fan.shell, oface, newface,
+    array(select abs(x) from unnest(fan.newring_edges) u(x));
 
   -- Update isolated nodes in new new face 
   sql := 'UPDATE '
-    || quote_ident(atopology) || '.node SET containing_face = ' || newface
-    || ' WHERE containing_face = ' || oface 
-    || ' AND ';
+    || quote_ident(atopology) || '.node SET containing_face = $2 '
+    || ' WHERE containing_face = $3 AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
   sql := sql || 'ST_Contains($1, geom)';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Updating isolated nodes in old face';
 #endif
-  EXECUTE sql USING fan.shell;
+  EXECUTE sql USING fan.shell, newface, oface;
 
   RETURN newface;
 
@@ -3908,19 +3901,18 @@ BEGIN
     'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE start_node = ' || anode
+    || '.edge_data WHERE start_node = $1'
     || ' UNION SELECT edge_id, end_node, -1, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE end_node = ' || anode;
+    || '.edge_data WHERE end_node = $1';
   IF newedge.isclosed THEN
-    sql := sql || ' UNION SELECT '
-      || newedge.edge_id || ',' || newedge.end_node
-      || ',-1,0,0,' -- pretend we start elsewhere
-      || quote_literal(newedge.cleangeom::text);
+    -- pretend we start elsewhere
+    sql := sql || ' UNION SELECT $2, $3, -1, 0, 0, $4';
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING
+    anode, newedge.edge_id, newedge.end_node, newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
@@ -4035,19 +4027,18 @@ BEGIN
     'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE start_node = ' || anothernode
+    || '.edge_data WHERE start_node = $1'
     || 'UNION SELECT edge_id, end_node, -1, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE end_node = ' || anothernode;
+    || '.edge_data WHERE end_node = $1';
   IF newedge.isclosed THEN
-    sql := sql || ' UNION SELECT '
-      || newedge.edge_id || ',' || -1 -- pretend we end elsewhere
-      || ',' || newedge.start_node || ',0,0,'
-      || quote_literal(newedge.cleangeom::text);
+    -- pretend we end elsewhere (-1)
+    sql := sql || ' UNION SELECT $2, -1, $3, 0, 0, $4';
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING
+    anothernode, newedge.edge_id, newedge.start_node, newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
