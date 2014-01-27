@@ -3192,7 +3192,7 @@ BEGIN
   IF newedge.start_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.start_node_geom, ST_StartPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - start node not geometry start point.';
@@ -3201,7 +3201,7 @@ BEGIN
   IF newedge.end_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.end_node_geom, ST_EndPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - end node not geometry end point.';
@@ -3818,7 +3818,7 @@ BEGIN
   IF newedge.start_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.start_node_geom, ST_StartPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - start node not geometry start point.';
@@ -3827,7 +3827,7 @@ BEGIN
   IF newedge.end_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.end_node_geom, ST_EndPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - end node not geometry end point.';
