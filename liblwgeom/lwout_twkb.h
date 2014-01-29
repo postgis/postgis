@@ -36,6 +36,18 @@
 #define TYPE_DIM_SET_TYPE(flag, type) ((flag) = (flag & 0xE0) | ((type & 0x1F)))
 #define TYPE_DIM_SET_DIM(flag, dim) ((flag) = (flag & 0x1F) | ((dim & 0x07)<<5))
 
+
+/**
+*Constants to find the range of Varint. 
+* Since Varint only uses 7 bits instead of 8 in each byte 
+* a 8 byte varint only uses 56 bits for the number and 8 for telling if next byte is used
+*/
+const int64_t max_varint = ((int64_t) 1<<56) - 1;
+const int64_t min_s_varint = (int64_t) -1<<55;
+const int64_t max_s_varint = ((int64_t)1<<55) - 1;
+
+
+
 int s_getvarint_size(int64_t val);
 int u_getvarint_size(uint64_t val);
 
@@ -46,27 +58,27 @@ static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int 
 static uint8_t* ptarray_to_twkb_buf_m1(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int64_t accum_rel[]);
 
 static size_t  lwgeom_agg_to_twkbpoint_size(lwgeom_id *geom_array, uint8_t variant,int n,int8_t prec,int64_t refpoint[],int method);
-static size_t lwpoint_to_twkb_size(const LWPOINT *pt, uint8_t variant, int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static size_t lwpoint_to_twkb_size(const LWPOINT *pt, uint8_t variant, int8_t prec, int64_t id,int64_t refpoint[],int method);
 static uint8_t* lwgeom_agg_to_twkbpoint_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int64_t refpoint[],int method);
-static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static uint8_t* lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 
 static size_t  lwgeom_agg_to_twkbline_size(lwgeom_id *geom_array, uint8_t variant,int n,int8_t prec,int64_t refpoint[],int method);
-static size_t lwline_to_twkb_size(const LWLINE *line, uint8_t variant, int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static size_t lwline_to_twkb_size(const LWLINE *line, uint8_t variant, int8_t prec, int64_t id,int64_t refpoint[],int method);
 static uint8_t* lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int64_t refpoint[],int method);
-static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static uint8_t* lwline_to_twkb_buf(const LWLINE *line, uint8_t *buf, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 
 static size_t  lwgeom_agg_to_twkbpoly_size(lwgeom_id *geom_array, uint8_t variant,int n,int8_t prec,int64_t refpoint[],int method);
-static size_t lwpoly_to_twkb_size(const LWPOLY *poly, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static size_t lwpoly_to_twkb_size(const LWPOLY *poly, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 static uint8_t* lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int64_t refpoint[],int method);
-static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static uint8_t* lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 
 static size_t  lwgeom_agg_to_twkbcollection_size(lwgeom_id *geom_array, uint8_t variant,int n,int8_t prec,int64_t refpoint[],int method);
-static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col, uint8_t variant, int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col, uint8_t variant, int8_t prec, int64_t id,int64_t refpoint[],int method);
 static uint8_t* lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, uint8_t *buf, uint8_t variant,int8_t prec, int64_t refpoint[],int method);
-static uint8_t* lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static uint8_t* lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 
-static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t variant, int8_t prec, uint64_t id,int64_t refpoint[],int method);
-static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant,int8_t prec, uint64_t id,int64_t refpoint[],int method);
+static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t variant, int8_t prec, int64_t id,int64_t refpoint[],int method);
+static uint8_t* lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant,int8_t prec, int64_t id,int64_t refpoint[],int method);
 
 
 //static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t variant,int8_t prec);
