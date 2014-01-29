@@ -2,7 +2,7 @@
  * $Id: pgsql2shp-cli.c 5450 2010-03-22 19:38:14Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under

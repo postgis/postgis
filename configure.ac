@@ -2,7 +2,7 @@ dnl **********************************************************************
 dnl * $Id: configure.ac 2797 2008-05-31 09:56:44Z mcayland $
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
-dnl * http://postgis.refractions.net
+dnl * http://postgis.net
 dnl * Copyright 2008 Mark Cave-Ayland
 dnl *
 dnl * This is free software; you can redistribute and/or modify it under

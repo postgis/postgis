@@ -1,6 +1,6 @@
 /**********************************************************************
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright 2012 (C) Paul Ramsey <pramsey@cleverelephant.ca>
  *

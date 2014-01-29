@@ -3,7 +3,7 @@
  * $Id: lwout_twkb.h 4715 2009-11-01 17:58:42Z nicklas $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2013 Nicklas Avén
  *
  * This is free software; you can redistribute and/or modify it under

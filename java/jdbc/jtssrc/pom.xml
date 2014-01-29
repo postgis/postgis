@@ -42,17 +42,17 @@
 	<mailingLists>
 		<mailingList>
 			<name>User List</name>
-			<subscribe>postgis-users-subscribe@postgis.refractions.net</subscribe>
-			<unsubscribe>postgis-users-unsubscribe@postgis.refractions.net</unsubscribe>
-			<post>postgis-users@postgis.refractions.net</post>
-			<archive>http://postgis.refractions.net/pipermail/postgis-users/</archive>
+			<subscribe>postgis-users-subscribe@lists.osgeo.org</subscribe>
+			<unsubscribe>postgis-users-unsubscribe@lists.osgeo.org</unsubscribe>
+			<post>postgis-users@lists.osgeo.org</post>
+			<archive>http://lists.osgeo.org/pipermail/postgis-users/</archive>
 		</mailingList>
 		<mailingList>
 			<name>Developer List</name>
-			<subscribe>postgis-devel-subscribe@postgis.refractions.net</subscribe>
-			<unsubscribe>postgis-devel-unsubscribe@postgis.refractions.net</unsubscribe>
-			<post>postgis-devel@postgis.refractions.net</post>
-			<archive>http://postgis.refractions.net/pipermail/postgis-devel/</archive>
+			<subscribe>postgis-devel-subscribe@lists.osgeo.org</subscribe>
+			<unsubscribe>postgis-devel-unsubscribe@lists.osgeo.org</unsubscribe>
+			<post>postgis-devel@lists.osgeo.org</post>
+			<archive>http://lists.osgeo.org/pipermail/postgis-devel/</archive>
 		</mailingList>
 	</mailingLists>
 	<issueManagement>

@@ -3,7 +3,7 @@
  * $Id: measures.c 5439 2010-03-16 03:13:33Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2011 Nicklas Avén
  *
  * This is free software; you can redistribute and/or modify it under
