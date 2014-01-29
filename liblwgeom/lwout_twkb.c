@@ -264,7 +264,6 @@ static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int 
 	size_t size = 0;
 	int j, factor,i;
 	double *dbl_ptr;
-	int start=0;
 	/*The variable factor is used to "shift" the double float coordinate to keep enough significant digits, 
 	for demanded precision, when cast to integer*/
 	factor=pow(10,prec);
@@ -275,27 +274,8 @@ static size_t ptarray_to_twkb_size_m1(const POINTARRAY *pa, uint8_t variant,int 
 		size+=u_getvarint_size(pa->npoints);
 	}
 	LWDEBUGF(4, "Refvalue dim 1 is %d",accum_rel[0]);
-	if(accum_rel[0]==INT64_MIN)
-	{
-		LWDEBUGF(4, "We don't have a ref-point yet so we give space for full coordinates",0);
-		/*Get a pointer to the first point of the point array*/
-		dbl_ptr = (double*)getPoint_internal(pa, 0);
-				
-		LWDEBUGF(4, "Our geom have %d dims",dims);
-		/*Load the accum_rel aray with the first points dimmension*/
-		for ( j = 0; j < dims; j++ )
-		{	
-			
-			LWDEBUGF(4, "dim nr %ld, refvalue is %ld",j, accum_rel[j]);
-			r = (int64_t) round(factor*dbl_ptr[j]);
-			accum_rel[j]=r;
-			LWDEBUGF(4, "deltavalue = %ld and resulting refvalue is %ld",r,accum_rel[j]);
-			size += s_getvarint_size((int64_t) r);
-			
-		}	
-		start=1;
-	}
-	for ( i = start; i < pa->npoints; i++ )
+
+	for ( i = 0; i < pa->npoints; i++ )
 	{
 		dbl_ptr = (double*)getPoint_internal(pa, i);
 		for ( j = 0; j < dims; j++ )
@@ -341,7 +321,6 @@ static uint8_t* ptarray_to_twkb_buf_m1(const POINTARRAY *pa, uint8_t *buf, uint8
 	int i, j, factor;
 	double *dbl_ptr;
 	factor=pow(10,prec);
-	int start=0;
 	
 	
 		
@@ -352,26 +331,7 @@ static uint8_t* ptarray_to_twkb_buf_m1(const POINTARRAY *pa, uint8_t *buf, uint8
 		LWDEBUGF(4, "Register npoints:%d",pa->npoints);	
 	}
 
-	/*if we don't have a ref-point yet*/
-	if(accum_rel[0]==INT64_MIN)
-	{	
-		LWDEBUGF(2, "We don't have a ref-point yet so we store the full coordinates",0);
-		/*Get a pointer do the first point of the point array*/
-		dbl_ptr = (double*)getPoint_internal(pa, 0);
-		
-		/*the first coordinate for each dimension is copied to the buffer
-		and registered in accum_rel array*/
-			for ( j = 0; j < dims; j++ )
-			{	
-				LWDEBUGF(4, "dim nr %ld, refvalue is %ld",j, accum_rel[j]);
-				r = (int64_t) round(factor*dbl_ptr[j]);
-				accum_rel[j]=r;
-				LWDEBUGF(4, "deltavalue = %ld and resulting refvalue is %ld",r,accum_rel[j]);	
-				buf = s_varint_to_twkb_buf(r,buf);
-			}
-		start=1;
-	}
-	for ( i = start; i < pa->npoints; i++ )
+	for ( i = 0; i < pa->npoints; i++ )
 	{
 		LWDEBUGF(4, "Writing point #%d", i);
 		dbl_ptr = (double*)getPoint_internal(pa, i);
@@ -903,8 +863,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	/*an integer array holding the reference point. In most cases the last used point
 	but in the case of pointcloud it is a user defined refpoint.
 	INT32_MIN indicates that the ref-point is not set yet*/
-	int64_t refpoint[4]= {INT64_MIN,INT64_MIN,INT64_MIN,INT64_MIN};
-	int64_t refpoint2[4]= {INT64_MIN,INT64_MIN,INT64_MIN,INT64_MIN};
+	int64_t refpoint[4]={0,0,0,0};
+	int64_t refpoint2[4]= {0,0,0,0};
 	
 	/* Initialize output size */
 	if ( size_out ) *size_out = 0;
@@ -988,8 +948,8 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	/*an integer array holding the reference point. In most cases the last used point
 	but in the case of pointcloud it is a user defined refpoint.
 	INT32_MIN indicates that the ref-point is not set yet*/
-	int64_t refpoint[4]= {INT64_MIN,INT64_MIN,INT64_MIN,INT64_MIN};
-	int64_t refpoint2[4]= {INT64_MIN,INT64_MIN,INT64_MIN,INT64_MIN};
+	int64_t refpoint[4]= {0,0,0,0};
+	int64_t refpoint2[4]= {0,0,0,0};
 	
 	LWDEBUGF(4, "We have collected: %d points, %d linestrings, %d polygons and %d collections",lwgeom_arrays->n_points,lwgeom_arrays->n_linestrings,lwgeom_arrays->n_polygons,lwgeom_arrays->n_collections );
 
