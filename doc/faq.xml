@@ -97,14 +97,9 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </question>
 
       <answer>
-        <para>You can store point, line, polygon, multipoint, multiline,
-        multipolygon, and geometrycollections. In PostGIS 2.0 and above you can also store TINS and Polyhedral Surfaces in the basic geometry type.
-        These are specified in the Open
-        GIS Well Known Text Format (with XYZ,XYM,XYZM extensions).  There are three data types currently supported.
-		The standard OGC geometry data type which uses a planar coordinate system for measurement, the 
-		geography data type which uses a geodetic coordinate system (not OGC, but you'll find a similar type in Microsoft SQL Server 2008+).  Only WGS 84 long lat (SRID:4326) is supported
-		by the geography data type.  The newest family member of the PostGIS spatial type family is raster for storing and analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="RT_FAQ"/>
-		and <xref linkend="RT_reference" /> for more details.</para>
+        <para>You can store Points, Linestrings, Polygons, CircularStrings, CompoundCurves, CurvePolygons, Triangles, PolyhedralSurfaces, TINs, Rasters, and collections of all the above. The most commonly used types used are Points, Linestrings and Polygons, and their collections.</para>
+        <para>Points, Linestrings and Polygons can be stored either as "geometry" or "geography". "Geometry" are cartesian representations of features in a 2D space. The shortest distance between two "geometry" points is a straight line. "Geography" are representations of objects on a spherical surface. The shortest distance between two "geography" points is a great circle.</para>
+        <para>The "raster" type has a distinct set of functions for manipulation and analysis. Refer to <xref linkend="RT_FAQ"/> and <xref linkend="RT_reference" /> for more details.</para>
       </answer>
     </qandaentry>
 	

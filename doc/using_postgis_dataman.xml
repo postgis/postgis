@@ -5,21 +5,22 @@
   <sect1 id="RefObject">
 	<title>GIS Objects</title>
 
-	<para>The GIS objects supported by PostGIS are a superset of the "Simple
-	Features" defined by the OpenGIS Consortium (OGC). As of version 0.9,
-	PostGIS supports all the objects and functions specified in the OGC
-	"Simple Features for SQL" specification.</para>
+	<para>The GIS objects supported by PostGIS are all the vector types defined
+  in the "Simple Features for SQL 1.2.1" standard defined by the OpenGIS Consortium (OGC),
+  and the ISO "SQL/MM Part 3: Spatial" document. In addition, PostGIS supports a raster
+  type (no standards exist to follow), and a topology model (following an early
+  draft ISO standard for topology that has not been published as yet).</para>
 
-	<para>PostGIS extends the standard with support for 3DZ,3DM and 4D
-	coordinates.</para>
+	<para>The OGC and ISO standards define 2D (x/y), 3D (x/y/z, x/y/m) and 4D (x/y/z/m) 
+  variants of points, lines, polygons, curved features, polyhedra, and TINS.</para>
 
 	<sect2 id="OpenGISWKBWKT">
-	  <title>OpenGIS WKB and WKT</title>
+	  <title>Well-Known Binary (WKB) and Well-Known Text (WKT) Representations</title>
 
-	  <para>The OpenGIS specification defines two standard ways of expressing
-	  spatial objects: the Well-Known Text (WKT) form and the Well-Known
-	  Binary (WKB) form. Both WKT and WKB include information about the type
-	  of the object and the coordinates which form the object.</para>
+	  <para>The OGC and ISO specifications define both text and binary 
+    representations for geometry objects, WKT and WKB. Both representations
+    include information about the type
+	  of the object and the coordinates that form the object.</para>
 
 	  <para>Examples of the text representations (WKT) of the spatial objects
 	  of the features are as follows:</para>
