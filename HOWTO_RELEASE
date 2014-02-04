@@ -53,9 +53,9 @@ Release procedure
       postgis_topology/sql_bits/topology_unpackaged.sql.in
       postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
 6) Tag branch:  
-   svn copy http://svn.osgeo.org/postgis/branch/x.x http://svn.osgeo.org/postgis/tags/x.x.x
+   svn copy https://svn.osgeo.org/postgis/branches/x.x https://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
-   svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
+   svn checkout https://svn.osgeo.org/postgis/tags/x.x.x
 8) Update Version.config as specified in Versioning Scheme above. See also 17
 9) Update doc/postgis.xml to download.osgeo.org link 
   (note: unreleased are on postgis.net, and released download.osgeo.org )
