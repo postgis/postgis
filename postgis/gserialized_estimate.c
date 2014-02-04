@@ -497,7 +497,7 @@ nd_box_init_bounds(ND_BOX *a)
 	for ( d = 0; d < ND_DIMS; d++ )
 	{
 		a->min[d] = FLT_MAX;
-		a->max[d] = FLT_MIN;
+		a->max[d] = -1 * FLT_MAX;
 	}
 	return TRUE;
 }
