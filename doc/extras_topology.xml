@@ -1308,7 +1308,7 @@ an error is thrown.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>text <function>ST_ModEdgeSplit</function></funcdef>
+					<funcdef>integer <function>ST_ModEdgeSplit</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
@@ -1323,6 +1323,7 @@ an error is thrown.
 Split an edge by creating a new node along an existing edge,
 modifying the original edge and adding a new edge.
 Updates all existing joined edges and relationships accordingly.
+Returns the identifier of the newly added node.
 		</para>
 
                 <!-- use this format if new function -->
@@ -1343,8 +1344,8 @@ Updates all existing joined edges and relationships accordingly.
 
 
 -- Split the edge  --
-SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910),26986)  ) As result;
-         result
+SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910),26986)  ) As node_id;
+        node_id
 -------------------------
 7
 </programlisting>
