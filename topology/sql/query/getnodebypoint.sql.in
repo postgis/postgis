@@ -59,20 +59,17 @@ BEGIN
 
 
     if tol1 = 0 then
-    	sql := 'SELECT a.node_id FROM ' 
+    	sql := 'SELECT node_id FROM ' 
         || quote_ident(atopology) 
-        || '.node as a WHERE '
-        || '(a.geom && ' || quote_literal(apoint::text)||'::geometry) '
-        || ' AND (ST_Intersects(a.geom,' || quote_literal(apoint::text)||'::geometry) );';
+        || '.node WHERE ST_Intersects(geom, $1)';
     else
-    	sql := 'SELECT a.node_id FROM ' 
+    	sql := 'SELECT node_id FROM ' 
         || quote_ident(atopology) 
-        || '.node as a WHERE '
-        || '(ST_DWithin(a.geom,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ') );';
+        || '.node WHERE ST_DWithin(geom, $1, $2)';
     end if;
 
     BEGIN
-    EXECUTE sql INTO STRICT idnode;
+    EXECUTE sql INTO STRICT idnode USING apoint, tol1;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             idnode = 0;

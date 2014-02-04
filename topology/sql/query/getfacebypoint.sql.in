@@ -65,21 +65,17 @@ BEGIN
     -- first test is to check if there is inside an mbr
     --
     if tol1 = 0 then
-    	sql := 'SELECT a.face_id FROM ' 
+    	sql := 'SELECT face_id FROM '
         || quote_ident(atopology) 
-        || '.face as a WHERE '
-        || '(a.mbr && ' || quote_literal(apoint::text)||'::geometry) '
-        || 'LIMIT 1;';
+        || '.face WHERE mbr && $1 LIMIT 1';
     else
-    	sql := 'SELECT a.face_id FROM ' 
+    	sql := 'SELECT face_id FROM ' 
         || quote_ident(atopology) 
-        || '.face as a WHERE '
-        || '(ST_DWithin(a.mbr,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ') ) '
-        || 'LIMIT 1;';
+        || '.face as a WHERE ST_DWithin(mbr, $1, $2) LIMIT 1';
     end if;
 
     BEGIN
-    EXECUTE sql INTO STRICT idface;
+    EXECUTE sql INTO STRICT idface USING apoint, tol1;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             idface = 0;
@@ -97,7 +93,7 @@ BEGIN
         	|| quote_ident(atopology) || '.edge_data as b,'
             || '(SELECT a.face_id FROM '
     		|| quote_ident(atopology) || '.face as a '
-        	|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+        	|| 'WHERE ST_Intersects(a.mbr,$1)=true'
             || ') as c '
     		|| 'WHERE (b.left_face = c.face_id) '
         	|| ' UNION ALL '
@@ -105,13 +101,13 @@ BEGIN
     		|| quote_ident(atopology) || '.edge_data as b,'
         	|| '(SELECT a.face_id FROM '
             || quote_ident(atopology) || '.face as a '
-    		|| 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
+    		|| 'WHERE ST_Intersects(a.mbr,$1)=true'
         	|| ') as c '
             || 'WHERE (b.right_face = c.face_id) '
     		|| ') as d '
         	|| 'GROUP BY face_id '
             || ') as e '
-    		|| 'WHERE ST_Intersects(e.geom, ' || quote_literal(apoint::text)||'::geometry)=true;';
+    		|| 'WHERE ST_Intersects(e.geom, $1)';
         else
         	sql := 'SELECT e.face_id FROM ('
             || 'SELECT d.face_id,ST_BuildArea(ST_Union(geom)) as geom FROM ('
@@ -119,7 +115,7 @@ BEGIN
         	|| quote_ident(atopology) || '.edge_data as b,'
             || '(SELECT a.face_id FROM '
     		|| quote_ident(atopology) || '.face as a '
-        	|| 'WHERE ST_DWithin(a.mbr,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ')=true'
+        	|| 'WHERE ST_DWithin(a.mbr,$1,$2)'
             || ') as c '
     		|| 'WHERE (b.left_face = c.face_id) '
         	|| ' UNION ALL '
@@ -127,19 +123,19 @@ BEGIN
     		|| quote_ident(atopology) || '.edge_data as b,'
         	|| '(SELECT a.face_id FROM '
             || quote_ident(atopology) || '.face as a '
-    		|| 'WHERE ST_DWithin(a.mbr,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ')=true'
+    		|| 'WHERE ST_DWithin(a.mbr,$1,$2)'
         	|| ') as c '
             || 'WHERE (b.right_face = c.face_id) '
     		|| ') as d '
         	|| 'GROUP BY face_id '
             || ') as e '
-    		|| 'WHERE ST_DWithin(e.geom, ' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ')=true;';
+    		|| 'WHERE ST_DWithin(e.geom, $1, $2)';
         end if;
 	
     	RAISE DEBUG ' ==> %',sql;
 
         BEGIN
-            EXECUTE sql INTO STRICT idface;
+            EXECUTE sql INTO STRICT idface USING apoint, tol1;
         	EXCEPTION
         	    WHEN NO_DATA_FOUND THEN
                     idface = 0;

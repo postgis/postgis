@@ -29,7 +29,7 @@ PostGIS 2.2.0
   - #2390, Testsuite for pgsql2shp
   - #2527, Added -k flag to raster2pgsql to skip checking that
            band is NODATA
-  - #2616, Reduce text casts during topology building 
+  - #2616, Reduce text casts during topology building and export
 
  * Bug Fixes *
 

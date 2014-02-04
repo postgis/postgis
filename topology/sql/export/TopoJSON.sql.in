@@ -67,27 +67,24 @@ BEGIN
     FOR rec IN SELECT (ST_Dump(topology.Geometry(tg))).geom
     LOOP -- {
 
-      sql := 'SELECT e.*, ST_LineLocatePoint('
-            || quote_literal(rec.geom::text)
+      sql := 'SELECT e.*, ST_LineLocatePoint($1'
             || ', ST_LineInterpolatePoint(e.geom, 0.2)) as pos'
-            || ', ST_LineLocatePoint('
-            || quote_literal(rec.geom::text)
+            || ', ST_LineLocatePoint($1'
             || ', ST_LineInterpolatePoint(e.geom, 0.8)) as pos2 FROM '
             || quote_ident(toponame)
-            || '.edge e WHERE ST_Covers('
-            || quote_literal(rec.geom::text)
+            || '.edge e WHERE ST_Covers($1'
             || ', e.geom) ORDER BY pos';
             -- TODO: add relation to the conditional, to reduce load ?
-      FOR rec2 IN EXECUTE sql
+      FOR rec2 IN EXECUTE sql USING rec.geom
       LOOP -- {
 
         IF edgeMapTable IS NOT NULL THEN
-          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec2.edge_id;
-          EXECUTE sql INTO arcid;
+          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = $1';
+          EXECUTE sql INTO arcid USING rec2.edge_id;
           IF arcid IS NULL THEN
             EXECUTE 'INSERT INTO ' || edgeMapTable::text
-              || '(edge_id) VALUES (' || rec2.edge_id || ') RETURNING arc_id-1'
-            INTO arcid;
+              || '(edge_id) VALUES ($1) RETURNING arc_id-1'
+            INTO arcid USING rec2.edge_id;
           END IF;
         ELSE
           arcid := rec2.edge_id;
@@ -230,12 +227,12 @@ FROM _edgepath
         END IF;
 
         IF edgeMapTable IS NOT NULL THEN
-          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec.edge_id;
-          EXECUTE sql INTO arcid;
+          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = $1';
+          EXECUTE sql INTO arcid USING rec.edge_id;
           IF arcid IS NULL THEN
             EXECUTE 'INSERT INTO ' || edgeMapTable::text
-              || '(edge_id) VALUES (' || rec.edge_id || ') RETURNING arc_id-1'
-            INTO arcid;
+              || '(edge_id) VALUES ($1) RETURNING arc_id-1'
+            INTO arcid USING rec.edge_id;
           END IF;
         ELSE
           arcid := rec.edge_id-1;
