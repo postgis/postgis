@@ -231,7 +231,9 @@ int
 geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, int* dwithin)
 {
 	double distance;
-	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) )
+	/* TODO!!! Why does the tolerance stopper in the circ_tree_distance_tree_internal arbitrarily screw up? */
+/*	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) ) */
+	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, FP_TOLERANCE, &distance) ) 
 	{
 		*dwithin = (distance <= tolerance ? LW_TRUE : LW_FALSE);
 		return LW_SUCCESS;
