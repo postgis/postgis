@@ -80,6 +80,10 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->num_nodes = 0;
 	node->nodes = NULL;
 	node->edge_num = i;
+    
+    /* Zero out metadata */
+    node->pt_outside = NULL;
+    node->geom_type = 0;
 	
 	return node;
 }
@@ -97,6 +101,8 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 	tree->nodes = NULL;
 	tree->num_nodes = 0;
 	tree->edge_num = 0;
+    tree->geom_type = POINTTYPE;
+    tree->pt_outside = NULL;
 	return tree;
 }
 
@@ -280,13 +286,13 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	node->num_nodes = num_nodes;
 	node->nodes = c;
 	node->edge_num = -1;
+    node->geom_type = 0;
+    node->pt_outside = NULL;
 	return node;
 }
 
 /**
-* Build a tree of nodes from a point array, one node per edge, and each
-* with an associated measure range along a one-dimensional space. We
-* can then search that space as a range tree.
+* Build a tree of nodes from a point array, one node per edge.
 */
 CIRC_NODE* 
 circ_tree_new(const POINTARRAY* pa)
@@ -385,6 +391,24 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 	
 	/* Return a reference to the head of the tree */
 	return nodes[0];
+}
+
+
+/**
+* Returns a #POINT2D that is a vertex of the input shape
+*/
+int circ_tree_get_point(const CIRC_NODE* node, POINT4D* pt)
+{
+	if ( circ_node_is_leaf(node) )
+    {
+        pt->x = node->p1->x;
+        pt->y = node->p1->y;
+        return LW_SUCCESS;
+    }
+    else
+    {
+        return circ_tree_get_point(node->nodes[0], pt);
+    }
 }
 
 
@@ -668,13 +692,19 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 static CIRC_NODE*
 lwpoint_calculate_circ_tree(const LWPOINT* lwpoint)
 {
-	return circ_tree_new(lwpoint->point);
+	CIRC_NODE* node;
+    node = circ_tree_new(lwpoint->point);
+    node->geom_type = lwgeom_get_type((LWGEOM*)lwpoint);;
+	return node;
 }
 
 static CIRC_NODE*
 lwline_calculate_circ_tree(const LWLINE* lwline)
 {
-	return circ_tree_new(lwline->points);
+	CIRC_NODE* node;
+    node = circ_tree_new(lwline->points);
+    node->geom_type = lwgeom_get_type((LWGEOM*)lwline);
+	return node;
 }
 
 static CIRC_NODE*
@@ -702,6 +732,8 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	node = circ_nodes_merge(nodes, j);
 	/* Don't need the working list any more */
 	lwfree(nodes);
+    
+    node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	
 	return node;
 }
@@ -732,6 +764,8 @@ lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 	/* Don't need the working list any more */
 	lwfree(nodes);
 	
+    node->geom_type = lwgeom_get_type((LWGEOM*)lwcol);;
+    
 	return node;
 }
 
