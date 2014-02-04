@@ -1074,6 +1074,10 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	 * number of rows that can be returned.
 	 */
 	selectivity = val / ntuples_max;
+
+    /* Guard against over-estimates :) */
+    if ( selectivity > 1.0 ) 
+        selectivity = 1.0;
 	
 	return selectivity;
 }
