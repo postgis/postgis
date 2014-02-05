@@ -674,6 +674,31 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT) );
+
+	/* Antipodal straddles. Great circles cross but at opposite */
+	/* sides of the globe */
+	/* #2534 */
+	/* http://www.gcmap.com/mapui?P=60N+90E-20S+90E%0D%0A0N+0E-90.04868865037885W+57.44011727050777S%0D%0A&MS=wls&DU=mi */
+	line2pts("LINESTRING(90.0 60.0, 90.0 -20.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 0.0, -90.04868865037885 -57.44011727050777)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	line2pts("LINESTRING(-5 0, 5 0)", &A1, &A2);
+	line2pts("LINESTRING(179 -5, 179 5)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	line2pts("LINESTRING(175 -85, 175 85)", &A1, &A2);
+	line2pts("LINESTRING(65 0, -105 0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+	
+	line2pts("LINESTRING(175 -85, 175 85)", &A1, &A2);
+	line2pts("LINESTRING(45 0, -125 0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+	
 }
 
 static void test_edge_distance_to_point(void)
