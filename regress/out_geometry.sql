@@ -50,6 +50,13 @@ SELECT 'gml_shortline_02', ST_AsGML(3, GeomFromEWKT('LINESTRING(1 2, 3 4)'), 0, 
 SELECT 'gml_shortline_03', ST_AsGML(3, GeomFromEWKT('MULTILINESTRING((1 2, 3 4), (5 6, 7 8))'), 0, 6, '');
 SELECT 'gml_shortline_04', ST_AsGML(3, GeomFromEWKT('MULTILINESTRING((1 2, 3 4), (5 6, 7 8))'), 0, 2, '');
 
+-- CIRCULARSTRING / COMPOUNDCURVE / CURVEPOLYGON / MULTISURFACE / MULTICURVE
+SELECT 'gml_out_curve_01', ST_AsGML( 3, GeomFromEWKT('CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)'));
+SELECT 'gml_out_curve_02', ST_ASGML( 3, GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))'));
+SELECT 'gml_out_curve_03', ST_AsGML( 3, GeomFromEWKT('CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))'));
+SELECT 'gml_out_curve_04', ST_AsGML( 3, GeomFromEWKT('MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))'));
+SELECT 'gml_out_curve_05', ST_AsGML( 3, GeomFromEWKT('MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))'));
+
 --
 -- KML
 --

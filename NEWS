@@ -22,6 +22,7 @@ PostGIS 2.2.0
   - #2430, ST_ForceCurve
   - #2565, ST_SummaryStatsAgg()
   - #2567, ST_CountAgg()
+  - #2632, ST_AsGML() support for curved features
 
  * Enhancements *
 
