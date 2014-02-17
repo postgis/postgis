@@ -3738,7 +3738,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			
 			<para>Version 2: Takes geomA and geomB and returns the <xref linkend="DE-9IM" /></para>
 
-			<para>Version 3: same as version 2 bu allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
+			<para>Version 3: same as version 2, but allows to specify a boundary node rule (1:OGC/MOD2, 2:Endpoint, 3:MultivalentEndpoint, 4:MonovalentEndpoint)</para>
 			
 			<note><para>Do not call with a GeometryCollection as an argument</para></note>
 			
