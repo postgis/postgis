@@ -831,7 +831,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degA_B,
 	  <para>Computes the geometric center of a geometry, or equivalently,
 	  the center of mass of the geometry as a <varname>POINT</varname>. For
 	  [<varname>MULTI</varname>]<varname>POINT</varname>s, this is computed
-	  as the arithmetric mean of the input coordinates. For
+	  as the arithmetic mean of the input coordinates. For
 	  [<varname>MULTI</varname>]<varname>LINESTRING</varname>s, this is
 	  computed as the weighted length of each line segment. For
 	  [<varname>MULTI</varname>]<varname>POLYGON</varname>s, "weight" is
