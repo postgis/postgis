@@ -2,7 +2,7 @@
  * $Id: cu_varint.c 6160 2013-09-21 01:28:12Z nicklas $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright (C) 2013 Nicklas Avén
  *
