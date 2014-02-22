@@ -37,7 +37,21 @@ use warnings;
 # if the major numbers in version_from are less than the version_to
 # number.
 #
+# TODO: move configuration outside of code
+#
 my $objs = {
+ 	"102" => { 
+		"aggregates" => {
+			"st_extent(geometry)" => 1,
+			"st_memcollect(geometry)" => 1,
+			"st_memunion(geometry)" => 1,
+			"st_accum(geometry)" => 1,
+			"st_union(geometry)" => 1,
+			"st_collect(geometry)" => 1,
+			"st_polygonize(geometry)" => 1,
+			"st_makeline(geometry)" => 1
+		}
+	},
  	"104" => { 
 		"types" => {
 			"box3d_extent" => 1,
@@ -64,7 +78,23 @@ my $objs = {
 			"geography" => 1,
 			"gidx" => 1
 		}
-	}
+	},
+ 	"200" => { 
+		"aggregates" => {
+			"st_3dextent(geometry)" => 1,
+      "topology.topoelementarray_agg(topology.topoelement)" => 1
+		}
+	},
+ 	"201" => { 
+		"aggregates" => {
+			"st_samealignment(raster)" => 1,
+			"st_union(raster,unionarg[])" => 1,
+			"st_union(raster,integer,text)" => 1,
+			"st_union(raster,integer)" => 1,
+			"st_union(raster)" => 1,
+			"st_union(raster,text)" => 1
+		}
+	},
 };
 
 #
@@ -227,8 +257,17 @@ while(<INPUT>)
 			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
 			last if /\);/;
 		}
-		print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
-		print $def;
+		my $aggsig = "$aggname($aggtype)";
+		my $ver = $version_from_num + 1;
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+		{
+			if( $objs->{$ver}->{"aggregates"}->{$aggsig} )
+			{
+        print "DROP AGGREGATE IF EXISTS $aggsig;\n";
+        print $def;
+			}
+			$ver++;
+		}
 	}
 	
 	# This code handles operators by creating them if we are doing a major upgrade

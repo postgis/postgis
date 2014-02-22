@@ -22,6 +22,7 @@ PostGIS 2.1.2
  * Enhancements *
 
   - #2494, avoid memcopy in GiST index (hayamiz)
+  - #2560, soft upgrade: avoid drop/recreate of aggregates that hadn't changed
 
 
 
