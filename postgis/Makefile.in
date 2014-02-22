@@ -16,7 +16,9 @@ MODULEDIR=contrib/$(MODULE_big)
 
 # Update PREV_big manually on branching
 # TODO: move this definition in ../../Version.config
+PREV_big_dot=2.1
 PREV_big=21
+CURV_big_dot=@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
@@ -172,11 +174,12 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 postgis_upgrade_$(PREV_big)_$(CURV_big).sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
 	cat $^ > $@
 postgis_upgrade_$(PREV_big)_$(CURV_big).sql: postgis_upgrade_$(PREV_big)_$(CURV_big).sql.in ../utils/postgis_proc_upgrade.pl 
-	$(PERL) ../utils/postgis_proc_upgrade.pl $< 2.0 > $@
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< $(PREV_big_dot) > $@
 	
-#this is same as $(PREV_big)_$(CURV_big) until we release a 2.1.0	
-postgis_upgrade_$(CURV_big)_minor.sql: postgis_upgrade_$(PREV_big)_$(CURV_big).sql
-	cp $< $@
+postgis_upgrade_$(CURV_big)_minor.sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
+	cat $^ > $@
+postgis_upgrade_$(CURV_big)_minor.sql: postgis_upgrade_$(CURV_big)_minor.sql.in ../utils/postgis_proc_upgrade.pl
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< $(CURV_big_dot) > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
 #$(SQL_OBJS): %.in: %.in.c

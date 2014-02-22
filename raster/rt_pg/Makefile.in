@@ -26,7 +26,9 @@ MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Update PREV_big manually on branching
 # TODO: move this definition in ../../Version.config
+PREV_big_dot=2.1
 PREV_big=21
+CURV_big_dot=@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 CURV_big=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
@@ -121,24 +123,19 @@ endif
 # Objects dependencies
 $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
 
-# Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-#$(SQL_OBJS): %.in: %.in.c
-#	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' > $@
-
 # SQL objects deps here
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 
-#remove all create object types since these can't be done cleanly in an upgrade
-rtpostgis_upgrade.sql: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
-	$(PERL) ../../utils/postgis_proc_upgrade.pl $< 2.0 > $@
-	#$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
-
-rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
+rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql.in: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis.sql 
 	cat $^ > $@
+rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql: rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql.in ../../utils/postgis_proc_upgrade.pl 
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< $(PREV_big_dot) > $@
 
-# same as $(PREV_big)_$(CURV_big) until next .0 is released
-rtpostgis_upgrade_$(CURV_big)_minor.sql: rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql
-	cp $< $@
+rtpostgis_upgrade_$(CURV_big)_minor.sql.in: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis.sql 
+	cat $^ > $@
+rtpostgis_upgrade_$(CURV_big)_minor.sql: rtpostgis_upgrade_$(CURV_big)_minor.sql.in ../../utils/postgis_proc_upgrade.pl
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< $(CURV_big_dot) > $@
+
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
