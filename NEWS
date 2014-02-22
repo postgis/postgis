@@ -17,6 +17,7 @@ PostGIS 2.1.2
   - #2607, Cannot open more than 1024 out-db files in one process
   - #2610, Ensure face splitting algorithm uses the edge index
   - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
+  - #2648, Fix sqlmm topology funx for use with no "topology" in search_path
 
  * Enhancements *
 
