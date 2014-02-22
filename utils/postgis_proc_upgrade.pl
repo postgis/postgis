@@ -196,11 +196,15 @@ while(<DATA>)
 # applied to an existing, loaded database: types and operators
 # and operator classes that have already been defined.
 #
+my $comment = '';
 open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
 while(<INPUT>)
 {
 
-	next if ( /^\-\-/ );
+	if ( /^\-\-/ ) {
+		$comment .= $_;
+		next;
+	}
 
 	#
 	# Allow through deprecations from postgis_drop.sql
@@ -285,17 +289,28 @@ while(<INPUT>)
 			last if /\);/;
 		}
 		my $aggsig = "$aggname($aggtype)";
-		my $ver = $version_from_num + 1;
-    #print "-- Checking ${aggsig} -- From: ${version_from_num} -- To: ${version_to_num}\n";
-		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-		{
-			if( $objs->{$ver}->{"aggregates"}->{$aggsig} )
-			{
-        print "DROP AGGREGATE IF EXISTS $aggsig;\n";
-        print $def;
-			}
-			$ver++;
-		}
+
+    #print "-- Checking comment $comment\n";
+    $comment =~ m/(?:Availability|Changed):\s([^\.])\.([^.]*)/;
+    my $last_updated = $1*100 + $2;
+
+    if ( ! $last_updated ) {
+      my $ver = $version_from_num + 1;
+      while( $version_from_num < $version_to_num && $ver <= $version_to_num )
+      {
+        if( $objs->{$ver}->{"aggregates"}->{$aggsig} )
+        {
+          $last_updated = ${ver};
+          last;
+        }
+        $ver++;
+      }
+    }
+    print "-- Checking ${aggsig} -- LastUpdated: ${last_updated} -- From: ${version_from_num} -- To: ${version_to_num}\n";
+    if ( $last_updated > $version_from_num ) {
+      print "DROP AGGREGATE IF EXISTS $aggsig;\n";
+      print $def;
+    }
 	}
 	
 	# This code handles operators by creating them if we are doing a major upgrade
@@ -372,6 +387,8 @@ while(<INPUT>)
 			$ver++;
 		}
 	}
+
+	$comment = '';
 }
 
 close( INPUT );
