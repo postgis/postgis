@@ -111,15 +111,16 @@ $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../..
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 
 #remove all create object types since these can't be done cleanly in an upgrade
-rtpostgis_upgrade.sql: rtpostgis.sql
-	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
+rtpostgis_upgrade.sql: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
+	$(PERL) ../../utils/postgis_proc_upgrade.pl $< 2.0 > $@
+	#$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
 rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
 # same as 20_21 until 2.1.0 is released
-rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
-	cat $^ > $@
+rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_20_21.sql
+	cp $< $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
