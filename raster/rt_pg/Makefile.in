@@ -77,7 +77,7 @@ PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLA
 SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade_$(PREV_big)_$(CURV_big).sql.in rtpostgis_upgrade_$(CURV_big)_minor.sql.in
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@ 
