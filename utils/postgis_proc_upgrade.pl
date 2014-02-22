@@ -209,8 +209,8 @@ while(<INPUT>)
 	#
 	# Allow through deprecations from postgis_drop.sql
 	#
-	print if ( /^drop function if exists/i );
-	print if ( /^drop aggregate if exists/i );
+	print if ( /^drop function /i );
+	print if ( /^drop aggregate /i );
 
 	if ( /^create or replace function/i )
 	{
