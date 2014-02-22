@@ -291,10 +291,13 @@ while(<INPUT>)
 		my $aggsig = "$aggname($aggtype)";
 
     #print "-- Checking comment $comment\n";
-    $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s;
-    my $last_updated = $1*100 + $2;
+    my $last_updated = 0;
+    if ( $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s ) {
+      $last_updated = $1*100 + $2;
+    }
 
     if ( ! $last_updated ) {
+      print STDERR "WARNING: no last updated info for aggregate '${aggsig}'\n";
       my $ver = $version_from_num + 1;
       while( $version_from_num < $version_to_num && $ver <= $version_to_num )
       {
@@ -306,7 +309,7 @@ while(<INPUT>)
         $ver++;
       }
     }
-    print "-- Checking ${aggsig} -- LastUpdated: ${last_updated} -- From: ${version_from_num} -- To: ${version_to_num}\n";
+    #print "-- Checking ${aggsig} -- LastUpdated: ${last_updated} -- From: ${version_from_num} -- To: ${version_to_num}\n";
     if ( $last_updated > $version_from_num ) {
       print "DROP AGGREGATE IF EXISTS $aggsig;\n";
       print $def;
