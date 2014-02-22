@@ -57,7 +57,7 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE name = toponame)  THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
@@ -1390,7 +1390,7 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE name = toponame)  THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
@@ -1461,10 +1461,10 @@ BEGIN
      'SQL/MM Spatial exception - null argument';
   END IF;
 
-      --
+  --
   -- Atopology must  be registered
   -- 
-  IF NOT EXISTS(SELECT name FROM topology WHERE topology.name = atopology) THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE topology.name = atopology) THEN
     RAISE EXCEPTION
      'SQL/MM Spatial exception - invalid topology name';
   END IF;
