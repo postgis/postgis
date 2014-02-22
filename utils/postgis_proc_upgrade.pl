@@ -291,7 +291,7 @@ while(<INPUT>)
 		my $aggsig = "$aggname($aggtype)";
 
     #print "-- Checking comment $comment\n";
-    $comment =~ m/(?:Availability|Changed):\s([^\.])\.([^.]*)/;
+    $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s;
     my $last_updated = $1*100 + $2;
 
     if ( ! $last_updated ) {
