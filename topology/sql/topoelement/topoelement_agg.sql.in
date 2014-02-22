@@ -49,6 +49,7 @@ LANGUAGE 'sql' IMMUTABLE;
 --
 -- Aggregates a set of TopoElement values into a TopoElementArray
 --
+-- Availability: 2.0.0
 DROP AGGREGATE IF EXISTS topology.TopoElementArray_agg(topology.TopoElement);
 CREATE AGGREGATE topology.TopoElementArray_agg(
 	sfunc = topology.TopoElementArray_append,

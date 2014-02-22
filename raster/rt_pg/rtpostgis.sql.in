@@ -37,6 +37,8 @@
 
 SET client_min_messages TO warning;
 
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 BEGIN;
 
 ------------------------------------------------------------------------------
@@ -500,6 +502,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, integer, boolean, double precision) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -514,6 +517,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, boolean, double precision) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -528,6 +532,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, int, boolean) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -769,11 +774,8 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE AGGREGATE st_countagg(
-	raster,
- 	integer, boolean,
-	double precision
-) (
+-- Availability: 2.2.0
+CREATE AGGREGATE st_countagg(raster, integer, boolean, double precision) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	FINALFUNC = _st_countagg_finalfn
@@ -799,10 +801,8 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE AGGREGATE st_countagg(
-	raster,
-	integer, boolean
-) (
+-- Availability: 2.2.0
+CREATE AGGREGATE st_countagg(raster, integer, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	FINALFUNC = _st_countagg_finalfn
@@ -828,6 +828,7 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_countagg(raster, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
@@ -5911,6 +5912,7 @@ CREATE OR REPLACE FUNCTION _st_samealignment_finalfn(agg agg_samealignment)
 	AS $$ SELECT $1.aligned $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE AGGREGATE st_samealignment(raster) (
 	SFUNC = _st_samealignment_transfn,
 	STYPE = agg_samealignment,
@@ -6511,6 +6513,7 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, unionarg[])
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.1.0
 CREATE AGGREGATE st_union(raster, unionarg[]) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6522,6 +6525,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, integer, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6533,6 +6538,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, integer) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6544,6 +6551,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6555,6 +6564,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, text)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,

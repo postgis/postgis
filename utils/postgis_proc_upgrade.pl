@@ -37,7 +37,21 @@ use warnings;
 # if the major numbers in version_from are less than the version_to
 # number.
 #
+# TODO: move configuration outside of code
+#
 my $objs = {
+ 	"102" => { 
+		"aggregates" => {
+			"st_extent(geometry)" => 1,
+			"st_memcollect(geometry)" => 1,
+			"st_memunion(geometry)" => 1,
+			"st_accum(geometry)" => 1,
+			"st_union(geometry)" => 1,
+			"st_collect(geometry)" => 1,
+			"st_polygonize(geometry)" => 1,
+			"st_makeline(geometry)" => 1
+		}
+	},
  	"104" => { 
 		"types" => {
 			"box3d_extent" => 1,
@@ -64,6 +78,32 @@ my $objs = {
 			"geography" => 1,
 			"gidx" => 1
 		}
+	},
+ 	"200" => { 
+		"aggregates" => {
+			"st_3dextent(geometry)" => 1,
+      "topology.topoelementarray_agg(topology.topoelement)" => 1
+		}
+	},
+ 	"201" => { 
+		"aggregates" => {
+			"st_samealignment(raster)" => 1,
+			"st_union(raster,unionarg[])" => 1,
+			"st_union(raster,integer,text)" => 1,
+			"st_union(raster,integer)" => 1,
+			"st_union(raster)" => 1,
+			"st_union(raster,text)" => 1
+		}
+	},
+ 	"202" => { 
+		"aggregates" => {
+			"st_summarystatsagg(raster,integer,boolean,doubleprecision)" => 1,
+			"st_summarystatsagg(raster,boolean,doubleprecision)" => 1,
+			"st_summarystatsagg(raster,integer)" => 1,
+			"st_countagg(raster,integer,boolean,doubleprecision)" => 1,
+			"st_countagg(raster,integer,boolean)" => 1,
+			"st_countagg(raster,boolean)" => 1
+		}
 	}
 };
 
@@ -75,6 +115,7 @@ die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]
 	if ( @ARGV < 1 || @ARGV > 3 );
 
 my $sql_file = $ARGV[0];
+my $module = 'postgis';
 my $version_to = "";
 my $version_to_num = 0;
 my $version_from = $ARGV[1];
@@ -109,6 +150,10 @@ while(<INPUT>)
 				$version_to = $1;
 				last;
 	}
+	elsif (/TYPE raster/)
+	{
+        $module = 'postgis_raster';
+	}
 }
 close(INPUT); 
 
@@ -142,6 +187,7 @@ print "SET search_path TO $schema;\n" if $schema;
 while(<DATA>)
 {
 	s/NEWVERSION/$version_to/g;
+  s/MODULE/$module/g;
 	print;
 }
 
@@ -211,33 +257,45 @@ while(<INPUT>)
 		my $type1 = $1;
 		my $type2 = $2;
 		my $def = $_;
+    unless (/;$/) { 
+      while(<INPUT>) {
+        $def .= $_;
+        last if /;$/;
+      }
+    }
 		print "DROP CAST IF EXISTS ($type1 AS $type2);\n";
 		print $def;
 	}
 
 	# This code handles aggregates by dropping and recreating them.
-	if ( /^create aggregate\s+(\S+)\s*\(/i )
+	if ( /^create aggregate\s+([^(]+)\s*\(/i )
 	{
 		my $aggname = $1;
+    #print "-- Aggname ${aggname}\n";
 		my $aggtype = 'unknown';
 		my $def = $_;
+    if ( /^create aggregate\s+\S+\s*\(([^)]*)\)/i ) {
+	    $aggtype = $1;
+      $aggtype =~ s/\s*//g;
+    }
 		while(<INPUT>)
 		{
 			$def .= $_;
 			$aggtype = $1 if ( /basetype\s*=\s*([^,]*)\s*,/i );
 			last if /\);/;
 		}
-		if ($aggtype eq "unknown")
+		my $aggsig = "$aggname($aggtype)";
+		my $ver = $version_from_num + 1;
+    #print "-- Checking ${aggsig} -- From: ${version_from_num} -- To: ${version_to_num}\n";
+		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
 		{
-		#For the new aggregate syntax where the parameters is defined like a common function
-			print "DROP AGGREGATE IF EXISTS $aggname;\n";
+			if( $objs->{$ver}->{"aggregates"}->{$aggsig} )
+			{
+        print "DROP AGGREGATE IF EXISTS $aggsig;\n";
+        print $def;
+			}
+			$ver++;
 		}
-		else
-		{
-		#For the old syntax when the parameter is defined through "basetype"
-			print "DROP AGGREGATE IF EXISTS $aggname($aggtype);\n";
-		}
-		print $def;
 	}
 	
 	# This code handles operators by creating them if we are doing a major upgrade
@@ -346,17 +404,17 @@ BEGIN
 	-- would both return actual PostGIS release number.
 	-- 
 	BEGIN
-		SELECT into old_scripts postgis_lib_version();
+		SELECT into old_scripts MODULE_lib_version();
 	EXCEPTION WHEN OTHERS THEN
 		RAISE DEBUG ''Got %'', SQLERRM;
-		SELECT into old_scripts postgis_scripts_installed();
+		SELECT into old_scripts MODULE_scripts_installed();
 	END;
 	SELECT into new_scripts ''NEWVERSION'';
 	SELECT into old_maj substring(old_scripts from 1 for 2);
 	SELECT into new_maj substring(new_scripts from 1 for 2);
 
 	IF old_maj != new_maj THEN
-		RAISE EXCEPTION ''Upgrade from version % to version % requires a dump/reload. See PostGIS manual for instructions'', old_scripts, new_scripts;
+		RAISE EXCEPTION ''Upgrade of MODULE from version % to version % requires a dump/reload. See PostGIS manual for instructions'', old_scripts, new_scripts;
 	ELSE
 		RETURN ''Scripts versions checked for upgrade: ok'';
 	END IF;
