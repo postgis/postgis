@@ -1111,6 +1111,29 @@ sub upgrade_spatial
     return 1;
 }
 
+# Upgrade an existing database (soft upgrade, extension method)
+sub upgrade_spatial_extension
+{
+    print "Upgrading PostGIS in '${DB}' using 'ALTER EXTENSION'\n" ;
+
+    # ON_ERROR_STOP is used by psql to return non-0 on an error
+    my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+    my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis UPGRADE TO ${libver}next\" $DB >> $REGRESS_LOG 2>&1";
+    my $rv = system($cmd);
+    die "\nError encountered altering EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
+	    if $rv;
+
+    if ( $OPT_WITH_TOPO ) 
+    {
+      my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis_topology UPGRADE TO ${libver}next\" $DB >> $REGRESS_LOG 2>&1";
+      my $rv = system($cmd);
+      die "\nError encountered altering EXTENSION POSTGIS_TOPOLOGY, see $REGRESS_LOG for details\n\n"
+        if $rv;
+    }
+    
+    return 1;
+}
+
 sub drop_spatial
 {
 	my $ok = 1;
