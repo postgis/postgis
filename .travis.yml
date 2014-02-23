@@ -7,9 +7,11 @@ env:
     #- GEOS_VERSION=3.3.8
     #- GDAL_VERSION=1.10.0
 before_install:
-  - rm .travis.yml
-  - sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
+  #- rm .travis.yml
+  #- sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update
+  - apt-cache search libgdal
+  - apt-cache search postgresql-server
   - sudo apt-get install -qq build-essential flex autoconf libtool gfortran postgresql-server-dev-all xsltproc libjson0-dev libproj-dev dblatex xsltproc libcunit1-dev libcunit1 docbook-xsl docbook-mathml libgdal-dev libgeos-dev
   - git config --global user.name "PostGIS Travis CI"
   - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
