@@ -94,7 +94,7 @@ my $objs = {
 			"st_union(raster)" => 1,
 			"st_union(raster,text)" => 1
 		}
-	},
+	}
 };
 
 #
@@ -266,7 +266,8 @@ while(<INPUT>)
 		my $def = $_;
     if ( /^create aggregate\s+\S+\s*\(([^)]*)\)/i ) {
 	    $aggtype = $1;
-      $aggtype =~ s/\s*//g;
+      $aggtype =~ s/\s*,\s*/,/g; # drop spaces around commas
+      $aggtype =~ s/\s\s*/ /g; # collapse multiple spaces into one
     }
 		while(<INPUT>)
 		{
