@@ -200,16 +200,6 @@ else
 	}
 }
 
-if ( $OPT_UPGRADE )
-{
-	upgrade_spatial();
-}
-
-
-##################################################################
-# Report PostGIS environment
-##################################################################
-
 my $libver = sql("select postgis_lib_version()");
 
 if ( ! $libver )
@@ -219,6 +209,24 @@ if ( ! $libver )
 	print "For details, check $REGRESS_LOG\n\n";
 	exit(1);
 }
+
+
+if ( $OPT_UPGRADE )
+{
+	if ( $OPT_EXTENSIONS )
+	{	
+		upgrade_spatial_extensions();
+	}
+	else
+	{
+	  upgrade_spatial();
+  }
+}
+
+
+##################################################################
+# Report PostGIS environment
+##################################################################
 
 my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
@@ -1112,13 +1120,13 @@ sub upgrade_spatial
 }
 
 # Upgrade an existing database (soft upgrade, extension method)
-sub upgrade_spatial_extension
+sub upgrade_spatial_extensions
 {
     print "Upgrading PostGIS in '${DB}' using 'ALTER EXTENSION'\n" ;
 
     # ON_ERROR_STOP is used by psql to return non-0 on an error
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis UPGRADE TO ${libver}next\" $DB >> $REGRESS_LOG 2>&1";
+    my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis UPDATE TO '${libver}next'\" $DB >> $REGRESS_LOG 2>&1";
     my $rv = system($cmd);
     die "\nError encountered altering EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
 	    if $rv;
