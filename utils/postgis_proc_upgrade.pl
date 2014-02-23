@@ -97,10 +97,10 @@ my $objs = {
 	},
  	"202" => { 
 		"aggregates" => {
-			"st_summarystatsagg(raster,integer,boolean,doubleprecision)" => 1,
-			"st_summarystatsagg(raster,boolean,doubleprecision)" => 1,
+			"st_summarystatsagg(raster,integer,boolean,double precision)" => 1,
+			"st_summarystatsagg(raster,boolean,double precision)" => 1,
 			"st_summarystatsagg(raster,integer)" => 1,
-			"st_countagg(raster,integer,boolean,doubleprecision)" => 1,
+			"st_countagg(raster,integer,boolean,double precision)" => 1,
 			"st_countagg(raster,integer,boolean)" => 1,
 			"st_countagg(raster,boolean)" => 1
 		}
@@ -280,7 +280,8 @@ while(<INPUT>)
 		my $def = $_;
     if ( /^create aggregate\s+\S+\s*\(([^)]*)\)/i ) {
 	    $aggtype = $1;
-      $aggtype =~ s/\s*//g;
+      $aggtype =~ s/\s*,\s*/,/g; # drop spaces around commas
+      $aggtype =~ s/\s\s*/ /g; # collapse multiple spaces into one
     }
 		while(<INPUT>)
 		{
