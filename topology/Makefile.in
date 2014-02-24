@@ -23,8 +23,6 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 PGIS_MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(PGIS_MODULE_big)
 
-PGIS_MAJ_MIN=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
-
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql topology_upgrade.sql uninstall_topology.sql
 
