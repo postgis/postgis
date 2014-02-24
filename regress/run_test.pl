@@ -1162,7 +1162,7 @@ sub upgrade_spatial
 {
     print "Upgrading PostGIS in '${DB}' \n" ;
 
-    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql`;
+    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql`;
     chomp($script);
 
     if ( -e $script )
