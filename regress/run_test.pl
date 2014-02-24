@@ -1177,7 +1177,7 @@ sub upgrade_spatial
     
     if ( $OPT_WITH_TOPO ) 
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql`;
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade.sql`;
         chomp($script);
         if ( -e $script )
         {

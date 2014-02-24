@@ -26,7 +26,7 @@ MODULEDIR=contrib/$(PGIS_MODULE_big)
 PGIS_MAJ_MIN=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=topology.sql topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql uninstall_topology.sql
+DATA_built=topology.sql topology_upgrade.sql uninstall_topology.sql
 
 # SQL preprocessor
 SQLPP = @SQLPP@
@@ -79,10 +79,11 @@ endif
 
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
-topology_upgrade.sql:  topology.sql
+# TODO: use postgis_proc_upgrade.pl
+topology_upgrade.sql.in:  topology.sql
 	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
+topology_upgrade.sql: topology_drop_before.sql topology_upgrade.sql.in topology_drop_after.sql
 	cat $^ > $@
 
 topology.sql: sql/sqlmm.sql.in sql/populate.sql.in sql/polygonize.sql.in sql/export/gml.sql.in sql/export/TopoJSON.sql.in sql/query/getnodebypoint.sql.in sql/query/getedgebypoint.sql.in sql/query/getfacebypoint.sql.in sql/query/GetRingEdges.sql.in sql/query/GetNodeEdges.sql.in sql/manage/TopologySummary.sql.in sql/manage/CopyTopology.sql.in sql/manage/ManageHelper.sql.in sql/topoelement/topoelement_agg.sql.in sql/topogeometry/type.sql.in sql/topogeometry/totopogeom.sql.in sql/topogeometry/cleartopogeom.sql.in sql/topogeometry/simplify.sql.in sql/predicates.sql.in ../postgis/sqldefines.h ../postgis_svn_revision.h
