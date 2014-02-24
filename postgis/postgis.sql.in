@@ -2593,6 +2593,10 @@ BEGIN
 		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+		WHEN insufficient_privilege THEN
+			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	BEGIN
