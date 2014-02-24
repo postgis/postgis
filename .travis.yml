@@ -36,8 +36,8 @@ notifications:
     channels:
       - "irc.freenode.org#postgis"
     on_success: change
-    on_failure: always
-    use_notice: true
+    on_failure: change
+    use_notice: false
 script:
   - make
   - make check RUNTESTFLAGS=-v
