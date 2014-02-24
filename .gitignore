@@ -71,7 +71,7 @@ postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy.sql
 postgis/postgis.sql
-postgis/postgis_upgrade_*.sql*
+postgis/postgis_upgrade.sql*
 postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_postgis.sql
