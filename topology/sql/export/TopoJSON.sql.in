@@ -116,7 +116,7 @@ BEGIN
     EXECUTE 'SET search_path TO ' || quote_ident(toponame) || ',' || old_search_path;
 
     SELECT array_agg(id) as f
-    FROM ( SELECT (GetTopoGeomElements(tg))[1] as id ) as f
+    FROM ( SELECT (topology.GetTopoGeomElements(tg))[1] as id ) as f
     INTO all_faces;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG

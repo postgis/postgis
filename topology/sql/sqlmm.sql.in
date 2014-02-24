@@ -2503,7 +2503,7 @@ DECLARE
 BEGIN
   WITH edgestar AS (
     SELECT *, count(*) over () AS cnt
-    FROM GetNodeEdges(atopology, anode)
+    FROM topology.GetNodeEdges(atopology, anode)
   )
   SELECT ARRAY[ (
       SELECT p.edge AS prev FROM edgestar p
@@ -2829,7 +2829,7 @@ BEGIN
     sql := 'UPDATE ' || quote_ident(atopology)
       || '.face SET mbr = $1 WHERE face_id = $2' ;
     EXECUTE sql USING
-      ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.left_face)),
+      ST_Envelope(topology.ST_GetFaceGeometry(atopology, oldedge.left_face)),
       oldedge.left_face
       ;
   END IF;
@@ -2837,7 +2837,7 @@ BEGIN
     sql := 'UPDATE ' || quote_ident(atopology)
       || '.face SET mbr = $1 WHERE face_id = $2';
     EXECUTE sql USING
-      ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.right_face)),
+      ST_Envelope(topology.ST_GetFaceGeometry(atopology, oldedge.right_face)),
       oldedge.right_face
     ;
   END IF;

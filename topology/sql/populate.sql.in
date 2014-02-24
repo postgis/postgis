@@ -134,7 +134,7 @@ BEGIN
     USING apoint
 	LOOP
     IF allowEdgeSplitting THEN
-      RETURN ST_ModEdgeSplit(atopology, rec.edge_id, apoint);
+      RETURN topology.ST_ModEdgeSplit(atopology, rec.edge_id, apoint);
     ELSE
 		  RAISE EXCEPTION 'An edge crosses the given node.';
     END IF;
@@ -757,7 +757,7 @@ BEGIN
         RAISE WARNING 'Edge within % distance from node still does not contain the node after snapping to it with tolerance %', tol, snaptol;
       END IF;
 #endif
-      PERFORM ST_ChangeEdgeGeom(atopology, rec.edge_id, snapedge);
+      PERFORM topology.ST_ChangeEdgeGeom(atopology, rec.edge_id, snapedge);
     END IF;
     id := topology.ST_ModEdgeSplit(atopology, rec.edge_id, prj);
   ELSE
@@ -1032,7 +1032,7 @@ BEGIN
 #endif
   FOR rec IN EXECUTE sql USING apoly LOOP
     -- check for actual containment
-    fgeom := ST_PointOnSurface(ST_GetFaceGeometry(atopology, rec.face_id));
+    fgeom := ST_PointOnSurface(topology.ST_GetFaceGeometry(atopology, rec.face_id));
     IF NOT ST_Covers(apoly, fgeom) THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Face % not covered by input polygon', rec.face_id;
