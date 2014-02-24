@@ -4,6 +4,7 @@
 # PostGIS - Spatial Types for PostgreSQL
 # http://postgis.net
 #
+# Copyright (C) 2014 Sandro Santilli <strk@keybit.net>
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
 # Copyright (C) 2005 Refractions Research Inc.
 #
@@ -107,6 +108,28 @@ my $objs = {
 	}
 };
 
+sub find_last_updated
+{
+  my $type = shift;
+  my $sig = shift;
+  for my $ver ( sort { $b cmp $a } keys $objs ) {
+    if ( $objs->{$ver}->{$type}->{$sig} ) {
+      return $ver;
+    }
+  }
+  return 0;
+}
+
+sub parse_last_updated
+{
+  my $comment = shift;
+  if ( $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s ) {
+    return $1*100 + $2;
+  }
+  return 0;
+}
+
+
 #
 # Commandline argument handling
 #
@@ -122,15 +145,6 @@ my $version_from = $ARGV[1];
 my $version_from_num = 0;
 my $schema = "";
 $schema = $ARGV[2] if @ARGV > 2;
-
-if ( $version_from =~ /^(\d+)\.(\d+)/ )
-{
-	$version_from_num = 100 * $1 + $2; 
-}
-else
-{
-	die "Version from number invalid, must be of form X.X\n";
-}
 
 die "Unable to open input SQL file $sql_file\n"
 	if ( ! -f $sql_file );
@@ -172,7 +186,7 @@ else
 
 print qq{
 --
--- UPGRADE SCRIPT FROM PostGIS $version_from TO PostGIS $version_to
+-- UPGRADE SCRIPT TO PostGIS $version_to
 --
 
 };
@@ -233,16 +247,23 @@ while(<INPUT>)
 			$def .= $_;
 			last if /\)/;
 		}
-		my $ver = $version_from_num + 1;
-		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-		{
-			if( $objs->{$ver}->{"types"}->{$newtype} )
-			{
-				print $def;
-				last;
-			}
-			$ver++;
-		}
+
+    my $last_updated = parse_last_updated($comment);
+    if ( ! $last_updated ) {
+      print STDERR "WARNING: no last updated info for type '${newtype}'\n";
+      $last_updated = find_last_updated("types", $newtype);
+    }
+    print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
+      print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
 	}
 
 	if ( /^do *language .*\$\$/i )
@@ -292,29 +313,23 @@ while(<INPUT>)
 		my $aggsig = "$aggname($aggtype)";
 
     #print "-- Checking comment $comment\n";
-    my $last_updated = 0;
-    if ( $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s ) {
-      $last_updated = $1*100 + $2;
-    }
-
+    my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
       print STDERR "WARNING: no last updated info for aggregate '${aggsig}'\n";
-      my $ver = $version_from_num + 1;
-      while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-      {
-        if( $objs->{$ver}->{"aggregates"}->{$aggsig} )
-        {
-          $last_updated = ${ver};
-          last;
-        }
-        $ver++;
-      }
+      $last_updated = find_last_updated("aggregates", $aggsig);
     }
-    #print "-- Checking ${aggsig} -- LastUpdated: ${last_updated} -- From: ${version_from_num} -- To: ${version_to_num}\n";
-    if ( $last_updated > $version_from_num ) {
-      print "DROP AGGREGATE IF EXISTS $aggsig;\n";
-      print $def;
-    }
+    print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
+      print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE 'DROP AGGREGATE IF EXISTS $aggsig';
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
 	}
 	
 	# This code handles operators by creating them if we are doing a major upgrade
@@ -330,16 +345,23 @@ while(<INPUT>)
 			last if /\);/;
 		}
 		my $opsig = $optype . " " . $opname;
-		my $ver = $version_from_num + 1;
-		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-		{
-			if( $objs->{$ver}->{"operators"}->{$opsig} )
-			{
-				print $def;
-				last;
-			}
-			$ver++;
-		}
+
+    my $last_updated = parse_last_updated($comment);
+    if ( ! $last_updated ) {
+      print STDERR "WARNING: no last updated info for operator '${opsig}'\n";
+      $last_updated = find_last_updated("operators", $opsig);
+    }
+    print "-- Operator ${opsig} -- LastUpdated: ${last_updated}\n";
+      print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
 	}
 
 	# Always output create ore replace view (see ticket #1097)
@@ -380,22 +402,31 @@ while(<INPUT>)
 		}
 		$opctype =~ tr/A-Z/a-z/;
 		$opcidx =~ tr/A-Z/a-z/;
-		my $ver = $version_from_num + 1;
-		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-		{
-			if( $objs->{$ver}->{"opclasses"}->{$opclassname} )
-			{
-				print $def;
-				last;
-			}
-			$ver++;
-		}
+
+    my $last_updated = parse_last_updated($comment);
+    if ( ! $last_updated ) {
+      print STDERR "WARNING: no last updated info for operator class '${opclassname}'\n";
+      $last_updated = find_last_updated("opclasses", $opclassname);
+    }
+    print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
+      print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
 	}
 
 	$comment = '';
 }
 
 close( INPUT );
+
+print "DROP TABLE _postgis_upgrade_info;\n";
 
 print "COMMIT;\n";
 
@@ -446,3 +477,19 @@ LANGUAGE 'plpgsql';
 SELECT postgis_major_version_check();
 
 DROP FUNCTION postgis_major_version_check();
+
+CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
+  SELECT 'NEWVERSION'::text as upgraded,
+  MODULE_scripts_installed() as installed
+) SELECT
+  upgraded as scripts_upgraded,
+  installed as scripts_installed,
+  substring(upgraded from '([0-9]*)\.')::int * 100 +
+  substring(upgraded from '[0-9]*\.([0-9]*)\.')::int
+    as version_to_num,
+  substring(installed from '([0-9]*)\.')::int * 100 +
+  substring(installed from '[0-9]*\.([0-9]*)\.')::int
+    as version_from_num
+  FROM versions
+;
+ 
