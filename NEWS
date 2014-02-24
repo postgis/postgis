@@ -18,6 +18,7 @@ PostGIS 2.1.2
   - #2610, Ensure face splitting algorithm uses the edge index
   - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
   - #2648, #2653, Fix topology functions when "topology" is not in search_path
+  - #2654, Drop deprecated calls from topology
 
  * Enhancements *
 
