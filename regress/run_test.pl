@@ -1192,7 +1192,7 @@ sub upgrade_spatial
     
     if ( $OPT_WITH_RASTER ) 
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql`;
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql`;
         chomp($script);
         if ( -e $script )
         {
