@@ -17,8 +17,8 @@
 
 #ifdef HAVE_LIBJSON
 
-#include <json/json.h>
-#include <json/json_object_private.h>
+#include <json-c/json.h>
+#include <json-c/json_object_private.h>
 #include <string.h>
 
 static void geojson_lwerror(char *msg, int error_code)
