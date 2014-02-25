@@ -753,16 +753,18 @@ nd_box_array_distribution(const ND_BOX **nd_boxes, int num_boxes, const ND_BOX *
 
 		/* How dispersed is the distribution of features across bins? */
 		range = range_quintile(counts, num_bins);
+
 #if POSTGIS_DEBUG_LEVEL >= 3
 		average = avg(counts, num_bins);
 		sdev = stddev(counts, num_bins);
 		sdev_ratio = sdev/average;
-#endif
-		
+
 		POSTGIS_DEBUGF(3, " dimension %d: range = %d", d, range);
 		POSTGIS_DEBUGF(3, " dimension %d: average = %.6g", d, average);
 		POSTGIS_DEBUGF(3, " dimension %d: stddev = %.6g", d, sdev);
 		POSTGIS_DEBUGF(3, " dimension %d: stddev_ratio = %.6g", d, sdev_ratio);
+#endif
+		
 		distribution[d] = range;
 	}
 	
