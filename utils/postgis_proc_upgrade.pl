@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 #
 # PostGIS - Spatial Types for PostgreSQL
@@ -112,7 +112,7 @@ sub find_last_updated
 {
   my $type = shift;
   my $sig = shift;
-  for my $ver ( sort { $b cmp $a } keys $objs ) {
+  for my $ver ( sort { $b cmp $a } keys %$objs ) {
     if ( $objs->{$ver}->{$type}->{$sig} ) {
       return $ver;
     }
