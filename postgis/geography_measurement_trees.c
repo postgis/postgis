@@ -85,7 +85,7 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 	GEOGRAPHIC_POINT in_gpoint;
 	POINT3D in_point3d;
 
-	POSTGIS_DEBUGF(3, "tree1_type=%d, lwgeom2->type=%d", tree1_type, lwgeom2->type);
+	POSTGIS_DEBUGF(3, "tree1_type=%d", tree1_type);
 
 	/* If the tree'ed argument is a polygon, do the P-i-P using the tree-based P-i-P */
 	if ( tree1_type == POLYGONTYPE || tree1_type == MULTIPOLYGONTYPE )
@@ -235,7 +235,7 @@ geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, con
 /*	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) ) */
 	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, FP_TOLERANCE, &distance) ) 
 	{
-		*dwithin = (distance <= tolerance ? LW_TRUE : LW_FALSE);
+		*dwithin = (distance <= (tolerance + FP_TOLERANCE) ? LW_TRUE : LW_FALSE);
 		return LW_SUCCESS;
 	}
 	return LW_FAILURE;
