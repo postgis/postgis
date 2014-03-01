@@ -23,6 +23,7 @@ PostGIS 2.2.0
   - #2565, ST_SummaryStatsAgg()
   - #2567, ST_CountAgg()
   - #2632, ST_AsGML() support for curved features
+  - #2652, Add --upgrade-path switch to run_test.pl
 
  * Enhancements *
 

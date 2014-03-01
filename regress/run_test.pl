@@ -44,6 +44,10 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my $OPT_EXTVERSION = '';
+my $OPT_UPGRADE_PATH = '';
+my $OPT_UPGRADE_FROM = '';
+my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
 
 GetOptions (
@@ -51,6 +55,7 @@ GetOptions (
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP, 
 	'upgrade' => \$OPT_UPGRADE,
+	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'nocreate' => \$OPT_NOCREATE,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
@@ -62,6 +67,21 @@ GetOptions (
 if ( @ARGV < 1 )
 {
 	usage();
+}
+
+if ( $OPT_UPGRADE_PATH )
+{
+  if ( ! $OPT_EXTENSIONS )
+  {
+    die "--upgrade-path is only supported with --extensions"
+  }
+  $OPT_UPGRADE = 1; # implied 
+  my @path = split ('--', $OPT_UPGRADE_PATH);
+  $OPT_UPGRADE_FROM = $path[0]
+    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+  $OPT_UPGRADE_TO = $path[1]
+    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+  print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
 
@@ -236,9 +256,14 @@ my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
+my $scriptver = sql("select postgis_scripts_installed()");
+my $raster_scriptver = sql("select postgis_raster_scripts_installed()")
+  if ( $OPT_WITH_RASTER );
 
 print "$pgsqlver\n";
 print "  Postgis $libver - r${svnrev} - $libbuilddate\n";
+print "  scripts ${scriptver}\n";
+print "  raster scripts ${raster_scriptver}\n" if ( $OPT_WITH_RASTER );
 print "  GEOS: $geosver\n" if $geosver;
 print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
@@ -383,6 +408,8 @@ Options:
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
+  --extension     load using extensions
+  --upgrade-path  upgrade path, format <from>--<to>
 };
 
 }
@@ -1104,24 +1131,37 @@ sub load_sql_file
 # Prepare the database for spatial operations (extension method)
 sub prepare_spatial_extensions
 {
-	print "Preparing db '${DB}' using 'CREATE EXTENSION'\n"; 
-
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $cmd = "psql $psql_opts -c \"CREATE EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
-    my $rv = system($cmd);
+	my $sql = "CREATE EXTENSION postgis";
+	if ( $OPT_UPGRADE_FROM ) {
+		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+	}
 
-	die "\nError encountered creating EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-	    if $rv;
+	print "Preparing db '${DB}' using: ${sql}\n"; 
 
-    if ( $OPT_WITH_TOPO )
-    {
-        $cmd = "psql $psql_opts -c \"CREATE EXTENSION postgis_topology\" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-    	die "\nError encountered creating EXTENSION POSTGIS_TOPOLOGY, see $REGRESS_LOG for details\n\n"
-    	    if $rv;
-    }
-    return 1;
+	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+	my $rv = system($cmd);
+
+  if ( $rv ) {
+  	fail "Error encountered creating EXTENSION POSTGIS", $REGRESS_LOG;
+  	die;
+	}
+
+	if ( $OPT_WITH_TOPO )
+	{
+		my $sql = "CREATE EXTENSION postgis_topology";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+ 	return 1;
 }
 
 # Prepare the database for spatial operations (old method)
@@ -1210,21 +1250,30 @@ sub upgrade_spatial
 # Upgrade an existing database (soft upgrade, extension method)
 sub upgrade_spatial_extensions
 {
-    print "Upgrading PostGIS in '${DB}' using 'ALTER EXTENSION'\n" ;
-
     # ON_ERROR_STOP is used by psql to return non-0 on an error
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis UPDATE TO '${libver}next'\" $DB >> $REGRESS_LOG 2>&1";
+    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
+    my $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
+
+    print "Upgrading PostGIS in '${DB}' using: ${sql}\n" ;
+
+    my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+    #print "CMD: " . $cmd . "\n";
     my $rv = system($cmd);
-    die "\nError encountered altering EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-	    if $rv;
+    if ( $rv ) {
+      fail "Error encountered altering EXTENSION POSTGIS", $REGRESS_LOG;
+      die;
+    }
 
     if ( $OPT_WITH_TOPO ) 
     {
-      my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis_topology UPGRADE TO ${libver}next\" $DB >> $REGRESS_LOG 2>&1";
+      my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
+      my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
-      die "\nError encountered altering EXTENSION POSTGIS_TOPOLOGY, see $REGRESS_LOG for details\n\n"
-        if $rv;
+      if ( $rv ) {
+        fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        die;
+      }
     }
     
     return 1;
