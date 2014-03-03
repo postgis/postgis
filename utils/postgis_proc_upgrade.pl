@@ -162,7 +162,7 @@ while(<INPUT>)
 	if (/INSTALL VERSION: (.*)/)
 	{
 				$version_to = $1;
-				last;
+				#last;
 	}
 	elsif (/TYPE raster/)
 	{
@@ -445,14 +445,14 @@ DECLARE
 BEGIN
 	--
 	-- This uses postgis_lib_version() rather then
-	-- postgis_scripts_installed() as in 1.0 because
+	-- MODULE_scripts_installed() as in 1.0 because
 	-- in the 1.0 => 1.1 transition that would result
 	-- in an impossible upgrade:
 	--
 	--   from 0.3.0 to 1.1.0
 	--
 	-- Next releases will still be ok as
-	-- postgis_lib_version() and postgis_scripts_installed()
+	-- postgis_lib_version() and MODULE_scripts_installed()
 	-- would both return actual PostGIS release number.
 	-- 
 	BEGIN
