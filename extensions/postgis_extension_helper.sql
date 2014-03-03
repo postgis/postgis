@@ -3,10 +3,9 @@
 -- $Id$
 ----
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
--- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
