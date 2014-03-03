@@ -3,7 +3,7 @@
 -- $Id: remove_from_extension.sql.in 9324 2012-02-27 22:08:12Z pramsey $
 ----
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
 --

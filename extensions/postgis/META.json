@@ -39,7 +39,7 @@
 		},
 		"repository": {
 			"url": "svn://svn.osgeo.org/postgis/",
-			"web": "http://www.postgis.org",
+			"web": "http://postgis.net",
 			"type": "svn"
 		}
 	},

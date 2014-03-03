@@ -1,6 +1,5 @@
-PostGIS 2.0.0
+PostGIS 
 ============
 
 Extensive documentation can be found at.
-HTML: http://www.postgis.org/documentation/manual-svn/
-PDF: http://www.postgis.org/download/postgis-2.0.0SVN.pdf
+HTML: http://postgis.net/documentation
