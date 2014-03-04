@@ -3,11 +3,17 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+
 	<groupId>org.postgis</groupId>
 	<artifactId>postgis-jdbc-jtsparser</artifactId>
-	<version>2.0.0</version>
+	<version>2.1.0SVN</version>
 	<packaging>jar</packaging>
-
 	<name>Postgis JDBC Driver JTS Parser</name>
 	<url>http://www.postgis.org</url>
 	<description>Parser between JTS and PostGIS geometry formats.</description>
@@ -28,12 +34,24 @@
 			<name>María Arias de Reyna</name>
 			<email>delawen en gmail.com</email>
 		</developer>
+		<developer>
+			<name>Baris ERGUN</name>
+			<email>barisergun75@gmail.com</email>
+		</developer>
 	</developers>
 	<contributors>
 		<contributor>
 			<name>Hakan Tandogan</name>
 			<email>hakan@gurkensalat.com</email>
 			<url>http://www.gurkensalat.com/</url>
+			<roles>
+				<role>Maven Packager</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Baris Ergun</name>
+			<email>barisergun75@gmail.com</email>
+			<url>http://www.barisergun.com/</url>
 			<roles>
 				<role>Maven Packager</role>
 			</roles>
@@ -55,46 +73,26 @@
 			<archive>http://lists.osgeo.org/pipermail/postgis-devel/</archive>
 		</mailingList>
 	</mailingLists>
+
 	<issueManagement>
 		<system>Trac</system>
 		<url>http://trac.osgeo.org/postgis/</url>
 	</issueManagement>
+
 	<scm>
-		<url>http://trac.osgeo.org/postgis/browser/tags/2.0.0</url>
-		<connection>scm:svn:http://svn.osgeo.org/postgis/tags/2.0.0/</connection>
-		<developerConnection>scm:svn:http://svn.osgeo.org/postgis/tags/2.0.0/</developerConnection>
+		<url>http://trac.osgeo.org/postgis/browser/trunk</url>
+		<connection>scm:svn:http://svn.osgeo.org/postgis/trunk</connection>
+		<developerConnection>scm:svn:http://svn.osgeo.org/postgis/trunk</developerConnection>
 	</scm>
 
 	<build>
-		<sourceDirectory>${basedir}/org</sourceDirectory>
 		<plugins>
-
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>2.9.1</version>
+				<configuration>
+					<overview>${basedir}/src/java/org/postgis/jts/overview.html</overview>
+				</configuration>
 			</plugin>
 		</plugins>
 
@@ -104,7 +102,7 @@
 		<dependency>
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
-			<version>2.0.0</version>
+			<version>[2.1.0, )</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
@@ -113,47 +111,6 @@
 		</dependency>
 
 	</dependencies>
-	<reporting>
-		<plugins>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>javancss-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdepend-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</reporting>
-
 
 	<distributionManagement>
 		<repository>
