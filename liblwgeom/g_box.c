@@ -246,10 +246,19 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
 	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
+
+	/* Deal with the geodetic case special: we only compare the geodetic boxes (x/y/z) */
+	/* Never the M dimension */
+	if ( FLAGS_GET_GEODETIC(g1->flags) && FLAGS_GET_GEODETIC(g2->flags) )
+	{
+		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
+			return LW_FALSE;
+		else
+			return LW_TRUE;		
+	}
 		
 	/* If both geodetic or both have Z, check Z */
-	if ( (FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags)) || 
-	     (FLAGS_GET_GEODETIC(g1->flags) && FLAGS_GET_GEODETIC(g2->flags)) )
+	if ( FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags) )
 	{
 		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;
