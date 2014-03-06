@@ -1226,7 +1226,7 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 			<title>Description</title>
 
 			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
-			<para>This is the aggregate version of ST_AsTWKB. It aggregates and returns the geoemtry in TWKB-format. In the resulting TWKB-geometry each individual ID of the input geometries is stored. </para>
+			<para>This is the aggregate version of ST_AsTWKB. It aggregates and returns the geometry in TWKB-format. In the resulting TWKB-geometry each individual ID of the input geometries is stored. </para>
 			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
 			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
 			<note>
