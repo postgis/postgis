@@ -1195,6 +1195,21 @@ static void test_lwgeom_distance_sphere(void)
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
+	/* Ticket #2638, no "M" */
+	lwg1 = lwgeom_from_wkt("LINESTRING (-41.0821 50.3036,50 -41)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7,5 5))", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Ticket #2638, with "M" */
+	lwg1 = lwgeom_from_wkt("LINESTRING M (-41.0821 50.3036 1,50 -41 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POLYGON M ((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2))", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 }
 
 static void test_spheroid_distance(void)
