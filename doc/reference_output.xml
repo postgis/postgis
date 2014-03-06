@@ -1180,7 +1180,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			</note>
 				
 
-			<para>Availability: 2.2</para>
+			<para>Availability: 2.2.0</para>
 		  </refsection>
 
 
@@ -1196,7 +1196,7 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsTWKBAgg" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_AsTWKBAgg" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
 
