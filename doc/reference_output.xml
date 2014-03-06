@@ -1210,12 +1210,12 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
 			  </funcprototype>
