@@ -1196,25 +1196,25 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsTWKB_agg" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_AsTWKBAgg" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_AsTWKB_agg">
+	<refentry id="ST_AsTWKBAgg">
 		  <refnamediv>
-			<refname>ST_AsTWKB_agg</refname>
+			<refname>ST_AsTWKBAgg</refname>
 			<refpurpose>Aggregates the geometries and returns as TWKB</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
+				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB_agg</function></funcdef>
+				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
@@ -1234,18 +1234,18 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 			</note>
 				
 
-			<para>Availability: 2.2</para>
+			<para>Availability: 2.2.0</para>
 		  </refsection>
 
 
 		  <refsection>
 			<title>Examples</title>
 <programlisting>
-SELECT ST_AsTWKB_agg(geom,0,id) FROM
+SELECT ST_AsTWKBAgg(geom,0,id) FROM
 (SELECT 'LINESTRING(1 1,5 5)'::geometry geom, 1 AS id
 UNION ALL
 SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
-                               st_astwkb_agg                                
+                               st_astwkbagg                                
 ----------------------------------------------------------------------------
 \x035602010202020808020202000904
 </programlisting>
@@ -1253,7 +1253,7 @@ SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsTWKB" /><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_AsTWKB" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 </refentry>
   </sect1>
