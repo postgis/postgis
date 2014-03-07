@@ -7,6 +7,7 @@ PostGIS 2.1.2
  * Bug Fixes *
 
   - #2543, invalid join selectivity error from simple query
+  - #2546, GeoJSON with string coordinates parses incorrectly 
   - #2547, Fix ST_Simplify(TopoGeometry) for hierarchical topogeoms
   - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and
            ST_AsJPEG
