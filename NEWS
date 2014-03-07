@@ -18,6 +18,8 @@ YYYY/MM/DD
   - #2589, Remove use of unnecessary void pointers
   - #2607, Cannot open more than 1024 out-db files in process
   - #2610, Ensure face splitting algorithm uses the edge index 
+  - #2638, Geography distance on M geometries sometimes wrong
+
 
 PostGIS 2.0.4
 2013/09/06
