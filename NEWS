@@ -17,6 +17,7 @@ PostGIS 2.1.2
   - #2607, Cannot open more than 1024 out-db files in one process
   - #2610, Ensure face splitting algorithm uses the edge index
   - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
+  - #2638, Geography distance on M geometries sometimes wrong
   - #2648, #2653, Fix topology functions when "topology" is not in search_path
   - #2654, Drop deprecated calls from topology
   - #2655, Let users without topology privileges call postgis_full_version()
