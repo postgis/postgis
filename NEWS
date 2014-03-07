@@ -55,6 +55,7 @@ PostGIS 2.2.0
   - #2607, Cannot open more than 1024 out-db files in one process
   - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
   - #2556, geography ST_Intersects results depending on insert order
+  - #2634, regression in sphere distance code
 
  * Code refactoring *
 
