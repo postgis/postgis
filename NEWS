@@ -47,6 +47,7 @@ PostGIS 2.2.0
   - #2534, st_distance is returning incorrect results for large geographies
   - #2540, Change GUC name for GDAL_DATA to postgis.gdal_datapath
   - #2543, invalid join selectivity error from simple query
+  - #2546, GeoJSON with string coordinates parses incorrectly 
   - #2552, Fix handling of NULL raster in ST_AsTIFF, ST_AsPNG
            and ST_AsJPEG
   - #2555, Fix parsing issue of range arguments of ST_Reclass
