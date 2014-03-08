@@ -3079,7 +3079,7 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 int 
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
-	POINT3D AN, BN;  /* Normals to plane A and plane B */
+	POINT3D AN, BN, VN;  /* Normals to plane A and plane B */
 	double ab_dot;
 	int a1_side, a2_side, b1_side, b2_side;
 	int rv = PIR_NO_INTERACT;
@@ -3127,8 +3127,21 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	if ( a1_side != a2_side && (a1_side + a2_side) == 0 &&
 	     b1_side != b2_side && (b1_side + b2_side) == 0 )
 	{
-		/* Mid-point intersection! */
-		return PIR_INTERSECTS;
+		/* Have to check if intersection point is inside both arcs */
+		unit_normal(&AN, &BN, &VN);
+		if ( point_in_cone(A1, A2, &VN) && point_in_cone(B1, B2, &VN) )
+		{
+			return PIR_INTERSECTS;
+		}
+
+		/* Have to check if intersection point is inside both arcs */
+		vector_scale(&VN, -1);
+		if ( point_in_cone(A1, A2, &VN) && point_in_cone(B1, B2, &VN) )
+		{
+			return PIR_INTERSECTS;
+		}
+		
+		return PIR_NO_INTERACT;
 	}
 
 	/* The rest are all intersects variants... */
