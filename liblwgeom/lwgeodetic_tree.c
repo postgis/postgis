@@ -522,13 +522,19 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	double min_dist = MAXFLOAT;
 	double max_dist = MAXFLOAT;
 	GEOGRAPHIC_POINT closest1, closest2;
-	double distance2;
 	double threshold_radians = threshold / spheroid->radius;
 	
 	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
-	distance2 = spheroid_distance(&closest1, &closest2, spheroid);
 
-	return distance2;
+	/* Spherical case */
+	if ( spheroid->a == spheroid->b )
+	{
+		return spheroid->radius * sphere_distance(&closest1, &closest2);
+	}
+	else
+	{
+		return spheroid_distance(&closest1, &closest2, spheroid);		
+	}
 }
 
 static double 

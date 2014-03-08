@@ -1815,7 +1815,12 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 			e1.start = e1.end;
 		}
 
-		return spheroid_distance(&g1, &nearest2, s);
+		/* On sphere, return answer */
+		if ( use_sphere )
+			return distance;
+		/* On spheroid, calculate final answer based on closest approach */
+		else
+			return spheroid_distance(&g1, &nearest2, s);
 	}
 
 	/* Initialize start of line 1 */
