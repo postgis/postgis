@@ -35,6 +35,7 @@ PostGIS 2.2.0
 
  * Bug Fixes *
 
+  - #2666, Error out at configure time if no SQL preprocessor can be found
   - #2371, Support GEOS versions with more than 1 digit in micro
   - #2383, Removed unsafe use of \' from raster warning message
   - #2384, Fixed variable datatype in ST_Neighborhood
