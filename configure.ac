@@ -40,7 +40,11 @@ else
   if test "x$GPP" != "x"; then
     SQLPP="${GPP} -C -s \'" dnl Use better string support
   else
-    SQLPP="${CPP} -w -traditional-cpp"
+    if test "x${CPP}" != "x"; then
+      SQLPP="${CPP} -w -traditional-cpp"
+    else
+      AC_MSG_ERROR([Required "cpp" command not found])
+    fi
   fi
 fi
 AC_SUBST([SQLPP])
