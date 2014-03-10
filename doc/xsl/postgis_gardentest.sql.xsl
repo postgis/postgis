@@ -9,7 +9,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.1.0</xsl:variable>
+	<xsl:variable name='testversion'>2.2.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -18,7 +18,7 @@
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
 	<xsl:variable name='var_integer2'>5</xsl:variable>
-	<xsl:variable name='var_float1'>0.5</xsl:variable>
+	<xsl:variable name='var_float1'>20.1</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
 	<xsl:variable name='var_distance'>100</xsl:variable>
 	<xsl:variable name='var_version1'>1</xsl:variable>
@@ -31,7 +31,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log21</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log22</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
