@@ -46,6 +46,14 @@ select g,encode(ST_AsTWKB(g::geometry,precission,id),'hex') from
 --GEOMETRYCOLLECTION
 select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geometry),0),'hex') from
 (
+select 'POINT(1 1)'::text g
+union all
+select 'LINESTRING(2 2, 3 3)'::text g
+) foo;
+
+
+select st_astext(st_collect(g::geometry)), encode(ST_AsTWKB(ST_Collect(g::geometry),0),'hex') from
+(
 select 'MULTIPOINT((1 1),(2 2))'::text g
 union all
 select 'POINT(78 -78)'::text g
