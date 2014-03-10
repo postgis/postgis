@@ -174,6 +174,7 @@ pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	uint8_t variant = 0;
 
+
 if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
 		/* cannot be called directly because of dummy-type argument */
@@ -194,18 +195,8 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		/* If user specified precision, respect it */
 		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2); 
 				
-		/* If user specified method, respect it
-		This will probably be taken away when we can decide which compression method that is best	*/
-		if ((PG_NARGS()>5) && (!PG_ARGISNULL(5)))
-		{
-			state->method = PG_GETARG_INT32(5); 
-		}
-		else
-		{
-			state->method = 1;
-		}
-	
-		//state->method = ((PG_NARGS()>5) && PG_ARGISNULL(5)) ? (int) 1 : PG_GETARG_INT32(5); 
+		/* There is no input for user to choose encoding method, but it is still defined here if we need it again	*/
+		state->method = 1;
 
 	}
 	else
@@ -214,8 +205,7 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		
 		if(!((state->n_rows)<(state->max_rows)))
 		{
-			    newlen = (state->max_rows)*2; 			
-			    /* switch to aggregate memory context */
+			    newlen = (state->max_rows)*2; 	
 			    
 			    state->geoms = (geom_id*)repalloc((void*)(state->geoms),newlen*sizeof(geom_id));
 				
@@ -224,23 +214,27 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 	
 	}	
 
-	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	if (!PG_ARGISNULL(1))
+	{
 
-	((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
-	
-	
-	if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
-	{
-		variant = variant | (TWKB_ID);
-		((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
-	}
-	else
-	{
-		variant = variant & ~TWKB_ID;
-		((state->geoms)+state->n_rows)->id = 0;
-	}
-	state->variant=variant;
-	(state->n_rows)++;	
+		geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+		((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
+		
+		
+		if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
+		{
+			variant = variant | (TWKB_ID);
+			((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
+		}
+		else
+		{
+			variant = variant & ~TWKB_ID;
+			((state->geoms)+state->n_rows)->id = 0;
+		}
+		state->variant=variant;
+		(state->n_rows)++;	
+	}	
 	MemoryContextSwitchTo(oldcontext); 
 	
 	PG_RETURN_POINTER(state);
@@ -365,7 +359,8 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 	lwgeom_arrays.n_points=lwgeom_arrays.n_linestrings=lwgeom_arrays.n_polygons=lwgeom_arrays.n_collections=0;
 	geom_array=state->geoms;
 
-
+	if (state->n_rows<1)
+		PG_RETURN_NULL();
 	
 	
 	for (i=0;i<state->n_rows;i++)
