@@ -1056,7 +1056,7 @@ BEGIN
 
   -- 3. Find faces covered by input polygon
   --    NOTE: potential snapping changed polygon edges
-  sql := 'SELECT DISTINCT f.face_id FROM ' || quote_ident(atopology)
+  sql := 'SELECT f.face_id FROM ' || quote_ident(atopology)
     || '.face f WHERE f.mbr && '
     || quote_literal(apoly::text)
     || '::geometry';
