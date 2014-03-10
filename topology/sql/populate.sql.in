@@ -1025,7 +1025,7 @@ BEGIN
 
   -- 3. Find faces covered by input polygon
   --    NOTE: potential snapping changed polygon edges
-  sql := 'SELECT DISTINCT f.face_id FROM ' || quote_ident(atopology)
+  sql := 'SELECT f.face_id FROM ' || quote_ident(atopology)
     || '.face f WHERE f.mbr && $1';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
