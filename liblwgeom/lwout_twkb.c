@@ -885,8 +885,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 
 	if ( buf_size == 0 )
 	{
-		LWDEBUG(4,"Error calculating output WKB buffer size.");
-		lwerror("Error calculating output WKB buffer size.");
+		LWDEBUG(4,"Error calculating output TWKB buffer size.");
+		lwerror("Error calculating output TWKB buffer size.");
 		return NULL;
 	}
 
@@ -894,8 +894,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	buf = lwalloc(buf_size);
 	if ( buf == NULL )
 	{
-		LWDEBUGF(4,"Unable to allocate %d bytes for WKB output buffer.", buf_size);
-		lwerror("Unable to allocate %d bytes for WKB output buffer.", buf_size);
+		LWDEBUGF(4,"Unable to allocate %d bytes for TWKB output buffer.", buf_size);
+		lwerror("Unable to allocate %d bytes for TWKB output buffer.", buf_size);
 		return NULL;
 	}
 
@@ -924,8 +924,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	/* The buffer pointer should now land at the end of the allocated buffer space. Let's check. */
 	if ( buf_size != (buf - wkb_out) )
 	{
-		LWDEBUG(4,"Output WKB is not the same size as the allocated buffer.");
-		lwerror("Output WKB is not the same size as the allocated buffer.");
+		LWDEBUG(4,"Output TWKB is not the same size as the allocated buffer.");
+		lwerror("Output TWKB is not the same size as the allocated buffer (precalculated size:%d, allocated size:%d)", buf_size, (buf - wkb_out));
 		lwfree(wkb_out);
 		return NULL;
 	}
@@ -993,8 +993,8 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 
 	if ( buf_size == 0 )
 	{
-		LWDEBUG(4,"Error calculating output WKB buffer size.");
-		lwerror("Error calculating output WKB buffer size.");
+		LWDEBUG(4,"Error calculating output TWKB buffer size.");
+		lwerror("Error calculating output TWKB buffer size.");
 		return NULL;
 	}
 
@@ -1060,8 +1060,8 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	/* The buffer pointer should now land at the end of the allocated buffer space. Let's check. */
 	if ( buf_size != (buf - wkb_out) )
 	{
-		LWDEBUG(4,"Output WKB is not the same size as the allocated buffer.");
-		lwerror("Output WKB is not the same size as the allocated buffer.");
+		LWDEBUG(4,"Output TWKB is not the same size as the allocated buffer.");
+		lwerror("Output TWKB is not the same size as the allocated buffer (precalculated size:%d, allocated size:%d)", buf_size, (buf - wkb_out));
 		lwfree(wkb_out);
 		return NULL;
 	}
