@@ -171,7 +171,6 @@ pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 	MemoryContext oldcontext;	
 	twkb_state* state;
 	int32 newlen;
-	GSERIALIZED *geom;
 	uint8_t variant = 0;
 
 
@@ -216,9 +215,6 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 
 	if (!PG_ARGISNULL(1))
 	{
-
-		geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
 		((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
 		
 		
