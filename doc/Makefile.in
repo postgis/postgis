@@ -318,13 +318,17 @@ man-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
 
-docs-install: html/postgis.html
-	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
-	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+docs-install: html/postgis.html html/style.css
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
+	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
+	$(INSTALL_DATA) html/style.css $(DESTDIR)$(PGSQL_DOCDIR)/postgis/
+	$(INSTALL_DATA) html/images/* $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images/
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 docs-uninstall: 
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/style.css
+	rm -rf $(DESTDIR)$(PGSQL_DOCDIR)/postgis/images
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
 install: comments-install
