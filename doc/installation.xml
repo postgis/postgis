@@ -1418,12 +1418,10 @@ pretty_address
 	  <para>This section applies only to those who installed PostGIS not using extensions.  If you have extensions and try to upgrade with this approach you'll get messages like:</para>
 	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
 	  <para>
-		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
-		for your version of PostGIS.  For example <filename>postgis_upgrade_21_to_22.sql</filename> should be used if you are upgrading 
-		from PostGIS 2.1 to 2.2.  If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
+		After compiling and installing (make install) you should find a  <filename>postgis_upgrade.sql</filename> and <filename>rtpostgis_upgrade.sql</filename> in the installation folders. For example <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>.  Install the <filename>postgis_upgrade.sql</filename>. If you have raster functionality installed, you will also need to install the <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>. If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
 	  </para>
 
-	  <programlisting>psql -f postgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <para>
 		The same procedure applies to raster and
@@ -1433,8 +1431,8 @@ pretty_address
 		If you need them:
 	  </para>
 
-	  <programlisting>psql -f rtpostgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
-	  <programlisting>psql -f topology_upgrade_22_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <note>
 		<para>
