@@ -69,7 +69,7 @@ pgis_abs;
 
 typedef struct
 {
-	Datum id;	//Id, from function parameter
+	int64_t id;	//Id, from function parameter
 	Datum geom;	//the geometry from function parameter
 }
 geom_id;
@@ -187,7 +187,7 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		don't forget to free*/
 	 
 		state=palloc(sizeof(twkb_state));
-		state->geoms = palloc(10*sizeof(geom_id));
+		state->geoms = (geom_id*) palloc(10*sizeof(geom_id));
 		state->max_rows = 10;
 		state->n_rows = 0;	
 	
@@ -367,7 +367,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 		{
 			case POINTTYPE:
 				if (lwgeom_arrays.n_points==0)
-					lwgeom_arrays.points = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.points = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.points+lwgeom_arrays.n_points)->geom=lwgeom;
 				(lwgeom_arrays.points+lwgeom_arrays.n_points)->id=(geom_array+i)->id;
@@ -376,7 +376,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			/* LineString and CircularString both have 'points' elements */
 			case LINETYPE:
 				if (lwgeom_arrays.n_linestrings==0)
-					lwgeom_arrays.linestrings = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.linestrings = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->geom=lwgeom;
 				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->id=(geom_array+i)->id;
@@ -386,7 +386,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			/* Polygon has 'nrings' and 'rings' elements */
 			case POLYGONTYPE:
 				if (lwgeom_arrays.n_polygons==0)
-					lwgeom_arrays.polygons = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.polygons = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->geom=lwgeom;
 				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->id=(geom_array+i)->id;
@@ -403,7 +403,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			case MULTIPOLYGONTYPE:
 			case COLLECTIONTYPE:
 				if (lwgeom_arrays.n_collections==0)
-					lwgeom_arrays.collections = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.collections = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->geom=lwgeom;
 				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->id=(geom_array+i)->id;

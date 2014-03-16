@@ -366,7 +366,7 @@ static size_t  lwgeom_agg_to_twkbpoint_size(lwgeom_id *geom_array,uint8_t varian
 	/*One byte for type declaration*/
 	size_t size = WKB_BYTE_SIZE;
 	/*One integer holding number of geometries*/
-	size += u_getvarint_size((uint64_t) 2);
+	size += u_getvarint_size((uint64_t) n);
 
 	int i;
 	for (i=0;i<n;i++)
