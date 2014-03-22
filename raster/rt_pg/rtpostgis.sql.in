@@ -5622,23 +5622,27 @@ CREATE CAST (raster AS bytea)
 -------------------------------------------------------------------
 
 -- call PostgreSQL's hashvarlena() function
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION raster_hash(raster)
 	RETURNS integer
 	AS 'hashvarlena'
 	LANGUAGE 'internal' IMMUTABLE STRICT;
 
 -- use raster_hash() to compare
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION raster_eq(raster, raster)
 	RETURNS bool
 	AS $$ SELECT raster_hash($1) = raster_hash($2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE OPERATOR = (
 	LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_eq,
 	COMMUTATOR = '=',
 	RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
+-- Availability: 2.1.0
 CREATE OPERATOR CLASS hash_raster_ops
 	DEFAULT FOR TYPE raster USING hash AS
 	OPERATOR	1	= ,
