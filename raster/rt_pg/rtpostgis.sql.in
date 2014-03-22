@@ -5470,6 +5470,7 @@ CREATE OPERATOR = (
 	RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
+-- Availability: 2.1.0
 CREATE OPERATOR CLASS hash_raster_ops
 	DEFAULT FOR TYPE raster USING hash AS
 	OPERATOR	1	= ,
