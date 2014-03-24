@@ -93,7 +93,13 @@ my $objs = {
 			"st_union(raster,integer)" => 1,
 			"st_union(raster)" => 1,
 			"st_union(raster,text)" => 1
-		}
+		},
+		"operators" => {
+			"raster =" => 1
+		},
+		"opclasses" => {
+			"hash_raster_ops" => 1
+		},
 	}
 };
 
