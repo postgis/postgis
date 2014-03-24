@@ -242,6 +242,9 @@ if ( $OPT_UPGRADE )
 	{
 	  upgrade_spatial();
   }
+
+  # Update libver
+  $libver = sql("select postgis_lib_version()");
 }
 
 
