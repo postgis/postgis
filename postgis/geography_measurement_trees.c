@@ -199,7 +199,10 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 		circtree = lwgeom_calculate_circ_tree(lwgeom);
 		if ( geomtype == POLYGONTYPE || geomtype == MULTIPOLYGONTYPE ) 
 		{
-			circ_tree_get_point(circtree_cached, &p4d);
+			POINT2D p2d;
+			circ_tree_get_point(circtree_cached, &p2d);
+			p4d.x = p2d.x;
+			p4d.y = p2d.y;
 			if ( CircTreePIP(circtree, g, &p4d) )
 			{
 				*distance = 0.0;
