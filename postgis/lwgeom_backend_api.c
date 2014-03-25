@@ -18,7 +18,6 @@
 
 /* for custom variables */
 #include "utils/guc.h"
-#include "utils/guc_tables.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_backend_api.h"
@@ -104,24 +103,11 @@ void lwgeom_init_backend()
 	/* During an upgrade, a prior copy of the PostGIS library will */
 	/* already be loaded in memory and the GUC already defined. We */
 	/* can skip GUC definition in this case, so we just return. */
+	const char *guc_installed = GetConfigOption(guc_name, TRUE, FALSE);
 
-    struct config_generic **guc_vars;
-    int                     numOpts,
-                            i;
-	guc_vars = get_guc_variables();
-    numOpts = GetNumConfigOptions();
-
-	/* Uh oh, no GUCs? */
-	if ( ! guc_vars ) return;
-
-	for (i = 0; i < numOpts; i++)
-	{
-		if ( guc_vars[i] && guc_vars[i]->name && strcmp(guc_vars[i]->name, guc_name) == 0 )
-		{
-			/* Uh oh, this GUC name already exists */
-			return;
-		}
-	}
+	/* Uh oh, this GUC name already exists */
+	if ( guc_installed ) 
+		return;
 
 	/* Good, the GUC name is not already in use, so this must be a fresh */
 	/* and clean new load of the library, and we can define the user GUC */
