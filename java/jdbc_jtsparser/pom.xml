@@ -12,7 +12,7 @@
 
 	<groupId>org.postgis</groupId>
 	<artifactId>postgis-jdbc-jtsparser</artifactId>
-	<version>2.1.0SVN</version>
+	<version>2.2.0SVN</version>
 	<packaging>jar</packaging>
 	<name>Postgis JDBC Driver JTS Parser</name>
 	<url>http://www.postgis.org</url>
