@@ -118,9 +118,8 @@ rtpostgis_upgrade.sql: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
-# same as 20_21 until 2.1.0 is released
-rtpostgis_upgrade_21_minor.sql: rtpostgis_upgrade_20_21.sql
-	cp $< $@
+rtpostgis_upgrade_21_minor.sql: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
+	$(PERL) ../../utils/postgis_proc_upgrade.pl rtpostgis.sql 2.1 > $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
