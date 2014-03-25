@@ -18,6 +18,7 @@
 
 /* for custom variables */
 #include "utils/guc.h"
+#include "utils/guc_tables.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_backend_api.h"
@@ -96,7 +97,35 @@ static void lwgeom_backend_switch( const char* newvalue, void* extra )
 
 void lwgeom_init_backend()
 {
-    DefineCustomStringVariable( "postgis.backend", /* name */
+	static const char *guc_name = "postgis.backend";
+
+	/* #2382 Before trying to create a user GUC, make sure */
+	/* that the name is not already in use. Why would it be in use? */
+	/* During an upgrade, a prior copy of the PostGIS library will */
+	/* already be loaded in memory and the GUC already defined. We */
+	/* can skip GUC definition in this case, so we just return. */
+
+    struct config_generic **guc_vars;
+    int                     numOpts,
+                            i;
+	guc_vars = get_guc_variables();
+    numOpts = GetNumConfigOptions();
+
+	/* Uh oh, no GUCs? */
+	if ( ! guc_vars ) return;
+
+	for (i = 0; i < numOpts; i++)
+	{
+		if ( guc_vars[i] && guc_vars[i]->name && strcmp(guc_vars[i]->name, guc_name) == 0 )
+		{
+			/* Uh oh, this GUC name already exists */
+			return;
+		}
+	}
+
+	/* Good, the GUC name is not already in use, so this must be a fresh */
+	/* and clean new load of the library, and we can define the user GUC */
+    DefineCustomStringVariable( guc_name, /* name */
 				"Sets the PostGIS Geometry Backend.", /* short_desc */
 				"Sets the PostGIS Geometry Backend (allowed values are 'geos' or 'sfcgal')", /* long_desc */
 				&lwgeom_backend_name, /* valueAddr */
