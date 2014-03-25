@@ -789,7 +789,8 @@ fi
 dnl Check that we can find the json/json.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [])	
+AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes], [
+  AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [])])	
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libjson
