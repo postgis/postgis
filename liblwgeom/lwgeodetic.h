@@ -105,6 +105,7 @@ double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
 int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test);
+void lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside);
 int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 double ptarray_area_sphere(const POINTARRAY *pa);
 double latitude_degrees_normalize(double lat);
@@ -130,4 +131,16 @@ double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, c
 double spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, const SPHEROID *spheroid);
 int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);
 
+
 #endif /* _LWGEODETIC_H */
+
+
+
+/**
+* Notes for rewrite
+* 
+* Define separate POINT types for 2-d-points-in-radiands and 3-d-points-in-geocentric
+* Maintain consistent units (radians?) throughout all calculations
+* Put an index pointer onto LWGEOM itself, and cache the indexed LWGEOM instead of a bare tree
+* only primitive objects should get a tree
+*/

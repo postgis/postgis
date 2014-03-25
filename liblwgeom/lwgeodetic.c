@@ -1419,7 +1419,22 @@ int edge_calculate_gbox(const POINT3D *A1, const POINT3D *A2, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
-
+void lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside)
+{	
+	/* Make sure we have boxes */
+	if ( poly->bbox )
+	{
+		gbox_pt_outside(poly->bbox, pt_outside);
+		return;
+	}
+	else
+	{
+		GBOX gbox;
+		lwgeom_calculate_gbox_geodetic((LWGEOM*)poly, &gbox);
+		gbox_pt_outside(&gbox, pt_outside);
+		return;
+	}
+}
 
 /**
 * Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is
