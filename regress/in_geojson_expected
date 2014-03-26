@@ -9,3 +9,4 @@ ERROR:  Unable to find 'coordinates' in GeoJSON string
 ERROR:  unexpected character (at offset 0)
 #2130|8
 #2216|30
+#2619|POLYGON EMPTY
