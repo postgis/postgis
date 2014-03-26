@@ -117,8 +117,8 @@ circ_node_compare(const void* v1, const void* v2)
 {
 	POINT2D p1, p2;
 	unsigned int u1, u2;
-	CIRC_NODE *c1 = (CIRC_NODE*)v1;
-	CIRC_NODE *c2 = (CIRC_NODE*)v2;
+	CIRC_NODE *c1 = *((CIRC_NODE**)v1);
+	CIRC_NODE *c2 = *((CIRC_NODE**)v2);
 	p1.x = rad2deg((c1->center).lon);
 	p1.y = rad2deg((c1->center).lat);
 	p2.x = rad2deg((c2->center).lon);
