@@ -751,7 +751,6 @@ dnl ===========================================================================
 
 CHECK_JSON=yes
 HAVE_JSON=no
-AC_SUBST([HAVE_JSON])
 
 AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
@@ -807,6 +806,7 @@ fi
 
 AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
+AC_SUBST([HAVE_JSON])
 
 fi dnl }
 

@@ -16,3 +16,6 @@ SELECT '#2130', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinat
 
 -- #2216 --
 SELECT '#2216', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[4,0],[0,-4],[-4,0],[0,4],[4,0]],[[2,0],[0,2],[-2,0],[0,-2],[2,0]]],[[[24,0],[20,-4],[16,0],[20,4],[24,0]],[[22,0],[20,2],[18,0],[20,-2],[22,0]]],[[[44,0],[40,-4],[36,0],[40,4],[44,0]],[[42,0],[40,2],[38,0],[40,-2],[42,0]]]]}'));
+
+-- #2619 --
+SELECT '#2619', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","bbox":[1,5,2,6],"coordinates":[]}'));
