@@ -1335,6 +1335,10 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		}
 	}
 
+	/* Interior but no Exterior ! */
+	if ( ! ppa )
+	 	gml_lwerror("invalid GML representation", 48);
+
 	/* PolygonPatch/interior */
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
