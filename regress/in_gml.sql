@@ -301,6 +301,8 @@ SELECT 'surface_21', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 -- ERROR: interpolation not planar
 SELECT 'surface_22', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
+-- ERROR: interior but no exterior  
+SELECT 'surface_23', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:interior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 
 --
