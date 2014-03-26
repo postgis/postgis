@@ -181,6 +181,7 @@ parse_geojson_polygon(json_object *geojson, int *hasz,  int root_srid)
 	json_object* rings = NULL;
 	int i = 0, j = 0;
 	int nRings = 0;
+	int nPoints = 0;
 
 	rings = findMemberByName( geojson, "coordinates" );
 	if ( ! rings ) 
@@ -199,12 +200,11 @@ parse_geojson_polygon(json_object *geojson, int *hasz,  int root_srid)
 
 	if ( ! nRings )
 	{
-		return (LWGEOM *)lwpoly_construct_empty(root_srid, 0, 0);
+		return (LWGEOM *)lwpoly_construct_empty(root_srid, *hasz, 0);
 	}
 
 	ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 
-	int nPoints;
 	json_object* points = NULL;
 	ppa[0] = ptarray_construct_empty(1, 0, 1);
 	points = json_object_array_get_idx( rings, 0 );
