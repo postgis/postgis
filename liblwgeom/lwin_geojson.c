@@ -68,7 +68,6 @@ static int
 parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 {
 	POINT4D pt;
-	int iType = 0;
 
 	LWDEBUGF(3, "parse_geojson_coord called for object %s.", json_object_to_json_string( poObj ) );
 
