@@ -33,7 +33,7 @@ sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bit
 	mkdir -p sql
 	cat $^ > $@
 	
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade sql_patch_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
@@ -44,9 +44,9 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sq
 	cp $< $@
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_raster_upgrade_minor.sql
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/extension_upgrade_minor.sql
 	cp $< $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/extension_upgrade_minor.sql
 	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -78,9 +78,24 @@ sql_bits/rtpostgis_upgrade_20_21.sql: ../../raster/rt_pg/rtpostgis_upgrade_20_21
 		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
 	$< > $@
 
+sql_bits/rtpostgis_upgrade_21_minor.sql: ../../raster/rt_pg/rtpostgis_upgrade_21_minor.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
+		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
+		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
+	$< > $@
+
+
 #don't drop casts just yet since we don't have provision to remove from extension yet
 #need to also drop temporary functions from extenions since it gets auto-added
 sql_bits/postgis_upgrade_20_21.sql: ../../postgis/postgis_upgrade_20_21.sql 
+		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
+		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
+	 	 $< > $@
+
+sql_bits/postgis_upgrade_21_minor.sql: ../../postgis/postgis_upgrade_21_minor.sql 
 		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
 		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
@@ -94,10 +109,12 @@ sql_bits/postgis_upgrade_20_21.sql: ../../postgis/postgis_upgrade_20_21.sql
 sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
-#postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
-#TODO: come up with a better name
+#extension_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: what about postgis_drop_after.sql ? where does it fit ??
-sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_21.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_bits/extension_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_21.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+
+sql_bits/extension_upgrade_patch.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade_21_minor.sql sql_bits/rtpostgis_upgrade_21_minor.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
@@ -139,8 +156,13 @@ sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
 
 sql/postgis--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
 
-sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
-	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
+sql_minor_upgrade: sql_bits/extension_upgrade_minor.sql
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS_MINOR); do \
+  	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+	done
+
+sql_patch_upgrade: sql_bits/extension_upgrade_patch.sql
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS_PATCH); do \
   	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
