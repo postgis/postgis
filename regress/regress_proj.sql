@@ -10,7 +10,7 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 
 -- Repeat all tests with the new function names.
 --- test #0: NULL values
-SELECT 0,coalesce(ST_AsText(ST_transform(NULL, 100001)),'EMPTY');
+SELECT 0,coalesce(ST_AsText(ST_transform(NULL::geometry, 100001)),'EMPTY');
 
 --- test #1: a simple projection
 SELECT 1,ST_AsEWKT(ST_SnapToGrid(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),100001),10));
