@@ -1147,7 +1147,7 @@ sub upgrade_spatial_extensions
 
     if ( $OPT_WITH_TOPO ) 
     {
-      my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis_topology UPGRADE TO ${libver}next\" $DB >> $REGRESS_LOG 2>&1";
+      my $cmd = "psql $psql_opts -c \"ALTER EXTENSION postgis_topology UPDATE TO '${libver}next'\" $DB >> $REGRESS_LOG 2>&1";
       my $rv = system($cmd);
       die "\nError encountered altering EXTENSION POSTGIS_TOPOLOGY, see $REGRESS_LOG for details\n\n"
         if $rv;
