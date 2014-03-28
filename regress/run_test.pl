@@ -584,7 +584,21 @@ sub run_simple_test
 	mkpath($betmpdir);
 	chmod 0777, $betmpdir;
 
-	my $cmd = "psql -v \"VERBOSITY=terse\" -v \"tmpfile='$tmpfile'\" -tXA $DB < $sql > $outfile 2>&1";
+	my $scriptdir;
+	if ( $OPT_EXTENSIONS ) {
+		# TODO: allow override this default with env variable ?
+		my $pgis_majmin = $libver;
+		$pgis_majmin =~ s/^([1-9]*\.[1-9]*).*/\1/;
+		$scriptdir = `pg_config --sharedir`;
+		chop $scriptdir;
+		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
+	} else {
+		$scriptdir = $STAGED_SCRIPTS_DIR;
+	}
+	my $cmd = "psql -v \"VERBOSITY=terse\""
+          . " -v \"tmpfile='$tmpfile'\""
+          . " -v \"scriptdir=$scriptdir\""
+          . " -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines
