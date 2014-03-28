@@ -44,9 +44,9 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sq
 	cp $< $@
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
-sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/extension_upgrade_minor.sql
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/extension_upgrade_patch.sql
 	cp $< $@
-sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/extension_upgrade_minor.sql
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/extension_upgrade_patch.sql
 	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
