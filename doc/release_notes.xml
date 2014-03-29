@@ -6,6 +6,71 @@
 		  <title>Release 2.2.0</title>
 		  <para>Release date: YYYY/MM/DD</para>
 		</sect1>
+    <sect1>
+      <title>Release 2.1.2</title>
+      <para>Release date: 2014/03/31</para>
+      <para>This is a bug fix release, addressing issues that have been filed since the 2.1.1 release.</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+            <para>#2666, Error out at configure time if no SQL preprocessor can be found</para>
+            <para>#2534, st_distance returning incorrect results for large geographies</para>
+            <para>#2539, Check for json-c/json.h presence/usability before json/json.h</para>
+            <para>#2543, invalid join selectivity error from simple query</para>
+            <para>#2546, GeoJSON with string coordinates parses incorrectly </para>
+            <para>#2547, Fix ST_Simplify(TopoGeometry) for hierarchical topogeoms</para>
+            <para>#2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and
+                       ST_AsJPEG</para>
+            <para>#2555, Fix parsing issue of range arguments of ST_Reclass</para>
+            <para>#2556, geography ST_Intersects results depending on insert order</para>
+            <para>#2580, Do not allow installing postgis twice in the same database</para>
+            <para>#2589, Remove use of unnecessary void pointers</para>
+            <para>#2607, Cannot open more than 1024 out-db files in one process</para>
+            <para>#2610, Ensure face splitting algorithm uses the edge index</para>
+            <para>#2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox</para>
+            <para>#2619, Empty rings array in GeoJSON polygon causes crash</para>
+            <para>#2634, regression in sphere distance code</para>
+            <para>#2638, Geography distance on M geometries sometimes wrong</para>
+            <para>#2648, #2653, Fix topology functions when "topology" is not in search_path</para>
+            <para>#2654, Drop deprecated calls from topology</para>
+            <para>#2655, Let users without topology privileges call postgis_full_version()</para>
+            <para>#2674, Fix missing operator = and hash_raster_ops opclass on raster</para>
+            <para>#2675, #2534, #2636, #2634, #2638, Geography distance issues with tree optimization</para>
+      </simplesect>
+      <simplesect>
+        <title>Enhancements</title>
+          <para>#2494, avoid memcopy in GiST index (hayamiz)</para>
+          <para>#2560, soft upgrade: avoid drop/recreate of aggregates that hadn't changed</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.1.1</title>
+      <para>Release date: 2013/11/06</para>
+      <para>This is a bug fix release, addressing issues that have been filed since the 2.1.0 release.</para>
+      <simplesect>
+        <title>Important Changes</title>
+        <para>#2514, Change raster license from GPL v3+ to v2+, allowing distribution of PostGIS Extension as GPLv2.</para>
+      </simplesect>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#2396, Make regression tests more endian-agnostic</para>
+        <para>#2434, Fix ST_Intersection(geog,geog) regression in rare cases</para>
+        <para>#2454, Fix behavior of ST_PixelAsXXX functions regarding exclude_nodata_value parameter</para>
+        <para>#2489, Fix upgrades from 2.0 leaving stale function signatures</para>
+        <para>#2525, Fix handling of SRID in nested collections</para>
+        <para>#2449, Fix potential infinite loop in index building</para>
+        <para>#2493, Fix behavior of ST_DumpValues when passed an empty raster</para>
+        <para>#2502, Fix postgis_topology_scripts_installed() install schema</para>
+        <para>#2504, Fix segfault on bogus pgsql2shp call </para>
+        <para>#2512, Support for foreign tables and materialized views in raster_columns and raster_overviews</para>
+      </simplesect>
+      <simplesect>
+        <title>Enhancements</title>
+        <para>#2478, support for tiger 2013</para>
+        <para>#2463, support for exact length calculations on arc geometries</para>
+      </simplesect>
+    </sect1>    
+
 		
     <sect1>
 		  <title>Release 2.1.0</title>
