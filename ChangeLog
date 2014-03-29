@@ -1,3 +1,526 @@
+2014-03-28 22:10  strk
+
+	* regress/run_test.pl: Fix extension upgrade call for topology in
+	  run_test.pl
+
+2014-03-28 20:11  strk
+
+	* regress/legacy.sql: Also find uninstall_legacy.sql in :scriptdir,
+	  use \cd for 9.1 support
+
+2014-03-28 19:56  robe
+
+	* NEWS, doc/release_notes.xml: #2690 copy news to doc release
+	  notes. Be optimistic we'll release 3/31/2014
+
+2014-03-28 19:21  strk
+
+	* topology/test/regress/st_createtopogeo.sql: More spatial_ref_sys
+	  truncation during test
+
+2014-03-28 19:04  strk
+
+	* regress/legacy.sql: Have regress/legacy.sql truncate
+	  spatial_ref_sys
+
+2014-03-28 19:04  strk
+
+	* regress/legacy.sql, regress/run_test.pl: Allow using :scriptdir
+	  variable in regress tests
+	  
+	  Have legacy.sql use it to find legacy.sql.
+	  The run_test.pl script sets it using pg_config when --extensions
+	  switch is given.
+
+2014-03-28 13:04  pramsey
+
+	* regress/loader/ReprojectPts-pre.sql, regress/regress_ogc.sql,
+	  regress/regress_proj.sql: #2687, pass tests when raster/vector
+	  are co-loaded
+
+2014-03-28 12:53  strk
+
+	* extensions/postgis/Makefile.in: Extension "next" is patch-level
+	  away (#2684)
+
+2014-03-28 12:34  pramsey
+
+	* extensions/postgis/Makefile.in,
+	  extensions/upgradeable_versions.mk: #2684, upgrade extensions at
+	  the patch level
+
+2014-03-26 15:04  pramsey
+
+	* liblwgeom/lwgeodetic_tree.c: CircNode compare function needs to
+	  deference inputs
+
+2014-03-26 10:20  colivier
+
+	* postgis/lwgeom_in_gml.c, regress/in_gml.sql,
+	  regress/in_gml_expected: #2681 fix for 2.1 branch
+
+2014-03-26 10:06  pramsey
+
+	* NEWS: Add #2619
+
+2014-03-26 09:37  pramsey
+
+	* liblwgeom/lwgeodetic.c, liblwgeom/lwin_geojson.c: Quiet a pair of
+	  llvm warnings
+
+2014-03-26 09:22  pramsey
+
+	* configure.ac, liblwgeom/lwin_geojson.c, regress/in_geojson.sql,
+	  regress/in_geojson_expected: #2619, SIGSEGV in ST_GeomFromGeoJSON
+	  with empty list of coordinates
+
+2014-03-25 20:02  bergun
+
+	* java/jdbc/jtssrc/pom.xml, java/jdbc/pom.xml: #2625 updating
+	  pom.xml for 2.1.2 release
+
+2014-03-25 13:35  strk
+
+	* raster/rt_pg/Makefile.in: rtpostgis_upgrade_21_minor.sql is _not_
+	  same as 20_21
+	  
+	  Should fix make check w/out re-breaking #2674
+
+2014-03-25 12:31  pramsey
+
+	* NEWS: Update with latest changes
+
+2014-03-25 12:26  pramsey
+
+	* configure.ac: #2539, Check for json-c/json.h presence/usability
+	  before json/json.h
+
+2014-03-25 08:34  pramsey
+
+	* liblwgeom/cunit/cu_tree.c: Remove noise from test
+
+2014-03-25 08:17  pramsey
+
+	* liblwgeom/cunit/cu_tree.c, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h, liblwgeom/lwgeodetic_tree.c,
+	  liblwgeom/lwgeodetic_tree.h,
+	  postgis/geography_measurement_trees.c: #2675, bad handling of
+	  multi-geometries in geography tree distance
+
+2014-03-24 17:49  strk
+
+	* NEWS, utils/postgis_proc_upgrade.pl: Fix missing operator = and
+	  hash_raster_ops opclass on raster
+	  
+	  Closes #2674
+
+2014-03-22 05:29  robe
+
+	* raster/rt_core/rt_api.h: #2620 allow kFreeBSD to be treated as
+	  FreeBSD
+
+2014-03-22 04:29  robe
+
+	* raster/rt_pg/rtpostgis.sql.in: #2674 missed the operator class
+	  hash_raster_ops in last commit
+
+2014-03-22 04:28  robe
+
+	* raster/rt_pg/rtpostgis.sql.in: #2674 raster missing availability
+	  info for some operators and functions used in equality operator
+
+2014-03-18 16:36  strk
+
+	* .travis.yml: Fix travis build by only installing postgresql 9.1
+	  (#2678)
+
+2014-03-13 21:11  robe
+
+	* doc/Makefile.in: #2609 topogeo_AddPolygon unnecessary use of
+	  DISTINCT
+
+2014-03-10 18:46  robe
+
+	* topology/sql/populate.sql.in: #2609 topogeo_AddPolygon
+	  unnecessary use of DISTINCT
+
+2014-03-09 23:16  robe
+
+	* doc/using_postgis_dataman.xml: #2558: WKT form(s) of MULTIPOINT
+	  documentation make OGC compliant
+
+2014-03-09 18:55  strk
+
+	* NEWS, configure.ac: Error out at configure time if no SQL
+	  preprocessor can be found
+	  
+	  Closes #2666
+
+2014-03-08 00:51  pramsey
+
+	* NEWS, liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c:
+	  #2534, st_distance is returning incorrect results for large
+	  geographies
+
+2014-03-08 00:43  pramsey
+
+	* liblwgeom/lwgeodetic.c, liblwgeom/lwgeodetic_tree.c: #2636,
+	  Regress ST_Distance_Sphere between 2.1.2dev and 2.0.4 with 2D
+
+2014-03-07 23:58  pramsey
+
+	* NEWS, liblwgeom/lwgeodetic.c: #2634, regression in sphere
+	  distance code
+
+2014-03-07 23:20  pramsey
+
+	* NEWS, liblwgeom/lwin_geojson.c: #2546, GeoJSON with string
+	  coordinates parses incorrectly
+
+2014-03-07 13:27  pramsey
+
+	* NEWS: Update for #2638
+
+2014-03-06 05:53  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c: #2638,
+	  geography ST_Intersects bugginess with Polygon/multilinestring M
+
+2014-03-03 03:01  robe
+
+	* extensions/postgis/META.json, extensions/postgis/doc/postgis.md,
+	  extensions/postgis/sql_bits/remove_from_extension.sql.in,
+	  extensions/postgis_extension_helper.sql,
+	  extensions/postgis_extension_helper_uninstall.sql,
+	  extensions/postgis_tiger_geocoder/META.json,
+	  extensions/postgis_tiger_geocoder/doc/postgis_tiger_geocoder.md,
+	  extensions/postgis_tiger_geocoder/sql_bits/remove_from_extension.sql.in,
+	  extensions/postgis_topology/META.json,
+	  extensions/postgis_topology/doc/postgis.md,
+	  extensions/postgis_topology/sql_bits/remove_from_extension.sql.in:
+	  fix website links to go to postgis.net
+
+2014-02-25 17:54  pramsey
+
+	* postgis/geography_measurement_trees.c,
+	  postgis/gserialized_estimate.c: Fix variable decls in debugs,
+	  closes #2650
+
+2014-02-24 10:25  strk
+
+	* NEWS, postgis/postgis.sql.in: Let users without topology
+	  privileges call postgis_full_version()
+	  
+	  Closes #2655
+
+2014-02-24 07:08  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in: Drop deprecated calls from
+	  topology (#2654)
+
+2014-02-24 06:41  strk
+
+	* NEWS, topology/sql/export/TopoJSON.sql.in,
+	  topology/sql/populate.sql.in, topology/sql/sqlmm.sql.in: Fully
+	  qualify calls to topology methods (#2653)
+
+2014-02-23 16:32  strk
+
+	* utils/postgis_proc_upgrade.pl: Fix AGG signatures with multi-word
+	  typenames
+	  
+	  For example... "double precision".
+	  This fixes upgrades involving drop/recreate of aggregates
+
+2014-02-23 16:32  strk
+
+	* regress/run_test.pl: Fix --extension --upgrade handling
+
+2014-02-23 16:32  strk
+
+	* regress/tickets.sql: Fix ambiguous query in tickets.sql when
+	  raster support is loaded
+	  
+	  See #2651
+
+2014-02-23 16:09  strk
+
+	* regress/run_test.pl: Add support for --extension --upgrade in
+	  run_test.pl
+
+2014-02-23 15:27  strk
+
+	* extensions/postgis/Makefile.in: Do not force extension-specific
+	  removal of objects on upgrade
+	  
+	  It should be taken care of by the upgrade scripts themselves
+
+2014-02-22 14:57  strk
+
+	* raster/rt_pg/Makefile.in, raster/rt_pg/rtpostgis.sql.in: Generate
+	  raster upgrade script using postgis_proc_upgrade
+
+2014-02-22 14:57  strk
+
+	* utils/postgis_proc_upgrade.pl: Make postgis_proc_upgrade ready to
+	  deal with rtpostgis.sql
+
+2014-02-22 09:13  strk
+
+	* NEWS, utils/postgis_proc_upgrade.pl: Soft upgrade: avoid
+	  drop/recreate of aggregates that hadn't changed
+	  
+	  Closes #2560
+
+2014-02-22 09:13  strk
+
+	* topology/sql/topoelement/topoelement_agg.sql.in: Encode
+	  availability of topology aggregates
+	  
+	  See #2560
+
+2014-02-22 09:13  strk
+
+	* raster/rt_pg/rtpostgis.sql.in: Encode availability and last
+	  change in raster aggregates
+	  
+	  See #2560
+
+2014-02-22 08:32  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in: Fully qualify topology.topology
+	  (#2648)
+
+2014-02-20 05:46  robe
+
+	* doc/reference_measure.xml: #2646 typo arithmetric -> arithmetric
+	  in ST_Centroid
+
+2014-02-14 03:30  robe
+
+	* doc/using_raster_dataman.xml: #2576 Error in manual wrt
+	  using_raster RT_PLPython
+
+2014-02-14 03:23  robe
+
+	* doc/reference_constructor.xml: #2582 fix all references to -1 in
+	  constructors and change to 0 (SRID Unknown)
+
+2014-02-05 05:25  pramsey
+
+	* regress/empty.sql, regress/sql-mm-curvepoly.sql,
+	  regress/sql-mm-curvepoly_expected: #2396, wrap wkb outputting
+	  tests in explicit endianness
+
+2014-02-04 23:17  pramsey
+
+	* NEWS, postgis/gserialized_estimate.c: #2615, EstimatedExtent (and
+	  hence, underlying stats) gathering wrong bbox
+
+2014-02-04 22:43  pramsey
+
+	* NEWS, postgis/gserialized_estimate.c: #2543, invalid join
+	  selectivity error from simple query
+
+2014-02-04 19:44  pramsey
+
+	* NEWS: #2556 news entry
+
+2014-02-04 19:31  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: #2556, regression
+	  test
+
+2014-02-04 08:36  strk
+
+	* doc/extras_topology.xml: Fix ST_ModEdgeSplit documentation
+	  (#2633)
+
+2014-02-04 06:30  pramsey
+
+	* postgis/geography_measurement_trees.c: #2422, geography
+	  regression difference ST_DWithin
+	  "Fix" actually just removes tolerance-stop from the distance
+	  calculation
+	  Question of why tolerance stop fails, remains open.
+
+2014-02-04 06:05  pramsey
+
+	* postgis/geography_measurement_trees.c: Free tree on short circuit
+
+2014-02-04 06:01  pramsey
+
+	* liblwgeom/lwgeodetic_tree.c, liblwgeom/lwgeodetic_tree.h: Add
+	  circtree get point signature
+
+2014-02-04 05:56  pramsey
+
+	* doc/faq.xml, doc/using_postgis_dataman.xml: Update docs on WKB
+
+2014-02-04 05:56  pramsey
+
+	* HOWTO_RELEASE: Update SVN urls for osgeo https
+
+2014-02-04 05:47  pramsey
+
+	* postgis/geography_measurement_trees.c: #2556, ST_Intersects
+	  results depending on insert order
+
+2014-01-30 19:17  pramsey
+
+	* java/jdbc/src/org/postgis/GeometryCollection.java: #2588,
+	  GeometryCollection constructor parse defect for sub geometries
+	  (POINTM,POLYGONM,...) of GEOMETRYCOLLECTIONM (From bergun)
+
+2014-01-22 16:21  strk
+
+	* NEWS: Add notice about 2.0.0 having drop the SRID check in
+	  operator &&
+
+2014-01-17 03:46  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c: Fix the inability to open more
+	  than ~1024 unique out-db files in one process
+
+2014-01-13 22:49  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in: Ensure face splitting algorithm
+	  uses the edge index (#2610)
+
+2014-01-04 17:45  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c: Remove use of void pointers in
+	  rt_raster_from_gdal_dataset to prevent void point arithemetics.
+	  Ticket #2589
+
+2014-01-01 02:18  robe
+
+	* doc/extras_topology.xml: #2593: document topology relationship
+	  functions intersects and equals.
+
+2013-12-19 17:29  strk
+
+	* extensions/postgis_tiger_geocoder/Makefile.in: Ensure output dir
+	  is created before attempting to write to it
+	  
+	  See https://travis-ci.org/postgis/postgis/builds/15654853#L1357
+
+2013-12-18 15:54  strk
+
+	* NEWS, postgis/postgis.sql.in: Do not allow installing postgis
+	  twice in the same database (#2580)
+	  
+	  Checks for the presence of a "postgis_version" function,
+	  and if found raises an exception with a message with
+	  the schema containing it.
+
+2013-12-07 14:41  dustymugs
+
+	* NEWS, raster/rt_pg/rt_pg.c, raster/test/regress/rt_reclass.sql,
+	  raster/test/regress/rt_reclass_expected: fix parsing issue of
+	  range arguments of ST_Reclass. Ticket #2555
+
+2013-11-27 16:03  dustymugs
+
+	* NEWS, raster/rt_pg/rtpostgis.sql.in,
+	  raster/test/regress/rt_asjpeg.sql,
+	  raster/test/regress/rt_asjpeg_expected,
+	  raster/test/regress/rt_aspng.sql,
+	  raster/test/regress/rt_aspng_expected,
+	  raster/test/regress/rt_astiff.sql,
+	  raster/test/regress/rt_astiff_expected: fix NULL raster handling
+	  in ST_AsPNG, ST_AsJPEG and ST_AsTIFF
+
+2013-11-21 17:24  strk
+
+	* NEWS, topology/sql/topogeometry/simplify.sql.in,
+	  topology/test/regress/st_simplify.sql,
+	  topology/test/regress/st_simplify_expected: Fix
+	  ST_Simplify(TopoGeometry) for hierarchical topogeoms (#2547)
+
+2013-11-21 16:52  strk
+
+	* doc/extras_topology.xml: Add link from TopoElement to
+	  TopoElementArray
+
+2013-11-21 16:52  strk
+
+	* raster/rt_pg/rtpostgis.sql.in: Fix dangling commutator for
+	  raster/geometry OPERATOR ~ (#2532)
+
+2013-11-20 00:17  pramsey
+
+	* NEWS, postgis/gserialized_gist_2d.c: #2494, Avoid unnecessary
+	  memory copy in gserialized_datum_get_box2df_p
+
+2013-11-16 22:35  robe
+
+	* HOWTO_RELEASE: minor tweaks to how to release
+
+2013-11-16 21:57  robe
+
+	* extensions/upgradeable_versions.mk: #2544: fix extension script
+	  (made a booboo last commit)
+
+2013-11-16 20:01  robe
+
+	* HOWTO_RELEASE, Version.config,
+	  extensions/upgradeable_versions.mk: #2544: change micro from svn
+	  to devand clarify how to release docs
+
+2013-11-12 21:40  pramsey
+
+	* liblwgeom/g_box.c: #2542, build on Centos/ RHEL 5
+
+2013-11-08 19:46  pramsey
+
+	* NEWS, Version.config: Set for next release
+
+2013-11-08 19:37  pramsey
+
+	* NEWS, README.postgis, Version.config,
+	  extensions/postgis/sql_bits/postgis--unpackaged.sql.in,
+	  extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in,
+	  extensions/postgis_topology/sql_bits/topology--unpackaged.sql.in:
+	  Update all manual bits for 2.1.1 release
+
+2013-11-07 14:57  dustymugs
+
+	* NEWS, raster/rt_pg/rtpostgis.sql.in,
+	  raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in,
+	  raster/test/regress/tickets.sql: Add missing operators for
+	  raster. Ticket #2532
+
+2013-11-06 16:32  strk
+
+	* NEWS, postgis/postgis.sql.in: Remove duplicated signatures
+
+2013-11-06 09:46  strk
+
+	* NEWS, liblwgeom/cunit/cu_split.c, liblwgeom/lwgeom_geos_split.c:
+	  Fix small memory leak in lwline_split_by_line (#2528)
+	  
+	  Thanks Alessandro Furieri for the report and test
+
+2013-11-06 09:42  strk
+
+	* NEWS: tab to space
+
+2013-11-06 05:12  dustymugs
+
+	* NEWS, raster/loader/raster2pgsql.c, raster/loader/raster2pgsql.h:
+	  added -k to raster2pgsql for skipping band is NODATA check
+
+2013-11-05 19:57  pramsey
+
+	* postgis/lwgeom_functions_basic.c: #2529, inconsistent behaviour
+	  in ST_FlipCoordinates
+
+2013-11-05 18:25  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Update
+	  doco for 2.1.1 release
+
 2013-11-05 17:58  pramsey
 
 	* extensions/postgis_tiger_geocoder/sql_bits, install-sh, postgis,
