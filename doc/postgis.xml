@@ -8,11 +8,11 @@
 
 <!-- ONCE Tagged, this need to change to http://download.osgeo.org/postgis/source/postgis-@@LAST_RELEASE_VERSION@@.tar.gz -->
 <!-- In dev should be, this need to change to http://postgis.net/stuff/postgis-@@LAST_RELEASE_VERSION@@.tar.gz -->
-<!ENTITY postgis_download_url "http://postgis.net/stuff/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">
+<!ENTITY postgis_download_url "http://download.osgeo.org/postgis/source/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">
 
 <!-- Change these values to update the version numbers referenced within the documentation -->
 <!ENTITY last_proj_release_version "4.8.0">
-<!ENTITY last_geos_release_version "3.4.0">
+<!ENTITY last_geos_release_version "3.4.2">
 <!ENTITY min_postgres_version "9.0">
 
 <!ENTITY introduction SYSTEM "introduction.xml">
