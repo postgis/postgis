@@ -92,3 +92,4 @@
  ALTER EXTENSION postgis_topology ADD type topology.topoelementarray;
  ALTER EXTENSION postgis_topology ADD type topology.topogeometry;
  ALTER EXTENSION postgis_topology ADD type topology.validatetopology_returntype;
+

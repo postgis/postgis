@@ -50,7 +50,7 @@ Release procedure
     about to release version  and copy contents to  
     (TODO: we need to automate this) 
       postgis/sql_bits/postgis--unpackages.sql.in
-      postgis_topology/sql_bits/topology_unpackaged.sql.in
+      postgis_topology/sql_bits/topology--unpackaged.sql.in
       postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
 6) Tag branch:  
    svn copy https://svn.osgeo.org/postgis/branches/x.x https://svn.osgeo.org/postgis/tags/x.x.x

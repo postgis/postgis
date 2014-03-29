@@ -100,3 +100,4 @@
  ALTER EXTENSION postgis_tiger_geocoder ADD table zip_state;
  ALTER EXTENSION postgis_tiger_geocoder ADD table zip_state_loc;
  ALTER EXTENSION postgis_tiger_geocoder ADD type norm_addy;
+
