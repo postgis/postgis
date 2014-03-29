@@ -86,9 +86,11 @@ Release procedure
     - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
 
-16) Push the revision number forward.  All POSTGIS_MICRO_VERSION that are in branch or trunk should end in
-dev.  So for example if you just release 2.1.1, then the 2.1 branch should have POSTGIS_MICRO_VERSION set to 2dev 
-so that the full version is 2.1.2dev.
-17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk including the one you just released
+16) In the branch, push the revision number forward in Version.config.  
+    All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.  
+    So for example if you just release 2.1.1, then the 2.1 branch should have 
+    POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
+17) In the branch, ensure all the previous released minor versions are listed in 
+    extension/upgradeable_versions.mk including the one you just released
 
 
