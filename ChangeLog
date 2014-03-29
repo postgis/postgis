@@ -1,3 +1,272 @@
+2014-03-26 10:07  pramsey
+
+	* NEWS: Add #2619
+
+2014-03-26 09:35  pramsey
+
+	* postgis/lwgeom_in_geojson.c: #2619, SIGSEGV in ST_GeomFromGeoJSON
+	  with empty list of coordinates
+
+2014-03-18 16:38  strk
+
+	* .travis.yml: Fix travis build by only installing postgresql 9.1
+	  (#2678)
+
+2014-03-07 13:27  pramsey
+
+	* NEWS: Update for #2638
+
+2014-03-06 05:56  pramsey
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/g_box.c: #2638,
+	  geography ST_Intersects bugginess with Polygon/multilinestring M
+
+2014-01-30 19:17  pramsey
+
+	* java/jdbc/src/org/postgis/GeometryCollection.java: #2588,
+	  GeometryCollection constructor parse defect for sub geometries
+	  (POINTM,POLYGONM,...) of GEOMETRYCOLLECTIONM (From bergun)
+
+2014-01-22 16:22  strk
+
+	* NEWS: Add notice about 2.0.0 having drop the SRID check in
+	  operator &&
+
+2014-01-17 03:55  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c: Fix the inability to open more
+	  than ~1024 unique out-db files in one process
+
+2014-01-13 22:48  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in.c: Ensure face splitting
+	  algorithm uses the edge index (#2610)
+
+2014-01-04 17:27  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c: Remove use of void pointers in
+	  rt_raster_from_gdal_dataset to prevent
+	  void pointer arithmetics. Ticket #2589
+
+2014-01-04 17:27  dustymugs
+
+	* raster/rt_core/rt_api.c: cleanup of unused variables
+
+2013-12-07 14:56  dustymugs
+
+	* NEWS, raster/rt_pg/rt_pg.c, raster/test/regress/rt_reclass.sql,
+	  raster/test/regress/rt_reclass_expected: fix parsing issue of
+	  range arguments of ST_Reclass. Ticket #2555
+
+2013-11-27 16:16  dustymugs
+
+	* NEWS, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_asjpeg.sql,
+	  raster/test/regress/rt_asjpeg_expected,
+	  raster/test/regress/rt_aspng.sql,
+	  raster/test/regress/rt_aspng_expected,
+	  raster/test/regress/rt_astiff.sql,
+	  raster/test/regress/rt_astiff_expected: fix NULL raster in
+	  ST_AsPNG, ST_AsTIFF and ST_AsJPEG. Ticket #2552
+
+2013-11-20 00:23  pramsey
+
+	* NEWS, postgis/gserialized_gist_2d.c: #2494, Avoid unnecessary
+	  memory copy in gserialized_datum_get_box2df_p
+
+2013-11-07 15:14  dustymugs
+
+	* raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in.c: workaround to
+	  upgrading missing raster/geometry operators for 8.4
+
+2013-11-07 13:46  dustymugs
+
+	* NEWS, install-sh, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in.c,
+	  raster/test/regress/tickets.sql: Add missing graster/geometry
+	  operators. Ticket #2532
+
+2013-11-06 16:46  strk
+
+	* NEWS, postgis/postgis.sql.in.c: Remove duplicated signatures
+
+2013-11-06 09:48  strk
+
+	* NEWS, liblwgeom/cunit/cu_split.c, liblwgeom/lwgeom_geos_split.c:
+	  Fix small memory leak in lwline_split_by_line (#2528)
+	  
+	  Thanks Alessandro Furieri for the report and test
+
+2013-11-05 19:55  pramsey
+
+	* postgis/lwgeom_functions_basic.c: #2529, flip_coordinates
+	  behavior inconsistent
+
+2013-10-30 09:44  strk
+
+	* NEWS: Reword raster license change NEWS item (#2514)
+
+2013-10-30 09:39  strk
+
+	* LICENSE.TXT: Clarify licensing of PostGIS core as GPL2+ (#2515)
+
+2013-10-28 19:46  dustymugs
+
+	* NEWS: wrong ticket
+
+2013-10-28 19:23  dustymugs
+
+	* NEWS, raster/Makefile.in, raster/loader/Makefile.in,
+	  raster/loader/raster2pgsql.c, raster/loader/raster2pgsql.h,
+	  raster/macros/ac_proj4_version.m4, raster/rt_core/Makefile.in,
+	  raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/Makefile.in, raster/rt_pg/rt_pg.c,
+	  raster/rt_pg/rt_pg.h, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/rt_pg/rtpostgis_drop.sql.in.c,
+	  raster/rt_pg/rtpostgis_legacy.sql.in.c,
+	  raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in.c,
+	  raster/scripts/Makefile.in, raster/scripts/python/Makefile.in,
+	  raster/scripts/python/Makefile.rt.sample,
+	  raster/scripts/python/genraster.py,
+	  raster/scripts/python/ovdump.py, raster/scripts/python/pixval.py,
+	  raster/scripts/python/raster2pgsql.py,
+	  raster/scripts/python/rtgdalraster.py,
+	  raster/scripts/python/rtpixdump.py,
+	  raster/scripts/python/rtreader.py,
+	  raster/scripts/python/rtrowdump.py,
+	  raster/scripts/python/window.py, raster/test/Makefile.in,
+	  raster/test/core/Makefile.in, raster/test/core/check.h,
+	  raster/test/core/testwkb.c, raster/test/regress/Makefile.in,
+	  raster/test/regress/box3d.sql,
+	  raster/test/regress/bug_test_car5.sql,
+	  raster/test/regress/check_raster_columns.sql,
+	  raster/test/regress/check_raster_overviews.sql,
+	  raster/test/regress/create_rt_band_properties_test.sql,
+	  raster/test/regress/create_rt_empty_raster_test.sql,
+	  raster/test/regress/create_rt_gist_test.sql,
+	  raster/test/regress/create_rt_properties_test.sql,
+	  raster/test/regress/create_rt_utility_test.sql,
+	  raster/test/regress/rt_above.sql,
+	  raster/test/regress/rt_addband.sql,
+	  raster/test/regress/rt_band_properties.sql,
+	  raster/test/regress/rt_below.sql,
+	  raster/test/regress/rt_bytea.sql,
+	  raster/test/regress/rt_contain.sql,
+	  raster/test/regress/rt_contained.sql,
+	  raster/test/regress/rt_dimensions.sql,
+	  raster/test/regress/rt_georeference.sql,
+	  raster/test/regress/rt_hasnoband.sql,
+	  raster/test/regress/rt_isempty.sql,
+	  raster/test/regress/rt_left.sql,
+	  raster/test/regress/rt_overabove.sql,
+	  raster/test/regress/rt_overbelow.sql,
+	  raster/test/regress/rt_overlap.sql,
+	  raster/test/regress/rt_overleft.sql,
+	  raster/test/regress/rt_overright.sql,
+	  raster/test/regress/rt_pixelsize.sql,
+	  raster/test/regress/rt_pixelvalue.sql,
+	  raster/test/regress/rt_right.sql,
+	  raster/test/regress/rt_rotation.sql,
+	  raster/test/regress/rt_same.sql,
+	  raster/test/regress/rt_scale.sql,
+	  raster/test/regress/rt_set_band_properties.sql,
+	  raster/test/regress/rt_set_properties.sql,
+	  raster/test/regress/rt_spatial_relationship.sql,
+	  raster/test/regress/rt_upperleft.sql,
+	  raster/test/regress/rt_utility.sql: Change raster license from
+	  v3+ to v2+. Ticket #2516
+
+2013-10-18 21:31  pramsey
+
+	* postgis/postgis.sql.in.c: #2511, geometry_columns doesn't support
+	  materialized views or foreign tables
+
+2013-10-16 22:44  pramsey
+
+	* postgis/postgis.sql.in.c: #2511, geometry_columns doesn't support
+	  materialized views
+
+2013-10-13 15:40  robe
+
+	* regress/tickets.sql, regress/tickets_expected: #2506 regress
+	  failure on 32-bit windows PostgreSQL. More stringent round but
+	  also subtract to guarantee they are the same
+
+2013-10-11 01:17  robe
+
+	* regress/tickets.sql, regress/tickets_expected: #2506 regress
+	  failure on 32-bit windows PostgreSQL. Round values so match on
+	  all platforms
+
+2013-10-09 14:39  strk
+
+	* NEWS, loader/pgsql2shp-cli.c: Fix segfault on bogus pgsql2shp
+	  call (#2504)
+
+2013-10-09 06:51  strk
+
+	* NEWS, postgis/postgis.sql.in.c, topology/topology.sql.in.c,
+	  topology/topology_drop_before.sql.in.c: Put
+	  postgis_topology_scripts_installed() in topology schema (#2502)
+	  
+	  This was the only topology signature installed in the default
+	  schema.
+	  The postgis_full_version() function is updated to find it there.
+
+2013-09-12 03:37  robe
+
+	* doc/extras_tigergeocoder.xml: revert back change
+
+2013-09-12 03:21  robe
+
+	* doc/extras_tigergeocoder.xml: #2455 fixed for branch 2.0
+
+2013-09-09 11:07  strk
+
+	* .gitignore: topology/test/Makefile is now generated: ignore
+
+2013-09-08 18:50  pramsey
+
+	* regress/empty.sql, regress/empty_expected, regress/regress.sql,
+	  regress/regress_expected, regress/sql-mm-compoundcurve.sql,
+	  regress/sql-mm-compoundcurve_expected,
+	  regress/sql-mm-curvepoly.sql, regress/sql-mm-curvepoly_expected,
+	  regress/tickets.sql, regress/tickets_expected: Fix 8.4 regression
+	  failures (#2472)
+
+2013-09-08 15:05  robe
+
+	* HOWTO_RELEASE: update to include updating source.html page. Minor
+	  other changes reshuffling
+
+2013-09-06 23:01  pramsey
+
+	* NEWS, README.postgis, Version.config: Update version numbers
+
+2013-09-06 22:51  pramsey
+
+	* doc/using_postgis_dataman.xml: Splling
+
+2013-09-06 22:00  pramsey
+
+	* regress/empty.sql, regress/empty_expected, regress/regress.sql,
+	  regress/regress_expected, regress/sql-mm-compoundcurve.sql,
+	  regress/sql-mm-compoundcurve_expected,
+	  regress/sql-mm-curvepoly.sql, regress/sql-mm-curvepoly_expected,
+	  regress/tickets.sql, regress/tickets_expected: #2396, pass
+	  big-endian online regression tests
+
+2013-09-06 21:15  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Update
+	  news/docs for 2.0.4 release
+
+2013-09-06 20:58  pramsey
+
+	* postgis, topology/test, topology/test/regress,
+	  utils/postgis_restore.pl.in: Clean up restore script per
+	  strk/darkblueb
+
 2013-09-06 16:45  strk
 
 	* liblwgeom/lwgeom_geos.c: Enhance error messages in
