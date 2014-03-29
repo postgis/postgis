@@ -63,6 +63,75 @@ PostGIS 2.2.0
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
 
+PostGIS 2.1.2
+2014/03/31
+
+ * Important Changes *
+
+ * Bug Fixes *
+
+  - #2666, Error out at configure time if no SQL preprocessor can be found
+  - #2534, st_distance returning incorrect results for large geographies
+  - #2539, Check for json-c/json.h presence/usability before json/json.h
+  - #2543, invalid join selectivity error from simple query
+  - #2546, GeoJSON with string coordinates parses incorrectly 
+  - #2547, Fix ST_Simplify(TopoGeometry) for hierarchical topogeoms
+  - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and
+           ST_AsJPEG
+  - #2555, Fix parsing issue of range arguments of ST_Reclass
+  - #2556, geography ST_Intersects results depending on insert order
+  - #2580, Do not allow installing postgis twice in the same database
+  - #2589, Remove use of unnecessary void pointers
+  - #2607, Cannot open more than 1024 out-db files in one process
+  - #2610, Ensure face splitting algorithm uses the edge index
+  - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
+  - #2619, Empty rings array in GeoJSON polygon causes crash
+  - #2634, regression in sphere distance code
+  - #2638, Geography distance on M geometries sometimes wrong
+  - #2648, #2653, Fix topology functions when "topology" is not in search_path
+  - #2654, Drop deprecated calls from topology
+  - #2655, Let users without topology privileges call postgis_full_version()
+  - #2674, Fix missing operator = and hash_raster_ops opclass on raster
+  - #2675, #2534, #2636, #2634, #2638, Geography distance issues with tree optimization
+  
+ * Enhancements *
+
+  - #2494, avoid memcopy in GiST index (hayamiz)
+  - #2560, soft upgrade: avoid drop/recreate of aggregates that hadn't changed
+
+PostGIS 2.1.1
+2013/11/08
+
+ * Important Changes *
+
+  - #2514, Change raster license from GPL v3+ to v2+, allowing 
+           distribution of PostGIS Extension as GPLv2.
+
+ * Bug Fixes *
+
+  - #2396, Make regression tests more endian-agnostic
+  - #2434, Fix ST_Intersection(geog,geog) regression in rare cases
+  - #2454, Fix behavior of ST_PixelAsXXX functions regarding
+           exclude_nodata_value parameter
+  - #2449, Fix potential infinite loop in index building
+  - #2489, Fix upgrades from 2.0 leaving stale function signatures
+  - #2493, Fix behavior of ST_DumpValues when passed an empty raster
+  - #2502, Fix postgis_topology_scripts_installed() install schema
+  - #2504, Fix segfault on bogus pgsql2shp call 
+  - #2512, Support for foreign tables and materialized views in
+           raster_columns and raster_overviews
+  - #2525, Fix handling of SRID in nested collections
+  - #2528, Fix memory leak in ST_Split / lwline_split_by_line
+  - #2532, Add missing raster/geometry commutator operators
+  - #2533, Remove duplicated signatures
+
+ * Enhancements *
+
+  - #2463, support for exact length calculations on arc geometries
+  - #2478, support for tiger 2013
+  - #2527, Added -k flag to raster2pgsql to skip checking that
+           band is NODATA
+    
 PostGIS 2.1.0
 2013/08/17
 
