@@ -4,6 +4,7 @@ UPGRADEABLE_VERSIONS = \
     2.0.2 \
     2.0.3 \
     2.0.4 \
+    2.0.5 \
 	2.1.0rc1 \
 	2.1.0rc2 \
 	2.1.0rc3 \
@@ -16,7 +17,8 @@ UPGRADEABLE_VERSIONS_MINOR = \
     2.0.1 \
     2.0.2 \
     2.0.3 \
-    2.0.4 
+    2.0.4 \
+    2.0.5
 
 UPGRADEABLE_VERSIONS_PATCH = \
 	2.1.0rc1 \
