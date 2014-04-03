@@ -19,3 +19,7 @@ SELECT '#2216', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinat
 
 -- #2619 --
 SELECT '#2619', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","bbox":[1,5,2,6],"coordinates":[]}'));
+
+-- #2697 --
+SELECT '#2697', ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[1]}');
+SELECT '#2697', ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[1,1]}');

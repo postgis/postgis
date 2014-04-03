@@ -6,7 +6,7 @@ PostGIS 2.1.3
 
  * Bug Fixes *
 
-  - #
+  - #2697, invalid GeoJSON Polygon input crashes server process
 
 
 
