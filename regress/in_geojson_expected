@@ -10,3 +10,5 @@ ERROR:  unexpected character (at offset 0)
 #2130|8
 #2216|30
 #2619|POLYGON EMPTY
+ERROR:  The 'coordinates' in GeoJSON ring are not an array
+ERROR:  The 'coordinates' in GeoJSON ring are not an array

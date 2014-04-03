@@ -57,6 +57,8 @@ PostGIS 2.2.0
   - #2615, EstimatedExtent (and hence, underlying stats) gathering wrong bbox
   - #2556, geography ST_Intersects results depending on insert order
   - #2634, regression in sphere distance code
+  - #2697, invalid GeoJSON Polygon input crashes server process
+
 
  * Code refactoring *
 
