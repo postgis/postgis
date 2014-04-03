@@ -952,6 +952,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	}
 	}
 
+	#ifdef _DEBUG
 	/*
 	 * Now check if every point of input is also found
 	 * in output, or abort by returning NULL
@@ -984,7 +985,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			}
 		}
 	}
-
+	#endif
 
 	return gout;
 }
