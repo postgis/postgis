@@ -1646,10 +1646,8 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 	<refentry id="ST_NumInteriorRings">
 	  <refnamediv>
 		<refname>ST_NumInteriorRings</refname>
-		<refpurpose>Return the number of interior rings of the first polygon in
-			the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
-			Return NULL if there is no polygon in the
-			geometry.</refpurpose>
+		<refpurpose>Return the number of interior rings of the a polygon in
+			the geometry. This will work with POLYGON and return NULL for a MULTIPOLYGON type or any other type</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1670,6 +1668,7 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 			geometry.</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
+		<para>Changed: 2.0.0 - in prior versions it would return the number of interior rings for the first POLYGON in a MULTIPOLYGON.</para>
 	  </refsection>
 
 	  <refsection>
