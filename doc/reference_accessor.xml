@@ -1697,8 +1697,8 @@ GROUP BY gid, field1,field2;
 	<refentry id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
-		<refpurpose>Return the number of interior rings of the first polygon in
-			the geometry. Synonym to ST_NumInteriorRings. </refpurpose>
+		<refpurpose>Return the number of interior rings of a polygon in
+			the geometry. Synonym for ST_NumInteriorRings. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
