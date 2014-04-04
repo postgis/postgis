@@ -749,7 +749,7 @@ sub run_loader_and_check_output
 # $1 - Description of this run of the dumper, used for error messages.
 # $2 - Table name to dump from.
 # $3 - "Expected" .shp file to compare with.
-# $3 - If you pass true, this will run the loader even if neither
+# $4 - If you pass true, this will run the loader even if neither
 #      of the expected results files exists (though of course
 #      the results won't be compared with anything).
 ##################################################################
