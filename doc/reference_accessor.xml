@@ -1711,17 +1711,6 @@ GROUP BY gid, field1,field2;
 	  </refsynopsisdiv>
 
 	  <refsection>
-		<title>Description</title>
-
-		<para>Return the number of interior rings of the first polygon in
-			the geometry. Synonym to ST_NumInteriorRings. The OpenGIS specs are
-			ambiguous about the exact function naming, so we provide both
-			spellings.</para>
-
-		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
-	  </refsection>
-
-	  <refsection>
 		<title>See Also</title>
 
 		<para><xref linkend="ST_NumInteriorRings" /></para>
