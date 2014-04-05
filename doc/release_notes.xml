@@ -295,8 +295,76 @@
       <para>#2111, Raster bands can only reference the first 256 bands of out-db rasters</para>
 		</simplesect>
 	 </sect1>
-	  
-       <sect1>
+	 
+	     <sect1>
+       <title>Release 2.0.5</title>
+         <para>Release date: 2014/03/31</para>
+         <para>This is a bug fix release, addressing issues that have been filed since the 2.0.4 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
+       <simplesect>
+         <title>Bug Fixes</title>
+         <para>#2494, avoid memcpy in GIST index</para>
+         <para>#2502, Fix postgis_topology_scripts_installed() install schema</para>
+         <para>#2504, Fix segfault on bogus pgsql2shp call </para>
+         <para>#2528, Fix memory leak in ST_Split / lwline_split_by_line</para>
+         <para>#2532, Add missing raster/geometry commutator operators</para>
+         <para>#2533, Remove duplicated signatures</para>
+         <para>#2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and ST_AsJPEG</para>
+         <para>#2555, Fix parsing issue of range arguments of ST_Reclass</para>
+         <para>#2589, Remove use of unnecessary void pointers</para>
+         <para>#2607, Cannot open more than 1024 out-db files in process</para>
+         <para>#2610, Ensure face splitting algorithm uses the edge index </para>
+         <para>#2619, Empty ring array in GeoJSON polygon causes crash</para>
+         <para>#2638, Geography distance on M geometries sometimes wrong</para>
+       </simplesect>
+       <simplesect>
+         <title>Important Changes</title>
+         <para>##2514, Change raster license from GPL v3+ to v2+, allowing distribution of PostGIS Extension as GPLv2.</para>
+       </simplesect>
+     </sect1>
+
+  <sect1>
+    <title>Release 2.0.4</title>
+      <para>Release date: 2013/09/06</para>
+      <para>This is a bug fix release, addressing issues that have been filed since the 2.0.3 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
+    <simplesect>
+      <title>Bug Fixes</title>
+        <para>#2110, Equality operator between EMPTY and point on origin</para>
+        <para>Allow adding points at precision distance with TopoGeo_addPoint</para>
+        <para>#1968, Fix missing edge from toTopoGeom return</para>
+        <para>#2165, ST_NumPoints regression failure with CircularString</para>
+        <para>#2168, ST_Distance is not always commutative</para>
+        <para>#2186, gui progress bar updates too frequent</para>
+        <para>#2201, ST_GeoHash wrong on boundaries</para>
+        <para>#2257, GBOX variables not initialized when testing with empty geometries</para>
+        <para>#2271, Prevent parallel make of raster</para>
+        <para>#2267, Server crash from analyze table</para>
+        <para>#2277, potential segfault removed</para>
+        <para>#2307, ST_MakeValid outputs invalid geometries</para>
+        <para>#2351, st_distance between geographies wrong</para>
+        <para>#2359, Incorrect handling of schema for overview constraints</para>
+        <para>#2371, Support GEOS versions with more than 1 digit in micro</para>
+        <para>#2372, Cannot parse space-padded KML coordinates</para>
+        <para>Fix build with systemwide liblwgeom installed</para>
+        <para>#2383, Fix unsafe use of \' in warning message</para>
+        <para>#2410, Fix segmentize of collinear curve</para>
+        <para>#2412, ST_LineToCurve support for lines with less than 4 vertices</para>
+        <para>#2415, ST_Multi support for COMPOUNDCURVE and CURVEPOLYGON</para>
+        <para>#2420, ST_LineToCurve: require at least 8 edges to define a full circle</para>
+        <para>#2423, ST_LineToCurve: require all arc edges to form the same angle</para>
+        <para>#2424, ST_CurveToLine: add support for COMPOUNDCURVE in MULTICURVE</para>
+        <para>#2427, Make sure to retain first point of curves on ST_CurveToLine</para>
+    </simplesect>
+    <simplesect>
+      <title>Enhancements</title>
+      <para>#2269, Avoid uselessly detoasting full geometries on ANALYZE</para>
+    </simplesect>
+    <simplesect>
+      <title>Known Issues</title>
+      <para>#2111, Raster bands can only reference the first 256 bands of out-db rasters</para>
+    </simplesect>
+  </sect1>
+  
+  <sect1>
 		<title>Release 2.0.3</title>
 		<para>Release date: 2013/03/01</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
