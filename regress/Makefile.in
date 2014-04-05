@@ -18,6 +18,8 @@ TMPDIR?=/tmp
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
+POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
+POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_SFCGAL=@HAVE_SFCGAL@
 MINGWBUILD=@MINGWBUILD@
@@ -210,7 +212,7 @@ test check: staged-install
 
 garden:
 	createdb postgis_garden
-	createlang plpgsql postgis_garden
+	createlang plpgsql postgis_garden || true # tolerate an error here
 	psql -d postgis_garden < ../postgis/postgis.sql
 	psql -d postgis_garden < ../spatial_ref_sys.sql
 	@echo '-------------------------------------------------'
