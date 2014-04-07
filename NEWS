@@ -58,6 +58,7 @@ PostGIS 2.2.0
   - #2556, geography ST_Intersects results depending on insert order
   - #2634, regression in sphere distance code
   - #2697, invalid GeoJSON Polygon input crashes server process
+  - #2704, ST_DumpPoints of EMPTY geometries crashes server
 
 
  * Code refactoring *
