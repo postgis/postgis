@@ -833,8 +833,13 @@ projFileCreate(SHPDUMPERSTATE *state)
 				{
 					return 0;
 				}
-				fputs (srtext, fp);
-				LWDEBUGF(3, "\n result proj SRText is %s .\n", srtext);
+				{
+#if POSTGIS_DEBUG_LEVEL > 0
+				  int result =
+#endif
+				  fputs (srtext,fp);
+				  LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+				}
 				fclose( fp );
 				free( pszFullname );
 			}
