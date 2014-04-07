@@ -720,7 +720,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 	char *esc_table;
 	char *esc_geo_col_name;
 
-	int error;
+	int error, result;
 	PGresult *res;
 	int size;
 
@@ -834,11 +834,16 @@ projFileCreate(SHPDUMPERSTATE *state)
 					return 0;
 				}
 				{
-#if POSTGIS_DEBUG_LEVEL > 0
-				  int result =
-#endif
-				  fputs (srtext,fp);
-				  LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+				    result = fputs (srtext,fp);
+                    LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+                    if (result == EOF)
+                    {
+                        fclose( fp );
+                        free( pszFullname );
+                        PQclear(res);
+                        free(query);
+                        return 0;
+                    }
 				}
 				fclose( fp );
 				free( pszFullname );
