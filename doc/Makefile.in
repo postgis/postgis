@@ -276,6 +276,8 @@ clean:
 	rm -f *.epub
 	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
+	rm -f postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
+	rm -f raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql
 
 distclean: clean
 	$(MAKE) -C html/image_src distclean

@@ -228,3 +228,4 @@ cleanup:
 
 clean:
 	rm -rf $(REGRESS_INSTALLDIR)
+	rm -f postgis_garden_result.txt

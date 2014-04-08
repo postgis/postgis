@@ -25,6 +25,8 @@ doc/postgis_aggs_mm.xml
 doc/postgis_comments.sql
 doc/postgis-out.xml
 doc/raster_comments.sql
+doc/postgis_gardentest_*.sql
+doc/raster_gardentest_*.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
 extensions/Makefile
@@ -100,6 +102,7 @@ raster/test/regress/rtpostgis.sql
 regress/00-regress-install/
 regress/Makefile
 regress/postgis.sql
+regress/postgis_garden_result.txt
 *.so
 st_*.png
 .svn
