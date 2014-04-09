@@ -20,6 +20,7 @@
 	<xsl:variable name='var_integer2'>5</xsl:variable>
 	<xsl:variable name='var_float1'>20.1</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
+	<xsl:variable name='var_frac'>0.80</xsl:variable>
 	<xsl:variable name='var_distance'>100</xsl:variable>
 	<xsl:variable name='var_version1'>1</xsl:variable>
 	<xsl:variable name='var_version2'>2</xsl:variable>
@@ -244,7 +245,14 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="Multiple NULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
-
+		<pgis:gset ID="Malformed Linestrings" GeometryType="LINESTRING" createtable="true">(SELECT ST_GeomFromText('LINESTRING(1 2, 1 2)',4326) As the_geom
+			UNION ALL SELECT ST_MakeLine('SRID=4326;POINT(1 2)'::geometry, 'SRID=4326;POINT EMPTY'::geometry) As the_geom
+		)
+		</pgis:gset>
+		<pgis:gset ID="Malformed Polygons" GeometryType="POLYGON" createtable="true">(SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2)',4326)) As the_geom
+			UNION ALL SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2, 3 2, 1 2)',4326)) As the_geom
+		)
+		</pgis:gset>
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
@@ -646,6 +654,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(type, 'bytea')">
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'Frac') or contains(parameter, 'frac') or contains(parameter, 'percent')">
+						<xsl:value-of select="$var_frac" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'float') or contains(type, 'double')">
 						<xsl:value-of select="$var_float1" />
