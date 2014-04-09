@@ -1,7 +1,7 @@
 # **********************************************************************
 # *
 # * PostGIS - Spatial Types for PostgreSQL
-# * http://postgis.refractions.net
+# * http://postgis.net
 # * 
 # * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
 # * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -18,6 +18,8 @@ TMPDIR?=/tmp
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
+POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
+POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_SFCGAL=@HAVE_SFCGAL@
 MINGWBUILD=@MINGWBUILD@
@@ -205,7 +207,7 @@ test check: staged-install
 
 garden:
 	createdb postgis_garden
-	createlang plpgsql postgis_garden
+	createlang plpgsql postgis_garden || true # tolerate an error here
 	psql -d postgis_garden < ../postgis/postgis.sql
 	psql -d postgis_garden < ../spatial_ref_sys.sql
 	@echo '-------------------------------------------------'
@@ -221,3 +223,4 @@ cleanup:
 
 clean:
 	rm -rf $(REGRESS_INSTALLDIR)
+	rm -f postgis_garden_result.txt
