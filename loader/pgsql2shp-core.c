@@ -1207,7 +1207,7 @@ read_column_map(SHPDUMPERSTATE *state)
 		state->column_map_pgfieldnames[curmapsize][fieldnamesize] = '\0';
 		
 		/* Now swallow up any whitespace */
-		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++);
+		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++) {}
 
 		/* Finally locate end of second column (dbffieldname) */
  		for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		

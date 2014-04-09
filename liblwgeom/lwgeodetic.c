@@ -443,10 +443,12 @@ static void vector_scale(POINT3D *n, double scale)
 	return;
 }
 
-static inline double vector_magnitude(const POINT3D* v)
-{
-	return sqrt(v->x*v->x + v->y*v->y + v->z*v->z);
-}
+/*
+* static inline double vector_magnitude(const POINT3D* v)
+* {
+*	return sqrt(v->x*v->x + v->y*v->y + v->z*v->z);
+* }
+*/
 
 /**
 * Angle between two unit vectors

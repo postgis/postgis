@@ -130,7 +130,7 @@ int u_getvarint_size(uint64_t val)
 {
 	LWDEBUGF(2, "Entered  u_getvarint_size",0);
 	
-	if(val<0||val>max_varint)
+	if(val>max_varint)
 		lwerror("Value is out of range for unsigned varint (0 to %ld)", max_varint);
 	uint64_t q;
 	int n=0;
