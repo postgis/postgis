@@ -1107,19 +1107,20 @@ if test "x$with_raster" != "xno"; then
 
 		AC_SUBST([GDALFPOLYGONIZE])
 
-    dnl ===========================================================================
-    dnl Allow output of double truncation warnings with --with-raster-dblwarning
-    dnl ===========================================================================
-    AC_ARG_ENABLE(
-      [offline-rasters],
-      AC_HELP_STRING([--disable-offline-rasters], [disable support for off-db rasters]),
-      [POSTGIS_RASTER_DISABLE_OFFLINE=1],
-      [POSTGIS_RASTER_DISABLE_OFFLINE=0])
-
-    AC_DEFINE_UNQUOTED(
-      [POSTGIS_RASTER_DISABLE_OFFLINE],
-      [$POSTGIS_RASTER_DISABLE_OFFLINE],
-      [Define to disable support for offline rasters])
+		dnl ===========================================================================
+		dnl Disable offline raster storage with --disable-offline-raster
+		dnl ===========================================================================
+		AC_ARG_ENABLE(
+			[offline-rasters],
+			AC_HELP_STRING([--disable-offline-rasters], [disable support for off-db rasters]),
+			[POSTGIS_RASTER_DISABLE_OFFLINE=1],
+			[POSTGIS_RASTER_DISABLE_OFFLINE=0])
+		if test "x$POSTGIS_RASTER_DISABLE_OFFLINE" = "x1"; then
+			AC_DEFINE_UNQUOTED(
+				[POSTGIS_RASTER_DISABLE_OFFLINE],
+				[$POSTGIS_RASTER_DISABLE_OFFLINE],
+				[Define to disable support for offline rasters])
+		fi
 
 	else
 		AC_MSG_RESULT([not found])
