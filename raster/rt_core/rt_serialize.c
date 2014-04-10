@@ -580,6 +580,10 @@ rt_raster_serialize(rt_raster raster) {
 		/* Add band type */
 		*ptr = band->pixtype;
 		if (band->offline) {
+#ifdef POSTGIS_RASTER_DISABLE_OFFLINE
+      rterror("rt_raster_serialize: offdb raster support disabled at compile-time");
+      return NULL;
+#endif
 			*ptr |= BANDTYPE_FLAG_OFFDB;
 		}
 		if (band->hasnodata) {
