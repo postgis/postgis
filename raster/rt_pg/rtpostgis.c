@@ -173,6 +173,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *newdrivers, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "newdrivers = %s", newdrivers);
 
 	/* validate new drivers */
+	/* TODO: flesh this out */
 
 	/*
 	CPLSetConfigOption("GDAL_SKIP", newdrivers);
@@ -183,10 +184,13 @@ static char *gdalenableddrivers;
 /* Module load callback */
 void
 _PG_init(void) {
+	const char *gdal_skip;
 
 	/* restrict GDAL drivers */
-	/* unless over-ridden by GUCs, default to VRT, WMS, WCS and MEM */
-	CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
+	/* unless already set, default to VRT, WMS, WCS and MEM */
+	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
+	if (gdal_skip == NULL)
+		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();

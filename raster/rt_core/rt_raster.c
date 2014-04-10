@@ -1600,9 +1600,12 @@ rt_raster_clone(rt_raster raster, uint8_t deep) {
  *   for freeing the returned data using CPLFree()
  */
 uint8_t*
-rt_raster_to_gdal(rt_raster raster, const char *srs,
-	char *format, char **options, uint64_t *gdalsize) {
+rt_raster_to_gdal(
+	rt_raster raster, const char *srs,
+	char *format, char **options, uint64_t *gdalsize
+) {
 	GDALDriverH src_drv = NULL;
+	int destroy_src_drv = 0;
 	GDALDatasetH src_ds = NULL;
 
 	vsi_l_offset rtn_lenvsi;
@@ -1625,7 +1628,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	RASTER_DEBUGF(3, "output format is %s", format);
 
 	/* load raster into a GDAL MEM raster */
-	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, NULL, 0, &src_drv);
+	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, NULL, 0, &src_drv, &destroy_src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_to_gdal: Could not convert raster to GDAL MEM format");
 		return 0;
@@ -1636,6 +1639,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	if (NULL == rtn_drv) {
 		rterror("rt_raster_to_gdal: Could not load the output GDAL driver");
 		GDALClose(src_ds);
+		if (destroy_src_drv) GDALDestroyDriver(src_drv);
 		return 0;
 	}
 	RASTER_DEBUG(3, "Output driver loaded");
@@ -1651,15 +1655,16 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 		NULL, /* progress function */
 		NULL /* progress data */
 	);
-	if (NULL == rtn_ds) {
-		rterror("rt_raster_to_gdal: Could not create the output GDAL dataset");
-		GDALClose(src_ds);
-		return 0;
-	}
 
 	/* close source dataset */
 	GDALClose(src_ds);
+	if (destroy_src_drv) GDALDestroyDriver(src_drv);
 	RASTER_DEBUG(3, "Closed GDAL MEM raster");
+
+	if (NULL == rtn_ds) {
+		rterror("rt_raster_to_gdal: Could not create the output GDAL dataset");
+		return 0;
+	}
 
 	RASTER_DEBUGF(4, "dataset SRS: %s", GDALGetProjectionRef(rtn_ds));
 
@@ -1712,6 +1717,8 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 
 	rt_util_gdal_register_all();
 	count = GDALGetDriverCount();
+	RASTER_DEBUGF(3, "%d drivers found", count);
+
 	rtn = (rt_gdaldriver) rtalloc(count * sizeof(struct rt_gdaldriver_t));
 	if (NULL == rtn) {
 		rterror("rt_raster_gdal_drivers: Could not allocate memory for gdaldriver structure");
@@ -1739,7 +1746,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 		txt_len = strlen(txt);
 
 		if (cancc) {
-			RASTER_DEBUGF(3, "rt_raster_gdal_driver: driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
+			RASTER_DEBUGF(3, "driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
 		}
 
 		txt_len = (txt_len + 1) * sizeof(char);
@@ -1777,7 +1784,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 ******************************************************************************/
 
 /**
- * Return GDAL dataset using GDAL MEM driver from raster
+ * Return GDAL dataset using GDAL MEM driver from raster.
  *
  * @param raster : raster to convert to GDAL MEM
  * @param srs : the raster's coordinate system in OGC WKT
@@ -1787,6 +1794,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
  *   ignore nodata values for the band
  * @param count : number of elements in bandNums
  * @param rtn_drv : is set to the GDAL driver object
+ * @param destroy_rtn_drv : if non-zero, caller must destroy the MEM driver
  *
  * @return GDAL dataset using GDAL MEM driver
  */
@@ -1797,7 +1805,7 @@ rt_raster_to_gdal_mem(
 	uint32_t *bandNums,
 	int *excludeNodataValues,
 	int count,
-	GDALDriverH *rtn_drv
+	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 ) {
 	GDALDriverH drv = NULL;
 	GDALDatasetH ds = NULL;
@@ -1822,16 +1830,28 @@ rt_raster_to_gdal_mem(
 
 	assert(NULL != raster);
 	assert(NULL != rtn_drv);
+	assert(NULL != destroy_rtn_drv);
+
+	*destroy_rtn_drv = 0;
 
 	/* store raster in GDAL MEM raster */
-	if (!rt_util_gdal_driver_registered("MEM"))
+	if (!rt_util_gdal_driver_registered("MEM")) {
+		RASTER_DEBUG(4, "Registering MEM driver");
 		GDALRegister_MEM();
+		*destroy_rtn_drv = 1;
+	}
 	drv = GDALGetDriverByName("MEM");
 	if (NULL == drv) {
 		rterror("rt_raster_to_gdal_mem: Could not load the MEM GDAL driver");
 		return 0;
 	}
 	*rtn_drv = drv;
+
+	/* unload driver from GDAL driver manager */
+	if (*destroy_rtn_drv) {
+		RASTER_DEBUG(4, "Deregistering MEM driver");
+		GDALDeregisterDriver(drv);
+	}
 
 	width = rt_raster_get_width(raster);
 	height = rt_raster_get_height(raster);
@@ -2496,6 +2516,7 @@ rt_raster_gdal_rasterize(
 	CPLErr cplerr;
 	double _gt[6] = {0};
 	GDALDriverH _drv = NULL;
+	int unload_drv = 0;
 	GDALDatasetH _ds = NULL;
 	GDALRasterBandH _band = NULL;
 
@@ -3117,8 +3138,11 @@ rt_raster_gdal_rasterize(
 		_dim[0], _dim[1]);
 
 	/* load GDAL mem */
-	if (!rt_util_gdal_driver_registered("MEM"))
+	if (!rt_util_gdal_driver_registered("MEM")) {
+		RASTER_DEBUG(4, "Registering MEM driver");
 		GDALRegister_MEM();
+		unload_drv = 1;
+	}
 	_drv = GDALGetDriverByName("MEM");
 	if (NULL == _drv) {
 		rterror("rt_raster_gdal_rasterize: Could not load the MEM GDAL driver");
@@ -3130,6 +3154,12 @@ rt_raster_gdal_rasterize(
 		return NULL;
 	}
 
+	/* unload driver from GDAL driver manager */
+	if (unload_drv) {
+		RASTER_DEBUG(4, "Deregistering MEM driver");
+		GDALDeregisterDriver(_drv);
+	}
+
 	_ds = GDALCreate(_drv, "", _dim[0], _dim[1], 0, GDT_Byte, NULL);
 	if (NULL == _ds) {
 		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
@@ -3137,6 +3167,7 @@ rt_raster_gdal_rasterize(
 		OGR_G_DestroyGeometry(src_geom);
 		_rti_rasterize_arg_destroy(arg);
 		/* OGRCleanupAll(); */
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -3151,6 +3182,7 @@ rt_raster_gdal_rasterize(
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -3170,6 +3202,7 @@ rt_raster_gdal_rasterize(
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 			return NULL;
 		}
@@ -3225,6 +3258,7 @@ rt_raster_gdal_rasterize(
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
+			if (unload_drv) GDALDestroyDriver(_drv);
 
 			return NULL;
 		}
@@ -3251,6 +3285,7 @@ rt_raster_gdal_rasterize(
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -3264,6 +3299,7 @@ rt_raster_gdal_rasterize(
 	/* OGRCleanupAll(); */
 
 	GDALClose(_ds);
+	if (unload_drv) GDALDestroyDriver(_drv);
 
 	if (NULL == rast) {
 		rterror("rt_raster_gdal_rasterize: Could not rasterize geometry");

@@ -335,9 +335,12 @@ void
 rt_util_gdal_register_all(void) {
 	static int registered = 0;
 
-	if (registered)
+	if (registered) {
+		RASTER_DEBUG(3, "Already called once... not calling GDALAllRegister");
 		return;
+	}
 
+	RASTER_DEBUG(3, "Calling GDALAllRegister");
 	GDALAllRegister();
 	registered = 1;
 }
