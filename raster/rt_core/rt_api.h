@@ -1254,11 +1254,12 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  *                   and include in the GDAL dataset (0 based)
  * @param count : number of elements in bandNums
  * @param rtn_drv : is set to the GDAL driver object
+ * @param destroy_rtn_drv : if non-zero, caller must destroy the MEM driver
  *
  * @return GDAL dataset using GDAL MEM driver
  */
 GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
-	uint32_t *bandNums, int count, GDALDriverH *rtn_drv);
+	uint32_t *bandNums, int count, GDALDriverH *rtn_drv, int *destry_rtn_drv);
 
 /**
  * Return a raster from a GDAL dataset

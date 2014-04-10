@@ -65,6 +65,19 @@
  */
 PG_MODULE_MAGIC;
 
+/*
+ * Module load callback
+ */
+void _PG_init(void) {
+	const char *gdal_skip;
+
+	/* restrict GDAL drivers */
+	/* unless already set, default to VRT, WMS, WCS and MEM */
+	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
+	if (gdal_skip == NULL)
+		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
+}
+
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
  * keeping inline with the use of pgis_ for ./postgis C utility

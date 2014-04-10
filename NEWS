@@ -1,5 +1,9 @@
 PostGIS 2.0.6
-2013/mm/dd
+2014/mm/dd
+
+ * Important Changes *
+  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS
+    and MEM drivers
 
  * Bug Fixes *
   - 

@@ -1688,6 +1688,7 @@ static void testGDALToRaster() {
 	double value;
 
 	GDALDriverH gddrv = NULL;
+	int destroy = 0;
 	GDALDatasetH gdds = NULL;
 
 	raster = rt_raster_new(xmax, ymax);
@@ -1704,8 +1705,9 @@ static void testGDALToRaster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv, &destroy);
 	CHECK(gddrv);
+	CHECK((destroy == 0));
 	CHECK(gdds);
 	CHECK((GDALGetRasterXSize(gdds) == xmax));
 	CHECK((GDALGetRasterYSize(gdds) == ymax));
@@ -1747,8 +1749,9 @@ static void testGDALToRaster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv, &destroy);
 	CHECK(gddrv);
+	CHECK((destroy == 0));
 	CHECK(gdds);
 	CHECK((GDALGetRasterXSize(gdds) == xmax));
 	CHECK((GDALGetRasterYSize(gdds) == ymax));

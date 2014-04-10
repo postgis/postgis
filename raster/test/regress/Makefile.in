@@ -131,6 +131,7 @@ TEST_SREL = \
 	
 TEST_BUGS = \
 	bug_test_car5 \
+	permitted_gdal_drivers \
 	tickets
 
 TEST_LOADER = \
