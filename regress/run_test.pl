@@ -24,7 +24,7 @@ use strict;
 # Global configuration items
 ##################################################################
 
-our $DB = "postgis_reg";
+our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
 our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
 our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
