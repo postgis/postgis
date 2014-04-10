@@ -1563,6 +1563,7 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  * to check for pixels with value
  * @param count : number of elements in bandNums and exclude_nodata_values
  * @param rtn_drv : is set to the GDAL driver object
+ * @param destroy_rtn_drv : if non-zero, caller must destroy the MEM driver
  *
  * @return GDAL dataset using GDAL MEM driver
  */
@@ -1572,7 +1573,7 @@ GDALDatasetH rt_raster_to_gdal_mem(
 	uint32_t *bandNums,
 	int *excludeNodataValues,
 	int count,
-	GDALDriverH *rtn_drv
+	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 );
 
 /**

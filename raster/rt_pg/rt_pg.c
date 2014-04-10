@@ -72,12 +72,17 @@ PG_MODULE_MAGIC;
 /*
  * Module load callback
  */
-void _PG_init(void);
-void
-_PG_init(void)
-{
-    /* Install liblwgeom handlers */
-    pg_install_lwgeom_handlers();
+void _PG_init(void) {
+	const char *gdal_skip;
+
+	/* restrict GDAL drivers */
+	/* unless already set, default to VRT, WMS, WCS and MEM */
+	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
+	if (gdal_skip == NULL)
+		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
+
+	/* Install liblwgeom handlers */
+	pg_install_lwgeom_handlers();
 
     /* TODO: Install raster callbacks (see rt_init_allocators) */
 }

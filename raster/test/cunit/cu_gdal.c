@@ -490,6 +490,7 @@ static void test_gdal_to_raster() {
 	double value;
 
 	GDALDriverH gddrv = NULL;
+	int destroy = 0;
 	GDALDatasetH gdds = NULL;
 
 	raster = rt_raster_new(width, height);
@@ -505,8 +506,9 @@ static void test_gdal_to_raster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
+	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
@@ -550,8 +552,9 @@ static void test_gdal_to_raster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
+	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
