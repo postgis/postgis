@@ -147,6 +147,11 @@ PG_MODULE_MAGIC;
 /* Module load callback */
 void _PG_init(void);
 
+/* ---------------------------------------------------------------- */
+/*  PostGIS raster GUCs                                             */
+/* ---------------------------------------------------------------- */
+
+/* postgis.gdal_datapath */
 static void
 rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "newpath = %s", newpath);
@@ -161,18 +166,35 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	CPLSetConfigOption("GDAL_DATA", newpath);
 	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", NULL));
 }
-
 static char *gdaldatapath;
+
+static void
+rtpg_assignHookGDALEnabledDrivers(const char *newdrivers, void *extra) {
+	POSTGIS_RT_DEBUGF(4, "newdrivers = %s", newdrivers);
+
+	/* validate new drivers */
+
+	/*
+	CPLSetConfigOption("GDAL_SKIP", newdrivers);
+	*/
+}
+static char *gdalenableddrivers;
 
 /* Module load callback */
 void
 _PG_init(void) {
+
+	/* restrict GDAL drivers */
+	/* unless over-ridden by GUCs, default to VRT, WMS, WCS and MEM */
+	CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
+
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
 	/* TODO: Install raster callbacks (see rt_init_allocators)??? */
 
 	/* Define custom GUC variables. */
+
 	DefineCustomStringVariable(
 		"postgis.gdal_datapath", /* name */
 		"Path to GDAL data files.", /* short_desc */
@@ -185,6 +207,21 @@ _PG_init(void) {
 		NULL, /* GucStringCheckHook check_hook */
 #endif
 		rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
+		NULL  /* GucShowHook show_hook */
+	);
+
+	DefineCustomStringVariable(
+		"postgis.gdal_enabled_drivers", /* name */
+		"Enabled GDAL drivers.", /* short_desc */
+		"List of permitted GDAL drivers. (sets the GDAL_SKIP config option).", /* long_desc */
+		&gdalenableddrivers, /* valueAddr */
+		NULL, /* bootValue */
+		PGC_SUSET, /* GucContext context */
+		0, /* int flags */
+#if POSTGIS_PGSQL_VERSION >= 91
+		NULL, /* GucStringCheckHook check_hook */
+#endif
+		rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
 		NULL  /* GucShowHook show_hook */
 	);
 }
