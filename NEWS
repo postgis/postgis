@@ -6,8 +6,8 @@ PostGIS 2.2.0
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
-  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS
-    and MEM drivers
+  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS,
+    PDF and MEM drivers
 
  * Deprecated signatures *
 

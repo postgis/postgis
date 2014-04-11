@@ -190,7 +190,7 @@ _PG_init(void) {
 	/* unless already set, default to VRT, WMS, WCS and MEM */
 	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
 	if (gdal_skip == NULL)
-		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM");
+		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM PDF");
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
