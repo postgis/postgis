@@ -10,6 +10,10 @@ PostGIS 2.1.3
   - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS,
     PDF and MEM drivers
 
+ * Enhancements *
+
+  - Make offline raster optional (--disable-offline-raster configure switch)
+
 PostGIS 2.1.2
 2014/03/31
 
