@@ -785,9 +785,7 @@ rt_raster rt_raster_gdal_warp(
 	/* load VRT driver */
 	if (!rt_util_gdal_driver_registered("VRT")) {
 		RASTER_DEBUG(3, "Registering VRT driver");
-		RASTER_DEBUGF(4, "VRT registered: %d", rt_util_gdal_driver_registered("VRT"));
 		GDALRegister_VRT();
-		RASTER_DEBUGF(4, "VRT registered: %d", rt_util_gdal_driver_registered("VRT"));
 		arg->dst.destroy_drv = 1;
 	}
 	arg->dst.drv = GDALGetDriverByName("VRT");
