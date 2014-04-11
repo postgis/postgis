@@ -32,3 +32,6 @@
 
 /* Define to 1 if a warning is outputted every time a double is truncated */
 #undef POSTGIS_RASTER_WARN_ON_TRUNCATION
+
+/* Define to disable support for offline rasters */
+#undef POSTGIS_RASTER_DISABLE_OFFLINE
