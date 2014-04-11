@@ -26,8 +26,8 @@ psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
-psql -d yourdatabase -f topology/topology.sql
-psql -d yourdatabase -f doc/topology_comments.sql
+psql -d yourdatabase -f topology.sql
+psql -d yourdatabase -f topology_comments.sql
 
 </programlisting>
 <note><para>topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if
