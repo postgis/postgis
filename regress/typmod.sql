@@ -223,9 +223,9 @@ SELECT 'gg',
  coord_dimension, srid, type
 from geography_columns ORDER BY f_table_name;
 
-SELECT distinct 'catalog-schema', f_table_catalog,f_table_schema FROM geometry_columns
+SELECT distinct 'catalog-schema', f_table_catalog = current_database(),f_table_schema FROM geometry_columns
 UNION
-SELECT distinct 'catalog-schema', f_table_catalog,f_table_schema FROM geography_columns
+SELECT distinct 'catalog-schema', f_table_catalog = current_database(),f_table_schema FROM geography_columns
 ;
 
 CREATE TABLE tm.types (id serial, g geometry);
