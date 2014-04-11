@@ -2,7 +2,7 @@ PostGIS 2.0.6
 2014/mm/dd
 
  * Important Changes *
-  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS
+  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS, PDF
     and MEM drivers
 
  * Bug Fixes *
