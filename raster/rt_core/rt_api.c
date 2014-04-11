@@ -10659,6 +10659,7 @@ rt_raster_gdal_rasterize(
 	CPLErr cplerr;
 	double _gt[6] = {0};
 	GDALDriverH _drv = NULL;
+	int unload_drv = 0;
 	GDALDatasetH _ds = NULL;
 	GDALRasterBandH _band = NULL;
 
@@ -11310,8 +11311,10 @@ rt_raster_gdal_rasterize(
 		_dim[0], _dim[1]);
 
 	/* load GDAL mem */
-	if (!rt_util_gdal_driver_registered("MEM"))
+	if (!rt_util_gdal_driver_registered("MEM")) {
 		GDALRegister_MEM();
+		unload_drv = 1;
+	}
 	_drv = GDALGetDriverByName("MEM");
 	if (NULL == _drv) {
 		rterror("rt_raster_gdal_rasterize: Could not load the MEM GDAL driver");
@@ -11325,6 +11328,9 @@ rt_raster_gdal_rasterize(
 		return NULL;
 	}
 
+	if (unload_drv)
+		GDALDeregisterDriver(_drv);
+
 	_ds = GDALCreate(_drv, "", _dim[0], _dim[1], 0, GDT_Byte, NULL);
 	if (NULL == _ds) {
 		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
@@ -11334,6 +11340,8 @@ rt_raster_gdal_rasterize(
 		OGR_G_DestroyGeometry(src_geom);
 		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
+
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -11350,6 +11358,7 @@ rt_raster_gdal_rasterize(
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -11371,6 +11380,7 @@ rt_raster_gdal_rasterize(
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
+			if (unload_drv) GDALDestroyDriver(_drv);
 
 			return NULL;
 		}
@@ -11426,6 +11436,7 @@ rt_raster_gdal_rasterize(
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
+			if (unload_drv) GDALDestroyDriver(_drv);
 
 			return NULL;
 		}
@@ -11455,6 +11466,7 @@ rt_raster_gdal_rasterize(
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
+		if (unload_drv) GDALDestroyDriver(_drv);
 
 		return NULL;
 	}
@@ -11469,6 +11481,7 @@ rt_raster_gdal_rasterize(
 	/* OGRCleanupAll(); */
 
 	GDALClose(_ds);
+	if (unload_drv) GDALDestroyDriver(_drv);
 
 	if (NULL == rast) {
 		rterror("rt_raster_gdal_rasterize: Could not rasterize geometry");
