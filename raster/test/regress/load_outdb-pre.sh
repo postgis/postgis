@@ -11,6 +11,7 @@ if [ "$CSYS" == "msys" ]; then
 fi
 
 SQL=" \
+SET postgis.gdal_enabled_drivers = 'GTiff';
 DROP TABLE IF EXISTS raster_outdb_template; \
 CREATE TABLE raster_outdb_template AS \
 SELECT \

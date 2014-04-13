@@ -2126,8 +2126,8 @@ rt_util_gdal_configured(void);
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void);
+int
+rt_util_gdal_register_all(int force_register_all);
 
 /*
 	is the driver registered?

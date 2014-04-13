@@ -1,3 +1,4 @@
+SET postgis.gdal_enabled_drivers = 'GTiff PNG';
 /*
 Driver: PNG/Portable Network Graphics
 Files: testraster.png

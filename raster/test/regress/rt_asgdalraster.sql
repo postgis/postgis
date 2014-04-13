@@ -1,3 +1,4 @@
+SET postgis.gdal_enabled_drivers = 'GTiff PNG JPEG';
 SELECT CASE
 	WHEN length(
 		ST_AsGDALRaster(

@@ -725,7 +725,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 	}
 
 	/* open outdb raster file */
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	hdsOut = GDALOpenShared(outdbfile, GA_ReadOnly);
 	if (hdsOut == NULL) {
 		if (pgraster != NULL) {

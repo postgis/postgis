@@ -1619,7 +1619,7 @@ rt_raster_to_gdal(
 	assert(NULL != gdalsize);
 
 	/* any supported format is possible */
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	RASTER_DEBUG(3, "loaded all supported GDAL formats");
 
 	/* output format not specified */
@@ -1715,7 +1715,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 
 	assert(drv_count != NULL);
 
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	count = GDALGetDriverCount();
 	RASTER_DEBUGF(3, "%d drivers found", count);
 

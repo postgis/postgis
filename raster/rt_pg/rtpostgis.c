@@ -138,6 +138,7 @@
 #include "lwgeom_pg.h"
 
 #include "rtpostgis.h"
+#include "rtpg_internal.h"
 
 /*
  * This is required for builds against pgsql
@@ -152,7 +153,6 @@ void _PG_init(void);
 /* ---------------------------------------------------------------- */
 
 static char *gdaldatapath = NULL;
-static char *gdaldisableddrivers = NULL;
 static char *gdalenableddrivers = NULL;
 
 /* postgis.gdal_datapath */
@@ -172,52 +172,130 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", NULL));
 }
 
-/* postgis.gdal_disabled_drivers */
+/* postgis.gdal_enabled_drivers */
+#define ENABLE_ALL "ENABLE_ALL"
+#define DISABLE_ALL "DISABLE_ALL"
 static void
-rtpg_assignHookGDALDisabledDrivers(const char *newdrivers, void *extra) {
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
-	POSTGIS_RT_DEBUGF(4, "disableddrivers = %s", newdrivers);
-	POSTGIS_RT_DEBUGF(4, "gdaldisableddrivers = %s", gdaldisableddrivers);
-	POSTGIS_RT_DEBUGF(4, "gdalenableddrivers = %s", gdalenableddrivers);
+rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
+	int enable_all = 0;
+	int disable_all = 0;
 
-	/* enabled drivers always take presidence */
-	if (gdalenableddrivers != NULL)
+	char **enabled_drivers_array = NULL;
+	int enabled_drivers_count = 0;
+	char *gdal_skip = NULL;
+
+	uint32_t i;
+	uint32_t j;
+
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "enabled_drivers = %s", enabled_drivers);
+
+	/* if NULL, nothing to do */
+	if (enabled_drivers == NULL)
 		return;
 
+	/* destroy the driver manager */
+	/* this is the only way to ensure GDAL_SKIP is recognized */
+	GDALDestroyDriverManager();
+	CPLSetConfigOption("GDAL_SKIP", NULL);
+
+	/* force wrapper function to call GDALAllRegister() */
+	rt_util_gdal_register_all(1);
+
+	enabled_drivers_array = rtpg_strsplit(enabled_drivers, " ", &enabled_drivers_count);
+
+	/* scan for keywords DISABLE_ALL and ENABLE_ALL */
+	disable_all = 0;
+	enable_all = 0;
+	if (strstr(enabled_drivers, DISABLE_ALL) != NULL) {
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (strstr(enabled_drivers_array[i], DISABLE_ALL) != NULL) {
+				disable_all = 1;
+				break;
+			}
+		}
+	}
+	else if (strstr(enabled_drivers, ENABLE_ALL) != NULL) {
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (strstr(enabled_drivers_array[i], ENABLE_ALL) != NULL) {
+				enable_all = 1;
+				break;
+			}
+		}
+	}
+
+	if (!enable_all) {
+		int found = 0;
+		uint32_t drv_count = 0;
+		rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
+		POSTGIS_RT_DEBUGF(4, "driver count = %d", drv_count);
+
+		/* all other drivers than those in new drivers are added to GDAL_SKIP */
+		for (i = 0; i < drv_count; i++) {
+			found = 0;
+
+			if (!disable_all) {
+				/* gdal driver found in enabled_drivers, continue to thorough search */
+				if (strstr(enabled_drivers, drv_set[i].short_name) != NULL) {
+					/* thorough search of enabled_drivers */
+					for (j = 0; j < enabled_drivers_count; j++) {
+						/* driver found */
+						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
+							found = 1;
+							break;
+						}
+					}
+				}
+			}
+
+			/* driver found, continue */
+			if (found)
+				continue;
+
+			/* driver not found, add to gdal_skip */
+			if (gdal_skip == NULL) {
+				gdal_skip = palloc(sizeof(char) * (strlen(drv_set[i].short_name) + 1));
+				sprintf(gdal_skip, "%s", drv_set[i].short_name);
+			}
+			else {
+				gdal_skip = repalloc(
+					gdal_skip,
+					sizeof(char) * (
+						strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1
+					)
+				);
+				sprintf(gdal_skip, "%s %s", gdal_skip, drv_set[i].short_name);
+			}
+		}
+
+		for (i = 0; i < drv_count; i++) {
+			pfree(drv_set[i].short_name);
+			pfree(drv_set[i].long_name);
+			pfree(drv_set[i].create_options);
+		}
+		if (drv_count) pfree(drv_set);
+
+	}
+
+	/* destroy the driver manager */
+	/* this is the only way to ensure GDAL_SKIP is recognized */
+	GDALDestroyDriverManager();
+
 	/* set GDAL_SKIP */
-	CPLSetConfigOption("GDAL_SKIP", newdrivers);
+	POSTGIS_RT_DEBUGF(4, "gdal_skip = %s", gdal_skip);
+	CPLSetConfigOption("GDAL_SKIP", gdal_skip);
+	if (gdal_skip != NULL) pfree(gdal_skip);
+
+	/* force wrapper function to call GDALAllRegister() */
+	rt_util_gdal_register_all(1);
+
+	pfree(enabled_drivers_array);
 	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
-}
-
-/* postgis.gdal_enabled_drivers */
-static void
-rtpg_assignHookGDALEnabledDrivers(const char *newdrivers, void *extra) {
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
-	POSTGIS_RT_DEBUGF(4, "enableddrivers = %s", newdrivers);
-	POSTGIS_RT_DEBUGF(4, "gdaldisableddrivers = %s", gdaldisableddrivers);
-	POSTGIS_RT_DEBUGF(4, "gdalenableddrivers = %s", gdalenableddrivers);
-
-	/* all other drivers than those in this list are added to GDAL_SKIP */
-
-	/* set GDAL_SKIP */
-	/*
-	CPLSetConfigOption("GDAL_SKIP", newdrivers);
-	*/
 }
 
 /* Module load callback */
 void
 _PG_init(void) {
-	const char *gdal_skip;
-
-	/*
-	 * restrict GDAL drivers
-	 * unless already set, default to:
-	 * VRT, WMS, WCS, PDF, MEM, HTTP, RPFTOC, PCIDSK
-	 */
-	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
-	if (gdal_skip == NULL)
-		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM PDF HTTP RPFTOC PCIDSK");
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
@@ -241,29 +319,24 @@ _PG_init(void) {
 		NULL  /* GucShowHook show_hook */
 	);
 
-	DefineCustomStringVariable(
-		"postgis.gdal_disabled_drivers", /* name */
-		"Enabled GDAL drivers.", /* short_desc */
-		"List of disabled GDAL drivers. (sets the GDAL_SKIP config option).", /* long_desc */
-		&gdaldisableddrivers, /* valueAddr */
-		NULL, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
-#endif
-		rtpg_assignHookGDALDisabledDrivers, /* GucStringAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
-
+	/*
+	 * GucContext is set to PGC_BACKEND. As per PostgreSQL's guc.h...
+	 *
+	 * BACKEND options can only be set at postmaster startup, from the
+	 * configuration file, or by client request in the connection startup
+	 * packet (e.g., from libpq's PGOPTIONS variable). Furthermore, an
+	 * already-started backend will ignore changes to such an option in the
+	 * configuration file. The idea is that these options are fixed for a
+	 * given backend once it's started, but they can vary across backends.
+	 */
 	DefineCustomStringVariable(
 		"postgis.gdal_enabled_drivers", /* name */
 		"Enabled GDAL drivers.", /* short_desc */
-		"List of enabled GDAL drivers. If both postgis.gdal_enabled_drivers and postgis.disabled_drivers is set, postgis.gdal_disabled_drivers is ignored. (sets the GDAL_SKIP config option).", /* long_desc */
+		"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
 		&gdalenableddrivers, /* valueAddr */
-		NULL, /* bootValue */
+		DISABLE_ALL, /* bootValue */
 		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
+		GUC_LIST_INPUT, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
 		NULL, /* GucStringCheckHook check_hook */
 #endif

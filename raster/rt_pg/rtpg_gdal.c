@@ -94,7 +94,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	}
 
 	/* register all GDAL drivers */
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 
 	/* open GDAL raster */
 	hdsSrc = GDALOpenShared("/vsimem/in.dat", GA_ReadOnly);

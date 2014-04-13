@@ -331,18 +331,20 @@ int rt_util_gdal_configured(void) {
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void) {
+int
+rt_util_gdal_register_all(int force_register_all) {
 	static int registered = 0;
 
-	if (registered) {
+	if (registered && !force_register_all) {
 		RASTER_DEBUG(3, "Already called once... not calling GDALAllRegister");
-		return;
+		return 0;
 	}
 
 	RASTER_DEBUG(3, "Calling GDALAllRegister");
 	GDALAllRegister();
 	registered = 1;
+
+	return 1;
 }
 
 /*

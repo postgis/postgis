@@ -1,3 +1,4 @@
+SET postgis.gdal_enabled_drivers = 'PNG';
 SELECT ST_AsPNG(NULL) IS NULL;
 SELECT CASE
 	WHEN length(

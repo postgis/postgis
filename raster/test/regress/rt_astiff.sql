@@ -1,3 +1,4 @@
+SET postgis.gdal_enabled_drivers = 'GTiff';
 SELECT ST_AsTIFF(NULL) IS NULL;
 SELECT ST_AsTIFF(NULL, 'JPEG') IS NULL;
 SELECT CASE

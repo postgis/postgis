@@ -6,8 +6,8 @@ PostGIS 2.2.0
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
-  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS,
-    PDF and MEM drivers
+  - By default, PostGIS raster disables all GDAL drivers affecting
+    out-db rasters, ST_FromGDALRaster() and ST_AsGDALRaster() variants
 
  * Deprecated signatures *
 
@@ -17,7 +17,9 @@ PostGIS 2.2.0
  * New Features *
 
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
-  - #1678, Added GUC postgis.gdal.datapath to specify GDAL config
+  - Added GUC postgis.gdal_enabled_drivers to specify GDAL config
+    variable GDAL_SKIP
+  - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
     variable GDAL_DATA
   - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader

@@ -359,7 +359,7 @@ rt_band_load_offline_data(rt_band band) {
 #endif
 
 
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	/*
 	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
 	*/
