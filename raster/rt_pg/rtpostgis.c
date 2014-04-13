@@ -152,8 +152,8 @@ void _PG_init(void);
 /*  PostGIS raster GUCs                                             */
 /* ---------------------------------------------------------------- */
 
-static char *gdaldatapath = NULL;
-static char *gdalenableddrivers = NULL;
+static char *gdal_datapath = NULL;
+extern char *gdal_enabled_drivers;
 
 /* postgis.gdal_datapath */
 static void
@@ -173,8 +173,6 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 }
 
 /* postgis.gdal_enabled_drivers */
-#define ENABLE_ALL "ENABLE_ALL"
-#define DISABLE_ALL "DISABLE_ALL"
 static void
 rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int enable_all = 0;
@@ -207,17 +205,17 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	/* scan for keywords DISABLE_ALL and ENABLE_ALL */
 	disable_all = 0;
 	enable_all = 0;
-	if (strstr(enabled_drivers, DISABLE_ALL) != NULL) {
+	if (strstr(enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
 		for (i = 0; i < enabled_drivers_count; i++) {
-			if (strstr(enabled_drivers_array[i], DISABLE_ALL) != NULL) {
+			if (strstr(enabled_drivers_array[i], GDAL_DISABLE_ALL) != NULL) {
 				disable_all = 1;
 				break;
 			}
 		}
 	}
-	else if (strstr(enabled_drivers, ENABLE_ALL) != NULL) {
+	else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
 		for (i = 0; i < enabled_drivers_count; i++) {
-			if (strstr(enabled_drivers_array[i], ENABLE_ALL) != NULL) {
+			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
 				enable_all = 1;
 				break;
 			}
@@ -308,7 +306,7 @@ _PG_init(void) {
 		"postgis.gdal_datapath", /* name */
 		"Path to GDAL data files.", /* short_desc */
 		"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
-		&gdaldatapath, /* valueAddr */
+		&gdal_datapath, /* valueAddr */
 		NULL, /* bootValue */
 		PGC_SUSET, /* GucContext context */
 		0, /* int flags */
@@ -333,8 +331,8 @@ _PG_init(void) {
 		"postgis.gdal_enabled_drivers", /* name */
 		"Enabled GDAL drivers.", /* short_desc */
 		"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
-		&gdalenableddrivers, /* valueAddr */
-		DISABLE_ALL, /* bootValue */
+		&gdal_enabled_drivers, /* valueAddr */
+		GDAL_DISABLE_ALL, /* bootValue */
 		PGC_SUSET, /* GucContext context */
 		GUC_LIST_INPUT, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91

@@ -354,9 +354,9 @@ rt_band_load_offline_data(rt_band band) {
 
 	rt_util_gdal_register_all(0);
 	/*
-	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
 	*/
-	hdsSrc = GDALOpen(band->data.offline.path, GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
@@ -450,8 +450,6 @@ rt_band_load_offline_data(rt_band band) {
 	_rast = rt_raster_from_gdal_dataset(hdsDst);
 
 	GDALClose(hdsDst);
-	/* XXX: need to find a way to clean up the GDALOpenShared datasets at end of transaction */
-	/* GDALClose(hdsSrc); */
 	GDALClose(hdsSrc);
 	/*
 	{

@@ -328,6 +328,8 @@ int rt_util_gdal_configured(void) {
 	return 1;
 }
 
+char *gdal_enabled_drivers = NULL;
+
 /*
 	register all GDAL drivers
 */
@@ -368,6 +370,27 @@ rt_util_gdal_driver_registered(const char *drv) {
 	}
 
 	return 0;
+}
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
+	assert(NULL != fn);
+
+	if (
+		gdal_enabled_drivers != NULL &&
+		strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL
+	) {
+		rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
+		return NULL;
+	}
+
+	if (shared)
+		return GDALOpenShared(fn, fn_access);
+	else
+		return GDALOpen(fn, fn_access);
 }
 
 void

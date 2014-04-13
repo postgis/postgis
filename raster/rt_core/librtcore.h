@@ -2000,9 +2000,15 @@ extern void *rtalloc(size_t size);
 extern void *rtrealloc(void *mem, size_t size);
 extern void rtdealloc(void *mem);
 
+/*
+ * GDAL driver flags
+ */
 
+#define GDAL_ENABLE_ALL "ENABLE_ALL"
+#define GDAL_DISABLE_ALL "DISABLE_ALL"
 
-/* Set of functions to clamp double to int of different size
+/*
+ * Set of functions to clamp double to int of different size
  */
 
 #if !defined(POSTGIS_RASTER_WARN_ON_TRUNCATION)
@@ -2115,7 +2121,8 @@ rt_util_gdal_supported_sr(const char *srs);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+rt_errorstate
+rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
 
 /*
 	is GDAL configured correctly?
@@ -2134,6 +2141,12 @@ rt_util_gdal_register_all(int force_register_all);
 */
 int
 rt_util_gdal_driver_registered(const char *drv);
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
 
 void
 rt_util_from_ogr_envelope(
