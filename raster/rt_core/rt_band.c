@@ -352,13 +352,6 @@ rt_band_load_offline_data(rt_band band) {
 		return ES_ERROR;
 	}
 
-#ifdef POSTGIS_RASTER_DISABLE_OFFLINE
-	rterror("rt_raster_load_offline_data: "
-	        "offline raster support disabled at compile-time");
-	return ES_ERROR;
-#endif
-
-
 	rt_util_gdal_register_all(0);
 	/*
 	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
