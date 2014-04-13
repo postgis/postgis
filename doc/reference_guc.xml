@@ -78,4 +78,84 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 			</refsection>
 	</refentry>
 
+  <refentry id="postgis_gdal_enabled_drivers">
+			<refnamediv>
+				<refname>postgis.gdal_enabled_drivers</refname>
+				<refpurpose>
+					A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP.
+				</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP.
+				</para>
+				<para>
+					Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <ulink url='http://www.gdal.org/formats_list.html'>GDAL Raster Formats</ulink>. Multiple drivers can be specified by putting a space between each driver.
+				</para>
+
+				<note>
+					<para>
+						This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						There are two special codes available to enable or disable all GDAL drivers: ENABLE_ALL and DISABLE_ALL. The codes are case-sensitive.
+					</para>
+					<para>
+						When <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL, attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						In the standard PostGIS installation, <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Additional information about GDAL_SKIP is available at GDAL's <ulink url="http://trac.osgeo.org/gdal/wiki/ConfigOptions">Configuration Options</ulink>.
+					</para>
+				</note>
+
+				<para>Availability: 2.2.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>Set and reset <varname>postgis.gdal_enabled_drivers</varname></para>
+
+				<programlisting>
+SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';
+SET postgis.gdal_enabled_drivers = default;
+				</programlisting>
+				
+				<para>Enable all GDAL Drivers</para>
+				<programlisting>
+SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';
+				</programlisting>
+
+				<para>Disable all GDAL Drivers</para>
+				<programlisting>
+SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_FromGDALRaster" />, 
+					<xref linkend="RT_ST_AsGDALRaster" />, 
+					<xref linkend="RT_ST_AsTIFF" />, 
+					<xref linkend="RT_ST_AsPNG" />, 
+					<xref linkend="RT_ST_AsJPEG" />
+				</para>
+			</refsection>
+	</refentry>
+
 </sect1>
