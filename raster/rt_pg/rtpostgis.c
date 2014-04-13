@@ -151,10 +151,15 @@ void _PG_init(void);
 /*  PostGIS raster GUCs                                             */
 /* ---------------------------------------------------------------- */
 
+static char *gdaldatapath = NULL;
+static char *gdaldisableddrivers = NULL;
+static char *gdalenableddrivers = NULL;
+
 /* postgis.gdal_datapath */
 static void
 rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "newpath = %s", newpath);
+	POSTGIS_RT_DEBUGF(4, "gdaldatapath = %s", gdaldatapath);
 
 	/* clear finder cache */
 	CPLFinderClean();
@@ -166,31 +171,53 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	CPLSetConfigOption("GDAL_DATA", newpath);
 	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", NULL));
 }
-static char *gdaldatapath;
 
+/* postgis.gdal_disabled_drivers */
+static void
+rtpg_assignHookGDALDisabledDrivers(const char *newdrivers, void *extra) {
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "disableddrivers = %s", newdrivers);
+	POSTGIS_RT_DEBUGF(4, "gdaldisableddrivers = %s", gdaldisableddrivers);
+	POSTGIS_RT_DEBUGF(4, "gdalenableddrivers = %s", gdalenableddrivers);
+
+	/* enabled drivers always take presidence */
+	if (gdalenableddrivers != NULL)
+		return;
+
+	/* set GDAL_SKIP */
+	CPLSetConfigOption("GDAL_SKIP", newdrivers);
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+}
+
+/* postgis.gdal_enabled_drivers */
 static void
 rtpg_assignHookGDALEnabledDrivers(const char *newdrivers, void *extra) {
-	POSTGIS_RT_DEBUGF(4, "newdrivers = %s", newdrivers);
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "enableddrivers = %s", newdrivers);
+	POSTGIS_RT_DEBUGF(4, "gdaldisableddrivers = %s", gdaldisableddrivers);
+	POSTGIS_RT_DEBUGF(4, "gdalenableddrivers = %s", gdalenableddrivers);
 
-	/* validate new drivers */
-	/* TODO: flesh this out */
+	/* all other drivers than those in this list are added to GDAL_SKIP */
 
+	/* set GDAL_SKIP */
 	/*
 	CPLSetConfigOption("GDAL_SKIP", newdrivers);
 	*/
 }
-static char *gdalenableddrivers;
 
 /* Module load callback */
 void
 _PG_init(void) {
 	const char *gdal_skip;
 
-	/* restrict GDAL drivers */
-	/* unless already set, default to VRT, WMS, WCS and MEM */
+	/*
+	 * restrict GDAL drivers
+	 * unless already set, default to:
+	 * VRT, WMS, WCS, PDF, MEM, HTTP, RPFTOC, PCIDSK
+	 */
 	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
 	if (gdal_skip == NULL)
-		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM PDF");
+		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM PDF HTTP RPFTOC PCIDSK");
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
@@ -215,9 +242,24 @@ _PG_init(void) {
 	);
 
 	DefineCustomStringVariable(
+		"postgis.gdal_disabled_drivers", /* name */
+		"Enabled GDAL drivers.", /* short_desc */
+		"List of disabled GDAL drivers. (sets the GDAL_SKIP config option).", /* long_desc */
+		&gdaldisableddrivers, /* valueAddr */
+		NULL, /* bootValue */
+		PGC_SUSET, /* GucContext context */
+		0, /* int flags */
+#if POSTGIS_PGSQL_VERSION >= 91
+		NULL, /* GucStringCheckHook check_hook */
+#endif
+		rtpg_assignHookGDALDisabledDrivers, /* GucStringAssignHook assign_hook */
+		NULL  /* GucShowHook show_hook */
+	);
+
+	DefineCustomStringVariable(
 		"postgis.gdal_enabled_drivers", /* name */
 		"Enabled GDAL drivers.", /* short_desc */
-		"List of permitted GDAL drivers. (sets the GDAL_SKIP config option).", /* long_desc */
+		"List of enabled GDAL drivers. If both postgis.gdal_enabled_drivers and postgis.disabled_drivers is set, postgis.gdal_disabled_drivers is ignored. (sets the GDAL_SKIP config option).", /* long_desc */
 		&gdalenableddrivers, /* valueAddr */
 		NULL, /* bootValue */
 		PGC_SUSET, /* GucContext context */
