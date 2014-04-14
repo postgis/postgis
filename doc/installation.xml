@@ -493,6 +493,15 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-sfcgal=PATH</command></term>
+		  <listitem>
+			<para>
+			  By default PostGIS will not install with sfcgal support without this switch. 
+			  <varname>PATH</varname> is an optional argument that allows to specify an alternate PATH to sfcgal-config.
+			</para>
+		  </listitem>
+		</varlistentry>
 	  </variablelist>
 	  <note>
 		<para>
