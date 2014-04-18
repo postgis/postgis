@@ -1033,6 +1033,22 @@ if test "x$with_raster" != "xno"; then
 		AC_SUBST([LIBGDAL_LDFLAGS])
 
 		AC_SUBST([GDALFPOLYGONIZE])
+
+	  dnl ===========================================================================
+	  dnl Disable offline raster storage with --disable-offline-raster
+	  dnl ===========================================================================
+	  AC_ARG_ENABLE(
+	    [offline-rasters],
+	    AC_HELP_STRING([--disable-offline-rasters], [disable support for off-db rasters]),
+	    [POSTGIS_RASTER_DISABLE_OFFLINE=1],
+	    [POSTGIS_RASTER_DISABLE_OFFLINE=0])
+	  if test "x$POSTGIS_RASTER_DISABLE_OFFLINE" = "x1"; then
+	    AC_DEFINE_UNQUOTED(
+	      [POSTGIS_RASTER_DISABLE_OFFLINE],
+	      [$POSTGIS_RASTER_DISABLE_OFFLINE],
+	      [Define to disable support for offline rasters])
+	  fi
+
 	else
 		AC_MSG_RESULT([not found])
 		AC_MSG_ERROR([gdal-config not found. Use --without-raster or try --with-gdalconfig=<path to gdal-config>])
@@ -1147,7 +1163,11 @@ AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
-    AC_MSG_RESULT([  PostGIS Raster:       enabled])
+  if test "x$POSTGIS_RASTER_DISABLE_OFFLINE" = "x1"; then
+    AC_MSG_RESULT([  PostGIS Raster:       enabled (no offline)])
+  else
+    AC_MSG_RESULT([  PostGIS Raster:       enabled (offline included)])
+  fi
 else
     AC_MSG_RESULT([  PostGIS Raster:       disabled])
 

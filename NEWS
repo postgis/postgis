@@ -4,10 +4,10 @@ PostGIS 2.0.6
  * Important Changes *
   - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS, PDF
     and MEM drivers
+  - Make offline raster optional (--disable-offline-raster configure switch)
 
  * Bug Fixes *
   - 
-
 
 PostGIS 2.0.5
 2013/03/31
