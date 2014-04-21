@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-
+#$| = 1;
 use File::Basename;
 use File::Temp 'tempdir';
 #use File::Which;
@@ -493,8 +493,8 @@ sub run_simple_sql
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
 	my $cmd = "psql -v \"VERBOSITY=terse\" -tXA $DB < $sql > $tmpfile 2>&1";
+	print($cmd);
 	my $rv = system($cmd);
-
 	# Check if psql errored out.
 	if ( $rv != 0 ) 
 	{
@@ -608,7 +608,7 @@ sub run_simple_test
 
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT)/, @lines);
+	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
@@ -768,6 +768,7 @@ sub run_dumper_and_check_output
 		show_progress();
 		$cmd = "${PGSQL2SHP} -f ${TMPDIR}/dumper $DB $tblname > $errfile 2>&1";
 		$rv = system($cmd);
+	
 		if ( $rv )
 		{
 			fail("$description: dumping loaded table", $errfile);
@@ -775,9 +776,11 @@ sub run_dumper_and_check_output
 		}
 
 		# Compare with expected output if there is any.
+		
 		if ( -r $expected_shp_file )
 		{
 			show_progress();
+			
 			my $diff = diff($expected_shp_file,  "$TMPDIR/dumper.shp");
 			if ( $diff )
 			{
@@ -982,6 +985,7 @@ sub run_dumper_test
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
+  sleep(1);
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
   my $dumpstring = join '', @dumplines;
@@ -994,7 +998,7 @@ sub run_dumper_test
   my $rv = system(@cmd);
   open STDERR, '>&', $stderr_save;
   open STDOUT, '>&', $stdout_save;
-
+  #sleep(3);
   show_progress();
 
   if ( $rv )
