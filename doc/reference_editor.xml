@@ -644,11 +644,13 @@ GEOMETRYCOLLECTION(
 			<para>
                         Turns a geometry into its curved representation, if applicable:
                         lines become compoundcurves, multilines become multicurves
-                        polygons become curvepolygons multipolygons become multisurfaces.
+                        polygons become curvepolygons multipolygons become multisurfaces. If the geometry input is already a curved representation returns back same as input.
                         </para>
 
 		        <para>Availability: 2.2.0</para>
 	  		<para>&Z_support;</para>
+	  			<!-- Optionally mention Circular String Support -->
+	  			<para>&curve_support;</para>
 		</refsection>
 
 		<refsection>
