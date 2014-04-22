@@ -1,3 +1,7 @@
+WITH foo AS (
+	SELECT postgis_raster_lib_version()
+)
+SELECT NULL FROM foo;
 SET postgis.gdal_enabled_drivers = 'GTiff';
 DELETE FROM loadedrast WHERE filename != 'testraster.tif';
 SELECT srid, scale_x::numeric(16, 10), scale_y::numeric(16, 10), blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values::numeric(16,10)[], out_db, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'loadedrast' AND r_raster_column = 'rast';

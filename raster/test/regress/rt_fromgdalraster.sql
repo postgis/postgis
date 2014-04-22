@@ -1,3 +1,7 @@
+WITH foo AS (
+	SELECT postgis_raster_lib_version()
+)
+SELECT NULL FROM foo;
 SET postgis.gdal_enabled_drivers = 'GTiff PNG';
 /*
 Driver: PNG/Portable Network Graphics
