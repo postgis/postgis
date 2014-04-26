@@ -154,6 +154,7 @@ void _PG_init(void);
 
 static char *gdal_datapath = NULL;
 extern char *gdal_enabled_drivers;
+extern char enable_outdb_rasters;
 
 /* postgis.gdal_datapath */
 static void
@@ -291,6 +292,12 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
 }
 
+/* postgis.eanble_outdb_rasters */
+static void
+rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
+	/* do nothing for now */
+}
+
 /* Module load callback */
 void
 _PG_init(void) {
@@ -317,16 +324,6 @@ _PG_init(void) {
 		NULL  /* GucShowHook show_hook */
 	);
 
-	/*
-	 * GucContext is set to PGC_BACKEND. As per PostgreSQL's guc.h...
-	 *
-	 * BACKEND options can only be set at postmaster startup, from the
-	 * configuration file, or by client request in the connection startup
-	 * packet (e.g., from libpq's PGOPTIONS variable). Furthermore, an
-	 * already-started backend will ignore changes to such an option in the
-	 * configuration file. The idea is that these options are fixed for a
-	 * given backend once it's started, but they can vary across backends.
-	 */
 	DefineCustomStringVariable(
 		"postgis.gdal_enabled_drivers", /* name */
 		"Enabled GDAL drivers.", /* short_desc */
@@ -334,11 +331,26 @@ _PG_init(void) {
 		&gdal_enabled_drivers, /* valueAddr */
 		GDAL_DISABLE_ALL, /* bootValue */
 		PGC_SUSET, /* GucContext context */
-		GUC_LIST_INPUT, /* int flags */
+		0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
 		NULL, /* GucStringCheckHook check_hook */
 #endif
 		rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
+		NULL  /* GucShowHook show_hook */
+	);
+
+	DefineCustomBoolVariable(
+		"postgis.enable_outdb_rasters", /* name */
+		"Enable Out-DB raster bands", /* short_desc */
+		"If true, rasters can access data located outside the database", /* long_desc */
+		&enable_outdb_rasters, /* valueAddr */
+		false, /* bootValue */
+		PGC_SUSET, /* GucContext context */
+		0, /* int flags */
+#if POSTGIS_PGSQL_VERSION >= 91
+		NULL, /* GucStringCheckHook check_hook */
+#endif
+		rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
 		NULL  /* GucShowHook show_hook */
 	);
 }

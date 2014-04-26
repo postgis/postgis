@@ -316,6 +316,9 @@ rt_band_get_data(rt_band band) {
 		return band->data.mem;
 }
 
+/* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
+char enable_outdb_rasters = 1;
+
 /**
 	* Load offline band's data.  Loaded data is internally owned
 	* and should not be released by the caller.  Data will be
@@ -349,6 +352,12 @@ rt_band_load_offline_data(rt_band band) {
 	}
 	else if (!strlen(band->data.offline.path)) {
 		rterror("rt_band_load_offline_data: Offline band does not a have a specified file");
+		return ES_ERROR;
+	}
+
+	/* offline_data is disabled */
+	if (!enable_outdb_rasters) {
+		rterror("rt_band_load_offline_data: Access to offline bands disabled");
 		return ES_ERROR;
 	}
 

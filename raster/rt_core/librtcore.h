@@ -2006,6 +2006,7 @@ extern void rtdealloc(void *mem);
 
 #define GDAL_ENABLE_ALL "ENABLE_ALL"
 #define GDAL_DISABLE_ALL "DISABLE_ALL"
+#define GDAL_VSICURL "VSICURL"
 
 /*
  * Set of functions to clamp double to int of different size

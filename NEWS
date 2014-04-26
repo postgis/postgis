@@ -19,6 +19,8 @@ PostGIS 2.2.0
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
   - Added GUC postgis.gdal_enabled_drivers to specify GDAL config
     variable GDAL_SKIP
+  - Added GUC postgis.enable_outdb_rasters to enable access to
+    rasters with out-db bands
   - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
     variable GDAL_DATA
   - #2341, New mask parameter for ST_MapAlgebra

@@ -328,8 +328,6 @@ int rt_util_gdal_configured(void) {
 	return 1;
 }
 
-char *gdal_enabled_drivers = NULL;
-
 /*
 	register all GDAL drivers
 */
@@ -372,6 +370,9 @@ rt_util_gdal_driver_registered(const char *drv) {
 	return 0;
 }
 
+/* variable for PostgreSQL GUC: postgis.gdal_enabled_drivers */
+char *gdal_enabled_drivers = NULL;
+
 /*
 	wrapper for GDALOpen and GDALOpenShared
 */
@@ -379,12 +380,21 @@ GDALDatasetH
 rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
 	assert(NULL != fn);
 
-	if (
-		gdal_enabled_drivers != NULL &&
-		strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL
-	) {
-		rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
-		return NULL;
+	if (gdal_enabled_drivers != NULL) {
+		if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
+			rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
+			return NULL;
+		}
+		else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+			/* do nothing */
+		}
+		else if (
+			(strstr(fn, "/vsicurl") != NULL) &&
+			(strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)
+		) {
+			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
+			return NULL;
+		}
 	}
 
 	if (shared)

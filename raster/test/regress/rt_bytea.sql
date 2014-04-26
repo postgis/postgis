@@ -183,6 +183,7 @@ DROP TABLE rt_bytea_test;
 --- Test out-db as in-db
 -----------------------------------------------------------------------
 SET postgis.gdal_enabled_drivers = 'GTiff';
+SET postgis.enable_outdb_rasters = TRUE;
 WITH foo AS (
 	SELECT
 		rid,

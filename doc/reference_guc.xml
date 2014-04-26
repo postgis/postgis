@@ -103,7 +103,19 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 
 				<note>
 					<para>
-						There are two special codes available to enable or disable all GDAL drivers: ENABLE_ALL and DISABLE_ALL. The codes are case-sensitive.
+						There are three special codes available for <varname>postgis.gdal_enabled_drivers</varname>. The codes are case-sensitive.
+
+						<itemizedlist>
+							<listitem>
+								<para><varname>DISABLE_ALL</varname> disables all GDAL drivers. If present, <varname>DISABLE_ALL</varname> overrides all other values in <varname>postgis.gdal_enabled_drivers</varname>.</para>
+						</listitem>
+							<listitem>
+								<para><varname>ENABLE_ALL</varname> enables all GDAL drivers.</para>
+						</listitem>
+							<listitem>
+								<para><varname>VSICURL</varname> enables GDAL's <varname>/vsicurl/</varname> virtual file system.</para>
+						</listitem>
+						</itemizedlist>
 					</para>
 					<para>
 						When <varname>postgis.gdal_enabled_drivers</varname> is set to DISABLE_ALL, attempts to use out-db rasters, ST_FromGDALRaster(), ST_AsGDALRaster(), ST_AsTIFF(), ST_AsJPEG() and ST_AsPNG() will result in error messages.
@@ -153,9 +165,65 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 					<xref linkend="RT_ST_AsGDALRaster" />, 
 					<xref linkend="RT_ST_AsTIFF" />, 
 					<xref linkend="RT_ST_AsPNG" />, 
-					<xref linkend="RT_ST_AsJPEG" />
+					<xref linkend="RT_ST_AsJPEG" />, 
+					<xref linkend="postgis_enable_outdb_rasters" />
 				</para>
 			</refsection>
 	</refentry>
 
+  <refentry id="postgis_enable_outdb_rasters">
+			<refnamediv>
+				<refname>postgis.enable_outdb_rasters</refname>
+				<refpurpose>
+					A boolean configuration option to enable access to out-db raster bands.
+				</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A boolean configuration option to enable access to out-db raster bands.
+				</para>
+
+				<note>
+					<para>
+						This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC <varname>postgis.enable_outdb_rasters</varname> determines the accessible raster formats.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</varname> is set to False.
+					</para>
+				</note>
+
+				<para>Availability: 2.2.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>Set and reset <varname>postgis.enable_outdb_rasters</varname></para>
+
+				<programlisting>
+SET postgis.enable_outdb_rasters TO True;
+SET postgis.enable_outdb_rasters = default;
+SET postgis.enable_outdb_rasters = True;
+SET postgis.enable_outdb_rasters = False;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="postgis_gdal_enabled_drivers" />
+				</para>
+			</refsection>
+	</refentry>
 </sect1>
