@@ -123,7 +123,7 @@ sub find_last_updated
 sub parse_last_updated
 {
   my $comment = shift;
-  if ( $comment =~ m/.*(?:Availability|Changed):\s([^\.])\.([^.]*)/s ) {
+  if ( $comment =~ m/.*(?:Availability|Changed|Updated):\s([^\.])\.([^.]*)/s ) {
     return $1*100 + $2;
   }
   return 0;
