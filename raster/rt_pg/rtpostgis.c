@@ -160,7 +160,7 @@ extern char enable_outdb_rasters;
 static void
 rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "newpath = %s", newpath);
-	POSTGIS_RT_DEBUGF(4, "gdaldatapath = %s", gdaldatapath);
+	POSTGIS_RT_DEBUGF(4, "gdaldatapath = %s", gdal_datapath);
 
 	/* clear finder cache */
 	CPLFinderClean();
@@ -302,6 +302,59 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 void
 _PG_init(void) {
 
+	char *env_postgis_gdal_enabled_drivers = NULL;
+	char *boot_postgis_gdal_enabled_drivers = NULL;
+
+	char *env_postgis_enable_outdb_rasters = NULL;
+	bool boot_postgis_enable_outdb_rasters = false;
+
+	/*
+	 use POSTGIS_GDAL_ENABLED_DRIVERS to set the bootValue
+	 of GUC postgis.gdal_enabled_drivers
+	*/
+	env_postgis_gdal_enabled_drivers = getenv("POSTGIS_GDAL_ENABLED_DRIVERS");
+	if (env_postgis_gdal_enabled_drivers == NULL) {
+		boot_postgis_gdal_enabled_drivers = palloc(
+			sizeof(char) * (strlen(GDAL_DISABLE_ALL) + 1)
+		);
+		sprintf(boot_postgis_gdal_enabled_drivers, "%s", GDAL_DISABLE_ALL);
+	}
+	else {
+		boot_postgis_gdal_enabled_drivers = rtpg_trim(
+			env_postgis_gdal_enabled_drivers
+		);
+	}
+	POSTGIS_RT_DEBUGF(
+		4,
+		"boot_postgis_gdal_enabled_drivers = %s",
+		boot_postgis_gdal_enabled_drivers
+	);
+
+	/*
+	 use POSTGIS_ENABLE_OUTDB_RASTERS to set the bootValue
+	 of GUC postgis.enable_outdb_rasters
+	*/
+	env_postgis_enable_outdb_rasters = getenv("POSTGIS_ENABLE_OUTDB_RASTERS");
+	if (env_postgis_enable_outdb_rasters != NULL) {
+		char *env = rtpg_trim(env_postgis_enable_outdb_rasters);
+
+		/* out of memory */
+		if (env == NULL) {
+			elog(ERROR, "_PG_init: Cannot process environmental variable: POSTGIS_ENABLE_OUTDB_RASTERS");
+			return;
+		}
+
+		if (strcmp(env, "1") == 0)
+			boot_postgis_enable_outdb_rasters = true;
+
+		pfree(env);
+	}
+	POSTGIS_RT_DEBUGF(
+		4,
+		"boot_postgis_enable_outdb_rasters = %s",
+		boot_postgis_enable_outdb_rasters ? "TRUE" : "FALSE"
+	);
+
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
@@ -329,7 +382,7 @@ _PG_init(void) {
 		"Enabled GDAL drivers.", /* short_desc */
 		"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
 		&gdal_enabled_drivers, /* valueAddr */
-		GDAL_DISABLE_ALL, /* bootValue */
+		boot_postgis_gdal_enabled_drivers, /* bootValue */
 		PGC_SUSET, /* GucContext context */
 		0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
@@ -344,7 +397,7 @@ _PG_init(void) {
 		"Enable Out-DB raster bands", /* short_desc */
 		"If true, rasters can access data located outside the database", /* long_desc */
 		&enable_outdb_rasters, /* valueAddr */
-		false, /* bootValue */
+		boot_postgis_enable_outdb_rasters, /* bootValue */
 		PGC_SUSET, /* GucContext context */
 		0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
@@ -353,6 +406,9 @@ _PG_init(void) {
 		rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
 		NULL  /* GucShowHook show_hook */
 	);
+
+	/* free memory allocations */
+	pfree(boot_postgis_gdal_enabled_drivers);
 }
 
 /* ---------------------------------------------------------------- */
