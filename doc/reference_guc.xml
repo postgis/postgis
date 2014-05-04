@@ -89,17 +89,16 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 			<refsection>
 				<title>Description</title>
 				<para>
-					A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP.
+					A configuration option to set the enabled GDAL drivers in the PostGIS environment. Affects the GDAL configuration variable GDAL_SKIP. This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
 				</para>
+
+				<para>
+					The initial value of <varname>postgis.gdal_enabled_drivers</varname> may also be set by passing the environment variable <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> with the list of enabled drivers to the process starting PostgreSQL.
+				</para>
+
 				<para>
 					Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <ulink url='http://www.gdal.org/formats_list.html'>GDAL Raster Formats</ulink>. Multiple drivers can be specified by putting a space between each driver.
 				</para>
-
-				<note>
-					<para>
-						This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
-					</para>
-				</note>
 
 				<note>
 					<para>
@@ -182,14 +181,12 @@ SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';
 			<refsection>
 				<title>Description</title>
 				<para>
-					A boolean configuration option to enable access to out-db raster bands.
+					A boolean configuration option to enable access to out-db raster bands. This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
 				</para>
 
-				<note>
-					<para>
-						This option can be set in PostgreSQL's configuration file: postgresql.conf. It can also be set by connection or transaction.
-					</para>
-				</note>
+				<para>
+					The initial value of <varname>postgis.enable_outdb_rasters</varname> may also be set by passing the environment variable <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> with a non-zero value to the process starting PostgreSQL.
+				</para>
 
 				<note>
 					<para>
