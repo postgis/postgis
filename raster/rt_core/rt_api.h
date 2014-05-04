@@ -1416,7 +1416,13 @@ extern void *rtalloc(size_t size);
 extern void *rtrealloc(void *mem, size_t size);
 extern void rtdealloc(void *mem);
 
+/* 
+ * GDAL driver flags 
+ */ 
 
+#define GDAL_ENABLE_ALL "ENABLE_ALL" 
+#define GDAL_DISABLE_ALL "DISABLE_ALL" 
+#define GDAL_VSICURL "VSICURL" 
 
 /* Set of functions to clamp double to int of different size
  */
@@ -1532,6 +1538,18 @@ rt_util_gdal_configured(void);
 */
 int
 rt_util_gdal_driver_registered(const char *drv);
+
+/*
+ * register all GDAL drivers
+ */
+int
+rt_util_gdal_register_all(int force_register_all);
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
 
 void
 rt_util_from_ogr_envelope(

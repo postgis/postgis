@@ -65,22 +65,6 @@
  */
 PG_MODULE_MAGIC;
 
-/*
- * Module load callback
- */
-void _PG_init(void) {
-	const char *gdal_skip;
-
-	/*
-	 * restrict GDAL drivers
-	 * unless already set, default to:
-	 * VRT, WMS, WCS, PDF, MEM, HTTP, RPFTOC, PCIDSK
-	 */
-	gdal_skip = CPLGetConfigOption("GDAL_SKIP", NULL);
-	if (gdal_skip == NULL)
-		CPLSetConfigOption("GDAL_SKIP", "VRT WMS WCS MEM PDF HTTP RPFTOC PCIDSK");
-}
-
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
  * keeping inline with the use of pgis_ for ./postgis C utility
@@ -99,6 +83,181 @@ static char *rtpg_removespaces(char *str);
 static char *rtpg_trim(const char* input);
 static char *rtpg_strrstr(const char *s1, const char *s2);
 static char *rtpg_getSR(int srid);
+
+extern char *gdal_enabled_drivers;
+extern char enable_outdb_rasters;
+
+#define ENV_POSTGIS_GDAL_ENABLED_DRIVERS "POSTGIS_GDAL_ENABLED_DRIVERS"
+#define ENV_POSTGIS_ENABLE_OUTDB_RASTERS "POSTGIS_ENABLE_OUTDB_RASTERS"
+
+/* rtpg_assignHookGDALEnabledDrivers() should only be called by _PG_init */
+static void
+rtpg_assignHookGDALEnabledDrivers() {
+	char *enabled_drivers = NULL;
+	int enable_all = 0;
+	int disable_all = 0;
+
+	char **enabled_drivers_array = NULL;
+	int enabled_drivers_count = 0;
+	char *gdal_skip = NULL;
+
+	uint32_t i;
+	uint32_t j;
+
+	enabled_drivers = getenv(ENV_POSTGIS_GDAL_ENABLED_DRIVERS);
+
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "enabled_drivers = %s", enabled_drivers);
+
+	if (enabled_drivers != NULL) {
+		gdal_enabled_drivers = palloc(
+			sizeof(char) * (strlen(enabled_drivers) + 1)
+		);
+
+		sprintf(gdal_enabled_drivers, "%s", enabled_drivers);
+
+		enabled_drivers_array = rtpg_strsplit(enabled_drivers, " ", &enabled_drivers_count);
+	}
+	else {
+		gdal_enabled_drivers = palloc(sizeof(char));
+		sprintf(gdal_enabled_drivers, "%s", "");
+	}
+
+	/* destroy the driver manager */
+	/* this is the only way to ensure GDAL_SKIP is recognized */
+	GDALDestroyDriverManager();
+	CPLSetConfigOption("GDAL_SKIP", NULL);
+
+	/* force wrapper function to call GDALAllRegister() */
+	rt_util_gdal_register_all(1);
+
+	/* scan for keywords DISABLE_ALL and ENABLE_ALL */
+	disable_all = 0;
+	enable_all = 0;
+	if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (strstr(enabled_drivers_array[i], GDAL_DISABLE_ALL) != NULL) {
+				disable_all = 1;
+				break;
+			}
+		}
+	}
+	else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
+				enable_all = 1;
+				break;
+			}
+		}
+	}
+
+	if (!enable_all) {
+		int found = 0;
+		uint32_t drv_count = 0;
+		rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
+		POSTGIS_RT_DEBUGF(4, "driver count = %d", drv_count);
+
+		/* all other drivers than those in new drivers are added to GDAL_SKIP */
+		for (i = 0; i < drv_count; i++) {
+			found = 0;
+
+			if (!disable_all) {
+				/* gdal driver found in gdal_enabled_drivers, continue to thorough search */
+				if (strstr(gdal_enabled_drivers, drv_set[i].short_name) != NULL) {
+					/* thorough search of enabled_drivers */
+					for (j = 0; j < enabled_drivers_count; j++) {
+						/* driver found */
+						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
+							found = 1;
+							break;
+						}
+					}
+				}
+			}
+
+			/* driver found, continue */
+			if (found)
+				continue;
+
+			/* driver not found, add to gdal_skip */
+			if (gdal_skip == NULL) {
+				gdal_skip = palloc(sizeof(char) * (strlen(drv_set[i].short_name) + 1));
+				sprintf(gdal_skip, "%s", drv_set[i].short_name);
+			}
+			else {
+				gdal_skip = repalloc(
+					gdal_skip,
+					sizeof(char) * (
+						strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1
+					)
+				);
+				sprintf(gdal_skip, "%s %s", gdal_skip, drv_set[i].short_name);
+			}
+		}
+
+		for (i = 0; i < drv_count; i++) {
+			pfree(drv_set[i].short_name);
+			pfree(drv_set[i].long_name);
+			pfree(drv_set[i].create_options);
+		}
+		if (drv_count) pfree(drv_set);
+
+	}
+
+	/* destroy the driver manager */
+	/* this is the only way to ensure GDAL_SKIP is recognized */
+	GDALDestroyDriverManager();
+
+	/* set GDAL_SKIP */
+	POSTGIS_RT_DEBUGF(4, "gdal_skip = %s", gdal_skip);
+	CPLSetConfigOption("GDAL_SKIP", gdal_skip);
+	if (gdal_skip != NULL) pfree(gdal_skip);
+
+	/* force wrapper function to call GDALAllRegister() */
+	rt_util_gdal_register_all(1);
+
+	if (enabled_drivers_count)
+		pfree(enabled_drivers_array);
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+}
+
+/*
+ * Module load callback
+ */
+void _PG_init(void) {
+	char *env_postgis_enable_outdb_rasters = NULL;
+
+	/*
+	 * use POSTGIS_GDAL_ENABLED_DRIVERS to restrict drivers
+	 */
+	rtpg_assignHookGDALEnabledDrivers();
+
+	/*
+	 * use POSTGIS_ENABLE_OUTDB_RASTERS to enable access to out-db rasters
+	 */
+	enable_outdb_rasters = 0;
+	env_postgis_enable_outdb_rasters = getenv(ENV_POSTGIS_ENABLE_OUTDB_RASTERS);
+	if (env_postgis_enable_outdb_rasters != NULL) {
+		char *env = rtpg_trim(env_postgis_enable_outdb_rasters);
+
+		/* out of memory */
+		if (env == NULL) {
+			elog(
+				ERROR,
+				"_PG_init: Cannot process environmental variable: %s",
+				ENV_POSTGIS_ENABLE_OUTDB_RASTERS
+			);
+			return;
+		}
+
+		if (strcmp(env, "1") == 0)
+			enable_outdb_rasters = 1;
+
+		pfree(env);
+	}
+
+	/* TODO: Install raster callbacks (see rt_init_allocators) */
+}
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...

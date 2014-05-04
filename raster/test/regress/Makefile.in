@@ -54,10 +54,6 @@ TEST_FUNC = \
 	box3d \
 	rt_addband \
 	rt_band \
-	rt_asgdalraster \
-	rt_astiff \
-	rt_asjpeg \
-	rt_aspng \
 	rt_union
 
 TEST_PROPS = \

@@ -1,8 +1,8 @@
 4326
-ERROR:  rt_band_load_offline_data: Cannot open offline raster: <VRTDataset rasterXSize="1000" rasterYSize="1"><VRTRasterBand band="1" subClass="VRTRawRasterBand"><SourceFilename>/etc/passwd</SourceFilename></VRTRasterBand></VRTDataset>
-ERROR:  rt_band_load_offline_data: Cannot open offline raster: <VRTDataset rasterXSize="1000" rasterYSize="1"><VRTRasterBand band="1" subClass="VRTRawRasterBand"><SourceFilename>/etc/passwd</SourceFilename></VRTRasterBand></VRTDataset>
+ERROR:  rt_raster_load_offline_data: Access to offline bands disabled
+ERROR:  rt_raster_load_offline_data: Access to offline bands disabled
 4326
 4326
-ERROR:  rt_band_load_offline_data: Cannot open offline raster: <VRTDataset rasterXSize="1000" rasterYSize="1"><VRTRasterBand band="1" subClass="VRTRawRasterBand"><SourceFilename>/etc/passwd</SourceFilename></VRTRasterBand></VRTDataset>
-ERROR:  rt_band_load_offline_data: Cannot open offline raster: <VRTDataset rasterXSize="1000" rasterYSize="1"><VRTRasterBand band="1" subClass="VRTRawRasterBand"><SourceFilename>/etc/passwd</SourceFilename></VRTRasterBand></VRTDataset>
+ERROR:  rt_raster_load_offline_data: Access to offline bands disabled
+ERROR:  rt_raster_load_offline_data: Access to offline bands disabled
 4326
