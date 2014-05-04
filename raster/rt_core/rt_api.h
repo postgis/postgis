@@ -2125,6 +2125,12 @@ rt_util_gdal_register_all(int force_register_all);
 int
 rt_util_gdal_driver_registered(const char *drv);
 
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
+
 void
 rt_util_from_ogr_envelope(
 	OGREnvelope	env,
