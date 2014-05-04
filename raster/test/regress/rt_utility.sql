@@ -428,8 +428,10 @@ SELECT ST_Summary(
 		, 1, '8BUI', 1, 0
 	)
 );
+/*
 SELECT
 	rid,
 	ST_Summary(rast)
 FROM raster_outdb_template
 ORDER BY rid;
+*/

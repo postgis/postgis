@@ -7,12 +7,13 @@ PostGIS 2.1.3
   - #2697, invalid GeoJSON Polygon input crashes server process
   - #2700, Fix dumping of higher-dimension datasets with null rows
   - #2706, ST_DumpPoints of EMPTY geometries crashes server
-  - By default, PostGIS raster prevents usage of GDAL VRT, WCS, WMS,
-    PDF and MEM drivers
 
  * Enhancements *
 
-  - Make offline raster optional (--disable-offline-raster configure switch)
+  - Add control of GDAL drivers with the environment variable
+    POSTGIS_GDAL_ENABLED_DRIVERS. By default, all GDAL drivers are disabled
+  - Add ability to disable out-db raster bands with the environment variable
+    POSTGIS_ENABLE_OUTDB_RASTERS. By default, out-db raster bands are disabled
 
 PostGIS 2.1.2
 2014/03/31

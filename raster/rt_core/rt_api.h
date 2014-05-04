@@ -1984,7 +1984,13 @@ extern void *rtalloc(size_t size);
 extern void *rtrealloc(void *mem, size_t size);
 extern void rtdealloc(void *mem);
 
+/*
+ * GDAL driver flags
+ */
 
+#define GDAL_ENABLE_ALL "ENABLE_ALL"
+#define GDAL_DISABLE_ALL "DISABLE_ALL"
+#define GDAL_VSICURL "VSICURL"
 
 /* Set of functions to clamp double to int of different size
  */
@@ -2110,8 +2116,8 @@ rt_util_gdal_configured(void);
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void);
+int
+rt_util_gdal_register_all(int force_register_all);
 
 /*
 	is the driver registered?

@@ -41,8 +41,7 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 TEST_FIRST = \
-	check_gdal \
-	load_outdb
+	check_gdal
 
 TEST_LAST = \
 	clean
@@ -98,11 +97,6 @@ TEST_BANDPROPS = \
 
 TEST_UTILITY = \
 	rt_utility \
-	rt_fromgdalraster \
-	rt_asgdalraster \
-	rt_astiff \
-	rt_asjpeg \
-	rt_aspng \
 	rt_reclass \
 	rt_gdalwarp \
 	rt_asraster \
@@ -141,11 +135,7 @@ TEST_BUGS = \
 TEST_LOADER = \
 	loader/Basic \
 	loader/BasicCopy \
-	loader/BasicFilename \
-	loader/BasicOutDB \
-	loader/Tiled10x10 \
-	loader/Tiled10x10Copy \
-	loader/Tiled8x8
+	loader/BasicFilename
 
 TESTS = $(TEST_FIRST) \
 	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \

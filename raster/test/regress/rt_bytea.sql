@@ -182,6 +182,10 @@ DROP TABLE rt_bytea_test;
 -----------------------------------------------------------------------
 --- Test out-db as in-db
 -----------------------------------------------------------------------
+/*
+cannot test as by default, out-db is disabled and can only be
+overridden by an ENV variable
+
 WITH foo AS (
 	SELECT
 		rid,
@@ -215,3 +219,4 @@ SELECT
 	rid
 FROM foo
 WHERE encode(outbytea, 'base64') = encode(outin, 'base64');
+*/

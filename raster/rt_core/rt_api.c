@@ -441,15 +441,17 @@ int rt_util_gdal_configured(void) {
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void) {
+int
+rt_util_gdal_register_all(int force_register_all) {
 	static int registered = 0;
 
-	if (registered)
-		return;
+	if (registered && !force_register_all)
+		return 0;
 
 	GDALAllRegister();
 	registered = 1;
+
+	return 1;
 }
 
 /*
@@ -473,6 +475,39 @@ rt_util_gdal_driver_registered(const char *drv) {
 	}
 
 	return 0;
+}
+
+/* variable for PostgreSQL GUC: postgis.gdal_enabled_drivers */
+char *gdal_enabled_drivers = NULL;
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared) {
+	assert(NULL != fn);
+
+	if (gdal_enabled_drivers != NULL) {
+		if (strstr(gdal_enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
+			rterror("rt_util_gdal_open: Cannot open file. All GDAL drivers disabled");
+			return NULL;
+		}
+		else if (strstr(gdal_enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
+			/* do nothing */
+		}
+		else if (
+			(strstr(fn, "/vsicurl") != NULL) &&
+			(strstr(gdal_enabled_drivers, GDAL_VSICURL) == NULL)
+		) {
+			rterror("rt_util_gdal_open: Cannot open VSICURL file. VSICURL disabled");
+			return NULL;
+		}
+	}
+
+	if (shared)
+		return GDALOpenShared(fn, fn_access);
+	else
+		return GDALOpen(fn, fn_access);
 }
 
 void
@@ -1758,6 +1793,9 @@ rt_band_get_data(rt_band band) {
 		return band->data.mem;
 }
 
+/* variable for PostgreSQL env variable: POSTGIS_ENABLE_OUTDB_RASTERS */
+char enable_outdb_rasters = 1;
+
 /**
 	* Load offline band's data.  Loaded data is internally owned
 	* and should not be released by the caller.  Data will be
@@ -1794,17 +1832,17 @@ rt_band_load_offline_data(rt_band band) {
 		return ES_ERROR;
 	}
 
-#ifdef POSTGIS_RASTER_DISABLE_OFFLINE
-	rterror("rt_raster_load_offline_data: "
-	        "offline raster support disabled at compile-time");
-	return ES_ERROR;
-#endif
+	/* out-db is disabled */
+	if (!enable_outdb_rasters) {
+		rterror("rt_raster_load_offline_data: Access to offline bands disabled");
+		return ES_ERROR;
+	}
 
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	/*
-	 hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
+	 hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
 	*/
-	hdsSrc = GDALOpen(band->data.offline.path, GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
@@ -8835,7 +8873,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	assert(NULL != gdalsize);
 
 	/* any supported format is possible */
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	RASTER_DEBUG(3, "loaded all supported GDAL formats");
 
 	/* output format not specified */
@@ -8927,7 +8965,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 
 	assert(drv_count != NULL);
 
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 	count = GDALGetDriverCount();
 	rtn = (rt_gdaldriver) rtalloc(count * sizeof(struct rt_gdaldriver_t));
 	if (NULL == rtn) {

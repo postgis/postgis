@@ -183,6 +183,7 @@ SELECT * FROM ST_BandMetadata(
 SELECT (ST_DumpAsPolygons(newrast,3)).val As b3val FROM (SELECT ST_AddBand(NULL, array_agg(rast)) AS newrast FROM (SELECT ST_AsRaster(ST_Buffer(ST_Point(10,10), 34),200,200, '8BUI',i*30) As rast FROM generate_series(1,3) As i ) As foo ) As foofoo;
 
 -- out-db variants
+/*
 SELECT
 	1,
 	bandnum,
@@ -223,3 +224,4 @@ SELECT
 		ELSE NULL
 	END
 FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 4), ARRAY[]::int[]);
+*/
