@@ -37,7 +37,7 @@ SQL_OBJS = \
   topology_drop_after.sql
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS)
+EXTRA_CLEAN=$(SQL_OBJS) topology_upgrade.sql.in
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@ 
