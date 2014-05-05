@@ -1228,11 +1228,7 @@ AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
-  if test "x$POSTGIS_RASTER_DISABLE_OFFLINE" = "x1"; then
-    AC_MSG_RESULT([  PostGIS Raster:       enabled (no offline)])
-  else
-    AC_MSG_RESULT([  PostGIS Raster:       enabled (offline included)])
-  fi
+    AC_MSG_RESULT([  PostGIS Raster:       enabled])
 else
     AC_MSG_RESULT([  PostGIS Raster:       disabled])
 
