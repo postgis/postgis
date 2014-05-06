@@ -185,7 +185,6 @@ rtpg_assignHookGDALEnabledDrivers() {
 			/* driver not found, add to gdal_skip */
 			if (gdal_skip == NULL) {
 				gdal_skip = palloc(sizeof(char) * (strlen(drv_set[i].short_name) + 1));
-				sprintf(gdal_skip, "%s", drv_set[i].short_name);
 			}
 			else {
 				gdal_skip = repalloc(
@@ -195,8 +194,8 @@ rtpg_assignHookGDALEnabledDrivers() {
 					)
 				);
 				strncat(gdal_skip, " ", 1);
-				strncat(gdal_skip, drv_set[i].short_name, strlen(drv_set[i].short_name));
 			}
+			strncat(gdal_skip, drv_set[i].short_name, strlen(drv_set[i].short_name));
 		}
 
 		for (i = 0; i < drv_count; i++) {
