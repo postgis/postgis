@@ -42,7 +42,7 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 	  steps.
 	</para>
 	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables:
-	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname>.</para>
+	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment.</para>
 	
 	<para>If you want to enable offline raster:</para>
 	<programlisting>POSTGIS_ENABLE_OUTDB_RASTERS=1</programlisting>
