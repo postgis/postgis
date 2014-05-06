@@ -50,7 +50,7 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 	<para>In order to enable all GDAL drivers, set your environment variable as follows</para>
 	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL</programlisting>
 	<para>If you want to set specific drivers, set your environment variable as follows:</para>
-	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS="GTiff PNG JPEG GIF"</programlisting>
+	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS="EHdr GTiff PNG JPEG GIF XYZ"</programlisting>
   </sect1>
 
   <sect1 id="install_requirements">
