@@ -56,6 +56,7 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 	edit <filename>/etc/postgresql/<replaceable>9.3</replaceable>/<replaceable>main</replaceable>/environment</filename> where 9.3 refers to version of PostgreSQL and main refers to the cluster.</para>
 	
 	<para>On windows, if you are running as a service, you can set via System variables which for Windows 7 you can get to by right-clicking on Computer->Properties Advanced System Settings or in explorer navigating to <varname>Control Panel\All Control Panel Items\System</varname>. Then clicking Advanced System Settings ->Advanced->Environment Variables</varname> and adding new system variables.</para>
+	<para>After you set the environment variables, you'll need to restart your PostgreSQL service for the changes to take effect.</para>
   </sect1>
 
   <sect1 id="install_requirements">
