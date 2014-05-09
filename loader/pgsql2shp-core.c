@@ -720,7 +720,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 	char *esc_table;
 	char *esc_geo_col_name;
 
-	int error;
+	int error, result;
 	PGresult *res;
 	int size;
 
@@ -833,9 +833,16 @@ projFileCreate(SHPDUMPERSTATE *state)
 				{
 					return 0;
 				}
-				fputs (srtext, fp);
-				//LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
-				LWDEBUGF(3, "\n result proj SRText is %s .\n",  srtext);
+				result = fputs (srtext,fp);
+        LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+        if (result == EOF)
+        {
+            fclose( fp );
+            free( pszFullname );
+            PQclear(res);
+            free(query);
+            return 0;
+        }
 				fclose( fp );
 				free( pszFullname );
 			}
