@@ -109,7 +109,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 
 	enabled_drivers = getenv(ENV_POSTGIS_GDAL_ENABLED_DRIVERS);
 
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", ""));
 	POSTGIS_RT_DEBUGF(4, "enabled_drivers = %s", enabled_drivers);
 
 	if (enabled_drivers != NULL) {
@@ -162,6 +162,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 
 		/* all other drivers than those in new drivers are added to GDAL_SKIP */
 		for (i = 0; i < drv_count; i++) {
+			POSTGIS_RT_DEBUGF(4, "drv_set[%d] = %s", i, drv_set[i].short_name);
 			found = 0;
 
 			if (!disable_all) {
@@ -222,7 +223,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 
 	if (enabled_drivers_count)
 		pfree(enabled_drivers_array);
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", ""));
 }
 
 /*
