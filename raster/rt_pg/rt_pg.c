@@ -168,10 +168,12 @@ rtpg_assignHookGDALEnabledDrivers() {
 			if (!disable_all) {
 				/* gdal driver found in gdal_enabled_drivers, continue to thorough search */
 				if (strstr(gdal_enabled_drivers, drv_set[i].short_name) != NULL) {
+					POSTGIS_RT_DEBUGF(4, "%s found in gdal_enabled_drivers", drv_set[i].short_name);
 					/* thorough search of enabled_drivers */
 					for (j = 0; j < enabled_drivers_count; j++) {
 						/* driver found */
 						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
+							POSTGIS_RT_DEBUGF(4, "%s found", drv_set[i].short_name);
 							found = 1;
 							break;
 						}
