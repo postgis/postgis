@@ -117,7 +117,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 			sizeof(char) * (strlen(enabled_drivers) + 1)
 		);
 
-		sprintf(gdal_enabled_drivers, "\"%s\"", enabled_drivers);
+		sprintf(gdal_enabled_drivers, "%s", enabled_drivers);
 
 		enabled_drivers_array = rtpg_strsplit(enabled_drivers, " ", &enabled_drivers_count);
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -241,11 +241,6 @@ void _PG_init(void) {
 	char *env_postgis_enable_outdb_rasters = NULL;
 
 	/*
-	 * use POSTGIS_GDAL_ENABLED_DRIVERS to restrict drivers
-	 */
-	rtpg_assignHookGDALEnabledDrivers();
-
-	/*
 	 * use POSTGIS_ENABLE_OUTDB_RASTERS to enable access to out-db rasters
 	 */
 	enable_outdb_rasters = 0;
@@ -268,6 +263,11 @@ void _PG_init(void) {
 
 		pfree(env);
 	}
+
+	/*
+	 * use POSTGIS_GDAL_ENABLED_DRIVERS to restrict drivers
+	 */
+	rtpg_assignHookGDALEnabledDrivers();
 
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
