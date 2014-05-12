@@ -1,6 +1,6 @@
 /**********************************************************************
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright 2012 (C) Paul Ramsey <pramsey@cleverelephant.ca>
  *
@@ -817,7 +817,7 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode)
 	stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
 	if ( ! stats_tuple )
 	{
-		POSTGIS_DEBUGF(2, "stats for \"%s\" do not exist", get_rel_name(table_oid));
+		POSTGIS_DEBUGF(2, "stats for \"%s\" do not exist", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 		return NULL;
 	}
 	
@@ -1164,7 +1164,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	relid2 = getrelid(var2->varno, root->parse->rtable);
 
 	POSTGIS_DEBUGF(3, "using relations \"%s\" Oid(%d), \"%s\" Oid(%d)", 
-	                  get_rel_name(relid1), relid1, get_rel_name(relid2), relid2);
+	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2); 
 
 	/* Pull the stats from the stats system. */
 	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode);
@@ -1173,12 +1173,12 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	/* If we can't get stats, we have to stop here! */
 	if ( ! stats1 )
 	{
-		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid1), relid1);
+		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid1) ? get_rel_name(relid1) : "NULL" , relid1);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 	else if ( ! stats2 )
 	{
-		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid2), relid2);
+		POSTGIS_DEBUGF(3, "unable to retrieve stats for \"%s\" Oid(%d)", get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
