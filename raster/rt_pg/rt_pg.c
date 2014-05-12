@@ -102,6 +102,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 
 	char **enabled_drivers_array = NULL;
 	int enabled_drivers_count = 0;
+	bool *enabled_drivers_found = NULL;
 	char *gdal_skip = NULL;
 
 	uint32_t i;
@@ -126,6 +127,9 @@ rtpg_assignHookGDALEnabledDrivers() {
 			POSTGIS_RT_DEBUGF(4, "enabled_drivers_array[%d] = \"%s\"", i, enabled_drivers_array[i]);
 		}
 #endif
+
+		enabled_drivers_found = palloc(sizeof(bool) * enabled_drivers_count);
+		memset(enabled_drivers_found, FALSE, sizeof(bool) * enabled_drivers_count);
 	}
 	else {
 		gdal_enabled_drivers = palloc(sizeof(char));
@@ -180,6 +184,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 						/* driver found */
 						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
 							POSTGIS_RT_DEBUGF(4, "\"%s\" found in enabled_drivers_array", drv_set[i].short_name);
+							enabled_drivers_found[j] = TRUE;
 							found = 1;
 							break;
 						}
@@ -215,6 +220,12 @@ rtpg_assignHookGDALEnabledDrivers() {
 		}
 		if (drv_count) pfree(drv_set);
 
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (enabled_drivers_found[i])
+				continue;
+
+			elog(WARNING, "Unknown GDAL driver: %s", enabled_drivers_array[i]);
+		}
 	}
 
 	/* destroy the driver manager */
@@ -229,8 +240,10 @@ rtpg_assignHookGDALEnabledDrivers() {
 	/* force wrapper function to call GDALAllRegister() */
 	rt_util_gdal_register_all(1);
 
-	if (enabled_drivers_count)
+	if (enabled_drivers_count) {
 		pfree(enabled_drivers_array);
+		pfree(enabled_drivers_found);
+	}
 	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = \"%s\"", CPLGetConfigOption("GDAL_SKIP", ""));
 }
 
