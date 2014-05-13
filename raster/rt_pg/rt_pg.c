@@ -231,7 +231,7 @@ rtpg_assignHookGDALEnabledDrivers() {
 		if (disable_all)
 			elog(WARNING, "%s set. Ignoring GDAL driver: %s", GDAL_DISABLE_ALL, enabled_drivers_array[i]);
 		else if (enable_all)
-			elog(WARNING, "%s set. Ignoring GDAL driver: %s", GDAL_DISABLE_ALL, enabled_drivers_array[i]);
+			elog(WARNING, "%s set. Ignoring GDAL driver: %s", GDAL_ENABLE_ALL, enabled_drivers_array[i]);
 		else
 			elog(WARNING, "Unknown GDAL driver: %s", enabled_drivers_array[i]);
 	}
