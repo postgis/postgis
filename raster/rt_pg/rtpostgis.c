@@ -170,7 +170,7 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 
 	/* set GDAL_DATA */
 	CPLSetConfigOption("GDAL_DATA", newpath);
-	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", NULL));
+	POSTGIS_RT_DEBUGF(4, "GDAL_DATA = %s", CPLGetConfigOption("GDAL_DATA", ""));
 }
 
 /* postgis.gdal_enabled_drivers */
@@ -181,12 +181,13 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 
 	char **enabled_drivers_array = NULL;
 	int enabled_drivers_count = 0;
+	bool *enabled_drivers_found = NULL;
 	char *gdal_skip = NULL;
 
 	uint32_t i;
 	uint32_t j;
 
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", ""));
 	POSTGIS_RT_DEBUGF(4, "enabled_drivers = %s", enabled_drivers);
 
 	/* if NULL, nothing to do */
@@ -202,6 +203,8 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	rt_util_gdal_register_all(1);
 
 	enabled_drivers_array = rtpg_strsplit(enabled_drivers, " ", &enabled_drivers_count);
+	enabled_drivers_found = palloc(sizeof(bool) * enabled_drivers_count);
+	memset(enabled_drivers_found, FALSE, sizeof(bool) * enabled_drivers_count);
 
 	/* scan for keywords DISABLE_ALL and ENABLE_ALL */
 	disable_all = 0;
@@ -240,6 +243,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 					for (j = 0; j < enabled_drivers_count; j++) {
 						/* driver found */
 						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
+							enabled_drivers_found[j] = TRUE;
 							found = 1;
 							break;
 						}
@@ -275,6 +279,11 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 		}
 		if (drv_count) pfree(drv_set);
 
+		for (i = 0; i < enabled_drivers_count; i++) {
+			if (enabled_drivers_found[i])
+				continue;
+			elog(WARNING, "Unknown GDAL driver: %s", enabled_drivers_array[i]);
+		}
 	}
 
 	/* destroy the driver manager */
@@ -290,7 +299,8 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	rt_util_gdal_register_all(1);
 
 	pfree(enabled_drivers_array);
-	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", NULL));
+	pfree(enabled_drivers_found);
+	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", ""));
 }
 
 /* postgis.eanble_outdb_rasters */
