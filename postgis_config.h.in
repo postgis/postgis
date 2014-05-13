@@ -1,4 +1,4 @@
-/* postgis_config.h.in.  Generated from configure.ac by autoheader.  */
+#ifndef POSTGIS_CONFIG_H
 
 #include "postgis_svn_revision.h"
 
@@ -187,3 +187,5 @@
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
    `char[]'. */
 #undef YYTEXT_POINTER
+
+#endif /* POSTGIS_CONFIG_H */
