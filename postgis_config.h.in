@@ -1,4 +1,5 @@
 #ifndef POSTGIS_CONFIG_H
+#define POSTGIS_CONFIG_H 1
 
 #include "postgis_svn_revision.h"
 
