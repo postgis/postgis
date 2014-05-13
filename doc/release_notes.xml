@@ -3,6 +3,41 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.1.3</title>
+      <para>Release date: 2014/05/13</para>
+      <para>This is a bug fix and security release.</para>
+      <simplesect>
+        <title>Important changes</title>
+<para>
+Starting with this version offline raster access and use of GDAL drivers
+are disabled by default.
+</para>
+
+<para>
+An environment variable is introduced to allow for enabling
+specific GDAL drivers: POSTGIS_GDAL_ENABLED_DRIVERS.
+By default, all GDAL drivers are disabled
+</para>
+
+<para>
+An environment variable is introduced to allow for enabling
+out-db raster bands: POSTGIS_ENABLE_OUTDB_RASTERS.
+By default, out-db raster bands are disabled
+</para>
+
+<para>
+The environment variables must be set for the PostgreSQL process,
+and determines the behavior of the whole cluster.
+</para>
+      </simplesect>
+      <simplesect>
+        <title>Bug Fixes</title>
+<para>#2697, invalid GeoJSON Polygon input crashes server process</para>
+<para>#2700, Fix dumping of higher-dimension datasets with null rows</para>
+<para>#2706, ST_DumpPoints of EMPTY geometries crashes server</para>
+      </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.1.2</title>
       <para>Release date: 2014/03/31</para>
       <para>This is a bug fix release, addressing issues that have been filed since the 2.1.1 release.</para>
