@@ -212,16 +212,16 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	if (strstr(enabled_drivers, GDAL_DISABLE_ALL) != NULL) {
 		for (i = 0; i < enabled_drivers_count; i++) {
 			if (strstr(enabled_drivers_array[i], GDAL_DISABLE_ALL) != NULL) {
+				enabled_drivers_found[i] = TRUE;
 				disable_all = 1;
-				break;
 			}
 		}
 	}
 	else if (strstr(enabled_drivers, GDAL_ENABLE_ALL) != NULL) {
 		for (i = 0; i < enabled_drivers_count; i++) {
 			if (strstr(enabled_drivers_array[i], GDAL_ENABLE_ALL) != NULL) {
+				enabled_drivers_found[i] = TRUE;
 				enable_all = 1;
-				break;
 			}
 		}
 	}
@@ -230,6 +230,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 		int found = 0;
 		uint32_t drv_count = 0;
 		rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
+
 		POSTGIS_RT_DEBUGF(4, "driver count = %d", drv_count);
 
 		/* all other drivers than those in new drivers are added to GDAL_SKIP */
@@ -245,7 +246,6 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 						if (strcmp(enabled_drivers_array[j], drv_set[i].short_name) == 0) {
 							enabled_drivers_found[j] = TRUE;
 							found = 1;
-							break;
 						}
 					}
 				}
@@ -279,11 +279,18 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 		}
 		if (drv_count) pfree(drv_set);
 
-		for (i = 0; i < enabled_drivers_count; i++) {
-			if (enabled_drivers_found[i])
-				continue;
+	}
+
+	for (i = 0; i < enabled_drivers_count; i++) {
+		if (enabled_drivers_found[i])
+			continue;
+
+		if (disable_all)
+			elog(WARNING, "%s set. Ignoring GDAL driver: %s", GDAL_DISABLE_ALL, enabled_drivers_array[i]);
+		else if (enable_all)
+			elog(WARNING, "%s set. Ignoring GDAL driver: %s", GDAL_ENABLE_ALL, enabled_drivers_array[i]);
+		else
 			elog(WARNING, "Unknown GDAL driver: %s", enabled_drivers_array[i]);
-		}
 	}
 
 	/* destroy the driver manager */
