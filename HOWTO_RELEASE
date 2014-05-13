@@ -40,7 +40,7 @@ documentation -- that means having the required software:
 Release procedure
 -----------------
 
-1) Re-generate the ChangeLog using svn2cl and truncate old legacy junk
+1) Re-generate the ChangeLog (make ChangeLog)
 2) Edit NEWS: set release date and check all notable changes have
    been reported (extract from ChangeLog).
 3) Edit README.postgis and set release date and version.
