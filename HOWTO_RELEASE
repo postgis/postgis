@@ -52,9 +52,8 @@ Release procedure
    $ base=http://svn.osgeo.org/postgis/
    $ rev=2.0.PATCH
    $ svn copy -m "Tagged release $rev" $base/branches/2.0 $base/tags/$rev
-9) Checkout tag:
-   svn checkout $base/tags/$rev
-10) Run: sh make_dist.sh $rev
+9) Run: sh make_dist.sh $rev
+10) Build and test generated tarball (including extension upgrade)
 11) Copy tarball to web site and edit downloads page
 12) Announce on e-mail 
     - postgis-users
