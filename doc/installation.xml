@@ -50,7 +50,9 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 	<para>In order to enable all GDAL drivers available in your GDAL install, set this environment variable as follows</para>
 	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL</programlisting>
 	<para>If you want to only enable specific drivers, set your environment variable as follows:</para>
-	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS="EHdr GTiff PNG JPEG GIF XYZ"</programlisting>
+	<programlisting>POSTGIS_GDAL_ENABLED_DRIVERS="GTiff PNG JPEG GIF XYZ"</programlisting>
+	
+	<note><para>If you are on windows, do not quote the driver list</para></note>
 	
 	<para>Setting environment variables varies depending on OS.  For PostgreSQL installed on Ubuntu or Debian via apt-postgresql, the preferred way is to
 	edit <filename>/etc/postgresql/<replaceable>9.3</replaceable>/<replaceable>main</replaceable>/environment</filename> where 9.3 refers to version of PostgreSQL and main refers to the cluster.</para>
