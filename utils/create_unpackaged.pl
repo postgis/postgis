@@ -148,7 +148,10 @@ print "-- \n";
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "\n";
 
-
+print "-- complain if script is sourced in psql\n";
+print '\echo Use "CREATE EXTENSION ' . ${extname} .
+      '" to load this file. \quit';
+print "\n\n";
 
 print "-- Register all views.\n";
 foreach my $view (@views)
