@@ -40,30 +40,27 @@ documentation -- that means having the required software:
 Release procedure
 -----------------
 
-1) Re-generate the ChangeLog (make ChangeLog.svn && mv ChangeLog.svn ChangeLog)
-2) Edit NEWS: set release date and check all notable changes have
+- Re-generate the ChangeLog (make ChangeLog.svn && mv ChangeLog.svn ChangeLog)
+- Edit NEWS: set release date and check all notable changes have
    been reported (extract from ChangeLog).
-3) Edit README.postgis and set release date and version.
-4) Add release notes in doc/release_notes.xml
-5) Check version in Version.config as specified in Versioning Scheme above.
+- Edit README.postgis and set release date and version.
+- Add release notes in doc/release_notes.xml
+- Check version in Version.config as specified in Versioning Scheme above.
    (remove the "dev" suffix)
-6) Update doc/postgis.xml to download.osgeo.org link 
-  (note: unreleased are on postgis.net, and released download.osgeo.org )
-   Also make sure the correct minimum and lastest geos etc are noted.
-7) Commit all your changes
-8) Tag the release:
+- Commit all your changes
+- Tag the release:
    $ base=http://svn.osgeo.org/postgis/
    $ rev=2.1.PATCH
    $ svn copy -m "Tagged release $rev" $base/branches/2.1 $base/tags/$rev
-9) Run: sh make_dist.sh $rev
-10) Build and test generated tarball (including extension upgrade)
-11) Copy tarball to web site and edit downloads page
-12) Announce on e-mail 
+- Run: sh make_dist.sh $rev
+- Build and test generated tarball (including extension upgrade)
+- Copy tarball to web site and edit downloads page
+- Announce on e-mail 
     - postgis-users
     - postgis-devel
     - pgsql-announce
     - osgeo-discuss
-13) Update web sites
+- Update web sites
     - PostGIS News
     - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
@@ -79,13 +76,12 @@ Release procedure
     - Wikipedia
     - Twitter (we all love twitter don't we)
     - PlanetPostGIS
-14) Update Trac and make old Milestone as completed
-
-15) In the branch, push the revision number forward in Version.config.  
-    All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.  
-    So for example if you just release 2.1.1, then the 2.1 branch should have 
-    POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
-16) In the branch, ensure all the previous released minor versions are listed in 
-    extension/upgradeable_versions.mk including the one you just released
+- Update Trac and make old Milestone as completed
+- In the branch, push the revision number forward in Version.config.  
+  All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.  
+  So for example if you just release 2.1.1, then the 2.1 branch should have 
+  POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
+- In the branch, ensure all the previous released minor versions are listed in 
+  extension/upgradeable_versions.mk including the one you just released
 
 
