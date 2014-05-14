@@ -1,14 +1,12 @@
 PostGIS 2.0.6
-2014/mm/dd
+2014/05/14
 
  * Important Changes *
+
   - Add control of GDAL drivers with the environment variable
     POSTGIS_GDAL_ENABLED_DRIVERS. By default, all GDAL drivers are disabled
   - Add ability to disable out-db raster bands with the environment variable
     POSTGIS_ENABLE_OUTDB_RASTERS. By default, out-db raster bands are disabled
-
- * Bug Fixes *
-  - 
 
 PostGIS 2.0.5
 2013/03/31
