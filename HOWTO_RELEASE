@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2013-11-16
+Date: 2014-05-14
 
 Versioning Scheme
 -----------------
@@ -18,6 +18,10 @@ additions have been introduced (one or two functions can be considered
 [POSTGIS_MAJOR_VERSION] is incremented (and MICRO and MINOR set to 0) when
 a dump/reload of existing spatial databases is *REQUIRED* for things
 to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
+
+All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
+So for example if you just release 2.1.1, then the 2.1 branch should have
+POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
 
 Requirements
 ------------
@@ -57,10 +61,11 @@ Release procedure
    Also make sure the correct minimum and lastest geos etc are noted.
 8) Commit all changes
 9) Tag branch:  
-   svn copy http://svn.osgeo.org/postgis/branch/x.x http://svn.osgeo.org/postgis/tags/x.x.x
-10) Checkout tag:
-   svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
-11) Run: sh make_dist.sh x.x.x (or use debbie for this)
+   $ base=http://svn.osgeo.org/postgis/
+   $ rev=x.x.0
+   $ svn copy -m "Tagged release $rev" $base/trunk $base/tags/$rev
+10) Run: sh make_dist.sh $rev (or use debbie for this)
+11) Build and test generated tarball (including extension upgrade)
 12) Copy tarball to web site and edit downloads page
 13) Announce on e-mail 
     - postgis-users
@@ -84,10 +89,8 @@ Release procedure
     - Twitter (we all love twitter don't we)
     - PlanetPostGIS
 15) Update Trac and make old Milestone as completed
-
-16) Push the revision number forward.  All POSTGIS_MICRO_VERSION that are in branch or trunk should end in
-dev.  So for example if you just release 2.1.1, then the 2.1 branch should have POSTGIS_MICRO_VERSION set to 2dev 
-so that the full version is 2.1.2dev.
-17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk including the one you just released
+16) Push the revision number forward (see Versioning Scheme)
+17) Ensure all the previous released minor versions are listed in
+    extension/upgradeable_versions.mk including the one you just released
 
 
