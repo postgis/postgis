@@ -38,7 +38,7 @@ all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERS
 
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	mkdir -p sql
-	echo '\echo Use "CREATE EXTENSION postgis" to load this file. \quit' > $@
+	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
 	cat $^ >> $@
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
@@ -104,7 +104,7 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 #TODO: come up with a better name
 #TODO: what about postgis_drop_after.sql ? where does it fit ??
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade.sql sql_bits/rtpostgis_upgrade.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
-	echo '\echo Use "CREATE EXTENSION postgis" to load this file. \quit' > $@
+	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
 	cat $^ >> $@
 
 sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
