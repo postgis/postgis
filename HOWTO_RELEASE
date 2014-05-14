@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2009-07-01
+Date: 2014-05-14
 
 Versioning Scheme
 -----------------
@@ -77,8 +77,8 @@ Release procedure
     - Wikipedia
     - Twitter (we all love twitter don't we)
 14) Update Trac and make old Milestone as completed
-
 15) Push the revision number forward
-16) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
+16) Ensure all the previous released minor versions are listed in
+    extension/upgradeable_versions.mk
 
 
