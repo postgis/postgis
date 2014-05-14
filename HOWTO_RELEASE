@@ -46,7 +46,7 @@ Release procedure
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Check version in Version.config as specified in Versioning Scheme above.
-   (remove the SVN suffix)
+   (remove the "dev" suffix)
 6) Update doc/postgis.xml to download.osgeo.org link 
   (note: unreleased are on postgis.net, and released download.osgeo.org )
    Also make sure the correct minimum and lastest geos etc are noted.
