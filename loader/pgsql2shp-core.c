@@ -2,7 +2,7 @@
  * $Id: pgsql2shp.c 5450 2010-03-22 19:38:14Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://www.postgis.org
+ * http://postgis.net
  *
  * Copyright (C) 2001-2003 Refractions Research Inc.
  *

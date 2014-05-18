@@ -2,14 +2,14 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://www.postgis.org
+ * http://postgis.net
  * Copyright 2008 OpenGeo.org
  * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- * Maintainer: Paul Ramsey <pramsey@opengeo.org>
+ * Maintainer: Paul Ramsey <pramsey@boundlessgeo.com>
  *
  **********************************************************************/
 
