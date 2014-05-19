@@ -84,7 +84,6 @@ Release procedure
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
-    - PlanetPostGIS
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Ensure all the previous released minor versions are listed in
