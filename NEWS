@@ -3,7 +3,7 @@ PostGIS 2.1.4
 
  * Enhancements *
 
-  - Speedup ST_Simplify calls against points (#2745)
+  - #2745, Speedup ST_Simplify calls against points
 
 PostGIS 2.1.3
 2014/05/13
