@@ -44,9 +44,16 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *result;
-	LWGEOM *in = lwgeom_from_gserialized(geom);
+  int type = gserialized_get_type(geom);
+	LWGEOM *in;
 	LWGEOM *out;
-	double dist = PG_GETARG_FLOAT8(1);
+	double dist;
+
+  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+    PG_RETURN_POINTER(geom);
+
+	dist = PG_GETARG_FLOAT8(1);
+	in = lwgeom_from_gserialized(geom);
 
 	out = lwgeom_simplify(in, dist);
 	if ( ! out ) PG_RETURN_NULL();
