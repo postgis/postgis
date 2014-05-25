@@ -4,6 +4,7 @@ PostGIS 2.1.4
  * Enhancements *
 
   - #2745, Speedup ST_Simplify calls against points
+  - #2747, Support for GDAL 2.0
 
 PostGIS 2.1.3
 2014/05/13
