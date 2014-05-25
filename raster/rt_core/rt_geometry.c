@@ -910,7 +910,12 @@ rt_raster_gdal_polygonize(
 	/*****************************
 	 * Register ogr mem driver
 	 *****************************/
+#ifdef GDAL_DCAP_RASTER
+	/* in GDAL 2.0, OGRRegisterAll() is an alias to GDALAllRegister() */
+	rt_util_gdal_register_all(0);
+#else
 	OGRRegisterAll();
+#endif
 
 	RASTER_DEBUG(3, "creating OGR MEM vector");
 
