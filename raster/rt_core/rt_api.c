@@ -6324,7 +6324,12 @@ rt_raster_gdal_polygonize(
 	/*****************************
 	 * Register ogr mem driver
 	 *****************************/
+#ifdef GDAL_DCAP_RASTER
+	/* As for GDAL 2.0, OGRRegisterAll() is an alias for GDALAllRegister() */
+	rt_util_gdal_register_all(0);
+#else
 	OGRRegisterAll();
+#endif
 
 	RASTER_DEBUG(3, "creating OGR MEM vector");
 
@@ -8975,6 +8980,14 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 
 	for (i = 0, j = 0; i < count; i++) {
 		drv = GDALGetDriver(i);
+
+#ifdef GDAL_DCAP_RASTER
+		/* Starting with GDAL 2.0, vector drivers can also be returned */ 
+		/* Only keep raster drivers */ 
+		state = GDALGetMetadataItem(drv, GDAL_DCAP_RASTER, NULL);
+		if (state == NULL || !EQUAL(state, "YES"))
+			continue;
+#endif
 
 		if (cancc) {
 			/* CreateCopy support */
