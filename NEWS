@@ -38,6 +38,7 @@ PostGIS 2.2.0
   - #2527, Added -k flag to raster2pgsql to skip checking that
            band is NODATA
   - #2616, Reduce text casts during topology building and export
+  - #2747, Add support for GDAL 2.0
 
  * Bug Fixes *
 
