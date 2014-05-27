@@ -123,7 +123,9 @@ rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql.in 
-	cat $^ > $@
+	echo 'BEGIN;' > $@
+	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
+	echo 'COMMIT;' >> $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
