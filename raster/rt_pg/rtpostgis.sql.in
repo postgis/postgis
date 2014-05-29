@@ -5713,32 +5713,40 @@ CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- raster/geometry functions
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry @ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
     
 -- geometry/raster functions
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
     RETURNS bool
     AS 'select $1 @ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
     AS 'select $1 && $2::geometry'
@@ -5821,18 +5829,22 @@ CREATE OPERATOR ~ (
     );
 
 -- raster/geometry operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.5
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -5840,18 +5852,22 @@ CREATE OPERATOR && (
     );
 
 -- geometry/raster operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.5
 CREATE OPERATOR @ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
- 
+
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',
