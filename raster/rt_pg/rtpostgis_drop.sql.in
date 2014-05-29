@@ -43,7 +43,6 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, te
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
-DROP AGGREGATE IF EXISTS ST_Union(raster);
 
 --these were renamed to ST_MapAlgebraExpr or argument names changed --
 DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, integer, text, text, nodatavaluerepl text);
