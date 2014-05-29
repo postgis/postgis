@@ -201,6 +201,41 @@ BEGIN
 END;
 $$;
 
+-- raster_columns and raster_overviews tables are deprecated
+DO LANGUAGE 'plpgsql' $$
+	DECLARE
+		cnt int;
+	BEGIN
+		SELECT count(*) INTO cnt
+		FROM pg_class c
+		JOIN pg_namespace n
+			ON c.relnamespace = n.oid
+		WHERE c.relname = 'raster_columns'
+			AND c.relkind = 'r'::char
+			AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+		IF cnt > 0 THEN
+			EXECUTE 'ALTER TABLE raster_columns RENAME TO deprecated_raster_columns';
+		END IF;
+
+		SELECT count(*) INTO cnt
+		FROM pg_class c
+		JOIN pg_namespace n
+			ON c.relnamespace = n.oid
+		WHERE c.relname = 'raster_overviews'
+			AND c.relkind = 'r'::char
+			AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+		IF cnt > 0 THEN
+			EXECUTE 'ALTER TABLE raster_overviews RENAME TO deprecated_raster_overviews';
+		END IF;
+
+	END;
+	$$;
+
+-- inserted new column into view
+DROP VIEW IF EXISTS raster_columns;
+
 -- Changed return type
 DROP FUNCTION IF EXISTS _st_summarystats(raster,int, boolean, double precision);
 DROP FUNCTION IF EXISTS st_summarystats(raster,int, boolean);

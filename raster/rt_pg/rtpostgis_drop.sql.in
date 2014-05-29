@@ -114,45 +114,6 @@ DROP TYPE IF EXISTS histogram;
 DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
 
--- raster_columns and raster_overviews tables are deprecated
-DROP FUNCTION IF EXISTS _rename_raster_tables();
-CREATE OR REPLACE FUNCTION _rename_raster_tables()
-	RETURNS void AS $$
-	DECLARE
-		cnt int;
-	BEGIN
-		SELECT count(*) INTO cnt
-		FROM pg_class c
-		JOIN pg_namespace n
-			ON c.relnamespace = n.oid
-		WHERE c.relname = 'raster_columns'
-			AND c.relkind = 'r'::char
-			AND NOT pg_is_other_temp_schema(c.relnamespace);
-
-		IF cnt > 0 THEN
-			EXECUTE 'ALTER TABLE raster_columns RENAME TO deprecated_raster_columns';
-		END IF;
-
-		SELECT count(*) INTO cnt
-		FROM pg_class c
-		JOIN pg_namespace n
-			ON c.relnamespace = n.oid
-		WHERE c.relname = 'raster_overviews'
-			AND c.relkind = 'r'::char
-			AND NOT pg_is_other_temp_schema(c.relnamespace);
-
-		IF cnt > 0 THEN
-			EXECUTE 'ALTER TABLE raster_overviews RENAME TO deprecated_raster_overviews';
-		END IF;
-
-	END;
-	$$ LANGUAGE 'plpgsql' VOLATILE;
-SELECT _rename_raster_tables();
-DROP FUNCTION _rename_raster_tables();
-
--- inserted new column into view
-DROP VIEW IF EXISTS raster_columns;
-
 -- functions no longer supported
 DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
 DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
