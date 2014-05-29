@@ -5649,6 +5649,8 @@ CREATE OPERATOR ~ (
     );
 
 -- raster/geometry operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5661,6 +5663,7 @@ CREATE OPERATOR @ (
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -5668,6 +5671,8 @@ CREATE OPERATOR && (
     );
 
 -- geometry/raster operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5680,6 +5685,7 @@ CREATE OPERATOR @ (
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',
