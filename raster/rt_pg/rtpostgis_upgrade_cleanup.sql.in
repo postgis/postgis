@@ -28,7 +28,7 @@
 -- WARNING: Any change in this file must be evaluated for compatibility.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+--
 -- This section is take add / drop things like CASTS, TYPES etc. that have changed
 -- Since these are normally excluded from sed upgrade generator
 -- they must be explicitly added
@@ -36,7 +36,12 @@
 -- It is not run thru the sed processor to prevent it from being stripped
 -- Note: We put these in separate file from drop since the extension module has
 -- to add additional logic to drop them from the extension as well
-#include "sqldefines.h"
+--
+-- TODO: tag each item with the version in which it was changed
+--
+
+#include "sqldefines.h" // TODO: does not seem to be needed
+
 /** -- GIST operator functions -- these don't seem necessary
 DROP OPERATOR IF EXISTS << (raster, raster);
 DROP FUNCTION IF EXISTS st_left(raster, raster);
@@ -195,3 +200,178 @@ BEGIN
 	END IF;
 END;
 $$;
+
+-- Changed return type
+DROP FUNCTION IF EXISTS _st_summarystats(raster,int, boolean, double precision);
+DROP FUNCTION IF EXISTS st_summarystats(raster,int, boolean);
+DROP FUNCTION IF EXISTS st_summarystats(raster, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster,int, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster,int, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster, double precision);
+DROP FUNCTION IF EXISTS _st_summarystats(text, text,integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_summarystats(text, text,integer, boolean);
+DROP FUNCTION IF EXISTS st_summarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text,integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text,integer, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
+DROP FUNCTION IF EXISTS _st_histogram( raster, int, boolean, double precision, int, double precision[], boolean, double precision, double precision);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, boolean, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, boolean, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram( raster, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, boolean, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram( text, text, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, boolean);
+DROP FUNCTION IF EXISTS _st_histogram( text, text, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_quantile(raster, int, boolean, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(raster, int, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(raster, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, int, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, int, boolean, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, int, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, int, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, double precision[]);
+DROP FUNCTION IF EXISTS _st_quantile(raster, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS _st_quantile(text, text, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(raster, integer, boolean, double precision[], double precision);
+
+-- Incompatible signature change
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_value(raster, geometry);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, double precision);
+DROP FUNCTION IF EXISTS st_value(raster, geometry, double precision);
+DROP FUNCTION IF EXISTS st_setvalue(raster, integer, geometry, double precision);
+DROP FUNCTION IF EXISTS st_setvalue(raster, geometry, double precision);
+DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, text, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, geometry, text, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, geometry, regprocedure);
+DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, geometry, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, int, geometry, float8, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8[], boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, float8[], boolean);
+DROP FUNCTION IF EXISTS st_addband(raster, text, float8, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, int, text, float8, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, raster, int, int);
+DROP FUNCTION IF EXISTS st_bandisnodata(raster, integer, boolean);
+DROP FUNCTION IF EXISTS st_bandpath(raster, integer);
+DROP FUNCTION IF EXISTS st_bandpixeltype(raster, integer);
+DROP FUNCTION IF EXISTS st_georeference(raster, text);
+DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
+DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8, int4);
+DROP FUNCTION IF EXISTS st_polygon(raster, integer);
+DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text, text, double precision, boolean);
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text, boolean);
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text);
+DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, text, boolean);
+DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, boolean);
+DROP FUNCTION IF EXISTS st_aspect(raster, integer, text);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, double precision, double precision, double precision, double precision, boolean);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float, boolean);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float);
+DROP FUNCTION IF EXISTS st_resample(raster, integer, double precision, double precision, double precision, double precision, double precision, double precision, text, double precision);
+DROP FUNCTION IF EXISTS st_resample(raster, integer, integer, integer, double precision, double precision, double precision, double precision, text, double precision);
+DROP FUNCTION IF EXISTS _st_tile(raster, integer, integer, int[]);
+DROP FUNCTION IF EXISTS st_tile(raster, integer[], integer, integer);
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer);
+DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster); 
+DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
+DROP FUNCTION IF EXISTS st_asbinary(raster);
+DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, integer, text, text, text);
+DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, text, text, text);
+DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, regprocedure);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure, VARIADIC text[]); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, regprocedure, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure, VARIADIC text[]); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
+DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, integer, regprocedure);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, raster, regprocedure, text, text, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, raster, integer, regprocedure, text, text, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFctNgb(raster, integer, text, integer, integer, regprocedure, text,  VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_BandMetaData(raster, integer); --out param 
+DROP FUNCTION IF EXISTS ST_BandNoDataValue(raster, integer); -- out param 
+DROP FUNCTION IF EXISTS ST_HasNoBand(raster); -- default param
+DROP FUNCTION IF EXISTS ST_Resample(raster, raster, text, double precision);
+DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
+DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
+DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
+DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster);
+DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean  , geometry);
+DROP FUNCTION IF EXISTS ST_Intersects(geometry , raster, integer , boolean);
+DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
+DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
+DROP FUNCTION IF EXISTS ST_Intersection(raster, geometry);
+DROP FUNCTION IF EXISTS ST_Intersection(raster, integer, geometry);
+DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer);
+DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
+DROP FUNCTION IF EXISTS st_intersects(raster, raster);
+DROP FUNCTION IF EXISTS st_intersection(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_intersection(raster, geometry);
+-- arg names changed
+DROP FUNCTION IF EXISTS _ST_Resample(raster, text, double precision, integer, double precision, double precision, double precision, double precision, double precision, double precision);
+DROP FUNCTION IF EXISTS ST_SetGeoReference(raster, text, text);
+DROP FUNCTION IF EXISTS st_setbandisnodata(raster, integer);
+DROP FUNCTION IF EXISTS st_setbandnodatavalue(raster, integer, double precision, boolean);
+DROP FUNCTION IF EXISTS st_dumpaspolygons(raster, integer);
+-- function parameter names changed
+DROP FUNCTION IF EXISTS st_nearestvalue(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_nearestvalue(raster, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, geometry, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, geometry, integer, boolean);
+
+-- function no longer exist or refactored (check which is which!)
+DROP FUNCTION IF EXISTS st_intersects(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_intersects(raster, geometry, integer);
+DROP FUNCTION IF EXISTS st_intersects(geometry, raster, integer);
+DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
+DROP FUNCTION IF EXISTS _st_intersects(geometry, raster, integer);
+

@@ -115,7 +115,7 @@ rtpostgis_upgrade.sql: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< 2.0 > $@
 	#$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
 
-rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql
+rtpostgis_upgrade_20_21.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql rtpostgis_drop.sql 
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@
