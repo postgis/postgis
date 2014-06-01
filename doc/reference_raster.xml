@@ -12571,18 +12571,39 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+          <paramdef>
+            <type>raster </type>
+            <parameter>A</parameter>
+          </paramdef>
+          <paramdef>
+            <type>raster </type>
+            <parameter>B</parameter>
+          </paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+          <paramdef>
+            <type>raster </type>
+            <parameter>A</parameter>
+          </paramdef>
+          <paramdef>
+            <type>geometry </type>
+            <parameter>B</parameter>
+          </paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+          <paramdef>
+            <type>geometry </type>
+            <parameter>B</parameter>
+          </paramdef>
+          <paramdef>
+            <type>raster </type>
+            <parameter>A</parameter>
+          </paramdef>
 
-				<paramdef>
-				  <type>raster </type>
-
-				  <parameter>A</parameter>
-				</paramdef>
-
-				<paramdef>
-				  <type>raster </type>
-
-				  <parameter>B</parameter>
-				</paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -12595,6 +12616,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 			<note><para>This operand will make use of any indexes that may be available on the
 				rasters.</para></note>
 
+					<para>Availability: 2.0.0</para>
 		  </refsection>
 
 		  <refsection>
