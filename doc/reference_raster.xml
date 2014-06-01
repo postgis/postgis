@@ -12569,54 +12569,53 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 
 		  <refsynopsisdiv>
 			<funcsynopsis>
-			  <funcprototype>
+				<funcprototype>
 				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
-          <paramdef>
-            <type>raster </type>
-            <parameter>A</parameter>
-          </paramdef>
-          <paramdef>
-            <type>raster </type>
-            <parameter>B</parameter>
-          </paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+				
+				<funcprototype>
 				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
-          <paramdef>
-            <type>raster </type>
-            <parameter>A</parameter>
-          </paramdef>
-          <paramdef>
-            <type>geometry </type>
-            <parameter>B</parameter>
-          </paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+				
+				<funcprototype>
 				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
-          <paramdef>
-            <type>geometry </type>
-            <parameter>B</parameter>
-          </paramdef>
-          <paramdef>
-            <type>raster </type>
-            <parameter>A</parameter>
-          </paramdef>
-
-			  </funcprototype>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>B</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+				</funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A intersects the bounding box of raster B.</para>
+				<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometr A intersects the bounding box of raster/geometr B.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
+				<note><para>This operand will make use of any indexes that may be available on the
 				rasters.</para></note>
 
-					<para>Availability: 2.0.0</para>
+				<para>Availability: 2.0.0</para>
 		  </refsection>
 
 		  <refsection>
@@ -12799,7 +12798,75 @@ a_rid | b_rid | overleft
 			<para><xref linkend="RT_Raster_Same" /></para>
 		  </refsection>
 		</refentry>
-		 
+
+		<refentry id="RT_Raster_Contained">
+		  <refnamediv>
+			<refname>@</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contained by B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+
+          </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometry A
+			is contained by bounding box of raster/geometr B.  </para>
+
+			<note><para>This operand will use spatial indexes on the rasters. </para></note>
+				
+			<para>Availability:  2.0.0 raster @ raster, raster @ geometry introduced</para>
+			<para>Availability:  2.0.5 geometry @ raster introduced </para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Contains" /></para>
+		  </refsection>
+		</refentry>
+		
 		<refentry id="RT_Raster_Same">
 		  <refnamediv>
 			<refname>~=</refname>
@@ -12851,6 +12918,73 @@ a_rid | b_rid | overleft
 		  <refsection>
         <title>See Also</title>
         <para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_Raster_EQ" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="RT_Raster_Contains">
+		  <refnamediv>
+			<refname>~</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+
+          </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometry A
+			is contains bounding box of raster/geometr B.  </para>
+
+			<note><para>This operand will use spatial indexes on the rasters. </para></note>
+				
+			<para>Availability:  2.0.0</para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Contained" /></para>
 		  </refsection>
 		</refentry>
 	</sect1>
