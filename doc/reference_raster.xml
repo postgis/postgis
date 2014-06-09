@@ -13920,7 +13920,7 @@ NOTICE:  The two rasters provided have different SRIDs
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+						<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef>
 						<paramdef><type>raster </type><parameter>rastA</parameter></paramdef>
 						<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>
 					</funcprototype>
