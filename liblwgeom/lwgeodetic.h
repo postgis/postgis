@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwgeodetic.h 9324 2012-02-27 22:08:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -17,10 +17,32 @@
 #define _GNU_SOURCE
 #endif
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <math.h>
 
 #ifndef NAN
-#define NAN 0.0/0.0
+#ifdef _MSC_VER
+static union
+{
+    unsigned long nan[2];
+    double d;
+} internal_postgis_nan = { 0xffffffff, 0x7fffffff };
+#define NAN (internal_postgis_nan.d);
+#endif
+#endif
+
+#ifndef NAN
+#ifdef _MSC_VER
+static union
+{
+    unsigned long nan[2];
+    double d;
+} internal_postgis_nan = { 0xffffffff, 0x7fffffff };
+#define NAN (internal_postgis_nan.d);
+#endif
 #endif
 
 extern int gbox_geocentric_slow;
@@ -33,7 +55,7 @@ extern int gbox_geocentric_slow;
 typedef struct
 {
 	double lon;
-	double lat;
+	double lat; 
 } GEOGRAPHIC_POINT;
 
 /**

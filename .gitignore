@@ -2,6 +2,7 @@
 *.la
 .libs
 *.lo
+_build
 postgis_svn_revision.h
 aclocal.m4
 autom4te.cache/
