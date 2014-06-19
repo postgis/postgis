@@ -8553,6 +8553,17 @@ CREATE OR REPLACE FUNCTION UpdateRasterSRID(
 	LANGUAGE 'sql' VOLATILE STRICT;
 
 -------------------------------------------------------------------
+--  Debugging
+-------------------------------------------------------------------
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION postgis_noop(raster)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_noop'
+	LANGUAGE 'c' VOLATILE STRICT;
+
+
+-------------------------------------------------------------------
 --  END
 -------------------------------------------------------------------
 -- make views public viewable --

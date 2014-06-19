@@ -35,6 +35,7 @@
 
 Datum RASTER_in(PG_FUNCTION_ARGS);
 Datum RASTER_out(PG_FUNCTION_ARGS);
+Datum RASTER_noop(PG_FUNCTION_ARGS);
 
 Datum RASTER_to_bytea(PG_FUNCTION_ARGS);
 Datum RASTER_to_binary(PG_FUNCTION_ARGS);
@@ -198,6 +199,27 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 	pfree(wkb);
 	PG_FREE_IF_COPY(pgraster, 0);
 
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_noop);
+Datum RASTER_noop(PG_FUNCTION_ARGS)
+{
+	rt_raster raster;
+	rt_pgraster *pgraster, *result;
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_noop: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+	result = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (result == NULL)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(result, raster->size);
 	PG_RETURN_POINTER(result);
 }
 
