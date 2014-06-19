@@ -2,7 +2,7 @@
  * $Id: lwgeom_transform.h -1M 2011-08-11 11:15:57Z (local) $ 
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under

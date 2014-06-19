@@ -580,6 +580,10 @@ rt_raster_serialize(rt_raster raster) {
 		/* Add band type */
 		*ptr = band->pixtype;
 		if (band->offline) {
+#ifdef POSTGIS_RASTER_DISABLE_OFFLINE
+      rterror("rt_raster_serialize: offdb raster support disabled at compile-time");
+      return NULL;
+#endif
 			*ptr |= BANDTYPE_FLAG_OFFDB;
 		}
 		if (band->hasnodata) {
@@ -867,7 +871,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 			pathlen = strlen((char*) ptr);
 			band->data.offline.path = rtalloc(sizeof(char) * (pathlen + 1));
 			if (band->data.offline.path == NULL) {
-				rterror("rt_raster_deserialize: Could not allocate momory for offline band path");
+				rterror("rt_raster_deserialize: Could not allocate memory for offline band path");
 				for (j = 0; j <= i; j++) rt_band_destroy(rast->bands[j]);
 				rt_raster_destroy(rast);
 				return NULL;

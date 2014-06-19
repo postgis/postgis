@@ -3,10 +3,9 @@
 -- $Id$
 ----
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
--- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -93,9 +92,14 @@ BEGIN
 	IF var_cur_search_path LIKE '%' || quote_ident(a_schema_name) || '%' THEN
 		var_result := a_schema_name || ' already in database search_path';
 	ELSE
-		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database()) || ' SET search_path = ' || var_cur_search_path || ', ' || quote_ident(a_schema_name); 
+		var_cur_search_path := var_cur_search_path || ', '
+                        || quote_ident(a_schema_name); 
+		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database())
+                              || ' SET search_path = ' || var_cur_search_path;
 		var_result := a_schema_name || ' has been added to end of database search_path ';
 	END IF;
+
+	EXECUTE 'SET search_path = ' || var_cur_search_path;
   
   RETURN var_result;
 END

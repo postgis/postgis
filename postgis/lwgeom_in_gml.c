@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2009 - 2010 Oslandia
  *
  * This is free software; you can redistribute and/or modify it under
@@ -1334,6 +1334,10 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 				ppa[0] = ptarray_flip_coordinates(ppa[0]);
 		}
 	}
+
+	/* Interior but no Exterior ! */
+	if ( ! ppa )
+	 	gml_lwerror("invalid GML representation", 48);
 
 	/* PolygonPatch/interior */
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)

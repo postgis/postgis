@@ -274,7 +274,7 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 		<refname>ST_GeomCollFromText</refname>
 
 		<refpurpose>Makes a collection Geometry from collection WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</refpurpose>
+			not give, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -297,7 +297,7 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 		<title>Description</title>
 
 		  <para>Makes a collection Geometry from the Well-Known-Text (WKT) representation with the given SRID. If SRID is
-			not give, it defaults to -1.</para>
+			not give, it defaults to 0.</para>
 
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
 
@@ -942,7 +942,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		geometry type. This function plays the role of the Geometry Factory in
 		SQL. This is an alternate name for ST_WKBToSQL.</para>
 
-		<para>If SRID is not specified, it defaults to -1 (Unknown).</para>
+		<para>If SRID is not specified, it defaults to 0 (Unknown).</para>
 		<para>&sfs_compliant; s3.2.7.2 - the optional SRID is from the conformance suite</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.41</para>
 		<para>&curve_support;</para>
@@ -1030,7 +1030,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 		<refname>ST_LineFromText</refname>
 
 		<refpurpose>Makes a Geometry from WKT representation with the given SRID. If SRID is
-				not given, it defaults to -1.</refpurpose>
+				not given, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1052,7 +1052,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 		<title>Description</title>
 
 		<para>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to -1.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
+				not give, it defaults to 0.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
 
 		<note>
 		  <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
@@ -1120,7 +1120,7 @@ aline                            | null_return
 		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
 		Factory in SQL.</para>
 
-	  <para>If an SRID is not specified, it defaults to -1. <varname>NULL</varname> is
+	  <para>If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname>
 		does not represent a <varname>LINESTRING</varname>.</para>
 
@@ -1193,7 +1193,7 @@ aline                            | null_return
 		<varname>LINESTRING</varname> geometry. This function plays the role of the Geometry
 		Factory in SQL.</para>
 
-	  <para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+	  <para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
 		<varname>LINESTRING</varname> geometry. This an alias for <xref linkend="ST_LineFromWKB" />.</para>
 
@@ -1785,7 +1785,7 @@ result
 		<title>Description</title>
 
 		 <para>Makes a Geometry from  Well-Known-Text (WKT) with the given SRID. If SRID is
-			not give, it defaults to -1.</para>
+			not give, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
 			suite</para>
@@ -1823,7 +1823,7 @@ result
 		<refname>ST_MPointFromText</refname>
 
 		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</refpurpose>
+			not give, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1846,7 +1846,7 @@ result
 		<title>Description</title>
 
 		 <para>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</para>
+			not give, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
 			suite</para>
@@ -1885,7 +1885,7 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 		<refname>ST_MPolyFromText</refname>
 
 		<refpurpose>Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</refpurpose>
+			not give, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1908,7 +1908,7 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 		<title>Description</title>
 
 		 <para>Makes a MultiPolygon from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</para>
+			not give, it defaults to 0.</para>
 
 		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
 
@@ -2077,7 +2077,7 @@ SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 			<title>Description</title>
 
 			<para>Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text representation. If SRID is
-			not give, it defaults to unknown (currently -1).  If geometry is not a WKT point representation, returns null.
+			not give, it defaults to unknown (currently 0).  If geometry is not a WKT point representation, returns null.
 			If completely invalid WKT, then throws an error.</para>
 
 			<!-- optionally mention that this function uses indexes if appropriate -->
@@ -2141,7 +2141,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 			<varname>POINT</varname> geometry. This function plays the role of the Geometry
 			Factory in SQL.</para>
 
-		<para>If an SRID is not specified, it defaults to -1.  <varname>NULL</varname> is
+		<para>If an SRID is not specified, it defaults to 0.  <varname>NULL</varname> is
 		returned if the input <varname>bytea</varname> does not represent a
 		<varname>POINT</varname> geometry.</para>
 		<para>&sfs_compliant; s3.2.7.2</para>
@@ -2250,7 +2250,7 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 		<refname>ST_PolygonFromText</refname>
 
 		<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.</refpurpose>
+			not give, it defaults to 0.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2271,7 +2271,7 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 		<title>Description</title>
 
 		<para>Makes a Geometry from WKT with the given SRID. If SRID is
-			not give, it defaults to -1.  Returns null if WKT is not a polygon.</para>
+			not give, it defaults to 0.  Returns null if WKT is not a polygon.</para>
 
 
 		<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance

@@ -43,6 +43,7 @@ struct _rti_warp_arg_t {
 		GDALDriverH drv;
 		GDALDatasetH ds;
 		char *srs;
+		int destroy_drv;
 	} src, dst;
 
 	GDALWarpOptions *wopts;
@@ -75,10 +76,12 @@ _rti_warp_arg_init() {
 	}
 
 	arg->src.drv = NULL;
+	arg->src.destroy_drv = 0;
 	arg->src.ds = NULL;
 	arg->src.srs = NULL;
 
 	arg->dst.drv = NULL;
+	arg->dst.destroy_drv = 0;
 	arg->dst.ds = NULL;
 	arg->dst.srs = NULL;
 
@@ -105,10 +108,20 @@ _rti_warp_arg_destroy(_rti_warp_arg arg) {
 	if (arg->dst.srs != NULL)
 		CPLFree(arg->dst.srs);
 
+	if (arg->dst.drv != NULL && arg->dst.destroy_drv) {
+		GDALDeregisterDriver(arg->dst.drv);
+		GDALDestroyDriver(arg->dst.drv);
+	}
+
 	if (arg->src.ds != NULL)
 		GDALClose(arg->src.ds);
 	if (arg->src.srs != NULL)
 		CPLFree(arg->src.srs);
+
+	if (arg->src.drv != NULL && arg->src.destroy_drv) {
+		GDALDeregisterDriver(arg->src.drv);
+		GDALDestroyDriver(arg->src.drv);
+	}
 
 	if (arg->transform.func == GDALApproxTransform) {
 		if (arg->transform.arg.imgproj != NULL)
@@ -244,7 +257,7 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* load raster into a GDAL MEM dataset */
-	arg->src.ds = rt_raster_to_gdal_mem(raster, arg->src.srs, NULL, NULL, 0, &(arg->src.drv));
+	arg->src.ds = rt_raster_to_gdal_mem(raster, arg->src.srs, NULL, NULL, 0, &(arg->src.drv), &(arg->src.destroy_drv));
 	if (NULL == arg->src.ds) {
 		rterror("rt_raster_gdal_warp: Could not convert raster to GDAL MEM format");
 		_rti_warp_arg_destroy(arg);
@@ -770,8 +783,11 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* load VRT driver */
-	if (!rt_util_gdal_driver_registered("VRT"))
+	if (!rt_util_gdal_driver_registered("VRT")) {
+		RASTER_DEBUG(3, "Registering VRT driver");
 		GDALRegister_VRT();
+		arg->dst.destroy_drv = 1;
+	}
 	arg->dst.drv = GDALGetDriverByName("VRT");
 	if (NULL == arg->dst.drv) {
 		rterror("rt_raster_gdal_warp: Could not load the output GDAL VRT driver");

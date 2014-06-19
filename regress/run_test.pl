@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-
+#$| = 1;
 use File::Basename;
 use File::Temp 'tempdir';
 #use File::Which;
@@ -24,7 +24,7 @@ use strict;
 # Global configuration items
 ##################################################################
 
-our $DB = "postgis_reg";
+our $DB = $ENV{"POSTGIS_REGRESS_DB"} || "postgis_reg";
 our $REGDIR = abs_path(dirname($0));
 our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
 our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
@@ -44,6 +44,10 @@ my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
+my $OPT_EXTVERSION = '';
+my $OPT_UPGRADE_PATH = '';
+my $OPT_UPGRADE_FROM = '';
+my $OPT_UPGRADE_TO = '';
 my $VERBOSE = 0;
 
 GetOptions (
@@ -51,6 +55,7 @@ GetOptions (
 	'clean' => \$OPT_CLEAN,
 	'nodrop' => \$OPT_NODROP, 
 	'upgrade' => \$OPT_UPGRADE,
+	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
 	'nocreate' => \$OPT_NOCREATE,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
@@ -62,6 +67,21 @@ GetOptions (
 if ( @ARGV < 1 )
 {
 	usage();
+}
+
+if ( $OPT_UPGRADE_PATH )
+{
+  if ( ! $OPT_EXTENSIONS )
+  {
+    die "--upgrade-path is only supported with --extensions"
+  }
+  $OPT_UPGRADE = 1; # implied 
+  my @path = split ('--', $OPT_UPGRADE_PATH);
+  $OPT_UPGRADE_FROM = $path[0]
+    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+  $OPT_UPGRADE_TO = $path[1]
+    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+  print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
 
@@ -201,16 +221,6 @@ else
 	}
 }
 
-if ( $OPT_UPGRADE )
-{
-	upgrade_spatial();
-}
-
-
-##################################################################
-# Report PostGIS environment
-##################################################################
-
 my $libver = sql("select postgis_lib_version()");
 
 if ( ! $libver )
@@ -221,6 +231,27 @@ if ( ! $libver )
 	exit(1);
 }
 
+
+if ( $OPT_UPGRADE )
+{
+	if ( $OPT_EXTENSIONS )
+	{	
+		upgrade_spatial_extensions();
+	}
+	else
+	{
+	  upgrade_spatial();
+  }
+
+  # Update libver
+  $libver = sql("select postgis_lib_version()");
+}
+
+
+##################################################################
+# Report PostGIS environment
+##################################################################
+
 my $geosver =  sql("select postgis_geos_version()");
 my $projver = sql("select postgis_proj_version()");
 my $svnrev = sql("select postgis_svn_version()");
@@ -228,9 +259,14 @@ my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
 my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
+my $scriptver = sql("select postgis_scripts_installed()");
+my $raster_scriptver = sql("select postgis_raster_scripts_installed()")
+  if ( $OPT_WITH_RASTER );
 
 print "$pgsqlver\n";
 print "  Postgis $libver - r${svnrev} - $libbuilddate\n";
+print "  scripts ${scriptver}\n";
+print "  raster scripts ${raster_scriptver}\n" if ( $OPT_WITH_RASTER );
 print "  GEOS: $geosver\n" if $geosver;
 print "  PROJ: $projver\n" if $projver;
 print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
@@ -375,6 +411,8 @@ Options:
   --sfcgal        use also sfcgal backend
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
+  --extension     load using extensions
+  --upgrade-path  upgrade path, format <from>--<to>
 };
 
 }
@@ -455,8 +493,8 @@ sub run_simple_sql
 	# Dump output to a temp file.
 	my $tmpfile = sprintf("%s/test_%s_tmp", $TMPDIR, $RUN);
 	my $cmd = "psql -v \"VERBOSITY=terse\" -tXA $DB < $sql > $tmpfile 2>&1";
+	#print($cmd);
 	my $rv = system($cmd);
-
 	# Check if psql errored out.
 	if ( $rv != 0 ) 
 	{
@@ -546,7 +584,21 @@ sub run_simple_test
 	mkpath($betmpdir);
 	chmod 0777, $betmpdir;
 
-	my $cmd = "psql -v \"VERBOSITY=terse\" -v \"tmpfile='$tmpfile'\" -tXA $DB < $sql > $outfile 2>&1";
+	my $scriptdir;
+	if ( $OPT_EXTENSIONS ) {
+		# TODO: allow override this default with env variable ?
+		my $pgis_majmin = $libver;
+		$pgis_majmin =~ s/^([1-9]*\.[1-9]*).*/\1/;
+		$scriptdir = `pg_config --sharedir`;
+		chop $scriptdir;
+		$scriptdir .= "/contrib/postgis-" . $pgis_majmin;
+	} else {
+		$scriptdir = $STAGED_SCRIPTS_DIR;
+	}
+	my $cmd = "psql -v \"VERBOSITY=terse\""
+          . " -v \"tmpfile='$tmpfile'\""
+          . " -v \"scriptdir=$scriptdir\""
+          . " -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
 	# Check for ERROR lines
@@ -556,7 +608,7 @@ sub run_simple_test
 
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
-	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT)/, @lines);
+	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
@@ -697,7 +749,7 @@ sub run_loader_and_check_output
 # $1 - Description of this run of the dumper, used for error messages.
 # $2 - Table name to dump from.
 # $3 - "Expected" .shp file to compare with.
-# $3 - If you pass true, this will run the loader even if neither
+# $4 - If you pass true, this will run the loader even if neither
 #      of the expected results files exists (though of course
 #      the results won't be compared with anything).
 ##################################################################
@@ -716,6 +768,7 @@ sub run_dumper_and_check_output
 		show_progress();
 		$cmd = "${PGSQL2SHP} -f ${TMPDIR}/dumper $DB $tblname > $errfile 2>&1";
 		$rv = system($cmd);
+	
 		if ( $rv )
 		{
 			fail("$description: dumping loaded table", $errfile);
@@ -723,9 +776,11 @@ sub run_dumper_and_check_output
 		}
 
 		# Compare with expected output if there is any.
+		
 		if ( -r $expected_shp_file )
 		{
 			show_progress();
+			
 			my $diff = diff($expected_shp_file,  "$TMPDIR/dumper.shp");
 			if ( $diff )
 			{
@@ -930,6 +985,7 @@ sub run_dumper_test
 
   # Produce the output SHP file.
   open DUMPFILE, "$dump_file" or die "Cannot open dump file $dump_file\n";
+  sleep(1);
   my @dumplines = <DUMPFILE>;
   close DUMPFILE;
   my $dumpstring = join '', @dumplines;
@@ -942,7 +998,7 @@ sub run_dumper_test
   my $rv = system(@cmd);
   open STDERR, '>&', $stderr_save;
   open STDOUT, '>&', $stdout_save;
-
+  #sleep(3);
   show_progress();
 
   if ( $rv )
@@ -1096,24 +1152,37 @@ sub load_sql_file
 # Prepare the database for spatial operations (extension method)
 sub prepare_spatial_extensions
 {
-	print "Preparing db '${DB}' using 'CREATE EXTENSION'\n"; 
-
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
-    my $cmd = "psql $psql_opts -c \"CREATE EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
-    my $rv = system($cmd);
+	my $sql = "CREATE EXTENSION postgis";
+	if ( $OPT_UPGRADE_FROM ) {
+		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+	}
 
-	die "\nError encountered creating EXTENSION POSTGIS, see $REGRESS_LOG for details\n\n"
-	    if $rv;
+	print "Preparing db '${DB}' using: ${sql}\n"; 
 
-    if ( $OPT_WITH_TOPO )
-    {
-        $cmd = "psql $psql_opts -c \"CREATE EXTENSION postgis_topology\" $DB >> $REGRESS_LOG 2>&1";
-        $rv = system($cmd);
-    	die "\nError encountered creating EXTENSION POSTGIS_TOPOLOGY, see $REGRESS_LOG for details\n\n"
-    	    if $rv;
-    }
-    return 1;
+	my $cmd = "psql $psql_opts -c \"". $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+	my $rv = system($cmd);
+
+  if ( $rv ) {
+  	fail "Error encountered creating EXTENSION POSTGIS", $REGRESS_LOG;
+  	die;
+	}
+
+	if ( $OPT_WITH_TOPO )
+	{
+		my $sql = "CREATE EXTENSION postgis_topology";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+  	if ( $rv ) {
+  		fail "Error encountered creating EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+  		die;
+		}
+ 	}
+ 	return 1;
 }
 
 # Prepare the database for spatial operations (old method)
@@ -1154,7 +1223,7 @@ sub upgrade_spatial
 {
     print "Upgrading PostGIS in '${DB}' \n" ;
 
-    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql`;
+    my $script = `ls ${STAGED_SCRIPTS_DIR}/postgis_upgrade.sql`;
     chomp($script);
 
     if ( -e $script )
@@ -1169,7 +1238,7 @@ sub upgrade_spatial
     
     if ( $OPT_WITH_TOPO ) 
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql`;
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/topology_upgrade.sql`;
         chomp($script);
         if ( -e $script )
         {
@@ -1184,7 +1253,7 @@ sub upgrade_spatial
     
     if ( $OPT_WITH_RASTER ) 
     {
-        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql`;
+        my $script = `ls ${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade.sql`;
         chomp($script);
         if ( -e $script )
         {
@@ -1196,6 +1265,38 @@ sub upgrade_spatial
             die "$script not found\n";
         }
     }
+    return 1;
+}
+
+# Upgrade an existing database (soft upgrade, extension method)
+sub upgrade_spatial_extensions
+{
+    # ON_ERROR_STOP is used by psql to return non-0 on an error
+    my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+    my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
+    my $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
+
+    print "Upgrading PostGIS in '${DB}' using: ${sql}\n" ;
+
+    my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+    #print "CMD: " . $cmd . "\n";
+    my $rv = system($cmd);
+    if ( $rv ) {
+      fail "Error encountered altering EXTENSION POSTGIS", $REGRESS_LOG;
+      die;
+    }
+
+    if ( $OPT_WITH_TOPO ) 
+    {
+      my $sql = "ALTER EXTENSION postgis_topology UPDATE TO '${nextver}'";
+      my $cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+      my $rv = system($cmd);
+      if ( $rv ) {
+        fail "Error encountered altering EXTENSION POSTGIS_TOPOLOGY", $REGRESS_LOG;
+        die;
+      }
+    }
+    
     return 1;
 }
 

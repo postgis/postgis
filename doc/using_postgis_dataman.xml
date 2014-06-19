@@ -38,7 +38,7 @@
 		</listitem>
 
 		<listitem>
-		  <para>MULTIPOINT(0 0,1 2)</para>
+		  <para>MULTIPOINT((0 0),(1 2))</para>
 		</listitem>
 
 		<listitem>

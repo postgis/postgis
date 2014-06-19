@@ -57,7 +57,7 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE name = toponame)  THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
@@ -78,18 +78,14 @@ BEGIN
     sql := 'WITH er2 AS ( ' 
       || 'WITH er AS ( SELECT ' 
       || 'min(e.edge_id) over (), count(*) over () as cnt, e.edge_id, '
-      || 'ST_LineLocatePoint('
-      || quote_literal(bounds::text)
+      || 'ST_LineLocatePoint($1'
       || ', ST_LineInterpolatePoint(e.geom, 0.2)) as pos'
-      || ', ST_LineLocatePoint('
-      || quote_literal(bounds::text)
+      || ', ST_LineLocatePoint($1'
       || ', ST_LineInterpolatePoint(e.geom, 0.8)) as pos2 FROM '
       || quote_ident(toponame)
       || '.edge e WHERE ( e.left_face = ' || face_id
       || ' OR e.right_face = ' || face_id
-      || ') AND ST_Covers('
-      || quote_literal(bounds::text)
-      || ', e.geom)';
+      || ') AND ST_Covers($1, e.geom)';
     IF face_id = 0 THEN
       sql := sql || ' ORDER BY POS ASC) ';
     ELSE
@@ -103,7 +99,7 @@ BEGIN
 
     --RAISE DEBUG 'SQL: %', sql;
 
-    FOR rec IN EXECUTE sql
+    FOR rec IN EXECUTE sql USING bounds
     LOOP
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -343,8 +339,8 @@ BEGIN
     || ',' || rec.next_right_edge
     || ',' || rec.left_face
     || ',' || rec.right_face
-    || ',' || quote_literal(rec.geom::text)
-    || ')';
+    || ', $1)'
+    USING rec.geom;
   -- End of new edge insertion }
 
   -- Update next_left_edge/next_right_edge for
@@ -623,14 +619,15 @@ BEGIN
     e2sign = 1;
   END IF;
   EXECUTE 'UPDATE ' || quote_ident(toponame)
-    || '.edge_data SET geom = ' || quote_literal(rec.geom::text)
+    || '.edge_data SET geom = $1'
     || ', start_node = ' || rec.start_node
     || ', end_node = ' || rec.end_node
     || ', next_left_edge = ' || rec.next_left_edge
     || ', abs_next_left_edge = ' || abs(rec.next_left_edge)
     || ', next_right_edge = ' || rec.next_right_edge
     || ', abs_next_right_edge = ' || abs(rec.next_right_edge)
-    || ' WHERE edge_id = ' || e1id;
+    || ' WHERE edge_id = ' || e1id
+    USING rec.geom;
   -- End of first edge update }
 
   -- Update next_left_edge/next_right_edge for
@@ -1393,7 +1390,7 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE name = toponame)  THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
@@ -1464,10 +1461,10 @@ BEGIN
      'SQL/MM Spatial exception - null argument';
   END IF;
 
-      --
+  --
   -- Atopology must  be registered
   -- 
-  IF NOT EXISTS(SELECT name FROM topology WHERE topology.name = atopology) THEN
+  IF NOT EXISTS(SELECT name FROM topology.topology WHERE topology.name = atopology) THEN
     RAISE EXCEPTION
      'SQL/MM Spatial exception - invalid topology name';
   END IF;
@@ -1486,8 +1483,9 @@ BEGIN
   -- We use index AND x/y equality
   --
   FOR rec IN EXECUTE 'SELECT node_id FROM '
-    || quote_ident(atopology) || '.node ' ||
-    'WHERE ST_Equals(geom, ' || quote_literal(apoint::text) || '::geometry)'
+    || quote_ident(atopology)
+    || '.node WHERE ST_Equals(geom, $1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
      'SQL/MM Spatial exception - coincident node';
@@ -1499,8 +1497,8 @@ BEGIN
   --
   FOR rec IN EXECUTE 'SELECT edge_id FROM '
     || quote_ident(atopology) || '.edge ' 
-    || 'WHERE ST_Intersects(geom, ' || quote_literal(apoint::text)
-    || '::geometry)'
+    || 'WHERE ST_Intersects(geom, $1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
     'SQL/MM Spatial exception - edge crosses node.';
@@ -1513,13 +1511,11 @@ BEGIN
   --
   sql := 'SELECT f.face_id FROM ' 
         || quote_ident(atopology) 
-        || '.face f WHERE f.face_id > 0 AND f.mbr && '
-        || quote_literal(apoint::text)
-        || '::geometry AND ST_Contains(topology.ST_GetFaceGeometry('
+        || '.face f WHERE f.face_id > 0 AND f.mbr && $1'
+        || ' AND ST_Contains(topology.ST_GetFaceGeometry('
         || quote_literal(atopology) 
-        || ', f.face_id), '
-        || quote_literal(apoint::text)
-        || '::geometry)';
+        || ', f.face_id), $1)'
+        ;
   IF aface IS NOT NULL AND aface != 0 THEN
     sql := sql || ' AND f.face_id = ' || aface;
   END IF;
@@ -1527,7 +1523,7 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO containingface;
+  EXECUTE sql INTO containingface USING apoint;
 
   -- If aface was specified, check that it was correct
   IF aface IS NOT NULL THEN -- {
@@ -1555,15 +1551,14 @@ BEGIN
       || quote_ident(atopology)
       || '.node(node_id, geom, containing_face) SELECT nextval('
       || quote_literal( quote_ident(atopology) || '.node_node_id_seq' )
-      || '),'
-      ||quote_literal(apoint::text)
-      || '::geometry,' || containingface
+      || '), $1, '
+      || containingface
       || ' RETURNING node_id';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
 
-  EXECUTE sql INTO nodeid;
+  EXECUTE sql INTO nodeid USING apoint;
 
   RETURN nodeid;
 EXCEPTION
@@ -1623,10 +1618,10 @@ BEGIN
   -- We use index AND x/y equality
   --
   FOR rec IN EXECUTE 'SELECT node_id FROM '
-    || quote_ident(atopology) || '.node ' ||
-    'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-    ||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
-    ||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
+    || quote_ident(atopology)
+    || '.node WHERE geom && $1 '
+    ||' AND ST_X(geom) = ST_X($1) AND ST_Y(geom) = ST_Y($1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
      'SQL/MM Spatial exception - coincident node';
@@ -1637,10 +1632,9 @@ BEGIN
   -- I used _intersects_ here to include boundaries (endpoints)
   --
   FOR rec IN EXECUTE 'SELECT edge_id FROM '
-    || quote_ident(atopology) || '.edge ' 
-    || 'WHERE geom && ' || quote_literal(apoint::text) 
-    || ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
-    || '::geometry)'
+    || quote_ident(atopology)
+    || '.edge WHERE ST_Intersects(geom, $1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
     'SQL/MM Spatial exception - edge crosses node.';
@@ -1650,8 +1644,8 @@ BEGIN
   -- Update node point
   --
   EXECUTE 'UPDATE ' || quote_ident(atopology) || '.node '
-    || ' SET geom = ' || quote_literal(apoint::text) 
-    || ' WHERE node_id = ' || anode;
+    || ' SET geom = $1 WHERE node_id = $2'
+    USING apoint, anode;
 
   RETURN 'Isolated Node ' || anode || ' moved to location '
     || ST_X(apoint) || ',' || ST_Y(apoint);
@@ -1854,13 +1848,9 @@ BEGIN
   -- Check if a coincident node already exists
   --
   FOR rec IN EXECUTE 'SELECT node_id FROM '
-    || quote_ident(atopology) || '.node '
-    || 'WHERE geom && '
-    || quote_literal(apoint::text) || '::geometry'
-    || ' AND ST_X(geom) = ST_X('
-    || quote_literal(apoint::text) || '::geometry)'
-    || ' AND ST_Y(geom) = ST_Y('
-    || quote_literal(apoint::text) || '::geometry)'
+    || quote_ident(atopology) || '.node WHERE geom && $1 '
+    || ' AND ST_X(geom) = ST_X($1) AND ST_Y(geom) = ST_Y($1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
      'SQL/MM Spatial exception - coincident node';
@@ -1881,16 +1871,15 @@ BEGIN
   -- Add the new node 
   --
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-    || '.node(node_id, geom) 
-    VALUES(' || nodeid || ','
-    || quote_literal(apoint::text)
-    || ')';
+    || '.node(node_id, geom) VALUES($1, $2)'
+    USING nodeid, apoint;
 
   --
   -- Delete the old edge
   --
-  EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
-    || ' WHERE edge_id = ' || anedge;
+  EXECUTE 'DELETE FROM ' || quote_ident(atopology)
+    || '.edge_data WHERE edge_id = $1'
+    USING anedge;
 
   --
   -- Compute new edges
@@ -1942,8 +1931,8 @@ BEGIN
               END
     || ',' || oldedge.left_face               -- left_face
     || ',' || oldedge.right_face              -- right_face
-    || ',' || quote_literal(edge1::text)      -- geom
-    ||')';
+    || ',$1)' -- geom
+    USING edge1;
 
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
     || '.edge VALUES('
@@ -1964,8 +1953,8 @@ BEGIN
     || ',' || -edgeid1                        -- next_right_edge
     || ',' || oldedge.left_face               -- left_face
     || ',' || oldedge.right_face              -- right_face
-    || ',' || quote_literal(edge2::text)      -- geom
-    ||')';
+    || ',$1)' -- geom
+    USING edge2;
 
   --
   -- Update all next edge references to match new layout
@@ -2151,13 +2140,9 @@ BEGIN
   -- Check if a coincident node already exists
   --
   FOR rec IN EXECUTE 'SELECT node_id FROM '
-    || quote_ident(atopology) || '.node ' ||
-    'WHERE geom && '
-    || quote_literal(apoint::text) || '::geometry'
-    ||' AND ST_X(geom) = ST_X('
-    || quote_literal(apoint::text) || '::geometry)'
-    ||' AND ST_Y(geom) = ST_Y('
-    ||quote_literal(apoint::text)||'::geometry)'
+    || quote_ident(atopology) || '.node WHERE geom && $1'
+    ||' AND ST_X(geom) = ST_X($1) AND ST_Y(geom) = ST_Y($1)'
+    USING apoint
   LOOP
     RAISE EXCEPTION
      'SQL/MM Spatial exception - coincident node';
@@ -2178,9 +2163,8 @@ BEGIN
   -- Add the new node 
   --
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-    || '.node(node_id, geom) 
-    VALUES('||nodeid||','||quote_literal(apoint::text)||
-    ')';
+    || '.node(node_id, geom) VALUES($1, $2)'
+    USING nodeid,apoint;
 
   --
   -- Compute new edge
@@ -2224,20 +2208,16 @@ BEGIN
     || ',' || -anedge                        -- next_right_edge
     || ',' || oldedge.left_face              -- left_face
     || ',' || oldedge.right_face             -- right_face
-    || ',' || quote_literal(newedge2::text)  -- geom
-    ||')';
+    || ',$1)' --geom
+    USING newedge2;
 
   --
   -- Update the old edge
   --
-  EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
-    || ' SET geom = ' || quote_literal(newedge1::text)
-    || ','
-    || ' next_left_edge = ' || newedgeid
-    || ', abs_next_left_edge = ' || newedgeid
-    || ','
-    || ' end_node = ' || nodeid
-    || ' WHERE edge_id = ' || anedge;
+  EXECUTE 'UPDATE ' || quote_ident(atopology)
+    || '.edge_data SET geom = $1, next_left_edge = $2, ' 
+    || 'abs_next_left_edge = $2, end_node = $3 WHERE edge_id = $4'
+    USING newedge1, newedgeid, nodeid, anedge;
 
 
   --
@@ -2444,9 +2424,8 @@ BEGIN
   -- 
   FOR rec IN EXECUTE 'SELECT node_id FROM '
     || quote_ident(atopology) || '.node '
-    || ' WHERE geom && ' || quote_literal(acurve::text) 
-    || ' AND ST_Contains(' || quote_literal(acurve::text)
-    || ',geom)'
+    || ' WHERE ST_Contains($1, geom)'
+    USING acurve 
   LOOP
     RAISE EXCEPTION
       'SQL/MM Spatial exception - geometry crosses a node';
@@ -2457,7 +2436,8 @@ BEGIN
   -- 
   FOR rec IN EXECUTE 'SELECT * FROM '
     || quote_ident(atopology) || '.edge_data
-    WHERE ST_Intersects(geom, ' || quote_literal(acurve::text) || '::geometry)'
+    WHERE ST_Intersects(geom, $1)'
+    USING acurve
   LOOP
     RAISE EXCEPTION 'SQL/MM Spatial exception - geometry intersects an edge';
   END LOOP;
@@ -2483,8 +2463,8 @@ BEGIN
     || '.edge VALUES(' || edgeid || ',' || anode
     || ',' || anothernode || ',' || (-edgeid)
     || ',' || edgeid || ','
-    || aface || ',' || aface || ','
-    || quote_literal(acurve::text) || ')';
+    || aface || ',' || aface || ',$1)'
+    USING acurve;
 
   --
   -- Update Node containing_face values
@@ -2523,7 +2503,7 @@ DECLARE
 BEGIN
   WITH edgestar AS (
     SELECT *, count(*) over () AS cnt
-    FROM GetNodeEdges(atopology, anode)
+    FROM topology.GetNodeEdges(atopology, anode)
   )
   SELECT ARRAY[ (
       SELECT p.edge AS prev FROM edgestar p
@@ -2652,14 +2632,12 @@ BEGIN
   -- g) Check if curve crosses any node
   -- 
   FOR rec IN EXECUTE
-    'SELECT node_id, ST_Relate(geom, '
-    || quote_literal(acurve::text) || '::geometry, 2) as relate FROM '
+    'SELECT node_id, ST_Relate(geom, $1, 2) as relate FROM '
     || quote_ident(atopology)
-    || '.node WHERE geom && '
-    || quote_literal(acurve::text)
-    || '::geometry AND node_id NOT IN ('
+    || '.node WHERE geom && $1 AND node_id NOT IN ('
     || oldedge.start_node || ',' || oldedge.end_node
     || ')'
+    USING acurve
   LOOP
     IF ST_RelateMatch(rec.relate, 'T********') THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
@@ -2669,13 +2647,10 @@ BEGIN
   --
   -- h) Check if this geometry has any interaction with any existing edge
   --
-  sql := 'SELECT edge_id, ST_Relate(geom,' 
-    || quote_literal(acurve::text)
-    || '::geometry, 2) as im FROM '
+  sql := 'SELECT edge_id, ST_Relate(geom, $1, 2) as im FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE edge_id != ' || anedge || ' AND geom && '
-    || quote_literal(acurve::text) || '::geometry';
-  FOR rec IN EXECUTE sql LOOP -- {
+    || '.edge_data WHERE edge_id != $2 AND geom && $1';
+  FOR rec IN EXECUTE sql USING acurve, anedge LOOP -- {
 
     --RAISE DEBUG 'IM=%',rec.im;
 
@@ -2712,15 +2687,14 @@ BEGIN
   sql := 'SELECT ST_Collect(geom) as nodes, '
     || 'null::geometry as r1, null::geometry as r2 FROM '
     || quote_ident(atopology)
-    || '.node WHERE geom && '
-    || quote_literal(ST_Collect(ST_Envelope(oldedge.geom),
-                                ST_Envelope(acurve))::text)
-    || '::geometry AND node_id NOT IN ( '
+    || '.node WHERE geom && $1 AND node_id NOT IN ( '
     || oldedge.start_node || ',' || oldedge.end_node || ')';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO rng_info;
+  EXECUTE sql INTO rng_info USING ST_Collect(ST_Envelope(oldedge.geom),
+                                             ST_Envelope(acurve))
+  ;
 
   -- There's no collision if there's no nodes in the combined
   -- bbox of old and new edges.
@@ -2812,8 +2786,8 @@ BEGIN
   -- Update edge geometry
   --
   EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
-    || ' SET geom = ' || quote_literal(acurve::text) 
-    || ' WHERE edge_id = ' || anedge;
+    || ' SET geom = $1 WHERE edge_id = $2'
+    USING acurve, anedge;
 
   -- 
   -- Check edge adjacency after
@@ -2852,20 +2826,20 @@ BEGIN
   --       would be larger than the old face MBR...
   --
   IF oldedge.left_face != 0 THEN
-    sql := 'UPDATE ' || quote_ident(atopology) || '.face '
-      || ' SET mbr = ' || quote_literal(
-        ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.left_face))::text
-        )
-      || '::geometry WHERE face_id = ' || oldedge.left_face;
-    EXECUTE sql;
+    sql := 'UPDATE ' || quote_ident(atopology)
+      || '.face SET mbr = $1 WHERE face_id = $2' ;
+    EXECUTE sql USING
+      ST_Envelope(topology.ST_GetFaceGeometry(atopology, oldedge.left_face)),
+      oldedge.left_face
+      ;
   END IF;
   IF oldedge.right_face != 0 AND oldedge.right_face != oldedge.left_face THEN
-    sql := 'UPDATE ' || quote_ident(atopology) || '.face '
-      || ' SET mbr = ' || quote_literal(
-        ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.right_face))::text
-        )
-      || '::geometry WHERE face_id = ' || oldedge.right_face;
-    EXECUTE sql;
+    sql := 'UPDATE ' || quote_ident(atopology)
+      || '.face SET mbr = $1 WHERE face_id = $2';
+    EXECUTE sql USING
+      ST_Envelope(topology.ST_GetFaceGeometry(atopology, oldedge.right_face)),
+      oldedge.right_face
+    ;
   END IF;
   
 
@@ -2939,14 +2913,17 @@ BEGIN
   RAISE DEBUG 'Edge % splitted face %', anedge, oface;
 #endif
 
-  sql := 'WITH ids as ( select row_number() over () as seq, edge from unnest('
-    || quote_literal(fan.newring_edges::text)
-    || '::int[] ) u(edge) ), edges AS ( select CASE WHEN i.edge < 0 THEN ST_Reverse(e.geom) ELSE e.geom END as g FROM ids i left join '
-    || quote_ident(atopology) || '.edge_data e ON(e.edge_id = abs(i.edge)) ORDER BY seq) SELECT ST_MakePolygon(ST_MakeLine(g.g)) FROM edges g;';
+  sql := 'WITH ids as ( select row_number() over () as seq, edge '
+    || 'from unnest($1) u(edge) ), edges AS ( select CASE WHEN i.edge < 0 '
+    || 'THEN ST_Reverse(e.geom) ELSE e.geom END as g FROM ids i left join '
+    || quote_ident(atopology) || '.edge_data e ON(e.edge_id = abs(i.edge)) '
+    || 'ORDER BY seq) SELECT ST_MakePolygon(ST_MakeLine(g.g)) FROM edges g';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO fan.shell;
+  EXECUTE sql INTO fan.shell USING
+    fan.newring_edges
+  ;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'got shell'; 
@@ -2971,13 +2948,15 @@ BEGIN
     -- Update old face mbr (nothing to do if we're opening an hole)
     IF isccw THEN -- {
       sql := 'UPDATE '
-        || quote_ident(atopology) || '.face SET mbr = '
-        || quote_literal(ST_Envelope(fan.shell)::text)
-        || '::geometry WHERE face_id = ' || oface;
+        || quote_ident(atopology)
+        || '.face SET mbr = $1 WHERE face_id = $2';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     	RAISE DEBUG 'Updating old face mbr'; 
 #endif
-    	EXECUTE sql;
+    	EXECUTE sql USING
+        ST_Envelope(fan.shell),
+        oface
+      ;
     END IF; -- }
     RETURN NULL;
   END IF;
@@ -2991,38 +2970,36 @@ BEGIN
       || ' RETURNING face_id';
   ELSE
     sql := 'INSERT INTO '
-      || quote_ident(atopology) || '.face(mbr) VALUES ('
-      || quote_literal(ST_Envelope(fan.shell)::text)
-      || '::geometry) RETURNING face_id';
+      || quote_ident(atopology) || '.face(mbr) VALUES ($1) RETURNING face_id';
   END IF; -- }
 
   -- Insert new face
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Inserting new face'; 
 #endif
-  EXECUTE sql INTO STRICT newface;
+  EXECUTE sql INTO STRICT newface USING ST_Envelope(fan.shell);
 
   -- Update forward edges
-  sql := 'UPDATE '
-    || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
-    || ' WHERE left_face = ' || oface || ' AND edge_id = ANY ('
-    || quote_literal(array( select +(x) from unnest(fan.newring_edges) u(x) )::text)
-    || ')';
+  sql := 'UPDATE ' || quote_ident(atopology) ||
+    '.edge_data SET left_face = $1 WHERE edge_id = ANY($3)'
+  ;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating forward edges in new ring';
+  RAISE DEBUG 'Updating backward and forward edges in new ring: %', sql;
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING newface, oface,
+    array(select +x from unnest(fan.newring_edges) u(x) where x > 0)
+  ;
 
   -- Update backward edges
-  sql := 'UPDATE '
-    || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
-    || ' WHERE right_face = ' || oface || ' AND edge_id = ANY ('
-    || quote_literal(array( select -(x) from unnest(fan.newring_edges) u(x) )::text)
-    || ')';
+  sql := 'UPDATE ' || quote_ident(atopology) ||
+    '.edge_data SET right_face = $1 WHERE edge_id = ANY($3)'
+  ;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating backward edges in new ring';
+  RAISE DEBUG 'Updating backward edges in new ring: %', sql;
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING newface, oface,
+    array(select -x from unnest(fan.newring_edges) u(x) where x < 0)
+  ;
 
   IF oface != 0 AND NOT isccw THEN -- {
     -- face shrinked, must update all non-contained edges and nodes
@@ -3040,38 +3017,30 @@ BEGIN
   -- Update edges bounding the old face
   sql := 'UPDATE '
     || quote_ident(atopology)
-    || '.edge_data SET left_face = CASE WHEN left_face = '
-    || oface || ' THEN ' || newface
-    || ' ELSE left_face END, right_face = CASE WHEN right_face = '
-    || oface || ' THEN ' || newface
-    || ' ELSE right_face END WHERE ( left_face = ' || oface
-    || ' OR right_face = ' || oface
-    || ') AND NOT edge_id = ANY ('
-    || quote_literal( array(
-        select abs(x) from unnest(fan.newring_edges) u(x)
-       )::text )
-    || ') AND ';
+    || '.edge_data SET left_face = CASE WHEN left_face = $2 THEN $3'
+    || ' ELSE left_face END, right_face = CASE WHEN right_face = $2 '
+    || ' THEN $3 ELSE right_face END WHERE ( left_face = $2 '
+    || ' OR right_face = $2 ) AND NOT edge_id = ANY ($4) AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
-  sql := sql || '( ' || quote_literal(fan.shell::text)
-    || ' && geom AND _ST_Contains(' || quote_literal(fan.shell::text)
+  sql := sql || '($1 && geom AND _ST_Contains($1'
     -- We only need to check a single point, but must not be an endpoint
-    || '::geometry, ST_LineInterpolatePoint(geom, 0.2)) )';
+    || ', ST_LineInterpolatePoint(geom, 0.2)) )';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Updating edges bounding the old face: %', sql;
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING fan.shell, oface, newface,
+    array(select abs(x) from unnest(fan.newring_edges) u(x));
 
   -- Update isolated nodes in new new face 
   sql := 'UPDATE '
-    || quote_ident(atopology) || '.node SET containing_face = ' || newface
-    || ' WHERE containing_face = ' || oface 
-    || ' AND ';
+    || quote_ident(atopology) || '.node SET containing_face = $2 '
+    || ' WHERE containing_face = $3 AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
-  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+  sql := sql || 'ST_Contains($1, geom)';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Updating isolated nodes in old face';
 #endif
-  EXECUTE sql;
+  EXECUTE sql USING fan.shell, newface, oface;
 
   RETURN newface;
 
@@ -3223,7 +3192,7 @@ BEGIN
   IF newedge.start_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.start_node_geom, ST_StartPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - start node not geometry start point.';
@@ -3232,7 +3201,7 @@ BEGIN
   IF newedge.end_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.end_node_geom, ST_EndPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - end node not geometry end point.';
@@ -3244,12 +3213,10 @@ BEGIN
   -- Check if this geometry crosses any node
   --
   FOR rec IN EXECUTE
-    'SELECT node_id, ST_Relate(geom, '
-    || quote_literal(acurve::text) || '::geometry, 2) as relate FROM '
+    'SELECT node_id, ST_Relate(geom, $1, 2) as relate FROM '
     || quote_ident(atopology)
-    || '.node WHERE geom && '
-    || quote_literal(acurve::text)
-    || '::geometry'
+    || '.node WHERE geom && $1'
+    USING acurve
   LOOP
     IF ST_RelateMatch(rec.relate, 'T********') THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
@@ -3259,12 +3226,10 @@ BEGIN
   --
   -- Check if this geometry has any interaction with any existing edge
   --
-  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
-    || quote_literal(acurve::text)
-    || '::geometry, 2) as im FROM '
+  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom, $1, 2) as im FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE geom && '
-    || quote_literal(acurve::text) || '::geometry'
+    || '.edge_data WHERE geom && $1'
+    USING acurve
   LOOP
 
     --RAISE DEBUG 'IM=%',rec.im;
@@ -3320,11 +3285,10 @@ BEGIN
   IF newedge.isclosed THEN
     sql := sql || ' UNION SELECT '
       || newedge.edge_id || ',' || newedge.end_node
-      || ',-1,0,0,' -- pretend we start elsewhere
-      || quote_literal(newedge.cleangeom::text);
+      || ',-1,0,0,$1'; -- pretend we start elsewhere
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
@@ -3447,11 +3411,10 @@ BEGIN
   IF newedge.isclosed THEN
     sql := sql || ' UNION SELECT '
       || newedge.edge_id || ',' || -1 -- pretend we end elsewhere
-      || ',' || newedge.start_node || ',0,0,'
-      || quote_literal(newedge.cleangeom::text);
+      || ',' || newedge.start_node || ',0,0,$1';
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
@@ -3580,8 +3543,9 @@ BEGIN
     || ',' || newedge.next_right_edge
     || ',' || newedge.left_face
     || ',' || newedge.right_face
-    || ',' || quote_literal(newedge.geom::geometry::text)
-    || ')';
+    || ',$1)'
+    USING newedge.geom
+    ;
 
   -- Link prev_left_edge to us 
   -- (if it's not us already)
@@ -3854,7 +3818,7 @@ BEGIN
   IF newedge.start_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.start_node_geom, ST_StartPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - start node not geometry start point.';
@@ -3863,7 +3827,7 @@ BEGIN
   IF newedge.end_node_geom IS NULL
   THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
-  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  ELSIF NOT ST_Equals(newedge.end_node_geom, ST_EndPoint(acurve))
   THEN
     RAISE EXCEPTION
       'SQL/MM Spatial exception - end node not geometry end point.';
@@ -3873,12 +3837,10 @@ BEGIN
   -- Check if this geometry crosses any node
   --
   FOR rec IN EXECUTE
-    'SELECT node_id, ST_Relate(geom, '
-    || quote_literal(acurve::text) || '::geometry, 2) as relate FROM '
+    'SELECT node_id, ST_Relate(geom, $1, 2) as relate FROM '
     || quote_ident(atopology)
-    || '.node WHERE geom && '
-    || quote_literal(acurve::text)
-    || '::geometry'
+    || '.node WHERE geom && $1'
+    USING acurve
   LOOP
     IF ST_RelateMatch(rec.relate, 'T********') THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
@@ -3888,12 +3850,10 @@ BEGIN
   --
   -- Check if this geometry has any interaction with any existing edge
   --
-  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
-    || quote_literal(acurve::text)
-    || '::geometry, 2) as im FROM '
+  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom, $1, 2) as im FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE geom && '
-    || quote_literal(acurve::text) || '::geometry'
+    || '.edge_data WHERE geom && $1'
+    USING acurve
   LOOP
 
     --RAISE DEBUG 'IM=%',rec.im;
@@ -3941,19 +3901,18 @@ BEGIN
     'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE start_node = ' || anode
+    || '.edge_data WHERE start_node = $1'
     || ' UNION SELECT edge_id, end_node, -1, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE end_node = ' || anode;
+    || '.edge_data WHERE end_node = $1';
   IF newedge.isclosed THEN
-    sql := sql || ' UNION SELECT '
-      || newedge.edge_id || ',' || newedge.end_node
-      || ',-1,0,0,' -- pretend we start elsewhere
-      || quote_literal(newedge.cleangeom::text);
+    -- pretend we start elsewhere
+    sql := sql || ' UNION SELECT $2, $3, -1, 0, 0, $4';
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING
+    anode, newedge.edge_id, newedge.end_node, newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
@@ -4068,19 +4027,18 @@ BEGIN
     'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) as geom FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE start_node = ' || anothernode
+    || '.edge_data WHERE start_node = $1'
     || 'UNION SELECT edge_id, end_node, -1, left_face, right_face, '
     || 'ST_RemoveRepeatedPoints(geom) FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE end_node = ' || anothernode;
+    || '.edge_data WHERE end_node = $1';
   IF newedge.isclosed THEN
-    sql := sql || ' UNION SELECT '
-      || newedge.edge_id || ',' || -1 -- pretend we end elsewhere
-      || ',' || newedge.start_node || ',0,0,'
-      || quote_literal(newedge.cleangeom::text);
+    -- pretend we end elsewhere (-1)
+    sql := sql || ' UNION SELECT $2, -1, $3, 0, 0, $4';
   END IF;
   i := 0;
-  FOR rec IN EXECUTE sql
+  FOR rec IN EXECUTE sql USING
+    anothernode, newedge.edge_id, newedge.start_node, newedge.cleangeom
   LOOP -- incident edges {
 
     i := i + 1;
@@ -4209,8 +4167,9 @@ BEGIN
     || ',' || newedge.next_right_edge
     || ',' || newedge.left_face
     || ',' || newedge.right_face
-    || ',' || quote_literal(newedge.geom::geometry::text)
-    || ')';
+    || ',$1)'
+    USING newedge.geom
+    ;
 
   -- Link prev_left_edge to us 
   -- (if it's not us already)

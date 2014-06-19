@@ -71,7 +71,7 @@
 #endif
 
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__)    /* seems to work like Linux... */
+#if defined(__FreeBSD_kernel__) || defined(__OpenBSD__)    /* seems to work like Linux... */
 #if !defined(LINUX)
 #define LINUX
 #endif
@@ -1578,6 +1578,7 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  * to check for pixels with value
  * @param count : number of elements in bandNums and exclude_nodata_values
  * @param rtn_drv : is set to the GDAL driver object
+ * @param destroy_rtn_drv : if non-zero, caller must destroy the MEM driver
  *
  * @return GDAL dataset using GDAL MEM driver
  */
@@ -1587,7 +1588,7 @@ GDALDatasetH rt_raster_to_gdal_mem(
 	uint32_t *bandNums,
 	int *excludeNodataValues,
 	int count,
-	GDALDriverH *rtn_drv
+	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 );
 
 /**
@@ -1999,9 +2000,16 @@ extern void *rtalloc(size_t size);
 extern void *rtrealloc(void *mem, size_t size);
 extern void rtdealloc(void *mem);
 
+/*
+ * GDAL driver flags
+ */
 
+#define GDAL_ENABLE_ALL "ENABLE_ALL"
+#define GDAL_DISABLE_ALL "DISABLE_ALL"
+#define GDAL_VSICURL "VSICURL"
 
-/* Set of functions to clamp double to int of different size
+/*
+ * Set of functions to clamp double to int of different size
  */
 
 #if !defined(POSTGIS_RASTER_WARN_ON_TRUNCATION)
@@ -2114,7 +2122,8 @@ rt_util_gdal_supported_sr(const char *srs);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+rt_errorstate
+rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
 
 /*
 	is GDAL configured correctly?
@@ -2125,14 +2134,20 @@ rt_util_gdal_configured(void);
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void);
+int
+rt_util_gdal_register_all(int force_register_all);
 
 /*
 	is the driver registered?
 */
 int
 rt_util_gdal_driver_registered(const char *drv);
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
 
 void
 rt_util_from_ogr_envelope(

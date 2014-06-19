@@ -838,6 +838,7 @@ rt_raster_gdal_polygonize(
 	long j;
 	OGRSFDriverH ogr_drv = NULL;
 	GDALDriverH gdal_drv = NULL;
+	int destroy_gdal_drv = 0;
 	GDALDatasetH memdataset = NULL;
 	GDALRasterBandH gdal_band = NULL;
 	OGRDataSourceH memdatasource = NULL;
@@ -900,7 +901,7 @@ rt_raster_gdal_polygonize(
 	/*****************************************************
 	 * Convert raster to GDAL MEM dataset
 	 *****************************************************/
-	memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, excludeNodataValues, 1, &gdal_drv);
+	memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, excludeNodataValues, 1, &gdal_drv, &destroy_gdal_drv);
 	if (NULL == memdataset) {
 		rterror("rt_raster_gdal_polygonize: Couldn't convert raster to GDAL MEM dataset");
 		return NULL;
@@ -909,7 +910,12 @@ rt_raster_gdal_polygonize(
 	/*****************************
 	 * Register ogr mem driver
 	 *****************************/
+#ifdef GDAL_DCAP_RASTER
+	/* in GDAL 2.0, OGRRegisterAll() is an alias to GDALAllRegister() */
+	rt_util_gdal_register_all(0);
+#else
 	OGRRegisterAll();
+#endif
 
 	RASTER_DEBUG(3, "creating OGR MEM vector");
 
@@ -921,6 +927,7 @@ rt_raster_gdal_polygonize(
 	if (NULL == memdatasource) {
 		rterror("rt_raster_gdal_polygonize: Couldn't create a OGR Datasource to store pols");
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		return NULL;
 	}
 
@@ -930,6 +937,7 @@ rt_raster_gdal_polygonize(
 
 		/* xxx jorgearevalo: what should we do now? */
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
@@ -952,6 +960,7 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Couldn't create layer to store polygons");
 
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGRReleaseDataSource(memdatasource);
 
 		return NULL;
@@ -980,6 +989,7 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Couldn't get GDAL band to polygonize");
 
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
@@ -1000,6 +1010,7 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
 
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
@@ -1040,6 +1051,7 @@ rt_raster_gdal_polygonize(
 		rterror("rt_raster_gdal_polygonize: Could not allocate memory for geomval set");
 
 		GDALClose(memdataset);
+		if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		if (NULL != pszQuery)
@@ -1071,6 +1083,7 @@ rt_raster_gdal_polygonize(
 
 			OGR_F_Destroy(hFeature);
 			GDALClose(memdataset);
+			if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 			OGR_Fld_Destroy(hFldDfn);
 			OGR_DS_DeleteLayer(memdatasource, 0);
 			if (NULL != pszQuery)
@@ -1172,6 +1185,7 @@ rt_raster_gdal_polygonize(
 
 	RASTER_DEBUG(3, "destroying GDAL MEM raster");
 	GDALClose(memdataset);
+	if (destroy_gdal_drv) GDALDestroyDriver(gdal_drv);
 
 	RASTER_DEBUG(3, "destroying OGR MEM vector");
 	OGR_Fld_Destroy(hFldDfn);

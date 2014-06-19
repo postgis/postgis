@@ -117,8 +117,8 @@ configure: configure.in
 config.status: configure
 	./configure
 
-ChangeLog.svn:
-	svn2cl --authors=authors.svn -i -o ChangeLog.svn
+ChangeLog:
+	svn2cl --authors=authors.svn -i -o ChangeLog
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check
@@ -141,4 +141,4 @@ svnrebase: authors.git
 postgis_svn_revision.h: 
 	$(PERL) utils/svn_repo_revision.pl
 
-.PHONY: utils liblwgeom ChangeLog.svn raster postgis_svn_revision.h
+.PHONY: utils liblwgeom ChangeLog raster postgis_svn_revision.h

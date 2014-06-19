@@ -316,6 +316,9 @@ rt_band_get_data(rt_band band) {
 		return band->data.mem;
 }
 
+/* variable for PostgreSQL GUC: postgis.enable_outdb_rasters */
+char enable_outdb_rasters = 1;
+
 /**
 	* Load offline band's data.  Loaded data is internally owned
 	* and should not be released by the caller.  Data will be
@@ -352,11 +355,17 @@ rt_band_load_offline_data(rt_band band) {
 		return ES_ERROR;
 	}
 
-	rt_util_gdal_register_all();
+	/* offline_data is disabled */
+	if (!enable_outdb_rasters) {
+		rterror("rt_band_load_offline_data: Access to offline bands disabled");
+		return ES_ERROR;
+	}
+
+	rt_util_gdal_register_all(0);
 	/*
-	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 1);
 	*/
-	hdsSrc = GDALOpen(band->data.offline.path, GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open(band->data.offline.path, GA_ReadOnly, 0);
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return ES_ERROR;
@@ -450,8 +459,6 @@ rt_band_load_offline_data(rt_band band) {
 	_rast = rt_raster_from_gdal_dataset(hdsDst);
 
 	GDALClose(hdsDst);
-	/* XXX: need to find a way to clean up the GDALOpenShared datasets at end of transaction */
-	/* GDALClose(hdsSrc); */
 	GDALClose(hdsSrc);
 	/*
 	{

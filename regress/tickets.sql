@@ -52,7 +52,7 @@ SELECT '#44', ST_Relate(g1, g2, 'T12101212'), ST_Relate(g1, g2, 't12101212') FRO
 ) AS v(g1, g2);
 
 -- #58 --
-SELECT '#58', round(ST_xmin(g)),round(ST_ymin(g)),round(ST_xmax(g)),round(ST_ymax(g)) FROM (SELECT ST_Envelope('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)') as g)  AS foo;
+SELECT '#58', round(ST_xmin(g)),round(ST_ymin(g)),round(ST_xmax(g)),round(ST_ymax(g)) FROM (SELECT ST_Envelope('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry) as g)  AS foo;
 
 -- #65 --
 SELECT '#65', ST_AsGML(ST_GeometryFromText('CURVEPOLYGON(CIRCULARSTRING(4 2,3 -1.0,1 -1,-1.0 4,4 2))'));
@@ -602,7 +602,7 @@ FROM inp;
 -- #1150
 insert into spatial_ref_sys (srid, proj4text) values (500001,NULL);
 insert into spatial_ref_sys (srid, proj4text) values (500002, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
-select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)',500001));
+select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)'::geometry,500001));
 
 -- #1038
 select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);
@@ -849,6 +849,18 @@ SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1
 SELECT '#2168',  ST_Distance(g1,g2)::numeric(16,8)  As dist_g1_g2, ST_Distance(g2,g1)::numeric(16,8) AS dist_g2_g1,ST_Distance(g1,g2) - ST_Distance(g2,g1) 
   FROM (SELECT 'POINT(18.5107234 54.7587757)'::geography As g1, 'POINT(18.58218 54.7344227)'::geography As g2) As a;
 
+
+-- #2556 --
+
+CREATE TABLE images (id integer, name varchar, extent geography(POLYGON,4326));
+INSERT INTO images VALUES (47409, 'TDX-1_2010-10-06T19_44_2375085', 'SRID=4326;POLYGON((-59.4139571913088 82.9486103943668,-57.3528882462655 83.1123152898828,-50.2302874208478 81.3740574826097,-51.977353304689 81.2431047148532,-59.4139571913088 82.9486103943668))'::geography);
+INSERT INTO images VALUES (1, 'first_image', 'SRID=4326;POLYGON((-162.211667 88.046667,-151.190278 87.248889,-44.266389 74.887778,-40.793889 75.043333,-162.211667 88.046667))'::geography);
+SELECT '#2556' AS ticket, id, round(ST_Distance(extent, 'SRID=4326;POLYGON((-46.625977 81.634149,-46.625977 81.348076,-48.999023 81.348076,-48.999023 81.634149,-46.625977 81.634149))'::geography)) from images;
+DROP TABLE images;
+
+--#2672
+
+SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

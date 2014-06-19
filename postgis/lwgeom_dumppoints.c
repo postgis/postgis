@@ -74,6 +74,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 
 		/* return early if nothing to do */
 		if (!lwgeom || lwgeom_is_empty(lwgeom)) {
+			MemoryContextSwitchTo(oldcontext);
 			funcctx = SRF_PERCALL_SETUP();
 			SRF_RETURN_DONE(funcctx);
 		}

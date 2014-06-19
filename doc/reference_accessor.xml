@@ -270,7 +270,7 @@ ST_Dimension
 	  <refnamediv>
 		<refname>ST_EndPoint</refname>
 
-		<refpurpose>Returns the last point of a <varname>LINESTRING</varname>
+		<refpurpose>Returns the last point of a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>
 		geometry as a <varname>POINT</varname>.</refpurpose>
 	  </refnamediv>
 
@@ -293,6 +293,8 @@ ST_Dimension
 
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
 		<para>&Z_support;</para>
+		<!-- Optionally mention Circular String Support -->
+	  <para>&curve_support;</para>
 		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.
@@ -321,8 +323,7 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
   st_asewkt
 --------------
  POINT(0 0 5)
-(1 row)
-</programlisting>
+(1 row)</programlisting>
 	  </refsection>
 
 	  <refsection>
@@ -1646,10 +1647,8 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 	<refentry id="ST_NumInteriorRings">
 	  <refnamediv>
 		<refname>ST_NumInteriorRings</refname>
-		<refpurpose>Return the number of interior rings of the first polygon in
-			the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
-			Return NULL if there is no polygon in the
-			geometry.</refpurpose>
+		<refpurpose>Return the number of interior rings of the a polygon in
+			the geometry. This will work with POLYGON and return NULL for a MULTIPOLYGON type or any other type</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1670,6 +1669,7 @@ POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
 			geometry.</para>
 
 		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
+		<para>Changed: 2.0.0 - in prior versions it would return the number of interior rings for the first POLYGON in a MULTIPOLYGON.</para>
 	  </refsection>
 
 	  <refsection>
@@ -1698,8 +1698,8 @@ GROUP BY gid, field1,field2;
 	<refentry id="ST_NumInteriorRing">
 	  <refnamediv>
 		<refname>ST_NumInteriorRing</refname>
-		<refpurpose>Return the number of interior rings of the first polygon in
-			the geometry. Synonym to ST_NumInteriorRings. </refpurpose>
+		<refpurpose>Return the number of interior rings of a polygon in
+			the geometry. Synonym for ST_NumInteriorRings. </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1710,17 +1710,6 @@ GROUP BY gid, field1,field2;
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Return the number of interior rings of the first polygon in
-			the geometry. Synonym to ST_NumInteriorRings. The OpenGIS specs are
-			ambiguous about the exact function naming, so we provide both
-			spellings.</para>
-
-		<para>&sqlmm_compliant; SQL-MM 3: 8.2.5</para>
-	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
@@ -2033,12 +2022,14 @@ POINT(3 2)
 	<refsection>
 	  <title>Description</title>
 
-	  <para>Returns the first point of a <varname>LINESTRING</varname> geometry
+	  <para>Returns the first point of a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname> geometry
 	  as a <varname>POINT</varname> or <varname>NULL</varname> if the input
-	  parameter is not a <varname>LINESTRING</varname>.</para>
+	  parameter is not a <varname>LINESTRING</varname> or <varname>CIRCULARLINESTRING</varname>.</para>
 
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.3</para>
 	  <para>&Z_support;</para>
+	  <!-- Optionally mention Circular String Support -->
+	  <para>&curve_support;</para>
 	  <note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
 	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.
@@ -2069,6 +2060,11 @@ SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
  POINT(0 1 1)
 (1 row)
 
+-- circular linestring --
+SELECT ST_AsText(ST_StartPoint('CIRCULARSTRING(5 2,-3 1.999999, -2 1, -4 2, 5 2)'::geometry));
+ st_astext
+------------
+ POINT(5 2)
 </programlisting>
 	</refsection>
 

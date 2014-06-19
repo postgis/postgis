@@ -1,6 +1,7 @@
 \set VERBOSITY terse
 set client_min_messages to ERROR;
 
+TRUNCATE spatial_ref_sys;
 INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
 
 -- Invalid topologies

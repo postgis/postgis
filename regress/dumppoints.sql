@@ -177,3 +177,9 @@ FROM (
 SELECT 'CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))'::geometry as geom
 ) as g
 ) j;
+
+SELECT '#2704', ST_DumpPoints('POLYGON EMPTY'::geometry);
+SELECT '#2704', ST_DumpPoints('MULTIPOLYGON EMPTY'::geometry);
+SELECT '#2704', ST_DumpPoints('MULTILINESTRING EMPTY'::geometry);
+SELECT '#2704', ST_DumpPoints('LINESTRING EMPTY'::geometry);
+SELECT '#2704', ST_DumpPoints('GEOMETRYCOLLECTION EMPTY'::geometry);

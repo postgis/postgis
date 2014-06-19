@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2009 Paul Ramsey <pramsey@opengeo.org>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -69,7 +69,7 @@ pgis_abs;
 
 typedef struct
 {
-	Datum id;	//Id, from function parameter
+	int64_t id;	//Id, from function parameter
 	Datum geom;	//the geometry from function parameter
 }
 geom_id;
@@ -171,8 +171,8 @@ pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 	MemoryContext oldcontext;	
 	twkb_state* state;
 	int32 newlen;
-	GSERIALIZED *geom;
 	uint8_t variant = 0;
+
 
 if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
@@ -187,25 +187,15 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		don't forget to free*/
 	 
 		state=palloc(sizeof(twkb_state));
-		state->geoms = palloc(10*sizeof(geom_id));
+		state->geoms = (geom_id*) palloc(10*sizeof(geom_id));
 		state->max_rows = 10;
 		state->n_rows = 0;	
 	
 		/* If user specified precision, respect it */
 		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2); 
 				
-		/* If user specified method, respect it
-		This will probably be taken away when we can decide which compression method that is best	*/
-		if ((PG_NARGS()>5) && (!PG_ARGISNULL(5)))
-		{
-			state->method = PG_GETARG_INT32(5); 
-		}
-		else
-		{
-			state->method = 1;
-		}
-	
-		//state->method = ((PG_NARGS()>5) && PG_ARGISNULL(5)) ? (int) 1 : PG_GETARG_INT32(5); 
+		/* There is no input for user to choose encoding method, but it is still defined here if we need it again	*/
+		state->method = 1;
 
 	}
 	else
@@ -214,8 +204,7 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		
 		if(!((state->n_rows)<(state->max_rows)))
 		{
-			    newlen = (state->max_rows)*2; 			
-			    /* switch to aggregate memory context */
+			    newlen = (state->max_rows)*2; 	
 			    
 			    state->geoms = (geom_id*)repalloc((void*)(state->geoms),newlen*sizeof(geom_id));
 				
@@ -224,23 +213,24 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 	
 	}	
 
-	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
-	
-	
-	if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
+	if (!PG_ARGISNULL(1))
 	{
-		variant = variant | (TWKB_ID);
-		((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
-	}
-	else
-	{
-		variant = variant & ~TWKB_ID;
-		((state->geoms)+state->n_rows)->id = 0;
-	}
-	state->variant=variant;
-	(state->n_rows)++;	
+		((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
+		
+		
+		if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
+		{
+			variant = variant | (TWKB_ID);
+			((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
+		}
+		else
+		{
+			variant = variant & ~TWKB_ID;
+			((state->geoms)+state->n_rows)->id = 0;
+		}
+		state->variant=variant;
+		(state->n_rows)++;	
+	}	
 	MemoryContextSwitchTo(oldcontext); 
 	
 	PG_RETURN_POINTER(state);
@@ -365,7 +355,8 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 	lwgeom_arrays.n_points=lwgeom_arrays.n_linestrings=lwgeom_arrays.n_polygons=lwgeom_arrays.n_collections=0;
 	geom_array=state->geoms;
 
-
+	if (state->n_rows<1)
+		PG_RETURN_NULL();
 	
 	
 	for (i=0;i<state->n_rows;i++)
@@ -376,7 +367,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 		{
 			case POINTTYPE:
 				if (lwgeom_arrays.n_points==0)
-					lwgeom_arrays.points = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.points = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.points+lwgeom_arrays.n_points)->geom=lwgeom;
 				(lwgeom_arrays.points+lwgeom_arrays.n_points)->id=(geom_array+i)->id;
@@ -385,7 +376,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			/* LineString and CircularString both have 'points' elements */
 			case LINETYPE:
 				if (lwgeom_arrays.n_linestrings==0)
-					lwgeom_arrays.linestrings = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.linestrings = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->geom=lwgeom;
 				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->id=(geom_array+i)->id;
@@ -395,7 +386,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			/* Polygon has 'nrings' and 'rings' elements */
 			case POLYGONTYPE:
 				if (lwgeom_arrays.n_polygons==0)
-					lwgeom_arrays.polygons = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.polygons = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->geom=lwgeom;
 				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->id=(geom_array+i)->id;
@@ -412,7 +403,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 			case MULTIPOLYGONTYPE:
 			case COLLECTIONTYPE:
 				if (lwgeom_arrays.n_collections==0)
-					lwgeom_arrays.collections = palloc(((state->n_rows)-i)*sizeof(geom_id));
+					lwgeom_arrays.collections = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 				
 				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->geom=lwgeom;
 				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->id=(geom_array+i)->id;

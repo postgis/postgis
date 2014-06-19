@@ -2,7 +2,7 @@
 # * $Id: Makefile.in
 # *
 # * PostGIS - Spatial Types for PostgreSQL
-# * http://postgis.refractions.net
+# * http://postgis.net
 # * Copyright 2008 Paul Ramsey, Mark Cave-Ayland
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -11,14 +11,15 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ 
-LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
+
+CFLAGS=@CFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ $(CUNIT_CPPFLAGS)
+LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c $(CUNIT_LDFLAGS) -lm
 
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
@@ -50,6 +51,7 @@ OBJS=	\
 	cu_in_geojson.o \
 	cu_in_wkb.o \
 	cu_in_wkt.o \
+	cu_varint.o \
 	cu_tester.o 
 
 ifeq (@SFCGAL@,sfcgal)
@@ -75,12 +77,11 @@ endif
 
 # Build the main unit test executable
 cu_tester: ../liblwgeom.la $(OBJS)
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) ../liblwgeom.la $(CUNIT_LDFLAGS)
-	#$(CC) -o $@ $(OBJS) ../.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) ../liblwgeom.la $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
-	$(CC) $(CFLAGS) $(CUNIT_CPPFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Clean target
 clean:

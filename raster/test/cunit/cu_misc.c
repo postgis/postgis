@@ -108,10 +108,45 @@ static void test_hsv_to_rgb() {
 	CU_ASSERT_DOUBLE_EQUAL(rgb[2], 0.4, DBL_EPSILON);
 }
 
+static void test_util_gdal_open() {
+	extern char *gdal_enabled_drivers;
+
+	GDALDatasetH ds;
+
+	char *disable_all = GDAL_DISABLE_ALL;
+	char *enabled = "GTiff JPEG PNG";
+	char *enabled_vsi = "GTiff JPEG PNG VSICURL";
+
+	rt_util_gdal_register_all(1);
+
+	/* all drivers disabled */
+	gdal_enabled_drivers = disable_all;
+	ds = rt_util_gdal_open("/tmp/foo", GA_ReadOnly, 0);
+	CU_ASSERT(ds == NULL);
+
+	/* can't test VSICURL if HTTP driver not found */
+	if (!rt_util_gdal_driver_registered("HTTP"))
+		return;
+
+	/* enabled drivers, no VSICURL */
+	gdal_enabled_drivers = enabled;
+	ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
+	CU_ASSERT(ds == NULL);
+
+	/* enabled drivers with VSICURL */
+	/* disabled as we don't want network access as a requirement 
+	gdal_enabled_drivers = enabled_vsi;
+	ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
+	CU_ASSERT(ds != NULL);
+	GDALClose(ds);
+	*/
+}
+
 /* register tests */
 CU_TestInfo misc_tests[] = {
 	PG_TEST(test_rgb_to_hsv),
 	PG_TEST(test_hsv_to_rgb),
+	PG_TEST(test_util_gdal_open),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo misc_suite = {"misc",  NULL,  NULL, misc_tests};

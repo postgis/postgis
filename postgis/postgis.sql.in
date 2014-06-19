@@ -2611,6 +2611,10 @@ BEGIN
 		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+		WHEN insufficient_privilege THEN
+			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	BEGIN
@@ -3361,29 +3365,32 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	LANGUAGE 'c';
 
 --Availability: 2.2.0
-
 CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int)
   RETURNS internal
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
-  
+
+-- Availability: 2.2.0  
 CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8)
   RETURNS internal
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
 
+-- Availability: 2.2.0  
 CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
   RETURNS bytea
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
 
-CREATE AGGREGATE st_astwkb_agg(geometry,int) (
+-- Availability: 2.2.0  
+CREATE AGGREGATE st_astwkbagg(geometry,int) (
   SFUNC=pgis_twkb_accum_transfn,
   STYPE=internal,
   FINALFUNC=pgis_twkb_accum_finalfn
 );
 
-CREATE AGGREGATE st_astwkb_agg(geometry,int,int8) (
+-- Availability: 2.2.0
+CREATE AGGREGATE st_astwkbagg(geometry,int,int8) (
   SFUNC=pgis_twkb_accum_transfn,
   STYPE=internal,
   FINALFUNC=pgis_twkb_accum_finalfn

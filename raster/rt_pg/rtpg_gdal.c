@@ -94,10 +94,10 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	}
 
 	/* register all GDAL drivers */
-	rt_util_gdal_register_all();
+	rt_util_gdal_register_all(0);
 
 	/* open GDAL raster */
-	hdsSrc = GDALOpenShared("/vsimem/in.dat", GA_ReadOnly);
+	hdsSrc = rt_util_gdal_open("/vsimem/in.dat", GA_ReadOnly, 1);
 	if (hdsSrc == NULL) {
 		VSIFCloseL(vsifp);
 		PG_FREE_IF_COPY(bytea_data, 0);

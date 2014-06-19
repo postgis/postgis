@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -54,7 +54,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	uint32 perQuad = PG_GETARG_INT32(1);
+	int32 perQuad = PG_GETARG_INT32(1);
 	GSERIALIZED *ret;
 	LWGEOM *igeom = NULL, *ogeom = NULL;
 

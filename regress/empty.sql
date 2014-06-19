@@ -123,14 +123,14 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_GeometryN(empty, n) == empty', ST_GeometryN(empty, n) FROM inp;
+ ) SELECT 'ST_GeometryN(empty, n) == empty', encode(ST_AsEWKB(ST_GeometryN(empty, n),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_ExteriorRing(empty) == empty', ST_ExteriorRing(empty) FROM inp;
+ ) SELECT 'ST_ExteriorRing(empty) == empty', encode(ST_AsEWKB(ST_ExteriorRing(empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_InteriorRingN(empty, n) == NULL', ST_InteriorRingN(empty, n) FROM inp;
+ ) SELECT 'ST_InteriorRingN(empty, n) == NULL', encode(ST_AsEWKB(ST_InteriorRingN(empty, n),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_Area(empty) == 0', ST_Area(empty) FROM inp;

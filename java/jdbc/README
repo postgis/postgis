@@ -223,7 +223,8 @@ CLASSPATH, "make postgis_jts" and use at your own risk.
 
 Well, the best place are the official PostGIS mailing lists for PostGIS,
 subscription information is linked at:
-  http://postgis.refractions.net/support.php
+
+  http://postgis.net/
   
 If you want to report errors, please try to send us all the details we need
 to reproduce your problem. A small, self-contained test case would be best.

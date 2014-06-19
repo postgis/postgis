@@ -37,6 +37,8 @@
 
 SET client_min_messages TO warning;
 
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 BEGIN;
 
 ------------------------------------------------------------------------------
@@ -500,6 +502,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, integer, boolean, double precision) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -514,6 +517,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, boolean, double precision) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -528,6 +532,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats_transfn(
 	AS 'MODULE_PATHNAME', 'RASTER_summaryStats_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_summarystatsagg(raster, int, boolean) (
 	SFUNC = _st_summarystats_transfn,
 	STYPE = internal,
@@ -769,11 +774,8 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE AGGREGATE st_countagg(
-	raster,
- 	integer, boolean,
-	double precision
-) (
+-- Availability: 2.2.0
+CREATE AGGREGATE st_countagg(raster, integer, boolean, double precision) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	FINALFUNC = _st_countagg_finalfn
@@ -799,10 +801,8 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE AGGREGATE st_countagg(
-	raster,
-	integer, boolean
-) (
+-- Availability: 2.2.0
+CREATE AGGREGATE st_countagg(raster, integer, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
 	FINALFUNC = _st_countagg_finalfn
@@ -828,6 +828,7 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
+-- Availability: 2.2.0
 CREATE AGGREGATE st_countagg(raster, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
@@ -5621,23 +5622,27 @@ CREATE CAST (raster AS bytea)
 -------------------------------------------------------------------
 
 -- call PostgreSQL's hashvarlena() function
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION raster_hash(raster)
 	RETURNS integer
 	AS 'hashvarlena'
 	LANGUAGE 'internal' IMMUTABLE STRICT;
 
 -- use raster_hash() to compare
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION raster_eq(raster, raster)
 	RETURNS bool
 	AS $$ SELECT raster_hash($1) = raster_hash($2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE OPERATOR = (
 	LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_eq,
 	COMMUTATOR = '=',
 	RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
+-- Availability: 2.1.0
 CREATE OPERATOR CLASS hash_raster_ops
 	DEFAULT FOR TYPE raster USING hash AS
 	OPERATOR	1	= ,
@@ -5708,32 +5713,40 @@ CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- raster/geometry functions
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry ~ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry @ $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
     LANGUAGE 'sql' IMMUTABLE STRICT;
     
 -- geometry/raster functions
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
     RETURNS bool
     AS 'select $1 @ $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
     AS 'select $1 && $2::geometry'
@@ -5816,18 +5829,22 @@ CREATE OPERATOR ~ (
     );
 
 -- raster/geometry operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.5
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
     COMMUTATOR = '&&',
@@ -5835,18 +5852,22 @@ CREATE OPERATOR && (
     );
 
 -- geometry/raster operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.5
 CREATE OPERATOR @ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
- 
+
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
     COMMUTATOR = '&&',
@@ -5911,6 +5932,7 @@ CREATE OR REPLACE FUNCTION _st_samealignment_finalfn(agg agg_samealignment)
 	AS $$ SELECT $1.aligned $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE AGGREGATE st_samealignment(raster) (
 	SFUNC = _st_samealignment_transfn,
 	STYPE = agg_samealignment,
@@ -6511,6 +6533,7 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, unionarg[])
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.1.0
 CREATE AGGREGATE st_union(raster, unionarg[]) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6522,6 +6545,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, integer, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6533,6 +6558,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, integer) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6544,6 +6571,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -6555,6 +6584,8 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, text)
 	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.0 changed definition
 CREATE AGGREGATE st_union(raster, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
@@ -8520,6 +8551,17 @@ CREATE OR REPLACE FUNCTION UpdateRasterSRID(
 	RETURNS boolean
 	AS $$ SELECT _UpdateRasterSRID('', $1, $2, $3) $$
 	LANGUAGE 'sql' VOLATILE STRICT;
+
+-------------------------------------------------------------------
+--  Debugging
+-------------------------------------------------------------------
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION postgis_noop(raster)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'RASTER_noop'
+	LANGUAGE 'c' VOLATILE STRICT;
+
 
 -------------------------------------------------------------------
 --  END

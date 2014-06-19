@@ -34,7 +34,7 @@ psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
-psql -d yourdatabase -f topology/topology.sql
+psql -d yourdatabase -f topology.sql
 psql -d yourdatabase -f topology_comments.sql</programlisting>
 
 	<para>
@@ -156,7 +156,7 @@ psql -d yourdatabase -f topology_comments.sql</programlisting>
 	  
 	  <listitem>
 		<para>
-                  SFCGAL, version 0.2 (or higher) could be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 0.2 require at least CGAL 4.1.
+                  SFCGAL, version 1.0 (or higher) could be used to provide additional 2D and 3D advanced analysis functions to PostGIS cf <xref linkend="reference_sfcgal" />. And also allow to use SFCGAL rather than GEOS for some 2D functions provided by both backends (like ST_Intersection or ST_Area, for instance). A PostgreSQL configuration variable <code>postgis.backend</code> allow end user to control which backend he want to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.0 require at least CGAL 4.1 and Boost 1.46 (cf: <ulink url="http://oslandia.github.io/SFCGAL/installation.html">http://oslandia.github.io/SFCGAL/installation.html</ulink>)
 
 		  <ulink url="https://github.com/Oslandia/SFCGAL">https://github.com/Oslandia/SFCGAL</ulink>.
 		</para>
@@ -490,6 +490,15 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			  cause breakage of loader, you can disable it entirely with this command.  Refer to ticket <ulink url="http://trac.osgeo.org/postgis/ticket/748">http://trac.osgeo.org/postgis/ticket/748</ulink> for an example issue solved by configuring with this.
 			  NOTE: that you aren't missing much by turning this off.  This is used for international help/label support for the GUI loader which is not yet documented
 			  and still experimental.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-sfcgal=PATH</command></term>
+		  <listitem>
+			<para>
+			  By default PostGIS will not install with sfcgal support without this switch. 
+			  <varname>PATH</varname> is an optional argument that allows to specify an alternate PATH to sfcgal-config.
 			</para>
 		  </listitem>
 		</varlistentry>
@@ -1418,12 +1427,10 @@ pretty_address
 	  <para>This section applies only to those who installed PostGIS not using extensions.  If you have extensions and try to upgrade with this approach you'll get messages like:</para>
 	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
 	  <para>
-		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
-		for your version of PostGIS.  For example <filename>postgis_upgrade_21_to_22.sql</filename> should be used if you are upgrading 
-		from PostGIS 2.1 to 2.2.  If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
+		After compiling and installing (make install) you should find a  <filename>postgis_upgrade.sql</filename> and <filename>rtpostgis_upgrade.sql</filename> in the installation folders. For example <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>.  Install the <filename>postgis_upgrade.sql</filename>. If you have raster functionality installed, you will also need to install the <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>. If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need to do a HARD UPGRADE.
 	  </para>
 
-	  <programlisting>psql -f postgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <para>
 		The same procedure applies to raster and
@@ -1433,8 +1440,8 @@ pretty_address
 		If you need them:
 	  </para>
 
-	  <programlisting>psql -f rtpostgis_upgrade_22_minor.sql -d your_spatial_database</programlisting>
-	  <programlisting>psql -f topology_upgrade_22_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f rtpostgis_upgrade.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f topology_upgrade.sql -d your_spatial_database</programlisting>
 
 	  <note>
 		<para>

@@ -2,7 +2,7 @@ dnl **********************************************************************
 dnl * $Id: configure.ac 2797 2008-05-31 09:56:44Z mcayland $
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
-dnl * http://postgis.refractions.net
+dnl * http://postgis.net
 dnl * Copyright 2008 Mark Cave-Ayland
 dnl *
 dnl * This is free software; you can redistribute and/or modify it under
@@ -40,7 +40,11 @@ else
   if test "x$GPP" != "x"; then
     SQLPP="${GPP} -C -s \'" dnl Use better string support
   else
-    SQLPP="${CPP} -traditional-cpp"
+    if test "x${CPP}" != "x"; then
+      SQLPP="${CPP} -traditional-cpp"
+    else
+		  AC_MSG_ERROR([Required "cpp" command not found])
+    fi
   fi
 fi
 AC_SUBST([SQLPP])
@@ -751,7 +755,6 @@ dnl ===========================================================================
 
 CHECK_JSON=yes
 HAVE_JSON=no
-AC_SUBST([HAVE_JSON])
 
 AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
@@ -806,6 +809,7 @@ fi
 
 AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
+AC_SUBST([HAVE_JSON])
 
 fi dnl }
 

@@ -286,7 +286,7 @@ gg|polygonz4326|gg|3|4326|PolygonZ
 gg|polygonzm|gg|4|4326|PolygonZM
 gg|polygonzm0|gg|4|4326|PolygonZM
 gg|polygonzm4326|gg|4|4326|PolygonZM
-catalog-schema|postgis_reg|tm
+catalog-schema|t|tm
 circularstring|0|Point|0|KO-BKO
 circularstring|0|LineString|0|KO-BKO
 circularstring|0|Polygon|0|KO-BKO

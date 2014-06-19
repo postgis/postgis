@@ -1809,7 +1809,7 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision,
 */
 extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
 
-extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, uint64_t id,int method);
+extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, int64_t id,int method);
 extern uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t variant , size_t *size_out,int8_t prec, int method);
 
 /**
