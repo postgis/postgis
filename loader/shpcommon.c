@@ -2,7 +2,7 @@
  * $Id: shpcommon.c 5646 2010-05-27 13:19:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2010 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
  * This is free software; you can redistribute and/or modify it under

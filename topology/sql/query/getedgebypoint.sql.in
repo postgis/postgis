@@ -1,7 +1,7 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 --
 -- Copyright (C) 2011 Andrea Peri <aperi2007@gmail.com>
 --
@@ -62,20 +62,17 @@ BEGIN
 
 
     if tol1 = 0 then
-    	sql := 'SELECT a.edge_id FROM ' 
+    	sql := 'SELECT edge_id FROM ' 
         || quote_ident(atopology) 
-        || '.edge_data as a WHERE '
-        || '(a.geom && ' || quote_literal(apoint::text)||'::geometry) '
-        || ' AND (ST_Intersects(a.geom,' || quote_literal(apoint::text)||'::geometry) );';
+        || '.edge_data WHERE ST_Intersects(geom, $1)';
     else
-    	sql := 'SELECT a.edge_id FROM ' 
+    	sql := 'SELECT edge_id FROM ' 
         || quote_ident(atopology) 
-        || '.edge_data as a WHERE '
-        || '(ST_DWithin(a.geom,' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ') );';
+        || '.edge_data WHERE ST_DWithin(geom, $1, $2)';
     end if;
 
     BEGIN
-    EXECUTE sql INTO STRICT idedge;
+    EXECUTE sql INTO STRICT idedge USING apoint, tol1;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             idedge = 0;

@@ -2,7 +2,7 @@
 # * $Id: Makefile.in 
 # *
 # * PostGIS - Spatial Types for PostgreSQL
-# * http://postgis.refractions.net
+# * http://postgis.net
 # * Copyright 2008 Mark Cave-Ayland
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -60,6 +60,7 @@ SA_OBJS = \
 	lwin_geojson.o \
 	lwin_wkb.o \
 	lwout_wkt.o \
+	lwout_twkb.o \
 	lwin_wkt_parse.o \
 	lwin_wkt_lex.o \
 	lwin_wkt.o \

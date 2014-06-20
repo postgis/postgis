@@ -36,29 +36,29 @@ WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry,
  120 as tolerance
- ) SELECT 'ST_Buffer(empty, tolerance) == empty', ST_Buffer(empty, tolerance) FROM inp;
+ ) SELECT 'ST_Buffer(empty, tolerance) == empty', encode(ST_AsBinary(ST_Buffer(empty, tolerance),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Union(geometry, empty) == geometry', ST_Union(geometry, empty) FROM inp;
+ ) SELECT 'ST_Union(geometry, empty) == geometry', encode(ST_AsBinary(ST_Union(geometry, empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_Union(empty, empty) == empty', ST_Union(empty, empty) FROM inp;
+ ) SELECT 'ST_Union(empty, empty) == empty', encode(ST_AsBinary(ST_Union(empty, empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Intersection(geometry, empty) == geometry', ST_Intersection(geometry, empty) FROM inp;
+ ) SELECT 'ST_Intersection(geometry, empty) == geometry', encode(ST_AsBinary(ST_Intersection(geometry, empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_Intersection(empty, empty) == empty', ST_Intersection(empty, empty) FROM inp;
+ ) SELECT 'ST_Intersection(empty, empty) == empty', encode(ST_AsBinary(ST_Intersection(empty, empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_Difference(geometry, empty) FROM inp;
+ ) SELECT 'ST_Difference(geometry, empty) == geometry', encode(ST_AsBinary(ST_Difference(geometry, empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Difference(empty, geometry) == empty', ST_Difference(empty, geometry) FROM inp;
+ ) SELECT 'ST_Difference(empty, geometry) == empty', encode(ST_AsBinary(ST_Difference(empty, geometry),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
@@ -123,14 +123,14 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_GeometryN(empty, n) == empty', ST_GeometryN(empty, n) FROM inp;
+ ) SELECT 'ST_GeometryN(empty, n) == empty', encode(ST_AsEWKB(ST_GeometryN(empty, n),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_ExteriorRing(empty) == empty', ST_ExteriorRing(empty) FROM inp;
+ ) SELECT 'ST_ExteriorRing(empty) == empty', encode(ST_AsEWKB(ST_ExteriorRing(empty),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_InteriorRingN(empty, n) == NULL', ST_InteriorRingN(empty, n) FROM inp;
+ ) SELECT 'ST_InteriorRingN(empty, n) == NULL', encode(ST_AsEWKB(ST_InteriorRingN(empty, n),'ndr'),'hex') FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_Area(empty) == 0', ST_Area(empty) FROM inp;

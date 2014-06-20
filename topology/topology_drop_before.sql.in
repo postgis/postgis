@@ -1,6 +1,6 @@
 -- $Id$
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2012 Regina Obe <lr@pcorp.us>
 -- This is free software; you can redistribute and/or modify it under
@@ -14,4 +14,7 @@
 -- we might want to take toTopoGeom one out before release since
 -- I don't think too many people installed the bad name
 DROP FUNCTION IF EXISTS topology.toTopoGeom(Geometry, varchar, int, float8);
+
+-- used to be in public, will now be moved to topology
+DROP FUNCTION IF EXISTS postgis_topology_scripts_installed();
 

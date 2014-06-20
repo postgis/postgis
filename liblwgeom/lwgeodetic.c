@@ -443,10 +443,12 @@ static void vector_scale(POINT3D *n, double scale)
 	return;
 }
 
-static inline double vector_magnitude(const POINT3D* v)
-{
-	return sqrt(v->x*v->x + v->y*v->y + v->z*v->z);
-}
+/*
+* static inline double vector_magnitude(const POINT3D* v)
+* {
+*	return sqrt(v->x*v->x + v->y*v->y + v->z*v->z);
+* }
+*/
 
 /**
 * Angle between two unit vectors
@@ -1170,7 +1172,10 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 
 	/* Zero length edge, */
 	if ( geographic_point_equals(&(e->start), &(e->end)) )
+	{
+        *closest = e->start;
 		return sphere_distance(&(e->start), gp);
+	}
 
 	robust_cross_product(&(e->start), &(e->end), &n);
 	normalize(&n);
@@ -1416,7 +1421,22 @@ int edge_calculate_gbox(const POINT3D *A1, const POINT3D *A2, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
-
+void lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside)
+{	
+	/* Make sure we have boxes */
+	if ( poly->bbox )
+	{
+		gbox_pt_outside(poly->bbox, pt_outside);
+		return;
+	}
+	else
+	{
+		GBOX gbox;
+		lwgeom_calculate_gbox_geodetic((LWGEOM*)poly, &gbox);
+		gbox_pt_outside(&gbox, pt_outside);
+		return;
+	}
+}
 
 /**
 * Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is
@@ -1811,12 +1831,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 			}
 			e1.start = e1.end;
 		}
+
 		/* On sphere, return answer */
 		if ( use_sphere )
 			return distance;
 		/* On spheroid, calculate final answer based on closest approach */
 		else
 			return spheroid_distance(&g1, &nearest2, s);
+
 	}
 
 	/* Initialize start of line 1 */
@@ -3075,7 +3097,7 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 int 
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
-	POINT3D AN, BN;  /* Normals to plane A and plane B */
+	POINT3D AN, BN, VN;  /* Normals to plane A and plane B */
 	double ab_dot;
 	int a1_side, a2_side, b1_side, b2_side;
 	int rv = PIR_NO_INTERACT;
@@ -3123,8 +3145,21 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	if ( a1_side != a2_side && (a1_side + a2_side) == 0 &&
 	     b1_side != b2_side && (b1_side + b2_side) == 0 )
 	{
-		/* Mid-point intersection! */
-		return PIR_INTERSECTS;
+		/* Have to check if intersection point is inside both arcs */
+		unit_normal(&AN, &BN, &VN);
+		if ( point_in_cone(A1, A2, &VN) && point_in_cone(B1, B2, &VN) )
+		{
+			return PIR_INTERSECTS;
+		}
+
+		/* Have to check if intersection point is inside both arcs */
+		vector_scale(&VN, -1);
+		if ( point_in_cone(A1, A2, &VN) && point_in_cone(B1, B2, &VN) )
+		{
+			return PIR_INTERSECTS;
+		}
+		
+		return PIR_NO_INTERACT;
 	}
 
 	/* The rest are all intersects variants... */

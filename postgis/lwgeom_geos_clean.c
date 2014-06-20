@@ -2,7 +2,7 @@
  * $Id: lwgeom_geos.c 5258 2010-02-17 21:02:49Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
  *

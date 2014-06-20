@@ -283,12 +283,12 @@
     <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
     <note><para>You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and
     the raster table will be created in the default schema of the database or user</para></note>
-    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql
+    <programlisting>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql
 psql -d gisdb -f elev.sql</programlisting>
         
     <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
         
-    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</programlisting>
+    <programlisting>raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</programlisting>
     
     <para>Load rasters Massachusetts state plane meters aerial tiles 
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
@@ -483,7 +483,13 @@ Available GDAL raster formats:
 					<para><varname>nodata_values</varname> An array of double precision numbers denoting the <varname>nodata_value</varname> for each band.  You will have the same number of elements in this array as you have number of bands. These numbers define the pixel value for each band that should be ignored for most operations.  This is similar information provided by <xref linkend="RT_ST_BandNoDataValue" />.</para>
 				</listitem>
 				<listitem>
+					<para><varname>out_db</varname> An array of boolean flags indicating if the raster bands data is maintained outside the database. You will have the same number of elements in this array as you have number of bands.</para>
+				</listitem>
+				<listitem>
 					<para><varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to run the <xref linkend="RT_DropRasterConstraints" /> function before load and then reapply constraints with <xref linkend="RT_AddRasterConstraints"  /> after load. </para>
+				</listitem>
+				<listitem>
+					<para><varname>spatial_index</varname> A boolean that is true if raster column has a spatial index.</para>
 				</listitem>
 			 </itemizedlist>
         </sect2>
@@ -728,9 +734,9 @@ public class SaveQueryImage {
    		
    		<sect2 id="RT_PLPython">
    			<title>Use PLPython to dump out images via SQL</title>
-   			<para>This is a plpython stored function that creates a file in the server directory for each record.</para>
-   			<programlisting>//plpython postgresql stored proc.  Requires you have plpython installed
-<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
+   			<para>This is a plpython stored function that creates a file in the server directory for each record.  
+   			Requires you have plpython installed.  Should work fine with both plpythonu and plpython3u.</para>
+   			<programlisting><![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
 RETURNS text
 AS $$
 f = open(param_filepath, 'wb+')

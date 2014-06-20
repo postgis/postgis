@@ -1,3 +1,5 @@
+--- In case this test is running in an extension context
+TRUNCATE spatial_ref_sys; 
 ---
 --- EPSG 4326 : WGS 84
 ---

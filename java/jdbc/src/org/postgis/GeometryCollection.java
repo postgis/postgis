@@ -68,10 +68,10 @@ public class GeometryCollection extends ComposedGeom {
     }
 
     protected void innerWKT(StringBuffer SB) {
-        subgeoms[0].outerWKT(SB, false);
+        subgeoms[0].outerWKT(SB, true);
         for (int i = 1; i < subgeoms.length; i++) {
             SB.append(',');
-            subgeoms[i].outerWKT(SB, false);
+            subgeoms[i].outerWKT(SB, true);
         }
     }
 

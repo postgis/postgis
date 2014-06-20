@@ -55,7 +55,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	double tolerance;
+	/* double tolerance; */
 	bool use_spheroid;
 	SPHEROID s;
 
@@ -64,8 +64,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
-
+	/* tolerance = PG_GETARG_FLOAT8(2); */
+    
 	/* Read our calculation type. */
 	use_spheroid = PG_GETARG_BOOL(3);
 
@@ -168,6 +168,9 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
 	}
+
+    /* Knock off any funny business at the micrometer level, ticket #2168 */
+    distance = round(distance * 10e8) / 10e8;
 
 	PG_RETURN_FLOAT8(distance);
 }
@@ -704,7 +707,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
 		gbox2.flags = g2->flags;
 		empty2 = gserialized_is_empty(g2);
-		if ( ! empty1 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
+		if ( ! empty2 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
 			elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g2, &gbox2)");
 	}
 	/*

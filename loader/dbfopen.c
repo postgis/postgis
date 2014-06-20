@@ -505,7 +505,7 @@ DBFOpenLL( const char * pszFilename, const char * pszAccess, SAHooks *psHooks )
         }
 		psDBF->sHooks.FClose( pfCPG );
     }
-    if( psDBF->pszCodePage == NULL && pabyBuf[29] != 0 )
+    if( (psDBF->pszCodePage == NULL) && (psDBF->iLanguageDriver != 0) )
     {
         sprintf( (char *) pabyBuf, "LDID/%d", psDBF->iLanguageDriver );
         psDBF->pszCodePage = (char *) malloc(strlen((char*)pabyBuf) + 1);

@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2003 Refractions Research Inc.
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>

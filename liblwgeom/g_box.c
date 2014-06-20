@@ -9,6 +9,12 @@
  *
  **********************************************************************/
 
+#if !HAVE_ISFINITE
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#endif
+
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <stdlib.h>
@@ -146,28 +152,28 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 int gbox_is_valid(const GBOX *gbox)
 {
 	/* X */
-	if ( ! finite(gbox->xmin) || isnan(gbox->xmin) ||
-	     ! finite(gbox->xmax) || isnan(gbox->xmax) )
+	if ( ! isfinite(gbox->xmin) || isnan(gbox->xmin) ||
+	     ! isfinite(gbox->xmax) || isnan(gbox->xmax) )
 		return LW_FALSE;
 		
 	/* Y */
-	if ( ! finite(gbox->ymin) || isnan(gbox->ymin) ||
-	     ! finite(gbox->ymax) || isnan(gbox->ymax) )
+	if ( ! isfinite(gbox->ymin) || isnan(gbox->ymin) ||
+	     ! isfinite(gbox->ymax) || isnan(gbox->ymax) )
 		return LW_FALSE;
 		
 	/* Z */
 	if ( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
 	{
-		if ( ! finite(gbox->zmin) || isnan(gbox->zmin) ||
-		     ! finite(gbox->zmax) || isnan(gbox->zmax) )
+		if ( ! isfinite(gbox->zmin) || isnan(gbox->zmin) ||
+		     ! isfinite(gbox->zmax) || isnan(gbox->zmax) )
 			return LW_FALSE;
 	}
 
 	/* M */
 	if ( FLAGS_GET_M(gbox->flags) )
 	{
-		if ( ! finite(gbox->mmin) || isnan(gbox->mmin) ||
-		     ! finite(gbox->mmax) || isnan(gbox->mmax) )
+		if ( ! isfinite(gbox->mmin) || isnan(gbox->mmin) ||
+		     ! isfinite(gbox->mmax) || isnan(gbox->mmax) )
 			return LW_FALSE;
 	}
 	
@@ -240,10 +246,19 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
 	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
+
+	/* Deal with the geodetic case special: we only compare the geodetic boxes (x/y/z) */
+	/* Never the M dimension */
+	if ( FLAGS_GET_GEODETIC(g1->flags) && FLAGS_GET_GEODETIC(g2->flags) )
+	{
+		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
+			return LW_FALSE;
+		else
+			return LW_TRUE;		
+	}
 		
 	/* If both geodetic or both have Z, check Z */
-	if ( (FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags)) || 
-	     (FLAGS_GET_GEODETIC(g1->flags) && FLAGS_GET_GEODETIC(g2->flags)) )
+	if ( FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags) )
 	{
 		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;

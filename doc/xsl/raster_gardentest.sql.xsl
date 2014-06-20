@@ -9,7 +9,7 @@
 			using a garden variety of rasters.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.1.0</xsl:variable>
+	<xsl:variable name='testversion'>2.2.0</xsl:variable>
 	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
@@ -24,7 +24,7 @@
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
-	<xsl:variable name='var_options'>NULL</xsl:variable>
+	<xsl:variable name='var_options'>NULL::text</xsl:variable>
 	<xsl:variable name="var_onerasteruserfunc">'monkey_oneuserfunc(float,integer[],text[])'::regprocedure</xsl:variable> 
 	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
 	<xsl:variable name='var_pixeltypenoq'>8BUI</xsl:variable>
@@ -32,7 +32,7 @@
 	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
 	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>raster_garden_log21</xsl:variable>
+	<xsl:variable name='var_logtable'>raster_garden_log22</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>

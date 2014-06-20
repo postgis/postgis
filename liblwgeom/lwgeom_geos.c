@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright 2011-2012 Sandro Santilli <strk@keybit.net>
  *
@@ -432,7 +432,7 @@ lwgeom_normalize(const LWGEOM *geom1)
 	g1 = LWGEOM2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS.");
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL ;
 	}
 
@@ -485,7 +485,7 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	g1 = LWGEOM2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
-		lwerror("First argument geometry could not be converted to GEOS.");
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL ;
 	}
 

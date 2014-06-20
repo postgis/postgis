@@ -1,3 +1,10 @@
+WITH foo AS (
+	SELECT postgis_raster_lib_version()
+)
+SELECT NULL FROM foo;
+SET postgis.gdal_enabled_drivers = 'GTiff';
+SELECT ST_AsTIFF(NULL) IS NULL;
+SELECT ST_AsTIFF(NULL, 'JPEG') IS NULL;
 SELECT CASE
 	WHEN length(
 		ST_AsTIFF(

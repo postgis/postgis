@@ -20,6 +20,81 @@
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
 
+typedef struct 
+{
+    int ldid;
+    int cpg;
+    char *desc;
+    char *iconv;
+    char *pg;
+} code_page_entry;
+
+static int num_code_pages = 60;
+
+static code_page_entry code_pages[] = {
+    {0x01, 437, "U.S. MS-DOS", "CP437",""},
+    {0x02, 850, "International MS-DOS", "CP850",""},
+    {0x03, 1252, "Window ANSI", "WINDOWS-1252","WIN1252"},
+    {0x08, 865, "Danish OEM", "CP865",""},
+    {0x09, 437, "Dutch OEM", "CP437",""},
+    {0x0A, 850, "Dutch OEM*", "CP850",""},
+    {0x0B, 437, "Finnish OEM", "CP437",""},
+    {0x0D, 437, "French OEM", "CP437",""},
+    {0x0E, 850, "French OEM*", "CP850",""},
+    {0x0F, 437, "German OEM", "CP437",""},
+    {0x10, 850, "German OEM*", "CP850",""},
+    {0x11, 437, "Italian OEM", "CP437",""},
+    {0x12, 850, "Italian OEM*", "CP850",""},
+    {0x13, 932, "Japanese Shift-JIS", "CP932","SJIS"},
+    {0x14, 850, "Spanish OEM*", "CP850",""},
+    {0x15, 437, "Swedish OEM", "CP437",""},
+    {0x16, 850, "Swedish OEM*", "CP850",""},
+    {0x17, 865, "Norwegian OEM", "CP865",""},
+    {0x18, 437, "Spanish OEM", "CP865",""},
+    {0x19, 437, "English OEM (Britain)", "CP437",""},
+    {0x1A, 850, "English OEM (Britain)*", "CP850",""},
+    {0x1B, 437, "English OEM (U.S.)", "CP437",""},
+    {0x1C, 863, "French OEM (Canada)", "CP863",""},
+    {0x1D, 850, "French OEM*", "CP850",""},
+    {0x1F, 852, "Czech OEM", "CP852",""},
+    {0x22, 852, "Hungarian OEM", "CP852",""},
+    {0x23, 852, "Polish OEM", "CP852",""},
+    {0x24, 860, "Portugese OEM", "CP860",""},
+    {0x25, 850, "Potugese OEM*", "CP850",""},
+    {0x26, 866, "Russian OEM", "WINDOWS-866","WIN866"},
+    {0x37, 850, "English OEM (U.S.)*", "CP850",""},
+    {0x40, 852, "Romanian OEM", "CP852",""},
+    {0x4D, 936, "Chinese GBK (PRC)", "CP936",""},
+    {0x4E, 949, "Korean (ANSI/OEM)", "CP949",""},
+    {0x4F, 950, "Chinese Big 5 (Taiwan)", "CP950","BIG5"},
+    {0x50, 874, "Thai (ANSI/OEM)", "WIN874",""},
+    {0x57, 1252, "ANSI", "WINDOWS-1252",""},
+    {0x58, 1252, "Western European ANSI", "WINDOWS-1252",""},
+    {0x59, 1252, "Spanish ANSI", "WINDOWS-1252",""},
+    {0x64, 852, "Eastern European MS-DOS", "CP852",""},
+    {0x65, 866, "Russian MS-DOS", "CP866",""},
+    {0x66, 865, "Nordic MS-DOS", "CP865",""},
+    {0x67, 861, "Icelandic MS-DOS", "",""},
+    {0x6A, 737, "Greek MS-DOS (437G)", "CP737",""},
+    {0x6B, 857, "Turkish MS-DOS", "CP857",""},
+    {0x6C, 863, "French-Canadian MS-DOS", "CP863",""},
+    {0x78, 950, "Taiwan Big 5", "CP950",""},
+    {0x79, 949, "Hangul (Wansung)", "CP949",""},
+    {0x7A, 936, "PRC GBK", "CP936","GBK"},
+    {0x7B, 932, "Japanese Shift-JIS", "CP932",""},
+    {0x7C, 874, "Thai Windows/MS-DOS", "WINDOWS-874","WIN874"},
+    {0x86, 737, "Greek OEM", "CP737",""},
+    {0x87, 852, "Slovenian OEM", "CP852",""},
+    {0x88, 857, "Turkish OEM", "CP857",""},
+    {0xC8, 1250, "Eastern European Windows", "WINDOWS-1250","WIN1250"},
+    {0xC9, 1251, "Russian Windows", "WINDOWS-1251","WIN1251"},
+    {0xCA, 1254, "Turkish Windows", "WINDOWS-1254","WIN1254"},
+    {0xCB, 1253, "Greek Windows", "WINDOWS-1253","WIN1253"},
+    {0xCC, 1257, "Baltic Window", "WINDOWS-1257","WIN1257"},
+    {0xFF, 65001, "UTF-8", "UTF-8","UTF8"}
+};
+
+
 /* Internal ring/point structures */
 typedef struct struct_point
 {
@@ -43,7 +118,6 @@ typedef struct struct_ring
 #define UTF8_BAD_RESULT 1
 #define UTF8_NO_RESULT 2
 
-int utf8(const char *fromcode, char *inputbuf, char **outputbuf);
 char *escape_copy_string(char *str);
 char *escape_insert_string(char *str);
 
@@ -53,6 +127,59 @@ int PIP(Point P, Point *V, int n);
 int FindPolygons(SHPObject *obj, Ring ***Out);
 void ReleasePolygons(Ring **polys, int npolys);
 int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry);
+
+/*
+* Code page info will come out of dbfopen as either a bare codepage number
+* (e.g. 1256) or as "LDID/1234" from the DBF hreader. 
+*/
+static char *
+codepage2encoding(const char *cpg)
+{
+    int cpglen;
+    int is_ldid = 0;
+    int num, i;
+    
+    /* Do nothing on nothing. */
+    if ( ! cpg ) return NULL;
+    
+    /* Is this an LDID string? */
+    /* If so, note it and move past the "LDID/" tag */
+    cpglen = strlen(cpg);
+    if ( strstr(cpg, "LDID/") )
+    {
+        if ( cpglen > 5 )
+        {
+            cpg += 5;
+            is_ldid = 1;
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    
+    /* Read the number */
+    num = atoi(cpg);
+    
+    /* Can we find this number in our lookup table? */
+    for ( i = is_ldid ; i < num_code_pages; i++ )
+    {
+        if ( is_ldid )
+        {
+            if ( code_pages[i].ldid == num )
+                return strdup(code_pages[i].iconv);
+        }
+        else
+        {
+            if ( code_pages[i].cpg == num )
+                return strdup(code_pages[i].iconv);
+        }
+    }
+    
+    /* Didn't find a matching entry */
+    return NULL;
+    
+}
 
 /* Append variadic formatted string to a stringbuffer */
 void
@@ -77,7 +204,8 @@ vasbappend(stringbuffer_t *sb, char *fmt, ... )
 }
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
-int utf8(const char *fromcode, char *inputbuf, char **outputbuf)
+static int 
+utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 {
 	iconv_t cd;
 	char *outputptr;
@@ -862,6 +990,22 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		snprintf(state->message, SHPLOADERMSGLEN, _("%s: dbf file (.dbf) can not be opened."), state->config->shp_file);
 
 		return SHPLOADERERR;
+	}
+	
+	/* User hasn't altered the default encoding preference... */
+	if ( strcmp(state->config->encoding, ENCODING_DEFAULT) == 0 )
+	{
+	    /* But the file has a code page entry... */
+	    if ( state->hDBFHandle->pszCodePage )
+	    {
+	        /* And we figured out what iconv encoding it maps to, so use it! */
+            char *newencoding = NULL;
+	        if ( (newencoding = codepage2encoding(state->hDBFHandle->pszCodePage)) )
+	        {
+                lwfree(state->config->encoding);
+                state->config->encoding = newencoding;
+            }
+        }
 	}
 
 	/* If reading the whole shapefile (not just attributes)... */

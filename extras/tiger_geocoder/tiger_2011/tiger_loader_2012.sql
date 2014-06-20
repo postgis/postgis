@@ -12,8 +12,7 @@
 -- Author: Regina Obe and Leo Hsu <lr@pcorp.us>
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
---SET search_path TO tiger,public;
---ALTER TABLE tiger.faces RENAME cd111fp  TO cdfp;
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SELECT tiger.SetSearchPathForInstall('tiger');
 BEGIN;
 CREATE OR REPLACE FUNCTION loader_macro_replace(param_input text, param_keys text[],param_values text[]) 
@@ -56,17 +55,33 @@ SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '
 $$
   LANGUAGE sql VOLATILE;
   
+DO 
+$$
+BEGIN
+  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_platform' AND table_schema = 'tiger') THEN
+      CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);     
+  END IF;   
+END 
+$$ LANGUAGE 'plpgsql';
+
+DO 
+$$
+BEGIN
+  IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'tiger_data') THEN
+       CREATE SCHEMA tiger_data;     
+  END IF;   
+END 
+$$ LANGUAGE 'plpgsql';
 
 
-DROP TABLE IF EXISTS loader_platform;
-CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
+DELETE FROM loader_platform WHERE os IN ('sh', 'windows');
 GRANT SELECT ON TABLE loader_platform TO public;
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)
 VALUES('windows', '%WGETTOOL%', '%PGBIN%', 
 E'set TMPDIR=${staging_fold}\\temp\\
 set UNZIPTOOL="C:\\Program Files\\7-Zip\\7z.exe"
 set WGETTOOL="C:\\wget\\wget.exe"
-set PGBIN=C:\\Program Files\\PostgreSQL\\8.4\\bin\\
+set PGBIN=C:\\Program Files\\PostgreSQL\\9.2\\bin\\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -76,11 +91,12 @@ set PSQL="%PGBIN%psql"
 set SHP2PGSQL="%PGBIN%shp2pgsql"
 cd ${staging_fold}
 ', E'del %TMPDIR%\\*.* /Q
-%PSQL% -c "DROP SCHEMA ${staging_schema} CASCADE;"
+%PSQL% -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
 %PSQL% -c "CREATE SCHEMA ${staging_schema};"
+%PSQL% -c "DO language ''plpgsql'' $$ BEGIN IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = ''${data_schema}'' ) THEN CREATE SCHEMA ${data_schema}; END IF;  END $$"
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
 cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ', 
-'for /r %%z in (*${table_name}.dbf) do (${loader}  -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
+'for /r %%z in (*${table_name}.dbf) do (${loader} -D -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
 );
 
 
@@ -99,26 +115,34 @@ PSQL=${PGBIN}/psql
 SHP2PGSQL=${PGBIN}/shp2pgsql
 cd ${staging_fold}
 ', E'rm -f ${TMPDIR}/*.*
-${PSQL} -c "DROP SCHEMA tiger_staging CASCADE;"
-${PSQL} -c "CREATE SCHEMA tiger_staging;"
-
+${PSQL} -c "DROP SCHEMA IF EXISTS ${staging_schema} CASCADE;"
+${PSQL} -c "CREATE SCHEMA ${staging_schema};"
 for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
 'for z in *${table_name}.dbf; do 
-${loader} -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
+${loader} -D -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
 ${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
 
 -- variables table
-DROP TABLE IF EXISTS loader_variables;
-CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_variables' AND table_schema = 'tiger') THEN
+      CREATE TABLE loader_variables(tiger_year varchar(4) PRIMARY KEY, website_root text, staging_fold text, data_schema text, staging_schema text);    
+  END IF;   
+END 
+$$ LANGUAGE 'plpgsql';
+
+TRUNCATE TABLE loader_variables;
 INSERT INTO loader_variables(tiger_year, website_root , staging_fold, data_schema, staging_schema)
 	VALUES('2012', 'ftp://ftp2.census.gov/geo/tiger/TIGER2012', '/gisdata', 'tiger_data', 'tiger_staging');
 GRANT SELECT ON TABLE loader_variables TO public;
 
-DROP TABLE IF EXISTS loader_lookuptables;
-CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000, 
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name = 'loader_lookuptables' AND table_schema = 'tiger') THEN
+   CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000, 
 		lookup_name text primary key, 
 		table_name text, single_mode boolean NOT NULL DEFAULT true, 
 		load boolean NOT NULL DEFAULT true, 
@@ -127,7 +151,13 @@ CREATE TABLE loader_lookuptables(process_order integer NOT NULL DEFAULT 1000,
 		level_nation boolean NOT NULL DEFAULT false,
 		post_load_process text, single_geom_mode boolean DEFAULT false, 
 		insert_mode char(1) NOT NULL DEFAULT 'c', 
-		pre_load_process text,columns_exclude text[], website_root_override text);
+		pre_load_process text,columns_exclude text[], website_root_override text);   
+  END IF;   
+END 
+$$ LANGUAGE 'plpgsql';
+
+TRUNCATE TABLE loader_lookuptables;
+
 		
 GRANT SELECT ON TABLE loader_lookuptables TO public;
 		
@@ -179,7 +209,7 @@ VALUES(4, 'zcta5', 'zcta510', true,true, false,false, false, 'a',
 	'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (zcta5ce,statefp), CONSTRAINT uidx_${state_abbrev}_${lookup_name}_gid UNIQUE (gid)) INHERITS(${lookup_name});" ',
 	'${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
 ${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"'
-, ARRAY['gid','geoid','geoid10'], 'ftp://ftp2.census.gov/geo/tiger/TIGER2010/ZCTA5/2010');
+, ARRAY['gid','geoid','geoid10'], 'ftp://ftp2.census.gov/geo/tiger/TIGER2012/ZCTA5/2012');
 
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process )
@@ -290,7 +320,7 @@ SELECT
 ' ||
 	-- State level files - if an override website is specified we use that instead of variable one
 	array_to_string( ARRAY(SELECT 'cd ' || replace(variables.staging_fold,'/', platform.path_sep) || '
-' || platform.wget || ' ' || COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  ) || '/*_' || s.state_fips || '* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html 
+' || platform.wget || ' ' || COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  ) || '/tl_*_' || s.state_fips || '_* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html 
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name) ), 'http://', ''),'ftp://','')    || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '.zip ') || '
@@ -365,6 +395,7 @@ CREATE OR REPLACE FUNCTION loader_load_staged_data(param_staging_table text, par
 RETURNS integer AS
 $$
 -- exclude this set list of columns if no exclusion list is specified 
+
    SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid','cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
    ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10'
       , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00', 

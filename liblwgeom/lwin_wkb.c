@@ -318,6 +318,9 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
+
+	LWDEBUGF(4,"Pointarray has %d points", npoints);
+
 	if( s->has_z ) ndims++;
 	if( s->has_m ) ndims++;
 	pa_size = npoints * ndims * WKB_DOUBLE_SIZE;
@@ -465,6 +468,8 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 	uint32_t nrings = integer_from_wkb_state(s);
 	int i = 0;
 	LWPOLY *poly = lwpoly_construct_empty(s->srid, s->has_z, s->has_m);
+
+	LWDEBUGF(4,"Polygon has %d rings", nrings);
 	
 	/* Empty polygon? */
 	if( nrings == 0 )
@@ -595,6 +600,8 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
+
+	LWDEBUGF(4,"Collection has %d components", ngeoms);
 	
 	/* Empty collection? */
 	if ( ngeoms == 0 )

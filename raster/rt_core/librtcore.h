@@ -11,11 +11,12 @@
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2013 Nathaneil Hunter Clay <clay.nathaniel@gmail.com
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,13 +24,41 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
-#ifndef RT_API_H_INCLUDED
-#define RT_API_H_INCLUDED
+/**
+ * @file librtcore.h
+ *
+ * This library is the generic raster handling section of PostGIS. The raster
+ * objects, constructors, destructors, and a set of spatial processing functions
+ * are implemented here.
+ *
+ * The library is designed for use in non-PostGIS applications if necessary. The
+ * units tests at test/core (and the future loader/dumper programs) are examples
+ * of non-PostGIS applications using rt_core.
+ *
+ * Programs using this library should set up the default memory managers and error
+ * handlers by implementing an rt_init_allocators() function, which can be as
+ * a wrapper around the rt_install_default_allocators() function if you want
+ * no special handling for memory management and error reporting.
+ *
+ **/
+
+/******************************************************************************
+* Some rules for *.(c|h) files in rt_core
+*
+* All functions in rt_core that receive a band index parameter
+*   must be 0-based
+*
+* Variables and functions internal for a public function should be prefixed
+*   with _rti_, e.g. _rti_iterator_arg.
+******************************************************************************/
+
+#ifndef LIBRTCORE_H_INCLUDED
+#define LIBRTCORE_H_INCLUDED
 
 /* define the systems */
 #if defined(__linux__)  /* (predefined) */
@@ -42,7 +71,7 @@
 #endif
 
 
-#if defined(__FreeBSD__) || defined(__OpenBSD__)    /* seems to work like Linux... */
+#if defined(__FreeBSD_kernel__) || defined(__OpenBSD__)    /* seems to work like Linux... */
 #if !defined(LINUX)
 #define LINUX
 #endif
@@ -90,43 +119,26 @@
 #endif
 #endif
 
+#include <stdio.h> /* for printf, sprintf */
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
+#include <string.h> /* for memcpy, strlen, etc */
 #include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
-#include <math.h>
 
-#include "lwgeom_geos.h"
 #include "liblwgeom.h"
 
 #include "gdal_alg.h"
 #include "gdal_frmts.h"
 #include "gdal.h"
 #include "gdalwarper.h"
-#include "ogr_api.h"
-#include "ogr_srs_api.h"
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
+#include "ogr_api.h"
+#include "ogr_srs_api.h"
+
 #include "../../postgis_config.h"
 #include "../raster_config.h"
-
-/**
- * @file rt_api.h
- *
- * This library is the generic raster handling section of PostGIS. The raster
- * objects, constructors, destructors, and a set of spatial processing functions
- * are implemented here.
- *
- * The library is designed for use in non-PostGIS applications if necessary. The
- * units tests at test/core (and the future loader/dumper programs) are examples
- * of non-PostGIS applications using rt_core.
- *
- * Programs using this library should set up the default memory managers and error
- * handlers by implementing an rt_init_allocators() function, which can be as
- * a wrapper around the rt_install_default_allocators() function if you want
- * no special handling for memory management and error reporting.
- *
- **/
 
 /**
  * Types definitions
@@ -134,6 +146,7 @@
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_pixel_t* rt_pixel;
+typedef struct rt_mask_t* rt_mask;
 typedef struct rt_geomval_t* rt_geomval;
 typedef struct rt_bandstats_t* rt_bandstats;
 typedef struct rt_histogram_t* rt_histogram;
@@ -373,6 +386,7 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  *
  * @param npixel : array of rt_pixel objects
  * @param count : number of elements in npixel
+ * @param mask : mask to be respected when returning array
  * @param x : the column of the center pixel (0-based)
  * @param y : the line of the center pixel (0-based)
  * @param distancex : the number of pixels around the specified pixel
@@ -387,7 +401,8 @@ rt_errorstate rt_pixtype_compare_clamped_values(
  * @return ES_NONE on success, ES_ERROR on error
  */
 rt_errorstate rt_pixel_set_to_array(
-	rt_pixel npixel, int count,
+	rt_pixel npixel,int count,
+	rt_mask mask,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
 	double ***value,
@@ -1563,6 +1578,7 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  * to check for pixels with value
  * @param count : number of elements in bandNums and exclude_nodata_values
  * @param rtn_drv : is set to the GDAL driver object
+ * @param destroy_rtn_drv : if non-zero, caller must destroy the MEM driver
  *
  * @return GDAL dataset using GDAL MEM driver
  */
@@ -1572,7 +1588,7 @@ GDALDatasetH rt_raster_to_gdal_mem(
 	uint32_t *bandNums,
 	int *excludeNodataValues,
 	int count,
-	GDALDriverH *rtn_drv
+	GDALDriverH *rtn_drv, int *destroy_rtn_drv
 );
 
 /**
@@ -1948,6 +1964,7 @@ rt_raster_iterator(
 	rt_pixtype pixtype,
 	uint8_t hasnodata, double nodataval,
 	uint16_t distancex, uint16_t distancey,
+	rt_mask mask,
 	void *userarg,
 	int (*callback)(
 		rt_iterator_arg arg,
@@ -1983,9 +2000,16 @@ extern void *rtalloc(size_t size);
 extern void *rtrealloc(void *mem, size_t size);
 extern void rtdealloc(void *mem);
 
+/*
+ * GDAL driver flags
+ */
 
+#define GDAL_ENABLE_ALL "ENABLE_ALL"
+#define GDAL_DISABLE_ALL "DISABLE_ALL"
+#define GDAL_VSICURL "VSICURL"
 
-/* Set of functions to clamp double to int of different size
+/*
+ * Set of functions to clamp double to int of different size
  */
 
 #if !defined(POSTGIS_RASTER_WARN_ON_TRUNCATION)
@@ -2098,7 +2122,8 @@ rt_util_gdal_supported_sr(const char *srs);
  *
  * @return ES_NONE on success, ES_ERROR on error
  */
-rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+rt_errorstate
+rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
 
 /*
 	is GDAL configured correctly?
@@ -2109,14 +2134,20 @@ rt_util_gdal_configured(void);
 /*
 	register all GDAL drivers
 */
-void
-rt_util_gdal_register_all(void);
+int
+rt_util_gdal_register_all(int force_register_all);
 
 /*
 	is the driver registered?
 */
 int
 rt_util_gdal_driver_registered(const char *drv);
+
+/*
+	wrapper for GDALOpen and GDALOpenShared
+*/
+GDALDatasetH
+rt_util_gdal_open(const char *fn, GDALAccess fn_access, int shared);
 
 void
 rt_util_from_ogr_envelope(
@@ -2268,6 +2299,14 @@ struct rt_pixel_t {
 	LWGEOM *geom;
 };
 
+struct rt_mask_t {
+  uint16_t dimx;
+  uint16_t dimy;
+  double **values;
+  int **nodata;
+  int weighted; /* 0 if not weighted values 1 if weighted values */
+};
+
 /* polygon as LWPOLY with associated value */
 struct rt_geomval_t {
 	LWPOLY *geom;
@@ -2414,4 +2453,4 @@ struct rt_colormap_t {
 	rt_colormap_entry entry;
 };
 
-#endif /* RT_API_H_INCLUDED */
+#endif /* LIBRTCORE_H_INCLUDED */

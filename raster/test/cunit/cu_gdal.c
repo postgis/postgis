@@ -5,10 +5,10 @@
  * Copyright (C) 2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,8 +16,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -490,6 +490,7 @@ static void test_gdal_to_raster() {
 	double value;
 
 	GDALDriverH gddrv = NULL;
+	int destroy = 0;
 	GDALDatasetH gdds = NULL;
 
 	raster = rt_raster_new(width, height);
@@ -505,8 +506,9 @@ static void test_gdal_to_raster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
+	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
@@ -550,8 +552,9 @@ static void test_gdal_to_raster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv, &destroy);
 	CU_ASSERT(gddrv != NULL);
+	CU_ASSERT_EQUAL(destroy, 0);
 	CU_ASSERT(gdds != NULL);
 	CU_ASSERT_EQUAL(GDALGetRasterXSize(gdds), width);
 	CU_ASSERT_EQUAL(GDALGetRasterYSize(gdds), height);
@@ -573,6 +576,8 @@ static void test_gdal_to_raster() {
 	}
 
 	GDALClose(gdds);
+	gdds = NULL;
+	gddrv = NULL;
 
 	cu_free_raster(rast);
 	cu_free_raster(raster);

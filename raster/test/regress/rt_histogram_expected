@@ -76,16 +76,25 @@ BEGIN
 -5.619|-1.239|0|0.000
 -1.239|3.142|10|0.500
 SAVEPOINT
-NOTICE:  Invalid band index (must use 1-based). Returning NULL
-ERROR:  RASTER_histogramCoverage: Could not get summary stats of coverage
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+NOTICE:  Raster does not have band at index 2. Skipping raster
+ERROR:  RASTER_histogramCoverage: Cannot get summary stats of coverage
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test1" does not exist at character 20
+ERROR:  relation "test1" does not exist at character 82
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast1" does not exist at character 8
+ERROR:  column "rast1" does not exist at character 50
 COMMIT
 RELEASE
 COMMIT

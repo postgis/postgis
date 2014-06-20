@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright (C) 2010 Olivier Courtin <olivier.courtin@oslandia.com>
  * Copyright (C) 2010 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>

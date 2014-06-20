@@ -3,7 +3,7 @@
 -- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 -- Copyright 2001-2003 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -27,14 +27,42 @@ SET client_min_messages TO warning;
 
 BEGIN;
 
--------------------------------------------------------------------
---  SPHEROID TYPE
--------------------------------------------------------------------
+-- Check that no other postgis is installed
+DO $$
+DECLARE
+  rec RECORD;
+BEGIN
+  FOR rec IN
+    SELECT n.nspname, p.proname FROM pg_proc p, pg_namespace n
+    WHERE p.proname = 'postgis_version'
+    AND p.pronamespace = n.oid
+  LOOP
+    RAISE EXCEPTION 'PostGIS is already installed in schema ''%'', uninstall it first', rec.nspname;
+  END LOOP;
+END
+$$ LANGUAGE 'plpgsql';
+
+
+-- Let the user know about a deprecated signature and its new name, if any
 CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
 RETURNS void AS
 $$
+DECLARE
+  curver_text text;
 BEGIN
-    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+  --
+  -- Raises a NOTICE if it was deprecated in this version,
+  -- a WARNING if in a previous version (only up to minor version checked)
+  --
+    curver_text := POSTGIS_LIB_VERSION;
+    IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
+       ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
+         split_part(curver_text,'.',2) != split_part(version,'.',2) )
+    THEN
+      RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+    ELSE
+      RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
+    END IF;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
@@ -1038,11 +1066,21 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_MemSize(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_mem_size'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
+	RETURNS int4 AS
+  $$ SELECT _postgis_deprecate('ST_Mem_Size', 'ST_MemSize', '2.2.0');
+    SELECT ST_MemSize($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_summary(geometry)
@@ -1277,6 +1315,12 @@ CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ForceCurve(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_curve'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry)
 	RETURNS geometry
@@ -1342,7 +1386,19 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
+		
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	RETURNS BYTEA
@@ -2560,11 +2616,15 @@ BEGIN
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
 	BEGIN
-		SELECT postgis_topology_scripts_installed() INTO topo_scr_ver;
+		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
-		WHEN undefined_function THEN
+		WHEN undefined_function OR invalid_schema_name THEN
 			topo_scr_ver := NULL;
 			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+		WHEN insufficient_privilege THEN
+			RAISE NOTICE 'Topology support cannot be inspected. Is current user granted USAGE on schema "topology" ?';
+		WHEN OTHERS THEN
+			RAISE NOTICE 'Function postgis_topology_scripts_installed() could not be called: % (%)', SQLERRM, SQLSTATE;
 	END;
 
 	BEGIN
@@ -3313,6 +3373,38 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
+
+--Availability: 2.2.0
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+
+-- Availability: 2.2.0  
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+
+-- Availability: 2.2.0  
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
+  RETURNS bytea
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
+
+-- Availability: 2.2.0  
+CREATE AGGREGATE st_astwkbagg(geometry,int) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
+
+-- Availability: 2.2.0
+CREATE AGGREGATE st_astwkbagg(geometry,int,int8) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (
@@ -4095,12 +4187,6 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT ST_MPointFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
@@ -4550,16 +4636,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 300;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
-	RETURNS FLOAT8
-	AS $$
-	select st_distance(geography($1),geography($2),false)
-	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT
-	COST 300;
-
-
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
 ---------------------------------------------------------------
@@ -4731,7 +4807,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND a.atttypid = t.oid 
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
-    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char" OR c.relkind = 'm'::"char" OR c.relkind = 'f'::"char")
     AND NOT pg_is_other_temp_schema(c.relnamespace)
     AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
     AND has_table_privilege( c.oid, 'SELECT'::text );

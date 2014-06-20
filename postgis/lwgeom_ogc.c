@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2005 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -204,7 +204,7 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	int count = -1;
 	
-	if ( lwgeom->type == LINETYPE )
+	if ( lwgeom->type == LINETYPE || lwgeom->type == CIRCSTRINGTYPE )
 		count = lwgeom_count_vertices(lwgeom);
 
 	lwgeom_free(lwgeom);

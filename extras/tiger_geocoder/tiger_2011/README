@@ -25,7 +25,7 @@ Steps to install and load (without using extensions)
 
 1.  Create a PostGIS enabled db if you don't have one already
 
-2.	From command line, cd into the tiger_geocoder_2010 folder
+2.	From command line, cd into the tiger_geocoder_2011 folder
 
 3.  Edit the tiger_loader.sql to the paths of your executables server etc.
 
@@ -66,20 +66,18 @@ WHITESPACE AND POSSIBLY NON-SCRIPT CHARACTERS THAT CAUSE IT TO BREAK.)
 -- do this step since 2011 county, state tables are available only at national level
 SELECT loader_generate_nation_script('sh');  
 
-Then run the above script
+-- After the nation load, generate a bash script suitable for Unix command lines 
+-- for your desired states. 
 
--- then run script for your desired states
 SELECT loader_generate_script(ARRAY['DC','RI'], 'sh');
 
---To generate a bash script suitable for Unix command lines
-SELECT loader_generate_script(ARRAY['DC','RI'], 'sh');
 
 ONCE YOU GENERATE THIS SCRIPT, EDIT IT TO ADD "set -e -u" AT THE TOP;
 THIS SETTING WILL MAKE IT STOP ON ERROR OR UNITIALIZED VARIABLE AND
-MAKE IT EASIER TO DEBUG ANY PROBLEMS.  THEN RUN THE SCRIPT AT THE
-COMMAND LINE, REDIRECTING STANDARD OUTPUT AND STANDARD ERROR TO USEFUL
-FILES.  YOU MAY WANT TO RUN "tail -f " TO SEE THE STANDARD ERROR AS IT
-GETS WRITTEN.  FOR EXAMPLE:
+MAKE IT EASIER TO DEBUG ANY PROBLEMS.  
+THEN RUN THE SCRIPT AT THE COMMAND LINE, REDIRECTING STANDARD OUTPUT AND 
+STANDARD ERROR TO USEFUL FILES.  YOU MAY WANT TO RUN "tail -f " TO SEE THE 
+STANDARD ERROR AS IT GETS WRITTEN.  FOR EXAMPLE: 
 
 $ sh foo.sh 1>out 2>err; tail -f err
 
@@ -94,9 +92,9 @@ SELECT loader_generate_nation_script('windows');
 SELECT loader_generate_script(ARRAY['DC','RI'], 'windows');
 
 If your script disappears without loading anything, 
-most likely one of your path settings is wrong.  
+most likely one of your path settings is wrong. 
 To troubleshoot run the batch script by 
-first opening up a commandline and executing the file.
+first opening up a commandline and executing the file. 
 
 That will keep the window open for you to see the error.
 

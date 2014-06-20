@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
  *
@@ -550,25 +550,26 @@ static void out_gml_test_geoms(void)
 	    "<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos srsDimension=\"2\">0 1</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:MultiGeometry><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember></gml:MultiGeometry></gml:geometryMember></gml:MultiGeometry>",
 	    NULL, 0, 0);
 
-
-
 	/* GML2 - CircularString */
 	do_gml2_unsupported(
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "lwgeom_to_gml2: 'CircularString' geometry type not supported");
 	/* GML3 - CircularString */
-	do_gml3_unsupported(
-	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
-	    "lwgeom_to_gml3: 'CircularString' geometry type not supported");
+    do_gml3_test(
+                "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
+                "<gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 0 2 2 0 0 2 2 4</gml:posList></gml:ArcString></gml:segments></gml:Curve>",
+                NULL, 0, 0 );
 
 	/* GML2 - CompoundCurve */
 	do_gml2_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
 	    "lwgeom_to_gml2: 'CompoundCurve' geometry type not supported");
 	/* GML3 - CompoundCurve */
-	do_gml3_unsupported(
-	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_gml3: 'CompoundCurve' geometry type not supported");
+
+    do_gml3_test(
+       "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
+                "<gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">0 0 1 1 1 0</gml:posList></gml:ArcString><gml:LineStringSegment><gml:posList srsDimension=\"2\">1 0 0 1</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>",
+                NULL, 0, 0 );
 
 	/* GML2 - CurvePolygon */
 	do_gml2_unsupported(
@@ -576,9 +577,10 @@ static void out_gml_test_geoms(void)
 	    "lwgeom_to_gml2: 'CurvePolygon' geometry type not supported");
 
 	/* GML3 - CurvePolygon */
-	do_gml3_unsupported(
-	    "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
-	    "lwgeom_to_gml3: 'CurvePolygon' geometry type not supported");
+    do_gml3_test(
+        "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
+                "<gml:Polygon><gml:exterior><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
+                NULL, 1, 0 );
 
 
 	/* GML2 - MultiCurve */
@@ -587,9 +589,10 @@ static void out_gml_test_geoms(void)
 	    "lwgeom_to_gml2: 'MultiCurve' geometry type not supported");
 
 	/* GML3 - MultiCurve */
-	do_gml3_unsupported(
-	    "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
-	    "lwgeom_to_gml3: 'MultiCurve' geometry type not supported");
+    do_gml3_test(
+         "MULTICURVE((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0,2 1,2 2))",
+                "<gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">5 5 3 5 3 3 0 3</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">0 0 2 1 2 2</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>",
+                NULL, 0, 0 );
 
 	/* GML2 - MultiSurface */
 	do_gml2_unsupported(
@@ -597,9 +600,10 @@ static void out_gml_test_geoms(void)
 	    "lwgeom_to_gml2: 'MultiSurface' geometry type not supported");
 
 	/* GML3 - MultiSurface */
-	do_gml3_unsupported(
-	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-	    "lwgeom_to_gml3: 'MultiSurface' geometry type not supported");
+    do_gml3_test(
+                "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+                "<gml:MultiSurface><gml:Polygon><gml:exterior><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">7 8 10 10 6 14 4 11 7 8</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:MultiSurface>",
+                NULL, 1, 0 );
 
 	/* GML2 - PolyhedralSurface */
 	do_gml2_unsupported(

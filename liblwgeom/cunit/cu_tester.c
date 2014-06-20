@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -52,6 +52,7 @@ extern CU_SuiteInfo out_geojson_suite;
 extern CU_SuiteInfo out_svg_suite;
 extern CU_SuiteInfo out_x3d_suite;
 extern CU_SuiteInfo out_encoded_polyline_suite;
+extern CU_SuiteInfo varint_suite;
 
 /*
 ** The main() function for setting up and running the tests.
@@ -97,6 +98,7 @@ int main(int argc, char *argv[])
 		out_svg_suite,
 		out_x3d_suite,
 		out_encoded_polyline_suite,
+		varint_suite,
 		CU_SUITE_INFO_NULL
 	};
 

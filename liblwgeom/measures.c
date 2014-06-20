@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2001-2006 Refractions Research Inc.
  * Copyright 2010 Nicklas Avén
  * Copyright 2012 Paul Ramsey
@@ -222,6 +222,7 @@ lw_dist2d_is_collection(const LWGEOM *g)
 	case MULTICURVETYPE:
 	case MULTISURFACETYPE:
 	case COMPOUNDTYPE:
+	case POLYHEDRALSURFACETYPE:
 		return LW_TRUE;
 		break;
 

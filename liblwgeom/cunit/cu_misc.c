@@ -2,7 +2,7 @@
  * $Id: cu_print.c 6160 2010-11-01 01:28:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2008 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under

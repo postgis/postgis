@@ -162,7 +162,10 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
             <!-- Optionally add a "See Also" section -->
             <refsection>
                 <title>See Also</title>
-                <para><xref linkend="GetTopoGeomElements"/></para>
+                <para>
+                  <xref linkend="GetTopoGeomElements"/>,
+                  <xref linkend="topoelementarray" />
+                </para>
             </refsection>
 		</refentry>
 		
@@ -1305,7 +1308,7 @@ an error is thrown.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>text <function>ST_ModEdgeSplit</function></funcdef>
+					<funcdef>integer <function>ST_ModEdgeSplit</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
@@ -1320,6 +1323,7 @@ an error is thrown.
 Split an edge by creating a new node along an existing edge,
 modifying the original edge and adding a new edge.
 Updates all existing joined edges and relationships accordingly.
+Returns the identifier of the newly added node.
 		</para>
 
                 <!-- use this format if new function -->
@@ -1340,8 +1344,8 @@ Updates all existing joined edges and relationships accordingly.
 
 
 -- Split the edge  --
-SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910),26986)  ) As result;
-         result
+SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910),26986)  ) As node_id;
+        node_id
 -------------------------
 7
 </programlisting>
@@ -3175,35 +3179,161 @@ A full TopoJSON document will be need to contain, in addition to the snippets re
 CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);
 
 -- header
-SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {';
+SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {'
 
 -- objects
-SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
+UNION ALL SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
 FROM features.big_parcels WHERE feature_name = 'P3P4';
 
 -- arcs
-SELECT '}, "arcs": ['
-  UNION ALL
-SELECT (regexp_matches(ST_AsGEOJSON(ST_SnapToGrid(e.geom,1)), '\[.*\]'))[1] as t
-FROM edgemap m, city_data.edge e WHERE e.edge_id = m.edge_id;
+WITH edges AS ( 
+  SELECT m.arc_id, e.geom FROM edgemap m, city_data.edge e
+  WHERE e.edge_id = m.edge_id
+), points AS (
+  SELECT arc_id, (st_dumppoints(geom)).* FROM edges
+), compare AS (
+  SELECT p2.arc_id,
+         CASE WHEN p1.path IS NULL THEN p2.geom
+              ELSE ST_Translate(p2.geom, -ST_X(p1.geom), -ST_Y(p1.geom))
+         END AS geom
+  FROM points p2 LEFT OUTER JOIN points p1
+  ON ( p1.arc_id = p2.arc_id AND p2.path[1] = p1.path[1]+1 )
+  ORDER BY arc_id, p2.path
+), arcsdump AS (
+  SELECT arc_id, (regexp_matches( ST_AsGeoJSON(geom), '\[.*\]'))[1] as t
+  FROM compare
+), arcs AS (
+  SELECT arc_id, '[' || array_to_string(array_agg(t), ',') || ']' as a FROM arcsdump
+  GROUP BY arc_id
+  ORDER BY arc_id
+)
+SELECT '}, "arcs": [' UNION ALL
+SELECT array_to_string(array_agg(a), E',\n') from arcs
 
 -- footer
-SELECT ']}'::text as t
+UNION ALL SELECT ']}'::text as t;
 
 -- Result:
 { "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {
 "P3P4": { "type": "MultiPolygon", "arcs": [[[-1]],[[6,5,-5,-4,-3,1]]]}
 }, "arcs": [
-[[25,30],[31,30],[31,40],[17,40],[17,30],[25,30]]
-[[35,6],[35,14]]
-[[35,6],[47,6]]
-[[47,6],[47,14]]
-[[47,14],[47,22]]
-[[35,22],[47,22]]
-[[35,14],[35,22]]
-]}
+ [[25,30],[6,0],[0,10],[-14,0],[0,-10],[8,0]],
+ [[35,6],[0,8]],
+ [[35,6],[12,0]],
+ [[47,6],[0,8]],
+ [[47,14],[0,8]],
+ [[35,22],[12,0]],
+ [[35,14],[0,8]]
+ ]}
 </programlisting>
             </refsection>
 	  </refentry>
+</sect1>
+
+<sect1 id="Topology_Relationships">
+	     <sect1info>
+            <abstract>
+                <para>This section lists the Topology functions used to check relationships between topogeometries and topology primitives</para>
+            </abstract>
+        </sect1info>
+	    <title>Topology Spatial Relationships</title>
+	    <refentry id="TG_Equals">
+        <refnamediv>
+          <refname>Equals</refname>
+      
+          <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>boolean <function>Equals</function></funcdef>
+              <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+              <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+          <para>Returns true if two topogeometries are composed of the same topology primitives: faces, edges, nodes.</para>
+      
+          <!-- optionally mention that this function uses indexes if appropriate -->
+          <note>
+            <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.</para>
+          </note>
+          <!-- use this format if new function -->
+        <para>Availability: 1.? </para>
+        
+       
+        <!-- Optionally mention 3d support -->
+        <para>&Z_support;</para>
+        </refsection>
+      
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting><!--TODO: Need example --></programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="GetTopoGeomElements" />, <xref linkend="ST_Equals" /></para>
+        </refsection>
+      </refentry>
+      
+      <refentry id="TG_Intersects">
+        <refnamediv>
+          <refname>Intersects</refname>
+      
+          <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>boolean <function>Equals</function></funcdef>
+              <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
+              <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+          <para>Returns true if two topogeometries share primitives or primitives intersect</para>
+      
+          <!-- optionally mention that this function uses indexes if appropriate -->
+          <note>
+            <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.
+            Also not currently supported for hierarchichal topogeometries (topogeometries composed of other topogeometries).</para>
+          </note>
+          <!-- use this format if new function -->
+        <para>Availability: 1.? </para>
+        
+       
+        <!-- Optionally mention 3d support -->
+        <para>&Z_support;</para>
+        </refsection>
+      
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting><!--TODO: Need example --></programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="ST_Intersects" /></para>
+        </refsection>
+      </refentry>
 </sect1>
 </chapter>

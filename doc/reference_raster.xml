@@ -284,6 +284,103 @@ VALUES (1,
            </refsection>
 		</refentry>
 
+		<refentry id="summarystats">
+			<refnamediv>
+				<refname>summarystats</refname>
+				<refpurpose>A composite type returned by the ST_SummaryStats and ST_SummaryStatsAgg functions.</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A composite type returned by the <xref linkend="RT_ST_SummaryStats"/> and <xref linkend="RT_ST_SummaryStatsAgg"/> functions.
+
+					<variablelist>
+						<varlistentry>
+							<term>
+								<parameter>count </parameter>
+								<type>integer</type>
+							</term>
+							<listitem>
+								<para>
+									Number of pixels counted for the summary statistics.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>sum </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Sum of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>mean </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Arithmetic mean of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>stddev </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Standard deviation of all counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>min </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Minimum value of counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>max </parameter>
+								<type>double precision</type>
+							</term>
+							<listitem>
+								<para>
+									Maximum value of counted pixel values.
+								</para>
+							</listitem>
+						</varlistentry>
+
+					</variablelist>
+
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />
+				</para>
+			</refsection>
+		</refentry>
 		<refentry id="unionarg">
 			<refnamediv>
 				<refname>unionarg</refname>
@@ -704,6 +801,44 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 	  </refsection>
 	</refentry>
 	
+		<refentry id="RT_PostGIS_GDAL_Version">
+			<refnamediv>
+				<refname>PostGIS_GDAL_Version</refname>
+				<refpurpose>Reports the version of the GDAL library in use by PostGIS.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>PostGIS_GDAL_Version</function></funcdef> 
+						<paramdef></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Reports the version of the GDAL library in use by PostGIS. Will also check and report if GDAL can find its data files.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT PostGIS_GDAL_Version();
+       postgis_gdal_version        
+-----------------------------------
+ GDAL 1.11dev, released 2013/04/13
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="postgis_gdal_datapath" />
+				</para>
+			</refsection>
+		</refentry>
+
 	<refentry id="RT_PostGIS_Raster_Lib_Build_Date">
 	  <refnamediv>
 		<refname>PostGIS_Raster_Lib_Build_Date</refname>
@@ -787,7 +922,7 @@ postgis_raster_lib_version
 	  </refsection>
 	  
 	</refentry>
-	
+
 	<refentry id="RT_ST_GDALDrivers">
 	  <refnamediv>
 		<refname>ST_GDALDrivers</refname>
@@ -3608,9 +3743,15 @@ WHERE rid=2;
 						ST_PixelAsPolygons returns one polygon geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
 					</para>
 				</note>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as polygons.
+					</para>
+				</note>
 
 				<para>Availability: 2.0.0</para>
 				<para>Enhanced: 2.1.0 exclude_nodata_value optional argument was added.</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 				
 			<refsection>
@@ -3721,7 +3862,13 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
 				</para>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+					</para>
+				</note>
 				<para>Availability: 2.1.0</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 
 			<refsection>
@@ -3845,7 +3992,13 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
 				</para>
+				<note>
+					<para>
+						When exclude_nodata_value = TRUE, only those pixels whose values are not NODATA are returned as points.
+					</para>
+				</note>
 				<para>Availability: 2.1.0</para>
+				<para>Changed: 2.1.1 Changed behavior of exclude_nodata_value.</para>
 			</refsection>
 
 			<refsection>
@@ -6440,6 +6593,7 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 	
 	<sect1 id="RasterBand_Stats">
 	    <title>Raster Band Statistics and Analytics</title>
+
 	    	<refentry id="RT_ST_Count">
 			<refnamediv>
 				<refname>ST_Count</refname>
@@ -6481,6 +6635,13 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 				<para>Returns the number of pixels in a given band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>nodata</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para></note>
 				<para>Availability: 2.0.0 </para>
+
+				<warning>
+					<para>
+						The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_CountAgg" /> instead.
+					</para>
+				</warning>
+
 			</refsection>
 				
 			<refsection>
@@ -6500,7 +6661,104 @@ rid | exclude_nodata | include_nodata
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetBandNoDataValue" /></para>
+				<para>
+					<xref linkend="RT_ST_CountAgg" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
+			</refsection>
+		</refentry>
+		
+	  <refentry id="RT_ST_CountAgg">
+			<refnamediv>
+				<refname>ST_CountAgg</refname>
+				<refpurpose>
+					Aggregate. Returns the number of pixels in a given band of a set of rasters. If no band is specified defaults to band 1. If exclude_nodata_value is set to true, will only count pixels that are not equal to the NODATA value.
+				</refpurpose>
+		 	</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>bigint <function>ST_CountAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the number of pixels in a given band of a set of rasters.  If no band is specified <varname>nband</varname> defaults to 1.</para> 
+				<para>
+					If <varname>exclude_nodata_value</varname> is set to true, will only count pixels with value not equal to the <varname>NODATA</varname> value of the raster. Set <varname>exclude_nodata_value</varname> to false to get count all pixels
+			 	</para>
+				<para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between zero (0) and one (1)</para>
+
+				<para>Availability: 2.2.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		rast.rast
+	FROM (
+		SELECT ST_SetValue(
+			ST_SetValue(
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
+				)
+				, 1, 5, 4, 0
+			)
+			, 1, 5, 5, 3.14159
+		) AS rast
+	) AS rast
+	FULL JOIN (
+		SELECT generate_series(1, 10) AS id
+	) AS id
+		ON 1 = 1
+)
+SELECT
+	ST_CountAgg(rast, 1, TRUE)
+FROM foo;
+
+ st_countagg 
+-------------
+          20
+(1 row)
+				</programlisting>	
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Count" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -6679,7 +6937,8 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_Count" />, 
-					<xref linkend="RT_ST_SummaryStats" />
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />
 				</para>
 			</refsection>
 		</refentry>
@@ -6830,46 +7089,51 @@ ORDER BY value, quantile,rid
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SetBandNoDataValue" /></para>
+				<para>
+					<xref linkend="RT_ST_Count" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />, 
+					<xref linkend="RT_ST_SetBandNoDataValue" />
+				</para>
 			</refsection>
 		</refentry>
 		
 		<refentry id="RT_ST_SummaryStats">
 			<refnamediv>
 				<refname>ST_SummaryStats</refname>
-				<refpurpose>Returns record consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
+				<refpurpose>Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage. Band 1 is assumed is no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+
+				 <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-				  				  
-				  <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
+					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  
-				 <funcprototype>
-					<funcdef>record <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-
 				
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -6877,12 +7141,20 @@ ORDER BY value, quantile,rid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns record consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+				<para>Returns <xref linkend="summarystats"/> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
 
 				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value. Set <varname>exclude_nodata_value</varname> to false to get count of all pixels.</para></note>
 				
 				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</para></note>
+
 				<para>Availability: 2.0.0 </para>
+
+				<warning>
+					<para>
+						The ST_SummaryStats(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="RT_ST_SummaryStatsAgg" /> instead.
+					</para>
+				</warning>
+
 			</refsection>
 				
 			<refsection>
@@ -6967,12 +7239,115 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 			<refsection>
 				<title>See Also</title>
 				<para>
-<xref linkend="RT_ST_Count" />,
-<xref linkend="RT_ST_Clip" />
+					<xref linkend="summarystats" />, 
+					<xref linkend="RT_ST_SummaryStatsAgg" />, 
+					<xref linkend="RT_ST_Count" />, 
+				 	<xref linkend="RT_ST_Clip" />
 				</para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_SummaryStatsAgg">
+			<refnamediv>
+				<refname>ST_SummaryStatsAgg</refname>
+				<refpurpose>Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster band of a set of raster. Band 1 is assumed is no band is specified.</refpurpose>
+			</refnamediv>
 		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+				  
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>sample_percent</parameter></paramdef>
+				 	</funcprototype>
+				  				  
+					<funcprototype>
+						<funcdef>summarystats <function>ST_SummaryStatsAgg</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+				 	</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns <xref linkend="summarystats"/> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+
+				<note><para>By default only considers pixel values not equal to the <varname>NODATA</varname> value. Set <varname>exclude_nodata_value</varname> to False to get count of all pixels.</para></note>
+				
+				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to value between 0 and 1</para></note>
+
+				<para>Availability: 2.2.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		rast.rast
+	FROM (
+		SELECT ST_SetValue(
+			ST_SetValue(
+				ST_SetValue(
+					ST_AddBand(
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+						, 1, '64BF', 0, 0
+					)
+					, 1, 1, 1, -10
+				)
+				, 1, 5, 4, 0
+			)
+			, 1, 5, 5, 3.14159
+		) AS rast
+	) AS rast
+	FULL JOIN (
+		SELECT generate_series(1, 10) AS id
+	) AS id
+		ON 1 = 1
+)
+SELECT
+	(stats).count,
+	round((stats).sum::numeric, 3),
+	round((stats).mean::numeric, 3),
+	round((stats).stddev::numeric, 3),
+	round((stats).min::numeric, 3),
+	round((stats).max::numeric, 3)
+FROM (
+	SELECT
+		ST_SummaryStatsAgg(rast, 1, TRUE, 1) AS stats
+	FROM foo
+) bar;
+
+ count |  round  | round  | round |  round  | round 
+-------+---------+--------+-------+---------+-------
+    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142
+(1 row)
+				</programlisting>	
+			</refsection>
+			
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="summarystats" />, 
+					<xref linkend="RT_ST_SummaryStats" />, 
+					<xref linkend="RT_ST_Count" />, 
+				 	<xref linkend="RT_ST_Clip" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_ValueCount">
 			<refnamediv>
 				<refname>ST_ValueCount</refname>
@@ -10745,7 +11120,7 @@ WHERE rid = 2;
             </refsection>
 				
 				<refsection>
-					<title>Examples</title>
+					<title>Examples: Variant 1</title>
 				
 					<programlisting>SELECT 
     rid,
@@ -10759,6 +11134,23 @@ WHERE rid = 2;
    2 | 253.222229003906
 (1 row)
 				</programlisting>
+			
+			</refsection>
+			
+			<refsection>
+					<title>Examples: Variant 2</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)
+       ,  2, 2)
+  FROM dummy_rast 
+   WHERE rid = 2;
+ rid |     st_value
+-----+------------------
+   2 | 253.222229003906
+(1 row)</programlisting>
 			
 			</refsection>
 		
@@ -12177,32 +12569,53 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 
 		  <refsynopsisdiv>
 			<funcsynopsis>
-			  <funcprototype>
+				<funcprototype>
 				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
-
-				<paramdef>
-				  <type>raster </type>
-
-				  <parameter>A</parameter>
-				</paramdef>
-
-				<paramdef>
-				  <type>raster </type>
-
-				  <parameter>B</parameter>
-				</paramdef>
-			  </funcprototype>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+				
+				<funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+				
+				<funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>B</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>A</parameter>
+					</paramdef>
+				</funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A intersects the bounding box of raster B.</para>
+				<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometr A intersects the bounding box of raster/geometr B.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
+				<note><para>This operand will make use of any indexes that may be available on the
 				rasters.</para></note>
 
+				<para>Availability: 2.0.0</para>
 		  </refsection>
 
 		  <refsection>
@@ -12337,6 +12750,243 @@ a_rid | b_rid | overleft
 </programlisting>
 		  </refsection>
 		 </refentry>
+		 
+		<refentry id="RT_Raster_EQ">
+		  <refnamediv>
+			<refname>&#61;</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&#61;</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+			is the same as the bounding box of raster B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for rasters  to
+			perform internal orderings and comparison of rasters (ie. in a GROUP BY or ORDER BY clause).</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+				rasters. Use <xref linkend="RT_Raster_Same" /> instead.  This operator exists mostly so one can group by the raster column.</para></caution>
+				
+			<para>Availability:  2.1.0 </para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Same" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="RT_Raster_Contained">
+		  <refnamediv>
+			<refname>@</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contained by B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>@</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+
+          </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometry A
+			is contained by bounding box of raster/geometr B.  </para>
+
+			<note><para>This operand will use spatial indexes on the rasters. </para></note>
+				
+			<para>Availability:  2.0.0 raster @ raster, raster @ geometry introduced</para>
+			<para>Availability:  2.0.5 geometry @ raster introduced </para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Contains" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="RT_Raster_Same">
+		  <refnamediv>
+			<refname>~=</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~=</function></funcdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>raster </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+        <title>Description</title>
+  
+        <para>The <varname>~=</varname> operator returns <varname>TRUE</varname> if the bounding box of raster A
+        is the same as the bounding box of raster B.</para>
+  
+        <note><para>This operand will make use of any indexes that may be available on the
+          rasters.</para></note>
+  
+         <para>Availability: 2.0.0</para>
+
+		  </refsection>
+
+		  <refsection>
+        <title>Examples</title>
+        <para>Very useful usecase is for taking two sets of single band rasters that are of the same chunk but represent different themes and creating a multi-band raster</para>
+  <programlisting>SELECT ST_AddBand(prec.rast, alt.rast) As new_rast
+    FROM prec INNER JOIN alt ON (prec.rast ~= alt.rast);
+        </programlisting>
+		  </refsection>
+		  
+		  <refsection>
+        <title>See Also</title>
+        <para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_Raster_EQ" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="RT_Raster_Contains">
+		  <refnamediv>
+			<refname>~</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses double precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+          </funcprototype>
+          
+          <funcprototype>
+            <funcdef>boolean <function>~</function></funcdef>
+            <paramdef>
+              <type>raster </type>
+              <parameter>B</parameter>
+            </paramdef>
+            <paramdef>
+              <type>geometry </type>
+              <parameter>A</parameter>
+            </paramdef>
+
+          </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the bounding box of raster/geometry A
+			is contains bounding box of raster/geometr B.  </para>
+
+			<note><para>This operand will use spatial indexes on the rasters. </para></note>
+				
+			<para>Availability:  2.0.0</para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="RT_Raster_Contained" /></para>
+		  </refsection>
+		</refentry>
 	</sect1>
 	
 	<sect1 id="Raster_Relationships">
@@ -13270,7 +13920,7 @@ NOTICE:  The two rasters provided have different SRIDs
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+						<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef>
 						<paramdef><type>raster </type><parameter>rastA</parameter></paramdef>
 						<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>
 					</funcprototype>

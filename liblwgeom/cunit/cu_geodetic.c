@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -674,6 +674,31 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT) );
+
+	/* Antipodal straddles. Great circles cross but at opposite */
+	/* sides of the globe */
+	/* #2534 */
+	/* http://www.gcmap.com/mapui?P=60N+90E-20S+90E%0D%0A0N+0E-90.04868865037885W+57.44011727050777S%0D%0A&MS=wls&DU=mi */
+	line2pts("LINESTRING(90.0 60.0, 90.0 -20.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 0.0, -90.04868865037885 -57.44011727050777)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	line2pts("LINESTRING(-5 0, 5 0)", &A1, &A2);
+	line2pts("LINESTRING(179 -5, 179 5)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	line2pts("LINESTRING(175 -85, 175 85)", &A1, &A2);
+	line2pts("LINESTRING(65 0, -105 0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+	
+	line2pts("LINESTRING(175 -85, 175 85)", &A1, &A2);
+	line2pts("LINESTRING(45 0, -125 0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+	
 }
 
 static void test_edge_distance_to_point(void)
@@ -702,6 +727,15 @@ static void test_edge_distance_to_point(void)
 	CU_ASSERT_DOUBLE_EQUAL(closest.lat, 0.0, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(closest.lon, 0.0, 0.00001);
 
+	/* Ticket #2351 */
+     edge_set(149.386990599235, -26.3567415843982, 149.386990599247, -26.3567415843965, &e);
+	point_set(149.386990599235, -26.3567415843982, &g);
+	d = edge_distance_to_point(&e, &g, &closest);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+    // printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
+    // printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
+	CU_ASSERT_DOUBLE_EQUAL(g.lat, closest.lat, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		 
 }
 
 static void test_edge_distance_to_edge(void)
@@ -1178,6 +1212,29 @@ static void test_lwgeom_distance_sphere(void)
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
+    /* Ticket #2351 */
+	lwg1 = lwgeom_from_wkt("LINESTRING(149.386990599235 -26.3567415843982,149.386990599247 -26.3567415843965)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(149.386990599235 -26.3567415843982)", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Ticket #2638, no "M" */
+	lwg1 = lwgeom_from_wkt("LINESTRING (-41.0821 50.3036,50 -41)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7,5 5))", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+
+	/* Ticket #2638, with "M" */
+	lwg1 = lwgeom_from_wkt("LINESTRING M (-41.0821 50.3036 1,50 -41 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POLYGON M ((0 0 2,10 0 1,10 10 -2,0 10 -5,0 0 -5),(5 5 6,7 5 6,7 7 6,5 7 10,5 5 -2))", LW_PARSER_CHECK_NONE);
+	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
+	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
 }
 
 static void test_spheroid_distance(void)

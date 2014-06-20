@@ -9,7 +9,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.1.0</xsl:variable>
+	<xsl:variable name='testversion'>2.2.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -18,8 +18,9 @@
 	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer1'>3</xsl:variable>
 	<xsl:variable name='var_integer2'>5</xsl:variable>
-	<xsl:variable name='var_float1'>0.5</xsl:variable>
+	<xsl:variable name='var_float1'>20.1</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
+	<xsl:variable name='var_frac'>0.80</xsl:variable>
 	<xsl:variable name='var_distance'>100</xsl:variable>
 	<xsl:variable name='var_version1'>1</xsl:variable>
 	<xsl:variable name='var_version2'>2</xsl:variable>
@@ -31,7 +32,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log21</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log22</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -244,7 +245,14 @@ FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;MULTIPOLYGON(((-71.0821 42.3036 2,-71.
 		<pgis:gset ID="Single NULL" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom)</pgis:gset>
 		<pgis:gset ID="Multiple NULLs" GeometryType="GEOMETRY" createtable="false">(SELECT CAST(Null As geometry) As the_geom FROM generate_series(1,4) As foo)</pgis:gset>
 
-
+		<pgis:gset ID="Malformed Linestrings" GeometryType="LINESTRING" createtable="true">(SELECT ST_GeomFromText('LINESTRING(1 2, 1 2)',4326) As the_geom
+			UNION ALL SELECT ST_MakeLine('SRID=4326;POINT(1 2)'::geometry, 'SRID=4326;POINT EMPTY'::geometry) As the_geom
+		)
+		</pgis:gset>
+		<pgis:gset ID="Malformed Polygons" GeometryType="POLYGON" createtable="true">(SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2)',4326)) As the_geom
+			UNION ALL SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(1 2, 1 2,1 2, 1 2, 3 2, 1 2)',4326)) As the_geom
+		)
+		</pgis:gset>
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
@@ -466,7 +474,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')])" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')]) + count(paramdef/parameter[contains(text(),'geomjson')]) + count(paramdef/parameter[contains(text(),'geomkml')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
 
@@ -614,6 +622,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(parameter,'geomkml'))">
 						<xsl:text>ST_AsKML(foo1.the_geom)</xsl:text>
 					</xsl:when>
+					<xsl:when test="(contains(parameter,'geomjson'))">
+						<xsl:text>ST_AsGeoJSON(foo1.the_geom)</xsl:text>
+					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
@@ -643,6 +654,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(type, 'bytea')">
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'Frac') or contains(parameter, 'frac') or contains(parameter, 'percent')">
+						<xsl:value-of select="$var_frac" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'float') or contains(type, 'double')">
 						<xsl:value-of select="$var_float1" />

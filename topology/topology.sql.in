@@ -3,7 +3,7 @@
 -- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 --
 -- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
 -- Copyright (C) 2005 Refractions Research Inc.
@@ -2003,7 +2003,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --general management --
 #include "sql/manage/ManageHelper.sql.in"
 
-CREATE OR REPLACE FUNCTION postgis_topology_scripts_installed() RETURNS text
+CREATE OR REPLACE FUNCTION topology.postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
 	LANGUAGE 'sql' IMMUTABLE;
 

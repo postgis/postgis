@@ -8,6 +8,19 @@
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 #############################################################################
 
@@ -68,6 +81,9 @@ TEST_PROPS = \
 TEST_BANDPROPS = \
 	rt_band_properties \
 	rt_set_band_properties \
+	rt_pixelaspolygons \
+	rt_pixelaspoints \
+	rt_pixelascentroids \
 	rt_setvalues_array \
 	rt_summarystats \
 	rt_count \
@@ -80,9 +96,6 @@ TEST_BANDPROPS = \
 	rt_neighborhood \
 	rt_nearestvalue \
 	rt_pixelofvalue \
-	rt_pixelaspolygons \
-	rt_pixelaspoints \
-	rt_pixelascentroids \
 	rt_polygon
 
 TEST_UTILITY = \
@@ -108,6 +121,7 @@ TEST_MAPALGEBRA = \
 	rt_clip \
 	rt_mapalgebra \
 	rt_mapalgebra_expr \
+	rt_mapalgebra_mask \
 	rt_union \
 	rt_invdistweight4ma \
 	rt_4ma \
@@ -124,6 +138,7 @@ TEST_SREL = \
 	
 TEST_BUGS = \
 	bug_test_car5 \
+	permitted_gdal_drivers \
 	tickets
 
 TEST_LOADER = \

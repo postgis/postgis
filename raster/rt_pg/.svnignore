@@ -1,12 +1,6 @@
 Makefile
 rtpostgis.sql
-rtpostgis.sql.in
 rtpostgis_drop.sql
-rtpostgis_drop.sql.in
-rtpostgis_upgrade.sql
-rtpostgis_upgrade_20_minor.sql
-rtpostgis_upgrade_cleanup.sql
-rtpostgis_upgrade_cleanup.sql.in
+rtpostgis_upgrade*.sql
 uninstall_rtpostgis.sql
 rtpostgis_legacy.sql
-rtpostgis_legacy.sql.in

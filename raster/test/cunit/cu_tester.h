@@ -2,14 +2,17 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************/
 
-#include "rt_api.h"
+#include "librtcore.h"
+
+#include "../../../postgis_config.h"
+#include "../../raster_config.h"
 
 #define PG_TEST(test_func) { #test_func, test_func }
 #define MAX_CUNIT_MSG_LENGTH 512

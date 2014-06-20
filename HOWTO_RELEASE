@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2009-07-01
+Date: 2014-05-14
 
 Versioning Scheme
 -----------------
@@ -9,6 +9,7 @@ Release version is composed by POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION
 and POSTGIS_MICRO_VERSION components.
 
 By default only [POSTGIS_MICRO_VERSION] increments between releases.
+Starting at PostGIS 2.1 in development  POSTGIS_MICRO_VERSION should have a dev at the end
 
 [POSTGIS_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
 additions have been introduced (one or two functions can be considered
@@ -17,6 +18,10 @@ additions have been introduced (one or two functions can be considered
 [POSTGIS_MAJOR_VERSION] is incremented (and MICRO and MINOR set to 0) when
 a dump/reload of existing spatial databases is *REQUIRED* for things
 to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
+
+All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
+So for example if you just release 2.1.1, then the 2.1 branch should have
+POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
 
 Requirements
 ------------
@@ -28,59 +33,60 @@ documentation -- that means having the required software:
   - PostgreSQL 
   - GEOS
   - Proj4
+  - GDAL (for raster)
+  - json-c (for GeoJSON load support)
 * For the docs:
   - xsltproc
   - DocBook XSL scripts
-  - ImageMagick
+  - ImageMagic
+  - DbLatex (for PDF)
 
 Release procedure
 -----------------
 
-1) Re-generate the ChangeLog using svn2cl.
-2) Edit NEWS: set release date and check all notable changes have
-   been reported (extract from ChangeLog).
-3) Edit README.postgis and set release date and version.
-4) Add release notes in doc/release_notes.xml
-5) Commit all your changes
-  a) make sure to run the extensions/make_unpackaged.sql and copy contents to  
-    (TODO: we need to automate this) 
-      postgis/sql_bits/postgis--unpackages.sql.in
-      postgis_topology/sql_bits/topology_unpackaged.sql.in
-      postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
-6) Tag trunk:  
-   svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
-7) Checkout tag:
-   svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
-8) Update Version.config as specified in Versioning Scheme above.
-9) Update doc/postgis.xml to download.osgeo.org link 
-  (note: unreleased are on postgis.net, and released download.osgeo.org )
-   Also make sure the correct minimum and lastest geos etc are noted.
-10) Commit your version number change to the tag.
-11) Run: sh make_dist.sh x.x.x (or use debbie for this)
-12) Copy tarball to web site and edit downloads page
-13) Announce on e-mail 
+- Re-generate the ChangeLog (make ChangeLog)
+- Edit NEWS: set release date and check all notable changes have
+  been reported (extract from ChangeLog).
+- Edit README.postgis and set release date and version.
+- Add release notes in doc/release_notes.xml
+- make sure to run the extensions/make_unpackaged.sql on 
+  about to release version  and copy contents to  
+  (TODO: we need to automate this) 
+    postgis/sql_bits/postgis--unpackages.sql.in
+    postgis_topology/sql_bits/topology_unpackaged.sql.in
+    postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
+- Update Version.config to drop the "dev" suffix
+- Commit all changes
+- Tag branch:  
+   $ base=http://svn.osgeo.org/postgis/
+   $ rev=x.x.0
+   $ svn copy -m "Tagged release $rev" $base/trunk $base/tags/$rev
+- Run: sh make_dist.sh $rev (or use debbie for this)
+- Build and test generated tarball (including extension upgrade)
+- Copy tarball to web site and edit downloads page
+- Announce on e-mail 
     - postgis-users
     - postgis-devel
     - pgsql-announce
     - osgeo-discuss
-14) Update web sites
+- Update web sites
     - PostGIS News
-     - https://svn.osgeo.org/postgis/web/_content_posts
+    - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
-       b) commit and wait 5 minutes to see changes on website
+       b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
+       c) commit and wait 5 minutes to see changes on website
     - PostGIS doc release versioned doc - http://postgis.net/documentation/
      (For building pdf, debbie has tagged jobs 
        -- http://debbie.postgis.net:8080 (log in)
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
-       Oh just be lazy and bug Regina Obe do this.
+       Or just be lazy and bug Regina Obe do this.
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
-    - PlanetPostGIS
-15) Update Trac and make old Milestone as completed
-
-16) Push the revision number in trunk forward if necessary
-17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
+- Update Trac and make old Milestone as completed
+- Push the revision number forward (see Versioning Scheme)
+- Ensure all the previous released minor versions are listed in
+  extension/upgradeable_versions.mk including the one you just released
 
 

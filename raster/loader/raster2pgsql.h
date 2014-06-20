@@ -10,10 +10,10 @@
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,8 +21,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
 
@@ -41,7 +41,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../rt_core/rt_api.h"
+#include "librtcore.h"
+
+#include "../../postgis_config.h"
+#include "../raster_config.h"
 
 #define CSEQUAL(a,b) (strcmp(a,b)==0)
 
@@ -138,6 +141,9 @@ typedef struct raster_loader_config {
 	int hasnodata;
 	/* nodata value for bands with no nodata value */
 	double nodataval;
+
+	/* skip NODATA value check for bands */
+	int skip_nodataval_check;
 
 	/* endianness of binary output, 0 = XDR, 1 = NDR (default) */
 	int endian;

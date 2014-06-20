@@ -707,7 +707,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 {
 	FILE	*fp;
 	char	*pszFullname, *pszBasename;
-	int	i, result;
+	int	i;
 
 	char *pszFilename = state->shp_file;
 	char *schema = state->schema;
@@ -720,7 +720,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 	char *esc_table;
 	char *esc_geo_col_name;
 
-	int error;
+	int error, result;
 	PGresult *res;
 	int size;
 
@@ -833,8 +833,18 @@ projFileCreate(SHPDUMPERSTATE *state)
 				{
 					return 0;
 				}
-				result = fputs (srtext,fp);
-				LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+				{
+				    result = fputs (srtext,fp);
+                    LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);
+                    if (result == EOF)
+                    {
+                        fclose( fp );
+                        free( pszFullname );
+                        PQclear(res);
+                        free(query);
+                        return 0;
+                    }
+				}
 				fclose( fp );
 				free( pszFullname );
 			}
@@ -944,6 +954,8 @@ getTableInfo(SHPDUMPERSTATE *state)
 		{
 			geometry_type_from_string(PQgetvalue(res, i, 2), &type, &dummy, &dummy);
 
+			if (!type) continue; /* skip null geometries */
+
 			/* We can always set typefound to that of the first column found */
 			if (!typefound)
 				typefound = type;
@@ -995,6 +1007,24 @@ getTableInfo(SHPDUMPERSTATE *state)
 
 			/* Update the rowcount for each type */
 			state->rowcount += atoi(PQgetvalue(res, i, 0));
+
+			/* Set up the dimension output type (note: regardless of how many rows
+				 the table metadata query returns, this value will be the same. But
+				 we'll choose to use the first value anyway) */
+			tmpint = atoi(PQgetvalue(res, i, 1));
+			switch (tmpint)
+			{
+			case 0:
+				state->outtype = 's';
+				break;
+			case 1:
+				state->outtype = 'm';
+				break;
+			default:
+				state->outtype = 'z';
+				break;
+			}
+
 		}
 
 		/* Flag an error if the table contains incompatible geometry combinations */
@@ -1003,23 +1033,6 @@ getTableInfo(SHPDUMPERSTATE *state)
 			snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Incompatible mixed geometry types in table"));
 			PQclear(res);
 			return SHPDUMPERERR;
-		}
-
-		/* Set up the dimension output type (note: regardless of how many rows
-		   the table metadata query returns, this value will be the same. But
-		   we'll choose to use the first value anyway) */
-		tmpint = atoi(PQgetvalue(res, 0, 1));
-		switch (tmpint)
-		{
-		case 0:
-			state->outtype = 's';
-			break;
-		case 1:
-			state->outtype = 'm';
-			break;
-		default:
-			state->outtype = 'z';
-			break;
 		}
 
 		/* Set up the shapefile output type based upon the dimension information */
@@ -1194,7 +1207,7 @@ read_column_map(SHPDUMPERSTATE *state)
 		state->column_map_pgfieldnames[curmapsize][fieldnamesize] = '\0';
 		
 		/* Now swallow up any whitespace */
-		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++);
+		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++) {}
 
 		/* Finally locate end of second column (dbffieldname) */
  		for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
