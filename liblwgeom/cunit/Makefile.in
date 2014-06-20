@@ -52,6 +52,7 @@ OBJS=	\
 	cu_in_geojson.o \
 	cu_in_wkb.o \
 	cu_in_wkt.o \
+	cu_in_encoded_polyline.o \
 	cu_varint.o \
 	cu_tester.o
 
