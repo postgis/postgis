@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<sect1 id="reference_sfcgal">
+	<sect1info>
+		<abstract>
+				<para> 
+            SFCGAL is a C++ wrapper  library around CGAL that provides advanced 2D and 3D functions. 
+            For robustness, geometry coordinates have an exact rational number representation.
+        </para>
+        <para> 
+            Installation instructions of the library can be found on SFCGAL home page (http://www.sfcgal.org). 
+            To load the functions execute postgis/sfcgal.sql
+        </para>
+		</abstract>
+	</sect1info>
+	<refentry id="postgis_sfcgal_version">
+	  <refnamediv>
+		<refname>postgis_sfcgal_version</refname>
 
-  <sect1 id="reference_sfcgal">
-	<title>Using SFCGAL Advanced 2D/3D functions</title>
-        <para> 
-          TODO Introduction part
-        </para>
-        <para> 
-          TODO Install part
-        </para>
+		<refpurpose>Returns the version of SFCGAL in use</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>postgis_sfcgal_version</function></funcdef>
+                        <void/>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
 
 	<refentry id="ST_Extrude">
 	  <refnamediv>
@@ -185,6 +217,62 @@
 
 	</refentry>
 
+	<refentry id="ST_3DIntersection">
+	  <refnamediv>
+		<refname>ST_3DIntersection</refname>
+
+		<refpurpose>Perform 3D intersection</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DIntersection</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_3DArea">
+	  <refnamediv>
+		<refname>ST_3DArea</refname>
+
+		<refpurpose>Computes area of 3D geometries</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float<function>ST_3DArea</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
 
 	<refentry id="ST_Tesselate">
 	  <refnamediv>
@@ -214,4 +302,4 @@
 
 	</refentry>
 
-  </sect1>
+</sect1>
