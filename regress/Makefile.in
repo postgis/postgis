@@ -106,6 +106,7 @@ TESTS = \
 	in_geohash \
 	in_gml \
 	in_kml \
+	in_encodedpolyline \
 	iscollection \
 	regress_ogc \
 	regress_ogc_cover \
