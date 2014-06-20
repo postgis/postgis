@@ -11,6 +11,7 @@ PostGIS 2.2.0
 
  * Deprecated signatures *
 
+  - #2769, ST_Mem_Size renamed to ST_MemSize
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
   - #2567, ST_Count(tablename, rastercolumn, ...)
 
