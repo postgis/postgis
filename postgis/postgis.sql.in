@@ -1066,11 +1066,21 @@ CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_MemSize(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_mem_size'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_mem_size(geometry)
+	RETURNS int4 AS
+  $$ SELECT _postgis_deprecate('ST_Mem_Size', 'ST_MemSize', '2.2.0');
+    SELECT ST_MemSize($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_summary(geometry)

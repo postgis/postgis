@@ -186,7 +186,7 @@ select '109',ST_NPoints('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3
 
 select '110', ST_NRings('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
 
-select '111', ST_mem_size(PostGIS_DropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
+select '111', ST_MemSize(PostGIS_DropBBOX('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY)) as value;
 
 select '112',ST_NumGeometries('GEOMETRYCOLLECTION(POINT(1 1), LINESTRING( 1 1 , 2 2, 3 3),MULTIPOINT(1 1, 2 2))'::GEOMETRY) as value;
 
@@ -214,6 +214,9 @@ select '126',a ~= b from TEST;
 select '127',a @ b from TEST;
 select '128',a ~ b from TEST; 
 
+-- ST_Mem_Size was deprecated in favor of ST_MemSize in 2.2.0
+-- We keep the test using the deprecated function until 2.4.0 
+-- (when the function will be removed)
 select '129', ST_mem_size(PostGIS_DropBBOX(a)), ST_mem_size(PostGIS_DropBBOX(b)) from TEST;
 
 select '131', ST_X('POINT(1 2)');
