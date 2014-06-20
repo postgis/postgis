@@ -3730,6 +3730,30 @@ CREATE OR REPLACE FUNCTION postgis_libjson_version()
 	AS 'MODULE_PATHNAME','postgis_libjson_version'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+----------------------------------------------------------------------
+-- ENCODED POLYLINE INPUT
+-----------------------------------------------------------------------
+-- Availability: 2.2.0
+-- ST_LineFromEncodedPolyline(polyline text, precision int4)
+CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(text, int4 DEFAULT 5)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','line_from_encoded_polyline'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+------------------------------------------------------------------------
+
+----------------------------------------------------------------------
+-- ENCODED POLYLINE OUTPUT
+-----------------------------------------------------------------------
+-- Availability: 2.2.0
+-- ST_AsEncodedPolyline(geom geometry, precision int4)
+CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, int4 DEFAULT 5)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEncodedPolyline'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+------------------------------------------------------------------------
+
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------

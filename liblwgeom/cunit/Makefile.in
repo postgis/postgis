@@ -46,6 +46,7 @@ OBJS=	\
 	cu_out_kml.o \
 	cu_out_geojson.o \
 	cu_out_svg.o \
+	cu_out_encoded_polyline.o \
 	cu_surface.o \
 	cu_out_x3d.o \
 	cu_in_geojson.o \
