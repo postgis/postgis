@@ -198,7 +198,7 @@
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Minkowski</function></funcdef>
+			<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
 			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
 		  </funcprototype>
