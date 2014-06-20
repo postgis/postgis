@@ -433,3 +433,6 @@ SELECT
 	ST_Summary(rast)
 FROM raster_outdb_template
 ORDER BY rid;
+
+SELECT 'ms1', ST_MemSize(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0));
+SELECT 'ms2', ST_MemSize(rast) from raster_outdb_template order by rid;

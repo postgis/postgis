@@ -133,3 +133,15 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(pixsize);
 }
 
+/** find the detoasted size of a value */
+Datum RASTER_memsize(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(RASTER_memsize);
+Datum RASTER_memsize(PG_FUNCTION_ARGS)
+{
+  void *detoasted = PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+  size_t size = VARSIZE(detoasted);
+  PG_FREE_IF_COPY(detoasted,0);
+  PG_RETURN_INT32(size);
+}
+
+

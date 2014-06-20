@@ -279,6 +279,12 @@ CREATE OR REPLACE FUNCTION st_summary(rast raster)
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_MemSize(raster)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'RASTER_memsize'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -----------------------------------------------------------------------
 -- Constructor ST_MakeEmptyRaster
 -----------------------------------------------------------------------
