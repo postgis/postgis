@@ -268,3 +268,9 @@ SELECT 'test 11.10', st_minpossiblevalue('32BF') < 0.;
 SELECT 'test 11.11', st_minpossiblevalue('64BF') < 0.;
 
 DROP TABLE rt_utility_test;
+
+-----------------------------------------------------------------------
+-- ST_BandPath()
+-----------------------------------------------------------------------
+
+SELECT 'bandpath1', right(ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)), 14);
