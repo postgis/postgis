@@ -69,6 +69,7 @@ PostGIS 2.2.0
   - #2634, regression in sphere distance code
   - #2697, invalid GeoJSON Polygon input crashes server process
   - #2706, ST_DumpPoints of EMPTY geometries crashes server
+  - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
 
 
  * Code refactoring *
