@@ -284,56 +284,61 @@ Datum RASTER_bandIsNoData(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getBandPath);
 Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = NULL;
-    rt_raster raster = NULL;
-    rt_band band = NULL;
-    int32_t bandindex;
-    const char *bandpath;
-    text *result;
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int32_t bandindex;
+	const char *bandpath;
+	text *result;
 
-    /* Index is 1-based */
-    bandindex = PG_GETARG_INT32(1);
-    if ( bandindex < 1 ) {
-        elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
-        PG_RETURN_NULL();
-    }
+	/* Index is 1-based */
+	bandindex = PG_GETARG_INT32(1);
+	if ( bandindex < 1 ) {
+		elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+		PG_RETURN_NULL();
+	}
 
-    /* Deserialize raster */
-    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	/* Deserialize raster */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! raster ) {
-        PG_FREE_IF_COPY(pgraster, 0);
-        elog(ERROR, "RASTER_getBandPath: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_getBandPath: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
 
-    /* Fetch requested band and its nodata value */
-    band = rt_raster_get_band(raster, bandindex - 1);
-    if ( ! band ) {
-        elog(NOTICE, "Could not find raster band of index %d when getting band path. Returning NULL", bandindex);
-        rt_raster_destroy(raster);
-        PG_FREE_IF_COPY(pgraster, 0);
-        PG_RETURN_NULL();
-    }
+	/* Fetch requested band */
+	band = rt_raster_get_band(raster, bandindex - 1);
+	if (!band) {
+		elog(
+			NOTICE,
+			"Could not find raster band of index %d when getting band path. Returning NULL",
+			bandindex
+		);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
 
-    bandpath = rt_band_get_ext_path(band);
+	bandpath = rt_band_get_ext_path(band);
+	if (!bandpath) {
 		rt_band_destroy(band);
-    rt_raster_destroy(raster);
-    PG_FREE_IF_COPY(pgraster, 0);
-    if ( ! bandpath )
-    {
-        PG_RETURN_NULL();
-    }
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
 
-    result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
+	result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
+	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1); 
+	strcpy((char *) VARDATA(result), bandpath);
 
-    SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1);
+	rt_band_destroy(band);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
 
-    strcpy((char *) VARDATA(result), bandpath);
-
-    PG_RETURN_TEXT_P(result);
+	PG_RETURN_TEXT_P(result);
 }
 
 /**

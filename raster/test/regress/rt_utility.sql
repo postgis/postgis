@@ -434,5 +434,16 @@ SELECT
 FROM raster_outdb_template
 ORDER BY rid;
 
+-----------------------------------------------------------------------
+-- st_memsize()
+-----------------------------------------------------------------------
+
 SELECT 'ms1', ST_MemSize(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0));
 SELECT 'ms2', ST_MemSize(rast) from raster_outdb_template order by rid;
+
+-----------------------------------------------------------------------
+-- st_bandpath()
+-----------------------------------------------------------------------
+
+SELECT 'bandpath1', right(ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)), 14);
+SELECT 'bandpath2', right(ST_BandPath(rast), 14) from raster_outdb_template order by rid;

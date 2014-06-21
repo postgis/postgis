@@ -56,3 +56,9 @@ ms2|280
 ms2|280
 ms2|8240
 ms2|8240
+NOTICE:  Could not find raster band of index 1 when getting band path. Returning NULL
+bandpath1|
+bandpath2|testraster.tif
+bandpath2|testraster.tif
+bandpath2|
+bandpath2|testraster.tif
