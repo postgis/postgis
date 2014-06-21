@@ -37,3 +37,5 @@ Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)
     band 3 of pixtype 16BSI is in-db with no NODATA value
 Skewed raster of 10x10 pixels has 1 band and extent of BOX(0 -10,10 0.0001)
     band 1 of pixtype 8BUI is in-db with NODATA value of 0
+NOTICE:  Could not find raster band of index 1 when getting band path. Returning NULL
+bandpath1|
