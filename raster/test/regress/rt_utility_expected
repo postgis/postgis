@@ -52,10 +52,10 @@ Skewed raster of 10x10 pixels has 1 band and extent of BOX(0 -10,10 0.0001)
     band 1 of pixtype 8BUI is out-db with NODATA value of 255
     band 2 of pixtype 8BUI is in-db with NODATA value of 0
 ms1|64
-ms2|280
-ms2|280
-ms2|8240
-ms2|8240
+ms2|1|82
+ms2|2|82
+ms2|3|8174
+ms2|4|8174
 NOTICE:  Could not find raster band of index 1 when getting band path. Returning NULL
 bandpath1|
 bandpath2|testraster.tif
