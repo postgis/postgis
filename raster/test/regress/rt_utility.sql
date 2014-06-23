@@ -443,11 +443,15 @@ WITH
 mem AS (
   SELECT rid, ST_MemSize(rast) as size from raster_outdb_template
 ),
+bands AS (
+  SELECT rid, generate_series(1,ST_NumBands(rast)) as num
+    FROM raster_outdb_template
+),
 path AS (
-  SELECT rid, sum(length(st_bandpath(rast,n))) as len,
-    array_agg(st_bandpath(rast,n)) as agg
-  FROM raster_outdb_template, generate_series(1,ST_NumBands(rast)) n
-  GROUP BY rid
+  SELECT r.rid, sum(coalesce(length(st_bandpath(r.rast,b.num)),0)) as len
+  FROM raster_outdb_template r, bands b
+  WHERE r.rid = b.rid
+  GROUP BY r.rid
 )
 SELECT 'ms2', mem.rid, mem.size - path.len
   from mem, path
