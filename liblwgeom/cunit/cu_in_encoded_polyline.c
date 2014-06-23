@@ -39,49 +39,18 @@ static void do_encoded_polyline_test(char * in, int precision, char * out)
 
 static void in_encoded_polyline_test_geoms(void)
 {
-	/* Linestring */
 	do_encoded_polyline_test(
 	    "_p~iF~ps|U_ulLnnqC_mqNvxq`@",
 	    5,
-			"LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)");
-
-	/* MultiPoint */
-	do_encoded_polyline_test(
-	    "_p~iF~ps|U_ulLnnqC",
-	    5,
-			"MULTIPOINT(-120.2 38.5,-120.95 40.7)");
-}
-
-static void in_encoded_polyline_test_srid(void)
-{
-
-	/* SRID - with PointArray */
-	do_encoded_polyline_test(
-	    "_ibE?_seK_seK",
-	    5,
-			"SRID=4326;LINESTRING(0 1,2 3)");
-
-	/* wrong SRID */
-	do_encoded_polyline_test(
-	    "_ibE?_seK_seK",
-	    5,
-			"SRID=4327;LINESTRING(0 1,2 3)");
+			"SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)");
 }
 
 static void in_encoded_polyline_test_precision(void)
 {
-
-	/* Linestring */
 	do_encoded_polyline_test(
 			"kj_~}U_wvjjw@sohih@rtnkMke}ts^zod{gB",
 	    7,
-	    "LINESTRING(-120.2 38.53354789,-120.95446664 40.7,-126.45322 -120.954466644666)");
-
-	/* MultiPoint */
-	do_encoded_polyline_test(
-	    "gejAnwiFohCzm@",
-	    3,
-			"MULTIPOINT(-120.2 38.5,-120.95 40.7)");
+	    "SRID=4326;LINESTRING(-120.2 38.53354789,-120.95446664 40.7,-126.45322 -120.954466644666)");
 }
 
 /*
@@ -90,7 +59,6 @@ static void in_encoded_polyline_test_precision(void)
 CU_TestInfo in_encoded_polyline_tests[] =
 {
 	PG_TEST(in_encoded_polyline_test_geoms),
-	PG_TEST(in_encoded_polyline_test_srid),
 	PG_TEST(in_encoded_polyline_test_precision),
 	CU_TEST_INFO_NULL
 };
