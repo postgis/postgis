@@ -439,7 +439,20 @@ ORDER BY rid;
 -----------------------------------------------------------------------
 
 SELECT 'ms1', ST_MemSize(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0));
-SELECT 'ms2', ST_MemSize(rast) from raster_outdb_template order by rid;
+WITH
+mem AS (
+  SELECT rid, ST_MemSize(rast) as size from raster_outdb_template
+),
+path AS (
+  SELECT rid, sum(length(st_bandpath(rast,n))) as len,
+    array_agg(st_bandpath(rast,n)) as agg
+  FROM raster_outdb_template, generate_series(1,ST_NumBands(rast)) n
+  GROUP BY rid
+)
+SELECT 'ms2', mem.rid, mem.size - path.len
+  from mem, path
+  where mem.rid = path.rid
+  order by mem.rid;
 
 -----------------------------------------------------------------------
 -- st_bandpath()
