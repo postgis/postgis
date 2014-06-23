@@ -22,22 +22,22 @@ DROP TABLE IF EXISTS raster_outdb_template;
 CREATE TABLE raster_outdb_template AS
 SELECT
 	1 AS rid,
-	ST_AddBand(
+	ST_AddBand( -- insert all three bands of out-db raster at index 1
 		ST_MakeEmptyRaster(90, 90, 0., 0., 1, -1, 0, 0, 0),
 		1, '$FILERASTER'::text, NULL::int[]
 	) AS rast
 UNION ALL
 SELECT
 	2 AS rid,
-	ST_AddBand(
+	ST_AddBand( -- append all three bands of out-db raster
 		ST_MakeEmptyRaster(90, 90, 0., 0., 1, -1, 0, 0, 0),
 		'$FILERASTER'::text, NULL::int[]
 	) AS rast
 UNION ALL
 SELECT
 	3 AS rid,
-	ST_AddBand(
-		ST_AddBand(
+	ST_AddBand( -- append out-db band 2
+		ST_AddBand( -- in-db band
 			ST_MakeEmptyRaster(90, 90, 0., 0., 1, -1, 0, 0, 0),
 			1, '8BUI', 1, 0
 		),
@@ -46,8 +46,8 @@ SELECT
 UNION ALL
 SELECT
 	4 AS rid,
-	ST_AddBand(
-		ST_AddBand(
+	ST_AddBand( -- append out-db band 2
+		ST_AddBand( -- in-db band
 			ST_MakeEmptyRaster(90, 90, 0., 0., 1, -1, 0, 0, 0),
 			1, '8BUI', 1, 0
 		),
