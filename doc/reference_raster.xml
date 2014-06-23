@@ -2189,7 +2189,7 @@ t          |
 		<title>Description</title>
 
 		<para>Returns the amount of space (in bytes) the raster takes. </para>
-		<para>This is a nice compliment to PostgreSQL built in functions pg_column_siez, pg_size_pretty, pg_relation_size, pg_total_relation_size.</para>
+		<para>This is a nice compliment to PostgreSQL built in functions pg_column_size, pg_size_pretty, pg_relation_size, pg_total_relation_size.</para>
 		<note><para>pg_relation_size which gives the byte size of a table may return byte size lower than ST_MemSize. This is because
 		pg_relation_size does not add toasted table contribution and large geometries are stored in TOAST tables. pg_column_size might return lower because it returns the compressed size.</para>
 		<para>pg_total_relation_size - includes, the table, the toasted tables, and the indexes.</para>
