@@ -946,6 +946,23 @@ static void test_lwgeom_as_curve(void)
 
 }
 
+static void test_lwline_from_lwmpoint(void)
+{
+	LWLINE *line;
+	LWMPOINT *mpoint;
+
+//	LWLINE *
+//	lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
+
+	mpoint = (LWMPOINT*)lwgeom_from_wkt("MULTIPOINT(0 0, 0 1, 1 1, 1 2, 2 2)", LW_PARSER_CHECK_NONE);
+	line = lwline_from_lwmpoint(SRID_DEFAULT, mpoint);
+	CU_ASSERT_EQUAL(line->points->npoints, mpoint->ngeoms);
+	CU_ASSERT_DOUBLE_EQUAL(lwline_length_2d(line), 4.0, 0.000001);
+	
+	lwline_free(line);
+	lwmpoint_free(mpoint);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -969,6 +986,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
 	PG_TEST(test_lwgeom_same),
+	PG_TEST(test_lwline_from_lwmpoint),
 	PG_TEST(test_lwgeom_as_curve),
 	CU_TEST_INFO_NULL
 };
