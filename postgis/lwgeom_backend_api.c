@@ -96,22 +96,7 @@ static void lwgeom_backend_switch( const char* newvalue, void* extra )
 
 void lwgeom_init_backend()
 {
-	static const char *guc_name = "postgis.backend";
-
-	/* #2382 Before trying to create a user GUC, make sure */
-	/* that the name is not already in use. Why would it be in use? */
-	/* During an upgrade, a prior copy of the PostGIS library will */
-	/* already be loaded in memory and the GUC already defined. We */
-	/* can skip GUC definition in this case, so we just return. */
-	const char *guc_installed = GetConfigOption(guc_name, TRUE, FALSE);
-
-	/* Uh oh, this GUC name already exists */
-	if ( guc_installed ) 
-		return;
-
-	/* Good, the GUC name is not already in use, so this must be a fresh */
-	/* and clean new load of the library, and we can define the user GUC */
-    DefineCustomStringVariable( guc_name, /* name */
+    DefineCustomStringVariable( "postgis.backend", /* name */
 				"Sets the PostGIS Geometry Backend.", /* short_desc */
 				"Sets the PostGIS Geometry Backend (allowed values are 'geos' or 'sfcgal')", /* long_desc */
 				&lwgeom_backend_name, /* valueAddr */
