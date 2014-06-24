@@ -260,32 +260,28 @@ LWLINE *
 lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
 {
 	uint32_t i;
-	POINTARRAY *pa;
-	char zmflag = FLAGS_GET_ZM(mpoint->flags);
-	size_t ptsize, size;
-	uint8_t *newpoints, *ptr;
+	POINTARRAY *pa = NULL;
+	LWGEOM *lwgeom = (LWGEOM*)mpoint;
+	POINT4D pt;
 
-	if ( zmflag == 0 ) ptsize=2*sizeof(double);
-	else if ( zmflag == 3 ) ptsize=4*sizeof(double);
-	else ptsize=3*sizeof(double);
+	char hasz = lwgeom_has_z(lwgeom);
+	char hasm = lwgeom_has_m(lwgeom);
+	uint32_t npoints = mpoint->ngeoms;
 
-	/* Allocate space for output points */
-	size = ptsize*mpoint->ngeoms;
-	newpoints = lwalloc(size);
-	memset(newpoints, 0, size);
-
-	ptr=newpoints;
-	for (i=0; i<mpoint->ngeoms; i++)
+	if ( lwgeom_is_empty(lwgeom) ) 
 	{
-		memcpy(ptr,
-		       getPoint_internal(mpoint->geoms[i]->point, 0),
-		       ptsize);
-		ptr+=ptsize;
+		return lwline_construct_empty(srid, hasz, hasm);
 	}
 
-	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, mpoint->ngeoms, newpoints);
+	pa = ptarray_construct(hasz, hasm, npoints);
+
+	for (i=0; i < npoints; i++)
+	{
+		getPoint4d_p(mpoint->geoms[i]->point, 0, &pt);
+		ptarray_set_point4d(pa, i, &pt);
+	}
 	
-	LWDEBUGF(3, "lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
+	LWDEBUGF(3, "lwline_from_lwmpoint: constructed pointarray for %d points", mpoint->ngeoms);
 
 	return lwline_construct(srid, NULL, pa);
 }
