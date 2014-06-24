@@ -67,4 +67,10 @@ CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
+CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
+       RETURNS boolean
+       AS 'MODULE_PATHNAME','sfcgal_is_planar'
+       LANGUAGE 'c' IMMUTABLE STRICT
+       COST 100;
+
 COMMIT;
