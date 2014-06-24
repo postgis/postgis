@@ -139,6 +139,7 @@ die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> <version_from> [<schema>]
 
 my $sql_file = $ARGV[0];
 my $module = 'postgis';
+my $soname = '';
 my $version_to = "";
 my $version_to_num = 0;
 my $version_from = $ARGV[1];
@@ -168,6 +169,10 @@ while(<INPUT>)
 	{
         $module = 'postgis_raster';
 	}
+	elsif (m@('\$libdir/[^']*')@)
+	{
+        $soname = $1;
+	}
 }
 close(INPUT); 
 
@@ -190,6 +195,8 @@ print qq{
 --
 
 };
+
+print "LOAD $soname;\n" if ($soname);
 
 print "BEGIN;\n";
 print "SET search_path TO $schema;\n" if $schema;
