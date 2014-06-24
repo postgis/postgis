@@ -17,8 +17,14 @@
 
 #ifdef HAVE_LIBJSON
 
+#ifdef HAVE_LIBJSON_C
+#include <json-c/json.h>
+#include <json-c/json_object_private.h>
+#else
 #include <json/json.h>
 #include <json/json_object_private.h>
+#endif
+
 #include <string.h>
 
 static void geojson_lwerror(char *msg, int error_code)
@@ -491,7 +497,7 @@ LWGEOM*
 lwgeom_from_geojson(const char *geojson, char **srs)
 {
 #ifndef HAVE_LIBJSON
-  *srs = NULL;
+	*srs = NULL;
 	lwerror("You need JSON-C for lwgeom_from_geojson");
 	return NULL;
 #else /* HAVE_LIBJSON  */
@@ -503,7 +509,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	json_tokener* jstok = NULL;
 	json_object* poObj = NULL;
 	json_object* poObjSrs = NULL;
-  *srs = NULL;
+	*srs = NULL;
 
 	/* Begin to Parse json */
 	jstok = json_tokener_new();
@@ -511,11 +517,11 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	if( jstok->err != json_tokener_success)
 	{
 		char err[256];
-		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
+		snprintf(err, 256, "%s (at offset %d)", json_tokener_error_desc(jstok->err), jstok->char_offset);
 		json_tokener_free(jstok);
-    json_object_put(poObj);
+		json_object_put(poObj);
 		geojson_lwerror(err, 1);
-    return NULL;
+		return NULL;
 	}
 	json_tokener_free(jstok);
 
