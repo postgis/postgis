@@ -8,7 +8,6 @@ PostGIS 2.2.0
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
   - By default, PostGIS raster disables all GDAL drivers affecting
     out-db rasters, ST_FromGDALRaster() and ST_AsGDALRaster() variants
-  - Support for libjson-c 0.9 was removed, use 0.10 or higher
 
  * Deprecated signatures *
 
