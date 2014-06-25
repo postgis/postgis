@@ -28,6 +28,8 @@
 #ifndef JSON_C_VERSION
 // Adds support for libjson < 0.10
 # define json_tokener_error_desc(x) json_tokener_errors[(x)]
+#endif
+
 #else
 
 #include <string.h>
