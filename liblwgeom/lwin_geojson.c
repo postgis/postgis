@@ -17,9 +17,21 @@
 
 #ifdef HAVE_LIBJSON
 
+#include <string.h>
+
+#ifdef HAVE_LIBJSON_C
+#include <json-c/json.h>
+#include <json-c/json_object_private.h>
+#else
 #include <json/json.h>
 #include <json/json_object_private.h>
-#include <string.h>
+#endif
+
+#ifndef JSON_C_VERSION
+// Adds support for libjson < 0.10
+# define json_tokener_error_desc(x) json_tokener_errors[(x)]
+#endif
+
 
 static void geojson_lwerror(char *msg, int error_code)
 {
@@ -502,7 +514,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	json_tokener* jstok = NULL;
 	json_object* poObj = NULL;
 	json_object* poObjSrs = NULL;
-  *srs = NULL;
+	*srs = NULL;
 
 	/* Begin to Parse json */
 	jstok = json_tokener_new();
@@ -510,11 +522,11 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	if( jstok->err != json_tokener_success)
 	{
 		char err[256];
-		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
+		snprintf(err, 256, "%s (at offset %d)", json_tokener_error_desc(jstok->err), jstok->char_offset);
 		json_tokener_free(jstok);
-    json_object_put(poObj);
+		json_object_put(poObj);
 		geojson_lwerror(err, 1);
-    return NULL;
+		return NULL;
 	}
 	json_tokener_free(jstok);
 
@@ -527,13 +539,13 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 			json_object* poObjSrsProps = findMemberByName( poObjSrs, "properties" );
 			json_object* poNameURL = findMemberByName( poObjSrsProps, "name" );
 			const char* pszName = json_object_get_string( poNameURL );
-      *srs = lwalloc(strlen(pszName) + 1);
-      strcpy(*srs, pszName);
+			*srs = lwalloc(strlen(pszName) + 1);
+			strcpy(*srs, pszName);
 		}
 	}
 
 	lwgeom = parse_geojson(poObj, &hasz, 0);
-  json_object_put(poObj);
+	json_object_put(poObj);
 
 	lwgeom_add_bbox(lwgeom);
 

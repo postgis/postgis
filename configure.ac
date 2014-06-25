@@ -751,6 +751,7 @@ dnl ===========================================================================
 
 CHECK_JSON=yes
 HAVE_JSON=no
+HAVE_JSON_C=no
 
 AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
@@ -767,16 +768,6 @@ if test ! "x$JSONDIR" = "x"; then
 	if test "x$JSONDIR" = "xyes"; then
 		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
 	else
-		dnl We need (libjson.so OR libjson.a OR libjson.dll) AND json/json.h
-		if test ! -e "${JSONDIR}/include/json/json.h" -o \
-		        ! \( -e "${JSONDIR}/lib/libjson.so" -o \
-		            -e "${JSONDIR}/lib/libjson.dll" -o \
-		            -e "${JSONDIR}/lib/libjson.dylib" -o \
-		            -e "${JSONDIR}/bin/libjson.dll" -o \
-		            -e "${JSONDIR}/lib/libjson.a" \) 
-		then
-			AC_MSG_ERROR([Cannot find json dev files in "$JSONDIR"])
-		fi
 		AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
 
 		dnl Add the include directory to JSON_CPPFLAGS
@@ -788,8 +779,9 @@ fi
 dnl Check that we can find the json/json.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes], [
-  AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [])])	
+AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [
+  AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes; HAVE_JSON_C=yes], [])
+])      
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libjson
@@ -802,6 +794,9 @@ LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "yes"; then
 	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
+fi
+if test "$HAVE_JSON_C" = "yes"; then
+  AC_DEFINE([HAVE_LIBJSON_C], 1, [Define to 1 if libjson resides in a json-c subdir])
 fi
 
 AC_SUBST([JSON_CPPFLAGS])
