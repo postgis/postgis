@@ -61,17 +61,17 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 	stringbuffer_t *sb;
 	double scale = pow(10,precision);
 
-	/* Take the double value and multiply it by 1e5, rounding the result */
+	/* Take the double value and multiply it by 1x10^percision, rounding the result */
 	prevPoint = getPoint2d_cp(pa, 0);
-	delta[0] = (int)(prevPoint->y*scale);
-	delta[1] = (int)(prevPoint->x*scale);
+	delta[0] = round(prevPoint->y*scale);
+	delta[1] = round(prevPoint->x*scale);
 
 	/*  points only include the offset from the previous point */
 	for (i=1; i<pa->npoints; i++)
 	{
 		const POINT2D *point = getPoint2d_cp(pa, i);
-		delta[2*i] = (int)(point->y*scale) - (int)(prevPoint->y*scale);
-		delta[(2*i)+1] = (int)(point->x*scale) - (int)(prevPoint->x*scale);
+		delta[2*i] = round(point->y*scale) - round(prevPoint->y*scale);
+		delta[(2*i)+1] = round(point->x*scale) - round(prevPoint->x*scale);
 		prevPoint = point;
 	}
 

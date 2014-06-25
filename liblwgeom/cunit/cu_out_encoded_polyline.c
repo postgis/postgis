@@ -92,9 +92,9 @@ static void out_encoded_polyline_test_precision(void)
 
 	/* Linestring */
 	do_encoded_polyline_test(
-	    "LINESTRING(-120.2 38.53354789,-120.95446664 40.7,-126.45322 -120.954466644666)",
-	    7,
-	    "kj_~}U_wvjjw@sohih@rtnkMke}ts^zod{gB");
+	    "LINESTRING(-0.250691 49.283048,-0.250633 49.283376,-0.250502 49.283972,-0.251245 49.284028,-0.251938 49.284232,-0.251938 49.2842)",
+	    6,
+	    "o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?");
 
 	/* MultiPoint */
 	do_encoded_polyline_test(
