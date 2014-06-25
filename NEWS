@@ -17,6 +17,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #2159, report libjson version from postgis_full_version()
   - #2770, ST_MemSize(raster)
   - Add postgis_noop(raster)
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()

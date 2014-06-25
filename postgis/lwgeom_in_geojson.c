@@ -17,6 +17,14 @@
 #include "liblwgeom.h"
 #include "lwgeom_export.h"
 
+#ifdef HAVE_LIBJSON
+# ifdef HAVE_LIBJSON_C
+#  include <json-c/json.h>
+# else
+#  include <json/json.h>
+# endif
+#endif
+
 Datum geom_from_geojson(PG_FUNCTION_ARGS);
 Datum postgis_libjson_version(PG_FUNCTION_ARGS);
 
@@ -26,7 +34,11 @@ Datum postgis_libjson_version(PG_FUNCTION_ARGS)
 #ifndef HAVE_LIBJSON
 	PG_RETURN_NULL();
 #else /* HAVE_LIBJSON  */
+# ifdef JSON_C_VERSION
+  const char *ver = json_c_version(); 
+# else
 	const char *ver = "UNKNOWN";
+# endif
 	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
 #endif
