@@ -17,6 +17,7 @@
 #include "liblwgeom.h"
 
 Datum geom_from_geojson(PG_FUNCTION_ARGS);
+Datum postgis_libjson_version(PG_FUNCTION_ARGS);
 
 
 static void geojson_lwerror(char *msg, int error_code)
@@ -28,8 +29,20 @@ static void geojson_lwerror(char *msg, int error_code)
 #ifdef HAVE_LIBJSON
 
 #include "lwgeom_export.h"
+
+#ifdef HAVE_LIBJSON_C
+#include <json-c/json.h>
+#include <json-c/json_object_private.h>
+#else
 #include <json/json.h>
 #include <json/json_object_private.h>
+#endif
+
+#ifndef JSON_C_VERSION
+// Adds support for libjson < 0.10
+# define json_tokener_error_desc(x) json_tokener_errors[(x)]
+#endif
+
 
 /* Prototype */
 LWGEOM* parse_geojson(json_object *geojson, bool *hasz,  int *root_srid);
@@ -520,7 +533,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	if( jstok->err != json_tokener_success)
 	{
 		char err[256];
-		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
+		snprintf(err, 256, "%s (at offset %d)", json_tokener_error_desc(jstok->err), jstok->char_offset);
 		json_tokener_free(jstok);
 		json_object_put(poObj);
 		geojson_lwerror(err, 1);
