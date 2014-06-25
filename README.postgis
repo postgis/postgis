@@ -68,7 +68,7 @@ this to work.
    for translation support
    (typically in libc on GNU/Linux, in which case 0.17 is required).
 
-* JSON-C (Optional, Version 0.9 or higher)
+* JSON-C (Optional, Version 0.10 or higher)
 
   JSON-C is used to import GeoJSON via the function ST_GeomFromGeoJson().
 
