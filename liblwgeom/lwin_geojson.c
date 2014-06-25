@@ -25,6 +25,11 @@
 #include <json/json_object_private.h>
 #endif
 
+#ifndef JSON_C_VERSION
+// Adds support for libjson < 0.10
+# define json_tokener_error_desc(x) json_tokener_errors[(x)]
+#else
+
 #include <string.h>
 
 static void geojson_lwerror(char *msg, int error_code)
