@@ -19,7 +19,7 @@
 
 /* return SFCGAL version string */
 const char*
-lwgeom_sfcgal_version();
+lwgeom_sfcgal_version(void);
 
 /* Convert SFCGAL structure to lwgeom PostGIS */
 LWGEOM*
