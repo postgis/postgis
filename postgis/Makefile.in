@@ -73,6 +73,9 @@ PG_OBJS= \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
 	gserialized_estimate.o \
+	sp_gist.o\
+	spginsert.o\
+	spgdoinsert.o\
 	geography_inout.o \
 	geography_btree.o \
 	geography_measurement.o \
