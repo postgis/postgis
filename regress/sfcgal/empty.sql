@@ -38,29 +38,29 @@ WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry,
  120 as tolerance
- ) SELECT 'ST_Buffer(empty, tolerance) == empty', ST_Buffer(empty, tolerance) FROM inp;
+ ) SELECT 'ST_Buffer(empty, tolerance) == empty', ST_IsEmpty(ST_Buffer(empty, tolerance)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Union(geometry, empty) == geometry', ST_Union(geometry, empty) FROM inp;
+ ) SELECT 'ST_Union(geometry, empty) == geometry', ST_AsEWKT(ST_Union(geometry, empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_Union(empty, empty) == empty', ST_Union(empty, empty) FROM inp;
+ ) SELECT 'ST_Union(empty, empty) == empty', ST_IsEmpty(ST_Union(empty, empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Intersection(geometry, empty) == geometry', ST_Intersection(geometry, empty) FROM inp;
+ ) SELECT 'ST_Intersection(geometry, empty) == geometry', ST_IsEmpty(ST_Intersection(geometry, empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_Intersection(empty, empty) == empty', ST_Intersection(empty, empty) FROM inp;
+ ) SELECT 'ST_Intersection(empty, empty) == empty', ST_IsEmpty(ST_Intersection(empty, empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_Difference(geometry, empty) FROM inp;
+ ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_AsEWKT(ST_Difference(geometry, empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Difference(empty, geometry) == empty', ST_Difference(empty, geometry) FROM inp;
+ ) SELECT 'ST_Difference(empty, geometry) == empty', ST_IsEmpty(ST_Difference(empty, geometry)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
@@ -125,10 +125,10 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n
- ) SELECT 'ST_GeometryN(empty, n) == empty', ST_GeometryN(empty, n) FROM inp;
+ ) SELECT 'ST_GeometryN(empty, n) == empty', ST_IsEmpty(ST_GeometryN(empty, n)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
- ) SELECT 'ST_ExteriorRing(empty) == empty', ST_ExteriorRing(empty) FROM inp;
+ ) SELECT 'ST_ExteriorRing(empty) == empty', ST_IsEmpty(ST_ExteriorRing(empty)) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  1 as n

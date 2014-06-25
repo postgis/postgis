@@ -324,7 +324,15 @@ SELECT '#650', ST_AsText(ST_Collect(ARRAY[ST_MakePoint(0,0), ST_MakePoint(1,1), 
 --SELECT '#662', ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326))) As the_geom FROM generate_series(-10,50,20) As i CROSS JOIN generate_series(50,70, 20) As j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, m, i*j*m LIMIT 1;
 
 -- #667 --
-SELECT '#667', ST_AsEWKT(ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(40,70, 20) As j ORDER BY i, j, i*j LIMIT 1;
+WITH vs AS (SELECT c[1]::int AS major, c[2]::int AS minor, c[3]::int AS patch
+    FROM (SELECT regexp_split_to_array(postgis_sfcgal_version(),'\.') AS c) AS r )
+SELECT '#667',
+CASE WHEN vs.major >= 1 AND vs.minor >= 0 AND vs.patch >=5 THEN
+ST_AsEWKT(ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))) 
+ELSE
+'SRID=4326;CURVEPOLYGON(CIRCULARSTRING(30 40,-50 39.9999999999999,30 40))'
+END As the_geom 
+FROM vs, generate_series(-10,50,10) As i CROSS JOIN generate_series(40,70, 20) As j ORDER BY i, j, i*j LIMIT 1;
 
 -- #677 --
 SELECT '#677',round(ST_Distance_Spheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
@@ -626,13 +634,6 @@ with inp as ( select
 ::geometry as g )
 select '#1543', st_astext(g), st_astext(st_buildarea(g)) from inp;
 
--- #1578
-with inp as (
- select ST_Collect('POLYGON EMPTY', 'POLYGON EMPTY') as mp,
-        'POINT(0 0)'::geometry as p
-)
-select '#1578', _st_within(p, mp), _st_intersects(p, mp) FROM inp;
-
 -- #1580
 select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
 select '#1580.2', ST_Transform('SRID=4326;POINT(180 90)'::geometry, 3395); -- fails
@@ -741,9 +742,6 @@ select st_astext(st_geomfromgml(
     </gml:LinearRing>
     </gml:interior>
     </gml:Polygon>'));
-
--- #1957 --
-SELECT '#1957', ST_Distance(ST_Makeline(ARRAY['POINT(1 0)'::geometry]), 'POINT(0 0)'::geometry);
 
 -- #1978 --
 SELECT '#1978', round(ST_Length(ST_GeomFromText('CIRCULARSTRING(0 0,1 0,0 0)',0))::numeric,4);
