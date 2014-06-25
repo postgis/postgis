@@ -10,6 +10,7 @@ PostGIS 2.1.4
  * Bug Fixes *
 
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
+  - #2775, Fix regressions tests against all versions of SFCGAL
 
 PostGIS 2.1.3
 2014/05/13

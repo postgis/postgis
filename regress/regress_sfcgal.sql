@@ -10,7 +10,20 @@ SELECT 'ST_Tesselate', ST_AsText(ST_Tesselate('GEOMETRYCOLLECTION(POINT(4 4),POL
 SELECT 'ST_3DArea', ST_3DArea('POLYGON((0 0 0,1 0 0,1 1 0,0 1 0,0 0 0))');
 SELECT 'ST_Extrude_point', ST_AsText(ST_Extrude('POINT(0 0)', 1, 0, 0));
 SELECT 'ST_Extrude_line', ST_AsText(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0));
-SELECT 'ST_Extrude_surface', ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1));
+-- In the first SFCGAL versions, the extruded face was wrongly oriented
+-- we change the extrusion result to match the original
+SELECT 'ST_Extrude_surface', 
+CASE WHEN postgis_sfcgal_version() = '1.0' 
+THEN
+    ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1))
+ELSE
+    regexp_replace(
+    regexp_replace(
+    ST_AsText(ST_Extrude(ST_Extrude(ST_Extrude('POINT(0 0)', 1, 0, 0), 0, 1, 0), 0, 0, 1)) , 
+    '\(\(0 1 0,1 1 0,1 0 0,0 1 0\)\)', '((1 1 0,1 0 0,0 1 0,1 1 0))'),
+    '\(\(0 1 0,1 0 0,0 0 0,0 1 0\)\)', '((1 0 0,0 0 0,0 1 0,1 0 0))')
+END;
+
 SELECT 'ST_ForceLHR', ST_AsText(ST_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
 SELECT 'ST_Orientation_1', ST_Orientation(ST_ForceLHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
 SELECT 'ST_Orientation_2', ST_Orientation(ST_ForceRHR('POLYGON((0 0,0 1,1 1,1 0,0 0))'));
