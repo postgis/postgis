@@ -15,7 +15,7 @@
 #include "lwgeom_log.h"
 #include "../postgis_config.h"
 
-#ifdef HAVE_LIBJSON
+#if defined(HAVE_LIBJSON) || defined(HAVE_LIBJSON_C) /* --{ */
 
 #ifdef HAVE_LIBJSON_C
 #include <json-c/json.h>
@@ -28,7 +28,7 @@
 #ifndef JSON_C_VERSION
 // Adds support for libjson < 0.10
 # define json_tokener_error_desc(x) json_tokener_errors[(x)]
-#else
+#endif
 
 #include <string.h>
 
@@ -496,7 +496,7 @@ parse_geojson(json_object *geojson, int *hasz,  int root_srid)
 	return NULL; /* Never reach */
 }
 
-#endif /* HAVE_LIBJSON  */
+#endif /* HAVE_LIBJSON or HAVE_LIBJSON_C --} */
 
 LWGEOM*
 lwgeom_from_geojson(const char *geojson, char **srs)
@@ -559,7 +559,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	}
 
   return lwgeom;
-#endif /* HAVE_LIBJSON  */
+#endif /* HAVE_LIBJSON } */
 }
 
 

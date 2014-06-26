@@ -632,7 +632,7 @@ HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
 	if test -x "$SFCGAL_CONFIG"; then
-		SFCGAL_VERSION=`$SFCGAL_CONFIG --version`
+		SFCGAL_VERSION=`$SFCGAL_CONFIG --version` || AC_MSG_ERROR([cannot determine sfcgal version (tried with $SFCGAL_CONFIG --version)])
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
 		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`" -DHAVE_SFCGAL"
 
