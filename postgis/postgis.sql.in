@@ -715,7 +715,50 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
 	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal);
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- SP-GiST Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_2d(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_leaf_consistent_2d'
+	LANGUAGE 'c';
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_2d(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_inner_consistent_2d'
+	LANGUAGE 'c';
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal,internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_picksplit_2d'
+	LANGUAGE 'c';
+
+
+-- Availability: 2.2.0
+CREATE OPERATOR CLASS spgist_geometry_ops_2d
+	DEFAULT FOR TYPE geometry USING SPGIST AS
+	STORAGE box2df,
+	OPERATOR        1        <<  ,
+	OPERATOR        2        &<	 ,
+	OPERATOR        3        &&  ,
+	OPERATOR        4        &>	 ,
+	OPERATOR        5        >>	 ,
+	OPERATOR        6        ~=	 ,
+	OPERATOR        7        ~	 ,
+	OPERATOR        8        @	 ,
+	OPERATOR        9        &<| ,
+	OPERATOR        10       <<| ,
+	OPERATOR        11       |>> ,
+	OPERATOR        12       |&> ,
+	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
+	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
+	FUNCTION        8        spg_quad_leaf_consistent (internal, geometry, int4),
+	FUNCTION        1        spg_quad_inner_consistent (internal, geometry, int4),
+	FUNCTION        6        spg_quad_picksplit (internal, internal),
 
 -----------------------------------------------------------------------------
 -- GiST ND GEOMETRY-over-GSERIALIZED
