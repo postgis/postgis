@@ -134,7 +134,7 @@ y_cmp(const void *a, const void *b, void *arg)
 #endif
 
 Datum
-spg_quad_picksplit(PG_FUNCTION_ARGS)
+geometry_spgist_picksplit_2d(PG_FUNCTION_ARGS)
 {
 	spgPickSplitIn *in = (spgPickSplitIn *) PG_GETARG_POINTER(0);
 	spgPickSplitOut *out = (spgPickSplitOut *) PG_GETARG_POINTER(1);
@@ -192,7 +192,7 @@ spg_quad_picksplit(PG_FUNCTION_ARGS)
 
 
 Datum
-spg_quad_inner_consistent(PG_FUNCTION_ARGS)
+geometry_spgist_inner_consistent_2d(PG_FUNCTION_ARGS)
 {
 	spgInnerConsistentIn *in = (spgInnerConsistentIn *) PG_GETARG_POINTER(0);
 	spgInnerConsistentOut *out = (spgInnerConsistentOut *) PG_GETARG_POINTER(1);
@@ -301,7 +301,7 @@ spg_quad_inner_consistent(PG_FUNCTION_ARGS)
 
 
 Datum
-spg_quad_leaf_consistent(PG_FUNCTION_ARGS)
+geometry_spgist_leaf_consistent_2d(PG_FUNCTION_ARGS)
 {
 	spgLeafConsistentIn *in = (spgLeafConsistentIn *) PG_GETARG_POINTER(0);
 	spgLeafConsistentOut *out = (spgLeafConsistentOut *) PG_GETARG_POINTER(1);

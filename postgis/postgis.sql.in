@@ -719,25 +719,26 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 -- SP-GiST Support Functions
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION spg_quad_leaf_consistent(internal,geometry,int4) 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_2d(internal,geometry,int4) 
 	RETURNS bool 
-	AS '$libdir/postgis-2.0' ,'spg_quad_leaf_consistent'
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_leaf_consistent_2d'
 	LANGUAGE 'c';
 
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION spg_quad_inner_consistent(internal,geometry,int4) 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_2d(internal,geometry,int4) 
 	RETURNS bool 
-	AS '$libdir/postgis-2.0' ,'spg_quad_leaf_consistent'
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_inner_consistent_2d'
 	LANGUAGE 'c';
 
-CREATE OR REPLACE FUNCTION spg_quad_inner_consistent(internal,geometry,int4) 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal,internal) 
 	RETURNS internal 
-	AS '$libdir/postgis-2.0' ,'spg_quad_leaf_consistent'
+	AS 'MODULE_PATHNAME' ,'geometry_spgist_picksplit_2d'
 	LANGUAGE 'c';
 
 
--- Availability: 2.0.0
+-- Availability: 2.2.0
 CREATE OPERATOR CLASS spgist_geometry_ops_2d
 	DEFAULT FOR TYPE geometry USING SPGIST AS
 	STORAGE box2df,
