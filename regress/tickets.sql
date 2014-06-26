@@ -858,6 +858,7 @@ INSERT INTO images VALUES (1, 'first_image', 'SRID=4326;POLYGON((-162.211667 88.
 SELECT '#2556' AS ticket, id, round(ST_Distance(extent, 'SRID=4326;POLYGON((-46.625977 81.634149,-46.625977 81.348076,-48.999023 81.348076,-48.999023 81.634149,-46.625977 81.634149))'::geography)) from images;
 DROP TABLE images;
 
+SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
