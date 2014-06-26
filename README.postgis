@@ -96,6 +96,9 @@ To configure PostGIS, run::
 
   ./configure
 
+If the file is missing you must be using a development version
+of the code. In that case call ./autogen.sh to generate it.
+
 The results of the configuration can be easily seen within the
 ``postgis_config.h`` file.
 
