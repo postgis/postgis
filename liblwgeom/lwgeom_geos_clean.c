@@ -834,15 +834,16 @@ LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
 
 	/* Collect areas and lines (if any line) */
 	gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms);
-	lwfree(vgeoms);
 	if ( ! gout )   /* an exception again */
 	{
 		/* cleanup and throw */
 		for ( i=0; i<nvgeoms; ++i ) GEOSGeom_destroy(vgeoms[i]);
+		lwfree(vgeoms);
 		lwerror("GEOSGeom_createCollection() threw an error: %s",
 		         lwgeom_geos_errmsg);
 		return NULL;
 	}
+	lwfree(vgeoms);
 
 	return gout;
 
