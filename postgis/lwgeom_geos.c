@@ -18,12 +18,6 @@
 #include "miscadmin.h"
 #include "utils/array.h"
 
-#if POSTGIS_PGSQL_VERSION >= 93
-#include "access/htup_details.h"
-#else
-#include "access/htup.h"
-#endif
-
 #include "utils/builtins.h"
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
@@ -31,6 +25,13 @@
 #include "funcapi.h"
 
 #include "../postgis_config.h"
+
+#if POSTGIS_PGSQL_VERSION >= 93
+#include "access/htup_details.h"
+#else
+#include "access/htup.h"
+#endif
+
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
