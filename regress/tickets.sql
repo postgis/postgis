@@ -859,6 +859,23 @@ SELECT '#2556' AS ticket, id, round(ST_Distance(extent, 'SRID=4326;POLYGON((-46.
 DROP TABLE images;
 
 SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
+
+SELECT '#2704', ST_AsText(ST_GeomFromGML('<?xml version="1.0"?>
+<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd"
+             gml:id="ID1">
+    <gml:exterior>
+        <gml:LinearRing>
+            <gml:pos>0 0</gml:pos>
+            <gml:pos>0 1</gml:pos>
+            <gml:pos>1 1</gml:pos>
+            <gml:pos>1 0</gml:pos>
+            <gml:pos>0 0</gml:pos>
+        </gml:LinearRing>
+    </gml:exterior>
+</gml:Polygon>'));
+
 SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 
 SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))'::geometry);
