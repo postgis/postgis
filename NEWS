@@ -9,6 +9,7 @@ PostGIS 2.1.4
 
  * Bug Fixes *
 
+  - #2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
   - Fix potential memory fault in ST_MakeValid
   - #2784, Fix handling of bogus argument to --with-sfcgal
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
