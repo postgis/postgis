@@ -2484,6 +2484,7 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 	assert(gbox);
 	assert(pa);
 
+	gbox_init(&edge_gbox);
 	edge_gbox.flags = gbox->flags;
 
 	if ( pa->npoints == 0 ) return LW_FAILURE;
