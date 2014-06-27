@@ -1,6 +1,10 @@
 PostGIS 2.0.7
 YYYY/MM/DD
 
+ * Bug Fixes *
+
+  - #2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
+
 PostGIS 2.0.6
 2014/05/14
 
