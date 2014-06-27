@@ -17,6 +17,13 @@
 #include "fmgr.h"
 #include "miscadmin.h"
 #include "utils/array.h"
+
+#if POSTGIS_PGSQL_VERSION >= 93
+#include "access/htup_details.h"
+#else
+#include "access/htup.h"
+#endif
+
 #include "utils/builtins.h"
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
@@ -1824,7 +1831,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	GEOSGeometry *geos_location = NULL;
 	LWGEOM *location = NULL;
 	char valid = 0;
-	Datum result;
+	HeapTupleHeader result;
 	TupleDesc tupdesc;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
@@ -1896,7 +1903,9 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	values[2] =  location ? lwgeom_to_hexwkb(location, WKB_EXTENDED, 0) : 0;
 
 	tuple = BuildTupleFromCStrings(attinmeta, values);
-	result = HeapTupleGetDatum(tuple);
+	result = (HeapTupleHeader) palloc(tuple->t_len);
+	memcpy(result, tuple->t_data, tuple->t_len);
+	heap_freetuple(tuple);
 
 	PG_RETURN_HEAPTUPLEHEADER(result);
 

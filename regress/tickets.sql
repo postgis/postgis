@@ -861,5 +861,7 @@ DROP TABLE images;
 SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
 SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 
+SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))'::geometry);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
