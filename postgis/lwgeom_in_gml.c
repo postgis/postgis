@@ -684,7 +684,6 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 {
 	xmlChar *dimension, *gmlpos;
-	xmlNodePtr posnode;
 	int dim, gml_dim;
 	POINTARRAY *dpa;
 	char *pos, *p;
@@ -694,61 +693,53 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 	/* HasZ, !HasM, 1 Point */
 	dpa = ptarray_construct_empty(1, 0, 1);
 
-	for (posnode = xnode ; posnode != NULL ; posnode = posnode->next)
-	{
-		/* We only care about gml:pos element */
-		if (posnode->type != XML_ELEMENT_NODE) continue;
-		if (!is_gml_namespace(posnode, false)) continue;
-		if (strcmp((char *) posnode->name, "pos")) continue;
+    dimension = gmlGetProp(xnode, (xmlChar *) "srsDimension");
+    if (dimension == NULL) /* in GML 3.0.0 it was dimension */
+        dimension = gmlGetProp(xnode, (xmlChar *) "dimension");
+    if (dimension == NULL) dim = 2;	/* We assume that we are in 2D */
+    else
+    {
+        dim = atoi((char *) dimension);
+        xmlFree(dimension);
+        if (dim < 2 || dim > 3)
+            gml_lwerror("invalid GML representation", 25);
+    }
+    if (dim == 2) *hasz = false;
 
-		dimension = gmlGetProp(xnode, (xmlChar *) "srsDimension");
-		if (dimension == NULL) /* in GML 3.0.0 it was dimension */
-			dimension = gmlGetProp(xnode, (xmlChar *) "dimension");
-		if (dimension == NULL) dim = 2;	/* We assume that we are in 2D */
-		else
-		{
-			dim = atoi((char *) dimension);
-			xmlFree(dimension);
-			if (dim < 2 || dim > 3)
-				gml_lwerror("invalid GML representation", 25);
-		}
-		if (dim == 2) *hasz = false;
+    /* We retrieve gml:pos string */
+    gmlpos = xmlNodeGetContent(xnode);
+    pos = (char *) gmlpos;
+    while (isspace(*pos)) pos++;	/* Eat extra whitespaces if any */
 
-		/* We retrieve gml:pos string */
-		gmlpos = xmlNodeGetContent(posnode);
-		pos = (char *) gmlpos;
-		while (isspace(*pos)) pos++;	/* Eat extra whitespaces if any */
+    /* gml:pos pattern: 	x1 y1
+        * 			x1 y1 z1
+        */
+    for (p=pos, gml_dim=0, digit=false ; *pos ; pos++)
+    {
+        if (isdigit(*pos)) digit = true;
+        if (digit && (*pos == ' ' || *(pos+1) == '\0'))
+        {
+            if (*pos == ' ') *pos = '\0';
+            gml_dim++;
+            if 	(gml_dim == 1)
+                pt.x = parse_gml_double(p, true, true);
+            else if (gml_dim == 2)
+                pt.y = parse_gml_double(p, true, true);
+            else if (gml_dim == 3)
+                pt.z = parse_gml_double(p, true, true);
 
-		/* gml:pos pattern: 	x1 y1
-		 * 			x1 y1 z1
-		 */
-		for (p=pos, gml_dim=0, digit=false ; *pos ; pos++)
-		{
-			if (isdigit(*pos)) digit = true;
-			if (digit && (*pos == ' ' || *(pos+1) == '\0'))
-			{
-				if (*pos == ' ') *pos = '\0';
-				gml_dim++;
-				if 	(gml_dim == 1)
-					pt.x = parse_gml_double(p, true, true);
-				else if (gml_dim == 2)
-					pt.y = parse_gml_double(p, true, true);
-				else if (gml_dim == 3)
-					pt.z = parse_gml_double(p, true, true);
+            p = pos+1;
+            digit = false;
+        }
+    }
+    xmlFree(gmlpos);
 
-				p = pos+1;
-				digit = false;
-			}
-		}
-		xmlFree(gmlpos);
+    /* Test again coherent dimensions on each coord */
+    if (gml_dim == 2) *hasz = false;
+    if (gml_dim < 2 || gml_dim > 3 || gml_dim != dim)
+        gml_lwerror("invalid GML representation", 26);
 
-		/* Test again coherent dimensions on each coord */
-		if (gml_dim == 2) *hasz = false;
-		if (gml_dim < 2 || gml_dim > 3 || gml_dim != dim)
-			gml_lwerror("invalid GML representation", 26);
-
-		ptarray_append_point(dpa, &pt, LW_FALSE);
-	}
+    ptarray_append_point(dpa, &pt, LW_FALSE);
 
 	return ptarray_clone_deep(dpa);
 }
