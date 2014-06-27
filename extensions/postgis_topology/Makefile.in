@@ -4,6 +4,7 @@ EXTENSION    = postgis_topology
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 GREP=@GREP@
+PERL=@PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -59,7 +60,7 @@ sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cat $< | ../../utils/create_unpackaged.pl postgis_topology > $@
+	cat $< | $(PERL) ../../utils/create_unpackaged.pl postgis_topology > $@
 
 #upgrade script should have everything but table, schema, type creation/alter
 #NOTE: we assume all object definitions end in ;
