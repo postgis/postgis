@@ -436,5 +436,5 @@ FROM raster_outdb_template
 ORDER BY rid;
 */
 
-SELECT 'bandpath1', right(ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)), 14);
+SELECT 'bandpath1', trim(both ' ' from ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)));
 --SELECT 'bandpath2', right(ST_BandPath(rast), 14) from raster_outdb_template order by rid;
