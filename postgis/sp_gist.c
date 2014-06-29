@@ -49,7 +49,7 @@ spg_quad_config(PG_FUNCTION_ARGS)
  * Points on one of the axes are taken to lie in the lowest-numbered
  * adjacent quadrant.
  */
-static int2
+static int
 getQuadrant(Point *centroid, Point *tst)
 {
 	if ((SPTEST(point_above, tst, centroid) ||
