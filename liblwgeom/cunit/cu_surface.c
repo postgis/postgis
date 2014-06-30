@@ -240,6 +240,7 @@ void polyhedralsurface_parse(void)
 	LWGEOM *geom;
 	GSERIALIZED *g;
 	char *tmp;
+	unsigned char *utmp;
 
 	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
@@ -313,9 +314,9 @@ void polyhedralsurface_parse(void)
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
-	tmp = lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
+	utmp = lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
 	CU_ASSERT_STRING_EQUAL("010F00000000000000", tmp);
-	lwfree(tmp);
+	lwfree(utmp);
 	tmp = lwgeom_to_ewkt(geom);
 	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE EMPTY", tmp);
 	lwfree(tmp);
