@@ -290,7 +290,7 @@ distclean: clean
 	rm -f Makefile
 
 maintainer-clean: clean images-clean
-	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
 
 ifeq ($(XSLTPROC),)
 comments: requirements_not_met_xsltproc
