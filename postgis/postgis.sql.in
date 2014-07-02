@@ -740,7 +740,7 @@ CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal,internal)
 
 -- Availability: 2.2.0
 CREATE OPERATOR CLASS spgist_geometry_ops_2d
-	DEFAULT FOR TYPE geometry USING SPGIST AS
+	DEFAULT FOR TYPE box2df USING SPGIST AS
 	STORAGE box2df,
 --	OPERATOR        1        <<  ,
 --	OPERATOR        2        &<	 ,
