@@ -4,7 +4,7 @@ The code is built into a single postgresql extension library.
 Portions of this code belong to their respective contributors.
 This code is released under an MIT-X license.
 
-Copyright (c) 2006-2013 Stephen Woodbridge.
+Copyright (c) 2006-2014 Stephen Woodbridge.
 Copyright (c) 2008 Walter Bruce Sinclair
 
 woodbri@swoodbridge.com
