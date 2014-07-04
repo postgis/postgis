@@ -4,6 +4,7 @@ EXTENSION     = postgis
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 GREP = @GREP@
+PERL=@PERL@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -47,7 +48,7 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql ../../utils/create_unpackaged.pl
 	mkdir -p sql
-	cat ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql | ../../utils/create_unpackaged.pl postgis > $@
+	cat ../../postgis/postgis.sql ../../raster/rt_pg/rtpostgis.sql | $(PERL) ../../utils/create_unpackaged.pl postgis > $@
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_raster_upgrade_minor.sql

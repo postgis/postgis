@@ -314,7 +314,7 @@ void polyhedralsurface_parse(void)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	tmp = lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
-	CU_ASSERT_STRING_EQUAL("010F00000000000000", tmp);
+	CU_ASSERT_STRING_EQUAL("010F00000000000000", (char*)tmp);
 	lwfree(tmp);
 	tmp = lwgeom_to_ewkt(geom);
 	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE EMPTY", tmp);

@@ -14,6 +14,9 @@ SUBDIRS += postgis_tiger_geocoder
 ifeq (@TOPOLOGY@,topology)
 	SUBDIRS += postgis_topology
 endif
+ifeq (@SFCGAL@,sfcgal)
+	SUBDIRS += postgis_sfcgal
+endif
 
 all clean distclean install uninstall:
 	for DIR in $(SUBDIRS); do \

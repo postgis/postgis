@@ -13,6 +13,10 @@
 -- New SFCGAL functions (meaning prototype not already provided by GEOS)
 --
 
+#include "sqldefines.h"
+
+-- INSTALL VERSION: POSTGIS_LIB_VERSION
+
 BEGIN;
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text

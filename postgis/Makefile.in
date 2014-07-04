@@ -15,7 +15,7 @@ MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
 # Files to be copied to the contrib/ directory
-SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql uninstall_sfcgal.sql
+SQL_built=postgis.sql uninstall_postgis.sql postgis_upgrade.sql  legacy.sql uninstall_legacy.sql legacy_minimal.sql legacy_gist.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring pre-processing)
@@ -25,7 +25,7 @@ GEOM_BACKEND_OBJ = lwgeom_geos.o
 SFCGAL_BACKEND_OBJ = lwgeom_sfcgal.o
 
 ifeq (@SFCGAL@,sfcgal)
-DATA_built=$(SQL_built) sfcgal.sql
+DATA_built=$(SQL_built) sfcgal.sql sfcgal_upgrade.sql uninstall_sfcgal.sql
 SQL_OBJS=$(SQL_objs) sfcgal.sql
 BACKEND_OBJ=$(GEOM_BACKEND_OBJ) $(SFCGAL_BACKEND_OBJ)
 else
@@ -105,7 +105,9 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	uninstall_legacy.sql \
 	uninstall_sfcgal.sql \
 	postgis_upgrade.sql.in \
-	postgis_upgrade.sql
+	postgis_upgrade.sql \
+	sfcgal_upgrade.sql.in \
+	sfcgal_upgrade.sql
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
@@ -168,6 +170,12 @@ postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 postgis_upgrade.sql: postgis_drop_before.sql postgis_upgrade.sql.in postgis_drop_after.sql
+	cat $^ > $@
+
+sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl
+	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
+
+sfcgal_upgrade.sql: sfcgal_upgrade.sql.in postgis_drop_after.sql
 	cat $^ > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version

@@ -650,5 +650,15 @@ SELECT
 	(ST_BandMetadata(rast, 1))
 FROM foo;
 
+-- Test that you can't pass a strict callback and no user argument
+-- Se http://trac.osgeo.org/postgis/ticket/2803
+CREATE FUNCTION strict_cb(float8[][][], int[][], text[])
+returns float8 AS $$ select 0::float8; $$ language 'sql' immutable strict;
+SELECT ST_MapAlgebra( t1.rast, 2,
+ 'strict_cb(float8[][][], int[][], text[])'::regprocedure)
+	FROM raster_nmapalgebra_in t1;
+DROP FUNCTION strict_cb(float8[][][],int[][],text[]);
+
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_in;
+

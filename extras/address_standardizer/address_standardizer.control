@@ -1,0 +1,5 @@
+# address_standardizer extension
+comment = ''
+default_version = '1.0'
+encoding = 'LATIN1'
+relocatable = true

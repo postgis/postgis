@@ -182,7 +182,7 @@ ifeq ($(HAVE_SFCGAL),yes)
 		sfcgal/concave_hull.sql \
 		sfcgal/wmsservers.sql
 
-	RUNTESTFLAGS = --sfcgal
+	SFCGALTESTFLAGS = --sfcgal
 endif
 
 
@@ -208,8 +208,8 @@ staged-install: staged-install-raster staged-install-topology
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install
-	$(PERL) run_test.pl $(RUNTESTFLAGS) $(TESTS) && \
-	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS)
+	$(PERL) run_test.pl $(RUNTESTFLAGS) ${SFCGALTESTFLAGS} $(TESTS) && \
+	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) ${SFCGALTESTFLAGS} $(TESTS)
 
 garden:
 	createdb postgis_garden

@@ -27,6 +27,8 @@ PostGIS 2.2.0
     rasters with out-db bands
   - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
     variable GDAL_DATA
+  - #2387 address_standardizer extension as part of PostGIS
+     Stephen Woodbridge (imaptools.com), Walter Sinclair
   - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
   - #2430, ST_ForceCurve
@@ -43,6 +45,8 @@ PostGIS 2.2.0
            band is NODATA
   - #2616, Reduce text casts during topology building and export
   - #2747, Add support for GDAL 2.0
+  - #2754, SFCGAL can now be installed with CREATE EXTENSION
+       Vincent Mora (Oslandia)
 
  * Bug Fixes *
 

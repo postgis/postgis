@@ -1901,6 +1901,13 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	}
 
 	inlwgeom = lwgeom_from_gserialized(ingeom);
+	
+	if ( lwgeom_is_empty(inlwgeom) )
+	{
+		lwgeom_free(inlwgeom);
+		PG_RETURN_POINTER(ingeom);
+	}
+	
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
 
 	/* Copy input bounding box if any */

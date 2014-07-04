@@ -457,8 +457,7 @@
 				<title>PostGIS Functions new or enhanced in 2.2</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
 	
-				<note><para>Tiger Geocoder upgraded to work with TIGER 2013 census data. 
-					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
+				<note><para>postgis_sfcgal now can be installed as an extension using CREATE EXTENSION postgis_sfcgal;</para></note>
 					
 				<para>Functions new in PostGIS 2.2</para>
 				<itemizedlist>
@@ -490,6 +489,34 @@
 					</xsl:for-each>
 				</itemizedlist>
 			</sect2>
+			
+		 <sect2 id="ChangedFunctions_2_2"><title>PostGIS functions breaking changes in 2.2</title>
+				<para>The functions given below are PostGIS functions that have possibly breaking changes in PostGIS 2.2.  If you use any of these, you may need to check your existing code.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry   -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				<!-- For each section if there is note about enhanced in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Changed: 2.2')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+			</sect2>
+
 			
 			<sect2 id="NewFunctions_2_1">
 				<title>PostGIS Functions new or enhanced in 2.1</title>
