@@ -670,7 +670,6 @@ char *
 rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize) {
 	uint8_t *wkb = NULL;
 	char* hexwkb = NULL;
-	uint32_t i = 0;
 	uint32_t wkbsize = 0;
 
 	assert(NULL != raster);
@@ -689,11 +688,16 @@ rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize) {
 		rtdealloc(wkb);
 		return NULL;
 	}
-	hexwkb[*hexwkbsize] = '\0'; /* Null-terminate */
 
-	for (i = 0; i < wkbsize; ++i) {
-		deparse_hex(wkb[i], &(hexwkb[2 * i]));
+	char *optr = hexwkb;
+	uint8_t *iptr = wkb;
+	const char hexchar[]="0123456789ABCDEF";
+	while (wkbsize--) {
+		uint8_t v = *iptr++;
+		*optr++ = hexchar[v>>4];
+		*optr++ = hexchar[v & 0x0F];
 	}
+	*optr = '\0'; /* Null-terminate */
 
 	rtdealloc(wkb); /* we don't need this anymore */
 
