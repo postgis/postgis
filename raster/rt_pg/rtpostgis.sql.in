@@ -2573,14 +2573,14 @@ CREATE OR REPLACE FUNCTION st_resize(
 					END IF;
 
 					whd[i] := wh[i]::double precision * 0.01;
-				EXCEPTION WHEN OTHERS THEN
+				EXCEPTION WHEN OTHERS THEN -- TODO: WHEN invalid_parameter_value !
 					RAISE EXCEPTION 'Invalid percentage value provided for width/height';
 					RETURN NULL;
 				END;
 			ELSE
 				BEGIN
 					whi[i] := abs(wh[i]::integer);
-				EXCEPTION WHEN OTHERS THEN
+				EXCEPTION WHEN OTHERS THEN -- TODO: only handle appropriate SQLSTATE
 					RAISE EXCEPTION 'Non-integer value provided for width/height';
 					RETURN NULL;
 				END;
@@ -6790,7 +6790,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint(cn name, sql text)
 			WHEN OTHERS THEN
 				RAISE NOTICE 'Unable to add constraint: %', cn;
 				RAISE NOTICE 'SQL used for failed constraint: %', sql;
-				RAISE NOTICE 'Returned error message: %', SQLERRM;
+				RAISE NOTICE 'Returned error message: % (%)', SQLERRM, SQLSTATE;
 				RETURN FALSE;
 		END;
 
@@ -6820,7 +6820,8 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint(rastschema name, rasttable na
 			WHEN undefined_object THEN
 				RAISE NOTICE 'The constraint "%" does not exist.  Skipping', cn;
 			WHEN OTHERS THEN
-				RAISE NOTICE 'Unable to drop constraint "%"', cn;
+				RAISE NOTICE 'Unable to drop constraint "%": % (%)',
+          cn, SQLERRM, SQLSTATE;
 				RETURN FALSE;
 		END;
 
@@ -6868,7 +6869,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttabl
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the SRID of a sample raster';
+			RAISE NOTICE 'Unable to get the SRID of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -6934,7 +6936,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the %-scale of a sample raster', upper($4);
+			RAISE NOTICE 'Unable to get the %-scale of a sample raster: % (%)',
+        upper($4), SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -7014,7 +7017,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_blocksize(rastschema name, ras
 				attrset := attrset || attr;
 			END LOOP;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the % of a sample raster', $4;
+			RAISE NOTICE 'Unable to get the % of a sample raster: % (%)',
+        $4, SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -7080,7 +7084,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the extent of the raster column. Attempting memory efficient (slower) approach';
+			RAISE NOTICE 'Unable to get the extent of the raster column (%:%). Attempting memory efficient (slower) approach', SQLSTATE, SQLERRM;
 
 			sql := 'SELECT st_ashexewkb(st_memunion(st_convexhull('
 				|| quote_ident($3)
@@ -7089,7 +7093,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 			BEGIN
 				EXECUTE sql INTO attr;
 			EXCEPTION WHEN OTHERS THEN
-				RAISE NOTICE 'Still unable to get the extent of the raster column. Cannot add extent constraint';
+				RAISE NOTICE 'Still unable to get the extent of the raster column (%:%). Cannot add extent constraint', SQLSTATE, SQLERRM;
 				RETURN FALSE;
 			END;
 		END;
@@ -7148,7 +7152,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the alignment of a sample raster';
+			RAISE NOTICE 'Unable to get the alignment of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -7284,20 +7289,25 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 			sql := 'WITH foo AS (SELECT ST_Metadata(' || quote_ident($3) || ') AS meta, ST_ConvexHull(' || quote_ident($3) || ') AS hull FROM ' || fqtn || ') SELECT max((meta).scalex), max((meta).scaley), max((meta).skewx), max((meta).skewy), max((meta).width), max((meta).height), ST_Union(hull) FROM foo';
 			EXECUTE sql INTO _scalex, _scaley, _skewx, _skewy, _tilewidth, _tileheight, _covextent;
 		EXCEPTION WHEN OTHERS THEN
+			RAISE DEBUG 'Unable to get coverage metadata for %.%: % (%)',
+        fqtn, quote_ident($3), SQLERRM, SQLSTATE;
+      -- TODO: Why not return false here ?
 		END;
 
 		-- rasterize extent
 		BEGIN
 			_covrast := ST_AsRaster(_covextent, _scalex, _scaley, '8BUI', 1, 0, NULL, NULL, _skewx, _skewy);
 			IF _covrast IS NULL THEN
-				RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint';
+				RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint: % (%)',
+          SQLERRM, SQLSTATE;
 				RETURN FALSE;
 			END IF;
 
 			-- remove band
 			_covrast := ST_MakeEmptyRaster(_covrast);
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint';
+			RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -7378,7 +7388,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_num_bands(rastschema name, ras
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the number of bands of a sample raster';
+			RAISE NOTICE 'Unable to get the number of bands of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 
@@ -7442,12 +7453,13 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, r
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the pixel types of a sample raster';
+			RAISE NOTICE 'Unable to get the pixel types of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 		max := array_length(attr, 1);
 		IF max < 1 OR max IS NULL THEN
-			RAISE NOTICE 'Unable to get the pixel types of a sample raster';
+			RAISE NOTICE 'Unable to get the pixel types of a sample raster (max < 1 or null)';
 			RETURN FALSE;
 		END IF;
 
@@ -7518,12 +7530,13 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the nodata values of a sample raster';
+			RAISE NOTICE 'Unable to get the nodata values of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 		max := array_length(attr, 1);
 		IF max < 1 OR max IS NULL THEN
-			RAISE NOTICE 'Unable to get the nodata values of a sample raster';
+			RAISE NOTICE 'Unable to get the nodata values of a sample raster (max < 1 or null)';
 			RETURN FALSE;
 		END IF;
 
@@ -7598,12 +7611,13 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rastta
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster';
+			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster: % (%)',
+        SQLERRM, SQLSTATE;
 			RETURN FALSE;
 		END;
 		max := array_length(attr, 1);
 		IF max < 1 OR max IS NULL THEN
-			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster';
+			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster (max < 1 or null)';
 			RETURN FALSE;
 		END IF;
 
