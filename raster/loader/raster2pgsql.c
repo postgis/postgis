@@ -794,6 +794,7 @@ flush_stringbuffer(STRINGBUFFER *buffer) {
 	rtdealloc_stringbuffer(buffer, 0);
 }
 
+/* Takes ownership of the passed string */
 static int
 append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
 	buffer->length++;
@@ -804,13 +805,7 @@ append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
 		return 0;
 	}
 
-	buffer->line[buffer->length - 1] = NULL;
-	buffer->line[buffer->length - 1] = rtalloc(sizeof(char) * (strlen(str) + 1));
-	if (buffer->line[buffer->length - 1] == NULL) {
-		rterror(_("append_stringbuffer: Could not allocate memory for appending string to buffer"));
-		return 0;
-	}
-	strcpy(buffer->line[buffer->length - 1], str);
+	buffer->line[buffer->length - 1] = str;
 
 	return 1;
 }
@@ -864,7 +859,6 @@ insert_records(
 			);
 
 			append_sql_to_buffer(buffer, sql);
-			rtdealloc(sql);
 			sql = NULL;
 		}
 
@@ -908,7 +902,6 @@ insert_records(
 			);
 
 			append_sql_to_buffer(buffer, sql);
-			rtdealloc(sql);
 			sql = NULL;
 		}
 	}
@@ -938,7 +931,6 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 	);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -987,7 +979,6 @@ create_table(
 	);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1026,7 +1017,6 @@ copy_from(
 	);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 	sql = NULL;
 
 	return 1;
@@ -1035,7 +1025,7 @@ copy_from(
 static int
 copy_from_end(STRINGBUFFER *buffer) {
 	/* end of data */
-	append_sql_to_buffer(buffer, "\\.");
+	append_sql_to_buffer(buffer, strdup("\\."));
 
 	return 1;
 }
@@ -1088,7 +1078,6 @@ create_index(
 	rtdealloc(_column);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1119,7 +1108,6 @@ analyze_table(
 	);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1150,7 +1138,6 @@ vacuum_table(
 	);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1217,7 +1204,6 @@ add_raster_constraints(
 	rtdealloc(_column);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1324,7 +1310,6 @@ add_overview_constraints(
 	rtdealloc(_column);
 
 	append_sql_to_buffer(buffer, sql);
-	rtdealloc(sql);
 
 	return 1;
 }
@@ -1517,7 +1502,6 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			/* add hexwkb to tileset */
 			append_stringbuffer(tileset, hex);
 
-			rtdealloc(hex);
 			GDALClose(hdsDst);
 
 			/* flush if tileset gets too big */
@@ -1834,8 +1818,6 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* add hexwkb to tileset */
 				append_stringbuffer(tileset, hex);
 
-				rtdealloc(hex);
-
 				/* flush if tileset gets too big */
 				if (tileset->length > 10) {
 					if (!insert_records(
@@ -1953,7 +1935,6 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* add hexwkb to tileset */
 				append_stringbuffer(tileset, hex);
 
-				rtdealloc(hex);
 				GDALClose(hdsDst);
 
 				/* flush if tileset gets too big */
@@ -1989,7 +1970,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	assert(config->raster_column != NULL);
 
 	if (config->transaction) {
-		if (!append_sql_to_buffer(buffer, "BEGIN;")) {
+		if (!append_sql_to_buffer(buffer, strdup("BEGIN;"))) {
 			rterror(_("process_rasters: Could not add BEGIN statement to string buffer"));
 			return 0;
 		}
@@ -2252,7 +2233,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	}
 
 	if (config->transaction) {
-		if (!append_sql_to_buffer(buffer, "END;")) {
+		if (!append_sql_to_buffer(buffer, strdup("END;"))) {
 			rterror(_("process_rasters: Could not add END statement to string buffer"));
 			return 0;
 		}
