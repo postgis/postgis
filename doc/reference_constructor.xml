@@ -1020,7 +1020,7 @@ LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)
     <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_AsEncodedPolyline" />, <xref linkend="ST_AsEncodedPolyline" />, <xref linkend="ST_AsEncodedPolyline" /></para>
+    <para><xref linkend="ST_AsEncodedPolyline" /></para>
     </refsection>
   </refentry>
 
