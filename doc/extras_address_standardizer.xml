@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="Address_Standardizer">
+	<title>Address Standardizer</title>
+	<para>This is a fork of the <ulink url="http://www.pagcgeo.org/docs/html/pagc-11.html">PAGC standardizer</ulink> and a single line address parser.
+The code is built into a single postgresql extension library called <code>address_standardizer</code> which can be installed with <code>CREATE EXTENSION address_standardizer</code>.</para>
+	 <para>The code for this extension can be found in the PostGIS <filename>extras/adress_standardizer</filename> and is currently self-contained.</para>
+  <sect1 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
+  		<para>The parser works from right to left looking first at the macro elements 
+  			for postcode, state/province, city, and then looks micro elements to determine
+if we are dealing with a house number street or intersection or landmark.
+It currently does not look for a country code or name, but that could be
+introduced in the future.</para>
+			<variablelist>
+				<varlistentry>
+						<term>Country code</term>
+						<listitem><para>Assumed to be US or CA based on: postcode as US or Canada state/province as US or Canada else US</para></listitem>
+				</varlistentry>
+				<varlistentry>
+						<term>Postcode/zipcode</term>
+						<listitem><para>These are recognized using Perl compatible regular expressions.
+These regexs are currently in the parseaddress-api.c and are relatively
+simple to make changes to if needed.</para></listitem>
+				</varlistentry>
+				<varlistentry>
+						<term>State/province</term>
+						<listitem><para>These are recognized using Perl compatible regular expressions.
+These regexs are currently in the parseaddress-api.c but could get moved
+into includes in the future for easier maintenance.</para></listitem>
+				</varlistentry>
+			</variablelist>
+  </sect1>
+  <sect1 id="Address_Standardizer_Types"><title>Address Standardizer Types</title>
+  		  <sect1info>
+            <abstract>
+                <para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very 
+                    important especially when designing your own functions.  
+                </para>	
+            </abstract>
+        </sect1info>
+        <refentry id="stdaddr">
+					<refnamediv>
+					<refname>stdaddr</refname>
+						<refpurpose>A composite type that consists of the elements of an address.  This is the return type for <varname>standardize_address</varname> function.</refpurpose>
+					</refnamediv>
+					<refsection>
+						<title>Description</title>
+						<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
+						<para>The token numbers denote the reference number in the <varname>rules</varname> table.</para>
+						<variablelist>
+							<varlistentry>
+									<term>building</term>
+									<listitem>
+										<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
+									</listitem>
+							</varlistentry>
+							<varlistentry><term>house_num</term> 
+								<listitem>
+									<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry><listitem><term>predir</term>
+							   	<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
+							</listitem></varlistentry>
+							<varlistentry><term>qual</term> 
+								<listitem>
+										<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry><term>pretype</term>
+								<listitem>
+										<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry><term>name</term>
+									<listitem>
+										<para>is text (token number <code>5</code>): STREET NAME</para>
+									</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>suftype</term>
+									<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>sufdir</term>
+									<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>ruralroute</term>
+									<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>extra</term>
+									<para>is text: Extra information like Floor number.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>city</term>
+									<para>is text (token number <code>10</code>): Example Boston.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>state</term>
+									<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>country</term>
+									<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>postcode</term>
+									<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>box</term>
+									<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<listitem><term>unit</term>
+									<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
+								</listitem>
+							</varlistentry>
+					</variablelist>
+					</refsection>
+				</refentry>
+  </sect1>
+  <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
+		<refentry id="standardize_address">
+		<refnamediv>
+			<refname>standardize_address</refname>
+	
+			<refpurpose>Returns an stdaddr form of an input address utilizing lex, gaz, and rule tables.</refpurpose>
+		</refnamediv>
+	
+		<refsynopsisdiv>
+			<funcsynopsis>
+				 <funcprototype>
+					<funcdef>stdaddr <function>standardize_address</function></funcdef>
+					<paramdef><type>text </type> <parameter>lextab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rultab</parameter></paramdef>
+				</funcprototype>
+				
+				<funcprototype>
+					<funcdef>stdaddr <function>standardize_address</function></funcdef>
+					<paramdef><type>text </type> <parameter>lextab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rultab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>micro</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>macro</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+	
+		<refsection>
+			<title>Description</title>
+	
+			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing lex, gaz, and rule tables.</para>
+	
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>This function call will automatically include a bounding box
+				comparison that will make use of any indexes that are available on the
+				geometries.</para>
+			</note>
+			<!-- use this format if new function -->
+		<para>Availability: 2.2.0</para>
+		</refsection>
+	
+	
+		<refsection>
+			<title>Examples</title>
+	
+			<programlisting></programlisting>
+		</refsection>
+	
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+			<title>See Also</title>
+	
+			<para><xref linkend="stdaddr" /></para>
+		</refsection>
+	</refentry>
+  
+  </sect1>
+</chapter>

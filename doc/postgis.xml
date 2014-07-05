@@ -47,6 +47,7 @@
 <!ENTITY extras_topology SYSTEM "extras_topology.xml">
 <!ENTITY extras_tigergeocoder SYSTEM "extras_tigergeocoder.xml">
 <!ENTITY extras_historytable SYSTEM "extras_historytable.xml">
+<!ENTITY extras_address_standardizer SYSTEM "extras_address_standardizer.xml">
 
 <!ENTITY sfs_compliant 
 "<inlinemediaobject>
