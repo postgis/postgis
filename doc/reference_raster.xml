@@ -1607,14 +1607,14 @@ SELECT ST_AsPNG(
 				  <funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
-					<paramdef choice="opt"><type>character </type> <parameter>delimiter=,</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 				  </funcprototype>
 				  
-				  <funcprototype>
+				<funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
+					<paramdef choice="opt"><type>character </type> <parameter>delimiter=,</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1622,8 +1622,9 @@ SELECT ST_AsPNG(
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a single band of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
-				bands of a raster. If no band is specified, band 1 is assumed. Used as a helper function in various functions such as for deleting a band.</para>
+				<para>Returns one or more bands of an existing raster as a new raster.  Useful for building new rasters from existing rasters or export of only selected
+				bands of a raster or rearranging the order of bands in a raster. If no band is specified, band 1 is assumed. Used as a helper function in various functions such as for deleting a band. </para>
+				<warning><para>For the <code>nbands</code> as text variant of function, the default delimiter is <code>,</code> which means you can ask for <code>'1,2,3'</code> and if you wanted to use a different delimeter you would do <code>ST_Band(rast, '1@2@3', '@')</code>.  For asking for multiple bands, we strongly suggest you use the array form of this function e.g. <code>ST_Band(rast, '{1,2,3}'::int[]);</code> since the <code>text</code> list of bands form may be removed in future versions of PostGIS.</para></warning>
                     
                  <para>Availability: 2.0.0</para>
 			</refsection>
@@ -1644,8 +1645,8 @@ FROM (
      1 | 8BUI |     1 | 2BUI
 					</programlisting>
 					
-					<programlisting>-- Return bands 2 and 3. Use text to define bands
-SELECT ST_NumBands(ST_Band(rast, '2,3')) As num_bands
+					<programlisting>-- Return bands 2 and 3. Using array cast syntax
+SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands
     FROM dummy_rast WHERE rid=2;
     
 num_bands
@@ -1704,7 +1705,7 @@ WHERE rid=35;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_NumBands" />, , <xref linkend="RT_ST_Reclass" /></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_Reclass" />, <xref linkend="RT_reference" /></para>
 			</refsection>
 		</refentry>
 
