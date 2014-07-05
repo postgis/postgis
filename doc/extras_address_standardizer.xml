@@ -29,7 +29,7 @@ into includes in the future for easier maintenance.</para></listitem>
 				</varlistentry>
 			</variablelist>
   </sect1>
-  <sect1 id="Address_Standardizer_Types"><title>Address Standardizer Types</title>
+  <sect1 id="Address_Standardizer_Types">
   		  <sect1info>
             <abstract>
                 <para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very 
@@ -37,6 +37,7 @@ into includes in the future for easier maintenance.</para></listitem>
                 </para>	
             </abstract>
         </sect1info>
+        <title>Address Standardizer Types</title>
         <refentry id="stdaddr">
 					<refnamediv>
 					<refname>stdaddr</refname>
@@ -46,87 +47,87 @@ into includes in the future for easier maintenance.</para></listitem>
 						<title>Description</title>
 						<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
 						<para>The token numbers denote the reference number in the <varname>rules</varname> table.</para>
-						<variablelist>
-							<varlistentry>
-									<term>building</term>
+							<variablelist>
+								<varlistentry>
+										<term>building</term>
+										<listitem>
+											<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry><term>house_num</term> 
 									<listitem>
-										<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
+										<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 									</listitem>
-							</varlistentry>
-							<varlistentry><term>house_num</term> 
-								<listitem>
-									<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>predir</term><listitem>
-							   	<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
-							</listitem></varlistentry>
-							<varlistentry><term>qual</term> 
-								<listitem>
-										<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>pretype</term>
-								<listitem>
-										<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>name</term>
+								</varlistentry>
+								<varlistentry><term>predir</term><listitem>
+										<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
+								</listitem></varlistentry>
+								<varlistentry><term>qual</term> 
 									<listitem>
-										<para>is text (token number <code>5</code>): STREET NAME</para>
+											<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
 									</listitem>
-							</varlistentry>
-							<varlistentry><term>suftype</term>
-								<listitem>
-									<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>sufdir</term>
-								<listitem>
-									<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>ruralroute</term>
-								<listitem>
-									<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>extra</term>
-								<listitem>
-									<para>is text: Extra information like Floor number.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>city</term>
-								<listitem>
-									<para>is text (token number <code>10</code>): Example Boston.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>state</term>
-								<listitem>
-									<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>country</term>
-								<listitem>
-									<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>postcode</term>
-								<listitem>
-									<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>box</term>
-								<listitem>
-									<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
-								</listitem>
-							</varlistentry>
-							<varlistentry><term>unit</term>
-								<listitem>
-									<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
-								</listitem>
-							</varlistentry>
-					</variablelist>
+								</varlistentry>
+								<varlistentry><term>pretype</term>
+									<listitem>
+											<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>name</term>
+										<listitem>
+											<para>is text (token number <code>5</code>): STREET NAME</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry><term>suftype</term>
+									<listitem>
+										<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>sufdir</term>
+									<listitem>
+										<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>ruralroute</term>
+									<listitem>
+										<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>extra</term>
+									<listitem>
+										<para>is text: Extra information like Floor number.</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>city</term>
+									<listitem>
+										<para>is text (token number <code>10</code>): Example Boston.</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>state</term>
+									<listitem>
+										<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>country</term>
+									<listitem>
+										<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>postcode</term>
+									<listitem>
+										<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>box</term>
+									<listitem>
+										<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>unit</term>
+									<listitem>
+										<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
+									</listitem>
+								</varlistentry>
+						</variablelist>
 					</refsection>
 				</refentry>
   </sect1>
