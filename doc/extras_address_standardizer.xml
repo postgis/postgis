@@ -76,53 +76,53 @@ into includes in the future for easier maintenance.</para></listitem>
 										<para>is text (token number <code>5</code>): STREET NAME</para>
 									</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>suftype</term>
+							<varlistentry><term>suftype</term>
+								<listitem>
 									<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>sufdir</term>
+							<varlistentry><term>sufdir</term>
+								<listitem>
 									<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>ruralroute</term>
+							<varlistentry><term>ruralroute</term>
+								<listitem>
 									<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>extra</term>
+							<varlistentry><term>extra</term>
+								<listitem>
 									<para>is text: Extra information like Floor number.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>city</term>
+							<varlistentry><term>city</term>
+								<listitem>
 									<para>is text (token number <code>10</code>): Example Boston.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>state</term>
+							<varlistentry><term>state</term>
+								<listitem>
 									<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>country</term>
+							<varlistentry><term>country</term>
+								<listitem>
 									<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>postcode</term>
+							<varlistentry><term>postcode</term>
+								<listitem>
 									<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>box</term>
+							<varlistentry><term>box</term>
+								<listitem>
 									<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
 								</listitem>
 							</varlistentry>
-							<varlistentry>
-								<listitem><term>unit</term>
+							<varlistentry><term>unit</term>
+								<listitem>
 									<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
 								</listitem>
 							</varlistentry>
