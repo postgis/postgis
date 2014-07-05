@@ -58,7 +58,7 @@ into includes in the future for easier maintenance.</para></listitem>
 									<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
 								</listitem>
 							</varlistentry>
-							<varlistentry><listitem><term>predir</term>
+							<varlistentry><term>predir</term><listitem>
 							   	<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
 							</listitem></varlistentry>
 							<varlistentry><term>qual</term> 
