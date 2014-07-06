@@ -16193,6 +16193,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
 typedef struct {
 	Oid ufc_noid;
+	Oid ufc_rettype;
 	FmgrInfo ufl_info;
 	FunctionCallInfoData ufc_info;
 } rtpg_nmapalgebra_callback_arg;
@@ -16249,6 +16250,7 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 	arg->cextent = NULL;
 
 	arg->callback.ufc_noid = InvalidOid;
+	arg->callback.ufc_rettype = InvalidOid;
 
 	return arg;
 }
@@ -16585,8 +16587,22 @@ static int rtpg_nmapalgebra_callback(
 	pfree(mdPos);
 
 	/* result is not null*/
-	if (!callback->ufc_info.isnull)
-		*value = DatumGetFloat8(datum);
+	if (!callback->ufc_info.isnull) {
+		switch (callback->ufc_rettype) {
+			case FLOAT8OID:
+				*value = DatumGetFloat8(datum);
+				break;
+			case FLOAT4OID:
+				*value = (double) DatumGetFloat4(datum);
+				break;
+			case INT4OID:
+				*value = (double) DatumGetInt32(datum);
+				break;
+			case INT2OID:
+				*value = (double) DatumGetInt16(datum);
+				break; 
+		}
+	}
 	else
 		*nodata = 1;
 
@@ -16754,17 +16770,47 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			noerr = 2;
 		}
 
+		/* check that callback function return type is supported */
+		if (
+			get_func_result_type(
+				arg->callback.ufc_noid,
+				&(arg->callback.ufc_rettype),
+				NULL
+			) != TYPEFUNC_SCALAR
+		) {
+			noerr = 3;
+		}
+
+		if (!(
+			arg->callback.ufc_rettype == FLOAT8OID ||
+			arg->callback.ufc_rettype == FLOAT4OID ||
+			arg->callback.ufc_rettype == INT4OID ||
+			arg->callback.ufc_rettype == INT2OID
+		)) {
+			noerr = 4;
+		}
+
 		/*
 			TODO: consider adding checks of the userfunction parameters
 				should be able to use get_fn_expr_argtype() of fmgr.c
 		*/
 
-		if (noerr > 0) {
+		if (noerr != 0) {
 			rtpg_nmapalgebra_arg_destroy(arg);
-			if (noerr > 1)
-				elog(ERROR, "RASTER_nMapAlgebra: Function provided must have three input parameters");
-			else
-				elog(ERROR, "RASTER_nMapAlgebra: Function provided must return double precision, not resultset");
+			switch (noerr) {
+				case 4:
+					elog(ERROR, "RASTER_nMapAlgebra: Function provided must return a double precision, float, int or smallint");
+					break;
+				case 3:
+					elog(ERROR, "RASTER_nMapAlgebra: Function provided must return scalar (double precision, float, int, smallint)");
+					break;
+				case 2:
+					elog(ERROR, "RASTER_nMapAlgebra: Function provided must have three input parameters");
+					break;
+				case 1:
+					elog(ERROR, "RASTER_nMapAlgebra: Function provided must return double precision, not resultset");
+					break;
+			}
 			PG_RETURN_NULL();
 		}
 

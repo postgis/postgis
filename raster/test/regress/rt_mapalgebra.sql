@@ -650,9 +650,8 @@ SELECT
 	(ST_BandMetadata(rast, 1))
 FROM foo;
 
--- Test that you can't pass a strict callback and no user argument
--- Se http://trac.osgeo.org/postgis/ticket/2803
-
+-- Ticket #2803
+-- http://trac.osgeo.org/postgis/ticket/2803
 ALTER FUNCTION raster_nmapalgebra_test(
 	value double precision[][][],
 	pos int[][],
@@ -672,5 +671,32 @@ SELECT
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
+-- Ticket #2802
+-- http://trac.osgeo.org/postgis/ticket/2802
+CREATE OR REPLACE FUNCTION raster_nmapalgebra_test_bad_return(
+	value double precision[][][],
+	pos int[][],
+	VARIADIC userargs text[]
+)
+	RETURNS text
+	AS $$
+	BEGIN
+		RETURN 255;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+SELECT
+	rid,
+	ST_Value(
+		ST_MapAlgebra(
+			ARRAY[ROW(rast, 1)]::rastbandarg[],
+			'raster_nmapalgebra_test_bad_return(double precision[], int[], text[])'::regprocedure
+		),
+		1, 1, 1
+	) = 255
+FROM raster_nmapalgebra_in
+WHERE rid IN (2);
+
 DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
 DROP TABLE IF EXISTS raster_nmapalgebra_in;

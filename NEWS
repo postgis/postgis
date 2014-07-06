@@ -15,6 +15,7 @@ PostGIS 2.1.4
   - #2784, Fix handling of bogus argument to --with-sfcgal
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
   - #2775, Fix regressions tests against all versions of SFCGAL
+  - #2802, ST_MapAlgebra checks for valid callback function return value
   - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
 
 PostGIS 2.1.3

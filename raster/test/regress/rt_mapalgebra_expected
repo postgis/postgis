@@ -355,3 +355,4 @@ NOTICE:  value = {{{1}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
 NOTICE:  userargs = {}
 2|
+ERROR:  RASTER_nMapAlgebra: Function provided must return a double precision, float, int or smallint
