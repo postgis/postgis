@@ -798,13 +798,18 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		if (!PG_ARGISNULL(9))
 			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(9);
 		else {
-			arg->callback.ufc_info.arg[2] = (Datum) NULL;
-			arg->callback.ufc_info.argnull[2] = TRUE;
-      if ( arg->callback.ufl_info.fn_strict ) {
-	      /* function is strict and null parameter is passed */
-	      /* http://archives.postgresql.org/pgsql-general/2011-11/msg00424.php */
-		    elog(ERROR, "RASTER_nMapAlgebra: strict callback requires user argument");
+      if (arg->callback.ufl_info.fn_strict) {
+				/* build and assign an empty TEXT array */
+				/* TODO: manually free the empty array? */
+				arg->callback.ufc_info.arg[2] = PointerGetDatum(
+					construct_empty_array(TEXTOID)
+				);
+				arg->callback.ufc_info.argnull[2] = FALSE;
       }
+			else {
+				arg->callback.ufc_info.arg[2] = (Datum) NULL;
+				arg->callback.ufc_info.argnull[2] = TRUE;
+			}
 		}
 	}
 	else {
