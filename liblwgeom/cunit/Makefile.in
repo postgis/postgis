@@ -46,13 +46,15 @@ OBJS=	\
 	cu_out_kml.o \
 	cu_out_geojson.o \
 	cu_out_svg.o \
+	cu_out_encoded_polyline.o \
 	cu_surface.o \
 	cu_out_x3d.o \
 	cu_in_geojson.o \
 	cu_in_wkb.o \
 	cu_in_wkt.o \
+	cu_in_encoded_polyline.o \
 	cu_varint.o \
-	cu_tester.o 
+	cu_tester.o
 
 ifeq (@SFCGAL@,sfcgal)
 CFLAGS += @SFCGAL_CPPFLAGS@
