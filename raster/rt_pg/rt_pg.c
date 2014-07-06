@@ -16195,7 +16195,6 @@ typedef struct {
 	Oid ufc_noid;
 	FmgrInfo ufl_info;
 	FunctionCallInfoData ufc_info;
-	int ufc_nullcount;
 } rtpg_nmapalgebra_callback_arg;
 
 typedef struct rtpg_nmapalgebra_arg_t *rtpg_nmapalgebra_arg;
@@ -16250,7 +16249,6 @@ static rtpg_nmapalgebra_arg rtpg_nmapalgebra_arg_init() {
 	arg->cextent = NULL;
 
 	arg->callback.ufc_noid = InvalidOid;
-	arg->callback.ufc_nullcount = 0;
 
 	return arg;
 }
@@ -16581,17 +16579,6 @@ static int rtpg_nmapalgebra_callback(
 	callback->ufc_info.arg[0] = PointerGetDatum(mdValues);
 	callback->ufc_info.arg[1] = PointerGetDatum(mdPos);
 
-	/* function is strict and null parameter is passed */
-	/* http://archives.postgresql.org/pgsql-general/2011-11/msg00424.php */
-	if (callback->ufl_info.fn_strict && callback->ufc_nullcount) {
-		*nodata = 1;
-
-		pfree(mdValues);
-		pfree(mdPos);
-
-		return 1;
-	}
-
 	/* call user callback function */
 	datum = FunctionCallInvoke(&(callback->ufc_info));
 	pfree(mdValues);
@@ -16796,9 +16783,18 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		if (!PG_ARGISNULL(7))
 			arg->callback.ufc_info.arg[2] = PG_GETARG_DATUM(7);
 		else {
-			arg->callback.ufc_info.arg[2] = (Datum) NULL;
-			arg->callback.ufc_info.argnull[2] = TRUE;
-			arg->callback.ufc_nullcount++;
+      if (arg->callback.ufl_info.fn_strict) {
+				/* build and assign an empty TEXT array */
+				/* TODO: manually free the empty array? */
+				arg->callback.ufc_info.arg[2] = PointerGetDatum(
+					construct_empty_array(TEXTOID)
+				);
+				arg->callback.ufc_info.argnull[2] = FALSE;
+      }
+			else {
+				arg->callback.ufc_info.arg[2] = (Datum) NULL;
+				arg->callback.ufc_info.argnull[2] = TRUE;
+			}
 		}
 	}
 	else {
