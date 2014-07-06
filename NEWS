@@ -75,6 +75,7 @@ PostGIS 2.2.0
   - #2697, invalid GeoJSON Polygon input crashes server process
   - #2706, ST_DumpPoints of EMPTY geometries crashes server
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
+  - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
 
 
  * Code refactoring *
