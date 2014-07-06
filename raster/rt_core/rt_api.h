@@ -2,7 +2,7 @@
  * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
- * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
+ * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011-2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
