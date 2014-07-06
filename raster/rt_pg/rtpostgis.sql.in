@@ -7057,7 +7057,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rastt
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND a.attnum = ANY (s.conkey)
-		AND s.consrc LIKE '%st_coveredby(st_convexhull(%';
+		AND s.consrc LIKE '%st_coveredby(st_envelope(%';
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
@@ -7077,30 +7077,15 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 
 		cn := 'enforce_max_extent_' || $3;
 
-		sql := 'SELECT st_ashexewkb(st_union(st_convexhull('
+		sql := 'SELECT st_ashexewkb(st_envelope(st_collect(st_envelope('
 			|| quote_ident($3)
-			|| '))) FROM '
+			|| ')))) FROM '
 			|| fqtn;
-		BEGIN
-			EXECUTE sql INTO attr;
-		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the extent of the raster column (%:%). Attempting memory efficient (slower) approach', SQLSTATE, SQLERRM;
-
-			sql := 'SELECT st_ashexewkb(st_memunion(st_convexhull('
-				|| quote_ident($3)
-				|| '))) FROM '
-				|| fqtn;
-			BEGIN
-				EXECUTE sql INTO attr;
-			EXCEPTION WHEN OTHERS THEN
-				RAISE NOTICE 'Still unable to get the extent of the raster column (%:%). Cannot add extent constraint', SQLSTATE, SQLERRM;
-				RETURN FALSE;
-			END;
-		END;
+		EXECUTE sql INTO attr;
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_coveredby(st_convexhull('
+			|| ' CHECK (st_coveredby(st_envelope('
 			|| quote_ident($3)
 			|| '), ''' || attr || '''::geometry))';
 		RETURN _add_raster_constraint(cn, sql);
