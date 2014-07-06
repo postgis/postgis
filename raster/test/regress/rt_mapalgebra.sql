@@ -650,9 +650,8 @@ SELECT
 	(ST_BandMetadata(rast, 1))
 FROM foo;
 
--- Test that you can't pass a strict callback and no user argument
--- Se http://trac.osgeo.org/postgis/ticket/2803
-
+-- Ticket #2803
+-- http://trac.osgeo.org/postgis/ticket/2803
 ALTER FUNCTION raster_nmapalgebra_test(
 	value double precision[][][],
 	pos int[][],
@@ -671,3 +670,6 @@ SELECT
 	) = 255
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
+
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]); 
+DROP TABLE IF EXISTS raster_nmapalgebra_in; 
