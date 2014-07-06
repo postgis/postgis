@@ -994,6 +994,7 @@ SELECT
       <funcprototype>
       <funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef>
       <paramdef><type>text </type> <parameter>polyline</parameter></paramdef>
+      <paramdef choice="opt"><type>integer </type> <parameter>precision=5</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     </refsynopsisdiv>

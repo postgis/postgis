@@ -1266,8 +1266,9 @@ SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
     <refsynopsisdiv>
     <funcsynopsis>
       <funcprototype>
-      <funcdef>bytea <function>ST_AsEncodedPolyline</function></funcdef>
-      <paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
+      <funcdef>test <function>ST_AsEncodedPolyline</function></funcdef>
+      <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+      <paramdef choice="opt"><type>integer </type> <parameter>precision=5</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     </refsynopsisdiv>
