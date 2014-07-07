@@ -56,7 +56,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 {
 	int i;
 	POINT2D *prevPoint;
-	int *delta = malloc(2*sizeof(int)*pa->npoints);
+	int *delta = lwalloc(2*sizeof(int)*pa->npoints);
 	char *encoded_polyline = NULL;
 	stringbuffer_t *sb;
 	double scale = pow(10,precision);
@@ -109,7 +109,7 @@ char * pointarray_to_encoded_polyline(const POINTARRAY *pa, int precision)
 			stringbuffer_aprintf(sb, "%c", (char)numberToEncode);
 	}
 
-	free(delta);
+	lwfree(delta);
 	encoded_polyline = stringbuffer_getstringcopy(sb);
 	stringbuffer_destroy(sb);
 
