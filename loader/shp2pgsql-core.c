@@ -1931,7 +1931,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	/* Create gist index if specified and not in "prepare" mode */
 	if (state->config->createindex)
 	{
-		stringbuffer_aprintf(sb, "CREATE INDEX \"%s_%s_gist\" ON ", state->config->table, state->geo_col);
+		stringbuffer_aprintf(sb, "CREATE INDEX ON ", state->config->table, state->geo_col);
 		/* Schema is optional, include if present. */
 		if (state->config->schema)
 		{
