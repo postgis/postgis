@@ -107,6 +107,8 @@ IMAGES= \
 	../images/st_split02.png \
 	../images/st_split03.png \
 	../images/st_split04.png \
+	../images/st_straightskeleton01.png \
+	../images/st_straigntskeleton02.png \
 	../images/st_symdifference01.png \
 	../images/st_symdifference02.png \
 	../images/st_touches01.png \

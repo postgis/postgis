@@ -170,7 +170,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Force_2D">
+	<refentry id="ST_Force2D">
 	  <refnamediv>
 		<refname>ST_Force2D</refname>
 

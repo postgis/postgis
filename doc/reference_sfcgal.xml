@@ -99,6 +99,37 @@
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
+	  
+	  <refsection><title>Examples</title>
+	  		<programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON((175 150, 20 40, 50 60, 125 100, 175 150))'));</programlisting>
+	  		
+	  	 <informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_straightskeleton01.png" />
+							  </imageobject>
+							  <caption><para>Original polygon</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+					  <entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_straightskeleton02.png" />
+							  </imageobject>
+							  <caption><para>Straight Skeleton of polygon</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+				</row>
+				</tbody>
+				</tgroup>
+			</informaltable>
+	  </refsection>
 
 	</refentry>
 

@@ -18,6 +18,15 @@
         <para>This GUC is only relevant if you compiled PostGIS with sfcgal support.  By default <varname>geos</varname> backend is used for functions where both GEOS and SFCGAL have the same named function.  This variable allows you to override and make sfcgal the backend to service the request.</para>
         <para>Availability: 2.1.0</para>
       </refsection>
+      
+      <refsection>
+      	<title>Examples</title>
+      	<para>Sets backend just for life of connection</para>
+      	<programlisting>set postgis.backend = sfcgal;</programlisting>
+      	
+      	<para>Sets backend for new connections to database</para>
+      	<programlisting>ALTER DATABASE mygisdb SET postgis.backend = sfcgal;</programlisting>
+      </refsection>
       <refsection>
 			  <title>See Also</title>
 			  <para><xref linkend="reference_sfcgal" /></para>
