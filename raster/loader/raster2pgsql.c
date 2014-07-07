@@ -1076,8 +1076,6 @@ create_index(
 		return 0;
 	}
 	sprintf(sql, "CREATE INDEX ON %s%s USING gist (st_convexhull(%s))%s%s;",
-		_table,
-		_column,
 		(schema != NULL ? schema : ""),
 		table,
 		column,
