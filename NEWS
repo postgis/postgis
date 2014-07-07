@@ -80,6 +80,8 @@ PostGIS 2.2.0
            like geometry extent
   - #2802, ST_MapAlgebra checks for valid callback function return value
   - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
+  - #2822, Use @ operator instead of ST_CoveredBy() for raster
+           max extent constraint
 
  * Code refactoring *
 

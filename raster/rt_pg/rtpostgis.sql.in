@@ -7048,7 +7048,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_blocksize(rastschema name, ra
 CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rasttable name, rastcolumn name)
 	RETURNS geometry AS $$
 	SELECT
-		trim(both '''' from split_part(trim(split_part(s.consrc, ',', 2)), '::', 1))::geometry
+		trim(both '''' from split_part(trim(split_part(s.consrc, ' @ ', 2)), '::', 1))::geometry
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7057,7 +7057,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rastt
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND a.attnum = ANY (s.conkey)
-		AND s.consrc LIKE '%st_coveredby(st_envelope(%';
+		AND s.consrc LIKE '%st_envelope(% @ %';
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
@@ -7085,9 +7085,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_coveredby(st_envelope('
+			|| ' CHECK (st_envelope('
 			|| quote_ident($3)
-			|| '), ''' || attr || '''::geometry))';
+			|| ') @ ''' || attr || '''::geometry)';
 		RETURN _add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
