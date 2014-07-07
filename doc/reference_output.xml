@@ -1293,7 +1293,7 @@ ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_LineFromMultiPoint" /></para>
+    <para><xref linkend="ST_LineFromEncodedPolyline" /></para>
     </refsection>
 </refentry>
   </sect1>
