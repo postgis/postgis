@@ -2154,7 +2154,7 @@ Returns a text summary of the contents of the geometry.
 <xref linkend="PostGIS_AddBBox" />,
 <xref linkend="ST_Force_3DM" />,
 <xref linkend="ST_Force_3DZ" />,
-<xref linkend="ST_Force_2D" />,
+<xref linkend="ST_Force2D" />,
 <xref linkend="geography" />
 		</para>
 
