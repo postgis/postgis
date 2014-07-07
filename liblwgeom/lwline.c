@@ -257,7 +257,7 @@ lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
  * Construct a LWLINE from a LWMPOINT
  */
 LWLINE *
-lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
+lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 {
 	uint32_t i;
 	POINTARRAY *pa = NULL;
