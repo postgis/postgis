@@ -1609,6 +1609,8 @@ POINT(2 1)
 		  <important>
 			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
 		  </important>
+		  
+		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate values when <code>postgis.backend=geos</code>. <code>postgis.backend=sfcgal</code>, it will return a 2D geometry regardless ignoring the Z-Coordinate. Refer to <xref linkend="postgis_backend" /> for details.</para></warning>
 
 		  <para>Performed by the GEOS module</para>
                   <para>&sfcgal_enhanced;</para>
@@ -1657,9 +1659,37 @@ FROM country
 	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
 		</programlisting>
 		</refsection>
+		
+		<refsection>
+		<title>Examples: 2.5Dish</title>
+		<para>Geos is the default backend if not set. Note this is not a true intersection, compare to the same example using <xref linkend="ST_3DIntersection" />.</para> 	
+		<programlisting>	
+set postgis.backend=geos; 
+select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
+from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
+ CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
+
+               st_astext
+---------------------------------------
+ LINESTRING Z (1 1 8,0.5 0.5 8,0 0 10)
+		</programlisting>
+		
+		<para>If your PostGIS is compiled with sfcgal support, have option of using sfcgal, but note if basically cases down both geometries to 2D before doing intersection
+		and returns the ST_Force2D equivalent result which is a 2D geometry</para> 	
+		<programlisting>	
+set postgis.backend=sfcgal; 
+select ST_AsText(ST_Intersection(linestring, polygon)) As wkt
+from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
+ CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
+
+                     wkt
+----------------------------------------------
+ MULTILINESTRING((0.5 0.5,0 0),(1 1,0.5 0.5))
+		</programlisting>
+	  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Difference"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+			<para><xref linkend="ST_3DIntersection" />, <xref linkend="ST_Difference"/>, <xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Force2D" />, <xref linkend="ST_SymDifference"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>
 
@@ -1691,7 +1721,7 @@ FROM country
 
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Examples: 2D</title>
 
 		<programlisting>
 SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
@@ -1716,6 +1746,8 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 
 		</programlisting>
 	  </refsection>
+	  
+
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
