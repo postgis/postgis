@@ -982,6 +982,49 @@ SELECT
 	  </refsection>
 	</refentry>
 
+  <refentry id="ST_LineFromEncodedPolyline">
+    <refnamediv>
+    <refname>ST_LineFromEncodedPolyline</refname>
+
+    <refpurpose>Creates a LineString from an Encoded Polyline.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+      <funcdef>geometry <function>ST_LineFromEncodedPolyline</function></funcdef>
+      <paramdef><type>text </type> <parameter>polyline</parameter></paramdef>
+      <paramdef choice="opt"><type>integer </type> <parameter>precision=5</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+    <title>Description</title>
+
+    <para>Creates a LineString from an Encoded Polyline string.</para>
+
+    </refsection>
+
+    <refsection>
+    <title>Examples</title>
+
+    <programlisting>
+--Create a line string from a polyline
+SELECT ST_AsEWKT(ST_LineFromEncodedPolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'));
+--result--
+LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)
+    </programlisting>
+    </refsection>
+
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+    <title>See Also</title>
+
+    <para><xref linkend="ST_AsEncodedPolyline" /></para>
+    </refsection>
+  </refentry>
+
 	<refentry id="ST_LineFromMultiPoint">
 	  <refnamediv>
 		<refname>ST_LineFromMultiPoint</refname>

@@ -51,6 +51,8 @@ extern CU_SuiteInfo out_kml_suite;
 extern CU_SuiteInfo out_geojson_suite;
 extern CU_SuiteInfo out_svg_suite;
 extern CU_SuiteInfo out_x3d_suite;
+extern CU_SuiteInfo out_encoded_polyline_suite;
+extern CU_SuiteInfo in_encoded_polyline_suite;
 extern CU_SuiteInfo varint_suite;
 
 /*
@@ -96,6 +98,8 @@ int main(int argc, char *argv[])
 		out_geojson_suite,
 		out_svg_suite,
 		out_x3d_suite,
+		out_encoded_polyline_suite,
+		in_encoded_polyline_suite,
 		varint_suite,
 		CU_SUITE_INFO_NULL
 	};
