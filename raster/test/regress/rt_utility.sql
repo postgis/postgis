@@ -273,4 +273,7 @@ DROP TABLE rt_utility_test;
 -- ST_BandPath()
 -----------------------------------------------------------------------
 
-SELECT 'bandpath1', right(ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)), 14);
+SELECT 'bandpath1', substring(path from length(path) - 13)
+FROM (
+	SELECT ST_BandPath(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)) AS path
+) foo;
