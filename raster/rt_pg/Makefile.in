@@ -122,7 +122,7 @@ $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 rtpostgis_upgrade.sql.in: rtpostgis.sql ../../utils/postgis_proc_upgrade.pl
 	$(PERL) ../../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
-rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_drop.sql rtpostgis_upgrade.sql.in 
+rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rtpostgis_drop.sql
 	echo 'BEGIN;' > $@
 	cat $^ | sed -e 's/^BEGIN;$$//' -e 's/^COMMIT;$$//' >> $@
 	echo 'COMMIT;' >> $@
