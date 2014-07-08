@@ -1182,6 +1182,21 @@ sub prepare_spatial_extensions
   		die;
 		}
  	}
+
+	if ( $OPT_WITH_SFCGAL )
+	{
+		my $sql = "CREATE EXTENSION postgis_sfcgal";
+		if ( $OPT_UPGRADE_FROM ) {
+			$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
+		}
+ 		$cmd = "psql $psql_opts -c \"" . $sql . "\" $DB >> $REGRESS_LOG 2>&1";
+		$rv = system($cmd);
+		if ( $rv ) {
+		  fail "Error encountered creating EXTENSION POSTGIS_SFCGAL", $REGRESS_LOG;
+		  die;
+		}
+	}
+
  	return 1;
 }
 
