@@ -28,6 +28,9 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h" /* For index common functions */
 
+#if POSTGIS_PGSQL_VERSION > 92
+#include "access/htup_details.h"
+#endif 
 
 #include <math.h>
 #if HAVE_IEEEFP_H
