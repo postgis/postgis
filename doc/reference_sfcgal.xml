@@ -72,7 +72,7 @@
 	  </refsection>
 	  
 	  <refsection><title>Examples</title>
-	  		
+	  		<para>3D images were generated using the PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript redering library</ulink>.</para>
 	  		
 	  	 <informaltable>
 				  <tgroup cols="2">
@@ -133,7 +133,11 @@
 				</tgroup>
 			</informaltable>
 	  </refsection>
+	  <refsection>
+				<title>See Also</title>
 
+				<para><xref linkend="ST_AsX3D" /></para>
+		</refsection>
 	</refentry>
 
 
