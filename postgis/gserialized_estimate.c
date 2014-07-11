@@ -2164,8 +2164,8 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 		nsp = text2cstring(PG_GETARG_TEXT_P(0));
 		tbl = text2cstring(PG_GETARG_TEXT_P(1));
 		col = PG_GETARG_TEXT_P(2);
-		nsp_tbl = palloc(strlen(nsp) + strlen(tbl) + 2);
-		sprintf(nsp_tbl, "%s.%s", nsp, tbl);
+		nsp_tbl = palloc(strlen(nsp) + strlen(tbl) + 6);
+		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
 		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
 		pfree(nsp_tbl);
 	}
@@ -2173,7 +2173,10 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	{
 		tbl = text2cstring(PG_GETARG_TEXT_P(0));
 		col = PG_GETARG_TEXT_P(1);
-		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(tbl)));
+		nsp_tbl = palloc(strlen(tbl) + 3);
+		sprintf(nsp_tbl, "\"%s\"", tbl);
+		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
+		pfree(nsp_tbl);
 	}
 	else
 	{
