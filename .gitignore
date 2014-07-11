@@ -2,6 +2,7 @@
 *.la
 .libs
 *.lo
+gmon.out
 install-sh
 postgis_svn_revision.h
 aclocal.m4
@@ -35,6 +36,10 @@ extensions/postgis/Makefile
 extensions/postgis/postgis.control
 extensions/postgis/sql/
 extensions/postgis/sql_bits/*.sql
+extensions/postgis_sfcgal/Makefile
+extensions/postgis_sfcgal/postgis_sfcgal.control
+extensions/postgis_sfcgal/sql/
+extensions/postgis_sfcgal/sql_bits/
 extensions/postgis_tiger_geocoder/Makefile
 extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
 extensions/postgis_tiger_geocoder/sql
@@ -75,6 +80,7 @@ postgis/legacy_minimal.sql
 postgis/legacy.sql
 postgis/postgis.sql
 postgis/postgis_upgrade.sql*
+postgis/sfcgal_upgrade.sql*
 postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_postgis.sql
