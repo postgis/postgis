@@ -2363,8 +2363,13 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="RT_ST_PixelWidth" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, 
-			<xref linkend="RT_ST_SkewY" /></para>
+			<para>
+				<xref linkend="RT_ST_PixelWidth" />,
+				<xref linkend="RT_ST_ScaleX" />,
+				<xref linkend="RT_ST_ScaleY" />,
+				<xref linkend="RT_ST_SkewX" />, 
+				<xref linkend="RT_ST_SkewY" />
+			</para>
 		</refsection>
 	</refentry>
 		
@@ -4288,11 +4293,22 @@ WHERE
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_PixelAsPolygon" />, <xref linkend="RT_ST_ScaleX" />,
-					, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, 
-					<xref linkend="RT_ST_UpperLeftY" />, <xref linkend="RT_ST_SRID" />, <xref linkend="ST_AsText" />,
-					, <xref linkend="ST_Point" />, <xref linkend="ST_MakeEnvelope" />, 
-					<xref linkend="ST_Intersects" />, <xref linkend="ST_Intersection" /></para>
+				<para>
+					<xref linkend="RT_ST_SetValue" />, 
+					<xref linkend="RT_ST_DumpAsPolygons" />,
+					<xref linkend="RT_ST_NumBands" />,
+					<xref linkend="RT_ST_PixelAsPolygon" />,
+					<xref linkend="RT_ST_ScaleX" />,
+					<xref linkend="RT_ST_ScaleY" />,
+					<xref linkend="RT_ST_UpperLeftX" />, 
+					<xref linkend="RT_ST_UpperLeftY" />,
+					<xref linkend="RT_ST_SRID" />,
+					<xref linkend="ST_AsText" />,
+					<xref linkend="ST_Point" />,
+					<xref linkend="ST_MakeEnvelope" />, 
+					<xref linkend="ST_Intersects" />,
+					<xref linkend="ST_Intersection" />
+				</para>
 			</refsection>
 		</refentry>
 
