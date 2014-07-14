@@ -5974,7 +5974,11 @@ FROM (
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Rescale" />, <xref linkend="RT_ST_Transform" /></para>
+				<para>
+					<xref linkend="RT_ST_Rescale" />,
+					<xref linkend="RT_ST_Resize" />,
+					<xref linkend="RT_ST_Transform" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -6014,7 +6018,7 @@ FROM (
 				
 				<para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster.</para>
 				
-				<para>When the new scalex or scaley is not a divisor of the raster width or height, the extent of the resulting raster is expanded to encompass the extent of the provided raster.</para>
+				<para>When the new scalex or scaley is not a divisor of the raster width or height, the extent of the resulting raster is expanded to encompass the extent of the provided raster. If you want to be sure to retain exact input extent see <xref linkend="RT_ST_Resize" /></para>
 				
 				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
@@ -6048,7 +6052,14 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_SetScale" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_Resample" />, <xref linkend="RT_ST_Transform" /></para>
+				<para>
+					<xref linkend="RT_ST_Resize" />,
+					<xref linkend="RT_ST_Resample" />,
+					<xref linkend="RT_ST_SetScale" />,
+					<xref linkend="RT_ST_ScaleX" />,
+					<xref linkend="RT_ST_ScaleY" />,
+					<xref linkend="RT_ST_Transform" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -6244,7 +6255,7 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 				<title>Description</title>
 
 				<para>
-					Resize a raster to a new width/height.  The new width/height can be specified in exact number of pixels or a percentage of the raster's width/height.
+					Resize a raster to a new width/height. The new width/height can be specified in exact number of pixels or a percentage of the raster's width/height. The extent of the the new raster will be the same as the extent of the provided raster.
 				</para>
 
 				<para>
