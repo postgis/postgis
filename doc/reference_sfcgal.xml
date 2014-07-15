@@ -447,7 +447,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 						<informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselation01.png" />
+								<imagedata fileref="images/st_tesselate01.png" />
 							  </imageobject>
 							  <caption><para>Original Cube</para></caption>
 							</mediaobject>
@@ -466,7 +466,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 		       <para> <informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_tesselation02.png" />
+								<imagedata fileref="images/st_tesselate02.png" />
 							  </imageobject>
 							  <caption><para>Tesselated Cube with triangles colored</para></caption>
 							</mediaobject>
