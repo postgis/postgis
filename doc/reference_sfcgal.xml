@@ -389,7 +389,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  <refnamediv>
 		<refname>ST_Tesselate</refname>
 
-		<refpurpose>Perform surface Tesselation</refpurpose>
+		<refpurpose>Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -403,12 +403,85 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	  <refsection>
 		<title>Description</title>
-
+		<para>Takes as input a surface such a  MULTI(POLYGON) or POLYHEDRALSURFACE and returns a TIN representation via the process of tesselation using triangles.</para>
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
+	  </refsection>
+	  
+	  <informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para>
+						<programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
+						<informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_tesselation01.png" />
+							  </imageobject>
+							  <caption><para>Original Cube</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+					  <entry><para>
+					  <programlisting>SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
+		<para>ST_AsText output:</para>
+		<screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),((0 0 0,0 1 0,1 1 0,0 0 0)),
+		((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),((0 0 1,0 0 0,1 0 0,0 0 1)),
+		((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),((0 1 0,0 1 1,1 1 1,0 1 0)),
+		((1 1 0,0 1 0,1 1 1,1 1 0)),((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))</screen>
+					  <para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_tesselation02.png" />
+							  </imageobject>
+							  <caption><para>Tesselated Cube with triangles colored</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+					  </row>
+					  
+					  <row>
+						<entry><para>
+						<programlisting>SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
+						<informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_tesselate03.png" />
+							  </imageobject>
+							  <caption><para>Original polygon</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+					  <entry><para>
+					  <programlisting>SELECT 
+	ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
+	</para>
+	<para>ST_AsText output</para>
+	<screen>TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),
+	 ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),((120 190,10 190,50 160,120 190)))</screen>
+					  <para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_tesselate04.png" />
+							  </imageobject>
+							  <caption><para>Tesselated Polygon</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+					  </row>
+				</tbody>
+				</tgroup>
+			</informaltable>
 	  </refsection>
 
 	</refentry>

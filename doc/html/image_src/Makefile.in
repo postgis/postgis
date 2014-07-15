@@ -112,6 +112,8 @@ IMAGES= \
 	../images/st_straightskeleton01.png \
 	../images/st_symdifference01.png \
 	../images/st_symdifference02.png \
+	../images/st_tesselate03.png \
+	../images/st_tesselate04.png \
 	../images/st_touches01.png \
 	../images/st_touches02.png \
 	../images/st_touches03.png \
