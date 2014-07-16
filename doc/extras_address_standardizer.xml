@@ -160,7 +160,7 @@ into includes in the future for easier maintenance.</para></listitem>
 									<listitem>
 										<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
 										<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
-										<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. 
+										<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. </para>
 									</listitem>
 								</varlistentry>
 						</variablelist>
