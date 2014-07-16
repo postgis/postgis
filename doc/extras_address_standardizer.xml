@@ -131,6 +131,78 @@ into includes in the future for easier maintenance.</para></listitem>
 					</refsection>
 				</refentry>
   </sect1>
+  
+    <sect1 id="Address_Standardizer_Tables">
+  		  <sect1info>
+            <abstract>
+                <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.  
+                </para>	
+            </abstract>
+        </sect1info>
+        <title>Address Standardizer Tables</title>
+        <refentry id="rulestab">
+					<refnamediv>
+					<refname>rules</refname>
+						<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence</refpurpose>
+					</refnamediv>
+					<refsection>
+						<title>Description</title>
+						<para>A rules table must have at least the following columns, though you are allowed to add more for your own uses. </para>
+						
+							<variablelist>
+								<varlistentry>
+										<term>id</term>
+										<listitem>
+											<para>Primary key of table</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry><term>rule</term> 
+									<listitem>
+										<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
+										<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
+										<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. 
+									</listitem>
+								</varlistentry>
+						</variablelist>
+						
+						<para>Each rule has a rule type which is denoted by one of following:</para>
+						<variablelist>
+								<varlistentry>
+										<term>MACRO_C</term>
+										<listitem>
+											<para>(token number = "0"). The class of rules for parsing MACRO clauses.</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry>
+										<term>MICRO_C</term>
+										<listitem>
+											<para>(token number = "1"). The class of rules for parsing full MICRO clauses (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry>
+										<term>ARC_C</term>
+										<listitem>
+											<para>(token number = "2"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute.</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry>
+										<term>CIVIC_C</term>
+										<listitem>
+											<para>(token number = "3"). The class of rules for parsing the HOUSE attribute.</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry>
+										<term>EXTRA_C</term>
+										<listitem>
+											<para>(token number = "4"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
+										</listitem>
+								</varlistentry>
+						</variablelist>
+						
+					</refsection>
+				</refentry>
+  </sect1>
+  
   <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
 		<refentry id="standardize_address">
 		<refnamediv>
