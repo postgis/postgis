@@ -1034,7 +1034,11 @@ Check constraints:
 	  <refsection>
 		<title>See Also</title>
 		
-		<para><xref linkend="ST_SetSRID"/> , <xref linkend="ST_Transform"/></para>
+		<para>
+  <xref linkend="RT_UpdateRasterSRID"/>,
+  <xref linkend="ST_SetSRID"/>,
+  <xref linkend="ST_Transform"/>
+		</para>
 	  </refsection>
 	</refentry>
   </sect1>
