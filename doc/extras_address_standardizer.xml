@@ -142,7 +142,7 @@ into includes in the future for easier maintenance.</para></listitem>
         <title>Address Standardizer Tables</title>
         <refentry id="rulestab">
 					<refnamediv>
-					<refname>rules</refname>
+					<refname>rules table</refname>
 						<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence</refpurpose>
 					</refnamediv>
 					<refsection>
@@ -198,6 +198,92 @@ into includes in the future for easier maintenance.</para></listitem>
 										</listitem>
 								</varlistentry>
 						</variablelist>
+						
+					</refsection>
+				</refentry>
+				
+				<refentry id="lextab">
+					<refnamediv>
+					<refname>lex table</refname>
+						<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
+					</refnamediv>
+					<refsection>
+						<title>Description</title>
+						<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdworkd: <code>1</code>.</para>
+						
+						<para>A lex has at least the following columns in the table. You may add</para>
+							<variablelist>
+								<varlistentry>
+										<term>id</term>
+										<listitem>
+											<para>Primary key of table</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry><term>seq</term> 
+									<listitem>
+										<para>integer: definition number?</para>
+									</listitem>
+								</varlistentry>
+
+								<varlistentry><term>word</term> 
+									<listitem>
+										<para>text: the input word</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>stdword</term> 
+									<listitem>
+										<para>text: the standardized replacement word</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>token</term> 
+									<listitem>
+										<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+									</listitem>
+								</varlistentry>
+						</variablelist>
+					</refsection>
+				</refentry>
+				
+				<refentry id="gaztab">
+					<refnamediv>
+					<refname>gaz table</refname>
+						<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
+					</refnamediv>
+					<refsection>
+						<title>Description</title>
+						<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+						
+						<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
+							<variablelist>
+								<varlistentry>
+										<term>id</term>
+										<listitem>
+											<para>Primary key of table</para>
+										</listitem>
+								</varlistentry>
+								<varlistentry><term>seq</term> 
+									<listitem>
+										<para>integer: definition number?</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>word</term> 
+									<listitem>
+										<para>text: the input word</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>stdword</term> 
+									<listitem>
+										<para>text: the standardized replacement word</para>
+									</listitem>
+								</varlistentry>
+								<varlistentry><term>token</term> 
+									<listitem>
+										<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+									</listitem>
+								</varlistentry>
+						</variablelist>
+						
+					
 						
 					</refsection>
 				</refentry>
@@ -257,7 +343,7 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>See Also</title>
 	
-			<para><xref linkend="stdaddr" /></para>
+			<para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, , <xref linkend="gaztab" /></para>
 		</refsection>
 	</refentry>
   
