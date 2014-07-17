@@ -143,6 +143,7 @@ TEST_BUGS = \
 
 TEST_LOADER = \
 	loader/Basic \
+	loader/Projected \
 	loader/BasicCopy \
 	loader/BasicFilename \
 	loader/BasicOutDB \

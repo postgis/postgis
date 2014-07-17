@@ -330,9 +330,10 @@ usage() {
 		"OPTIONS:\n"
 	));
 	printf(_(
-		"  -s <srid> Set the raster's SRID. Defaults to %d. If SRID not\n"
-		"      provided or is %d, raster's metadata will be checked to\n"
-		"      determine an appropriate SRID.\n"
+		"  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+		"     Optionally reprojects from given SRID (cannot be used with -Y).\n"
+		"     Raster's metadata will be checked to determine an appropriate SRID.\n"
+		"     If a srid of %d is provided (either as from or as target).\n"
 	), SRID_UNKNOWN, SRID_UNKNOWN);
 	printf(_(
 		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
@@ -693,7 +694,7 @@ init_config(RTLOADERCFG *config) {
 	config->overview = NULL;
 	config->overview_table = NULL;
 	config->quoteident = 0;
-	config->srid = SRID_UNKNOWN;
+	config->srid = config->out_srid = SRID_UNKNOWN;
 	config->nband = NULL;
 	config->nband_count = 0;
 	memset(config->tile_size, 0, sizeof(int) * 2);
@@ -822,7 +823,7 @@ static int
 insert_records(
 	const char *schema, const char *table, const char *column,
 	const char *filename, const char *file_column_name,
-	int copy_statements,
+	int copy_statements, int out_srid,
 	STRINGBUFFER *tileset, STRINGBUFFER *buffer
 ) {
 	char *fn = NULL;
@@ -865,7 +866,7 @@ insert_records(
 	}
 	/* INSERT statements */
 	else {
-		len = strlen("INSERT INTO  () VALUES (''::raster);") + 1;
+		len = strlen("INSERT INTO  () VALUES (ST_Transform(''::raster,xxxxxxxxx));") + 1;
 		if (schema != NULL)
 			len += strlen(schema);
 		len += strlen(table);
@@ -878,6 +879,7 @@ insert_records(
 			fn = strreplace(filename, "'", "''", NULL);
 
 		for (x = 0; x < tileset->length; x++) {
+			char *ptr;
 			int sqllen = len;
 
 			sqllen += strlen(tileset->line[x]);
@@ -889,17 +891,27 @@ insert_records(
 				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
 				return 0;
 			}
-			sprintf(sql, "INSERT INTO %s%s (%s%s%s) VALUES ('%s'::raster%s%s%s);",
-				(schema != NULL ? schema : ""),
-				table,
-				column,
-				(filename != NULL ? "," : ""),
-				(filename != NULL ? file_column_name : ""),
-				tileset->line[x],
-				(filename != NULL ? ",'" : ""),
-				(filename != NULL ? fn : ""),
-				(filename != NULL ? "'" : "")
-			);
+			ptr = sql;
+			ptr += sprintf(sql, "INSERT INTO %s%s (%s%s%s) VALUES (",
+					(schema != NULL ? schema : ""),
+					table,
+					column,
+					(filename != NULL ? "," : ""),
+					(filename != NULL ? file_column_name : "")
+				);
+			if (out_srid != SRID_UNKNOWN) {
+				ptr += sprintf(ptr, "ST_Transform(");
+			}
+			ptr += sprintf(ptr, "'%s'::raster",
+					tileset->line[x]
+				);
+			if (out_srid != SRID_UNKNOWN) {
+				ptr += sprintf(ptr, ", %d)", out_srid);
+			}
+			if (filename != NULL) {
+				ptr += sprintf(ptr, ",'%s'", fn);
+			}
+			ptr += sprintf(ptr, ");");
 
 			append_sql_to_buffer(buffer, sql);
 			sql = NULL;
@@ -1507,7 +1519,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 				if (!insert_records(
 					config->schema, ovtable, config->raster_column,
 					(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-					config->copy_statements,
+					config->copy_statements, config->out_srid,
 					tileset, buffer
 				)) {
 					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
@@ -1595,6 +1607,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 			}
 			OSRDestroySpatialReference(hSRS);
 		}
+	}
+
+	if ( info->srid == SRID_UNKNOWN && config->out_srid != SRID_UNKNOWN ) {
+		  rterror(_("convert_raster: could not determine source srid, cannot transform to target srid %d"), config->out_srid);
+		  GDALClose(hdsSrc);
+		  return 0;
 	}
 
 	/* record geotransform matrix */
@@ -1821,7 +1839,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
 						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements,
+						config->copy_statements, config->out_srid,
 						tileset, buffer
 					)) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
@@ -1940,7 +1958,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
 						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
-						config->copy_statements,
+						config->copy_statements, config->out_srid,
 						tileset, buffer
 					)) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
@@ -2056,7 +2074,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			if (tileset.length && !insert_records(
 				config->schema, config->table, config->raster_column,
 				(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-				config->copy_statements,
+				config->copy_statements, config->out_srid,
 				&tileset, buffer
 			)) {
 				rterror(_("process_rasters: Could not convert raster tiles into INSERT or COPY statements"));
@@ -2103,7 +2121,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					if (tileset.length && !insert_records(
 						config->schema, config->overview_table[j], config->raster_column,
 						(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-						config->copy_statements,
+						config->copy_statements, config->out_srid,
 						&tileset, buffer
 					)) {
 						rterror(_("process_rasters: Could not convert overview tiles into INSERT or COPY statements"));
@@ -2300,9 +2318,18 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	for (i = 1; i < argc; i++) {
+		char *optarg, *ptr;
 		/* srid */
 		if (CSEQUAL(argv[i], "-s") && i < argc - 1) {
-			config->srid = atoi(argv[++i]);
+			optarg = argv[++i];
+			ptr = strchr(optarg, ':');
+			if (ptr) {
+				*ptr++ = '\0';
+				sscanf(optarg, "%d", &config->srid);
+				sscanf(ptr, "%d", &config->out_srid);
+			} else {
+				config->srid = config->out_srid = atoi(optarg);
+			}
 		}
 		/* band index */
 		else if (CSEQUAL(argv[i], "-b") && i < argc - 1) {
@@ -2629,6 +2656,17 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 			strncpy(config->rt_file[config->rt_file_count - 1], argv[i], strlen(argv[i]) + 1);
+		}
+	}
+
+	if (config->srid != config->out_srid) {
+		if (config->copy_statements) {
+			rterror(_("Invalid argument combination - cannot use -Y with -s FROM_SRID:TO_SRID"));
+			exit(1);
+		}
+		if (config->out_srid == SRID_UNKNOWN) {
+			rterror(_("Unknown target SRID is invalid when source SRID is given"));
+			exit(1);
 		}
 	}
 

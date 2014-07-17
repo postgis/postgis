@@ -97,8 +97,11 @@ typedef struct raster_loader_config {
 	/* case-sensitive of identifiers, 1 = yes, 0 = no (default) */
 	int quoteident;
 
-	/* SRID of raster */
+	/* SRID of input raster */
 	int srid;
+
+	/* SRID of output raster (reprojection) */
+	int out_srid;
 
 	/* bands to extract */
 	int *nband; /* 1-based */

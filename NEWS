@@ -17,6 +17,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #2843, Support reprojection on raster import
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
   - #2159, report libjson version from postgis_full_version()
   - #2770, ST_MemSize(raster)
