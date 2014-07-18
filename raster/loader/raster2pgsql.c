@@ -820,6 +820,53 @@ append_sql_to_buffer(STRINGBUFFER *buffer, const char *str) {
 }
 
 static int
+copy_from(const char *schema, const char *table, const char *column,
+          const char *filename, const char *file_column_name,
+          STRINGBUFFER *buffer)
+{
+	char *sql = NULL;
+	uint32_t len = 0;
+
+	assert(table != NULL);
+	assert(column != NULL);
+
+	len = strlen("COPY  () FROM stdin;") + 1;
+	if (schema != NULL)
+		len += strlen(schema);
+	len += strlen(table);
+	len += strlen(column);
+	if (filename != NULL)
+		len += strlen(",") + strlen(file_column_name);
+
+	sql = rtalloc(sizeof(char) * len);
+	if (sql == NULL) {
+		rterror(_("copy_from: Could not allocate memory for COPY statement"));
+		return 0;
+	}
+	sprintf(sql, "COPY %s%s (%s%s%s) FROM stdin;",
+		(schema != NULL ? schema : ""),
+		table,
+		column,
+		(filename != NULL ? "," : ""),
+		(filename != NULL ? file_column_name : "")
+	);
+
+	append_sql_to_buffer(buffer, sql);
+	sql = NULL;
+
+	return 1;
+}
+
+static int
+copy_from_end(STRINGBUFFER *buffer)
+{
+	/* end of data */
+	append_sql_to_buffer(buffer, strdup("\\."));
+
+	return 1;
+}
+
+static int
 insert_records(
 	const char *schema, const char *table, const char *column,
 	const char *filename, const char *file_column_name,
@@ -836,6 +883,16 @@ insert_records(
 
 	/* COPY statements */
 	if (copy_statements) {
+
+    if (!copy_from(
+      schema, table, column,
+      (file_column_name ? filename : NULL), file_column_name,
+      buffer
+    )) {
+      rterror(_("insert_records: Could not add COPY statement to string buffer"));
+      return 0;
+    }
+
 
 		/* escape tabs in filename */
 		if (filename != NULL)
@@ -862,6 +919,11 @@ insert_records(
 			append_sql_to_buffer(buffer, sql);
 			sql = NULL;
 		}
+
+    if (!copy_from_end(buffer)) {
+      rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
+      return 0;
+    }
 
 	}
 	/* INSERT statements */
@@ -991,53 +1053,6 @@ create_table(
 	);
 
 	append_sql_to_buffer(buffer, sql);
-
-	return 1;
-}
-
-static int
-copy_from(
-	const char *schema, const char *table, const char *column,
-	const char *filename, const char *file_column_name,
-	STRINGBUFFER *buffer
-) {
-	char *sql = NULL;
-	uint32_t len = 0;
-
-	assert(table != NULL);
-	assert(column != NULL);
-
-	len = strlen("COPY  () FROM stdin;") + 1;
-	if (schema != NULL)
-		len += strlen(schema);
-	len += strlen(table);
-	len += strlen(column);
-	if (filename != NULL)
-		len += strlen(",") + strlen(file_column_name);
-
-	sql = rtalloc(sizeof(char) * len);
-	if (sql == NULL) {
-		rterror(_("copy_from: Could not allocate memory for COPY statement"));
-		return 0;
-	}
-	sprintf(sql, "COPY %s%s (%s%s%s) FROM stdin;",
-		(schema != NULL ? schema : ""),
-		table,
-		column,
-		(filename != NULL ? "," : ""),
-		(filename != NULL ? file_column_name : "")
-	);
-
-	append_sql_to_buffer(buffer, sql);
-	sql = NULL;
-
-	return 1;
-}
-
-static int
-copy_from_end(STRINGBUFFER *buffer) {
-	/* end of data */
-	append_sql_to_buffer(buffer, strdup("\\."));
 
 	return 1;
 }
@@ -2051,17 +2066,6 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			init_rastinfo(&rastinfo);
 			init_stringbuffer(&tileset);
 
-			if (config->copy_statements && !copy_from(
-				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-				buffer
-			)) {
-				rterror(_("process_rasters: Could not add COPY statement to string buffer"));
-				rtdealloc_rastinfo(&rastinfo);
-				rtdealloc_stringbuffer(&tileset, 0);
-				return 0;
-			}
-
 			/* convert raster */
 			if (!convert_raster(i, config, &rastinfo, &tileset, buffer)) {
 				rterror(_("process_rasters: Could not process raster: %s"), config->rt_file[i]);
@@ -2073,7 +2077,8 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			/* process raster tiles into COPY or INSERT statements */
 			if (tileset.length && !insert_records(
 				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
+				(config->file_column ? config->rt_filename[i] : NULL),
+        config->file_column_name,
 				config->copy_statements, config->out_srid,
 				&tileset, buffer
 			)) {
@@ -2085,12 +2090,6 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			rtdealloc_stringbuffer(&tileset, 0);
 
-			if (config->copy_statements && !copy_from_end(buffer)) {
-				rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
-				rtdealloc_rastinfo(&rastinfo);
-				return 0;
-			}
-
 			/* flush buffer after every raster */
 			flush_stringbuffer(buffer);
 
@@ -2099,17 +2098,6 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				int j = 0;
 
 				for (j = 0; j < config->overview_count; j++) {
-
-					if (config->copy_statements && !copy_from(
-							config->schema, config->overview_table[j], config->raster_column,
-							(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
-							buffer
-					)) {
-						rterror(_("process_rasters: Could not add COPY statement to string buffer"));
-						rtdealloc_rastinfo(&rastinfo);
-						rtdealloc_stringbuffer(&tileset, 0);
-						return 0;
-					}
 
 					if (!build_overview(i, config, &rastinfo, j, &tileset, buffer)) {
 						rterror(_("process_rasters: Could not create overview of factor %d for raster %s"), config->overview[j], config->rt_file[i]);
@@ -2134,14 +2122,6 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					/* flush buffer after every raster */
 					flush_stringbuffer(buffer);
-
-					if (config->copy_statements) {
-						if (!copy_from_end(buffer)) {
-							rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
-							rtdealloc_rastinfo(&rastinfo);
-							return 0;
-						}
-					}
 				}
 			}
 
