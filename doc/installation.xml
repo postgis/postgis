@@ -1210,7 +1210,7 @@ Run tests: 90</programlisting>
   
   <sect1 id="installing_pagc_address_standardizer"><title>Installing and Using ddress standardizer</title>
   		<para>The <code>address_standardizer</code> extension used to be a separate package that required separate download. From PostGIS 2.2 on, it is now bundled in.
-  		For more information about the address_standardize, what it does, and how to configure it for your needs, refer to <xerf linkend="Address_Standardizer" />.</para>
+  		For more information about the address_standardize, what it does, and how to configure it for your needs, refer to <xref linkend="Address_Standardizer" />.</para>
   		<para>This standardizer can be use in conjunction with the PostGIS packaged tiger geocoder extension as a replacement for the <xref linkend="Normalize_Address" /> discussed.
   		To use as replacement refer to  <xref linkend="tiger_pagc_address_standardizing" />.
   		You can also use it as a building block for your own geocoder.</para>
