@@ -1211,7 +1211,7 @@ Run tests: 90</programlisting>
 	
 			<para>The address standardizer relies on PCRE which is usually already installed on most Nix systems, 
 but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. It also requires Perl with the <code>Regexp::Assemble</code> installed </para>
-			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+			<para>For Windows users, the PostGIS 2.1+ bundle is packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
 			<para>Installing Regex::Assemble</para>
 			<programlisting>cpan Regexp::Assemble</programlisting>
 			<para>or if you are on Ubuntu / Debian you might need to do</para>
@@ -1226,7 +1226,13 @@ make install</programlisting>
       <para>Once you have installed, you can connect to your database and run the SQL:</para>
 			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
 			
-
+			<para>The following test requires no rules, gaz, or lex tables</para>
+			<programlisting>SELECT num, street, city, state, zip 
+ FROM parse_address('1 Devonshire Place, Boston, MA 02109');</programlisting>
+			<para>Output should be</para>
+			<screen> num |         street         |  city  | state |  zip
+-----+------------------------+--------+-------+-------
+ 1   | Devonshire Place PH301 | Boston | MA    | 02109</screen>
 	</sect1>
   
   <sect1 id="loading_extras_tiger_geocoder">
