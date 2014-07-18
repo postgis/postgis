@@ -1202,6 +1202,33 @@ Run tests: 90</programlisting>
 	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>
   
+  <sect1 id="installing_pagc_address_standardizer"><title>Installing and Using ddress standardizer</title>
+  		<para>The <code>address_standardizer</code> extension used to be a separate package that required separate download. From PostGIS 2.2 on, it is now bundled in.
+  		For more information about the address_standardize, what it does, and how to configure it for your needs, refer to <xerf linkend="Address_Standardizer" />.</para>
+  		<para>This standardizer can be use in conjunction with the PostGIS packaged tiger geocoder extension as a replacement for the <xref linkend="Normalize_Address" /> discussed.
+  		To use as replacement refer to  <xref linkend="tiger_pagc_address_standardizing" />.
+  		You can also use it as a building block for your own geocoder.</para>
+	
+			<para>The address standardizer relies on PCRE which is usually already installed on most Nix systems, 
+but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. It also requires Perl with the <code>Regexp::Assemble</code> installed </para>
+			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+			<para>Installing Regex::Assemble</para>
+			<programlisting>cpan Regexp::Assemble</programlisting>
+			<para>or if you are on Ubuntu / Debian you might need to do</para>
+			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
+			<para>Compiling</para>
+			<programlisting>cd postgis-&last_release_version;/extras/address_standardizer
+make
+#if you have in non-standard location pcre try
+# make SHLIB_LINK="-L/path/pcre/lib -lpostgres -lpgport -lpcre" CPPFLAGS="-I.  -I/path/pcre/include" 
+make install</programlisting>
+
+      <para>Once you have installed, you can connect to your database and run the SQL:</para>
+			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
+			
+
+	</sect1>
+  
   <sect1 id="loading_extras_tiger_geocoder">
   	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
   	
@@ -1250,30 +1277,6 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			</orderedlist>
 		</sect3>
 		
-		<sect3 id="installing_pagc_address_standardizer"><title>Installing and Using PAGC address standardizer</title>
-			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
-			project that has a much better address standardizer engine.  This is currently a separate project, which is a subproject of PAGC.  The source code for this PostgreSQL standardizer extension can be downloaded from <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>.  To use this new normalizer, you compile the pagc extension and install as an extension in your database.</para>
-			<para>The PAGC project and standardizer portion in particular, relies on PCRE which is usually already installed on most Nix systems, 
-but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. It also requires Perl with the <code>Regexp::Assemble</code> installed </para>
-			<para>For Windows users, the PostGIS 2.1+ bundle will come packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
-			<para>Installing Regex::Assemble</para>
-			<programlisting>cpan Regexp::Assemble</programlisting>
-			<para>or if you are on Ubuntu / Debian you might need to do</para>
-			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
-			<para>Compiling</para>
-			<programlisting>svn co svn://svn.code.sf.net/p/pagc/code/branches/sew-refactor/postgresql address_standardizer
-cd address_standardizer
-make
-#if you have in non-standard location pcre try
-# make SHLIB_LINK="-L/path/pcre/lib -lpostgres -lpgport -lpcre" CPPFLAGS="-I.  -I/path/pcre/include" 
-make install</programlisting>
-
-      <para>Once you have installed, you can connect to your database and run the SQL:</para>
-			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
-			
-			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. The other nice thing about this extension is that its tiger agnostic, so can be used with other data sources such as international addresses.</para>
-
-		</sect3>
 	</sect2>
 	<sect2 id="install_tiger_geocoder">
 		<title>Tiger Geocoder Enabling your PostGIS database: Not Using Extensions</title>
@@ -1307,6 +1310,12 @@ pretty_address
 202 E Fremont St, Las Vegas, NV 89101
 			</programlisting>
 		</para>
+	</sect2>
+	<sect2 id="tiger_pagc_address_standardizing"><title>Using Address Standardizer Extension with Tiger geocoder</title>
+			<para>One of the many complaints of folks is the address normalizer function <xref linkend="Normalize_Address" /> function that normalizes an address for prepping before geocoding.  The normalizer is far from perfect and trying to patch its imperfectness takes a vast amount of resources.  As such we have integrated with another
+			project that has a much better address standardizer engine.  To use this new address_standardizer, you compile the extension as described in <xref linkend="installing_pagc_address_standardizer" /> and install as an extension in your database.</para>
+						
+			<para>Once you install this extension in the same database as you have installed <code>postgis_tiger_geocoder</code>, then the <xref linkend="Pagc_Normalize_Address" /> can be used instead of <xref linkend="Normalize_Address" />. This extension is tiger agnostic, so can be used with other data sources such as international addresses. The tiger geocoder extension does come packaged with its own custom versions of <xref linkend="rulestab" /> ( <code>tiger.pagc_rules</code>) , <xref linkend="gaztab" /> (<code>tiger.pagc_gaz</code>), and <xref linkend="lextab" /> (<code>tiger.pagc_lex</code>).  These you can add and update to improve your standardizing experience for your own needs.</para>
 	</sect2>
 	<sect2 id="tiger_geocoder_loading_data">
 		<title>Loading Tiger Data</title>
