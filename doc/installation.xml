@@ -171,7 +171,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	  
 	 <listitem>
 			<para>
-				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems) and <code>Regex::Assemble</code> perl CPAN package.  The  <code>Regex::Assemble</code> is only needed for compilation, not for running in PostgreSQL.</para>
+				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems) and <code>Regex::Assemble</code> perl CPAN package.  The  <code>Regex::Assemble</code> is only needed for compilation, not for running in PostgreSQL.
 			</para>
 		</listitem>
 
