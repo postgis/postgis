@@ -303,6 +303,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			<funcsynopsis>
 				 <funcprototype>
 					<funcdef>record <function>parse_address</function></funcdef>
+					<paramdef><type>text </type> <parameter>address</parameter></paramdef>
 				</funcprototype>
 
 			</funcsynopsis>
@@ -335,7 +336,8 @@ into includes in the future for easier maintenance.</para></listitem>
 			<para></para>
 		</refsection>
 	</refentry>
-		<refentry id="standardize_address">
+	
+	<refentry id="standardize_address">
 		<refnamediv>
 			<refname>standardize_address</refname>
 	
