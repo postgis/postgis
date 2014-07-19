@@ -324,9 +324,9 @@ into includes in the future for easier maintenance.</para></listitem>
 			<title>Examples</title>
 	
 			<programlisting>SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234');</programlisting>
-			<screen> num |          street          |  city  |  zip  | zipplus
------+--------------------------+--------+-------+---------
- 1   | Devonshire Place, PH 301 | Boston | 02109 | 1234</screen>
+			<screen> num |      street      |  city  |  zip  | zipplus
+-----+------------------+--------+-------+---------
+ 1   | Devonshire Place | Boston | 02109 | 1234</screen>
 		</refsection>
 	
 		<!-- Optionally add a "See Also" section -->
