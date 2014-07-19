@@ -292,6 +292,49 @@ into includes in the future for easier maintenance.</para></listitem>
   </sect1>
   
   <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>
+  		<refentry id="parse_address">
+		<refnamediv>
+			<refname>parse_address</refname>
+	
+			<refpurpose>Takes a 1 line address and breaks into parts</refpurpose>
+		</refnamediv>
+	
+		<refsynopsisdiv>
+			<funcsynopsis>
+				 <funcprototype>
+					<funcdef>record <function>parse_address</function></funcdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+	
+		<refsection>
+			<title>Description</title>
+	
+			<para>Returns takes as input an address, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
+			<emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
+
+			<!-- use this format if new function -->
+		<para>Availability: 2.2.0</para>
+		</refsection>
+	
+	
+		<refsection>
+			<title>Examples</title>
+	
+			<programlisting>SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234');</programlisting>
+			<screen> num |          street          |  city  |  zip  | zipplus
+-----+--------------------------+--------+-------+---------
+ 1   | Devonshire Place, PH 301 | Boston | 02109 | 1234</screen>
+		</refsection>
+	
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+			<title>See Also</title>
+	
+			<para></para>
+		</refsection>
+	</refentry>
 		<refentry id="standardize_address">
 		<refnamediv>
 			<refname>standardize_address</refname>
@@ -306,6 +349,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					<paramdef><type>text </type> <parameter>lextab</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>gaztab</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rultab</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>address</parameter></paramdef>
 				</funcprototype>
 				
 				<funcprototype>
@@ -322,14 +366,8 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Description</title>
 	
-			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing lex, gaz, and rule tables.</para>
-	
-			<!-- optionally mention that this function uses indexes if appropriate -->
-			<note>
-				<para>This function call will automatically include a bounding box
-				comparison that will make use of any indexes that are available on the
-				geometries.</para>
-			</note>
+			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
+
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
 		</refsection>
@@ -338,14 +376,40 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Examples</title>
 	
-			<programlisting></programlisting>
+			<programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
+			   'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
+			   
+			<para>Make easier to read we'll dump output using hstore extension CREATE EXTENSION hstore; you need to install</para>
+			<programlisting>SELECT (each(hstore(p))).*  
+ FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
+   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234') As p;</programlisting>
+ 			<screen>    key     |      value
+------------+-----------------
+ box        |
+ city       | BOSTON
+ name       | DEVONSHIRE
+ qual       |
+ unit       | # PENTHOUSE 301
+ extra      |
+ state      | MA
+ predir     |
+ sufdir     |
+ country    | USA
+ pretype    |
+ suftype    | PL
+ building   |
+ postcode   | 02109
+ house_num  | 1
+ ruralroute |
+(16 rows) 			
+ 			</screen>
 		</refsection>
 	
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
 	
-			<para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, , <xref linkend="gaztab" /></para>
+			<para><xref linkend="stdaddr" />, <xref linkend="rulestab" />, <xref linkend="lextab" />, <xref linkend="gaztab" />, <xref linkend="Pagc_Normalize_Address" /></para>
 		</refsection>
 	</refentry>
   
