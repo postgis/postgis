@@ -57,5 +57,5 @@ CREATE OR REPLACE FUNCTION parse_address(IN text,
         OUT country text)
     RETURNS record
     AS '$libdir/address_standardizer', 'parse_address'
-    LANGUAGE 'c' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
