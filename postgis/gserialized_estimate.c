@@ -56,6 +56,7 @@ dimensionality cases. (2D geometry) &&& (3D column), etc.
 #include "utils/builtins.h"
 #include "utils/syscache.h"
 #include "utils/rel.h"
+#include "utils/selfuncs.h"
 
 #include "../postgis_config.h"
 
@@ -799,6 +800,35 @@ nd_increment(ND_IBOX *ibox, int ndims, int *counter)
 	return TRUE;
 }
 
+static ND_STATS*
+pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
+{
+  int stats_kind = STATISTIC_KIND_ND;
+  int rv, nvalues;
+	float4 *floatptr;
+	ND_STATS *nd_stats;
+
+  /* If we're in 2D mode, set the kind appropriately */
+  if ( mode == 2 ) stats_kind = STATISTIC_KIND_2D;
+
+  /* Then read the geom status histogram from that */
+  rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
+                        NULL, NULL, NULL, &floatptr, &nvalues);
+  if ( ! rv ) {
+    POSTGIS_DEBUGF(2,
+            "no slot of kind %d in stats tuple", stats_kind);
+    return NULL;
+  }
+	
+  /* Clone the stats here so we can release the attstatsslot immediately */
+  nd_stats = palloc(sizeof(float) * nvalues);
+  memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
+
+  /* Clean up */
+  free_attstatsslot(0, NULL, 0, floatptr, nvalues);
+
+  return nd_stats;
+}
 
 /**
 * Pull the stats object from the PgSQL system catalogs. Used
@@ -808,10 +838,7 @@ static ND_STATS*
 pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode)
 {
 	HeapTuple stats_tuple;
-	float4 *floatptr;
 	ND_STATS *nd_stats;
-	int rv, nvalues;
-	int stats_kind = STATISTIC_KIND_ND;
 
 	/* First pull the stats tuple */
 	stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
@@ -820,31 +847,18 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode)
 		POSTGIS_DEBUGF(2, "stats for \"%s\" do not exist", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
 		return NULL;
 	}
-	
-	/* If we're in 2D mode, set the kind appropriately */
-	if ( mode == 2 )
-		stats_kind = STATISTIC_KIND_2D;
-			
-	/* Then read the geom status histogram from that */
-	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
-	if ( ! rv )
+
+	nd_stats = pg_nd_stats_from_tuple(stats_tuple, mode);
+	ReleaseSysCache(stats_tuple);
+	if ( ! nd_stats )
 	{
-		ReleaseSysCache(stats_tuple);
-		POSTGIS_DEBUGF(2, "histogram for \"%s\" does not exist?", get_rel_name(table_oid));
-		return NULL;
+		POSTGIS_DEBUGF(2,
+			"histogram for attribute %d of table \"%s\" does not exist?",
+			att_num, get_rel_name(table_oid));
 	}
 	
-	/* Clone the stats here so we can release the attstatsslot immediately */
-	nd_stats = palloc(sizeof(float) * nvalues);
-	memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
-	
-	/* Clean up */
-	free_attstatsslot(0, NULL, 0, floatptr, nvalues);
-	ReleaseSysCache(stats_tuple);
-
 	return nd_stats;
 }
-
 
 /**
 * Pull the stats object from the PgSQL system catalogs. The
@@ -2052,8 +2066,8 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	/* int varRelid = PG_GETARG_INT32(3); */
 	int mode = PG_GETARG_INT32(4);
 	
-	Oid relid;
-	ND_STATS *nd_stats;
+	VariableStatData vardata;
+	ND_STATS *nd_stats = NULL;
 
 	Node *other;
 	Var *self;
@@ -2096,25 +2110,6 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(DEFAULT_ND_SEL);
 	}
 
-	/*
-	* We don't have a nice <const> && <var> or <var> && <const> 
-	* situation here. <const> && <const> would probably get evaluated
-	* away by PgSQL earlier on. <func> && <const> is harder, and the
-	* case we get often is <const> && ST_Expand(<var>), which does 
-	* actually have a subtly different selectivity than a bae
-	* <const> && <var> call. It's calculatable though, by expanding
-	* every cell in the histgram appropriately.
-	* 
-	* Discussion: http://trac.osgeo.org/postgis/ticket/1828
-	*
-	* To do? Do variable selectivity based on the <func> node.
-	*/
-	if ( ! IsA(self, Var) )
-	{
-		POSTGIS_DEBUG(3, " no bare variable argument ? - returning a moderate selectivity");
-		PG_RETURN_FLOAT8(FALLBACK_ND_SEL);
-	}
-
 	/* Convert the constant to a BOX */
 	if( ! gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box) )
 	{
@@ -2124,13 +2119,18 @@ Datum gserialized_gist_sel(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(4, " requested search box is: %s", gbox_to_string(&search_box));
 
 	/* Get pg_statistic row */
-	relid = getrelid(self->varno, root->parse->rtable);
-	nd_stats = pg_get_nd_stats(relid, self->varattno, mode);
+	examine_variable(root, (Node*)self, 0, &vardata);
+	if ( vardata.statsTuple ) {
+		nd_stats = pg_nd_stats_from_tuple(vardata.statsTuple, mode);
+	}
+	ReleaseVariableStats(vardata);
+
 	if ( ! nd_stats )
 	{
 		POSTGIS_DEBUG(3, " unable to load stats from syscache, not analyzed yet?");
 		PG_RETURN_FLOAT8(FALLBACK_ND_SEL);
 	}
+
 	POSTGIS_DEBUGF(4, " got stats:\n%s", nd_stats_to_json(nd_stats));
 
 	/* Do the estimation! */

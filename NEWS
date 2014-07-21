@@ -18,6 +18,7 @@ PostGIS 2.2.0
  * New Features *
 
   - #2843, Support reprojection on raster import
+           (Sandro Santilli / Vizzuality)
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
   - #2159, report libjson version from postgis_full_version()
   - #2770, ST_MemSize(raster)
@@ -41,6 +42,9 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - #2839, Implement selectivity estimator for functional indexes,
+           speeding up spatial queries on raster tables.
+           (Sandro Santilli / Vizzuality)
   - #2361, Added spatial_index column to raster_columns view
   - #2390, Testsuite for pgsql2shp
   - #2527, Added -k flag to raster2pgsql to skip checking that

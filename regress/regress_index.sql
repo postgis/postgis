@@ -46,25 +46,32 @@ $$;
 
 -- There are 50000 points in the table with full extent being
 -- BOX(0.0439142361 0.0197799355,999.955261 999.993652)
+CREATE TABLE sample_queries AS
+SELECT 1 as id, 5 as tol, 'ST_MakeEnvelope(125,125,135,135)' as box
+ UNION ALL
+SELECT 2, 60, 'ST_MakeEnvelope(0,0,135,135)'
+ UNION ALL
+SELECT 3, 500, 'ST_MakeEnvelope(0,0,500,500)'
+ UNION ALL
+SELECT 4, 600, 'ST_MakeEnvelope(0,0,1000,1000)'
+;
 
 ANALYZE test;
 
-SELECT estimate_error('
- select num from test where the_geom && ST_MakeEnvelope(125,125,135,135);
-', 5);
+SELECT estimate_error(
+  'select num from test where the_geom && ' || box, tol )
+  FROM sample_queries ORDER BY id;
 
-select estimate_error('
- select num from test where the_geom && ST_MakeEnvelope(0,0,135,135);
-', 50);
+-- Test selectivity estimation of functional indexes
 
-SELECT estimate_error('
- select num from test where the_geom && ST_MakeEnvelope(0,0,500,500);
-', 500);
+CREATE INDEX expressional_gist on test using gist ( st_centroid(the_geom) );
+ANALYZE test;
 
-SELECT estimate_error('
- select num from test where the_geom && ST_MakeEnvelope(0,0,1000,1000);
-', 600);
+SELECT 'expr', estimate_error(
+  'select num from test where st_centroid(the_geom) && ' || box, tol )
+  FROM sample_queries ORDER BY id;
 
 DROP TABLE test;
+DROP TABLE sample_queries;
 
 DROP FUNCTION estimate_error(text, int);
