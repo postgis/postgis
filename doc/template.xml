@@ -62,6 +62,9 @@
 	
 	<!-- Optionally mention support for Triangles and TINS  -->
 	<para>&T_support;</para>
+	
+	<!-- Optionally mention address_standardizer required -->
+	<para>&address_standardizer_required;</para>
   </refsection>
 
 

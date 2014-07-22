@@ -49,6 +49,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						<title>Description</title>
 						<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
 						<para>The token numbers denote the reference number in the <varname>rules</varname> table.</para>
+						<para>&address_standardizer_required;</para>
 							<variablelist>
 								<varlistentry>
 										<term>building</term>
@@ -317,6 +318,7 @@ into includes in the future for easier maintenance.</para></listitem>
 
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
+		<para>&address_standardizer_required;</para>
 		</refsection>
 	
 	
@@ -374,6 +376,7 @@ into includes in the future for easier maintenance.</para></listitem>
 
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
+		<para>&address_standardizer_required;</para>
 		</refsection>
 	
 	

@@ -77,6 +77,13 @@
      <imagedata fileref='images/check.png' />
    </imageobject>
  </inlinemediaobject> This method needs SFCGAL backend.">
+ 
+<!ENTITY address_standardizer_required 
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject> This method needs address_standardizer extension.">
 
 <!ENTITY curve_support 
 "<inlinemediaobject>

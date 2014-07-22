@@ -1009,8 +1009,9 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
 		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-		<para>This version uses the PAGC address standardizer C extension which you can download. There are slight variations in casing and formatting and also provides a richer breakout.</para>
+		<para>There are slight variations in casing and formatting over the <xref linkend="Normalize_Address" />.</para>
 		<para>Availability: 2.1.0</para>
+		<para>&address_standardizer_required;</para>
 		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
 		<para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
 		<para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>
