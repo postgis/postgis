@@ -41,8 +41,8 @@ include $(PGXS)
 
 PERL := $(shell which perl)
 
-address_standardizer--1.0.sql: address_standardizer--1.0.sql.in
-	$(PERL) mk-sql.pl '$(PGVER)' address_standardizer--1.0.sql.in > address_standardizer--1.0.sql
+address_standardizer--1.0.sql: address_standardizer.sql.in
+	$(PERL) mk-sql.pl '$(PGVER)' address_standardizer.sql.in > address_standardizer--1.0.sql
 
 us-lex.sql: lexicon.csv
 	$(PERL) pagc-data-psql lex lexicon.csv > us-lex.sql
