@@ -17,23 +17,20 @@ CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$
 DECLARE
-  anl XML; -- analisys
+  anl TEXT; -- analisys
   err INT; -- absolute difference between planned and actual rows
   est INT; -- estimated count
   act INT; -- actual count
+  mat TEXT[];
 BEGIN
-  EXECUTE 'EXPLAIN (ANALYZE, FORMAT XML) ' || qry INTO STRICT anl;
+  EXECUTE 'EXPLAIN ANALYZE ' || qry INTO anl;
 
-  SELECT (xpath('//x:Plan-Rows/text()', anl,
-         ARRAY[ARRAY['x', 'http://www.postgresql.org/2009/explain']]))[1]
-         ::text::int
-  INTO est;
+  SELECT regexp_matches(anl, ' rows=([0-9]*) .* rows=([0-9]*) ')
+  INTO mat;
 
-  SELECT (xpath('//x:Actual-Rows/text()', anl,
-         ARRAY[ARRAY['x', 'http://www.postgresql.org/2009/explain']]))[1]
-         ::text::int
-  INTO act;
-
+  est := mat[1];
+  act := mat[2];
+    
   err = abs(est-act);
 
   RETURN act || '+=' || tol || ':' || coalesce(
