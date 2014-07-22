@@ -1,5 +1,5 @@
 # postgis topology extension
 comment = 'PostGIS SFCGAL functions'
 default_version = '@POSTGIS_LIB_VERSION@'
-relocatable = false
+relocatable = true
 requires = postgis
