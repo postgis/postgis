@@ -56,6 +56,9 @@ SELECT 3, 500, 'ST_MakeEnvelope(0,0,500,500)'
 SELECT 4, 600, 'ST_MakeEnvelope(0,0,1000,1000)'
 ;
 
+-- We raise the statistics target to the limit 
+ALTER TABLE test ALTER COLUMN the_geom SET STATISTICS 10000;
+
 ANALYZE test;
 
 SELECT estimate_error(
