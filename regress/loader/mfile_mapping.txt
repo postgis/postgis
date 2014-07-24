@@ -1,2 +1,2 @@
-﻿address add
+address add
 short_name short
