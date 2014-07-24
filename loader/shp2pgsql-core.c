@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://www.postgis.org
+ * http://postgis.net
  * 
  * Copyright (C) 2008 OpenGeo.org
  * Copyright (C) 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
@@ -899,6 +899,99 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->tablespace = NULL;
 	config->idxtablespace = NULL;
 	config->usetransaction = 1;
+	config->column_map_filename = NULL;
+}
+
+/**
+ * @TODO: This is copied from pgsql2shp-core.c consider moving somewhere so can be reused
+ * Read the content of filename into a symbol map stored
+ * at state->column_map_filename.
+ *
+ * The content of the file is lines of two names separated by
+ * white space and no trailing or leading space:
+ *
+ *    COLUMNNAME DBFFIELD1
+ *    AVERYLONGCOLUMNNAME DBFFIELD2
+ *
+ *    etc.
+ *
+ * It is the reponsibility of the caller to reclaim the allocated space
+ * as follows:
+ *
+ * free(state->column_map_pgfieldnames[]) to free the column names
+ * free(state->column_map_dbffieldnames[]) to free the dbf field names
+ *
+ * @param state : container of state->column_map where the malloc'd
+ *                symbol map will be stored.
+ */
+static int
+read_column_map(SHPLOADERSTATE *state)
+{
+	FILE *fptr;
+	char linebuffer[1024];
+	char *tmpstr, *tmpptr;
+	int curmapsize, fieldnamesize;
+	
+	/* Read column map file and load the column_map_dbffieldnames and column_map_pgfieldnames
+	   arrays */
+	fptr = fopen(state->config->column_map_filename, "r");
+	if (!fptr)
+	{
+		/* Return an error */
+		snprintf(state->message, SHPLOADERMSGLEN, _("ERROR: Unable to open column map file %s"), state->config->column_map_filename);
+		return SHPLOADERERR;
+	}
+	
+	/* First count how many columns we have... */
+	while (fgets(linebuffer, 1024, fptr) != NULL)
+		state->column_map_size++;
+	
+	/* Now we know the final size, allocate the arrays and load the data */
+	fseek(fptr, 0, SEEK_SET);
+	state->column_map_pgfieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
+	state->column_map_dbffieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
+	
+	/* Read in a line at a time... */
+	curmapsize = 0;
+	while (fgets(linebuffer, 1024, fptr) != NULL)
+	{
+		/* Split into two separate strings - pgfieldname followed by dbffieldname */
+
+		/* First locate end of first column (pgfieldname) */
+ 		for (tmpptr = tmpstr = linebuffer; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
+		fieldnamesize = tmpptr - tmpstr;
+
+		/* Allocate memory and copy the string ensuring it is terminated */
+		state->column_map_pgfieldnames[curmapsize] = malloc(fieldnamesize + 1);
+		strncpy(state->column_map_pgfieldnames[curmapsize], tmpstr, fieldnamesize);
+		state->column_map_pgfieldnames[curmapsize][fieldnamesize] = '\0';
+		
+		/* Now swallow up any whitespace */
+		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++) {}
+
+		/* Finally locate end of second column (dbffieldname) */
+ 		for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
+		fieldnamesize = tmpptr - tmpstr;
+		
+		/* Allocate memory and copy the string ensuring it is terminated */
+		state->column_map_dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
+		strncpy(state->column_map_dbffieldnames[curmapsize], tmpstr, fieldnamesize);
+		state->column_map_dbffieldnames[curmapsize][fieldnamesize] = '\0';
+		
+		/* Error out if the dbffieldname is > 10 chars */
+		if (strlen(state->column_map_dbffieldnames[curmapsize]) > 10)
+		{
+			snprintf(state->message, SHPLOADERMSGLEN, _("ERROR: column map file specifies a DBF field name \"%s\" which is longer than 10 characters"), state->column_map_dbffieldnames[curmapsize]);
+			return SHPLOADERERR;
+		}
+		
+		curmapsize++;
+	}
+
+	fclose(fptr);
+
+	/* Done; return success */
+	return SHPLOADEROK;
 }
 
 /* Create a new shapefile state object */
@@ -960,7 +1053,7 @@ int
 ShpLoaderOpenShape(SHPLOADERSTATE *state)
 {
 	SHPObject *obj = NULL;
-	int j, z;
+	int j, z, k;
 	int ret = SHPLOADEROK;
 
 	int field_precision, field_width;
@@ -990,6 +1083,15 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		snprintf(state->message, SHPLOADERMSGLEN, _("%s: dbf file (.dbf) can not be opened."), state->config->shp_file);
 
 		return SHPLOADERERR;
+	}
+	
+		
+	/* Open the column map if one was specified */
+	if (state->config->column_map_filename)
+	{
+		ret = read_column_map(state);
+		if (ret != SHPLOADEROK)
+			return SHPLOADERERR;
 	}
 	
 	/* User hasn't altered the default encoding preference... */
@@ -1246,6 +1348,19 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 			strncpy(name, utf8str, MAXFIELDNAMELEN);
 			free(utf8str);
+		}
+		
+		/* If a column map file has been passed in, use this to create the postgresql field name from
+		   the dbf column name */
+		if (state->column_map_size > 0)
+		{
+			for (k = 0; k < state->column_map_size; k++)
+			{
+				if (!strcasecmp(state->column_map_dbffieldnames[k], name))
+				{
+					strcpy(name, state->column_map_pgfieldnames[k]);
+				}
+			}
 		}
 
 		/*

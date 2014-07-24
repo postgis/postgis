@@ -69,6 +69,7 @@ TESTS = \
 	loader/ReprojectPtsGeog \
 	loader/Latin1 \
 	loader/Latin1-implicit \
+	loader/mfile \
   dumper/literalsrid \
   dumper/realtable \
 	binary \

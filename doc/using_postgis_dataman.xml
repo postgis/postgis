@@ -1753,7 +1753,22 @@ COMMIT;</programlisting>
         </para>
       </listitem>
     </varlistentry>
-        <varlistentry>
+    
+    <varlistentry>
+      <term>-m</term>
+      <listitem>
+        <para>
+          -m <filename>a_file_name</filename>  Specify a file containing a set of mappings of (long) column
+     names to 10 character DBF column names. The content of the file is one or
+     more lines of two names separated by white space and no trailing or
+     leading space. For example:
+         <programlisting>COLUMNNAME DBFFIELD1
+AVERYLONGCOLUMNNAME DBFFIELD2</programlisting>
+        </para>
+      </listitem>
+    </varlistentry>
+    
+    <varlistentry>
       <term>-S </term>
       <listitem>
         <para>

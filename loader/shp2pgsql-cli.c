@@ -44,8 +44,15 @@ usage()
 	printf(_( "  -k  Keep postgresql identifiers case.\n" ));
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
+	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
+	         "     names to 10 character DBF column names. The content of the file is one or\n"
+	         "     more lines of two names separated by white space and no trailing or\n"
+	         "     leading space. For example:\n"
+	         "         COLUMNNAME DBFFIELD1\n"
+	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
 	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
 	printf(_( "  -t <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n" ));
+
 	printf(_( "  -w  Output WKT instead of WKB.  Note that this can result in\n"
 	          "      coordinate drift.\n" ));
 	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
@@ -89,7 +96,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:t:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -138,7 +145,10 @@ main (int argc, char **argv)
 		case 'g':
 			config->geo_col = pgis_optarg;
 			break;
-
+		case 'm':
+			config->column_map_filename = pgis_optarg;
+			break;
+			
 		case 'k':
 			config->quoteidentifiers = 1;
 			break;

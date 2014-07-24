@@ -144,6 +144,9 @@ typedef struct shp_loader_config
 
 	/* whether to do a single transaction or run each statement on its own */
 	int usetransaction;
+	
+	/* Name of the column map file if specified */
+	char *column_map_filename;
 
 } SHPLOADERCONFIG;
 
@@ -214,6 +217,15 @@ typedef struct shp_loader_state
 	/* geometry/geography column name to use.  Will be set to the default if the config did
 	   not specify a column name. */
 	char *geo_col; 
+	
+	/* Column map pgfieldnames */
+	char **column_map_pgfieldnames;
+	
+	/* Column map dbffieldnames */
+	char **column_map_dbffieldnames;
+	
+	/* Number of entries within column map */
+	int column_map_size;
 
 } SHPLOADERSTATE;
 
