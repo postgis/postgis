@@ -709,19 +709,20 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 	ptr = output;
 
 	/* Open outmost tag */
+	/** @TODO: decide if we need outtermost tags, this one was just a copy from gml so is wrong **/
 	if ( srs )
 	{
-		ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", defid, srs);
+		//ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", defid, srs);
 	}
 	else
 	{
-		ptr += sprintf(ptr, "<%sMultiGeometry>", defid);
+		//ptr += sprintf(ptr, "<%sMultiGeometry>", defid);
 	}
 
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		ptr += sprintf(ptr, "<%sgeometryMember>", defid);
+		//ptr += sprintf(ptr, "<%sgeometryMember>", defid);
 		if ( subgeom->type == POINTTYPE )
 		{
 			ptr += asx3d3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, opts, defid);
@@ -734,6 +735,11 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		{
 			ptr += asx3d3_poly_buf((LWPOLY*)subgeom, 0, ptr, precision, opts, 0, defid);
 		}
+		else if ( subgeom->type == TINTYPE )
+		{
+			ptr += asx3d3_tin_buf((LWTIN*)subgeom, srs, ptr, precision, opts,  defid);
+			
+		}
 		else if ( lwgeom_is_collection(subgeom) )
 		{
 			if ( subgeom->type == COLLECTIONTYPE )
@@ -744,11 +750,11 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
-		ptr += sprintf(ptr, "</%sgeometryMember>", defid);
+		//ptr += sprintf(ptr, "</%sgeometryMember>", defid);
 	}
 
 	/* Close outmost tag */
-	ptr += sprintf(ptr, "</%sMultiGeometry>", defid);
+	//ptr += sprintf(ptr, "</%sMultiGeometry>", defid);
 
 	return (ptr-output);
 }
