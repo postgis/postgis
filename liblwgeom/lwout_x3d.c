@@ -667,7 +667,8 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 	size_t defidlen = strlen(defid);
 	LWGEOM *subgeom;
 
-	size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2;
+	//size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2;
+	size = defidlen*2;
 
 	if ( srs )
 		size += strlen(srs) + sizeof(" srsName=..");
@@ -675,7 +676,7 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		size += ( sizeof("<geometryMember>/") + defidlen ) * 2;
+		//size += ( sizeof("<geometryMember>/") + defidlen ) * 2;
 		if ( subgeom->type == POINTTYPE )
 		{
 			size += asx3d3_point_size((LWPOINT*)subgeom, 0, precision, opts, defid);
@@ -687,6 +688,14 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 		else if ( subgeom->type == POLYGONTYPE )
 		{
 			size += asx3d3_poly_size((LWPOLY*)subgeom, 0, precision, opts, defid);
+		}
+		else if ( subgeom->type == TINTYPE )
+		{
+			size += asx3d3_tin_size((LWTIN*)subgeom, 0, precision, opts, defid);
+		}
+		else if ( subgeom->type == POLYHEDRALSURFACETYPE )
+		{
+			size += asx3d3_psurface_size((LWPSURFACE*)subgeom, 0, precision, opts, defid);
 		}
 		else if ( lwgeom_is_collection(subgeom) )
 		{
@@ -738,6 +747,11 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		else if ( subgeom->type == TINTYPE )
 		{
 			ptr += asx3d3_tin_buf((LWTIN*)subgeom, srs, ptr, precision, opts,  defid);
+			
+		}
+		else if ( subgeom->type == POLYHEDRALSURFACETYPE )
+		{
+			ptr += asx3d3_psurface_buf((LWPSURFACE*)subgeom, srs, ptr, precision, opts,  defid);
 			
 		}
 		else if ( lwgeom_is_collection(subgeom) )
