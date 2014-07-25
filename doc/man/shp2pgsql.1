@@ -76,8 +76,19 @@ lat/lon data.  At the moment the only spatial reference supported is 4326.
 Specify the name of the geometry column (mostly useful in append mode).
 .TP 
 \fB\-k\fR
-Keep idendifiers case (column, schema and attributes). Note that attributes 
+Keep identifiers case (column, schema and attributes). Note that attributes 
 in Shapefile are usually all UPPERCASE.
+.TP 
+\fB\-m\fR <\fIfilename\fR>
+Specify a file containing a set of mappings of (long) column names to 10
+character DBF column names. The content of the file is one or more lines 
+of two names separated by white space and no trailing or leading space:
+
+COLUMNNAME DBFFIELD1\\n
+.br
+AVERYLONGCOLUMNNAME DBFFIELD2\\n
+
+etc.
 .TP 
 \fB\-i\fR
 Coerce all integers to standard 32\-bit integers, do not create 64\-bit 
