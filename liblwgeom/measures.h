@@ -4,7 +4,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
- * Copyright 2010 Nicklas Avén
+ * Copyright 2010 Nicklas AvÃ©n
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.

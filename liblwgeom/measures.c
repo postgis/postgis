@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  * Copyright 2001-2006 Refractions Research Inc.
- * Copyright 2010 Nicklas Avén
+ * Copyright 2010 Nicklas AvÃ©n
  * Copyright 2012 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under
