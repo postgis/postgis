@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "shpcommon.h"
 
 
@@ -132,7 +133,7 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 {
   FILE *fptr;
   char linebuffer[1024];
-  char *tmpstr, *tmpptr;
+  char *tmpstr;
   int curmapsize, fieldnamesize;
   
   /* Read column map file and load the colmap_dbffieldnames
@@ -160,24 +161,21 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
   {
     /* Split into two separate strings: pgfieldname and dbffieldname */
     /* First locate end of first column (pgfieldname) */
-    /* TODO: use strcspn(3) ? */
-    for (tmpptr = tmpstr = linebuffer; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);
-    fieldnamesize = tmpptr - tmpstr;
+    fieldnamesize = strcspn(linebuffer, "\t\n "); 
+    tmpstr = linebuffer;
 
     /* Allocate memory and copy the string ensuring it is terminated */
     map->pgfieldnames[curmapsize] = malloc(fieldnamesize + 1);
     strncpy(map->pgfieldnames[curmapsize], tmpstr, fieldnamesize);
     map->pgfieldnames[curmapsize][fieldnamesize] = '\0';
-    
+
     /* Now swallow up any whitespace */
-    /* TODO: use strcspn(3) ? */
-    for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++) {}
+    tmpstr = linebuffer + fieldnamesize;
+    tmpstr += strspn(tmpstr, "\t\n "); 
 
     /* Finally locate end of second column (dbffieldname) */
-    /* TODO: use strcspn(3) ? */
-    for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);   
-    fieldnamesize = tmpptr - tmpstr;
-    
+    fieldnamesize = strcspn(tmpstr, "\t\n "); 
+
     /* Allocate memory and copy the string ensuring it is terminated */
     map->dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
     strncpy(map->dbffieldnames[curmapsize], tmpstr, fieldnamesize);
