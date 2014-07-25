@@ -18,6 +18,8 @@ PostGIS 2.2.0
  * New Features *
   - #899, -m shp2pgsql attribute names mapping -m switch
            (Regina Obe / Sandro Santilli)
+  - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
+    variable GDAL_DATA
   - #2843, Support reprojection on raster import
            (Sandro Santilli / Vizzuality)
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
@@ -29,8 +31,6 @@ PostGIS 2.2.0
     variable GDAL_SKIP
   - Added GUC postgis.enable_outdb_rasters to enable access to
     rasters with out-db bands
-  - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
-    variable GDAL_DATA
   - #2387 address_standardizer extension as part of PostGIS
      Stephen Woodbridge (imaptools.com), Walter Sinclair
   - #2341, New mask parameter for ST_MapAlgebra
@@ -40,8 +40,7 @@ PostGIS 2.2.0
   - #2567, ST_CountAgg()
   - #2632, ST_AsGML() support for curved features
   - #2652, Add --upgrade-path switch to run_test.pl
-  - Incorporate PAGC-based address standardizer into PostGIS 
-    and document (Regina Obe, Stephen Woodbridge)
+  - #2754 sfcgal wrapped as an extension
 
  * Enhancements *
 
