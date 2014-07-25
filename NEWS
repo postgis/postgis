@@ -16,7 +16,8 @@ PostGIS 2.2.0
   - #2567, ST_Count(tablename, rastercolumn, ...)
 
  * New Features *
-
+  - #899, -m shp2pgsql attribute names mapping -m switch
+           (Regina Obe / Sandro Santilli)
   - #2843, Support reprojection on raster import
            (Sandro Santilli / Vizzuality)
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
@@ -39,6 +40,8 @@ PostGIS 2.2.0
   - #2567, ST_CountAgg()
   - #2632, ST_AsGML() support for curved features
   - #2652, Add --upgrade-path switch to run_test.pl
+  - Incorporate PAGC-based address standardizer into PostGIS 
+    and document (Regina Obe, Stephen Woodbridge)
 
  * Enhancements *
 
