@@ -1143,98 +1143,6 @@ set_dumper_config_defaults(SHPDUMPERCONFIG *config)
 	config->column_map_filename = NULL;
 }
 
-/**
- * Read the content of filename into a symbol map stored
- * at state->column_map_filename.
- *
- * The content of the file is lines of two names separated by
- * white space and no trailing or leading space:
- *
- *    COLUMNNAME DBFFIELD1
- *    AVERYLONGCOLUMNNAME DBFFIELD2
- *
- *    etc.
- *
- * It is the reponsibility of the caller to reclaim the allocated space
- * as follows:
- *
- * free(state->column_map_pgfieldnames[]) to free the column names
- * free(state->column_map_dbffieldnames[]) to free the dbf field names
- *
- * @param state : container of state->column_map where the malloc'd
- *                symbol map will be stored.
- */
-static int
-read_column_map(SHPDUMPERSTATE *state)
-{
-	FILE *fptr;
-	char linebuffer[1024];
-	char *tmpstr, *tmpptr;
-	int curmapsize, fieldnamesize;
-	
-	/* Read column map file and load the column_map_dbffieldnames and column_map_pgfieldnames
-	   arrays */
-	fptr = fopen(state->config->column_map_filename, "r");
-	if (!fptr)
-	{
-		/* Return an error */
-		snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Unable to open column map file %s"), state->config->column_map_filename);
-		return SHPDUMPERERR;
-	}
-	
-	/* First count how many columns we have... */
-	while (fgets(linebuffer, 1024, fptr) != NULL)
-		state->column_map_size++;
-	
-	/* Now we know the final size, allocate the arrays and load the data */
-	fseek(fptr, 0, SEEK_SET);
-	state->column_map_pgfieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
-	state->column_map_dbffieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
-	
-	/* Read in a line at a time... */
-	curmapsize = 0;
-	while (fgets(linebuffer, 1024, fptr) != NULL)
-	{
-		/* Split into two separate strings - pgfieldname followed by dbffieldname */
-
-		/* First locate end of first column (pgfieldname) */
- 		for (tmpptr = tmpstr = linebuffer; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
-		fieldnamesize = tmpptr - tmpstr;
-
-		/* Allocate memory and copy the string ensuring it is terminated */
-		state->column_map_pgfieldnames[curmapsize] = malloc(fieldnamesize + 1);
-		strncpy(state->column_map_pgfieldnames[curmapsize], tmpstr, fieldnamesize);
-		state->column_map_pgfieldnames[curmapsize][fieldnamesize] = '\0';
-		
-		/* Now swallow up any whitespace */
-		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++) {}
-
-		/* Finally locate end of second column (dbffieldname) */
- 		for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
-		fieldnamesize = tmpptr - tmpstr;
-		
-		/* Allocate memory and copy the string ensuring it is terminated */
-		state->column_map_dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
-		strncpy(state->column_map_dbffieldnames[curmapsize], tmpstr, fieldnamesize);
-		state->column_map_dbffieldnames[curmapsize][fieldnamesize] = '\0';
-		
-		/* Error out if the dbffieldname is > 10 chars */
-		if (strlen(state->column_map_dbffieldnames[curmapsize]) > 10)
-		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: column map file specifies a DBF field name \"%s\" which is longer than 10 characters"), state->column_map_dbffieldnames[curmapsize]);
-			return SHPDUMPERERR;
-		}
-		
-		curmapsize++;
-	}
-
-	fclose(fptr);
-
-	/* Done; return success */
-	return SHPDUMPEROK;
-}
-
-
 /* Create a new shapefile state object */
 SHPDUMPERSTATE *
 ShpDumperCreate(SHPDUMPERCONFIG *config)
@@ -1258,10 +1166,8 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->dbffieldnames = NULL;
 	state->dbffieldtypes = NULL;
 	state->pgfieldnames = NULL;
-	state->column_map_pgfieldnames = NULL;
-	state->column_map_dbffieldnames = NULL;
-	state->column_map_size = 0;
 	state->big_endian = is_bigendian();
+	colmap_init(&state->column_map);
 	
 	return state;
 }
@@ -1427,9 +1333,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* Open the column map if one was specified */
 	if (state->config->column_map_filename)
 	{
-		ret = read_column_map(state);
-		if (ret != SHPDUMPEROK)
-			return SHPDUMPERERR;
+		ret = colmap_read(state->config->column_map_filename,
+		                  &state->column_map, state->message, SHPDUMPERMSGLEN);
+		if (!ret) return SHPDUMPERERR;
 	}
 		
 	/* If a user-defined query has been specified, create and point the state to our new table */
@@ -1602,17 +1508,15 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		strncpy(dbffieldname, ptr, 10);
 		dbffieldname[10] = '\0';
 
-		/* If a column map file has been passed in, use this to create the dbf field name from
-		   the PostgreSQL column name */
-		if (state->column_map_size > 0)
+		/* If a column map file has been passed in,
+		 * use this to create the dbf field name from
+		 * the PostgreSQL column name */
 		{
-			for (j = 0; j < state->column_map_size; j++)
-			{
-				if (!strcasecmp(state->column_map_pgfieldnames[j], dbffieldname))
-				{
-					strncpy(dbffieldname, state->column_map_dbffieldnames[j], 10);
-					dbffieldname[10] = '\0';
-				}
+		  const char *mapped = colmap_dbf_by_pg(&state->column_map, dbffieldname);
+		  if (mapped)
+		  {
+			  strncpy(dbffieldname, mapped, 10);
+			  dbffieldname[10] = '\0';
 			}
 		}
 			
@@ -2291,20 +2195,7 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 			free(state->pgfieldnames);
 
 		/* Free any column map fieldnames if specified */
-		if (state->column_map_size > 0)
-		{
-			for (i = 0; i < state->column_map_size; i++)
-			{
-				if (state->column_map_pgfieldnames[i])
-					free(state->column_map_pgfieldnames[i]);
-				
-				if (state->column_map_dbffieldnames[i])
-					free(state->column_map_dbffieldnames[i]);
-			}
-			
-			free(state->column_map_pgfieldnames);
-			free(state->column_map_dbffieldnames);
-		}
+		colmap_clean(&state->column_map);
 		
 		/* Free other names */
 		if (state->table)

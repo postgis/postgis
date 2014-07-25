@@ -184,14 +184,8 @@ typedef struct shp_dumper_state
 	/* Last (error) message */
 	char message[SHPDUMPERMSGLEN];
 
-	/* Column map pgfieldnames */
-	char **column_map_pgfieldnames;
-	
-	/* Column map dbffieldnames */
-	char **column_map_dbffieldnames;
-	
-	/* Number of entries within column map */
-	int column_map_size;
+	/* Column map */
+  colmap column_map;
 
 } SHPDUMPERSTATE;
 
