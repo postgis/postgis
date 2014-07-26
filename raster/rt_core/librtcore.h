@@ -1350,10 +1350,17 @@ rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
-rt_errorstate rt_raster_get_envelope(
-	rt_raster raster,
-	rt_envelope *env
-);
+rt_errorstate rt_raster_get_envelope(rt_raster raster, rt_envelope *env);
+
+/**
+ * Get raster's envelope as a geometry
+ *
+ * @param raster : the raster to get info from
+ * @param **env : pointer to envelope geom
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env);
 
 /**
  * Get raster perimeter

@@ -112,6 +112,11 @@ CREATE TYPE geomval AS (
 -- Raster Accessors
 -----------------------------------------------------------------------
 
+CREATE OR REPLACE FUNCTION st_envelope(raster)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','RASTER_envelope'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION st_convexhull(raster)
     RETURNS geometry
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
@@ -128,11 +133,6 @@ CREATE OR REPLACE FUNCTION st_minconvexhull(
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
     AS 'select box3d(st_convexhull($1))'
-    LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_envelope(raster)
-    RETURNS geometry
-    AS 'select st_envelope(st_convexhull($1))'
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_height(raster)

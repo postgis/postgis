@@ -76,7 +76,8 @@ TEST_PROPS = \
 	rt_metadata \
 	rt_rastertoworldcoord \
 	rt_worldtorastercoord \
-	rt_convexhull
+	rt_convexhull \
+	rt_envelope
 
 TEST_BANDPROPS = \
 	rt_band_properties \

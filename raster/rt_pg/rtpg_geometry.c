@@ -47,6 +47,7 @@
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
 
+Datum RASTER_envelope(PG_FUNCTION_ARGS);
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS);
 Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS);
 
@@ -59,9 +60,64 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS);
 /* rasterize a geometry */
 Datum RASTER_asRaster(PG_FUNCTION_ARGS);
 
+/* ---------------------------------------------------------------- */
+/*  Raster envelope                                                 */
+/* ---------------------------------------------------------------- */
+PG_FUNCTION_INFO_V1(RASTER_envelope);
+Datum RASTER_envelope(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster;
+	rt_raster raster;
+	LWGEOM *geom = NULL;
+	GSERIALIZED* gser = NULL;
+	size_t gser_size;
+	int err = ES_NONE;
+
+	bool minhull = FALSE;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(
+		PG_GETARG_DATUM(0),
+		0,
+		sizeof(struct rt_raster_serialized_t)
+	);
+	raster = rt_raster_deserialize(pgraster, TRUE);
+
+	if (!raster) {
+		PG_FREE_IF_COPY(pgraster, 0);
+		elog(ERROR, "RASTER_envelope: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	err = rt_raster_get_envelope_geom(raster, &geom);
+
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_envelope: Could not get raster's envelope");
+		PG_RETURN_NULL();
+	}
+	else if (geom == NULL) {
+		elog(NOTICE, "Raster's envelope is NULL");
+		PG_RETURN_NULL();
+	}
+
+	gser = gserialized_from_lwgeom(geom, 0, &gser_size);
+	lwgeom_free(geom);
+
+	SET_VARSIZE(gser, gser_size);
+	PG_RETURN_POINTER(gser);
+}
+
 /**
  * Return the convex hull of this raster
  */
+/* ---------------------------------------------------------------- */
+/*  Raster convex hull                                              */
+/* ---------------------------------------------------------------- */
 PG_FUNCTION_INFO_V1(RASTER_convex_hull);
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {

@@ -24,6 +24,145 @@
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
 
+static void test_raster_envelope() {
+	rt_raster raster = NULL;
+	rt_envelope rtenv;
+
+	/* width = 0, height = 0 */
+	raster = rt_raster_new(0, 0);
+	CU_ASSERT(raster != NULL);
+
+	rt_raster_set_offsets(raster, 0.5, 0.5);
+	rt_raster_set_scale(raster, 1, -1);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope(raster, &rtenv), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinY, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxY, 0.5, DBL_EPSILON);
+	cu_free_raster(raster);
+
+	/* width = 0 */
+	raster = rt_raster_new(0, 5);
+	CU_ASSERT(raster != NULL);
+
+	rt_raster_set_offsets(raster, 0.5, 0.5);
+	rt_raster_set_scale(raster, 1, -1);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope(raster, &rtenv), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinY, -4.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxY, 0.5, DBL_EPSILON);
+	cu_free_raster(raster);
+
+	/* height = 0 */
+	raster = rt_raster_new(5, 0);
+	CU_ASSERT(raster != NULL);
+
+	rt_raster_set_offsets(raster, 0.5, 0.5);
+	rt_raster_set_scale(raster, 1, -1);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope(raster, &rtenv), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxX, 5.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinY, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxY, 0.5, DBL_EPSILON);
+	cu_free_raster(raster);
+
+	/* normal raster */
+	raster = rt_raster_new(5, 5);
+	CU_ASSERT(raster != NULL);
+
+	rt_raster_set_offsets(raster, 0.5, 0.5);
+	rt_raster_set_scale(raster, 1, -1);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope(raster, &rtenv), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinX, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxX, 5.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MinY, -4.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(rtenv.MaxY, 0.5, DBL_EPSILON);
+	cu_free_raster(raster);
+}
+
+static void test_raster_envelope_geom() {
+	rt_raster raster = NULL;
+	LWGEOM *env = NULL;
+	LWPOLY *poly = NULL;
+	POINTARRAY *ring = NULL;
+	POINT4D pt;
+
+	/* NULL raster */
+	CU_ASSERT_EQUAL(rt_raster_get_envelope_geom(NULL, &env), ES_NONE);
+	CU_ASSERT(env == NULL);
+
+	/* width = 0, height = 0 */
+	raster = rt_raster_new(0, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope_geom(raster, &env), ES_NONE);
+	CU_ASSERT_EQUAL(env->type, POINTTYPE);
+	lwgeom_free(env);
+	cu_free_raster(raster);
+
+	/* width = 0 */
+	raster = rt_raster_new(0, 256);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope_geom(raster, &env), ES_NONE);
+	CU_ASSERT_EQUAL(env->type, LINETYPE);
+	lwgeom_free(env);
+	cu_free_raster(raster);
+
+	/* height = 0 */
+	raster = rt_raster_new(256, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope_geom(raster, &env), ES_NONE);
+	CU_ASSERT_EQUAL(env->type, LINETYPE);
+	lwgeom_free(env);
+	cu_free_raster(raster);
+
+	/* normal raster */
+	raster = rt_raster_new(5, 5);
+	CU_ASSERT(raster != NULL);
+
+	rt_raster_set_offsets(raster, 0.5, 0.5);
+	rt_raster_set_scale(raster, 1, -1);
+
+	CU_ASSERT_EQUAL(rt_raster_get_envelope_geom(raster, &env), ES_NONE);
+	poly = lwgeom_as_lwpoly(env);
+	CU_ASSERT_EQUAL(poly->srid, rt_raster_get_srid(raster));
+	CU_ASSERT_EQUAL(poly->nrings, 1);
+
+	ring = poly->rings[0];
+	CU_ASSERT(ring != NULL);
+	CU_ASSERT_EQUAL(ring->npoints, 5);
+
+	getPoint4d_p(ring, 0, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.5, DBL_EPSILON);
+
+	getPoint4d_p(ring, 1, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 5.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.5, DBL_EPSILON);
+
+	getPoint4d_p(ring, 2, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 5.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, -4.5, DBL_EPSILON);
+
+	getPoint4d_p(ring, 3, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, -4.5, DBL_EPSILON);
+
+	getPoint4d_p(ring, 4, &pt);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.5, DBL_EPSILON);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.5, DBL_EPSILON);
+
+	lwgeom_free(env);
+	cu_free_raster(raster);
+}
+
 static void test_raster_convex_hull() {
 	rt_raster raster = NULL;
 	LWGEOM *hull = NULL;
@@ -434,9 +573,8 @@ static void test_raster_pixel_as_polygon() {
 
 /* register tests */
 CU_TestInfo raster_geometry_tests[] = {
-	/* TODO: rt_raster_envelope()
 	PG_TEST(test_raster_envelope),
-	*/
+	PG_TEST(test_raster_envelope_geom),
 	PG_TEST(test_raster_convex_hull),
 	PG_TEST(test_raster_surface),
 	PG_TEST(test_raster_perimeter),

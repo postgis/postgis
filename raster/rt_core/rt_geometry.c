@@ -675,6 +675,135 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
 }
 
 /******************************************************************************
+* rt_raster_get_envelope_geom()
+******************************************************************************/
+
+/**
+ * Get raster's envelope as a geometry
+ *
+ * @param raster : the raster to get info from
+ * @param **env : pointer to envelope
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate
+rt_raster_get_envelope_geom(rt_raster raster, LWGEOM **env) {
+	double gt[6] = {0.0};
+	int srid = SRID_UNKNOWN;
+
+	POINTARRAY *pts = NULL;
+	POINT4D p4d;
+
+	assert(env != NULL);
+	*env = NULL;
+
+	/* raster is NULL, envelope is NULL */
+	if (raster == NULL)
+		return ES_NONE;
+
+	/* raster metadata */
+	srid = rt_raster_get_srid(raster);
+	rt_raster_get_geotransform_matrix(raster, gt);
+
+	RASTER_DEBUGF(
+		3,
+		"rt_raster_get_envelope: raster is %dx%d",
+		raster->width,
+		raster->height
+	); 
+
+	/* return point or line since at least one of the two dimensions is 0 */
+	if ((!raster->width) || (!raster->height)) {
+		p4d.x = gt[0];
+		p4d.y = gt[3];
+
+		/* return point */
+		if (!raster->width && !raster->height) {
+			LWPOINT *point = lwpoint_make2d(srid, p4d.x, p4d.y);
+			*env = lwpoint_as_lwgeom(point);
+		}
+		/* return linestring */
+		else {
+			LWLINE *line = NULL;
+			pts = ptarray_construct_empty(0, 0, 2);
+
+			/* first point of line */
+			ptarray_append_point(pts, &p4d, LW_TRUE);
+
+			/* second point of line */
+			if (rt_raster_cell_to_geopoint(
+				raster,
+				rt_raster_get_width(raster), rt_raster_get_height(raster),
+				&p4d.x, &p4d.y,
+				gt
+			) != ES_NONE) {
+				rterror("rt_raster_get_envelope: Could not get second point for linestring");
+				return ES_ERROR;
+			}
+			ptarray_append_point(pts, &p4d, LW_TRUE);
+			line = lwline_construct(srid, NULL, pts);
+
+			*env = lwline_as_lwgeom(line);
+		}
+
+		return ES_NONE;
+	}
+	else {
+		rt_envelope rtenv;
+		int err = ES_NONE;
+		POINTARRAY **rings = NULL;
+		LWPOLY* poly = NULL;
+
+		/* only one ring */
+		rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+		if (!rings) {
+			rterror("rt_raster_get_envelope_geom: Could not allocate memory for polygon ring");
+			return ES_ERROR;
+		}
+		rings[0] = ptarray_construct(0, 0, 5);
+		if (!rings[0]) {
+			rterror("rt_raster_get_envelope_geom: Could not construct point array");
+			return ES_ERROR;
+		}
+		pts = rings[0];
+
+		err = rt_raster_get_envelope(raster, &rtenv);
+		if (err != ES_NONE) {
+			rterror("rt_raster_get_envelope_geom: Could not get raster envelope");
+			return err;
+		}
+
+		/* build ring */
+
+		/* minx, maxy */
+		p4d.x = rtenv.MinX;
+		p4d.y = rtenv.MaxY;
+		ptarray_set_point4d(pts, 0, &p4d);
+		ptarray_set_point4d(pts, 4, &p4d);
+
+		/* maxx, maxy */
+		p4d.x = rtenv.MaxX;
+		p4d.y = rtenv.MaxY;
+		ptarray_set_point4d(pts, 1, &p4d);
+
+		/* maxx, miny */
+		p4d.x = rtenv.MaxX;
+		p4d.y = rtenv.MinY;
+		ptarray_set_point4d(pts, 2, &p4d);
+
+		/* minx, miny */
+		p4d.x = rtenv.MinX;
+		p4d.y = rtenv.MinY;
+		ptarray_set_point4d(pts, 3, &p4d);
+
+		poly = lwpoly_construct(srid, 0, 1, rings);
+		*env = lwpoly_as_lwgeom(poly);
+	}
+
+	return ES_NONE;
+}
+
+/******************************************************************************
 * rt_raster_get_convex_hull()
 ******************************************************************************/
 

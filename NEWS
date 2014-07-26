@@ -55,6 +55,7 @@ PostGIS 2.2.0
   - #2747, Add support for GDAL 2.0
   - #2754, SFCGAL can now be installed with CREATE EXTENSION
        Vincent Mora (Oslandia)
+  - #2828, Convert ST_Envelope(raster) from SQL to C
 
  * Bug Fixes *
 
