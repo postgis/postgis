@@ -6618,8 +6618,6 @@ CREATE OR REPLACE FUNCTION st_clip(
 )
 	RETURNS raster
  	AS $$
-	DECLARE
-		contains boolean;
 	BEGIN
 		-- short-cut if geometry's extent fully contains raster's extent
 		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ ST_Envelope(rast) THEN
