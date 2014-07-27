@@ -6602,7 +6602,7 @@ CREATE AGGREGATE st_union(raster, text) (
 -- ST_Clip
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_clip(
+CREATE OR REPLACE FUNCTION _st_clip(
 	rast raster, nband integer[],
 	geom geometry,
 	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
@@ -6610,6 +6610,25 @@ CREATE OR REPLACE FUNCTION st_clip(
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_clip'
 	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster, nband integer[],
+	geom geometry,
+	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+)
+	RETURNS raster
+ 	AS $$
+	DECLARE
+		contains boolean;
+	BEGIN
+		-- short-cut if geometry's extent fully contains raster's extent
+		IF (nodataval IS NULL OR array_length(nodataval, 1) < 1) AND geom ~ ST_Envelope(rast) THEN
+			RETURN rast;
+		END IF;
+
+		RETURN _ST_Clip($1, $2, $3, $4, $5);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_clip(
 	rast raster, nband integer,
