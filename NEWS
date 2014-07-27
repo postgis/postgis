@@ -7,6 +7,8 @@ PostGIS 2.1.4
   - #2747, Support for GDAL 2.0
   - #2749, Make rtpostgis_upgrade_20_21.sql ACID
   - #2811, Do not specify index names when loading shapefiles/rasters
+  - #2829, Shortcut ST_Clip(raster) if geometry fully contains the raster
+           and no NODATA specified
 
  * Bug Fixes *
 
