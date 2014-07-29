@@ -7,6 +7,7 @@ before_install:
   - sudo apt-get update
   - apt-cache search libgdal
   - sudo apt-get install -q build-essential flex autoconf libtool gfortran postgresql-server-dev-9.1 xsltproc libjson0-dev libproj-dev dblatex xsltproc libcunit1-dev libcunit1 docbook-xsl docbook-mathml libgdal-dev libgeos-dev
+  - dpkg -l | grep postgresql
   - git config --global user.name "PostGIS Travis CI"
   - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
   - ./autogen.sh
