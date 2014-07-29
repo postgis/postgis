@@ -425,15 +425,19 @@ static void test_point_interpolate(void)
 	q.m = 50.0;
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'Z', 35.0);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_EQUAL( r.x, 15.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 41.0);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_EQUAL( r.y, 21.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 50.0);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_EQUAL( r.y, 30.0);
 
 	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 40.0);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_EQUAL( r.y, 20.0);
 
 }

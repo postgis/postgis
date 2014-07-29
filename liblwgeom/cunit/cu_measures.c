@@ -455,36 +455,42 @@ test_lw_dist2d_pt_arc(void)
 
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside unit semicircle, 0.5 units from arc */
 	P.x  = 0 ; P.y  = 1.5;	
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside unit semicircle, sqrt(2) units from arc end point*/
 	P.x  = 0 ; P.y  = -1;	
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0), 0.000001);
 
 	/* Point outside unit semicircle, sqrt(2)-1 units from arc end point*/
 	P.x  = 1 ; P.y  = 1;	
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
 
 	/* Point on unit semicircle midpoint */
 	P.x  = 0 ; P.y  = 1;	
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* Point on unit semicircle endpoint */
 	P.x  = 1 ; P.y  = 0;	
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* Point inside closed circle */
@@ -494,6 +500,7 @@ test_lw_dist2d_pt_arc(void)
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
 	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);	
 }
 
@@ -516,6 +523,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = -2; A1.y = 2;
 	A2.x = 2 ; A2.y = 2;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Edge to the right of the unit semicircle */
@@ -523,6 +531,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = 2; A1.y = -2;
 	A2.x = 2; A2.y = 2;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Edge to the left of the unit semicircle */
@@ -530,6 +539,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = -2; A1.y = -2;
 	A2.x = -2; A2.y = 2;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Edge within the unit semicircle */
@@ -537,6 +547,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = 0; A1.y = 0;
 	A2.x = 0; A2.y = 0.5;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Edge grazing the unit semicircle */
@@ -544,6 +555,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = -2; A1.y = 1;
 	A2.x =  2; A2.y = 1;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0., 0.000001);
 
 	/* Line grazing the unit semicircle, but edge not */
@@ -551,6 +563,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = 1; A1.y = 1;
 	A2.x = 2; A2.y = 1;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
 
 	/* Edge intersecting the unit semicircle */
@@ -558,6 +571,7 @@ test_lw_dist2d_seg_arc(void)
 	A1.x = 0; A1.y = 0;
 	A2.x = 2; A2.y = 2;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* Line intersecting the unit semicircle, but edge not */
@@ -566,6 +580,7 @@ test_lw_dist2d_seg_arc(void)
 	A2.x = -2; A2.y = 2;
 	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
 	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
 }
 
@@ -590,6 +605,7 @@ test_lw_dist2d_arc_arc(void)
 	A2.x = 0 ; A2.y = 2;
 	A3.x = 1 ; A3.y = 3;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Arc grazes the unit semicircle */
@@ -598,6 +614,7 @@ test_lw_dist2d_arc_arc(void)
 	A2.x = 0 ; A2.y = 1;
 	A3.x = 1 ; A3.y = 2;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* Circles intersect, but arcs do not */
@@ -606,6 +623,7 @@ test_lw_dist2d_arc_arc(void)
 	A2.x =  0; A2.y =  2;
 	A3.x =  1; A3.y =  1;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2)-1, 0.000001);
 
 	/* Circles and arcs intersect */
@@ -614,6 +632,7 @@ test_lw_dist2d_arc_arc(void)
 	A2.x =  0; A2.y =  0;
 	A3.x =  1; A3.y =  1;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
 
 	/* inscribed and closest on arcs */
@@ -623,6 +642,7 @@ test_lw_dist2d_arc_arc(void)
 	A3.x =  0.5; A3.y = 0.0;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* inscribed and closest not on arcs */
@@ -632,6 +652,7 @@ test_lw_dist2d_arc_arc(void)
 	A3.x =  0.5; A3.y =  0.0;
 	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
 	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 }
 
@@ -693,18 +714,21 @@ test_lw_dist2d_pt_ptarrayarc(void)
 	P.x = P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Point above arc on Y axis */
 	P.y = 2;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Point 45 degrees off arc, 2 radii from center */
 	P.y = P.x = 2 * cos(M_PI/4);
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Four unit semi-circles surrounding the 2x2 box around origin */
@@ -715,36 +739,42 @@ test_lw_dist2d_pt_ptarrayarc(void)
 	P.x = P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0), 0.000001);
 
 	/* Point on box edge */
 	P.x = -1; P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Point within a semicircle lobe */
 	P.x = -1.5; P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside a semicircle lobe */
 	P.x = -2.5; P.y = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside a semicircle lobe */
 	P.y = -2.5; P.x = 0;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	/* Point outside a semicircle lobe */
 	P.y = 2; P.x = 1;
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1.0, 0.000001);
 
 	/* Clean up */
@@ -767,6 +797,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 2, -1 2, 1 2, 2 2)"));
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Reversed arguments, should fail */
@@ -774,6 +805,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	cu_error_msg_reset();
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline1->points, lwline2->points, &dl);
 	//printf("%s\n", cu_error_msg);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_STRING_EQUAL("lw_dist2d_ptarray_ptarrayarc called with non-arc input", cu_error_msg);
 
 	lwline_free(lwline2);
@@ -782,6 +814,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 -3, -2 -2, -2 2, -2 3)"));
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Four unit semi-circles surrounding the 2x2 box around origin */
@@ -790,6 +823,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	lwline1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
 	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2.5 -3, -2.5 -2, -2.5 2, -2.5 3)"));
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 
 	lwline_free(lwline2);

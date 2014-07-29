@@ -55,6 +55,7 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	char *s = 0;
 
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	if( p.errcode ) {
 		return strdup(p.message);
 	}
@@ -335,6 +336,7 @@ static void test_wkt_in_errlocation(void)
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
 
 //	printf("errlocation %d\n", p.errlocation);
