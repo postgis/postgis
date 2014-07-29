@@ -55,10 +55,11 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	char *s = 0;
 
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	if( p.errcode ) {
+	  CU_ASSERT_EQUAL( rv, LW_FAILURE );
 		return strdup(p.message);
 	}
+	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
 	s = lwgeom_to_wkt(p.geom, variant, 8, NULL);
 	lwgeom_parser_result_free(&p);
 	return s;
@@ -336,7 +337,7 @@ static void test_wkt_in_errlocation(void)
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_EQUAL( rv, LW_FAILURE );
 	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
 
 //	printf("errlocation %d\n", p.errlocation);
@@ -369,4 +370,4 @@ CU_TestInfo wkt_in_tests[] =
 	PG_TEST(test_wkt_in_errlocation),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo wkt_in_suite = {"WKT In Suite",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};
+CU_SuiteInfo wkt_in_suite = {"in_wkt",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};

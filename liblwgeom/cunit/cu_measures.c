@@ -805,7 +805,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 	cu_error_msg_reset();
 	rv = lw_dist2d_ptarray_ptarrayarc(lwline1->points, lwline2->points, &dl);
 	//printf("%s\n", cu_error_msg);
-	CU_ASSERT_EQUAL( rv, LW_SUCCESS );
+	CU_ASSERT_EQUAL( rv, LW_FAILURE );
 	CU_ASSERT_STRING_EQUAL("lw_dist2d_ptarray_ptarrayarc called with non-arc input", cu_error_msg);
 
 	lwline_free(lwline2);
@@ -848,4 +848,4 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_lw_dist2d_ptarray_ptarrayarc),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};
+CU_SuiteInfo measures_suite = {"measures", NULL,  NULL, measures_tests};
