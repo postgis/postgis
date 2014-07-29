@@ -1143,8 +1143,11 @@ sub load_sql_file
 		my $cmd = "psql $psql_opts -Xf $file $DB >> $REGRESS_LOG 2>&1";
 		print "  $file\n" if $VERBOSE;
 		my $rv = system($cmd);
-		die "\nError encountered loading $file, see $REGRESS_LOG for details\n\n"
-		    if $rv;
+		if ( $rv )
+		{
+		  fail "Error encountered loading $file", $REGRESS_LOG;
+		  exit 1
+		}
 	}
 	return 1;
 }
