@@ -36,21 +36,6 @@
 #define TYPE_DIM_SET_TYPE(flag, type) ((flag) = (flag & 0xE0) | ((type & 0x1F)))
 #define TYPE_DIM_SET_DIM(flag, dim) ((flag) = (flag & 0x1F) | ((dim & 0x07)<<5))
 
-
-/**
-*Constants to find the range of Varint. 
-* Since Varint only uses 7 bits instead of 8 in each byte 
-* a 8 byte varint only uses 56 bits for the number and 8 for telling if next byte is used
-*/
-const int64_t max_varint = ((int64_t) 1<<56) - 1;
-const int64_t min_s_varint = (int64_t) -1<<55;
-const int64_t max_s_varint = ((int64_t)1<<55) - 1;
-
-
-
-int s_getvarint_size(int64_t val);
-int u_getvarint_size(uint64_t val);
-
 static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int prec,int64_t accum_rel[],int method);
 static uint8_t* ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant,int8_t prec,int64_t accum_rel[],int method);
 

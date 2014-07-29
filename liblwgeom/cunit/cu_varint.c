@@ -20,41 +20,76 @@
 #include "liblwgeom_internal.h"
 #include "liblwgeom.h"
 
-#include "lwout_twkb.c"
+#include "varint.h"
 #include "cu_tester.h"
 
-
-static void do_test_unsigned_varint(uint64_t nr,int expected_size, char* expected_res)
+static void do_test_s32_varint(int32_t nr,int expected_size, char* expected_res)
 {
 	uint8_t buf[8];	
 	int size;
+	char *hex;
 	
-	size = u_getvarint_size(nr);
+	size = varint_s32_encoded_size(nr);
 	CU_ASSERT_EQUAL(size,expected_size);
-	u_varint_to_twkb_buf(nr, buf);
-	CU_ASSERT_STRING_EQUAL( hexbytes_from_bytes(buf,size),expected_res);	
+	varint_s32_encode_buf(nr, buf);
+	hex = hexbytes_from_bytes(buf,size);
+  if ( strcmp(hex,expected_res) ) {
+    printf("Expected: %s\nObtained: %s\n", expected_res, hex);
+  }
+	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+  lwfree(hex);
 }
 
-static void do_test_signed_varint(uint64_t nr,int expected_size, char* expected_res)
+static void do_test_u64_varint(uint64_t nr,int expected_size, char* expected_res)
 {
 	uint8_t buf[8];	
 	int size;
+	char *hex;
 	
-	size = u_getvarint_size(nr);
+	size = varint_u64_encoded_size(nr);
 	CU_ASSERT_EQUAL(size,expected_size);
-	s_varint_to_twkb_buf(nr, buf);
-	CU_ASSERT_STRING_EQUAL( hexbytes_from_bytes(buf,size),expected_res);	
+	varint_u64_encode_buf(nr, buf);
+	hex = hexbytes_from_bytes(buf,size);
+  if ( strcmp(hex,expected_res) ) {
+    printf("Expected: %s\nObtained: %s\n", expected_res, hex);
+  }
+	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+  lwfree(hex);
 }
 
+static void do_test_s64_varint(int64_t nr,int expected_size, char* expected_res)
+{
+	uint8_t buf[8];	
+	int size;
+	char *hex;
+	
+	size = varint_s64_encoded_size(nr);
+	CU_ASSERT_EQUAL(size,expected_size);
+	varint_s64_encode_buf(nr, buf);
+	hex = hexbytes_from_bytes(buf,size);
+  if ( strcmp(hex,expected_res) ) {
+    printf("Expected: %s\nObtained: %s\n", expected_res, hex);
+  }
+	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+  lwfree(hex);
+}
 
 static void test_varint(void)
 {
 
-	do_test_unsigned_varint(1,1, "01");
-	do_test_unsigned_varint(300,2, "AC02");
-	do_test_unsigned_varint(150,2, "9601");
+	do_test_u64_varint(1, 1, "01");
+	do_test_u64_varint(300, 2, "AC02");
+	do_test_u64_varint(150, 2, "9601");
 	
-	do_test_signed_varint(1,1, "02");
+	do_test_s64_varint(1, 1, "02");
+	do_test_s64_varint(-1, 1, "01");
+	do_test_s64_varint(-2, 1, "03");
+#if 0 /* FIXME! */
+	do_test_s64_varint(2147483647, 4, "FFFFFFFE");
+	do_test_s64_varint(-2147483648, 4, "FFFFFFFF");
+#endif
+
+	/* TODO: test signed/unsigned 32bit varints */
 }
 
 
