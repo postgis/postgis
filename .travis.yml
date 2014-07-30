@@ -3,9 +3,10 @@ env:
     - PGUSER=postgres
     - RUNTESTFLAGS=-v
 before_install:
-  - rm .travis.yml
+  #- rm .travis.yml
   - sudo apt-get update
   - apt-cache search libgdal
+  - sudo apt-get purge -q postgresql-9.3 postgresql-9.2
   - sudo apt-get install -q build-essential flex autoconf libtool gfortran postgresql-server-dev-9.1 xsltproc libjson0-dev libproj-dev dblatex xsltproc libcunit1-dev libcunit1 docbook-xsl docbook-mathml libgdal-dev libgeos-dev
   - dpkg -l | grep postgresql
   - git config --global user.name "PostGIS Travis CI"
