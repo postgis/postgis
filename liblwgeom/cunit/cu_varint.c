@@ -155,6 +155,22 @@ static void test_varint(void)
    */
 	do_test_s32_varint(-2147483648, 5, "FFFFFFFF0F");
 
+	do_test_s32_varint(1, 1, "02");
+  /*
+    0000:0001 - input (01)
+    0000:0010 - A: input << 1
+    0000:0000 - B: input >> 31
+    0000:0010 - zigzag (A xor B) == output
+   */
+
+	do_test_s32_varint(-1, 1, "01");
+  /*
+    1111:1111 ... 1111:1111 - input (FFFFFFFF)
+    1111:1111 ... 1111:1110 - A: input << 1
+    1111:1111 ... 1111:1111 - B: input >> 31
+    0000:0000 ... 0000:0001 - zigzag (A xor B) == output
+   */
+
 
 }
 
