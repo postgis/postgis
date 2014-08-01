@@ -670,13 +670,13 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 	//size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2;
 	size = defidlen*2;
 
-	if ( srs )
-		size += strlen(srs) + sizeof(" srsName=..");
+	/** if ( srs )
+		size += strlen(srs) + sizeof(" srsName=.."); **/
 
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		//size += ( sizeof("<geometryMember>/") + defidlen ) * 2;
+		size += ( sizeof("<Shape />") + defidlen ) * 2; /** for collections we need to wrap each in a shape tag to make valid **/
 		if ( subgeom->type == POINTTYPE )
 		{
 			size += asx3d3_point_size((LWPOINT*)subgeom, 0, precision, opts, defid);
@@ -731,7 +731,7 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
-		//ptr += sprintf(ptr, "<%sgeometryMember>", defid);
+		ptr += sprintf(ptr, "<Shape%s>", defid);
 		if ( subgeom->type == POINTTYPE )
 		{
 			ptr += asx3d3_point_buf((LWPOINT*)subgeom, 0, ptr, precision, opts, defid);
@@ -764,7 +764,7 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
-		//ptr += sprintf(ptr, "</%sgeometryMember>", defid);
+		ptr += sprintf(ptr, "</Shape>", defid);
 	}
 
 	/* Close outmost tag */
