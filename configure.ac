@@ -125,10 +125,16 @@ AC_CHECK_DECL(isfinite,
   [],
   [#include <math.h>])
 
+dnl Clear the cache
+unset ac_cv_have_decl_isfinite
+
 AC_CHECK_DECL(isfinite,
   AC_DEFINE([HAVE_GNU_ISFINITE]),
   [],
-  [[#define _GNU_SOURCE],[#include <math.h>]])
+  [[
+    #define _GNU_SOURCE 
+    #include <math.h>
+  ]])
 
 dnl 
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
