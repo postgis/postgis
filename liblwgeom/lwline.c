@@ -319,7 +319,7 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 
 	/* Update the bounding box */
 	lwgeom_drop_bbox(lwline_as_lwgeom(line));
-	lwgeom_drop_bbox(lwline_as_lwgeom(line));
+	lwgeom_add_bbox(lwline_as_lwgeom(line));
 	
 	return LW_SUCCESS;
 }
