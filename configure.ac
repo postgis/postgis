@@ -112,14 +112,23 @@ AC_DEFINE_UNQUOTED([HAVE_TERMIOS_H], [$HAVE_TERMIOS_H], [termios.h header])
 dnl
 dnl Check for platform-specific functions
 dnl
-AC_CHECK_FUNC(vasprintf, [HAVE_VASPRINTF=1], [HAVE_VASPRINTF=0])
-AC_DEFINE([HAVE_VASPRINTF])
-AC_CHECK_FUNC(asprintf, [HAVE_ASPRINTF=1], [HAVE_ASPRINTF=0])
-AC_DEFINE([HAVE_ASPRINTF])
+AC_CHECK_FUNC(vasprintf, AC_DEFINE([HAVE_VASPRINTF]))
+AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
 AC_FUNC_FSEEKO()
-AC_CHECK_FUNC(isfinite, [HAVE_ISFINITE=1], [HAVE_ISFINITE=0])
-AC_DEFINE([HAVE_ISFINITE])
 
+dnl 
+dnl First see if we have isfinite in basic header
+dnl then check to see if it's a GNU extension
+dnl
+AC_CHECK_DECL(isfinite, 
+  [AC_DEFINE([HAVE_ISFINITE])], 
+  [],
+  [#include <math.h>])
+
+AC_CHECK_DECL(isfinite,
+  AC_DEFINE([HAVE_GNU_ISFINITE]),
+  [],
+  [[#define _GNU_SOURCE],[#include <math.h>]])
 
 dnl 
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
