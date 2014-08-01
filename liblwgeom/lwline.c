@@ -313,7 +313,15 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 {
 	POINT4D pt;	
 	getPoint4d_p(point->point, 0, &pt);
-	return ptarray_insert_point(line->points, &pt, where);
+
+	if ( ptarray_insert_point(line->points, &pt, where) != LW_SUCCESS )
+		return LW_FAILURE;
+
+	/* Update the bounding box */
+	lwgeom_drop_bbox(lwline_as_lwgeom(line));
+	lwgeom_drop_bbox(lwline_as_lwgeom(line));
+	
+	return LW_SUCCESS;
 }
 
 
