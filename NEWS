@@ -92,6 +92,7 @@ PostGIS 2.2.0
   - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
+  - #2845, Bad geometry created from ST_AddPoint
 
  * Code refactoring *
 
