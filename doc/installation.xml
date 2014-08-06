@@ -1223,7 +1223,7 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 			<para>or if you are on Ubuntu / Debian you might need to do</para>
 			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
 			<para>Compiling</para>
-			<programlisting>cd postgis-&last_release_version;/extras/address_standardizer
+			<programlisting>cd postgis-&last_release_version;/extensions/address_standardizer
 make
 #if you have in non-standard location pcre try
 # make SHLIB_LINK="-L/path/pcre/lib -lpostgres -lpgport -lpcre" CPPFLAGS="-I.  -I/path/pcre/include" 

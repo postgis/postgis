@@ -4,7 +4,7 @@
 	<para>This is a fork of the <ulink url="http://www.pagcgeo.org/docs/html/pagc-11.html">PAGC standardizer</ulink> (original code for this portion was  <ulink url="http://sourceforge.net/p/pagc/code/360/tree/branches/sew-refactor/postgresql">PAGC PostgreSQL Address Standardizer</ulink>). </para>
 	<para>The address standardizer is a single line address parser that takes an input address and normalizes it based on a set of rules stored in a table and helper lex and gaz tables.</para>
 	<para>The code is built into a single postgresql extension library called <code>address_standardizer</code> which can be installed with <code>CREATE EXTENSION address_standardizer;</code>.</para>
-	 <para>The code for this extension can be found in the PostGIS <filename>extras/adress_standardizer</filename> and is currently self-contained.</para>
+	 <para>The code for this extension can be found in the PostGIS <filename>extensions/address_standardizer</filename> and is currently self-contained.</para>
 	 <para>For installation instructions refer to: <xref linkend="installing_pagc_address_standardizer" />.</para>
   <sect1 id="Address_Standardizer_Basics"><title>How the Parser Works</title>
   		<para>The parser works from right to left looking first at the macro elements 
