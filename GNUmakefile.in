@@ -46,6 +46,7 @@ distclean-local: clean
 	rm -f GNUmakefile
 	rm -f config.log config.cache config.status 
 	rm -f postgis_config.h
+	rm -f java/jdbc/Makefile
 
 maintainer-clean: 
 	@echo '------------------------------------------------------'
