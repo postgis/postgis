@@ -99,8 +99,9 @@
 		  <refsection>
 			<title>See Also</title>
 			<para>
-<xref linkend="ST_GeomFromWKB" />
+<xref linkend="ST_GeomFromWKB" />,
 <xref linkend="ST_AsEWKB" />,
+<xref linkend="ST_AsTWKB" />,
 <xref linkend="ST_AsText" />,
 			</para>
 		  </refsection>
@@ -247,7 +248,11 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsBinary" /><xref linkend="ST_AsEWKB" /><xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" /></para>
+			<para>
+<xref linkend="ST_AsBinary" />,
+<xref linkend="ST_AsEWKB" />,
+<xref linkend="ST_AsText" />,
+<xref linkend="ST_GeomFromEWKT" /></para>
 		  </refsection>
 	</refentry>
 	<refentry id="ST_AsGeoJSON">
