@@ -93,4 +93,4 @@ check: topology.sql
 	$(MAKE) -C test $@
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile test/Makefile

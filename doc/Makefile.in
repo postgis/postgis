@@ -287,7 +287,7 @@ clean:
 
 distclean: clean
 	$(MAKE) -C html/image_src distclean
-	rm -f Makefile
+	rm -f Makefile Makefile.comments html/image_src/Makefile
 
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
