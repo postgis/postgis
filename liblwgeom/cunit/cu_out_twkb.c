@@ -48,28 +48,6 @@ static int clean_twkb_out_suite(void)
 	return 0;
 }
 
-static char *hexchr = "0123456789ABCDEF";
-
-char* hexbytes_from_bytes(uint8_t *bytes, size_t size) 
-{
-	char *hex;
-	int i;
-	if ( ! bytes || ! size )
-	{
-		lwerror("hexbutes_from_bytes: invalid input");
-		return NULL;
-	}
-	hex = lwalloc(size * 2 + 1);
-	hex[2*size] = '\0';
-	for( i = 0; i < size; i++ )
-	{
-		/* Top four bits to 0-F */
-		hex[2*i] = hexchr[bytes[i] >> 4];
-		/* Bottom four bits to 0-F */
-		hex[2*i+1] = hexchr[bytes[i] & 0x0F];
-	}
-	return hex;
-}
 
 /*
 ** Creating an input TWKB from a wkt string 

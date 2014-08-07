@@ -18,9 +18,7 @@
 #include "CUnit/CUnit.h"
 
 #include "liblwgeom_internal.h"
-#include "liblwgeom.h"
 
-#include "varint.h"
 #include "cu_tester.h"
 
 static void do_test_u32_varint(uint32_t nr,int expected_size, char* expected_res)
