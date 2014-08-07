@@ -1188,6 +1188,8 @@ AC_OUTPUT([GNUmakefile
    extensions/postgis_topology/postgis_topology.control 
    extensions/postgis_tiger_geocoder/Makefile 
    extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control 
+   extensions/address_standardizer/Makefile 
+   extensions/address_standardizer/address_standardizer.control 
    liblwgeom/Makefile 
    liblwgeom/cunit/Makefile 
    liblwgeom/liblwgeom.h 

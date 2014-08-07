@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION standardize_address(
         micro text,
         macro text )
     RETURNS SETOF stdaddr
-    AS '$libdir/address_standardizer', 'standardize_address'
+    AS  'MODULE_PATHNAME', 'standardize_address'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION standardize_address(
@@ -42,7 +42,7 @@ CREATE OR REPLACE FUNCTION standardize_address(
         rultab text,
         address text )
     RETURNS SETOF stdaddr
-    AS '$libdir/address_standardizer', 'standardize_address1'
+    AS  'MODULE_PATHNAME', 'standardize_address1'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION parse_address(IN text,
@@ -56,6 +56,6 @@ CREATE OR REPLACE FUNCTION parse_address(IN text,
         OUT zipplus text,
         OUT country text)
     RETURNS record
-    AS '$libdir/address_standardizer', 'parse_address'
+    AS  'MODULE_PATHNAME', 'parse_address'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
