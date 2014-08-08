@@ -764,7 +764,7 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		else
 			lwerror("asx3d3_collection_buf: unknown geometry type");
 
-		ptr += sprintf(ptr, "</Shape>", defid);
+		ptr += printf(ptr, "</Shape>");
 	}
 
 	/* Close outmost tag */
