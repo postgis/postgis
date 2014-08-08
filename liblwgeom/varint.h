@@ -58,7 +58,7 @@ _varint_u64_encode_buf(uint64_t q, uint8_t *buf)
     return buf+=n;
 }
 
-unsigned
+inline unsigned
 varint_u32_encoded_size(uint32_t val)
 {
   LWDEBUGF(2, "Entered varint_u32_encoded_size, value %u", val);
@@ -71,14 +71,14 @@ varint_u32_encoded_size(uint32_t val)
   return _varint_u64_encoded_size(val); /* implicit upcast to 64bit int */
 }
 
-uint8_t*
+inline uint8_t*
 varint_u32_encode_buf(uint32_t val, uint8_t *buf)
 {
   LWDEBUGF(2, "Entered varint_u32_encode_buf, value %u", val);
   return _varint_u64_encode_buf(val, buf); /* implicit upcast to 64bit */
 }
 
-unsigned
+inline unsigned
 varint_s32_encoded_size(int32_t val)
 {
   LWDEBUGF(2, "Entered varint_s32_encoded_size, value %d", val);
@@ -92,7 +92,7 @@ varint_s32_encoded_size(int32_t val)
   return _varint_u64_encoded_size(q); /* implicit upcast to 64bit int */
 }
 
-uint8_t*
+inline uint8_t*
 varint_s32_encode_buf(int32_t val, uint8_t *buf)
 {
   LWDEBUGF(2, "Entered varint_s32_encode_buf, value %d", val);
@@ -100,7 +100,7 @@ varint_s32_encode_buf(int32_t val, uint8_t *buf)
   return _varint_u64_encode_buf(q, buf); /* implicit upcast to 64bit */
 }
 
-unsigned
+inline unsigned
 varint_s64_encoded_size(int64_t val)
 {
   LWDEBUGF(2, "Entered varint_s64_encoded_size, value %ld", val);
@@ -123,7 +123,7 @@ varint_s64_encode_buf(int64_t val, uint8_t *buf)
   return _varint_u64_encode_buf(q, buf);
 }
 
-unsigned
+inline unsigned
 varint_u64_encoded_size(uint64_t val)
 {
   LWDEBUGF(2, "Entered varint_u64_encoded_size, value %lu", val);
@@ -136,7 +136,7 @@ varint_u64_encoded_size(uint64_t val)
   return _varint_u64_encoded_size(val);
 }
 
-uint8_t*
+inline uint8_t*
 varint_u64_encode_buf(uint64_t val, uint8_t *buf)
 {
   LWDEBUGF(2, "Entered varint_u64_encode_buf, value %lu", val);
