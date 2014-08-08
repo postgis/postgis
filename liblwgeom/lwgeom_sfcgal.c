@@ -12,8 +12,6 @@
  *
  **********************************************************************/
 
-
-#include <assert.h>
 #include "lwgeom_sfcgal.h"
 
 static int SFCGAL_type_to_lwgeom_type(sfcgal_geometry_type_t type);
