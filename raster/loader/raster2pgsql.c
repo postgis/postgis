@@ -806,7 +806,7 @@ append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
 		return 0;
 	}
 
-	buffer->line[buffer->length - 1] = str;
+	buffer->line[buffer->length - 1] = (char *) str;
 
 	return 1;
 }
