@@ -270,32 +270,37 @@ CREATE OPERATOR CLASS gist_geography_ops
 -- For sorting and grouping
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_lt(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_lt'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_le(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_le'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gt(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0	
 CREATE OR REPLACE FUNCTION geography_ge(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0	
 CREATE OR REPLACE FUNCTION geography_eq(geography, geography)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'geography_eq'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.5.0	
 CREATE OR REPLACE FUNCTION geography_cmp(geography, geography)
 	RETURNS integer
 	AS 'MODULE_PATHNAME', 'geography_cmp'
@@ -304,36 +309,42 @@ CREATE OR REPLACE FUNCTION geography_cmp(geography, geography)
 --
 -- Sorting operators for Btree
 --
-
+-- Availability: 1.5.0
 CREATE OPERATOR < (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_lt,
 	COMMUTATOR = '>', NEGATOR = '>=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 1.5.0
 CREATE OPERATOR <= (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_le,
 	COMMUTATOR = '>=', NEGATOR = '>',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 1.5.0
 CREATE OPERATOR = (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_eq,
 	COMMUTATOR = '=', -- we might implement a faster negator here
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 1.5.0
 CREATE OPERATOR >= (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_ge,
 	COMMUTATOR = '<=', NEGATOR = '<',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
+
+-- Availability: 1.5.0
 CREATE OPERATOR > (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_gt,
 	COMMUTATOR = '<', NEGATOR = '<=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 1.5.0
 CREATE OPERATOR CLASS btree_geography_ops
 	DEFAULT FOR TYPE geography USING btree AS
 	OPERATOR	1	< ,
