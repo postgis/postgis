@@ -73,8 +73,6 @@ Datum RASTER_envelope(PG_FUNCTION_ARGS)
 	size_t gser_size;
 	int err = ES_NONE;
 
-	bool minhull = FALSE;
-
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
