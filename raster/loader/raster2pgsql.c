@@ -329,11 +329,18 @@ usage() {
 		"\n"
 		"OPTIONS:\n"
 	));
+	/*
 	printf(_(
 		"  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
 		"     Optionally reprojects from given SRID (cannot be used with -Y).\n"
 		"     Raster's metadata will be checked to determine an appropriate SRID.\n"
 		"     If a srid of %d is provided (either as from or as target).\n"
+	), SRID_UNKNOWN, SRID_UNKNOWN);
+	*/
+	printf(_(
+		"  -s <srid> Set the SRID field. Defaults to %d. If SRID not\n"
+		"     provided or is %d, raster's metadata will be checked to\n"
+		"     determine an appropriate SRID.\n"
 	), SRID_UNKNOWN, SRID_UNKNOWN);
 	printf(_(
 		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
