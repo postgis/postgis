@@ -540,7 +540,7 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	if ( ! lwgeom )
 		lwerror("Unable to parse WKB");
  		
-	gser = gserialized_geography_from_lwgeom(lwgeom, 0);
+	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(gser);
 }
