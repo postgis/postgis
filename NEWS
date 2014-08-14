@@ -21,6 +21,7 @@ PostGIS 2.1.4
   - #2802, ST_MapAlgebra checks for valid callback function return value
   - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
   - #2845, Bad geometry created from ST_AddPoint
+  - #2870, Binary insert into geography column results geometry being inserted
 
 PostGIS 2.1.3
 2014/05/13
