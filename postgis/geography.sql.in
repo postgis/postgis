@@ -84,7 +84,7 @@ CREATE CAST (geography AS geography) WITH FUNCTION geography(geography, integer,
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geography(bytea)
 	RETURNS geography
-	AS 'MODULE_PATHNAME','LWGEOM_from_bytea'
+	AS 'MODULE_PATHNAME','geography_from_binary'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0

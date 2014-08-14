@@ -93,6 +93,7 @@ PostGIS 2.2.0
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
   - #2845, Bad geometry created from ST_AddPoint
+  - #2870, Binary insert into geography column results in value being inserted as geometry
 
  * Code refactoring *
 
