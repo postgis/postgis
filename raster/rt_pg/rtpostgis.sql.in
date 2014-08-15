@@ -117,10 +117,13 @@ CREATE OR REPLACE FUNCTION st_envelope(raster)
 	AS 'MODULE_PATHNAME','RASTER_envelope'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+-- Changed: 2.1.4 raised cost 
 CREATE OR REPLACE FUNCTION st_convexhull(raster)
     RETURNS geometry
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
-    LANGUAGE 'c' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT
+    COST 300;
 
 CREATE OR REPLACE FUNCTION st_minconvexhull(
 	rast raster,
