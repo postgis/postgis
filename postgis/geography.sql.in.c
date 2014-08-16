@@ -82,6 +82,7 @@ CREATE OR REPLACE FUNCTION geography(geography, integer, boolean)
 CREATE CAST (geography AS geography) WITH FUNCTION geography(geography, integer, boolean) AS IMPLICIT;
 
 -- Availability: 2.0.0
+-- Changed: 2.0.7 ticket #2870 changed to use geography bytea func instead of geometry bytea
 CREATE OR REPLACE FUNCTION geography(bytea)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_from_binary'

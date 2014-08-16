@@ -771,6 +771,8 @@ SELECT '#2427', st_astext(st_pointn(ST_CurveToLine('CIRCULARSTRING(-1 0,0 1,0 -1
 
 SELECT '#2168',  ST_Distance(g1,g2)::numeric(16,8)  As dist_g1_g2, ST_Distance(g2,g1)::numeric(16,8) AS dist_g2_g1,ST_Distance(g1,g2) - ST_Distance(g2,g1) 
   FROM (SELECT 'POINT(18.5107234 54.7587757)'::geography As g1, 'POINT(18.58218 54.7344227)'::geography As g2) As a;
+  
+SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
