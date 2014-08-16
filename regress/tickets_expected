@@ -258,3 +258,4 @@ ERROR:  invalid GML representation
 #2704|POLYGON((0 0,0 1,1 1,1 0,0 0))
 #2712|LINESTRING EMPTY
 #2788|f|Self-intersection|POINT(1 1)
+#2870|Point[GS]
