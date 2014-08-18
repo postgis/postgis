@@ -39,6 +39,7 @@ INSTALL_DATA=@INSTALL_DATA@
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
 XMLLINT=@XMLLINT@
+CAN_BUILD_COMMENTS=@CAN_BUILD_COMMENTS@
 PERL=@PERL@
 
 # To allow network access use:
@@ -88,21 +89,19 @@ PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
 PGSQL_SHAREDIR=@PGSQL_SHAREDIR@
 
-# If XSLTPROC or XSLBASE were not found during configure, we cannot
-# build the documentation
-ifeq ($(XSLTPROC),)
-all: requirements_not_met_xsltproc
-else
-ifeq ($(XSLBASE),)
-all: requirements_not_met_xslbase
-else
-ifeq ($(IMAGEMAGICK),)
-all: requirements_not_met_imagemagick
-else
-all: comments
+BUILD_TARGET =
+
+ifeq ($(CAN_BUILD_COMMENTS),yes)
+BUILD_TARGET += comments
 endif
+
+ifeq ($(CAN_BUILD_PDF),yes)
+BUILD_TARGET += pdf
 endif
-endif
+
+# TODO: add "html" to the BUILD_TARGET if it can be built
+
+all: $(BUILD_TARGET)
 
 XML_SOURCES = \
 	extras_historytable.xml \
@@ -292,15 +291,15 @@ distclean: clean
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql sfcgal_comments.sql
 
-ifeq ($(XSLTPROC),)
-comments: requirements_not_met_xsltproc
+ifneq ($(CAN_BUILD_COMMENTS),yes)
+comments:
 else
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
 endif
 
 cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
 
-ifeq ($(XSLTPROC),)
+ifneq ($(CAN_BUILD_COMMENTS),yes)
 comments-install: 
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
