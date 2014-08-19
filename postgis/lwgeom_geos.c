@@ -1999,7 +1999,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	LWPOINT *point;
 	RTREE_POLY_CACHE *poly_cache;
-	bool result;
+	int result;
 	PrepGeomCache *prep_cache;
 
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2222,7 +2222,7 @@ Datum covers(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
-	bool result;
+	int result;
 	GBOX box1, box2;
 	int type1, type2;
 	LWGEOM *lwgeom;
@@ -2377,7 +2377,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	int result;
 	GBOX box1, box2;
 	LWGEOM *lwgeom;
 	LWPOINT *point;
@@ -2503,7 +2503,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
-	bool result;
+	int result;
 	GBOX box1, box2;
 
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2571,7 +2571,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *serialized_poly;
-	bool result;
+	int result;
 	GBOX box1, box2;
 	int type1, type2, polytype;
 	LWPOINT *point;
