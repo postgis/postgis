@@ -2389,7 +2389,7 @@ BEGIN
 		END IF;
 	END IF;
 
-	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN 
+	IF postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN 
 	-- srid was enforced with constraints before, keep it that way.
         -- Make up constraint name
         cname = 'enforce_srid_'  || column_name;
