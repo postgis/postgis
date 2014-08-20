@@ -1374,7 +1374,7 @@ POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Line_Substring" /></para>
+			<para><xref linkend="ST_LineSubstring" /></para>
 		</refsection>
 	</refentry>
 

@@ -2,7 +2,7 @@
 <sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
 	
-		<refentry id="ST_Line_Interpolate_Point">
+		<refentry id="ST_LineInterpolatePoint">
 		  <refnamediv>
 			<refname>ST_LineInterpolatePoint</refname>
 
@@ -263,7 +263,7 @@ WHERE n*100.00/length &lt; 1;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Length" />, <xref linkend="ST_Line_Interpolate_Point" />, <xref linkend="ST_LineMerge" /></para>
+			<para><xref linkend="ST_Length" />, <xref linkend="ST_LineInterpolatePoint" />, <xref linkend="ST_LineMerge" /></para>
 		  </refsection>
 	</refentry>
 
