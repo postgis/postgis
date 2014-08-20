@@ -26,6 +26,8 @@
 #undef HAVE_VASPRINTF
 #undef HAVE_ASPRINTF
 #undef HAVE_FSEEKO
+#undef HAVE_ISFINITE 
+#undef HAVE_GNU_ISFINITE 
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
