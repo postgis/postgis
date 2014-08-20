@@ -27,16 +27,16 @@
 			must be a LINESTRING. Second argument is a float8 between 0 and 1
 			representing fraction of total linestring length the point has to be located.</para>
 
-			<para>See <xref linkend="ST_Line_Locate_Point" /> for
+			<para>See <xref linkend="ST_LineLocatePoint" /> for
 			computing the line location nearest to a Point.</para>
-
+			
 			<note>
 			  <para>Since release 1.1.1 this function also interpolates M and
 			  Z values (when present), while prior releases set them to
 			  0.0.</para>
 			</note>
 			<para>Availability: 0.8.2, Z and M supported added in 1.1.1</para>
-      <para>Changed: 2.1.0. Up to 2.0.x this was called ST_LineInterpolatePoint.</para>
+			<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Interpolate_Point.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -83,11 +83,11 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_Length" />, <xref linkend="ST_Line_Locate_Point" /></para>
+			<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_Length" />, <xref linkend="ST_LineLocatePoint" /></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Line_Locate_Point">
+		<refentry id="ST_LineLocatePoint">
 		  <refnamediv>
 			<refname>ST_LineLocatePoint</refname>
 
@@ -113,8 +113,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			the closest point on LineString to the given Point, as a fraction
 			of total <link linkend="ST_Length2D">2d line</link> length.</para>
 
-			<para>You can use the returned location to extract a Point (<xref linkend="ST_Line_Interpolate_Point" />) or
-			a substring (<xref linkend="ST_Line_Substring" />).</para>
+			<para>You can use the returned location to extract a Point (<xref linkend="ST_LineInterpolatePoint" />) or
+			a substring (<xref linkend="ST_LineSubstring" />).</para>
 
 			<para>This is useful for approximating numbers of addresses</para>
 
@@ -164,11 +164,11 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Length2D" />, <xref linkend="ST_Line_Interpolate_Point" />, <xref linkend="ST_Line_Substring" /></para>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Length2D" />, <xref linkend="ST_LineInterpolatePoint" />, <xref linkend="ST_LineSubstring" /></para>
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Line_Substring">
+		<refentry id="ST_LineSubstring">
 		  <refnamediv>
 			<refname>ST_LineSubstring</refname>
 
@@ -199,9 +199,9 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			To use with contiguous MULTILINESTRINGs use in conjunction with <xref linkend="ST_LineMerge" />.</para>
 
 			<para>If 'start' and 'end' have the same value this is equivalent
-			to <xref linkend="ST_Line_Interpolate_Point" />.</para>
+			to <xref linkend="ST_LineInterpolatePoint" />.</para>
 
-			<para>See <xref linkend="ST_Line_Locate_Point" /> for
+			<para>See <xref linkend="ST_LineLocatePoint" /> for
 			computing the line location nearest to a Point.</para>
 
 			<note>
@@ -211,7 +211,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			</note>
 
 			<para>Availability: 1.1.0, Z and M supported added in 1.1.1</para>
-    <para>Changed: 2.1.0. Up to 2.0.x this was called ST_LineSubstring.</para>
+			<para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Substring.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
