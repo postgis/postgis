@@ -674,7 +674,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Segmentize" />, <xref linkend="ST_Line_Substring" /></para>
+			<para><xref linkend="ST_Segmentize" />, <xref linkend="ST_LineSubstring" /></para>
 		</refsection>
 	</refentry>
 
