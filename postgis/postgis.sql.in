@@ -2333,6 +2333,7 @@ LANGUAGE 'sql' VOLATILE STRICT;
 -- Change SRID of all features in a spatially-enabled table
 --
 -----------------------------------------------------------------------
+-- Changed: 2.1.4 check against real_schema
 CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalogn_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid_in integer)
 	RETURNS text
 	AS
@@ -2389,7 +2390,7 @@ BEGIN
 		END IF;
 	END IF;
 
-	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN 
+	IF postgis_constraint_srid(real_schema, table_name, column_name) IS NOT NULL THEN 
 	-- srid was enforced with constraints before, keep it that way.
         -- Make up constraint name
         cname = 'enforce_srid_'  || column_name;
