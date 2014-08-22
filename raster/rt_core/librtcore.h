@@ -71,7 +71,7 @@
 #endif
 
 
-#if defined(__FreeBSD_kernel__) || defined(__OpenBSD__)    /* seems to work like Linux... */
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__OpenBSD__)    /* seems to work like Linux... */
 #if !defined(LINUX)
 #define LINUX
 #endif
