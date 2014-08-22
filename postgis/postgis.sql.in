@@ -1400,7 +1400,7 @@ CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8,boolean,boolean default false)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8,boolean)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT;
