@@ -161,6 +161,7 @@ lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 	{
 		int new_maxrings = 2 * (poly->nrings + 1);
 		poly->rings = lwrealloc(poly->rings, new_maxrings * sizeof(POINTARRAY*));
+		poly->maxrings = new_maxrings;
 	}
 	
 	/* Add the new ring entry. */
