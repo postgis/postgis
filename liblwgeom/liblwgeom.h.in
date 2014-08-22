@@ -1798,6 +1798,8 @@ LWGEOM_UNPARSER_RESULT;
 */
 #define TWKB_ID 0x01
 #define TWKB_NO_TYPE 0x02
+#define TWKB_SIZES 0x04
+#define TWKB_BBOXES 0x08
 
 
 /*
@@ -1817,8 +1819,8 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision,
 */
 extern uint8_t*  lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out);
 
-extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, int64_t id,int method);
-extern uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t variant , size_t *size_out,int8_t prec, int method);
+extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,int8_t prec, int64_t id);
+extern uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t variant , size_t *size_out,int8_t prec);
 
 /**
 * @param lwgeom geometry to convert to HEXWKB

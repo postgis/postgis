@@ -40,19 +40,31 @@ _varint_u64_encoded_size(uint64_t q)
 	return ++n;
 }
 
-static uint8_t*
-_varint_u64_encode_buf(uint64_t q, uint8_t *buf)
+static int
+_varint_u64_encode_buf(uint64_t val, uint8_t **buf)
 {
-	int n=0, grp;
-	while ((q>>(7*(n+1))) >0)
+	uint8_t grp;	
+	uint64_t q=val;
+	while (1) 
 	{
-		grp=128^(127&(q>>(7*n)));
-		buf[n++]=grp;	
+		grp=127&q; //We put the 7 least significant bits in grp
+		q=q>>7;	//We rightshift our input value 7 bits which means that the 7 next least significant bits becomes the 7 least significant
+		if(q>0) // Check if, after our rightshifting, we still have anything to read in our input value.
+		{
+			/*In the next line quite a lot is happening.
+			Since there is more to read in our input value we signalize that by setting the most siginicant bit in our byte to 1.
+			Then we put that byte in our buffer (**buf) and move the cursor to our buffer (*buf) one step*/
+			*((*buf)++)=128^grp;
+		}
+		else
+		{
+			/*The same as above, but since there is nothing more to read in our input value we leave the most significant bit unset*/
+			*((*buf)++)=grp;
+	//		printf("grp1:%d\n",(int) grp);
+			return 0;
+		}
 	}
-	grp=127&(q>>(7*n));
-	buf[n++]=grp;	
-
-	return buf+=n;
+	return 0;
 }
 
 unsigned
@@ -68,11 +80,12 @@ varint_u32_encoded_size(uint32_t val)
   return _varint_u64_encoded_size(val); /* implicit upcast to 64bit int */
 }
 
-uint8_t*
-varint_u32_encode_buf(uint32_t val, uint8_t *buf)
+int
+varint_u32_encode_buf(uint32_t val, uint8_t **buf)
 {
   LWDEBUGF(2, "Entered varint_u32_encode_buf, value %u", val);
-  return _varint_u64_encode_buf(val, buf); /* implicit upcast to 64bit */
+  _varint_u64_encode_buf(val, buf); /* implicit upcast to 64bit */
+return 0;
 }
 
 unsigned
@@ -89,12 +102,14 @@ varint_s32_encoded_size(int32_t val)
   return _varint_u64_encoded_size(q); /* implicit upcast to 64bit int */
 }
 
-uint8_t*
-varint_s32_encode_buf(int32_t val, uint8_t *buf)
+int
+varint_s32_encode_buf(int32_t val, uint8_t **buf)
 {
-  LWDEBUGF(2, "Entered varint_s32_encode_buf, value %d", val);
-  uint32_t q = (val << 1) ^ (val >> 31); /* zig-zag encode */
-  return _varint_u64_encode_buf(q, buf); /* implicit upcast to 64bit */
+	
+	uint32_t q;
+	q = (val << 1) ^ (val >> 31);/* zig-zag encode */
+	_varint_u64_encode_buf(q, buf);/* implicit upcast to 64bit */
+	return 0;
 }
 
 unsigned
@@ -111,13 +126,13 @@ varint_s64_encoded_size(int64_t val)
   return _varint_u64_encoded_size(q);
 }
 
-uint8_t*
-varint_s64_encode_buf(int64_t val, uint8_t *buf)
+int
+varint_s64_encode_buf(int64_t val, uint8_t **buf)
 {
-  LWDEBUGF(2, "Entered varint_s64_encode_buf, value %ld", val);
-
-  uint64_t q = (val << 1) ^ (val >> 63); /* zig-zag encode */
-  return _varint_u64_encode_buf(q, buf);
+	uint64_t q;
+	q = (val << 1) ^ (val >> 63);
+	varint_u64_encode_buf(q, buf);
+	return 0;
 }
 
 unsigned
@@ -133,9 +148,10 @@ varint_u64_encoded_size(uint64_t val)
   return _varint_u64_encoded_size(val);
 }
 
-uint8_t*
-varint_u64_encode_buf(uint64_t val, uint8_t *buf)
+int
+varint_u64_encode_buf(uint64_t val, uint8_t **buf)
 {
   LWDEBUGF(2, "Entered varint_u64_encode_buf, value %lu", val);
-  return _varint_u64_encode_buf(val, buf);
+  _varint_u64_encode_buf(val, buf);
+  return 0;
 }

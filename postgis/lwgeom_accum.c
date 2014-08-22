@@ -82,7 +82,6 @@ typedef struct
 	int	n_rows;		
 	int	max_rows;
 	geom_id *geoms;
-	int method;
 }
 twkb_state;
 
@@ -192,11 +191,7 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 		state->n_rows = 0;	
 	
 		/* If user specified precision, respect it */
-		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2); 
-				
-		/* There is no input for user to choose encoding method, but it is still defined here if we need it again	*/
-		state->method = 1;
-
+		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2);
 	}
 	else
 	{
@@ -228,6 +223,19 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 			variant = variant & ~TWKB_ID;
 			((state->geoms)+state->n_rows)->id = 0;
 		}
+		
+		/* If user wants registered twkb sizes */
+		if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) && PG_GETARG_BOOL(4) )
+			variant = variant | (TWKB_SIZES);
+		else
+			variant = variant & ~TWKB_SIZES;
+		
+			/* If user wants bounding boxes */
+		if ( (PG_NARGS()>5) && (!PG_ARGISNULL(5)) && PG_GETARG_BOOL(5) )
+			variant = variant | (TWKB_BBOXES);
+		else
+			variant = variant & ~TWKB_BBOXES;
+	
 		state->variant=variant;
 		(state->n_rows)++;	
 	}	
@@ -416,7 +424,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 		}
 	
 	}		
-	twkb = lwgeom_agg_to_twkb(&lwgeom_arrays, state->variant , &twkb_size,(int8_t) state->precision,state->method);
+	twkb = lwgeom_agg_to_twkb(&lwgeom_arrays, state->variant , &twkb_size,(int8_t) state->precision);
 
 
 		/* Clean up and return */

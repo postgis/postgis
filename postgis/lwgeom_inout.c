@@ -413,7 +413,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	uint8_t variant = 0;
  	bytea *result;
 	int64_t id;
-	int prec,method;
+	int prec;
 	
 	/* If user specified precision, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
@@ -435,20 +435,24 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	{
 		variant = variant & ~TWKB_ID;
 		id=0;
-	}
+	}	
 	
-		/* If user specified method, respect it
-		This will probably be taken away when we can decide which compression method that is best	*/
-	if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) )
-	{
-		method = PG_GETARG_INT32(4);
-	}
-	else 
-		method=1;
+		/* If user wants registered twkb sizes */
+	if ( (PG_NARGS()>3) && (!PG_ARGISNULL(3)) && PG_GETARG_BOOL(3) )
+		variant = variant | (TWKB_SIZES);
+	else
+		variant = variant & ~TWKB_SIZES;
+	
+		/* If user wants bounding boxes */
+	if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) && PG_GETARG_BOOL(4) )
+		variant = variant | (TWKB_BBOXES);
+	else
+		variant = variant & ~TWKB_BBOXES;
+	
 	
 	/* Create TWKB bin string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	twkb = lwgeom_to_twkb(lwgeom, variant , &twkb_size,(int8_t) prec,(int64_t) id,method);
+	twkb = lwgeom_to_twkb(lwgeom, variant , &twkb_size,(int8_t) prec,(int64_t) id);
 	lwgeom_free(lwgeom);
 	
 	/* Prepare the PgSQL text return type */

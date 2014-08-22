@@ -25,24 +25,24 @@
 unsigned varint_u32_encoded_size(uint32_t val);
 
 /* Encode unsigned 32bit integer */
-uint8_t* varint_u32_encode_buf(uint32_t val, uint8_t *buf);
+int varint_u32_encode_buf(uint32_t val, uint8_t **buf);
 
 /* Find encoded size for signed 32bit integer */
 unsigned varint_s32_encoded_size(int32_t val);
 
 /* Encode signed 32bit integer */
-uint8_t* varint_s32_encode_buf(int32_t val, uint8_t *buf);
+int varint_s32_encode_buf(int32_t val, uint8_t **buf);
 
 /* Find encoded size for unsigned 64bit integer */
 unsigned varint_u64_encoded_size(uint64_t val);
 
 /* Encode unsigned 64bit integer */
-uint8_t* varint_u64_encode_buf(uint64_t val, uint8_t *buf);
+int varint_u64_encode_buf(uint64_t val, uint8_t **buf);
 
 /* Find encoded size for signed 64bit integer */
 unsigned varint_s64_encoded_size(int64_t val);
 
 /* Encode unsigned 64bit integer */
-uint8_t* varint_s64_encode_buf(int64_t val, uint8_t *buf);
+int varint_s64_encode_buf(int64_t val, uint8_t **buf);
 
 #endif /* !defined _LIBLWGEOM_VARINT_H  */

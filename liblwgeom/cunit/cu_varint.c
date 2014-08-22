@@ -22,81 +22,89 @@
 
 static void do_test_u32_varint(uint32_t nr,int expected_size, char* expected_res)
 {
-	uint8_t buf[8];	
+	uint8_t *buf, *original;	
 	int size;
 	char *hex;
 	
+	buf = original=lwalloc(8);
 	size = varint_u32_encoded_size(nr);
 	if ( size != expected_size ) {
 	  printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
-	varint_u32_encode_buf(nr, buf);
-	hex = hexbytes_from_bytes(buf,size);
+	varint_u32_encode_buf(nr, &buf);
+	hex = hexbytes_from_bytes(original,size);
 	if ( strcmp(hex,expected_res) ) {
 	  printf("Expected: %s\nObtained: %s\n", expected_res, hex);
 	}
 	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+lwfree(original);	
   lwfree(hex);
 }
 
 static void do_test_s32_varint(int32_t nr,int expected_size, char* expected_res)
 {
-	uint8_t buf[8];	
+	uint8_t *buf, *original;
 	int size;
 	char *hex;
 	
+	buf = original=lwalloc(8);
 	size = varint_s32_encoded_size(nr);
 	if ( size != expected_size ) {
 	  printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
-	varint_s32_encode_buf(nr, buf);
-	hex = hexbytes_from_bytes(buf,size);
+	varint_s32_encode_buf(nr, &buf);
+	hex = hexbytes_from_bytes(original,size);
 	if ( strcmp(hex,expected_res) ) {
 	  printf("Expected: %s\nObtained: %s\n", expected_res, hex);
 	}
 	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+lwfree(original);	
   lwfree(hex);
 }
 
 static void do_test_u64_varint(uint64_t nr,int expected_size, char* expected_res)
 {
-	uint8_t buf[8];	
+	uint8_t *buf, *original;
 	int size;
 	char *hex;
 	
+	buf = original=lwalloc(8);
 	size = varint_u64_encoded_size(nr);
 	if ( size != expected_size ) {
 	  printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
-	varint_u64_encode_buf(nr, buf);
-	hex = hexbytes_from_bytes(buf,size);
+	varint_u64_encode_buf(nr, &buf);
+	hex = hexbytes_from_bytes(original,size);
 	if ( strcmp(hex,expected_res) ) {
 	  printf("Expected: %s\nObtained: %s\n", expected_res, hex);
 	}
-	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+	CU_ASSERT_STRING_EQUAL(hex, expected_res);
+lwfree(original);	
   lwfree(hex);
 }
 
 static void do_test_s64_varint(int64_t nr,int expected_size, char* expected_res)
 {
-	uint8_t buf[8];	
+	uint8_t *buf, *original;
 	int size;
 	char *hex;
 	
+	buf = original=lwalloc(8);
 	size = varint_s64_encoded_size(nr);
 	if ( size != expected_size ) {
 	  printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
 	CU_ASSERT_EQUAL(size,expected_size);
-	varint_s64_encode_buf(nr, buf);
-	hex = hexbytes_from_bytes(buf,size);
+	varint_s64_encode_buf(nr, &buf);
+	hex = hexbytes_from_bytes(original,size);
 	if ( strcmp(hex,expected_res) ) {
 	  printf("Expected: %s\nObtained: %s\n", expected_res, hex);
 	}
 	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+lwfree(original);	
   lwfree(hex);
 }
 
