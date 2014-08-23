@@ -177,7 +177,7 @@ BEGIN
             ) AS sub 
           JOIN state s ON ($10 = s.statefp) 
             ORDER BY 1,2,3,4,5,6,7,9 
-          LIMIT 20) As foo ORDER BY sub_rating, exact_address DESC LIMIT  ' || max_results ;
+          LIMIT 20) As foo ORDER BY sub_rating, exact_address DESC LIMIT  ' || max_results*10 ;
          
   IF var_debug THEN
          RAISE NOTICE 'stmt: %', 
@@ -235,7 +235,7 @@ BEGIN
             RETURN;
         END IF;
     
-        IF var_n >= max_results  THEN --we have exceeded our desired limit
+        IF var_n >= max_results AND RATING < 10  THEN --we have exceeded our desired limit and rating is not horrible
             RETURN;
         END IF;
     

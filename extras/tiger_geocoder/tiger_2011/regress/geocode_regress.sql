@@ -103,4 +103,7 @@ SELECT '#1333b' AS ticket, pprint_addy(addy), st_astext(geomout),rating FROM geo
 SELECT '#1392a' AS ticket, pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('State Hwy 121', 'N Denton Tap Rd', 'TX', 'Coppell', '', 2);
 SELECT '#1392b' AS ticket, pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('State Hwy 121', 'N Denton Tap Rd', 'TX','', '', 2);
 --
+
+-- Geocode 1 not returning best answer
+SELECT '#2899' AS ticket, st_astext(ST_SnapToGrid(geomout,0.0001)),rating FROM geocode('22 Minnow Ln, Westbrook, CT 06498',1);
 \timing
