@@ -26,6 +26,7 @@ PostGIS 2.1.4
   - #2845, Bad geometry created from ST_AddPoint
   - #2870, Binary insert into geography column results geometry being inserted
   - #2819, find isfinite or replacement on Centos5 / Solaris
+  - #2899, geocode limit 1 not returning best answer (tiger geocoder)
 
 PostGIS 2.1.3
 2014/05/13
