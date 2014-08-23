@@ -291,7 +291,7 @@
 	  <refnamediv>
 		<refname>ST_MinkowskiSum</refname>
 
-		<refpurpose>Perform Minkowski sum</refpurpose>
+		<refpurpose>Performs Minkowski sum</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -307,11 +307,12 @@
 	  <refsection>
 		<title>Description</title>
 
+                <para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
+                <para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
+
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
 	  </refsection>
 
 	</refentry>
