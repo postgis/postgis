@@ -50,7 +50,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to tiger_geocoder in control
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
-  ../../extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql \
+  ../../extras/tiger_geocoder/tiger_2011/tiger_loader_2014.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/nullable_levenshtein.sql \
@@ -84,7 +84,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql \
+	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2014.sql \
 	../../extras/tiger_geocoder/tiger_2011/census_loader.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
