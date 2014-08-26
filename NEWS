@@ -14,10 +14,12 @@ PostGIS 2.1.4
  * Bug Fixes *
 
   - #2704, ST_GeomFromGML() does not work properly with array of gml:pos
+  - #2708, updategeometrysrid doesn't update srid check when schema
+           not specified. Patch from Marc Jansen
+  - #2759, Fix postgis_restore.pl handling of multiline object comments
+           embedding sql comments
   - #2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
   - Fix potential memory fault in ST_MakeValid
-  - #2708 updategeometrysrid doesn't update srid check when schema not specified
-    Patch from Marc Jansen
   - #2784, Fix handling of bogus argument to --with-sfcgal
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
   - #2775, Fix regressions tests against all versions of SFCGAL

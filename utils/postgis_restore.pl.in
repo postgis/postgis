@@ -277,6 +277,22 @@ while( my $l = <INPUT> ) {
     next;
   }
 
+  # Parse comments, to avoid skipping quoted comments
+  # See http://trac.osgeo.org/postgis/ticket/2759
+  elsif ( $l =~ /^COMMENT ON .* IS '(.*)/)
+  {
+    my @sublines = ($l);
+    my $comment = $1;
+    # A comment ends with an odd number of single quotes and a semicolon
+    while( $comment !~ /('*)[\t ]*;[\t ]*$/ || length($1) % 2 == 0)
+    {
+      $comment = <INPUT>;
+      push(@sublines, $comment);
+    }
+    print STDOUT @sublines;
+    next;
+  }
+
   # Clamp SRIDS in spatial_ref_sys
   elsif ( $l =~ /COPY spatial_ref_sys /)
   {
