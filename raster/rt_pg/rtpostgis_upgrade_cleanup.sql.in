@@ -365,7 +365,9 @@ DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster); 
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
 
--- remove TYPE summarystats
+-- TYPE summarystats removed in version 2.1.0
+-- TODO: only DROP if source version is 2.1.0
+-- See http://trac.osgeo.org/postgis/ticket/2908
 DROP FUNCTION IF EXISTS st_summarystats(raster,int, boolean);
 DROP FUNCTION IF EXISTS st_summarystats(raster, boolean);
 DROP FUNCTION IF EXISTS st_approxsummarystats(raster,int, boolean, double precision);
