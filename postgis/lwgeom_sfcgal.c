@@ -16,6 +16,8 @@
 #include "fmgr.h"
 #include "../liblwgeom/liblwgeom.h"
 
+#include "../postgis_config.h"
+
 #include "lwgeom_pg.h"
 #include "lwgeom_sfcgal.h"
 
