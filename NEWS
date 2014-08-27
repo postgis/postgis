@@ -73,6 +73,23 @@ PostGIS 2.2.0
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
 
+PostGIS 2.1.3
+2014/05/13
+
+ * Important / Breaking Changes  *
+
+  - Add control of GDAL drivers with the environment variable
+    POSTGIS_GDAL_ENABLED_DRIVERS. By default, all GDAL drivers are disabled
+  - Add ability to disable out-db raster bands with the environment variable
+    POSTGIS_ENABLE_OUTDB_RASTERS. By default, out-db raster bands are disabled
+
+ * Bug Fixes *
+
+  - #2697, invalid GeoJSON Polygon input crashes server process
+  - #2700, Fix dumping of higher-dimension datasets with null rows
+  - #2706, ST_DumpPoints of EMPTY geometries crashes server
+
+
 PostGIS 2.1.2
 2014/03/31
 
@@ -366,6 +383,43 @@ PostGIS 2.1.0
 
  * Known Issues *
   - #2111, Raster bands can only reference the first 256 bands of out-db rasters
+
+PostGIS 2.0.6
+2014/05/14
+
+ * Important Changes *
+
+  - Add control of GDAL drivers with the environment variable
+    POSTGIS_GDAL_ENABLED_DRIVERS. By default, all GDAL drivers are disabled
+  - Add ability to disable out-db raster bands with the environment variable
+    POSTGIS_ENABLE_OUTDB_RASTERS. By default, out-db raster bands are disabled
+
+ * Bug Fixes *
+
+  - #2772, fix premature memory free in RASTER_getBandPath (ST_BandPath)
+
+PostGIS 2.0.5
+2013/03/31
+
+ * Important Changes *
+
+  - #2514, Change raster license from GPL v3+ to v2+, allowing 
+           distribution of PostGIS Extension as GPLv2.
+
+ * Bug Fixes *
+  - #2494, avoid memcpy in GIST index
+  - #2502, Fix postgis_topology_scripts_installed() install schema
+  - #2504, Fix segfault on bogus pgsql2shp call 
+  - #2528, Fix memory leak in ST_Split / lwline_split_by_line
+  - #2532, Add missing raster/geometry commutator operators
+  - #2533, Remove duplicated signatures
+  - #2552, Fix NULL raster handling in ST_AsPNG, ST_AsTIFF and ST_AsJPEG
+  - #2555, Fix parsing issue of range arguments of ST_Reclass
+  - #2589, Remove use of unnecessary void pointers
+  - #2607, Cannot open more than 1024 out-db files in process
+  - #2610, Ensure face splitting algorithm uses the edge index 
+  - #2619, Empty ring array in GeoJSON polygon causes crash
+  - #2638, Geography distance on M geometries sometimes wrong
 
 PostGIS 2.0.4
 2013/09/06
