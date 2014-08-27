@@ -154,8 +154,6 @@ sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
 # 		-e 's/;;/;/g' $< > $@
 
 
-sql/postgis--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
-
 sql_minor_upgrade: sql_bits/extension_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS_MINOR); do \
   	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
