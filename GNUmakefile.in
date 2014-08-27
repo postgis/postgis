@@ -5,7 +5,7 @@
 #-----------------------------------------------------
 
 # todo: add all subdirs
-SUBDIRS = liblwgeom libpgcommon postgis regress @RASTER@ @TOPOLOGY@ loader utils @EXTENSIONS@
+SUBDIRS = liblwgeom libpgcommon postgis regress @RASTER@ @TOPOLOGY@ loader utils doc @EXTENSIONS@
 
 PERL = @PERL@
 
@@ -20,10 +20,6 @@ all install uninstall noop clean distclean check:
 	fi
 
 all: postgis_svn_revision.h
-
-ifneq ($(XSLTPROC),)
-all: comments
-endif
 
 install: all comments-install
 
