@@ -424,6 +424,7 @@ INSERT INTO raster_union_in
 	SELECT 61, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0) AS rast UNION ALL
 	SELECT 62, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, 0, 1, -1, 0, 0, 0), 1, '8BUI', 3, 0) AS rast UNION ALL
 	SELECT 63, ST_AddBand(ST_MakeEmptyRaster(2, 2, -1, -3, 1, -1, 0, 0, 0), 1, '8BUI', 4, 0) AS rast UNION ALL
+	SELECT  0, NULL::raster UNION ALL -- toxic element embedded
 	SELECT 64, ST_AddBand(ST_MakeEmptyRaster(2, 2, -2, 4, 1, -1, 0, 0, 0), 1, '8BUI', 5, 0) AS rast
 ;
 
@@ -452,3 +453,7 @@ ORDER BY uniontype, y, x;
 
 DROP TABLE IF EXISTS raster_union_in;
 DROP TABLE IF EXISTS raster_union_out;
+
+-- Some toxic input
+SELECT 'none', ST_Union(r) from ( select null::raster r where false ) f;
+SELECT 'null', ST_Union(null::raster);

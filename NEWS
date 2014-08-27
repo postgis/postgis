@@ -13,6 +13,7 @@ PostGIS 2.1.4
 
  * Bug Fixes *
 
+  - Fix crash in ST_Union(raster)
   - #2704, ST_GeomFromGML() does not work properly with array of gml:pos
   - #2708, updategeometrysrid doesn't update srid check when schema
            not specified. Patch from Marc Jansen
