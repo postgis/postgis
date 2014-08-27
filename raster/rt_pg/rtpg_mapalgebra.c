@@ -2876,6 +2876,8 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 	pfree(itrset);
 	rtpg_union_arg_destroy(iwr);
 
+	if (!_rtn) PG_RETURN_NULL();
+
 	pgraster = rt_raster_serialize(_rtn);
 	rt_raster_destroy(_rtn);
 
