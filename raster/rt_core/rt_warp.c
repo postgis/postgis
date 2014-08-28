@@ -29,6 +29,9 @@
  *
  */
 
+#include "../../postgis_config.h"
+//#define POSTGIS_DEBUG_LEVEL 4
+
 #include "librtcore.h"
 #include "librtcore_internal.h"
 
@@ -990,6 +993,12 @@ rt_raster rt_raster_gdal_warp(
 	/* substitute spatial, reset back to default */
 	if (subspatial) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
+		/* See http://trac.osgeo.org/postgis/ticket/2911 */
+		/* We should proably also tweak rotation here */
+		/* NOTE: the times 10 is because it was divided by 10 in a section above,
+		 *       I'm not sure the above division was needed */
+		gt[1] = _scale[0] * 10;
+		gt[5] = -1 * _scale[1] * 10;
 
 		rt_raster_set_geotransform_matrix(rast, gt);
 		rt_raster_set_srid(rast, SRID_UNKNOWN);

@@ -835,14 +835,14 @@ SELECT
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
 			, 1, '8BUI', 255, 0
 		)
-		, 0.25, 0.9
+		, 0.25, 0.8
 	) AS rast
 UNION ALL
 SELECT -- ticket #2188
 	4 AS rid, 
 	ST_Resize(
 		ST_AddBand(
-			ST_MakeEmptyRaster(1024, 768, 0, 0, 1, -1, 0, 0, 0)
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
 			, 1, '8BUI', 255, 0
 		)
 		, 0.5, 0.5
