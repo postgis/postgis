@@ -325,52 +325,17 @@ rt_raster rt_raster_gdal_warp(
 		memset(arg->transform.option.item, 0, sizeof(char *) * (arg->transform.option.len + 1));
 
 		for (i = 0; i < arg->transform.option.len; i++) {
-			switch (i) {
-				case 1:
-					if (arg->dst.srs != NULL)
-						arg->transform.option.item[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(arg->dst.srs) + 1));
-					else
-						arg->transform.option.item[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + 1));
-					break;
-				case 0:
-					if (arg->src.srs != NULL)
-						arg->transform.option.item[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(arg->src.srs) + 1));
-					else
-						arg->transform.option.item[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + 1));
-					break;
-			}
+			const char *srs = i ? arg->dst.srs : arg->src.srs;
+			const char *lbl = i ? "DST_SRS=" : "SRC_SRS=";
+			size_t sz = sizeof(char) * (strlen(lbl) + 1);
+			if ( srs ) sz += strlen(srs);
+			arg->transform.option.item[i] = (char *) rtalloc(sz);
 			if (NULL == arg->transform.option.item[i]) {
 				rterror("rt_raster_gdal_warp: Could not allocation memory for transform options");
 				_rti_warp_arg_destroy(arg);
 				return NULL;
 			}
-
-			switch (i) {
-				case 1:
-					if (arg->dst.srs != NULL) {
-						snprintf(
-							arg->transform.option.item[i],
-							sizeof(char) * (strlen("DST_SRS=") + strlen(arg->dst.srs) + 1),
-							"DST_SRS=%s",
-							arg->dst.srs
-						);
-					}
-					else
-						sprintf(arg->transform.option.item[i], "%s", "DST_SRS=");
-					break;
-				case 0:
-					if (arg->src.srs != NULL) {
-						snprintf(
-							arg->transform.option.item[i],
-							sizeof(char) * (strlen("SRC_SRS=") + strlen(arg->src.srs) + 1),
-							"SRC_SRS=%s",
-							arg->src.srs
-						);
-					}
-					else
-						sprintf(arg->transform.option.item[i], "%s", "SRC_SRS=");
-					break;
-			}
+			sprintf(arg->transform.option.item[i], "%s%s", lbl, srs ? srs : "");
 			RASTER_DEBUGF(4, "arg->transform.option.item[%d] = %s", i, arg->transform.option.item[i]);
 		}
 	}
