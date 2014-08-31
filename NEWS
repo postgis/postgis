@@ -59,6 +59,7 @@ PostGIS 2.2.0
   - #2828, Convert ST_Envelope(raster) from SQL to C
   - #2829, Shortcut ST_Clip(raster) if geometry fully contains the raster
            and no NODATA specified
+  - #2906, Update tiger geocoder to handle tiger 2014 data
 
  * Bug Fixes *
 
