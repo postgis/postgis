@@ -93,6 +93,7 @@ SA_OBJS = \
 	varint.o
 
 NM_OBJS = \
+	geodesic.o \
 	lwspheroid.o
 
 ifeq (@SFCGAL@,sfcgal)

@@ -14,6 +14,14 @@
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
+/* toggle the order of these for testing geodesic functions from GeographicLib */
+#undef USE_GEODESIC
+#define USE_GEODESIC
+
+#ifdef USE_GEODESIC
+#include "geodesic.h"
+#endif /* USE_GEODESIC */
+
 /**
 * Initialize spheroid object based on major and minor axis
 */
@@ -26,6 +34,7 @@ void spheroid_init(SPHEROID *s, double a, double b)
 	s->radius = (2.0 * a + b ) / 3.0;
 }
 
+#ifndef USE_GEODESIC
 static double spheroid_mu2(double alpha, const SPHEROID *s)
 {
 	double b2 = POW2(s->b);
@@ -41,6 +50,80 @@ static double spheroid_big_b(double u2)
 {
 	return (u2 / 1024.0) * (256.0 + u2 * (-128.0 + u2 * (74.0 - 47.0 * u2)));
 }
+#endif /* else USE_GEODESIC */
+
+
+#ifdef USE_GEODESIC
+
+/**
+* Computes the shortest distance along the surface of the spheroid
+* between two points. Based on Vincenty's formula for the geodetic
+* inverse problem as described by Karney (2013).
+*
+* @param a - location of first point.
+* @param b - location of second point.
+* @param s - spheroid to calculate on
+* @return spheroidal distance between a and b in spheroid units.
+*/
+double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
+{
+    double lat1 = a->lat * 180.0 / M_PI;
+    double lon1 = a->lon * 180.0 / M_PI;
+    double lat2 = b->lat * 180.0 / M_PI;
+    double lon2 = b->lon * 180.0 / M_PI;
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
+    double azi1, azi2, s12; /* returned */
+    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+    return s12;
+}
+
+/**
+* Computes the direction of the geodesic joining two points on
+* the spheroid. Based on Vincenty's formula for the geodetic
+* inverse problem as described by Karney (2013).
+*
+* @param r - location of first point
+* @param s - location of second point
+* @return azimuth of line joining r to s (but not reverse)
+*/
+double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
+{
+    double lat1 = a->lat * 180.0 / M_PI;
+    double lon1 = a->lon * 180.0 / M_PI;
+    double lat2 = b->lat * 180.0 / M_PI;
+    double lon2 = b->lon * 180.0 / M_PI;
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
+    double azi1, azi2, s12; /* returned */
+    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+    return azi1 * M_PI / 180.0;
+}
+
+/**
+* Given a location, an azimuth and a distance, computes the
+* location of the projected point. Based on Vincenty's formula
+* for the geodetic direct problem as described by Karney (2013).
+*
+* @param r - location of first point.
+* @param distance - distance in meters.
+* @param azimuth - azimuth in radians.
+* @return s - location of projected point.
+*/
+int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g)
+{
+    double lat1 = r->lat * 180.0 / M_PI;
+    double lon1 = r->lon * 180.0 / M_PI;
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
+    double lat2, lon2, azi2; /* returned */
+    geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, &azi2);
+	g->lat = lat2 * M_PI / 180.0;
+	g->lon = lon2 * M_PI / 180.0;
+	return LW_SUCCESS;
+}
+
+#else /* USE_GEODESIC */
 
 /**
 * Computes the shortest distance along the surface of the spheroid
@@ -284,6 +367,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	return LW_SUCCESS;
 }
 
+#endif /* else USE_GEODESIC */
 
 static inline double spheroid_prime_vertical_radius_of_curvature(double latitude, const SPHEROID *spheroid)
 {
