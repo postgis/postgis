@@ -4935,6 +4935,7 @@ CREATE OR REPLACE VIEW raster_overviews AS
 -- AddOverviewConstraints
 ------------------------------------------------------------------------------
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION AddOverviewConstraints (
 	ovschema name, ovtable name, ovcolumn name,
 	refschema name, reftable name, refcolumn name,
@@ -5012,6 +5013,7 @@ CREATE OR REPLACE FUNCTION AddOverviewConstraints (
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION AddOverviewConstraints (
 	ovtable name, ovcolumn name,
 	reftable name, refcolumn name,
@@ -5026,6 +5028,7 @@ CREATE OR REPLACE FUNCTION AddOverviewConstraints (
 -- DropOverviewConstraints
 ------------------------------------------------------------------------------
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION DropOverviewConstraints (
 	ovschema name,
 	ovtable name,
@@ -5080,6 +5083,7 @@ CREATE OR REPLACE FUNCTION DropOverviewConstraints (
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION DropOverviewConstraints (
 	ovtable name,
 	ovcolumn name
