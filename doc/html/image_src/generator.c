@@ -35,6 +35,7 @@
 #include <ctype.h>
 
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h" /* for trim_trailing_zeros */
 #include "lwgeom_log.h"
 #include "styles.h"
 
@@ -47,6 +48,15 @@ char *imageSize = "200x200";
 
 
 int getStyleName(char **styleName, char* line);
+
+static void
+checked_system(const char* cmd)
+{
+  int ret = system(cmd);
+	if ( WEXITSTATUS(ret) != 0 ) {
+		fprintf(stderr, "Failure return code (%d) from command: %s", WEXITSTATUS(ret), cmd);
+	}
+}
 
 /**
  * Writes the coordinates of a POINTARRAY to a char* where ordinates are
@@ -230,7 +240,7 @@ addDropShadow(int layerNumber)
 	    "convert tmp%d.png -gravity center \"(\" +clone -background navy -shadow 100x3+4+4 \")\" +swap -background none -flatten tmp%d.png",
 	    layerNumber, layerNumber);
 	LWDEBUGF(4, "%s", str);
-	system(str);
+	checked_system(str);
 }
 
 /**
@@ -249,7 +259,7 @@ addHighlight(int layerNumber)
 	    "convert tmp%d.png \"(\" +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \")\" -compose In -composite tmp%d.png",
 	    layerNumber, layerNumber);
 	LWDEBUGF(4, "%s", str);
-	system(str);
+	checked_system(str);
 }
 
 /**
@@ -265,7 +275,7 @@ optimizeImage(char* filename)
 	str = malloc( (18 + (2*strlen(filename)) + 1) * sizeof(char) );
 	sprintf(str, "convert %s -depth 8 %s", filename, filename);
 	LWDEBUGF(4, "%s", str);
-	system(str);
+	checked_system(str);
 	free(str);
 }
 
@@ -275,12 +285,11 @@ optimizeImage(char* filename)
 static void
 flattenLayers(char* filename)
 {
-	char *str;
-	str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
+	char *str = malloc( (48 + strlen(filename) + 1) * sizeof(char) );
 	sprintf(str, "convert tmp[0-9].png -background white -flatten %s", filename);
 
 	LWDEBUGF(4, "%s", str);
-	system(str);
+	checked_system(str);
 	// TODO: only remove the tmp files if they exist.
 	remove("tmp0.png");
 	remove("tmp1.png");
@@ -330,7 +339,6 @@ int main( int argc, const char* argv[] )
 	char line [2048];
 	char *filename;
 	int layerCount;
-	int styleNumber;
 	LAYERSTYLE *styles;
 	char *image_path = "../images/";
 
@@ -378,7 +386,6 @@ int main( int argc, const char* argv[] )
 			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
-		styleNumber = layerCount % length(styles);
 		ptr += drawGeometry( ptr, lwgeom, getStyle(styles, styleName) );
 
 		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
@@ -386,7 +393,7 @@ int main( int argc, const char* argv[] )
 		lwfree( lwgeom );
 
 		LWDEBUGF( 4, "%s", output );
-		system(output);
+		checked_system(output);
 
 		addHighlight( layerCount );
 		addDropShadow( layerCount );
