@@ -607,6 +607,171 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 		<para><xref linkend="RT_AddRasterConstraints"/></para>
 	  </refsection>
 	</refentry>
+
+  <refentry id="RT_AddOverviewConstraints">
+	  <refnamediv>
+		<refname>AddOverviewConstraints</refname>
+
+		<refpurpose>Tag a raster column as being an overview of another.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>reftable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refcolumn</parameter></paramdef>
+        <paramdef><type>int </type>
+        <parameter>ovfactor</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>reftable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refcolumn</parameter></paramdef>
+        <paramdef><type>int </type>
+        <parameter>ovfactor</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Adds constraints on a raster column that are used to display information
+in the <varname>raster_overviews</varname> raster catalog.
+		</para>
+		<para>
+The <varname>ovfactor</varname> parameter represents the scale multiplier
+in the overview column: higher overview factors have lower resolution.
+		</para>
+		<para>
+When the <varname>ovschema</varname> and <varname>refschema</varname>
+parameters are omitted, the first table found scanning the
+<varname>search_path</varname> will be used.
+		</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+CREATE TABLE res1 AS SELECT
+ST_AddBand(
+  ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
+  1, '8BSI'::text, -129, NULL
+) r1;
+
+CREATE TABLE res2 AS SELECT
+ST_AddBand(
+  ST_MakeEmptyRaster(500, 500, 0, 0, 4),
+  1, '8BSI'::text, -129, NULL
+) r2;
+
+SELECT AddOverviewConstraints('res2', 'r2', 'res1', 'r1', 2);
+
+-- verify if registered correctly in the raster_overviews view --
+SELECT o_table_name ot, o_raster_column oc,
+       r_table_name rt, r_raster_column rc,
+       overview_factor f
+FROM raster_overviews WHERE o_table_name = 'res2';
+  ot  | oc |  rt  | rc | f
+------+----+------+----+---
+ res2 | r2 | res1 | r1 | 2
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+      <para>
+ <xref linkend="RT_Raster_Overviews"/>,
+ <xref linkend="RT_DropOverviewConstraints"/>,
+ <xref linkend="RT_AddRasterConstraints"/>
+      </para>
+	  </refsection>
+	</refentry>
+
+  <refentry id="RT_DropOverviewConstraints">
+	  <refnamediv>
+		<refname>DropOverviewConstraints</refname>
+
+		<refpurpose>Untag a raster column from being an overview of another.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+        <funcdef>boolean <function>DropOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Remove from a raster column the constraints used to show it as
+being an overview of another in the <varname>raster_overviews</varname>
+raster catalog.
+		</para>
+		<para>
+When the <varname>ovschema</varname> parameter is omitted,
+the first table found scanning the <varname>search_path</varname>
+will be used.
+		</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+      <para>
+ <xref linkend="RT_Raster_Overviews"/>,
+ <xref linkend="RT_AddOverviewConstraints"/>,
+ <xref linkend="RT_DropRasterConstraints"/>
+      </para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="RT_PostGIS_Raster_Lib_Build_Date">
 	  <refnamediv>
