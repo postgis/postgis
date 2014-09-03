@@ -928,7 +928,7 @@ FROM raster_overviews WHERE o_table_name = 'res2';
 		  </funcprototype>
 
 		  <funcprototype>
-        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <funcdef>boolean <function>DropOverviewConstraints</function></funcdef>
         <paramdef><type>name </type>
         <parameter>ovtable</parameter></paramdef>
         <paramdef><type>name </type>
