@@ -109,7 +109,8 @@ TEST_UTILITY = \
 	rt_reclass \
 	rt_gdalwarp \
 	rt_asraster \
-	rt_dumpvalues
+	rt_dumpvalues \
+	rt_createoverview
 
 TEST_MAPALGEBRA = \
 	rt_mapalgebraexpr \
