@@ -902,6 +902,7 @@ FROM raster_overviews WHERE o_table_name = 'res2';
       <para>
  <xref linkend="RT_Raster_Overviews"/>,
  <xref linkend="RT_DropOverviewConstraints"/>,
+ <xref linkend="RT_CreateOverview"/>,
  <xref linkend="RT_AddRasterConstraints"/>
       </para>
 	  </refsection>
