@@ -37,25 +37,6 @@ static void do_encoded_polyline_test(char * in, int precision, char * out)
 }
 
 
-static void do_encoded_polyline_unsupported(char * in, int precision, char * out)
-{
-	LWGEOM *g;
-	char *h;
-
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_encoded_polyline(g, precision);
-
-	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in, cu_error_msg, out);
-
-	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
-	cu_error_msg_reset();
-
-	lwfree(h);
-	lwgeom_free(g);
-}
-
 static void out_encoded_polyline_test_geoms(void)
 {
 	/* Linestring */

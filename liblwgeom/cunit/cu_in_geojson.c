@@ -31,7 +31,7 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
 	g = lwgeom_from_geojson(in, &srs);
   if ( ! g ) {
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, cu_error_msg);
-	  CU_ASSERT(g);
+	  CU_ASSERT(g != NULL);
     return;
   }
 
@@ -59,36 +59,6 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
 	lwgeom_free(g);
 	if ( h ) lwfree(h);
   if ( srs ) lwfree(srs);
-}
-
-
-static void do_geojson_unsupported(char * in, char * exp)
-{
-	LWGEOM *g;
-	char * h = NULL;
-  char * srs = NULL;
-  size_t size;
-
-	g = lwgeom_from_geojson(in, &srs);
-
-  if ( g ) {
-	  h = lwgeom_to_wkt(g, WKT_ISO, 1, &size);
-    fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n",
-              in, exp, h);
-    CU_ASSERT(!g);
-  } else {
-
-    if (strcmp(cu_error_msg, exp))
-      fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n",
-              in, exp, cu_error_msg);
-    CU_ASSERT_STRING_EQUAL(in, cu_error_msg);
-  }
-
-  cu_error_msg_reset();
-
-  if ( srs ) lwfree(srs);
-  if ( h ) lwfree(h);
-	lwgeom_free(g);
 }
 
 static void in_geojson_test_srid(void)
