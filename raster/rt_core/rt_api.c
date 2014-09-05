@@ -10583,6 +10583,12 @@ rt_raster rt_raster_gdal_warp(
 	/* substitute geotransform matrix, reset back to default */
 	if (subgt) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
+		/* See http://trac.osgeo.org/postgis/ticket/2911 */
+		/* We should proably also tweak rotation here */
+		/* NOTE: the division by 10 is because it was multiplied by 10 in
+		 * a section above. I'm not sure the above division was needed */
+		gt[1] = _scale[0] / 10;
+		gt[5] = -1 * _scale[1] / 10;
 
 		rt_raster_set_geotransform_matrix(rast, gt);
 	}

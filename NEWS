@@ -13,6 +13,8 @@ PostGIS 2.1.4
 
  * Bug Fixes *
 
+  - #2911, Fix output scale on ST_Rescale/ST_Resample/ST_Resize of rasters
+           with scale 1/-1 and offset 0/0.
   - Fix crash in ST_Union(raster)
   - #2704, ST_GeomFromGML() does not work properly with array of gml:pos
   - #2708, updategeometrysrid doesn't update srid check when schema
