@@ -30,7 +30,7 @@ YACC=@YACC@
 LEX=@LEX@
 
 %c: %l
-	@echo "WARNING: Lexer not generated. Run 'make parse' to manually build lexer/parser."
+	@echo "WARNING: Lexer not generated. Run 'make parser' to manually build lexer/parser."
 
 # Standalone LWGEOM objects
 SA_OBJS = \
