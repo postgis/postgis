@@ -11128,7 +11128,7 @@ UPDATE wind
 					<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 					
                     <note>
-                      <para>In order for rasters to be unioned, they most all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_SameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
+                      <para>In order for rasters to be unioned, they most all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
                     </note>
 
 					<para>Availability: 2.0.0 </para>
