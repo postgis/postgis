@@ -10582,6 +10582,10 @@ UPDATE wind
 					<title>Description</title>
 				
 					<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+					
+					<note>
+                      <para>In order for rasters to be unioned, they most all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
+                    </note>
 
 					<para>Availability: 2.0.0 </para>
 					<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
@@ -13570,7 +13574,7 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
 		<refnamediv>
 			<refname>ST_SameAlignment</refname>
 
-			<refpurpose>Returns true if rasters have same skew, scale, spatial ref and false if they don't with notice detailing issue.</refpurpose>
+			<refpurpose>Returns true if rasters have same skew, scale, spatial ref, and offset (pixels can be put on same grid without cutting into pixels) and false if they don't with notice detailing issue.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
