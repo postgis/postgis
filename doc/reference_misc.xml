@@ -164,7 +164,7 @@ all_em|grabone   | grab_rest
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Estimated_Extent">
+	<refentry id="ST_EstimatedExtent">
 	  <refnamediv>
 		<refname>ST_EstimatedExtent</refname>
 
