@@ -211,7 +211,7 @@ BEGIN
 					END IF;
 					var_addy_alt.streetname := var_addy.streetname;
 					var_addy_alt.streettypeabbrev := var_addy.streettypeabbrev;
-                                        var_addy_alt.predirabbrev := var_addy.predirabrv;
+                    var_addy_alt.predirabbrev := var_addy.predirabbrev;
 					addy[array_upper(addy,1) - 1 ] := var_addy_alt; 
 					IF var_debug THEN
 						RAISE NOTICE 'Replaced with : %, %', var_addy_alt, clock_timestamp();
