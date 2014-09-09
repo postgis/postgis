@@ -66,15 +66,15 @@ static double spheroid_big_b(double u2)
 */
 double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
 {
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-    double lat1 = a->lat * 180.0 / M_PI;
-    double lon1 = a->lon * 180.0 / M_PI;
-    double lat2 = b->lat * 180.0 / M_PI;
-    double lon2 = b->lon * 180.0 / M_PI;
-    double s12; /* return distance */
-    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, 0, 0);
-    return s12;
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = a->lat * 180.0 / M_PI;
+	double lon1 = a->lon * 180.0 / M_PI;
+	double lat2 = b->lat * 180.0 / M_PI;
+	double lon2 = b->lon * 180.0 / M_PI;
+	double s12; /* return distance */
+	geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, 0, 0);
+	return s12;
 }
 
 /**
@@ -87,15 +87,15 @@ double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, c
 */
 double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
 {
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-    double lat1 = a->lat * 180.0 / M_PI;
-    double lon1 = a->lon * 180.0 / M_PI;
-    double lat2 = b->lat * 180.0 / M_PI;
-    double lon2 = b->lon * 180.0 / M_PI;
-    double azi1; /* return azimuth */
-    geod_inverse(&gd, lat1, lon1, lat2, lon2, 0, &azi1, 0);
-    return azi1 * M_PI / 180.0;
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = a->lat * 180.0 / M_PI;
+	double lon1 = a->lon * 180.0 / M_PI;
+	double lat2 = b->lat * 180.0 / M_PI;
+	double lon2 = b->lon * 180.0 / M_PI;
+	double azi1; /* return azimuth */
+	geod_inverse(&gd, lat1, lon1, lat2, lon2, 0, &azi1, 0);
+	return azi1 * M_PI / 180.0;
 }
 
 /**
@@ -109,12 +109,12 @@ double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, 
 */
 int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g)
 {
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-    double lat1 = r->lat * 180.0 / M_PI;
-    double lon1 = r->lon * 180.0 / M_PI;
-    double lat2, lon2; /* return projected position */
-    geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, 0);
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = r->lat * 180.0 / M_PI;
+	double lon1 = r->lon * 180.0 / M_PI;
+	double lat2, lon2; /* return projected position */
+	geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, 0);
 	g->lat = lat2 * M_PI / 180.0;
 	g->lon = lon2 * M_PI / 180.0;
 	return LW_SUCCESS;
@@ -127,27 +127,26 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	if ( ! pa || pa->npoints < 4 )
 		return 0.0;
 
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-	LWDEBUGF(4, "geod_init: %.12g %.12g", spheroid->a, spheroid->f);
-    struct geod_polygon pl;
-    geod_polygon_init(&pl, 0);
-    int i;
-    double area; /* returned projection position */
-	POINT2D p; /* angular units are degrees */
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	struct geod_polygon pl;
+	geod_polygon_init(&pl, 0);
+	int i;
+	double area; /* returned polygon area */
+	POINT2D p; /* long/lat units are degrees */
 
 	/* Pass points from point array; don't close the linearring */
 	for ( i = 1; i < pa->npoints; i++ )
 	{
 		getPoint2d_p(pa, i, &p);
-        geod_polygon_addpoint(&gd, &pl, p.y, p.x);
-	    LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
+		geod_polygon_addpoint(&gd, &pl, p.y, p.x);
+		LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
 	}
 	i = geod_polygon_compute(&gd, &pl, 0, 1, &area, 0);
 	if ( i != pa->npoints - 1 )
 	{
 		lwerror("ptarray_area_spheroid: different number of points %d vs %d",
-                i, pa->npoints - 1);
+				i, pa->npoints - 1);
 	}
 	LWDEBUGF(4, "geod_polygon_compute area: %.12g", area);
 	return fabs(area);
@@ -398,8 +397,6 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	return LW_SUCCESS;
 }
 
-#endif /* else USE_GEODESIC */
-
 static inline double spheroid_prime_vertical_radius_of_curvature(double latitude, const SPHEROID *spheroid)
 {
 	return spheroid->a / (sqrt(1.0 - spheroid->e_sq * POW2(sin(latitude))));
@@ -412,8 +409,6 @@ static inline double spheroid_parallel_arc_length(double latitude, double deltaL
 	       * deltaLongitude;
 }
 
-
-#ifndef USE_GEODESIC
 /**
 * Computes the area on the spheroid of a box bounded by meridians and
 * parallels. The box is defined by two points, the South West corner
@@ -619,7 +614,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	}
 	return fabs(area);
 }
-#endif /* ndef USE_GEODESIC */
+#endif /* else USE_GEODESIC */
 
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
