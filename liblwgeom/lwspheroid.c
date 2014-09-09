@@ -50,7 +50,7 @@ static double spheroid_big_b(double u2)
 {
 	return (u2 / 1024.0) * (256.0 + u2 * (-128.0 + u2 * (74.0 - 47.0 * u2)));
 }
-#endif /* else USE_GEODESIC */
+#endif /* ndef USE_GEODESIC */
 
 
 #ifdef USE_GEODESIC
@@ -99,8 +99,8 @@ double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, 
 }
 
 /**
-* Given a location, an azimuth and a distance, computes the location
-* of the projected point. Using the direct problem (Karney 2013).
+* Given a location, an azimuth and a distance, computes the location of
+* the projected point. Using the direct geodesic problem (Karney 2013).
 *
 * @param r - location of first point
 * @param distance - distance in meters
@@ -118,6 +118,39 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	g->lat = lat2 * M_PI / 180.0;
 	g->lon = lon2 * M_PI / 180.0;
 	return LW_SUCCESS;
+}
+
+
+static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
+{
+	/* Return zero on non-sensical inputs */
+	if ( ! pa || pa->npoints < 4 )
+		return 0.0;
+
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
+	LWDEBUGF(4, "geod_init: %.12g %.12g", spheroid->a, spheroid->f);
+    struct geod_polygon pl;
+    geod_polygon_init(&pl, 0);
+    int i;
+    double area; /* returned projection position */
+	POINT2D p; /* angular units are degrees */
+
+	/* Pass points from point array; don't close the linearring */
+	for ( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint2d_p(pa, i, &p);
+        geod_polygon_addpoint(&gd, &pl, p.y, p.x);
+	    LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
+	}
+	i = geod_polygon_compute(&gd, &pl, 0, 1, &area, 0);
+	if ( i != pa->npoints - 1 )
+	{
+		lwerror("ptarray_area_spheroid: different number of points %d vs %d",
+                i, pa->npoints - 1);
+	}
+	LWDEBUGF(4, "geod_polygon_compute area: %.12g", area);
+	return fabs(area);
 }
 
 
@@ -380,6 +413,7 @@ static inline double spheroid_parallel_arc_length(double latitude, double deltaL
 }
 
 
+#ifndef USE_GEODESIC
 /**
 * Computes the area on the spheroid of a box bounded by meridians and
 * parallels. The box is defined by two points, the South West corner
@@ -585,6 +619,8 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	}
 	return fabs(area);
 }
+#endif /* ndef USE_GEODESIC */
+
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
 * and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons
