@@ -2,6 +2,48 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    
+    <sect1>
+        <title>Release 2.1.4</title>
+        <para>Release date: 2014-09-10</para>
+        <para>This is a bug fix and performance improvement release.</para>
+        <simplesect>
+            <title>Enhancements</title>
+            <para>#2745, Speedup ST_Simplify calls against points</para>
+            <para>#2747, Support for GDAL 2.0</para>
+            <para>#2749, Make rtpostgis_upgrade_20_21.sql ACID</para>
+            <para>#2811, Do not specify index names when loading shapefiles/rasters</para>
+            <para>#2829, Shortcut ST_Clip(raster) if geometry fully contains the raster
+                       and no NODATA specified</para>
+            <para>#2895, Raise cost of ST_ConvexHull(raster) to 300 for better query plans</para>
+        </simplesect>
+
+        <simplesect>
+            <title>Bug Fixes</title>
+            <para>#2911, Fix output scale on ST_Rescale/ST_Resample/ST_Resize of rasters
+                       with scale 1/-1 and offset 0/0.</para>
+            <para>Fix crash in ST_Union(raster)</para>
+            <para>#2704, ST_GeomFromGML() does not work properly with array of gml:pos</para>
+            <para>#2708, updategeometrysrid doesn't update srid check when schema
+                       not specified. Patch from Marc Jansen</para>
+            <para>#2759, Fix postgis_restore.pl handling of multiline object comments
+                       embedding sql comments</para>
+            <para>#2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
+              - Fix potential memory fault in ST_MakeValid</para>
+            <para>#2784, Fix handling of bogus argument to --with-sfcgal</para>
+            <para>#2772, Premature memory free in RASTER_getBandPath (ST_BandPath)</para>
+            <para>#2775, Fix regressions tests against all versions of SFCGAL</para>
+            <para>#2802, ST_MapAlgebra checks for valid callback function return value</para>
+            <para>#2803, ST_MapAlgebra handles no userarg and STRICT callback function</para>
+            <para>#2845, Bad geometry created from ST_AddPoint</para>
+            <para>#2870, Binary insert into geography column results geometry being inserted</para>
+            <para>#2819, find isfinite or replacement on Centos5 / Solaris</para>
+            <para>#2899, geocode limit 1 not returning best answer (tiger geocoder)</para>
+            <para>#2927  reverse_geocode not filling in direction prefix (tiger geocoder)
+                       get rid of deprecated ST_Line_Locate_Point called </para>
+         </simplesect>
+    </sect1>
+    
     <sect1>
       <title>Release 2.1.3</title>
       <para>Release date: 2014/05/13</para>
