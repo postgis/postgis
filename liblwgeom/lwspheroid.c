@@ -57,31 +57,29 @@ static double spheroid_big_b(double u2)
 
 /**
 * Computes the shortest distance along the surface of the spheroid
-* between two points. Based on Vincenty's formula for the geodetic
-* inverse problem as described by Karney (2013).
+* between two points, using the inverse geodesic problem (Karney 2013).
 *
-* @param a - location of first point.
-* @param b - location of second point.
+* @param a - location of first point
+* @param b - location of second point
 * @param s - spheroid to calculate on
-* @return spheroidal distance between a and b in spheroid units.
+* @return spheroidal distance between a and b in spheroid units
 */
 double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
 {
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
     double lat1 = a->lat * 180.0 / M_PI;
     double lon1 = a->lon * 180.0 / M_PI;
     double lat2 = b->lat * 180.0 / M_PI;
     double lon2 = b->lon * 180.0 / M_PI;
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-    double azi1, azi2, s12; /* returned */
-    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+    double s12; /* return distance */
+    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, 0, 0);
     return s12;
 }
 
 /**
-* Computes the direction of the geodesic joining two points on
-* the spheroid. Based on Vincenty's formula for the geodetic
-* inverse problem as described by Karney (2013).
+* Computes the forward azimuth of the geodesic joining two points on
+* the spheroid, using the inverse geodesic problem (Karney 2013).
 *
 * @param r - location of first point
 * @param s - location of second point
@@ -89,39 +87,39 @@ double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, c
 */
 double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
 {
+    struct geod_geodesic gd;
+    geod_init(&gd, spheroid->a, spheroid->f);
     double lat1 = a->lat * 180.0 / M_PI;
     double lon1 = a->lon * 180.0 / M_PI;
     double lat2 = b->lat * 180.0 / M_PI;
     double lon2 = b->lon * 180.0 / M_PI;
-    struct geod_geodesic gd;
-    geod_init(&gd, spheroid->a, spheroid->f);
-    double azi1, azi2, s12; /* returned */
-    geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+    double azi1; /* return azimuth */
+    geod_inverse(&gd, lat1, lon1, lat2, lon2, 0, &azi1, 0);
     return azi1 * M_PI / 180.0;
 }
 
 /**
-* Given a location, an azimuth and a distance, computes the
-* location of the projected point. Based on Vincenty's formula
-* for the geodetic direct problem as described by Karney (2013).
+* Given a location, an azimuth and a distance, computes the location
+* of the projected point. Using the direct problem (Karney 2013).
 *
-* @param r - location of first point.
-* @param distance - distance in meters.
-* @param azimuth - azimuth in radians.
-* @return s - location of projected point.
+* @param r - location of first point
+* @param distance - distance in meters
+* @param azimuth - azimuth in radians
+* @return g - location of projected point
 */
 int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g)
 {
-    double lat1 = r->lat * 180.0 / M_PI;
-    double lon1 = r->lon * 180.0 / M_PI;
     struct geod_geodesic gd;
     geod_init(&gd, spheroid->a, spheroid->f);
-    double lat2, lon2, azi2; /* returned */
-    geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, &azi2);
+    double lat1 = r->lat * 180.0 / M_PI;
+    double lon1 = r->lon * 180.0 / M_PI;
+    double lat2, lon2; /* return projected position */
+    geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, 0);
 	g->lat = lat2 * M_PI / 180.0;
 	g->lon = lon2 * M_PI / 180.0;
 	return LW_SUCCESS;
 }
+
 
 #else /* USE_GEODESIC */
 
