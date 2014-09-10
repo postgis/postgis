@@ -1,5 +1,5 @@
 PostGIS 2.1.4
-2014/09/DD
+2014/09/10
 
  * Enhancements *
 
@@ -13,25 +13,32 @@ PostGIS 2.1.4
 
  * Bug Fixes *
 
+  - #2605, armel: _ST_Covers() returns true for point in hole 
   - #2911, Fix output scale on ST_Rescale/ST_Resample/ST_Resize of rasters
            with scale 1/-1 and offset 0/0.
   - Fix crash in ST_Union(raster)
   - #2704, ST_GeomFromGML() does not work properly with array of gml:pos
+    (Even Roualt)
   - #2708, updategeometrysrid doesn't update srid check when schema
            not specified. Patch from Marc Jansen
+  - #2720, lwpoly_add_ring should update maxrings after realloc
   - #2759, Fix postgis_restore.pl handling of multiline object comments
            embedding sql comments
   - #2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
   - Fix potential memory fault in ST_MakeValid
   - #2784, Fix handling of bogus argument to --with-sfcgal
   - #2772, Premature memory free in RASTER_getBandPath (ST_BandPath)
-  - #2775, Fix regressions tests against all versions of SFCGAL
+  - #2755, Fix regressions tests against all versions of SFCGAL
+  - #2775, lwline_from_lwmpoint leaks memory 
   - #2802, ST_MapAlgebra checks for valid callback function return value
   - #2803, ST_MapAlgebra handles no userarg and STRICT callback function
+  - #2834, ST_Estimated_Extent and mixedCase table names (regression bug)
   - #2845, Bad geometry created from ST_AddPoint
   - #2870, Binary insert into geography column results geometry being inserted
+  - #2872, make install builds documentation (Greg Troxell)
   - #2819, find isfinite or replacement on Centos5 / Solaris
   - #2899, geocode limit 1 not returning best answer (tiger geocoder)
+  - #2903, Unable to compile on FreeBSD 
   - #2927  reverse_geocode not filling in direction prefix (tiger geocoder)
            get rid of deprecated ST_Line_Locate_Point called 
 
