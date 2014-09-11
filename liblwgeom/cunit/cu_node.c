@@ -16,6 +16,8 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 
+#include "../../postgis_config.h"
+
 static void test_lwgeom_node(void)
 {
 #if POSTGIS_GEOS_VERSION >= 33
