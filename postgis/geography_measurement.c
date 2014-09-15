@@ -162,15 +162,15 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
 
+	/* Knock off any funny business at the micrometer level, ticket #2168 */
+	distance = round(distance * 10e8) / 10e8;
+
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
 	{
 		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
 	}
-
-    /* Knock off any funny business at the micrometer level, ticket #2168 */
-    distance = round(distance * 10e8) / 10e8;
 
 	PG_RETURN_FLOAT8(distance);
 }

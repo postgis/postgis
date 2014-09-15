@@ -397,6 +397,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	return LW_SUCCESS;
 }
 
+
 static inline double spheroid_prime_vertical_radius_of_curvature(double latitude, const SPHEROID *spheroid)
 {
 	return spheroid->a / (sqrt(1.0 - spheroid->e_sq * POW2(sin(latitude))));
@@ -408,6 +409,7 @@ static inline double spheroid_parallel_arc_length(double latitude, double deltaL
 	       * cos(latitude)
 	       * deltaLongitude;
 }
+
 
 /**
 * Computes the area on the spheroid of a box bounded by meridians and
