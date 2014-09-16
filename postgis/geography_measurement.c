@@ -424,6 +424,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
 
+#ifndef USE_GEODESIC
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
 	{
@@ -434,6 +435,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
 			use_spheroid = LW_FALSE;
 	}
+#endif /* ndef USE_GEODESIC */
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )

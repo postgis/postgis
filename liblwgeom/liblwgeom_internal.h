@@ -30,6 +30,15 @@
 
 #include "liblwgeom.h"
 
+/**
+* GeographicLib
+*/
+#undef USE_GEODESIC
+#define USE_GEODESIC
+
+#ifdef USE_GEODESIC
+#include "geodesic.h"
+#endif
 
 /**
 * PI
@@ -38,7 +47,7 @@
 
 
 /**
-* Floating point comparitors.
+* Floating point comparators.
 */
 #define FP_TOLERANCE 1e-12
 #define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)

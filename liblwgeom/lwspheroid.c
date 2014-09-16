@@ -14,14 +14,6 @@
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
-/* toggle the order of these for testing geodesic functions from GeographicLib */
-#undef USE_GEODESIC
-#define USE_GEODESIC
-
-#ifdef USE_GEODESIC
-#include "geodesic.h"
-#endif /* USE_GEODESIC */
-
 /**
 * Initialize spheroid object based on major and minor axis
 */
