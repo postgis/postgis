@@ -3060,9 +3060,10 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 		<title>See Also</title>
 
 		<para>
-			<xref linkend="ST_Union" />
-			<xref linkend="ST_MemUnion" />
-			<xref linkend="ST_Collect" />
+			<xref linkend="ST_Union" />,
+			<xref linkend="ST_MemUnion" />,
+			<xref linkend="ST_Collect" />,
+			<xref linkend="ST_Node" />
 		</para>
 	  </refsection>
 	</refentry>
