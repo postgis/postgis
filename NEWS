@@ -1,3 +1,11 @@
+PostGIS 2.1.5
+2014/xx/xx
+
+ * Bug Fixes *
+
+  - #2931, BOX representation is case sensitive
+
+
 PostGIS 2.1.4
 2014/09/10
 
