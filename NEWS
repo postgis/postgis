@@ -8,6 +8,7 @@ YYYY/MM/DD
   - #2870, Binary insert into geography column results geometry being inserted 
   - #2720, lwpoly_add_ring should update maxrings after realloc
   - #2697, ST_GeomFromGeoJSON() of invalid GeoJSON Polygons crashes server 
+  - #2931, BOX representation is case sensitive
 
 
 

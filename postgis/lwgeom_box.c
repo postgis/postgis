@@ -48,15 +48,21 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 	int nitems;
 	double tmp;
 	GBOX box;
+	int i;
 	
 	gbox_init(&box);
 
-	if (strstr(str,"BOX(") !=  str )
+	if (strcasestr(str,"BOX(") !=  str )
 	{
 		elog(ERROR,"box2d parser - doesnt start with BOX(");
 		PG_RETURN_NULL();
 	}
-	nitems = sscanf(str,"BOX(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
+	
+	for(i = 0; str[i]; i++) {
+	  str[i] = tolower(str[i]);
+	}
+	
+	nitems = sscanf(str,"box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
 	if (nitems != 4)
 	{
 		elog(ERROR,"box2d parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
