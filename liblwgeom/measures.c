@@ -23,6 +23,31 @@ Initializing functions
 The functions starting the distance-calculation processses
 --------------------------------------------------------------------------------------------------------------*/
 
+LWGEOM *
+lwgeom_closest_line(LWGEOM *lw1, LWGEOM *lw2)
+{
+  return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
+}
+
+LWGEOM *
+lwgeom_furthest_line(LWGEOM *lw1, LWGEOM *lw2)
+{
+  return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
+}
+
+LWGEOM *
+lwgeom_closest_point(LWGEOM *lw1, LWGEOM *lw2)
+{
+  return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);  
+}
+
+LWGEOM *
+lwgeom_furthest_point(LWGEOM *lw1, LWGEOM *lw2)
+{
+  return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MAX);  
+}
+
+
 void
 lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 {

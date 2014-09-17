@@ -64,10 +64,6 @@
 #define MAXFLOAT      3.402823466e+38F
 #endif
 
-/* for the measure functions*/
-#define DIST_MAX		-1
-#define DIST_MIN		1
-
 /*
 * this will change to NaN when I figure out how to
 * get NaN in a platform-independent way
@@ -150,9 +146,6 @@
 #define XDR 0 /* big endian */
 #define NDR 1 /* little endian */
 extern char getMachineEndian(void);
-
-/* Raise an lwerror if srids do not match */
-void error_if_srid_mismatch(int srid1, int srid2);
 
 
 /*

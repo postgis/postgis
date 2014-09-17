@@ -18,16 +18,31 @@
 #include "lwgeom_log.h"
 
 
-/*------------------------------------------------------------------------------------------------------------
-Initializing functions
-The functions starting the distance-calculation processses
---------------------------------------------------------------------------------------------------------------*/
+
+LWGEOM * 
+lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
+}
+
+LWGEOM * 
+lwgeom_furthest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
+}
+
+LWGEOM * 
+lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
+}
+
 
 /**
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2, z1, z2;
 	double initdistance = ( mode == DIST_MIN ? MAXFLOAT : -1.0);
@@ -76,7 +91,7 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x,y,z;
 	DISTPTS3D thedl;

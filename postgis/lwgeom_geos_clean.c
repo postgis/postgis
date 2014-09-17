@@ -42,7 +42,6 @@
 #include "../postgis_config.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
-#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 
 #include <string.h>

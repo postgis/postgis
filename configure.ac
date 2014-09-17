@@ -34,7 +34,7 @@ dnl SQL Preprocessor
 dnl
 AC_PATH_PROG([CPPBIN], [cpp], [])
 if test "x$CPPBIN" != "x"; then
-  SQLPP="${CPPBIN} -traditional-cpp -P"
+  SQLPP="${CPPBIN} -traditional-cpp -w -P"
 else
   AC_PATH_PROG([GPP], [gpp_], [])
   if test "x$GPP" != "x"; then
