@@ -724,7 +724,7 @@ update_table_chooser_from_database()
 			{
 				geocol_name = PQgetvalue(geocol_result, j, PQfnumber(geocol_result, "attname"));
 			
-				gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, TABLECHOOSER_GEOCOL_COMBO_TEXT);
+				gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
 				gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter, 
 						TABLECHOOSER_GEOCOL_COMBO_TEXT, geocol_name,
 						-1);
@@ -735,7 +735,7 @@ update_table_chooser_from_database()
 			/* Add a "default" entry */
 			geocol_name = NULL;
 			
-			gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, TABLECHOOSER_GEOCOL_COMBO_TEXT);
+			gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
 			gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter, 
 						TABLECHOOSER_GEOCOL_COMBO_TEXT, _("(None)"),
 						-1);
