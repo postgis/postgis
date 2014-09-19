@@ -28,6 +28,7 @@
 #undef HAVE_FSEEKO
 #undef HAVE_ISFINITE 
 #undef HAVE_GNU_ISFINITE 
+#undef HAVE_STRCASESTR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
