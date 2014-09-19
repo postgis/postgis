@@ -28,6 +28,8 @@
 #include <ieeefp.h>
 #endif
 
+#include <float.h>
+
 #include "liblwgeom.h"
 
 
@@ -57,12 +59,6 @@
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
-/**
-* Largest float value. Should this be from math.h instead?
-*/
-#ifndef MAXFLOAT
-#define MAXFLOAT      3.402823466e+38F
-#endif
 
 /*
 * this will change to NaN when I figure out how to

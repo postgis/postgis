@@ -57,9 +57,9 @@ lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 	dl->mode = mode;
 	dl->tolerance = 0.0;
 	if ( mode == DIST_MIN )
-		dl->distance = MAXFLOAT;
+		dl->distance = FLT_MAX;
 	else
-		dl->distance = -1 * MAXFLOAT;
+		dl->distance = -1 * FLT_MAX;
 }
 
 /**
@@ -70,7 +70,7 @@ lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2;
 
-	double initdistance = ( mode == DIST_MIN ? MAXFLOAT : -1.0);
+	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
 	DISTPTS thedl;
 	LWPOINT *lwpoints[2];
 	LWGEOM *result;
@@ -117,7 +117,7 @@ lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 {
 	double x,y;
 	DISTPTS thedl;
-	double initdistance = MAXFLOAT;
+	double initdistance = FLT_MAX;
 	LWGEOM *result;
 
 	thedl.mode = mode;
@@ -200,7 +200,7 @@ lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	DISTPTS thedl;
 	LWDEBUG(2, "lwgeom_mindistance2d_tolerance is called");
 	thedl.mode = DIST_MIN;
-	thedl.distance= MAXFLOAT;
+	thedl.distance= FLT_MAX;
 	thedl.tolerance = tolerance;
 	if (lw_dist2d_comp( lw1,lw2,&thedl))
 	{
@@ -208,7 +208,7 @@ lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	}
 	/*should never get here. all cases ought to be error handled earlier*/
 	lwerror("Some unspecified error.");
-	return MAXFLOAT;
+	return FLT_MAX;
 }
 
 

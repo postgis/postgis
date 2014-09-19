@@ -707,7 +707,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
-	if (mindist<MAXFLOAT)
+	if (mindist<FLT_MAX)
 		PG_RETURN_FLOAT8(mindist);
 	
 	PG_RETURN_NULL();
@@ -745,7 +745,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 	/*empty geometries cases should be right handled since return from underlying
-	 functions should be MAXFLOAT which causes false as answer*/
+	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
 }
 
@@ -950,7 +950,7 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
-	if (mindist<MAXFLOAT)
+	if (mindist<FLT_MAX)
 		PG_RETURN_FLOAT8(mindist);
 
 	PG_RETURN_NULL();
@@ -989,7 +989,7 @@ Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*empty geometries cases should be right handled since return from underlying
-	 functions should be MAXFLOAT which causes false as answer*/
+	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
 }
 

@@ -552,8 +552,8 @@ circ_node_max_distance(const CIRC_NODE *n1, const CIRC_NODE *n2)
 double
 circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID* spheroid, double threshold)
 {
-	double min_dist = MAXFLOAT;
-	double max_dist = MAXFLOAT;
+	double min_dist = FLT_MAX;
+	double max_dist = FLT_MAX;
 	GEOGRAPHIC_POINT closest1, closest2;
 	double threshold_radians = threshold / spheroid->radius;
 	
@@ -589,7 +589,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	if( circ_node_min_distance(n1, n2) > *max_dist )
 	{
 		LWDEBUGF(4, "pruning pair %p, %p", n1, n2);		
-		return MAXFLOAT;
+		return FLT_MAX;
 	}
 	
 	/* If your maximum is a new low, we'll use that as our new global tolerance */
@@ -707,7 +707,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	}
 	else
 	{	
-		d_min = MAXFLOAT;
+		d_min = FLT_MAX;
 		/* Drive the recursion into the COLLECTION types first so we end up with */
 		/* pairings of primitive geometries that can be forced into the point-in-polygon */
 		/* tests above. */
