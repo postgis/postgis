@@ -114,6 +114,7 @@ dnl Check for platform-specific functions
 dnl
 AC_CHECK_FUNC(vasprintf, AC_DEFINE([HAVE_VASPRINTF]))
 AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
+AC_CHECK_FUNC(strcasestr, AC_DEFINE([HAVE_STRCASESTR]))
 AC_FUNC_FSEEKO()
 
 dnl 
