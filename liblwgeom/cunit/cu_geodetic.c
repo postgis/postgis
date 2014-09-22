@@ -1307,7 +1307,12 @@ static void test_spheroid_area(void)
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0); /* spheroid */
+	/* spheroid */
+#ifdef USE_PRE22GEODESIC
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0);
+#else /* $ Planimeter -E -p 8 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.947, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square */
@@ -1317,7 +1322,12 @@ static void test_spheroid_area(void)
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	/* spheroid */
+#ifdef USE_PRE22GEODESIC
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
+#else /* $ Planimeter -E -p 8 --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square *near* dateline */
@@ -1327,7 +1337,12 @@ static void test_spheroid_area(void)
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	/* spheroid */
+#ifdef USE_PRE22GEODESIC
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
+#else /* $ Planimeter -E -r -p 8 --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square *across* dateline */
@@ -1337,7 +1352,12 @@ static void test_spheroid_area(void)
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.3679, 10.0); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	/* spheroid */
+#ifdef USE_PRE22GEODESIC
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
+#else /* $ Planimeter -E -p 8 --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
+#endif
 	lwgeom_free(lwg);
 }
 

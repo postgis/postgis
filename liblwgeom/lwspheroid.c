@@ -26,7 +26,7 @@ void spheroid_init(SPHEROID *s, double a, double b)
 	s->radius = (2.0 * a + b ) / 3.0;
 }
 
-#ifndef USE_GEODESIC
+#ifdef USE_PRE22GEODESIC
 static double spheroid_mu2(double alpha, const SPHEROID *s)
 {
 	double b2 = POW2(s->b);
@@ -42,14 +42,15 @@ static double spheroid_big_b(double u2)
 {
 	return (u2 / 1024.0) * (256.0 + u2 * (-128.0 + u2 * (74.0 - 47.0 * u2)));
 }
-#endif /* ndef USE_GEODESIC */
+#endif /* def USE_PRE22GEODESIC */
 
 
-#ifdef USE_GEODESIC
+#ifndef USE_PRE22GEODESIC
 
 /**
 * Computes the shortest distance along the surface of the spheroid
-* between two points, using the inverse geodesic problem (Karney 2013).
+* between two points, using the inverse geodesic problem from
+* GeographicLib (Karney 2013).
 *
 * @param a - location of first point
 * @param b - location of second point
@@ -92,7 +93,8 @@ double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, 
 
 /**
 * Given a location, an azimuth and a distance, computes the location of
-* the projected point. Using the direct geodesic problem (Karney 2013).
+* the projected point. Using the direct geodesic problem from
+* GeographicLib (Karney 2013).
 *
 * @param r - location of first point
 * @param distance - distance in meters
@@ -121,20 +123,20 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 
 	struct geod_geodesic gd;
 	geod_init(&gd, spheroid->a, spheroid->f);
-	struct geod_polygon pl;
-	geod_polygon_init(&pl, 0);
+	struct geod_polygon poly;
+	geod_polygon_init(&poly, 0);
 	int i;
 	double area; /* returned polygon area */
 	POINT2D p; /* long/lat units are degrees */
 
 	/* Pass points from point array; don't close the linearring */
-	for ( i = 1; i < pa->npoints; i++ )
+	for ( i = 0; i < pa->npoints - 1; i++ )
 	{
 		getPoint2d_p(pa, i, &p);
-		geod_polygon_addpoint(&gd, &pl, p.y, p.x);
+		geod_polygon_addpoint(&gd, &poly, p.y, p.x);
 		LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
 	}
-	i = geod_polygon_compute(&gd, &pl, 0, 1, &area, 0);
+	i = geod_polygon_compute(&gd, &poly, 0, 1, &area, 0);
 	if ( i != pa->npoints - 1 )
 	{
 		lwerror("ptarray_area_spheroid: different number of points %d vs %d",
@@ -144,8 +146,9 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	return fabs(area);
 }
 
-
-#else /* USE_GEODESIC */
+/* Above use GeographicLib */
+#else /* ndef USE_PRE22GEODESIC */
+/* Below use pre-version 2.2 geodesic functions */
 
 /**
 * Computes the shortest distance along the surface of the spheroid
@@ -608,7 +611,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	}
 	return fabs(area);
 }
-#endif /* else USE_GEODESIC */
+#endif /* else USE_PRE22GEODESIC */
 
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
