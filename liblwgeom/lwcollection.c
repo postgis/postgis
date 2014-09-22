@@ -199,8 +199,9 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	/* Allocate more space if we need it */
 	lwcollection_reserve(col, col->ngeoms + 1);
 
+#if PARANOIA_LEVEL > 1
+	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
-	/* TODO: drop this check ... */
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		if ( col->geoms[i] == geom )
@@ -209,6 +210,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 			return col;
 		}
 	}
+#endif
 
 	col->geoms[col->ngeoms] = (LWGEOM*)geom;
 	col->ngeoms++;

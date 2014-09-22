@@ -1,6 +1,10 @@
 PostGIS 2.1.5
 2014/xx/xx
 
+ * Enhancements *
+
+  - #2933, Speedup construction of large multi-geometry objects
+
  * Bug Fixes *
 
   - #2931, BOX representation is case sensitive
