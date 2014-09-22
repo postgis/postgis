@@ -34,7 +34,6 @@
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
-#include "liblwgeom_internal.h"  /* For FLT_MAX */
 
 /* Fall back to older finite() if necessary */
 #ifndef HAVE_ISFINITE
@@ -45,6 +44,7 @@
 # endif
 #endif
 
+#include <float.h> /* For FLT_MAX */
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
