@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-03-10 11:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -25,12 +25,38 @@ msgstr ""
 #: faq.xml:8
 #, no-c-format
 msgid ""
+"Where can I find tutorials, guides and workshops on working with PostGIS"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:12
+#, no-c-format
+msgid ""
+"OpenGeo has a step by step tutorial guide workshop <ulink url=\"http://"
+"workshops.boundlessgeo.com/postgis-intro/\">Introduction to PostGIS</ulink>. "
+"It includes packaged data as well as intro to working with OpenGeo Suite. It "
+"is probably the best tutorial on PostGIS."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:13
+#, no-c-format
+msgid ""
+"BostonGIS also has a <ulink url=\"http://www.bostongis.com/PrinterFriendly."
+"aspx?content_name=postgis_tut01\">PostGIS almost idiot's guide on getting "
+"started</ulink>. That one is more focused on the windows user."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:18
+#, no-c-format
+msgid ""
 "My applications and desktop tools worked with PostGIS 1.5,but they don't "
 "work with PostGIS 2.0. How do I fix this?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:12
+#: faq.xml:22
 #, no-c-format
 msgid ""
 "A lot of deprecated functions were removed from the PostGIS code base in "
@@ -45,7 +71,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:18
+#: faq.xml:28
 #, no-c-format
 msgid ""
 "The <varname>legacy.sql</varname> file is located in the same folder as "
@@ -55,7 +81,90 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:24
+#: faq.xml:35
+#, no-c-format
+msgid ""
+"When I load OpenStreetMap data with osm2pgsql, I'm getting an error failed: "
+"ERROR: operator class \"gist_geometry_ops\" does not exist for access method "
+"\"gist\" Error occurred. This worked fine in PostGIS 1.5."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:40
+#, no-c-format
+msgid ""
+"In PostGIS 2, the default geometry operator class gist_geometry_ops was "
+"changed to gist_geometry_ops_2d and the gist_geometry_ops was completely "
+"removed. This was done because PostGIS 2 also introduced Nd spatial indexes "
+"for 3D support and the old name was deemed confusing and a misnomer."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:41
+#, no-c-format
+msgid ""
+"Some older applications that as part of the process create tables and "
+"indexes, explicitly referenced the operator class name. This was unnecessary "
+"if you want the default 2D index. So if you manage said good, change index "
+"creation from:"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:42
+#, no-c-format
+msgid "BAD:"
+msgstr ""
+
+#. Tag: programlisting
+#: faq.xml:43
+#, no-c-format
+msgid ""
+"CREATE INDEX idx_my_table_geom ON my_table USING gist(geom "
+"gist_geometry_ops);"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:44
+#, no-c-format
+msgid "To GOOD:"
+msgstr ""
+
+#. Tag: programlisting
+#: faq.xml:45
+#, no-c-format
+msgid "CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:47
+#, no-c-format
+msgid ""
+"The only case where you WILL need to specify the operator class is if you "
+"want a 3D spatial index as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: faq.xml:48
+#, no-c-format
+msgid ""
+"CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom "
+"gist_geometry_ops_nd);"
+msgstr ""
+
+#. Tag: para
+#: faq.xml:50
+#, no-c-format
+msgid ""
+"If you are unfortunate to be stuck with compiled code you can't change that "
+"has the old gist_geometry_ops hard-coded, then you can create the old class "
+"using the <filename>legacy_gist.sql</filename> packaged in PostGIS 2.0.2+. "
+"However if you use this fix, you are advised to at a later point drop the "
+"index and recreate it without the operator class. This will save you grief "
+"in the future when you need to upgrade again."
+msgstr ""
+
+#. Tag: para
+#: faq.xml:56
 #, no-c-format
 msgid ""
 "I'm running PostgreSQL 9.0 and I can no longer read/view geometries in "
@@ -63,7 +172,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:28
+#: faq.xml:60
 #, no-c-format
 msgid ""
 "In PostgreSQL 9.0+, the default encoding for bytea data has been changed to "
@@ -74,7 +183,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:32
+#: faq.xml:64
 #, no-c-format
 msgid ""
 "You can upgrade your JDBC driver to the latest PostgreSQL 9.0 version which "
@@ -83,7 +192,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:34
+#: faq.xml:66
 #, no-c-format
 msgid ""
 "If you are running a .NET app, you can use Npgsql 2.0.11 or higher which you "
@@ -95,7 +204,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:38
+#: faq.xml:70
 #, no-c-format
 msgid ""
 "If upgrading your PostgreSQL driver is not an option, then you can set the "
@@ -103,13 +212,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:39
+#: faq.xml:71
 #, no-c-format
 msgid "ALTER DATABASE mypostgisdb SET bytea_output='escape';"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:46
+#: faq.xml:78
 #, no-c-format
 msgid ""
 "I tried to use PgAdmin to view my geometry column and it is blank, what "
@@ -117,7 +226,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:50
+#: faq.xml:82
 #, no-c-format
 msgid ""
 "PgAdmin doesn't show anything for large geometries. The best ways to verify "
@@ -125,7 +234,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:53
+#: faq.xml:85
 #, no-c-format
 msgid ""
 "-- this should return no records if all your geom fields are filled "
@@ -134,7 +243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:55
+#: faq.xml:87
 #, no-c-format
 msgid ""
 "-- To tell just how large your geometry is do a query of the form\n"
@@ -144,13 +253,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:61
+#: faq.xml:93
 #, no-c-format
 msgid "What kind of geometric objects can I store?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:65
+#: faq.xml:97
 #, no-c-format
 msgid ""
 "You can store point, line, polygon, multipoint, multiline, multipolygon, and "
@@ -168,13 +277,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:78
+#: faq.xml:110
 #, no-c-format
 msgid "I'm all confused. Which data store should I use geometry or geography?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:82
+#: faq.xml:114
 #, no-c-format
 msgid ""
 "Short Answer: geography is a new data type that supports long range "
@@ -196,7 +305,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:93
+#: faq.xml:125
 #, no-c-format
 msgid ""
 "Long Answer: Refer to our more lengthy discussion in the <xref linkend="
@@ -205,7 +314,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:101
+#: faq.xml:133
 #, no-c-format
 msgid ""
 "I have more intense questions about geography, such as how big of a "
@@ -215,7 +324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:105
+#: faq.xml:137
 #, no-c-format
 msgid ""
 "Your questions are too deep and complex to be adequately answered in this "
@@ -224,13 +333,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:112
+#: faq.xml:144
 #, no-c-format
 msgid "How do I insert a GIS object into the database?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:116
+#: faq.xml:148
 #, no-c-format
 msgid ""
 "First, you need to create a table with a column of type \"geometry\" or "
@@ -240,7 +349,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:120
+#: faq.xml:152
 #, no-c-format
 msgid ""
 "For geometry: Connect to your database with <filename>psql</filename> and "
@@ -248,24 +357,24 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:124
+#: faq.xml:156
 #, no-c-format
 msgid ""
-"CREATE TABLE gtest ( ID int4, NAME varchar(20) );\n"
-"SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);"
+"CREATE TABLE gtest ( gid serial primary key, name varchar(20)\n"
+"        , geom geometry(LINESTRING) );"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:126
+#: faq.xml:158
 #, no-c-format
 msgid ""
-"If the geometry column addition fails, you probably have not loaded the "
-"PostGIS functions and objects into this database. See the <xref linkend="
-"\"PGInstall\"/>."
+"If the geometry column definition fails, you probably have not loaded the "
+"PostGIS functions and objects into this database or are using a pre-2.0 "
+"version of PostGIS. See the <xref linkend=\"PGInstall\"/>."
 msgstr ""
 
 #. Tag: para
-#: faq.xml:130
+#: faq.xml:162
 #, no-c-format
 msgid ""
 "Then, you can insert a geometry into the table using a SQL insert statement. "
@@ -274,19 +383,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:134
+#: faq.xml:166
 #, no-c-format
 msgid ""
 "INSERT INTO gtest (ID, NAME, GEOM) \n"
 "VALUES (\n"
 "  1, \n"
 "  'First Geometry', \n"
-"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)\n"
+"  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:136
+#: faq.xml:168
 #, no-c-format
 msgid ""
 "For more information about other GIS objects, see the <link linkend="
@@ -294,25 +403,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:139
+#: faq.xml:171
 #, no-c-format
 msgid "To view your GIS data in the table:"
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:141
+#: faq.xml:173
 #, no-c-format
 msgid "SELECT id, name, ST_AsText(geom) AS geom FROM gtest;"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:143
+#: faq.xml:175
 #, no-c-format
 msgid "The return value should look something like this:"
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:145
+#: faq.xml:177
 #, no-c-format
 msgid ""
 "id | name           | geom\n"
@@ -322,13 +431,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:151
+#: faq.xml:183
 #, no-c-format
 msgid "How do I construct a spatial query?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:155
+#: faq.xml:187
 #, no-c-format
 msgid ""
 "The same way you construct any other database query, as an SQL combination "
@@ -336,7 +445,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:158
+#: faq.xml:190
 #, no-c-format
 msgid ""
 "For spatial queries, there are two issues that are important to keep in mind "
@@ -345,7 +454,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:163
+#: faq.xml:195
 #, no-c-format
 msgid ""
 "In general, you will want to use the \"intersects operator\" (&amp;&amp;) "
@@ -356,7 +465,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:170
+#: faq.xml:202
 #, no-c-format
 msgid ""
 "You will also make use of spatial functions, such as Distance(), "
@@ -369,7 +478,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:178
+#: faq.xml:210
 #, no-c-format
 msgid ""
 "SELECT id, the_geom \n"
@@ -379,13 +488,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:184
+#: faq.xml:216
 #, no-c-format
 msgid "How do I speed up spatial queries on large tables?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:188
+#: faq.xml:220
 #, no-c-format
 msgid ""
 "Fast queries on large tables is the <emphasis>raison d'etre</emphasis> of "
@@ -394,7 +503,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:192
+#: faq.xml:224
 #, no-c-format
 msgid ""
 "To build a spatial index on a table with a <varname>geometry</varname> "
@@ -402,14 +511,14 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:196
+#: faq.xml:228
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:198
+#: faq.xml:230
 #, no-c-format
 msgid ""
 "The \"USING GIST\" option tells the server to use a GiST (Generalized Search "
@@ -417,7 +526,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:202
+#: faq.xml:234
 #, no-c-format
 msgid ""
 "GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in "
@@ -425,7 +534,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:207
+#: faq.xml:239
 #, no-c-format
 msgid ""
 "You should also ensure that the PostgreSQL query planner has enough "
@@ -434,7 +543,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:212
+#: faq.xml:244
 #, no-c-format
 msgid ""
 "For PostgreSQL 8.0.x and greater, just run the <command>VACUUM ANALYZE</"
@@ -442,21 +551,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:215
+#: faq.xml:247
 #, no-c-format
 msgid ""
-"For PostgreSQL 7.4.x and below, run the <command>SELECT UPDATE_GEOMETRY_STATS"
-"()</command> command."
+"For PostgreSQL 7.4.x and below, run the <command>SELECT "
+"UPDATE_GEOMETRY_STATS()</command> command."
 msgstr ""
 
 #. Tag: para
-#: faq.xml:222
+#: faq.xml:254
 #, no-c-format
 msgid "Why aren't PostgreSQL R-Tree indexes supported?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:226
+#: faq.xml:258
 #, no-c-format
 msgid ""
 "Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, "
@@ -465,7 +574,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:231
+#: faq.xml:263
 #, no-c-format
 msgid ""
 "Our tests have shown search speed for native R-Tree and GiST to be "
@@ -476,7 +585,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:239
+#: faq.xml:271
 #, no-c-format
 msgid ""
 "R-Tree indexes in PostgreSQL cannot handle features which are larger than 8K "
@@ -485,7 +594,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:246
+#: faq.xml:278
 #, no-c-format
 msgid ""
 "R-Tree indexes in PostgreSQL are not \"null safe\", so building an index on "
@@ -493,7 +602,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:256
+#: faq.xml:288
 #, no-c-format
 msgid ""
 "Why should I use the <varname>AddGeometryColumn()</varname> function and all "
@@ -501,7 +610,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:261
+#: faq.xml:293
 #, no-c-format
 msgid ""
 "If you do not want to use the OpenGIS support functions, you do not have to. "
@@ -514,7 +623,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:270
+#: faq.xml:302
 #, no-c-format
 msgid ""
 "MapServer is one application which makes use of the "
@@ -524,14 +633,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:279
+#: faq.xml:311
 #, no-c-format
 msgid ""
 "What is the best way to find all objects within a radius of another object?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:284
+#: faq.xml:316
 #, no-c-format
 msgid ""
 "To use the database most efficiently, it is best to do radius queries which "
@@ -541,7 +650,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:289
+#: faq.xml:321
 #, no-c-format
 msgid ""
 "The <varname>ST_DWithin(geometry, geometry, distance)</varname> function is "
@@ -551,7 +660,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:295
+#: faq.xml:327
 #, no-c-format
 msgid ""
 "For example, to find all objects with 100 meters of POINT(1000 1000) the "
@@ -559,7 +668,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:298
+#: faq.xml:330
 #, no-c-format
 msgid ""
 "SELECT * FROM geotable \n"
@@ -567,13 +676,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:304
+#: faq.xml:336
 #, no-c-format
 msgid "How do I perform a coordinate reprojection as part of a query?"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:309
+#: faq.xml:341
 #, no-c-format
 msgid ""
 "To perform a reprojection, both the source and destination coordinate "
@@ -585,13 +694,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:316
+#: faq.xml:348
 #, no-c-format
 msgid "SELECT ST_Transform(the_geom,4269) FROM geotable;"
 msgstr ""
 
 #. Tag: para
-#: faq.xml:322
+#: faq.xml:354
 #, no-c-format
 msgid ""
 "I did an ST_AsEWKT and ST_AsText on my rather large geometry and it returned "
@@ -599,7 +708,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:326
+#: faq.xml:358
 #, no-c-format
 msgid ""
 "You are probably using PgAdmin or some other tool that doesn't output large "
@@ -608,7 +717,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq.xml:329
+#: faq.xml:361
 #, no-c-format
 msgid ""
 "--To check number of geometries are really blank\n"
@@ -617,7 +726,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:335
+#: faq.xml:367
 #, no-c-format
 msgid ""
 "When I do an ST_Intersects, it says my two geometries don't intersect when I "
@@ -625,7 +734,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:339
+#: faq.xml:371
 #, no-c-format
 msgid ""
 "This generally happens in two common cases. Your geometry is invalid -- "
@@ -635,7 +744,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:347
+#: faq.xml:379
 #, no-c-format
 msgid ""
 "I am releasing software that uses PostGIS, does that mean my software has to "
@@ -644,7 +753,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:351
+#: faq.xml:383
 #, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
@@ -654,7 +763,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq.xml:352
+#: faq.xml:384
 #, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
