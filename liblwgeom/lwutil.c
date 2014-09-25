@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <ctype.h> /* for tolower */
 
 /* Global variables */
 #include "../postgis_config.h"
