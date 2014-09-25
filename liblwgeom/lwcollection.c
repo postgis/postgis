@@ -173,8 +173,6 @@ void lwcollection_reserve(LWCOLLECTION *col, int ngeoms)
 */
 LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
-	int i = 0;
-
 	if ( col == NULL || geom == NULL ) return NULL;
 
 	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) ) {
@@ -202,6 +200,8 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 #if PARANOIA_LEVEL > 1
 	/* See http://trac.osgeo.org/postgis/ticket/2933 */
 	/* Make sure we don't already have a reference to this geom */
+	{
+	int i = 0;
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		if ( col->geoms[i] == geom )
@@ -209,6 +209,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 			LWDEBUGF(4, "Found duplicate geometry in collection %p == %p", col->geoms[i], geom);
 			return col;
 		}
+	}
 	}
 #endif
 
