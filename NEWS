@@ -17,6 +17,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #2939, ST_ClipByBox2D (Sandro Santilli / CartoDB)
   - #2247, ST_Retile and ST_CreateOverview: in-db raster overviews creation
            (Sandro Santilli / Vizzuality)
   - #899, -m shp2pgsql attribute names mapping -m switch

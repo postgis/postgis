@@ -365,6 +365,57 @@ FROM (SELECT ST_Buffer(
 			this function with standard OGC interface</para>
 		  </refsection>
 	</refentry>
+
+	<refentry id="ST_ClipByBox2D">
+	  <refnamediv>
+		<refname>ST_ClipByBox2D</refname>
+		<refpurpose>Returns the portion of a geometry falling within a rectangle.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_ClipByBox2D</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>box2d</type> <parameter>box</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+    <para>
+Clips a geometry by a 2D box in a fast but possibly dirty way. The output
+geometry is not guaranteed to be valid (self-intersections for a polygon
+may be introduced). Topologically invalid input geometries do not result
+in exceptions being thrown.
+    </para>
+
+		<para>Performed by the GEOS module.</para>
+		<note><para>Requires GEOS 3.5.0+</para></note>
+
+		<para>Availability: 2.2.0.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<programlisting>
+-- Rely on implicit cast from geometry to box2d for the second parameter
+SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
+      </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para>
+<xref linkend="ST_Intersection" />,
+<xref linkend="ST_MakeBox2D" />,
+<xref linkend="ST_MakeEnvelope" />
+    </para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_Collect">
 	  <refnamediv>
 		<refname>ST_Collect</refname>

@@ -3110,6 +3110,14 @@ CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
+-- Requires GEOS >= 3.5.0
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_ClipByBox2d'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 50;
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------
