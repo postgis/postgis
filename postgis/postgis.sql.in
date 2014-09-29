@@ -3575,7 +3575,7 @@ CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_Contains($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2
@@ -3588,7 +3588,7 @@ CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_CoveredBy($1,$2)'
+	AS 'SELECT $1 @ $2 AND _ST_CoveredBy($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2
@@ -3602,7 +3602,7 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Covers($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_Covers($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.4.0
@@ -3616,7 +3616,7 @@ CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_ContainsProperly($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_ContainsProperly($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- PostGIS equivalent function: overlaps(geom1 geometry, geom2 geometry)
@@ -3636,7 +3636,7 @@ CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Contains($2,$1)'
+	AS 'SELECT $2 ~ $1 AND _ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2
