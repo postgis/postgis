@@ -226,7 +226,7 @@ BEGIN
       RAISE EXCEPTION 'Intersection point/collection not implemented yet';
 
     ELSE
-      RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
+      RAISE EXCEPTION 'Invalid TopoGeometry type %', tg2.type;
     END IF;
 
   ELSIF tg1.type = 2 THEN -- [multi]line
@@ -343,10 +343,10 @@ BEGIN
   ---------------------------------------------------------
 
     ELSIF tg2.type = 4 THEN -- line/collection
-      RAISE EXCEPTION 'Intersection line/collection not implemented yet', tg1.type, tg2.type;
+      RAISE EXCEPTION 'Intersection line/collection not implemented yet';
 
     ELSE
-      RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
+      RAISE EXCEPTION 'Invalid TopoGeometry type %', tg2.type;
     END IF;
 
 
@@ -430,17 +430,17 @@ BEGIN
   ---------------------------------------------------------
 
     ELSIF tg2.type = 4 THEN -- polygon/collection
-      RAISE EXCEPTION 'Intersection poly/collection not implemented yet', tg1.type, tg2.type;
+      RAISE EXCEPTION 'Intersection poly/collection not implemented yet';
 
     ELSE
-      RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
+      RAISE EXCEPTION 'Invalid TopoGeometry type %', tg2.type;
     END IF;
 
   ELSIF tg1.type = 4 THEN -- collection
     IF tg2.type = 4 THEN -- collection/collection
-      RAISE EXCEPTION 'Intersection collection/collection not implemented yet', tg1.type, tg2.type;
+      RAISE EXCEPTION 'Intersection collection/collection not implemented yet';
     ELSE
-      RAISE EXCEPTION 'Invalid TopoGeometry type', tg2.type;
+      RAISE EXCEPTION 'Invalid TopoGeometry type %', tg2.type;
     END IF;
 
   ELSE
