@@ -107,7 +107,7 @@ static int uint8_to_twkb_buf(const uint8_t ival, uint8_t **buf)
 static size_t empty_to_twkb_size(const LWGEOM *geom, uint8_t variant, int64_t id) 
 {
 	LWDEBUGF(2, "Entered  empty_to_twkb_size",0);
-	size_t size=0;
+	size_t size = WKB_BYTE_SIZE + WKB_BYTE_SIZE;
 	/*size of ID*/
 	size += varint_s64_encoded_size((int64_t) id);
 	/*size of npoints*/
@@ -127,6 +127,11 @@ static int empty_to_twkb_buf(const LWGEOM *geom, uint8_t **buf, uint8_t variant,
 		wkb_type |= WKB_MULTIPOINT_TYPE; /* set MULTIPOINT flag */
 	}
 	uint8_t flag=0;
+	
+		/* Set the id flag */
+	FIRST_BYTE_SET_ID(flag, ((variant & TWKB_ID) ? 1 : 0));
+	/* Tell what precision to use*/
+	FIRST_BYTE_SET_PRECISION(flag,0);
 	
 	/*Copy the flag to the buffer*/
 	uint8_to_twkb_buf(flag,buf);
