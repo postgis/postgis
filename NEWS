@@ -8,6 +8,7 @@ PostGIS 2.1.5
  * Bug Fixes *
 
   - #2931, BOX representation is case sensitive
+  - #2942, PostgreSQL 9.5 support
 
 
 PostGIS 2.1.4
