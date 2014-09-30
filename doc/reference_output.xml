@@ -1166,29 +1166,12 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include sizes</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID=null</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include sizes=false</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include bounding boxes=false</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
-
 		  <refsection>
 			<title>Description</title>
 			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
@@ -1197,8 +1180,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			<para>The fourth parameter is optional. If it is set to true, the size of the geometry is included</para>
 			<note>
 			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">https://github.com/nicklasaven/TWKB</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">https://github.com/nicklasaven/twkb_web"</ulink></para>
-			</note>
-				
+			</note>		
 
 			<para>Availability: 2.2.0</para>
 		  </refsection>
@@ -1238,6 +1220,21 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
 				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
 				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include sizes</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
+				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
+				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include sizes</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include bounding boxes</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>

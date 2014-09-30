@@ -1386,24 +1386,12 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-		
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8 default null,boolean default false, boolean default false)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-	
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8,boolean)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE;
 	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
@@ -3406,6 +3394,12 @@ CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,b
   RETURNS internal
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
+  
+-- Availability: 2.2.0  
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,boolean,boolean)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
 
 -- Availability: 2.2.0  
 CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
@@ -3429,6 +3423,13 @@ CREATE AGGREGATE st_astwkbagg(geometry,int,int8) (
 
 -- Availability: 2.2.0
 CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
+
+-- Availability: 2.2.0
+CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean,boolean) (
   SFUNC=pgis_twkb_accum_transfn,
   STYPE=internal,
   FINALFUNC=pgis_twkb_accum_finalfn
