@@ -330,7 +330,10 @@ EOF
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+  IF $last_updated > version_from_num OR (
+      $last_updated = version_from_num AND version_from_isdev
+    ) FROM _postgis_upgrade_info
+  THEN
     EXECUTE 'DROP AGGREGATE IF EXISTS $aggsig';
     EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
@@ -496,7 +499,9 @@ CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
     as version_to_num,
   substring(installed from '([0-9]*)\.')::int * 100 +
   substring(installed from '[0-9]*\.([0-9]*)\.')::int
-    as version_from_num
+    as version_from_num,
+  position('dev' in  installed)::bool
+    as version_from_isdev
   FROM versions
 ;
  
