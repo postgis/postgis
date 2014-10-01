@@ -10,4 +10,9 @@ SELECT ST_AsText(ST_ClipByBox2d('MULTIPOINT(-1 -1, 0 0, 2 2)'::geometry,ST_MakeE
 SELECT ST_AsText(ST_ClipByBox2d('POLYGON((0 0, 10 10, 0 10, 10 0, 0 0))', ST_MakeEnvelope(2,2,8,8)));
 -- Invalid polygon (lineal self-intersection) -- ST_Intersection returns a collection
 SELECT ST_AsText(ST_ClipByBox2d('POLYGON((0 0,5 4,5 6,0 10,10 10,5 6,5 4,10 0,0 0))', ST_MakeEnvelope(2,2,10,5)));
+-- Invalid polygon (non-closed ring) -- ST_Intersection raises an exception
+-- The HEXWKB represents 'POLYGON((0 0, 10 0, 10 10, 0 10))'
+SELECT ST_AsText(ST_ClipByBox2d(
+  '0103000000010000000400000000000000000000000000000000000000000000000000244000000000000000000000000000002440000000000000244000000000000000000000000000002440'
+  , ST_MakeEnvelope(2,2,5,5)));
 

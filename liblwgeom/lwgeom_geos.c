@@ -234,11 +234,38 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 	return sq;
 }
 
+static GEOSGeometry *
+ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
+{
+	GEOSCoordSeq sq;
+	GEOSGeom g;
+  POINTARRAY *npa = 0;
 
+  if ( autofix )
+  {
+    /* check ring for being closed and fix if not */
+    if ( ! ptarray_is_closed_2d(pa) ) {
+      npa = ptarray_addPoint(pa, getPoint_internal(pa, 0),
+                             FLAGS_NDIMS(pa->flags), pa->npoints);
+      pa = npa;
+    }
+    /* TODO: check ring for having at least 4 vertices */
+#if 0
+    while ( pa->npoints < 4 ) {
+      npa = ptarray_addPoint(npa, getPoint_internal(pa, 0),
+                             FLAGS_NDIMS(pa->flags), pa->npoints);
+    }
+#endif
+  }
 
+  sq = ptarray_to_GEOSCoordSeq(pa);
+  if ( npa ) ptarray_free(npa);
+	g = GEOSGeom_createLinearRing(sq);
+  return g;
+}
 
 GEOSGeometry *
-LWGEOM2GEOS(const LWGEOM *lwgeom)
+LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g, shell;
@@ -299,6 +326,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 		break;
 	case LINETYPE:
 		lwl = (LWLINE *)lwgeom;
+		/* TODO: if (autofix) */
 		if ( lwl->points->npoints == 1 ) {
 			/* Duplicate point, to make geos-friendly */
 			lwl->points = ptarray_addPoint(lwl->points,
@@ -330,9 +358,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 		}
 		else
 		{
-			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
-			/* TODO: check ring for being closed and fix if not */
-			shell = GEOSGeom_createLinearRing(sq);
+			shell = ptarray_to_GEOSLinearRing(lwpoly->rings[0], autofix);
 			if ( ! shell ) return NULL;
 			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
 			ngeoms = lwpoly->nrings-1;
@@ -341,8 +367,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 
 			for (i=1; i<lwpoly->nrings; ++i)
 			{
-				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
-				geoms[i-1] = GEOSGeom_createLinearRing(sq);
+				geoms[i-1] = ptarray_to_GEOSLinearRing(lwpoly->rings[i], autofix);
 				if ( ! geoms[i-1] )
 				{
 					--i;
@@ -379,7 +404,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 
 		for (i=0; i<ngeoms; ++i)
 		{
-			GEOSGeometry* g = LWGEOM2GEOS(lwc->geoms[i]);
+			GEOSGeometry* g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if ( ! g )
 			{
 				while (i) GEOSGeom_destroy(geoms[--i]);
@@ -429,7 +454,7 @@ lwgeom_normalize(const LWGEOM *geom1)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 0);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -482,14 +507,14 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	LWDEBUG(3, "intersection() START");
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 0);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL ;
 	}
 
-	g2 = LWGEOM2GEOS(geom2);
+	g2 = LWGEOM2GEOS(geom2, 0);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
 		lwerror("Second argument geometry could not be converted to GEOS.");
@@ -563,14 +588,14 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 0);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2);
+	g2 = LWGEOM2GEOS(geom2, 0);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
 		GEOSGeom_destroy(g1);
@@ -637,7 +662,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 0);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -645,7 +670,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2);
+	g2 = LWGEOM2GEOS(geom2, 0);
 
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
@@ -713,7 +738,7 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 0);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -721,7 +746,7 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2);
+	g2 = LWGEOM2GEOS(geom2, 0);
 
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
@@ -787,7 +812,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	LWDEBUG(3, "clip_by_rect() START");
 
-	g1 = LWGEOM2GEOS(geom1);
+	g1 = LWGEOM2GEOS(geom1, 1); /* auto-fix structure */
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1123,7 +1148,7 @@ lwgeom_buildarea(const LWGEOM *geom)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	geos_in = LWGEOM2GEOS(geom);
+	geos_in = LWGEOM2GEOS(geom, 0);
 	
 	if ( 0 == geos_in )   /* exception thrown at construction */
 	{
@@ -1172,7 +1197,7 @@ lwgeom_geos_noop(const LWGEOM* geom_in)
 	int is3d = FLAGS_GET_Z(geom_in->flags);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
-	geosgeom = LWGEOM2GEOS(geom_in);
+	geosgeom = LWGEOM2GEOS(geom_in, 0);
 	if ( ! geosgeom ) {
 		lwerror("Geometry could not be converted to GEOS: %s",
 			lwgeom_geos_errmsg);
@@ -1210,14 +1235,14 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)LWGEOM2GEOS(geom1);
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(geom1, 0);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	g2 = (GEOSGeometry *)LWGEOM2GEOS(geom2);
+	g2 = (GEOSGeometry *)LWGEOM2GEOS(geom2, 0);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
 		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1273,14 +1298,14 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)LWGEOM2GEOS(geom1);
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(geom1, 0);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	g2 = (GEOSGeometry *)LWGEOM2GEOS(geom2);
+	g2 = (GEOSGeometry *)LWGEOM2GEOS(geom2, 0);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
 		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1325,7 +1350,7 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in);
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in, 0);
 	if ( ! g1 ) 
 	{
 		lwerror("lwgeom_offsetcurve: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1446,7 +1471,7 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance,
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in);
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in, 0);
 	if ( ! g1 ) 
 	{
 		lwerror("lwgeom_delaunay_triangulation: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);

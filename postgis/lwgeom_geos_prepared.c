@@ -318,7 +318,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		return LW_FAILURE;
 	}
 	
-	prepcache->geom = LWGEOM2GEOS( lwgeom );
+	prepcache->geom = LWGEOM2GEOS( lwgeom , 0);
 	if ( ! prepcache->geom ) return LW_FAILURE;
 	prepcache->prepared_geom = GEOSPrepare( prepcache->geom );
 	if ( ! prepcache->prepared_geom ) return LW_FAILURE;

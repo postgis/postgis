@@ -1009,7 +1009,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
 	lwgeom_out = lwgeom_in;
-	geosgeom = LWGEOM2GEOS(lwgeom_out);
+	geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
 	if ( ! geosgeom )
 	{
 		LWDEBUGF(4,
@@ -1025,7 +1025,8 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 		}
 
 		/* try again as we did cleanup now */
-		geosgeom = LWGEOM2GEOS(lwgeom_out);
+		/* TODO: invoke LWGEOM2GEOS directly with autoclean ? */
+		geosgeom = LWGEOM2GEOS(lwgeom_out, 0);
 		if ( ! geosgeom )
 		{
 			lwerror("Couldn't convert POSTGIS geom to GEOS: %s",

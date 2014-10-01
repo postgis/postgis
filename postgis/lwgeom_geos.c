@@ -586,7 +586,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 							geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 						}
 						/* This builds a LWPOLY on top of the serialized form */
-						g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j]));
+						g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j], 0));
 						if ( 0 == g )   /* exception thrown at construction */
 						{
 							/* TODO: cleanup all GEOS memory */
@@ -928,7 +928,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(lwgeom);
+	g1 = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
@@ -1785,7 +1785,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	{
 		lwerror("unable to deserialize input");
 	}
-	g1 = LWGEOM2GEOS(lwgeom);
+	g1 = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
 	
 	if ( ! g1 )
@@ -3264,7 +3264,7 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 		lwerror("POSTGIS2GEOS: unable to deserialize input");
 		return NULL;
 	}
-	ret = LWGEOM2GEOS(lwgeom);
+	ret = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
 	if ( ! ret )
 	{
