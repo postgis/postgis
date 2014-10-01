@@ -123,7 +123,7 @@ BEGIN
 				FROM e LEFT JOIN addr As a ON (a.statefp = ' || quote_literal(var_state) || '  AND e.tlid = a.tlid and e.eside = a.side) 
 				)
 		SELECT * 
-		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.streetname, foo.streettypeabbrev, foo.zip,  foo.center_pt,
+		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.predirabrv, foo.streetname, foo.streettypeabbrev, foo.zip,  foo.center_pt,
 			  side, to_number(fromhn, ''999999'') As fromhn, to_number(tohn, ''999999'') As tohn, ST_GeometryN(ST_Multi(line),1) As line, 
 			   dist
 		FROM 
@@ -157,6 +157,7 @@ BEGIN
             var_primary_fullname := var_redge.fullname;
             var_addy.streetname = var_redge.streetname;
             var_addy.streettypeabbrev := var_redge.streettypeabbrev;
+            var_addy.predirabbrev := var_redge.predirabrv;
         END IF;
        
         IF ST_Intersects(var_redge.line, var_primary_line) THEN
@@ -166,7 +167,7 @@ BEGIN
             var_addy.address := var_nstrnum;
             IF  var_redge.fromhn IS NOT NULL THEN
                 --interpolate the number -- note that if fromhn > tohn we will be subtracting which is what we want
-                var_nstrnum := (var_redge.fromhn + ST_Line_Locate_Point(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
+                var_nstrnum := (var_redge.fromhn + ST_LineLocatePoint(var_redge.line, var_pt)*(var_redge.tohn - var_redge.fromhn))::numeric(10);
                 -- The odd even street number side of street rule
                 IF (var_nstrnum  % 2)  != (var_redge.tohn % 2) THEN
                     var_nstrnum := CASE WHEN var_nstrnum + 1 NOT BETWEEN var_redge.fromhn AND var_redge.tohn THEN var_nstrnum - 1 ELSE var_nstrnum + 1 END;
@@ -210,6 +211,7 @@ BEGIN
 					END IF;
 					var_addy_alt.streetname := var_addy.streetname;
 					var_addy_alt.streettypeabbrev := var_addy.streettypeabbrev;
+                    var_addy_alt.predirabbrev := var_addy.predirabbrev;
 					addy[array_upper(addy,1) - 1 ] := var_addy_alt; 
 					IF var_debug THEN
 						RAISE NOTICE 'Replaced with : %, %', var_addy_alt, clock_timestamp();

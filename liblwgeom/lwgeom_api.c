@@ -14,7 +14,6 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
-#include <float.h>
 #include <stdio.h>
 #include <errno.h>
 #include <assert.h>

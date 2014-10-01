@@ -16,7 +16,8 @@
 #include "utils/array.h"
 #include "utils/geo_decls.h"
 
-#include "liblwgeom_internal.h"
+#include "../postgis_config.h"
+#include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
 #include <math.h>
@@ -596,7 +597,7 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	point = lw_dist2d_distancepoint(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
+	point = lwgeom_closest_point(lwgeom1, lwgeom2);
 
 	if (lwgeom_is_empty(point))
 		PG_RETURN_NULL();
@@ -630,7 +631,7 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	theline = lw_dist2d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
+	theline = lwgeom_closest_line(lwgeom1, lwgeom2);
 	
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();	
@@ -664,7 +665,7 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	theline = lw_dist2d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MAX);
+	theline = lwgeom_furthest_line(lwgeom1, lwgeom2);
 	
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
@@ -705,7 +706,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
-	if (mindist<MAXFLOAT)
+	if (mindist<FLT_MAX)
 		PG_RETURN_FLOAT8(mindist);
 	
 	PG_RETURN_NULL();
@@ -743,7 +744,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 	/*empty geometries cases should be right handled since return from underlying
-	 functions should be MAXFLOAT which causes false as answer*/
+	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
 }
 
@@ -836,7 +837,8 @@ Datum LWGEOM_closestpoint3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	point = lw_dist3d_distancepoint(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
+	point = lwgeom_closest_point_3d(lwgeom1, lwgeom2);
+	// point = lw_dist3d_distancepoint(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
 
 	if (lwgeom_is_empty(point))
 		PG_RETURN_NULL();	
@@ -871,7 +873,8 @@ Datum LWGEOM_shortestline3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
+	theline = lwgeom_closest_line_3d(lwgeom1, lwgeom2);
+	// theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MIN);
 	
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
@@ -906,7 +909,8 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MAX);
+	theline = lwgeom_furthest_line_3d(lwgeom1, lwgeom2);
+	// theline = lw_dist3d_distanceline(lwgeom1, lwgeom2, lwgeom1->srid, DIST_MAX);
 	
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
@@ -945,7 +949,7 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*if called with empty geometries the ingoing mindistance is untouched, and makes us return NULL*/
-	if (mindist<MAXFLOAT)
+	if (mindist<FLT_MAX)
 		PG_RETURN_FLOAT8(mindist);
 
 	PG_RETURN_NULL();
@@ -984,7 +988,7 @@ Datum LWGEOM_dwithin3d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 	
 	/*empty geometries cases should be right handled since return from underlying
-	 functions should be MAXFLOAT which causes false as answer*/
+	 functions should be FLT_MAX which causes false as answer*/
 	PG_RETURN_BOOL(tolerance >= mindist);
 }
 

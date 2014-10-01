@@ -528,8 +528,8 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 	tmp.flags = flags;
 
 	/* Initialize */
-	gbox->xmin = gbox->ymin = gbox->zmin = gbox->mmin = MAXFLOAT;
-	gbox->xmax = gbox->ymax = gbox->zmax = gbox->mmax = -1 * MAXFLOAT;
+	gbox->xmin = gbox->ymin = gbox->zmin = gbox->mmin = FLT_MAX;
+	gbox->xmax = gbox->ymax = gbox->zmax = gbox->mmax = -1 * FLT_MAX;
 
 	for ( i = 2; i < curve->points->npoints; i += 2 )
 	{

@@ -168,6 +168,8 @@
 */
 extern int clamp_srid(int srid);
 
+/* Raise an lwerror if srids do not match */
+void error_if_srid_mismatch(int srid1, int srid2);
 
 /**
  * Global functions for memory/logging handlers.
@@ -1068,22 +1070,27 @@ extern float  next_float_up(double d);
 extern double next_double_down(float d);
 extern double next_double_up(float d);
 
-/* general utilities
-	2D*/
-extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
-extern double distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
-extern LWGEOM *lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
-extern LWGEOM *lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
-extern double lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2);
-extern double lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
-extern double lwgeom_maxdistance2d(LWGEOM *lw1, LWGEOM *lw2);
-extern double lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
-/*
-	3D*/
+/* general utilities 2D */
+extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
+extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
+extern LWGEOM* lwgeom_closest_line(LWGEOM *lw1, LWGEOM *lw2);
+extern LWGEOM* lwgeom_furthest_line(LWGEOM *lw1, LWGEOM *lw2);
+extern LWGEOM* lwgeom_closest_point(LWGEOM *lw1, LWGEOM *lw2);
+extern LWGEOM* lwgeom_furthest_point(LWGEOM *lw1, LWGEOM *lw2);
+extern double  lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2);
+extern double  lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
+extern double  lwgeom_maxdistance2d(LWGEOM *lw1, LWGEOM *lw2);
+extern double  lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
+
+/* 3D */
 extern double distance3d_pt_pt(const POINT3D *p1, const POINT3D *p2);
 extern double distance3d_pt_seg(const POINT3D *p, const POINT3D *A, const POINT3D *B);
-extern LWGEOM *lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
-extern LWGEOM *lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
+
+extern LWGEOM* lwgeom_furthest_line_3d(LWGEOM *lw1, LWGEOM *lw2);
+extern LWGEOM* lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2);
+extern LWGEOM* lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2);
+
+
 extern double lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2);
 extern double lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance);
 extern double lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2);
@@ -1870,6 +1877,9 @@ extern void lwfree(void *mem);
 /* Utilities */
 extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
 
+#ifndef HAVE_STRCASESTR
+extern char *strcasestr(const char *s, const char *find);
+#endif
 
 /*******************************************************************************
  * SQLMM internal functions - TODO: Move into separate header files
@@ -1894,6 +1904,7 @@ LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.

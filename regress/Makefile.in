@@ -161,6 +161,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 		delaunaytriangles
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
+	# GEOS-3.5 adds:
+	# ST_ClipByBox2d
+	TESTS += \
+		clipbybox2d
+endif
+
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
 	# ST_GeomFromGeoJSON()

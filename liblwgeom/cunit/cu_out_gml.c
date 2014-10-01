@@ -148,26 +148,6 @@ static void do_gml2_unsupported(char * in, char * out)
 	lwgeom_free(g);
 }
 
-static void do_gml3_unsupported(char * in, char * out)
-{
-	LWGEOM *g;
-	char *h;
-	int opts = LW_GML_IS_DIMS;
-
-	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, NULL, 0, opts, "", NULL);
-
-	if (strcmp(cu_error_msg, out))
-		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",
-		        in, cu_error_msg, out);
-
-	CU_ASSERT_STRING_EQUAL(out, cu_error_msg);
-	cu_error_msg_reset();
-
-	lwfree(h);
-	lwgeom_free(g);
-}
-
 static void do_gml2_extent_test(char * in, char * out, char * srs,
                                    double precision, char * prefix)
 {

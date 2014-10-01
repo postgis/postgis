@@ -18,19 +18,34 @@
 #include "lwgeom_log.h"
 
 
-/*------------------------------------------------------------------------------------------------------------
-Initializing functions
-The functions starting the distance-calculation processses
---------------------------------------------------------------------------------------------------------------*/
+
+LWGEOM * 
+lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
+}
+
+LWGEOM * 
+lwgeom_furthest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
+}
+
+LWGEOM * 
+lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
+{
+	return lw_dist3d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
+}
+
 
 /**
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2, z1, z2;
-	double initdistance = ( mode == DIST_MIN ? MAXFLOAT : -1.0);
+	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
 	DISTPTS3D thedl;
 	LWPOINT *lwpoints[2];
 	LWGEOM *result;
@@ -76,11 +91,11 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x,y,z;
 	DISTPTS3D thedl;
-	double initdistance = MAXFLOAT;
+	double initdistance = FLT_MAX;
 	LWGEOM *result;
 
 	thedl.mode = mode;
@@ -166,7 +181,7 @@ lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	DISTPTS3D thedl;
 	LWDEBUG(2, "lwgeom_mindistance3d_tolerance is called");
 	thedl.mode = DIST_MIN;
-	thedl.distance= MAXFLOAT;
+	thedl.distance= FLT_MAX;
 	thedl.tolerance = tolerance;
 	if (lw_dist3d_recursive(lw1, lw2, &thedl))
 	{
@@ -174,7 +189,7 @@ lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	}
 	/*should never get here. all cases ought to be error handled earlier*/
 	lwerror("Some unspecified error.");
-	return MAXFLOAT;
+	return FLT_MAX;
 }
 
 

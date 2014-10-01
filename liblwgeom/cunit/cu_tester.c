@@ -26,6 +26,7 @@ extern CU_SuiteInfo print_suite;
 extern CU_SuiteInfo algorithms_suite;
 extern CU_SuiteInfo buildarea_suite;
 extern CU_SuiteInfo clean_suite;
+extern CU_SuiteInfo clip_by_rect_suite;
 extern CU_SuiteInfo misc_suite;
 extern CU_SuiteInfo ptarray_suite;
 extern CU_SuiteInfo measures_suite;
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
 		algorithms_suite,
 		buildarea_suite,
 		clean_suite,
+		clip_by_rect_suite,
 		measures_suite,
 		node_suite,
 		wkt_out_suite,

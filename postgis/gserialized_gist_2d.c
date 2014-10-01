@@ -34,7 +34,6 @@
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
-#include "liblwgeom_internal.h"  /* For MAXFLOAT */
 
 /* Fall back to older finite() if necessary */
 #ifndef HAVE_ISFINITE
@@ -45,6 +44,7 @@
 # endif
 #endif
 
+#include <float.h> /* For FLT_MAX */
 
 /*
 ** When is a node split not so good? If more than 90% of the entries
@@ -517,7 +517,7 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 			return b->ymin - a->ymax;
 	}
 	
-	return MAXFLOAT;
+	return FLT_MAX;
 }
 
 
@@ -631,7 +631,7 @@ Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
 	}
-	PG_RETURN_FLOAT8(MAXFLOAT);
+	PG_RETURN_FLOAT8(FLT_MAX);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_distance_box_2d);
@@ -651,7 +651,7 @@ Datum gserialized_distance_box_2d(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
 	}
-	PG_RETURN_FLOAT8(MAXFLOAT);
+	PG_RETURN_FLOAT8(FLT_MAX);
 }
 
 PG_FUNCTION_INFO_V1(gserialized_same_2d);
@@ -1077,14 +1077,14 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
     *  and '14' as the gist distance-between-boxes strategy number */
     if ( strategy != 13 && strategy != 14 ) {
         elog(ERROR, "unrecognized strategy number: %d", strategy);
-		PG_RETURN_FLOAT8(MAXFLOAT);
+		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
 	/* Null box should never make this far. */
 	if ( gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_box) == LW_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
-		PG_RETURN_FLOAT8(MAXFLOAT);
+		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
 	/* Get the entry box */

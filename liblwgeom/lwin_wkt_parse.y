@@ -50,7 +50,15 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	int parse_rv = 0;
 
 	/* Clean up our global parser result. */
-    lwgeom_parser_result_init(&global_parser_result);
+	lwgeom_parser_result_init(&global_parser_result);
+	/* Work-around possible bug in GNU Bison 3.0.2 resulting in wkt_yylloc
+	 * members not being initialized on yyparse() as documented here:
+	 * https://www.gnu.org/software/bison/manual/html_node/Location-Type.html
+	 * See discussion here:
+	 * http://lists.osgeo.org/pipermail/postgis-devel/2014-September/024506.html
+	 */
+	wkt_yylloc.last_column = wkt_yylloc.last_line = \
+	wkt_yylloc.first_column = wkt_yylloc.first_line = 1;
 
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
@@ -93,7 +101,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 
 %locations
 %error-verbose
-%name-prefix="wkt_yy"
+%name-prefix "wkt_yy"
 
 %union {
 	int integervalue;

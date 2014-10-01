@@ -28,6 +28,8 @@
 #include <ieeefp.h>
 #endif
 
+#include <float.h>
+
 #include "liblwgeom.h"
 
 /* Define to enable pre-version 2.2 geodesic functions for geography types
@@ -55,16 +57,6 @@
 #define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
 #define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
-/**
-* Largest float value. Should this be from math.h instead?
-*/
-#ifndef MAXFLOAT
-#define MAXFLOAT      3.402823466e+38F
-#endif
-
-/* for the measure functions*/
-#define DIST_MAX		-1
-#define DIST_MIN		1
 
 /*
 * this will change to NaN when I figure out how to
@@ -148,9 +140,6 @@
 #define XDR 0 /* big endian */
 #define NDR 1 /* little endian */
 extern char getMachineEndian(void);
-
-/* Raise an lwerror if srids do not match */
-void error_if_srid_mismatch(int srid1, int srid2);
 
 
 /*

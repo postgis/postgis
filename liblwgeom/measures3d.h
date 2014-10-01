@@ -11,7 +11,7 @@
  *
  **********************************************************************/
 
-#include "liblwgeom_internal.h"
+#include "measures.h"
 
 #define DOT(u,v)   (u.x * v.x + u.y * v.y + u.z * v.z)
 #define VECTORLENGTH(v)   sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z))
@@ -44,6 +44,12 @@ typedef struct
 }
 PLANE3D; 
 
+
+/*
+Geometry returning functions
+*/
+LWGEOM * lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
+LWGEOM * lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
 
 /*
 Preprocessing functions

@@ -73,7 +73,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -103,6 +102,8 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
+
+#endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
@@ -160,7 +161,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -172,12 +181,7 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
-extern yy_size_t wkt_yyleng;
+extern int wkt_yyleng;
 
 extern FILE *wkt_yyin, *wkt_yyout;
 
@@ -203,6 +207,11 @@ extern FILE *wkt_yyin, *wkt_yyout;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -220,7 +229,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -290,8 +299,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when wkt_yytext is formed. */
 static char yy_hold_char;
-static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
-yy_size_t wkt_yyleng;
+static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+int wkt_yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -319,7 +328,7 @@ static void wkt_yy_init_buffer (YY_BUFFER_STATE b,FILE *file  );
 
 YY_BUFFER_STATE wkt_yy_scan_buffer (char *base,yy_size_t size  );
 YY_BUFFER_STATE wkt_yy_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE wkt_yy_scan_bytes (yyconst char *bytes,yy_size_t len  );
+YY_BUFFER_STATE wkt_yy_scan_bytes (yyconst char *bytes,int len  );
 
 void *wkt_yyalloc (yy_size_t  );
 void *wkt_yyrealloc (void *,yy_size_t  );
@@ -672,7 +681,8 @@ static void wkt_lexer_unknown()
 	} while (0);
 
  
-#line 676 "lwin_wkt_lex.c"
+#define YY_NO_INPUT 1
+#line 686 "lwin_wkt_lex.c"
 
 #define INITIAL 0
 
@@ -711,7 +721,7 @@ FILE *wkt_yyget_out (void );
 
 void wkt_yyset_out  (FILE * out_str  );
 
-yy_size_t wkt_yyget_leng (void );
+int wkt_yyget_leng (void );
 
 char *wkt_yyget_text (void );
 
@@ -751,7 +761,12 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -759,7 +774,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( wkt_yytext, wkt_yyleng, 1, wkt_yyout )
+#define ECHO do { if (fwrite( wkt_yytext, wkt_yyleng, 1, wkt_yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -770,7 +785,7 @@ static int input (void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		yy_size_t n; \
+		size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( wkt_yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -852,10 +867,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 64 "lwin_wkt_lex.l"
+#line 65 "lwin_wkt_lex.l"
 
 
-#line 859 "lwin_wkt_lex.c"
+#line 874 "lwin_wkt_lex.c"
 
 	if ( !(yy_init) )
 		{
@@ -936,7 +951,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 66 "lwin_wkt_lex.l"
+#line 67 "lwin_wkt_lex.l"
 {  
 	LWDEBUG(5,"DOUBLE");
 	wkt_yylval.doublevalue = atof(wkt_yytext); 
@@ -945,7 +960,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 72 "lwin_wkt_lex.l"
+#line 73 "lwin_wkt_lex.l"
 { 
 	LWDEBUG(5,"SRID");
 	wkt_yylval.integervalue = wkt_lexer_read_srid(wkt_yytext); 
@@ -954,87 +969,87 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 78 "lwin_wkt_lex.l"
+#line 79 "lwin_wkt_lex.l"
 { return COLLECTION_TOK; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 79 "lwin_wkt_lex.l"
+#line 80 "lwin_wkt_lex.l"
 { return MSURFACE_TOK; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 80 "lwin_wkt_lex.l"
+#line 81 "lwin_wkt_lex.l"
 { return MPOLYGON_TOK; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 81 "lwin_wkt_lex.l"
+#line 82 "lwin_wkt_lex.l"
 { return MCURVE_TOK; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 82 "lwin_wkt_lex.l"
+#line 83 "lwin_wkt_lex.l"
 { return MLINESTRING_TOK; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 83 "lwin_wkt_lex.l"
+#line 84 "lwin_wkt_lex.l"
 { return MPOINT_TOK; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 84 "lwin_wkt_lex.l"
+#line 85 "lwin_wkt_lex.l"
 { return CURVEPOLYGON_TOK; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 85 "lwin_wkt_lex.l"
+#line 86 "lwin_wkt_lex.l"
 { return POLYGON_TOK; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 86 "lwin_wkt_lex.l"
+#line 87 "lwin_wkt_lex.l"
 { return COMPOUNDCURVE_TOK; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 87 "lwin_wkt_lex.l"
+#line 88 "lwin_wkt_lex.l"
 { return CIRCULARSTRING_TOK; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 88 "lwin_wkt_lex.l"
+#line 89 "lwin_wkt_lex.l"
 { return LINESTRING_TOK; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 89 "lwin_wkt_lex.l"
+#line 90 "lwin_wkt_lex.l"
 { return POLYHEDRALSURFACE_TOK; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 90 "lwin_wkt_lex.l"
+#line 91 "lwin_wkt_lex.l"
 { return TRIANGLE_TOK; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 91 "lwin_wkt_lex.l"
+#line 92 "lwin_wkt_lex.l"
 { return TIN_TOK; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 92 "lwin_wkt_lex.l"
+#line 93 "lwin_wkt_lex.l"
 { return POINT_TOK; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 93 "lwin_wkt_lex.l"
+#line 94 "lwin_wkt_lex.l"
 { return EMPTY_TOK; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 95 "lwin_wkt_lex.l"
+#line 96 "lwin_wkt_lex.l"
 { 
 	LWDEBUG(5,"DIMENSIONALITY");
 	wkt_yylval.stringvalue = wkt_yytext;
@@ -1043,33 +1058,33 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 101 "lwin_wkt_lex.l"
+#line 102 "lwin_wkt_lex.l"
 { LWDEBUG(5,"LBRACKET"); return LBRACKET_TOK; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 102 "lwin_wkt_lex.l"
+#line 103 "lwin_wkt_lex.l"
 { LWDEBUG(5,"RBRACKET"); return RBRACKET_TOK; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 103 "lwin_wkt_lex.l"
+#line 104 "lwin_wkt_lex.l"
 { LWDEBUG(5,"COMMA"); return COMMA_TOK; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 104 "lwin_wkt_lex.l"
+#line 105 "lwin_wkt_lex.l"
 { LWDEBUG(5,"SEMICOLON"); return SEMICOLON_TOK; }
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 106 "lwin_wkt_lex.l"
+#line 107 "lwin_wkt_lex.l"
 { /* ignore whitespace */ LWDEBUG(5,"WHITESPACE"); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 108 "lwin_wkt_lex.l"
+#line 109 "lwin_wkt_lex.l"
 { /* Error out and stop parsing on unknown/unexpected characters */
 	LWDEBUG(5,"UNKNOWN"); 
 	wkt_lexer_unknown();
@@ -1078,10 +1093,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 114 "lwin_wkt_lex.l"
+#line 115 "lwin_wkt_lex.l"
 ECHO;
 	YY_BREAK
-#line 1085 "lwin_wkt_lex.c"
+#line 1100 "lwin_wkt_lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1268,7 +1283,7 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1282,7 +1297,7 @@ static int yy_get_next_buffer (void)
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1313,7 +1328,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), num_to_read );
+			(yy_n_chars), (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1435,7 +1450,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1459,7 +1474,7 @@ static int yy_get_next_buffer (void)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( wkt_yywrap( ) )
-						return 0;
+						return EOF;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -1707,7 +1722,7 @@ void wkt_yypop_buffer_state (void)
  */
 static void wkt_yyensure_buffer_stack (void)
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -1799,16 +1814,17 @@ YY_BUFFER_STATE wkt_yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to wkt_yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE wkt_yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
+YY_BUFFER_STATE wkt_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
-	yy_size_t n, i;
+	yy_size_t n;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -1890,7 +1906,7 @@ FILE *wkt_yyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-yy_size_t wkt_yyget_leng  (void)
+int wkt_yyget_leng  (void)
 {
         return wkt_yyleng;
 }
@@ -2038,7 +2054,7 @@ void wkt_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 114 "lwin_wkt_lex.l"
+#line 115 "lwin_wkt_lex.l"
 
 
 

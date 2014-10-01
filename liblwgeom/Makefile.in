@@ -29,9 +29,6 @@ SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@.@POSTGIS_MICRO_VERSION@
 YACC=@YACC@
 LEX=@LEX@
 
-%c: %l
-	@echo "WARNING: Lexer not generated. Run 'make parse' to manually build lexer/parser."
-
 # Standalone LWGEOM objects
 SA_OBJS = \
 	stringbuffer.o \
@@ -111,6 +108,7 @@ SA_HEADERS = \
 	liblwgeom_internal.h \
 	lwgeom_log.h \
 	lwgeom_geos.h \
+  lwin_wkt_parse.h \
   varint.h
 
 all: liblwgeom.la
@@ -164,15 +162,11 @@ $(LT_SA_OBJS): %.lo: %.c
 $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
-# Manually generate WKT parser from Flex/Bison inputs
-# Bison 2.5, Flex 2.5.35
-parser:
+lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
-	$(LEX) -i lwin_wkt_lex.l
-#	$(YACC) --debug --verbose -o'$@' -d $<
-#	$(YACC) -o'$@' -d $^
-#	$(LEX) -i $<
 
+lwin_wkt_lex.c: lwin_wkt_lex.l
+	$(LEX) -i lwin_wkt_lex.l
 
 liblwgeom.h: liblwgeom.h.in
 	cd .. && ./config.status

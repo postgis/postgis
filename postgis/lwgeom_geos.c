@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2009-2012 Sandro Santilli <strk@keybit.net>
+ * Copyright 2009-2014 Sandro Santilli <strk@keybit.net>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2001-2003 Refractions Research Inc.
  *
@@ -34,7 +34,7 @@
 
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "lwgeom_geos.h"
-#include "liblwgeom_internal.h"
+#include "liblwgeom.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h" 
 
@@ -1633,6 +1633,69 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
+}
+
+Datum ST_ClipByBox2d(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_ClipByBox2d);
+Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 35
+
+	lwerror("The GEOS version this PostGIS binary "
+					"was compiled against (%d) doesn't support "
+					"'GEOSClipByRect' function (3.5.0+ required)",
+					POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 35 */
+
+	GSERIALIZED *geom1;
+	GSERIALIZED *result;
+	LWGEOM *lwgeom1, *lwresult ;
+	const GBOX *bbox1;
+	const GBOX *bbox2;
+
+	geom1 = (GSERIALIZED *)	PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom1 = lwgeom_from_gserialized(geom1) ;
+
+	bbox1 = lwgeom_get_bbox(lwgeom1);
+	if ( ! bbox1 ) {
+		/* empty clips to empty, no matter rect */
+		lwgeom_free(lwgeom1);
+		PG_RETURN_POINTER(geom1);
+	}
+
+	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
+
+	/* If bbox1 outside of bbox, return empty */
+	if ( LW_FALSE == gbox_overlaps_2d(bbox1, bbox2) ) {
+		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
+		lwgeom_free(lwgeom1);
+		PG_FREE_IF_COPY(geom1, 1);
+		result = geometry_serialize(lwresult) ;
+		lwgeom_free(lwresult) ;
+		PG_RETURN_POINTER(result);
+	}
+
+	/* if bbox1 is covered by bbox, return lwgeom1 */
+	if ( bbox1->xmax <= bbox2->xmax && bbox1->xmin >= bbox2->xmin &&
+			 bbox1->ymax <= bbox2->ymax && bbox1->ymin >= bbox2->ymin )
+	{
+		lwgeom_free(lwgeom1);
+		PG_RETURN_POINTER(geom1);
+	}
+
+	lwresult = lwgeom_clip_by_rect(lwgeom1, bbox2->xmin, bbox2->ymin,
+	                               bbox2->xmax, bbox2->ymax);
+	lwgeom_free(lwgeom1) ;
+
+	result = geometry_serialize(lwresult) ;
+	lwgeom_free(lwresult) ;
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
+#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
 

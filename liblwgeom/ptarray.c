@@ -1620,8 +1620,10 @@ ptarray_length(const POINTARRAY *pts)
 
 /*
  * Get a pointer to nth point of a POINTARRAY.
- * You cannot safely cast this to a real POINT, due to memory alignment
- * constraints. Use getPoint*_p for that.
+ *
+ * Casting to returned pointer to POINT2D* should be safe,
+ * as gserialized format always keeps the POINTARRAY pointer
+ * aligned to double boundary.
  */
 uint8_t *
 getPoint_internal(const POINTARRAY *pa, int n)

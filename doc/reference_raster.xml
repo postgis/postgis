@@ -800,6 +800,172 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 		<para><xref linkend="RT_AddRasterConstraints"/></para>
 	  </refsection>
 	</refentry>
+
+  <refentry id="RT_AddOverviewConstraints">
+	  <refnamediv>
+		<refname>AddOverviewConstraints</refname>
+
+		<refpurpose>Tag a raster column as being an overview of another.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>reftable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refcolumn</parameter></paramdef>
+        <paramdef><type>int </type>
+        <parameter>ovfactor</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+        <funcdef>boolean <function>AddOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>reftable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>refcolumn</parameter></paramdef>
+        <paramdef><type>int </type>
+        <parameter>ovfactor</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Adds constraints on a raster column that are used to display information
+in the <varname>raster_overviews</varname> raster catalog.
+		</para>
+		<para>
+The <varname>ovfactor</varname> parameter represents the scale multiplier
+in the overview column: higher overview factors have lower resolution.
+		</para>
+		<para>
+When the <varname>ovschema</varname> and <varname>refschema</varname>
+parameters are omitted, the first table found scanning the
+<varname>search_path</varname> will be used.
+		</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+CREATE TABLE res1 AS SELECT
+ST_AddBand(
+  ST_MakeEmptyRaster(1000, 1000, 0, 0, 2),
+  1, '8BSI'::text, -129, NULL
+) r1;
+
+CREATE TABLE res2 AS SELECT
+ST_AddBand(
+  ST_MakeEmptyRaster(500, 500, 0, 0, 4),
+  1, '8BSI'::text, -129, NULL
+) r2;
+
+SELECT AddOverviewConstraints('res2', 'r2', 'res1', 'r1', 2);
+
+-- verify if registered correctly in the raster_overviews view --
+SELECT o_table_name ot, o_raster_column oc,
+       r_table_name rt, r_raster_column rc,
+       overview_factor f
+FROM raster_overviews WHERE o_table_name = 'res2';
+  ot  | oc |  rt  | rc | f
+------+----+------+----+---
+ res2 | r2 | res1 | r1 | 2
+(1 row)
+		</programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+      <para>
+ <xref linkend="RT_Raster_Overviews"/>,
+ <xref linkend="RT_DropOverviewConstraints"/>,
+ <xref linkend="RT_CreateOverview"/>,
+ <xref linkend="RT_AddRasterConstraints"/>
+      </para>
+	  </refsection>
+	</refentry>
+
+  <refentry id="RT_DropOverviewConstraints">
+	  <refnamediv>
+		<refname>DropOverviewConstraints</refname>
+
+		<refpurpose>Untag a raster column from being an overview of another.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+
+		  <funcprototype>
+        <funcdef>boolean <function>DropOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovschema</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+        <funcdef>boolean <function>DropOverviewConstraints</function></funcdef>
+        <paramdef><type>name </type>
+        <parameter>ovtable</parameter></paramdef>
+        <paramdef><type>name </type>
+        <parameter>ovcolumn</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Remove from a raster column the constraints used to show it as
+being an overview of another in the <varname>raster_overviews</varname>
+raster catalog.
+		</para>
+		<para>
+When the <varname>ovschema</varname> parameter is omitted,
+the first table found scanning the <varname>search_path</varname>
+will be used.
+		</para>
+
+		<para>Availability: 2.0.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+      <para>
+ <xref linkend="RT_Raster_Overviews"/>,
+ <xref linkend="RT_AddOverviewConstraints"/>,
+ <xref linkend="RT_DropRasterConstraints"/>
+      </para>
+	  </refsection>
+	</refentry>
 	
 		<refentry id="RT_PostGIS_GDAL_Version">
 			<refnamediv>
@@ -1157,6 +1323,59 @@ WHERE short_name = 'GTiff') As g;
         <title>See Also</title>
         <para>
           <xref linkend="UpdateGeometrySRID"/>
+        </para>
+      </refsection>
+		</refentry>
+
+		<refentry id="RT_CreateOverview">
+			<refnamediv>
+				<refname>ST_CreateOverview</refname>
+				<refpurpose>
+Create an reduced resolution version of a given raster coverage.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+
+					<funcprototype>
+						<funcdef>regclass <function>ST_CreateOverview</function></funcdef>
+						<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef>
+						<paramdef><type>name </type> <parameter>col</parameter></paramdef>
+						<paramdef><type>int </type> <parameter>factor</parameter></paramdef>
+					  <paramdef choice="opt"><type>text </type> <parameter>algo='NearestNeighbor'</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title> 
+
+				<para>
+Create an overview table with resampled tiles from the source table.
+Output tiles will have the same size of input tiles and cover the same
+spatial extent with a lower resolution (pixel size will be
+1/<varname>factor</varname> of the original in both directions).
+				</para>
+
+        <para>
+The overview table will be made available in the
+<varname>raster_overviews</varname> catalog and will have raster
+constraints enforced.
+				</para>
+
+				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
+
+				<para>Availability: 2.2.0</para>
+			</refsection> 
+      <refsection>
+        <title>See Also</title>
+        <para>
+  <xref linkend="RT_Retile"/>,
+  <xref linkend="RT_AddOverviewConstraints"/>,
+  <xref linkend="RT_AddRasterConstraints"/>,
+  <xref linkend="RT_Raster_Overviews"/>
         </para>
       </refsection>
 		</refentry>
@@ -1946,11 +2165,62 @@ FROM baz;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_Union" />
+					<xref linkend="RT_ST_Union" />,
+					<xref linkend="RT_Retile" />
 				</para>
 			</refsection>
 
 		</refentry>
+
+		<refentry id="RT_Retile">
+			<refnamediv>
+				<refname>ST_Retile</refname>
+				<refpurpose>
+					Return a set of configured tiles from an arbitrarily tiled raster coverage.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+
+					<funcprototype>
+						<funcdef>SETOF raster <function>ST_Retile</function></funcdef>
+						<paramdef><type>regclass </type> <parameter>tab</parameter></paramdef>
+						<paramdef><type>name </type> <parameter>col</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>ext</parameter></paramdef>
+						<paramdef><type>float8 </type> <parameter>sfx</parameter></paramdef>
+						<paramdef><type>float8 </type> <parameter>sfy</parameter></paramdef>
+						<paramdef><type>int </type> <parameter>tw</parameter></paramdef>
+						<paramdef><type>int </type> <parameter>th</parameter></paramdef>
+					  <paramdef choice="opt"><type>text </type> <parameter>algo='NearestNeighbor'</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title> 
+
+				<para>
+Return a set of tiles having the specified scale (<varname>sfx</varname>,
+<varname>sfy</varname>) and max size (<varname>tw</varname>,
+<varname>th</varname>) and covering the specified extent
+(<varname>ext</varname>) with data coming from the specified
+raster coverage (<varname>tab</varname>, <varname>col</varname>).
+				</para>
+
+				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
+
+				<para>Availability: 2.2.0</para>
+			</refsection> 
+      <refsection>
+        <title>See Also</title>
+        <para>
+          <xref linkend="RT_CreateOverview"/>
+        </para>
+      </refsection>
+		</refentry>
+
 
 		<refentry id="RT_ST_FromGDALRaster">
 
@@ -10858,6 +11128,10 @@ UPDATE wind
 					<title>Description</title>
 				
 					<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+					
+                    <note>
+                      <para>In order for rasters to be unioned, they most all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
+                    </note>
 
 					<para>Availability: 2.0.0 </para>
 					<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
@@ -13864,7 +14138,7 @@ SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CRO
 		<refnamediv>
 			<refname>ST_SameAlignment</refname>
 
-			<refpurpose>Returns true if rasters have same skew, scale, spatial ref and false if they don't with notice detailing issue.</refpurpose>
+			<refpurpose>Returns true if rasters have same skew, scale, spatial ref, and offset (pixels can be put on same grid without cutting into pixels) and false if they don't with notice detailing issue.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>

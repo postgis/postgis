@@ -13,7 +13,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 #include "liblwgeom.h"
-#include "liblwgeom_internal.h"
+#include "liblwgeom_internal.h"  /* For FP comparators. */
 #include "lwgeom_pg.h"
 #include "math.h"
 #include "lwgeom_rtree.h"

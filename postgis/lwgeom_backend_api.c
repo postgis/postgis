@@ -172,6 +172,6 @@ Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
     PG_FREE_IF_COPY(geom1, 0);
     PG_FREE_IF_COPY(geom2, 1);
     /*empty geometries cases should be right handled since return from underlying
-      functions should be MAXFLOAT which causes false as answer*/
+      functions should be FLT_MAX which causes false as answer*/
     PG_RETURN_BOOL(0.0 == mindist);
 }

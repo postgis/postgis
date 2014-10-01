@@ -1386,24 +1386,12 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-		
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8 default null,boolean default false, boolean default false)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-	
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8,boolean)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE;
 	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
@@ -3110,6 +3098,14 @@ CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
+-- Requires GEOS >= 3.5.0
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_ClipByBox2d'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 50;
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------
@@ -3398,6 +3394,12 @@ CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,b
   RETURNS internal
 	AS 'MODULE_PATHNAME'
   LANGUAGE c ;
+  
+-- Availability: 2.2.0  
+CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,boolean,boolean)
+  RETURNS internal
+	AS 'MODULE_PATHNAME'
+  LANGUAGE c ;
 
 -- Availability: 2.2.0  
 CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
@@ -3421,6 +3423,13 @@ CREATE AGGREGATE st_astwkbagg(geometry,int,int8) (
 
 -- Availability: 2.2.0
 CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean) (
+  SFUNC=pgis_twkb_accum_transfn,
+  STYPE=internal,
+  FINALFUNC=pgis_twkb_accum_finalfn
+);
+
+-- Availability: 2.2.0
+CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean,boolean) (
   SFUNC=pgis_twkb_accum_transfn,
   STYPE=internal,
   FINALFUNC=pgis_twkb_accum_finalfn
@@ -3567,7 +3576,7 @@ CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_Contains($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2
@@ -3580,7 +3589,7 @@ CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_CoveredBy($1,$2)'
+	AS 'SELECT $1 @ $2 AND _ST_CoveredBy($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2
@@ -3594,7 +3603,7 @@ CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Covers($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_Covers($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.4.0
@@ -3608,7 +3617,7 @@ CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_ContainsProperly($1,$2)'
+	AS 'SELECT $1 ~ $2 AND _ST_ContainsProperly($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- PostGIS equivalent function: overlaps(geom1 geometry, geom2 geometry)
@@ -3628,7 +3637,7 @@ CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 -- Inlines index magic
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Contains($2,$1)'
+	AS 'SELECT $2 ~ $1 AND _ST_Contains($2,$1)'
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Availability: 1.2.2

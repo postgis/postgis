@@ -13,10 +13,12 @@
 
 #include "liblwgeom_internal.h"
 
+/* for the measure functions*/
+#define DIST_MAX		-1
+#define DIST_MIN		1
 
-/**
-
-Structure used in distance-calculations
+/** 
+* Structure used in distance-calculations
 */
 typedef struct
 {
@@ -30,8 +32,8 @@ typedef struct
 
 typedef struct
 {
-	double	themeasure;	/*a value calculated to compare distances*/
-	int		pnr;	/*pointnumber. the ordernumber of the point*/
+	double themeasure;	/*a value calculated to compare distances*/
+	int pnr;	/*pointnumber. the ordernumber of the point*/
 } LISTSTRUCT;
 
 
@@ -41,7 +43,7 @@ typedef struct
 int lw_dist2d_comp(LWGEOM *lw1, LWGEOM *lw2, DISTPTS *dl);
 int lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl);
-int lw_dist2d_check_overlap(LWGEOM *lwg1,LWGEOM *lwg2);
+int lw_dist2d_check_overlap(LWGEOM *lwg1, LWGEOM *lwg2);
 int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 
 /*
@@ -92,4 +94,11 @@ void lw_dist2d_distpts_init(DISTPTS *dl, int mode);
 * Length primitives
 */
 double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
+
+/*
+* Geometry returning functions
+*/
+LWGEOM* lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode);
+LWGEOM* lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode);
+
 

@@ -34,6 +34,7 @@ OBJS=	\
 	cu_tree.o \
 	cu_measures.o \
 	cu_node.o \
+	cu_clip_by_rect.o \
 	cu_libgeom.o \
 	cu_split.o \
 	cu_stringbuffer.o \

@@ -34,7 +34,7 @@ dnl SQL Preprocessor
 dnl
 AC_PATH_PROG([CPPBIN], [cpp], [])
 if test "x$CPPBIN" != "x"; then
-  SQLPP="${CPPBIN} -traditional-cpp -P"
+  SQLPP="${CPPBIN} -traditional-cpp -w -P"
 else
   AC_PATH_PROG([GPP], [gpp_], [])
   if test "x$GPP" != "x"; then
@@ -114,6 +114,7 @@ dnl Check for platform-specific functions
 dnl
 AC_CHECK_FUNC(vasprintf, AC_DEFINE([HAVE_VASPRINTF]))
 AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
+AC_CHECK_FUNC(strcasestr, AC_DEFINE([HAVE_STRCASESTR]))
 AC_FUNC_FSEEKO()
 
 dnl 
@@ -165,25 +166,19 @@ dnl
 
 CAN_BUILD_COMMENTS=yes
 
-AC_PATH_PROG([IMAGEMAGICK], [convert], [])
-if test "x$IMAGEMAGICK" = "x"; then
-	AC_MSG_WARN([ImageMagick does not seem to be installed. Documentation cannot be built])
-  CAN_BUILD_COMMENTS=no
-fi
-
 AC_PATH_PROG([XSLTPROC], [xsltproc], [])
 if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
   CAN_BUILD_COMMENTS=no
 fi
 
-AC_PATH_PROG([XMLLINT], [xmllint], [])
-if test "x$XMLLINT" = "x"; then
-	AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
-  CAN_BUILD_COMMENTS=no
-fi
-
 CAN_BUILD_PDF=${CAN_BUILD_COMMENTS}
+
+AC_PATH_PROG([IMAGEMAGICK], [convert], [])
+if test "x$IMAGEMAGICK" = "x"; then
+	AC_MSG_WARN([ImageMagick does not seem to be installed. Documentation cannot be built])
+  CAN_BUILD_PDF=no
+fi
 
 AC_PATH_PROG([DBLATEX], [dblatex], [])
 if test "x$DBLATEX" = "x"; then
@@ -193,6 +188,12 @@ fi
 
 AC_SUBST(CAN_BUILD_COMMENTS)
 AC_SUBST(CAN_BUILD_PDF)
+
+AC_PATH_PROG([XMLLINT], [xmllint], [])
+if test "x$XMLLINT" = "x"; then
+	AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
+fi
+
 
 dnl
 dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
