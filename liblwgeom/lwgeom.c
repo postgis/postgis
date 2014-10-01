@@ -261,7 +261,7 @@ LWGEOM *lwpoint_as_lwgeom(const LWPOINT *obj)
 /**
 ** Look-up for the correct MULTI* type promotion for singleton types.
 */
-static uint8_t MULTITYPE[17] =
+uint8_t MULTITYPE[NUMTYPES] =
 {
 	0,
 	MULTIPOINTTYPE,        /*  1 */
@@ -274,7 +274,7 @@ static uint8_t MULTITYPE[17] =
 	POLYHEDRALSURFACETYPE, /* 11 */
 	0, 0,
 	TINTYPE,               /* 14 */
-	0,0
+	0
 };
 
 /**

@@ -414,5 +414,6 @@ int gbox_centroid(const GBOX* gbox, POINT2D* out);
 /* Utilities */
 extern void trim_trailing_zeros(char *num);
 
+extern uint8_t MULTITYPE[NUMTYPES];
 
 #endif /* _LIBLWGEOM_INTERNAL_H */
