@@ -746,7 +746,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			<title>Description</title>
 
 			<para>Returns the azimuth in radians of the segment defined by the given
-			point-geometries, or NULL if the two points are coincident. The azimuth is north-based and is measured clockwise: North = 0; East = PI/2; South = PI; West = 3PI/2.</para>
+			point-geometries, or NULL if the two points are coincident. The azimuth is north-based and is measured clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
 
 			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
 				and a point. </para>

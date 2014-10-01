@@ -355,7 +355,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	{
 		azimuth = azimuth + M_PI * 2.0;
 	}
-	if (azimuth > (PI * 2.0))
+	if (azimuth > (M_PI * 2.0))
 	{
 		azimuth = azimuth - M_PI * 2.0;
 	}
