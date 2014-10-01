@@ -46,6 +46,7 @@ static void do_type_test(char * in, int type)
 			in, lwtype_name(h->type), lwtype_name(type));
 	CU_ASSERT_EQUAL(h->type, type);
 	lwgeom_free(h);
+	lwgeom_free(g);
 }
 
 
