@@ -465,7 +465,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			}
 #endif
 
-			geoms[i] = LWGEOM2GEOS(lwpoly_as_lwgeom(gv[i].geom));
+			geoms[i] = LWGEOM2GEOS(lwpoly_as_lwgeom(gv[i].geom), 0);
 			lwpoly_free(gv[i].geom);
 		}
 		rtdealloc(gv);
@@ -1259,7 +1259,7 @@ rt_raster_gdal_polygonize(
 			break;
 #endif
 
-			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom);
+			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
 			if (ggeom == NULL) {
 				rtwarn("Cannot test geometry for validity");
 				break;

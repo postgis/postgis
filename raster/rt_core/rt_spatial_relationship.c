@@ -193,7 +193,7 @@ rt_errorstate rt_raster_geos_spatial_relationship(
 	}
 
 	/* convert LWMPOLY to GEOSGeometry */
-	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1));
+	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1), 0);
 	lwmpoly_free(surface1);
 	if (geom1 == NULL) {
 		rterror("rt_raster_geos_spatial_relationship: Could not convert surface of the specified band from the first raster to a GEOSGeometry");
@@ -201,7 +201,7 @@ rt_errorstate rt_raster_geos_spatial_relationship(
 		return ES_ERROR;
 	}
 
-	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2));
+	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2), 0);
 	lwmpoly_free(surface2);
 	if (geom2 == NULL) {
 		rterror("rt_raster_geos_spatial_relationship: Could not convert surface of the specified band from the second raster to a GEOSGeometry");
@@ -1079,7 +1079,7 @@ rt_raster_intersects(
 				rtn = 0;
 				break;
 			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(hull[i]);
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(hull[i], 0);
 			if (NULL == ghull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
