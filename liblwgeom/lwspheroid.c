@@ -14,6 +14,9 @@
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
+/* GeographicLib */
+#include "geodesic.h"
+
 /**
 * Initialize spheroid object based on major and minor axis
 */

@@ -27,6 +27,14 @@
 #include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
+#ifdef USE_PRE22GEODESIC
+/* round to 100 nm precision */
+#define INVMINDIST 1.0e9
+#else
+/* round to 15 nm precision*/
+#define INVMINDIST 1.5e8
+#endif
+
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_uncached(PG_FUNCTION_ARGS);
 Datum geography_distance_tree(PG_FUNCTION_ARGS);
@@ -162,8 +170,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
 
-	/* Knock off any funny business at the micrometer level, ticket #2168 */
-	distance = round(distance * 10e8) / 10e8;
+	/* Knock off any funny business at the nanometer level, ticket #2168 */
+	distance = round(distance * INVMINDIST) / INVMINDIST;
 
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )

@@ -35,15 +35,6 @@
 #define USE_PRE22GEODESIC
 #undef USE_PRE22GEODESIC
 
-/* GeographicLib */
-#include "geodesic.h"
-
-/**
-* PI
-*/
-#define PI 3.1415926535897932384626433832795
-
-
 /**
 * Floating point comparators.
 */
