@@ -48,7 +48,7 @@ lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
 	ret->nrings = lwpoly->nrings;
 	ret->maxrings = lwpoly->nrings; /* Allocate room for sub-members, just in case. */
 	ret->rings = lwalloc(ret->maxrings * sizeof(LWGEOM*));
-	ret->bbox = lwpoly->bbox;
+	ret->bbox = lwpoly->bbox ? gbox_clone(lwpoly->bbox) : NULL;
 	for ( i = 0; i < ret->nrings; i++ )
 	{
 		ret->rings[i] = lwline_as_lwgeom(lwline_construct(ret->srid, NULL, ptarray_clone_deep(lwpoly->rings[i])));

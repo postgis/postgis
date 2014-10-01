@@ -7,6 +7,7 @@ PostGIS 2.1.5
 
  * Bug Fixes *
 
+  - #2949, Fix memory leak in lwgeom_mindistance2d for curve input
   - #2931, BOX representation is case sensitive
   - #2942, PostgreSQL 9.5 support
 
