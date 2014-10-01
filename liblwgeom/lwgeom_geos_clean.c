@@ -997,7 +997,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
-	LWGEOM *lwgeom_out, *lwgeom_tmp;
+	LWGEOM *lwgeom_out;
 
 	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -1052,12 +1052,19 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	GEOSGeom_destroy(geosout);
 
 	if ( lwgeom_is_collection(lwgeom_in) && ! lwgeom_is_collection(lwgeom_out) )
-	{
+	{{
+		LWGEOM **ogeoms = lwalloc(sizeof(LWGEOM*));
+		LWGEOM *ogeom;
 		LWDEBUG(3, "lwgeom_make_valid: forcing multi");
-		lwgeom_tmp = lwgeom_as_multi(lwgeom_out);
-		lwfree(lwgeom_out); /* note: only frees the wrapper, not the content */
-		lwgeom_out = lwgeom_tmp;
-	}
+		/* NOTE: this is safe because lwgeom_out is surely not lwgeom_in or
+		 * otherwise we couldn't have a collection and a non-collection */
+		assert(lwgeom_in != lwgeom_out);
+		ogeoms[0] = lwgeom_out;
+		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[lwgeom_out->type],
+		                          lwgeom_out->srid, lwgeom_out->bbox, 1, ogeoms);
+		lwgeom_out->bbox = NULL;
+		lwgeom_out = ogeom;
+	}}
 
 	lwgeom_out->srid = lwgeom_in->srid;
 	return lwgeom_out;
