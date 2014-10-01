@@ -306,7 +306,7 @@ lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
 		{
 			line = lwcircstring_segmentize((LWCIRCSTRING *)tmp, perQuad);
 			ptarray[i] = ptarray_clone_deep(line->points);
-			lwfree(line);
+			lwline_free(line);
 		}
 		else if (tmp->type == LINETYPE)
 		{
@@ -317,7 +317,7 @@ lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
 		{
 			line = lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
 			ptarray[i] = ptarray_clone_deep(line->points);
-			lwfree(line);
+			lwline_free(line);
 		}
 		else
 		{
@@ -773,7 +773,7 @@ lwpolygon_desegmentize(LWPOLY *poly)
 	{
 		for (i=0; i<poly->nrings; i++)
 		{
-			lwfree(geoms[i]);
+			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
 		return lwgeom_clone((LWGEOM *)poly);
 	}
@@ -802,7 +802,7 @@ lwmline_desegmentize(LWMLINE *mline)
 	{
 		for (i=0; i<mline->ngeoms; i++)
 		{
-			lwfree(geoms[i]);
+			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
 		return lwgeom_clone((LWGEOM *)mline);
 	}
@@ -830,7 +830,7 @@ lwmpolygon_desegmentize(LWMPOLY *mpoly)
 	{
 		for (i=0; i<mpoly->ngeoms; i++)
 		{
-			lwfree(geoms[i]);
+			lwfree(geoms[i]); /* TODO: should this be lwgeom_free instead ? */
 		}
 		return lwgeom_clone((LWGEOM *)mpoly);
 	}
