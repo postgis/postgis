@@ -905,7 +905,7 @@ lw_dist2d_poly_curvepoly(LWPOLY *poly1, LWCURVEPOLY *curvepoly2, DISTPTS *dl)
 {
 	LWCURVEPOLY *curvepoly1 = lwcurvepoly_construct_from_lwpoly(poly1);
 	int rv = lw_dist2d_curvepoly_curvepoly(curvepoly1, curvepoly2, dl);
-	lwfree(curvepoly1);
+	lwgeom_free((LWGEOM*)curvepoly1);
 	return rv;
 }
 
@@ -914,7 +914,7 @@ lw_dist2d_circstring_poly(LWCIRCSTRING *circ, LWPOLY *poly, DISTPTS *dl)
 {
 	LWCURVEPOLY *curvepoly = lwcurvepoly_construct_from_lwpoly(poly);
 	int rv = lw_dist2d_line_curvepoly((LWLINE*)circ, curvepoly, dl);
-	lwfree(curvepoly);
+	lwgeom_free((LWGEOM*)curvepoly);
 	return rv;
 }
 
