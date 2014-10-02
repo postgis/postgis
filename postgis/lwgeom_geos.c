@@ -1671,7 +1671,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	if ( LW_FALSE == gbox_overlaps_2d(bbox1, bbox2) ) {
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
 		lwgeom_free(lwgeom1);
-		PG_FREE_IF_COPY(geom1, 1);
+		PG_FREE_IF_COPY(geom1, 0);
 		result = geometry_serialize(lwresult) ;
 		lwgeom_free(lwresult) ;
 		PG_RETURN_POINTER(result);
