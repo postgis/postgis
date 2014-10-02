@@ -1803,11 +1803,11 @@ LWGEOM_UNPARSER_RESULT;
 /*
 ** Variants available for TWKB
 */
-#define TWKB_ID 0x01
-#define TWKB_NO_TYPE 0x02
-#define TWKB_SIZES 0x04
-#define TWKB_BBOXES 0x08
-
+#define TWKB_ID 0x01 /*User wants id*/
+#define TWKB_SIZES 0x02 /*User wants sizes*/
+#define TWKB_BBOXES 0x04 /*User wants bboxes*/
+#define TWKB_NO_TYPE 0x08 /*No type because it is a sub geoemtry*/
+#define TWKB_NO_ID 0x10 /*No ID because it is a subgeoemtry*/
 
 /*
 ** New parsing and unparsing functions.
