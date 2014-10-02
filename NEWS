@@ -12,6 +12,7 @@ PostGIS 2.1.5
   - #2949, Fix memory leak in lwgeom_mindistance2d for curve input
   - #2931, BOX representation is case sensitive
   - #2942, PostgreSQL 9.5 support
+  - #2953, 2D stats not generated when Z/M values are extreme
 
 
 PostGIS 2.1.4
