@@ -1305,6 +1305,10 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 			continue;
 		}
 		
+		/* If we're in 2D mode, zero out the higher dimensions for "safety" */
+		if ( mode == 2 )
+			gbox.zmin = gbox.zmax = gbox.mmin = gbox.mmax = 0.0;
+		
 		/* Check bounds for validity (finite and not NaN) */
 		if ( ! gbox_is_valid(&gbox) )
 		{
