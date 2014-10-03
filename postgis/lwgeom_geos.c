@@ -1665,10 +1665,13 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(geom1);
 	}
 
+	/* WARNING: this is really a BOX2DF, use only xmin and ymin fields */
 	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
 
-	/* If bbox1 outside of bbox, return empty */
-	if ( LW_FALSE == gbox_overlaps_2d(bbox1, bbox2) ) {
+	/* If bbox1 outside of bbox2, return empty */
+	if ( bbox1->xmin > bbox2->xmax || bbox1->xmax < bbox2->xmin ||
+			 bbox1->ymin > bbox2->ymax || bbox1->ymax < bbox2->ymin )
+	{
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
 		lwgeom_free(lwgeom1);
 		PG_FREE_IF_COPY(geom1, 0);
@@ -1677,7 +1680,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 	}
 
-	/* if bbox1 is covered by bbox, return lwgeom1 */
+	/* if bbox1 is covered by bbox2, return lwgeom1 */
 	if ( bbox1->xmax <= bbox2->xmax && bbox1->xmin >= bbox2->xmin &&
 			 bbox1->ymax <= bbox2->ymax && bbox1->ymin >= bbox2->ymin )
 	{
