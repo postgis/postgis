@@ -10,7 +10,7 @@
   <para>For loading rasters from raster files please refer to <xref linkend="RT_Loading_Rasters" /></para>  
    
     <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
-<programlisting>CREATE TABLE dummy_rast(rid integer, rast raster);
+<programlisting language="sql">CREATE TABLE dummy_rast(rid integer, rast raster);
 INSERT INTO dummy_rast(rid, rast)
 VALUES (1,
 ('01' -- little endian (uint8 ndr)
