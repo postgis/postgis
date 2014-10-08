@@ -1224,23 +1224,15 @@ Run tests: 90</programlisting>
   <sect1 id="installing_pagc_address_standardizer"><title>Installing and Using the address standardizer</title>
   		<para>The <code>address_standardizer</code> extension used to be a separate package that required separate download. From PostGIS 2.2 on, it is now bundled in.
   		For more information about the address_standardize, what it does, and how to configure it for your needs, refer to <xref linkend="Address_Standardizer" />.</para>
-  		<para>This standardizer can be use in conjunction with the PostGIS packaged tiger geocoder extension as a replacement for the <xref linkend="Normalize_Address" /> discussed.
+  		<para>This standardizer can be used in conjunction with the PostGIS packaged tiger geocoder extension as a replacement for the <xref linkend="Normalize_Address" /> discussed.
   		To use as replacement refer to  <xref linkend="tiger_pagc_address_standardizing" />.
-  		You can also use it as a building block for your own geocoder.</para>
+  		You can also use it as a building block for your own geocoder or use it to standardize your addresses for easier compare of addresses.</para>
 	
-			<para>The address standardizer relies on PCRE which is usually already installed on most Nix systems, 
-but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. It also requires Perl with the <code>Regexp::Assemble</code> installed </para>
-			<para>For Windows users, the PostGIS 2.1+ bundle is packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
-			<para>Installing Regex::Assemble</para>
-			<programlisting>cpan Regexp::Assemble</programlisting>
-			<para>or if you are on Ubuntu / Debian you might need to do</para>
-			<programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
-			<para>Compiling</para>
-			<programlisting>cd postgis-&last_release_version;/extensions/address_standardizer
-make
-#if you have in non-standard location pcre try
-# make SHLIB_LINK="-L/path/pcre/lib -lpostgres -lpgport -lpcre" CPPFLAGS="-I.  -I/path/pcre/include" 
-make install</programlisting>
+		<para>The address standardizer relies on PCRE which is usually already installed on many Nix systems, 
+but you can download the latest at: <ulink url="http://www.pcre.org">http://www.pcre.org</ulink>. If during <xref linkend="installation_configuration" />, PCRE is found, then the address standardizer extension will automatically be built.  If you have a custom pcre install you want to use instead, pass to configure <code>--with-pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the root folder for your pcre include and lib directories.</para>
+
+		<para>For Windows users, the PostGIS 2.1+ bundle is packaged with the address_standardizer already so no need to compile and can move straight to <code>CREATE EXTENSION</code> step.</para>
+
 
       <para>Once you have installed, you can connect to your database and run the SQL:</para>
 			<programlisting>CREATE EXTENSION address_standardizer;</programlisting>
@@ -1252,6 +1244,13 @@ make install</programlisting>
 			<screen> num |         street         |  city  | state |  zip
 -----+------------------------+--------+-------+-------
  1   | Devonshire Place PH301 | Boston | MA    | 02109</screen>
+ 
+        <sect2><title>Installing Regex::Assemble</title>
+            <para>Perl Regex:Assemble is no longer needed for compiling address_standardizer extension since the files it generates are part of the source tree.  However if you need to edit the <filename>usps-st-city-orig.txt</filename> or <filename>usps-st-city-orig.txt usps-st-city-adds.tx</filename>, you need to rebuild <filename>parseaddress-stcities.h</filename> which does require Regex:Assemble.</para>
+            <programlisting>cpan Regexp::Assemble</programlisting>
+            <para>or if you are on Ubuntu / Debian you might need to do</para>
+            <programlisting>sudo perl -MCPAN -e "install Regexp::Assemble"</programlisting>
+        </sect2>
 	</sect1>
   
   <sect1 id="loading_extras_tiger_geocoder">
