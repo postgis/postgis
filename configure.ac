@@ -928,6 +928,70 @@ AC_DEFINE_UNQUOTED([POSTGIS_AUTOCACHE_BBOX], [1], [Enable caching of bounding bo
 dnl Always enable use of ANALYZE statistics by default
 AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 
+dnl ====================================
+dnl address standardizer stuff
+dnl ====================================
+AC_ARG_WITH([address_standardizer],
+    [AS_HELP_STRING([--without-address_standardizer],
+                    [Disable the address_standardizer extension])],
+    [], [])
+
+if test "x$address_standardizer" != "xno"; then
+    dnl ===========================================================================
+    dnl Detect the version of PCRE installed
+    dnl ===========================================================================
+    LDFLAGS="$LDFLAGS_SAVE"
+    CFLAGS="$CFLAGS_SAVE"
+    
+    CHECK_PCRE=yes
+    HAVE_PCRE=no
+    ADDRESS_STANDARDIZER="address_standardizer"
+    AC_ARG_WITH([pcredir], 
+        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])], 
+        [PCREDIR="$withval"], [PCREDIR=""])
+    
+    if test ! "x$PCREDIR" = "x"; then
+        dnl Make sure that the directory exists 
+        if test "x$PCREDIR" = "xyes"; then
+            AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
+        else
+            if test -d "$PCREDIR"; then
+                AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
+    
+                dnl Add the include directory to PCRE_CPPFLAGS	
+                PCRE_CPPFLAGS="-I$PCREDIR/include"	
+                PCRE_LDFLAGS="-L$PCREDIR/lib"
+            else
+                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found]) 
+            fi
+        fi
+    fi
+    
+    
+    dnl Check that we can find the pcre.h header file
+    CPPFLAGS_SAVE="$CPPFLAGS"
+    CPPFLAGS="$PCRE_CPPFLAGS"
+    
+    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])	
+    AC_SUBST([PCRE])
+    AC_SUBST([HAVE_PCRE])
+    AC_SUBST([ADDRESS_STANDARDIZER])
+    
+    dnl Return the PCRE version number
+    AC_DEFINE_UNQUOTED([PCRE_VERSION], [$PCRE_VERSION], [PCRE library version])
+    AC_SUBST([PCRE_VERSION])
+    CPPFLAGS="$CPPFLAGS_SAVE"
+    
+    AC_SUBST([PCRE_CPPFLAGS])
+    AC_SUBST([PCRE_LDFLAGS])
+    
+    
+
+else
+    ADDRESS_STANDARDIZER=""
+    AC_SUBST([ADDRESS_STANDARDIZER])
+    AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
+fi
 
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
@@ -1167,70 +1231,7 @@ else
 	RT_MAKEFILE_LIST="raster/Makefile"
 fi
 
-dnl ====================================
-dnl address standardizer stuff
-dnl ====================================
-AC_ARG_WITH([address_standardizer],
-    [AS_HELP_STRING([--without-address_standardizer],
-                    [Disable the address_standardizer extension])],
-    [], [])
 
-if test "x$address_standardizer" != "xno"; then
-    dnl ===========================================================================
-    dnl Detect the version of PCRE installed
-    dnl ===========================================================================
-    LDFLAGS="$LDFLAGS_SAVE"
-    CFLAGS="$CFLAGS_SAVE"
-    
-    CHECK_PCRE=yes
-    HAVE_PCRE=no
-    ADDRESS_STANDARDIZER="address_standardizer"
-    AC_ARG_WITH([pcredir], 
-        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])], 
-        [PCREDIR="$withval"], [PCREDIR=""])
-    
-    if test ! "x$PCREDIR" = "x"; then
-        dnl Make sure that the directory exists 
-        if test "x$PCREDIR" = "xyes"; then
-            AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
-        else
-            if test -d "$PCREDIR"; then
-                AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
-    
-                dnl Add the include directory to PCRE_CPPFLAGS	
-                PCRE_CPPFLAGS="-I$PCREDIR/include"	
-                PCRE_LDFLAGS="-L$PCREDIR/lib"
-            else
-                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found]) 
-            fi
-        fi
-    fi
-    
-    
-    dnl Check that we can find the pcre.h header file
-    CPPFLAGS_SAVE="$CPPFLAGS"
-    CPPFLAGS="$PCRE_CPPFLAGS"
-    
-    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])	
-    AC_SUBST([PCRE])
-    AC_SUBST([HAVE_PCRE])
-    AC_SUBST([ADDRESS_STANDARDIZER])
-    
-    dnl Return the PCRE version number
-    AC_DEFINE_UNQUOTED([PCRE_VERSION], [$PCRE_VERSION], [PCRE library version])
-    AC_SUBST([PCRE_VERSION])
-    CPPFLAGS="$CPPFLAGS_SAVE"
-    
-    AC_SUBST([PCRE_CPPFLAGS])
-    AC_SUBST([PCRE_LDFLAGS])
-    
-    
-
-else
-    ADDRESS_STANDARDIZER=""
-    AC_SUBST([ADDRESS_STANDARDIZER])
-    AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
-fi
 
 
 
