@@ -18,6 +18,10 @@ ifeq (@SFCGAL@,sfcgal)
 	SUBDIRS += postgis_sfcgal
 endif
 
+ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
+	SUBDIRS += address_standardizer
+endif
+
 all clean distclean install uninstall:
 	for DIR in $(SUBDIRS); do \
 		echo "---- Making $@ in $${DIR}"; \
