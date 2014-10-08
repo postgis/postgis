@@ -90,7 +90,8 @@ parseaddress-regex.h: mk-st-regexp
 	./mk-st-regexp > parseaddress-regex.h
 
 dist-clean:
-	rm -f mk-st-regexp mk-city-regex usps-st-city-name.txt parseaddress-stcities.h parseaddress-regex.h test_main
+    rm -f mk-st-regexp mk-city-regex usps-st-city-name.txt test_main
+	#rm -f mk-st-regexp mk-city-regex usps-st-city-name.txt parseaddress-stcities.h parseaddress-regex.h test_main
 
 test:
 	@echo "To run the test on parse_address do the follow:"
