@@ -171,7 +171,8 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	  
 	 <listitem>
 			<para>
-				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems) and <code>Regex::Assemble</code> perl CPAN package.  The  <code>Regex::Assemble</code> is only needed for compilation, not for running in PostgreSQL.
+				In order to build the <xref linkend="Address_Standardizer" /> you will also need PCRE <ulink url="http://www.pcre.org">http://www.pcre.org</ulink> (which generally is already installed on nix systems).  <code>Regex::Assemble</code> perl CPAN package is only needed if you want to rebuild the data encoded in <filename>parseaddress-stcities.h</filename>.
+				<xref linkend="Address_Standardizer" /> will automatically be built if it detects a PCRE library, or you pass in a valid <varname>--with-pcre-dir=/path/to/pcre</varname> during configure.
 			</para>
 		</listitem>
 
@@ -467,7 +468,19 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
-
+		
+		<varlistentry>
+		  <term><command>--with-pcredir=DIR</command></term>
+		  <listitem>
+			<para>
+			  <ulink url="http://www.pcre.org/">PCRE</ulink> is an BSD-licensed Perl Compatible Regular Expression library required by address_standardizer extension. Use this
+			  parameter (<command>--with-pcredir=/path/to/pcredir</command>) to
+			  manually specify a particular PCRE installation directory that
+			  PostGIS will build against.
+			</para>
+		  </listitem>
+		</varlistentry>
+		
 		<varlistentry>
 		  <term><command>--with-gui</command></term>
 		  <listitem>
