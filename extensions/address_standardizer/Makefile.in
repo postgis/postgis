@@ -83,11 +83,11 @@ mk-city-regex: mk-city-regex.pl usps-st-city-name.txt
 usps-st-city-name.txt: usps-st-city-orig.txt usps-st-city-adds.txt
 	cat usps-st-city-orig.txt usps-st-city-adds.txt | sort -u >usps-st-city-name.txt
 
-parseaddress-stcities.h: mk-city-regex
-	./mk-city-regex > parseaddress-stcities.h
+#parseaddress-stcities.h: mk-city-regex
+#	./mk-city-regex > parseaddress-stcities.h
 
-parseaddress-regex.h: mk-st-regexp
-	./mk-st-regexp > parseaddress-regex.h
+#parseaddress-regex.h: mk-st-regexp
+#	./mk-st-regexp > parseaddress-regex.h
 
 dist-clean:
 	rm -f mk-st-regexp mk-city-regex usps-st-city-name.txt test_main
