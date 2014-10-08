@@ -931,12 +931,12 @@ AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 dnl ====================================
 dnl address standardizer stuff
 dnl ====================================
-AC_ARG_WITH([address_standardizer],
-    [AS_HELP_STRING([--without-address_standardizer],
+AC_ARG_WITH([address-standardizer],
+    [AS_HELP_STRING([--without-address-standardizer],
                     [Disable the address_standardizer extension])],
     [], [])
 
-if test "x$address_standardizer" != "xno"; then
+if test "x$with_address_standardizer" != "xno"; then
     dnl ===========================================================================
     dnl Detect the version of PCRE installed
     dnl ===========================================================================
