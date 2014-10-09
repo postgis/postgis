@@ -982,6 +982,70 @@ SELECT
 	  </refsection>
 	</refentry>
 
+
+<refentry id="ST_GeomFromTWKB">
+	  <refnamediv>
+		<refname>ST_GeomFromTWKB</refname>
+		<refpurpose>Creates a geometry instance from a Tiny Well-Known Binary geometry
+		representation (TWKB).</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a tiny well-known
+		binary representation of a geometry and creates an instance of the appropriate
+		geometry type.</para>
+
+		<para>SRID always defaults to 0 (Unknown).</para>
+		<note>
+		  <para>TWKB doesn't make any difference of Z and M. So a 3D geoemtry in TWKB will always be a GeometryZ, like PointZ when converted to PostGIS geometry</para>
+		</note>	
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table 
+		-- unless standard_conforming_strings is set to on.
+SELECT ST_AsEWKT(
+ST_GeomFromTWKB(E'\\x304202f7f40dbce4040105')
+);
+					  st_asewkt
+------------------------------------------------------
+LINESTRING(-113.98 39.198,-113.981 39.195)
+(1 row)
+
+SELECT
+  ST_AsText(
+	ST_GeomFromTWKB(
+	  ST_AsTWKB('POINT(2 5)'::geometry,0)
+	)
+  );
+ st_astext
+------------
+ POINT(2 5)
+(1 row)</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_GeomFromWKB" />,<xref linkend="ST_AsTWKB" />,<xref linkend="ST_AsTWKBAgg" />,<xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
+	  </refsection>
+	</refentry>
+
   <refentry id="ST_LineFromEncodedPolyline">
     <refnamediv>
     <refname>ST_LineFromEncodedPolyline</refname>

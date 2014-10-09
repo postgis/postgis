@@ -354,6 +354,29 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(bytea_wkb, 0);
 	PG_RETURN_POINTER(geom);
 }
+/*
+ * LWGEOMFromTWKB(wkb)
+ * NOTE: twkb is in *binary* not hex form.
+ *
+ */
+PG_FUNCTION_INFO_V1(LWGEOMFromTWKB);
+Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS)
+{
+	bytea *bytea_twkb = (bytea*)PG_GETARG_BYTEA_P(0);
+	GSERIALIZED *geom;
+	LWGEOM *lwgeom;
+	uint8_t *twkb = (uint8_t*)VARDATA(bytea_twkb);
+	
+	lwgeom = lwgeom_from_twkb(twkb, VARSIZE(bytea_twkb)-VARHDRSZ, LW_PARSER_CHECK_ALL);
+
+	if ( lwgeom_needs_bbox(lwgeom) )
+		lwgeom_add_bbox(lwgeom);
+
+	geom = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(bytea_twkb, 0);
+	PG_RETURN_POINTER(geom);
+}
 
 /*
  * WKBFromLWGEOM(lwgeom) --> wkb

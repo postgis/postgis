@@ -155,3 +155,58 @@ varint_u64_encode_buf(uint64_t val, uint8_t **buf)
   _varint_u64_encode_buf(val, buf);
   return 0;
 }
+
+/*Read varint*/
+
+/* Read from unsigned 64bit varint */
+uint64_t varint_u64_read(uint8_t **data, uint8_t *the_end)
+{
+    uint64_t nVal = 0;
+    int nShift = 0;
+    uint8_t nByte;
+    
+    while(*data<=the_end)//Check so we don't read beyond the twkb
+    {
+        nByte = (uint8_t) **data; //read a byte
+        if (!(nByte & 0x80)) //If it is the last byte in the varInt ....
+        {
+            (*data) ++; //move the "cursor" one step
+            return nVal | ((uint64_t)nByte << nShift);	 //Move the last read byte to the most significant place in the result and return the whole result
+        }
+        /*We get here when there is more to read in the input varInt*/
+        nVal |= ((uint64_t)(nByte & 0x7f)) << nShift; //Here we take the least significant 7 bits of the read byte and put it in the most significant place in the result variable. 
+        (*data) ++; //move the "cursor" of the input buffer step (8 bits)
+        nShift += 7; //move the cursor in the resulting variable (7 bits)
+    }
+     lwerror("VarInt value goes beyond TWKB");
+    return 0;
+}
+
+/* Read from signed 64bit varint */
+uint64_t varint_s64_read(uint8_t **data, uint8_t *the_end)
+{
+    uint64_t nVal = varint_u64_read(data,the_end);
+    /* un-zig-zag-ging */
+    if ((nVal & 1) == 0) 
+        return (((uint64_t)nVal) >> 1);
+    else
+        return (uint64_t) (-(nVal >> 1)-1);
+}
+
+/* Used to jump over varint values as efficient as possible*/
+void varint_64_jump_n(uint8_t **data, int nValues, uint8_t *the_end)
+{
+    uint8_t nByte;
+    while(nValues>0)//Check so we don't read beyond the twkb
+    {
+	 if(*data>the_end)
+		 lwerror("VarInt value goes beyond TWKB");
+        nByte = (uint8_t) **data; //read a byte
+        if (!(nByte & 0x80)) //If it is the last byte in the varInt ....
+        {
+             nValues--;//...We count one more varint
+        }       
+        (*data) ++; //move the "cursor" of the input buffer step (8 bits)
+    }
+     return;
+}

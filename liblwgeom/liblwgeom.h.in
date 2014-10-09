@@ -1846,6 +1846,10 @@ extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check);
+/**
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
+ */
+extern LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check);
 
 /**
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
