@@ -202,7 +202,7 @@ static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int fac
 		for ( j = 0; j < dims; j++ )
 		{
 			LWDEBUGF(4, "dim nr %d, refvalue is %d",j, accum_rel[0][j]);
-			r=(int64_t) lround(factor*dbl_ptr[j]-accum_rel[0][j]);
+			r=(int64_t) lround(factor*dbl_ptr[j])-accum_rel[0][j];
 			accum_rel[0][j]+=r;		
 			if(variant&TWKB_BBOXES)
 			{
@@ -249,7 +249,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t **buf, uint8_t vari
 			/*To get the relative coordinate we don't get the distance from the last point
 			but instead the distance from our accumulated last point
 			This is important to not build up a accumulated error when rounding the coordinates*/				
-			r=(int64_t) lround(factor*dbl_ptr[j]-accum_rel[j]);		
+			r=(int64_t) lround(factor*dbl_ptr[j])-accum_rel[j];		
 			LWDEBUGF(4, "deltavalue: %d, ",r );				
 			accum_rel[j]+=r;
 			varint_s64_encode_buf(r,buf);
