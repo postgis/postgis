@@ -429,7 +429,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(TWKBFromLWGEOM);
 Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	uint8_t *twkb;
 	size_t twkb_size;
@@ -437,6 +437,11 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
  	bytea *result;
 	int64_t id;
 	int prec;
+	
+	/*check for null input since we cannot have the sql-function as strict. 
+	That is because we use null as default for optional ID*/	
+	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+		geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	
 	/* If user specified precision, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )

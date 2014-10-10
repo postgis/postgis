@@ -260,3 +260,4 @@ ERROR:  invalid GML representation
 #2712|LINESTRING EMPTY
 #2788|f|Self-intersection|POINT(1 1)
 #2870|Point[GS]
+#2956|t
