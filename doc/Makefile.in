@@ -104,6 +104,7 @@ endif
 all: $(BUILD_TARGET)
 
 XML_SOURCES = \
+    extras_address_standardizer.xml \
 	extras_historytable.xml \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
@@ -118,6 +119,7 @@ XML_SOURCES = \
 	reference_constructor.xml \
 	reference_editor.xml \
 	reference_exception.xml \
+	reference_guc.xml \
 	reference_lrs.xml \
 	reference_management.xml \
 	reference_measure.xml \
