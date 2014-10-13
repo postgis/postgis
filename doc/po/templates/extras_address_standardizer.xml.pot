@@ -612,9 +612,9 @@ msgstr ""
 #: extras_address_standardizer.xml:328
 #, no-c-format
 msgid ""
-      "SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234');\n"
-      " num |      street      |  city  |  zip  | zipplus\n"
-      "-----+------------------+--------+-------+---------\n"
+      "SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234');\n"
+      " num |      street      |  city  |  zip  | zipplus\n"
+      "-----+------------------+--------+-------+---------\n"
       " 1   | Devonshire Place | Boston | 02109 | 1234"
 msgstr ""
 
@@ -652,7 +652,7 @@ msgstr ""
 #: extras_address_standardizer.xml:386
 #, no-c-format
 msgid ""
-      "SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
+      "SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
       "                           'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');"
 msgstr ""
 
@@ -666,8 +666,8 @@ msgstr ""
 #: extras_address_standardizer.xml:390
 #, no-c-format
 msgid ""
-      "SELECT (each(hstore(p))).*  \n"
-      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
+      "SELECT (each(hstore(p))).*  \n"
+      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
       "   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234') As p;"
 msgstr ""
 
@@ -675,24 +675,24 @@ msgstr ""
 #: extras_address_standardizer.xml:393
 #, no-c-format
 msgid ""
-      "key     |      value\n"
-      "------------+-----------------\n"
-      " box        |\n"
-      " city       | BOSTON\n"
-      " name       | DEVONSHIRE\n"
-      " qual       |\n"
-      " unit       | # PENTHOUSE 301\n"
-      " extra      |\n"
-      " state      | MA\n"
-      " predir     |\n"
-      " sufdir     |\n"
-      " country    | USA\n"
-      " pretype    |\n"
-      " suftype    | PL\n"
-      " building   |\n"
-      " postcode   | 02109\n"
-      " house_num  | 1\n"
-      " ruralroute |\n"
+      "key     |      value\n"
+      "------------+-----------------\n"
+      " box        |\n"
+      " city       | BOSTON\n"
+      " name       | DEVONSHIRE\n"
+      " qual       |\n"
+      " unit       | # PENTHOUSE 301\n"
+      " extra      |\n"
+      " state      | MA\n"
+      " predir     |\n"
+      " sufdir     |\n"
+      " country    | USA\n"
+      " pretype    |\n"
+      " suftype    | PL\n"
+      " building   |\n"
+      " postcode   | 02109\n"
+      " house_num  | 1\n"
+      " ruralroute |\n"
       "(16 rows)"
 msgstr ""
 
