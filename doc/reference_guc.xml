@@ -106,7 +106,7 @@ SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';</progra
 				</para>
 
 				<para>
-					Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <ulink url='http://www.gdal.org/formats_list.html'>GDAL Raster Formats</ulink>. Multiple drivers can be specified by putting a space between each driver.
+					Enabled GDAL specified drivers can be specified by the driver's short-name or code. Driver short-names or codes can be found at <ulink url="http://www.gdal.org/formats_list.html">GDAL Raster Formats</ulink>. Multiple drivers can be specified by putting a space between each driver.
 				</para>
 
 				<note>
