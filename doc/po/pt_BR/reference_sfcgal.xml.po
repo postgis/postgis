@@ -1,49 +1,51 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
+# Dauro Lima Sobrinho <daurolima@gmail.com>, 2014
+# Marcelo Soares Souza <marcelo@juntadados.org>, 2014
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2013-05-12 08:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2014-08-01 21:21+0000\n"
+"Last-Translator: Dauro Lima Sobrinho <daurolima@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/postgis-1/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Tag: title
 #: reference_sfcgal.xml:4
 #, no-c-format
 msgid "Using SFCGAL Advanced 2D/3D functions"
-msgstr ""
+msgstr "Utilizando funções SFCGAL 2D/3D avançadas"
 
 #. Tag: para
 #: reference_sfcgal.xml:5
 #, no-c-format
 msgid "TODO Introduction part"
-msgstr ""
+msgstr "Parte da Introdução do TODO"
 
 #. Tag: para
 #: reference_sfcgal.xml:8
 #, no-c-format
 msgid "TODO Install part"
-msgstr ""
+msgstr "Parte de Instalação do TODO"
 
 #. Tag: refname
 #: reference_sfcgal.xml:14
 #, no-c-format
 msgid "ST_Extrude"
-msgstr ""
+msgstr "ST_Extrude"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:16
 #, no-c-format
 msgid "Extrude a surface to a related volume"
-msgstr ""
+msgstr "Extrude uma superfície a um volume relacionado"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:21
@@ -54,7 +56,7 @@ msgid ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>geometry <function>ST_Extrude</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> <paramdef><type>float</type> <parameter>x</parameter></paramdef> <paramdef><type>float</type> <parameter>y</parameter></paramdef> <paramdef><type>float</type> <parameter>z</parameter></paramdef>"
 
 #. Tag: title
 #: reference_sfcgal.xml:32 reference_sfcgal.xml:61 reference_sfcgal.xml:90
@@ -62,7 +64,7 @@ msgstr ""
 #: reference_sfcgal.xml:206
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descrição"
 
 #. Tag: para
 #: reference_sfcgal.xml:34 reference_sfcgal.xml:63 reference_sfcgal.xml:92
@@ -70,7 +72,7 @@ msgstr ""
 #: reference_sfcgal.xml:208
 #, no-c-format
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilidade"
 
 #. Tag: para
 #: reference_sfcgal.xml:35 reference_sfcgal.xml:64 reference_sfcgal.xml:93
@@ -78,7 +80,7 @@ msgstr ""
 #: reference_sfcgal.xml:209
 #, no-c-format
 msgid "&sfcgal_required;"
-msgstr ""
+msgstr "&sfcgal_required;"
 
 #. Tag: para
 #: reference_sfcgal.xml:36 reference_sfcgal.xml:65 reference_sfcgal.xml:94
@@ -86,7 +88,7 @@ msgstr ""
 #: reference_sfcgal.xml:210
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:37 reference_sfcgal.xml:66 reference_sfcgal.xml:95
@@ -94,7 +96,7 @@ msgstr ""
 #: reference_sfcgal.xml:211
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:38 reference_sfcgal.xml:67 reference_sfcgal.xml:96
@@ -102,19 +104,19 @@ msgstr ""
 #: reference_sfcgal.xml:212
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refname
 #: reference_sfcgal.xml:46
 #, no-c-format
 msgid "ST_StraightSkeleton"
-msgstr ""
+msgstr "ST_StraightSkeleton"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:48
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
-msgstr ""
+msgstr "Calcule um esqueleto em linha reta de uma geometria"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:53
@@ -122,19 +124,19 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:75
 #, no-c-format
 msgid "ST_IsPlanar"
-msgstr ""
+msgstr "ST_IsPlanar"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:77
 #, no-c-format
 msgid "Check if a surface is or not planar"
-msgstr ""
+msgstr "Verifique se a superfície é ou não planar"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:82
@@ -142,19 +144,19 @@ msgstr ""
 msgid ""
 "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:104
 #, no-c-format
 msgid "ST_Orientation"
-msgstr ""
+msgstr "ST_Orientation"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:106
 #, no-c-format
 msgid "Determine surface orientation"
-msgstr ""
+msgstr "Determine orientação da superfície"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:111
@@ -162,19 +164,19 @@ msgstr ""
 msgid ""
 "<funcdef>integer <function>ST_Orientation</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>integer <function>ST_Orientation</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:133
 #, no-c-format
 msgid "ST_ForceLHR"
-msgstr ""
+msgstr "ST_ForceLHR"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:135
 #, no-c-format
 msgid "Force LHR orientation"
-msgstr ""
+msgstr "Orientação força LHR"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:140
@@ -182,19 +184,19 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:161
 #, no-c-format
 msgid "ST_MinkowskiSum"
-msgstr ""
+msgstr "ST_MinkowskiSum"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:163
 #, no-c-format
 msgid "Perform Minkowski sum"
-msgstr ""
+msgstr "Executar soma Minkowski"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:168
@@ -203,19 +205,19 @@ msgid ""
 "<funcdef>geometry <function>ST_Minkowski</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>geometry <function>ST_Minkowski</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:191
 #, no-c-format
 msgid "ST_Tesselate"
-msgstr ""
+msgstr "ST_Tesselate"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:193
 #, no-c-format
 msgid "Perform surface Tesselation"
-msgstr ""
+msgstr "Realize Tesselation superfície"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:198
@@ -223,4 +225,4 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>geometry <function>ST_Tesselate</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
