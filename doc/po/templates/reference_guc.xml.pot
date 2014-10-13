@@ -144,7 +144,7 @@ msgstr ""
 #: reference_guc.xml:72
 #, no-c-format
 msgid ""
-      "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
+      "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
       "SET postgis.gdal_datapath TO default;"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 #: reference_guc.xml:78
 #, no-c-format
 msgid ""
-      "ALTER DATABASE gisdb\n"
+      "ALTER DATABASE gisdb\n"
       "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 #: reference_guc.xml:153
 #, no-c-format
 msgid ""
-      "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+      "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
       "SET postgis.gdal_enabled_drivers = default;"
 msgstr ""
 
@@ -330,9 +330,9 @@ msgstr ""
 #: reference_guc.xml:220
 #, no-c-format
 msgid ""
-      "SET postgis.enable_outdb_rasters TO True;\n"
-      "SET postgis.enable_outdb_rasters = default;\n"
-      "SET postgis.enable_outdb_rasters = True;\n"
+      "SET postgis.enable_outdb_rasters TO True;\n"
+      "SET postgis.enable_outdb_rasters = default;\n"
+      "SET postgis.enable_outdb_rasters = True;\n"
       "SET postgis.enable_outdb_rasters = False;"
 msgstr ""
 
