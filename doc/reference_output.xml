@@ -1178,7 +1178,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
 			<para>The fourth parameter is optional. If it is set to true, the size of the geometry is included</para>
 			<note>
-			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">https://github.com/nicklasaven/TWKB</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">https://github.com/nicklasaven/twkb_web"</ulink></para>
+			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink> , and code for building a client can be found <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink></para>
 			</note>		
 			<note>
 			  <para>TWKB doesn't make any difference of Z and M. So PointM and PointZ will give the same twkb representation.</para>
