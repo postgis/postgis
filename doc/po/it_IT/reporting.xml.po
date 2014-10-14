@@ -45,7 +45,7 @@ msgstr ""
 "sviluppatori PostGIS di replicarlo, quindi idealmente contiene uno script "
 "che lo rende evidente e un elenco di informazioni sull'ambiente in cui si "
 "verifica. Le informazioni indispensabili possono essere estratte eseguendo "
-"code>SELECT postgis_full_version()</code> [per postgis] and <code>SELECT "
+"<code>SELECT postgis_full_version()</code> [per postgis] and <code>SELECT "
 "version()</code> [per postgresql]."
 
 #. Tag: para
