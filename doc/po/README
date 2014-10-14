@@ -9,3 +9,21 @@ localized manual.
 Run ``make update-po`` from the parent directory to
 update the translation files to be in sync with the 
 official documentation.
+
+Using transifex
+---------------
+
+Transifex web-ui to translation was setup here:
+https://www.transifex.com/projects/p/postgis-1
+
+Run ``make update-tx`` from the parent directory to
+update the transifex command-line tool configuration,
+found in ../.tx/config (only needed when new doc sources
+are added);
+
+Push locally updated templates to transifex with ``tx push -t``.
+Push locally updated translations to transifex with ``tx push -s``.
+
+Pull remotely updated translations with ``tx pull``
+
+See ``tx help``.
