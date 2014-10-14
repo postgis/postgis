@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Tommaso Di Bucchianico, 2013
 msgid ""
@@ -9,11 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2012-09-14 21:04+0000\n"
 "PO-Revision-Date: 2013-12-01 05:50+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis-1/language/it_IT/)\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
+"postgis-1/language/it_IT/)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: para
@@ -23,7 +24,11 @@ msgid ""
 "This section lists the PostgreSQL data types installed by PostGIS. Note we "
 "describe the casting behavior of these which is very important especially "
 "when designing your own functions."
-msgstr "Questa sezione illustra i tipi di dati di PostgreSQL che vengono installati da Postgis. Vengono illustrati anche i metodi per eseguire il cast tra diversi tipi, cosa particolarmente importante per la realizzazione di funzioni proprie."
+msgstr ""
+"Questa sezione illustra i tipi di dati di PostgreSQL che vengono installati "
+"da Postgis. Vengono illustrati anche i metodi per eseguire il cast tra "
+"diversi tipi, cosa particolarmente importante per la realizzazione di "
+"funzioni proprie."
 
 #. Tag: para
 #: reference_type.xml:8
@@ -32,10 +37,17 @@ msgid ""
 "A Cast is when one type is coerced into another type. PostgreSQL is unique "
 "from most databases in that it allows you to define casting behavior for "
 "custom types and the functions used for casting. A cast can be specified as "
-"automatic in which case, you do not have to do a CAST(myfoo As otherfootype)"
-" or myfoo::otherfootype if you are feeding it to a function that only works "
+"automatic in which case, you do not have to do a CAST(myfoo As otherfootype) "
+"or myfoo::otherfootype if you are feeding it to a function that only works "
 "with otherfootype and there is an automatic cast in place for it."
-msgstr "Effettuare il cast significa forzare un tipo in un altro tipo di dato. PostgreSQL è tra i pochi database che offrono la possibilità di definire comportamento di casting per tipi personalizzati e le funzioni usate per il casting. Un cast può essere definito come automatico: non è necessario utilizzare la funzione CAST(myfoo As otherfootype) oppure myfoo::otherfootype se si esegue una funzione che supporta unicamente il tipo otherfootype. In questo caso il cast avverrà automaticamente."
+msgstr ""
+"Effettuare il cast significa forzare un tipo in un altro tipo di dato. "
+"PostgreSQL è tra i pochi database che offrono la possibilità di definire "
+"comportamento di casting per tipi personalizzati e le funzioni usate per il "
+"casting. Un cast può essere definito come automatico: non è necessario "
+"utilizzare la funzione CAST(myfoo As otherfootype) oppure myfoo::"
+"otherfootype se si esegue una funzione che supporta unicamente il tipo "
+"otherfootype. In questo caso il cast avverrà automaticamente."
 
 #. Tag: para
 #: reference_type.xml:13
@@ -43,11 +55,19 @@ msgstr "Effettuare il cast significa forzare un tipo in un altro tipo di dato. P
 msgid ""
 "The danger of relying on automatic cast behavior is when you have an "
 "overloaded function say one that takes a box2d and one that takes a box3d "
-"but no geometry. What happens is that both functions are equally good to use"
-" with geometry since geometry has an autocast for both -- so you end up with"
-" an ambiguous function error. To force PostgreSQL to choose, you do a "
+"but no geometry. What happens is that both functions are equally good to use "
+"with geometry since geometry has an autocast for both -- so you end up with "
+"an ambiguous function error. To force PostgreSQL to choose, you do a "
 "CAST(mygeom As box3d) or mygeom::box3d."
-msgstr "Un rischio dell'usare un cast automatico può esserci quando si ha una funzione sovraccaricata, per esempio una funzione che accetta come argomento un box2d e un'altra che accetta un box3d ma nessuna che accetti un geometry. In questo caso le due funzioni possono essere utilizzate con un tipo geometry, perché geometry supporta il cast automatico verso box2d e box3d, e si avrà quindi un errore che indica che la funzione è ambigua. Per forzare PostgreSQL ad effettuare la scelta giusta bisogna effettuare un cast specifico con CAST(mygeom AS box3d) oppure mygeom::box3d"
+msgstr ""
+"Un rischio dell'usare un cast automatico può esserci quando si ha una "
+"funzione sovraccaricata, per esempio una funzione che accetta come argomento "
+"un box2d e un'altra che accetta un box3d ma nessuna che accetti un geometry. "
+"In questo caso le due funzioni possono essere utilizzate con un tipo "
+"geometry, perché geometry supporta il cast automatico verso box2d e box3d, e "
+"si avrà quindi un errore che indica che la funzione è ambigua. Per forzare "
+"PostgreSQL ad effettuare la scelta giusta bisogna effettuare un cast "
+"specifico con CAST(mygeom AS box3d) oppure mygeom::box3d"
 
 #. Tag: para
 #: reference_type.xml:17
@@ -56,7 +76,11 @@ msgid ""
 "<emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST "
 "to text (presumably because of the magical unknown type), so no defined "
 "CASTS for that need to be present for you to CAST an object to text."
-msgstr "<emphasis>A partire dalla versione PostgreSQL 8.3</emphasis> - È possibile effettuare il CAST di ogni tipo a \"text\" (presumibilmente per merito del magico tipo \"unknown\"), quindi non è necessario definire esplicitamente il CAST di un oggetto a \"text\"."
+msgstr ""
+"<emphasis>A partire dalla versione PostgreSQL 8.3</emphasis> - È possibile "
+"effettuare il CAST di ogni tipo a \"text\" (presumibilmente per merito del "
+"magico tipo \"unknown\"), quindi non è necessario definire esplicitamente il "
+"CAST di un oggetto a \"text\"."
 
 #. Tag: title
 #: reference_type.xml:20
@@ -76,7 +100,9 @@ msgstr "<refname>box2d</refname>"
 msgid ""
 "A box composed of x min, ymin, xmax, ymax. Often used to return the 2d "
 "enclosing box of a geometry."
-msgstr "Un rettangolo  composto dalle coordinate xmin,ymin,xmax,ymax. Spesso è usato per ritornare l'estensione 2D della geometria."
+msgstr ""
+"Un rettangolo  composto dalle coordinate xmin,ymin,xmax,ymax. Spesso è usato "
+"per ritornare l'estensione 2D della geometria."
 
 #. Tag: title
 #: reference_type.xml:29 reference_type.xml:40 reference_type.xml:79
@@ -92,7 +118,10 @@ msgid ""
 "box2d is a spatial data type used to represent the enclosing box of a "
 "geometry or set of geometries. ST_Extent in earlier versions prior to "
 "PostGIS 1.4 would return a box2d."
-msgstr "box2d è un tipo di dato spaziale usato per rappresentare in rettangolo contenente una geometria o un insieme di geometrie. In versioni precedenti Postgis 1.4, la funzione ST_Extent ritorna un box2d."
+msgstr ""
+"box2d è un tipo di dato spaziale usato per rappresentare in rettangolo "
+"contenente una geometria o un insieme di geometrie. In versioni precedenti "
+"Postgis 1.4, la funzione ST_Extent ritorna un box2d."
 
 #. Tag: refname
 #: reference_type.xml:35
@@ -106,7 +135,10 @@ msgstr "<refname>box3d</refname>"
 msgid ""
 "A box composed of x min, ymin, zmin, xmax, ymax, zmax. Often used to return "
 "the 3d extent of a geometry or collection of geometries."
-msgstr "Un parallelepipedo composto dalle coordinate xmin, ymin, zmin, xmax, ymax, zmax. Spesso usato per ritornare l'estensione 3D di una geometria o di una collezione di geometrie."
+msgstr ""
+"Un parallelepipedo composto dalle coordinate xmin, ymin, zmin, xmax, ymax, "
+"zmax. Spesso usato per ritornare l'estensione 3D di una geometria o di una "
+"collezione di geometrie."
 
 #. Tag: para
 #: reference_type.xml:41
@@ -114,7 +146,10 @@ msgstr "Un parallelepipedo composto dalle coordinate xmin, ymin, zmin, xmax, yma
 msgid ""
 "box3d is a postgis spatial data type used to represent the enclosing box of "
 "a geometry or set of geometries. ST_3DExtent returns a box3d object."
-msgstr "box3d è un tipo spaziale di Postgis usato per rappresentare il parallelepipedo contente una geometria o un insieme di geometrie. La funzione ST_3DExtent ritorna un oggetto box3d."
+msgstr ""
+"box3d è un tipo spaziale di Postgis usato per rappresentare il "
+"parallelepipedo contente una geometria o un insieme di geometrie. La "
+"funzione ST_3DExtent ritorna un oggetto box3d."
 
 #. Tag: title
 #: reference_type.xml:45 reference_type.xml:84 reference_type.xml:160
@@ -128,7 +163,9 @@ msgstr "Comportamento in caso di CAST"
 msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
-msgstr "Questa sezione illustra le modalità di CAST - automatici e espliciti -  permessi per questo tipo di dato"
+msgstr ""
+"Questa sezione illustra le modalità di CAST - automatici e espliciti -  "
+"permessi per questo tipo di dato"
 
 #. Tag: entry
 #: reference_type.xml:51 reference_type.xml:90 reference_type.xml:166
@@ -186,7 +223,9 @@ msgstr "Tipi di dati spaziali piani."
 msgid ""
 "geometry is a fundamental postgis spatial data type used to represent a "
 "feature in the Euclidean coordinate system."
-msgstr "Il tipo di dato \"geometry\" è un fondamentale tipo spaziale di Postgis usato per rappresentare una entità in un sistema di coordinate euclideo. "
+msgstr ""
+"Il tipo di dato \"geometry\" è un fondamentale tipo spaziale di Postgis "
+"usato per rappresentare una entità in un sistema di coordinate euclideo. "
 
 #. Tag: entry
 #: reference_type.xml:102
@@ -231,7 +270,10 @@ msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "path[] (a 1-d array holding the position of the geometry within the dumped "
 "object.)"
-msgstr "Un tipo di dato spaziale composto da due campi: geom (contenente un oggetto geometry) e path[] (un array  unidimensionale 1-d contenente la posizione della geometria all'interno della collezione)."
+msgstr ""
+"Un tipo di dato spaziale composto da due campi: geom (contenente un oggetto "
+"geometry) e path[] (un array  unidimensionale 1-d contenente la posizione "
+"della geometria all'interno della collezione)."
 
 #. Tag: para
 #: reference_type.xml:137
@@ -243,7 +285,11 @@ msgid ""
 "navigation path within the dumped geometry to find this element. It is used "
 "by the ST_Dump* family of functions as an output type to explode a more "
 "complex geometry into its constituent parts and location of parts."
-msgstr "geometry_dump è un tipo composto formato da un oggetto geometry, associato al campo .geom, e path[] un array unidimensionale di interi (l'array inizia con 1. Per esempio path[1] ritorna il primo elemento) che definisce il percorso di ogni geometria all'interno della collezione. "
+msgstr ""
+"geometry_dump è un tipo composto formato da un oggetto geometry, associato "
+"al campo .geom, e path[] un array unidimensionale di interi (l'array inizia "
+"con 1. Per esempio path[1] ritorna il primo elemento) che definisce il "
+"percorso di ogni geometria all'interno della collezione. "
 
 #. Tag: refname
 #: reference_type.xml:150
@@ -263,7 +309,9 @@ msgstr "Tipi spaziali ellissoidi."
 msgid ""
 "geography is a spatial data type used to represent a feature in the round-"
 "earth coordinate system."
-msgstr "geography è un tipo spaziale usato per rappresentare un'entità in un sistema di coordinate sferico valido per l'intero pianeta."
+msgstr ""
+"geography è un tipo spaziale usato per rappresentare un'entità in un sistema "
+"di coordinate sferico valido per l'intero pianeta."
 
 #. Tag: entry
 #: reference_type.xml:171

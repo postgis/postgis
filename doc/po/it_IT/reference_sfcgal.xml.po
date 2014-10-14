@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Tommaso Di Bucchianico, 2013
 msgid ""
@@ -9,11 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2013-05-12 08:39+0000\n"
 "PO-Revision-Date: 2013-12-09 19:33+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis-1/language/it_IT/)\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
+"postgis-1/language/it_IT/)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -55,7 +56,12 @@ msgid ""
 "<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Extrude</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> <paramdef><type>float</type> <parameter>x</parameter></paramdef> <paramdef><type>float</type> <parameter>y</parameter></paramdef> <paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
 
 #. Tag: title
 #: reference_sfcgal.xml:32 reference_sfcgal.xml:61 reference_sfcgal.xml:90
@@ -123,7 +129,9 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:75
@@ -143,7 +151,9 @@ msgstr "Verifica se una superficie è planare o meno."
 msgid ""
 "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:104
@@ -163,7 +173,9 @@ msgstr "Determina l'orientazione di una superficie."
 msgid ""
 "<funcdef>integer <function>ST_Orientation</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>integer <function>ST_Orientation</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>ST_Orientation</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:133
@@ -183,7 +195,9 @@ msgstr "Forza l'orientazione di tipo LHR"
 msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:161
@@ -204,7 +218,10 @@ msgid ""
 "<funcdef>geometry <function>ST_Minkowski</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Minkowski</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Minkowski</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:191
@@ -224,4 +241,6 @@ msgstr "Effettua tassellazione di una superficie"
 msgid ""
 "<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Tesselate</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"

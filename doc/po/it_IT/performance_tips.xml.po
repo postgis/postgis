@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Tommaso Di Bucchianico, 2013
 msgid ""
@@ -9,11 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2012-09-14 17:50+0000\n"
 "PO-Revision-Date: 2013-11-30 05:55+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis-1/language/it_IT/)\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
+"postgis-1/language/it_IT/)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -39,13 +40,21 @@ msgstr "Descrizione del problema"
 #, no-c-format
 msgid ""
 "Current PostgreSQL versions (including 8.0) suffer from a query optimizer "
-"weakness regarding TOAST tables. TOAST tables are a kind of \"extension "
-"room\" used to store large (in the sense of data size) values that do not "
-"fit into normal data pages (like long texts, images or complex geometries "
-"with lots of vertices), see <ulink "
-"url=\"http://www.postgresql.org/docs/current/static/storage-toast.html\">the"
-" PostgreSQL Documentation for TOAST</ulink> for more information)."
-msgstr "Le attuali versioni di PostgreSQL (compresa la versione 8.0) sono affette da un difetto del query optimizer riguardante le tabelle TOAST. Le tabelle TOAST sono una sorta di \"spazio aggiuntivo\" usato per memorizzare valori di grandi dimensioni (nel senso di dimensioni dei dati) che non possono essere salvati in normali pagine (per esempio lunghi testi, immagini o geometrie con molti vertici). Vedi <ulink url=\"http://www.postgresql.org/docs/current/static/storage-toast.html\">la  documentazione PostgreSQL sulle tabelle TOAST</ulink> per maggiori informazioni)."
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
+"\" used to store large (in the sense of data size) values that do not fit "
+"into normal data pages (like long texts, images or complex geometries with "
+"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
+"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
+"for more information)."
+msgstr ""
+"Le attuali versioni di PostgreSQL (compresa la versione 8.0) sono affette da "
+"un difetto del query optimizer riguardante le tabelle TOAST. Le tabelle "
+"TOAST sono una sorta di \"spazio aggiuntivo\" usato per memorizzare valori "
+"di grandi dimensioni (nel senso di dimensioni dei dati) che non possono "
+"essere salvati in normali pagine (per esempio lunghi testi, immagini o "
+"geometrie con molti vertici). Vedi <ulink url=\"http://www.postgresql.org/"
+"docs/current/static/storage-toast.html\">la  documentazione PostgreSQL sulle "
+"tabelle TOAST</ulink> per maggiori informazioni)."
 
 #. Tag: para
 #: performance_tips.xml:19
@@ -57,7 +66,13 @@ msgid ""
 "itself is small, but it uses lots of TOAST space. In our example case, the "
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "
 "table used 8225 pages."
-msgstr "Il problema si presenta nel caso di tabelle contenenti geometrie di grandi dimensioni ma poche righe (per esempio una tabella contenente i confini di tutti gli stati europei ad alta risoluzione). In questo caso infatti la tabella in se è di piccole dimensioni ma usa molto spazio TOAST. Nel nostro esempio la tabella conteneva circa 80 righe e utilizzava solo 3 pagine di dati, ma la tabella TOAST ne utilizzava 8225."
+msgstr ""
+"Il problema si presenta nel caso di tabelle contenenti geometrie di grandi "
+"dimensioni ma poche righe (per esempio una tabella contenente i confini di "
+"tutti gli stati europei ad alta risoluzione). In questo caso infatti la "
+"tabella in se è di piccole dimensioni ma usa molto spazio TOAST. Nel nostro "
+"esempio la tabella conteneva circa 80 righe e utilizzava solo 3 pagine di "
+"dati, ma la tabella TOAST ne utilizzava 8225."
 
 #. Tag: para
 #: performance_tips.xml:26
@@ -71,7 +86,9 @@ msgid ""
 "is correct. But in our case, the &amp;&amp; operator has to fetch every "
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
-msgstr "Ora si lanci una query che usi l'operatore  &amp;&amp; e che [MATCHES] solo poche righe. Il "
+msgstr ""
+"Ora si lanci una query che usi l'operatore  &amp;&amp; e che [MATCHES] solo "
+"poche righe. Il "
 
 #. Tag: para
 #: performance_tips.xml:35
@@ -79,9 +96,14 @@ msgstr "Ora si lanci una query che usi l'operatore  &amp;&amp; e che [MATCHES] s
 msgid ""
 "To see whether your suffer from this bug, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the postgres performance mailing list: "
-"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
-msgstr "Per controllare se i propri dati sono interessati da questo bug, si può usare il comando PostgreSQL \"EXPLAIN ANALYZE\". Per maggiori informazioni e dettagli tecnici consultare il corrispondente thread sulla mailing list di PostgreSQL: http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"read the thread on the postgres performance mailing list: http://archives."
+"postgresql.org/pgsql-performance/2005-02/msg00030.php"
+msgstr ""
+"Per controllare se i propri dati sono interessati da questo bug, si può "
+"usare il comando PostgreSQL \"EXPLAIN ANALYZE\". Per maggiori informazioni e "
+"dettagli tecnici consultare il corrispondente thread sulla mailing list di "
+"PostgreSQL: http://archives.postgresql.org/pgsql-performance/2005-02/"
+"msg00030.php"
 
 #. Tag: title
 #: performance_tips.xml:43
@@ -95,7 +117,10 @@ msgstr "Possibili soluzioni"
 msgid ""
 "The PostgreSQL people are trying to solve this issue by making the query "
 "estimation TOAST-aware. For now, here are two workarounds:"
-msgstr "Gli sviluppatori di PostgreSQL stanno cercando di risolvere il problema rendendo la valutazione della query indipendente dalla tabella TOAST. Per ora ci sono due possibili soluzioni alternative:"
+msgstr ""
+"Gli sviluppatori di PostgreSQL stanno cercando di risolvere il problema "
+"rendendo la valutazione della query indipendente dalla tabella TOAST. Per "
+"ora ci sono due possibili soluzioni alternative:"
 
 #. Tag: para
 #: performance_tips.xml:48
@@ -104,10 +129,17 @@ msgid ""
 "The first workaround is to force the query planner to use the index. Send "
 "\"SET enable_seqscan TO off;\" to the server before issuing the query. This "
 "basically forces the query planner to avoid sequential scans whenever "
-"possible. So it uses the GIST index as usual. But this flag has to be set on"
-" every connection, and it causes the query planner to make misestimations in"
-" other cases, so you should \"SET enable_seqscan TO on;\" after the query."
-msgstr "La è forzare il query planner ad usare l'indice spaziale usando il comando \"SET enable_seqscan TO off;\" prima di lanciare la query. Questo comando impedisce al query planner di usare lo scan sequenziale della tabella se possibile e lo forza quindi ad usare l'indice GIST. Tuttavia il comando deve essere lanciato ad ogni connessione e, per evitare di confondere il query planner in altri casi,  il parametro deve essere resettato dopo l'esecuzione della query interessata con il comando \"SET enable_seqscan TO on;\" ."
+"possible. So it uses the GIST index as usual. But this flag has to be set on "
+"every connection, and it causes the query planner to make misestimations in "
+"other cases, so you should \"SET enable_seqscan TO on;\" after the query."
+msgstr ""
+"La è forzare il query planner ad usare l'indice spaziale usando il comando "
+"\"SET enable_seqscan TO off;\" prima di lanciare la query. Questo comando "
+"impedisce al query planner di usare lo scan sequenziale della tabella se "
+"possibile e lo forza quindi ad usare l'indice GIST. Tuttavia il comando deve "
+"essere lanciato ad ogni connessione e, per evitare di confondere il query "
+"planner in altri casi,  il parametro deve essere resettato dopo l'esecuzione "
+"della query interessata con il comando \"SET enable_seqscan TO on;\" ."
 
 #. Tag: para
 #: performance_tips.xml:56
@@ -115,25 +147,35 @@ msgstr "La è forzare il query planner ad usare l'indice spaziale usando il coma
 msgid ""
 "The second workaround is to make the sequential scan as fast as the query "
 "planner thinks. This can be achieved by creating an additional column that "
-"\"caches\" the bbox, and matching against this. In our example, the commands"
-" are like:"
-msgstr "Il secondo metodo è rendere lo scan sequenziale così veloce come il query planner si aspetta che sia. Questo può essere raggiunto aggiungendo una colonna addizionale in cui salvare la bounding box di ogni geometria. Nel nostro esempio i comandi sarebbero:"
+"\"caches\" the bbox, and matching against this. In our example, the commands "
+"are like:"
+msgstr ""
+"Il secondo metodo è rendere lo scan sequenziale così veloce come il query "
+"planner si aspetta che sia. Questo può essere raggiunto aggiungendo una "
+"colonna addizionale in cui salvare la bounding box di ogni geometria. Nel "
+"nostro esempio i comandi sarebbero:"
 
 #. Tag: programlisting
 #: performance_tips.xml:61
 #, no-c-format
 msgid ""
-"SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+"SELECT "
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
-msgstr "SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\nUPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
+msgstr ""
+"SELECT "
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
 
 #. Tag: para
 #: performance_tips.xml:63
 #, no-c-format
 msgid ""
-"Now change your query to use the &amp;&amp; operator against bbox instead of"
-" geom_column, like:"
-msgstr "Ora la query deve essere modificata in modo da usare l'operatore &amp;&amp; con la colonna bbox piuttosto che con la colonna geom_column:"
+"Now change your query to use the &amp;&amp; operator against bbox instead of "
+"geom_column, like:"
+msgstr ""
+"Ora la query deve essere modificata in modo da usare l'operatore &amp;&amp; "
+"con la colonna bbox piuttosto che con la colonna geom_column:"
 
 #. Tag: programlisting
 #: performance_tips.xml:66
@@ -142,7 +184,10 @@ msgid ""
 "SELECT geom_column \n"
 "FROM mytable \n"
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
-msgstr "SELECT geom_column\nFROM mytable\nWHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+msgstr ""
+"SELECT geom_column\n"
+"FROM mytable\n"
+"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
 #: performance_tips.xml:68
@@ -152,7 +197,12 @@ msgid ""
 "\"in sync\". The most transparent way to do this would be triggers, but you "
 "also can modify your application to keep the bbox column current or run the "
 "UPDATE query above after every modification."
-msgstr "Ovviamente la colonna bbox deve essere mantenuta attuale quando si modificano o si aggiungono geometrie. La via più semplice per fare questo sarebbe con un trigger, oppure l'applicazione può essere modificata in modo da attualizzare anche la colonna bbox oppure si può lanciare l'UPDATE precedente dopo ogni modifica."
+msgstr ""
+"Ovviamente la colonna bbox deve essere mantenuta attuale quando si "
+"modificano o si aggiungono geometrie. La via più semplice per fare questo "
+"sarebbe con un trigger, oppure l'applicazione può essere modificata in modo "
+"da attualizzare anche la colonna bbox oppure si può lanciare l'UPDATE "
+"precedente dopo ogni modifica."
 
 #. Tag: title
 #: performance_tips.xml:77
@@ -165,15 +215,25 @@ msgstr "CLUSTERing di indici geometrici"
 #, no-c-format
 msgid ""
 "For tables that are mostly read-only, and where a single index is used for "
-"the majority of queries, PostgreSQL offers the CLUSTER command. This command"
-" physically reorders all the data rows in the same order as the index "
-"criteria, yielding two performance advantages: First, for index range scans,"
-" the number of seeks on the data table is drastically reduced. Second, if "
+"the majority of queries, PostgreSQL offers the CLUSTER command. This command "
+"physically reorders all the data rows in the same order as the index "
+"criteria, yielding two performance advantages: First, for index range scans, "
+"the number of seeks on the data table is drastically reduced. Second, if "
 "your working set concentrates to some small intervals on the indices, you "
 "have a more efficient caching because the data rows are spread along fewer "
-"data pages. (Feel invited to read the CLUSTER command documentation from the"
-" PostgreSQL manual at this point.)"
-msgstr "Per tabelle che vengono per lo più solo lette, e dove un singolo indice è usato dalla maggior parte delle query, PostgreSQL offre il comando CLUSTER. Questo comando riordina fisicamente le righe in modo che l'ordine corrisponda a quello dell'indice. Con questo metodo si migliorano le prestazioni per due motivi: primo, il numero delle ricerche nella tabella dei dati è ridotto drasticamente. Secondo, se i dati interessati dalla query sono concentrati in un piccolo intervallo sull'indice, il processo di mettere in cache sarà più efficiente perché le righe saranno distribuite all'interno di poche pagine. (si invita a leggere la documentazione di PostgreSQL riguardante il comando CLUSTER)."
+"data pages. (Feel invited to read the CLUSTER command documentation from the "
+"PostgreSQL manual at this point.)"
+msgstr ""
+"Per tabelle che vengono per lo più solo lette, e dove un singolo indice è "
+"usato dalla maggior parte delle query, PostgreSQL offre il comando CLUSTER. "
+"Questo comando riordina fisicamente le righe in modo che l'ordine "
+"corrisponda a quello dell'indice. Con questo metodo si migliorano le "
+"prestazioni per due motivi: primo, il numero delle ricerche nella tabella "
+"dei dati è ridotto drasticamente. Secondo, se i dati interessati dalla query "
+"sono concentrati in un piccolo intervallo sull'indice, il processo di "
+"mettere in cache sarà più efficiente perché le righe saranno distribuite "
+"all'interno di poche pagine. (si invita a leggere la documentazione di "
+"PostgreSQL riguardante il comando CLUSTER)."
 
 #. Tag: para
 #: performance_tips.xml:89
@@ -182,7 +242,9 @@ msgid ""
 "However, currently PostgreSQL does not allow clustering on PostGIS GIST "
 "indices because GIST indices simply ignores NULL values, you get an error "
 "message like:"
-msgstr "Attualmente però, PostgreSQL non permette di usare il clustering con indici GIST, perché gli indici GIST ignorano i valori nulli:"
+msgstr ""
+"Attualmente però, PostgreSQL non permette di usare il clustering con indici "
+"GIST, perché gli indici GIST ignorano i valori nulli:"
 
 #. Tag: programlisting
 #: performance_tips.xml:93
@@ -190,16 +252,23 @@ msgstr "Attualmente però, PostgreSQL non permette di usare il clustering con in
 msgid ""
 "lwgeom=# CLUSTER my_geom_index ON my_table; \n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
-"HINT: You may be able to work around this by marking column \"the_geom\" NOT NULL."
-msgstr "lwgeom=# CLUSTER my_geom_index ON my_table;\nERROR: cannot cluster when index access method does not handle null values\nHINT: You may be able to work around this by marking column \"the_geom\" NOT NULL."
+"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
+"NULL."
+msgstr ""
+"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
+"ERROR: cannot cluster when index access method does not handle null values\n"
+"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
+"NULL."
 
 #. Tag: para
 #: performance_tips.xml:95
 #, no-c-format
 msgid ""
-"As the HINT message tells you, one can work around this deficiency by adding"
-" a \"not null\" constraint to the table:"
-msgstr "Come suggerito dal messaggio di errore, è possibile aggirare il problema aggiungendo un vincolo \"NOT NULL\" alla tabella:"
+"As the HINT message tells you, one can work around this deficiency by adding "
+"a \"not null\" constraint to the table:"
+msgstr ""
+"Come suggerito dal messaggio di errore, è possibile aggirare il problema "
+"aggiungendo un vincolo \"NOT NULL\" alla tabella:"
 
 #. Tag: programlisting
 #: performance_tips.xml:98
@@ -207,7 +276,9 @@ msgstr "Come suggerito dal messaggio di errore, è possibile aggirare il problem
 msgid ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
 "ALTER TABLE"
-msgstr "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \nALTER TABLE"
+msgstr ""
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"ALTER TABLE"
 
 #. Tag: para
 #: performance_tips.xml:100
@@ -217,7 +288,11 @@ msgid ""
 "geometry column. Additionally, you must use the above method to add the "
 "constraint, using a CHECK constraint like \"ALTER TABLE blubb ADD CHECK "
 "(geometry is not null);\" will not work."
-msgstr "Ovviamente questo non funzionerà se la colonna the_geom già contiene valori nulli. Inoltre il vincolo dev'essere definito usando il comando precedente. Usare un vincolo CHECK del tipo \"ALTER TABLE blubb ADD CHECK (geometry is not null);\" non funzionerà."
+msgstr ""
+"Ovviamente questo non funzionerà se la colonna the_geom già contiene valori "
+"nulli. Inoltre il vincolo dev'essere definito usando il comando precedente. "
+"Usare un vincolo CHECK del tipo \"ALTER TABLE blubb ADD CHECK (geometry is "
+"not null);\" non funzionerà."
 
 #. Tag: title
 #: performance_tips.xml:107
@@ -229,13 +304,20 @@ msgstr "Evitare la conversione della dimensione"
 #: performance_tips.xml:109
 #, no-c-format
 msgid ""
-"Sometimes, you happen to have 3D or 4D data in your table, but always access"
-" it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only"
-" output 2D geometries. They do this by internally calling the ST_Force_2d() "
+"Sometimes, you happen to have 3D or 4D data in your table, but always access "
+"it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only "
+"output 2D geometries. They do this by internally calling the ST_Force_2d() "
 "function, which introduces a significant overhead for large geometries. To "
 "avoid this overhead, it may be feasible to pre-drop those additional "
 "dimensions once and forever:"
-msgstr "A volte può accadere di avere dati in 3D o 4D, ma di accederli sempre usando funzioni che danno in output solo geometrie 2D come ST_AsText() oppure ST_AsBinary(). Queste funzioni processano internamente le geometrie eseguendo ST_Force2D()  e questo può risultare in un peggioramento delle prestazioni significativo nel caso di geometrie di grandi dimensioni. Per evitare questo problema è consigliabile eliminare le dimensioni non utilizzate una volte e per sempre:"
+msgstr ""
+"A volte può accadere di avere dati in 3D o 4D, ma di accederli sempre usando "
+"funzioni che danno in output solo geometrie 2D come ST_AsText() oppure "
+"ST_AsBinary(). Queste funzioni processano internamente le geometrie "
+"eseguendo ST_Force2D()  e questo può risultare in un peggioramento delle "
+"prestazioni significativo nel caso di geometrie di grandi dimensioni. Per "
+"evitare questo problema è consigliabile eliminare le dimensioni non "
+"utilizzate una volte e per sempre:"
 
 #. Tag: programlisting
 #: performance_tips.xml:116
@@ -243,7 +325,9 @@ msgstr "A volte può accadere di avere dati in 3D o 4D, ma di accederli sempre u
 msgid ""
 "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
 "VACUUM FULL ANALYZE mytable;"
-msgstr "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \nVACUUM FULL ANALYZE mytable;"
+msgstr ""
+"UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
+"VACUUM FULL ANALYZE mytable;"
 
 #. Tag: para
 #: performance_tips.xml:118
@@ -251,9 +335,14 @@ msgstr "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \nVACUUM FULL ANALY
 msgid ""
 "Note that if you added your geometry column using AddGeometryColumn() "
 "there'll be a constraint on geometry dimension. To bypass it you will need "
-"to drop the constraint. Remember to update the entry in the geometry_columns"
-" table and recreate the constraint afterwards."
-msgstr "Se la colonna di tipo geometry è stata aggiunta usando la funzione AddGeometryColumn(), verrà creato anche un vincolo dimensionale sulla geometria. Per aggirare il vincolo sarà necessario cancellarlo. Ricorda di attualizzare il record nella tabella geometry_columns e di ricreare il vincolo successivamente. "
+"to drop the constraint. Remember to update the entry in the geometry_columns "
+"table and recreate the constraint afterwards."
+msgstr ""
+"Se la colonna di tipo geometry è stata aggiunta usando la funzione "
+"AddGeometryColumn(), verrà creato anche un vincolo dimensionale sulla "
+"geometria. Per aggirare il vincolo sarà necessario cancellarlo. Ricorda di "
+"attualizzare il record nella tabella geometry_columns e di ricreare il "
+"vincolo successivamente. "
 
 #. Tag: para
 #: performance_tips.xml:124
@@ -266,7 +355,15 @@ msgid ""
 "for temporary disk space. Additionally, if you have mixed dimension "
 "geometries, restricting the UPDATE by \"WHERE dimension(the_geom)&gt;2\" "
 "skips re-writing of geometries that already are in 2D."
-msgstr "Nel caso di grandi tabelle può essere sensato dividere l'UPDATE in porzioni più piccole, usando la clausola WHERE con la chiave primaria o un altro criterio flessibile per attualizzare solo una parte della tabella , ed eseguendo un semplice \"VACUUM;\" tra gli UPDATE. Questo accorgimento ridurrà drasticamente il bisogno lo spazio temporaneo sul disco. Inoltre, se la colonna geometrica contiene geometrie con diverse dimensioni, si può limitare l'UPDATE con \"WHERE dimension(the_geom)&gt;2\", evitando così di riscrivere le geometrie che sono già in 2D."
+msgstr ""
+"Nel caso di grandi tabelle può essere sensato dividere l'UPDATE in porzioni "
+"più piccole, usando la clausola WHERE con la chiave primaria o un altro "
+"criterio flessibile per attualizzare solo una parte della tabella , ed "
+"eseguendo un semplice \"VACUUM;\" tra gli UPDATE. Questo accorgimento "
+"ridurrà drasticamente il bisogno lo spazio temporaneo sul disco. Inoltre, se "
+"la colonna geometrica contiene geometrie con diverse dimensioni, si può "
+"limitare l'UPDATE con \"WHERE dimension(the_geom)&gt;2\", evitando così di "
+"riscrivere le geometrie che sono già in 2D."
 
 #. Tag: title
 #: performance_tips.xml:136
@@ -279,21 +376,30 @@ msgstr "Mettere a punto la configurazione"
 #, no-c-format
 msgid ""
 "These tips are taken from Kevin Neufeld's presentation \"Tips for the "
-"PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use of"
-" PostGIS (for example, static data and complex analysis vs frequently "
-"updated data and lots of users) these changes can provide significant "
-"speedups to your queries."
-msgstr "Questi consigli sono tratti dalla presentazione di Kevin Neufeld  \"Tips for the PostGIS Power User\" alla conferenza FOSS4G 2007. A seconda del contesto in cui viene usato PostGIS (per esempio dati statici e analisi complesse piuttosto che update frequenti e numerosi utenti) questi cambiamenti possono significare un significativo aumento della velocità delle query."
+"PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use of "
+"PostGIS (for example, static data and complex analysis vs frequently updated "
+"data and lots of users) these changes can provide significant speedups to "
+"your queries."
+msgstr ""
+"Questi consigli sono tratti dalla presentazione di Kevin Neufeld  \"Tips for "
+"the PostGIS Power User\" alla conferenza FOSS4G 2007. A seconda del contesto "
+"in cui viene usato PostGIS (per esempio dati statici e analisi complesse "
+"piuttosto che update frequenti e numerosi utenti) questi cambiamenti possono "
+"significare un significativo aumento della velocità delle query."
 
 #. Tag: para
 #: performance_tips.xml:144
 #, no-c-format
 msgid ""
 "For a more tips (and better formatting), the original presentation is at "
-"<ulink "
-"url=\"http://2007.foss4g.org/presentations/view.php?abstract_id=117\"> "
-"http://2007.foss4g.org/presentations/view.php?abstract_id=117</ulink>."
-msgstr "Per più consigli (e una formattazione migliore) la presentazione originale è consultabile a <ulink url=\"http://2007.foss4g.org/presentations/view.php?abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?abstract_id=117</ulink>."
+"<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117</ulink>."
+msgstr ""
+"Per più consigli (e una formattazione migliore) la presentazione originale è "
+"consultabile a <ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117</ulink>."
 
 #. Tag: title
 #: performance_tips.xml:151
@@ -319,7 +425,9 @@ msgstr "checkpoint_segments"
 msgid ""
 "Maximum number of log file segments between automatic WAL checkpoints (each "
 "segment is normally 16MB); default is 3"
-msgstr "Numero massimo di segmenti del log file tra checkpoint WAL (ogni segmento è normalmente 16MB); l'impostazione predefinita è 3."
+msgstr ""
+"Numero massimo di segmenti del log file tra checkpoint WAL (ogni segmento è "
+"normalmente 16MB); l'impostazione predefinita è 3."
 
 #. Tag: para
 #: performance_tips.xml:169
@@ -327,9 +435,14 @@ msgstr "Numero massimo di segmenti del log file tra checkpoint WAL (ogni segment
 msgid ""
 "Set to at least 10 or 30 for databases with heavy write activity, or more "
 "for large database loads. Another article on the topic worth reading <ulink "
-"url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-"
-"bgw-83.htm\">Greg Smith: Checkpoint and Background writer</ulink>"
-msgstr "Impostare almeno su 10 o 30 per database con intensa attività di scrittura, o più quando si importa nel database grandi quantità di dati. Un altro articolo da leggere sull'argomento è <ulink url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm\">Greg Smith: Checkpoint and Background writer</ulink> "
+"url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm"
+"\">Greg Smith: Checkpoint and Background writer</ulink>"
+msgstr ""
+"Impostare almeno su 10 o 30 per database con intensa attività di scrittura, "
+"o più quando si importa nel database grandi quantità di dati. Un altro "
+"articolo da leggere sull'argomento è <ulink url=\"http://www.westnet.com/"
+"~gsmith/content/postgresql/chkp-bgw-83.htm\">Greg Smith: Checkpoint and "
+"Background writer</ulink> "
 
 #. Tag: para
 #: performance_tips.xml:175
@@ -349,20 +462,28 @@ msgstr "constraint_exclusion"
 msgid ""
 "Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
 "partition)"
-msgstr "Il valore di default è \"off\" per versioni inferiori alla 8.4 e \"partition\" a partire dalla 8.4()"
+msgstr ""
+"Il valore di default è \"off\" per versioni inferiori alla 8.4 e \"partition"
+"\" a partire dalla 8.4()"
 
 #. Tag: para
 #: performance_tips.xml:192
 #, no-c-format
 msgid ""
-"This is generally used for table partitioning. If you are running PostgreSQL"
-" versions below 8.4, set to \"on\" to ensure the query planner will optimize"
-" as desired. As of PostgreSQL 8.4, the default for this is set to "
-"\"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
-"force the planner to only analyze tables for constraint consideration if "
-"they are in an inherited hierarchy and not pay the planner penalty "
-"otherwise."
-msgstr "Generalmente usato per il partizionamento delle tabelle. Con versioni di PostgreSQL inferiori alla 8.4 impostare il parametro su \"on\" per permettere al query planner di ottimizzare secondo necessità. Da PostgreSQL 8.4, il valore di default è \"partition\", ideale per versioni 8.4 e superiori perché forza il query planner ad analizzare i vincoli delle tabelle solo  se queste sono in una gerarchia di ereditarietà e non essere penalizzate dal planner in caso contrario."
+"This is generally used for table partitioning. If you are running PostgreSQL "
+"versions below 8.4, set to \"on\" to ensure the query planner will optimize "
+"as desired. As of PostgreSQL 8.4, the default for this is set to \"partition"
+"\" which is ideal for PostgreSQL 8.4 and above since it will force the "
+"planner to only analyze tables for constraint consideration if they are in "
+"an inherited hierarchy and not pay the planner penalty otherwise."
+msgstr ""
+"Generalmente usato per il partizionamento delle tabelle. Con versioni di "
+"PostgreSQL inferiori alla 8.4 impostare il parametro su \"on\" per "
+"permettere al query planner di ottimizzare secondo necessità. Da PostgreSQL "
+"8.4, il valore di default è \"partition\", ideale per versioni 8.4 e "
+"superiori perché forza il query planner ad analizzare i vincoli delle "
+"tabelle solo  se queste sono in una gerarchia di ereditarietà e non essere "
+"penalizzate dal planner in caso contrario."
 
 #. Tag: ulink
 #: performance_tips.xml:202
@@ -395,7 +516,10 @@ msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
 "resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
 "operations and complex queries)"
-msgstr "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM\">work_mem</ulink> (memoria usata per operazioni di ordinamento e query complesse)"
+msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> (memoria usata per operazioni "
+"di ordinamento e query complesse)"
 
 #. Tag: para
 #: performance_tips.xml:228
@@ -407,13 +531,16 @@ msgstr "Default: 1MB"
 #: performance_tips.xml:233
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
-msgstr "Aumentare il valore per grandi database, query complesse, abbondanza di RAM"
+msgstr ""
+"Aumentare il valore per grandi database, query complesse, abbondanza di RAM"
 
 #. Tag: para
 #: performance_tips.xml:238
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
-msgstr "Diminuire il valore nel caso di molti utenti concorrenti oppure disponibilità di RAM ridotta"
+msgstr ""
+"Diminuire il valore nel caso di molti utenti concorrenti oppure "
+"disponibilità di RAM ridotta"
 
 #. Tag: para
 #: performance_tips.xml:243
@@ -434,7 +561,10 @@ msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
 "resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (used "
 "for VACUUM, CREATE INDEX, etc.)"
-msgstr "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (usato per VACUUM, CREATE INDEX, etc.)"
+msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (usato "
+"per VACUUM, CREATE INDEX, etc.)"
 
 #. Tag: para
 #: performance_tips.xml:256
@@ -446,7 +576,9 @@ msgstr "Default: 16MB"
 #: performance_tips.xml:261
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
-msgstr "Generalmente troppo basso. Tiene occupati i processi Input/Output e blocca oggetti quando viene impegnata la memoria swap."
+msgstr ""
+"Generalmente troppo basso. Tiene occupati i processi Input/Output e blocca "
+"oggetti quando viene impegnata la memoria swap."
 
 #. Tag: para
 #: performance_tips.xml:266
@@ -454,7 +586,10 @@ msgstr "Generalmente troppo basso. Tiene occupati i processi Input/Output e bloc
 msgid ""
 "Recommend 32MB to 256MB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
-msgstr "Si raccomandano 32MB oppure 256MB su server di produzione con molta RAM, ma dipende dal numero di utenti concorrenti. Nel caso di molta RAM e pochi sviluppatori:"
+msgstr ""
+"Si raccomandano 32MB oppure 256MB su server di produzione con molta RAM, ma "
+"dipende dal numero di utenti concorrenti. Nel caso di molta RAM e pochi "
+"sviluppatori:"
 
 #. Tag: programlisting
 #: performance_tips.xml:269
