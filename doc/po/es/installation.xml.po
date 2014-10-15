@@ -389,7 +389,7 @@ msgid ""
 "PostgreSQL server headers access in order to compile. It can be built "
 "against PostgreSQL versions &min_postgres_version; or higher. Earlier "
 "versions of PostgreSQL are <emphasis>not</emphasis> supported."
-msgstr "El modulo PostGIS es una extensión del servidor PostgreSQL. Como tal, PostGIS &last_release_version; <emphasis>requiere</emphasis> PostgreSQL con acceso completo cabeceras del servidor con el fin de compilar. Puede ser compilado en PostgreSQL versiones &min_postgres_version, o superior. Las versiones anteriores de PostgreSQL <emphasis>no</emphasis> son compatibles."
+msgstr "El modulo PostGIS es una extensión del servidor PostgreSQL. Como tal, PostGIS &last_release_version; <emphasis>requiere</emphasis> PostgreSQL con acceso completo cabeceras del servidor con el fin de compilar. Puede ser compilado en PostgreSQL versiones &min_postgres_version;, o superior. Las versiones anteriores de PostgreSQL <emphasis>no</emphasis> son compatibles."
 
 #. Tag: para
 #: installation.xml:255
@@ -508,7 +508,7 @@ msgid ""
 "the GDAL installation directory. Use this parameter (<command>--with-"
 "gdalconfig=/path/to/gdal-config</command>) to manually specify a particular "
 "GDAL installation that PostGIS will build against."
-msgstr "GDAL, una biblioteca necesaria, proporciona la funcionalidad necesaria para el soporte de raster <comando> gdal-config </ command> para activar la instalación de software para localizar el directorio de instalación de GDAL. Utilice este parámetro (<comando> - with-gdalconfig = / ruta /a/ gdal config-</ command>) para especificar manualmente una instalación de GDAL personalizada que PostGIS utilizara para compilar."
+msgstr "GDAL, una biblioteca necesaria, proporciona la funcionalidad necesaria para el soporte de raster <command> gdal-config </command> para activar la instalación de software para localizar el directorio de instalación de GDAL. Utilice este parámetro (<command> - with-gdalconfig = / ruta /a/ gdal config-</command>) para especificar manualmente una instalación de GDAL personalizada que PostGIS utilizara para compilar."
 
 #. Tag: para
 #: installation.xml:368
@@ -1929,7 +1929,7 @@ msgid ""
 "often skip the reinstallation of postgis extension before restoring since "
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore. ."
-msgstr "Si has instalado PostGIS sin una version especificada, a menudo se puede omitir la reinstalación de la extensión PostGIS antes de restaurar desde la copia de seguridad sólo tienes que ejecutar <code> CREATE EXTENSION postgis</ code>  y así recoge la nueva versión más reciente durante la restauración."
+msgstr "Si has instalado PostGIS sin una version especificada, a menudo se puede omitir la reinstalación de la extensión PostGIS antes de restaurar desde la copia de seguridad sólo tienes que ejecutar <code> CREATE EXTENSION postgis</code>  y así recoge la nueva versión más reciente durante la restauración."
 
 #. Tag: title
 #: installation.xml:1030

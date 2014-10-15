@@ -65,7 +65,7 @@ msgid ""
 "provided by your PostGIS install documented here <xref "
 "linkend=\"RT_ST_GDALDrivers\"/> if you are using the same gdal library for "
 "both."
-msgstr "Como raster2pgsql se compila como parte de PostGIS, a menudo (a menos que compiles tu propia librería GDAL), los tipos de raster que admite el ejecutable serán los mismos que los compilados en la librería de dependencias de GDAL. Para obtener una lista de tipos de raster que tu comando raster2pgsql soporta, utiliza el valor <varname>-G </ varname>. Estos deben ser los mismos que los previstos por tu instalación de  PostGIS, documentado aquí <xref linkend=\"RT_ST_GDALDrivers\"/> si utilizas la misma librería GDAL en ambos casos."
+msgstr "Como raster2pgsql se compila como parte de PostGIS, a menudo (a menos que compiles tu propia librería GDAL), los tipos de raster que admite el ejecutable serán los mismos que los compilados en la librería de dependencias de GDAL. Para obtener una lista de tipos de raster que tu comando raster2pgsql soporta, utiliza el valor <varname>-G </varname>. Estos deben ser los mismos que los previstos por tu instalación de  PostGIS, documentado aquí <xref linkend=\"RT_ST_GDALDrivers\"/> si utilizas la misma librería GDAL en ambos casos."
 
 #. Tag: para
 #: using_raster_dataman.xml:16
@@ -88,7 +88,7 @@ msgid ""
 "aligned, it is possible for the overviews to not align. Visit <ulink "
 "url=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/postgis/ticket/1764</ulink>"
 " for an example where the overviews do not align."
-msgstr "Cuando creamos previsualizaciones de un factor específico de un conjunto de rasters que están alineados, es posible que las previsualizaciones no estén alineadas. Visita <ulink url=\"http://trac.osgeo.org/postgis/ticket/1764\"> http://trac.osgeo.org/postgis/ticket/1764 </ ulink> para un ejemplo donde las previsualizaciones no se alinean."
+msgstr "Cuando creamos previsualizaciones de un factor específico de un conjunto de rasters que están alineados, es posible que las previsualizaciones no estén alineadas. Visita <ulink url=\"http://trac.osgeo.org/postgis/ticket/1764\"> http://trac.osgeo.org/postgis/ticket/1764 </ulink> para un ejemplo donde las previsualizaciones no se alinean."
 
 #. Tag: para
 #: using_raster_dataman.xml:25
@@ -534,7 +534,7 @@ msgid ""
 "rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode"
 " instead of table insert. (-F) Include a field called filename to hold the "
 "name of the file the tiles were cut from."
-msgstr "Carga las teselas planas métricas aéreas de los Raster del estado Massachusetts  en un esquema denominado <varname>aerial</ varname> y crear una vista completa, y previsualizaciones de niveles 2 y 4, utiliza el modo de copia para insertar (sin archivo intermedio sólo directamente a db), y -e no fuerces todo en una transacción (bueno si quieres ver datos en tablas de inmediato sin tener que esperar). Divide los raster en teselas de 128x128 píxeles y aplica las restricciones de raster. Utiliza el modo copia en lugar de insertar en la tabla.(-F) Incluye un campo llamado nombre de archivo para contener el nombre del archivo de las teselas de donde proceden los cortes."
+msgstr "Carga las teselas planas métricas aéreas de los Raster del estado Massachusetts  en un esquema denominado <varname>aerial</varname> y crear una vista completa, y previsualizaciones de niveles 2 y 4, utiliza el modo de copia para insertar (sin archivo intermedio sólo directamente a db), y -e no fuerces todo en una transacción (bueno si quieres ver datos en tablas de inmediato sin tener que esperar). Divide los raster en teselas de 128x128 píxeles y aplica las restricciones de raster. Utiliza el modo copia en lugar de insertar en la tabla.(-F) Incluye un campo llamado nombre de archivo para contener el nombre del archivo de las teselas de donde proceden los cortes."
 
 #. Tag: programlisting
 #: using_raster_dataman.xml:296
@@ -982,7 +982,7 @@ msgid ""
 "resolution caricature of a higher resolution table. These are generated "
 "along-side the main raster table when you use the <varname>-l</varname> "
 "switch in raster loading."
-msgstr "<varname> raster_overviews </ varname> hace un catálogo de información sobre las columnas de la tabla de rasters utilizados para previsualizaciones y la información adicional sobre ellas, que es útil para saber cuándo utilizar las. Las tablas de previsualizaciones se catalogan tanto <varname>raster_columns</varname> como en <varname>raster_overviews</varname> porque son rasters por derecho propio, pero también sirven a un propósito especial adicional de ser simplificación de resolución inferior de una tabla de mayor resolución. Estas se generan a lo largo de la creación de la tabla raster principal cuando se utiliza la opción <varname>-l</ varname> en el comando de carga."
+msgstr "<varname> raster_overviews </varname> hace un catálogo de información sobre las columnas de la tabla de rasters utilizados para previsualizaciones y la información adicional sobre ellas, que es útil para saber cuándo utilizar las. Las tablas de previsualizaciones se catalogan tanto <varname>raster_columns</varname> como en <varname>raster_overviews</varname> porque son rasters por derecho propio, pero también sirven a un propósito especial adicional de ser simplificación de resolución inferior de una tabla de mayor resolución. Estas se generan a lo largo de la creación de la tabla raster principal cuando se utiliza la opción <varname>-l</varname> en el comando de carga."
 
 #. Tag: para
 #: using_raster_dataman.xml:395
@@ -1136,7 +1136,7 @@ msgid ""
 "Raster-graphics-with-LibreOffice-Base-Reports.html\">Rendering PostGIS "
 "Raster graphics with LibreOffice Base Reports</ulink>. In addition you can "
 "use a wide variety of languages as demonstrated in this section."
-msgstr "El hecho de que PostGIS raster te proporcione las funciones de SQL para crear rasters en formatos de imagen conocidos te da un montón de opciones para crearlas. Por ejemplo, puedes usar OpenOffice / LibreOffice para una representación como se demuestra en <ulink url=\"http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html\">Renderizar Gráficos PostGIS Raster con LibreOffice</ ulink>. Además se puede utilizar una amplia variedad de lenguajes de programación como se demuestra en esta sección."
+msgstr "El hecho de que PostGIS raster te proporcione las funciones de SQL para crear rasters en formatos de imagen conocidos te da un montón de opciones para crearlas. Por ejemplo, puedes usar OpenOffice / LibreOffice para una representación como se demuestra en <ulink url=\"http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html\">Renderizar Gráficos PostGIS Raster con LibreOffice</ulink>. Además se puede utilizar una amplia variedad de lenguajes de programación como se demuestra en esta sección."
 
 #. Tag: title
 #: using_raster_dataman.xml:447
@@ -1521,7 +1521,7 @@ msgid ""
 "with psql</ulink> that piggy backs on PostgreSQL somewhat legacy large "
 "object support. To use first launch your psql commandline connected to your "
 "database."
-msgstr "PSQL no tiene un uso fácil de la funcionalidad integrada para la salida de binarios. Esto es un pequeño truco y se basa en una de las propuestas que contiene el <ulink url=\"http://people.planetpostgresql.org/andrew/index.php?/archives/196-Clever-trick-challenge.html\">Clever Trick Challenge -- Outputting bytes with psql</ ulink> que respalda en PostgreSQL algo del legado de soporte de objetos. Para utilizarlo, primero lanza la línea de comandos psql conectando a tu base de datos."
+msgstr "PSQL no tiene un uso fácil de la funcionalidad integrada para la salida de binarios. Esto es un pequeño truco y se basa en una de las propuestas que contiene el <ulink url=\"http://people.planetpostgresql.org/andrew/index.php?/archives/196-Clever-trick-challenge.html\">Clever Trick Challenge -- Outputting bytes with psql</ulink> que respalda en PostgreSQL algo del legado de soporte de objetos. Para utilizarlo, primero lanza la línea de comandos psql conectando a tu base de datos."
 
 #. Tag: para
 #: using_raster_dataman.xml:494

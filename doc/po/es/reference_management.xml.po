@@ -100,7 +100,7 @@ msgid ""
 "error is thrown if the schemaname doesn't exist (or not visible in the "
 "current search_path) or the specified SRID, geometry type, or dimension is "
 "invalid."
-msgstr "Añade una columna de geometría a una tabla existente de atributos. <varname>schema_name</ varname> es el nombre del esquema de la tabla. <varname>srid</ varname> debe ser una referencia de valor entero a una entrada en la tabla SPATIAL_REF_SYS. <varname>type</ varname> debe ser una cadena que corresponde al tipo de geometría, por ejemplo, 'POLYGON' or 'MULTILINESTRING'. Se lanza un error si no existe el schemaname (o no esta visible en el search_path actual) o el SRID, el tipo de geometría, o la dimensión no son validos."
+msgstr "Añade una columna de geometría a una tabla existente de atributos. <varname>schema_name</varname> es el nombre del esquema de la tabla. <varname>srid</varname> debe ser una referencia de valor entero a una entrada en la tabla SPATIAL_REF_SYS. <varname>type</varname> debe ser una cadena que corresponde al tipo de geometría, por ejemplo, 'POLYGON' or 'MULTILINESTRING'. Se lanza un error si no existe el schemaname (o no esta visible en el search_path actual) o el SRID, el tipo de geometría, o la dimensión no son validos."
 
 #. Tag: para
 #: reference_management.xml:104
@@ -120,7 +120,7 @@ msgstr "Cambiado: 2.0.0 Esta función ya no se actualiza desde geometry_columns 
 msgid ""
 "Changed: 2.0.0 If you require the old behavior of constraints use the "
 "default <varname>use_typmod</varname>, but set it to false."
-msgstr "Cambiado: 2.0.0 Si necesitas el comportamiento antiguo de restricciones, utiliza el valor predeterminado <varname>use_typmod</ varname>, pero cambiala a false."
+msgstr "Cambiado: 2.0.0 Si necesitas el comportamiento antiguo de restricciones, utiliza el valor predeterminado <varname>use_typmod</varname>, pero cambiala a false."
 
 #. Tag: para
 #: reference_management.xml:111
@@ -379,7 +379,7 @@ msgid ""
 "that since geometry_columns is now a view against the system catalogs, you "
 "can drop a table with geometry columns like any other table using <code>DROP"
 " TABLE</code>"
-msgstr "Cambiado: 2.0.0 Se proporciona esta función para la compatibilidad con versiones anteriores. Ahora que  geometry_columns es una vista y no un catálogo del sistema, se puede borrar una tabla con columnas de geometría como cualquier otra tabla utilizando <code>DROP TABLE</ code>"
+msgstr "Cambiado: 2.0.0 Se proporciona esta función para la compatibilidad con versiones anteriores. Ahora que  geometry_columns es una vista y no un catálogo del sistema, se puede borrar una tabla con columnas de geometría como cualquier otra tabla utilizando <code>DROP TABLE</code>"
 
 #. Tag: programlisting
 #: reference_management.xml:269
@@ -910,7 +910,7 @@ msgid ""
 "<varname>geometry_columns</varname> view. By default will convert all "
 "geometry columns with no type modifier to ones with type modifiers. To get "
 "old behavior set <varname>use_typmod=false</varname>"
-msgstr "Asegura que las columnas de geometría se define con modificadores de tipo o tienen restricciones espaciales apropiadas Esto asegura que se registrarán correctamente en la vista <varname>geometry_columns</ varname>. Por defecto se convertirán todas las columnas de geometría sin modificador de tipo a modificadores de tipo. Para conseguir el comportamiento del sistema antiguo selecciona <varname>use_typmod = false</ varname>"
+msgstr "Asegura que las columnas de geometría se define con modificadores de tipo o tienen restricciones espaciales apropiadas Esto asegura que se registrarán correctamente en la vista <varname>geometry_columns</varname>. Por defecto se convertirán todas las columnas de geometría sin modificador de tipo a modificadores de tipo. Para conseguir el comportamiento del sistema antiguo selecciona <varname>use_typmod = false</varname>"
 
 #. Tag: funcsynopsis
 #: reference_management.xml:709
@@ -934,7 +934,7 @@ msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
 "constraints to ensure they are registered correctly in "
 "<varname>geometry_columns</varname> table."
-msgstr "Asegura que las columnas de geometría se define con modificadores de tipo o tienen restricciones espaciales apropiadas Esto asegura que se registrarán correctamente en la vista <varname>geometry_columns</ varname>."
+msgstr "Asegura que las columnas de geometría se define con modificadores de tipo o tienen restricciones espaciales apropiadas Esto asegura que se registrarán correctamente en la vista <varname>geometry_columns</varname>."
 
 #. Tag: para
 #: reference_management.xml:730
@@ -1024,7 +1024,7 @@ msgid ""
 "constraints to constrain geometry types. You can still use check constraint "
 "behavior instead by using the new <varname>use_typmod</varname> and setting "
 "it to false."
-msgstr "Cambiado: 2.0.0 Por defecto, ahora utiliza modificadores de tipo en lugar de restricciones de tipo check para limitar los tipos de geometría. Puedes seguir utilizando el comportamiento de las restricciones check con el uso de la nueva variable <varname>use_typmod</ varname> y estableciéndolo a false."
+msgstr "Cambiado: 2.0.0 Por defecto, ahora utiliza modificadores de tipo en lugar de restricciones de tipo check para limitar los tipos de geometría. Puedes seguir utilizando el comportamiento de las restricciones check con el uso de la nueva variable <varname>use_typmod</varname> y estableciéndolo a false."
 
 #. Tag: para
 #: reference_management.xml:780

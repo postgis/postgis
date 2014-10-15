@@ -72,7 +72,7 @@ msgid ""
 " data. Each of these tables inherits from the tables "
 "<varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>,"
 " etc located in the <varname>tiger schema</varname>."
-msgstr "También se crea otro esquema llamado <varname>tiger_data</varname> que aloja todos los datos del censo para cada estado que el cargador descarga desde el sitio del Censo y lo carga en la base de datos. En el modelo actual, cada conjunto de tablas estatales lleva un prefijo con el código de estado, por ejemplo <varname>ma_addr</varname>,<varname>ma_edges</varname> etc. con restricciones para reforzar únicamente esos datos del estado. Cada una de estas tablas descienden de las tablas <varname>addr</varname>,<varname>faces</varname>,varname>edges</varname>, etc. que están en el <varname>esquema tiger</varname>."
+msgstr "También se crea otro esquema llamado <varname>tiger_data</varname> que aloja todos los datos del censo para cada estado que el cargador descarga desde el sitio del Censo y lo carga en la base de datos. En el modelo actual, cada conjunto de tablas estatales lleva un prefijo con el código de estado, por ejemplo <varname>ma_addr</varname>,<varname>ma_edges</varname> etc. con restricciones para reforzar únicamente esos datos del estado. Cada una de estas tablas descienden de las tablas <varname>addr</varname>,<varname>faces</varname>,<varname>edges</varname>, etc. que están en el <varname>esquema tiger</varname>."
 
 #. Tag: para
 #: extras_tigergeocoder.xml:13

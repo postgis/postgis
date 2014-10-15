@@ -71,7 +71,7 @@ msgid ""
 "is correct. But in our case, the &amp;&amp; operator has to fetch every "
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
-msgstr "Ahora al emitir una consulta en la que utilizas el operador geométrico &&  para buscar un límite que coincide sólo unas pocas de esas filas, el optimizador de consultas ve que la tabla sólo tiene 3 páginas y 80 filas. Se estima que un escaseo secuencial en una tabla pequeña de este tipo es mucho más rápida que usando un índice. Y por lo que decide ignorar el índice de GIST. Por lo general, esta estimación es correcta. Pero en nuestro caso, el operador && tiene que buscar en cada geometría del disco la comparación de los limites, y leer todas las páginas TOAST también."
+msgstr "Ahora al emitir una consulta en la que utilizas el operador geométrico &amp;&amp;  para buscar un límite que coincide sólo unas pocas de esas filas, el optimizador de consultas ve que la tabla sólo tiene 3 páginas y 80 filas. Se estima que un escaseo secuencial en una tabla pequeña de este tipo es mucho más rápida que usando un índice. Y por lo que decide ignorar el índice de GIST. Por lo general, esta estimación es correcta. Pero en nuestro caso, el operador &amp;&amp; tiene que buscar en cada geometría del disco la comparación de los limites, y leer todas las páginas TOAST también."
 
 #. Tag: para
 #: performance_tips.xml:35
