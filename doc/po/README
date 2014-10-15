@@ -22,7 +22,10 @@ found in ../.tx/config (only needed when new doc sources
 are added);
 
 Push locally updated templates to transifex with ``tx push -t``.
+
 Push locally updated translations to transifex with ``tx push -s``.
+The --skip switch makes upload continue on import failure (useful
+when some of the translation files have no translations at all).
 
 Pull remotely updated translations with ``tx pull``
 
