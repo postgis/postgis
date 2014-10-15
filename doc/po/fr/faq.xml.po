@@ -98,7 +98,10 @@ msgid ""
 " and as described on <ulink "
 "url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">Francisco"
 " Figueiredo's NpgSQL 2.0.11 released blog entry</ulink>"
-msgstr "Si vous faites tourner une application .NET, vous pouvez utiliser Npgsql 2.0.11 ou supérieure, que vous pouvez télécharger de <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, et voir la description donnée sur l'entrée de blog de Francisco Figueiredo sur NpgSQL 2.0.11 : <ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">"
+msgstr "Si vous faites tourner une application .NET, vous pouvez utiliser Npgsql 2.0.11 ou supérieure, que vous pouvez télécharger de <ulink url=\"http://pgfoundry.org/frs/?group_id=1000140\">http://pgfoundry.org/frs/?group_id=1000140</ulink>, et voir la description donnée sur l'entrée de blog de
+<ulink url=\"http://fxjr.blogspot.com/2010/11/npgsql-2011-released.html\">
+Francisco Figueiredo sur NpgSQL 2.0.11 
+</ulink>"
 
 #. Tag: para
 #: faq.xml:38

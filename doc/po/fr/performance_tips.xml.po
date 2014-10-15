@@ -45,7 +45,7 @@ msgid ""
 "with lots of vertices), see <ulink "
 "url=\"http://www.postgresql.org/docs/current/static/storage-toast.html\">the"
 " PostgreSQL Documentation for TOAST</ulink> for more information)."
-msgstr "Les versions de PostgreSQL actuelles (y compris 8.0) souffrent d'une faiblesse optimiseur de requête relative les tables TOAST. Tables TOAST sont une sorte de «salle de l'extension\" utilisé pour stocker de grandes valeurs (dans le sens de la taille des données) qui ne rentrent pas dans les pages de données normales (comme de longs textes, images ou des géométries complexes avec beaucoup de sommets), voir <url ulink = \"http://www.postgresql.org/docs/current/static/storage-toast.html\"> Documentation PostgreSQL pour TOAST </ ulink> pour plus d'informations)."
+msgstr "Les versions de PostgreSQL actuelles (y compris 8.0) souffrent d'une faiblesse optimiseur de requête relative les tables TOAST. Tables TOAST sont une sorte de «salle de l'extension\" utilisé pour stocker de grandes valeurs (dans le sens de la taille des données) qui ne rentrent pas dans les pages de données normales (comme de longs textes, images ou des géométries complexes avec beaucoup de sommets), voir <ulink url=\"http://www.postgresql.org/docs/current/static/storage-toast.html\"> Documentation PostgreSQL pour TOAST </ulink> pour plus d'informations)."
 
 #. Tag: para
 #: performance_tips.xml:19
