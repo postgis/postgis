@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # vpicavet <vincent.ml@oslandia.com>, 2013
 msgid ""
@@ -9,11 +9,12 @@ msgstr ""
 "POT-Creation-Date: 2012-09-14 17:50+0000\n"
 "PO-Revision-Date: 2013-11-27 18:04+0000\n"
 "Last-Translator: vpicavet <vincent.ml@oslandia.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
+"language/fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Tag: title
@@ -27,19 +28,26 @@ msgstr "Support des transactions longues"
 #, no-c-format
 msgid ""
 "This module and associated pl/pgsql functions have been implemented to "
-"provide long locking support required by <ulink "
-"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature "
-"Service</ulink> specification."
-msgstr "Ce module et les fonctions pl/pgsql associées ont été implémentées pour fournir le support du verrouillage long, requis par la spécification <ulink url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</ulink>."
+"provide long locking support required by <ulink url=\"http://www."
+"opengeospatial.org/standards/wfs\">Web Feature Service</ulink> specification."
+msgstr ""
+"Ce module et les fonctions pl/pgsql associées ont été implémentées pour "
+"fournir le support du verrouillage long, requis par la spécification <ulink "
+"url=\"http://www.opengeospatial.org/standards/wfs\">Web Feature Service</"
+"ulink>."
 
 #. Tag: para
 #: reference_transaction.xml:10
 #, no-c-format
 msgid ""
-"Users must use <ulink url=\"http://www.postgresql.org/docs/current/static"
-"/transaction-iso.html\">serializable transaction level</ulink> otherwise "
+"Users must use <ulink url=\"http://www.postgresql.org/docs/current/static/"
+"transaction-iso.html\">serializable transaction level</ulink> otherwise "
 "locking mechanism would break."
-msgstr "Les utilisateurs doivent activer le niveau de transaction <ulink url=\"http://www.postgresql.org/docs/current/static/transaction-iso.html\">serializable transaction</ulink> sinon les mécanismes de verrouillage ne fonctionneront pas."
+msgstr ""
+"Les utilisateurs doivent activer le niveau de transaction <ulink url="
+"\"http://www.postgresql.org/docs/current/static/transaction-iso.html"
+"\">serializable transaction</ulink> sinon les mécanismes de verrouillage ne "
+"fonctionneront pas."
 
 #. Tag: refname
 #: reference_transaction.xml:18
@@ -51,17 +59,21 @@ msgstr "AddAuth"
 #: reference_transaction.xml:20
 #, no-c-format
 msgid ""
-"<refpurpose>Add an authorization token to be used in current "
-"transaction.</refpurpose>"
-msgstr "<refpurpose>Ajoute un jeton d'autorisation à utiliser dans la transaction courante.</refpurpose>"
+"<refpurpose>Add an authorization token to be used in current transaction.</"
+"refpurpose>"
+msgstr ""
+"<refpurpose>Ajoute un jeton d'autorisation à utiliser dans la transaction "
+"courante.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:25
 #, no-c-format
 msgid ""
-"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text"
-" </type> <parameter>auth_token</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
+"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
+"</type> <parameter>auth_token</parameter></paramdef>"
+msgstr ""
+"<funcdef>boolean <function>AddAuth</function></funcdef> <paramdef><type>text "
+"</type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: title
 #: reference_transaction.xml:33 reference_transaction.xml:83
@@ -76,7 +88,9 @@ msgstr "Description"
 #, no-c-format
 msgid ""
 "<para>Add an authorization token to be used in current transaction.</para>"
-msgstr "<para>Ajoute un jeton d'autorisation à utiliser dans la transaction courante.</para>"
+msgstr ""
+"<para>Ajoute un jeton d'autorisation à utiliser dans la transaction courante."
+"</para>"
 
 #. Tag: para
 #: reference_transaction.xml:37
@@ -84,7 +98,9 @@ msgstr "<para>Ajoute un jeton d'autorisation à utiliser dans la transaction cou
 msgid ""
 "Creates/adds to a temp table called temp_lock_have_table the current "
 "transaction identifier and authorization token key."
-msgstr "Crée/ajoute l'identifiant de transaction courante et la clé du jeton d'autorisation à une table temporaire nommée temp_lock_have_table"
+msgstr ""
+"Crée/ajoute l'identifiant de transaction courante et la clé du jeton "
+"d'autorisation à une table temporaire nommée temp_lock_have_table"
 
 #. Tag: para
 #: reference_transaction.xml:40 reference_transaction.xml:92
@@ -109,13 +125,26 @@ msgid ""
 "SELECT LockRow('towns', '353', 'priscilla');\n"
 "                BEGIN TRANSACTION;\n"
 "                        SELECT AddAuth('joey');\n"
-"                        UPDATE towns SET the_geom = ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
+"                        UPDATE towns SET the_geom = "
+"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
 "                COMMIT;\n"
 "\n"
 "\n"
 "                ---Error--\n"
-"                ERROR:  UPDATE where \"gid\" = '353' requires authorization 'priscilla'"
-msgstr "SELECT LockRow('towns', '353', 'priscilla');\n                BEGIN TRANSACTION;\n                        SELECT AddAuth('joey');\n                        UPDATE towns SET the_geom = ST_Translate(the_geom,2,2) WHERE gid = 353;\n                COMMIT;\n\n\n                ---Error--\n                ERROR:  UPDATE where \"gid\" = '353' requires authorization 'priscilla'"
+"                ERROR:  UPDATE where \"gid\" = '353' requires authorization "
+"'priscilla'"
+msgstr ""
+"SELECT LockRow('towns', '353', 'priscilla');\n"
+"                BEGIN TRANSACTION;\n"
+"                        SELECT AddAuth('joey');\n"
+"                        UPDATE towns SET the_geom = "
+"ST_Translate(the_geom,2,2) WHERE gid = 353;\n"
+"                COMMIT;\n"
+"\n"
+"\n"
+"                ---Error--\n"
+"                ERROR:  UPDATE where \"gid\" = '353' requires authorization "
+"'priscilla'"
 
 #. Tag: title
 #: reference_transaction.xml:52 reference_transaction.xml:105
@@ -137,22 +166,32 @@ msgstr "CheckAuth"
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token."
-msgstr "Crée un déclencheur sur une table pour empêcher/autoriser les mises à jour (UPDATE) et les suppressions (DELETE) de lignes en se basant sur le jeton d'autorisation."
+msgstr ""
+"Crée un déclencheur sur une table pour empêcher/autoriser les mises à jour "
+"(UPDATE) et les suppressions (DELETE) de lignes en se basant sur le jeton "
+"d'autorisation."
 
 #. Tag: funcsynopsis
 #: reference_transaction.xml:66
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
-"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>"
-" <paramdef><type>text </type> "
-"<parameter>a_key_column_name</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
-"<paramdef><type>text </type> "
+"<paramdef><type>text </type> <parameter>a_key_column_name</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>CheckAuth</function></funcdef> <paramdef><type>text </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
 "<parameter>a_key_column_name</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> <paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_key_column_name</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>CheckAuth</function></funcdef> <paramdef><type>text </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>a_key_column_name</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_transaction.xml:85
@@ -160,28 +199,37 @@ msgstr "<funcprototype> <funcdef>integer <function>CheckAuth</function></funcdef
 msgid ""
 "Creates trigger on a table to prevent/allow updates and deletes of rows "
 "based on authorization token. Identify rows using &lt;rowid_col&gt; column."
-msgstr "Crée un déclencheur sur une table pour empêcher/autoriser les mises à jour (UPDATE) et les suppressions (DELETE) de lignes en se basant sur le jeton d'autorisation. Identifie les lignes en utilisant la colonne &lt;rowid_col&gt; ."
+msgstr ""
+"Crée un déclencheur sur une table pour empêcher/autoriser les mises à jour "
+"(UPDATE) et les suppressions (DELETE) de lignes en se basant sur le jeton "
+"d'autorisation. Identifie les lignes en utilisant la colonne &lt;"
+"rowid_col&gt; ."
 
 #. Tag: para
 #: reference_transaction.xml:87
 #, no-c-format
 msgid ""
-"If a_schema_name is not passed in, then searches for table in current "
-"schema."
-msgstr "Si a_schema_name n'est pas passé en entrée, alors la table est cherchée dans le schéma courant."
+"If a_schema_name is not passed in, then searches for table in current schema."
+msgstr ""
+"Si a_schema_name n'est pas passé en entrée, alors la table est cherchée dans "
+"le schéma courant."
 
 #. Tag: para
 #: reference_transaction.xml:88
 #, no-c-format
 msgid ""
 "If an authorization trigger already exists on this table function errors."
-msgstr "Si un déclencheur d'autorisation existe déjà sur la table alors la fonction renvoie une erreur."
+msgstr ""
+"Si un déclencheur d'autorisation existe déjà sur la table alors la fonction "
+"renvoie une erreur."
 
 #. Tag: para
 #: reference_transaction.xml:89
 #, no-c-format
 msgid "If Transaction support is not enabled, function throws an exception."
-msgstr "Si le support des transactions longues n'est pas activé alors la fonction lance une exception."
+msgstr ""
+"Si le support des transactions longues n'est pas activé alors la fonction "
+"lance une exception."
 
 #. Tag: programlisting
 #: reference_transaction.xml:100
@@ -191,7 +239,11 @@ msgid ""
 "                        result\n"
 "                        ------\n"
 "                        0"
-msgstr "SELECT CheckAuth('public', 'towns', 'gid');\n                        result\n                        ------\n                        0"
+msgstr ""
+"SELECT CheckAuth('public', 'towns', 'gid');\n"
+"                        result\n"
+"                        ------\n"
+"                        0"
 
 #. Tag: refname
 #: reference_transaction.xml:113
@@ -203,10 +255,14 @@ msgstr "DisableLongTransactions"
 #: reference_transaction.xml:115
 #, no-c-format
 msgid ""
-"<refpurpose>Disable long transaction support. This function removes the long"
-" transaction support metadata tables, and drops all triggers attached to "
-"lock-checked tables.</refpurpose>"
-msgstr "<refpurpose>Désactive le support des transactions longues. Cette fonction supprime les tables de métadonnées du support de transactions longues, et supprime également tous les déclencheurs attachés aux tables pour lesquelles il y a une vérification de verrou.</refpurpose>"
+"<refpurpose>Disable long transaction support. This function removes the long "
+"transaction support metadata tables, and drops all triggers attached to lock-"
+"checked tables.</refpurpose>"
+msgstr ""
+"<refpurpose>Désactive le support des transactions longues. Cette fonction "
+"supprime les tables de métadonnées du support de transactions longues, et "
+"supprime également tous les déclencheurs attachés aux tables pour lesquelles "
+"il y a une vérification de verrou.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:122
@@ -214,16 +270,22 @@ msgstr "<refpurpose>Désactive le support des transactions longues. Cette foncti
 msgid ""
 "<funcdef>text <function>DisableLongTransactions</function></funcdef> "
 "<paramdef></paramdef>"
-msgstr "<funcdef>text <function>DisableLongTransactions</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+"<funcdef>text <function>DisableLongTransactions</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_transaction.xml:132
 #, no-c-format
 msgid ""
 "<para>Disable long transaction support. This function removes the long "
-"transaction support metadata tables, and drops all triggers attached to "
-"lock-checked tables.</para>"
-msgstr "<para>Désactive le support des transactions longues. Cette fonction supprime les tables de métadonnées du support de transactions longues, et supprime également tous les déclencheurs attachés aux tables pour lesquelles il y a une vérification de verrou.</para>"
+"transaction support metadata tables, and drops all triggers attached to lock-"
+"checked tables.</para>"
+msgstr ""
+"<para>Désactive le support des transactions longues. Cette fonction supprime "
+"les tables de métadonnées du support de transactions longues, et supprime "
+"également tous les déclencheurs attachés aux tables pour lesquelles il y a "
+"une vérification de verrou.</para>"
 
 #. Tag: para
 #: reference_transaction.xml:135
@@ -232,7 +294,10 @@ msgid ""
 "Drops meta table called <varname>authorization_table</varname> and a view "
 "called <varname>authorized_tables</varname> and all triggers called "
 "<varname>checkauthtrigger</varname>"
-msgstr "Supprime la table de métadonnées nommée <varname>authorization_table</varname> et la vue nommée  <varname>authorized_tables</varname> ainsi que tous les déclencheurs nommés <varname>checkauthtrigger</varname>"
+msgstr ""
+"Supprime la table de métadonnées nommée <varname>authorization_table</"
+"varname> et la vue nommée  <varname>authorized_tables</varname> ainsi que "
+"tous les déclencheurs nommés <varname>checkauthtrigger</varname>"
 
 #. Tag: programlisting
 #: reference_transaction.xml:146
@@ -241,7 +306,10 @@ msgid ""
 "SELECT DisableLongTransactions();\n"
 "--result--\n"
 "Long transactions support disabled"
-msgstr "SELECT DisableLongTransactions();\n--result--\nLong transactions support disabled"
+msgstr ""
+"SELECT DisableLongTransactions();\n"
+"--result--\n"
+"Long transactions support disabled"
 
 #. Tag: refname
 #: reference_transaction.xml:159
@@ -256,7 +324,11 @@ msgid ""
 "<refpurpose>Enable long transaction support. This function creates the "
 "required metadata tables, needs to be called once before using the other "
 "functions in this section. Calling it twice is harmless.</refpurpose>"
-msgstr "<refpurpose>Active le support des transactions longues. Cette fonction crée les tables de métadonnées nécessaires. Elle doit être appelée une fois avant d'utiliser les autres fonctions de cette section. L'appeler deux fois ou plus n'a aucun effet.</refpurpose>"
+msgstr ""
+"<refpurpose>Active le support des transactions longues. Cette fonction crée "
+"les tables de métadonnées nécessaires. Elle doit être appelée une fois avant "
+"d'utiliser les autres fonctions de cette section. L'appeler deux fois ou "
+"plus n'a aucun effet.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:169
@@ -264,16 +336,22 @@ msgstr "<refpurpose>Active le support des transactions longues. Cette fonction c
 msgid ""
 "<funcdef>text <function>EnableLongTransactions</function></funcdef> "
 "<paramdef></paramdef>"
-msgstr "<funcdef>text <function>EnableLongTransactions</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+"<funcdef>text <function>EnableLongTransactions</function></funcdef> "
+"<paramdef></paramdef>"
 
 #. Tag: para
 #: reference_transaction.xml:179
 #, no-c-format
 msgid ""
 "<para>Enable long transaction support. This function creates the required "
-"metadata tables, needs to be called once before using the other functions in"
-" this section. Calling it twice is harmless.</para>"
-msgstr "<para>Active le support des transactions longues. Cette fonction crée les tables de métadonnées nécessaires. Elle doit être appelée une fois avant d'utiliser les autres fonctions de cette section. L'appeler deux fois ou plus n'a aucun effet.</para>"
+"metadata tables, needs to be called once before using the other functions in "
+"this section. Calling it twice is harmless.</para>"
+msgstr ""
+"<para>Active le support des transactions longues. Cette fonction crée les "
+"tables de métadonnées nécessaires. Elle doit être appelée une fois avant "
+"d'utiliser les autres fonctions de cette section. L'appeler deux fois ou "
+"plus n'a aucun effet.</para>"
 
 #. Tag: para
 #: reference_transaction.xml:183
@@ -281,7 +359,9 @@ msgstr "<para>Active le support des transactions longues. Cette fonction crée l
 msgid ""
 "Creates a meta table called <varname>authorization_table</varname> and a "
 "view called <varname>authorized_tables</varname>"
-msgstr "Crée une table de métadonnées nommée <varname>authorization_table</varname> et une vue nommée <varname>authorized_tables</varname>"
+msgstr ""
+"Crée une table de métadonnées nommée <varname>authorization_table</varname> "
+"et une vue nommée <varname>authorized_tables</varname>"
 
 #. Tag: programlisting
 #: reference_transaction.xml:193
@@ -290,7 +370,10 @@ msgid ""
 "SELECT EnableLongTransactions();\n"
 "--result--\n"
 "Long transactions support enabled"
-msgstr "SELECT EnableLongTransactions();\n--result--\nLong transactions support enabled"
+msgstr ""
+"SELECT EnableLongTransactions();\n"
+"--result--\n"
+"Long transactions support enabled"
 
 #. Tag: refname
 #: reference_transaction.xml:206
@@ -302,30 +385,46 @@ msgstr "LockRow"
 #: reference_transaction.xml:208
 #, no-c-format
 msgid "Set lock/authorization for specific row in table"
-msgstr "Active le vérouillage/l'autorisation pour une ligne spécifique de la table"
+msgstr ""
+"Active le vérouillage/l'autorisation pour une ligne spécifique de la table"
 
 #. Tag: funcsynopsis
 #: reference_transaction.xml:212
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> "
-"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>"
-" <paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> "
 "<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> "
-"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>"
-" </funcprototype> <funcprototype> <funcdef>integer "
-"<function>LockRow</function></funcdef> <paramdef><type>text </type> "
-"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> "
-"<parameter>an_auth_token</parameter></paramdef> "
-"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>"
-" </funcprototype> <funcprototype> <funcdef>integer "
+"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>integer <function>LockRow</"
+"function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</"
+"parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</"
+"parameter></paramdef> <paramdef><type>timestamp</type> <parameter>expire_dt</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer "
 "<function>LockRow</function></funcdef> <paramdef><type>text </type> "
 "<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
 "<parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> "
 "<parameter>an_auth_token</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> <paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> <paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer <function>LockRow</function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> <paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer <function>LockRow</function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>integer <function>LockRow</function></funcdef> "
+"<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef> "
+"<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef> "
+"<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>integer <function>LockRow</"
+"function></funcdef> <paramdef><type>text </type> <parameter>a_table_name</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>a_row_key</"
+"parameter></paramdef> <paramdef><type>text</type> <parameter>an_auth_token</"
+"parameter></paramdef> <paramdef><type>timestamp</type> <parameter>expire_dt</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>integer "
+"<function>LockRow</function></funcdef> <paramdef><type>text </type> "
+"<parameter>a_table_name</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>a_row_key</parameter></paramdef> <paramdef><type>text</type> "
+"<parameter>an_auth_token</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_transaction.xml:243
@@ -334,7 +433,11 @@ msgid ""
 "Set lock/authorization for specific row in table &lt;authid&gt; is a text "
 "value, &lt;expires&gt; is a timestamp defaulting to now()+1hour. Returns 1 "
 "if lock has been assigned, 0 otherwise (already locked by other auth)"
-msgstr "Active le vérouillage/l'autorisation pour la ligne spécifique dans la table  &lt;authid&gt; est une valeur textuelle,  &lt;expires&gt; est un timestamp (date+heure) qui vaut par défaut now()+1hour, Retourne 1 si le verrou a été assigné, sinon 0 (déjà verrouillé par une autre autorisation)"
+msgstr ""
+"Active le vérouillage/l'autorisation pour la ligne spécifique dans la table  "
+"&lt;authid&gt; est une valeur textuelle,  &lt;expires&gt; est un timestamp "
+"(date+heure) qui vaut par défaut now()+1hour, Retourne 1 si le verrou a été "
+"assigné, sinon 0 (déjà verrouillé par une autre autorisation)"
 
 #. Tag: programlisting
 #: reference_transaction.xml:255
@@ -350,7 +453,17 @@ msgid ""
 "LockRow\n"
 "-------\n"
 "0"
-msgstr "SELECT LockRow('public', 'towns', '2', 'joey');\nLockRow\n-------\n1\n\n--Joey has already locked the record and Priscilla is out of luck\nSELECT LockRow('public', 'towns', '2', 'priscilla');\nLockRow\n-------\n0"
+msgstr ""
+"SELECT LockRow('public', 'towns', '2', 'joey');\n"
+"LockRow\n"
+"-------\n"
+"1\n"
+"\n"
+"--Joey has already locked the record and Priscilla is out of luck\n"
+"SELECT LockRow('public', 'towns', '2', 'priscilla');\n"
+"LockRow\n"
+"-------\n"
+"0"
 
 #. Tag: refname
 #: reference_transaction.xml:268
@@ -362,9 +475,11 @@ msgstr "UnlockRows"
 #: reference_transaction.xml:270
 #, no-c-format
 msgid ""
-"<refpurpose>Remove all locks held by specified authorization id. Returns the"
-" number of locks released.</refpurpose>"
-msgstr "<refpurpose>Supprime tous les verrous que possède l'autorisation spécifiée. Retourne le nombre de verrous supprimés.</refpurpose>"
+"<refpurpose>Remove all locks held by specified authorization id. Returns the "
+"number of locks released.</refpurpose>"
+msgstr ""
+"<refpurpose>Supprime tous les verrous que possède l'autorisation spécifiée. "
+"Retourne le nombre de verrous supprimés.</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_transaction.xml:276
@@ -372,7 +487,9 @@ msgstr "<refpurpose>Supprime tous les verrous que possède l'autorisation spéci
 msgid ""
 "<funcdef>integer <function>UnlockRows</function></funcdef> "
 "<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
-msgstr "<funcdef>integer <function>UnlockRows</function></funcdef> <paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
+msgstr ""
+"<funcdef>integer <function>UnlockRows</function></funcdef> "
+"<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>"
 
 #. Tag: para
 #: reference_transaction.xml:286
@@ -380,7 +497,9 @@ msgstr "<funcdef>integer <function>UnlockRows</function></funcdef> <paramdef><ty
 msgid ""
 "<para>Remove all locks held by specified authorization id. Returns the "
 "number of locks released.</para>"
-msgstr "<para>Supprime tous les verrous que possède l'autorisation spécifiée. Retourne le nombre de verrous supprimés.</para>"
+msgstr ""
+"<para>Supprime tous les verrous que possède l'autorisation spécifiée. "
+"Retourne le nombre de verrous supprimés.</para>"
 
 #. Tag: programlisting
 #: reference_transaction.xml:296
@@ -392,4 +511,10 @@ msgid ""
 "                UnLockRows\n"
 "                ------------\n"
 "                2"
-msgstr "SELECT LockRow('towns', '353', 'priscilla');\n                SELECT LockRow('towns', '2', 'priscilla');\n                SELECT UnLockRows('priscilla');\n                UnLockRows\n                ------------\n                2"
+msgstr ""
+"SELECT LockRow('towns', '353', 'priscilla');\n"
+"                SELECT LockRow('towns', '2', 'priscilla');\n"
+"                SELECT UnLockRows('priscilla');\n"
+"                UnLockRows\n"
+"                ------------\n"
+"                2"
