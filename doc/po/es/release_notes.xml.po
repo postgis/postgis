@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -8,11 +8,12 @@ msgstr ""
 "POT-Creation-Date: 2012-09-14 17:50+0000\n"
 "PO-Revision-Date: 2013-11-27 13:48+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
+"language/es/)\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
@@ -217,8 +218,7 @@ msgstr ""
 #: release_notes.xml:38
 #, no-c-format
 msgid ""
-"#1834, revise postgis extension to only backup user specified "
-"spatial_ref_sys"
+"#1834, revise postgis extension to only backup user specified spatial_ref_sys"
 msgstr ""
 
 #. Tag: para
@@ -268,8 +268,8 @@ msgstr ""
 #: release_notes.xml:48
 #, no-c-format
 msgid ""
-"#1873, fix ptarray_locate_point to return interpolated Z/M values for on-"
-"the-line case"
+"#1873, fix ptarray_locate_point to return interpolated Z/M values for on-the-"
+"line case"
 msgstr ""
 
 #. Tag: para
@@ -283,8 +283,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:52
 #, no-c-format
-msgid ""
-"#1881, shp2pgsql-gui -- editing a field sometimes triggers removing row"
+msgid "#1881, shp2pgsql-gui -- editing a field sometimes triggers removing row"
 msgstr ""
 
 #. Tag: para
@@ -452,10 +451,10 @@ msgid ""
 "-- If you have been using deprecated functions CHANGE your apps or suffer "
 "the consequences. If you don't see a function documented -- it ain't "
 "supported or it is an internal function. Some constraints in older tables "
-"were built with deprecated functions. If you restore you may need to rebuild"
-" table constraints with populate_geometry_columns(). If you have "
-"applications or tools that rely on deprecated functions, please refer to "
-"<link linkend=\"legacy_faq\"></link> for more details."
+"were built with deprecated functions. If you restore you may need to rebuild "
+"table constraints with populate_geometry_columns(). If you have applications "
+"or tools that rely on deprecated functions, please refer to <link linkend="
+"\"legacy_faq\"></link> for more details."
 msgstr ""
 
 #. Tag: para
@@ -463,8 +462,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "#944 geometry_columns is now a view instead of a table (Paul Ramsey, Regina "
-"Obe) for tables created the old way reads (srid, type, dims) constraints for"
-" geometry columns created with type modifiers reads rom column definition"
+"Obe) for tables created the old way reads (srid, type, dims) constraints for "
+"geometry columns created with type modifiers reads rom column definition"
 msgstr ""
 
 #. Tag: para
@@ -525,21 +524,19 @@ msgstr ""
 #: release_notes.xml:124
 #, no-c-format
 msgid ""
-"<ulink "
-"url=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding\">Raster"
-" support integrated and documented</ulink> (Pierre Racine, Jorge Arévalo, "
-"Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park) "
-"(Company developer and funding: University Laval, Deimos Space, CadCorp, "
-"Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis "
-"Center for Vectorborne Diseases)"
+"<ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding"
+"\">Raster support integrated and documented</ulink> (Pierre Racine, Jorge "
+"Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie "
+"Park) (Company developer and funding: University Laval, Deimos Space, "
+"CadCorp, Michigan Tech Research Institute, Azavea, Paragon Corporation, UC "
+"Davis Center for Vectorborne Diseases)"
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:127
 #, no-c-format
 msgid ""
-"Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-"
-"Ayland)"
+"Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)"
 msgstr ""
 
 #. Tag: para
@@ -703,8 +700,8 @@ msgstr ""
 msgid ""
 "Extras - revised tiger_geocoder to work with TIGER census 2010 data, "
 "addition of reverse geocoder function, various bug fixes, accuracy "
-"enhancements, limit max result return, speed improvements, loading routines."
-" (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter "
+"enhancements, limit max result return, speed improvements, loading routines. "
+"(Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter "
 "Systems Group)"
 msgstr ""
 
@@ -738,11 +735,11 @@ msgstr ""
 #: release_notes.xml:170
 #, no-c-format
 msgid ""
-"We thank <ulink url=\"http://blog.opengeo.org/2012/02/01/it-goes-up-"
-"to-2-0/\">U.S Department of State Human Information Unit (HIU)</ulink> and "
-"<ulink url=\"http://blog.cartodb.com/post/17318840209/postgis-core-"
-"committer-sandro-santilli-joins-cartodb\">Vizzuality</ulink> for general "
-"monetary support to get PostGIS 2.0 out the door."
+"We thank <ulink url=\"http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/"
+"\">U.S Department of State Human Information Unit (HIU)</ulink> and <ulink "
+"url=\"http://blog.cartodb.com/post/17318840209/postgis-core-committer-sandro-"
+"santilli-joins-cartodb\">Vizzuality</ulink> for general monetary support to "
+"get PostGIS 2.0 out the door."
 msgstr ""
 
 #. Tag: title
@@ -819,8 +816,8 @@ msgstr ""
 #: release_notes.xml:188
 #, no-c-format
 msgid ""
-"#1121, populate_geometry_columns using deprecated functions (Regin Obe, Paul"
-" Ramsey)"
+"#1121, populate_geometry_columns using deprecated functions (Regin Obe, Paul "
+"Ramsey)"
 msgstr ""
 
 #. Tag: para
@@ -874,8 +871,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:197
 #, no-c-format
-msgid ""
-"#1344, allow exporting tables with invalid geometries (Sandro Santilli)"
+msgid "#1344, allow exporting tables with invalid geometries (Sandro Santilli)"
 msgstr ""
 
 #. Tag: para
@@ -955,8 +951,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is a bug fix release, addressing issues that have been filed since the "
-"1.5.2 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient"
-" otherwise a hard upgrade is recommended."
+"1.5.2 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient "
+"otherwise a hard upgrade is recommended."
 msgstr ""
 
 #. Tag: para
@@ -971,8 +967,8 @@ msgstr ""
 #: release_notes.xml:220
 #, no-c-format
 msgid ""
-"#1007, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ (Sandro Santilli,"
-" reported by Birgit Laggner)"
+"#1007, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ (Sandro Santilli, "
+"reported by Birgit Laggner)"
 msgstr ""
 
 #. Tag: para
@@ -987,8 +983,8 @@ msgstr ""
 #: release_notes.xml:224
 #, no-c-format
 msgid ""
-"#845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén) Reported"
-" by cdestigter"
+"#845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén) Reported "
+"by cdestigter"
 msgstr ""
 
 #. Tag: para
@@ -1103,16 +1099,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is a bug fix release, addressing issues that have been filed since the "
-"1.5.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient"
-" otherwise a hard upgrade is recommended."
+"1.5.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient "
+"otherwise a hard upgrade is recommended."
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:256
 #, no-c-format
 msgid ""
-"Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro"
-" Santilli)"
+"Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro "
+"Santilli)"
 msgstr ""
 
 #. Tag: para
@@ -1140,8 +1136,8 @@ msgstr ""
 #: release_notes.xml:260
 #, no-c-format
 msgid ""
-"#393, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul"
-" Ramsey)"
+"#393, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul "
+"Ramsey)"
 msgstr ""
 
 #. Tag: para
@@ -1273,8 +1269,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is a bug fix release, addressing issues that have been filed since the "
-"1.4.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient"
-" otherwise a hard upgrade is recommended."
+"1.4.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient "
+"otherwise a hard upgrade is recommended."
 msgstr ""
 
 #. Tag: para
@@ -1359,9 +1355,9 @@ msgstr ""
 #: release_notes.xml:302
 #, no-c-format
 msgid ""
-"This release provides support for geographic coordinates (lat/lon) via a new"
-" GEOGRAPHY type. Also performance enhancements, new input format support "
-"(GML,KML) and general upkeep."
+"This release provides support for geographic coordinates (lat/lon) via a new "
+"GEOGRAPHY type. Also performance enhancements, new input format support (GML,"
+"KML) and general upkeep."
 msgstr ""
 
 #. Tag: title
@@ -1400,8 +1396,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:313
 #, no-c-format
-msgid ""
-"The library versions below are the minimum requirements for PostGIS 1.5"
+msgid "The library versions below are the minimum requirements for PostGIS 1.5"
 msgstr ""
 
 #. Tag: para
@@ -1502,8 +1497,7 @@ msgstr ""
 #: release_notes.xml:336
 #, no-c-format
 msgid ""
-"Add measure values to an existing linestring with ST_AddMeasure (Paul "
-"Ramsey)"
+"Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)"
 msgstr ""
 
 #. Tag: para
@@ -1599,7 +1593,8 @@ msgstr ""
 #: release_notes.xml:360
 #, no-c-format
 msgid ""
-"http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority"
+"http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS"
+"+1.5.0&amp;order=priority"
 msgstr ""
 
 #. Tag: title
@@ -1618,8 +1613,8 @@ msgstr ""
 #: release_notes.xml:367
 #, no-c-format
 msgid ""
-"This release provides performance enhancements, improved internal structures"
-" and testing, new features, and upgraded documentation. If you are running "
+"This release provides performance enhancements, improved internal structures "
+"and testing, new features, and upgraded documentation. If you are running "
 "PostGIS 1.1+, a soft upgrade is sufficient otherwise a hard upgrade is "
 "recommended."
 msgstr ""
@@ -1696,8 +1691,8 @@ msgstr ""
 #: release_notes.xml:392
 #, no-c-format
 msgid ""
-"ST_IsValidReason() returns readable explanations for validity failures (Paul"
-" Ramsey)"
+"ST_IsValidReason() returns readable explanations for validity failures (Paul "
+"Ramsey)"
 msgstr ""
 
 #. Tag: para
@@ -1745,8 +1740,8 @@ msgstr ""
 #: release_notes.xml:399
 #, no-c-format
 msgid ""
-"Populate_Geometry_Columns() -- automatically add records to geometry_columns"
-" for TABLES and VIEWS (Kevin Neufeld)"
+"Populate_Geometry_Columns() -- automatically add records to geometry_columns "
+"for TABLES and VIEWS (Kevin Neufeld)"
 msgstr ""
 
 #. Tag: para
@@ -1890,7 +1885,8 @@ msgstr ""
 #: release_notes.xml:426
 #, no-c-format
 msgid ""
-"http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.4.0&amp;order=priority"
+"http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS"
+"+1.4.0&amp;order=priority"
 msgstr ""
 
 #. Tag: title
@@ -1935,8 +1931,8 @@ msgstr ""
 msgid ""
 "If you are running PostGIS 1.1+, a soft upgrade is sufficient otherwise a "
 "hard upgrade is recommended. This release is a bug fix release to address a "
-"failure in ST_Force_Collection and related functions that critically affects"
-" using MapServer with LINE layers."
+"failure in ST_Force_Collection and related functions that critically affects "
+"using MapServer with LINE layers."
 msgstr ""
 
 #. Tag: title
@@ -1986,9 +1982,9 @@ msgstr ""
 #: release_notes.xml:467
 #, no-c-format
 msgid ""
-"This release fixes bugs shp2pgsql, adds enhancements to SVG and KML support,"
-" adds a ST_SimplifyPreserveTopology function, makes the build more sensitive"
-" to GEOS versions, and fixes a handful of severe but rare failure cases."
+"This release fixes bugs shp2pgsql, adds enhancements to SVG and KML support, "
+"adds a ST_SimplifyPreserveTopology function, makes the build more sensitive "
+"to GEOS versions, and fixes a handful of severe but rare failure cases."
 msgstr ""
 
 #. Tag: title
@@ -2049,8 +2045,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This release provides performance enhancements to the relational functions, "
-"adds new relational functions and begins the migration of our function names"
-" to the SQL-MM convention, using the spatial type (SP) prefix."
+"adds new relational functions and begins the migration of our function names "
+"to the SQL-MM convention, using the spatial type (SP) prefix."
 msgstr ""
 
 #. Tag: title
@@ -2070,10 +2066,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Added ST_Covers and ST_CoveredBy relational functions. Description and "
-"justification of these functions can be found at <ulink url=\"http://lin-"
-"ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
-"spatial.html\">http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-"
-"ogc-covers-spatial.html</ulink>"
+"justification of these functions can be found at <ulink url=\"http://lin-ear-"
+"th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html"
+"\">http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-"
+"spatial.html</ulink>"
 msgstr ""
 
 #. Tag: para
@@ -2186,9 +2182,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "JDBC: Fixed JTS handling for multi-dimensional geometries (thanks to Thomas "
-"Marti for hint and partial patch). Additionally, now JavaDoc is compiled and"
-" packaged. Fixed classpath problems with GCJ. Fixed pgjdbc 8.2 "
-"compatibility, losing support for jdk 1.3 and older."
+"Marti for hint and partial patch). Additionally, now JavaDoc is compiled and "
+"packaged. Fixed classpath problems with GCJ. Fixed pgjdbc 8.2 compatibility, "
+"losing support for jdk 1.3 and older."
 msgstr ""
 
 #. Tag: title
@@ -2207,9 +2203,9 @@ msgstr ""
 #: release_notes.xml:569
 #, no-c-format
 msgid ""
-"This release provides type definitions along with "
-"serialization/deserialization capabilities for SQL-MM defined curved "
-"geometries, as well as performance enhancements."
+"This release provides type definitions along with serialization/"
+"deserialization capabilities for SQL-MM defined curved geometries, as well "
+"as performance enhancements."
 msgstr ""
 
 #. Tag: para
@@ -2243,8 +2239,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is a bugfix release, in particular fixing a critical error with GEOS "
-"interface in 64bit systems. Includes an updated of the SRS parameters and an"
-" improvement in reprojections (take Z in consideration). Upgrade is "
+"interface in 64bit systems. Includes an updated of the SRS parameters and an "
+"improvement in reprojections (take Z in consideration). Upgrade is "
 "<emphasis>encouraged</emphasis>."
 msgstr ""
 
@@ -2265,8 +2261,8 @@ msgstr ""
 #: release_notes.xml:754 release_notes.xml:833 release_notes.xml:899
 #, no-c-format
 msgid ""
-"If you are upgrading from release 1.0.3 or later follow the <link "
-"linkend=\"soft_upgrade\">soft upgrade</link> procedure."
+"If you are upgrading from release 1.0.3 or later follow the <link linkend="
+"\"soft_upgrade\">soft upgrade</link> procedure."
 msgstr ""
 
 #. Tag: para
@@ -2276,10 +2272,10 @@ msgstr ""
 #: release_notes.xml:1239
 #, no-c-format
 msgid ""
-"If you are upgrading from a release <emphasis>between 1.0.0RC6 and "
-"1.0.2</emphasis> (inclusive) and really want a live upgrade read the <link "
-"linkend=\"rel_1.0.3_upgrading\">upgrade section</link> of the 1.0.3 release "
-"notes chapter."
+"If you are upgrading from a release <emphasis>between 1.0.0RC6 and 1.0.2</"
+"emphasis> (inclusive) and really want a live upgrade read the <link linkend="
+"\"rel_1.0.3_upgrading\">upgrade section</link> of the 1.0.3 release notes "
+"chapter."
 msgstr ""
 
 #. Tag: para
@@ -2289,8 +2285,8 @@ msgstr ""
 #: release_notes.xml:1244
 #, no-c-format
 msgid ""
-"Upgrade from any release prior to 1.0.0RC6 requires an <link "
-"linkend=\"hard_upgrade\">hard upgrade</link>."
+"Upgrade from any release prior to 1.0.0RC6 requires an <link linkend="
+"\"hard_upgrade\">hard upgrade</link>."
 msgstr ""
 
 #. Tag: para
@@ -2438,8 +2434,8 @@ msgstr ""
 #: release_notes.xml:693
 #, no-c-format
 msgid ""
-"This is an bugfix release including some improvements in the Java interface."
-" Upgrade is <emphasis>encouraged</emphasis>."
+"This is an bugfix release including some improvements in the Java interface. "
+"Upgrade is <emphasis>encouraged</emphasis>."
 msgstr ""
 
 #. Tag: para
@@ -2498,8 +2494,8 @@ msgstr ""
 #: release_notes.xml:735
 #, no-c-format
 msgid ""
-"Added EJB3 tutorial / examples donated by Norman Barker "
-"&lt;nbarker@ittvis.com&gt;"
+"Added EJB3 tutorial / examples donated by Norman Barker &lt;nbarker@ittvis."
+"com&gt;"
 msgstr ""
 
 #. Tag: para
@@ -2725,8 +2721,8 @@ msgstr ""
 #: release_notes.xml:870
 #, no-c-format
 msgid ""
-"Embedded access control in estimated_extent() for builds against pgsql &gt;="
-" 8.0.0"
+"Embedded access control in estimated_extent() for builds against pgsql &gt;= "
+"8.0.0"
 msgstr ""
 
 #. Tag: para
@@ -2758,10 +2754,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "This is an important Bugfix release, upgrade is <emphasis>highly "
-"recommended</emphasis>. Previous version contained a bug in "
-"postgis_restore.pl preventing <link linkend=\"hard_upgrade\">hard "
-"upgrade</link> procedure to complete and a bug in GEOS-2.2+ connector "
-"preventing GeometryCollection objects to be used in topological operations."
+"recommended</emphasis>. Previous version contained a bug in postgis_restore."
+"pl preventing <link linkend=\"hard_upgrade\">hard upgrade</link> procedure "
+"to complete and a bug in GEOS-2.2+ connector preventing GeometryCollection "
+"objects to be used in topological operations."
 msgstr ""
 
 #. Tag: para
@@ -2850,8 +2846,8 @@ msgstr ""
 #: release_notes.xml:951
 #, no-c-format
 msgid ""
-"It is <emphasis>highly recommended</emphasis> that you upgrade to GEOS-2.2.x"
-" before installing PostGIS, this will ensure future GEOS upgrades won't "
+"It is <emphasis>highly recommended</emphasis> that you upgrade to GEOS-2.2.x "
+"before installing PostGIS, this will ensure future GEOS upgrades won't "
 "require a rebuild of the PostGIS library."
 msgstr ""
 
@@ -2869,21 +2865,20 @@ msgid ""
 "objects. Markus Schaber added many improvements in his JDBC2 code. Alex "
 "Bodnaru helped with PostgreSQL source dependency relief and provided Debian "
 "specfiles. Michael Fuhr tested new things on Solaris arch. David Techer and "
-"Gerald Fenoy helped testing GEOS C-API connector. Hartmut Tschauner provided"
-" code for the azimuth() function. Devrim GUNDUZ provided RPM specfiles. Carl"
-" Anderson helped with the new area building functions. See the <link "
-"linkend=\"credits\">credits</link> section for more names."
+"Gerald Fenoy helped testing GEOS C-API connector. Hartmut Tschauner provided "
+"code for the azimuth() function. Devrim GUNDUZ provided RPM specfiles. Carl "
+"Anderson helped with the new area building functions. See the <link linkend="
+"\"credits\">credits</link> section for more names."
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:972
 #, no-c-format
 msgid ""
-"If you are upgrading from release 1.0.3 or later you <emphasis>DO "
-"NOT</emphasis> need a dump/reload. Simply sourcing the new "
-"lwpostgis_upgrade.sql script in all your existing databases will work. See "
-"the <link linkend=\"soft_upgrade\">soft upgrade</link> chapter for more "
-"information."
+"If you are upgrading from release 1.0.3 or later you <emphasis>DO NOT</"
+"emphasis> need a dump/reload. Simply sourcing the new lwpostgis_upgrade.sql "
+"script in all your existing databases will work. See the <link linkend="
+"\"soft_upgrade\">soft upgrade</link> chapter for more information."
 msgstr ""
 
 #. Tag: title
@@ -3037,8 +3032,8 @@ msgstr ""
 #: release_notes.xml:1046
 #, no-c-format
 msgid ""
-"Removed automatic call to fix_geometry_columns() in AddGeometryColumns() and"
-" update_geometry_stats()"
+"Removed automatic call to fix_geometry_columns() in AddGeometryColumns() and "
+"update_geometry_stats()"
 msgstr ""
 
 #. Tag: title
@@ -3190,16 +3185,16 @@ msgstr ""
 #: release_notes.xml:1116 release_notes.xml:1173
 #, no-c-format
 msgid ""
-"If you are upgrading from release 1.0.3 or later you <emphasis>DO "
-"NOT</emphasis> need a dump/reload."
+"If you are upgrading from release 1.0.3 or later you <emphasis>DO NOT</"
+"emphasis> need a dump/reload."
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:1131
 #, no-c-format
 msgid ""
-"Fixed palloc(0) call in collection deserializer (only gives problem with "
-"--enable-cassert)"
+"Fixed palloc(0) call in collection deserializer (only gives problem with --"
+"enable-cassert)"
 msgstr ""
 
 #. Tag: para
@@ -3381,17 +3376,17 @@ msgstr ""
 #: release_notes.xml:1229
 #, no-c-format
 msgid ""
-"Contains important bug fixes and a few improvements. In particular, it fixes"
-" a memory leak preventing successful build of GiST indexes for large spatial"
-" tables."
+"Contains important bug fixes and a few improvements. In particular, it fixes "
+"a memory leak preventing successful build of GiST indexes for large spatial "
+"tables."
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:1236
 #, no-c-format
 msgid ""
-"If you are upgrading from release 1.0.3 you <emphasis>DO NOT</emphasis> need"
-" a dump/reload."
+"If you are upgrading from release 1.0.3 you <emphasis>DO NOT</emphasis> need "
+"a dump/reload."
 msgstr ""
 
 #. Tag: para
@@ -3501,9 +3496,9 @@ msgstr ""
 #: release_notes.xml:1298
 #, no-c-format
 msgid ""
-"An <link linkend=\"hard_upgrade\">hard upgrade</link> procedure "
-"(dump/reload) will force recomputation of all bounding boxes (not included "
-"in dumps). This is <emphasis>required</emphasis> if upgrading from releases "
+"An <link linkend=\"hard_upgrade\">hard upgrade</link> procedure (dump/"
+"reload) will force recomputation of all bounding boxes (not included in "
+"dumps). This is <emphasis>required</emphasis> if upgrading from releases "
 "prior to 1.0.0RC6."
 msgstr ""
 
@@ -3517,8 +3512,8 @@ msgid ""
 "eventual changes in them (geometry statistics update, reindexing). Invoke "
 "the script after a make install (run with no args for syntax help). "
 "Optionally run utils/postgis_proc_upgrade.pl to refresh postgis procedures "
-"and functions signatures (see <link linkend=\"soft_upgrade\">Soft "
-"upgrade</link>)."
+"and functions signatures (see <link linkend=\"soft_upgrade\">Soft upgrade</"
+"link>)."
 msgstr ""
 
 #. Tag: para
@@ -3597,16 +3592,16 @@ msgstr ""
 #: release_notes.xml:1352 release_notes.xml:1392
 #, no-c-format
 msgid ""
-"If you are upgrading from release 1.0.0RC6 or up you <emphasis>DO "
-"NOT</emphasis> need a dump/reload."
+"If you are upgrading from release 1.0.0RC6 or up you <emphasis>DO NOT</"
+"emphasis> need a dump/reload."
 msgstr ""
 
 #. Tag: para
 #: release_notes.xml:1355 release_notes.xml:1395
 #, no-c-format
 msgid ""
-"Upgrading from older releases requires a dump/reload. See the <link "
-"linkend=\"upgrading\">upgrading</link> chapter for more informations."
+"Upgrading from older releases requires a dump/reload. See the <link linkend="
+"\"upgrading\">upgrading</link> chapter for more informations."
 msgstr ""
 
 #. Tag: para
@@ -4165,8 +4160,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:1678
 #, no-c-format
-msgid ""
-"Some functions made IMMUTABLE from STABLE, for performance improvement."
+msgid "Some functions made IMMUTABLE from STABLE, for performance improvement."
 msgstr ""
 
 #. Tag: para
@@ -4253,8 +4247,8 @@ msgstr ""
 #: release_notes.xml:1720
 #, no-c-format
 msgid ""
-"spatial_ref_sys: changed Paris entries to match the ones distributed with "
-"0.x."
+"spatial_ref_sys: changed Paris entries to match the ones distributed with 0."
+"x."
 msgstr ""
 
 #. Tag: title
@@ -4386,8 +4380,8 @@ msgstr ""
 #: release_notes.xml:1804
 #, no-c-format
 msgid ""
-"Support for up to 4d coordinates, providing lossless "
-"shapefile-&gt;postgis-&gt;shapefile conversion."
+"Support for up to 4d coordinates, providing lossless shapefile-&gt;postgis-"
+"&gt;shapefile conversion."
 msgstr ""
 
 #. Tag: para
