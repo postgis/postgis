@@ -164,6 +164,10 @@ update-po: $(XML_INPUTS_POT)
     done; \
   done
 
+pull-tx:
+	tx pull --all
+	$(MAKE) update-po
+
 # Register transifex resources, run when adding a new .xml file
 update-tx:
 	for f in $(XML_INPUTS_POT); do \
