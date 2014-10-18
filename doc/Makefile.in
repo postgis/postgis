@@ -146,8 +146,24 @@ XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
 XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
 
+.PHONY: $(XML_INPUTS_POT)
 $(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
-	$(XML2POT) $< > $@
+	@if test -f $@; then \
+	  $(XML2POT) $< > $@.tmp; \
+    changed=`diff $@.tmp $@ | grep -v '^[<>] "POT-Creation-Date:' | wc -l`; \
+    if expr $${changed} \> 3 >/dev/null; then \
+      echo "$@ updated"; \
+      mv $@.tmp $@; \
+    else \
+      echo "$@ unchanged"; \
+      rm $@.tmp; \
+    fi; \
+  else \
+	  $(XML2POT) $< > $@; \
+  fi;
+
+# Update translation templates
+update-pot: $(XML_INPUTS_POT)
 
 # Creates or updates translation files
 update-po: $(XML_INPUTS_POT)
