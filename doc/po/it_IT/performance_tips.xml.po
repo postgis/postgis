@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2013-11-30 05:55+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
@@ -157,11 +157,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:61
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
-"UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
 msgstr ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
@@ -302,11 +302,11 @@ msgstr "Evitare la conversione della dimensione"
 
 #. Tag: para
 #: performance_tips.xml:109
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sometimes, you happen to have 3D or 4D data in your table, but always access "
 "it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only "
-"output 2D geometries. They do this by internally calling the ST_Force_2d() "
+"output 2D geometries. They do this by internally calling the ST_Force2D() "
 "function, which introduces a significant overhead for large geometries. To "
 "avoid this overhead, it may be feasible to pre-drop those additional "
 "dimensions once and forever:"
@@ -321,9 +321,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:116
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
+"UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
 "UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"

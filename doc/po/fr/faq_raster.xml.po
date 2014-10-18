@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2013-12-03 17:05+0000\n"
 "Last-Translator: Arnaud Vandecasteele <arnaud.sig@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
@@ -137,14 +137,13 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:44
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If you are on windows, you can compile yourself, or use the <ulink url="
-"\"http://www.postgis.org/download/windows/experimental.php#wktraster\">pre-"
-"compiled PostGIS Raster windows binaries</ulink>. If you are on Mac OSX "
-"Leopard or Snow Leopard, there are binaries available at <ulink url=\"http://"
-"www.kyngchaos.com/software/postgres\">Kyng Chaos Mac OSX PostgreSQL/GIS "
-"binaries</ulink>."
+"\"http://postgis.net/windows_downloads\">pre-compiled PostGIS Raster windows "
+"binaries</ulink>. If you are on Mac OSX Leopard or Snow Leopard, there are "
+"binaries available at <ulink url=\"http://www.kyngchaos.com/software/postgres"
+"\">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>."
 msgstr ""
 "Si vous êtes sous windows, vous pouvez compiler vous-même, ou bien utiliser "
 "les <ulink url=\"http://www.postgis.org/download/windows/experimental."
@@ -392,12 +391,14 @@ msgstr "Voici un exemple de transformation "
 
 #. Tag: programlisting
 #: faq_raster.xml:120
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost dbname='mygisdb' "
-"user='postgres' password=whatever' schema='someschema' table=sometable\" C:"
-"\\somefile.png"
+"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost port=5432 "
+"dbname='mygisdb' user='postgres' password='whatever' schema='someschema' "
+"table=sometable\" C:\\somefile.png"
 msgstr ""
+"gdalinfo \"PG:host=localhost port=5432 dbname='maBaseDeDonnees' "
+"user='postgres' password='monPassword' schema='monSchema' table=maTable\""
 
 #. Tag: para
 #: faq_raster.xml:121
@@ -409,22 +410,26 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq_raster.xml:123
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost dbname='mygisdb' "
-"user='postgres' password=whatever' schema='someschema' table=sometable where="
-"\"owner='jimmy'\" \" C:\\somefile.png"
+"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost port=5432 "
+"dbname='mygisdb' user='postgres' password='whatever' schema='someschema' "
+"table=sometable where='filename=\\'abcd.sid\\''\" \" C:\\somefile.png"
 msgstr ""
+"gdalinfo \"PG:host=localhost port=5432 dbname='maBaseDeDonnees' "
+"user='postgres' password='monPassword' schema='monSchema' table=maTable\""
 
 #. Tag: programlisting
 #: faq_raster.xml:124
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost dbname='mygisdb' "
-"user='postgres' password=whatever' schema='someschema' table=sometable "
-"where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' \" "
-"C:\\intersectregion.png"
+"gdal_translate -of PNG -outsize 10% 10% \"PG:host=localhost port=5432 "
+"dbname='mygisdb' user='postgres' password='whatever' schema='someschema' "
+"table=sometable where='ST_Intersects(rast, "
+"ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' \" C:\\intersectregion.png"
 msgstr ""
+"gdalinfo \"PG:host=localhost port=5432 dbname='maBaseDeDonnees' "
+"user='postgres' password='monPassword' schema='monSchema' table=maTable\""
 
 #. Tag: para
 #: faq_raster.xml:125
@@ -456,21 +461,6 @@ msgstr ""
 #: faq_raster.xml:134
 #, no-c-format
 msgid ""
-"We know for sure the following windows binaries have PostGIS Raster built in."
-msgstr ""
-
-#. Tag: para
-#: faq_raster.xml:135
-#, no-c-format
-msgid ""
-"<ulink url=\"http://fwtools.maptools.org/\">FWTools latest stable version "
-"for Windows is compiled with Raster support</ulink>."
-msgstr ""
-
-#. Tag: para
-#: faq_raster.xml:136
-#, no-c-format
-msgid ""
 "PostGIS Raster is undergoing many changes. If you want to get the latest "
 "nightly build for Windows -- then check out the Tamas Szekeres nightly "
 "builds built with Visual Studio which contain GDAL trunk, Python Bindings "
@@ -481,7 +471,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:145
+#: faq_raster.xml:138
+#, no-c-format
+msgid ""
+"<ulink url=\"http://fwtools.maptools.org/\">FWTools latest stable version "
+"for Windows is compiled with Raster support</ulink>."
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:144
 #, no-c-format
 msgid "What tools can I use to view PostGIS raster data?"
 msgstr ""
@@ -489,7 +487,7 @@ msgstr ""
 "Postgis ?"
 
 #. Tag: para
-#: faq_raster.xml:149
+#: faq_raster.xml:148
 #, no-c-format
 msgid ""
 "You can use MapServer compiled with GDAL 1.7+ and PostGIS Raster driver "
@@ -502,7 +500,7 @@ msgstr ""
 "PostGIS raster installé."
 
 #. Tag: para
-#: faq_raster.xml:151
+#: faq_raster.xml:150
 #, no-c-format
 msgid ""
 "In theory any tool that renders data using GDAL can support PostGIS raster "
@@ -513,7 +511,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:158
+#: faq_raster.xml:157
 #, no-c-format
 msgid "How can I add a PostGIS raster layer to my MapServer map?"
 msgstr ""
@@ -521,7 +519,7 @@ msgstr ""
 "map de MapServer ?"
 
 #. Tag: para
-#: faq_raster.xml:162
+#: faq_raster.xml:161
 #, no-c-format
 msgid ""
 "First you need GDAL 1.7 or higher compiled with PostGIS raster support. GDAL "
@@ -534,7 +532,7 @@ msgstr ""
 "GDAL et de PostGIS raster, ont été corrigées."
 
 #. Tag: para
-#: faq_raster.xml:164
+#: faq_raster.xml:163
 #, no-c-format
 msgid ""
 "You can much like you can with any other raster. Refer to <ulink url="
@@ -544,7 +542,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:167
+#: faq_raster.xml:166
 #, no-c-format
 msgid ""
 "What makes PostGIS raster data particularly interesting, is that since each "
@@ -553,7 +551,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:169
+#: faq_raster.xml:168
 #, no-c-format
 msgid ""
 "Below is an example of how you would define a PostGIS raster layer in "
@@ -561,7 +559,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:170
+#: faq_raster.xml:169
 #, no-c-format
 msgid ""
 "The mode=2 is required for tiled rasters and was added in PostGIS 2.0 and "
@@ -569,7 +567,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq_raster.xml:171
+#: faq_raster.xml:170
 #, no-c-format
 msgid ""
 "-- displaying raster with standard raster options\n"
@@ -603,7 +601,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq_raster.xml:173
+#: faq_raster.xml:172
 #, no-c-format
 msgid ""
 "-- displaying raster with standard raster options and a where clause\n"
@@ -622,13 +620,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:181
+#: faq_raster.xml:180
 #, no-c-format
 msgid "What functions can I currently use with my raster data?"
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:185
+#: faq_raster.xml:184
 #, no-c-format
 msgid ""
 "Refer to the list of <xref linkend=\"RT_reference\"/>. There are more, but "
@@ -636,7 +634,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:187
+#: faq_raster.xml:186
 #, no-c-format
 msgid ""
 "Refer to the <ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/"
@@ -645,7 +643,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:195
+#: faq_raster.xml:194
 #, no-c-format
 msgid ""
 "I am getting error ERROR: function st_intersects(raster, unknown) is not "
@@ -653,7 +651,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:199
+#: faq_raster.xml:198
 #, no-c-format
 msgid ""
 "The function is not unique error happens if one of your arguments is a "
@@ -666,13 +664,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:200
+#: faq_raster.xml:199
 #, no-c-format
 msgid "For example if your code looks like this:"
 msgstr "Par exemple, si votre code ressemble à ceci :"
 
 #. Tag: programlisting
-#: faq_raster.xml:201
+#: faq_raster.xml:200
 #, no-c-format
 msgid ""
 "SELECT rast\n"
@@ -684,7 +682,7 @@ msgstr ""
 "WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)');"
 
 #. Tag: para
-#: faq_raster.xml:202
+#: faq_raster.xml:201
 #, no-c-format
 msgid ""
 "Cast the textual geometry representation to a geometry by changing your code "
@@ -692,7 +690,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: faq_raster.xml:203
+#: faq_raster.xml:202
 #, no-c-format
 msgid ""
 "SELECT rast\n"
@@ -701,7 +699,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:211
+#: faq_raster.xml:208
 #, no-c-format
 msgid ""
 "How is PostGIS Raster different from Oracle GeoRaster (SDO_GEORASTER) and "
@@ -711,7 +709,7 @@ msgstr ""
 "du type SDO_RASTER ?"
 
 #. Tag: para
-#: faq_raster.xml:215
+#: faq_raster.xml:212
 #, no-c-format
 msgid ""
 "For a more extensive discussion on this topic, check out Jorge Arévalo "
@@ -723,7 +721,7 @@ msgstr ""
 "i/\">Oracle GeoRaster and PostGIS Raster: First impressions </ulink>"
 
 #. Tag: para
-#: faq_raster.xml:216
+#: faq_raster.xml:213
 #, no-c-format
 msgid ""
 "The major advantage of one-georeference-by-raster over one-georeference-by-"
@@ -731,7 +729,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:217
+#: faq_raster.xml:214
 #, no-c-format
 msgid ""
 "* coverages to be not necessarily rectangular (which is often the case of "
@@ -740,7 +738,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:218
+#: faq_raster.xml:215
 #, no-c-format
 msgid ""
 "* rasters to overlaps (which is necessary to implement lossless vector to "
@@ -748,7 +746,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:219
+#: faq_raster.xml:216
 #, no-c-format
 msgid ""
 "These arrangements are possible in Oracle as well, but they imply the "
@@ -759,7 +757,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: faq_raster.xml:224
+#: faq_raster.xml:221
 #, no-c-format
 msgid ""
 "It's a bit like if PostGIS would force you to store only full rectangular "
@@ -769,4 +767,67 @@ msgid ""
 "Vector structures needs the flexibility to store discontinuous and non-"
 "rectangular coverages. We think it is a big advantage that raster structure "
 "should benefit as well."
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:229
+#, no-c-format
+msgid ""
+"raster2pgsql load of large file fails with String of N bytes is too long for "
+"encoding conversion?"
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:233
+#, no-c-format
+msgid ""
+"raster2pgsql doesn't make any connections to your database when generating "
+"the file to load. If your database has set an explicit client encoding "
+"different from your database encoding, then when loading large raster files "
+"(above 30 MB in size), you may run into a <code>bytes is too long for "
+"encoding conversion</code>."
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:235
+#, no-c-format
+msgid ""
+"This generally happens if for example you have your database in UTF8, but to "
+"support windows apps, you have the client encoding set to <code>WIN1252</"
+"code>."
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:236
+#, no-c-format
+msgid ""
+"To work around this make sure the client encoding is the same as your "
+"database encoding during load. You can do this by explicitly setting the "
+"encoding in your load script. Example, if you are on windows:"
+msgstr ""
+
+#. Tag: programlisting
+#: faq_raster.xml:237
+#, no-c-format
+msgid "set PGCLIENTENCODING=UTF8"
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:238
+#, no-c-format
+msgid "If you are on Unix/Linux"
+msgstr ""
+
+#. Tag: programlisting
+#: faq_raster.xml:239
+#, no-c-format
+msgid "export PGCLIENTENCODING=UTF8"
+msgstr ""
+
+#. Tag: para
+#: faq_raster.xml:240
+#, no-c-format
+msgid ""
+"Gory details of this issue are detailed in <ulink url=\"http://trac.osgeo."
+"org/postgis/ticket/2209\">http://trac.osgeo.org/postgis/ticket/2209</ulink>"
 msgstr ""

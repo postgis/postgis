@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-10 23:07+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -158,7 +158,7 @@ msgstr ""
 #. Tag: title
 #: extras_address_standardizer.xml:49 extras_address_standardizer.xml:152
 #: extras_address_standardizer.xml:214 extras_address_standardizer.xml:256
-#: extras_address_standardizer.xml:314 extras_address_standardizer.xml:373
+#: extras_address_standardizer.xml:314 extras_address_standardizer.xml:369
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -183,7 +183,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:52 extras_address_standardizer.xml:321
-#: extras_address_standardizer.xml:379
+#: extras_address_standardizer.xml:375
 #, no-c-format
 msgid "&address_standardizer_required;"
 msgstr ""
@@ -721,13 +721,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:320 extras_address_standardizer.xml:378
+#: extras_address_standardizer.xml:320 extras_address_standardizer.xml:374
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:326 extras_address_standardizer.xml:384
+#: extras_address_standardizer.xml:326 extras_address_standardizer.xml:380
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -744,19 +744,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:338 extras_address_standardizer.xml:417
+#: extras_address_standardizer.xml:334 extras_address_standardizer.xml:391
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: refname
-#: extras_address_standardizer.xml:346
+#: extras_address_standardizer.xml:342
 #, no-c-format
 msgid "standardize_address"
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:348
+#: extras_address_standardizer.xml:344
 #, no-c-format
 msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
@@ -764,7 +764,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: extras_address_standardizer.xml:352
+#: extras_address_standardizer.xml:348
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
@@ -782,7 +782,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:375
+#: extras_address_standardizer.xml:371
 #, no-c-format
 msgid ""
 "Returns an <xref linkend=\"stdaddr\"/> form of an input address utilizing "
@@ -791,7 +791,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: extras_address_standardizer.xml:386
+#: extras_address_standardizer.xml:382
 #, no-c-format
 msgid ""
 "SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
@@ -800,7 +800,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:389
+#: extras_address_standardizer.xml:384
 #, no-c-format
 msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
@@ -808,7 +808,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: extras_address_standardizer.xml:390
+#: extras_address_standardizer.xml:385
 #, no-c-format
 msgid ""
 "SELECT (each(hstore(p))).*  \n"
@@ -818,7 +818,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: extras_address_standardizer.xml:393
+#: extras_address_standardizer.xml:386
 #, no-c-format
 msgid ""
 "key     |      value\n"
@@ -843,9 +843,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:419
+#: extras_address_standardizer.xml:393
 #, no-c-format
 msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="
-"\"gaztab\"/>,"
+"\"gaztab\"/>, <xref linkend=\"Pagc_Normalize_Address\"/>"
 msgstr ""

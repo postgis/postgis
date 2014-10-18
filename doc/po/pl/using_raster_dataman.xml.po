@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2014-01-21 10:49+0000\n"
 "Last-Translator: wotankeld <arek.matoszka@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -117,13 +117,13 @@ msgstr ""
 "przykład, w którym podglądy nie przylegają do siebie."
 
 #. Tag: para
-#: using_raster_dataman.xml:25
+#: using_raster_dataman.xml:23
 #, no-c-format
 msgid "EXAMPLE USAGE:"
 msgstr "Przykłady użycia:"
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:26
+#: using_raster_dataman.xml:24
 #, no-c-format
 msgid ""
 "raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</"
@@ -135,13 +135,13 @@ msgstr ""
 "sql"
 
 #. Tag: term
-#: using_raster_dataman.xml:30
+#: using_raster_dataman.xml:28
 #, no-c-format
 msgid "<term>-?</term>"
 msgstr "<term>-?</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:32
+#: using_raster_dataman.xml:30
 #, no-c-format
 msgid ""
 "Display help screen. Help will also display if you don't pass in any "
@@ -151,31 +151,31 @@ msgstr ""
 "nie zostanie podany żaden argument."
 
 #. Tag: term
-#: using_raster_dataman.xml:39
+#: using_raster_dataman.xml:37
 #, no-c-format
 msgid "<term>-G</term>"
 msgstr "<term>-G</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:41
+#: using_raster_dataman.xml:39
 #, no-c-format
 msgid "Print the supported raster formats."
 msgstr "Wyświetla na ekranie listę wspieranych formatów rastrowych."
 
 #. Tag: term
-#: using_raster_dataman.xml:48
+#: using_raster_dataman.xml:46
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
 msgstr "(c|a|d|p) Są opcjami wzajemnie wykluczającymi się:"
 
 #. Tag: term
-#: using_raster_dataman.xml:53
+#: using_raster_dataman.xml:51
 #, no-c-format
 msgid "<term>-c</term>"
 msgstr "<term>-c</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:55
+#: using_raster_dataman.xml:53
 #, no-c-format
 msgid ""
 "Create new table and populate it with raster(s), <emphasis>this is the "
@@ -185,43 +185,43 @@ msgstr ""
 "domyślny</emphasis>"
 
 #. Tag: term
-#: using_raster_dataman.xml:62
+#: using_raster_dataman.xml:60
 #, no-c-format
 msgid "<term>-a</term>"
 msgstr "<term>-a</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:64
+#: using_raster_dataman.xml:62
 #, no-c-format
 msgid "Append raster(s) to an existing table."
 msgstr "Dopisuje raster (rastry) do istniejącej tabeli."
 
 #. Tag: term
-#: using_raster_dataman.xml:71
+#: using_raster_dataman.xml:69
 #, no-c-format
 msgid "<term>-d</term>"
 msgstr "<term>-d</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:73
+#: using_raster_dataman.xml:71
 #, no-c-format
 msgid "Drop table, create new one and populate it with raster(s)"
 msgstr "Usuwa istniejącą tabelę, tworzy nową i wypełnia ją rastrem (rastrami)"
 
 #. Tag: term
-#: using_raster_dataman.xml:80
+#: using_raster_dataman.xml:78
 #, no-c-format
 msgid "<term>-p</term>"
 msgstr "<term>-p</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:82
+#: using_raster_dataman.xml:80
 #, no-c-format
 msgid "Prepare mode, only create the table."
 msgstr "Tryb przygotowania, tworzy tabelę."
 
 #. Tag: term
-#: using_raster_dataman.xml:93
+#: using_raster_dataman.xml:91
 #, no-c-format
 msgid ""
 "Raster processing: Applying constraints for proper registering in raster "
@@ -231,13 +231,13 @@ msgstr ""
 "katalogach rastrów"
 
 #. Tag: term
-#: using_raster_dataman.xml:98
+#: using_raster_dataman.xml:96
 #, no-c-format
 msgid "<term>-C</term>"
 msgstr "<term>-C</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:100
+#: using_raster_dataman.xml:98
 #, no-c-format
 msgid ""
 "Apply raster constraints -- srid, pixelsize etc. to ensure raster is "
@@ -247,13 +247,13 @@ msgstr ""
 "rejestrację rastra w widoku <varname>raster_columns</varname>."
 
 #. Tag: term
-#: using_raster_dataman.xml:106
+#: using_raster_dataman.xml:104
 #, no-c-format
 msgid "<term>-x</term>"
 msgstr "<term>-x</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:108
+#: using_raster_dataman.xml:106
 #, no-c-format
 msgid ""
 "Disable setting the max extent constraint. Only applied if -C flag is also "
@@ -263,20 +263,23 @@ msgstr ""
 "wyłącznie jeżeli użyto też flagi -C."
 
 #. Tag: term
-#: using_raster_dataman.xml:114
+#: using_raster_dataman.xml:112
 #, no-c-format
 msgid "<term>-r</term>"
 msgstr "<term>-r</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:116
-#, no-c-format
+#: using_raster_dataman.xml:114
+#, fuzzy, no-c-format
 msgid ""
-"Set the regular blocking constraint. Only applied if -C flag is also used."
+"Set the constraints (spatially unique and coverage tile) for regular "
+"blocking. Only applied if -C flag is also used."
 msgstr ""
+"Wyłącza ustawienie ograniczenia maksymalnego zakresu przestrzennego. Używane "
+"wyłącznie jeżeli użyto też flagi -C."
 
 #. Tag: term
-#: using_raster_dataman.xml:127
+#: using_raster_dataman.xml:125
 #, no-c-format
 msgid ""
 "Raster processing: Optional parameters used to manipulate input raster "
@@ -286,13 +289,13 @@ msgstr ""
 "rastrowymi danymi wejściowymi."
 
 #. Tag: term
-#: using_raster_dataman.xml:132
+#: using_raster_dataman.xml:130
 #, no-c-format
 msgid "-s &lt;SRID&gt;"
 msgstr "-s &lt;SRID&gt;"
 
 #. Tag: para
-#: using_raster_dataman.xml:134
+#: using_raster_dataman.xml:132
 #, no-c-format
 msgid ""
 "Assign output raster with specified SRID. If not provided or is zero, "
@@ -303,13 +306,13 @@ msgstr ""
 "odpowiedniego SRID."
 
 #. Tag: term
-#: using_raster_dataman.xml:141
+#: using_raster_dataman.xml:139
 #, no-c-format
 msgid "-b BAND"
 msgstr "-b ZAKRES"
 
 #. Tag: para
-#: using_raster_dataman.xml:143
+#: using_raster_dataman.xml:141
 #, no-c-format
 msgid ""
 "Index (1-based) of band to extract from raster. For more than one band "
@@ -321,35 +324,37 @@ msgstr ""
 "nie podana użyte będą wszystkie zakresy rastra."
 
 #. Tag: term
-#: using_raster_dataman.xml:151
+#: using_raster_dataman.xml:149
 #, no-c-format
 msgid "-t TILE_SIZE"
 msgstr "-t ROZMIAR_KAFLA"
 
 #. Tag: para
-#: using_raster_dataman.xml:153
-#, no-c-format
+#: using_raster_dataman.xml:151
+#, fuzzy, no-c-format
 msgid ""
 "Cut raster into tiles to be inserted one per table row. <varname>TILE_SIZE</"
-"varname> is expressed as WIDTHxHEIGHT."
+"varname> is expressed as WIDTHxHEIGHT or set to the value \"auto\" to allow "
+"the loader to compute an appropriate tile size using the first raster and "
+"applied to all rasters."
 msgstr ""
 "Dzieli raster na kafle celem ładowania ich pojedynczo jako wiersze w tabeli. "
 "<varname>ROZMIAR_KAFLA</varname> jest wyrażony jako SZEROKOŚĆxWYSOKOŚĆ."
 
 #. Tag: term
-#: using_raster_dataman.xml:160
+#: using_raster_dataman.xml:158
 #, no-c-format
 msgid "-R, --register"
 msgstr "-R, --register"
 
 #. Tag: para
-#: using_raster_dataman.xml:162
+#: using_raster_dataman.xml:160
 #, no-c-format
 msgid "Register the raster as a filesystem (out-db) raster."
 msgstr "Rejestruje raster jako raster w systemie plikowym (out-db)."
 
 #. Tag: para
-#: using_raster_dataman.xml:163
+#: using_raster_dataman.xml:161
 #, no-c-format
 msgid ""
 "Only the metadata of the raster and path location to the raster is stored in "
@@ -359,20 +364,22 @@ msgstr ""
 "bazie danych (nie wartości pikseli)."
 
 #. Tag: term
-#: using_raster_dataman.xml:168
+#: using_raster_dataman.xml:166
 #, no-c-format
 msgid "-l <varname>OVERVIEW_FACTOR</varname>"
 msgstr "-l <varname>WSPÓŁCZYNNIK</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:169
-#, no-c-format
+#: using_raster_dataman.xml:167
+#, fuzzy, no-c-format
 msgid ""
 "Create overview of the raster. For more than one factor, separate with "
 "comma(,). Overview table name follows the pattern o_<varname>overview "
-"factor</varname>_<varname>table</varname>. Created overview is stored in the "
-"database and is not affected by -R. Note that your generated sql file will "
-"contain both the main table and overview tables."
+"factor</varname>_<varname>table</varname>, where <varname>overview factor</"
+"varname> is a placeholder for numerical overview factor and <varname>table</"
+"varname> is replaced with the base table name. Created overview is stored in "
+"the database and is not affected by -R. Note that your generated sql file "
+"will contain both the main table and overview tables."
 msgstr ""
 "Tworzy przegląd rastra. W przypadku więcej niż jednego współczynnika, należy "
 "je rozdzielić przecinkiem (,). Nazwa tabeli przeglądu jest tworzona zgodnie "
@@ -382,92 +389,92 @@ msgstr ""
 "główną tabelę, jak i tabele przeglądów."
 
 #. Tag: term
-#: using_raster_dataman.xml:177
+#: using_raster_dataman.xml:175
 #, no-c-format
 msgid "-N <varname>NODATA</varname>"
 msgstr "-N <varname>NODATA</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:179
+#: using_raster_dataman.xml:177
 #, no-c-format
 msgid "NODATA value to use on bands without a NODATA value."
 msgstr "NODATA wartość, która zostanie użyta dla zakresów bez wartości NODATA."
 
 #. Tag: term
-#: using_raster_dataman.xml:191
+#: using_raster_dataman.xml:189
 #, no-c-format
 msgid "Optional parameters used to manipulate database objects"
 msgstr "Opcjonalne parametru używane do manipulacji obiektami bazodanowymi."
 
 #. Tag: term
-#: using_raster_dataman.xml:196
+#: using_raster_dataman.xml:194
 #, no-c-format
 msgid "<term>-q</term>"
 msgstr "<term>-q</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:198
+#: using_raster_dataman.xml:196
 #, no-c-format
 msgid "Wrap PostgreSQL identifiers in quotes"
 msgstr "Opakowuje identyfikatory PostgreSQL w cudzysłowy"
 
 #. Tag: term
-#: using_raster_dataman.xml:203
+#: using_raster_dataman.xml:201
 #, no-c-format
 msgid "-f COLUMN"
 msgstr "-f KOLMUNA"
 
 #. Tag: para
-#: using_raster_dataman.xml:205
+#: using_raster_dataman.xml:203
 #, no-c-format
 msgid "Specify name of destination raster column, default is 'rast'"
 msgstr ""
 "Określa nazwę docelowej kolumny rastrowej, domyślnie przyjmuje wartość 'rast'"
 
 #. Tag: term
-#: using_raster_dataman.xml:211
+#: using_raster_dataman.xml:209
 #, no-c-format
 msgid "<term>-F</term>"
 msgstr "<term>-F</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:213
+#: using_raster_dataman.xml:211
 #, no-c-format
 msgid "Add a column with the name of the file"
 msgstr "Dodaje kolumnę z nazwą pliku"
 
 #. Tag: term
-#: using_raster_dataman.xml:218
+#: using_raster_dataman.xml:216
 #, no-c-format
 msgid "<term>-I</term>"
 msgstr "<term>-I</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:220
+#: using_raster_dataman.xml:218
 #, no-c-format
 msgid "Create a GiST index on the raster column."
 msgstr "Tworzy indeks GiST na kolumnie rastrowej."
 
 #. Tag: term
-#: using_raster_dataman.xml:227
+#: using_raster_dataman.xml:225
 #, no-c-format
 msgid "<term>-M</term>"
 msgstr "<term>-M</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:229
+#: using_raster_dataman.xml:227
 #, no-c-format
 msgid "Vacuum analyze the raster table."
 msgstr "Wykonuje VACUUM i ANALYZE na tabeli rastrowej."
 
 #. Tag: term
-#: using_raster_dataman.xml:236
+#: using_raster_dataman.xml:234
 #, no-c-format
 msgid "-T <varname>tablespace</varname>"
 msgstr "-T <varname>przestrzeń_tabel</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:238
+#: using_raster_dataman.xml:236
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table. Note that indices (including the "
@@ -479,13 +486,13 @@ msgstr ""
 "tabel, chyba że użyta zostanie dodatkowo flaga -X."
 
 #. Tag: term
-#: using_raster_dataman.xml:247
+#: using_raster_dataman.xml:245
 #, no-c-format
 msgid "-X <varname>tablespace</varname>"
 msgstr "-X <varname>przestrzeń_tabel</varname>"
 
 #. Tag: para
-#: using_raster_dataman.xml:249
+#: using_raster_dataman.xml:247
 #, no-c-format
 msgid ""
 "Specify the tablespace for the table's new index. This applies to the "
@@ -495,37 +502,37 @@ msgstr ""
 "oraz, jeśli użyto flagi -I,  indeksu przestrzennego."
 
 #. Tag: term
-#: using_raster_dataman.xml:258
+#: using_raster_dataman.xml:256
 #, no-c-format
 msgid "<term>-Y</term>"
 msgstr "<term>-Y</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:260
+#: using_raster_dataman.xml:258
 #, no-c-format
 msgid "Use copy statements instead of insert statements."
 msgstr "Używa instrukcji copy zamiast instrukcji insert."
 
 #. Tag: term
-#: using_raster_dataman.xml:271
+#: using_raster_dataman.xml:269
 #, no-c-format
 msgid "<term>-e</term>"
 msgstr "<term>-e</term>"
 
 #. Tag: para
-#: using_raster_dataman.xml:272
+#: using_raster_dataman.xml:270
 #, no-c-format
 msgid "Execute each statement individually, do not use a transaction."
 msgstr "Wykonuje każdą instrukcję osobno, nie korzystając z transakcji."
 
 #. Tag: term
-#: using_raster_dataman.xml:276
+#: using_raster_dataman.xml:274
 #, no-c-format
 msgid "-E ENDIAN"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:277
+#: using_raster_dataman.xml:275
 #, no-c-format
 msgid ""
 "Control endianness of generated binary output of raster; specify 0 for XDR "
@@ -533,13 +540,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_raster_dataman.xml:281
+#: using_raster_dataman.xml:279
 #, no-c-format
 msgid "-V <varname>version</varname>"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:282
+#: using_raster_dataman.xml:280
 #, no-c-format
 msgid ""
 "Specify version of output format. Default is 0. Only 0 is supported at this "
@@ -547,7 +554,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:285
+#: using_raster_dataman.xml:283
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and uploading it "
@@ -555,7 +562,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:286
+#: using_raster_dataman.xml:284
 #, no-c-format
 msgid ""
 "You can leave the schema name out e.g <varname>demelevation</varname> "
@@ -564,30 +571,30 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:288
+#: using_raster_dataman.xml:286
 #, no-c-format
 msgid ""
-"raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
+"raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation > elev."
 "sql\n"
 "psql -d gisdb -f elev.sql"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:290
+#: using_raster_dataman.xml:288
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:292
+#: using_raster_dataman.xml:290
 #, no-c-format
 msgid ""
-"raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
+"raster2pgsql -s 4326 -I -C -M *.tif -F -t 100x100 public.demelevation | psql "
 "-d gisdb"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:294
+#: using_raster_dataman.xml:292
 #, no-c-format
 msgid ""
 "Load rasters Massachusetts state plane meters aerial tiles into a schema "
@@ -601,7 +608,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:296
+#: using_raster_dataman.xml:294
 #, no-c-format
 msgid ""
 "raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*."
@@ -609,7 +616,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:298
+#: using_raster_dataman.xml:296
 #, no-c-format
 msgid ""
 "--get a list of raster types supported:\n"
@@ -617,13 +624,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:300
+#: using_raster_dataman.xml:298
 #, no-c-format
 msgid "The -G commands outputs a list something like"
 msgstr ""
 
 #. Tag: screen
-#: using_raster_dataman.xml:301
+#: using_raster_dataman.xml:299
 #, no-c-format
 msgid ""
 "Available GDAL raster formats:\n"
@@ -727,13 +734,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:304
+#: using_raster_dataman.xml:302
 #, no-c-format
 msgid "Creating rasters using PostGIS raster functions"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:305
+#: using_raster_dataman.xml:303
 #, no-c-format
 msgid ""
 "On many occasions, you'll want to create rasters and raster tables right in "
@@ -742,7 +749,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:307
+#: using_raster_dataman.xml:305
 #, no-c-format
 msgid ""
 "Create a table with a raster column to hold the new raster records which can "
@@ -750,13 +757,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:308
+#: using_raster_dataman.xml:306
 #, no-c-format
 msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:311
+#: using_raster_dataman.xml:309
 #, no-c-format
 msgid ""
 "There are many functions to help with that goal. If you are creating rasters "
@@ -766,7 +773,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:313
+#: using_raster_dataman.xml:311
 #, no-c-format
 msgid ""
 "You can also create rasters from geometries. To achieve that you'll want to "
@@ -777,7 +784,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:315
+#: using_raster_dataman.xml:313
 #, no-c-format
 msgid ""
 "There are even many more options for creating new raster tables from "
@@ -786,7 +793,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:317
+#: using_raster_dataman.xml:315
 #, no-c-format
 msgid ""
 "Once you are done populating your table initially, you'll want to create a "
@@ -794,7 +801,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:318
+#: using_raster_dataman.xml:316
 #, no-c-format
 msgid ""
 "CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING "
@@ -802,7 +809,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:319
+#: using_raster_dataman.xml:317
 #, no-c-format
 msgid ""
 "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster "
@@ -810,7 +817,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:320
+#: using_raster_dataman.xml:318
 #, no-c-format
 msgid ""
 "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the "
@@ -819,20 +826,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:321
+#: using_raster_dataman.xml:319
 #, no-c-format
 msgid ""
 "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:326
+#: using_raster_dataman.xml:324
 #, no-c-format
 msgid "Raster Catalogs"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:327
+#: using_raster_dataman.xml:325
 #, no-c-format
 msgid ""
 "There are two raster catalog views that come packaged with PostGIS. Both "
@@ -842,7 +849,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:331
+#: using_raster_dataman.xml:329
 #, no-c-format
 msgid ""
 "<varname>raster_columns</varname> this view catalogs all the raster table "
@@ -850,7 +857,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:334
+#: using_raster_dataman.xml:332
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> this view catalogs all the raster table "
@@ -860,13 +867,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:338
+#: using_raster_dataman.xml:336
 #, no-c-format
 msgid "Raster Columns Catalog"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:339
+#: using_raster_dataman.xml:337
 #, no-c-format
 msgid ""
 "The <varname>raster_columns</varname> is a catalog of all raster table "
@@ -877,7 +884,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:341
+#: using_raster_dataman.xml:339
 #, no-c-format
 msgid ""
 "If you created your tables not with the loader or forgot to specify the "
@@ -888,7 +895,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:346
+#: using_raster_dataman.xml:344
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the table is in. This will "
@@ -896,7 +903,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:349
+#: using_raster_dataman.xml:347
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table "
@@ -904,13 +911,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:352
+#: using_raster_dataman.xml:350
 #, no-c-format
 msgid "<varname>r_table_name</varname> raster table"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:355
+#: using_raster_dataman.xml:353
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the column in the <varname>r_table_name</"
@@ -921,7 +928,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:358
+#: using_raster_dataman.xml:356
 #, no-c-format
 msgid ""
 "<varname>srid</varname> The spatial reference identifier of the raster. "
@@ -929,7 +936,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:361
+#: using_raster_dataman.xml:359
 #, no-c-format
 msgid ""
 "<varname>scale_x</varname> The scaling between geometric spatial coordinates "
@@ -939,7 +946,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:364
+#: using_raster_dataman.xml:362
 #, no-c-format
 msgid ""
 "<varname>scale_y</varname> The scaling between geometric spatial coordinates "
@@ -950,7 +957,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:367
+#: using_raster_dataman.xml:365
 #, no-c-format
 msgid ""
 "<varname>blocksize_x</varname> The width (number of pixels across) of each "
@@ -958,7 +965,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:370
+#: using_raster_dataman.xml:368
 #, no-c-format
 msgid ""
 "<varname>blocksize_y</varname> The width (number of pixels down) of each "
@@ -966,7 +973,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:373
+#: using_raster_dataman.xml:371
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> A boolean that is true if all the raster "
@@ -975,19 +982,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:376
+#: using_raster_dataman.xml:374
 #, no-c-format
 msgid ""
-"<varname>regular_blocking</varname> This is a true/false constraint flag set "
-"on the table to denote that the tiles do not overlap, are of the same "
-"alignment, pixel size, srid etc. It is not really validated but just taken "
-"as a given so should be used for informational. In the future we plan to "
-"properly constrain this so that this inforamtion is guaranteed to be right "
-"when it returns <varname>true</varname>"
+"<varname>regular_blocking</varname> If the raster column has the spatially "
+"unique and coverage tile constraints, the value with be TRUE. Otherwise, it "
+"will be FALSE."
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:379
+#: using_raster_dataman.xml:377
 #, no-c-format
 msgid ""
 "<varname>num_bands</varname> The number of bands in each tile of your raster "
@@ -995,7 +999,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:382
+#: using_raster_dataman.xml:380
 #, no-c-format
 msgid ""
 "<varname>pixel_types</varname> An array defining the pixel type for each "
@@ -1005,7 +1009,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:385
+#: using_raster_dataman.xml:383
 #, no-c-format
 msgid ""
 "<varname>nodata_values</varname> An array of double precision numbers "
@@ -1017,7 +1021,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:388
+#: using_raster_dataman.xml:386
+#, no-c-format
+msgid ""
+"<varname>out_db</varname> An array of boolean flags indicating if the raster "
+"bands data is maintained outside the database. You will have the same number "
+"of elements in this array as you have number of bands."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:389
 #, no-c-format
 msgid ""
 "<varname>extent</varname> This is the extent of all the raster rows in your "
@@ -1027,14 +1040,22 @@ msgid ""
 "\"RT_AddRasterConstraints\"/> after load."
 msgstr ""
 
+#. Tag: para
+#: using_raster_dataman.xml:392
+#, no-c-format
+msgid ""
+"<varname>spatial_index</varname> A boolean that is true if raster column has "
+"a spatial index."
+msgstr ""
+
 #. Tag: title
-#: using_raster_dataman.xml:393
+#: using_raster_dataman.xml:397
 #, no-c-format
 msgid "Raster Overviews"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:394
+#: using_raster_dataman.xml:398
 #, no-c-format
 msgid ""
 "<varname>raster_overviews</varname> catalogs information about raster table "
@@ -1044,11 +1065,12 @@ msgid ""
 "varname> because they are rasters in their own right but also serve an "
 "additional special purpose of being a lower resolution caricature of a "
 "higher resolution table. These are generated along-side the main raster "
-"table when you use the <varname>-l</varname> switch in raster loading."
+"table when you use the <varname>-l</varname> switch in raster loading or can "
+"be generated manually using <xref linkend=\"RT_AddOverviewConstraints\"/>."
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:395
+#: using_raster_dataman.xml:399
 #, no-c-format
 msgid ""
 "Overview tables contain the same constraints as other raster tables as well "
@@ -1056,7 +1078,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:396
+#: using_raster_dataman.xml:400
 #, no-c-format
 msgid ""
 "The information in <varname>raster_overviews</varname> does not duplicate "
@@ -1068,13 +1090,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:397
+#: using_raster_dataman.xml:401
 #, no-c-format
 msgid "Two main reasons for overviews are:"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:399
+#: using_raster_dataman.xml:403
 #, no-c-format
 msgid ""
 "Low resolution representation of the core tables commonly used for fast "
@@ -1082,7 +1104,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:400
+#: using_raster_dataman.xml:404
 #, no-c-format
 msgid ""
 "Computations are generally faster to do on them than their higher resolution "
@@ -1093,7 +1115,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:403
+#: using_raster_dataman.xml:407
 #, no-c-format
 msgid ""
 "The <varname>raster_overviews</varname> catalog contains the following "
@@ -1101,7 +1123,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:406
+#: using_raster_dataman.xml:410
 #, no-c-format
 msgid ""
 "<varname>o_table_catalog</varname> The database the overview table is in. "
@@ -1109,7 +1131,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:409
+#: using_raster_dataman.xml:413
 #, no-c-format
 msgid ""
 "<varname>o_table_schema</varname> The database schema the overview raster "
@@ -1117,20 +1139,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:412
+#: using_raster_dataman.xml:416
 #, no-c-format
 msgid "<varname>o_table_name</varname> raster overview table name"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:415
+#: using_raster_dataman.xml:419
 #, no-c-format
 msgid ""
 "<varname>o_raster_column</varname> the raster column in the overview table."
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:419
+#: using_raster_dataman.xml:423
 #, no-c-format
 msgid ""
 "<varname>r_table_catalog</varname> The database the raster table that this "
@@ -1138,7 +1160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:422
+#: using_raster_dataman.xml:426
 #, no-c-format
 msgid ""
 "<varname>r_table_schema</varname> The database schema the raster table that "
@@ -1146,14 +1168,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:425
+#: using_raster_dataman.xml:429
 #, no-c-format
 msgid ""
 "<varname>r_table_name</varname> raster table that this overview services."
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:428
+#: using_raster_dataman.xml:432
 #, no-c-format
 msgid ""
 "<varname>r_raster_column</varname> the raster column that this overview "
@@ -1161,7 +1183,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:431
+#: using_raster_dataman.xml:435
 #, no-c-format
 msgid ""
 "<varname>overview_factor</varname> - this is the pyramid level of the "
@@ -1181,13 +1203,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:443
+#: using_raster_dataman.xml:447
 #, no-c-format
 msgid "Building Custom Applications with PostGIS Raster"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:444
+#: using_raster_dataman.xml:448
 #, no-c-format
 msgid ""
 "The fact that PostGIS raster provides you with SQL functions to render "
@@ -1201,14 +1223,14 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:447
+#: using_raster_dataman.xml:451
 #, no-c-format
 msgid ""
 "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:448
+#: using_raster_dataman.xml:452
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use the PHP PostgreSQL driver and "
@@ -1218,7 +1240,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:451 using_raster_dataman.xml:463
+#: using_raster_dataman.xml:455 using_raster_dataman.xml:467
 #, no-c-format
 msgid ""
 "The sample query demonstrates how to combine a whole bunch of raster "
@@ -1230,7 +1252,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:454
+#: using_raster_dataman.xml:458
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/"
@@ -1239,7 +1261,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:455
+#: using_raster_dataman.xml:459
 #, no-c-format
 msgid ""
 "<![CDATA[<?php\n"
@@ -1274,7 +1296,7 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:458
+#: using_raster_dataman.xml:462
 #, no-c-format
 msgid ""
 "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster "
@@ -1282,7 +1304,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:459
+#: using_raster_dataman.xml:463
 #, no-c-format
 msgid ""
 "In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver "
@@ -1292,7 +1314,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:462
+#: using_raster_dataman.xml:466
 #, no-c-format
 msgid ""
 "You will need the npgsql .NET PostgreSQL driver for this exercise which you "
@@ -1302,7 +1324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:466
+#: using_raster_dataman.xml:470
 #, no-c-format
 msgid ""
 "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented "
@@ -1310,7 +1332,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:467
+#: using_raster_dataman.xml:471
 #, no-c-format
 msgid ""
 "You would call the below using <programlisting>http://mywebserver/TestRaster."
@@ -1319,7 +1341,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:468
+#: using_raster_dataman.xml:472
 #, no-c-format
 msgid ""
 "-- web.config connection string section --\n"
@@ -1331,7 +1353,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:469
+#: using_raster_dataman.xml:473
 #, no-c-format
 msgid ""
 "// Code for TestRaster.ashx\n"
@@ -1405,13 +1427,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:472
+#: using_raster_dataman.xml:476
 #, no-c-format
 msgid "Java console app that outputs raster query as Image file"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:473
+#: using_raster_dataman.xml:477
 #, no-c-format
 msgid ""
 "This is a simple java console app that takes a query that returns one image "
@@ -1419,7 +1441,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:474
+#: using_raster_dataman.xml:478
 #, no-c-format
 msgid ""
 "You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://"
@@ -1428,13 +1450,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:475
+#: using_raster_dataman.xml:479
 #, no-c-format
 msgid "You can compile the following code using a command something like:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:476
+#: using_raster_dataman.xml:480
 #, no-c-format
 msgid ""
 "set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
@@ -1443,13 +1465,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:477
+#: using_raster_dataman.xml:481
 #, no-c-format
 msgid "And call it from the command-line with something like"
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:478
+#: using_raster_dataman.xml:482
 #, no-c-format
 msgid ""
 "java -jar SaveQueryImage.jar \"SELECT "
@@ -1458,7 +1480,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:479
+#: using_raster_dataman.xml:483
 #, no-c-format
 msgid ""
 "-- Manifest.txt --\n"
@@ -1467,7 +1489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:480
+#: using_raster_dataman.xml:484
 #, no-c-format
 msgid ""
 "// Code for SaveQueryImage.java\n"
@@ -1534,24 +1556,24 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:484
+#: using_raster_dataman.xml:488
 #, no-c-format
 msgid "Use PLPython to dump out images via SQL"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:485
+#: using_raster_dataman.xml:489
 #, no-c-format
 msgid ""
 "This is a plpython stored function that creates a file in the server "
-"directory for each record."
+"directory for each record. Requires you have plpython installed. Should work "
+"fine with both plpythonu and plpython3u."
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:486
+#: using_raster_dataman.xml:491
 #, no-c-format
 msgid ""
-"//plpython postgresql stored proc.  Requires you have plpython installed\n"
 "<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, "
 "param_filepath text)\n"
 "RETURNS text\n"
@@ -1563,7 +1585,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_raster_dataman.xml:487
+#: using_raster_dataman.xml:492
 #, no-c-format
 msgid ""
 "--write out 5 images to the PostgreSQL server in varying sizes\n"
@@ -1585,13 +1607,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_raster_dataman.xml:490
+#: using_raster_dataman.xml:495
 #, no-c-format
 msgid "Outputting Rasters with PSQL"
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:491
+#: using_raster_dataman.xml:496
 #, no-c-format
 msgid ""
 "Sadly PSQL doesn't have easy to use built-in functionality for outputting "
@@ -1604,7 +1626,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_raster_dataman.xml:494
+#: using_raster_dataman.xml:499
 #, no-c-format
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
@@ -1612,7 +1634,7 @@ msgid ""
 msgstr ""
 
 #. Tag: screen
-#: using_raster_dataman.xml:495
+#: using_raster_dataman.xml:500
 #, no-c-format
 msgid ""
 "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"

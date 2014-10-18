@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2013-11-27 16:31+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -91,7 +91,7 @@ msgstr ""
 #. Tag: para
 #: using_postgis_dataman.xml:41
 #, no-c-format
-msgid "MULTIPOINT(0 0,1 2)"
+msgid "MULTIPOINT((0 0),(1 2))"
 msgstr ""
 
 #. Tag: para
@@ -1552,9 +1552,8 @@ msgid ""
 "The AddGeometryColumn() approach creates a geometry column and also "
 "registers the new column in the geometry_columns table. If your software "
 "utilizes geometry_columns, then any geometry columns you need to query by "
-"must be registered in this view. Starting with PoastGIS 2.0, "
-"geometry_columns is no longer editable and all geometry columns are "
-"autoregistered."
+"must be registered in this view. Starting with PostGIS 2.0, geometry_columns "
+"is no longer editable and all geometry columns are autoregistered."
 msgstr ""
 
 #. Tag: para
@@ -2278,99 +2277,81 @@ msgstr ""
 
 #. Tag: emphasis
 #: using_postgis_dataman.xml:1174 using_postgis_dataman.xml:1184
-#: using_postgis_dataman.xml:1377 using_postgis_dataman.xml:1390
+#: using_postgis_dataman.xml:1268 using_postgis_dataman.xml:1281
 #, no-c-format
 msgid "<emphasis role=\"bold\">Interior</emphasis>"
 msgstr ""
 
 #. Tag: emphasis
-#: using_postgis_dataman.xml:1176 using_postgis_dataman.xml:1227
-#: using_postgis_dataman.xml:1380 using_postgis_dataman.xml:1413
+#: using_postgis_dataman.xml:1176 using_postgis_dataman.xml:1190
+#: using_postgis_dataman.xml:1271 using_postgis_dataman.xml:1304
 #, no-c-format
 msgid "<emphasis role=\"bold\">Boundary</emphasis>"
 msgstr ""
 
 #. Tag: emphasis
-#: using_postgis_dataman.xml:1178 using_postgis_dataman.xml:1270
-#: using_postgis_dataman.xml:1383 using_postgis_dataman.xml:1436
+#: using_postgis_dataman.xml:1178 using_postgis_dataman.xml:1196
+#: using_postgis_dataman.xml:1274 using_postgis_dataman.xml:1327
 #, no-c-format
 msgid "<emphasis role=\"bold\">Exterior</emphasis>"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1188
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1185
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgid "dim( I(a) ∩ I(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1201
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1186
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgid "dim( I(a) ∩ B(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1214
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1187
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgid "dim( I(a) ∩ E(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1231
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1191
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgid "dim( B(a) ∩ I(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1244
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1192
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgid "dim( B(a) ∩ B(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1257
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1193
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgid "dim( B(a) ∩ E(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1274
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1197
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgid "dim( E(a) ∩ I(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1287
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1198
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgid "dim( E(a) ∩ B(b) )"
 msgstr ""
 
-#. Tag: mml:mrow
-#: using_postgis_dataman.xml:1300
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1199
 #, no-c-format
-msgid ""
-"<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> "
-"<mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgid "dim( E(a) ∩ E(b) )"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1315
+#: using_postgis_dataman.xml:1206
 #, no-c-format
 msgid ""
 "Where <emphasis>dim(a)</emphasis> is the dimension of <emphasis>a</emphasis> "
@@ -2379,69 +2360,69 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1322
+#: using_postgis_dataman.xml:1213
 #, no-c-format
 msgid "<literal>0</literal> =&gt; point"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1326
+#: using_postgis_dataman.xml:1217
 #, no-c-format
 msgid "<literal>1</literal> =&gt; line"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1330
+#: using_postgis_dataman.xml:1221
 #, no-c-format
 msgid "<literal>2</literal> =&gt; area"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1334
+#: using_postgis_dataman.xml:1225
 #, no-c-format
 msgid "<literal>T</literal> =&gt; <literal>{0,1,2}</literal>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1339
+#: using_postgis_dataman.xml:1230
 #, no-c-format
 msgid "<literal>F</literal> =&gt; empty set"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1343
+#: using_postgis_dataman.xml:1234
 #, no-c-format
 msgid "<literal>*</literal> =&gt; don't care"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1347
+#: using_postgis_dataman.xml:1238
 #, no-c-format
 msgid "Visually, for two overlapping polygonal geometries, this looks like:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1394 using_postgis_dataman.xml:1406
-#: using_postgis_dataman.xml:1440 using_postgis_dataman.xml:1452
+#: using_postgis_dataman.xml:1285 using_postgis_dataman.xml:1297
+#: using_postgis_dataman.xml:1331 using_postgis_dataman.xml:1343
 #, no-c-format
 msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">2</emphasis>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1400 using_postgis_dataman.xml:1417
-#: using_postgis_dataman.xml:1429 using_postgis_dataman.xml:1446
+#: using_postgis_dataman.xml:1291 using_postgis_dataman.xml:1308
+#: using_postgis_dataman.xml:1320 using_postgis_dataman.xml:1337
 #, no-c-format
 msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">1</emphasis>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1423
+#: using_postgis_dataman.xml:1314
 #, no-c-format
 msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">0</emphasis>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1464
+#: using_postgis_dataman.xml:1355
 #, no-c-format
 msgid ""
 "Read from left to right and from top to bottom, the dimensional matrix is "
@@ -2449,7 +2430,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1467
+#: using_postgis_dataman.xml:1358
 #, no-c-format
 msgid ""
 "A relate matrix that would therefore represent our first example of two "
@@ -2458,7 +2439,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1471
+#: using_postgis_dataman.xml:1362
 #, no-c-format
 msgid ""
 "-- Identify road segments that cross on a line\n"
@@ -2470,7 +2451,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1473
+#: using_postgis_dataman.xml:1364
 #, no-c-format
 msgid ""
 "A relate matrix that represents the second example of wharfs partly on the "
@@ -2478,7 +2459,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1477
+#: using_postgis_dataman.xml:1368
 #, no-c-format
 msgid ""
 "-- Identify wharfs partly on a lake's shoreline\n"
@@ -2489,13 +2470,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1479
+#: using_postgis_dataman.xml:1370
 #, no-c-format
 msgid "For more information or reading, see:"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1483
+#: using_postgis_dataman.xml:1374
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple "
@@ -2504,32 +2485,32 @@ msgid ""
 msgstr ""
 
 #. Tag: ulink
-#: using_postgis_dataman.xml:1488
+#: using_postgis_dataman.xml:1379
 #, no-c-format
 msgid ""
 "Dimensionally Extended Nine-Intersection Model (DE-9IM) by Christian Strobl"
 msgstr ""
 
 #. Tag: ulink
-#: using_postgis_dataman.xml:1492
+#: using_postgis_dataman.xml:1383
 #, no-c-format
 msgid "GeoTools: Point Set Theory and the DE-9IM Matrix"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1495
+#: using_postgis_dataman.xml:1386
 #, no-c-format
 msgid "<emphasis>Encyclopedia of GIS</emphasis> By Hui Xiong"
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1505
+#: using_postgis_dataman.xml:1396
 #, no-c-format
-msgid "Loading GIS Data"
+msgid "Loading GIS (Vector) Data"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1507
+#: using_postgis_dataman.xml:1398
 #, no-c-format
 msgid ""
 "Once you have created a spatial table, you are ready to upload GIS data to "
@@ -2539,13 +2520,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1513 using_postgis_dataman.xml:1789
+#: using_postgis_dataman.xml:1404
 #, no-c-format
-msgid "Using SQL"
+msgid "Loading Data Using SQL"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1515
+#: using_postgis_dataman.xml:1406
 #, no-c-format
 msgid ""
 "If you can convert your data to a text representation, then using formatted "
@@ -2555,7 +2536,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1521
+#: using_postgis_dataman.xml:1412
 #, no-c-format
 msgid ""
 "A data upload file (<filename>roads.sql</filename> for example) might look "
@@ -2563,7 +2544,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1524
+#: using_postgis_dataman.xml:1415
 #, no-c-format
 msgid ""
 "BEGIN;\n"
@@ -2589,7 +2570,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1526
+#: using_postgis_dataman.xml:1417
 #, no-c-format
 msgid ""
 "The data file can be piped into PostgreSQL very easily using the \"psql\" "
@@ -2597,19 +2578,19 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1529
+#: using_postgis_dataman.xml:1420
 #, no-c-format
 msgid "psql -d [database] -f roads.sql"
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1533
+#: using_postgis_dataman.xml:1424
 #, no-c-format
-msgid "Using the Loader"
+msgid "shp2pgsql: Using the ESRI Shapefile Loader"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1535
+#: using_postgis_dataman.xml:1426
 #, no-c-format
 msgid ""
 "The <filename>shp2pgsql</filename> data loader converts ESRI Shape files "
@@ -2619,7 +2600,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1540
+#: using_postgis_dataman.xml:1431
 #, no-c-format
 msgid ""
 "In addition to the shp2pgsql command-line loader, there is an "
@@ -2630,19 +2611,19 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1547
+#: using_postgis_dataman.xml:1438
 #, no-c-format
 msgid "(c|a|d|p) These are mutually exclusive options:"
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1552
+#: using_postgis_dataman.xml:1443
 #, no-c-format
 msgid "<term>-c</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1554
+#: using_postgis_dataman.xml:1445
 #, no-c-format
 msgid ""
 "Creates a new table and populates it from the shapefile. <emphasis>This is "
@@ -2650,13 +2631,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1562
+#: using_postgis_dataman.xml:1453
 #, no-c-format
 msgid "<term>-a</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1564
+#: using_postgis_dataman.xml:1455
 #, no-c-format
 msgid ""
 "Appends data from the Shape file into the database table. Note that to use "
@@ -2665,13 +2646,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1573 using_postgis_dataman.xml:1948
+#: using_postgis_dataman.xml:1464 using_postgis_dataman.xml:1853
 #, no-c-format
 msgid "<term>-d</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1575
+#: using_postgis_dataman.xml:1466
 #, no-c-format
 msgid ""
 "Drops the database table before creating a new table with the data in the "
@@ -2679,13 +2660,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1583
+#: using_postgis_dataman.xml:1474
 #, no-c-format
 msgid "<term>-p</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1585
+#: using_postgis_dataman.xml:1476
 #, no-c-format
 msgid ""
 "Only produces the table creation SQL code, without adding any actual data. "
@@ -2694,25 +2675,25 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1598
+#: using_postgis_dataman.xml:1489
 #, no-c-format
 msgid "<term>-?</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1600
+#: using_postgis_dataman.xml:1491
 #, no-c-format
 msgid "Display help screen."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1607
+#: using_postgis_dataman.xml:1498
 #, no-c-format
 msgid "<term>-D</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1609
+#: using_postgis_dataman.xml:1500
 #, no-c-format
 msgid ""
 "Use the PostgreSQL \"dump\" format for the output data. This can be combined "
@@ -2721,13 +2702,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1618
+#: using_postgis_dataman.xml:1509
 #, no-c-format
 msgid "-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1620
+#: using_postgis_dataman.xml:1511
 #, no-c-format
 msgid ""
 "Creates and populates the geometry tables with the specified SRID. "
@@ -2737,13 +2718,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1631
+#: using_postgis_dataman.xml:1522
 #, no-c-format
 msgid "<term>-k</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1633
+#: using_postgis_dataman.xml:1524
 #, no-c-format
 msgid ""
 "Keep identifiers' case (column, schema and attributes). Note that attributes "
@@ -2751,13 +2732,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1641
+#: using_postgis_dataman.xml:1532
 #, no-c-format
 msgid "<term>-i</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1643
+#: using_postgis_dataman.xml:1534
 #, no-c-format
 msgid ""
 "Coerce all integers to standard 32-bit integers, do not create 64-bit "
@@ -2765,25 +2746,49 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1651
+#: using_postgis_dataman.xml:1542
 #, no-c-format
 msgid "<term>-I</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1653
+#: using_postgis_dataman.xml:1544
 #, no-c-format
 msgid "Create a GiST index on the geometry column."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1659
+#: using_postgis_dataman.xml:1551
+#, no-c-format
+msgid "<term>-m</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1553
+#, no-c-format
+msgid ""
+"-m <filename>a_file_name</filename> Specify a file containing a set of "
+"mappings of (long) column names to 10 character DBF column names. The "
+"content of the file is one or more lines of two names separated by white "
+"space and no trailing or leading space. For example:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1558
+#, no-c-format
+msgid ""
+"COLUMNNAME DBFFIELD1\n"
+"AVERYLONGCOLUMNNAME DBFFIELD2"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1564
 #, no-c-format
 msgid "<term>-S</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1661
+#: using_postgis_dataman.xml:1566
 #, no-c-format
 msgid ""
 "Generate simple geometries instead of MULTI geometries. Will only succeed if "
@@ -2792,13 +2797,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1670
+#: using_postgis_dataman.xml:1575
 #, no-c-format
 msgid "-t &lt;dimensionality&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1672
+#: using_postgis_dataman.xml:1577
 #, no-c-format
 msgid ""
 "Force the output geometry to have the specified dimensionality. Use the "
@@ -2806,7 +2811,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1676
+#: using_postgis_dataman.xml:1581
 #, no-c-format
 msgid ""
 "If the input has fewer dimensions that specified, the output will have those "
@@ -2815,13 +2820,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1685
+#: using_postgis_dataman.xml:1590
 #, no-c-format
 msgid "<term>-w</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1687
+#: using_postgis_dataman.xml:1592
 #, no-c-format
 msgid ""
 "Output WKT format, instead of WKB. Note that this can introduce coordinate "
@@ -2829,13 +2834,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1695
+#: using_postgis_dataman.xml:1600
 #, no-c-format
 msgid "<term>-e</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1697
+#: using_postgis_dataman.xml:1602
 #, no-c-format
 msgid ""
 "Execute each statement on its own, without using a transaction. This allows "
@@ -2845,13 +2850,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1707
+#: using_postgis_dataman.xml:1612
 #, no-c-format
 msgid "-W &lt;encoding&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1709
+#: using_postgis_dataman.xml:1614
 #, no-c-format
 msgid ""
 "Specify encoding of the input data (dbf file). When used, all attributes of "
@@ -2862,25 +2867,25 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1719
+#: using_postgis_dataman.xml:1624
 #, no-c-format
 msgid "-N &lt;policy&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1721
+#: using_postgis_dataman.xml:1626
 #, no-c-format
 msgid "NULL geometries handling policy (insert*,skip,abort)"
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1727
+#: using_postgis_dataman.xml:1632
 #, no-c-format
 msgid "<term>-n</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1729
+#: using_postgis_dataman.xml:1634
 #, no-c-format
 msgid ""
 "-n Only import DBF file. If your data has no corresponding shapefile, it "
@@ -2890,13 +2895,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1737
+#: using_postgis_dataman.xml:1642
 #, no-c-format
 msgid "<term>-G</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1739
+#: using_postgis_dataman.xml:1644
 #, no-c-format
 msgid ""
 "Use geography type instead of geometry (requires lon/lat data) in WGS84 long "
@@ -2904,13 +2909,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1745
+#: using_postgis_dataman.xml:1650
 #, no-c-format
 msgid "-T &lt;tablespace&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1747
+#: using_postgis_dataman.xml:1652
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table. Indexes will still use the default "
@@ -2919,13 +2924,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1755
+#: using_postgis_dataman.xml:1660
 #, no-c-format
 msgid "-X &lt;tablespace&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1757
+#: using_postgis_dataman.xml:1662
 #, no-c-format
 msgid ""
 "Specify the tablespace for the new table's indexes. This applies to the "
@@ -2933,7 +2938,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1765
+#: using_postgis_dataman.xml:1670
 #, no-c-format
 msgid ""
 "An example session using the loader to create an input file and uploading it "
@@ -2941,7 +2946,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1770
+#: using_postgis_dataman.xml:1675
 #, no-c-format
 msgid ""
 "# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; "
@@ -2950,25 +2955,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1772
+#: using_postgis_dataman.xml:1677
 #, no-c-format
 msgid "A conversion and upload can be done all in one step using UNIX pipes:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1776
+#: using_postgis_dataman.xml:1681
 #, no-c-format
 msgid "# shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb"
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1781
+#: using_postgis_dataman.xml:1686
 #, no-c-format
 msgid "Retrieving GIS Data"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1783
+#: using_postgis_dataman.xml:1688
 #, no-c-format
 msgid ""
 "Data can be extracted from the database using either SQL or the Shape file "
@@ -2976,8 +2981,14 @@ msgid ""
 "available to do comparisons and queries on spatial tables."
 msgstr ""
 
+#. Tag: title
+#: using_postgis_dataman.xml:1694
+#, no-c-format
+msgid "Using SQL to Retrieve Data"
+msgstr ""
+
 #. Tag: para
-#: using_postgis_dataman.xml:1791
+#: using_postgis_dataman.xml:1696
 #, no-c-format
 msgid ""
 "The most straightforward means of pulling data out of the database is to use "
@@ -2986,7 +2997,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1796
+#: using_postgis_dataman.xml:1701
 #, no-c-format
 msgid ""
 "db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;\n"
@@ -3004,7 +3015,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1798
+#: using_postgis_dataman.xml:1703
 #, no-c-format
 msgid ""
 "However, there will be times when some kind of restriction is necessary to "
@@ -3015,13 +3026,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1806
+#: using_postgis_dataman.xml:1711
 #, no-c-format
 msgid "&amp;&amp;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1809
+#: using_postgis_dataman.xml:1714
 #, no-c-format
 msgid ""
 "This operator tells whether the bounding box of one geometry intersects the "
@@ -3029,13 +3040,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1815
+#: using_postgis_dataman.xml:1720
 #, no-c-format
 msgid "ST_OrderingEquals"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1818
+#: using_postgis_dataman.xml:1723
 #, no-c-format
 msgid ""
 "This tests whether two geometries are geometrically identical. For example, "
@@ -3044,13 +3055,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1825
+#: using_postgis_dataman.xml:1730
 #, no-c-format
 msgid "<term>=</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1828
+#: using_postgis_dataman.xml:1733
 #, no-c-format
 msgid ""
 "This operator is a little more naive, it only tests whether the bounding "
@@ -3058,7 +3069,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1834
+#: using_postgis_dataman.xml:1739
 #, no-c-format
 msgid ""
 "Next, you can use these operators in queries. Note that when specifying "
@@ -3069,7 +3080,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1840
+#: using_postgis_dataman.xml:1745
 #, no-c-format
 msgid ""
 "SELECT road_id, road_name\n"
@@ -3079,7 +3090,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1842
+#: using_postgis_dataman.xml:1747
 #, no-c-format
 msgid ""
 "The above query would return the single record from the \"ROADS_GEOM\" table "
@@ -3087,7 +3098,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1845
+#: using_postgis_dataman.xml:1750
 #, no-c-format
 msgid ""
 "When using the \"&amp;&amp;\" operator, you can specify either a BOX3D as "
@@ -3096,7 +3107,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1850
+#: using_postgis_dataman.xml:1755
 #, no-c-format
 msgid ""
 "SELECT road_id, road_name\n"
@@ -3105,7 +3116,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1852
+#: using_postgis_dataman.xml:1757
 #, no-c-format
 msgid ""
 "The above query will use the bounding box of the polygon for comparison "
@@ -3113,7 +3124,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1855
+#: using_postgis_dataman.xml:1760
 #, no-c-format
 msgid ""
 "The most common spatial query will probably be a \"frame-based\" query, used "
@@ -3123,7 +3134,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1860
+#: using_postgis_dataman.xml:1765
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(roads_geom) AS geom\n"
@@ -3133,20 +3144,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1862
+#: using_postgis_dataman.xml:1767
 #, no-c-format
 msgid ""
 "Note the use of the SRID 312, to specify the projection of the envelope."
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1866
+#: using_postgis_dataman.xml:1771
 #, no-c-format
 msgid "Using the Dumper"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1868
+#: using_postgis_dataman.xml:1773
 #, no-c-format
 msgid ""
 "The <filename>pgsql2shp</filename> table dumper connects directly to the "
@@ -3155,92 +3166,92 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1872
+#: using_postgis_dataman.xml:1777
 #, no-c-format
 msgid ""
 "pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1874
+#: using_postgis_dataman.xml:1779
 #, no-c-format
 msgid "pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1876
+#: using_postgis_dataman.xml:1781
 #, no-c-format
 msgid "The commandline options are:"
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1880
+#: using_postgis_dataman.xml:1785
 #, no-c-format
 msgid "-f &lt;filename&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1883
+#: using_postgis_dataman.xml:1788
 #, no-c-format
 msgid "Write the output to a particular filename."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1888
+#: using_postgis_dataman.xml:1793
 #, no-c-format
 msgid "-h &lt;host&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1891
+#: using_postgis_dataman.xml:1796
 #, no-c-format
 msgid "The database host to connect to."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1896
+#: using_postgis_dataman.xml:1801
 #, no-c-format
 msgid "-p &lt;port&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1899
+#: using_postgis_dataman.xml:1804
 #, no-c-format
 msgid "The port to connect to on the database host."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1904
+#: using_postgis_dataman.xml:1809
 #, no-c-format
 msgid "-P &lt;password&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1907
+#: using_postgis_dataman.xml:1812
 #, no-c-format
 msgid "The password to use when connecting to the database."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1912
+#: using_postgis_dataman.xml:1817
 #, no-c-format
 msgid "-u &lt;user&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1915
+#: using_postgis_dataman.xml:1820
 #, no-c-format
 msgid "The username to use when connecting to the database."
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1920
+#: using_postgis_dataman.xml:1825
 #, no-c-format
 msgid "-g &lt;geometry column&gt;"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1923
+#: using_postgis_dataman.xml:1828
 #, no-c-format
 msgid ""
 "In the case of tables with multiple geometry columns, the geometry column to "
@@ -3248,13 +3259,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1929
+#: using_postgis_dataman.xml:1834
 #, no-c-format
 msgid "<term>-b</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1932
+#: using_postgis_dataman.xml:1837
 #, no-c-format
 msgid ""
 "Use a binary cursor. This will make the operation faster, but will not work "
@@ -3262,13 +3273,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1939
+#: using_postgis_dataman.xml:1844
 #, no-c-format
 msgid "<term>-r</term>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1942
+#: using_postgis_dataman.xml:1847
 #, no-c-format
 msgid ""
 "Raw mode. Do not drop the <varname>gid</varname> field, or escape column "
@@ -3276,7 +3287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1951
+#: using_postgis_dataman.xml:1856
 #, no-c-format
 msgid ""
 "For backward compatibility: write a 3-dimensional shape file when dumping "
@@ -3286,13 +3297,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: using_postgis_dataman.xml:1959
+#: using_postgis_dataman.xml:1864
 #, no-c-format
 msgid "-m <varname>filename</varname>"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1961
+#: using_postgis_dataman.xml:1866
 #, no-c-format
 msgid ""
 "Remap identifiers to ten character names. The content of the file is lines "
@@ -3301,13 +3312,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:1974
+#: using_postgis_dataman.xml:1879
 #, no-c-format
 msgid "Building Indexes"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1976
+#: using_postgis_dataman.xml:1881
 #, no-c-format
 msgid ""
 "Indexes are what make using a spatial database for large data sets possible. "
@@ -3319,7 +3330,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1986
+#: using_postgis_dataman.xml:1891
 #, no-c-format
 msgid ""
 "B-Trees are used for data which can be sorted along one axis; for example, "
@@ -3329,7 +3340,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:1993
+#: using_postgis_dataman.xml:1898
 #, no-c-format
 msgid ""
 "R-Trees break up data into rectangles, and sub-rectangles, and sub-sub "
@@ -3339,7 +3350,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2000
+#: using_postgis_dataman.xml:1905
 #, no-c-format
 msgid ""
 "GiST (Generalized Search Trees) indexes break up data into \"things to one "
@@ -3349,13 +3360,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2009
+#: using_postgis_dataman.xml:1914
 #, no-c-format
 msgid "GiST Indexes"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2011
+#: using_postgis_dataman.xml:1916
 #, no-c-format
 msgid ""
 "GiST stands for \"Generalized Search Tree\" and is a generic form of "
@@ -3365,7 +3376,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2016
+#: using_postgis_dataman.xml:1921
 #, no-c-format
 msgid ""
 "Once a GIS data table exceeds a few thousand rows, you will want to build an "
@@ -3375,20 +3386,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2021
+#: using_postgis_dataman.xml:1926
 #, no-c-format
 msgid ""
 "The syntax for building a GiST index on a \"geometry\" column is as follows:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2024
+#: using_postgis_dataman.xml:1929
 #, no-c-format
 msgid "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] );"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2025
+#: using_postgis_dataman.xml:1930
 #, no-c-format
 msgid ""
 "The above syntax will always build a 2D-index. To get the an n-dimensional "
@@ -3397,7 +3408,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2026
+#: using_postgis_dataman.xml:1931
 #, no-c-format
 msgid ""
 "CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] "
@@ -3405,7 +3416,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2028
+#: using_postgis_dataman.xml:1933
 #, no-c-format
 msgid ""
 "Building a spatial index is a computationally intensive exercise: on tables "
@@ -3416,7 +3427,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2034
+#: using_postgis_dataman.xml:1939
 #, no-c-format
 msgid ""
 "VACUUM ANALYZE [table_name] [(column_name)];\n"
@@ -3425,7 +3436,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2036
+#: using_postgis_dataman.xml:1941
 #, no-c-format
 msgid ""
 "GiST indexes have two advantages over R-Tree indexes in PostgreSQL. Firstly, "
@@ -3439,13 +3450,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2048
+#: using_postgis_dataman.xml:1953
 #, no-c-format
 msgid "Using Indexes"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2050
+#: using_postgis_dataman.xml:1955
 #, no-c-format
 msgid ""
 "Ordinarily, indexes invisibly speed up data access: once the index is built, "
@@ -3456,7 +3467,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2057
+#: using_postgis_dataman.xml:1962
 #, no-c-format
 msgid ""
 "If you find your spatial indexes are not being used (or your attribute "
@@ -3464,7 +3475,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2063
+#: using_postgis_dataman.xml:1968
 #, no-c-format
 msgid ""
 "Firstly, make sure statistics are gathered about the number and "
@@ -3480,7 +3491,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2077
+#: using_postgis_dataman.xml:1982
 #, no-c-format
 msgid ""
 "If vacuuming does not work, you can force the planner to use the index "
@@ -3493,7 +3504,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2087
+#: using_postgis_dataman.xml:1992
 #, no-c-format
 msgid ""
 "As of version 0.6, it should not be necessary to force the planner to use "
@@ -3501,7 +3512,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2094
+#: using_postgis_dataman.xml:1999
 #, no-c-format
 msgid ""
 "If you find the planner wrong about the cost of sequential vs index scans "
@@ -3512,13 +3523,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2105
+#: using_postgis_dataman.xml:2010
 #, no-c-format
 msgid "Complex Queries"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2107
+#: using_postgis_dataman.xml:2012
 #, no-c-format
 msgid ""
 "The <emphasis>raison d'etre</emphasis> of spatial database functionality is "
@@ -3538,13 +3549,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2121
+#: using_postgis_dataman.xml:2026
 #, no-c-format
 msgid "Taking Advantage of Indexes"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2123
+#: using_postgis_dataman.xml:2028
 #, no-c-format
 msgid ""
 "When constructing a query it is important to remember that only the bounding-"
@@ -3555,7 +3566,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2130
+#: using_postgis_dataman.xml:2035
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -3565,7 +3576,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2132
+#: using_postgis_dataman.xml:2037
 #, no-c-format
 msgid ""
 "This query is selecting all the geometries in geom_table which are within "
@@ -3577,7 +3588,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2139
+#: using_postgis_dataman.xml:2044
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -3587,7 +3598,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2141
+#: using_postgis_dataman.xml:2046
 #, no-c-format
 msgid ""
 "This query selects the same geometries, but it does it in a more efficient "
@@ -3604,13 +3615,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2155
+#: using_postgis_dataman.xml:2060
 #, no-c-format
 msgid "Change in Behavior"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2157
+#: using_postgis_dataman.xml:2062
 #, no-c-format
 msgid ""
 "As of PostGIS 1.3.0, most of the Geometry Relationship Functions, with the "
@@ -3619,13 +3630,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: using_postgis_dataman.xml:2164
+#: using_postgis_dataman.xml:2069
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2166
+#: using_postgis_dataman.xml:2071
 #, no-c-format
 msgid ""
 "The examples in this section will make use of two tables, a table of linear "
@@ -3634,7 +3645,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2170
+#: using_postgis_dataman.xml:2075
 #, no-c-format
 msgid ""
 "Column      | Type              | Description\n"
@@ -3645,14 +3656,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2172
+#: using_postgis_dataman.xml:2077
 #, no-c-format
 msgid ""
 "The table definition for the <varname>bc_municipality</varname> table is:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2175
+#: using_postgis_dataman.xml:2080
 #, no-c-format
 msgid ""
 "Column     | Type              | Description\n"
@@ -3664,19 +3675,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2180
+#: using_postgis_dataman.xml:2085
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2185
+#: using_postgis_dataman.xml:2090
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2188
+#: using_postgis_dataman.xml:2093
 #, no-c-format
 msgid ""
 "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
@@ -3688,13 +3699,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2194
+#: using_postgis_dataman.xml:2099
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2198
+#: using_postgis_dataman.xml:2103
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -3702,7 +3713,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2202
+#: using_postgis_dataman.xml:2107
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3717,13 +3728,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2208
+#: using_postgis_dataman.xml:2113
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2213
+#: using_postgis_dataman.xml:2118
 #, no-c-format
 msgid ""
 "This query brings a spatial measurement into the query condition. There are "
@@ -3731,7 +3742,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2217
+#: using_postgis_dataman.xml:2122
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3749,7 +3760,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2219
+#: using_postgis_dataman.xml:2124
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -3761,13 +3772,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2231
+#: using_postgis_dataman.xml:2136
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2236
+#: using_postgis_dataman.xml:2141
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", because we are bringing together "
@@ -3777,7 +3788,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2242
+#: using_postgis_dataman.xml:2147
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3802,7 +3813,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2244
+#: using_postgis_dataman.xml:2149
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -3812,13 +3823,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2253
+#: using_postgis_dataman.xml:2158
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2258
+#: using_postgis_dataman.xml:2163
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -3829,7 +3840,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2265
+#: using_postgis_dataman.xml:2170
 #, no-c-format
 msgid ""
 "CREATE TABLE pg_roads as\n"
@@ -3844,13 +3855,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2271
+#: using_postgis_dataman.xml:2176
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2276
+#: using_postgis_dataman.xml:2181
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -3868,13 +3879,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: using_postgis_dataman.xml:2282
+#: using_postgis_dataman.xml:2187
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr ""
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2287
+#: using_postgis_dataman.xml:2192
 #, no-c-format
 msgid ""
 "SELECT gid, name, ST_Area(the_geom) AS area\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2013-12-07 18:17+0000\n"
 "Last-Translator: Tommaso Di Bucchianico\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
@@ -113,7 +113,7 @@ msgstr ""
 #: reference_management.xml:499 reference_management.xml:540
 #: reference_management.xml:583 reference_management.xml:631
 #: reference_management.xml:677 reference_management.xml:726
-#: reference_management.xml:862
+#: reference_management.xml:863
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -200,14 +200,14 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_management.xml:118 reference_management.xml:195
-#: reference_management.xml:868
+#: reference_management.xml:869
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_management.xml:119 reference_management.xml:196
-#: reference_management.xml:869
+#: reference_management.xml:870
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -232,6 +232,7 @@ msgstr ""
 #: reference_management.xml:506 reference_management.xml:548
 #: reference_management.xml:600 reference_management.xml:646
 #: reference_management.xml:683 reference_management.xml:784
+#: reference_management.xml:873
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
@@ -383,7 +384,7 @@ msgstr ""
 #: reference_management.xml:470 reference_management.xml:512
 #: reference_management.xml:554 reference_management.xml:606
 #: reference_management.xml:652 reference_management.xml:689
-#: reference_management.xml:873
+#: reference_management.xml:886
 #, no-c-format
 msgid "See Also"
 msgstr "Vedi anche"
@@ -634,13 +635,15 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_management.xml:308
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT PostGIS_Full_Version();\n"
 "                                                           postgis_full_version\n"
 "----------------------------------------------------------------------------------\n"
-" POSTGIS=\"1.3.3\" GEOS=\"3.1.0-CAPI-1.5.0\" PROJ=\"Rel. 4.4.9, 29 Oct "
-"2004\" USE_STATS\n"
+"POSTGIS=\"2.2.0dev r12699\" GEOS=\"3.5.0dev-CAPI-1.9.0 r3989\" SFCGAL="
+"\"1.0.4\" PROJ=\"Rel. 4.8.0, 6 March 2012\" \n"
+"GDAL=\"GDAL 1.11.0, released 2014/04/16\" LIBXML=\"2.7.8\" LIBJSON=\"0.12\" "
+"RASTER\n"
 "(1 row)"
 msgstr ""
 "SELECT PostGIS_Full_Version();\n"
@@ -1531,13 +1534,13 @@ msgstr "UpdateGeometrySRID"
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, geometry_columns "
-"metadata and srid table constraint"
+"metadata and srid. If it was enforced with constraints, the constraints will "
+"be updated with new srid constraint. If the old was enforced by type "
+"definition, the type definition will be changed."
 msgstr ""
-"Aggiorna lo SRID di tutti i record in una colonna geometry. Vengono "
-"aggiornati anche geometry_columns e il vincolo SRID della colonna."
 
 #. Tag: funcsynopsis
-#: reference_management.xml:810
+#: reference_management.xml:811
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></"
@@ -1577,7 +1580,7 @@ msgstr ""
 "</type> <parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_management.xml:864
+#: reference_management.xml:865
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
@@ -1587,3 +1590,66 @@ msgstr ""
 "Aggiorna lo SRID di tutti i record in una colonna geometry, aggiornando "
 "anche geometry_columns e il vincolo SRID della colonna. Usa la funzione "
 "current_schema() se lo schema non è passato come argomento."
+
+#. Tag: para
+#: reference_management.xml:874
+#, no-c-format
+msgid ""
+"This will change the srid of the roads table to 4326 from whatever it was "
+"before"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:875
+#, no-c-format
+msgid "SELECT UpdateGeometrySRID('roads','geom',4326);"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:877
+#, no-c-format
+msgid "The prior example is equivalent to this DDL statement"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:878
+#, no-c-format
+msgid ""
+"ALTER TABLE roads \n"
+"  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326) \n"
+"    USING ST_SetSRID(geom,4326);"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:880
+#, no-c-format
+msgid ""
+"If you got the projection wrong (or brought it in as unknown) in load and "
+"you wanted to transform to web mercator all in one shot You can do this with "
+"DDL but there is no equivalent PostGIS management function to do so in one "
+"go."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:883
+#, no-c-format
+msgid ""
+"ALTER TABLE roads \n"
+" ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING "
+"ST_Transform(ST_SetSRID(geom,4326),3857) ;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:888
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
+msgstr ""
+", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
+"\"PostGIS_Version\"/>"
+
+#~ msgid ""
+#~ "Updates the SRID of all features in a geometry column, geometry_columns "
+#~ "metadata and srid table constraint"
+#~ msgstr ""
+#~ "Aggiorna lo SRID di tutti i record in una colonna geometry. Vengono "
+#~ "aggiornati anche geometry_columns e il vincolo SRID della colonna."

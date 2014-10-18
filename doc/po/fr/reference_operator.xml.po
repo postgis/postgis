@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
 "PO-Revision-Date: 2014-01-15 22:03+0000\n"
 "Last-Translator: Guy BARA <bara.guy@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
@@ -67,7 +67,7 @@ msgstr ""
 #: reference_operator.xml:546 reference_operator.xml:599
 #: reference_operator.xml:654 reference_operator.xml:712
 #: reference_operator.xml:765 reference_operator.xml:818
-#: reference_operator.xml:883 reference_operator.xml:949
+#: reference_operator.xml:883 reference_operator.xml:950
 #, no-c-format
 msgid "Description"
 msgstr "Description"
@@ -133,8 +133,8 @@ msgstr ""
 #: reference_operator.xml:502 reference_operator.xml:556
 #: reference_operator.xml:611 reference_operator.xml:665
 #: reference_operator.xml:722 reference_operator.xml:775
-#: reference_operator.xml:843 reference_operator.xml:899
-#: reference_operator.xml:963
+#: reference_operator.xml:843 reference_operator.xml:900
+#: reference_operator.xml:964
 #, no-c-format
 msgid "Examples"
 msgstr "Exemples"
@@ -166,7 +166,7 @@ msgstr ""
 #: reference_operator.xml:562 reference_operator.xml:617
 #: reference_operator.xml:671 reference_operator.xml:728
 #: reference_operator.xml:781 reference_operator.xml:848
-#: reference_operator.xml:915 reference_operator.xml:967
+#: reference_operator.xml:916 reference_operator.xml:968
 #, no-c-format
 msgid "See Also"
 msgstr "Voir Aussi"
@@ -1109,7 +1109,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:888 reference_operator.xml:953
+#: reference_operator.xml:888 reference_operator.xml:954
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -1128,13 +1128,22 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:893 reference_operator.xml:958
+#: reference_operator.xml:892
+#, no-c-format
+msgid ""
+"Refer to <ulink url=\"http://workshops.opengeo.org/postgis-intro/knn.html"
+"\">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live "
+"example."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:894 reference_operator.xml:959
 #, no-c-format
 msgid "Availability: 2.0.0 only available for PostgreSQL 9.1+"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:900
+#: reference_operator.xml:901
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
@@ -1158,13 +1167,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:901
+#: reference_operator.xml:902
 #, no-c-format
 msgid "Then the KNN raw answer:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:904
+#: reference_operator.xml:905
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
@@ -1188,7 +1197,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:905
+#: reference_operator.xml:906
 #, no-c-format
 msgid ""
 "Note the misordering in the actual distances and the different entries that "
@@ -1196,13 +1205,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:909
+#: reference_operator.xml:910
 #, no-c-format
 msgid "Finally the hybrid:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:912
+#: reference_operator.xml:913
 #, no-c-format
 msgid ""
 "<![CDATA[WITH index_query AS (\n"
@@ -1230,20 +1239,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:916
+#: reference_operator.xml:917
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_operator.xml:922
+#: reference_operator.xml:923
 #, no-c-format
 msgid "&lt;#&gt;"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_operator.xml:924
+#: reference_operator.xml:925
 #, no-c-format
 msgid ""
 "Returns the distance between bounding box of 2 geometries. For point / point "
@@ -1254,7 +1263,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_operator.xml:930
+#: reference_operator.xml:931
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
@@ -1263,7 +1272,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:951
+#: reference_operator.xml:952
 #, no-c-format
 msgid ""
 "The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between "
@@ -1273,7 +1282,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:956
+#: reference_operator.xml:957
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
@@ -1281,7 +1290,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:964
+#: reference_operator.xml:965
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT *\n"
@@ -1316,7 +1325,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:968
+#: reference_operator.xml:969
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_centroid"
