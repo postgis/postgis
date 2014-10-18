@@ -176,7 +176,7 @@ update-tx:
 	for f in $(XML_INPUTS_POT); do \
     f=`basename $${f} .pot`; \
     res=`echo "$${f}" | sed 's/\.//g'`pot; \
-    tx set --auto-local -r postgis-1.$${res} "po/<lang>/$${f}.po" \
+    tx set --auto-local -r postgis.$${res} "po/<lang>/$${f}.po" \
            --source-lang en --source-file "po/templates/$${f}.pot" \
            --execute; \
   done
