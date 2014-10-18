@@ -144,7 +144,7 @@ msgstr "Paul Ramsey (Coordinatore)"
 
 #. Tag: para
 #: introduction.xml:58
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Co-founder of PostGIS project. General bug fixing, geography support, "
 "geography and geometry index support (2D, 3D, nD index and anything spatial "
@@ -152,12 +152,12 @@ msgid ""
 "development), GEOS functionality integration and alignment with GEOS "
 "releases, loader/dumper, and Shapefile GUI loader."
 msgstr ""
-"Cofondatore del progetto PostGIS. Correzione dei bug, supporto alla "
+"Co-fondatore del progetto PostGIS. Correzione dei bug, supporto alla "
 "componente geografica, supporto per gli indici geografici e geometrici  (2D, "
 "3D, nD e qualsiasi altra cosa legata agli indici spaziali), strutture "
-"interne per la geometria, integrazione delle funzionalità GEOS e "
-"allineamento con le nuove versioni GEOS releases, loader/dumper, e "
-"interfaccia grafica per il loader Shapefile."
+"interne per la geometria, PointCloud (in sviluppo), integrazione delle "
+"funzionalità GEOS e allineamento con le nuove versioni di GEOS, "
+"loader/dumper, e interfaccia grafica per il loader Shapefile."
 
 #. Tag: term
 #: introduction.xml:64
