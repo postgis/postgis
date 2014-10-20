@@ -2,16 +2,18 @@
 #
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013
+# pibinko <pibinko@gmail.com>, 2013
+# Sandro Santilli <strk@keybit.net>, 2014
 # Stefano Costa <steko@iosa.it>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: 2013-11-27 09:02+0000\n"
-"Last-Translator: pibinko <pibinko@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
-"postgis-1/language/it_IT/)\n"
+"PO-Revision-Date: 2014-10-20 15:34+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis/"
+"language/it_IT/)\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -135,6 +137,9 @@ msgid ""
 "Raster development, integration with GDAL, raster loader, user support, "
 "general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)"
 msgstr ""
+"Sviluppo raster, integrazione con GDAL, loader raster, supporto agli utenti, "
+"generica soluzione di bachi, prove su vari sistemi operativi (Slackware, "
+"Mac, Windows e altri)"
 
 #. Tag: term
 #: introduction.xml:56
@@ -156,8 +161,8 @@ msgstr ""
 "componente geografica, supporto per gli indici geografici e geometrici  (2D, "
 "3D, nD e qualsiasi altra cosa legata agli indici spaziali), strutture "
 "interne per la geometria, PointCloud (in sviluppo), integrazione delle "
-"funzionalità GEOS e allineamento con le nuove versioni di GEOS, "
-"loader/dumper, e interfaccia grafica per il loader Shapefile."
+"funzionalità GEOS e allineamento con le nuove versioni di GEOS, loader/"
+"dumper, e interfaccia grafica per il loader Shapefile."
 
 #. Tag: term
 #: introduction.xml:64
@@ -179,9 +184,9 @@ msgstr ""
 
 #. Tag: title
 #: introduction.xml:74
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Core Contributors Present"
-msgstr "Collaboratori passati e presenti"
+msgstr "Principali collaboratori attuali"
 
 #. Tag: term
 #: introduction.xml:77
@@ -203,14 +208,15 @@ msgstr "Nicklas Avén"
 
 #. Tag: para
 #: introduction.xml:87
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Distance function enhancements (including 3D distance and relationship "
 "functions) and additions, Tiny WKB output format (TWKB) (in development) and "
 "general user support"
 msgstr ""
 "Miglioramenti e aggiunte alla funzione di distanza (comprese le funzioni di "
-"distanza 3D e di relazione), test su Windows e supporto generale agli utenti"
+"distanza e di relazione 3D), formato di output Tiny WKB (TWKB) (in sviluppo) "
+"e supporto generale agli utenti"
 
 #. Tag: term
 #: introduction.xml:92
@@ -239,6 +245,8 @@ msgid ""
 "CMake support for PostGIS, built original raster loader in python and low "
 "level raster api functions"
 msgstr ""
+"Supporto CMake per PostGIS, ha sviluppato il loader raster originale in "
+"python e le funzioni API raster di basso livello."
 
 #. Tag: term
 #: introduction.xml:106
@@ -263,13 +271,13 @@ msgstr "David Zwarg"
 #: introduction.xml:115
 #, no-c-format
 msgid "Raster development (mostly map algebra analytic functions)"
-msgstr ""
+msgstr "Sviluppo raster (principalmente funzioni analitiche di map algebra)"
 
 #. Tag: title
 #: introduction.xml:121
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Core Contributors Past"
-msgstr "Collaboratori passati e presenti"
+msgstr "Principali collaboratori passati"
 
 #. Tag: term
 #: introduction.xml:125
@@ -295,15 +303,16 @@ msgstr "Kevin Neufeld"
 
 #. Tag: para
 #: introduction.xml:133
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Prior PSC Member. Documentation and documentation support tools, buildbot "
 "maintenance, advanced user support on PostGIS newsgroup, and PostGIS "
 "maintenance function enhancements."
 msgstr ""
 "Ex-membro del comitato di coordinamento. Documentazione e strumenti di "
-"supporto alla documentazione. Supporto avanzato per gli utenti nel newsgroup "
-"PostGIS, miglioramenti alle funzioni di manutenzione PostGIS."
+"supporto alla documentazione, manutenzione dei buildbot, supporto avanzato "
+"per gli utenti nel newsgroup PostGIS, miglioramenti alle funzioni di "
+"manutenzione PostGIS."
 
 #. Tag: term
 #: introduction.xml:139
@@ -356,19 +365,19 @@ msgstr ""
 
 #. Tag: title
 #: introduction.xml:165
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Other Contributors"
-msgstr "Altri collaboratori: persone fisiche"
+msgstr "Altri collaboratori"
 
 #. Tag: term
 #: introduction.xml:168
 #, no-c-format
 msgid "Individual Contributors"
-msgstr ""
+msgstr "Collaboratori individuali"
 
 #. Tag: para
 #: introduction.xml:171
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas "
 "Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
@@ -388,18 +397,19 @@ msgstr ""
 "Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. "
 "Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
 "Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
-"Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, Jeff "
-"Adams, Jose Carlos Martinez Llari, Kashif Rasul, Klaus Foerster, Kris Jurka, "
-"Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de Reyna, Mark Sondheim, "
-"Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Nikita "
-"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Richard Greenwood, Silvio "
-"Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Picavet"
+"Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Kashif Rasul, Klaus "
+"Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de "
+"Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, "
+"Michael Fuhr, Nathan Wagner, Nathaniel Clay, Nikita Shulga, Norman Vine, "
+"Rafal Magda, Ralph Mason, Richard Greenwood, Silvio Grosso, Steffen Macke, "
+"Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
 
 #. Tag: term
 #: introduction.xml:232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Corporate Sponsors"
-msgstr "Altre collaborazioni: sponsor aziendali"
+msgstr "Sponsor aziendali"
 
 #. Tag: para
 #: introduction.xml:235
@@ -414,7 +424,7 @@ msgstr ""
 
 #. Tag: para
 #: introduction.xml:236
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In alphabetical order: Arrival 3D, Associazione Italiana per l'Informazione "
 "Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
@@ -428,16 +438,17 @@ msgid ""
 "Center for Vectorborne Diseases, University of Laval, U.S Department of "
 "State (HIU), Vizzuality, Zonar Systems"
 msgstr ""
-"In ordine alfabetico:  Arrival 3D, Associazione Italiana per l'Informazione "
+"In ordine alfabetico: Arrival 3D, Associazione Italiana per l'Informazione "
 "Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
 "City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, Deimos "
 "Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
 "Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
-"AG, Michigan Tech Research Institute, Norwegian Forest and Landscape "
-"Institute, OpenGeo, OSGeo, Oslandia, Paragon Corporation, R3 GIS, "
-"Refractions Research, Regione Toscana-SIGTA, Safe Software, Sirius "
-"Corporation plc, Stadt Uster, UC Davis Center for Vectorborne Diseases, "
-"University of Laval, U.S Department of State (HIU), Vizzuality, Zonar Systems"
+"AG, Michigan Tech Research Institute, Natural Resources Canada, Norwegian "
+"Forest and Landscape Institute, OpenGeo, OSGeo, Oslandia, Palantir "
+"Technologies, Paragon Corporation, R3 GIS, Refractions Research, Regione "
+"Toscana-SIGTA, Safe Software, Sirius Corporation plc, Stadt Uster, UC Davis "
+"Center for Vectorborne Diseases, University of Laval, U.S Department of "
+"State (HIU), Vizzuality, Zonar Systems"
 
 #. Tag: term
 #: introduction.xml:277
@@ -447,7 +458,7 @@ msgstr "Campagne di finanziamento diffuso"
 
 #. Tag: para
 #: introduction.xml:280
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
 "funded that can service a large number of people. Each campaign is "
@@ -462,12 +473,12 @@ msgstr ""
 "Le campagne di finanziamento diffuso sono campagne che promuoviamo per "
 "finanziare funzionalità molto richieste e che possono servire a un gran "
 "numero di persone. Ogni campagna è dedicata in modo particolare a una data "
-"funzionalità o gruppo di funzionalità. Ogni sponsor partecipat con una quota "
+"funzionalità o gruppo di funzionalità. Ogni sponsor partecipa con una quota "
 "ridotta rispetto al finanziamento richiesto, e con un numero sufficiente di "
 "persone e organizzazioni che contribuiscono, possiamo ottenere i fondi per "
 "retribuire un lavoro che servirà a molti. Se avete un'idea per una funzione "
 "che pensate possa essere cofinanziata anche da molti altri, vi preghiamo di "
-"condividere le vostre idee sul <ulink url=\"http://www.postgis.org/mailman/"
+"condividere le vostre idee sul <ulink url=\"http://postgis.net/mailman/"
 "listinfo/postgis-users\">newsgroup PostGIS</ulink>, e insieme possiamo "
 "vedere di realizzarla."
 
@@ -499,7 +510,7 @@ msgstr ""
 
 #. Tag: para
 #: introduction.xml:283
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
 "\"bold\">postgis64windows</emphasis></ulink> - 20 someodd sponsors each "
@@ -508,11 +519,10 @@ msgid ""
 "2.0.1 available on PostgreSQL stack builder."
 msgstr ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
-"\"bold\">postgis64windows</emphasis></ulink> - Una ventina di sponsor hanno "
+"\"bold\">postgis64windows</emphasis></ulink> - 20 e passa sponsor hanno "
 "contribuito con 100 USD ciascuno per retribuire il lavoro necessario per "
 "risolvere varie problematiche su PostGIS per Windows a 64 bit. E' successo. "
-"Ora abbiamo una versione beta per PostGIS 2.0.0 e una previsione per il "
-"rilascio di una versione finale che sarà disponibile con lo stack builder "
+"Ora abbiamo una versione per PostGIS 2.0.1 disponibile con lo stack builder "
 "PostgreSQL."
 
 #. Tag: term
@@ -587,15 +597,15 @@ msgstr "Altre informazioni"
 
 #. Tag: para
 #: introduction.xml:318
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The latest software, documentation and news items are available at the "
 "PostGIS web site, <ulink url=\"http://postgis.net\">http://postgis.net</"
 "ulink>."
 msgstr ""
 "Le versioni più recenti del software, della documentazione e le notizie sono "
-"disponibili sul sito web di PostGIS,  <ulink url=\"http://www.postgis.org"
-"\">http://www.postgis.org</ulink>."
+"disponibili sul sito web di PostGIS,  <ulink url=\"http://postgis.net"
+"\">http://postgis.net</ulink>."
 
 #. Tag: para
 #: introduction.xml:324
@@ -667,12 +677,3 @@ msgstr ""
 "standards/sfs\">Simple Features for Specification for SQL</ulink>&quot; è "
 "disponibile sul sito web dell'OpenGIS Consortium:  <ulink url=\"http://www."
 "opengeospatial.org/\">http://www.opengeospatial.org/</ulink>."
-
-#~ msgid "Raster development, raster loader"
-#~ msgstr "Sviluppo raster, loader raster"
-
-#~ msgid "Raster loader, low level raster api functions"
-#~ msgstr "Loader raster, funzioni API raster a basso livello"
-
-#~ msgid "Raster development"
-#~ msgstr "Sviluppo raster"
