@@ -266,7 +266,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dblatex and then re-run configure"; \
 	   false; \
 	else \
-		dblatex -T native -t pdf \
+		$(DBLATEX) -T native -t pdf \
 		   -I "${PWD}/html" \
 		   -P doc.collab.show=0 \
 		   -P figure.note="${PWD}/html/images/note" \
