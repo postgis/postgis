@@ -2,15 +2,17 @@
 #
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013
+# pibinko <pibinko@gmail.com>, 2013
+# Sandro Santilli <strk@keybit.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-10-14 22:30+0000\n"
-"PO-Revision-Date: 2013-11-26 23:23+0000\n"
-"Last-Translator: pibinko <pibinko@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
-"postgis-1/language/it_IT/)\n"
+"PO-Revision-Date: 2014-10-20 15:59+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/postgis/"
+"language/it_IT/)\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +29,7 @@ msgstr "Manuale di PostGIS &last_release_version;"
 #: postgis.xml:131
 #, no-c-format
 msgid "The PostGIS Development Group"
-msgstr ""
+msgstr "Il gruppo di sviluppo di PostGIS"
 
 #. Tag: affiliation
 #: postgis.xml:137
@@ -65,7 +67,7 @@ msgstr "Questo è il manuale per la versione &last_release_version;"
 
 #. Tag: para
 #: postgis.xml:161
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This work is licensed under a <ulink url=\"http://creativecommons.org/"
 "licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
@@ -77,5 +79,5 @@ msgstr ""
 "creativecommons.org/licenses/by-sa/3.0/\">Creative Commons Attribution-Share "
 "Alike 3.0 License</ulink>. Siete liberi di utilizzare questo materiale come "
 "volete, ma vi chiediamo di citare il progetto PostGIS come fonte e, ove "
-"possibile, di inserire un link a <ulink url=\"http://www.postgis.org"
-"\">http://www.postgis.org</ulink>."
+"possibile, di inserire un link a <ulink url=\"http://postgis.net\">http://"
+"postgis.net</ulink>."
