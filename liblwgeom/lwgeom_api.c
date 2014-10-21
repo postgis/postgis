@@ -762,4 +762,16 @@ interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F)
 }
 
 
+int _lwgeom_interrupt_requested = 0;
+void
+lwgeom_request_interrupt() {
+  _lwgeom_interrupt_requested = 1;
+}
 
+lwinterrupt_callback *_lwgeom_interrupt_callback = 0;
+lwinterrupt_callback *
+lwgeom_register_interrupt_callback(lwinterrupt_callback *cb) {
+  lwinterrupt_callback *old = _lwgeom_interrupt_callback;
+  _lwgeom_interrupt_callback = cb;
+  return old;
+}

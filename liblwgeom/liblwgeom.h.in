@@ -190,6 +190,33 @@ extern void lwgeom_set_handlers(lwallocator allocator,
         lwreporter noticereporter);
 
 /**
+ * Request interruption of any running code
+ *
+ * Safe for use from signal handlers
+ *
+ * Interrupted code will (as soon as it finds out
+ * to be interrupted) cleanup and return as soon as possible.
+ *
+ * The return value from interrupted code is undefined,
+ * it is the caller responsibility to not take it in consideration.
+ * 
+ */
+extern void lwgeom_request_interrupt(void);
+
+/**
+ * Install a callback to be called periodically during
+ * algorithm execution. Mostly only needed on WIN32 to
+ * dispatch queued signals.
+ *
+ * The callback is invoked before checking for interrupt
+ * being requested, so you can request interruption from
+ * the callback, if you want (see lwgeom_request_interrupt).
+ *
+ */
+typedef void (lwinterrupt_callback)();
+extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
+
+/**
  * Write a notice out to the notice handler.
  *
  * Uses standard printf() substitutions.
