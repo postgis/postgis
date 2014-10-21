@@ -767,6 +767,10 @@ void
 lwgeom_request_interrupt() {
   _lwgeom_interrupt_requested = 1;
 }
+void
+lwgeom_cancel_interrupt() {
+  _lwgeom_interrupt_requested = 0;
+}
 
 lwinterrupt_callback *_lwgeom_interrupt_callback = 0;
 lwinterrupt_callback *

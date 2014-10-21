@@ -204,6 +204,11 @@ extern void lwgeom_set_handlers(lwallocator allocator,
 extern void lwgeom_request_interrupt(void);
 
 /**
+ * Cancel any interruption request
+ */
+extern void lwgeom_cancel_interrupt(void);
+
+/**
  * Install a callback to be called periodically during
  * algorithm execution. Mostly only needed on WIN32 to
  * dispatch queued signals.
