@@ -107,6 +107,7 @@ void
 _PG_fini(void)
 {
   elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
+  pqsignal(SIGINT, coreIntHandler);
 }
 
 
