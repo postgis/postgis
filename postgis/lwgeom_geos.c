@@ -357,8 +357,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				/* Uh oh! Exception thrown at construction... */
 				if ( ! g )  
 				{
-					lwerror("One of the geometries in the set "
-					        "could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+					HANDLE_GEOS_ERROR("One of the geometries in the set "
+					                  "could not be converted to GEOS");
 					PG_RETURN_NULL();
 				}
 
@@ -404,8 +404,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g);
 		if ( ! g_union )
 		{
-			lwerror("GEOSUnaryUnion: %s",
-			        lwgeom_geos_errmsg);
+			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
 			PG_RETURN_NULL();
 		}
 
@@ -577,8 +576,8 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					if ( 0 == g )   /* exception thrown at construction */
 					{
 						/* TODO: release GEOS allocated memory ! */
-						lwerror("One of the geometries in the set "
-						        "could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+						HANDLE_GEOS_ERROR("One of the geometries in the set "
+					                    "could not be converted to GEOS");
 						PG_RETURN_NULL();
 					}
 					geoms[curgeom] = g;
@@ -638,8 +637,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			GEOSGeom_destroy(g1);
 			if ( ! g2 )
 			{
-				lwerror("GEOSUnionCascaded: %s",
-				        lwgeom_geos_errmsg);
+				HANDLE_GEOS_ERROR("GEOSUnionCascaded");
 				PG_RETURN_NULL();
 			}
 
@@ -696,8 +694,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					if ( 0 == g1 )   /* exception thrown at construction */
 					{
 						/* TODO: release GEOS allocated memory ! */
-						lwerror("First argument geometry could not be converted to GEOS: %s",
-						        lwgeom_geos_errmsg);
+			      HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 						PG_RETURN_NULL();
 					}
 
@@ -1553,6 +1550,8 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
+		/* Why is this a WARNING rather than an error ? */
+		/* TODO: use HANDLE_GEOS_ERROR instead */
 		elog(WARNING, "GEOSPointOnSurface(): %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
@@ -1869,7 +1868,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if (reason_str == NULL)
 		{
-			elog(ERROR,"GEOSisValidReason() threw an error: %s", lwgeom_geos_errmsg);
+			HANDLE_GEOS_ERROR("GEOSisValidReason");
 			PG_RETURN_NULL(); /* never get here */
 		}
 		result = cstring2text(reason_str);
