@@ -216,6 +216,11 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 	for (i=0; i<poly->nrings; i++)
 	{
 		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
+		if ( ! newrings[i] ) {
+			while (i--) ptarray_free(newrings[i]);
+			lwfree(newrings);
+			return NULL;
+		}
 	}
 	return lwpoly_construct(poly->srid, NULL,
 	                        poly->nrings, newrings);

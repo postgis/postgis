@@ -108,6 +108,7 @@ TESTS = \
 	in_gml \
 	in_kml \
 	in_encodedpolyline \
+	interrupt \
 	iscollection \
 	regress_ogc \
 	regress_ogc_cover \

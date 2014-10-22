@@ -75,6 +75,11 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
                 pg_unparser_errhint(&lwg_unparser_result); \
         } while(0);
 
+/* TODO: only cancel the interrupt if inside an outer call ? */
+#define LWGEOM_INIT() { \
+  lwgeom_cancel_interrupt(); \
+}
+
 
 /*
 ** GSERIALIED prototypes used outside the index functions

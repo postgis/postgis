@@ -67,6 +67,8 @@ PostGIS 2.2.0
 
  * Bug Fixes *
 
+  - #2893, Allow interruptibility of ST_Segmentize(geometry)
+           (Sandro Santilli / CartoDB)
   - #2540, Change GUC name for GDAL_DATA to postgis.gdal_datapath
   - #2777, Raster max extent constraint based upon envelope to behave
            like geometry extent

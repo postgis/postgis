@@ -229,7 +229,14 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 
 	newgeoms = lwalloc(sizeof(LWGEOM *)*col->ngeoms);
 	for (i=0; i<col->ngeoms; i++)
+	{
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
+		if ( ! newgeoms[i] ) {
+			while (i--) lwgeom_free(newgeoms[i]);
+			lwfree(newgeoms);
+			return NULL;
+		}
+	}
 
 	return lwcollection_construct(col->type, col->srid, NULL, col->ngeoms, newgeoms);
 }
