@@ -355,18 +355,18 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refsection>
 				
 			<refsection><title>Rule Types and Rank</title>
-				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank which is a number from (1-17).</para>
+				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
 				<variablelist>
 						<varlistentry>
 								<term>MACRO_C</term>
 								<listitem>
-									<para>(token number = "0"). The class of rules for parsing MACRO clauses.</para>
+									<para>(token number = "0"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
 								</listitem>
 						</varlistentry>
 						<varlistentry>
 								<term>MICRO_C</term>
 								<listitem>
-									<para>(token number = "1"). The class of rules for parsing full MICRO clauses (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
+									<para>(token number = "1"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
 								</listitem>
 						</varlistentry>
 						<varlistentry>
