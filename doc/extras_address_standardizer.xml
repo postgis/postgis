@@ -172,7 +172,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			
 			<refsection id="rule_input_tokens"><title>Input Tokens</title>
 				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</ulink> are as follows:</para>
-				<emphasis role="bold">Form-Based Input Tokens</emphasis>
+				<para><emphasis role="bold">Form-Based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
 								<term>AMPERS</term>
@@ -238,7 +238,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 				</variablelist>
 				
-				<emphasis role="bold">Function-based Input Tokens</emphasis>
+				<para><emphasis role="bold">Function-based Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
 								<term>BOXH</term>
@@ -304,7 +304,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 				</variablelist>
 				
-				<emphasis role="bold">Postal Type Input Tokens</emphasis>
+				<para><emphasis role="bold">Postal Type Input Tokens</emphasis></para>
 				<variablelist>
 						<varlistentry>
 								<term>QUINT</term>
@@ -335,7 +335,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 				</variablelist>
 				
-				<emphasis role="bold">Stopwords</emphasis>
+				<para><emphasis role="bold">Stopwords</emphasis></para>
 					<para>STOPWORDS combine with WORDS. In rules a string of multiple WORDs and STOPWORDs will be represented by a single WORD token.</para>
 					<variablelist>
 						<varlistentry>
