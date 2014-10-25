@@ -170,7 +170,7 @@ into includes in the future for easier maintenance.</para></listitem>
 				</variablelist>
 			</refsection>
 			
-			<refsection><title>Input Tokens</title>
+			<refsection id="rule_input_tokens"><title>Input Tokens</title>
 				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</ulink> are as follows:</para>
 				<emphasis role="bold">Form-Based Input Tokens</emphasis>
 				<variablelist>
@@ -236,8 +236,118 @@ into includes in the future for easier maintenance.</para></listitem>
 								<para>(1). A word is a string of letters of arbitrary length. A single letter can be both a SINGLE and a WORD.</para>
 							</listitem>
 						</varlistentry>
-						
 				</variablelist>
+				
+				<emphasis role="bold">Function-based Input Tokens</emphasis>
+				<variablelist>
+						<varlistentry>
+								<term>BOXH</term>
+								<listitem>
+									<para>(14). Words used to denote post office boxes. For example <emphasis>Box</emphasis> or <emphasis>PO Box</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>BUILDH</term>
+								<listitem>
+									<para>(19). Words used to denote buildings or building complexes, usually as a prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>BUILDT</term>
+								<listitem>
+									<para>(24). Words and abbreviations used to denote buildings or building complexes, usually as a suffix. For example: <emphasis>Shopping Centre</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>DIRECT</term>
+								<listitem>
+									<para>(22). Words used to denote directions, for example <emphasis>North</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>MILE</term>
+								<listitem>
+									<para>(20). Words used to denote milepost addresses.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>ROAD</term>
+								<listitem>
+									<para>(6). Words and abbreviations used to denote highways and roads. For example: the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis></para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>RR</term>
+								<listitem>
+									<para>(8). Words and abbreviations used to denote rural routes. <emphasis>RR</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>TYPE</term>
+								<listitem>
+									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>UNITH</term>
+								<listitem>
+									<para>(16). Words and abbreviation used to denote internal subaddresses. For example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+				</variablelist>
+				
+				<emphasis role="bold">Postal Type Input Tokens</emphasis>
+				<variablelist>
+						<varlistentry>
+								<term>QUINT</term>
+								<listitem>
+									<para>(28). A 5 digit number. Identifies a Zip Code</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>QUAD</term>
+								<listitem>
+									<para>(29). A 4 digit number. Identifies ZIP4.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>PCH</term>
+								<listitem>
+									<para>(27). A 3 character sequence of letter number letter. Identifies an FSA, the first 3 characters of a Canadian postal code.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>PCT</term>
+								<listitem>
+									<para>(26). A 3 character sequence of number letter number. Identifies an LDU, the last 3 characters of a Canadian postal code.</para>
+								</listitem>
+						</varlistentry>
+				</variablelist>
+				
+				<emphasis role="bold">Stopwords</emphasis>
+					<para>STOPWORDS combine with WORDS. In rules a string of multiple WORDs and STOPWORDs will be represented by a single WORD token.</para>
+					<variablelist>
+						<varlistentry>
+								<term>STOPWORD</term>
+								<listitem>
+									<para>(7). A word with low lexical significance, that can be omitted in parsing. For example: <emphasis>THE</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+					</variablelist>
+
+    
+
 			</refsection>
 					
 			<refsection><title>Output Tokens</title>
@@ -284,11 +394,11 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refentry id="lextab">
 			<refnamediv>
 			<refname>lex table</refname>
-				<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
+				<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdworkd: <code>1</code>.</para>
+				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with  <xref linkend="rule_input_tokens" /> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdword: <code>1</code>.</para>
 				
 				<para>A lex has at least the following columns in the table. You may add</para>
 					<variablelist>
@@ -326,11 +436,11 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refentry id="gaztab">
 			<refnamediv>
 			<refname>gaz table</refname>
-				<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
+				<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+				<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
 				
 				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
 					<variablelist>
@@ -342,7 +452,7 @@ into includes in the future for easier maintenance.</para></listitem>
 						</varlistentry>
 						<varlistentry><term>seq</term> 
 							<listitem>
-								<para>integer: definition number?</para>
+								<para>integer: definition number? - identifer used for that instance of the word</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry><term>word</term> 
