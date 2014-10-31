@@ -1080,6 +1080,122 @@ asgml3_poly(const LWPOLY *poly, const char *srs, int precision, int opts, int is
 	return output;
 }
 
+static size_t 
+asgml3_compound_size(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
+{
+	int i;
+	size_t size;
+	LWGEOM *subgeom;
+	size_t prefixlen = strlen(prefix);
+
+	size = ( sizeof( "<Curve></Curve>" ) + 2 * prefixlen );
+
+	if (srs) size += strlen(srs) + sizeof(" srsName=..");
+	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
+
+	size += ( sizeof("<segments></segments>") + 2 * prefixlen );
+
+	for(i= 0; i < col->ngeoms; ++i )
+	{
+		subgeom = col->geoms[i];
+		if ( subgeom->type == LINETYPE )
+		{
+
+			size += sizeof( "<LineStringSegment></LineStringSegment" ) + 2 * prefixlen;
+			size += sizeof( "<posList></posList" ) + 2 * prefixlen;
+			size += pointArray_GMLsize( ((LWLINE*)subgeom)->points, precision );
+		}
+		else if( subgeom->type == CIRCSTRINGTYPE )
+		{
+			size += sizeof( "<ArcString><posList></ArcString></posList>") + 4 * prefixlen;
+			size += pointArray_GMLsize( ((LWCIRCSTRING*)subgeom)->points, precision );
+		}
+		else
+		{
+			continue;
+		}
+		if (IS_DIMS(opts))
+		{
+			size += sizeof(" srsDimension='x'");
+		}
+	}
+	return size;
+}
+
+static size_t 
+asgml3_compound_buf(const LWCOMPOUND *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
+{
+	LWGEOM *subgeom;
+	int i;
+	char* ptr = output;
+	int dimension=2;
+
+	if (FLAGS_GET_Z(col->flags))
+	{
+		dimension = 3;
+	}
+
+	ptr += sprintf( ptr, "<%sCurve", prefix );
+	if (srs)
+	{
+		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	}
+	if (id)
+	{
+		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
+	}
+	ptr += sprintf( ptr, ">" );
+	ptr += sprintf( ptr, "<%ssegments>", prefix );
+
+	for( i = 0; i < col->ngeoms; ++i )
+	{
+		subgeom = col->geoms[i];
+		if( subgeom->type != LINETYPE && subgeom->type != CIRCSTRINGTYPE )
+		{
+			continue;
+		}
+
+		if ( subgeom->type == LINETYPE )
+		{
+			ptr += sprintf( ptr, "<%sLineStringSegment><%sposList", prefix, prefix );
+			if (IS_DIMS(opts))
+			{
+				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
+			}
+			ptr += sprintf(ptr, ">");
+			ptr += pointArray_toGML3(((LWCIRCSTRING*)subgeom)->points, ptr, precision, opts);
+			ptr += sprintf( ptr, "</%sposList></%sLineStringSegment>", prefix, prefix );
+		}
+		else if( subgeom->type == CIRCSTRINGTYPE )
+		{
+			ptr += sprintf( ptr, "<%sArcString><%sposList" , prefix, prefix );
+			if (IS_DIMS(opts))
+			{
+				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
+			}
+			ptr += sprintf(ptr, ">");
+			ptr += pointArray_toGML3(((LWLINE*)subgeom)->points, ptr, precision, opts);
+			ptr += sprintf( ptr, "</%sposList></%sArcString>", prefix, prefix );
+		}
+	}
+
+	ptr += sprintf( ptr, "</%ssegments>", prefix );
+	ptr += sprintf( ptr, "</%sCurve>", prefix );
+	return ( ptr - output );
+}
+
+static char *
+asgml3_compound(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
+{
+	char* gml;
+	size_t size;
+
+	size = asgml3_compound_size( col, srs, precision, opts, prefix, id );
+	gml = lwalloc( size );
+	asgml3_compound_buf( col, srs, gml, precision, opts, prefix, id );
+	return gml;
+}
+
 static size_t asgml3_curvepoly_size(const LWCURVEPOLY* poly, const char *srs, int precision, int opts, const char *prefix, const char *id)
 {
 	size_t prefixlen = strlen(prefix);
@@ -1115,6 +1231,11 @@ static size_t asgml3_curvepoly_size(const LWCURVEPOLY* poly, const char *srs, in
 		{
 			size += sizeof("<CurveMember></CurveMember>") + 2 * prefixlen;
 			size += asgml3_circstring_size((LWCIRCSTRING*)subgeom, srs, precision, opts, prefix, id);
+		}
+		else if( subgeom->type == COMPOUNDTYPE )
+		{
+			size += sizeof("<curveMember></curveMember>") + 2 * prefixlen;
+			size += asgml3_compound_size( (LWCOMPOUND*)subgeom, srs, precision, opts, prefix, id );
 		}
 	}
 	return size;
@@ -1172,6 +1293,12 @@ static size_t asgml3_curvepoly_buf(const LWCURVEPOLY* poly, const char *srs, cha
 		{
 			ptr += sprintf( ptr, "<%scurveMember>", prefix );
 			ptr += asgml3_circstring_buf( (LWCIRCSTRING*)subgeom, srs, ptr, precision, opts, prefix, id );
+			ptr += sprintf( ptr, "</%scurveMember>", prefix );
+		}
+		else if( subgeom->type == COMPOUNDTYPE )
+		{
+			ptr += sprintf( ptr, "<%scurveMember>", prefix );
+			ptr += asgml3_compound_buf( (LWCOMPOUND*)subgeom, srs, ptr, precision, opts, prefix, id );
 			ptr += sprintf( ptr, "</%scurveMember>", prefix );
 		}
 
@@ -1610,119 +1737,6 @@ asgml3_collection(const LWCOLLECTION *col, const char *srs, int precision, int o
 	size = asgml3_collection_size(col, srs, precision, opts, prefix, id);
 	gml = lwalloc(size);
 	asgml3_collection_buf(col, srs, gml, precision, opts, prefix, id);
-	return gml;
-}
-
-static size_t asgml3_compound_size(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
-{
-	int i;
-	size_t size;
-	LWGEOM *subgeom;
-	size_t prefixlen = strlen(prefix);
-
-	size = ( sizeof( "<Curve></Curve>" ) + 2 * prefixlen );
-
-	if (srs) size += strlen(srs) + sizeof(" srsName=..");
-	if (id)  size += strlen(id) + strlen(prefix) + sizeof(" id=..");
-
-	size += ( sizeof("<segments></segments>") + 2 * prefixlen );
-
-	for(i= 0; i < col->ngeoms; ++i )
-	{
-		subgeom = col->geoms[i];
-		if ( subgeom->type == LINETYPE )
-		{
-
-			size += sizeof( "<LineStringSegment></LineStringSegment" ) + 2 * prefixlen;
-			size += sizeof( "<posList></posList" ) + 2 * prefixlen;
-			size += pointArray_GMLsize( ((LWLINE*)subgeom)->points, precision );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			size += sizeof( "<ArcString><posList></ArcString></posList>") + 4 * prefixlen;
-			size += pointArray_GMLsize( ((LWCIRCSTRING*)subgeom)->points, precision );
-		}
-		else
-		{
-			continue;
-		}
-		if (IS_DIMS(opts))
-		{
-			size += sizeof(" srsDimension='x'");
-		}
-	}
-	return size;
-}
-
-static size_t asgml3_compound_buf(const LWCOMPOUND *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
-{
-	LWGEOM *subgeom;
-	int i;
-	char* ptr = output;
-	int dimension=2;
-
-	if (FLAGS_GET_Z(col->flags))
-	{
-		dimension = 3;
-	}
-
-	ptr += sprintf( ptr, "<%sCurve", prefix );
-	if (srs)
-	{
-		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
-	}
-	if (id)
-	{
-		ptr += sprintf(ptr, " %sid=\"%s\"", prefix, id );
-	}
-	ptr += sprintf( ptr, ">" );
-	ptr += sprintf( ptr, "<%ssegments>", prefix );
-
-	for( i = 0; i < col->ngeoms; ++i )
-	{
-		subgeom = col->geoms[i];
-		if( subgeom->type != LINETYPE && subgeom->type != CIRCSTRINGTYPE )
-		{
-			continue;
-		}
-
-		if ( subgeom->type == LINETYPE )
-		{
-			ptr += sprintf( ptr, "<%sLineStringSegment><%sposList", prefix, prefix );
-			if (IS_DIMS(opts))
-			{
-				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-			}
-			ptr += sprintf(ptr, ">");
-			ptr += pointArray_toGML3(((LWCIRCSTRING*)subgeom)->points, ptr, precision, opts);
-			ptr += sprintf( ptr, "</%sposList></%sLineStringSegment>", prefix, prefix );
-		}
-		else if( subgeom->type == CIRCSTRINGTYPE )
-		{
-			ptr += sprintf( ptr, "<%sArcString><%sposList" , prefix, prefix );
-			if (IS_DIMS(opts))
-			{
-				ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
-			}
-			ptr += sprintf(ptr, ">");
-			ptr += pointArray_toGML3(((LWLINE*)subgeom)->points, ptr, precision, opts);
-			ptr += sprintf( ptr, "</%sposList></%sArcString>", prefix, prefix );
-		}
-	}
-
-	ptr += sprintf( ptr, "</%ssegments>", prefix );
-	ptr += sprintf( ptr, "</%sCurve>", prefix );
-	return ( ptr - output );
-}
-
-static char *asgml3_compound(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
-{
-	char* gml;
-	size_t size;
-
-	size = asgml3_compound_size( col, srs, precision, opts, prefix, id );
-	gml = lwalloc( size );
-	asgml3_compound_buf( col, srs, gml, precision, opts, prefix, id );
 	return gml;
 }
 
