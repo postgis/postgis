@@ -1229,11 +1229,13 @@ static size_t asgml3_curvepoly_size(const LWCURVEPOLY* poly, const char *srs, in
 		}
 		else if( subgeom->type == CIRCSTRINGTYPE )
 		{
+			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
 			size += sizeof("<CurveMember></CurveMember>") + 2 * prefixlen;
 			size += asgml3_circstring_size((LWCIRCSTRING*)subgeom, srs, precision, opts, prefix, id);
 		}
 		else if( subgeom->type == COMPOUNDTYPE )
 		{
+			size += sizeof("<Ring></Ring>") + 2 * prefixlen;
 			size += sizeof("<curveMember></curveMember>") + 2 * prefixlen;
 			size += asgml3_compound_size( (LWCOMPOUND*)subgeom, srs, precision, opts, prefix, id );
 		}
@@ -1291,15 +1293,19 @@ static size_t asgml3_curvepoly_buf(const LWCURVEPOLY* poly, const char *srs, cha
 		}
 		else if( subgeom->type == CIRCSTRINGTYPE )
 		{
+			ptr += sprintf( ptr, "<%sRing>", prefix );
 			ptr += sprintf( ptr, "<%scurveMember>", prefix );
 			ptr += asgml3_circstring_buf( (LWCIRCSTRING*)subgeom, srs, ptr, precision, opts, prefix, id );
 			ptr += sprintf( ptr, "</%scurveMember>", prefix );
+			ptr += sprintf( ptr, "</%sRing>", prefix );
 		}
 		else if( subgeom->type == COMPOUNDTYPE )
 		{
+			ptr += sprintf( ptr, "<%sRing>", prefix );
 			ptr += sprintf( ptr, "<%scurveMember>", prefix );
 			ptr += asgml3_compound_buf( (LWCOMPOUND*)subgeom, srs, ptr, precision, opts, prefix, id );
 			ptr += sprintf( ptr, "</%scurveMember>", prefix );
+			ptr += sprintf( ptr, "</%sRing>", prefix );
 		}
 
 		if( i == 0 )
