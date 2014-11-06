@@ -1,4 +1,6 @@
 ERROR:  canceling statement due to statement timeout
+buffer_interrupted_on_time|t
 NOTICE:  liblwgeom code interrupted
 ERROR:  canceling statement due to statement timeout
+segmentize_interrupted_on_time|t
 1|LINESTRING(0 0,2 0,4 0)
