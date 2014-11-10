@@ -17,6 +17,7 @@ TMPDIR?=/tmp
 
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
+GEOS_NUMERIC_VERSION=@GEOS_NUMERIC_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -159,7 +160,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
 	# ST_DelaunayTriangles
 	TESTS += \
-		delaunaytriangles
+		delaunaytriangles \
+		interrupt_buffer
+endif
+
+ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 30403),1)
+	TESTS += \
+		interrupt_relate
 endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)

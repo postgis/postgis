@@ -1,5 +1,3 @@
-ERROR:  canceling statement due to statement timeout
-buffer interrupted on time
 NOTICE:  liblwgeom code interrupted
 ERROR:  canceling statement due to statement timeout
 segmentize interrupted on time

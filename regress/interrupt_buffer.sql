@@ -1,5 +1,3 @@
--- liblwgeom interruption
-
 CREATE TEMPORARY TABLE _time AS SELECT now() t;
 
 CREATE FUNCTION _timecheck(label text, tolerated interval) RETURNS text
@@ -29,15 +27,18 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
 
 
 -----------------
--- ST_Segmentize
+-- ST_Buffer
 -----------------
 
 SET statement_timeout TO 100;
-SELECT ST_Segmentize(ST_MakeLine(ST_Point(4,39), ST_Point(1,41)), 1e-100);
-SELECT _timecheck('segmentize', '150ms');
-SET statement_timeout TO 0;
+select ST_Buffer(g,100) from _inputs WHERE id = 1;
+--( select (st_dumppoints(st_buffer(st_makepoint(0,0),10000,100000))).geom g) foo;
+-- it may take some more to interrupt st_buffer, see
+-- https://travis-ci.org/postgis/postgis/builds/40211116#L2222-L2223
+SELECT _timecheck('buffer', '200ms');
+
 -- Not affected by old timeout
-SELECT '1',ST_AsText(ST_Segmentize('LINESTRING(0 0,4 0)'::geometry, 2));
+SELECT '1', ST_NPoints(ST_Buffer('POINT(4 0)'::geometry, 2, 1));
 
 
 DROP FUNCTION _timecheck(text, interval);
