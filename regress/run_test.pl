@@ -609,6 +609,7 @@ sub run_simple_test
 	# Strip the lines we don't care about
 	@lines = grep(!/^\$/, @lines);
 	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY)/, @lines);
+	@lines = grep(!/^(DO)$/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
 	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
