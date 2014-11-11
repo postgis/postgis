@@ -25,6 +25,7 @@ SELECT 1::int as id, ST_Collect(g) g FROM (
  ) foo
 ;
 
+UPDATE _time SET t = now(); -- reset time as creating tables spends some
 
 -----------------
 -- ST_Buffer
