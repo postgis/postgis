@@ -132,11 +132,30 @@
 		<refentry id="topoelement">
 		  <refnamediv>
 			<refname>TopoElement</refname>
-			<refpurpose>An array of 2 integers generally used to identify a TopoGeometry component. </refpurpose>
+			<refpurpose>An array of 2 integers generally used to identify a TopoGeometry component.</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>An array of 2 integers used to represent the id (first element) and type (second element) of a topology primitive or the id (first element) and layer (second element) of a TopoGeometry. Sets of such pairs are used to define TopoGeometry objects (either simple or hierarchical).</para>
+			<para>
+An array of 2 integers used to represent one component of a simple or
+hierarchical <xref linkend="topogeometry" />.
+			</para>
+			<para>
+In the case of a simple TopoGeometry the first element of the array
+represents the identifier of a topological primitive and the second
+element represents its type (1:node, 2:edge, 3:face). In the case of a
+hierarchical TopoGeometry the first element of the array represents the
+identifier of a child TopoGeometry and the second element represents
+its layer identifier.
+			</para>
+
+<note><para>
+For any given hierarchical TopoGeometry all child TopoGeometry
+elements will come from the same child layer, as specified in
+the topology.layer record for the layer of the TopoGeometry
+being defined.
+</para></note>
+
 		  </refsection>
             <refsection>
                 <title>Examples</title>
@@ -164,7 +183,8 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
                 <title>See Also</title>
                 <para>
                   <xref linkend="GetTopoGeomElements"/>,
-                  <xref linkend="topoelementarray" />
+                  <xref linkend="topoelementarray" />,
+                  <xref linkend="topogeometry" />
                 </para>
             </refsection>
 		</refentry>
