@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  * 
  * Copyright 2006 Corporacion Autonoma Regional de Santander 
  *                Eduin Carrillo <yecarrillo@cas.gov.co>

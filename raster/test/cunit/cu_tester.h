@@ -2,7 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

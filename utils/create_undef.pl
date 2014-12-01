@@ -2,7 +2,7 @@
 
 #
 # PostGIS - Spatial Types for PostgreSQL
-# http://postgis.refractions.net
+# http://postgis.net
 #
 # Copyright (C) 2011 OpenGeo.org
 # Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
@@ -59,7 +59,7 @@ my $time = POSIX::strftime("%c", localtime);
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "-- \n";
 print "-- PostGIS - Spatial Types for PostgreSQL \n";
-print "-- http://postgis.refractions.net \n";
+print "-- http://postgis.net \n";
 print "-- \n";
 print "-- This is free software; you can redistribute and/or modify it under \n";
 print "-- the terms of the GNU General Public Licence. See the COPYING file. \n";

@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://postgis.refractions.net
+ * http://postgis.net
  *
  * Wrapper around SFCGAL for 3D functions
  *

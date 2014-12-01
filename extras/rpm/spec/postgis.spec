@@ -12,7 +12,7 @@ Source0:	http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
 Source4:	filter-requires-perl-Pg.sh
 Patch1:		postgis-configure.patch
 Patch2:		postgis-javamakefile.patch
-URL:		http://postgis.refractions.net/
+URL:		http://postgis.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	postgresql-devel, proj-devel, geos-devel, byacc, proj-devel, flex, postgresql-jdbc
