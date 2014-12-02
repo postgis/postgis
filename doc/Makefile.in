@@ -44,7 +44,7 @@ PERL=@PERL@
 
 # To allow network access use:
 #
-# make html XSLTPROCFLAGS=
+# $(MAKE) html XSLTPROCFLAGS=
 #
 ifeq ($(XSLTPROCFLAGS),)
 	XSLTPROCFLAGS=--nonet

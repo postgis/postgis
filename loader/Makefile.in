@@ -84,7 +84,7 @@ shp2pgsql-gui.res: shp2pgsql-gui.rc shp2pgsql-gui.ico
 # liblwgeom.a dependency to allow "make install" in 
 # the loader/ subdirectory to work  
 $(LIBLWGEOM):
-	make -C ../liblwgeom
+	$(MAKE) -C ../liblwgeom
 
 shp2pgsql-core.o: shp2pgsql-core.c shp2pgsql-core.h shpcommon.h
 	$(CC) $(CFLAGS) -c $<
@@ -128,7 +128,7 @@ uninstall:
 
 check:
 ifdef gtk_build
-	make -C cunit check
+	$(MAKE) -C cunit check
 endif
 
 clean:

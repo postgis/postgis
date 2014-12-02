@@ -155,10 +155,10 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 	$(MAKE) -C .. postgis_svn_revision.h
 
 ../liblwgeom/.libs/liblwgeom.a:
-	make -C ../liblwgeom liblwgeom.la
+	$(MAKE) -C ../liblwgeom liblwgeom.la
 
 ../libpgcommon/libpgcommon.a:
-	make -C ../libpgcommon libpgcommon.a
+	$(MAKE) -C ../libpgcommon libpgcommon.a
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number

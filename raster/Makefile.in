@@ -1,7 +1,7 @@
 #############################################################################
 # $Id: Makefile 3940 2009-03-30 09:30:43Z mloskot $
 #
-# Master makefile used to build WKT Raster
+# Master Makefile used to build WKT Raster
 #
 # Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
 #
