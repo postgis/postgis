@@ -18,7 +18,7 @@
  *
  * See the comments in geodesic.h for documentation.
  *
- * Copyright (c) Charles Karney (2012-2013) <charles@karney.com> and licensed
+ * Copyright (c) Charles Karney (2012-2014) <charles@karney.com> and licensed
  * under the MIT/X11 License.  For more information, see
  * http://geographiclib.sourceforge.net/
  */
@@ -222,6 +222,7 @@ static void C1pf(real eps, real c[]);
 static real A2m1f(real eps);
 static void C2f(real eps, real c[]);
 static int transit(real lon1, real lon2);
+static int transitdirect(real lon1, real lon2);
 static void accini(real s[]);
 static void acccopy(const real s[], real t[]);
 static void accadd(real s[], real y);
@@ -271,18 +272,16 @@ void geod_lineinit(struct geod_geodesicline* l,
   l->caps = (caps ? caps : GEOD_DISTANCE_IN | GEOD_LONGITUDE) |
     GEOD_LATITUDE | GEOD_AZIMUTH; /* Always allow latitude and azimuth */
 
-  /* Guard against underflow in salp0 */
-  azi1 = AngRound(AngNormalize(azi1));
-  lon1 = AngNormalize(lon1);
   l->lat1 = lat1;
   l->lon1 = lon1;
-  l->azi1 = azi1;
+  /* Guard against underflow in salp0 */
+  l->azi1 = AngRound(AngNormalize(azi1));
   /* alp1 is in [0, pi] */
-  alp1 = azi1 * degree;
+  alp1 = l->azi1 * degree;
   /* Enforce sin(pi) == 0 and cos(pi/2) == 0.  Better to face the ensuing
    * problems directly than to skirt them. */
-  l->salp1 =      azi1  == -180 ? 0 : sin(alp1);
-  l->calp1 = fabs(azi1) ==   90 ? 0 : cos(alp1);
+  l->salp1 =      l->azi1  == -180 ? 0 : sin(alp1);
+  l->calp1 = fabs(l->azi1) ==   90 ? 0 : cos(alp1);
   phi = lat1 * degree;
   /* Ensure cbet1 = +epsilon at poles */
   sbet1 = l->f1 * sin(phi);
@@ -349,7 +348,7 @@ void geod_lineinit(struct geod_geodesicline* l,
 }
 
 real geod_genposition(const struct geod_geodesicline* l,
-                      boolx arcmode, real s12_a12,
+                      unsigned flags, real s12_a12,
                       real* plat2, real* plon2, real* pazi2,
                       real* ps12, real* pm12,
                       real* pM12, real* pM21,
@@ -371,11 +370,11 @@ real geod_genposition(const struct geod_geodesicline* l,
 
   outmask &= l->caps & OUT_ALL;
   if (!( TRUE /*Init()*/ &&
-         (arcmode || (l->caps & GEOD_DISTANCE_IN & OUT_ALL)) ))
+         (flags & GEOD_ARCMODE || (l->caps & GEOD_DISTANCE_IN & OUT_ALL)) ))
     /* Uninitialized or impossible distance calculation requested */
     return NaN;
 
-  if (arcmode) {
+  if (flags & GEOD_ARCMODE) {
     real s12a;
     /* Interpret s12_a12 as spherical arc length */
     sig12 = s12_a12 * degree;
@@ -435,7 +434,7 @@ real geod_genposition(const struct geod_geodesicline* l,
   csig2 = l->csig1 * csig12 - l->ssig1 * ssig12;
   dn2 = sqrt(1 + l->k2 * sq(ssig2));
   if (outmask & (GEOD_DISTANCE | GEOD_REDUCEDLENGTH | GEOD_GEODESICSCALE)) {
-    if (arcmode || fabs(l->f) > 0.01)
+    if (flags & GEOD_ARCMODE || fabs(l->f) > 0.01)
       B12 = SinCosSeries(TRUE, ssig2, csig2, l->C1a, nC1);
     AB1 = (1 + l->A1m1) * (B12 - l->B11);
   }
@@ -446,26 +445,29 @@ real geod_genposition(const struct geod_geodesicline* l,
   if (cbet2 == 0)
     /* I.e., salp0 = 0, csig2 = 0.  Break the degeneracy in this case */
     cbet2 = csig2 = tiny;
-  /* tan(omg2) = sin(alp0) * tan(sig2) */
-  somg2 = l->salp0 * ssig2; comg2 = csig2;  /* No need to normalize */
   /* tan(alp0) = cos(sig2)*tan(alp2) */
   salp2 = l->salp0; calp2 = l->calp0 * csig2; /* No need to normalize */
-  /* omg12 = omg2 - omg1 */
-  omg12 = atan2(somg2 * l->comg1 - comg2 * l->somg1,
-                comg2 * l->comg1 + somg2 * l->somg1);
 
   if (outmask & GEOD_DISTANCE)
-    s12 = arcmode ? l->b * ((1 + l->A1m1) * sig12 + AB1) : s12_a12;
+    s12 = flags & GEOD_ARCMODE ? l->b * ((1 + l->A1m1) * sig12 + AB1) : s12_a12;
 
   if (outmask & GEOD_LONGITUDE) {
+    /* tan(omg2) = sin(alp0) * tan(sig2) */
+    somg2 = l->salp0 * ssig2; comg2 = csig2;  /* No need to normalize */
+    /* omg12 = omg2 - omg1 */
+    omg12 = flags & GEOD_LONG_NOWRAP ? sig12
+      - (atan2(ssig2, csig2) - atan2(l->ssig1, l->csig1))
+      + (atan2(somg2, comg2) - atan2(l->somg1, l->comg1))
+      : atan2(somg2 * l->comg1 - comg2 * l->somg1,
+              comg2 * l->comg1 + somg2 * l->somg1);
     lam12 = omg12 + l->A3c *
       ( sig12 + (SinCosSeries(TRUE, ssig2, csig2, l->C3a, nC3-1)
                  - l->B31));
     lon12 = lam12 / degree;
     /* Use AngNormalize2 because longitude might have wrapped multiple
      * times. */
-    lon12 = AngNormalize2(lon12);
-    lon2 = AngNormalize(l->lon1 + lon12);
+    lon2 = flags & GEOD_LONG_NOWRAP ? l->lon1 + lon12 :
+      AngNormalize(AngNormalize(l->lon1) + AngNormalize2(lon12));
   }
 
   if (outmask & GEOD_LATITUDE)
@@ -542,7 +544,7 @@ real geod_genposition(const struct geod_geodesicline* l,
   if (outmask & GEOD_AREA)
     *pS12 = S12;
 
-  return arcmode ? s12_a12 : sig12 / degree;
+  return flags & GEOD_ARCMODE ? s12_a12 : sig12 / degree;
 }
 
 void geod_position(const struct geod_geodesicline* l, real s12,
@@ -552,7 +554,7 @@ void geod_position(const struct geod_geodesicline* l, real s12,
 
 real geod_gendirect(const struct geod_geodesic* g,
                     real lat1, real lon1, real azi1,
-                    boolx arcmode, real s12_a12,
+                    unsigned flags, real s12_a12,
                     real* plat2, real* plon2, real* pazi2,
                     real* ps12, real* pm12, real* pM12, real* pM21,
                     real* pS12) {
@@ -568,8 +570,9 @@ real geod_gendirect(const struct geod_geodesic* g,
 
   geod_lineinit(&l, g, lat1, lon1, azi1,
                 /* Automatically supply GEOD_DISTANCE_IN if necessary */
-                outmask | (arcmode ? GEOD_NONE : GEOD_DISTANCE_IN));
-  return geod_genposition(&l, arcmode, s12_a12,
+                outmask |
+                (flags & GEOD_ARCMODE ? GEOD_NONE : GEOD_DISTANCE_IN));
+  return geod_genposition(&l, flags, s12_a12,
                           plat2, plon2, pazi2, ps12, pm12, pM12, pM21, pS12);
 }
 
@@ -577,7 +580,7 @@ void geod_direct(const struct geod_geodesic* g,
                  real lat1, real lon1, real azi1,
                  real s12,
                  real* plat2, real* plon2, real* pazi2) {
-  geod_gendirect(g, lat1, lon1, azi1, FALSE, s12, plat2, plon2, pazi2,
+  geod_gendirect(g, lat1, lon1, azi1, GEOD_NOFLAGS, s12, plat2, plon2, pazi2,
                  0, 0, 0, 0, 0);
 }
 
@@ -1516,6 +1519,13 @@ int transit(real lon1, real lon2) {
     (lon2 < 0 && lon1 >= 0 && lon12 < 0 ? -1 : 0);
 }
 
+int transitdirect(real lon1, real lon2) {
+  lon1 = fmod(lon1, (real)(720));
+  lon2 = fmod(lon2, (real)(720));
+  return ( ((lon2 >= 0 && lon2 < 360) || lon2 < -360 ? 0 : 1) -
+           ((lon1 >= 0 && lon1 < 360) || lon1 < -360 ? 0 : 1) );
+}
+
 void accini(real s[]) {
   /* Initialize an accumulator; this is an array with two elements. */
   s[0] = s[1] = 0;
@@ -1583,13 +1593,13 @@ void geod_polygon_addedge(const struct geod_geodesic* g,
                           real azi, real s) {
   if (p->num) {                 /* Do nothing is num is zero */
     real lat, lon, S12;
-    geod_gendirect(g, p->lat, p->lon, azi, FALSE, s,
+    geod_gendirect(g, p->lat, p->lon, azi, GEOD_LONG_NOWRAP, s,
                    &lat, &lon, 0,
                    0, 0, 0, 0, p->polyline ? 0 : &S12);
     accadd(p->P, s);
     if (!p->polyline) {
       accadd(p->A, S12);
-      p->crossings += transit(p->lon, lon);
+      p->crossings += transitdirect(p->lon, lon);
     }
     p->lat = lat; p->lon = lon;
     ++p->num;
@@ -1720,11 +1730,11 @@ unsigned geod_polygon_testedge(const struct geod_geodesic* g,
   crossings = p->crossings;
   {
     real lat, lon, s12, S12;
-    geod_gendirect(g, p->lat, p->lon, azi, FALSE, s,
+    geod_gendirect(g, p->lat, p->lon, azi, GEOD_LONG_NOWRAP, s,
                    &lat, &lon, 0,
                    0, 0, 0, 0, &S12);
     tempsum += S12;
-    crossings += transit(p->lon, lon);
+    crossings += transitdirect(p->lon, lon);
     geod_geninverse(g, lat,  lon, p->lat0,  p->lon0,
                     &s12, 0, 0, 0, 0, 0, &S12);
     perimeter += s12;
