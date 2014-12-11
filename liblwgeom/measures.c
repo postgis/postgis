@@ -2219,16 +2219,16 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 {
 	if ( A->x == B->x )
 	{
-		if ( A->y < B->y ) *d=0.0;
-		else if ( A->y > B->y ) *d=M_PI;
+		if ( A->y < B->y ) *d = 0.0;
+		else if ( A->y > B->y ) *d = M_PI; /* 180 degrees */
 		else return 0;
 		return 1;
 	}
 
 	if ( A->y == B->y )
 	{
-		if ( A->x < B->x ) *d=M_PI/2;
-		else if ( A->x > B->x ) *d=M_PI+(M_PI/2);
+		if ( A->x < B->x ) *d = M_PI_2; /* 90 degrees */
+		else if ( A->x > B->x ) *d = M_PI + M_PI_2; /* 270 degrees */
 		else return 0;
 		return 1;
 	}
@@ -2242,7 +2242,7 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 		else /* ( A->y > B->y )  - equality case handled above */
 		{
 			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
-			   + (M_PI/2);
+			   + M_PI_2;
 		}
 	}
 
@@ -2256,7 +2256,7 @@ azimuth_pt_pt(const POINT2D *A, const POINT2D *B, double *d)
 		else /* ( A->y < B->y )  - equality case handled above */
 		{
 			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
-			   + (M_PI+(M_PI/2));
+			   + (M_PI + M_PI_2);
 		}
 	}
 

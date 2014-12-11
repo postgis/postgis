@@ -8,6 +8,12 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
+ * Note: Geodesic measurements have been independently verified using
+ * GeographicLib v 1.37 with MPFR C++ using utilities GeodSolve and
+ * Planimeter, with -E "exact" flag with the following env vars:
+ *     export GEOGRAPHICLIB_DIGITS=1000
+ *     export WGS84_ELIPSOID="6378137 298.257223563"
+ *     export WGS84_SPHERE="6371008.7714150598325213222 0"
  **********************************************************************/
 
 #include <stdio.h>
@@ -77,13 +83,17 @@ static void test_sphere_direction(void)
 	geographic_point_init(1, 0, &e);
 	dist = sphere_distance(&s, &e);
 	dir = sphere_direction(&s, &e, dist);
-	CU_ASSERT_DOUBLE_EQUAL(dir, M_PI / 2.0, 0.0001);
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0 0 0 1" */
+	CU_ASSERT_DOUBLE_EQUAL(dir, M_PI_2, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist, 0.0174532925199433, 1e-14);
 
 	geographic_point_init(0, 0, &s);
 	geographic_point_init(0, 1, &e);
 	dist = sphere_distance(&s, &e);
 	dir = sphere_direction(&s, &e, dist);
-	CU_ASSERT_DOUBLE_EQUAL(dir, 0.0, 0.0001);
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0 0 1 0" */
+	CU_ASSERT_DOUBLE_EQUAL(dir, 0.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist, 0.0174532925199433, 1e-14);
 	
 }
 
@@ -92,61 +102,79 @@ static void test_sphere_project(void)
 	GEOGRAPHIC_POINT s, e;
 	double dir1, dist1, dir2, dist2;
 
-	dir1 = M_PI/2;
+	dir1 = M_PI_2;
 	dist1 = 0.1;
 	
-	geographic_point_init(0, 0, &s);  
+	geographic_point_init(0, 0, &s);
 	sphere_project(&s, dist1, dir1, &e);
+
+	CU_ASSERT_DOUBLE_EQUAL(e.lon, 0.1, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(e.lat, 0.0, 1e-14);
 	
+	/* Direct and inverse solutions agree */
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist1);
 
-	CU_ASSERT_DOUBLE_EQUAL(dist1, dist2, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(dir1, dir2, 0.0001);	
+	CU_ASSERT_DOUBLE_EQUAL(dist1, dist2, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dir1, dir2, 1e-14);
 	
 	dist1 = sphere_distance(&e, &s);
 	dir1 = sphere_direction(&e, &s, dist1);
 	sphere_project(&e, dist1, dir1, &s);
-	
-	CU_ASSERT_DOUBLE_EQUAL(s.lon, 0.0, 0.0001);
-	CU_ASSERT_DOUBLE_EQUAL(s.lat, 0.0, 0.0001);	
+
+	CU_ASSERT_DOUBLE_EQUAL(s.lon, 0.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(s.lat, 0.0, 1e-14);
 
 	geographic_point_init(0, 0.2, &e);  
 	geographic_point_init(0, 0.4, &s);  
 	dist1 = sphere_distance(&s, &e);
 	dir1 = sphere_direction(&e, &s, dist1);
-	CU_ASSERT_DOUBLE_EQUAL(dir1, 0.0, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0.2 0 0.4 0" */
+	CU_ASSERT_DOUBLE_EQUAL(dir1, 0.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist1, 0.0034906585039887, 1e-14);
 
-	geographic_point_init(0, 1, &s);  
+	geographic_point_init(0, 1, &s); /* same start point for remainder of tests */
 	geographic_point_init(0, 2, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.0, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 0" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
 	
 	geographic_point_init(1, 1, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, 1.57064, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 1" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 89.991273575329292895136 * M_PI / 180.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
 	geographic_point_init(0, 0, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, 3.14159, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 0" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, M_PI, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
 
 	geographic_point_init(-1, 1, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, -1.57064, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 -1" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, -89.991273575329292895136 * M_PI / 180.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
 	geographic_point_init(1, 2, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.785017, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 1" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 44.978182941465044354783 * M_PI / 180.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0246782972905467, 1e-14);
 
 	geographic_point_init(-1, 0, &e);  
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
-	CU_ASSERT_DOUBLE_EQUAL(dir2, -2.35612, 0.0001);	
+	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 -1" */
+	CU_ASSERT_DOUBLE_EQUAL(dir2, -134.995636455344851488216 * M_PI / 180.0, 1e-14);
+	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0246820563917664, 1e-14);
 }
 
 #if 0
@@ -247,12 +275,12 @@ static void test_gbox_from_spherical_coordinates(void)
 		gbox_geocentric_slow = LW_FALSE;
 
 		if (
-		    ( fabs( gbox.xmin - gbox_slow.xmin ) > gtolerance ) ||
-		    ( fabs( gbox.xmax - gbox_slow.xmax ) > gtolerance ) ||
-		    ( fabs( gbox.ymin - gbox_slow.ymin ) > gtolerance ) ||
-		    ( fabs( gbox.ymax - gbox_slow.ymax ) > gtolerance ) ||
-		    ( fabs( gbox.zmin - gbox_slow.zmin ) > gtolerance ) ||
-		    ( fabs( gbox.zmax - gbox_slow.zmax ) > gtolerance ) )
+			( fabs( gbox.xmin - gbox_slow.xmin ) > gtolerance ) ||
+			( fabs( gbox.xmax - gbox_slow.xmax ) > gtolerance ) ||
+			( fabs( gbox.ymin - gbox_slow.ymin ) > gtolerance ) ||
+			( fabs( gbox.ymax - gbox_slow.ymax ) > gtolerance ) ||
+			( fabs( gbox.zmin - gbox_slow.zmin ) > gtolerance ) ||
+			( fabs( gbox.zmax - gbox_slow.zmax ) > gtolerance ) )
 		{
 			printf("\n-------\n");
 			printf("If you are seeing this, cut and paste it, it is a randomly generated test case!\n");
@@ -728,12 +756,12 @@ static void test_edge_distance_to_point(void)
 	CU_ASSERT_DOUBLE_EQUAL(closest.lon, 0.0, 0.00001);
 
 	/* Ticket #2351 */
-     edge_set(149.386990599235, -26.3567415843982, 149.386990599247, -26.3567415843965, &e);
+	edge_set(149.386990599235, -26.3567415843982, 149.386990599247, -26.3567415843965, &e);
 	point_set(149.386990599235, -26.3567415843982, &g);
 	d = edge_distance_to_point(&e, &g, &closest);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
-    // printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
-    // printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
+	// printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
+	// printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, closest.lat, 0.00001);
 	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		 
 }
@@ -1116,6 +1144,15 @@ static void test_lwpoly_covers_point2d(void)
 	result = lwpoly_covers_point2d(poly, &pt_to_test);
 	CU_ASSERT_EQUAL(result, LW_TRUE);
 	lwgeom_free(lwg);
+
+	/* Triangle over the antimeridian */
+	lwg = lwgeom_from_wkt("POLYGON((140 52, 152.0 -6.0, -120.0 -29.0, 140 52))", LW_PARSER_CHECK_NONE);
+	poly = (LWPOLY*)lwg;
+	pt_to_test.x = -172.0;
+	pt_to_test.y = -13.0;
+	result = lwpoly_covers_point2d(poly, &pt_to_test);
+	CU_ASSERT_EQUAL(result, LW_TRUE);
+	lwgeom_free(lwg);
 	
 }
 
@@ -1212,7 +1249,7 @@ static void test_lwgeom_distance_sphere(void)
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
-    /* Ticket #2351 */
+	/* Ticket #2351 */
 	lwg1 = lwgeom_from_wkt("LINESTRING(149.386990599235 -26.3567415843982,149.386990599247 -26.3567415843965)", LW_PARSER_CHECK_NONE);
 	lwg2 = lwgeom_from_wkt("POINT(149.386990599235 -26.3567415843982)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
@@ -1241,40 +1278,65 @@ static void test_spheroid_distance(void)
 {
 	GEOGRAPHIC_POINT g1, g2;
 	double d;
+#ifdef USE_PRE22GEODESIC
+	double epsilon; /* irregular */
+#else
+	const double epsilon = 1e-8; /* at least 10 nm precision */
+#endif
 	SPHEROID s;
 
 	/* Init to WGS84 */
 	spheroid_init(&s, 6378137.0, 6356752.314245179498);
 
-	/* One vertical degree */
+	/* One vertical degree
+	$ GeodSolve -E -i -p 16 --input-string "0 0 1 0" */
 	point_set(0.0, 0.0, &g1);
 	point_set(0.0, 1.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-	CU_ASSERT_DOUBLE_EQUAL(d, 110574.388615329, 0.001);
+#ifdef USE_PRE22GEODESIC
+	epsilon = 1e-6;
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 110574.3885577987957342, epsilon);
 
-	/* Ten horizontal degrees */
+	/* Ten horizontal degrees
+	$ GeodSolve -E -i -p 16 --input-string "0 -10 0 0" */
 	point_set(-10.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.90793274, 0.001);
+#ifdef USE_PRE22GEODESIC
+	epsilon = 1e-3;
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.9079327357264771, epsilon);
 
-	/* One horizonal degree */
+	/* One horizonal degree
+	$ GeodSolve -E -i -p 16 --input-string "0 -1 0 0" */
 	point_set(-1.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-	CU_ASSERT_DOUBLE_EQUAL(d, 111319.490779, 0.001);
+#ifdef USE_PRE22GEODESIC
+	epsilon = 1e-4;
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 111319.4907932735726477, epsilon);
 
-	/* Around world w/ slight bend */
+	/* Around world w/ slight bend
+	$ GeodSolve -E -i -p 16 --input-string "0 -180 1 0" */
 	point_set(-180.0, 0.0, &g1);
 	point_set(0.0, 1.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-	CU_ASSERT_DOUBLE_EQUAL(d, 19893357.0704483, 0.001);
+#ifdef USE_PRE22GEODESIC
+	epsilon = 1e-5;
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 19893357.0700676468277450, epsilon);
 
-	/* Up to pole */
+	/* Up to pole
+	$ GeodSolve -E -i -p 16 --input-string "0 -180 90 0" */
 	point_set(-180.0, 0.0, &g1);
 	point_set(0.0, 90.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-	CU_ASSERT_DOUBLE_EQUAL(d, 10001965.7295318, 0.001);
+#ifdef USE_PRE22GEODESIC
+	epsilon = 1e-6;
+#endif
+	CU_ASSERT_DOUBLE_EQUAL(d, 10001965.7293127228117396, epsilon);
 
 }
 
@@ -1293,71 +1355,60 @@ static void test_spheroid_area(void)
 	/* Medford lot test polygon */
 	lwg = lwgeom_from_wkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	/* sphere: Planimeter -E -p 20 -e $WGS84_SPHERE -r --input-string \
+	"42.5007249610493 -122.848227067007;42.5007179884263 -122.848309475585;"\
+	"42.500835880696 -122.848327688675;42.5008428533324 -122.848245279942" */
 	a1 = lwgeom_area_sphere(lwg, &s);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 89.721147136698008, 0.1);
+	/* spheroid: Planimeter -E -p 20 -r --input-string \
+	"42.5007249610493 -122.848227067007;42.5007179884263 -122.848309475585;"\
+	"42.500835880696 -122.848327688675;42.5008428533324 -122.848245279942" */
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7127703297, 0.1); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.1); /* spheroid */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 89.868413479309585, 0.1);
 	lwgeom_free(lwg);
 
 	/* Big-ass polygon */
 	lwg = lwgeom_from_wkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	/* sphere: Planimeter -E -p 20 -e $WGS84_SPHERE -r --input-string "3 -2;4 -2;4 -1;3 -1" */
 	a1 = lwgeom_area_sphere(lwg, &s);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.106982993974659, 0.1);
+	/* spheroid: Planimeter -E -p 20 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
-	/* spheroid */
-#ifdef USE_PRE22GEODESIC
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0);
-#else /* $ Planimeter -E -p 8 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.947, 0.1);
-#endif
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.946891319597874, 0.1);
 	lwgeom_free(lwg);
 
 	/* One-degree square */
 	lwg = lwgeom_from_wkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	/* sphere: Planimeter -E -p 20 -e $WGS84_SPHERE --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
 	a1 = lwgeom_area_sphere(lwg, &s);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
+	/* spheroid: Planimeter -E -p 20 --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
-	/* spheroid */
-#ifdef USE_PRE22GEODESIC
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
-#else /* $ Planimeter -E -p 8 --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
-#endif
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 	lwgeom_free(lwg);
 
-	/* One-degree square *near* dateline */
+	/* One-degree square *near* the antimeridian */
 	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	/* sphere: Planimeter -E -p 20 -e $WGS84_SPHERE -r --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
 	a1 = lwgeom_area_sphere(lwg, &s);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
+	/* spheroid: Planimeter -E -p 20 -r --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
-	/* spheroid */
-#ifdef USE_PRE22GEODESIC
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
-#else /* $ Planimeter -E -r -p 8 --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
-#endif
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 	lwgeom_free(lwg);
 
-	/* One-degree square *across* dateline */
+	/* One-degree square *across* the antimeridian */
 	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	/* sphere: Planimeter -E -p 20 -e $WGS84_SPHERE --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
 	a1 = lwgeom_area_sphere(lwg, &s);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
+	/* spheroid: Planimeter -E -p 20 --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.3679, 10.0); /* sphere */
-	/* spheroid */
-#ifdef USE_PRE22GEODESIC
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0);
-#else /* $ Planimeter -E -p 8 --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.043, 0.1);
-#endif
+	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 	lwgeom_free(lwg);
 }
 
@@ -1383,7 +1434,7 @@ static void test_gbox_utils(void)
 	CU_ASSERT_DOUBLE_EQUAL(a2, 0.017764, 0.0000001);
 	lwgeom_free(lwg);
 
-	/* One-degree square *across* dateline */
+	/* One-degree square *across* antimeridian */
 	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = gbox_angular_width(&gbox);
@@ -1393,7 +1444,7 @@ static void test_gbox_utils(void)
 	CU_ASSERT_DOUBLE_EQUAL(a2, 0.0174553, 0.0000001);
 	lwgeom_free(lwg);
 	
-	/* One-degree square *across* dateline */
+	/* One-degree square *across* antimeridian */
 	lwg = lwgeom_from_wkt("POLYGON((178.5 2,178.5 1,-179.5 1,-179.5 2,178.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	gbox_centroid(&gbox, &pt);
@@ -1415,18 +1466,18 @@ static void test_vector_angle(void)
 	p1.x = 1.0;
 	p2.y = 1.0;
 	angle = vector_angle(&p1, &p2);
-	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/2, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI_2, 0.00001);
 
 	p1.x = p2.y = 0.0;
 	p1.y = 1.0;
 	p2.x = 1.0;
 	angle = vector_angle(&p1, &p2);
-	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/2, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI_2, 0.00001);
 
 	p2.y = p2.x = 1.0;
 	normalize(&p2);
 	angle = vector_angle(&p1, &p2);
-	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/4, 0.00001);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI_4, 0.00001);
 
 	p2.x = p2.y = p2.z = 1.0;
 	normalize(&p2);
@@ -1446,7 +1497,7 @@ static void test_vector_rotate(void)
 	
 	p1.x = 1.0;
 	p2.y = 1.0;
-	angle = M_PI/4;
+	angle = M_PI_4;
 	vector_rotate(&p1, &p2, angle, &n);
 	//printf("%g %g %g\n\n", n.x, n.y, n.z);
 	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.707107, 0.00001);	
