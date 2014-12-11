@@ -1,25 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
+# Translators:
+# aghisla <a.ghisla@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"PO-Revision-Date: 2013-11-28 13:58+0000\n"
+"Last-Translator: aghisla <a.ghisla@gmail.com>\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
+"postgis-1/language/it_IT/)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Tag: title
 #: reference.xml:3
 #, no-c-format
 msgid "PostGIS Reference"
-msgstr ""
+msgstr "Guida a PostGIS"
 
 #. Tag: para
 #: reference.xml:5
@@ -29,6 +31,9 @@ msgid ""
 "need. There are other functions which are required support functions to the "
 "PostGIS objects which are not of use to a general user."
 msgstr ""
+"Le funzioni elencate sotto sono quelle di cui un utente PostGIS avrà più "
+"probabilmente bisogno. Ci sono altre funzioni, di supporto agli oggetti "
+"PostGIS, che non sono utili all'utente comune."
 
 #. Tag: para
 #: reference.xml:11
@@ -42,14 +47,27 @@ msgid ""
 "documentation are deprecated and will be removed in a future release so STOP "
 "USING THEM."
 msgstr ""
+"PostGIS ha iniziato una transizione dalla namin convention esistente a una "
+"convenzione SQL-MM-centrica. Di conseguenza, molte funzioni di uso comune "
+"sono state rinominate usando il prefisso standard \"spatial type\" (ST). Le "
+"funzioni precedenti sono tuttora disponibili, anche se non elencate nel "
+"presente documento. Al loro posto sono presenti le funzioni aggiornate "
+"corrispondenti. Le funzioni non ST_ che mancano in questo documento sono "
+"deprecate e verranno eliminate in una futura release, quindi NON VANNO PIÙ "
+"USATE."
 
 #. Tag: chapter
 #: reference.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"&reference_type; &reference_guc; &reference_management; "
+"&reference_constructor; &reference_accessor; &reference_editor; "
+"&reference_output; &reference_operator; &reference_measure; "
+"&reference_sfcgal; &reference_processing; &reference_lrs; "
+"&reference_transaction; &reference_misc; &reference_exception;"
+msgstr ""
 "&reference_type; &reference_management; &reference_constructor; "
 "&reference_accessor; &reference_editor; &reference_output; "
 "&reference_operator; &reference_measure; &reference_processing; "
 "&reference_lrs; &reference_transaction; &reference_misc; "
 "&reference_exception;"
-msgstr ""

@@ -32,6 +32,12 @@ doc/raster_gardentest_*.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
 extensions/Makefile
+extensions/address_standardizer/Makefile
+extensions/address_standardizer/mk-st-regexp
+extensions/address_standardizer/address_standardizer--*.sql
+extensions/address_standardizer/address_standardizer.control
+extensions/address_standardizer/address_standardizer.sql
+extensions/address_standardizer/us-*.sql
 extensions/postgis/Makefile
 extensions/postgis/postgis.control
 extensions/postgis/sql/
@@ -134,3 +140,4 @@ utils/postgis_restore.pl
 doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql
+*.pdf

@@ -125,7 +125,6 @@ NOTICE:  value = {{{200,200,300},{200,200,300},{NULL,NULL,NULL}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{4,4}}
 NOTICE:  userargs = {1000}
 NOTICE:  record = (17,"(2,-4,2,2,1,-1,0,0,0,1)","(32BUI,0,f,)",1000)
-DO
 NOTICE:  value = {{{1}},{{2}}}
 NOTICE:  pos = [0:2][1:2]={{1,1},{2,2},{1,1}}
 NOTICE:  userargs = <NULL>

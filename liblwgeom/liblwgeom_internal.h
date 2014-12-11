@@ -401,5 +401,19 @@ int gbox_centroid(const GBOX* gbox, POINT2D* out);
 /* Utilities */
 extern void trim_trailing_zeros(char *num);
 
+extern uint8_t MULTITYPE[NUMTYPES];
+
+extern lwinterrupt_callback *_lwgeom_interrupt_callback;
+extern int _lwgeom_interrupt_requested;
+#define LW_ON_INTERRUPT(x) { \
+  if ( _lwgeom_interrupt_callback ) { \
+    (*_lwgeom_interrupt_callback)(); \
+  } \
+  if ( _lwgeom_interrupt_requested ) { \
+    _lwgeom_interrupt_requested = 0; \
+    lwnotice("liblwgeom code interrupted"); \
+    x; \
+  } \
+}
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

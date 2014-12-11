@@ -75,6 +75,11 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
                 pg_unparser_errhint(&lwg_unparser_result); \
         } while(0);
 
+/* TODO: only cancel the interrupt if inside an outer call ? */
+#define LWGEOM_INIT() { \
+  lwgeom_cancel_interrupt(); \
+}
+
 
 /*
 ** GSERIALIED prototypes used outside the index functions
@@ -153,6 +158,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_curve(PG_FUNCTION_ARGS);
 
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
+Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
 

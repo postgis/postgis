@@ -434,6 +434,8 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 			p1 = p2;
 			ipoff++;
 		}
+
+		LW_ON_INTERRUPT(ptarray_free(opa); return NULL);
 	}
 
 	return opa;

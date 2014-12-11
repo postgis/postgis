@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+#
+# Translators:
+# BJ Jang <qgis.tr.kr@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-10-14 22:30+0000\n"
+"PO-Revision-Date: 2014-10-14 22:36+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/postgis-1/"
+"language/ko_KR/)\n"
+"Language: ko_KR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Tag: title
+#: postgis.xml:127
+#, no-c-format
+msgid "PostGIS &last_release_version; Manual"
+msgstr "PostGIS &last_release_version; 매뉴얼"
+
+#. Tag: corpauthor
+#: postgis.xml:131
+#, no-c-format
+msgid "The PostGIS Development Group"
+msgstr ""
+
+#. Tag: affiliation
+#: postgis.xml:137
+#, no-c-format
+msgid ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
+msgstr ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
+
+#. Tag: para
+#: postgis.xml:151
+#, no-c-format
+msgid ""
+"PostGIS is an extension to the PostgreSQL object-relational database system "
+"which allows GIS (Geographic Information Systems) objects to be stored in "
+"the database. PostGIS includes support for GiST-based R-Tree spatial "
+"indexes, and functions for analysis and processing of GIS objects."
+msgstr ""
+"PostGIS는 객체 관계형 데이터베이스 시스템인 PostgreSQL의 확장팩으로, GIS(지"
+"리 정보 시스템) 객체를 데이터베이스에 저장할 수 있게 해줍니다. PostGIS는 "
+"GiST-기반 R-트리 인덱스와, GIS 객체를 분석하기 처리하기 위한 함수들에 대한 지"
+"원이 포함되어 있습니다."
+
+#. Tag: para
+#: postgis.xml:160
+#, no-c-format
+msgid "This is the manual for version &last_release_version;"
+msgstr "이 문서는 버전 &last_release_version;에 대한 매뉴얼 입니다."
+
+#. Tag: para
+#: postgis.xml:161
+#, no-c-format
+msgid ""
+"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
+"ulink>. Feel free to use this material any way you like, but we ask that you "
+"attribute credit to the PostGIS Project and wherever possible, a link back "
+"to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgstr ""

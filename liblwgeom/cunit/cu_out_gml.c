@@ -559,9 +559,12 @@ static void out_gml_test_geoms(void)
 	/* GML3 - CurvePolygon */
     do_gml3_test(
         "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))",
-                "<gml:Polygon><gml:exterior><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
+                "<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon>",
                 NULL, 1, 0 );
-
+	do_gml3_test(
+		"CURVEPOLYGON(COMPOUNDCURVE((763650.600000001 189057.100000001,7636.35 189045.199999999, 763650.548999999 189057.844000001,763650.600000001 189057.100000001)))",
+				 "<gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">763650.6 189057.1 7636.35 189045.2 763650.549 189057.844 763650.6 189057.1</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior></gml:Polygon>",
+				NULL, 7, 0 );
 
 	/* GML2 - MultiCurve */
 	do_gml2_unsupported(
@@ -582,7 +585,7 @@ static void out_gml_test_geoms(void)
 	/* GML3 - MultiSurface */
     do_gml3_test(
                 "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
-                "<gml:MultiSurface><gml:Polygon><gml:exterior><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">7 8 10 10 6 14 4 11 7 8</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:MultiSurface>",
+                "<gml:MultiSurface><gml:Polygon><gml:exterior><gml:Ring><gml:curveMember><gml:Curve><gml:segments><gml:ArcString><gml:posList srsDimension=\"2\">-2 0 -1 -1 0 0 1 -1 2 0 0 2 -2 0</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember></gml:Ring></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension=\"2\">-1 0 0 0.5 1 0 0 1 -1 0</gml:posList></gml:LinearRing></gml:interior></gml:Polygon><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension=\"2\">7 8 10 10 6 14 4 11 7 8</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:MultiSurface>",
                 NULL, 1, 0 );
 
 	/* GML2 - PolyhedralSurface */

@@ -1904,15 +1904,22 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	LWGEOM_INIT();
+
 	inlwgeom = lwgeom_from_gserialized(ingeom);
-	
 	if ( lwgeom_is_empty(inlwgeom) )
 	{
+		/* Should only happen on interruption */
 		lwgeom_free(inlwgeom);
 		PG_RETURN_POINTER(ingeom);
 	}
 	
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
+	if ( ! outlwgeom ) {
+		/* Should only happen on interruption */
+		PG_FREE_IF_COPY(ingeom, 0);
+		PG_RETURN_NULL();
+	}
 
 	/* Copy input bounding box if any */
 	if ( inlwgeom->bbox )

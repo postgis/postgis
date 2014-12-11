@@ -2592,7 +2592,6 @@ LINESTRING(241.42 38.38,241.8 38.45)
 				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
 		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
 
-		<para>Performed by the GEOS module.</para>
 		<para>Availability: 1.2.2</para>
 	  </refsection>
 

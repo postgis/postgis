@@ -64,7 +64,7 @@ check: requirements_not_met_cunit
 else
 
 $(LOADER_OBJS):
-	make -C ..
+	$(MAKE) -C ..
 
 # Build the unit tester
 all: cu_tester

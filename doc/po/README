@@ -3,9 +3,37 @@ Translation files for the PostGIS manual.
 Compilation of the files require the ``poxml`` package,
 part of the KDE development kit.
 
-Run ``make`` in language directories to generate the 
-localized manual.
+In language subdirectories, run ``make`` to build localized manual and
+comments, ``make local-pdf`` for the pdf.
 
-Run ``make update-po`` from the parent directory to
-update the translation files to be in sync with the 
-official documentation.
+In parent directory (doc), run ``make update-po`` to update the translation
+files to be in sync with the source code, ``make html-localized`` or
+``make pdf-localized`` to build the localized html or pdf manual for
+all enabled languages
+
+Using transifex
+---------------
+
+Transifex web-ui to translation was setup here:
+https://www.transifex.com/projects/p/postgis
+
+Run ``make update-tx`` from the parent (doc) directory to
+update the transifex command-line tool configuration,
+found in ../.tx/config (only needed when new doc sources
+are added);
+
+Run ``make pull-tx`` to import remotely updated translations
+and ``make push-tx`` to upload the locally update ones, after
+making sure they are well-formed (``make html-localized`` succeeds).
+
+NOTE: the recommended workflow is:
+
+ make pull-tx
+ do:
+  make html-localized || edit
+ until success 
+ if edits:
+  make push-tx
+  make pull-tx
+  commit changes to repo
+ fi

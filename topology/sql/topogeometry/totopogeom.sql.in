@@ -144,7 +144,9 @@ DECLARE
   atopology TEXT;
 BEGIN
 
-  RAISE NOTICE 'TopoGeometry is "%", its topology_id is "%"', tg, topology_id(tg);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'TopoGeometry is "%", its topology_id is "%"', tg, topology_id(tg);
+#endif
 
   -- Get topology information
   SELECT id, name FROM topology.topology

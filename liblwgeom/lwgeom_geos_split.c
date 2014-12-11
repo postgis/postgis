@@ -69,13 +69,13 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS((LWGEOM*)lwline_in);
+	g1 = LWGEOM2GEOS((LWGEOM*)lwline_in, 0);
 	if ( ! g1 )
 	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
-	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
+	g2 = LWGEOM2GEOS((LWGEOM*)blade_in, 0);
 	if ( ! g2 )
 	{
 		GEOSGeom_destroy(g1);
@@ -264,7 +264,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS((LWGEOM*)lwpoly_in);
+	g1 = LWGEOM2GEOS((LWGEOM*)lwpoly_in, 0);
 	if ( NULL == g1 )
 	{
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
@@ -278,7 +278,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS((LWGEOM*)blade_in);
+	g2 = LWGEOM2GEOS((LWGEOM*)blade_in, 0);
 	if ( NULL == g2 )
 	{
 		GEOSGeom_destroy(g1);

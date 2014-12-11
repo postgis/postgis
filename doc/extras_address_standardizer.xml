@@ -32,110 +32,110 @@ into includes in the future for easier maintenance.</para></listitem>
 			</variablelist>
   </sect1>
   <sect1 id="Address_Standardizer_Types">
-  		  <sect1info>
-            <abstract>
-                <para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very 
-                    important especially when designing your own functions.  
-                </para>	
-            </abstract>
-        </sect1info>
-        <title>Address Standardizer Types</title>
-        <refentry id="stdaddr">
-					<refnamediv>
-					<refname>stdaddr</refname>
-						<refpurpose>A composite type that consists of the elements of an address.  This is the return type for <varname>standardize_address</varname> function.</refpurpose>
-					</refnamediv>
-					<refsection>
-						<title>Description</title>
-						<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
-						<para>The token numbers denote the reference number in the <varname>rules</varname> table.</para>
-						<para>&address_standardizer_required;</para>
-							<variablelist>
-								<varlistentry>
-										<term>building</term>
-										<listitem>
-											<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry><term>house_num</term> 
-									<listitem>
-										<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>predir</term><listitem>
-										<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
-								</listitem></varlistentry>
-								<varlistentry><term>qual</term> 
-									<listitem>
-											<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>pretype</term>
-									<listitem>
-											<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>name</term>
-										<listitem>
-											<para>is text (token number <code>5</code>): STREET NAME</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry><term>suftype</term>
-									<listitem>
-										<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>sufdir</term>
-									<listitem>
-										<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>ruralroute</term>
-									<listitem>
-										<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>extra</term>
-									<listitem>
-										<para>is text: Extra information like Floor number.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>city</term>
-									<listitem>
-										<para>is text (token number <code>10</code>): Example Boston.</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>state</term>
-									<listitem>
-										<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>country</term>
-									<listitem>
-										<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>postcode</term>
-									<listitem>
-										<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>box</term>
-									<listitem>
-										<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>unit</term>
-									<listitem>
-										<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
-									</listitem>
-								</varlistentry>
-						</variablelist>
-					</refsection>
-				</refentry>
+	<sect1info>
+		<abstract>
+			<para>This section lists the PostgreSQL data types installed by Address Standardizer extension.  Note we describe the casting behavior of these which is very 
+				important especially when designing your own functions.  
+			</para>	
+		</abstract>
+	</sect1info>
+	<title>Address Standardizer Types</title>
+	<refentry id="stdaddr">
+		<refnamediv>
+		<refname>stdaddr</refname>
+			<refpurpose>A composite type that consists of the elements of an address.  This is the return type for <varname>standardize_address</varname> function.</refpurpose>
+		</refnamediv>
+		<refsection>
+			<title>Description</title>
+			<para>A composite type that consists of elements of an address.   This is the return type for <xref linkend="standardize_address" /> function. Some descriptions for elements are borrowed from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.1">PAGC Postal Attributes</ulink>.</para>
+			<para>The token numbers denote the output reference number in the <xref linkend="rulestab" />.</para>
+			<para>&address_standardizer_required;</para>
+				<variablelist>
+					<varlistentry>
+							<term>building</term>
+							<listitem>
+								<para> is text (token number <code>0</code>):  Refers to building number or name. Unparsed building identifiers and types. Generally blank for most addresses.</para>
+							</listitem>
+					</varlistentry>
+					<varlistentry><term>house_num</term> 
+						<listitem>
+							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>predir</term><listitem>
+							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
+					</listitem></varlistentry>
+					<varlistentry><term>qual</term> 
+						<listitem>
+								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>pretype</term>
+						<listitem>
+								<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>name</term>
+							<listitem>
+								<para>is text (token number <code>5</code>): STREET NAME</para>
+							</listitem>
+					</varlistentry>
+					<varlistentry><term>suftype</term>
+						<listitem>
+							<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>sufdir</term>
+						<listitem>
+							<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>ruralroute</term>
+						<listitem>
+							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>extra</term>
+						<listitem>
+							<para>is text: Extra information like Floor number.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>city</term>
+						<listitem>
+							<para>is text (token number <code>10</code>): Example Boston.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>state</term>
+						<listitem>
+							<para>is text (token number <code>11</code>):  Example <code>MASSACHUSETTS</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>country</term>
+						<listitem>
+							<para>is text (token number <code>12</code>):  Example <code>USA</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>postcode</term>
+						<listitem>
+							<para>is text POSTAL CODE (ZIP CODE) (token number <code>13</code>):  Example <code>02109</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>box</term>
+						<listitem>
+							<para>is text POSTAL BOX NUMBER (token number <code>14 and 15</code>):  Example <code>02109</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>unit</term>
+						<listitem>
+							<para>is text Apartment number or Suite Number (token number <code>17</code>):  Example <emphasis>3B</emphasis> in <code>APT 3B</code>.</para>
+						</listitem>
+					</varlistentry>
+			</variablelist>
+		</refsection>
+	</refentry>
   </sect1>
   
-    <sect1 id="Address_Standardizer_Tables">
+  <sect1 id="Address_Standardizer_Tables">
   		  <sect1info>
             <abstract>
                 <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.  
@@ -144,152 +144,338 @@ into includes in the future for easier maintenance.</para></listitem>
         </sect1info>
         <title>Address Standardizer Tables</title>
         <refentry id="rulestab">
-					<refnamediv>
-					<refname>rules table</refname>
-						<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence</refpurpose>
-					</refnamediv>
-					<refsection>
-						<title>Description</title>
-						<para>A rules table must have at least the following columns, though you are allowed to add more for your own uses. </para>
-						
-							<variablelist>
-								<varlistentry>
-										<term>id</term>
-										<listitem>
-											<para>Primary key of table</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry><term>rule</term> 
-									<listitem>
-										<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
-										<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
-										<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. </para>
-									</listitem>
-								</varlistentry>
-						</variablelist>
-						
-						<para>Each rule has a rule type which is denoted by one of following:</para>
-						<variablelist>
-								<varlistentry>
-										<term>MACRO_C</term>
-										<listitem>
-											<para>(token number = "0"). The class of rules for parsing MACRO clauses.</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry>
-										<term>MICRO_C</term>
-										<listitem>
-											<para>(token number = "1"). The class of rules for parsing full MICRO clauses (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry>
-										<term>ARC_C</term>
-										<listitem>
-											<para>(token number = "2"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute.</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry>
-										<term>CIVIC_C</term>
-										<listitem>
-											<para>(token number = "3"). The class of rules for parsing the HOUSE attribute.</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry>
-										<term>EXTRA_C</term>
-										<listitem>
-											<para>(token number = "4"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
-										</listitem>
-								</varlistentry>
-						</variablelist>
-						
-					</refsection>
-				</refentry>
+			<refnamediv>
+			<refname>rules table</refname>
+				<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence</refpurpose>
+			</refnamediv>
+			<refsection>
+				<title>Description</title>
+				<para>A rules table must have at least the following columns, though you are allowed to add more for your own uses. </para>
 				
-				<refentry id="lextab">
-					<refnamediv>
-					<refname>lex table</refname>
-						<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
-					</refnamediv>
-					<refsection>
-						<title>Description</title>
-						<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdworkd: <code>1</code>.</para>
+					<variablelist>
+						<varlistentry>
+								<term>id</term>
+								<listitem>
+									<para>Primary key of table</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry><term>rule</term> 
+							<listitem>
+								<para>text field denoting the rule. Details at <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-rec--">PAGC Address Standardizer Rule records</ulink>.</para>
+								<para>A rule consists of a set of non-negative integers representing input tokens, terminated by a -1, followed by an equal number of non-negative integers representing postal attributes, terminated by a -1, followed by an integer representing a rule type, followed by an integer representing the rank of the rule. The rules are ranked from 0 (lowest) to 17 (highest).</para>
+								<para>So for example the rule <code>2 0 2 22 3 -1 5 5 6 7 3 -1 2 6</code> maps to sequence of output tokens <emphasis>TYPE NUMBER TYPE DIRECT QUALIF</emphasis> to the output sequence <emphasis>STREET STREET SUFTYP SUFDIR QUALIF</emphasis>. The rule is an ARC_C rule of rank 6. </para>
+								<para>Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />.</para>
+							</listitem>
+						</varlistentry>
+				</variablelist>
+			</refsection>
+			
+			<refsection id="rule_input_tokens"><title>Input Tokens</title>
+				<para>Each rule starts with a set of input tokens followed by a terminator <code>-1</code>. Valid input tokens excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#ss12.2">PAGC Input Tokens</ulink> are as follows:</para>
+				<para><emphasis role="bold">Form-Based Input Tokens</emphasis></para>
+				<variablelist>
+						<varlistentry>
+								<term>AMPERS</term>
+								<listitem>
+									<para>(13). The ampersand (&amp;) is frequently used to abbreviate the word "and".</para>
+								</listitem>
+						</varlistentry>
 						
-						<para>A lex has at least the following columns in the table. You may add</para>
-							<variablelist>
-								<varlistentry>
-										<term>id</term>
-										<listitem>
-											<para>Primary key of table</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry><term>seq</term> 
-									<listitem>
-										<para>integer: definition number?</para>
-									</listitem>
-								</varlistentry>
+						<varlistentry>
+								<term>DASH</term>
+								<listitem>
+									<para>(9). A punctuation character.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>DOUBLE</term>
+								<listitem>
+									<para>(21). A sequence of two letters. Often used as identifiers.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>FRACT</term>
+								<listitem>
+									<para>(25). Fractions are sometimes used in civic numbers or unit numbers.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>MIXED</term>
+							<listitem>
+								<para>(23). An alphanumeric string that contains both letters and digits. Used for identifiers.</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>NUMBER</term>
+							<listitem>
+								<para>(0). A string of digits.</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>ORD</term>
+							<listitem>
+								<para>(15). Representations such as First or 1st. Often used in street names.</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>ORD</term>
+							<listitem>
+								<para>(18). A single letter.</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>WORD</term>
+							<listitem>
+								<para>(1). A word is a string of letters of arbitrary length. A single letter can be both a SINGLE and a WORD.</para>
+							</listitem>
+						</varlistentry>
+				</variablelist>
+				
+				<para><emphasis role="bold">Function-based Input Tokens</emphasis></para>
+				<variablelist>
+						<varlistentry>
+								<term>BOXH</term>
+								<listitem>
+									<para>(14). Words used to denote post office boxes. For example <emphasis>Box</emphasis> or <emphasis>PO Box</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>BUILDH</term>
+								<listitem>
+									<para>(19). Words used to denote buildings or building complexes, usually as a prefix. For example: <emphasis>Tower</emphasis> in <emphasis>Tower 7A</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>BUILDT</term>
+								<listitem>
+									<para>(24). Words and abbreviations used to denote buildings or building complexes, usually as a suffix. For example: <emphasis>Shopping Centre</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>DIRECT</term>
+								<listitem>
+									<para>(22). Words used to denote directions, for example <emphasis>North</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>MILE</term>
+								<listitem>
+									<para>(20). Words used to denote milepost addresses.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>ROAD</term>
+								<listitem>
+									<para>(6). Words and abbreviations used to denote highways and roads. For example: the <emphasis>Interstate</emphasis> in <emphasis>Interstate 5</emphasis></para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>RR</term>
+								<listitem>
+									<para>(8). Words and abbreviations used to denote rural routes. <emphasis>RR</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>TYPE</term>
+								<listitem>
+									<para>(2). Words and abbreviation used to denote street typess. For example: <emphasis>ST</emphasis> or <emphasis>AVE</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>UNITH</term>
+								<listitem>
+									<para>(16). Words and abbreviation used to denote internal subaddresses. For example, <emphasis>APT</emphasis> or <emphasis>UNIT</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+				</variablelist>
+				
+				<para><emphasis role="bold">Postal Type Input Tokens</emphasis></para>
+				<variablelist>
+						<varlistentry>
+								<term>QUINT</term>
+								<listitem>
+									<para>(28). A 5 digit number. Identifies a Zip Code</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>QUAD</term>
+								<listitem>
+									<para>(29). A 4 digit number. Identifies ZIP4.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>PCH</term>
+								<listitem>
+									<para>(27). A 3 character sequence of letter number letter. Identifies an FSA, the first 3 characters of a Canadian postal code.</para>
+								</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+								<term>PCT</term>
+								<listitem>
+									<para>(26). A 3 character sequence of number letter number. Identifies an LDU, the last 3 characters of a Canadian postal code.</para>
+								</listitem>
+						</varlistentry>
+				</variablelist>
+				
+				<para><emphasis role="bold">Stopwords</emphasis></para>
+					<para>STOPWORDS combine with WORDS. In rules a string of multiple WORDs and STOPWORDs will be represented by a single WORD token.</para>
+					<variablelist>
+						<varlistentry>
+								<term>STOPWORD</term>
+								<listitem>
+									<para>(7). A word with low lexical significance, that can be omitted in parsing. For example: <emphasis>THE</emphasis>.</para>
+								</listitem>
+						</varlistentry>
+					</variablelist>
 
-								<varlistentry><term>word</term> 
-									<listitem>
-										<para>text: the input word</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>stdword</term> 
-									<listitem>
-										<para>text: the standardized replacement word</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>token</term> 
-									<listitem>
-										<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
-									</listitem>
-								</varlistentry>
-						</variablelist>
-					</refsection>
-				</refentry>
-				
-				<refentry id="gaztab">
-					<refnamediv>
-					<refname>gaz table</refname>
-						<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See Input Tokens) and (b) standardized representations.</refpurpose>
-					</refnamediv>
-					<refsection>
-						<title>Description</title>
-						<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">(a) input tokens</ulink> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
-						
-						<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
-							<variablelist>
-								<varlistentry>
-										<term>id</term>
-										<listitem>
-											<para>Primary key of table</para>
-										</listitem>
-								</varlistentry>
-								<varlistentry><term>seq</term> 
-									<listitem>
-										<para>integer: definition number?</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>word</term> 
-									<listitem>
-										<para>text: the input word</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>stdword</term> 
-									<listitem>
-										<para>text: the standardized replacement word</para>
-									</listitem>
-								</varlistentry>
-								<varlistentry><term>token</term> 
-									<listitem>
-										<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
-									</listitem>
-								</varlistentry>
-						</variablelist>
-						
+    
+
+			</refsection>
 					
-						
-					</refsection>
-				</refentry>
+			<refsection><title>Output Tokens</title>
+				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />.</para>
+			</refsection>
+				
+			<refsection><title>Rule Types and Rank</title>
+				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
+				<variablelist>
+						<varlistentry>
+								<term>MACRO_C</term>
+								<listitem>
+									<para>(token number = "0"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
+								</listitem>
+						</varlistentry>
+						<varlistentry>
+								<term>MICRO_C</term>
+								<listitem>
+									<para>(token number = "1"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry>
+								<term>ARC_C</term>
+								<listitem>
+									<para>(token number = "2"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute.</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry>
+								<term>CIVIC_C</term>
+								<listitem>
+									<para>(token number = "3"). The class of rules for parsing the HOUSE attribute.</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry>
+								<term>EXTRA_C</term>
+								<listitem>
+									<para>(token number = "4"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
+								</listitem>
+						</varlistentry>
+				</variablelist>
+			</refsection>
+		</refentry>
+				
+		<refentry id="lextab">
+			<refnamediv>
+			<refname>lex table</refname>
+				<refpurpose>A lex table is used to classify alphanumeric input and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
+			</refnamediv>
+			<refsection>
+				<title>Description</title>
+				<para>A lex (short for lexicon) table is used to classify alphanumeric input and associate that input with  <xref linkend="rule_input_tokens" /> and (b) standardized representations. Things you will find in these tables are <code>ONE</code> mapped to stdword: <code>1</code>.</para>
+				
+				<para>A lex has at least the following columns in the table. You may add</para>
+					<variablelist>
+						<varlistentry>
+								<term>id</term>
+								<listitem>
+									<para>Primary key of table</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry><term>seq</term> 
+							<listitem>
+								<para>integer: definition number?</para>
+							</listitem>
+						</varlistentry>
+		
+						<varlistentry><term>word</term> 
+							<listitem>
+								<para>text: the input word</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>stdword</term> 
+							<listitem>
+								<para>text: the standardized replacement word</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>token</term> 
+							<listitem>
+								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+							</listitem>
+						</varlistentry>
+				</variablelist>
+			</refsection>
+		</refentry>
+				
+		<refentry id="gaztab">
+			<refnamediv>
+			<refname>gaz table</refname>
+				<refpurpose>A gaz table is used to standardize place names and associate that input with (a) input tokens ( See <xref linkend="rule_input_tokens" />) and (b) standardized representations.</refpurpose>
+			</refnamediv>
+			<refsection>
+				<title>Description</title>
+				<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+				
+				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
+					<variablelist>
+						<varlistentry>
+								<term>id</term>
+								<listitem>
+									<para>Primary key of table</para>
+								</listitem>
+						</varlistentry>
+						<varlistentry><term>seq</term> 
+							<listitem>
+								<para>integer: definition number? - identifer used for that instance of the word</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>word</term> 
+							<listitem>
+								<para>text: the input word</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>stdword</term> 
+							<listitem>
+								<para>text: the standardized replacement word</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry><term>token</term> 
+							<listitem>
+								<para>integer: the kind of word it is.  Only if it is used in this context will it be replaced. Refer to <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--i-tok--">PAGC Tokens</ulink>.</para>
+							</listitem>
+						</varlistentry>
+				</variablelist>
+				
+			
+				
+			</refsection>
+		</refentry>
   </sect1>
   
   <sect1 id="Address_Standardizer_Functions"><title>Address Standardizer Functions</title>

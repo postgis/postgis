@@ -95,7 +95,7 @@ lwgeom_extract_unique_endpoints(const LWGEOM* lwg)
 	LWGEOM* ret;
 	GEOSGeometry *gepu;
 	LWMPOINT *epall = lwgeom_extract_endpoints(lwg);
-	GEOSGeometry *gepall = LWGEOM2GEOS((LWGEOM*)epall);
+	GEOSGeometry *gepall = LWGEOM2GEOS((LWGEOM*)epall, 1);
 	lwmpoint_free(epall);
 	if ( ! gepall ) {
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
@@ -146,7 +146,7 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 	}
 
 	initGEOS(lwgeom_geos_error, lwgeom_geos_error);
-	g1 = LWGEOM2GEOS(lwgeom_in);
+	g1 = LWGEOM2GEOS(lwgeom_in, 1);
 	if ( ! g1 ) {
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;

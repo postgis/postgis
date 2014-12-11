@@ -163,7 +163,7 @@ generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:
-	make -C ../../../liblwgeom liblwgeom.la
+	$(MAKE) -C ../../../liblwgeom liblwgeom.la
 
 # Clean target
 clean:

@@ -1235,7 +1235,7 @@ rt_raster_compute_skewed_raster(
 			return NULL;
 		}
 
-		ngeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(npoly));
+		ngeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(npoly), 0);
 		lwpoly_free(npoly);
 	}
 
@@ -1250,7 +1250,7 @@ rt_raster_compute_skewed_raster(
 			return NULL;
 		}
 
-		sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom);
+		sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom, 0);
 		lwgeom_free(geom);
 
 		covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
@@ -1298,7 +1298,7 @@ rt_raster_compute_skewed_raster(
 				return NULL;
 			}
 
-			sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom);
+			sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom, 0);
 			lwgeom_free(geom);
 
 			covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
@@ -2732,13 +2732,13 @@ rt_raster_gdal_rasterize(
 			return NULL;
 		}
 
-		egeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(epoly));
+		egeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(epoly), 0);
 		lwpoly_free(epoly);
 
 		/* convert WKB to geometry */
 		RASTER_DEBUG(4, "Converting WKB to geometry");
 		lwgeom = lwgeom_from_wkb(wkb, wkb_len, LW_PARSER_CHECK_NONE);
-		geom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom);
+		geom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
 		lwgeom_free(lwgeom);
 
 		result = GEOSRelatePattern(egeom, geom, "T**FF*FF*");

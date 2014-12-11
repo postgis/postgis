@@ -133,8 +133,9 @@ lwline_reverse(LWLINE *line)
 LWLINE *
 lwline_segmentize2d(LWLINE *line, double dist)
 {
-	return lwline_construct(line->srid, NULL,
-	                        ptarray_segmentize2d(line->points, dist));
+	POINTARRAY *segmentized = ptarray_segmentize2d(line->points, dist);
+	if ( ! segmentized ) return NULL;
+	return lwline_construct(line->srid, NULL, segmentized);
 }
 
 /* check coordinate equality  */

@@ -882,5 +882,6 @@ SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGO
 
 SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography) ;
 
+SELECT '#2956', st_astwkb(null,0) is null;
 -- Clean up
 DELETE FROM spatial_ref_sys;

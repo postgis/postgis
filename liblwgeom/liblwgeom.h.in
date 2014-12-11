@@ -190,6 +190,38 @@ extern void lwgeom_set_handlers(lwallocator allocator,
         lwreporter noticereporter);
 
 /**
+ * Request interruption of any running code
+ *
+ * Safe for use from signal handlers
+ *
+ * Interrupted code will (as soon as it finds out
+ * to be interrupted) cleanup and return as soon as possible.
+ *
+ * The return value from interrupted code is undefined,
+ * it is the caller responsibility to not take it in consideration.
+ * 
+ */
+extern void lwgeom_request_interrupt(void);
+
+/**
+ * Cancel any interruption request
+ */
+extern void lwgeom_cancel_interrupt(void);
+
+/**
+ * Install a callback to be called periodically during
+ * algorithm execution. Mostly only needed on WIN32 to
+ * dispatch queued signals.
+ *
+ * The callback is invoked before checking for interrupt
+ * being requested, so you can request interruption from
+ * the callback, if you want (see lwgeom_request_interrupt).
+ *
+ */
+typedef void (lwinterrupt_callback)();
+extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
+
+/**
  * Write a notice out to the notice handler.
  *
  * Uses standard printf() substitutions.
@@ -1803,11 +1835,11 @@ LWGEOM_UNPARSER_RESULT;
 /*
 ** Variants available for TWKB
 */
-#define TWKB_ID 0x01
-#define TWKB_NO_TYPE 0x02
-#define TWKB_SIZES 0x04
-#define TWKB_BBOXES 0x08
-
+#define TWKB_ID 0x01 /*User wants id*/
+#define TWKB_SIZES 0x02 /*User wants sizes*/
+#define TWKB_BBOXES 0x04 /*User wants bboxes*/
+#define TWKB_NO_TYPE 0x08 /*No type because it is a sub geoemtry*/
+#define TWKB_NO_ID 0x10 /*No ID because it is a subgeoemtry*/
 
 /*
 ** New parsing and unparsing functions.
@@ -1846,6 +1878,10 @@ extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
  * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check);
+/**
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
+ */
+extern LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check);
 
 /**
  * @param check parser check flags, see LW_PARSER_CHECK_* macros

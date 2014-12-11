@@ -409,6 +409,46 @@ test_lwgeom_segmentize2d(void)
 	lwfree(strout);
 	lwgeom_free(linein);
 	lwgeom_free(lineout);
+
+	/* test interruption */
+
+	linein = lwgeom_from_wkt("LINESTRING(0 0,10 0)", LW_PARSER_CHECK_NONE);
+	lwgeom_request_interrupt();
+	lineout = lwgeom_segmentize2d(linein, 1e-100);
+	CU_ASSERT_EQUAL(lineout, NULL);
+	lwgeom_free(linein);
+
+	linein = lwgeom_from_wkt("MULTILINESTRING((0 0,10 0),(20 0, 30 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_request_interrupt();
+	lineout = lwgeom_segmentize2d(linein, 1e-100);
+	CU_ASSERT_EQUAL(lineout, NULL);
+	lwgeom_free(linein);
+
+	linein = lwgeom_from_wkt(
+"MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2)))"
+    , LW_PARSER_CHECK_NONE);
+	lwgeom_request_interrupt();
+	lineout = lwgeom_segmentize2d(linein, 1e-100);
+	CU_ASSERT_EQUAL(lineout, NULL);
+	lwgeom_free(linein);
+
+	linein = lwgeom_from_wkt(
+"GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2))),MULTILINESTRING((0 0,10 0),(20 0, 30 0)),MULTIPOINT(0 0, 3 4))"
+    , LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FATAL(linein != NULL);
+	lwgeom_request_interrupt();
+	lineout = lwgeom_segmentize2d(linein, 1e-100);
+	CU_ASSERT_EQUAL(lineout, NULL);
+	lwgeom_free(linein);
+
+	linein = lwgeom_from_wkt("LINESTRING(20 0, 30 0)", LW_PARSER_CHECK_NONE);
+	/* NOT INTERRUPTED */
+	lineout = lwgeom_segmentize2d(linein, 5);
+	strout = lwgeom_to_ewkt(lineout);
+	CU_ASSERT_STRING_EQUAL(strout, "LINESTRING(20 0,25 0,30 0)");
+	lwfree(strout);
+	lwgeom_free(linein);
+	lwgeom_free(lineout);
 }
 
 static void

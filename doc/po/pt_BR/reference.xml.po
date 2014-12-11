@@ -1,25 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
+# Translators:
+# Marcelo Soares Souza <marcelo@juntadados.org>, 2014
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"PO-Revision-Date: 2014-02-05 17:53+0000\n"
+"Last-Translator: Marcelo Soares Souza <marcelo@juntadados.org>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
+"postgis-1/language/pt_BR/)\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Tag: title
 #: reference.xml:3
 #, no-c-format
 msgid "PostGIS Reference"
-msgstr ""
+msgstr "Referência do PostGIS"
 
 #. Tag: para
 #: reference.xml:5
@@ -29,6 +31,9 @@ msgid ""
 "need. There are other functions which are required support functions to the "
 "PostGIS objects which are not of use to a general user."
 msgstr ""
+"As funções descritas abaixo são as que um usuário do PostGIS devem precisar. "
+"Existem outras funções que são necessárias para suportar os objetos PostGIS "
+"mas que não são de uso comum pelo usuário."
 
 #. Tag: para
 #: reference.xml:11
@@ -42,14 +47,26 @@ msgid ""
 "documentation are deprecated and will be removed in a future release so STOP "
 "USING THEM."
 msgstr ""
+"O PostGIS iniciou uma transição da convenção de nomenclatura existente para "
+"uma convenção em torno do SQL-MM. Como resultado, a maioria das funções que "
+"você conhece e ama foram renomeadas usando o padrão de tipo espacial (com o "
+"prefixo ST). As funções anteriores ainda existem, porém não são listadas "
+"nesta documentação onde as funções atualizadas são equivalentes. As funções "
+"que não possuem prefixo ST_ não listadas nesta documentação estão obsoletas "
+"e serão removidas em futuros lançamentos, então PAREM DE UTILIZÁ-LAS."
 
 #. Tag: chapter
 #: reference.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
+"&reference_type; &reference_guc; &reference_management; "
+"&reference_constructor; &reference_accessor; &reference_editor; "
+"&reference_output; &reference_operator; &reference_measure; "
+"&reference_sfcgal; &reference_processing; &reference_lrs; "
+"&reference_transaction; &reference_misc; &reference_exception;"
+msgstr ""
 "&reference_type; &reference_management; &reference_constructor; "
 "&reference_accessor; &reference_editor; &reference_output; "
 "&reference_operator; &reference_measure; &reference_processing; "
 "&reference_lrs; &reference_transaction; &reference_misc; "
 "&reference_exception;"
-msgstr ""

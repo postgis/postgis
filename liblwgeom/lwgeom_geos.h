@@ -24,7 +24,7 @@
 ** Public prototypes for GEOS utility functions.
 */
 LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
-GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g);
+GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
 GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
 

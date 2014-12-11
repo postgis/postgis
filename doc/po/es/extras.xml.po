@@ -1,0 +1,40 @@
+# SOME DESCRIPTIVE TITLE.
+#
+# Translators:
+# Carlos Barrios <gbarrios@aaa.upv.es>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-10-14 22:30+0000\n"
+"PO-Revision-Date: 2014-10-14 22:34+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
+"language/es/)\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: title
+#: extras.xml:3
+#, no-c-format
+msgid "PostGIS Extras"
+msgstr ""
+
+#. Tag: para
+#: extras.xml:5
+#, no-c-format
+msgid ""
+"This chapter documents features found in the extras folder of the PostGIS "
+"source tarballs and source repository. These are not always packaged with "
+"PostGIS binary releases, but are usually plpgsql based or standard shell "
+"scripts that can be run as is."
+msgstr ""
+
+#. Tag: chapter
+#: extras.xml:6
+#, no-c-format
+msgid "&extras_tigergeocoder;"
+msgstr ""

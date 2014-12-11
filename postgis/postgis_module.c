@@ -32,12 +32,10 @@ static pqsigfunc coreIntHandler = 0;
 static void handleInterrupt(int sig);
 
 #ifdef WIN32
-#if POSTGIS_GEOS_VERSION >= 34 
-static void geosInterruptCallback() {
+static void interruptCallback() {
   if (UNBLOCKED_SIGNAL_QUEUE()) 
     pgwin32_dispatch_queued_signals(); 
 }
-#endif
 #endif
 
 /*
@@ -52,8 +50,9 @@ _PG_init(void)
 
 #ifdef WIN32
 #if POSTGIS_GEOS_VERSION >= 34 
-  GEOS_interruptRegisterCallback(geosInterruptCallback);
+  GEOS_interruptRegisterCallback(interruptCallback);
 #endif
+  lwgeom_register_interrupt_callback(interruptCallback);
 #endif
 
 #if 0
@@ -108,6 +107,7 @@ void
 _PG_fini(void)
 {
   elog(NOTICE, "Goodbye from PostGIS %s", POSTGIS_VERSION);
+  pqsignal(SIGINT, coreIntHandler);
 }
 
 
@@ -120,7 +120,8 @@ handleInterrupt(int sig)
   GEOS_interruptRequest();
 #endif
 
-  /* TODO: request interruption of liblwgeom as well ? */
+  /* request interruption of liblwgeom as well */
+  lwgeom_request_interrupt();
 
   if ( coreIntHandler ) {
     (*coreIntHandler)(sig);

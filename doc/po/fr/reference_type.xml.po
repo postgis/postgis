@@ -1,0 +1,329 @@
+# SOME DESCRIPTIVE TITLE.
+#
+# Translators:
+# Nicolas Ribot <nicolas.ribot@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 21:04+0000\n"
+"PO-Revision-Date: 2013-11-27 16:24+0000\n"
+"Last-Translator: Nicolas Ribot <nicolas.ribot@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
+"language/fr/)\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. Tag: para
+#: reference_type.xml:5
+#, no-c-format
+msgid ""
+"This section lists the PostgreSQL data types installed by PostGIS. Note we "
+"describe the casting behavior of these which is very important especially "
+"when designing your own functions."
+msgstr ""
+"Cette section liste les types de données PostgreSQL installés par PostGIS. "
+"Leurs méthodes de transtypage sont également décrites, ce qui est "
+"particulièrement important lors de la définition/création de nouvelles "
+"fonctions."
+
+#. Tag: para
+#: reference_type.xml:8
+#, no-c-format
+msgid ""
+"A Cast is when one type is coerced into another type. PostgreSQL is unique "
+"from most databases in that it allows you to define casting behavior for "
+"custom types and the functions used for casting. A cast can be specified as "
+"automatic in which case, you do not have to do a CAST(myfoo As otherfootype) "
+"or myfoo::otherfootype if you are feeding it to a function that only works "
+"with otherfootype and there is an automatic cast in place for it."
+msgstr ""
+"Un transtypage ou cast est l'opération visant à changer un type de données "
+"vers un autres type. PostgreSQL offre la fonctionnalité assez unique de "
+"pouvoir définir les comportements des types spécifiques lors du transtypage "
+"et les fonctions utilisées lors du transtypage. Un transtypage peut être "
+"défini comme automatique, auquel cas il n'est pas nécessaire d'utiliser la "
+"fonction CAST(myfoo As otherfootype) ou myfoo::otherfootype lors de l'appel "
+"d'une fonction supportant uniquement otherfootype: le transtypage sera "
+"automatique."
+
+#. Tag: para
+#: reference_type.xml:13
+#, no-c-format
+msgid ""
+"The danger of relying on automatic cast behavior is when you have an "
+"overloaded function say one that takes a box2d and one that takes a box3d "
+"but no geometry. What happens is that both functions are equally good to use "
+"with geometry since geometry has an autocast for both -- so you end up with "
+"an ambiguous function error. To force PostgreSQL to choose, you do a "
+"CAST(mygeom As box3d) or mygeom::box3d."
+msgstr ""
+"Le danger lors de l'utilisation d'un transtypage automatique peut survenir "
+"si, par exemple, il existe une fonction surchargée prenant en paramètre une "
+"box2d et une prenant une box3d, mais aucune acceptant une geometry. Dans ce "
+"cas, les deux fonctions peuvent être utilisées avec un type geometry sachant "
+"que ce type peut être transtypé automatiquement vers les deux types box2d et "
+"box3d. Une erreur survient alors indiquant que la fonction est ambigüe. Pour "
+"forcer PostgreSQL à utiliser la bonne fonction, il faut utiliser la fonction "
+"CAST(mygeom As box3d) ou mygeom::box3d."
+
+#. Tag: para
+#: reference_type.xml:17
+#, no-c-format
+msgid ""
+"<emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST "
+"to text (presumably because of the magical unknown type), so no defined "
+"CASTS for that need to be present for you to CAST an object to text."
+msgstr ""
+"<emphasis>A partir de PostgreSQL 8.3</emphasis> - Tout peut être transtypé "
+"en texte (type text). Il n'est donc pas nécessaire de définir un opérateur "
+"de transtypage spécifique vers le type text.."
+
+#. Tag: title
+#: reference_type.xml:20
+#, no-c-format
+msgid "PostgreSQL PostGIS Geometry/Geography/Box Types"
+msgstr "Les types Geometry/Geography/Box de PostgreSQL PostGIS"
+
+#. Tag: refname
+#: reference_type.xml:24
+#, no-c-format
+msgid "<refname>box2d</refname>"
+msgstr "<refname>box2d</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:25
+#, no-c-format
+msgid ""
+"A box composed of x min, ymin, xmax, ymax. Often used to return the 2d "
+"enclosing box of a geometry."
+msgstr ""
+"Un rectangle composé des coordonnées xmin, ymin, xmax, ymax. Souvent utilisé "
+"pour renvoyer la boite 2d d'une géométrie."
+
+#. Tag: title
+#: reference_type.xml:29 reference_type.xml:40 reference_type.xml:79
+#: reference_type.xml:136 reference_type.xml:155
+#, no-c-format
+msgid "Description"
+msgstr "Description"
+
+#. Tag: para
+#: reference_type.xml:30
+#, no-c-format
+msgid ""
+"box2d is a spatial data type used to represent the enclosing box of a "
+"geometry or set of geometries. ST_Extent in earlier versions prior to "
+"PostGIS 1.4 would return a box2d."
+msgstr ""
+"box2d est un type spatial utilisé pour représenter la boite englobante d'une "
+"géométrie ou d'un ensemble de géométries. Dans les versions de PostGIS "
+"antérieures à 1.4, la fonction ST_Extent renvoie une box2d."
+
+#. Tag: refname
+#: reference_type.xml:35
+#, no-c-format
+msgid "<refname>box3d</refname>"
+msgstr "<refname>box3d</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:36
+#, no-c-format
+msgid ""
+"A box composed of x min, ymin, zmin, xmax, ymax, zmax. Often used to return "
+"the 3d extent of a geometry or collection of geometries."
+msgstr ""
+"Une boite composée des coordonnées xmin, ymin, zmin, xmax, ymax, zmax. "
+"Souvent utilisé pour renvoyer la boite 3d d'une géométrie ou d'une "
+"collection de géométries."
+
+#. Tag: para
+#: reference_type.xml:41
+#, no-c-format
+msgid ""
+"box3d is a postgis spatial data type used to represent the enclosing box of "
+"a geometry or set of geometries. ST_3DExtent returns a box3d object."
+msgstr ""
+"box3d est un type spatial utilisé pour représenter la boite englobante d'une "
+"géométrie ou d'un ensemble de géométries en 3 dimensions. La fonction "
+"ST_3DExtent renvoie une box3d."
+
+#. Tag: title
+#: reference_type.xml:45 reference_type.xml:84 reference_type.xml:160
+#, no-c-format
+msgid "Casting Behavior"
+msgstr "Comportement du transtypage"
+
+#. Tag: para
+#: reference_type.xml:46 reference_type.xml:85 reference_type.xml:161
+#, no-c-format
+msgid ""
+"This section lists the automatic as well as explicit casts allowed for this "
+"data type"
+msgstr ""
+"Cette section liste les transtypages automatiques et explicites autorisés "
+"pour ce type de données"
+
+#. Tag: entry
+#: reference_type.xml:51 reference_type.xml:90 reference_type.xml:166
+#, no-c-format
+msgid "Cast To"
+msgstr "Transtypage vers"
+
+#. Tag: entry
+#: reference_type.xml:52 reference_type.xml:91 reference_type.xml:167
+#, no-c-format
+msgid "Behavior"
+msgstr "Comportement"
+
+#. Tag: entry
+#: reference_type.xml:55 reference_type.xml:94
+#, no-c-format
+msgid "<entry>box</entry>"
+msgstr "<entry>box</entry>"
+
+#. Tag: entry
+#: reference_type.xml:56 reference_type.xml:60 reference_type.xml:64
+#: reference_type.xml:95 reference_type.xml:99 reference_type.xml:103
+#: reference_type.xml:107 reference_type.xml:111 reference_type.xml:115
+#, no-c-format
+msgid "automatic"
+msgstr "automatique"
+
+#. Tag: entry
+#: reference_type.xml:59 reference_type.xml:98
+#, no-c-format
+msgid "<entry>box2d</entry>"
+msgstr "<entry>box2d</entry>"
+
+#. Tag: entry
+#: reference_type.xml:63 reference_type.xml:170
+#, no-c-format
+msgid "<entry>geometry</entry>"
+msgstr "<entry>geometry</entry>"
+
+#. Tag: refname
+#: reference_type.xml:74
+#, no-c-format
+msgid "<refname>geometry</refname>"
+msgstr "<refname>geometry</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:75
+#, no-c-format
+msgid "Planar spatial data type."
+msgstr "Type de données spatiales planaires"
+
+#. Tag: para
+#: reference_type.xml:80
+#, no-c-format
+msgid ""
+"geometry is a fundamental postgis spatial data type used to represent a "
+"feature in the Euclidean coordinate system."
+msgstr ""
+"Le type geometry est un type de données capital dans PostGIS, utilisé pour "
+"modéliser une entité dans un système de coordonées euclidien."
+
+#. Tag: entry
+#: reference_type.xml:102
+#, no-c-format
+msgid "<entry>box3d</entry>"
+msgstr "<entry>box3d</entry>"
+
+#. Tag: entry
+#: reference_type.xml:106
+#, no-c-format
+msgid "bytea"
+msgstr "bytea"
+
+#. Tag: entry
+#: reference_type.xml:110
+#, no-c-format
+msgid "<entry>geography</entry>"
+msgstr "<entry>geography</entry>"
+
+#. Tag: entry
+#: reference_type.xml:114
+#, no-c-format
+msgid "text"
+msgstr "text"
+
+#. Tag: title
+#: reference_type.xml:123 reference_type.xml:143 reference_type.xml:179
+#, no-c-format
+msgid "See Also"
+msgstr "Voir aussi"
+
+#. Tag: refname
+#: reference_type.xml:130
+#, no-c-format
+msgid "geometry_dump"
+msgstr "geometry_dump"
+
+#. Tag: refpurpose
+#: reference_type.xml:131
+#, no-c-format
+msgid ""
+"A spatial datatype with two fields - geom (holding a geometry object) and "
+"path[] (a 1-d array holding the position of the geometry within the dumped "
+"object.)"
+msgstr ""
+"Un type spatial comportant deux champs - geom (stockant un objet "
+"géométrique) et path[] (un tableau uni dimensionnel 1-d stockant la position "
+"de la géométrie dans la collection.) "
+
+#. Tag: para
+#: reference_type.xml:137
+#, no-c-format
+msgid ""
+"geometry_dump is a compound data type consisting of a geometry object "
+"referenced by the .geom field and path[] a 1-dimensional integer array "
+"(starting at 1 e.g. path[1] to get first element) array that defines the "
+"navigation path within the dumped geometry to find this element. It is used "
+"by the ST_Dump* family of functions as an output type to explode a more "
+"complex geometry into its constituent parts and location of parts."
+msgstr ""
+"geometry_dump est un type de données composite consistant en un objet "
+"géométrique référencé par le champ .geom et un tableau uni dimensionnel "
+"d'entiers référencé par le champ path[] donnant la position de chaque "
+"géométrie dans la collection (L'index du tableau démarre à 1. Par ex: "
+"path[1] pour obtenir le premier élément). Ce type utilisé par la famille de "
+"fonctions ST_Dump* comme type de retour pour exploser une géométrie complexe "
+"en ses parties élémentaires et les positions de ces parties."
+
+#. Tag: refname
+#: reference_type.xml:150
+#, no-c-format
+msgid "<refname>geography</refname>"
+msgstr "<refname>geography</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:151
+#, no-c-format
+msgid "Ellipsoidal spatial data type."
+msgstr "Type spatial ellipsoïdal"
+
+#. Tag: para
+#: reference_type.xml:156
+#, no-c-format
+msgid ""
+"geography is a spatial data type used to represent a feature in the round-"
+"earth coordinate system."
+msgstr ""
+"geography est un type de données spatiales utilisé pour représenter une "
+"entité dans les coordonnées sphériques de la terre."
+
+#. Tag: entry
+#: reference_type.xml:171
+#, no-c-format
+msgid "explicit"
+msgstr "explicite"
+
+#. Tag: para
+#: reference_type.xml:180
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Geography\"/>"
+msgstr ", <xref linkend=\"PostGIS_Geography\"/>"

@@ -17,6 +17,7 @@ TMPDIR?=/tmp
 
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
+GEOS_NUMERIC_VERSION=@GEOS_NUMERIC_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -108,6 +109,7 @@ TESTS = \
 	in_gml \
 	in_kml \
 	in_encodedpolyline \
+	interrupt \
 	iscollection \
 	regress_ogc \
 	regress_ogc_cover \
@@ -158,7 +160,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
 	# ST_DelaunayTriangles
 	TESTS += \
-		delaunaytriangles
+		delaunaytriangles \
+		interrupt_buffer
+endif
+
+ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 30403),1)
+	TESTS += \
+		interrupt_relate
 endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
@@ -220,13 +228,13 @@ test check: staged-install
 	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
 
 garden:
-	createdb postgis_garden
-	createlang plpgsql postgis_garden || true # tolerate an error here
-	psql -d postgis_garden < ../postgis/postgis.sql
-	psql -d postgis_garden < ../spatial_ref_sys.sql
+	createdb postgis_garden && \
+	createlang plpgsql postgis_garden && \
+	psql -d postgis_garden < ../postgis/postgis.sql && \
+	psql -d postgis_garden < ../spatial_ref_sys.sql || true # tolerate an error here
 	@echo '-------------------------------------------------'
 	@echo 'Regression tests in progress (it will take time)'
-	@echo 'Result output: ./regress/garden_result.txt'
+	@echo 'Result output: ./regress/postgis_garden_result.txt'
 	@echo '-------------------------------------------------'
 	psql -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
 	#dropdb postgis_garden

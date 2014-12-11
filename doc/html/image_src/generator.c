@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/wait.h> /* for WEXITSTATUS */
 
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h" /* for trim_trailing_zeros */

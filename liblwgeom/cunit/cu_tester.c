@@ -34,6 +34,7 @@ extern CU_SuiteInfo node_suite;
 extern CU_SuiteInfo wkt_out_suite;
 extern CU_SuiteInfo wkt_in_suite;
 extern CU_SuiteInfo twkb_out_suite;
+extern CU_SuiteInfo twkb_in_suite;
 extern CU_SuiteInfo wkb_out_suite;
 extern CU_SuiteInfo wkb_in_suite;
 extern CU_SuiteInfo libgeom_suite;
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
 		wkt_out_suite,
 		wkt_in_suite,
 		twkb_out_suite,
+		twkb_in_suite,
 		wkb_out_suite,
 		wkb_in_suite,
 		libgeom_suite,
