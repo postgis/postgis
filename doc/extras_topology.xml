@@ -300,7 +300,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                 <para>If you don't specify [child_layer] (or set it to NULL) this layer would contain Basic TopoGeometries (composed by primitive topology elements). 
                     Otherwise this layer will contain hierarchical TopoGeometries (composed by TopoGeometries from the child_layer).</para>
     
-                <para>Once the layer is created (it's id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
+                <para>Once the layer is created (its id is returned by the AddTopoGeometryColumn function) you're ready to construct TopoGeometry objects in it</para>
                 <para>Valid <varname>feature_type</varname>s are: POINT, LINE, POLYGON, COLLECTION</para> 
         
                 <!-- use this format if new function -->
@@ -2363,7 +2363,7 @@ edgeid
 				<refname>AddFace</refname>
 			
 				<refpurpose>
-Registers a face primitive to a topology and get it's identifier.
+Registers a face primitive to a topology and get its identifier.
         </refpurpose>
 			</refnamediv>
 		
@@ -2382,7 +2382,7 @@ Registers a face primitive to a topology and get it's identifier.
                 <title>Description</title>
             
                 <para>
-Registers a face primitive to a topology and get it's identifier.
+Registers a face primitive to a topology and get its identifier.
                 </para>
 
                 <para>
