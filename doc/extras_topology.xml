@@ -2343,7 +2343,7 @@ edgeid
 				<refname>AddFace</refname>
 			
 				<refpurpose>
-Registers a face primitive to a topology and get its identifier.
+Registers a face primitive to a topology and gets its identifier.
         </refpurpose>
 			</refnamediv>
 		
@@ -2362,7 +2362,7 @@ Registers a face primitive to a topology and get its identifier.
                 <title>Description</title>
             
                 <para>
-Registers a face primitive to a topology and get its identifier.
+Registers a face primitive to a topology and gets its identifier.
                 </para>
 
                 <para>
