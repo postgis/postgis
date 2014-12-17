@@ -174,8 +174,8 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>Returns a geography object from the  well-known text or extended well-known representation.  SRID 4326 is assumed. This
-				is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
+			<para>Returns a geography object from the well-known text or extended well-known representation. SRID 4326 is assumed if unspecified.
+				This is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
 		  </refsection>
 		  
 		 <refsection>
@@ -183,7 +183,10 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 			<programlisting>
 --- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
-UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');		
+UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
+
+--- specify a geography point using EPSG:4267, NAD27
+SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			</programlisting>
 		 </refsection>
 		  <refsection>
@@ -207,7 +210,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>Returns a geography object from the  well-known text representation.  SRID 4326 is assumed.</para>
+			<para>Returns a geography object from the  well-known text representation. SRID 4326 is assumed if unspecified.</para>
 			<!-- TODO: put in example -->
 		  </refsection>
 		  <refsection>
