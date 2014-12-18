@@ -1,3 +1,220 @@
+2014-12-17 17:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r13149] NEWS, postgis/geography_inout.c: #3009, geography
+	  functions may change column
+
+2014-12-12 21:13  Regina Obe <lr@pcorp.us>
+
+	* [r13147] doc/extras_topology.xml: fix link to vincent's topology
+	  talk -- point to 2012 instead of 2010 one.
+
+2014-12-12 07:26  Regina Obe <lr@pcorp.us>
+
+	* [r13145] doc/extras_topology.xml: missed get to gets correction
+	  in last commit
+
+2014-12-12 06:58  Regina Obe <lr@pcorp.us>
+
+	* [r13143] doc/extras_topology.xml: Grammar corrections from Eric
+	  Theise -
+	  https://github.com/erictheise/postgis/commit/b76aeaf6b2539345d44f3c2d60fbd84625e3467d
+
+2014-12-03 23:37  Regina Obe <lr@pcorp.us>
+
+	* [r13137] raster/rt_pg/rtpostgis.sql.in: #3006 Numeric overflow
+	  when executing AddRasterConstraints, increased precision to 25,10
+
+2014-12-01 08:47  Sandro Santilli <strk@keybit.net>
+
+	* [r13134] configure.ac, doc/Makefile.comments.in,
+	  doc/html/image_src/Makefile.in, doc/html/image_src/generator.c,
+	  doc/html/image_src/styles.c, doc/html/image_src/styles.h,
+	  doc/man/pgsql2shp.1, doc/man/shp2pgsql.1,
+	  extras/WFS_locks/WFS_locks.sql.in, extras/rpm/spec/postgis.spec,
+	  java/Makefile, java/jdbc/Makefile.in, liblwgeom/Makefile.in,
+	  liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/cunit/cu_buildarea.c, liblwgeom/cunit/cu_clean.c,
+	  liblwgeom/cunit/cu_force_sfs.c, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_geodetic_data.h, liblwgeom/cunit/cu_geos.c,
+	  liblwgeom/cunit/cu_homogenize.c, liblwgeom/cunit/cu_in_geojson.c,
+	  liblwgeom/cunit/cu_in_wkb.c, liblwgeom/cunit/cu_in_wkt.c,
+	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/cunit/cu_misc.c, liblwgeom/cunit/cu_node.c,
+	  liblwgeom/cunit/cu_out_geojson.c, liblwgeom/cunit/cu_out_gml.c,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/cunit/cu_out_svg.c,
+	  liblwgeom/cunit/cu_out_wkb.c, liblwgeom/cunit/cu_out_wkt.c,
+	  liblwgeom/cunit/cu_print.c, liblwgeom/cunit/cu_ptarray.c,
+	  liblwgeom/cunit/cu_sfcgal.c, liblwgeom/cunit/cu_split.c,
+	  liblwgeom/cunit/cu_stringbuffer.c, liblwgeom/cunit/cu_surface.c,
+	  liblwgeom/cunit/cu_surface.h, liblwgeom/cunit/cu_tester.c,
+	  liblwgeom/cunit/cu_tester.h, liblwgeom/cunit/cu_tree.c,
+	  liblwgeom/cunit/cu_triangulate.c, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwalgorithm.c, liblwgeom/lwcircstring.c,
+	  liblwgeom/lwcollection.c, liblwgeom/lwcompound.c,
+	  liblwgeom/lwcurvepoly.c, liblwgeom/lwgeom.c,
+	  liblwgeom/lwgeom_api.c, liblwgeom/lwgeom_debug.c,
+	  liblwgeom/lwgeom_geos.c, liblwgeom/lwgeom_geos.h,
+	  liblwgeom/lwgeom_geos_clean.c, liblwgeom/lwgeom_geos_node.c,
+	  liblwgeom/lwgeom_geos_split.c, liblwgeom/lwgeom_log.h,
+	  liblwgeom/lwgeom_sfcgal.c, liblwgeom/lwgeom_sfcgal.h,
+	  liblwgeom/lwgeom_transform.c, liblwgeom/lwhomogenize.c,
+	  liblwgeom/lwline.c, liblwgeom/lwlinearreferencing.c,
+	  liblwgeom/lwmcurve.c, liblwgeom/lwmline.c, liblwgeom/lwmpoint.c,
+	  liblwgeom/lwmpoly.c, liblwgeom/lwmsurface.c,
+	  liblwgeom/lwout_geojson.c, liblwgeom/lwout_gml.c,
+	  liblwgeom/lwout_kml.c, liblwgeom/lwout_svg.c,
+	  liblwgeom/lwpoint.c, liblwgeom/lwpoly.c, liblwgeom/lwpsurface.c,
+	  liblwgeom/lwsegmentize.c, liblwgeom/lwtin.c,
+	  liblwgeom/lwtriangle.c, liblwgeom/measures.c,
+	  liblwgeom/measures.h, liblwgeom/measures3d.c,
+	  liblwgeom/measures3d.h, liblwgeom/ptarray.c,
+	  libpgcommon/Makefile.in, libpgcommon/common.h,
+	  libpgcommon/cunit/Makefile.in, libpgcommon/lwgeom_cache.c,
+	  libpgcommon/lwgeom_cache.h, libpgcommon/lwgeom_pg.c,
+	  libpgcommon/lwgeom_transform.c, libpgcommon/lwgeom_transform.h,
+	  loader/Makefile.in, loader/README.pgsql2shp,
+	  loader/README.shp2pgsql, loader/cunit/Makefile.in,
+	  loader/cunit/cu_pgsql2shp.c, loader/cunit/cu_pgsql2shp.h,
+	  loader/cunit/cu_shp2pgsql.c, loader/cunit/cu_shp2pgsql.h,
+	  loader/cunit/cu_tester.c, loader/cunit/cu_tester.h,
+	  loader/pgsql2shp-cli.c, loader/pgsql2shp-core.h,
+	  loader/shp2pgsql-core.h, loader/shp2pgsql-gui.c,
+	  loader/shpcommon.c, loader/shpcommon.h,
+	  macros/ac_proj4_version.m4, postgis/Makefile.in,
+	  postgis/long_xact.c, postgis/long_xact.sql.in,
+	  postgis/lwgeom_accum.c, postgis/lwgeom_backend_api.c,
+	  postgis/lwgeom_backend_api.h, postgis/lwgeom_box.c,
+	  postgis/lwgeom_btree.c, postgis/lwgeom_dump.c,
+	  postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_analytic.h,
+	  postgis/lwgeom_functions_basic.c, postgis/lwgeom_functions_lrs.c,
+	  postgis/lwgeom_geos.c, postgis/lwgeom_geos.h,
+	  postgis/lwgeom_geos_clean.c, postgis/lwgeom_geos_prepared.c,
+	  postgis/lwgeom_geos_prepared.h,
+	  postgis/lwgeom_geos_relatematch.c, postgis/lwgeom_in_gml.c,
+	  postgis/lwgeom_ogc.c, postgis/lwgeom_rtree.c,
+	  postgis/lwgeom_sfcgal.c, postgis/lwgeom_sfcgal.h,
+	  postgis/lwgeom_spheroid.c, postgis/lwgeom_sqlmm.c,
+	  postgis/lwgeom_transform.c, postgis/lwgeom_triggers.c,
+	  postgis/postgis.sql.in, postgis/postgis_drop_after.sql,
+	  postgis/postgis_module.c, postgis/uninstall_long_xact.sql.in,
+	  postgis/uninstall_sqlmm.sql.in,
+	  raster/macros/ac_proj4_version.m4, raster/test/cunit/Makefile.in,
+	  raster/test/cunit/cu_tester.c, raster/test/cunit/cu_tester.h,
+	  topology/Makefile.in, topology/sql/export/TopoJSON.sql.in,
+	  topology/sql/export/gml.sql.in,
+	  topology/sql/manage/CopyTopology.sql.in,
+	  topology/sql/manage/TopologySummary.sql.in,
+	  topology/sql/polygonize.sql.in, topology/sql/populate.sql.in,
+	  topology/sql/predicates.sql.in,
+	  topology/sql/query/GetNodeEdges.sql.in,
+	  topology/sql/query/GetRingEdges.sql.in,
+	  topology/sql/query/getedgebypoint.sql.in,
+	  topology/sql/query/getfacebypoint.sql.in,
+	  topology/sql/query/getnodebypoint.sql.in,
+	  topology/sql/topoelement/topoelement_agg.sql.in,
+	  topology/sql/topogeometry/cleartopogeom.sql.in,
+	  topology/sql/topogeometry/simplify.sql.in,
+	  topology/sql/topogeometry/totopogeom.sql.in,
+	  topology/sql/topogeometry/type.sql.in, topology/topology.sql.in,
+	  utils/Makefile.in, utils/create_undef.pl,
+	  utils/postgis_proc_upgrade.pl, utils/postgis_restore.pl.in: Fix
+	  website links to go to postgis.net
+
+2014-10-07 14:11  Regina Obe <lr@pcorp.us>
+
+	* [r13042]
+	  extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql:
+	  #2958 reverse_geocode erroring ERROR: invalid input syntax for
+	  type numeric: " " (revised patch to not return 0 for non-numbered
+	  roads)
+
+2014-10-07 13:41  Regina Obe <lr@pcorp.us>
+
+	* [r13040]
+	  extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql:
+	  #2958 reverse_geocode erroring ERROR: invalid input syntax for
+	  type numeric: " "
+
+2014-10-05 00:08  Regina Obe <lr@pcorp.us>
+
+	* [r13036] doc/reference_output.xml: #2955 ST_AsGML is missing some
+	  protos in docs
+
+2014-10-02 17:35  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r13032] NEWS: Update news for #2953
+
+2014-10-02 17:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r13031] postgis/gserialized_estimate.c: #2953, Unable to compute
+	  stats for some features
+
+2014-10-01 14:46  Sandro Santilli <strk@keybit.net>
+
+	* [r13026] NEWS, liblwgeom/liblwgeom_internal.h,
+	  liblwgeom/lwgeom.c, liblwgeom/lwgeom_geos_clean.c: Fix yet
+	  another memory leak in lwgeom_make_valid (#2947)
+	  
+	  The leak occurs on invalid single-component collection input.
+
+2014-10-01 14:11  Sandro Santilli <strk@keybit.net>
+
+	* [r13024] liblwgeom/cunit/cu_force_sfs.c,
+	  liblwgeom/lwsegmentize.c: Fix leaks in lwcurvepoly_segmentize and
+	  its tester
+
+2014-10-01 13:58  Sandro Santilli <strk@keybit.net>
+
+	* [r13022] NEWS, liblwgeom/lwcurvepoly.c, liblwgeom/measures.c: Fix
+	  memory leak in lw_dist2d_poly_curvepoly and
+	  lw_dist2d_circstring_poly
+	  
+	  Also clear the memory management for
+	  lwcurvepoly_construct_from_lwpoly .
+	  Fixes #2949.
+
+2014-09-30 06:48  Sandro Santilli <strk@keybit.net>
+
+	* [r13011] NEWS: Note the PostgreSQL 9.5 support in the news
+
+2014-09-30 06:47  Sandro Santilli <strk@keybit.net>
+
+	* [r13010] topology/sql/predicates.sql.in: Fix syntax error in
+	  RAISE calls (#2942)
+	  
+	  PostgreSQL 9.5 doesn't tolerate them...
+
+2014-09-22 09:38  Sandro Santilli <strk@keybit.net>
+
+	* [r12994] NEWS, liblwgeom/lwcollection.c: Reduce default paranoia
+	  on geometry collection construction
+	  
+	  Significantly speeds up creation of large collection of
+	  geometries.
+	  Closes #2933
+
+2014-09-19 21:23  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r12990] configure.ac, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwutil.c, postgis_config.h.in: #2934, strcasestr
+	  support for platforms lacking it
+
+2014-09-17 17:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r12983] NEWS, postgis/lwgeom_box.c: #2931, BOX representation is
+	  case sensitive
+
+2014-09-11 04:02  Regina Obe <lr@pcorp.us>
+
+	* [r12969] Version.config, extensions/upgradeable_versions.mk: bump
+	  to 2.1.5dev
+
+2014-09-11 01:18  Regina Obe <lr@pcorp.us>
+
+	* [r12965] ChangeLog, README.postgis, Version.config, authors.svn:
+	  Update Bborie's contact, flip to 2.1.4
+
 2014-09-10 07:05  Regina Obe <lr@pcorp.us>
 
 	* [r12964] NEWS, doc/release_notes.xml: Add missing ticket items to
