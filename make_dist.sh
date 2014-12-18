@@ -32,7 +32,7 @@ if [ -d "$outdir" ]; then
 fi
 
 echo "Exporting tag $tag"
-svnurl="http://svn.osgeo.org/postgis/$tag"
+svnurl="https://svn.osgeo.org/postgis/$tag"
 svn export $svnurl "$outdir"
 if [ $? -gt 0 ]; then
 	exit 1
