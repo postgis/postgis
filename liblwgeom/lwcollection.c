@@ -173,8 +173,6 @@ void lwcollection_reserve(LWCOLLECTION *col, int ngeoms)
 */
 LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 {
-	int i = 0;
-
 	if ( col == NULL || geom == NULL ) return NULL;
 
 	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) ) {
