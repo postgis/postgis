@@ -1855,6 +1855,17 @@ BEGIN
     || quote_ident(atopology)
     || '.edge_data (right_face);';
 
+  ------- Indexes on next_left_edge and next_right_edge of edge_data
+  ------- NOTE: Significantly improves performance inserting 
+  --------      new edges on large topologies
+  -------       See http://trac.osgeo.org/postgis/ticket/3010
+  EXECUTE 'CREATE INDEX edge_next_left_edge_idx ON '
+    || quote_ident(atopology)
+    || '.edge_data (next_left_edge);';
+  EXECUTE 'CREATE INDEX edge_next_right_edge_idx ON '
+    || quote_ident(atopology)
+    || '.edge_data (next_right_edge);';
+
   ------- Indexes on start_node and end_node of edge_data
   ------- NOTE: this indexes speed up node deletion
   -------       by a factor of 1000 !
