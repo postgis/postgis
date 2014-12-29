@@ -116,6 +116,7 @@ regress/00-regress-install/
 regress/Makefile
 regress/postgis.sql
 regress/postgis_garden_result.txt
+regress/raster_garden_result.txt
 *.so
 st_*.png
 .svn
