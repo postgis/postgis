@@ -1731,7 +1731,7 @@ BEGIN
   END IF;
 
   --
-  -- Check node existance
+  -- Check edge existance
   -- 
   ok = false;
   FOR edge IN EXECUTE 'SELECT * FROM '
@@ -1822,7 +1822,7 @@ BEGIN
   END;
 
   --
-  -- Check node existance
+  -- Check edge existance
   -- 
   ok = false;
   FOR oldedge IN EXECUTE 'SELECT * FROM '
@@ -1957,7 +1957,7 @@ BEGIN
     USING edge2;
 
   --
-  -- Update all next edge references to match new layout
+  -- Update all next edge references to match new layout (ST_NewEdgeSplit)
   --
 
   EXECUTE 'UPDATE ' || quote_ident(atopology)
@@ -2114,7 +2114,7 @@ BEGIN
   END;
 
   --
-  -- Check node existance
+  -- Check edge existance
   -- 
   ok = false;
   FOR oldedge IN EXECUTE 'SELECT * FROM '
@@ -2221,7 +2221,7 @@ BEGIN
 
 
   --
-  -- Update all next edge references to match new layout
+  -- Update all next edge references to match new layout (ST_ModEdgeSplit)
   --
 
   EXECUTE 'UPDATE ' || quote_ident(atopology)
