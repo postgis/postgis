@@ -361,6 +361,11 @@ BEGIN
     || ', next_left_edge = ' || e2sign*newedgeid
     || '*(next_left_edge/'
     || e2id || ')  WHERE abs_next_left_edge = ' || e2id;
+  IF e2rec.start_node = commonnode THEN
+    sql := sql || ' AND end_node = ' || e2rec.end_node;
+  ELSE
+    sql := sql || ' AND end_node = ' || e2rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
   sql := 'UPDATE ' || quote_ident(toponame)
@@ -368,6 +373,11 @@ BEGIN
     || ', next_right_edge = ' || e2sign*newedgeid
     || '*(next_right_edge/'
     || e2id || ') WHERE abs_next_right_edge = ' || e2id;
+  IF e2rec.start_node = commonnode THEN
+    sql := sql || ' AND start_node = ' || e2rec.end_node;
+  ELSE
+    sql := sql || ' AND start_node = ' || e2rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
 
@@ -377,6 +387,11 @@ BEGIN
     || ', next_left_edge = ' || newedgeid
     || '*(next_left_edge/'
     || e1id || ')  WHERE abs_next_left_edge = ' || e1id;
+  IF e1rec.start_node = commonnode THEN
+    sql := sql || ' AND end_node = ' || e1rec.end_node;
+  ELSE
+    sql := sql || ' AND end_node = ' || e1rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
   sql := 'UPDATE ' || quote_ident(toponame)
@@ -384,6 +399,11 @@ BEGIN
     || ', next_right_edge = ' || newedgeid
     || '*(next_right_edge/'
     || e1id || ') WHERE abs_next_right_edge = ' || e1id;
+  IF e1rec.start_node = commonnode THEN
+    sql := sql || ' AND start_node = ' || e1rec.end_node;
+  ELSE
+    sql := sql || ' AND start_node = ' || e1rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
 
@@ -646,6 +666,11 @@ BEGIN
     || ', next_left_edge = ' || e2sign*e1id
     || '*(next_left_edge/'
     || e2id || ')  WHERE abs_next_left_edge = ' || e2id;
+  IF e2rec.start_node = commonnode THEN
+    sql := sql || ' AND end_node = ' || e2rec.end_node;
+  ELSE
+    sql := sql || ' AND end_node = ' || e2rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
   sql := 'UPDATE ' || quote_ident(toponame)
@@ -653,6 +678,11 @@ BEGIN
     || ', next_right_edge = ' || e2sign*e1id
     || '*(next_right_edge/'
     || e2id || ') WHERE abs_next_right_edge = ' || e2id;
+  IF e2rec.start_node = commonnode THEN
+    sql := sql || ' AND start_node = ' || e2rec.end_node;
+  ELSE
+    sql := sql || ' AND start_node = ' || e2rec.start_node;
+  END IF;
   --RAISE DEBUG 'SQL: %', sql;
   EXECUTE sql;
 
@@ -1977,6 +2007,7 @@ BEGIN
     || ','
     || ' abs_next_right_edge = ' || edgeid2
     || ' WHERE next_right_edge = ' || anedge
+    || ' AND start_node = ' || oldedge.start_node
     || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
     ;
   EXECUTE 'UPDATE ' || quote_ident(atopology)
@@ -1985,6 +2016,7 @@ BEGIN
     || ','
     || ' abs_next_right_edge = ' || edgeid1
     || ' WHERE next_right_edge = ' || -anedge
+    || ' AND start_node = ' || oldedge.end_node
     || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
     ;
 
@@ -1994,6 +2026,7 @@ BEGIN
     || ','
     || ' abs_next_left_edge = ' || edgeid1
     || ' WHERE next_left_edge = ' || anedge
+    || ' AND end_node = ' || oldedge.start_node
     || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
     ;
   EXECUTE 'UPDATE ' || quote_ident(atopology)
@@ -2002,6 +2035,7 @@ BEGIN
     || ','
     || ' abs_next_left_edge = ' || edgeid2
     || ' WHERE next_left_edge = ' || -anedge
+    || ' AND end_node = ' || oldedge.end_node
     || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
     ;
 
@@ -2250,7 +2284,8 @@ BEGIN
     || ','
     || ' abs_next_right_edge = ' || newedgeid
     || ' WHERE edge_id != ' || newedgeid
-    || ' AND next_right_edge = ' || -anedge;
+    || ' AND next_right_edge = ' || -anedge
+    || ' AND start_node = ' || oldedge.end_node;
 
   EXECUTE 'UPDATE ' || quote_ident(atopology)
     || '.edge_data SET '
@@ -2258,7 +2293,8 @@ BEGIN
     || ','
     || ' abs_next_left_edge = ' || newedgeid
     || ' WHERE edge_id != ' || newedgeid
-    || ' AND next_left_edge = ' || -anedge;
+    || ' AND next_left_edge = ' || -anedge
+    || ' AND end_node = ' || oldedge.end_node;
 
   --
   -- Update references in the Relation table.
