@@ -62,7 +62,7 @@ SELECT '#66', ST_AsText((ST_Dump(ST_GeomFromEWKT('CIRCULARSTRING(0 0,1 1,2 2)'))
 
 -- #68 --
 SELECT '#68a', ST_AsText(ST_Shift_Longitude(ST_GeomFromText('MULTIPOINT(1 3, 4 5)')));
-SELECT '#68b', ST_AsText(ST_Shift_Longitude(ST_GeomFromText('CIRCULARSTRING(1 3, 4 5, 6 7)')));
+SELECT '#68b', ST_AsText(ST_ShiftLongitude(ST_GeomFromText('CIRCULARSTRING(1 3, 4 5, 6 7)')));
 
 -- #69 --
 SELECT '#69', ST_AsText(ST_Translate(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),1,2));

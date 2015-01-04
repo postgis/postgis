@@ -2499,7 +2499,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
 	<refentry id="ST_Shift_Longitude">
 	  <refnamediv>
-		<refname>ST_Shift_Longitude</refname>
+		<refname>ST_ShiftLongitude</refname>
 
 		<refpurpose>Reads every point/vertex in every component of every feature
 			in a geometry, and if the longitude coordinate is &lt;0, adds 360
@@ -2510,7 +2510,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Shift_Longitude</function></funcdef>
+			<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -2531,6 +2531,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 
 		<para>&Z_support;</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
+    <para>NOTE: this function was renamed from "ST_Shift_Longitude" in 2.2.0</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
@@ -2540,14 +2541,14 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 		<title>Examples</title>
 
 		<programlisting>--3d points
-SELECT ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
-	ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
+SELECT ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,
+	ST_AsEWKT(ST_ShiftLongitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
 geomA							  geomB
 ----------						  -----------
 SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
 
 --regular line string
-SELECT ST_AsText(ST_Shift_Longitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
+SELECT ST_AsText(ST_ShiftLongitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
 
 st_astext
 ----------
