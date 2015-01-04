@@ -2179,7 +2179,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 
 		<refpurpose>Returns minimum distance in meters between two lon/lat
 				geometries. Uses a spherical earth and radius of 6370986 meters.
-				Faster than ST_Distance_Spheroid <xref linkend="ST_Distance_Spheroid" />, but less
+				Faster than ST_DistanceSpheroid <xref linkend="ST_Distance_Spheroid" />, but less
 				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
 	  </refnamediv>
 
@@ -2236,7 +2236,7 @@ FROM
 
 	<refentry id="ST_Distance_Spheroid">
 	  <refnamediv>
-		<refname>ST_Distance_Spheroid</refname>
+		<refname>ST_DistanceSpheroid</refname>
 
 		<refpurpose>Returns the minimum distance between two lon/lat geometries given a
 			particular spheroid.
@@ -2246,7 +2246,7 @@ FROM
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Distance_Spheroid</function></funcdef>
+			<funcdef>float <function>ST_DistanceSpheroid</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>measurement_spheroid</parameter></paramdef>
@@ -2265,6 +2265,7 @@ FROM
 		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+		<para>Changed: 2.2.0 In prior versions this used to be called ST_Distance_Spheroid</para>
 	  </refsection>
 
 
@@ -2272,7 +2273,7 @@ FROM
 		<title>Examples</title>
 
 		<programlisting>SELECT round(CAST(
-		ST_Distance_Spheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
+		ST_DistanceSpheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
 			As numeric),2) As dist_meters_spheroid,
 		round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
 round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
@@ -2845,7 +2846,7 @@ ST_3DLength
 
 	<refentry id="ST_Length_Spheroid">
 	  <refnamediv>
-		<refname>ST_Length_Spheroid</refname>
+		<refname>ST_LengthSpheroid</refname>
 
 		<refpurpose>Calculates the 2D or 3D length of a linestring/multilinestring on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
@@ -2855,7 +2856,7 @@ ST_3DLength
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Length_Spheroid</function></funcdef>
+			<funcdef>float <function>ST_LengthSpheroid</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
 		  </funcprototype>
@@ -2878,6 +2879,8 @@ ST_3DLength
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 
+		<para>Availability: 1.2.2</para>
+		<para>Changed: 2.2.0 In prior versions this used to be called ST_Length_Spheroid</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -2885,13 +2888,13 @@ ST_3DLength
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Length_Spheroid( geometry_column,
+		<programlisting>SELECT ST_LengthSpheroid( geometry_column,
 			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
 			  FROM geometry_table;
 
-SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len,
-ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
 	(-71.05957 42.3589 , -71.061 43))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
@@ -2900,9 +2903,9 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
  85204.5207562955 | 13986.8725229309 | 71217.6482333646
 
  --3D
-SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len,
-ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_LengthSpheroid( the_geom, sph_m ) As tot_len,
+ST_LengthSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_LengthSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
 	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;

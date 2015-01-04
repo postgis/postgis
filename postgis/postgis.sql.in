@@ -1140,6 +1140,7 @@ CREATE OR REPLACE FUNCTION ST_Length(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
+-- TODO: deprecate ?
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
@@ -1147,12 +1148,21 @@ CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
+-- Availability in 2.2.0
+CREATE OR REPLACE FUNCTION ST_LengthSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Length_Spheroid', 'ST_LengthSpheroid', '2.2.0');
+    SELECT ST_LengthSpheroid($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
@@ -1192,12 +1202,21 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	AS 'MODULE_PATHNAME','area'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,spheroid)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Distance_Spheroid', 'ST_DistanceSpheroid', '2.2.0');
+    SELECT ST_DistanceSpheroid($1,$2,$3);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Minimum distance. 2d only.
 
