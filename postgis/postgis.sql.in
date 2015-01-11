@@ -2841,6 +2841,12 @@ CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_SetEffectiveArea'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
