@@ -1,8 +1,11 @@
 RFC2: Well Known Binary format for RASTER type
 ----------------------------------------------
-$Author$
-$Date$
-$Revision$
+Author: Sandro Santilli <strk@keybit.net>
+Date: 2009-01-29
+Status: Adopted
+Revisions:
+ 2011-01-24 by Jorge Arévalo
+  - Adds isNodataValue bit to band flags
 ------------------------------------------------------
 
 The WKB format for RASTER is meant for transport.

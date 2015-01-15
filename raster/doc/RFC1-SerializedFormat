@@ -1,8 +1,11 @@
 RFC1: serialized format (storage) for RASTER type
 ------------------------------------------------------
-$Author$
-$Date$
-$Revision$
+Author: Sandro Santilli <strk@keybit.net>
+Date: 2009-01-28
+Status: Adopted
+Revisions:
+ 2011-01-24 by Jorge Arévalo
+  - Adds isNodataValue bit to band flags
 ------------------------------------------------------
 
 The goals of the serialized version for RASTER type are:
