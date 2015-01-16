@@ -2030,7 +2030,7 @@ FROM (SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DistanceSphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
@@ -2173,9 +2173,9 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
   </refsection>
 </refentry>
 
-<refentry id="ST_Distance_Sphere">
+<refentry id="ST_DistanceSphere">
 	  <refnamediv>
-		<refname>ST_Distance_Sphere</refname>
+		<refname>ST_DistanceSphere</refname>
 
 		<refpurpose>Returns minimum distance in meters between two lon/lat
 				geometries. Uses a spherical earth and radius of 6370986 meters.
@@ -2186,7 +2186,7 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Distance_Sphere</function></funcdef>
+			<funcdef>float <function>ST_DistanceSphere</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatA</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>geomlonlatB</parameter></paramdef>
 		  </funcprototype>
@@ -2205,13 +2205,14 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
+		<para>Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere</para>
 	  </refsection>
 
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
+		<programlisting>SELECT round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters,
 round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
 round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
@@ -2275,7 +2276,7 @@ FROM
 		<programlisting>SELECT round(CAST(
 		ST_DistanceSpheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]')
 			As numeric),2) As dist_meters_spheroid,
-		round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
+		round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere,
 round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611),
 		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
 FROM
@@ -2291,7 +2292,7 @@ FROM
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Sphere" /></para>
+		<para><xref linkend="ST_Distance" />, <xref linkend="ST_DistanceSphere" /></para>
 	  </refsection>
 	</refentry>
 

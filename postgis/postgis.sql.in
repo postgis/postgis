@@ -4729,13 +4729,22 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 #include "geography.sql.in"
 
 
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8
 	AS $$
 	select st_distance(geography($1),geography($2),false)
 	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT
+	COST 300;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Distance_Sphere', 'ST_DistanceSphere', '2.2.0');
+    SELECT ST_DistanceSphere($1,$2);
+  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 300;
 
