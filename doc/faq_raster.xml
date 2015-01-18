@@ -3,6 +3,16 @@
   <title>PostGIS Raster Frequently Asked Questions</title>
 
   <qandaset>
+  
+     <qandaentry id="faq_security_change_1">
+      <question>
+        <para>I'm getting error <code>ERROR: RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format.</code></para>
+      </question>
+
+      <answer>
+        <para>As of PostGIS 2.1.3 and 2.0.5, a security change was made to by default disable all GDAL drivers and out of db rasters. The release notes are at <ulink url="/2014/05/19/postgis-2.0.6_and_2.1.3">PostGIS 2.0.6, 2.1.3 security release</ulink>. In order to reenable specific drivers or all drivers and reenable out of database support, refer to <xref linkend="install_short_version" />.</para>
+      </answer>
+    </qandaentry>
     
   	 <qandaentry>
       <question>
