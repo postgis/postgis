@@ -127,7 +127,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
-                <para>&sfcgal_enhanced;</para>
+        <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
@@ -313,7 +313,7 @@ ST_DWithin(
 			<refname>ST_3DIntersects</refname>
 
 			<refpurpose>Returns TRUE if the Geometries "spatially
-			intersect" in 3d - only for points and linestrings
+			intersect" in 3d - only for points, linestrings, polygons, polyhedral surface (area).  With SFCGAL backend enabled also supports TINS and Polyhedral Surfaces (including solids) in addition.
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -345,9 +345,13 @@ ST_DWithin(
 			  comparison that will make use of any indexes that are available on the
 			  geometries.</para>
 			</note>
+			
+			<note><para>In order to take advantage of support for TINS and extended support for PolyHedralSurfaces, you need to enable the SFCGAL backend.  This can be done at session time with: <code>set postgis.backend = sfcgal;</code> or at the database or system level.  Database level can be done with <code>ALTER DATABASE gisdb SET postgis.backend = sfcgal;</code>.</para></note>
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&sfcgal_enhanced;</para>
 			<para>&sqlmm_compliant; SQL-MM 3: ?</para>
 		</refsection>
 		<refsection>
@@ -361,6 +365,14 @@ ST_DWithin(
 (1 row)
 		</programlisting>
 		</refsection>
+		
+		<refsection><title>TIN Examples</title>
+		    <programlisting>set postgis.backend = sfcgal;
+SELECT ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geometry);
+ st_3dintersects 
+-----------------
+ t</programlisting></refsection>
+		
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_Intersects"/></para>
