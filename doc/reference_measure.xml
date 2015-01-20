@@ -313,7 +313,7 @@ ST_DWithin(
 			<refname>ST_3DIntersects</refname>
 
 			<refpurpose>Returns TRUE if the Geometries "spatially
-			intersect" in 3d - only for points, linestrings, polygons, polyhedral surface (area).  With SFCGAL backend enabled also supports TINS and Polyhedral Surfaces (including solids) in addition.
+			intersect" in 3d - only for points, linestrings, polygons, polyhedral surface (area).  With SFCGAL backend enabled also supports TINS 
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
@@ -346,7 +346,7 @@ ST_DWithin(
 			  geometries.</para>
 			</note>
 			
-			<note><para>In order to take advantage of support for TINS and extended support for PolyHedralSurfaces, you need to enable the SFCGAL backend.  This can be done at session time with: <code>set postgis.backend = sfcgal;</code> or at the database or system level.  Database level can be done with <code>ALTER DATABASE gisdb SET postgis.backend = sfcgal;</code>.</para></note>
+			<note><para>In order to take advantage of support for TINS, you need to enable the SFCGAL backend.  This can be done at session time with: <code>set postgis.backend = sfcgal;</code> or at the database or system level.  Database level can be done with <code>ALTER DATABASE gisdb SET postgis.backend = sfcgal;</code>.</para></note>
 			<para>&Z_support;</para>
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
