@@ -57,6 +57,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/topo2.5d.sql \
 	regress/totopogeom.sql \
 	regress/droptopology.sql \
+	regress/droptopogeometrycolumn.sql \
 	regress/copytopology.sql \
 	regress/createtopogeom.sql \
 	regress/createtopology.sql \

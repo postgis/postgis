@@ -7,6 +7,7 @@ PostGIS 2.1.6
 
  * Bug Fixes *
 
+  - #3016, Allow unregistering layers of corrupted topologies
   - #3015, Avoid exceptions from TopologySummary
 
 

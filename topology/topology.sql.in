@@ -277,8 +277,9 @@ BEGIN
   END IF;
 
   -- Check if any record in the relation table references this layer
-  FOR rec IN SELECT * FROM pg_namespace
-    WHERE text(nspname) = toponame
+  FOR rec IN SELECT c.oid FROM pg_namespace n, pg_class c
+    WHERE text(n.nspname) = toponame AND c.relnamespace = n.oid
+          AND c.relname = 'relation'
   LOOP
     query = 'SELECT * '
       || ' FROM ' || quote_ident(toponame)
@@ -749,9 +750,7 @@ BEGIN
   END IF;
     
   -- Clean up the topology schema
-  FOR rec IN SELECT * FROM pg_namespace
-    WHERE text(nspname) = lyrinfo.toponame
-  LOOP
+  BEGIN
     -- Cleanup the relation table
     EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
       || '.relation '
@@ -761,8 +760,12 @@ BEGIN
     -- Drop the sequence for topogeoms in this layer
     EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
       || '.topogeo_s_' || lyrinfo.layer_id;
-
-  END LOOP;
+  EXCEPTION
+    WHEN UNDEFINED_TABLE THEN
+      RAISE NOTICE '%', SQLERRM;
+    WHEN OTHERS THEN
+      RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
+  END;
 
   ok = false;
   FOR rec IN SELECT * FROM pg_namespace n, pg_class c, pg_attribute a
