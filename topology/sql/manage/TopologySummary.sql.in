@@ -27,6 +27,7 @@ DECLARE
   missing int4;
   sql text;
   ret text;
+  tgcount int4;
 BEGIN
 
   ret := 'Topology ' || quote_ident(atopology) ;
@@ -36,57 +37,62 @@ BEGIN
     -- TODO: catch <no_rows> to give a nice error message
     var_topology_id := rec.id;
 
-    ret := ret || ' (' || rec.id || '), ';
-    ret := ret || 'SRID ' || rec.srid || ', '
+    ret := ret || ' (id ' || rec.id || ', '
+               || 'SRID ' || rec.srid || ', '
                || 'precision ' || rec.precision;
     IF rec.hasz THEN ret := ret || ', has Z'; END IF;
-    ret := ret || E'\n';
+    ret := ret || E')\n';
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
-      ret := ret || E' (X)\n';
+      ret := ret || E' (unregistered)\n';
   END;
 
   BEGIN
-
-  BEGIN
-    EXECUTE 'SELECT count(node_id) FROM ' || quote_ident(atopology)
+    EXECUTE 'SELECT count(*) FROM ' || quote_ident(atopology)
       || '.node ' INTO STRICT n;
     ret = ret || n || ' nodes, ';
   EXCEPTION
     WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
-      ret = ret || 'X nodes, ';
+      IF NOT EXISTS (
+          SELECT * FROM pg_catalog.pg_namespace WHERE nspname = atopology
+         )
+      THEN
+        ret = ret || 'missing schema';
+        RETURN ret; 
+      ELSE
+        ret = ret || 'missing nodes, ';
+      END IF;
   END;
 
   BEGIN
-    EXECUTE 'SELECT count(edge_id) FROM ' || quote_ident(atopology)
-      || '.edge_data ' INTO STRICT n;
+    EXECUTE 'SELECT count(*) FROM ' || quote_ident(atopology)
+      || '.edge' INTO STRICT n;
     ret = ret || n || ' edges, ';
   EXCEPTION
     WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
-      ret = ret || 'X edges, ';
+      ret = ret || 'missing edges, ';
   END;
 
   BEGIN
-    EXECUTE 'SELECT count(face_id) FROM ' || quote_ident(atopology)
-      || '.face WHERE face_id != 0' INTO STRICT n;
-    ret = ret || n || ' faces, ';
+    EXECUTE 'SELECT count(*) FROM ' || quote_ident(atopology)
+      || '.face' INTO STRICT n;
+    ret = ret || greatest(n-1,0) || ' faces, '; -- -1 is face=0
   EXCEPTION
     WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
-      ret = ret || 'X faces, ';
+      ret = ret || 'missing faces, ';
   END;
 
   BEGIN
-
-    EXECUTE 'SELECT count(*) FROM (SELECT DISTINCT layer_id,topogeo_id FROM '
-      || quote_ident(atopology) || '.relation ) foo ' INTO STRICT n;
-    ret = ret || n || ' topogeoms in ';
-
-    EXECUTE 'SELECT count(*) FROM (SELECT DISTINCT layer_id FROM '
-      || quote_ident(atopology) || '.relation ) foo ' INTO STRICT n;
-    ret = ret || n || ' layers' || E'\n';
+    EXECUTE 'SELECT count(distinct layer_id) AS ln, '
+      || 'count(distinct (layer_id,topogeo_id)) AS tn FROM '
+      || quote_ident(atopology) || '.relation' INTO STRICT rec;
+    tgcount := rec.tn;
+    ret = ret || rec.tn || ' topogeoms in ' || rec.ln || E' layers\n';
   EXCEPTION
-    WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
-      ret = ret || 'X topogeoms in X layers' || E'\n';
+    WHEN UNDEFINED_TABLE THEN
+      ret = ret || E'missing relations\n';
+    WHEN UNDEFINED_COLUMN THEN
+      ret = ret || E'corrupted relations\n';
   END;
 
   -- print information about registered layers
@@ -119,7 +125,8 @@ BEGIN
 
       ret = ret || n || ' topogeoms' || E'\n';
 
-    EXCEPTION WHEN UNDEFINED_TABLE THEN
+    EXCEPTION WHEN UNDEFINED_TABLE OR UNDEFINED_COLUMN THEN
+      n := NULL;
       ret = ret || 'X topogeoms' || E'\n';
     END;
 
@@ -142,10 +149,17 @@ BEGIN
             || quote_ident(rec.feature_column) || ') FROM '
             || quote_ident(rec.schema_name) || '.'
             || quote_ident(rec.table_name) || ') as foo';
-          EXECUTE sql INTO STRICT missing;
-          IF missing > 0 THEN
-            ret = ret || ' (' || missing || ' missing topogeoms)';
-          END IF;
+          BEGIN
+            EXECUTE sql INTO STRICT missing;
+            IF missing > 0 THEN
+              ret = ret || ' (' || missing || ' missing topogeoms)';
+            END IF;
+          EXCEPTION
+            WHEN UNDEFINED_TABLE THEN
+              ret = ret || ' ( unexistent table )';
+            WHEN UNDEFINED_COLUMN THEN
+              ret = ret || ' ( unexistent column )';
+          END;
         END IF;
         ret = ret || E'\n';
 
@@ -156,31 +170,26 @@ BEGIN
   END LOOP; -- }
 
   -- print information about unregistered layers containing topogeoms
-  sql := 'SELECT layer_id FROM '
-      || quote_ident(atopology) || '.relation EXCEPT SELECT layer_id'
-      || ' FROM topology.layer WHERE topology_id = '
-      || var_topology_id || 'ORDER BY layer_id';
-  --RAISE DEBUG '%', sql;
-  FOR rec IN  EXECUTE sql
-  LOOP -- {
-    ret = ret || 'Layer ' || rec.layer_id::text || ', UNREGISTERED, ';
+  IF tgcount > 0 THEN -- {
 
-    EXECUTE 'SELECT count(*) FROM ( SELECT DISTINCT topogeo_id FROM '
-      || quote_ident(atopology)
-      || '.relation r WHERE r.layer_id = ' || rec.layer_id
-      || ' ) foo ' INTO STRICT n;
+    sql := 'SELECT layer_id FROM '
+        || quote_ident(atopology) || '.relation EXCEPT SELECT layer_id'
+        || ' FROM topology.layer WHERE topology_id = $1 ORDER BY layer_id';
+    --RAISE DEBUG '%', sql;
+    FOR rec IN  EXECUTE sql USING var_topology_id
+    LOOP -- {
+      ret = ret || 'Layer ' || rec.layer_id::text || ', UNREGISTERED, ';
 
-    ret = ret || n || ' topogeoms' || E'\n';
+      EXECUTE 'SELECT count(*) FROM ( SELECT DISTINCT topogeo_id FROM '
+        || quote_ident(atopology)
+        || '.relation r WHERE r.layer_id = ' || rec.layer_id
+        || ' ) foo ' INTO STRICT n;
 
-  END LOOP; -- }
+      ret = ret || n || ' topogeoms' || E'\n';
 
-  EXCEPTION
-    WHEN INVALID_SCHEMA_NAME THEN
-      ret = ret || E'\n- missing schema - ';
-    WHEN OTHERS THEN
-      RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
-  END;
+    END LOOP; -- }
 
+  END IF; -- }
 
   RETURN ret;
 END
