@@ -610,7 +610,7 @@ sub run_simple_test
 	@lines = grep(!/^\$/, @lines);
 	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
-	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
+	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
 	@lines = grep(!/^LINE \d/, @lines);
 	@lines = grep(!/^\s+$/, @lines);

@@ -341,7 +341,6 @@ NOTICE:  value = {{{10}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
 NOTICE:  userargs = <NULL>
 30|(0,0,2,2,1,-1,0,0,0,1)|(8BUI,0,f,)
-ALTER FUNCTION
 NOTICE:  value = {{{1}}}
 NOTICE:  pos = [0:1][1:2]={{1,1},{1,1}}
 NOTICE:  userargs = {}
