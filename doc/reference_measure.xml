@@ -2893,7 +2893,7 @@ ST_3DLength
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 
 		<para>Availability: 1.2.2</para>
-		<para>Changed: 2.2.0 In prior versions this used to be called ST_Length_Spheroid</para>
+		<para>Changed: 2.2.0 In prior versions this used to be called ST_Length_Spheroid and used to have a ST_3DLength_Spheroid alias</para>
 		<para>&Z_support;</para>
 	  </refsection>
 
@@ -2934,7 +2934,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_3DLength_Spheroid" /></para>
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" /></para>
 	  </refsection>
 	</refentry>
 
@@ -2972,7 +2972,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
-		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_3DLength_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
+		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
 
 	  </refsection>
 
@@ -3013,53 +3013,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_3DLength_Spheroid" /></para>
-	  </refsection>
-	</refentry>
-
-	<refentry id="ST_3DLength_Spheroid">
-	  <refnamediv>
-		<refname>ST_3DLength_Spheroid</refname>
-
-		<refpurpose>Calculates the length of a geometry on an ellipsoid,
-			taking the elevation into account. This is just an alias for ST_Length_Spheroid. </refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>float <function>ST_3DLength_Spheroid</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
-			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Calculates the length of a geometry on an ellipsoid,
-			taking the elevation into account. This is just an alias
-			for ST_Length_Spheroid. </para>
-
-		<note><para>Changed: 2.0.0 In prior versions this used to return 0 for anything that is not a MULTILINESTRING or LINESTRING and in 2.0.0 on returns the perimeter of if given a polgon.</para></note>
-		<note><para>This function is just an alias for ST_Length_Spheroid. </para></note>
-		<para>&Z_support;</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3d_Spheroid</para>
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>See ST_Length_Spheroid</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length_Spheroid" /></para>
+		<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" /></para>
 	  </refsection>
 	</refentry>
 

@@ -1138,22 +1138,25 @@ CREATE OR REPLACE FUNCTION ST_Length(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_length2d_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- this is a fake (for back-compatibility)
--- uses 3d if 3d is available, 2d otherwise
--- TODO: deprecate ?
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 100;
-
 -- Availability in 2.2.0
 CREATE OR REPLACE FUNCTION ST_LengthSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+-- Availability: 2.0.0
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_3DLength_Spheroid', 'ST_LengthSpheroid', '2.2.0');
+    SELECT ST_LengthSpheroid($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT
+	COST 100;
+
 
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
