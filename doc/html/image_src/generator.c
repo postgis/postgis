@@ -371,6 +371,7 @@ int main( int argc, const char* argv[] )
 		char output[32768];
 		char *ptr = output;
 		char *styleName;
+		LAYERSTYLE *style;
 		int useDefaultStyle;
 
 		ptr += sprintf( ptr, "convert -size %s xc:none ", imageSize );
@@ -387,7 +388,12 @@ int main( int argc, const char* argv[] )
 			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
-		ptr += drawGeometry( ptr, lwgeom, getStyle(styles, styleName) );
+		style = getStyle(styles, styleName);
+		if ( ! style ) {
+		  lwerror("Could not find style named %s", styleName);
+		  return -1;
+		}
+		ptr += drawGeometry( ptr, lwgeom, style );
 
 		ptr += sprintf( ptr, "-flip tmp%d.png", layerCount );
 
