@@ -715,7 +715,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
 				dstnband = 1;
 			}
-			else if (dstnband > numbands) {
+			else if (numbands > 0 && dstnband > numbands) {
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
 				dstnband = numbands + 1; 
 			}

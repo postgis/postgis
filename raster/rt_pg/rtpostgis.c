@@ -310,7 +310,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	POSTGIS_RT_DEBUGF(4, "GDAL_SKIP = %s", CPLGetConfigOption("GDAL_SKIP", ""));
 }
 
-/* postgis.eanble_outdb_rasters */
+/* postgis.enable_outdb_rasters */
 static void
 rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 	/* do nothing for now */
