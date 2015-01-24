@@ -9,7 +9,7 @@ PostGIS 2.1.6
 
   - #3016, Allow unregistering layers of corrupted topologies
   - #3015, Avoid exceptions from TopologySummary
-
+  - #3020, ST_AddBand out-db bug where height using width value
 
 PostGIS 2.1.5
 2014/12/18
