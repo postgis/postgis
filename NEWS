@@ -81,6 +81,7 @@ PostGIS 2.2.0
            like geometry extent
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
+  - #3020, ST_AddBand out-db bug where height using width value
 
  * Code refactoring *
 

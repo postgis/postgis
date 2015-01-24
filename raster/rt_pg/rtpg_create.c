@@ -773,7 +773,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 
 	/* some raster info */
 	width = rt_raster_get_width(raster);
-	height = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
 
 	/* are rasters aligned? */
 	_rast = rt_raster_new(1, 1);
