@@ -223,3 +223,38 @@ SELECT
 		ELSE NULL
 	END
 FROM ST_BandMetadata((SELECT rast FROM raster_outdb_template WHERE rid = 4), ARRAY[]::int[]);
+
+-- #3020
+SET postgis.gdal_enabled_drivers = 'GTiff';
+SET postgis.enable_outdb_rasters = true;
+WITH foo AS (
+	SELECT
+			path
+	FROM ST_BandMetadata(
+		(SELECT rast FROM raster_outdb_template WHERE rid = 1),
+	 	ARRAY[]::int[]
+	)
+	LIMIT 1
+), raster as (
+SELECT
+	ST_AddBand(
+		ST_MakeEmptyRaster(90, 90, 0., 0., 1, -1, 0, 0, 0),
+		1, foo.path, NULL::int[]
+	) AS rast
+FROM foo
+)
+SELECT
+	ST_Value(rast, 1, 1)
+FROM raster
+UNION ALL
+SELECT
+	ST_Value(rast, 6, 45)
+FROM raster
+UNION ALL
+SELECT
+	ST_Value(rast, 90, 50)
+FROM raster
+UNION ALL
+SELECT
+	ST_Value(rast, 100, 100)
+FROM raster
