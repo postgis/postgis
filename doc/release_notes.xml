@@ -8,6 +8,27 @@
 	</sect1>
 	
 	<sect1>
+        <title>Release 2.1.5</title>
+        <para>Release date: 2014-12-18</para>
+        <para>This is a bug fix and performance improvement release.</para>
+        <simplesect>
+            <title>Enhancements</title>
+            <para>#2933, Speedup construction of large multi-geometry objects</para>
+        </simplesect>
+        <simplesect>
+              <title>Bug Fixes</title>
+							
+						  <para>#2947, Fix memory leak in lwgeom_make_valid for single-component
+						           collection input</para>
+						  <para>#2949, Fix memory leak in lwgeom_mindistance2d for curve input</para>
+						  <para>#2931, BOX representation is case sensitive</para>
+						  <para>#2942, PostgreSQL 9.5 support</para>
+						  <para>#2953, 2D stats not generated when Z/M values are extreme</para>
+						  <para>#3009, Geography cast may effect underlying tuple</para>
+         </simplesect>
+    </sect1>
+    
+	<sect1>
         <title>Release 2.1.4</title>
         <para>Release date: 2014-09-10</para>
         <para>This is a bug fix and performance improvement release.</para>
