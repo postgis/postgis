@@ -544,9 +544,9 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                     </informaltable>
         
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.0.0</para>
                 	<!-- use this format if not a new function but functionality enhanced -->
-                	<para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
 			</refsection>
 		
 		
