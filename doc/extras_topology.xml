@@ -491,8 +491,8 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                         <tbody>
                             <row>
                                     <entry>edge crosses node</entry>
+                                    <entry>edge_id</entry>
                                     <entry>node_id</entry>
-                                    <entry>edge_id # NOTE: should this be swapped?</entry>
                             </row>
                             <row>
                                     <entry>invalid edge</entry>
