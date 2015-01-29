@@ -547,6 +547,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                 <para>Availability: 1.0.0</para>
                 	<!-- use this format if not a new function but functionality enhanced -->
                 <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
 			</refsection>
 		
 		

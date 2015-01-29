@@ -3,6 +3,8 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes *
 
+  - #3022, ValidateTopology swapped meaning of id1 and id2 for the
+           'edge crosses node' error (now edge_id,node_id)
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
