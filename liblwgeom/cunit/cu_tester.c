@@ -41,6 +41,7 @@ extern CU_SuiteInfo libgeom_suite;
 extern CU_SuiteInfo split_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo geos_suite;
+extern CU_SuiteInfo geos_cluster_suite;
 extern CU_SuiteInfo sfcgal_suite;
 extern CU_SuiteInfo tree_suite;
 extern CU_SuiteInfo triangulate_suite;
@@ -57,6 +58,7 @@ extern CU_SuiteInfo out_x3d_suite;
 extern CU_SuiteInfo out_encoded_polyline_suite;
 extern CU_SuiteInfo in_encoded_polyline_suite;
 extern CU_SuiteInfo varint_suite;
+extern CU_SuiteInfo unionfind_suite;
 
 /*
 ** The main() function for setting up and running the tests.
@@ -87,6 +89,7 @@ int main(int argc, char *argv[])
 		split_suite,
 		geodetic_suite,
 		geos_suite,
+		geos_cluster_suite,
 #if HAVE_SFCGAL
 		sfcgal_suite,
 #endif
@@ -107,6 +110,7 @@ int main(int argc, char *argv[])
 		out_encoded_polyline_suite,
 		in_encoded_polyline_suite,
 		varint_suite,
+		unionfind_suite,
 		CU_SUITE_INFO_NULL
 	};
 

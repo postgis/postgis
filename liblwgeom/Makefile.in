@@ -85,9 +85,11 @@ SA_OBJS = \
 	lwgeom_debug.o \
 	lwgeom_geos.o \
 	lwgeom_geos_clean.o \
+	lwgeom_geos_cluster.o \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
 	lwgeom_transform.o \
+	lwunionfind.o \
 	effectivearea.o \
 	varint.o
 

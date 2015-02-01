@@ -21,6 +21,7 @@
 #include "utils/builtins.h"
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
+#include "utils/lsyscache.h"
 #include "executor/spi.h"
 #include "funcapi.h"
 
@@ -84,6 +85,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
@@ -3406,6 +3408,91 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
+}
+
+PG_FUNCTION_INFO_V1(clusterintersecting_garray);
+Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	Datum* result_array_data;
+	ArrayType *array, *result;
+	int is3d = 0;
+	uint32 nelems, nclusters, i;
+	GEOSGeometry **geos_inputs, **geos_results;
+	int srid=SRID_UNKNOWN;
+	size_t offset;
+
+	/* Parameters used to construct a result array */
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *) datum == NULL ) PG_RETURN_NULL();
+
+	array = DatumGetArrayTypeP(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of elements: %d", nelems);
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	geos_inputs = palloc(sizeof(GEOSGeometry *)*nelems);
+	offset = 0;
+	for (i=0; i<nelems; i++)
+	{
+		GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(VARSIZE(geom));
+		if ( ! is3d ) is3d = gserialized_has_z(geom);
+
+		geos_inputs[i] = (GEOSGeometry *)POSTGIS2GEOS(geom);
+		if ( 0 == geos_inputs[i] )   /* exception thrown at construction */
+		{
+			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+			PG_RETURN_NULL();
+		}
+		if ( ! i )
+		{
+			srid = gserialized_get_srid(geom);
+		}
+		else if ( srid != gserialized_get_srid(geom) )
+		{
+			elog(ERROR, "clusterintersecting: operation on mixed SRID geometries");
+			PG_RETURN_NULL();
+		}
+	}
+
+	if (cluster_intersecting(geos_inputs, nelems, &geos_results, &nclusters) != LW_SUCCESS) {
+		elog(ERROR, "clusterintersecting: Error performing clustering");
+		PG_RETURN_NULL();
+	}
+	pfree(geos_inputs);
+
+	if ( ! geos_results ) PG_RETURN_NULL();
+
+	result_array_data = palloc(nclusters * sizeof(Datum));
+	for (i=0; i<nclusters; ++i)
+	{
+		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
+		GEOSGeom_destroy(geos_results[i]);
+	}
+	
+	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
+	result = (ArrayType*) construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
+
+	if ( result == NULL )
+	{
+		elog(ERROR, "clusterintersecting: Error constructing return-array");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(linemerge);

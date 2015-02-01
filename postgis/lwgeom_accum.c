@@ -20,6 +20,7 @@
 #include "../postgis_config.h"
 
 #include "liblwgeom.h"
+#include "lwgeom_geos.h"
 #include "lwgeom_pg.h"
 
 /* Local prototypes */
@@ -32,6 +33,7 @@ Datum pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_twkb_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
+Datum pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_abs_in(PG_FUNCTION_ARGS);
 Datum pgis_abs_out(PG_FUNCTION_ARGS);
 
@@ -40,6 +42,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_twkb_garray(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
@@ -488,6 +491,30 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 }
+
+/**
+ * The "clusterintersecting" final function passes the geometry[] to a 
+ * clustering function before returning the result.
+*/
+PG_FUNCTION_INFO_V1(pgis_geometry_clusterintersecting_finalfn);
+Datum
+pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
+{
+		pgis_abs *p;
+		Datum result = 0;
+		Datum geometry_array = 0;
+
+		if (PG_ARGISNULL(0))
+			PG_RETURN_NULL();
+
+		p = (pgis_abs*) PG_GETARG_POINTER(0);
+		geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+		result = PGISDirectFunctionCall1( clusterintersecting_garray, geometry_array );
+	    if (!result)
+			PG_RETURN_NULL();
+
+		PG_RETURN_DATUM(result);
+}	
 
 /**
 * A modified version of PostgreSQL's DirectFunctionCall1 which allows NULL results; this

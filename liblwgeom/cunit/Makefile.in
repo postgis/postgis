@@ -31,6 +31,7 @@ OBJS=	\
 	cu_ptarray.o \
 	cu_geodetic.o \
 	cu_geos.o \
+	cu_geos_cluster.o \
 	cu_tree.o \
 	cu_measures.o \
 	cu_node.o \
@@ -57,6 +58,7 @@ OBJS=	\
 	cu_in_wkt.o \
 	cu_in_encoded_polyline.o \
 	cu_varint.o \
+	cu_unionfind.o \ 
 	cu_tester.o
 
 ifeq (@SFCGAL@,sfcgal)
