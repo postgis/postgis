@@ -15,13 +15,13 @@
 #include "../lwgeom_geos.h"
 #include "cu_tester.h"
 
-static void perform_clustering_test(char** wkt_inputs, int num_inputs, char** wkt_outputs, int num_outputs) {
+static void perform_clustering_test(char** wkt_inputs, uint32_t num_inputs, char** wkt_outputs, uint32_t num_outputs) {
 	size_t i, j;
 
 	GEOSGeometry** geos_results;
-	int num_clusters;
+	uint32_t num_clusters;
 
-	const GEOSGeometry** geos_inputs = lwalloc(num_inputs * sizeof(GEOSGeometry*));
+	GEOSGeometry** geos_inputs = lwalloc(num_inputs * sizeof(GEOSGeometry*));
 	LWGEOM** expected_outputs = lwalloc(num_outputs * sizeof(LWGEOM*));
 
 	for (i = 0; i < num_inputs; i++) {
