@@ -17,16 +17,16 @@
 
 typedef struct
 {
-	int* clusters;
-	int* cluster_sizes;
-	size_t num_clusters;
-	size_t N;
+	uint32_t* clusters;
+	uint32_t* cluster_sizes;
+	uint32_t num_clusters;
+	uint32_t N;
 } UNIONFIND;
 
-UNIONFIND* UF_create(size_t N);
+UNIONFIND* UF_create(uint32_t N);
 void UF_destroy(UNIONFIND* uf);
-size_t UF_find(UNIONFIND* uf, size_t i);
-void UF_union(UNIONFIND* uf, size_t i, size_t j);
-int* UF_ordered_by_cluster(UNIONFIND* uf);
+uint32_t UF_find(UNIONFIND* uf, uint32_t i);
+void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
+uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
 
 #endif

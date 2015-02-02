@@ -18,14 +18,14 @@ static int cmp_int(const void *a, const void *b);
 static int cmp_int_ptr(const void *a, const void *b);
 
 UNIONFIND*
-UF_create(size_t N)
+UF_create(uint32_t N)
 {
 	size_t i;
 	UNIONFIND* uf = lwalloc(sizeof(UNIONFIND));
 	uf->N = N;
 	uf->num_clusters = N;
-	uf->clusters = lwalloc(N * sizeof(int));
-	uf->cluster_sizes = lwalloc(N * sizeof(int));
+	uf->clusters = lwalloc(N * sizeof(uint32_t));
+	uf->cluster_sizes = lwalloc(N * sizeof(uint32_t));
 
 	for (i = 0; i < N; i++)
 	{
@@ -44,8 +44,8 @@ UF_destroy(UNIONFIND* uf)
 	lwfree(uf);
 }
 
-size_t
-UF_find (UNIONFIND* uf, size_t i)
+uint32_t
+UF_find (UNIONFIND* uf, uint32_t i)
 {
 	while (uf->clusters[i] != i)
 	{
@@ -56,10 +56,10 @@ UF_find (UNIONFIND* uf, size_t i)
 }
 
 void
-UF_union(UNIONFIND* uf, size_t i, size_t j)
+UF_union(UNIONFIND* uf, uint32_t i, uint32_t j)
 {
-	size_t a = UF_find(uf, i);
-	size_t b = UF_find(uf, j);
+	uint32_t a = UF_find(uf, i);
+	uint32_t b = UF_find(uf, j);
 
 	if (a == b)
 	{
@@ -83,12 +83,12 @@ UF_union(UNIONFIND* uf, size_t i, size_t j)
 	uf->num_clusters--;
 }
 
-int*
+uint32_t*
 UF_ordered_by_cluster(UNIONFIND* uf)
 {
 	size_t i;
-	int** cluster_id_ptr_by_elem_id = lwalloc(uf->N * sizeof (int*));
-	int* ordered_ids = lwalloc(uf->N * sizeof (int));
+	uint32_t** cluster_id_ptr_by_elem_id = lwalloc(uf->N * sizeof (uint32_t*));
+	uint32_t* ordered_ids = lwalloc(uf->N * sizeof (uint32_t));
 
 	for (i = 0; i < uf->N; i++)
 	{
@@ -102,7 +102,7 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 	/* Sort the array of cluster id pointers, so that pointers to the
 	 * same cluster id are grouped together.
 	 * */
-	qsort(cluster_id_ptr_by_elem_id, uf->N, sizeof (int*), &cmp_int_ptr);
+	qsort(cluster_id_ptr_by_elem_id, uf->N, sizeof (uint32_t*), &cmp_int_ptr);
 
 	/* Recover the input element ids from the cluster id pointers, so
 	 * we can return element ids grouped by cluster id.
@@ -118,11 +118,11 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 static int
 cmp_int(const void *a, const void *b)
 {
-	if (*((int*) a) > *((int*) b))
+	if (*((uint32_t*) a) > *((uint32_t*) b))
 	{
 		return 1;
 	}
-	else if (*((int*) a) < *((int*) b))
+	else if (*((uint32_t*) a) < *((uint32_t*) b))
 	{
 		return -1;
 	}
@@ -135,7 +135,7 @@ cmp_int(const void *a, const void *b)
 static int
 cmp_int_ptr(const void *a, const void *b)
 {
-	int val_cmp = cmp_int(*((int**) a), *((int**) b));
+	int val_cmp = cmp_int(*((uint32_t**) a), *((uint32_t**) b));
 	if (val_cmp != 0)
 	{
 		return val_cmp;

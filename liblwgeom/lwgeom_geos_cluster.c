@@ -29,17 +29,17 @@ struct STRTree
 {
 	GEOSSTRtree* tree;
 	GEOSGeometry** envelopes;
-	int* geom_ids;
-	int num_geoms;
+	uint32_t* geom_ids;
+	uint32_t num_geoms;
 };
 
-static struct STRTree make_strtree(GEOSGeometry** geoms, int num_geoms);
+static struct STRTree make_strtree(GEOSGeometry** geoms, uint32_t num_geoms);
 static void destroy_strtree(struct STRTree tree);
 static void union_if_intersecting(void* item, void* userdata);
-static int union_intersecting_pairs(GEOSGeometry** geoms, int num_geoms, UNIONFIND* uf);
+static int union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf);
 
 static struct STRTree
-make_strtree(GEOSGeometry** geoms, int num_geoms)
+make_strtree(GEOSGeometry** geoms, uint32_t num_geoms)
 {
 	struct STRTree tree;
 	tree.tree = GEOSSTRtree_create(num_geoms);
@@ -48,7 +48,7 @@ make_strtree(GEOSGeometry** geoms, int num_geoms)
 		return tree;
 	}
 	tree.envelopes = lwalloc(num_geoms * sizeof(GEOSGeometry*));
-	tree.geom_ids  = lwalloc(num_geoms * sizeof(int));
+	tree.geom_ids  = lwalloc(num_geoms * sizeof(uint32_t));
 	tree.num_geoms = num_geoms;
 
 	size_t i;
@@ -82,8 +82,8 @@ union_if_intersecting(void* item, void* userdata)
 	{
 		return;
 	}
-	size_t q = *((size_t*) item);
-	size_t p = *(cxt->p);
+	uint32_t q = *((uint32_t*) item);
+	uint32_t p = *(cxt->p);
 
 	if (p != q && UF_find(cxt->uf, p) != UF_find(cxt->uf, q))
 	{
@@ -106,7 +106,7 @@ union_if_intersecting(void* item, void* userdata)
 }
 
 static int
-union_intersecting_pairs(GEOSGeometry** geoms, int num_geoms, UNIONFIND* uf)
+union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf)
 {
 	size_t i;
 
@@ -160,7 +160,7 @@ cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** c
 	*clusterGeoms = lwalloc(*num_clusters * sizeof(GEOSGeometry*));
 
 	GEOSGeometry **geoms_in_cluster = lwalloc(num_geoms * sizeof(GEOSGeometry*));
-	int* ordered_components = UF_ordered_by_cluster(uf);
+	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
 	for (i = 0, j = 0, k = 0; i < num_geoms; i++)
 	{
 		geoms_in_cluster[j++] = geoms[ordered_components[i]];
