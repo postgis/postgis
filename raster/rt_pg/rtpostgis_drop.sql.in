@@ -58,8 +58,6 @@ DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean  , geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry , raster, integer , boolean);
 DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
-DROP FUNCTION IF EXISTS ST_Intersection(raster, geometry);
-DROP FUNCTION IF EXISTS ST_Intersection(raster, integer, geometry);
 
 -- Removed in 2.1.0
 DROP FUNCTION IF EXISTS _st_mapalgebra4unionfinal1(raster);
