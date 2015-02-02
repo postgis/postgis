@@ -3550,9 +3550,9 @@ CREATE AGGREGATE ST_Collect (
 
 -- Availability: 2.2
 CREATE AGGREGATE ST_ClusterIntersecting (
-        BASETYPE  = geometry,
-	SFUNC     = pgis_geometry_accum_transfn,
-	STYPE     = pgis_abs,
+	BASETYPE = geometry,
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_clusterintersecting_finalfn
 	);
 
