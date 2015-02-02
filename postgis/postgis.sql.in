@@ -3448,7 +3448,7 @@ CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
 
--- Availability: 2.0
+-- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
@@ -3549,7 +3549,7 @@ CREATE AGGREGATE ST_Collect (
 	);
 
 -- Availability: 2.2
-CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
+CREATE AGGREGATE ST_ClusterIntersecting (
         BASETYPE  = geometry,
 	SFUNC     = pgis_geometry_accum_transfn,
 	STYPE     = pgis_abs,
