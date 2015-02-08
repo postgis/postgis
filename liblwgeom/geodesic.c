@@ -13,7 +13,7 @@
  *   C. F. F. Karney,
  *   Algorithms for geodesics,
  *   J. Geodesy <b>87</b>, 43--55 (2013);
- *   http://dx.doi.org/10.1007/s00190-012-0578-z
+ *   https://dx.doi.org/10.1007/s00190-012-0578-z
  *   Addenda: http://geographiclib.sf.net/geod-addenda.html
  *
  * See the comments in geodesic.h for documentation.
@@ -1217,7 +1217,8 @@ real InverseStart(const struct geod_geodesic* g,
       calp1 = sbet12a - cbet2 * sbet1 * sq(somg12) / (1 - comg12);
     }
   }
-  if (salp1 > 0)              /* Sanity check on starting guess */
+  /* Sanity check on starting guess.  Backwards check allows NaN through. */
+  if (!(salp1 <= 0))
     SinCosNorm(&salp1, &calp1);
   else {
     salp1 = 1; calp1 = 0;
