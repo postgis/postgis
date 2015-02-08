@@ -86,6 +86,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
+Datum cluster_within_distance_garray(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
@@ -3289,6 +3290,83 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 	return ret;
 }
 
+LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
+{
+	size_t offset;
+    uint32_t i;
+
+	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
+
+	for (i=0, offset=0; i<nelems; i++)
+	{
+		GSERIALIZED *geom = (GSERIALIZED*) (ARR_DATA_PTR(array) + offset);
+		offset += INTALIGN(VARSIZE(geom));
+
+        *is3d = *is3d || gserialized_has_z(geom);
+
+	    lw_geoms[i] = lwgeom_from_gserialized(geom);
+		if (!lw_geoms[i]) /* error in creation */
+		{
+			elog(ERROR, "Geometry deserializing geometry");
+            return NULL;
+		}
+		if (i == 0)
+		{
+			*srid = gserialized_get_srid(geom);
+		}
+		else if (*srid != gserialized_get_srid(geom))
+		{
+			elog(ERROR, "Operation on mixed SRID geometries");
+            return NULL;
+		}
+	}
+
+    return lw_geoms;
+}
+
+GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid)
+{
+	size_t offset;
+    uint32_t i;
+
+	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
+
+	for (i=0, offset=0; i<nelems; i++)
+	{
+		GSERIALIZED *geom = (GSERIALIZED*) (ARR_DATA_PTR(array) + offset);
+		offset += INTALIGN(VARSIZE(geom));
+
+        *is3d = *is3d || gserialized_has_z(geom);
+
+		geos_geoms[i] = (GEOSGeometry*) POSTGIS2GEOS(geom);
+		if (!geos_geoms[i])   /* exception thrown at construction */
+		{
+            uint32_t j;
+			elog(ERROR, "Geometry could not be converted to GEOS");
+
+            for (j = i-1; j >= 0; j--) {
+                GEOSGeom_destroy(geos_geoms[j]);
+            }
+            return NULL;
+		}
+		if (i == 0)
+		{
+			*srid = gserialized_get_srid(geom);
+		}
+		else if (*srid != gserialized_get_srid(geom))
+		{
+            uint32_t j;
+			elog(ERROR, "Operation on mixed SRID geometries");
+
+            for (j = i-1; j >= 0; j--) {
+                GEOSGeom_destroy(geos_geoms[j]);
+            }
+            return NULL;
+		}
+	}
+
+    return geos_geoms;
+}
 
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
@@ -3410,6 +3488,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 }
 
+
 PG_FUNCTION_INFO_V1(clusterintersecting_garray);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 {
@@ -3420,7 +3499,6 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	uint32 nelems, nclusters, i;
 	GEOSGeometry **geos_inputs, **geos_results;
 	int srid=SRID_UNKNOWN;
-	size_t offset;
 
 	/* Parameters used to construct a result array */
 	int16 elmlen;
@@ -3443,38 +3521,18 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	geos_inputs = palloc(sizeof(GEOSGeometry *)*nelems);
-	offset = 0;
-	for (i=0; i<nelems; i++)
-	{
-		GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(VARSIZE(geom));
-		if ( ! is3d ) is3d = gserialized_has_z(geom);
-
-		geos_inputs[i] = (GEOSGeometry *)POSTGIS2GEOS(geom);
-		if ( 0 == geos_inputs[i] )   /* exception thrown at construction */
-		{
-			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
-			PG_RETURN_NULL();
-		}
-		if ( ! i )
-		{
-			srid = gserialized_get_srid(geom);
-		}
-		else if ( srid != gserialized_get_srid(geom) )
-		{
-			elog(ERROR, "clusterintersecting: operation on mixed SRID geometries");
-			PG_RETURN_NULL();
-		}
-	}
+    geos_inputs = ARRAY2GEOS(array, nelems, &is3d, &srid);
+    if(!geos_inputs) {
+        PG_RETURN_NULL();
+    }
 
 	if (cluster_intersecting(geos_inputs, nelems, &geos_results, &nclusters) != LW_SUCCESS) {
 		elog(ERROR, "clusterintersecting: Error performing clustering");
 		PG_RETURN_NULL();
 	}
-	pfree(geos_inputs);
+	pfree(geos_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
 
-	if ( ! geos_results ) PG_RETURN_NULL();
+	if (!geos_results) PG_RETURN_NULL();
 
 	result_array_data = palloc(nclusters * sizeof(Datum));
 	for (i=0; i<nclusters; ++i)
@@ -3482,13 +3540,82 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
 		GEOSGeom_destroy(geos_results[i]);
 	}
+    pfree(geos_results);
 	
 	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
 	result = (ArrayType*) construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
 
-	if ( result == NULL )
+	if (!result)
 	{
 		elog(ERROR, "clusterintersecting: Error constructing return-array");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(cluster_within_distance_garray);
+Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	Datum* result_array_data;
+	ArrayType *array, *result;
+	int is3d = 0;
+	uint32 nelems, nclusters, i;
+	LWGEOM** lw_inputs;
+    LWGEOM** lw_results;
+    double tolerance;
+	int srid=SRID_UNKNOWN;
+
+	/* Parameters used to construct a result array */
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+
+	datum = PG_GETARG_DATUM(0);
+    tolerance = PG_GETARG_FLOAT8(1);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *) datum == NULL ) PG_RETURN_NULL();
+
+	array = DatumGetArrayTypeP(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of elements: %d", nelems);
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+    lw_inputs = ARRAY2LWGEOM(array, nelems, &is3d, &srid);
+    if (!lw_inputs) {
+        PG_RETURN_NULL();
+    }
+
+	if (cluster_within_distance(lw_inputs, nelems, tolerance, &lw_results, &nclusters) != LW_SUCCESS) {
+		elog(ERROR, "cluster_within: Error performing clustering");
+		PG_RETURN_NULL();
+	}
+	pfree(lw_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
+
+	if (!lw_results) PG_RETURN_NULL();
+
+	result_array_data = palloc(nclusters * sizeof(Datum));
+	for (i=0; i<nclusters; ++i)
+	{
+		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], 0, NULL));
+        lwgeom_free(lw_results[i]);
+	}
+    pfree(lw_results);
+	
+	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
+	result = (ArrayType*) construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
+
+	if (!result)
+	{
+		elog(ERROR, "clusterwithin: Error constructing return-array");
 		PG_RETURN_NULL();
 	}
 

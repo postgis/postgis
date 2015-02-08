@@ -15,6 +15,7 @@
 
 #include "../liblwgeom/lwgeom_geos.h" /* for GEOSGeom */
 #include "liblwgeom.h" /* for GSERIALIZED */
+#include "utils/array.h" /* for ArrayType */
 
 /*
 ** Public prototypes for GEOS utility functions.
@@ -22,6 +23,8 @@
 
 GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, char want3d);
 GEOSGeometry * POSTGIS2GEOS(GSERIALIZED *g);
+GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
+LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
 
 Datum geos_intersects(PG_FUNCTION_ARGS);
 Datum geos_intersection(PG_FUNCTION_ARGS);

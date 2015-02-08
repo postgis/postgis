@@ -1613,13 +1613,24 @@ CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION ST_ClusterIntersecting(geometry[])
+    RETURNS geometry[]
+    AS '$libdir/postgis-2.2', 'clusterintersecting_garray'
+    LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
+    RETURNS geometry[]
+    AS '$libdir/postgis-2.2', 'cluster_within_distance_garray'
+    LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
-
 
 CREATE TYPE geometry_dump AS (
 	path integer[],
@@ -3412,7 +3423,7 @@ CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE TYPE pgis_abs (
-	internallength = 8,
+	internallength = 16,
 	input = pgis_abs_in,
 	output = pgis_abs_out,
 	alignment = double
@@ -3420,6 +3431,12 @@ CREATE TYPE pgis_abs (
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
+	RETURNS pgis_abs
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c';
+
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8)
 	RETURNS pgis_abs
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
@@ -3450,6 +3467,12 @@ CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
+	RETURNS geometry[]
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c';
+
+-- Availability: 2.2
+CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
@@ -3554,6 +3577,13 @@ CREATE AGGREGATE ST_ClusterIntersecting (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_clusterintersecting_finalfn
+	);
+
+-- Availability: 2.2
+CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_clusterwithin_finalfn
 	);
 
 -- Availability: 1.2.2

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<refentry id="ST_ClusterIntersecting">
+<refentry id="ST_ClusterWithin">
   <refnamediv>
-    <refname>ST_ClusterIntersecting</refname>
+    <refname>ST_ClusterWithin</refname>
 
-    <refpurpose>Aggregate.  Returns an array with the connected components of a set of geometries</refpurpose>
+    <refpurpose>Aggregate.  Returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</refpurpose>
   </refnamediv>
 
   <refsynopsisdiv>
     <funcsynopsis>
       <funcprototype>
-        <funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef>
+        <funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef>
         <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+        <paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
@@ -18,9 +19,9 @@
   <refsection>
     <title>Description</title>
 
-    <para>ST_ClusterIntersecting is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents an interconnected set of geometries.</para>
+    <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</para>
 
-    <para>Availability: 2.2.0 - requires GEOS </para>
+    <para>Availability: 2.2.0 - requires GEOS</para>
   </refsection>
 
   <refsection>
@@ -33,7 +34,7 @@ WITH testdata AS
 		       'LINESTRING (0 0, -1 -1)'::geometry,
 		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
 
-SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
+SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
     
 --result
 

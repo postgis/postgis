@@ -25,6 +25,7 @@
 
 /* Local prototypes */
 Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
+Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -34,6 +35,7 @@ Datum pgis_twkb_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS);
+Datum pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_abs_in(PG_FUNCTION_ARGS);
 Datum pgis_abs_out(PG_FUNCTION_ARGS);
 
@@ -43,6 +45,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_twkb_garray(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
+Datum cluster_within_distance_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
@@ -61,12 +64,14 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 /**
 ** To pass the internal ArrayBuildState pointer between the
 ** transfn and finalfn we need to wrap it into a custom type first,
-** the pgis_abs type in our case.
+** the pgis_abs type in our case.  The extra "data" member can optionally
+** be used to pass an additional constant argument to a finalizer function.
 */
 
 typedef struct
 {
 	ArrayBuildState *a;
+    Datum data;
 }
 pgis_abs;
 
@@ -146,10 +151,15 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 	{
 		p = (pgis_abs*) palloc(sizeof(pgis_abs));
 		p->a = NULL;
+        p->data = (Datum) NULL;
 	}
 	else
 	{
 		p = (pgis_abs*) PG_GETARG_POINTER(0);
+
+        if (PG_NARGS() == 3  && !p->data) {
+            p->data = PG_GETARG_DATUM(2);
+        }
 	}
 	state = p->a;
 	elem = PG_ARGISNULL(1) ? (Datum) 0 : PG_GETARG_DATUM(1);
@@ -517,6 +527,36 @@ pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
 }	
 
 /**
+ * The "cluster_within_distance" final function passes the geometry[] to a 
+ * clustering function before returning the result.
+*/
+PG_FUNCTION_INFO_V1(pgis_geometry_clusterwithin_finalfn);
+Datum
+pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
+{
+		pgis_abs *p;
+		Datum result = 0;
+		Datum geometry_array = 0;
+
+		if (PG_ARGISNULL(0))
+			PG_RETURN_NULL();
+
+		p = (pgis_abs*) PG_GETARG_POINTER(0);
+
+        if (!p->data) {
+            elog(ERROR, "Tolerance not defined");
+            PG_RETURN_NULL();
+        }
+
+		geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+		result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
+	    if (!result)
+			PG_RETURN_NULL();
+
+		PG_RETURN_DATUM(result);
+}	
+
+/**
 * A modified version of PostgreSQL's DirectFunctionCall1 which allows NULL results; this
 * is required for aggregates that return NULL.
 */
@@ -536,6 +576,38 @@ PGISDirectFunctionCall1(PGFunction func, Datum arg1)
 
 	fcinfo.arg[0] = arg1;
 	fcinfo.argnull[0] = false;
+
+	result = (*func) (&fcinfo);
+
+	/* Check for null result, returning a "NULL" Datum if indicated */
+	if (fcinfo.isnull)
+		return (Datum) 0;
+
+	return result;
+}
+
+/**
+* A modified version of PostgreSQL's DirectFunctionCall2 which allows NULL results; this
+* is required for aggregates that return NULL.
+*/
+Datum
+PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
+{
+	FunctionCallInfoData fcinfo;
+	Datum           result;
+
+#if POSTGIS_PGSQL_VERSION > 90
+
+	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
+#else
+
+	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+#endif
+
+	fcinfo.arg[0] = arg1;
+    fcinfo.arg[1] = arg2;
+	fcinfo.argnull[0] = false;
+	fcinfo.argnull[1] = false;
 
 	result = (*func) (&fcinfo);
 
