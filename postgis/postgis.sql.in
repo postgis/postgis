@@ -886,11 +886,20 @@ CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ShiftLongitude(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Shift_Longitude', 'ST_ShiftLongitude', '2.2.0');
+    SELECT ST_ShiftLongitude($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------------
 --  BOX3D FUNCTIONS
@@ -954,13 +963,6 @@ CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'BOX2D_construct'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2D_combine'
-	LANGUAGE 'c' IMMUTABLE;
-
 -----------------------------------------------------------------------
 -- ST_ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
@@ -1003,15 +1005,15 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_FindExtent(text,text,text) RETURNS box2d AS
 $$
 DECLARE
 	schemaname alias for $1;
 	tablename alias for $2;
 	columnname alias for $3;
 	myrec RECORD;
-
 BEGIN
 	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
@@ -1020,12 +1022,20 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
+  $$ SELECT _postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
+    SELECT ST_FindExtent($1,$2,$3);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_FindExtent(text,text) RETURNS box2d AS
 $$
 DECLARE
 	tablename alias for $1;
@@ -1040,6 +1050,13 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
+  $$ SELECT _postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
+    SELECT ST_FindExtent($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -------------------------------------------
 -- other lwgeom functions
@@ -1121,21 +1138,34 @@ CREATE OR REPLACE FUNCTION ST_Length(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_length2d_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- this is a fake (for back-compatibility)
--- uses 3d if 3d is available, 2d otherwise
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
+-- Availability in 2.2.0
+CREATE OR REPLACE FUNCTION ST_LengthSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_length_ellipsoid_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+-- Availability: 2.0.0
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_3DLength_spheroid(geometry, spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_3DLength_Spheroid', 'ST_LengthSpheroid', '2.2.0');
+    SELECT ST_LengthSpheroid($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 100;
+
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Length_Spheroid', 'ST_LengthSpheroid', '2.2.0');
+    SELECT ST_LengthSpheroid($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
@@ -1175,12 +1205,21 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	AS 'MODULE_PATHNAME','area'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,spheroid)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Distance_Spheroid', 'ST_DistanceSpheroid', '2.2.0');
+    SELECT ST_DistanceSpheroid($1,$2,$3);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Minimum distance. 2d only.
 
@@ -2805,6 +2844,12 @@ CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_simplify2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default 0)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_SetEffectiveArea'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
@@ -3278,15 +3323,41 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
 --------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_CombineBBox(box3d,geometry)
 	RETURNS box3d
 	AS 'MODULE_PATHNAME', 'BOX3D_combine'
 	LANGUAGE 'c' IMMUTABLE;
 
 -- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
+	RETURNS box3d AS
+  $$ SELECT _postgis_deprecate('ST_Combine_BBox', 'ST_CombineBbox', '2.2.0');
+    SELECT ST_CombineBbox($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_CombineBbox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2D_combine'
+	LANGUAGE 'c' IMMUTABLE;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
+	RETURNS box2d AS
+  $$ SELECT _postgis_deprecate('ST_Combine_BBox', 'ST_CombineBbox', '2.2.0');
+    SELECT ST_CombineBbox($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+
+-- Availability: 1.2.2
 CREATE AGGREGATE ST_Extent(
-	sfunc = ST_combine_bbox,
+	sfunc = ST_combine_bbox, -- TODO: use ST_CombineBbox (since 2.2.0)
 	finalfunc = box2d,
 	basetype = geometry,
 	stype = box3d
@@ -3294,7 +3365,7 @@ CREATE AGGREGATE ST_Extent(
 
 -- Availability: 2.0.0
 CREATE AGGREGATE ST_3DExtent(
-	sfunc = ST_combine_bbox,
+	sfunc = ST_combine_bbox, -- TODO: use ST_CombineBbox (since 2.2.0)
 	basetype = geometry,
 	stype = box3d
 	);
@@ -4661,13 +4732,22 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 #include "geography.sql.in"
 
 
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8
 	AS $$
 	select st_distance(geography($1),geography($2),false)
 	$$
+	LANGUAGE 'sql' IMMUTABLE STRICT
+	COST 300;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Distance_Sphere', 'ST_DistanceSphere', '2.2.0');
+    SELECT ST_DistanceSphere($1,$2);
+  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 300;
 

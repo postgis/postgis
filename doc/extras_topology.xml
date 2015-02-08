@@ -110,6 +110,7 @@
                     <para><varname>id2</varname> is an integer: For errors that involve 2 objects denotes the secondary edge / or node</para>
                   </listitem>
                 </orderedlist>
+                
             </refsection>
 		  <!-- Optionally add a "See Also" section -->
             <refsection>
@@ -482,13 +483,71 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 			<refsection>
                 <title>Description</title>
             
-                <para>Returns a set of <xref linkend="validatetopology_returntype"/> objects detailing issues with topology. Refer to 
-                   <xref linkend="validatetopology_returntype"/> for listing of possible errors.</para>
+                <para>Returns a set of <xref linkend="validatetopology_returntype"/> objects detailing issues with topology. List of possible errors and what the returned ids represent are displayed below:</para>
+                   
+                  <informaltable rowsep="1" frame="all">
+                    <tgroup cols="3">
+                        <thead><row><entry>Error</entry><entry>id1</entry><entry>id2</entry></row></thead>
+                        <tbody>
+                            <row>
+                                    <entry>edge crosses node</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>node_id</entry>
+                            </row>
+                            <row>
+                                    <entry>invalid edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>edge not simple</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>edge crosses edge</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>edge_id</entry>
+                            </row>
+                            <row>
+                                    <entry>edge start node geometry mis-match</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>node_id</entry>
+                            </row>
+                            <row>
+                                    <entry>edge end node geometry mis-match</entry>
+                                    <entry>edge_id</entry>
+                                    <entry>node_id</entry>
+                            </row>
+                            <row>
+                                    <entry>face without edges</entry>
+                                    <entry>face_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>face has no rings</entry>
+                                    <entry>face_id</entry>
+                                    <entry>null</entry>
+                            </row>
+                            <row>
+                                    <entry>face overlaps face</entry>
+                                    <entry>face_id</entry>
+                                    <entry>face_id</entry>
+                            </row>
+                            <row>
+                                    <entry>face within face</entry>
+                                    <entry>inner face_id</entry>
+                                    <entry>outer face_id</entry>
+                            </row>
+                         </tbody>
+                        </tgroup>
+                    </informaltable>
         
                 <!-- use this format if new function -->
-                <para>Availability: 1.?</para>
+                <para>Availability: 1.0.0</para>
                 	<!-- use this format if not a new function but functionality enhanced -->
-                	<para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para>Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false positives that were existent in prior versions.</para>
+                <para>Changed: 2.2.0 values for id1 and id2 were swapped for 'edge crosses node' to be consistent with error description.</para>
 			</refsection>
 		
 		

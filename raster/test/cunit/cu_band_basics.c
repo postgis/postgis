@@ -128,7 +128,7 @@ static void test_band_metadata() {
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
 			CU_ASSERT_EQUAL(rt_band_get_pixel(band, x, y, &val, NULL), ES_NONE);
-			CU_ASSERT_DOUBLE_EQUAL(val, 255, 1.);
+			CU_ASSERT_DOUBLE_EQUAL(val, 0, 1.);
 		}
 	}
 

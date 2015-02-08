@@ -928,6 +928,7 @@ extern LWGEOM* lwgeom_force_3dm(const LWGEOM *geom);
 extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
+extern LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom, double area);
 
 /* 
  * Force to use SFS 1.1 geometry type

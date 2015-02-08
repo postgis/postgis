@@ -118,3 +118,7 @@ NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raste
 3|2|t|t
 4|1|t|t
 4|2|f|
+NOTICE:  Attempting to get pixel value with out of range raster coordinates: (99, 99)
+255
+90
+255

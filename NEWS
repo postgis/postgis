@@ -3,6 +3,8 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes *
 
+  - #3022, ValidateTopology swapped meaning of id1 and id2 for the
+           'edge crosses node' error (now edge_id,node_id)
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
@@ -11,6 +13,13 @@ PostGIS 2.2.0
 
  * Deprecated signatures *
 
+  - #2748, ST_Shift_Longitude renamed to ST_ShiftLongitude,
+           ST_Find_Extent renamed to ST_FindExtent,
+           ST_Combine_BBox renamed to ST_CombineBbox,
+           ST_Length_Spheroid renamed to ST_LengthSpheroid,
+           ST_Distance_Spheroid renamed to ST_DistanceSpheroid,
+           ST_Distance_Sphere renamed to ST_DistanceSphere,
+           ST_3DLength_Spheroid deprecated (use ST_LengthSpheroid)
   - #2769, ST_Mem_Size renamed to ST_MemSize
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
   - #2567, ST_Count(tablename, rastercolumn, ...)
@@ -74,6 +83,7 @@ PostGIS 2.2.0
            like geometry extent
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
+  - #3020, ST_AddBand out-db bug where height using width value
 
  * Code refactoring *
 

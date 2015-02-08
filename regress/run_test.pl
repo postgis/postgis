@@ -610,7 +610,7 @@ sub run_simple_test
 	@lines = grep(!/^\$/, @lines);
 	@lines = grep(!/^(INSERT|DELETE|UPDATE|SELECT|COPY|DO)/, @lines);
 	@lines = grep(!/^(CONTEXT|RESET|ANALYZE)/, @lines);
-	@lines = grep(!/^(DROP|CREATE|VACUUM)/, @lines);
+	@lines = grep(!/^(DROP|CREATE|ALTER|VACUUM)/, @lines);
 	@lines = grep(!/^(LOG|SET|TRUNCATE)/, @lines);
 	@lines = grep(!/^LINE \d/, @lines);
 	@lines = grep(!/^\s+$/, @lines);
@@ -1348,7 +1348,10 @@ sub drop_spatial_extensions
     
     if ( $OPT_WITH_TOPO )
     {
-        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_topology\" $DB >> $REGRESS_LOG 2>&1";
+        # NOTE: "manually" dropping topology schema as EXTENSION does not
+        #       take care of that itself, see
+        #       http://trac.osgeo.org/postgis/ticket/2138
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_topology; DROP SCHEMA topology;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
       	$ok = 0 if $rv;
     }

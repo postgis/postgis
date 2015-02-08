@@ -31,6 +31,7 @@
 
 /* Prototypes */
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -67,6 +68,35 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_SetEffectiveArea);
+Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *result;
+  int type = gserialized_get_type(geom);
+	LWGEOM *in;
+	LWGEOM *out;
+	double area;
+
+  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+    PG_RETURN_POINTER(geom);
+
+	area = PG_GETARG_FLOAT8(1);
+	in = lwgeom_from_gserialized(geom);
+
+	out = lwgeom_set_effective_area(in, area);
+	if ( ! out ) PG_RETURN_NULL();
+
+	/* COMPUTE_BBOX TAINTING */
+	if ( in->bbox ) lwgeom_add_bbox(out);
+
+	result = geometry_serialize(out);
+	lwgeom_free(out);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
+	
 /***********************************************************************
  * --strk@keybit.net;
  ***********************************************************************/

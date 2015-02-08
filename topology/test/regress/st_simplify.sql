@@ -35,8 +35,8 @@ INSERT INTO tt.bigareas (tg) SELECT
     TopoElementArray_agg(ARRAY[r.topogeo_id, r.layer_id]))
   FROM tt.relation r, _test_layers l1
   WHERE r.layer_id = l1.layer_id AND l1.id = 1
-  GROUP BY r.topogeo_id;
-UPDATE tt.bigareas SET g = tg;
+  GROUP BY r.topogeo_id ORDER BY r.topogeo_id;
+UPDATE tt.bigareas a SET g = st_multi(o.g) FROM tt.areas o WHERE a.id = o.id;
 
 SELECT 'HS1',
   -- Point 1 3 is removed when simplifying the simple (unconstrained) geometry
