@@ -25,9 +25,11 @@
 */
 LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
 GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
+GEOSGeometry * GBOX2GEOS(const GBOX *g);
 GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
 int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
+int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
 
 POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 

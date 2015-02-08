@@ -23,10 +23,20 @@ typedef struct
 	uint32_t N;
 } UNIONFIND;
 
+/* Allocate a UNIONFIND structure of capacity N */
 UNIONFIND* UF_create(uint32_t N);
+
+/* Release memory associated with UNIONFIND structure */
 void UF_destroy(UNIONFIND* uf);
-uint32_t UF_find(UNIONFIND* uf, uint32_t i);
+
+/* Identify the cluster id associated with specified component id */
+uint32_t UF_find(UNIONFIND* uf, uint32_t i); 
+
+/* Merge the clusters that contain the two specified components ids */
 void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
+
+/* Return an array of component ids, where components that are in the
+ * same cluster are contiguous in the array */
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
 
 #endif
