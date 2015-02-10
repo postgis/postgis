@@ -36,7 +36,7 @@ static void test_unionfind_union(void)
 	UF_union(uf, 3, 2); /* both have size = 1, so 3 becomes 2 */
 	UF_union(uf, 8, 7); /* add 8 (smaller) to 0-7 (larger)    */
 	UF_union(uf, 1, 2); /* add 1 (smaller) to 2-3 (larger)    */
-	
+
 	uint32_t expected_final_ids[] =   { 0, 2, 2, 2, 4, 5, 6, 0, 0, 9 };
 	uint32_t expected_final_sizes[] = { 3, 0, 3, 0, 1, 1, 1, 0, 0, 1 };
 
@@ -50,14 +50,14 @@ static void test_unionfind_ordered_by_cluster(void)
 {
 	UNIONFIND *uf = UF_create(10);
 	uint32_t final_clusters[] = { 0, 2, 2, 2, 4, 5, 6, 0, 0, 2 };
-   	uint32_t final_sizes[]    = { 3, 0, 4, 0, 1, 1, 1, 0, 0, 0 };
+	uint32_t final_sizes[]    = { 3, 0, 4, 0, 1, 1, 1, 0, 0, 0 };
 	uf->clusters = final_clusters;
 	uf->cluster_sizes = final_sizes;
 	uf->num_clusters = 5;
 
 	uint32_t* actual_ids_by_cluster = UF_ordered_by_cluster(uf);
 	uint32_t expected_ids_by_cluster[] = { 0, 7, 8, 1, 2, 3, 9, 4, 5, 6 };
-	
+
 	CU_ASSERT_EQUAL(0, memcmp(actual_ids_by_cluster, expected_ids_by_cluster, 10 * sizeof(uint32_t)));
 }
 

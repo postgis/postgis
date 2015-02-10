@@ -30,7 +30,7 @@ UNIONFIND* UF_create(uint32_t N);
 void UF_destroy(UNIONFIND* uf);
 
 /* Identify the cluster id associated with specified component id */
-uint32_t UF_find(UNIONFIND* uf, uint32_t i); 
+uint32_t UF_find(UNIONFIND* uf, uint32_t i);
 
 /* Merge the clusters that contain the two specified components ids */
 void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
