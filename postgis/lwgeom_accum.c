@@ -152,14 +152,14 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		p = (pgis_abs*) palloc(sizeof(pgis_abs));
 		p->a = NULL;
         p->data = (Datum) NULL;
+
+        if (PG_NARGS() == 3) {
+            p->data = PG_GETARG_DATUM(2);
+        }
 	}
 	else
 	{
 		p = (pgis_abs*) PG_GETARG_POINTER(0);
-
-        if (PG_NARGS() == 3  && !p->data) {
-            p->data = PG_GETARG_DATUM(2);
-        }
 	}
 	state = p->a;
 	elem = PG_ARGISNULL(1) ? (Datum) 0 : PG_GETARG_DATUM(1);
