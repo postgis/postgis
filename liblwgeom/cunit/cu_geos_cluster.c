@@ -166,11 +166,21 @@ static void nonsequential_test(void)
 	perform_cluster_within_distance_test(0, wkt_inputs, 6, expected_outputs, 1);
 }
 
+static void single_input_test(void)
+{
+    char* wkt_inputs[] = { "POINT (0 0)" };
+    char* expected_outputs[] = { "GEOMETRYCOLLECTION (POINT (0 0))" };
+
+    perform_cluster_intersecting_test(wkt_inputs, 1, expected_outputs, 1);
+    perform_cluster_within_distance_test(1, wkt_inputs, 1, expected_outputs, 1);
+}
+
 CU_TestInfo geos_cluster_tests[] =
 {
 	PG_TEST(basic_test),
 	PG_TEST(nonsequential_test),
 	PG_TEST(basic_distance_test),
+	PG_TEST(single_input_test),
 	CU_TEST_INFO_NULL
 };
 

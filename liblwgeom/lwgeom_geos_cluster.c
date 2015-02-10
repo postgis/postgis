@@ -160,6 +160,10 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 {
 	uint32_t i;
 
+    if (num_geoms <= 1) {
+        return LW_SUCCESS;
+    }
+
 	struct STRTree tree = make_strtree((void**) geoms, num_geoms, 0);
 	if (tree.tree == NULL)
 	{
@@ -196,6 +200,10 @@ static int
 union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double tolerance)
 {
     uint32_t i;
+
+    if (num_geoms <= 1) {
+        return LW_SUCCESS;
+    }
     
     struct STRTree tree = make_strtree((void**) geoms, num_geoms, 1);
     if (tree.tree == NULL)
