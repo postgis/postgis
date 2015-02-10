@@ -71,7 +71,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 typedef struct
 {
 	ArrayBuildState *a;
-    Datum data;
+	Datum data;
 }
 pgis_abs;
 
@@ -87,7 +87,7 @@ typedef struct
 {
 	uint8_t variant;
 	int	precision;		//number of decimals in coordinates
-	int	n_rows;		
+	int	n_rows;
 	int	max_rows;
 	geom_id *geoms;
 }
@@ -151,11 +151,12 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 	{
 		p = (pgis_abs*) palloc(sizeof(pgis_abs));
 		p->a = NULL;
-        p->data = (Datum) NULL;
+		p->data = (Datum) NULL;
 
-        if (PG_NARGS() == 3) {
-            p->data = PG_GETARG_DATUM(2);
-        }
+		if (PG_NARGS() == 3)
+		{
+			p->data = PG_GETARG_DATUM(2);
+		}
 	}
 	else
 	{
@@ -180,13 +181,13 @@ Datum
 pgis_twkb_accum_transfn(PG_FUNCTION_ARGS)
 {
 	MemoryContext aggcontext;
-	MemoryContext oldcontext;	
+	MemoryContext oldcontext;
 	twkb_state* state;
 	int32 newlen;
 	uint8_t variant = 0;
 
 
-if (!AggCheckCallContext(fcinfo, &aggcontext))
+	if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
 		/* cannot be called directly because of dummy-type argument */
 		elog(ERROR, "array_agg_transfn called in non-aggregate context");
@@ -197,63 +198,63 @@ if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
 		/*state gets palloced and 10 geometry elements too
 		don't forget to free*/
-	 
+
 		state=palloc(sizeof(twkb_state));
 		state->geoms = (geom_id*) palloc(10*sizeof(geom_id));
 		state->max_rows = 10;
-		state->n_rows = 0;	
-	
+		state->n_rows = 0;
+
 		/* If user specified precision, respect it */
 		state->precision = PG_ARGISNULL(2) ? (int) 0 : PG_GETARG_INT32(2);
 	}
 	else
 	{
 		state = (twkb_state*) PG_GETARG_POINTER(0);
-		
+
 		if(!((state->n_rows)<(state->max_rows)))
 		{
-			    newlen = (state->max_rows)*2; 	
-			    
-			    state->geoms = (geom_id*)repalloc((void*)(state->geoms),newlen*sizeof(geom_id));
-				
-			    state->max_rows = newlen;			    
-		}	
-	
-	}	
+			newlen = (state->max_rows)*2;
+
+			state->geoms = (geom_id*)repalloc((void*)(state->geoms),newlen*sizeof(geom_id));
+
+			state->max_rows = newlen;
+		}
+
+	}
 
 	if (!PG_ARGISNULL(1))
 	{
-		((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));      
-		
-		
+		((state->geoms)+state->n_rows)->geom = PG_ARGISNULL(1) ? (Datum) 0 : PointerGetDatum(PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1)));
+
+
 		if ((PG_NARGS()>3) && (!PG_ARGISNULL(3)))
 		{
 			variant = variant | (TWKB_ID);
-			((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3); 
+			((state->geoms)+state->n_rows)->id = PG_GETARG_INT64(3);
 		}
 		else
 		{
 			variant = variant & ~TWKB_ID;
 			((state->geoms)+state->n_rows)->id = 0;
 		}
-		
+
 		/* If user wants registered twkb sizes */
 		if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) && PG_GETARG_BOOL(4) )
 			variant = variant | (TWKB_SIZES);
 		else
 			variant = variant & ~TWKB_SIZES;
-		
-			/* If user wants bounding boxes */
+
+		/* If user wants bounding boxes */
 		if ( (PG_NARGS()>5) && (!PG_ARGISNULL(5)) && PG_GETARG_BOOL(5) )
 			variant = variant | (TWKB_BBOXES);
 		else
 			variant = variant & ~TWKB_BBOXES;
-	
+
 		state->variant=variant;
-		(state->n_rows)++;	
-	}	
-	MemoryContextSwitchTo(oldcontext); 
-	
+		(state->n_rows)++;
+	}
+	MemoryContextSwitchTo(oldcontext);
+
 	PG_RETURN_POINTER(state);
 }
 
@@ -275,7 +276,7 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 	Assert(fcinfo->context &&
 	       (IsA(fcinfo->context, AggState) ||
 	        IsA(fcinfo->context, WindowAggState))
-	       );
+	      );
 
 	state = p->a;
 	dims[0] = state->nelems;
@@ -369,7 +370,7 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 	twkb_geom_arrays lwgeom_arrays;
 	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
-	size_t twkb_size;	
+	size_t twkb_size;
 	uint8_t *twkb;
 	bytea *result;
 	state =  (twkb_state*)  PG_GETARG_POINTER(0);
@@ -378,71 +379,71 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 
 	if (state->n_rows<1)
 		PG_RETURN_NULL();
-	
-	
-	for (i=0;i<state->n_rows;i++)
+
+
+	for (i=0; i<state->n_rows; i++)
 	{
 		geom = (GSERIALIZED*)PG_DETOAST_DATUM((geom_array+i)->geom);
 		lwgeom = lwgeom_from_gserialized(geom);
 		switch ( lwgeom->type )
 		{
-			case POINTTYPE:
-				if (lwgeom_arrays.n_points==0)
-					lwgeom_arrays.points = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
-				
-				(lwgeom_arrays.points+lwgeom_arrays.n_points)->geom=lwgeom;
-				(lwgeom_arrays.points+lwgeom_arrays.n_points)->id=(geom_array+i)->id;
-				(lwgeom_arrays.n_points)++;
-				break;
+		case POINTTYPE:
+			if (lwgeom_arrays.n_points==0)
+				lwgeom_arrays.points = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
+
+			(lwgeom_arrays.points+lwgeom_arrays.n_points)->geom=lwgeom;
+			(lwgeom_arrays.points+lwgeom_arrays.n_points)->id=(geom_array+i)->id;
+			(lwgeom_arrays.n_points)++;
+			break;
 			/* LineString and CircularString both have 'points' elements */
-			case LINETYPE:
-				if (lwgeom_arrays.n_linestrings==0)
-					lwgeom_arrays.linestrings = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
-				
-				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->geom=lwgeom;
-				(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->id=(geom_array+i)->id;
-				(lwgeom_arrays.n_linestrings)++;
-				break;
+		case LINETYPE:
+			if (lwgeom_arrays.n_linestrings==0)
+				lwgeom_arrays.linestrings = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
+
+			(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->geom=lwgeom;
+			(lwgeom_arrays.linestrings+lwgeom_arrays.n_linestrings)->id=(geom_array+i)->id;
+			(lwgeom_arrays.n_linestrings)++;
+			break;
 
 			/* Polygon has 'nrings' and 'rings' elements */
-			case POLYGONTYPE:
-				if (lwgeom_arrays.n_polygons==0)
-					lwgeom_arrays.polygons = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
-				
-				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->geom=lwgeom;
-				(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->id=(geom_array+i)->id;
-				(lwgeom_arrays.n_polygons)++;
-				break;
+		case POLYGONTYPE:
+			if (lwgeom_arrays.n_polygons==0)
+				lwgeom_arrays.polygons = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
 
-			/* Triangle has one ring of three points 
+			(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->geom=lwgeom;
+			(lwgeom_arrays.polygons+lwgeom_arrays.n_polygons)->id=(geom_array+i)->id;
+			(lwgeom_arrays.n_polygons)++;
+			break;
+
+			/* Triangle has one ring of three points
 			case TRIANGLETYPE:
 				return lwtriangle_to_twkb_buf((LWTRIANGLE*)geom, buf, variant);
-	*/
+			*/
 			/* All these Collection types have 'ngeoms' and 'geoms' elements */
-			case MULTIPOINTTYPE:
-			case MULTILINETYPE:
-			case MULTIPOLYGONTYPE:
-			case COLLECTIONTYPE:
-				if (lwgeom_arrays.n_collections==0)
-					lwgeom_arrays.collections = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
-				
-				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->geom=lwgeom;
-				(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->id=(geom_array+i)->id;
-				(lwgeom_arrays.n_collections)++;
-				break;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			if (lwgeom_arrays.n_collections==0)
+				lwgeom_arrays.collections = (lwgeom_id*)palloc(((state->n_rows)-i)*sizeof(lwgeom_id));
+
+			(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->geom=lwgeom;
+			(lwgeom_arrays.collections+lwgeom_arrays.n_collections)->id=(geom_array+i)->id;
+			(lwgeom_arrays.n_collections)++;
+			break;
 
 			/* Unknown type! */
-			default:
-				lwerror("Unsupported geometry type: %s [%d]", lwtype_name(lwgeom->type), lwgeom->type);
+		default:
+			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(lwgeom->type), lwgeom->type);
 		}
-	
-	}		
+
+	}
 	twkb = lwgeom_agg_to_twkb(&lwgeom_arrays, state->variant , &twkb_size,(int8_t) state->precision);
 
 
-		/* Clean up and return */
+	/* Clean up and return */
 	/* Prepare the PgSQL text return type */
-	
+
 	result = palloc(twkb_size + VARHDRSZ);
 	SET_VARSIZE(result, twkb_size+VARHDRSZ);
 	memcpy(VARDATA(result), twkb, twkb_size);
@@ -503,58 +504,59 @@ pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)
 }
 
 /**
- * The "clusterintersecting" final function passes the geometry[] to a 
+ * The "clusterintersecting" final function passes the geometry[] to a
  * clustering function before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_clusterintersecting_finalfn);
 Datum
 pgis_geometry_clusterintersecting_finalfn(PG_FUNCTION_ARGS)
 {
-		pgis_abs *p;
-		Datum result = 0;
-		Datum geometry_array = 0;
+	pgis_abs *p;
+	Datum result = 0;
+	Datum geometry_array = 0;
 
-		if (PG_ARGISNULL(0))
-			PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
-		p = (pgis_abs*) PG_GETARG_POINTER(0);
-		geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-		result = PGISDirectFunctionCall1( clusterintersecting_garray, geometry_array );
-	    if (!result)
-			PG_RETURN_NULL();
+	p = (pgis_abs*) PG_GETARG_POINTER(0);
+	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+	result = PGISDirectFunctionCall1( clusterintersecting_garray, geometry_array );
+	if (!result)
+		PG_RETURN_NULL();
 
-		PG_RETURN_DATUM(result);
-}	
+	PG_RETURN_DATUM(result);
+}
 
 /**
- * The "cluster_within_distance" final function passes the geometry[] to a 
+ * The "cluster_within_distance" final function passes the geometry[] to a
  * clustering function before returning the result.
 */
 PG_FUNCTION_INFO_V1(pgis_geometry_clusterwithin_finalfn);
 Datum
 pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 {
-		pgis_abs *p;
-		Datum result = 0;
-		Datum geometry_array = 0;
+	pgis_abs *p;
+	Datum result = 0;
+	Datum geometry_array = 0;
 
-		if (PG_ARGISNULL(0))
-			PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
-		p = (pgis_abs*) PG_GETARG_POINTER(0);
+	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
-        if (!p->data) {
-            elog(ERROR, "Tolerance not defined");
-            PG_RETURN_NULL();
-        }
+	if (!p->data)
+	{
+		elog(ERROR, "Tolerance not defined");
+		PG_RETURN_NULL();
+	}
 
-		geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-		result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
-	    if (!result)
-			PG_RETURN_NULL();
+	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
+	if (!result)
+		PG_RETURN_NULL();
 
-		PG_RETURN_DATUM(result);
-}	
+	PG_RETURN_DATUM(result);
+}
 
 /**
 * A modified version of PostgreSQL's DirectFunctionCall1 which allows NULL results; this
@@ -605,7 +607,7 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 #endif
 
 	fcinfo.arg[0] = arg1;
-    fcinfo.arg[1] = arg2;
+	fcinfo.arg[1] = arg2;
 	fcinfo.argnull[0] = false;
 	fcinfo.argnull[1] = false;
 
