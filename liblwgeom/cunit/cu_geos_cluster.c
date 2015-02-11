@@ -104,11 +104,6 @@ static void perform_cluster_within_distance_test(double tolerance, char** wkt_in
 
 	CU_ASSERT_EQUAL(num_outputs, num_clusters);
 
-	int i;
-	for(i=0; i < num_clusters; i++)
-	{
-		printf("%s\n", lwgeom_to_ewkt(lw_results[i]));
-	}
 	assert_all_results_found(lw_results, num_clusters, expected_outputs, num_outputs);
 }
 
