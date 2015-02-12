@@ -1365,7 +1365,7 @@ BEGIN
 
   -- Check for edge crossed nodes
   -- TODO: do this in the single edge loop
-  FOR rec IN EXECUTE 'SELECT n.node_id as id1, e.edge_id as id2 FROM '
+  FOR rec IN EXECUTE 'SELECT n.node_id as nid, e.edge_id as eid FROM '
     || quote_ident(toponame) || '.node n, '
     || quote_ident(toponame) || '.edge e '
     || 'WHERE e.start_node != n.node_id '
@@ -1373,8 +1373,8 @@ BEGIN
     || 'AND ST_Within(n.geom, e.geom)'
   LOOP
     retrec.error = 'edge crosses node';
-    retrec.id1 = rec.id1;
-    retrec.id2 = rec.id2;
+    retrec.id1 = rec.eid; -- edge_id
+    retrec.id2 = rec.nid; -- node_id
     RETURN NEXT retrec;
   END LOOP;
 
