@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 		surface_suite,
 		homogenize_suite,
 		force_sfs_suite,
-#if HAVE_JSON
+#if HAVE_LIBJSON
 		in_geojson_suite,
 #endif
 		out_gml_suite,
