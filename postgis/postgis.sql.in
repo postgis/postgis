@@ -363,36 +363,42 @@ CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 -- Sorting operators for Btree
 --
 
+-- Availability: 0.9.0
 CREATE OPERATOR < (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_lt,
 	COMMUTATOR = '>', NEGATOR = '>=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR <= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_le,
 	COMMUTATOR = '>=', NEGATOR = '>',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
 	COMMUTATOR = '=', -- we might implement a faster negator here
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR >= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_ge,
 	COMMUTATOR = '<=', NEGATOR = '<',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
+
+-- Availability: 0.9.0
 CREATE OPERATOR > (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_gt,
 	COMMUTATOR = '<', NEGATOR = '<=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
-
+-- Availability: 0.9.0
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
 	OPERATOR	1	< ,
@@ -529,6 +535,8 @@ CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
+-- Changed: 2.0.0 use gserialized selectivity estimators
 CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
 	COMMUTATOR = '&&',
@@ -542,6 +550,7 @@ CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR ~= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
 	RESTRICT = contsel, JOIN = contjoinsel
@@ -560,11 +569,13 @@ CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 #if POSTGIS_PGSQL_VERSION >= 91
+-- Availability: 2.0.0
 CREATE OPERATOR <-> (
     LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_centroid,
     COMMUTATOR = '<->'
 );
 
+-- Availability: 2.0.0
 CREATE OPERATOR <#> (
     LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_box,
     COMMUTATOR = '<#>'
@@ -583,12 +594,14 @@ CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_within_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
 	COMMUTATOR = '~',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.1.0
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
 	COMMUTATOR = '@',
@@ -601,6 +614,7 @@ CREATE OR REPLACE FUNCTION geometry_left(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_left_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR << (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
 	COMMUTATOR = '>>',
@@ -613,6 +627,7 @@ CREATE OR REPLACE FUNCTION geometry_overleft(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overleft_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &< (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
 	COMMUTATOR = '&>',
@@ -625,6 +640,7 @@ CREATE OR REPLACE FUNCTION geometry_below(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_below_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR <<| (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
 	COMMUTATOR = '|>>',
@@ -637,6 +653,7 @@ CREATE OR REPLACE FUNCTION geometry_overbelow(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overbelow_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &<| (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
 	COMMUTATOR = '|&>',
@@ -649,6 +666,7 @@ CREATE OR REPLACE FUNCTION geometry_overright(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overright_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
 	COMMUTATOR = '&<',
@@ -661,6 +679,7 @@ CREATE OR REPLACE FUNCTION geometry_right(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_right_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR >> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
 	COMMUTATOR = '<<',
@@ -673,6 +692,7 @@ CREATE OR REPLACE FUNCTION geometry_overabove(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overabove_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR |&> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
 	COMMUTATOR = '&<|',
@@ -685,6 +705,7 @@ CREATE OR REPLACE FUNCTION geometry_above(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_above_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR |>> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
 	COMMUTATOR = '<<|',

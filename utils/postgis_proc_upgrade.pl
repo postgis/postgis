@@ -54,18 +54,6 @@ my $objs = {
 		}
 	},
  	"105" => { 
-		"operators" => {
-			"geography >" => 1,
-			"geography >=" => 1,
-			"geography =" => 1,
-			"geography <=" => 1,
-			"geography <" => 1,
-			"geography &&" => 1 
-		},
-		"opclasses" => {
-			"gist_geography_ops" => 1,
-			"btree_geography_ops" => 1
-		},
 		"views" => {
 			"geography_columns" => 1
 		},
