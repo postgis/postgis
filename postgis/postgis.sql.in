@@ -79,6 +79,7 @@ CREATE OR REPLACE FUNCTION spheroid_out(spheroid)
 	AS 'MODULE_PATHNAME','ellipsoid_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.5.0
 CREATE TYPE spheroid (
 	alignment = double,
 	internallength = 65,
@@ -126,6 +127,7 @@ CREATE OR REPLACE FUNCTION geometry_send(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_send'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE TYPE geometry (
 	internallength = variable,
 	input = geometry_in,
@@ -236,6 +238,7 @@ CREATE OR REPLACE FUNCTION box3d_out(box3d)
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE TYPE box3d (
 	alignment = double,
 	internallength = 52,
@@ -257,6 +260,7 @@ CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	AS 'MODULE_PATHNAME','BOX2D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.8.2
 CREATE TYPE box2d (
 	internallength = 65,
 	input = box2d_in,
@@ -1620,7 +1624,7 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
-
+-- Availability: 1.0.0
 CREATE TYPE geometry_dump AS (
 	path integer[],
 	geom geometry
@@ -3411,6 +3415,7 @@ CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.4.0
 CREATE TYPE pgis_abs (
 	internallength = 8,
 	input = pgis_abs_in,

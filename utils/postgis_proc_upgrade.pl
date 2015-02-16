@@ -53,12 +53,6 @@ my $objs = {
 			"st_makeline(geometry)" => 1
 		}
 	},
- 	"104" => { 
-		"types" => {
-			"box3d_extent" => 1,
-			"pgis_abs" => 1
-		}
-	},
  	"105" => { 
 		"operators" => {
 			"geography >" => 1,
@@ -75,10 +69,6 @@ my $objs = {
 		"views" => {
 			"geography_columns" => 1
 		},
-		"types" => {
-			"geography" => 1,
-			"gidx" => 1
-		}
 	},
  	"200" => { 
 		"aggregates" => {
