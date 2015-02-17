@@ -55,6 +55,7 @@ CREATE OR REPLACE FUNCTION raster_out(raster)
     AS 'MODULE_PATHNAME','RASTER_out'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE TYPE raster (
     alignment = double,
     internallength = variable,
@@ -94,6 +95,7 @@ CREATE OR REPLACE FUNCTION postgis_gdal_version()
 -- generic composite type of a raster and its band index
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE rastbandarg AS (
 	rast raster,
 	nband integer
@@ -103,6 +105,7 @@ CREATE TYPE rastbandarg AS (
 -- generic composite type of a geometry and value
 -----------------------------------------------------------------------
 
+-- Availability: 2.0.0
 CREATE TYPE geomval AS (
 	geom geometry,
 	val double precision
@@ -324,6 +327,7 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
 -- Constructor ST_AddBand
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE addbandarg AS (
 	index int,
 	pixeltype text,
@@ -421,6 +425,7 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFA
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
 
+-- Availability: 2.0.0
 CREATE TYPE summarystats AS (
 	count bigint,
 	sum double precision,
@@ -688,6 +693,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 -- ST_CountAgg
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE agg_count AS (
 	count bigint,
 	nband integer,
@@ -1695,6 +1701,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, 
 -----------------------------------------------------------------------
 -- ST_Reclass
 -----------------------------------------------------------------------
+-- Availability: 2.0.0
 CREATE TYPE reclassarg AS (
 	nband int,
 	reclassexpr text,
@@ -5904,6 +5911,7 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE TYPE agg_samealignment AS (
 	refraster raster,
 	aligned boolean
@@ -6527,6 +6535,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 -- ST_Union aggregate
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE unionarg AS (
 	nband int,
 	uniontype text
