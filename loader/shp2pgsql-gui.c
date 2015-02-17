@@ -27,8 +27,6 @@
 #include "shp2pgsql-core.h"
 #include "pgsql2shp-core.h"
 
-#include "../liblwgeom/liblwgeom.h" /* for lw_asprintf */
-
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
 #define SHAPEFIELDMAXWIDTH 60
 
@@ -957,10 +955,16 @@ static void
 add_loader_file_config_to_list(SHPLOADERCONFIG *loader_file_config)
 {
 	GtkTreeIter iter;
-	char *srid;
+#define MAXLEN 16
+	char srid[MAXLEN+1];
 	
 	/* Convert SRID into string */
-	lw_asprintf(&srid, "%d", loader_file_config->sr_id);
+	if ( MAXLEN+1 <= snprintf(srid, MAXLEN+1, "%d", loader_file_config->sr_id) )
+	{
+		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
+		pgui_raise_error_dialogue();
+		srid[MAXLEN] = '\0';
+	}
 	
 	gtk_list_store_insert_before(import_file_list_store, &iter, NULL);
 	gtk_list_store_set(import_file_list_store, &iter,
@@ -1415,7 +1419,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	gint is_valid;
 	gpointer gptr;
 	GtkTreeIter iter;
-	char *sql_form, *query, *connection_string, *progress_text = NULL, *progress_shapefile = NULL;
+	char *sql_form, *query, *connection_string, *progress_shapefile = NULL;
+  char progress_text[GUIMSG_LINE_MAXLEN+1];
 	PGresult *result;
 	
 	int ret, i = 0;
@@ -1538,7 +1543,9 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		strcpy(progress_shapefile, &loader_file_config->shp_file[i]);
 		
 		/* Display the progress dialog */
-		lw_asprintf(&progress_text, _("Importing shapefile %s (%d records)..."), progress_shapefile, ShpLoaderGetRecordCount(state));
+		//lw_asprintf(&progress_text, _("Importing shapefile %s (%d records)..."), progress_shapefile, ShpLoaderGetRecordCount(state));
+		snprintf(progress_text, GUIMSG_LINE_MAXLEN, _("Importing shapefile %s (%d records)..."), progress_shapefile, ShpLoaderGetRecordCount(state));
+		progress_text[GUIMSG_LINE_MAXLEN] = '\0';
 		gtk_label_set_text(GTK_LABEL(label_progress), progress_text);
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
 		gtk_widget_show_all(dialog_progress);
@@ -1724,9 +1731,6 @@ import_cleanup:
 		ShpLoaderDestroy(state);
 
 		/* Tidy up */
-		if (progress_text)
-			free(progress_text);
-		
 		if (progress_shapefile)
 			free(progress_shapefile);
 		
@@ -1765,7 +1769,8 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 	gint is_valid;
 	gpointer gptr;
 	GtkTreeIter iter;
-	char *output_shapefile, *orig_shapefile, *progress_text = NULL;
+	char *output_shapefile, *orig_shapefile;
+  char progress_text[GUIMSG_LINE_MAXLEN+1];
 	gchar *folder_path;
 	
 	int ret, success = FALSE, i = 0;
@@ -1873,7 +1878,9 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		}
 
 		/* Update the text */
-		lw_asprintf(&progress_text, _("Exporting table %s (%d records)..."), dumper_table_config->table, ShpDumperGetRecordCount(state));
+		//lw_asprintf(&progress_text, _("Exporting table %s (%d records)..."), dumper_table_config->table, ShpDumperGetRecordCount(state));
+		snprintf(progress_text, GUIMSG_LINE_MAXLEN, _("Exporting table %s (%d records)..."), dumper_table_config->table, ShpDumperGetRecordCount(state));
+		progress_text[GUIMSG_LINE_MAXLEN] = '\0';
 		gtk_label_set_text(GTK_LABEL(label_progress), progress_text);
 
 		/* Allow GTK events to get a look in */
@@ -2171,7 +2178,8 @@ pgui_action_handle_loader_edit(GtkCellRendererText *renderer,
 	gpointer gptr;
 	gint columnindex;
 	SHPLOADERCONFIG *loader_file_config;
-	char *srid;
+#define MAXLEN 16
+	char srid[MAXLEN+1];
 	
 	/* Empty doesn't fly */
 	if (strlen(new_text) == 0)
@@ -2190,7 +2198,12 @@ pgui_action_handle_loader_edit(GtkCellRendererText *renderer,
 	update_loader_file_config_from_listview_iter(&iter, loader_file_config);
 	
 	/* Now refresh the listview UI row with the new configuration */
-	lw_asprintf(&srid, "%d", loader_file_config->sr_id);
+	if ( MAXLEN+1 <= snprintf(srid, MAXLEN+1, "%d", loader_file_config->sr_id) )
+	{
+		pgui_logf("Invalid SRID requiring more than %d digits: %d", MAXLEN, loader_file_config->sr_id);
+		pgui_raise_error_dialogue();
+		srid[MAXLEN] = '\0';
+	}
 	
 	gtk_list_store_set(import_file_list_store, &iter,
 	                   IMPORT_SCHEMA_COLUMN, loader_file_config->schema,
