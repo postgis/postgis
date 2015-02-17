@@ -223,7 +223,7 @@ static void pgui_sanitize_connection_string(char *connection_string);
 void
 pgui_log_va(const char *fmt, va_list ap)
 {
-	char *msg[GUIMSG_LINE_MAXLEN+1];
+	char msg[GUIMSG_LINE_MAXLEN+1];
 	GtkTextIter iter;
 
 	if ( -1 == vsnprintf (msg, GUIMSG_LINE_MAXLEN, fmt, ap) ) return;

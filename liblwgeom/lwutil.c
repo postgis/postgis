@@ -110,7 +110,7 @@ default_reallocator(void *mem, size_t size)
 static void
 default_noticereporter(const char *fmt, va_list ap)
 {
-	char *msg[LW_MSG_MAXLEN+1];
+	char msg[LW_MSG_MAXLEN+1];
 	vsnprintf (msg, LW_MSG_MAXLEN, fmt, ap);
 	msg[LW_MSG_MAXLEN]='\0';
 	printf("%s\n", msg);
@@ -119,7 +119,7 @@ default_noticereporter(const char *fmt, va_list ap)
 static void
 default_errorreporter(const char *fmt, va_list ap)
 {
-	char *msg[LW_MSG_MAXLEN+1];
+	char msg[LW_MSG_MAXLEN+1];
 	vsnprintf (msg, LW_MSG_MAXLEN, fmt, ap);
 	msg[LW_MSG_MAXLEN]='\0';
 	fprintf(stderr, "%s\n", msg);
