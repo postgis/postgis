@@ -242,19 +242,8 @@ int main(int argc, char *argv[])
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-	char *msg;
-
-	/** This is a GNU extension.
-	* Dunno how to handle errors here.
-	 */
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-
-	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
-	lwfree(msg);
+  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
 }
 
 void
