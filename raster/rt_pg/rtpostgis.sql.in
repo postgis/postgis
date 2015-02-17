@@ -5772,72 +5772,85 @@ CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
 --  GiST index OPERATORs
 ------------------------------------------------------------------------------
 -- raster/raster operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR << (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_left,
     COMMUTATOR = '>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &< (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overleft,
     COMMUTATOR = '&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR <<| (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_below,
     COMMUTATOR = '|>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &<| (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overbelow,
     COMMUTATOR = '|&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overlap,
     COMMUTATOR = '&&',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overright,
     COMMUTATOR = '&<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR >> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_right,
     COMMUTATOR = '<<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR |&> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overabove,
     COMMUTATOR = '&<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR |>> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_above,
     COMMUTATOR = '<<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR ~= (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_same,
     COMMUTATOR = '~=',
     RESTRICT = eqsel, JOIN = eqjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contained,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contain,
     COMMUTATOR = '@',
@@ -5847,6 +5860,7 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 
 -- Availability: 2.0.0
+-- Last Changed: 2.2.0 removed commutator spec
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
