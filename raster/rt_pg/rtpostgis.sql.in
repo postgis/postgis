@@ -5860,7 +5860,8 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 
 -- Availability: 2.0.0
--- Last Changed: 2.2.0 removed commutator spec
+-- NOTE: 2.1.2 removed the commutator spec but it was wrong
+--       See http://trac.osgeo.org/postgis/ticket/3039
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5868,6 +5869,7 @@ CREATE OPERATOR ~ (
     );
 
 -- Availability: 2.0.5
+-- NOTE: was missing in 2.1.0 but was added in 2.1.1
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
     COMMUTATOR = '~',
@@ -5884,6 +5886,8 @@ CREATE OPERATOR && (
 -- geometry/raster operators
 
 -- Availability: 2.0.0
+-- NOTE: 2.1.2 removed the commutator spec but it was wrong
+--       See http://trac.osgeo.org/postgis/ticket/3039
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5891,6 +5895,7 @@ CREATE OPERATOR ~ (
     );
 
 -- Availability: 2.0.5
+-- NOTE: was missing in 2.1.0 but was added in 2.1.1
 CREATE OPERATOR @ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
     COMMUTATOR = '~',
