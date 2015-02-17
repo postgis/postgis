@@ -148,6 +148,8 @@ PG_MODULE_MAGIC;
 /* Module load callback */
 void _PG_init(void);
 
+#define RT_MSG_MAXLEN 256
+
 /* ---------------------------------------------------------------- */
 /*  PostGIS raster GUCs                                             */
 /* ---------------------------------------------------------------- */
@@ -472,32 +474,23 @@ rt_pg_free(void *ptr)
 static void
 rt_pg_error(const char *fmt, va_list ap)
 {
-#define ERRMSG_MAXLEN 256
+    char errmsg[RT_MSG_MAXLEN+1];
 
-    char errmsg[ERRMSG_MAXLEN+1];
+    vsnprintf (errmsg, RT_MSG_MAXLEN, fmt, ap);
 
-    vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
-
-    errmsg[ERRMSG_MAXLEN]='\0';
+    errmsg[RT_MSG_MAXLEN]='\0';
     ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
 static void
 rt_pg_notice(const char *fmt, va_list ap)
 {
-    char *msg;
+    char msg[RT_MSG_MAXLEN+1];
 
-    /*
-     * This is a GNU extension.
-     * Dunno how to handle errors here.
-     */
-    if (!lw_vasprintf (&msg, fmt, ap))
-    {
-        va_end (ap);
-        return;
-    }
+    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
+
+    msg[RT_MSG_MAXLEN]='\0';
     ereport(NOTICE, (errmsg_internal("%s", msg)));
-    free(msg);
 }
 
 
