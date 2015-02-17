@@ -58,6 +58,8 @@ extern CU_SuiteInfo out_encoded_polyline_suite;
 extern CU_SuiteInfo in_encoded_polyline_suite;
 extern CU_SuiteInfo varint_suite;
 
+#define MAX_CUNIT_MSG_LENGTH 256
+
 /*
 ** The main() function for setting up and running the tests.
 ** Returns a CUE_SUCCESS on successful running, another
