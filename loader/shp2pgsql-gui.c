@@ -27,8 +27,6 @@
 #include "shp2pgsql-core.h"
 #include "pgsql2shp-core.h"
 
-#include "../liblwgeom/liblwgeom.h" /* for lw_vasprintf */
-
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
 #define SHAPEFIELDMAXWIDTH 60
 
@@ -206,7 +204,8 @@ enum
 };
 
 /* Other */
-static char *pgui_errmsg = NULL;
+#define GUIMSG_LINE_MAXLEN 256
+static char *pgui_errmsg[GUIMSG_LINE_MAXLEN+1];
 static PGconn *pg_connection = NULL;
 static SHPCONNECTIONCONFIG *conn = NULL;
 static SHPLOADERCONFIG *global_loader_config = NULL;
@@ -224,10 +223,11 @@ static void pgui_sanitize_connection_string(char *connection_string);
 void
 pgui_log_va(const char *fmt, va_list ap)
 {
-	char *msg;
+	char *msg[GUIMSG_LINE_MAXLEN+1];
 	GtkTextIter iter;
 
-	if (!lw_vasprintf (&msg, fmt, ap)) return;
+	if ( -1 == vsnprintf (msg, GUIMSG_LINE_MAXLEN, fmt, ap) ) return;
+	msg[GUIMSG_LINE_MAXLEN] = '\0';
 
 	/* Append text to the end of the text area, scrolling if required to make it visible */
 	gtk_text_buffer_get_end_iter(textbuffer_log, &iter);
@@ -239,9 +239,6 @@ pgui_log_va(const char *fmt, va_list ap)
 	/* Allow GTK to process events */
 	while (gtk_events_pending())
 		gtk_main_iteration();
-
-	free(msg);
-	return;
 }
 
 /*
@@ -263,11 +260,8 @@ pgui_logf(const char *fmt, ...)
 void
 pgui_seterr_va(const char *fmt, va_list ap)
 {
-	/* Free any existing message */
-	if (pgui_errmsg)
-		free(pgui_errmsg);
-	
-	if (!lw_vasprintf (&pgui_errmsg, fmt, ap)) return;
+	if ( -1 == vsnprintf (pgui_errmsg, GUIMSG_LINE_MAXLEN, fmt, ap) ) return;
+	pgui_errmsg[GUIMSG_LINE_MAXLEN] = '\0';
 }
 
 static void
