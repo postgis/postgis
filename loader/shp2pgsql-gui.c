@@ -27,6 +27,8 @@
 #include "shp2pgsql-core.h"
 #include "pgsql2shp-core.h"
 
+#include "../liblwgeom/liblwgeom.h" /* for lw_asprintf */
+
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
 #define SHAPEFIELDMAXWIDTH 60
 
@@ -205,7 +207,7 @@ enum
 
 /* Other */
 #define GUIMSG_LINE_MAXLEN 256
-static char *pgui_errmsg[GUIMSG_LINE_MAXLEN+1];
+static char pgui_errmsg[GUIMSG_LINE_MAXLEN+1];
 static PGconn *pg_connection = NULL;
 static SHPCONNECTIONCONFIG *conn = NULL;
 static SHPLOADERCONFIG *global_loader_config = NULL;
