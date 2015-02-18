@@ -74,6 +74,7 @@ TESTS = \
   dumper/literalsrid \
   dumper/realtable \
 	binary \
+	operators \
 	regress \
 	regress_index \
 	regress_index_nulls \
