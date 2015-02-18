@@ -91,10 +91,9 @@ static void test_sfcgal_noop(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo sfcgal_tests[] =
+void sfcgal_suite_setup(void);
+void sfcgal_suite_setup(void)
 {
-	PG_TEST(test_sfcgal_noop),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo sfcgal_suite = {"SFCGAL",  NULL,  NULL, sfcgal_tests};
-
+	CU_pSuite suite = CU_add_suite("SFCGAL", NULL, NULL);
+	PG_ADD_TEST(suite, test_sfcgal_noop);
+}

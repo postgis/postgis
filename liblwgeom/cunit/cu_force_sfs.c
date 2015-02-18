@@ -164,11 +164,11 @@ static void test_sfs_11(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo force_sfs_tests[] =
+void force_sfs_suite_setup(void);
+void force_sfs_suite_setup(void)
 {
-	PG_TEST(test_sfs_11),
-	PG_TEST(test_sfs_12),
-	PG_TEST(test_sqlmm),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo force_sfs_suite = {"force_sfs",  NULL,  NULL, force_sfs_tests};
+	CU_pSuite suite = CU_add_suite("force_sfs", NULL, NULL);
+	PG_ADD_TEST(suite, test_sfs_11);
+	PG_ADD_TEST(suite, test_sfs_12);
+	PG_ADD_TEST(suite, test_sqlmm);
+}

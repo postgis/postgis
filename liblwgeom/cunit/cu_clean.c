@@ -139,9 +139,9 @@ static void test_lwgeom_make_valid(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-static CU_TestInfo clean_tests[] =
+void clean_suite_setup(void);
+void clean_suite_setup(void)
 {
-	PG_TEST(test_lwgeom_make_valid),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo clean_suite = {"clean",  NULL,  NULL, clean_tests};
+	CU_pSuite suite = CU_add_suite("clean", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwgeom_make_valid);
+}

@@ -966,29 +966,28 @@ static void test_lwline_from_lwmpoint(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo libgeom_tests[] =
+void libgeom_suite_setup(void);
+void libgeom_suite_setup(void)
 {
-	PG_TEST(test_typmod_macros),
-	PG_TEST(test_flags_macros),
-	PG_TEST(test_serialized_srid),
-	PG_TEST(test_gserialized_from_lwgeom_size),
-	PG_TEST(test_gbox_serialized_size),
-	PG_TEST(test_lwgeom_from_gserialized),
-	PG_TEST(test_lwgeom_count_vertices),
-	PG_TEST(test_on_gser_lwgeom_count_vertices),
-	PG_TEST(test_geometry_type_from_string),
-	PG_TEST(test_lwcollection_extract),
-	PG_TEST(test_lwgeom_free),
-	PG_TEST(test_lwgeom_flip_coordinates),
-	PG_TEST(test_f2d),
-	PG_TEST(test_lwgeom_clone),
-	PG_TEST(test_lwgeom_force_clockwise),
-	PG_TEST(test_lwgeom_calculate_gbox),
-	PG_TEST(test_lwgeom_is_empty),
-	PG_TEST(test_lwgeom_same),
-	PG_TEST(test_lwline_from_lwmpoint),
-	PG_TEST(test_lwgeom_as_curve),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
-
+	CU_pSuite suite = CU_add_suite("libgeom", NULL, NULL);
+	PG_ADD_TEST(suite, test_typmod_macros);
+	PG_ADD_TEST(suite, test_flags_macros);
+	PG_ADD_TEST(suite, test_serialized_srid);
+	PG_ADD_TEST(suite, test_gserialized_from_lwgeom_size);
+	PG_ADD_TEST(suite, test_gbox_serialized_size);
+	PG_ADD_TEST(suite, test_lwgeom_from_gserialized);
+	PG_ADD_TEST(suite, test_lwgeom_count_vertices);
+	PG_ADD_TEST(suite, test_on_gser_lwgeom_count_vertices);
+	PG_ADD_TEST(suite, test_geometry_type_from_string);
+	PG_ADD_TEST(suite, test_lwcollection_extract);
+	PG_ADD_TEST(suite, test_lwgeom_free);
+	PG_ADD_TEST(suite, test_lwgeom_flip_coordinates);
+	PG_ADD_TEST(suite, test_f2d);
+	PG_ADD_TEST(suite, test_lwgeom_clone);
+	PG_ADD_TEST(suite, test_lwgeom_force_clockwise);
+	PG_ADD_TEST(suite, test_lwgeom_calculate_gbox);
+	PG_ADD_TEST(suite, test_lwgeom_is_empty);
+	PG_ADD_TEST(suite, test_lwgeom_same);
+	PG_ADD_TEST(suite, test_lwline_from_lwmpoint);
+	PG_ADD_TEST(suite, test_lwgeom_as_curve);
+}

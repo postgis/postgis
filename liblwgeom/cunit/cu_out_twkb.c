@@ -127,16 +127,15 @@ static void test_twkb_out_collection(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-
-CU_TestInfo twkb_out_tests[] =
+void twkb_out_suite_setup(void);
+void twkb_out_suite_setup(void)
 {
-	PG_TEST(test_twkb_out_point),
-	PG_TEST(test_twkb_out_linestring),
-	PG_TEST(test_twkb_out_polygon),
-	PG_TEST(test_twkb_out_multipoint),
-	PG_TEST(test_twkb_out_multilinestring),
-	PG_TEST(test_twkb_out_multipolygon),
-	PG_TEST(test_twkb_out_collection),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo twkb_out_suite = {"TWKB Out Suite",  init_twkb_out_suite,  clean_twkb_out_suite, twkb_out_tests};
+	CU_pSuite suite = CU_add_suite("TWKB Out Suite", init_twkb_out_suite, clean_twkb_out_suite);
+	PG_ADD_TEST(suite, test_twkb_out_point);
+	PG_ADD_TEST(suite, test_twkb_out_linestring);
+	PG_ADD_TEST(suite, test_twkb_out_polygon);
+	PG_ADD_TEST(suite, test_twkb_out_multipoint);
+	PG_ADD_TEST(suite, test_twkb_out_multilinestring);
+	PG_ADD_TEST(suite, test_twkb_out_multipolygon);
+	PG_ADD_TEST(suite, test_twkb_out_collection);
+}

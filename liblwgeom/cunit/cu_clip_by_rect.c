@@ -56,9 +56,9 @@ static void test_lwgeom_clip_by_rect(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo clip_by_rect_tests[] =
+void clip_by_rect_suite_setup(void);
+void clip_by_rect_suite_setup(void)
 {
-	PG_TEST(test_lwgeom_clip_by_rect),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo clip_by_rect_suite = {"clip_by_rect",  NULL,  NULL, clip_by_rect_tests};
+	CU_pSuite suite = CU_add_suite("clip_by_rect", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwgeom_clip_by_rect);
+}

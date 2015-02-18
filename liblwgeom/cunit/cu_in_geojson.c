@@ -199,11 +199,11 @@ static void in_geojson_test_geoms(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo in_geojson_tests[] =
+void in_geojson_suite_setup(void);
+void in_geojson_suite_setup(void)
 {
-	PG_TEST(in_geojson_test_srid),
-	PG_TEST(in_geojson_test_bbox),
-	PG_TEST(in_geojson_test_geoms),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo in_geojson_suite = {"in_geojson",  NULL,  NULL, in_geojson_tests};
+	CU_pSuite suite = CU_add_suite("in_geojson", NULL, NULL);
+	PG_ADD_TEST(suite, in_geojson_test_srid);
+	PG_ADD_TEST(suite, in_geojson_test_bbox);
+	PG_ADD_TEST(suite, in_geojson_test_geoms);
+}

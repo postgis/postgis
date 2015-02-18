@@ -54,10 +54,10 @@ static void test_stringbuffer_aprintf(void)
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo stringbuffer_tests[] =
+void stringbuffer_suite_setup(void);
+void stringbuffer_suite_setup(void)
 {
-	PG_TEST(test_stringbuffer_append),
-	PG_TEST(test_stringbuffer_aprintf),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo stringbuffer_suite = {"stringbuffer", NULL, NULL, stringbuffer_tests };
+	CU_pSuite suite = CU_add_suite("stringbuffer", NULL, NULL);
+	PG_ADD_TEST(suite, test_stringbuffer_append);
+	PG_ADD_TEST(suite, test_stringbuffer_aprintf);
+}

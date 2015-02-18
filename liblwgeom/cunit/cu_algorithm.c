@@ -903,24 +903,24 @@ static void test_geohash_point_as_int(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo algorithms_tests[] =
+void algorithms_suite_setup(void);
+void algorithms_suite_setup(void)
 {
-	PG_TEST(test_lw_segment_side),
-	PG_TEST(test_lw_segment_intersects),
-	PG_TEST(test_lwline_crossing_short_lines),
-	PG_TEST(test_lwline_crossing_long_lines),
-	PG_TEST(test_lwline_crossing_bugs),
-	PG_TEST(test_lwpoint_set_ordinate),
-	PG_TEST(test_lwpoint_get_ordinate),
-	PG_TEST(test_point_interpolate),
-	PG_TEST(test_lwline_clip),
-	PG_TEST(test_lwline_clip_big),
-	PG_TEST(test_lwmline_clip),
-	PG_TEST(test_geohash_point),
-	PG_TEST(test_geohash_precision),
-	PG_TEST(test_geohash),
-	PG_TEST(test_geohash_point_as_int),
-	PG_TEST(test_isclosed),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo algorithms_suite = {"PostGIS Computational Geometry Suite",  init_cg_suite,  clean_cg_suite, algorithms_tests};
+	CU_pSuite suite = CU_add_suite("PostGIS Computational Geometry Suite", init_cg_suite, clean_cg_suite);
+	PG_ADD_TEST(suite,test_lw_segment_side);
+	PG_ADD_TEST(suite,test_lw_segment_intersects);
+	PG_ADD_TEST(suite,test_lwline_crossing_short_lines);
+	PG_ADD_TEST(suite,test_lwline_crossing_long_lines);
+	PG_ADD_TEST(suite,test_lwline_crossing_bugs);
+	PG_ADD_TEST(suite,test_lwpoint_set_ordinate);
+	PG_ADD_TEST(suite,test_lwpoint_get_ordinate);
+	PG_ADD_TEST(suite,test_point_interpolate);
+	PG_ADD_TEST(suite,test_lwline_clip);
+	PG_ADD_TEST(suite,test_lwline_clip_big);
+	PG_ADD_TEST(suite,test_lwmline_clip);
+	PG_ADD_TEST(suite,test_geohash_point);
+	PG_ADD_TEST(suite,test_geohash_precision);
+	PG_ADD_TEST(suite,test_geohash);
+	PG_ADD_TEST(suite,test_geohash_point_as_int);
+	PG_ADD_TEST(suite,test_isclosed);
+}

@@ -21,42 +21,79 @@
 static void
 cu_errorreporter(const char *fmt, va_list ap);
 
-/* ADD YOUR SUITE HERE (1 of 2) */
-extern CU_SuiteInfo print_suite;
-extern CU_SuiteInfo algorithms_suite;
-extern CU_SuiteInfo buildarea_suite;
-extern CU_SuiteInfo clean_suite;
-extern CU_SuiteInfo clip_by_rect_suite;
-extern CU_SuiteInfo misc_suite;
-extern CU_SuiteInfo ptarray_suite;
-extern CU_SuiteInfo measures_suite;
-extern CU_SuiteInfo node_suite;
-extern CU_SuiteInfo wkt_out_suite;
-extern CU_SuiteInfo wkt_in_suite;
-extern CU_SuiteInfo twkb_out_suite;
-extern CU_SuiteInfo twkb_in_suite;
-extern CU_SuiteInfo wkb_out_suite;
-extern CU_SuiteInfo wkb_in_suite;
-extern CU_SuiteInfo libgeom_suite;
-extern CU_SuiteInfo split_suite;
-extern CU_SuiteInfo geodetic_suite;
-extern CU_SuiteInfo geos_suite;
-extern CU_SuiteInfo sfcgal_suite;
-extern CU_SuiteInfo tree_suite;
-extern CU_SuiteInfo triangulate_suite;
-extern CU_SuiteInfo homogenize_suite;
-extern CU_SuiteInfo force_sfs_suite;
-extern CU_SuiteInfo in_geojson_suite;
-extern CU_SuiteInfo stringbuffer_suite;
-extern CU_SuiteInfo surface_suite;
-extern CU_SuiteInfo out_gml_suite;
-extern CU_SuiteInfo out_kml_suite;
-extern CU_SuiteInfo out_geojson_suite;
-extern CU_SuiteInfo out_svg_suite;
-extern CU_SuiteInfo out_x3d_suite;
-extern CU_SuiteInfo out_encoded_polyline_suite;
-extern CU_SuiteInfo in_encoded_polyline_suite;
-extern CU_SuiteInfo varint_suite;
+
+/* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
+extern void print_suite_setup();
+extern void algorithms_suite_setup();
+extern void buildarea_suite_setup();
+extern void clean_suite_setup();
+extern void clip_by_rect_suite_setup();
+extern void force_sfs_suite_setup(void);
+extern void geodetic_suite_setup(void);
+extern void geos_suite_setup(void);
+extern void homogenize_suite_setup(void);
+extern void in_encoded_polyline_suite_setup(void);
+extern void in_geojson_suite_setup(void);
+extern void twkb_in_suite_setup(void);
+extern void libgeom_suite_setup(void);
+extern void measures_suite_setup(void);
+extern void misc_suite_setup(void);
+extern void node_suite_setup(void);
+extern void out_encoded_polyline_suite_setup(void);
+extern void out_geojson_suite_setup(void);
+extern void out_gml_suite_setup(void);
+extern void out_kml_suite_setup(void);
+extern void out_svg_suite_setup(void);
+extern void twkb_out_suite_setup(void);
+extern void out_x3d_suite_setup(void);
+extern void ptarray_suite_setup(void);
+extern void sfcgal_suite_setup(void);
+extern void split_suite_setup(void);
+extern void stringbuffer_suite_setup(void);
+extern void tree_suite_setup(void);
+extern void triangulate_suite_setup(void);
+extern void varint_suite_setup(void);
+
+/* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
+PG_SuiteSetup setupfuncs[] =
+{
+	print_suite_setup,
+	algorithms_suite_setup,
+	buildarea_suite_setup,
+	clean_suite_setup,
+	clip_by_rect_suite_setup,
+	force_sfs_suite_setup,
+	geodetic_suite_setup,
+	geos_suite_setup,
+	homogenize_suite_setup,
+	in_encoded_polyline_suite_setup,
+#if HAVE_LIBJSON
+	in_geojson_suite_setup,
+#endif
+	twkb_in_suite_setup,
+	libgeom_suite_setup,
+	measures_suite_setup,
+	misc_suite_setup,
+	node_suite_setup,
+	out_encoded_polyline_suite_setup,
+	out_geojson_suite_setup,
+	out_gml_suite_setup,
+	out_kml_suite_setup,
+	out_svg_suite_setup,
+	twkb_out_suite_setup,
+	out_x3d_suite_setup,
+	ptarray_suite_setup,
+#if HAVE_SFCGAL
+	sfcgal_suite_setup,
+#endif
+	split_suite_setup,
+	stringbuffer_suite_setup,
+	tree_suite_setup,
+	triangulate_suite_setup,
+	varint_suite_setup,
+	NULL
+};
+
 
 #define MAX_CUNIT_MSG_LENGTH 256
 
@@ -67,51 +104,6 @@ extern CU_SuiteInfo varint_suite;
 */
 int main(int argc, char *argv[])
 {
-	/* ADD YOUR SUITE HERE (2 of 2) */
-	CU_SuiteInfo suites[] =
-	{
-		print_suite,
-		misc_suite,
-		ptarray_suite,
-		algorithms_suite,
-		buildarea_suite,
-		clean_suite,
-		clip_by_rect_suite,
-		measures_suite,
-		node_suite,
-		wkt_out_suite,
-		wkt_in_suite,
-		twkb_out_suite,
-		twkb_in_suite,
-		wkb_out_suite,
-		wkb_in_suite,
-		libgeom_suite,
-		split_suite,
-		geodetic_suite,
-		geos_suite,
-#if HAVE_SFCGAL
-		sfcgal_suite,
-#endif
-		tree_suite,
-		triangulate_suite,
-		stringbuffer_suite,
-		surface_suite,
-		homogenize_suite,
-		force_sfs_suite,
-#if HAVE_LIBJSON
-		in_geojson_suite,
-#endif
-		out_gml_suite,
-		out_kml_suite,
-		out_geojson_suite,
-		out_svg_suite,
-		out_x3d_suite,
-		out_encoded_polyline_suite,
-		in_encoded_polyline_suite,
-		varint_suite,
-		CU_SUITE_INFO_NULL
-	};
-
 	int index;
 	char *suite_name;
 	CU_pSuite suite_to_run;
@@ -133,13 +125,20 @@ int main(int argc, char *argv[])
 		return errCode;
 	}
 
-	/* Register all the test suites. */
-	if (CUE_SUCCESS != CU_register_suites(suites))
+	PG_SuiteSetup *setupfunc = setupfuncs;
+	while ( *setupfunc )
 	{
-		errCode = CU_get_error();
-		printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
-		return errCode;
+		(*setupfunc)();
+		setupfunc++;
 	}
+
+	/* Register all the test suites. */
+	// if (CUE_SUCCESS != CU_register_suites(suites))
+	// {
+	// 	errCode = CU_get_error();
+	// 	printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
+	// 	return errCode;
+	// }
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
