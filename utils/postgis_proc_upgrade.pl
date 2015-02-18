@@ -381,29 +381,80 @@ EOF
 		my $opctype = 'unknown';
 		my $opcidx = 'unknown';
 		my $def = $_;
+		my $last_updated;
+		my $subcomment = '';
+		my @subobjects; # minversion, definition
 		while(<INPUT>)
 		{
+			if ( /^\s*\-\-/ ) {
+				$subcomment .= $_;
+				next;
+			}
+
 			$def .= $_;
 			$opctype = $1 if ( /for type (\w+) /i );
 			$opcidx = $1 if ( /using (\w+) /i );
+
+			# Support adding members at later versions
+			if ( /\s+(OPERATOR|FUNCTION)\s+[0-9]+\s+ / )
+			{
+				my $last_updated = parse_last_updated($subcomment);
+				if ( $last_updated )
+				{
+					my $subdefn = $_;
+					chop $subdefn;
+					$subdefn =~ s/[,;]$//; # strip ending comma or semicolon
+					# argument types must be specified in ALTER OPERATOR FAMILY
+					if ( $subdefn =~ m/\s+(OPERATOR.*)(FOR.*)/ )
+					{
+						$subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
+					}
+					elsif ( $subdefn =~ m/\s+(FUNCTION\s+[0-9]+ )(.*)/ )
+					{
+						$subdefn = $1.'('.$opctype.','.$opctype.') '.$2;
+					}
+					push @subobjects, [$last_updated, $subdefn];
+				}
+				$subcomment = '';
+			}
 			last if /\);/;
 		}
 		$opctype =~ tr/A-Z/a-z/;
 		$opcidx =~ tr/A-Z/a-z/;
 
-    my $last_updated = parse_last_updated($comment);
+    $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
       print STDERR "WARNING: no last updated info for operator class '${opclassname}'\n";
       $last_updated = find_last_updated("opclasses", $opclassname);
     }
     print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
-      print <<"EOF";
+    print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
   IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
-    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
-  END IF;
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$
+    $def    \$postgis_proc_upgrade_parsed_def\$;
+EOF
+    my $ELSE="ELSE -- version_from >= $last_updated";
+    for my $subobj ( @subobjects )
+    {
+      $last_updated = @{$subobj}[0];
+      $def = @{$subobj}[1];
+      print <<"EOF";
+  $ELSE
+    -- Last Updated: ${last_updated}
+    IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+      EXECUTE \$postgis_proc_upgrade_parsed_def\$
+        ALTER OPERATOR FAMILY ${opclassname} USING ${opcidx}
+          ADD $def;
+      \$postgis_proc_upgrade_parsed_def\$;
+    END IF;
+EOF
+      $ELSE="";
+    }
+    print <<"EOF";
+  END IF; -- version_from >= $last_updated
 END
 \$postgis_proc_upgrade\$;
 EOF
