@@ -19,19 +19,38 @@
 static void 
 cu_error_reporter(const char *fmt, va_list ap);
 
-/* ADD YOUR SUITE HERE (1 of 2) */
-extern CU_SuiteInfo pixtype_suite;
-extern CU_SuiteInfo raster_basics_suite;
-extern CU_SuiteInfo band_basics_suite;
-extern CU_SuiteInfo raster_wkb_suite;
-extern CU_SuiteInfo gdal_suite;
-extern CU_SuiteInfo raster_geometry_suite;
-extern CU_SuiteInfo raster_misc_suite;
-extern CU_SuiteInfo band_stats_suite;
-extern CU_SuiteInfo band_misc_suite;
-extern CU_SuiteInfo mapalgebra_suite;
-extern CU_SuiteInfo spatial_relationship_suite;
-extern CU_SuiteInfo misc_suite;
+/* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
+extern void pixtype_suite_setup(void);
+extern void raster_basics_suite_setup(void);
+extern void band_basics_suite_setup(void);
+extern void raster_wkb_suite_setup(void);
+extern void gdal_suite_setup(void);
+extern void raster_geometry_suite_setup(void);
+extern void raster_misc_suite_setup(void);
+extern void band_stats_suite_setup(void);
+extern void band_misc_suite_setup(void);
+extern void mapalgebra_suite_setup(void);
+extern void spatial_relationship_suite_setup(void);
+extern void misc_suite_setup(void);
+
+/* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
+PG_SuiteSetup setupfuncs[] =
+{
+	pixtype_suite_setup,
+	raster_basics_suite_setup,
+	band_basics_suite_setup,
+	raster_wkb_suite_setup,
+	gdal_suite_setup,
+	raster_geometry_suite_setup,
+	raster_misc_suite_setup,
+	band_stats_suite_setup,
+	band_misc_suite_setup,
+	mapalgebra_suite_setup,
+	spatial_relationship_suite_setup,
+	misc_suite_setup,
+	NULL
+};
+
 
 /*
 ** The main() function for setting up and running the tests.
@@ -40,24 +59,6 @@ extern CU_SuiteInfo misc_suite;
 */
 int main(int argc, char *argv[])
 {
-	/* ADD YOUR SUITE HERE (2 of 2) */
-	CU_SuiteInfo suites[] =
-	{
-		pixtype_suite,
-		raster_basics_suite,
-		band_basics_suite,
-		raster_wkb_suite,
-		gdal_suite,
-		raster_geometry_suite,
-		raster_misc_suite,
-		band_stats_suite,
-		band_misc_suite,
-		spatial_relationship_suite,
-		mapalgebra_suite,
-		misc_suite,
-		CU_SUITE_INFO_NULL
-	};
-
 	int index;
 	char *suite_name;
 	CU_pSuite suite_to_run;
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
 	CU_pTestRegistry registry;
 	int num_run;
 	int num_failed;
+	PG_SuiteSetup *setupfunc = setupfuncs;
 
 	/* install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
@@ -80,11 +82,10 @@ int main(int argc, char *argv[])
 	}
 
 	/* Register all the test suites. */
-	if (CUE_SUCCESS != CU_register_suites(suites))
+	while ( *setupfunc )
 	{
-		errCode = CU_get_error();
-		printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
-		return errCode;
+		(*setupfunc)();
+		setupfunc++;
 	}
 
 	/* Run all tests using the CUnit Basic interface */

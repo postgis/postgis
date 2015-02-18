@@ -572,13 +572,15 @@ static void test_raster_pixel_as_polygon() {
 }
 
 /* register tests */
-CU_TestInfo raster_geometry_tests[] = {
-	PG_TEST(test_raster_envelope),
-	PG_TEST(test_raster_envelope_geom),
-	PG_TEST(test_raster_convex_hull),
-	PG_TEST(test_raster_surface),
-	PG_TEST(test_raster_perimeter),
-	PG_TEST(test_raster_pixel_as_polygon),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo raster_geometry_suite = {"raster_geometry",  NULL,  NULL, raster_geometry_tests};
+void raster_geometry_suite_setup(void);
+void raster_geometry_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("raster_geometry", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_envelope);
+	PG_ADD_TEST(suite, test_raster_envelope_geom);
+	PG_ADD_TEST(suite, test_raster_convex_hull);
+	PG_ADD_TEST(suite, test_raster_surface);
+	PG_ADD_TEST(suite, test_raster_perimeter);
+	PG_ADD_TEST(suite, test_raster_pixel_as_polygon);
+}
+

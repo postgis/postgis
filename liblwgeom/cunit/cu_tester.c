@@ -113,11 +113,12 @@ int main(int argc, char *argv[])
 	CU_pTestRegistry registry;
 	int num_run;
 	int num_failed;
+	PG_SuiteSetup *setupfunc = setupfuncs;
 
-	/* install the custom error handler */
+	/* Install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0);
 
-	/* initialize the CUnit test registry */
+	/* Initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
 	{
 		errCode = CU_get_error();
@@ -125,20 +126,12 @@ int main(int argc, char *argv[])
 		return errCode;
 	}
 
-	PG_SuiteSetup *setupfunc = setupfuncs;
+	/* Register all the test suites. */
 	while ( *setupfunc )
 	{
 		(*setupfunc)();
 		setupfunc++;
 	}
-
-	/* Register all the test suites. */
-	// if (CUE_SUCCESS != CU_register_suites(suites))
-	// {
-	// 	errCode = CU_get_error();
-	// 	printf("    Error attempting to register test suites: %d.  See CUError.h for error code list.\n", errCode);
-	// 	return errCode;
-	// }
 
 	/* Run all tests using the CUnit Basic interface */
 	CU_basic_set_mode(CU_BRM_VERBOSE);
