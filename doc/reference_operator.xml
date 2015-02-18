@@ -95,7 +95,7 @@ FROM ( VALUES
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's 3D bounding box intersects B's 3D bounding box.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
