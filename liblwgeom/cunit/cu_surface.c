@@ -401,15 +401,12 @@ surface_dimension(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-/*
-** Used by test harness to register the tests in this file.
-*/
-CU_TestInfo surface_tests[] =
+void surface_suite_setup(void);
+void surface_suite_setup(void)
 {
-	PG_TEST(triangle_parse),
-	PG_TEST(tin_parse),
-	PG_TEST(polyhedralsurface_parse),
-	PG_TEST(surface_dimension),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo surface_suite = {"surface",  NULL,  NULL, surface_tests};
+	CU_pSuite suite = CU_add_suite("surface", NULL,  NULL);
+	PG_ADD_TEST(suite, triangle_parse);
+	PG_ADD_TEST(suite, tin_parse);
+	PG_ADD_TEST(suite, polyhedralsurface_parse);
+	PG_ADD_TEST(suite, surface_dimension);
+}

@@ -350,24 +350,23 @@ static void test_wkt_in_errlocation(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-
-CU_TestInfo wkt_in_tests[] =
+void wkt_in_suite_setup(void);
+void wkt_in_suite_setup(void)
 {
-	PG_TEST(test_wkt_in_point),
-	PG_TEST(test_wkt_in_linestring),
-	PG_TEST(test_wkt_in_polygon),
-	PG_TEST(test_wkt_in_multipoint),
-	PG_TEST(test_wkt_in_multilinestring),
-	PG_TEST(test_wkt_in_multipolygon),
-	PG_TEST(test_wkt_in_collection),
-	PG_TEST(test_wkt_in_circularstring),
-	PG_TEST(test_wkt_in_compoundcurve),
-	PG_TEST(test_wkt_in_curvpolygon),
-	PG_TEST(test_wkt_in_multicurve),
-	PG_TEST(test_wkt_in_multisurface),
-	PG_TEST(test_wkt_in_tin),
-	PG_TEST(test_wkt_in_polyhedralsurface),
-	PG_TEST(test_wkt_in_errlocation),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo wkt_in_suite = {"in_wkt",  init_wkt_in_suite,  clean_wkt_in_suite, wkt_in_tests};
+	CU_pSuite suite = CU_add_suite("WKT In Suite", init_wkt_in_suite, clean_wkt_in_suite);
+	PG_ADD_TEST(suite, test_wkt_in_point);
+	PG_ADD_TEST(suite, test_wkt_in_linestring);
+	PG_ADD_TEST(suite, test_wkt_in_polygon);
+	PG_ADD_TEST(suite, test_wkt_in_multipoint);
+	PG_ADD_TEST(suite, test_wkt_in_multilinestring);
+	PG_ADD_TEST(suite, test_wkt_in_multipolygon);
+	PG_ADD_TEST(suite, test_wkt_in_collection);
+	PG_ADD_TEST(suite, test_wkt_in_circularstring);
+	PG_ADD_TEST(suite, test_wkt_in_compoundcurve);
+	PG_ADD_TEST(suite, test_wkt_in_curvpolygon);
+	PG_ADD_TEST(suite, test_wkt_in_multicurve);
+	PG_ADD_TEST(suite, test_wkt_in_multisurface);
+	PG_ADD_TEST(suite, test_wkt_in_tin);
+	PG_ADD_TEST(suite, test_wkt_in_polyhedralsurface);
+	PG_ADD_TEST(suite, test_wkt_in_errlocation);
+}

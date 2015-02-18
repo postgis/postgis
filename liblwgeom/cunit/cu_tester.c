@@ -53,6 +53,12 @@ extern void stringbuffer_suite_setup(void);
 extern void tree_suite_setup(void);
 extern void triangulate_suite_setup(void);
 extern void varint_suite_setup(void);
+extern void wkt_out_suite_setup(void);
+extern void wkb_out_suite_setup(void);
+extern void surface_suite_setup(void);
+extern void wkb_in_suite_setup(void);
+extern void wkt_in_suite_setup(void);
+
 
 /* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
 PG_SuiteSetup setupfuncs[] =
@@ -91,6 +97,11 @@ PG_SuiteSetup setupfuncs[] =
 	tree_suite_setup,
 	triangulate_suite_setup,
 	varint_suite_setup,
+	wkt_out_suite_setup,
+	wkb_out_suite_setup,
+	surface_suite_setup,
+	wkb_in_suite_setup,
+	wkt_in_suite_setup,
 	NULL
 };
 
