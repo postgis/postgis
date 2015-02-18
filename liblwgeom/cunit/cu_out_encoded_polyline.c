@@ -90,7 +90,7 @@ static void out_encoded_polyline_test_precision(void)
 void out_encoded_polyline_suite_setup(void);
 void out_encoded_polyline_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Encoded Polyline Out Suite", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Encoded Polyline Output", NULL, NULL);
 	PG_ADD_TEST(suite, out_encoded_polyline_test_geoms);
 	PG_ADD_TEST(suite, out_encoded_polyline_test_srid);
 	PG_ADD_TEST(suite, out_encoded_polyline_test_precision);

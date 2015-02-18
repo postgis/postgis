@@ -53,6 +53,6 @@ static void test_lwgeom_delaunay_triangulation(void)
 void triangulate_suite_setup(void);
 void triangulate_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("triangulate", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Triangulate", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwgeom_delaunay_triangulation);
 }

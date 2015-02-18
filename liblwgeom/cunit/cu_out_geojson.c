@@ -301,7 +301,7 @@ static void out_geojson_test_geoms(void)
 void out_geojson_suite_setup(void);
 void out_geojson_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("GeoJson Out Suite", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("GeoJson Output", NULL, NULL);
 	PG_ADD_TEST(suite, out_geojson_test_precision);
 	PG_ADD_TEST(suite, out_geojson_test_dims);
 	PG_ADD_TEST(suite, out_geojson_test_srid);

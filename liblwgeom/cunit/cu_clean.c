@@ -142,6 +142,6 @@ static void test_lwgeom_make_valid(void)
 void clean_suite_setup(void);
 void clean_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("clean", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Geometry Clean", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwgeom_make_valid);
 }

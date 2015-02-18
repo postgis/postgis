@@ -163,7 +163,7 @@ static void test_lwgeom_split(void)
 void split_suite_setup(void);
 void split_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("split", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Split", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwline_split_by_point_to);
 	PG_ADD_TEST(suite, test_lwgeom_split);
 }

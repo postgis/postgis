@@ -254,7 +254,7 @@ static void test_geom(void)
 void homogenize_suite_setup(void);
 void homogenize_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("homogenize", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Homogenize", NULL, NULL);
 	PG_ADD_TEST(suite, test_coll_point);
 	PG_ADD_TEST(suite, test_coll_line);
 	PG_ADD_TEST(suite, test_coll_poly);

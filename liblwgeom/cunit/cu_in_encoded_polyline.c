@@ -59,7 +59,7 @@ static void in_encoded_polyline_test_precision(void)
 void in_encoded_polyline_suite_setup(void);
 void in_encoded_polyline_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Encoded Polyline In Suite", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Encoded Polyline Input", NULL, NULL);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_geoms);
 	PG_ADD_TEST(suite, in_encoded_polyline_test_precision);
 }

@@ -239,7 +239,7 @@ static void out_kml_test_prefix(void)
 void out_kml_suite_setup(void);
 void out_kml_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("KML Out Suite", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("KML Output", NULL, NULL);
 	PG_ADD_TEST(suite, out_kml_test_precision);
 	PG_ADD_TEST(suite, out_kml_test_dims);
 	PG_ADD_TEST(suite, out_kml_test_geoms);

@@ -969,7 +969,7 @@ static void test_lwline_from_lwmpoint(void)
 void libgeom_suite_setup(void);
 void libgeom_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("libgeom", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Serialization/Deserialization", NULL, NULL);
 	PG_ADD_TEST(suite, test_typmod_macros);
 	PG_ADD_TEST(suite, test_flags_macros);
 	PG_ADD_TEST(suite, test_serialized_srid);

@@ -1487,7 +1487,7 @@ static void test_lwgeom_area_sphere(void)
 void geodetic_suite_setup(void);
 void geodetic_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Geodetic Suite", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Geodetic", NULL, NULL);
 	PG_ADD_TEST(suite, test_sphere_direction);
 	PG_ADD_TEST(suite, test_sphere_project);
 	PG_ADD_TEST(suite, test_lwgeom_area_sphere);

@@ -164,7 +164,7 @@ static void test_twkb_in_collection(void)
 void twkb_in_suite_setup(void);
 void twkb_in_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("TWKB In Suite", init_twkb_in_suite, clean_twkb_in_suite);
+	CU_pSuite suite = CU_add_suite("TWKB Input", init_twkb_in_suite, clean_twkb_in_suite);
 	PG_ADD_TEST(suite, test_twkb_in_point);
 	PG_ADD_TEST(suite, test_twkb_in_linestring);
 	PG_ADD_TEST(suite, test_twkb_in_polygon);

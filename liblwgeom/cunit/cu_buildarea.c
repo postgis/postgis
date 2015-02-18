@@ -326,7 +326,7 @@ static void buildarea7(void)
 void buildarea_suite_setup(void);
 void buildarea_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("buildarea", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Buildarea", NULL, NULL);
 	PG_ADD_TEST(suite,buildarea1);
 	PG_ADD_TEST(suite,buildarea2);
 	PG_ADD_TEST(suite,buildarea3);
