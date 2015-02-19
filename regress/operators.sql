@@ -77,12 +77,25 @@ select 'ab1',ST_MakeEnvelope(2,2,4,8) |>> ST_MakeEnvelope(2,2,4,4); --f
 select 'ab2',ST_MakeEnvelope(2,4,4,8) |>> ST_MakeEnvelope(2,2,4,4); --f
 select 'ab3',ST_MakeEnvelope(2,5,4,8) |>> ST_MakeEnvelope(2,2,4,4); --t
 
--- : same as         =
+-- same as           =
 
 select 'eq1',ST_MakeEnvelope(2,2,4,4) = ST_MakeEnvelope(2,2,4,4); -- f
 select 'eq2',ST_MakeEnvelope(2,4,4,8) = 'LINESTRING(2 4,4 8)'::geometry; -- t
 select 'eq3',ST_MakePoint(0,0) = ST_MakePoint(1,0); -- f
 
--- TODO: distance          <->
--- TODO: nd overlap        &&& -- http://trac.osgeo.org/postgis/ticket/3036
+-- box centroid distance  <->
+
+select 'cd1', 'LINESTRING(0 0,0 10,10 10)'::geometry <->
+              'LINESTRING(6 2,6 8)'::geometry; -- 1
+select 'cd2', 'LINESTRING(0 0,0 10,10 10)'::geometry <->
+              'LINESTRING(11 0,19 10)'::geometry; -- 10
+
+-- box distance           <#>
+
+select 'bd1', 'LINESTRING(0 0,0 10,10 10)'::geometry <#>
+              'LINESTRING(6 2,6 8)'::geometry; -- 0
+select 'bd2', 'LINESTRING(0 0,0 10,10 10)'::geometry <#>
+              'LINESTRING(11 0,19 10)'::geometry; -- 1
+
+-- TODO: nd overlap         &&&
 
