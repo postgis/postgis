@@ -178,7 +178,7 @@ static void test_wkb_out_polyhedralsurface(void)
 void wkb_out_suite_setup(void);
 void wkb_out_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("WKB Output", init_wkb_out_suite, clean_wkb_out_suite);
+	CU_pSuite suite = CU_add_suite("wkb_output", init_wkb_out_suite, clean_wkb_out_suite);
 	PG_ADD_TEST(suite, test_wkb_out_point);
 	PG_ADD_TEST(suite, test_wkb_out_linestring);
 	PG_ADD_TEST(suite, test_wkb_out_polygon);

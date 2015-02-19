@@ -1070,7 +1070,7 @@ static void out_gml3_extent(void)
 void out_gml_suite_setup(void);
 void out_gml_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("GML Output", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("gml_output", NULL, NULL);
 	PG_ADD_TEST(suite, out_gml_test_precision);
 	PG_ADD_TEST(suite, out_gml_test_srid);
 	PG_ADD_TEST(suite, out_gml_test_dims);

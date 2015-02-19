@@ -66,6 +66,6 @@ static void test_lwgeom_node(void)
 void node_suite_setup(void);
 void node_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Noding", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("noding", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwgeom_node);
 }

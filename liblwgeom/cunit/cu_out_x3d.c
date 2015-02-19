@@ -162,7 +162,7 @@ static void out_x3d3_test_geoms(void)
 void out_x3d_suite_setup(void);
 void out_x3d_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("X3D Output", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("x3d_output", NULL, NULL);
 	PG_ADD_TEST(suite, out_x3d3_test_precision);
 	PG_ADD_TEST(suite, out_x3d3_test_geoms);
 }

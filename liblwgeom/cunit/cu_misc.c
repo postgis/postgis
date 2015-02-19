@@ -125,7 +125,7 @@ static void test_misc_wkb(void)
 void misc_suite_setup(void);
 void misc_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Miscellaneous", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("miscellaneous", NULL, NULL);
 	PG_ADD_TEST(suite, test_misc_force_2d);
 	PG_ADD_TEST(suite, test_misc_simplify);
 	PG_ADD_TEST(suite, test_misc_count_vertices);

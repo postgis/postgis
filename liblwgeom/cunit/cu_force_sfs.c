@@ -167,7 +167,7 @@ static void test_sfs_11(void)
 void force_sfs_suite_setup(void);
 void force_sfs_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Force SFS", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("force_sfs", NULL, NULL);
 	PG_ADD_TEST(suite, test_sfs_11);
 	PG_ADD_TEST(suite, test_sfs_12);
 	PG_ADD_TEST(suite, test_sqlmm);

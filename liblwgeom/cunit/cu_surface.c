@@ -404,7 +404,7 @@ surface_dimension(void)
 void surface_suite_setup(void);
 void surface_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Surface", NULL,  NULL);
+	CU_pSuite suite = CU_add_suite("surface", NULL,  NULL);
 	PG_ADD_TEST(suite, triangle_parse);
 	PG_ADD_TEST(suite, tin_parse);
 	PG_ADD_TEST(suite, polyhedralsurface_parse);

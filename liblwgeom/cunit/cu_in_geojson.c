@@ -202,7 +202,7 @@ static void in_geojson_test_geoms(void)
 void in_geojson_suite_setup(void);
 void in_geojson_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("GeoJSON Input", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("geojson_input", NULL, NULL);
 	PG_ADD_TEST(suite, in_geojson_test_srid);
 	PG_ADD_TEST(suite, in_geojson_test_bbox);
 	PG_ADD_TEST(suite, in_geojson_test_geoms);

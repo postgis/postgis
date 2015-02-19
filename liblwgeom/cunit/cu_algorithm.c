@@ -906,7 +906,7 @@ static void test_geohash_point_as_int(void)
 void algorithms_suite_setup(void);
 void algorithms_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Computational Geometry", init_cg_suite, clean_cg_suite);
+	CU_pSuite suite = CU_add_suite("computational_geometry", init_cg_suite, clean_cg_suite);
 	PG_ADD_TEST(suite,test_lw_segment_side);
 	PG_ADD_TEST(suite,test_lw_segment_intersects);
 	PG_ADD_TEST(suite,test_lwline_crossing_short_lines);

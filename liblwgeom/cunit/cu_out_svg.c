@@ -321,7 +321,7 @@ static void out_svg_test_srid(void)
 void out_svg_suite_setup(void);
 void out_svg_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("SVG Output", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("svg_output", NULL, NULL);
 	PG_ADD_TEST(suite, out_svg_test_precision);
 	PG_ADD_TEST(suite, out_svg_test_dims);
 	PG_ADD_TEST(suite, out_svg_test_relative);

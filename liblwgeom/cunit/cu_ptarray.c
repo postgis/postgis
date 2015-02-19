@@ -695,7 +695,7 @@ static void test_ptarrayarc_contains_point()
 void ptarray_suite_setup(void);
 void ptarray_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Point Array", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("point_array", NULL, NULL);
 	PG_ADD_TEST(suite, test_ptarray_append_point);
 	PG_ADD_TEST(suite, test_ptarray_append_ptarray);
 	PG_ADD_TEST(suite, test_ptarray_locate_point);

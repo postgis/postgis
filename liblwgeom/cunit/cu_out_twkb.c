@@ -130,7 +130,7 @@ static void test_twkb_out_collection(void)
 void twkb_out_suite_setup(void);
 void twkb_out_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("TWKB Output", init_twkb_out_suite, clean_twkb_out_suite);
+	CU_pSuite suite = CU_add_suite("twkb_output", init_twkb_out_suite, clean_twkb_out_suite);
 	PG_ADD_TEST(suite, test_twkb_out_point);
 	PG_ADD_TEST(suite, test_twkb_out_linestring);
 	PG_ADD_TEST(suite, test_twkb_out_polygon);

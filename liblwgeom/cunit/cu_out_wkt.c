@@ -211,7 +211,7 @@ static void test_wkt_out_multisurface(void)
 void wkt_out_suite_setup(void);
 void wkt_out_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("WKT Output", init_wkt_out_suite, clean_wkt_out_suite);
+	CU_pSuite suite = CU_add_suite("wkt_output", init_wkt_out_suite, clean_wkt_out_suite);
 	PG_ADD_TEST(suite, test_wkt_out_point);
 	PG_ADD_TEST(suite, test_wkt_out_linestring);
 	PG_ADD_TEST(suite, test_wkt_out_polygon);

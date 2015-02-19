@@ -216,7 +216,7 @@ static void test_wkb_in_malformed(void)
 void wkb_in_suite_setup(void);
 void wkb_in_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("WKB Input", init_wkb_in_suite, clean_wkb_in_suite);
+	CU_pSuite suite = CU_add_suite("wkb_input", init_wkb_in_suite, clean_wkb_in_suite);
 	PG_ADD_TEST(suite, test_wkb_in_point);
 	PG_ADD_TEST(suite, test_wkb_in_linestring);
 	PG_ADD_TEST(suite, test_wkb_in_polygon);

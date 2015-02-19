@@ -164,7 +164,7 @@ static void test_lwprint_bad_formats(void)
 void print_suite_setup(void);
 void print_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Printing", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("printing", NULL, NULL);
 	PG_ADD_TEST(suite, test_lwprint_default_format);
 	PG_ADD_TEST(suite, test_lwprint_format_orders);
 	PG_ADD_TEST(suite, test_lwprint_optional_format);

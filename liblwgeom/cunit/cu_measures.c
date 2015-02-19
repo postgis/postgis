@@ -876,7 +876,7 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 void measures_suite_setup(void);
 void measures_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Measures", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("measures", NULL, NULL);
 	PG_ADD_TEST(suite, test_mindistance2d_tolerance);
 	PG_ADD_TEST(suite, test_rect_tree_contains_point);
 	PG_ADD_TEST(suite, test_rect_tree_intersects_tree);

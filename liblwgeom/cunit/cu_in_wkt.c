@@ -353,7 +353,7 @@ static void test_wkt_in_errlocation(void)
 void wkt_in_suite_setup(void);
 void wkt_in_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("WKT Input", init_wkt_in_suite, clean_wkt_in_suite);
+	CU_pSuite suite = CU_add_suite("wkt_input", init_wkt_in_suite, clean_wkt_in_suite);
 	PG_ADD_TEST(suite, test_wkt_in_point);
 	PG_ADD_TEST(suite, test_wkt_in_linestring);
 	PG_ADD_TEST(suite, test_wkt_in_polygon);
