@@ -97,5 +97,20 @@ select 'bd1', 'LINESTRING(0 0,0 10,10 10)'::geometry <#>
 select 'bd2', 'LINESTRING(0 0,0 10,10 10)'::geometry <#>
               'LINESTRING(11 0,19 10)'::geometry; -- 1
 
--- TODO: nd overlap         &&&
+-- nd overlap             &&&
 
+select 'ndov1', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(3 3 3 5)'::geometry; -- f
+select 'ndov2', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(3 3 5 3)'::geometry; -- f
+select 'ndov3', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(3 5 3 3)'::geometry; -- f
+select 'ndov4', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(5 3 3 3)'::geometry; -- f
+select 'ndov5', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(3 3 3 3)'::geometry; -- t
+select 'ndov6', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(2 4 2 4)'::geometry; -- t
+select 'ndov7', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
+                'POINT(4 2 4 2)'::geometry; -- t
+-- TODO: mixed-dimension &&& overlap
