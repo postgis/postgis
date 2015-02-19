@@ -308,13 +308,12 @@ static void test_tree_circ_distance(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo tree_tests[] =
+void tree_suite_setup(void);
+void tree_suite_setup(void)
 {
-	PG_TEST(test_tree_circ_create),
-	PG_TEST(test_tree_circ_pip),
-	PG_TEST(test_tree_circ_pip2),
-	PG_TEST(test_tree_circ_distance),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo tree_suite = {"Internal Spatial Trees",  NULL,  NULL, tree_tests};
-
+	CU_pSuite suite = CU_add_suite("Internal Spatial Trees", NULL, NULL);
+	PG_ADD_TEST(suite, test_tree_circ_create);
+	PG_ADD_TEST(suite, test_tree_circ_pip);
+	PG_ADD_TEST(suite, test_tree_circ_pip2);
+	PG_ADD_TEST(suite, test_tree_circ_distance);
+}

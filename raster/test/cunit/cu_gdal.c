@@ -642,14 +642,16 @@ static void test_gdal_warp() {
 }
 
 /* register tests */
-CU_TestInfo gdal_tests[] = {
-	PG_TEST(test_gdal_configured),
-	PG_TEST(test_gdal_drivers),
-	PG_TEST(test_gdal_rasterize),
-	PG_TEST(test_gdal_polygonize),
-	PG_TEST(test_raster_to_gdal),
-	PG_TEST(test_gdal_to_raster),
-	PG_TEST(test_gdal_warp),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo gdal_suite = {"gdal",  NULL,  NULL, gdal_tests};
+void gdal_suite_setup(void);
+void gdal_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("gdal", NULL, NULL);
+	PG_ADD_TEST(suite, test_gdal_configured);
+	PG_ADD_TEST(suite, test_gdal_drivers);
+	PG_ADD_TEST(suite, test_gdal_rasterize);
+	PG_ADD_TEST(suite, test_gdal_polygonize);
+	PG_ADD_TEST(suite, test_raster_to_gdal);
+	PG_ADD_TEST(suite, test_gdal_to_raster);
+	PG_ADD_TEST(suite, test_gdal_warp);
+}
+

@@ -68,10 +68,9 @@ static void test_geos_noop(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo geos_tests[] =
+void geos_suite_setup(void);
+void geos_suite_setup(void)
 {
-	PG_TEST(test_geos_noop),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo geos_suite = {"GEOS",  NULL,  NULL, geos_tests};
-
+	CU_pSuite suite = CU_add_suite("GEOS", NULL, NULL);
+	PG_ADD_TEST(suite, test_geos_noop);
+}

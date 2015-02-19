@@ -1080,17 +1080,17 @@ static void out_gml3_extent(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_gml_tests[] =
+void out_gml_suite_setup(void);
+void out_gml_suite_setup(void)
 {
-	PG_TEST(out_gml_test_precision),
-	PG_TEST(out_gml_test_srid),
-	PG_TEST(out_gml_test_dims),
-	PG_TEST(out_gml_test_geodetic),
-	PG_TEST(out_gml_test_geoms),
-	PG_TEST(out_gml_test_geoms_prefix),
-	PG_TEST(out_gml_test_geoms_nodims),
-	PG_TEST(out_gml2_extent),
-	PG_TEST(out_gml3_extent),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_gml_suite = {"out_gml",  NULL,  NULL, out_gml_tests};
+	CU_pSuite suite = CU_add_suite("GML Output", NULL, NULL);
+	PG_ADD_TEST(suite, out_gml_test_precision);
+	PG_ADD_TEST(suite, out_gml_test_srid);
+	PG_ADD_TEST(suite, out_gml_test_dims);
+	PG_ADD_TEST(suite, out_gml_test_geodetic);
+	PG_ADD_TEST(suite, out_gml_test_geoms);
+	PG_ADD_TEST(suite, out_gml_test_geoms_prefix);
+	PG_ADD_TEST(suite, out_gml_test_geoms_nodims);
+	PG_ADD_TEST(suite, out_gml2_extent);
+	PG_ADD_TEST(suite, out_gml3_extent);
+}

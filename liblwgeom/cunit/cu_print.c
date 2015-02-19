@@ -18,7 +18,6 @@
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
-
 static void test_lwprint_assert_format(char * point_wkt, const char * format, const char * expected)
 {
 	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
@@ -160,15 +159,16 @@ static void test_lwprint_bad_formats(void)
 }
 
 /*
-** Used by the test harness to register the tests in this file.
+** Callback used by the test harness to register the tests in this file.
 */
-CU_TestInfo print_tests[] =
+void print_suite_setup(void);
+void print_suite_setup(void)
 {
-	PG_TEST(test_lwprint_default_format),
-	PG_TEST(test_lwprint_format_orders),
-	PG_TEST(test_lwprint_optional_format),
-	PG_TEST(test_lwprint_oddball_formats),
-	PG_TEST(test_lwprint_bad_formats),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo print_suite = {"print_suite", NULL, NULL, print_tests };
+	CU_pSuite suite = CU_add_suite("Printing", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwprint_default_format);
+	PG_ADD_TEST(suite, test_lwprint_format_orders);
+	PG_ADD_TEST(suite, test_lwprint_optional_format);
+	PG_ADD_TEST(suite, test_lwprint_oddball_formats);
+	PG_ADD_TEST(suite, test_lwprint_bad_formats);
+}
+

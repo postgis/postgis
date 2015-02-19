@@ -318,13 +318,13 @@ static void out_svg_test_srid(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_svg_tests[] =
+void out_svg_suite_setup(void);
+void out_svg_suite_setup(void)
 {
-	PG_TEST(out_svg_test_precision),
-	PG_TEST(out_svg_test_dims),
-	PG_TEST(out_svg_test_relative),
-	PG_TEST(out_svg_test_geoms),
-	PG_TEST(out_svg_test_srid),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_svg_suite = {"SVG Out Suite",  NULL,  NULL, out_svg_tests};
+	CU_pSuite suite = CU_add_suite("SVG Output", NULL, NULL);
+	PG_ADD_TEST(suite, out_svg_test_precision);
+	PG_ADD_TEST(suite, out_svg_test_dims);
+	PG_ADD_TEST(suite, out_svg_test_relative);
+	PG_ADD_TEST(suite, out_svg_test_geoms);
+	PG_ADD_TEST(suite, out_svg_test_srid);
+}

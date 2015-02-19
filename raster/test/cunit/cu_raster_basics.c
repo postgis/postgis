@@ -205,13 +205,15 @@ static void test_raster_replace_band() {
 }
 
 /* register tests */
-CU_TestInfo raster_basics_tests[] = {
-	PG_TEST(test_raster_new),
-	PG_TEST(test_raster_empty),
-	PG_TEST(test_raster_metadata),
-	PG_TEST(test_raster_clone),
-	PG_TEST(test_raster_from_band),
-	PG_TEST(test_raster_replace_band),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo raster_basics_suite = {"raster_basics",  NULL,  NULL, raster_basics_tests};
+void raster_basics_suite_setup(void);
+void raster_basics_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("raster_basics", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_new);
+	PG_ADD_TEST(suite, test_raster_empty);
+	PG_ADD_TEST(suite, test_raster_metadata);
+	PG_ADD_TEST(suite, test_raster_clone);
+	PG_ADD_TEST(suite, test_raster_from_band);
+	PG_ADD_TEST(suite, test_raster_replace_band);
+}
+

@@ -4779,17 +4779,19 @@ static void test_raster_same_alignment() {
 }
 
 /* register tests */
-CU_TestInfo spatial_relationship_tests[] = {
-	PG_TEST(test_raster_geos_overlaps),
-	PG_TEST(test_raster_geos_touches),
-	PG_TEST(test_raster_geos_contains),
-	PG_TEST(test_raster_geos_contains_properly),
-	PG_TEST(test_raster_geos_covers),
-	PG_TEST(test_raster_geos_covered_by),
-	PG_TEST(test_raster_within_distance),
-	PG_TEST(test_raster_fully_within_distance),
-	PG_TEST(test_raster_intersects),
-	PG_TEST(test_raster_same_alignment),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo spatial_relationship_suite = {"spatial_relationship",  NULL,  NULL, spatial_relationship_tests};
+void spatial_relationship_suite_setup(void);
+void spatial_relationship_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("spatial_relationship", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_geos_overlaps);
+	PG_ADD_TEST(suite, test_raster_geos_touches);
+	PG_ADD_TEST(suite, test_raster_geos_contains);
+	PG_ADD_TEST(suite, test_raster_geos_contains_properly);
+	PG_ADD_TEST(suite, test_raster_geos_covers);
+	PG_ADD_TEST(suite, test_raster_geos_covered_by);
+	PG_ADD_TEST(suite, test_raster_within_distance);
+	PG_ADD_TEST(suite, test_raster_fully_within_distance);
+	PG_ADD_TEST(suite, test_raster_intersects);
+	PG_ADD_TEST(suite, test_raster_same_alignment);
+}
+

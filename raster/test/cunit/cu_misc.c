@@ -143,10 +143,12 @@ static void test_util_gdal_open() {
 }
 
 /* register tests */
-CU_TestInfo misc_tests[] = {
-	PG_TEST(test_rgb_to_hsv),
-	PG_TEST(test_hsv_to_rgb),
-	PG_TEST(test_util_gdal_open),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo misc_suite = {"misc",  NULL,  NULL, misc_tests};
+void misc_suite_setup(void);
+void misc_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("misc", NULL, NULL);
+	PG_ADD_TEST(suite, test_rgb_to_hsv);
+	PG_ADD_TEST(suite, test_hsv_to_rgb);
+	PG_ADD_TEST(suite, test_util_gdal_open);
+}
+

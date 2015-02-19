@@ -122,13 +122,13 @@ static void test_misc_wkb(void)
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo misc_tests[] =
+void misc_suite_setup(void);
+void misc_suite_setup(void)
 {
-	PG_TEST(test_misc_force_2d),
-	PG_TEST(test_misc_simplify),
-	PG_TEST(test_misc_count_vertices),
-	PG_TEST(test_misc_area),
-	PG_TEST(test_misc_wkb),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo misc_suite = {"misc", NULL, NULL, misc_tests };
+	CU_pSuite suite = CU_add_suite("Miscellaneous", NULL, NULL);
+	PG_ADD_TEST(suite, test_misc_force_2d);
+	PG_ADD_TEST(suite, test_misc_simplify);
+	PG_ADD_TEST(suite, test_misc_count_vertices);
+	PG_ADD_TEST(suite, test_misc_area);
+	PG_ADD_TEST(suite, test_misc_wkb);
+}

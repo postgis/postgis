@@ -160,10 +160,10 @@ static void test_lwgeom_split(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo split_tests[] =
+void split_suite_setup(void);
+void split_suite_setup(void)
 {
-	PG_TEST(test_lwline_split_by_point_to),
-	PG_TEST(test_lwgeom_split),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo split_suite = {"split",  NULL,  NULL, split_tests};
+	CU_pSuite suite = CU_add_suite("Split", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwline_split_by_point_to);
+	PG_ADD_TEST(suite, test_lwgeom_split);
+}

@@ -50,9 +50,9 @@ static void test_lwgeom_delaunay_triangulation(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo triangulate_tests[] =
+void triangulate_suite_setup(void);
+void triangulate_suite_setup(void)
 {
-	PG_TEST(test_lwgeom_delaunay_triangulation),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo triangulate_suite = {"triangulate",  NULL,  NULL, triangulate_tests};
+	CU_pSuite suite = CU_add_suite("Triangulate", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwgeom_delaunay_triangulation);
+}

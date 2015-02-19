@@ -208,21 +208,20 @@ static void test_wkt_out_multisurface(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-
-CU_TestInfo wkt_out_tests[] =
+void wkt_out_suite_setup(void);
+void wkt_out_suite_setup(void)
 {
-	PG_TEST(test_wkt_out_point),
-	PG_TEST(test_wkt_out_linestring),
-	PG_TEST(test_wkt_out_polygon),
-	PG_TEST(test_wkt_out_multipoint),
-	PG_TEST(test_wkt_out_multilinestring),
-	PG_TEST(test_wkt_out_multipolygon),
-	PG_TEST(test_wkt_out_collection),
-	PG_TEST(test_wkt_out_circularstring),
-	PG_TEST(test_wkt_out_compoundcurve),
-	PG_TEST(test_wkt_out_curvpolygon),
-	PG_TEST(test_wkt_out_multicurve),
-	PG_TEST(test_wkt_out_multisurface),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo wkt_out_suite = {"WKT Out Suite",  init_wkt_out_suite,  clean_wkt_out_suite, wkt_out_tests};
+	CU_pSuite suite = CU_add_suite("WKT Output", init_wkt_out_suite, clean_wkt_out_suite);
+	PG_ADD_TEST(suite, test_wkt_out_point);
+	PG_ADD_TEST(suite, test_wkt_out_linestring);
+	PG_ADD_TEST(suite, test_wkt_out_polygon);
+	PG_ADD_TEST(suite, test_wkt_out_multipoint);
+	PG_ADD_TEST(suite, test_wkt_out_multilinestring);
+	PG_ADD_TEST(suite, test_wkt_out_multipolygon);
+	PG_ADD_TEST(suite, test_wkt_out_collection);
+	PG_ADD_TEST(suite, test_wkt_out_circularstring);
+	PG_ADD_TEST(suite, test_wkt_out_compoundcurve);
+	PG_ADD_TEST(suite, test_wkt_out_curvpolygon);
+	PG_ADD_TEST(suite, test_wkt_out_multicurve);
+	PG_ADD_TEST(suite, test_wkt_out_multisurface);
+}

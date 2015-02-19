@@ -228,13 +228,15 @@ static void test_pixtype_compare_clamped_values() {
 }
 
 /* register tests */
-CU_TestInfo pixtype_tests[] = {
-	PG_TEST(test_pixtype_size),
-	PG_TEST(test_pixtype_alignment),
-	PG_TEST(test_pixtype_name),
-	PG_TEST(test_pixtype_index_from_name),
-	PG_TEST(test_pixtype_get_min_value),
-	PG_TEST(test_pixtype_compare_clamped_values),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo pixtype_suite = {"pixtype",  NULL,  NULL, pixtype_tests};
+void pixtype_suite_setup(void);
+void pixtype_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("pixtype", NULL, NULL);
+	PG_ADD_TEST(suite, test_pixtype_size);
+	PG_ADD_TEST(suite, test_pixtype_alignment);
+	PG_ADD_TEST(suite, test_pixtype_name);
+	PG_ADD_TEST(suite, test_pixtype_index_from_name);
+	PG_ADD_TEST(suite, test_pixtype_get_min_value);
+	PG_ADD_TEST(suite, test_pixtype_compare_clamped_values);
+}
+
