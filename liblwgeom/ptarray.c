@@ -1733,3 +1733,54 @@ ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt)
 {
 	return getPoint4d_p(pa, 0, pt);
 }
+
+
+
+
+/*
+ * Stick an array of points to the given gridspec.
+ * Return "gridded" points in *outpts and their number in *outptsn.
+ *
+ * Two consecutive points falling on the same grid cell are collapsed
+ * into one single point.
+ *
+ */
+POINTARRAY *
+ptarray_grid(const POINTARRAY *pa, const gridspec *grid)
+{
+	POINT4D pt;
+	int ipn; /* input point numbers */
+	POINTARRAY *dpa;
+
+	LWDEBUGF(2, "ptarray_grid called on %p", pa);
+
+	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
+
+	for (ipn=0; ipn<pa->npoints; ++ipn)
+	{
+
+		getPoint4d_p(pa, ipn, &pt);
+
+		if ( grid->xsize )
+			pt.x = rint((pt.x - grid->ipx)/grid->xsize) *
+			         grid->xsize + grid->ipx;
+
+		if ( grid->ysize )
+			pt.y = rint((pt.y - grid->ipy)/grid->ysize) *
+			         grid->ysize + grid->ipy;
+
+		if ( FLAGS_GET_Z(pa->flags) && grid->zsize )
+			pt.z = rint((pt.z - grid->ipz)/grid->zsize) *
+			         grid->zsize + grid->ipz;
+
+		if ( FLAGS_GET_M(pa->flags) && grid->msize )
+			pt.m = rint((pt.m - grid->ipm)/grid->msize) *
+			         grid->msize + grid->ipm;
+
+		ptarray_append_point(dpa, &pt, LW_FALSE);
+
+	}
+
+	return dpa;
+}
+

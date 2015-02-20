@@ -169,21 +169,21 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
 	text *type_text;
-	char *type_str = palloc(32);
+	static int type_str_len = 32;
+	char type_str[type_str_len];
 
 	/* Read just the header from the toasted tuple */
 	gser = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, gserialized_max_header_size());
 
 	/* Make it empty string to start */
-	*type_str = 0;
+	type_str[0] = 0;
 
 	/* Build up the output string */
-	strncat(type_str, "ST_", 32);
-	strncat(type_str, lwtype_name(gserialized_get_type(gser)), 32);
+	strncat(type_str, "ST_", type_str_len);
+	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len);
 	
 	/* Build a text type to store things in */
 	type_text = cstring2text(type_str);
-	pfree(type_str);
 
 	PG_FREE_IF_COPY(gser, 0);
 	PG_RETURN_TEXT_P(type_text);

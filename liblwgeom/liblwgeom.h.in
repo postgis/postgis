@@ -578,7 +578,9 @@ typedef struct
 }
 LWTIN;
 
-
+/**
+* TWKB Support Structures 
+*/
 typedef struct
 {
 	int64_t id;	//Id, from function parameter
@@ -598,6 +600,22 @@ typedef struct
 	int n_collections;
 }
 twkb_geom_arrays;
+
+/**
+* Snap-to-grid Support
+*/
+typedef struct gridspec_t
+{
+	double ipx;
+	double ipy;
+	double ipz;
+	double ipm;
+	double xsize;
+	double ysize;
+	double zsize;
+	double msize;
+}
+gridspec;
 
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
@@ -660,7 +678,7 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 * Returns the size in bytes to read from toast to get the basic 
 * information from a geometry: GSERIALIZED struct, bbox and type 
 */
-extern uint32_t gserialized_max_header_size();
+extern uint32_t gserialized_max_header_size(void);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
@@ -828,6 +846,14 @@ extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, int n);
 * values, only read them.
 */
 extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, int n);
+
+/**
+* Returns a POINT4D pointer into the POINTARRAY serialized_ptlist, 
+* suitable for reading from. This is very high performance
+* and declared const because you aren't allowed to muck with the 
+* values, only read them.
+*/
+extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, int n);
 
 /*
  * set point N to the given value

@@ -354,7 +354,16 @@ int lwcompound_is_closed(const LWCOMPOUND *curve);
 int lwpsurface_is_closed(const LWPSURFACE *psurface);
 int lwtin_is_closed(const LWTIN *tin);
 
-
+/**
+* Snap to grid
+*/
+LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
+LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid);
+LWPOINT* lwpoint_grid(const LWPOINT *point, const gridspec *grid);
+LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid);
+LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid);
+LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
+POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
 
 /*
 * What side of the line formed by p1 and p2 does q fall? 

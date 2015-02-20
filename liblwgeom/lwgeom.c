@@ -1754,3 +1754,29 @@ lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
 	}
 }
 
+
+LWGEOM *
+lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
+{
+	switch ( lwgeom->type )
+	{
+		case POINTTYPE:
+			return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
+		case LINETYPE:
+			return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+			return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
+		case CIRCSTRINGTYPE:
+			return (LWGEOM *)lwcircstring_grid((LWCIRCSTRING *)lwgeom, grid);
+		default:
+			lwerror("lwgeom_grid: Unsupported geometry type: %s",
+			        lwtype_name(lwgeom->type));
+			return NULL;
+	}
+}

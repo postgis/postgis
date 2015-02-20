@@ -119,6 +119,27 @@ static void test_misc_wkb(void)
 		
 }
 
+
+static void test_grid(void)
+{
+	gridspec grid;
+	static char *wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))";
+	LWGEOM *geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
+	LWGEOM *geomgrid;
+	char *str;
+	
+	grid.ipx = grid.ipy = 0;
+	grid.xsize = grid.ysize = 20;
+
+	geomgrid = lwgeom_grid(geom, &grid);
+	str = lwgeom_to_ewkt(geomgrid);
+	CU_ASSERT_STRING_EQUAL(str, "MULTIPOLYGON EMPTY");
+	lwfree(str);
+	lwgeom_free(geom);
+	lwgeom_free(geomgrid);		
+}
+
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -131,4 +152,5 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_misc_count_vertices);
 	PG_ADD_TEST(suite, test_misc_area);
 	PG_ADD_TEST(suite, test_misc_wkb);
+	PG_ADD_TEST(suite, test_grid);
 }

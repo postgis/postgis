@@ -564,3 +564,21 @@ lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt)
 		
 	return lwgeom_startpoint(col->geoms[0], pt);
 }
+
+
+LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid)
+{
+	uint32_t i;
+	LWCOLLECTION *newcoll;
+	
+	newcoll = lwcollection_construct_empty(coll->type, coll->srid, lwgeom_has_z((LWGEOM*)coll), lwgeom_has_m((LWGEOM*)coll));
+
+	for (i=0; i<coll->ngeoms; i++)
+	{
+		LWGEOM *g = lwgeom_grid(coll->geoms[i], grid);
+		if ( g ) 
+			lwcollection_add_lwgeom(newcoll, g);
+	}
+
+	return newcoll;
+}
