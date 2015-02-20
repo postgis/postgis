@@ -113,4 +113,31 @@ select 'ndov6', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
                 'POINT(2 4 2 4)'::geometry; -- t
 select 'ndov7', 'LINESTRING(2 2 2 2, 4 4 4 4)'::geometry &&&
                 'POINT(4 2 4 2)'::geometry; -- t
--- TODO: mixed-dimension &&& overlap
+
+-- &&& with mixed dimensions
+
+WITH v(i,g) AS ( VALUES
+ (1,'POINT(0 0)'::geometry), -- true, infinite M range
+ (2,'POINTZ(0 0 1)'),        -- true, infinite M range
+ (3,'POINTZ(0 0 0)'),        -- true, infinite M range
+ (4,'POINTM(0 0 1)'),        -- true, fully defined overlap
+ (5,'POINTZM(0 0 0 1)'),     -- true, fully defined overlap
+ (6,'POINTZM(0 0 1 0)'),     -- false, M out of range
+ (7,'LINESTRINGM(-1 0 2,1 0 3)'), -- false, M out of range
+ (8,'LINESTRINGZ(-1 0 2,1 0 3)')  -- true, infinite M range
+ )
+SELECT 'ndovm1', array_agg(i) FROM v WHERE g &&& 'POINTM(0 0 1)'::geometry
+ORDER BY 1;
+
+WITH v(i,g) AS ( VALUES
+ (1,'POINT(0 0)'::geometry), -- true, infinite Z range
+ (2,'POINTZ(0 0 1)'),        -- true, fully defined overlap
+ (3,'POINTZ(0 0 0)'),        -- false, Z out of range
+ (4,'POINTM(0 0 0)'),        -- true, infinite Z range
+ (5,'POINTZM(0 0 0 1)'),     -- false, Z out of range
+ (6,'POINTZM(0 0 1 0)'),     -- true, fully defined overlap
+ (7,'LINESTRINGM(-1 0 2,1 0 3)'), -- true, infinite Z range
+ (8,'LINESTRINGZ(-1 0 2,1 0 3)')  -- false, Z out of range
+ )
+SELECT 'ndovm2', array_agg(i) FROM v WHERE g &&& 'POINTZ(0 0 1)'::geometry
+ORDER BY 1;

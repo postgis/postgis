@@ -51,10 +51,6 @@ typedef struct
 /* allocate a new gidx object on the heap */
 GIDX* gidx_new(int ndims) ;
 
-/* Convert a gidx to a gbox */
-void gbox_from_gidx(GIDX *gidx, GBOX *gbox);
-/* Convert a gbox to a new gidx */
-GIDX* gidx_from_gbox(GBOX box);
 /* Increase the size of a GIDX */
 void gidx_expand(GIDX *a, float d);
 

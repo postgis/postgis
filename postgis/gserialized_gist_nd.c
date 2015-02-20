@@ -29,6 +29,8 @@
 
 #include "../postgis_config.h"
 
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"	     /* For utility functions. */
@@ -301,7 +303,15 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 /*
 ** Overlapping GIDX box test.
 **
-** Box(A) Overlap Box(B) IFF (pt(a)LL < pt(B)UR) && (pt(b)LL < pt(a)UR)
+** Box(A) Overlaps Box(B) IFF for every dimension d:
+**   min(A,d) <= max(B,d) && max(A,d) => min(B,d)
+**
+** Any missing dimension is assumed by convention to
+** overlap whatever finite range available on the
+** other operand. See
+** http://lists.osgeo.org/pipermail/postgis-devel/2015-February/024757.html
+**
+** Empty boxes never overlap.
 */
 static bool gidx_overlaps(GIDX *a, GIDX *b)
 {
@@ -319,7 +329,7 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 
 	ndims_b = GIDX_NDIMS(b);
 
-	/* compare within the dimensions of (b) */
+	/* compare only up to dimensions of (b), missing dimensions always overlap */
 	for ( i = 0; i < ndims_b; i++ )
 	{
 		if ( GIDX_GET_MIN(a,i) > GIDX_GET_MAX(b,i) )
@@ -328,14 +338,6 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 			return FALSE;
 	}
 
-	/* compare to zero those dimensions in (a) absent in (b) */
-	for ( i = ndims_b; i < GIDX_NDIMS(a); i++ )
-	{
-		if ( GIDX_GET_MIN(a,i) > 0.0 )
-			return FALSE;
-		if ( GIDX_GET_MAX(a,i) < 0.0 )
-			return FALSE;
-	}
 	return TRUE;
 }
 
