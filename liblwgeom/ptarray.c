@@ -1272,7 +1272,8 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	double tlen, plen;
 	int t, seg=-1;
 	POINT4D	start4d, end4d, projtmp;
-	POINT2D start, end, proj, p;
+	POINT2D proj, p;
+	const POINT2D *start, *end;
 
 	/* Initialize our 2D copy of the input parameter */
 	p.x = p4d->x;
@@ -1280,12 +1281,12 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	
 	if ( ! proj4d ) proj4d = &projtmp;
 
-	getPoint2d_p(pa, 0, &start);
+	start = getPoint2d_cp(pa, 0);
 	for (t=1; t<pa->npoints; t++)
 	{
 		double dist;
-		getPoint2d_p(pa, t, &end);
-		dist = distance2d_pt_seg(&p, &start, &end);
+		end = getPoint2d_cp(pa, t);
+		dist = distance2d_pt_seg(&p, start, end);
 
 		if (t==1 || dist < mindist )
 		{
@@ -1322,7 +1323,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	LWDEBUGF(3, "Closest segment:%d, npoints:%d", seg, pa->npoints);
 
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, &end) )
+	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, end) )
 	{
 		return 1.0;
 	}
@@ -1338,16 +1339,16 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	if ( tlen == 0 ) return 0;
 
 	plen=0;
-	getPoint2d_p(pa, 0, &start);
+	start = getPoint2d_cp(pa, 0);
 	for (t=0; t<seg; t++, start=end)
 	{
-		getPoint2d_p(pa, t+1, &end);
-		plen += distance2d_pt_pt(&start, &end);
+		end = getPoint2d_cp(pa, t+1);
+		plen += distance2d_pt_pt(start, end);
 
 		LWDEBUGF(4, "Segment %d made plen %g", t, plen);
 	}
 
-	plen+=distance2d_pt_pt(&proj, &start);
+	plen+=distance2d_pt_pt(&proj, start);
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 
@@ -1435,8 +1436,7 @@ static void
 ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
 	int k;
-	POINT2D pa, pb;
-	const POINT2D* pk;
+	const POINT2D *pk, *pa, *pb;
 	double tmp, d;
 
 	LWDEBUG(4, "function called");
@@ -1447,11 +1447,11 @@ ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 	if (p1 + 1 < p2)
 	{
 
-		getPoint2d_p(pts, p1, &pa);
-		getPoint2d_p(pts, p2, &pb);
+		pa = getPoint2d_cp(pts, p1);
+		pb = getPoint2d_cp(pts, p2);
 
 		LWDEBUGF(4, "P%d(%f,%f) to P%d(%f,%f)",
-		         p1, pa.x, pa.y, p2, pb.x, pb.y);
+		         p1, pa->x, pa->y, p2, pb->x, pb->y);
 
 		for (k=p1+1; k<p2; k++)
 		{
@@ -1460,7 +1460,7 @@ ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 			LWDEBUGF(4, "P%d(%f,%f)", k, pk->x, pk->y);
 
 			/* distance computation */
-			tmp = distance2d_sqr_pt_seg(pk, &pa, &pb);
+			tmp = distance2d_sqr_pt_seg(pk, pa, pb);
 
 			if (tmp > d)
 			{

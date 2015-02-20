@@ -277,16 +277,15 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 {
 	int cn = 0;    /* the crossing number counter */
 	int i;
-	POINT2D v1, v2;
+	const POINT2D *v1, *v2;
+	const POINT2D *first, *last;
 
-	POINT2D first, last;
-
-	getPoint2d_p(ring, 0, &first);
-	getPoint2d_p(ring, ring->npoints-1, &last);
-	if ( memcmp(&first, &last, sizeof(POINT2D)) )
+	first = getPoint2d_cp(ring, 0);
+	last = getPoint2d_cp(ring, ring->npoints-1);
+	if ( memcmp(first, last, sizeof(POINT2D)) )
 	{
 		lwerror("pt_in_ring_2d: V[n] != V[0] (%g %g != %g %g)",
-		        first.x, first.y, last.x, last.y);
+		        first->x, first->y, last->x, last->y);
 		return LW_FALSE;
 
 	}
@@ -295,28 +294,28 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 	/* printPA(ring); */
 
 	/* loop through all edges of the polygon */
-	getPoint2d_p(ring, 0, &v1);
+	v1 = getPoint2d_cp(ring, 0);
 	for (i=0; i<ring->npoints-1; i++)
 	{
 		double vt;
-		getPoint2d_p(ring, i+1, &v2);
+		v2 = getPoint2d_cp(ring, i+1);
 
 		/* edge from vertex i to vertex i+1 */
 		if
 		(
 		    /* an upward crossing */
-		    ((v1.y <= p->y) && (v2.y > p->y))
+		    ((v1->y <= p->y) && (v2->y > p->y))
 		    /* a downward crossing */
-		    || ((v1.y > p->y) && (v2.y <= p->y))
+		    || ((v1->y > p->y) && (v2->y <= p->y))
 		)
 		{
 
-			vt = (double)(p->y - v1.y) / (v2.y - v1.y);
+			vt = (double)(p->y - v1->y) / (v2->y - v1->y);
 
-			/* P.x <intersect */
-			if (p->x < v1.x + vt * (v2.x - v1.x))
+			/* P->x <intersect */
+			if (p->x < v1->x + vt * (v2->x - v1->x))
 			{
-				/* a valid crossing of y=p.y right of p.x */
+				/* a valid crossing of y=p->y right of p->x */
 				++cn;
 			}
 		}

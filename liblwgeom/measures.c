@@ -559,13 +559,12 @@ point to point calculation
 int
 lw_dist2d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS *dl)
 {
-	POINT2D p1;
-	POINT2D p2;
+	const POINT2D *p1, *p2;
 
-	getPoint2d_p(point1->point, 0, &p1);
-	getPoint2d_p(point2->point, 0, &p2);
+	p1 = getPoint2d_cp(point1->point, 0);
+	p2 = getPoint2d_cp(point2->point, 0);
 
-	return lw_dist2d_pt_pt(&p1, &p2,dl);
+	return lw_dist2d_pt_pt(p1, p2, dl);
 }
 /**
 
@@ -1117,8 +1116,8 @@ int
 lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 {
 	int t,u;
-	POINT2D	start, end;
-	POINT2D	start2, end2;
+	const POINT2D	*start, *end;
+	const POINT2D	*start2, *end2;
 	int twist = dl->twisted;
 
 	LWDEBUGF(2, "lw_dist2d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
@@ -1127,11 +1126,11 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 	{
 		for (t=0; t<l1->npoints; t++) /*for each segment in L1 */
 		{
-			getPoint2d_p(l1, t, &start);
+			start = getPoint2d_cp(l1, t);
 			for (u=0; u<l2->npoints; u++) /*for each segment in L2 */
 			{
-				getPoint2d_p(l2, u, &start2);
-				lw_dist2d_pt_pt(&start,&start2,dl);
+				start2 = getPoint2d_cp(l2, u);
+				lw_dist2d_pt_pt(start, start2, dl);
 				LWDEBUGF(4, "maxdist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
 				         t, u, dl->distance, dl->tolerance);
@@ -1140,16 +1139,16 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 	}
 	else
 	{
-		getPoint2d_p(l1, 0, &start);
+		start = getPoint2d_cp(l1, 0);
 		for (t=1; t<l1->npoints; t++) /*for each segment in L1 */
 		{
-			getPoint2d_p(l1, t, &end);
-			getPoint2d_p(l2, 0, &start2);
+			end = getPoint2d_cp(l1, t);
+			start2 = getPoint2d_cp(l2, 0);
 			for (u=1; u<l2->npoints; u++) /*for each segment in L2 */
 			{
-				getPoint2d_p(l2, u, &end2);
+				end2 = getPoint2d_cp(l2, u);
 				dl->twisted=twist;
-				lw_dist2d_seg_seg(&start, &end, &start2, &end2,dl);
+				lw_dist2d_seg_seg(start, end, start2, end2, dl);
 				LWDEBUGF(4, "mindist_ptarray_ptarray; seg %i * seg %i, dist = %g\n",t,u,dl->distance);
 				LWDEBUGF(3, " seg%d-seg%d dist: %f, mindist: %f",
 				         t, u, dl->distance, dl->tolerance);
@@ -1779,7 +1778,8 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX 
 
 	double k, thevalue;
 	float	deltaX, deltaY, c1m, c2m;
-	POINT2D	theP,c1, c2;
+	POINT2D	c1, c2;
+	const POINT2D *theP;
 	float min1X, max1X, max1Y, min1Y,min2X, max2X, max2Y, min2Y;
 	int t;
 	int n1 = l1->npoints;
@@ -1816,16 +1816,16 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX 
 		k = -deltaX/deltaY;
 		for (t=0; t<n1; t++) /*for each segment in L1 */
 		{
-			getPoint2d_p(l1, t, &theP);
-			thevalue = theP.y-(k*theP.x);
+			theP = getPoint2d_cp(l1, t);
+			thevalue = theP->y - (k * theP->x);
 			list1[t].themeasure=thevalue;
 			list1[t].pnr=t;
 
 		}
 		for (t=0; t<n2; t++) /*for each segment in L2*/
 		{
-			getPoint2d_p(l2, t, &theP);
-			thevalue = theP.y-(k*theP.x);
+			theP = getPoint2d_cp(l2, t);
+			thevalue = theP->y - (k * theP->x);
 			list2[t].themeasure=thevalue;
 			list2[t].pnr=t;
 
@@ -1842,17 +1842,16 @@ lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl, GBOX 
 		k = -deltaY/deltaX;
 		for (t=0; t<n1; t++) /*for each segment in L1 */
 		{
-			getPoint2d_p(l1, t, &theP);
-			thevalue = theP.x-(k*theP.y);
+			theP = getPoint2d_cp(l1, t);
+			thevalue = theP->x - (k * theP->y);
 			list1[t].themeasure=thevalue;
 			list1[t].pnr=t;
 			/* lwnotice("l1 %d, measure=%f",t,thevalue ); */
 		}
 		for (t=0; t<n2; t++) /*for each segment in L2*/
 		{
-			getPoint2d_p(l2, t, &theP);
-
-			thevalue = theP.x-(k*theP.y);
+			theP = getPoint2d_cp(l2, t);
+			thevalue = theP->x - (k * theP->y);
 			list2[t].themeasure=thevalue;
 			list2[t].pnr=t;
 			/* lwnotice("l2 %d, measure=%f",t,thevalue ); */
@@ -1903,7 +1902,7 @@ struct_cmp_by_measure(const void *a, const void *b)
 int
 lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRUCT *list2,double k, DISTPTS *dl)
 {
-	POINT2D p1, p2, p3, p4, p01, p02;
+	const POINT2D *p1, *p2, *p3, *p4, *p01, *p02;
 	int pnr1,pnr2,pnr3,pnr4, n1, n2, i, u, r, twist;
 	double maxmeasure;
 	n1=	l1->npoints;
@@ -1911,9 +1910,9 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRU
 
 	LWDEBUG(2, "lw_dist2d_pre_seg_seg is called");
 
-	getPoint2d_p(l1, list1[0].pnr, &p1);
-	getPoint2d_p(l2, list2[0].pnr, &p3);
-	lw_dist2d_pt_pt(&p1, &p3,dl);
+	p1 = getPoint2d_cp(l1, list1[0].pnr);
+	p3 = getPoint2d_cp(l2, list2[0].pnr);
+	lw_dist2d_pt_pt(p1, p3, dl);
 	maxmeasure = sqrt(dl->distance*dl->distance + (dl->distance*dl->distance*k*k));
 	twist = dl->twisted; /*to keep the incomming order between iterations*/
 	for (i =(n1-1); i>=0; --i)
@@ -1925,53 +1924,53 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRU
 		for (r=-1; r<=1; r +=2) /*because we are not iterating in the original pointorder we have to check the segment before and after every point*/
 		{
 			pnr1 = list1[i].pnr;
-			getPoint2d_p(l1, pnr1, &p1);
+			p1 = getPoint2d_cp(l1, pnr1);
 			if (pnr1+r<0)
 			{
-				getPoint2d_p(l1, (n1-1), &p01);
-				if (( p1.x == p01.x) && (p1.y == p01.y)) pnr2 = (n1-1);
+				p01 = getPoint2d_cp(l1, (n1-1));
+				if (( p1->x == p01->x) && (p1->y == p01->y)) pnr2 = (n1-1);
 				else pnr2 = pnr1; /* if it is a line and the last and first point is not the same we avoid the edge between start and end this way*/
 			}
 
 			else if (pnr1+r>(n1-1))
 			{
-				getPoint2d_p(l1, 0, &p01);
-				if (( p1.x == p01.x) && (p1.y == p01.y)) pnr2 = 0;
+				p01 = getPoint2d_cp(l1, 0);
+				if (( p1->x == p01->x) && (p1->y == p01->y)) pnr2 = 0;
 				else pnr2 = pnr1; /* if it is a line and the last and first point is not the same we avoid the edge between start and end this way*/
 			}
 			else pnr2 = pnr1+r;
 
 
-			getPoint2d_p(l1, pnr2, &p2);
+			p2 = getPoint2d_cp(l1, pnr2);
 			for (u=0; u<n2; ++u)
 			{
 				if (((list2[u].themeasure-list1[i].themeasure)) >= maxmeasure) break;
 				pnr3 = list2[u].pnr;
-				getPoint2d_p(l2, pnr3, &p3);
+				p3 = getPoint2d_cp(l2, pnr3);
 				if (pnr3==0)
 				{
-					getPoint2d_p(l2, (n2-1), &p02);
-					if (( p3.x == p02.x) && (p3.y == p02.y)) pnr4 = (n2-1);
+					p02 = getPoint2d_cp(l2, (n2-1));
+					if (( p3->x == p02->x) && (p3->y == p02->y)) pnr4 = (n2-1);
 					else pnr4 = pnr3; /* if it is a line and the last and first point is not the same we avoid the edge between start and end this way*/
 				}
 				else pnr4 = pnr3-1;
 
-				getPoint2d_p(l2, pnr4, &p4);
+				p4 = getPoint2d_cp(l2, pnr4);
 				dl->twisted=twist;
-				if (!lw_dist2d_selected_seg_seg(&p1, &p2, &p3, &p4, dl)) return LW_FALSE;
+				if (!lw_dist2d_selected_seg_seg(p1, p2, p3, p4, dl)) return LW_FALSE;
 
 				if (pnr3>=(n2-1))
 				{
-					getPoint2d_p(l2, 0, &p02);
-					if (( p3.x == p02.x) && (p3.y == p02.y)) pnr4 = 0;
+					p02 = getPoint2d_cp(l2, 0);
+					if (( p3->x == p02->x) && (p3->y == p02->y)) pnr4 = 0;
 					else pnr4 = pnr3; /* if it is a line and the last and first point is not the same we avoid the edge between start and end this way*/
 				}
 
 				else pnr4 = pnr3+1;
 
-				getPoint2d_p(l2, pnr4, &p4);
+				p4 = getPoint2d_cp(l2, pnr4);
 				dl->twisted=twist; /*we reset the "twist" for each iteration*/
-				if (!lw_dist2d_selected_seg_seg(&p1, &p2, &p3, &p4, dl)) return LW_FALSE;
+				if (!lw_dist2d_selected_seg_seg(p1, p2, p3, p4, dl)) return LW_FALSE;
 
 				maxmeasure = sqrt(dl->distance*dl->distance + (dl->distance*dl->distance*k*k));/*here we "translate" the found mindistance so it can be compared to our "z"-values*/
 			}
@@ -1988,7 +1987,7 @@ lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRU
 	already know they do not intersect
 */
 int
-lw_dist2d_selected_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
+lw_dist2d_selected_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const POINT2D *D, DISTPTS *dl)
 {
 	LWDEBUGF(2, "lw_dist2d_selected_seg_seg [%g,%g]->[%g,%g] by [%g,%g]->[%g,%g]",
 	         A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);

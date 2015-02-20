@@ -722,13 +722,13 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			POINT2D pt;
-			getPoint2d_p(pa, i, &pt);
+			const POINT2D *pt;
+			pt = getPoint2d_cp(pa, i);
 
-      lwprint_double(pt.x, precision, x, BUFSIZE);
-      trim_trailing_zeros(x);
-      lwprint_double(pt.y, precision, y, BUFSIZE);
-      trim_trailing_zeros(y);
+			lwprint_double(pt->x, precision, x, BUFSIZE);
+			trim_trailing_zeros(x);
+			lwprint_double(pt->y, precision, y, BUFSIZE);
+			trim_trailing_zeros(y);
 
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s]", x, y);
@@ -738,15 +738,15 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			POINT4D pt;
-			getPoint4d_p(pa, i, &pt);
+			const POINT3DZ *pt;
+			pt = getPoint3dz_cp(pa, i);
 
-      lwprint_double(pt.x, precision, x, BUFSIZE);
-      trim_trailing_zeros(x);
-      lwprint_double(pt.y, precision, y, BUFSIZE);
-      trim_trailing_zeros(y);
-      lwprint_double(pt.z, precision, z, BUFSIZE);
-      trim_trailing_zeros(z);
+			lwprint_double(pt->x, precision, x, BUFSIZE);
+			trim_trailing_zeros(x);
+			lwprint_double(pt->y, precision, y, BUFSIZE);
+			trim_trailing_zeros(y);
+			lwprint_double(pt->z, precision, z, BUFSIZE);
+			trim_trailing_zeros(z);
 
 			if ( i ) ptr += sprintf(ptr, ",");
 			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
