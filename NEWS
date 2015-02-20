@@ -5,6 +5,7 @@ PostGIS 2.1.6
 
   - #3000, Ensure edge splitting and healing algorithms use indexes
   - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
+  - #3050, Speep up geometry type reading (J.Santana @ CartoDB)
 
  * Bug Fixes *
 
