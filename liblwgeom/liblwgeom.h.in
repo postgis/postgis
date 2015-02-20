@@ -656,6 +656,12 @@ extern uint8_t gflags(int hasz, int hasm, int geodetic);
 */
 extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 
+/** 
+* Returns the size in bytes to read from toast to get the basic 
+* information from a geometry: GSERIALIZED struct, bbox and type 
+*/
+extern uint32_t gserialized_max_header_size();
+
 /**
 * Extract the SRID from the serialized form (it is packed into
 * three bytes so this is a handy function).

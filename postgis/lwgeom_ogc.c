@@ -107,19 +107,17 @@ Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_getTYPE);
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *lwgeom;
-	char *text_ob;
+	GSERIALIZED *gser;
+	text *text_ob;
 	char *result;
-	int32 size;
 	uint8_t type;
+	static int maxtyplen = 20;
 
-	lwgeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	text_ob = lwalloc(20+VARHDRSZ);
-	result = text_ob+VARHDRSZ;
+	gser = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, gserialized_max_header_size());
+	text_ob = palloc0(VARHDRSZ + maxtyplen);
+	result = VARDATA(text_ob);
 
-	type = gserialized_get_type(lwgeom);
-
-	memset(VARDATA(text_ob), 0, 20);
+	type = gserialized_get_type(gser);
 
 	if (type == POINTTYPE)
 		strcpy(result,"POINT");
@@ -154,15 +152,14 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	else
 		strcpy(result,"UNKNOWN");
 
-	if ( gserialized_has_m(lwgeom) && ! gserialized_has_z(lwgeom) )
+	if ( gserialized_has_m(gser) && ! gserialized_has_z(gser) )
 		strcat(result, "M");
 
-	size = strlen(result) + VARHDRSZ ;
-	SET_VARSIZE(text_ob, size); /* size of string */
+	SET_VARSIZE(text_ob, strlen(result) + VARHDRSZ); /* size of string */
 
-	PG_FREE_IF_COPY(lwgeom, 0);
+	PG_FREE_IF_COPY(gser, 0);
 
-	PG_RETURN_POINTER(text_ob);
+	PG_RETURN_TEXT_P(text_ob);
 }
 
 
@@ -170,24 +167,25 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geometry_geometrytype);
 Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *lwgeom;
+	GSERIALIZED *gser;
 	text *type_text;
 	char *type_str = palloc(32);
 
-	lwgeom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	/* Read just the header from the toasted tuple */
+	gser = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, gserialized_max_header_size());
 
 	/* Make it empty string to start */
 	*type_str = 0;
 
 	/* Build up the output string */
 	strncat(type_str, "ST_", 32);
-	strncat(type_str, lwtype_name(gserialized_get_type(lwgeom)), 32);
+	strncat(type_str, lwtype_name(gserialized_get_type(gser)), 32);
 	
 	/* Build a text type to store things in */
 	type_text = cstring2text(type_str);
 	pfree(type_str);
 
-	PG_FREE_IF_COPY(lwgeom, 0);
+	PG_FREE_IF_COPY(gser, 0);
 	PG_RETURN_TEXT_P(type_text);
 }
 
