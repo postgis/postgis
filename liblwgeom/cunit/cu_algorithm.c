@@ -899,6 +899,25 @@ static void test_geohash_point_as_int(void)
 	CU_ASSERT_EQUAL(gh, (unsigned int)4166944232);	
 }
 
+static void test_lwgeom_simplify(void)
+{
+		LWGEOM *l;
+		char *ewkt;
+
+		/* Not simplifiable */
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 50 1.00001, 100 0)", LW_PARSER_CHECK_NONE), 1.0);
+		ewkt = lwgeom_to_ewkt(l);
+		CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(0 0,50 1.00001,100 0)");
+		lwgeom_free(l);
+		lwfree(ewkt);
+
+		/* Simplifiable */
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0,50 0.99999,100 0)", LW_PARSER_CHECK_NONE), 1.0);
+		ewkt = lwgeom_to_ewkt(l);
+		CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(0 0,100 0)");
+		lwgeom_free(l);
+		lwfree(ewkt);
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -923,4 +942,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_geohash);
 	PG_ADD_TEST(suite,test_geohash_point_as_int);
 	PG_ADD_TEST(suite,test_isclosed);
+	PG_ADD_TEST(suite,test_lwgeom_simplify);
 }

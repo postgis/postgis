@@ -2155,6 +2155,15 @@ distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 
 }
 
+double
+distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2)
+{
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+
+	return  hside*hside + vside*vside;
+
+}
 
 
 /**
@@ -2208,6 +2217,38 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 	           (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y)
 	       );
 }
+
+/* return distance squared, useful to avoid sqrt calculations */
+double
+distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
+{
+	double	r,s;
+
+	if (  ( A->x == B->x) && (A->y == B->y) )
+		return distance2d_sqr_pt_pt(p,A);
+
+	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	if (r<0) return distance2d_sqr_pt_pt(p,A);
+	if (r>1) return distance2d_sqr_pt_pt(p,B);
+
+
+	/*
+	 * (2)
+	 *	     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+	 *	s = -----------------------------
+	 *	             	L^2
+	 *
+	 *	Then the distance from C to P = |s|*L.
+	 *
+	 */
+
+	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
+	    ( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	return s * s * ( (B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y) );
+}
+
 
 
 /**

@@ -63,7 +63,6 @@ extern void wkt_in_suite_setup(void);
 /* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
 PG_SuiteSetup setupfuncs[] =
 {
-	print_suite_setup,
 	algorithms_suite_setup,
 	buildarea_suite_setup,
 	clean_suite_setup,
@@ -76,7 +75,6 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
-	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	measures_suite_setup,
 	misc_suite_setup,
@@ -86,22 +84,24 @@ PG_SuiteSetup setupfuncs[] =
 	out_gml_suite_setup,
 	out_kml_suite_setup,
 	out_svg_suite_setup,
-	twkb_out_suite_setup,
 	out_x3d_suite_setup,
 	ptarray_suite_setup,
+	print_suite_setup,
 #if HAVE_SFCGAL
 	sfcgal_suite_setup,
 #endif
 	split_suite_setup,
 	stringbuffer_suite_setup,
+	surface_suite_setup,
 	tree_suite_setup,
 	triangulate_suite_setup,
+	twkb_in_suite_setup,
+	twkb_out_suite_setup,
 	varint_suite_setup,
-	wkt_out_suite_setup,
-	wkb_out_suite_setup,
-	surface_suite_setup,
 	wkb_in_suite_setup,
+	wkb_out_suite_setup,
 	wkt_in_suite_setup,
+	wkt_out_suite_setup,
 	NULL
 };
 

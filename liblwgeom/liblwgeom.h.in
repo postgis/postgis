@@ -1105,7 +1105,9 @@ extern double next_double_up(float d);
 
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
+extern double  distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
+extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM* lwgeom_closest_line(LWGEOM *lw1, LWGEOM *lw2);
 extern LWGEOM* lwgeom_furthest_line(LWGEOM *lw1, LWGEOM *lw2);
 extern LWGEOM* lwgeom_closest_point(LWGEOM *lw1, LWGEOM *lw2);
