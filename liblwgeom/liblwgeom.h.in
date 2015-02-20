@@ -1044,6 +1044,8 @@ extern double next_double_up(float d);
 	2D*/
 extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
+extern double  distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2);
+extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM *lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
 extern LWGEOM *lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
 extern double lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2);

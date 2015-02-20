@@ -1433,13 +1433,14 @@ static void
 ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
 	int k;
-	POINT2D pa, pb, pk;
-	double tmp;
+	POINT2D pa, pb;
+	const POINT2D* pk;
+	double tmp, d;
 
 	LWDEBUG(4, "function called");
 
-	*dist = -1;
 	*split = p1;
+	d = -1;
 
 	if (p1 + 1 < p2)
 	{
@@ -1452,26 +1453,28 @@ ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 
 		for (k=p1+1; k<p2; k++)
 		{
-			getPoint2d_p(pts, k, &pk);
+			pk = getPoint2d_cp(pts, k);
 
-			LWDEBUGF(4, "P%d(%f,%f)", k, pk.x, pk.y);
+			LWDEBUGF(4, "P%d(%f,%f)", k, pk->x, pk->y);
 
 			/* distance computation */
-			tmp = distance2d_pt_seg(&pk, &pa, &pb);
+			tmp = distance2d_sqr_pt_seg(pk, &pa, &pb);
 
-			if (tmp > *dist)
+			if (tmp > d)
 			{
-				*dist = tmp;	/* record the maximum */
+				d = tmp;	/* record the maximum */
 				*split = k;
 
-				LWDEBUGF(4, "P%d is farthest (%g)", k, *dist);
+				LWDEBUGF(4, "P%d is farthest (%g)", k, d);
 			}
 		}
+		*dist = d;
 
 	} /* length---should be redone if can == 0 */
 	else
 	{
 		LWDEBUG(3, "segment too short, no split/no dist");
+		*dist = -1;
 	}
 
 }
@@ -1485,6 +1488,8 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 	double dist;
 	POINTARRAY *outpts;
 	POINT4D pt;
+
+	double eps_sqr = epsilon * epsilon;
 
 	/* Allocate recursion stack */
 	stack = lwalloc(sizeof(int)*inpts->npoints);
@@ -1509,7 +1514,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 
 		LWDEBUGF(3, "Farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
 
-		if (dist > epsilon || ( outpts->npoints+sp+1 < minpts && dist > 0 ) )
+		if (dist > eps_sqr || ( outpts->npoints+sp+1 < minpts && dist >= 0 ) )
 		{
 			LWDEBUGF(4, "Added P%d to stack (outpts:%d)", split, sp);
 			stack[++sp] = split;
@@ -1517,6 +1522,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 		else
 		{
 			getPoint4d_p(inpts, stack[sp], &pt);
+			LWDEBUGF(4, "npoints , minpoints %d %d", outpts->npoints, minpts);
 			ptarray_append_point(outpts, &pt, LW_FALSE);
 			
 			LWDEBUGF(4, "Added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
