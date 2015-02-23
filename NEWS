@@ -9,6 +9,7 @@ PostGIS 2.1.6
 
  * Bug Fixes *
 
+  - #3045, Fix dimensionality confusion in &&& operator
   - #3016, Allow unregistering layers of corrupted topologies
   - #3015, Avoid exceptions from TopologySummary
   - #3020, ST_AddBand out-db bug where height using width value
