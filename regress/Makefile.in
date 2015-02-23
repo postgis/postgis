@@ -69,6 +69,7 @@ TESTS = \
 	loader/ReprojectPtsGeog \
 	loader/Latin1 \
 	binary \
+	operators \
 	regress \
 	regress_index \
 	regress_index_nulls \
