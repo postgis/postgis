@@ -180,7 +180,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 	/* Build up the output string */
 	strncat(type_str, "ST_", type_str_len);
-	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len);
+	strncat(type_str, lwtype_name(gserialized_get_type(gser)), type_str_len - 3);
 	
 	/* Build a text type to store things in */
 	type_text = cstring2text(type_str);
