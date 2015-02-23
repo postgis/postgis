@@ -95,7 +95,7 @@ FROM ( VALUES
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's 3D bounding box intersects B's 3D bounding box.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1068,9 +1068,10 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
-			<refpurpose>Returns the distance between two points.  For point / point checks it uses floating point accuracy (as opposed to the double precision accuracy of the underlying point geometry).  For other geometry types
-			the distance between the floating point bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
-			using KNN gist functionality.</refpurpose>
+			<refpurpose>
+Returns the 2D distance between the centroids of A and B bounding
+boxes.
+			</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1096,10 +1097,13 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;-&gt;</varname> operator returns distance between two points read from the spatial index for points (float precision).  For
-			other geometries it returns the distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
+			<para>
+The <varname>&lt;-&gt;</varname> operator returns the 2D distance between the
+centroids of the bounding boxes of two geometries.  Useful for doing
+nearest neighbor <emphasis role="strong">approximate</emphasis> distance
+ordering.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
+			<note><para>This operand will make use of 2D GiST indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
