@@ -1273,14 +1273,24 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	int t, seg=-1;
 	POINT4D	start4d, end4d, projtmp;
 	POINT2D proj, p;
-	const POINT2D *start, *end;
+	const POINT2D *start = NULL, *end = NULL;
 
 	/* Initialize our 2D copy of the input parameter */
 	p.x = p4d->x;
 	p.y = p4d->y;
 	
 	if ( ! proj4d ) proj4d = &projtmp;
-
+	
+	/* If the pointarray has only one point, the nearest point is */
+	/* just that point */
+	if ( pa->npoints == 1 )
+	{
+		getPoint4d_p(pa, 0, proj4d);
+		*mindistout = distance2d_pt_pt(&p, start);
+		return 0.0;
+	}
+	
+	/* Loop through pointarray looking for nearest segment */
 	start = getPoint2d_cp(pa, 0);
 	for (t=1; t<pa->npoints; t++)
 	{
