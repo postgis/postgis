@@ -7,14 +7,10 @@ CREATE FUNCTION qnodes(q text) RETURNS text
 LANGUAGE 'plpgsql' AS
 $$
 DECLARE
-  exp XML;
+  exp TEXT;
 BEGIN
-  EXECUTE 'EXPLAIN (FORMAT XML, VERBOSE) ' || q INTO STRICT exp;
-  RETURN array_to_string(
-    xpath('//x:Node-Type/text()', exp,
-          ARRAY[ARRAY['x', 'http://www.postgresql.org/2009/explain']]),
-    ','
-  );
+  EXECUTE 'EXPLAIN ' || q INTO exp;
+  RETURN (regexp_matches(exp, ' *(.*Scan)'))[1];
 END;
 $$;
 
