@@ -78,6 +78,7 @@ TESTS = \
 	regress_lrs \
 	removepoint \
 	setpoint \
+	size \
 	simplify \
 	snaptogrid \
 	summary \
