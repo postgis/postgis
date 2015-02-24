@@ -39,3 +39,5 @@ SELECT '<#> res1',num,
   order by the_geom <#> 'LINESTRING(1000 0,1005 5)'::geometry LIMIT 1;
 
 DROP FUNCTION qnodes(text);
+
+DROP TABLE test;
