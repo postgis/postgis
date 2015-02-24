@@ -108,3 +108,6 @@ DROP FUNCTION estimate_error(text, int);
 
 DROP FUNCTION qnodes(text);
 
+set enable_indexscan = on;
+set enable_bitmapscan = on;
+set enable_seqscan = on;
