@@ -3,14 +3,25 @@
 
 --- test some of the searching capabilities
 
-CREATE FUNCTION qnodes(q text) RETURNS text
+CREATE OR REPLACE FUNCTION qnodes(q text) RETURNS text
 LANGUAGE 'plpgsql' AS
 $$
 DECLARE
   exp TEXT;
+  mat TEXT[];
+  ret TEXT[];
 BEGIN
-  EXECUTE 'EXPLAIN ' || q INTO exp;
-  RETURN (regexp_matches(exp, ' *(.*Scan)'))[1];
+  FOR exp IN EXECUTE 'EXPLAIN ' || q
+  LOOP
+    --RAISE NOTICE 'EXP: %', exp;
+    mat := regexp_matches(exp, ' *(?:-> *)?(.*Scan)');
+    --RAISE NOTICE 'MAT: %', mat;
+    IF mat IS NOT NULL THEN
+      ret := array_append(ret, mat[1]);
+    END IF;
+    --RAISE NOTICE 'RET: %', ret;
+  END LOOP;
+  RETURN array_to_string(ret,',');
 END;
 $$;
 
