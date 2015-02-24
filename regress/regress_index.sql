@@ -43,21 +43,6 @@ set enable_seqscan = off;
 SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0)');
  select num,ST_astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
 
--- Index-supported KNN query
-
-SELECT '<-> idx', qnodes('select * from test order by the_geom <-> ST_MakePoint(0,0)');
-SELECT '<-> res1',num,
-  (the_geom <-> 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
-  ST_astext(the_geom) from test
-  order by the_geom <-> 'LINESTRING(0 0,5 5)'::geometry LIMIT 1;
-
--- Full table extent: BOX(0.0439142361 0.0197799355,999.955261 999.993652)
-SELECT '<#> idx', qnodes('select * from test order by the_geom <#> ST_MakePoint(0,0)');
-SELECT '<#> res1',num,
-  (the_geom <#> 'LINESTRING(1000 0,1005 5)'::geometry)::numeric(10,2),
-  ST_astext(the_geom) from test
-  order by the_geom <#> 'LINESTRING(1000 0,1005 5)'::geometry LIMIT 1;
-
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
 LANGUAGE 'plpgsql' VOLATILE AS $$
