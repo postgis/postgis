@@ -25,6 +25,8 @@ CREATE INDEX on test using gist (the_geom);
 
 -- Index-supported KNN query
 
+set enable_seqscan = on;
+
 SELECT '<-> idx', qnodes('select * from test order by the_geom <-> ST_MakePoint(0,0)');
 SELECT '<-> res1',num,
   (the_geom <-> 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
