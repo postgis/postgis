@@ -46,3 +46,7 @@ SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0
 DROP TABLE test;
 
 DROP FUNCTION qnodes(text);
+
+set enable_indexscan = on;
+set enable_bitmapscan = on;
+set enable_seqscan = on;
