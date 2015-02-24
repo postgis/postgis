@@ -47,15 +47,16 @@ SELECT 'scan_seq', qnodes('select * from test where the_geom && ST_MakePoint(0,0
 
 SELECT '<-> idx', qnodes('select * from test order by the_geom <-> ST_MakePoint(0,0)');
 SELECT '<-> res1',num,
-  ST_Distance(the_geom, 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
+  (the_geom <-> 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
   ST_astext(the_geom) from test
   order by the_geom <-> 'LINESTRING(0 0,5 5)'::geometry LIMIT 1;
 
+-- Full table extent: BOX(0.0439142361 0.0197799355,999.955261 999.993652)
 SELECT '<#> idx', qnodes('select * from test order by the_geom <#> ST_MakePoint(0,0)');
 SELECT '<#> res1',num,
-  ST_Distance(the_geom, 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
+  (the_geom <#> 'LINESTRING(1000 0,1005 5)'::geometry)::numeric(10,2),
   ST_astext(the_geom) from test
-  order by the_geom <#> 'LINESTRING(0 0,5 5)'::geometry LIMIT 1;
+  order by the_geom <#> 'LINESTRING(1000 0,1005 5)'::geometry LIMIT 1;
 
 CREATE FUNCTION estimate_error(qry text, tol int)
 RETURNS text
