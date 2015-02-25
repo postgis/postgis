@@ -1588,10 +1588,10 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  <refsection>
 		<title>Description</title>
 		<para>Returns a version of the given geometry with X and Y axis flipped.</para>
+		<para>Availability: 2.0.0</para>
 		<para>&curve_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&M_support;</para>
-		<para>Availability: 2.0.0</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
@@ -1641,10 +1641,10 @@ Returns a version of the given geometry with given ordinates swapped.
 The <varname>ords</varname> parameter is a 2-characters string naming
 the ordinates to swap. Valid names are: x,y,z and m.
     </para>
+		<para>Availability: 2.2.0</para>
 		<para>&curve_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&M_support;</para>
-		<para>Availability: 2.2.0</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
