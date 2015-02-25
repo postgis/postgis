@@ -26,6 +26,8 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
+           n-D distance operators (Sandro Santilli / Boundless)
   - Interruptibility API for liblwgeom (Sandro Santilli / CartoDB)
   - #2939, ST_ClipByBox2D (Sandro Santilli / CartoDB)
   - #2247, ST_Retile and ST_CreateOverview: in-db raster overviews creation

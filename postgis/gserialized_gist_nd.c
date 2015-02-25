@@ -36,6 +36,9 @@
 #include "gserialized_gist.h"	     /* For utility functions. */
 #include "geography.h"
 
+#include <assert.h>
+
+
 /* Fall back to older finite() if necessary */
 #ifndef HAVE_ISFINITE
 # ifdef HAVE_GNU_ISFINITE
@@ -75,6 +78,7 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS);
 Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same(PG_FUNCTION_ARGS);
+Datum gserialized_gist_distance(PG_FUNCTION_ARGS);
 
 /*
 ** ND Operator prototypes
@@ -82,6 +86,8 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 Datum gserialized_overlaps(PG_FUNCTION_ARGS);
 Datum gserialized_contains(PG_FUNCTION_ARGS);
 Datum gserialized_within(PG_FUNCTION_ARGS);
+Datum gserialized_distance_box_nd(PG_FUNCTION_ARGS);
+Datum gserialized_distance_centroid_nd(PG_FUNCTION_ARGS);
 
 /*
 ** GIDX true/false test function type
@@ -457,6 +463,98 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 }
 
 /**
+* Calculate the centroid->centroid distance between the boxes.
+*/
+static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
+{
+  int ndims, i;
+  double sum = 0;
+
+  /* Base computation on least available dimensions */
+  ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
+  for ( i = 0; i < ndims; ++i )
+  {
+    double ca, cb, d;
+    double amin = GIDX_GET_MIN(a,i);
+    double amax = GIDX_GET_MAX(a,i);
+    double bmin = GIDX_GET_MIN(b,i);
+    double bmax = GIDX_GET_MAX(b,i);
+    ca = amin + ( ( amax - amin ) / 2.0 );
+    cb = bmin + ( ( bmax - bmin ) / 2.0 );
+    d = ca - cb;
+    if ( ! isfinite(d) )
+    {
+      /* Can happen if a dimension was padded with FLT_MAX,
+       * effectively meaning "infinite range". In that case
+       * we take that dimension as adding 0 to the total
+       * distance.
+       */
+      continue;
+    }
+    sum += d * d;
+/*
+    POSTGIS_DEBUGF(3, " centroid of A for dimension %d is %g", i, ca);
+    POSTGIS_DEBUGF(3, " centroid of B for dimension %d is %g", i, cb);
+    POSTGIS_DEBUGF(3, " distance on dimension %d is %g, squared as %g, grows sum to %g", i, d, d*d, sum);
+*/
+  }
+  return sqrt(sum);
+}
+
+/**
+* Calculate the box->box distance.
+*/
+static double gidx_distance(const GIDX *a, const GIDX *b)
+{
+  int ndims, i;
+  double sum = 0;
+
+  /* Base computation on least available dimensions */
+  ndims = Min(GIDX_NDIMS(b), GIDX_NDIMS(a));
+  for ( i = 0; i < ndims; ++i )
+  {
+    double d;
+    double amin = GIDX_GET_MIN(a,i);
+    double amax = GIDX_GET_MAX(a,i);
+    double bmin = GIDX_GET_MIN(b,i);
+    double bmax = GIDX_GET_MAX(b,i);
+    POSTGIS_DEBUGF(3, "A %g - %g", amin, amax);
+    POSTGIS_DEBUGF(3, "B %g - %g", bmin, bmax);
+
+    if ( ( amin <= bmax && amax >= bmin ) )
+    {
+      /* overlaps */
+      d = 0;
+    }
+    else if ( bmax < amin )
+    {
+      /* is "left" */
+      d = amin - bmax;
+    }
+    else
+    {
+      /* is "right" */
+      assert( bmin > amax );
+      d = bmin - amax;
+    }
+    if ( ! isfinite(d) )
+    {
+      /* Can happen if coordinates are corrupted/NaN */
+      continue;
+    }
+    sum += d * d;
+    POSTGIS_DEBUGF(3, "dist %g, squared %g, grows sum to %g", d, d*d, sum);
+  }
+  return sqrt(sum);
+}
+
+static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
+{
+  /* TODO: implement ! */
+  return 0;
+}
+
+/**
 * Return a #GSERIALIZED with an expanded bounding box.
 */
 GSERIALIZED* 
@@ -481,6 +579,55 @@ gserialized_expand(GSERIALIZED *g, double distance)
 /***********************************************************************
 * GiST N-D Index Operator Functions
 */
+
+PG_FUNCTION_INFO_V1(gserialized_distance_box_nd);
+Datum gserialized_distance_box_nd(PG_FUNCTION_ARGS)
+{
+	char bmem1[GIDX_MAX_SIZE];
+	GIDX *b1 = (GIDX*)bmem1;
+	char bmem2[GIDX_MAX_SIZE];
+	GIDX *b2 = (GIDX*)bmem2;
+	Datum gs1 = PG_GETARG_DATUM(0);
+	Datum gs2 = PG_GETARG_DATUM(1);
+	double distance;
+
+	POSTGIS_DEBUG(3, "entered function");
+
+	/* Must be able to build box for each argument (ie, not empty geometry). */
+	if ( (gserialized_datum_get_gidx_p(gs1, b1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_gidx_p(gs2, b2) == LW_SUCCESS) )
+	{
+		distance = gidx_distance(b1, b2);
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(b1), gidx_to_string(b2));
+		PG_RETURN_FLOAT8(distance);
+	}
+	PG_RETURN_FLOAT8(FLT_MAX);
+}
+
+
+PG_FUNCTION_INFO_V1(gserialized_distance_centroid_nd);
+Datum gserialized_distance_centroid_nd(PG_FUNCTION_ARGS)
+{
+	char b1mem[GIDX_MAX_SIZE];
+	GIDX *b1 = (GIDX*)b1mem;
+	char b2mem[GIDX_MAX_SIZE];
+	GIDX *b2 = (GIDX*)b2mem;
+	Datum gs1 = PG_GETARG_DATUM(0);
+	Datum gs2 = PG_GETARG_DATUM(1);
+	double distance;
+
+	POSTGIS_DEBUG(3, "entered function");
+
+	/* Must be able to build box for each argument (ie, not empty geometry). */
+	if ( (gserialized_datum_get_gidx_p(gs1, b1) == LW_SUCCESS) &&
+			 (gserialized_datum_get_gidx_p(gs2, b2) == LW_SUCCESS) )
+	{
+		distance = gidx_distance_leaf_centroid(b1, b2);
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(b1), gidx_to_string(b2));
+		PG_RETURN_FLOAT8(distance);
+	}
+	PG_RETURN_FLOAT8(FLT_MAX);
+}
 
 /*
 ** '~' and operator function. Based on two serialized return true if
@@ -842,8 +989,6 @@ Datum gserialized_gist_union(PG_FUNCTION_ARGS)
 
 }
 
-
-
 /*
 ** GiST support function. Test equality of keys.
 */
@@ -861,6 +1006,72 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/*
+** GiST support function.
+** Take in a query and an entry and return the "distance" between them.
+**
+** Given an index entry p and a query value q, this function determines the
+** index entry's "distance" from the query value. This function must be
+** supplied if the operator class contains any ordering operators. A query
+** using the ordering operator will be implemented by returning index entries
+** with the smallest "distance" values first, so the results must be consistent
+** with the operator's semantics. For a leaf index entry the result just
+** represents the distance to the index entry; for an internal tree node, the
+** result must be the smallest distance that any child entry could have.
+**
+** Strategy 13 = centroid-based distance tests
+** Strategy 14 = box-based distance tests (not implemented)
+*/
+PG_FUNCTION_INFO_V1(gserialized_gist_distance);
+Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
+{
+	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
+	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+	char query_box_mem[GIDX_MAX_SIZE];
+	GIDX *query_box = (GIDX*)query_box_mem;
+	GIDX *entry_box;
+	double distance;
+
+	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
+
+	/* We are using '13' as the gist distance-betweeen-centroids strategy number
+	 *  and '14' as the gist distance-between-boxes strategy number */
+	if ( strategy != 13 && strategy != 14 ) {
+		elog(ERROR, "unrecognized strategy number: %d", strategy);
+		PG_RETURN_FLOAT8(FLT_MAX);
+	}
+
+	/* Null box should never make this far. */
+	if ( gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), query_box) == LW_FAILURE )
+	{
+		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
+		PG_RETURN_FLOAT8(FLT_MAX);
+	}
+
+	/* Get the entry box */
+	entry_box = (GIDX*)DatumGetPointer(entry->key);
+
+	/* Box-style distance test */
+	if ( strategy == 14 )
+	{
+		distance = gidx_distance(entry_box, query_box);
+		PG_RETURN_FLOAT8(distance);
+	}
+
+	/* Treat leaf node tests different from internal nodes */
+	if (GIST_LEAF(entry))
+	{
+		/* Calculate distance to leaves */
+		distance = (double)gidx_distance_leaf_centroid(entry_box, query_box);
+	}
+	else
+	{
+		/* Calculate distance for internal nodes */
+		distance = (double)gidx_distance_node_centroid(entry_box, query_box);
+	}
+
+	PG_RETURN_FLOAT8(distance);
+}
 
 
 /*
