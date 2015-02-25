@@ -154,6 +154,13 @@ LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm);
 LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm);
 POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm);
 
+/**
+ * Swap ordinate values o1 and o2 on a given POINTARRAY
+ *
+ * Ordinates semantic is: 0=x 1=y 2=z 3=m
+ */
+void ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2);
+
 /*
 * Is Empty?
 */

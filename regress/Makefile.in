@@ -129,6 +129,7 @@ TESTS = \
 	typmod \
 	remove_repeated_points \
 	split \
+	swapordinates \
 	relate \
 	bestsrid \
 	concave_hull\

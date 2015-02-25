@@ -2714,16 +2714,71 @@ Datum ST_FlipCoordinates(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_FlipCoordinates);
 Datum ST_FlipCoordinates(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	GSERIALIZED *output;
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(input);
-	LWGEOM *lwgeom_out;
+	GSERIALIZED *in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	GSERIALIZED *out;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
 
-	lwgeom_out = lwgeom_flip_coordinates(lwgeom_in);
-	output = geometry_serialize(lwgeom_out);
+	lwgeom_swap_ordinates(lwgeom, LWORD_X, LWORD_Y);
+	out = geometry_serialize(lwgeom);
 
-	lwgeom_free(lwgeom_in);
-	PG_FREE_IF_COPY(input, 0);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(in, 0);
 
-	PG_RETURN_POINTER(output);
+	PG_RETURN_POINTER(out);
+}
+
+static LWORD ordname2ordval(char n)
+{
+  if ( n == 'x' || n == 'X' ) return LWORD_X;
+  if ( n == 'y' || n == 'y' ) return LWORD_Y;
+  if ( n == 'z' || n == 'Z' ) return LWORD_Z;
+  if ( n == 'm' || n == 'M' ) return LWORD_M;
+  lwerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
+  return (LWORD)-1;
+}
+
+Datum ST_SwapOrdinates(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_SwapOrdinates);
+Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *in;
+  GSERIALIZED *out;
+  LWGEOM *lwgeom;
+  const char *ospec;
+  LWORD o1, o2;
+
+  ospec = PG_GETARG_CSTRING(1);
+  if ( strlen(ospec) != 2 )
+  {
+    lwerror("Invalid ordinate specification. "
+            "Need two letters from the set (x,y,z,m). "
+            "Got '%s'", ospec);
+    PG_RETURN_NULL();
+  }
+  o1 = ordname2ordval( ospec[0] );
+  o2 = ordname2ordval( ospec[1] );
+
+  in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+
+  /* Check presence of given ordinates */
+  if ( ( o1 == LWORD_M || o2 == LWORD_M ) && ! gserialized_has_m(in) )
+  {
+    lwerror("Geometry does not have an M ordinate");
+    PG_RETURN_NULL();
+  }
+  if ( ( o1 == LWORD_Z || o2 == LWORD_Z ) && ! gserialized_has_z(in) )
+  {
+    lwerror("Geometry does not have a Z ordinate");
+    PG_RETURN_NULL();
+  }
+
+  /* Nothing to do if swapping the same ordinate, pity for the copy... */
+  if ( o1 == o2 ) PG_RETURN_POINTER(in);
+
+  lwgeom = lwgeom_from_gserialized(in);
+  lwgeom_swap_ordinates(lwgeom, o1, o2);
+  out = geometry_serialize(lwgeom);
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(in, 0);
+  PG_RETURN_POINTER(out);
 }

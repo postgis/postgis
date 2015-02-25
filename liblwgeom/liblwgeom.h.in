@@ -84,6 +84,14 @@
 #define WKBSRIDFLAG 0x20000000
 #define WKBBBOXFLAG 0x10000000
 
+/** Ordinate names */
+typedef enum LWORD_T {
+  LWORD_X = 0,
+  LWORD_Y = 1,
+  LWORD_Z = 2,
+  LWORD_M = 3
+} LWORD;
+
 /**********************************************************************
 ** Spherical radius.
 ** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of 
@@ -1548,8 +1556,25 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
 extern char lwtriangle_is_repeated_points(LWTRIANGLE *triangle);
 
 /**
+ * Swap ordinate values in every vertex of the geometry.
+ *
+ * Ordinates to swap are specified using an index with meaning:
+ * 0=x, 1=y, 2=z, 3=m
+ *
+ * Swapping an existing ordinate with an unexisting one results
+ * in undefined value being written in the existing ordinate.
+ * Caller should verify and prevent such calls.
+ *
+ * Availability: 2.2.0
+ */
+extern void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2);
+
+/**
 * Reverse the X and Y coordinate order. Useful for geometries in lat/lon order
 * than need to be converted to lon/lat order.
+*
+* NOTE: uses lwgeom_swap_ordinates internally,
+*       kept for backward compatibility
 */
 extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 

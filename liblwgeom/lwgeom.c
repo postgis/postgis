@@ -1428,12 +1428,24 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 
 LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 {
+  lwgeom_swap_ordinates(in,LWORD_X,LWORD_Y);
+  return in;
+}
+
+void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
+{
 	LWCOLLECTION *col;
 	LWPOLY *poly;
 	int i;
 
-	if ( (!in) || lwgeom_is_empty(in) )
-		return in;
+#if PARANOIA_LEVEL > 0
+  assert(o1 < 4);
+  assert(o2 < 4);
+#endif
+
+	if ( (!in) || lwgeom_is_empty(in) ) return;
+
+  /* TODO: check for lwgeom NOT having the specified dimension ? */
 
 	LWDEBUGF(4, "lwgeom_flip_coordinates, got type: %s",
 	         lwtype_name(in->type));
@@ -1441,27 +1453,27 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	switch (in->type)
 	{
 	case POINTTYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwpoint(in)->point);
+		ptarray_swap_ordinates(lwgeom_as_lwpoint(in)->point, o1, o2);
 		break;
 
 	case LINETYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwline(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwline(in)->points, o1, o2);
 		break;
 
 	case CIRCSTRINGTYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwcircstring(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwcircstring(in)->points, o1, o2);
 		break;
 
 	case POLYGONTYPE:
 		poly = (LWPOLY *) in;
 		for (i=0; i<poly->nrings; i++)
 		{
-			ptarray_flip_coordinates(poly->rings[i]);
+			ptarray_swap_ordinates(poly->rings[i], o1, o2);
 		}
 		break;
 
 	case TRIANGLETYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwtriangle(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwtriangle(in)->points, o1, o2);
 		break;
 
 	case MULTIPOINTTYPE:
@@ -1477,19 +1489,21 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
 		{
-			lwgeom_flip_coordinates(col->geoms[i]);
+			lwgeom_swap_ordinates(col->geoms[i], o1, o2);
 		}
 		break;
 
 	default:
-		lwerror("lwgeom_flip_coordinates: unsupported geometry type: %s",
+		lwerror("lwgeom_swap_ordinates: unsupported geometry type: %s",
 		        lwtype_name(in->type));
-		return NULL;
+		return;
 	}
 
-	lwgeom_drop_bbox(in);
-	lwgeom_add_bbox(in);
-	return in;
+  /* only refresh bbox if X or Y changed */
+  if ( o1 < 2 || o2 < 2 ) {
+    lwgeom_drop_bbox(in);
+    lwgeom_add_bbox(in);
+  }
 }
 
 void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
