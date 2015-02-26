@@ -5,10 +5,9 @@
 			<refnamediv>
 				<refname>ST_Buffer</refname>
 
-				<refpurpose>(T) For geometry: Returns a geometry that represents all points whose distance
-			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper.  Introduced in 1.5 support for
-			different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#
+				<refpurpose>
+Returns a geometry covering all points within a given distance
+from the input geometry.
 			</refpurpose>
 			</refnamediv>
 
@@ -1679,8 +1678,8 @@ SELECT ST_AsText(
 		<refnamediv>
 			<refname>ST_Intersection</refname>
 
-			<refpurpose>(T) Returns a geometry that represents the shared portion of geomA and geomB.  The geography implementation
-					does a transform to geometry to do the intersection and then transform back to WGS84.
+			<refpurpose>
+Returns a geometry that represents the shared portion of geomA and geomB.
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
