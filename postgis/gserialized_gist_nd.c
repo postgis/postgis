@@ -1293,7 +1293,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	bool all_entries_equal = true;
 	OffsetNumber max_offset;
 	int nbytes, ndims_pageunion, d;
-	int posmax = -1;
+	int posmin = entryvec->n;
 
 	POSTGIS_DEBUG(4, "[GIST] 'picksplit' function called");
 
@@ -1447,13 +1447,13 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 	for ( d = 0; d < ndims_pageunion; d++ )
 	{
 		int posd = Max(pos[ABOVE(d)],pos[BELOW(d)]);
-		if ( posd > posmax )
+		if ( posd < posmin )
 		{
 			direction = d;
-			posmax = posd;
+			posmin = posd;
 		}
 	}
-	if ( direction == -1 || posmax == -1 )
+	if ( direction == -1 || posmin == entryvec->n )
 	{
 		/* ERROR OUT HERE */
 		elog(ERROR, "Error in building split, unable to determine split direction.");
