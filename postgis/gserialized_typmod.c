@@ -383,7 +383,7 @@ Datum postgis_typmod_dims(PG_FUNCTION_ARGS)
 	int32 typmod = PG_GETARG_INT32(0);
 	int32 dims = 2;
 	if ( typmod < 0 )
-		PG_RETURN_INT32(dims);
+		PG_RETURN_NULL(); /* unconstrained */
 	if ( TYPMOD_GET_Z(typmod) )
 		dims++;
 	if ( TYPMOD_GET_M(typmod) )
