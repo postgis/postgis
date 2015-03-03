@@ -29,7 +29,6 @@
 
 
 /* Generate human readable form for GIDX. */
-#if POSTGIS_DEBUG_LEVEL > 0
 char* gidx_to_string(GIDX *a)
 {
 	char *str, *rv;
@@ -38,7 +37,7 @@ char* gidx_to_string(GIDX *a)
 	if ( a == NULL )
 		return pstrdup("<NULLPTR>");
 
-	str = (char*)palloc(128);
+	str = (char*)palloc(128); /* 15*2*4+8==128 */
 	rv = str;
 	ndims = GIDX_NDIMS(a);
 
@@ -52,7 +51,6 @@ char* gidx_to_string(GIDX *a)
 
 	return rv;
 }
-#endif
 
 
 static uint8_t

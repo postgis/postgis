@@ -56,9 +56,7 @@ void gidx_expand(GIDX *a, float d);
 
 
 /* Generate human readable form for GIDX. */
-#if POSTGIS_DEBUG_LEVEL > 0
 char* gidx_to_string(GIDX *a) ; 
-#endif
 
 /* typedef to correct array-bounds checking for casts to GIDX - do not
    use this ANYWHERE except in the casts below */

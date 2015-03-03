@@ -26,6 +26,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - Canonical output for index key types
   - ST_SwapOrdinates (Sandro Santilli / Boundless)
   - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
            n-D distance operators (Sandro Santilli / Boundless)

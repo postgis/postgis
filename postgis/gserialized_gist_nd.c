@@ -1496,7 +1496,7 @@ Datum gidx_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gidx_out); 
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function gidx_out not implemented")));
-	PG_RETURN_POINTER(NULL);
+  GIDX *box = (GIDX *) PG_GETARG_POINTER(0);
+  char *result = gidx_to_string(box);
+  PG_RETURN_CSTRING(result);
 }
