@@ -3,6 +3,7 @@ YYYY/MM/DD
 
  * Bug Fixes *
 
+  - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
   - #3058, Fix ND-GiST picksplit method to split on the best plane
   - #2774, fix undefined behavior in ptarray_calculate_gbox_geodetic
   - #2845, Bad geometry created from ST_AddPoint

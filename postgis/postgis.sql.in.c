@@ -4405,9 +4405,9 @@ CREATE OR REPLACE VIEW geometry_columns AS
     n.nspname::varchar(256) AS f_table_schema, 
     c.relname::varchar(256) AS f_table_name, 
     a.attname::varchar(256) AS f_geometry_column, 
-    COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2),
+    COALESCE(postgis_typmod_dims(a.atttypmod),
              postgis_constraint_dims(n.nspname, c.relname, a.attname),
-             2) AS coord_dimension, 
+             2) AS coord_dimension, -- should it be 0 instead ?
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0),
              postgis_constraint_srid(n.nspname, c.relname, a.attname),
              0) AS srid, 
