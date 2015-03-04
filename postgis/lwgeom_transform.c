@@ -46,7 +46,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	input_srid = gserialized_get_srid(geom);
 	if ( input_srid == SRID_UNKNOWN )
 	{
@@ -118,7 +118,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
 	{
 		pfree(geom);

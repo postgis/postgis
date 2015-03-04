@@ -8,6 +8,7 @@
 #include "funcapi.h"
 
 #include "../postgis_config.h"
+#include "lwgeom_pg.h"
 #if POSTGIS_PGSQL_VERSION > 92
 #include "access/htup_details.h"
 #endif
@@ -69,7 +70,7 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		/* get a local copy of what we're doing a dump points on */
-		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
 
 		/* return early if nothing to do */

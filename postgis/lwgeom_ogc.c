@@ -113,7 +113,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	uint8_t type;
 	static int maxtyplen = 20;
 
-	gser = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
 	text_ob = palloc0(VARHDRSZ + maxtyplen);
 	result = VARDATA(text_ob);
 
@@ -173,7 +173,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 	char type_str[type_str_len];
 
 	/* Read just the header from the toasted tuple */
-	gser = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, gserialized_max_header_size());
+	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
 
 	/* Make it empty string to start */
 	type_str[0] = 0;

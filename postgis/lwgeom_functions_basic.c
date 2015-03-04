@@ -104,7 +104,7 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	size_t size = VARSIZE(geom);
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
@@ -1070,7 +1070,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_longitude_shift called.");
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Drop bbox, will be recomputed */
@@ -1857,7 +1857,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_isempty);
 Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	bool empty = lwgeom_is_empty(lwgeom);
 
@@ -1944,7 +1944,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_reverse called");
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_reverse(lwgeom);
@@ -1963,7 +1963,7 @@ Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_clockwise_poly called");
 
-	ingeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	ingeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	lwgeom = lwgeom_from_gserialized(ingeom);
 	lwgeom_force_clockwise(lwgeom);
@@ -2162,7 +2162,7 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	/* header + srid/flags + bbox? + type number */
 	size = VARHDRSZ + 8 + 32 + 4;  
 
-	geom = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, size);
+	geom = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, size);
 
 	type = gserialized_get_type(geom);
 	PG_RETURN_BOOL(lwtype_is_collection(type));
@@ -2339,7 +2339,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_setpoint_linestring called.");
 
 	/* we copy input as we're going to modify it */
-	pglwg1 = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	pglwg1 = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	which = PG_GETARG_INT32(1);
 	pglwg2 = PG_GETARG_GSERIALIZED_P(2);
@@ -2551,7 +2551,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_affine);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P_COPY(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	GSERIALIZED *ret;
 	AFFINE affine;
@@ -2694,7 +2694,7 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P_COPY(0);
 	GSERIALIZED *output;
 	LWGEOM *lwgeom_in = lwgeom_from_gserialized(input);
 	LWGEOM *lwgeom_out;
@@ -2714,7 +2714,7 @@ Datum ST_FlipCoordinates(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_FlipCoordinates);
 Datum ST_FlipCoordinates(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	GSERIALIZED *in = PG_GETARG_GSERIALIZED_P_COPY(0);
 	GSERIALIZED *out;
 	LWGEOM *lwgeom = lwgeom_from_gserialized(in);
 
@@ -2758,7 +2758,7 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   o1 = ordname2ordval( ospec[0] );
   o2 = ordname2ordval( ospec[1] );
 
-  in = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+  in = PG_GETARG_GSERIALIZED_P_COPY(0);
 
   /* Check presence of given ordinates */
   if ( ( o1 == LWORD_M || o2 == LWORD_M ) && ! gserialized_has_m(in) )

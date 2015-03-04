@@ -162,7 +162,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_latlon);
 Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 {
 	/* Get the parameters */
-	GSERIALIZED *pg_lwgeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *pg_lwgeom = PG_GETARG_GSERIALIZED_P(0);
 	text *format_text = PG_GETARG_TEXT_P(1);
 
 	LWGEOM *lwgeom;

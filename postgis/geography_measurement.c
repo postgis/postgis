@@ -365,7 +365,7 @@ Datum geography_expand(PG_FUNCTION_ARGS)
 	double distance;
 
 	/* Get a wholly-owned pointer to the geography */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P_COPY(0);
 
 	/* Read our distance value and normalize to unit-sphere. */
 	distance = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;

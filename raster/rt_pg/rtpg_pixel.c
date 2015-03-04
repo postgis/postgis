@@ -36,6 +36,8 @@
 #include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 
 #include "../../postgis_config.h"
+#include "lwgeom_pg.h"
+
 
 #if POSTGIS_PGSQL_VERSION > 92
 #include "access/htup_details.h" /* for heap_form_tuple() */
@@ -1871,7 +1873,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 	}
 
 	/* point */
-	geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	geom = PG_GETARG_GSERIALIZED_P(2);
 	if (gserialized_get_type(geom) != POINTTYPE) {
 		elog(NOTICE, "Geometry provided must be a point");
 		rt_raster_destroy(raster);

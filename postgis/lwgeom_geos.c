@@ -1348,7 +1348,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	
 	/* Read SQL arguments */
 	nargs = PG_NARGS();
-	gser_input = (GSERIALIZED*) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	size = PG_GETARG_FLOAT8(1);
 
 	/* Check for a useable type */
@@ -1593,7 +1593,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom, *result;
 	GEOSGeometry *geosgeom, *geosresult;
 
-	geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Empty.Centroid() == Point Empty */
 	if ( gserialized_is_empty(geom) )
