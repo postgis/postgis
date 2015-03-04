@@ -25,7 +25,7 @@
 /* Install PosgreSQL handlers for liblwgeom use */
 void pg_install_lwgeom_handlers(void);
 
-#define PG_GETARG_GSERIALIZED(varno) ((GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(varno)))
+#define PG_GETARG_GSERIALIZED_P(varno) ((GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(varno)))
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0

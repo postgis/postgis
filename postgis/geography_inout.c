@@ -180,7 +180,7 @@ Datum geography_out(PG_FUNCTION_ARGS)
 	GSERIALIZED *g = NULL;
 	char *hexwkb;
 
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom = lwgeom_from_gserialized(g);
 	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, 0);
 	lwgeom_free(lwgeom);
@@ -223,7 +223,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Get the geography */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -341,7 +341,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -407,7 +407,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -463,7 +463,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 
 	/* Get the geography */
 	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Convert to lwgeom so we can run the old functions */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -618,7 +618,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *ret = NULL;
-	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *g_ser = PG_GETARG_GSERIALIZED_P(0);
 
 	lwgeom = lwgeom_from_gserialized(g_ser);
 
@@ -676,7 +676,7 @@ Datum geography_send(PG_FUNCTION_ARGS)
 	uint8_t *wkb;
 	bytea *result;
 
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom = lwgeom_from_gserialized(g);
 	wkb = lwgeom_to_wkb(lwgeom, WKB_EXTENDED, &size_result);
 	lwgeom_free(lwgeom);

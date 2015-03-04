@@ -290,7 +290,7 @@ Datum geometry_typmod_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_enforce_typmod);
 Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *arg = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *arg = PG_GETARG_GSERIALIZED_P(0);
 	int32 typmod = PG_GETARG_INT32(1);
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
@@ -309,7 +309,7 @@ Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geometry_enforce_typmod);
 Datum geometry_enforce_typmod(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *arg = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *arg = PG_GETARG_GSERIALIZED_P(0);
 	int32 typmod = PG_GETARG_INT32(1);
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */

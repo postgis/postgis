@@ -57,7 +57,7 @@ Datum geometry_to_point(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 	
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != POINTTYPE )
 		elog(ERROR, "geometry_to_point only accepts Points");
@@ -96,7 +96,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 		
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != LINETYPE )
 		elog(ERROR, "geometry_to_path only accepts LineStrings");
@@ -181,7 +181,7 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 		
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != POLYGONTYPE )
 		elog(ERROR, "geometry_to_polygon only accepts Polygons");

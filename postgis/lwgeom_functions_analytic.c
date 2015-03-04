@@ -43,7 +43,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
   int type = gserialized_get_type(geom);
 	LWGEOM *in;
@@ -71,7 +71,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_SetEffectiveArea);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
   int type = gserialized_get_type(geom);
 	LWGEOM *in;
@@ -116,7 +116,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *gser = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
 	double distance = PG_GETARG_FLOAT8(1);
 	LWLINE *line;
@@ -287,7 +287,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	LWGEOM *out_lwgeom;
 	gridspec grid;
 
-	GSERIALIZED *in_geom = PG_GETARG_GSERIALIZED(0);
+	GSERIALIZED *in_geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Set grid values to zero to start */
 	memset(&grid, 0, sizeof(gridspec));
@@ -353,7 +353,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	/* BOX3D box3d; */
 	POINT4D offsetpoint;
 
-	in_geom = PG_GETARG_GSERIALIZED(0);
+	in_geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Return input geometry if input geometry is empty */
 	if ( gserialized_is_empty(in_geom) )
@@ -361,7 +361,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(in_geom);
 	}
 
-	in_point = PG_GETARG_GSERIALIZED(1);
+	in_point = PG_GETARG_GSERIALIZED_P(1);
 	in_lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(in_point));
 	if ( in_lwpoint == NULL )
 	{
@@ -422,8 +422,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	int type1, type2, rv;
 	LWLINE *l1 = NULL;
 	LWLINE *l2 = NULL;
-	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
@@ -459,7 +459,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_substring);
 Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	double from = PG_GETARG_FLOAT8(1);
 	double to = PG_GETARG_FLOAT8(2);
 	LWGEOM *olwgeom;

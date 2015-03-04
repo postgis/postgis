@@ -60,8 +60,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
 	/* tolerance = PG_GETARG_FLOAT8(2); */
@@ -124,8 +124,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
@@ -192,8 +192,8 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	int dwithin = LW_FALSE;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
@@ -253,8 +253,8 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Return FALSE on empty arguments. */
 	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
@@ -305,8 +305,8 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
@@ -402,7 +402,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry object loaded into memory. */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Read our calculation type */
 	use_spheroid = PG_GETARG_BOOL(1);
@@ -474,7 +474,7 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
     int type;
 
 	/* Get our geometry object loaded into memory. */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for area features. */
     type = gserialized_get_type(g);
@@ -533,7 +533,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	SPHEROID s;
 
 	/* Get our geometry object loaded into memory. */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* EMPTY things have no length */
@@ -585,7 +585,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	POINT2D pt;
 
 	/* Get our geometry object loaded into memory. */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* We need the bounding box to get an outside point for area algorithm */
 	if ( gserialized_get_gbox_p(g, &gbox) == LW_FAILURE )
@@ -627,8 +627,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	int result = LW_FALSE;
 
 	/* Get our geometry objects loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	type1 = gserialized_get_type(g1);
 	type2 = gserialized_get_type(g2);
@@ -840,7 +840,7 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	
 	/* Get our geometry object loaded into memory. */
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for points. */
     type = gserialized_get_type(g);
@@ -912,8 +912,8 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	uint32_t type1, type2;
 
 	/* Get our geometry object loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
 	
 	/* Only return for points. */
     type1 = gserialized_get_type(g1);
@@ -975,7 +975,7 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 	uint32_t type1;
 
 	/* Get our geometry object loaded into memory. */
-	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g1 = PG_GETARG_GSERIALIZED_P(0);
     type1 = gserialized_get_type(g1);
 
 	/* Convert max_seg_length from metric units to radians */
