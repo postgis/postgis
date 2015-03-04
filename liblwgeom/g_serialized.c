@@ -172,83 +172,172 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		return LW_SUCCESS;
 	}
 
-	/* No pre-calculated box, but for cartesian entries we can do some magic */
-	if ( ! FLAGS_GET_GEODETIC(g->flags) )
+	return LW_FAILURE;
+}
+
+/*
+* Populate a bounding box *without* allocating an LWGEOM. Useful
+* for some performance purposes.
+*/
+static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
+{
+	uint32_t type = gserialized_get_type(g);
+
+	/* Peeking doesn't help if you already have a box or are geodetic */
+	if ( FLAGS_GET_GEODETIC(g->flags) || FLAGS_GET_BBOX(g->flags) )
 	{
-		uint32_t type = gserialized_get_type(g);
-		/* Boxes of points are easy peasy */
-		if ( type == POINTTYPE )
-		{
-			int i = 1; /* Start past <pointtype><padding> */
-			double *dptr = (double*)(g->data);
-
-			/* Read the empty flag */
-			int *iptr = (int*)(g->data);
-			int isempty = (iptr[1] == 0);
-
-			/* EMPTY point has no box */
-			if ( isempty ) return LW_FAILURE;
-
-			gbox->xmin = gbox->xmax = dptr[i++];
-			gbox->ymin = gbox->ymax = dptr[i++];
-			if ( FLAGS_GET_Z(g->flags) )
-			{
-				gbox->zmin = gbox->zmax = dptr[i++];
-			}
-			if ( FLAGS_GET_M(g->flags) )
-			{
-				gbox->mmin = gbox->mmax = dptr[i++];
-			}
-			gbox_float_round(gbox);
-			return LW_SUCCESS;
-		}
-		/* We can calculate the box of a two-point cartesian line trivially */
-		else if ( type == LINETYPE )
-		{
-			int ndims = FLAGS_NDIMS(g->flags);
-			int i = 0; /* Start past <linetype><npoints> */
-			double *dptr = (double*)(g->data);
-			int *iptr = (int*)(g->data);
-			int npoints = iptr[1]; /* Read the npoints */
-			
-			/* This only works with 2-point lines */
-			if ( npoints != 2 )
-				return LW_FAILURE;
-				
-			/* Advance to X */
-			i++;
-			gbox->xmin = FP_MIN(dptr[i], dptr[i+ndims]);
-			gbox->xmax = FP_MAX(dptr[i], dptr[i+ndims]);
-			
-			/* Advance to Y */
-			i++;
-			gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
-			gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
-			
-			if ( FLAGS_GET_Z(g->flags) )
-			{
-				/* Advance to Z */
-				i++;
-				gbox->zmin = FP_MIN(dptr[i], dptr[i+ndims]);
-				gbox->zmax = FP_MAX(dptr[i], dptr[i+ndims]);
-			}
-			if ( FLAGS_GET_M(g->flags) )
-			{
-				/* Advance to M */
-				i++;
-				gbox->mmin = FP_MIN(dptr[i], dptr[i+ndims]);
-				gbox->mmax = FP_MAX(dptr[i], dptr[i+ndims]);
-			}
-			gbox_float_round(gbox);
-			return LW_SUCCESS;
-		}
-		/* We could also do single-entry multi-points */
-		else if ( type == MULTIPOINTTYPE )
-		{
-			/* TODO: Make this actually happen */
-			return LW_FAILURE;
-		}
+		return LW_FAILURE;
 	}
+	
+	/* Boxes of points are easy peasy */
+	if ( type == POINTTYPE )
+	{
+		int i = 1; /* Start past <pointtype><padding> */
+		double *dptr = (double*)(g->data);
+
+		/* Read the empty flag */
+		int *iptr = (int*)(g->data);
+		int isempty = (iptr[1] == 0);
+
+		/* EMPTY point has no box */
+		if ( isempty ) return LW_FAILURE;
+
+		gbox->xmin = gbox->xmax = dptr[i++];
+		gbox->ymin = gbox->ymax = dptr[i++];
+		if ( FLAGS_GET_Z(g->flags) )
+		{
+			gbox->zmin = gbox->zmax = dptr[i++];
+		}
+		if ( FLAGS_GET_M(g->flags) )
+		{
+			gbox->mmin = gbox->mmax = dptr[i++];
+		}
+		gbox_float_round(gbox);
+		return LW_SUCCESS;
+	}
+	/* We can calculate the box of a two-point cartesian line trivially */
+	else if ( type == LINETYPE )
+	{
+		int ndims = FLAGS_NDIMS(g->flags);
+		int i = 0; /* Start at <linetype><npoints> */
+		double *dptr = (double*)(g->data);
+		int *iptr = (int*)(g->data);
+		int npoints = iptr[1]; /* Read the npoints */
+	
+		/* This only works with 2-point lines */
+		if ( npoints != 2 )
+			return LW_FAILURE;
+		
+		/* Advance to X */
+		/* Past <linetype><npoints> */
+		i++;
+		gbox->xmin = FP_MIN(dptr[i], dptr[i+ndims]);
+		gbox->xmax = FP_MAX(dptr[i], dptr[i+ndims]);
+	
+		/* Advance to Y */
+		i++;
+		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
+		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
+	
+		if ( FLAGS_GET_Z(g->flags) )
+		{
+			/* Advance to Z */
+			i++;
+			gbox->zmin = FP_MIN(dptr[i], dptr[i+ndims]);
+			gbox->zmax = FP_MAX(dptr[i], dptr[i+ndims]);
+		}
+		if ( FLAGS_GET_M(g->flags) )
+		{
+			/* Advance to M */
+			i++;
+			gbox->mmin = FP_MIN(dptr[i], dptr[i+ndims]);
+			gbox->mmax = FP_MAX(dptr[i], dptr[i+ndims]);
+		}
+		gbox_float_round(gbox);
+		return LW_SUCCESS;
+	}
+	/* We can also do single-entry multi-points */
+	else if ( type == MULTIPOINTTYPE )
+	{
+		int i = 0; /* Start at <multipointtype><ngeoms> */
+		double *dptr = (double*)(g->data);
+		int *iptr = (int*)(g->data);
+		int ngeoms = iptr[1]; /* Read the ngeoms */
+	
+		/* This only works with single-entry multipoints */
+		if ( ngeoms != 1 )
+			return LW_FAILURE;
+
+		/* Move forward two doubles (four ints) */
+		/* Past <multipointtype><ngeoms> */
+		/* Past <pointtype><emtpyflat> */
+		i += 2;
+
+		/* Read the doubles from the one point */
+		gbox->xmin = gbox->xmax = dptr[i++];
+		gbox->ymin = gbox->ymax = dptr[i++];
+		if ( FLAGS_GET_Z(g->flags) )
+		{
+			gbox->zmin = gbox->zmax = dptr[i++];
+		}
+		if ( FLAGS_GET_M(g->flags) )
+		{
+			gbox->mmin = gbox->mmax = dptr[i++];
+		}
+		gbox_float_round(gbox);
+		return LW_SUCCESS;
+	}
+	/* And we can do single-entry multi-lines with two vertices (!!!) */
+	else if ( type == MULTILINETYPE )
+	{
+		int ndims = FLAGS_NDIMS(g->flags);
+		int i = 0; /* Start at <multilinetype><ngeoms> */
+		double *dptr = (double*)(g->data);
+		int *iptr = (int*)(g->data);
+		int ngeoms = iptr[1]; /* Read the ngeoms */
+		int npoints;
+	
+		/* This only works with 1-line multilines */
+		if ( ngeoms != 1 )
+			return LW_FAILURE;
+
+		/* Npoints is at <multilinetype><ngeoms><linetype><npoints> */
+		npoints = iptr[3];
+
+		if ( npoints != 2 )
+			return LW_FAILURE;
+
+		/* Advance to X */
+		/* Move forward two doubles (four ints) */
+		/* Past <multilinetype><ngeoms> */
+		/* Past <linetype><npoints> */
+		i += 2;
+		gbox->xmin = FP_MIN(dptr[i], dptr[i+ndims]);
+		gbox->xmax = FP_MAX(dptr[i], dptr[i+ndims]);
+	
+		/* Advance to Y */
+		i++;
+		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
+		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
+	
+		if ( FLAGS_GET_Z(g->flags) )
+		{
+			/* Advance to Z */
+			i++;
+			gbox->zmin = FP_MIN(dptr[i], dptr[i+ndims]);
+			gbox->zmax = FP_MAX(dptr[i], dptr[i+ndims]);
+		}
+		if ( FLAGS_GET_M(g->flags) )
+		{
+			/* Advance to M */
+			i++;
+			gbox->mmin = FP_MIN(dptr[i], dptr[i+ndims]);
+			gbox->mmax = FP_MAX(dptr[i], dptr[i+ndims]);
+		}
+		gbox_float_round(gbox);
+		return LW_SUCCESS;
+	}
+	
 	return LW_FAILURE;
 }
 
@@ -257,18 +346,29 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 * Read the bounding box off a serialization and calculate one if
 * it is not already there.
 */
-int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box)
+int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *box)
 {
-	LWGEOM *lwgeom;
-	int ret = gserialized_read_gbox_p(geom, box);
-	if ( LW_FAILURE == ret ) {
-		/* See http://trac.osgeo.org/postgis/ticket/1023 */
-		lwgeom = lwgeom_from_gserialized(geom);
-		ret = lwgeom_calculate_gbox(lwgeom, box);
+	/* Try to just read the serialized box. */
+	if ( gserialized_read_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	/* No box? Try to peek into simpler geometries and */
+	/* derive a box without creating an lwgeom */
+	else if ( gserialized_peek_gbox_p(g, box) == LW_SUCCESS )
+	{
+		return LW_SUCCESS;
+	}
+	/* Damn! Nothing for it but to create an lwgeom... */
+	/* See http://trac.osgeo.org/postgis/ticket/1023 */
+	else
+	{
+		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
+		int ret = lwgeom_calculate_gbox(lwgeom, box);
 		gbox_float_round(box);
 		lwgeom_free(lwgeom);
+		return ret;
 	}
-	return ret;
 }
 
 
