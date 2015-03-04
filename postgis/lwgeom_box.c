@@ -33,6 +33,7 @@
 Datum BOX2D_in(PG_FUNCTION_ARGS);
 Datum BOX2D_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS);
 Datum BOX2D_expand(PG_FUNCTION_ARGS);
 Datum BOX2D_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX2D_combine(PG_FUNCTION_ARGS);
@@ -123,8 +124,29 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 	FLAGS_SET_Z(gbox.flags, 0);
 	FLAGS_SET_M(gbox.flags, 0);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(gbox_copy(&gbox));
 }
+
+
+/*convert a GSERIALIZED to BOX2D */
+PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DF);
+Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GBOX gbox;
+
+	if ( gserialized_get_gbox_p(geom, &gbox) == LW_FAILURE )
+		PG_RETURN_NULL();
+
+	/* Strip out higher dimensions */
+	FLAGS_SET_Z(gbox.flags, 0);
+	FLAGS_SET_M(gbox.flags, 0);
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(gbox_copy(&gbox));
+}
+
 
 /*----------------------------------------------------------
  *	Relational operators for BOXes.

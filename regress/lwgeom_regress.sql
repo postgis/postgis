@@ -101,3 +101,16 @@ SELECT ST_MemSize(ST_collect(ST_Force3dm(geometry(wkb_ndr)))) from test_data;
 SELECT ST_MemSize(ST_collect(ST_Force2d(ST_force4d(ST_force3dm(ST_force3dz(ST_force2d(geometry(wkb_ndr)))))))) from test_data;
 
 DROP TABLE test_data;
+
+
+SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;POINT(1 1)'));
+SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;LINESTRING(1 1,0 0)'::geometry));
+SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTIPOINT(1 1)')),E'\n',' ');
+SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTILINESTRING((1 1,0 0))'::geometry)),E'\n',' ');
+SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;POLYGON((0 0, 0 1, 1 1 ,1 0,0 0))'::geometry)),E'\n',' ');
+
+SELECT '#3069',  postgis_getbbox('SRID=0;POINT(1 1)'::geometry);
+SELECT '#3069',  postgis_getbbox('SRID=0;LINESTRING(0 0, 1 1)'::geometry);
+SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0, 1 1))'::geometry);
+SELECT '#3069',  postgis_getbbox('SRID=0;MULTIPOINT(1 1)'::geometry);
+SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0,1 1))'::geometry);

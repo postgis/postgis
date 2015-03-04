@@ -1018,7 +1018,7 @@ CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2D'
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DF'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
