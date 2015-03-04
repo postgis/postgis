@@ -1299,6 +1299,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 		GBOX gbox;
 		ND_BOX *nd_box;
 		bool is_null;
+		bool is_copy;
 
 		datum = fetchfunc(stats, i, &is_null);
 
@@ -1312,6 +1313,7 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 			
 		/* Read the bounds from the gserialized. */
 		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
+		is_copy = VARATT_IS_EXTENDED(datum);
 		if ( LW_FAILURE == gserialized_get_gbox_p(geom, &gbox) )
 		{
 			/* Skip empties too. */
@@ -1363,6 +1365,10 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 
 		/* Increment our "good feature" count */
 		notnull_cnt++;
+		
+		/* Free up memory if our sample geometry was copied */
+		if ( is_copy ) 
+			pfree(geom);
 
 		/* Give backend a chance of interrupting us */
 		vacuum_delay_point();
