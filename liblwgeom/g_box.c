@@ -296,6 +296,17 @@ gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
+int 
+gbox_contains_2d(const GBOX *g1, const GBOX *g2)
+{
+	if ( ( g2->xmin < g1->xmin ) || ( g2->xmax > g1->xmax ) ||
+	     ( g2->ymin < g1->ymin ) || ( g2->ymax > g1->ymax ) )
+	{
+		return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
 /**
 * Warning, this function is only good for x/y/z boxes, used
 * in unit testing of geodetic box generation.

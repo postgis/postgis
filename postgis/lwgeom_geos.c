@@ -1679,8 +1679,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
 
 	/* If bbox1 outside of bbox2, return empty */
-	if ( bbox1->xmin > bbox2->xmax || bbox1->xmax < bbox2->xmin ||
-			 bbox1->ymin > bbox2->ymax || bbox1->ymax < bbox2->ymin )
+	if ( ! gbox_overlaps_2d(bbox1, bbox2) )
 	{
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
 		lwgeom_free(lwgeom1);
@@ -1691,8 +1690,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	}
 
 	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( bbox1->xmax <= bbox2->xmax && bbox1->xmin >= bbox2->xmin &&
-			 bbox1->ymax <= bbox2->ymax && bbox1->ymin >= bbox2->ymin )
+	if ( gbox_contains_2d(box2, box1) )
 	{
 		lwgeom_free(lwgeom1);
 		PG_RETURN_POINTER(geom1);
@@ -2023,7 +2021,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if ( ! gbox_overlaps_2d(&box1, &box2) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2098,8 +2096,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	     gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
+		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2234,8 +2231,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		if ( ! gbox_contains_2d(&box1, &box2) )
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -2324,8 +2320,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2479,8 +2474,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+		if ( ! gbox_contains_2d(&box2, &box1) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
