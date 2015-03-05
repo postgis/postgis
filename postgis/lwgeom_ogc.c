@@ -571,7 +571,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwerror("Argument to X() must be a point");
+		lwerror("Argument to ST_X() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	point = lwgeom_as_lwpoint(lwgeom);
@@ -600,7 +600,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwerror("Argument to Y() must be a point");
+		lwerror("Argument to ST_Y() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	point = lwgeom_as_lwpoint(lwgeom);
@@ -631,7 +631,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwerror("Argument to Z() must be a point");
+		lwerror("Argument to ST_Z() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	point = lwgeom_as_lwpoint(lwgeom);
@@ -664,7 +664,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	if ( gserialized_get_type(geom) != POINTTYPE )
-		lwerror("Argument to M() must be a point");
+		lwerror("Argument to ST_M() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	point = lwgeom_as_lwpoint(lwgeom);

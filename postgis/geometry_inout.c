@@ -88,7 +88,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
 	int i;
-	POINT2D pt;
+	const POINT2D *pt;
 	size_t size;
 
 	POSTGIS_DEBUG(2, "geometry_to_path called");
@@ -116,9 +116,9 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 
 	for ( i = 0; i < pa->npoints; i++ )
 	{
-		getPoint2d_p(pa, i, &pt);
-		(path->p[i]).x = pt.x;
-		(path->p[i]).y = pt.y;
+		pt = getPoint2d_cp(pa, i);
+		(path->p[i]).x = pt->x;
+		(path->p[i]).y = pt->y;
 	}
 	
 	lwgeom_free(lwgeom);
@@ -207,10 +207,9 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 		
 	for ( i = 0; i < pa->npoints; i++ )
 	{
-		POINT2D pt;
-		getPoint2d_p(pa, i, &pt);
-		(polygon->p[i]).x = pt.x;
-		(polygon->p[i]).y = pt.y;
+		const POINT2D *pt = getPoint2d_cp(pa, i);
+		(polygon->p[i]).x = pt->x;
+		(polygon->p[i]).y = pt->y;
 	}
 
 	lwgeom_free(lwgeom);

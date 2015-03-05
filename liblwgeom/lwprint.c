@@ -390,7 +390,7 @@ static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
  */
 char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 {
-	POINT2D p;
+	const POINT2D *p;
 	if (NULL == pt)
 	{
 		lwerror("Cannot convert a null point into formatted text.");
@@ -399,6 +399,6 @@ char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 	{
 		lwerror("Cannot convert an empty point into formatted text.");
 	}
-	getPoint2d_p(pt->point, 0, &p);
-	return lwdoubles_to_latlon(p.y, p.x, format);
+	p = getPoint2d_cp(pt->point, 0);
+	return lwdoubles_to_latlon(p->y, p->x, format);
 }

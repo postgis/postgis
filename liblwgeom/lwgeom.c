@@ -565,18 +565,18 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 int
 lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad)
 {
+	const POINT2D *pt;
 	POINT2D center;
-	POINT2D pt;
 
 	if ( ! p || ! p->point )
 		return LW_FALSE;
 		
-	getPoint2d_p(p->point, 0, &pt);
+	pt = getPoint2d_cp(p->point, 0);
 
 	center.x = cx;
 	center.y = cy;
 
-	if ( distance2d_pt_pt(&pt, &center) < rad ) 
+	if ( distance2d_pt_pt(pt, &center) < rad ) 
 		return LW_TRUE;
 
 	return LW_FALSE;
