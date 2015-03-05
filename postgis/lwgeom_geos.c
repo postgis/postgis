@@ -1734,6 +1734,7 @@ void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
 	{
 		lwgeom = lwgeom_from_gserialized(g1);
 		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
+		lwgeom_free(lwgeom);
 		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
 		ereport(ERROR,
 		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
@@ -1741,20 +1742,19 @@ void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
 		       );
 		pfree(hintwkt);
 		pfree(hintmsg);
-		lwgeom_free(lwgeom);
 	}
 	else if (t2 == COLLECTIONTYPE)
 	{
 		lwgeom = lwgeom_from_gserialized(g2);
 		hintwkt = lwgeom_to_wkt(lwgeom, WKT_SFSQL, DBL_DIG, &hintsz);
 		hintmsg = lwmessage_truncate(hintwkt, 0, hintsz-1, 80, 1);
+		lwgeom_free(lwgeom);
 		ereport(ERROR,
 		        (errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
 		         errhint("Change argument 2: '%s'", hintmsg))
 		       );
 		pfree(hintwkt);
 		pfree(hintmsg);
-		lwgeom_free(lwgeom);
 	}
 }
 
