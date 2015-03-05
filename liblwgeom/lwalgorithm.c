@@ -456,7 +456,7 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 {
 	int i = 0, j = 0;
-	POINT2D p1, p2, q1, q2;
+	const POINT2D *p1, *p2, *q1, *q2;
 	POINTARRAY *pa1 = NULL, *pa2 = NULL;
 	int cross_left = 0;
 	int cross_right = 0;
@@ -474,26 +474,26 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 	LWDEBUGF(4, "l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2));
 
 	/* Initialize first point of q */
-	getPoint2d_p(pa2, 0, &q1);
+	q1 = getPoint2d_cp(pa2, 0);
 
 	for ( i = 1; i < pa2->npoints; i++ )
 	{
 
 		/* Update second point of q to next value */
-		getPoint2d_p(pa2, i, &q2);
+		q2 = getPoint2d_cp(pa2, i);
 
 		/* Initialize first point of p */
-		getPoint2d_p(pa1, 0, &p1);
+		p1 = getPoint2d_cp(pa1, 0);
 
 		for ( j = 1; j < pa1->npoints; j++ )
 		{
 
 			/* Update second point of p to next value */
-			getPoint2d_p(pa1, j, &p2);
+			p2 = getPoint2d_cp(pa1, j);
 
-			this_cross = lw_segment_intersects(&p1, &p2, &q1, &q2);
+			this_cross = lw_segment_intersects(p1, p2, q1, q2);
 
-			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1.x, p1.y, p2.x, p2.y);
+			LWDEBUGF(4, "i=%d, j=%d (%.8g %.8g, %.8g %.8g)", this_cross, i, j, p1->x, p1->y, p2->x, p2->y);
 
 			if ( this_cross == SEG_CROSS_LEFT )
 			{
