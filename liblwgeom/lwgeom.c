@@ -1107,7 +1107,31 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 	{
 		return LW_FALSE;
 	}
-	return LW_TRUE;
+	else if ( geom->type == LINETYPE )
+	{
+		if ( lwgeom_count_vertices(geom) <= 2 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else if ( geom->type == MULTIPOINTTYPE )
+	{
+		if ( ((LWCOLLECTION*)geom)->ngeoms == 1 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else if ( geom->type == MULTILINETYPE )
+	{
+		if ( ((LWCOLLECTION*)geom)->ngeoms == 1 && lwgeom_count_vertices(geom) <= 2 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else
+	{
+		return LW_TRUE;
+	}
 }
 
 /**
