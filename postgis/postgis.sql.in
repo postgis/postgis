@@ -2029,7 +2029,7 @@ BEGIN
                     BEGIN
                         EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
                         ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
-                        CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
+                        CHECK (geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ')';
                         constraint_successful := true;
                     EXCEPTION
                         WHEN check_violation THEN

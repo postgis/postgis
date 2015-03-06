@@ -62,6 +62,7 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - #3070, Simplify geometry type constraint
   - #2839, Implement selectivity estimator for functional indexes,
            speeding up spatial queries on raster tables.
            (Sandro Santilli / Vizzuality)
