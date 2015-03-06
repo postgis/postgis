@@ -2014,6 +2014,7 @@ LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
+LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, int maxvertices);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.

@@ -1872,3 +1872,103 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 	return 0;
 }
 
+/* Prototype for recursion */
+static int lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip);
+
+static int
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip)
+{
+
+	/* Always just recurse into collections */
+	if ( lwgeom_is_collection(geom) )
+	{
+		LWCOLLECTION *gcol = (LWCOLLECTION*)geom;
+		int i, n = 0;
+		for ( i = 0; i < gcol->ngeoms; i++ )
+		{
+			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, col, clip);
+		}
+		return n;
+	}
+	
+	/* Points and single-point multipoints can be added right into the output result */
+	if ( (geom->type == POINTTYPE) || 
+	     (geom->type == MULTIPOINTTYPE && lwgeom_count_vertices(geom) == 1) )
+	{
+		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+		return 1;
+	}
+	
+	/* Haven't set up a clipping box yet? Make one then recurse again */
+	if ( ! clip )
+	{
+		double height, width;
+		const GBOX *box = lwgeom_get_bbox(geom);
+		GBOX square;
+		if ( ! box ) return 0;
+		width = box->xmax - box->xmin;
+		height = box->ymax - box->ymin;
+		if ( width > height )
+		{
+			square.xmin = box->xmin;
+			square.xmax = box->xmax;
+			square.ymin = (box->ymin + box->ymax - width)/2;
+			square.ymax = (box->ymin + box->ymax + width)/2;
+		}
+		else
+		{
+			square.ymin = box->ymin;
+			square.ymax = box->ymax;
+			square.xmin = (box->xmin + box->xmax - height)/2;
+			square.xmax = (box->xmin + box->xmax + height)/2;
+		}
+		return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+	}
+	/* Everything is in place! Let's start subdividing! */
+	else
+	{
+		int npoints = lwgeom_npoints_in_rect(geom, clip);
+		/* Clipping rectangle didn't hit anything! No-op! */
+		if ( npoints == 0 )
+		{
+			return 0;
+		}
+		/* Clipping rectangle has reached target size: apply it! */
+		else if ( npoints < maxvertices )
+		{
+			lwcollection_add_lwgeom(col, lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax));
+			return npoints;
+		}
+		/* Clipping rectangle too small: subdivide more! */
+		else
+		{
+			int i, n = 0;
+			GBOX boxes[4];
+			double width = FP_TOLERANCE + (clip->xmax - clip->xmin)/2;
+			for( i = 0; i < 4; i++ )
+			{
+				int ix = i / 2;
+				int iy = i % 2;
+				boxes[i].xmin = clip->xmin + ix * width;
+				boxes[i].xmax = clip->xmin + width + ix * width;
+				boxes[i].ymin = clip->ymin + iy * width;
+				boxes[i].ymax = clip->ymin + width + iy * width;
+				n += lwgeom_subdivide_recursive(geom, maxvertices, col, &(boxes[i]));
+			}
+			return n;
+		}
+	}
+	return 0;
+}
+
+LWCOLLECTION *
+lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
+{
+	int n = 0;
+	LWCOLLECTION *col;
+	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	n = lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
+	return col;
+}
+
+
