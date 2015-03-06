@@ -307,6 +307,17 @@ gbox_contains_2d(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
+int 
+gbox_contains_point2d(const GBOX *g, const POINT2D *p)
+{
+	if ( ( g->xmin <= p->x ) && ( g->xmax >= p->x ) &&
+	     ( g->ymin <= p->y ) && ( g->ymax >= p->y ) )
+	{
+		return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
 /**
 * Warning, this function is only good for x/y/z boxes, used
 * in unit testing of geodetic box generation.

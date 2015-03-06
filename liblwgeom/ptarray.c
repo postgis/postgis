@@ -1818,3 +1818,19 @@ ptarray_grid(const POINTARRAY *pa, const gridspec *grid)
 	return dpa;
 }
 
+int 
+ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
+{
+	const POINT2D *pt;
+	int n = 0;
+	int i;
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		pt = getPoint2d_cp(pa, i);
+		if ( gbox_contains_point2d(gbox, pt) )
+			n++;
+	}
+	return n;
+}
+
+

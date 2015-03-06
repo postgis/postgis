@@ -1818,3 +1818,57 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 			return NULL;
 	}
 }
+
+
+int
+lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
+{
+	const GBOX *geombox = lwgeom_get_bbox(geom);
+	
+	if ( ! gbox_overlaps_2d(geombox, gbox) )
+		return 0;
+	
+	switch ( geom->type )
+	{
+		case POINTTYPE:
+			return ptarray_npoints_in_rect(((LWPOINT*)geom)->point, gbox);
+
+		case CIRCSTRINGTYPE:
+		case LINETYPE:
+			return ptarray_npoints_in_rect(((LWLINE*)geom)->points, gbox);
+
+		case POLYGONTYPE:
+		{
+			int i, n = 0;
+			LWPOLY *poly = (LWPOLY*)geom;
+			for ( i = 0; i < poly->nrings; i++ )
+			{
+				n += ptarray_npoints_in_rect(poly->rings[i], gbox);
+			}
+			return n;
+		}
+
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COMPOUNDTYPE:
+		case COLLECTIONTYPE:
+		{
+			int i, n = 0;
+			LWCOLLECTION *col = (LWCOLLECTION*)geom;
+			for ( i = 0; i < col->ngeoms; i++ )
+			{
+				n += lwgeom_npoints_in_rect(col->geoms[i], gbox);
+			}
+			return n;
+		}
+		default:
+		{
+			lwerror("lwgeom_npoints_in_rect: Unsupported geometry type: %s",
+			        lwtype_name(geom->type));
+			return 0;
+		}
+	}
+	return 0;
+}
+

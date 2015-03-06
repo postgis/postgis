@@ -435,3 +435,7 @@ extern int _lwgeom_interrupt_requested;
 }
 
 #endif /* _LIBLWGEOM_INTERNAL_H */
+
+int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
+int gbox_contains_point2d(const GBOX *g, const POINT2D *p);
+int lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox);
