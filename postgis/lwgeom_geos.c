@@ -1690,7 +1690,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	}
 
 	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( gbox_contains_2d(box2, box1) )
+	if ( gbox_contains_2d(bbox2, bbox1) )
 	{
 		lwgeom_free(lwgeom1);
 		PG_RETURN_POINTER(geom1);
