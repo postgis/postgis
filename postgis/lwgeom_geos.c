@@ -1679,7 +1679,8 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
 
 	/* If bbox1 outside of bbox2, return empty */
-	if ( ! gbox_overlaps_2d(bbox1, bbox2) )
+	if ( bbox1->xmin > bbox2->xmax || bbox1->xmax < bbox2->xmin ||
+	     bbox1->ymin > bbox2->ymax || bbox1->ymax < bbox2->ymin )
 	{
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
 		lwgeom_free(lwgeom1);
@@ -1690,7 +1691,8 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	}
 
 	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( gbox_contains_2d(bbox2, bbox1) )
+	if ( bbox1->xmax <= bbox2->xmax && bbox1->xmin >= bbox2->xmin &&
+	     bbox1->ymax <= bbox2->ymax && bbox1->ymin >= bbox2->ymin )
 	{
 		lwgeom_free(lwgeom1);
 		PG_RETURN_POINTER(geom1);
