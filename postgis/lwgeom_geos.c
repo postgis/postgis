@@ -12,19 +12,13 @@
  *
  **********************************************************************/
 
-/* TODO: we probaby don't need _all_ these pgsql headers */
-#include "postgres.h"
-#include "fmgr.h"
-#include "miscadmin.h"
-#include "utils/array.h"
-
-#include "utils/builtins.h"
-#include "utils/hsearch.h"
-#include "utils/memutils.h"
-#include "executor/spi.h"
-#include "funcapi.h"
-
 #include "../postgis_config.h"
+
+/* PostgreSQL */
+#include "postgres.h"
+#include "funcapi.h"
+#include "utils/array.h"
+#include "utils/builtins.h"
 
 #if POSTGIS_PGSQL_VERSION >= 93
 #include "access/htup_details.h"
@@ -32,15 +26,13 @@
 #include "access/htup.h"
 #endif
 
+/* PostGIS */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h" 
 
-
-#include <string.h>
-#include <assert.h>
 
 /* Return NULL on GEOS error
  *
