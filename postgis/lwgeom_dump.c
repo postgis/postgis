@@ -226,7 +226,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 		if ( gserialized_get_type(pglwgeom) != POLYGONTYPE )
 		{
-			lwerror("Input is not a polygon");
+			elog(ERROR, "Input is not a polygon");
 		}
 
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
@@ -316,7 +316,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 35
 
-	elog(ERROR, ("The GEOS version this PostGIS binary "
+	elog(ERROR, "The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'%s' function (3.5.0+ required)",
 	        POSTGIS_GEOS_VERSION, __func__);
