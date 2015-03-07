@@ -3221,6 +3221,15 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 50;
 
+-- Requires GEOS >= 3.5.0
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256)
+	RETURNS setof geometry
+	AS 'MODULE_PATHNAME', 'ST_Subdivide'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------

@@ -489,6 +489,26 @@ lwpoly_startpoint(const LWPOLY* poly, POINT4D* pt)
 	return ptarray_startpoint(poly->rings[0], pt);
 }
 
+int
+lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt)
+{
+	int i;
+	
+	if ( lwpoly_is_empty(poly) )
+		return LW_FALSE;
+	
+	if ( ptarray_contains_point(poly->rings[0], pt) == LW_OUTSIDE )
+		return LW_FALSE;
+	
+	for ( i = 1; i < poly->nrings; i++ )
+	{
+		if ( ptarray_contains_point(poly->rings[i], pt) == LW_INSIDE )
+			return LW_FALSE;
+	}
+	return LW_TRUE;
+}
+
+
 
 LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid)
 {

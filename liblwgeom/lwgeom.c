@@ -1905,6 +1905,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		double height, width;
 		const GBOX *box = lwgeom_get_bbox(geom);
 		GBOX square;
+		gbox_init(&square);
 		if ( ! box ) return 0;
 		width = box->xmax - box->xmin;
 		height = box->ymax - box->ymin;
@@ -1928,16 +1929,65 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 	else
 	{
 		int npoints = lwgeom_npoints_in_rect(geom, clip);
-		/* Clipping rectangle didn't hit anything! No-op! */
+		/* Clipping rectangle didn't hit anything! */
 		if ( npoints == 0 )
 		{
-			return 0;
+			/* Is it because it's a rectangle totally *inside* a polygon? */
+			if ( geom->type == POLYGONTYPE )
+			{
+				POINT2D pt;
+				pt.x = clip->xmin;
+				pt.y = clip->ymin;
+				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
+				{
+					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
+					/* Hm, clipping left nothing behind, skip it */
+					if ( lwgeom_is_empty(clipped) )
+					{
+						return 0;
+					}
+					/* Add the clipped part */
+					else
+					{
+						lwcollection_add_lwgeom(col, clipped);
+						return 5;
+					}
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
 		}
 		/* Clipping rectangle has reached target size: apply it! */
 		else if ( npoints < maxvertices )
 		{
-			lwcollection_add_lwgeom(col, lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax));
-			return npoints;
+			/* Oh, it also covers the whole geometry */
+			if ( npoints == lwgeom_count_vertices(geom) )
+			{
+				lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+				return npoints;
+			}
+			/* Partial coverage, we need to clip */
+			else
+			{
+				LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
+				/* Hm, clipping left nothing behind, skip it */
+				if ( lwgeom_is_empty(clipped) )
+				{
+					return 0;
+				}
+				/* Add the clipped part */
+				else
+				{
+					lwcollection_add_lwgeom(col, clipped);
+					return npoints;
+				}				
+			}				
 		}
 		/* Clipping rectangle too small: subdivide more! */
 		else
@@ -1949,6 +1999,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			{
 				int ix = i / 2;
 				int iy = i % 2;
+				gbox_init(&(boxes[i]));
 				boxes[i].xmin = clip->xmin + ix * width;
 				boxes[i].xmax = clip->xmin + width + ix * width;
 				boxes[i].ymin = clip->ymin + iy * width;
