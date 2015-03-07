@@ -226,7 +226,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 		if ( gserialized_get_type(pglwgeom) != POLYGONTYPE )
 		{
-			lwerror("Input is not a polygon");
+			elog(ERROR, "Input is not a polygon");
 		}
 
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
