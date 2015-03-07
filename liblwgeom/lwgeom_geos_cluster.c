@@ -320,7 +320,7 @@ combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clus
 			{
 				LWGEOM** components = lwalloc(num_geoms * sizeof(LWGEOM*));
 				memcpy(components, geoms_in_cluster, num_geoms * sizeof(LWGEOM*));
-				(*clusterGeoms)[k++] = lwcollection_construct(COLLECTIONTYPE, 0, NULL, j, (LWGEOM**) components);
+				(*clusterGeoms)[k++] = lwcollection_construct(COLLECTIONTYPE, components[0]->srid, NULL, j, (LWGEOM**) components);
 			}
 			else
 			{
