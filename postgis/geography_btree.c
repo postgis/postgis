@@ -178,8 +178,8 @@ PG_FUNCTION_INFO_V1(geography_eq);
 Datum geography_eq(PG_FUNCTION_ARGS)
 {
 	/* Perfect equals test based on hash */
-	GSERIALIZED *g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	uint32 h1 = geography_hash(g1);
 	uint32 h2 = geography_hash(g2);

@@ -436,8 +436,11 @@ pgis_twkb_accum_finalfn(PG_FUNCTION_ARGS)
 		default:
 			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(lwgeom->type), lwgeom->type);
 		}
-
-	}
+	
+	}		
+	if  (fabs(state->precision)>7)
+		lwerror("precision cannot be more than 7");
+	
 	twkb = lwgeom_agg_to_twkb(&lwgeom_arrays, state->variant , &twkb_size,(int8_t) state->precision);
 
 

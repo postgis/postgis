@@ -79,6 +79,7 @@ CREATE OR REPLACE FUNCTION spheroid_out(spheroid)
 	AS 'MODULE_PATHNAME','ellipsoid_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.5.0
 CREATE TYPE spheroid (
 	alignment = double,
 	internallength = 65,
@@ -126,6 +127,7 @@ CREATE OR REPLACE FUNCTION geometry_send(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_send'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE TYPE geometry (
 	internallength = variable,
 	input = geometry_in,
@@ -236,6 +238,7 @@ CREATE OR REPLACE FUNCTION box3d_out(box3d)
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE TYPE box3d (
 	alignment = double,
 	internallength = 52,
@@ -257,6 +260,7 @@ CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	AS 'MODULE_PATHNAME','BOX2D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.8.2
 CREATE TYPE box2d (
 	internallength = 65,
 	input = box2d_in,
@@ -359,36 +363,42 @@ CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 -- Sorting operators for Btree
 --
 
+-- Availability: 0.9.0
 CREATE OPERATOR < (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_lt,
 	COMMUTATOR = '>', NEGATOR = '>=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR <= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_le,
 	COMMUTATOR = '>=', NEGATOR = '>',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
 	COMMUTATOR = '=', -- we might implement a faster negator here
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.9.0
 CREATE OPERATOR >= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_ge,
 	COMMUTATOR = '<=', NEGATOR = '<',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
+
+-- Availability: 0.9.0
 CREATE OPERATOR > (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_gt,
 	COMMUTATOR = '<', NEGATOR = '<=',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
-
+-- Availability: 0.9.0
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
 	OPERATOR	1	< ,
@@ -525,6 +535,8 @@ CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_overlaps_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
+-- Changed: 2.0.0 use gserialized selectivity estimators
 CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
 	COMMUTATOR = '&&',
@@ -538,6 +550,7 @@ CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_same_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR ~= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
 	RESTRICT = contsel, JOIN = contjoinsel
@@ -555,17 +568,17 @@ CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
-#if POSTGIS_PGSQL_VERSION >= 91
+-- Availability: 2.0.0
 CREATE OPERATOR <-> (
     LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_centroid,
     COMMUTATOR = '<->'
 );
 
+-- Availability: 2.0.0
 CREATE OPERATOR <#> (
     LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_box,
     COMMUTATOR = '<#>'
 );
-#endif
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_contains(geom1 geometry, geom2 geometry)
@@ -579,12 +592,14 @@ CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_within_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
 	COMMUTATOR = '~',
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- Availability: 0.1.0
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
 	COMMUTATOR = '@',
@@ -597,6 +612,7 @@ CREATE OR REPLACE FUNCTION geometry_left(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_left_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR << (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
 	COMMUTATOR = '>>',
@@ -609,6 +625,7 @@ CREATE OR REPLACE FUNCTION geometry_overleft(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overleft_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &< (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
 	COMMUTATOR = '&>',
@@ -621,6 +638,7 @@ CREATE OR REPLACE FUNCTION geometry_below(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_below_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR <<| (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
 	COMMUTATOR = '|>>',
@@ -633,6 +651,7 @@ CREATE OR REPLACE FUNCTION geometry_overbelow(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overbelow_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &<| (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
 	COMMUTATOR = '|&>',
@@ -645,6 +664,7 @@ CREATE OR REPLACE FUNCTION geometry_overright(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overright_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR &> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
 	COMMUTATOR = '&<',
@@ -657,6 +677,7 @@ CREATE OR REPLACE FUNCTION geometry_right(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_right_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR >> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
 	COMMUTATOR = '<<',
@@ -669,6 +690,7 @@ CREATE OR REPLACE FUNCTION geometry_overabove(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_overabove_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR |&> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
 	COMMUTATOR = '&<|',
@@ -681,6 +703,7 @@ CREATE OR REPLACE FUNCTION geometry_above(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'gserialized_above_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 0.1.0
 CREATE OPERATOR |>> (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
 	COMMUTATOR = '<<|',
@@ -786,6 +809,39 @@ CREATE OPERATOR &&& (
 	JOIN = gserialized_gist_joinsel_nd	
 );
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_distance_centroid_nd(geometry,geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_distance_centroid_nd'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OPERATOR <<->> (
+    LEFTARG = geometry, RIGHTARG = geometry,
+    PROCEDURE = geometry_distance_centroid_nd,
+    COMMUTATOR = '<<->>'
+);
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_distance_box_nd(geom1 geometry, geom2 geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_nd'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OPERATOR <<#>> (
+    LEFTARG = geometry, RIGHTARG = geometry,
+    PROCEDURE = geometry_distance_box_nd,
+    COMMUTATOR = '<<#>>'
+);
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_gist_distance'
+	LANGUAGE 'c';
+
+
 -- Availability: 2.0.0
 CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FOR TYPE geometry USING GIST AS
@@ -794,6 +850,14 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 --	OPERATOR        6        ~=	,
 --	OPERATOR        7        ~	,
 --	OPERATOR        8        @	,
+#if POSTGIS_PGSQL_VERSION >= 91
+	-- Availability: 2.2.0
+	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
+	-- Availability: 2.2.0
+	OPERATOR        14       <<#>> FOR ORDER BY pg_catalog.float_ops,
+	-- Availability: 2.2.0
+	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, int4),
+#endif
 	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_nd (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_nd (internal),
@@ -954,7 +1018,7 @@ CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2D'
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DF'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1632,6 +1696,7 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
+-- Availability: 1.0.0
 CREATE TYPE geometry_dump AS (
 	path integer[],
 	geom geometry
@@ -1976,7 +2041,7 @@ BEGIN
                     BEGIN
                         EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
                         ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
-                        CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
+                        CHECK (geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ')';
                         constraint_successful := true;
                     EXCEPTION
                         WHEN check_violation THEN
@@ -3168,6 +3233,15 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 50;
 
+-- Requires GEOS >= 3.5.0
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256)
+	RETURNS setof geometry
+	AS 'MODULE_PATHNAME', 'ST_Subdivide'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
+
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
 --------------------------------------------------------------------------------
@@ -3422,6 +3496,7 @@ CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.4.0
 CREATE TYPE pgis_abs (
 	internallength = 16,
 	input = pgis_abs_in,
@@ -4685,6 +4760,15 @@ CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DFullyWithin(ST_ConvexHull($1), ST_ConvexHull($2), $3)'
 	LANGUAGE 'sql' IMMUTABLE; 
 	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SwapOrdinates(geom geometry, ords cstring)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_SwapOrdinates'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- NOTE: same as ST_SwapOrdinates(geometry, 'xy')
+--       but slightly faster in that it doesn't need to parse ordinate
+--       spec strings
 CREATE OR REPLACE FUNCTION ST_FlipCoordinates(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_FlipCoordinates'
@@ -4943,9 +5027,9 @@ CREATE OR REPLACE VIEW geometry_columns AS
     n.nspname::varchar(256) AS f_table_schema, 
     c.relname::varchar(256) AS f_table_name, 
     a.attname::varchar(256) AS f_geometry_column, 
-    COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2),
+    COALESCE(postgis_typmod_dims(a.atttypmod),
              postgis_constraint_dims(n.nspname, c.relname, a.attname),
-             2) AS coord_dimension, 
+             2) AS coord_dimension, -- should it be 0 instead ?
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0),
              postgis_constraint_srid(n.nspname, c.relname, a.attname),
              0) AS srid, 

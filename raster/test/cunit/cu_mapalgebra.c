@@ -1184,10 +1184,12 @@ static void test_raster_colormap() {
 }
 
 /* register tests */
-CU_TestInfo mapalgebra_tests[] = {
-	PG_TEST(test_raster_iterator),
-	PG_TEST(test_band_reclass),
-	PG_TEST(test_raster_colormap),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo mapalgebra_suite = {"mapalgebra",  NULL,  NULL, mapalgebra_tests};
+void mapalgebra_suite_setup(void);
+void mapalgebra_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("mapalgebra", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_iterator);
+	PG_ADD_TEST(suite, test_band_reclass);
+	PG_ADD_TEST(suite, test_raster_colormap);
+}
+

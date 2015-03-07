@@ -565,18 +565,18 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 int
 lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad)
 {
+	const POINT2D *pt;
 	POINT2D center;
-	POINT2D pt;
 
 	if ( ! p || ! p->point )
 		return LW_FALSE;
 		
-	getPoint2d_p(p->point, 0, &pt);
+	pt = getPoint2d_cp(p->point, 0);
 
 	center.x = cx;
 	center.y = cy;
 
-	if ( distance2d_pt_pt(&pt, &center) < rad ) 
+	if ( distance2d_pt_pt(pt, &center) < rad ) 
 		return LW_TRUE;
 
 	return LW_FALSE;
@@ -1107,7 +1107,31 @@ int lwgeom_needs_bbox(const LWGEOM *geom)
 	{
 		return LW_FALSE;
 	}
-	return LW_TRUE;
+	else if ( geom->type == LINETYPE )
+	{
+		if ( lwgeom_count_vertices(geom) <= 2 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else if ( geom->type == MULTIPOINTTYPE )
+	{
+		if ( ((LWCOLLECTION*)geom)->ngeoms == 1 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else if ( geom->type == MULTILINETYPE )
+	{
+		if ( ((LWCOLLECTION*)geom)->ngeoms == 1 && lwgeom_count_vertices(geom) <= 2 )
+			return LW_FALSE;
+		else
+			return LW_TRUE;
+	}
+	else
+	{
+		return LW_TRUE;
+	}
 }
 
 /**
@@ -1428,12 +1452,24 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 
 LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 {
+  lwgeom_swap_ordinates(in,LWORD_X,LWORD_Y);
+  return in;
+}
+
+void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
+{
 	LWCOLLECTION *col;
 	LWPOLY *poly;
 	int i;
 
-	if ( (!in) || lwgeom_is_empty(in) )
-		return in;
+#if PARANOIA_LEVEL > 0
+  assert(o1 < 4);
+  assert(o2 < 4);
+#endif
+
+	if ( (!in) || lwgeom_is_empty(in) ) return;
+
+  /* TODO: check for lwgeom NOT having the specified dimension ? */
 
 	LWDEBUGF(4, "lwgeom_flip_coordinates, got type: %s",
 	         lwtype_name(in->type));
@@ -1441,27 +1477,27 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	switch (in->type)
 	{
 	case POINTTYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwpoint(in)->point);
+		ptarray_swap_ordinates(lwgeom_as_lwpoint(in)->point, o1, o2);
 		break;
 
 	case LINETYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwline(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwline(in)->points, o1, o2);
 		break;
 
 	case CIRCSTRINGTYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwcircstring(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwcircstring(in)->points, o1, o2);
 		break;
 
 	case POLYGONTYPE:
 		poly = (LWPOLY *) in;
 		for (i=0; i<poly->nrings; i++)
 		{
-			ptarray_flip_coordinates(poly->rings[i]);
+			ptarray_swap_ordinates(poly->rings[i], o1, o2);
 		}
 		break;
 
 	case TRIANGLETYPE:
-		ptarray_flip_coordinates(lwgeom_as_lwtriangle(in)->points);
+		ptarray_swap_ordinates(lwgeom_as_lwtriangle(in)->points, o1, o2);
 		break;
 
 	case MULTIPOINTTYPE:
@@ -1477,19 +1513,21 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
 		{
-			lwgeom_flip_coordinates(col->geoms[i]);
+			lwgeom_swap_ordinates(col->geoms[i], o1, o2);
 		}
 		break;
 
 	default:
-		lwerror("lwgeom_flip_coordinates: unsupported geometry type: %s",
+		lwerror("lwgeom_swap_ordinates: unsupported geometry type: %s",
 		        lwtype_name(in->type));
-		return NULL;
+		return;
 	}
 
-	lwgeom_drop_bbox(in);
-	lwgeom_add_bbox(in);
-	return in;
+  /* only refresh bbox if X or Y changed */
+  if ( o1 < 2 || o2 < 2 ) {
+    lwgeom_drop_bbox(in);
+    lwgeom_add_bbox(in);
+  }
 }
 
 void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
@@ -1753,4 +1791,235 @@ lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
 			return LW_FAILURE;
 	}
 }
+
+
+LWGEOM *
+lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
+{
+	switch ( lwgeom->type )
+	{
+		case POINTTYPE:
+			return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
+		case LINETYPE:
+			return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+			return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
+		case CIRCSTRINGTYPE:
+			return (LWGEOM *)lwcircstring_grid((LWCIRCSTRING *)lwgeom, grid);
+		default:
+			lwerror("lwgeom_grid: Unsupported geometry type: %s",
+			        lwtype_name(lwgeom->type));
+			return NULL;
+	}
+}
+
+
+int
+lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
+{
+	const GBOX *geombox = lwgeom_get_bbox(geom);
+	
+	if ( ! gbox_overlaps_2d(geombox, gbox) )
+		return 0;
+	
+	switch ( geom->type )
+	{
+		case POINTTYPE:
+			return ptarray_npoints_in_rect(((LWPOINT*)geom)->point, gbox);
+
+		case CIRCSTRINGTYPE:
+		case LINETYPE:
+			return ptarray_npoints_in_rect(((LWLINE*)geom)->points, gbox);
+
+		case POLYGONTYPE:
+		{
+			int i, n = 0;
+			LWPOLY *poly = (LWPOLY*)geom;
+			for ( i = 0; i < poly->nrings; i++ )
+			{
+				n += ptarray_npoints_in_rect(poly->rings[i], gbox);
+			}
+			return n;
+		}
+
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COMPOUNDTYPE:
+		case COLLECTIONTYPE:
+		{
+			int i, n = 0;
+			LWCOLLECTION *col = (LWCOLLECTION*)geom;
+			for ( i = 0; i < col->ngeoms; i++ )
+			{
+				n += lwgeom_npoints_in_rect(col->geoms[i], gbox);
+			}
+			return n;
+		}
+		default:
+		{
+			lwerror("lwgeom_npoints_in_rect: Unsupported geometry type: %s",
+			        lwtype_name(geom->type));
+			return 0;
+		}
+	}
+	return 0;
+}
+
+/* Prototype for recursion */
+static int lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip);
+
+static int
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip)
+{
+
+	/* Always just recurse into collections */
+	if ( lwgeom_is_collection(geom) )
+	{
+		LWCOLLECTION *gcol = (LWCOLLECTION*)geom;
+		int i, n = 0;
+		for ( i = 0; i < gcol->ngeoms; i++ )
+		{
+			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, col, clip);
+		}
+		return n;
+	}
+	
+	/* Points and single-point multipoints can be added right into the output result */
+	if ( (geom->type == POINTTYPE) || 
+	     (geom->type == MULTIPOINTTYPE && lwgeom_count_vertices(geom) == 1) )
+	{
+		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+		return 1;
+	}
+	
+	/* Haven't set up a clipping box yet? Make one then recurse again */
+	if ( ! clip )
+	{
+		double height, width;
+		const GBOX *box = lwgeom_get_bbox(geom);
+		GBOX square;
+		gbox_init(&square);
+		if ( ! box ) return 0;
+		width = box->xmax - box->xmin;
+		height = box->ymax - box->ymin;
+		if ( width > height )
+		{
+			square.xmin = box->xmin;
+			square.xmax = box->xmax;
+			square.ymin = (box->ymin + box->ymax - width)/2;
+			square.ymax = (box->ymin + box->ymax + width)/2;
+		}
+		else
+		{
+			square.ymin = box->ymin;
+			square.ymax = box->ymax;
+			square.xmin = (box->xmin + box->xmax - height)/2;
+			square.xmax = (box->xmin + box->xmax + height)/2;
+		}
+		return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+	}
+	/* Everything is in place! Let's start subdividing! */
+	else
+	{
+		int npoints = lwgeom_npoints_in_rect(geom, clip);
+		/* Clipping rectangle didn't hit anything! */
+		if ( npoints == 0 )
+		{
+			/* Is it because it's a rectangle totally *inside* a polygon? */
+			if ( geom->type == POLYGONTYPE )
+			{
+				POINT2D pt;
+				pt.x = clip->xmin;
+				pt.y = clip->ymin;
+				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
+				{
+					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
+					/* Hm, clipping left nothing behind, skip it */
+					if ( lwgeom_is_empty(clipped) )
+					{
+						return 0;
+					}
+					/* Add the clipped part */
+					else
+					{
+						lwcollection_add_lwgeom(col, clipped);
+						return 5;
+					}
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		/* Clipping rectangle has reached target size: apply it! */
+		else if ( npoints < maxvertices )
+		{
+			/* Oh, it also covers the whole geometry */
+			if ( npoints == lwgeom_count_vertices(geom) )
+			{
+				lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+				return npoints;
+			}
+			/* Partial coverage, we need to clip */
+			else
+			{
+				LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
+				/* Hm, clipping left nothing behind, skip it */
+				if ( lwgeom_is_empty(clipped) )
+				{
+					return 0;
+				}
+				/* Add the clipped part */
+				else
+				{
+					lwcollection_add_lwgeom(col, clipped);
+					return npoints;
+				}				
+			}				
+		}
+		/* Clipping rectangle too small: subdivide more! */
+		else
+		{
+			int i, n = 0;
+			GBOX boxes[4];
+			double width = FP_TOLERANCE + (clip->xmax - clip->xmin)/2;
+			for( i = 0; i < 4; i++ )
+			{
+				int ix = i / 2;
+				int iy = i % 2;
+				gbox_init(&(boxes[i]));
+				boxes[i].xmin = clip->xmin + ix * width;
+				boxes[i].xmax = clip->xmin + width + ix * width;
+				boxes[i].ymin = clip->ymin + iy * width;
+				boxes[i].ymax = clip->ymin + width + iy * width;
+				n += lwgeom_subdivide_recursive(geom, maxvertices, col, &(boxes[i]));
+			}
+			return n;
+		}
+	}
+	return 0;
+}
+
+LWCOLLECTION *
+lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
+{
+	int n = 0;
+	LWCOLLECTION *col;
+	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	n = lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
+	return col;
+}
+
 

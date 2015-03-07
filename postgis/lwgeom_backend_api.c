@@ -14,12 +14,12 @@
 
 #include "postgres.h"
 #include "fmgr.h"
-#include "../liblwgeom/liblwgeom.h"
-
-/* for custom variables */
-#include "utils/guc.h"
+#include "utils/guc.h" /* for custom variables */
 
 #include "../postgis_config.h"
+#include "lwgeom_pg.h"
+#include "liblwgeom.h"
+
 #include "lwgeom_backend_api.h"
 #include "lwgeom_geos.h"
 #if HAVE_SFCGAL
@@ -156,8 +156,8 @@ PG_FUNCTION_INFO_V1(intersects3d_dwithin);
 Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
 {
     double mindist;
-    GSERIALIZED *geom1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-    GSERIALIZED *geom2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+    GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+    GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
     LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
     LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
 

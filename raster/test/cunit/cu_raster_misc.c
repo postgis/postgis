@@ -205,11 +205,13 @@ static void test_raster_compute_skewed_raster() {
 }
 
 /* register tests */
-CU_TestInfo raster_misc_tests[] = {
-	PG_TEST(test_raster_cell_to_geopoint),
-	PG_TEST(test_raster_geopoint_to_cell),
-	PG_TEST(test_raster_from_two_rasters),
-	PG_TEST(test_raster_compute_skewed_raster),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo raster_misc_suite = {"raster_misc",  NULL,  NULL, raster_misc_tests};
+void raster_misc_suite_setup(void);
+void raster_misc_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("raster_misc", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_cell_to_geopoint);
+	PG_ADD_TEST(suite, test_raster_geopoint_to_cell);
+	PG_ADD_TEST(suite, test_raster_from_two_rasters);
+	PG_ADD_TEST(suite, test_raster_compute_skewed_raster);
+}
+

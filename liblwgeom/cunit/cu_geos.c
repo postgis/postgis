@@ -18,6 +18,8 @@
 #include "lwgeom_geos.h"
 #include "cu_tester.h"
 
+#include "liblwgeom_internal.h"
+
 static void test_geos_noop(void)
 {
 	int i;
@@ -65,13 +67,45 @@ static void test_geos_noop(void)
 }
 
 
+static void test_geos_subdivide(void)
+{
+#if POSTGIS_GEOS_VERSION < 35
+	printf("%d\n", POSTGIS_GEOS_VERSION);
+	return;
+#else
+	char *ewkt = "MULTILINESTRING((0 0, 0 100))";
+	char *out_ewkt;
+	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+
+	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
+	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	CU_ASSERT_EQUAL(2, geom3->ngeoms);
+	lwfree(out_ewkt);
+	lwcollection_free(geom3);
+	lwgeom_free(geom2);
+
+	geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	geom3 = lwgeom_subdivide(geom2, 20);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
+	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	CU_ASSERT_EQUAL(8, geom3->ngeoms);
+	lwfree(out_ewkt);
+	lwcollection_free(geom3);
+	lwgeom_free(geom2);
+
+	lwgeom_free(geom1);
+#endif
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo geos_tests[] =
+void geos_suite_setup(void);
+void geos_suite_setup(void)
 {
-	PG_TEST(test_geos_noop),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo geos_suite = {"GEOS",  NULL,  NULL, geos_tests};
-
+	CU_pSuite suite = CU_add_suite("GEOS", NULL, NULL);
+	PG_ADD_TEST(suite, test_geos_noop);
+	PG_ADD_TEST(suite, test_geos_subdivide);
+}

@@ -43,7 +43,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
   int type = gserialized_get_type(geom);
 	LWGEOM *in;
@@ -71,7 +71,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_SetEffectiveArea);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
   int type = gserialized_get_type(geom);
 	LWGEOM *in;
@@ -116,7 +116,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *gser = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gser = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
 	double distance = PG_GETARG_FLOAT8(1);
 	LWLINE *line;
@@ -271,319 +271,40 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 #define CHECK_RING_IS_CLOSE
 #define SAMEPOINT(a,b) ((a)->x==(b)->x&&(a)->y==(b)->y)
 
-typedef struct gridspec_t
-{
-	double ipx;
-	double ipy;
-	double ipz;
-	double ipm;
-	double xsize;
-	double ysize;
-	double zsize;
-	double msize;
-}
-gridspec;
 
 
 /* Forward declarations */
-LWGEOM *lwgeom_grid(LWGEOM *lwgeom, gridspec *grid);
-LWCOLLECTION *lwcollection_grid(LWCOLLECTION *coll, gridspec *grid);
-LWPOINT * lwpoint_grid(LWPOINT *point, gridspec *grid);
-LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
-LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
-LWCIRCSTRING *lwcirc_grid(LWCIRCSTRING *line, gridspec *grid);
-POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
-static int grid_isNull(const gridspec *grid);
-#if POSTGIS_DEBUG_LEVEL >=4
-static void grid_print(const gridspec *grid);
-#endif
 
-/* A NULL grid is a grid in which size in all dimensions is 0 */
-static int
-grid_isNull(const gridspec *grid)
-{
-	if ( grid->xsize==0 &&
-	        grid->ysize==0 &&
-	        grid->zsize==0 &&
-	        grid->msize==0 ) return 1;
-	else return 0;
-}
 
-#if POSTGIS_DEBUG_LEVEL >= 4
-/* Print grid using given reporter */
-static void
-grid_print(const gridspec *grid)
-{
-	lwnotice("GRID(%g %g %g %g, %g %g %g %g)",
-	         grid->ipx, grid->ipy, grid->ipz, grid->ipm,
-	         grid->xsize, grid->ysize, grid->zsize, grid->msize);
-}
-#endif
-
-/*
- * Stick an array of points to the given gridspec.
- * Return "gridded" points in *outpts and their number in *outptsn.
- *
- * Two consecutive points falling on the same grid cell are collapsed
- * into one single point.
- *
- */
-POINTARRAY *
-ptarray_grid(POINTARRAY *pa, gridspec *grid)
-{
-	POINT4D pbuf;
-	int ipn; /* input point numbers */
-	POINTARRAY *dpa;
-
-	POSTGIS_DEBUGF(2, "ptarray_grid called on %p", pa);
-
-	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
-
-	for (ipn=0; ipn<pa->npoints; ++ipn)
-	{
-
-		getPoint4d_p(pa, ipn, &pbuf);
-
-		if ( grid->xsize )
-			pbuf.x = rint((pbuf.x - grid->ipx)/grid->xsize) *
-			         grid->xsize + grid->ipx;
-
-		if ( grid->ysize )
-			pbuf.y = rint((pbuf.y - grid->ipy)/grid->ysize) *
-			         grid->ysize + grid->ipy;
-
-		if ( FLAGS_GET_Z(pa->flags) && grid->zsize )
-			pbuf.z = rint((pbuf.z - grid->ipz)/grid->zsize) *
-			         grid->zsize + grid->ipz;
-
-		if ( FLAGS_GET_M(pa->flags) && grid->msize )
-			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
-			         grid->msize + grid->ipm;
-
-		ptarray_append_point(dpa, &pbuf, LW_FALSE);
-
-	}
-
-	return dpa;
-}
-
-LWLINE *
-lwline_grid(LWLINE *line, gridspec *grid)
-{
-	LWLINE *oline;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(line->points, grid);
-
-	/* Skip line3d with less then 2 points */
-	if ( opa->npoints < 2 ) return NULL;
-
-	/* TODO: grid bounding box... */
-	oline = lwline_construct(line->srid, NULL, opa);
-
-	return oline;
-}
-
-LWCIRCSTRING *
-lwcirc_grid(LWCIRCSTRING *line, gridspec *grid)
-{
-	LWCIRCSTRING *oline;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(line->points, grid);
-
-	/* Skip line3d with less then 2 points */
-	if ( opa->npoints < 2 ) return NULL;
-
-	/* TODO: grid bounding box... */
-	oline = lwcircstring_construct(line->srid, NULL, opa);
-
-	return oline;
-}
-
-LWPOLY *
-lwpoly_grid(LWPOLY *poly, gridspec *grid)
-{
-	LWPOLY *opoly;
-	int ri;
-	POINTARRAY **newrings = NULL;
-	int nrings = 0;
-#if 0
-	/*
-	 * TODO: control this assertion
-	 * it is assumed that, since the grid size will be a pixel,
-	 * a visible ring should show at least a white pixel inside,
-	 * thus, for a square, that would be grid_xsize*grid_ysize
-	 */
-	double minvisiblearea = grid->xsize * grid->ysize;
-#endif
-
-	nrings = 0;
-
-	POSTGIS_DEBUGF(3, "grid_polygon3d: applying grid to polygon with %d rings",
-	         poly->nrings);
-
-	for (ri=0; ri<poly->nrings; ri++)
-	{
-		POINTARRAY *ring = poly->rings[ri];
-		POINTARRAY *newring;
-
-#if POSTGIS_DEBUG_LEVEL >= 4
-		POINT2D p1, p2;
-		getPoint2d_p(ring, 0, &p1);
-		getPoint2d_p(ring, ring->npoints-1, &p2);
-		if ( ! SAMEPOINT(&p1, &p2) )
-			POSTGIS_DEBUG(4, "Before gridding: first point != last point");
-#endif
-
-		newring = ptarray_grid(ring, grid);
-
-		/* Skip ring if not composed by at least 4 pts (3 segments) */
-		if ( newring->npoints < 4 )
-		{
-			pfree(newring);
-
-			POSTGIS_DEBUGF(3, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
-
-			if ( ri ) continue;
-			else break; /* this is the external ring, no need to work on holes */
-		}
-
-#if POSTGIS_DEBUG_LEVEL >= 4
-		getPoint2d_p(newring, 0, &p1);
-		getPoint2d_p(newring, newring->npoints-1, &p2);
-		if ( ! SAMEPOINT(&p1, &p2) )
-			POSTGIS_DEBUG(4, "After gridding: first point != last point");
-#endif
-
-		POSTGIS_DEBUGF(3, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
-		         ring->npoints, newring->npoints);
-
-		/*
-		 * Add ring to simplified ring array
-		 * (TODO: dinamic allocation of pts_per_ring)
-		 */
-		if ( ! nrings )
-		{
-			newrings = palloc(sizeof(POINTARRAY *));
-		}
-		else
-		{
-			newrings = repalloc(newrings, sizeof(POINTARRAY *)*(nrings+1));
-		}
-		if ( ! newrings )
-		{
-			elog(ERROR, "Out of virtual memory");
-			return NULL;
-		}
-		newrings[nrings++] = newring;
-	}
-
-	POSTGIS_DEBUGF(3, "grid_polygon3d: simplified polygon with %d rings", nrings);
-
-	if ( ! nrings ) return NULL;
-
-	opoly = lwpoly_construct(poly->srid, NULL, nrings, newrings);
-	return opoly;
-}
-
-LWPOINT *
-lwpoint_grid(LWPOINT *point, gridspec *grid)
-{
-	LWPOINT *opoint;
-	POINTARRAY *opa;
-
-	opa = ptarray_grid(point->point, grid);
-
-	/* TODO: grid bounding box ? */
-	opoint = lwpoint_construct(point->srid, NULL, opa);
-
-	POSTGIS_DEBUG(2, "lwpoint_grid called");
-
-	return opoint;
-}
-
-LWCOLLECTION *
-lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
-{
-	uint32 i;
-	LWGEOM **geoms;
-	uint32 ngeoms=0;
-
-	geoms = palloc(coll->ngeoms * sizeof(LWGEOM *));
-
-	for (i=0; i<coll->ngeoms; i++)
-	{
-		LWGEOM *g = lwgeom_grid(coll->geoms[i], grid);
-		if ( g ) geoms[ngeoms++] = g;
-	}
-
-	if ( ! ngeoms ) return lwcollection_construct_empty(coll->type, coll->srid, 0, 0);
-
-	return lwcollection_construct(coll->type, coll->srid,
-	                              NULL, ngeoms, geoms);
-}
-
-LWGEOM *
-lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
-{
-	switch (lwgeom->type)
-	{
-	case POINTTYPE:
-		return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
-	case LINETYPE:
-		return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
-	case POLYGONTYPE:
-		return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-	case COMPOUNDTYPE:
-		return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
-	case CIRCSTRINGTYPE:
-		return (LWGEOM *)lwcirc_grid((LWCIRCSTRING *)lwgeom, grid);
-	default:
-		elog(ERROR, "lwgeom_grid: Unsupported geometry type: %s",
-		     lwtype_name(lwgeom->type));
-		return NULL;
-	}
-}
 
 PG_FUNCTION_INFO_V1(LWGEOM_snaptogrid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 {
-	Datum datum;
-	GSERIALIZED *in_geom;
 	LWGEOM *in_lwgeom;
 	GSERIALIZED *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	/* BOX3D box3d; */
 
-	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
-	datum = PG_GETARG_DATUM(0);
-	in_geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
+	GSERIALIZED *in_geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	/* Set grid values to zero to start */
+	memset(&grid, 0, sizeof(gridspec));
+
 	grid.ipx = PG_GETARG_FLOAT8(1);
-
-	if ( PG_ARGISNULL(2) ) PG_RETURN_NULL();
 	grid.ipy = PG_GETARG_FLOAT8(2);
-
-	if ( PG_ARGISNULL(3) ) PG_RETURN_NULL();
 	grid.xsize = PG_GETARG_FLOAT8(3);
-
-	if ( PG_ARGISNULL(4) ) PG_RETURN_NULL();
 	grid.ysize = PG_GETARG_FLOAT8(4);
 
-	/* Do not support gridding Z and M values for now */
-	grid.ipz=grid.ipm=grid.zsize=grid.msize=0;
-
-	/* Return input geometry if grid is null or input geometry is empty */
-	if ( grid_isNull(&grid) || gserialized_is_empty(in_geom) )
+	/* Return input geometry if input geometry is empty */
+	if ( gserialized_is_empty(in_geom) )
+	{
+		PG_RETURN_POINTER(in_geom);
+	}
+	
+	/* Return input geometry if input grid is meaningless */
+	if ( grid.xsize==0 && grid.ysize==0 && grid.zsize==0 && grid.msize==0 )
 	{
 		PG_RETURN_POINTER(in_geom);
 	}
@@ -596,7 +317,8 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
+	if ( in_lwgeom->bbox ) 
+		lwgeom_add_bbox(out_lwgeom);
 
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
@@ -606,10 +328,22 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out_geom);
 }
 
+
+#if POSTGIS_DEBUG_LEVEL >= 4
+/* Print grid using given reporter */
+static void
+grid_print(const gridspec *grid)
+{
+	lwnotice("GRID(%g %g %g %g, %g %g %g %g)",
+	         grid->ipx, grid->ipy, grid->ipz, grid->ipm,
+	         grid->xsize, grid->ysize, grid->zsize, grid->msize);
+}
+#endif
+
+
 PG_FUNCTION_INFO_V1(LWGEOM_snaptogrid_pointoff);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	GSERIALIZED *in_geom, *in_point;
 	LWGEOM *in_lwgeom;
 	LWPOINT *in_lwpoint;
@@ -619,29 +353,24 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	/* BOX3D box3d; */
 	POINT4D offsetpoint;
 
-	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
-	datum = PG_GETARG_DATUM(0);
-	in_geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
+	in_geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	datum = PG_GETARG_DATUM(1);
-	in_point = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
+	/* Return input geometry if input geometry is empty */
+	if ( gserialized_is_empty(in_geom) )
+	{
+		PG_RETURN_POINTER(in_geom);
+	}
+
+	in_point = PG_GETARG_GSERIALIZED_P(1);
 	in_lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(in_point));
 	if ( in_lwpoint == NULL )
 	{
 		lwerror("Offset geometry must be a point");
 	}
 
-	if ( PG_ARGISNULL(2) ) PG_RETURN_NULL();
 	grid.xsize = PG_GETARG_FLOAT8(2);
-
-	if ( PG_ARGISNULL(3) ) PG_RETURN_NULL();
 	grid.ysize = PG_GETARG_FLOAT8(3);
-
-	if ( PG_ARGISNULL(4) ) PG_RETURN_NULL();
 	grid.zsize = PG_GETARG_FLOAT8(4);
-
-	if ( PG_ARGISNULL(5) ) PG_RETURN_NULL();
 	grid.msize = PG_GETARG_FLOAT8(5);
 
 	/* Take offsets from point geometry */
@@ -656,9 +385,9 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 #if POSTGIS_DEBUG_LEVEL >= 4
 	grid_print(&grid);
 #endif
-
-	/* Return input geometry if grid is null */
-	if ( grid_isNull(&grid) )
+	
+	/* Return input geometry if input grid is meaningless */
+	if ( grid.xsize==0 && grid.ysize==0 && grid.zsize==0 && grid.msize==0 )
 	{
 		PG_RETURN_POINTER(in_geom);
 	}
@@ -693,8 +422,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	int type1, type2, rv;
 	LWLINE *l1 = NULL;
 	LWLINE *l2 = NULL;
-	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
@@ -730,7 +459,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_substring);
 Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	double from = PG_GETARG_FLOAT8(1);
 	double to = PG_GETARG_FLOAT8(2);
 	LWGEOM *olwgeom;

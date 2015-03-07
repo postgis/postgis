@@ -29,6 +29,8 @@
 
 #define PARANOIA_LEVEL 1
 
+#define PGC_ERRMSG_MAXLEN 256
+
 /**
 * Utility to convert cstrings to textp pointers 
 */
@@ -152,32 +154,23 @@ pg_free(void *ptr)
 static void
 pg_error(const char *fmt, va_list ap)
 {
-#define ERRMSG_MAXLEN 256
+	char errmsg[PGC_ERRMSG_MAXLEN+1];
 
-	char errmsg[ERRMSG_MAXLEN+1];
+	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
 
-	vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
-
-	errmsg[ERRMSG_MAXLEN]='\0';
+	errmsg[PGC_ERRMSG_MAXLEN]='\0';
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
 static void
 pg_notice(const char *fmt, va_list ap)
 {
-	char *msg;
+	char errmsg[PGC_ERRMSG_MAXLEN+1];
 
-	/*
-	 * This is a GNU extension.
-	 * Dunno how to handle errors here.
-	 */
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-	ereport(NOTICE, (errmsg_internal("%s", msg)));
-	free(msg);
+	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+
+	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
 
 void

@@ -17,13 +17,18 @@
 
 #include "../postgis_config.h"
 
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+
 #include "liblwgeom.h"         /* For standard geometry types. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"
 
+#define FLAGS_NDIMS_GIDX(f) ( FLAGS_GET_GEODETIC(f) ? 3 : \
+                              FLAGS_GET_M(f) ? 4 : \
+                              FLAGS_GET_Z(f) ? 3 : 2 )
+
 
 /* Generate human readable form for GIDX. */
-#if POSTGIS_DEBUG_LEVEL > 0
 char* gidx_to_string(GIDX *a)
 {
 	char *str, *rv;
@@ -32,7 +37,7 @@ char* gidx_to_string(GIDX *a)
 	if ( a == NULL )
 		return pstrdup("<NULLPTR>");
 
-	str = (char*)palloc(128);
+	str = (char*)palloc(128); /* 15*2*4+8==128 */
 	rv = str;
 	ndims = GIDX_NDIMS(a);
 
@@ -46,7 +51,6 @@ char* gidx_to_string(GIDX *a)
 
 	return rv;
 }
-#endif
 
 
 static uint8_t
@@ -58,6 +62,73 @@ gserialized_datum_get_flags(Datum gsdatum)
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
 	return gpart->flags;
 }
+
+/* Convert a double-based GBOX into a float-based GIDX,
+   ensuring the float box is larger than the double box */
+static int gidx_from_gbox_p(GBOX box, GIDX *a)
+{
+	int ndims;
+
+	ndims = FLAGS_NDIMS_GIDX(box.flags);
+	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
+
+	GIDX_SET_MIN(a,0,next_float_down(box.xmin));
+	GIDX_SET_MAX(a,0,next_float_up(box.xmax));
+	GIDX_SET_MIN(a,1,next_float_down(box.ymin));
+	GIDX_SET_MAX(a,1,next_float_up(box.ymax));
+
+	/* Geodetic indexes are always 3d, geocentric x/y/z */
+	if ( FLAGS_GET_GEODETIC(box.flags) )
+	{
+		GIDX_SET_MIN(a,2,next_float_down(box.zmin));
+		GIDX_SET_MAX(a,2,next_float_up(box.zmax));
+	}
+	else
+	{
+		/* Cartesian with Z implies Z is third dimension */
+		if ( FLAGS_GET_Z(box.flags) )
+		{
+			GIDX_SET_MIN(a,2,next_float_down(box.zmin));
+			GIDX_SET_MAX(a,2,next_float_up(box.zmax));
+		}
+		/* M is always fourth dimension, we pad if needed */
+		if ( FLAGS_GET_M(box.flags) )
+		{
+			if ( ! FLAGS_GET_Z(box.flags) )
+			{
+				GIDX_SET_MIN(a,2,-1*FLT_MAX);
+				GIDX_SET_MAX(a,2,FLT_MAX);
+			}
+			GIDX_SET_MIN(a,3,next_float_down(box.mmin));
+			GIDX_SET_MAX(a,3,next_float_up(box.mmax));
+		}
+	}
+
+	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
+
+	return LW_SUCCESS;
+}
+
+/* Convert a gidx to a gbox */
+static void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
+{
+	gbox->xmin = (double)GIDX_GET_MIN(a,0);
+	gbox->xmax = (double)GIDX_GET_MAX(a,0);
+
+	gbox->ymin = (double)GIDX_GET_MIN(a,1);
+	gbox->ymax = (double)GIDX_GET_MAX(a,1);
+
+	if ( FLAGS_GET_Z(flags) ) {
+		gbox->zmin = (double)GIDX_GET_MIN(a,2);
+		gbox->zmax = (double)GIDX_GET_MAX(a,2);
+	}
+
+	if ( FLAGS_GET_M(flags) ) {
+		gbox->mmin = (double)GIDX_GET_MIN(a,3);
+		gbox->mmax = (double)GIDX_GET_MAX(a,3);
+	}
+}
+
 
 /**
 * Given a #GSERIALIZED datum, as quickly as possible (peaking into the top
@@ -75,8 +146,8 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
 		return LW_FAILURE;
 		
-	gbox_from_gidx(gidx, gbox);
 	gbox->flags = gserialized_datum_get_flags(gsdatum);
+	gbox_from_gidx(gidx, gbox, gbox->flags);
 	
 	return LW_SUCCESS;
 }
@@ -92,7 +163,7 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 */
 GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 {
-	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
 	int box_ndims = GIDX_NDIMS(gidx);
 	GSERIALIZED *g_out = NULL;
 	size_t box_size = 2 * g_ndims * sizeof(float);
@@ -140,7 +211,7 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
 {
-	int g_ndims = (FLAGS_GET_GEODETIC(g->flags) ? 3 : FLAGS_NDIMS(g->flags));
+	int g_ndims = FLAGS_NDIMS_BOX(g->flags);
 	size_t box_size = 2 * g_ndims * sizeof(float);
 	size_t g_out_size = VARSIZE(g) - box_size;
 	GSERIALIZED *g_out = palloc(g_out_size);
@@ -166,76 +237,6 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
 	}
 
 	return g_out;
-}
-
-
-/* Convert a double-based GBOX into a float-based GIDX,
-   ensuring the float box is larger than the double box */
-static int gidx_from_gbox_p(GBOX box, GIDX *a)
-{
-	int ndims;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
-
-	GIDX_SET_MIN(a,0,next_float_down(box.xmin));
-	GIDX_SET_MAX(a,0,next_float_up(box.xmax));
-	GIDX_SET_MIN(a,1,next_float_down(box.ymin));
-	GIDX_SET_MAX(a,1,next_float_up(box.ymax));
-
-	/* Geodetic indexes are always 3d, geocentric x/y/z */
-	if ( FLAGS_GET_GEODETIC(box.flags) )
-	{
-		GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-		GIDX_SET_MAX(a,2,next_float_up(box.zmax));
-	}
-	else
-	{
-		/* Cartesian with Z implies Z is third dimension */
-		if ( FLAGS_GET_Z(box.flags) )
-		{
-			GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-			GIDX_SET_MAX(a,2,next_float_up(box.zmax));
-			if ( FLAGS_GET_M(box.flags) )
-			{
-				GIDX_SET_MIN(a,3,next_float_down(box.mmin));
-				GIDX_SET_MAX(a,3,next_float_up(box.mmax));
-			}
-		}
-		/* Unless there's no Z, in which case M is third dimension */
-		else if ( FLAGS_GET_M(box.flags) )
-		{
-			GIDX_SET_MIN(a,2,next_float_down(box.mmin));
-			GIDX_SET_MAX(a,2,next_float_up(box.mmax));
-		}
-	}
-
-	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
-
-	return LW_SUCCESS;
-}
-
-
-GIDX* gidx_from_gbox(GBOX box)
-{
-	int	ndims;
-	GIDX *a;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	a = gidx_new(ndims);
-	gidx_from_gbox_p(box, a);
-	return a;
-}
-
-
-void gbox_from_gidx(GIDX *a, GBOX *gbox)
-{
-	gbox->xmin = (double)GIDX_GET_MIN(a,0);
-	gbox->ymin = (double)GIDX_GET_MIN(a,1);
-	gbox->zmin = (double)GIDX_GET_MIN(a,2);
-	gbox->xmax = (double)GIDX_GET_MAX(a,0);
-	gbox->ymax = (double)GIDX_GET_MAX(a,1);
-	gbox->zmax = (double)GIDX_GET_MAX(a,2);
 }
 
 /**
@@ -265,9 +266,18 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 	if ( FLAGS_GET_BBOX(gpart->flags) )
 	{
 		/* Yes! Copy it out into the GIDX! */
-		const size_t size = gbox_serialized_size(gpart->flags);
+		size_t size = gbox_serialized_size(gpart->flags);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, gpart->data, size);
+		/* if M is present but Z is not, pad Z and shift M */
+		if ( FLAGS_GET_M(gpart->flags) && ! FLAGS_GET_Z(gpart->flags) )
+		{
+			size += 2 * sizeof(float);
+			GIDX_SET_MIN(gidx,3,GIDX_GET_MIN(gidx,2));
+			GIDX_SET_MAX(gidx,3,GIDX_GET_MAX(gidx,2));
+			GIDX_SET_MIN(gidx,2,-1*FLT_MAX);
+			GIDX_SET_MAX(gidx,2,FLT_MAX);
+		}
 		SET_VARSIZE(gidx, VARHDRSZ + size);
 		result = LW_SUCCESS;
 	}
@@ -312,7 +322,7 @@ int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
 
 	if ( FLAGS_GET_BBOX(g->flags) )
 	{
-		int ndims = FLAGS_NDIMS_BOX(g->flags);
+		int ndims = FLAGS_NDIMS_GIDX(g->flags);
 		const size_t size = 2 * ndims * sizeof(float);
 		POSTGIS_DEBUG(4, "copying box out of serialization");
 		memcpy(gidx->c, g->data, size);

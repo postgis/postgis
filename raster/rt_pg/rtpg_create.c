@@ -715,7 +715,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
 				dstnband = 1;
 			}
-			else if (dstnband > numbands) {
+			else if (numbands > 0 && dstnband > numbands) {
 				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
 				dstnband = numbands + 1; 
 			}
@@ -773,7 +773,7 @@ Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
 
 	/* some raster info */
 	width = rt_raster_get_width(raster);
-	height = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
 
 	/* are rasters aligned? */
 	_rast = rt_raster_new(1, 1);

@@ -16,7 +16,7 @@
 #include "../postgis_config.h"
 
 #include "shp2pgsql-core.h"
-#include "../liblwgeom/liblwgeom.h" /* for lw_vasprintf */
+#include "../liblwgeom/liblwgeom.h"
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
 
@@ -179,28 +179,6 @@ codepage2encoding(const char *cpg)
     /* Didn't find a matching entry */
     return NULL;
     
-}
-
-/* Append variadic formatted string to a stringbuffer */
-void
-vasbappend(stringbuffer_t *sb, char *fmt, ... )
-{
-	va_list ap;
-	char *msg;
-
-	va_start(ap, fmt);
-
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-
-	/* Append to the stringbuffer */
-	stringbuffer_append(sb, msg);
-	free(msg);
-
-	va_end(ap);
 }
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */

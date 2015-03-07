@@ -84,6 +84,14 @@
 #define WKBSRIDFLAG 0x20000000
 #define WKBBBOXFLAG 0x10000000
 
+/** Ordinate names */
+typedef enum LWORD_T {
+  LWORD_X = 0,
+  LWORD_Y = 1,
+  LWORD_Z = 2,
+  LWORD_M = 3
+} LWORD;
+
 /**********************************************************************
 ** Spherical radius.
 ** Moritz, H. (1980). Geodetic Reference System 1980, by resolution of 
@@ -578,7 +586,9 @@ typedef struct
 }
 LWTIN;
 
-
+/**
+* TWKB Support Structures 
+*/
 typedef struct
 {
 	int64_t id;	//Id, from function parameter
@@ -598,6 +608,22 @@ typedef struct
 	int n_collections;
 }
 twkb_geom_arrays;
+
+/**
+* Snap-to-grid Support
+*/
+typedef struct gridspec_t
+{
+	double ipx;
+	double ipy;
+	double ipz;
+	double ipm;
+	double xsize;
+	double ysize;
+	double zsize;
+	double msize;
+}
+gridspec;
 
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(const LWGEOM *lwgeom);
@@ -655,6 +681,12 @@ extern uint8_t gflags(int hasz, int hasm, int geodetic);
 * the anonymous data area, so this is a handy function).
 */
 extern uint32_t gserialized_get_type(const GSERIALIZED *g);
+
+/** 
+* Returns the size in bytes to read from toast to get the basic 
+* information from a geometry: GSERIALIZED struct, bbox and type 
+*/
+extern uint32_t gserialized_max_header_size(void);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
@@ -808,12 +840,28 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
 extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 
 /**
-* Returns a pointer into the POINTARRAY serialized_ptlist, 
+* Returns a POINT2D pointer into the POINTARRAY serialized_ptlist, 
 * suitable for reading from. This is very high performance
 * and declared const because you aren't allowed to muck with the 
 * values, only read them.
 */
 extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, int n);
+
+/**
+* Returns a POINT3DZ pointer into the POINTARRAY serialized_ptlist, 
+* suitable for reading from. This is very high performance
+* and declared const because you aren't allowed to muck with the 
+* values, only read them.
+*/
+extern const POINT3DZ* getPoint3dz_cp(const POINTARRAY *pa, int n);
+
+/**
+* Returns a POINT4D pointer into the POINTARRAY serialized_ptlist, 
+* suitable for reading from. This is very high performance
+* and declared const because you aren't allowed to muck with the 
+* values, only read them.
+*/
+extern const POINT4D* getPoint4d_cp(const POINTARRAY *pa, int n);
 
 /*
  * set point N to the given value
@@ -1105,7 +1153,9 @@ extern double next_double_up(float d);
 
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
+extern double  distance2d_sqr_pt_pt(const POINT2D *p1, const POINT2D *p2);
 extern double  distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
+extern double  distance2d_sqr_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B);
 extern LWGEOM* lwgeom_closest_line(LWGEOM *lw1, LWGEOM *lw2);
 extern LWGEOM* lwgeom_furthest_line(LWGEOM *lw1, LWGEOM *lw2);
 extern LWGEOM* lwgeom_closest_point(LWGEOM *lw1, LWGEOM *lw2);
@@ -1506,8 +1556,25 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in);
 extern char lwtriangle_is_repeated_points(LWTRIANGLE *triangle);
 
 /**
+ * Swap ordinate values in every vertex of the geometry.
+ *
+ * Ordinates to swap are specified using an index with meaning:
+ * 0=x, 1=y, 2=z, 3=m
+ *
+ * Swapping an existing ordinate with an unexisting one results
+ * in undefined value being written in the existing ordinate.
+ * Caller should verify and prevent such calls.
+ *
+ * Availability: 2.2.0
+ */
+extern void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2);
+
+/**
 * Reverse the X and Y coordinate order. Useful for geometries in lat/lon order
 * than need to be converted to lon/lat order.
+*
+* NOTE: uses lwgeom_swap_ordinates internally,
+*       kept for backward compatibility
 */
 extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 
@@ -1680,6 +1747,11 @@ extern int gbox_overlaps(const GBOX *g1, const GBOX *g2);
 * Return #LW_TRUE if the #GBOX overlaps on the 2d plane, #LW_FALSE otherwise. 
 */
 extern int gbox_overlaps_2d(const GBOX *g1, const GBOX *g2);
+
+/**
+* Return #LW_TRUE if the first #GBOX contains the second on the 2d plane, #LW_FALSE otherwise. 
+*/
+extern int  gbox_contains_2d(const GBOX *g1, const GBOX *g2);
 
 /**
 * Copy the values of original #GBOX into duplicate.
@@ -1942,6 +2014,7 @@ LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
+LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, int maxvertices);
 
 /**
  * Snap vertices and segments of a geometry to another using a given tolerance.

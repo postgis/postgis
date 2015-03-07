@@ -504,3 +504,22 @@ double lwline_length_2d(const LWLINE *line)
 		return 0.0;
 	return ptarray_length_2d(line->points);
 }
+
+
+
+LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid)
+{
+	LWLINE *oline;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(line->points, grid);
+
+	/* Skip line3d with less then 2 points */
+	if ( opa->npoints < 2 ) return NULL;
+
+	/* TODO: grid bounding box... */
+	oline = lwline_construct(line->srid, NULL, opa);
+
+	return oline;
+}
+

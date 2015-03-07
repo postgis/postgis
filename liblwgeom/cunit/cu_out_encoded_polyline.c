@@ -87,11 +87,11 @@ static void out_encoded_polyline_test_precision(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_encoded_polyline_tests[] =
+void out_encoded_polyline_suite_setup(void);
+void out_encoded_polyline_suite_setup(void)
 {
-	PG_TEST(out_encoded_polyline_test_geoms),
-	PG_TEST(out_encoded_polyline_test_srid),
-	PG_TEST(out_encoded_polyline_test_precision),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_encoded_polyline_suite = {"Encoded Polyline Out Suite",  NULL,  NULL, out_encoded_polyline_tests};
+	CU_pSuite suite = CU_add_suite("encoded_polyline_output", NULL, NULL);
+	PG_ADD_TEST(suite, out_encoded_polyline_test_geoms);
+	PG_ADD_TEST(suite, out_encoded_polyline_test_srid);
+	PG_ADD_TEST(suite, out_encoded_polyline_test_precision);
+}

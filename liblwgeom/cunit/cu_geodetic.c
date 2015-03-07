@@ -1484,31 +1484,31 @@ static void test_lwgeom_area_sphere(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo geodetic_tests[] =
+void geodetic_suite_setup(void);
+void geodetic_suite_setup(void)
 {
-	PG_TEST(test_sphere_direction),
-	PG_TEST(test_sphere_project),
-	PG_TEST(test_lwgeom_area_sphere),
-	PG_TEST(test_signum),
-	PG_TEST(test_gbox_from_spherical_coordinates),
-	PG_TEST(test_gserialized_get_gbox_geocentric),
-	PG_TEST(test_clairaut),
-	PG_TEST(test_edge_intersection),
-	PG_TEST(test_edge_intersects),
-	PG_TEST(test_edge_distance_to_point),
-	PG_TEST(test_edge_distance_to_edge),
-	PG_TEST(test_lwgeom_distance_sphere),
-	PG_TEST(test_lwgeom_check_geodetic),
-	PG_TEST(test_gserialized_from_lwgeom),
-	PG_TEST(test_spheroid_distance),
-	PG_TEST(test_spheroid_area),
-	PG_TEST(test_lwpoly_covers_point2d),
-	PG_TEST(test_gbox_utils),
-	PG_TEST(test_vector_angle),
-	PG_TEST(test_vector_rotate),
-	PG_TEST(test_lwgeom_segmentize_sphere),
-	PG_TEST(test_ptarray_contains_point_sphere),
-	PG_TEST(test_ptarray_contains_point_sphere_iowa),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo geodetic_suite = {"Geodetic Suite",  NULL,  NULL, geodetic_tests};
+	CU_pSuite suite = CU_add_suite("geodetic", NULL, NULL);
+	PG_ADD_TEST(suite, test_sphere_direction);
+	PG_ADD_TEST(suite, test_sphere_project);
+	PG_ADD_TEST(suite, test_lwgeom_area_sphere);
+	PG_ADD_TEST(suite, test_signum);
+	PG_ADD_TEST(suite, test_gbox_from_spherical_coordinates);
+	PG_ADD_TEST(suite, test_gserialized_get_gbox_geocentric);
+	PG_ADD_TEST(suite, test_clairaut);
+	PG_ADD_TEST(suite, test_edge_intersection);
+	PG_ADD_TEST(suite, test_edge_intersects);
+	PG_ADD_TEST(suite, test_edge_distance_to_point);
+	PG_ADD_TEST(suite, test_edge_distance_to_edge);
+	PG_ADD_TEST(suite, test_lwgeom_distance_sphere);
+	PG_ADD_TEST(suite, test_lwgeom_check_geodetic);
+	PG_ADD_TEST(suite, test_gserialized_from_lwgeom);
+	PG_ADD_TEST(suite, test_spheroid_distance);
+	PG_ADD_TEST(suite, test_spheroid_area);
+	PG_ADD_TEST(suite, test_lwpoly_covers_point2d);
+	PG_ADD_TEST(suite, test_gbox_utils);
+	PG_ADD_TEST(suite, test_vector_angle);
+	PG_ADD_TEST(suite, test_vector_rotate);
+	PG_ADD_TEST(suite, test_lwgeom_segmentize_sphere);
+	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere);
+	PG_ADD_TEST(suite, test_ptarray_contains_point_sphere_iowa);
+}

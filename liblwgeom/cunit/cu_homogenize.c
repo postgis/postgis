@@ -251,14 +251,14 @@ static void test_geom(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo homogenize_tests[] =
+void homogenize_suite_setup(void);
+void homogenize_suite_setup(void)
 {
-	PG_TEST(test_coll_point),
-	PG_TEST(test_coll_line),
-	PG_TEST(test_coll_poly),
-	PG_TEST(test_coll_coll),
-	PG_TEST(test_geom),
-	PG_TEST(test_coll_curve),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo homogenize_suite = {"homogenize",  NULL,  NULL, homogenize_tests};
+	CU_pSuite suite = CU_add_suite("homogenize", NULL, NULL);
+	PG_ADD_TEST(suite, test_coll_point);
+	PG_ADD_TEST(suite, test_coll_line);
+	PG_ADD_TEST(suite, test_coll_poly);
+	PG_ADD_TEST(suite, test_coll_coll);
+	PG_ADD_TEST(suite, test_geom);
+	PG_ADD_TEST(suite, test_coll_curve);
+}

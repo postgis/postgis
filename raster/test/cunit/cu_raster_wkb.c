@@ -809,8 +809,10 @@ static void test_raster_wkb() {
 }
 
 /* register tests */
-CU_TestInfo raster_wkb_tests[] = {
-	PG_TEST(test_raster_wkb),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo raster_wkb_suite = {"raster_wkb",  NULL,  NULL, raster_wkb_tests};
+void raster_wkb_suite_setup(void);
+void raster_wkb_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("raster_wkb", NULL, NULL);
+	PG_ADD_TEST(suite, test_raster_wkb);
+}
+

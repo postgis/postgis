@@ -119,16 +119,57 @@ static void test_misc_wkb(void)
 		
 }
 
+
+static void test_grid(void)
+{
+	gridspec grid;
+	static char *wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))";
+	LWGEOM *geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
+	LWGEOM *geomgrid;
+	char *str;
+	
+	grid.ipx = grid.ipy = 0;
+	grid.xsize = grid.ysize = 20;
+
+	geomgrid = lwgeom_grid(geom, &grid);
+	str = lwgeom_to_ewkt(geomgrid);
+	CU_ASSERT_STRING_EQUAL(str, "MULTIPOLYGON EMPTY");
+	lwfree(str);
+	lwgeom_free(geom);
+	lwgeom_free(geomgrid);		
+}
+
+static void test_rect_count(void)
+{
+	GBOX box;
+	int n;
+	static char *wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))";
+	LWGEOM *geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
+
+	box.xmin = -5;  box.ymin = -5;
+	box.xmax =  5;  box.ymax =  5;
+	n = lwgeom_npoints_in_rect(geom, &box);
+	CU_ASSERT_EQUAL(2, n);
+
+	box.xmin = -5;  box.ymin = -5;
+	box.xmax = 15;  box.ymax = 15; 
+	n = lwgeom_npoints_in_rect(geom, &box);
+	CU_ASSERT_EQUAL(5, n);
+}
+
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo misc_tests[] =
+void misc_suite_setup(void);
+void misc_suite_setup(void)
 {
-	PG_TEST(test_misc_force_2d),
-	PG_TEST(test_misc_simplify),
-	PG_TEST(test_misc_count_vertices),
-	PG_TEST(test_misc_area),
-	PG_TEST(test_misc_wkb),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo misc_suite = {"misc", NULL, NULL, misc_tests };
+	CU_pSuite suite = CU_add_suite("miscellaneous", NULL, NULL);
+	PG_ADD_TEST(suite, test_misc_force_2d);
+	PG_ADD_TEST(suite, test_misc_simplify);
+	PG_ADD_TEST(suite, test_misc_count_vertices);
+	PG_ADD_TEST(suite, test_misc_area);
+	PG_ADD_TEST(suite, test_misc_wkb);
+	PG_ADD_TEST(suite, test_grid);
+	PG_ADD_TEST(suite, test_rect_count);
+}

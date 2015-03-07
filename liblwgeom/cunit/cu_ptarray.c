@@ -435,7 +435,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(10 10,0 10,0 0,10 0)");
-	printf("%s\n", str);
+	// printf("%s\n", str);
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
@@ -692,17 +692,17 @@ static void test_ptarrayarc_contains_point()
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo ptarray_tests[] =
+void ptarray_suite_setup(void);
+void ptarray_suite_setup(void)
 {
-	PG_TEST(test_ptarray_append_point),
-	PG_TEST(test_ptarray_append_ptarray),
-	PG_TEST(test_ptarray_locate_point),
-	PG_TEST(test_ptarray_isccw),
-	PG_TEST(test_ptarray_signed_area),
-	PG_TEST(test_ptarray_desegmentize),
-	PG_TEST(test_ptarray_insert_point),
-	PG_TEST(test_ptarray_contains_point),
-	PG_TEST(test_ptarrayarc_contains_point),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };
+	CU_pSuite suite = CU_add_suite("point_array", NULL, NULL);
+	PG_ADD_TEST(suite, test_ptarray_append_point);
+	PG_ADD_TEST(suite, test_ptarray_append_ptarray);
+	PG_ADD_TEST(suite, test_ptarray_locate_point);
+	PG_ADD_TEST(suite, test_ptarray_isccw);
+	PG_ADD_TEST(suite, test_ptarray_signed_area);
+	PG_ADD_TEST(suite, test_ptarray_desegmentize);
+	PG_ADD_TEST(suite, test_ptarray_insert_point);
+	PG_ADD_TEST(suite, test_ptarray_contains_point);
+	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);
+}

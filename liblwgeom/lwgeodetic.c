@@ -1735,7 +1735,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	GEOGRAPHIC_POINT g1, g2;
 	GEOGRAPHIC_POINT nearest1, nearest2;
 	POINT3D A1, A2, B1, B2;
-	POINT2D p;
+	const POINT2D *p;
 	double distance;
 	int i, j;
 	int use_sphere = (s->a == s->b ? 1 : 0);
@@ -1750,10 +1750,10 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	/* Handle point/point case here */
 	if ( pa1->npoints == 1 && pa2->npoints == 1 )
 	{
-		getPoint2d_p(pa1, 0, &p);
-		geographic_point_init(p.x, p.y, &g1);
-		getPoint2d_p(pa2, 0, &p);
-		geographic_point_init(p.x, p.y, &g2);
+		p = getPoint2d_cp(pa1, 0);
+		geographic_point_init(p->x, p->y, &g1);
+		p = getPoint2d_cp(pa2, 0);
+		geographic_point_init(p->x, p->y, &g2);
 		/* Sphere special case, axes equal */
 		distance = s->radius * sphere_distance(&g1, &g2);
 		if ( use_sphere )
@@ -1786,19 +1786,19 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		}
 
 		/* Initialize our point */
-		getPoint2d_p(pa_one, 0, &p);
-		geographic_point_init(p.x, p.y, &g1);
+		p = getPoint2d_cp(pa_one, 0);
+		geographic_point_init(p->x, p->y, &g1);
 
 		/* Initialize start of line */
-		getPoint2d_p(pa_many, 0, &p);
-		geographic_point_init(p.x, p.y, &(e1.start));
+		p = getPoint2d_cp(pa_many, 0);
+		geographic_point_init(p->x, p->y, &(e1.start));
 
 		/* Iterate through the edges in our line */
 		for ( i = 1; i < pa_many->npoints; i++ )
 		{
 			double d;
-			getPoint2d_p(pa_many, i, &p);
-			geographic_point_init(p.x, p.y, &(e1.end));
+			p = getPoint2d_cp(pa_many, i);
+			geographic_point_init(p->x, p->y, &(e1.end));
 			/* Get the spherical distance between point and edge */
 			d = s->radius * edge_distance_to_point(&e1, &g1, &g2);
 			/* New shortest distance! Record this distance / location */
@@ -1842,29 +1842,29 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	}
 
 	/* Initialize start of line 1 */
-	getPoint2d_p(pa1, 0, &p);
-	geographic_point_init(p.x, p.y, &(e1.start));
+	p = getPoint2d_cp(pa1, 0);
+	geographic_point_init(p->x, p->y, &(e1.start));
 	geog2cart(&(e1.start), &A1);
 
 
 	/* Handle line/line case */
 	for ( i = 1; i < pa1->npoints; i++ )
 	{
-		getPoint2d_p(pa1, i, &p);
-		geographic_point_init(p.x, p.y, &(e1.end));
+		p = getPoint2d_cp(pa1, i);
+		geographic_point_init(p->x, p->y, &(e1.end));
 		geog2cart(&(e1.end), &A2);
 
 		/* Initialize start of line 2 */
-		getPoint2d_p(pa2, 0, &p);
-		geographic_point_init(p.x, p.y, &(e2.start));
+		p = getPoint2d_cp(pa2, 0);
+		geographic_point_init(p->x, p->y, &(e2.start));
 		geog2cart(&(e2.start), &B1);
 
 		for ( j = 1; j < pa2->npoints; j++ )
 		{
 			double d;
 
-			getPoint2d_p(pa2, j, &p);
-			geographic_point_init(p.x, p.y, &(e2.end));
+			p = getPoint2d_cp(pa2, j);
+			geographic_point_init(p->x, p->y, &(e2.end));
 			geog2cart(&(e2.end), &B2);
 
 			LWDEBUGF(4, "e1.start == GPOINT(%.6g %.6g) ", e1.start.lat, e1.start.lon);
@@ -2141,7 +2141,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	if ( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) ||
 	        ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
-		POINT2D p;
+		const POINT2D *p;
 		LWPOLY *lwpoly;
 		LWPOINT *lwpt;
 		double distance = FLT_MAX;
@@ -2157,10 +2157,10 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 			lwpt = (LWPOINT*)lwgeom2;
 			lwpoly = (LWPOLY*)lwgeom1;
 		}
-		getPoint2d_p(lwpt->point, 0, &p);
+		p = getPoint2d_cp(lwpt->point, 0);
 
 		/* Point in polygon implies zero distance */
-		if ( lwpoly_covers_point2d(lwpoly, &p) )
+		if ( lwpoly_covers_point2d(lwpoly, p) )
 		{
 			return 0.0;
 		}
@@ -2179,9 +2179,9 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Line/polygon case, if start point-in-poly, return zero, else return distance. */
 	if ( ( type1 == POLYGONTYPE && type2 == LINETYPE ) ||
-	        ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
+	     ( type2 == POLYGONTYPE && type1 == LINETYPE ) )
 	{
-		POINT2D p;
+		const POINT2D *p;
 		LWPOLY *lwpoly;
 		LWLINE *lwline;
 		double distance = FLT_MAX;
@@ -2197,12 +2197,12 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 			lwline = (LWLINE*)lwgeom2;
 			lwpoly = (LWPOLY*)lwgeom1;
 		}
-		getPoint2d_p(lwline->points, 0, &p);
+		p = getPoint2d_cp(lwline->points, 0);
 
 		LWDEBUG(4, "checking if a point of line is in polygon");
 
 		/* Point in polygon implies zero distance */
-		if ( lwpoly_covers_point2d(lwpoly, &p) ) 
+		if ( lwpoly_covers_point2d(lwpoly, p) ) 
 			return 0.0;
 
 		LWDEBUG(4, "checking ring distances");
@@ -2226,20 +2226,20 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 	if ( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) ||
 	        ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
 	{
-		POINT2D p;
+		const POINT2D *p;
 		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;
 		LWPOLY *lwpoly2 = (LWPOLY*)lwgeom2;
 		double distance = FLT_MAX;
 		int i, j;
 
 		/* Point of 2 in polygon 1 implies zero distance */
-		getPoint2d_p(lwpoly1->rings[0], 0, &p);
-		if ( lwpoly_covers_point2d(lwpoly2, &p) )
+		p = getPoint2d_cp(lwpoly1->rings[0], 0);
+		if ( lwpoly_covers_point2d(lwpoly2, p) )
 			return 0.0;
 
 		/* Point of 1 in polygon 2 implies zero distance */
-		getPoint2d_p(lwpoly2->rings[0], 0, &p);
-		if ( lwpoly_covers_point2d(lwpoly1, &p) )
+		p = getPoint2d_cp(lwpoly2->rings[0], 0);
+		if ( lwpoly_covers_point2d(lwpoly1, p) )
 			return 0.0;
 
 		/* Not contained, so what's the actual distance? */

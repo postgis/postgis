@@ -108,7 +108,6 @@ Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS);
 typedef bool (*box2df_predicate)(const BOX2DF *a, const BOX2DF *b);
 
 
-#if POSTGIS_DEBUG_LEVEL > 0
 static char* box2df_to_string(const BOX2DF *a)
 {
 	char *rv = NULL;
@@ -120,8 +119,6 @@ static char* box2df_to_string(const BOX2DF *a)
 	sprintf(rv, "BOX2DF(%.12g %.12g, %.12g %.12g)", a->xmin, a->ymin, a->xmax, a->ymax);
 	return rv;
 }
-#endif
-
 
 /* Allocate a new copy of BOX2DF */
 static BOX2DF* box2df_copy(BOX2DF *b)
@@ -2207,7 +2204,7 @@ Datum box2df_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(box2df_out);
 Datum box2df_out(PG_FUNCTION_ARGS)
 {
-	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-	               errmsg("function box2df_out not implemented")));
-	PG_RETURN_POINTER(NULL);
+  BOX2DF *box = (BOX2DF *) PG_GETARG_POINTER(0);
+  char *result = box2df_to_string(box);
+  PG_RETURN_CSTRING(result);
 }

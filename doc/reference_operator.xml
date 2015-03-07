@@ -95,7 +95,7 @@ FROM ( VALUES
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's 3D bounding box intersects B's 3D bounding box.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1068,9 +1068,10 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
-			<refpurpose>Returns the distance between two points.  For point / point checks it uses floating point accuracy (as opposed to the double precision accuracy of the underlying point geometry).  For other geometry types
-			the distance between the floating point bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
-			using KNN gist functionality.</refpurpose>
+			<refpurpose>
+Returns the 2D distance between the centroids of A and B bounding
+boxes.
+			</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1096,16 +1097,19 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;-&gt;</varname> operator returns distance between two points read from the spatial index for points (float precision).  For
-			other geometries it returns the distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
+			<para>
+The <varname>&lt;-&gt;</varname> operator returns the 2D distance between the
+centroids of the bounding boxes of two geometries.  Useful for doing
+nearest neighbor <emphasis role="strong">approximate</emphasis> distance
+ordering.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
+			<note><para>This operand will make use of 2D GiST indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 			<para>Refer to <ulink url="http://workshops.opengeo.org/postgis-intro/knn.html">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live example.</para>
 
-			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
+			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
 			 	
 		
 		  </refsection>
@@ -1192,8 +1196,9 @@ Finally the hybrid:
 		  <refnamediv>
 			<refname>&lt;#&gt;</refname>
 
-			<refpurpose>Returns the distance between bounding box of 2 geometries.  For point / point checks it's almost the same as distance (though may be different since the bounding box is at floating point accuracy and geometries are double precision).  Useful for doing distance ordering and nearest neighbor limits
-			using KNN gist functionality.</refpurpose>
+			<refpurpose>
+Returns the 2D distance between A and B bounding boxes.
+			</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1219,14 +1224,14 @@ Finally the hybrid:
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two floating point bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
+			<para>The <varname>&lt;#&gt;</varname> operator returns distance between two floating point bounding boxes, possibly reading them from a spatial index (PostgreSQL 9.1+ required).   Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant e.g. ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)  instead of g1.geom &lt;#&gt;.</para></note>
 
-			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
+			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
 		
 		  </refsection>
 
@@ -1264,6 +1269,128 @@ SELECT b.tlid, b.mtfcc,
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_centroid" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="geometry_distance_centroid_nd">
+		  <refnamediv>
+			<refname>&lt;&lt;-&gt;&gt;</refname>
+
+			<refpurpose>
+Returns the n-D distance between the centroids of A and B bounding
+boxes.
+			</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D (euclidean)
+distance between the centroids of the bounding boxes of two geometries. 
+Useful for doing nearest neighbor
+<emphasis role="strong">approximate</emphasis> distance ordering.
+      </para>
+
+			<note><para>
+This operand will make use of n-D GiST indexes that may be available on
+the geometries.  It is different from other operators that use spatial
+indexes in that the spatial index is only used when the operator is in
+the ORDER BY clause.
+      </para></note>
+			<note><para>
+Index only kicks in if one of the geometries is a constant (not in a
+subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead
+of a.geom
+      </para></note>
+
+			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 	
+		
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="geometry_distance_box_nd" />,
+<xref linkend="geometry_distance_centroid" />
+      </para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="geometry_distance_box_nd">
+		  <refnamediv>
+			<refname>&lt;&lt;#&gt;&gt;</refname>
+
+			<refpurpose>
+Returns the n-D distance between A and B bounding boxes.
+			</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between two floating point bounding boxes, possibly reading them from a spatial index (PostgreSQL 9.1+ required).   Useful for doing nearest neighbor <emphasis role="strong">approximate</emphasis> distance ordering.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
+			  is in the ORDER BY clause.</para></note>
+			<note><para>
+Index only kicks in if one of the geometries is a constant e.g. ORDER BY
+(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom)  instead of g1.geom
+&lt;&lt;#&gt;&gt;.
+      </para></note>
+
+			 <para>Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+</para>
+		
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="geometry_distance_centroid_nd" />,
+<xref linkend="geometry_distance_box" />
+      </para>
 		  </refsection>
 		</refentry>
 

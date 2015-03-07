@@ -202,34 +202,45 @@ GEOSCoordSeq
 ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 {
 	uint32_t dims = 2;
-	uint32_t size, i;
-	POINT3DZ p;
+	uint32_t i;
+	const POINT3DZ *p3d;
+	const POINT2D *p2d;
 	GEOSCoordSeq sq;
 
-	if ( FLAGS_GET_Z(pa->flags) ) dims = 3;
-	size = pa->npoints;
+	if ( FLAGS_GET_Z(pa->flags) ) 
+		dims = 3;
 
-	sq = GEOSCoordSeq_create(size, dims);
-	if ( ! sq ) lwerror("Error creating GEOS Coordinate Sequence");
+	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) ) 
+		lwerror("Error creating GEOS Coordinate Sequence");
 
-	for (i=0; i<size; i++)
+	for ( i=0; i < pa->npoints; i++ )
 	{
-		getPoint3dz_p(pa, i, &p);
+		if ( dims == 3 )
+		{
+			p3d = getPoint3dz_cp(pa, i);
+			p2d = (const POINT2D *)p3d;
+		}
+		else
+		{
+			p2d = getPoint2d_cp(pa, i);
+		}
 
-		LWDEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
+		LWDEBUGF(4, "Point: %g,%g,%g", p2d->x, p2d->y, p3d->z);
 
 #if POSTGIS_GEOS_VERSION < 33
 		/* Make sure we don't pass any infinite values down into GEOS */
 		/* GEOS 3.3+ is supposed to  handle this stuff OK */
-		if ( isinf(p.x) || isinf(p.y) || (dims == 3 && isinf(p.z)) )
+		if ( isinf(p2d->x) || isinf(p2d->y) || (dims == 3 && isinf(p3d->z)) )
 			lwerror("Infinite coordinate value found in geometry.");
-		if ( isnan(p.x) || isnan(p.y) || (dims == 3 && isnan(p.z)) )
+		if ( isnan(p2d->x) || isnan(p2d->y) || (dims == 3 && isnan(p3d->z)) )
 			lwerror("NaN coordinate value found in geometry.");
 #endif
 
-		GEOSCoordSeq_setX(sq, i, p.x);
-		GEOSCoordSeq_setY(sq, i, p.y);
-		if ( dims == 3 ) GEOSCoordSeq_setZ(sq, i, p.z);
+		GEOSCoordSeq_setX(sq, i, p2d->x);
+		GEOSCoordSeq_setY(sq, i, p2d->y);
+		
+		if ( dims == 3 ) 
+			GEOSCoordSeq_setZ(sq, i, p3d->z);
 	}
 	return sq;
 }

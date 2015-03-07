@@ -33,6 +33,7 @@
 Datum BOX2D_in(PG_FUNCTION_ARGS);
 Datum BOX2D_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS);
 Datum BOX2D_expand(PG_FUNCTION_ARGS);
 Datum BOX2D_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX2D_combine(PG_FUNCTION_ARGS);
@@ -107,7 +108,7 @@ Datum BOX2D_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2D);
 Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	GBOX gbox;
 
@@ -123,8 +124,29 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 	FLAGS_SET_Z(gbox.flags, 0);
 	FLAGS_SET_M(gbox.flags, 0);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(gbox_copy(&gbox));
 }
+
+
+/*convert a GSERIALIZED to BOX2D */
+PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DF);
+Datum LWGEOM_to_BOX2DF(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GBOX gbox;
+
+	if ( gserialized_get_gbox_p(geom, &gbox) == LW_FAILURE )
+		PG_RETURN_NULL();
+
+	/* Strip out higher dimensions */
+	FLAGS_SET_Z(gbox.flags, 0);
+	FLAGS_SET_M(gbox.flags, 0);
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(gbox_copy(&gbox));
+}
+
 
 /*----------------------------------------------------------
  *	Relational operators for BOXes.
@@ -384,7 +406,7 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 
 	if (box2d_ptr == NULL)
 	{
-		lwgeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		lwgeom = PG_GETARG_GSERIALIZED_P(1);
 		/* empty geom would make getbox2d_p return NULL */
 		if ( ! gserialized_get_gbox_p(lwgeom, &box) ) PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(GBOX));
@@ -400,7 +422,7 @@ Datum BOX2D_combine(PG_FUNCTION_ARGS)
 
 	/*combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol) */
 
-	lwgeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	lwgeom = PG_GETARG_GSERIALIZED_P(1);
 	if ( ! gserialized_get_gbox_p(lwgeom, &box) )
 	{
 		/* must be the empty geom */
@@ -498,8 +520,8 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2D_construct);
 Datum BOX2D_construct(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *pgmin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *pgmax = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GSERIALIZED *pgmin = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *pgmax = PG_GETARG_GSERIALIZED_P(1);
 	GBOX *result;
 	LWPOINT *minpoint, *maxpoint;
 	double min, max, tmp;

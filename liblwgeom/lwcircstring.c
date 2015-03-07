@@ -298,3 +298,23 @@ LWPOINT* lwcircstring_get_lwpoint(LWCIRCSTRING *circ, int where) {
 	lwpoint = lwpoint_construct(circ->srid, NULL, pa);
 	return lwpoint;
 }
+
+/*
+* Snap to grid 
+*/
+LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid)
+{
+	LWCIRCSTRING *oline;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(line->points, grid);
+
+	/* Skip line3d with less then 2 points */
+	if ( opa->npoints < 2 ) return NULL;
+
+	/* TODO: grid bounding box... */
+	oline = lwcircstring_construct(line->srid, NULL, opa);
+
+	return oline;
+}
+

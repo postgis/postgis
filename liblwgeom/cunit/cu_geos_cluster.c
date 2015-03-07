@@ -188,14 +188,12 @@ static void single_input_test(void)
 	perform_cluster_within_distance_test(1, wkt_inputs, 1, expected_outputs, 1);
 }
 
-CU_TestInfo geos_cluster_tests[] =
+void geos_cluster_suite_setup(void);
+void geos_cluster_suite_setup(void)
 {
-	PG_TEST(basic_test),
-	PG_TEST(nonsequential_test),
-	PG_TEST(basic_distance_test),
-	PG_TEST(single_input_test),
-	CU_TEST_INFO_NULL
+    CU_pSuite suite = CU_add_suite("Clustering", init_geos_cluster_suite, NULL);
+    PG_ADD_TEST(suite, basic_test);
+    PG_ADD_TEST(suite, nonsequential_test);
+    PG_ADD_TEST(suite, basic_distance_test);
+    PG_ADD_TEST(suite, single_input_test);
 };
-
-CU_SuiteInfo geos_cluster_suite = {"Clustering",  init_geos_cluster_suite,  NULL, geos_cluster_tests};
-

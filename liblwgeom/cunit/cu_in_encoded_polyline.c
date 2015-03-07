@@ -56,10 +56,10 @@ static void in_encoded_polyline_test_precision(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo in_encoded_polyline_tests[] =
+void in_encoded_polyline_suite_setup(void);
+void in_encoded_polyline_suite_setup(void)
 {
-	PG_TEST(in_encoded_polyline_test_geoms),
-	PG_TEST(in_encoded_polyline_test_precision),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo in_encoded_polyline_suite = {"Encoded Polyline In Suite",  NULL,  NULL, in_encoded_polyline_tests};
+	CU_pSuite suite = CU_add_suite("encoded_polyline_input", NULL, NULL);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_geoms);
+	PG_ADD_TEST(suite, in_encoded_polyline_test_precision);
+}

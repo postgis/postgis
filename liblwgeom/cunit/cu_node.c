@@ -63,12 +63,9 @@ static void test_lwgeom_node(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-/*
-** Used by test harness to register the tests in this file.
-*/
-CU_TestInfo node_tests[] =
+void node_suite_setup(void);
+void node_suite_setup(void)
 {
-	PG_TEST(test_lwgeom_node),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo node_suite = {"node",  NULL,  NULL, node_tests};
+	CU_pSuite suite = CU_add_suite("noding", NULL, NULL);
+	PG_ADD_TEST(suite, test_lwgeom_node);
+}

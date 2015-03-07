@@ -3,6 +3,8 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes *
 
+  - #3022, ValidateTopology swapped meaning of id1 and id2 for the
+           'edge crosses node' error (now edge_id,node_id)
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
@@ -24,6 +26,10 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - Canonical output for index key types
+  - ST_SwapOrdinates (Sandro Santilli / Boundless)
+  - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
+           n-D distance operators (Sandro Santilli / Boundless)
   - Interruptibility API for liblwgeom (Sandro Santilli / CartoDB)
   - #2939, ST_ClipByBox2D (Sandro Santilli / CartoDB)
   - #2247, ST_Retile and ST_CreateOverview: in-db raster overviews creation
@@ -56,6 +62,7 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - #3070, Simplify geometry type constraint
   - #2839, Implement selectivity estimator for functional indexes,
            speeding up spatial queries on raster tables.
            (Sandro Santilli / Vizzuality)
@@ -71,6 +78,7 @@ PostGIS 2.2.0
   - #2829, Shortcut ST_Clip(raster) if geometry fully contains the raster
            and no NODATA specified
   - #2906, Update tiger geocoder to handle tiger 2014 data
+  - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
 
  * Bug Fixes *
 
@@ -81,6 +89,7 @@ PostGIS 2.2.0
            like geometry extent
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
+  - #3020, ST_AddBand out-db bug where height using width value
 
  * Code refactoring *
 

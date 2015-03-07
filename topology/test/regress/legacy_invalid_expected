@@ -1,8 +1,8 @@
 BEGIN
 t
 coincident nodes|1|23
-edge crosses node|23|1
-edge crosses node|14|27
+edge crosses node|1|23
+edge crosses node|27|14
 edge not simple|28|
 invalid edge|33|
 edge crosses edge|2|28

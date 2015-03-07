@@ -61,13 +61,11 @@ static void test_unionfind_ordered_by_cluster(void)
 	CU_ASSERT_EQUAL(0, memcmp(actual_ids_by_cluster, expected_ids_by_cluster, 10 * sizeof(uint32_t)));
 }
 
-CU_TestInfo unionfind_tests[] =
+void unionfind_suite_setup(void);
+void unionfind_suite_setup(void)
 {
-	PG_TEST(test_unionfind_create),
-	PG_TEST(test_unionfind_union),
-	PG_TEST(test_unionfind_ordered_by_cluster),
-	CU_TEST_INFO_NULL
-};
-
-CU_SuiteInfo unionfind_suite = {"Clustering Union-Find",  NULL,  NULL, unionfind_tests};
-
+    CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
+	PG_ADD_TEST(suite, test_unionfind_create),
+	PG_ADD_TEST(suite, test_unionfind_union),
+	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
+}

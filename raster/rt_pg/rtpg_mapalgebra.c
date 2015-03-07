@@ -3049,7 +3049,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 	srid = clamp_srid(rt_raster_get_srid(arg->raster));
 
 	/* geometry (2) */
-	gser = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	gser = PG_GETARG_GSERIALIZED_P(2);
 	geom = lwgeom_from_gserialized(gser);
 
 	/* Get a 2D version of the geometry if necessary */

@@ -128,7 +128,7 @@ static void test_band_metadata() {
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
 			CU_ASSERT_EQUAL(rt_band_get_pixel(band, x, y, &val, NULL), ES_NONE);
-			CU_ASSERT_DOUBLE_EQUAL(val, 255, 1.);
+			CU_ASSERT_DOUBLE_EQUAL(val, 0, 1.);
 		}
 	}
 
@@ -1253,20 +1253,22 @@ static void test_band_get_pixel_line() {
 }
 
 /* register tests */
-CU_TestInfo band_basics_tests[] = {
-	PG_TEST(test_band_metadata),
-	PG_TEST(test_band_pixtype_1BB),
-	PG_TEST(test_band_pixtype_2BUI),
-	PG_TEST(test_band_pixtype_4BUI),
-	PG_TEST(test_band_pixtype_8BUI),
-	PG_TEST(test_band_pixtype_8BSI),
-	PG_TEST(test_band_pixtype_16BUI),
-	PG_TEST(test_band_pixtype_16BSI),
-	PG_TEST(test_band_pixtype_32BUI),
-	PG_TEST(test_band_pixtype_32BSI),
-	PG_TEST(test_band_pixtype_32BF),
-	PG_TEST(test_band_pixtype_64BF),
-	PG_TEST(test_band_get_pixel_line),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo band_basics_suite = {"band_basics",  NULL,  NULL, band_basics_tests};
+void band_basics_suite_setup(void);
+void band_basics_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("band_basics", NULL, NULL);
+	PG_ADD_TEST(suite, test_band_metadata);
+	PG_ADD_TEST(suite, test_band_pixtype_1BB);
+	PG_ADD_TEST(suite, test_band_pixtype_2BUI);
+	PG_ADD_TEST(suite, test_band_pixtype_4BUI);
+	PG_ADD_TEST(suite, test_band_pixtype_8BUI);
+	PG_ADD_TEST(suite, test_band_pixtype_8BSI);
+	PG_ADD_TEST(suite, test_band_pixtype_16BUI);
+	PG_ADD_TEST(suite, test_band_pixtype_16BSI);
+	PG_ADD_TEST(suite, test_band_pixtype_32BUI);
+	PG_ADD_TEST(suite, test_band_pixtype_32BSI);
+	PG_ADD_TEST(suite, test_band_pixtype_32BF);
+	PG_ADD_TEST(suite, test_band_pixtype_64BF);
+	PG_ADD_TEST(suite, test_band_get_pixel_line);
+}
+
