@@ -1899,7 +1899,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		return 1;
 	}
 	
-	/* Haven't set up a clipping box yet? Make one then recurse again */
+	/* Haven't set up a clipping box yet? Make one, then recurse again */
+	/* We make the initial box the smallest perfect square that can contain */
+	/* the geometry, for easy quad-subdivision as we recurse */
 	if ( ! clip )
 	{
 		double height, width;
@@ -1940,6 +1942,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 				pt.y = clip->ymin;
 				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
 				{
+					/* TODO: Probably just making the clipping box into a polygon is a more */
+					/* efficient way to do this? */
 					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
 					/* Hm, clipping left nothing behind, skip it */
 					if ( lwgeom_is_empty(clipped) )
