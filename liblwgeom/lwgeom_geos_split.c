@@ -172,9 +172,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	 *  1. The point is not on the line or on the boundary
 	 *      -> Leave collection untouched, return 0
 	 *  2. The point is on the boundary
-	 *      -> Push 1 element on the collection:
-	 *         o the original line
-	 *      -> Return 1
+	 *      -> Leave collection untouched, return 1
 	 *  3. The point is in the line
 	 *      -> Push 2 elements on the collection:
 	 *         o start_point - cut_point
