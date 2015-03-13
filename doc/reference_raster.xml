@@ -5564,7 +5564,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
 							<type>raster </type> <parameter>rast</parameter>
 						</paramdef>
 						<paramdef>
-							<type>integer[] </type> <parameter>nband</parameter>
+							<type>integer[] </type> <parameter>nband=NULL</parameter>
 						</paramdef>
 						<paramdef>
 							<type>boolean </type> <parameter>exclude_nodata_value=true</parameter>
@@ -5589,7 +5589,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
 				<title>Description</title>
 
 				<para>
-					Get the values of the specified band as a 2-dimension array.  If <varname>nband</varname> is NULL or not provided, all raster bands are processed.
+					Get the values of the specified band as a 2-dimension array (first index is row, second is column). If <varname>nband</varname> is NULL or not provided, all raster bands are processed.
 				</para>
 
 				<para>Availability: 2.1.0</para>
@@ -5627,6 +5627,19 @@ FROM foo;
      3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}
      1 | {{1,1,1},{1,1,1},{1,1,1}}
 (2 rows)
+				</programlisting>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 1, 2, 5) AS rast
+)
+SELECT
+	(ST_DumpValues(rast, 1))[2][1]
+FROM foo;
+
+ st_dumpvalues
+---------------
+             5
+(1 row)
 				</programlisting>
 			</refsection>
 
