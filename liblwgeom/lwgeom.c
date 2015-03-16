@@ -372,14 +372,14 @@ void
 lwgeom_release(LWGEOM *lwgeom)
 {
 	if ( ! lwgeom )
-		lwerror("%s: someone called on 0x0", __func__);
+		lwerror("lwgeom_release: someone called on 0x0");
 
 	LWDEBUGF(3, "releasing type %s", lwtype_name(lwgeom->type));
 
 	/* Drop bounding box (always a copy) */
 	if ( lwgeom->bbox )
 	{
-		LWDEBUGF(3, "%s: releasing bbox. %p", __func__, lwgeom->bbox);
+		LWDEBUGF(3, "lwgeom_release: releasing bbox. %p", lwgeom->bbox);
 		lwfree(lwgeom->bbox);
 	}
 	lwfree(lwgeom);
@@ -421,7 +421,7 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
 	default:
-		lwerror("%s: Unknown geometry type: %s", __func__, lwtype_name(lwgeom->type));
+		lwerror("lwgeom_clone: Unknown geometry type: %s", lwtype_name(lwgeom->type));
 		return NULL;
 	}
 }
@@ -456,7 +456,7 @@ lwgeom_clone_deep(const LWGEOM *lwgeom)
 	case COLLECTIONTYPE:
 		return (LWGEOM *)lwcollection_clone_deep((LWCOLLECTION *)lwgeom);
 	default:
-		lwerror("%s: Unknown geometry type: %s", __func__, lwtype_name(lwgeom->type));
+		lwerror("lwgeom_clone_deep: Unknown geometry type: %s", lwtype_name(lwgeom->type));
 		return NULL;
 	}
 }
@@ -555,7 +555,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 		return lwcollection_same((LWCOLLECTION *)lwgeom1,
 		                         (LWCOLLECTION *)lwgeom2);
 	default:
-		lwerror("%s: unsupported geometry type: %s", __func__, 
+		lwerror("lwgeom_same: unsupported geometry type: %s",
 		        lwtype_name(lwgeom1->type));
 		return LW_FALSE;
 	}
@@ -735,7 +735,7 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 		case COLLECTIONTYPE:
 			return lwcollection_as_lwgeom(lwcollection_force_dims((LWCOLLECTION*)geom, hasz, hasm));
 		default:
-			lwerror("%s: unsupported geom type: %s", __func__, lwtype_name(geom->type));
+			lwerror("lwgeom_force_2d: unsupported geom type: %s", lwtype_name(geom->type));
 			return NULL;
 	}
 }
@@ -893,7 +893,7 @@ lwgeom_set_geodetic(LWGEOM *geom, int value)
 				lwgeom_set_geodetic(col->geoms[i], value);
 			break;
 		default:
-			lwerror("%s: unsupported geom type: %s", __func__, lwtype_name(geom->type));
+			lwerror("lwgeom_set_geodetic: unsupported geom type: %s", lwtype_name(geom->type));
 			return;
 	}
 }
@@ -938,8 +938,8 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 			lwgeom_longitude_shift(coll->geoms[i]);
 		return;
 	default:
-		lwerror("%s: unsupported geom type: %s",
-		        __func__, lwtype_name(lwgeom->type));
+		lwerror("lwgeom_longitude_shift: unsupported geom type: %s",
+		        lwtype_name(lwgeom->type));
 	}
 }
 
@@ -1095,7 +1095,7 @@ void lwgeom_free(LWGEOM *lwgeom)
 		lwcollection_free((LWCOLLECTION *)lwgeom);
 		break;
 	default:
-		lwerror("%s called with unknown type (%d) %s", __func__, lwgeom->type, lwtype_name(lwgeom->type));
+		lwerror("lwgeom_free called with unknown type (%d) %s", lwgeom->type, lwtype_name(lwgeom->type));
 	}
 	return;
 }
@@ -1144,8 +1144,8 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 	/* Null? Zero. */
 	if( ! geom ) return 0;
 	
-	LWDEBUGF(4, "%s got type %s",
-	         __func__, lwtype_name(geom->type));
+	LWDEBUGF(4, "lwgeom_count_vertices got type %s",
+	         lwtype_name(geom->type));
 
 	/* Empty? Zero. */
 	if( lwgeom_is_empty(geom) ) return 0;
@@ -1176,8 +1176,8 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("%s: unsupported input geometry type: %s",
-		        __func__, lwtype_name(geom->type));
+		lwerror("lwgeom_count_vertices: unsupported input geometry type: %s",
+		        lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
@@ -1195,8 +1195,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 	/* Null? Zero. */
 	if( ! geom ) return -1;
 	
-	LWDEBUGF(4, "%s got type %s",
-	         __func__, lwtype_name(geom->type));
+	LWDEBUGF(4, "lwgeom_dimension got type %s",
+	         lwtype_name(geom->type));
 
 	/* Empty? Zero. */
 	/* if( lwgeom_is_empty(geom) ) return 0; */
@@ -1237,8 +1237,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 		return maxdim;
 	}
 	default:
-		lwerror("%s: unsupported input geometry type: %s",
-		        __func__, lwtype_name(geom->type));
+		lwerror("lwgeom_dimension: unsupported input geometry type: %s",
+		        lwtype_name(geom->type));
 	}
 	return -1;
 }
@@ -1287,7 +1287,7 @@ int lwgeom_count_rings(const LWGEOM *geom)
 		break;
 	}
 	default:
-		lwerror("%s: unsupported input geometry type: %s", __func__, lwtype_name(geom->type));
+		lwerror("lwgeom_count_rings: unsupported input geometry type: %s", lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d rings", result);
@@ -1297,8 +1297,8 @@ int lwgeom_count_rings(const LWGEOM *geom)
 int lwgeom_is_empty(const LWGEOM *geom)
 {
 	int result = LW_FALSE;
-	LWDEBUGF(4, "%s: got type %s",
-	         __func__, lwtype_name(geom->type));
+	LWDEBUGF(4, "lwgeom_is_empty: got type %s",
+	         lwtype_name(geom->type));
 
 	switch (geom->type)
 	{
@@ -1330,8 +1330,8 @@ int lwgeom_is_empty(const LWGEOM *geom)
 		return lwcollection_is_empty((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("%s: unsupported input geometry type: %s",
-		        __func__, lwtype_name(geom->type));
+		lwerror("lwgeom_is_empty: unsupported input geometry type: %s",
+		        lwtype_name(geom->type));
 		break;
 	}
 	return result;
@@ -1363,8 +1363,8 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 {
 	int dim;
 
-	LWDEBUGF(3, "%s got type %s",
-	         __func__, lwtype_name(geom->type));
+	LWDEBUGF(3, "lwgeom_dimensionality got type %s",
+	         lwtype_name(geom->type));
 
 	switch (geom->type)
 	{
@@ -1397,8 +1397,8 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 		return lwcollection_dimensionality((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("%s: unsupported input geometry type: %s",
-		        __func__, lwtype_name(geom->type));
+		lwerror("lwgeom_dimensionality: unsupported input geometry type: %s",
+		        lwtype_name(geom->type));
 		break;
 	}
 	return 0;
@@ -1442,8 +1442,8 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		return in;
 
 	default:
-		lwnotice("%s: unsupported geometry type: %s",
-		         __func__, lwtype_name(in->type));
+		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
+		         lwtype_name(in->type));
 		return in;
 		break;
 	}
@@ -1518,8 +1518,8 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 		break;
 
 	default:
-		lwerror("%s: unsupported geometry type: %s",
-		        __func__, lwtype_name(in->type));
+		lwerror("lwgeom_swap_ordinates: unsupported geometry type: %s",
+		        lwtype_name(in->type));
 		return;
 	}
 
@@ -1565,8 +1565,7 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 	case COLLECTIONTYPE:
 		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist);
 	default:
-	lwerror("%s: unsupported geometry type: %s",
-        	__func__, lwtype_name(igeom->type));
+		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(igeom->type));
 	}
 	return NULL;
 }
@@ -1726,8 +1725,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 			}
 			else 
 			{
-				lwerror("%s: unsupported geometry type: %s",
-			        	__func__, lwtype_name(type));
+				lwerror("lwgeom_affine: unable to handle type '%s'", lwtype_name(type));
 			}
 		}
 	}
@@ -1758,8 +1756,8 @@ lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 		case COLLECTIONTYPE:
 			return lwcollection_as_lwgeom(lwcollection_construct_empty(type, srid, hasz, hasm));
 		default:
-			lwerror("%s: unsupported geometry type: %s",
-		        	__func__, lwtype_name(type));
+			lwerror("lwgeom_construct_empty: unsupported geometry type: %s",
+		        	lwtype_name(type));
 			return NULL;
 	}
 }
@@ -1788,8 +1786,8 @@ lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
 		case COLLECTIONTYPE:
 			return lwcollection_startpoint((LWCOLLECTION*)lwgeom, pt);
 		default:
-			lwerror("%s: unsupported geometry type: %s",
-		        	__func__, lwtype_name(lwgeom->type));
+			lwerror("int: unsupported geometry type: %s",
+		        	lwtype_name(lwgeom->type));
 			return LW_FAILURE;
 	}
 }
@@ -1815,8 +1813,8 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 		case CIRCSTRINGTYPE:
 			return (LWGEOM *)lwcircstring_grid((LWCIRCSTRING *)lwgeom, grid);
 		default:
-			lwerror("%s: Unsupported geometry type: %s",
-			        __func__, lwtype_name(lwgeom->type));
+			lwerror("lwgeom_grid: Unsupported geometry type: %s",
+			        lwtype_name(lwgeom->type));
 			return NULL;
 	}
 }
@@ -1829,10 +1827,7 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 	
 	if ( ! gbox_overlaps_2d(geombox, gbox) )
 		return 0;
-
-	if ( gbox_contains_2d(gbox, geombox) )
-		return lwgeom_count_vertices(geom);
-		
+	
 	switch ( geom->type )
 	{
 		case POINTTYPE:
@@ -1869,7 +1864,7 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 		}
 		default:
 		{
-			lwerror("%s: Unsupported geometry type: %s", __func__,
+			lwerror("lwgeom_npoints_in_rect: Unsupported geometry type: %s",
 			        lwtype_name(geom->type));
 			return 0;
 		}
@@ -1947,9 +1942,24 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 				pt.y = clip->ymin;
 				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
 				{
-					LWPOLY *clip_poly = lwpoly_construct_from_gbox(geom->srid, clip);
-					lwcollection_add_lwgeom(col, lwpoly_as_lwgeom(clip_poly));
-					return 5;
+					/* TODO: Probably just making the clipping box into a polygon is a more */
+					/* efficient way to do this? */
+					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
+					/* Hm, clipping left nothing behind, skip it */
+					if ( lwgeom_is_empty(clipped) )
+					{
+						return 0;
+					}
+					/* Add the clipped part */
+					else
+					{
+						lwcollection_add_lwgeom(col, clipped);
+						return 5;
+					}
+				}
+				else
+				{
+					return 0;
 				}
 			}
 			else
@@ -2011,11 +2021,6 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
 	int n = 0;
 	LWCOLLECTION *col;
-
-	/* Guard against terribleness */
-	if ( maxvertices < 10 )
-		lwerror("%s: must use a vertex count of at least 10", __func__);
-
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 	n = lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
 	return col;

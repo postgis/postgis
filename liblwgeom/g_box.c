@@ -46,16 +46,6 @@ GBOX* gbox_clone(const GBOX *gbox)
 	return g;
 }
 
-int gbox_has_z(const GBOX *gbox)
-{
-	return FLAGS_GET_Z(gbox->flags);
-}
-
-int gbox_has_m(const GBOX *gbox)
-{
-	return FLAGS_GET_M(gbox->flags);
-}
-
 /* TODO to be removed */
 BOX3D* box3d_from_gbox(const GBOX *gbox)
 {
