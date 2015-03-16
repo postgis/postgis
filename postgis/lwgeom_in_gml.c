@@ -605,7 +605,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_append_point(dpa, &pt, LW_FALSE);
+			ptarray_append_point(dpa, &pt, LW_TRUE);
 			digit = false;
 
 			q = p+1;

@@ -329,7 +329,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
         if ( isdigit(*q) || *q == '+' || *q == '-' || *q == '.' || ! *q ) {
           if ( kml_dims < 2 ) lwerror("invalid KML representation"); /* (not enough ordinates)"); */
           if ( kml_dims < 3 ) *hasz = false;
-          ptarray_append_point(dpa, &pt, LW_FALSE);
+          ptarray_append_point(dpa, &pt, LW_TRUE);
           kml_dims = 0;
         }
         p = q-1; /* will be incrementedon next iteration */

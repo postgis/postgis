@@ -11,6 +11,7 @@ PostGIS 2.1.6
 
   - #3069, small objects getting inappropriately fluffed up w/ boxes
   - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
+  - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
   - #3058, Fix ND-GiST picksplit method to split on the best plane
   - #3052, Make operators <-> and <#> available for PostgreSQL < 9.1
   - #3045, Fix dimensionality confusion in &&& operator
