@@ -122,7 +122,7 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 
 	}
 
-	return ptarray_append_point(pa, &pt, LW_FALSE);
+	return ptarray_append_point(pa, &pt, LW_TRUE);
 }
 
 static LWGEOM*

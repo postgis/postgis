@@ -334,7 +334,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
           else if ( seen_kml_dims != kml_dims ) {
             lwerror("invalid KML representation: mixed coordinates dimension");
           }
-          ptarray_append_point(dpa, &pt, LW_FALSE);
+          ptarray_append_point(dpa, &pt, LW_TRUE);
           kml_dims = 0;
         }
         p = q-1; /* will be incrementedon next iteration */
