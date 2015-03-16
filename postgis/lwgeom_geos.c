@@ -33,6 +33,8 @@
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h" 
 
+#include "float.h" /* for DBL_DIG */
+
 
 /* Return NULL on GEOS error
  *
