@@ -59,6 +59,7 @@ extensions/postgis_topology/sql_bits/*.sql
 GNUmakefile
 java/jdbc/Makefile
 java/jdbc/lib/
+java/jdbc/pom.xml
 java/jdbc/target/
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
