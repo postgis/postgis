@@ -76,6 +76,53 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
+LWPOLY*
+lwpoly_construct_from_gbox(int srid, const GBOX *gbox)
+{
+	POINTARRAY *pa;
+	POINT4D p;
+	LWPOLY *result = lwalloc(sizeof(LWPOLY));
+	result->type = POLYGONTYPE;
+	result->flags = gflags(0, 0, 0);
+	result->srid = srid;
+	result->nrings = 1;
+	result->maxrings = 1; /* Allocate room for ring, just in case. */
+	result->rings = lwalloc(result->maxrings * sizeof(POINTARRAY*));
+	result->bbox = gbox_clone(gbox);
+
+	/* Add a ring */
+	pa = ptarray_construct_empty(0, 0, 5);
+	result->rings[0] = pa;
+
+	/* 1st point */
+	p.x = gbox->xmin;
+	p.y = gbox->ymin;
+	ptarray_append_point(pa, &p, LW_TRUE);
+
+	/* 2nd point */
+	p.x = gbox->xmin;
+	p.y = gbox->ymax;
+	ptarray_append_point(pa, &p, LW_TRUE);
+
+	/* 3rd point */
+	p.x = gbox->xmax;
+	p.y = gbox->ymax;
+	ptarray_append_point(pa, &p, LW_TRUE);
+
+	/* 4th point */
+	p.x = gbox->xmax;
+	p.y = gbox->ymin;
+	ptarray_append_point(pa, &p, LW_TRUE);
+
+	/* 5th point */
+	p.x = gbox->xmin;
+	p.y = gbox->ymin;
+	ptarray_append_point(pa, &p, LW_TRUE);
+	
+	return result;
+}
+
+
 void lwpoly_free(LWPOLY  *poly)
 {
 	int t;

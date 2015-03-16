@@ -23,3 +23,14 @@ CREATE TEMPORARY TABLE t AS SELECT
 SELECT ST_AsEWKT(ST_ClipByBox2d(g, ST_MakeEnvelope(-20,-20,-10,-10))) FROM t;
 -- See http://trac.osgeo.org/postgis/ticket/2954
 SELECT ST_AsEWKT(ST_ClipByBox2D('SRID=4326;POINT(0 0)','BOX3D(-1 -1,1 1)'::box3d::box2d));
+
+
+-- ST_Subdivide requires ST_ClibByBox2D
+SELECT Round(Sum(ST_Area(geom))), Count(*) 
+  FROM ST_Subdivide(ST_Segmentize('POLYGON((0 0, 0 100, 100 100, 100 0, 0 0))'::geometry,1),100) AS geom;
+
+SELECT Round(Sum(ST_Area(geom))), Count(*) 
+  FROM ST_Subdivide(ST_Segmentize('POLYGON((0 0, 0 100, 100 100, 100 0, 0 0))'::geometry,1),24) AS geom;
+
+SELECT Round(Sum(ST_Area(geom))), Count(*) 
+  FROM ST_Subdivide(ST_Segmentize('POLYGON((0 0, 0 100, 100 100, 100 0, 0 0))'::geometry,1),12) AS geom;

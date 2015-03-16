@@ -1042,6 +1042,10 @@ extern LWCOMPOUND* lwcompound_construct_from_lwline(const LWLINE *lwpoly);
 */
 extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
 
+/**
+* Construct a new 2D polygon using an envelope as input 
+*/
+extern LWPOLY* lwpoly_construct_from_gbox(int srid, const GBOX *gbox);
 
 /******************************************************************
  * LWGEOM functions

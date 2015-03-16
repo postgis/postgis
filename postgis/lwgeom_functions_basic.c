@@ -2099,52 +2099,21 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 {
 	LWPOLY *poly;
 	GSERIALIZED *result;
-	POINTARRAY **pa;
-	POINT4D p;
-	double x1, y1, x2, y2;
+	GBOX gbox;
 	int srid = SRID_UNKNOWN;
 
 	POSTGIS_DEBUG(2, "ST_MakeEnvelope called");
 
-	x1 = PG_GETARG_FLOAT8(0);
-	y1 = PG_GETARG_FLOAT8(1);
-	x2 = PG_GETARG_FLOAT8(2);
-	y2 = PG_GETARG_FLOAT8(3);
+	gbox_init(&gbox);
+	gbox.xmin = PG_GETARG_FLOAT8(0);
+	gbox.ymin = PG_GETARG_FLOAT8(1);
+	gbox.xmax = PG_GETARG_FLOAT8(2);
+	gbox.ymax = PG_GETARG_FLOAT8(3);
 	if ( PG_NARGS() > 4 ) {
 		srid = PG_GETARG_INT32(4);
 	}
 
-	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY**));
-	pa[0] = ptarray_construct_empty(0, 0, 5);
-
-	/* 1st point */
-	p.x = x1;
-	p.y = y1;
-	ptarray_append_point(pa[0], &p, LW_TRUE);
-
-	/* 2nd point */
-	p.x = x1;
-	p.y = y2;
-	ptarray_append_point(pa[0], &p, LW_TRUE);
-
-	/* 3rd point */
-	p.x = x2;
-	p.y = y2;
-	ptarray_append_point(pa[0], &p, LW_TRUE);
-
-	/* 4th point */
-	p.x = x2;
-	p.y = y1;
-	ptarray_append_point(pa[0], &p, LW_TRUE);
-
-	/* 5th point */
-	p.x = x1;
-	p.y = y1;
-	ptarray_append_point(pa[0], &p, LW_TRUE);
-
-	poly = lwpoly_construct(srid, NULL, 1, pa);
-	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
-
+	poly = lwpoly_construct_from_gbox(srid, &gbox);
 	result = geometry_serialize(lwpoly_as_lwgeom(poly));
 	lwpoly_free(poly);
 
