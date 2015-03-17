@@ -696,7 +696,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 -- ST_CountAgg
 -----------------------------------------------------------------------
 
--- Availability: 2.1.0
+-- Availability: 2.2.0
 CREATE TYPE agg_count AS (
 	count bigint,
 	nband integer,
