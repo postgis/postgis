@@ -557,6 +557,10 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
+	/* Empty TRIANGLE starts w/ empty POINTARRAY, free it first */
+	if (tri->points)
+		ptarray_free(tri->points);
+	
 	tri->points = pa;	
 	return tri;
 }
