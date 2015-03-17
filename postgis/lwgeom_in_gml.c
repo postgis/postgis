@@ -282,8 +282,6 @@ static xmlNodePtr get_xlink_node(xmlNodePtr xnode)
  */
 static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 {
-	int i;
-	POINT4D p;
 	projPJ in_pj, out_pj;
 	char *text_in, *text_out;
 
@@ -299,11 +297,9 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	lwfree(text_in);
 	lwfree(text_out);
 
-	for (i=0 ; i < pa->npoints ; i++)
+	if ( ptarray_transform(pa, in_pj, out_pj) == LW_FAILURE )
 	{
-		getPoint4d_p(pa, i, &p);
-		point4d_transform(&p, in_pj, out_pj);
-		ptarray_set_point4d(pa, i, &p);
+		elog(ERROR, "gml_reproject_pa: reprojection failed");
 	}
 
 	pj_free(in_pj);
@@ -605,7 +601,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_append_point(dpa, &pt, LW_FALSE);
+			ptarray_append_point(dpa, &pt, LW_TRUE);
 			digit = false;
 
 			q = p+1;
@@ -1056,9 +1052,9 @@ static LWGEOM* parse_gml_curve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		{
 			if (i + 1 == lss) last = 1;
 			/* Check if segments are not disjoints */
-			if (i > 0 && memcmp(	getPoint_internal(pa, npoints),
+			if (i > 0 && memcmp( getPoint_internal(pa, npoints),
 			                     getPoint_internal(ppa[i], 0),
-			                     *hasz?sizeof(POINT3D):sizeof(POINT2D)))
+			                     *hasz ? sizeof(POINT3D) : sizeof(POINT2D)))
 				gml_lwerror("invalid GML representation", 41);
 
 			/* Aggregate stuff */

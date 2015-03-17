@@ -74,6 +74,7 @@ TESTS = \
   dumper/literalsrid \
   dumper/realtable \
 	binary \
+	operators \
 	regress \
 	regress_index \
 	regress_index_nulls \
@@ -82,6 +83,7 @@ TESTS = \
 	regress_lrs \
 	removepoint \
 	setpoint \
+	size \
 	simplify \
 	snaptogrid \
 	summary \
@@ -127,10 +129,16 @@ TESTS = \
 	typmod \
 	remove_repeated_points \
 	split \
+	swapordinates \
 	relate \
 	bestsrid \
 	concave_hull\
 	twkb
+
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
+  # Index supported KNN only available in PostgreSQL 9.1 and higher
+	TESTS += knn
+endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	# GEOS-3.3 adds:

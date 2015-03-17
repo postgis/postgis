@@ -12,6 +12,9 @@
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
+top_builddir = @top_builddir@
+SHELL = @SHELL@
+LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
@@ -159,7 +162,8 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 
 # Build the main executable
 generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS)
+	$(LIBTOOL) --mode=link \
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.la -lm $(CUNIT_LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:

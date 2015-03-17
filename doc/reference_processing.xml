@@ -5,10 +5,9 @@
 			<refnamediv>
 				<refname>ST_Buffer</refname>
 
-				<refpurpose>(T) For geometry: Returns a geometry that represents all points whose distance
-			from this Geometry is less than or equal to distance. Calculations
-			are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper.  Introduced in 1.5 support for
-			different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#
+				<refpurpose>
+Returns a geometry covering all points within a given distance
+from the input geometry.
 			</refpurpose>
 			</refnamediv>
 
@@ -1588,10 +1587,10 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	  <refsection>
 		<title>Description</title>
 		<para>Returns a version of the given geometry with X and Y axis flipped.</para>
+		<para>Availability: 2.0.0</para>
 		<para>&curve_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&M_support;</para>
-		<para>Availability: 2.0.0</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
@@ -1606,14 +1605,81 @@ POINT(2 1)
 		 ]]></programlisting>
 	  </refsection>
 
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para> <xref linkend="ST_SwapOrdinates" /> </para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_SwapOrdinates">
+	  <refnamediv>
+		<refname>ST_SwapOrdinates</refname>
+		<refpurpose>Returns a version of the given geometry with
+				given ordinate values swapped.
+    </refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>
+Returns a version of the given geometry with given ordinates swapped.
+    </para>
+		<para>
+The <varname>ords</varname> parameter is a 2-characters string naming
+the ordinates to swap. Valid names are: x,y,z and m.
+    </para>
+		<para>Availability: 2.2.0</para>
+		<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
+	  	<para>&M_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Example</title>
+		<programlisting><![CDATA[
+-- Scale M value by 2
+SELECT ST_AsText(
+  ST_SwapOrdinates(
+    ST_Scale(
+      ST_SwapOrdinates(g,'xm'),
+      2, 1
+    ),
+  'xm')
+) FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;
+     st_astext
+--------------------
+ POINT ZM (0 0 0 4)
+		 ]]></programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para> <xref linkend="ST_FlipCoordinates" /> </para>
+	  </refsection>
+
 	</refentry>
 
 	<refentry id="ST_Intersection">
 		<refnamediv>
 			<refname>ST_Intersection</refname>
 
-			<refpurpose>(T) Returns a geometry that represents the shared portion of geomA and geomB.  The geography implementation
-					does a transform to geometry to do the intersection and then transform back to WGS84.
+			<refpurpose>
+Returns a geometry that represents the shared portion of geomA and geomB.
 			</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>

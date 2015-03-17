@@ -236,12 +236,12 @@ static void out_kml_test_prefix(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_kml_tests[] =
+void out_kml_suite_setup(void);
+void out_kml_suite_setup(void)
 {
-	PG_TEST(out_kml_test_precision),
-	PG_TEST(out_kml_test_dims),
-	PG_TEST(out_kml_test_geoms),
-	PG_TEST(out_kml_test_prefix),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_kml_suite = {"KML Out Suite",  NULL,  NULL, out_kml_tests};
+	CU_pSuite suite = CU_add_suite("kml_output", NULL, NULL);
+	PG_ADD_TEST(suite, out_kml_test_precision);
+	PG_ADD_TEST(suite, out_kml_test_dims);
+	PG_ADD_TEST(suite, out_kml_test_geoms);
+	PG_ADD_TEST(suite, out_kml_test_prefix);
+}

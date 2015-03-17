@@ -323,19 +323,16 @@ static void buildarea7(void)
 }
 
 
-/*
-** Used by test harness to register the tests in this file.
-*/
-static CU_TestInfo buildarea_tests[] =
+void buildarea_suite_setup(void);
+void buildarea_suite_setup(void)
 {
-	PG_TEST(buildarea1),
-	PG_TEST(buildarea2),
-	PG_TEST(buildarea3),
-	PG_TEST(buildarea4),
-	PG_TEST(buildarea4b),
-	PG_TEST(buildarea5),
-	PG_TEST(buildarea6),
-	PG_TEST(buildarea7),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo buildarea_suite = {"buildarea",  NULL,  NULL, buildarea_tests};
+	CU_pSuite suite = CU_add_suite("buildarea", NULL, NULL);
+	PG_ADD_TEST(suite,buildarea1);
+	PG_ADD_TEST(suite,buildarea2);
+	PG_ADD_TEST(suite,buildarea3);
+	PG_ADD_TEST(suite,buildarea4);
+	PG_ADD_TEST(suite,buildarea4b);
+	PG_ADD_TEST(suite,buildarea5);
+	PG_ADD_TEST(suite,buildarea6);
+	PG_ADD_TEST(suite,buildarea7);
+}

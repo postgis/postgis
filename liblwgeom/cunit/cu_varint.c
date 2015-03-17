@@ -183,9 +183,9 @@ static void test_varint(void)
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo varint_tests[] =
+void varint_suite_setup(void);
+void varint_suite_setup(void)
 {
-	PG_TEST(test_varint),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo varint_suite = {"varint", NULL, NULL, varint_tests };
+	CU_pSuite suite = CU_add_suite("varint", NULL, NULL);
+	PG_ADD_TEST(suite, test_varint);
+}

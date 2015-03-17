@@ -267,9 +267,11 @@ static void test_band_value_count() {
 }
 
 /* register tests */
-CU_TestInfo band_stats_tests[] = {
-	PG_TEST(test_band_stats),
-	PG_TEST(test_band_value_count),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo band_stats_suite = {"band_stats",  NULL,  NULL, band_stats_tests};
+void band_stats_suite_setup(void);
+void band_stats_suite_setup(void)
+{
+	CU_pSuite suite = CU_add_suite("band_stats", NULL, NULL);
+	PG_ADD_TEST(suite, test_band_stats);
+	PG_ADD_TEST(suite, test_band_value_count);
+}
+

@@ -31,6 +31,7 @@
 
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
+Datum ST_Subdivide(PG_FUNCTION_ARGS);
 
 typedef struct GEOMDUMPNODE_T
 {
@@ -79,7 +80,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
-		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
 
 		/* Create function state */
@@ -222,10 +223,10 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
-		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pglwgeom = PG_GETARG_GSERIALIZED_P_COPY(0);
 		if ( gserialized_get_type(pglwgeom) != POLYGONTYPE )
 		{
-			lwerror("Input is not a polygon");
+			elog(ERROR, "Input is not a polygon");
 		}
 
 		lwgeom = lwgeom_from_gserialized(pglwgeom);
@@ -298,5 +299,106 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 	SRF_RETURN_DONE(funcctx);
 
+}
+
+
+struct FLATCOLLECTIONDUMPSTATE
+{
+	int geomnum;
+	LWCOLLECTION *col;
+};
+
+/*
+* Break an object up into smaller objects of no more than N vertices 
+*/
+PG_FUNCTION_INFO_V1(ST_Subdivide);
+Datum ST_Subdivide(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 35
+
+	elog(ERROR, "The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'%s' function (3.5.0+ required)",
+	        POSTGIS_GEOS_VERSION, __func__);
+	PG_RETURN_NULL();
+
+#else /* POSTGIS_GEOS_VERSION >= 35 */
+
+	typedef struct
+	{
+		int nextgeom;
+		int numgeoms;
+		LWCOLLECTION *col;
+	} collection_fctx;
+
+	FuncCallContext *funcctx;
+	collection_fctx *fctx;
+	MemoryContext oldcontext;
+
+	/* stuff done only on the first call of the function */
+	if (SRF_IS_FIRSTCALL())
+	{
+		GSERIALIZED *gser;
+		LWGEOM *geom;
+		LWCOLLECTION *col;
+		int maxvertices = 256;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/*
+		* switch to memory context appropriate for multiple function calls
+		*/
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/*
+		* Get the geometry value 
+		*/
+		gser = PG_GETARG_GSERIALIZED_P(0);
+		geom = lwgeom_from_gserialized(gser);
+		
+		/*
+		* Get the max vertices value 
+		*/
+		maxvertices = PG_GETARG_INT32(1);
+		
+		/*
+		* Compute the subdivision of the geometry
+		*/
+		col = lwgeom_subdivide(geom, maxvertices);
+		
+		if ( ! col ) 
+			SRF_RETURN_DONE(funcctx);
+
+		/* allocate memory for user context */
+		fctx = (collection_fctx *) palloc(sizeof(collection_fctx));
+
+		/* initialize state */
+		fctx->nextgeom = 0;
+		fctx->numgeoms = col->ngeoms;
+		fctx->col = col;
+
+		/* save user context, switch back to function context */
+		funcctx->user_fctx = fctx;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+	fctx = funcctx->user_fctx;
+
+	if (fctx->nextgeom < fctx->numgeoms)
+	{
+		GSERIALIZED *gpart = geometry_serialize(fctx->col->geoms[fctx->nextgeom]);
+		fctx->nextgeom++;
+		SRF_RETURN_NEXT(funcctx, PointerGetDatum(gpart));
+	}
+	else
+	{
+		/* do when there is no more left */
+		SRF_RETURN_DONE(funcctx);
+	}
+	
+#endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 

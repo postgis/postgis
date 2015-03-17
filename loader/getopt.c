@@ -32,11 +32,7 @@
 
 #define ERR(s, c)\
   if(pgis_opterr){\
-        char errbuf[2];\
-        errbuf[0] = (char)c; errbuf[1] = '\n';\
-        (void) write(2, argv[0], (unsigned)strlen(argv[0]));\
-        (void) write(2, s, (unsigned)strlen(s));\
-        (void) write(2, errbuf, 2);\
+    fprintf(stderr, "%s%s%c\n", argv[0], s, c);\
   }
 
 int     pgis_opterr = 1;

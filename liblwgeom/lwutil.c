@@ -23,6 +23,8 @@ static void default_errorreporter(const char *fmt, va_list ap);
 lwreporter lwnotice_var = default_noticereporter;
 lwreporter lwerror_var = default_errorreporter;
 
+#define LW_MSG_MAXLEN 256
+
 static char *lwgeomTypeName[] =
 {
 	"Unknown",
@@ -108,37 +110,19 @@ default_reallocator(void *mem, size_t size)
 static void
 default_noticereporter(const char *fmt, va_list ap)
 {
-	char *msg;
-
-	/*
-	 * This is a GNU extension.
-	 * Dunno how to handle errors here.
-	 */
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
+	char msg[LW_MSG_MAXLEN+1];
+	vsnprintf (msg, LW_MSG_MAXLEN, fmt, ap);
+	msg[LW_MSG_MAXLEN]='\0';
 	printf("%s\n", msg);
-	free(msg);
 }
 
 static void
 default_errorreporter(const char *fmt, va_list ap)
 {
-	char *msg;
-
-	/*
-	 * This is a GNU extension.
-	 * Dunno how to handle errors here.
-	 */
-	if (!lw_vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
+	char msg[LW_MSG_MAXLEN+1];
+	vsnprintf (msg, LW_MSG_MAXLEN, fmt, ap);
+	msg[LW_MSG_MAXLEN]='\0';
 	fprintf(stderr, "%s\n", msg);
-	free(msg);
 	exit(1);
 }
 

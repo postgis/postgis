@@ -298,13 +298,13 @@ static void out_geojson_test_geoms(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_geojson_tests[] =
+void out_geojson_suite_setup(void);
+void out_geojson_suite_setup(void)
 {
-	PG_TEST(out_geojson_test_precision),
-	PG_TEST(out_geojson_test_dims),
-	PG_TEST(out_geojson_test_srid),
-	PG_TEST(out_geojson_test_bbox),
-	PG_TEST(out_geojson_test_geoms),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_geojson_suite = {"GeoJson Out Suite",  NULL,  NULL, out_geojson_tests};
+	CU_pSuite suite = CU_add_suite("geojson_output", NULL, NULL);
+	PG_ADD_TEST(suite, out_geojson_test_precision);
+	PG_ADD_TEST(suite, out_geojson_test_dims);
+	PG_ADD_TEST(suite, out_geojson_test_srid);
+	PG_ADD_TEST(suite, out_geojson_test_bbox);
+	PG_ADD_TEST(suite, out_geojson_test_geoms);
+}

@@ -873,19 +873,19 @@ test_lw_dist2d_ptarray_ptarrayarc(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo measures_tests[] =
+void measures_suite_setup(void);
+void measures_suite_setup(void)
 {
-	PG_TEST(test_mindistance2d_tolerance),
-	PG_TEST(test_rect_tree_contains_point),
-	PG_TEST(test_rect_tree_intersects_tree),
-	PG_TEST(test_lwgeom_segmentize2d),
-	PG_TEST(test_lwgeom_locate_along),
-	PG_TEST(test_lw_dist2d_pt_arc),
-	PG_TEST(test_lw_dist2d_seg_arc),
-	PG_TEST(test_lw_dist2d_arc_arc),
-	PG_TEST(test_lw_arc_length),
-	PG_TEST(test_lw_dist2d_pt_ptarrayarc),
-	PG_TEST(test_lw_dist2d_ptarray_ptarrayarc),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo measures_suite = {"measures", NULL,  NULL, measures_tests};
+	CU_pSuite suite = CU_add_suite("measures", NULL, NULL);
+	PG_ADD_TEST(suite, test_mindistance2d_tolerance);
+	PG_ADD_TEST(suite, test_rect_tree_contains_point);
+	PG_ADD_TEST(suite, test_rect_tree_intersects_tree);
+	PG_ADD_TEST(suite, test_lwgeom_segmentize2d);
+	PG_ADD_TEST(suite, test_lwgeom_locate_along);
+	PG_ADD_TEST(suite, test_lw_dist2d_pt_arc);
+	PG_ADD_TEST(suite, test_lw_dist2d_seg_arc);
+	PG_ADD_TEST(suite, test_lw_dist2d_arc_arc);
+	PG_ADD_TEST(suite, test_lw_arc_length);
+	PG_ADD_TEST(suite, test_lw_dist2d_pt_ptarrayarc);
+	PG_ADD_TEST(suite, test_lw_dist2d_ptarray_ptarrayarc);
+}

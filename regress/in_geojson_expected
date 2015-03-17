@@ -7,7 +7,7 @@ geomfromgeojson_06|MULTIPOLYGON(((0 0,1 1,1 0,0 0)))
 #1434: Next two errors
 ERROR:  Unable to find 'coordinates' in GeoJSON string
 ERROR:  unexpected character (at offset 0)
-#2130|8
+#2130|50
 #2216|30
 #2619|POLYGON EMPTY
 ERROR:  The 'coordinates' in GeoJSON ring are not an array

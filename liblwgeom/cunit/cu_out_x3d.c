@@ -159,10 +159,10 @@ static void out_x3d3_test_geoms(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-CU_TestInfo out_x3d_tests[] =
+void out_x3d_suite_setup(void);
+void out_x3d_suite_setup(void)
 {
-	PG_TEST(out_x3d3_test_precision),
-	PG_TEST(out_x3d3_test_geoms),
-	CU_TEST_INFO_NULL
-};
-CU_SuiteInfo out_x3d_suite = {"X3D Out Suite",  NULL,  NULL, out_x3d_tests};
+	CU_pSuite suite = CU_add_suite("x3d_output", NULL, NULL);
+	PG_ADD_TEST(suite, out_x3d3_test_precision);
+	PG_ADD_TEST(suite, out_x3d3_test_geoms);
+}

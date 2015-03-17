@@ -57,7 +57,7 @@ Datum geometry_to_point(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 	
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != POINTTYPE )
 		elog(ERROR, "geometry_to_point only accepts Points");
@@ -88,7 +88,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	POINTARRAY *pa;
 	int i;
-	POINT2D pt;
+	const POINT2D *pt;
 	size_t size;
 
 	POSTGIS_DEBUG(2, "geometry_to_path called");
@@ -96,7 +96,7 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 		
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != LINETYPE )
 		elog(ERROR, "geometry_to_path only accepts LineStrings");
@@ -116,9 +116,9 @@ Datum geometry_to_path(PG_FUNCTION_ARGS)
 
 	for ( i = 0; i < pa->npoints; i++ )
 	{
-		getPoint2d_p(pa, i, &pt);
-		(path->p[i]).x = pt.x;
-		(path->p[i]).y = pt.y;
+		pt = getPoint2d_cp(pa, i);
+		(path->p[i]).x = pt->x;
+		(path->p[i]).y = pt->y;
 	}
 	
 	lwgeom_free(lwgeom);
@@ -181,7 +181,7 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
 		
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	if ( gserialized_get_type(geom) != POLYGONTYPE )
 		elog(ERROR, "geometry_to_polygon only accepts Polygons");
@@ -207,10 +207,9 @@ Datum geometry_to_polygon(PG_FUNCTION_ARGS)
 		
 	for ( i = 0; i < pa->npoints; i++ )
 	{
-		POINT2D pt;
-		getPoint2d_p(pa, i, &pt);
-		(polygon->p[i]).x = pt.x;
-		(polygon->p[i]).y = pt.y;
+		const POINT2D *pt = getPoint2d_cp(pa, i);
+		(polygon->p[i]).x = pt->x;
+		(polygon->p[i]).y = pt->y;
 	}
 
 	lwgeom_free(lwgeom);

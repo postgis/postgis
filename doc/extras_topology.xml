@@ -2145,7 +2145,8 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 				<refname>GetRingEdges</refname>
 			
 				<refpurpose>
-Returns an ordered set of edges forming a ring with the given edge .
+Returns the ordered set of signed edge identifiers met by walking on an
+a given edge side.
 				</refpurpose>
 			</refnamediv>
 		
@@ -2164,12 +2165,18 @@ Returns an ordered set of edges forming a ring with the given edge .
                 <title>Description</title>
             
                 <para>
-Returns an ordered set of edges forming a ring with the given edge.
+Returns the ordered set of signed edge identifiers met by walking on an
+a given edge side.
 Each output consists of a sequence and a signed edge id.
 Sequence numbers start with value 1.
-A negative edge identifier means that the given edge is taken backward.
-You can pass a negative edge id to start walking backward.
-		</para>
+                </para>
+
+                <para>
+If you pass a positive edge id, the walk starts on the left side
+of the corresponding edge and follows the edge direction.
+If you pass a negative edge id, the walk starts on the right side
+of it and goes backward.
+                </para>
 
                 <para>
 If <varname>max_edges</varname> is not null no more than those records
@@ -2177,9 +2184,12 @@ are returned by that function. This is meant to be a safety parameter
 when dealing with possibly invalid topologies.
 		</para>
 
+    <note><para>
+This function uses edge ring linking metadata.
+    </para></note>
                 
                 <!-- use this format if new function -->
-                <para>Availability: 2.0 </para>
+                <para>Availability: 2.0.0 </para>
 			</refsection>
 		
 		

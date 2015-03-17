@@ -55,6 +55,7 @@ CREATE OR REPLACE FUNCTION raster_out(raster)
     AS 'MODULE_PATHNAME','RASTER_out'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
 CREATE TYPE raster (
     alignment = double,
     internallength = variable,
@@ -94,6 +95,7 @@ CREATE OR REPLACE FUNCTION postgis_gdal_version()
 -- generic composite type of a raster and its band index
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE rastbandarg AS (
 	rast raster,
 	nband integer
@@ -103,6 +105,7 @@ CREATE TYPE rastbandarg AS (
 -- generic composite type of a geometry and value
 -----------------------------------------------------------------------
 
+-- Availability: 2.0.0
 CREATE TYPE geomval AS (
 	geom geometry,
 	val double precision
@@ -324,6 +327,7 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
 -- Constructor ST_AddBand
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE addbandarg AS (
 	index int,
 	pixeltype text,
@@ -421,6 +425,10 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFA
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
 
+-- NOTE: existed in 2.0.0 but was removed in 2.1.0.
+-- See http://trac.osgeo.org/postgis/ticket/3082#comment:5
+-- Availability: 2.0.0
+-- Missing in: 2.1.0
 CREATE TYPE summarystats AS (
 	count bigint,
 	sum double precision,
@@ -688,6 +696,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 -- ST_CountAgg
 -----------------------------------------------------------------------
 
+-- Availability: 2.2.0
 CREATE TYPE agg_count AS (
 	count bigint,
 	nband integer,
@@ -1695,6 +1704,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, 
 -----------------------------------------------------------------------
 -- ST_Reclass
 -----------------------------------------------------------------------
+-- Availability: 2.0.0
 CREATE TYPE reclassarg AS (
 	nband int,
 	reclassexpr text,
@@ -5765,72 +5775,85 @@ CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
 --  GiST index OPERATORs
 ------------------------------------------------------------------------------
 -- raster/raster operators
+
+-- Availability: 2.0.0
 CREATE OPERATOR << (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_left,
     COMMUTATOR = '>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &< (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overleft,
     COMMUTATOR = '&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR <<| (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_below,
     COMMUTATOR = '|>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &<| (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overbelow,
     COMMUTATOR = '|&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overlap,
     COMMUTATOR = '&&',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR &> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overright,
     COMMUTATOR = '&<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR >> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_right,
     COMMUTATOR = '<<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR |&> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overabove,
     COMMUTATOR = '&<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR |>> (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_above,
     COMMUTATOR = '<<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR ~= (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_same,
     COMMUTATOR = '~=',
     RESTRICT = eqsel, JOIN = eqjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contained,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
+-- Availability: 2.0.0
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contain,
     COMMUTATOR = '@',
@@ -5840,6 +5863,8 @@ CREATE OPERATOR ~ (
 -- raster/geometry operators
 
 -- Availability: 2.0.0
+-- NOTE: 2.1.2 removed the commutator spec but it was wrong
+--       See http://trac.osgeo.org/postgis/ticket/3039
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5847,6 +5872,7 @@ CREATE OPERATOR ~ (
     );
 
 -- Availability: 2.0.5
+-- NOTE: was missing in 2.1.0 but was added in 2.1.1
 CREATE OPERATOR @ (
     LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_contained_by_geometry,
     COMMUTATOR = '~',
@@ -5863,6 +5889,8 @@ CREATE OPERATOR && (
 -- geometry/raster operators
 
 -- Availability: 2.0.0
+-- NOTE: 2.1.2 removed the commutator spec but it was wrong
+--       See http://trac.osgeo.org/postgis/ticket/3039
 CREATE OPERATOR ~ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
     -- COMMUTATOR = '@', -- see http://trac.osgeo.org/postgis/ticket/2532
@@ -5870,6 +5898,7 @@ CREATE OPERATOR ~ (
     );
 
 -- Availability: 2.0.5
+-- NOTE: was missing in 2.1.0 but was added in 2.1.1
 CREATE OPERATOR @ (
     LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_contained_by_raster,
     COMMUTATOR = '~',
@@ -5904,6 +5933,7 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
 CREATE TYPE agg_samealignment AS (
 	refraster raster,
 	aligned boolean
@@ -6527,6 +6557,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 -- ST_Union aggregate
 -----------------------------------------------------------------------
 
+-- Availability: 2.1.0
 CREATE TYPE unionarg AS (
 	nband int,
 	uniontype text

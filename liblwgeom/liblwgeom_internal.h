@@ -152,6 +152,13 @@ LWPOLY* lwpoly_force_dims(const LWPOLY *lwpoly, int hasz, int hasm);
 LWCOLLECTION* lwcollection_force_dims(const LWCOLLECTION *lwcol, int hasz, int hasm);
 POINTARRAY* ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm);
 
+/**
+ * Swap ordinate values o1 and o2 on a given POINTARRAY
+ *
+ * Ordinates semantic is: 0=x 1=y 2=z 3=m
+ */
+void ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2);
+
 /*
 * Is Empty?
 */
@@ -352,7 +359,16 @@ int lwcompound_is_closed(const LWCOMPOUND *curve);
 int lwpsurface_is_closed(const LWPSURFACE *psurface);
 int lwtin_is_closed(const LWTIN *tin);
 
-
+/**
+* Snap to grid
+*/
+LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
+LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid);
+LWPOINT* lwpoint_grid(const LWPOINT *point, const gridspec *grid);
+LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid);
+LWLINE* lwline_grid(const LWLINE *line, const gridspec *grid);
+LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
+POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
 
 /*
 * What side of the line formed by p1 and p2 does q fall? 
@@ -417,3 +433,8 @@ extern int _lwgeom_interrupt_requested;
 }
 
 #endif /* _LIBLWGEOM_INTERNAL_H */
+
+int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
+int gbox_contains_point2d(const GBOX *g, const POINT2D *p);
+int lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox);
+int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);

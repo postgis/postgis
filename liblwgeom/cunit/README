@@ -67,18 +67,18 @@ will find a block that looks like this (this example is from cu_print.c):
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo print_tests[] = {
-        PG_TEST(test_lwprint_default_format),
-        PG_TEST(test_lwprint_format_orders),
-        PG_TEST(test_lwprint_optional_format),
-        PG_TEST(test_lwprint_oddball_formats),
-        PG_TEST(test_lwprint_bad_formats),
-        CU_TEST_INFO_NULL
+void print_suite_setup(void);
+void print_suite_setup(void)
+{
+      CU_pSuite suite = CU_add_suite("Print", init_print_suite, clean_print_suite);
+      PG_ADD_TEST(test_lwprint_default_format);
+      PG_ADD_TEST(test_lwprint_format_orders);
+      PG_ADD_TEST(test_lwprint_optional_format);
 };
 
 Add a new line for your test:
 
-	PG_TEST(<your test function name>),
+	PG_ADD_TEST(<your test function name>);
 
 The tests will be run in the order they appear in the list. 
 CU_TEST_INFO_NULL must always be the last entry.
@@ -122,18 +122,16 @@ of the file, construct the array of tests (example taken from cu_print.c):
 /*
 ** Used by the test harness to register the tests in this file.
 */
-CU_TestInfo print_tests[] = {
-        PG_TEST(test_lwprint_default_format),
-        PG_TEST(test_lwprint_format_orders),
-        PG_TEST(test_lwprint_optional_format),
-        PG_TEST(test_lwprint_oddball_formats),
-        PG_TEST(test_lwprint_bad_formats),
-        CU_TEST_INFO_NULL
+void print_suite_setup(void);
+void print_suite_setup(void)
+{
+      CU_pSuite suite = CU_add_suite("Print", init_print_suite, clean_print_suite);
+      PG_ADD_TEST(test_lwprint_default_format);
+      PG_ADD_TEST(test_lwprint_format_orders);
+      PG_ADD_TEST(test_lwprint_optional_format);
 };
 
-Note that each test function must be wrapped with the PG_TEST macro, and
-the last entry must be CU_TEST_INFO_NULL.  The naming convention is
-generally <suite name>_tests.
+The naming convention is generally <suite name>_suite_setup.
 
 3.3 Construct the init / clean functions and the suite struct.
 
@@ -148,18 +146,10 @@ The naming convention is generally:
 static int init_<suite name>(void)
 static int clean_<suite_name>(void)
 
-The very last line of the file (after all the functions and the tests
-array) should look like this:
-
-CU_SuiteInfo <suite info name> = {"<suite display name>", <init function>, <clean function>, <test array>};
-
-The naming convention is generally <suite name>_suite.  If you do not have
-an init function, you may pass "NULL" instead.  Same with the clean function.
-
 3.4 Add your suite to cu_tester.c.
 
 Edit cu_tester.c.  Search for "ADD YOUR SUITE HERE" and add new lines in
-the appropriate places, using the suite info name you used in the last step.
+the appropriate places, using the _suite_setup name you used in the last step.
 
 Now run make (remember to run configure first), then ./cu_tester and your
 new suite should run.

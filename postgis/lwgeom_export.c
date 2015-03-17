@@ -190,7 +190,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -305,7 +305,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -380,7 +380,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -449,7 +449,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
@@ -504,7 +504,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -573,7 +573,7 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = PG_GETARG_GSERIALIZED_P(0);
 	if (gserialized_get_srid(geom) != 4326) {
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Only SRID 4326 is supported.");

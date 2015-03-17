@@ -162,7 +162,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_latlon);
 Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 {
 	/* Get the parameters */
-	GSERIALIZED *pg_lwgeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *pg_lwgeom = PG_GETARG_GSERIALIZED_P(0);
 	text *format_text = PG_GETARG_TEXT_P(1);
 
 	LWGEOM *lwgeom;
@@ -231,7 +231,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
 	char *hexwkb;
 	size_t hexwkb_size;
@@ -249,7 +249,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asHEXEWKB);
 Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
 	char *hexwkb;
 	size_t hexwkb_size;
@@ -302,7 +302,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_text);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
 	char *hexwkb;
 	size_t hexwkb_size;
@@ -385,7 +385,7 @@ Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom;
 	uint8_t *wkb;
 	size_t wkb_size;
@@ -441,7 +441,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	/*check for null input since we cannot have the sql-function as strict. 
 	That is because we use null as default for optional ID*/	
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
-		geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		geom = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* If user specified precision, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
@@ -499,7 +499,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
 
@@ -515,7 +515,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_dropBBOX);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* No box? we're done already! */
 	if ( ! gserialized_has_bbox(geom) )

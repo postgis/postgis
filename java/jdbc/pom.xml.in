@@ -11,7 +11,7 @@
 
     <groupId>org.postgis</groupId>
     <artifactId>postgis-jdbc</artifactId>
-    <version>2.2.0dev</version>
+    <version>%VERSION%</version>
     <packaging>jar</packaging>
     <name>Postgis JDBC Driver</name>
     <url>http://postgis.net</url>

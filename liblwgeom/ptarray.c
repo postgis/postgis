@@ -369,6 +369,30 @@ ptarray_flip_coordinates(POINTARRAY *pa)
 	return pa;
 }
 
+void
+ptarray_swap_ordinates(POINTARRAY *pa, LWORD o1, LWORD o2)
+{
+	int i;
+	double d, *dp1, *dp2;
+	POINT4D p;
+
+#if PARANOIA_LEVEL > 0
+  assert(o1 < 4);
+  assert(o2 < 4);
+#endif
+
+  dp1 = ((double*)&p)+(unsigned)o1;
+  dp2 = ((double*)&p)+(unsigned)o2;
+	for (i=0 ; i < pa->npoints ; i++)
+	{
+		getPoint4d_p(pa, i, &p);
+		d = *dp2;
+		*dp2 = *dp1;
+		*dp1 = d;
+		ptarray_set_point4d(pa, i, &p);
+	}
+}
+
 
 /**
  * @brief Returns a modified #POINTARRAY so that no segment is
@@ -1272,20 +1296,31 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	double tlen, plen;
 	int t, seg=-1;
 	POINT4D	start4d, end4d, projtmp;
-	POINT2D start, end, proj, p;
+	POINT2D proj, p;
+	const POINT2D *start = NULL, *end = NULL;
 
 	/* Initialize our 2D copy of the input parameter */
 	p.x = p4d->x;
 	p.y = p4d->y;
 	
 	if ( ! proj4d ) proj4d = &projtmp;
-
-	getPoint2d_p(pa, 0, &start);
+	
+	/* If the pointarray has only one point, the nearest point is */
+	/* just that point */
+	if ( pa->npoints == 1 )
+	{
+		getPoint4d_p(pa, 0, proj4d);
+		*mindistout = distance2d_pt_pt(&p, start);
+		return 0.0;
+	}
+	
+	/* Loop through pointarray looking for nearest segment */
+	start = getPoint2d_cp(pa, 0);
 	for (t=1; t<pa->npoints; t++)
 	{
 		double dist;
-		getPoint2d_p(pa, t, &end);
-		dist = distance2d_pt_seg(&p, &start, &end);
+		end = getPoint2d_cp(pa, t);
+		dist = distance2d_pt_seg(&p, start, end);
 
 		if (t==1 || dist < mindist )
 		{
@@ -1322,7 +1357,7 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	LWDEBUGF(3, "Closest segment:%d, npoints:%d", seg, pa->npoints);
 
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, &end) )
+	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, end) )
 	{
 		return 1.0;
 	}
@@ -1338,16 +1373,16 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	if ( tlen == 0 ) return 0;
 
 	plen=0;
-	getPoint2d_p(pa, 0, &start);
+	start = getPoint2d_cp(pa, 0);
 	for (t=0; t<seg; t++, start=end)
 	{
-		getPoint2d_p(pa, t+1, &end);
-		plen += distance2d_pt_pt(&start, &end);
+		end = getPoint2d_cp(pa, t+1);
+		plen += distance2d_pt_pt(start, end);
 
 		LWDEBUGF(4, "Segment %d made plen %g", t, plen);
 	}
 
-	plen+=distance2d_pt_pt(&proj, &start);
+	plen+=distance2d_pt_pt(&proj, start);
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 
@@ -1435,45 +1470,47 @@ static void
 ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
 	int k;
-	POINT2D pa, pb, pk;
-	double tmp;
+	const POINT2D *pk, *pa, *pb;
+	double tmp, d;
 
 	LWDEBUG(4, "function called");
 
-	*dist = -1;
 	*split = p1;
+	d = -1;
 
 	if (p1 + 1 < p2)
 	{
 
-		getPoint2d_p(pts, p1, &pa);
-		getPoint2d_p(pts, p2, &pb);
+		pa = getPoint2d_cp(pts, p1);
+		pb = getPoint2d_cp(pts, p2);
 
 		LWDEBUGF(4, "P%d(%f,%f) to P%d(%f,%f)",
-		         p1, pa.x, pa.y, p2, pb.x, pb.y);
+		         p1, pa->x, pa->y, p2, pb->x, pb->y);
 
 		for (k=p1+1; k<p2; k++)
 		{
-			getPoint2d_p(pts, k, &pk);
+			pk = getPoint2d_cp(pts, k);
 
-			LWDEBUGF(4, "P%d(%f,%f)", k, pk.x, pk.y);
+			LWDEBUGF(4, "P%d(%f,%f)", k, pk->x, pk->y);
 
 			/* distance computation */
-			tmp = distance2d_pt_seg(&pk, &pa, &pb);
+			tmp = distance2d_sqr_pt_seg(pk, pa, pb);
 
-			if (tmp > *dist)
+			if (tmp > d)
 			{
-				*dist = tmp;	/* record the maximum */
+				d = tmp;	/* record the maximum */
 				*split = k;
 
-				LWDEBUGF(4, "P%d is farthest (%g)", k, *dist);
+				LWDEBUGF(4, "P%d is farthest (%g)", k, d);
 			}
 		}
+		*dist = d;
 
 	} /* length---should be redone if can == 0 */
 	else
 	{
 		LWDEBUG(3, "segment too short, no split/no dist");
+		*dist = -1;
 	}
 
 }
@@ -1487,6 +1524,8 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 	double dist;
 	POINTARRAY *outpts;
 	POINT4D pt;
+
+	double eps_sqr = epsilon * epsilon;
 
 	/* Allocate recursion stack */
 	stack = lwalloc(sizeof(int)*inpts->npoints);
@@ -1511,7 +1550,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 
 		LWDEBUGF(3, "Farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
 
-		if (dist > epsilon || ( outpts->npoints+sp+1 < minpts && dist > 0 ) )
+		if (dist > eps_sqr || ( outpts->npoints+sp+1 < minpts && dist >= 0 ) )
 		{
 			LWDEBUGF(4, "Added P%d to stack (outpts:%d)", split, sp);
 			stack[++sp] = split;
@@ -1519,6 +1558,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 		else
 		{
 			getPoint4d_p(inpts, stack[sp], &pt);
+			LWDEBUGF(4, "npoints , minpoints %d %d", outpts->npoints, minpts);
 			ptarray_append_point(outpts, &pt, LW_FALSE);
 			
 			LWDEBUGF(4, "Added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
@@ -1727,3 +1767,70 @@ ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt)
 {
 	return getPoint4d_p(pa, 0, pt);
 }
+
+
+
+
+/*
+ * Stick an array of points to the given gridspec.
+ * Return "gridded" points in *outpts and their number in *outptsn.
+ *
+ * Two consecutive points falling on the same grid cell are collapsed
+ * into one single point.
+ *
+ */
+POINTARRAY *
+ptarray_grid(const POINTARRAY *pa, const gridspec *grid)
+{
+	POINT4D pt;
+	int ipn; /* input point numbers */
+	POINTARRAY *dpa;
+
+	LWDEBUGF(2, "ptarray_grid called on %p", pa);
+
+	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
+
+	for (ipn=0; ipn<pa->npoints; ++ipn)
+	{
+
+		getPoint4d_p(pa, ipn, &pt);
+
+		if ( grid->xsize )
+			pt.x = rint((pt.x - grid->ipx)/grid->xsize) *
+			         grid->xsize + grid->ipx;
+
+		if ( grid->ysize )
+			pt.y = rint((pt.y - grid->ipy)/grid->ysize) *
+			         grid->ysize + grid->ipy;
+
+		if ( FLAGS_GET_Z(pa->flags) && grid->zsize )
+			pt.z = rint((pt.z - grid->ipz)/grid->zsize) *
+			         grid->zsize + grid->ipz;
+
+		if ( FLAGS_GET_M(pa->flags) && grid->msize )
+			pt.m = rint((pt.m - grid->ipm)/grid->msize) *
+			         grid->msize + grid->ipm;
+
+		ptarray_append_point(dpa, &pt, LW_FALSE);
+
+	}
+
+	return dpa;
+}
+
+int 
+ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox)
+{
+	const POINT2D *pt;
+	int n = 0;
+	int i;
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		pt = getPoint2d_cp(pa, i);
+		if ( gbox_contains_point2d(gbox, pt) )
+			n++;
+	}
+	return n;
+}
+
+
