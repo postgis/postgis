@@ -425,7 +425,10 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFA
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
 
+-- NOTE: existed in 2.0.0 but was removed in 2.1.0.
+-- See http://trac.osgeo.org/postgis/ticket/3082#comment:5
 -- Availability: 2.0.0
+-- Missing in: 2.1.0
 CREATE TYPE summarystats AS (
 	count bigint,
 	sum double precision,

@@ -107,6 +107,16 @@ sub parse_last_updated
   return 0;
 }
 
+sub parse_missing
+{
+  my $comment = shift;
+  my @missing = ();
+  if ( $comment =~ m/.*(?:Missing in):\s([^\.])\.([^.]*)/s ) {
+    push(@missing, $1*100 + $2);
+  }
+  return join(',',@missing);
+}
+
 
 #
 # Commandline argument handling
@@ -238,13 +248,19 @@ while(<INPUT>)
       print STDERR "WARNING: no last updated info for type '${newtype}'\n";
       $last_updated = find_last_updated("types", $newtype);
     }
+    my $missing = parse_missing($comment);
     print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
 DO LANGUAGE 'plpgsql'
 \$postgis_proc_upgrade\$
 BEGIN
-  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
-    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  IF $last_updated > version_from_num
+EOF
+      print "OR version_from_num IN ( ${missing} )" if ( $missing );
+      print <<"EOF";
+     FROM _postgis_upgrade_info
+  THEN
+      EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
   END IF;
 END
 \$postgis_proc_upgrade\$;
