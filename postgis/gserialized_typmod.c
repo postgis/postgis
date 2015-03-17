@@ -29,7 +29,7 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 #include "lwgeom_export.h"   /* For export functions. */
-
+#include "lwgeom_transform.h" /* for srid_is_latlon */ 
 
 Datum geography_typmod_in(PG_FUNCTION_ARGS);
 Datum geometry_typmod_in(PG_FUNCTION_ARGS);
@@ -241,33 +241,8 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 			POSTGIS_DEBUGF(3, "srid: %d", srid);
 			if ( srid != SRID_UNKNOWN )
 			{
-				/* TODO: Check that the value
-				 *	 provided is in fact a lonlat
-				 *       entry in spatial_ref_sysj
-				 */
-				/* For now, we only accept SRID_DEFAULT. */
-				if ( is_geography && srid != SRID_DEFAULT )
-				{
-					ereport(ERROR,
-						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-						 errmsg("Currently, only %d is accepted as an SRID for GEOGRAPHY", SRID_DEFAULT)));
-				}
-				else
-				{
-					TYPMOD_SET_SRID(typmod, srid);
-				}
+				TYPMOD_SET_SRID(typmod, srid); 
 			}
-#if 0 /* keep the default instead */
-			else
-			{
-			    if ( is_geography )
-			    {
-					ereport(ERROR,
-					        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					         errmsg("UNKNOWN SRID is not for GEOGRAPHY")));			        
-		            }
-			}
-#endif /* keep the default for unknown */
 		}
 	}
 
@@ -286,6 +261,10 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 {
 	ArrayType *arr = (ArrayType *) DatumGetPointer(PG_GETARG_DATUM(0));
 	uint32 typmod = gserialized_typmod_in(arr, LW_TRUE);
+	int srid = TYPMOD_GET_SRID(typmod); 
+	/* Check the SRID is legal (geographic coordinates) */ 
+	srid_is_latlong(fcinfo, srid); 
+
 	PG_RETURN_INT32(typmod);
 }
 
