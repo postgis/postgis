@@ -38,6 +38,8 @@
 #include "lwgeom_rtree.h"
 #include "lwgeom_geos_prepared.h" 
 
+#include "float.h" /* for DBL_DIG */ 
+
 
 #include <string.h>
 #include <assert.h>
