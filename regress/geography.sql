@@ -7,6 +7,15 @@ VALUES (
  '+proj=longlat +datum=WGS84 +no_defs'
 );
 
+INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text)
+VALUES (
+ '4269',
+ 'EPSG',
+ '4269',
+ 'GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]]',
+ '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs'
+);
+
 -- Do cached and uncached distance agree?
 SELECT c, abs(ST_Distance(ply::geography, pt::geography) - _ST_DistanceUnCached(ply::geography, pt::geography)) < 0.01 FROM 
 ( VALUES
@@ -71,7 +80,12 @@ ply AS (
 )
 SELECT 'geog_precision_pazafir', _ST_DistanceUnCached(pt.point, ply.polygon), ST_Distance(pt.point, ply.polygon) FROM pt, ply;
 
+-- #2941
+CREATE TABLE test(id integer, geog geography(multilinestring,4269));
+INSERT INTO test VALUES (1, 'SRID=4269;MULTILINESTRING((0 0, 1 1))');
+SELECT id,ST_AsText(geog) FROM test;
+DROP TABLE test;
 
 -- Clean up spatial_ref_sys
-DELETE FROM spatial_ref_sys WHERE srid = 4326;
+DELETE FROM spatial_ref_sys WHERE srid IN (4269,4326);
     
