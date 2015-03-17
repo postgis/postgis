@@ -11,8 +11,17 @@
 # **********************************************************************
 
 ANT=@ANT@
+POSTGIS_LIB_VERSION=@POSTGIS_LIB_VERSION@
 
 all: build
+
+pom.xml: pom.xml.in
+	sed 's,%VERSION%,$(POSTGIS_LIB_VERSION),g' $< >$@
+
+distclean:
+	rm -f pom.xml
+
+build: pom.xml
 
 build clean distclean check:
 	$(ANT) $@
