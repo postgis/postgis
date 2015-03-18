@@ -916,7 +916,15 @@ Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	mindist = lwgeom_mindistance3d(lwgeom1, lwgeom2);
+	/* #3056, only do 3D distance calculation when both arguments have Z */
+	if ( lwgeom_has_z(lwgeom1) && lwgeom_has_z(lwgeom2) )
+	{
+		mindist = lwgeom_mindistance3d(lwgeom1, lwgeom2);
+	}
+	else
+	{
+		mindist = lwgeom_mindistance2d(lwgeom1, lwgeom2);
+	}
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
