@@ -262,3 +262,6 @@ select 'emptyCollectionArea', st_area('GEOMETRYCOLLECTION EMPTY');
 -- 
 select 'spheroidLength1_deprecated', round(st_length_spheroid('MULTILINESTRING((-118.584 38.374,-118.583 38.5),(-71.05957 42.3589 , -71.061 43))'::geometry,'SPHEROID["GRS_1980",6378137,298.257222101]'::spheroid)::numeric,5);
 select 'spheroidLength1', round(ST_LengthSpheroid('MULTILINESTRING((-118.584 38.374,-118.583 38.5),(-71.05957 42.3589 , -71.061 43))'::geometry,'SPHEROID["GRS_1980",6378137,298.257222101]'::spheroid)::numeric,5);
+
+-- #3056, only do 3d distance when *both* arguments are 3d
+select '#3056', st_3ddistance('LINESTRING(0 0 0, 1 1 1)'::geometry, 'POINT(0.5 0.5)'::geometry);
