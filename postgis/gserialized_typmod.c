@@ -96,6 +96,32 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 
 }
 
+/*
+* If a user is handing us a MULTIPOINT EMPTY but trying to fit it into
+* a POINT geometry column, there's a strong chance the reason she has
+* a MULTIPOINT EMPTY because we gave it to her during data dump, 
+* converting the internal POINT EMPTY into a EWKB MULTIPOINT EMPTY 
+* (because EWKB doesn't have a clean way to represent POINT EMPTY).
+* In such a case, it makes sense to turn the MULTIPOINT EMPTY into a 
+* point EMPTY, rather than throwing an error.
+*/
+static GSERIALIZED* empty_point_special_case(GSERIALIZED *gser, int32_t typmod, int is_geography)
+{
+	if ( TYPMOD_GET_TYPE(typmod) == POINTTYPE &&
+		 gserialized_get_type(gser) == MULTIPOINTTYPE && 
+	     gserialized_is_empty(gser) )
+	{
+		if ( is_geography )
+		{
+			return geography_serialize(lwpoint_as_lwgeom(lwpoint_construct_empty(TYPMOD_GET_SRID(typmod), TYPMOD_GET_Z(typmod), TYPMOD_GET_M(typmod))));
+		}
+		else
+		{
+			return geometry_serialize(lwpoint_as_lwgeom(lwpoint_construct_empty(TYPMOD_GET_SRID(typmod), TYPMOD_GET_Z(typmod), TYPMOD_GET_M(typmod))));
+		}
+	}
+	return gser;
+}
 
 /**
 * Check the consistency of the metadata we want to enforce in the typmod:
@@ -294,6 +320,9 @@ Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
+	/* Allow MULTIPOINT EMPTY into columns restricted to POINT EMPTY */
+	arg = empty_point_special_case(arg, typmod, 1);
+
 	/* Check if geometry typmod is consistent with the supplied one. */
 	postgis_valid_typmod(arg, typmod);
 
@@ -312,6 +341,9 @@ Datum geometry_enforce_typmod(PG_FUNCTION_ARGS)
 	int32 typmod = PG_GETARG_INT32(1);
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
+
+	/* Allow MULTIPOINT EMPTY into columns restricted to POINT EMPTY */
+	arg = empty_point_special_case(arg, typmod, 0);
 
 	/* Check if geometry typmod is consistent with the supplied one. */
 	postgis_valid_typmod(arg, typmod);
