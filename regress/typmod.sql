@@ -346,7 +346,7 @@ BEGIN
 				out_status := out_status || '-GOK';
 			EXCEPTION
 			WHEN OTHERS THEN
-				out_status := out_status || '-GKO:';
+				out_status := out_status || '-GKO';
 			END;
 
 			-- binary insertion (geography) {
