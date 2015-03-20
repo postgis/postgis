@@ -231,9 +231,11 @@ SELECT distinct 'catalog-schema', f_table_catalog,f_table_schema FROM geography_
 CREATE TABLE tm.types (id serial, g geometry);
 
 INSERT INTO tm.types(g) values ('POINT EMPTY');
+INSERT INTO tm.types(g) values ('POINT(0 0)');
 INSERT INTO tm.types(g) values ('LINESTRING EMPTY');
 INSERT INTO tm.types(g) values ('POLYGON EMPTY');
 INSERT INTO tm.types(g) values ('MULTIPOINT EMPTY');
+INSERT INTO tm.types(g) values ('MULTIPOINT(0 0)');
 INSERT INTO tm.types(g) values ('MULTILINESTRING EMPTY');
 INSERT INTO tm.types(g) values ('MULTIPOLYGON EMPTY');
 INSERT INTO tm.types(g) values ('GEOMETRYCOLLECTION EMPTY');
@@ -248,11 +250,11 @@ INSERT INTO tm.types(g) values ('TIN EMPTY');
 
 -- all zm flags
 INSERT INTO tm.types(g)
-SELECT st_force3dz(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force3dz(g) FROM tm.types WHERE id < 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force3dm(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force3dm(g) FROM tm.types WHERE id < 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force4d(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force4d(g) FROM tm.types WHERE id < 17 ORDER BY id;
 
 -- known srid
 INSERT INTO tm.types(g)
@@ -298,6 +300,9 @@ BEGIN
 		LOOP
 			out_srid := ST_Srid(rec2.g);
 			out_type := substr(ST_GeometryType(rec2.g), 4);
+			IF NOT ST_IsEmpty(rec2.g) THEN
+				out_type := out_type || 'NE';
+			END IF;
 			out_flags := ST_zmflag(rec2.g);
 			BEGIN
 				sql := 'INSERT INTO '
