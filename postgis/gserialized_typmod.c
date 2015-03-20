@@ -321,7 +321,7 @@ Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
 	/* Allow MULTIPOINT EMPTY into columns restricted to POINT EMPTY */
-	arg = empty_point_special_case(arg, typmod, 1);
+	// arg = empty_point_special_case(arg, typmod, 1);
 
 	/* Check if geometry typmod is consistent with the supplied one. */
 	postgis_valid_typmod(arg, typmod);
@@ -343,7 +343,7 @@ Datum geometry_enforce_typmod(PG_FUNCTION_ARGS)
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
 	/* Allow MULTIPOINT EMPTY into columns restricted to POINT EMPTY */
-	arg = empty_point_special_case(arg, typmod, 0);
+	// arg = empty_point_special_case(arg, typmod, 0);
 
 	/* Check if geometry typmod is consistent with the supplied one. */
 	postgis_valid_typmod(arg, typmod);
