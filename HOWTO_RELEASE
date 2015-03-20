@@ -45,7 +45,8 @@ Release procedure
    been reported (extract from ChangeLog).
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
-- Edit extensions/upgradeable_versions.mk and add new versions
+- Edit extensions/upgradeable_versions.mk and add new version number
+  Also edit extensions/upgradeable_versions.mk in trunk to reference this release number
 - Check version in Version.config as specified in Versioning Scheme above.
    (remove the "dev" suffix)
 - Commit all your changes
