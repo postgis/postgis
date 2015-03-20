@@ -9,6 +9,7 @@ PostGIS 2.1.6
 
  * Bug Fixes *
 
+  - #2941, allow geography columns with SRID other than 4326
   - #3069, small objects getting inappropriately fluffed up w/ boxes
   - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
   - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
@@ -18,6 +19,8 @@ PostGIS 2.1.6
   - #3016, Allow unregistering layers of corrupted topologies
   - #3015, Avoid exceptions from TopologySummary
   - #3020, ST_AddBand out-db bug where height using width value
+  - #3031, Allow restore of Geometry(Point) tables dumped with empties in them
+
 
 PostGIS 2.1.5
 2014/12/18
