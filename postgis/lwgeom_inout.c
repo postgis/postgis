@@ -121,7 +121,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 
 	if ( geom_typmod >= 0 )
 	{
-		postgis_valid_typmod(ret, geom_typmod);
+		ret = postgis_valid_typmod(ret, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
@@ -590,7 +590,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	if ( geom_typmod >= 0 )
 	{
-		postgis_valid_typmod(geom, geom_typmod);
+		geom = postgis_valid_typmod(geom, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else

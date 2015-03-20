@@ -724,6 +724,11 @@ extern int gserialized_has_z(const GSERIALIZED *gser);
 extern int gserialized_has_m(const GSERIALIZED *gser);
 
 /**
+* Check if a #GSERIALIZED is a geography.
+*/
+extern int gserialized_is_geodetic(const GSERIALIZED *gser);
+
+/**
 * Return a number indicating presence of Z and M coordinates.
 * 0 = None, 1 = M, 2 = Z, 3 = ZM
 */

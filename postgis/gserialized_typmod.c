@@ -102,7 +102,7 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 * Check the consistency of the metadata we want to enforce in the typmod:
 * srid, type and dimensionality. If things are inconsistent, shut down the query.
 */
-void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod)
+GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 {
 	int32 geom_srid = gserialized_get_srid(gser);
 	int32 geom_type = gserialized_get_type(gser);
@@ -116,10 +116,31 @@ void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod)
 	POSTGIS_DEBUG(2, "Entered function");
 
 	/* No typmod (-1) => no preferences */
-	if (typmod < 0) return;
+	if (typmod < 0) return gser;
 
 	POSTGIS_DEBUGF(3, "Got geom(type = %d, srid = %d, hasz = %d, hasm = %d)", geom_type, geom_srid, geom_z, geom_m);
 	POSTGIS_DEBUGF(3, "Got typmod(type = %d, srid = %d, hasz = %d, hasm = %d)", typmod_type, typmod_srid, typmod_z, typmod_m);
+
+	/*
+	* #3031: If a user is handing us a MULTIPOINT EMPTY but trying to fit it into
+	* a POINT geometry column, there's a strong chance the reason she has
+	* a MULTIPOINT EMPTY because we gave it to her during data dump, 
+	* converting the internal POINT EMPTY into a EWKB MULTIPOINT EMPTY 
+	* (because EWKB doesn't have a clean way to represent POINT EMPTY).
+	* In such a case, it makes sense to turn the MULTIPOINT EMPTY back into a 
+	* point EMPTY, rather than throwing an error.
+	*/
+	if ( typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE && 
+	     gserialized_is_empty(gser) )
+	{
+		pfree(gser);
+		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
+		geom_type = POINTTYPE;
+		if ( gserialized_is_geodetic(gser) )
+			gser = geography_serialize(lwpoint_as_lwgeom(empty_point));
+		else
+			gser = geometry_serialize(lwpoint_as_lwgeom(empty_point));
+	}
 
 	/* Typmod has a preference for SRID? Geometry SRID had better match. */
 	if ( typmod_srid > 0 && typmod_srid != geom_srid )
@@ -175,6 +196,9 @@ void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod)
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 		            errmsg("Geometry has M dimension but column does not" )));
 	}
+	
+	return gser;
+	
 }
 
 
@@ -296,7 +320,7 @@ Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
 	/* Check if geometry typmod is consistent with the supplied one. */
-	postgis_valid_typmod(arg, typmod);
+	arg = postgis_valid_typmod(arg, typmod);
 
 	PG_RETURN_POINTER(arg);
 }
@@ -315,7 +339,7 @@ Datum geometry_enforce_typmod(PG_FUNCTION_ARGS)
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
 	/* Check if geometry typmod is consistent with the supplied one. */
-	postgis_valid_typmod(arg, typmod);
+	arg = postgis_valid_typmod(arg, typmod);
 
 	PG_RETURN_POINTER(arg);
 }

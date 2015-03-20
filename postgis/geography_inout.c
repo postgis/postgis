@@ -104,7 +104,7 @@ GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod
 	/* Check for typmod agreement */
 	if ( geog_typmod >= 0 )
 	{
-		postgis_valid_typmod(g_ser, geog_typmod);
+		g_ser = postgis_valid_typmod(g_ser, geog_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
