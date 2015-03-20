@@ -307,16 +307,7 @@ Datum sfcgal_distance3D(PG_FUNCTION_ARGS)
 	geom1 = POSTGIS2SFCGALGeometry(input1);
 	PG_FREE_IF_COPY(input1, 1);
 
-	/* #3056, only do 3D distance calculation when both arguments have Z */
-	if ( lwgeom_has_z(geom0) && lwgeom_has_z(geom1) )
-	{
-		result = sfcgal_geometry_distance_3d(geom0, geom1);
-	}
-	else
-	{
-		result = sfcgal_geometry_distance(geom0, geom1);
-	}
-
+	result = sfcgal_geometry_distance_3d(geom0, geom1);
 	sfcgal_geometry_delete(geom0);
 	sfcgal_geometry_delete(geom1);
 
