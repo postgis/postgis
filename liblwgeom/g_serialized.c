@@ -42,7 +42,12 @@ int gserialized_ndims(const GSERIALIZED *gser)
 	return FLAGS_NDIMS(gser->flags);
 }
 
-uint32_t gserialized_max_header_size() 
+int gserialized_is_geodetic(const GSERIALIZED *gser)
+{
+	return FLAGS_GET_GEODETIC(gser->flags);
+}
+
+uint32_t gserialized_max_header_size(void)
 {
 	/* read GSERIALIZED size + max bbox according gbox_serialized_size (2 + Z + M) + 1 int for type */
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);

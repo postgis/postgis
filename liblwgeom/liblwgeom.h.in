@@ -604,7 +604,7 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 * Returns the size in bytes to read from toast to get the basic 
 * information from a geometry: GSERIALIZED struct, bbox and type 
 */
-extern uint32_t gserialized_max_header_size();
+extern uint32_t gserialized_max_header_size(void);
 
 /**
 * Extract the SRID from the serialized form (it is packed into
@@ -640,6 +640,11 @@ extern int gserialized_has_z(const GSERIALIZED *gser);
 * Check if a #GSERIALIZED has an M ordinate.
 */
 extern int gserialized_has_m(const GSERIALIZED *gser);
+
+/**
+* Check if a #GSERIALIZED is a geography.
+*/
+extern int gserialized_is_geodetic(const GSERIALIZED *gser);
 
 /**
 * Return a number indicating presence of Z and M coordinates.
