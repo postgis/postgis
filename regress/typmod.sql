@@ -248,17 +248,20 @@ INSERT INTO tm.types(g) values ('POLYHEDRALSURFACE EMPTY');
 INSERT INTO tm.types(g) values ('TRIANGLE EMPTY');
 INSERT INTO tm.types(g) values ('TIN EMPTY');
 
--- all zm flags
+-- all zm flags (17 is the number of base types)
 INSERT INTO tm.types(g)
-SELECT st_force3dz(g) FROM tm.types WHERE id < 17 ORDER BY id;
+SELECT st_force3dz(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force3dm(g) FROM tm.types WHERE id < 17 ORDER BY id;
+SELECT st_force3dm(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force4d(g) FROM tm.types WHERE id < 17 ORDER BY id;
+SELECT st_force4d(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 
 -- known srid
 INSERT INTO tm.types(g)
 SELECT st_setsrid(g,4326) FROM tm.types ORDER BY id;
+
+-- Expected: 17 (base count) * 4 (zmflag combinations) * 2 (srids)
+SELECT 'num_types', count(*) from tm.types;
 
 -- Now try to insert each type into each table
 CREATE FUNCTION tm.insert_all(tmpfile_prefix text)
