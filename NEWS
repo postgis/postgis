@@ -91,7 +91,8 @@ PostGIS 2.2.0
            max extent constraint
   - #3020, ST_AddBand out-db bug where height using width value
   - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
-
+  - #3086, ST_DumpValues() crashes backend on cleanup with invalid
+           band indexes
 
  * Code refactoring *
 
