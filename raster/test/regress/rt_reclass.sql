@@ -16,7 +16,7 @@ FROM (
 			10, 10, 12
 		),
 		ROW(1, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)
-	) AS rast
+	) AS rast  OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -43,7 +43,7 @@ FROM (
 			2, 10, 10, 12
 		),
 		ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)
-	) AS rast
+	) AS rast   OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -71,7 +71,7 @@ FROM (
 		),
 		ROW(1, '0:1', '8BUI', 255),
 		ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)
-	) AS rast
+	) AS rast   OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -90,7 +90,7 @@ FROM (
 			1, 10, 10, 0
 		),
 		ROW(1, '0-100]:200-255,(100-200]:100-200,(200-255]:0-100', '8BUI', NULL)
-	) AS rast
+	) AS rast  OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -109,7 +109,7 @@ FROM (
 			1, 10, 10, 2.71828
 		),
 		ROW(1, '-10000--100]:1-50,(-100-1000]:50-150,(1000-10000]:150-254', '8BUI', 0)
-	) AS rast
+	) AS rast  OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -147,7 +147,7 @@ FROM (
 			1, 10, 10, 2.71828
 		),
 		ROW(1, 'a-100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
-	) AS rast
+	) AS rast OFFSET 0
 ) AS t;
 SELECT
 	ST_Value(t.rast, 1, 1, 1),
@@ -166,7 +166,7 @@ FROM (
 			1, 10, 10, 2.71828
 		),
 		ROW(2, '-10000--100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
-	) AS rast
+	) AS rast OFFSET 0
 ) AS t;
 
 -- ticket #2555
@@ -192,5 +192,5 @@ FROM (
 		),
 
 		1, '[-9000-9000]:[-900-900]', '32BF'
-	) AS rast
+	) AS rast OFFSET 0
 ) AS t;
