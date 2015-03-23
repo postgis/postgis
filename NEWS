@@ -7,7 +7,7 @@ PostGIS 2.1.7
 
  * Bug Fixes *
 
-  - 
+  - #3088, Do not (re)define strcasestr in a liblwgeom.h
 
 
 PostGIS 2.1.6

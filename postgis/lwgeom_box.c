@@ -52,12 +52,6 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 	
 	gbox_init(&box);
 
-	if (strcasestr(str,"BOX(") !=  str )
-	{
-		elog(ERROR,"box2d parser - doesnt start with BOX(");
-		PG_RETURN_NULL();
-	}
-	
 	for(i = 0; str[i]; i++) {
 	  str[i] = tolower(str[i]);
 	}
