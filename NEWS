@@ -3,6 +3,7 @@ YYYY/MM/DD
 
  * Bug Fixes *
 
+  - #3088, Do not (re)define strcasestr in a liblwgeom.h
   - #3069, small objects getting inappropriately fluffed up w/ boxes
   - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
   - #3058, Fix ND-GiST picksplit method to split on the best plane

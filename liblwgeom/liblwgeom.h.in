@@ -1793,10 +1793,6 @@ extern void lwfree(void *mem);
 extern void trim_trailing_zeros(char *num);
 extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
 
-#ifndef HAVE_STRCASESTR
-extern char *strcasestr(const char *s, const char *find);
-#endif
-
 /*******************************************************************************
  * SQLMM internal functions - TODO: Move into separate header files
  ******************************************************************************/
