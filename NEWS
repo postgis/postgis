@@ -98,6 +98,46 @@ PostGIS 2.2.0
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
 
+PostGIS 2.1.6
+2015/03/20
+
+ * Enhancements *
+
+  - #3000, Ensure edge splitting and healing algorithms use indexes
+  - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
+  - #3050, Speep up geometry type reading (J.Santana @ CartoDB)
+
+ * Bug Fixes *
+
+  - #2941, allow geography columns with SRID other than 4326
+  - #3069, small objects getting inappropriately fluffed up w/ boxes
+  - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
+  - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
+  - #3058, Fix ND-GiST picksplit method to split on the best plane
+  - #3052, Make operators <-> and <#> available for PostgreSQL < 9.1
+  - #3045, Fix dimensionality confusion in &&& operator
+  - #3016, Allow unregistering layers of corrupted topologies
+  - #3015, Avoid exceptions from TopologySummary
+  - #3020, ST_AddBand out-db bug where height using width value
+  - #3031, Allow restore of Geometry(Point) tables dumped with empties in them
+
+PostGIS 2.1.5
+2014/12/18
+
+ * Enhancements *
+
+  - #2933, Speedup construction of large multi-geometry objects
+
+ * Bug Fixes *
+
+  - #2947, Fix memory leak in lwgeom_make_valid for single-component
+           collection input
+  - #2949, Fix memory leak in lwgeom_mindistance2d for curve input
+  - #2931, BOX representation is case sensitive
+  - #2942, PostgreSQL 9.5 support
+  - #2953, 2D stats not generated when Z/M values are extreme
+  - #3009, Geography cast may effect underlying tuple
+
 PostGIS 2.1.4
 2014/09/10
 
