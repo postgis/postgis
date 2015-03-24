@@ -3539,7 +3539,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(nulls);
 	}
 	/* hasnosetvalue and nosetvalue */
-	else if (!PG_ARGISNULL(6) & PG_GETARG_BOOL(6)) {
+	else if (!PG_ARGISNULL(6) && PG_GETARG_BOOL(6)) {
 		hasnosetval = TRUE;
 		if (PG_ARGISNULL(7))
 			nosetvalisnull = TRUE;
