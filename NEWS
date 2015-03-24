@@ -7,6 +7,8 @@ PostGIS 2.1.7
 
  * Bug Fixes *
 
+  - #3086, ST_DumpValues() crashes backend on cleanup with invalid
+           band indexes
   - #3088, Do not (re)define strcasestr in a liblwgeom.h
 
 

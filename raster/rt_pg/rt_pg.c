@@ -2754,16 +2754,20 @@ static void rtpg_dumpvalues_arg_destroy(rtpg_dumpvalues_arg arg) {
 		if (arg->nbands != NULL)
 			pfree(arg->nbands);
 
-		for (i = 0; i < arg->numbands; i++) {
-			if (arg->values[i] != NULL)
-				pfree(arg->values[i]);
+		if (arg->values != NULL) {
+			for (i = 0; i < arg->numbands; i++) {
 
-			if (arg->nodata[i] != NULL)
-				pfree(arg->nodata[i]);
+				if (arg->values[i] != NULL)
+					pfree(arg->values[i]);
+
+				if (arg->nodata[i] != NULL)
+					pfree(arg->nodata[i]);
+
+			}
+
+			pfree(arg->values);
 		}
 
-		if (arg->values != NULL)
-			pfree(arg->values);
 		if (arg->nodata != NULL)
 			pfree(arg->nodata);
 	}
