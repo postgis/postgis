@@ -3052,6 +3052,63 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 </refentry>
 
 
+	<refentry id="ST_Subdivide">
+	  <refnamediv>
+		<refname>ST_Subdivide</refname>
+		<refpurpose>Returns a set of geometry where no geometry in the set has more than the specified number of vertices.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>setof geometry <function>ST_Subdivide</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+    <para>
+Turns a single geometry into a set in which each element has fewer than
+the maximum allowed number of vertices. Useful for converting excessively
+large polygons and other objects into small portions that fit within the
+database page size. Uses the same envelope clipping as ST_ClipByBox2D does,
+recursively subdividing the input geometry until all portions have less than the
+maximum vertex count.
+    </para>
+
+		<para>Clipping performed by the GEOS module.</para>
+		<note><para>Requires GEOS 3.5.0+</para></note>
+
+		<para>Availability: 2.2.0.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<programlisting>
+-- Subdivide a geometry until it all parts have < 50 vertices
+SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100)'::geometry, 1),50));
+
+-- Create a new subdivided table suitable for joining to the original
+CREATE TABLE subdivided_geoms AS
+SELECT pkey, ST_Subdivide(geom) AS geom
+FROM original_geoms;
+ </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para>
+<xref linkend="ST_ClipByBox2D" />,
+    </para>
+	  </refsection>
+	</refentry>
+
+
+
 <refentry id="ST_Union">
   <refnamediv>
 	<refname>ST_Union</refname>
