@@ -3090,7 +3090,7 @@ maximum vertex count.
 	  <refsection>
 		<title>Examples</title>
 			<programlisting>
--- Subdivide a geometry until it all parts have < 50 vertices
+-- Subdivide a geometry until it all parts have &lt; 50 vertices
 SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100)'::geometry, 1),50));
 
 -- Create a new subdivided table suitable for joining to the original
