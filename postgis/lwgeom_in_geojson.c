@@ -64,7 +64,11 @@ findMemberByName(json_object* poObj, const char* pszName )
 
 	if( NULL != json_object_get_object(poTmp) )
 	{
-		assert( NULL != json_object_get_object(poTmp)->head );
+		if ( NULL == json_object_get_object(poTmp)->head )
+		{
+			geojson_lwerror("invalid GeoJSON representation", 2);
+			return NULL;
+		}
 
 		for( it.entry = json_object_get_object(poTmp)->head;
 		        ( it.entry ?
@@ -96,6 +100,11 @@ parse_geojson_coord(json_object *poObj, bool *hasz, POINTARRAY *pa)
 		const int nSize = json_object_array_length( poObj );
 		POSTGIS_DEBUGF(3, "parse_geojson_coord called for array size %d.", nSize );
 
+		if ( nSize < 2 )
+		{
+			geojson_lwerror("Too few ordinates in GeoJSON", 4);
+			return LW_FAILURE;
+		}
 
 		// Read X coordinate
 		poObjCoord = json_object_array_get_idx( poObj, 0 );
@@ -114,7 +123,7 @@ parse_geojson_coord(json_object *poObj, bool *hasz, POINTARRAY *pa)
 			pt.y = json_object_get_int( poObjCoord );
 		POSTGIS_DEBUGF(3, "parse_geojson_coord pt.y = %f.", pt.y );
 
-		if( nSize == 3 ) /* should this be >= 3 ? */
+		if( nSize > 2 ) /* should this be >= 3 ? */
 		{
 			// Read Z coordiante
 			poObjCoord = json_object_array_get_idx( poObj, 2 );
@@ -125,18 +134,26 @@ parse_geojson_coord(json_object *poObj, bool *hasz, POINTARRAY *pa)
 			POSTGIS_DEBUGF(3, "parse_geojson_coord pt.z = %f.", pt.z );
 			*hasz = true;
 		}
-		else
+		else if ( nSize == 2 )
 		{
 			*hasz = false;
 			/* Initialize Z coordinate, if required */
 			if ( FLAGS_GET_Z(pa->flags) ) pt.z = 0.0;
 		}
-
-		/* TODO: should we account for nSize > 3 ? */
-
+		else
+		{
+			/* TODO: should we account for nSize > 3 ? */
+			/* more than 3 coordinates, we're just dropping dimensions here... */
+		}
+		
 		/* Initialize M coordinate, if required */
 		if ( FLAGS_GET_M(pa->flags) ) pt.m = 0.0;
-
+		
+	}
+	else
+	{
+		/* If it's not an array, just don't handle it */
+		return LW_FAILURE;
 	}
 
 	return ptarray_append_point(pa, &pt, LW_FALSE);
