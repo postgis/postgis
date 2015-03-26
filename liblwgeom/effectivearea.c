@@ -9,26 +9,49 @@
  *
  **********************************************************************/
  
- #include "liblwgeom_internal.h"
- #include "lwgeom_log.h"
+ #include "effectivearea.h"
 
-typedef struct
+
+EFFECTIVE_AREAS*
+initiate_effectivearea(const POINTARRAY *inpts)
 {
-	double area;
-	int prev;
-	int next;
-} areanode;
+	LWDEBUG(2, "Entered  initiate_effectivearea");
+	EFFECTIVE_AREAS *ea;
+	ea=lwalloc(sizeof(EFFECTIVE_AREAS));
+	ea->initial_arealist = lwalloc(inpts->npoints*sizeof(areanode));
+	ea->res_arealist = lwalloc(inpts->npoints*sizeof(double));
+	ea->inpts=inpts;
+	return ea;	
+}
 
-/**
 
-Structure to hold pointarray and it's arealist
-*/
-typedef struct
+void destroy_effectivearea(EFFECTIVE_AREAS *ea)
 {
-	const POINTARRAY *inpts;
-	areanode *initial_arealist;
-	double *res_arealist;
-} EFFECTIVE_AREAS;
+	lwfree(ea->initial_arealist);
+	lwfree(ea->res_arealist);
+	lwfree(ea);
+}
+
+
+static MINHEAP
+initiate_minheap(int npoints)
+{
+	MINHEAP tree;
+	tree.key_array = lwalloc(npoints*sizeof(void*));
+	tree.maxSize=npoints;
+	tree.usedSize=0;
+	return tree;
+}
+
+
+static void 
+destroy_minheap(MINHEAP tree)
+{
+	lwfree(tree.key_array);
+}
+
+
+
 
 /**
 
@@ -36,7 +59,7 @@ Calculate the area of a triangle in 2d
 */
 static double triarea2d(const double *P1, const double *P2, const double *P3)
 {
-	LWDEBUG(2, "Entered  triarea2d");
+//	LWDEBUG(2, "Entered  triarea2d");
 	double ax,bx,ay,by, area;
 	
 	ax=P1[0]-P2[0];
@@ -45,8 +68,6 @@ static double triarea2d(const double *P1, const double *P2, const double *P3)
 	by=P3[1]-P2[1];
 	
 	area= fabs(0.5*(ax*by-ay*bx));
-	
-	LWDEBUGF(2, "Calculated area is %f",(float) area);
 	return area;
 }
 
@@ -78,9 +99,129 @@ static double triarea3d(const double *P1, const double *P2, const double *P3)
 
 /**
 
+We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refere to
+*/
+static int cmpfunc (const void * a, const void * b)
+{
+//	LWDEBUG(2, "cmpfunc entered");
+	double v1 =  (*(areanode**)a)->area;
+	double v2 = (*(areanode**)b)->area;
+	return  (v1>v2 ) ? 1 : -1;
+}
+
+
+/**
+
+Sift Down
+*/
+static void down(MINHEAP *tree,areanode *arealist,int parent)
+{
+	LWDEBUG(2, "Entered  down");
+	areanode **treearray=tree->key_array;
+	int left=parent*2;
+	int right = left +1;
+	void *tmp;
+	int swap=parent;
+	double leftarea=0;
+	double rightarea=0;
+	
+	double parentarea=((areanode*) treearray[parent])->area;
+
+	if(left<tree->usedSize)
+	{	
+		leftarea=((areanode*) treearray[left])->area;		
+		if(parentarea>leftarea)
+			swap=left;
+	}
+	if(right<tree->usedSize)
+	{
+		rightarea=((areanode*) treearray[right])->area;
+		if(rightarea<parentarea&&rightarea<leftarea)
+			swap=right;
+	}
+	if(swap>parent)
+	{
+	/*ok, we have to swap something*/
+		tmp=treearray[parent];
+		treearray[parent]=treearray[swap];
+		/*Update reference*/
+		((areanode*) treearray[parent])->treeindex=parent;
+		treearray[swap]=tmp;
+		/*Update reference*/
+		((areanode*) treearray[swap])->treeindex=swap;	
+		if(swap<tree->usedSize)
+			down(tree,arealist,swap);
+	}
+	return;
+}
+
+
+/**
+
+Sift Up
+*/
+static void up(MINHEAP *tree,areanode *arealist,int c)
+{
+	void *tmp;
+
+	areanode **treearray=tree->key_array;
+	
+	int parent=floor(c/2);
+	
+	while(((areanode*) treearray[c])->area<((areanode*) treearray[parent])->area)
+	{
+		/*ok, we have to swap*/
+		tmp=treearray[parent];
+		treearray[parent]=treearray[c];
+		/*Update reference*/
+		((areanode*) treearray[parent])->treeindex=parent;
+		treearray[c]=tmp;	
+		/*Update reference*/
+		((areanode*) treearray[c])->treeindex=c;
+		c=parent;		
+		parent=floor(c/2);
+	}
+	return;
+}
+
+
+/**
+
+Get a reference to the point with the smallest effective area from the root of the min heap
+*/
+static 	areanode* minheap_pop(MINHEAP *tree,areanode *arealist )
+{	LWDEBUG(2, "Entered  minheap_pop");
+	areanode *res = tree->key_array[0];
+	/*put last value first*/
+	tree->key_array[0]=tree->key_array[tree->usedSize-1];
+	
+	down(tree,arealist,0);
+	tree->usedSize--;
+	return res;
+}
+
+
+/**
+
+The member of the minheap at index idx is changed. Update the tree and make restore the heap property
+*/
+static void minheap_update(MINHEAP *tree,areanode *arealist , int idx)
+{
+	areanode **treearray=tree->key_array;
+	int 	parent=floor(idx/2);
+	
+	if(((areanode*) treearray[idx])->area<((areanode*) treearray[parent])->area)
+		up(tree,arealist,idx);
+	else
+		down(tree,arealist,idx);
+	return;
+}
+
+/**
+
 To get the effective area, we have to check what area a point results in when all smaller areas are eliminated
 */
-static void tune_areas(EFFECTIVE_AREAS ea)
+static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps)
 {
 	LWDEBUG(2, "Entered  tune_areas");
 	const double *P1;
@@ -88,159 +229,184 @@ static void tune_areas(EFFECTIVE_AREAS ea)
 	const double *P3;
 	double area;
 	
-	int npoints=ea.inpts->npoints;
+
+	
+	int npoints=ea->inpts->npoints;
 	int i;
-	int current, prevcurrent, nextcurrent;
-	int is3d = FLAGS_GET_Z(ea.inpts->flags);
-		
-	do
+	int current, precurrent, procurrent;
+	
+	MINHEAP tree = initiate_minheap(npoints);
+	
+	int is3d = FLAGS_GET_Z(ea->inpts->flags);
+	
+	
+	/*Add all keys (index in initial_arealist) into minheap array*/
+	for (i=0;i<npoints;i++)
 	{
-		/*i is our cursor*/
-		i=0;
+		tree.key_array[i]=ea->initial_arealist+i;
+		LWDEBUGF(2, "add nr %d, with area %lf, and %lf",i,ea->initial_arealist[i].area, tree.key_array[i]->area );
+	}
+	tree.usedSize=npoints;
+	
+	/*order the keys by area, small to big*/	
+	qsort(tree.key_array, npoints, sizeof(void*), cmpfunc);
+	
+	/*We have to put references to our tree in our point-list*/
+	for (i=0;i<npoints-1;i++)
+	{
+		 ((areanode*) tree.key_array[i])->treeindex=i;
+	}
+	/*Ok, now we have a minHeap, just need to keep it*/
+	
+	
+	for (i=0;i<npoints-1;i++)
+	{	
+		/*Get a reference to the point with the currently smallest effective area*/
+		current=minheap_pop(&tree, ea->initial_arealist)-ea->initial_arealist;
+		LWDEBUGF(4,"current=%d",current);
 		
-		/*current is the point that currently gives the smallest area*/
-		current=0;
-		
-		do
-		{			
-			i=ea.initial_arealist[i].next;
-			if(ea.initial_arealist[i].area<ea.initial_arealist[current].area)
-			{
-				current=i;
-			}		
-		}while(i<npoints-2);
 		/*We have found the smallest area. That is the resulting effective area for the "current" point*/
-		ea.res_arealist[current]=ea.initial_arealist[current].area;
+		if (i<npoints-avoid_collaps)
+			ea->res_arealist[current]=ea->initial_arealist[current].area;
+		else
+			ea->res_arealist[current]=FLT_MAX;	
+				
+		/*The found smallest area point is now regarded as elimnated and we have to recalculate the area the adjacent (ignoring earlier elimnated points) points gives*/
 		
-		LWDEBUGF(2, "Smallest area was to point %d",current);		
+		/*FInd point before and after*/
+		precurrent=ea->initial_arealist[current].prev;
+		procurrent=ea->initial_arealist[current].next;
 		
-		/*The found smallest area point is now viewwed as elimnated and we have to recalculate the area the adjacent (ignoring earlier elimnated points) points gives*/
-		prevcurrent=ea.initial_arealist[current].prev;
-		nextcurrent=ea.initial_arealist[current].next;
+		P2= (double*)getPoint_internal(ea->inpts, precurrent);
+		P3= (double*)getPoint_internal(ea->inpts, procurrent);
 		
-		P2= (double*)getPoint_internal(ea.inpts, prevcurrent);
-		P3= (double*)getPoint_internal(ea.inpts, nextcurrent);
-		
-		if(prevcurrent>0)
+		/*Check if point before current point is the first in the point array. */
+		if(precurrent>0)
 		{		
-		
-			LWDEBUGF(2, "calculate previous, %d",prevcurrent);				
-			P1= (double*)getPoint_internal(ea.inpts, ea.initial_arealist[prevcurrent].prev);
+					
+			P1= (double*)getPoint_internal(ea->inpts, ea->initial_arealist[precurrent].prev);
 			if(is3d)
 				area=triarea3d(P1, P2, P3);
 			else
 				area=triarea2d(P1, P2, P3);			
-			ea.initial_arealist[prevcurrent].area = FP_MAX(area,ea.res_arealist[current]);
+			
+			ea->initial_arealist[precurrent].area = FP_MAX(area,ea->res_arealist[current]);
+			LWDEBUGF(4, "found new area %lf to point %d, in treeplace : %d",ea->initial_arealist[precurrent].area,precurrent, ea->initial_arealist[precurrent].treeindex);
+			minheap_update(&tree, ea->initial_arealist, ea->initial_arealist[precurrent].treeindex);
 		}
-		if(nextcurrent<npoints-1)
+		if(procurrent<npoints-1)/*Check if point after current point is the last in the point array. */
 		{
-			LWDEBUGF(2, "calculate next, %d",nextcurrent);	
 			P1=P2;
 			P2=P3;	
 			
-			P3= (double*)getPoint_internal(ea.inpts, ea.initial_arealist[nextcurrent].next);
+			P3= (double*)getPoint_internal(ea->inpts, ea->initial_arealist[procurrent].next);
+			
+
 			if(is3d)
 				area=triarea3d(P1, P2, P3);
 			else
 				area=triarea2d(P1, P2, P3);	
-			ea.initial_arealist[nextcurrent].area = FP_MAX(area,ea.res_arealist[current]);
+		
+				
+			ea->initial_arealist[procurrent].area = FP_MAX(area,ea->res_arealist[current]);
 			
-			LWDEBUG(2, "Back from area_calc");
+			LWDEBUGF(4, "found new area %lf to point %d, in treeplace : %d",ea->initial_arealist[procurrent].area,procurrent, ea->initial_arealist[procurrent].treeindex);
+			minheap_update(&tree, ea->initial_arealist, ea->initial_arealist[procurrent].treeindex);
+
 		}
 		
 		/*rearrange the nodes so the eliminated point will be ingored on the next run*/
-		ea.initial_arealist[prevcurrent].next = ea.initial_arealist[current].next;
-		ea.initial_arealist[nextcurrent].prev = ea.initial_arealist[current].prev;
+		ea->initial_arealist[precurrent].next = ea->initial_arealist[current].next;
+		ea->initial_arealist[procurrent].prev = ea->initial_arealist[current].prev;
 		
 		/*Check if we are finnished*/
-		if(prevcurrent==0&&nextcurrent==npoints-1)
+		if(precurrent==0&&procurrent==npoints-1)
 			current=0;
-	}while(current>0);
+	};
+	destroy_minheap(tree);
 	return;	
 }
 
 
-static void ptarray_calc_areas(EFFECTIVE_AREAS ea)
-{
-	LWDEBUG(2, "Entered  ptarray_set_effective_area2d");
-	int i;
-	int npoints=ea.inpts->npoints;
-	int is3d = FLAGS_GET_Z(ea.inpts->flags);
+/**
 
+We calculate the effective area for the first time
+*/
+void ptarray_calc_areas(EFFECTIVE_AREAS *ea, int avoid_collaps)
+{
+	LWDEBUG(2, "Entered  ptarray_calc_areas");
+	int i;
+	int npoints=ea->inpts->npoints;
+	int is3d = FLAGS_GET_Z(ea->inpts->flags);
+
+	
 	const double *P1;
 	const double *P2;
 	const double *P3;	
 		
-	P1 = (double*)getPoint_internal(ea.inpts, 0);
-	P2 = (double*)getPoint_internal(ea.inpts, 1);
+	P1 = (double*)getPoint_internal(ea->inpts, 0);
+	P2 = (double*)getPoint_internal(ea->inpts, 1);
 	
-	/*The first and last point shall always have the maximum effective area.*/
-	ea.initial_arealist[0].area=ea.initial_arealist[npoints-1].area=DBL_MAX;
-	ea.res_arealist[0]=ea.res_arealist[npoints-1]=DBL_MAX;
+	/*The first and last point shall always have the maximum effective area. We use float max to not make trouble for bbox*/
+	ea->initial_arealist[0].area=ea->initial_arealist[npoints-1].area=FLT_MAX;
+	ea->res_arealist[0]=ea->res_arealist[npoints-1]=FLT_MAX;
 	
-	ea.initial_arealist[0].next=1;
-	ea.initial_arealist[0].prev=0;
+	ea->initial_arealist[0].next=1;
+	ea->initial_arealist[0].prev=0;
 	
 	LWDEBUGF(2, "Time to iterate the pointlist with %d points",npoints);
 	for (i=1;i<(npoints)-1;i++)
 	{
-		ea.initial_arealist[i].next=i+1;
-		ea.initial_arealist[i].prev=i-1;
-			LWDEBUGF(2, "i=%d",i);
-		P3 = (double*)getPoint_internal(ea.inpts, i+1);
+		ea->initial_arealist[i].next=i+1;
+		ea->initial_arealist[i].prev=i-1;
+		P3 = (double*)getPoint_internal(ea->inpts, i+1);
 
 		if(is3d)
-			ea.initial_arealist[i].area=triarea3d(P1, P2, P3);
+			ea->initial_arealist[i].area=triarea3d(P1, P2, P3);
 		else
-			ea.initial_arealist[i].area=triarea2d(P1, P2, P3);
+			ea->initial_arealist[i].area=triarea2d(P1, P2, P3);
 		
-		LWDEBUGF(2, "area = %f",ea.initial_arealist[i].area);
 		P1=P2;
 		P2=P3;
 		
 	}	
-		ea.initial_arealist[npoints-1].next=npoints-1;
-		ea.initial_arealist[npoints-1].prev=npoints-2;
-	LWDEBUG(2, "Time to go on");
+		ea->initial_arealist[npoints-1].next=npoints-1;
+		ea->initial_arealist[npoints-1].prev=npoints-2;
 	
 	for (i=1;i<(npoints)-1;i++)
 	{
-		ea.res_arealist[i]=-1;
+		ea->res_arealist[i]=-1;
 	}
 	
-	tune_areas(ea);
+	tune_areas(ea,avoid_collaps);
 	return ;
 }
 
 
-static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,double trshld)
+
+static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_collaps,double trshld)
 {
 	LWDEBUG(2, "Entered  ptarray_set_effective_area");
 	int p;
 	POINT4D pt;
-	EFFECTIVE_AREAS ea;
+	EFFECTIVE_AREAS *ea;
+	ea=initiate_effectivearea(inpts);
 	
-	ea.initial_arealist = lwalloc(inpts->npoints*sizeof(areanode));
-	LWDEBUGF(2, "sizeof(areanode)=%d",sizeof(areanode));
-	ea.res_arealist = lwalloc(inpts->npoints*sizeof(double));
-	ea.inpts=inpts;
 	POINTARRAY *opts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), 1, inpts->npoints);
 
-	ptarray_calc_areas(ea);	
+	ptarray_calc_areas(ea,avoid_collaps);	
 	
 	/*Only return points with an effective area above the threashold*/
-	for (p=0;p<ea.inpts->npoints;p++)
+	for (p=0;p<ea->inpts->npoints;p++)
 	{
-		if(ea.res_arealist[p]>=trshld)
+		if(ea->res_arealist[p]>=trshld)
 		{
-			pt=getPoint4d(ea.inpts, p);
-			pt.m=ea.res_arealist[p];
+			pt=getPoint4d(ea->inpts, p);
+			pt.m=ea->res_arealist[p];
 			ptarray_append_point(opts, &pt, LW_FALSE);
 		}
 	}	
-			
-		lwfree(ea.initial_arealist);
-		lwfree(ea.res_arealist);
+	destroy_effectivearea(ea);
 	return opts;
 	
 }
@@ -255,7 +421,7 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline, double trshld)
 	if( lwline_is_empty(iline) )
 		return lwline_clone(iline);
 			
-	oline = lwline_construct(iline->srid, NULL, ptarray_set_effective_area(iline->points,trshld));
+	oline = lwline_construct(iline->srid, NULL, ptarray_set_effective_area(iline->points,2,trshld));
 		
 	oline->type = iline->type;
 	return oline;
@@ -276,7 +442,7 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly, double trshld)
 	for (i = 0; i < ipoly->nrings; i++)
 	{
 		/* Add ring to simplified polygon */
-		if( lwpoly_add_ring(opoly, ptarray_set_effective_area(ipoly->rings[i],trshld)) == LW_FAILURE )
+		if( lwpoly_add_ring(opoly, ptarray_set_effective_area(ipoly->rings[i],4,trshld)) == LW_FAILURE )
 			return NULL;
 	}
 
