@@ -153,10 +153,11 @@ parse_geojson_point(json_object *geojson, int *hasz,  int root_srid)
 	LWDEBUGF(3, "parse_geojson_point called with root_srid = %d.", root_srid );
 
 	coords = findMemberByName( geojson, "coordinates" );
-	if ( ! coords ) {
+	if ( ! coords ) 
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
-    return NULL;
-  }
+		return NULL;
+	}
 	
 	pa = ptarray_construct_empty(1, 0, 1);
 	parse_geojson_coord(coords, hasz, pa);
@@ -179,8 +180,8 @@ parse_geojson_linestring(json_object *geojson, int *hasz,  int root_srid)
 	points = findMemberByName( geojson, "coordinates" );
 	if ( ! points ) {
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
-    return NULL;
-  }
+		return NULL;
+	}
 
 	pa = ptarray_construct_empty(1, 0, 1);
 
@@ -373,10 +374,11 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
 	}
 
 	poObjPolys = findMemberByName( geojson, "coordinates" );
-	if ( ! poObjPolys ) {
+	if ( ! poObjPolys )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
-    return NULL;
-  }
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjPolys ) )
 	{
@@ -449,10 +451,11 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz,  int root_srid
 	}
 
 	poObjGeoms = findMemberByName( geojson, "geometries" );
-	if ( ! poObjGeoms ) {
+	if ( ! poObjGeoms ) 
+	{
 		geojson_lwerror("Unable to find 'geometries' in GeoJSON string", 4);
-    return NULL;
-  }
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjGeoms ) )
 	{
@@ -475,16 +478,18 @@ parse_geojson(json_object *geojson, int *hasz,  int root_srid)
 	json_object* type = NULL;
 	const char* name;
 
-	if( NULL == geojson ) {
+	if( NULL == geojson ) 
+	{
 		geojson_lwerror("invalid GeoJSON representation", 2);
-    return NULL;
-  }
+		return NULL;
+	}
 
 	type = findMemberByName( geojson, "type" );
-	if( NULL == type ) {
+	if( NULL == type ) 
+	{
 		geojson_lwerror("unknown GeoJSON type", 3);
-    return NULL;
-  }
+		return NULL;
+	}
 
 	name = json_object_get_string( type );
 
