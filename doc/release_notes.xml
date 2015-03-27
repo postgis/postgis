@@ -3,9 +3,28 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
 
-     <sect1>
-       <title>Release 2.0.6</title>
-         <para>Release date: 2014/05/14</para>
+    <sect1>
+      <title>Release 2.0.7</title>
+      <para>Release date: 2015/03/27</para>
+      <para>In addition to minor improvements and bug fixes, important fixes in the stability of GeoJSON input.</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#3088, Do not (re)define strcasestr in a liblwgeom.h</para>
+        <para>#3069, small objects getting inappropriately fluffed up w/ boxes</para>
+        <para>#3068, Have postgis_typmod_dims return NULL for unconstrained dims</para>
+        <para>#3058, Fix ND-GiST picksplit method to split on the best plane</para>
+        <para>#2774, fix undefined behavior in ptarray_calculate_gbox_geodetic</para>
+        <para>#2845, Bad geometry created from ST_AddPoint</para>
+        <para>#2870, Binary insert into geography column results geometry being inserted </para>
+        <para>#2720, lwpoly_add_ring should update maxrings after realloc</para>
+        <para>#2697, ST_GeomFromGeoJSON() of invalid GeoJSON Polygons crashes server </para>
+        <para>#2931, BOX representation is case sensitive</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
+      <title>Release 2.0.6</title>
+      <para>Release date: 2014/05/14</para>
       <para>This is a security release.</para>
       <simplesect>
         <title>Important changes</title>
