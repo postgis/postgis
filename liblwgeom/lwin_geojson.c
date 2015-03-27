@@ -110,7 +110,7 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 		pt.y = json_object_get_double( poObjCoord );
 		LWDEBUGF(3, "parse_geojson_coord pt.y = %f.", pt.y );
 
-		if( nSize < 2 ) /* should this be >= 3 ? */
+		if( nSize > 2 ) /* should this be >= 3 ? */
 		{
 			// Read Z coordinate
 			poObjCoord = json_object_array_get_idx( poObj, 2 );
