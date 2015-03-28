@@ -210,7 +210,7 @@ run_simple_test ()
 		| grep --binary-files=text -v "^\(INSERT\|DELETE\|UPDATE\|SELECT\)" \
 		| grep --binary-files=text -v "^\(CONTEXT\|RESET\|ANALYZE\)" \
 		| grep --binary-files=text -v "^\(DROP\|CREATE\|VACUUM\)" \
-		| grep --binary-files=text -v "^\(SET\|TRUNCATE\)" \
+		| grep --binary-files=text -v "^\(SET\|TRUNCATE\|COPY\)" \
 		| grep --binary-files=text -v "^LINE [0-9]" \
 		| grep --binary-files=text -v "^  *^$" \
 		| sed -e 's/Infinity/inf/g' -e 's/Inf/inf/g' -e 's/1\.#INF/inf/g' \
