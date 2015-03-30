@@ -1,15 +1,12 @@
 PostGIS 2.1.7
-2015/xx/xx
-
- * Enhancements *
-
-  - 
+2015/03/30
 
  * Bug Fixes *
 
   - #3086, ST_DumpValues() crashes backend on cleanup with invalid
            band indexes
   - #3088, Do not (re)define strcasestr in a liblwgeom.h
+  - #3094, Malformed GeoJSON inputs crash backend
 
 
 PostGIS 2.1.6

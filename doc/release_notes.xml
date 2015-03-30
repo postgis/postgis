@@ -4,8 +4,21 @@
     <subtitle>Release Notes</subtitle>
 	
     <sect1>
-      <title>Release 2.1.5</title>
-      <para>Release date: 2014-12-18</para>
+      <title>Release 2.1.7</title>
+      <para>Release date: 2015-03-30</para>
+      <para>This is a critical bug fix release.</para>
+      <simplesect>  
+       <simplesect>
+         <title>Bug Fixes</title>
+         <para>#3086, ST_DumpValues() crashes backend on cleanup with invalid band indexes</para>
+         <para>#3088, Do not (re)define strcasestr in a liblwgeom.h</para>
+         <para>#3094, Malformed GeoJSON inputs crash backend</para>
+       </simplesect>
+    </sect1>
+  
+    <sect1>
+      <title>Release 2.1.6</title>
+      <para>Release date: 2015-03-20</para>
       <para>This is a bug fix and performance improvement release.</para>
       <simplesect>  
         <title>Enhancements</title>

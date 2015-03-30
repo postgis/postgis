@@ -1,3 +1,53 @@
+2015-03-27 17:21  pramsey
+
+	* liblwgeom/lwin_geojson.c: Formatting
+
+2015-03-27 16:26  pramsey
+
+	* liblwgeom/lwin_geojson.c: Fix z+ handling
+
+2015-03-26 22:29  pramsey
+
+	* liblwgeom/lwin_geojson.c: GeoJSON maintenance
+
+2015-03-24 13:39  dustymugs
+
+	* raster/rt_pg/rt_pg.c: invalid operator. Ticket #3090
+
+2015-03-24 13:32  dustymugs
+
+	* NEWS, raster/rt_pg/rt_pg.c,
+	  raster/test/regress/rt_dumpvalues.sql: Fix ST_DumpValues()
+	  crasher when cleaning. Ticket #3086
+
+2015-03-23 16:34  strk
+
+	* NEWS, configure.ac, liblwgeom/liblwgeom.h.in, liblwgeom/lwutil.c,
+	  postgis/lwgeom_box.c: Do not (re)define strcasestr in a public
+	  header (#3088)
+
+2015-03-20 17:11  pramsey
+
+	* HOWTO_RELEASE: Add notes on updateing trunk too
+
+2015-03-20 17:08  pramsey
+
+	* HOWTO_RELEASE, extensions/upgradeable_versions.mk,
+	  java/jdbc_jtsparser/pom.xml: Push versions forward
+
+2015-03-20 17:01  pramsey
+
+	* NEWS, Version.config: Set versions for 2.1.7dev
+
+2015-03-20 17:00  pramsey
+
+	* NEWS, README.postgis, Version.config, doc/release_notes.xml:
+	  Setup for 2.1.6 release
+
+2015-03-20 16:45  pramsey
+
+	* ChangeLog: update changelog
+
 2015-03-20 15:50  pramsey
 
 	* NEWS: Update NEWs
