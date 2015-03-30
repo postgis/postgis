@@ -7,8 +7,7 @@
       <title>Release 2.1.7</title>
       <para>Release date: 2015-03-30</para>
       <para>This is a critical bug fix release.</para>
-      <simplesect>  
-       <simplesect>
+     <simplesect>
          <title>Bug Fixes</title>
          <para>#3086, ST_DumpValues() crashes backend on cleanup with invalid band indexes</para>
          <para>#3088, Do not (re)define strcasestr in a liblwgeom.h</para>
