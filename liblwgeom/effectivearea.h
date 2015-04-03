@@ -59,6 +59,6 @@ EFFECTIVE_AREAS* initiate_effectivearea(const POINTARRAY *inpts);
 
 void destroy_effectivearea(EFFECTIVE_AREAS *ea);
 
-void ptarray_calc_areas(EFFECTIVE_AREAS *ea,int avoid_collaps);
+void ptarray_calc_areas(EFFECTIVE_AREAS *ea,int avoid_collaps, int set_area, double trshld);
 
 #endif /* _EFFECTIVEAREA_H */

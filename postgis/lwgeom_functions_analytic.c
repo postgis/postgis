@@ -73,18 +73,24 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
-  int type = gserialized_get_type(geom);
+	int type = gserialized_get_type(geom);
 	LWGEOM *in;
 	LWGEOM *out;
-	double area;
+	double area=0;
+	int set_area=0;
 
-  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
-    PG_RETURN_POINTER(geom);
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		PG_RETURN_POINTER(geom);
 
-	area = PG_GETARG_FLOAT8(1);
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+		area = PG_GETARG_FLOAT8(1);
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	set_area = PG_GETARG_INT32(2);
+
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_set_effective_area(in, area);
+	out = lwgeom_set_effective_area(in,set_area, area);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
