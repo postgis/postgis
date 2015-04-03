@@ -2737,7 +2737,55 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_SetEffectiveArea">
+<refentry id="ST_SimplifyVW">
+	  <refnamediv>
+		<refname>ST_SimplifyVW</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SimplifyVW</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para> Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm. 
+		Will actually do something only with (multi)lines and (multi)polygons but you can safely call it with any kind of geometry. 
+		Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function.</para>
+
+		<note><para>Note that returned geometry might loose its
+				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
+		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+		<note><para>This function handles 3D and the third dimmension will affect the result</para></note>
+		<para>Availability: 2.2.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>A linestring that get the efffective area calculated. All points is returned since we give 0 as themin area threashold</para>
+				<programlisting>
+
+select ST_AStext(ST_SimplifyVW(geom,30)) simplified
+FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo; 
+-result
+ simplified
+-----------+-------------------+
+LINESTRING(5 2,7 25,10 10)
+
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+		  </refsection>
+	</refentry>
+		<refentry id="ST_SetEffectiveArea">
 	  <refnamediv>
 		<refname>ST_SetEffectiveArea</refname>
 		<refpurpose>Sets for each vertex point it's effective area,  
@@ -2750,32 +2798,34 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>threashold = 0</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
-		<para> Sets for each vertex point it's effective area from Visvalingam’s algorithm.
+		<para> Sets for each vertex point it's effective area from Visvalingam-Whyatt’s algorithm.
 			The effective area is stored as the M-value of the geomtries. 
-			If the second optional parameter is used, the resulting geometriy will be build obnly on vertex points with an effective area 
+			If the second optional parameter is used, the resulting geometriy will be build only on vertex points with an effective area 
 			greater than or equal to that threashold value. That will be a simplified geometry.
-			
+			</para><para>
 			This function can be used for server side simplification by using the threashold. Another option is to not give any threashold value. 
 			Then you get the full geometry back, but with effective areas as M-values wich can be used by the client to simplify very fast.
-			
+			</para><para>
 			Will actually do something only with
 			(multi)lines and (multi)polygons but you can safely call it with
 			any kind of geometry. Since simplification occurs on a
 			object-by-object basis you can also feed a GeometryCollection to
 			this function.
+			</para>
 			
-			This function handles 3D and the third dimmension will affect the effective area.</para>
 
 		<note><para>Note that returned geometry might loose its
 				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
 		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
 		<note><para>The output geoemtry will loose all previous information in the M-values</para></note>
+		<note><para>This function handles 3D and the third dimmension will affect the effective area</para></note>
 		<para>Availability: 2.2.0</para>
 	  </refsection>
 
@@ -2789,13 +2839,13 @@ FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
 -result
  all_pts | thrshld_30
 -----------+-------------------+
-LINESTRING M (5 2 1.79769313486232e+308,3 8 29,6 20 1.5,7 25 49.5,10 10 1.79769313486232e+308) | LINESTRING M (5 2 1.79769313486232e+308,7 25 49.5,10 10 1.79769313486232e+308)
+LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.40282346638529e+38) | LINESTRING M (5 2 3.40282346638529e+38,7 25 49.5,10 10 3.40282346638529e+38)
 
 				</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+			<para><xref linkend="ST_SimplifyVW" /></para>
 		  </refsection>
 	</refentry>
 	
