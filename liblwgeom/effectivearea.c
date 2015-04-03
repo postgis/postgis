@@ -57,19 +57,7 @@ Calculate the area of a triangle in 2d
 */
 static double triarea2d(const double *P1, const double *P2, const double *P3)
 {
-//	LWDEBUG(2, "Entered  triarea2d");
-/*	double ax,bx,ay,by, area;
-	
-	ax=P1[0]-P2[0];
-	bx=P3[0]-P2[0];
-	ay=P1[1]-P2[1];
-	by=P3[1]-P2[1];
-	
-	area= fabs(0.5*(ax*by-ay*bx));*/
-	
 	return fabs(0.5*((P1[0]-P2[0])*(P3[1]-P2[1])-(P1[1]-P2[1])*(P3[0]-P2[0])));
-	
-	/*return area;*/
 }
 
 /**
