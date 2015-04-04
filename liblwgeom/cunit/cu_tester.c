@@ -37,6 +37,7 @@ extern void in_geojson_suite_setup(void);
 extern void twkb_in_suite_setup(void);
 extern void libgeom_suite_setup(void);
 extern void measures_suite_setup(void);
+extern void effectivearea_suite_setup(void);
 extern void misc_suite_setup(void);
 extern void node_suite_setup(void);
 extern void out_encoded_polyline_suite_setup(void);
@@ -77,6 +78,7 @@ PG_SuiteSetup setupfuncs[] =
 #endif
 	libgeom_suite_setup,
 	measures_suite_setup,
+	effectivearea_suite_setup,
 	misc_suite_setup,
 	node_suite_setup,
 	out_encoded_polyline_suite_setup,

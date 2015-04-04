@@ -85,6 +85,7 @@ TESTS = \
 	setpoint \
 	size \
 	simplify \
+	simplifyvw \
 	snaptogrid \
 	summary \
 	affine \
