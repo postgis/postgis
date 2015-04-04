@@ -423,6 +423,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 		}	
 	}
 	destroy_effectivearea(ea);
+	
 	return opts;
 	
 }
@@ -455,6 +456,7 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 	LWDEBUG(2, "Entered  lwpoly_set_effective_area");
 	int i;
 	int set_m;
+	int avoid_collapse=4;
 	if(set_area)
 		set_m=1;
 	else
@@ -467,9 +469,15 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 
 	for (i = 0; i < ipoly->nrings; i++)
 	{
+		POINTARRAY *pa = ptarray_set_effective_area(ipoly->rings[i],avoid_collapse,set_area,trshld);
 		/* Add ring to simplified polygon */
-		if( lwpoly_add_ring(opoly, ptarray_set_effective_area(ipoly->rings[i],4,set_area,trshld)) == LW_FAILURE )
-			return NULL;
+		if(pa->npoints>=4)
+		{
+			if( lwpoly_add_ring(opoly,pa ) == LW_FAILURE )
+				return NULL;
+		}
+		/*Inner rings we allow to ocollapse and then we remove them*/
+		avoid_collapse=0;
 	}
 
 
