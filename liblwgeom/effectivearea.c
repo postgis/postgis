@@ -90,10 +90,15 @@ We create the minheap by ordering the minheap array by the areas in the areanode
 */
 static int cmpfunc (const void * a, const void * b)
 {
-//	LWDEBUG(2, "cmpfunc entered");
 	double v1 =  (*(areanode**)a)->area;
 	double v2 = (*(areanode**)b)->area;
-	return  (v1>v2 ) ? 1 : -1;
+	/*qsort gives unpredictable results when comaping identical values. 
+	If two values is the same we force returning the last point in hte point array.
+	That way we get the same ordering on diffreent machines and pllatforms*/
+	if (v1==v2)
+		return (*(areanode**)a)-(*(areanode**)b);
+	else
+		return  (v1>v2 ) ? 1 : -1;
 }
 
 
@@ -246,6 +251,7 @@ static void tune_areas(EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, dou
 	for (i=0;i<npoints;i++)
 	{
 		 ((areanode*) tree.key_array[i])->treeindex=i;
+		LWDEBUGF(4,"Check ordering qsort gives, area=%lf and belong to point %d",((areanode*) tree.key_array[i])->area, tree.key_array[i]-ea->initial_arealist);
 	}
 	/*Ok, now we have a minHeap, just need to keep it*/
 	
