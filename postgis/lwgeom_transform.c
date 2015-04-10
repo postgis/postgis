@@ -155,8 +155,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(geom);
 		
 		elog(ERROR,
-		    "transform_geom: could not parse proj4 string '%s' %s",
-		    input_proj4, pj_errstr);
+				"transform_geom: could not parse proj4 string '%s' %s",
+				input_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(input_proj4);
@@ -245,7 +245,7 @@ Datum transform_to_proj(PG_FUNCTION_ARGS)
 	}
 	input_proj4 = GetProj4StringSPI(input_srid);
 
-    output_proj4_text = PG_GETARG_TEXT_P(1);
+	output_proj4_text = PG_GETARG_TEXT_P(1);
 	output_proj4 = text2cstring(output_proj4_text);
 
 	/* make input and output projection objects */
@@ -256,8 +256,8 @@ Datum transform_to_proj(PG_FUNCTION_ARGS)
 		if ( ! pj_errstr ) pj_errstr = "";
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,
-		    "transform_to_proj: could not parse SRID=%d for PROJ.4: '%s' %s",
-		    input_srid, input_proj4, pj_errstr);
+				"transform_to_proj: could not parse SRID=%d for PROJ.4: '%s' %s",
+				input_srid, input_proj4, pj_errstr);
 		pfree(input_proj4);
 		PG_RETURN_NULL();
 	}
@@ -323,10 +323,10 @@ Datum transform_from_proj_to_proj(PG_FUNCTION_ARGS)
 
 
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
-    input_proj4_text = PG_GETARG_TEXT_P(1);
-    output_proj4_text = PG_GETARG_TEXT_P(2);
+	input_proj4_text = PG_GETARG_TEXT_P(1);
+	output_proj4_text = PG_GETARG_TEXT_P(2);
 
-    /* Convert from text to cstring for libproj */
+	/* Convert from text to cstring for libproj */
 
 	geom_srid = gserialized_get_srid(geom);
 	if (geom_srid != SRID_UNKNOWN)
@@ -344,8 +344,8 @@ Datum transform_from_proj_to_proj(PG_FUNCTION_ARGS)
 		if ( ! pj_errstr ) pj_errstr = "";
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,
-		    "transform_from_proj_to_proj: could not parse 'from_proj' for PROJ.4: '%s' %s",
-		    input_proj4, pj_errstr);
+				"transform_from_proj_to_proj: could not parse 'from_proj' for PROJ.4: '%s' %s",
+				input_proj4, pj_errstr);
 		pfree(input_proj4);
 		PG_RETURN_NULL();
 	}
@@ -424,7 +424,7 @@ Datum transform_from_proj_to_srid(PG_FUNCTION_ARGS)
 				"transform_from_proj_to_srid: ignoring geometry SRID=%d",
 				geom_srid);
 
-    input_proj4_text = PG_GETARG_TEXT_P(1);
+	input_proj4_text = PG_GETARG_TEXT_P(1);
 	input_proj4 = text2cstring(input_proj4_text);
 
 	SetPROJ4LibPath();
@@ -438,8 +438,8 @@ Datum transform_from_proj_to_srid(PG_FUNCTION_ARGS)
 		if ( ! pj_errstr ) pj_errstr = "";
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,
-		    "transform_from_proj_to_srid: could not parse 'from_proj' for PROJ.4: '%s' %s",
-		    input_proj4, pj_errstr);
+				"transform_from_proj_to_srid: could not parse 'from_proj' for PROJ.4: '%s' %s",
+				input_proj4, pj_errstr);
 		pfree(input_proj4);
 		PG_RETURN_NULL();
 	}
