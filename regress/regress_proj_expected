@@ -10,3 +10,4 @@ ERROR:  Input geometry has unknown (0) SRID
 9|POINT(574600 5316780)
 10|POINT(574600 5316780)
 11|SRID=100001;POINT(574600 5316780)
+ERROR:  transform_to_proj: could not parse 'to_proj' for PROJ.4: 'invalid projection': projection not named
