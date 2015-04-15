@@ -385,48 +385,34 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
 		const int nPolys = json_object_array_length( poObjPolys );
 
 		for(i = 0; i < nPolys; ++i)
-		{
-			POINTARRAY **ppa;
-			json_object* poObjPoly = NULL;
-			poObjPoly = json_object_array_get_idx( poObjPolys, i );
-
-			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
+		{			
+			json_object* poObjPoly = json_object_array_get_idx( poObjPolys, i );
 
 			if( json_type_array == json_object_get_type( poObjPoly ) )
 			{
-				int nPoints;
-				json_object* points = NULL;
-				int ring = json_object_array_length( poObjPoly );
-				ppa[0] = ptarray_construct_empty(1, 0, 1);
-
-				points = json_object_array_get_idx( poObjPoly, 0 );
-				nPoints = json_object_array_length( points );
-
-				for (j=0; j < nPoints; j++ )
+				LWPOLY *lwpoly = lwpoly_construct_empty(geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+				int nRings = json_object_array_length( poObjPoly );
+				
+				for(j = 0; j < nRings; ++j)
 				{
-					json_object* coords = NULL;
-					coords = json_object_array_get_idx( points, j );
-					parse_geojson_coord(coords, hasz, ppa[0]);
-				}
-
-				for(j = 1; j < ring; ++j)
-				{
-					int nPoints;
-					ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa, sizeof(POINTARRAY*) * (j + 1));
-					ppa[j] = ptarray_construct_empty(1, 0, 1);
-					points = json_object_array_get_idx( poObjPoly, j );
-
-					nPoints = json_object_array_length( points );
-					for (k=0; k < nPoints; k++ )
+					json_object* points = json_object_array_get_idx( poObjPoly, j );
+					
+					if( json_type_array == json_object_get_type( poObjPoly ) )
 					{
-						json_object* coords = NULL;
-						coords = json_object_array_get_idx( points, k );
-						parse_geojson_coord(coords, hasz, ppa[j]);
+
+						POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
+
+						int nPoints = json_object_array_length( points );
+						for ( k=0; k < nPoints; k++ )
+						{
+							json_object* coords = json_object_array_get_idx( points, k );
+							parse_geojson_coord(coords, hasz, pa);
+						}
+						
+						lwpoly_add_ring(lwpoly, pa);
 					}
 				}
-
-				geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
-				                                   (LWPOLY*)lwpoly_construct(root_srid, NULL, ring, ppa));
+				geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom, lwpoly);
 			}
 		}
 	}
