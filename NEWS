@@ -3,7 +3,8 @@ PostGIS 2.0.8
 
  * Bug Fixes *
 
-  - 
+  - #3094, Malformed GeoJSON inputs crash backend
+
 
 
 PostGIS 2.0.7
