@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011-2015 Sandro Santilli <strk@keybit.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -147,6 +147,83 @@ static void test_lwgeom_split(void)
   CU_ASSERT(ret != NULL);
   wkt = lwgeom_to_ewkt(ret);
 	in_wkt = "SRID=1;GEOMETRYCOLLECTION(POLYGON((7 1,0 1,0 10,7 10,7 1)),POLYGON((7 10,10 10,10 1,7 1,7 10)))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+  /* Split line by multiline */
+  geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT_FATAL(geom != NULL);
+  blade = lwgeom_from_wkt("MULTILINESTRING((1 1,1 -1),(2 1,2 -1,3 -1,3 1))",
+    LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  if ( ! ret ) printf("%s", cu_error_msg);
+  CU_ASSERT_FATAL(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+  CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,1 0),LINESTRING(1 0,2 0),LINESTRING(2 0,3 0),LINESTRING(3 0,10 0))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+  /* Split line by polygon (boundary) */
+  geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT_FATAL(geom != NULL);
+  blade = lwgeom_from_wkt(
+"POLYGON((1 -2,1 1,2 1,2 -1,3 -1,3 1,11 1,11 -2,1 -2))",
+    LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  if ( ! ret ) printf("%s", cu_error_msg);
+  CU_ASSERT_FATAL(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+  CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,1 0),LINESTRING(1 0,2 0),LINESTRING(2 0,3 0),LINESTRING(3 0,10 0))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+  /* Split line by EMPTY polygon (boundary) */
+  geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT_FATAL(geom != NULL);
+  blade = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  if ( ! ret ) printf("%s", cu_error_msg);
+  CU_ASSERT_FATAL(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+  CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,10 0))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
+
+  /* Split line by multipolygon (boundary) */
+  geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT_FATAL(geom != NULL);
+  blade = lwgeom_from_wkt(
+"MULTIPOLYGON(((1 -1,1 1,2 1,2 -1,1 -1)),((3 -1,3 1,11 1,11 -1,3 -1)))",
+    LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  if ( ! ret ) printf("%s", cu_error_msg);
+  CU_ASSERT_FATAL(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+  CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,1 0),LINESTRING(1 0,2 0),LINESTRING(2 0,3 0),LINESTRING(3 0,10 0))";
   if (strcmp(in_wkt, wkt))
                 fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
   CU_ASSERT_STRING_EQUAL(wkt, in_wkt);

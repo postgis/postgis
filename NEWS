@@ -63,6 +63,7 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - Allow splitting lines by multilines and (multi)polygon boundaries
   - #3070, Simplify geometry type constraint
   - #2839, Implement selectivity estimator for functional indexes,
            speeding up spatial queries on raster tables.
@@ -832,7 +833,7 @@ PostGIS 1.5.3
    - #457 ST_CollectionExtract returns non-requested type
     (Nicklas Avén, Paul Ramsey)
    - #441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)
-   - #411 Ability to backup invalid geometries (Sando Santilli)
+   - #411 Ability to backup invalid geometries (Sandro Santilli)
      Reported by Regione Toscana
    - #409 ST_AsSVG - degraded (Olivier Courtin)
      Reported by Sdikiy
