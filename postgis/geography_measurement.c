@@ -27,6 +27,14 @@
 #include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
+#ifdef USE_PRE22GEODESIC
+/* round to 100 nm precision */
+#define INVMINDIST 1.0e9
+#else
+/* round to 10 nm precision */
+#define INVMINDIST 1.0e8
+#endif
+
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_uncached(PG_FUNCTION_ARGS);
 Datum geography_distance_tree(PG_FUNCTION_ARGS);
@@ -162,15 +170,15 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
 
+	/* Knock off any funny business at the nanometer level, ticket #2168 */
+	distance = round(distance * INVMINDIST) / INVMINDIST;
+
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
 	{
 		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
 	}
-
-    /* Knock off any funny business at the micrometer level, ticket #2168 */
-    distance = round(distance * 10e8) / 10e8;
 
 	PG_RETURN_FLOAT8(distance);
 }
@@ -424,6 +432,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
 
+#ifdef USE_PRE22GEODESIC
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
 	{
@@ -434,6 +443,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
 			use_spheroid = LW_FALSE;
 	}
+#endif /* ifdef USE_PRE22GEODESIC */
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )

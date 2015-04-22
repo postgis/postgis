@@ -57,8 +57,8 @@ typedef struct
 /**
 * Conversion functions
 */
-#define deg2rad(d) (PI * (d) / 180.0)
-#define rad2deg(r) (180.0 * (r) / PI)
+#define deg2rad(d) (M_PI * (d) / 180.0)
+#define rad2deg(r) (180.0 * (r) / M_PI)
 
 /**
 * Ape a java function
