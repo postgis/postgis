@@ -96,4 +96,10 @@ select '85', st_asewkt(ST_Split(
   'SRID=3;MULTIPOLYGON(((0 -1,0 -3,2 -3,2 -1,0 -1)),((3 0,3 2,5 2,5 0,3 0)))'
 ));
 
+-- Split multiline by multipoint
+select '86', st_asewkt(ST_Split(
+  'SRID=3;MULTILINESTRING((0 0,10 0),(5 -5, 5 5),(0 20,10 20))',
+  'SRID=3;MULTIPOINT(2 6,5 0,5 20,2 20,8 20,8 0,5 -2,0 0, 5 -5, 10 20)'
+));
+
 -- TODO: split line by collapsed line 

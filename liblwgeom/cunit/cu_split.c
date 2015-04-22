@@ -231,6 +231,24 @@ static void test_lwgeom_split(void)
 	lwgeom_free(ret);
 	lwgeom_free(geom);
 	lwgeom_free(blade);
+
+  /* Split line by multipoint */
+  geom = lwgeom_from_wkt("LINESTRING(0 0, 10 0)", LW_PARSER_CHECK_NONE);
+  CU_ASSERT_FATAL(geom != NULL);
+  blade = lwgeom_from_wkt("MULTIPOINT(2 0,8 0,4 0)", LW_PARSER_CHECK_NONE);
+  ret = lwgeom_split(geom, blade);
+  if ( ! ret ) printf("%s", cu_error_msg);
+  CU_ASSERT_FATAL(ret != NULL);
+  wkt = lwgeom_to_ewkt(ret);
+  CU_ASSERT_FATAL(wkt != NULL);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(8 0,10 0),LINESTRING(0 0,2 0),LINESTRING(4 0,8 0),LINESTRING(2 0,4 0))";
+  if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+  CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+  lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
 }
 
 

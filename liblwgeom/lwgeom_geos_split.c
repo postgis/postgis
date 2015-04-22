@@ -43,6 +43,7 @@
 
 static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
+static LWGEOM* lwline_split_by_mpoint(const LWLINE* lwgeom_in, const LWMPOINT* blade_in);
 static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWLINE* blade_in);
 static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
@@ -178,6 +179,43 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 	return (LWGEOM*)out;
 }
 
+static LWGEOM*
+lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
+{
+  LWMLINE* out;
+  int i, j;
+
+  out = lwmline_construct_empty(lwline_in->srid,
+          FLAGS_GET_Z(lwline_in->flags),
+          FLAGS_GET_M(lwline_in->flags));
+  lwmline_add_lwline(out, lwline_clone(lwline_in));
+
+  for (i=0; i<mp->ngeoms; ++i)
+  {
+    for (j=0; j<out->ngeoms; ++j)
+    {
+      lwline_in = out->geoms[j];
+      LWPOINT *blade_in = mp->geoms[i];
+      int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
+      if ( 2 == ret )
+      {
+        /* the point splits this line,
+         * 2 splits were added to collection.
+         * We'll move the latest added into
+         * the slot of the current one.
+         */
+        lwline_free(out->geoms[j]);
+        out->geoms[j] = out->geoms[--out->ngeoms];
+      }
+    }
+  }
+
+  /* Turn multiline into collection */
+  out->type = COLLECTIONTYPE;
+
+  return (LWGEOM*)out;
+}
+
 int
 lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
                          LWMLINE* v)
@@ -247,6 +285,8 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 	{
 	case POINTTYPE:
 		return lwline_split_by_point(lwline_in, (LWPOINT*)blade_in);
+	case MULTIPOINTTYPE:
+		return lwline_split_by_mpoint(lwline_in, (LWMPOINT*)blade_in);
 
 	case LINETYPE:
 	case MULTILINETYPE:
