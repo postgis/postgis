@@ -1648,6 +1648,9 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	/* Add the shape attribute if we are reading it */
 	if (state->config->readshape == 1)
 	{
+		/* Force the locale to C */
+		char *oldlocale = setlocale(LC_NUMERIC, "C");
+		
 		/* Handle the case of a NULL shape */
 		if (obj->nVertices == 0)
 		{
@@ -1740,6 +1743,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 		/* Tidy up everything */
 		SHPDestroyObject(obj);
+		
+		setlocale(LC_NUMERIC, oldlocale);
 	}
 
 	/* Close the line correctly for dump/insert format */
