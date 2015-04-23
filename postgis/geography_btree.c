@@ -241,7 +241,7 @@ Datum geography_cmp(PG_FUNCTION_ARGS)
 
 	/* Must be able to build box for each argument (ie, not empty geometry) */
 	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
+	     ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
 	{
 		PG_RETURN_BOOL(FALSE);
 	}
@@ -249,13 +249,33 @@ Datum geography_cmp(PG_FUNCTION_ARGS)
 	geography_gidx_center(gbox1, &p1);
 	geography_gidx_center(gbox2, &p2);
 
-	if ( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z )
+	if  ( ! FP_EQUALS(p1.x, p2.x) )
+	{
+		if  (p1.x < p2.x)
+		{
+			PG_RETURN_INT32(-1);
+		}
 		PG_RETURN_INT32(1);
+	}
 
-	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) )
-		PG_RETURN_INT32(0);
+	if  ( ! FP_EQUALS(p1.y, p2.y) )
+	{
+		if  (p1.y < p2.y)
+		{
+			PG_RETURN_INT32(-1);
+		}
+		PG_RETURN_INT32(1);
+	}
 
-	PG_RETURN_INT32(-1);
+	if  ( ! FP_EQUALS(p1.z, p2.z) )
+	{
+		if  (p1.z < p2.z)
+		{
+			PG_RETURN_INT32(-1);
+		}
+		PG_RETURN_INT32(1);
+	}
 
+	PG_RETURN_INT32(0);
 }
 
