@@ -96,6 +96,7 @@ PostGIS 2.2.0
   - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
   - #3086, ST_DumpValues() crashes backend on cleanup with invalid
            band indexes
+  - #3018, GROUP BY geography sometimes returns duplicate rows
 
  * Code refactoring *
 
