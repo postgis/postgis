@@ -219,13 +219,13 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 		{
 			p3d = getPoint3dz_cp(pa, i);
 			p2d = (const POINT2D *)p3d;
+			LWDEBUGF(4, "Point: %g,%g,%g", p3d->x, p3d->y, p3d->z);
 		}
 		else
 		{
 			p2d = getPoint2d_cp(pa, i);
+			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
-
-		LWDEBUGF(4, "Point: %g,%g,%g", p2d->x, p2d->y, p3d->z);
 
 #if POSTGIS_GEOS_VERSION < 33
 		/* Make sure we don't pass any infinite values down into GEOS */
