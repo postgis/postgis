@@ -82,6 +82,7 @@ PostGIS 2.2.0
            and no NODATA specified
   - #2906, Update tiger geocoder to handle tiger 2014 data
   - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
+  - #3092, Slow performance of geometry_columns with many tables
 
  * Bug Fixes *
 
