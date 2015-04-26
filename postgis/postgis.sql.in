@@ -4936,6 +4936,8 @@ $$
 $$
 LANGUAGE 'sql' IMMUTABLE STRICT COST 200;
 
+-- Availability: 2.0.0
+-- Deprecation in 2.2.0
 CREATE OR REPLACE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
@@ -4951,6 +4953,8 @@ SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integ
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
+-- Availability: 2.0.0
+-- Deprecation in 2.2.0
 CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
@@ -4968,6 +4972,8 @@ LANGUAGE 'sql' STABLE STRICT;
 
 -- support function to pull out geometry type from constraint check
 -- will return pretty name instead of ugly name
+-- Availability: 2.0.0
+-- Deprecation in 2.2.0
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
 SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar		
@@ -4983,112 +4989,47 @@ SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
-
-CREATE OR REPLACE FUNCTION postgis_constraint_array_srid(constraints text[])
-RETURNS integer AS
-$$
-DECLARE
-  constr TEXT;
-  matches TEXT[];
-BEGIN
-  FOREACH constr IN ARRAY $1
-  LOOP
-    matches := regexp_matches(constr, E'srid\\(.+\\) = (\\d+)', 'i');
-    IF matches[1] IS NOT NULL THEN
-      RETURN matches[1];
-    END IF;
-  END LOOP;
-  RETURN NULL;
-END;
-$$
-LANGUAGE 'plpgsql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION postgis_constraint_array_dims(constraints text[])
-RETURNS integer AS
-$$
-DECLARE
-  constr TEXT;
-  matches TEXT[];
-BEGIN
-  FOREACH constr IN ARRAY $1
-  LOOP
-    matches := regexp_matches(constr, E'ndims\\(.+\\) = (\\d+)', 'i');
-    IF matches[1] IS NOT NULL THEN
-      RETURN matches[1];
-    END IF;
-  END LOOP;
-  RETURN NULL;
-END;
-$$
-LANGUAGE 'plpgsql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION postgis_constraint_array_type(constraints text[])
-RETURNS text AS
-$$
-DECLARE
-  constr TEXT;
-  matches TEXT[];
-BEGIN
-  FOREACH constr IN ARRAY $1
-  LOOP
-    matches := regexp_matches(constr, E'geometrytype\\(.+\\) = ''(ST_)?(\\S+)''', 'i');
-    IF matches[2] IS NOT NULL THEN
-      RETURN upper(matches[2]);
-    END IF;
-  END LOOP;
-  RETURN NULL;
-END;
-$$
-LANGUAGE 'plpgsql' STABLE STRICT;
-
-
+-- Availability: 2.0.0
+-- Changed: 2.1.8 significant performance improvement for constraint based columns
 CREATE OR REPLACE VIEW geometry_columns AS 
-WITH raw AS
-(SELECT
-  n.nspname 
-  ,c.relname 
-  ,a.attname
-  ,t.typname
-  ,a.atttypmod
-  ,array_agg(s.consrc::text) as constraints
-FROM pg_class c 
-JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
-JOIN pg_namespace n ON c.relnamespace = n.oid
-JOIN pg_type t ON a.atttypid = t.oid 
-LEFT JOIN pg_constraint s ON s.connamespace = n.oid 
-  AND s.conrelid = c.oid 
-  AND a.attnum = ANY (s.conkey) 
-  AND (s.consrc ILIKE '%geometrytype(% = %' OR s.consrc ILIKE '%ndims(% = %' OR s.consrc ILIKE '%srid(% = %')
-WHERE c.relkind IN ('r'::"char", 'v'::"char", 'm'::"char", 'f'::"char") 
-AND NOT ( n.nspname = 'public' AND c.relname = 'raster_columns' )
-AND t.typname = 'geometry'::name
-AND NOT pg_is_other_temp_schema(c.relnamespace)
-AND has_table_privilege( c.oid, 'SELECT'::text )
-GROUP BY n.nspname, c.relname, a.attname, t.typname, a.atttypmod
-)
-SELECT 
-  current_database()::varchar(256) AS f_table_catalog, 
-  nspname::varchar(256) AS f_table_schema, 
-  relname::varchar(256) AS f_table_name, 
-  attname::varchar(256) AS f_geometry_column, 
-  COALESCE(postgis_typmod_dims(atttypmod),
-           postgis_constraint_array_dims(constraints),
-           2) AS coord_dimension, 
-  COALESCE(NULLIF(postgis_typmod_srid(atttypmod),0),
-           postgis_constraint_array_srid(constraints),
-           0) AS srid, 
-  -- force to be uppercase with no ZM so is backwards compatible
-  -- with old geometry_columns
-  replace(
-    replace(
-      COALESCE(
-        NULLIF(upper(postgis_typmod_type(atttypmod)::text), 'GEOMETRY'),
-        postgis_constraint_array_type(constraints),
-        'GEOMETRY'
-      ), 'ZM', ''
-    ), 'Z', ''
-  )::varchar(30) AS type
-FROM raw;
+ SELECT current_database()::character varying(256) AS f_table_catalog,
+-- TODO: consider getting rid of CASTING it slows things down by 2 to 6 fold for table/column exact matches.  
+--      Geography doesn't have casting by the way
+    n.nspname::varchar(256) AS f_table_schema,
+    c.relname::varchar(256) AS f_table_name,
+    a.attname::varchar(256) AS f_geometry_column,
+    COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
+    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
+    replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type
+   FROM pg_class c
+     JOIN pg_attribute a ON a.attrelid = c.oid AND NOT a.attisdropped
+     JOIN pg_namespace n ON c.relnamespace = n.oid
+     JOIN pg_type t ON a.atttypid = t.oid
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey, replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) As type
+           FROM pg_constraint AS s
+          WHERE s.consrc ~~* '%geometrytype(% = %'::text 
+          
+) st ON st.connamespace = n.oid AND st.conrelid = c.oid AND (a.attnum = ANY (st.conkey))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey, replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text)::integer As ndims
+           FROM pg_constraint AS s
+          WHERE s.consrc ~~* '%ndims(% = %'::text
+          
+) sn ON sn.connamespace = n.oid AND sn.conrelid = c.oid AND (a.attnum = ANY (sn.conkey))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey, replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text)::integer As srid
+           FROM pg_constraint AS s
+          WHERE s.consrc ~~* '%srid(% = %'::text
+          
+) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
+  WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char"])) 
+  AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name 
+  AND NOT pg_is_other_temp_schema(c.relnamespace) AND has_table_privilege(c.oid, 'SELECT'::text);
+
 
 -- TODO: support RETURNING and raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_insert AS
