@@ -4991,13 +4991,12 @@ LANGUAGE 'sql' STABLE STRICT;
 
 -- Availability: 2.0.0
 -- Changed: 2.1.8 significant performance improvement for constraint based columns
+-- Changed: 2.2.0 get rid of scheman, table, column cast to improve performance
 CREATE OR REPLACE VIEW geometry_columns AS 
  SELECT current_database()::character varying(256) AS f_table_catalog,
--- TODO: consider getting rid of CASTING it slows things down by 2 to 6 fold for table/column exact matches.  
---      Geography doesn't have casting by the way
-    n.nspname::varchar(256) AS f_table_schema,
-    c.relname::varchar(256) AS f_table_name,
-    a.attname::varchar(256) AS f_geometry_column,
+    n.nspname AS f_table_schema,
+    c.relname AS f_table_name,
+    a.attname AS f_geometry_column,
     COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
     replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text)::character varying(30) AS type

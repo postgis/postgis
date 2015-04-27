@@ -65,3 +65,5 @@ $$ ;
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);
+
+DROP VIEW geometry_columns; -- removed cast 2.2.0 so need to recreate
