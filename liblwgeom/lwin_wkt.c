@@ -707,6 +707,41 @@ LWGEOM* wkt_parser_collection_new(LWGEOM *geom)
 }
 
 
+LWGEOM* wkt_parser_compound_new(LWGEOM *geom) 
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	static int ngeoms = 1;
+	LWDEBUG(4,"entered");
+	
+	/* Toss error on null geometry input */
+	if( ! geom )
+	{
+		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
+		return NULL;
+	}
+	
+	/* Elements of a compoundcurve cannot be empty, because */
+	/* empty things can't join up and form a ring */
+	if ( lwgeom_is_empty(geom) )
+	{
+		lwgeom_free(geom);
+		SET_PARSER_ERROR(PARSER_ERROR_INCONTINUOUS);
+		return NULL;		
+	}
+	
+	/* Create our geometry array */
+	geoms = lwalloc(sizeof(LWGEOM*) * ngeoms);
+	geoms[0] = geom;
+	
+	/* Make a new collection */
+	col = lwcollection_construct(COLLECTIONTYPE, SRID_UNKNOWN, NULL, ngeoms, geoms);
+
+	/* Return the result. */
+	return lwcollection_as_lwgeom(col);
+}
+
+
 LWGEOM* wkt_parser_compound_add_geom(LWGEOM *col, LWGEOM *geom)
 {
 	LWDEBUG(4,"entered");
