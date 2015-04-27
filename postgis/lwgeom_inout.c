@@ -323,14 +323,14 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 }
 
 /*
- * LWGEOMFromWKB(wkb,  [SRID] )
+ * LWGEOMFromEWKB(wkb,  [SRID] )
  * NOTE: wkb is in *binary* not hex form.
  *
  * NOTE: this function parses EWKB (extended form)
  *       which also contains SRID info. 
  */
-PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
-Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOMFromEWKB);
+Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
 {
 	bytea *bytea_wkb = (bytea*)PG_GETARG_BYTEA_P(0);
 	int32 srid = 0;
@@ -638,7 +638,7 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_from_bytea start");
 
 	result = (GSERIALIZED *)DatumGetPointer(DirectFunctionCall1(
-	                                          LWGEOMFromWKB, PG_GETARG_DATUM(0)));
+	                                          LWGEOMFromEWKB, PG_GETARG_DATUM(0)));
 
 	PG_RETURN_POINTER(result);
 }
