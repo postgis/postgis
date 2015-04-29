@@ -2631,8 +2631,8 @@ rt_raster_gdal_rasterize(
 		(FLT_NEQ(*width, 0.0)) &&
 		(FLT_NEQ(*height, 0.0))
 	) {
-		_dim[0] = fabs(*width);
-		_dim[1] = fabs(*height);
+		_dim[0] = abs(*width);
+		_dim[1] = abs(*height);
 
 		if (FLT_NEQ(extent.MaxX, extent.MinX))
 			_scale[0] = fabs((extent.MaxX - extent.MinX) / _dim[0]);
@@ -2700,8 +2700,8 @@ rt_raster_gdal_rasterize(
 			(wkbtype == wkbLineString) ||
 			(wkbtype == wkbMultiLineString)
 		) &&
-		FLT_EQ(_dim[0], 0) &&
-		FLT_EQ(_dim[1], 0)
+		_dim[0] == 0 &&
+		_dim[1] == 0
 	) {
 		int result;
 		LWPOLY *epoly = NULL;

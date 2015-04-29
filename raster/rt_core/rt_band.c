@@ -445,7 +445,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	VRTAddSimpleSource(
 		hbandDst, GDALGetRasterBand(hdsSrc, band->data.offline.bandNum + 1),
-		abs(offset[0]), abs(offset[1]),
+		fabs(offset[0]), fabs(offset[1]),
 		band->width, band->height,
 		0, 0,
 		band->width, band->height,

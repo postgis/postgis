@@ -744,8 +744,8 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		_dim[0], _dim[1]);
 
-	if (FLT_EQ(_dim[0], 0) || FLT_EQ(_dim[1], 0)) {
-		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _dim[0], _dim[1]);
+	if ( _dim[0] == 0 || _dim[1] == 0 ) {
+		rterror("rt_raster_gdal_warp: The width (%d) or height (%d) of the warped raster is zero", _dim[0], _dim[1]);
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}

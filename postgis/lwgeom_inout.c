@@ -447,7 +447,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
 		prec = PG_GETARG_INT32(1);
-		if  (fabs(prec)>7)
+		if  (abs(prec)>7)
 			lwerror("precision cannot be more than 7");
 	}
 	else
