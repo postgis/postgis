@@ -10,6 +10,12 @@ select 'geomfromgeojson_06',st_astext(st_geomfromgeojson(st_asgeojson('MULTIPOLY
 select '#1434: Next two errors';
 select '#1434.1',ST_GeomFromGeoJSON('{ "type": "Point", "crashme": [100.0, 0.0] }');
 select '#1434.2',ST_GeomFromGeoJSON('crashme');;
+select '#1434.3',ST_GeomFromGeoJSON('');
+select '#1434.4',ST_GeomFromGeoJSON('{}');
+select '#1434.5',ST_GeomFromGeoJSON('{"type":"Point","coordinates":[]}'); 
+select '#1434.6',ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[]]}'); 
+select '#1434.7',ST_GeomFromGeoJSON('{"type":"MultiPoint"}'); 
+select '#1434.8',ST_GeomFromGeoJSON('{"type":"Point"}'); 
 
 -- #2130 --
 SELECT '#2130', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,32],[-117,32],[-117,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-117,32],[-117,32],[-117,32],[-117,32]],[[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,33]]]]}'));
@@ -23,3 +29,13 @@ SELECT '#2619', ST_AsText(ST_GeomFromGeoJSON('{"type":"Polygon","bbox":[1,5,2,6]
 -- #2697 --
 SELECT '#2697', ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[1]}');
 SELECT '#2697', ST_GeomFromGeoJSON('{"type":"Polygon","coordinates":[1,1]}');
+
+-- FromGeoJSON 3D
+
+SELECT 'geomfromgeojson_z_01', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[1,2,3]}'));
+SELECT 'geomfromgeojson_z_02', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3],[2,3,4]]}'));
+
+-- FromGeoJSON 4D
+
+SELECT 'geomfromgeojson_zm_01', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[1,2,3,4]}'));
+SELECT 'geomfromgeojson_zm_02', ST_AsEWKT(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3,4],[2,3,4,5]]}'));
