@@ -542,4 +542,4 @@ LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom,int set_area, double trshl
 	}
 	return NULL;
 }
- 
+

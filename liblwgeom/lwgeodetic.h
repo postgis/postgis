@@ -144,3 +144,4 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 * Put an index pointer onto LWGEOM itself, and cache the indexed LWGEOM instead of a bare tree
 * only primitive objects should get a tree
 */
+

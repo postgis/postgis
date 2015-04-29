@@ -60,3 +60,4 @@ nValues tells how many varInts to jump over*/
 void varint_64_jump_n(uint8_t **data, int nValues, uint8_t *the_end);
 
 #endif /* !defined _LIBLWGEOM_VARINT_H  */
+
