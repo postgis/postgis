@@ -3,9 +3,10 @@ PostGIS 2.1.8
 
  * Bug Fixes *
 
-  - #3094, Malformed GeoJSON inputs crash backend
   - #3018, GROUP BY geography sometimes returns duplicate rows
   - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3094, Malformed GeoJSON inputs crash backend
+  - #3104, st_asgml introduces random characters in ID field
 
 
 PostGIS 2.1.7
