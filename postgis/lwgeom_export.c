@@ -177,8 +177,6 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
 	const char* gml_id = NULL;
-	char *prefix_buf, *gml_id_buf;
-	text *prefix_text, *gml_id_text;
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -209,36 +207,36 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	/* retrieve prefix */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
 	{
-		prefix_text = PG_GETARG_TEXT_P(4);
-		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		text* prefix_text = PG_GETARG_TEXT_P(4);
+		if ( VARSIZE(prefix_text) == VARHDRSZ )
 		{
 			prefix = "";
 		}
 		else
 		{
-			/* +2 is one for the ':' and one for term null */
-			prefix_buf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-			memcpy(prefix_buf, VARDATA(prefix_text),
-			       VARSIZE(prefix_text)-VARHDRSZ);
+			size_t len = VARSIZE(prefix_text)-VARHDRSZ;
+			char* prefix_buf = palloc(len + 2); /* +2 is one for the ':' and one for term null */
+			memcpy(prefix_buf, VARDATA(prefix_text), len);
 			/* add colon and null terminate */
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix_buf[len] = ':';
+			prefix_buf[len+1] = '\0';
 			prefix = prefix_buf;
 		}
 	}
 
 	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
 	{
-		gml_id_text = PG_GETARG_TEXT_P(5);
-		if ( VARSIZE(gml_id_text)-VARHDRSZ == 0 )
+		text* gml_id_text = PG_GETARG_TEXT_P(5);
+		if ( VARSIZE(gml_id_text) == VARHDRSZ )
 		{
 			gml_id = "";
 		}
 		else
 		{
-			gml_id_buf = palloc(VARSIZE(gml_id_text)-VARHDRSZ+1);
-			memcpy(gml_id_buf, VARDATA(gml_id_text), VARSIZE(gml_id_text)-VARHDRSZ);
-			gml_id_buf[VARSIZE(gml_id_text)-VARHDRSZ+1] = '\0';
+			size_t len = VARSIZE(gml_id_text)-VARHDRSZ;
+			char* gml_id_buf = palloc(len+1);
+			memcpy(gml_id_buf, VARDATA(gml_id_text), len);
+			gml_id_buf[len] = '\0';
 			gml_id = gml_id_buf;
 		}
 	}
