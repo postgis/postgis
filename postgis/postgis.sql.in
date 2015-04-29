@@ -2434,35 +2434,23 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
+-- Changed: 2.1.8 improve performance
 CREATE OR REPLACE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
 $$
 DECLARE
-	schem text;
-	tabl text;
+	schem varchar =  $1;
+	tabl varchar = $2;
 	sr int4;
 BEGIN
-	IF $1 IS NULL THEN
-	  RAISE EXCEPTION 'find_srid() - schema is NULL!';
-	END IF;
-	IF $2 IS NULL THEN
-	  RAISE EXCEPTION 'find_srid() - table name is NULL!';
-	END IF;
-	IF $3 IS NULL THEN
-	  RAISE EXCEPTION 'find_srid() - column name is NULL!';
-	END IF;
-	schem = $1;
-	tabl = $2;
 -- if the table contains a . and the schema is empty
 -- split the table into a schema and a table
 -- otherwise drop through to default behavior
-	IF ( schem = '' and tabl LIKE '%.%' ) THEN
+	IF ( schem = '' and strpos(tabl,'.') > 0 ) THEN
 	 schem = substr(tabl,1,strpos(tabl,'.')-1);
 	 tabl = substr(tabl,length(schem)+2);
-	ELSE
-	 schem = schem || '%';
 	END IF;
 
-	select SRID into sr from geometry_columns where f_table_schema like schem and f_table_name = tabl and f_geometry_column = $3;
+	select SRID into sr from geometry_columns where (f_table_schema = schem or schem = '') and f_table_name = tabl and f_geometry_column = $3;
 	IF NOT FOUND THEN
 	   RAISE EXCEPTION 'find_srid() - couldnt find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase missmatch?';
 	END IF;
@@ -2470,6 +2458,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
 
 
 ---------------------------------------------------------------
