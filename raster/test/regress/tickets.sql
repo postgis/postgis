@@ -61,7 +61,7 @@ BEGIN
 	rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, 0);
 	rast := ST_AddBand(rast, 1, '8BUI', initvalue, nodataval);
 
-	EXECUTE format('INSERT INTO test_raster_scale_%s VALUES (%L, %L)', table_suffix, rid, rast);
+	EXECUTE 'INSERT INTO test_raster_scale_' || table_suffix || ' VALUES ($1, $2)' USING rid, rast;
 	RETURN;
 END;
 $$ LANGUAGE 'plpgsql';
