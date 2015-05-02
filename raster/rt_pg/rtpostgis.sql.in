@@ -7011,7 +7011,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK (round(st_scale' || $4 || '('
 			|| quote_ident($3)
-			|| ')::numeric, 10) = round(' || attr || '::numeric, 10))';
+			|| ')::numeric, 10) = round(' || text(attr) || '::numeric, 10))';
 		RETURN _add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
