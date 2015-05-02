@@ -4,9 +4,10 @@
 
   <qandaset>
   
-    <qandaentry id="faq_security_change_1">
+     <qandaentry id="faq_security_change_1">
       <question>
-        <para>I'm getting error <code>ERROR: RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format.</code></para>
+        <para>I'm getting error <code>ERROR: RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format.</code>  when using ST_FromGDALRaster
+        or <code>ERROR: rt_raster_to_gdal: Could not load the output GDAL driver</code> when trying to use ST_AsPNG or other raster input functions.</para>
       </question>
 
       <answer>
