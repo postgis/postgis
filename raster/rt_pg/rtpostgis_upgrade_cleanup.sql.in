@@ -578,3 +578,5 @@ DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
 
+-- function signature change
+DROP FUNCTION IF EXISTS _raster_constraint_nodata_values(rast raster);
