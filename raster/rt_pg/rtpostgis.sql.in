@@ -6884,7 +6884,10 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint(rastschema name, rasttable na
 CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
-		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		regexp_replace(
+			split_part(s.consrc, ' = ', 2),
+			'[\(\)]', '', 'g'
+		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -6945,21 +6948,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_srid(rastschema name, rasttab
 CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rasttable name, rastcolumn name, axis char)
 	RETURNS double precision AS $$
 	SELECT
-		replace(
+		regexp_replace(
 			replace(
-				replace(
-					replace(
-						split_part(
-							split_part(s.consrc, ' = ', 2),
-						 	'::', 1
-						),
-						'round(', ''
-					),
-					')', ''
+				split_part(
+					split_part(s.consrc, ' = ', 2),
+					'::', 1
 				),
-				'(', ''
+				'round(', ''
 			),
-			' ', ''
+			'[ ''''\(\)]', '', 'g'
 		)::double precision
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
@@ -7037,7 +7034,10 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 			WHEN strpos(s.consrc, 'ANY (ARRAY[') > 0 THEN
 				split_part((regexp_matches(s.consrc, E'ARRAY\\[(.*?){1}\\]'))[1], ',', 1)::integer
 			ELSE
-				replace(replace(split_part(s.consrc, '= ', 2), ')', ''), '(', '')::integer
+				regexp_replace(
+					split_part(s.consrc, '= ', 2),
+					'[\(\)]', '', 'g'
+				)::integer
 			END
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
@@ -7404,7 +7404,10 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_regular_blocking(rastschema n
 CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
-		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		regexp_replace(
+			split_part(s.consrc, ' = ', 2),
+			'[\(\)]', '', 'g'
+		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7463,7 +7466,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_num_bands(rastschema name, ra
 CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, rasttable name, rastcolumn name)
 	RETURNS text[] AS $$
 	SELECT
-		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::text[]
+		trim(
+			both '''' from split_part(
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
+				),
+				'::', 1
+			)
+		)::text[]
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7542,12 +7553,9 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 	SELECT
 		trim(both '''' from
 			split_part(
-				replace(
-					replace(
-						split_part(s.consrc, ' = ', 2),
-					 	')', ''
-					),
-					'(', ''
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
 				),
 				'::', 1
 			)
@@ -7632,7 +7640,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_nodata_values(rastschema name
 CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean[] AS $$
 	SELECT
-		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::boolean[]
+		trim(
+			both '''' from split_part(
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
+				),
+				'::', 1
+			)
+		)::boolean[]
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
