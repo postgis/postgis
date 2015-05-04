@@ -598,6 +598,7 @@ sub run_simple_test
 	my $cmd = "psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
+          . " -v \"regdir=$REGDIR\""
           . " -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
@@ -624,6 +625,7 @@ sub run_simple_test
 		$lines[$i] =~ s/[eE]([+-])0+(\d+)/e$1$2/g;
 		$lines[$i] =~ s/Self-intersection .*/Self-intersection/;
 		$lines[$i] =~ s/^ROLLBACK/COMMIT/;
+		$lines[$i] =~ s/^psql.*(NOTICE|WARNING|ERROR):/\1:/g;
 	}
 	
 	# Write out output file
