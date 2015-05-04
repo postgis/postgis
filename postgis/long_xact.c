@@ -49,7 +49,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	char *authtable = "authorization_table";
 	const char *op;
 #define ERRMSGLEN 256
-	char errmsg[ERRMSGLEN];
+	char err_msg[ERRMSGLEN];
 
 
 	/* Make sure trigdata is pointing at what I expect */
@@ -155,14 +155,14 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 fail:
 
-	snprintf(errmsg, ERRMSGLEN, "%s where \"%s\" = '%s' requires authorization '%s'",
+	snprintf(err_msg, ERRMSGLEN, "%s where \"%s\" = '%s' requires authorization '%s'",
 	         op, colname, pk_id, lockcode);
-	errmsg[ERRMSGLEN-1] = '\0';
+	err_msg[ERRMSGLEN-1] = '\0';
 
 #ifdef ABORT_ON_AUTH_FAILURE
-	elog(ERROR, "%s", errmsg);
+	elog(ERROR, "%s", err_msg);
 #else
-	elog(NOTICE, "%s", errmsg);
+	elog(NOTICE, "%s", err_msg);
 #endif
 
 	SPI_finish();
