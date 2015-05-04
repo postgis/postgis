@@ -30,7 +30,7 @@
  */
 
 #include "../../postgis_config.h"
-//#define POSTGIS_DEBUG_LEVEL 4
+/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 #include "librtcore.h"
 #include "librtcore_internal.h"

@@ -26,7 +26,7 @@
 #endif
 
 #ifndef JSON_C_VERSION
-// Adds support for libjson < 0.10
+/* Adds support for libjson < 0.10 */
 # define json_tokener_error_desc(x) json_tokener_errors[(x)]
 #endif
 
@@ -99,19 +99,19 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 			return LW_FAILURE;
 		}
 		
-		// Read X coordinate
+		/* Read X coordinate */
 		poObjCoord = json_object_array_get_idx( poObj, 0 );
 		pt.x = json_object_get_double( poObjCoord );
 		LWDEBUGF(3, "parse_geojson_coord pt.x = %f.", pt.x );
 
-		// Read Y coordinate
+		/* Read Y coordinate */
 		poObjCoord = json_object_array_get_idx( poObj, 1 );
 		pt.y = json_object_get_double( poObjCoord );
 		LWDEBUGF(3, "parse_geojson_coord pt.y = %f.", pt.y );
 
 		if( nSize > 2 ) /* should this be >= 3 ? */
 		{
-			// Read Z coordinate
+			/* Read Z coordinate */
 			poObjCoord = json_object_array_get_idx( poObj, 2 );
 			pt.z = json_object_get_double( poObjCoord );
 			LWDEBUGF(3, "parse_geojson_coord pt.z = %f.", pt.z );

@@ -188,7 +188,7 @@ static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int fac
 	double *dbl_ptr;
 	/*The variable factor is used to "shift" the double float coordinate to keep enough significant digits, 
 	for demanded precision, when cast to integer*/
-//	factor=pow(10,prec);
+/*	factor=pow(10,prec); */
 	/* Include the npoints size if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
 	{
@@ -229,7 +229,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t **buf, uint8_t vari
 	int dims = FLAGS_NDIMS(pa->flags);
 	int i, j;
 	double *dbl_ptr;
-	//factor=pow(10,prec);
+	/*factor=pow(10,prec);*/
 	
 	
 		
@@ -255,7 +255,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t **buf, uint8_t vari
 			varint_s64_encode_buf(r,buf);
 		}
 	}	
-	//LWDEBUGF(4, "Done (buf = %p)", buf);
+	/* LWDEBUGF(4, "Done (buf = %p)", buf); */
 	return 0;
 }
 
@@ -323,7 +323,7 @@ static int lwgeom_agg_to_twkbpoint_buf(lwgeom_id* geom_array,int n, uint8_t **bu
 	if(*variant&TWKB_BBOXES)
 	{		
 		write_bbox(buf,dims,refpoint[1],refpoint[2]);
-		//So we only write bboxes to highest level
+		/* So we only write bboxes to highest level */
 		*variant = *variant & ~TWKB_BBOXES;
 	}
 	
@@ -415,7 +415,7 @@ static int lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t **buf
 	if(*variant&TWKB_BBOXES)
 	{		
 		write_bbox(buf,dims,refpoint[1],refpoint[2]);
-		//So we only write bboxes to highest level
+		/* So we only write bboxes to highest level */
 		*variant = *variant & ~TWKB_BBOXES;
 	}
 	
@@ -517,7 +517,7 @@ static int lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t **buf
 	if(*variant&TWKB_BBOXES)
 	{		
 		write_bbox(buf,dims,refpoint[1],refpoint[2]);
-		//So we only write bboxes to highest level
+		/* So we only write bboxes to highest level */
 		*variant = *variant & ~TWKB_BBOXES;
 	}
 	
@@ -626,7 +626,7 @@ static int lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, uint8_t
 	if(*variant&TWKB_BBOXES)
 	{		
 		write_bbox(buf,dims,refpoint[1],refpoint[2]);
-		//So we only write bboxes to highest level
+		/* So we only write bboxes to highest level */
 		*variant = *variant & ~TWKB_BBOXES;
 	}
 	
@@ -719,7 +719,7 @@ static size_t lwgeom_to_twkb_size(const LWGEOM *geom,uint8_t *variant, int64_t f
 		case MULTIPOLYGONTYPE:
 			 *variant =*variant | TWKB_NO_TYPE;
 			size += lwcollection_to_twkb_size((LWCOLLECTION*)geom,variant, factor,id,refpoint);	
-			//We need to get back the possibility to write types
+			/* We need to get back the possibility to write types */
 			*variant =*variant & ~TWKB_NO_TYPE;
 			break;
 		case COLLECTIONTYPE:
@@ -749,7 +749,7 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t **buf, uint8_t *varian
 		if(*variant&TWKB_BBOXES)
 		{		
 			write_bbox(buf,FLAGS_NDIMS(geom->flags),refpoint[1],refpoint[2]);
-			//So we only write bboxes to highest level
+			/* So we only write bboxes to highest level */
 			*variant = *variant & ~TWKB_BBOXES;
 		}
 	}
@@ -785,7 +785,7 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t **buf, uint8_t *varian
 			/*the NO_TYPE flag tells that the type not shall be repeated for subgeometries*/
 			*variant=*variant | TWKB_NO_TYPE;
 			res= lwcollection_to_twkb_buf((LWCOLLECTION*)geom, buf, variant,factor,id,refpoint);
-			//We need to get back the possibility to write types
+			/* We need to get back the possibility to write types */
 			*variant =*variant & ~TWKB_NO_TYPE;
 			return res;
 		}			
@@ -839,8 +839,8 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	LWDEBUGF(4, "WKB output size: %d", buf_size);
 
 	
-	//add the size of the bbox
-	// If empty geometry request for bbox is ignored
+	/* add the size of the bbox
+	 * If empty geometry request for bbox is ignored */
 	if(variant&TWKB_BBOXES)
 	{		
 		LWDEBUG(4,"We want boxes and will calculate required size");
@@ -848,7 +848,7 @@ uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, size_t *size_out,in
 	}
 
 		
-	//reset refpoints
+	/* reset refpoints */
 	refpoint[0][0]=refpoint[0][1]=refpoint[0][2]=refpoint[0][3]=0;
 
 	
@@ -964,19 +964,19 @@ uint8_t* lwgeom_agg_to_twkb(const twkb_geom_arrays *lwgeom_arrays,uint8_t varian
 	if (lwgeom_arrays->n_collections > 0)
 		buf_size += lwgeom_agg_to_twkbcollection_size(lwgeom_arrays->collections,&variant,lwgeom_arrays->n_collections, factor,refpoint);
 	
-	//add the size of the bbox
-	// If empty geometry request for bbox is ignored
+	/* add the size of the bbox
+	 * If empty geometry request for bbox is ignored */
 		
 	if(variant&TWKB_BBOXES)
 	{
 		LWDEBUG(4,"We want boxes and will calculate required size");
-		//Check how many dimmensions that have been used for the box
+		/* Check how many dimmensions that have been used for the box */
 		while (nDims<MAX_N_DIMS&&refpoint[1][nDims]<INT64_MAX&&refpoint[2][nDims]>INT64_MIN)
 			nDims++;				
 		buf_size += sizeof_bbox(nDims,refpoint[1],refpoint[2]);
 	}
 	
-	//reset refpoints
+	/* reset refpoints */
 	refpoint[0][0]=refpoint[0][1]=refpoint[0][2]=refpoint[0][3]=0;
 		
 		LWDEBUGF(4, "WKB output size: %d", buf_size);

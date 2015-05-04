@@ -47,9 +47,9 @@ _varint_u64_encode_buf(uint64_t val, uint8_t **buf)
 	uint64_t q=val;
 	while (1) 
 	{
-		grp=127&q; //We put the 7 least significant bits in grp
-		q=q>>7;	//We rightshift our input value 7 bits which means that the 7 next least significant bits becomes the 7 least significant
-		if(q>0) // Check if, after our rightshifting, we still have anything to read in our input value.
+		grp=127&q; /* We put the 7 least significant bits in grp */
+		q=q>>7;	/* We rightshift our input value 7 bits which means that the 7 next least significant bits becomes the 7 least significant */
+		if(q>0) /* Check if, after our rightshifting, we still have anything to read in our input value. */
 		{
 			/*In the next line quite a lot is happening.
 			Since there is more to read in our input value we signalize that by setting the most siginicant bit in our byte to 1.
@@ -60,7 +60,7 @@ _varint_u64_encode_buf(uint64_t val, uint8_t **buf)
 		{
 			/*The same as above, but since there is nothing more to read in our input value we leave the most significant bit unset*/
 			*((*buf)++)=grp;
-	//		printf("grp1:%d\n",(int) grp);
+	/*		printf("grp1:%d\n",(int) grp); */
 			return 0;
 		}
 	}
@@ -165,18 +165,18 @@ uint64_t varint_u64_read(uint8_t **data, uint8_t *the_end)
     int nShift = 0;
     uint8_t nByte;
     
-    while(*data<=the_end)//Check so we don't read beyond the twkb
+    while(*data<=the_end)/* Check so we don't read beyond the twkb */
     {
-        nByte = (uint8_t) **data; //read a byte
-        if (!(nByte & 0x80)) //If it is the last byte in the varInt ....
+        nByte = (uint8_t) **data; /* read a byte */
+        if (!(nByte & 0x80)) /* is the last byte in the varInt .... */
         {
-            (*data) ++; //move the "cursor" one step
-            return nVal | ((uint64_t)nByte << nShift);	 //Move the last read byte to the most significant place in the result and return the whole result
+            (*data) ++; /* move the "cursor" one step */
+            return nVal | ((uint64_t)nByte << nShift);	 /* Move the last read byte to the most significant place in the result and return the whole result */
         }
         /*We get here when there is more to read in the input varInt*/
-        nVal |= ((uint64_t)(nByte & 0x7f)) << nShift; //Here we take the least significant 7 bits of the read byte and put it in the most significant place in the result variable. 
-        (*data) ++; //move the "cursor" of the input buffer step (8 bits)
-        nShift += 7; //move the cursor in the resulting variable (7 bits)
+        nVal |= ((uint64_t)(nByte & 0x7f)) << nShift; /* Here we take the least significant 7 bits of the read byte and put it in the most significant place in the result variable. */
+        (*data) ++; /* move the "cursor" of the input buffer step (8 bits) */
+        nShift += 7; /* move the cursor in the resulting variable (7 bits) */
     }
      lwerror("VarInt value goes beyond TWKB");
     return 0;
@@ -197,16 +197,16 @@ uint64_t varint_s64_read(uint8_t **data, uint8_t *the_end)
 void varint_64_jump_n(uint8_t **data, int nValues, uint8_t *the_end)
 {
     uint8_t nByte;
-    while(nValues>0)//Check so we don't read beyond the twkb
+    while(nValues>0)/* Check so we don't read beyond the twkb */
     {
 	 if(*data>the_end)
 		 lwerror("VarInt value goes beyond TWKB");
-        nByte = (uint8_t) **data; //read a byte
-        if (!(nByte & 0x80)) //If it is the last byte in the varInt ....
+        nByte = (uint8_t) **data; /* read a byte */
+        if (!(nByte & 0x80)) /* If it is the last byte in the varInt .... */
         {
-             nValues--;//...We count one more varint
+             nValues--;/*...We count one more varint */
         }       
-        (*data) ++; //move the "cursor" of the input buffer step (8 bits)
+        (*data) ++; /* move the "cursor" of the input buffer step (8 bits) */
     }
      return;
 }

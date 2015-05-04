@@ -165,7 +165,7 @@ static LWPOINT* lwpoint_from_twkb_state(twkb_parse_state *s)
 
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	POINTARRAY *pa = ptarray_from_twkb_state(s,npoints);	
 	return lwpoint_construct(0, NULL, pa);
@@ -181,7 +181,7 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*get number of points*/
 	npoints = varint_u64_read(&(s->pos), s->twkb_end);
@@ -209,7 +209,7 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 	int i;
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*get number of rings*/
 	nrings= varint_u64_read(&(s->pos), s->twkb_end);
@@ -272,7 +272,7 @@ static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 	
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*Now we switch off id reading for subgeometries*/
 	s->read_id=LW_FALSE;
@@ -306,7 +306,7 @@ static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 	
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*Now we switch off id reading for subgeometries*/
 	s->read_id=LW_FALSE;
@@ -340,7 +340,7 @@ static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 	
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*Now we switch off id reading for subgeometries*/
 	s->read_id=LW_FALSE;
@@ -375,7 +375,7 @@ static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 	
 	/* TODO, make an option to use the id-value and return a set with geometry and id*/
 	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over id value
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
 	
 	/*Now we switch off id reading for subgeometries*/
 	s->read_id=LW_FALSE;
@@ -417,7 +417,7 @@ static void magicbyte_from_twkb_state(twkb_parse_state *s)
 	
 	/*If the twkb-geometry has size information we just jump over it*/
 	if(s->magic_byte&TWKB_SIZES)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); //Jump over size information
+		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over size info */
 	
 	/*If our dataset has bboxes we just set a flag for that. We cannot do anything about it before we know the number of dimmensions*/
 	if(s->magic_byte&TWKB_BBOXES)
@@ -453,7 +453,7 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 	/*Now we know number of dommensions so we can jump over the bboxes with right number of "jumps"*/
 	if (s->has_bboxes)
 	{
-		varint_64_jump_n(&(s->pos),2*(s->ndims), s->twkb_end); //Jump over bbox
+		varint_64_jump_n(&(s->pos),2*(s->ndims), s->twkb_end); /* Jump over bbox */
 		/*We only have bboxes at top level, so once found we forget about it*/
 		s->has_bboxes=LW_FALSE;
 	}

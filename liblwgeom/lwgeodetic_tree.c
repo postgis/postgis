@@ -388,8 +388,9 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 	int num_parents = 0;
 	int j;
 
-	// TODO, roll geom_type *up* as tree is built, changing to collection types as simple types are merged 
-	// TODO, change the distance algorithm to drive down to simple types first, test pip on poly/other cases, then test edges
+	/* TODO, roll geom_type *up* as tree is built, changing to collection types as simple types are merged 
+	 * TODO, change the distance algorithm to drive down to simple types first, test pip on poly/other cases, then test edges
+	 */
 
 	while( num_children > 1 )
 	{
@@ -578,8 +579,10 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 	int i;
 	
 	LWDEBUGF(4, "entered, min_dist=%.8g max_dist=%.8g, type1=%d, type2=%d", *min_dist, *max_dist, n1->geom_type, n2->geom_type);
-//	circ_tree_print(n1, 0);
-//	circ_tree_print(n2, 0);
+/*
+	circ_tree_print(n1, 0);
+	circ_tree_print(n2, 0);
+*/
 	
 	/* Short circuit if we've already hit the minimum */
 	if( *min_dist <= threshold )

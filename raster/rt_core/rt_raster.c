@@ -2766,7 +2766,7 @@ rt_raster_gdal_rasterize(
 				(NULL != grid_xw && NULL != grid_xw) &&
 				FLT_NEQ(*grid_xw, extent.MinX)
 			) {
-				// do nothing
+				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
 			}
 			else {
@@ -2781,7 +2781,7 @@ rt_raster_gdal_rasterize(
 				(NULL != grid_xw && NULL != grid_xw) &&
 				FLT_NEQ(*grid_yw, extent.MaxY)
 			) {
-				// do nothing
+				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
 			}
 			else {
@@ -2798,7 +2798,7 @@ rt_raster_gdal_rasterize(
 				(NULL != grid_xw && NULL != grid_xw) &&
 				FLT_NEQ(*grid_xw, extent.MinX)
 			) {
-				// do nothing
+				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
 			}
 			else {
@@ -2814,7 +2814,7 @@ rt_raster_gdal_rasterize(
 				(NULL != grid_xw && NULL != grid_xw) &&
 				FLT_NEQ(*grid_yw, extent.MaxY)
 			) {
-				// do nothing
+				/* do nothing */
 				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
 			}
 			else {

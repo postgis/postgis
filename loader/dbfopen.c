@@ -629,7 +629,7 @@ DBFHandle SHPAPI_CALL
 DBFCreate( const char * pszFilename )
 
 {
-    return DBFCreateEx( pszFilename, "LDID/87" ); // 0x57
+    return DBFCreateEx( pszFilename, "LDID/87" ); /* 0x57 */
 }
 
 /************************************************************************/
@@ -704,7 +704,7 @@ DBFCreateLL( const char * pszFilename, const char * pszCodePage, SAHooks *psHook
         {
             ldid = atoi( pszCodePage + 5 );
             if( ldid > 255 )
-                ldid = -1; // don't use 0 to indicate out of range as LDID/0 is a valid one
+                ldid = -1; /* don't use 0 to indicate out of range as LDID/0 is a valid one */
         }
         if( ldid < 0 )
         {
@@ -1133,14 +1133,14 @@ static int DBFIsValueNULL( char chType, const char* pszValue )
 
       case 'D':
         /* NULL date fields have value "00000000" or blank or empty */
-        if (pszValue[0] == '\0' ||                  // emtpy string
+        if (pszValue[0] == '\0' ||                  /* emtpy string */
             strncmp(pszValue,"00000000",8) == 0 || 
             strncmp(pszValue,"        ",8) == 0) {
             return 1;
         } else {
             return 0;
         }
-        // return strncmp(pszValue,"00000000",8) == 0;
+        /* return strncmp(pszValue,"00000000",8) == 0; */
 
       case 'L':
         /* NULL boolean fields have value "?" or empty */

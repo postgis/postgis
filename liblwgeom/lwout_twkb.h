@@ -15,7 +15,7 @@
 #include "lwgeom_log.h"
 #include <limits.h>
 
-//Maximum number of geometry dimmensions that internal arrays can hold
+/* Maximum number of geometry dimmensions that internal arrays can hold */
 #define MAX_N_DIMS 4
 
 /**
@@ -67,7 +67,4 @@ static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t **buf, uint
 
 static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t *variant, int64_t factor, int64_t id,int64_t refpoint[3][4]);
 static int lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[3][4]);
-
-
-//static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t variant,int64_t factor);
 

@@ -591,8 +591,8 @@ LWTIN;
 */
 typedef struct
 {
-	int64_t id;	//Id, from function parameter
-	LWGEOM* geom;	//the geometry from function parameter
+	int64_t id;   /* Id, from function parameter */
+	LWGEOM* geom; /* the geometry from function parameter */
 }
 lwgeom_id;
 

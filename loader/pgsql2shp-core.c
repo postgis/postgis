@@ -1341,7 +1341,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
-		state->table = malloc(20 + 20);		// string + max long precision
+		state->table = malloc(20 + 20);		/* string + max long precision */
 		sprintf(state->table, "__pgsql2shp%lu_tmp_table", (long)getpid());
 
 		query = malloc(32 + strlen(state->table) + strlen(state->config->usrquery));

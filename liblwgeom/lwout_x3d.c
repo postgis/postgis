@@ -667,7 +667,7 @@ asx3d3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 	size_t defidlen = strlen(defid);
 	LWGEOM *subgeom;
 
-	//size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2;
+	/* size = sizeof("<MultiGeometry></MultiGeometry>") + defidlen*2; */
 	size = defidlen*2;
 
 	/** if ( srs )
@@ -719,14 +719,16 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 
 	/* Open outmost tag */
 	/** @TODO: decide if we need outtermost tags, this one was just a copy from gml so is wrong **/
+#ifdef PGIS_X3D_OUTERMOST_TAGS
 	if ( srs )
 	{
-		//ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", defid, srs);
+		ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", defid, srs);
 	}
 	else
 	{
-		//ptr += sprintf(ptr, "<%sMultiGeometry>", defid);
+		ptr += sprintf(ptr, "<%sMultiGeometry>", defid);
 	}
+#endif
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -768,7 +770,9 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 	}
 
 	/* Close outmost tag */
-	//ptr += sprintf(ptr, "</%sMultiGeometry>", defid);
+#ifdef PGIS_X3D_OUTERMOST_TAGS
+	ptr += sprintf(ptr, "</%sMultiGeometry>", defid);
+#endif
 
 	return (ptr-output);
 }
