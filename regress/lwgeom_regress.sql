@@ -105,7 +105,7 @@ DROP TABLE test_data;
 
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;POINT(1 1)'::geometry));
 SELECT '#3069', ST_Summary(PostGIS_Noop('SRID=4326;LINESTRING(1 1,0 0)'::geometry));
-SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTIPOINT(1 1)')::geometry),E'\n',' ');
+SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTIPOINT(1 1)'::geometry)),E'\n',' ');
 SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;MULTILINESTRING((1 1,0 0))'::geometry)),E'\n',' ');
 SELECT '#3069', replace(ST_Summary(PostGIS_Noop('SRID=4326;POLYGON((0 0, 0 1, 1 1 ,1 0,0 0))'::geometry)),E'\n',' ');
 
