@@ -19,6 +19,13 @@ language: c
 
 compiler: gcc
 
+script:
+  - ./configure
+  - make
+  - make check
+  - sudo make install
+  - make installcheck
+
 notifications:
   email: false
   irc:
