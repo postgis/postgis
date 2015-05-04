@@ -1355,6 +1355,13 @@ sub drop_spatial_extensions
         $rv = system($cmd);
       	$ok = 0 if $rv;
     }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_sfcgal;\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        $ok = 0 if $rv;
+    }
     
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";
     $rv = system($cmd);
