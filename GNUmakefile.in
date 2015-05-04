@@ -35,6 +35,9 @@ test: check
 
 check: all docs-check
 
+installcheck:
+	RUNTESTFLAGS=--extension $(MAKE) check
+
 distclean: clean distclean-local
 
 distclean-local: clean
