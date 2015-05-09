@@ -521,6 +521,8 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	/* retrieve option */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
+		
+	
 
 	/* retrieve defid */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
@@ -543,12 +545,22 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
+	lwgeom = lwgeom_from_gserialized(geom);
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
-
-	lwgeom = lwgeom_from_gserialized(geom);
+	
+	if (option & LW_X3D_USE_GEOCOORDS) {
+		if (srid != 4326) {
+			PG_FREE_IF_COPY(geom, 0);
+			/** TODO: we need to support UTM and other coordinate systems supported by X3D eventually 
+			http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#t-earthgeoids **/
+			elog(ERROR, "Only SRID 4326 is supported for geocoordinates.");
+			PG_RETURN_NULL();
+		}
+	}
+	
 
 	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
 

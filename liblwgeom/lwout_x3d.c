@@ -2,9 +2,9 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://www.postgis.org
+ * http://postgis.net
  * adapted from lwout_asgml.c
- * Copyright 2011 Arrival 3D
+ * Copyright 2011-2015 Arrival 3D
  * 				Regina Obe with input from Dave Arendash
  *
  * This is free software; you can redistribute and/or modify it under
@@ -28,7 +28,7 @@ static char *asx3d3_line(const LWLINE *line, char *srs, int precision, int opts,
 static size_t asx3d3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const char *defid);
 static size_t asx3d3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *defid);
-static size_t asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
+static size_t asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precisioSn, int opts, const char *defid);
 static char *asx3d3_multi(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_psurface(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *defid);
@@ -145,10 +145,17 @@ asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	size_t defidlen = strlen(defid);
 
 	size = pointArray_X3Dsize(line->points, precision)*2;
-
-	size += (
-	            sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
+	
+	if ( X3D_USE_GEOCOORDS(opts) ) {
+			size += (
+	            sizeof("<LineSet vertexCount=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' /></LineSet>")  + defidlen
 	        ) * 2;
+	}
+	else {
+		size += (
+		            sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
+		        ) * 2;
+	}
 
 	/* if (srs)     size += strlen(srs) + sizeof(" srsName=.."); */
 	return size;
@@ -167,8 +174,9 @@ asx3d3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int 
 	pa = line->points;
 	ptr += sprintf(ptr, "<LineSet %s vertexCount='%d'>", defid, pa->npoints);
 
-
-	ptr += sprintf(ptr, "<Coordinate point='");
+	if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+	else
+		ptr += sprintf(ptr, "<Coordinate point='");
 	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed((LWLINE *) line));
 
 	ptr += sprintf(ptr, "' />");
@@ -371,7 +379,11 @@ asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 	LWGEOM *subgeom;
 
 	/* the longest possible multi version needs to hold DEF=defid and coordinate breakout */
-	size = sizeof("<PointSet><Coordinate point='' /></PointSet>") + defidlen;
+	if ( X3D_USE_GEOCOORDS(opts) )
+		size = sizeof("<PointSet><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' /></PointSet>");
+	else
+		size = sizeof("<PointSet><Coordinate point='' /></PointSet>") + defidlen;
+	
 
 	/* if ( srs ) size += strlen(srs) + sizeof(" srsName=.."); */
 
@@ -443,7 +455,10 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
             return 0;
     }
     if (dimension == 3){
-        ptr += sprintf(ptr, "<Coordinate point='");
+		if ( X3D_USE_GEOCOORDS(opts) ) 
+			ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ((opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+		else
+        	ptr += sprintf(ptr, "<Coordinate point='");
     }
 
 	for (i=0; i<col->ngeoms; i++)
@@ -497,7 +512,9 @@ asx3d3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts,
 	size_t size;
 	size_t defidlen = strlen(defid);
 
-	size = sizeof("<IndexedFaceSet coordIndex=''><Coordinate point='' />") + defidlen;
+	if ( X3D_USE_GEOCOORDS(opts) ) size = sizeof("<IndexedFaceSet coordIndex=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' />") + defidlen;
+	else size = sizeof("<IndexedFaceSet coordIndex=''><Coordinate point='' />") + defidlen;
+	
 
 	for (i=0; i<psur->ngeoms; i++)
 	{
@@ -546,7 +563,9 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 		j += k;
 	}
 
-	ptr += sprintf(ptr, "'><Coordinate point='");
+	if ( X3D_USE_GEOCOORDS(opts) ) 
+		ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+	else ptr += sprintf(ptr, "'><Coordinate point='");
 
 	for (i=0; i<psur->ngeoms; i++)
 	{
@@ -626,7 +645,9 @@ asx3d3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
 		k += 3;
 	}
 
-	ptr += sprintf(ptr, "'><Coordinate point='");
+	if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+	else ptr += sprintf(ptr, "'><Coordinate point='");
+	
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		ptr += asx3d3_triangle_buf(tin->geoms[i], 0, ptr, precision,
@@ -830,7 +851,11 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 
 				if ( i )
 					ptr += sprintf(ptr, " ");
-				ptr += sprintf(ptr, "%s %s", x, y);
+					
+				if ( ( opts & LW_X3D_FLIP_XY) )
+					ptr += sprintf(ptr, "%s %s", y, x);
+				else
+					ptr += sprintf(ptr, "%s %s", x, y);
 			}
 		}
 	}
@@ -865,7 +890,10 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 				if ( i )
 					ptr += sprintf(ptr, " ");
 
-				ptr += sprintf(ptr, "%s %s %s", x, y, z);
+				if ( ( opts & LW_X3D_FLIP_XY) )
+					ptr += sprintf(ptr, "%s %s %s", y, x, z);
+				else
+					ptr += sprintf(ptr, "%s %s %s", x, y, z);
 			}
 		}
 	}
