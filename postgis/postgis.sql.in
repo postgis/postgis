@@ -1294,11 +1294,20 @@ CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_PointInsideCircle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
+	RETURNS bool AS
+  $$ SELECT _postgis_deprecate('ST_Point_Inside_Circle', 'ST_PointInsideCircle', '2.2.0');
+    SELECT ST_PointInsideCircle($1,$2,$3,$4);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
