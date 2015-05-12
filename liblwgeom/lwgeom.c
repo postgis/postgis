@@ -1937,10 +1937,15 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			/* Is it because it's a rectangle totally *inside* a polygon? */
 			if ( geom->type == POLYGONTYPE )
 			{
-				POINT2D pt;
-				pt.x = clip->xmin;
-				pt.y = clip->ymin;
-				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
+				const LWPOLY *poly = (LWPOLY*)geom;
+				POINT2D pt_ll, pt_lr, pt_ur, pt_ul;
+				pt_ll.x = pt_ul.x = clip->xmin;
+				pt_lr.x = pt_ur.x = clip->xmax;
+				pt_ul.y = pt_ur.y = clip->ymax;
+				pt_ll.y = pt_lr.y = clip->ymin;
+
+				if ( lwpoly_contains_point(poly, &pt_ll) || lwpoly_contains_point(poly, &pt_ul) ||
+				     lwpoly_contains_point(poly, &pt_lr) || lwpoly_contains_point(poly, &pt_ur) )
 				{
 					/* TODO: Probably just making the clipping box into a polygon is a more */
 					/* efficient way to do this? */
