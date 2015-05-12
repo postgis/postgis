@@ -3181,7 +3181,6 @@ FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56
  4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 183.27272727272,
     114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,189.5238095238
  98.000000000001,106.000000000001 98.000000000001))</screen>
-				</programlisting>
 						  </para></entry>
 					  </row>
 					  <row>
@@ -3196,10 +3195,9 @@ FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56
 				<programlisting>SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 150)'::geometry,50),4));</programlisting>
 <screen>LINESTRING(0 0,35.3553390593274 35.3553390593274,70.7106781186547 70.7106781186547,75.000000000001 75.000000000001)
 LINESTRING(75.000000000001 75.000000000001,100 100,135.355339059327 135.355339059327,150 150)</screen>
-				</programlisting>
 						  </para></entry>
 					  </row>
-			</tbody></tgroup></informaltable>
+				</tbody></tgroup></informaltable>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
