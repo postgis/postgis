@@ -113,6 +113,8 @@ IMAGES= \
 	../images/st_split03.png \
 	../images/st_split04.png \
 	../images/st_straightskeleton01.png \
+	../images/st_subdivide01.png \
+	../images/st_subdivide02.png \
 	../images/st_symdifference01.png \
 	../images/st_symdifference02.png \
 	../images/st_tesselate03.png \

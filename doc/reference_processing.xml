@@ -3146,20 +3146,65 @@ maximum vertex count.
 
 	  <refsection>
 		<title>Examples</title>
-			<programlisting>
--- Subdivide a geometry until it all parts have &lt; 50 vertices
-SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100)'::geometry, 1),50));
-
--- Create a new subdivided table suitable for joining to the original
+			<programlisting>-- Create a new subdivided table suitable for joining to the original
 CREATE TABLE subdivided_geoms AS
 SELECT pkey, ST_Subdivide(geom) AS geom
 FROM original_geoms;
  </programlisting>
+ 
+ 				<informaltable>
+				  <tgroup cols="1">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_subdivide01.png" />
+							  </imageobject>
+							  <caption><para>Subdivide max 10 vertices</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
+FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
+57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
+190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  As f(geom);</programlisting>
+<screen>rn |                          wkt
+---+---------------------------------------------------------------------------
+ 1 | POLYGON((22 64,29.3913043478263 98.000000000001,106.000000000001 98.00000000001,
+        106.000000000001 27.5882352941173,85 35,68 29,66 28,49 42,32 56,22 64))
+ 2 | POLYGON((29.3913043478263 98.000000000001,32 110,40 119,36 150,57 158,
+        75 11,92 182,106.000000000001 183.272727272727,106.000000000001 98.000000000001,
+        29.913043478263 98.000000000001))
+ 3 | POLYGON((106.000000000001 27.5882352941173,106.000000000001 98.00000000000,
+ 189.52380952381 98.000000000001,185 79,186 56,186 52,178 34,168 18,147 13,
+ 132 0,119 23,106.000000000001 27.5882352941173))
+ 4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 183.27272727272,
+    114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,189.5238095238
+ 98.000000000001,106.000000000001 98.000000000001))</screen>
+				</programlisting>
+						  </para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_subdivide02.png" />
+							  </imageobject>
+							  <caption><para>Useful in conjunction with ST_Segmentize to create additional vertices that can then be used for splitting</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 150)'::geometry,50),4));</programlisting>
+<screen>LINESTRING(0 0,35.3553390593274 35.3553390593274,70.7106781186547 70.7106781186547,75.000000000001 75.000000000001)
+LINESTRING(75.000000000001 75.000000000001,100 100,135.355339059327 135.355339059327,150 150)</screen>
+				</programlisting>
+						  </para></entry>
+					  </row>
+			</tbody></tgroup></informaltable>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 		<para>
-<xref linkend="ST_ClipByBox2D" />,
+<xref linkend="ST_AsText" />, <xref linkend="ST_ClipByBox2D" />, <xref linkend="ST_Segmentize" />
     </para>
 	  </refsection>
 	</refentry>
