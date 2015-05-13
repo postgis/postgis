@@ -227,7 +227,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geography <function>ST_GeogFromWKB</function></funcdef>
-			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -267,6 +267,50 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 		<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsBinary" /></para>
 	  </refsection>
 </refentry>
+
+	<refentry id="ST_GeomFromTWKB">
+	  <refnamediv>
+		<refname>ST_GeomFromTWKB</refname>
+		<refpurpose>Creates a geometry instance from a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry
+		representation.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry representation (WKB) and creates an instance of the appropriate
+		geometry type.</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));
+
+         st_astext
+-----------------------------
+ LINESTRING(126 34, 127 35)
+(1 row)
+
+</programlisting>
+	  </refsection>
+	   <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsTWKB" /></para>
+	  </refsection>
+    </refentry>
 
 
 	<refentry id="ST_GeomCollFromText">
