@@ -374,6 +374,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		}
 
 	}
+	array_free_iterator(iterator);
 
 	/*
 	** Take our GEOS geometries and turn them into a GEOS collection,

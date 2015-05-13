@@ -608,7 +608,6 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		}
 
 	}
-
 	array_free_iterator(iter_geoms);
 	array_free_iterator(iter_ids);
 	
