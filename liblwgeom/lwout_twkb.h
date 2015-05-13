@@ -1,6 +1,5 @@
 
 /**********************************************************************
- * $Id: lwout_twkb.h 4715 2009-11-01 17:58:42Z nicklas $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

@@ -1,4 +1,3 @@
---$Id$-
 -- pagc_normalize_address(addressString)
 -- This takes an address string and parses it into address (internal/street)
 -- street name, type, direction prefix and suffix, location, state and
@@ -17,7 +16,6 @@ DECLARE
   rawInput VARCHAR;
 
 BEGIN
---$Id$-
   result.parsed := FALSE;
 
   rawInput := trim(in_rawinput);

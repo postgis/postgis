@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # Brute-force dump of all pixels of all bands in WKT Raster field/row to text.
 # This utility is handy for debugging purposes.

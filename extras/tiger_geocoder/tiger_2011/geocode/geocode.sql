@@ -1,4 +1,3 @@
---$Id$
 CREATE OR REPLACE FUNCTION geocode(
     input VARCHAR, max_results integer DEFAULT 10,
     restrict_geom geometry DEFAULT NULL,

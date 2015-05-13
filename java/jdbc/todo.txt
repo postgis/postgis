@@ -1,5 +1,4 @@
 Todo for PostGIS 1.0 compatible JDBC classes
-$Id$
 
 - even more Testing, especialy against different postgis, 
   pgjdbc and postgresql releases.

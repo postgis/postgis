@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Export functions for PostgreSQL/PostGIS
  * Copyright 2009 Olivier Courtin <olivier.courtin@oslandia.com>

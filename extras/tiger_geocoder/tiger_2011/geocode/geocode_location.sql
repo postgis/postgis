@@ -1,4 +1,3 @@
---$Id$
 CREATE OR REPLACE FUNCTION geocode_location(
     parsed NORM_ADDY,
     restrict_geom geometry DEFAULT null,

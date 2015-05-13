@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -29,7 +28,6 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-#define P2S_RCSID "$Id$"
 
 
 /*

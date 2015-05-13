@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------
--- $Id$
 --
 -- Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 --

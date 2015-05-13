@@ -1,4 +1,3 @@
---$Id$
 \timing
 -- Limit 1
 SELECT 'T1', pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('529 Main Street, Boston, MA 02129',1);

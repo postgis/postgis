@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # A simple driver to read RASTER field data directly from PostGIS/WKTRaster.
 #

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id$
  *
  * Project:  Shapelib
  * Purpose:  Implementation of .dbf access API documented in dbf_api.html.
@@ -163,7 +162,6 @@
 #include <ctype.h>
 #include <string.h>
 
-SHP_CVSID("$Id$")
 
 #ifndef FALSE
 #  define FALSE		0

@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: lwgeom_transform.h -1M 2011-08-11 11:15:57Z (local) $ 
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

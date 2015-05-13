@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: geography_inout.c 4535 2009-09-28 18:16:21Z colivier $
  *
  * PostGIS - Spatial Types for PostgreSQL
  *

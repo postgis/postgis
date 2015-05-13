@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # This is a simple script based on GDAL and used to retrieve value of single raster pixel.
 # It is used in WKTRaster testing to compare raster samples.

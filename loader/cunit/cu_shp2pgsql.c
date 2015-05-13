@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: cu_shp2pgsql.c 5674 2010-06-03 02:04:15Z mleslie $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

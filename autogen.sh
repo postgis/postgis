@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# $Id$
 #
 # PostGIS Bootstrapping Script
 #

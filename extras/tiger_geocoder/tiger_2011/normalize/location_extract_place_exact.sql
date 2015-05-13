@@ -1,4 +1,3 @@
---$Id$-
 -- location_extract_place_exact(string, stateAbbrev)
 -- This function checks the place_lookup table to find a potential match to
 -- the location described at the end of the given string.  If an exact match
@@ -16,7 +15,6 @@ DECLARE
   lstate VARCHAR;
   rec RECORD;
 BEGIN
---$Id$-
   ws := E'[ ,.\n\f\t]';
 
   -- Try for an exact match against places

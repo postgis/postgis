@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * PostGIS Raster loader
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
@@ -68,7 +67,6 @@
 */
 #define MAXTILESIZE 1073741824
 
-#define RCSID "$Id$"
 
 typedef struct raster_loader_config {
 	/* raster filename */

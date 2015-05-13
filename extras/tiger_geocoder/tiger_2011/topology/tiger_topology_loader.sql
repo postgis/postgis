@@ -1,5 +1,4 @@
 /*******************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2011 Leo Hsu and Regina Obe <lr@pcorp.us> 
@@ -41,7 +40,6 @@ DECLARE
  	var_srid int := 4269;
  	var_precision double precision := 0;
 BEGIN
-	--$Id$
 	CASE region_type
 		WHEN 'place' THEN
 			SELECT the_geom , statefp FROM place INTO var_rgeom, var_statefp WHERE plcidfp = region_id;

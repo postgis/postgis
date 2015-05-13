@@ -1,4 +1,3 @@
---$Id: normalize_address_regress.sql 10309 2012-09-20 11:54:44Z robe $
 SELECT set_geocode_setting('use_pagc_address_parser', 'true');
 \timing
 SELECT '#887' As ticket, * FROM normalize_address('2450 N COLORADO ST, PHILADELPHIA, PA, 19132');

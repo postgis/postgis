@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster

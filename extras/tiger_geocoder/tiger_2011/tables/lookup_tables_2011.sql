@@ -1,4 +1,3 @@
---$Id$
 --SET search_path TO tiger, public;
 SELECT tiger.SetSearchPathForInstall('tiger');
 -- Create direction lookup table

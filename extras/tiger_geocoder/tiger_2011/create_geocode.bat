@@ -1,4 +1,3 @@
-REM $Id$
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres

@@ -1,5 +1,4 @@
 dnl **********************************************************************
-dnl * $Id: configure.ac 2797 2008-05-31 09:56:44Z mcayland $
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
 dnl * http://postgis.net

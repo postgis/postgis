@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: cu_print.c 6160 2010-11-01 01:28:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

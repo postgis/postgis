@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-# $Id: test_joinestimation.pl 1633 2005-04-18 13:50:14Z strk $
 # 
 # TODO:
 #

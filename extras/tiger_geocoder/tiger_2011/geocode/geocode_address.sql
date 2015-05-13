@@ -1,4 +1,3 @@
---$Id$
 --DROP FUNCTION IF EXISTS geocode_address(norm_addy, integer , geometry);
 CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, max_results integer DEFAULT 10, restrict_geom geometry DEFAULT NULL, OUT addy norm_addy, OUT geomout geometry, OUT rating integer)
   RETURNS SETOF record AS

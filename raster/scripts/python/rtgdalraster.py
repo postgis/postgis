@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # A simple utility for passing parameters to ST_AsGDALRaster
 # for a GDAL raster output

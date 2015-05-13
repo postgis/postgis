@@ -1,4 +1,3 @@
---$Id: tiger_loader_2012.sql 11850 2013-08-22 04:36:09Z robe $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.org

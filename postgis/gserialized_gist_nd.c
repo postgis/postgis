@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: gserialized_gist_nd.c 6519 2010-12-28 00:54:19Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>

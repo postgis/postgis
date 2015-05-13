@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>

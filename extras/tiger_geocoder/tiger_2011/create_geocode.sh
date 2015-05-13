@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id$
 PGPORT=5432
 PGHOST=localhost
 PGUSER=postgres

@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: lwgeom_geos.c 5258 2010-02-17 21:02:49Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

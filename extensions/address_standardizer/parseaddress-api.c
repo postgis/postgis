@@ -9,7 +9,6 @@
  * woodbri@swoodbridge.com
  * woodbr@imaptools.com
  *
- * $Id: parseaddress.c,v 2.6 2010/07/25 00:47:24 woodbri Exp $
  *
  * TODO:
  *   * add recognition of country before or after postalcode

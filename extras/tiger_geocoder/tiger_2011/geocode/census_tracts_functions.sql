@@ -1,4 +1,3 @@
---$Id: census_tracts_functions.sql 7996 2011-10-21 12:01:12Z robe $
  /*** 
  * 
  * Copyright (C) 2012 Regina Obe and Leo Hsu (Paragon Corporation)
@@ -18,7 +17,6 @@ DECLARE
   var_stmt text;
   var_debug boolean = false;
 BEGIN
-	--$Id: census_tracts_functions.sql 7996 2011-10-21 12:01:12Z robe $
 	IF loc_geom IS NULL THEN
 		RETURN null;
 	ELSE

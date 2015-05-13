@@ -1,4 +1,3 @@
---$Id$
  /*** 
  * 
  * Copyright (C) 2012 Regina Obe and Leo Hsu (Paragon Corporation)

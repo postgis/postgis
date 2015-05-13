@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-# $Id: test_estimation.pl 1631 2005-04-18 13:30:25Z strk $
 # 
 # TODO:
 #

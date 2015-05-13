@@ -1,5 +1,4 @@
 --  Lookup tables used by pagc to standardize in format expected by tiger geocoder 
---$Id$-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT tiger.SetSearchPathForInstall('tiger');

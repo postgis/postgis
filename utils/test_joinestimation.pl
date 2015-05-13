@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 
-# $Id$
 # 
 # TODO:
 #

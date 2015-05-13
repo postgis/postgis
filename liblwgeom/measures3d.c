@@ -1,6 +1,5 @@
 
 /**********************************************************************
- * $Id: measures.c 5439 2010-03-16 03:13:33Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: shpcommon.h 5646 2010-05-27 13:19:12Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

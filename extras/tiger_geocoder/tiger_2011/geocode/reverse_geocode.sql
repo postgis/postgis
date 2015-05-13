@@ -1,4 +1,3 @@
---$Id$
  /*** 
  * 
  * Copyright (C) 2011-2014 Regina Obe and Leo Hsu (Paragon Corporation)
@@ -30,7 +29,6 @@ DECLARE
   var_zip varchar := NULL;
   var_primary_fullname varchar := '';
 BEGIN
-	--$Id$
 	IF pt IS NULL THEN
 		RETURN;
 	ELSE

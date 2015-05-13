@@ -1,4 +1,3 @@
--- $Id$
 -- Tests to confirm the concave hull area is <= convex hull and 
 -- covers the original geometry (can't use covers because always gives topo errors with 3.3
 SELECT 
