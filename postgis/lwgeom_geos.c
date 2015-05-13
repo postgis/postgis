@@ -253,11 +253,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
 	** terminal collection from the ST_Union aggregate 
 	*/
-	Datum datum;
 	ArrayType *array;
 
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+
 	int is3d = LW_FALSE, gotsrid = LW_FALSE;
-	int nelems = 0, i = 0, geoms_size = 0, curgeom = 0;
+	int nelems = 0, geoms_size = 0, curgeom = 0, count = 0;
 
 	GSERIALIZED *gser_out = NULL;
 
@@ -267,37 +270,39 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	int srid = SRID_UNKNOWN;
 
-	size_t offset = 0;
-	bits8 *bitmap;
-	int bitmask;
 	int empty_type = 0;
 
-	datum = PG_GETARG_DATUM(0);
-
 	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+	if ( PG_ARGISNULL(0) )
+		PG_RETURN_NULL();
 
-	array = DatumGetArrayTypeP(datum);
-
-	/* How many things in our array? */
+	array = PG_GETARG_ARRAYTYPE_P(0);
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-	/* PgSQL supplies a bitmap of which array entries are null */
-	bitmap = ARR_NULLBITMAP(array);
-
+	
 	/* Empty array? Null return */
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-	/* One-element union is the element itself! */
-	if ( nelems == 1 )
+	/* Quick scan for nulls */
+	iterator = array_create_iterator(array, 0);
+	while( array_iterate(iterator, &value, &isnull) )
 	{
-		/* If the element is a NULL then we need to handle it separately */
-		if (bitmap && (*bitmap & 1) == 0)
-			PG_RETURN_NULL();
-		else
-			PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+		/* Skip null array items */
+		if ( isnull )
+			continue;
+		
+		count++;
 	}
-
+	array_free_iterator(iterator);
+	
+	
+	/* All-nulls? Return null */
+	if ( count == 0 )
+		PG_RETURN_NULL();
+	
+	/* One geom, good geom? Return it */
+	if ( count == 1 && nelems == 1 )
+		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+	
 	/* Ok, we really need GEOS now ;) */
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -305,80 +310,69 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** Collect the non-empty inputs and stuff them into a GEOS collection
 	*/
 	geoms_size = nelems;
-	geoms = palloc( sizeof(GEOSGeometry*) * geoms_size );
+	geoms = palloc(sizeof(GEOSGeometry*) * geoms_size);
 
 	/*
 	** We need to convert the array of GSERIALIZED into a GEOS collection.
 	** First make an array of GEOS geometries.
 	*/
-	offset = 0;
-	bitmap = ARR_NULLBITMAP(array);
-	bitmask = 1;
-	for ( i = 0; i < nelems; i++ )
+	iterator = array_create_iterator(array, 0);
+	while( array_iterate(iterator, &value, &isnull) )
 	{
-		/* Only work on non-NULL entries in the array */
-		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		GSERIALIZED *gser_in;
+
+		/* Skip null array items */
+		if ( isnull )
+			continue;
+		
+		gser_in = (GSERIALIZED *)DatumGetPointer(value);
+
+		/* Check for SRID mismatch in array elements */
+		if ( gotsrid ) 
 		{
-			GSERIALIZED *gser_in = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-
-			/* Check for SRID mismatch in array elements */
-			if ( gotsrid ) 
-			{
-				error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
-			}
-			else
-			{
-				/* Initialize SRID/dimensions info */
-				srid = gserialized_get_srid(gser_in);
-				is3d = gserialized_has_z(gser_in);
-				gotsrid = 1;
-			}
-
-			/* Don't include empties in the union */
-			if ( gserialized_is_empty(gser_in) )
-			{
-				int gser_type = gserialized_get_type(gser_in);
-				if (gser_type > empty_type)
-				{
-					empty_type = gser_type;
-					POSTGIS_DEBUGF(4, "empty_type = %d  gser_type = %d", empty_type, gser_type);
-				}
-			}
-			else
-			{
-				g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
-
-				/* Uh oh! Exception thrown at construction... */
-				if ( ! g )  
-				{
-					HANDLE_GEOS_ERROR("One of the geometries in the set "
-					                  "could not be converted to GEOS");
-					PG_RETURN_NULL();
-				}
-
-				/* Ensure we have enough space in our storage array */
-				if ( curgeom == geoms_size )
-				{
-					geoms_size *= 2;
-					geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
-				}
-
-				geoms[curgeom] = g;
-				curgeom++;
-			}
-			offset += INTALIGN(VARSIZE(gser_in));			
+			error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
+		}
+		else
+		{
+			/* Initialize SRID/dimensions info */
+			srid = gserialized_get_srid(gser_in);
+			is3d = gserialized_has_z(gser_in);
+			gotsrid = 1;
 		}
 
-		/* Advance NULL bitmap */
-		if (bitmap)
+		/* Don't include empties in the union */
+		if ( gserialized_is_empty(gser_in) )
 		{
-			bitmask <<= 1;
-			if (bitmask == 0x100)
+			int gser_type = gserialized_get_type(gser_in);
+			if (gser_type > empty_type)
 			{
-				bitmap++;
-				bitmask = 1;
+				empty_type = gser_type;
+				POSTGIS_DEBUGF(4, "empty_type = %d  gser_type = %d", empty_type, gser_type);
 			}
 		}
+		else
+		{
+			g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
+
+			/* Uh oh! Exception thrown at construction... */
+			if ( ! g )  
+			{
+				HANDLE_GEOS_ERROR("One of the geometries in the set "
+				                  "could not be converted to GEOS");
+				PG_RETURN_NULL();
+			}
+
+			/* Ensure we have enough space in our storage array */
+			if ( curgeom == geoms_size )
+			{
+				geoms_size *= 2;
+				geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
+			}
+
+			geoms[curgeom] = g;
+			curgeom++;
+		}
+
 	}
 
 	/*
@@ -434,104 +428,86 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 {
 /* For GEOS < 3.3, use the old CascadedUnion function for polygons and
    brute force two-by-two for other types. */
-	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
-	int nelems, i;
+	int nelems = 0;
 	GSERIALIZED *result = NULL;
 	GSERIALIZED *pgis_geom = NULL;
 	GEOSGeometry * g1 = NULL;
 	GEOSGeometry * g2 = NULL;
-	GEOSGeometry * geos_result=NULL;
-	int srid=SRID_UNKNOWN;
-	size_t offset = 0;
-	bits8 *bitmap;
-	int bitmask;
-#if POSTGIS_DEBUG_LEVEL > 0
-	static int call=1;
-#endif
+	GEOSGeometry * geos_result = NULL;
+	int srid = SRID_UNKNOWN;
+	int count;
+
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
+
 	int gotsrid = 0;
-	int allpolys=1;
+	int allpolys = 1;
 
-#if POSTGIS_DEBUG_LEVEL > 0
-	call++;
-	POSTGIS_DEBUGF(2, "GEOS incremental union (call %d)", call);
-#endif
-
-	datum = PG_GETARG_DATUM(0);
-
-	/* TODO handle empties */
-
-	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
-
-	array = DatumGetArrayTypeP(datum);
-
+	if ( PG_ARGISNULL(0) )
+		PG_RETURN_NULL();
+	
+	array = PG_GETARG_ARRAYTYPE_P(0);
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	
+	POSTGIS_DEBUGF(3, "%s: number of elements: %d", __func__, nelems);
 
-	bitmap = ARR_NULLBITMAP(array);
-
-	POSTGIS_DEBUGF(3, "unite_garray: number of elements: %d", nelems);
-
-	if ( nelems == 0 ) PG_RETURN_NULL();
-
-	/* One-element union is the element itself */
-	if ( nelems == 1 )
-	{
-		/* If the element is a NULL then we need to handle it separately */
-		if (bitmap && (*bitmap & 1) == 0)
-			PG_RETURN_NULL();
-		else
-			PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
-	}
-
-	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	/* Zero elements in array? return NULL */
+	if ( nelems == 0 ) 
+		PG_RETURN_NULL();
 
 	/*
 	** First, see if all our elements are POLYGON/MULTIPOLYGON
 	** If they are, we can use UnionCascaded for faster results.
 	*/
-	offset = 0;
-	bitmask = 1;
-	gotsrid = 0;
-	for ( i = 0; i < nelems; i++ )
+	count = 0;
+	iterator = array_create_iterator(array, 0);
+	while( array_iterate(iterator, &value, &isnull) )
 	{
+		GSERIALIZED *pggeom;
+		int pgtype;
+		
 		/* Don't do anything for NULL values */
-		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
-		{
-			GSERIALIZED *pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-			int pgtype = gserialized_get_type(pggeom);
-			offset += INTALIGN(VARSIZE(pggeom));
-			if ( ! gotsrid ) /* Initialize SRID */
-			{
-				srid = gserialized_get_srid(pggeom);
-				gotsrid = 1;
-				if ( gserialized_has_z(pggeom) ) is3d = 1;
-			}
-			else
-			{
-				error_if_srid_mismatch(srid, gserialized_get_srid(pggeom));
-			}
+		if ( isnull )
+			continue;
 
-			if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
-			{
-				allpolys = 0;
-				break;
-			}
+		pggeom = (GSERIALIZED *)DatumGetPointer(value);
+		pgtype = gserialized_get_type(pggeom);
+		
+		if ( ! gotsrid ) /* Initialize SRID */
+		{
+			srid = gserialized_get_srid(pggeom);
+			gotsrid = 1;
+			if ( gserialized_has_z(pggeom) ) is3d = 1;
+		}
+		else
+		{
+			error_if_srid_mismatch(srid, gserialized_get_srid(pggeom));
 		}
 
-		/* Advance NULL bitmap */
-		if (bitmap)
+		if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
 		{
-			bitmask <<= 1;
-			if (bitmask == 0x100)
-			{
-				bitmap++;
-				bitmask = 1;
-			}
+			allpolys = 0;
+			break;
 		}
+		
+		count++;
 	}
+	array_free_iterator(iterator);
+
+	/* All the components are null? Return null */
+	if ( count == 0 )
+		PG_RETURN_NULL();
+
+	/* Just one non-null component? Return that */
+	if ( count == 1 && nelems == 1 )
+		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(lwnotice, lwgeom_geos_error);
+
 
 	if ( allpolys )
 	{
@@ -541,79 +517,71 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		int geoms_size = nelems;
 		int curgeom = 0;
 		GEOSGeometry **geoms = NULL;
-		geoms = palloc( sizeof(GEOSGeometry *) * geoms_size );
+		geoms = palloc(sizeof(GEOSGeometry *) * geoms_size);
 		/*
 		** We need to convert the array of GSERIALIZED into a GEOS MultiPolygon.
 		** First make an array of GEOS Polygons.
 		*/
-		offset = 0;
-		bitmap = ARR_NULLBITMAP(array);
-		bitmask = 1;
-		for ( i = 0; i < nelems; i++ )
+		iterator = array_create_iterator(array, 0);
+		while( array_iterate(iterator, &value, &isnull) )
 		{
 			GEOSGeometry* g;
-
+			GSERIALIZED *pggeom;
+			int pgtype;
+							
 			/* Don't do anything for NULL values */
-			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+			if ( isnull )
+				continue;
+
+			pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
+			pgtype = gserialized_get_type(pggeom);
+
+			if ( pgtype == POLYGONTYPE )
 			{
-				GSERIALIZED *pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-				int pgtype = gserialized_get_type(pggeom);
-				offset += INTALIGN(VARSIZE(pggeom));
-				if ( pgtype == POLYGONTYPE )
+				if ( curgeom == geoms_size )
 				{
+					geoms_size *= 2;
+					geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
+				}
+				g = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
+				if ( 0 == g )   /* exception thrown at construction */
+				{
+					/* TODO: release GEOS allocated memory ! */
+					HANDLE_GEOS_ERROR("One of the geometries in the set "
+				                    "could not be converted to GEOS");
+					PG_RETURN_NULL();
+				}
+				geoms[curgeom] = g;
+				curgeom++;
+			}
+			if ( pgtype == MULTIPOLYGONTYPE )
+			{
+				int j = 0;
+				LWMPOLY *lwmpoly = (LWMPOLY*)lwgeom_from_gserialized(pggeom);;
+				for ( j = 0; j < lwmpoly->ngeoms; j++ )
+				{
+					GEOSGeometry* g;
 					if ( curgeom == geoms_size )
 					{
 						geoms_size *= 2;
 						geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
 					}
-					g = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
+					/* This builds a LWPOLY on top of the serialized form */
+					g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j], 0));
 					if ( 0 == g )   /* exception thrown at construction */
 					{
-						/* TODO: release GEOS allocated memory ! */
-						HANDLE_GEOS_ERROR("One of the geometries in the set "
-					                    "could not be converted to GEOS");
+						/* TODO: cleanup all GEOS memory */
+						HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
 						PG_RETURN_NULL();
 					}
-					geoms[curgeom] = g;
-					curgeom++;
+					geoms[curgeom++] = g;
 				}
-				if ( pgtype == MULTIPOLYGONTYPE )
-				{
-					int j = 0;
-					LWMPOLY *lwmpoly = (LWMPOLY*)lwgeom_from_gserialized(pggeom);;
-					for ( j = 0; j < lwmpoly->ngeoms; j++ )
-					{
-						GEOSGeometry* g;
-						if ( curgeom == geoms_size )
-						{
-							geoms_size *= 2;
-							geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
-						}
-						/* This builds a LWPOLY on top of the serialized form */
-						g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j], 0));
-						if ( 0 == g )   /* exception thrown at construction */
-						{
-							/* TODO: cleanup all GEOS memory */
-							HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
-							PG_RETURN_NULL();
-						}
-						geoms[curgeom++] = g;
-					}
-					lwmpoly_free(lwmpoly);
-				}
+				lwmpoly_free(lwmpoly);
 			}
 
-			/* Advance NULL bitmap */
-			if (bitmap)
-			{
-				bitmask <<= 1;
-				if (bitmask == 0x100)
-				{
-					bitmap++;
-					bitmask = 1;
-				}
-			}
 		}
+		array_free_iterator(iterator);
+		
 		/*
 		** Take our GEOS Polygons and turn them into a GEOS MultiPolygon,
 		** then pass that into cascaded union.
@@ -650,76 +618,64 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		/*
 		** Heterogeneous result, let's slog through this one union at a time.
 		*/
-		offset = 0;
-		bitmap = ARR_NULLBITMAP(array);
-		bitmask = 1;
-		for (i=0; i<nelems; i++)
+
+		iterator = array_create_iterator(array, 0);
+		while( array_iterate(iterator, &value, &isnull) )
 		{
+			GSERIALIZED *geom;
+							
 			/* Don't do anything for NULL values */
-			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+			if ( isnull )
+				continue;
+			
+			geom = (GSERIALIZED *)DatumGetPointer(value);
+			pgis_geom = geom;
+
+			POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
+
+			/* Check is3d flag */
+			if ( gserialized_has_z(geom) ) is3d = 1;
+
+			/* Check SRID homogeneity and initialize geos result */
+			if ( ! geos_result )
 			{
-				GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-				offset += INTALIGN(VARSIZE(geom));
-
-				pgis_geom = geom;
-
-				POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
-
-				/* Check is3d flag */
-				if ( gserialized_has_z(geom) ) is3d = 1;
-
-				/* Check SRID homogeneity and initialize geos result */
-				if ( ! geos_result )
+				geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
+				if ( 0 == geos_result )   /* exception thrown at construction */
 				{
-					geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
-					if ( 0 == geos_result )   /* exception thrown at construction */
-					{
-						HANDLE_GEOS_ERROR("geometry could not be converted to GEOS");
-						PG_RETURN_NULL();
-					}
-					srid = gserialized_get_srid(geom);
-					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(gserialized_get_type(geom)));
+					HANDLE_GEOS_ERROR("geometry could not be converted to GEOS");
+					PG_RETURN_NULL();
 				}
-				else
+				srid = gserialized_get_srid(geom);
+				POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(gserialized_get_type(geom)));
+			}
+			else
+			{
+				error_if_srid_mismatch(srid, gserialized_get_srid(geom));
+
+				g1 = POSTGIS2GEOS(pgis_geom);
+				if ( 0 == g1 )   /* exception thrown at construction */
 				{
-					error_if_srid_mismatch(srid, gserialized_get_srid(geom));
+					/* TODO: release GEOS allocated memory ! */
+		      HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+					PG_RETURN_NULL();
+				}
 
-					g1 = POSTGIS2GEOS(pgis_geom);
-					if ( 0 == g1 )   /* exception thrown at construction */
-					{
-						/* TODO: release GEOS allocated memory ! */
-			      HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-						PG_RETURN_NULL();
-					}
+				POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
+				               call, i, lwtype_name(gserialized_get_type(geom)));
 
-					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-					               call, i, lwtype_name(gserialized_get_type(geom)));
-
-					g2 = GEOSUnion(g1, geos_result);
-					if ( g2 == NULL )
-					{
-						GEOSGeom_destroy((GEOSGeometry *)g1);
-						GEOSGeom_destroy((GEOSGeometry *)geos_result);
-						HANDLE_GEOS_ERROR("GEOSUnion");
-					}
+				g2 = GEOSUnion(g1, geos_result);
+				if ( g2 == NULL )
+				{
 					GEOSGeom_destroy((GEOSGeometry *)g1);
 					GEOSGeom_destroy((GEOSGeometry *)geos_result);
-					geos_result = g2;
+					HANDLE_GEOS_ERROR("GEOSUnion");
 				}
+				GEOSGeom_destroy((GEOSGeometry *)g1);
+				GEOSGeom_destroy((GEOSGeometry *)geos_result);
+				geos_result = g2;
 			}
-
-			/* Advance NULL bitmap */
-			if (bitmap)
-			{
-				bitmask <<= 1;
-				if (bitmask == 0x100)
-				{
-					bitmap++;
-					bitmask = 1;
-				}
-			}
-
 		}
+		array_free_iterator(iterator);
 
 		/* If geos_result is set then we found at least one non-NULL geometry */
 		if (geos_result)
