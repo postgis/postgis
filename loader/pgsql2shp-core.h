@@ -28,7 +28,7 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-
+#define P2S_RCSID "$Id$"
 
 /*
  * Error message handling

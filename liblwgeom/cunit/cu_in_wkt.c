@@ -337,7 +337,7 @@ static void test_wkt_in_errlocation(void)
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_FAILURE );
-	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
+	CU_ASSERT((12 - p.errlocation) < 1.5);
 
 //	printf("errlocation %d\n", p.errlocation);
 //	printf("message %s\n", p.message);

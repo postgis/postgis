@@ -64,6 +64,7 @@
 #include <string.h>
 #include <stdio.h>
 
+SHP_CVSID("$Id$")
 
 #ifdef SHPAPI_UTF8_HOOKS
 #   ifdef SHPAPI_WINDOWS

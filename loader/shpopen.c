@@ -263,6 +263,7 @@
 #include <string.h>
 #include <stdio.h>
 
+SHP_CVSID("$Id$")
 
 typedef unsigned char uchar;
 

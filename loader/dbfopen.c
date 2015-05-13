@@ -162,6 +162,7 @@
 #include <ctype.h>
 #include <string.h>
 
+SHP_CVSID("$Id$")
 
 #ifndef FALSE
 #  define FALSE		0

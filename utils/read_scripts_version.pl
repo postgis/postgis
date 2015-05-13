@@ -19,6 +19,7 @@ foreach $f (@files)
 		open(F, $file);
 		while(<F>)
 		{
+            $r = $1 if /\$Id: \S+ (\d+) /;
 		}
 		print "$f got revision $r\n" if $debug && $r;
   		$rev = $r if $r > $rev; 

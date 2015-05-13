@@ -67,6 +67,7 @@
 */
 #define MAXTILESIZE 1073741824
 
+#define RCSID "$Id$"
 
 typedef struct raster_loader_config {
 	/* raster filename */

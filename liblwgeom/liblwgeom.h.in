@@ -19,7 +19,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "proj_api.h"
-#include "bytebuffer.h"
 
 /**
 * @file liblwgeom.h

@@ -69,7 +69,7 @@ static void cu_twkb(char *wkt, int8_t prec_xy, int8_t prec_z, int8_t prec_m, uin
 /*
 ** Creating an input TWKB from a wkt string
 */
-static void cu_twkb_idlist(char *wkt, uint64_t *idlist, int8_t prec_xy, int8_t prec_z, int8_t prec_m, uint8_t variant)
+static void cu_twkb_idlist(char *wkt, int64_t *idlist, int8_t prec_xy, int8_t prec_z, int8_t prec_m, uint8_t variant)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	LWGEOM *g_b;
@@ -199,7 +199,7 @@ static void test_twkb_out_collection(void)
 
 static void test_twkb_out_idlist(void)
 {
-	uint64_t idlist[2];
+	int64_t idlist[2];
 
 	idlist[0] = 2;
 	idlist[1] = 4;
