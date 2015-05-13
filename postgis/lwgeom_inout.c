@@ -445,7 +445,6 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	size_t twkb_size;
 	uint8_t variant = 0;
  	bytea *result;
-	int precXY, precZ, precM;
 	srs_precision sp;
 	
 	/*check for null input since we cannot have the sql-function as strict. 
@@ -457,64 +456,32 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	/* Read sensible precision defaults (about one meter) given the srs */
 	sp = srid_axis_precision(fcinfo, gserialized_get_srid(geom), TWKB_DEFAULT_PRECISION);
 	
-	/* If user did not specify XY precision, use sensible default */
-	if ( PG_NARGS() > 1 && PG_ARGISNULL(1) )
-	{
-		precXY = sp.precision_xy;
-	}
-	else
-	{
-		precXY = PG_GETARG_INT32(1);
-		if ( abs(precXY) > 7 )
-			lwerror("precision cannot be more than 7");
-	}
+	/* If user specified XY precision, use it */
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+		sp.precision_xy = PG_GETARG_INT32(1);
 
-	/* If user did not specify Z precision, use sensible default */
-	if ( PG_NARGS() > 2 && PG_ARGISNULL(2) )
-	{
-		precZ = sp.precision_z;
-	}
-	else
-	{
-		precZ = PG_GETARG_INT32(2);
-		if ( precZ < 0 )
-			lwerror("precision for Z cannot be negative");
-		if ( precZ > 7 )
-			lwerror("precision for Z cannot be more than 7");
-	}
+	/* If user specified Z precision, use it */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		sp.precision_z = PG_GETARG_INT32(2);
 
-	/* If user did not specify M precision, use sensible default */
-	if ( PG_NARGS() > 3 && PG_ARGISNULL(3) )
-	{
-		precM = sp.precision_m;
-	}
-	else
-	{
-		precM = PG_GETARG_INT32(3);
-		if ( precM < 0 )
-			lwerror("precision for Z cannot be negative");
-		if ( precM > 7 )
-			lwerror("precision for Z cannot be more than 7");
-	}
+	/* If user specified M precision, use it */
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		sp.precision_m = PG_GETARG_INT32(3);
 
 	/* We don't permit ids for single geoemtries */
 	variant = variant & ~TWKB_ID;
-	
+
 	/* If user wants registered twkb sizes */
-	if ( (PG_NARGS()>4) && (!PG_ARGISNULL(4)) && PG_GETARG_BOOL(4) )
+	if ( PG_NARGS() > 4 && ! PG_ARGISNULL(4) && PG_GETARG_BOOL(4) )
 		variant |= TWKB_SIZE;
-	else
-		variant &= ~TWKB_SIZE;
 	
 	/* If user wants bounding boxes */
-	if ( (PG_NARGS()>5) && (!PG_ARGISNULL(5)) && PG_GETARG_BOOL(5) )
+	if ( PG_NARGS() > 5 && ! PG_ARGISNULL(5) && PG_GETARG_BOOL(5) )
 		variant |= TWKB_BBOX;
-	else
-		variant &= ~TWKB_BBOX;
-	
+
 	/* Create TWKB binary string */
 	lwgeom = lwgeom_from_gserialized(geom);
-	twkb = lwgeom_to_twkb(lwgeom, variant, precXY, precZ, precM, &twkb_size);
+	twkb = lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m, &twkb_size);
 	lwgeom_free(lwgeom);
 	
 	/* Prepare the PgSQL text return type */
@@ -619,27 +586,27 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	/* Read sensible precision defaults (about one meter) given the srs */
 	sp = srid_axis_precision(fcinfo, lwgeom_get_srid(lwcollection_as_lwgeom(col)), TWKB_DEFAULT_PRECISION);
 	
-	/* If user did not specify XY precision, use sensible default */
-	if ( ! ( PG_NARGS() > 2 && PG_ARGISNULL(2) ) )
+	/* If user specified XY precision, use it */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		sp.precision_xy = PG_GETARG_INT32(2);
 
-	/* If user did not specify Z precision, use sensible default */
-	if ( ! ( PG_NARGS() > 3 && PG_ARGISNULL(3) ) )
+	/* If user specified Z precision, use it */
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		sp.precision_z = PG_GETARG_INT32(3);
 
-	/* If user did not specify M precision, use sensible default */
-	if ( ! ( PG_NARGS() > 4 && PG_ARGISNULL(4) ) )
+	/* If user specified M precision, use it */
+	if ( PG_NARGS() > 4 && ! PG_ARGISNULL(4) )
 		sp.precision_m = PG_GETARG_INT32(4);
 
 	/* We are building an ID'ed output */
 	variant = TWKB_ID;
 	
 	/* If user wants registered twkb sizes */
-	if ( PG_NARGS() > 5 && !PG_ARGISNULL(5) && PG_GETARG_BOOL(5) )
+	if ( PG_NARGS() > 5 && ! PG_ARGISNULL(5) && PG_GETARG_BOOL(5) )
 		variant |= TWKB_SIZE;
 	
 	/* If user wants bounding boxes */
-	if ( PG_NARGS() > 6 && !PG_ARGISNULL(6) && PG_GETARG_BOOL(6) )
+	if ( PG_NARGS() > 6 && ! PG_ARGISNULL(6) && PG_GETARG_BOOL(6) )
 		variant |= TWKB_BBOX;
 
 	/* Write out the TWKB */
