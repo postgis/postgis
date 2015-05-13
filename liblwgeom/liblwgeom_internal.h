@@ -30,8 +30,6 @@
 
 #include <float.h>
 
-#include "bytebuffer.h"
-
 #include "liblwgeom.h"
 
 
