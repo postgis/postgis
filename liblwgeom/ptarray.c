@@ -56,12 +56,11 @@ ptarray_construct(char hasz, char hasm, uint32_t npoints)
 POINTARRAY*
 ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 {
-	uint8_t dims = gflags(hasz, hasm, 0);
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	pa->serialized_pointlist = NULL;
 	
 	/* Set our dimsionality info on the bitmap */
-	pa->flags = dims;
+	pa->flags = gflags(hasz, hasm, 0);
 	
 	/* We will be allocating a bit of room */
 	pa->npoints = 0;

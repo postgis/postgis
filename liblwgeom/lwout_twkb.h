@@ -14,57 +14,69 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 #include <limits.h>
+#include "bytebuffer.h"
 
 /* Maximum number of geometry dimmensions that internal arrays can hold */
 #define MAX_N_DIMS 4
 
-/**
-* If the twkb includes an ID 1 bit
-* If the twkb includes its size 1 bit
-* If the twkb includes bboxes 1 bit
-* Precision  4 bits
-*/
-
-
-#define FIRST_BYTE_SET_ID(flag, id) ((flag) = (flag & 0xFE) | ((id & 0x01)))
-#define FIRST_BYTE_SET_SIZES(flag, sizes) ((flag) = (flag & 0xFD) | ((sizes & 0x02)))
-#define FIRST_BYTE_SET_BBOXES(flag, bboxes) ((flag) = (flag & 0xFB) | ((bboxes & 0x04)))
-
-#define FIRST_BYTE_SET_PRECISION(flag, prec) ((flag) = (flag & 0x0F) | ((prec<<4) & 0xF0))
+#define MAX_BBOX_SIZE 64
+#define MAX_SIZE_SIZE 8
 
 
 /**
-* Macros for manipulating the 'type_dim' int. An int8_t used as follows:
-* Type 5 bits
-* NDims  3 bits
+* Header true/false flags
 */
 
-#define TYPE_DIM_SET_TYPE(flag, type) ((flag) = (flag & 0xE0) | ((type & 0x1F)))
-#define TYPE_DIM_SET_DIM(flag, dim) ((flag) = (flag & 0x1F) | ((dim & 0x07)<<5))
+#define FIRST_BYTE_SET_BBOXES(flag, bool)   ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (~0x01)))
+#define FIRST_BYTE_SET_SIZES(flag, bool)    ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (~0x02)))
+#define FIRST_BYTE_SET_IDLIST(flag, bool)   ((flag) = ((bool) ? (flag) | 0x04 : (flag) & (~0x04)))
+#define FIRST_BYTE_SET_EXTENDED(flag, bool) ((flag) = ((bool) ? (flag) | 0x08 : (flag) & (~0x08)))
+#define FIRST_BYTE_SET_EMPTY(flag, bool)    ((flag) = ((bool) ? (flag) | 0x10 : (flag) & (~0x10)))
 
-static size_t ptarray_to_twkb_size(const POINTARRAY *pa, uint8_t variant,int prec,int64_t accum_rel[3][4]);
-static int ptarray_to_twkb_buf(const POINTARRAY *pa, uint8_t **buf, uint8_t variant,int64_t factor,int64_t accum_rel[]);
 
-static size_t  lwgeom_agg_to_twkbpoint_size(lwgeom_id *geom_array, uint8_t *variant,int n,int64_t factor,int64_t refpoint[3][4]);
-static size_t lwpoint_to_twkb_size(const LWPOINT *pt, uint8_t *variant, int64_t factor, int64_t id,int64_t refpoint[3][4]);
-static int lwgeom_agg_to_twkbpoint_buf(lwgeom_id* geom_array,int n, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t refpoint[3][4]);
-static int lwpoint_to_twkb_buf(const LWPOINT *pt, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[]);
+/**
+* Macros for manipulating the 'type_precision' int. An int8_t used as follows:
+* Type 4 bits
+* Precision 4 bits
+*/
 
-static size_t  lwgeom_agg_to_twkbline_size(lwgeom_id *geom_array, uint8_t *variant,int n,int64_t factor,int64_t refpoint[3][4]);
-static size_t lwline_to_twkb_size(const LWLINE *line, uint8_t *variant, int64_t factor, int64_t id,int64_t refpoint[3][4]);
-static int lwgeom_agg_to_twkbline_buf(lwgeom_id* geom_array,int n, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t refpoint[3][4]);
-static int lwline_to_twkb_buf(const LWLINE *line, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[]);
+#define TYPE_PREC_SET_TYPE(flag, type) ((flag) = ((flag) & 0xF0) | (((type) & 0x0F)))
+#define TYPE_PREC_SET_PREC(flag, prec) ((flag) = ((flag) & 0x0F) | (((prec) & 0x0F) << 4))
 
-static size_t  lwgeom_agg_to_twkbpoly_size(lwgeom_id *geom_array, uint8_t *variant,int n,int64_t factor,int64_t refpoint[3][4]);
-static size_t lwpoly_to_twkb_size(const LWPOLY *poly, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[3][4]);
-static int lwgeom_agg_to_twkbpoly_buf(lwgeom_id* geom_array,int n, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t refpoint[3][4]);
-static int lwpoly_to_twkb_buf(const LWPOLY *poly, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[]);
+#define HIGHER_DIM_SET_HASZ(flag, bool) ((flag) = ((bool) ? (flag) | 0x01 : (flag) & (~0x01)))
+#define HIGHER_DIM_SET_HASM(flag, bool) ((flag) = ((bool) ? (flag) | 0x02 : (flag) & (~0x02)))
 
-static size_t  lwgeom_agg_to_twkbcollection_size(lwgeom_id *geom_array, uint8_t *variant,int n,int64_t factor,int64_t refpoint[3][4]);
-static size_t lwcollection_to_twkb_size(const LWCOLLECTION *col, uint8_t *variant, int64_t factor, int64_t id,int64_t refpoint[3][4]);
-static int lwgeom_agg_to_twkbcollection_buf(lwgeom_id* geom_array,int n, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t refpoint[3][4]);
-static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[3][4]);
+#define HIGHER_DIM_SET_PRECZ(flag, prec) ((flag) = ((flag) & 0xE3) | (((prec) & 0x07) << 2))
+#define HIGHER_DIM_SET_PRECM(flag, prec) ((flag) = ((flag) & 0x1F) | (((prec) & 0x07) << 5))
 
-static size_t lwgeom_to_twkb_size(const LWGEOM *geom, uint8_t *variant, int64_t factor, int64_t id,int64_t refpoint[3][4]);
-static int lwgeom_to_twkb_buf(const LWGEOM *geom, uint8_t **buf, uint8_t *variant,int64_t factor, int64_t id,int64_t refpoint[3][4]);
+typedef struct
+{
+	/* Options defined at start */
+	uint8_t variant;
+	int8_t prec_xy;
+	int8_t prec_z;
+	int8_t prec_m;
+	float factor[4]; /*What factor to multiply the coordiinates with to get the requested precision*/
+} TWKB_GLOBALS;
+
+typedef struct
+{
+	uint8_t variant;  /*options that change at runtime*/
+	bytebuffer_t *header_buf;
+	bytebuffer_t *geom_buf;
+	int hasz;
+	int hasm;
+	const int64_t *idlist;
+	int64_t bbox_min[MAX_N_DIMS];
+	int64_t bbox_max[MAX_N_DIMS];
+	int64_t accum_rels[MAX_N_DIMS]; /*Holds the acculmulated relative values*/
+} TWKB_STATE;
+
+static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+
+static int lwpoint_to_twkb_buf(const LWPOINT *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *parent_state);
 

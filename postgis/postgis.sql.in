@@ -1500,11 +1500,17 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geometry,int4,int8 default null,boolean default false, boolean default false)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry, prec int4 default NULL, prec_z int4 default NULL, prec_m int4 default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','TWKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE;
-	
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry[], ids bigint[], prec int4 default NULL, prec_z int4 default NULL, prec_m int4 default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','TWKBFromLWGEOMArray'
+	LANGUAGE 'c' IMMUTABLE;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	RETURNS BYTEA
@@ -3530,64 +3536,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
-
---Availability: 2.2.0
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
--- Availability: 2.2.0  
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
--- Availability: 2.2.0  
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,boolean)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-  
--- Availability: 2.2.0  
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_transfn(internal, geometry,int,int8,boolean,boolean)
-  RETURNS internal
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
--- Availability: 2.2.0  
-CREATE OR REPLACE FUNCTION pgis_twkb_accum_finalfn(internal)
-  RETURNS bytea
-	AS 'MODULE_PATHNAME'
-  LANGUAGE c ;
-
--- Availability: 2.2.0  
-CREATE AGGREGATE st_astwkbagg(geometry,int) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
-
--- Availability: 2.2.0
-CREATE AGGREGATE st_astwkbagg(geometry,int,int8) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
-
--- Availability: 2.2.0
-CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
-
--- Availability: 2.2.0
-CREATE AGGREGATE st_astwkbagg(geometry,int,int8,boolean,boolean) (
-  SFUNC=pgis_twkb_accum_transfn,
-  STYPE=internal,
-  FINALFUNC=pgis_twkb_accum_finalfn
-);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (

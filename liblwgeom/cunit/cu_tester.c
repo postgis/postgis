@@ -76,6 +76,7 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
+	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	measures_suite_setup,
 	effectivearea_suite_setup,
@@ -97,7 +98,6 @@ PG_SuiteSetup setupfuncs[] =
 	surface_suite_setup,
 	tree_suite_setup,
 	triangulate_suite_setup,
-	twkb_in_suite_setup,
 	twkb_out_suite_setup,
 	varint_suite_setup,
 	wkb_in_suite_setup,

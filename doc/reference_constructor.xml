@@ -1042,7 +1042,7 @@ SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromWKB" />,<xref linkend="ST_AsTWKB" />,<xref linkend="ST_AsTWKBAgg" />,<xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
+		<para><xref linkend="ST_GeomFromWKB" />,<xref linkend="ST_AsTWKB" />,<xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
 	  </refsection>
 	</refentry>
 

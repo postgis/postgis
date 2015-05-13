@@ -14,27 +14,42 @@
 #include "lwgeom_log.h"
 #include "varint.h"
 
+#define TWKB_IN_MAXCOORDS 4
+
 /**
 * Used for passing the parse state between the parsing functions.
 */
-typedef struct 
+typedef struct
 {
-	/*General*/
+	/* Pointers to the bytes */
 	uint8_t *twkb; /* Points to start of TWKB */
-	uint8_t *twkb_end; /* Expected end of TWKB */
-	int check; /* Simple validity checks on geometries */
-	/*Info about current geometry*/
-	uint8_t magic_byte; /*the magic byte contain info about if twkb contain id, size info, bboxes and precision*/
-	int ndims; /* Number of dimmensions */
-	int has_z; /*TODO get rid of this*/
-	int has_m; /*TODO get rid of this*/
-	int has_bboxes;  
-	double factor; /*precission factor to get the real numbers from the integers*/
+	uint8_t *twkb_end; /* Points to end of TWKB */
+	uint8_t *pos; /* Current read position */
+
+	uint32_t check; /* Simple validity checks on geometries */
 	uint32_t lwtype; /* Current type we are handling */
-	/*Parsing info*/
-	int read_id; /*This is not telling if the twkb uses id or not. It is just for internal use to tell if id shall be read. Like the points inside multipoint doesn't have id*/
-	uint8_t *pos; /* Current parse position */
-	int64_t *coords; /*An array to keep delta values from 4 dimmensions*/
+
+	uint8_t has_bbox;
+	uint8_t has_size;
+	uint8_t has_idlist;
+	uint8_t has_z;
+	uint8_t has_m;
+	uint8_t is_empty;
+
+	/* Precision factors to convert ints to double */
+	double factor;
+	double factor_z;
+	double factor_m;
+
+	uint64_t size;
+
+	/* Info about current geometry */
+	uint8_t magic_byte; /* the magic byte contain info about if twkb contain id, size info, bboxes and precision */
+
+	int ndims; /* Number of dimensions */
+
+	int64_t *coords; /* An array to keep delta values from 4 dimensions */
+
 } twkb_parse_state;
 
 
@@ -47,58 +62,81 @@ LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s);
 /**********************************************************************/
 
 /**
-* Check that we are not about to read off the end of the WKB 
+* Check that we are not about to read off the end of the WKB
 * array.
 */
-static inline void twkb_parse_state_check(twkb_parse_state *s, size_t next)
+static inline void twkb_parse_state_advance(twkb_parse_state *s, size_t next)
 {
-	
 	if( (s->pos + next) > s->twkb_end)
-		lwerror("TWKB structure does not match expected size!");
-} 
+	{
+		lwerror("%s: TWKB structure does not match expected size!", __func__);
+		// lwnotice("TWKB structure does not match expected size!");
+	}
 
-/**
-* Take in an unknown kind of wkb type number and ensure it comes out
-* as an extended WKB type number (with Z/M/SRID flags masked onto the 
-* high bits).
-*/
-static void lwtype_from_twkb_state(twkb_parse_state *s, uint8_t twkb_type)
+	s->pos += next;
+}
+
+static inline int64_t twkb_parse_state_varint(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwtype_from_twkb_state");
+	size_t size;
+	int64_t val = varint_s64_decode(s->pos, s->twkb_end, &size);
+	twkb_parse_state_advance(s, size);
+	return val;
+}
 
-	
+static inline uint64_t twkb_parse_state_uvarint(twkb_parse_state *s)
+{
+	size_t size;
+	uint64_t val = varint_u64_decode(s->pos, s->twkb_end, &size);
+	twkb_parse_state_advance(s, size);
+	return val;
+}
+
+static inline double twkb_parse_state_double(twkb_parse_state *s, double factor)
+{
+	size_t size;
+	int64_t val = varint_s64_decode(s->pos, s->twkb_end, &size);
+	twkb_parse_state_advance(s, size);
+	return val / factor;
+}
+
+static inline void twkb_parse_state_varint_skip(twkb_parse_state *s)
+{
+	size_t size = varint_size(s->pos, s->twkb_end);
+
+	if ( ! size )
+		lwerror("%s: no varint to skip", __func__);
+
+	twkb_parse_state_advance(s, size);
+	return;
+}
+
+
+
+static uint32_t lwtype_from_twkb_type(uint8_t twkb_type)
+{
 	switch (twkb_type)
 	{
-		case 1: 
-			s->lwtype = POINTTYPE;
-			break;
-		case 2: 
-			s->lwtype = LINETYPE;
-			break;
+		case 1:
+			return POINTTYPE;
+		case 2:
+			return LINETYPE;
 		case 3:
-			s->lwtype = POLYGONTYPE;
-			break;
+			return POLYGONTYPE;
 		case 4:
-			s->lwtype = MULTIPOINTTYPE;
-			break;
+			return MULTIPOINTTYPE;
 		case 5:
-			s->lwtype = MULTILINETYPE;
-			break;
+			return MULTILINETYPE;
 		case 6:
-			s->lwtype = MULTIPOLYGONTYPE;
-			break;
-		case 7: 
-			s->lwtype = COLLECTIONTYPE;
-			break;		
+			return MULTIPOLYGONTYPE;
+		case 7:
+			return COLLECTIONTYPE;
 
 		default: /* Error! */
 			lwerror("Unknown WKB type");
-			break;	
+			return 0;
 	}
-
-	LWDEBUGF(4,"Got lwtype %s (%u)", lwtype_name(s->lwtype), s->lwtype);
-
-	return;
+	return 0;
 }
 
 /**
@@ -107,48 +145,56 @@ static void lwtype_from_twkb_state(twkb_parse_state *s, uint8_t twkb_type)
 */
 static uint8_t byte_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering byte_from_twkb_state");
-	uint8_t return_value = 0;
-
-	twkb_parse_state_check(s, WKB_BYTE_SIZE);
-	LWDEBUG(4, "Passed state check");
-	
-	return_value = s->pos[0];
-	s->pos += WKB_BYTE_SIZE;
-	
-	return return_value;
+	uint8_t val = *(s->pos);
+	twkb_parse_state_advance(s, WKB_BYTE_SIZE);
+	return val;
 }
 
 
 /**
 * POINTARRAY
 * Read a dynamically sized point array and advance the parse state forward.
-* First read the number of points, then read the points.
 */
 static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints)
 {
-	LWDEBUG(2,"Entering ptarray_from_twkb_state");
 	POINTARRAY *pa = NULL;
 	uint32_t ndims = s->ndims;
-	int i,j;
+	int i;
+	double *dlist;
 
-	
+	LWDEBUG(2,"Entering ptarray_from_twkb_state");
 	LWDEBUGF(4,"Pointarray has %d points", npoints);
-
 
 	/* Empty! */
 	if( npoints == 0 )
-		return ptarray_construct(s->has_z, s->has_m, npoints);
-	
-	double *dlist;
+		return ptarray_construct_empty(s->has_z, s->has_m, 0);
+
 	pa = ptarray_construct(s->has_z, s->has_m, npoints);
 	dlist = (double*)(pa->serialized_pointlist);
 	for( i = 0; i < npoints; i++ )
 	{
-		for (j=0;j<ndims;j++)
+		int j = 0;
+		/* X */
+		s->coords[j] += twkb_parse_state_varint(s);
+		dlist[ndims*i + j] = s->coords[j] / s->factor;
+		j++;
+		/* Y */
+		s->coords[j] += twkb_parse_state_varint(s);
+		dlist[ndims*i + j] = s->coords[j] / s->factor;
+		j++;
+		/* Z */
+		if ( s->has_z )
 		{
-			s->coords[j]+=varint_s64_read(&(s->pos), s->twkb_end);
-			dlist[(ndims*i)+j] = s->coords[j]/s->factor;
+			s->coords[j] += twkb_parse_state_varint(s);
+			dlist[ndims*i + j] = s->coords[j] / s->factor_z;
+			j++;
+		}
+		/* M */
+		if ( s->has_m )
+		{
+			s->coords[j] += twkb_parse_state_varint(s);
+			dlist[ndims*i + j] = s->coords[j] / s->factor_m;
+			j++;
 		}
 	}
 
@@ -160,15 +206,16 @@ static POINTARRAY* ptarray_from_twkb_state(twkb_parse_state *s, uint32_t npoints
 */
 static LWPOINT* lwpoint_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwpoint_from_twkb_state");
 	static uint32_t npoints = 1;
+	POINTARRAY *pa;
 
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	POINTARRAY *pa = ptarray_from_twkb_state(s,npoints);	
-	return lwpoint_construct(0, NULL, pa);
+	LWDEBUG(2,"Entering lwpoint_from_twkb_state");
+
+	if ( s->is_empty )
+		return lwpoint_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
+
+	pa = ptarray_from_twkb_state(s, npoints);
+	return lwpoint_construct(SRID_UNKNOWN, NULL, pa);
 }
 
 /**
@@ -176,19 +223,25 @@ static LWPOINT* lwpoint_from_twkb_state(twkb_parse_state *s)
 */
 static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwline_from_twkb_state");
 	uint32_t npoints;
+	POINTARRAY *pa;
 
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*get number of points*/
-	npoints = varint_u64_read(&(s->pos), s->twkb_end);
-	
-	POINTARRAY *pa = ptarray_from_twkb_state(s,npoints);	
-	if( pa == NULL || pa->npoints == 0 )
-		return lwline_construct_empty(0, s->has_z, s->has_m);
+	LWDEBUG(2,"Entering lwline_from_twkb_state");
+
+	if ( s->is_empty )
+		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
+
+	/* Read number of points */
+	npoints = twkb_parse_state_uvarint(s);
+
+	if ( npoints == 0 )
+		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
+
+	/* Read coordinates */
+	pa = ptarray_from_twkb_state(s, npoints);
+
+	if( pa == NULL )
+		return lwline_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{
@@ -196,7 +249,7 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 		return NULL;
 	}
 
-	return lwline_construct(0, NULL, pa);
+	return lwline_construct(SRID_UNKNOWN, NULL, pa);
 }
 
 /**
@@ -204,33 +257,44 @@ static LWLINE* lwline_from_twkb_state(twkb_parse_state *s)
 */
 static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwpoly_from_twkb_state");
-	uint32_t nrings,npoints;
+	uint32_t nrings;
 	int i;
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*get number of rings*/
-	nrings= varint_u64_read(&(s->pos), s->twkb_end);
-	
-	LWPOLY *poly = lwpoly_construct_empty(0, s->has_z, s->has_m);
+	LWPOLY *poly;
+
+	LWDEBUG(2,"Entering lwpoly_from_twkb_state");
+
+	if ( s->is_empty )
+		return lwpoly_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
+
+	/* Read number of rings */
+	nrings = twkb_parse_state_uvarint(s);
+
+	/* Start w/ empty polygon */
+	poly = lwpoly_construct_empty(SRID_UNKNOWN, s->has_z, s->has_m);
 
 	LWDEBUGF(4,"Polygon has %d rings", nrings);
-	
+
 	/* Empty polygon? */
 	if( nrings == 0 )
 		return poly;
 
-
-
 	for( i = 0; i < nrings; i++ )
 	{
-		/*get number of points*/
-		npoints = varint_u64_read(&(s->pos), s->twkb_end);
-		POINTARRAY *pa = ptarray_from_twkb_state(s,npoints);
+		/* Ret number of points */
+		uint32_t npoints = twkb_parse_state_uvarint(s);
+		POINTARRAY *pa = ptarray_from_twkb_state(s, npoints);
+
+		/* Skip empty rings */
 		if( pa == NULL )
 			continue;
+
+		/* Force first and last points to be the same. */
+		if( ! ptarray_is_closed_2d(pa) )
+		{
+			POINT4D pt;
+			getPoint4d_p(pa, 0, &pt);
+			ptarray_append_point(pa, &pt, LW_FALSE);
+		}
 
 		/* Check for at least four points. */
 		if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
@@ -240,15 +304,6 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 			return NULL;
 		}
 
-		/* Check that first and last points are the same. */
-		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed_2d(pa) )
-		{
-			/*TODO copy the first point to the last instead of error*/
-			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
-			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
-			return NULL;
-		}
-		
 		/* Add ring to polygon */
 		if ( lwpoly_add_ring(poly, pa) == LW_FAILURE )
 		{
@@ -257,7 +312,7 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 		}
 
 	}
-	return poly;	
+	return poly;
 }
 
 
@@ -266,33 +321,37 @@ static LWPOLY* lwpoly_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwmultipoint_from_twkb_state");
-	int ngeoms;
+	int ngeoms, i;
 	LWGEOM *geom = NULL;
-	
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*Now we switch off id reading for subgeometries*/
-	s->read_id=LW_FALSE;
-	/*get number of geometries*/
-	ngeoms= varint_u64_read(&(s->pos), s->twkb_end);	
-	LWDEBUGF(4,"Number of geometries %d",ngeoms);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype,0, s->has_z, s->has_m);
-	while (ngeoms>0)
+	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
+
+	LWDEBUG(2,"Entering lwmultipoint_from_twkb_state");
+
+	if ( s->is_empty )
+		return col;
+
+	/* Read number of geometries */
+	ngeoms = twkb_parse_state_uvarint(s);
+	LWDEBUGF(4,"Number of geometries %d", ngeoms);
+
+	/* It has an idlist, we need to skip that */
+	if ( s->has_idlist )
 	{
-		geom = (LWGEOM*) lwpoint_from_twkb_state(s);
+		for ( i = 0; i < ngeoms; i++ )
+			twkb_parse_state_varint_skip(s);
+	}
+
+	for ( i = 0; i < ngeoms; i++ )
+	{
+		geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
-		ngeoms--;
 	}
-	/*Better turn it on again because we don't know what will come next*/
-	s->read_id=LW_FALSE;
-	return col;	
+
+	return col;
 }
 
 /**
@@ -300,33 +359,38 @@ static LWCOLLECTION* lwmultipoint_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwmultilinestring_from_twkb_state");
-	int ngeoms;
+	int ngeoms, i;
 	LWGEOM *geom = NULL;
-	
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*Now we switch off id reading for subgeometries*/
-	s->read_id=LW_FALSE;
-	/*get number of geometries*/
-	ngeoms= varint_u64_read(&(s->pos), s->twkb_end);	
+	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
+
+	LWDEBUG(2,"Entering lwmultilinestring_from_twkb_state");
+
+	if ( s->is_empty )
+		return col;
+
+	/* Read number of geometries */
+	ngeoms = twkb_parse_state_uvarint(s);
+
 	LWDEBUGF(4,"Number of geometries %d",ngeoms);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype,0, s->has_z, s->has_m);
-	while (ngeoms>0)
+
+	/* It has an idlist, we need to skip that */
+	if ( s->has_idlist )
 	{
-		geom = (LWGEOM*) lwline_from_twkb_state(s);
+		for ( i = 0; i < ngeoms; i++ )
+			twkb_parse_state_varint_skip(s);
+	}
+
+	for ( i = 0; i < ngeoms; i++ )
+	{
+		geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
-		ngeoms--;
 	}
-	/*Better turn it on again because we don't know what will come next*/
-	s->read_id=LW_FALSE;
-	return col;	
+
+	return col;
 }
 
 /**
@@ -334,33 +398,37 @@ static LWCOLLECTION* lwmultiline_from_twkb_state(twkb_parse_state *s)
 */
 static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwmultipolygon_from_twkb_state");
-	int ngeoms;
+	int ngeoms, i;
 	LWGEOM *geom = NULL;
-	
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*Now we switch off id reading for subgeometries*/
-	s->read_id=LW_FALSE;
-	/*get number of geometries*/
-	ngeoms= varint_u64_read(&(s->pos), s->twkb_end);	
+	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
+
+	LWDEBUG(2,"Entering lwmultipolygon_from_twkb_state");
+
+	if ( s->is_empty )
+		return col;
+
+	/* Read number of geometries */
+	ngeoms = twkb_parse_state_uvarint(s);
 	LWDEBUGF(4,"Number of geometries %d",ngeoms);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype,0, s->has_z, s->has_m);
-	while (ngeoms>0)
+
+	/* It has an idlist, we need to skip that */
+	if ( s->has_idlist )
 	{
-		geom = (LWGEOM*) lwpoly_from_twkb_state(s);
+		for ( i = 0; i < ngeoms; i++ )
+			twkb_parse_state_varint_skip(s);
+	}
+
+	for ( i = 0; i < ngeoms; i++ )
+	{
+		geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
 		{
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
-		ngeoms--;
 	}
-	/*Better turn it on again because we don't know what will come next*/
-	s->read_id=LW_FALSE;
-	return col;	
+
+	return col;
 }
 
 
@@ -369,22 +437,28 @@ static LWCOLLECTION* lwmultipoly_from_twkb_state(twkb_parse_state *s)
 **/
 static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwcollection_from_twkb_state");
-	int ngeoms;
+	int ngeoms, i;
 	LWGEOM *geom = NULL;
-	
-	/* TODO, make an option to use the id-value and return a set with geometry and id*/
-	if((s->magic_byte&TWKB_ID) && s->read_id)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over id value */
-	
-	/*Now we switch off id reading for subgeometries*/
-	s->read_id=LW_FALSE;
-		
-	/*get number of geometries*/
-	ngeoms= varint_u64_read(&(s->pos), s->twkb_end);	
+	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, SRID_UNKNOWN, s->has_z, s->has_m);
+
+	LWDEBUG(2,"Entering lwcollection_from_twkb_state");
+
+	if ( s->is_empty )
+		return col;
+
+	/* Read number of geometries */
+	ngeoms = twkb_parse_state_uvarint(s);
+
 	LWDEBUGF(4,"Number of geometries %d",ngeoms);
-	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype,0, s->has_z, s->has_m);
-	while (ngeoms>0)
+
+	/* It has an idlist, we need to skip that */
+	if ( s->has_idlist )
+	{
+		for ( i = 0; i < ngeoms; i++ )
+			twkb_parse_state_varint_skip(s);
+	}
+
+	for ( i = 0; i < ngeoms; i++ )
 	{
 		geom = lwgeom_from_twkb_state(s);
 		if ( lwcollection_add_lwgeom(col, geom) == NULL )
@@ -392,142 +466,203 @@ static LWCOLLECTION* lwcollection_from_twkb_state(twkb_parse_state *s)
 			lwerror("Unable to add geometry (%p) to collection (%p)", geom, col);
 			return NULL;
 		}
-		ngeoms--;
 	}
-	/*We better turn id reading on again because we don't know what will come next*/
-	s->read_id=LW_FALSE;
-	return col;	
+
+
+	return col;
 }
 
 
-static void magicbyte_from_twkb_state(twkb_parse_state *s)
+static void header_from_twkb_state(twkb_parse_state *s)
 {
 	LWDEBUG(2,"Entering magicbyte_from_twkb_state");
-	
-	int  precission;
-	s->has_bboxes=LW_FALSE;
-	
-	/*Get the first magic byte*/
-	s->magic_byte = byte_from_twkb_state(s);
-	
-	/*Read precission from the last 4 bits of the magic_byte*/
-	
-	precission=(s->magic_byte&0xF0)>>4;
-	s->factor=pow(10,1.0*precission);
-	
-	/*If the twkb-geometry has size information we just jump over it*/
-	if(s->magic_byte&TWKB_SIZES)
-		varint_64_jump_n(&(s->pos),1, s->twkb_end); /* Jump over size info */
-	
-	/*If our dataset has bboxes we just set a flag for that. We cannot do anything about it before we know the number of dimmensions*/
-	if(s->magic_byte&TWKB_BBOXES)
-		s->has_bboxes=LW_TRUE;
+
+	uint8_t extended_dims;
+
+	/* Read the first two bytes */
+	uint8_t type_precision = byte_from_twkb_state(s);
+	uint8_t metadata = byte_from_twkb_state(s);
+
+	/* Strip type and precision out of first byte */
+	uint8_t type = type_precision & 0x0F;
+	int8_t precision = unzigzag8((type_precision & 0xF0) >> 4);
+
+	/* Convert TWKB type to internal type */
+	s->lwtype = lwtype_from_twkb_type(type);
+
+	/* Convert the precision into factor */
+	s->factor = pow(10, (double)precision);
+
+	/* Strip metadata flags out of second byte */
+	s->has_bbox   =  metadata & 0x01;
+	s->has_size   = (metadata & 0x02) >> 1;
+	s->has_idlist = (metadata & 0x04) >> 2;
+	extended_dims = (metadata & 0x08) >> 3;
+	s->is_empty   = (metadata & 0x10) >> 4;
+
+	/* Flag for higher dims means read a third byte */
+	if ( extended_dims )
+	{
+		int8_t precision_z, precision_m;
+
+		extended_dims = byte_from_twkb_state(s);
+
+		/* Strip Z/M presence and precision from ext byte */
+		s->has_z    = (extended_dims & 0x01);
+		s->has_m    = (extended_dims & 0x02) >> 1;
+		precision_z = (extended_dims & 0x1C) >> 2;
+		precision_m = (extended_dims & 0xE0) >> 5;
+
+		/* Convert the precision into factor */
+		s->factor_z = pow(10, (double)precision_z);
+		s->factor_m = pow(10, (double)precision_m);
+	}
+	else
+	{
+		s->has_z = 0;
+		s->has_m = 0;
+		s->factor_z = 0;
+		s->factor_m = 0;
+	}
+
+	/* Read the size, if there is one */
+	if ( s->has_size )
+	{
+		s->size = twkb_parse_state_uvarint(s);
+	}
+
+	/* Calculate the number of dimensions */
+	s->ndims = 2 + s->has_z + s->has_m;
+
+	return;
 }
 
+
+
 /**
-* GEOMETRY
-* Generic handling for WKB geometries. The front of every WKB geometry
-* (including those embedded in collections) is an endian byte, a type
-* number and an optional srid number. We handle all those here, then pass
-* to the appropriate handler for the specific type.
+* Generic handling for TWKB geometries. The front of every TWKB geometry
+* (including those embedded in collections) is a type byte and metadata byte,
+* then optional size, bbox, etc. Read those, then switch to particular type
+* handling code.
 */
 LWGEOM* lwgeom_from_twkb_state(twkb_parse_state *s)
 {
-	LWDEBUG(2,"Entering lwgeom_from_twkb_state");
-	
-	
-	uint8_t type_dim_byte;
-	uint8_t twkb_type;
-		
-	/* Read the type and number of dimmensions*/
-	type_dim_byte = byte_from_twkb_state(s);	
-	
-	twkb_type=type_dim_byte&0x1F;	
-	s->ndims=(type_dim_byte&0xE0)>>5;	
-	
-	s->has_z=LW_FALSE;
-	s->has_m=LW_FALSE;
-	if(s->ndims>2) s->has_z=LW_TRUE;
-	if(s->ndims>3) s->has_m=LW_TRUE;	
-	
-	/*Now we know number of dommensions so we can jump over the bboxes with right number of "jumps"*/
-	if (s->has_bboxes)
+	GBOX bbox;
+	LWGEOM *geom = NULL;
+	uint32_t has_bbox = LW_FALSE;
+	int i;
+
+	/* Read the first two bytes, and optional */
+	/* extended precision info and optional size info */
+	header_from_twkb_state(s);
+
+	/* Just experienced a geometry header, so now we */
+	/* need to reset our coordinate deltas */
+	for ( i = 0; i < TWKB_IN_MAXCOORDS; i++ )
 	{
-		varint_64_jump_n(&(s->pos),2*(s->ndims), s->twkb_end); /* Jump over bbox */
-		/*We only have bboxes at top level, so once found we forget about it*/
-		s->has_bboxes=LW_FALSE;
+		s->coords[i] = 0.0;
 	}
-	
-	lwtype_from_twkb_state(s, twkb_type);
-	
-		
-	/* Do the right thing */
+
+	/* Read the bounding box, is there is one */
+	if ( s->has_bbox )
+	{
+		/* Initialize */
+		has_bbox = s->has_bbox;
+		memset(&bbox, 0, sizeof(GBOX));
+		bbox.flags = gflags(s->has_z, s->has_m, 0);
+
+		/* X */
+		bbox.xmin = twkb_parse_state_double(s, s->factor);
+		bbox.xmax = bbox.xmin + twkb_parse_state_double(s, s->factor);
+		/* Y */
+		bbox.ymin = twkb_parse_state_double(s, s->factor);
+		bbox.ymax = bbox.ymin + twkb_parse_state_double(s, s->factor);
+		/* Z */
+		if ( s->has_z )
+		{
+			bbox.zmin = twkb_parse_state_double(s, s->factor_z);
+			bbox.zmax = bbox.zmin + twkb_parse_state_double(s, s->factor_z);
+		}
+		/* M */
+		if ( s->has_z )
+		{
+			bbox.mmin = twkb_parse_state_double(s, s->factor_m);
+			bbox.mmax = bbox.mmin + twkb_parse_state_double(s, s->factor_m);
+		}
+	}
+
+	/* Switch to code for the particular type we're dealing with */
 	switch( s->lwtype )
 	{
 		case POINTTYPE:
-			return (LWGEOM*)lwpoint_from_twkb_state(s);
+			geom = lwpoint_as_lwgeom(lwpoint_from_twkb_state(s));
 			break;
 		case LINETYPE:
-			return (LWGEOM*)lwline_from_twkb_state(s);
+			geom = lwline_as_lwgeom(lwline_from_twkb_state(s));
 			break;
 		case POLYGONTYPE:
-			return (LWGEOM*)lwpoly_from_twkb_state(s);
+			geom = lwpoly_as_lwgeom(lwpoly_from_twkb_state(s));
 			break;
 		case MULTIPOINTTYPE:
-			return (LWGEOM*)lwmultipoint_from_twkb_state(s);
+			geom = lwcollection_as_lwgeom(lwmultipoint_from_twkb_state(s));
 			break;
 		case MULTILINETYPE:
-			return (LWGEOM*)lwmultiline_from_twkb_state(s);
+			geom = lwcollection_as_lwgeom(lwmultiline_from_twkb_state(s));
 			break;
 		case MULTIPOLYGONTYPE:
-			return (LWGEOM*)lwmultipoly_from_twkb_state(s);
+			geom = lwcollection_as_lwgeom(lwmultipoly_from_twkb_state(s));
 			break;
 		case COLLECTIONTYPE:
-			return (LWGEOM*)lwcollection_from_twkb_state(s);
+			geom = lwcollection_as_lwgeom(lwcollection_from_twkb_state(s));
 			break;
-
 		/* Unknown type! */
 		default:
 			lwerror("Unsupported geometry type: %s [%d]", lwtype_name(s->lwtype), s->lwtype);
+			break;
 	}
 
-	/* Return value to keep compiler happy. */
-	return NULL;
-	
+	if ( has_bbox )
+	{
+		geom->bbox = gbox_clone(&bbox);
+	}
+
+	return geom;
 }
 
-/* TODO add check for SRID consistency */
 
 /**
 * WKB inputs *must* have a declared size, to prevent malformed WKB from reading
 * off the end of the memory segment (this stops a malevolent user from declaring
-* a one-ring polygon to have 10 rings, causing the WKB reader to walk off the 
+* a one-ring polygon to have 10 rings, causing the WKB reader to walk off the
 * end of the memory).
 *
-* Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD, 
+* Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD,
 * LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
 LWGEOM* lwgeom_from_twkb(uint8_t *twkb, size_t twkb_size, char check)
 {
-	LWDEBUG(2,"Entering lwgeom_from_twkb");
+	int64_t coords[TWKB_IN_MAXCOORDS] = {0, 0, 0, 0};
 	twkb_parse_state s;
-	
-	/* Initialize the state appropriately */
-	s.twkb = twkb;
-	s.twkb_end = twkb+twkb_size;
-	s.check = check;
-	s.ndims= 0;
-	int64_t coords[4] = {0,0,0,0};
-	s.coords=coords;
-	s.pos = twkb;
-	s.read_id=LW_TRUE; /*This is just to tell that IF the twkb uses id it should be read. The functions can switch this off for reading subgeometries for instance*/
+
+	LWDEBUG(2,"Entering lwgeom_from_twkb");
 	LWDEBUGF(4,"twkb_size: %d",(int) twkb_size);
-	/* Hand the check catch-all values */
-	if ( check & LW_PARSER_CHECK_NONE ) 
+
+	/* Zero out the state */
+	memset(&s, 0, sizeof(twkb_parse_state));
+
+	/* Initialize the state appropriately */
+	s.twkb = s.pos = twkb;
+	s.twkb_end = twkb + twkb_size;
+	s.check = check;
+	s.coords = coords;
+
+	/* Handle the check catch-all values */
+	if ( check & LW_PARSER_CHECK_NONE )
 		s.check = 0;
 	else
 		s.check = check;
-	/*read the first byte and put the result in twkb_state*/
-	magicbyte_from_twkb_state(&s);
+
+
+	/* Read the rest of the geometry */
 	return lwgeom_from_twkb_state(&s);
 }

@@ -765,3 +765,28 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 }
 
 
+srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision)
+{
+	projPJ pj1;
+	projPJ pj2;
+
+	srs_precision sp;
+	
+	sp.precision_xy = precision;
+	sp.precision_z = precision;
+	sp.precision_m = precision;
+	
+	if ( srid == SRID_UNKNOWN )
+		return sp;
+
+	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
+		return sp;
+
+	if ( pj_is_latlong(pj1) )
+	{
+		sp.precision_xy += 5;
+		return sp;
+	}
+	
+	return sp;
+}
