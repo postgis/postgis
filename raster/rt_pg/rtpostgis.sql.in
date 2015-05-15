@@ -7572,6 +7572,8 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
+-- Availability: 2.0.0
+-- Changed: 2.2.0
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
 	RETURNS numeric[] AS
 	$$ SELECT array_agg(round(nodatavalue::numeric, 10))::numeric[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
