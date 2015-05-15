@@ -2024,10 +2024,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
-	int n = 0;
 	LWCOLLECTION *col;
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	n = lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
+	lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
 	return col;
 }
 
