@@ -310,26 +310,21 @@ distance_ellipse_calculation(double lat1, double long1,
 	return sphere->b * (A * (sigma - dsigma));
 }
 
-
 /*
  * Find the "length of a geometry"
  * length2d_spheroid(point, sphere) = 0
  * length2d_spheroid(line, sphere) = length of line
  * length2d_spheroid(polygon, sphere) = 0
- *	-- could make sense to return sum(ring perimeter)
+ *     -- could make sense to return sum(ring perimeter)
  * uses ellipsoidal math to find the distance
  * x's are longitude, and y's are latitude - both in decimal degrees
  */
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_ellipsoid);
 Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	double dist = lwgeom_length_spheroid(lwgeom, sphere);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_FLOAT8(dist);
+  Datum geom2d = DirectFunctionCall1(LWGEOM_force_2d, PG_GETARG_DATUM(0));
+  PG_RETURN_DATUM(DirectFunctionCall2(LWGEOM_length_ellipsoid_linestring,
+    geom2d, PG_GETARG_DATUM(1)));
 }
 
 

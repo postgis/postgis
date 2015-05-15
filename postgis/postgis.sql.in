@@ -1230,12 +1230,21 @@ CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
   $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Length2DSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.2.0
+CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8 AS
+  $$ SELECT _postgis_deprecate('ST_Length2D_Spheroid', 'ST_Length2DSpheroid', '2.2.0');
+    SELECT ST_Length2DSpheroid($1,$2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DPerimeter(geometry)
