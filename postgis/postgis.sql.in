@@ -50,7 +50,7 @@ DECLARE
   curver_text text;
 BEGIN
   --
-  -- Raises a NOTICE if it was deprecated in this version,
+  -- Raises a DEBUG if it was deprecated in this version,
   -- a WARNING if in a previous version (only up to minor version checked)
   --
     curver_text := POSTGIS_LIB_VERSION;
@@ -3007,12 +3007,16 @@ CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
+-- Deprecation in 2.0.0 replaced by ST_LocateBetween
+-- TODO: switch to use of _postgis_deprecate() in 2.3.0 (or drop)
 CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
+-- Deprecation in 2.0.0 replaced by ST_LocateAlong
+-- TODO: switch to use of _postgis_deprecate() in 2.3.0 (or drop)
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT ST_locate_between_measures($1, $2, $2) $$

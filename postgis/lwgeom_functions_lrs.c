@@ -702,7 +702,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	int hasm = gserialized_has_m(gin);
 	int type;
 
-	elog(NOTICE,"ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.");	
+	elog(WARNING,"ST_Locate_Between_Measures and ST_Locate_Along_Measure were deprecated in 2.2.0. Please use ST_LocateAlong and ST_LocateBetween");
 
 	if ( end_measure < start_measure )
 	{
