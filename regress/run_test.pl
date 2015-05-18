@@ -78,9 +78,9 @@ if ( $OPT_UPGRADE_PATH )
   $OPT_UPGRADE = 1; # implied 
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
-    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+    || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
   $OPT_UPGRADE_TO = $path[1]
-    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+    || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
   print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
