@@ -232,16 +232,83 @@ if ( ! $libver )
 }
 
 
+sub create_upgrade_test_objects
+{
+  # TODO: allow passing the "upgrade-init" script via commandline
+
+  my $query = "create table upgrade_test(g1 geometry, g2 geography";
+  $query .= ", r raster" if ( $OPT_WITH_RASTER );
+  $query .= ")";
+  my $ret = sql($query);
+  unless ( $ret =~ /^CREATE/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong creating upgrade_test table: $ret.\n";
+    exit(1);
+  }
+
+  if ( $OPT_WITH_RASTER )
+  {
+    $query = "insert into upgrade_test(r) ";
+    $query .= "select ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
+    $query .= "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
+    $ret = sql($query);
+    unless ( $ret =~ /^t$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong adding raster constraints to upgrade_test: " . $ret . "\n";
+      exit(1);
+    }
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    $query = "select topology.createTopology('upgrade_test');";
+    $ret = sql($query);
+    unless ( $ret =~ /^[1-9][0-9]*$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong adding upgrade_test topology: " . $ret . "\n";
+      exit(1);
+    }
+  }
+}
+
+sub drop_upgrade_test_objects
+{
+  # TODO: allow passing the "upgrade-cleanup" script via commandline
+
+  my $ret = sql("drop table upgrade_test;");
+  unless ( $ret =~ /^DROP/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong dropping spatial tables: $ret.\n";
+    exit(1);
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    my $query = "SELECT topology.DropTopology('upgrade_test');";
+    $ret = sql($query);
+    unless ( $ret =~ /^Topology 'upgrade_test' dropped$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong dropping upgrade_test topology: " . $ret . "\n";
+      exit(1);
+    }
+  }
+}
+
+
 if ( $OPT_UPGRADE )
 {
-	if ( $OPT_EXTENSIONS )
-	{	
-		upgrade_spatial_extensions();
-	}
-	else
-	{
+  create_upgrade_test_objects();
+
+  if ( $OPT_EXTENSIONS )
+  {
+    upgrade_spatial_extensions();
+  }
+  else
+  {
 	  upgrade_spatial();
   }
+
+  drop_upgrade_test_objects();
 
   # Update libver
   $libver = sql("select postgis_lib_version()");
