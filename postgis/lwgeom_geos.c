@@ -283,7 +283,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Quick scan for nulls */
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
 	iterator = array_create_iterator(array, 0);
+#endif
 	while( array_iterate(iterator, &value, &isnull) )
 	{
 		/* Skip null array items */
@@ -316,7 +320,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** We need to convert the array of GSERIALIZED into a GEOS collection.
 	** First make an array of GEOS geometries.
 	*/
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
 	iterator = array_create_iterator(array, 0);
+#endif
 	while( array_iterate(iterator, &value, &isnull) )
 	{
 		GSERIALIZED *gser_in;
@@ -464,7 +472,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** If they are, we can use UnionCascaded for faster results.
 	*/
 	count = 0;
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
 	iterator = array_create_iterator(array, 0);
+#endif
 	while( array_iterate(iterator, &value, &isnull) )
 	{
 		GSERIALIZED *pggeom;
@@ -523,7 +535,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** We need to convert the array of GSERIALIZED into a GEOS MultiPolygon.
 		** First make an array of GEOS Polygons.
 		*/
+#if POSTGIS_PGSQL_VERSION >= 95	
+		iterator = array_create_iterator(array, 0, NULL);
+#else
 		iterator = array_create_iterator(array, 0);
+#endif
 		while( array_iterate(iterator, &value, &isnull) )
 		{
 			GEOSGeometry* g;
@@ -620,7 +636,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** Heterogeneous result, let's slog through this one union at a time.
 		*/
 
+#if POSTGIS_PGSQL_VERSION >= 95	
+		iterator = array_create_iterator(array, 0, NULL);
+#else
 		iterator = array_create_iterator(array, 0);
+#endif
 		while( array_iterate(iterator, &value, &isnull) )
 		{
 			GSERIALIZED *geom;

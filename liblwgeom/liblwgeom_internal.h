@@ -35,7 +35,7 @@
 /* Define to enable pre-version 2.2 geodesic functions for geography types
    (e.g. Vincenty for ST_Distance); otherwise use GeographicLib */
 #define USE_PRE22GEODESIC
-#undef USE_PRE22GEODESIC
+/* #undef USE_PRE22GEODESIC */
 
 /**
 * Floating point comparators.
