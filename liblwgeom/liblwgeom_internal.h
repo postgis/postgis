@@ -32,14 +32,11 @@
 
 #include "liblwgeom.h"
 
-/* Define to enable pre-version 2.2 geodesic functions for geography types
-   (e.g. Vincenty for ST_Distance); otherwise use GeographicLib */
-/* #define USE_PRE22GEODESIC */
-/* #undef USE_PRE22GEODESIC */
-
 #if defined(PJ_VERSION) && PJ_VERSION >= 490
+/* Enable new geodesic functions */
 #define PROJ_GEODESIC 1
 #else
+/* Use the old (pre-2.2) geodesic functions */
 #define PROJ_GEODESIC 0
 #endif
 
