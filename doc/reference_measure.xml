@@ -643,8 +643,8 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		<refnamediv>
 		  <refname>ST_Area</refname>
 
-		  <refpurpose>Returns the area of the surface if it is a polygon or
-				multi-polygon. For "geometry" type area is in SRID units.  For "geography" area is in square meters.</refpurpose>
+		  <refpurpose>Returns the area of the surface if it is a Polygon or
+				MultiPolygon. For geometry, a 2D Cartesian area is determined with units specified by the SRID.  For geography, area is determined on a curved surface with units in square meters.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -663,12 +663,13 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the area of the geometry if it is a polygon or
-				multi-polygon. Return the area measurement of an ST_Surface or
-		  ST_MultiSurface value. For geometry Area is in the units of the srid.  For geography area is in square meters  and defaults to measuring about the spheroid of the geography (currently only WGS84).
-		  To measure around the faster but less accurate sphere -- ST_Area(geog,false).
+			<para>Returns the area of the geometry if it is a Polygon or
+				MultiPolygon. Return the area measurement of an ST_Surface or
+		  ST_MultiSurface value. For geometry, a 2D Cartesian area is determined with units specified by the SRID.  For geography, by default area is determined on a spheroid with units in square meters.
+		  To measure around the faster but less accurate sphere, use ST_Area(geog,false).
 		  </para>
 		  	<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
+			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
 		 	<para>&sfs_compliant;</para>
 		 	<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
 		 	<para>&P_support;</para>
@@ -680,8 +681,8 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		  <refsection>
 			<title>Examples</title>
 			<para>Return area in square feet for a plot of Massachusetts land and multiply by conversion to get square meters.
-				Note this is in square feet because 2249 is
-				Mass State Plane Feet </para>
+				Note this is in square feet because EPSG:2249 is
+				Massachusetts State Plane Feet </para>
 			<programlisting>
 SELECT ST_Area(the_geom) As sqft, ST_Area(the_geom)*POWER(0.3048,2) As sqm
 		FROM (SELECT
@@ -691,9 +692,9 @@ SELECT ST_Area(the_geom) As sqft, ST_Area(the_geom)*POWER(0.3048,2) As sqm
 ---------+-------------
  928.625 | 86.27208552
 </programlisting>
-<para>Return area square feet and transform to Massachusetts state plane meters (26986) to get square meters.
+<para>Return area square feet and transform to Massachusetts state plane meters (EPSG:26986) to get square meters.
 				Note this is in square feet because 2249 is
-				Mass State Plane Feet and transformed area is in square meters since 26986 is state plane mass meters </para>
+				Massachusetts State Plane Feet and transformed area is in square meters since EPSG:26986 is state plane Massachusetts meters </para>
 <programlisting>
 
 SELECT ST_Area(the_geom) As sqft, ST_Area(ST_Transform(the_geom,26986)) As sqm
@@ -705,7 +706,7 @@ SELECT ST_Area(the_geom) As sqft, ST_Area(ST_Transform(the_geom,26986)) As sqm
  928.625 | 86.2724304199219
 			</programlisting>
 
-<para>Return area square feet and square meters using Geography data type.  Note that we transform to our geometry to geography
+<para>Return area square feet and square meters using geography data type.  Note that we transform to our geometry to geography
 	(before you can do that make sure your geometry is in WGS 84 long lat 4326).  Geography always measures in meters. 
 	This is just for demonstration to compare.  Normally your table will be stored in geography data type already.</para>
 <programlisting>
@@ -720,9 +721,9 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			)
 		)
 	) As foo(the_geog);
- sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
------------------+------------------+------------------
-928.684405217197 | 927.186481558724 | 86.2776044452694
+  sqft_spheroid   |   sqft_sphere    |   sqm_spheroid
+------------------+------------------+------------------
+ 928.684403538925 | 927.049336105925 | 86.2776042893529
 
  --if your data is in geography already
  SELECT ST_Area(the_geog)/POWER(0.3048,2) As  sqft, ST_Area(the_geog) As sqm
@@ -758,13 +759,14 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			<title>Description</title>
 
 			<para>Returns the azimuth in radians of the segment defined by the given
-			point-geometries, or NULL if the two points are coincident. The azimuth is north-based and is measured clockwise: North = 0; East = PI/2; South = PI; West = 3PI/2.</para>
-
-			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
-				and a point. </para>
+			point geometries, or NULL if the two points are coincident. The azimuth is angle is referenced from north, and is positive clockwise: North = 0; East = &#x03C0;/2; South = &#x03C0;; West = 3&#x03C0;/2.</para>
+			<para>For the geography type, the forward azimuth is solved as part of the inverse geodesic problem.</para>
+			<para>The azimuth is mathematical concept defined as the angle between a reference plane and a point, with angular units in radians.
+			Units can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para>
 
 			<para>Availability: 1.1.0</para>
 			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
+			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
 			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
 				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
 		</refsection>
@@ -773,13 +775,8 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		<title>Examples</title>
 		<para>Geometry Azimuth in degrees </para>
 <programlisting>
-SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degA_B,
-	ST_Azimuth(ST_Point(75,100), ST_Point(25,45))/(2*pi())*360 As degB_A;
-	
--- NOTE easier to remember syntax using PostgreSQL built-in degrees function --
--- Both yield same answer --
-SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degA_B,
-	degrees( ST_Azimuth(ST_Point(75,100), ST_Point(25,45)) ) As degB_A;
+SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
+	    degrees(ST_Azimuth(ST_Point(75, 100), ST_Point(25, 45))) AS degB_A;
 
       dega_b       |     degb_a
 ------------------+------------------
@@ -1933,8 +1930,8 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refnamediv>
 		<refname>ST_Distance</refname>
 
-		<refpurpose>For geometry type Returns the 2-dimensional cartesian minimum distance (based on spatial ref) between two geometries in
-		projected units.  For geography type defaults to return spheroidal minimum distance between two geographies in meters.</refpurpose>
+		<refpurpose>For geometry type Returns the 2D Cartesian distance between two geometries in
+		projected units (based on spatial ref).  For geography type defaults to return minimum geodesic distance between two geographies in meters.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -1975,18 +1972,19 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 	  <refsection>
 		<title>Description</title>
 
-		<para>For geometry type returns the 2-dimensional minimum cartesian distance between two geometries in
-		projected units (spatial ref units). For geography type defaults to return the minimum distance around WGS 84 spheroid between two geographies in meters.  Pass in
-		false to return answer in sphere instead of spheroid.</para>
+		<para>For geometry type returns the minimum 2D Cartesian distance between two geometries in
+		projected units (spatial ref units). For geography type defaults to return the minimum geodesic distance between two geographies in meters.  If use_spheroid is
+		false, a faster sphere calculation is used instead of a spheroid.</para>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
 		<para>&curve_support;</para>
-                <para>&sfcgal_enhanced;</para>
+		<para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
-		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
 		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
+		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
 	  </refsection>
 
 	  <refsection>
@@ -2432,7 +2430,7 @@ FROM
 		having the same SRID.</para>
 		
 		<para>For geography units are in meters and measurement is
-		defaulted to use_spheroid=true (measure around WGS 84 spheroid), for faster check, use_spheroid=false to measure along sphere.
+		defaulted to use_spheroid=true, for faster check, use_spheroid=false to measure along sphere.
 		</para>
 		<note>
 		  <para>This function call will automatically include a bounding box
@@ -2698,7 +2696,7 @@ t
 		<refnamediv>
 		  <refname>ST_Length</refname>
 
-		  <refpurpose>Returns the 2d length of the geometry if it is a linestring or multilinestring. geometry are in units of spatial reference and geography are in meters (default spheroid)</refpurpose>
+		  <refpurpose>Returns the 2D length of the geometry if it is a LineString or MultiLineString. geometry are in units of spatial reference and geography are in meters (default spheroid)</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -2716,9 +2714,12 @@ t
 		<refsection>
 			<title>Description</title>
 
-			<para>For geometry: Returns the cartesian 2D length of the geometry if it is a linestring, multilinestring, ST_Curve, ST_MultiCurve.  0 is returned for
-				areal geometries.  For areal geometries use ST_Perimeter. Geometry: Measurements are in the units of the
-				spatial reference system of the geometry. Geography: Units are in meters and also acts as a Perimeter function for areal geogs.</para>
+			<para>For geometry: Returns the 2D Cartesian length of the geometry if it is a LineString, MultiLineString, ST_Curve, ST_MultiCurve.  0 is returned for
+				areal geometries.  For areal geometries use <xref linkend="ST_Perimeter" />. For geometry types, units for length measures are specified by the
+				spatial reference system of the geometry.</para>
+			<para>For geography types, the calculations are performed using the inverse geodesic problem, where length units are in meters.
+				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
+				If <varname>use_spheroid=false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
 
 			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
 			<warning><para>Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/POLYGON of type geography would give you the perimeter of the POLYGON/MULTIPOLYGON.  In 2.0.0 
@@ -2727,13 +2728,13 @@ t
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
-                        <para>&sfcgal_enhanced;</para>
+			<para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>
 			<title>Geometry Examples</title>
-			<para>Return length in feet for line string. Note this is in feet because 2249 is
-				Mass State Plane Feet</para>
+			<para>Return length in feet for line string. Note this is in feet because EPSG:2249 is
+				Massachusetts State Plane Feet</para>
 			<programlisting>
 SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416)',2249));
@@ -2742,7 +2743,7 @@ st_length
  122.630744000095
 
 
---Transforming WGS 84 linestring to Massachusetts state plane meters
+--Transforming WGS 84 LineString to Massachusetts state plane meters
 SELECT ST_Length(
 	ST_Transform(
 		ST_GeomFromEWKT('SRID=4326;LINESTRING(-72.1260 42.45, -72.1240 42.45666, -72.123 42.1546)'),
@@ -2765,8 +2766,7 @@ FROM (SELECT ST_GeographyFromText(
  As foo;
  length_spheroid  |  length_sphere
 ------------------+------------------
- 34310.5703627305 | 34346.2060960742
-(1 row)
+ 34310.5703627288 | 34346.2060960742
 			</programlisting>
 		  </refsection>
 		<refsection>
@@ -2838,8 +2838,8 @@ FROM (SELECT ST_GeographyFromText(
 	  <refsection>
 		<title>Examples</title>
 
-		<para>Return length in feet for a 3D cable. Note this is in feet because 2249 is
-				Mass State Plane Feet</para>
+		<para>Return length in feet for a 3D cable. Note this is in feet because EPSG:2249 is
+				Massachusetts State Plane Feet</para>
 		<programlisting>
 SELECT ST_3DLength(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 2967450 1,743265 2967450 3,
 743265.625 2967416 3,743238 2967416 3)',2249));
@@ -2940,7 +2940,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 	<refentry id="ST_Length2D_Spheroid">
 	  <refnamediv>
-		<refname>ST_Length2DSpheroid</refname>
+		<refname>ST_Length2D_Spheroid</refname>
 
 		<refpurpose>Calculates the 2D length of a linestring/multilinestring on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
@@ -2950,7 +2950,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>float <function>ST_Length2DSpheroid</function></funcdef>
+			<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
 		  </funcprototype>
@@ -2974,22 +2974,19 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
 
-		<para>Availability: 1.2.2</para>
-		<para>Changed: 2.2.0 In prior versions this used to be called ST_Length2D_Spheroid</para>
-
 	  </refsection>
 
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Length2DSpheroid( geometry_column,
+		<programlisting>SELECT ST_Length2D_Spheroid( geometry_column,
 			  'SPHEROID["GRS_1980",6378137,298.257222101]' )
 			  FROM geometry_table;
 
-SELECT ST_Length2DSpheroid( the_geom, sph_m ) As tot_len,
-ST_Length2DSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length2DSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
 	(-71.05957 42.3589 , -71.061 43))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
@@ -2998,9 +2995,9 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
  85204.5207562955 | 13986.8725229309 | 71217.6482333646
 
  --3D Observe same answer
-SELECT ST_Length2DSpheroid( the_geom, sph_m ) As tot_len,
-ST_Length2DSpheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
-ST_Length2DSpheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1,
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
 			  FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
 	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom,
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
@@ -3345,7 +3342,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 		  <refname>ST_Perimeter</refname>
 
 		  <refpurpose>Return the length measurement of the boundary of an ST_Surface
-		  or ST_MultiSurface geometry or geography. (Polygon, Multipolygon).  geometry measurement is in units of spatial reference and geography is in meters.</refpurpose>
+		  or ST_MultiSurface geometry or geography. (Polygon, MultiPolygon).  geometry measurement is in units of spatial reference and geography is in meters.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -3364,10 +3361,12 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, ST_MultiSurface (Polygon, Multipolygon).  0 is returned for
-				non-areal geometries.  For linestrings use ST_Length.  Measurements for geometry are in the units of the
-				spatial reference system of the geometry. Measurements for geography are in meters. If <varname>use_spheroid</varname> is set to false, then will
-				model earth as a sphere instead of a spheroid.</para>
+			<para>Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, ST_MultiSurface (Polygon, MultiPolygon).  0 is returned for
+				non-areal geometries.  For linear geometries use <xref linkend="ST_Length" />.  For geometry types, units for perimeter measures are specified by the
+				spatial reference system of the geometry.</para>
+			<para>For geography types, the calculations are performed using the inverse geodesic problem, where perimeter units are in meters.
+				If PostGIS is compiled with PROJ version 4.8.0 or later, the spheroid is specified by the SRID, otherwise it is exclusive to WGS84.
+				If <varname>use_spheroid=false</varname>, then calculations will approximate a sphere instead of a spheroid.</para>
 
 			<para>Currently this is an alias for ST_Perimeter2D, but this may change to support higher dimensions.</para>
 
@@ -3378,8 +3377,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 
 		<refsection>
 			<title>Examples: Geometry</title>
-			<para>Return perimeter in feet for polygon and multipolygon. Note this is in feet because 2249 is
-				Mass State Plane Feet</para>
+			<para>Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet because EPSG:2249 is
+				Massachusetts State Plane Feet</para>
 			<programlisting>
 SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,743265 2967450,
 743265.625 2967416,743238 2967416))', 2249));
@@ -3407,7 +3406,7 @@ st_perimeter
 		  </refsection>
 		  <refsection>
 			<title>Examples: Geography</title>
-			<para>Return perimeter in meters and feet for polygon and multipolygon. Note this is geography (WGS 84 long lat)</para>
+			<para>Return perimeter in meters and feet for Polygon and MultiPolygon. Note this is geography (WGS 84 long lat)</para>
 			<programlisting>
 SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As per_ft 
 FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
@@ -3418,7 +3417,7 @@ FROM ST_GeogFromText('POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766
 37.3790462565251 | 122.634666195949
 
 
--- Multipolygon example --
+-- MultiPolygon example --
 SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog,false) As per_sphere_meters,  ST_Perimeter(geog)/0.3048 As per_ft 
 FROM ST_GeogFromText('MULTIPOLYGON(((-71.1044543107478 42.340674480411,-71.1044542869917 42.3406744369506,
 -71.1044553562977 42.340673886454,-71.1044543107478 42.340674480411)),
@@ -3617,9 +3616,8 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) measured in radians and distance measured in meters.</para>
-			<para>Distance, azimuth and projection are all aspects of the same operation, describing (or in the case of projection, constructing) the relationship between two points on the world.</para>
-			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (<varname>pi/2</varname>), south is azimuth 180 (<varname>pi</varname>), west is azimuth 270 (<varname>pi*1.5</varname>).</para>
+			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) measured in radians and distance measured in meters. This is also called a direct geodesic problem.</para>
+			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (&#x03C0;/2), south is azimuth 180 (&#x03C0;), west is azimuth 270 (3&#x03C0;/2).</para>
 			<para>The distance is given in meters.</para>
 			
 			<para>Availability: 2.0.0</para>
@@ -3631,19 +3629,20 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 
 			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 			  st_astext
-------------------------------------------
- POINT(0.63523102912532 0.63947233472882)
+                 st_astext
+--------------------------------------------
+ POINT(0.635231029125537 0.639472334729198)
 (1 row)
 	</programlisting>
 		  </refsection>
 		  
 		  <refsection>
-			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 (45 degrees) </title>
+			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 radians (45 degrees) </title>
 
 			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, pi()/4));
-			  st_astext
-------------------------------------------
- POINT(0.63523102912532 0.63947233472882)
+                 st_astext
+--------------------------------------------
+ POINT(0.635231029125537 0.639472334729198)
 (1 row)
 	</programlisting>
 		  </refsection>
@@ -3855,7 +3854,7 @@ SELECT mat.name, pat.name, ST_RelateMatch(mat.val, pat.val) As satisfied
 		If g1 and g2 are intersecting with more than one point the function will return a line with start
 		and end in the same point but it can be any of the intersecting points.
 		The line returned will always start in g1 and end in g2.
-		The length of the line this function returns will always be the same as st_distance returns for g1 and g2.	
+		The length of the line this function returns will always be the same as ST_Distance returns for g1 and g2.
 		</para>
 
 		<para>Availability: 1.5.0</para>

@@ -732,9 +732,9 @@ test_lw_arc_length(void)
 
 	/* Arc to right of the unit semicircle */
 	d = lw_arc_length(&A1, &A2, &A3);
-	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI/2, 0.000001);
+	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI_2, 0.000001);
 	d = lw_arc_length(&A3, &A2, &A1);
-	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI/2, 0.000001);	
+	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI_2, 0.000001);
 }
 
 static void
@@ -764,7 +764,7 @@ test_lw_dist2d_pt_ptarrayarc(void)
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
 
 	/* Point 45 degrees off arc, 2 radii from center */
-	P.y = P.x = 2 * cos(M_PI/4);
+	P.y = P.x = 2 * cos(M_PI_4);
 	lw_dist2d_distpts_init(&dl, DIST_MIN);
 	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
 	CU_ASSERT_EQUAL( rv, LW_SUCCESS );

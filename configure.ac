@@ -377,7 +377,7 @@ elif test "x$PG_CONFIG" = "x"; then
 
 	dnl If we couldn't find pg_config, display an error
 	if test "x$PG_CONFIG" = "x"; then
-		AC_MSG_ERROR([could not find pg_config within the current path. You may need to try re-running configure with a --with-pgconfig parameter.])
+		AC_MSG_ERROR([could not find pg_config within the current path. You may need to try re-running configure with a --with-pg_config parameter.])
 	fi
 else
 	dnl PG_CONFIG was specified; display a message to the user

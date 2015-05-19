@@ -32,15 +32,13 @@
 
 #include "liblwgeom.h"
 
+/* Define to enable pre-version 2.2 geodesic functions for geography types
+   (e.g. Vincenty for ST_Distance); otherwise use GeographicLib */
+#define USE_PRE22GEODESIC
+#undef USE_PRE22GEODESIC
 
 /**
-* PI
-*/
-#define PI 3.1415926535897932384626433832795
-
-
-/**
-* Floating point comparitors.
+* Floating point comparators.
 */
 #define FP_TOLERANCE 1e-12
 #define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)

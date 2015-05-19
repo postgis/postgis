@@ -19,8 +19,6 @@ PostGIS 2.2.0
            ST_Length_Spheroid renamed to ST_LengthSpheroid,
            ST_Distance_Spheroid renamed to ST_DistanceSpheroid,
            ST_Distance_Sphere renamed to ST_DistanceSphere,
-           ST_Length2D_Spheroid renamed to ST_Length2DSpheroid,
-           ST_Point_Inside_Circle renamed to ST_PointInsideCircle,
            ST_3DLength_Spheroid deprecated (use ST_LengthSpheroid)
   - #2769, ST_Mem_Size renamed to ST_MemSize
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...)
@@ -30,6 +28,7 @@ PostGIS 2.2.0
 
   - Canonical output for index key types
   - ST_SwapOrdinates (Sandro Santilli / Boundless)
+  - #2918, Use GeographicLib functions for geodetics (Mike Toews)
   - #3074, ST_Subdivide (Paul Ramsey / CartoDB)
   - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
            n-D distance operators (Sandro Santilli / Boundless)

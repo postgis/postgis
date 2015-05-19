@@ -56,8 +56,8 @@ typedef struct
 /**
 * Conversion functions
 */
-#define deg2rad(d) (PI * (d) / 180.0)
-#define rad2deg(r) (180.0 * (r) / PI)
+#define deg2rad(d) (M_PI * (d) / 180.0)
+#define rad2deg(r) (180.0 * (r) / M_PI)
 
 /**
 * Ape a java function
@@ -143,4 +143,5 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 * Put an index pointer onto LWGEOM itself, and cache the indexed LWGEOM instead of a bare tree
 * only primitive objects should get a tree
 */
+
 

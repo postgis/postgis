@@ -50,7 +50,7 @@ DECLARE
   curver_text text;
 BEGIN
   --
-  -- Raises a DEBUG if it was deprecated in this version,
+  -- Raises a NOTICE if it was deprecated in this version,
   -- a WARNING if in a previous version (only up to minor version checked)
   --
     curver_text := POSTGIS_LIB_VERSION;
