@@ -32,14 +32,6 @@
 
 #include "liblwgeom.h"
 
-#if defined(PJ_VERSION) && PJ_VERSION >= 490
-/* Enable new geodesic functions */
-#define PROJ_GEODESIC 1
-#else
-/* Use the old (pre-2.2) geodesic functions */
-#define PROJ_GEODESIC 0
-#endif
-
 /**
 * Floating point comparators.
 */
