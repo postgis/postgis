@@ -105,15 +105,10 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 		        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 		         errmsg("could not determine input data type")));
 
-	if (fcinfo->context && IsA(fcinfo->context, AggState))
-		aggcontext = ((AggState *) fcinfo->context)->aggcontext;
-	else if (fcinfo->context && IsA(fcinfo->context, WindowAggState))
-		aggcontext = ((WindowAggState *) fcinfo->context)->aggcontext;
-
-	else
+	if ( ! AggCheckCallContext(fcinfo, &aggcontext) )
 	{
 		/* cannot be called directly because of dummy-type argument */
-		elog(ERROR, "array_agg_transfn called in non-aggregate context");
+		elog(ERROR, "%s called in non-aggregate context", __func__);
 		aggcontext = NULL;  /* keep compiler quiet */
 	}
 
