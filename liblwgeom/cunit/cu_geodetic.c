@@ -1373,8 +1373,10 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.106982993974659, 0.1);
 	/* spheroid: Planimeter -E -p 20 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
+#ifndef USE_PRE22GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.946891319597874, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square */
@@ -1384,8 +1386,10 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
+#ifndef USE_PRE22GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square *near* the antimeridian */
@@ -1395,8 +1399,10 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 -r --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
+#ifndef USE_PRE22GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
+#endif
 	lwgeom_free(lwg);
 
 	/* One-degree square *across* the antimeridian */
@@ -1406,8 +1412,10 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
+#ifndef USE_PRE22GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
+#endif
 	lwgeom_free(lwg);
 }
 
