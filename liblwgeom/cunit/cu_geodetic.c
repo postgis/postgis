@@ -1277,7 +1277,7 @@ static void test_spheroid_distance(void)
 {
 	GEOGRAPHIC_POINT g1, g2;
 	double d;
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	double epsilon; /* irregular */
 #else
 	const double epsilon = 1e-8; /* at least 10 nm precision */
@@ -1292,7 +1292,7 @@ static void test_spheroid_distance(void)
 	point_set(0.0, 0.0, &g1);
 	point_set(0.0, 1.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	epsilon = 1e-6;
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 110574.3885577987957342, epsilon);
@@ -1302,7 +1302,7 @@ static void test_spheroid_distance(void)
 	point_set(-10.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	epsilon = 1e-3;
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 1113194.9079327357264771, epsilon);
@@ -1312,7 +1312,7 @@ static void test_spheroid_distance(void)
 	point_set(-1.0, 0.0, &g1);
 	point_set(0.0, 0.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	epsilon = 1e-4;
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 111319.4907932735726477, epsilon);
@@ -1322,7 +1322,7 @@ static void test_spheroid_distance(void)
 	point_set(-180.0, 0.0, &g1);
 	point_set(0.0, 1.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	epsilon = 1e-5;
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 19893357.0700676468277450, epsilon);
@@ -1332,7 +1332,7 @@ static void test_spheroid_distance(void)
 	point_set(-180.0, 0.0, &g1);
 	point_set(0.0, 90.0, &g2);
 	d = spheroid_distance(&g1, &g2, &s);
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 	epsilon = 1e-6;
 #endif
 	CU_ASSERT_DOUBLE_EQUAL(d, 10001965.7293127228117396, epsilon);
@@ -1373,7 +1373,8 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.106982993974659, 0.1);
 	/* spheroid: Planimeter -E -p 20 -r --input-string "3 -2;4 -2;4 -1;3 -1" */
-#ifndef USE_PRE22GEODESIC
+#if PROJ_GEODESIC
+	// printf("XXXXX %d\n", PJ_VERSION);
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286884908.946891319597874, 0.1);
 #endif
@@ -1386,7 +1387,7 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 --input-string "2 8.5;1 8.5;1 9.5;2 9.5" */
-#ifndef USE_PRE22GEODESIC
+#if PROJ_GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 #endif
@@ -1399,7 +1400,7 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 -r --input-string "2 179.5;1 179.5;1 178.5;2 178.5" */
-#ifndef USE_PRE22GEODESIC
+#if PROJ_GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 #endif
@@ -1412,7 +1413,7 @@ static void test_spheroid_area(void)
 	a1 = lwgeom_area_sphere(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.368023059138681, 0.1);
 	/* spheroid: Planimeter -E -p 20 --input-string "2 179.5;1 179.5;1 -179.5;2 -179.5" */
-#ifndef USE_PRE22GEODESIC
+#if PROJ_GEODESIC
 	a2 = lwgeom_area_spheroid(lwg, &s);
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12305128751.042900673161556, 0.1);
 #endif

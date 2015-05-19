@@ -15,7 +15,9 @@
 #include "lwgeom_log.h"
 
 /* GeographicLib */
-#include "geodesic.h"
+#if PROJ_GEODESIC
+#include <geodesic.h>
+#endif
 
 /**
 * Initialize spheroid object based on major and minor axis
@@ -29,7 +31,7 @@ void spheroid_init(SPHEROID *s, double a, double b)
 	s->radius = (2.0 * a + b ) / 3.0;
 }
 
-#ifdef USE_PRE22GEODESIC
+#if ! PROJ_GEODESIC
 static double spheroid_mu2(double alpha, const SPHEROID *s)
 {
 	double b2 = POW2(s->b);
@@ -45,10 +47,10 @@ static double spheroid_big_b(double u2)
 {
 	return (u2 / 1024.0) * (256.0 + u2 * (-128.0 + u2 * (74.0 - 47.0 * u2)));
 }
-#endif /* def USE_PRE22GEODESIC */
+#endif /* ! PROJ_GEODESIC */
 
 
-#ifndef USE_PRE22GEODESIC
+#if PROJ_GEODESIC
 
 /**
 * Computes the shortest distance along the surface of the spheroid
@@ -150,7 +152,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 }
 
 /* Above use GeographicLib */
-#else /* ndef USE_PRE22GEODESIC */
+#else /* ! PROJ_GEODESIC */
 /* Below use pre-version 2.2 geodesic functions */
 
 /**
@@ -614,7 +616,7 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	}
 	return fabs(area);
 }
-#endif /* else USE_PRE22GEODESIC */
+#endif /* else ! PROJ_GEODESIC */
 
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
