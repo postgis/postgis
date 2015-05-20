@@ -597,7 +597,7 @@ sub sql
 {
 	my $sql = shift;
 	my $result = `psql -tXA -d $DB -c "$sql"`;
-	$result =~ s/\n$//;
+	chomp $result;
 	$result;
 }
 
