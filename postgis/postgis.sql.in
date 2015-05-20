@@ -555,16 +555,23 @@ CREATE OPERATOR ~= (
 	RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- As of 2.2.0 this no longer returns the centroid/centroid distance, it 
+-- returns the actual distance, to support the 'recheck' functionality
+-- enabled in the KNN operator
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry) 
 	RETURNS float8 
-	AS 'MODULE_PATHNAME' ,'gserialized_distance_centroid_2d'
+#if POSTGIS_PGSQL_VERSION >= 95
+  AS 'MODULE_PATHNAME' ,'distance'
+#else
+  AS 'MODULE_PATHNAME' ,'gserialized_distance_centroid_2d'
+#endif
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry) 
 	RETURNS float8 
-	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
+  AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0

@@ -1064,13 +1064,12 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  </refsection>
 		</refentry>
 		
-		<refentry id="geometry_distance_centroid">
+		<refentry id="geometry_distance_knn">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
 			<refpurpose>
-Returns the 2D distance between the centroids of A and B bounding
-boxes.
+Returns the 2D distance between A and B. Used in the "ORDER BY" clause to provide index-assisted nearest-neighbor result sets.
 			</refpurpose>
 		  </refnamediv>
 
@@ -1098,18 +1097,15 @@ boxes.
 			<title>Description</title>
 
 			<para>
-The <varname>&lt;-&gt;</varname> operator returns the 2D distance between the
-centroids of the bounding boxes of two geometries.  Useful for doing
-nearest neighbor <emphasis role="strong">approximate</emphasis> distance
-ordering.</para>
+The <varname>&lt;-&gt;</varname> operator returns the 2D distance between two geometries.  Useful for doing
+nearest neighbor distance ordering.</para>
 
-			<note><para>This operand will make use of 2D GiST indexes that may be available on the
-			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
-			  is in the ORDER BY clause.</para></note>
+			<note><para>This operand will make use of 2D GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 			<para>Refer to <ulink url="http://workshops.opengeo.org/postgis-intro/knn.html">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live example.</para>
 
-			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para>Availability: 2.2.0 -- True KNN ("K nearest neighbor") only available for PostgreSQL 9.5+</para>
+			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
 			 	
 		
 		  </refsection>
@@ -1144,23 +1140,23 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
         d         | edabbr | vaabbr
 ------------------+--------+--------
                 0 | ALQ    | 128
- 5579.67450712005 | ALQ    | 001
  5541.57712511724 | ALQ    | 129A
+ 5579.67450712005 | ALQ    | 001
+  6083.4207708641 | ALQ    | 131
+  7691.2205404848 | ALQ    | 003
+ 7900.75451037313 | ALQ    | 122
  8694.20710669982 | ALQ    | 129B
  9564.24289057111 | ALQ    | 130
-  6083.4207708641 | ALQ    | 131
   12089.665931705 | ALQ    | 127
-  24795.264503022 | ALQ    | 124
- 24587.6584922302 | ALQ    | 123
- 26764.2555463114 | ALQ    | 125
+ 18472.5531479404 | ALQ    | 002
 (10 rows)
 </programlisting>
 <para>
-Note the misordering in the actual distances and the different entries that actually show up in the top 10.
+If you run "EXPLAIN ANALYZE" on the two queries you would see a performance improvement for the second.
 </para>
 
 <para>
-Finally the hybrid:
+For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true nearest neighbors. First a CTE query using the index-assisted KNN, then an exact query to get correct ordering:
 </para>
 <programlisting><![CDATA[WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
@@ -1268,7 +1264,7 @@ SELECT b.tlid, b.mtfcc,
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_centroid" /></para>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_knn" /></para>
 		  </refsection>
 		</refentry>
 
@@ -1333,7 +1329,7 @@ of a.geom
 			<title>See Also</title>
 			<para>
 <xref linkend="geometry_distance_box_nd" />,
-<xref linkend="geometry_distance_centroid" />
+<xref linkend="geometry_distance_knn" />
       </para>
 		  </refsection>
 		</refentry>

@@ -28,9 +28,9 @@ CREATE INDEX test_gist_2d on test using gist (the_geom);
 
 SELECT '<-> idx', qnodes('select * from test order by the_geom <-> ST_MakePoint(0,0) LIMIT 1');
 SELECT '<-> res1',num,
-  (the_geom <-> 'LINESTRING(0 0,5 5)'::geometry)::numeric(10,2),
+  (the_geom <-> 'POINT(2.5 2.5)'::geometry)::numeric(10,2),
   ST_astext(the_geom) from test
-  order by the_geom <-> 'LINESTRING(0 0,5 5)'::geometry LIMIT 1;
+  order by the_geom <-> 'POINT(2.5 2.5)'::geometry LIMIT 1;
 
 -- Full table extent: BOX(0.0439142361 0.0197799355,999.955261 999.993652)
 SELECT '<#> idx', qnodes('select * from test order by the_geom <#> ST_MakePoint(0,0) LIMIT 1');

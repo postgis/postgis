@@ -85,10 +85,8 @@ select 'eq3',ST_MakePoint(0,0) = ST_MakePoint(1,0); -- f
 
 -- box centroid distance  <->
 
-select 'cd1', 'LINESTRING(0 0,0 10,10 10)'::geometry <->
-              'LINESTRING(6 2,6 8)'::geometry; -- 1
-select 'cd2', 'LINESTRING(0 0,0 10,10 10)'::geometry <->
-              'LINESTRING(11 0,19 10)'::geometry; -- 10
+select 'cd1', 'LINESTRING(0 0,0 10)'::geometry <->
+              'LINESTRING(4 0,4 10)'::geometry; -- 4
 
 -- box distance           <#>
 

@@ -387,6 +387,7 @@ static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
     return sqrt((a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y));
 }
 
+#if POSTGIS_PGSQL_VERSION < 95
 /**
 * Calculate the The node_box_edge->query_centroid distance 
 * between the boxes.
@@ -455,11 +456,13 @@ static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *qu
         else
         {
             /*ERROR*/
+			elog(ERROR, "%s: reached unreachable code", __func__);
         }
     }
     
     return sqrt(d);
 }
+#endif 
 
 /* Quick distance function */
 static inline double pt_distance(double ax, double ay, double bx, double by)
@@ -1055,8 +1058,8 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 ** represents the distance to the index entry; for an internal tree node, the
 ** result must be the smallest distance that any child entry could have.
 ** 
-** Strategy 13 = centroid-based distance tests
-** Strategy 14 = box-based distance tests
+** Strategy 13 = true distance tests <->
+** Strategy 14 = box-based distance tests <#>
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_distance_2d);
 Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
@@ -1066,13 +1069,16 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 	BOX2DF *entry_box;
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
 	double distance;
+#if POSTGIS_PGSQL_VERSION >= 95
+	bool *recheck = (bool *) PG_GETARG_POINTER(4);
+#endif
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
 
-    /* We are using '13' as the gist distance-betweeen-centroids strategy number 
-    *  and '14' as the gist distance-between-boxes strategy number */
-    if ( strategy != 13 && strategy != 14 ) {
-        elog(ERROR, "unrecognized strategy number: %d", strategy);
+	/* We are using '13' as the gist true-distance <-> strategy number 
+	*  and '14' as the gist distance-between-boxes <#> strategy number */
+	if ( strategy != 13 && strategy != 14 ) {
+		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
@@ -1082,10 +1088,34 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
-
-	/* Get the entry box */
-    entry_box = (BOX2DF*)DatumGetPointer(entry->key);
 	
+	/* Get the entry box */
+	entry_box = (BOX2DF*)DatumGetPointer(entry->key);
+	
+#if POSTGIS_PGSQL_VERSION >= 95
+	
+	/* Box-style distance test */
+	if ( strategy == 14 ) /* operator <#> */
+	{
+		distance = (double)box2df_distance(entry_box, &query_box);
+	}
+	/* True distance test (formerly centroid distance) */
+	else if ( strategy == 13 ) /* operator <-> */
+	{
+		/* In all cases, since we only have keys (boxes) we'll return */
+		/* the minimum possible distance, which is the box2df_distance */
+		/* and let the recheck sort things out in the case of leaves */
+		distance = (double)box2df_distance(entry_box, &query_box);
+
+		if (GIST_LEAF(entry))
+			*recheck = true;
+	}
+	else
+	{
+		elog(ERROR, "%s: reached unreachable code", __func__);
+		PG_RETURN_NULL();
+	}
+#else
 	/* Box-style distance test */
 	if ( strategy == 14 )
 	{
@@ -1096,15 +1126,16 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 	{
-	    /* Calculate distance to leaves */
+		/* Calculate distance to leaves */
 		distance = (double)box2df_distance_leaf_centroid(entry_box, &query_box);
 	}
 	else
 	{
-	    /* Calculate distance for internal nodes */
+		/* Calculate distance for internal nodes */
 		distance = (double)box2df_distance_node_centroid(entry_box, &query_box);
 	}
-
+#endif	
+	
 	PG_RETURN_FLOAT8(distance);
 }
 

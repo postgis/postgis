@@ -3,6 +3,9 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes *
 
+  - #2703, KNN <-> operator now returns the correct distance ordering
+           for all geometry types, not just for points. Code that expects
+           the looser "centroid distance" ordering should be updated.
   - #3022, ValidateTopology swapped meaning of id1 and id2 for the
            'edge crosses node' error (now edge_id,node_id)
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
