@@ -78,6 +78,9 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 Datum gserialized_gist_distance(PG_FUNCTION_ARGS);
+#if POSTGIS_PGSQL_VERSION >= 95
+Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS);
+#endif
 
 /*
 ** ND Operator prototypes
@@ -549,8 +552,46 @@ static double gidx_distance(const GIDX *a, const GIDX *b)
 
 static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 {
-  /* TODO: implement ! */
-  return 0;
+	int i;
+	double sum = 0;
+
+	/* Base computation on least available dimensions */
+	int ndims = Min(GIDX_NDIMS(node), GIDX_NDIMS(query));
+
+	for ( i = 0; i < ndims; ++i )
+	{
+		double d;
+		double amin = GIDX_GET_MIN(query,i);
+		double amax = GIDX_GET_MAX(query,i);
+		double bmin = GIDX_GET_MIN(node,i);
+		double bmax = GIDX_GET_MAX(node,i);
+		double ca = amin + ( ( amax - amin ) / 2.0 );
+
+		if ( ( ca <= bmax && ca >= bmin ) )
+		{
+			/* overlaps */
+			d = 0;
+		}
+		else if ( bmax < ca )
+		{
+			/* is "left" */
+			d = ca - bmax;
+		}
+		else
+		{
+			/* is "right" */
+			assert( bmin > ca );
+			d = bmin - ca;
+		}
+		if ( ! isfinite(d) )
+		{
+			/* Can happen if coordinates are corrupted/NaN */
+			continue;
+		}
+		sum += d * d;
+		POSTGIS_DEBUGF(3, "dist %g, squared %g, grows sum to %g", d, d*d, sum);
+	}
+	return sqrt(sum);
 }
 
 /**
@@ -1005,6 +1046,59 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+
+
+#if POSTGIS_PGSQL_VERSION >= 95
+
+PG_FUNCTION_INFO_V1(gserialized_gist_geog_distance);
+Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
+{
+	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
+	Datum query_datum = PG_GETARG_DATUM(1);
+	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+	bool *recheck = (bool *) PG_GETARG_POINTER(4);
+	char query_box_mem[GIDX_MAX_SIZE];
+	GIDX *query_box = (GIDX*)query_box_mem;
+	GIDX *entry_box;
+	double distance;
+
+	POSTGIS_DEBUGF(4, "[GIST] '%s' function called", __func__);
+ 
+	/* We are using '13' as the gist geography distance <-> strategy number */
+	if ( strategy != 13  ) 
+	{
+		elog(ERROR, "unrecognized strategy number: %d", strategy);
+		PG_RETURN_FLOAT8(FLT_MAX);
+	}
+
+	/* Null box should never make this far. */
+	if ( gserialized_datum_get_gidx_p(query_datum, query_box) == LW_FAILURE )
+	{
+		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
+		PG_RETURN_FLOAT8(FLT_MAX);
+	}
+
+	/* Get the entry box */
+	entry_box = (GIDX*)DatumGetPointer(entry->key);
+
+	/* Return distances from key-based tests should always be */
+	/* the minimum possible distance, box-to-box */
+	/* We scale up to "world units" so that the box-to-box distances */
+	/* compare reasonably with the over-the-spheroid distances that */
+	/* the recheck process will turn up */
+	distance = WGS84_RADIUS * gidx_distance(entry_box, query_box);
+
+	/* When we hit leaf nodes, it's time to turn on recheck */
+	if (GIST_LEAF(entry))
+	{
+		*recheck = true;
+	}
+			
+	PG_RETURN_FLOAT8(distance);
+}
+#endif
+
+
 /*
 ** GiST support function.
 ** Take in a query and an entry and return the "distance" between them.
@@ -1032,7 +1126,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	double distance;
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
-
+ 
 	/* We are using '13' as the gist distance-betweeen-centroids strategy number
 	 *  and '14' as the gist distance-between-boxes strategy number */
 	if ( strategy != 13 && strategy != 14 ) {
@@ -1050,23 +1144,25 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	/* Get the entry box */
 	entry_box = (GIDX*)DatumGetPointer(entry->key);
 
-	/* Box-style distance test */
+	/* Box-style distance test <<#>> */
 	if ( strategy == 14 )
 	{
 		distance = gidx_distance(entry_box, query_box);
-		PG_RETURN_FLOAT8(distance);
 	}
-
-	/* Treat leaf node tests different from internal nodes */
-	if (GIST_LEAF(entry))
-	{
-		/* Calculate distance to leaves */
-		distance = (double)gidx_distance_leaf_centroid(entry_box, query_box);
-	}
+	/* Centroid-style distance test <<->> */
 	else
 	{
-		/* Calculate distance for internal nodes */
-		distance = (double)gidx_distance_node_centroid(entry_box, query_box);
+		/* Treat leaf node tests different from internal nodes */
+		if (GIST_LEAF(entry))
+		{
+			/* Calculate distance to leaves */
+			distance = (double)gidx_distance_leaf_centroid(entry_box, query_box);
+		}
+		else
+		{
+			/* Calculate distance for internal nodes */
+			distance = (double)gidx_distance_node_centroid(entry_box, query_box);
+		}
 	}
 
 	PG_RETURN_FLOAT8(distance);

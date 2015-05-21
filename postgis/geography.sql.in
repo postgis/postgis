@@ -247,6 +247,28 @@ CREATE OPERATOR && (
 	JOIN = gserialized_gist_joinsel_nd	
 );
 
+#if POSTGIS_PGSQL_VERSION >= 95
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geography_knn_distance(geography, geography)
+  RETURNS float8
+  AS 'MODULE_PATHNAME','geography_distance'
+  LANGUAGE 'c' IMMUTABLE STRICT
+  COST 100;
+
+-- Availability: 2.2.0
+CREATE OPERATOR <-> (
+  LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_knn_distance,
+  COMMUTATOR = '<->'
+);
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4) 
+	RETURNS float8 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_geog_distance'
+	LANGUAGE 'c';
+
+#endif
 
 -- Availability: 1.5.0
 CREATE OPERATOR CLASS gist_geography_ops
@@ -256,6 +278,11 @@ CREATE OPERATOR CLASS gist_geography_ops
 --	OPERATOR        6        ~=	,
 --	OPERATOR        7        ~	,
 --	OPERATOR        8        @	,
+#if POSTGIS_PGSQL_VERSION >= 95
+-- Availability: 2.2.0
+	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
+	FUNCTION        8        geography_gist_distance (internal, geography, int4),
+#endif
 	FUNCTION        1        geography_gist_consistent (internal, geography, int4),
 	FUNCTION        2        geography_gist_union (bytea, internal),
 	FUNCTION        3        geography_gist_compress (internal),

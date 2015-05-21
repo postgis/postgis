@@ -126,8 +126,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	GSERIALIZED* g1 = NULL;
 	GSERIALIZED* g2 = NULL;
 	double distance;
-	double tolerance;
-	bool use_spheroid;
+	double tolerance = 0.0;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -135,10 +135,12 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -192,9 +194,9 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 	int dwithin = LW_FALSE;
 
@@ -203,10 +205,12 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -254,9 +258,9 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -272,10 +276,12 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	}
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -306,9 +312,9 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom2 = NULL;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -316,10 +322,12 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
