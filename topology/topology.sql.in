@@ -1432,9 +1432,9 @@ BEGIN
 
   FOR rec IN EXECUTE sql
   LOOP
+
     IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
       CONTINUE; -- no interior intersection
-    END IF;
 
     --
     -- Closed lines have no boundary, so endpoint
@@ -1443,7 +1443,7 @@ BEGIN
     -- See also full explanation in topology.AddEdge
     --
 
-    IF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
+    ELSIF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
       -- first line (g1) is open, second (g2) is closed
       -- first boundary has puntual intersection with second interior
       --
@@ -1453,9 +1453,8 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
-    END IF;
 
-    IF ST_RelateMatch(rec.im, 'F01FFF102') THEN
+    ELSIF ST_RelateMatch(rec.im, 'F01FFF102') THEN
       -- second line (g2) is open, first (g1) is closed
       -- second boundary has puntual intersection with first interior
       -- 
@@ -1465,9 +1464,8 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
-    END IF;
 
-    IF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
+    ELSIF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
       -- both lines are closed (boundary intersects nothing)
       -- they have puntual intersection between interiors
       -- 
@@ -1479,6 +1477,7 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
+
     END IF;
 
     retrec.error = 'edge crosses edge';
