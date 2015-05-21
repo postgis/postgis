@@ -3458,7 +3458,7 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Extent(
-	sfunc = ST_combine_bbox, -- TODO: use ST_CombineBbox (since 2.2.0)
+	sfunc = ST_CombineBBox,
 	finalfunc = box2d,
 	basetype = geometry,
 	stype = box3d
@@ -3466,7 +3466,7 @@ CREATE AGGREGATE ST_Extent(
 
 -- Availability: 2.0.0
 CREATE AGGREGATE ST_3DExtent(
-	sfunc = ST_combine_bbox, -- TODO: use ST_CombineBbox (since 2.2.0)
+	sfunc = ST_CombineBBox,
 	basetype = geometry,
 	stype = box3d
 	);
