@@ -1104,7 +1104,7 @@ nearest neighbor distance ordering.</para>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 			<para>Refer to <ulink url="http://workshops.opengeo.org/postgis-intro/knn.html">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live example.</para>
 
-			 <para>Availability: 2.2.0 -- True KNN ("K nearest neighbor") only available for PostgreSQL 9.5+</para>
+			 <para>Changed: 2.2.0 -- True KNN ("K nearest neighbor") behavior for PostgreSQL 9.5+</para>
 			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
 			 	
 		
