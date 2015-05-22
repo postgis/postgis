@@ -1222,7 +1222,17 @@ SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);
                  st_astwkb                  
 --------------------------------------------
 \x02000202020808
+
 </programlisting>
+<para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
+</para>
+<programlisting>
+SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
+                 st_astwkb                  
+--------------------------------------------
+\x040402020400000202
+</programlisting>
+
 		  </refsection>
 
 		  <refsection>
