@@ -252,7 +252,7 @@ CREATE OPERATOR && (
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geography_knn_distance(geography, geography)
   RETURNS float8
-  AS 'MODULE_PATHNAME','geography_distance'
+  AS 'MODULE_PATHNAME','geography_distance_uncached'
   LANGUAGE 'c' IMMUTABLE STRICT
   COST 100;
 
