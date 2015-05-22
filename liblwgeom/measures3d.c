@@ -128,7 +128,7 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 
 
 /**
-Function initialazing 3d max distance calculation
+Function initializing 3d max distance calculation
 */
 double
 lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2)
@@ -139,7 +139,7 @@ lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2)
 }
 
 /**
-Function handling 3d max distance calculations and dfyllywithin calculations.
+Function handling 3d max distance calculations and dfullywithin calculations.
 The difference is just the tolerance.
 */
 double
@@ -161,7 +161,7 @@ lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 }
 
 /**
-	Function initialazing 3d min distance calculation
+	Function initializing 3d min distance calculation
 */
 double
 lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2)
@@ -203,7 +203,7 @@ Functions preparing geometries for distance-calculations
 
 
 /**
-This is a recursive function delivering every possible combinatin of subgeometries
+This is a recursive function delivering every possible combination of subgeometries
 */
 int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 {
@@ -283,7 +283,7 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 
 /**
 
-This function distributes the brut-force for 3D so far the only type, tasks depending on type
+This function distributes the brute-force for 3D so far the only type, tasks depending on type
 */
 int
 lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
