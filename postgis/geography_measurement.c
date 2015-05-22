@@ -135,11 +135,11 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	if ( ! PG_ARGISNULL(2) )
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	if ( ! PG_ARGISNULL(3) )
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
@@ -205,11 +205,11 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	if ( ! PG_ARGISNULL(2) )
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	if ( ! PG_ARGISNULL(3) )
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
@@ -276,11 +276,11 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	}
 
 	/* Read our tolerance value. */
-	if ( ! PG_ARGISNULL(2) )
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	if ( ! PG_ARGISNULL(3) )
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
@@ -322,11 +322,11 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	if ( ! PG_ARGISNULL(2) )
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	if ( ! PG_ARGISNULL(3) )
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
@@ -848,12 +848,13 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	LWPOINT *lwp_projected;
 	GSERIALIZED *g = NULL;
 	GSERIALIZED *g_out = NULL;
-	double azimuth, distance;
+	double azimuth = 0.0;
+	double distance;
 	SPHEROID s;
 	uint32_t type;
 
 	/* Return NULL on NULL distance or geography */
-	if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
 		PG_RETURN_NULL();
 	
 	/* Get our geometry object loaded into memory. */
@@ -878,9 +879,7 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
-	if ( PG_ARGISNULL(2) )
-		azimuth = 0.0;
-	else
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		azimuth = PG_GETARG_FLOAT8(2); /* Azimuth in Radians */
 
 	/* Initialize spheroid */
