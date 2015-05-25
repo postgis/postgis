@@ -33,6 +33,7 @@ select 'line_locate_point_2', ST_LineLocatePoint(ST_geomfromtext('LINESTRING(-19
 select 'line_locate_point_3', ST_LineLocatePoint(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953743.873 471070.784)', 6269));
 --- http://trac.osgeo.org/postgis/ticket/1772#comment:2
 select 'line_locate_point_4', ST_LineLocatePoint('LINESTRING(0 1, 0 1, 0 1)', 'POINT(0 1)');
+SELECT 'line_locate_point_5', ST_LineLocatePoint(ST_MakeLine('POINT(1 2)'::geometry, 'POINT EMPTY'::geometry), ST_Point(-11,40));
 
 --- line_substring / line_interpolate_point
 
