@@ -105,12 +105,23 @@ LT_NM_OBJS = $(NM_OBJS:.o=.lo)
 LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
 
 SA_HEADERS = \
+	bytebuffer.h \
+	effectivearea.h \
 	liblwgeom.h \
 	liblwgeom_internal.h \
-	lwgeom_log.h \
+	lwgeodetic.h \
+	lwgeodetic_tree.h \
 	lwgeom_geos.h \
-  lwin_wkt_parse.h \
-  varint.h
+	lwgeom_log.h \
+	lwgeom_sfcgal.h \
+	lwin_wkt.h \
+	lwin_wkt_parse.h \
+	lwout_twkb.h \
+	lwtree.h \
+	measures3d.h \
+	measures.h \
+	stringbuffer.h \
+	varint.h
 
 all: liblwgeom.la
 
