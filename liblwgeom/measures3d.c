@@ -17,6 +17,26 @@
 #include "lwgeom_log.h"
 
 
+static inline int
+get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
+{
+	v->x=p2->x-p1->x;
+	v->y=p2->y-p1->y;
+	v->z=p2->z-p1->z;
+	
+	return LW_TRUE;
+}
+
+static inline int
+get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
+{
+	v->x=(v1->y*v2->z)-(v1->z*v2->y);
+	v->y=(v1->z*v2->x)-(v1->x*v2->z);
+	v->z=(v1->x*v2->y)-(v1->y*v2->x);
+
+	return LW_TRUE;
+}
+
 
 LWGEOM * 
 lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
