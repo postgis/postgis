@@ -141,6 +141,11 @@ ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
 	TESTS += knn
 endif
 
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
+  # Index supported KNN recheck only available in PostgreSQL 9.5 and higher
+	TESTS += knn_recheck
+endif
+
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	# GEOS-3.3 adds:
 	# ST_HausdorffDistance, ST_Buffer(params)
