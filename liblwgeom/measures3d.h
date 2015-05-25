@@ -81,14 +81,12 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, PLANE3D *plane, DISTPTS
 double project_point_on_plane(POINT3DZ *p,  PLANE3D *pl, POINT3DZ *p0);
 int define_plane(POINTARRAY *pa, PLANE3D *pl);
 int pt_in_ring_3d(const POINT3DZ *p, const POINTARRAY *ring,PLANE3D *plane);
+
 /*
 Helper functions
 */
-int get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v);
-int get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v);
 
-
-int
+inline int
 get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
 {
 	v->x=p2->x-p1->x;
@@ -98,7 +96,7 @@ get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
 	return LW_TRUE;
 }
 
-int
+inline int
 get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 {
 	v->x=(v1->y*v2->z)-(v1->z*v2->y);
