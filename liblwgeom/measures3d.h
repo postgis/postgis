@@ -1,4 +1,3 @@
-
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
@@ -10,10 +9,13 @@
  *
  **********************************************************************/
 
+#ifndef _MEASURES3D_H
+#define _MEASURES3D_H 1
+
 #include "measures.h"
 
-#define DOT(u,v)   (u.x * v.x + u.y * v.y + u.z * v.z)
-#define VECTORLENGTH(v)   sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z))
+#define DOT(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)
+#define VECTORLENGTH(v)   sqrt(((v).x * (v).x) + ((v).y * (v).y) + ((v).z * (v).z))
 
 
 /**
@@ -105,3 +107,5 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 
 	return LW_TRUE;
 }
+
+#endif /* !defined _MEASURES3D_H  */
