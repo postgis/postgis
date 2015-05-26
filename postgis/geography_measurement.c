@@ -490,17 +490,17 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 	double length;
 	bool use_spheroid = LW_TRUE;
 	SPHEROID s;
-    int type;
+	int type;
 
 	/* Get our geometry object loaded into memory. */
 	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for area features. */
-    type = gserialized_get_type(g);
-    if ( ! (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) )
-    {
+	type = gserialized_get_type(g);
+	if ( ! (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) )
+	{
 		PG_RETURN_FLOAT8(0.0);
-    }
+	}
 	
 	lwgeom = lwgeom_from_gserialized(g);
 
@@ -863,12 +863,12 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for points. */
-    type = gserialized_get_type(g);
-    if ( type != POINTTYPE )
-    {
+	type = gserialized_get_type(g);
+	if ( type != POINTTYPE )
+	{
 		elog(ERROR, "ST_Project(geography) is only valid for point inputs");
 		PG_RETURN_NULL();
-    }
+	}
 
 	distance = PG_GETARG_FLOAT8(1); /* Distance in Meters */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -934,13 +934,13 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 	
 	/* Only return for points. */
-    type1 = gserialized_get_type(g1);
-    type2 = gserialized_get_type(g2);
-    if ( type1 != POINTTYPE || type2 != POINTTYPE )
-    {
+	type1 = gserialized_get_type(g1);
+	type2 = gserialized_get_type(g2);
+	if ( type1 != POINTTYPE || type2 != POINTTYPE )
+	{
 		elog(ERROR, "ST_Azimuth(geography, geography) is only valid for point inputs");
 		PG_RETURN_NULL();
-    }
+	}
 	
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
@@ -994,13 +994,13 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 
 	/* Get our geometry object loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
-    type1 = gserialized_get_type(g1);
+	type1 = gserialized_get_type(g1);
 
 	/* Convert max_seg_length from metric units to radians */
 	max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
 
 	/* We can't densify points or points, reflect them back */
-    if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
+	if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
 		PG_RETURN_POINTER(g1);
 
 	/* Deserialize */
