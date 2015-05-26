@@ -1879,6 +1879,11 @@ static int
 lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip)
 {
 
+	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
+	{
+		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
+	}
+	
 	/* Always just recurse into collections */
 	if ( lwgeom_is_collection(geom) )
 	{
