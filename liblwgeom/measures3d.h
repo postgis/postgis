@@ -49,15 +49,15 @@ PLANE3D;
 /*
 Geometry returning functions
 */
-LWGEOM * lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
-LWGEOM * lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode);
+LWGEOM * lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode);
+LWGEOM * lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode);
 
 /*
 Preprocessing functions
 */
-int lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl);
+int lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl);
 int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl);
-int lw_dist3d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl);
+int lw_dist3d_distribute_fast(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl);
 
 /*
 Brute force functions

@@ -39,7 +39,7 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 
 
 LWGEOM * 
-lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_line_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
 }
@@ -51,7 +51,7 @@ lwgeom_furthest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
 }
 
 LWGEOM * 
-lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_point_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	return lw_dist3d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
 }
@@ -61,7 +61,7 @@ lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2, z1, z2;
 	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
@@ -110,7 +110,7 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	double x,y,z;
 	DISTPTS3D thedl;
@@ -151,7 +151,7 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 Function initializing 3d max distance calculation
 */
 double
-lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_maxdistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_maxdistance3d is called");
 
@@ -163,7 +163,7 @@ Function handling 3d max distance calculations and dfullywithin calculations.
 The difference is just the tolerance.
 */
 double
-lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	/*double thedist;*/
 	DISTPTS3D thedl;
@@ -184,7 +184,7 @@ lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	Function initializing 3d min distance calculation
 */
 double
-lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_mindistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_mindistance3d is called");
 	return lwgeom_mindistance3d_tolerance( lw1, lw2, 0.0 );
@@ -195,7 +195,7 @@ lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2)
 	The difference is just the tolerance.
 */
 double
-lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	DISTPTS3D thedl;
 	LWDEBUG(2, "lwgeom_mindistance3d_tolerance is called");
@@ -306,7 +306,7 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 This function distributes the brute-force for 3D so far the only type, tasks depending on type
 */
 int
-lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
+lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 {
 
 	int	t1 = lwg1->type;
