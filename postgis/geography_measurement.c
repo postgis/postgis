@@ -62,7 +62,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	double tolerance = 0.0;
+	double tolerance = FP_TOLERANCE;
 	bool use_spheroid = true;
 	SPHEROID s;
 
@@ -100,7 +100,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	lwgeom_add_bbox_deep(lwgeom1, NULL);
 	lwgeom_add_bbox_deep(lwgeom2, NULL);
 	
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 
 	/* Clean up */
 	lwgeom_free(lwgeom1);
