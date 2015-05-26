@@ -3043,6 +3043,16 @@ CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 	RETURNS geometry 
 	AS 'MODULE_PATHNAME', 'ST_AddMeasure' 
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+---------------------------------------------------------------
+-- TEMPORAL
+---------------------------------------------------------------
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_ClosestPointOfApproach(geometry, geometry)
+	RETURNS float8 
+	AS 'MODULE_PATHNAME', 'ST_ClosestPointOfApproach' 
+	LANGUAGE 'c' IMMUTABLE STRICT;
     
 ---------------------------------------------------------------
 -- GEOS

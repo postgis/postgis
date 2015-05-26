@@ -542,7 +542,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
-		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</refpurpose>
+		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -597,6 +597,84 @@ ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))')
 	  </refsection>
 
 	</refentry>
-
 	
+		<refentry id="ST_ClosestPointOfApproach">
+
+		  <refnamediv>
+			<refname>ST_ClosestPointOfApproach</refname>
+			<refpurpose>
+Returns the measure at which points interpolated along two lines are closest.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Returns the smallest measure at which point interpolated along the given
+lines are at the smallest distance. Inputs must be LINESTRINGM geometries
+and the M value in their vertices are expected to be growing from first
+to last vertex.
+			</para>
+      
+			<para>
+See <xref linkend="ST_LocateAlong" /> for getting the actual points at
+the given measure.
+			</para>
+			
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- Return the time in which two objects moving between 10:00 and 11:00
+-- are closest to each other and their distance at that point
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+), cpa AS (
+  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
+), points AS (
+  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,
+         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb
+  FROM inp, cpa
+)
+SELECT to_timestamp(m) t,
+       ST_Distance(pa,pb) distance
+FROM points, cpa;
+
+               t               |     distance
+-------------------------------+------------------
+ 2015-05-26 10:45:31.034483+02 | 1.96036833151395
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_LocateAlong" />,
+<xref linkend="ST_AddMeasure" />
+			</para>
+		  </refsection>
+		</refentry>
   </sect1>

@@ -2,7 +2,9 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
- * Copyright 2011 Paul Ramsey
+ *
+ * Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -11,7 +13,7 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-
+#include "measures3d.h"
 
 static int 
 segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offset, POINT4D *pn)
@@ -848,4 +850,351 @@ lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt)
 			lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
 	}
 	return ret;
+}
+
+/*
+ * Time of closest point of approach
+ * 
+ * Given two vectors (p1-p2 and q1-q2) and
+ * a time range (t1-t2) return the time in which
+ * a point p is closest to a point q on their
+ * respective vectors, and the actual points
+ *
+ * Here we use algorithm from softsurfer.com
+ * that can be found here
+ * http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
+ *
+ * @param p0 start of first segment, will be set to actual
+ *           closest point of approach on segment.
+ * @param p1 end of first segment
+ * @param q0 start of second segment, will be set to actual
+ *           closest point of approach on segment.
+ * @param q1 end of second segment
+ * @param t0 start of travel time
+ * @param t1 end of travel time
+ *
+ * @return time of closest point of approach
+ *
+ */
+static double
+segments_tcpa(POINT4D* p0, const POINT4D* p1,
+        POINT4D* q0, const POINT4D* q1,
+        double t0, double t1)
+{
+  POINT3DZ pv; /* velocity of p, aka u */
+  POINT3DZ qv; /* velocity of q, aka v */
+  POINT3DZ dv; /* velocity difference */
+  POINT3DZ w0; /* vector between first points */
+
+/*
+  lwnotice("FROM %g,%g,%g,%g -- %g,%g,%g,%g",
+    p0->x, p0->y, p0->z, p0->m,
+    p1->x, p1->y, p1->z, p1->m);
+  lwnotice("  TO %g,%g,%g,%g -- %g,%g,%g,%g",
+    q0->x, q0->y, q0->z, q0->m,
+    q1->x, q1->y, q1->z, q1->m);
+*/
+
+  /* PV aka U */
+  pv.x = ( p1->x - p0->x );
+  pv.y = ( p1->y - p0->y );
+  pv.z = ( p1->z - p0->z );
+  /*lwnotice("PV:  %g, %g, %g", pv.x, pv.y, pv.z);*/
+
+  /* QV aka V */
+  qv.x = ( q1->x - q0->x );
+  qv.y = ( q1->y - q0->y );
+  qv.z = ( q1->z - q0->z );
+  /*lwnotice("QV:  %g, %g, %g", qv.x, qv.y, qv.z);*/
+
+  dv.x = pv.x - qv.x;
+  dv.y = pv.y - qv.y;
+  dv.z = pv.z - qv.z;
+  /*lwnotice("DV:  %g, %g, %g", dv.x, dv.y, dv.z);*/
+
+  double dv2 = DOT(dv,dv);
+  /*lwnotice("DOT: %g", dv2);*/
+
+  if ( dv2 == 0.0 )
+  {
+    /* Distance is the same at any time, we pick the earliest */
+    return t0;
+  }
+
+  /* Distance at any given time, with t0 */
+  w0.x = ( p0->x - q0->x );
+  w0.y = ( p0->y - q0->y );
+  w0.z = ( p0->z - q0->z );
+
+  /*lwnotice("W0:  %g, %g, %g", w0.x, w0.y, w0.z);*/
+
+  /* Check that at distance dt w0 is distance */
+
+  /* This is the fraction of measure difference */
+  double t = -DOT(w0,dv) / dv2;
+  /*lwnotice("CLOSEST TIME (fraction): %g", t);*/
+
+  if ( t > 1.0 ) {
+    /* Getting closer as we move to the end */
+    /*lwnotice("Converging");*/
+    t = 1;
+  } else if ( t < 0.0 ) {
+    /*lwnotice("Diverging");*/
+    t = 0;
+  }
+
+  /* Interpolate the actual points now */
+
+  p0->x += pv.x * t;
+  p0->y += pv.y * t;
+  p0->z += pv.z * t;
+
+  q0->x += qv.x * t;
+  q0->y += qv.y * t;
+  q0->z += qv.z * t;
+
+  t = t0 + (t1 - t0) * t;
+  /*lwnotice("CLOSEST TIME (real): %g", t);*/
+
+  return t;
+}
+
+static int
+ptarray_collect_mvals(const POINTARRAY *pa, double tmin, double tmax, double *mvals)
+{
+  POINT4D pbuf;
+  int i, n=0;
+  for (i=0; i<pa->npoints; ++i)
+  {
+    getPoint4d_p(pa, i, &pbuf); /* could be optimized */
+    if ( pbuf.m >= tmin && pbuf.m <= tmax )
+      mvals[n++] = pbuf.m;
+  }
+  return n;
+}
+
+static int
+compare_double(const void *a, const void *b)
+{
+  double *dpa = (double *)a;
+  double *dpb = (double *)b;
+  return *dpb < *dpa;
+}
+
+/* Return number of elements in unique array */
+static int
+uniq(double *vals, int nvals)
+{
+  int i, last=0;
+  for (i=1; i<nvals; ++i)
+  {
+    /*lwnotice("(I%d):%g", i, vals[i]);*/
+    if ( vals[i] != vals[last] )
+    {
+      vals[++last] = vals[i];
+      /*lwnotice("(O%d):%g", last, vals[last]);*/
+    }
+  }
+  return last+1;
+}
+
+/*
+ * Find point at a given measure
+ *
+ * The function assumes measures are linear so that always a single point
+ * is returned for a single measure.
+ *
+ * @param pa the point array to perform search on
+ * @param m the measure to search for
+ * @param p the point to write result into
+ * @param from the segment number to start from
+ *
+ * @return the segment number the point was found into
+ *         or -1 if given measure was out of the known range.
+ */
+static int
+ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, int from)
+{
+	int i = from;
+	POINT4D p1, p2;
+		
+	/* Walk through each segment in the point array */
+  getPoint4d_p(pa, i, &p1);
+	for ( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint4d_p(pa, i, &p2);
+
+		if ( segment_locate_along(&p1, &p2, m, 0, p) == LW_TRUE )
+			return i-1; /* found */
+
+    p1 = p2;
+	}	
+
+	return -1; /* not found */
+}
+
+double
+lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
+{
+  LWLINE *l1, *l2;
+  int i;
+  const GBOX *gbox1, *gbox2;
+  double tmin, tmax;
+  double *mvals;
+  int nmvals = 0;
+  double mintime;
+  double mindist2; /* minimum distance, squared */
+
+	if ( ! lwgeom_has_m(g1) || ! lwgeom_has_m(g2) ) {
+		lwerror("Both input geometries must have a measure dimension");
+    return -1;
+  }
+
+  l1 = lwgeom_as_lwline(g1);
+  l2 = lwgeom_as_lwline(g2);
+
+	if ( ! l1 || ! l2 ) {
+		lwerror("Both input geometries must be linestrings");
+    return -1;
+  }
+
+  if ( l1->points->npoints < 2 || l2->points->npoints < 2 ) {
+		lwerror("Both input lines must have at least 2 points");
+    return -1;
+  }
+
+  gbox1 = lwgeom_get_bbox(g1);
+  gbox2 = lwgeom_get_bbox(g2);
+
+  assert(gbox1); /* or the npoints check above would have failed */
+  assert(gbox2); /* or the npoints check above would have failed */
+
+  /*
+   * Find overlapping M range
+   */
+
+  tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
+  tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
+
+  if ( tmax == tmin ) /* both exists only at a given time */
+  {
+    /*lwnotice("Inputs only exist both at a single time");*/
+    if ( mindist ) 
+    {
+      *mindist = lwgeom_mindistance3d(g1, g2);
+    }
+    return tmax;
+  }
+
+  if ( tmax < tmin ) {
+    lwerror("Inputs never exist at the same time");
+    return -1;
+  }
+
+  /* lwnotice("Min:%g, Max:%g", tmin, tmax); */
+
+  /*
+   * Collect M values in common time range from inputs
+   */
+
+  mvals = lwalloc( sizeof(double*) *
+                   ( l1->points->npoints + l2->points->npoints ) );
+
+  /* TODO: also clip the lines ? */
+  nmvals  = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
+  nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, &(mvals[nmvals]));
+
+  /* Sort values in ascending order */
+  qsort(mvals, nmvals, sizeof(double), compare_double);
+
+  /* Remove duplicated values */
+  nmvals = uniq(mvals, nmvals);
+
+  if ( nmvals < 2 )
+    return mvals[0]; /* there's a single time, must be that one... */
+
+  /*
+   * For each consecutive pair of measures, compute time of closest point
+   * approach and actual distance between points at that time
+   */
+  mintime = tmin;
+  for (i=1; i<nmvals; ++i)
+  {
+    double t0 = mvals[i-1];
+    double t1 = mvals[i];
+    double t;
+    POINT4D p0, p1, q0, q1;
+    int seg;
+    double dist2;
+
+    /*lwnotice("T %g-%g", t0, t1);*/
+
+    seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
+    if ( -1 == seg )
+    {
+      lwfree(mvals);
+      lwerror("Non-linear measures in first geometry");
+      return -1;
+    }
+    /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);*/
+
+    seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
+    if ( -1 == seg )
+    {
+      lwfree(mvals);
+      lwerror("Non-linear measures in first geometry");
+      return -1;
+    }
+    /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);*/
+
+    seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
+    if ( -1 == seg )
+    {
+      lwfree(mvals);
+      lwerror("Non-linear measures in second geometry");
+      return -1;
+    }
+    /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);*/
+
+    seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
+    if ( -1 == seg )
+    {
+      lwfree(mvals);
+      lwerror("Non-linear measures in second geometry");
+      return -1;
+    }
+    /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);*/
+
+    t = segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
+
+/*
+    lwnotice("Closest points: %g,%g,%g and %g,%g,%g at time %g",
+      p0.x, p0.y, p0.z,
+      q0.x, q0.y, q0.z, t);
+*/
+
+    dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
+           ( q0.y - p0.y ) * ( q0.y - p0.y ) +
+           ( q0.z - p0.z ) * ( q0.z - p0.z );
+    if ( i == 1 || dist2 < mindist2 )
+    {
+      mindist2 = dist2;
+      mintime = t;
+      /* lwnotice("MINTIME: %g", mintime); */
+    }
+
+  }
+
+  /*
+   * Release memory
+   */
+
+  lwfree(mvals);
+
+  if ( mindist ) {
+    *mindist = sqrt(mindist2);
+  }
+  /*lwnotice("MINDIST: %g", sqrt(mindist2));*/
+
+  return mintime;
 }

@@ -29,6 +29,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3128, ST_ClosestPointOfApproach (Sandro Santilli / Boundless)
   - Canonical output for index key types
   - ST_SwapOrdinates (Sandro Santilli / Boundless)
   - #2918, Use GeographicLib functions for geodetics (Mike Toews)

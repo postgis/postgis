@@ -250,6 +250,7 @@ cu_errorreporter(const char *fmt, va_list ap)
 {
   vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
   cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+  /* fprintf(stderr, "ERROR: %s\n", cu_error_msg); */
 }
 
 void

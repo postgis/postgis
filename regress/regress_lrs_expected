@@ -34,3 +34,6 @@ line_substring_11|POINT(0 0)
 line_substring_12|POINT Z (0.5 0.5 7.5)
 line_interpolate_point|POINT(0 0)
 line_interpolate_point|POINT Z (0.5 0.5 7.5)
+pca1|10
+pca2|5
+pca3|5.5

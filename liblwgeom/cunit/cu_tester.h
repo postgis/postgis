@@ -3,6 +3,8 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
+ * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
@@ -20,3 +22,11 @@ void cu_error_msg_reset(void);
 
 /* Our internal callback to register Suites with the main tester */
 typedef void (*PG_SuiteSetup)(void);
+
+#define ASSERT_DOUBLE_EQUAL(o,e) do { \
+  if ( o != e ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %g\n Obtained: %g\n", __FILE__, __LINE__, (e), (o)); \
+  CU_ASSERT_EQUAL(o,e); \
+} while (0);
+
+

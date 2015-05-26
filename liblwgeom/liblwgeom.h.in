@@ -1396,6 +1396,16 @@ extern LWCOLLECTION* lwgeom_locate_between(const LWGEOM *lwin, double from, doub
 */
 extern double lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt);
 
+/**
+* Find the time of closest point of approach
+*
+* @param mindist if not null will be set to the minimum distance between
+*                the trajectories at the closest point of approach.
+*
+* @return the time value in which the minimum distance was reached
+*/
+extern double lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist);
+
 /*
  * Ensure every segment is at most 'dist' long.
  * Returned LWGEOM might is unchanged if a POINT.
