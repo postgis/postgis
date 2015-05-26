@@ -62,8 +62,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	/* double tolerance; */
-	bool use_spheroid;
+	double tolerance = 0.0;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -71,10 +71,12 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	/* tolerance = PG_GETARG_FLOAT8(2); */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
     
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
