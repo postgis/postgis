@@ -37,3 +37,7 @@ line_interpolate_point|POINT Z (0.5 0.5 7.5)
 pca1|10
 pca2|5
 pca3|5.5
+addMeasure1|LINESTRING M (0 0 10,2 0 15,4 0 20)
+addMeasure2|LINESTRING M (0 0 10,9 0 19,10 0 20)
+interpolatePoint1|2
+interpolatePoint2|3

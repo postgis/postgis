@@ -56,12 +56,16 @@ select 'line_substring_10', ST_AsText(ST_LineSubstring('LINESTRING(0 0 4, 4 4 0)
 select 'line_substring_11', ST_AsText(ST_LineSubstring('LINESTRING(0 0, 1 1)', 0, 0));
 select 'line_substring_12', ST_AsText(ST_LineSubstring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
 
---- line_interpolate_point
+--
+--- ST_LineInterpolatePoint
+--
 
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0, 1 1)', 0));
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0 10, 1 1 5)', 0.5));
 
+--
 --- ST_PointOfClosestApproach
+--
 
 -- Converging
 select 'pca1', ST_ClosestPointOfApproach(
@@ -76,4 +80,16 @@ select 'pca3', ST_ClosestPointOfApproach(
   'LINESTRINGZM(0 0 0 0, 0 0 0 10)',
   'LINESTRINGZM(-30 0 5 4, 10 0 5 6)');
 
--- TODO: test ST_AddMeasures 
+--
+-- ST_AddMeasure
+--
+
+select 'addMeasure1', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 2 0, 4 0)', 10, 20));
+select 'addMeasure2', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 9 0, 10 0)', 10, 20));
+
+--
+-- ST_InterpolatePoint
+--
+
+select 'interpolatePoint1', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(5 0)');
+select 'interpolatePoint2', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(7.5 0)');
