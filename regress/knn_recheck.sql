@@ -55,3 +55,68 @@ FROM knn_recheck_geom As a
 ORDER BY a.gid, b.rn;
 
 DROP TABLE knn_recheck_geom;
+
+-- geography tests
+DELETE FROM spatial_ref_sys where srid = 4326;
+INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","proj4text") VALUES (4326,'EPSG',4326,'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ');
+-- create table
+CREATE TABLE knn_recheck_geog(gid serial primary key, geog geography);
+INSERT INTO knn_recheck_geog(gid,geog)
+SELECT ROW_NUMBER() OVER(ORDER BY x,y) AS gid, ST_Point(x*1.11,y*0.95)::geography As geog
+FROM generate_series(-100,100, 1) AS x CROSS JOIN generate_series(-90,90,1) As y;
+
+INSERT INTO knn_recheck_geog(gid, geog)
+SELECT 500000, 'LINESTRING(-95 -10, -11 65, 5 10, -70 60)'::geography;
+
+INSERT INTO knn_recheck_geog(gid, geog)
+SELECT 500001, 'POLYGON((-95 10, -95.6 10.5, -95.9 10.75, -95 10))'::geography;
+
+INSERT INTO knn_recheck_geog(gid,geog)
+SELECT 600000 + ROW_NUMBER() OVER(ORDER BY gid) AS gid, ST_Buffer(geog,1000) As geog
+FROM knn_recheck_geog
+WHERE gid IN(1000, 10000, 2000, 2614, 40000);
+
+
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(95 10)'::geography, geog) )
+FROM knn_recheck_geog
+ORDER BY 'POINT(95 10)'::geography <-> geog LIMIT 5;
+
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(-95 -10)'::geography, geog) )
+FROM knn_recheck_geog
+ORDER BY 'POINT(-95 -10)'::geography <-> geog LIMIT 5;
+
+-- lateral check before index
+SELECT a.gid, b.gid As match, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY ST_Distance(a.geog, b.geog, true)::numeric(16,0), b.gid ) As true_rn, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY b.dist::numeric, b.gid)  As knn_rn
+FROM knn_recheck_geog As a 
+	LEFT JOIN 
+		LATERAL ( SELECT  gid, geog,  a.geog <-> g.geog  As dist
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog, g.gid LIMIT 5) As b ON true
+	WHERE a.gid IN(500000,500010,1000,2614)
+ORDER BY a.gid, knn_rn;
+
+-- create index and repeat
+CREATE INDEX idx_knn_recheck_geog_gist ON knn_recheck_geog USING gist(geog);
+
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(95 10)'::geography, geog) )
+FROM knn_recheck_geog
+ORDER BY 'POINT(95 10)'::geography <-> geog LIMIT 5;
+
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(-95 -10)'::geography, geog) )
+FROM knn_recheck_geog
+ORDER BY 'POINT(-95 -10)'::geography <-> geog LIMIT 5;
+
+-- lateral check before index
+SELECT a.gid, b.gid As match, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY ST_Distance(a.geog, b.geog, true)::numeric(16,0), b.gid ) As true_rn, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY b.dist::numeric, b.gid)  As knn_rn
+FROM knn_recheck_geog As a 
+	LEFT JOIN 
+		LATERAL ( SELECT  gid, geog,  a.geog <-> g.geog  As dist
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog, g.gid LIMIT 5) As b ON true
+	WHERE a.gid IN(500000,500010,1000,2614)
+ORDER BY a.gid, knn_rn;
+
+DROP TABLE knn_recheck_geog;
+
+--
+-- Delete inserted spatial data
+--
+DELETE FROM spatial_ref_sys WHERE srid = 4326;
