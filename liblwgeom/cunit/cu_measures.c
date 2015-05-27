@@ -1089,6 +1089,18 @@ test_lwgeom_tcpa(void)
 	ASSERT_DOUBLE_EQUAL(m, 3.0);
 	ASSERT_DOUBLE_EQUAL(dist, 1.0);
 
+
+  /* Test for https://trac.osgeo.org/postgis/ticket/3136 */
+
+	g1 = lwgeom_from_wkt("LINESTRING M (0 0 1432291464,2 0 1432291536) ", LW_PARSER_CHECK_NONE);
+	g2 = lwgeom_from_wkt("LINESTRING M (0 0 1432291464,1 0 1432291466.25,2 0 1432291500)", LW_PARSER_CHECK_NONE);
+	dist = -1;
+	m = lwgeom_tcpa(g1, g2, &dist);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	ASSERT_DOUBLE_EQUAL(m, 1432291464.0);
+	ASSERT_DOUBLE_EQUAL(dist, 0.0);
+
 }
 
 /*

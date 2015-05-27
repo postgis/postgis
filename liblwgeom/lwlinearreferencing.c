@@ -1043,7 +1043,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
   double *mvals;
   int nmvals = 0;
   double mintime;
-  double mindist2; /* minimum distance, squared */
+  double mindist2 = FLT_MAX; /* minimum distance, squared */
 
 	if ( ! lwgeom_has_m(g1) || ! lwgeom_has_m(g2) ) {
 		lwerror("Both input geometries must have a measure dimension");
@@ -1063,6 +1063,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     return -1;
   }
 
+  /* WARNING: these ranges may be wider than real ones */
   gbox1 = lwgeom_get_bbox(g1);
   gbox2 = lwgeom_get_bbox(g2);
 
@@ -1071,6 +1072,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
 
   /*
    * Find overlapping M range
+   * WARNING: may be larger than the real one
    */
 
   tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
@@ -1130,39 +1132,19 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     /*lwnotice("T %g-%g", t0, t1);*/
 
     seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
-    if ( -1 == seg )
-    {
-      lwfree(mvals);
-      lwerror("Non-linear measures in first geometry");
-      return -1;
-    }
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
     /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);*/
 
     seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
-    if ( -1 == seg )
-    {
-      lwfree(mvals);
-      lwerror("Non-linear measures in first geometry");
-      return -1;
-    }
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
     /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);*/
 
     seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
-    if ( -1 == seg )
-    {
-      lwfree(mvals);
-      lwerror("Non-linear measures in second geometry");
-      return -1;
-    }
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
     /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);*/
 
     seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
-    if ( -1 == seg )
-    {
-      lwfree(mvals);
-      lwerror("Non-linear measures in second geometry");
-      return -1;
-    }
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
     /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);*/
 
     t = segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
@@ -1176,7 +1158,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
            ( q0.y - p0.y ) * ( q0.y - p0.y ) +
            ( q0.z - p0.z ) * ( q0.z - p0.z );
-    if ( i == 1 || dist2 < mindist2 )
+    if ( dist2 < mindist2 )
     {
       mindist2 = dist2;
       mintime = t;
