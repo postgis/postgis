@@ -44,19 +44,23 @@ PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	double dist = PG_GETARG_FLOAT8(1);
 	GSERIALIZED *result;
-  int type = gserialized_get_type(geom);
-	LWGEOM *in;
-	LWGEOM *out;
-	double dist;
+	int type = gserialized_get_type(geom);
+	LWGEOM *in, *out;
+	bool preserve_collapsed = false;
 
-  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
-    PG_RETURN_POINTER(geom);
+	/* Handle optional argument to preserve collapsed features */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		preserve_collapsed = true;
 
-	dist = PG_GETARG_FLOAT8(1);
+	/* Can't simplify points! */
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		PG_RETURN_POINTER(geom);
+		
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_simplify(in, dist);
+	out = lwgeom_simplify(in, dist, preserve_collapsed);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */

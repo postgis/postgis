@@ -48,7 +48,7 @@ static void test_misc_simplify(void)
 	char *wkt_out;
 
 	geom = lwgeom_from_wkt("LINESTRING(0 0,0 10,0 51,50 20,30 20,7 32)", LW_PARSER_CHECK_NONE);
-	geom2d = lwgeom_simplify(geom,2);
+	geom2d = lwgeom_simplify(geom, 2, LW_FALSE);
 	wkt_out = lwgeom_to_ewkt(geom2d);
 	CU_ASSERT_STRING_EQUAL("LINESTRING(0 0,0 51,50 20,30 20,7 32)",wkt_out);
 	lwgeom_free(geom);
@@ -56,7 +56,7 @@ static void test_misc_simplify(void)
 	lwfree(wkt_out);
 
 	geom = lwgeom_from_wkt("MULTILINESTRING((0 0,0 10,0 51,50 20,30 20,7 32))", LW_PARSER_CHECK_NONE);
-	geom2d = lwgeom_simplify(geom,2);
+	geom2d = lwgeom_simplify(geom, 2, LW_FALSE);
 	wkt_out = lwgeom_to_ewkt(geom2d);
 	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,0 51,50 20,30 20,7 32))",wkt_out);
 	lwgeom_free(geom);

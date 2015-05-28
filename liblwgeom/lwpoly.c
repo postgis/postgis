@@ -348,20 +348,27 @@ int lwpoly_count_vertices(LWPOLY *poly)
 	return v;
 }
 
-LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
+LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed)
 {
 	int i;
 	LWPOLY *opoly = lwpoly_construct_empty(ipoly->srid, FLAGS_GET_Z(ipoly->flags), FLAGS_GET_M(ipoly->flags));
 
-	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
+	LWDEBUGF(2, "%s: simplifying polygon with %d rings", __func__, ipoly->nrings);
 
-	if( lwpoly_is_empty(ipoly) )
-		return opoly; /* should we return NULL instead ? */
+	if ( lwpoly_is_empty(ipoly) )
+		return NULL;
 
-	for (i = 0; i < ipoly->nrings; i++)
+	for ( i = 0; i < ipoly->nrings; i++ )
 	{
-		static const int minvertices = 0; /* TODO: allow setting this */
-		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist, minvertices);
+		POINTARRAY *opts;
+		int minvertices = 0;
+
+		/* We'll still let holes collapse, but if we're preserving */
+		/* and this is a shell, we ensure it is kept */
+		if ( preserve_collapsed && i == 0 )
+			minvertices = 4; 
+			
+		opts = ptarray_simplify(ipoly->rings[i], dist, minvertices);
 
 		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
 

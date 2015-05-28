@@ -1549,7 +1549,7 @@ void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 	}
 }
 
-LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
+LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed)
 {
 	switch (igeom->type)
 	{
@@ -1557,15 +1557,15 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 	case MULTIPOINTTYPE:
 		return lwgeom_clone(igeom);
 	case LINETYPE:
-		return (LWGEOM*)lwline_simplify((LWLINE*)igeom, dist);
+		return (LWGEOM*)lwline_simplify((LWLINE*)igeom, dist, preserve_collapsed);
 	case POLYGONTYPE:
-		return (LWGEOM*)lwpoly_simplify((LWPOLY*)igeom, dist);
+		return (LWGEOM*)lwpoly_simplify((LWPOLY*)igeom, dist, preserve_collapsed);
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist);
+		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist, preserve_collapsed);
 	default:
-		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(igeom->type));
+		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(igeom->type));
 	}
 	return NULL;
 }

@@ -503,18 +503,40 @@ int lwline_count_vertices(LWLINE *line)
 	return line->points->npoints;
 }
 
-LWLINE* lwline_simplify(const LWLINE *iline, double dist)
+LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed)
 {
+	static const int minvertices = 2; /* TODO: allow setting this */
 	LWLINE *oline;
+	POINTARRAY *pa;
 
 	LWDEBUG(2, "function called");
 
 	/* Skip empty case */
 	if( lwline_is_empty(iline) )
-		return lwline_clone(iline);
-		
-	static const int minvertices = 0; /* TODO: allow setting this */
-	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, minvertices));
+		return NULL;
+
+	pa = ptarray_simplify(iline->points, dist, minvertices);
+	if ( ! pa ) return NULL;
+
+	/* Make sure single-point collapses have two points */
+	if ( pa->npoints == 1 )
+	{
+		/* Make sure single-point collapses have two points */
+		if ( preserve_collapsed )
+		{
+			POINT4D pt;
+			getPoint4d_p(pa, 0, &pt);		
+			ptarray_append_point(pa, &pt, LW_TRUE);
+		}
+		/* Return null for collapse */
+		else 
+		{
+			ptarray_free(pa);
+			return NULL;
+		}
+	}
+
+	oline = lwline_construct(iline->srid, NULL, pa);
 	oline->type = iline->type;
 	return oline;
 }
