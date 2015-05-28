@@ -86,14 +86,95 @@ static void write_bbox(TWKB_STATE *ts, int ndims)
 
 /**
 * Stores a pointarray as varints in the buffer
+* @register_npoints, controls whether an npoints entry is added to the buffer (used to skip npoints for point types)
+* @dimension, states the dimensionality of object this array is part of (0 = point, 1 = linear, 2 = areal)
 */
-static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints)
+static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, int dimension)
 {
-	int64_t r;
 	int ndims = FLAGS_NDIMS(pa->flags);
 	int i, j;
+	bytebuffer_t b;
+	int nextdelta[MAX_N_DIMS];
+	int npoints = 0;
+	int minpoints = pow(2, dimension); /* 1 pt for point, 2 for line, 4 for ring */
 
 	LWDEBUGF(2, "Entered %s", __func__);
+
+	/* Dispense with the empty case right away */
+	if ( pa->npoints == 0 && register_npoints )	
+	{		
+		LWDEBUGF(4, "Register npoints:%d", pa->npoints);
+		bytebuffer_append_uvarint(ts->geom_buf, pa->npoints);
+		return 0;
+	}
+		
+	/* Independent buffer to hold the coordinates, so we can put the npoints */
+	/* into the stream once we know how many points we actually have */
+	bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
+	
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		double *dbl_ptr = (double*)getPoint_internal(pa, i);
+		int diff = 0;
+
+		/* Write this coordinate to the buffer as a varint */
+		for ( j = 0; j < ndims; j++ )
+		{
+			/* To get the relative coordinate we don't get the distance */
+			/* from the last point but instead the distance from our */
+			/* last accumulated point. This is important to not build up an */
+			/* accumulated error when rounding the coordinates */
+			nextdelta[j] = (int) lround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
+			LWDEBUGF(4, "deltavalue: %d, ", nextdelta[j]);
+			diff += abs(nextdelta[j]);
+		}
+		
+		/* Skipping the first point is not allowed */
+		/* If the sum(abs()) of all the deltas was zero, */
+		/* then this was a duplicate point, so we can ignore it */
+		if ( i > minpoints && diff == 0 )
+			continue;
+		
+		/* We really added a point, so... */
+		npoints++;
+		
+		/* Write this vertex to the temporary buffer as varints */
+		for ( j = 0; j < ndims; j++ )
+		{
+			ts->accum_rels[j] += nextdelta[j];
+			bytebuffer_append_varint(&b, nextdelta[j]);
+		}
+
+		/* See if this coordinate expands the bounding box */
+		if( globals->variant & TWKB_BBOX )
+		{
+			for ( j = 0; j < ndims; j++ )
+			{
+				if( ts->accum_rels[j] > ts->bbox_max[j] )
+					ts->bbox_max[j] = ts->accum_rels[j];
+
+				if( ts->accum_rels[j] < ts->bbox_min[j] )
+					ts->bbox_min[j] = ts->accum_rels[j];
+			}
+		}
+
+	}	
+
+	/* Now write the temporary results into the main buffer */
+	/* First the npoints */
+	if ( register_npoints )	
+		bytebuffer_append_uvarint(ts->geom_buf, npoints);
+	
+	/* Now the coordinates */
+	bytebuffer_append_bytebuffer(ts->geom_buf, &b);
+	
+	/* Clear our temporary buffer */
+	lwfree(b.buf_start);
+	
+	return 0;
+	
+	
+#if 0
 
 	/* Set the number of points (if it's not a POINT type) */
 	if ( register_npoints )
@@ -136,6 +217,8 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	}
 
 	return 0;
+	
+#endif
 }
 
 /******************************************************************
@@ -147,7 +230,7 @@ static int lwpoint_to_twkb_buf(const LWPOINT *pt, TWKB_GLOBALS *globals, TWKB_ST
 	LWDEBUGF(2, "Entered %s", __func__);
 
 	/* Set the coordinates (don't write npoints) */
-	ptarray_to_twkb_buf(pt->point, globals, ts, 0);
+	ptarray_to_twkb_buf(pt->point, globals, ts, 0, 0);
 	return 0;
 }
 
@@ -160,7 +243,7 @@ static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_ST
 	LWDEBUGF(2, "Entered %s", __func__);
 
 	/* Set the coordinates (do write npoints) */
-	ptarray_to_twkb_buf(line->points, globals, ts, 1);
+	ptarray_to_twkb_buf(line->points, globals, ts, 1, 1);
 	return 0;
 }
 
@@ -178,7 +261,7 @@ static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_ST
 	for ( i = 0; i < poly->nrings; i++ )
 	{
 		/* Set the coordinates (do write npoints) */
-		ptarray_to_twkb_buf(poly->rings[i], globals, ts, 1);
+		ptarray_to_twkb_buf(poly->rings[i], globals, ts, 1, 2);
 	}
 
 	return 0;

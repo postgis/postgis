@@ -55,6 +55,7 @@ typedef struct
 }
 bytebuffer_t;
 
+void bytebuffer_init_with_size(bytebuffer_t *b, size_t size);
 bytebuffer_t *bytebuffer_create_with_size(size_t size);
 bytebuffer_t *bytebuffer_create(void);
 void bytebuffer_destroy(bytebuffer_t *s);

@@ -68,6 +68,19 @@ bytebuffer_create_with_size(size_t size)
 }
 
 /**
+* Allocate just the internal buffer of an existing bytebuffer_t
+* struct. Useful for allocating short-lived bytebuffers off the stack.
+*/
+void 
+bytebuffer_init_with_size(bytebuffer_t *b, size_t size)
+{
+	b->buf_start = lwalloc(size);
+	b->readcursor = b->writecursor = b->buf_start;
+	b->capacity = size;
+	memset(b->buf_start, 0, size);
+}
+
+/**
 * Free the bytebuffer_t and all memory managed within it.
 */
 void 
