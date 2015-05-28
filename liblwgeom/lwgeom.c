@@ -2035,4 +2035,15 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 	return col;
 }
 
+int
+lwgeom_is_trajectory(const LWGEOM *geom)
+{
+  int type = geom->type;
+
+  if( type != LINETYPE ) {
+    lwnotice("Geometry is not a LINESTRING");
+    return LW_FALSE;
+  }
+  return lwline_is_trajectory((LWLINE*)geom);
+}
 

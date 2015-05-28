@@ -126,6 +126,7 @@ TESTS = \
 	wmsservers \
 	wkt \
 	wkb \
+	temporal \
 	tickets \
 	typmod \
 	remove_repeated_points \

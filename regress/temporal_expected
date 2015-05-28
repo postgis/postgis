@@ -1,0 +1,13 @@
+NOTICE:  Geometry is not a LINESTRING
+invalidTrajectory1|f
+NOTICE:  Line does not have M dimension
+invalidTrajectory2|f
+NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (0)
+invalidTrajectory3|f
+NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+invalidTrajectory4|f
+NOTICE:  Measure of vertex 3 (1) not bigger than measure of vertex 2 (2)
+invalidTrajectory8|f
+validTrajectory1|t
+validTrajectory2|t
+validTrajectory3|t

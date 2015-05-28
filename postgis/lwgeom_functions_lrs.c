@@ -776,3 +776,19 @@ Datum ST_ClosestPointOfApproach(PG_FUNCTION_ARGS)
   PG_FREE_IF_COPY(gs1, 1);
 	PG_RETURN_FLOAT8(m);
 }
+
+/*
+ * Does the object correctly model a trajectory ?
+ * Must be a LINESTRINGM with growing measures
+ */
+Datum ST_IsValidTrajectory(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_IsValidTrajectory);
+Datum ST_IsValidTrajectory(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *gs0 = PG_GETARG_GSERIALIZED_P(0);
+  /* All checks already performed by liblwgeom, not worth checking again */
+  LWGEOM *g0 = lwgeom_from_gserialized(gs0);
+  int ret = lwgeom_is_trajectory(g0);
+  lwgeom_free(g0);
+  PG_RETURN_BOOL(ret == LW_TRUE);
+}

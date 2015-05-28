@@ -1103,6 +1103,53 @@ test_lwgeom_tcpa(void)
 
 }
 
+static void
+test_lwgeom_is_trajectory(void)
+{
+	LWGEOM *g;
+	int ret;
+
+	g = lwgeom_from_wkt("POINT M(0 0 1)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_FALSE); /* not a linestring */
+
+	g = lwgeom_from_wkt("LINESTRING Z(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_FALSE); /* no measure */
+
+	g = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_FALSE); /* same measure in two points */
+
+	g = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 0)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_FALSE); /* backward measure */
+
+	g = lwgeom_from_wkt("LINESTRING M(0 0 1, 1 0 3, 2 2 2)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_FALSE); /* backward measure */
+
+	g = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 2)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_TRUE); /* ok (still) */
+
+	g = lwgeom_from_wkt("LINESTRING M EMPTY", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_TRUE); /* ok (empty) */
+
+	g = lwgeom_from_wkt("LINESTRING M (0 0 1)", LW_PARSER_CHECK_NONE);
+	ret = lwgeom_is_trajectory(g);
+	lwgeom_free(g);
+	ASSERT_INT_EQUAL(ret, LW_TRUE); /* ok (corner case) */
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1122,4 +1169,5 @@ void measures_suite_setup(void)
 	PG_ADD_TEST(suite, test_lw_dist2d_pt_ptarrayarc);
 	PG_ADD_TEST(suite, test_lw_dist2d_ptarray_ptarrayarc);
 	PG_ADD_TEST(suite, test_lwgeom_tcpa);
+	PG_ADD_TEST(suite, test_lwgeom_is_trajectory);
 }

@@ -29,4 +29,10 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_EQUAL(o,e); \
 } while (0);
 
+#define ASSERT_INT_EQUAL(o,e) do { \
+  if ( o != e ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %d\n Obtained: %d\n", __FILE__, __LINE__, (e), (o)); \
+  CU_ASSERT_EQUAL(o,e); \
+} while (0);
+
 
