@@ -80,7 +80,7 @@ static void test_geos_subdivide(void)
 	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
-	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(2, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
@@ -89,7 +89,7 @@ static void test_geos_subdivide(void)
 	geom2 = lwgeom_segmentize2d(geom1, 1.0);
 	geom3 = lwgeom_subdivide(geom2, 20);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
-	// printf("\n--------\n%s\n--------\n", out_ewkt);
+	printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(8, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);

@@ -1930,7 +1930,17 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			square.xmin = (box->xmin + box->xmax - height)/2;
 			square.xmax = (box->xmin + box->xmax + height)/2;
 		}
-		return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+		
+		/* Just quit right away for objects with no size */
+		if ( width == 0 && height == 0 )
+		{
+			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+			return 1;
+		}
+		else
+		{
+			return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+		}
 	}
 	/* Everything is in place! Let's start subdividing! */
 	else
