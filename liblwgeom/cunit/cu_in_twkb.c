@@ -84,8 +84,8 @@ static void cu_twkb_in(char *wkt)
 	twkb_b = lwgeom_to_twkb(g_b, variant, precision, precision, precision, &twkb_size_b);
 
 	/* Turn TWKB into hex for comparisons */
-	if ( hex_a ) free(hex_a);
-	if ( hex_b ) free(hex_b);
+	if ( hex_a ) lwfree(hex_a);
+	if ( hex_b ) lwfree(hex_b);
 	hex_a = hexbytes_from_bytes(twkb_a, twkb_size_a);
 	hex_b = hexbytes_from_bytes(twkb_b, twkb_size_b);
 
@@ -208,7 +208,6 @@ static void test_twkb_in_precision(void)
 	{
 		cu_twkb_in("MULTILINESTRING((0 0,0 1),EMPTY,(1 1, 10 10))");
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-		// printf("old: %s\nnew: %s\n",hex_a, hex_b);
 
 		cu_twkb_in("MULTIPOLYGON(((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),((-1 -1 0,-1 2 0,2 2 0,2 -1 0,-1 -1 0),(0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)))");
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -217,6 +216,7 @@ static void test_twkb_in_precision(void)
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 		cu_twkb_in("MULTILINESTRING((0 0 200000,0 1 10),(1 100000000 23, 10 10 45))");
+		// printf("old: %s\nnew: %s\n",hex_a, hex_b);
 		CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 	}
 

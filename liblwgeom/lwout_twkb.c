@@ -89,14 +89,13 @@ static void write_bbox(TWKB_STATE *ts, int ndims)
 * @register_npoints, controls whether an npoints entry is added to the buffer (used to skip npoints for point types)
 * @dimension, states the dimensionality of object this array is part of (0 = point, 1 = linear, 2 = areal)
 */
-static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, int dimension)
+static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB_STATE *ts, int register_npoints, int minpoints)
 {
 	int ndims = FLAGS_NDIMS(pa->flags);
 	int i, j;
 	bytebuffer_t b;
-	int nextdelta[MAX_N_DIMS];
+	int64_t nextdelta[MAX_N_DIMS];
 	int npoints = 0;
-	int minpoints = pow(2, dimension); /* 1 pt for point, 2 for line, 4 for ring */
 
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -124,9 +123,9 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 			/* from the last point but instead the distance from our */
 			/* last accumulated point. This is important to not build up an */
 			/* accumulated error when rounding the coordinates */
-			nextdelta[j] = (int) lround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
+			nextdelta[j] = (int64_t) lround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
 			LWDEBUGF(4, "deltavalue: %d, ", nextdelta[j]);
-			diff += abs(nextdelta[j]);
+			diff += llabs(nextdelta[j]);
 		}
 		
 		/* Skipping the first point is not allowed */
@@ -183,7 +182,7 @@ static int lwpoint_to_twkb_buf(const LWPOINT *pt, TWKB_GLOBALS *globals, TWKB_ST
 	LWDEBUGF(2, "Entered %s", __func__);
 
 	/* Set the coordinates (don't write npoints) */
-	ptarray_to_twkb_buf(pt->point, globals, ts, 0, 0);
+	ptarray_to_twkb_buf(pt->point, globals, ts, 0, 1);
 	return 0;
 }
 
@@ -196,7 +195,7 @@ static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_ST
 	LWDEBUGF(2, "Entered %s", __func__);
 
 	/* Set the coordinates (do write npoints) */
-	ptarray_to_twkb_buf(line->points, globals, ts, 1, 1);
+	ptarray_to_twkb_buf(line->points, globals, ts, 1, 2);
 	return 0;
 }
 
@@ -214,7 +213,7 @@ static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_ST
 	for ( i = 0; i < poly->nrings; i++ )
 	{
 		/* Set the coordinates (do write npoints) */
-		ptarray_to_twkb_buf(poly->rings[i], globals, ts, 1, 2);
+		ptarray_to_twkb_buf(poly->rings[i], globals, ts, 1, 4);
 	}
 
 	return 0;
