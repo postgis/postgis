@@ -172,53 +172,6 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 	lwfree(b.buf_start);
 	
 	return 0;
-	
-	
-#if 0
-
-	/* Set the number of points (if it's not a POINT type) */
-	if ( register_npoints )
-	{
-		bytebuffer_append_uvarint(ts->geom_buf, pa->npoints);
-		LWDEBUGF(4, "Register npoints:%d", pa->npoints);
-	}
-
-	for ( i = 0; i < pa->npoints; i++ )
-	{
-		LWDEBUGF(4, "Writing point #%d", i);
-		double *dbl_ptr = (double*)getPoint_internal(pa, i);
-
-		/* Write this coordinate to the buffer as a varint */
-		for ( j = 0; j < ndims; j++ )
-		{
-			/* To get the relative coordinate we don't get the distance */
-			/* from the last point but instead the distance from our */
-			/* last accumulated point. This is important to not build up an */
-			/* accumulated error when rounding the coordinates */
-			r = (int64_t) lround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
-			LWDEBUGF(4, "deltavalue: %d, ", r);
-			ts->accum_rels[j] += r;
-			bytebuffer_append_varint(ts->geom_buf, r);
-		}
-
-		/* See if this coordinate expands the bounding box */
-		if( globals->variant & TWKB_BBOX )
-		{
-			for ( j = 0; j < ndims; j++ )
-			{
-				if( ts->accum_rels[j] > ts->bbox_max[j] )
-					ts->bbox_max[j] = ts->accum_rels[j];
-
-				if( ts->accum_rels[j] < ts->bbox_min[j] )
-					ts->bbox_min[j] = ts->accum_rels[j];
-			}
-		}
-
-	}
-
-	return 0;
-	
-#endif
 }
 
 /******************************************************************
