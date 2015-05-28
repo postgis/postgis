@@ -885,6 +885,5 @@ SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geog
 
 SELECT '#2956', st_astwkb(null,0) is null;
 
-SELECT '#3135', st_astext(ST_SubDivide(ST_GeomFromText('POLYGON((1 2,1 2,1 2,1 2))'), 2));
 -- Clean up
 DELETE FROM spatial_ref_sys;

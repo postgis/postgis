@@ -261,4 +261,3 @@ ERROR:  invalid GML representation
 #2788|f|Self-intersection|POINT(1 1)
 #2870|Point[GS]
 #2956|t
-#3135|POLYGON((1 2,1 2,1 2,1 2))
