@@ -921,13 +921,11 @@ static void test_lwgeom_simplify(void)
 		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 1 0, 1 1, 0 1, 0 0)", LW_PARSER_CHECK_NONE), 10, LW_FALSE);
 		CU_ASSERT_EQUAL(l, NULL);
 		lwgeom_free(l);
-		lwfree(ewkt);
 
 		/* Simplify and collapse */
 		l = lwgeom_simplify(lwgeom_from_wkt("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))", LW_PARSER_CHECK_NONE), 10, LW_FALSE);
 		CU_ASSERT_EQUAL(l, NULL);
 		lwgeom_free(l);
-		lwfree(ewkt);
 		
 		/* Not simplifiable */
 		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 50 1.00001, 100 0)", LW_PARSER_CHECK_NONE), 1.0, LW_FALSE);
