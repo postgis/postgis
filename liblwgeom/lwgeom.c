@@ -2055,7 +2055,7 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 	const int minmaxvertices = 16;
 	LWCOLLECTION *col;
 
-	if ( maxvertices < 16 )
+	if ( maxvertices < 8 )
 	{
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
