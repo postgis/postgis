@@ -58,6 +58,7 @@ Datum geography_distance_knn(PG_FUNCTION_ARGS)
 	return DirectFunctionCall3(geography_distance_uncached, 
 		PG_GETARG_DATUM(0), 
 		PG_GETARG_DATUM(1), 
+		(Datum)0, 
 		BoolGetDatum(false));
 }
 
