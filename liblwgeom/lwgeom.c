@@ -1873,11 +1873,13 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 }
 
 /* Prototype for recursion */
-static int lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip);
+static int 
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip)
 {
+	const int maxdepth = 25;
 
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
 	{
@@ -1891,9 +1893,18 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		int i, n = 0;
 		for ( i = 0; i < gcol->ngeoms; i++ )
 		{
-			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, col, clip);
+			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
+			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, depth, col, clip);
 		}
 		return n;
+	}
+	
+	/* But don't go too far. 2^25 = 33M, that's enough subdivision */
+	/* Signal callers above that we depth'ed out with a negative */
+	/* return value */
+	if ( depth > maxdepth )
+	{
+		return 0;		
 	}
 	
 	/* Points and single-point multipoints can be added right into the output result */
@@ -1939,7 +1950,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		}
 		else
 		{
-			return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+			/* Don't increment depth here, as we aren't subdividing yet */
+			return lwgeom_subdivide_recursive(geom, maxvertices, depth, col, &square);
 		}
 	}
 	/* Everything is in place! Let's start subdividing! */
@@ -2013,22 +2025,22 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 				}				
 			}				
 		}
-		/* Clipping rectangle too small: subdivide more! */
+		/* Clipping rectangle too large: subdivide more! */
 		else
 		{
 			int i, n = 0;
 			GBOX boxes[4];
-			double width = FP_TOLERANCE + (clip->xmax - clip->xmin)/2;
+			double width = (clip->xmax - clip->xmin)/2;
 			for( i = 0; i < 4; i++ )
 			{
 				int ix = i / 2;
 				int iy = i % 2;
 				gbox_init(&(boxes[i]));
-				boxes[i].xmin = clip->xmin + ix * width;
-				boxes[i].xmax = clip->xmin + width + ix * width;
-				boxes[i].ymin = clip->ymin + iy * width;
-				boxes[i].ymax = clip->ymin + width + iy * width;
-				n += lwgeom_subdivide_recursive(geom, maxvertices, col, &(boxes[i]));
+				boxes[i].xmin = clip->xmin + ix * width - FP_TOLERANCE;
+				boxes[i].xmax = clip->xmin + width + ix * width + - FP_TOLERANCE;
+				boxes[i].ymin = clip->ymin + iy * width - FP_TOLERANCE;
+				boxes[i].ymax = clip->ymin + width + iy * width + FP_TOLERANCE;
+				n += lwgeom_subdivide_recursive(geom, maxvertices, ++depth, col, &(boxes[i]));
 			}
 			return n;
 		}
@@ -2039,9 +2051,17 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
+	const int startdepth = 0;
+	const int minmaxvertices = 16;
 	LWCOLLECTION *col;
+
+	if ( maxvertices < 16 )
+	{
+		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
+	}
+	
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
+	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, NULL);
 	return col;
 }
 
