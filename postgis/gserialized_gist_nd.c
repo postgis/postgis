@@ -1062,7 +1062,7 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	GIDX *entry_box;
 	double distance;
 
-	POSTGIS_DEBUGF(4, "[GIST] '%s' function called", __func__);
+	POSTGIS_DEBUGF(3, "[GIST] '%s' function called", __func__);
  
 	/* We are using '13' as the gist geography distance <-> strategy number */
 	if ( strategy != 13  ) 
@@ -1074,10 +1074,16 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	/* Null box should never make this far. */
 	if ( gserialized_datum_get_gidx_p(query_datum, query_box) == LW_FAILURE )
 	{
-		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
+		POSTGIS_DEBUG(2, "[GIST] null query_gbox_index!");
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
+	/* When we hit leaf nodes, it's time to turn on recheck */
+	if (GIST_LEAF(entry))
+	{
+		*recheck = true;
+	}
+			
 	/* Get the entry box */
 	entry_box = (GIDX*)DatumGetPointer(entry->key);
 
@@ -1087,13 +1093,8 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	/* compare reasonably with the over-the-spheroid distances that */
 	/* the recheck process will turn up */
 	distance = WGS84_RADIUS * gidx_distance(entry_box, query_box);
+	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
 
-	/* When we hit leaf nodes, it's time to turn on recheck */
-	if (GIST_LEAF(entry))
-	{
-		*recheck = true;
-	}
-			
 	PG_RETURN_FLOAT8(distance);
 }
 #endif

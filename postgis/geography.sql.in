@@ -250,15 +250,15 @@ CREATE OPERATOR && (
 #if POSTGIS_PGSQL_VERSION >= 95
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geography_knn_distance(geography, geography)
+CREATE OR REPLACE FUNCTION geography_distance_knn(geography, geography)
   RETURNS float8
-  AS 'MODULE_PATHNAME','geography_distance_uncached'
+  AS 'MODULE_PATHNAME','geography_distance_knn'
   LANGUAGE 'c' IMMUTABLE STRICT
   COST 100;
 
 -- Availability: 2.2.0
 CREATE OPERATOR <-> (
-  LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_knn_distance,
+  LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_distance_knn,
   COMMUTATOR = '<->'
 );
 

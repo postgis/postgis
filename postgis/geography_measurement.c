@@ -36,6 +36,7 @@
 
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_uncached(PG_FUNCTION_ARGS);
+Datum geography_distance_knn(PG_FUNCTION_ARGS);
 Datum geography_distance_tree(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
 Datum geography_dwithin_uncached(PG_FUNCTION_ARGS);
@@ -50,6 +51,16 @@ Datum geography_project(PG_FUNCTION_ARGS);
 Datum geography_azimuth(PG_FUNCTION_ARGS);
 Datum geography_segmentize(PG_FUNCTION_ARGS);
 
+
+PG_FUNCTION_INFO_V1(geography_distance_knn);
+Datum geography_distance_knn(PG_FUNCTION_ARGS)
+{
+	return DirectFunctionCall3(geography_distance_uncached, 
+		PG_GETARG_DATUM(0), 
+		PG_GETARG_DATUM(1), 
+		BoolGetDatum(false));
+}
+
 /*
 ** geography_distance_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
@@ -63,7 +74,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double distance;
 	double tolerance = FP_TOLERANCE;
-	bool use_spheroid = true;
+	bool use_spheroid = false; /* XXX WARNING< CHANGE THIS DO NOT COMMIT */
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -101,6 +112,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	lwgeom_add_bbox_deep(lwgeom2, NULL);
 	
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+
+	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
 
 	/* Clean up */
 	lwgeom_free(lwgeom1);
