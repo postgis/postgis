@@ -245,8 +245,8 @@ test check: staged-install
 garden:
 	createdb postgis_garden
 	createlang plpgsql postgis_garden || true #tolerate an error here
-	psql -d postgis_garden < ../postgis/postgis.sql && \
-	psql -d postgis_garden < ../spatial_ref_sys.sql || true # tolerate an error here
+	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql && \
+	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql || true # tolerate an error here
 	@echo '-------------------------------------------------'
 	@echo 'Regression tests in progress (it will take time)'
 	@echo 'Result output: ./regress/postgis_garden_result.txt'
