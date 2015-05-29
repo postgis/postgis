@@ -55,7 +55,7 @@ Datum geography_segmentize(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(geography_distance_knn);
 Datum geography_distance_knn(PG_FUNCTION_ARGS)
 {
-	return DirectFunctionCall3(geography_distance_uncached, 
+	return DirectFunctionCall4(geography_distance_uncached, 
 		PG_GETARG_DATUM(0), 
 		PG_GETARG_DATUM(1), 
 		(Datum)0, 
