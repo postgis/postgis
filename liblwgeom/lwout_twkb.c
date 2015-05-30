@@ -93,9 +93,10 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 {
 	int ndims = FLAGS_NDIMS(pa->flags);
 	int i, j;
-	bytebuffer_t b;
+	bytebuffer_t b,*b_p;
 	int64_t nextdelta[MAX_N_DIMS];
 	int npoints = 0;
+	int where2writenpoints=0;
 
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -106,11 +107,36 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 		bytebuffer_append_uvarint(ts->geom_buf, pa->npoints);
 		return 0;
 	}
-		
-	/* Independent buffer to hold the coordinates, so we can put the npoints */
-	/* into the stream once we know how many points we actually have */
-	bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
-	
+
+	/*If npoints is more than 127 it is unpredictable how many bytes npoints will need*/
+	/*Then we have to store the deltas in a temp buffer to later add them after npoints*/
+	/*If noints is below 128 we know 1 byte will be needed*/
+	/*Then we can make room for that 1 byte at once and write to*/
+	/*ordinary buffer*/
+	if(pa->npoints>127)
+	{
+		/* Independent buffer to hold the coordinates, so we can put the npoints */
+		/* into the stream once we know how many points we actually have */
+		bytebuffer_init_with_size(&b, 3 * ndims * pa->npoints);
+		b_p=&b;
+	}
+	else
+	{
+		/*We give an alias to our ordinary buffer*/
+		b_p=ts->geom_buf;
+		if ( register_npoints )		
+		{		
+			/*We do not store a pointer to the place where we want the npoints value*/
+			/*Instead we store how far from the beginning of the buffer we want the value*/
+			/*That is because we otherwise will get in trouble if the buffer is reallocated*/			
+			where2writenpoints=b_p->writecursor-b_p->buf_start;
+			
+			/*We just move the cursor 1 step to make room for npoints byte*/
+			/*We use the function append_byte even if we have no value yet, */
+			/*since that gives us the check for big enough buffer and moves the cursor*/
+			bytebuffer_append_byte(b_p, 0);
+		}
+	}
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		double *dbl_ptr = (double*)getPoint_internal(pa, i);
@@ -141,7 +167,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 		for ( j = 0; j < ndims; j++ )
 		{
 			ts->accum_rels[j] += nextdelta[j];
-			bytebuffer_append_varint(&b, nextdelta[j]);
+			bytebuffer_append_varint(b_p, nextdelta[j]);
 		}
 
 		/* See if this coordinate expands the bounding box */
@@ -159,16 +185,27 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 
 	}	
 
-	/* Now write the temporary results into the main buffer */
-	/* First the npoints */
-	if ( register_npoints )	
-		bytebuffer_append_uvarint(ts->geom_buf, npoints);
-	
-	/* Now the coordinates */
-	bytebuffer_append_bytebuffer(ts->geom_buf, &b);
-	
-	/* Clear our temporary buffer */
-	lwfree(b.buf_start);
+
+
+	if(pa->npoints>127)
+	{		
+		/* Now write the temporary results into the main buffer */
+		/* First the npoints */
+		if ( register_npoints )	
+			bytebuffer_append_uvarint(ts->geom_buf, npoints);
+		/* Now the coordinates */
+		bytebuffer_append_bytebuffer(ts->geom_buf, b_p);
+		
+		/* Clear our temporary buffer */
+		lwfree(b.buf_start);
+	}
+	else
+	{
+		/*If we didn't use a temp buffer, we just write that npoints value*/
+		/*to where it belongs*/
+		if ( register_npoints )	
+			varint_u64_encode_buf(npoints, b_p->buf_start+where2writenpoints);
+	}
 	
 	return 0;
 }
