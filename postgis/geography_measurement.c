@@ -55,11 +55,58 @@ Datum geography_segmentize(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(geography_distance_knn);
 Datum geography_distance_knn(PG_FUNCTION_ARGS)
 {
-	return DirectFunctionCall4(geography_distance_uncached, 
-		PG_GETARG_DATUM(0), 
-		PG_GETARG_DATUM(1), 
-		(Datum)0, 
-		BoolGetDatum(false));
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double distance;
+	double tolerance = FP_TOLERANCE;
+	bool use_spheroid = false; 
+	SPHEROID s;
+
+	/* Get our geometry objects loaded into memory. */
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* Return NULL on empty arguments. */
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_NULL();
+	}
+
+	/* Make sure we have boxes attached */
+	lwgeom_add_bbox_deep(lwgeom1, NULL);
+	lwgeom_add_bbox_deep(lwgeom2, NULL);
+	
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+
+	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
+
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
+	/* Something went wrong, negative return... should already be eloged, return NULL */
+	if ( distance < 0.0 )
+	{
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_FLOAT8(distance);
 }
 
 /*
