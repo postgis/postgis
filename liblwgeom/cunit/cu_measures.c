@@ -1153,7 +1153,6 @@ test_lwgeom_is_trajectory(void)
 /*
 ** Used by test harness to register the tests in this file.
 */
-void measures_suite_setup(void);
 void measures_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("measures", NULL, NULL);
