@@ -61,7 +61,7 @@ Datum geography_distance_knn(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double distance;
 	double tolerance = FP_TOLERANCE;
-	bool use_spheroid = true; 
+	bool use_spheroid = false; /**switched back to use sphere, can get index to harmonize with sphoeroid **/ 
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */

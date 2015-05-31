@@ -1,4 +1,4 @@
--- create table
+﻿-- create table
 CREATE TABLE knn_recheck_geom(gid serial primary key, geom geometry);
 INSERT INTO knn_recheck_geom(gid,geom)
 SELECT ROW_NUMBER() OVER(ORDER BY x,y) AS gid, ST_Point(x*0.777,y*0.777) As geom
@@ -77,42 +77,42 @@ FROM knn_recheck_geog
 WHERE gid IN(1000, 10000, 2000, 2614, 40000);
 
 
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(95 10)'::geography, geog) )
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(95 10)'::geography, geog,false) )
 FROM knn_recheck_geog
 ORDER BY 'POINT(95 10)'::geography <-> geog LIMIT 5;
 
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(-95 -10)'::geography, geog) )
+SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(-95 -10)'::geography, geog, false) )
 FROM knn_recheck_geog
 ORDER BY 'POINT(-95 -10)'::geography <-> geog LIMIT 5;
 
 -- lateral check before index
-SELECT a.gid, b.gid As match, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY ST_Distance(a.geog, b.geog, true)::numeric(16,0), b.gid ) As true_rn, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY b.dist::numeric, b.gid)  As knn_rn
+SELECT a.gid,  ARRAY(SELECT  gid
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
 FROM knn_recheck_geog As a 
-	LEFT JOIN 
-		LATERAL ( SELECT  gid, geog,  a.geog <-> g.geog  As dist
-			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog, g.gid LIMIT 5) As b ON true
 	WHERE a.gid IN(500000,500010,1000,2614)
-ORDER BY a.gid, knn_rn;
+ORDER BY a.gid;
+
 
 -- create index and repeat
 CREATE INDEX idx_knn_recheck_geog_gist ON knn_recheck_geog USING gist(geog);
 
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(95 10)'::geography, geog) )
+SELECT gid
 FROM knn_recheck_geog
 ORDER BY 'POINT(95 10)'::geography <-> geog LIMIT 5;
 
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(-95 -10)'::geography, geog) )
+SELECT gid
 FROM knn_recheck_geog
 ORDER BY 'POINT(-95 -10)'::geography <-> geog LIMIT 5;
 
--- lateral check before index
-SELECT a.gid, b.gid As match, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY ST_Distance(a.geog, b.geog, true)::numeric(16,0), b.gid ) As true_rn, ROW_NUMBER() OVER(PARTITION BY a.gid ORDER BY b.dist::numeric, b.gid)  As knn_rn
+-- check after index
+set enable_seqscan = false;  --sometimes doesn't want to use index
+SELECT a.gid,  ARRAY(SELECT  gid
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
+			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
 FROM knn_recheck_geog As a 
-	LEFT JOIN 
-		LATERAL ( SELECT  gid, geog,  a.geog <-> g.geog  As dist
-			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog, g.gid LIMIT 5) As b ON true
 	WHERE a.gid IN(500000,500010,1000,2614)
-ORDER BY a.gid, knn_rn;
+ORDER BY a.gid;
 
 DROP TABLE knn_recheck_geog;
 
@@ -120,3 +120,4 @@ DROP TABLE knn_recheck_geog;
 -- Delete inserted spatial data
 --
 DELETE FROM spatial_ref_sys WHERE srid = 4326;
+
