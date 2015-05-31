@@ -19,12 +19,12 @@ WHERE gid IN(1000, 10000, 2000, 40000);
 
 -- without index order should match st_distance order --
 -- point check
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(200 1000)'::geometry, geom) )
+SELECT gid, ST_Distance( 'POINT(200 1000)'::geometry, geom)::numeric(10,2)
 FROM knn_recheck_geom
 ORDER BY 'POINT(200 1000)'::geometry <-> geom LIMIT 5;
 
 -- linestring check
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'LINESTRING(200 100, -10 600)'::geometry, geom) )
+SELECT gid, ST_Distance( 'LINESTRING(200 100, -10 600)'::geometry, geom)::numeric(10,2)
 FROM knn_recheck_geom
 ORDER BY 'LINESTRING(200 100, -10 600)'::geometry <-> geom LIMIT 5;
 
@@ -40,8 +40,9 @@ ORDER BY a.gid, b.rn;
 -- create index and repeat
 CREATE INDEX idx_knn_recheck_geom_gist ON knn_recheck_geom USING gist(geom);
 
+set enable_seqscan = false;
 -- point check after index
-SELECT gid, RANK() OVER(ORDER BY ST_Distance( 'POINT(200 1000)'::geometry, geom) )
+SELECT gid, ST_Distance( 'POINT(200 1000)'::geometry, geom)::numeric(10,2)
 FROM knn_recheck_geom
 ORDER BY 'POINT(200 1000)'::geometry <-> geom LIMIT 5;
 
