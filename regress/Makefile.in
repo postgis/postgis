@@ -188,7 +188,8 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 	# GEOS-3.5 adds:
 	# ST_ClipByBox2d
 	TESTS += \
-		clipbybox2d
+		clipbybox2d \
+		subdivide
 endif
 
 ifeq ($(HAVE_JSON),yes)
