@@ -2033,8 +2033,8 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 			double width = (clip->xmax - clip->xmin)/2;
 			for( i = 0; i < 4; i++ )
 			{
-				int ix = i / 2;
-				int iy = i % 2;
+				int ix = i / 2; /* 0, 0, 1, 1 */
+				int iy = i % 2; /* 0, 1, 0, 1 */
 				gbox_init(&(boxes[i]));
 				boxes[i].xmin = clip->xmin + ix * width - FP_TOLERANCE;
 				boxes[i].xmax = clip->xmin + width + ix * width + - FP_TOLERANCE;
@@ -2052,10 +2052,10 @@ LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
 	const int startdepth = 0;
-	const int minmaxvertices = 16;
+	const int minmaxvertices = 8;
 	LWCOLLECTION *col;
 
-	if ( maxvertices < 8 )
+	if ( maxvertices < minmaxvertices )
 	{
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
