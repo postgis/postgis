@@ -29,6 +29,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3139, ST_BoundingDiagonal (Sandro Santilli / Boundless)
   - #3129, ST_IsValidTrajectory (Sandro Santilli / Boundless)
   - #3128, ST_ClosestPointOfApproach (Sandro Santilli / Boundless)
   - Canonical output for index key types

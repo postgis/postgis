@@ -114,3 +114,24 @@ SELECT '#3069',  postgis_getbbox('SRID=0;LINESTRING(0 0, 1 1)'::geometry);
 SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0, 1 1))'::geometry);
 SELECT '#3069',  postgis_getbbox('SRID=0;MULTIPOINT(1 1)'::geometry);
 SELECT '#3069',  postgis_getbbox('SRID=0;MULTILINESTRING((0 0,1 1))'::geometry);
+
+-- ST_BoundingDiagonal
+
+SELECT 'BoundingDiagonal1', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
+    'SRID=4326;POINT(1e+15 1e+15)'::geometry
+)));
+SELECT 'BoundingDiagonal2', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
+    'SRID=4326;POINT(1e+15 1e+15)'::geometry
+), true));
+SELECT 'BoundingDiagonal3', ST_AsEwkt(ST_BoundingDiagonal(postgis_addbbox(
+    'SRID=4326;POINT(1e+15 1e+15)'::geometry
+), false));
+SELECT 'BoundingDiagonal4', ST_AsEwkt(ST_BoundingDiagonal(
+    'SRID=3857;LINESTRING(1 2 3 4, 0 1 -8 2, -1 -2 -3 9)'::geometry
+));
+SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
+    'SRID=3857;LINESTRING M (5 4 0,4 4 1)'::geometry
+));
+SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
+    'SRID=3857;POLYGON M EMPTY'::geometry
+));

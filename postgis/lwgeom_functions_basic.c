@@ -2744,3 +2744,58 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   PG_FREE_IF_COPY(in, 0);
   PG_RETURN_POINTER(out);
 }
+
+/*
+ * ST_BoundingDiagonal(inp geometry, fits boolean)
+ */
+Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_BoundingDiagonal);
+Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
+  GSERIALIZED *geom_out;
+  bool fits = PG_GETARG_BOOL(1);
+  LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
+  LWGEOM *lwgeom_out;
+  const GBOX *gbox;
+  int hasz = FLAGS_GET_Z(lwgeom_in->flags);
+  int hasm = FLAGS_GET_M(lwgeom_in->flags);
+  int srid = lwgeom_in->srid;
+  POINT4D pt;
+  POINTARRAY *pa;
+
+  if ( fits ) {
+    /* unregister any cached bbox to ensure it's recomputed */
+    lwgeom_in->bbox = NULL;
+  }
+
+  gbox = lwgeom_get_bbox(lwgeom_in);
+
+  if ( ! gbox )
+  {
+    lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+  }
+  else
+  {
+    pa = ptarray_construct_empty(hasz, hasm, 2);
+    pt.x = gbox->xmin;
+    pt.y = gbox->ymin;
+    pt.z = gbox->zmin;
+    pt.m = gbox->mmin;
+    ptarray_append_point(pa, &pt, LW_TRUE);
+    pt.x = gbox->xmax;
+    pt.y = gbox->ymax;
+    pt.z = gbox->zmax;
+    pt.m = gbox->mmax;
+    ptarray_append_point(pa, &pt, LW_TRUE);
+    lwgeom_out = lwline_as_lwgeom( lwline_construct(srid, NULL, pa) );
+  }
+
+  lwgeom_free(lwgeom_in);
+  PG_FREE_IF_COPY(geom_in, 0);
+
+  geom_out = geometry_serialize(lwgeom_out);
+  lwgeom_free(lwgeom_out);
+
+  PG_RETURN_POINTER(geom_out);
+}
