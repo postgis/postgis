@@ -1091,9 +1091,15 @@ estimate_join_selectivity(const ND_STATS *s1, const ND_STATS *s2)
 	 */
 	selectivity = val / ntuples_max;
 
-    /* Guard against over-estimates :) */
-    if ( selectivity > 1.0 ) 
-        selectivity = 1.0;
+	/* Guard against over-estimates and crazy numbers :) */
+	if ( isnan(selectivity) || ! isfinite(selectivity) || selectivity < 0.0 )
+	{
+		selectivity = DEFAULT_ND_JOINSEL;
+	}
+	else if ( selectivity > 1.0 )
+	{
+		selectivity = 1.0;
+	}
 	
 	return selectivity;
 }
