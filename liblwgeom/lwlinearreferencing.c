@@ -1099,12 +1099,12 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
    * Collect M values in common time range from inputs
    */
 
-  mvals = lwalloc( sizeof(double*) *
+  mvals = lwalloc( sizeof(double) *
                    ( l1->points->npoints + l2->points->npoints ) );
 
   /* TODO: also clip the lines ? */
   nmvals  = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
-  nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, &(mvals[nmvals]));
+  nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
 
   /* Sort values in ascending order */
   qsort(mvals, nmvals, sizeof(double), compare_double);
