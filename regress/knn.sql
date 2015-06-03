@@ -83,3 +83,18 @@ SELECT '<<->> res3',num,
 DROP FUNCTION qnodes(text);
 
 DROP TABLE test;
+
+-- nd box centroid distance  <<->>
+
+select '<<->> ndcd1', 'LINESTRING(0 0,0 10,10 10)'::geometry <<->>
+                'LINESTRING(6 2,6 8)'::geometry; -- 1
+select '<<->> ndcd2', 'LINESTRING(0 0,0 10,10 10)'::geometry <<->>
+                'LINESTRING(11 0,19 10)'::geometry; -- 10
+select '<<->> ndcd3', 'POINTM(0 0 0)'::geometry <<->>
+                'POINTM(0 0 5)'::geometry; -- 5
+select '<<->> ndcd4', 'POINTZ(0 0 15)'::geometry <<->>
+                'POINTZ(0 0 10)'::geometry; -- 5
+select '<<->> ndcd5', 'POINTZM(1 2 3 4)'::geometry <<->>
+                'POINTZM(2 3 4 5)'::geometry; -- 2
+select '<<->> ndcd6', 'POINTZM(9 9 3 4)'::geometry <<->>
+                'POINT(9 8)'::geometry; -- 1, higher dimensions overlapping
