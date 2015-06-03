@@ -138,8 +138,11 @@ TESTS = \
 	twkb
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
 	# Index supported KNN only available in PostgreSQL 9.1 and higher
+	# For 9.5 and higher, use the recheck suite instead
 	TESTS += knn
+endif
 endif
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)

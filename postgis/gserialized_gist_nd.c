@@ -464,6 +464,7 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 /**
 * Calculate the centroid->centroid distance between the boxes.
 */
+#if POSTGIS_PGSQL_VERSION < 95
 static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
 {
   int ndims, i;
@@ -499,6 +500,7 @@ static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
   }
   return sqrt(sum);
 }
+#endif
 
 /**
 * Calculate the box->box distance.
@@ -547,6 +549,43 @@ static double gidx_distance(const GIDX *a, const GIDX *b)
   return sqrt(sum);
 }
 
+static double gidx_distance_m(const GIDX *a, const GIDX *b)
+{
+	int mdim_a, mdim_b;
+	double d, amin, amax, bmin, bmax;
+
+	/* Base computation on least available dimensions */
+	mdim_a = GIDX_NDIMS(a) - 1;
+	mdim_b = GIDX_NDIMS(b) - 1;
+
+	amin = GIDX_GET_MIN(a,mdim_a);
+	amax = GIDX_GET_MAX(a,mdim_a);
+	bmin = GIDX_GET_MIN(b,mdim_b);
+	bmax = GIDX_GET_MAX(b,mdim_b);
+
+    if ( ( amin <= bmax && amax >= bmin ) )
+    {
+      /* overlaps */
+      d = 0;
+    }
+    else if ( bmax < amin )
+    {
+      /* is "left" */
+      d = amin - bmax;
+    }
+    else
+    {
+      /* is "right" */
+      assert( bmin > amax );
+      d = bmin - amax;
+    }
+	
+	return d;
+}
+
+
+
+#if POSTGIS_PGSQL_VERSION < 95
 static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 {
 	int i;
@@ -590,6 +629,7 @@ static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 	}
 	return sqrt(sum);
 }
+#endif
 
 /**
 * Return a #GSERIALIZED with an expanded bounding box.
@@ -625,69 +665,112 @@ gserialized_expand(GSERIALIZED *g, double distance)
 PG_FUNCTION_INFO_V1(gserialized_distance_nd);
 Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PGSQL_VERSION < 95
-	/* Centroid-to-centroid distance */
 	char b1mem[GIDX_MAX_SIZE];
 	GIDX *b1 = (GIDX*)b1mem;
 	char b2mem[GIDX_MAX_SIZE];
 	GIDX *b2 = (GIDX*)b2mem;
-	Datum gs1 = PG_GETARG_DATUM(0);
-	Datum gs2 = PG_GETARG_DATUM(1);
 	double distance;
 
-	POSTGIS_DEBUG(3, "entered function");
+#if POSTGIS_PGSQL_VERSION < 95
+
+	/* Centroid-to-centroid distance */
+	Datum gs1 = PG_GETARG_DATUM(0);
+	Datum gs2 = PG_GETARG_DATUM(1);
+	double box_distance = FLT_MAX;
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ( (gserialized_datum_get_gidx_p(gs1, b1) == LW_SUCCESS) &&
 	     (gserialized_datum_get_gidx_p(gs2, b2) == LW_SUCCESS) )
 	{
-		distance = gidx_distance_leaf_centroid(b1, b2);
+		box_distance = gidx_distance_leaf_centroid(b1, b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(b1), gidx_to_string(b2));
-		PG_RETURN_FLOAT8(distance);
 	}
-	PG_RETURN_FLOAT8(FLT_MAX);
+	PG_RETURN_FLOAT8(box_distance);
+
 #else
+
 	/* Feature-to-feature distance */
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	LWGEOM *lw1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lw2 = lwgeom_from_gserialized(geom2);
 	LWGEOM *closest;
-	double dist;
+
 
 	/* Find an exact shortest line w/ the dimensions we support */
 	if ( lwgeom_has_z(lw1) && lwgeom_has_z(lw2) )
 	{
 		closest = lwgeom_closest_line_3d(lw1, lw2);
-		dist = lwgeom_length(closest);
+		distance = lwgeom_length(closest);
 	}
 	else
 	{
 		closest = lwgeom_closest_line(lw1, lw2);
-		dist = lwgeom_length_2d(closest);
+		distance = lwgeom_length_2d(closest);
 	}
 
 	/* Un-sqrt the distance so we can add extra terms */
-	dist = dist*dist;
+	distance = distance*distance;
 
 	/* Can only add the M term if both objects have M */
 	if ( lwgeom_has_m(lw1) && lwgeom_has_m(lw2) )
 	{
 		double m1, m2;
-		LWPOINT *lwp1 = lwline_get_lwpoint(closest, 0);
-		LWPOINT *lwp2 = lwline_get_lwpoint(closest, 1);
-		m1 = lwgeom_interpolate_point(lw1, lpw1);
-		m2 = lwgeom_interpolate_point(lw2, lpw2);
-		lwpoint_free(lwp1);
-		lwpoint_free(lwp2);
-		dist += (m1-m2)*(m1-m2);
+		int usebox = false;
+		
+		if ( lwgeom_get_type(lw1) == POINTTYPE )
+		{
+			POINT4D p;
+			lwpoint_getPoint4d_p((LWPOINT*)lw1, &p);
+			m1 = p.m;
+		}
+		else if ( lwgeom_get_type(lw1) == LINETYPE )
+		{
+			LWPOINT *lwp1 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 0);
+			m1 = lwgeom_interpolate_point(lw1, lwp1);
+			lwpoint_free(lwp1);
+		}
+		else
+		{
+			usebox = true;
+		}
+		
+		if ( lwgeom_get_type(lw2) == POINTTYPE )
+		{
+			POINT4D p;
+			lwpoint_getPoint4d_p((LWPOINT*)lw2, &p);
+			m2 = p.m;
+		}
+		else if ( lwgeom_get_type(lw2) == LINETYPE )
+		{
+			LWPOINT *lwp2 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 1);
+			m1 = lwgeom_interpolate_point(lw2, lwp2);
+			lwpoint_free(lwp2);
+		}
+		else 
+		{
+			usebox = true;
+		}
+
+		if ( usebox )
+		{
+			double d;
+			gserialized_get_gidx_p(geom1, b1);
+			gserialized_get_gidx_p(geom2, b2);
+			d = gidx_distance_m(b1, b2);
+			distance += d*d;
+		}
+		else
+		{
+			distance += (m2-m1)*(m2-m1);
+		}
 	}
 
 	lwgeom_free(closest);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
-	PG_RETURN_FLOAT8(sqtr(dist));
+	PG_RETURN_FLOAT8(sqrt(distance));
 #endif
 }
 
