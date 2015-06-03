@@ -1355,14 +1355,14 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
-AC_MSG_RESULT([ --------- GEOS VERSION NOTICE ------------ ])
-AC_MSG_RESULT([  You are building against GEOS ${GEOS_FULL_VERSION} ])
-AC_MSG_RESULT([  To take advantage of all the features of ])
-AC_MSG_RESULT([  PostGIS we recommend you build using ])
-AC_MSG_RESULT([  GEOS 3.3.2 or higher. You can download ])
-AC_MSG_RESULT([  the latest versions from ])
-AC_MSG_RESULT([  http://trac.osgeo.org/geos ])
-AC_MSG_RESULT()
+if test "$GEOS_NUMERIC_VERSION" -lt 30402; then
+AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
+AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
+AC_MSG_WARN([  To take advantage of all the features of ])
+AC_MSG_WARN([  PostGIS we recommend you build using ])
+AC_MSG_WARN([  GEOS 3.4.2 or higher. You can download ])
+AC_MSG_WARN([  the latest versions from ])
+AC_MSG_WARN([  http://trac.osgeo.org/geos ])
+AC_MSG_WARN()
 fi
 
