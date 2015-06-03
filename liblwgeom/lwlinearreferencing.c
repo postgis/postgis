@@ -974,11 +974,16 @@ ptarray_collect_mvals(const POINTARRAY *pa, double tmin, double tmax, double *mv
 }
 
 static int
-compare_double(const void *a, const void *b)
+compare_double(const void *pa, const void *pb)
 {
-  double *dpa = (double *)a;
-  double *dpb = (double *)b;
-  return *dpb < *dpa;
+  double a = *((double *)pa);
+  double b = *((double *)pb);
+	if ( a < b ) 
+		return -1;
+	else if ( a > b ) 
+		return 1;
+	else 
+		return 0;
 }
 
 /* Return number of elements in unique array */
@@ -988,11 +993,11 @@ uniq(double *vals, int nvals)
   int i, last=0;
   for (i=1; i<nvals; ++i)
   {
-    /*lwnotice("(I%d):%g", i, vals[i]);*/
+    // lwnotice("(I%d):%g", i, vals[i]);
     if ( vals[i] != vals[last] )
     {
       vals[++last] = vals[i];
-      /*lwnotice("(O%d):%g", last, vals[last]);*/
+      // lwnotice("(O%d):%g", last, vals[last]);
     }
   }
   return last+1;
@@ -1093,7 +1098,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     return -1;
   }
 
-  /* lwnotice("Min:%g, Max:%g", tmin, tmax); */
+   // lwnotice("Min:%g, Max:%g", tmin, tmax);
 
   /*
    * Collect M values in common time range from inputs
@@ -1129,31 +1134,31 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     int seg;
     double dist2;
 
-    /*lwnotice("T %g-%g", t0, t1);*/
+    // lwnotice("T %g-%g", t0, t1);
 
     seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
     if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
-    /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);*/
+    // lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
 
     seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
     if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
-    /*lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);*/
+    // lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
 
     seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
     if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
-    /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);*/
+    // lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
 
     seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
     if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
-    /*lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);*/
+    // lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 
     t = segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
 
-/*
+		/*
     lwnotice("Closest points: %g,%g,%g and %g,%g,%g at time %g",
       p0.x, p0.y, p0.z,
       q0.x, q0.y, q0.z, t);
-*/
+		*/
 
     dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
            ( q0.y - p0.y ) * ( q0.y - p0.y ) +
@@ -1162,7 +1167,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     {
       mindist2 = dist2;
       mintime = t;
-      /* lwnotice("MINTIME: %g", mintime); */
+       // lwnotice("MINTIME: %g", mintime);
     }
 
   }

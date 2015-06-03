@@ -1076,7 +1076,6 @@ test_lwgeom_tcpa(void)
 	ASSERT_DOUBLE_EQUAL(m, 20.0);
 	ASSERT_DOUBLE_EQUAL(dist, 5.0);
 
-
   /* G1 stops at t=1 until t=4 to let G2 pass by, then continues */
   /* G2 passes at 1 meter from G1 t=3 */
 
@@ -1088,7 +1087,6 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 3.0);
 	ASSERT_DOUBLE_EQUAL(dist, 1.0);
-
 
   /* Test for https://trac.osgeo.org/postgis/ticket/3136 */
 
