@@ -33,9 +33,9 @@ PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
 # Where we put our regression installation 
 ifeq ($(MINGWBUILD),1)
-        srcdir=$(shell bash -c "pwd -W")
+	srcdir=$(shell bash -c "pwd -W")
 else
-        srcdir=$(shell pwd)
+	srcdir=$(shell pwd)
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
@@ -71,8 +71,8 @@ TESTS = \
 	loader/Latin1 \
 	loader/Latin1-implicit \
 	loader/mfile \
-  dumper/literalsrid \
-  dumper/realtable \
+	dumper/literalsrid \
+	dumper/realtable \
 	binary \
 	operators \
 	regress \
@@ -90,7 +90,7 @@ TESTS = \
 	summary \
 	affine \
 	empty \
-  forcecurve \
+	forcecurve \
 	measures \
 	legacy \
 	long_xact \
@@ -138,12 +138,12 @@ TESTS = \
 	twkb
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
-  # Index supported KNN only available in PostgreSQL 9.1 and higher
+	# Index supported KNN only available in PostgreSQL 9.1 and higher
 	TESTS += knn
 endif
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
-  # Index supported KNN recheck only available in PostgreSQL 9.5 and higher
+	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
 	TESTS += knn_recheck
 endif
 
@@ -161,7 +161,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
 	TESTS += \
 		offsetcurve \
-		relatematch  \
+		relatematch \
 		isvaliddetail \
 		sharedpaths \
 		snap \
