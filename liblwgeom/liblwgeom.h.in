@@ -1168,7 +1168,6 @@ extern double lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw
 extern double lwgeom_maxdistance3d(const LWGEOM *lw1, const LWGEOM *lw2);
 extern double lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance);
 
-
 extern double lwgeom_area(const LWGEOM *geom);
 extern double lwgeom_length(const LWGEOM *geom);
 extern double lwgeom_length_2d(const LWGEOM *geom);

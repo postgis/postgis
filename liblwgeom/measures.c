@@ -18,6 +18,7 @@
 #include "lwgeom_log.h"
 
 
+
 /*------------------------------------------------------------------------------------------------------------
 Initializing functions
 The functions starting the distance-calculation processses

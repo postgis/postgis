@@ -818,7 +818,7 @@ CREATE OPERATOR &&& (
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid_nd(geometry,geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'gserialized_distance_centroid_nd'
+	AS 'MODULE_PATHNAME', 'gserialized_distance_nd'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2.0
@@ -826,19 +826,6 @@ CREATE OPERATOR <<->> (
     LEFTARG = geometry, RIGHTARG = geometry,
     PROCEDURE = geometry_distance_centroid_nd,
     COMMUTATOR = '<<->>'
-);
-
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geometry_distance_box_nd(geom1 geometry, geom2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_nd'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 2.2.0
-CREATE OPERATOR <<#>> (
-    LEFTARG = geometry, RIGHTARG = geometry,
-    PROCEDURE = geometry_distance_box_nd,
-    COMMUTATOR = '<<#>>'
 );
 
 -- Availability: 2.2.0
@@ -859,8 +846,6 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 #if POSTGIS_PGSQL_VERSION >= 91
 	-- Availability: 2.2.0
 	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
-	-- Availability: 2.2.0
-	OPERATOR        14       <<#>> FOR ORDER BY pg_catalog.float_ops,
 	-- Availability: 2.2.0
 	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, int4),
 #endif

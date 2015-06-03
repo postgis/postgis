@@ -34,6 +34,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 
+
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int point_in_ring(POINTARRAY *pts, POINT2D *point);
