@@ -78,9 +78,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same(PG_FUNCTION_ARGS);
 Datum gserialized_gist_distance(PG_FUNCTION_ARGS);
-#if POSTGIS_PGSQL_VERSION >= 95
 Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS);
-#endif
 
 /*
 ** ND Operator prototypes
@@ -1048,7 +1046,6 @@ Datum gserialized_gist_same(PG_FUNCTION_ARGS)
 
 
 
-#if POSTGIS_PGSQL_VERSION >= 95
 
 PG_FUNCTION_INFO_V1(gserialized_gist_geog_distance);
 Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
@@ -1056,7 +1053,9 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
 	Datum query_datum = PG_GETARG_DATUM(1);
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+#if POSTGIS_PGSQL_VERSION >= 95
 	bool *recheck = (bool *) PG_GETARG_POINTER(4);
+#endif
 	char query_box_mem[GIDX_MAX_SIZE];
 	GIDX *query_box = (GIDX*)query_box_mem;
 	GIDX *entry_box;
@@ -1078,11 +1077,13 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
 
+#if POSTGIS_PGSQL_VERSION >= 95
 	/* When we hit leaf nodes, it's time to turn on recheck */
 	if (GIST_LEAF(entry))
 	{
 		*recheck = true;
 	}
+#endif
 			
 	/* Get the entry box */
 	entry_box = (GIDX*)DatumGetPointer(entry->key);
@@ -1097,7 +1098,6 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(distance);
 }
-#endif
 
 
 /*
