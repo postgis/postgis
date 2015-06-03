@@ -437,6 +437,11 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, double trshld)
 {
 	LWDEBUG(2, "Entered  lwline_set_effective_area");
+	
+		/* Skip empty case or too small to simplify */
+	if( lwline_is_empty(iline) || iline->points->npoints<3)
+		return lwline_clone(iline);
+	
 	int set_m;
 	if(set_area)
 		set_m=1;
@@ -445,9 +450,7 @@ static LWLINE* lwline_set_effective_area(const LWLINE *iline,int set_area, doubl
 	
 	LWLINE *oline = lwline_construct_empty(iline->srid, FLAGS_GET_Z(iline->flags), set_m);
 
-	/* Skip empty case */
-	if( lwline_is_empty(iline) )
-		return lwline_clone(iline);
+
 			
 	oline = lwline_construct(iline->srid, NULL, ptarray_set_effective_area(iline->points,2,set_area,trshld));
 		
@@ -468,7 +471,6 @@ static LWPOLY* lwpoly_set_effective_area(const LWPOLY *ipoly,int set_area, doubl
 	else
 		set_m=FLAGS_GET_M(ipoly->flags);
 	LWPOLY *opoly = lwpoly_construct_empty(ipoly->srid, FLAGS_GET_Z(ipoly->flags), set_m);
-
 
 	if( lwpoly_is_empty(ipoly) )
 		return opoly; /* should we return NULL instead ? */
