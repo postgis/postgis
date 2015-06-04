@@ -24,7 +24,6 @@ if [ -n "$1" ]; then
 fi
 
 outdir="postgis-$version"
-package="postgis-$version.tar.gz"
 
 if [ -d "$outdir" ]; then
 	echo "Output directory $outdir already exists."
@@ -74,6 +73,21 @@ cd "$outdir"
 make distclean
 cd "$owd"
 
+# Find a better version name when fetching
+# a development branch
+if test "$tag" = "trunk"; then
+  echo "Tweaking version for development snapshot"
+  VMAJ=`grep POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VMIN=`grep POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VMIC=`grep POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
+  version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
+  newoutdir=postgis-${version}
+  mv -vi "$outdir" "$newoutdir"
+  outdir=${newoutdir}
+fi
+
+package="postgis-$version.tar.gz"
 echo "Generating $package file"
 tar czf "$package" "$outdir"
 
