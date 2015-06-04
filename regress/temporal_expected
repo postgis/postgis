@@ -11,3 +11,7 @@ invalidTrajectory8|f
 validTrajectory1|t
 validTrajectory2|t
 validTrajectory3|t
+pca1|10
+pca2|5
+pca3|5.5
+pca#3136|80000002|80000002
