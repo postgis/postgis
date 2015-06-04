@@ -2931,7 +2931,7 @@ CREATE OR REPLACE FUNCTION ST_SimplifyVW(geometry,  float8)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default 0, integer default 1)
+CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default -1, integer default 1)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_SetEffectiveArea'
 	LANGUAGE 'c' IMMUTABLE STRICT;

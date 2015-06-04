@@ -408,7 +408,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 		/*Only return points with an effective area above the threashold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
-			if(ea->res_arealist[p]>=trshld)
+			if(ea->res_arealist[p]>trshld)
 			{
 				pt=getPoint4d(ea->inpts, p);
 				pt.m=ea->res_arealist[p];
@@ -421,7 +421,7 @@ static POINTARRAY * ptarray_set_effective_area(POINTARRAY *inpts,int avoid_colla
 		/*Only return points with an effective area above the threashold*/
 		for (p=0;p<ea->inpts->npoints;p++)
 		{
-			if(ea->res_arealist[p]>=trshld)
+			if(ea->res_arealist[p]>trshld)
 			{
 				pt=getPoint4d(ea->inpts, p);
 				ptarray_append_point(opts, &pt, LW_TRUE);
