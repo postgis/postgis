@@ -509,5 +509,5 @@ rt_init_allocators(void)
 {
     /* raster callback - install raster handlers */
     rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,
-            rt_pg_notice, rt_pg_debug);
+            rt_pg_debug, rt_pg_notice);
 }

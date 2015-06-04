@@ -1602,7 +1602,7 @@ rt_raster rt_raster_colormap(
 
 	/* INTERPOLATE and only one non-NODATA entry */
 	if (colormap->method == CM_INTERPOLATE && arg->npos < 2) {
-		rtinfo("Method INTERPOLATE requires at least two non-NODATA colormap entries. Using NEAREST instead");
+		rtwarn("Method INTERPOLATE requires at least two non-NODATA colormap entries. Using NEAREST instead");
 		colormap->method = CM_NEAREST;
 	}
 

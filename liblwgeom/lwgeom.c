@@ -1176,8 +1176,8 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("lwgeom_count_vertices: unsupported input geometry type: %s",
-		        lwtype_name(geom->type));
+		lwerror("%s: unsupported input geometry type: %s",
+		        __func__, lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
@@ -1237,8 +1237,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 		return maxdim;
 	}
 	default:
-		lwerror("lwgeom_dimension: unsupported input geometry type: %s",
-		        lwtype_name(geom->type));
+		lwerror("%s: unsupported input geometry type: %s",
+		        __func__, lwtype_name(geom->type));
 	}
 	return -1;
 }

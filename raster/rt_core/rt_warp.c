@@ -293,7 +293,7 @@ rt_raster rt_raster_gdal_warp(
 		) {
 			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
-			rtinfo("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
+			rtwarn("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
 
 			subspatial = 1;
 
