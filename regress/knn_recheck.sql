@@ -172,7 +172,6 @@ As foo(the_geom) ;
 
 -- without index order should match st_3ddistance order --
 -- point check
-
 SELECT '#1nd-3' As t, gid, ST_3DDistance( 'POINT(-305 998.5 1000)'::geometry, geom)::numeric(12,4) As dist3d,
 ('POINT(-305 998.5 1000)'::geometry <<->> geom)::numeric(12,4) As dist_knn
 FROM knn_recheck_geom_nd
@@ -184,7 +183,40 @@ SELECT '#2nd-3' As t, gid, ST_3DDistance( 'MULTILINESTRING((-95 -300 5000, 105 4
 FROM knn_recheck_geom_nd
 ORDER BY 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry <<->> geom LIMIT 5;
 
--- TODO: add index tests
+-- lateral test
+SELECT '#3nd-3' As t, a.gid, b.gid As match, ST_3DDistance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
+FROM knn_recheck_geom_nd As a 
+	LEFT JOIN 
+		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
+			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
+	WHERE a.gid IN(1,500003,600001)
+ORDER BY a.gid, true_rn;
+
+-- create index and repeat
+CREATE INDEX idx_knn_recheck_geom_nd_gist ON knn_recheck_geom_nd USING gist(geom gist_geometry_ops_nd);
+vacuum analyze knn_recheck_geom_nd;
+set enable_seqscan = false;
+-- point check
+SELECT '#1nd-3' As t, gid, ST_3DDistance( 'POINT(-305 998.5 1000)'::geometry, geom)::numeric(12,4) As dist3d,
+('POINT(-305 998.5 1000)'::geometry <<->> geom)::numeric(12,4) As dist_knn
+FROM knn_recheck_geom_nd
+ORDER BY 'POINT(-305 998.5 1000)'::geometry <<->> geom LIMIT 5;
+
+-- linestring check 
+SELECT '#2nd-3' As t, gid, ST_3DDistance( 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry::geometry, geom)::numeric(12,4),
+ ('MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry <<->> geom)::numeric(12,4) As knn_dist
+FROM knn_recheck_geom_nd
+ORDER BY 'MULTILINESTRING((-95 -300 5000, 105 451 1000, 100 323 200),(-50 2000 456, 30 6000 789))'::geometry <<->> geom LIMIT 5;
+
+-- lateral test
+SELECT '#3nd-3' As t, a.gid, b.gid As match, ST_3DDistance(a.geom, b.geom)::numeric(15,4) As true_rn, b.knn_dist::numeric(15,4)
+FROM knn_recheck_geom_nd As a 
+	LEFT JOIN 
+		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
+			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
+	WHERE a.gid IN(1,500003,600001)
+ORDER BY a.gid, true_rn;
+
 
 DROP TABLE knn_recheck_geom_nd;
 
