@@ -442,7 +442,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	 */
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
 
-	POSTGIS_DEBUGF(2, "ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
+	POSTGIS_DEBUGF(2, "ptarray_locate...: called for pointarray %p, m0:%g, m1:%g",
 	         ipa, m0, m1);
 
 
@@ -464,7 +464,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		/* segment completely outside, nothing to do */
 		if (! clipval ) continue;
 
-		POSTGIS_DEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %x", p1.x, p1.y, p1.z, p1.m,
+		POSTGIS_DEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %d", p1.x, p1.y, p1.z, p1.m,
 		         p2.x, p2.y, p2.z, p2.m, clipval);
 
 		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
@@ -486,7 +486,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 */
 		if ( clipval & 0x0100 || i == ipa->npoints-1 )
 		{
-			POSTGIS_DEBUGF(3, " closing pointarray %x with %d points", dpa, dpa->npoints);
+			POSTGIS_DEBUGF(3, " closing pointarray %p with %d points", dpa, dpa->npoints);
 
 			ret.ptarrays[ret.nptarrays++] = dpa;
 			dpa = NULL;
@@ -512,7 +512,7 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 {
 	POINT3DM p3dm;
 
-	POSTGIS_DEBUGF(2, "lwpoint_locate_between called for lwpoint %x", lwpoint);
+	POSTGIS_DEBUGF(2, "lwpoint_locate_between called for lwpoint %p", lwpoint);
 
 	lwpoint_getPoint3dm_p(lwpoint, &p3dm);
 	if ( p3dm.m >= m0 && p3dm.m <= m1)
@@ -553,7 +553,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	const int lineflag=0x10;
 	POINTARRAYSET paset=ptarray_locate_between_m(ipa, m0, m1);
 
-	POSTGIS_DEBUGF(2, "lwline_locate_between called for lwline %x", lwline_in);
+	POSTGIS_DEBUGF(2, "lwline_locate_between called for lwline %p", lwline_in);
 
 	POSTGIS_DEBUGF(3, " ptarray_locate... returned %d pointarrays",
 	         paset.nptarrays);
@@ -624,7 +624,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	int ngeoms=0;
 	LWGEOM **geoms;
 
-	POSTGIS_DEBUGF(2, "lwcollection_locate_between_m called for lwcoll %x", lwcoll);
+	POSTGIS_DEBUGF(2, "lwcollection_locate_between_m called for lwcoll %p", lwcoll);
 
 	geoms=lwalloc(sizeof(LWGEOM *)*lwcoll->ngeoms);
 	for (i=0; i<lwcoll->ngeoms; i++)
@@ -653,7 +653,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 static LWGEOM *
 lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 {
-	POSTGIS_DEBUGF(2, "lwgeom_locate_between called for lwgeom %x", lwin);
+	POSTGIS_DEBUGF(2, "lwgeom_locate_between called for lwgeom %p", lwin);
 
 	switch (lwin->type)
 	{

@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	PG_SuiteSetup *setupfunc = setupfuncs;
 
 	/* Install the custom error handler */
-	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0);
+	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0, 0);
 
 	/* Initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())

@@ -193,6 +193,7 @@ typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
 typedef void (*lwreporter)(const char* fmt, va_list ap);
+typedef void (*lwdebuglogger)(int level, const char* fmt, va_list ap);
 
 /**
 * Install custom memory management and error handling functions you want your
@@ -202,7 +203,7 @@ typedef void (*lwreporter)(const char* fmt, va_list ap);
 */
 extern void lwgeom_set_handlers(lwallocator allocator, 
         lwreallocator reallocator, lwfreeor freeor, lwreporter errorreporter,
-        lwreporter noticereporter);
+        lwreporter noticereporter, lwdebuglogger debuglogger);
 
 /**
  * Request interruption of any running code
@@ -255,6 +256,15 @@ void lwnotice(const char *fmt, ...);
  * @ingroup logging
  */
 void lwerror(const char *fmt, ...);
+
+/**
+ * Write a debug message out. 
+ * Don't call this function directly, use the 
+ * macros, LWDEBUG() or LWDEBUGF(), for
+ * efficiency.
+ * @ingroup logging
+ */
+void lwdebug(int level, const char *fmt, ...);
 
 
 /* TODO: move these elsewhere */

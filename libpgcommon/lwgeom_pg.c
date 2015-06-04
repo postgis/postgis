@@ -173,11 +173,25 @@ pg_notice(const char *fmt, va_list ap)
 	ereport(NOTICE, (errmsg_internal("%s", errmsg)));
 }
 
+static void
+pg_debug(int level, const char *fmt, va_list ap)
+{
+	char errmsg[PGC_ERRMSG_MAXLEN+1];
+	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	int pglevel[6] = {NOTICE, DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5};
+
+	if ( level >= 0 && level <= 5 )
+		ereport(pglevel[level], (errmsg_internal("%s", errmsg)));
+	else
+		ereport(DEBUG5, (errmsg_internal("%s", errmsg)));		
+}
+
 void
 pg_install_lwgeom_handlers(void)
 {
 	/* install PostgreSQL handlers */
-	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice);
+	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice, pg_debug);
 }
 
 /**

@@ -31,7 +31,7 @@
 #define LWDEBUG(level, msg) \
         do { \
             if (POSTGIS_DEBUG_LEVEL >= level) \
-              lwnotice("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
+              lwdebug(level, "[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
         } while (0);
 
 /* Display a formatted notice at the given debug level
@@ -39,7 +39,7 @@
 #define LWDEBUGF(level, msg, ...) \
         do { \
             if (POSTGIS_DEBUG_LEVEL >= level) \
-              lwnotice("[%s:%s:%d] " msg, \
+              lwdebug(level, "[%s:%s:%d] " msg, \
                 __FILE__, __func__, __LINE__, __VA_ARGS__); \
         } while (0);
 

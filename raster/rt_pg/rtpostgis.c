@@ -492,11 +492,22 @@ rt_pg_notice(const char *fmt, va_list ap)
     ereport(NOTICE, (errmsg_internal("%s", msg)));
 }
 
+static void
+rt_pg_debug(const char *fmt, va_list ap)
+{
+    char msg[RT_MSG_MAXLEN+1];
+
+    vsnprintf (msg, RT_MSG_MAXLEN, fmt, ap);
+
+    msg[RT_MSG_MAXLEN]='\0';
+    ereport(DEBUG1, (errmsg_internal("%s", msg)));
+}
+
 
 void
 rt_init_allocators(void)
 {
     /* raster callback - install raster handlers */
     rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,
-            rt_pg_notice, rt_pg_notice);
+            rt_pg_notice, rt_pg_debug);
 }

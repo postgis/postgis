@@ -3261,22 +3261,15 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom;
 	GEOSGeometry *geosgeom;
 	GSERIALIZED *lwgeom_result;
-#if POSTGIS_DEBUG_LEVEL > 0
-	int result;
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-#endif
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-
-
 	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
 	lwgeom_result = GEOS2POSTGIS(geosgeom, gserialized_has_z(geom));
 	GEOSGeom_destroy(geosgeom);
-
 
 	PG_FREE_IF_COPY(geom, 0);
 
