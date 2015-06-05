@@ -1,6 +1,6 @@
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2010, 2011, 2012 Regina Obe and Leo Hsu 
 -- Paragon Corporation
@@ -94,7 +94,7 @@ cd ${staging_fold}
 %PSQL% -c "DO language ''plpgsql'' $$ BEGIN IF NOT EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = ''${data_schema}'' ) THEN CREATE SCHEMA ${data_schema}; END IF;  END $$"
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
 cd %TMPDIR%', E'%PSQL%', E'\\', E'%SHP2PGSQL%', 'set ', 
-'for /r %%z in (*${table_name}.dbf) do (${loader} -D -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
+'for /r %%z in (*${table_name}*.dbf) do (${loader} -D -s 4269 -g the_geom -W "latin1" %%z tiger_staging.${state_abbrev}_${table_name} | ${psql} & ${psql} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));")'
 );
 
 
@@ -118,7 +118,7 @@ ${PSQL} -c "CREATE SCHEMA ${staging_schema};"
 for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 for z in */*.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 cd $TMPDIR;\n', '${PSQL}', '/', '${SHP2PGSQL}', 'export ',
-'for z in *${table_name}.dbf; do 
+'for z in *${table_name}*.dbf; do 
 ${loader} -D -s 4269 -g the_geom -W "latin1" $z ${staging_schema}.${state_abbrev}_${table_name} | ${psql} 
 ${PSQL} -c "SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}''));"
 done');
@@ -166,6 +166,31 @@ COMMENT ON COLUMN loader_lookuptables.table_name IS 'suffix of the tables to loa
 COMMENT ON COLUMN loader_lookuptables.load IS 'Whether or not to load the table.  For states and zcta5 (you may just want to download states10, zcta510 nationwide file manually) load your own into a single table that inherits from tiger.states, tiger.zcta5.  You''ll get improved performance for some geocoding cases.';
 COMMENT ON COLUMN loader_lookuptables.columns_exclude IS 'List of columns to exclude as an array. This is excluded from both input table and output table and rest of columns remaining are assumed to be in same order in both tables. gid, geoid,cpi,suffix1ce are excluded if no columns are specified.';
 COMMENT ON COLUMN loader_lookuptables.website_root_override IS 'Path to use for wget instead of that specified in year table.  Needed currently for zcta where they release that only for 2000 and 2010';
+
+INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
+VALUES(10, 'tract', 'tract', true, false, true,false, 'c', 
+'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (tract_id) ) INHERITS(tiger.${lookup_name}); " ',
+	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid TO tract_id;  SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
+	${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
+	${psql} -c "VACUUM ANALYZE ${data_schema}.${state_abbrev}_${lookup_name};"
+	${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"', ARRAY['gid']);
+
+INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
+VALUES(11, 'tabblock', 'tabblock', true, true, false,false, 'c', 
+'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (tabblock_id)) INHERITS(tiger.${lookup_name});" ',
+'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${lookup_name} RENAME geoid10 TO tabblock_id;"
+${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
+${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
+${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', '{gid, uatyp10, tractce10, blockce10,suffix1ce,blockce,tractce}'::text[]);
+
+
+INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state, single_geom_mode, insert_mode, pre_load_process, post_load_process, columns_exclude )
+VALUES(12, 'bg', 'bg', true,false, true,false, 'c', 
+'${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (bg_id)) INHERITS(tiger.${lookup_name});" ',
+'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid TO bg_id;  SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); "
+${psql} -c "ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT chk_statefp CHECK (statefp = ''${state_fips}'');"
+${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
+${psql} -c "vacuum analyze ${data_schema}.${state_abbrev}_${lookup_name};"', ARRAY['gid']);
 
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state,  level_nation, single_geom_mode, pre_load_process, post_load_process)
 VALUES(2, 'county_all', 'county', true, false, false, true,
@@ -287,7 +312,7 @@ SELECT
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(replace(variables.website_root, 'http://', ''),'ftp://','')  || '/' || upper(table_name)  || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*' || table_name || '.zip ') || '
-' || COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
+' || COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
 		|| CASE WHEN lu.single_geom_mode THEN ' -S ' ELSE ' ' END::text || ' -W "latin1" tl_' || variables.tiger_year 
 	|| '_us_' || lu.table_name || '.dbf tiger_staging.' || lu.table_name || ' | '::text || platform.psql 
 		|| COALESCE(E'\n' || 
@@ -322,7 +347,7 @@ SELECT
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name) ), 'http://', ''),'ftp://','')    || '
 ' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '.zip ') || '
-' ||loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
+' ||loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || platform.loader || ' -D -' ||  lu.insert_mode || ' -s 4269 -g the_geom ' 
 		|| CASE WHEN lu.single_geom_mode THEN ' -S ' ELSE ' ' END::text || ' -W "latin1" tl_' || variables.tiger_year || '_' || s.state_fips 
 	|| '_' || lu.table_name || '.dbf tiger_staging.' || lower(s.state_abbrev) || '_' || lu.table_name || ' | '::text || platform.psql 
 		|| COALESCE(E'\n' || 
@@ -336,9 +361,9 @@ SELECT
 ' || platform.wget || ' ' || COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  ) || '/*_' || s.state_fips || '* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html 
 '
 || 'cd ' ||  replace(variables.staging_fold,'/', platform.path_sep) || '/' || replace(replace(COALESCE(lu.website_root_override,variables.website_root || '/' || upper(table_name)  || '/'), 'http://', ''),'ftp://','')  || '
-' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '.zip ') || '
+' || replace(platform.unzip_command, '*.zip', 'tl_*_' || s.state_fips || '*_' || table_name || '*.zip ') || '
 ' || loader_macro_replace(COALESCE(lu.pre_load_process || E'\n', '') || COALESCE(county_process_command || E'\n','')
-				|| COALESCE(E'\n' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader  || CASE WHEN lu.single_geom_mode THEN ' -S' ELSE ' ' END::text, lu.table_name, lu.lookup_name ]) 
+				|| COALESCE(E'\n' ||lu.post_load_process , '') , ARRAY['loader','table_name','lookup_name'], ARRAY[platform.loader  || ' -D ' || CASE WHEN lu.single_geom_mode THEN ' -S' ELSE ' ' END::text, lu.table_name, lu.lookup_name ]) 
 				FROM loader_lookuptables AS lu
 				WHERE level_county = true AND load = true
 				ORDER BY process_order, lookup_name), E'\n') ::text 

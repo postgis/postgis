@@ -1,6 +1,6 @@
 --
 -- PostGIS - Spatial Types for PostgreSQL
--- http://www.postgis.org
+-- http://postgis.net
 --
 -- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu
 --
