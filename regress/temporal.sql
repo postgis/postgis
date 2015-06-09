@@ -36,6 +36,10 @@ select 'cpa3', ST_ClosestPointOfApproach(
 select 'cpa4', ST_ClosestPointOfApproach(
   'LINESTRINGZM(0 0 0 0, 0 0 0 10)',
   'LINESTRINGZM(0 5 0 10, 10 0 5 11)');
+-- Disjoint
+select 'cpa5', ST_ClosestPointOfApproach(
+  'LINESTRINGM(0 0 0, 0 0 4)',
+  'LINESTRINGM(0 0 5, 0 0 10)');
 -- Ticket #3136
 WITH inp as ( SELECT
  'LINESTRING M (0 0 80000002,1 0 80000003)'::geometry g1,

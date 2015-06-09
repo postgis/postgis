@@ -914,7 +914,7 @@ test_lwgeom_tcpa(void)
 	ASSERT_DOUBLE_EQUAL(dist, -77.0); /* not touched */
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
 	CU_ASSERT_STRING_EQUAL(
-    "Both input lines must have at least 2 points",
+    "Both input lines must have at least 2 points", /* should be accepted ? */
     cu_error_msg
   );
 
@@ -931,18 +931,14 @@ test_lwgeom_tcpa(void)
     cu_error_msg
   );
 
-  /* Invalid input, timeranges do not overlap */
+  /* Timeranges do not overlap */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 2, 0 0 5)", LW_PARSER_CHECK_NONE);
 	m = lwgeom_tcpa(g1, g2, NULL);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
-	ASSERT_DOUBLE_EQUAL(m, -1.0);
-	CU_ASSERT_STRING_EQUAL(
-    "Inputs never exist at the same time",
-    cu_error_msg
-  );
+	ASSERT_DOUBLE_EQUAL(m, -2.0); /* means timeranges do not overlap */
 
   /* One of the tracks is still, the other passes to that point */
 

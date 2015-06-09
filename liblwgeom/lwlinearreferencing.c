@@ -1091,8 +1091,8 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
   tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
 
   if ( tmax < tmin ) {
-    lwerror("Inputs never exist at the same time");
-    return -1;
+		LWDEBUGF(1, "Inputs never exist at the same time");
+    return -2;
   }
 
    // lwnotice("Min:%g, Max:%g", tmin, tmax);

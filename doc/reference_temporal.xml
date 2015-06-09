@@ -92,7 +92,8 @@ Returns the measure at which points interpolated along two lines are closest.
 			<para>
 Returns the smallest measure at which point interpolated along the given
 lines are at the smallest distance. Inputs must be valid trajectories as
-checked by <xref linkend="ST_IsValidTrajectory" />.
+checked by <xref linkend="ST_IsValidTrajectory" />. Null is returned if
+the trajectories do not overlap on the M range.
 			</para>
       
 			<para>
