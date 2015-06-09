@@ -18,7 +18,7 @@ all: build
 pom.xml: pom.xml.in
 	sed 's,%VERSION%,$(POSTGIS_LIB_VERSION),g' $< >$@
 
-distclean:
+clean:
 	rm -f pom.xml
 
 build: pom.xml
