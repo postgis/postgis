@@ -2135,15 +2135,11 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
 /*
- * Split polygon by line, line by line, line by point.
+ * Split (multi)polygon by line; (multi)line by (multi)line,
+ * (multi)point or (multi)polygon boundary.
  *
- * Returns all components as a collection.
- * First element of the collection is always the part which
- * remains after the cut, while the second element is the
- * part which has been cut out. We arbitrarely take the part
- * on the *right* of cut lines as the part which has been cut out.
- * For a line cut by a point the part which remains is the one
- * from start of the line to the cut point.
+ * Collections are accepted as first argument.
+ * Returns all obtained pieces as a collection.
  */
 LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
 
