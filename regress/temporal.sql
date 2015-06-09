@@ -32,6 +32,10 @@ select 'cpa2', ST_ClosestPointOfApproach(
 select 'cpa3', ST_ClosestPointOfApproach(
   'LINESTRINGZM(0 0 0 0, 0 0 0 10)',
   'LINESTRINGZM(-30 0 5 4, 10 0 5 6)');
+-- Meeting
+select 'cpa4', ST_ClosestPointOfApproach(
+  'LINESTRINGZM(0 0 0 0, 0 0 0 10)',
+  'LINESTRINGZM(0 5 0 10, 10 0 5 11)');
 -- Ticket #3136
 WITH inp as ( SELECT
  'LINESTRING M (0 0 80000002,1 0 80000003)'::geometry g1,

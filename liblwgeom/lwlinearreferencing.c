@@ -1119,7 +1119,7 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     /* there's a single time, must be that one... */
     double t0 = mvals[0];
     POINT4D p0, p1;
-    lwnotice("Inputs only exist both at a single time (%g)", t0);
+    LWDEBUGF(1, "Inputs only exist both at a single time (%g)", t0);
     if ( mindist )
     {
       if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
