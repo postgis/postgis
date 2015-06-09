@@ -620,6 +620,15 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 	return lw_dist3d_pt_pt(p,&c,dl);
 }
 
+double
+distance3d_pt_pt(const POINT3D *p1, const POINT3D *p2)
+{
+  double dx = p2->x - p1->x;
+  double dy = p2->y - p1->y;
+  double dz = p2->z - p1->z;
+  return sqrt ( dx*dx + dy*dy + dz*dz);
+}
+
 
 /**
 
