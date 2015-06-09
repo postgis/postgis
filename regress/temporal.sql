@@ -47,3 +47,18 @@ WITH inp as ( SELECT
 SELECT 'cpa#3136',
 ST_ClosestPointOfApproach(g2,g1), ST_ClosestPointOfApproach(g1,g2)
 FROM inp;
+
+----------------------------------------
+--
+-- ST_DistanceCPA
+--
+----------------------------------------
+
+SELECT 'cpad1', ST_DistanceCPA('LINESTRINGM(0 0 0, 1 0 1)'::geometry
+          ,'LINESTRINGM(0 0 0, 1 0 1)'::geometry);
+SELECT 'cpad2', ST_DistanceCPA('LINESTRINGM(0 0 0, 1 0 1)'::geometry
+          ,'LINESTRINGM(0 0 1, 1 0 2)'::geometry);
+SELECT 'cpad3', ST_DistanceCPA('LINESTRING(0 0 0 0, 1 0 0 1)'::geometry
+          ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);
+SELECT 'invalid', ST_DistanceCPA('LINESTRING(0 0 0, 1 0 0)'::geometry
+            ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);

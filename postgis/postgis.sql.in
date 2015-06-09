@@ -3052,6 +3052,12 @@ CREATE OR REPLACE FUNCTION ST_ClosestPointOfApproach(geometry, geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_DistanceCPA(geometry, geometry)
+	RETURNS float8 
+	AS 'MODULE_PATHNAME', 'gserialized_distance_cpa' -- ST_DistanceCPA
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 	RETURNS bool 
 	AS 'MODULE_PATHNAME', 'ST_IsValidTrajectory' 
