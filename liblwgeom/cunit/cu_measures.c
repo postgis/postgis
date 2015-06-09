@@ -1099,6 +1099,17 @@ test_lwgeom_tcpa(void)
 	ASSERT_DOUBLE_EQUAL(m, 1432291464.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
+	/* Tracks share a single point in time */
+
+	g1 = lwgeom_from_wkt("LINESTRINGM(0 0 0, 1 0 2)", LW_PARSER_CHECK_NONE);
+	g2 = lwgeom_from_wkt("LINESTRINGM(0 0 2, 1 0 3)", LW_PARSER_CHECK_NONE);
+	dist = -1;
+	m = lwgeom_tcpa(g1, g2, &dist);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	ASSERT_DOUBLE_EQUAL(m, 2.0);
+	ASSERT_DOUBLE_EQUAL(dist, 1.0);
+
 }
 
 static void

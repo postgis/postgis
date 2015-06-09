@@ -28,12 +28,19 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 		return LW_FALSE;
 	}
 
-	/* We'll just can out on this degenerate case for now. 
-	   Correct behavior is probably an mprop of 0.5? 
-	   Still would have to deal with case of true p1==p2. */
 	if( m1 == m2 ) 
 	{
+		/* Degenerate case: same M on both points.
+		   If they are the same point we just return one of them. */
+		if ( p4d_same(p1,p2) )
+		{
+			*pn = *p1;
+			return LW_TRUE;
+		}
+		/* If the points are different we can out.
+		   Correct behavior is probably an mprop of 0.5? */
 		lwerror("Zero measure-length line encountered!");
+		return LW_FALSE;
 	}
 
 	/* M is in range, new point to be generated. */
@@ -1083,16 +1090,6 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
   tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
   tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
 
-  if ( tmax == tmin ) /* both exists only at a given time */
-  {
-    /*lwnotice("Inputs only exist both at a single time");*/
-    if ( mindist ) 
-    {
-      *mindist = lwgeom_mindistance3d(g1, g2);
-    }
-    return tmax;
-  }
-
   if ( tmax < tmin ) {
     lwerror("Inputs never exist at the same time");
     return -1;
@@ -1118,7 +1115,27 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
   nmvals = uniq(mvals, nmvals);
 
   if ( nmvals < 2 )
-    return mvals[0]; /* there's a single time, must be that one... */
+  {{
+    /* there's a single time, must be that one... */
+    double t0 = mvals[0];
+    POINT4D p0, p1;
+    lwnotice("Inputs only exist both at a single time (%g)", t0);
+    if ( mindist )
+    {
+      if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
+      {
+        lwerror("Could not find point with M=%g on first geom", t0);
+        return -1;
+      }
+      if ( -1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0) )
+      {
+        lwerror("Could not find point with M=%g on second geom", t0);
+        return -1;
+      }
+      *mindist = distance3d_pt_pt((POINT3D*)&p0, (POINT3D*)&p1);
+    }
+    return t0;
+  }}
 
   /*
    * For each consecutive pair of measures, compute time of closest point
