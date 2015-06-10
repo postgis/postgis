@@ -60,5 +60,9 @@ SELECT 'cpad2', ST_DistanceCPA('LINESTRINGM(0 0 0, 1 0 1)'::geometry
           ,'LINESTRINGM(0 0 1, 1 0 2)'::geometry);
 SELECT 'cpad3', ST_DistanceCPA('LINESTRING(0 0 0 0, 1 0 0 1)'::geometry
           ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);
+-- Disjoint
+SELECT 'cpad4', ST_DistanceCPA('LINESTRINGM(0 0 0, 10 0 10)'::geometry
+          ,'LINESTRINGM(10 0 11, 10 10 20)'::geometry);
 SELECT 'invalid', ST_DistanceCPA('LINESTRING(0 0 0, 1 0 0)'::geometry
             ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);
+

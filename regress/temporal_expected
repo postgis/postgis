@@ -20,4 +20,5 @@ cpa#3136|80000002|80000002
 cpad1|0
 cpad2|1
 cpad3|2
+cpad4|
 ERROR:  Both input geometries must have a measure dimension
