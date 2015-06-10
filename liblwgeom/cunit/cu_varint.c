@@ -44,10 +44,7 @@ static void do_test_u32_varint(uint32_t nr, int expected_size, char* expected_re
 	CU_ASSERT_EQUAL(size, expected_size);
 	
 	hex = hexbytes_from_bytes(buf, size);
-	if ( strcmp(hex, expected_res) ) 
-		printf("Expected: %s\nObtained: %s\n", expected_res, hex);
-
-	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);	
 	lwfree(hex);
 }
 
@@ -65,11 +62,7 @@ static void do_test_s32_varint(int32_t nr,int expected_size, char* expected_res)
 	CU_ASSERT_EQUAL(size,expected_size);
 
 	hex = hexbytes_from_bytes(buf, size);
-	if ( strcmp(hex,expected_res) ) 
-	{
-		printf("Expected: %s\nObtained: %s\n", expected_res, hex);
-	}
-	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);	
 	lwfree(hex);
 }
 
@@ -87,11 +80,7 @@ static void do_test_u64_varint(uint64_t nr,int expected_size, char* expected_res
 	CU_ASSERT_EQUAL(size,expected_size);
 
 	hex = hexbytes_from_bytes(buf,size);
-	if ( strcmp(hex,expected_res) ) 
-	{
-		printf("Expected: %s\nObtained: %s\n", expected_res, hex);
-	}
-	CU_ASSERT_STRING_EQUAL(hex, expected_res);
+	ASSERT_STRING_EQUAL(hex, expected_res);
 	lwfree(hex);
 }
 
@@ -109,11 +98,7 @@ static void do_test_s64_varint(int64_t nr,int expected_size, char* expected_res)
 	CU_ASSERT_EQUAL(size,expected_size);
 	
 	hex = hexbytes_from_bytes(buf,size);
-	if ( strcmp(hex,expected_res) ) 
-	{
-		printf("Expected: %s\nObtained: %s\n", expected_res, hex);
-	}
-	CU_ASSERT_STRING_EQUAL(hex, expected_res);	
+	ASSERT_STRING_EQUAL(hex, expected_res);	
 	lwfree(hex);
 }
 
@@ -123,7 +108,7 @@ static void test_varint(void)
 	do_test_u64_varint(1, 1, "01");
 	do_test_u64_varint(300, 2, "AC02");
 	do_test_u64_varint(150, 2, "9601");
-	do_test_u64_varint(240, 2, "F001"); 
+	do_test_u64_varint(240, 2, "F001");
 	do_test_u64_varint(0x4000, 3, "808001");
   /*
                 0100:0000 0000:0000 - input (0x4000)
