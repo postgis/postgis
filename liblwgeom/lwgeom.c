@@ -1732,6 +1732,56 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 
 }
 
+void
+lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
+{
+	int type = geom->type;
+	int i;
+
+	switch(type) 
+	{
+		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
+		{
+			LWLINE *l = (LWLINE*)geom;
+			ptarray_scale(l->points, factor);
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *p = (LWPOLY*)geom;
+			for( i = 0; i < p->nrings; i++ )
+				ptarray_scale(p->rings[i], factor);
+			break;
+		}
+		case CURVEPOLYTYPE:
+		{
+			LWCURVEPOLY *c = (LWCURVEPOLY*)geom;
+			for( i = 0; i < c->nrings; i++ )
+				lwgeom_scale(c->rings[i], factor);
+			break;
+		}
+		default:
+		{
+			if( lwgeom_is_collection(geom) )
+			{
+				LWCOLLECTION *c = (LWCOLLECTION*)geom;
+				for( i = 0; i < c->ngeoms; i++ )
+				{
+					lwgeom_scale(c->geoms[i], factor);
+				}
+			}
+			else 
+			{
+				lwerror("lwgeom_scale: unable to handle type '%s'", lwtype_name(type));
+			}
+		}
+	}
+}
+
 LWGEOM*
 lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 {

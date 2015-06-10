@@ -1184,6 +1184,7 @@ extern double lwgeom_length_2d(const LWGEOM *geom);
 extern double lwgeom_perimeter(const LWGEOM *geom);
 extern double lwgeom_perimeter_2d(const LWGEOM *geom);
 extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
+extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
 extern LWPOINT* lwline_get_lwpoint(LWLINE *line, int where);

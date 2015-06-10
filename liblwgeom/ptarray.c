@@ -1763,6 +1763,31 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 
 }
 
+/**
+ * Scale a pointarray.
+ */
+void
+ptarray_scale(POINTARRAY *pa, const POINT4D *fact)
+{
+  int i;
+  POINT4D p4d;
+
+  LWDEBUG(3, "ptarray_scale start");
+
+  for (i=0; i<pa->npoints; ++i)
+  {
+    getPoint4d_p(pa, i, &p4d);
+    p4d.x *= fact->x;
+    p4d.y *= fact->y;
+    p4d.z *= fact->z;
+    p4d.m *= fact->m;
+    ptarray_set_point4d(pa, i, &p4d);
+  }
+
+  LWDEBUG(3, "ptarray_scale end");
+
+}
+
 int
 ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt)
 {

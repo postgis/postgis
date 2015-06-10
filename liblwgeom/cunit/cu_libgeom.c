@@ -963,6 +963,26 @@ static void test_lwline_from_lwmpoint(void)
 }
 
 /*
+ * Test lwgeom_scale
+ */
+static void test_lwgeom_scale(void)
+{
+	LWGEOM *geom;
+	POINT4D factor;
+	char *out_ewkt;
+
+	geom = lwgeom_from_wkt("SRID=4326;GEOMETRYCOLLECTION(POINT(0 1 2 3),POLYGON((-1 -1 0 1,-1 2.5 0 1,2 2 0 1,2 -1 0 1,-1 -1 0 1),(0 0 1 2,0 1 1 2,1 1 1 2,1 0 2 3,0 0 1 2)),LINESTRING(0 0 0 0, 1 2 3 4))", LW_PARSER_CHECK_NONE);
+	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+  lwgeom_scale(geom, &factor);
+	out_ewkt = lwgeom_to_ewkt(geom);
+  ASSERT_STRING_EQUAL(out_ewkt, "SRID=4326;GEOMETRYCOLLECTION(POINT(0 3 8 15),POLYGON((-2 -3 0 5,-2 7.5 0 5,4 6 0 5,4 -3 0 5,-2 -3 0 5),(0 0 4 10,0 3 4 10,2 3 4 10,2 0 8 15,0 0 4 10)),LINESTRING(0 0 0 0,2 6 12 20))");
+
+	lwgeom_free(geom);
+	lwfree(out_ewkt);
+
+}
+
+/*
 ** Used by test harness to register the tests in this file.
 */
 void libgeom_suite_setup(void);
@@ -989,4 +1009,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_same);
 	PG_ADD_TEST(suite, test_lwline_from_lwmpoint);
 	PG_ADD_TEST(suite, test_lwgeom_as_curve);
+	PG_ADD_TEST(suite, test_lwgeom_scale);
 }

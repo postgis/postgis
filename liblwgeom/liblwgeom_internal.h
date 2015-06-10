@@ -300,6 +300,11 @@ LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 
 /*
+* Scale
+*/
+void ptarray_scale(POINTARRAY *pa, const POINT4D *factor);
+
+/*
 * PointArray
 */
 int ptarray_isccw(const POINTARRAY *pa);
