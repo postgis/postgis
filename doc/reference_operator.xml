@@ -1069,7 +1069,7 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<refname>&lt;-&gt;</refname>
 
 			<refpurpose>
-Returns the 2D distance between A and B. Used in the "ORDER BY" clause to provide index-assisted nearest-neighbor result sets. For PostgreSQL below 9.5 only gives centroid distance of bounding boxes and for PostgreSQL 9.5+, does true KNN distance search giving true distance between geometries, and distance sphere for geographies
+Returns the 2D distance between A and B.
 			</refpurpose>
 		  </refnamediv>
 
@@ -1113,8 +1113,13 @@ Returns the 2D distance between A and B. Used in the "ORDER BY" clause to provid
 			<title>Description</title>
 
 			<para>
-The <varname>&lt;-&gt;</varname> operator returns the 2D distance between two geometries.  Useful for doing
-nearest neighbor distance ordering.</para>
+The <varname>&lt;-&gt;</varname> operator returns the 2D distance between
+two geometries.  Used in the "ORDER BY" clause provides index-assisted
+nearest-neighbor result sets.  For PostgreSQL below 9.5 only gives
+centroid distance of bounding boxes and for PostgreSQL 9.5+, does true
+KNN distance search giving true distance between geometries, and distance
+sphere for geographies.
+      </para>
 
 			<note><para>This operand will make use of 2D GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
