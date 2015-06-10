@@ -203,7 +203,9 @@ typedef void (*lwdebuglogger)(int level, const char* fmt, va_list ap);
 */
 extern void lwgeom_set_handlers(lwallocator allocator, 
         lwreallocator reallocator, lwfreeor freeor, lwreporter errorreporter,
-        lwreporter noticereporter, lwdebuglogger debuglogger);
+        lwreporter noticereporter);
+
+extern void lwgeom_set_debuglogger(lwdebuglogger debuglogger);
 
 /**
  * Request interruption of any running code

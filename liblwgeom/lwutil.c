@@ -168,7 +168,7 @@ default_errorreporter(const char *fmt, va_list ap)
 void
 lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
 	        lwfreeor freeor, lwreporter errorreporter,
-	        lwreporter noticereporter, lwdebuglogger debuglogger) {
+	        lwreporter noticereporter) {
 
 	if ( allocator ) lwalloc_var = allocator;
 	if ( reallocator ) lwrealloc_var = reallocator;
@@ -176,6 +176,11 @@ lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
 
 	if ( errorreporter ) lwerror_var = errorreporter;
 	if ( noticereporter ) lwnotice_var = noticereporter;
+}
+
+void
+lwgeom_set_debuglogger(lwdebuglogger debuglogger) {
+
 	if ( debuglogger ) lwdebug_var = debuglogger;
 }
 

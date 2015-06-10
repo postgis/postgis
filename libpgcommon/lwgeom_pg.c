@@ -191,7 +191,8 @@ void
 pg_install_lwgeom_handlers(void)
 {
 	/* install PostgreSQL handlers */
-	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice, pg_debug);
+	lwgeom_set_handlers(pg_alloc, pg_realloc, pg_free, pg_error, pg_notice);
+	lwgeom_set_debuglogger(pg_debug);
 }
 
 /**
