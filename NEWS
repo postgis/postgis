@@ -3,6 +3,7 @@ PostGIS 2.2.0
 
  * Important / Breaking Changes *
 
+  - PROJ4 4.6 and higher only
   - #2703, KNN <-> operator now returns the correct distance ordering
            for all geometry types, not just for points. Code that expects
            the looser "centroid distance" ordering should be updated.
