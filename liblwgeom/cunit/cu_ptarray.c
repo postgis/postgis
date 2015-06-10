@@ -45,12 +45,12 @@ static void test_ptarray_append_point(void)
 	p.y = 1;
 	ptarray_append_point(line->points, &p, LW_TRUE);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
 	lwfree(wkt);
 
 	ptarray_append_point(line->points, &p, LW_FALSE);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(0 0,1 1,1 1)");
 	lwfree(wkt);
 
 	lwline_free(line);
@@ -67,35 +67,35 @@ static void test_ptarray_insert_point(void)
 	p.y = 1;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(1 1)");
 	lwfree(wkt);
 
 	p.x = 2; 
 	p.y = 20;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,1 1)");
 	lwfree(wkt);
 
 	p.x = 3; 
 	p.y = 30;
 	ptarray_insert_point(line->points, &p, 1);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,3 30,1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,3 30,1 1)");
 	lwfree(wkt);
 
 	p.x = 4; 
 	p.y = 40;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1)");
 	lwfree(wkt);
 
 	p.x = 5; 
 	p.y = 50;
 	ptarray_insert_point(line->points, &p, 4);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
-	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1,5 50)");
+	ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1,5 50)");
 	lwfree(wkt);
 
 	lwline_free(line);
@@ -113,7 +113,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,5 5)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,5 5)");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -124,7 +124,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,5 5,6 3)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,5 5,6 3)");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -135,7 +135,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING EMPTY");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING EMPTY");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -146,7 +146,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, 0);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,12 43,42 15)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,12 43,42 15)");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -165,7 +165,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, .7);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,5.5 7,12 43,42 15)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,5.5 7,12 43,42 15)");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -176,7 +176,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,0 0,0 10)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,0 0,0 10)");
 	lwfree(wkt);
 	lwline_free(line2);
 	lwline_free(line1);
@@ -196,7 +196,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_SUCCESS);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
-	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
+	ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
 	lwfree(wkt);
 	FLAGS_SET_READONLY(line2->points->flags, 0); /* for lwline_free */
 	lwline_free(line2);
@@ -354,7 +354,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
+	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -367,7 +367,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
+	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -379,7 +379,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,-1 -1))");
+	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,-1 -1))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -391,7 +391,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-0.70710678 -3.7071068,1 -3),(1 -3,5 5))");
+	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-0.70710678 -3.7071068,1 -3),(1 -3,5 5))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -403,7 +403,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),CIRCULARSTRING(0 -1,-0.70710678 -2.7071068,1 -2))");
+	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),CIRCULARSTRING(0 -1,-0.70710678 -2.7071068,1 -2))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -414,7 +414,7 @@ static void test_ptarray_desegmentize()
 	in = out;
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,2 2,3 1),(3 1,4 4))");
+	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,2 2,3 1),(3 1,4 4))");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	// printf("%s\n", str);
@@ -425,7 +425,7 @@ static void test_ptarray_desegmentize()
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10,0 0)");
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10,0 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10,0 0)");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);	
@@ -433,7 +433,7 @@ static void test_ptarray_desegmentize()
 	in = lwgeom_from_text("LINESTRING(10 10,0 10,0 0,10 0)");
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(10 10,0 10,0 0,10 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(10 10,0 10,0 0,10 0)");
 	// printf("%s\n", str);
 	lwgeom_free(in);
 	lwgeom_free(out);
@@ -442,7 +442,7 @@ static void test_ptarray_desegmentize()
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10)");
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
-	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10)");
 	// printf("%s\n", str);
 	lwgeom_free(in);
 	lwgeom_free(out);
@@ -453,7 +453,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
-	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,1 1)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,1 1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);		
@@ -674,7 +674,7 @@ static void test_ptarrayarc_contains_point()
 	cu_error_msg_reset();
 	rv = ptarrayarc_contains_point(pa, &pt);
 	//printf("%s\n", cu_error_msg);
-	CU_ASSERT_STRING_EQUAL("ptarrayarc_contains_point called with even number of points", cu_error_msg);
+	ASSERT_STRING_EQUAL("ptarrayarc_contains_point called with even number of points", cu_error_msg);
 
 	/*** Unclosed ring ***/
 	lwline_free(lwline);
@@ -682,7 +682,7 @@ static void test_ptarrayarc_contains_point()
 	pa = lwline->points;
 	cu_error_msg_reset();
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_STRING_EQUAL("ptarrayarc_contains_point called on unclosed ring", cu_error_msg);
+	ASSERT_STRING_EQUAL("ptarrayarc_contains_point called on unclosed ring", cu_error_msg);
 
 	lwline_free(lwline);
 }
@@ -733,7 +733,7 @@ static void test_ptarray_scale()
 void ptarray_suite_setup(void);
 void ptarray_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("point_array", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("ptarray", NULL, NULL);
 	PG_ADD_TEST(suite, test_ptarray_append_point);
 	PG_ADD_TEST(suite, test_ptarray_append_ptarray);
 	PG_ADD_TEST(suite, test_ptarray_locate_point);
