@@ -7,6 +7,7 @@ PostGIS 2.1.8
   - #3048, shp2pgsql - illegal number format when specific system locale set
   - #3094, Malformed GeoJSON inputs crash backend
   - #3104, st_asgml introduces random characters in ID field
+  - #3155, Remove liblwgeom.h on make uninstall
   - Fix crash in ST_LineLocatePoint
 
 
