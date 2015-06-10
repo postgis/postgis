@@ -147,7 +147,8 @@ endif
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
 	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
-	TESTS += knn_recheck
+	TESTS += knn_recheck \
+           temporal_knn
 endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)

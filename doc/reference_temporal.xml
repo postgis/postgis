@@ -211,7 +211,8 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 			<para>
 <xref linkend="ST_IsValidTrajectory" />,
 <xref linkend="ST_ClosestPointOfApproach" />,
-<xref linkend="ST_AddMeasure" />
+<xref linkend="ST_AddMeasure" />,
+<xref linkend="geometry_distance_cpa" />
 			</para>
 		  </refsection>
 		</refentry>

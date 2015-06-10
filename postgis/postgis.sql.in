@@ -828,6 +828,24 @@ CREATE OPERATOR <<->> (
     COMMUTATOR = '<<->>'
 );
 
+--
+-- This is for use with |=| operator, which does not directly use
+-- ST_DistanceCPA just in case it'll ever need to change behavior
+-- (operators definition cannot be altered)
+--
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION geometry_distance_cpa(geometry, geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_DistanceCPA'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OPERATOR |=| (
+    LEFTARG = geometry, RIGHTARG = geometry,
+    PROCEDURE = geometry_distance_cpa,
+    COMMUTATOR = '|=|'
+);
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,int4)
 	RETURNS float8
@@ -846,6 +864,10 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 #if POSTGIS_PGSQL_VERSION >= 91
 	-- Availability: 2.2.0
 	OPERATOR        13       <<->> FOR ORDER BY pg_catalog.float_ops,
+#if POSTGIS_PGSQL_VERSION >= 95
+	-- Availability: 2.2.0
+	OPERATOR        20       |=| FOR ORDER BY pg_catalog.float_ops,
+#endif
 	-- Availability: 2.2.0
 	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, int4),
 #endif

@@ -505,7 +505,7 @@ static double gidx_distance_leaf_centroid(const GIDX *a, const GIDX *b)
 /**
 * Calculate the box->box distance.
 */
-static double gidx_distance(const GIDX *a, const GIDX *b)
+static double gidx_distance(const GIDX *a, const GIDX *b, int m_is_time)
 {
   int ndims, i;
   double sum = 0;
@@ -526,6 +526,10 @@ static double gidx_distance(const GIDX *a, const GIDX *b)
     {
       /* overlaps */
       d = 0;
+    }
+    else if ( i == 4 && m_is_time )
+    {
+      return FLT_MAX;
     }
     else if ( bmax < amin )
     {
@@ -1200,7 +1204,7 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	/* We scale up to "world units" so that the box-to-box distances */
 	/* compare reasonably with the over-the-spheroid distances that */
 	/* the recheck process will turn up */
-	distance = WGS84_RADIUS * gidx_distance(entry_box, query_box);
+	distance = WGS84_RADIUS * gidx_distance(entry_box, query_box, 0);
 	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
 
 	PG_RETURN_FLOAT8(distance);
@@ -1220,7 +1224,8 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 ** represents the distance to the index entry; for an internal tree node, the
 ** result must be the smallest distance that any child entry could have.
 **
-** Strategy 13 = centroid-based distance tests <<->>
+** Strategy 13 is centroid-based distance tests <<->>
+** Strategy 20 is cpa based distance tests |=|
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_distance);
 Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
@@ -1238,8 +1243,9 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
  
-	/* We are using '13' as the gist distance strategy number for <<->> */
-	if ( strategy != 13 ) {
+	/* Strategy 13 is <<->> */
+	/* Strategy 20 is |=| */
+	if ( strategy != 13 && strategy != 20 ) {
 		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
 	}
@@ -1256,11 +1262,20 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION >= 95
 
-	distance = gidx_distance(entry_box, query_box);
+	/* Strategy 20 is |=| */
+	distance = gidx_distance(entry_box, query_box, strategy == 20);
+
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 		*recheck = true;
 #else
+
+	if ( strategy == 20 )
+	{
+		elog(ERROR, "You need PostgreSQL 9.5.0 or higher in order to use |=| with index");
+		PG_RETURN_FLOAT8(FLT_MAX);
+	}
+
 	/* Treat leaf node tests different from internal nodes */
 	if (GIST_LEAF(entry))
 	{
