@@ -553,42 +553,6 @@ static double gidx_distance(const GIDX *a, const GIDX *b, int m_is_time)
   return sqrt(sum);
 }
 
-static double gidx_distance_m(const GIDX *a, const GIDX *b)
-{
-	int mdim_a, mdim_b;
-	double d, amin, amax, bmin, bmax;
-
-	/* Base computation on least available dimensions */
-	mdim_a = GIDX_NDIMS(a) - 1;
-	mdim_b = GIDX_NDIMS(b) - 1;
-
-	amin = GIDX_GET_MIN(a,mdim_a);
-	amax = GIDX_GET_MAX(a,mdim_a);
-	bmin = GIDX_GET_MIN(b,mdim_b);
-	bmax = GIDX_GET_MAX(b,mdim_b);
-
-    if ( ( amin <= bmax && amax >= bmin ) )
-    {
-      /* overlaps */
-      d = 0;
-    }
-    else if ( bmax < amin )
-    {
-      /* is "left" */
-      d = amin - bmax;
-    }
-    else
-    {
-      /* is "right" */
-      assert( bmin > amax );
-      d = bmin - amax;
-    }
-	
-	return d;
-}
-
-
-
 #if POSTGIS_PGSQL_VERSION < 95
 static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 {
@@ -633,7 +597,41 @@ static double gidx_distance_node_centroid(const GIDX *node, const GIDX *query)
 	}
 	return sqrt(sum);
 }
-#endif
+#else /* POSTGIS_PGSQL_VERSION >= 95 */
+static double gidx_distance_m(const GIDX *a, const GIDX *b)
+{
+	int mdim_a, mdim_b;
+	double d, amin, amax, bmin, bmax;
+
+	/* Base computation on least available dimensions */
+	mdim_a = GIDX_NDIMS(a) - 1;
+	mdim_b = GIDX_NDIMS(b) - 1;
+
+	amin = GIDX_GET_MIN(a,mdim_a);
+	amax = GIDX_GET_MAX(a,mdim_a);
+	bmin = GIDX_GET_MIN(b,mdim_b);
+	bmax = GIDX_GET_MAX(b,mdim_b);
+
+    if ( ( amin <= bmax && amax >= bmin ) )
+    {
+      /* overlaps */
+      d = 0;
+    }
+    else if ( bmax < amin )
+    {
+      /* is "left" */
+      d = amin - bmax;
+    }
+    else
+    {
+      /* is "right" */
+      assert( bmin > amax );
+      d = bmin - amax;
+    }
+	
+	return d;
+}
+#endif /* POSTGIS_PGSQL_VERSION >= 96 */
 
 /**
 * Return a #GSERIALIZED with an expanded bounding box.
@@ -673,7 +671,6 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	GIDX *b1 = (GIDX*)b1mem;
 	char b2mem[GIDX_MAX_SIZE];
 	GIDX *b2 = (GIDX*)b2mem;
-	double distance;
 
 #if POSTGIS_PGSQL_VERSION < 95
 
@@ -691,7 +688,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	}
 	PG_RETURN_FLOAT8(box_distance);
 
-#else
+#else /* POSTGIS_PGSQL_VERSION >= 96 */
 
 	/* Feature-to-feature distance */
 	GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -699,6 +696,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	LWGEOM *lw1 = lwgeom_from_gserialized(geom1);
 	LWGEOM *lw2 = lwgeom_from_gserialized(geom2);
 	LWGEOM *closest;
+	double distance;
 
 
 	/* Find an exact shortest line w/ the dimensions we support */
@@ -775,7 +773,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 	PG_RETURN_FLOAT8(sqrt(distance));
-#endif
+#endif /* POSTGIS_PGSQL_VERSION >= 96 */
 }
 
 /*
