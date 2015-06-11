@@ -239,36 +239,6 @@ extern void lwgeom_cancel_interrupt(void);
 typedef void (lwinterrupt_callback)();
 extern lwinterrupt_callback *lwgeom_register_interrupt_callback(lwinterrupt_callback *);
 
-/**
- * Write a notice out to the notice handler.
- *
- * Uses standard printf() substitutions.
- * Use for messages you always want output.
- * For debugging, use LWDEBUG() or LWDEBUGF().
- * @ingroup logging
- */
-void lwnotice(const char *fmt, ...);
-
-/**
- * Write a notice out to the error handler.
- *
- * Uses standard printf() substitutions.
- * Use for errors you always want output.
- * For debugging, use LWDEBUG() or LWDEBUGF().
- * @ingroup logging
- */
-void lwerror(const char *fmt, ...);
-
-/**
- * Write a debug message out. 
- * Don't call this function directly, use the 
- * macros, LWDEBUG() or LWDEBUGF(), for
- * efficiency.
- * @ingroup logging
- */
-void lwdebug(int level, const char *fmt, ...);
-
-
 /******************************************************************/
 
 typedef struct {

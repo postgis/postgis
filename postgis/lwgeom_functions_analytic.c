@@ -345,7 +345,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 static void
 grid_print(const gridspec *grid)
 {
-	lwnotice("GRID(%g %g %g %g, %g %g %g %g)",
+	lwpgnotice("GRID(%g %g %g %g, %g %g %g %g)",
 	         grid->ipx, grid->ipy, grid->ipz, grid->ipm,
 	         grid->xsize, grid->ysize, grid->zsize, grid->msize);
 }
@@ -376,7 +376,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	in_lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(in_point));
 	if ( in_lwpoint == NULL )
 	{
-		lwerror("Offset geometry must be a point");
+		lwpgerror("Offset geometry must be a point");
 	}
 
 	grid.xsize = PG_GETARG_FLOAT8(2);

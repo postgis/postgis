@@ -211,7 +211,7 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
 	GSERIALIZED *g = NULL;
 
 	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
-	if ( ! g ) lwerror("Unable to serialize lwgeom.");
+	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
 }
@@ -228,7 +228,31 @@ GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
 	GSERIALIZED *g = NULL;
 
 	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
-	if ( ! g ) lwerror("Unable to serialize lwgeom.");
+	if ( ! g ) lwpgerror("Unable to serialize lwgeom.");
 	SET_VARSIZE(g, ret_size);
 	return g;
+}
+
+void
+lwpgnotice(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+  pg_notice(fmt, ap);
+
+	va_end(ap);
+}
+
+void
+lwpgerror(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+  pg_error(fmt, ap);
+
+	va_end(ap);
 }

@@ -57,4 +57,35 @@
 
 #endif /* POSTGIS_DEBUG_LEVEL <= 0 */
 
+/**
+ * Write a notice out to the notice handler.
+ *
+ * Uses standard printf() substitutions.
+ * Use for messages you always want output.
+ * For debugging, use LWDEBUG() or LWDEBUGF().
+ * @ingroup logging
+ */
+void lwnotice(const char *fmt, ...);
+
+/**
+ * Write a notice out to the error handler.
+ *
+ * Uses standard printf() substitutions.
+ * Use for errors you always want output.
+ * For debugging, use LWDEBUG() or LWDEBUGF().
+ * @ingroup logging
+ */
+void lwerror(const char *fmt, ...);
+
+/**
+ * Write a debug message out. 
+ * Don't call this function directly, use the 
+ * macros, LWDEBUG() or LWDEBUGF(), for
+ * efficiency.
+ * @ingroup logging
+ */
+void lwdebug(int level, const char *fmt, ...);
+
+
+
 #endif /* LWGEOM_LOG_H */

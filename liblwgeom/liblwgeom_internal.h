@@ -18,6 +18,8 @@
 
 #include "../postgis_config.h"
 
+#include "lwgeom_log.h"
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>

@@ -38,7 +38,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	/* Raise an error if input is not a linestring or multilinestring */
 	if ( type != LINETYPE && type != MULTILINETYPE )
 	{
-		lwerror("Only LINESTRING and MULTILINESTRING are supported");
+		lwpgerror("Only LINESTRING and MULTILINESTRING are supported");
 		PG_RETURN_NULL();
 	}
 
@@ -497,7 +497,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	 * if dpa!=NULL it means we didn't close it yet.
 	 * this should never happen.
 	 */
-	if ( dpa != NULL ) lwerror("Something wrong with algorithm");
+	if ( dpa != NULL ) lwpgerror("Something wrong with algorithm");
 
 	return ret;
 }
@@ -592,7 +592,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a bug */
 		else
 		{
-			lwerror("ptarray_locate_between_m returned a POINARRAY set containing POINTARRAY with 0 points");
+			lwpgerror("ptarray_locate_between_m returned a POINARRAY set containing POINTARRAY with 0 points");
 		}
 
 	}
@@ -673,11 +673,11 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 		/* Polygon types are not supported */
 	case POLYGONTYPE:
 	case MULTIPOLYGONTYPE:
-		lwerror("Areal geometries are not supported by locate_between_measures");
+		lwpgerror("Areal geometries are not supported by locate_between_measures");
 		return NULL;
 	}
 
-	lwerror("Unkonwn geometry type (%s:%d)", __FILE__, __LINE__);
+	lwpgerror("Unkonwn geometry type (%s:%d)", __FILE__, __LINE__);
 	return NULL;
 }
 
@@ -706,7 +706,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 	if ( end_measure < start_measure )
 	{
-		lwerror("locate_between_m: 2nd arg must be bigger then 1st arg");
+		lwpgerror("locate_between_m: 2nd arg must be bigger then 1st arg");
 		PG_RETURN_NULL();
 	}
 	
@@ -715,7 +715,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 */
 	if ( ! hasm )
 	{
-		lwerror("Geometry argument does not have an 'M' ordinate");
+		lwpgerror("Geometry argument does not have an 'M' ordinate");
 		PG_RETURN_NULL();
 	}
 
@@ -727,7 +727,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
-		lwerror("Areal or Collection types are not supported");
+		lwpgerror("Areal or Collection types are not supported");
 		PG_RETURN_NULL();
 	}
 

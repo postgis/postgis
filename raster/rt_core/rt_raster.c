@@ -1223,7 +1223,7 @@ rt_raster_compute_skewed_raster(
 	raster->height = _r[1];
 
 	/* initialize GEOS */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(rtinfo, lwgeom_geos_error);
 
 	/* create reference LWPOLY */
 	{
@@ -2716,7 +2716,7 @@ rt_raster_gdal_rasterize(
 		*/
 
 		/* initialize GEOS */
-		initGEOS(lwnotice, lwgeom_geos_error);
+		initGEOS(rtinfo, lwgeom_geos_error);
 
 		/* convert envelope to geometry */
 		RASTER_DEBUG(4, "Converting envelope to geometry");

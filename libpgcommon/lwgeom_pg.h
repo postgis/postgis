@@ -170,4 +170,7 @@ Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
 
+void lwpgerror(const char *fmt, ...);
+void lwpgnotice(const char *fmt, ...);
+
 #endif /* !defined _LWGEOM_PG_H */

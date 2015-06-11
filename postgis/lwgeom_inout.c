@@ -187,13 +187,13 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	uint8_t geom_type = gserialized_get_type(pg_lwgeom);
 	if (POINTTYPE != geom_type)
 	{
-		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
+		lwpgerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
 	}
 	/* Convert to LWGEOM type */
 	lwgeom = lwgeom_from_gserialized(pg_lwgeom);
 
   if (format_text == NULL) {
-    lwerror("ST_AsLatLonText: invalid format string (null");
+    lwpgerror("ST_AsLatLonText: invalid format string (null");
     PG_RETURN_NULL();
   }
 

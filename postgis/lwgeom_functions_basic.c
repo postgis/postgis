@@ -1561,7 +1561,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	pglwg1 = PG_GETARG_GSERIALIZED_P(0);
 	if ( gserialized_get_type(pglwg1) != LINETYPE )
 	{
-		lwerror("Shell is not a line");
+		lwpgerror("Shell is not a line");
 	}
 	shell = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
@@ -1578,7 +1578,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 			offset += INTALIGN(VARSIZE(g));
 			if ( gserialized_get_type(g) != LINETYPE )
 			{
-				lwerror("Hole %d is not a line", i);
+				lwpgerror("Hole %d is not a line", i);
 			}
 			hole = lwgeom_as_lwline(lwgeom_from_gserialized(g));
 			holes[i] = hole;
@@ -2394,14 +2394,14 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		lwerror("Argument must be POINT geometries");
+		lwpgerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
 	srid = lwpoint->srid;
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p1) )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		lwerror("Error extracting point");
+		lwpgerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
 	lwpoint_free(lwpoint);
@@ -2413,19 +2413,19 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Argument must be POINT geometries");
+		lwpgerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
 	if ( lwpoint->srid != srid )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Operation on mixed SRID geometries");
+		lwpgerror("Operation on mixed SRID geometries");
 		PG_RETURN_NULL();
 	}
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p2) )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Error extracting point");
+		lwpgerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
 	lwpoint_free(lwpoint);
@@ -2661,7 +2661,7 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_in = lwgeom_from_gserialized(input);
 	LWGEOM *lwgeom_out;
 
-	/* lwnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
+	/* lwpgnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
 
 	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in);
 	output = geometry_serialize(lwgeom_out);
@@ -2695,7 +2695,7 @@ static LWORD ordname2ordval(char n)
   if ( n == 'y' || n == 'y' ) return LWORD_Y;
   if ( n == 'z' || n == 'Z' ) return LWORD_Z;
   if ( n == 'm' || n == 'M' ) return LWORD_M;
-  lwerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
+  lwpgerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
   return (LWORD)-1;
 }
 
@@ -2712,7 +2712,7 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   ospec = PG_GETARG_CSTRING(1);
   if ( strlen(ospec) != 2 )
   {
-    lwerror("Invalid ordinate specification. "
+    lwpgerror("Invalid ordinate specification. "
             "Need two letters from the set (x,y,z,m). "
             "Got '%s'", ospec);
     PG_RETURN_NULL();
@@ -2725,12 +2725,12 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   /* Check presence of given ordinates */
   if ( ( o1 == LWORD_M || o2 == LWORD_M ) && ! gserialized_has_m(in) )
   {
-    lwerror("Geometry does not have an M ordinate");
+    lwpgerror("Geometry does not have an M ordinate");
     PG_RETURN_NULL();
   }
   if ( ( o1 == LWORD_Z || o2 == LWORD_Z ) && ! gserialized_has_z(in) )
   {
-    lwerror("Geometry does not have a Z ordinate");
+    lwpgerror("Geometry does not have a Z ordinate");
     PG_RETURN_NULL();
   }
 

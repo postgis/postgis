@@ -20,10 +20,10 @@
 Datum box2d_from_geohash(PG_FUNCTION_ARGS);
 Datum point_from_geohash(PG_FUNCTION_ARGS);
 
-static void geohash_lwerror(char *msg, int error_code)
+static void geohash_lwpgerror(char *msg, int error_code)
 {
 	POSTGIS_DEBUGF(3, "ST_Box2dFromGeoHash ERROR %i", error_code);
-	lwerror("%s", msg);
+	lwpgerror("%s", msg);
 }
 
 #include "lwgeom_export.h"
@@ -38,7 +38,7 @@ parse_geohash(char *geohash, int precision)
 
 	if (NULL == geohash)
 	{
-		geohash_lwerror("invalid GeoHash representation", 2);
+		geohash_lwpgerror("invalid GeoHash representation", 2);
 	}
 
 	decode_geohash_bbox(geohash, lat, lon, precision);

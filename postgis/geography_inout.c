@@ -555,7 +555,7 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
 	
 	if ( ! lwgeom )
-		lwerror("Unable to parse WKB");
+		lwpgerror("Unable to parse WKB");
  		
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);

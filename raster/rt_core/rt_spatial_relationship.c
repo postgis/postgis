@@ -171,7 +171,7 @@ rt_errorstate rt_raster_geos_spatial_relationship(
 		return ES_ERROR;
 	}
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(rtinfo, lwgeom_geos_error);
 
 	/* get LWMPOLY of each band */
 	if (rt_raster_surface(rast1, nband1, &surface1) != ES_NONE) {
@@ -1066,7 +1066,7 @@ rt_raster_intersects(
 	do {
 		int rtn;
 
-		initGEOS(lwnotice, lwgeom_geos_error);
+		initGEOS(rtinfo, lwgeom_geos_error);
 
 		rtn = 1;
 		for (i = 0; i < 2; i++) {

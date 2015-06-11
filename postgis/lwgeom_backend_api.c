@@ -91,7 +91,7 @@ static void lwgeom_backend_switch( const char* newvalue, void* extra )
 	    return;
 	}
     }
-    lwerror("Can't find %s geometry backend", newvalue );
+    lwpgerror("Can't find %s geometry backend", newvalue );
 }
 
 void lwgeom_init_backend()

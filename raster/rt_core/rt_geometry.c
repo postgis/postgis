@@ -434,7 +434,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	}
 
 	/* initialize GEOS */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(rtinfo, lwgeom_geos_error);
 
 	/* use gdal polygonize */
 	gv = rt_raster_gdal_polygonize(raster, nband, 1, &gvcount);
@@ -1190,7 +1190,7 @@ rt_raster_gdal_polygonize(
 	}
 
 	/* initialize GEOS */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(rtinfo, lwgeom_geos_error);
 
 	RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
 

@@ -119,6 +119,7 @@ PostGIS 2.2.0
 
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
+  - #1220, lwerror and lwnotice function became internal to liblwgeom
 
 PostGIS 2.1.6
 2015/03/20

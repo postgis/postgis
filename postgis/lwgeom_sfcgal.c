@@ -50,7 +50,7 @@ void sfcgal_postgis_init(void)
 {
     if ( ! __sfcgal_init ) {
 	sfcgal_init();
-	sfcgal_set_error_handlers((sfcgal_error_handler_t) lwnotice, (sfcgal_error_handler_t) lwerror);
+	sfcgal_set_error_handlers((sfcgal_error_handler_t) lwpgnotice, (sfcgal_error_handler_t) lwpgerror);
 	sfcgal_set_alloc_handlers(lwalloc, lwfree);
 	__sfcgal_init = 1;
     }
@@ -65,7 +65,7 @@ sfcgal_geometry_t* POSTGIS2SFCGALGeometry(GSERIALIZED *pglwgeom)
 
 	if (! lwgeom)
 	{
-		lwerror("POSTGIS2SFCGALGeometry: Unable to deserialize input");
+		lwpgerror("POSTGIS2SFCGALGeometry: Unable to deserialize input");
 	}
 	g = LWGEOM2SFCGAL(lwgeom);
 	lwgeom_free(lwgeom);
@@ -82,7 +82,7 @@ sfcgal_prepared_geometry_t* POSTGIS2SFCGALPreparedGeometry(GSERIALIZED *pglwgeom
 
 	if (!lwgeom)
 	{
-		lwerror("POSTGIS2SFCGALPreparedGeometry: Unable to deserialize input");
+		lwpgerror("POSTGIS2SFCGALPreparedGeometry: Unable to deserialize input");
 	}
 	g = LWGEOM2SFCGAL(lwgeom);
 

@@ -180,7 +180,7 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 		}
 		else
 		{
-			lwerror("geography_distance_cache this cannot happen!");
+			lwpgerror("geography_distance_cache this cannot happen!");
 			return LW_FAILURE;
 		}
 		
