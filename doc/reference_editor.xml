@@ -1273,11 +1273,8 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 		<title>Description</title>
 
 		<para>Scales the geometry to a new size by multiplying the
-			ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor,
-			Zfactor).</para>
-
-		<note><para><code>ST_Scale(geomA,  XFactor, YFactor, ZFactor)</code>
-			is short-hand for <code>ST_Affine(geomA,  XFactor, 0, 0,  0, YFactor, 0,  0, 0, ZFactor,  0, 0, 0)</code>.</para></note>
+			ordinates with the corresponding factor parameters.
+		</para>
 
 		<para>
 The version taking a geometry as the <varname>factor</varname> parameter
@@ -1314,6 +1311,13 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 			st_asewkt
 ----------------------------------
  LINESTRING(0.5 1.5 3,0.5 0.75 1)
+
+--Version 3: Scale X Y Z M
+ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),
+   ST_MakePoint(0.5, 0.75, 2, -1)));
+			       st_asewkt
+----------------------------------------
+ LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)
 
 
 </programlisting>

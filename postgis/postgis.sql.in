@@ -880,96 +880,6 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FUNCTION        7        geometry_gist_same_nd (geometry, geometry, internal);
 
 
------------------------------------------------------------------------------
--- Affine transforms
------------------------------------------------------------------------------
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1,	$3 - cos($2) * $3 + sin($2) * $4, $4 - sin($2) * $3 - cos($2) * $4, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,geometry)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1, ST_X($3) - cos($2) * ST_X($3) + sin($2) * ST_Y($3), ST_Y($3) - sin($2) * ST_X($3) - cos($2) * ST_Y($3), 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Rotate($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Translate($1, $2, $3, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_Scale'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
-	--AS 'SELECT ST_Scale($1, ST_Point($2, $3, $4))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Scale($1, $2, $3, 1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $4, 0, 0,  0, $5, 0,
-		0, 0, 1,  $2 * $4, $3 * $5, 0)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ShiftLongitude(geometry)
 	RETURNS geometry
@@ -1733,6 +1643,100 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
+
+-----------------------------------------------------------------------------
+-- Affine transforms
+-----------------------------------------------------------------------------
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1,	$3 - cos($2) * $3 + sin($2) * $4, $4 - sin($2) * $3 - cos($2) * $4, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,geometry)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1, ST_X($3) - cos($2) * ST_X($3) + sin($2) * ST_Y($3), ST_Y($3) - sin($2) * ST_X($3) - cos($2) * ST_Y($3), 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Rotate($1, $2)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Translate($1, $2, $3, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Scale'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
+	RETURNS geometry
+	--AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	AS 'SELECT ST_Scale($1, ST_MakePoint($2, $3, $4))'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Scale($1, $2, $3, 1)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  $4, 0, 0,  0, $5, 0,
+		0, 0, 1,  $2 * $4, $3 * $5, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- Dumping
+-----------------------------------------------------------------------
 
 -- Availability: 1.0.0
 CREATE TYPE geometry_dump AS (
