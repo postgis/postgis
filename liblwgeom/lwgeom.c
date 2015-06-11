@@ -1339,8 +1339,11 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 		return NULL;
 	}
 
-	lwgeom_drop_bbox(in);
-	lwgeom_add_bbox(in);
+  /* only refresh bbox if X or Y changed */
+  if ( in->bbox && (o1 < 2 || o2 < 2) ) {
+    lwgeom_drop_bbox(in);
+    lwgeom_add_bbox(in);
+  }
 	return in;
 }
 
