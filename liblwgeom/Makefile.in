@@ -69,7 +69,6 @@ SA_OBJS = \
 	lwsegmentize.o \
 	lwlinearreferencing.o \
 	lwprint.o \
-	vsprintf.o \
 	g_box.o \
 	g_serialized.o \
 	g_util.o \
