@@ -970,16 +970,30 @@ static void test_lwgeom_scale(void)
 	LWGEOM *geom;
 	POINT4D factor;
 	char *out_ewkt;
+	GBOX *box;
 
 	geom = lwgeom_from_wkt("SRID=4326;GEOMETRYCOLLECTION(POINT(0 1 2 3),POLYGON((-1 -1 0 1,-1 2.5 0 1,2 2 0 1,2 -1 0 1,-1 -1 0 1),(0 0 1 2,0 1 1 2,1 1 1 2,1 0 2 3,0 0 1 2)),LINESTRING(0 0 0 0, 1 2 3 4))", LW_PARSER_CHECK_NONE);
 	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
   lwgeom_scale(geom, &factor);
 	out_ewkt = lwgeom_to_ewkt(geom);
   ASSERT_STRING_EQUAL(out_ewkt, "SRID=4326;GEOMETRYCOLLECTION(POINT(0 3 8 15),POLYGON((-2 -3 0 5,-2 7.5 0 5,4 6 0 5,4 -3 0 5,-2 -3 0 5),(0 0 4 10,0 3 4 10,2 3 4 10,2 0 8 15,0 0 4 10)),LINESTRING(0 0 0 0,2 6 12 20))");
-
 	lwgeom_free(geom);
 	lwfree(out_ewkt);
 
+	geom = lwgeom_from_wkt("POINT(1 1 1 1)", LW_PARSER_CHECK_NONE);
+	lwgeom_add_bbox(geom);
+	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+	lwgeom_scale(geom, &factor);
+	box = geom->bbox;
+	ASSERT_DOUBLE_EQUAL(box->xmin, 2);
+	ASSERT_DOUBLE_EQUAL(box->xmax, 2);
+	ASSERT_DOUBLE_EQUAL(box->ymin, 3);
+	ASSERT_DOUBLE_EQUAL(box->ymax, 3);
+	ASSERT_DOUBLE_EQUAL(box->zmin, 4);
+	ASSERT_DOUBLE_EQUAL(box->zmax, 4);
+	ASSERT_DOUBLE_EQUAL(box->mmin, 5);
+	ASSERT_DOUBLE_EQUAL(box->mmax, 5);
+	lwgeom_free(geom);
 }
 
 /*
