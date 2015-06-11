@@ -2799,3 +2799,51 @@ Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
 
   PG_RETURN_POINTER(geom_out);
 }
+
+Datum ST_Scale(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Scale);
+Datum ST_Scale(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P_COPY(0); /* will be modified */
+  GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+  GSERIALIZED *ret;
+  LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
+  LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
+  LWPOINT *lwpoint;
+  POINT4D factors;
+
+  lwpoint = lwgeom_as_lwpoint(lwgeom2);
+  if ( lwpoint == NULL )
+  {
+    lwgeom_free(lwgeom1);
+    lwgeom_free(lwgeom2);
+    PG_FREE_IF_COPY(geom1, 0);
+    PG_FREE_IF_COPY(geom2, 1);
+    lwpgerror("Scale factor geometry parameter must be a point");
+    PG_RETURN_NULL();
+  }
+  if ( ! lwpoint->point->npoints )
+  {
+    /* empty point, return input untouched */ 
+    lwgeom_free(lwgeom1);
+    lwgeom_free(lwgeom2);
+    PG_FREE_IF_COPY(geom2, 1);
+    PG_RETURN_POINTER(geom1);
+  }
+  getPoint4d_p(lwpoint->point, 0, &factors);
+  if ( ! FLAGS_GET_Z(lwpoint->flags ) ) factors.z = 1;
+  if ( ! FLAGS_GET_M(lwpoint->flags ) ) factors.m = 1;
+
+  lwgeom_scale(lwgeom1, &factors);
+
+  /* Construct GSERIALIZED */
+  ret = geometry_serialize(lwgeom1);
+
+  /* Cleanup */
+  lwgeom_free(lwgeom1);
+  lwgeom_free(lwgeom2);
+  PG_FREE_IF_COPY(geom1, 0);
+  PG_FREE_IF_COPY(geom2, 1);
+
+  PG_RETURN_POINTER(ret);
+}

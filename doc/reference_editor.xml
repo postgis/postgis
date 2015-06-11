@@ -1260,6 +1260,12 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
 		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Scale</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -1273,15 +1279,24 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 		<note><para><code>ST_Scale(geomA,  XFactor, YFactor, ZFactor)</code>
 			is short-hand for <code>ST_Affine(geomA,  XFactor, 0, 0,  0, YFactor, 0,  0, 0, ZFactor,  0, 0, 0)</code>.</para></note>
 
+		<para>
+The version taking a geometry as the <varname>factor</varname> parameter
+allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all
+supported dimensions. Missing dimensions in the <varname>factor</varname>
+point are equivalant to no scaling the corresponding dimension.
+    </para>
+
 		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 
 		<para>Availability: 1.1.0.</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was introduced.</para>
 		<para>&P_support;</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
 	  	<para>&T_support;</para>
+	  	<para>&M_support;</para>
 	  </refsection>
 
 

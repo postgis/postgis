@@ -944,10 +944,17 @@ CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
 	AS 'SELECT ST_Translate($1, $2, $3, 0)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Scale'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	--AS 'SELECT ST_Scale($1, ST_Point($2, $3, $4))'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
