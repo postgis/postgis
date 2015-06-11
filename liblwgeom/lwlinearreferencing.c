@@ -1042,7 +1042,7 @@ ptarray_locate_along_linear(const POINTARRAY *pa, double m, POINT4D *p, int from
 		
 	/* Walk through each segment in the point array */
   getPoint4d_p(pa, i, &p1);
-	for ( i = 1; i < pa->npoints; i++ )
+	for ( i = from+1; i < pa->npoints; i++ )
 	{
 		getPoint4d_p(pa, i, &p2);
 
