@@ -1147,8 +1147,13 @@ extern void lwgeom_affine(LWGEOM *geom, const AFFINE *affine);
 extern void lwgeom_scale(LWGEOM *geom, const POINT4D *factors);
 extern int lwgeom_dimension(const LWGEOM *geom);
 
-extern LWPOINT* lwline_get_lwpoint(LWLINE *line, int where);
-extern LWPOINT* lwcircstring_get_lwpoint(LWCIRCSTRING *circ, int where);
+extern LWPOINT* lwline_get_lwpoint(const LWLINE *line, int where);
+extern LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where);
+
+extern LWPOINT* lwcompound_get_startpoint(const LWCOMPOUND *lwcmp);
+extern LWPOINT* lwcompound_get_endpoint(const LWCOMPOUND *lwcmp);
+extern LWPOINT* lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where);
+
 
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);

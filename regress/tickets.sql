@@ -879,6 +879,18 @@ SELECT '#2704', ST_AsText(ST_GeomFromGML('<?xml version="1.0"?>
 
 SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 
+SELECT '#2717', 
+   ST_AsText(ST_StartPoint(g)), 
+   ST_AsText(ST_EndPoint(g)), 
+   ST_AsText(ST_PointN(g, 1)), 
+   ST_AsText(ST_PointN(g, 2)), 
+   ST_AsText(ST_PointN(g, 3)), 
+   ST_AsText(ST_PointN(g, 4)), 
+   ST_AsText(ST_PointN(g, 5))
+   FROM ( 
+     SELECT 'COMPOUNDCURVE((-1 -1, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1))'::geometry AS g
+   ) AS foo;
+
 SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))'::geometry);
 
 SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography) ;

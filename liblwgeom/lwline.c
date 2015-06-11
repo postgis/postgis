@@ -292,7 +292,7 @@ lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 * Returns NULL if the geometry is empty or the index invalid.
 */
 LWPOINT*
-lwline_get_lwpoint(LWLINE *line, int where)
+lwline_get_lwpoint(const LWLINE *line, int where)
 {
 	POINT4D pt;
 	LWPOINT *lwpoint;

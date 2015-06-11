@@ -200,8 +200,9 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	int count = -1;
+	int type = lwgeom->type;
 	
-	if ( lwgeom->type == LINETYPE || lwgeom->type == CIRCSTRINGTYPE )
+	if ( type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
 		count = lwgeom_count_vertices(lwgeom);
 
 	lwgeom_free(lwgeom);
@@ -545,6 +546,10 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		/* OGC index starts at one, so we substract first. */
 		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, where - 1);
 	}
+	else if ( type == COMPOUNDTYPE )
+	{
+		lwpoint = lwcompound_get_lwpoint((LWCOMPOUND*)lwgeom, where - 1);
+	}	
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
@@ -698,6 +703,10 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	{
 		lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, 0);
 	}
+	else if ( type == COMPOUNDTYPE )
+	{
+		lwpoint = lwcompound_get_startpoint((LWCOMPOUND*)lwgeom);
+	}
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
@@ -725,6 +734,10 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 		LWLINE *line = (LWLINE*)lwgeom;
 		if ( line->points )
 			lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, line->points->npoints - 1);
+	}
+	else if ( type == COMPOUNDTYPE )
+	{
+		lwpoint = lwcompound_get_endpoint((LWCOMPOUND*)lwgeom);
 	}
 
 	lwgeom_free(lwgeom);

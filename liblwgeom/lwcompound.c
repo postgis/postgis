@@ -200,3 +200,65 @@ lwcompound_construct_from_lwline(const LWLINE *lwline)
 	/* ogeom->bbox = lwline->bbox; */
   return ogeom;
 }
+
+LWPOINT* 
+lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
+{
+	int i;
+	int count = 0;
+	int npoints = 0;
+	if ( lwgeom_is_empty((LWGEOM*)lwcmp) )
+		return NULL;
+	
+	npoints = lwgeom_count_vertices((LWGEOM*)lwcmp);
+	if ( where < 0 || where >= npoints )
+	{
+		lwerror("%s: index %d is not in range of number of vertices (%d) in input", __func__, where, npoints);
+		return NULL;
+	}
+	
+	for ( i = 0; i < lwcmp->ngeoms; i++ )
+	{
+		LWGEOM* part = lwcmp->geoms[i];
+		int npoints_part = lwgeom_count_vertices(part);
+		if ( where >= count && where < count + npoints_part )
+		{
+			return lwline_get_lwpoint((LWLINE*)part, where - count);
+		}
+		else
+		{
+			count += npoints_part;
+		}
+	}
+
+	return NULL;	
+}
+
+
+
+LWPOINT *
+lwcompound_get_startpoint(const LWCOMPOUND *lwcmp)
+{
+	return lwcompound_get_lwpoint(lwcmp, 0);
+}
+
+LWPOINT *
+lwcompound_get_endpoint(const LWCOMPOUND *lwcmp)
+{
+	LWLINE *lwline;
+	if ( lwcmp->ngeoms < 1 )
+	{
+		return NULL;
+	}
+	
+	lwline = (LWLINE*)(lwcmp->geoms[lwcmp->ngeoms-1]);
+
+	if ( (!lwline) || (!lwline->points) || (lwline->points->npoints < 1) )
+	{
+		return NULL;
+	}
+	
+	return lwline_get_lwpoint(lwline, lwline->points->npoints-1);
+}
+
+	
