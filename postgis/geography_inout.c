@@ -598,9 +598,11 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	** functions do the right thing.
 	*/
 	lwgeom_set_geodetic(lwgeom, true);
+	
 	/* Recalculate the boxes after re-setting the geodetic bit */
 	lwgeom_drop_bbox(lwgeom);
 	lwgeom_add_bbox(lwgeom);
+	
 	g_ser = geography_serialize(lwgeom);
 
 	/*

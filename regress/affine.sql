@@ -48,6 +48,9 @@ select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geom
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geometry,2, 3, 5, 7), 0.1));
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1 1)'::geometry,2, 3, 5, 7), 0.1));
 
+-- https://trac.osgeo.org/postgis/ticket/3159
+select '#3159', st_summary(st_affine(st_makepoint(1,1),1,0,0,1,0,0));
+
 -- postgis-users/2006-May/012119.html
 select 'transl_bbox', box2d(ST_Translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));
 select 'ST_Scale_bbox', box2d(ST_Scale('LINESTRING(1 0, 2 1)'::geometry, 2, 0));
