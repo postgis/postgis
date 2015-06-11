@@ -1524,7 +1524,7 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	}
 
   /* only refresh bbox if X or Y changed */
-  if ( o1 < 2 || o2 < 2 ) {
+  if ( in->bbox && (o1 < 2 || o2 < 2) ) {
     lwgeom_drop_bbox(in);
     lwgeom_add_bbox(in);
   }

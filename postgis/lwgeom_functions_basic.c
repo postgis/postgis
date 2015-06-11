@@ -2536,8 +2536,11 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	lwgeom_affine(lwgeom, &affine);
 
 	/* COMPUTE_BBOX TAINTING */
-	lwgeom_drop_bbox(lwgeom);
-	lwgeom_add_bbox(lwgeom);
+	if ( lwgeom->bbox )
+	{
+		lwgeom_drop_bbox(lwgeom);
+		lwgeom_add_bbox(lwgeom);
+	}
 	ret = geometry_serialize(lwgeom);
 
 	/* Release memory */
