@@ -1634,7 +1634,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
 	const GBOX *bbox1;
-	const GBOX *bbox2;
+	GBOX *bbox2;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
@@ -1648,10 +1648,10 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 
 	/* WARNING: this is really a BOX2DF, use only xmin and ymin fields */
 	bbox2 = (GBOX *)PG_GETARG_POINTER(1);
+	bbox2->flags = 0;
 
 	/* If bbox1 outside of bbox2, return empty */
-	if ( bbox1->xmin > bbox2->xmax || bbox1->xmax < bbox2->xmin ||
-	     bbox1->ymin > bbox2->ymax || bbox1->ymax < bbox2->ymin )
+	if ( ! gbox_overlaps_2d(bbox1, bbox2) )
 	{
 		lwresult = lwgeom_construct_empty(lwgeom1->type, lwgeom1->srid, 0, 0);
 		lwgeom_free(lwgeom1);
@@ -1662,8 +1662,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	}
 
 	/* if bbox1 is covered by bbox2, return lwgeom1 */
-	if ( bbox1->xmax <= bbox2->xmax && bbox1->xmin >= bbox2->xmin &&
-	     bbox1->ymax <= bbox2->ymax && bbox1->ymin >= bbox2->ymin )
+	if ( gbox_contains_2d(bbox2, bbox1) )
 	{
 		lwgeom_free(lwgeom1);
 		PG_RETURN_POINTER(geom1);
@@ -1671,14 +1670,17 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 
 	lwresult = lwgeom_clip_by_rect(lwgeom1, bbox2->xmin, bbox2->ymin,
 	                               bbox2->xmax, bbox2->ymax);
-	lwgeom_free(lwgeom1) ;
+
+	lwgeom_free(lwgeom1);
+	PG_FREE_IF_COPY(geom1, 0);
+
+	if ( lwresult == NULL ) 
+		PG_RETURN_NULL();
 
 	result = geometry_serialize(lwresult) ;
 	lwgeom_free(lwresult) ;
-
-	PG_FREE_IF_COPY(geom1, 0);
-
 	PG_RETURN_POINTER(result);
+	
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 

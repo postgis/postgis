@@ -841,9 +841,8 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	if (g3 == NULL)
 	{
-	  lwerror("Error performing rectangular clipping: %s",
-	          lwgeom_geos_errmsg);
-		return NULL; /* never get here */
+		lwnotice("Error performing rectangular clipping: %s", lwgeom_geos_errmsg);
+		return NULL;
 	}
 
 	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
@@ -853,8 +852,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	if (result == NULL)
 	{
-    lwerror("Error performing intersection: GEOS2LWGEOM: %s",
-            lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 

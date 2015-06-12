@@ -2042,7 +2042,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 					/* efficient way to do this? */
 					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
 					/* Hm, clipping left nothing behind, skip it */
-					if ( lwgeom_is_empty(clipped) )
+					if ( (!clipped) || lwgeom_is_empty(clipped) )
 					{
 						return 0;
 					}
@@ -2077,7 +2077,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 			{
 				LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
 				/* Hm, clipping left nothing behind, skip it */
-				if ( lwgeom_is_empty(clipped) )
+				if ( (!clipped) || lwgeom_is_empty(clipped) )
 				{
 					return 0;
 				}
