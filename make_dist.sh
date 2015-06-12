@@ -66,13 +66,15 @@ fi
 
 make clean # won't drop the comment files
 
-# make pom file
-cd "$outdir"/java/jdbc
-echo "Make java pom file"
-make pom.xml
-if [ $? -gt 0 ]; then
-	exit 1
-fi
+# cd "$owd"
+# echo "Make java pom file"
+# owd="$PWD"
+# cd "$outdir"
+# cd java/jdbc
+# make pom.xml
+# if [ $? -gt 0 ]; then
+# 	exit 1
+# fi
 
 cd "$owd"
 
