@@ -2659,20 +2659,24 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P_COPY(0);
-	GSERIALIZED *output;
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(input);
-	LWGEOM *lwgeom_out;
+	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	GSERIALIZED *g_out;
+	LWGEOM *lwgeom_in = lwgeom_from_gserialized(g_in);
+	LWGEOM *lwgeom_out = NULL;
+	double tolerance = 0.0;
 
-	/* lwpgnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+		tolerance = PG_GETARG_FLOAT8(1);
 
-	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in);
-	output = geometry_serialize(lwgeom_out);
+	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
+	g_out = geometry_serialize(lwgeom_out);
 
+	if ( lwgeom_out != lwgeom_in )
+		lwgeom_free(lwgeom_out);
 	lwgeom_free(lwgeom_in);
-	PG_FREE_IF_COPY(input, 0);
 
-	PG_RETURN_POINTER(output);
+	PG_FREE_IF_COPY(g_in, 0);
+	PG_RETURN_POINTER(g_out);
 }
 
 Datum ST_FlipCoordinates(PG_FUNCTION_ARGS);

@@ -32,6 +32,9 @@ PostGIS 2.2.0
 
   - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
     (Sandro Santilli / Boundless)
+  - #3131, KNN support for the geography type (Paul Ramsey / CartoDB)
+  - #2703, Exact KNN results for all geometry types, aka "KNN re-check" (Paul Ramsey / CartoDB)
+  - #1137, Allow a tolerance value in ST_RemoveRepeatedPoints (Paul Ramsey / CartoDB)
   - #3062, Allow passing M factor to ST_Scale (Sandro Santilli / Boundless)
   - #3139, ST_BoundingDiagonal (Sandro Santilli / Boundless)
   - #3129, ST_IsValidTrajectory (Sandro Santilli / Boundless)
@@ -40,8 +43,8 @@ PostGIS 2.2.0
   - Canonical output for index key types
   - ST_SwapOrdinates (Sandro Santilli / Boundless)
   - #2918, Use GeographicLib functions for geodetics (Mike Toews)
-  - #3074, ST_Subdivide (Paul Ramsey / CartoDB)
-  - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
+  - #3074, ST_Subdivide to break up large geometry (Paul Ramsey / CartoDB)
+  - #3040, KNN GiST index based centroid (<<->>)
            n-D distance operators (Sandro Santilli / Boundless)
   - Interruptibility API for liblwgeom (Sandro Santilli / CartoDB)
   - #2939, ST_ClipByBox2D (Sandro Santilli / CartoDB)
@@ -75,7 +78,7 @@ PostGIS 2.2.0
   - #2227, Simplification with Visvalingam-Whyatt algorithm
            ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avén)
   - Functions to encode and decode TWKB
-           ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén)
+           ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
 
  * Enhancements *
 

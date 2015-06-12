@@ -3286,8 +3286,8 @@ CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry)
 -- Only checks consecutive points for lineal and polygonal geoms.
 -- Checks all points for multipoint geoms.
 --
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geometry)
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geom geometry, tolerance float8 default 0.0)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'ST_RemoveRepeatedPoints'
        LANGUAGE 'c' IMMUTABLE STRICT

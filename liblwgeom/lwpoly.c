@@ -286,7 +286,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 }
 
 LWGEOM*
-lwpoly_remove_repeated_points(LWPOLY *poly)
+lwpoly_remove_repeated_points(LWPOLY *poly, double tolerance)
 {
 	uint32_t i;
 	POINTARRAY **newrings;
@@ -294,7 +294,7 @@ lwpoly_remove_repeated_points(LWPOLY *poly)
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		newrings[i] = ptarray_remove_repeated_points(poly->rings[i]);
+		newrings[i] = ptarray_remove_repeated_points(poly->rings[i], tolerance);
 	}
 
 	return (LWGEOM*)lwpoly_construct(poly->srid,

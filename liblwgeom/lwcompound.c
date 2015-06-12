@@ -261,4 +261,3 @@ lwcompound_get_endpoint(const LWCOMPOUND *lwcmp)
 	return lwline_get_lwpoint(lwline, lwline->points->npoints-1);
 }
 
-	

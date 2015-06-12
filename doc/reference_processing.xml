@@ -2438,6 +2438,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 		  <funcprototype>
 			<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2450,8 +2451,10 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 				any kind of geometry. Since simplification occurs on a
 				object-by-object basis you can also feed a GeometryCollection to
 				this function.</para>
+        <para>If the tolerance parameter is provided, vertices within the tolerance 
+        of one another will be considered the "same" for the purposes of removal.</para>
 
-		<para>Availability: 2.0.0</para>
+		<para>Availability: 2.2.0</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 	  </refsection>

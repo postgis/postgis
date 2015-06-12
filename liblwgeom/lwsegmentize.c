@@ -280,7 +280,7 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad)
 			return NULL;
 		}
 	}
-	ptarray_out = ptarray_remove_repeated_points(ptarray);
+	ptarray_out = ptarray_remove_repeated_points(ptarray, 0.0);
 	ptarray_free(ptarray);
 	return lwline_construct(icompound->srid, NULL, ptarray_out);
 }

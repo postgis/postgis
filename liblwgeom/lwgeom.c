@@ -1404,7 +1404,7 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	return 0;
 }
 
-extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
+extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in, double tolerance)
 {
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
 	         lwtype_name(in->type));
@@ -1412,19 +1412,19 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	switch (in->type)
 	{
 	case MULTIPOINTTYPE:
-		return lwmpoint_remove_repeated_points((LWMPOINT*)in);
+		return lwmpoint_remove_repeated_points((LWMPOINT*)in, tolerance);
 		break;
 	case LINETYPE:
-		return lwline_remove_repeated_points((LWLINE*)in);
+		return lwline_remove_repeated_points((LWLINE*)in, tolerance);
 
 	case MULTILINETYPE:
 	case COLLECTIONTYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
-		return lwcollection_remove_repeated_points((LWCOLLECTION *)in);
+		return lwcollection_remove_repeated_points((LWCOLLECTION *)in, tolerance);
 
 	case POLYGONTYPE:
-		return lwpoly_remove_repeated_points((LWPOLY *)in);
+		return lwpoly_remove_repeated_points((LWPOLY *)in, tolerance);
 		break;
 
 	case POINTTYPE:
@@ -1442,8 +1442,8 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		return in;
 
 	default:
-		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
-		         lwtype_name(in->type));
+		lwnotice("%s: unsupported geometry type: %s",
+		         __func__, lwtype_name(in->type));
 		return in;
 		break;
 	}

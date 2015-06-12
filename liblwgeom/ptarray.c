@@ -1423,20 +1423,21 @@ ptarray_longitude_shift(POINTARRAY *pa)
  *
  */
 POINTARRAY *
-ptarray_remove_repeated_points(POINTARRAY *in)
+ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
 {
 	POINTARRAY* out;
 	size_t ptsize;
 	size_t ipn, opn;
+	const POINT2D *last_point, *this_point;
 
-	LWDEBUG(3, "ptarray_remove_repeated_points called.");
+	LWDEBUGF(3, "%s called", __func__);
 
 	/* Single or zero point arrays can't have duplicates */
 	if ( in->npoints < 3 ) return ptarray_clone_deep(in);
 
 	ptsize = ptarray_point_size(in);
 
-	LWDEBUGF(3, "ptsize: %d", ptsize);
+	LWDEBUGF(3, " ptsize: %d", ptsize);
 
 	/* Allocate enough space for all points */
 	out = ptarray_construct(FLAGS_GET_Z(in->flags),
@@ -1446,18 +1447,20 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 
 	opn=1;
 	memcpy(getPoint_internal(out, 0), getPoint_internal(in, 0), ptsize);
+	last_point = getPoint2d_cp(in, 0);
 	LWDEBUGF(3, " first point copied, out points: %d", opn);
-	for (ipn=1; ipn<in->npoints; ++ipn)
+	for ( ipn = 1; ipn < in->npoints; ++ipn)
 	{
-		if ( (ipn==in->npoints-1 && opn==1) || memcmp(getPoint_internal(in, ipn-1),
-		        getPoint_internal(in, ipn), ptsize) )
+		this_point = getPoint2d_cp(in, ipn);
+		if ( (ipn == in->npoints-1 && opn==1) || 
+		     (tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) != 0) ||
+		     (tolerance > 0.0 && distance2d_pt_pt(last_point, this_point) > tolerance) )
 		{
 			/* The point is different from the previous,
 			 * we add it to output */
-			memcpy(getPoint_internal(out, opn++),
-			       getPoint_internal(in, ipn), ptsize);
-			LWDEBUGF(3, " Point %d differs from point %d. Out points: %d",
-			         ipn, ipn-1, opn);
+			memcpy(getPoint_internal(out, opn++), getPoint_internal(in, ipn), ptsize);
+			last_point = this_point;
+			LWDEBUGF(3, " Point %d differs from point %d. Out points: %d", ipn, ipn-1, opn);
 		}
 	}
 
