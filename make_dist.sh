@@ -3,7 +3,7 @@
 #
 # USAGE:
 #
-# -- postgis-cvs.tar.gz 
+# -- postgis-x.y.0dev-r#####.tar.gz
 # sh make_dist.sh
 #
 # -- postgis-1.1.0.tar.gz 
@@ -14,12 +14,10 @@
 #
 
 tag=trunk
-version=cvs
+version=dev
 
 if [ -n "$1" ]; then
 	version="$1"
-	#version=`echo $version | sed 's/RC/-rc/'`
-	#tag=pgis_`echo "$version" | sed 's/\./_/g'`
 	tag="tags/$version"
 fi
 
