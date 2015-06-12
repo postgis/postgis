@@ -61,19 +61,17 @@ make comments
 if [ $? -gt 0 ]; then
 	exit 1
 fi
-
 make clean # won't drop the comment files
+cd "$owd"
 
-# cd "$owd"
-# echo "Make java pom file"
-# owd="$PWD"
-# cd "$outdir"
-# cd java/jdbc
-# make pom.xml
-# if [ $? -gt 0 ]; then
-# 	exit 1
-# fi
-
+# generating pom file
+echo "Generating java pom file"
+owd="$PWD"
+cd "$outdir"/java/jdbc
+make pom.xml
+if [ $? -gt 0 ]; then
+  exit 1
+fi
 cd "$owd"
 
 # Run make distclean
