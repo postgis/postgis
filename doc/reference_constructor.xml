@@ -1715,6 +1715,7 @@ FROM
 		<refsection>
 			<title>See Also</title>
 			<para>
+				<xref linkend="ST_Boundary" />,
 				<xref linkend="ST_Accum" />,
 				<xref linkend="ST_AddPoint" />,
 				<xref linkend="ST_GeometryType" />,
