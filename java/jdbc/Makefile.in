@@ -18,13 +18,14 @@ all: build
 pom.xml: pom.xml.in
 	sed 's,%VERSION%,$(POSTGIS_LIB_VERSION),g' $< >$@
 
+# nothing to do on clean
+# (better not invoke ant here, as it downloads the world
 clean:
-	: nothing to do
 
 build: pom.xml
-
-build clean distclean check:
 	$(ANT) $@
+
+distclean: clean
 
 maintainer-clean: distclean
 	rm -f pom.xml
