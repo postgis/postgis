@@ -19,7 +19,7 @@ pom.xml: pom.xml.in
 	sed 's,%VERSION%,$(POSTGIS_LIB_VERSION),g' $< >$@
 
 clean:
-	rm -f pom.xml
+	: nothing to do
 
 build: pom.xml
 
@@ -27,7 +27,7 @@ build clean distclean check:
 	$(ANT) $@
 
 maintainer-clean: distclean
-	: nothing to do
+	rm -f pom.xml
 
 install uninstall:
 	: TODO !
