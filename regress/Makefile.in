@@ -216,7 +216,8 @@ ifeq ($(HAVE_SFCGAL),yes)
 		sfcgal/regress.sql \
 		sfcgal/tickets.sql \
 		sfcgal/concave_hull.sql \
-		sfcgal/wmsservers.sql
+		sfcgal/wmsservers.sql \
+		sfcgal/approximatemedialaxis.sql
 
 	SFCGALTESTFLAGS = --sfcgal
 endif
