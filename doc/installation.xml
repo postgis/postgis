@@ -205,18 +205,6 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	  
 	  <listitem>
 		<para>
-		  Apache Ant (<filename>ant</filename>) is required for building any of
-		  the drivers under the <filename>java</filename> directory. Ant is
-		  available from
-		  <ulink url="http://ant.apache.org">
-			http://ant.apache.org
-		  </ulink>
-		  .
-		</para>
-	  </listitem>
-
-	  <listitem>
-		<para>
 		  DocBook (<filename>xsltproc</filename>) is required for building the
 		  documentation. Docbook is available from
 		  <ulink url="http://www.docbook.org/">
@@ -1739,51 +1727,6 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
 		</para>
 	  </listitem>
 	</orderedlist>
-  </sect1>
-
-  <sect1>
-	<title>JDBC</title>
-
-	<para>
-	  The JDBC extensions provide Java objects corresponding to the internal
-	  PostGIS types. These objects can be used to write Java clients which query
-	  the PostGIS database and draw or do calculations on the GIS data in
-	  PostGIS.
-	</para>
-
-	<orderedlist>
-	  <listitem>
-		<para>
-		  Enter the <filename>java/jdbc</filename> sub-directory of the PostGIS
-		  distribution.
-		</para>
-	  </listitem>
-
-	  <listitem>
-		<para>
-		  Run the <filename>ant</filename> command. Copy the
-		  <filename>postgis.jar</filename> file to wherever you keep your java
-		  libraries.
-		</para>
-	  </listitem>
-	</orderedlist>
-
-	<para>
-	  The JDBC extensions require a PostgreSQL JDBC driver to be present in the
-	  current CLASSPATH during the build process. If the PostgreSQL JDBC driver
-	  is located elsewhere, you may pass the location of the JDBC driver JAR
-	  separately using the -D parameter like this:
-	</para>
-
-	<programlisting># ant -Dclasspath=/path/to/postgresql-jdbc.jar</programlisting>
-
-	<para>
-	  PostgreSQL JDBC drivers can be downloaded from
-	  <ulink url="http://jdbc.postgresql.org">
-		http://jdbc.postgresql.org
-	  </ulink>
-	  .
-	</para>
   </sect1>
 
   <sect1>

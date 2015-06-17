@@ -1293,7 +1293,6 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments 
    doc/html/image_src/Makefile 
    utils/Makefile 
-   java/jdbc/Makefile
    $RT_MAKEFILE_LIST])
     
 dnl ===========================================================================
