@@ -30,6 +30,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3169, ST_ApproximateMedialAxis (Sandro Santilli)
   - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
     (Sandro Santilli / Boundless)
   - #3131, KNN support for the geography type (Paul Ramsey / CartoDB)
@@ -53,7 +54,7 @@ PostGIS 2.2.0
   - #899, -m shp2pgsql attribute names mapping -m switch
            (Regina Obe / Sandro Santilli)
   - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
-    variable GDAL_DATA
+           variable GDAL_DATA
   - #2843, Support reprojection on raster import
            (Sandro Santilli / Vizzuality)
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
@@ -65,8 +66,8 @@ PostGIS 2.2.0
     variable GDAL_SKIP
   - Added GUC postgis.enable_outdb_rasters to enable access to
     rasters with out-db bands
-  - #2387 address_standardizer extension as part of PostGIS
-     Stephen Woodbridge (imaptools.com), Walter Sinclair
+  - #2387, address_standardizer extension as part of PostGIS
+           Stephen Woodbridge (imaptools.com), Walter Sinclair
   - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
   - #2430, ST_ForceCurve
@@ -74,11 +75,11 @@ PostGIS 2.2.0
   - #2567, ST_CountAgg()
   - #2632, ST_AsGML() support for curved features
   - #2652, Add --upgrade-path switch to run_test.pl
-  - #2754 sfcgal wrapped as an extension
+  - #2754, sfcgal wrapped as an extension
   - #2227, Simplification with Visvalingam-Whyatt algorithm
            ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avén)
   - Functions to encode and decode TWKB
-           ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
+    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
 
  * Enhancements *
 
