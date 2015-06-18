@@ -97,7 +97,7 @@ CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
            WHERE NOT ST_Touches(geom, ST_Boundary(poly))
          )
          SELECT
-          COALESCE(g, ST_SetSRID('MULTILINESTRING EMPTY', ST_Srid(poly))) 
+          COALESCE(g, ST_SetSRID('MULTILINESTRING EMPTY'::geometry, ST_Srid(poly)))
          INTO ret
          FROM filtered;
          RETURN ret;
