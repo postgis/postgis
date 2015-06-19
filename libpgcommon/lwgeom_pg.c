@@ -163,6 +163,17 @@ pg_error(const char *fmt, va_list ap)
 }
 
 static void
+pg_warning(const char *fmt, va_list ap)
+{
+	char errmsg[PGC_ERRMSG_MAXLEN+1];
+
+	vsnprintf (errmsg, PGC_ERRMSG_MAXLEN, fmt, ap);
+
+	errmsg[PGC_ERRMSG_MAXLEN]='\0';
+	ereport(WARNING, (errmsg_internal("%s", errmsg)));
+}
+
+static void
 pg_notice(const char *fmt, va_list ap)
 {
 	char errmsg[PGC_ERRMSG_MAXLEN+1];
@@ -241,6 +252,18 @@ lwpgnotice(const char *fmt, ...)
 	va_start(ap, fmt);
 
   pg_notice(fmt, ap);
+
+	va_end(ap);
+}
+
+void
+lwpgwarning(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+  pg_warning(fmt, ap);
 
 	va_end(ap);
 }
