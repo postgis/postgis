@@ -426,15 +426,6 @@ if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
 	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.0])
 fi	
 
-dnl Temporary hack until minimum PostgreSQL version is 9.0:
-dnl If PostgreSQL < 9.0 is detected, trigger the inclusion of the new versioned PGXS targets
-PGXSOVERRIDE=0
-if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
-	PGXSOVERRIDE=1
-fi
-
-AC_SUBST([PGXSOVERRIDE])
-
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)

@@ -24,18 +24,6 @@ PG_CONFIG = @PG_CONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
-# PGXS override feature. The ability to allow PostGIS to install itself
-# in a versioned directory is only available in PostgreSQL >= 8.5. To
-# do this by default on older PostgreSQL versions, we need to override
-# the existing PGXS targets.
-#
-# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
-# section and its associated Makefile.pgxs should be removed.
-PGXSOVERRIDE = @PGXSOVERRIDE@
-ifeq ($(PGXSOVERRIDE),1)
-	include ../postgis/Makefile.pgxs
-endif
-
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
