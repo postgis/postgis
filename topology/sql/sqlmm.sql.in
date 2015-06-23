@@ -2183,22 +2183,14 @@ BEGIN
   END LOOP;
 
   --
-  -- Get new node id
-  --
-  FOR rec IN EXECUTE 'SELECT nextval(''' ||
-    atopology || '.node_node_id_seq'')'
-  LOOP
-    nodeid = rec.nextval;
-  END LOOP;
-
-  --RAISE NOTICE 'Next node id = % ', nodeid;
-
-  --
-  -- Add the new node 
+  -- Add the new node, returning its identifier
   --
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-    || '.node(node_id, geom) VALUES($1, $2)'
+    || '.node(node_id, geom) VALUES(DEFAULT, $2) RETURNING node_id'
+    INTO nodeid
     USING nodeid,apoint;
+
+  --RAISE NOTICE 'Next node id = % ', nodeid;
 
   --
   -- Compute new edge
