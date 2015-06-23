@@ -3091,6 +3091,12 @@ CREATE OR REPLACE FUNCTION ST_DistanceCPA(geometry, geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_CPAWithin(geometry, geometry, float8)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'ST_CPAWithin'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 	RETURNS bool 
 	AS 'MODULE_PATHNAME', 'ST_IsValidTrajectory' 

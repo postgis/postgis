@@ -66,3 +66,29 @@ SELECT 'cpad4', ST_DistanceCPA('LINESTRINGM(0 0 0, 10 0 10)'::geometry
 SELECT 'invalid', ST_DistanceCPA('LINESTRING(0 0 0, 1 0 0)'::geometry
             ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry);
 
+
+----------------------------------------
+--
+-- ST_CPAWithin
+--
+----------------------------------------
+
+SELECT 'cpaw1', d, ST_CPAWithin(
+       'LINESTRINGM(0 0 0, 1 0 1)'::geometry
+      ,'LINESTRINGM(0 0 0, 1 0 1)'::geometry, d)
+      FROM ( VALUES (0.0),(1) ) f(d) ORDER BY d;
+SELECT 'cpaw2', d, ST_CPAWithin(
+       'LINESTRINGM(0 0 0, 1 0 1)'::geometry
+      ,'LINESTRINGM(0 0 1, 1 0 2)'::geometry, d)
+      FROM ( VALUES (0.5),(1),(1.2) ) f(d) ORDER BY d;
+SELECT 'cpaw3', d, ST_CPAWithin(
+       'LINESTRING(0 0 0 0, 1 0 0 1)'::geometry
+      ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry, d)
+      FROM ( VALUES (1.9),(2),(2.0001) ) f(d) ORDER BY d;
+-- temporary disjoint
+SELECT 'cpaw4', ST_CPAWithin(
+       'LINESTRINGM(0 0 0, 10 0 10)'::geometry
+      ,'LINESTRINGM(10 0 11, 10 10 20)'::geometry, 1e15);
+SELECT 'cpaw_invalid', ST_CPAWithin(
+       'LINESTRING(0 0 0, 1 0 0)'::geometry
+      ,'LINESTRING(0 0 3 0, 1 0 2 1)'::geometry, 1e16);

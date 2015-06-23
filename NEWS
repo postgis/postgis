@@ -31,6 +31,7 @@ PostGIS 2.2.0
  * New Features *
 
   - #3169, ST_ApproximateMedialAxis (Sandro Santilli)
+  - ST_CPAWithin (Sandro Santilli / Boundless)
   - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
     (Sandro Santilli / Boundless)
   - #3131, KNN support for the geography type (Paul Ramsey / CartoDB)

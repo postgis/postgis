@@ -89,4 +89,25 @@ Datum ST_DistanceCPA(PG_FUNCTION_ARGS)
   PG_RETURN_FLOAT8(mindist);
 }
 
+/*
+ * Return true if the distance between two trajectories at their
+ * closest point of approach is within the given max.
+ */
+Datum ST_CPAWithin(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_CPAWithin);
+Datum ST_CPAWithin(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *gs0 = PG_GETARG_GSERIALIZED_P(0);
+  GSERIALIZED *gs1 = PG_GETARG_GSERIALIZED_P(1);
+  double maxdist = PG_GETARG_FLOAT8(2);
+  /* All checks already performed by liblwgeom, not worth checking again */
+  LWGEOM *g0 = lwgeom_from_gserialized(gs0);
+  LWGEOM *g1 = lwgeom_from_gserialized(gs1);
+  int ret = lwgeom_cpa_within(g0, g1, maxdist);
+  lwgeom_free(g0);
+  lwgeom_free(g1);
+  PG_FREE_IF_COPY(gs0, 0);
+  PG_FREE_IF_COPY(gs1, 1);
+	PG_RETURN_BOOL( ret == LW_TRUE );
+}
 

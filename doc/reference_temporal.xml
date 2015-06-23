@@ -217,4 +217,76 @@ SELECT ST_DistanceCPA(a,b) distance FROM inp;
 		  </refsection>
 		</refentry>
 
+		<refentry id="ST_CPAWithin">
+
+		  <refnamediv>
+			<refname>ST_CPAWithin</refname>
+			<refpurpose>
+Returns true if the trajectories' closest points of approach
+are within the specified distance.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float8 <function>ST_CPAWithin</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Checks whether two moving objects have ever been within the
+specified max distance.
+      </para>
+			<para>
+Inputs must be valid trajectories as checked by
+<xref linkend="ST_IsValidTrajectory" />.
+False is returned if the trajectories do not overlap on the M range.
+			</para>
+      
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+)
+SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
+
+ st_cpawithin |     distance
+--------------+------------------
+ t            | 1.96521473776207
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_IsValidTrajectory" />,
+<xref linkend="ST_ClosestPointOfApproach" />,
+<xref linkend="ST_DistanceCPA" />,
+<xref linkend="geometry_distance_cpa" />
+			</para>
+		  </refsection>
+		</refentry>
+
   </sect1>
