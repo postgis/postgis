@@ -1196,7 +1196,6 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
       mintime = t;
        // lwnotice("MINTIME: %g", mintime);
     }
-
   }
 
   /*
@@ -1211,4 +1210,154 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
   /*lwnotice("MINDIST: %g", sqrt(mindist2));*/
 
   return mintime;
+}
+
+int
+lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
+{
+  LWLINE *l1, *l2;
+  int i;
+  const GBOX *gbox1, *gbox2;
+  double tmin, tmax;
+  double *mvals;
+  int nmvals = 0;
+  double maxdist2 = maxdist * maxdist;
+  int within = LW_FALSE;
+
+	if ( ! lwgeom_has_m(g1) || ! lwgeom_has_m(g2) ) {
+		lwerror("Both input geometries must have a measure dimension");
+    return LW_FALSE;
+  }
+
+  l1 = lwgeom_as_lwline(g1);
+  l2 = lwgeom_as_lwline(g2);
+
+	if ( ! l1 || ! l2 ) {
+		lwerror("Both input geometries must be linestrings");
+    return LW_FALSE;
+  }
+
+  if ( l1->points->npoints < 2 || l2->points->npoints < 2 ) {
+    /* TODO: return distance between these two points */
+		lwerror("Both input lines must have at least 2 points");
+    return LW_FALSE;
+  }
+
+  /* WARNING: these ranges may be wider than real ones */
+  gbox1 = lwgeom_get_bbox(g1);
+  gbox2 = lwgeom_get_bbox(g2);
+
+  assert(gbox1); /* or the npoints check above would have failed */
+  assert(gbox2); /* or the npoints check above would have failed */
+
+  /*
+   * Find overlapping M range
+   * WARNING: may be larger than the real one
+   */
+
+  tmin = FP_MAX(gbox1->mmin, gbox2->mmin);
+  tmax = FP_MIN(gbox1->mmax, gbox2->mmax);
+
+  if ( tmax < tmin ) {
+	  LWDEBUG(1, "Inputs never exist at the same time");
+    return LW_FALSE;
+  }
+
+   // lwnotice("Min:%g, Max:%g", tmin, tmax);
+
+  /*
+   * Collect M values in common time range from inputs
+   */
+
+  mvals = lwalloc( sizeof(double) *
+                   ( l1->points->npoints + l2->points->npoints ) );
+
+  /* TODO: also clip the lines ? */
+  nmvals  = ptarray_collect_mvals(l1->points, tmin, tmax, mvals);
+  nmvals += ptarray_collect_mvals(l2->points, tmin, tmax, mvals + nmvals);
+
+  /* Sort values in ascending order */
+  qsort(mvals, nmvals, sizeof(double), compare_double);
+
+  /* Remove duplicated values */
+  nmvals = uniq(mvals, nmvals);
+
+  if ( nmvals < 2 )
+  {{
+    /* there's a single time, must be that one... */
+    double t0 = mvals[0];
+    POINT4D p0, p1;
+    LWDEBUGF(1, "Inputs only exist both at a single time (%g)", t0);
+    if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
+    {
+      lwerror("Could not find point with M=%g on first geom", t0);
+      return -1;
+    }
+    if ( -1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0) )
+    {
+      lwerror("Could not find point with M=%g on second geom", t0);
+      return -1;
+    }
+    if ( distance3d_pt_pt((POINT3D*)&p0, (POINT3D*)&p1) <= maxdist )
+      within = LW_TRUE;
+    lwfree(mvals);
+    return within;
+  }}
+
+  /*
+   * For each consecutive pair of measures, compute time of closest point
+   * approach and actual distance between points at that time
+   */
+  for (i=1; i<nmvals; ++i)
+  {
+    double t0 = mvals[i-1];
+    double t1 = mvals[i];
+    POINT4D p0, p1, q0, q1;
+    int seg;
+    double dist2;
+
+    // lwnotice("T %g-%g", t0, t1);
+
+    seg = ptarray_locate_along_linear(l1->points, t0, &p0, 0);
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+    // lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t0, seg, p0.x, p0.y, p0.z);
+
+    seg = ptarray_locate_along_linear(l1->points, t1, &p1, seg);
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+    // lwnotice("Measure %g on segment %d of line 1: %g, %g, %g", t1, seg, p1.x, p1.y, p1.z);
+
+    seg = ptarray_locate_along_linear(l2->points, t0, &q0, 0);
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+    // lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t0, seg, q0.x, q0.y, q0.z);
+
+    seg = ptarray_locate_along_linear(l2->points, t1, &q1, seg);
+    if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
+    // lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
+
+    segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
+
+		/*
+    lwnotice("Closest points: %g,%g,%g and %g,%g,%g at time %g",
+      p0.x, p0.y, p0.z,
+      q0.x, q0.y, q0.z, t);
+		*/
+
+    dist2 = ( q0.x - p0.x ) * ( q0.x - p0.x ) +
+           ( q0.y - p0.y ) * ( q0.y - p0.y ) +
+           ( q0.z - p0.z ) * ( q0.z - p0.z );
+    if ( dist2 <= maxdist2 )
+    {
+      LWDEBUGF(1, "Within distance %g at time %g, breaking", *mindist, mintime);
+      within = LW_TRUE;
+      break;
+    }
+  }
+
+  /*
+   * Release memory
+   */
+
+  lwfree(mvals);
+
+  return within;
 }

@@ -946,10 +946,11 @@ test_lwgeom_tcpa(void)
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 5)", LW_PARSER_CHECK_NONE);
   dist  = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
-	lwgeom_free(g1);
-	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 1.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
+	CU_ASSERT( lwgeom_cpa_within(g1, g2, 0.0) == LW_TRUE );
+	lwgeom_free(g1);
+	lwgeom_free(g2);
 
   /* One of the tracks is still, the other passes at 10 meters from point */
 
@@ -957,10 +958,13 @@ test_lwgeom_tcpa(void)
 	g2 = lwgeom_from_wkt("LINESTRING M(-10 10 1, 10 10 5)", LW_PARSER_CHECK_NONE);
   dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
-	lwgeom_free(g1);
-	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 3.0);
 	ASSERT_DOUBLE_EQUAL(dist, 10.0);
+	CU_ASSERT( lwgeom_cpa_within(g1, g2, 11.0) == LW_TRUE );
+	CU_ASSERT( lwgeom_cpa_within(g1, g2, 10.0) == LW_TRUE );
+	CU_ASSERT( lwgeom_cpa_within(g1, g2, 9.0) == LW_FALSE );
+	lwgeom_free(g1);
+	lwgeom_free(g2);
 
   /* Equal tracks, 2d */
 

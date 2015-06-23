@@ -1384,6 +1384,13 @@ extern double lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt);
 extern double lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist);
 
 /**
+* Is the closest point of approach within a distance ?
+*
+* @return LW_TRUE or LW_FALSE
+*/
+extern int lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist);
+
+/**
 * Return LW_TRUE or LW_FALSE depending on whether or not a geometry is
 * a linestring with measure value growing from start to end vertex
 */
