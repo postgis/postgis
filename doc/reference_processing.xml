@@ -2871,7 +2871,7 @@ LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.4028234
         <refsection>
             <title>Description</title>
             <para>
-            The function supports splitting a line by (multi)point, (multi)line or (multi)polygon boundary, a polygon by line. The returned geometry is always a collection.
+            The function supports splitting a line by (multi)point, (multi)line or (multi)polygon boundary, a (multi)polygon by line. The returned geometry is always a collection.
             </para>
             
             <para>

@@ -10,8 +10,8 @@
  *
  **********************************************************************
  *
- * Split polygon by line, line by (multi)line or (multi)polygon boundary,
- * line by point.
+ * Split (multi)polygon by line, line by (multi)line
+ * or (multi)polygon boundary, line by point.
  * Returns at most components as a collection.
  * First element of the collection is always the part which
  * remains after the cut, while the second element is the
@@ -19,7 +19,6 @@
  * on the *right* of cut lines as the part which has been cut out.
  * For a line cut by a point the part which remains is the one
  * from start of the line to the cut point.
- *
  *
  * Author: Sandro Santilli <strk@keybit.net>
  *
@@ -31,6 +30,8 @@
  *
  * [1] http://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString
  *
+ * Further evolved for RT-SITA to allow splitting lines by multilines
+ * and (multi)polygon boundaries (CIG 6002233F59)
  *
  **********************************************************************/
 
