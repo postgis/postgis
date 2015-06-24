@@ -307,6 +307,49 @@ static void test_lwgeom_from_gserialized(void)
 
 }
 
+
+static void test_gserialized_is_empty(void)
+{
+	int i = 0;
+	struct gserialized_empty_cases {
+		const char* wkt;
+		int isempty;
+	};
+	
+	struct gserialized_empty_cases cases[] = {
+		{ "POINT EMPTY", 1 },
+		{ "POINT(1 1)", 0 },
+		{ "LINESTRING EMPTY", 1 },
+		{ "MULTILINESTRING EMPTY", 1 },
+		{ "MULTILINESTRING(EMPTY)", 1 },
+		{ "MULTILINESTRING(EMPTY,EMPTY)", 1 },
+		{ "MULTILINESTRING(EMPTY,(0 0,1 1))", 0 },
+		{ "MULTILINESTRING((0 0,1 1),EMPTY)", 0 },
+		{ "MULTILINESTRING(EMPTY,(0 0,1 1),EMPTY)", 0 },
+		{ "MULTILINESTRING(EMPTY,EMPTY,EMPTY)", 1 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY,EMPTY))", 1 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY),POINT(1 1))", 0 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY, (0 0)),POINT EMPTY)", 0 },
+		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
+		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
+		{ NULL, 0 }
+	};
+	
+	while( cases[i].wkt )
+	{
+		// i = 11;
+		LWGEOM *lw = lwgeom_from_wkt(cases[i].wkt, LW_PARSER_CHECK_NONE);
+		GSERIALIZED *g = gserialized_from_lwgeom(lw, 0, 0);
+		int ie = gserialized_is_empty(g);
+		// printf("%s: we say %d, they say %d\n", cases[i].wkt, cases[i].isempty, ie);
+		CU_ASSERT_EQUAL(ie, cases[i].isempty);
+		lwgeom_free(lw);
+		lwfree(g);
+		i++;
+	}
+}
+	
+
 static void test_geometry_type_from_string(void)
 {
 	int rv;
@@ -934,4 +977,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_is_empty);
 	PG_ADD_TEST(suite, test_lwgeom_same);
 	PG_ADD_TEST(suite, test_lwline_from_lwmpoint);
+	PG_ADD_TEST(suite, test_gserialized_is_empty);
 }
