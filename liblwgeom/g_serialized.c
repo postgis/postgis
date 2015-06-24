@@ -108,27 +108,46 @@ GSERIALIZED* gserialized_copy(const GSERIALIZED *g)
 	return g_out;
 }
 
+static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty);
+static size_t gserialized_is_empty_recurse(const uint8_t *p, int *isempty)
+{
+	int i;
+	int32_t type, num;
+
+	memcpy(&type, p, 4);
+	memcpy(&num, p+4, 4);
+	
+	if ( lwtype_is_collection(type) )
+	{
+		size_t lz = 8;
+		for ( i = 0; i < num; i++ )
+		{
+			lz += gserialized_is_empty_recurse(p+lz, isempty);
+			if ( ! *isempty )
+				return lz;
+		}
+		*isempty = LW_TRUE;
+		return lz;
+	}
+	else
+	{
+		*isempty = (num == 0 ? LW_TRUE : LW_FALSE);
+		return 8;
+	}
+}
+
 int gserialized_is_empty(const GSERIALIZED *g)
 {
 	uint8_t *p = (uint8_t*)g;
-	int i;
+	int isempty = 0;
 	assert(g);
 
 	p += 8; /* Skip varhdr and srid/flags */
 	if( FLAGS_GET_BBOX(g->flags) )
 		p += gbox_serialized_size(g->flags); /* Skip the box */
-	p += 4; /* Skip type number */
-	
-	/* For point/line/circstring this is npoints */
-	/* For polygons this is nrings */
-	/* For collections this is ngeoms */
-	memcpy(&i, p, sizeof(int));
-	
-	/* If it is non-zero, it's not empty */
-	if ( i > 0 )
-		return LW_FALSE;
-	else
-		return LW_TRUE;	
+
+	gserialized_is_empty_recurse(p, &isempty);
+	return isempty;
 }
 
 char* gserialized_to_string(const GSERIALIZED *g)
