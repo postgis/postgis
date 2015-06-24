@@ -9,6 +9,7 @@ PostGIS 2.1.8
   - #3094, Malformed GeoJSON inputs crash backend
   - #3104, st_asgml introduces random characters in ID field
   - #3155, Remove liblwgeom.h on make uninstall
+  - #3177, gserialized_is_empty cannot handle nested empty cases
   - Fix crash in ST_LineLocatePoint
 
 
