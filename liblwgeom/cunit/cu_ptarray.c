@@ -444,7 +444,7 @@ static void test_ptarray_desegmentize()
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	CU_ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10)");
-	printf("%s\n", str);
+	// printf("%s\n", str);
 	lwgeom_free(in);
 	lwgeom_free(out);
 	lwfree(str);
