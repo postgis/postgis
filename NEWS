@@ -14,6 +14,7 @@ PostGIS 2.2.0
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
   - By default, PostGIS raster disables all GDAL drivers affecting
     out-db rasters, ST_FromGDALRaster() and ST_AsGDALRaster() variants
+  - #3181, POINT EMPTY is now stored as POINT(NaN NaN) in WKB, instead of as MULTIPOINT EMPTY
 
  * Deprecated signatures *
 

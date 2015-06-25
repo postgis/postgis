@@ -9,6 +9,8 @@
  *
  **********************************************************************/
 
+#include <math.h>
+
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
@@ -274,10 +276,24 @@ static uint8_t* double_to_wkb_buf(const double d, uint8_t *buf, uint8_t variant)
 */
 static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 {
-	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
+	/* endian byte + type integer */
+	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE;
 
+	/* optional srid integer */
 	if ( lwgeom_wkb_needs_srid(geom, variant) )
 		size += WKB_INT_SIZE;
+
+	/* Represent POINT EMPTY as POINT(NaN NaN) */
+	if ( geom->type == POINTTYPE )
+	{
+		const LWPOINT *pt = (LWPOINT*)geom;
+		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);		
+	}
+	/* num-elements */
+	else
+	{
+		size += WKB_INT_SIZE;
+	}
 
 	return size;
 }
@@ -285,13 +301,6 @@ static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
 	uint32_t wkb_type = lwgeom_wkb_type(geom, variant);
-
-	if ( geom->type == POINTTYPE )
-	{
-		/* Change POINT to MULTIPOINT */
-		wkb_type &= ~WKB_POINT_TYPE;     /* clear POINT flag */
-		wkb_type |= WKB_MULTIPOINT_TYPE; /* set MULTIPOINT flag */
-	}
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -303,8 +312,24 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 	if ( lwgeom_wkb_needs_srid(geom, variant) )
 		buf = integer_to_wkb_buf(geom->srid, buf, variant);
 
-	/* Set nrings/npoints/ngeoms to zero */
-	buf = integer_to_wkb_buf(0, buf, variant);
+	/* Represent POINT EMPTY as POINT(NaN NaN) */
+	if ( geom->type == POINTTYPE )
+	{
+		const LWPOINT *pt = (LWPOINT*)geom;
+		static double nn = NAN;
+		int i;
+		for ( i = 0; i < FLAGS_NDIMS(pt->point->flags); i++ )
+		{
+			buf = double_to_wkb_buf(nn, buf, variant);
+		}
+	}
+	/* Everything else is flagged as empty using num-elements == 0 */
+	else
+	{
+		/* Set nrings/npoints/ngeoms to zero */
+		buf = integer_to_wkb_buf(0, buf, variant);
+	}
+	
 	return buf;
 }
 

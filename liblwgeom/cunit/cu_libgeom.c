@@ -240,7 +240,6 @@ static void test_gbox_serialized_size(void)
 
 
 
-
 static void test_lwgeom_from_gserialized(void)
 {
 	LWGEOM *geom;
