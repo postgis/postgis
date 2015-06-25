@@ -8,7 +8,7 @@
         </para>
         <para> 
             Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>. 
-            To load the functions execute postgis/sfcgal.sql
+            To load the functions create extension postgis_sfcgal. 
         </para>
 		</abstract>
 	</sect1info>
