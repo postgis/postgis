@@ -86,6 +86,7 @@ SA_OBJS = \
 	lwgeom_geos_clean.o \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
+	lwgeom_topo.o \
 	lwgeom_transform.o \
 	effectivearea.o \
 	varint.o
@@ -110,6 +111,9 @@ SA_HEADERS = \
 	liblwgeom_internal.h \
 	lwgeodetic.h \
 	lwgeodetic_tree.h \
+	liblwgeom_topo.h \
+	liblwgeom_topo_internal.h \
+	lwgeom_log.h \
 	lwgeom_geos.h \
 	lwgeom_log.h \
 	lwgeom_sfcgal.h \
