@@ -31,6 +31,7 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3117, Add SFCGAL 1.1 support: add ST_3DDifference, ST_3DUnion, ST_Volume, ST_MakeSolid, ST_IsSolid (Vincent Mora / Oslandia)
   - #3169, ST_ApproximateMedialAxis (Sandro Santilli)
   - ST_CPAWithin (Sandro Santilli / Boundless)
   - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
