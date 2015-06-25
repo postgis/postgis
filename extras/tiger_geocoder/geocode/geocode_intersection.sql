@@ -54,7 +54,7 @@ BEGIN
     							|| ')  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) As addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[]) OR addr.zip IS NULL 
     				ORDER BY CASE WHEN lower(f.fullname) = $6 THEN 0 ELSE 1 END
-    				LIMIT 5000
+    				LIMIT 50000
     			  ),
         a2 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
     				FROM (SELECT * FROM featnames 
@@ -63,7 +63,7 @@ BEGIN
     							|| ' )  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[])  or addr.zip IS NULL 
     			ORDER BY CASE WHEN lower(f.fullname) = $7 THEN 0 ELSE 1 END
-    				LIMIT 5000
+    				LIMIT 50000
     			  ),
     	 e1 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
@@ -71,7 +71,7 @@ BEGIN
     					INNER JOIN  edges AS e ON (e.statefp = a.statefp AND a.tlid = e.tlid)
     				WHERE e.statefp = $1 
     				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
-    				LIMIT 1000) ,
+    				LIMIT 5000) ,
     	e2 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
     				FROM (SELECT * FROM edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
@@ -80,7 +80,7 @@ BEGIN
     					
     				WHERE (lower(e.fullname) = $7 or lower(a.name) LIKE $4 || ''%'')
     				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
-    				LIMIT 100
+    				LIMIT 5000
     				), 
     	segs AS (SELECT DISTINCT ON(e1.tlid, e1.side)
                    CASE WHEN e1.tnidf = e2.tnidf OR e1.tnidf = e2.tnidt THEN
