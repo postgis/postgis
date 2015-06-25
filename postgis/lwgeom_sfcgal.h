@@ -29,10 +29,17 @@ GSERIALIZED* SFCGALPreparedGeometry2POSTGIS( const sfcgal_prepared_geometry_t* g
 Datum sfcgal_intersects(PG_FUNCTION_ARGS);
 Datum sfcgal_intersects3D(PG_FUNCTION_ARGS);
 Datum sfcgal_intersection(PG_FUNCTION_ARGS);
+Datum sfcgal_difference3D(PG_FUNCTION_ARGS);
+Datum sfcgal_difference(PG_FUNCTION_ARGS);
+Datum sfcgal_union3D(PG_FUNCTION_ARGS);
+Datum sfcgal_union(PG_FUNCTION_ARGS);
+Datum sfcgal_volume(PG_FUNCTION_ARGS);
 Datum sfcgal_triangulate(PG_FUNCTION_ARGS);
 Datum sfcgal_area(PG_FUNCTION_ARGS);
 Datum sfcgal_distance(PG_FUNCTION_ARGS);
 Datum sfcgal_distance3D(PG_FUNCTION_ARGS);
+Datum sfcgal_make_solid(PG_FUNCTION_ARGS);
+Datum sfcgal_is_solid(PG_FUNCTION_ARGS);
 
 
 /* Initialize sfcgal with PostGIS error handlers */

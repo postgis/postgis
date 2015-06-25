@@ -67,10 +67,10 @@ Datum buffer(PG_FUNCTION_ARGS);
 Datum geos_intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
-Datum difference(PG_FUNCTION_ARGS);
+Datum geos_difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
-Datum geomunion(PG_FUNCTION_ARGS);
+Datum geos_geomunion(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
@@ -812,8 +812,8 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
  * );
  *
  */
-PG_FUNCTION_INFO_V1(geomunion);
-Datum geomunion(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_geomunion);
+Datum geos_geomunion(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -1463,8 +1463,8 @@ Datum geos_intersection(PG_FUNCTION_ARGS)
  *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
  *	'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
  */
-PG_FUNCTION_INFO_V1(difference);
-Datum difference(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_difference);
+Datum geos_difference(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;

@@ -2,9 +2,11 @@ SET postgis.backend = 'sfcgal';
 
 -- Tests to confirm the concave hull area is <= convex hull and 
 -- covers the original geometry (can't use covers because always gives topo errors with 3.3
+-- vmora: the small tolerance for area comes from the reordering of the geometry that
+--        cause small errors on area to cummulate (difference of 5e-13 on 2224 in this case)
 SELECT 
 	'ST_ConcaveHull MultiPolygon 0.95', ST_Area(ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.95) )) = ST_Area(geom) As encloses_geom, 
+		geom, 0.95) )) - ST_Area(geom) < 1e-9 As encloses_geom, 
 		(ST_Area(ST_ConvexHull(geom)) 
 		- ST_Area(ST_ConcaveHull(geom, 0.95))) < (0.95 * ST_Area(ST_ConvexHull(geom) ) ) As reached_target
 FROM ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 

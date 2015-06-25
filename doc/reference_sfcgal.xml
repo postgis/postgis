@@ -449,6 +449,63 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 	</refentry>
 
+	<refentry id="ST_3DDifference">
+	  <refnamediv>
+		<refname>ST_3DDifference</refname>
+
+		<refpurpose>Perform 3D difference</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DDifference</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_3DUnion">
+	  <refnamediv>
+		<refname>ST_3DUnion</refname>
+
+		<refpurpose>Perform 3D union</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DUnion</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	</refentry>
+
+
 	<refentry id="ST_3DArea">
 	  <refnamediv>
 		<refname>ST_3DArea</refname>
@@ -582,5 +639,91 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  </refsection>
 
 	</refentry>
+
+	<refentry id="ST_Volume">
+	  <refnamediv>
+		<refname>ST_Volume</refname>
+
+		<refpurpose>Computes the volume.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float<function>ST_Volume</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_MakeSolid">
+	  <refnamediv>
+		<refname>ST_MakeSolid</refname>
+
+		<refpurpose>Cast the geometry into a solid. No check is performed. To obtain a valid solid, the input geometry must be a closed Polyhedral Surface or a closed TIN.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_MakeSolid</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_IsSolid">
+	  <refnamediv>
+		<refname>ST_IsSolid</refname>
+
+		<refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean<function>ST_IsSolid</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
 
 </sect1>

@@ -24,11 +24,11 @@ T3.16|
 T3.17|
 T3.18|
 ST_Buffer(empty, tolerance) == empty|t
-ST_Union(geometry, empty) == geometry|POLYGON((0 0,10 0,5 5,0 0))
+ST_Union(geometry, empty) == geometry|t
 ST_Union(empty, empty) == empty|t
 ST_Intersection(geometry, empty) == geometry|t
 ST_Intersection(empty, empty) == empty|t
-ST_Difference(geometry, empty) == geometry|POLYGON((0 0,10 0,5 5,0 0))
+ST_Difference(geometry, empty) == geometry|t
 ST_Difference(empty, geometry) == empty|t
 ST_Distance(geometry, empty) == NULL|inf
 ST_DWithin(geometry, empty, tolerance) == FALSE|f
