@@ -13488,7 +13488,7 @@ multilinestringzm4326|4326|Triangle|3|KO-BKO-GKO-BGKO
 multilinestringzm4326|4326|Tin|3|KO-BKO-GKO-BGKO
 multilinestringzm4326||COUNT|2|
 multilinestringzm4326||GCOUNT|4|
-multipoint|0|Point|0|OK-BOK-GOK-BGOK
+multipoint|0|Point|0|KO-BKO-GKO-BGKO
 multipoint|0|PointNE|0|KO-BKO-GKO-BGKO
 multipoint|0|LineString|0|KO-BKO-GKO-BGKO
 multipoint|0|Polygon|0|KO-BKO-GKO-BGKO
@@ -13556,7 +13556,7 @@ multipoint|0|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint|0|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint|0|Triangle|3|KO-BKO-GKO-BGKO
 multipoint|0|Tin|3|KO-BKO-GKO-BGKO
-multipoint|4326|Point|0|OK-BOK-GOK-BGOK
+multipoint|4326|Point|0|KO-BKO-GKO-BGKO
 multipoint|4326|PointNE|0|KO-BKO-GKO-BGKO
 multipoint|4326|LineString|0|KO-BKO-GKO-BGKO
 multipoint|4326|Polygon|0|KO-BKO-GKO-BGKO
@@ -13624,9 +13624,9 @@ multipoint|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipoint|4326|Tin|3|KO-BKO-GKO-BGKO
-multipoint||COUNT|12|
-multipoint||GCOUNT|12|
-multipoint0|0|Point|0|OK-BOK-GOK-BGOK
+multipoint||COUNT|8|
+multipoint||GCOUNT|8|
+multipoint0|0|Point|0|KO-BKO-GKO-BGKO
 multipoint0|0|PointNE|0|KO-BKO-GKO-BGKO
 multipoint0|0|LineString|0|KO-BKO-GKO-BGKO
 multipoint0|0|Polygon|0|KO-BKO-GKO-BGKO
@@ -13694,7 +13694,7 @@ multipoint0|0|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint0|0|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint0|0|Triangle|3|KO-BKO-GKO-BGKO
 multipoint0|0|Tin|3|KO-BKO-GKO-BGKO
-multipoint0|4326|Point|0|OK-BOK-GOK-BGOK
+multipoint0|4326|Point|0|KO-BKO-GKO-BGKO
 multipoint0|4326|PointNE|0|KO-BKO-GKO-BGKO
 multipoint0|4326|LineString|0|KO-BKO-GKO-BGKO
 multipoint0|4326|Polygon|0|KO-BKO-GKO-BGKO
@@ -13762,9 +13762,9 @@ multipoint0|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint0|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint0|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipoint0|4326|Tin|3|KO-BKO-GKO-BGKO
-multipoint0||COUNT|12|
-multipoint0||GCOUNT|12|
-multipoint4326|0|Point|0|KO-BKO-GOK-BGOK
+multipoint0||COUNT|8|
+multipoint0||GCOUNT|8|
+multipoint4326|0|Point|0|KO-BKO-GKO-BGKO
 multipoint4326|0|PointNE|0|KO-BKO-GKO-BGKO
 multipoint4326|0|LineString|0|KO-BKO-GKO-BGKO
 multipoint4326|0|Polygon|0|KO-BKO-GKO-BGKO
@@ -13832,7 +13832,7 @@ multipoint4326|0|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint4326|0|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint4326|0|Triangle|3|KO-BKO-GKO-BGKO
 multipoint4326|0|Tin|3|KO-BKO-GKO-BGKO
-multipoint4326|4326|Point|0|OK-BOK-GOK-BGOK
+multipoint4326|4326|Point|0|KO-BKO-GKO-BGKO
 multipoint4326|4326|PointNE|0|KO-BKO-GKO-BGKO
 multipoint4326|4326|LineString|0|KO-BKO-GKO-BGKO
 multipoint4326|4326|Polygon|0|KO-BKO-GKO-BGKO
@@ -13900,8 +13900,8 @@ multipoint4326|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipoint4326|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipoint4326|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipoint4326|4326|Tin|3|KO-BKO-GKO-BGKO
-multipoint4326||COUNT|6|
-multipoint4326||GCOUNT|12|
+multipoint4326||COUNT|4|
+multipoint4326||GCOUNT|8|
 multipointm|0|Point|0|KO-BKO-GKO-BGKO
 multipointm|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointm|0|LineString|0|KO-BKO-GKO-BGKO
@@ -13936,7 +13936,7 @@ multipointm|0|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm|0|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm|0|Triangle|2|KO-BKO-GKO-BGKO
 multipointm|0|Tin|2|KO-BKO-GKO-BGKO
-multipointm|0|Point|1|OK-BOK-GOK-BGOK
+multipointm|0|Point|1|KO-BKO-GKO-BGKO
 multipointm|0|PointNE|1|KO-BKO-GKO-BGKO
 multipointm|0|LineString|1|KO-BKO-GKO-BGKO
 multipointm|0|Polygon|1|KO-BKO-GKO-BGKO
@@ -14004,7 +14004,7 @@ multipointm|4326|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm|4326|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm|4326|Triangle|2|KO-BKO-GKO-BGKO
 multipointm|4326|Tin|2|KO-BKO-GKO-BGKO
-multipointm|4326|Point|1|OK-BOK-GOK-BGOK
+multipointm|4326|Point|1|KO-BKO-GKO-BGKO
 multipointm|4326|PointNE|1|KO-BKO-GKO-BGKO
 multipointm|4326|LineString|1|KO-BKO-GKO-BGKO
 multipointm|4326|Polygon|1|KO-BKO-GKO-BGKO
@@ -14038,8 +14038,8 @@ multipointm|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointm|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointm|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointm|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointm||COUNT|12|
-multipointm||GCOUNT|12|
+multipointm||COUNT|8|
+multipointm||GCOUNT|8|
 multipointm0|0|Point|0|KO-BKO-GKO-BGKO
 multipointm0|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointm0|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14074,7 +14074,7 @@ multipointm0|0|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm0|0|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm0|0|Triangle|2|KO-BKO-GKO-BGKO
 multipointm0|0|Tin|2|KO-BKO-GKO-BGKO
-multipointm0|0|Point|1|OK-BOK-GOK-BGOK
+multipointm0|0|Point|1|KO-BKO-GKO-BGKO
 multipointm0|0|PointNE|1|KO-BKO-GKO-BGKO
 multipointm0|0|LineString|1|KO-BKO-GKO-BGKO
 multipointm0|0|Polygon|1|KO-BKO-GKO-BGKO
@@ -14142,7 +14142,7 @@ multipointm0|4326|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm0|4326|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm0|4326|Triangle|2|KO-BKO-GKO-BGKO
 multipointm0|4326|Tin|2|KO-BKO-GKO-BGKO
-multipointm0|4326|Point|1|OK-BOK-GOK-BGOK
+multipointm0|4326|Point|1|KO-BKO-GKO-BGKO
 multipointm0|4326|PointNE|1|KO-BKO-GKO-BGKO
 multipointm0|4326|LineString|1|KO-BKO-GKO-BGKO
 multipointm0|4326|Polygon|1|KO-BKO-GKO-BGKO
@@ -14176,8 +14176,8 @@ multipointm0|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointm0|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointm0|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointm0|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointm0||COUNT|12|
-multipointm0||GCOUNT|12|
+multipointm0||COUNT|8|
+multipointm0||GCOUNT|8|
 multipointm4326|0|Point|0|KO-BKO-GKO-BGKO
 multipointm4326|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointm4326|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14212,7 +14212,7 @@ multipointm4326|0|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm4326|0|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm4326|0|Triangle|2|KO-BKO-GKO-BGKO
 multipointm4326|0|Tin|2|KO-BKO-GKO-BGKO
-multipointm4326|0|Point|1|KO-BKO-GOK-BGOK
+multipointm4326|0|Point|1|KO-BKO-GKO-BGKO
 multipointm4326|0|PointNE|1|KO-BKO-GKO-BGKO
 multipointm4326|0|LineString|1|KO-BKO-GKO-BGKO
 multipointm4326|0|Polygon|1|KO-BKO-GKO-BGKO
@@ -14280,7 +14280,7 @@ multipointm4326|4326|MultiSurface|2|KO-BKO-GKO-BGKO
 multipointm4326|4326|PolyhedralSurface|2|KO-BKO-GKO-BGKO
 multipointm4326|4326|Triangle|2|KO-BKO-GKO-BGKO
 multipointm4326|4326|Tin|2|KO-BKO-GKO-BGKO
-multipointm4326|4326|Point|1|OK-BOK-GOK-BGOK
+multipointm4326|4326|Point|1|KO-BKO-GKO-BGKO
 multipointm4326|4326|PointNE|1|KO-BKO-GKO-BGKO
 multipointm4326|4326|LineString|1|KO-BKO-GKO-BGKO
 multipointm4326|4326|Polygon|1|KO-BKO-GKO-BGKO
@@ -14314,8 +14314,8 @@ multipointm4326|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointm4326|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointm4326|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointm4326|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointm4326||COUNT|6|
-multipointm4326||GCOUNT|12|
+multipointm4326||COUNT|4|
+multipointm4326||GCOUNT|8|
 multipointz|0|Point|0|KO-BKO-GKO-BGKO
 multipointz|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointz|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14333,7 +14333,7 @@ multipointz|0|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz|0|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz|0|Triangle|0|KO-BKO-GKO-BGKO
 multipointz|0|Tin|0|KO-BKO-GKO-BGKO
-multipointz|0|Point|2|OK-BOK-GOK-BGOK
+multipointz|0|Point|2|KO-BKO-GKO-BGKO
 multipointz|0|PointNE|2|KO-BKO-GKO-BGKO
 multipointz|0|LineString|2|KO-BKO-GKO-BGKO
 multipointz|0|Polygon|2|KO-BKO-GKO-BGKO
@@ -14401,7 +14401,7 @@ multipointz|4326|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz|4326|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz|4326|Triangle|0|KO-BKO-GKO-BGKO
 multipointz|4326|Tin|0|KO-BKO-GKO-BGKO
-multipointz|4326|Point|2|OK-BOK-GOK-BGOK
+multipointz|4326|Point|2|KO-BKO-GKO-BGKO
 multipointz|4326|PointNE|2|KO-BKO-GKO-BGKO
 multipointz|4326|LineString|2|KO-BKO-GKO-BGKO
 multipointz|4326|Polygon|2|KO-BKO-GKO-BGKO
@@ -14452,8 +14452,8 @@ multipointz|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointz|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointz|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointz|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointz||COUNT|12|
-multipointz||GCOUNT|12|
+multipointz||COUNT|8|
+multipointz||GCOUNT|8|
 multipointz0|0|Point|0|KO-BKO-GKO-BGKO
 multipointz0|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointz0|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14471,7 +14471,7 @@ multipointz0|0|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz0|0|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz0|0|Triangle|0|KO-BKO-GKO-BGKO
 multipointz0|0|Tin|0|KO-BKO-GKO-BGKO
-multipointz0|0|Point|2|OK-BOK-GOK-BGOK
+multipointz0|0|Point|2|KO-BKO-GKO-BGKO
 multipointz0|0|PointNE|2|KO-BKO-GKO-BGKO
 multipointz0|0|LineString|2|KO-BKO-GKO-BGKO
 multipointz0|0|Polygon|2|KO-BKO-GKO-BGKO
@@ -14539,7 +14539,7 @@ multipointz0|4326|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz0|4326|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz0|4326|Triangle|0|KO-BKO-GKO-BGKO
 multipointz0|4326|Tin|0|KO-BKO-GKO-BGKO
-multipointz0|4326|Point|2|OK-BOK-GOK-BGOK
+multipointz0|4326|Point|2|KO-BKO-GKO-BGKO
 multipointz0|4326|PointNE|2|KO-BKO-GKO-BGKO
 multipointz0|4326|LineString|2|KO-BKO-GKO-BGKO
 multipointz0|4326|Polygon|2|KO-BKO-GKO-BGKO
@@ -14590,8 +14590,8 @@ multipointz0|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointz0|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointz0|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointz0|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointz0||COUNT|12|
-multipointz0||GCOUNT|12|
+multipointz0||COUNT|8|
+multipointz0||GCOUNT|8|
 multipointz4326|0|Point|0|KO-BKO-GKO-BGKO
 multipointz4326|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointz4326|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14609,7 +14609,7 @@ multipointz4326|0|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz4326|0|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz4326|0|Triangle|0|KO-BKO-GKO-BGKO
 multipointz4326|0|Tin|0|KO-BKO-GKO-BGKO
-multipointz4326|0|Point|2|KO-BKO-GOK-BGOK
+multipointz4326|0|Point|2|KO-BKO-GKO-BGKO
 multipointz4326|0|PointNE|2|KO-BKO-GKO-BGKO
 multipointz4326|0|LineString|2|KO-BKO-GKO-BGKO
 multipointz4326|0|Polygon|2|KO-BKO-GKO-BGKO
@@ -14677,7 +14677,7 @@ multipointz4326|4326|MultiSurface|0|KO-BKO-GKO-BGKO
 multipointz4326|4326|PolyhedralSurface|0|KO-BKO-GKO-BGKO
 multipointz4326|4326|Triangle|0|KO-BKO-GKO-BGKO
 multipointz4326|4326|Tin|0|KO-BKO-GKO-BGKO
-multipointz4326|4326|Point|2|OK-BOK-GOK-BGOK
+multipointz4326|4326|Point|2|KO-BKO-GKO-BGKO
 multipointz4326|4326|PointNE|2|KO-BKO-GKO-BGKO
 multipointz4326|4326|LineString|2|KO-BKO-GKO-BGKO
 multipointz4326|4326|Polygon|2|KO-BKO-GKO-BGKO
@@ -14728,8 +14728,8 @@ multipointz4326|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointz4326|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointz4326|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointz4326|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointz4326||COUNT|6|
-multipointz4326||GCOUNT|12|
+multipointz4326||COUNT|4|
+multipointz4326||GCOUNT|8|
 multipointzm|0|Point|0|KO-BKO-GKO-BGKO
 multipointzm|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointzm|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14781,7 +14781,7 @@ multipointzm|0|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm|0|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm|0|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm|0|Tin|1|KO-BKO-GKO-BGKO
-multipointzm|0|Point|3|OK-BOK-GOK-BGOK
+multipointzm|0|Point|3|KO-BKO-GKO-BGKO
 multipointzm|0|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm|0|LineString|3|KO-BKO-GKO-BGKO
 multipointzm|0|Polygon|3|KO-BKO-GKO-BGKO
@@ -14849,7 +14849,7 @@ multipointzm|4326|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm|4326|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm|4326|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm|4326|Tin|1|KO-BKO-GKO-BGKO
-multipointzm|4326|Point|3|OK-BOK-GOK-BGOK
+multipointzm|4326|Point|3|KO-BKO-GKO-BGKO
 multipointzm|4326|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm|4326|LineString|3|KO-BKO-GKO-BGKO
 multipointzm|4326|Polygon|3|KO-BKO-GKO-BGKO
@@ -14866,8 +14866,8 @@ multipointzm|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointzm|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointzm|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointzm|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointzm||COUNT|12|
-multipointzm||GCOUNT|12|
+multipointzm||COUNT|8|
+multipointzm||GCOUNT|8|
 multipointzm0|0|Point|0|KO-BKO-GKO-BGKO
 multipointzm0|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointzm0|0|LineString|0|KO-BKO-GKO-BGKO
@@ -14919,7 +14919,7 @@ multipointzm0|0|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm0|0|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm0|0|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm0|0|Tin|1|KO-BKO-GKO-BGKO
-multipointzm0|0|Point|3|OK-BOK-GOK-BGOK
+multipointzm0|0|Point|3|KO-BKO-GKO-BGKO
 multipointzm0|0|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm0|0|LineString|3|KO-BKO-GKO-BGKO
 multipointzm0|0|Polygon|3|KO-BKO-GKO-BGKO
@@ -14987,7 +14987,7 @@ multipointzm0|4326|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm0|4326|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm0|4326|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm0|4326|Tin|1|KO-BKO-GKO-BGKO
-multipointzm0|4326|Point|3|OK-BOK-GOK-BGOK
+multipointzm0|4326|Point|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|LineString|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|Polygon|3|KO-BKO-GKO-BGKO
@@ -15004,8 +15004,8 @@ multipointzm0|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointzm0|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointzm0||COUNT|12|
-multipointzm0||GCOUNT|12|
+multipointzm0||COUNT|8|
+multipointzm0||GCOUNT|8|
 multipointzm4326|0|Point|0|KO-BKO-GKO-BGKO
 multipointzm4326|0|PointNE|0|KO-BKO-GKO-BGKO
 multipointzm4326|0|LineString|0|KO-BKO-GKO-BGKO
@@ -15057,7 +15057,7 @@ multipointzm4326|0|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm4326|0|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm4326|0|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm4326|0|Tin|1|KO-BKO-GKO-BGKO
-multipointzm4326|0|Point|3|KO-BKO-GOK-BGOK
+multipointzm4326|0|Point|3|KO-BKO-GKO-BGKO
 multipointzm4326|0|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm4326|0|LineString|3|KO-BKO-GKO-BGKO
 multipointzm4326|0|Polygon|3|KO-BKO-GKO-BGKO
@@ -15125,7 +15125,7 @@ multipointzm4326|4326|MultiSurface|1|KO-BKO-GKO-BGKO
 multipointzm4326|4326|PolyhedralSurface|1|KO-BKO-GKO-BGKO
 multipointzm4326|4326|Triangle|1|KO-BKO-GKO-BGKO
 multipointzm4326|4326|Tin|1|KO-BKO-GKO-BGKO
-multipointzm4326|4326|Point|3|OK-BOK-GOK-BGOK
+multipointzm4326|4326|Point|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|PointNE|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|LineString|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|Polygon|3|KO-BKO-GKO-BGKO
@@ -15142,8 +15142,8 @@ multipointzm4326|4326|MultiSurface|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|PolyhedralSurface|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|Triangle|3|KO-BKO-GKO-BGKO
 multipointzm4326|4326|Tin|3|KO-BKO-GKO-BGKO
-multipointzm4326||COUNT|6|
-multipointzm4326||GCOUNT|12|
+multipointzm4326||COUNT|4|
+multipointzm4326||GCOUNT|8|
 multipolygon|0|Point|0|KO-BKO-GKO-BGKO
 multipolygon|0|PointNE|0|KO-BKO-GKO-BGKO
 multipolygon|0|LineString|0|KO-BKO-GKO-BGKO
