@@ -346,7 +346,7 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 
 	/* Bulk copy the coordinates when: dimensionality matches, output format */
 	/* is not hex, and output endian matches internal endian. */
-	if ( (dims == pa_dims) && ! wkb_swap_bytes(variant) && ! (variant & WKB_HEX)  )
+	if ( pa->npoints && (dims == pa_dims) && ! wkb_swap_bytes(variant) && ! (variant & WKB_HEX)  )
 	{
 		size_t size = pa->npoints * dims * WKB_DOUBLE_SIZE;
 		memcpy(buf, getPoint_internal(pa, 0), size);
@@ -378,6 +378,10 @@ static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uint8_t variant)
 	/* Endian flag + type number */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE;
 
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)pt) )
+		return empty_to_wkb_size((LWGEOM*)pt, variant);
+
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)pt, variant) )
 		size += WKB_INT_SIZE;
@@ -389,6 +393,10 @@ static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uint8_t variant)
 
 static uint8_t* lwpoint_to_wkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t variant)
 {
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)pt) )
+		return empty_to_wkb_buf((LWGEOM*)pt, buf, variant);
+
 	/* Set the endian flag */
 	LWDEBUGF(4, "Entering function, buf = %p", buf);
 	buf = endian_to_wkb_buf(buf, variant);
@@ -416,6 +424,10 @@ static size_t lwline_to_wkb_size(const LWLINE *line, uint8_t variant)
 	/* Endian flag + type number */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE;
 
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)line) )
+		return empty_to_wkb_size((LWGEOM*)line, variant);
+
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)line, variant) )
 		size += WKB_INT_SIZE;
@@ -427,6 +439,10 @@ static size_t lwline_to_wkb_size(const LWLINE *line, uint8_t variant)
 
 static uint8_t* lwline_to_wkb_buf(const LWLINE *line, uint8_t *buf, uint8_t variant)
 {
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)line) )
+		return empty_to_wkb_buf((LWGEOM*)line, buf, variant);
+
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
 	/* Set the geometry type */
@@ -447,6 +463,10 @@ static size_t lwtriangle_to_wkb_size(const LWTRIANGLE *tri, uint8_t variant)
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
 
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)tri) )
+		return empty_to_wkb_size((LWGEOM*)tri, variant);
+
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)tri, variant) )
 		size += WKB_INT_SIZE;
@@ -459,6 +479,10 @@ static size_t lwtriangle_to_wkb_size(const LWTRIANGLE *tri, uint8_t variant)
 
 static uint8_t* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uint8_t *buf, uint8_t variant)
 {
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)tri) )
+		return empty_to_wkb_buf((LWGEOM*)tri, buf, variant);
+
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
 	
@@ -486,6 +510,10 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
 	int i = 0;
+	
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
+		return empty_to_wkb_size((LWGEOM*)poly, variant);
 
 	/* Extended WKB needs space for optional SRID integer */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)poly, variant) )
@@ -503,6 +531,10 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant)
 {
 	int i;
+
+	/* Only process empty at this level in the EXTENDED case */
+	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
+		return empty_to_wkb_buf((LWGEOM*)poly, buf, variant);
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -582,7 +614,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 		return 0;
 
 	/* Short circuit out empty geometries */
-	if ( lwgeom_is_empty(geom) )
+	if ( (!(variant & WKB_EXTENDED)) && lwgeom_is_empty(geom) )
 	{
 		return empty_to_wkb_size(geom, variant);
 	}
@@ -636,7 +668,8 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
 
-	if ( lwgeom_is_empty(geom) )
+	/* Do not simplify empties when outputting to canonical form */
+	if ( lwgeom_is_empty(geom) & ! (variant & WKB_EXTENDED) )
 		return empty_to_wkb_buf(geom, buf, variant);
 
 	switch ( geom->type )
