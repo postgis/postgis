@@ -215,8 +215,8 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_free(g);
 	
 	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
-	/* NaN should show up in bbox */
-	g = lwgeom_from_hexwkb("0101000020E8640000000000000000F8FF000000000000F8FF", LW_PARSER_CHECK_NONE);
+	/* NaN should show up in bbox for "SRID=4326;POINT(0 NaN)" */
+	g = lwgeom_from_hexwkb("0101000020E86400000000000000000000000000000000F8FF", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT(isnan(b.ymax));
 	lwgeom_free(g);	
