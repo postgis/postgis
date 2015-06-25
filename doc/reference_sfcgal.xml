@@ -312,11 +312,11 @@ around ST_StraightSkeleton (slower case).
 	  <refsection>
 		<title>Description</title>
 
+		<para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
+
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
 	  </refsection>
 
 	</refentry>
