@@ -665,6 +665,9 @@ if test "x$with_sfcgal" != "xno"; then
         		SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
 		fi
+		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 11; then
+			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.1.0 (found $SFCGAL_VERSION)])
+		fi
 
 	else
 		if test "x$with_sfcgal" != "x"; then
