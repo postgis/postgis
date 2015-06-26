@@ -918,7 +918,7 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   pt = lwgeom_as_lwpoint(lwgeom);
   if ( ! pt ) {
     lwgeom_free(lwgeom);
-	  PG_FREE_IF_COPY(geom, 3);
+	  PG_FREE_IF_COPY(geom, 2);
     lwpgerror("ST_ModEdgeSplit third argument must be a point geometry");
     PG_RETURN_NULL();
   }
