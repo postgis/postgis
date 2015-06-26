@@ -723,7 +723,7 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
 		cberror(topo->be_data, "nextval for edge_id returned null");
 	  return -1;
   }
-  edge_id = DatumGetInt32(dat);
+  edge_id = DatumGetInt64(dat); /* sequences return 64bit integers */
   return edge_id;
 }
 
