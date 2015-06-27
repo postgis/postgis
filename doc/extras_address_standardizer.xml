@@ -570,9 +570,11 @@ into includes in the future for easier maintenance.</para></listitem>
 			<title>Examples</title>
 			<para>Using address_standardizer_data_us extension</para>
 			<programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once
-SELECT *  FROM standardize_address('us_lex', 
+SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', 
 			   'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
-
+			<screen>house_num |    name    | suftype |  city  | country |     state     |      unit
+----------+------------+---------+--------+---------+---------------+-----------------
+1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301</screen>
 			<para>Using tables packaged with tiger geocoder. This example only works if you installec postgis_tiger_geocoder.</para>
 			<programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
 			   'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
