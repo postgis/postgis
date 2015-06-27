@@ -140,7 +140,7 @@ into includes in the future for easier maintenance.</para></listitem>
             <abstract>
                 <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.  
                 </para>	
-                <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standrdizing US addresses.</para>
+                <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standardizing US addresses.</para>
             </abstract>
         </sect1info>
         <title>Address Standardizer Tables</title>
