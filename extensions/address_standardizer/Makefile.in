@@ -30,7 +30,7 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 SQLPP = @SQLPP@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
-DATA_built = address_standardizer--@POSTGIS_LIB_VERSION@.sql us-lex.sql us-gaz.sql us-rules.sql
+DATA_built = address_standardizer--@POSTGIS_LIB_VERSION@.sql address_standardizer_data_us.control address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql us_lex.sql us_gaz.sql us_rules.sql
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
@@ -57,15 +57,10 @@ PERL=@PERL@
 address_standardizer--@POSTGIS_LIB_VERSION@.sql: address_standardizer.sql
 	$(PERL) mk-sql.pl '$(PGVER)' address_standardizer.sql > address_standardizer--@POSTGIS_LIB_VERSION@.sql
 
-us-lex.sql: lexicon.csv
-	$(PERL) pagc-data-psql lex lexicon.csv > us-lex.sql
-
-us-gaz.sql: gazeteer.csv
-	$(PERL) pagc-data-psql gaz gazeteer.csv > us-gaz.sql
-
-us-rules.sql: rules.txt
-	$(PERL) pagc-data-psql rules rules.txt > us-rules.sql
-
+# build us data extension
+address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql: us_lex.sql us_gaz.sql us_rules.sql
+	cat $^ >> $@
+	
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl
 	rm -f mk-st-regexp
