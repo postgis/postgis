@@ -30,7 +30,8 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 SQLPP = @SQLPP@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
-DATA_built = address_standardizer.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql address_standardizer_data_us.control sql/address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql us_lex.sql us_gaz.sql us_rules.sql
+DATA = address_standardizer_data_us.control us_lex.sql us_gaz.sql us_rules.sql
+DATA_built = sql/address_standardizer.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
