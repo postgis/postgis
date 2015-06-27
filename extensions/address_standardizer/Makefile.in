@@ -30,7 +30,7 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 SQLPP = @SQLPP@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
-DATA_built = address_standardizer--@POSTGIS_LIB_VERSION@.sql address_standardizer_data_us.control address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql us_lex.sql us_gaz.sql us_rules.sql
+DATA_built = address_standardizer.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql address_standardizer_data_us.control sql/address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql us_lex.sql us_gaz.sql us_rules.sql
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
@@ -50,16 +50,24 @@ PERL=@PERL@
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
-%.sql: %.sql.in
+sql/%.sql: %.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+
+sql/address_standardizer.sql: address_standardizer.sql
+	mkdir -p sql
+	cat $^ > $@
 	
-address_standardizer--@POSTGIS_LIB_VERSION@.sql: address_standardizer.sql
-	$(PERL) mk-sql.pl '$(PGVER)' address_standardizer.sql > address_standardizer--@POSTGIS_LIB_VERSION@.sql
+sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer.sql
+	cat $^ > $@
 
 # build us data extension
-address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql: us_lex.sql us_gaz.sql us_rules.sql
-	cat $^ >> $@
+sql/address_standardizer_data_us--@POSTGIS_LIB_VERSION@.sql: us_lex.sql us_gaz.sql us_rules.sql
+	mkdir -p sql
+	cat $^ > $@
+	
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
+	cat $^ > $@
 	
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl
