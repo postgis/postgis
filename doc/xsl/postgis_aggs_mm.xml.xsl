@@ -458,7 +458,7 @@
 	
 				<note><para>postgis_sfcgal now can be installed as an extension using CREATE EXTENSION postgis_sfcgal;</para></note>
 				<note><para>PostGIS 2.2.0: Tiger Geocoder upgraded to work with TIGER 2014 data.</para></note>
-				<note><para>address_standardizer, address_standardizer_data_us extensions for standardizing address data refer to <xref linkend="Address_Standardizer" /> fpr details.</para></note>	
+				<note><para>address_standardizer, address_standardizer_data_us extensions for standardizing address data refer to <xref linkend="Address_Standardizer" /> for details.</para></note>	
 				<para>Functions new in PostGIS 2.2</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
