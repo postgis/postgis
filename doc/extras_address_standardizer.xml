@@ -576,7 +576,7 @@ SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_ad
 			<screen>house_num |    name    | suftype |  city  | country |     state     |      unit
 ----------+------------+---------+--------+---------+---------------+-----------------
 1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301</screen>
-      <para>Using tables packaged with tiger geocoder. This example only works if you installec postgis_tiger_geocoder.</para>
+      <para>Using tables packaged with tiger geocoder. This example only works if you installed <varname>postgis_tiger_geocoder</varname>.</para>
       <programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
          'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
          
