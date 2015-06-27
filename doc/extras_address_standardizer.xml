@@ -140,6 +140,7 @@ into includes in the future for easier maintenance.</para></listitem>
             <abstract>
                 <para>This section lists the PostgreSQL table formats used by the address_standardizer for normalizing addresses.  Note that these tables do not need to be named the same as what is referenced here.  You can have different lex, gaz, rules tables for each country for example or for your custom geocoder.  The names of these tables get passed into the address standardizer functions.  
                 </para>	
+                <para>The packaged extension <varname>address_standardizer_data_us</varname> contains data for standrdizing US addresses.</para>
             </abstract>
         </sect1info>
         <title>Address Standardizer Tables</title>
@@ -575,15 +576,15 @@ SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_ad
 			<screen>house_num |    name    | suftype |  city  | country |     state     |      unit
 ----------+------------+---------+--------+---------+---------------+-----------------
 1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301</screen>
-			<para>Using tables packaged with tiger geocoder. This example only works if you installec postgis_tiger_geocoder.</para>
-			<programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
-			   'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
-			   
-			<para>Make easier to read we'll dump output using hstore extension CREATE EXTENSION hstore; you need to install</para>
-			<programlisting>SELECT (each(hstore(p))).*  
+      <para>Using tables packaged with tiger geocoder. This example only works if you installec postgis_tiger_geocoder.</para>
+      <programlisting>SELECT *  FROM standardize_address('tiger.pagc_lex', 
+         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
+         
+      <para>Make easier to read we'll dump output using hstore extension CREATE EXTENSION hstore; you need to install</para>
+      <programlisting>SELECT (each(hstore(p))).*  
  FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
    'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234') As p;</programlisting>
- 			<screen>    key     |      value
+       <screen>    key     |      value
 ------------+-----------------
  box        |
  city       | BOSTON
@@ -601,7 +602,7 @@ SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_ad
  postcode   | 02109
  house_num  | 1
  ruralroute |
-(16 rows) 			
+(16 rows)       
  			</screen>
 		</refsection>
 	

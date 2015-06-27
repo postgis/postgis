@@ -1,5 +1,5 @@
 PostGIS 2.2.0
-2014/MM/DD
+2015/09/DD
 
  * Important / Breaking Changes *
 
@@ -70,7 +70,10 @@ PostGIS 2.2.0
   - Added GUC postgis.enable_outdb_rasters to enable access to
     rasters with out-db bands
   - #2387, address_standardizer extension as part of PostGIS
-           Stephen Woodbridge (imaptools.com), Walter Sinclair
+           Stephen Woodbridge (imaptools.com), Walter Sinclair, Regina Obe
+  - #2816, address_standardizer_data_us extension 
+           provides reference lex,gaz,rules for address_standardizer
+           Stephen Woodbridge (imaptools.com), Walter Sinclair, Regina Obe
   - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
   - #2430, ST_ForceCurve
