@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS us_lex (
+CREATE TABLE IF NOT EXISTS us_lex (
 	id serial,
     seq integer,
     word text,
