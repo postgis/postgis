@@ -100,6 +100,8 @@ LDFLAGS += @SFCGAL_LDFLAGS@
 SA_OBJS += lwgeom_sfcgal.o
 endif
 
+LDFLAGS += -no-undefined
+
 LT_SA_OBJS = $(SA_OBJS:.o=.lo)
 LT_NM_OBJS = $(NM_OBJS:.o=.lo)
 LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
