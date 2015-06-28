@@ -4,10 +4,10 @@
  * http://postgis.net
  *
  * Copyright 2015 Daniel Baston
- *P
- *P This is free software; you can redistribute and/or modify it under
- *P the terms of the GNU General Public Licence. See the COPYING file.
- *P
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
  **********************************************************************/
 
 #include "CUnit/Basic.h"
