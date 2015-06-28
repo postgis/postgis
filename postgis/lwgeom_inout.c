@@ -584,6 +584,13 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	array_free_iterator(iter_geoms);
 	array_free_iterator(iter_ids);
 	
+	if(i==0)
+	{
+		elog(NOTICE, "No valid geometry - id pairs found");
+		PG_FREE_IF_COPY(arr_geoms, 0);
+		PG_FREE_IF_COPY(arr_ids, 1);
+		PG_RETURN_NULL();		
+	}
 	if ( is_homogeneous )
 	{
 		col->type = lwtype_get_collectiontype(subtype);
