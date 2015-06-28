@@ -12,6 +12,7 @@
 
 #include "CUnit/Basic.h"
 
+#include "../lwgeom_log.h"
 #include "../lwgeom_geos.h"
 #include "cu_tester.h"
 

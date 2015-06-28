@@ -3497,7 +3497,7 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	geos_inputs = ARRAY2GEOS(array, nelems, &is3d, &srid);
 	if(!geos_inputs)
@@ -3567,7 +3567,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	lw_inputs = ARRAY2LWGEOM(array, nelems, &is3d, &srid);
 	if (!lw_inputs)
