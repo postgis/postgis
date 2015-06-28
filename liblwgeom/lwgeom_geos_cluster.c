@@ -77,7 +77,16 @@ make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 		}
 		else
 		{
-			tree.envelopes[i] = GBOX2GEOS(lwgeom_get_bbox(geoms[i]));
+            const GBOX* box = lwgeom_get_bbox(geoms[i]);
+            if (box)
+            {
+                tree.envelopes[i] = GBOX2GEOS(box);
+            } 
+            else
+            {
+                /* Empty geometry */
+                tree.envelopes[i] = GEOSGeom_createEmptyPolygon();
+            }
 		}
 		GEOSSTRtree_insert(tree.tree, tree.envelopes[i], &(tree.geom_ids[i]));
 	}
@@ -178,6 +187,11 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 	}
 	for (i = 0; i < num_geoms; i++)
 	{
+        if (GEOSisEmpty(geoms[i]))
+        {
+            continue;
+        }
+
 		struct UnionIfIntersectingContext cxt =
 		{
 			.uf = uf,
@@ -230,7 +244,13 @@ union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, d
 			.tolerance = tolerance
 		};
 
-		GBOX* query_extent = gbox_clone(lwgeom_get_bbox(geoms[i]));
+        const GBOX* geom_extent = lwgeom_get_bbox(geoms[i]);
+        if (!geom_extent)
+        {
+            /* Empty geometry */
+            continue;
+        }
+		GBOX* query_extent = gbox_clone(geom_extent);
 		gbox_expand(query_extent, tolerance);
 		GEOSGeometry* query_envelope = GBOX2GEOS(query_extent);
 

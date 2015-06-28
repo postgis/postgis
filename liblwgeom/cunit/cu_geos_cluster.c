@@ -4,10 +4,10 @@
  * http://postgis.net
  *
  * Copyright 2015 Daniel Baston
- *
- * This is free software; you can redistribute and/or modify it under
- * the terms of the GNU General Public Licence. See the COPYING file.
- *
+ *P
+ *P This is free software; you can redistribute and/or modify it under
+ *P the terms of the GNU General Public Licence. See the COPYING file.
+ *P
  **********************************************************************/
 
 #include "CUnit/Basic.h"
@@ -23,6 +23,8 @@ static void assert_all_results_found(LWGEOM** results, size_t num_outputs, LWGEO
 	char found_equal = 0;
 	for (i = 0; i < num_outputs; i++)
 	{
+        printf(lwgeom_to_wkt(results[i], 1, 3, NULL));
+//        printf(lwgeom_to_wkt(expected[i], 1, 3, NULL));
 		for (j = 0; j < num_expected_outputs; j++)
 		{
 			if (lwgeom_same(results[i], expected[j]))
@@ -82,13 +84,19 @@ static void perform_cluster_intersecting_test(char** wkt_inputs, uint32_t num_in
 	LWGEOM** lw_results;
 	uint32_t num_clusters;
 
+    printf("d");
 	LWGEOM** expected_outputs = WKTARRAY2LWGEOM(wkt_outputs, num_outputs);
+    printf("e");
 	GEOSGeometry** geos_inputs = LWGEOMARRAY2GEOS(WKTARRAY2LWGEOM(wkt_inputs, num_inputs), num_inputs);
+    printf("f");
 
 	cluster_intersecting(geos_inputs, num_inputs, &geos_results, &num_clusters);
+    printf("a");
 	CU_ASSERT_EQUAL(num_outputs, num_clusters);
+    printf("b");
 
 	lw_results = GEOSARRAY2LWGEOM(geos_results, num_clusters);
+    printf("c");
 
 	assert_all_results_found(lw_results, num_clusters, expected_outputs, num_outputs);
 }
@@ -189,6 +197,15 @@ static void single_input_test(void)
 	perform_cluster_within_distance_test(1, wkt_inputs, 1, expected_outputs, 1);
 }
 
+static void empty_inputs_test(void)
+{
+    char* wkt_inputs[] = { "POLYGON EMPTY", "LINESTRING EMPTY"};
+    char* expected_outputs[] = { "GEOMETRYCOLLECTION( LINESTRING EMPTY )", "GEOMETRYCOLLECTION( POLYGON EMPTY )" };
+
+	perform_cluster_intersecting_test(wkt_inputs, 2, expected_outputs, 2);
+	perform_cluster_within_distance_test(1, wkt_inputs, 2, expected_outputs, 2);
+}
+
 void geos_cluster_suite_setup(void);
 void geos_cluster_suite_setup(void)
 {
@@ -197,4 +214,5 @@ void geos_cluster_suite_setup(void)
     PG_ADD_TEST(suite, nonsequential_test);
     PG_ADD_TEST(suite, basic_distance_test);
     PG_ADD_TEST(suite, single_input_test);
+    PG_ADD_TEST(suite, empty_inputs_test);
 };
