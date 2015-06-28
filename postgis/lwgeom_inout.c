@@ -508,6 +508,8 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 
 	int is_homogeneous = true;
 	int subtype = 0;
+	int has_z = 0;
+	int has_m  = 0;
 	LWCOLLECTION *col = NULL;
 	int64_t *idlist = NULL;
 	uint8_t variant = 0;
@@ -558,13 +560,26 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 
 		geom = lwgeom_from_gserialized((GSERIALIZED*)DatumGetPointer(val_geom));
 		uid = DatumGetInt64(val_id);
-
+		
 		/* Construct collection/idlist first time through */
 		if ( ! col )
-			col = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(geom), lwgeom_has_z(geom), lwgeom_has_m(geom));
+		{
+			has_z = lwgeom_has_z(geom);
+			has_m = lwgeom_has_m(geom);
+			col = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(geom), has_z, has_m);
+		}
 		if ( ! idlist ) 
 			idlist = palloc0(num_geoms * sizeof(int64_t));
 
+		
+		/*Check if there is differences in dimmenstionality*/
+		if( lwgeom_has_z(geom)!=has_z || lwgeom_has_m(geom)!=has_m)
+		{
+			elog(ERROR, "Geometries have differenct dimensionality");
+			PG_FREE_IF_COPY(arr_geoms, 0);
+			PG_FREE_IF_COPY(arr_ids, 1);
+			PG_RETURN_NULL();			
+		}
 		/* Store the values */
 		lwcollection_add_lwgeom(col, geom);
 		idlist[i++] = uid;
