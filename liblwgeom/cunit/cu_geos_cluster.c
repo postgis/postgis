@@ -23,8 +23,6 @@ static void assert_all_results_found(LWGEOM** results, size_t num_outputs, LWGEO
 	char found_equal = 0;
 	for (i = 0; i < num_outputs; i++)
 	{
-        printf(lwgeom_to_wkt(results[i], 1, 3, NULL));
-//        printf(lwgeom_to_wkt(expected[i], 1, 3, NULL));
 		for (j = 0; j < num_expected_outputs; j++)
 		{
 			if (lwgeom_same(results[i], expected[j]))
@@ -84,19 +82,13 @@ static void perform_cluster_intersecting_test(char** wkt_inputs, uint32_t num_in
 	LWGEOM** lw_results;
 	uint32_t num_clusters;
 
-    printf("d");
 	LWGEOM** expected_outputs = WKTARRAY2LWGEOM(wkt_outputs, num_outputs);
-    printf("e");
 	GEOSGeometry** geos_inputs = LWGEOMARRAY2GEOS(WKTARRAY2LWGEOM(wkt_inputs, num_inputs), num_inputs);
-    printf("f");
 
 	cluster_intersecting(geos_inputs, num_inputs, &geos_results, &num_clusters);
-    printf("a");
 	CU_ASSERT_EQUAL(num_outputs, num_clusters);
-    printf("b");
 
 	lw_results = GEOSARRAY2LWGEOM(geos_results, num_clusters);
-    printf("c");
 
 	assert_all_results_found(lw_results, num_clusters, expected_outputs, num_outputs);
 }
