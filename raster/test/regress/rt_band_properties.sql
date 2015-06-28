@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------
--- $Id$
 --
 -- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --

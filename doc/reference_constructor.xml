@@ -174,8 +174,8 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>Returns a geography object from the  well-known text or extended well-known representation.  SRID 4326 is assumed. This
-				is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
+			<para>Returns a geography object from the well-known text or extended well-known representation. SRID 4326 is assumed if unspecified.
+				This is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
 		  </refsection>
 		  
 		 <refsection>
@@ -183,7 +183,10 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 			<programlisting>
 --- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
-UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');		
+UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || lat || ')');
+
+--- specify a geography point using EPSG:4267, NAD27
+SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			</programlisting>
 		 </refsection>
 		  <refsection>
@@ -207,7 +210,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>Returns a geography object from the  well-known text representation.  SRID 4326 is assumed.</para>
+			<para>Returns a geography object from the  well-known text representation. SRID 4326 is assumed if unspecified.</para>
 			<!-- TODO: put in example -->
 		  </refsection>
 		  <refsection>
@@ -227,7 +230,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>geography <function>ST_GeogFromWKB</function></funcdef>
-			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>bytea </type> <parameter>wkb</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -267,6 +270,58 @@ ST_GeogFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\
 		<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsBinary" /></para>
 	  </refsection>
 </refentry>
+
+	<refentry id="ST_GeomFromTWKB">
+	  <refnamediv>
+		<refname>ST_GeomFromTWKB</refname>
+		<refpurpose>Creates a geometry instance from a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry
+		representation.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef>
+			<paramdef><type>bytea </type> <parameter>twkb</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a a TWKB ("<ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">Tiny Well-Known Binary</ulink>") geometry representation (WKB) and creates an instance of the appropriate
+		geometry type.</para>
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+SELECT ST_AsText(ST_GeomFromTWKB(ST_AsTWKB('LINESTRING(126 34, 127 35)'::geometry)));
+
+         st_astext
+-----------------------------
+ LINESTRING(126 34, 127 35)
+(1 row)
+
+
+SELECT ST_AsEWKT(
+  ST_GeomFromTWKB(E'\\x620002f7f40dbce4040105')
+);
+					  st_asewkt
+------------------------------------------------------
+LINESTRING(-113.98 39.198,-113.981 39.195)
+(1 row)
+</programlisting>
+	  </refsection>
+	   <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsTWKB" /></para>
+	  </refsection>
+    </refentry>
 
 
 	<refentry id="ST_GeomCollFromText">
@@ -983,69 +1038,6 @@ SELECT
 	</refentry>
 
 
-<refentry id="ST_GeomFromTWKB">
-	  <refnamediv>
-		<refname>ST_GeomFromTWKB</refname>
-		<refpurpose>Creates a geometry instance from a Tiny Well-Known Binary geometry
-		representation (TWKB).</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_GeomFromTWKB</function></funcdef>
-			<paramdef><type>bytea </type> <parameter>geom</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>The <varname>ST_GeomFromTWKB</varname> function, takes a tiny well-known
-		binary representation of a geometry and creates an instance of the appropriate
-		geometry type.</para>
-
-		<para>SRID always defaults to 0 (Unknown).</para>
-		<note>
-		  <para>TWKB doesn't make any difference of Z and M. So a 3D geoemtry in TWKB will always be a GeometryZ, like PointZ when converted to PostGIS geometry</para>
-		</note>	
-	  </refsection>
-
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table 
-		-- unless standard_conforming_strings is set to on.
-SELECT ST_AsEWKT(
-ST_GeomFromTWKB(E'\\x304202f7f40dbce4040105')
-);
-					  st_asewkt
-------------------------------------------------------
-LINESTRING(-113.98 39.198,-113.981 39.195)
-(1 row)
-
-SELECT
-  ST_AsText(
-	ST_GeomFromTWKB(
-	  ST_AsTWKB('POINT(2 5)'::geometry,0)
-	)
-  );
- st_astext
-------------
- POINT(2 5)
-(1 row)</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="ST_GeomFromWKB" />,<xref linkend="ST_AsTWKB" />,<xref linkend="ST_AsTWKBAgg" />,<xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
-	  </refsection>
-	</refentry>
-
   <refentry id="ST_LineFromEncodedPolyline">
     <refnamediv>
     <refname>ST_LineFromEncodedPolyline</refname>
@@ -1723,6 +1715,7 @@ FROM
 		<refsection>
 			<title>See Also</title>
 			<para>
+				<xref linkend="ST_Boundary" />,
 				<xref linkend="ST_Accum" />,
 				<xref linkend="ST_AddPoint" />,
 				<xref linkend="ST_GeometryType" />,

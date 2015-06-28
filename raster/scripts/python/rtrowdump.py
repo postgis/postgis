@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # Brute-force dump of single row from WKT Raster table as GeoTIFF.
 # This utility is handy for debugging purposes.

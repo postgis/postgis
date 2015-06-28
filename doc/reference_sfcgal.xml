@@ -8,7 +8,7 @@
         </para>
         <para> 
             Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>. 
-            To load the functions execute postgis/sfcgal.sql
+            To load the functions create extension postgis_sfcgal. 
         </para>
 		</abstract>
 	</sect1info>
@@ -200,6 +200,69 @@
 
 	</refentry>
 
+	<refentry id="ST_ApproximateMedialAxis">
+	  <refnamediv>
+		<refname>ST_ApproximateMedialAxis</refname>
+
+		<refpurpose>Compute the approximate medial axis of an areal geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+    <para>
+Return an approximate medial axis for the areal input based on
+its straight skeleton. Uses an SFCGAL specific API when built against
+a capable version (1.2.0+). Otherwise the function is just a wrapper
+around ST_StraightSkeleton (slower case).
+    </para>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	  
+	  <refsection><title>Examples</title>
+	  		<programlisting>SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+	  		
+	  	 <informaltable>
+				  <tgroup cols="1">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_approximatemedialaxis01.png" />
+							  </imageobject>
+							  <caption><para>A polygon and its approximate medial axis</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+					  </entry>
+				</row>
+				</tbody>
+				</tgroup>
+			</informaltable>
+	  </refsection>
+
+	  <refsection>
+				<title>See Also</title>
+
+				<para><xref linkend="ST_StraightSkeleton" /></para>
+		</refsection>
+
+	</refentry>
+
 
 	<refentry id="ST_IsPlanar">
 	  <refnamediv>
@@ -249,11 +312,11 @@
 	  <refsection>
 		<title>Description</title>
 
+		<para>The function only applies to polygons. It returns -1 if the polygon is counterclockwise oriented and 1 if the polygon is clockwise oriented.</para>
+
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
 	  </refsection>
 
 	</refentry>
@@ -385,6 +448,63 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  </refsection>
 
 	</refentry>
+
+	<refentry id="ST_3DDifference">
+	  <refnamediv>
+		<refname>ST_3DDifference</refname>
+
+		<refpurpose>Perform 3D difference</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DDifference</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_3DUnion">
+	  <refnamediv>
+		<refname>ST_3DUnion</refname>
+
+		<refpurpose>Perform 3D union</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_3DUnion</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+	</refentry>
+
 
 	<refentry id="ST_3DArea">
 	  <refnamediv>
@@ -519,5 +639,91 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  </refsection>
 
 	</refentry>
+
+	<refentry id="ST_Volume">
+	  <refnamediv>
+		<refname>ST_Volume</refname>
+
+		<refpurpose>Computes the volume.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float<function>ST_Volume</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_MakeSolid">
+	  <refnamediv>
+		<refname>ST_MakeSolid</refname>
+
+		<refpurpose>Cast the geometry into a solid. No check is performed. To obtain a valid solid, the input geometry must be a closed Polyhedral Surface or a closed TIN.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_MakeSolid</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+	<refentry id="ST_IsSolid">
+	  <refnamediv>
+		<refname>ST_IsSolid</refname>
+
+		<refpurpose>Test if the geometry is a solid. No validity check is performed.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean<function>ST_IsSolid</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Availability: 2.2.0</para>
+		<para>&sfcgal_required;</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	</refentry>
+
+
 
 </sect1>

@@ -1,6 +1,5 @@
 
 /**********************************************************************
- * $Id: measures.c 5439 2010-03-16 03:13:33Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -18,9 +17,29 @@
 #include "lwgeom_log.h"
 
 
+static inline int
+get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
+{
+	v->x=p2->x-p1->x;
+	v->y=p2->y-p1->y;
+	v->z=p2->z-p1->z;
+	
+	return LW_TRUE;
+}
+
+static inline int
+get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
+{
+	v->x=(v1->y*v2->z)-(v1->z*v2->y);
+	v->y=(v1->z*v2->x)-(v1->x*v2->z);
+	v->z=(v1->x*v2->y)-(v1->y*v2->x);
+
+	return LW_TRUE;
+}
+
 
 LWGEOM * 
-lwgeom_closest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_line_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	return lw_dist3d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
 }
@@ -32,7 +51,7 @@ lwgeom_furthest_line_3d(LWGEOM *lw1, LWGEOM *lw2)
 }
 
 LWGEOM * 
-lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_point_3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	return lw_dist3d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);
 }
@@ -42,7 +61,7 @@ lwgeom_closest_point_3d(LWGEOM *lw1, LWGEOM *lw2)
 Function initializing 3dshortestline and 3dlongestline calculations.
 */
 LWGEOM *
-lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2, z1, z2;
 	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
@@ -91,7 +110,7 @@ lw_dist3d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 Function initializing 3dclosestpoint calculations.
 */
 LWGEOM *
-lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
+lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	double x,y,z;
 	DISTPTS3D thedl;
@@ -129,10 +148,10 @@ lw_dist3d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 
 
 /**
-Function initialazing 3d max distance calculation
+Function initializing 3d max distance calculation
 */
 double
-lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_maxdistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_maxdistance3d is called");
 
@@ -140,11 +159,11 @@ lwgeom_maxdistance3d(LWGEOM *lw1, LWGEOM *lw2)
 }
 
 /**
-Function handling 3d max distance calculations and dfyllywithin calculations.
+Function handling 3d max distance calculations and dfullywithin calculations.
 The difference is just the tolerance.
 */
 double
-lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	/*double thedist;*/
 	DISTPTS3D thedl;
@@ -162,10 +181,10 @@ lwgeom_maxdistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 }
 
 /**
-	Function initialazing 3d min distance calculation
+	Function initializing 3d min distance calculation
 */
 double
-lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_mindistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_mindistance3d is called");
 	return lwgeom_mindistance3d_tolerance( lw1, lw2, 0.0 );
@@ -176,7 +195,7 @@ lwgeom_mindistance3d(LWGEOM *lw1, LWGEOM *lw2)
 	The difference is just the tolerance.
 */
 double
-lwgeom_mindistance3d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	DISTPTS3D thedl;
 	LWDEBUG(2, "lwgeom_mindistance3d_tolerance is called");
@@ -204,7 +223,7 @@ Functions preparing geometries for distance-calculations
 
 
 /**
-This is a recursive function delivering every possible combinatin of subgeometries
+This is a recursive function delivering every possible combination of subgeometries
 */
 int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 {
@@ -284,10 +303,10 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 
 /**
 
-This function distributes the brut-force for 3D so far the only type, tasks depending on type
+This function distributes the brute-force for 3D so far the only type, tasks depending on type
 */
 int
-lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
+lw_dist3d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS3D *dl)
 {
 
 	int	t1 = lwg1->type;
@@ -599,6 +618,15 @@ lw_dist3d_pt_seg(POINT3DZ *p, POINT3DZ *A, POINT3DZ *B, DISTPTS3D *dl)
 	c.z=A->z + r * (B->z-A->z);
 
 	return lw_dist3d_pt_pt(p,&c,dl);
+}
+
+double
+distance3d_pt_pt(const POINT3D *p1, const POINT3D *p2)
+{
+  double dx = p2->x - p1->x;
+  double dy = p2->y - p1->y;
+  double dz = p2->z - p1->z;
+  return sqrt ( dx*dx + dy*dy + dz*dz);
 }
 
 

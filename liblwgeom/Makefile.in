@@ -1,5 +1,4 @@
 # **********************************************************************
-# * $Id: Makefile.in
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
@@ -32,6 +31,7 @@ LEX=@LEX@
 # Standalone LWGEOM objects
 SA_OBJS = \
 	stringbuffer.o \
+	bytebuffer.o \
 	measures.o \
 	measures3d.o \
 	box2d.o \
@@ -69,7 +69,6 @@ SA_OBJS = \
 	lwsegmentize.o \
 	lwlinearreferencing.o \
 	lwprint.o \
-	vsprintf.o \
 	g_box.o \
 	g_serialized.o \
 	g_util.o \
@@ -88,6 +87,7 @@ SA_OBJS = \
 	lwgeom_geos_cluster.o \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
+	lwgeom_topo.o \
 	lwgeom_transform.o \
 	lwunionfind.o \
 	effectivearea.o \
@@ -107,12 +107,26 @@ LT_NM_OBJS = $(NM_OBJS:.o=.lo)
 LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
 
 SA_HEADERS = \
+	bytebuffer.h \
+	effectivearea.h \
 	liblwgeom.h \
 	liblwgeom_internal.h \
+	lwgeodetic.h \
+	lwgeodetic_tree.h \
+	liblwgeom_topo.h \
+	liblwgeom_topo_internal.h \
 	lwgeom_log.h \
 	lwgeom_geos.h \
-  lwin_wkt_parse.h \
-  varint.h
+	lwgeom_log.h \
+	lwgeom_sfcgal.h \
+	lwin_wkt.h \
+	lwin_wkt_parse.h \
+	lwout_twkb.h \
+	lwtree.h \
+	measures3d.h \
+	measures.h \
+	stringbuffer.h \
+	varint.h
 
 all: liblwgeom.la
 
@@ -126,9 +140,10 @@ install-liblwgeom: liblwgeom.la
 
 uninstall-liblwgeom:
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/liblwgeom.la"
+	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(includedir)/liblwgeom.h"
 
 # Make all objects depend upon postgis_config.h and postgis_svn_revision.h
-$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h
+$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
 ../postgis_svn_revision.h:
 	$(MAKE) -C .. postgis_svn_revision.h
@@ -136,7 +151,7 @@ $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h
 #liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 #ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS)
 
-liblwgeom.la: $(LT_OBJS) $(SA_HEADERS)
+liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) -release $(SOVER) $(LDFLAGS) -o $@
 
 maintainer-clean: clean

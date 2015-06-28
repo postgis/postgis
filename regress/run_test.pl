@@ -78,9 +78,9 @@ if ( $OPT_UPGRADE_PATH )
   $OPT_UPGRADE = 1; # implied 
   my @path = split ('--', $OPT_UPGRADE_PATH);
   $OPT_UPGRADE_FROM = $path[0]
-    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+    || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
   $OPT_UPGRADE_TO = $path[1]
-    || die "Malformed upgrade path, <from>:<to> expected, $OPT_UPGRADE_PATH given";
+    || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
   print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
 }
 
@@ -232,16 +232,83 @@ if ( ! $libver )
 }
 
 
+sub create_upgrade_test_objects
+{
+  # TODO: allow passing the "upgrade-init" script via commandline
+
+  my $query = "create table upgrade_test(g1 geometry, g2 geography";
+  $query .= ", r raster" if ( $OPT_WITH_RASTER );
+  $query .= ")";
+  my $ret = sql($query);
+  unless ( $ret =~ /^CREATE/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong creating upgrade_test table: $ret.\n";
+    exit(1);
+  }
+
+  if ( $OPT_WITH_RASTER )
+  {
+    $query = "insert into upgrade_test(r) ";
+    $query .= "select ST_AddBand(ST_MakeEmptyRaster(10, 10, 1, 1, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);";
+    $query .= "set client_min_messages to error; select AddRasterConstraints('upgrade_test', 'r')";
+    $ret = sql($query);
+    unless ( $ret =~ /^t$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong adding raster constraints to upgrade_test: " . $ret . "\n";
+      exit(1);
+    }
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    $query = "select topology.createTopology('upgrade_test');";
+    $ret = sql($query);
+    unless ( $ret =~ /^[1-9][0-9]*$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong adding upgrade_test topology: " . $ret . "\n";
+      exit(1);
+    }
+  }
+}
+
+sub drop_upgrade_test_objects
+{
+  # TODO: allow passing the "upgrade-cleanup" script via commandline
+
+  my $ret = sql("drop table upgrade_test;");
+  unless ( $ret =~ /^DROP/ ) {
+    `dropdb $DB`;
+    print "\nSomething went wrong dropping spatial tables: $ret.\n";
+    exit(1);
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    my $query = "SELECT topology.DropTopology('upgrade_test');";
+    $ret = sql($query);
+    unless ( $ret =~ /^Topology 'upgrade_test' dropped$/ ) {
+      `dropdb $DB`;
+      print "\nSomething went wrong dropping upgrade_test topology: " . $ret . "\n";
+      exit(1);
+    }
+  }
+}
+
+
 if ( $OPT_UPGRADE )
 {
-	if ( $OPT_EXTENSIONS )
-	{	
-		upgrade_spatial_extensions();
-	}
-	else
-	{
+  create_upgrade_test_objects();
+
+  if ( $OPT_EXTENSIONS )
+  {
+    upgrade_spatial_extensions();
+  }
+  else
+  {
 	  upgrade_spatial();
   }
+
+  drop_upgrade_test_objects();
 
   # Update libver
   $libver = sql("select postgis_lib_version()");
@@ -530,7 +597,7 @@ sub sql
 {
 	my $sql = shift;
 	my $result = `psql -tXA -d $DB -c "$sql"`;
-	$result =~ s/\n$//;
+	$result =~ s/[\n\r]*$//;
 	$result;
 }
 
@@ -598,6 +665,7 @@ sub run_simple_test
 	my $cmd = "psql -v \"VERBOSITY=terse\""
           . " -v \"tmpfile='$tmpfile'\""
           . " -v \"scriptdir=$scriptdir\""
+          . " -v \"regdir=$REGDIR\""
           . " -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
 
@@ -624,6 +692,7 @@ sub run_simple_test
 		$lines[$i] =~ s/[eE]([+-])0+(\d+)/e$1$2/g;
 		$lines[$i] =~ s/Self-intersection .*/Self-intersection/;
 		$lines[$i] =~ s/^ROLLBACK/COMMIT/;
+		$lines[$i] =~ s/^psql.*(NOTICE|WARNING|ERROR):/\1:/g;
 	}
 	
 	# Write out output file
@@ -1354,6 +1423,13 @@ sub drop_spatial_extensions
         $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_topology; DROP SCHEMA topology;\" $DB >> $REGRESS_LOG 2>&1";
         $rv = system($cmd);
       	$ok = 0 if $rv;
+    }
+
+    if ( $OPT_WITH_SFCGAL )
+    {
+        $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis_sfcgal;\" $DB >> $REGRESS_LOG 2>&1";
+        $rv = system($cmd);
+        $ok = 0 if $rv;
     }
     
     $cmd = "psql $psql_opts -c \"DROP EXTENSION postgis\" $DB >> $REGRESS_LOG 2>&1";

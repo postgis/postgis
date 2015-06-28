@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -216,8 +215,8 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_free(g);
 	
 	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
-	/* NaN should show up in bbox */
-	g = lwgeom_from_hexwkb("0101000020E8640000000000000000F8FF000000000000F8FF", LW_PARSER_CHECK_NONE);
+	/* NaN should show up in bbox for "SRID=4326;POINT(0 NaN)" */
+	g = lwgeom_from_hexwkb("0101000020E86400000000000000000000000000000000F8FF", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT(isnan(b.ymax));
 	lwgeom_free(g);	
@@ -238,7 +237,6 @@ static void test_gbox_serialized_size(void)
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),24);
 
 }
-
 
 
 
@@ -306,6 +304,49 @@ static void test_lwgeom_from_gserialized(void)
 	}
 
 }
+
+
+static void test_gserialized_is_empty(void)
+{
+	int i = 0;
+	struct gserialized_empty_cases {
+		const char* wkt;
+		int isempty;
+	};
+	
+	struct gserialized_empty_cases cases[] = {
+		{ "POINT EMPTY", 1 },
+		{ "POINT(1 1)", 0 },
+		{ "LINESTRING EMPTY", 1 },
+		{ "MULTILINESTRING EMPTY", 1 },
+		{ "MULTILINESTRING(EMPTY)", 1 },
+		{ "MULTILINESTRING(EMPTY,EMPTY)", 1 },
+		{ "MULTILINESTRING(EMPTY,(0 0,1 1))", 0 },
+		{ "MULTILINESTRING((0 0,1 1),EMPTY)", 0 },
+		{ "MULTILINESTRING(EMPTY,(0 0,1 1),EMPTY)", 0 },
+		{ "MULTILINESTRING(EMPTY,EMPTY,EMPTY)", 1 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY,EMPTY))", 1 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY),POINT(1 1))", 0 },
+		{ "GEOMETRYCOLLECTION(POINT EMPTY,MULTILINESTRING(EMPTY, (0 0)),POINT EMPTY)", 0 },
+		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,POINT EMPTY,MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
+		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
+		{ NULL, 0 }
+	};
+	
+	while( cases[i].wkt )
+	{
+		// i = 11;
+		LWGEOM *lw = lwgeom_from_wkt(cases[i].wkt, LW_PARSER_CHECK_NONE);
+		GSERIALIZED *g = gserialized_from_lwgeom(lw, 0, 0);
+		int ie = gserialized_is_empty(g);
+		// printf("%s: we say %d, they say %d\n", cases[i].wkt, cases[i].isempty, ie);
+		CU_ASSERT_EQUAL(ie, cases[i].isempty);
+		lwgeom_free(lw);
+		lwfree(g);
+		i++;
+	}
+}
+	
 
 static void test_geometry_type_from_string(void)
 {
@@ -598,8 +639,8 @@ static void test_lwgeom_flip_coordinates(void)
 
 
 	/*
-	     * Srid
-	     */
+	* Srid
+	*/
 
 	do_lwgeom_flip_coordinates(
 	    "SRID=4326;POINT(1 2)",
@@ -964,6 +1005,40 @@ static void test_lwline_from_lwmpoint(void)
 }
 
 /*
+ * Test lwgeom_scale
+ */
+static void test_lwgeom_scale(void)
+{
+	LWGEOM *geom;
+	POINT4D factor;
+	char *out_ewkt;
+	GBOX *box;
+
+	geom = lwgeom_from_wkt("SRID=4326;GEOMETRYCOLLECTION(POINT(0 1 2 3),POLYGON((-1 -1 0 1,-1 2.5 0 1,2 2 0 1,2 -1 0 1,-1 -1 0 1),(0 0 1 2,0 1 1 2,1 1 1 2,1 0 2 3,0 0 1 2)),LINESTRING(0 0 0 0, 1 2 3 4))", LW_PARSER_CHECK_NONE);
+	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+	lwgeom_scale(geom, &factor);
+	out_ewkt = lwgeom_to_ewkt(geom);
+	ASSERT_STRING_EQUAL(out_ewkt, "SRID=4326;GEOMETRYCOLLECTION(POINT(0 3 8 15),POLYGON((-2 -3 0 5,-2 7.5 0 5,4 6 0 5,4 -3 0 5,-2 -3 0 5),(0 0 4 10,0 3 4 10,2 3 4 10,2 0 8 15,0 0 4 10)),LINESTRING(0 0 0 0,2 6 12 20))");
+	lwgeom_free(geom);
+	lwfree(out_ewkt);
+
+	geom = lwgeom_from_wkt("POINT(1 1 1 1)", LW_PARSER_CHECK_NONE);
+	lwgeom_add_bbox(geom);
+	factor.x = 2; factor.y = 3; factor.z = 4; factor.m = 5;
+	lwgeom_scale(geom, &factor);
+	box = geom->bbox;
+	ASSERT_DOUBLE_EQUAL(box->xmin, 2);
+	ASSERT_DOUBLE_EQUAL(box->xmax, 2);
+	ASSERT_DOUBLE_EQUAL(box->ymin, 3);
+	ASSERT_DOUBLE_EQUAL(box->ymax, 3);
+	ASSERT_DOUBLE_EQUAL(box->zmin, 4);
+	ASSERT_DOUBLE_EQUAL(box->zmax, 4);
+	ASSERT_DOUBLE_EQUAL(box->mmin, 5);
+	ASSERT_DOUBLE_EQUAL(box->mmax, 5);
+	lwgeom_free(geom);
+}
+
+/*
 ** Used by test harness to register the tests in this file.
 */
 void libgeom_suite_setup(void);
@@ -990,4 +1065,6 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_same);
 	PG_ADD_TEST(suite, test_lwline_from_lwmpoint);
 	PG_ADD_TEST(suite, test_lwgeom_as_curve);
+	PG_ADD_TEST(suite, test_lwgeom_scale);
+	PG_ADD_TEST(suite, test_gserialized_is_empty);
 }

@@ -18,6 +18,8 @@
 
 #include "../postgis_config.h"
 
+#include "lwgeom_log.h"
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -32,15 +34,8 @@
 
 #include "liblwgeom.h"
 
-
 /**
-* PI
-*/
-#define PI 3.1415926535897932384626433832795
-
-
-/**
-* Floating point comparitors.
+* Floating point comparators.
 */
 #define FP_TOLERANCE 1e-12
 #define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)
@@ -192,9 +187,9 @@ extern int32_t lw_get_int32_t(const uint8_t *loc);
  * @param minpts minimun number of points to retain, if possible.
  */
 POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts);
-LWLINE* lwline_simplify(const LWLINE *iline, double dist);
-LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist);
-LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);
+LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed);
+LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed);
+LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist, int preserve_collapsed);
 
 /*
 * Computational geometry
@@ -307,6 +302,11 @@ LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 
 /*
+* Scale
+*/
+void ptarray_scale(POINTARRAY *pa, const POINT4D *factor);
+
+/*
 * PointArray
 */
 int ptarray_isccw(const POINTARRAY *pa);
@@ -345,11 +345,11 @@ void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D 
 /* 
 * Repeated points
 */
-POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in);
-LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in);
-LWGEOM* lwline_remove_repeated_points(LWLINE *in);
-LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in);
-LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
+POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in, double tolerance);
+LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in, double tolerance);
+LWGEOM* lwline_remove_repeated_points(LWLINE *in, double tolerance);
+LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in, double tolerance);
+LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in, double tolerance);
 
 /*
 * Closure test
@@ -434,9 +434,9 @@ extern int _lwgeom_interrupt_requested;
   } \
 }
 
-#endif /* _LIBLWGEOM_INTERNAL_H */
-
 int ptarray_npoints_in_rect(const POINTARRAY *pa, const GBOX *gbox);
 int gbox_contains_point2d(const GBOX *g, const POINT2D *p);
 int lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox);
 int lwpoly_contains_point(const LWPOLY *poly, const POINT2D *pt);
+
+#endif /* _LIBLWGEOM_INTERNAL_H */

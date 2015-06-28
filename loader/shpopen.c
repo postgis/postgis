@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id$
  *
  * Project:  Shapelib
  * Purpose:  Implementation of core Shapefile read/write functions.
@@ -1457,7 +1456,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
     if( nShapeId == -1 || psSHP->panRecSize[nShapeId] < nRecordSize-8 )
     {
         unsigned int nExpectedSize = psSHP->nFileSize + nRecordSize;
-        if( nExpectedSize < psSHP->nFileSize ) // due to unsigned int overflow
+        if( nExpectedSize < psSHP->nFileSize ) /* due to unsigned int overflow */
         {
             char str[128];
             sprintf( str, "Failed to write shape object. "

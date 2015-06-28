@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -16,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <locale.h> 
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
@@ -30,7 +30,6 @@
 #include "../liblwgeom/stringbuffer.h"
 
 #define S2P_RCSID "$Id$"
-
 
 /* Number of digits of precision in WKT produced. */
 #define WKT_PRECISION 15

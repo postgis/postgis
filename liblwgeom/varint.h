@@ -20,43 +20,26 @@
 #define _LIBLWGEOM_VARINT_H 1
 
 #include <stdint.h>
-/*Write varInt to buffer*/
+#include <stdlib.h>
 
-/* Find encoded size for unsigned 32bit integer */
-unsigned varint_u32_encoded_size(uint32_t val);
 
-/* Encode unsigned 32bit integer */
-int varint_u32_encode_buf(uint32_t val, uint8_t **buf);
+/* NEW SIGNATURES */
 
-/* Find encoded size for signed 32bit integer */
-unsigned varint_s32_encoded_size(int32_t val);
+size_t varint_u32_encode_buf(uint32_t val, uint8_t *buf);
+size_t varint_s32_encode_buf(int32_t val, uint8_t *buf);
+size_t varint_u64_encode_buf(uint64_t val, uint8_t *buf);
+size_t varint_s64_encode_buf(int64_t val, uint8_t *buf);
+int64_t varint_s64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size);
+uint64_t varint_u64_decode(const uint8_t *the_start, const uint8_t *the_end, size_t *size);
 
-/* Encode signed 32bit integer */
-int varint_s32_encode_buf(int32_t val, uint8_t **buf);
+size_t varint_size(const uint8_t *the_start, const uint8_t *the_end);
 
-/* Find encoded size for unsigned 64bit integer */
-unsigned varint_u64_encoded_size(uint64_t val);
-
-/* Encode unsigned 64bit integer */
-int varint_u64_encode_buf(uint64_t val, uint8_t **buf);
-
-/* Find encoded size for signed 64bit integer */
-unsigned varint_s64_encoded_size(int64_t val);
-
-/* Encode unsigned 64bit integer */
-int varint_s64_encode_buf(int64_t val, uint8_t **buf);
-
-/*Read varint*/
-
-/* Read from unsigned 64bit varint */
-uint64_t varint_u64_read(uint8_t **buf, uint8_t *the_end);
-
-/* Read from signed 64bit varint */
-uint64_t varint_s64_read(uint8_t **buf, uint8_t *the_end);
-
-/*To jump over values like id, when we don't care about id
-should be faster than reading it properly
-nValues tells how many varInts to jump over*/
-void varint_64_jump_n(uint8_t **data, int nValues, uint8_t *the_end);
+uint64_t zigzag64(int64_t val);
+uint32_t zigzag32(int32_t val);
+uint8_t zigzag8(int8_t val);
+int64_t unzigzag64(uint64_t val);
+int32_t unzigzag32(uint32_t val);
+int8_t unzigzag8(uint8_t val);
 
 #endif /* !defined _LIBLWGEOM_VARINT_H  */
+

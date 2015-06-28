@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -360,7 +359,8 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		/*
 		* Get the max vertices value 
 		*/
-		maxvertices = PG_GETARG_INT32(1);
+		if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+			maxvertices = PG_GETARG_INT32(1);
 		
 		/*
 		* Compute the subdivision of the geometry

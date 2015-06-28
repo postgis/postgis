@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -1206,150 +1205,129 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_collect_garray);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	ArrayType *array;
 	int nelems;
 	/*GSERIALIZED **geoms; */
-	GSERIALIZED *result=NULL;
+	GSERIALIZED *result = NULL;
 	LWGEOM **lwgeoms, *outlwg;
 	uint32 outtype;
-	int i, count;
-	int srid=SRID_UNKNOWN;
-	size_t offset;
-	GBOX *box=NULL;
-	bits8 *bitmap;
-	int bitmask;
+	int count;
+	int srid = SRID_UNKNOWN;
+	GBOX *box = NULL;
+
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect_garray called.");
 
-	/* Get input datum */
-	datum = PG_GETARG_DATUM(0);
-
-	/* Return null on null input */
-	if ( (Pointer *)datum == NULL )
-	{
-		elog(NOTICE, "NULL input");
+	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-	}
 
 	/* Get actual ArrayType */
-	array = DatumGetArrayTypeP(datum);
+	array = PG_GETARG_ARRAYTYPE_P(0);
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
 	POSTGIS_DEBUGF(3, " array is %d-bytes in size, %ld w/out header",
 	               ARR_SIZE(array), ARR_SIZE(array)-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
-
-
-	/* Get number of geometries in array */
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: array has %d elements", nelems);
 
 	/* Return null on 0-elements input array */
 	if ( nelems == 0 )
-	{
-		elog(NOTICE, "0 elements input array");
 		PG_RETURN_NULL();
-	}
 
 	/*
 	 * Deserialize all geometries in array into the lwgeoms pointers
 	 * array. Check input types to form output type.
 	 */
-	lwgeoms = palloc(sizeof(LWGEOM *)*nelems);
+	lwgeoms = palloc(sizeof(LWGEOM*) * nelems);
 	count = 0;
 	outtype = 0;
-	offset = 0;
-	bitmap = ARR_NULLBITMAP(array);
-	bitmask = 1;
-	for (i=0; i<nelems; i++)
+
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
+	iterator = array_create_iterator(array, 0);
+#endif
+	
+	while( array_iterate(iterator, &value, &isnull) )
 	{
+		GSERIALIZED *geom;
+		uint8_t intype;
+
 		/* Don't do anything for NULL values */
-		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		if ( isnull )
+			continue;
+		
+		geom = (GSERIALIZED *)DatumGetPointer(value);
+		intype = gserialized_get_type(geom);
+
+		lwgeoms[count] = lwgeom_from_gserialized(geom);
+
+		POSTGIS_DEBUGF(3, "%s: geom %d deserialized", __func__, count);
+
+		if ( ! count )
 		{
-			GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-			uint8_t intype = gserialized_get_type(geom);
+			/* Get first geometry SRID */
+			srid = lwgeoms[count]->srid;
 
-			offset += INTALIGN(VARSIZE(geom));
-
-			lwgeoms[count] = lwgeom_from_gserialized(geom);
-
-			POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: geom %d deserialized", i);
-
-			if ( ! count )
+			/* COMPUTE_BBOX WHEN_SIMPLE */
+			if ( lwgeoms[count]->bbox )
 			{
-				/* Get first geometry SRID */
-				srid = lwgeoms[count]->srid;
+				box = gbox_copy(lwgeoms[count]->bbox);
+			}
+		}
+		else
+		{
+			/* Check SRID homogeneity */
+			if ( lwgeoms[count]->srid != srid )
+			{
+				elog(ERROR, "Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
+			}
 
-				/* COMPUTE_BBOX WHEN_SIMPLE */
+			/* COMPUTE_BBOX WHEN_SIMPLE */
+			if ( box )
+			{
 				if ( lwgeoms[count]->bbox )
 				{
-					box = gbox_copy(lwgeoms[count]->bbox);
+					gbox_merge(lwgeoms[count]->bbox, box);
 				}
-			}
-			else
-			{
-				/* Check SRID homogeneity */
-				if ( lwgeoms[count]->srid != srid )
+				else
 				{
-					elog(ERROR,
-					     "Operation on mixed SRID geometries");
-					PG_RETURN_NULL();
-				}
-
-				/* COMPUTE_BBOX WHEN_SIMPLE */
-				if ( box )
-				{
-					if ( lwgeoms[count]->bbox )
-					{
-						box->xmin = Min(box->xmin, lwgeoms[count]->bbox->xmin);
-						box->ymin = Min(box->ymin, lwgeoms[count]->bbox->ymin);
-						box->xmax = Max(box->xmax, lwgeoms[count]->bbox->xmax);
-						box->ymax = Max(box->ymax, lwgeoms[count]->bbox->ymax);
-					}
-					else
-					{
-						pfree(box);
-						box = NULL;
-					}
+					pfree(box);
+					box = NULL;
 				}
 			}
-
-			lwgeom_drop_srid(lwgeoms[count]);
-			lwgeom_drop_bbox(lwgeoms[count]);
-
-			/* Output type not initialized */
-			if ( ! outtype )
-			{
-				/* Input is single, make multi */
-				if ( ! lwtype_is_collection(intype) ) 
-					outtype = lwtype_get_collectiontype(intype);
-				/* Input is multi, make collection */
-				else 
-					outtype = COLLECTIONTYPE;
-			}
-
-			/* Input type not compatible with output */
-			/* make output type a collection */
-			else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
-			{
-				outtype = COLLECTIONTYPE;
-			}
-
-			count++;
 		}
 
-		/* Advance NULL bitmap */
-		if (bitmap)
+		lwgeom_drop_srid(lwgeoms[count]);
+		lwgeom_drop_bbox(lwgeoms[count]);
+
+		/* Output type not initialized */
+		if ( ! outtype )
 		{
-			bitmask <<= 1;
-			if (bitmask == 0x100)
-			{
-				bitmap++;
-				bitmask = 1;
-			}
+			/* Input is single, make multi */
+			if ( ! lwtype_is_collection(intype) ) 
+				outtype = lwtype_get_collectiontype(intype);
+			/* Input is multi, make collection */
+			else 
+				outtype = COLLECTIONTYPE;
 		}
-		
+
+		/* Input type not compatible with output */
+		/* make output type a collection */
+		else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
+		{
+			outtype = COLLECTIONTYPE;
+		}
+
+		count++;
+
 	}
+	array_free_iterator(iterator);
+	
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect_garray: outtype = %d", outtype);
 
@@ -1417,48 +1395,36 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_makeline_garray);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	ArrayType *array;
 	int nelems;
-	GSERIALIZED *result=NULL;
+	GSERIALIZED *result = NULL;
 	LWGEOM **geoms;
 	LWGEOM *outlwg;
 	uint32 ngeoms;
-	int i;
-	size_t offset;
-	int srid=SRID_UNKNOWN;
+	int srid = SRID_UNKNOWN;
+	
+	ArrayIterator iterator;
+	Datum value;
+	bool isnull;
 
-	bits8 *bitmap;
-	int bitmask;
-
-	POSTGIS_DEBUG(2, "LWGEOM_makeline_garray called.");
-
-	/* Get input datum */
-	datum = PG_GETARG_DATUM(0);
+	POSTGIS_DEBUGF(2, "%s called", __func__);
 
 	/* Return null on null input */
-	if ( (Pointer *)datum == NULL )
-	{
-		elog(NOTICE, "NULL input");
+	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-	}
 
 	/* Get actual ArrayType */
-	array = DatumGetArrayTypeP(datum);
-
-	POSTGIS_DEBUG(3, "LWGEOM_makeline_garray: array detoasted");
+	array = PG_GETARG_ARRAYTYPE_P(0);
 
 	/* Get number of geometries in array */
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-	POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: array has %d elements", nelems);
+	POSTGIS_DEBUGF(3, "%s: array has %d elements", __func__, nelems);
 
 	/* Return null on 0-elements input array */
 	if ( nelems == 0 )
-	{
-		elog(NOTICE, "0 elements input array");
 		PG_RETURN_NULL();
-	}
+
 
 	/*
 	 * Deserialize all point geometries in array into the
@@ -1467,55 +1433,51 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	 */
 
 	/* possibly more then required */
-	geoms = palloc(sizeof(LWGEOM *)*nelems);
+	geoms = palloc(sizeof(LWGEOM *) * nelems);
 	ngeoms = 0;
-	offset = 0;
-	bitmap = ARR_NULLBITMAP(array);
-	bitmask = 1;
-	for (i=0; i<nelems; i++)
+
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
+	iterator = array_create_iterator(array, 0);
+#endif
+
+	while( array_iterate(iterator, &value, &isnull) )
 	{
-		/* Don't do anything for NULL values */
-		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		GSERIALIZED *geom;
+
+		if ( isnull )
+			continue;
+		
+		geom = (GSERIALIZED *)DatumGetPointer(value);
+
+		if ( gserialized_get_type(geom) != POINTTYPE && 
+		     gserialized_get_type(geom) != LINETYPE ) 
 		{
-			GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-			offset += INTALIGN(VARSIZE(geom));
-
-			if ( gserialized_get_type(geom) != POINTTYPE && gserialized_get_type(geom) != LINETYPE ) continue;
-
-			geoms[ngeoms++] =
-			    lwgeom_from_gserialized(geom);
-
-			/* Check SRID homogeneity */
-			if ( ngeoms == 1 )
-			{
-				/* Get first geometry SRID */
-				srid = geoms[ngeoms-1]->srid;
-				/* TODO: also get ZMflags */
-			}
-			else
-			{
-				if ( geoms[ngeoms-1]->srid != srid )
-				{
-					elog(ERROR,
-					     "Operation on mixed SRID geometries");
-					PG_RETURN_NULL();
-				}
-			}
-
-			POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: element %d deserialized", i);
+			continue;
 		}
 
-		/* Advance NULL bitmap */
-		if (bitmap)
+		geoms[ngeoms++] = lwgeom_from_gserialized(geom);
+
+		/* Check SRID homogeneity */
+		if ( ngeoms == 1 )
 		{
-			bitmask <<= 1;
-			if (bitmask == 0x100)
+			/* Get first geometry SRID */
+			srid = geoms[ngeoms-1]->srid;
+			/* TODO: also get ZMflags */
+		}
+		else
+		{
+			if ( geoms[ngeoms-1]->srid != srid )
 			{
-				bitmap++;
-				bitmask = 1;
+				elog(ERROR, "Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
 			}
 		}
+
+		POSTGIS_DEBUGF(3, "%s: element %d deserialized", __func__, ngeoms);
 	}
+	array_free_iterator(iterator);
 
 	/* Return null on 0-points input array */
 	if ( ngeoms == 0 )
@@ -1599,7 +1561,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	pglwg1 = PG_GETARG_GSERIALIZED_P(0);
 	if ( gserialized_get_type(pglwg1) != LINETYPE )
 	{
-		lwerror("Shell is not a line");
+		lwpgerror("Shell is not a line");
 	}
 	shell = lwgeom_as_lwline(lwgeom_from_gserialized(pglwg1));
 
@@ -1616,7 +1578,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 			offset += INTALIGN(VARSIZE(g));
 			if ( gserialized_get_type(g) != LINETYPE )
 			{
-				lwerror("Hole %d is not a line", i);
+				lwpgerror("Hole %d is not a line", i);
 			}
 			hole = lwgeom_as_lwline(lwgeom_from_gserialized(g));
 			holes[i] = hole;
@@ -2432,14 +2394,14 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		lwerror("Argument must be POINT geometries");
+		lwpgerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
 	srid = lwpoint->srid;
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p1) )
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		lwerror("Error extracting point");
+		lwpgerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
 	lwpoint_free(lwpoint);
@@ -2451,19 +2413,19 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Argument must be POINT geometries");
+		lwpgerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
 	if ( lwpoint->srid != srid )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Operation on mixed SRID geometries");
+		lwpgerror("Operation on mixed SRID geometries");
 		PG_RETURN_NULL();
 	}
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p2) )
 	{
 		PG_FREE_IF_COPY(geom, 1);
-		lwerror("Error extracting point");
+		lwpgerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
 	lwpoint_free(lwpoint);
@@ -2574,8 +2536,11 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	lwgeom_affine(lwgeom, &affine);
 
 	/* COMPUTE_BBOX TAINTING */
-	lwgeom_drop_bbox(lwgeom);
-	lwgeom_add_bbox(lwgeom);
+	if ( lwgeom->bbox )
+	{
+		lwgeom_drop_bbox(lwgeom);
+		lwgeom_add_bbox(lwgeom);
+	}
 	ret = geometry_serialize(lwgeom);
 
 	/* Release memory */
@@ -2694,20 +2659,24 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *input = PG_GETARG_GSERIALIZED_P_COPY(0);
-	GSERIALIZED *output;
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(input);
-	LWGEOM *lwgeom_out;
+	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	GSERIALIZED *g_out;
+	LWGEOM *lwgeom_in = lwgeom_from_gserialized(g_in);
+	LWGEOM *lwgeom_out = NULL;
+	double tolerance = 0.0;
 
-	/* lwnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+		tolerance = PG_GETARG_FLOAT8(1);
 
-	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in);
-	output = geometry_serialize(lwgeom_out);
+	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
+	g_out = geometry_serialize(lwgeom_out);
 
+	if ( lwgeom_out != lwgeom_in )
+		lwgeom_free(lwgeom_out);
 	lwgeom_free(lwgeom_in);
-	PG_FREE_IF_COPY(input, 0);
 
-	PG_RETURN_POINTER(output);
+	PG_FREE_IF_COPY(g_in, 0);
+	PG_RETURN_POINTER(g_out);
 }
 
 Datum ST_FlipCoordinates(PG_FUNCTION_ARGS);
@@ -2733,7 +2702,7 @@ static LWORD ordname2ordval(char n)
   if ( n == 'y' || n == 'y' ) return LWORD_Y;
   if ( n == 'z' || n == 'Z' ) return LWORD_Z;
   if ( n == 'm' || n == 'M' ) return LWORD_M;
-  lwerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
+  lwpgerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
   return (LWORD)-1;
 }
 
@@ -2750,7 +2719,7 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   ospec = PG_GETARG_CSTRING(1);
   if ( strlen(ospec) != 2 )
   {
-    lwerror("Invalid ordinate specification. "
+    lwpgerror("Invalid ordinate specification. "
             "Need two letters from the set (x,y,z,m). "
             "Got '%s'", ospec);
     PG_RETURN_NULL();
@@ -2763,12 +2732,12 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   /* Check presence of given ordinates */
   if ( ( o1 == LWORD_M || o2 == LWORD_M ) && ! gserialized_has_m(in) )
   {
-    lwerror("Geometry does not have an M ordinate");
+    lwpgerror("Geometry does not have an M ordinate");
     PG_RETURN_NULL();
   }
   if ( ( o1 == LWORD_Z || o2 == LWORD_Z ) && ! gserialized_has_z(in) )
   {
-    lwerror("Geometry does not have a Z ordinate");
+    lwpgerror("Geometry does not have a Z ordinate");
     PG_RETURN_NULL();
   }
 
@@ -2781,4 +2750,107 @@ Datum ST_SwapOrdinates(PG_FUNCTION_ARGS)
   lwgeom_free(lwgeom);
   PG_FREE_IF_COPY(in, 0);
   PG_RETURN_POINTER(out);
+}
+
+/*
+ * ST_BoundingDiagonal(inp geometry, fits boolean)
+ */
+Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_BoundingDiagonal);
+Datum ST_BoundingDiagonal(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom_in = PG_GETARG_GSERIALIZED_P(0);
+  GSERIALIZED *geom_out;
+  bool fits = PG_GETARG_BOOL(1);
+  LWGEOM *lwgeom_in = lwgeom_from_gserialized(geom_in);
+  LWGEOM *lwgeom_out;
+  const GBOX *gbox;
+  int hasz = FLAGS_GET_Z(lwgeom_in->flags);
+  int hasm = FLAGS_GET_M(lwgeom_in->flags);
+  int srid = lwgeom_in->srid;
+  POINT4D pt;
+  POINTARRAY *pa;
+
+  if ( fits ) {
+    /* unregister any cached bbox to ensure it's recomputed */
+    lwgeom_in->bbox = NULL;
+  }
+
+  gbox = lwgeom_get_bbox(lwgeom_in);
+
+  if ( ! gbox )
+  {
+    lwgeom_out = lwgeom_construct_empty(LINETYPE, srid, hasz, hasm);
+  }
+  else
+  {
+    pa = ptarray_construct_empty(hasz, hasm, 2);
+    pt.x = gbox->xmin;
+    pt.y = gbox->ymin;
+    pt.z = gbox->zmin;
+    pt.m = gbox->mmin;
+    ptarray_append_point(pa, &pt, LW_TRUE);
+    pt.x = gbox->xmax;
+    pt.y = gbox->ymax;
+    pt.z = gbox->zmax;
+    pt.m = gbox->mmax;
+    ptarray_append_point(pa, &pt, LW_TRUE);
+    lwgeom_out = lwline_as_lwgeom( lwline_construct(srid, NULL, pa) );
+  }
+
+  lwgeom_free(lwgeom_in);
+  PG_FREE_IF_COPY(geom_in, 0);
+
+  geom_out = geometry_serialize(lwgeom_out);
+  lwgeom_free(lwgeom_out);
+
+  PG_RETURN_POINTER(geom_out);
+}
+
+Datum ST_Scale(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Scale);
+Datum ST_Scale(PG_FUNCTION_ARGS)
+{
+  GSERIALIZED *geom1 = PG_GETARG_GSERIALIZED_P_COPY(0); /* will be modified */
+  GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
+  GSERIALIZED *ret;
+  LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
+  LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
+  LWPOINT *lwpoint;
+  POINT4D factors;
+
+  lwpoint = lwgeom_as_lwpoint(lwgeom2);
+  if ( lwpoint == NULL )
+  {
+    lwgeom_free(lwgeom1);
+    lwgeom_free(lwgeom2);
+    PG_FREE_IF_COPY(geom1, 0);
+    PG_FREE_IF_COPY(geom2, 1);
+    lwpgerror("Scale factor geometry parameter must be a point");
+    PG_RETURN_NULL();
+  }
+  if ( ! lwpoint->point->npoints )
+  {
+    /* empty point, return input untouched */ 
+    lwgeom_free(lwgeom1);
+    lwgeom_free(lwgeom2);
+    PG_FREE_IF_COPY(geom2, 1);
+    PG_RETURN_POINTER(geom1);
+  }
+  getPoint4d_p(lwpoint->point, 0, &factors);
+  if ( ! FLAGS_GET_Z(lwpoint->flags ) ) factors.z = 1;
+  if ( ! FLAGS_GET_M(lwpoint->flags ) ) factors.m = 1;
+
+  lwgeom_scale(lwgeom1, &factors);
+
+  /* Construct GSERIALIZED */
+  ret = geometry_serialize(lwgeom1);
+
+  /* Cleanup */
+  lwgeom_free(lwgeom1);
+  lwgeom_free(lwgeom2);
+  PG_FREE_IF_COPY(geom1, 0);
+  PG_FREE_IF_COPY(geom2, 1);
+
+  PG_RETURN_POINTER(ret);
 }

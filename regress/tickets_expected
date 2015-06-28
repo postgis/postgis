@@ -1,6 +1,6 @@
 #2|POLYGON((1 1,1 2,2 2,3 2,3 1,2 1,1 1))
 #11|0
-NOTICE:  ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.
+WARNING:  ST_Locate_Between_Measures and ST_Locate_Along_Measure were deprecated in 2.2.0. Please use ST_LocateAlong and ST_LocateBetween
 #21|SRID=31293;POINTM(6220.13 5337367.145 4566)
 t
 ERROR:  AddGeometryColumn() - invalid SRID
@@ -17,7 +17,7 @@ ERROR:  lwgeom_longitude_shift: unsupported geom type: CircularString
 #83|MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406))
 #85|0
 #112|GEOMETRYCOLLECTION(POINT(-10 50))
-NOTICE:  ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.
+WARNING:  ST_Locate_Between_Measures and ST_Locate_Along_Measure were deprecated in 2.2.0. Please use ST_LocateAlong and ST_LocateBetween
 ERROR:  Geometry argument does not have an 'M' ordinate
 #116|POLYGON EMPTY
 #122|CIRCULARSTRING(220268 150415,220227 150505,220227 150406)
@@ -111,7 +111,7 @@ NOTICE:  IllegalArgumentException: Invalid number of points in LinearRing found 
 #684,#2109|SRID=4326;POINT EMPTY
 #2109|SRID=3395;POINT EMPTY
 #685|0103000020e610000000000000
-#686|0107000020e610000000000000
+#686|0107000020e610000002000000010300000000000000011100000000000000
 #687|f
 #689|f
 #690
@@ -185,7 +185,7 @@ ERROR:  MultiSurface cannot contain MultiPoint element at character 8
 #1453.2|f
 #1454|t
 #1414|CURVEPOLYGON Z EMPTY
-#1478|01040000200100000000000000
+#1478|010100002001000000000000000000f87f000000000000f87f
 #745|GEOMETRYCOLLECTION(POLYGON((-72 42 1,-70 43 1,-71 41 1,-72 42 1)))
 #1450|POINT|POLYGON
 #1482|4326
@@ -256,9 +256,9 @@ ERROR:  invalid GML representation
 #2168|5340.76237395|5340.76237395|0
 #2556|47409|20623
 #2556|1|0
-#2672|
 #2704|POLYGON((0 0,0 1,1 1,1 0,0 0))
 #2712|LINESTRING EMPTY
+#2717|POINT(-1 -1)|POINT(3 1)|POINT(-1 -1)|POINT(1 1)|POINT(1 1)|POINT(2 2)|POINT(3 1)
 #2788|f|Self-intersection|POINT(1 1)
 #2870|Point[GS]
 #2956|t

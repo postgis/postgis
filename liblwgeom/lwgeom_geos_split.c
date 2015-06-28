@@ -1,17 +1,17 @@
 /**********************************************************************
- * $Id: lwgeom_geos.c 5258 2010-02-17 21:02:49Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011-2015 Sandro Santilli <strk@keybit.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************
  *
- * Split polygon by line, line by line, line by point.
+ * Split (multi)polygon by line, line by (multi)line
+ * or (multi)polygon boundary, line by point.
  * Returns at most components as a collection.
  * First element of the collection is always the part which
  * remains after the cut, while the second element is the
@@ -19,7 +19,6 @@
  * on the *right* of cut lines as the part which has been cut out.
  * For a line cut by a point the part which remains is the one
  * from start of the line to the cut point.
- *
  *
  * Author: Sandro Santilli <strk@keybit.net>
  *
@@ -31,6 +30,8 @@
  *
  * [1] http://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString
  *
+ * Further evolved for RT-SITA to allow splitting lines by multilines
+ * and (multi)polygon boundaries (CIG 6002233F59)
  *
  **********************************************************************/
 
@@ -40,8 +41,9 @@
 #include <string.h>
 #include <assert.h>
 
-static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWLINE* blade_in);
+static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
+static LWGEOM* lwline_split_by_mpoint(const LWLINE* lwgeom_in, const LWMPOINT* blade_in);
 static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
 static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWLINE* blade_in);
 static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
@@ -49,7 +51,7 @@ static LWGEOM* lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in);
 
 /* Initializes and uses GEOS internally */
 static LWGEOM*
-lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
+lwline_split_by_line(const LWLINE* lwline_in, const LWGEOM* blade_in)
 {
 	LWGEOM** components;
 	LWGEOM* diff;
@@ -58,6 +60,12 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 	GEOSGeometry* g1;
 	GEOSGeometry* g2;
 	int ret;
+
+	/* ASSERT blade_in is LINE or MULTILINE */
+	assert (blade_in->type == LINETYPE ||
+	        blade_in->type == MULTILINETYPE ||
+	        blade_in->type == POLYGONTYPE ||
+	        blade_in->type == MULTIPOLYGONTYPE );
 
 	/* Possible outcomes:
 	 *
@@ -75,12 +83,26 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
-	g2 = LWGEOM2GEOS((LWGEOM*)blade_in, 0);
+	g2 = LWGEOM2GEOS(blade_in, 0);
 	if ( ! g2 )
 	{
 		GEOSGeom_destroy(g1);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
+	}
+
+	/* If blade is a polygon, pick its boundary */
+	if ( blade_in->type == POLYGONTYPE || blade_in->type == MULTIPOLYGONTYPE )
+	{
+		gdiff = GEOSBoundary(g2);
+		GEOSGeom_destroy(g2);
+		if ( ! gdiff )
+		{
+			GEOSGeom_destroy(g1);
+			lwerror("GEOSBoundary: %s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+		g2 = gdiff; gdiff = NULL;
 	}
 
 	/* If interior intersecton is linear we can't split */
@@ -157,6 +179,43 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 	return (LWGEOM*)out;
 }
 
+static LWGEOM*
+lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
+{
+  LWMLINE* out;
+  int i, j;
+
+  out = lwmline_construct_empty(lwline_in->srid,
+          FLAGS_GET_Z(lwline_in->flags),
+          FLAGS_GET_M(lwline_in->flags));
+  lwmline_add_lwline(out, lwline_clone(lwline_in));
+
+  for (i=0; i<mp->ngeoms; ++i)
+  {
+    for (j=0; j<out->ngeoms; ++j)
+    {
+      lwline_in = out->geoms[j];
+      LWPOINT *blade_in = mp->geoms[i];
+      int ret = lwline_split_by_point_to(lwline_in, blade_in, out);
+      if ( 2 == ret )
+      {
+        /* the point splits this line,
+         * 2 splits were added to collection.
+         * We'll move the latest added into
+         * the slot of the current one.
+         */
+        lwline_free(out->geoms[j]);
+        out->geoms[j] = out->geoms[--out->ngeoms];
+      }
+    }
+  }
+
+  /* Turn multiline into collection */
+  out->type = COLLECTIONTYPE;
+
+  return (LWGEOM*)out;
+}
+
 int
 lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
                          LWMLINE* v)
@@ -172,9 +231,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	 *  1. The point is not on the line or on the boundary
 	 *      -> Leave collection untouched, return 0
 	 *  2. The point is on the boundary
-	 *      -> Push 1 element on the collection:
-	 *         o the original line
-	 *      -> Return 1
+	 *      -> Leave collection untouched, return 1
 	 *  3. The point is in the line
 	 *      -> Push 2 elements on the collection:
 	 *         o start_point - cut_point
@@ -228,9 +285,14 @@ lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 	{
 	case POINTTYPE:
 		return lwline_split_by_point(lwline_in, (LWPOINT*)blade_in);
+	case MULTIPOINTTYPE:
+		return lwline_split_by_mpoint(lwline_in, (LWMPOINT*)blade_in);
 
 	case LINETYPE:
-		return lwline_split_by_line(lwline_in, (LWLINE*)blade_in);
+	case MULTILINETYPE:
+	case POLYGONTYPE:
+	case MULTIPOLYGONTYPE:
+		return lwline_split_by_line(lwline_in, blade_in);
 
 	default:
 		lwerror("Splitting a Line by a %s is unsupported",

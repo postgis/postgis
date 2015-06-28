@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # This is a simple utility used to dump GDAL dataset into HEX WKB stream.
 # It's considered as a prototype of raster2pgsql tool planned to develop

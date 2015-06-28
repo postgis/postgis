@@ -1,8 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
+ *
+ * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -21,3 +22,22 @@ void cu_error_msg_reset(void);
 
 /* Our internal callback to register Suites with the main tester */
 typedef void (*PG_SuiteSetup)(void);
+
+#define ASSERT_DOUBLE_EQUAL(o,e) do { \
+  if ( o != e ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %g\n Obtained: %g\n", __FILE__, __LINE__, (double)(e), (o)); \
+  CU_ASSERT_EQUAL(o,(double)e); \
+} while (0);
+
+#define ASSERT_INT_EQUAL(o,e) do { \
+  if ( o != e ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %d\n Obtained: %d\n", __FILE__, __LINE__, (e), (o)); \
+  CU_ASSERT_EQUAL(o,e); \
+} while (0);
+
+#define ASSERT_STRING_EQUAL(o,e) do { \
+  if ( strcmp(o,e) != 0 ) \
+    fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (e), (o)); \
+  CU_ASSERT_STRING_EQUAL(o,e); \
+} while (0);
+

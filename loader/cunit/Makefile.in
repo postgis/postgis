@@ -1,5 +1,4 @@
 # **********************************************************************
-# * $Id: Makefile.in
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
@@ -10,8 +9,11 @@
 # *
 # **********************************************************************
 
+top_builddir = @top_builddir@
 CC=@CC@
 CFLAGS=@CFLAGS@ @WARNFLAGS@
+SHELL = @SHELL@
+LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
@@ -26,7 +28,7 @@ PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
 PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 
 # liblwgeom
-LIBLWGEOM=../../liblwgeom/.libs/liblwgeom.a
+LIBLWGEOM=../../liblwgeom/.libs/liblwgeom.la
 
 # iconv flags
 ICONV_LDFLAGS=@ICONV_LDFLAGS@
@@ -77,6 +79,7 @@ endif
 
 # Build the main unit test executable
 cu_tester: $(LOADER_OBJS) $(OBJS) 
+	$(LIBTOOL) --mode=link \
 	$(CC)  $^ -o $@ $(LIBLWGEOM) $(LDFLAGS)
 
 # Command to build each of the .o files

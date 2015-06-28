@@ -14,6 +14,11 @@
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
+/* GeographicLib */
+#if PROJ_GEODESIC
+#include <geodesic.h>
+#endif
+
 /**
 * Initialize spheroid object based on major and minor axis
 */
@@ -26,6 +31,7 @@ void spheroid_init(SPHEROID *s, double a, double b)
 	s->radius = (2.0 * a + b ) / 3.0;
 }
 
+#if ! PROJ_GEODESIC
 static double spheroid_mu2(double alpha, const SPHEROID *s)
 {
 	double b2 = POW2(s->b);
@@ -41,6 +47,113 @@ static double spheroid_big_b(double u2)
 {
 	return (u2 / 1024.0) * (256.0 + u2 * (-128.0 + u2 * (74.0 - 47.0 * u2)));
 }
+#endif /* ! PROJ_GEODESIC */
+
+
+#if PROJ_GEODESIC
+
+/**
+* Computes the shortest distance along the surface of the spheroid
+* between two points, using the inverse geodesic problem from
+* GeographicLib (Karney 2013).
+*
+* @param a - location of first point
+* @param b - location of second point
+* @param s - spheroid to calculate on
+* @return spheroidal distance between a and b in spheroid units
+*/
+double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
+{
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = a->lat * 180.0 / M_PI;
+	double lon1 = a->lon * 180.0 / M_PI;
+	double lat2 = b->lat * 180.0 / M_PI;
+	double lon2 = b->lon * 180.0 / M_PI;
+	double s12; /* return distance */
+	geod_inverse(&gd, lat1, lon1, lat2, lon2, &s12, 0, 0);
+	return s12;
+}
+
+/**
+* Computes the forward azimuth of the geodesic joining two points on
+* the spheroid, using the inverse geodesic problem (Karney 2013).
+*
+* @param r - location of first point
+* @param s - location of second point
+* @return azimuth of line joining r to s (but not reverse)
+*/
+double spheroid_direction(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid)
+{
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = a->lat * 180.0 / M_PI;
+	double lon1 = a->lon * 180.0 / M_PI;
+	double lat2 = b->lat * 180.0 / M_PI;
+	double lon2 = b->lon * 180.0 / M_PI;
+	double azi1; /* return azimuth */
+	geod_inverse(&gd, lat1, lon1, lat2, lon2, 0, &azi1, 0);
+	return azi1 * M_PI / 180.0;
+}
+
+/**
+* Given a location, an azimuth and a distance, computes the location of
+* the projected point. Using the direct geodesic problem from
+* GeographicLib (Karney 2013).
+*
+* @param r - location of first point
+* @param distance - distance in meters
+* @param azimuth - azimuth in radians
+* @return g - location of projected point
+*/
+int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g)
+{
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	double lat1 = r->lat * 180.0 / M_PI;
+	double lon1 = r->lon * 180.0 / M_PI;
+	double lat2, lon2; /* return projected position */
+	geod_direct(&gd, lat1, lon1, azimuth * 180.0 / M_PI, distance, &lat2, &lon2, 0);
+	g->lat = lat2 * M_PI / 180.0;
+	g->lon = lon2 * M_PI / 180.0;
+	return LW_SUCCESS;
+}
+
+
+static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *spheroid)
+{
+	/* Return zero on non-sensical inputs */
+	if ( ! pa || pa->npoints < 4 )
+		return 0.0;
+
+	struct geod_geodesic gd;
+	geod_init(&gd, spheroid->a, spheroid->f);
+	struct geod_polygon poly;
+	geod_polygon_init(&poly, 0);
+	int i;
+	double area; /* returned polygon area */
+	POINT2D p; /* long/lat units are degrees */
+
+	/* Pass points from point array; don't close the linearring */
+	for ( i = 0; i < pa->npoints - 1; i++ )
+	{
+		getPoint2d_p(pa, i, &p);
+		geod_polygon_addpoint(&gd, &poly, p.y, p.x);
+		LWDEBUGF(4, "geod_polygon_addpoint %d: %.12g %.12g", i, p.y, p.x);
+	}
+	i = geod_polygon_compute(&gd, &poly, 0, 1, &area, 0);
+	if ( i != pa->npoints - 1 )
+	{
+		lwerror("ptarray_area_spheroid: different number of points %d vs %d",
+				i, pa->npoints - 1);
+	}
+	LWDEBUGF(4, "geod_polygon_compute area: %.12g", area);
+	return fabs(area);
+}
+
+/* Above use GeographicLib */
+#else /* ! PROJ_GEODESIC */
+/* Below use pre-version 2.2 geodesic functions */
 
 /**
 * Computes the shortest distance along the surface of the spheroid
@@ -244,7 +357,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 	{
 		azimuth = azimuth + M_PI * 2.0;
 	}
-	if (azimuth > (PI * 2.0))
+	if (azimuth > (M_PI * 2.0))
 	{
 		azimuth = azimuth - M_PI * 2.0;
 	}
@@ -503,6 +616,8 @@ static double ptarray_area_spheroid(const POINTARRAY *pa, const SPHEROID *sphero
 	}
 	return fabs(area);
 }
+#endif /* else ! PROJ_GEODESIC */
+
 /**
 * Calculate the area of an LWGEOM. Anything except POLYGON, MULTIPOLYGON
 * and GEOMETRYCOLLECTION return zero immediately. Multi's recurse, polygons

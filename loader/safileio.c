@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: safileio.c,v 1.4 2008-01-16 20:05:14 bram Exp $
  *
  * Project:  Shapelib
  * Purpose:  Default implementation of file io based on stdio.
@@ -65,7 +64,7 @@
 #include <string.h>
 #include <stdio.h>
 
-SHP_CVSID("$Id: safileio.c,v 1.4 2008-01-16 20:05:14 bram Exp $");
+SHP_CVSID("$Id$")
 
 #ifdef SHPAPI_UTF8_HOOKS
 #   ifdef SHPAPI_WINDOWS

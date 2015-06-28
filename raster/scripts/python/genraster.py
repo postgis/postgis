@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 #
 # A very simple generator of rasters for testing WKT Raster.
 # A test file is a matrix of numbered cells greyscaled randomly.

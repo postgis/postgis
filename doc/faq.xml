@@ -97,13 +97,13 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </question>
 
       <answer>
-        <para>You can store point, line, polygon, multipoint, multiline,
-        multipolygon, and geometrycollections. In PostGIS 2.0 and above you can also store TINS and Polyhedral Surfaces in the basic geometry type.
+        <para>You can store Point, LineString, Polygon, MultiPoint, MultiLineString,
+        MultiPolygon, and GeometryCollection geometries. In PostGIS 2.0 and above you can also store TINS and Polyhedral Surfaces in the basic geometry type.
         These are specified in the Open
-        GIS Well Known Text Format (with XYZ,XYM,XYZM extensions).  There are three data types currently supported.
+        GIS Well Known Text Format (with Z, M, and ZM extensions).  There are three data types currently supported.
 		The standard OGC geometry data type which uses a planar coordinate system for measurement, the 
-		geography data type which uses a geodetic coordinate system (not OGC, but you'll find a similar type in Microsoft SQL Server 2008+).  Only WGS 84 long lat (SRID:4326) is supported
-		by the geography data type.  The newest family member of the PostGIS spatial type family is raster for storing and analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="RT_FAQ"/>
+		geography data type which uses a geodetic coordinate system, with calculations on either a sphere or spheroid.
+		The newest family member of the PostGIS spatial type family is raster for storing and analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="RT_FAQ"/>
 		and <xref linkend="RT_reference" /> for more details.</para>
       </answer>
     </qandaentry>
@@ -114,9 +114,9 @@ SELECT MAX(ST_NPoints(geom)) FROM sometable;</programlisting>
       </question>
 
       <answer>
-        <para>Short Answer: geography is a new data type that supports long range distances measurements, but most computations on it are currently
+        <para>Short Answer: geography is a newer data type that supports long range distances measurements, but most computations on it are
         slower than they are on geometry.  If
-		 you use geography -- you don't need to learn much about planar coordinate systems. Geography is generally best
+		 you use geography, you don't need to learn much about planar coordinate systems. Geography is generally best
 		 if all you care about is measuring distances and lengths and you have data from all over the world.
 		 Geometry data type is an older data type that has many more functions supporting it, enjoys greater support from third party tools,
 		 and operations on it are generally faster -- sometimes as much as 10 fold faster for larger geometries.

@@ -388,11 +388,11 @@ compound_list :
 	compound_list COMMA_TOK linestring_untagged
 		{ $$ = wkt_parser_compound_add_geom($1,$3); WKT_ERROR(); } |
 	circularstring
-		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } |
 	linestring
-		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } |
+		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } |
 	linestring_untagged
-		{ $$ = wkt_parser_collection_new($1); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_compound_new($1); WKT_ERROR(); } ;
 
 multicurve :
 	MCURVE_TOK LBRACKET_TOK curve_list RBRACKET_TOK

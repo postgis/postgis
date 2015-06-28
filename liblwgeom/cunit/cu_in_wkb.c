@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: cu_out_wkb.c 6036 2010-10-03 18:14:35Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -110,8 +109,23 @@ static void test_wkb_in_point(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 
 	cu_wkb_in("SRID=4;POINTM(1 1 1)");
-//	printf("old: %s\nnew: %s\n",hex_a, hex_b);
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+	
+	cu_wkb_in("POINT EMPTY");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("SRID=4326;POINT EMPTY");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("POINT Z EMPTY");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("POINT M EMPTY");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
+	cu_wkb_in("POINT ZM EMPTY");
+	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
+
 }
 
 static void test_wkb_in_linestring(void)

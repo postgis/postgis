@@ -78,4 +78,28 @@ select '82', st_equals(g, st_union(
     st_geometryn(st_split(g, st_pointn(g,p)), 1), 
     st_geometryn(st_split(g, st_pointn(g,p)), 2))) from inp;
 
+-- Split line by multiline
+select '83', st_asewkt(ST_Split(
+  'SRID=3;LINESTRING(1 -1,1 1)',
+  'SRID=3;MULTILINESTRING((10 0, 10 4),(-4 0, 4 0))'
+));
+
+-- Split line by polygon (boundary)
+select '84', st_asewkt(ST_Split(
+  'SRID=3;LINESTRING(1 -1,1 1)',
+  'SRID=3;POLYGON((-10 -10,-10 10,10 10,10 -10,-10 -10),(-4 2,-4 0,4 0,4 2,-4 2))'
+));
+
+-- Split line by multipolygon (boundary)
+select '85', st_asewkt(ST_Split(
+  'SRID=3;LINESTRING(1 -2,1 1,4 1)',
+  'SRID=3;MULTIPOLYGON(((0 -1,0 -3,2 -3,2 -1,0 -1)),((3 0,3 2,5 2,5 0,3 0)))'
+));
+
+-- Split multiline by multipoint
+select '86', st_asewkt(ST_Split(
+  'SRID=3;MULTILINESTRING((0 0,10 0),(5 -5, 5 5),(0 20,10 20))',
+  'SRID=3;MULTIPOINT(2 6,5 0,5 20,2 20,8 20,8 0,5 -2,0 0, 5 -5, 10 20)'
+));
+
 -- TODO: split line by collapsed line 

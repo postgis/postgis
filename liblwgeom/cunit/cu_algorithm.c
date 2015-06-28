@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -904,15 +903,39 @@ static void test_lwgeom_simplify(void)
 		LWGEOM *l;
 		char *ewkt;
 
+		/* Simplify but only so far... */
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 1 0, 1 1, 0 1, 0 0)", LW_PARSER_CHECK_NONE), 10, LW_TRUE);
+		ewkt = lwgeom_to_ewkt(l);
+		CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(0 0,0 0)");
+		lwgeom_free(l);
+		lwfree(ewkt);
+
+		/* Simplify but only so far... */
+		l = lwgeom_simplify(lwgeom_from_wkt("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))", LW_PARSER_CHECK_NONE), 10, LW_TRUE);
+		ewkt = lwgeom_to_ewkt(l);
+		CU_ASSERT_STRING_EQUAL(ewkt, "POLYGON((0 0,1 0,1 1,0 0))");
+		lwgeom_free(l);
+		lwfree(ewkt);
+
+		/* Simplify and collapse */
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 1 0, 1 1, 0 1, 0 0)", LW_PARSER_CHECK_NONE), 10, LW_FALSE);
+		CU_ASSERT_EQUAL(l, NULL);
+		lwgeom_free(l);
+
+		/* Simplify and collapse */
+		l = lwgeom_simplify(lwgeom_from_wkt("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))", LW_PARSER_CHECK_NONE), 10, LW_FALSE);
+		CU_ASSERT_EQUAL(l, NULL);
+		lwgeom_free(l);
+		
 		/* Not simplifiable */
-		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 50 1.00001, 100 0)", LW_PARSER_CHECK_NONE), 1.0);
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0, 50 1.00001, 100 0)", LW_PARSER_CHECK_NONE), 1.0, LW_FALSE);
 		ewkt = lwgeom_to_ewkt(l);
 		CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(0 0,50 1.00001,100 0)");
 		lwgeom_free(l);
 		lwfree(ewkt);
 
 		/* Simplifiable */
-		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0,50 0.99999,100 0)", LW_PARSER_CHECK_NONE), 1.0);
+		l = lwgeom_simplify(lwgeom_from_wkt("LINESTRING(0 0,50 0.99999,100 0)", LW_PARSER_CHECK_NONE), 1.0, LW_FALSE);
 		ewkt = lwgeom_to_ewkt(l);
 		CU_ASSERT_STRING_EQUAL(ewkt, "LINESTRING(0 0,100 0)");
 		lwgeom_free(l);

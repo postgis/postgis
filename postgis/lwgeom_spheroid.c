@@ -449,7 +449,7 @@ double distance_sphere_method(double lat1, double long1,double lat2,double long2
 
 	R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
 	/* 90 - lat1, but in radians */
-	S 	= R * sin(M_PI/2.0-lat1) ;
+	S 	= R * sin(M_PI_2 - lat1) ;
 
 	deltaX = long2 - long1;  /* in rads */
 	deltaY = lat2 - lat1;    /* in rads */

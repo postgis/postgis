@@ -437,7 +437,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 }
 
 LWGEOM*
-lwcollection_remove_repeated_points(LWCOLLECTION *coll)
+lwcollection_remove_repeated_points(LWCOLLECTION *coll, double tolerance)
 {
 	uint32_t i;
 	LWGEOM **newgeoms;
@@ -445,7 +445,7 @@ lwcollection_remove_repeated_points(LWCOLLECTION *coll)
 	newgeoms = lwalloc(sizeof(LWGEOM *)*coll->ngeoms);
 	for (i=0; i<coll->ngeoms; i++)
 	{
-		newgeoms[i] = lwgeom_remove_repeated_points(coll->geoms[i]);
+		newgeoms[i] = lwgeom_remove_repeated_points(coll->geoms[i], tolerance);
 	}
 
 	return (LWGEOM*)lwcollection_construct(coll->type,
@@ -503,7 +503,7 @@ int lwcollection_count_vertices(LWCOLLECTION *col)
 	return v;
 }
 
-LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
+LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist, int preserve_collapsed)
 {
  	int i;
 	LWCOLLECTION *out = lwcollection_construct_empty(igeom->type, igeom->srid, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
@@ -513,7 +513,7 @@ LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
 
 	for( i = 0; i < igeom->ngeoms; i++ )
 	{
-		LWGEOM *ngeom = lwgeom_simplify(igeom->geoms[i], dist);
+		LWGEOM *ngeom = lwgeom_simplify(igeom->geoms[i], dist, preserve_collapsed);
 		if ( ngeom ) out = lwcollection_add_lwgeom(out, ngeom);
 	}
 

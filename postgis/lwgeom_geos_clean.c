@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: lwgeom_geos.c 5258 2010-02-17 21:02:49Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -76,7 +75,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		break;
 
 	default:
-		lwerror("ST_MakeValid: unsupported geometry type %s",
+		lwpgerror("ST_MakeValid: unsupported geometry type %s",
 		        lwtype_name(lwgeom_in->type));
 		PG_RETURN_NULL();
 		break;
@@ -113,7 +112,7 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	/* Check dimensionality is the same as input */
 	if ( lwgeom_dimensionality(lwgeom_in) != lwgeom_dimensionality(lwgeom_out) )
 	{
-		lwnotice("lwgeom_clean: dimensional collapse (%d to %d)",
+		lwpgnotice("lwgeom_clean: dimensional collapse (%d to %d)",
 		         lwgeom_dimensionality(lwgeom_in), lwgeom_dimensionality(lwgeom_out));
 
 		return NULL;
@@ -123,7 +122,7 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	if ( lwgeom_out->type == COLLECTIONTYPE &&
 	        lwgeom_in->type != COLLECTIONTYPE )
 	{
-		lwnotice("lwgeom_clean: mixed-type output (%s) "
+		lwpgnotice("lwgeom_clean: mixed-type output (%s) "
 		         "from single-type input (%s)",
 		         lwtype_name(lwgeom_out->type),
 		         lwtype_name(lwgeom_in->type));

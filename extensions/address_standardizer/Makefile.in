@@ -28,9 +28,12 @@ OBJS_test_main = \
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 # SQL preprocessor
 SQLPP = @SQLPP@
+EXTVERSION    = @POSTGIS_LIB_VERSION@
+MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
-DATA_built = address_standardizer--@POSTGIS_LIB_VERSION@.sql us-lex.sql us-gaz.sql us-rules.sql
+DATA = address_standardizer_data_us.control us_lex.sql us_gaz.sql us_rules.sql
+DATA_built = sql/address_standardizer.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql   sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
@@ -50,22 +53,30 @@ PERL=@PERL@
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
-%.sql: %.sql.in
+sql/%.sql: %.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
+
+sql/address_standardizer.sql: address_standardizer.sql
+	mkdir -p sql
+	cat $^ > $@
 	
-address_standardizer--@POSTGIS_LIB_VERSION@.sql: address_standardizer.sql
-	$(PERL) mk-sql.pl '$(PGVER)' address_standardizer.sql > address_standardizer--@POSTGIS_LIB_VERSION@.sql
+sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer.sql
+	cat $^ > $@
 
-us-lex.sql: lexicon.csv
-	$(PERL) pagc-data-psql lex lexicon.csv > us-lex.sql
+# build us data extension
+sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql
+	mkdir -p sql
+	cat $^ > $@
+	
+# upgrade logic for us data extension (to go to next cludge for dev upgrading)
+sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	cat $^ > $@
 
-us-gaz.sql: gazeteer.csv
-	$(PERL) pagc-data-psql gaz gazeteer.csv > us-gaz.sql
-
-us-rules.sql: rules.txt
-	$(PERL) pagc-data-psql rules rules.txt > us-rules.sql
-
+# upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
+sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
+	cat $^ > $@	
+	
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl
 	rm -f mk-st-regexp

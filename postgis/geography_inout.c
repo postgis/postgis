@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * Copyright 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -104,7 +103,7 @@ GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod
 	/* Check for typmod agreement */
 	if ( geog_typmod >= 0 )
 	{
-		postgis_valid_typmod(g_ser, geog_typmod);
+		g_ser = postgis_valid_typmod(g_ser, geog_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
@@ -556,7 +555,7 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
 	
 	if ( ! lwgeom )
-		lwerror("Unable to parse WKB");
+		lwpgerror("Unable to parse WKB");
  		
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
@@ -598,9 +597,11 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	** functions do the right thing.
 	*/
 	lwgeom_set_geodetic(lwgeom, true);
+	
 	/* Recalculate the boxes after re-setting the geodetic bit */
 	lwgeom_drop_bbox(lwgeom);
 	lwgeom_add_bbox(lwgeom);
+	
 	g_ser = geography_serialize(lwgeom);
 
 	/*

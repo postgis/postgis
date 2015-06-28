@@ -1,0 +1,7 @@
+|=| no idx|Seq Scan
+|=| idx|Index Scan
+1|445|dist:2.97
+2|340|dist:3.21
+3|435|dist:8.26
+4|350|dist:9.10
+5|455|dist:14.21

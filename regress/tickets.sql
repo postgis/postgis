@@ -859,7 +859,7 @@ INSERT INTO images VALUES (1, 'first_image', 'SRID=4326;POLYGON((-162.211667 88.
 SELECT '#2556' AS ticket, id, round(ST_Distance(extent, 'SRID=4326;POLYGON((-46.625977 81.634149,-46.625977 81.348076,-48.999023 81.348076,-48.999023 81.634149,-46.625977 81.634149))'::geography)) from images;
 DROP TABLE images;
 
-SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
+-- SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
 
 SELECT '#2704', ST_AsText(ST_GeomFromGML('<?xml version="1.0"?>
 <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -879,10 +879,23 @@ SELECT '#2704', ST_AsText(ST_GeomFromGML('<?xml version="1.0"?>
 
 SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 
+SELECT '#2717', 
+   ST_AsText(ST_StartPoint(g)), 
+   ST_AsText(ST_EndPoint(g)), 
+   ST_AsText(ST_PointN(g, 1)), 
+   ST_AsText(ST_PointN(g, 2)), 
+   ST_AsText(ST_PointN(g, 3)), 
+   ST_AsText(ST_PointN(g, 4)), 
+   ST_AsText(ST_PointN(g, 5))
+   FROM ( 
+     SELECT 'COMPOUNDCURVE((-1 -1, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1))'::geometry AS g
+   ) AS foo;
+
 SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))'::geometry);
 
 SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography) ;
 
 SELECT '#2956', st_astwkb(null,0) is null;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

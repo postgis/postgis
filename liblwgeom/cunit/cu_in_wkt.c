@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: cu_out_wkt.c 6036 2010-10-03 18:14:35Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -338,7 +337,7 @@ static void test_wkt_in_errlocation(void)
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL( rv, LW_FAILURE );
-	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
+	CU_ASSERT((12 - p.errlocation) < 1.5);
 
 //	printf("errlocation %d\n", p.errlocation);
 //	printf("message %s\n", p.message);

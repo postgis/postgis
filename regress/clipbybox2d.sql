@@ -23,3 +23,6 @@ CREATE TEMPORARY TABLE t AS SELECT
 SELECT ST_AsEWKT(ST_ClipByBox2d(g, ST_MakeEnvelope(-20,-20,-10,-10))) FROM t;
 -- See http://trac.osgeo.org/postgis/ticket/2954
 SELECT ST_AsEWKT(ST_ClipByBox2D('SRID=4326;POINT(0 0)','BOX3D(-1 -1,1 1)'::box3d::box2d));
+
+SELECT '#3135', st_astext(ST_SubDivide(ST_GeomFromText('POLYGON((1 2,1 2,1 2,1 2))'), 2));
+

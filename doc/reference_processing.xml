@@ -2438,6 +2438,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 		  <funcprototype>
 			<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2450,8 +2451,10 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 				any kind of geometry. Since simplification occurs on a
 				object-by-object basis you can also feed a GeometryCollection to
 				this function.</para>
+        <para>If the tolerance parameter is provided, vertices within the tolerance 
+        of one another will be considered the "same" for the purposes of removal.</para>
 
-		<para>Availability: 2.0.0</para>
+		<para>Availability: 2.2.0</para>
 		<para>&P_support;</para>
 		<para>&Z_support;</para>
 	  </refsection>
@@ -2737,7 +2740,55 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_SetEffectiveArea">
+<refentry id="ST_SimplifyVW">
+	  <refnamediv>
+		<refname>ST_SimplifyVW</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SimplifyVW</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para> Returns a "simplified" version of the given geometry using the Visvalingam-Whyatt algorithm. 
+		Will actually do something only with (multi)lines and (multi)polygons but you can safely call it with any kind of geometry. 
+		Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function.</para>
+
+		<note><para>Note that returned geometry might loose its
+				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
+		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+		<note><para>This function handles 3D and the third dimmension will affect the result</para></note>
+		<para>Availability: 2.2.0</para>
+	  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+			<para>A linestring that get the efffective area calculated. All points is returned since we give 0 as themin area threashold</para>
+				<programlisting>
+
+select ST_AStext(ST_SimplifyVW(geom,30)) simplified
+FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo; 
+-result
+ simplified
+-----------+-------------------+
+LINESTRING(5 2,7 25,10 10)
+
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_SetEffectiveArea" />, <xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+		  </refsection>
+	</refentry>
+		<refentry id="ST_SetEffectiveArea">
 	  <refnamediv>
 		<refname>ST_SetEffectiveArea</refname>
 		<refpurpose>Sets for each vertex point it's effective area,  
@@ -2750,32 +2801,34 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>threashold = 0</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
-		<para> Sets for each vertex point it's effective area from Visvalingam’s algorithm.
+		<para> Sets for each vertex point it's effective area from Visvalingam-Whyatt’s algorithm.
 			The effective area is stored as the M-value of the geomtries. 
-			If the second optional parameter is used, the resulting geometriy will be build obnly on vertex points with an effective area 
+			If the second optional parameter is used, the resulting geometriy will be build only on vertex points with an effective area 
 			greater than or equal to that threashold value. That will be a simplified geometry.
-			
+			</para><para>
 			This function can be used for server side simplification by using the threashold. Another option is to not give any threashold value. 
 			Then you get the full geometry back, but with effective areas as M-values wich can be used by the client to simplify very fast.
-			
+			</para><para>
 			Will actually do something only with
 			(multi)lines and (multi)polygons but you can safely call it with
 			any kind of geometry. Since simplification occurs on a
 			object-by-object basis you can also feed a GeometryCollection to
 			this function.
+			</para>
 			
-			This function handles 3D and the third dimmension will affect the effective area.</para>
 
 		<note><para>Note that returned geometry might loose its
 				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
 		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
 		<note><para>The output geoemtry will loose all previous information in the M-values</para></note>
+		<note><para>This function handles 3D and the third dimmension will affect the effective area</para></note>
 		<para>Availability: 2.2.0</para>
 	  </refsection>
 
@@ -2789,13 +2842,13 @@ FROM (SELECT  'LINESTRING(5 2, 3 8, 6 20, 7 25, 10 10)'::geometry geom) As foo;
 -result
  all_pts | thrshld_30
 -----------+-------------------+
-LINESTRING M (5 2 1.79769313486232e+308,3 8 29,6 20 1.5,7 25 49.5,10 10 1.79769313486232e+308) | LINESTRING M (5 2 1.79769313486232e+308,7 25 49.5,10 10 1.79769313486232e+308)
+LINESTRING M (5 2 3.40282346638529e+38,3 8 29,6 20 1.5,7 25 49.5,10 10 3.40282346638529e+38) | LINESTRING M (5 2 3.40282346638529e+38,7 25 49.5,10 10 3.40282346638529e+38)
 
 				</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Simplify" />, <xref linkend="ST_SimplifyPreserveTopology" />, Topology <xref linkend="TP_ST_Simplify"/></para>
+			<para><xref linkend="ST_SimplifyVW" /></para>
 		  </refsection>
 	</refentry>
 	
@@ -2818,7 +2871,7 @@ LINESTRING M (5 2 1.79769313486232e+308,3 8 29,6 20 1.5,7 25 49.5,10 10 1.797693
         <refsection>
             <title>Description</title>
             <para>
-            The function supports splitting a line by point, a line by line, a polygon by line. The returned geometry is always a collection.
+            The function supports splitting a line by (multi)point, (multi)line or (multi)polygon boundary, a (multi)polygon by line. The returned geometry is always a collection.
             </para>
             
             <para>
@@ -2828,7 +2881,14 @@ LINESTRING M (5 2 1.79769313486232e+308,3 8 29,6 20 1.5,7 25 49.5,10 10 1.797693
             </para>
             
             <para>Availability: 2.0.0</para>
+            <para>Changed: 2.2.0 support for splitting a line by a multiline, a multipoint or (multi)polygon boundary was introduced.</para>
+
             <note><para>To improve the robustness of ST_Split it may be convenient to <xref linkend="ST_Snap"/> the input to the blade in advance using a very low tolerance. Otherwise the internally used coordinate grid may cause tolerance problems, where coordinates of input and blade do not fall onto each other and the input is not being split correctly (see <ulink url="http://trac.osgeo.org/postgis/ticket/2192">#2192</ulink>).</para></note> 
+
+            <note><para>
+When a (multi)polygon is passed as as the blade, its linear component
+(the boundary) is used for cutting the input.
+            </para></note>
         
         </refsection>
         <refsection>
@@ -3050,6 +3110,108 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 		<para><xref linkend="ST_Difference" />, <xref linkend="ST_Intersection" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 </refentry>
+
+
+	<refentry id="ST_Subdivide">
+	  <refnamediv>
+		<refname>ST_Subdivide</refname>
+		<refpurpose>Returns a set of geometry where no geometry in the set has more than the specified number of vertices.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>setof geometry <function>ST_Subdivide</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>max_vertices=256</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+    <para>
+Turns a single geometry into a set in which each element has fewer than
+the maximum allowed number of vertices. Useful for converting excessively
+large polygons and other objects into small portions that fit within the
+database page size. Uses the same envelope clipping as ST_ClipByBox2D does,
+recursively subdividing the input geometry until all portions have less than the
+maximum vertex count. Minimum vertice count allowed is 8 and if you try to specify lower than 8, it will throw an error.
+    </para>
+
+		<para>Clipping performed by the GEOS module.</para>
+		<note><para>Requires GEOS 3.5.0+</para></note>
+
+		<para>Availability: 2.2.0.</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<programlisting>-- Create a new subdivided table suitable for joining to the original
+CREATE TABLE subdivided_geoms AS
+SELECT pkey, ST_Subdivide(geom) AS geom
+FROM original_geoms;
+ </programlisting>
+ 
+ 				<informaltable>
+				  <tgroup cols="1">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_subdivide01.png" />
+							  </imageobject>
+							  <caption><para>Subdivide max 10 vertices</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt
+FROM ( SELECT ST_SubDivide('POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32 110,40 119,36 150,
+57 158,75 171,92 182,114 184,132 186,146 178,176 184,179 162,184 141,190 122,
+190 100,185 79,186 56,186 52,178 34,168 18,147 13,132 10))'::geometry,10))  As f(geom);</programlisting>
+<screen>rn |                          wkt
+---+---------------------------------------------------------------------------
+ 1 | POLYGON((22 64,29.3913043478263 98.000000000001,106.000000000001 98.00000000001,
+        106.000000000001 27.5882352941173,85 35,68 29,66 28,49 42,32 56,22 64))
+ 2 | POLYGON((29.3913043478263 98.000000000001,32 110,40 119,36 150,57 158,
+        75 11,92 182,106.000000000001 183.272727272727,106.000000000001 98.000000000001,
+        29.913043478263 98.000000000001))
+ 3 | POLYGON((106.000000000001 27.5882352941173,106.000000000001 98.00000000000,
+ 189.52380952381 98.000000000001,185 79,186 56,186 52,178 34,168 18,147 13,
+ 132 0,119 23,106.000000000001 27.5882352941173))
+ 4 | POLYGON((106.000000000001 98.000000000001,106.000000000001 183.27272727272,
+    114 184,132 186,146 178,176 184,179 162,184 141,190 122,190 100,189.5238095238
+ 98.000000000001,106.000000000001 98.000000000001))</screen>
+						  </para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_subdivide02.png" />
+							  </imageobject>
+							  <caption><para>Useful in conjunction with ST_Segmentize to create additional vertices that can then be used for splitting</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 150)'::geometry,10),8));</programlisting>
+<screen>LINESTRING(0 0,7.07106781186547 7.07106781186547,14.1421356237309 14.1421356237309,21.2132034355964 21.2132034355964,28.2842712474619 28.2842712474619,35.3553390593274 35.3553390593274,37.499999999998 37.499999999998)
+LINESTRING(37.499999999998 37.499999999998,42.4264068711929 42.4264068711929,49.4974746830583 49.4974746830583,56.5685424949238 56.5685424949238,63.6396103067893 63.6396103067893,70.7106781186548 70.7106781186548,74.999999999998 74.999999999998)
+LINESTRING(74.999999999998 74.999999999998,77.7817459305202 77.7817459305202,84.8528137423857 84.8528137423857,91.9238815542512 91.9238815542512,98.9949493661167 98.9949493661167,100 100,107.071067811865 107.071067811865,112.499999999998 112.499999999998)
+LINESTRING(112.499999999998 112.499999999998,114.142135623731 114.142135623731,121.213203435596 121.213203435596,128.284271247462 128.284271247462,135.355339059327 135.355339059327,142.426406871193 142.426406871193,149.497474683058 149.497474683058,149.999999999998 149.999999999998)</screen>
+						  </para></entry>
+					  </row>
+				</tbody></tgroup></informaltable>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para>
+<xref linkend="ST_AsText" />, <xref linkend="ST_ClipByBox2D" />, <xref linkend="ST_Segmentize" />
+    </para>
+	  </refsection>
+	</refentry>
+
 
 
 <refentry id="ST_Union">

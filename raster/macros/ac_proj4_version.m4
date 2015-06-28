@@ -1,5 +1,4 @@
 dnl **********************************************************************
-dnl * $Id$
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
 dnl * http://postgis.net

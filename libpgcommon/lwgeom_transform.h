@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: lwgeom_transform.h -1M 2011-08-11 11:15:57Z (local) $ 
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -14,7 +13,12 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-
+typedef struct srs_precision 
+{
+	int precision_xy;
+	int precision_z;
+	int precision_m;
+} srs_precision;
 
 char* GetProj4StringSPI(int srid);
 void SetPROJ4LibPath(void) ;
@@ -34,6 +38,7 @@ projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid);
 int GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2);
 int spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s);
 void srid_is_latlong(FunctionCallInfo fcinfo, int srid);
+srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precision);
 
 /**
  * Builtin SRID values

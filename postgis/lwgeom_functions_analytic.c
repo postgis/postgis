@@ -34,6 +34,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 
+
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int point_in_ring(POINTARRAY *pts, POINT2D *point);
@@ -44,19 +45,23 @@ PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	double dist = PG_GETARG_FLOAT8(1);
 	GSERIALIZED *result;
-  int type = gserialized_get_type(geom);
-	LWGEOM *in;
-	LWGEOM *out;
-	double dist;
+	int type = gserialized_get_type(geom);
+	LWGEOM *in, *out;
+	bool preserve_collapsed = false;
 
-  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
-    PG_RETURN_POINTER(geom);
+	/* Handle optional argument to preserve collapsed features */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		preserve_collapsed = true;
 
-	dist = PG_GETARG_FLOAT8(1);
+	/* Can't simplify points! */
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		PG_RETURN_POINTER(geom);
+		
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_simplify(in, dist);
+	out = lwgeom_simplify(in, dist, preserve_collapsed);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
@@ -73,18 +78,24 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	GSERIALIZED *result;
-  int type = gserialized_get_type(geom);
+	int type = gserialized_get_type(geom);
 	LWGEOM *in;
 	LWGEOM *out;
-	double area;
+	double area=0;
+	int set_area=0;
 
-  if ( type == POINTTYPE || type == MULTIPOINTTYPE )
-    PG_RETURN_POINTER(geom);
+	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
+		PG_RETURN_POINTER(geom);
 
-	area = PG_GETARG_FLOAT8(1);
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+		area = PG_GETARG_FLOAT8(1);
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) )
+	set_area = PG_GETARG_INT32(2);
+
 	in = lwgeom_from_gserialized(geom);
 
-	out = lwgeom_set_effective_area(in, area);
+	out = lwgeom_set_effective_area(in,set_area, area);
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
@@ -334,7 +345,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 static void
 grid_print(const gridspec *grid)
 {
-	lwnotice("GRID(%g %g %g %g, %g %g %g %g)",
+	lwpgnotice("GRID(%g %g %g %g, %g %g %g %g)",
 	         grid->ipx, grid->ipy, grid->ipz, grid->ipm,
 	         grid->xsize, grid->ysize, grid->zsize, grid->msize);
 }
@@ -365,7 +376,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	in_lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(in_point));
 	if ( in_lwpoint == NULL )
 	{
-		lwerror("Offset geometry must be a point");
+		lwpgerror("Offset geometry must be a point");
 	}
 
 	grid.xsize = PG_GETARG_FLOAT8(2);

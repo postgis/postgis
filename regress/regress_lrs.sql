@@ -33,6 +33,7 @@ select 'line_locate_point_2', ST_LineLocatePoint(ST_geomfromtext('LINESTRING(-19
 select 'line_locate_point_3', ST_LineLocatePoint(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953743.873 471070.784)', 6269));
 --- http://trac.osgeo.org/postgis/ticket/1772#comment:2
 select 'line_locate_point_4', ST_LineLocatePoint('LINESTRING(0 1, 0 1, 0 1)', 'POINT(0 1)');
+SELECT 'line_locate_point_5', ST_LineLocatePoint(ST_MakeLine('POINT(1 2)'::geometry, 'POINT EMPTY'::geometry), ST_Point(-11,40));
 
 --- line_substring / line_interpolate_point
 
@@ -55,7 +56,24 @@ select 'line_substring_10', ST_AsText(ST_LineSubstring('LINESTRING(0 0 4, 4 4 0)
 select 'line_substring_11', ST_AsText(ST_LineSubstring('LINESTRING(0 0, 1 1)', 0, 0));
 select 'line_substring_12', ST_AsText(ST_LineSubstring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
 
---- line_interpolate_point
+--
+--- ST_LineInterpolatePoint
+--
 
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0, 1 1)', 0));
 select 'line_interpolate_point', ST_AsText(ST_LineInterpolatePoint('LINESTRING(0 0 10, 1 1 5)', 0.5));
+
+
+--
+-- ST_AddMeasure
+--
+
+select 'addMeasure1', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 2 0, 4 0)', 10, 20));
+select 'addMeasure2', ST_AsText(ST_AddMeasure('LINESTRING(0 0, 9 0, 10 0)', 10, 20));
+
+--
+-- ST_InterpolatePoint
+--
+
+select 'interpolatePoint1', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(5 0)');
+select 'interpolatePoint2', ST_InterpolatePoint('LINESTRINGM(0 0 0, 10 0 4)', 'POINT(7.5 0)');

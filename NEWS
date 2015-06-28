@@ -1,8 +1,12 @@
 PostGIS 2.2.0
-2014/MM/DD
+2015/09/DD
 
  * Important / Breaking Changes *
 
+  - PROJ4 4.6 and higher only
+  - #2703, KNN <-> operator now returns the correct distance ordering
+           for all geometry types, not just for points. Code that expects
+           the looser "centroid distance" ordering should be updated.
   - #3022, ValidateTopology swapped meaning of id1 and id2 for the
            'edge crosses node' error (now edge_id,node_id)
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
@@ -10,6 +14,7 @@ PostGIS 2.2.0
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
   - By default, PostGIS raster disables all GDAL drivers affecting
     out-db rasters, ST_FromGDALRaster() and ST_AsGDALRaster() variants
+  - #3181, POINT EMPTY is now stored as POINT(NaN NaN) in WKB, instead of as MULTIPOINT EMPTY
 
  * Deprecated signatures *
 
@@ -26,9 +31,24 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - #3117, Add SFCGAL 1.1 support: add ST_3DDifference, ST_3DUnion, ST_Volume, ST_MakeSolid, ST_IsSolid (Vincent Mora / Oslandia)
+  - #3169, ST_ApproximateMedialAxis (Sandro Santilli)
+  - ST_CPAWithin (Sandro Santilli / Boundless)
+  - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
+    (Sandro Santilli / Boundless)
+  - #3131, KNN support for the geography type (Paul Ramsey / CartoDB)
+  - #2703, Exact KNN results for all geometry types, aka "KNN re-check" (Paul Ramsey / CartoDB)
+  - #1137, Allow a tolerance value in ST_RemoveRepeatedPoints (Paul Ramsey / CartoDB)
+  - #3062, Allow passing M factor to ST_Scale (Sandro Santilli / Boundless)
+  - #3139, ST_BoundingDiagonal (Sandro Santilli / Boundless)
+  - #3129, ST_IsValidTrajectory (Sandro Santilli / Boundless)
+  - #3128, ST_ClosestPointOfApproach (Sandro Santilli / Boundless)
+  - #3152, ST_DistanceCPA (Sandro Santilli / Boundless)
   - Canonical output for index key types
   - ST_SwapOrdinates (Sandro Santilli / Boundless)
-  - #3040, KNN GiST index based centroid (<<->>) and box (<<#>>)
+  - #2918, Use GeographicLib functions for geodetics (Mike Toews)
+  - #3074, ST_Subdivide to break up large geometry (Paul Ramsey / CartoDB)
+  - #3040, KNN GiST index based centroid (<<->>)
            n-D distance operators (Sandro Santilli / Boundless)
   - Interruptibility API for liblwgeom (Sandro Santilli / CartoDB)
   - #2939, ST_ClipByBox2D (Sandro Santilli / CartoDB)
@@ -37,7 +57,7 @@ PostGIS 2.2.0
   - #899, -m shp2pgsql attribute names mapping -m switch
            (Regina Obe / Sandro Santilli)
   - #1678, Added GUC postgis.gdal_datapath to specify GDAL config
-    variable GDAL_DATA
+           variable GDAL_DATA
   - #2843, Support reprojection on raster import
            (Sandro Santilli / Vizzuality)
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
@@ -49,8 +69,11 @@ PostGIS 2.2.0
     variable GDAL_SKIP
   - Added GUC postgis.enable_outdb_rasters to enable access to
     rasters with out-db bands
-  - #2387 address_standardizer extension as part of PostGIS
-     Stephen Woodbridge (imaptools.com), Walter Sinclair
+  - #2387, address_standardizer extension as part of PostGIS
+           Stephen Woodbridge (imaptools.com), Walter Sinclair, Regina Obe
+  - #2816, address_standardizer_data_us extension 
+           provides reference lex,gaz,rules for address_standardizer
+           Stephen Woodbridge (imaptools.com), Walter Sinclair, Regina Obe
   - #2341, New mask parameter for ST_MapAlgebra
   - #2397, read encoding info automatically in shapefile loader
   - #2430, ST_ForceCurve
@@ -58,10 +81,18 @@ PostGIS 2.2.0
   - #2567, ST_CountAgg()
   - #2632, ST_AsGML() support for curved features
   - #2652, Add --upgrade-path switch to run_test.pl
-  - #2754 sfcgal wrapped as an extension
+  - #2754, sfcgal wrapped as an extension
+  - #2227, Simplification with Visvalingam-Whyatt algorithm
+           ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avén)
+  - Functions to encode and decode TWKB
+    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
 
  * Enhancements *
 
+  - #897, ST_AsX3D support for GeoCoordinates and systems "GD" "WE"
+           ability to flip x/y axis (use option = 2, 3)
+  - ST_Split: allow splitting lines by multilines, multipoints
+              and (multi)polygon boundaries
   - #3070, Simplify geometry type constraint
   - #2839, Implement selectivity estimator for functional indexes,
            speeding up spatial queries on raster tables.
@@ -71,6 +102,7 @@ PostGIS 2.2.0
   - #2527, Added -k flag to raster2pgsql to skip checking that
            band is NODATA
   - #2616, Reduce text casts during topology building and export
+  - #2717, support startpoint, endpoint, pointn, numpoints for compoundcurve
   - #2747, Add support for GDAL 2.0
   - #2754, SFCGAL can now be installed with CREATE EXTENSION
        Vincent Mora (Oslandia)
@@ -79,6 +111,7 @@ PostGIS 2.2.0
            and no NODATA specified
   - #2906, Update tiger geocoder to handle tiger 2014 data
   - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
+  - #3092, Slow performance of geometry_columns with many tables
 
  * Bug Fixes *
 
@@ -89,12 +122,58 @@ PostGIS 2.2.0
            like geometry extent
   - #2822, Use @ operator instead of ST_CoveredBy() for raster
            max extent constraint
+  - #3018, GROUP BY geography sometimes returns duplicate rows
   - #3020, ST_AddBand out-db bug where height using width value
+  - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
+  - #3086, ST_DumpValues() crashes backend on cleanup with invalid
+           band indexes
 
  * Code refactoring *
 
   - Split raster/rt_core/rt_api.c and raster/rt_pg/rt_pg.c files into
     smaller files for ease of long-term maintenance and development
+  - #1220, lwerror and lwnotice function became internal to liblwgeom
+
+PostGIS 2.1.6
+2015/03/20
+
+ * Enhancements *
+
+  - #3000, Ensure edge splitting and healing algorithms use indexes
+  - #3048, Speed up geometry simplification (J.Santana @ CartoDB)
+  - #3050, Speep up geometry type reading (J.Santana @ CartoDB)
+
+ * Bug Fixes *
+
+  - #2941, allow geography columns with SRID other than 4326
+  - #3069, small objects getting inappropriately fluffed up w/ boxes
+  - #3068, Have postgis_typmod_dims return NULL for unconstrained dims
+  - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
+  - #3058, Fix ND-GiST picksplit method to split on the best plane
+  - #3052, Make operators <-> and <#> available for PostgreSQL < 9.1
+  - #3045, Fix dimensionality confusion in &&& operator
+  - #3016, Allow unregistering layers of corrupted topologies
+  - #3015, Avoid exceptions from TopologySummary
+  - #3020, ST_AddBand out-db bug where height using width value
+  - #3031, Allow restore of Geometry(Point) tables dumped with empties in them
+
+PostGIS 2.1.5
+2014/12/18
+
+ * Enhancements *
+
+  - #2933, Speedup construction of large multi-geometry objects
+
+ * Bug Fixes *
+
+  - #2947, Fix memory leak in lwgeom_make_valid for single-component
+           collection input
+  - #2949, Fix memory leak in lwgeom_mindistance2d for curve input
+  - #2931, BOX representation is case sensitive
+  - #2942, PostgreSQL 9.5 support
+  - #2953, 2D stats not generated when Z/M values are extreme
+  - #3009, Geography cast may effect underlying tuple
 
 PostGIS 2.1.4
 2014/09/10
@@ -788,7 +867,7 @@ PostGIS 1.5.3
    - #457 ST_CollectionExtract returns non-requested type
     (Nicklas AvÃ©n, Paul Ramsey)
    - #441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)
-   - #411 Ability to backup invalid geometries (Sando Santilli)
+   - #411 Ability to backup invalid geometries (Sandro Santilli)
      Reported by Regione Toscana
    - #409 ST_AsSVG - degraded (Olivier Courtin)
      Reported by Sdikiy

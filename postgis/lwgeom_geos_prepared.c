@@ -314,7 +314,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	*/
 	if ( prepcache->argnum || prepcache->geom || prepcache->prepared_geom )
 	{
-		lwerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
+		lwpgerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
 	}
 	
@@ -331,7 +331,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
+		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
 	
@@ -367,7 +367,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwerror("PrepGeomCacheCleaner failed to find hash entry for context %p", prepcache->context_callback);
+		lwpgerror("PrepGeomCacheCleaner failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
 	pghe->geom = 0;

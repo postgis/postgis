@@ -70,7 +70,7 @@ static void test_geos_noop(void)
 static void test_geos_subdivide(void)
 {
 #if POSTGIS_GEOS_VERSION < 35
-	printf("%d\n", POSTGIS_GEOS_VERSION);
+	// printf("%d\n", POSTGIS_GEOS_VERSION);
 	return;
 #else
 	char *ewkt = "MULTILINESTRING((0 0, 0 100))";

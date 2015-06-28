@@ -8,6 +8,11 @@ select 'ST_Translate', ST_asewkt(ST_Translate('POINT(0 0 0)'::geometry, -3, -7, 
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(1 1)'::geometry, 5, 5));
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(1 1)'::geometry, 3, 2));
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(10 20 -5)'::geometry, 4, 2, -8));
+SELECT 'ST_ScaleBOX', p && ST_Scale(p,ST_MakePoint(-10,1)) FROM (
+  select 'POINT(1 1)'::geometry p ) foo;
+select 'ST_ScaleM1', ST_asewkt(ST_Scale('POINT(10 20 -5 3)'::geometry, ST_MakePoint(4, 2, -8)));
+select 'ST_ScaleM2', ST_asewkt(ST_Scale('POINT(-2 -1 3 2)'::geometry, ST_MakePointM(-2, 3, 4)));
+select 'ST_ScaleM3', ST_asewkt(ST_Scale('POINT(10 20 -5 3)'::geometry, ST_MakePoint(-3, 2, -1, 3)));
 
 -- ST_Rotate
 select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, pi()/2, 10.0, 20.0), 0.1));
@@ -47,6 +52,9 @@ select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geom
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geometry,1, 1, 1, 2), 0.1));
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1)'::geometry,2, 3, 5, 7), 0.1));
 select 'ST_TransScale', ST_asewkt(ST_snapToGrid(ST_TransScale('POINT(1 1 1)'::geometry,2, 3, 5, 7), 0.1));
+
+-- https://trac.osgeo.org/postgis/ticket/3159
+select '#3159', st_summary(st_affine(st_makepoint(1,1),1,0,0,1,0,0));
 
 -- postgis-users/2006-May/012119.html
 select 'transl_bbox', box2d(ST_Translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));

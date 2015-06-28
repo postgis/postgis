@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -21,6 +20,9 @@
 static void
 cu_errorreporter(const char *fmt, va_list ap);
 
+static void
+cu_noticereporter(const char *fmt, va_list ap);
+
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
 extern void print_suite_setup();
@@ -39,6 +41,7 @@ extern void in_geojson_suite_setup(void);
 extern void twkb_in_suite_setup(void);
 extern void libgeom_suite_setup(void);
 extern void measures_suite_setup(void);
+extern void effectivearea_suite_setup(void);
 extern void misc_suite_setup(void);
 extern void node_suite_setup(void);
 extern void out_encoded_polyline_suite_setup(void);
@@ -79,8 +82,10 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
+	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	measures_suite_setup,
+	effectivearea_suite_setup,
 	misc_suite_setup,
 	node_suite_setup,
 	out_encoded_polyline_suite_setup,
@@ -99,7 +104,6 @@ PG_SuiteSetup setupfuncs[] =
 	surface_suite_setup,
 	tree_suite_setup,
 	triangulate_suite_setup,
-	twkb_in_suite_setup,
 	twkb_out_suite_setup,
 	varint_suite_setup,
 	wkb_in_suite_setup,
@@ -131,7 +135,7 @@ int main(int argc, char *argv[])
 	PG_SuiteSetup *setupfunc = setupfuncs;
 
 	/* Install the custom error handler */
-	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0);
+	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, cu_noticereporter);
 
 	/* Initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
@@ -253,6 +257,16 @@ cu_errorreporter(const char *fmt, va_list ap)
 {
   vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
   cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+  /*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
+}
+
+static void
+cu_noticereporter(const char *fmt, va_list ap)
+{
+  char buf[MAX_CUNIT_MSG_LENGTH+1];
+  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+  buf[MAX_CUNIT_MSG_LENGTH]='\0';
+  /*fprintf(stderr, "NOTICE: %s\n", buf);*/
 }
 
 void

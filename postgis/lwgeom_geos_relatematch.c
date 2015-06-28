@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: lwgeom_geos.c 5258 2010-02-17 21:02:49Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -42,7 +41,7 @@ PG_FUNCTION_INFO_V1(ST_RelateMatch);
 Datum ST_RelateMatch(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
+	lwpgerror("The GEOS version this postgis binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_RelateMatch' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -61,13 +60,13 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS)
         mat = text2cstring(mat_text);
         pat = text2cstring(pat_text);
 
-	initGEOS(lwnotice, lwgeom_geos_error);
+	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	result = GEOSRelatePatternMatch(mat, pat);
 	if (result == 2)
 	{
 		lwfree(mat); lwfree(pat);
-		lwerror("GEOSRelatePatternMatch: %s", lwgeom_geos_errmsg);
+		lwpgerror("GEOSRelatePatternMatch: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL();
 	}
 

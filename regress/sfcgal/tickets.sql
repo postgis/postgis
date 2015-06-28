@@ -54,7 +54,7 @@ SELECT '#44', ST_Relate(g1, g2, 'T12101212'), ST_Relate(g1, g2, 't12101212') FRO
 ) AS v(g1, g2);
 
 -- #58 --
-SELECT '#58', round(ST_xmin(g)),round(ST_ymin(g)),round(ST_xmax(g)),round(ST_ymax(g)) FROM (SELECT ST_Envelope('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)') as g)  AS foo;
+SELECT '#58', round(ST_xmin(g)),round(ST_ymin(g)),round(ST_xmax(g)),round(ST_ymax(g)) FROM (SELECT ST_Envelope('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry) as g)  AS foo;
 
 -- #65 --
 SELECT '#65', ST_AsGML(ST_GeometryFromText('CURVEPOLYGON(CIRCULARSTRING(4 2,3 -1.0,1 -1,-1.0 4,4 2))'));
@@ -610,7 +610,7 @@ FROM inp;
 -- #1150
 insert into spatial_ref_sys (srid, proj4text) values (500001,NULL);
 insert into spatial_ref_sys (srid, proj4text) values (500002, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
-select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)',500001));
+select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)'::geometry,500001));
 
 -- #1038
 select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);

@@ -15,7 +15,7 @@
 			  <funcprototype>
 				<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
-				<paramdef><type>float </type> <parameter>a_fraction</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>a_fraction</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -99,7 +99,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>float <function>ST_LineLocatePoint</function></funcdef>
+				<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
 			  </funcprototype>
@@ -183,8 +183,8 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			  <funcprototype>
 				<funcdef>geometry <function>ST_LineSubstring</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
-				<paramdef><type>float </type> <parameter>startfraction</parameter></paramdef>
-				<paramdef><type>float </type> <parameter>endfraction</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>startfraction</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>endfraction</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -281,8 +281,8 @@ WHERE n*100.00/length &lt; 1;
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateAlong</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>a_measure</parameter></paramdef>
-			<paramdef choice="opt"><type>float </type> <parameter>offset</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>a_measure</parameter></paramdef>
+			<paramdef choice="opt"><type>float8 </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -360,9 +360,9 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateBetween</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
-			<paramdef choice="opt"><type>float </type> <parameter>offset</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
+			<paramdef choice="opt"><type>float8 </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -433,8 +433,8 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>elevation_start</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>elevation_end</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>elevation_start</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>elevation_end</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -501,7 +501,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>float <function>ST_InterpolatePoint</function></funcdef>
+				<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
 			  </funcprototype>
@@ -542,7 +542,7 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
 
-		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points. If the geometry has no measure dimension, one is added. If the geometry has a measure dimension, it is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</refpurpose>
+		<refpurpose>Return a derived geometry with measure elements linearly interpolated between the start and end points.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -550,8 +550,8 @@ LINESTRING(6.1 7.1 6,7 8 9)
 		  <funcprototype>
 			<funcdef>geometry <function>ST_AddMeasure</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
-			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_start</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>measure_end</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -597,6 +597,5 @@ ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))')
 	  </refsection>
 
 	</refentry>
-
 	
   </sect1>

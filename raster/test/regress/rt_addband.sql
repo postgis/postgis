@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------
--- $Id$
 --
 -- Copyright (c) 2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --

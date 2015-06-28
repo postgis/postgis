@@ -1,5 +1,4 @@
 dnl **********************************************************************
-dnl * $Id: configure.ac 2797 2008-05-31 09:56:44Z mcayland $
 dnl *
 dnl * PostGIS - Spatial Types for PostgreSQL
 dnl * http://postgis.net
@@ -114,7 +113,6 @@ dnl Check for platform-specific functions
 dnl
 AC_CHECK_FUNC(vasprintf, AC_DEFINE([HAVE_VASPRINTF]))
 AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
-AC_CHECK_FUNC(strcasestr, AC_DEFINE([HAVE_STRCASESTR]))
 AC_FUNC_FSEEKO()
 
 dnl 
@@ -428,15 +426,6 @@ if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
 	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.0])
 fi	
 
-dnl Temporary hack until minimum PostgreSQL version is 9.0:
-dnl If PostgreSQL < 9.0 is detected, trigger the inclusion of the new versioned PGXS targets
-PGXSOVERRIDE=0
-if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
-	PGXSOVERRIDE=1
-fi
-
-AC_SUBST([PGXSOVERRIDE])
-
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)
@@ -663,12 +652,21 @@ if test "x$with_sfcgal" != "xno"; then
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
 		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`" -DHAVE_SFCGAL"
 
+		SFCGAL_MAJOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f1 | sed 's/[[^0-9]]//g'`
+		SFCGAL_MINOR_VERSION=`echo $SFCGAL_VERSION | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+		POSTGIS_SFCGAL_VERSION="$SFCGAL_MAJOR_VERSION$SFCGAL_MINOR_VERSION"
+		AC_DEFINE_UNQUOTED([POSTGIS_SFCGAL_VERSION], [$POSTGIS_SFCGAL_VERSION], [SFCGAL library version at build time])
+		AC_SUBST([POSTGIS_SFCGAL_VERSION])
+
 		SFCGAL_STATIC=`$SFCGAL_CONFIG --static`
 		if test "x$SFCGAL_STATIC" = "xON"; then
 			AC_MSG_WARN([The SFCGAL version found is not installed as a dynamic library.])
 		else
         		SFCGAL="sfcgal"
 			HAVE_SFCGAL="yes"
+		fi
+		if test ! "$POSTGIS_SFCGAL_VERSION" -ge 11; then
+			AC_MSG_ERROR([PostGIS requires SFCGAL >= 1.1.0 (found $SFCGAL_VERSION)])
 		fi
 
 	else
@@ -1272,7 +1270,8 @@ AC_OUTPUT([GNUmakefile
    extensions/postgis_tiger_geocoder/Makefile 
    extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control 
    extensions/address_standardizer/Makefile 
-   extensions/address_standardizer/address_standardizer.control 
+   extensions/address_standardizer/address_standardizer.control
+   extensions/address_standardizer/address_standardizer_data_us.control    
    liblwgeom/Makefile 
    liblwgeom/cunit/Makefile 
    liblwgeom/liblwgeom.h 
@@ -1289,7 +1288,6 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments 
    doc/html/image_src/Makefile 
    utils/Makefile 
-   java/jdbc/Makefile
    $RT_MAKEFILE_LIST])
     
 dnl ===========================================================================
@@ -1357,14 +1355,14 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30302; then
-AC_MSG_RESULT([ --------- GEOS VERSION NOTICE ------------ ])
-AC_MSG_RESULT([  You are building against GEOS ${GEOS_FULL_VERSION} ])
-AC_MSG_RESULT([  To take advantage of all the features of ])
-AC_MSG_RESULT([  PostGIS we recommend you build using ])
-AC_MSG_RESULT([  GEOS 3.3.2 or higher. You can download ])
-AC_MSG_RESULT([  the latest versions from ])
-AC_MSG_RESULT([  http://trac.osgeo.org/geos ])
-AC_MSG_RESULT()
+if test "$GEOS_NUMERIC_VERSION" -lt 30402; then
+AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
+AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
+AC_MSG_WARN([  To take advantage of all the features of ])
+AC_MSG_WARN([  PostGIS we recommend you build using ])
+AC_MSG_WARN([  GEOS 3.4.2 or higher. You can download ])
+AC_MSG_WARN([  the latest versions from ])
+AC_MSG_WARN([  http://trac.osgeo.org/geos ])
+AC_MSG_WARN()
 fi
 

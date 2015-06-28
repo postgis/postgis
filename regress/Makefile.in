@@ -33,9 +33,9 @@ PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
 # Where we put our regression installation 
 ifeq ($(MINGWBUILD),1)
-        srcdir=$(shell bash -c "pwd -W")
+	srcdir=$(shell bash -c "pwd -W")
 else
-        srcdir=$(shell pwd)
+	srcdir=$(shell pwd)
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
@@ -71,8 +71,8 @@ TESTS = \
 	loader/Latin1 \
 	loader/Latin1-implicit \
 	loader/mfile \
-  dumper/literalsrid \
-  dumper/realtable \
+	dumper/literalsrid \
+	dumper/realtable \
 	binary \
 	operators \
 	regress \
@@ -85,11 +85,12 @@ TESTS = \
 	setpoint \
 	size \
 	simplify \
+	simplifyvw \
 	snaptogrid \
 	summary \
 	affine \
 	empty \
-  forcecurve \
+	forcecurve \
 	measures \
 	legacy \
 	long_xact \
@@ -126,6 +127,7 @@ TESTS = \
 	wmsservers \
 	wkt \
 	wkb \
+	temporal \
 	tickets \
 	typmod \
 	remove_repeated_points \
@@ -137,8 +139,17 @@ TESTS = \
 	twkb
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
-  # Index supported KNN only available in PostgreSQL 9.1 and higher
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
+	# Index supported KNN only available in PostgreSQL 9.1 and higher
+	# For 9.5 and higher, use the recheck suite instead
 	TESTS += knn
+endif
+endif
+
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
+	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
+	TESTS += knn_recheck \
+           temporal_knn
 endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
@@ -155,7 +166,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
 	TESTS += \
 		offsetcurve \
-		relatematch  \
+		relatematch \
 		isvaliddetail \
 		sharedpaths \
 		snap \
@@ -182,7 +193,8 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 	# GEOS-3.5 adds:
 	# ST_ClipByBox2d
 	TESTS += \
-		clipbybox2d
+		clipbybox2d \
+		subdivide
 endif
 
 ifeq ($(HAVE_JSON),yes)
@@ -205,7 +217,8 @@ ifeq ($(HAVE_SFCGAL),yes)
 		sfcgal/regress.sql \
 		sfcgal/tickets.sql \
 		sfcgal/concave_hull.sql \
-		sfcgal/wmsservers.sql
+		sfcgal/wmsservers.sql \
+		sfcgal/approximatemedialaxis.sql
 
 	SFCGALTESTFLAGS = --sfcgal
 endif
@@ -237,15 +250,17 @@ test check: staged-install
 	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(SFCGALTESTFLAGS) $(TESTS)
 
 garden:
-	createdb postgis_garden && \
-	createlang plpgsql postgis_garden && \
-	psql -d postgis_garden < ../postgis/postgis.sql && \
-	psql -d postgis_garden < ../spatial_ref_sys.sql || true # tolerate an error here
+	createdb postgis_garden
+	createlang plpgsql postgis_garden || true #tolerate an error here
+	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/postgis.sql && \
+	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/spatial_ref_sys.sql || true # tolerate an error here
+	psql -d postgis_garden < $(REGRESS_INSTALLDIR)/share/contrib/postgis/rtpostgis.sql || true #tolerate an error here
 	@echo '-------------------------------------------------'
 	@echo 'Regression tests in progress (it will take time)'
 	@echo 'Result output: ./regress/postgis_garden_result.txt'
 	@echo '-------------------------------------------------'
 	psql -ad postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
+	psql -ad postgis_garden < ../doc/raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > raster_garden_result.txt 2>&1
 	#dropdb postgis_garden
 
 cleanup:

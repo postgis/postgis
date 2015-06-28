@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
@@ -30,7 +29,7 @@
  */
 
 #include "../../postgis_config.h"
-//#define POSTGIS_DEBUG_LEVEL 4
+/* #define POSTGIS_DEBUG_LEVEL 4 */
 
 #include "librtcore.h"
 #include "librtcore_internal.h"
@@ -294,7 +293,7 @@ rt_raster rt_raster_gdal_warp(
 		) {
 			double ngt[6] = {166021.4431, 0.1, 0, 10000000.0000, 0, -0.1};
 
-			rtinfo("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
+			rtwarn("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
 
 			subspatial = 1;
 
@@ -744,8 +743,8 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		_dim[0], _dim[1]);
 
-	if (FLT_EQ(_dim[0], 0) || FLT_EQ(_dim[1], 0)) {
-		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _dim[0], _dim[1]);
+	if ( _dim[0] == 0 || _dim[1] == 0 ) {
+		rterror("rt_raster_gdal_warp: The width (%d) or height (%d) of the warped raster is zero", _dim[0], _dim[1]);
 		_rti_warp_arg_destroy(arg);
 		return NULL;
 	}

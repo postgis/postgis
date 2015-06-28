@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id:$
  *
  * PostGIS - Export functions for PostgreSQL/PostGIS
  * Copyright 2009-2011 Olivier Courtin <olivier.courtin@oslandia.com>
@@ -177,8 +176,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
 	const char* gml_id = NULL;
-	char *prefix_buf, *gml_id_buf;
+	size_t len;
+	char *gml_id_buf, *prefix_buf;
 	text *prefix_text, *gml_id_text;
+	
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -210,19 +211,18 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
 	{
 		prefix_text = PG_GETARG_TEXT_P(4);
-		if ( VARSIZE(prefix_text)-VARHDRSZ == 0 )
+		if ( VARSIZE(prefix_text) == VARHDRSZ )
 		{
 			prefix = "";
 		}
 		else
 		{
-			/* +2 is one for the ':' and one for term null */
-			prefix_buf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-			memcpy(prefix_buf, VARDATA(prefix_text),
-			       VARSIZE(prefix_text)-VARHDRSZ);
+			len = VARSIZE(prefix_text)-VARHDRSZ;
+			prefix_buf = palloc(len + 2); /* +2 is one for the ':' and one for term null */
+			memcpy(prefix_buf, VARDATA(prefix_text), len);
 			/* add colon and null terminate */
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix_buf[len] = ':';
+			prefix_buf[len+1] = '\0';
 			prefix = prefix_buf;
 		}
 	}
@@ -230,15 +230,16 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
 	{
 		gml_id_text = PG_GETARG_TEXT_P(5);
-		if ( VARSIZE(gml_id_text)-VARHDRSZ == 0 )
+		if ( VARSIZE(gml_id_text) == VARHDRSZ )
 		{
 			gml_id = "";
 		}
 		else
 		{
-			gml_id_buf = palloc(VARSIZE(gml_id_text)-VARHDRSZ+1);
-			memcpy(gml_id_buf, VARDATA(gml_id_text), VARSIZE(gml_id_text)-VARHDRSZ);
-			gml_id_buf[VARSIZE(gml_id_text)-VARHDRSZ+1] = '\0';
+			len = VARSIZE(gml_id_text)-VARHDRSZ;
+			gml_id_buf = palloc(len+1);
+			memcpy(gml_id_buf, VARDATA(gml_id_text), len);
+			gml_id_buf[len] = '\0';
 			gml_id = gml_id_buf;
 		}
 	}
@@ -519,6 +520,8 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	/* retrieve option */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
+		
+	
 
 	/* retrieve defid */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
@@ -541,12 +544,22 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
+	lwgeom = lwgeom_from_gserialized(geom);
 	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
-
-	lwgeom = lwgeom_from_gserialized(geom);
+	
+	if (option & LW_X3D_USE_GEOCOORDS) {
+		if (srid != 4326) {
+			PG_FREE_IF_COPY(geom, 0);
+			/** TODO: we need to support UTM and other coordinate systems supported by X3D eventually 
+			http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#t-earthgeoids **/
+			elog(ERROR, "Only SRID 4326 is supported for geocoordinates.");
+			PG_RETURN_NULL();
+		}
+	}
+	
 
 	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
 

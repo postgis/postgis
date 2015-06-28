@@ -16,9 +16,6 @@ Directory structure::
   ./extensions  Support for the PostgreSQL 9.1+ Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
                 (package management specfiles, WFS_locks, sample WKB parser)
-  ./java/ejb    EJB Java support
-  ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
-                the GIS objects
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL
   ./loader      A program to convert ESRI Shape files into SQL text suitable

@@ -1,4 +1,3 @@
--- $Id$
 -- Test the populate_geometry_columns,DropGeometryTable etc --
 \set VERBOSITY terse
 SET client_min_messages TO warning;

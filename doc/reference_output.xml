@@ -781,10 +781,28 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 
 		<para>Returns a geometry as an X3D xml formatted node element  <ulink url="http://www.web3d.org/standards/number/19776-1">http://www.web3d.org/standards/number/19776-1</ulink>.  If <varname>maxdecimaldigits</varname> (precision) is not specified then defaults to 15. </para>
 		<note>
-		    <para>There are various options for translating PostGIS geometries to X3D since X3D geometry types don't map directly to PostGIS geometry types and some newer X3D types that might be better mappings we ahve avoided since most rendering tools don't currently support them.  
+		    <para>There are various options for translating PostGIS geometries to X3D since X3D geometry types don't map directly to PostGIS geometry types and some newer X3D types that might be better mappings we have avoided since most rendering tools don't currently support them.  
 		        These are the mappings we have settled on.  Feel free to post a bug ticket if you have thoughts on the idea or ways we can allow people to denote their preferred mappings.</para>
 		    <para>Below is how we currently map PostGIS 2D/3D types to X3D types</para>
 		</note>
+		
+        <para>The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to denote whether to represent coordinates with X3D GeoCoordinates Geospatial node and also whether to flip the x/y axis.  By default, <code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D default of lat/lon, y/x may be preferred.</para>
+       
+        <itemizedlist>
+            <listitem>
+              <para>0: X/Y in database order (e.g. long/lat = X,Y is standard database order), default value, and non-spatial coordinates (just regular old Coordinate tag).</para>
+            </listitem>
+        
+            <listitem>
+              <para>1: Flip X and Y.  If used in conjunction with the GeoCoordinate option switch, then output will be default "latitude_first" and coordinates will be flipped as well.</para>
+            </listitem>
+        
+            <listitem>
+              <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currenlty the only GeoCoordinate type supported.  <ulink url="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</ulink>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
+              you prefer the X3D default of  <code>GeoCoordinate geoSystem='"GD" "WE" "latitude_first"'</code> use <code>(2 + 1)</code> = <code>3</code> </para>
+            </listitem>
+        </itemizedlist>
+        
 		
 		<informaltable>
 				<tgroup cols="3">
@@ -833,7 +851,8 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		<para>Lots of advancements happening in 3D space particularly with <ulink url="http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5">X3D Integration with HTML5</ulink></para>
 		<para>There is also a nice open source X3D viewer you can use to view rendered geometries. Free Wrl <ulink url="http://freewrl.sourceforge.net/">http://freewrl.sourceforge.net/</ulink> binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher packaged to view the geometries.</para>
 		<para>Also check out <ulink url="https://github.com/robe2/postgis_x3d_viewer">PostGIS minimalist X3D viewer</ulink>  that utilizes this function and <ulink url="http://www.x3dom.org/">x3dDom html/js open source toolkit</ulink>.</para>
-		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>	
+		<para>Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML</para>
+		<para>Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) flipping.  Look at options for details.</para>	
 		<!-- Optionally mention 3d support -->
 		<para>&Z_support;</para>
         <!-- Optionally mention supports Polyhedral Surface  -->
@@ -1156,7 +1175,7 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 	<refentry id="ST_AsTWKB">
 		  <refnamediv>
 			<refname>ST_AsTWKB</refname>
-			<refpurpose>Returns the geometry as TWKB, Tiny WKB</refpurpose>
+			<refpurpose>Returns the geometry as TWKB, aka "Tiny Well-Known Binary"</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1164,24 +1183,32 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID=null</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include sizes=false</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include bounding boxes=false</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include_bounding boxes=false</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsTWKB</function></funcdef>
+				<paramdef><type>geometry[] </type> <parameter>geometries</parameter></paramdef>
+				<paramdef><type>bigint[] </type> <parameter>unique_ids</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef>
+				<paramdef><type>boolean </type> <parameter>include_bounding_boxes=false</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
-			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
-			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
-			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
-			<para>The fourth parameter is optional. If it is set to true, the size of the geometry is included</para>
+			<para>Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a <ulink url="https://github.com/TWKB/Specification/blob/master/twkb.md">compressed binary format</ulink> with a focus on minimizing the size of the output. </para>
+			<para>The decimal digits parameters control how much precision is stored in the output. By default, values are rounded to the nearest unit before encoding. If you want to transfer more precision, increase the number. For example, a value of 1 implies that the first digit to the right of the decimal point will be preserved.</para>
+			<para>The sizes and bounding boxes parameters control whether optional information about the encoded length of the object and the bounds of the object are included in the output. By default they are not. Do not turn them on unless your client software has a use for them, as they just use up space (and saving space is the point of TWKB).</para>
+			<para>The array-input form of the function is used to convert a collection of geometries and unique identifiers into a TWKB collection that preserves the identifiers. This is useful for clients that expect to unpack a collection and then access further information about the objects inside. You can create the arrays using the <ulink url="http://www.postgresql.org/docs/9.4/static/functions-aggregate.html">array_agg</ulink> function. The other parameters operate the same as for the simple form of the function.</para>
 			<note>
-			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink> , and code for building a client can be found <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink></para>
-			</note>		
-			<note>
-			  <para>TWKB doesn't make any difference of Z and M. So PointM and PointZ will give the same twkb representation.</para>
+			  <para>The format specification is available online at <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink>, and code for building a JavaScript client can be found at <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink>.</para>
 			</note>		
 
 			<para>Availability: 2.2.0</para>
@@ -1191,91 +1218,30 @@ SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));
 		  <refsection>
 			<title>Examples</title>
 <programlisting>
-SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry,0,1);
+SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);
                  st_astwkb                  
 --------------------------------------------
-\x0142020202020808
+\x02000202020808
+
 </programlisting>
+<para>To create an aggregate TWKB object including identifiers aggregate the desired geometries and objects first, using "array_agg()", then call the appropriate TWKB function.
+</para>
+<programlisting>
+SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
+                 st_astwkb                  
+--------------------------------------------
+\x040402020400000202
+</programlisting>
+
 		  </refsection>
 
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsTWKBAgg" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
+			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_AsTWKBAgg">
-		  <refnamediv>
-			<refname>ST_AsTWKBAgg</refname>
-			<refpurpose>Aggregates the geometries and returns as TWKB</refpurpose>
-		  </refnamediv>
 
-		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include sizes</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>bytea <function>ST_AsTWKBAgg</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>decimaldigits</parameter></paramdef>
-				<paramdef><type>int8 </type> <parameter>geometryID</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include sizes</parameter></paramdef>
-				<paramdef><type>boolean </type> <parameter>include bounding boxes</parameter></paramdef>
-			  </funcprototype>
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>Returns the geometry in TWKB format. TWKB is a new compressed binary format. </para>
-			<para>This is the aggregate version of ST_AsTWKB. It aggregates and returns the geometry in TWKB-format. In the resulting TWKB-geometry each individual ID of the input geometries is stored. </para>
-			<para>The second parameter is an integer used to define the number of coordinate decimals in the output.</para>
-			<para>The third parameter is optional. It is used to give each TWKB-geometry an unique ID</para>
-			<para>The fourth parameter is optional. If it is set to true, the size of the geometry is included</para>
-			<note>
-			  <para>TWKB is still a moving target. The format is described <ulink url="https://github.com/nicklasaven/TWKB">https://github.com/nicklasaven/TWKB</ulink> , and code for building a client can be found <ulink url="https://github.com/nicklasaven/twkb_web">https://github.com/nicklasaven/twkb_web</ulink></para>
-			</note>
-				
-
-			<para>Availability: 2.2.0</para>
-		  </refsection>
-
-
-		  <refsection>
-			<title>Examples</title>
-<programlisting>
-SELECT ST_AsTWKBAgg(geom,0,id) FROM
-(SELECT 'LINESTRING(1 1,5 5)'::geometry geom, 1 AS id
-UNION ALL
-SELECT 'LINESTRING(6 5, 1 7)'::geometry AS geom, 2 AS id) foo;
-                               st_astwkbagg                                
-----------------------------------------------------------------------------
-\x015602020202020808040202000904
-</programlisting>
-</refsection>
-		  <!-- Optionally add a "See Also" section -->
-		  <refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_AsTWKB" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
-		  </refsection>
-</refentry>
 
 <refentry id="ST_AsEncodedPolyline">
     <refnamediv>

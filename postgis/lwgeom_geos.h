@@ -28,6 +28,8 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems, int* is3d, int* srid);
 
 Datum geos_intersects(PG_FUNCTION_ARGS);
 Datum geos_intersection(PG_FUNCTION_ARGS);
+Datum geos_difference(PG_FUNCTION_ARGS);
+Datum geos_geomunion(PG_FUNCTION_ARGS);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);

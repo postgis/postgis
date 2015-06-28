@@ -1,5 +1,4 @@
 #############################################################################
-# $Id$ 
 #
 # Makefile used to simplify creation of PostGIS and WKT Raster enabled
 # database. Run make -f Makefile.rt to see usage message.

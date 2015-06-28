@@ -152,7 +152,7 @@ lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
 	char ret;
 	POINTARRAY *pa;
 
-	pa = ptarray_remove_repeated_points(triangle->points);
+	pa = ptarray_remove_repeated_points(triangle->points, 0.0);
 	ret = ptarray_same(pa, triangle->points);
 	ptarray_free(pa);
 

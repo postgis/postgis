@@ -1,6 +1,5 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-	 $Id$
 	 ********************************************************************
 	 Copyright 2010, Regina Obe
 	 License: BSD
@@ -459,7 +458,7 @@
 	
 				<note><para>postgis_sfcgal now can be installed as an extension using CREATE EXTENSION postgis_sfcgal;</para></note>
 				<note><para>PostGIS 2.2.0: Tiger Geocoder upgraded to work with TIGER 2014 data.</para></note>
-					
+				<note><para>address_standardizer, address_standardizer_data_us extensions for standardizing address data refer to <xref linkend="Address_Standardizer" /> for details.</para></note>	
 				<para>Functions new in PostGIS 2.2</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
@@ -489,6 +488,31 @@
 							</xsl:for-each>
 					</xsl:for-each>
 				</itemizedlist>
+				
+				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.2.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry   -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				<!-- For each section if there is note about enhanced in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Enhanced: 2.2')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>				
 			</sect2>
 			
 		 <sect2 id="ChangedFunctions_2_2"><title>PostGIS functions breaking changes in 2.2</title>

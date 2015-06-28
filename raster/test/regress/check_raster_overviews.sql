@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------
--- $Id$
 --
 -- Copyright (c) 2010 Mateusz Loskot <mateusz@loskot.net>
 -- Copyright (C) 2011 Regents of the University of California

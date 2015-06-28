@@ -1064,13 +1064,12 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  </refsection>
 		</refentry>
 		
-		<refentry id="geometry_distance_centroid">
+		<refentry id="geometry_distance_knn">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
 			<refpurpose>
-Returns the 2D distance between the centroids of A and B bounding
-boxes.
+Returns the 2D distance between A and B.
 			</refpurpose>
 		  </refnamediv>
 
@@ -1091,6 +1090,22 @@ boxes.
 				  <parameter>B</parameter>
 				</paramdef>
 			  </funcprototype>
+			  
+			   <funcprototype>
+				<funcdef>double precision <function>&lt;-&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>geography </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geography </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -1098,18 +1113,21 @@ boxes.
 			<title>Description</title>
 
 			<para>
-The <varname>&lt;-&gt;</varname> operator returns the 2D distance between the
-centroids of the bounding boxes of two geometries.  Useful for doing
-nearest neighbor <emphasis role="strong">approximate</emphasis> distance
-ordering.</para>
+The <varname>&lt;-&gt;</varname> operator returns the 2D distance between
+two geometries.  Used in the "ORDER BY" clause provides index-assisted
+nearest-neighbor result sets.  For PostgreSQL below 9.5 only gives
+centroid distance of bounding boxes and for PostgreSQL 9.5+, does true
+KNN distance search giving true distance between geometries, and distance
+sphere for geographies.
+      </para>
 
-			<note><para>This operand will make use of 2D GiST indexes that may be available on the
-			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
-			  is in the ORDER BY clause.</para></note>
+			<note><para>This operand will make use of 2D GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 			<para>Refer to <ulink url="http://workshops.opengeo.org/postgis-intro/knn.html">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live example.</para>
 
-			 <para>Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+</para>
+			 <para>Enhanced: 2.2.0 -- True KNN ("K nearest neighbor") behavior for geometry and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere rather than spheroid.  For PostgreSQL 9.4 and below, geography support is new but only supports centroid box.</para>
+			 <para>Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, so you'll want to get rid of that hack if you are running your code only on PostGIS 2.2+ 9.5+.  See examples below.</para>
+			 <para>Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry centroid distances instead of true distances. Exact results for points, inexact for all other types. Available for PostgreSQL 9.1+</para>
 			 	
 		
 		  </refsection>
@@ -1144,23 +1162,23 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
         d         | edabbr | vaabbr
 ------------------+--------+--------
                 0 | ALQ    | 128
- 5579.67450712005 | ALQ    | 001
  5541.57712511724 | ALQ    | 129A
+ 5579.67450712005 | ALQ    | 001
+  6083.4207708641 | ALQ    | 131
+  7691.2205404848 | ALQ    | 003
+ 7900.75451037313 | ALQ    | 122
  8694.20710669982 | ALQ    | 129B
  9564.24289057111 | ALQ    | 130
-  6083.4207708641 | ALQ    | 131
   12089.665931705 | ALQ    | 127
-  24795.264503022 | ALQ    | 124
- 24587.6584922302 | ALQ    | 123
- 26764.2555463114 | ALQ    | 125
+ 18472.5531479404 | ALQ    | 002
 (10 rows)
 </programlisting>
 <para>
-Note the misordering in the actual distances and the different entries that actually show up in the top 10.
+If you run "EXPLAIN ANALYZE" on the two queries you would see a performance improvement for the second.
 </para>
 
 <para>
-Finally the hybrid:
+For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the true nearest neighbors. First a CTE query using the index-assisted KNN, then an exact query to get correct ordering:
 </para>
 <programlisting><![CDATA[WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
@@ -1189,6 +1207,86 @@ Finally the hybrid:
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_box" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="geometry_distance_cpa">
+		  <refnamediv>
+			<refname>|=|</refname>
+
+			<refpurpose>
+Returns the distance between A and B trajectories at their closest point of approach.
+			</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>|=|</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+The <varname>|=|</varname> operator returns the 3D distance between
+two trajectories (See <xref linkend="ST_IsValidTrajectory" />).
+This is the same as <xref linkend="ST_DistanceCPA" /> but as an operator
+it can be used for doing nearest neightbor searches using an N-dimensional
+index (requires PostgreSQL 9.5.0 or higher).
+      </para>
+
+			<note><para>This operand will make use of ND GiST indexes that may be available on the geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator is in the ORDER BY clause.</para></note>
+			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead of a.geom</para></note>
+
+			 <para>Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+</para>
+
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- Save a literal query trajectory in a psql variable...
+\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),ST_MakePointM(-410,490,0)),10,20)'
+-- Run the query !
+SELECT track_id, dist FROM (
+  SELECT track_id, ST_DistanceCPA(tr,:qt) dist
+  FROM trajectories
+  ORDER BY tr |=| :qt
+  LIMIT 5
+) foo;
+ track_id        dist
+----------+-------------------
+      395 | 0.576496831518066
+      380 |  5.06797130410151
+      390 |  7.72262293958322
+      385 |   9.8004461358071
+      405 |  10.9534397988433
+(5 rows)
+</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_DistanceCPA" />,
+<xref linkend="ST_ClosestPointOfApproach" />,
+<xref linkend="ST_IsValidTrajectory" />
+      </para>
 		  </refsection>
 		</refentry>
 		
@@ -1268,7 +1366,7 @@ SELECT b.tlid, b.mtfcc,
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_centroid" /></para>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_knn" /></para>
 		  </refsection>
 		</refentry>
 
@@ -1333,7 +1431,7 @@ of a.geom
 			<title>See Also</title>
 			<para>
 <xref linkend="geometry_distance_box_nd" />,
-<xref linkend="geometry_distance_centroid" />
+<xref linkend="geometry_distance_knn" />
       </para>
 		  </refsection>
 		</refentry>

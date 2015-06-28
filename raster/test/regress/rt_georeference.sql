@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------
--- $Id$
 --
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>, David Zwarg <dzwarg@azavea.com>
 --

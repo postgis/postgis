@@ -34,21 +34,22 @@ void pg_install_lwgeom_handlers(void);
 #if POSTGIS_DEBUG_LEVEL > 0
 
 /* Display a simple message at NOTICE level */
+/* from PgSQL utils/elog.h, LOG is 15, and DEBUG5 is 10 and everything else is in between */
 #define POSTGIS_DEBUG(level, msg) \
         do { \
                 if (POSTGIS_DEBUG_LEVEL >= level) \
-                        ereport(NOTICE, (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
+                        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__))); \
         } while (0);
 
 /* Display a formatted message at NOTICE level (like printf, with variadic arguments) */
 #define POSTGIS_DEBUGF(level, msg, ...) \
         do { \
                 if (POSTGIS_DEBUG_LEVEL >= level) \
-                        ereport(NOTICE, (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
+                        ereport((level < 1 || level > 5) ? DEBUG5 : (LOG - level), (errmsg_internal("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__))); \
         } while (0);
 
-#else
-
+#else /* POSTGIS_DEBUG_LEVEL */
+	
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_DEBUG(level, msg) \
         ((void) 0)
@@ -57,7 +58,7 @@ void pg_install_lwgeom_handlers(void);
 #define POSTGIS_DEBUGF(level, msg, ...) \
         ((void) 0)
 
-#endif
+#endif /* POSTGIS_DEBUG_LEVEL */
 
 
 /*
@@ -162,13 +163,15 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_curve(PG_FUNCTION_ARGS);
 
-Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
+Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS);
 Datum LWGEOMFromTWKB(PG_FUNCTION_ARGS);
-Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
-Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
+
+void lwpgerror(const char *fmt, ...);
+void lwpgnotice(const char *fmt, ...);
+void lwpgwarning(const char *fmt, ...);
 
 #endif /* !defined _LWGEOM_PG_H */

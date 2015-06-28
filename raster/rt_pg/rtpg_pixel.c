@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
@@ -174,20 +173,23 @@ static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init() {
 static void rtpg_dumpvalues_arg_destroy(rtpg_dumpvalues_arg arg) {
 	int i = 0;
 
-	if (arg->numbands) {
+	if (arg->numbands > 0) {
 		if (arg->nbands != NULL)
 			pfree(arg->nbands);
 
-		for (i = 0; i < arg->numbands; i++) {
-			if (arg->values[i] != NULL)
-				pfree(arg->values[i]);
+		if (arg->values != NULL) {
+			for (i = 0; i < arg->numbands; i++) {
 
-			if (arg->nodata[i] != NULL)
-				pfree(arg->nodata[i]);
+				if (arg->values[i] != NULL)
+					pfree(arg->values[i]);
+
+				if (arg->nodata[i] != NULL)
+					pfree(arg->nodata[i]);
+			}
+
+			pfree(arg->values);
 		}
 
-		if (arg->values != NULL)
-			pfree(arg->values);
 		if (arg->nodata != NULL)
 			pfree(arg->nodata);
 	}
@@ -363,6 +365,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			}
 
 		}
+		/* no bands specified, return all bands */
 		else {
 			arg1->numbands = numbands;
 			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
@@ -959,7 +962,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(nulls);
 	}
 	/* hasnosetvalue and nosetvalue */
-	else if (!PG_ARGISNULL(6) & PG_GETARG_BOOL(6)) {
+	else if (!PG_ARGISNULL(6) && PG_GETARG_BOOL(6)) {
 		hasnosetval = TRUE;
 		if (PG_ARGISNULL(7))
 			nosetvalisnull = TRUE;

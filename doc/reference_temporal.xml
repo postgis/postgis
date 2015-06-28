@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sect1 id="Temporal">
+	  <title>Temporal Support</title>
+
+		<refentry id="ST_IsValidTrajectory">
+
+		  <refnamediv>
+			<refname>ST_IsValidTrajectory</refname>
+			<refpurpose>
+Returns <varname>true</varname> if the geometry is a valid trajectory.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Tell if a geometry encodes a valid trajectory.
+Valid trajectories are encoded as LINESTRING with M value growing
+from each vertex to the next.
+			</para>
+
+			<para>
+Valid trajectories are expected as input to some spatio-temporal queries
+like <xref linkend="ST_ClosestPointOfApproach" />
+			</para>
+      
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- A valid trajectory
+SELECT ST_IsValidTrajectory(ST_MakeLine(
+  ST_MakePointM(0,0,1),
+  ST_MakePointM(0,1,2))
+);
+ t
+
+-- An invalid trajectory
+SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));
+NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+ st_isvalidtrajectory
+----------------------
+ f
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_ClosestPointOfApproach" />
+			</para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_ClosestPointOfApproach">
+
+		  <refnamediv>
+			<refname>ST_ClosestPointOfApproach</refname>
+			<refpurpose>
+Returns the measure at which points interpolated along two lines are closest.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Returns the smallest measure at which point interpolated along the given
+lines are at the smallest distance. Inputs must be valid trajectories as
+checked by <xref linkend="ST_IsValidTrajectory" />. Null is returned if
+the trajectories do not overlap on the M range.
+			</para>
+      
+			<para>
+See <xref linkend="ST_LocateAlong" /> for getting the actual points at
+the given measure.
+			</para>
+			
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- Return the time in which two objects moving between 10:00 and 11:00
+-- are closest to each other and their distance at that point
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+), cpa AS (
+  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp
+), points AS (
+  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,
+         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb
+  FROM inp, cpa
+)
+SELECT to_timestamp(m) t,
+       ST_Distance(pa,pb) distance
+FROM points, cpa;
+
+               t               |     distance
+-------------------------------+------------------
+ 2015-05-26 10:45:31.034483+02 | 1.96036833151395
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_IsValidTrajectory" />,
+<xref linkend="ST_DistanceCPA" />,
+<xref linkend="ST_LocateAlong" />,
+<xref linkend="ST_AddMeasure" />
+			</para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_DistanceCPA">
+
+		  <refnamediv>
+			<refname>ST_DistanceCPA</refname>
+			<refpurpose>
+Returns the distance between closest points of approach in two trajectories.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float8 <function>ST_DistanceCPA</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Returns the minimum distance two moving objects have ever been each-other.
+Inputs must be valid trajectories as checked by
+<xref linkend="ST_IsValidTrajectory" />.
+Null is returned if the trajectories do not overlap on the M range.
+			</para>
+      
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- Return the minimum distance of two objects moving between 10:00 and 11:00
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+)
+SELECT ST_DistanceCPA(a,b) distance FROM inp;
+
+     distance
+------------------
+ 1.96036833151395
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_IsValidTrajectory" />,
+<xref linkend="ST_ClosestPointOfApproach" />,
+<xref linkend="ST_AddMeasure" />,
+<xref linkend="geometry_distance_cpa" />
+			</para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_CPAWithin">
+
+		  <refnamediv>
+			<refname>ST_CPAWithin</refname>
+			<refpurpose>
+Returns true if the trajectories' closest points of approach
+are within the specified distance.
+      </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float8 <function>ST_CPAWithin</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>
+				<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Checks whether two moving objects have ever been within the
+specified max distance.
+      </para>
+			<para>
+Inputs must be valid trajectories as checked by
+<xref linkend="ST_IsValidTrajectory" />.
+False is returned if the trajectories do not overlap on the M range.
+			</para>
+      
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+WITH inp AS ( SELECT
+  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) a,
+  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,
+    extract(epoch from '2015-05-26 10:00'::timestamptz),
+    extract(epoch from '2015-05-26 11:00'::timestamptz)
+  ) b
+)
+SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;
+
+ st_cpawithin |     distance
+--------------+------------------
+ t            | 1.96521473776207
+</programlisting>
+		  </refsection>
+
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_IsValidTrajectory" />,
+<xref linkend="ST_ClosestPointOfApproach" />,
+<xref linkend="ST_DistanceCPA" />,
+<xref linkend="geometry_distance_cpa" />
+			</para>
+		  </refsection>
+		</refentry>
+
+  </sect1>

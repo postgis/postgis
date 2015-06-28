@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
@@ -1543,7 +1542,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		strcpy(progress_shapefile, &loader_file_config->shp_file[i]);
 		
 		/* Display the progress dialog */
-		//lw_asprintf(&progress_text, _("Importing shapefile %s (%d records)..."), progress_shapefile, ShpLoaderGetRecordCount(state));
 		snprintf(progress_text, GUIMSG_LINE_MAXLEN, _("Importing shapefile %s (%d records)..."), progress_shapefile, ShpLoaderGetRecordCount(state));
 		progress_text[GUIMSG_LINE_MAXLEN] = '\0';
 		gtk_label_set_text(GTK_LABEL(label_progress), progress_text);
@@ -1878,7 +1876,6 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		}
 
 		/* Update the text */
-		//lw_asprintf(&progress_text, _("Exporting table %s (%d records)..."), dumper_table_config->table, ShpDumperGetRecordCount(state));
 		snprintf(progress_text, GUIMSG_LINE_MAXLEN, _("Exporting table %s (%d records)..."), dumper_table_config->table, ShpDumperGetRecordCount(state));
 		progress_text[GUIMSG_LINE_MAXLEN] = '\0';
 		gtk_label_set_text(GTK_LABEL(label_progress), progress_text);

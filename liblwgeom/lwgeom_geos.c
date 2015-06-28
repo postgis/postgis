@@ -219,13 +219,13 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 		{
 			p3d = getPoint3dz_cp(pa, i);
 			p2d = (const POINT2D *)p3d;
+			LWDEBUGF(4, "Point: %g,%g,%g", p3d->x, p3d->y, p3d->z);
 		}
 		else
 		{
 			p2d = getPoint2d_cp(pa, i);
+			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
-
-		LWDEBUGF(4, "Point: %g,%g,%g", p2d->x, p2d->y, p3d->z);
 
 #if POSTGIS_GEOS_VERSION < 33
 		/* Make sure we don't pass any infinite values down into GEOS */
@@ -881,9 +881,8 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	if (g3 == NULL)
 	{
-	  lwerror("Error performing rectangular clipping: %s",
-	          lwgeom_geos_errmsg);
-		return NULL; /* never get here */
+		lwnotice("Error performing rectangular clipping: %s", lwgeom_geos_errmsg);
+		return NULL;
 	}
 
 	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
@@ -893,8 +892,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	if (result == NULL)
 	{
-    lwerror("Error performing intersection: GEOS2LWGEOM: %s",
-            lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: GEOS2LWGEOM: %s", lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 

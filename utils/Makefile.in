@@ -1,5 +1,4 @@
 # **********************************************************************
-# * $Id$
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
@@ -43,6 +42,32 @@ SRID_USER_MAXIMUM = @SRID_USR_MAX@
 
 all: postgis_restore.pl
 	chmod +x $(SCRIPTS)
+
+DROP_FILES = \
+  ../raster/rt_pg/rtpostgis_upgrade_cleanup.sql.in \
+  ../raster/rt_pg/rtpostgis_drop.sql.in \
+  ../postgis/postgis_drop_after.sql \
+  ../postgis/postgis_drop_before.sql
+
+update-restore:
+	tac postgis_restore.pl.in | sed '/^__END__/q' | grep -v '^__END__' \
+    > postgis_restore_data
+	grep '^DROP FUNCTION IF EXISTS' $(DROP_FILES) | \
+    cut -d: -f2 | sed 's/^DROP FUNCTION IF EXISTS //' | \
+    sed 's/ *, */,/g' | \
+    sed 's/ *( */(/g' | \
+    sed 's/ *) */)/g' | \
+    tr '[A-Z]' '[a-z]' | \
+    sed 's/varchar/character varying/g' | \
+    sed 's/float8/double precision/g' | \
+    sed 's/\<int\>/integer/g' | \
+    sed 's/\<int4\>/integer/g' | \
+    sed 's/\<int8\>/bigint/g' | \
+    sed 's/\(.*\); *\(--.*\)\?/FUNCTION \1/' >> postgis_restore_data
+	cat postgis_restore.pl.in | sed '/^__END__/q' > postgis_restore.pl.in.new
+	cat postgis_restore_data | sort -u >> postgis_restore.pl.in.new
+	mv postgis_restore.pl.in.new postgis_restore.pl.in
+	rm -f postgis_restore_data
 
 postgis_restore.pl: postgis_restore.pl.in
 	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@

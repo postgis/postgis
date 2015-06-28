@@ -1176,8 +1176,8 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		result = lwcollection_count_vertices((LWCOLLECTION *)geom);
 		break;
 	default:
-		lwerror("lwgeom_count_vertices: unsupported input geometry type: %s",
-		        lwtype_name(geom->type));
+		lwerror("%s: unsupported input geometry type: %s",
+		        __func__, lwtype_name(geom->type));
 		break;
 	}
 	LWDEBUGF(3, "counted %d vertices", result);
@@ -1237,8 +1237,8 @@ int lwgeom_dimension(const LWGEOM *geom)
 		return maxdim;
 	}
 	default:
-		lwerror("lwgeom_dimension: unsupported input geometry type: %s",
-		        lwtype_name(geom->type));
+		lwerror("%s: unsupported input geometry type: %s",
+		        __func__, lwtype_name(geom->type));
 	}
 	return -1;
 }
@@ -1404,7 +1404,7 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 	return 0;
 }
 
-extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
+extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in, double tolerance)
 {
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
 	         lwtype_name(in->type));
@@ -1412,19 +1412,19 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	switch (in->type)
 	{
 	case MULTIPOINTTYPE:
-		return lwmpoint_remove_repeated_points((LWMPOINT*)in);
+		return lwmpoint_remove_repeated_points((LWMPOINT*)in, tolerance);
 		break;
 	case LINETYPE:
-		return lwline_remove_repeated_points((LWLINE*)in);
+		return lwline_remove_repeated_points((LWLINE*)in, tolerance);
 
 	case MULTILINETYPE:
 	case COLLECTIONTYPE:
 	case MULTIPOLYGONTYPE:
 	case POLYHEDRALSURFACETYPE:
-		return lwcollection_remove_repeated_points((LWCOLLECTION *)in);
+		return lwcollection_remove_repeated_points((LWCOLLECTION *)in, tolerance);
 
 	case POLYGONTYPE:
-		return lwpoly_remove_repeated_points((LWPOLY *)in);
+		return lwpoly_remove_repeated_points((LWPOLY *)in, tolerance);
 		break;
 
 	case POINTTYPE:
@@ -1442,8 +1442,8 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 		return in;
 
 	default:
-		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
-		         lwtype_name(in->type));
+		lwnotice("%s: unsupported geometry type: %s",
+		         __func__, lwtype_name(in->type));
 		return in;
 		break;
 	}
@@ -1524,7 +1524,7 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	}
 
   /* only refresh bbox if X or Y changed */
-  if ( o1 < 2 || o2 < 2 ) {
+  if ( in->bbox && (o1 < 2 || o2 < 2) ) {
     lwgeom_drop_bbox(in);
     lwgeom_add_bbox(in);
   }
@@ -1549,7 +1549,7 @@ void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 	}
 }
 
-LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
+LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist, int preserve_collapsed)
 {
 	switch (igeom->type)
 	{
@@ -1557,15 +1557,15 @@ LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist)
 	case MULTIPOINTTYPE:
 		return lwgeom_clone(igeom);
 	case LINETYPE:
-		return (LWGEOM*)lwline_simplify((LWLINE*)igeom, dist);
+		return (LWGEOM*)lwline_simplify((LWLINE*)igeom, dist, preserve_collapsed);
 	case POLYGONTYPE:
-		return (LWGEOM*)lwpoly_simplify((LWPOLY*)igeom, dist);
+		return (LWGEOM*)lwpoly_simplify((LWPOLY*)igeom, dist, preserve_collapsed);
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COLLECTIONTYPE:
-		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist);
+		return (LWGEOM*)lwcollection_simplify((LWCOLLECTION *)igeom, dist, preserve_collapsed);
 	default:
-		lwerror("lwgeom_simplify: unsupported geometry type: %s",lwtype_name(igeom->type));
+		lwerror("%s: unsupported geometry type: %s", __func__, lwtype_name(igeom->type));
 	}
 	return NULL;
 }
@@ -1732,6 +1732,70 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 
 }
 
+void
+lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
+{
+	int type = geom->type;
+	int i;
+
+	switch(type) 
+	{
+		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
+		case POINTTYPE:
+		case LINETYPE:
+		case CIRCSTRINGTYPE:
+		case TRIANGLETYPE:
+		{
+			LWLINE *l = (LWLINE*)geom;
+			ptarray_scale(l->points, factor);
+			break;
+		}
+		case POLYGONTYPE:
+		{
+			LWPOLY *p = (LWPOLY*)geom;
+			for( i = 0; i < p->nrings; i++ )
+				ptarray_scale(p->rings[i], factor);
+			break;
+		}
+		case CURVEPOLYTYPE:
+		{
+			LWCURVEPOLY *c = (LWCURVEPOLY*)geom;
+			for( i = 0; i < c->nrings; i++ )
+				lwgeom_scale(c->rings[i], factor);
+			break;
+		}
+		default:
+		{
+			if( lwgeom_is_collection(geom) )
+			{
+				LWCOLLECTION *c = (LWCOLLECTION*)geom;
+				for( i = 0; i < c->ngeoms; i++ )
+				{
+					lwgeom_scale(c->geoms[i], factor);
+				}
+			}
+			else 
+			{
+				lwerror("lwgeom_scale: unable to handle type '%s'", lwtype_name(type));
+			}
+		}
+	}
+
+  /* Recompute bbox if needed */
+
+  if ( geom->bbox ) {
+    /* TODO: expose a gbox_scale function */
+    geom->bbox->xmin *= factor->x;
+    geom->bbox->xmax *= factor->x;
+    geom->bbox->ymin *= factor->y;
+    geom->bbox->ymax *= factor->y;
+    geom->bbox->zmin *= factor->z;
+    geom->bbox->zmax *= factor->z;
+    geom->bbox->mmin *= factor->m;
+    geom->bbox->mmax *= factor->m;
+  }
+}
+
 LWGEOM*
 lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 {
@@ -1873,12 +1937,19 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 }
 
 /* Prototype for recursion */
-static int lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip);
+static int 
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *col, GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip)
 {
+	const int maxdepth = 25;
 
+	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
+	{
+		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
+	}
+	
 	/* Always just recurse into collections */
 	if ( lwgeom_is_collection(geom) )
 	{
@@ -1886,9 +1957,18 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		int i, n = 0;
 		for ( i = 0; i < gcol->ngeoms; i++ )
 		{
-			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, col, clip);
+			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
+			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, depth, col, clip);
 		}
 		return n;
+	}
+	
+	/* But don't go too far. 2^25 = 33M, that's enough subdivision */
+	/* Signal callers above that we depth'ed out with a negative */
+	/* return value */
+	if ( depth > maxdepth )
+	{
+		return 0;		
 	}
 	
 	/* Points and single-point multipoints can be added right into the output result */
@@ -1899,7 +1979,9 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 		return 1;
 	}
 	
-	/* Haven't set up a clipping box yet? Make one then recurse again */
+	/* Haven't set up a clipping box yet? Make one, then recurse again */
+	/* We make the initial box the smallest perfect square that can contain */
+	/* the geometry, for easy quad-subdivision as we recurse */
 	if ( ! clip )
 	{
 		double height, width;
@@ -1923,7 +2005,18 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			square.xmin = (box->xmin + box->xmax - height)/2;
 			square.xmax = (box->xmin + box->xmax + height)/2;
 		}
-		return lwgeom_subdivide_recursive(geom, maxvertices, col, &square);
+		
+		/* Just quit right away for objects with no size */
+		if ( width == 0 && height == 0 )
+		{
+			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+			return 1;
+		}
+		else
+		{
+			/* Don't increment depth here, as we aren't subdividing yet */
+			return lwgeom_subdivide_recursive(geom, maxvertices, depth, col, &square);
+		}
 	}
 	/* Everything is in place! Let's start subdividing! */
 	else
@@ -1935,14 +2028,21 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			/* Is it because it's a rectangle totally *inside* a polygon? */
 			if ( geom->type == POLYGONTYPE )
 			{
-				POINT2D pt;
-				pt.x = clip->xmin;
-				pt.y = clip->ymin;
-				if ( lwpoly_contains_point((LWPOLY*)geom, &pt) )
+				const LWPOLY *poly = (LWPOLY*)geom;
+				POINT2D pt_ll, pt_lr, pt_ur, pt_ul;
+				pt_ll.x = pt_ul.x = clip->xmin;
+				pt_lr.x = pt_ur.x = clip->xmax;
+				pt_ul.y = pt_ur.y = clip->ymax;
+				pt_ll.y = pt_lr.y = clip->ymin;
+
+				if ( lwpoly_contains_point(poly, &pt_ll) || lwpoly_contains_point(poly, &pt_ul) ||
+				     lwpoly_contains_point(poly, &pt_lr) || lwpoly_contains_point(poly, &pt_ur) )
 				{
+					/* TODO: Probably just making the clipping box into a polygon is a more */
+					/* efficient way to do this? */
 					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
 					/* Hm, clipping left nothing behind, skip it */
-					if ( lwgeom_is_empty(clipped) )
+					if ( (!clipped) || lwgeom_is_empty(clipped) )
 					{
 						return 0;
 					}
@@ -1977,7 +2077,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 			{
 				LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
 				/* Hm, clipping left nothing behind, skip it */
-				if ( lwgeom_is_empty(clipped) )
+				if ( (!clipped) || lwgeom_is_empty(clipped) )
 				{
 					return 0;
 				}
@@ -1989,22 +2089,22 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 				}				
 			}				
 		}
-		/* Clipping rectangle too small: subdivide more! */
+		/* Clipping rectangle too large: subdivide more! */
 		else
 		{
 			int i, n = 0;
 			GBOX boxes[4];
-			double width = FP_TOLERANCE + (clip->xmax - clip->xmin)/2;
+			double width = (clip->xmax - clip->xmin)/2;
 			for( i = 0; i < 4; i++ )
 			{
-				int ix = i / 2;
-				int iy = i % 2;
+				int ix = i / 2; /* 0, 0, 1, 1 */
+				int iy = i % 2; /* 0, 1, 0, 1 */
 				gbox_init(&(boxes[i]));
-				boxes[i].xmin = clip->xmin + ix * width;
-				boxes[i].xmax = clip->xmin + width + ix * width;
-				boxes[i].ymin = clip->ymin + iy * width;
-				boxes[i].ymax = clip->ymin + width + iy * width;
-				n += lwgeom_subdivide_recursive(geom, maxvertices, col, &(boxes[i]));
+				boxes[i].xmin = clip->xmin + ix * width - FP_TOLERANCE;
+				boxes[i].xmax = clip->xmin + width + ix * width + - FP_TOLERANCE;
+				boxes[i].ymin = clip->ymin + iy * width - FP_TOLERANCE;
+				boxes[i].ymax = clip->ymin + width + iy * width + FP_TOLERANCE;
+				n += lwgeom_subdivide_recursive(geom, maxvertices, ++depth, col, &(boxes[i]));
 			}
 			return n;
 		}
@@ -2015,11 +2115,29 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, LWCOLLECTION *co
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
-	int n = 0;
+	const int startdepth = 0;
+	const int minmaxvertices = 8;
 	LWCOLLECTION *col;
+
+	if ( maxvertices < minmaxvertices )
+	{
+		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
+	}
+	
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	n = lwgeom_subdivide_recursive(geom, maxvertices, col, NULL);
+	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, NULL);
 	return col;
 }
 
+int
+lwgeom_is_trajectory(const LWGEOM *geom)
+{
+  int type = geom->type;
+
+  if( type != LINETYPE ) {
+    lwnotice("Geometry is not a LINESTRING");
+    return LW_FALSE;
+  }
+  return lwline_is_trajectory((LWLINE*)geom);
+}
 

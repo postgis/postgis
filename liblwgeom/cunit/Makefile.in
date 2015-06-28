@@ -1,5 +1,4 @@
 # **********************************************************************
-# * $Id: Makefile.in
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
@@ -24,6 +23,7 @@ LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c $(CUNIT_LDFLAGS) -lm
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
 	cu_algorithm.o \
+	cu_bytebuffer.o \
 	cu_buildarea.o \
 	cu_clean.o \
 	cu_print.o \
@@ -34,6 +34,7 @@ OBJS=	\
 	cu_geos_cluster.o \
 	cu_tree.o \
 	cu_measures.o \
+	cu_effectivearea.o \
 	cu_node.o \
 	cu_clip_by_rect.o \
 	cu_libgeom.o \
@@ -53,8 +54,8 @@ OBJS=	\
 	cu_surface.o \
 	cu_out_x3d.o \
 	cu_in_geojson.o \
-	cu_in_wkb.o \
 	cu_in_twkb.o \
+	cu_in_wkb.o \
 	cu_in_wkt.o \
 	cu_in_encoded_polyline.o \
 	cu_varint.o \

@@ -1,6 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- $Id: rtpostgis_upgrade.sql.in.c 8448 2011-12-16 22:07:26Z dustymugs $
 --
 -- PostGIS Raster - Raster Type for PostGIS
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
@@ -83,100 +82,13 @@ CREATE CAST (raster AS bytea)
 DROP CAST IF EXISTS (raster AS box2d);
 DROP FUNCTION IF EXISTS box2d(raster);
 
--- If we are running 9.0+ we can use DO plpgsql to check
--- and only create if not exists so no need to force a drop
--- that way if people are using it, we will not mess them up
-DO language 'plpgsql' $$
-BEGIN
-	-- create raster box3d cast if it does not exist
-	IF NOT EXISTS(SELECT  cs.typname AS source
-		FROM pg_cast AS ca 
-        	INNER JOIN pg_type AS cs ON ca.castsource = cs.oid
-        	INNER JOIN pg_type AS ct ON ca.casttarget = ct.oid
-        	WHERE cs.typname = 'raster' AND ct.typname = 'box3d') THEN
-		CREATE OR REPLACE FUNCTION box3d(raster)
-		RETURNS box3d
-		AS 'SELECT box3d(st_convexhull($1))'
-		LANGUAGE 'sql' IMMUTABLE STRICT;
-		CREATE CAST (raster AS box3d)
-			WITH FUNCTION box3d(raster) AS ASSIGNMENT;
-    END IF;
-    
-    -- create addbandarg type if it does not exist
-	IF NOT EXISTS(SELECT typname
-		FROM pg_type 
-        	WHERE typname = 'addbandarg') THEN
-		CREATE TYPE addbandarg AS (
-			index int,
-			pixeltype text,
-			initialvalue float8,
-			nodataval float8
-		);
-    END IF;
-    
-    -- create agg_samealignment type if it does not exist
-	IF NOT EXISTS(SELECT typname 
-		FROM pg_type 
-        	WHERE typname = 'agg_samealignment') THEN
-			CREATE TYPE agg_samealignment AS (
-				refraster raster,
-				aligned boolean
-			);
-    END IF;
-    
-    -- create unionarg type if it does not exist
-	IF NOT EXISTS(SELECT typname
-		FROM pg_type 
-        	WHERE typname = 'unionarg') THEN
-			CREATE TYPE unionarg AS
-			   (nband integer,
-				uniontype text);
-    END IF;
-
-    -- create rastbandarg type if it does not exist
-	IF NOT EXISTS(SELECT typname
-		FROM pg_type 
-        	WHERE typname = 'rastbandarg') THEN
-			CREATE TYPE rastbandarg AS (
-				rast raster,
-				nband integer
-			);
-    END IF;
-
-    -- create summarystats type if it does not exist
-	IF NOT EXISTS(SELECT typname
-		FROM pg_type 
-        	WHERE typname = 'summarystats') THEN
-			CREATE TYPE summarystats AS (
-			 	count bigint,
-			 	sum double precision,
-			 	mean double precision,
-			 	stddev double precision,
-			 	min double precision,
-			 	max double precision
-			);
-    END IF;
-
-    -- create agg_count type if it does not exist
-	IF NOT EXISTS(SELECT typname 
-		FROM pg_type 
-        	WHERE typname = 'agg_count') THEN
-			CREATE TYPE agg_count AS (
-			 	count bigint,
-			 	nband integer,
-			 	exclude_nodata_value boolean,
-			 	sample_percent double precision
-			);
-    END IF;
-
-END$$;	
-
 -- make geometry cast ASSIGNMENT
 DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
 
 -- add missing OPERATORs
+-- TODO: drop, relying on proc_upgrade.pl output ?
 DO LANGUAGE 'plpgsql' $$
 BEGIN
 	IF NOT EXISTS (
@@ -665,3 +577,25 @@ DROP FUNCTION IF EXISTS _st_aspect4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_hillshade4ma(float8[], text, text[]);
 DROP FUNCTION IF EXISTS _st_slope4ma(float8[], text, text[]);
 
+-- function signature change
+-- return value changed
+DO LANGUAGE 'plpgsql' $$
+DECLARE
+	cnt bigint;
+BEGIN
+	SELECT
+		count(*)
+	INTO cnt
+	FROM pg_proc f
+	JOIN pg_type t
+		ON f.prorettype = t.oid
+	WHERE lower(f.proname) = '_raster_constraint_nodata_values'
+		AND f.pronargs = 1
+		AND t.typname = '_float8'; -- array form
+
+	IF cnt > 0 THEN
+		RAISE NOTICE 'Dropping _raster_constraint_nodata_values(raster) due to return value changes.  Unfortunately, this is a DROP ... CASCADE as the NODATA raster constraint uses _raster_constraint_nodata_values(raster).  You will need to reapply AddRasterConstraint(''SCHEMA'', ''TABLE'', ''COLUMN'', ''nodata'') to any raster column that requires this constraint.';
+		DROP FUNCTION IF EXISTS _raster_constraint_nodata_values(raster) CASCADE;
+	END IF;
+END;
+$$;

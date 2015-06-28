@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: geography_inout.c 4535 2009-09-28 18:16:21Z colivier $
  *
  * PostGIS - Spatial Types for PostgreSQL
  *
@@ -27,8 +26,17 @@
 #include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
+#if PROJ_GEODESIC
+/* round to 10 nm precision */
+#define INVMINDIST 1.0e8
+#else
+/* round to 100 nm precision */
+#define INVMINDIST 1.0e9
+#endif
+
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_uncached(PG_FUNCTION_ARGS);
+Datum geography_distance_knn(PG_FUNCTION_ARGS);
 Datum geography_distance_tree(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
 Datum geography_dwithin_uncached(PG_FUNCTION_ARGS);
@@ -43,31 +51,22 @@ Datum geography_project(PG_FUNCTION_ARGS);
 Datum geography_azimuth(PG_FUNCTION_ARGS);
 Datum geography_segmentize(PG_FUNCTION_ARGS);
 
-/*
-** geography_distance_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
-** returns double distance in meters
-*/
-PG_FUNCTION_INFO_V1(geography_distance_uncached);
-Datum geography_distance_uncached(PG_FUNCTION_ARGS)
+
+PG_FUNCTION_INFO_V1(geography_distance_knn);
+Datum geography_distance_knn(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double distance;
-	/* double tolerance; */
-	bool use_spheroid;
+	double tolerance = FP_TOLERANCE;
+	bool use_spheroid = false; /* must use sphere, can't get index to harmonize with spheroid */ 
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	g2 = PG_GETARG_GSERIALIZED_P(1);
-
-	/* Read our tolerance value. */
-	/* tolerance = PG_GETARG_FLOAT8(2); */
-    
-	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -91,7 +90,78 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	lwgeom_add_bbox_deep(lwgeom1, NULL);
 	lwgeom_add_bbox_deep(lwgeom2, NULL);
 	
-	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+
+	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
+
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
+	/* Something went wrong, negative return... should already be eloged, return NULL */
+	if ( distance < 0.0 )
+	{
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_FLOAT8(distance);
+}
+
+/*
+** geography_distance_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_distance_uncached);
+Datum geography_distance_uncached(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double distance;
+	double tolerance = FP_TOLERANCE;
+	bool use_spheroid = true; 
+	SPHEROID s;
+
+	/* Get our geometry objects loaded into memory. */
+	g1 = PG_GETARG_GSERIALIZED_P(0);
+	g2 = PG_GETARG_GSERIALIZED_P(1);
+
+	/* Read our tolerance value. */
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
+    
+	/* Read our calculation type. */
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* Return NULL on empty arguments. */
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_NULL();
+	}
+
+	/* Make sure we have boxes attached */
+	lwgeom_add_bbox_deep(lwgeom1, NULL);
+	lwgeom_add_bbox_deep(lwgeom2, NULL);
+	
+	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+
+	POSTGIS_DEBUGF(2, "[GIST] '%s' got distance %g", __func__, distance);
 
 	/* Clean up */
 	lwgeom_free(lwgeom1);
@@ -119,8 +189,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	GSERIALIZED* g1 = NULL;
 	GSERIALIZED* g2 = NULL;
 	double distance;
-	double tolerance;
-	bool use_spheroid;
+	double tolerance = 0.0;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -128,10 +198,12 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -162,15 +234,15 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
 
+	/* Knock off any funny business at the nanometer level, ticket #2168 */
+	distance = round(distance * INVMINDIST) / INVMINDIST;
+
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
 	{
 		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
 	}
-
-    /* Knock off any funny business at the micrometer level, ticket #2168 */
-    distance = round(distance * 10e8) / 10e8;
 
 	PG_RETURN_FLOAT8(distance);
 }
@@ -185,9 +257,9 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 	int dwithin = LW_FALSE;
 
@@ -196,10 +268,12 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -247,9 +321,9 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -265,10 +339,12 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	}
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -299,9 +375,9 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom2 = NULL;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
-	double tolerance;
+	double tolerance = 0.0;
 	double distance;
-	bool use_spheroid;
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -309,10 +385,12 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 
 	/* Read our tolerance value. */
-	tolerance = PG_GETARG_FLOAT8(2);
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+		tolerance = PG_GETARG_FLOAT8(2);
 
 	/* Read our calculation type. */
-	use_spheroid = PG_GETARG_BOOL(3);
+	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
+		use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -424,6 +502,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	else
 		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
 
+#if ! PROJ_GEODESIC
 	/* Test for cases that are currently not handled by spheroid code */
 	if ( use_spheroid )
 	{
@@ -434,6 +513,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		if ( gbox.zmax > 0.0 && gbox.zmin < 0.0 )
 			use_spheroid = LW_FALSE;
 	}
+#endif /* if ! PROJ_GEODESIC */
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
@@ -471,17 +551,17 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 	double length;
 	bool use_spheroid = LW_TRUE;
 	SPHEROID s;
-    int type;
+	int type;
 
 	/* Get our geometry object loaded into memory. */
 	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for area features. */
-    type = gserialized_get_type(g);
-    if ( ! (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) )
-    {
+	type = gserialized_get_type(g);
+	if ( ! (type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE) )
+	{
 		PG_RETURN_FLOAT8(0.0);
-    }
+	}
 	
 	lwgeom = lwgeom_from_gserialized(g);
 
@@ -831,24 +911,25 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	LWPOINT *lwp_projected;
 	GSERIALIZED *g = NULL;
 	GSERIALIZED *g_out = NULL;
-	double azimuth, distance;
+	double azimuth = 0.0;
+	double distance;
 	SPHEROID s;
 	uint32_t type;
 
 	/* Return NULL on NULL distance or geography */
-	if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
 		PG_RETURN_NULL();
 	
 	/* Get our geometry object loaded into memory. */
 	g = PG_GETARG_GSERIALIZED_P(0);
 	
 	/* Only return for points. */
-    type = gserialized_get_type(g);
-    if ( type != POINTTYPE )
-    {
+	type = gserialized_get_type(g);
+	if ( type != POINTTYPE )
+	{
 		elog(ERROR, "ST_Project(geography) is only valid for point inputs");
 		PG_RETURN_NULL();
-    }
+	}
 
 	distance = PG_GETARG_FLOAT8(1); /* Distance in Meters */
 	lwgeom = lwgeom_from_gserialized(g);
@@ -861,9 +942,7 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
-	if ( PG_ARGISNULL(2) )
-		azimuth = 0.0;
-	else
+	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		azimuth = PG_GETARG_FLOAT8(2); /* Azimuth in Radians */
 
 	/* Initialize spheroid */
@@ -916,13 +995,13 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	g2 = PG_GETARG_GSERIALIZED_P(1);
 	
 	/* Only return for points. */
-    type1 = gserialized_get_type(g1);
-    type2 = gserialized_get_type(g2);
-    if ( type1 != POINTTYPE || type2 != POINTTYPE )
-    {
+	type1 = gserialized_get_type(g1);
+	type2 = gserialized_get_type(g2);
+	if ( type1 != POINTTYPE || type2 != POINTTYPE )
+	{
 		elog(ERROR, "ST_Azimuth(geography, geography) is only valid for point inputs");
 		PG_RETURN_NULL();
-    }
+	}
 	
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
@@ -976,13 +1055,13 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 
 	/* Get our geometry object loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
-    type1 = gserialized_get_type(g1);
+	type1 = gserialized_get_type(g1);
 
 	/* Convert max_seg_length from metric units to radians */
 	max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
 
 	/* We can't densify points or points, reflect them back */
-    if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
+	if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
 		PG_RETURN_POINTER(g1);
 
 	/* Deserialize */

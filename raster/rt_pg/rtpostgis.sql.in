@@ -255,8 +255,8 @@ CREATE OR REPLACE FUNCTION st_summary(rast raster)
 		msg := msg || 'and extent of ' || extent;
 
 		IF
-			metadata.skewx::numeric(16, 10) <> 0::numeric(16, 10) OR 
-			metadata.skewy::numeric(16, 10) <> 0::numeric(16, 10)
+			round(metadata.skewx::numeric, 10) <> round(0::numeric, 10) OR 
+			round(metadata.skewy::numeric, 10) <> round(0::numeric, 10)
 		THEN
 			msg := 'Skewed ' || overlay(msg placing 'r' from 1 for 1);
 		END IF;
@@ -425,7 +425,10 @@ CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFA
 -- ST_SummaryStats and ST_ApproxSummaryStats
 -----------------------------------------------------------------------
 
+-- NOTE: existed in 2.0.0 but was removed in 2.1.0.
+-- See http://trac.osgeo.org/postgis/ticket/3082#comment:5
 -- Availability: 2.0.0
+-- Missing in: 2.1.0
 CREATE TYPE summarystats AS (
 	count bigint,
 	sum double precision,
@@ -693,7 +696,7 @@ CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double pre
 -- ST_CountAgg
 -----------------------------------------------------------------------
 
--- Availability: 2.1.0
+-- Availability: 2.2.0
 CREATE TYPE agg_count AS (
 	count bigint,
 	nband integer,
@@ -6881,7 +6884,10 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint(rastschema name, rasttable na
 CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
-		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		regexp_replace(
+			split_part(s.consrc, ' = ', 2),
+			'[\(\)]', '', 'g'
+		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -6942,7 +6948,16 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_srid(rastschema name, rasttab
 CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rasttable name, rastcolumn name, axis char)
 	RETURNS double precision AS $$
 	SELECT
-		replace(replace(split_part(split_part(s.consrc, ' = ', 2), '::', 1), ')', ''), '(', '')::double precision
+		regexp_replace(
+			replace(
+				split_part(
+					split_part(s.consrc, ' = ', 2),
+					'::', 1
+				),
+				'round(', ''
+			),
+			'[ ''''\(\)]', '', 'g'
+		)::double precision
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -6991,9 +7006,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_scale' || $4 || '('
+			|| ' CHECK (round(st_scale' || $4 || '('
 			|| quote_ident($3)
-			|| ')::numeric(25,10) = (' || attr || ')::numeric(25,10))';
+			|| ')::numeric, 10) = round(' || text(attr) || '::numeric, 10))';
 		RETURN _add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -7019,7 +7034,10 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 			WHEN strpos(s.consrc, 'ANY (ARRAY[') > 0 THEN
 				split_part((regexp_matches(s.consrc, E'ARRAY\\[(.*?){1}\\]'))[1], ',', 1)::integer
 			ELSE
-				replace(replace(split_part(s.consrc, '= ', 2), ')', ''), '(', '')::integer
+				regexp_replace(
+					split_part(s.consrc, '= ', 2),
+					'[\(\)]', '', 'g'
+				)::integer
 			END
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
@@ -7386,7 +7404,10 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_regular_blocking(rastschema n
 CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, rasttable name, rastcolumn name)
 	RETURNS integer AS $$
 	SELECT
-		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		regexp_replace(
+			split_part(s.consrc, ' = ', 2),
+			'[\(\)]', '', 'g'
+		)::integer
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7445,7 +7466,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_num_bands(rastschema name, ra
 CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, rasttable name, rastcolumn name)
 	RETURNS text[] AS $$
 	SELECT
-		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::text[]
+		trim(
+			both '''' from split_part(
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
+				),
+				'::', 1
+			)
+		)::text[]
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7522,7 +7551,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_pixel_types(rastschema name, 
 CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name, rasttable name, rastcolumn name)
 	RETURNS double precision[] AS $$
 	SELECT
-		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::double precision[]
+		trim(both '''' from
+			split_part(
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
+				),
+				'::', 1
+			)
+		)::double precision[]
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -7535,9 +7572,11 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
+-- Availability: 2.0.0
+-- Changed: 2.2.0
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
-	RETURNS double precision[] AS
-	$$ SELECT array_agg(nodatavalue)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	RETURNS numeric[] AS
+	$$ SELECT array_agg(round(nodatavalue::numeric, 10))::numeric[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
@@ -7546,7 +7585,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 		fqtn text;
 		cn name;
 		sql text;
-		attr double precision[];
+		attr numeric[];
 		max int;
 	BEGIN
 		fqtn := '';
@@ -7576,7 +7615,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK (_raster_constraint_nodata_values(' || quote_ident($3)
-			|| ')::numeric(16,10)[] = ''{';
+			|| ')::numeric[] = ''{';
 		FOR x in 1..max LOOP
 			IF attr[x] IS NULL THEN
 				sql := sql || 'NULL';
@@ -7587,7 +7626,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 				sql := sql || ',';
 			END IF;
 		END LOOP;
-		sql := sql || '}''::numeric(16,10)[])';
+		sql := sql || '}''::numeric[])';
 
 		RETURN _add_raster_constraint(cn, sql);
 	END;
@@ -7603,7 +7642,15 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_nodata_values(rastschema name
 CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean[] AS $$
 	SELECT
-		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::boolean[]
+		trim(
+			both '''' from split_part(
+				regexp_replace(
+					split_part(s.consrc, ' = ', 2),
+					'[\(\)]', '', 'g'
+				),
+				'::', 1
+			)
+		)::boolean[]
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2

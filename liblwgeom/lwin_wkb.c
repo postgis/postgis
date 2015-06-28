@@ -11,6 +11,7 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include <math.h>
 
 /**
 * Used for passing the parse state between the parsing functions.
@@ -369,6 +370,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 	POINTARRAY *pa = NULL;
 	size_t pa_size;
 	uint32_t ndims = 2;
+	const POINT2D *pt;
 
 	/* Count the dimensions. */
 	if( s->has_z ) ndims++;
@@ -397,7 +399,16 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 		}
 	}
 	
-	return lwpoint_construct(s->srid, NULL, pa);
+	/* Check for POINT(NaN NaN) ==> POINT EMPTY */
+	pt = getPoint2d_cp(pa, 0);
+	if ( isnan(pt->x) && isnan(pt->y) )
+	{
+		return lwpoint_construct_empty(s->srid, s->has_z, s->has_m);
+	}
+	else
+	{
+		return lwpoint_construct(s->srid, NULL, pa);
+	}
 }
 
 /**
@@ -557,6 +568,10 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
+	/* Empty TRIANGLE starts w/ empty POINTARRAY, free it first */
+	if (tri->points)
+		ptarray_free(tri->points);
+	
 	tri->points = pa;	
 	return tri;
 }

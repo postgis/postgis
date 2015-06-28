@@ -416,6 +416,85 @@ SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_BoundingDiagonal">
+		  <refnamediv>
+			<refname>ST_BoundingDiagonal</refname>
+
+			<refpurpose>Returns the diagonal of the supplied geometry's bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_BoundingDiagonal</function></funcdef>
+
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>fits=false</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Returns the diagonal of the supplied geometry's bounding box as linestring.
+If the input geometry is empty, the diagonal line is also empty, otherwise
+it is a 2-points linestring with minimum values of each dimension in its
+start point and maximum values in its end point.
+			</para>
+
+			<para>
+The returned linestring geometry always retains SRID and dimensionality
+(Z and M presence) of the input geometry.
+			</para>
+
+			<para>
+The <varname>fits</varname> parameter specifies if the best fit is needed.
+If false, the diagonal of a somewhat larger bounding box can be accepted
+(is faster to obtain for geometries with a lot of vertices). In any case
+the bounding box of the returned diagonal line always covers the input
+geometry.
+			</para>
+
+			<note><para>
+In degenerate cases (a single vertex in input) the returned linestring
+will be topologically invalid (no interior). This does not make the
+return semantically invalid.
+			</para></note>
+
+			<para>Availability: 2.2.0</para>
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Get the minimum X in a buffer around a point
+SELECT ST_X(ST_StartPoint(ST_BoundingDiagonal(
+  ST_Buffer(ST_MakePoint(0,0),10)
+)));
+ st_x
+------
+  -10
+		</programlisting>
+		</refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para>
+<xref linkend="ST_StartPoint" />,
+<xref linkend="ST_EndPoint" />,
+<xref linkend="ST_X" />,
+<xref linkend="ST_Y" />,
+<xref linkend="ST_Z" />,
+<xref linkend="ST_M" />,
+<xref linkend="geometry_overlaps_nd" />
+		</para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_ExteriorRing">
 	  <refnamediv>
 		<refname>ST_ExteriorRing</refname>

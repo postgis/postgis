@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # This is a simple script based on GDAL to dump overview to separate file.
 # It is used in WKTRaster testing to compare raster samples.

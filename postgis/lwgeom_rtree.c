@@ -165,7 +165,7 @@ RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
 
 	if (pa->npoints < startPoint + 2)
 	{
-		lwerror("RTreeCreateLeafNode: npoints = %d, startPoint = %d", pa->npoints, startPoint);
+		lwpgerror("RTreeCreateLeafNode: npoints = %d, startPoint = %d", pa->npoints, startPoint);
 	}
 
 	/*
@@ -313,7 +313,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 
 	if ( rtree_cache->index )
 	{
-		lwerror("RTreeBuilder asked to build index where one already exists.");
+		lwpgerror("RTreeBuilder asked to build index where one already exists.");
 		return LW_FAILURE;
 	}
 	
@@ -370,7 +370,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 	else
 	{
 		/* Uh oh, shouldn't be here. */
-		lwerror("RTreeBuilder got asked to build index on non-polygon");
+		lwpgerror("RTreeBuilder got asked to build index on non-polygon");
 		return LW_FAILURE;
 	}
 	return LW_SUCCESS;	

@@ -76,7 +76,7 @@ void lwmpoint_free(LWMPOINT *mpt)
 }
 
 LWGEOM*
-lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
+lwmpoint_remove_repeated_points(LWMPOINT *mpoint, double tolerance)
 {
 	uint32_t nnewgeoms;
 	uint32_t i, j;

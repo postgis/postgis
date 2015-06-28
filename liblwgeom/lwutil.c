@@ -23,6 +23,10 @@ static void default_errorreporter(const char *fmt, va_list ap);
 lwreporter lwnotice_var = default_noticereporter;
 lwreporter lwerror_var = default_errorreporter;
 
+/* Default logger */
+static void default_debuglogger(int level, const char *fmt, va_list ap);
+lwdebuglogger lwdebug_var = default_debuglogger;
+
 #define LW_MSG_MAXLEN 256
 
 static char *lwgeomTypeName[] =
@@ -79,6 +83,19 @@ lwerror(const char *fmt, ...)
 	va_end(ap);
 }
 
+void
+lwdebug(int level, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwdebug_var)(level, fmt, ap);
+
+	va_end(ap);
+}
+
 /*
  * Default allocators
  *
@@ -117,6 +134,22 @@ default_noticereporter(const char *fmt, va_list ap)
 }
 
 static void
+default_debuglogger(int level, const char *fmt, va_list ap)
+{
+	char msg[LW_MSG_MAXLEN+1];
+	if ( POSTGIS_DEBUG_LEVEL >= level )
+	{
+		/* Space pad the debug output */
+		int i;
+		for ( i = 0; i < level; i++ )
+			msg[i] = ' ';
+		vsnprintf(msg+i, LW_MSG_MAXLEN-i, fmt, ap);
+		msg[LW_MSG_MAXLEN]='\0';
+		printf("%s\n", msg);
+	}
+}
+
+static void
 default_errorreporter(const char *fmt, va_list ap)
 {
 	char msg[LW_MSG_MAXLEN+1];
@@ -143,6 +176,12 @@ lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
 
 	if ( errorreporter ) lwerror_var = errorreporter;
 	if ( noticereporter ) lwnotice_var = noticereporter;
+}
+
+void
+lwgeom_set_debuglogger(lwdebuglogger debuglogger) {
+
+	if ( debuglogger ) lwdebug_var = debuglogger;
 }
 
 const char* 
@@ -328,23 +367,3 @@ clamp_srid(int srid)
 	return newsrid;
 }
 
-#ifndef HAVE_STRCASESTR
-char *strcasestr(const char *s, const char *find)
-{
-  char c, sc;
-  size_t len;
-
-  if ((c = *find++) != 0) {
-    c = tolower((unsigned char)c);
-    len = strlen(find);
-    do {
-      do {
-        if ((sc = *s++) == 0)
-          return (NULL);
-      } while ((char)tolower((unsigned char)sc) != c);
-    } while (strncasecmp(s, find, len) != 0);
-    s--;
-  }
-  return ((char *)s);
-}
-#endif

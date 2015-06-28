@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 #
-# $Id$
 #
 # Calculates coordinates of window corners of given raster dataset.
 # It's just a simple helper for testing and debugging WKT Raster.

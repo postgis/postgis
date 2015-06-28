@@ -1,5 +1,4 @@
 /*
- * $Id$
  *
  * PostGIS Raster loader
  * http://trac.osgeo.org/postgis/wiki/WKTRaster

@@ -1,5 +1,4 @@
 ############################################################################
-# $Id$
 #
 # Copyright (c) 2009-2011 Sandro Santilli <strk@keybit.net>
 #
@@ -75,6 +74,9 @@ EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql.in
 # PGXS information
 PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
+# NO_TEMP_INSTALL is a workaround for a 9.5dev bug. See:
+# http://www.postgresql.org/message-id/CAB7nPqTsR5o3g-fBi6jbsVdhfPiLFWQ_0cGU5=94Rv_8W3qvFA@mail.gmail.com
+NO_TEMP_INSTALL=yes
 include $(PGXS)
 
 # Set PERL _after_ the include of PGXS
@@ -83,18 +85,6 @@ PERL=@PERL@
 # This is to workaround a bug in PGXS 8.4 win32 link line,
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
-
-# PGXS override feature. The ability to allow PostGIS to install itself
-# in a versioned directory is only available in PostgreSQL >= 8.5. To
-# do this by default on older PostgreSQL versions, we need to override
-# the existing PGXS targets.
-#
-# Once PostgreSQL 8.5 becomes the minimum supported version, this entire
-# section and its associated Makefile.pgxs should be removed.
-PGXSOVERRIDE = @PGXSOVERRIDE@
-ifeq ($(PGXSOVERRIDE),1)
-	include Makefile.pgxs
-endif
 
 # If REGRESS=1 passed as a parameter, change the default install paths
 # so that no prefix is included. This allows us to relocate to a temporary

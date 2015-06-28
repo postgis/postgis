@@ -292,7 +292,7 @@ lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 * Returns NULL if the geometry is empty or the index invalid.
 */
 LWPOINT*
-lwline_get_lwpoint(LWLINE *line, int where)
+lwline_get_lwpoint(const LWLINE *line, int where)
 {
 	POINT4D pt;
 	LWPOINT *lwpoint;
@@ -319,8 +319,11 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 		return LW_FAILURE;
 
 	/* Update the bounding box */
-	lwgeom_drop_bbox(lwline_as_lwgeom(line));
-	lwgeom_add_bbox(lwline_as_lwgeom(line));
+	if ( line->bbox )
+	{
+		lwgeom_drop_bbox(lwline_as_lwgeom(line));
+		lwgeom_add_bbox(lwline_as_lwgeom(line));
+	}
 	
 	return LW_SUCCESS;
 }
@@ -418,11 +421,11 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 }
 
 LWGEOM*
-lwline_remove_repeated_points(LWLINE *lwline)
+lwline_remove_repeated_points(LWLINE *lwline, double tolerance)
 {
-	POINTARRAY* npts = ptarray_remove_repeated_points(lwline->points);
+	POINTARRAY* npts = ptarray_remove_repeated_points(lwline->points, tolerance);
 
-	LWDEBUGF(3, "lwline_remove_repeated_points: npts %p", npts);
+	LWDEBUGF(3, "%s: npts %p", __func__, npts);
 
 	return (LWGEOM*)lwline_construct(lwline->srid,
 	                                 lwline->bbox ? gbox_copy(lwline->bbox) : 0,
@@ -436,6 +439,34 @@ lwline_is_closed(const LWLINE *line)
 		return ptarray_is_closed_3d(line->points);
 
 	return ptarray_is_closed_2d(line->points);
+}
+
+int
+lwline_is_trajectory(const LWLINE *line)
+{
+  POINT3DM p;
+  int i, n;
+  double m = -1 * FLT_MAX;
+
+  if ( ! FLAGS_GET_M(line->flags) ) {
+    lwnotice("Line does not have M dimension");
+    return LW_FALSE;
+  }
+
+  n = line->points->npoints;
+  if ( n < 2 ) return LW_TRUE; /* empty or single-point are "good" */
+
+  for (i=0; i<n; ++i) {
+    getPoint3dm_p(line->points, i, &p);
+    if ( p.m <= m ) {
+      lwnotice("Measure of vertex %d (%g) not bigger than measure of vertex %d (%g)",
+        i, p.m, i-1, m);
+      return LW_FALSE;
+    }
+    m = p.m;
+  }
+
+  return LW_TRUE;
 }
 
 
@@ -475,18 +506,40 @@ int lwline_count_vertices(LWLINE *line)
 	return line->points->npoints;
 }
 
-LWLINE* lwline_simplify(const LWLINE *iline, double dist)
+LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed)
 {
+	static const int minvertices = 2; /* TODO: allow setting this */
 	LWLINE *oline;
+	POINTARRAY *pa;
 
 	LWDEBUG(2, "function called");
 
 	/* Skip empty case */
 	if( lwline_is_empty(iline) )
-		return lwline_clone(iline);
-		
-	static const int minvertices = 0; /* TODO: allow setting this */
-	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, minvertices));
+		return NULL;
+
+	pa = ptarray_simplify(iline->points, dist, minvertices);
+	if ( ! pa ) return NULL;
+
+	/* Make sure single-point collapses have two points */
+	if ( pa->npoints == 1 )
+	{
+		/* Make sure single-point collapses have two points */
+		if ( preserve_collapsed )
+		{
+			POINT4D pt;
+			getPoint4d_p(pa, 0, &pt);		
+			ptarray_append_point(pa, &pt, LW_TRUE);
+		}
+		/* Return null for collapse */
+		else 
+		{
+			ptarray_free(pa);
+			return NULL;
+		}
+	}
+
+	oline = lwline_construct(iline->srid, NULL, pa);
 	oline->type = iline->type;
 	return oline;
 }

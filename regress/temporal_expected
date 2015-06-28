@@ -1,0 +1,34 @@
+NOTICE:  Geometry is not a LINESTRING
+invalidTrajectory1|f
+NOTICE:  Line does not have M dimension
+invalidTrajectory2|f
+NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (0)
+invalidTrajectory3|f
+NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)
+invalidTrajectory4|f
+NOTICE:  Measure of vertex 3 (1) not bigger than measure of vertex 2 (2)
+invalidTrajectory8|f
+validTrajectory1|t
+validTrajectory2|t
+validTrajectory3|t
+cpa1|10
+cpa2|5
+cpa3|5.5
+cpa4|10
+cpa5|
+cpa#3136|80000002|80000002
+cpad1|0
+cpad2|1
+cpad3|2
+cpad4|
+ERROR:  Both input geometries must have a measure dimension
+cpaw1|0.0|t
+cpaw1|1|t
+cpaw2|0.5|f
+cpaw2|1|t
+cpaw2|1.2|t
+cpaw3|1.9|f
+cpaw3|2|t
+cpaw3|2.0001|t
+cpaw4|f
+ERROR:  Both input geometries must have a measure dimension

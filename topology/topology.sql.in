@@ -1,6 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -252,11 +251,11 @@ BEGIN
     AND text(a.attname) = OLD.feature_column
   LOOP
     query = 'SELECT * '
-      || ' FROM ' || quote_ident(OLD.schema_name)
+         ' FROM ' || quote_ident(OLD.schema_name)
       || '.' || quote_ident(OLD.table_name)
       || ' WHERE layer_id('
       || quote_ident(OLD.feature_column)||') '
-      || '=' || OLD.layer_id
+         '=' || OLD.layer_id
       || ' LIMIT 1';
     --RAISE NOTICE '%', query;
     FOR rec IN EXECUTE query
@@ -282,9 +281,9 @@ BEGIN
           AND c.relname = 'relation'
   LOOP
     query = 'SELECT * '
-      || ' FROM ' || quote_ident(toponame)
+         ' FROM ' || quote_ident(toponame)
       || '.relation '
-      || ' WHERE layer_id = '|| OLD.layer_id
+         ' WHERE layer_id = '|| OLD.layer_id
       || ' LIMIT 1';
     --RAISE NOTICE '%', query;
     FOR rec IN EXECUTE query
@@ -422,10 +421,10 @@ BEGIN
   -- Get layer info (and verify it exists)
   ok = false;
   FOR plyr IN EXECUTE 'SELECT * FROM topology.layer '
-    || 'WHERE '
-    || ' topology_id = ' || topoid
+       'WHERE '
+       ' topology_id = ' || topoid
     || ' AND'
-    || ' layer_id = ' || NEW.layer_id
+       ' layer_id = ' || NEW.layer_id
   LOOP
     ok = true;
     EXIT;
@@ -448,7 +447,7 @@ BEGIN
     ok = false;
     FOR rec IN EXECUTE 'SELECT topogeo_id FROM '
       || quote_ident(toponame) || '.relation '
-      || ' WHERE layer_id = ' || plyr.child_id 
+         ' WHERE layer_id = ' || plyr.child_id
       || ' AND topogeo_id = ' || NEW.element_id
     LOOP
       ok = true;
@@ -482,7 +481,7 @@ BEGIN
       ok = false;
       FOR rec IN EXECUTE 'SELECT node_id FROM '
         || quote_ident(toponame) || '.node '
-        || ' WHERE node_id = ' || NEW.element_id
+           ' WHERE node_id = ' || NEW.element_id
       LOOP
         ok = true;
         EXIT;
@@ -500,7 +499,7 @@ BEGIN
       ok = false;
       FOR rec IN EXECUTE 'SELECT edge_id FROM '
         || quote_ident(toponame) || '.edge_data '
-        || ' WHERE edge_id = ' || abs(NEW.element_id)
+           ' WHERE edge_id = ' || abs(NEW.element_id)
       LOOP
         ok = true;
         EXIT;
@@ -522,7 +521,7 @@ BEGIN
       ok = false;
       FOR rec IN EXECUTE 'SELECT face_id FROM '
         || quote_ident(toponame) || '.face '
-        || ' WHERE face_id = ' || NEW.element_id
+           ' WHERE face_id = ' || NEW.element_id
       LOOP
         ok = true;
         EXIT;
@@ -611,10 +610,10 @@ BEGIN
     ) || ')' INTO STRICT newlayer_id;
 
   EXECUTE 'INSERT INTO ' 
-    || 'topology.layer(topology_id, '
-    || 'layer_id, level, child_id, schema_name, '
-    || 'table_name, feature_column, feature_type) '
-    || 'VALUES ('
+       'topology.layer(topology_id, '
+       'layer_id, level, child_id, schema_name, '
+       'table_name, feature_column, feature_type) '
+       'VALUES ('
     || topoid || ','
     || newlayer_id || ',' || COALESCE(newlevel, 0) || ','
     || COALESCE(child::text, 'NULL') || ','
@@ -636,30 +635,30 @@ BEGIN
   EXECUTE 'ALTER TABLE ' || quote_ident(schema)
     || '.' || quote_ident(tbl) 
     || ' ADD CONSTRAINT "check_topogeom_' || col || '" CHECK ('
-    || 'topology_id(' || quote_ident(col) || ') = ' || topoid
+       'topology_id(' || quote_ident(col) || ') = ' || topoid
     || ' AND '
-    || 'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
+       'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
     || ' AND '
-    || 'type(' || quote_ident(col) || ') = ' || intltype
+       'type(' || quote_ident(col) || ') = ' || intltype
     || ');';
 
   --
   -- Add dependency of the feature column on the topology schema
   --
   query = 'INSERT INTO pg_catalog.pg_depend SELECT '
-    || 'fcat.oid, fobj.oid, fsub.attnum, tcat.oid, '
-    || 'tobj.oid, 0, ''n'' '
-    || 'FROM pg_class fcat, pg_namespace fnsp, '
-    || ' pg_class fobj, pg_attribute fsub, '
-    || ' pg_class tcat, pg_namespace tobj '
-    || ' WHERE fcat.relname = ''pg_class'' '
-    || ' AND fnsp.nspname = ' || quote_literal(schema)
+       'fcat.oid, fobj.oid, fsub.attnum, tcat.oid, '
+       'tobj.oid, 0, ''n'' '
+       'FROM pg_class fcat, pg_namespace fnsp, '
+       ' pg_class fobj, pg_attribute fsub, '
+       ' pg_class tcat, pg_namespace tobj '
+       ' WHERE fcat.relname = ''pg_class'' '
+       ' AND fnsp.nspname = ' || quote_literal(schema)
     || ' AND fobj.relnamespace = fnsp.oid '
-    || ' AND fobj.relname = ' || quote_literal(tbl)
+       ' AND fobj.relname = ' || quote_literal(tbl)
     || ' AND fsub.attrelid = fobj.oid '
-    || ' AND fsub.attname = ' || quote_literal(col)
+       ' AND fsub.attname = ' || quote_literal(col)
     || ' AND tcat.relname = ''pg_namespace'' '
-    || ' AND tobj.nspname = ' || quote_literal(toponame);
+       ' AND tobj.nspname = ' || quote_literal(toponame);
 
 --
 -- The only reason to add this dependency is to avoid
@@ -673,23 +672,23 @@ BEGIN
   -- This is a dirty hack ...
   --
   query = 'INSERT INTO pg_catalog.pg_depend SELECT '
-    || 'scat.oid, sobj.oid, 0, fcat.oid, '
-    || 'fobj.oid, fsub.attnum, ''n'' '
-    || 'FROM pg_class fcat, pg_namespace fnsp, '
-    || ' pg_class fobj, pg_attribute fsub, '
-    || ' pg_class scat, pg_class sobj, '
-    || ' pg_namespace snsp '
-    || ' WHERE fcat.relname = ''pg_class'' '
-    || ' AND fnsp.nspname = ' || quote_literal(schema)
+       'scat.oid, sobj.oid, 0, fcat.oid, '
+       'fobj.oid, fsub.attnum, ''n'' '
+       'FROM pg_class fcat, pg_namespace fnsp, '
+       ' pg_class fobj, pg_attribute fsub, '
+       ' pg_class scat, pg_class sobj, '
+       ' pg_namespace snsp '
+       ' WHERE fcat.relname = ''pg_class'' '
+       ' AND fnsp.nspname = ' || quote_literal(schema)
     || ' AND fobj.relnamespace = fnsp.oid '
-    || ' AND fobj.relname = ' || quote_literal(tbl)
+       ' AND fobj.relname = ' || quote_literal(tbl)
     || ' AND fsub.attrelid = fobj.oid '
-    || ' AND fsub.attname = ' || quote_literal(col)
+       ' AND fsub.attname = ' || quote_literal(col)
     || ' AND scat.relname = ''pg_class'' '
-    || ' AND snsp.nspname = ' || quote_literal(toponame)
+       ' AND snsp.nspname = ' || quote_literal(toponame)
     || ' AND sobj.relnamespace = snsp.oid ' 
-    || ' AND sobj.relname = '
-    || ' ''topogeo_s_' || newlayer_id || ''' ';
+       ' AND sobj.relname = '
+       ' ''topogeo_s_' || newlayer_id || ''' ';
 
   RAISE NOTICE '%', query;
   EXECUTE query;
@@ -733,9 +732,9 @@ BEGIN
         -- Get layer and topology info
   ok = false;
   FOR rec IN EXECUTE 'SELECT t.name as toponame, l.* FROM '
-    || 'topology.topology t, topology.layer l '
-    || ' WHERE l.topology_id = t.id'
-    || ' AND l.schema_name = ' || quote_literal(schema)
+       'topology.topology t, topology.layer l '
+       ' WHERE l.topology_id = t.id'
+       ' AND l.schema_name = ' || quote_literal(schema)
     || ' AND l.table_name = ' || quote_literal(tbl)
     || ' AND l.feature_column = ' || quote_literal(col)
   LOOP
@@ -754,8 +753,8 @@ BEGIN
     -- Cleanup the relation table
     EXECUTE 'DELETE FROM ' || quote_ident(lyrinfo.toponame)
       || '.relation '
-      || ' WHERE '
-      || 'layer_id = ' || lyrinfo.layer_id;
+         ' WHERE '
+         'layer_id = ' || lyrinfo.layer_id;
 
     -- Drop the sequence for topogeoms in this layer
     EXECUTE 'DROP SEQUENCE ' || quote_ident(lyrinfo.toponame)
@@ -791,7 +790,7 @@ BEGIN
 
   -- Delete the layer record
   EXECUTE 'DELETE FROM topology.layer '
-    || ' WHERE topology_id = ' || lyrinfo.topology_id
+       ' WHERE topology_id = ' || lyrinfo.topology_id
     || ' AND layer_id = ' || lyrinfo.layer_id;
 
   IF ok THEN
@@ -870,7 +869,7 @@ BEGIN
   --
   layertype := NULL;
   FOR rec IN EXECUTE 'SELECT * FROM topology.layer'
-    || ' WHERE topology_id = ' || ret.topology_id
+       ' WHERE topology_id = ' || ret.topology_id
     || ' AND layer_id = ' || layer_id
   LOOP
     layertype = rec.feature_type;
@@ -935,8 +934,8 @@ BEGIN
       --
       EXECUTE 'INSERT INTO '||quote_ident(toponame)
         || '.relation(topogeo_id, layer_id, '
-        || 'element_id,element_type) '
-        || ' VALUES ('||ret.id
+           'element_id,element_type) '
+           ' VALUES ('||ret.id
         ||','||ret.layer_id
         || ',' || obj_id || ',' || obj_type || ');';
     END IF;
@@ -1102,8 +1101,8 @@ BEGIN
   -- Get layer info
   ok = false;
   FOR rec IN EXECUTE 'SELECT * FROM '
-    || ' topology.layer '
-    || ' WHERE layer_id = ' || layerid
+       ' topology.layer '
+       ' WHERE layer_id = ' || layerid
   LOOP
     lyr = rec;
     ok = true;
@@ -1116,7 +1115,7 @@ BEGIN
 
   query = 'SELECT abs(element_id) as element_id, element_type FROM '
     || quote_ident(toponame) || '.relation WHERE '
-    || ' layer_id = ' || layerid
+       ' layer_id = ' || layerid
     || ' AND topogeo_id = ' || quote_literal(tgid)
     || ' ORDER BY element_type, element_id';
 
@@ -1225,15 +1224,15 @@ BEGIN
       || quote_ident(clyr.schema_name) || '.'
       || quote_ident(clyr.table_name)
       || ', ' || quote_ident(toponame) || '.relation pr'
-      || ' WHERE '
-      || ' pr.topogeo_id = ' || topogeom.id
+         ' WHERE '
+         ' pr.topogeo_id = ' || topogeom.id
       || ' AND '
-      || ' pr.layer_id = ' || topogeom.layer_id
+         ' pr.layer_id = ' || topogeom.layer_id
       || ' AND '
-      || ' id('||quote_ident(clyr.feature_column)
+         ' id('||quote_ident(clyr.feature_column)
       || ') = pr.element_id '
-      || ' AND '
-      || 'layer_id('||quote_ident(clyr.feature_column)
+         ' AND '
+         'layer_id('||quote_ident(clyr.feature_column)
       || ') = pr.element_type ';
     --RAISE DEBUG '%', query;
     EXECUTE sql INTO geom;
@@ -1241,7 +1240,7 @@ BEGIN
   ELSIF topogeom.type = 3 THEN -- [multi]polygon -- }{
 
     sql := 'SELECT st_multi(st_union('
-      || 'topology.ST_GetFaceGeometry('
+         'topology.ST_GetFaceGeometry('
       || quote_literal(toponame) || ','
       || 'element_id))) as g FROM ' 
       || quote_ident(toponame)
@@ -1256,10 +1255,10 @@ BEGIN
       'SELECT st_multi(ST_LineMerge(ST_Collect(e.geom))) as g FROM '
       || quote_ident(toponame) || '.edge e, '
       || quote_ident(toponame) || '.relation r '
-      || ' WHERE r.topogeo_id = ' || topogeom.id
+         ' WHERE r.topogeo_id = ' || topogeom.id
       || ' AND r.layer_id = ' || topogeom.layer_id
       || ' AND r.element_type = 2 '
-      || ' AND abs(r.element_id) = e.edge_id';
+         ' AND abs(r.element_id) = e.edge_id';
     EXECUTE sql INTO geom;
   
   ELSIF topogeom.type = 1 THEN -- [multi]point -- }{
@@ -1268,39 +1267,39 @@ BEGIN
       'SELECT st_multi(st_union(n.geom)) as g FROM '
       || quote_ident(toponame) || '.node n, '
       || quote_ident(toponame) || '.relation r '
-      || ' WHERE r.topogeo_id = ' || topogeom.id
+         ' WHERE r.topogeo_id = ' || topogeom.id
       || ' AND r.layer_id = ' || topogeom.layer_id
       || ' AND r.element_type = 1 '
-      || ' AND r.element_id = n.node_id';
+         ' AND r.element_id = n.node_id';
     EXECUTE sql INTO geom;
 
   ELSIF topogeom.type = 4 THEN -- mixed collection -- }{
 
     sql := 'WITH areas AS ( SELECT ST_Union('
-      || 'topology.ST_GetFaceGeometry('
+         'topology.ST_GetFaceGeometry('
       || quote_literal(toponame) || ','
       || 'element_id)) as g FROM ' 
       || quote_ident(toponame)
       || '.relation WHERE topogeo_id = '
       || topogeom.id || ' AND layer_id = '
       || topogeom.layer_id || ' AND element_type = 3), '
-      || 'lines AS ( SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
+         'lines AS ( SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
       || quote_ident(toponame) || '.edge e, '
       || quote_ident(toponame) || '.relation r '
-      || ' WHERE r.topogeo_id = ' || topogeom.id
+         ' WHERE r.topogeo_id = ' || topogeom.id
       || ' AND r.layer_id = ' || topogeom.layer_id
       || ' AND r.element_type = 2 '
-      || ' AND abs(r.element_id) = e.edge_id ), '
-      || ' points as ( SELECT st_union(n.geom) as g FROM '
+         ' AND abs(r.element_id) = e.edge_id ), '
+         ' points as ( SELECT st_union(n.geom) as g FROM '
       || quote_ident(toponame) || '.node n, '
       || quote_ident(toponame) || '.relation r '
-      || ' WHERE r.topogeo_id = ' || topogeom.id
+         ' WHERE r.topogeo_id = ' || topogeom.id
       || ' AND r.layer_id = ' || topogeom.layer_id
       || ' AND r.element_type = 1 '
-      || ' AND r.element_id = n.node_id ), '
-      || ' un as ( SELECT g FROM areas UNION ALL SELECT g FROM lines '
-      || '          UNION ALL SELECT g FROM points ) '
-      || 'SELECT ST_Multi(ST_Collect(g)) FROM un';
+         ' AND r.element_id = n.node_id ), '
+         ' un as ( SELECT g FROM areas UNION ALL SELECT g FROM lines '
+         '          UNION ALL SELECT g FROM points ) '
+         'SELECT ST_Multi(ST_Collect(g)) FROM un';
     EXECUTE sql INTO geom;
 
   ELSE -- }{
@@ -1354,8 +1353,8 @@ BEGIN
   FOR rec IN EXECUTE 'SELECT a.node_id as id1, b.node_id as id2 FROM '
     || quote_ident(toponame) || '.node a, '
     || quote_ident(toponame) || '.node b '
-    || 'WHERE a.node_id < b.node_id '
-    || ' AND ST_DWithin(a.geom, b.geom, 0)' -- NOTE: see #1625 and #1789
+       'WHERE a.node_id < b.node_id '
+       ' AND ST_DWithin(a.geom, b.geom, 0)' -- NOTE: see #1625 and #1789
   LOOP
     retrec.error = 'coincident nodes';
     retrec.id1 = rec.id1;
@@ -1368,9 +1367,9 @@ BEGIN
   FOR rec IN EXECUTE 'SELECT n.node_id as nid, e.edge_id as eid FROM '
     || quote_ident(toponame) || '.node n, '
     || quote_ident(toponame) || '.edge e '
-    || 'WHERE e.start_node != n.node_id '
-    || 'AND e.end_node != n.node_id '
-    || 'AND ST_Within(n.geom, e.geom)'
+       'WHERE e.start_node != n.node_id '
+       'AND e.end_node != n.node_id '
+       'AND ST_Within(n.geom, e.geom)'
   LOOP
     retrec.error = 'edge crosses node';
     retrec.id1 = rec.eid; -- edge_id
@@ -1418,12 +1417,12 @@ BEGIN
 
   -- Check for edge crossing
   sql := 'SELECT e1.edge_id as id1, e2.edge_id as id2, '
-    || ' e1.geom as g1, e2.geom as g2, '
-    || 'ST_Relate(e1.geom, e2.geom) as im FROM '
+       ' e1.geom as g1, e2.geom as g2, '
+       'ST_Relate(e1.geom, e2.geom) as im FROM '
     || quote_ident(toponame) || '.edge e1, '
     || quote_ident(toponame) || '.edge e2 '
-    || 'WHERE e1.edge_id < e2.edge_id '
-    || ' AND e1.geom && e2.geom ';
+       'WHERE e1.edge_id < e2.edge_id '
+       ' AND e1.geom && e2.geom ';
   IF invalid_edges IS NOT NULL THEN
     sql := sql || ' AND NOT e1.edge_id = ANY ('
                || quote_literal(invalid_edges) || ')'
@@ -1433,9 +1432,9 @@ BEGIN
 
   FOR rec IN EXECUTE sql
   LOOP
+
     IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
       CONTINUE; -- no interior intersection
-    END IF;
 
     --
     -- Closed lines have no boundary, so endpoint
@@ -1444,7 +1443,7 @@ BEGIN
     -- See also full explanation in topology.AddEdge
     --
 
-    IF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
+    ELSIF ST_RelateMatch(rec.im, 'FF10F01F2') THEN
       -- first line (g1) is open, second (g2) is closed
       -- first boundary has puntual intersection with second interior
       --
@@ -1454,9 +1453,8 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
-    END IF;
 
-    IF ST_RelateMatch(rec.im, 'F01FFF102') THEN
+    ELSIF ST_RelateMatch(rec.im, 'F01FFF102') THEN
       -- second line (g2) is open, first (g1) is closed
       -- second boundary has puntual intersection with first interior
       -- 
@@ -1466,9 +1464,8 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
-    END IF;
 
-    IF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
+    ELSIF ST_RelateMatch(rec.im, '0F1FFF1F2') THEN
       -- both lines are closed (boundary intersects nothing)
       -- they have puntual intersection between interiors
       -- 
@@ -1480,6 +1477,7 @@ BEGIN
       THEN
         CONTINUE;
       END IF;
+
     END IF;
 
     retrec.error = 'edge crosses edge';
@@ -1493,8 +1491,8 @@ BEGIN
   FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
     || quote_ident(toponame) || '.edge e, '
     || quote_ident(toponame) || '.node n '
-    || 'WHERE e.start_node = n.node_id '
-    || 'AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)'
+       'WHERE e.start_node = n.node_id '
+       'AND NOT ST_Equals(ST_StartPoint(e.geom), n.geom)'
   LOOP
     retrec.error = 'edge start node geometry mis-match';
     retrec.id1 = rec.id1;
@@ -1507,8 +1505,8 @@ BEGIN
   FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
     || quote_ident(toponame) || '.edge e, '
     || quote_ident(toponame) || '.node n '
-    || 'WHERE e.end_node = n.node_id '
-    || 'AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)'
+       'WHERE e.end_node = n.node_id '
+       'AND NOT ST_Equals(ST_EndPoint(e.geom), n.geom)'
   LOOP
     retrec.error = 'edge end node geometry mis-match';
     retrec.id1 = rec.id1;
@@ -1535,7 +1533,7 @@ BEGIN
   -- for checking their consistency
 
   sql := 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
-    || 'SELECT face_id, topology.ST_GetFaceGeometry('
+       'SELECT face_id, topology.ST_GetFaceGeometry('
     || quote_literal(toponame) || ', face_id) as geom, mbr FROM '
     || quote_ident(toponame) || '.face WHERE face_id > 0';
   IF invalid_faces IS NOT NULL THEN
@@ -1546,16 +1544,16 @@ BEGIN
 
   -- Build a gist index on geom
   EXECUTE 'CREATE INDEX "face_check_gist" ON '
-    || 'face_check USING gist (geom);';
+       'face_check USING gist (geom);';
 
   -- Build a btree index on id
   EXECUTE 'CREATE INDEX "face_check_bt" ON ' 
-    || 'face_check (face_id);';
+       'face_check (face_id);';
 
   -- Scan the table looking for NULL geometries
   FOR rec IN EXECUTE
     'SELECT f1.face_id FROM '
-    || 'face_check f1 WHERE f1.geom IS NULL'
+       'face_check f1 WHERE f1.geom IS NULL'
   LOOP
     -- Face missing !
     retrec.error := 'face has no rings';
@@ -1569,12 +1567,12 @@ BEGIN
   -- TODO: also check for MBR consistency
   FOR rec IN EXECUTE
     'SELECT f1.geom, f1.face_id as id1, f2.face_id as id2, '
-    || ' ST_Relate(f1.geom, f2.geom) as im'
-    || ' FROM '
-    || 'face_check f1, '
-    || 'face_check f2 '
-    || 'WHERE f1.face_id < f2.face_id'
-    || ' AND f1.geom && f2.geom'
+       ' ST_Relate(f1.geom, f2.geom) as im'
+       ' FROM '
+       'face_check f1, '
+       'face_check f2 '
+       'WHERE f1.face_id < f2.face_id'
+       ' AND f1.geom && f2.geom'
   LOOP
 
     -- Face overlap
@@ -1608,7 +1606,7 @@ BEGIN
   FOR rec in EXECUTE
     'SELECT count(*) FROM ( getSRID(geom) FROM '
     || quote_ident(toponame) || '.edge '
-    || ' UNION '
+       ' UNION '
     'SELECT getSRID(geom) FROM '
     || quote_ident(toponame) || '.node )'
   LOOP
@@ -1666,9 +1664,9 @@ BEGIN
   -------------{ face CREATION
   EXECUTE 
   'CREATE TABLE ' || quote_ident(atopology) || '.face ('
-  || 'face_id SERIAL,'
-  || ' CONSTRAINT face_primary_key PRIMARY KEY(face_id)'
-  || ');';
+     'face_id SERIAL,'
+     ' CONSTRAINT face_primary_key PRIMARY KEY(face_id)'
+     ');';
 
   -- Add mbr column to the face table 
   EXECUTE
@@ -1683,19 +1681,19 @@ BEGIN
 
   EXECUTE 
   'CREATE TABLE ' || quote_ident(atopology) || '.node ('
-  || 'node_id SERIAL,'
+     'node_id SERIAL,'
   --|| 'geom GEOMETRY,'
-  || 'containing_face INTEGER,'
+     'containing_face INTEGER,'
 
-  || 'CONSTRAINT node_primary_key PRIMARY KEY(node_id),'
+     'CONSTRAINT node_primary_key PRIMARY KEY(node_id),'
 
   --|| 'CONSTRAINT node_geometry_type CHECK '
   --|| '( GeometryType(geom) = ''POINT'' ),'
 
-  || 'CONSTRAINT face_exists FOREIGN KEY(containing_face) '
-  || 'REFERENCES ' || quote_ident(atopology) || '.face(face_id)'
+     'CONSTRAINT face_exists FOREIGN KEY(containing_face) '
+     'REFERENCES ' || quote_ident(atopology) || '.face(face_id)'
 
-  || ');';
+     ');';
 
   -- Add geometry column to the node table 
   EXECUTE
@@ -1710,43 +1708,43 @@ BEGIN
   -- edge_data table
   EXECUTE 
   'CREATE TABLE ' || quote_ident(atopology) || '.edge_data ('
-  || 'edge_id SERIAL NOT NULL PRIMARY KEY,'
-  || 'start_node INTEGER NOT NULL,'
-  || 'end_node INTEGER NOT NULL,'
-  || 'next_left_edge INTEGER NOT NULL,'
-  || 'abs_next_left_edge INTEGER NOT NULL,'
-  || 'next_right_edge INTEGER NOT NULL,'
-  || 'abs_next_right_edge INTEGER NOT NULL,'
-  || 'left_face INTEGER NOT NULL,'
-  || 'right_face INTEGER NOT NULL,'
-  --|| 'geom GEOMETRY NOT NULL,'
+     'edge_id SERIAL NOT NULL PRIMARY KEY,'
+     'start_node INTEGER NOT NULL,'
+     'end_node INTEGER NOT NULL,'
+     'next_left_edge INTEGER NOT NULL,'
+     'abs_next_left_edge INTEGER NOT NULL,'
+     'next_right_edge INTEGER NOT NULL,'
+     'abs_next_right_edge INTEGER NOT NULL,'
+     'left_face INTEGER NOT NULL,'
+     'right_face INTEGER NOT NULL,'
+  --   'geom GEOMETRY NOT NULL,'
 
-  --|| 'CONSTRAINT edge_geometry_type CHECK '
-  --|| '( GeometryType(geom) = ''LINESTRING'' ),'
+  --   'CONSTRAINT edge_geometry_type CHECK '
+  --   '( GeometryType(geom) = ''LINESTRING'' ),'
 
-  || 'CONSTRAINT start_node_exists FOREIGN KEY(start_node)'
-  || ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
+     'CONSTRAINT start_node_exists FOREIGN KEY(start_node)'
+     ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
 
-  || 'CONSTRAINT end_node_exists FOREIGN KEY(end_node) '
-  || ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
+     'CONSTRAINT end_node_exists FOREIGN KEY(end_node) '
+     ' REFERENCES ' || quote_ident(atopology) || '.node(node_id),'
 
-  || 'CONSTRAINT left_face_exists FOREIGN KEY(left_face) '
-  || 'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
+     'CONSTRAINT left_face_exists FOREIGN KEY(left_face) '
+     'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
 
-  || 'CONSTRAINT right_face_exists FOREIGN KEY(right_face) '
-  || 'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
+     'CONSTRAINT right_face_exists FOREIGN KEY(right_face) '
+     'REFERENCES ' || quote_ident(atopology) || '.face(face_id),'
 
-  || 'CONSTRAINT next_left_edge_exists FOREIGN KEY(abs_next_left_edge)'
-  || ' REFERENCES ' || quote_ident(atopology)
+     'CONSTRAINT next_left_edge_exists FOREIGN KEY(abs_next_left_edge)'
+     ' REFERENCES ' || quote_ident(atopology)
   || '.edge_data(edge_id)'
-  || ' DEFERRABLE INITIALLY DEFERRED,'
+     ' DEFERRABLE INITIALLY DEFERRED,'
 
-  || 'CONSTRAINT next_right_edge_exists '
-  || 'FOREIGN KEY(abs_next_right_edge)'
-  || ' REFERENCES ' || quote_ident(atopology)
+     'CONSTRAINT next_right_edge_exists '
+     'FOREIGN KEY(abs_next_right_edge)'
+     ' REFERENCES ' || quote_ident(atopology)
   || '.edge_data(edge_id) '
-  || ' DEFERRABLE INITIALLY DEFERRED'
-  || ');';
+     ' DEFERRABLE INITIALLY DEFERRED'
+     ');';
 
   -- Add geometry column to the edge_data table 
   EXECUTE
@@ -1758,50 +1756,50 @@ BEGIN
   -- edge standard view (select rule)
   EXECUTE 'CREATE VIEW ' || quote_ident(atopology)
     || '.edge AS SELECT '
-    || ' edge_id, start_node, end_node, next_left_edge, '
-    || ' next_right_edge, '
-    || ' left_face, right_face, geom FROM '
+       ' edge_id, start_node, end_node, next_left_edge, '
+       ' next_right_edge, '
+       ' left_face, right_face, geom FROM '
     || quote_ident(atopology) || '.edge_data';
 
   -- edge standard view description
   EXECUTE 'COMMENT ON VIEW ' || quote_ident(atopology)
     || '.edge IS '
-    || '''Contains edge topology primitives''';
+       '''Contains edge topology primitives''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.edge_id IS '
-    || '''Unique identifier of the edge''';
+       '''Unique identifier of the edge''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.start_node IS '
-    || '''Unique identifier of the node at the start of the edge''';
+       '''Unique identifier of the node at the start of the edge''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.end_node IS '
-    || '''Unique identifier of the node at the end of the edge''';
+       '''Unique identifier of the node at the end of the edge''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.next_left_edge IS '
-    || '''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
+       '''Unique identifier of the next edge of the face on the left (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.next_right_edge IS '
-    || '''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
+       '''Unique identifier of the next edge of the face on the right (when looking in the direction from START_NODE to END_NODE), moving counterclockwise around the face boundary''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.left_face IS '
-    || '''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE''';
+       '''Unique identifier of the face on the left side of the edge when looking in the direction from START_NODE to END_NODE''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.right_face IS '
-    || '''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE''';
+       '''Unique identifier of the face on the right side of the edge when looking in the direction from START_NODE to END_NODE''';
   EXECUTE 'COMMENT ON COLUMN ' || quote_ident(atopology)
     || '.edge.geom IS '
-    || '''The geometry of the edge''';
+       '''The geometry of the edge''';
 
   -- edge standard view (insert rule)
   EXECUTE 'CREATE RULE edge_insert_rule AS ON INSERT '
-          || 'TO ' || quote_ident(atopology)
+             'TO ' || quote_ident(atopology)
     || '.edge DO INSTEAD '
-                || ' INSERT into ' || quote_ident(atopology)
+                   ' INSERT into ' || quote_ident(atopology)
     || '.edge_data '
-                || ' VALUES (NEW.edge_id, NEW.start_node, NEW.end_node, '
-    || ' NEW.next_left_edge, abs(NEW.next_left_edge), '
-    || ' NEW.next_right_edge, abs(NEW.next_right_edge), '
-    || ' NEW.left_face, NEW.right_face, NEW.geom);';
+                   ' VALUES (NEW.edge_id, NEW.start_node, NEW.end_node, '
+       ' NEW.next_left_edge, abs(NEW.next_left_edge), '
+       ' NEW.next_right_edge, abs(NEW.next_right_edge), '
+       ' NEW.left_face, NEW.right_face, NEW.geom);';
 
   --------------} END OF edge CREATION
 
@@ -1814,17 +1812,17 @@ BEGIN
   --
   EXECUTE 
   'CREATE TABLE ' || quote_ident(atopology) || '.relation ('
-  || ' topogeo_id integer NOT NULL, '
-  || ' layer_id integer NOT NULL, ' 
-  || ' element_id integer NOT NULL, '
-  || ' element_type integer NOT NULL, '
-  || ' UNIQUE(layer_id,topogeo_id,element_id,element_type));';
+     ' topogeo_id integer NOT NULL, '
+     ' layer_id integer NOT NULL, '
+     ' element_id integer NOT NULL, '
+     ' element_type integer NOT NULL, '
+     ' UNIQUE(layer_id,topogeo_id,element_id,element_type));';
 
   EXECUTE 
   'CREATE TRIGGER relation_integrity_checks '
-  ||'BEFORE UPDATE OR INSERT ON '
+     'BEFORE UPDATE OR INSERT ON '
   || quote_ident(atopology) || '.relation FOR EACH ROW '
-  || ' EXECUTE PROCEDURE topology.RelationTrigger('
+     ' EXECUTE PROCEDURE topology.RelationTrigger('
   ||topology_id||','||quote_literal(atopology)||')';
   --------------} END OF relation CREATION
 
@@ -1935,7 +1933,7 @@ BEGIN
 
     -- Drop all layers in the topology
     FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
-      || ' topology_id = ' || topoid
+         ' topology_id = ' || topoid
     LOOP
 
       EXECUTE 'SELECT topology.DropTopoGeometryColumn('

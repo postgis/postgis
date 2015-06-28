@@ -224,6 +224,8 @@ foreach my $fn (@funcs)
 	{
 		my $fn_nm = $1;
 		my $fn_arg = $2;
+		$fn_arg =~ s/\-\-.*\n//g;
+		$fn_arg =~ s/\n//g;
 
 		$fn_arg = strip_default($fn_arg);
 		if ( ! exists($type_funcs{$fn_nm}) )

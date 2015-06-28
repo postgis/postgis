@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: pgsql2shp-cli.c 5450 2010-03-22 19:38:14Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net

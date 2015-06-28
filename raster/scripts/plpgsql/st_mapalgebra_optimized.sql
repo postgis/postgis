@@ -1,6 +1,5 @@
 ----------------------------------------------------------------------
 --
--- $Id: st_mapalgebra_optimized.sql 6127 2010-10-25 16:06:00Z jorgearevalo $
 --
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --

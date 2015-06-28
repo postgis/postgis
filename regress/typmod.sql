@@ -231,9 +231,11 @@ SELECT distinct 'catalog-schema', f_table_catalog = current_database(),f_table_s
 CREATE TABLE tm.types (id serial, g geometry);
 
 INSERT INTO tm.types(g) values ('POINT EMPTY');
+INSERT INTO tm.types(g) values ('POINT(0 0)');
 INSERT INTO tm.types(g) values ('LINESTRING EMPTY');
 INSERT INTO tm.types(g) values ('POLYGON EMPTY');
 INSERT INTO tm.types(g) values ('MULTIPOINT EMPTY');
+INSERT INTO tm.types(g) values ('MULTIPOINT(0 0)');
 INSERT INTO tm.types(g) values ('MULTILINESTRING EMPTY');
 INSERT INTO tm.types(g) values ('MULTIPOLYGON EMPTY');
 INSERT INTO tm.types(g) values ('GEOMETRYCOLLECTION EMPTY');
@@ -246,17 +248,20 @@ INSERT INTO tm.types(g) values ('POLYHEDRALSURFACE EMPTY');
 INSERT INTO tm.types(g) values ('TRIANGLE EMPTY');
 INSERT INTO tm.types(g) values ('TIN EMPTY');
 
--- all zm flags
+-- all zm flags (17 is the number of base types)
 INSERT INTO tm.types(g)
-SELECT st_force3dz(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force3dz(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force3dm(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force3dm(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 INSERT INTO tm.types(g)
-SELECT st_force4d(g) FROM tm.types WHERE id < 15 ORDER BY id;
+SELECT st_force4d(g) FROM tm.types WHERE id <= 17 ORDER BY id;
 
 -- known srid
 INSERT INTO tm.types(g)
 SELECT st_setsrid(g,4326) FROM tm.types ORDER BY id;
+
+-- Expected: 17 (base count) * 4 (zmflag combinations) * 2 (srids)
+SELECT 'num_types', count(*) from tm.types;
 
 -- Now try to insert each type into each table
 CREATE FUNCTION tm.insert_all(tmpfile_prefix text)
@@ -298,6 +303,9 @@ BEGIN
 		LOOP
 			out_srid := ST_Srid(rec2.g);
 			out_type := substr(ST_GeometryType(rec2.g), 4);
+			IF NOT ST_IsEmpty(rec2.g) THEN
+				out_type := out_type || 'NE';
+			END IF;
 			out_flags := ST_zmflag(rec2.g);
 			BEGIN
 				sql := 'INSERT INTO '
@@ -346,7 +354,7 @@ BEGIN
 				out_status := out_status || '-GOK';
 			EXCEPTION
 			WHEN OTHERS THEN
-				out_status := out_status || '-GKO:';
+				out_status := out_status || '-GKO';
 			END;
 
 			-- binary insertion (geography) {

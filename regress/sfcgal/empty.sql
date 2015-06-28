@@ -42,7 +42,7 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Union(geometry, empty) == geometry', ST_AsEWKT(ST_Union(geometry, empty)) FROM inp;
+ ) SELECT 'ST_Union(geometry, empty) == geometry', ST_Equals(ST_ExteriorRing(ST_Union(geometry, empty)), 'LINESTRING(0 0, 10 0, 5 5, 0 0)'::geometry) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_Union(empty, empty) == empty', ST_IsEmpty(ST_Union(empty, empty)) FROM inp;
@@ -56,7 +56,7 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
- ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_AsEWKT(ST_Difference(geometry, empty)) FROM inp;
+ ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_Equals(ST_ExteriorRing(ST_Difference(geometry, empty)),  'LINESTRING(0 0, 10 0, 5 5, 0 0)'::geometry) FROM inp;
 WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty,
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
