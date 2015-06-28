@@ -676,23 +676,13 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			{
 				error_if_srid_mismatch(srid, gserialized_get_srid(geom));
 
-<<<<<<< HEAD
-					g1 = POSTGIS2GEOS(pgis_geom);
-					if ( 0 == g1 )   /* exception thrown at construction */
-					{
-						/* TODO: release GEOS allocated memory ! */
-						HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-						PG_RETURN_NULL();
-					}
-=======
-				g1 = POSTGIS2GEOS(pgis_geom);
-				if ( 0 == g1 )   /* exception thrown at construction */
-				{
-					/* TODO: release GEOS allocated memory ! */
-		      HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-					PG_RETURN_NULL();
-				}
->>>>>>> 0aa10f1679b0899747d1b543d2b3400eb1537a88
+                g1 = POSTGIS2GEOS(pgis_geom);
+                if ( 0 == g1 )   /* exception thrown at construction */
+                {
+                    /* TODO: release GEOS allocated memory ! */
+                    HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+                    PG_RETURN_NULL();
+                }
 
 				POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
 				               call, i, lwtype_name(gserialized_get_type(geom)));
@@ -3273,83 +3263,140 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 	return ret;
 }
 
+uint32_t array_nelems_not_null(ArrayType* array) {
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    uint32_t nelems_not_null = 0;
+
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
+	iterator = array_create_iterator(array, 0);
+#endif
+	while(array_iterate(iterator, &value, &isnull) )
+	{
+        if (!isnull)
+        {
+            nelems_not_null++;
+        }
+    }
+    array_free_iterator(iterator);
+
+    return nelems_not_null;
+}
+
+/* ARRAY2GEOS: Converts the non-null elements of a Postgres array into a LWGEOM* array */
 LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 {
-	size_t offset;
-	uint32_t i;
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    bool gotsrid = false;
+    uint32_t i = 0;
 
 	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
 
-	for (i=0, offset=0; i<nelems; i++)
+#if POSTGIS_PGSQL_VERSION >= 95
+    iterator = array_create_iterator(array, 0, NULL);
+#else
+    iterator = array_create_iterator(array, 0);
+#endif
+
+    while(array_iterate(iterator, &value, &isnull))
 	{
-		GSERIALIZED *geom = (GSERIALIZED*) (ARR_DATA_PTR(array) + offset);
-		offset += INTALIGN(VARSIZE(geom));
+		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+
+        if (isnull)
+        {
+            continue;
+        }
 
 		*is3d = *is3d || gserialized_has_z(geom);
 
 		lw_geoms[i] = lwgeom_from_gserialized(geom);
 		if (!lw_geoms[i]) /* error in creation */
 		{
-			elog(ERROR, "Geometry deserializing geometry");
+			lwpgerror("Geometry deserializing geometry");
 			return NULL;
 		}
-		if (i == 0)
+		if (!gotsrid)
 		{
+            gotsrid = true;
 			*srid = gserialized_get_srid(geom);
 		}
 		else if (*srid != gserialized_get_srid(geom))
 		{
-			elog(ERROR, "Operation on mixed SRID geometries");
+            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 			return NULL;
 		}
+
+        i++;
 	}
 
 	return lw_geoms;
 }
 
+/* ARRAY2GEOS: Converts the non-null elements of a Postgres array into a GEOSGeometry* array */
 GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid)
 {
-	size_t offset;
-	uint32_t i;
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    bool gotsrid = false;
+    uint32_t i = 0;
 
 	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
 
-	for (i=0, offset=0; i<nelems; i++)
+#if POSTGIS_PGSQL_VERSION >= 95
+    iterator = array_create_iterator(array, 0, NULL);
+#else
+    iterator = array_create_iterator(array, 0);
+#endif
+
+    while(array_iterate(iterator, &value, &isnull))
 	{
-		GSERIALIZED *geom = (GSERIALIZED*) (ARR_DATA_PTR(array) + offset);
-		offset += INTALIGN(VARSIZE(geom));
+        GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+
+        if (isnull)
+        {
+            continue;
+        }
 
 		*is3d = *is3d || gserialized_has_z(geom);
 
 		geos_geoms[i] = (GEOSGeometry*) POSTGIS2GEOS(geom);
 		if (!geos_geoms[i])   /* exception thrown at construction */
 		{
-			uint32_t j;
-			elog(ERROR, "Geometry could not be converted to GEOS");
+            lwpgerror("Geometry could not be converted to GEOS");
 
-			for (j = i-1; j >= 0; j--)
+            while (i >= 0)
 			{
-				GEOSGeom_destroy(geos_geoms[j]);
+				GEOSGeom_destroy(geos_geoms[i--]);
 			}
 			return NULL;
 		}
-		if (i == 0)
+
+		if (!gotsrid)
 		{
 			*srid = gserialized_get_srid(geom);
+            gotsrid = true;
 		}
 		else if (*srid != gserialized_get_srid(geom))
 		{
-			uint32_t j;
-			elog(ERROR, "Operation on mixed SRID geometries");
+            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 
-			for (j = i-1; j >= 0; j--)
+            while (i >= 0)
 			{
-				GEOSGeom_destroy(geos_geoms[j]);
+				GEOSGeom_destroy(geos_geoms[i--]);
 			}
 			return NULL;
 		}
+
+        i++;
 	}
 
+    array_free_iterator(iterator);
 	return geos_geoms;
 }
 
@@ -3470,7 +3517,6 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(clusterintersecting_garray);
 Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	Datum* result_array_data;
 	ArrayType *array, *result;
 	int is3d = 0;
@@ -3483,18 +3529,18 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 	bool elmbyval;
 	char elmalign;
 
-	datum = PG_GETARG_DATUM(0);
-
 	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *) datum == NULL ) PG_RETURN_NULL();
+    if (PG_ARGISNULL(0))
+        PG_RETURN_NULL();
 
-	array = DatumGetArrayTypeP(datum);
+	array = PG_GETARG_ARRAYTYPE_P(0);
+    nelems = array_nelems_not_null(array);
 
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of elements: %d", nelems);
+	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of non-null elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
+
+    /* TODO short-circuit for one element? */
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -3537,7 +3583,6 @@ Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(cluster_within_distance_garray);
 Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	Datum* result_array_data;
 	ArrayType *array, *result;
 	int is3d = 0;
@@ -3552,19 +3597,19 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	bool elmbyval;
 	char elmalign;
 
-	datum = PG_GETARG_DATUM(0);
-	tolerance = PG_GETARG_FLOAT8(1);
-
 	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *) datum == NULL ) PG_RETURN_NULL();
+    if (PG_ARGISNULL(0))
+        PG_RETURN_NULL();
 
-	array = DatumGetArrayTypeP(datum);
+    array = PG_GETARG_ARRAYTYPE_P(0);
+	tolerance = PG_GETARG_FLOAT8(1);
+    nelems = array_nelems_not_null(array);
 
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of elements: %d", nelems);
+	POSTGIS_DEBUGF(3, "cluster_within_distance_garray: number of non-null elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
+
+    /* TODO short-circuit for one element? */
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
