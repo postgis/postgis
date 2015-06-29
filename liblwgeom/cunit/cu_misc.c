@@ -145,11 +145,13 @@ static void test_rect_count(void)
 	static char *wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))";
 	LWGEOM *geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
 
+	box.flags = 0;
 	box.xmin = -5;  box.ymin = -5;
 	box.xmax =  5;  box.ymax =  5;
 	n = lwgeom_npoints_in_rect(geom, &box);
 	CU_ASSERT_EQUAL(2, n);
 
+	box.flags = 0;
 	box.xmin = -5;  box.ymin = -5;
 	box.xmax = 15;  box.ymax = 15; 
 	n = lwgeom_npoints_in_rect(geom, &box);
