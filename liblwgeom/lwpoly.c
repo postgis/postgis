@@ -356,7 +356,10 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed
 	LWDEBUGF(2, "%s: simplifying polygon with %d rings", __func__, ipoly->nrings);
 
 	if ( lwpoly_is_empty(ipoly) )
+	{
+		lwpoly_free(opoly);
 		return NULL;
+	}
 
 	for ( i = 0; i < ipoly->nrings; i++ )
 	{
@@ -383,14 +386,20 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed
 
 		/* Add ring to simplified polygon */
 		if( lwpoly_add_ring(opoly, opts) == LW_FAILURE )
+		{
+			lwpoly_free(opoly);
 			return NULL;
+		}
 	}
 
 	LWDEBUGF(3, "simplified polygon with %d rings", ipoly->nrings);
 	opoly->type = ipoly->type;
 
 	if( lwpoly_is_empty(opoly) )
+	{
+		lwpoly_free(opoly);
 		return NULL;
+	}
 
 	return opoly;
 }
