@@ -33,6 +33,8 @@ extern void clip_by_rect_suite_setup();
 extern void force_sfs_suite_setup(void);
 extern void geodetic_suite_setup(void);
 extern void geos_suite_setup(void);
+extern void geos_cluster_suite_setup(void);
+extern void unionfind_suite_setup(void);
 extern void homogenize_suite_setup(void);
 extern void in_encoded_polyline_suite_setup(void);
 extern void in_geojson_suite_setup(void);
@@ -73,6 +75,8 @@ PG_SuiteSetup setupfuncs[] =
 	force_sfs_suite_setup,
 	geodetic_suite_setup,
 	geos_suite_setup,
+	geos_cluster_suite_setup,
+	unionfind_suite_setup,
 	homogenize_suite_setup,
 	in_encoded_polyline_suite_setup,
 #if HAVE_LIBJSON

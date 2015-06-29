@@ -276,6 +276,46 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 }
 
 GEOSGeometry *
+GBOX2GEOS(const GBOX *box)
+{
+    GEOSGeometry* envelope;
+    GEOSGeometry* ring;
+    GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
+    if (!seq) {
+        return NULL;
+    }
+
+    GEOSCoordSeq_setX(seq, 0, box->xmin);
+    GEOSCoordSeq_setY(seq, 0, box->ymin);
+
+    GEOSCoordSeq_setX(seq, 1, box->xmax);
+    GEOSCoordSeq_setY(seq, 1, box->ymin);
+
+    GEOSCoordSeq_setX(seq, 2, box->xmax);
+    GEOSCoordSeq_setY(seq, 2, box->ymax);
+
+    GEOSCoordSeq_setX(seq, 3, box->xmin);
+    GEOSCoordSeq_setY(seq, 3, box->ymax);
+
+    GEOSCoordSeq_setX(seq, 4, box->xmin);
+    GEOSCoordSeq_setY(seq, 4, box->ymin);
+
+    ring = GEOSGeom_createLinearRing(seq);
+    if (!ring) {
+        GEOSCoordSeq_destroy(seq);
+        return NULL;
+    }
+
+    envelope = GEOSGeom_createPolygon(ring, NULL, 0);
+    if (!envelope) {
+        GEOSGeom_destroy(ring);
+        return NULL;
+    }
+
+    return envelope;
+}
+
+GEOSGeometry *
 LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 {
 	GEOSCoordSeq sq;

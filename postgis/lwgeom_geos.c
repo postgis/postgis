@@ -19,6 +19,7 @@
 #include "funcapi.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
+#include "utils/lsyscache.h"
 
 #if POSTGIS_PGSQL_VERSION >= 93
 #include "access/htup_details.h"
@@ -31,7 +32,7 @@
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
-#include "lwgeom_geos_prepared.h" 
+#include "lwgeom_geos_prepared.h"
 
 #include "float.h" /* for DBL_DIG */
 
@@ -78,6 +79,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum clusterintersecting_garray(PG_FUNCTION_ARGS);
+Datum cluster_within_distance_garray(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
@@ -251,7 +254,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 {
 	/*
 	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
-	** terminal collection from the ST_Union aggregate 
+	** terminal collection from the ST_Union aggregate
 	*/
 	ArrayType *array;
 
@@ -673,13 +676,13 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			{
 				error_if_srid_mismatch(srid, gserialized_get_srid(geom));
 
-				g1 = POSTGIS2GEOS(pgis_geom);
-				if ( 0 == g1 )   /* exception thrown at construction */
-				{
-					/* TODO: release GEOS allocated memory ! */
-		      HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-					PG_RETURN_NULL();
-				}
+                g1 = POSTGIS2GEOS(pgis_geom);
+                if ( 0 == g1 )   /* exception thrown at construction */
+                {
+                    /* TODO: release GEOS allocated memory ! */
+                    HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
+                    PG_RETURN_NULL();
+                }
 
 				POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
 				               call, i, lwtype_name(gserialized_get_type(geom)));
@@ -779,7 +782,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-    HANDLE_GEOS_ERROR("GEOSUnion");
+		HANDLE_GEOS_ERROR("GEOSUnion");
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -898,7 +901,8 @@ Datum boundary(PG_FUNCTION_ARGS)
 	}
 
 	/* GEOS doesn't do triangle type, so we special case that here */
-	if (lwgeom->type == TRIANGLETYPE) {
+	if (lwgeom->type == TRIANGLETYPE)
+	{
 		lwgeom->type = LINETYPE;
 		result = geometry_serialize(lwgeom);
 		lwgeom_free(lwgeom);
@@ -1080,15 +1084,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 	int nargs;
 	enum
 	{
-		ENDCAP_ROUND = 1,
-		ENDCAP_FLAT = 2,
-		ENDCAP_SQUARE = 3
+	    ENDCAP_ROUND = 1,
+	    ENDCAP_FLAT = 2,
+	    ENDCAP_SQUARE = 3
 	};
 	enum
 	{
-		JOIN_ROUND = 1,
-		JOIN_MITRE = 2,
-		JOIN_BEVEL = 3
+	    JOIN_ROUND = 1,
+	    JOIN_MITRE = 2,
+	    JOIN_BEVEL = 3
 	};
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_ENDCAP_STYLE = ENDCAP_ROUND;
@@ -1258,7 +1262,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-    HANDLE_GEOS_ERROR("GEOSBuffer");
+		HANDLE_GEOS_ERROR("GEOSBuffer");
 		PG_RETURN_NULL(); /* never get here */
 	}
 
@@ -1280,7 +1284,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 }
 
 /*
-* Compute at offset curve to a line 
+* Compute at offset curve to a line
 */
 Datum ST_OffsetCurve(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_OffsetCurve);
@@ -1309,14 +1313,14 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 		JOIN_MITRE = 2,
 		JOIN_BEVEL = 3
 	};
-	
+
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
 	double mitreLimit = DEFAULT_MITRE_LIMIT;
 	int joinStyle  = DEFAULT_JOIN_STYLE;
 	char *param = NULL;
 	char *paramstr = NULL;
-	
+
 	/* Read SQL arguments */
 	nargs = PG_NARGS();
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
@@ -1334,7 +1338,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	* Note that due to a bug, GEOS 3.3.0 would return EMPTY.
 	* See http://trac.osgeo.org/geos/ticket/454
 	*/
-	if ( size == 0 ) 
+	if ( size == 0 )
 		PG_RETURN_POINTER(gser_input);
 
 	/* Read the lwgeom, check for errors */
@@ -1416,9 +1420,9 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g", joinStyle, mitreLimit);
 		pfree(paramstr); /* alloc'ed in text2cstring */
 	}
-	
+
 	lwgeom_result = lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit);
-	
+
 	if (lwgeom_result == NULL)
 		lwpgerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");
 
@@ -1508,7 +1512,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	{
 		LWPOINT *lwp = lwpoint_construct_empty(
 		                   gserialized_get_srid(geom),
-		                   gserialized_has_z(geom), 
+		                   gserialized_has_z(geom),
 		                   gserialized_has_m(geom));
 		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
 		lwpoint_free(lwp);
@@ -1570,9 +1574,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom) )
 	{
 		LWPOINT *lwp = lwpoint_construct_empty(
-		                    gserialized_get_srid(geom), 
-		                    gserialized_has_z(geom), 
-		                    gserialized_has_m(geom));
+		                   gserialized_get_srid(geom),
+		                   gserialized_has_z(geom),
+		                   gserialized_has_m(geom));
 		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
 		lwpoint_free(lwp);
 		PG_RETURN_POINTER(result);
@@ -1640,7 +1644,8 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
 	bbox1 = lwgeom_get_bbox(lwgeom1);
-	if ( ! bbox1 ) {
+	if ( ! bbox1 )
+	{
 		/* empty clips to empty, no matter rect */
 		lwgeom_free(lwgeom1);
 		PG_RETURN_POINTER(geom1);
@@ -1753,10 +1758,10 @@ Datum isvalid(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 33
 	/* Short circuit and return FALSE if we have infinite coordinates */
 	/* GEOS 3.3+ is supposed to  handle this stuff OK */
-	if ( gserialized_get_gbox_p(geom1, &box1) )	
+	if ( gserialized_get_gbox_p(geom1, &box1) )
 	{
-		if ( isinf(box1.xmax) || isinf(box1.ymax) || isinf(box1.xmin) || isinf(box1.ymin) || 
-		     isnan(box1.xmax) || isnan(box1.ymax) || isnan(box1.xmin) || isnan(box1.ymin)  )
+		if ( isinf(box1.xmax) || isinf(box1.ymax) || isinf(box1.xmin) || isinf(box1.ymin) ||
+		        isnan(box1.xmax) || isnan(box1.ymax) || isnan(box1.xmin) || isnan(box1.ymin)  )
 		{
 			lwpgnotice("Geometry contains an Inf or NaN coordinate");
 			PG_RETURN_BOOL(FALSE);
@@ -1773,7 +1778,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	}
 	g1 = LWGEOM2GEOS(lwgeom, 0);
 	lwgeom_free(lwgeom);
-	
+
 	if ( ! g1 )
 	{
 		/* should we drop the following
@@ -1808,7 +1813,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	text *result = NULL;
 	const GEOSGeometry *g1 = NULL;
 #if POSTGIS_GEOS_VERSION < 33
-  GBOX box;
+	GBOX box;
 #endif
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
@@ -1816,10 +1821,10 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION < 33
 	/* Short circuit and return if we have infinite coordinates */
 	/* GEOS 3.3+ is supposed to  handle this stuff OK */
-	if ( gserialized_get_gbox_p(geom, &box) )	
+	if ( gserialized_get_gbox_p(geom, &box) )
 	{
-		if ( isinf(box.xmax) || isinf(box.ymax) || isinf(box.xmin) || isinf(box.ymin) || 
-		     isnan(box.xmax) || isnan(box.ymax) || isnan(box.xmin) || isnan(box.ymin)  )
+		if ( isinf(box.xmax) || isinf(box.ymax) || isinf(box.xmin) || isinf(box.ymin) ||
+		        isnan(box.xmax) || isnan(box.ymax) || isnan(box.xmin) || isnan(box.ymin)  )
 		{
 			const char *rsn = "Geometry contains an Inf or NaN coordinate";
 			size_t len = strlen(rsn);
@@ -1827,7 +1832,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 			SET_VARSIZE(result, VARHDRSZ + len);
 			memcpy(VARDATA(result), rsn, len);
 			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_POINTER(result);			
+			PG_RETURN_POINTER(result);
 		}
 	}
 #endif
@@ -1906,7 +1911,8 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) ) {
+	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
+	{
 		flags = PG_GETARG_INT32(1);
 	}
 
@@ -1917,7 +1923,7 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	if ( g1 )
 	{
 		valid = GEOSisValidDetail(g1, flags,
-			&geos_reason, &geos_location);
+		                          &geos_reason, &geos_location);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
 		if ( geos_reason )
 		{
@@ -2069,7 +2075,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ! gbox_contains_2d(&box1, &box2) )
 		{
@@ -2407,7 +2413,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 
 /**
-* ST_Within(A, B) => ST_Contains(B, A) so we just delegate this calculation to the 
+* ST_Within(A, B) => ST_Contains(B, A) so we just delegate this calculation to the
 * Contains implementation.
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
@@ -2567,7 +2573,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -2655,7 +2661,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	type1 = gserialized_get_type(geom1);
 	type2 = gserialized_get_type(geom2);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	     (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -2993,7 +2999,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 
-	if ( PG_NARGS() > 2 ) {
+	if ( PG_NARGS() > 2 )
+	{
 #if POSTGIS_GEOS_VERSION >= 33
 		bnr = PG_GETARG_INT32(2);
 #else
@@ -3084,7 +3091,7 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 	 * TODO: use gbox_same_2d instead (not available at time of writing)
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	     gserialized_get_gbox_p(geom2, &box2) )
+	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -3246,6 +3253,142 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 	return ret;
 }
 
+uint32_t array_nelems_not_null(ArrayType* array) {
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    uint32_t nelems_not_null = 0;
+
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iterator = array_create_iterator(array, 0, NULL);
+#else
+	iterator = array_create_iterator(array, 0);
+#endif
+	while(array_iterate(iterator, &value, &isnull) )
+	{
+        if (!isnull)
+        {
+            nelems_not_null++;
+        }
+    }
+    array_free_iterator(iterator);
+
+    return nelems_not_null;
+}
+
+/* ARRAY2LWGEOM: Converts the non-null elements of a Postgres array into a LWGEOM* array */
+LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
+{
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    bool gotsrid = false;
+    uint32_t i = 0;
+
+	LWGEOM** lw_geoms = palloc(nelems * sizeof(LWGEOM*));
+
+#if POSTGIS_PGSQL_VERSION >= 95
+    iterator = array_create_iterator(array, 0, NULL);
+#else
+    iterator = array_create_iterator(array, 0);
+#endif
+
+	while(array_iterate(iterator, &value, &isnull))
+	{
+		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+
+        if (isnull)
+        {
+            continue;
+        }
+
+		*is3d = *is3d || gserialized_has_z(geom);
+
+		lw_geoms[i] = lwgeom_from_gserialized(geom);
+		if (!lw_geoms[i]) /* error in creation */
+		{
+			lwpgerror("Geometry deserializing geometry");
+			return NULL;
+		}
+		if (!gotsrid)
+		{
+            gotsrid = true;
+			*srid = gserialized_get_srid(geom);
+		}
+		else if (*srid != gserialized_get_srid(geom))
+		{
+            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
+			return NULL;
+		}
+
+		i++;
+	}
+
+	return lw_geoms;
+}
+
+/* ARRAY2GEOS: Converts the non-null elements of a Postgres array into a GEOSGeometry* array */
+GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* srid)
+{
+    ArrayIterator iterator;
+    Datum value;
+    bool isnull;
+    bool gotsrid = false;
+    uint32_t i = 0;
+
+	GEOSGeometry** geos_geoms = palloc(nelems * sizeof(GEOSGeometry*));
+
+#if POSTGIS_PGSQL_VERSION >= 95
+    iterator = array_create_iterator(array, 0, NULL);
+#else
+    iterator = array_create_iterator(array, 0);
+#endif
+
+    while(array_iterate(iterator, &value, &isnull))
+	{
+        GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
+
+        if (isnull)
+        {
+            continue;
+        }
+
+		*is3d = *is3d || gserialized_has_z(geom);
+
+		geos_geoms[i] = (GEOSGeometry*) POSTGIS2GEOS(geom);
+		if (!geos_geoms[i])   /* exception thrown at construction */
+		{
+            uint32_t j;
+            lwpgerror("Geometry could not be converted to GEOS");
+
+			for (j = 0; j < i; j++) {
+				GEOSGeom_destroy(geos_geoms[j]);
+			}
+			return NULL;
+		}
+
+		if (!gotsrid)
+		{
+			*srid = gserialized_get_srid(geom);
+            gotsrid = true;
+		}
+		else if (*srid != gserialized_get_srid(geom))
+		{
+            uint32_t j;
+            error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
+
+            for (j = 0; j <= i; j++) {
+				GEOSGeom_destroy(geos_geoms[j]);
+			}
+			return NULL;
+		}
+       	 
+        i++;
+	}
+
+    array_free_iterator(iterator);
+	return geos_geoms;
+}
 
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
@@ -3360,6 +3503,142 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 }
 
+
+PG_FUNCTION_INFO_V1(clusterintersecting_garray);
+Datum clusterintersecting_garray(PG_FUNCTION_ARGS)
+{
+	Datum* result_array_data;
+	ArrayType *array, *result;
+	int is3d = 0;
+	uint32 nelems, nclusters, i;
+	GEOSGeometry **geos_inputs, **geos_results;
+	int srid=SRID_UNKNOWN;
+
+	/* Parameters used to construct a result array */
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+
+	/* Null array, null geometry (should be empty?) */
+    if (PG_ARGISNULL(0))
+        PG_RETURN_NULL();
+
+	array = PG_GETARG_ARRAYTYPE_P(0);
+    nelems = array_nelems_not_null(array);
+
+	POSTGIS_DEBUGF(3, "clusterintersecting_garray: number of non-null elements: %d", nelems);
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+    /* TODO short-circuit for one element? */
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	geos_inputs = ARRAY2GEOS(array, nelems, &is3d, &srid);
+	if(!geos_inputs)
+	{
+		PG_RETURN_NULL();
+	}
+
+	if (cluster_intersecting(geos_inputs, nelems, &geos_results, &nclusters) != LW_SUCCESS)
+	{
+		elog(ERROR, "clusterintersecting: Error performing clustering");
+		PG_RETURN_NULL();
+	}
+	pfree(geos_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
+
+	if (!geos_results) PG_RETURN_NULL();
+
+	result_array_data = palloc(nclusters * sizeof(Datum));
+	for (i=0; i<nclusters; ++i)
+	{
+		result_array_data[i] = PointerGetDatum(GEOS2POSTGIS(geos_results[i], is3d));
+		GEOSGeom_destroy(geos_results[i]);
+	}
+	pfree(geos_results);
+
+	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
+	result = (ArrayType*) construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
+
+	if (!result)
+	{
+		elog(ERROR, "clusterintersecting: Error constructing return-array");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(cluster_within_distance_garray);
+Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
+{
+	Datum* result_array_data;
+	ArrayType *array, *result;
+	int is3d = 0;
+	uint32 nelems, nclusters, i;
+	LWGEOM** lw_inputs;
+	LWGEOM** lw_results;
+	double tolerance;
+	int srid=SRID_UNKNOWN;
+
+	/* Parameters used to construct a result array */
+	int16 elmlen;
+	bool elmbyval;
+	char elmalign;
+
+	/* Null array, null geometry (should be empty?) */
+    if (PG_ARGISNULL(0))
+        PG_RETURN_NULL();
+
+    array = PG_GETARG_ARRAYTYPE_P(0);
+	tolerance = PG_GETARG_FLOAT8(1);
+    nelems = array_nelems_not_null(array);
+
+	POSTGIS_DEBUGF(3, "cluster_within_distance_garray: number of non-null elements: %d", nelems);
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+    /* TODO short-circuit for one element? */
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	lw_inputs = ARRAY2LWGEOM(array, nelems, &is3d, &srid);
+	if (!lw_inputs)
+	{
+		PG_RETURN_NULL();
+	}
+
+	if (cluster_within_distance(lw_inputs, nelems, tolerance, &lw_results, &nclusters) != LW_SUCCESS)
+	{
+		elog(ERROR, "cluster_within: Error performing clustering");
+		PG_RETURN_NULL();
+	}
+	pfree(lw_inputs); /* don't need to destroy items because GeometryCollections have taken ownership */
+
+	if (!lw_results) PG_RETURN_NULL();
+
+	result_array_data = palloc(nclusters * sizeof(Datum));
+	for (i=0; i<nclusters; ++i)
+	{
+		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], 0, NULL));
+		lwgeom_free(lw_results[i]);
+	}
+	pfree(lw_results);
+
+	get_typlenbyvalalign(array->elemtype, &elmlen, &elmbyval, &elmalign);
+	result = (ArrayType*) construct_array(result_array_data, nclusters, array->elemtype, elmlen, elmbyval, elmalign);
+
+	if (!result)
+	{
+		elog(ERROR, "clusterwithin: Error constructing return-array");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
 PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
@@ -3432,8 +3711,9 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS)
 
 	lwgeom_out = lwgeom_buildarea(lwgeom_in);
 	lwgeom_free(lwgeom_in) ;
-	
-	if ( ! lwgeom_out ) {
+
+	if ( ! lwgeom_out )
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
@@ -3465,8 +3745,9 @@ Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS)
 	lwgeom_in = lwgeom_from_gserialized(geom);
 	lwgeom_out = lwgeom_delaunay_triangulation(lwgeom_in, tolerance, flags);
 	lwgeom_free(lwgeom_in) ;
-	
-	if ( ! lwgeom_out ) {
+
+	if ( ! lwgeom_out )
+	{
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
@@ -3562,7 +3843,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	lwgeom_free(lwgeom_in);
 	lwgeom_free(lwblade_in);
-	
+
 	if ( ! lwgeom_out )
 	{
 		PG_FREE_IF_COPY(in, 0); /* possibly referenced by lwgeom_out */

@@ -94,6 +94,7 @@ TESTS = \
 	measures \
 	legacy \
 	long_xact \
+	cluster \
 	ctors \
 	sql-mm-serialize \
 	sql-mm-circularstring \
