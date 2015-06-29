@@ -29,13 +29,13 @@ LWT_BE_IFACE* lwt_CreateBackendIface(const LWT_BE_DATA *data)
   iface->data = data;
   iface->cb = NULL;
   return iface;
-};
+}
 
 void lwt_BackendIfaceRegisterCallbacks(LWT_BE_IFACE *iface,
                                        const LWT_BE_CALLBACKS* cb)
 {
   iface->cb = cb;
-};
+}
 
 void lwt_FreeBackendIface(LWT_BE_IFACE* iface)
 {
