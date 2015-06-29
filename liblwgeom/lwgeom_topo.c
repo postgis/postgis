@@ -250,7 +250,7 @@ LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWPOINT* pt,
     }
     if ( lwt_be_ExistsEdgeIntersectingPoint(topo, pt) ) /*x*/
     {
-      lwerror("SQL/MM Spatial exception - edge crosses node");
+      lwerror("SQL/MM Spatial exception - edge crosses node.");
       return -1;
     }
   }
@@ -262,18 +262,19 @@ LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWPOINT* pt,
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -1;
     }
-    if ( foundInFace == -1 ) {
-      lwerror("SQL/MM Spatial exception - edge crosses node");
-      return -1;
-    }
+    if ( foundInFace == -1 ) foundInFace = 0;
   }
 
   if ( face == -1 ) {
     face = foundInFace;
   }
   else if ( ! skipISOChecks && foundInFace != face ) {
-    lwerror("SQL/MM Spatial exception - within face % (not %)",
+#if 0
+    lwerror("SQL/MM Spatial exception - within face %d (not %d)",
             foundInFace, face);
+#else
+    lwerror("SQL/MM Spatial exception - not within face");
+#endif
     return -1;
   }
 

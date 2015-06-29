@@ -365,12 +365,9 @@ typedef struct LWT_BE_CALLBACKS_T {
    *
    * @param topo the topology to act upon
    * @param pt the query point
-   * @param numelems input/output parameter, pass number of edge identifiers
-   *                 in the input array, gets number of node in output array.
-   * @param fields fields to be filled in the returned structure, see
-   *               LWT_COL_FACE_* macros
    *
-   * @return a face identifier, -1 if point is on a topology edge
+   * @return a face identifier, -1 if no face contains the point
+   *         (could be in universe face or on an edge)
    *         or -2 on error (@see lastErrorMessage)
    */
   LWT_ELEMID (*getFaceContainingPoint) (

@@ -473,6 +473,82 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   return edges;
 }
 
+static LWT_ISO_EDGE*
+cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
+      const LWPOINT* pt, double dist, int* numelems,
+      int fields, int limit)
+{
+  LWT_ISO_EDGE *edges;
+	int spi_result;
+  int elems_requested = limit;
+  size_t hexewkb_size;
+  char *hexewkb;
+
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  int i;
+
+  initStringInfo(sql);
+  if ( elems_requested == -1 ) {
+    appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+  } else {
+    appendStringInfoString(sql, "SELECT ");
+    addEdgeFields(sql, fields, 0);
+  }
+  appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
+  // TODO: use binary cursor here ?
+  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  if ( dist ) {
+    appendStringInfo(sql, " WHERE ST_DWithin('%s'::geometry, geom, %g)", hexewkb, dist);
+  } else {
+    appendStringInfo(sql, " WHERE ST_Within('%s'::geometry, geom)", hexewkb);
+  }
+  lwfree(hexewkb);
+  if ( elems_requested == -1 ) {
+    appendStringInfoString(sql, ")");
+  } else if ( elems_requested > 0 ) {
+    appendStringInfo(sql, " LIMIT %d", elems_requested);
+  }
+  lwpgnotice("cb_getEdgeWithinDistance2D: query is: %s", sql->data);
+  spi_result = SPI_execute(sql->data, true, limit >= 0 ? limit : 0);
+  if ( spi_result != SPI_OK_SELECT ) {
+		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+	  *numelems = -1; return NULL;
+  }
+  pfree(sqldata.data);
+
+  lwpgnotice("cb_getEdgeWithinDistance2D: edge query "
+             "(limited by %d) returned %d rows",
+             elems_requested, SPI_processed);
+  *numelems = SPI_processed;
+  if ( ! SPI_processed ) {
+    return NULL;
+  }
+
+  if ( elems_requested == -1 )
+  {
+    /* This was an EXISTS query */
+    {
+      Datum dat;
+      bool isnull, exists;
+      dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+      exists = DatumGetBool(dat);
+      *numelems = exists ? 1 : 0;
+      lwpgnotice("cb_getEdgeWithinDistance2D: exists ? %d", *numelems);
+    }
+    return NULL;
+  }
+
+  edges = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
+  for ( i=0; i<SPI_processed; ++i )
+  {
+    HeapTuple row = SPI_tuptable->vals[i];
+    fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
+  }
+
+  return edges;
+}
+
 static LWT_ISO_NODE*
 cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
       const LWPOINT* pt, double dist, int* numelems,
@@ -828,6 +904,51 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   return 1;
 }
 
+static LWT_ELEMID
+cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
+{
+	int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  bool isnull;
+  Datum dat;
+  LWT_ELEMID face_id;
+  size_t hexewkb_size;
+  char *hexewkb;
+
+  initStringInfo(sql);
+
+  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
+  appendStringInfo(sql, "SELECT face_id FROM \"%s\".face "
+                        "WHERE mbr && '%s'::geometry AND ST_Contains("
+     "topology.ST_GetFaceGeometry('%s', face_id), "
+     "'%s'::geometry) LIMIT 1",
+      topo->name, hexewkb, topo->name, hexewkb);
+  lwfree(hexewkb);
+
+  spi_result = SPI_execute(sql->data, true, 1);
+  if ( spi_result != SPI_OK_SELECT ) {
+		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+	  return -2;
+  }
+  pfree(sqldata.data);
+
+  if ( SPI_processed != 1 ) {
+	  return -1; /* none found */
+  }
+
+  dat = SPI_getbinval( SPI_tuptable->vals[0],
+                       SPI_tuptable->tupdesc, 1, &isnull );
+  if ( isnull ) {
+		cberror(topo->be_data, "corrupted topology: face with NULL face_id");
+	  return -2;
+  }
+  face_id = DatumGetInt32(dat);
+  return face_id;
+}
+
 LWT_BE_CALLBACKS be_callbacks = {
     cb_lastErrorMessage,
     NULL, /* createTopology */
@@ -836,13 +957,13 @@ LWT_BE_CALLBACKS be_callbacks = {
     NULL, /* getNodeById */
     cb_getNodeWithinDistance2D,
     cb_insertNodes,
-    cb_getEdgeById, /* getEdgeById */
-    NULL, /* getEdgeWithinDistance2D */
+    cb_getEdgeById,
+    cb_getEdgeWithinDistance2D,
     cb_getNextEdgeId,
     cb_insertEdges,
     cb_updateEdges,
     NULL, /* getFacesById */
-    NULL, /* getFaceContainingPoint */
+    cb_getFaceContainingPoint,
     cb_updateTopoGeomEdgeSplit
 };
 
@@ -939,6 +1060,82 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   POSTGIS_DEBUG(1, "Calling lwt_ModEdgeSplit");
   node_id = lwt_ModEdgeSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_ModEdgeSplit returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 3);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
+}
+
+/*  ST_AddIsoNode(atopology, aface, apoint) */
+Datum ST_AddIsoNode(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_AddIsoNode);
+Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID containing_face;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(2) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  if ( PG_ARGISNULL(1) ) containing_face = -1;
+  else {
+    containing_face = PG_GETARG_INT32(1);
+    if ( containing_face < 0 ) {
+      lwpgerror("SQL/MM Spatial exception - not within face");
+      PG_RETURN_NULL();
+    }
+  }
+
+  geom = PG_GETARG_GSERIALIZED_P(2);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+#if 0
+    lwpgerror("ST_AddIsoNode third argument must be a point geometry");
+#else
+    lwpgerror("SQL/MM Spatial exception - invalid point");
+#endif
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_AddIsoNode");
+  node_id = lwt_AddIsoNode(topo, containing_face, pt, 0);
+  POSTGIS_DEBUG(1, "lwt_AddIsoNode returned");
   lwgeom_free(lwgeom);
   PG_FREE_IF_COPY(geom, 3);
   lwt_FreeTopology(topo);
