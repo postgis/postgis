@@ -495,16 +495,25 @@ typedef struct LWT_TOPOLOGY_T LWT_TOPOLOGY;
  *******************************************************************/
 
 /**
- * Initializes a new topology in the database
+ * Initializes a new topology
  *
- * Topology support must be already enabled for the database
- * (see lwt_EnableTopology).
+ * @param iface the backend interface handler (see lwt_CreateBackendIface)
+ * @param name name of the new topology
+ * @param srid the topology SRID
+ * @param prec the topology precision/tolerance
+ * @param hasz non-zero if topology primitives should have a Z ordinate
+ *
+ * @return the handler of the topology, or NULL on error
+ *         (liblwgeom error handler will be invoked with error message)
  */
 LWT_TOPOLOGY *lwt_CreateTopology(LWT_BE_IFACE *iface, const char *name,
                         int srid, double prec, int hasz);
 
 /**
  * Loads an existing topology by name from the database
+ *
+ * @param iface the backend interface handler (see lwt_CreateBackendIface)
+ * @param name name of the topology to load
  *
  * @return the handler of the topology, or NULL on error
  *         (liblwgeom error handler will be invoked with error message)
@@ -513,10 +522,15 @@ LWT_TOPOLOGY *lwt_LoadTopology(LWT_BE_IFACE *iface, const char *name);
 
 /**
  * Drop a topology and all its associated objects from the database
+ *
+ * @param topo the topology to drop
  */
 void lwt_DropTopology(LWT_TOPOLOGY* topo);
 
-/** Release memory associated with an LWT_TOPOLOGY */
+/** Release memory associated with an LWT_TOPOLOGY
+ *
+ * @param topo the topology to release (it's not removed from db)
+ */
 void lwt_FreeTopology(LWT_TOPOLOGY* topo);
 
 /*******************************************************************
