@@ -156,6 +156,8 @@ static void test_rect_count(void)
 	box.xmax = 15;  box.ymax = 15; 
 	n = lwgeom_npoints_in_rect(geom, &box);
 	CU_ASSERT_EQUAL(5, n);
+	
+	lwgeom_free(geom);
 }
 
 
