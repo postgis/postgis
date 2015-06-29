@@ -205,7 +205,8 @@ lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
  *
  ************************************************************************/
 
-LWT_TOPOLOGY *lwt_LoadTopology(LWT_BE_IFACE *iface, const char *name)
+LWT_TOPOLOGY *
+lwt_LoadTopology( LWT_BE_IFACE *iface, const char *name )
 {
   LWT_BE_TOPOLOGY* be_topo;
   LWT_TOPOLOGY* topo;
@@ -226,7 +227,7 @@ LWT_TOPOLOGY *lwt_LoadTopology(LWT_BE_IFACE *iface, const char *name)
 }
 
 void
-lwt_FreeTopology(LWT_TOPOLOGY* topo)
+lwt_FreeTopology( LWT_TOPOLOGY* topo )
 {
   if ( ! lwt_be_freeTopology(topo) ) {
     lwnotice("Could not release backend topology memory: %s",
@@ -236,8 +237,9 @@ lwt_FreeTopology(LWT_TOPOLOGY* topo)
 }
 
 
-LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWPOINT* pt,
-                          int skipISOChecks)
+LWT_ELEMID
+lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
+                LWPOINT* pt, int skipISOChecks )
 {
   LWT_ELEMID foundInFace = -1;
 
@@ -291,7 +293,9 @@ LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWPOINT* pt,
   return node.node_id;
 }
 
-LWT_ELEMID lwt_ModEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChecks)
+LWT_ELEMID
+lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
+                  LWPOINT* pt, int skipISOChecks )
 {
   LWT_ISO_NODE node;
   LWT_ISO_EDGE* oldedge;
