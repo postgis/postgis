@@ -173,13 +173,17 @@ lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LWT_EL
   CBT3(topo, updateTopoGeomEdgeSplit, split_edge, new_edge1, new_edge2);
 }
 
-/* wrappers of be wrappers... */
+/* wrappers of backend wrappers... */
 
 int
 lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt)
 {
   int exists = 0;
   lwt_be_getNodeWithinDistance2D(topo, pt, 0, &exists, 0, -1);
+  if ( exists == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return 0;
+  }
   return exists;
 }
 
@@ -188,6 +192,10 @@ lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
 {
   int exists = 0;
   lwt_be_getEdgeWithinDistance2D(topo, pt, 0, &exists, 0, -1);
+  if ( exists == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return 0;
+  }
   return exists;
 }
 
