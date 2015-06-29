@@ -767,6 +767,34 @@ cb_updateEdges( const LWT_BE_TOPOLOGY* topo,
   return SPI_processed;
 }
 
+static int
+cb_deleteEdges( const LWT_BE_TOPOLOGY* topo,
+      const LWT_ISO_EDGE* sel_edge, int sel_fields )
+{
+	int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+
+  initStringInfo(sql);
+  appendStringInfo(sql, "DELETE FROM \"%s\".edge_data WHERE ", topo->name);
+  addEdgeUpdate( sql, sel_edge, sel_fields, 0, updSel );
+
+  /* lwpgnotice("cb_deleteEdges: %s", sql->data); */
+
+  spi_result = SPI_execute( sql->data, false, 0 );
+  if ( spi_result != SPI_OK_DELETE )
+  {
+		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+	  return -1;
+  }
+  pfree(sqldata.data);
+
+  lwpgnotice("cb_deleteEdges: delete query processed %d rows", SPI_processed);
+
+  return SPI_processed;
+}
+
 static LWT_ELEMID
 cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
 {
@@ -819,15 +847,15 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   } else {
     appendStringInfoString(sql, "DELETE");
   }
-  appendStringInfo(sql, " FROM \"%s\".relation r, topology.layer l WHERE "
+  appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
     "AND abs(r.element_id) = %lld AND r.element_type = 2",
-    topo->name, topo->id, split_edge);
+    topo->name, (new_edge2 == -1 ? "," : "USING" ), topo->id, split_edge );
   if ( new_edge2 != -1 ) {
     appendStringInfo(sql, " RETURNING %s", proj);
   }
 
-  spi_result = SPI_execute(sql->data, true, 0);
+  spi_result = SPI_execute(sql->data, new_edge2 == -1, 0);
   if ( spi_result != ( new_edge2 == -1 ? SPI_OK_SELECT : SPI_OK_DELETE_RETURNING ) ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
@@ -964,7 +992,8 @@ LWT_BE_CALLBACKS be_callbacks = {
     cb_updateEdges,
     NULL, /* getFacesById */
     cb_getFaceContainingPoint,
-    cb_updateTopoGeomEdgeSplit
+    cb_updateTopoGeomEdgeSplit,
+    cb_deleteEdges
 };
 
 
@@ -1060,6 +1089,71 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
   POSTGIS_DEBUG(1, "Calling lwt_ModEdgeSplit");
   node_id = lwt_ModEdgeSplit(topo, edge_id, pt, 0);
   POSTGIS_DEBUG(1, "lwt_ModEdgeSplit returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 3);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
+}
+
+/*  ST_NewEdgesSplit(atopology, anedge, apoint) */
+Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_NewEdgesSplit);
+Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID edge_id;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  edge_id = PG_GETARG_INT32(1) ;
+
+  geom = PG_GETARG_GSERIALIZED_P(2);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+    lwpgerror("ST_NewEdgesSplit third argument must be a point geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_NewEdgesSplit");
+  node_id = lwt_NewEdgesSplit(topo, edge_id, pt, 0);
+  POSTGIS_DEBUG(1, "lwt_NewEdgesSplit returned");
   lwgeom_free(lwgeom);
   PG_FREE_IF_COPY(geom, 3);
   lwt_FreeTopology(topo);

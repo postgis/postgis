@@ -398,6 +398,22 @@ typedef struct LWT_BE_CALLBACKS_T {
       LWT_ELEMID split_edge, LWT_ELEMID new_edge1, LWT_ELEMID new_edge2
   );
 
+  /**
+   * Delete edges
+   *
+   * @param topo the topology to act upon
+   * @param sel_edge an LWT_ISO_EDGE object with selecting fields set.
+   * @param sel_fields fields used to select edges to be deleted,
+   *                   see LWT_COL_EDGE_* macros
+   *
+   * @return number of edges being deleted or -1 on error
+   *         (@see lastErroMessage)
+   */
+  int (*deleteEdges) (
+      const LWT_BE_TOPOLOGY* topo,
+      const LWT_ISO_EDGE* sel_edge, int sel_fields
+  );
+
 } LWT_BE_CALLBACKS;
 
 
@@ -815,7 +831,7 @@ void lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWGEOM* geom);
  * @param edge identifier of the edge to be split
  * @param pt geometry of the new node
  * @param skipChecks if non-zero skips consistency checks
- *                   (coincident node)
+ *                   (coincident node, point not on edge...)
  * @return the id of newly created node, or -1 on error
  *         (liblwgeom error handler will be invoked with error message)
  *
@@ -830,10 +846,12 @@ LWT_ELEMID lwt_ModEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, in
  * @param topo the topology to operate on
  * @param edge identifier of the edge to be split
  * @param pt geometry of the new node
+ * @param skipChecks if non-zero skips consistency checks
+ *                   (coincident node, point not on edge...)
  * @return the id of newly created node
  *
  */
-LWT_ELEMID lwt_NewEdgesSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt);
+LWT_ELEMID lwt_NewEdgesSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipChecks);
 
 /**
  * Merge two edges, modifying the first and deleting the second

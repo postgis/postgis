@@ -53,6 +53,8 @@ int
 lwt_be_insertEdges(LWT_TOPOLOGY* topo, LWT_ISO_EDGE* edge, int numelems);
 int
 lwt_be_updateEdges(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* sel_edge, int sel_fields, const LWT_ISO_EDGE* upd_edge, int upd_fields, const LWT_ISO_EDGE* exc_edge, int exc_fields);
+int
+lwt_be_deleteEdges(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* sel_edge, int sel_fields);
 
 LWT_ELEMID lwt_be_getFaceContainingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt);
 
