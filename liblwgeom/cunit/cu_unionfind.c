@@ -26,8 +26,8 @@ static void test_unionfind_create(void)
 	CU_ASSERT_EQUAL(10, uf->num_clusters);
 	CU_ASSERT_EQUAL(0, memcmp(uf->clusters, expected_initial_ids, 10*sizeof(uint32_t)));
 	CU_ASSERT_EQUAL(0, memcmp(uf->cluster_sizes, expected_initial_sizes, 10*sizeof(uint32_t)));
-    
-    UF_destroy(uf);
+
+	UF_destroy(uf);
 }
 
 static void test_unionfind_union(void)
@@ -47,7 +47,7 @@ static void test_unionfind_union(void)
 	CU_ASSERT_EQUAL(0, memcmp(uf->clusters, expected_final_ids, 10*sizeof(uint32_t)));
 	CU_ASSERT_EQUAL(0, memcmp(uf->cluster_sizes, expected_final_sizes, 10*sizeof(uint32_t)));
 
-    UF_destroy(uf);
+	UF_destroy(uf);
 }
 
 static void test_unionfind_ordered_by_cluster(void)
@@ -55,27 +55,28 @@ static void test_unionfind_ordered_by_cluster(void)
 	uint32_t final_clusters[] = { 0, 2, 2, 2, 4, 5, 6, 0, 0, 2 };
 	uint32_t final_sizes[]    = { 3, 0, 4, 0, 1, 1, 1, 0, 0, 0 };
 
-    /* Manually create UF at desired final state */
-	UNIONFIND uf = {
-        .N = 10,
-        .num_clusters = 5,
-        .clusters = final_clusters,
-        .cluster_sizes = final_sizes
-    };
+	/* Manually create UF at desired final state */
+	UNIONFIND uf =
+	{
+		.N = 10,
+		.num_clusters = 5,
+		.clusters = final_clusters,
+		.cluster_sizes = final_sizes
+	};
 
 	uint32_t* actual_ids_by_cluster = UF_ordered_by_cluster(&uf);
 	uint32_t expected_ids_by_cluster[] = { 0, 7, 8, 1, 2, 3, 9, 4, 5, 6 };
 
 	CU_ASSERT_EQUAL(0, memcmp(actual_ids_by_cluster, expected_ids_by_cluster, 10 * sizeof(uint32_t)));
 
-    lwfree(actual_ids_by_cluster);
+	lwfree(actual_ids_by_cluster);
 }
 
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
-    CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
 	PG_ADD_TEST(suite, test_unionfind_create),
-	PG_ADD_TEST(suite, test_unionfind_union),
-	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
+	            PG_ADD_TEST(suite, test_unionfind_union),
+	            PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
 }
