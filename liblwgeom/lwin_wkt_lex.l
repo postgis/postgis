@@ -61,6 +61,8 @@ static void wkt_lexer_unknown()
 %option never-interactive
 %option outfile="lwin_wkt_lex.c"
 %option noyywrap
+/* Suppress the default implementations. */
+%option noyyalloc noyyrealloc noyyfree
 
 %%
 
@@ -113,3 +115,18 @@ Z|M|ZM {
 	}
 
 %%
+
+void *wkt_yyalloc (yy_size_t  size )
+{
+	return (void *) lwalloc( size );
+}
+
+void *wkt_yyrealloc  (void * ptr, yy_size_t  size )
+{
+	return (void *) lwrealloc( (char *) ptr, size );
+}
+
+void wkt_yyfree (void * ptr )
+{
+	lwfree( (char *) ptr );	/* see wkt_yyrealloc() for (char *) cast */
+}

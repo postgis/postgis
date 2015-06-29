@@ -86,11 +86,13 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 		
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
+                wkt_yylex_destroy();
 		return LW_FAILURE;
 	}
 	
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
+        wkt_yylex_destroy();
 	return LW_SUCCESS;
 }
 

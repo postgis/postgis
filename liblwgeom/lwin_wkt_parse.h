@@ -100,7 +100,7 @@ extern int wkt_yydebug;
 
 union YYSTYPE
 {
-#line 106 "lwin_wkt_parse.y" /* yacc.c:1909  */
+#line 108 "lwin_wkt_parse.y" /* yacc.c:1909  */
 
 	int integervalue;
 	double doublevalue;
