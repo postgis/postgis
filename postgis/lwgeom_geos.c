@@ -3286,7 +3286,7 @@ uint32_t array_nelems_not_null(ArrayType* array) {
     return nelems_not_null;
 }
 
-/* ARRAY2GEOS: Converts the non-null elements of a Postgres array into a LWGEOM* array */
+/* ARRAY2LWGEOM: Converts the non-null elements of a Postgres array into a LWGEOM* array */
 LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 {
     ArrayIterator iterator;
@@ -3303,7 +3303,7 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
     iterator = array_create_iterator(array, 0);
 #endif
 
-    while(array_iterate(iterator, &value, &isnull))
+	while(array_iterate(iterator, &value, &isnull))
 	{
 		GSERIALIZED *geom = (GSERIALIZED*) DatumGetPointer(value);
 
@@ -3331,7 +3331,7 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 			return NULL;
 		}
 
-        i++;
+		i++;
 	}
 
 	return lw_geoms;
@@ -3368,11 +3368,11 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 		geos_geoms[i] = (GEOSGeometry*) POSTGIS2GEOS(geom);
 		if (!geos_geoms[i])   /* exception thrown at construction */
 		{
+            uint32_t j;
             lwpgerror("Geometry could not be converted to GEOS");
 
-            while (i >= 0)
-			{
-				GEOSGeom_destroy(geos_geoms[i--]);
+			for (j = 0; j < i; j++) {
+				GEOSGeom_destroy(geos_geoms[j]);
 			}
 			return NULL;
 		}
@@ -3384,15 +3384,15 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 		}
 		else if (*srid != gserialized_get_srid(geom))
 		{
+            uint32_t j;
             error_if_srid_mismatch(*srid, gserialized_get_srid(geom));
 
-            while (i >= 0)
-			{
-				GEOSGeom_destroy(geos_geoms[i--]);
+            for (j = 0; j <= i; j++) {
+				GEOSGeom_destroy(geos_geoms[j]);
 			}
 			return NULL;
 		}
-
+       	 
         i++;
 	}
 
