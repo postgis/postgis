@@ -39,6 +39,7 @@ PostGIS 2.2.0
   - Add |=| operator with CPA semantic and KNN support with PgSQL 9.5+
     (Sandro Santilli / Boundless)
   - #3131, KNN support for the geography type (Paul Ramsey / CartoDB)
+  - #3023, ST_ClusterIntersecting / ST_ClusterWithin (Dan Baston)
   - #2703, Exact KNN results for all geometry types, aka "KNN re-check" (Paul Ramsey / CartoDB)
   - #1137, Allow a tolerance value in ST_RemoveRepeatedPoints (Paul Ramsey / CartoDB)
   - #3062, Allow passing M factor to ST_Scale (Sandro Santilli / Boundless)
