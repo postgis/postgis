@@ -2064,6 +2064,14 @@ LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
  */
 LWGEOM* lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit);
 
+/*
+ * Return true if the input geometry is "simple" as per OGC defn.
+ *
+ * @return 1 if simple, 0 if non-simple, -1 on exception (lwerror is called
+ *         in that case)
+ */
+int lwgeom_is_simple(const LWGEOM *lwgeom);
+
 
 /*******************************************************************************
  * PROJ4-dependent extra functions on LWGEOM

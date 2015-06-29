@@ -1195,6 +1195,38 @@ lwgeom_buildarea(const LWGEOM *geom)
 	return geom_out;
 }
 
+int
+lwgeom_is_simple(const LWGEOM *geom)
+{
+	GEOSGeometry* geos_in;
+	int simple;
+
+	/* Empty is always simple */
+	if ( lwgeom_is_empty(geom) )
+	{
+		return 1;
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	geos_in = LWGEOM2GEOS(geom, 0);
+	if ( 0 == geos_in )   /* exception thrown at construction */
+	{
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		return -1;
+	}
+	simple = GEOSisSimple(geos_in);
+	GEOSGeom_destroy(geos_in);
+
+	if ( simple == 2 ) /* exception thrown */
+	{
+		lwerror("lwgeom_is_simple: %s", lwgeom_geos_errmsg);
+		return -1;
+	}
+
+	return simple ? 1 : 0;
+}
+
 /* ------------ end of BuildArea stuff ---------------------------------------------------------------------} */
 
 LWGEOM*

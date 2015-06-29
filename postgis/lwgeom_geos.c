@@ -3132,7 +3132,7 @@ PG_FUNCTION_INFO_V1(issimple);
 Datum issimple(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
-	GEOSGeometry *g1;
+	LWGEOM *lwgeom_in;
 	int result;
 
 	POSTGIS_DEBUG(2, "issimple called");
@@ -3142,24 +3142,14 @@ Datum issimple(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom) )
 		PG_RETURN_BOOL(TRUE);
 
-	initGEOS(lwpgnotice, lwgeom_geos_error);
+	lwgeom_in = lwgeom_from_gserialized(geom);
+	result = lwgeom_is_simple(lwgeom_in);
+	lwgeom_free(lwgeom_in) ;
+	PG_FREE_IF_COPY(geom, 0);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		PG_RETURN_NULL();
-	}
-	result = GEOSisSimple(g1);
-	GEOSGeom_destroy(g1);
-
-	if (result == 2)
-	{
-		HANDLE_GEOS_ERROR("GEOSisSimple");
+	if (result == -1) {
 		PG_RETURN_NULL(); /*never get here */
 	}
-
-	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_BOOL(result);
 }
