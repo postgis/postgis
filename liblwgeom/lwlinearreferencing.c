@@ -1134,16 +1134,19 @@ lwgeom_tcpa(const LWGEOM *g1, const LWGEOM *g2, double *mindist)
     {
       if ( -1 == ptarray_locate_along_linear(l1->points, t0, &p0, 0) )
       {
+        lwfree(mvals);
         lwerror("Could not find point with M=%g on first geom", t0);
         return -1;
       }
       if ( -1 == ptarray_locate_along_linear(l2->points, t0, &p1, 0) )
       {
+        lwfree(mvals);
         lwerror("Could not find point with M=%g on second geom", t0);
         return -1;
       }
       *mindist = distance3d_pt_pt((POINT3D*)&p0, (POINT3D*)&p1);
     }
+    lwfree(mvals);
     return t0;
   }}
 
