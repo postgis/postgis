@@ -38,6 +38,8 @@ int lwt_be_freeTopology(LWT_TOPOLOGY *topo);
 
 LWT_ISO_NODE* lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY* topo, LWPOINT* pt, double dist, int* numelems, int fields, int limit);
 
+LWT_ISO_NODE* lwt_be_getNodeById(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids, int* numelems, int fields);
+
 int lwt_be_ExistsCoincidentNode(LWT_TOPOLOGY* topo, LWPOINT* pt);
 int lwt_be_insertNodes(LWT_TOPOLOGY* topo, LWT_ISO_NODE* node, int numelems);
 
@@ -59,6 +61,12 @@ lwt_be_deleteEdges(LWT_TOPOLOGY* topo, const LWT_ISO_EDGE* sel_edge, int sel_fie
 LWT_ELEMID lwt_be_getFaceContainingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt);
 
 int lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LWT_ELEMID new_edge1, LWT_ELEMID new_edge2);
+
+LWT_ISO_NODE* lwt_be_getNodeWithinBox2D( const LWT_TOPOLOGY* topo,
+      const GBOX* box, int* numelems, int fields, int limit);
+
+LWT_ISO_EDGE* lwt_be_getEdgeWithinBox2D( const LWT_TOPOLOGY* topo,
+      const GBOX* box, int* numelems, int fields, int limit);
 
 /************************************************************************
  *
