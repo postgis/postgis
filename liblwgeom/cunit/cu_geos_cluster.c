@@ -83,7 +83,8 @@ static void perform_cluster_intersecting_test(char** wkt_inputs, uint32_t num_in
 	uint32_t num_clusters;
 
 	LWGEOM** expected_outputs = WKTARRAY2LWGEOM(wkt_outputs, num_outputs);
-	GEOSGeometry** geos_inputs = LWGEOMARRAY2GEOS(WKTARRAY2LWGEOM(wkt_inputs, num_inputs), num_inputs);
+	LWGEOM** lw_inputs = WKTARRAY2LWGEOM(wkt_inputs, num_inputs);
+	GEOSGeometry** geos_inputs = LWGEOMARRAY2GEOS(lw_inputs, num_inputs);
 
 	cluster_intersecting(geos_inputs, num_inputs, &geos_results, &num_clusters);
 	CU_ASSERT_EQUAL(num_outputs, num_clusters);
@@ -91,6 +92,29 @@ static void perform_cluster_intersecting_test(char** wkt_inputs, uint32_t num_in
 	lw_results = GEOSARRAY2LWGEOM(geos_results, num_clusters);
 
 	assert_all_results_found(lw_results, num_clusters, expected_outputs, num_outputs);
+
+	/* Cleanup */
+	uint32_t i;
+	for(i = 0; i < num_clusters; i++)
+	{
+		GEOSGeom_destroy(geos_results[i]);
+	}
+	lwfree(geos_inputs);
+	lwfree(geos_results);
+
+	for(i = 0; i < num_outputs; i++)
+	{
+		lwgeom_free(expected_outputs[i]);
+		lwgeom_free(lw_results[i]);
+	}
+	lwfree(expected_outputs);
+	lwfree(lw_results);
+
+	for(i = 0; i < num_inputs; i++)
+	{
+		lwgeom_free(lw_inputs[i]);
+	}
+	lwfree(lw_inputs);
 }
 
 static void perform_cluster_within_distance_test(double tolerance, char** wkt_inputs, uint32_t num_inputs, char** wkt_outputs, uint32_t num_outputs)
@@ -106,12 +130,28 @@ static void perform_cluster_within_distance_test(double tolerance, char** wkt_in
 	CU_ASSERT_EQUAL(num_outputs, num_clusters);
 
 	assert_all_results_found(lw_results, num_clusters, expected_outputs, num_outputs);
-}
 
+	/* Cleanup */
+	uint32_t i;
+	for(i = 0; i < num_outputs; i++)
+	{
+		lwgeom_free(expected_outputs[i]);
+		lwgeom_free(lw_results[i]);
+	}
+	lwfree(lw_results);
+	lwfree(expected_outputs);
+	lwfree(lw_inputs);
+}
 
 static int init_geos_cluster_suite(void)
 {
 	initGEOS(lwnotice, lwgeom_geos_error);
+	return 0;
+}
+
+static int clean_geos_cluster_suite(void)
+{
+	finishGEOS();
 	return 0;
 }
 
@@ -191,8 +231,8 @@ static void single_input_test(void)
 
 static void empty_inputs_test(void)
 {
-    char* wkt_inputs[] = { "POLYGON EMPTY", "LINESTRING EMPTY"};
-    char* expected_outputs[] = { "GEOMETRYCOLLECTION( LINESTRING EMPTY )", "GEOMETRYCOLLECTION( POLYGON EMPTY )" };
+	char* wkt_inputs[] = { "POLYGON EMPTY", "LINESTRING EMPTY"};
+	char* expected_outputs[] = { "GEOMETRYCOLLECTION( LINESTRING EMPTY )", "GEOMETRYCOLLECTION( POLYGON EMPTY )" };
 
 	perform_cluster_intersecting_test(wkt_inputs, 2, expected_outputs, 2);
 	perform_cluster_within_distance_test(1, wkt_inputs, 2, expected_outputs, 2);
@@ -201,10 +241,10 @@ static void empty_inputs_test(void)
 void geos_cluster_suite_setup(void);
 void geos_cluster_suite_setup(void)
 {
-    CU_pSuite suite = CU_add_suite("Clustering", init_geos_cluster_suite, NULL);
-    PG_ADD_TEST(suite, basic_test);
-    PG_ADD_TEST(suite, nonsequential_test);
-    PG_ADD_TEST(suite, basic_distance_test);
-    PG_ADD_TEST(suite, single_input_test);
-    PG_ADD_TEST(suite, empty_inputs_test);
+	CU_pSuite suite = CU_add_suite("Clustering", init_geos_cluster_suite, clean_geos_cluster_suite);
+	PG_ADD_TEST(suite, basic_test);
+	PG_ADD_TEST(suite, nonsequential_test);
+	PG_ADD_TEST(suite, basic_distance_test);
+	PG_ADD_TEST(suite, single_input_test);
+	PG_ADD_TEST(suite, empty_inputs_test);
 };
