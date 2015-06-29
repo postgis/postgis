@@ -515,7 +515,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   } else if ( elems_requested > 0 ) {
     appendStringInfo(sql, " LIMIT %d", elems_requested);
   }
-  spi_result = SPI_execute(sql->data, true, *numelems);
+  spi_result = SPI_execute(sql->data, true, limit >= 0 ? limit : 0);
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
@@ -523,7 +523,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getNodeWithinDistance2D: edge query "
+  lwpgnotice("cb_getNodeWithinDistance2D: node query "
              "(limited by %d) returned %d rows",
              elems_requested, SPI_processed);
   if ( ! SPI_processed ) {
