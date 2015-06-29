@@ -659,6 +659,114 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 }
 
 
+PG_FUNCTION_INFO_V1(TWKBFromTWKBArray);
+Datum TWKBFromTWKBArray(PG_FUNCTION_ARGS)
+{
+	ArrayType *arr_twkbs = NULL;
+	ArrayType *arr_ids = NULL;
+	int num_twkbs, num_ids, i = 0;
+
+	ArrayIterator iter_twkbs, iter_ids;
+	bool null_twkb, null_id;
+	Datum val_twkb, val_id;
+
+	uint8_t **col = NULL;
+	size_t *sizes = NULL;
+	int64_t *idlist = NULL;
+
+	uint8_t *twkb;
+	size_t twkb_size;
+	size_t out_size;
+ 	bytea *result;
+	bytea *bytea_twkb;
+	/* The first two arguments are required */
+	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) ) 
+		PG_RETURN_NULL();
+
+	arr_twkbs = PG_GETARG_ARRAYTYPE_P(0);
+	arr_ids = PG_GETARG_ARRAYTYPE_P(1);
+
+	num_twkbs = ArrayGetNItems(ARR_NDIM(arr_twkbs), ARR_DIMS(arr_twkbs));
+	num_ids = ArrayGetNItems(ARR_NDIM(arr_ids), ARR_DIMS(arr_ids));
+	
+	if ( num_twkbs != num_ids )
+	{
+		elog(ERROR, "size of geometry[] and integer[] arrays must match");
+		PG_RETURN_NULL();
+	}
+	
+	/* Loop through array and build a collection of geometry and */
+	/* a simple array of ids. If either side is NULL, skip it */
+
+#if POSTGIS_PGSQL_VERSION >= 95	
+	iter_twkbs = array_create_iterator(arr_twkbs, 0, NULL);
+	iter_ids = array_create_iterator(arr_ids, 0, NULL);
+#else
+	iter_twkbs = array_create_iterator(arr_twkbs, 0);
+	iter_ids = array_create_iterator(arr_ids, 0);
+#endif
+	/* Construct collection/idlist first time through */
+		col = palloc0(num_twkbs * sizeof(void*));
+		sizes = palloc0(num_twkbs * sizeof(size_t));
+		idlist = palloc0(num_twkbs * sizeof(int64_t));
+	
+	while( array_iterate(iter_twkbs, &val_twkb, &null_twkb) && 
+	       array_iterate(iter_ids, &val_id, &null_id) )
+	{
+		int32_t uid;
+
+		if ( null_twkb || null_id )
+		{
+			elog(NOTICE, "ST_CollectTWKB skipping NULL entry at position %d", i);
+			continue;
+		}
+		
+		bytea_twkb =(bytea*) DatumGetPointer(val_twkb);
+		uid = DatumGetInt64(val_id);
+		
+
+
+		twkb_size=VARSIZE_ANY_EXHDR(bytea_twkb);
+
+		/* Store the values */
+		col[i] = (uint8_t*)VARDATA(bytea_twkb);
+		sizes[i] = twkb_size;
+		idlist[i] = uid;
+		i++;
+		
+	}
+	
+	array_free_iterator(iter_twkbs);
+	array_free_iterator(iter_ids);
+	
+	
+	if(i==0)
+	{
+		elog(NOTICE, "No valid geometry - id pairs found");
+		PG_FREE_IF_COPY(arr_twkbs, 0);
+		PG_FREE_IF_COPY(arr_ids, 1);
+		PG_RETURN_NULL();		
+	}
+
+	/* Write out the TWKB */
+	 twkb = twkb_to_twkbcoll(col, sizes,&out_size, idlist, i);
+					  
+	/* Convert to a bytea return type */
+	result = palloc(out_size + VARHDRSZ);
+	memcpy(VARDATA(result), twkb,out_size);
+	SET_VARSIZE(result, out_size + VARHDRSZ);
+	
+	/* Clean up */
+	//~ pfree(twkb);
+	pfree(idlist);
+	PG_FREE_IF_COPY(arr_twkbs, 0);
+	PG_FREE_IF_COPY(arr_ids, 1);
+	
+	PG_RETURN_BYTEA_P(result);
+	//~ PG_RETURN_NULL();
+}
+
+
 /* puts a bbox inside the geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)

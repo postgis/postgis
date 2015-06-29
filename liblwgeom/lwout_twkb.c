@@ -55,7 +55,7 @@ static uint8_t lwgeom_twkb_type(const LWGEOM *geom)
 * Calculates the size of the bbox in varints in the form:
 * xmin, xdelta, ymin, ydelta
 */
-static size_t sizeof_bbox(TWKB_STATE *ts, int ndims)
+size_t sizeof_bbox(TWKB_STATE *ts, int ndims)
 {
 	int i;
 	uint8_t buf[16];
@@ -72,7 +72,7 @@ static size_t sizeof_bbox(TWKB_STATE *ts, int ndims)
 * Writes the bbox in varints in the form:
 * xmin, xdelta, ymin, ydelta
 */
-static void write_bbox(TWKB_STATE *ts, int ndims)
+void write_bbox(TWKB_STATE *ts, int ndims)
 {
 	int i;
 	LWDEBUGF(2, "Entered %s", __func__);
@@ -214,7 +214,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 * POINTS
 *******************************************************************/
 
-static int lwpoint_to_twkb_buf(const LWPOINT *pt, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwpoint_to_twkb_buf(const LWPOINT *pt, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -227,7 +227,7 @@ static int lwpoint_to_twkb_buf(const LWPOINT *pt, TWKB_GLOBALS *globals, TWKB_ST
 * LINESTRINGS
 *******************************************************************/
 
-static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -240,7 +240,7 @@ static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *globals, TWKB_ST
 * POLYGONS
 *******************************************************************/
 
-static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	int i;
 
@@ -262,7 +262,7 @@ static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *globals, TWKB_ST
 * MULTI-GEOMETRYS (MultiPoint, MultiLinestring, MultiPolygon)
 *******************************************************************/
 
-static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	int i;
 	int nempty = 0;
@@ -312,7 +312,7 @@ static int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, T
 * GEOMETRYCOLLECTIONS
 *******************************************************************/
 
-static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	int i;
 
@@ -345,7 +345,7 @@ static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globa
 * Handle whole TWKB
 *******************************************************************/
 
-static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *ts)
+int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *ts)
 {
 	LWDEBUGF(2, "Entered %s", __func__);
 
@@ -390,7 +390,7 @@ static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_ST
 }
 
 
-static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *parent_state)
+int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWKB_STATE *parent_state)
 {
 	int i, is_empty, has_z, has_m, ndims;
 	size_t bbox_size = 0, optional_precision_byte = 0;

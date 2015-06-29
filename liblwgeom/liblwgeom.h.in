@@ -2002,6 +2002,8 @@ extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t preci
 
 extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
 
+extern uint8_t* twkb_to_twkbcoll(uint8_t **twkb, size_t *sizes,size_t *out_size, int64_t *idlist, int n);
+
 /*******************************************************************************
  * SQLMM internal functions - TODO: Move into separate header files
  ******************************************************************************/
