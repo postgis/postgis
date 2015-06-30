@@ -25,6 +25,7 @@
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
+Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
@@ -360,6 +361,29 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 
 /**
+ * Encode Feature in GeoJson (Old C Signature)
+ * ST_AsGeoJSON(version, geom, precision, options)
+ * why was this written with a version param when there 
+ * is only one version?
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson_old);
+Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS)
+{
+	switch( PG_NARGS() )
+	{
+	case 2: 
+		return DirectFunctionCall1(LWGEOM_asGeoJson, PG_GETARG_DATUM(1));
+	case 3:
+		return DirectFunctionCall2(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2));
+	case 4:
+		return DirectFunctionCall3(LWGEOM_asGeoJson, PG_GETARG_DATUM(1), PG_GETARG_DATUM(2), PG_GETARG_DATUM(3));
+	default:
+		elog(ERROR, "bad call in %s", __func__);
+	}
+	PG_RETURN_NULL();
+}
+
+/**
  * Encode Feature in GeoJson
  */
 PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson);
@@ -369,32 +393,24 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *geojson;
 	text *result;
-	int srid;
-	int version;
-	int option = 0;
 	int has_bbox = 0;
 	int precision = DBL_DIG;
-	char * srs = NULL;
-
-	/* Get the version */
-	version = PG_GETARG_INT32(0);
-	if ( version != 1)
-	{
-		elog(ERROR, "Only GeoJSON 1 is supported");
-		PG_RETURN_NULL();
-	}
+	char *srs = NULL;
 
 	/* Get the geometry */
-	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = PG_GETARG_GSERIALIZED_P(1);
+	if ( PG_ARGISNULL(0) ) 
+		PG_RETURN_NULL();
+	
+	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Retrieve precision if any (default is max) */
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	if ( PG_NARGS() > 1 && !PG_ARGISNULL(1) )
 	{
-		precision = PG_GETARG_INT32(2);
+		precision = PG_GETARG_INT32(1);
 		if ( precision > DBL_DIG )
 			precision = DBL_DIG;
-		else if ( precision < 0 ) precision = 0;
+		else if ( precision < 0 ) 
+			precision = 0;
 	}
 
 	/* Retrieve output option
@@ -403,39 +419,45 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	 * 2 = short crs
 	 * 4 = long crs
 	 */
-	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
-		option = PG_GETARG_INT32(3);
-
-	if (option & 2 || option & 4)
+	if ( PG_NARGS() > 2 && !PG_ARGISNULL(2) )
 	{
-		srid = gserialized_get_srid(geom);
-		if ( srid != SRID_UNKNOWN )
+		int option = PG_GETARG_INT32(2);
+
+		if ( option & 2 || option & 4 )
 		{
-			if (option & 2) srs = getSRSbySRID(srid, true);
-			if (option & 4) srs = getSRSbySRID(srid, false);
-			if (!srs)
+			int srid = gserialized_get_srid(geom);
+			if ( srid != SRID_UNKNOWN )
 			{
-				elog(	ERROR,
-				      "SRID %i unknown in spatial_ref_sys table",
-				      srid);
-				PG_RETURN_NULL();
+				if ( option & 2 )
+					srs = getSRSbySRID(srid, true);
+			
+				if ( option & 4 )
+					srs = getSRSbySRID(srid, false);
+			
+				if ( !srs )
+				{
+					elog(ERROR,
+					      "SRID %i unknown in spatial_ref_sys table",
+					      srid);
+					PG_RETURN_NULL();
+				}
 			}
 		}
-	}
 
-	if (option & 1) has_bbox = 1;
+		if (option & 1) 
+			has_bbox = 1;
+	}
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
 	lwgeom_free(lwgeom);
 
-	PG_FREE_IF_COPY(geom, 1);
 	if (srs) pfree(srs);
 
 	result = cstring2text(geojson);
-
 	lwfree(geojson);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
 }
 

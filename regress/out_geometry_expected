@@ -53,8 +53,8 @@ geojson_empty_geom|
 geojson_precision_01|{"type":"Point","coordinates":[1,1]}
 geojson_precision_02|{"type":"Point","coordinates":[1.1111111,1.1111111]}
 geojson_version_01|{"type":"Point","coordinates":[1,1]}
-ERROR:  Only GeoJSON 1 is supported
-ERROR:  Only GeoJSON 1 is supported
+geojson_version_02|{"type":"Point","coordinates":[1,1]}
+geojson_version_03|{"type":"Point","coordinates":[1,1]}
 geojson_crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_02|{"type":"Point","coordinates":[1,1]}
 geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
