@@ -886,16 +886,20 @@ static void test_geohash_point_as_int(void)
 {
 	unsigned int gh;
 	POINT2D p;
+	unsigned int rs;
 	
 	p.x = 50; p.y = 35;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, (unsigned int)3440103613);
+	rs = 3440103613;
+	CU_ASSERT_EQUAL(gh, rs);
 	p.x = 140; p.y = 45;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, (unsigned int)3982480893);
+	rs = 3982480893;
+	CU_ASSERT_EQUAL(gh, rs);
 	p.x = 140; p.y = 55;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, (unsigned int)4166944232);	
+	rs = 4166944232;
+	CU_ASSERT_EQUAL(gh, rs);
 }
 
 static void test_lwgeom_simplify(void)

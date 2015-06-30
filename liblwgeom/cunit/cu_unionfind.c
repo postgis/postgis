@@ -65,7 +65,7 @@ static void test_unionfind_ordered_by_cluster(void)
 	};
 
 	uint32_t* actual_ids_by_cluster = UF_ordered_by_cluster(&uf);
-	uint32_t expected_ids_by_cluster[] = { 0, 7, 8, 1, 2, 3, 9, 4, 5, 6 };
+	// uint32_t expected_ids_by_cluster[] = { 0, 7, 8, 1, 2, 3, 9, 4, 5, 6 };
 
 	// CU_ASSERT_EQUAL(0, memcmp(actual_ids_by_cluster, expected_ids_by_cluster, 10 * sizeof(uint32_t)));
 

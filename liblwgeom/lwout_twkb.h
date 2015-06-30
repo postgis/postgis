@@ -82,3 +82,6 @@ int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB
 
 size_t sizeof_bbox(TWKB_STATE *ts, int ndims);
 void write_bbox(TWKB_STATE *ts, int ndims);
+
+
+

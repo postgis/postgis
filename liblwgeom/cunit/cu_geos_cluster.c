@@ -247,4 +247,4 @@ void geos_cluster_suite_setup(void)
 	PG_ADD_TEST(suite, basic_distance_test);
 	PG_ADD_TEST(suite, single_input_test);
 	PG_ADD_TEST(suite, empty_inputs_test);
-};
+}
