@@ -939,6 +939,7 @@ extern int ptarray_is_closed_2d(const POINTARRAY *pa);
 extern int ptarray_is_closed_3d(const POINTARRAY *pa);
 extern int ptarray_is_closed_z(const POINTARRAY *pa);
 extern void ptarray_longitude_shift(POINTARRAY *pa);
+extern int ptarray_isccw(const POINTARRAY *pa);
 extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
 

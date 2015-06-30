@@ -309,7 +309,6 @@ void ptarray_scale(POINTARRAY *pa, const POINT4D *factor);
 /*
 * PointArray
 */
-int ptarray_isccw(const POINTARRAY *pa);
 int ptarray_has_z(const POINTARRAY *pa);
 int ptarray_has_m(const POINTARRAY *pa);
 double ptarray_signed_area(const POINTARRAY *pa);
