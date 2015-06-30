@@ -325,40 +325,40 @@ lwgeom_as_curve(const LWGEOM *lwgeom)
 {
 	LWGEOM *ogeom;
 	int type = lwgeom->type;
-/*
-  int hasz = FLAGS_GET_Z(lwgeom->flags);
-  int hasm = FLAGS_GET_M(lwgeom->flags);
-  int srid = lwgeom->srid;
-*/
+	/*
+	int hasz = FLAGS_GET_Z(lwgeom->flags);
+	int hasm = FLAGS_GET_M(lwgeom->flags);
+	int srid = lwgeom->srid;
+	*/
 
 	switch(type)
 	{
 		case LINETYPE:
-      /* turn to COMPOUNDCURVE */
-      ogeom = (LWGEOM*)lwcompound_construct_from_lwline((LWLINE*)lwgeom);
-      break;
+			/* turn to COMPOUNDCURVE */
+			ogeom = (LWGEOM*)lwcompound_construct_from_lwline((LWLINE*)lwgeom);
+			break;
 		case POLYGONTYPE:
-      ogeom = (LWGEOM*)lwcurvepoly_construct_from_lwpoly(lwgeom_as_lwpoly(lwgeom));
-      break;
+			ogeom = (LWGEOM*)lwcurvepoly_construct_from_lwpoly(lwgeom_as_lwpoly(lwgeom));
+			break;
 		case MULTILINETYPE:
-      /* turn to MULTICURVE */
-      ogeom = lwgeom_clone(lwgeom);
-      ogeom->type = MULTICURVETYPE;
-      break;
+			/* turn to MULTICURVE */
+			ogeom = lwgeom_clone(lwgeom);
+			ogeom->type = MULTICURVETYPE;
+			break;
 		case MULTIPOLYGONTYPE:
-      /* turn to MULTISURFACE */
-      ogeom = lwgeom_clone(lwgeom);
-      ogeom->type = MULTISURFACETYPE;
-      break;
+			/* turn to MULTISURFACE */
+			ogeom = lwgeom_clone(lwgeom);
+			ogeom->type = MULTISURFACETYPE;
+			break;
 		case COLLECTIONTYPE:
 		default:
-      ogeom = lwgeom_clone(lwgeom);
-      break;
-  }
+			ogeom = lwgeom_clone(lwgeom);
+			break;
+	}
 
-  /* TODO: copy bbox from input geom ? */
+	/* TODO: copy bbox from input geom ? */
 
-  return ogeom;
+	return ogeom;
 }
 
 
@@ -1523,11 +1523,12 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 		return;
 	}
 
-  /* only refresh bbox if X or Y changed */
-  if ( in->bbox && (o1 < 2 || o2 < 2) ) {
-    lwgeom_drop_bbox(in);
-    lwgeom_add_bbox(in);
-  }
+	/* only refresh bbox if X or Y changed */
+	if ( in->bbox && (o1 < 2 || o2 < 2) ) 
+	{
+		lwgeom_drop_bbox(in);
+		lwgeom_add_bbox(in);
+	}
 }
 
 void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
@@ -1781,19 +1782,20 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 		}
 	}
 
-  /* Recompute bbox if needed */
+	/* Recompute bbox if needed */
 
-  if ( geom->bbox ) {
-    /* TODO: expose a gbox_scale function */
-    geom->bbox->xmin *= factor->x;
-    geom->bbox->xmax *= factor->x;
-    geom->bbox->ymin *= factor->y;
-    geom->bbox->ymax *= factor->y;
-    geom->bbox->zmin *= factor->z;
-    geom->bbox->zmax *= factor->z;
-    geom->bbox->mmin *= factor->m;
-    geom->bbox->mmax *= factor->m;
-  }
+	if ( geom->bbox ) 
+	{
+		/* TODO: expose a gbox_scale function */
+		geom->bbox->xmin *= factor->x;
+		geom->bbox->xmax *= factor->x;
+		geom->bbox->ymin *= factor->y;
+		geom->bbox->ymax *= factor->y;
+		geom->bbox->zmin *= factor->z;
+		geom->bbox->zmax *= factor->z;
+		geom->bbox->mmin *= factor->m;
+		geom->bbox->mmax *= factor->m;
+	}
 }
 
 LWGEOM*
@@ -2132,12 +2134,13 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 int
 lwgeom_is_trajectory(const LWGEOM *geom)
 {
-  int type = geom->type;
+	int type = geom->type;
 
-  if( type != LINETYPE ) {
-    lwnotice("Geometry is not a LINESTRING");
-    return LW_FALSE;
-  }
-  return lwline_is_trajectory((LWLINE*)geom);
+	if( type != LINETYPE ) 
+	{
+		lwnotice("Geometry is not a LINESTRING");
+		return LW_FALSE;
+	}
+	return lwline_is_trajectory((LWLINE*)geom);
 }
 

@@ -250,69 +250,72 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g;
-  POINTARRAY *npa = 0;
+	POINTARRAY *npa = 0;
 
-  if ( autofix )
-  {
-    /* check ring for being closed and fix if not */
-    if ( ! ptarray_is_closed_2d(pa) ) {
-      npa = ptarray_addPoint(pa, getPoint_internal(pa, 0),
-                             FLAGS_NDIMS(pa->flags), pa->npoints);
-      pa = npa;
-    }
-    /* TODO: check ring for having at least 4 vertices */
+	if ( autofix )
+	{
+		/* check ring for being closed and fix if not */
+		if ( ! ptarray_is_closed_2d(pa) ) 
+		{
+			npa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
+			pa = npa;
+		}
+		/* TODO: check ring for having at least 4 vertices */
 #if 0
-    while ( pa->npoints < 4 ) {
-      npa = ptarray_addPoint(npa, getPoint_internal(pa, 0),
-                             FLAGS_NDIMS(pa->flags), pa->npoints);
-    }
+		while ( pa->npoints < 4 ) 
+		{
+			npa = ptarray_addPoint(npa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
+		}
 #endif
-  }
+	}
 
-  sq = ptarray_to_GEOSCoordSeq(pa);
-  if ( npa ) ptarray_free(npa);
+	sq = ptarray_to_GEOSCoordSeq(pa);
+	if ( npa ) ptarray_free(npa);
 	g = GEOSGeom_createLinearRing(sq);
-  return g;
+	return g;
 }
 
 GEOSGeometry *
 GBOX2GEOS(const GBOX *box)
 {
-    GEOSGeometry* envelope;
-    GEOSGeometry* ring;
-    GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
-    if (!seq) {
-        return NULL;
-    }
+	GEOSGeometry* envelope;
+	GEOSGeometry* ring;
+	GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
+	if (!seq) 
+	{
+		return NULL;
+	}
 
-    GEOSCoordSeq_setX(seq, 0, box->xmin);
-    GEOSCoordSeq_setY(seq, 0, box->ymin);
+	GEOSCoordSeq_setX(seq, 0, box->xmin);
+	GEOSCoordSeq_setY(seq, 0, box->ymin);
 
-    GEOSCoordSeq_setX(seq, 1, box->xmax);
-    GEOSCoordSeq_setY(seq, 1, box->ymin);
+	GEOSCoordSeq_setX(seq, 1, box->xmax);
+	GEOSCoordSeq_setY(seq, 1, box->ymin);
 
-    GEOSCoordSeq_setX(seq, 2, box->xmax);
-    GEOSCoordSeq_setY(seq, 2, box->ymax);
+	GEOSCoordSeq_setX(seq, 2, box->xmax);
+	GEOSCoordSeq_setY(seq, 2, box->ymax);
 
-    GEOSCoordSeq_setX(seq, 3, box->xmin);
-    GEOSCoordSeq_setY(seq, 3, box->ymax);
+	GEOSCoordSeq_setX(seq, 3, box->xmin);
+	GEOSCoordSeq_setY(seq, 3, box->ymax);
 
-    GEOSCoordSeq_setX(seq, 4, box->xmin);
-    GEOSCoordSeq_setY(seq, 4, box->ymin);
+	GEOSCoordSeq_setX(seq, 4, box->xmin);
+	GEOSCoordSeq_setY(seq, 4, box->ymin);
 
-    ring = GEOSGeom_createLinearRing(seq);
-    if (!ring) {
-        GEOSCoordSeq_destroy(seq);
-        return NULL;
-    }
+	ring = GEOSGeom_createLinearRing(seq);
+	if (!ring) 
+	{
+		GEOSCoordSeq_destroy(seq);
+		return NULL;
+	}
 
-    envelope = GEOSGeom_createPolygon(ring, NULL, 0);
-    if (!envelope) {
-        GEOSGeom_destroy(ring);
-        return NULL;
-    }
+	envelope = GEOSGeom_createPolygon(ring, NULL, 0);
+	if (!envelope) 
+	{
+		GEOSGeom_destroy(ring);
+		return NULL;
+	}
 
-    return envelope;
+	return envelope;
 }
 
 GEOSGeometry *
@@ -587,8 +590,8 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-	        lwerror("Error performing intersection: %s",
-	                lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: %s",
+		        lwgeom_geos_errmsg);
 		return NULL; /* never get here */
 	}
 
@@ -603,8 +606,8 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-	        lwerror("Error performing intersection: GEOS2LWGEOM: %s",
-	                lwgeom_geos_errmsg);
+		lwerror("Error performing intersection: GEOS2LWGEOM: %s",
+		        lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 
@@ -675,8 +678,8 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-	        lwerror("Error performing difference: GEOS2LWGEOM: %s",
-	                lwgeom_geos_errmsg);
+		lwerror("Error performing difference: GEOS2LWGEOM: %s",
+		        lwgeom_geos_errmsg);
 		return NULL; /* never get here */
 	}
 
@@ -831,8 +834,8 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	if (result == NULL)
 	{
-	        lwerror("Error performing union: GEOS2LWGEOM: %s",
-	                lwgeom_geos_errmsg);
+		lwerror("Error performing union: GEOS2LWGEOM: %s",
+		        lwgeom_geos_errmsg);
 		return NULL; /*never get here */
 	}
 

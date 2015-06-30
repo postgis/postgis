@@ -81,10 +81,10 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->nodes = NULL;
 	node->edge_num = i;
     
-    /* Zero out metadata */
-    node->pt_outside.x = 0.0;
-    node->pt_outside.y = 0.0;
-    node->geom_type = 0;
+	/* Zero out metadata */
+	node->pt_outside.x = 0.0;
+	node->pt_outside.y = 0.0;
+	node->geom_type = 0;
 	
 	return node;
 }
@@ -102,9 +102,9 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 	tree->nodes = NULL;
 	tree->num_nodes = 0;
 	tree->edge_num = 0;
-    tree->geom_type = POINTTYPE;
-    tree->pt_outside.x = 0.0;
-    tree->pt_outside.y = 0.0;
+	tree->geom_type = POINTTYPE;
+	tree->pt_outside.x = 0.0;
+	tree->pt_outside.y = 0.0;
 	return tree;
 }
 
@@ -315,9 +315,9 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	node->num_nodes = num_nodes;
 	node->nodes = c;
 	node->edge_num = -1;
-    node->geom_type = new_geom_type;
-    node->pt_outside.x = 0.0;
-    node->pt_outside.y = 0.0;
+	node->geom_type = new_geom_type;
+	node->pt_outside.x = 0.0;
+	node->pt_outside.y = 0.0;
 	return node;
 }
 
@@ -434,15 +434,15 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 int circ_tree_get_point(const CIRC_NODE* node, POINT2D* pt)
 {
 	if ( circ_node_is_leaf(node) )
-    {
-        pt->x = node->p1->x;
-        pt->y = node->p1->y;
-        return LW_SUCCESS;
-    }
-    else
-    {
-        return circ_tree_get_point(node->nodes[0], pt);
-    }
+	{
+		pt->x = node->p1->x;
+		pt->y = node->p1->y;
+		return LW_SUCCESS;
+	}
+	else
+	{
+		return circ_tree_get_point(node->nodes[0], pt);
+	}
 }
 
 
@@ -812,8 +812,8 @@ static CIRC_NODE*
 lwpoint_calculate_circ_tree(const LWPOINT* lwpoint)
 {
 	CIRC_NODE* node;
-    node = circ_tree_new(lwpoint->point);
-    node->geom_type = lwgeom_get_type((LWGEOM*)lwpoint);;
+	node = circ_tree_new(lwpoint->point);
+	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoint);;
 	return node;
 }
 
@@ -821,8 +821,8 @@ static CIRC_NODE*
 lwline_calculate_circ_tree(const LWLINE* lwline)
 {
 	CIRC_NODE* node;
-    node = circ_tree_new(lwline->points);
-    node->geom_type = lwgeom_get_type((LWGEOM*)lwline);
+	node = circ_tree_new(lwline->points);
+	node->geom_type = lwgeom_get_type((LWGEOM*)lwline);
 	return node;
 }
 
@@ -858,7 +858,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 
 	/* Metatdata about polygons, we need this to apply P-i-P tests */
 	/* selectively when doing distance calculations */
-    node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
+	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
 	
 	return node;
@@ -889,9 +889,7 @@ lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 	node = circ_nodes_merge(nodes, j);
 	/* Don't need the working list any more */
 	lwfree(nodes);
-	
-    node->geom_type = lwgeom_get_type((LWGEOM*)lwcol);
-    
+	node->geom_type = lwgeom_get_type((LWGEOM*)lwcol);
 	return node;
 }
 

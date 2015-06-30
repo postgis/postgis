@@ -114,8 +114,8 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 LWCOMPOUND *
 lwcompound_construct_empty(int srid, char hasz, char hasm)
 {
-        LWCOMPOUND *ret = (LWCOMPOUND*)lwcollection_construct_empty(COMPOUNDTYPE, srid, hasz, hasm);
-        return ret;
+	LWCOMPOUND *ret = (LWCOMPOUND*)lwcollection_construct_empty(COMPOUNDTYPE, srid, hasz, hasm);
+	return ret;
 }
 
 int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)

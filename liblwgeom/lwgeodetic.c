@@ -296,7 +296,7 @@ static int gbox_check_poles(GBOX *gbox)
 	LWDEBUGF(4, "gbox %s", gbox_to_string(gbox));
 	/* Z axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	        gbox->ymin < 0.0 && gbox->ymax > 0.0 )
+	     gbox->ymin < 0.0 && gbox->ymax > 0.0 )
 	{
 		if ( (gbox->zmin + gbox->zmax) > 0.0 )
 		{
@@ -313,7 +313,7 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* Y axis */
 	if ( gbox->xmin < 0.0 && gbox->xmax > 0.0 &&
-	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
 		if ( gbox->ymin + gbox->ymax > 0.0 )
 		{
@@ -330,7 +330,7 @@ static int gbox_check_poles(GBOX *gbox)
 
 	/* X axis */
 	if ( gbox->ymin < 0.0 && gbox->ymax > 0.0 &&
-	        gbox->zmin < 0.0 && gbox->zmax > 0.0 )
+	     gbox->zmin < 0.0 && gbox->zmax > 0.0 )
 	{
 		if ( gbox->xmin + gbox->xmax > 0.0 )
 		{
@@ -807,7 +807,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 			return LW_FALSE;
 
 		if ( ( g.start.lat <= q.lat && q.lat <= g.end.lat ) ||
-		        ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
+		     ( g.end.lat <= q.lat && q.lat <= g.start.lat ) )
 		{
 			return LW_TRUE;
 		}
@@ -881,7 +881,7 @@ int edge_contains_coplanar_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POIN
 	}
 
 	if ( ( g.start.lon <= q.lon && q.lon <= g.end.lon ) ||
-	        ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
+	     ( g.end.lon <= q.lon && q.lon <= g.start.lon ) )
 	{
 		LWDEBUG(4, "true, this edge contains point");
 		return LW_TRUE;
@@ -1172,7 +1172,7 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 	/* Zero length edge, */
 	if ( geographic_point_equals(&(e->start), &(e->end)) )
 	{
-        *closest = e->start;
+		*closest = e->start;
 		return sphere_distance(&(e->start), gp);
 	}
 
@@ -2119,7 +2119,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Point/line combinations can all be handled with simple point array iterations */
 	if ( ( type1 == POINTTYPE || type1 == LINETYPE ) &&
-	        ( type2 == POINTTYPE || type2 == LINETYPE ) )
+	     ( type2 == POINTTYPE || type2 == LINETYPE ) )
 	{
 		POINTARRAY *pa1, *pa2;
 
@@ -2138,7 +2138,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Point/Polygon cases, if point-in-poly, return zero, else return distance. */
 	if ( ( type1 == POLYGONTYPE && type2 == POINTTYPE ) ||
-	        ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
+	     ( type2 == POLYGONTYPE && type1 == POINTTYPE ) )
 	{
 		const POINT2D *p;
 		LWPOLY *lwpoly;
@@ -2223,7 +2223,7 @@ double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, co
 
 	/* Polygon/polygon case, if start point-in-poly, return zero, else return distance. */
 	if ( ( type1 == POLYGONTYPE && type2 == POLYGONTYPE ) ||
-	        ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
+	     ( type2 == POLYGONTYPE && type1 == POLYGONTYPE ) )
 	{
 		const POINT2D *p;
 		LWPOLY *lwpoly1 = (LWPOLY*)lwgeom1;

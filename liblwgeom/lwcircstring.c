@@ -40,10 +40,10 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	LWCIRCSTRING *result;
 
 	/*
-	        * The first arc requires three points.  Each additional
-	        * arc requires two more points.  Thus the minimum point count
-	        * is three, and the count must be odd.
-	        */
+	* The first arc requires three points.  Each additional
+	* arc requires two more points.  Thus the minimum point count
+	* is three, and the count must be odd.
+	*/
 	if (points->npoints % 2 != 1 || points->npoints < 3)
 	{
 		lwnotice("lwcircstring_construct: invalid point count %d", points->npoints);
