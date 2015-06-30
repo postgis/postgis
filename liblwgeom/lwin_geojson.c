@@ -545,10 +545,19 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 		if (poObjSrsType != NULL)
 		{
 			json_object* poObjSrsProps = findMemberByName( poObjSrs, "properties" );
-			json_object* poNameURL = findMemberByName( poObjSrsProps, "name" );
-			const char* pszName = json_object_get_string( poNameURL );
-			*srs = lwalloc(strlen(pszName) + 1);
-			strcpy(*srs, pszName);
+			if ( poObjSrsProps )
+			{
+				json_object* poNameURL = findMemberByName( poObjSrsProps, "name" );
+				if ( poNameURL )
+				{
+					const char* pszName = json_object_get_string( poNameURL );
+					if ( pszName )
+					{
+						*srs = lwalloc(strlen(pszName) + 1);
+						strcpy(*srs, pszName);
+					}
+				}
+			}
 		}
 	}
 
