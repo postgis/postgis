@@ -1161,7 +1161,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	/* Only respond to an inner join/unknown context join */
 	if (jointype != JOIN_INNER)
 	{
-		elog(NOTICE, "gserialized_gist_joinsel: jointype %d not supported", jointype);
+		elog(DEBUG1, "%s: jointype %d not supported", __func__, jointype);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
@@ -1175,7 +1175,7 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	/* TODO: handle g1 && ST_Expand(g2) */
 	if (!IsA(arg1, Var) || !IsA(arg2, Var))
 	{
-		elog(DEBUG1, "gserialized_gist_joinsel called with arguments that are not column references");
+		elog(DEBUG1, "%s called with arguments that are not column references", __func__);
 		PG_RETURN_FLOAT8(DEFAULT_ND_JOINSEL);
 	}
 
