@@ -21,16 +21,16 @@
 #include "lwgeom_log.h"
 
 
-LWMLINE *lwmcurve_stroke(LWMCURVE *mcurve, uint32_t perQuad);
-LWMPOLY *lwmsurface_stroke(LWMSURFACE *msurface, uint32_t perQuad);
-LWCOLLECTION *lwcollection_stroke(LWCOLLECTION *collection, uint32_t perQuad);
+LWMLINE* lwmcurve_stroke(const LWMCURVE *mcurve, uint32_t perQuad);
+LWMPOLY* lwmsurface_stroke(const LWMSURFACE *msurface, uint32_t perQuad);
+LWCOLLECTION* lwcollection_stroke(const LWCOLLECTION *collection, uint32_t perQuad);
 
-LWGEOM *pta_unstroke(POINTARRAY *points, int type, int srid);
-LWGEOM *lwline_unstroke(LWLINE *line);
-LWGEOM *lwpolygon_unstroke(LWPOLY *poly);
-LWGEOM *lwmline_unstroke(LWMLINE *mline);
-LWGEOM *lwmpolygon_unstroke(LWMPOLY *mpoly);
-LWGEOM *lwgeom_unstroke(LWGEOM *geom);
+LWGEOM* pta_unstroke(const POINTARRAY *points, int type, int srid);
+LWGEOM* lwline_unstroke(const LWLINE *line);
+LWGEOM* lwpolygon_unstroke(const LWPOLY *poly);
+LWGEOM* lwmline_unstroke(const LWMLINE *mline);
+LWGEOM* lwmpolygon_unstroke(const LWMPOLY *mpoly);
+LWGEOM* lwgeom_unstroke(const LWGEOM *geom);
 
 
 /*
@@ -99,7 +99,7 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 }
 
 static POINTARRAY *
-lwcircle_stroke(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
+lwcircle_stroke(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, uint32_t perQuad)
 {
 	POINT2D center;
 	POINT2D *t1 = (POINT2D*)p1;
@@ -330,10 +330,9 @@ lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
 }
 
 LWMLINE *
-lwmcurve_stroke(LWMCURVE *mcurve, uint32_t perQuad)
+lwmcurve_stroke(const LWMCURVE *mcurve, uint32_t perQuad)
 {
 	LWMLINE *ogeom;
-	LWGEOM *tmp;
 	LWGEOM **lines;
 	int i;
 
@@ -343,7 +342,7 @@ lwmcurve_stroke(LWMCURVE *mcurve, uint32_t perQuad)
 
 	for (i = 0; i < mcurve->ngeoms; i++)
 	{
-		tmp = mcurve->geoms[i];
+		const LWGEOM *tmp = mcurve->geoms[i];
 		if (tmp->type == CIRCSTRINGTYPE)
 		{
 			lines[i] = (LWGEOM *)lwcircstring_stroke((LWCIRCSTRING *)tmp, perQuad);
@@ -368,7 +367,7 @@ lwmcurve_stroke(LWMCURVE *mcurve, uint32_t perQuad)
 }
 
 LWMPOLY *
-lwmsurface_stroke(LWMSURFACE *msurface, uint32_t perQuad)
+lwmsurface_stroke(const LWMSURFACE *msurface, uint32_t perQuad)
 {
 	LWMPOLY *ogeom;
 	LWGEOM *tmp;
@@ -404,7 +403,7 @@ lwmsurface_stroke(LWMSURFACE *msurface, uint32_t perQuad)
 }
 
 LWCOLLECTION *
-lwcollection_stroke(LWCOLLECTION *collection, uint32_t perQuad)
+lwcollection_stroke(const LWCOLLECTION *collection, uint32_t perQuad)
 {
 	LWCOLLECTION *ocol;
 	LWGEOM *tmp;
@@ -442,7 +441,7 @@ lwcollection_stroke(LWCOLLECTION *collection, uint32_t perQuad)
 }
 
 LWGEOM *
-lwgeom_stroke(LWGEOM *geom, uint32_t perQuad)
+lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad)
 {
 	LWGEOM * ogeom = NULL;
 	switch (geom->type)
@@ -582,7 +581,7 @@ geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
 }
 
 LWGEOM*
-pta_unstroke(POINTARRAY *points, int type, int srid)
+pta_unstroke(const POINTARRAY *points, int type, int srid)
 {
 	int i = 0, j, k;
 	POINT4D a1, a2, a3, b;
@@ -744,7 +743,7 @@ pta_unstroke(POINTARRAY *points, int type, int srid)
 
 
 LWGEOM *
-lwline_unstroke(LWLINE *line)
+lwline_unstroke(const LWLINE *line)
 {
 	LWDEBUG(2, "lwline_unstroke called.");
 
@@ -753,7 +752,7 @@ lwline_unstroke(LWLINE *line)
 }
 
 LWGEOM *
-lwpolygon_unstroke(LWPOLY *poly)
+lwpolygon_unstroke(const LWPOLY *poly)
 {
 	LWGEOM **geoms;
 	int i, hascurve = 0;
@@ -782,7 +781,7 @@ lwpolygon_unstroke(LWPOLY *poly)
 }
 
 LWGEOM *
-lwmline_unstroke(LWMLINE *mline)
+lwmline_unstroke(const LWMLINE *mline)
 {
 	LWGEOM **geoms;
 	int i, hascurve = 0;
@@ -809,8 +808,8 @@ lwmline_unstroke(LWMLINE *mline)
 	return (LWGEOM *)lwcollection_construct(MULTICURVETYPE, mline->srid, NULL, mline->ngeoms, geoms);
 }
 
-LWGEOM *
-lwmpolygon_unstroke(LWMPOLY *mpoly)
+LWGEOM * 
+lwmpolygon_unstroke(const LWMPOLY *mpoly)
 {
 	LWGEOM **geoms;
 	int i, hascurve = 0;
@@ -838,7 +837,7 @@ lwmpolygon_unstroke(LWMPOLY *mpoly)
 }
 
 LWGEOM *
-lwgeom_unstroke(LWGEOM *geom)
+lwgeom_unstroke(const LWGEOM *geom)
 {
 	LWDEBUG(2, "lwgeom_unstroke called.");
 

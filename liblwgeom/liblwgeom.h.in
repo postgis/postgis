@@ -2009,8 +2009,8 @@ extern uint8_t* twkb_to_twkbcoll(uint8_t **twkb, size_t *sizes,size_t *out_size,
  ******************************************************************************/
 
 int lwgeom_has_arc(const LWGEOM *geom);
-LWGEOM *lwgeom_stroke(LWGEOM *geom, uint32_t perQuad);
-LWGEOM *lwgeom_unstroke(LWGEOM *geom);
+LWGEOM *lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad);
+LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
 
 /*******************************************************************************
  * GEOS proxy functions on LWGEOM
