@@ -129,9 +129,8 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.3 or greater, but GEOS 3.4+ is recommended to take full advantage of all the new functions and features.  Without GEOS 3.4,
-			you will be missing some major enhancements such as ST_Triangles and long-running function interruption, and improvements to geometry validation and
-			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS 3.3.2+ is also required for topology support.  GEOS is available for download from
+		  GEOS geometry library, version 3.3 or greater, but GEOS 3.5+ is recommended to take full advantage of all the new functions and features.  Without GEOS 3.5,
+			you will be missing some major enhancements such as <xref linkend="ST_ClipByBox2D" /> and <xref linkend="ST_Subdivide" />. GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
 		  </ulink> and 3.4+ is backward-compatible with older versions so fairly safe to upgrade.

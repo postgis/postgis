@@ -394,7 +394,7 @@ in exceptions being thrown.
 		<para>Performed by the GEOS module.</para>
 		<note><para>Requires GEOS 3.5.0+</para></note>
 
-		<para>Availability: 2.2.0.</para>
+		<para>Availability: 2.2.0 - requires GEOS &gt;= 3.5.0.</para>
 
 	  </refsection>
 
@@ -3143,7 +3143,7 @@ maximum vertex count. Minimum vertice count allowed is 8 and if you try to speci
 		<para>Clipping performed by the GEOS module.</para>
 		<note><para>Requires GEOS 3.5.0+</para></note>
 
-		<para>Availability: 2.2.0.</para>
+		<para>Availability: 2.2.0 requires GEOS &gt;= 3.5.0.</para>
 
 	  </refsection>
 
