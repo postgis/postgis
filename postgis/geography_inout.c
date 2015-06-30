@@ -532,6 +532,9 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	if ( lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE )
 		PG_PARSER_ERROR(lwg_parser_result);
 
+	/* Error on any SRID != default */
+	srid_is_latlong(fcinfo, lwg_parser_result.geom->srid);
+
 	/* Clean up string */
 	pfree(wkt);
 	g_ser = gserialized_geography_from_lwgeom(lwg_parser_result.geom, -1);
@@ -556,6 +559,9 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	
 	if ( ! lwgeom )
 		lwpgerror("Unable to parse WKB");
+
+	/* Error on any SRID != default */
+	srid_is_latlong(fcinfo, lwgeom->srid);
  		
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
