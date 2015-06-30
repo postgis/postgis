@@ -292,9 +292,9 @@ double lwtriangle_perimeter_2d(const LWTRIANGLE *triangle);
 /*
 * Segmentization
 */
-LWLINE *lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32_t perQuad);
-LWLINE *lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad);
-LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
+LWLINE *lwcircstring_stroke(const LWCIRCSTRING *icurve, uint32_t perQuad);
+LWLINE *lwcompound_stroke(const LWCOMPOUND *icompound, uint32_t perQuad);
+LWPOLY *lwcurvepoly_stroke(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 
 /*
 * Affine

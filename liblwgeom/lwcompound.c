@@ -59,7 +59,7 @@ double lwcompound_length(const LWCOMPOUND *comp)
 	LWLINE *line;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
-	line = lwcompound_segmentize(comp, 32);
+	line = lwcompound_stroke(comp, 32);
 	length = lwline_length(line);
 	lwline_free(line);
 	return length;
@@ -71,7 +71,7 @@ double lwcompound_length_2d(const LWCOMPOUND *comp)
 	LWLINE *line;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
-	line = lwcompound_segmentize(comp, 32);
+	line = lwcompound_stroke(comp, 32);
 	length = lwline_length_2d(line);
 	lwline_free(line);
 	return length;

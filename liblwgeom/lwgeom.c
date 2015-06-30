@@ -758,7 +758,7 @@ lwgeom_force_sfs(LWGEOM *geom, int version)
 			case CURVEPOLYTYPE:
 			case MULTICURVETYPE:
 			case MULTISURFACETYPE:
-				return lwgeom_segmentize(geom, 32);
+				return lwgeom_stroke(geom, 32);
 
 			case COLLECTIONTYPE:
 				col = (LWCOLLECTION*)geom;
@@ -782,7 +782,7 @@ lwgeom_force_sfs(LWGEOM *geom, int version)
 		case CURVEPOLYTYPE:
 		case MULTICURVETYPE:
 		case MULTISURFACETYPE:
-			return lwgeom_segmentize(geom, 32);
+			return lwgeom_stroke(geom, 32);
 
 		/* SFS 1.2 types */
 		case TRIANGLETYPE:

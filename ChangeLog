@@ -1275,7 +1275,7 @@
 
 2012-12-20 17:19  strk
 
-	* Fix memory leaks in lwsegmentize and cu_ptarray
+	* Fix memory leaks in lwstroke and cu_ptarray
 
 2012-12-20 16:02  robe
 
@@ -31443,7 +31443,7 @@
 2008-09-16 18:44  mcayland
 
 	* Move the LWGEOM-specific functions from lwgeom_sqlmm.c into
-	  liblwgeom/lwsegmentize.c to ensure that liblwgeom can exist as a
+	  liblwgeom/lwstroke.c to ensure that liblwgeom can exist as a
 	  standalone library.
 
 2008-09-16 13:35  robe

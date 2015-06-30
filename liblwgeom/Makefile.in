@@ -66,7 +66,7 @@ SA_OBJS = \
 	lwutil.o \
 	lwhomogenize.o \
 	lwalgorithm.o \
-	lwsegmentize.o \
+	lwstroke.o \
 	lwlinearreferencing.o \
 	lwprint.o \
 	g_box.o \

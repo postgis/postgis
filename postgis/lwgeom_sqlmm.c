@@ -68,7 +68,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "perQuad = %d", perQuad);
 
 	igeom = lwgeom_from_gserialized(geom);
-	ogeom = lwgeom_segmentize(igeom, perQuad);
+	ogeom = lwgeom_stroke(igeom, perQuad);
 	lwgeom_free(igeom);
 	
 	if (ogeom == NULL) 
@@ -90,7 +90,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");
 
 	igeom = lwgeom_from_gserialized(geom);
-	ogeom = lwgeom_desegmentize(igeom);
+	ogeom = lwgeom_unstroke(igeom);
 	lwgeom_free(igeom);
 
 	if (ogeom == NULL)

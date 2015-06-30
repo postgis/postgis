@@ -342,7 +342,7 @@ static void test_ptarray_signed_area()
 
 
 
-static void test_ptarray_desegmentize() 
+static void test_ptarray_unstroke() 
 {
 	LWGEOM *in, *out;
 	char *str;
@@ -351,7 +351,7 @@ static void test_ptarray_desegmentize()
 	   but it looks like the intersection itself is too sloppy in generating the derived point
 	   to accurately reconstruct the circles.
 	in = lwgeom_from_text("POLYGON((0.5 0,0.471177920604846 -0.292635483024192,0.38581929876693 -0.574025148547634,0.247204418453818 -0.833355349529403,0.0606601717798223 -1.06066017177982,-5.44089437167602e-17 -1.11044268820754,-0.0606601717798188 -1.06066017177982,-0.247204418453816 -0.833355349529406,-0.385819298766929 -0.574025148547639,-0.471177920604845 -0.292635483024197,-0.5 -4.84663372329776e-15,-0.471177920604847 0.292635483024187,-0.385819298766932 0.57402514854763,-0.247204418453821 0.833355349529398,-0.0606601717798256 1.06066017177982,3.45538806345173e-16 1.11044268820754,0.0606601717798183 1.06066017177982,0.247204418453816 0.833355349529407,0.385819298766929 0.574025148547638,0.471177920604845 0.292635483024196,0.5 0))");
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
@@ -361,10 +361,10 @@ static void test_ptarray_desegmentize()
 	*/
 	
 	in = lwgeom_from_text("CIRCULARSTRING(-1 0,0 1,0 -1)");
-	out = lwgeom_segmentize(in,8);
+	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
 	in = out;
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
@@ -373,10 +373,10 @@ static void test_ptarray_desegmentize()
 	lwfree(str);	
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))");
-	out = lwgeom_segmentize(in,8);
+	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
 	in = out;
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,-1 -1))");
@@ -385,10 +385,10 @@ static void test_ptarray_desegmentize()
 	lwfree(str);	
 
 	in = lwgeom_from_text("COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))");
-	out = lwgeom_segmentize(in,8);
+	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
 	in = out;
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-0.70710678 -3.7071068,1 -3),(1 -3,5 5))");
@@ -397,10 +397,10 @@ static void test_ptarray_desegmentize()
 	lwfree(str);	
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),CIRCULARSTRING(0 -1,-1 -2,1 -2))");
-	out = lwgeom_segmentize(in,8);
+	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
 	in = out;
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),CIRCULARSTRING(0 -1,-0.70710678 -2.7071068,1 -2))");
@@ -409,10 +409,10 @@ static void test_ptarray_desegmentize()
 	lwfree(str);	
 	
 	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
-	out = lwgeom_segmentize(in,8);
+	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
 	in = out;
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1),CIRCULARSTRING(1 1,2 2,3 1),(3 1,4 4))");
 	lwgeom_free(in);
@@ -423,7 +423,7 @@ static void test_ptarray_desegmentize()
 	// See http://trac.osgeo.org/postgis/ticket/2425 
 	// and http://trac.osgeo.org/postgis/ticket/2420 
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10,0 0)");
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10,0 0)");
 	lwgeom_free(in);
@@ -431,7 +431,7 @@ static void test_ptarray_desegmentize()
 	lwfree(str);	
 
 	in = lwgeom_from_text("LINESTRING(10 10,0 10,0 0,10 0)");
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(10 10,0 10,0 0,10 0)");
 	// printf("%s\n", str);
@@ -440,7 +440,7 @@ static void test_ptarray_desegmentize()
 	lwfree(str);
 
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10)");
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10)");
 	// printf("%s\n", str);
@@ -450,7 +450,7 @@ static void test_ptarray_desegmentize()
 
 	// See http://trac.osgeo.org/postgis/ticket/2412
 	in = lwgeom_from_text("LINESTRING(0 0, 1 1)");
-	out = lwgeom_desegmentize(in);
+	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	// printf("%s\n", str);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,1 1)");
@@ -749,7 +749,7 @@ void ptarray_suite_setup(void)
 	PG_ADD_TEST(suite, test_ptarray_locate_point);
 	PG_ADD_TEST(suite, test_ptarray_isccw);
 	PG_ADD_TEST(suite, test_ptarray_signed_area);
-	PG_ADD_TEST(suite, test_ptarray_desegmentize);
+	PG_ADD_TEST(suite, test_ptarray_unstroke);
 	PG_ADD_TEST(suite, test_ptarray_insert_point);
 	PG_ADD_TEST(suite, test_ptarray_contains_point);
 	PG_ADD_TEST(suite, test_ptarrayarc_contains_point);

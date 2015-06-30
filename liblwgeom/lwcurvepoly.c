@@ -123,7 +123,7 @@ lwcurvepoly_area(const LWCURVEPOLY *curvepoly)
 	LWPOLY *poly;
 	if( lwgeom_is_empty((LWGEOM*)curvepoly) )
 		return 0.0;
-	poly = lwcurvepoly_segmentize(curvepoly, 32);
+	poly = lwcurvepoly_stroke(curvepoly, 32);
 	area = lwpoly_area(poly);
 	lwpoly_free(poly);
 	return area;
