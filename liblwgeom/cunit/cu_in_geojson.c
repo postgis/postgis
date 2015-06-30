@@ -22,40 +22,47 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
 {
 	LWGEOM *g;
 	char * h = NULL;
-  char * srs = NULL;
-  size_t size;
+	char * srs = NULL;
+	size_t size;
 
 	g = lwgeom_from_geojson(in, &srs);
-  if ( ! g ) {
+	if ( ! g ) 
+	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, cu_error_msg);
-	  CU_ASSERT(g != NULL);
-    return;
-  }
+		CU_ASSERT(g != NULL);
+		return;
+	}
 
 	h = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &size);
 
-	if (strcmp(h, exp)) {
+	if (strcmp(h, exp)) 
+	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, h);
-	  CU_ASSERT_STRING_EQUAL(h, exp);
-  }
+		CU_ASSERT_STRING_EQUAL(h, exp);
+	}
 
-  if ( exp_srs ) {
-    if ( ! srs ) {
-      fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: (null)\n", in, exp_srs);
-	    CU_ASSERT_EQUAL(srs, exp_srs);
-    }
-    else if (strcmp(srs, exp_srs)) {
-      fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
-	    CU_ASSERT_STRING_EQUAL(srs, exp_srs);
-    }
-  } else if ( srs ) {
-    fprintf(stderr, "\nIn:   %s\nExp:  (null)\nObt: %s\n", in, srs);
-	  CU_ASSERT_EQUAL(srs, exp_srs);
-  }
+	if ( exp_srs ) 
+	{
+		if ( ! srs ) 
+		{
+			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: (null)\n", in, exp_srs);
+			CU_ASSERT_EQUAL(srs, exp_srs);
+		}
+		else if (strcmp(srs, exp_srs)) 
+		{
+			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
+			CU_ASSERT_STRING_EQUAL(srs, exp_srs);
+		}
+	} 
+	else if ( srs ) 
+	{
+		fprintf(stderr, "\nIn:   %s\nExp:  (null)\nObt: %s\n", in, srs);
+		CU_ASSERT_EQUAL(srs, exp_srs);
+	}
 
 	lwgeom_free(g);
 	if ( h ) lwfree(h);
-  if ( srs ) lwfree(srs);
+	if ( srs ) lwfree(srs);
 }
 
 static void in_geojson_test_srid(void)
@@ -174,12 +181,12 @@ static void in_geojson_test_geoms(void)
 	    "{\"type\":\"MultiPolygon\",\"coordinates\":[[[[0,1],[2,3],[4,5],[0,1]]],[[[6,7],[8,9],[10,11],[6,7]]]]}",
 	    NULL, 0, 0);
 
-  /* MultiPolygon with internal rings */
-  /* See http://trac.osgeo.org/postgis/ticket/2216 */
-  do_geojson_test(
-      "MULTIPOLYGON(((4 0,0 -4,-4 0,0 4,4 0),(2 0,0 2,-2 0,0 -2,2 0)),((24 0,20 -4,16 0,20 4,24 0),(22 0,20 2,18 0,20 -2,22 0)),((44 0,40 -4,36 0,40 4,44 0),(42 0,40 2,38 0,40 -2,42 0)))",
-      "{'type':'MultiPolygon','coordinates':[[[[4,0],[0,-4],[-4,0],[0,4],[4,0]],[[2,0],[0,2],[-2,0],[0,-2],[2,0]]],[[[24,0],[20,-4],[16,0],[20,4],[24,0]],[[22,0],[20,2],[18,0],[20,-2],[22,0]]],[[[44,0],[40,-4],[36,0],[40,4],[44,0]],[[42,0],[40,2],[38,0],[40,-2],[42,0]]]]}",
-      NULL, 0, 0);
+	/* MultiPolygon with internal rings */
+	/* See http://trac.osgeo.org/postgis/ticket/2216 */
+	do_geojson_test(
+	    "MULTIPOLYGON(((4 0,0 -4,-4 0,0 4,4 0),(2 0,0 2,-2 0,0 -2,2 0)),((24 0,20 -4,16 0,20 4,24 0),(22 0,20 2,18 0,20 -2,22 0)),((44 0,40 -4,36 0,40 4,44 0),(42 0,40 2,38 0,40 -2,42 0)))",
+	    "{'type':'MultiPolygon','coordinates':[[[[4,0],[0,-4],[-4,0],[0,4],[4,0]],[[2,0],[0,2],[-2,0],[0,-2],[2,0]]],[[[24,0],[20,-4],[16,0],[20,4],[24,0]],[[22,0],[20,2],[18,0],[20,-2],[22,0]]],[[[44,0],[40,-4],[36,0],[40,4],[44,0]],[[42,0],[40,2],[38,0],[40,-2],[42,0]]]]}",
+	    NULL, 0, 0);
 
 	/* GeometryCollection */
 	do_geojson_test(
@@ -192,7 +199,6 @@ static void in_geojson_test_geoms(void)
 	    "GEOMETRYCOLLECTION EMPTY",
 	    "{\"type\":\"GeometryCollection\",\"geometries\":[]}",
 	    NULL, 0, 0);
-
 }
 
 /*
