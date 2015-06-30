@@ -112,8 +112,11 @@ int getSRIDbySRS(const char* srs)
 		SPI_finish();
 		return 0;
 	}
-	sprintf(query, "SELECT srid \
-	        FROM spatial_ref_sys WHERE auth_name||':'||auth_srid = '%s'", srs);
+	sprintf(query, 
+		"SELECT srid "
+		"FROM spatial_ref_sys, "
+		"regexp_matches('%s', E'([a-z]+):([0-9]+)', 'gi') AS re "
+		"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
 	err = SPI_exec(query, 1);
 	if ( err < 0 )
@@ -126,9 +129,11 @@ int getSRIDbySRS(const char* srs)
 	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0)
 	{
-		sprintf(query, "SELECT srid \
-		        FROM spatial_ref_sys WHERE \
-		        'urn:ogc:def:crs:'||auth_name||'::'||auth_srid = '%s'", srs);
+		sprintf(query, 
+			"SELECT srid "
+			"FROM spatial_ref_sys, "
+			"regexp_matches('%s', E'urn:ogc:def:crs:([a-z]+):.*:([0-9]+)', 'gi') AS re "
+			"WHERE re[1] ILIKE auth_name AND int4(re[2]) = auth_srid", srs);
 
 		err = SPI_exec(query, 1);
 		if ( err < 0 )

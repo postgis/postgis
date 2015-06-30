@@ -35,7 +35,7 @@ Datum postgis_libjson_version(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else /* HAVE_LIBJSON  */
 # ifdef JSON_C_VERSION
-  const char *ver = json_c_version(); 
+	const char *ver = json_c_version(); 
 # else
 	const char *ver = "UNKNOWN";
 # endif
@@ -56,24 +56,28 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	text *geojson_input;
 	char *geojson;
-  char *srs = NULL;
+	char *srs = NULL;
 
 	/* Get the geojson stream */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	if (PG_ARGISNULL(0)) 
+		PG_RETURN_NULL();
+	
 	geojson_input = PG_GETARG_TEXT_P(0);
 	geojson = text2cstring(geojson_input);
 
-  lwgeom = lwgeom_from_geojson(geojson, &srs);
-  if ( ! lwgeom ) {
-    /* Shouldn't get here */
-	  elog(ERROR, "lwgeom_from_geojson returned NULL");
-    PG_RETURN_NULL();
-  }
+	lwgeom = lwgeom_from_geojson(geojson, &srs);
+	if ( ! lwgeom ) 
+	{
+		/* Shouldn't get here */
+		elog(ERROR, "lwgeom_from_geojson returned NULL");
+		PG_RETURN_NULL();
+	}
 
-  if ( srs ) {
-    lwgeom_set_srid(lwgeom, getSRIDbySRS(srs));
-    lwfree(srs);
-  }
+	if ( srs ) 
+	{
+		lwgeom_set_srid(lwgeom, getSRIDbySRS(srs));
+		lwfree(srs);
+	}
 
 	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
