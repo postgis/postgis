@@ -64,19 +64,34 @@ static void test_unionfind_ordered_by_cluster(void)
 		.cluster_sizes = final_sizes
 	};
 
-	uint32_t* actual_ids_by_cluster = UF_ordered_by_cluster(&uf);
-	// uint32_t expected_ids_by_cluster[] = { 0, 7, 8, 1, 2, 3, 9, 4, 5, 6 };
+	uint32_t* ids_by_cluster = UF_ordered_by_cluster(&uf);
 
-	// CU_ASSERT_EQUAL(0, memcmp(actual_ids_by_cluster, expected_ids_by_cluster, 10 * sizeof(uint32_t)));
+	char encountered_cluster[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	lwfree(actual_ids_by_cluster);
+	uint32_t i;
+	for (i = 0; i < uf.N; i++)
+	{
+		uint32_t c = final_clusters[ids_by_cluster[i]];
+		if (!encountered_cluster[c])
+		{
+			encountered_cluster[c] = 1;
+		}
+		else
+		{
+			/* If we've seen an element of this cluster before, then the
+			 * current cluster must be the same as the previous cluster. */
+			uint32_t c_prev = final_clusters[ids_by_cluster[i-1]];
+			CU_ASSERT_EQUAL(c, c_prev);
+		}
+	}
+	lwfree(ids_by_cluster);
 }
 
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
-	PG_ADD_TEST(suite, test_unionfind_create),
-	            PG_ADD_TEST(suite, test_unionfind_union),
-	            PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
+	PG_ADD_TEST(suite, test_unionfind_create);
+	PG_ADD_TEST(suite, test_unionfind_union);
+	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
 }
