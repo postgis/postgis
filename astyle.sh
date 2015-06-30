@@ -3,7 +3,7 @@
 # Run astyle on the code base ready for release
 
 # If astyle doesn't exist, exit the script and do nothing
-echo "FOO" | astyle > /dev/null
+which astyle > /dev/null
 RET=$?
 if [ $RET -ne 0 ]; then
 	echo "Could not find astyle - aborting." 
