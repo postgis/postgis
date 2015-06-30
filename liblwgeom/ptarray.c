@@ -489,19 +489,6 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	return LW_TRUE;
 }
 
-
-
-/**
- * @brief Add a point in a pointarray.
- *
- * @param pa the source POINTARRAY
- * @param p the point to add
- * @param pdims number of ordinates in p (2..4)
- * @param where to insert the point. 0 prepends, pa->npoints appends
- *
- * @returns a newly constructed POINTARRAY using a newly allocated buffer
- *          for the actual points, or NULL on error.
- */
 POINTARRAY *
 ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 {
@@ -555,12 +542,6 @@ ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 	return ret;
 }
 
-
-/**
- * @brief Remove a point from a pointarray.
- * 	@param which -  is the offset (starting at 0)
- * @return #POINTARRAY is newly allocated
- */
 POINTARRAY *
 ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 {
@@ -602,13 +583,6 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 	return ret;
 }
 
-
-/**
- * @brief Merge two given POINTARRAY and returns a pointer
- * on the new aggregate one.
- * Warning: this function free the two inputs POINTARRAY
- * @return #POINTARRAY is newly allocated
- */
 POINTARRAY *
 ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 {

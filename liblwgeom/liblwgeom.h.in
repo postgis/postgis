@@ -906,9 +906,34 @@ extern int ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where);
 */
 extern int ptarray_remove_point(POINTARRAY *pa, int where);
 
+/**
+ * @brief Add a point in a pointarray.
+ *
+ * @param pa the source POINTARRAY
+ * @param p the point to add
+ * @param pdims number of ordinates in p (2..4)
+ * @param where to insert the point. 0 prepends, pa->npoints appends
+ *
+ * @returns a newly constructed POINTARRAY using a newly allocated buffer
+ *          for the actual points, or NULL on error.
+ */
 extern POINTARRAY *ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where);
+
+/**
+ * @brief Remove a point from a pointarray.
+ * 	@param which -  is the offset (starting at 0)
+ * @return #POINTARRAY is newly allocated
+ */
 extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, uint32_t where);
+
+/**
+ * @brief Merge two given POINTARRAY and returns a pointer
+ * on the new aggregate one.
+ * Warning: this function free the two inputs POINTARRAY
+ * @return #POINTARRAY is newly allocated
+ */
 extern POINTARRAY *ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2);
+
 extern int ptarray_is_closed(const POINTARRAY *pa);
 extern int ptarray_is_closed_2d(const POINTARRAY *pa);
 extern int ptarray_is_closed_3d(const POINTARRAY *pa);
