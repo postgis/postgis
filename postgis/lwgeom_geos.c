@@ -3170,23 +3170,25 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
-	if (gserialized_get_type(geom) != LINETYPE)
-	{
-		elog(ERROR,"isring() should only be called on a LINE");
-	}
-
 	/* Empty things can't close */
 	if ( gserialized_is_empty(geom) )
 		PG_RETURN_BOOL(FALSE);
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom );
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		PG_RETURN_NULL();
 	}
+
+	if ( GEOSGeomTypeId(g1) != GEOS_LINESTRING )
+	{
+		GEOSGeom_destroy(g1);
+		elog(ERROR, "ST_IsRing() should only be called on a linear feature");
+	}
+
 	result = GEOSisRing(g1);
 	GEOSGeom_destroy(g1);
 
@@ -3213,11 +3215,11 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	lwgeom = GEOS2LWGEOM(geom, want3d);
 	if ( ! lwgeom )
 	{
-		lwpgerror("GEOS2POSTGIS: GEOS2LWGEOM returned NULL");
+		lwpgerror("%s: GEOS2LWGEOM returned NULL", __func__);
 		return NULL;
 	}
 
-	POSTGIS_DEBUGF(4, "GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0));
+	POSTGIS_DEBUGF(4, "%s: GEOS2LWGEOM returned a %s", __func__, lwgeom_summary(lwgeom, 0));
 
 	if ( lwgeom_needs_bbox(lwgeom) == LW_TRUE )
 	{
@@ -3493,7 +3495,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(geos_result);
 	if ( result == NULL )
 	{
-		elog(ERROR, "GEOS2POSTGIS returned an error");
+		elog(ERROR, "%s returned an error", __func__);
 		PG_RETURN_NULL(); /*never get here */
 	}
 

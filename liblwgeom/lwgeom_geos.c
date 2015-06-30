@@ -337,10 +337,10 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 
 	if (lwgeom_has_arc(lwgeom))
 	{
-		LWDEBUG(3, "LWGEOM2GEOS: arced geometry found.");
-
-		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
-		return NULL;
+		LWGEOM *lwgeom_stroked = lwgeom_stroke(lwgeom, 32);
+		GEOSGeometry *g = LWGEOM2GEOS(lwgeom_stroked, autofix);
+		lwgeom_free(lwgeom_stroked);
+		return g;
 	}
 	
 	switch (lwgeom->type)

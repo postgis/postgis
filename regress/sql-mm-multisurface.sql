@@ -250,63 +250,50 @@ UPDATE public.multisurface
                 4 11,
                 7 8)))')
         WHERE id = 1;
--- These tests will fail on different architectures
--- We need a way to handle multiple byte orderings
---SELECT 'asbinary01', encode(asbinary(the_geom_2d), 'hex') FROM public.multisurface;
---SELECT 'asbinary02', encode(asbinary(the_geom_3dm), 'hex') FROM public.multisurface;
---SELECT 'asbinary03', encode(asbinary(the_geom_3dz), 'hex') FROM public.multisurface;
---SELECT 'asbinary04', encode(asbinary(the_geom_4d), 'hex') FROM public.multisurface;
---
---SELECT 'asewkb01', encode(asewkb(the_geom_2d), 'hex') FROM public.multisurface;
---SELECT 'asewkb02', encode(asewkb(the_geom_3dm), 'hex') FROM public.multisurface;
---SELECT 'asewkb03', encode(asewkb(the_geom_3dz), 'hex') FROM public.multisurface;
---SELECT 'asewkb04', encode(asewkb(the_geom_4d), 'hex') FROM public.multisurface;
+        
+SELECT 'asbinary01', encode(ST_AsBinary(the_geom_2d, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asbinary02', encode(ST_AsBinary(the_geom_3dm, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asbinary03', encode(ST_AsBinary(the_geom_3dz, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asbinary04', encode(ST_AsBinary(the_geom_4d, 'ndr'), 'hex') FROM public.multisurface;
 
-SELECT 'ST_CurveToLine-201', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-202', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-203', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-204', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'asewkb01', encode(ST_AsEWKB(the_geom_2d, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asewkb02', encode(ST_AsEWKB(the_geom_3dm, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asewkb03', encode(ST_AsEWKB(the_geom_3dz, 'ndr'), 'hex') FROM public.multisurface;
+SELECT 'asewkb04', encode(ST_AsEWKB(the_geom_4d, 'ndr'), 'hex') FROM public.multisurface;
 
-SELECT 'ST_CurveToLine-401', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-402', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-403', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine-404', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-201', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-202', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-203', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-204', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 2), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
 
-SELECT 'ST_CurveToLine01', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine02', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine03', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
-SELECT 'ST_CurveToLine04', ST_Asewkt(ST_SnapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-401', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-402', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-403', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine-404', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d, 4), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+
+SELECT 'ST_CurveToLine01', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine02', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine03', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
+SELECT 'ST_CurveToLine04', ST_AsEWKT(ST_SnapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.multisurface;
 
 -- TODO: ST_SnapToGrid is required to remove platform dependent precision
 -- issues.  Until ST_SnapToGrid is updated to work against curves, these
 -- tests cannot be run.
---SELECT 'ST_LineToCurve01', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.multisurface;
---SELECT 'ST_LineToCurve02', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.multisurface;
---SELECT 'ST_LineToCurve03', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.multisurface;
---SELECT 'ST_LineToCurve04', ST_Asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.multisurface;
+--SELECT 'ST_LineToCurve01', ST_AsEWKT(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.multisurface;
+--SELECT 'ST_LineToCurve02', ST_AsEWKT(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.multisurface;
+--SELECT 'ST_LineToCurve03', ST_AsEWKT(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.multisurface;
+--SELECT 'ST_LineToCurve04', ST_AsEWKT(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.multisurface;
 
 -- Repeat tests with new function names.
-SELECT 'astext01', ST_astext(the_geom_2d) FROM public.multisurface;
-SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.multisurface;
-SELECT 'astext03', ST_astext(the_geom_3dz) FROM public.multisurface;
-SELECT 'astext04', ST_astext(the_geom_4d) FROM public.multisurface;
+SELECT 'astext01', ST_AsText(the_geom_2d) FROM public.multisurface;
+SELECT 'astext02', ST_AsText(the_geom_3dm) FROM public.multisurface;
+SELECT 'astext03', ST_AsText(the_geom_3dz) FROM public.multisurface;
+SELECT 'astext04', ST_AsText(the_geom_4d) FROM public.multisurface;
 
-SELECT 'asewkt01', ST_asewkt(the_geom_2d) FROM public.multisurface;
-SELECT 'asewkt02', ST_asewkt(the_geom_3dm) FROM public.multisurface;
-SELECT 'asewkt03', ST_asewkt(the_geom_3dz) FROM public.multisurface;
-SELECT 'asewkt04', ST_asewkt(the_geom_4d) FROM public.multisurface;
-
--- These tests will fail on different architectures
--- We need a way to handle multiple byte orderings
---SELECT 'asbinary01', encode(ST_asbinary(the_geom_2d), 'hex') FROM public.multisurface;
---SELECT 'asbinary02', encode(ST_asbinary(the_geom_3dm), 'hex') FROM public.multisurface;
---SELECT 'asbinary03', encode(ST_asbinary(the_geom_3dz), 'hex') FROM public.multisurface;
---SELECT 'asbinary04', encode(ST_asbinary(the_geom_4d), 'hex') FROM public.multisurface;
---
---SELECT 'asewkb01', encode(ST_asewkb(the_geom_2d), 'hex') FROM public.multisurface;
---SELECT 'asewkb02', encode(ST_asewkb(the_geom_3dm), 'hex') FROM public.multisurface;
---SELECT 'asewkb03', encode(ST_asewkb(the_geom_3dz), 'hex') FROM public.multisurface;
---SELECT 'asewkb04', encode(ST_asewkb(the_geom_4d), 'hex') FROM public.multisurface;
+SELECT 'asewkt01', ST_AsEWKT(the_geom_2d) FROM public.multisurface;
+SELECT 'asewkt02', ST_AsEWKT(the_geom_3dm) FROM public.multisurface;
+SELECT 'asewkt03', ST_AsEWKT(the_geom_3dz) FROM public.multisurface;
+SELECT 'asewkt04', ST_AsEWKT(the_geom_4d) FROM public.multisurface;
 
 SELECT 'box2d01', box2d(the_geom_2d) FROM public.multisurface;
 SELECT 'box2d02', box2d(the_geom_3dm) FROM public.multisurface;
@@ -323,29 +310,25 @@ SELECT 'isValid02', ST_IsValid(the_geom_3dm) FROM public.multisurface;
 SELECT 'isValid03', ST_IsValid(the_geom_3dz) FROM public.multisurface;
 SELECT 'isValid04', ST_IsValid(the_geom_4d) FROM public.multisurface;
 
-SELECT 'dimension01', ST_dimension(the_geom_2d) FROM public.multisurface;
-SELECT 'dimension02', ST_dimension(the_geom_3dm) FROM public.multisurface;
-SELECT 'dimension03', ST_dimension(the_geom_3dz) FROM public.multisurface;
-SELECT 'dimension04', ST_dimension(the_geom_4d) FROM public.multisurface;
+SELECT 'dimension01', ST_Dimension(the_geom_2d) FROM public.multisurface;
+SELECT 'dimension02', ST_Dimension(the_geom_3dm) FROM public.multisurface;
+SELECT 'dimension03', ST_Dimension(the_geom_3dz) FROM public.multisurface;
+SELECT 'dimension04', ST_Dimension(the_geom_4d) FROM public.multisurface;
 
-SELECT 'numGeometries01', ST_numGeometries(the_geom_2d) FROM public.multisurface;
-SELECT 'numGeometries02', ST_numGeometries(the_geom_3dm) FROM public.multisurface;
-SELECT 'numGeometries03', ST_numGeometries(the_geom_3dz) FROM public.multisurface;
-SELECT 'numGeometries04', ST_numGeometries(the_geom_4d) FROM public.multisurface;
+SELECT 'numGeometries01', ST_NumGeometries(the_geom_2d) FROM public.multisurface;
+SELECT 'numGeometries02', ST_NumGeometries(the_geom_3dm) FROM public.multisurface;
+SELECT 'numGeometries03', ST_NumGeometries(the_geom_3dz) FROM public.multisurface;
+SELECT 'numGeometries04', ST_NumGeometries(the_geom_4d) FROM public.multisurface;
 
-SELECT 'geometryN-201', ST_asEWKT(ST_geometryN(the_geom_2d, 2)) FROM public.multisurface;
-SELECT 'geometryN-202', ST_asEWKT(ST_geometryN(the_geom_3dm, 2)) FROM public.multisurface;
-SELECT 'geometryN-203', ST_asEWKT(ST_geometryN(the_geom_3dz, 2)) FROM public.multisurface;
-SELECT 'geometryN-204', ST_asEWKT(ST_geometryN(the_geom_4d, 2)) FROM public.multisurface;
+SELECT 'geometryN-201', ST_AsEWKT(ST_geometryN(the_geom_2d, 2)) FROM public.multisurface;
+SELECT 'geometryN-202', ST_AsEWKT(ST_geometryN(the_geom_3dm, 2)) FROM public.multisurface;
+SELECT 'geometryN-203', ST_AsEWKT(ST_geometryN(the_geom_3dz, 2)) FROM public.multisurface;
+SELECT 'geometryN-204', ST_AsEWKT(ST_geometryN(the_geom_4d, 2)) FROM public.multisurface;
 
-SELECT 'geometryN-301', (ST_geometryN(the_geom_2d, 3) is null) FROM public.multisurface;
-SELECT 'geometryN-302', (ST_geometryN(the_geom_3dm, 3) is null) FROM public.multisurface;
-SELECT 'geometryN-303', (ST_geometryN(the_geom_3dz, 3) is null) FROM public.multisurface;
-SELECT 'geometryN-304', (ST_geometryN(the_geom_4d, 3) is null) FROM public.multisurface;
+SELECT 'geometryN-301', (ST_GeometryN(the_geom_2d, 3) is null) FROM public.multisurface;
+SELECT 'geometryN-302', (ST_GeometryN(the_geom_3dm, 3) is null) FROM public.multisurface;
+SELECT 'geometryN-303', (ST_GeometryN(the_geom_3dz, 3) is null) FROM public.multisurface;
+SELECT 'geometryN-304', (ST_GeometryN(the_geom_4d, 3) is null) FROM public.multisurface;
 
-SELECT DropGeometryColumn('public', 'multisurface', 'the_geom_2d');
-SELECT DropGeometryColumn('public', 'multisurface', 'the_geom_3dm');
-SELECT DropGeometryColumn('public', 'multisurface', 'the_geom_3dz');
-SELECT DropGeometryColumn('public', 'multisurface', 'the_geom_4d');
 DROP TABLE public.multisurface;
 
