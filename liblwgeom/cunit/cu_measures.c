@@ -426,16 +426,16 @@ test_lwgeom_segmentize2d(void)
 	lwgeom_free(linein);
 
 	linein = lwgeom_from_wkt(
-"MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2)))"
-    , LW_PARSER_CHECK_NONE);
+	  "MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2)))"
+	  , LW_PARSER_CHECK_NONE);
 	lwgeom_request_interrupt();
 	lineout = lwgeom_segmentize2d(linein, 1e-100);
 	CU_ASSERT_EQUAL(lineout, NULL);
 	lwgeom_free(linein);
 
 	linein = lwgeom_from_wkt(
-"GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2))),MULTILINESTRING((0 0,10 0),(20 0, 30 0)),MULTIPOINT(0 0, 3 4))"
-    , LW_PARSER_CHECK_NONE);
+	  "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,20 0,20 20,0 20,0 0),(2 2,2 4,4 4,4 2,2 2),(6 6,6 8,8 8,8 6,6 6)),((40 0,40 20,60 20,60 0,40 0),(42 2,42 4,44 4,44 2,42 2))),MULTILINESTRING((0 0,10 0),(20 0, 30 0)),MULTIPOINT(0 0, 3 4))"
+	  , LW_PARSER_CHECK_NONE);
 	CU_ASSERT_FATAL(linein != NULL);
 	lwgeom_request_interrupt();
 	lineout = lwgeom_segmentize2d(linein, 1e-100);
@@ -877,7 +877,7 @@ test_lwgeom_tcpa(void)
 	LWGEOM *g1, *g2;
 	double m, dist;
 
-  /* Invalid input, lack of dimensions */
+	/* Invalid input, lack of dimensions */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING (0 0 2, 0 0 5)", LW_PARSER_CHECK_NONE);
@@ -886,11 +886,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
 	CU_ASSERT_STRING_EQUAL(
-    "Both input geometries must have a measure dimension",
-    cu_error_msg
-  );
+	  "Both input geometries must have a measure dimension",
+	  cu_error_msg
+	  );
 
-  /* Invalid input, not linestrings */
+	/* Invalid input, not linestrings */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("POINT M (0 0 2)", LW_PARSER_CHECK_NONE);
@@ -899,26 +899,26 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
 	CU_ASSERT_STRING_EQUAL(
-    "Both input geometries must be linestrings",
-    cu_error_msg
-  );
+	  "Both input geometries must be linestrings",
+	  cu_error_msg
+	);
 
-  /* Invalid input, too short linestring */
+	/* Invalid input, too short linestring */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 10 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(2 0 1)", LW_PARSER_CHECK_NONE);
-  dist = -77;
+	dist = -77;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(dist, -77.0); /* not touched */
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
 	CU_ASSERT_STRING_EQUAL(
-    "Both input lines must have at least 2 points", /* should be accepted ? */
-    cu_error_msg
-  );
+	  "Both input lines must have at least 2 points", /* should be accepted ? */
+	  cu_error_msg
+	);
 
-  /* Invalid input, empty linestring */
+	/* Invalid input, empty linestring */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 10 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M EMPTY", LW_PARSER_CHECK_NONE);
@@ -927,11 +927,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -1.0);
 	CU_ASSERT_STRING_EQUAL(
-    "Both input lines must have at least 2 points",
-    cu_error_msg
-  );
+	  "Both input lines must have at least 2 points",
+	  cu_error_msg
+	);
 
-  /* Timeranges do not overlap */
+	/* Timeranges do not overlap */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 2, 0 0 5)", LW_PARSER_CHECK_NONE);
@@ -940,11 +940,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, -2.0); /* means timeranges do not overlap */
 
-  /* One of the tracks is still, the other passes to that point */
+	/* One of the tracks is still, the other passes to that point */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 1)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 5)", LW_PARSER_CHECK_NONE);
-  dist  = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	ASSERT_DOUBLE_EQUAL(m, 1.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
@@ -952,11 +952,11 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 
-  /* One of the tracks is still, the other passes at 10 meters from point */
+	/* One of the tracks is still, the other passes at 10 meters from point */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 0 0 5)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(-10 10 1, 10 10 5)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	ASSERT_DOUBLE_EQUAL(m, 3.0);
 	ASSERT_DOUBLE_EQUAL(dist, 10.0);
@@ -966,129 +966,129 @@ test_lwgeom_tcpa(void)
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 
-  /* Equal tracks, 2d */
+	/* Equal tracks, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 10, 10 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 10, 10 0 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 10.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
-  /* Reversed tracks, 2d */
+	/* Reversed tracks, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 10, 10 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(10 0 10, 0 0 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 15.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
-  /*  Parallel tracks, same speed, 2d */
+	/*  Parallel tracks, same speed, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(2 0 10, 12 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(13 0 10, 23 0 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 10.0);
 	ASSERT_DOUBLE_EQUAL(dist, 11.0);
 
-  /*  Parallel tracks, different speed (g2 gets closer as time passes), 2d */
+	/*  Parallel tracks, different speed (g2 gets closer as time passes), 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(4 0 10, 10 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(2 0 10,  9 0 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 20.0);
 	ASSERT_DOUBLE_EQUAL(dist, 1.0);
 
-  /*  Parallel tracks, different speed (g2 left behind as time passes), 2d */
+	/*  Parallel tracks, different speed (g2 left behind as time passes), 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(4 0 10, 10 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(2 0 10,  6 0 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 10.0);
 	ASSERT_DOUBLE_EQUAL(dist, 2.0);
 
-  /* Tracks, colliding, 2d */
+	/* Tracks, colliding, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 0, 10 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(5 -8 0,  5 8 10)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 5.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
-  /* Tracks crossing, NOT colliding, 2d */
+	/* Tracks crossing, NOT colliding, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 0, 10 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(8 -5 0,  8 5 10)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 6.5);
 	ASSERT_DOUBLE_EQUAL(rint(dist*100), 212.0);
 
-  /*  Same origin, different direction, 2d */
+	/*  Same origin, different direction, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 1, 10 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 0 1, -100 0 10)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 1.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
-  /*  Same ending, different direction, 2d */
+	/*  Same ending, different direction, 2d */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(10 0 1, 0 0 10)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(0 -100 1, 0 0 10)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 10.0);
 	ASSERT_DOUBLE_EQUAL(dist, 0.0);
 
-  /* Converging tracks, 3d */
+	/* Converging tracks, 3d */
 
 	g1 = lwgeom_from_wkt("LINESTRING ZM(0 0 0 10, 10 0 0 20)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING ZM(0 0 8 10, 10 0 5 20)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 20.0);
 	ASSERT_DOUBLE_EQUAL(dist, 5.0);
 
-  /* G1 stops at t=1 until t=4 to let G2 pass by, then continues */
-  /* G2 passes at 1 meter from G1 t=3 */
+	/* G1 stops at t=1 until t=4 to let G2 pass by, then continues */
+	/* G2 passes at 1 meter from G1 t=3 */
 
 	g1 = lwgeom_from_wkt("LINESTRING M(0 0 0, 0 1 1, 0 1 4, 0 10 13)", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M(-10 2 0, 0 2 3, 12 2 13)", LW_PARSER_CHECK_NONE);
-  dist = -1;
+	dist = -1;
 	m = lwgeom_tcpa(g1, g2, &dist);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
 	ASSERT_DOUBLE_EQUAL(m, 3.0);
 	ASSERT_DOUBLE_EQUAL(dist, 1.0);
 
-  /* Test for https://trac.osgeo.org/postgis/ticket/3136 */
+	/* Test for https://trac.osgeo.org/postgis/ticket/3136 */
 
 	g1 = lwgeom_from_wkt("LINESTRING M (0 0 1432291464,2 0 1432291536) ", LW_PARSER_CHECK_NONE);
 	g2 = lwgeom_from_wkt("LINESTRING M (0 0 1432291464,1 0 1432291466.25,2 0 1432291500)", LW_PARSER_CHECK_NONE);
