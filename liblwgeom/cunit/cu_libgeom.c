@@ -248,7 +248,7 @@ static void test_lwgeom_from_gserialized(void)
 	char *out_ewkt;
 	int i = 0;
 
-	char ewkt[][512] =
+	char *ewkt[] =
 	{
 		"POINT EMPTY",
 		"POINT(0 0.2)",
@@ -269,13 +269,13 @@ static void test_lwgeom_from_gserialized(void)
 		"SRID=4326;MULTIPOLYGON EMPTY",
 		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
 		"SRID=4326;GEOMETRYCOLLECTION EMPTY",
-		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY, MULTIPOLYGON EMPTY)",
+		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY,MULTIPOLYGON EMPTY)",
 		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
 		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
 		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
 	};
 
-	for ( i = 0; i < 13; i++ )
+	for ( i = 0; i < (sizeof ewkt/sizeof(char*)); i++ )
 	{
 		LWGEOM* geom2;
 
