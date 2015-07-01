@@ -3560,12 +3560,6 @@ CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_CollectTWKB(twkb bytea[], ids bigint[])
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','TWKBFromTWKBArray'
-	LANGUAGE 'c' IMMUTABLE;
-
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MemUnion (
 	basetype = geometry,

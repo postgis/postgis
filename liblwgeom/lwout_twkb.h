@@ -71,17 +71,11 @@ typedef struct
 	int64_t accum_rels[MAX_N_DIMS]; /*Holds the acculmulated relative values*/
 } TWKB_STATE;
 
-int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwgeom_to_twkb_buf(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
 
-int lwpoint_to_twkb_buf(const LWPOINT *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
-int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
-int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
-int lwmulti_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *globals, TWKB_STATE *ts);
-int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
-int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *parent_state);
-
-size_t sizeof_bbox(TWKB_STATE *ts, int ndims);
-void write_bbox(TWKB_STATE *ts, int ndims);
-
-
+static int lwpoint_to_twkb_buf(const LWPOINT *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwline_to_twkb_buf(const LWLINE *line, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwpoly_to_twkb_buf(const LWPOLY *poly, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwcollection_to_twkb_buf(const LWCOLLECTION *col, TWKB_GLOBALS *global_values, TWKB_STATE *ts);
+static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *global_values, TWKB_STATE *parent_state);
 

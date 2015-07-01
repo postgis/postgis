@@ -91,8 +91,7 @@ SA_OBJS = \
 	lwgeom_transform.o \
 	lwunionfind.o \
 	effectivearea.o \
-	varint.o \
-	twkb_tools.o
+	varint.o
 
 NM_OBJS = \
 	lwspheroid.o
