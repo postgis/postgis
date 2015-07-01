@@ -143,7 +143,7 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 	if (FLAGS_GET_ZM(g1->flags) != FLAGS_GET_ZM(g2->flags))
 		return LW_FALSE;
 
-	if (!gbox_same_2d(g1, g1)) return LW_FALSE;
+	if (!gbox_same_2d(g1, g2)) return LW_FALSE;
 
 	if (FLAGS_GET_Z(g1->flags) && (g1->zmin != g2->zmin || g1->zmax != g2->zmax))
 		return LW_FALSE;
