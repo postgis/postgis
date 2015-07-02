@@ -161,6 +161,16 @@ int gbox_same_2d(const GBOX *g1, const GBOX *g2)
 	return LW_FALSE;
 }
 
+int gbox_same_2d_float(const GBOX *g1, const GBOX *g2)
+{
+  if  ((g1->xmax == g2->xmax || next_float_up(g1->xmax)   == next_float_up(g2->xmax))   &&
+       (g1->ymax == g2->ymax || next_float_up(g1->ymax)   == next_float_up(g2->ymax))   &&
+       (g1->xmin == g2->xmin || next_float_down(g1->xmin) == next_float_down(g1->xmin)) &&
+       (g1->ymin == g2->ymin || next_float_down(g2->ymin) == next_float_down(g2->ymin)))
+      return LW_TRUE;
+  return LW_FALSE;
+}
+
 int gbox_is_valid(const GBOX *gbox)
 {
 	/* X */
