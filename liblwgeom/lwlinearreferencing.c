@@ -1332,7 +1332,9 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	{
 		double t0 = mvals[i-1];
 		double t1 = mvals[i];
+#if POSTGIS_DEBUG_LEVEL >= 1
 		double t;
+#endif
 		POINT4D p0, p1, q0, q1;
 		int seg;
 		double dist2;
