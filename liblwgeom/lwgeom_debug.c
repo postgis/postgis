@@ -30,7 +30,7 @@ lwgeom_flagchars(LWGEOM *lwg)
 	if ( lwg->srid != SRID_UNKNOWN ) tflags[flagno++] = 'S';
 	tflags[flagno] = '\0';
 
-	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
+	LWDEBUGF(4, "Flags: %s - returning %p", lwg->flags, tflags);
 
 	return tflags;
 }

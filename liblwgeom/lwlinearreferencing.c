@@ -1332,6 +1332,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 	{
 		double t0 = mvals[i-1];
 		double t1 = mvals[i];
+		double t;
 		POINT4D p0, p1, q0, q1;
 		int seg;
 		double dist2;
@@ -1354,6 +1355,9 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		if ( -1 == seg ) continue; /* possible, if GBOX is approximated */
 		// lwnotice("Measure %g on segment %d of line 2: %g, %g, %g", t1, seg, q1.x, q1.y, q1.z);
 
+#if POSTGIS_DEBUG_LEVEL >= 1
+		t =
+#endif
 		segments_tcpa(&p0, &p1, &q0, &q1, t0, t1);
 
 		/*
@@ -1367,7 +1371,7 @@ lwgeom_cpa_within(const LWGEOM *g1, const LWGEOM *g2, double maxdist)
 		        ( q0.z - p0.z ) * ( q0.z - p0.z );
 		if ( dist2 <= maxdist2 )
 		{
-			LWDEBUGF(1, "Within distance %g at time %g, breaking", *mindist, mintime);
+			LWDEBUGF(1, "Within distance %g at time %g, breaking", sqrt(dist2), t);
 			within = LW_TRUE;
 			break;
 		}
