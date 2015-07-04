@@ -266,7 +266,7 @@ ptarray_to_SFCGAL(const POINTARRAY* pa, int type)
 LWGEOM*
 SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 {
-	uint32_t ngeoms, nshells;
+	uint32_t ngeoms, nshells, nsolids;
 	uint32_t i, j, k;
 	int want3d;
 
@@ -328,16 +328,24 @@ SFCGAL2LWGEOM(const sfcgal_geometry_t* geom, int force3D, int srid)
 		LWGEOM** geoms = NULL;
 		if (ngeoms)
 		{
+			nsolids = 0;
 			geoms = (LWGEOM**) lwalloc(sizeof(LWGEOM*) * ngeoms);
 			for (i = 0; i < ngeoms; i++)
 			{
 				const sfcgal_geometry_t* g = sfcgal_geometry_collection_geometry_n(geom, i);
 				geoms[i] = SFCGAL2LWGEOM(g, 0, srid);
+				if ( FLAGS_GET_SOLID( geoms[i]->flags ) ) ++nsolids;
 			}
 			geoms = (LWGEOM**) lwrealloc(geoms, sizeof(LWGEOM*) * ngeoms);
 		}
-		return (LWGEOM*) lwcollection_construct(SFCGAL_type_to_lwgeom_type(
-		        sfcgal_geometry_type_id(geom)), srid, NULL, ngeoms, geoms);
+		LWGEOM* rgeom = (LWGEOM*) lwcollection_construct(SFCGAL_type_to_lwgeom_type(
+				sfcgal_geometry_type_id(geom)), srid, NULL, ngeoms, geoms);
+		if ( ngeoms )
+		{
+		        if ( ngeoms == nsolids ) FLAGS_SET_SOLID( rgeom->flags, 1);
+			else if ( nsolids ) lwnotice("SFCGAL2LWGEOM: SOLID in heterogeneous collection will be treated as a POLYHEDRALSURFACETYPE");
+		}
+		return rgeom;
 	}
 
 #if 0
