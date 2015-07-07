@@ -170,7 +170,10 @@ parse_geojson_point(json_object *geojson, bool *hasz,  int *root_srid)
 
 	coords = findMemberByName( geojson, "coordinates" );
 	if ( ! coords )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+		return NULL;
+	}
 	
 	pa = ptarray_construct_empty(1, 0, 1);
 	parse_geojson_coord(coords, hasz, pa);
@@ -192,7 +195,10 @@ parse_geojson_linestring(json_object *geojson, bool *hasz,  int *root_srid)
 
 	points = findMemberByName( geojson, "coordinates" );
 	if ( ! points )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+		return NULL;
+	}
 
 	pa = ptarray_construct_empty(1, 0, 1);
 
@@ -239,22 +245,26 @@ parse_geojson_polygon(json_object *geojson, bool *hasz,  int *root_srid)
 
 	/* No rings => empty polygon */
 	if ( ! nRings )
+	{
 		return (LWGEOM *) lwpoly_construct_empty(*root_srid, 0, 0);
+	}
 
 	for ( i = 0; i < nRings; i++ )
 	{
 		points = json_object_array_get_idx(rings, i);
 		if ( ! points || json_object_get_type(points) != json_type_array )
-        {
+		{
 			geojson_lwerror("The 'coordinates' in GeoJSON ring are not an array", 4);
 			return NULL;
-        }
+		}
 		nPoints = json_object_array_length(points);
 
 		/* Skip empty rings */
 		if ( nPoints == 0 ) continue;
 		if ( ! ppa )
+		{
 			ppa = (POINTARRAY**)lwalloc(sizeof(POINTARRAY*) * nRings);
+		}
 
 		ppa[i] = ptarray_construct_empty(1, 0, 1);
 		for ( j = 0; j < nPoints; j++ )
@@ -262,14 +272,14 @@ parse_geojson_polygon(json_object *geojson, bool *hasz,  int *root_srid)
 			json_object* coords = NULL;
 			coords = json_object_array_get_idx( points, j );
 			parse_geojson_coord(coords, hasz, ppa[i]);
-        }
+		}
 	}
 	
-    /* All the rings were empty! */
-    if ( ! ppa )
+	/* All the rings were empty! */
+	if ( ! ppa )
 		return (LWGEOM *) lwpoly_construct_empty(*root_srid, 0, 0);
 	
-    return (LWGEOM *) lwpoly_construct(*root_srid, NULL, nRings, ppa);
+	return (LWGEOM *) lwpoly_construct(*root_srid, NULL, nRings, ppa);
 }
 
 static LWGEOM*
@@ -290,7 +300,10 @@ parse_geojson_multipoint(json_object *geojson, bool *hasz,  int *root_srid)
 
 	poObjPoints = findMemberByName( geojson, "coordinates" );
 	if ( ! poObjPoints )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjPoints ) )
 	{
@@ -330,7 +343,10 @@ parse_geojson_multilinestring(json_object *geojson, bool *hasz,  int *root_srid)
 
 	poObjLines = findMemberByName( geojson, "coordinates" );
 	if ( ! poObjLines )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjLines ) )
 	{
@@ -379,7 +395,10 @@ parse_geojson_multipolygon(json_object *geojson, bool *hasz,  int *root_srid)
 
 	poObjPolys = findMemberByName( geojson, "coordinates" );
 	if ( ! poObjPolys )
+	{
 		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjPolys ) )
 	{
@@ -438,7 +457,10 @@ parse_geojson_geometrycollection(json_object *geojson, bool *hasz,  int *root_sr
 
 	poObjGeoms = findMemberByName( geojson, "geometries" );
 	if ( ! poObjGeoms )
+	{
 		geojson_lwerror("Unable to find 'geometries' in GeoJSON string", 4);
+		return NULL;
+	}
 
 	if( json_type_array == json_object_get_type( poObjGeoms ) )
 	{
@@ -462,11 +484,17 @@ parse_geojson(json_object *geojson, bool *hasz,  int *root_srid)
 	const char* name;
 
 	if( NULL == geojson )
+	{
 		geojson_lwerror("invalid GeoJSON representation", 2);
+		return NULL;
+	}
 
 	type = findMemberByName( geojson, "type" );
 	if( NULL == type )
+	{
 		geojson_lwerror("unknown GeoJSON type", 3);
+		return NULL;
+	}
 
 	name = json_object_get_string( type );
 
@@ -543,6 +571,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 		json_tokener_free(jstok);
 		json_object_put(poObj);
 		geojson_lwerror(err, 1);
+		PG_RETURN_NULL();
 	}
 	json_tokener_free(jstok);
 
@@ -553,10 +582,18 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 		if (poObjSrsType != NULL)
 		{
 			json_object* poObjSrsProps = findMemberByName( poObjSrs, "properties" );
-			json_object* poNameURL = findMemberByName( poObjSrsProps, "name" );
-			const char* pszName = json_object_get_string( poNameURL );
-			root_srid = getSRIDbySRS(pszName);
-			POSTGIS_DEBUGF(3, "getSRIDbySRS returned root_srid = %d.", root_srid );
+			if ( poObjSrsProps )
+			{
+				json_object* poNameURL = findMemberByName( poObjSrsProps, "name" );
+				if ( poNameURL )
+				{
+					const char* pszName = json_object_get_string( poNameURL );
+					if ( pszName )
+					{
+						root_srid = getSRIDbySRS(pszName);
+					}
+				}
+			}
 		}
 	}
 
