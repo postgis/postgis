@@ -4,15 +4,32 @@
     <subtitle>Release Notes</subtitle>
 	
     <sect1>
+      <title>Release 2.1.8</title>
+      <para>Release date: 2015-07-07</para>
+      <para>This is a critical bug fix release.</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#3159, do not force a bbox cache on ST_Affine</para>
+        <para>#3018, GROUP BY geography sometimes returns duplicate rows</para>
+        <para>#3048, shp2pgsql - illegal number format when specific system locale set</para>
+        <para>#3094, Malformed GeoJSON inputs crash backend</para>
+        <para>#3104, st_asgml introduces random characters in ID field</para>
+        <para>#3155, Remove liblwgeom.h on make uninstall</para>
+        <para>#3177, gserialized_is_empty cannot handle nested empty cases</para>
+        <para>Fix crash in ST_LineLocatePoint</para>
+      </simplesect>
+    </sect1>
+    
+    <sect1>
       <title>Release 2.1.7</title>
       <para>Release date: 2015-03-30</para>
       <para>This is a critical bug fix release.</para>
-     <simplesect>
-         <title>Bug Fixes</title>
-         <para>#3086, ST_DumpValues() crashes backend on cleanup with invalid band indexes</para>
-         <para>#3088, Do not (re)define strcasestr in a liblwgeom.h</para>
-         <para>#3094, Malformed GeoJSON inputs crash backend</para>
-       </simplesect>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#3086, ST_DumpValues() crashes backend on cleanup with invalid band indexes</para>
+        <para>#3088, Do not (re)define strcasestr in a liblwgeom.h</para>
+        <para>#3094, Malformed GeoJSON inputs crash backend</para>
+      </simplesect>
     </sect1>
   
     <sect1>
@@ -24,21 +41,21 @@
         <para>#3000, Ensure edge splitting and healing algorithms use indexes</para>
         <para>#3048, Speed up geometry simplification (J.Santana @ CartoDB)</para>
         <para>#3050, Speep up geometry type reading (J.Santana @ CartoDB)</para>
-       </simplesect>
-       <simplesect>
-         <title>Bug Fixes</title>
-         <para>#2941, allow geography columns with SRID other than 4326</para>
-         <para>#3069, small objects getting inappropriately fluffed up w/ boxes</para>
-         <para>#3068, Have postgis_typmod_dims return NULL for unconstrained dims</para>
-         <para>#3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions</para>
-         <para>#3058, Fix ND-GiST picksplit method to split on the best plane</para>
-         <para>#3052, Make operators &lt;-&gt; and &lt;#&gt; available for PostgreSQL &lt; 9.1</para>
-         <para>#3045, Fix dimensionality confusion in &amp;&amp;&amp; operator</para>
-         <para>#3016, Allow unregistering layers of corrupted topologies</para>
-         <para>#3015, Avoid exceptions from TopologySummary</para>
-         <para>#3020, ST_AddBand out-db bug where height using width value</para>
-         <para>#3031, Allow restore of Geometry(Point) tables dumped with empties in them</para>
-       </simplesect>
+      </simplesect>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#2941, allow geography columns with SRID other than 4326</para>
+        <para>#3069, small objects getting inappropriately fluffed up w/ boxes</para>
+        <para>#3068, Have postgis_typmod_dims return NULL for unconstrained dims</para>
+        <para>#3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions</para>
+        <para>#3058, Fix ND-GiST picksplit method to split on the best plane</para>
+        <para>#3052, Make operators &lt;-&gt; and &lt;#&gt; available for PostgreSQL &lt; 9.1</para>
+        <para>#3045, Fix dimensionality confusion in &amp;&amp;&amp; operator</para>
+        <para>#3016, Allow unregistering layers of corrupted topologies</para>
+        <para>#3015, Avoid exceptions from TopologySummary</para>
+        <para>#3020, ST_AddBand out-db bug where height using width value</para>
+        <para>#3031, Allow restore of Geometry(Point) tables dumped with empties in them</para>
+      </simplesect>
     </sect1>
   
     <sect1>

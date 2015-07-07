@@ -1,3 +1,150 @@
+2015-07-04 05:48  robe
+
+	* doc/reference_sfcgal.xml: #3116: SFCGAL add documentation for
+	  geometry backend switch. Patch from Vincent Mora
+
+2015-06-30 18:02  pramsey
+
+	* liblwgeom/lwin_geojson.c, postgis/lwgeom_export.c: Improve
+	  geojson import for srs objects
+
+2015-06-24 20:23  pramsey
+
+	* NEWS: Add #3177
+
+2015-06-24 20:21  pramsey
+
+	* liblwgeom/cunit/cu_libgeom.c, liblwgeom/g_serialized.c: #3177,
+	  gserialized_is_empty cannot handle nested empty cases
+
+2015-06-24 19:07  pramsey
+
+	* liblwgeom/lwgeodetic.h, liblwgeom/lwgeodetic_tree.h: Newlines on
+	  fileends
+
+2015-06-24 19:06  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c: Remove memory leak
+
+2015-06-24 19:05  pramsey
+
+	* liblwgeom/cunit/cu_ptarray.c: Remote printf
+
+2015-06-11 20:06  strk
+
+	* liblwgeom/lwgeom.c: Fix backport of bbox cache fix
+
+2015-06-11 19:47  strk
+
+	* NEWS, liblwgeom/lwgeom.c, liblwgeom/lwline.c,
+	  liblwgeom/lwlinearreferencing.c, postgis/geography_inout.c,
+	  postgis/lwgeom_functions_basic.c, regress/affine.sql,
+	  regress/affine_expected: Only add boxes to geometries that are
+	  input with them (#3159)
+	  
+	  Includes testcase
+
+2015-06-10 09:26  strk
+
+	* NEWS, liblwgeom/Makefile.in: Remove liblwgeom.h on make uninstall
+	  (#3155)
+
+2015-05-26 08:26  strk
+
+	* NEWS, liblwgeom/ptarray.c, regress/regress_lrs.sql,
+	  regress/regress_lrs_expected: Fix crasher found in garden tests
+	  
+	  Includes testcase.
+	  This is a backport of r13556 and r13555 from trunk.
+
+2015-05-19 17:38  pramsey
+
+	* postgis/lwgeom_accum.c: Build on 9.5
+
+2015-05-18 07:01  strk
+
+	* configure.ac: Fix confusing help message for --with-pgconfig
+	  
+	  Patch by Volf Tomáš
+
+2015-05-02 23:51  dustymugs
+
+	* raster/test/regress/tickets.sql: pg9.0 doesn't have format
+	  function
+
+2015-05-02 20:45  dustymugs
+
+	* raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: unit tests of numeric
+	  overflow. ticket #3100
+
+2015-05-02 07:01  robe
+
+	* doc/faq_raster.xml: add other error you might see to the security
+	  raster faq
+
+2015-04-29 20:03  robe
+
+	* postgis/postgis.sql.in: #2365: Significantly improve performance
+	  of find_srid when lots of geometry columns
+
+2015-04-29 15:55  pramsey
+
+	* postgis/lwgeom_export.c, regress/in_geojson.sql,
+	  regress/in_geojson_expected: C90 madness
+
+2015-04-29 12:48  pramsey
+
+	* NEWS, postgis/lwgeom_export.c: #3104, st_asgml introduces random
+	  characters in ID field
+
+2015-04-27 12:22  pramsey
+
+	* doc/introduction.xml: Update corporate info
+
+2015-04-26 05:16  robe
+
+	* extensions/upgradeable_versions.mk, postgis/postgis.sql.in: #3092
+	  refinement to geometry_columns view. Also add missing 2.0/2.1
+	  extension upgrade targets
+
+2015-04-26 04:33  robe
+
+	* loader/shp2pgsql-core.h: #3102 - add include <locale.h> to fix
+	  mingw-64 compile issue
+
+2015-04-23 20:00  pramsey
+
+	* liblwgeom/lwgeom_geos.c: #3091, segfault in unit tests in debug
+
+2015-04-23 19:36  pramsey
+
+	* NEWS, loader/shp2pgsql-core.c: #3048, shp2pgsql - illegal number
+	  format when specific system locale set
+
+2015-04-23 18:19  pramsey
+
+	* NEWS, postgis/geography_btree.c: #3018, GROUP BY geography
+	  sometimes returns duplicate rows
+
+2015-04-15 15:42  pramsey
+
+	* NEWS, liblwgeom/lwin_geojson.c: #3094, fixed another one
+
+2015-03-30 12:54  pramsey
+
+	* doc/release_notes.xml: Unbalanced <simplesect>
+
+2015-03-30 12:51  pramsey
+
+	* NEWS, Version.config: Move versions forward for development
+
+2015-03-30 12:50  pramsey
+
+	* ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk:
+	  Prepare for 2.1.7
+
 2015-03-27 17:21  pramsey
 
 	* liblwgeom/lwin_geojson.c: Formatting
