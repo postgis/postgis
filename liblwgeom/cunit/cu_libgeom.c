@@ -1038,6 +1038,40 @@ static void test_lwgeom_scale(void)
 	lwgeom_free(geom);
 }
 
+void test_gbox_same_2d(void);
+void test_gbox_same_2d(void)
+{
+	LWGEOM* g1 = lwgeom_from_wkt("LINESTRING(0 0, 1 1)", LW_PARSER_CHECK_NONE);
+    LWGEOM* g2 = lwgeom_from_wkt("LINESTRING(0 0, 0 1, 1 1)", LW_PARSER_CHECK_NONE);
+    LWGEOM* g3 = lwgeom_from_wkt("LINESTRING(0 0, 1 1.000000000001)", LW_PARSER_CHECK_NONE);
+
+    lwgeom_add_bbox(g1);
+    lwgeom_add_bbox(g2);
+    lwgeom_add_bbox(g3);
+
+    CU_ASSERT_TRUE(gbox_same_2d(g1->bbox, g2->bbox));
+    CU_ASSERT_FALSE(gbox_same_2d(g1->bbox, g3->bbox));
+    
+    /* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
+     * but still equal according to gbox_same_2d_float.
+     */
+    GSERIALIZED* s3 = gserialized_from_lwgeom(g3, LW_FALSE, NULL);
+    GBOX s3box;
+    gserialized_read_gbox_p(s3, &s3box);
+
+    CU_ASSERT_FALSE(gbox_same_2d(g3->bbox, &s3box));
+    CU_ASSERT_TRUE(gbox_same_2d_float(g3->bbox, &s3box));
+
+    /* The serialized box equals itself by either the exact or closest-float compares */
+    CU_ASSERT_TRUE(gbox_same_2d(&s3box, &s3box));
+    CU_ASSERT_TRUE(gbox_same_2d_float(&s3box, &s3box));
+
+    lwgeom_free(g1);
+    lwgeom_free(g2);
+    lwgeom_free(g3);
+    lwfree(s3);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1067,4 +1101,5 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_as_curve);
 	PG_ADD_TEST(suite, test_lwgeom_scale);
 	PG_ADD_TEST(suite, test_gserialized_is_empty);
+    PG_ADD_TEST(suite, test_gbox_same_2d);
 }
