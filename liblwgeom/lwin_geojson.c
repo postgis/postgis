@@ -39,7 +39,7 @@ static void geojson_lwerror(char *msg, int error_code)
 }
 
 /* Prototype */
-static LWGEOM* parse_geojson(json_object *geojson, int *hasz,  int root_srid);
+static LWGEOM* parse_geojson(json_object *geojson, int *hasz, int root_srid);
 
 static json_object*
 findMemberByName(json_object* poObj, const char* pszName )
@@ -143,7 +143,7 @@ parse_geojson_coord(json_object *poObj, int *hasz, POINTARRAY *pa)
 }
 
 static LWGEOM*
-parse_geojson_point(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_point(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom;
 	POINTARRAY *pa;
@@ -167,7 +167,7 @@ parse_geojson_point(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_linestring(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_linestring(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom;
 	POINTARRAY *pa;
@@ -203,7 +203,7 @@ parse_geojson_linestring(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_polygon(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_polygon(json_object *geojson, int *hasz, int root_srid)
 {
 	POINTARRAY **ppa = NULL;
 	json_object* rings = NULL;
@@ -265,7 +265,7 @@ parse_geojson_polygon(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_multipoint(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_multipoint(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom;
 	int i = 0;
@@ -308,7 +308,7 @@ parse_geojson_multipoint(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_multilinestring(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_multilinestring(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom = NULL;
 	int i, j;
@@ -360,7 +360,7 @@ parse_geojson_multilinestring(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_multipolygon(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom = NULL;
 	int i, j, k;
@@ -423,7 +423,7 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
 }
 
 static LWGEOM*
-parse_geojson_geometrycollection(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson_geometrycollection(json_object *geojson, int *hasz, int root_srid)
 {
 	LWGEOM *geom = NULL;
 	int i;
@@ -461,7 +461,7 @@ parse_geojson_geometrycollection(json_object *geojson, int *hasz,  int root_srid
 }
 
 static LWGEOM*
-parse_geojson(json_object *geojson, int *hasz,  int root_srid)
+parse_geojson(json_object *geojson, int *hasz, int root_srid)
 {
 	json_object* type = NULL;
 	const char* name;
@@ -515,7 +515,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 	*srs = NULL;
 	lwerror("You need JSON-C for lwgeom_from_geojson");
 	return NULL;
-#else /* HAVE_LIBJSON  */
+#else /* HAVE_LIBJSON */
 
 	/* size_t geojson_size = strlen(geojson); */
 
@@ -577,7 +577,7 @@ lwgeom_from_geojson(const char *geojson, char **srs)
 		LWDEBUG(2, "geom_from_geojson called.");
 	}
 
-  return lwgeom;
+	return lwgeom;
 #endif /* HAVE_LIBJSON } */
 }
 
