@@ -3085,15 +3085,13 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(TRUE);
 
 	/*
-	 * short-circuit: Loose test, if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
-	 *
-	 * TODO: use gbox_same_2d instead (not available at time of writing)
+	 * short-circuit: If geom1 and geom2 do not have the same bounding box
+	 * we can return FALSE.
 	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	if ( gserialized_read_gbox_p(geom1, &box1) &&
+	        gserialized_read_gbox_p(geom2, &box2) )
 	{
-		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		if ( gbox_same_2d_float(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
