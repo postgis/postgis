@@ -1047,11 +1047,11 @@ Add a new edge and, if doing so splits a face, modify the original
 face and add a new one.
                 </para>
 
-<para><note>
+<note><para>
 If possible, the new face will be created on left side of the new edge. 
 This will not be possible if the face on the left side will need to
 be the Universe face (unbounded).
-</note></para>
+</para></note>
 
     <para>
 Returns the id of the newly added edge.
