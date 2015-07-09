@@ -3,7 +3,7 @@ PostGIS 2.1.9
 
  * Bug Fixes *
 
-  - 
+  - #3198, ST_AddEdgeModFace docs report wrong side of new face
 
 
 PostGIS 2.1.8
