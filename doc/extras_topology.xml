@@ -1132,13 +1132,21 @@ Updates all existing joined edges and relationships accordingly.
                 <title>Description</title>
             
                 <para>
-Add a new edge and, if in doing so it splits a face, modify the original
-face and add a new face. Unless the face being split is the Universal Face, 
-the new face will be on the right side of the newly added edge.
+Add a new edge and, if doing so splits a face, modify the original
+face and add a new one.
+                </para>
+
+<para><note>
+If possible, the new face will be created on left side of the new edge. 
+This will not be possible if the face on the left side will need to
+be the Universe face (unbounded).
+</note></para>
+
+    <para>
 Returns the id of the newly added edge.
 		</para>
 
-                <para>
+    <para>
 Updates all existing joined edges and relationships accordingly.
 		</para>
 
