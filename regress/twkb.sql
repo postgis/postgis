@@ -61,24 +61,6 @@ union all
 select 'POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))'::text g
 ) foo;
 
-
---Aggregated geoemtries with preserved id
--- select st_astext(st_collect(g::geometry)), encode(ST_AsTWKBagg(g::geometry,0),'hex') from
--- (
--- select 'POINT(1 1)'::text g
--- union all
--- select 'POINT(2 2)'::text g
--- ) foo;
-
---Aggregated geoemtries with preserved id
--- select st_astext(st_collect(g::geometry)), encode(ST_AsTWKBagg(g::geometry,0),'hex') from
--- (
--- select 'MULTIPOINT((1 1),(2 2))'::text g
--- union all
--- select 'POINT(78 -78)'::text g
--- union all
--- select 'POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))'::text g
--- ) foo;
-
-
+--GEOMETRYCOLLECTION with bounding box ref #3187
+select encode(st_astwkb(st_collect('point(4 1)'::geometry,'linestring(1 1, 0 3)'::geometry),0,0,0,false,true),'hex');
 

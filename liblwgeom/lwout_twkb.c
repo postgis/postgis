@@ -493,6 +493,21 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 	/* Write the TWKB into the output buffer */
 	lwgeom_to_twkb_buf(geom, globals, &child_state);
 
+	/*If we have a header_buf, we know that this function is called inside a collection*/
+	/*and then we have to merge the bboxes of the included geometries*/
+	/*and put the result to the parent (the collection)*/
+	if( (globals->variant & TWKB_BBOX) && parent_state->header_buf )
+	{
+		LWDEBUG(4,"Merge bboxes");
+		for ( i = 0; i < ndims; i++ )
+		{
+			if(child_state.bbox_min[i]<parent_state->bbox_min[i])
+				parent_state->bbox_min[i] = child_state.bbox_min[i];
+			if(child_state.bbox_max[i]>parent_state->bbox_max[i])
+				parent_state->bbox_max[i] = child_state.bbox_max[i];
+		}
+	}
+	
 	/* Did we have a box? If so, how big? */
 	bbox_size = 0;
 	if( globals->variant & TWKB_BBOX )
@@ -562,6 +577,7 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant,
 	}
 	
 	ts.idlist = idlist;
+	ts.header_buf = NULL;
 	ts.geom_buf = bytebuffer_create();
 	lwgeom_write_to_buffer(geom, &tg, &ts);
 
