@@ -626,7 +626,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	if (!msg[3]) {
 		for (i = 0; i < ref->nband_count; i++) {
 			if (!x->hasnodata[i] && !ref->hasnodata[i]) continue;
-			if (FLT_NEQ(x->hasnodata[i], ref->hasnodata[i])) {
+			if (x->hasnodata[i] != ref->hasnodata[i]) {
 				rtwarn(_("Different NODATA values found for band %d in the set of rasters being converted to PostGIS raster"), ref->nband[i]);
 				msg[3]++;
 			}
@@ -670,7 +670,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	/* tile size */
 	if (!msg[5]) {
 		for (i = 0; i < 2; i++) {
-			if (FLT_NEQ(x->tile_size[i], ref->tile_size[i])) {
+			if (x->tile_size[i] != ref->tile_size[i]) {
 				rtwarn(_("Different tile sizes found in the set of rasters being converted to PostGIS raster"));
 				msg[5]++;
 				break;

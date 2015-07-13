@@ -1922,7 +1922,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	VRTAddSimpleSource(
 		hbandDst, GDALGetRasterBand(hdsSrc, band->data.offline.bandNum + 1),
-		abs(offset[0]), abs(offset[1]),
+		fabs(offset[0]), fabs(offset[1]),
 		band->width, band->height,
 		0, 0,
 		band->width, band->height,
@@ -10370,7 +10370,7 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		_dim[0], _dim[1]);
 
-	if (FLT_EQ(_dim[0], 0) || FLT_EQ(_dim[1], 0)) {
+	if (_dim[0] == 0 || _dim[1] == 0) {
 		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _dim[0], _dim[1]);
 		_rti_warp_arg_destroy(arg);
 		return NULL;
@@ -10833,8 +10833,8 @@ rt_raster_gdal_rasterize(
 		(FLT_NEQ(*width, 0.0)) &&
 		(FLT_NEQ(*height, 0.0))
 	) {
-		_dim[0] = fabs(*width);
-		_dim[1] = fabs(*height);
+		_dim[0] = abs(*width);
+		_dim[1] = abs(*height);
 
 		if (FLT_NEQ(extent.MaxX, extent.MinX))
 			_scale[0] = fabs((extent.MaxX - extent.MinX) / _dim[0]);
@@ -10904,8 +10904,8 @@ rt_raster_gdal_rasterize(
 			(wkbtype == wkbLineString) ||
 			(wkbtype == wkbMultiLineString)
 		) &&
-		FLT_EQ(_dim[0], 0) &&
-		FLT_EQ(_dim[1], 0)
+		_dim[0] == 0 &&
+		_dim[1] == 0
 	) {
 		int result;
 		LWPOLY *epoly = NULL;
