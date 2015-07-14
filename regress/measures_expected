@@ -38,7 +38,7 @@ distancepoly6|0|32.5269119345812|LINESTRING(2 2,2 2)|LINESTRING(2 2,2 2)|LINESTR
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'
 POINT Z (1 1 3)
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'
-POINT(1 1)
+POINT Z (1 1 2)
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'
 LINESTRING Z (1 1 3,1 2 3)
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'

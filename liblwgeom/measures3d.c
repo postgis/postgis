@@ -188,7 +188,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
 		
 		
-		if(!lwgeom_has_z(lw2))
+		if(!lwgeom_has_z(lw1) && !lwgeom_has_z(lw2))
 			return lw_dist2d_distancepoint(lw1, lw2, srid, mode);
 			
 		
@@ -215,6 +215,25 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			
 			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
 			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
+			{
+				/*should never get here. all cases ought to be error handled earlier*/
+				lwerror("Some unspecified error.");
+				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}			
+		}	
+				
+		if(!lwgeom_has_z(lw2))
+		{
+			LWPOINT *lwpoints[2];
+			LWGEOM *new_lw2;
+			x=thedl2d.p2.x;
+			y=thedl2d.p2.y;
+
+			lwpoints[0] = lwpoint_make3dz(srid, x, y, FLT_MIN);
+			lwpoints[1] = lwpoint_make3dz(srid, x, y, FLT_MAX);
+			
+			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
+			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
 			{
 				/*should never get here. all cases ought to be error handled earlier*/
 				lwerror("Some unspecified error.");
