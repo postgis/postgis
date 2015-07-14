@@ -11,7 +11,7 @@
 
 #ifndef _MEASURES3D_H
 #define _MEASURES3D_H 1
-
+#include <float.h>
 #include "measures.h"
 
 #define DOT(u,v)   ((u).x * (v).x + (u).y * (v).y + (u).z * (v).z)

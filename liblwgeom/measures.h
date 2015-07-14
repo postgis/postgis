@@ -39,8 +39,8 @@ typedef struct
 /*
 * Preprocessing functions
 */
-int lw_dist2d_comp(LWGEOM *lw1, LWGEOM *lw2, DISTPTS *dl);
-int lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
+int lw_dist2d_comp(const LWGEOM *lw1, const LWGEOM *lw2, DISTPTS *dl);
+int lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_check_overlap(LWGEOM *lwg1, LWGEOM *lwg2);
 int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
@@ -97,7 +97,7 @@ double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 /*
 * Geometry returning functions
 */
-LWGEOM* lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode);
-LWGEOM* lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode);
+LWGEOM* lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
+LWGEOM* lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode);
 
 

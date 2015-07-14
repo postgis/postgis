@@ -25,25 +25,25 @@ The functions starting the distance-calculation processses
 --------------------------------------------------------------------------------------------------------------*/
 
 LWGEOM *
-lwgeom_closest_line(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_line(const LWGEOM *lw1, const LWGEOM *lw2)
 {
   return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MIN);
 }
 
 LWGEOM *
-lwgeom_furthest_line(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_furthest_line(const LWGEOM *lw1, const LWGEOM *lw2)
 {
   return lw_dist2d_distanceline(lw1, lw2, lw1->srid, DIST_MAX);
 }
 
 LWGEOM *
-lwgeom_closest_point(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_closest_point(const LWGEOM *lw1, const LWGEOM *lw2)
 {
   return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MIN);  
 }
 
 LWGEOM *
-lwgeom_furthest_point(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_furthest_point(const LWGEOM *lw1, const LWGEOM *lw2)
 {
   return lw_dist2d_distancepoint(lw1, lw2, lw1->srid, DIST_MAX);  
 }
@@ -67,7 +67,7 @@ lw_dist2d_distpts_init(DISTPTS *dl, int mode)
 Function initializing shortestline and longestline calculations.
 */
 LWGEOM *
-lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
+lw_dist2d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2;
 
@@ -114,7 +114,7 @@ lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 Function initializing closestpoint calculations.
 */
 LWGEOM *
-lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist2d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2,int srid,int mode)
 {
 	double x,y;
 	DISTPTS thedl;
@@ -152,7 +152,7 @@ lw_dist2d_distancepoint(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
 Function initialazing max distance calculation
 */
 double
-lwgeom_maxdistance2d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_maxdistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_maxdistance2d is called");
 
@@ -164,7 +164,7 @@ Function handling max distance calculations and dfyllywithin calculations.
 The difference is just the tolerance.
 */
 double
-lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_maxdistance2d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	/*double thedist;*/
 	DISTPTS thedl;
@@ -185,7 +185,7 @@ lwgeom_maxdistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
 	Function initialazing min distance calculation
 */
 double
-lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2)
+lwgeom_mindistance2d(const LWGEOM *lw1, const LWGEOM *lw2)
 {
 	LWDEBUG(2, "lwgeom_mindistance2d is called");
 	return lwgeom_mindistance2d_tolerance( lw1, lw2, 0.0 );
@@ -196,7 +196,7 @@ lwgeom_mindistance2d(LWGEOM *lw1, LWGEOM *lw2)
 	The difference is just the tolerance.
 */
 double
-lwgeom_mindistance2d_tolerance(LWGEOM *lw1, LWGEOM *lw2, double tolerance)
+lwgeom_mindistance2d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
 	DISTPTS thedl;
 	LWDEBUG(2, "lwgeom_mindistance2d_tolerance is called");
@@ -228,7 +228,7 @@ Functions preparing geometries for distance-calculations
 	bboxes we will use anyway.
 */
 int
-lw_dist2d_comp(LWGEOM *lw1, LWGEOM *lw2, DISTPTS *dl)
+lw_dist2d_comp(const LWGEOM *lw1,const LWGEOM *lw2, DISTPTS *dl)
 {
 	LWDEBUG(2, "lw_dist2d_comp is called");
 
@@ -353,7 +353,7 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 
 int
-lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
+lw_dist2d_distribute_bruteforce(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS *dl)
 {
 
 	int	t1 = lwg1->type;

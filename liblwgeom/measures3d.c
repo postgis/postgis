@@ -63,6 +63,7 @@ Function initializing 3dshortestline and 3dlongestline calculations.
 LWGEOM *
 lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
+	LWDEBUG(2, "lw_dist3d_distanceline is called");
 	double x1,x2,y1,y2, z1, z2;
 	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
 	DISTPTS3D thedl;
@@ -73,14 +74,70 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	thedl.distance = initdistance;
 	thedl.tolerance = 0.0;
 
-	LWDEBUG(2, "lw_dist3d_distanceline is called");
-	if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+	/*Check if we really have 3D geoemtries*/
+	/*If not, send it to 2D-calculations which will give the same result*/
+	/*as an infinite z-value at one or two of the geometries*/
+	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		/*should never get here. all cases ought to be error handled earlier*/
-		lwerror("Some unspecified error.");
-		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		
+		if(!lwgeom_has_z(lw1) && !lwgeom_has_z(lw2))
+			return lw_dist2d_distanceline(lw1, lw2, srid, mode);	
+		
+		DISTPTS thedl2d;
+		thedl2d.mode = mode;
+		thedl2d.distance = initdistance;
+		thedl2d.tolerance = 0.0;
+		if (!lw_dist2d_comp( lw1,lw2,&thedl2d))
+		{
+			/*should never get here. all cases ought to be error handled earlier*/
+			lwerror("Some unspecified error.");
+			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		}
+		
+		if(!lwgeom_has_z(lw1))
+		{
+			LWGEOM *new_lw1;
+			x1=thedl2d.p1.x;
+			y1=thedl2d.p1.y;
+			lwpoints[0] = lwpoint_make3dz(srid, x1, y1, FLT_MIN);
+			lwpoints[1] = lwpoint_make3dz(srid, x1, y1, FLT_MAX);
+			
+			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
+			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
+			{
+				/*should never get here. all cases ought to be error handled earlier*/
+				lwerror("Some unspecified error.");
+				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}			
+		}	
+		if(!lwgeom_has_z(lw2))
+		{
+			LWGEOM *new_lw2;
+			x2=thedl2d.p2.x;
+			y2=thedl2d.p2.y;			
+			lwpoints[0] = lwpoint_make3dz(srid, x2, y2, FLT_MIN);
+			lwpoints[1] = lwpoint_make3dz(srid, x2, y2, FLT_MAX);
+			
+			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);	
+			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
+			{
+				/*should never get here. all cases ought to be error handled earlier*/
+				lwerror("Some unspecified error.");
+				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}						
+		}			
+		
 	}
-
+	else
+	{		
+		if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+		{
+			/*should never get here. all cases ought to be error handled earlier*/
+			lwerror("Some unspecified error.");
+			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		}
+	}
 	/*if thedl.distance is unchanged there where only empty geometries input*/
 	if (thedl.distance == initdistance)
 	{
@@ -95,7 +152,6 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 		x2=thedl.p2.x;
 		y2=thedl.p2.y;
 		z2=thedl.p2.z;
-
 
 		lwpoints[0] = lwpoint_make3dz(srid, x1, y1, z1);
 		lwpoints[1] = lwpoint_make3dz(srid, x2, y2, z2);
@@ -112,6 +168,7 @@ Function initializing 3dclosestpoint calculations.
 LWGEOM *
 lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
+	
 	double x,y,z;
 	DISTPTS3D thedl;
 	double initdistance = FLT_MAX;
@@ -122,14 +179,59 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	thedl.tolerance = 0;
 
 	LWDEBUG(2, "lw_dist3d_distancepoint is called");
-
-	if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+	
+	/*Check if we really have 3D geoemtries*/
+	/*If not, send it to 2D-calculations which will give the same result*/
+	/*as an infinite z-value at one or two of the geometries*/
+	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		/*should never get here. all cases ought to be error handled earlier*/
-		lwerror("Some unspecified error.");
-		result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-	}
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		
+		
+		if(!lwgeom_has_z(lw2))
+			return lw_dist2d_distancepoint(lw1, lw2, srid, mode);
+			
+		
+		DISTPTS thedl2d;
+		thedl2d.mode = mode;
+		thedl2d.distance = initdistance;
+		thedl2d.tolerance = 0.0;
+		if (!lw_dist2d_comp( lw1,lw2,&thedl2d))
+		{
+			/*should never get here. all cases ought to be error handled earlier*/
+			lwerror("Some unspecified error.");
+			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		}
+		
+		if(!lwgeom_has_z(lw1))
+		{
+			LWPOINT *lwpoints[2];
+			LWGEOM *new_lw1;
+			x=thedl2d.p1.x;
+			y=thedl2d.p1.y;
 
+			lwpoints[0] = lwpoint_make3dz(srid, x, y, FLT_MIN);
+			lwpoints[1] = lwpoint_make3dz(srid, x, y, FLT_MAX);
+			
+			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
+			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
+			{
+				/*should never get here. all cases ought to be error handled earlier*/
+				lwerror("Some unspecified error.");
+				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}			
+		}	
+		
+	}
+	else
+	{
+		if (!lw_dist3d_recursive(lw1, lw2, &thedl))
+		{
+			/*should never get here. all cases ought to be error handled earlier*/
+			lwerror("Some unspecified error.");
+			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+		}
+	}
 	if (thedl.distance == initdistance)
 	{
 		LWDEBUG(3, "didn't find geometries to measure between, returning null");
@@ -165,6 +267,11 @@ The difference is just the tolerance.
 double
 lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
+	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		return lwgeom_maxdistance2d_tolerance(lw1, lw2, tolerance);	
+	}
 	/*double thedist;*/
 	DISTPTS3D thedl;
 	LWDEBUG(2, "lwgeom_maxdistance3d_tolerance is called");
@@ -197,6 +304,11 @@ lwgeom_mindistance3d(const LWGEOM *lw1, const LWGEOM *lw2)
 double
 lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tolerance)
 {
+	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
+	{
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		return lwgeom_mindistance2d_tolerance(lw1, lw2, tolerance);	
+	}
 	DISTPTS3D thedl;
 	LWDEBUG(2, "lwgeom_mindistance3d_tolerance is called");
 	thedl.mode = DIST_MIN;

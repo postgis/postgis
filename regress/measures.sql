@@ -238,6 +238,29 @@ SELECT '3dDistancetest6',
 	ST_3DDistance(a,b) FROM (
 	SELECT 'LINESTRING(1 1 1 , 2 2 2)'::geometry as a, 'POLYGON((0 0 0, 2 2 2, 3 3 3, 0 0 0))'::geometry as b) as foo;	
 
+
+-- 3D mixed dimmentionality #2034
+--closestpoint with 2d as first point and 3d as second
+select st_astext(st_3dclosestpoint('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2 3)'::geometry));
+
+--closestpoint with 3d as first point and 2d as second
+select st_astext(st_3dclosestpoint('linestring(0 0 1,1 1 2,2 0 3)'::geometry, 'linestring(0 2, 3 2)'::geometry));
+
+--shortestline with 2d as first point and 3d as second
+select st_astext(st_3dshortestline('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2 3)'::geometry));
+
+--shortestline with 3d as first point and 2d as second
+select st_astext(st_3dshortestline('linestring(0 0 1,1 1 2,2 0 3)'::geometry, 'linestring(0 2, 3 2)'::geometry));
+
+--distance with 2d as first point and 3d as second
+select st_3ddistance('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2 3)'::geometry);
+
+--distance with 3d as first point and 2d as second
+select st_3ddistance('linestring(0 0 1,1 1 2,2 0 3)'::geometry, 'linestring(0 2, 3 2)'::geometry);
+
+
+
+
 -- Area of an empty polygon
 select 'emptyPolyArea', st_area('POLYGON EMPTY');
 
