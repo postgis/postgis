@@ -152,5 +152,4 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_misc_area);
 	PG_ADD_TEST(suite, test_misc_wkb);
 	PG_ADD_TEST(suite, test_grid);
-	PG_ADD_TEST(suite, test_rect_count);
 }
