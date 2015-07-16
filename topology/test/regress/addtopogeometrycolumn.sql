@@ -1,6 +1,7 @@
 set client_min_messages to WARNING;
 \set VERBOSITY terse
 
+select addtopogeometrycolumn('tt','public','feature','tg','POINT'); -- fail
 select createtopology('tt') > 0;
 select addtopogeometrycolumn('tt','public','feature','tg','POINT'); -- fail
 create table feature(id integer);
