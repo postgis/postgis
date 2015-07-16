@@ -76,25 +76,23 @@ static void test_geos_subdivide(void)
 	char *ewkt = "MULTILINESTRING((0 0, 0 100))";
 	char *out_ewkt;
 	LWGEOM *geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-
 	LWGEOM *geom2 = lwgeom_segmentize2d(geom1, 1.0);
+	
 	LWCOLLECTION *geom3 = lwgeom_subdivide(geom2, 80);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
 	// printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(2, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
-	lwgeom_free(geom2);
 
-	geom2 = lwgeom_segmentize2d(geom1, 1.0);
 	geom3 = lwgeom_subdivide(geom2, 20);
 	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom3);
 	// printf("\n--------\n%s\n--------\n", out_ewkt);
 	CU_ASSERT_EQUAL(8, geom3->ngeoms);
 	lwfree(out_ewkt);
 	lwcollection_free(geom3);
-	lwgeom_free(geom2);
 
+	lwgeom_free(geom2);
 	lwgeom_free(geom1);
 #endif
 }

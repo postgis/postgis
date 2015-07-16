@@ -1940,27 +1940,36 @@ lwgeom_npoints_in_rect(const LWGEOM *geom, const GBOX *gbox)
 
 /* Prototype for recursion */
 static int 
-lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip);
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, const GBOX *clip);
 
 static int
-lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, GBOX *clip)
+lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, const GBOX *clip)
 {
 	const int maxdepth = 25;
-
+	int nvertices = 0;
+	int i, n = 0;
+	double width = clip->xmax - clip->xmin;
+	double height = clip->ymax - clip->ymin;
+	GBOX subbox1, subbox2;
+	LWGEOM *clipped1, *clipped2;
+	
 	if ( geom->type == POLYHEDRALSURFACETYPE || geom->type == TINTYPE )
 	{
 		lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(geom->type));
 	}
 	
+	if ( width == 0.0 && height == 0.0 )
+		return 0;
+	
 	/* Always just recurse into collections */
 	if ( lwgeom_is_collection(geom) )
 	{
-		LWCOLLECTION *gcol = (LWCOLLECTION*)geom;
-		int i, n = 0;
-		for ( i = 0; i < gcol->ngeoms; i++ )
+		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
+		int n = 0;
+		for ( i = 0; i < incol->ngeoms; i++ )
 		{
 			/* Don't increment depth yet, since we aren't actually subdividing geomtries yet */
-			n += lwgeom_subdivide_recursive(gcol->geoms[i], maxvertices, depth, col, clip);
+			n += lwgeom_subdivide_recursive(incol->geoms[i], maxvertices, depth, col, clip);
 		}
 		return n;
 	}
@@ -1970,166 +1979,88 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	/* return value */
 	if ( depth > maxdepth )
 	{
-		return 0;		
+		return 0;	
 	}
 	
-	/* Points and single-point multipoints can be added right into the output result */
-	if ( (geom->type == POINTTYPE) || 
-	     (geom->type == MULTIPOINTTYPE && lwgeom_count_vertices(geom) == 1) )
+	nvertices = lwgeom_count_vertices(geom);
+	/* Skip empties entirely */
+	if ( nvertices == 0 )
+	{
+		return 0;
+	}
+	
+	/* If it is under the vertex tolerance, just add it, we're done */
+	if ( nvertices < maxvertices )
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 		return 1;
 	}
 	
-	/* Haven't set up a clipping box yet? Make one, then recurse again */
-	/* We make the initial box the smallest perfect square that can contain */
-	/* the geometry, for easy quad-subdivision as we recurse */
-	if ( ! clip )
+	subbox1 = subbox2 = *clip;
+	if ( width > height )
 	{
-		double height, width;
-		const GBOX *box = lwgeom_get_bbox(geom);
-		GBOX square;
-		gbox_init(&square);
-		if ( ! box ) return 0;
-		width = box->xmax - box->xmin;
-		height = box->ymax - box->ymin;
-		if ( width > height )
-		{
-			square.xmin = box->xmin;
-			square.xmax = box->xmax;
-			square.ymin = (box->ymin + box->ymax - width)/2;
-			square.ymax = (box->ymin + box->ymax + width)/2;
-		}
-		else
-		{
-			square.ymin = box->ymin;
-			square.ymax = box->ymax;
-			square.xmin = (box->xmin + box->xmax - height)/2;
-			square.xmax = (box->xmin + box->xmax + height)/2;
-		}
-		
-		/* Just quit right away for objects with no size */
-		if ( width == 0 && height == 0 )
-		{
-			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-			return 1;
-		}
-		else
-		{
-			/* Don't increment depth here, as we aren't subdividing yet */
-			return lwgeom_subdivide_recursive(geom, maxvertices, depth, col, &square);
-		}
+		subbox1.xmax = subbox2.xmin = (clip->xmin + clip->xmax)/2;
 	}
-	/* Everything is in place! Let's start subdividing! */
 	else
 	{
-		int npoints = lwgeom_npoints_in_rect(geom, clip);
-		/* Clipping rectangle didn't hit anything! */
-		if ( npoints == 0 )
-		{
-			/* Is it because it's a rectangle totally *inside* a polygon? */
-			if ( geom->type == POLYGONTYPE )
-			{
-				const LWPOLY *poly = (LWPOLY*)geom;
-				POINT2D pt_ll, pt_lr, pt_ur, pt_ul;
-				pt_ll.x = pt_ul.x = clip->xmin;
-				pt_lr.x = pt_ur.x = clip->xmax;
-				pt_ul.y = pt_ur.y = clip->ymax;
-				pt_ll.y = pt_lr.y = clip->ymin;
-
-				if ( lwpoly_contains_point(poly, &pt_ll) || lwpoly_contains_point(poly, &pt_ul) ||
-				     lwpoly_contains_point(poly, &pt_lr) || lwpoly_contains_point(poly, &pt_ur) )
-				{
-					/* TODO: Probably just making the clipping box into a polygon is a more */
-					/* efficient way to do this? */
-					LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
-					/* Hm, clipping left nothing behind, skip it */
-					if ( (!clipped) || lwgeom_is_empty(clipped) )
-					{
-						return 0;
-					}
-					/* Add the clipped part */
-					else
-					{
-						lwcollection_add_lwgeom(col, clipped);
-						return 5;
-					}
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		/* Clipping rectangle has reached target size: apply it! */
-		else if ( npoints < maxvertices )
-		{
-			/* Oh, it also covers the whole geometry */
-			if ( npoints == lwgeom_count_vertices(geom) )
-			{
-				lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-				return npoints;
-			}
-			/* Partial coverage, we need to clip */
-			else
-			{
-				LWGEOM *clipped = lwgeom_clip_by_rect(geom, clip->xmin, clip->ymin, clip->xmax, clip->ymax);
-				/* Hm, clipping left nothing behind, skip it */
-				if ( (!clipped) || lwgeom_is_empty(clipped) )
-				{
-					return 0;
-				}
-				/* Add the clipped part */
-				else
-				{
-					lwcollection_add_lwgeom(col, clipped);
-					return npoints;
-				}				
-			}				
-		}
-		/* Clipping rectangle too large: subdivide more! */
-		else
-		{
-			int i, n = 0;
-			GBOX boxes[4];
-			double width = (clip->xmax - clip->xmin)/2;
-			for( i = 0; i < 4; i++ )
-			{
-				int ix = i / 2; /* 0, 0, 1, 1 */
-				int iy = i % 2; /* 0, 1, 0, 1 */
-				gbox_init(&(boxes[i]));
-				boxes[i].xmin = clip->xmin + ix * width - FP_TOLERANCE;
-				boxes[i].xmax = clip->xmin + width + ix * width + - FP_TOLERANCE;
-				boxes[i].ymin = clip->ymin + iy * width - FP_TOLERANCE;
-				boxes[i].ymax = clip->ymin + width + iy * width + FP_TOLERANCE;
-				n += lwgeom_subdivide_recursive(geom, maxvertices, ++depth, col, &(boxes[i]));
-			}
-			return n;
-		}
+		subbox1.ymax = subbox2.ymin = (clip->ymin + clip->ymax)/2;
 	}
-	return 0;
+	
+	if ( height == 0 )
+	{
+		subbox1.ymax += FP_TOLERANCE;
+		subbox2.ymax += FP_TOLERANCE;
+		subbox1.ymin -= FP_TOLERANCE;
+		subbox2.ymin -= FP_TOLERANCE;
+	}
+
+	if ( width == 0 )
+	{
+		subbox1.xmax += FP_TOLERANCE;
+		subbox2.xmax += FP_TOLERANCE;
+		subbox1.xmin -= FP_TOLERANCE;
+		subbox2.xmin -= FP_TOLERANCE;
+	}
+		
+	clipped1 = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
+	clipped2 = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
+	
+	if ( clipped1 )
+	{
+		n += lwgeom_subdivide_recursive(clipped1, maxvertices, ++depth, col, &subbox1);
+		lwgeom_free(clipped1);
+	}
+
+	if ( clipped2 )
+	{
+		n += lwgeom_subdivide_recursive(clipped2, maxvertices, ++depth, col, &subbox2);
+		lwgeom_free(clipped2);
+	}
+	
+	return n;
+	
 }
 
 LWCOLLECTION *
 lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 {
-	const int startdepth = 0;
-	const int minmaxvertices = 8;
+	static int startdepth = 0;
+	static int minmaxvertices = 8;
 	LWCOLLECTION *col;
+	GBOX clip = *(lwgeom_get_bbox(geom));
+	int nparts;
 
 	if ( maxvertices < minmaxvertices )
 	{
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
-	
+
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
-	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, NULL);
+	nparts = lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
+	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
+
 
 int
 lwgeom_is_trajectory(const LWGEOM *geom)
