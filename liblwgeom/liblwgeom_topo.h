@@ -16,11 +16,7 @@
 #include "liblwgeom.h"
 
 /* INT64 */
-#ifdef _WIN32
-typedef __int64 LWT_INT64;
-#else
-typedef long long int LWT_INT64;
-#endif
+typedef int64_t LWT_INT64;
 
 /** Identifier of topology element */
 typedef LWT_INT64 LWT_ELEMID;
