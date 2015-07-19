@@ -33,6 +33,8 @@ PostGIS 2.2.0
 
  * New Features *
 
+  - Topology API in liblwgeom
+    (Sandro Santilli / Regione Toscana - SITA)
   - New lwgeom_is_simple method in liblwgeom
   - #3117, Add SFCGAL 1.1 support: add ST_3DDifference, ST_3DUnion,
            ST_Volume, ST_MakeSolid, ST_IsSolid (Vincent Mora / Oslandia)
