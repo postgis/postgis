@@ -892,77 +892,6 @@ LWT_TOPOELEMENT* lwt_AddGeometry(LWT_TOPOLOGY* topo, LWGEOM* geom,
 
 /*******************************************************************
  *
- * TopoGeometry management
- *
- *******************************************************************/
-
-/**
- * Add a TopoGeometry layer
- *
- * Registers a new topology layer into the layers registry.
- * It is up to the caller to create the column(s) required to hold
- * the TopoGeometry reference identifiers.
- *
- * @param topo the topology to operate on
- * @param schema name of schema, or NULL if unsupported
- * @param table name of table
- * @param colname name of column (or column prefix if complex
- *                types are unsupported)
- * @param type spatial type of the geometries in the layer
- * @param child identifier of child layer, or -1 for non-hierarchical
- * @return a layer_id
- */
-int lwt_AddTopoGeometryLayer(LWT_TOPOLOGY* topo, const char *tablename,
-                             const char *colname, LWT_SPATIALTYPE type,
-                             int child);
-
-/**
- * Drop a TopoGeometry layer
- *
- * Unregister the layer from the registry.
- * It is up to the caller to drop the deploy column(s).
- *
- * @param topo the topology to operate on
- * @param layer_id identifier of the layer to drop
- */
-void lwt_DropTopoGeometryLayer(LWT_TOPOLOGY* topo, int layer_id);
-
-/**
- * Create a TopoGeometry in a layer from a list of elements
- *
- * Populates the relation table in the topology (if nelems > 0).
- *
- * Returns the identifier of the TopoGeometry, which is unique within
- * its topology and layer (identified by layer_id).
- *
- * @param topo the topology to operate on
- * @param layer_id identifier of the layer the TopoGeometry object
- *                 belongs to.
- * @param type spatial type of the geometry
- * @param nelems number of elements composing the TopoGeometry
- * @param elems elements composing the TopoGeometry
- *
- * @return the TopoGeometry identifier (valid within the topology and layer)
- */
-LWT_ELEMID lwt_CreateTopoGeom(LWT_TOPOLOGY* topo, int layer_id,
-                              LWT_SPATIALTYPE type, int nelems,
-                              LWT_TOPOELEMENT* elems);
-
-/**
- * Return the Geometry of a TopoGeometry in a layer
- *
- * @param topo the topology to operate on
- * @param layer_id identifier of the TopoGeometry layer
- * @param topogeom_id identifier of the TopoGeometry object
- *
- * @return an LWGEOM, ownership to caller, use lwgeom_release to free up
- *
- */
-LWGEOM* lwt_TopoGeomGeometry(LWT_TOPOLOGY* topo, int layer_id,
-                             LWT_ELEMID topogeom_id);
-
-/*******************************************************************
- *
  * ISO signatures here
  *
  *******************************************************************/
@@ -1107,7 +1036,7 @@ LWT_ELEMID lwt_RemEdgeNewFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
  * @return the id of newly created face or -1 if no new face was created
  *
  */
-LWT_ELEMID lwt_RemEdgemodFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
+LWT_ELEMID lwt_RemEdgeModFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
 
 /**
  * Changes the shape of an edge without affecting the topology structure.
