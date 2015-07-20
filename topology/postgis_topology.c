@@ -1720,6 +1720,8 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
     appendStringInfo(sql, " RETURNING %s", proj);
   }
 
+  POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit query: %s", sql->data);
+
   spi_result = SPI_execute(sql->data, new_edge2 == -1 ? !topo->be_data->data_changed : false, 0);
   if ( spi_result != ( new_edge2 == -1 ? SPI_OK_SELECT : SPI_OK_DELETE_RETURNING ) ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
@@ -1729,6 +1731,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
 
   if ( spi_result == SPI_OK_DELETE_RETURNING && SPI_processed )
   {
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit: deleted %d faces", SPI_processed);
     topo->be_data->data_changed = true;
   }
 
@@ -1972,6 +1975,40 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   return face_id;
 }
 
+static int
+cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
+      const LWT_ELEMID* ids, int numelems )
+{
+	int spi_result, i;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+
+  initStringInfo(sql);
+  appendStringInfo(sql, "DELETE FROM \"%s\".face WHERE face_id IN (", topo->name);
+  for (i=0; i<numelems; ++i) {
+    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+  }
+  appendStringInfoString(sql, ")");
+
+  POSTGIS_DEBUGF(1, "cb_deleteFacesById query: %s", sql->data);
+
+  spi_result = SPI_execute( sql->data, false, 0 );
+  if ( spi_result != SPI_OK_DELETE )
+  {
+		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+            spi_result, sql->data);
+	  return -1;
+  }
+  pfree(sqldata.data);
+
+  if ( SPI_processed ) topo->be_data->data_changed = true;
+
+  POSTGIS_DEBUGF(1, "cb_deleteFacesById: delete query processed %d rows",
+                 SPI_processed);
+
+  return SPI_processed;
+}
+
 static LWT_ISO_NODE* 
 cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
@@ -2137,7 +2174,8 @@ static LWT_BE_CALLBACKS be_callbacks = {
     cb_updateEdgesById,
     cb_getEdgeByFace,
     cb_getNodeByFace,
-    cb_updateNodesById
+    cb_updateNodesById,
+    cb_deleteFacesById
 };
 
 
@@ -2444,6 +2482,73 @@ Datum ST_AddEdgeModFace(PG_FUNCTION_ARGS)
   POSTGIS_DEBUG(1, "Calling lwt_AddEdgeModFace");
   edge_id = lwt_AddEdgeModFace(topo, startnode_id, endnode_id, line, 0);
   POSTGIS_DEBUG(1, "lwt_AddEdgeModFace returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 3);
+  lwt_FreeTopology(topo);
+
+  if ( edge_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(edge_id);
+}
+
+/*  ST_AddEdgeNewFaces(atopology, snode, enode, line) */
+Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_AddEdgeNewFaces);
+Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID startnode_id, endnode_id;
+  int edge_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWLINE *line;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) || PG_ARGISNULL(3) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  startnode_id = PG_GETARG_INT32(1) ;
+  endnode_id = PG_GETARG_INT32(2) ;
+
+  geom = PG_GETARG_GSERIALIZED_P(3);
+  lwgeom = lwgeom_from_gserialized(geom);
+  line = lwgeom_as_lwline(lwgeom);
+  if ( ! line ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+    lwpgerror("ST_AddEdgeModFace fourth argument must be a line geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_AddEdgeNewFaces");
+  edge_id = lwt_AddEdgeNewFaces(topo, startnode_id, endnode_id, line, 0);
+  POSTGIS_DEBUG(1, "lwt_AddEdgeNewFaces returned");
   lwgeom_free(lwgeom);
   PG_FREE_IF_COPY(geom, 3);
   lwt_FreeTopology(topo);

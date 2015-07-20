@@ -162,6 +162,12 @@ lwt_be_insertFaces(LWT_TOPOLOGY* topo, LWT_ISO_FACE* face, int numelems)
   CBT2(topo, insertFaces, face, numelems);
 }
 
+static int
+lwt_be_deleteFacesById(const LWT_TOPOLOGY* topo, const LWT_ELEMID* ids, int numelems)
+{
+  CBT2(topo, deleteFacesById, ids, numelems);
+}
+
 LWT_ELEMID
 lwt_be_getNextEdgeId(LWT_TOPOLOGY* topo)
 {
@@ -1596,10 +1602,10 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   return newface.face_id;
 }
 
-LWT_ELEMID
-lwt_AddEdgeModFace( LWT_TOPOLOGY* topo,
-                    LWT_ELEMID start_node, LWT_ELEMID end_node,
-                    LWLINE *geom, int skipChecks )
+static LWT_ELEMID
+_lwt_AddEdge( LWT_TOPOLOGY* topo,
+              LWT_ELEMID start_node, LWT_ELEMID end_node,
+              LWLINE *geom, int skipChecks, int modFace )
 {
   LWT_ISO_EDGE newedge;
   LWGEOM *cleangeom;
@@ -2118,29 +2124,81 @@ lwt_AddEdgeModFace( LWT_TOPOLOGY* topo,
     }
   }
 
+  int newface1 = -1;
+
+  if ( ! modFace )
+  {
+    newface1 = _lwt_AddFaceSplit( topo, -newedge.edge_id, newedge.face_left, 0 );
+    if ( newface1 == 0 ) {
+      LWDEBUG(1, "New edge does not split any face");
+      return newedge.edge_id; /* no split */
+    }
+  }
+
   /* Check face splitting */
   int newface = _lwt_AddFaceSplit( topo, newedge.edge_id,
                                    newedge.face_left, 0 );
-  if ( newface == 0 ) return newedge.edge_id; /* no split */
+  if ( modFace )
+  {
+    if ( newface == 0 ) {
+      LWDEBUG(1, "New edge does not split any face");
+      return newedge.edge_id; /* no split */
+    }
 
-  if ( newface < 0 )
-  {
-    /* face on the left is the universe face */
-    /* must be forming a maximal ring in universal face */
-    newface = _lwt_AddFaceSplit( topo, -newedge.edge_id,
-                                 newedge.face_left, 0 );
-    if ( newface < 0 ) return newedge.edge_id; /* no split */
+    if ( newface < 0 )
+    {
+      /* face on the left is the universe face */
+      /* must be forming a maximal ring in universal face */
+      newface = _lwt_AddFaceSplit( topo, -newedge.edge_id,
+                                   newedge.face_left, 0 );
+      if ( newface < 0 ) return newedge.edge_id; /* no split */
+    }
+    else
+    {
+      _lwt_AddFaceSplit( topo, -newedge.edge_id, newedge.face_left, 1 );
+    }
   }
-  else
-  {
-    _lwt_AddFaceSplit( topo, -newedge.edge_id, newedge.face_left, 1 );
-  }
+
+  lwnotice("XXXX end of adding an edge, newedge.face_left is %d, newface is %d, newface1 is %d", newedge.face_left, newface, newface1);
 
   /*
    * Update topogeometries, if needed
    */
-  ret = lwt_be_updateTopoGeomFaceSplit(topo, newedge.face_left,
-                                       newface, -1);
+  if ( newedge.face_left != 0 )
+  {
+    ret = lwt_be_updateTopoGeomFaceSplit(topo, newedge.face_left,
+                                         newface, newface1);
+    if ( ret == 0 ) {
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+
+    if ( ! modFace )
+    {
+      /* drop old face from the face table */
+      ret = lwt_be_deleteFacesById(topo, &(newedge.face_left), 1);
+      if ( ret == -1 ) {
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+    }
+  }
 
   return newedge.edge_id;
+}
+
+LWT_ELEMID
+lwt_AddEdgeModFace( LWT_TOPOLOGY* topo,
+                    LWT_ELEMID start_node, LWT_ELEMID end_node,
+                    LWLINE *geom, int skipChecks )
+{
+  return _lwt_AddEdge( topo, start_node, end_node, geom, skipChecks, 1 );
+}
+
+LWT_ELEMID
+lwt_AddEdgeNewFaces( LWT_TOPOLOGY* topo,
+                    LWT_ELEMID start_node, LWT_ELEMID end_node,
+                    LWLINE *geom, int skipChecks )
+{
+  return _lwt_AddEdge( topo, start_node, end_node, geom, skipChecks, 0 );
 }
