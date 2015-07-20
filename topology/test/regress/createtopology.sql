@@ -26,3 +26,7 @@ SELECT topology.AddNode('2d', 'POINT(2 2)');
 SELECT topology.DropTopology('2d');
 SELECT topology.DropTopology('2dAgain');
 SELECT topology.DropTopology('3d');
+
+-- Exceptions
+SELECT topology.CreateTopology('public');
+SELECT topology.CreateTopology('topology');

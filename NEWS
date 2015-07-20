@@ -3,6 +3,7 @@ PostGIS 2.0.8
 
  * Bug Fixes *
 
+  - #3196, do not let DropTopology drop non-topology schemes
   - #3198, ST_AddEdgeModFace docs report wrong side of new face
   - #3159, do not force a bbox cache on ST_Affine
   - #3094, Malformed GeoJSON inputs crash backend
