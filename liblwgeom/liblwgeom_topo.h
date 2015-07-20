@@ -520,7 +520,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *        as a result of face splitting, or -1 if the old face was
    *        modified rather than replaced.
    *
-	 * @return 1 on success, 0 on error
+	 * @return 1 on success, 0 on error (@see lastErroMessage)
    *
    */
   int (*updateTopoGeomFaceSplit) (
@@ -672,6 +672,22 @@ typedef struct LWT_BE_CALLBACKS_T {
       const LWT_BE_TOPOLOGY* topo,
       const LWT_ISO_NODE* nodes, int numnodes,
       int upd_fields
+  );
+
+  /**
+   * Delete faces by id
+   *
+   * @param topo the topology to act upon
+   * @param ids an array of face identifiers
+   * @param numelems number of face identifiers in the ids array
+   *
+   * @return number of faces being deleted or -1 on error
+   *         (@see lastErroMessage)
+   */
+  int (*deleteFacesById) (
+      const LWT_BE_TOPOLOGY* topo,
+      const LWT_ELEMID* ids,
+      int numelems
   );
 
 } LWT_BE_CALLBACKS;
@@ -1056,12 +1072,15 @@ LWT_ELEMID lwt_AddEdgeModFace(LWT_TOPOLOGY* topo,
  * @param start_node identifier of the starting node
  * @param end_node identifier of the ending node
  * @param geom the edge geometry
+ * @param skipChecks if non-zero skips consistency checks
+ *                   (curve being simple and valid, start/end nodes
+ *                    consistency actual face containement)
  * @return ID of the newly added edge
  *
  */
 LWT_ELEMID lwt_AddEdgeNewFaces(LWT_TOPOLOGY* topo,
                               LWT_ELEMID start_node, LWT_ELEMID end_node,
-                              LWLINE *geom);
+                              LWLINE *geom, int skipChecks);
 
 /**
  * Remove an edge, possibly merging two faces (replacing both with a new one)
