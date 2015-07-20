@@ -13,3 +13,7 @@ SELECT topology.DropTopology('t1');
 SELECT topology.DropTopology('t2');
 DROP TABLE t2f;
 DROP TABLE t1f;
+
+-- Exceptions
+SELECT topology.DropTopology('topology');
+SELECT topology.DropTopology('doesnotexist');

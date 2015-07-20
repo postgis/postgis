@@ -1,3 +1,4 @@
+ERROR:  Topology 'tt' does not exist
 t
 ERROR:  relation "public.feature" does not exist
 ERROR:  Layer type must be one of POINT,LINE,POLYGON,COLLECTION
