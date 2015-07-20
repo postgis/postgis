@@ -14,3 +14,5 @@ ERROR:  Geometry has Z dimension but column does not
 Topology '2d' dropped
 Topology '2dAgain' dropped
 Topology '3d' dropped
+ERROR:  schema "public" already exists
+ERROR:  schema "topology" already exists

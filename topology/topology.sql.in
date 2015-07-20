@@ -561,12 +561,12 @@ DECLARE
   query text;
 BEGIN
 
-        -- Get topology id
-        SELECT id FROM topology.topology into topoid
-                WHERE name = toponame;
+  -- Get topology id
+  SELECT id INTO topoid
+    FROM topology.topology WHERE name = toponame;
 
-  IF topoid IS NULL THEN
-    RAISE EXCEPTION 'Topology % does not exist', toponame;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
   END IF;
 
   IF ltype ILIKE '%POINT%' OR ltype ILIKE 'PUNTAL' THEN
@@ -862,8 +862,12 @@ BEGIN
   END IF;
 
   -- Get topology id into return TopoGeometry
-  SELECT id FROM topology.topology into ret.topology_id
-    WHERE name = toponame;
+  SELECT id INTO ret.topology_id
+    FROM topology.topology WHERE name = toponame;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
+  END IF;
 
   --
   -- Get layer info
@@ -996,8 +1000,13 @@ $$
 DECLARE
   ret integer;
 BEGIN
-        SELECT id FROM topology.topology into ret
-                WHERE name = toponame;
+  SELECT id INTO ret
+    FROM topology.topology WHERE name = toponame;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
+  END IF;
+
   RETURN ret;
 END
 $$
@@ -1922,37 +1931,34 @@ DECLARE
   topoid integer;
   rec RECORD;
 BEGIN
-
   -- Get topology id
-        SELECT id FROM topology.topology into topoid
-                WHERE name = atopology;
+  SELECT id INTO topoid
+    FROM topology.topology WHERE name = atopology;
 
-
-  IF topoid IS NOT NULL THEN
-
-    RAISE NOTICE 'Dropping all layers from topology % (%)',
-      atopology, topoid;
-
-    -- Drop all layers in the topology
-    FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
-      || ' topology_id = ' || topoid
-    LOOP
-
-      EXECUTE 'SELECT topology.DropTopoGeometryColumn('
-        || quote_literal(rec.schema_name)
-        || ','
-        || quote_literal(rec.table_name)
-        || ','
-        || quote_literal(rec.feature_column)
-        || ')';
-    END LOOP;
-
-    -- Delete record from topology.topology
-    EXECUTE 'DELETE FROM topology.topology WHERE id = '
-      || topoid;
-
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(atopology);
   END IF;
 
+  RAISE NOTICE 'Dropping all layers from topology % (%)',
+    quote_literal(atopology), topoid;
+
+  -- Drop all layers in the topology
+  FOR rec IN EXECUTE 'SELECT * FROM topology.layer WHERE '
+    || ' topology_id = ' || topoid
+  LOOP
+
+    EXECUTE 'SELECT topology.DropTopoGeometryColumn('
+      || quote_literal(rec.schema_name)
+      || ','
+      || quote_literal(rec.table_name)
+      || ','
+      || quote_literal(rec.feature_column)
+      || ')';
+  END LOOP;
+
+  -- Delete record from topology.topology
+  EXECUTE 'DELETE FROM topology.topology WHERE id = '
+    || topoid;
 
   -- Drop the schema (if it exists)
   FOR rec IN SELECT * FROM pg_namespace WHERE text(nspname) = atopology

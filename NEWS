@@ -4,6 +4,7 @@ PostGIS 2.1.9
  * Bug Fixes *
 
   - #3198, ST_AddEdgeModFace docs report wrong side of new face
+  - #3196, do not let DropTopology drop non-topology schemes
 
 
 PostGIS 2.1.8
