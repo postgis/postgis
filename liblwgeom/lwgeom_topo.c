@@ -904,7 +904,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
       getPoint2d_p(pa, 0, &p1);
       getPoint2d_p(pa, 1, &p2);
       LWDEBUGF(1, "edge %" PRId64
-                  "starts on node %" PRId64
+                  " starts on node %" PRId64
                   ", edgeend is %g,%g-%g,%g",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
       if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {
@@ -933,10 +933,10 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         if ( azdif < minaz ) {
           data->nextCW = edge->edge_id; /* outgoing */
           data->cwFace = edge->face_left;
-          LWDEBUGF(1, "new nextCW edge is %" PRId64 ", "
-                      "outgoing, "
-                      "with face_left %" PRId64 " and face_right %" PRId64 " "
-                      "(previous had minaz=%g, face_left is new cwFace)",
+          LWDEBUGF(1, "new nextCW edge is %" PRId64
+                      ", outgoing, "
+                      "with face_left %" PRId64 " and face_right %" PRId64
+                      " (previous had minaz=%g, face_left is new cwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, minaz);
           minaz = azdif;
@@ -944,10 +944,10 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         else if ( azdif > maxaz ) {
           data->nextCCW = edge->edge_id; /* outgoing */
           data->ccwFace = edge->face_right;
-          LWDEBUGF(1, "new nextCCW edge is %" PRId64 ", "
-                      "outgoing, "
-                      "with face_left %" PRId64 " and face_right %" PRId64 " "
-                      "(previous had maxaz=%g, face_right is new ccwFace)",
+          LWDEBUGF(1, "new nextCCW edge is %" PRId64
+                      ", outgoing, "
+                      "with face_left %" PRId64 " and face_right %" PRId64
+                      " (previous had maxaz=%g, face_right is new ccwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, maxaz);
           maxaz = azdif;
@@ -976,18 +976,18 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         data->nextCW = data->nextCCW = -edge->edge_id; /* incoming */
         data->cwFace = edge->face_right;
         data->ccwFace = edge->face_left;
-        LWDEBUGF(1, "new nextCW and nextCCW edge is %" PRId64 ", "
-                    "incoming, "
-                    "with face_left %" PRId64 " and face_right %" PRId64 " "
-                    "(face_right is new cwFace, face_left is new ccwFace)",
+        LWDEBUGF(1, "new nextCW and nextCCW edge is %" PRId64
+                    ", incoming, "
+                    "with face_left %" PRId64 " and face_right %" PRId64
+                    " (face_right is new cwFace, face_left is new ccwFace)",
                     edge->edge_id, edge->face_left,
                     edge->face_right);
       } else {
         if ( azdif < minaz ) {
           data->nextCW = -edge->edge_id; /* incoming */
           data->cwFace = edge->face_right;
-          LWDEBUGF(1, "new nextCW edge is %" PRId64 ", "
-                      "incoming, "
+          LWDEBUGF(1, "new nextCW edge is %" PRId64
+                      ", incoming, "
                       "with face_left %" PRId64 " and face_right %" PRId64
                       " (previous had minaz=%g, face_right is new cwFace)",
                       edge->edge_id, edge->face_left,
@@ -997,8 +997,8 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         else if ( azdif > maxaz ) {
           data->nextCCW = -edge->edge_id; /* incoming */
           data->ccwFace = edge->face_left;
-          LWDEBUGF(1, "new nextCCW edge is %" PRId64 ", "
-                      "outgoing from start point, "
+          LWDEBUGF(1, "new nextCCW edge is %" PRId64
+                      ", outgoing, from start point, "
                       "with face_left %" PRId64 " and face_right %" PRId64
                       " (previous had maxaz=%g, face_left is new ccwFace)",
                       edge->edge_id, edge->face_left,

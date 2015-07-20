@@ -216,8 +216,10 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
 
   appendStringInfoChar(str, '(');
   if ( fields & LWT_COL_EDGE_EDGE_ID ) {
-    if ( edge->edge_id != -1 ) appendStringInfo(str, "%" PRId64, edge->edge_id);
-    else appendStringInfoString(str, "DEFAULT");
+    if ( edge->edge_id != -1 )
+      appendStringInfo(str, "%" PRId64, edge->edge_id);
+    else
+      appendStringInfoString(str, "DEFAULT");
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
@@ -238,12 +240,14 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
     appendStringInfo(str, "%s%" PRId64, sep, edge->next_left);
-    if ( fullEdgeData ) appendStringInfo(str, ",%" PRId64, ABS(edge->next_left));
+    if ( fullEdgeData )
+      appendStringInfo(str, ",%" PRId64, ABS(edge->next_left));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
     appendStringInfo(str, "%s%" PRId64, sep, edge->next_right);
-    if ( fullEdgeData ) appendStringInfo(str, ",%" PRId64, ABS(edge->next_right));
+    if ( fullEdgeData )
+      appendStringInfo(str, ",%" PRId64, ABS(edge->next_right));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_GEOM )
@@ -439,8 +443,10 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
   appendStringInfoChar(str, '(');
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
-    if ( node->node_id != -1 ) appendStringInfo(str, "%" PRId64, node->node_id);
-    else appendStringInfoString(str, "DEFAULT");
+    if ( node->node_id != -1 )
+      appendStringInfo(str, "%" PRId64, node->node_id);
+    else
+      appendStringInfoString(str, "DEFAULT");
     sep = ",";
   }
 
@@ -468,8 +474,10 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 static void
 addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
 {
-  if ( face->face_id != -1 ) appendStringInfo(str, "(%" PRId64, face->face_id);
-  else appendStringInfoString(str, "(DEFAULT");
+  if ( face->face_id != -1 )
+    appendStringInfo(str, "(%" PRId64, face->face_id);
+  else
+    appendStringInfoString(str, "(DEFAULT");
 
   if ( face->mbr ) {
     appendStringInfo(str, ",ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d))",
