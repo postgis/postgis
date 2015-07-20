@@ -1893,7 +1893,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 static int
 lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, const GBOX *clip)
 {
-	const int maxdepth = 25;
+	const int maxdepth = 50;
 	int nvertices = 0;
 	int i, n = 0;
 	double width = clip->xmax - clip->xmin;
@@ -1927,7 +1927,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	/* return value */
 	if ( depth > maxdepth )
 	{
-		return 0;	
+		return 0;
 	}
 	
 	nvertices = lwgeom_count_vertices(geom);
