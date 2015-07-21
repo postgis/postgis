@@ -13,7 +13,7 @@ Directory structure::
 
   ./            Build scripts and install directions
   ./doc         PostGIS Documentation
-  ./extensions  Support for the PostgreSQL 9.1+ Extensions framework
+  ./extensions  Support for the PostgreSQL Extensions framework
   ./extras      Various pieces that didn't belong to mainstream
                 (package management specfiles, WFS_locks, sample WKB parser)
   ./liblwgeom   LWGEOM geometry library
@@ -31,7 +31,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.0 and above.
+PostGIS is compatible with PostgreSQL 9.1 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.

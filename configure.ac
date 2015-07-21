@@ -421,10 +421,10 @@ PGSQL_LIBDIR=`$PG_CONFIG --libdir`
 PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
 AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-dnl Ensure that we are using PostgreSQL >= 9.0
-if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
-	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.0])
-fi	
+dnl Ensure that we are using PostgreSQL >= 9.1
+if test $POSTGIS_PGSQL_VERSION -lt 91; then
+	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.1])
+fi
 
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
@@ -1235,23 +1235,20 @@ fi
 
 dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
-dnl PostgreSQL 9.1 or better and the xlstproc tool for generating the commends
-dnl SQL file.
+dnl the xlstproc tool for generating the comments SQL file.
 dnl ===========================================================================
 
 EXTENSIONS=""
-if test $POSTGIS_PGSQL_VERSION -ge 91; then
-	if test \
-          "x$XSLTPROC" != "x" -o \
-          -e doc/postgis_comments.sql -a \
-          -e doc/raster_comments.sql;
-  then
-		if test "x$RASTER" = "xraster"; then
-				AC_MSG_RESULT([enabling PostgreSQL extension support...])
-				EXTENSIONS=extensions
-				AC_SUBST([EXTENSIONS])
-		fi
-	fi
+if test \
+        "x$XSLTPROC" != "x" -o \
+        -e doc/postgis_comments.sql -a \
+        -e doc/raster_comments.sql;
+then
+  if test "x$RASTER" = "xraster"; then
+      AC_MSG_RESULT([enabling PostgreSQL extension support...])
+      EXTENSIONS=extensions
+      AC_SUBST([EXTENSIONS])
+  fi
 fi
 
 
