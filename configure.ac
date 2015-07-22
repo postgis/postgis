@@ -1019,6 +1019,23 @@ fi
 
 AC_SUBST([TOPOLOGY])
 
+dnl ====================================
+dnl interrupt tests
+dnl ====================================
+INTERRUPTTESTS="no"
+AC_ARG_WITH([interrupt-tests],
+    [AS_HELP_STRING([--without-interrupt-tests],
+                    [Disable the interrupt tests (for CI servers)])],
+    [], [])
+
+if test "x$with_interrupt_tests" != "xno"; then
+    INTERRUPTTESTS="yes"
+fi
+
+AC_SUBST([INTERRUPTTESTS])
+
+
+
 dnl ===========================================================================
 dnl SRID stuff
 dnl ===========================================================================

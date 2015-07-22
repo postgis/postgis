@@ -24,6 +24,7 @@ POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_SFCGAL=@HAVE_SFCGAL@
 MINGWBUILD=@MINGWBUILD@
+INTERRUPTTESTS=@INTERRUPTTESTS@
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
 # to the directory and then use "pwd" to return the path. This
@@ -73,29 +74,53 @@ TESTS = \
 	loader/mfile \
 	dumper/literalsrid \
 	dumper/realtable \
-	binary \
-	operators \
-	regress \
-	regress_index \
-	regress_index_nulls \
-	regress_selectivity \
-	lwgeom_regress \
-	regress_lrs \
-	removepoint \
-	setpoint \
-	size \
-	simplify \
-	simplifyvw \
-	snaptogrid \
-	summary \
 	affine \
+	bestsrid \
+	binary \
+	boundary \
+	cluster \
+	concave_hull\
+	ctors \
+	dump \
+	dumppoints \
 	empty \
 	forcecurve \
-	measures \
+	geography \
+	in_geohash \
+	in_gml \
+	in_kml \
+	in_encodedpolyline \
+	iscollection \
 	legacy \
 	long_xact \
-	cluster \
-	ctors \
+	lwgeom_regress \
+	measures \
+	operators \
+	out_geometry \
+	out_geography \
+	polygonize \
+	polyhedralsurface \
+	postgis_type_name \
+	regress \
+	regress_bdpoly \
+	regress_index \
+	regress_index_nulls \
+	regress_management \
+	regress_selectivity \
+	regress_lrs \
+	regress_ogc \
+	regress_ogc_cover \
+	regress_ogc_prep \
+	regress_proj \
+	relate \
+	remove_repeated_points \
+	removepoint \
+	setpoint \
+	simplify \
+	simplifyvw \
+	size \
+	snaptogrid \
+	split \
 	sql-mm-serialize \
 	sql-mm-circularstring \
 	sql-mm-compoundcurve \
@@ -103,40 +128,15 @@ TESTS = \
 	sql-mm-general \
 	sql-mm-multicurve \
 	sql-mm-multisurface \
-	polyhedralsurface \
-	polygonize \
-	postgis_type_name \
-	geography \
-	out_geometry \
-	out_geography \
-	in_geohash \
-	in_gml \
-	in_kml \
-	in_encodedpolyline \
-	interrupt \
-	iscollection \
-	regress_ogc \
-	regress_ogc_cover \
-	regress_ogc_prep \
-	regress_bdpoly \
-	regress_proj \
-	regress_management \
-	dump \
-	dumppoints \
-	boundary \
-	wmsservers \
-	wkt \
-	wkb \
+	swapordinates \
+	summary \
 	temporal \
 	tickets \
+	twkb \
 	typmod \
-	remove_repeated_points \
-	split \
-	swapordinates \
-	relate \
-	bestsrid \
-	concave_hull\
-	twkb
+	wkb \
+	wkt \
+	wmsservers
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
@@ -180,14 +180,29 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
 	# ST_DelaunayTriangles
 	TESTS += \
-		delaunaytriangles \
-		interrupt_buffer
+		delaunaytriangles 
 endif
+
+
+ifeq ($(INTERRUPTTESTS),yes)
+	# Allow CI servers to configure --with-interrupt-tests
+	TESTS += \
+  	interrupt
 
 ifeq ($(shell expr $(GEOS_NUMERIC_VERSION) ">=" 30403),1)
 	TESTS += \
 		interrupt_relate
 endif
+
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
+	# GEOS-3.4 adds:
+	# ST_DelaunayTriangles
+	TESTS += \
+		interrupt_buffer
+endif
+		 
+endif
+
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 	# GEOS-3.5 adds:
@@ -196,6 +211,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 		clipbybox2d \
 		subdivide
 endif
+
 
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
