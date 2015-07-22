@@ -407,6 +407,9 @@ lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end)
 		length_so_far += distance2d_pt_pt(&a, &b);
 		if ( length > 0.0 )
 			m = m_start + m_range * length_so_far / length;
+		/* #3172, support (valid) zero-length inputs */
+		else if ( length == 0.0 && npoints > 1 )
+			m = m_start + m_range * i / (npoints-1);
 		else
 			m = 0.0;
 		q.x = p2.x;
