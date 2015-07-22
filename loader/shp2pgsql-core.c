@@ -1958,6 +1958,14 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		stringbuffer_aprintf(sb, "COMMIT;\n");
 	}
 
+	/* Always ANALYZE the resulting table, for better stats */
+	stringbuffer_aprintf(sb, "ANALYZE ");
+	if (state->config->schema)
+	{
+		stringbuffer_aprintf(sb, "\"%s\".", state->config->schema);
+	}
+	stringbuffer_aprintf(sb, "\"%s\";\n", state->config->table);
+
 	/* Copy the string buffer into a new string, destroying the string buffer */
 	ret = (char *)malloc(strlen((char *)stringbuffer_getstring(sb)) + 1);
 	strcpy(ret, (char *)stringbuffer_getstring(sb));
