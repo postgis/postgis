@@ -151,12 +151,19 @@ lwgeom_summary(const LWGEOM *lwgeom, int offset)
 	case POINTTYPE:
 		return lwpoint_summary((LWPOINT *)lwgeom, offset);
 
+	case CIRCSTRINGTYPE:
+	case TRIANGLETYPE:
 	case LINETYPE:
 		return lwline_summary((LWLINE *)lwgeom, offset);
 
 	case POLYGONTYPE:
 		return lwpoly_summary((LWPOLY *)lwgeom, offset);
 
+	case TINTYPE:
+	case MULTISURFACETYPE:
+	case MULTICURVETYPE:
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
