@@ -91,15 +91,10 @@ Datum LWGEOM_get_srid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_set_srid);
 Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *result;
-	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	int srid = PG_GETARG_INT32(1);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	lwgeom_set_srid(lwgeom, srid);
-	result = geometry_serialize(lwgeom);
-	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(geom, 0);
-	PG_RETURN_POINTER(result);
+	gserialized_set_srid(g, srid);
+	PG_RETURN_POINTER(g);
 }
 
 /* returns a string representation of this geometry's type */

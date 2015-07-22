@@ -801,7 +801,18 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars int4 DEFAULT 0)
 	AS 'MODULE_PATHNAME', 'ST_GeoHash'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
+	RETURNS int4
+	AS 'MODULE_PATHNAME', 'LWGEOM_get_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 	
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
+	RETURNS geography
+	AS 'MODULE_PATHNAME', 'LWGEOM_set_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+  
 -----------------------------------------------------------------------------
 
 
