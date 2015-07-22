@@ -38,9 +38,6 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS);
 Datum lwgeom_gt(PG_FUNCTION_ARGS);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
-
-#define BTREE_SRID_MISMATCH_SEVERITY ERROR
-
 PG_FUNCTION_INFO_V1(lwgeom_lt);
 Datum lwgeom_lt(PG_FUNCTION_ARGS)
 {
@@ -51,14 +48,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_lt called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
 
@@ -107,14 +97,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_le called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	gserialized_get_gbox_p(geom1, &box1);
 	gserialized_get_gbox_p(geom2, &box2);
@@ -173,14 +156,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_eq called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	gbox_init(&box1);
 	gbox_init(&box2);
@@ -217,14 +193,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_ge called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	gserialized_get_gbox_p(geom1, &box1);
 	gserialized_get_gbox_p(geom2, &box2);
@@ -281,14 +250,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_gt called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	gserialized_get_gbox_p(geom1, &box1);
 	gserialized_get_gbox_p(geom2, &box2);
@@ -341,14 +303,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "lwgeom_cmp called");
 
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(BTREE_SRID_MISMATCH_SEVERITY,
-		     "Operation on two GEOMETRIES with different SRIDs\n");
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		PG_RETURN_NULL();
-	}
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	gserialized_get_gbox_p(geom1, &box1);
 	gserialized_get_gbox_p(geom2, &box2);

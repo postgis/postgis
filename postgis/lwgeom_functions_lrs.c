@@ -185,11 +185,9 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 		elog(ERROR,"ST_InterpolatePoint: 2st argument isn't a point");
 		PG_RETURN_NULL();
 	}
-	if ( gserialized_get_srid(gser_line) != gserialized_get_srid(gser_point) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+
+	error_if_srid_mismatch(gserialized_get_srid(gser_line), gserialized_get_srid(gser_point));
+
 	if ( ! gserialized_has_m(gser_line) )
 	{
 		elog(ERROR,"ST_InterpolatePoint only accepts geometries that have an M dimension");
@@ -225,11 +223,8 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();
 	}
-	if ( gserialized_get_srid(geom1) != gserialized_get_srid(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
 	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));

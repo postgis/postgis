@@ -3469,11 +3469,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			if ( srid != gserialized_get_srid(geom) )
-			{
-				elog(ERROR, "polygonize: operation on mixed SRID geometries");
-				PG_RETURN_NULL();
-			}
+			error_if_srid_mismatch(srid, gserialized_get_srid(geom));
 		}
 	}
 
