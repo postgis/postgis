@@ -1248,17 +1248,11 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		/* Output type not initialized */
 		if ( ! outtype )
 		{
-			/* Input is single, make multi */
-			if ( ! lwtype_is_collection(intype) ) 
-				outtype = lwtype_get_collectiontype(intype);
-			/* Input is multi, make collection */
-			else 
-				outtype = COLLECTIONTYPE;
+			outtype = lwtype_get_collectiontype(intype);
 		}
-
 		/* Input type not compatible with output */
 		/* make output type a collection */
-		else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
+		else if ( outtype != COLLECTIONTYPE && lwtype_get_collectiontype(intype) != outtype )
 		{
 			outtype = COLLECTIONTYPE;
 		}

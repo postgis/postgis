@@ -861,6 +861,15 @@ DROP TABLE images;
 
 -- SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
 
+-- #2692
+WITH v AS ( SELECT 'CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry AS g FROM generate_series(1,3) ) 
+SELECT '#2692a', ST_AsText(st_collect(g)) FROM v;
+WITH v AS ( SELECT 'COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 1 2, 3 2))'::geometry AS g FROM generate_series(1,3) ) 
+SELECT '#2692b', ST_AsText(st_collect(g)) FROM v;
+WITH v AS ( SELECT 'TRIANGLE((0 0, 1 1, 1 0, 0 0))'::geometry AS g FROM generate_series(1,3) ) 
+SELECT '#2692c', ST_AsText(st_collect(g)) FROM v;
+
+
 SELECT '#2704', ST_AsText(ST_GeomFromGML('<?xml version="1.0"?>
 <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
