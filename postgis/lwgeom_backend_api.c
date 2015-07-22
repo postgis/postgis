@@ -181,12 +181,8 @@ Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
     LWGEOM *lwgeom1 = lwgeom_from_gserialized(geom1);
     LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
 
-    if (lwgeom1->srid != lwgeom2->srid)
-    {
-	elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
-	PG_RETURN_NULL();
-    }
-    
+	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
+	
     mindist = lwgeom_mindistance3d_tolerance(lwgeom1,lwgeom2,0.0);
     
     PG_FREE_IF_COPY(geom1, 0);

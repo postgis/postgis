@@ -481,6 +481,8 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	/* Calculate some other parameters on the spheroid */
 	spheroid_init(sphere, sphere->a, sphere->b);
 
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
+
 	/* Catch sphere special case and re-jig spheroid appropriately */
 	if ( ! use_spheroid )
 	{
@@ -498,13 +500,6 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	         type2 == MULTIPOINTTYPE || type2 == MULTILINETYPE || type2 == MULTIPOLYGONTYPE ))
 	{
 		elog(ERROR, "geometry_distance_spheroid: Only point/line/polygon supported.\n");
-		PG_RETURN_NULL();
-	}
-
-
-	if (gserialized_get_srid(geom1) != gserialized_get_srid(geom2))
-	{
-		elog(ERROR, "geometry_distance_spheroid: Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
