@@ -541,7 +541,8 @@ CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_expand'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8, boolean)
