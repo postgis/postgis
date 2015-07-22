@@ -70,6 +70,8 @@ Datum geography_distance_knn(PG_FUNCTION_ARGS)
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 	
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -136,6 +138,8 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	/* Read our calculation type. */
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
+
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -205,6 +209,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
+	
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
 	
@@ -274,6 +280,8 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	/* Read our calculation type. */
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
+
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -346,6 +354,8 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
 
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
+	
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
 
@@ -391,6 +401,8 @@ Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 	/* Read our calculation type. */
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
+
+	error_if_srid_mismatch(gserialized_get_srid(g1), gserialized_get_srid(g2));
 
 	/* Initialize spheroid */
 	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
@@ -724,6 +736,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	/* Construct our working geometries */
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
 
 	/* EMPTY never intersects with another geometry */
 	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
