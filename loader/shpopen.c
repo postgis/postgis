@@ -1702,8 +1702,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
         if( bBigEndian ) SwapWord( 4, &nPoints );
         if( bBigEndian ) SwapWord( 4, &nParts );
 
-        if (nPoints < 0 || nParts < 0 ||
-            nPoints > 50 * 1000 * 1000 || nParts > 10 * 1000 * 1000)
+        if (nPoints > 50 * 1000 * 1000 || nParts > 10 * 1000 * 1000)
         {
             snprintf(szErrorMsg, sizeof(szErrorMsg),
                      "Corrupted .shp file : shape %d, nPoints=%d, nParts=%d.",
@@ -1901,7 +1900,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
 
         if( bBigEndian ) SwapWord( 4, &nPoints );
 
-        if (nPoints < 0 || nPoints > 50 * 1000 * 1000)
+        if (nPoints > 50 * 1000 * 1000)
         {
             snprintf(szErrorMsg, sizeof(szErrorMsg),
                      "Corrupted .shp file : shape %d : nPoints = %d",
