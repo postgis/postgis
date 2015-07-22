@@ -2005,6 +2005,7 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 
 	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
 	nparts = lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
+	LWDEBUGF(3, "%s: chopped input geometry into %d parts", __func__, nparts);
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
 }
