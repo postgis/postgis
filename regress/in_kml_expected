@@ -15,8 +15,10 @@ ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 linestring_5|SRID=4326;LINESTRING(1 2,3 4)
 polygon_1|SRID=4326;POLYGON((1 2,3 4,5 6,1 2))
-ERROR:  invalid KML representation
-ERROR:  invalid KML representation
+NOTICE:  forced closure on an un-closed KML polygon
+polygon_2|SRID=4326;POLYGON((1 2,3 4,5 6,1 3,1 2))
+NOTICE:  forced closure on an un-closed KML polygon
+polygon_3|SRID=4326;POLYGON((1 2 3,4 5 6,7 8 9,1 2 0,1 2 3))
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation
 ERROR:  invalid KML representation
@@ -26,8 +28,10 @@ polygon_9|SRID=4326;POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
 polygon_10|SRID=4326;POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
 polygon_11|SRID=4326;POLYGON((1 2,3 4,5 6,1 2))
 ERROR:  invalid KML representation
-ERROR:  invalid KML representation
-ERROR:  invalid KML representation
+NOTICE:  forced closure on an un-closed KML polygon
+polygon_13|SRID=4326;POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 9,7 8))
+NOTICE:  forced closure on an un-closed KML polygon
+polygon_14|SRID=4326;POLYGON((1 2 3,4 5 6,7 8 9,1 2 3),(10 11 12,13 14 15,16 17 18,10 11 0,10 11 12))
 polygon_15|SRID=4326;POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8),(13 14,15 16,17 18,13 14))
 multi_7|SRID=4326;GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(3 4,5 6),POLYGON((7 8,9 10,11 12,7 8)))
 multi_8|SRID=4326;GEOMETRYCOLLECTION EMPTY

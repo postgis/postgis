@@ -81,10 +81,10 @@ SELECT 'polygon_1', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs>
 -- ERROR: In exterior ring: Last point is not the same as the first one 
 SELECT 'polygon_2', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,3</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
--- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
+-- FORCE CLOSE: In exterior 3D ring: Last point is not the same as the first one in Z
 SELECT 'polygon_3', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2,3 4,5,6 7,8,9 1,2,0</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
--- ERROR: Only 3 points in exterior ring
+-- FORCE CLOSE: Only 3 points in exterior ring
 SELECT 'polygon_4', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs></kml:Polygon>'));
 
 -- ERROR: Empty exterior ring coordinates 
@@ -105,10 +105,10 @@ SELECT 'polygon_11', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs
 -- ERROR: Only 3 points in interior ring
 SELECT 'polygon_12', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 7,8</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
--- ERROR: In interior ring: Last point is not the same as the first one 
+-- FORCE CLOSE: In interior ring: Last point is not the same as the first one 
 SELECT 'polygon_13', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2 3,4 5,6 1,2</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>7,8 9,10 11,12 7,9</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
--- ERROR: In interior 3D ring: Last point is not the same as the first one in Z
+-- FORCE CLOSE: In interior 3D ring: Last point is not the same as the first one in Z
 SELECT 'polygon_14', ST_AsEWKT(ST_GeomFromKML('<kml:Polygon><kml:outerBoundaryIs><kml:LinearRing><kml:coordinates>1,2,3 4,5,6 7,8,9 1,2,3</kml:coordinates></kml:LinearRing></kml:outerBoundaryIs><kml:innerBoundaryIs><kml:LinearRing><kml:coordinates>10,11,12 13,14,15 16,17,18 10,11,0</kml:coordinates></kml:LinearRing></kml:innerBoundaryIs></kml:Polygon>'));
 
 -- 3 rings

@@ -407,10 +407,17 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 			ppa[0] = parse_kml_coordinates(xb->children, hasz);
 
-			if (ppa[0]->npoints < 4
-			        || (!*hasz && !ptarray_is_closed_2d(ppa[0]))
-			        ||  (*hasz && !ptarray_is_closed_3d(ppa[0])))
+			if (ppa[0]->npoints < 4)
 				lwpgerror("invalid KML representation");
+
+			if ((!*hasz && !ptarray_is_closed_2d(ppa[0])) || 
+			    ( *hasz && !ptarray_is_closed_3d(ppa[0])))
+			{
+				POINT4D pt;
+				getPoint4d_p(ppa[0], 0, &pt);
+				ptarray_append_point(ppa[0], &pt, LW_TRUE);
+				lwpgnotice("forced closure on an un-closed KML polygon");
+			}
 		}
 	}
 
@@ -433,10 +440,17 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			                               sizeof(POINTARRAY*) * (ring + 1));
 			ppa[ring] = parse_kml_coordinates(xb->children, hasz);
 
-			if (ppa[ring]->npoints < 4
-			        || (!*hasz && !ptarray_is_closed_2d(ppa[ring]))
-			        ||  (*hasz && !ptarray_is_closed_3d(ppa[ring])))
+			if (ppa[ring]->npoints < 4)
 				lwpgerror("invalid KML representation");
+
+			if ((!*hasz && !ptarray_is_closed_2d(ppa[ring])) || 
+			    ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
+			{
+				POINT4D pt;
+				getPoint4d_p(ppa[ring], 0, &pt);
+				ptarray_append_point(ppa[ring], &pt, LW_TRUE);
+				lwpgnotice("forced closure on an un-closed KML polygon");
+			}
 
 			ring++;
 		}
