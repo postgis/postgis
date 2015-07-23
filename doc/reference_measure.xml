@@ -2188,7 +2188,8 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 		<refname>ST_DistanceSphere</refname>
 
 		<refpurpose>Returns minimum distance in meters between two lon/lat
-				geometries. Uses a spherical earth and radius of 6370986 meters.
+				geometries. Uses a spherical earth and radius derived from the spheroid 
+        defined by the SRID.
 				Faster than ST_DistanceSpheroid <xref linkend="ST_Distance_Spheroid" />, but less
 				accurate. PostGIS versions prior to 1.5 only implemented for points.</refpurpose>
 	  </refnamediv>
@@ -2207,12 +2208,10 @@ postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 2, 2 2 )
 		<title>Description</title>
 
 		<para>Returns minimum distance in meters between two lon/lat
-				points. Uses a spherical earth and radius of 6370986 meters.
+				points. Uses a spherical earth and radius derived from the spheroid 
+        defined by the SRID.
 				Faster than <xref linkend="ST_Distance_Spheroid"/>, but less
 				accurate. PostGIS Versions prior to 1.5 only implemented for points.</para>
-		<note>
-			<para>This function currently does not look at the SRID of a geometry and will always assume its in WGS 84 long lat. Prior versions of this function only support points.</para>
-		</note>
 		
 		<para>Availability: 1.5 - support for other geometry types besides points was introduced. Prior versions only work with points.</para>
 		<para>Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere</para>
