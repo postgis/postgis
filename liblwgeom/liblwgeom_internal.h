@@ -363,6 +363,23 @@ int lwtin_is_closed(const LWTIN *tin);
 /**
 * Snap to grid
 */
+
+/**
+* Snap-to-grid Support
+*/
+typedef struct gridspec_t
+{
+	double ipx;
+	double ipy;
+	double ipz;
+	double ipm;
+	double xsize;
+	double ysize;
+	double zsize;
+	double msize;
+}
+gridspec;
+
 LWGEOM* lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid);
 LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid);
 LWPOINT* lwpoint_grid(const LWPOINT *point, const gridspec *grid);
