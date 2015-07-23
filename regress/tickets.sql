@@ -861,8 +861,6 @@ INSERT INTO images VALUES (1, 'first_image', 'SRID=4326;POLYGON((-162.211667 88.
 SELECT '#2556' AS ticket, id, round(ST_Distance(extent, 'SRID=4326;POLYGON((-46.625977 81.634149,-46.625977 81.348076,-48.999023 81.348076,-48.999023 81.634149,-46.625977 81.634149))'::geography)) from images;
 DROP TABLE images;
 
--- SELECT '#2672', ST_AsTWKBAgg(null::geometry, 3);
-
 -- #2692
 WITH v AS ( SELECT 'CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry AS g FROM generate_series(1,3) ) 
 SELECT '#2692a', ST_AsText(st_collect(g)) FROM v;
