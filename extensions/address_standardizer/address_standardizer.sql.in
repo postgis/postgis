@@ -32,18 +32,18 @@ CREATE OR REPLACE FUNCTION standardize_address(
         rultab text,
         micro text,
         macro text )
-    RETURNS SETOF stdaddr
+    RETURNS stdaddr
     AS  'MODULE_PATHNAME', 'standardize_address'
-    LANGUAGE 'c' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT COST 200;
 
 CREATE OR REPLACE FUNCTION standardize_address(
         lextab text,
         gaztab text,
         rultab text,
         address text )
-    RETURNS SETOF stdaddr
+    RETURNS stdaddr
     AS  'MODULE_PATHNAME', 'standardize_address1'
-    LANGUAGE 'c' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT COST 200;
 
 CREATE OR REPLACE FUNCTION parse_address(IN text,
         OUT num text,
