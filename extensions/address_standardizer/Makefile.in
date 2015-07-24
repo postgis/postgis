@@ -28,6 +28,8 @@ OBJS_test_main = \
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 # SQL preprocessor
 SQLPP = @SQLPP@
+GREP=@GREP@
+PERL=@PERL@
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
@@ -42,8 +44,6 @@ EXTRA_CLEAN = usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
-PGXS := @PGXS@
-include $(PGXS)
 
 PGVER := $(shell $(PG_CONFIG) --version)
 
@@ -55,14 +55,11 @@ PERL=@PERL@
 # and adding the version number
 sql/%.sql: %.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
-
-sql/address_standardizer.sql: address_standardizer.sql
-	mkdir -p sql
-	cat $^ > $@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}-${MINORVERSION}'g" > $@
 	
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer.sql
 	cat $^ > $@
+
 
 # build us data extension
 sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql
@@ -142,5 +139,6 @@ tokenize.o: tokenize.c pagc_api.h
 
 std_pg_hash.o: std_pg_hash.c std_pg_hash.h pagc_api.h pagc_std_api.h
 
-
+PGXS := @PGXS@
+include $(PGXS)
 
