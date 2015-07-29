@@ -1,0 +1,20 @@
+# Status of topology functions (X = done)
+
+lwt_AddIsoNode        X
+lwt_AddEdgeModFace    X
+lwt_AddEdgeNewFaces   X
+lwt_ModEdgeSplit      X
+lwt_NewEdgesSplit     X
+
+lwt_AddIsoEdge
+lwt_GetFaceEdges
+lwt_GetFaceGeometry
+
+lwt_ChangeEdgeGeom
+lwt_MoveIsoNode
+lwt_RemEdgeNewFace
+lwt_RemEdgeModFace
+lwt_ModEdgeHeal
+lwt_NewEdgeHeal
+lwt_RemoveIsoNode
+
