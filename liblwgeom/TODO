@@ -6,7 +6,7 @@ lwt_AddEdgeNewFaces   X
 lwt_ModEdgeSplit      X
 lwt_NewEdgesSplit     X
 
-lwt_AddIsoEdge
+lwt_AddIsoEdge        X
 lwt_GetFaceEdges
 lwt_GetFaceGeometry
 

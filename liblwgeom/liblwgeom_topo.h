@@ -958,12 +958,13 @@ void lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node);
  * @param start_node identifier of the starting node
  * @param end_node identifier of the ending node
  * @param geom the edge geometry
- * @return ID of the newly added edge
+ * @return ID of the newly added edge, or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_AddIsoEdge(LWT_TOPOLOGY* topo,
                           LWT_ELEMID startNode, LWT_ELEMID endNode,
-                          LWLINE *geom);
+                          const LWLINE *geom);
 
 /**
  * Add a new edge possibly splitting a face (modifying it)

@@ -348,6 +348,16 @@ _lwt_release_edges(LWT_ISO_EDGE *edges, int num_edges)
   lwfree(edges);
 }
 
+static void
+_lwt_release_nodes(LWT_ISO_NODE *nodes, int num_nodes)
+{
+  int i;
+  for ( i=0; i<num_nodes; ++i ) {
+    lwpoint_release(nodes[i].geom);
+  }
+  lwfree(nodes);
+}
+
 /************************************************************************
  *
  * API implementation
@@ -440,6 +450,349 @@ lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
   }
 
   return node.node_id;
+}
+
+/* Check that an edge does not cross an existing node or edge
+ *
+ * Return -1 on cross, 0 if everything is fine.
+ * Note that before returning -1, lwerror is invoked...
+ */
+static int
+_lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
+                        LWT_ELEMID start_node, LWT_ELEMID end_node,
+                        const LWLINE *geom )
+{
+  int i, num_nodes, num_edges;
+  LWT_ISO_EDGE *edges;
+  LWT_ISO_NODE *nodes;
+  const GBOX *edgebox;
+  GEOSGeometry *edgegg;
+  const GEOSPreparedGeometry* prepared_edge;
+
+  edgegg = LWGEOM2GEOS( lwline_as_lwgeom(geom), 0);
+  if ( ! edgegg ) {
+    lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+  prepared_edge = GEOSPrepare( edgegg );
+  if ( ! prepared_edge ) {
+    lwerror("Could not prepare edge geometry: %s", lwgeom_geos_errmsg);
+    return -1;
+  }
+  edgebox = lwgeom_get_bbox( lwline_as_lwgeom(geom) );
+
+  /* loop over each node within the edge's gbox */
+  nodes = lwt_be_getNodeWithinBox2D( topo, edgebox, &num_nodes,
+                                            LWT_COL_NODE_ALL, 0 );
+  lwnotice("lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
+  if ( num_nodes == -1 ) {
+    GEOSPreparedGeom_destroy(prepared_edge);
+    GEOSGeom_destroy(edgegg);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for ( i=0; i<num_nodes; ++i )
+  {
+    LWT_ISO_NODE* node = &(nodes[i]);
+    GEOSGeometry *nodegg;
+    int contains;
+    if ( node->node_id == start_node ) continue;
+    if ( node->node_id == end_node ) continue;
+    /* check if the edge contains this node (not on boundary) */
+    nodegg = LWGEOM2GEOS( lwpoint_as_lwgeom(node->geom) , 0);
+    /* ST_RelateMatch(rec.relate, 'T********') */
+    contains = GEOSPreparedContains( prepared_edge, nodegg );
+    GEOSGeom_destroy(nodegg);
+    if (contains == 2)
+    {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      lwfree(nodes);
+      lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+    if ( contains )
+    {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      lwfree(nodes);
+      lwerror("SQL/MM Spatial exception - geometry crosses a node");
+      return -1;
+    }
+  }
+  if ( nodes ) lwfree(nodes); /* may be NULL if num_nodes == 0 */
+
+  /* loop over each edge within the edge's gbox */
+  edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
+  LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %d edges", num_edges);
+  if ( num_edges == -1 ) {
+    GEOSPreparedGeom_destroy(prepared_edge);
+    GEOSGeom_destroy(edgegg);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for ( i=0; i<num_edges; ++i )
+  {
+    LWT_ISO_EDGE* edge = &(edges[i]);
+    GEOSGeometry *eegg;
+    char *relate;
+    int match;
+
+    if ( ! edge->geom ) {
+      lwerror("Edge %d has NULL geometry!", edge->edge_id);
+      return -1;
+    }
+
+    eegg = LWGEOM2GEOS( lwline_as_lwgeom(edge->geom), 0 );
+    if ( ! eegg ) {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+
+    LWDEBUGF(2, "Edge %d converted to GEOS", edge->edge_id);
+
+    /* check if the edge crosses our edge (not boundary-boundary) */
+
+    relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
+    if ( ! relate ) {
+      GEOSGeom_destroy(eegg);
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+
+    LWDEBUGF(2, "Edge %d relate pattern is %s", edge->edge_id, relate);
+
+    match = GEOSRelatePatternMatch(relate, "F********");
+    if ( match ) {
+      if ( match == 2 ) {
+        GEOSPreparedGeom_destroy(prepared_edge);
+        GEOSGeom_destroy(edgegg);
+        GEOSGeom_destroy(eegg);
+        GEOSFree(relate);
+        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+      else continue; /* no interior intersection */
+    }
+
+    match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
+    if ( match ) {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      GEOSGeom_destroy(eegg);
+      GEOSFree(relate);
+      if ( match == 2 ) {
+        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+      } else {
+        lwerror("SQL/MM Spatial exception - coincident edge %" PRId64,
+                edge->edge_id);
+      }
+      return -1;
+    }
+
+    match = GEOSRelatePatternMatch(relate, "1********");
+    if ( match ) {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      GEOSGeom_destroy(eegg);
+      GEOSFree(relate);
+      if ( match == 2 ) {
+        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+      } else {
+        lwerror("Spatial exception - geometry intersects edge %" PRId64,
+                edge->edge_id);
+      }
+      return -1;
+    }
+
+    match = GEOSRelatePatternMatch(relate, "T********");
+    if ( match ) {
+      GEOSPreparedGeom_destroy(prepared_edge);
+      GEOSGeom_destroy(edgegg);
+      GEOSGeom_destroy(eegg);
+      GEOSFree(relate);
+      if ( match == 2 ) {
+        lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
+      } else {
+        lwerror("SQL/MM Spatial exception - geometry crosses edge %"
+                PRId64, edge->edge_id);
+      }
+      return -1;
+    }
+
+    LWDEBUGF(2, "Edge %d analisys completed, it does no harm", edge->edge_id);
+
+    GEOSFree(relate);
+    GEOSGeom_destroy(eegg);
+  }
+  if ( edges ) lwfree(edges); /* would be NULL if num_edges was 0 */
+
+  GEOSPreparedGeom_destroy(prepared_edge);
+  GEOSGeom_destroy(edgegg);
+
+  return 0;
+}
+
+
+LWT_ELEMID
+lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
+                LWT_ELEMID endNode, const LWLINE* geom )
+{
+  int num_nodes;
+  int i;
+  LWT_ISO_EDGE newedge;
+  LWT_ISO_NODE *endpoints;
+  LWT_ELEMID containing_face = -1;
+  LWT_ELEMID *node_ids;
+  int skipISOChecks = 0;
+  POINT2D p1, p2;
+
+  /* NOT IN THE SPECS:
+   * A closed edge is never isolated (as it forms a face)
+   */
+  if ( startNode == endNode )
+  {
+    lwerror("Closed edges would not be isolated, try lwt_AddEdgeNewFaces");
+    return -1;
+  }
+
+  if ( ! skipISOChecks )
+  {
+    /* Acurve must be simple */
+    if ( ! lwgeom_is_simple(lwline_as_lwgeom(geom)) )
+    {
+      lwerror("SQL/MM Spatial exception - curve not simple");
+      return -1;
+    }
+  }
+
+  /*
+   * Check for:
+   *    existence of nodes
+   *    nodes faces match
+   * Extract:
+   *    nodes face id
+   *    nodes geoms
+   */
+  num_nodes = 2;
+  node_ids = lwalloc(sizeof(LWT_ELEMID) * num_nodes);
+  node_ids[0] = startNode;
+  node_ids[1] = endNode;
+  endpoints = lwt_be_getNodeById( topo, node_ids, &num_nodes,
+                                             LWT_COL_NODE_ALL );
+  if ( ! endpoints ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( num_nodes < 2 )
+  {
+    _lwt_release_nodes(endpoints, num_nodes);
+    lwerror("SQL/MM Spatial exception - non-existent node");
+    return -1;
+  }
+  for ( i=0; i<num_nodes; ++i )
+  {
+    const LWT_ISO_NODE *n = &(endpoints[i]);
+    if ( n->containing_face == -1 )
+    {
+      _lwt_release_nodes(endpoints, num_nodes);
+      lwerror("SQL/MM Spatial exception - not isolated node");
+      return -1;
+    }
+    if ( containing_face == -1 ) containing_face = n->containing_face;
+    else if ( containing_face != n->containing_face )
+    {
+      _lwt_release_nodes(endpoints, num_nodes);
+      lwerror("SQL/MM Spatial exception - nodes in different faces");
+      return -1;
+    }
+
+    if ( ! skipISOChecks )
+    {
+      if ( n->node_id == startNode )
+      {
+        /* l) Check that start point of acurve match start node geoms. */
+        getPoint2d_p(geom->points, 0, &p1);
+        getPoint2d_p(n->geom->point, 0, &p2);
+        if ( ! p2d_same(&p1, &p2) )
+        {
+          _lwt_release_nodes(endpoints, num_nodes);
+          lwerror("SQL/MM Spatial exception - "
+                  "start node not geometry start point.");
+          return -1;
+        }
+      }
+      else
+      {
+        /* m) Check that end point of acurve match end node geoms. */
+        getPoint2d_p(geom->points, geom->points->npoints-1, &p1);
+        getPoint2d_p(n->geom->point, 0, &p2);
+        if ( ! p2d_same(&p1, &p2) )
+        {
+          _lwt_release_nodes(endpoints, num_nodes);
+          lwerror("SQL/MM Spatial exception - "
+                  "end node not geometry end point.");
+          return -1;
+        }
+      }
+    }
+  }
+
+  if ( ! skipISOChecks )
+    _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom );
+
+  /*
+   * All checks passed, time to prepare the new edge
+   */
+
+  newedge.edge_id = lwt_be_getNextEdgeId( topo );
+  if ( newedge.edge_id == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  /* TODO: this should likely be an exception instead ! */
+  if ( containing_face == -1 ) containing_face = 0;
+
+  newedge.start_node = startNode;
+  newedge.end_node = endNode;
+  newedge.face_left = newedge.face_right = containing_face;
+  newedge.next_left = -newedge.edge_id;
+  newedge.next_right = newedge.edge_id;
+  newedge.geom = (LWLINE *)geom; /* const cast.. */
+
+  int ret = lwt_be_insertEdges(topo, &newedge, 1);
+  if ( ret == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  } else if ( ret == 0 ) {
+    lwerror("Insertion of split edge failed (no reason)");
+    return -1;
+  }
+
+  /*
+   * Update Node containing_face values
+   *
+   * the nodes anode and anothernode are no more isolated
+   * because now there is an edge connecting them
+   */ 
+  LWT_ISO_NODE *updated_nodes = lwalloc(sizeof(LWT_ISO_NODE) * 2);
+  updated_nodes[0].node_id = startNode;
+  updated_nodes[0].containing_face = -1;
+  updated_nodes[1].node_id = endNode;
+  updated_nodes[1].containing_face = -1;
+  ret = lwt_be_updateNodesById(topo, updated_nodes, 2,
+                               LWT_COL_NODE_CONTAINING_FACE);
+  if ( ret == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  return newedge.edge_id;
 }
 
 static LWCOLLECTION *
@@ -1617,7 +1970,6 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   const LWPOINT *start_node_geom = NULL;
   const LWPOINT *end_node_geom = NULL;
   int num_nodes;
-  int num_edges;
   LWT_ISO_NODE *endpoints;
   int i;
   int prev_left;
@@ -1767,175 +2119,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
     }
 
-    LWT_ISO_EDGE *edges;
-    LWT_ISO_NODE *nodes;
-    const GBOX *edgebox;
-    GEOSGeometry *edgegg;
-    const GEOSPreparedGeometry* prepared_edge;
-
-    edgegg = LWGEOM2GEOS( lwline_as_lwgeom(geom), 0);
-    if ( ! edgegg ) {
-      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    prepared_edge = GEOSPrepare( edgegg );
-    if ( ! prepared_edge ) {
-      lwerror("Could not prepare edge geometry: %s", lwgeom_geos_errmsg);
-      return -1;
-    }
-    edgebox = lwgeom_get_bbox( lwline_as_lwgeom(geom) );
-
-    /* loop over each node within the edge's gbox */
-    nodes = lwt_be_getNodeWithinBox2D( topo, edgebox, &num_nodes, LWT_COL_NODE_ALL, 0 );
-    lwnotice("lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
-    if ( num_nodes == -1 ) {
-      GEOSPreparedGeom_destroy(prepared_edge);
-      GEOSGeom_destroy(edgegg);
-      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-      return -1;
-    }
-    for ( i=0; i<num_nodes; ++i )
-    {
-      LWT_ISO_NODE* node = &(nodes[i]);
-      GEOSGeometry *nodegg;
-      int contains;
-      if ( node->node_id == start_node ) continue;
-      if ( node->node_id == end_node ) continue;
-      /* check if the edge contains this node (not on boundary) */
-      nodegg = LWGEOM2GEOS( lwpoint_as_lwgeom(node->geom) , 0);
-      /* ST_RelateMatch(rec.relate, 'T********') */
-      contains = GEOSPreparedContains( prepared_edge, nodegg );
-		  GEOSGeom_destroy(nodegg);
-	    if (contains == 2)
-      {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        lwfree(nodes);
-        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
-        return -1;
-      }
-      if ( contains )
-      {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        lwfree(nodes);
-        lwerror("SQL/MM Spatial exception - geometry crosses a node");
-        return -1;
-      }
-    }
-    if ( nodes ) lwfree(nodes); /* may be NULL if num_nodes == 0 */
-
-    /* loop over each edge within the edge's gbox */
-    edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
-    LWDEBUGF(1, "lwt_be_getEdgeWithinBox2D returned %d edges", num_edges);
-    if ( num_edges == -1 ) {
-      GEOSPreparedGeom_destroy(prepared_edge);
-      GEOSGeom_destroy(edgegg);
-      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-      return -1;
-    }
-    for ( i=0; i<num_edges; ++i )
-    {
-      LWT_ISO_EDGE* edge = &(edges[i]);
-      GEOSGeometry *eegg;
-      char *relate;
-      int match;
-
-      if ( ! edge->geom ) {
-        lwerror("Edge %d has NULL geometry!", edge->edge_id);
-        return -1;
-      }
-
-      eegg = LWGEOM2GEOS( lwline_as_lwgeom(edge->geom), 0 );
-      if ( ! eegg ) {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
-        return -1;
-      }
-
-      LWDEBUGF(2, "Edge %d converted to GEOS", edge->edge_id);
-
-      /* check if the edge crosses our edge (not boundary-boundary) */
-
-      relate = GEOSRelateBoundaryNodeRule(eegg, edgegg, 2);
-      if ( ! relate ) {
-        GEOSGeom_destroy(eegg);
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
-        return -1;
-      }
-
-      LWDEBUGF(2, "Edge %d relate pattern is %s", edge->edge_id, relate);
-
-      match = GEOSRelatePatternMatch(relate, "F********");
-      if ( match ) {
-        if ( match == 2 ) {
-          GEOSPreparedGeom_destroy(prepared_edge);
-          GEOSGeom_destroy(edgegg);
-          GEOSGeom_destroy(eegg);
-          GEOSFree(relate);
-          lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-          return -1;
-        }
-        else continue; /* no interior intersection */
-      }
-
-      match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
-      if ( match ) {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        GEOSGeom_destroy(eegg);
-        GEOSFree(relate);
-        if ( match == 2 ) {
-          lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-        } else {
-          lwerror("SQL/MM Spatial exception - coincident edge %" PRId64,
-                  edge->edge_id);
-        }
-        return -1;
-      }
-
-      match = GEOSRelatePatternMatch(relate, "1********");
-      if ( match ) {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        GEOSGeom_destroy(eegg);
-        GEOSFree(relate);
-        if ( match == 2 ) {
-          lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-        } else {
-          lwerror("Spatial exception - geometry intersects edge %" PRId64,
-                  edge->edge_id);
-        }
-        return -1;
-      }
-
-      match = GEOSRelatePatternMatch(relate, "T********");
-      if ( match ) {
-        GEOSPreparedGeom_destroy(prepared_edge);
-        GEOSGeom_destroy(edgegg);
-        GEOSGeom_destroy(eegg);
-        GEOSFree(relate);
-        if ( match == 2 ) {
-          lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
-        } else {
-          lwerror("SQL/MM Spatial exception - geometry crosses edge %"
-                  PRId64, edge->edge_id);
-        }
-        return -1;
-      }
-
-      LWDEBUGF(2, "Edge %d analisys completed, it does no harm", edge->edge_id);
-
-      GEOSFree(relate);
-      GEOSGeom_destroy(eegg);
-    }
-    if ( edges ) lwfree(edges); /* would be NULL if num_edges was 0 */
-
-    GEOSPreparedGeom_destroy(prepared_edge);
-    GEOSGeom_destroy(edgegg);
+    _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom );
 
   } /* ! skipChecks */
 

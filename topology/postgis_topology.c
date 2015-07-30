@@ -386,7 +386,7 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
     if ( node->containing_face != -1 ) {
       appendStringInfo(str, "%" PRId64, node->containing_face);
     } else {
-      appendStringInfoString(str, "NULL");
+      appendStringInfoString(str, "null::int");
     }
     sep = sep1;
   }
@@ -453,7 +453,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
   if ( fields & LWT_COL_NODE_CONTAINING_FACE ) {
     if ( node->containing_face != -1 )
       appendStringInfo(str, "%s%" PRId64, sep, node->containing_face);
-    else appendStringInfo(str, "%snull", sep);
+    else appendStringInfo(str, "%snull::int", sep);
   }
 
   if ( fields & LWT_COL_NODE_GEOM ) {
@@ -463,7 +463,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
       appendStringInfo(str, "%s'%s'::geometry", sep, hexewkb);
       lwfree(hexewkb);
     } else {
-      appendStringInfo(str, "%snull", sep);
+      appendStringInfo(str, "%snull::geometry", sep);
     }
   }
 
@@ -484,7 +484,7 @@ addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
               face->mbr->xmin, face->mbr->ymin,
               face->mbr->xmax, face->mbr->ymax, srid);
   } else {
-    appendStringInfoString(str, ",null)");
+    appendStringInfoString(str, ",null::geometry)");
   }
 }
 
@@ -2435,6 +2435,80 @@ Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
 
   SPI_finish();
   PG_RETURN_INT32(node_id);
+}
+
+/*  ST_AddIsoEdge(atopology, anode, anothernode, acurve) */
+Datum ST_AddIsoEdge(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_AddIsoEdge);
+Datum ST_AddIsoEdge(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID edge_id;
+  LWT_ELEMID start_node, end_node;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWLINE *curve;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) ||
+       PG_ARGISNULL(2) || PG_ARGISNULL(3) )
+  {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  start_node = PG_GETARG_INT32(1);
+  end_node = PG_GETARG_INT32(2);
+
+  if ( start_node == end_node ) {
+    lwpgerror("Closed edges would not be isolated, try ST_AddEdgeNewFaces");
+    PG_RETURN_NULL();
+  }
+
+  geom = PG_GETARG_GSERIALIZED_P(3);
+  lwgeom = lwgeom_from_gserialized(geom);
+  curve = lwgeom_as_lwline(lwgeom);
+  if ( ! curve ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 3);
+    lwpgerror("SQL/MM Spatial exception - invalid curve");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_AddIsoEdge");
+  edge_id = lwt_AddIsoEdge(topo, start_node, end_node, curve);
+  POSTGIS_DEBUG(1, "lwt_AddIsoNode returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 3);
+  lwt_FreeTopology(topo);
+
+  if ( edge_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(edge_id);
 }
 
 /*  ST_AddEdgeModFace(atopology, snode, enode, line) */
