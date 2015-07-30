@@ -96,6 +96,7 @@ PostGIS 2.2.0
 
  * Enhancements *
 
+  - #2278, Make liblwgeom compatible between minor releases
   - #897, ST_AsX3D support for GeoCoordinates and systems "GD" "WE"
            ability to flip x/y axis (use option = 2, 3)
   - ST_Split: allow splitting lines by multilines, multipoints
