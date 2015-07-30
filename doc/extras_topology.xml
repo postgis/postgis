@@ -2077,8 +2077,8 @@ SELECT (topology.ST_GetFaceEdges('tt', 1)).*;
 (7 rows)
 </programlisting>
 <programlisting>
--- Returns the sequenc, edge id
--- , and geometry of the edges that bound face 1
+-- Returns the sequence, edge id
+-- and geometry of the edges that bound face 1
 -- If you just need geom and seq, can use ST_GetFaceGeometry
 SELECT t.seq, t.edge, geom
 FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
