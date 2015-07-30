@@ -78,8 +78,9 @@ struct LWT_TOPOLOGY_T
 {
   const LWT_BE_IFACE *be_iface;
   LWT_BE_TOPOLOGY *be_topo;
-  char *name;
-  char *table_prefix;
+  int srid;
+  double precision;
+  int hasZ;
 };
 
 #endif /* LIBLWGEOM_TOPO_INTERNAL_H */

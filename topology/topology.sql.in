@@ -1562,7 +1562,7 @@ BEGIN
   -- Scan the table looking for NULL geometries
   FOR rec IN EXECUTE
     'SELECT f1.face_id FROM '
-       'face_check f1 WHERE f1.geom IS NULL'
+       'face_check f1 WHERE f1.geom IS NULL OR ST_IsEmpty(f1.geom)'
   LOOP
     -- Face missing !
     retrec.error := 'face has no rings';

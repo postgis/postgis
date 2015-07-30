@@ -70,6 +70,7 @@ struct LWT_BE_TOPOLOGY_T {
   int id;
   int srid;
   int precision;
+  int hasZ;
 };
 
 /* utility funx */
@@ -156,6 +157,24 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
              name, topo->id, topo->srid);
 
   return topo;
+}
+
+static int
+cb_topoGetSRID(const LWT_BE_TOPOLOGY* topo)
+{
+  return topo->srid;
+}
+
+static int
+cb_topoHasZ(const LWT_BE_TOPOLOGY* topo)
+{
+  return topo->hasZ;
+}
+
+static double
+cb_topoGetPrecision(const LWT_BE_TOPOLOGY* topo)
+{
+  return topo->precision;
 }
 
 static int
@@ -2183,7 +2202,10 @@ static LWT_BE_CALLBACKS be_callbacks = {
     cb_getEdgeByFace,
     cb_getNodeByFace,
     cb_updateNodesById,
-    cb_deleteFacesById
+    cb_deleteFacesById,
+    cb_topoGetSRID,
+    cb_topoGetPrecision,
+    cb_topoHasZ
 };
 
 
@@ -2643,4 +2665,64 @@ Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS)
 
   SPI_finish();
   PG_RETURN_INT32(edge_id);
+}
+
+/* ST_GetFaceGeometry(atopology, aface) */
+Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_GetFaceGeometry);
+Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  LWT_ELEMID face_id;
+  LWGEOM *lwgeom;
+  LWT_TOPOLOGY *topo;
+  GSERIALIZED *geom;
+  MemoryContext old_context;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  face_id = PG_GETARG_INT32(1) ;
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetFaceGeometry");
+  lwgeom = lwt_GetFaceGeometry(topo, face_id);
+  POSTGIS_DEBUG(1, "lwt_GetFaceGeometry returned");
+  lwt_FreeTopology(topo);
+
+  if ( lwgeom == NULL ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  /* Serialize in upper memory context (outside of SPI) */
+  /* TODO: use a narrower context to switch to */
+  old_context = MemoryContextSwitchTo( TopMemoryContext );
+  geom = geometry_serialize(lwgeom);
+  MemoryContextSwitchTo(old_context);
+
+  SPI_finish();
+
+  PG_RETURN_POINTER(geom);
 }
