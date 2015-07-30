@@ -2424,7 +2424,7 @@ Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
   node_id = lwt_AddIsoNode(topo, containing_face, pt, 0);
   POSTGIS_DEBUG(1, "lwt_AddIsoNode returned");
   lwgeom_free(lwgeom);
-  PG_FREE_IF_COPY(geom, 3);
+  PG_FREE_IF_COPY(geom, 2);
   lwt_FreeTopology(topo);
 
   if ( node_id == -1 ) {
