@@ -1094,6 +1094,19 @@ LWT_ELEMID lwt_NewEdgesSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, i
 LWT_ELEMID lwt_ModEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
 
 /**
+ * Merge two edges, replacing both with a new one
+ *
+ * For ST_NewEdgeHeal
+ *
+ * @param topo the topology to operate on
+ * @param e1 identifier of first edge
+ * @param e2 identifier of second edge
+ * @return the id of the removed node
+ *
+ */
+LWT_ELEMID lwt_NewEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
+
+/**
  * Return the list of directed edges bounding a face
  *
  * For ST_GetFaceEdges
