@@ -54,6 +54,7 @@ PERL=@PERL@
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number
 sql/%.sql: %.sql.in
+	mkdir -p sql
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}-${MINORVERSION}'g" > $@
 	
