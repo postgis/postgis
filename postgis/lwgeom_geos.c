@@ -3097,6 +3097,14 @@ Datum ST_Equals(PG_FUNCTION_ARGS)
 		}
 	}
 
+	/*
+	 * short-circuit: if geom1 and geom2 are binary-equivalent, we can return
+	 * TRUE.  This is much faster than doing the comparison using GEOS.
+	 */
+	if (VARSIZE(geom1) == VARSIZE(geom2) && !memcmp(geom1, geom2, VARSIZE(geom1))) {
+	    PG_RETURN_BOOL(TRUE);
+	}
+
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
