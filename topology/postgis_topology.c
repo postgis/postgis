@@ -236,37 +236,37 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
   appendStringInfoChar(str, '(');
   if ( fields & LWT_COL_EDGE_EDGE_ID ) {
     if ( edge->edge_id != -1 )
-      appendStringInfo(str, "%" PRId64, edge->edge_id);
+      appendStringInfo(str, "" INT64_FORMAT, edge->edge_id);
     else
       appendStringInfoString(str, "DEFAULT");
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->start_node);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->start_node);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_END_NODE ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->end_node);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->end_node);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->face_left);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->face_left);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->face_right);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->face_right);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->next_left);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->next_left);
     if ( fullEdgeData )
-      appendStringInfo(str, ",%" PRId64, ABS(edge->next_left));
+      appendStringInfo(str, "," INT64_FORMAT, ABS(edge->next_left));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
-    appendStringInfo(str, "%s%" PRId64, sep, edge->next_right);
+    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->next_right);
     if ( fullEdgeData )
-      appendStringInfo(str, ",%" PRId64, ABS(edge->next_right));
+      appendStringInfo(str, "," INT64_FORMAT, ABS(edge->next_right));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_GEOM )
@@ -318,45 +318,45 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
 
   if ( fields & LWT_COL_EDGE_EDGE_ID ) {
     appendStringInfoString(str, "edge_id ");
-    appendStringInfo(str, "%s %" PRId64, op, edge->edge_id);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->edge_id);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
     appendStringInfo(str, "%sstart_node ", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->start_node);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->start_node);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_END_NODE ) {
     appendStringInfo(str, "%send_node", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->end_node);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->end_node);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT ) {
     appendStringInfo(str, "%sleft_face", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->face_left);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->face_left);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
     appendStringInfo(str, "%sright_face", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->face_right);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->face_right);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
     appendStringInfo(str, "%snext_left_edge", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->next_left);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->next_left);
     sep = sep1;
     if ( fullEdgeData ) {
       appendStringInfo(str, "%s abs_next_left_edge", sep);
-      appendStringInfo(str, "%s %" PRId64, op, ABS(edge->next_left));
+      appendStringInfo(str, "%s " INT64_FORMAT, op, ABS(edge->next_left));
     }
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
     appendStringInfo(str, "%snext_right_edge", sep);
-    appendStringInfo(str, "%s %" PRId64, op, edge->next_right);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->next_right);
     sep = sep1;
     if ( fullEdgeData ) {
       appendStringInfo(str, "%s abs_next_right_edge", sep);
-      appendStringInfo(str, "%s %" PRId64, op, ABS(edge->next_right));
+      appendStringInfo(str, "%s " INT64_FORMAT, op, ABS(edge->next_right));
     }
   }
   if ( fields & LWT_COL_EDGE_GEOM ) {
@@ -397,13 +397,13 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
     appendStringInfoString(str, "node_id ");
-    appendStringInfo(str, "%s %" PRId64, op, node->node_id);
+    appendStringInfo(str, "%s " INT64_FORMAT, op, node->node_id);
     sep = sep1;
   }
   if ( fields & LWT_COL_NODE_CONTAINING_FACE ) {
     appendStringInfo(str, "%scontaining_face %s", sep, op);
     if ( node->containing_face != -1 ) {
-      appendStringInfo(str, "%" PRId64, node->containing_face);
+      appendStringInfo(str, "" INT64_FORMAT, node->containing_face);
     } else {
       appendStringInfoString(str, "null::int");
     }
@@ -463,7 +463,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
     if ( node->node_id != -1 )
-      appendStringInfo(str, "%" PRId64, node->node_id);
+      appendStringInfo(str, "" INT64_FORMAT, node->node_id);
     else
       appendStringInfoString(str, "DEFAULT");
     sep = ",";
@@ -471,7 +471,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 
   if ( fields & LWT_COL_NODE_CONTAINING_FACE ) {
     if ( node->containing_face != -1 )
-      appendStringInfo(str, "%s%" PRId64, sep, node->containing_face);
+      appendStringInfo(str, "%s" INT64_FORMAT, sep, node->containing_face);
     else appendStringInfo(str, "%snull::int", sep);
   }
 
@@ -494,7 +494,7 @@ static void
 addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
 {
   if ( face->face_id != -1 )
-    appendStringInfo(str, "(%" PRId64, face->face_id);
+    appendStringInfo(str, "(" INT64_FORMAT, face->face_id);
   else
     appendStringInfoString(str, "(DEFAULT");
 
@@ -730,7 +730,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE edge_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getEdgeById query: %s", sql->data);
@@ -776,12 +776,12 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE start_node IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ") OR end_node IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -829,12 +829,12 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE left_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ") OR right_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -882,7 +882,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE face_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -925,9 +925,9 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
 
   initStringInfo(sql);
   appendStringInfo(sql, "WITH RECURSIVE edgering AS ( "
-    "SELECT %" PRId64
+    "SELECT " INT64_FORMAT
     " as signed_edge_id, edge_id, next_left_edge, next_right_edge "
-    "FROM \"%s\".edge_data WHERE edge_id = %" PRId64 " UNION "
+    "FROM \"%s\".edge_data WHERE edge_id = " INT64_FORMAT " UNION "
     "SELECT CASE WHEN "
     "p.signed_edge_id < 0 THEN p.next_right_edge ELSE p.next_left_edge END, "
     "e.edge_id, e.next_left_edge, e.next_right_edge "
@@ -1001,7 +1001,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE node_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getNodeById query: %s", sql->data);
@@ -1046,7 +1046,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE containing_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getNodeByFace query: %s", sql->data);
@@ -1548,7 +1548,7 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
   for (i=0; i<numfaces; ++i) {
     const LWT_ISO_FACE* face = &(faces[i]);
     appendStringInfo(sql,
-      "%" PRId64 " id, ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d) mbr",
+      "" INT64_FORMAT " id, ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d) mbr",
       face->face_id, face->mbr->xmin, face->mbr->ymin,
       face->mbr->xmax, face->mbr->ymax, topo->srid);
   }
@@ -1741,7 +1741,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-    "AND abs(r.element_id) = %" PRId64 " AND r.element_type = 2",
+    "AND abs(r.element_id) = " INT64_FORMAT " AND r.element_type = 2",
     topo->name, (new_edge2 == -1 ? "," : "USING" ), topo->id, split_edge );
   if ( new_edge2 != -1 ) {
     appendStringInfo(sql, " RETURNING %s", proj);
@@ -1805,7 +1805,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
     resetStringInfo(sql);
     appendStringInfo(sql,
       "INSERT INTO \"%s\".relation VALUES ("
-      "%d,%d,%" PRId64 ",%d)", topo->name,
+      "%d,%d," INT64_FORMAT ",%d)", topo->name,
       topogeo_id, layer_id, negate ? -new_edge1 : new_edge1, element_type);
     spi_result = SPI_execute(sql->data, false, 0);
     if ( spi_result != SPI_OK_INSERT ) {
@@ -1818,7 +1818,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
       resetStringInfo(sql);
       appendStringInfo(sql,
         "INSERT INTO FROM \"%s\".relation VALUES ("
-        "%d,%d,%" PRId64 ",%d", topo->name,
+        "%d,%d," INT64_FORMAT ",%d", topo->name,
         topogeo_id, layer_id, negate ? -new_edge2 : new_edge2, element_type);
       spi_result = SPI_execute(sql->data, false, 0);
       if ( spi_result != SPI_OK_INSERT ) {
@@ -1858,7 +1858,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-    "AND abs(r.element_id) = %" PRId64 " AND r.element_type = 3",
+    "AND abs(r.element_id) = " INT64_FORMAT " AND r.element_type = 3",
     topo->name, (new_face2 == -1 ? "," : "USING" ), topo->id, split_face );
   if ( new_face2 != -1 ) {
     appendStringInfo(sql, " RETURNING %s", proj);
@@ -1921,7 +1921,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
     resetStringInfo(sql);
     appendStringInfo(sql,
       "INSERT INTO \"%s\".relation VALUES ("
-      "%d,%d,%" PRId64 ",%d)", topo->name,
+      "%d,%d," INT64_FORMAT ",%d)", topo->name,
       topogeo_id, layer_id, negate ? -new_face1 : new_face1, element_type);
 
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit query: %s", sql->data);
@@ -1937,7 +1937,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
       resetStringInfo(sql);
       appendStringInfo(sql,
         "INSERT INTO \"%s\".relation VALUES ("
-        "%d,%d,%" PRId64 ",%d)", topo->name,
+        "%d,%d," INT64_FORMAT ",%d)", topo->name,
         topogeo_id, layer_id, negate ? -new_face2 : new_face2, element_type);
 
       POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit query: %s", sql->data);
@@ -2013,7 +2013,7 @@ cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
   initStringInfo(sql);
   appendStringInfo(sql, "DELETE FROM \"%s\".face WHERE face_id IN (", topo->name);
   for (i=0; i<numelems; ++i) {
-    appendStringInfo(sql, "%s%" PRId64, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
