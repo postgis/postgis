@@ -1249,8 +1249,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	int stats_slot;                     /* What slot is this data going into? (2D vs ND) */
 	int stats_kind;                     /* And this is what? (2D vs ND) */
 
-	/* Initialize sums */
-	memset(&sum, 0, sizeof(ND_BOX));
+	/* Initialize sum and stddev */
+	nd_box_init(&sum);
+	nd_box_init(&stddev);
 
 	/*
 	 * This is where gserialized_analyze_nd
