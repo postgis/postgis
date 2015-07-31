@@ -690,6 +690,30 @@ typedef struct LWT_BE_CALLBACKS_T {
       int numelems
   );
 
+  /**
+   * Get topology SRID
+   * @return 0 for unknown
+   */
+  int (*topoGetSRID) (
+      const LWT_BE_TOPOLOGY* topo
+  );
+
+  /**
+   * Get topology precision
+   */
+  double (*topoGetPrecision) (
+      const LWT_BE_TOPOLOGY* topo
+  );
+
+  /**
+   * Get topology Z flag
+   * @return 1 if topology elements do have Z value, 0 otherwise
+   */
+  int (*topoHasZ) (
+      const LWT_BE_TOPOLOGY* topo
+  );
+
+
 } LWT_BE_CALLBACKS;
 
 
@@ -1116,7 +1140,8 @@ LWT_ELEMID lwt_NewEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
  * @param face identifier of the face
  * @param edges will be set to an array of signed edge identifiers, will
  *              need to be released with lwfree
- * @return the number of edges in the edges array
+ * @return the number of edges in the edges array, or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 int lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges);
@@ -1129,7 +1154,8 @@ int lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges);
  * @param topo the topology to operate on
  * @param face identifier of the face
  * @return a polygon geometry representing the face, ownership to caller,
- *         to be released with lwgeom_release
+ *         to be released with lwgeom_release, or NULL on error
+ *         (liblwgeom error handler will be invoked with error message)
  */
 LWGEOM* lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID face);
 

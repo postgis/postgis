@@ -113,6 +113,24 @@ lwt_be_loadTopologyByName(LWT_BE_IFACE *be, const char *name)
   CB1(be, loadTopologyByName, name);
 }
 
+static int
+lwt_be_topoGetSRID(LWT_TOPOLOGY *topo)
+{
+  CBT0(topo, topoGetSRID);
+}
+
+static double
+lwt_be_topoGetPrecision(LWT_TOPOLOGY *topo)
+{
+  CBT0(topo, topoGetPrecision);
+}
+
+static int
+lwt_be_topoHasZ(LWT_TOPOLOGY *topo)
+{
+  CBT0(topo, topoHasZ);
+}
+
 int
 lwt_be_freeTopology(LWT_TOPOLOGY *topo)
 {
@@ -379,8 +397,9 @@ lwt_LoadTopology( LWT_BE_IFACE *iface, const char *name )
   topo = lwalloc(sizeof(LWT_TOPOLOGY));
   topo->be_iface = iface;
   topo->be_topo = be_topo;
-  topo->name = NULL; /* don't want to think about it now.. */
-  topo->table_prefix = NULL; /* don't want to think about it now */
+  topo->srid = lwt_be_topoGetSRID(topo);
+  topo->hasZ = lwt_be_topoHasZ(topo);
+  topo->precision = lwt_be_topoGetPrecision(topo);
 
   return topo;
 }
@@ -468,6 +487,8 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   const GBOX *edgebox;
   GEOSGeometry *edgegg;
   const GEOSPreparedGeometry* prepared_edge;
+
+  initGEOS(lwnotice, lwgeom_geos_error);
 
   edgegg = LWGEOM2GEOS( lwline_as_lwgeom(geom), 0);
   if ( ! edgegg ) {
@@ -1977,8 +1998,6 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   LWT_ISO_EDGE seledge;
   LWT_ISO_EDGE updedge;
 
-  initGEOS(lwnotice, lwgeom_geos_error);
-
   if ( ! skipChecks )
   {
     /* curve must be simple */
@@ -2343,8 +2362,6 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     }
   }
 
-  lwnotice("XXXX end of adding an edge, newedge.face_left is %d, newface is %d, newface1 is %d", newedge.face_left, newface, newface1);
-
   /*
    * Update topogeometries, if needed
    */
@@ -2385,4 +2402,106 @@ lwt_AddEdgeNewFaces( LWT_TOPOLOGY* topo,
                     LWLINE *geom, int skipChecks )
 {
   return _lwt_AddEdge( topo, start_node, end_node, geom, skipChecks, 0 );
+}
+
+LWGEOM*
+lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
+{
+  int numfaceedges;
+  LWT_ISO_EDGE *edges;
+  LWT_ISO_FACE *face;
+  LWPOLY *out;
+  LWGEOM *outg;
+  int i;
+  int fields;
+
+  if ( faceid == 0 )
+  {
+    lwerror("SQL/MM Spatial exception - universal face has no geometry");
+    return NULL;
+  }
+
+  /* Construct the face geometry */
+  numfaceedges = 1;
+  fields = LWT_COL_EDGE_GEOM |
+           LWT_COL_EDGE_FACE_LEFT |
+           LWT_COL_EDGE_FACE_RIGHT
+           ;
+  edges = lwt_be_getEdgeByFace( topo, &faceid, &numfaceedges, fields );
+  if ( numfaceedges == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return NULL;
+  }
+
+  if ( numfaceedges == 0 )
+  {
+    i = 1;
+    face = lwt_be_getFaceById(topo, &faceid, &i, LWT_COL_FACE_FACE_ID);
+    if ( i == -1 ) {
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return NULL;
+    }
+    if ( i == 0 ) {
+      lwerror("SQL/MM Spatial exception - non-existent face.");
+      return NULL;
+    }
+    lwfree( face );
+    if ( i > 1 ) {
+      lwerror("Corrupted topology: multiple face records have face_id=%"
+              PRId64, faceid);
+      return NULL;
+    }
+    /* Face has no boundary edges, we'll return EMPTY, see
+     * https://trac.osgeo.org/postgis/ticket/3221 */
+    out = lwpoly_construct_empty(topo->srid, topo->hasZ, 0);
+    return lwpoly_as_lwgeom(out);
+  }
+
+  /* Linemerge polygon boundaries */
+
+  LWGEOM **geoms = lwalloc( sizeof(LWGEOM*) * numfaceedges );
+  int validedges = 0;
+  for ( i=0; i<numfaceedges; ++i )
+  {
+    /* NOTE: skipping edges with same face on both sides, although
+     *       correct, results in a failure to build faces from
+     *       invalid topologies as expected by legacy tests.
+     * TODO: update legacy tests expectances/unleash this skipping ?
+     */
+    /* if ( edges[i].face_left == edges[i].face_right ) continue; */
+    geoms[validedges++] = lwline_as_lwgeom(edges[i].geom);
+  }
+  if ( ! validedges )
+  {
+    lwfree(geoms);
+    /* Face has no valid boundary edges, we'll return EMPTY, see
+     * https://trac.osgeo.org/postgis/ticket/3221 */
+    out = lwpoly_construct_empty(topo->srid, topo->hasZ, 0);
+    return lwpoly_as_lwgeom(out);
+  }
+  LWCOLLECTION *bounds = lwcollection_construct(MULTILINETYPE,
+                                                topo->srid,
+                                                NULL, /* gbox */
+                                                validedges,
+                                                geoms);
+#if 0 /* debugging (a leaking one) */
+  lwnotice("Collected face bounds: %s", lwgeom_to_wkt((LWGEOM*)bounds,
+                          WKT_ISO, 2, NULL));
+#endif
+
+  outg = lwgeom_buildarea( lwcollection_as_lwgeom(bounds) );
+
+  _lwt_release_edges(edges, numfaceedges);
+  lwcollection_release(bounds);
+
+  return outg;
+}
+
+int
+lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges)
+{
+  /* TODO: Construct the face geometry */
+  /* TODO: Then for each ring of the face polygon... */
+  lwerror("lwt_GetFaceEdges not implemented yet");
+  return -1;
 }
