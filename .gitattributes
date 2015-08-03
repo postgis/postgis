@@ -1,0 +1,9 @@
+*.vcproj	eol=crlf
+*.bat	    eol=crlf
+*.sh		eol=lf
+*.ac        eol=lf
+*.h.in      eol=lf
+*.h         eol=lf
+GNUmakefile.in eol=lf
+*_expected  eol=lf
+*.dmp       eol=lf
