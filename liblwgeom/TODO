@@ -8,7 +8,7 @@ lwt_NewEdgesSplit     X
 
 lwt_AddIsoEdge        X
 lwt_GetFaceGeometry   X
-lwt_GetFaceEdges
+lwt_GetFaceEdges      X
 
 lwt_ChangeEdgeGeom
 lwt_MoveIsoNode
