@@ -473,7 +473,7 @@ lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
 
 /* Check that an edge does not cross an existing node or edge
  *
- * Return -1 on cross, 0 if everything is fine.
+ * Return -1 on cross or error, 0 if everything is fine.
  * Note that before returning -1, lwerror is invoked...
  */
 static int
@@ -764,7 +764,10 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
   }
 
   if ( ! skipISOChecks )
-    _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom );
+  {
+    if ( _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom ) )
+      return -1;
+  }
 
   /*
    * All checks passed, time to prepare the new edge
@@ -2138,7 +2141,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
     }
 
-    _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom );
+    if ( _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom ) )
+      return -1;
 
   } /* ! skipChecks */
 
