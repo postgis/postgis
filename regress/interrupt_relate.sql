@@ -47,7 +47,9 @@ SELECT _timecheck('coveredby', '200ms');
 select ST_Crosses(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('crosses', '200ms');
 
-select ST_Equals(g,g) from _inputs WHERE id = 1; -- 6+ seconds
+-- NOTE: we're reversing one of the operands to avoid the
+--       short-circuit described in #3226
+select ST_Equals(g,st_reverse(g)) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('equals', '200ms');
 
 select ST_Intersects(g,g) from _inputs WHERE id = 1; -- 6+ seconds
