@@ -2408,6 +2408,53 @@ lwt_AddEdgeNewFaces( LWT_TOPOLOGY* topo,
   return _lwt_AddEdge( topo, start_node, end_node, geom, skipChecks, 0 );
 }
 
+static LWGEOM *
+_lwt_FaceByEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edges, int numfaceedges)
+{
+  LWGEOM *outg;
+  LWCOLLECTION *bounds;
+  LWGEOM **geoms = lwalloc( sizeof(LWGEOM*) * numfaceedges );
+  int i, validedges = 0;
+
+  for ( i=0; i<numfaceedges; ++i )
+  {
+    /* NOTE: skipping edges with same face on both sides, although
+     *       correct, results in a failure to build faces from
+     *       invalid topologies as expected by legacy tests.
+     * TODO: update legacy tests expectances/unleash this skipping ?
+     */
+    /* if ( edges[i].face_left == edges[i].face_right ) continue; */
+    geoms[validedges++] = lwline_as_lwgeom(edges[i].geom);
+  }
+  if ( ! validedges )
+  {
+    /* Face has no valid boundary edges, we'll return EMPTY, see
+     * https://trac.osgeo.org/postgis/ticket/3221 */
+    if ( numfaceedges ) lwfree(geoms);
+    LWDEBUG(1, "_lwt_FaceByEdges returning empty polygon");
+    return lwpoly_as_lwgeom(
+            lwpoly_construct_empty(topo->srid, topo->hasZ, 0)
+           );
+  }
+  bounds = lwcollection_construct(MULTILINETYPE,
+                                  topo->srid,
+                                  NULL, /* gbox */
+                                  validedges,
+                                  geoms);
+  outg = lwgeom_buildarea( lwcollection_as_lwgeom(bounds) );
+  lwcollection_release(bounds);
+  lwfree(geoms);
+#if 0
+  {
+  size_t sz;
+  char *wkt = lwgeom_to_wkt(outg, WKT_ISO, 2, &sz);
+  LWDEBUGF(1, "_lwt_FaceByEdges returning area: %s", wkt);
+  lwfree(wkt);
+  }
+#endif
+  return outg;
+}
+
 LWGEOM*
 lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
 {
@@ -2461,51 +2508,306 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
     return lwpoly_as_lwgeom(out);
   }
 
-  /* Linemerge polygon boundaries */
-
-  LWGEOM **geoms = lwalloc( sizeof(LWGEOM*) * numfaceedges );
-  int validedges = 0;
-  for ( i=0; i<numfaceedges; ++i )
-  {
-    /* NOTE: skipping edges with same face on both sides, although
-     *       correct, results in a failure to build faces from
-     *       invalid topologies as expected by legacy tests.
-     * TODO: update legacy tests expectances/unleash this skipping ?
-     */
-    /* if ( edges[i].face_left == edges[i].face_right ) continue; */
-    geoms[validedges++] = lwline_as_lwgeom(edges[i].geom);
-  }
-  if ( ! validedges )
-  {
-    lwfree(geoms);
-    /* Face has no valid boundary edges, we'll return EMPTY, see
-     * https://trac.osgeo.org/postgis/ticket/3221 */
-    out = lwpoly_construct_empty(topo->srid, topo->hasZ, 0);
-    return lwpoly_as_lwgeom(out);
-  }
-  LWCOLLECTION *bounds = lwcollection_construct(MULTILINETYPE,
-                                                topo->srid,
-                                                NULL, /* gbox */
-                                                validedges,
-                                                geoms);
-#if 0 /* debugging (a leaking one) */
-  lwnotice("Collected face bounds: %s", lwgeom_to_wkt((LWGEOM*)bounds,
-                          WKT_ISO, 2, NULL));
-#endif
-
-  outg = lwgeom_buildarea( lwcollection_as_lwgeom(bounds) );
-
+  outg = _lwt_FaceByEdges( topo, edges, numfaceedges );
   _lwt_release_edges(edges, numfaceedges);
-  lwcollection_release(bounds);
 
   return outg;
 }
 
-int
-lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face, LWT_ELEMID **edges)
+/* Find which edge from the "edges" set defines the next
+ * portion of the given "ring".
+ *
+ * The edge might be either forward or backward.
+ *
+ * @param ring The ring to find definition of.
+ *             It is assumed it does not contain duplicated vertices.
+ * @param from offset of the ring point to start looking from
+ * @param edges array of edges to search into
+ * @param numedges number of edges in the edges array
+ *
+ * @return index of the edge defining the next ring portion or
+ *               -1 if no edge was found to be part of the ring
+ */
+static int
+_lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
+                      const LWT_ISO_EDGE *edges, int numedges)
 {
-  /* TODO: Construct the face geometry */
-  /* TODO: Then for each ring of the face polygon... */
-  lwerror("lwt_GetFaceEdges not implemented yet");
+  int i;
+  POINT2D p1;
+
+  /* Get starting ring point */
+  getPoint2d_p(ring, from, &p1);
+
+  LWDEBUGF(1, "Ring's 'from' point (%d) is %g,%g", from, p1.x, p1.y);
+
+  /* find the edges defining the next portion of ring starting from
+   * vertex "from" */
+  for ( i=0; i<numedges; ++i )
+  {
+    const LWT_ISO_EDGE *isoe = &(edges[i]);
+    LWLINE *edge = isoe->geom;
+    POINTARRAY *epa = edge->points;
+    POINT2D p2, pt;
+    int match = 0;
+    int j;
+
+    /* Skip if the edge is a dangling one */
+    if ( isoe->face_left == isoe->face_right )
+    {
+      LWDEBUGF(3, "_lwt_FindNextRingEdge: edge %" PRId64
+                  " has same face (%" PRId64
+                  ") on both sides, skipping",
+                  isoe->edge_id, isoe->face_left);
+      continue;
+    }
+
+#if 0
+    size_t sz;
+    LWDEBUGF(1, "Edge %" PRId64 " is %s",
+                isoe->edge_id,
+                lwgeom_to_wkt(lwline_as_lwgeom(edge), WKT_ISO, 2, &sz));
+#endif
+
+    /* ptarray_remove_repeated_points ? */
+
+    getPoint2d_p(epa, 0, &p2);
+    LWDEBUGF(1, "Edges's 'first' point is %g,%g", p2.x, p2.y);
+    LWDEBUGF(1, "Rings's 'from' point is still %g,%g", p1.x, p1.y);
+    if ( p2d_same(&p1, &p2) )
+    {
+      LWDEBUG(1, "p2d_same(p1,p2) returned true");
+      LWDEBUGF(1, "First point of edge %" PRId64
+                  " matches ring vertex %d", isoe->edge_id, from);
+      /* first point matches, let's check next non-equal one */
+      for ( j=1; j<epa->npoints; ++j )
+      {
+        getPoint2d_p(epa, j, &p2);
+        /* we won't check duplicated edge points */
+        if ( p2d_same(&p1, &p2) ) continue;
+        /* we assume there are no duplicated points in ring */
+        getPoint2d_p(ring, from+1, &pt);
+        if ( p2d_same(&pt, &p2) )
+        {
+          match = 1;
+          break; /* no need to check more */
+        }
+      }
+    }
+    else
+    {
+      LWDEBUG(1, "p2d_same(p1,p2) returned false");
+      getPoint2d_p(epa, epa->npoints-1, &p2);
+      LWDEBUGF(1, "Edges's 'last' point is %g,%g", p2.x, p2.y);
+      if ( p2d_same(&p1, &p2) )
+      {
+        LWDEBUGF(1, "Last point of edge %" PRId64
+                    " matches ring vertex %d", isoe->edge_id, from);
+        /* last point matches, let's check next non-equal one */
+        for ( j=epa->npoints-2; j>=0; --j )
+        {
+          getPoint2d_p(epa, j, &p2);
+          /* we won't check duplicated edge points */
+          if ( p2d_same(&p1, &p2) ) continue;
+          /* we assume there are no duplicated points in ring */
+          getPoint2d_p(ring, from+1, &pt);
+          if ( p2d_same(&pt, &p2) )
+          {
+            match = 1;
+            break; /* no need to check more */
+          }
+        }
+      }
+    }
+
+    if ( match ) return i;
+
+  }
+
   return -1;
+}
+
+/* Reverse values in array between "from" (inclusive)
+ * and "to" (exclusive) indexes */
+static void
+_lwt_ReverseElemidArray(LWT_ELEMID *ary, int from, int to)
+{
+  LWT_ELEMID t;
+  while (from < to)
+  {
+    t = ary[from];
+    ary[from++] = ary[to];
+    ary[to--] = t;
+  }
+}
+
+/* Rotate values in array between "from" (inclusive)
+ * and "to" (exclusive) indexes, so that "rotidx" is
+ * the new value at "from" */
+static void
+_lwt_RotateElemidArray(LWT_ELEMID *ary, int from, int to, int rotidx)
+{
+  _lwt_ReverseElemidArray(ary, from, rotidx-1);
+  _lwt_ReverseElemidArray(ary, rotidx, to-1);
+  _lwt_ReverseElemidArray(ary, from, to-1);
+}
+
+
+int
+lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
+{
+  LWGEOM *face;
+  LWPOLY *facepoly;
+  LWT_ISO_EDGE *edges;
+  int numfaceedges;
+  int fields, i;
+  int nseid = 0; /* number of signed edge ids */
+  int prevseid;
+  LWT_ELEMID *seid; /* signed edge ids */
+
+  /* Get list of face edges */
+  numfaceedges = 1;
+  fields = LWT_COL_EDGE_EDGE_ID |
+           LWT_COL_EDGE_GEOM |
+           LWT_COL_EDGE_FACE_LEFT |
+           LWT_COL_EDGE_FACE_RIGHT
+           ;
+  edges = lwt_be_getEdgeByFace( topo, &face_id, &numfaceedges, fields );
+  if ( numfaceedges == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( ! numfaceedges ) return 0; /* no edges in output */
+
+  /* order edges by occurrence in face */
+
+  face = _lwt_FaceByEdges(topo, edges, numfaceedges);
+  if ( ! face )
+  {
+    /* _lwt_FaceByEdges should have already invoked lwerror in this case */
+    _lwt_release_edges(edges, numfaceedges);
+    return -1;
+  }
+
+  if ( lwgeom_is_empty(face) )
+  {
+    /* no edges in output */
+    _lwt_release_edges(edges, numfaceedges);
+    lwgeom_free(face);
+    return 0;
+  }
+
+  /* force_lhr, if the face is not the universe */
+  /* _lwt_FaceByEdges seems to guaranteed RHR */
+  /* lwgeom_force_clockwise(face); */
+  if ( face_id ) lwgeom_reverse(face);
+
+#if 0
+  {
+  size_t sz;
+  char *wkt = lwgeom_to_wkt(face, WKT_ISO, 2, &sz);
+  LWDEBUGF(1, "Geometry of face %" PRId64 " is: %s",
+              face_id, wkt);
+  lwfree(wkt);
+  }
+#endif
+
+  facepoly = lwgeom_as_lwpoly(face);
+  if ( ! facepoly )
+  {
+    _lwt_release_edges(edges, numfaceedges);
+    lwgeom_free(face);
+    lwerror("Geometry of face %" PRId64 " is not a polygon", face_id);
+    return -1;
+  }
+
+  nseid = prevseid = 0;
+  seid = lwalloc( sizeof(LWT_ELEMID) * numfaceedges );
+
+  /* for each ring of the face polygon... */
+  for ( i=0; i<facepoly->nrings; ++i )
+  {
+    const POINTARRAY *ring = facepoly->rings[i];
+    int j = 0;
+    LWT_ISO_EDGE *nextedge;
+    LWLINE *nextline;
+
+    LWDEBUGF(1, "Ring %d has %d points", i, ring->npoints);
+
+    while ( j < ring->npoints-1 )
+    {
+      LWDEBUGF(1, "Looking for edge covering ring %d from vertex %d",
+                  i, j);
+
+      int edgeno = _lwt_FindNextRingEdge(ring, j, edges, numfaceedges);
+      if ( edgeno == -1 )
+      {
+        /* should never happen */
+        _lwt_release_edges(edges, numfaceedges);
+        lwgeom_free(face);
+        lwfree(seid);
+        lwerror("No edge (among %d) found to be defining geometry of face %"
+                PRId64, face_id);
+        return -1;
+      }
+
+      nextedge = &(edges[edgeno]);
+      nextline = nextedge->geom;
+
+      LWDEBUGF(1, "Edge %" PRId64
+                  " covers ring %d from vertex %d to %d",
+                  nextedge->edge_id, i, j, j + nextline->points->npoints - 1);
+
+#if 0
+      size_t sz;
+      LWDEBUGF(1, "Edge %" PRId64 " is %s",
+                  nextedge->edge_id,
+lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
+#endif
+
+      j += nextline->points->npoints - 1;
+
+      /* Add next edge to the output array */
+      seid[nseid++] = nextedge->face_left == face_id ?
+                          nextedge->edge_id :
+                         -nextedge->edge_id;
+
+      /* avoid checking again on next time turn */
+      nextedge->face_left = nextedge->face_right = -1;
+    }
+
+    /* TODO: now "scroll" the list of edges so that the one
+     * with smaller absolute edge_id is first */
+    /* Range is: [prevseid, nseid) -- [inclusive, exclusive) */
+    if ( (nseid - prevseid) > 1 )
+    {{
+      LWT_ELEMID minid = 0;
+      int minidx = 0;
+      LWDEBUGF(1, "Looking for smallest id among the %d edges "
+                  "composing ring %d", (nseid-prevseid), i);
+      for ( j=prevseid; j<nseid; ++j )
+      {
+        LWT_ELEMID id = llabs(seid[j]);
+        LWDEBUGF(1, "Abs id of edge in pos %d is %" PRId64, j, id);
+        if ( ! minid || id < minid )
+        {
+          minid = id;
+          minidx = j;
+        }
+      }
+      LWDEBUGF(1, "Smallest id is %" PRId64
+                  " at position %d", minid, minidx);
+      if ( minidx != prevseid )
+      {
+        _lwt_RotateElemidArray(seid, prevseid, nseid, minidx);
+      }
+    }}
+
+    prevseid = nseid;
+  }
+
+  lwgeom_free(face);
+  _lwt_release_edges(edges, numfaceedges);
+
+  *out = seid;
+  return nseid;
 }
