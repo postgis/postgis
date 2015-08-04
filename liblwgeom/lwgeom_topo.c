@@ -29,6 +29,12 @@
 #include <inttypes.h> /* for PRId64 */
 #include <errno.h>
 
+#ifdef WIN32
+# define LWTFMT_ELEMID "lld"
+#else
+# define LWTFMT_ELEMID PRId64
+#endif
+
 /*********************************************************************
  *
  * Backend iface
@@ -609,7 +615,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
-        lwerror("SQL/MM Spatial exception - coincident edge %" PRId64,
+        lwerror("SQL/MM Spatial exception - coincident edge %" LWTFMT_ELEMID,
                 edge->edge_id);
       }
       return -1;
@@ -624,7 +630,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
-        lwerror("Spatial exception - geometry intersects edge %" PRId64,
+        lwerror("Spatial exception - geometry intersects edge %" LWTFMT_ELEMID,
                 edge->edge_id);
       }
       return -1;
@@ -640,7 +646,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
         lwerror("SQL/MM Spatial exception - geometry crosses edge %"
-                PRId64, edge->edge_id);
+                LWTFMT_ELEMID, edge->edge_id);
       }
       return -1;
     }
@@ -1246,7 +1252,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     minaz = maxaz = -1;
   }
 
-  LWDEBUGF(1, "Looking for edges incident to node %" PRId64
+  LWDEBUGF(1, "Looking for edges incident to node %" LWTFMT_ELEMID
               " and adjacent to azimuth %g", node, data->myaz);
 
   /* Get incident edges */
@@ -1272,7 +1278,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
 
     if ( pa->npoints < 2 ) {
       lwgeom_free(cleangeom);
-      lwerror("corrupted topology: edge %" PRId64
+      lwerror("corrupted topology: edge %" LWTFMT_ELEMID
               " does not have two distinct points", edge->edge_id);
       return -1;
     }
@@ -1280,8 +1286,8 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     if ( edge->start_node == node ) {
       getPoint2d_p(pa, 0, &p1);
       getPoint2d_p(pa, 1, &p2);
-      LWDEBUGF(1, "edge %" PRId64
-                  " starts on node %" PRId64
+      LWDEBUGF(1, "edge %" LWTFMT_ELEMID
+                  " starts on node %" LWTFMT_ELEMID
                   ", edgeend is %g,%g-%g,%g",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
       if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {
@@ -1291,7 +1297,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         return -1;
       }
       azdif = az - data->myaz;
-      LWDEBUGF(1, "azimuth of edge %" PRId64
+      LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
                   ": %g (diff: %g)", edge->edge_id, az, azdif);
 
       if ( azdif < 0 ) azdif += 2 * M_PI;
@@ -1300,9 +1306,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         data->nextCW = data->nextCCW = edge->edge_id; /* outgoing */
         data->cwFace = edge->face_left;
         data->ccwFace = edge->face_right;
-        LWDEBUGF(1, "new nextCW and nextCCW edge is %" PRId64
+        LWDEBUGF(1, "new nextCW and nextCCW edge is %" LWTFMT_ELEMID
                     ", outgoing, "
-                    "with face_left %" PRId64 " and face_right %" PRId64
+                    "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                     " (face_right is new ccwFace, face_left is new cwFace)",
                     edge->edge_id, edge->face_left,
                     edge->face_right);
@@ -1310,9 +1316,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         if ( azdif < minaz ) {
           data->nextCW = edge->edge_id; /* outgoing */
           data->cwFace = edge->face_left;
-          LWDEBUGF(1, "new nextCW edge is %" PRId64
+          LWDEBUGF(1, "new nextCW edge is %" LWTFMT_ELEMID
                       ", outgoing, "
-                      "with face_left %" PRId64 " and face_right %" PRId64
+                      "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                       " (previous had minaz=%g, face_left is new cwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, minaz);
@@ -1321,9 +1327,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         else if ( azdif > maxaz ) {
           data->nextCCW = edge->edge_id; /* outgoing */
           data->ccwFace = edge->face_right;
-          LWDEBUGF(1, "new nextCCW edge is %" PRId64
+          LWDEBUGF(1, "new nextCCW edge is %" LWTFMT_ELEMID
                       ", outgoing, "
-                      "with face_left %" PRId64 " and face_right %" PRId64
+                      "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                       " (previous had maxaz=%g, face_right is new ccwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, maxaz);
@@ -1335,7 +1341,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     if ( edge->end_node == node ) {
       getPoint2d_p(pa, pa->npoints-1, &p1);
       getPoint2d_p(pa, pa->npoints-2, &p2);
-      LWDEBUGF(1, "edge %" PRId64 " ends on node %" PRId64
+      LWDEBUGF(1, "edge %" LWTFMT_ELEMID " ends on node %" LWTFMT_ELEMID
                   ", edgeend is %g,%g-%g,%g",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
       if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {
@@ -1345,7 +1351,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         return -1;
       }
       azdif = az - data->myaz;
-      LWDEBUGF(1, "azimuth of edge %" PRId64
+      LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
                   ": %g (diff: %g)", edge->edge_id, az, azdif);
       if ( azdif < 0 ) azdif += 2 * M_PI;
       if ( minaz == -1 ) {
@@ -1353,9 +1359,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         data->nextCW = data->nextCCW = -edge->edge_id; /* incoming */
         data->cwFace = edge->face_right;
         data->ccwFace = edge->face_left;
-        LWDEBUGF(1, "new nextCW and nextCCW edge is %" PRId64
+        LWDEBUGF(1, "new nextCW and nextCCW edge is %" LWTFMT_ELEMID
                     ", incoming, "
-                    "with face_left %" PRId64 " and face_right %" PRId64
+                    "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                     " (face_right is new cwFace, face_left is new ccwFace)",
                     edge->edge_id, edge->face_left,
                     edge->face_right);
@@ -1363,9 +1369,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         if ( azdif < minaz ) {
           data->nextCW = -edge->edge_id; /* incoming */
           data->cwFace = edge->face_right;
-          LWDEBUGF(1, "new nextCW edge is %" PRId64
+          LWDEBUGF(1, "new nextCW edge is %" LWTFMT_ELEMID
                       ", incoming, "
-                      "with face_left %" PRId64 " and face_right %" PRId64
+                      "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                       " (previous had minaz=%g, face_right is new cwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, minaz);
@@ -1374,9 +1380,9 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         else if ( azdif > maxaz ) {
           data->nextCCW = -edge->edge_id; /* incoming */
           data->ccwFace = edge->face_left;
-          LWDEBUGF(1, "new nextCCW edge is %" PRId64
+          LWDEBUGF(1, "new nextCCW edge is %" LWTFMT_ELEMID
                       ", outgoing, from start point, "
-                      "with face_left %" PRId64 " and face_right %" PRId64
+                      "with face_left %" LWTFMT_ELEMID " and face_right %" LWTFMT_ELEMID
                       " (previous had maxaz=%g, face_left is new ccwFace)",
                       edge->edge_id, edge->face_left,
                       edge->face_right, maxaz);
@@ -1391,16 +1397,16 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
   if ( edges ) lwfree(edges); /* there might be none */
 
   LWDEBUGF(1, "edges adjacent to azimuth %g"
-              " (incident to node %" PRId64 ")"
-              ": CW:%" PRId64 "(%g) CCW:%" PRId64 "(%g)",
+              " (incident to node %" LWTFMT_ELEMID ")"
+              ": CW:%" LWTFMT_ELEMID "(%g) CCW:%" LWTFMT_ELEMID "(%g)",
               data->myaz, node, data->nextCW, minaz,
               data->nextCCW, maxaz);
 
   if ( numedges && data->cwFace != data->ccwFace )
   {
     if ( data->cwFace != -1 && data->ccwFace != -1 ) {
-      lwerror("Corrupted topology: adjacent edges %" PRId64 " and %" PRId64
-              " bind different face (%" PRId64 " and %" PRId64 ")",
+      lwerror("Corrupted topology: adjacent edges %" LWTFMT_ELEMID " and %" LWTFMT_ELEMID
+              " bind different face (%" LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
               numedges, data->nextCW, data->nextCCW,
               data->cwFace, data->ccwFace);
       return -1;
@@ -1487,7 +1493,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   signed_edge_ids = lwt_be_getRingEdges(topo, sedge,
                                         &num_signed_edge_ids, 0);
   if ( ! signed_edge_ids ) {
-    lwerror("Backend error (no ring edges for edge %" PRId64 "): %s",
+    lwerror("Backend error (no ring edges for edge %" LWTFMT_ELEMID "): %s",
             sedge, lwt_be_lastErrorMessage(topo->be_iface));
     return -2;
   }
@@ -1503,7 +1509,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     }
   }
 
-  LWDEBUGF(1, "Edge %" PRId64 " splitted face %" PRId64 " (mbr_only:%d)",
+  LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " splitted face %" LWTFMT_ELEMID " (mbr_only:%d)",
            sedge, face, mbr_only);
 
   /* Construct a polygon using edges of the ring */
@@ -1546,7 +1552,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   for ( i=0; i<num_signed_edge_ids; ++i )
   {
     LWT_ELEMID eid = signed_edge_ids[i];
-    LWDEBUGF(1, "Edge %d in ring of edge %" PRId64 " is edge %" PRId64,
+    LWDEBUGF(1, "Edge %d in ring of edge %" LWTFMT_ELEMID " is edge %" LWTFMT_ELEMID,
                 i, sedge, eid);
     LWT_ISO_EDGE *edge = NULL;
     POINTARRAY *epa;
@@ -1578,7 +1584,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   LWPOLY* shell = lwpoly_construct(0, 0, 1, points);
 
   int isccw = ptarray_isccw(pa);
-  LWDEBUGF(1, "Ring of edge %" PRId64 " is %sclockwise",
+  LWDEBUGF(1, "Ring of edge %" LWTFMT_ELEMID " is %sclockwise",
               sedge, isccw ? "counter" : "");
   const GBOX* shellbox = lwgeom_get_bbox(lwpoly_as_lwgeom(shell));
 
@@ -2086,7 +2092,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       else if ( newedge.face_left != node->containing_face )
       {
         lwerror("SQL/MM Spatial exception - geometry crosses an edge"
-                " (endnodes in faces %" PRId64 " and %" PRId64 ")",
+                " (endnodes in faces %" LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
                 newedge.face_left, node->containing_face);
       }
     }
@@ -2214,7 +2220,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
    */
   if ( newedge.face_left != newedge.face_right )
   {
-    lwerror("Left(%" PRId64 ")/right(%" PRId64 ")"
+    lwerror("Left(%" LWTFMT_ELEMID ")/right(%" LWTFMT_ELEMID ")"
             "faces mismatch: invalid topology ?",
             newedge.face_left, newedge.face_right);
     return -1;
@@ -2554,8 +2560,8 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     /* Skip if the edge is a dangling one */
     if ( isoe->face_left == isoe->face_right )
     {
-      LWDEBUGF(3, "_lwt_FindNextRingEdge: edge %" PRId64
-                  " has same face (%" PRId64
+      LWDEBUGF(3, "_lwt_FindNextRingEdge: edge %" LWTFMT_ELEMID
+                  " has same face (%" LWTFMT_ELEMID
                   ") on both sides, skipping",
                   isoe->edge_id, isoe->face_left);
       continue;
@@ -2563,7 +2569,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
 
 #if 0
     size_t sz;
-    LWDEBUGF(1, "Edge %" PRId64 " is %s",
+    LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is %s",
                 isoe->edge_id,
                 lwgeom_to_wkt(lwline_as_lwgeom(edge), WKT_ISO, 2, &sz));
 #endif
@@ -2576,7 +2582,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     if ( p2d_same(&p1, &p2) )
     {
       LWDEBUG(1, "p2d_same(p1,p2) returned true");
-      LWDEBUGF(1, "First point of edge %" PRId64
+      LWDEBUGF(1, "First point of edge %" LWTFMT_ELEMID
                   " matches ring vertex %d", isoe->edge_id, from);
       /* first point matches, let's check next non-equal one */
       for ( j=1; j<epa->npoints; ++j )
@@ -2600,7 +2606,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       LWDEBUGF(1, "Edges's 'last' point is %g,%g", p2.x, p2.y);
       if ( p2d_same(&p1, &p2) )
       {
-        LWDEBUGF(1, "Last point of edge %" PRId64
+        LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
                     " matches ring vertex %d", isoe->edge_id, from);
         /* last point matches, let's check next non-equal one */
         for ( j=epa->npoints-2; j>=0; --j )
@@ -2705,7 +2711,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   {
   size_t sz;
   char *wkt = lwgeom_to_wkt(face, WKT_ISO, 2, &sz);
-  LWDEBUGF(1, "Geometry of face %" PRId64 " is: %s",
+  LWDEBUGF(1, "Geometry of face %" LWTFMT_ELEMID " is: %s",
               face_id, wkt);
   lwfree(wkt);
   }
@@ -2716,7 +2722,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
   {
     _lwt_release_edges(edges, numfaceedges);
     lwgeom_free(face);
-    lwerror("Geometry of face %" PRId64 " is not a polygon", face_id);
+    lwerror("Geometry of face %" LWTFMT_ELEMID " is not a polygon", face_id);
     return -1;
   }
 
@@ -2746,20 +2752,20 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
         lwgeom_free(face);
         lwfree(seid);
         lwerror("No edge (among %d) found to be defining geometry of face %"
-                PRId64, face_id);
+                LWTFMT_ELEMID, face_id);
         return -1;
       }
 
       nextedge = &(edges[edgeno]);
       nextline = nextedge->geom;
 
-      LWDEBUGF(1, "Edge %" PRId64
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
                   " covers ring %d from vertex %d to %d",
                   nextedge->edge_id, i, j, j + nextline->points->npoints - 1);
 
 #if 0
       size_t sz;
-      LWDEBUGF(1, "Edge %" PRId64 " is %s",
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is %s",
                   nextedge->edge_id,
 lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
 #endif
@@ -2787,14 +2793,14 @@ lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
       for ( j=prevseid; j<nseid; ++j )
       {
         LWT_ELEMID id = llabs(seid[j]);
-        LWDEBUGF(1, "Abs id of edge in pos %d is %" PRId64, j, id);
+        LWDEBUGF(1, "Abs id of edge in pos %d is %" LWTFMT_ELEMID, j, id);
         if ( ! minid || id < minid )
         {
           minid = id;
           minidx = j;
         }
       }
-      LWDEBUGF(1, "Smallest id is %" PRId64
+      LWDEBUGF(1, "Smallest id is %" LWTFMT_ELEMID
                   " at position %d", minid, minidx);
       if ( minidx != prevseid )
       {
