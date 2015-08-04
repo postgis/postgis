@@ -48,13 +48,13 @@ select ST_Crosses(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('crosses', '200ms');
 
 select ST_Equals(g,g) from _inputs WHERE id = 1; -- 6+ seconds
-SELECT _timecheck('crosses', '200ms');
+SELECT _timecheck('equals', '200ms');
 
 select ST_Intersects(g,g) from _inputs WHERE id = 1; -- 6+ seconds
-SELECT _timecheck('crosses', '200ms');
+SELECT _timecheck('intersects', '200ms');
 
 select ST_Overlaps(g,g) from _inputs WHERE id = 1; -- 6+ seconds
-SELECT _timecheck('crosses', '200ms');
+SELECT _timecheck('overlaps', '200ms');
 
 select ST_Relate(g,g) from _inputs WHERE id = 1; -- 6+ seconds
 SELECT _timecheck('relate', '200ms');
