@@ -1020,6 +1020,22 @@ fi
 AC_SUBST([TOPOLOGY])
 
 dnl ====================================
+dnl --without-postgresql
+dnl ====================================
+AC_ARG_WITH([postgresql],
+    [AS_HELP_STRING([--without-postgresql],
+                    [Disable the postgresql extensions])],
+    [], [LIBLWGEOM_ONLY="no"])
+if test "x$with_postgresql" != "xno"; then
+    LIBLWGEOM_ONLY="yes"
+    AC_MSG_RESULT([PostgreSQL support requested])
+else
+    AC_MSG_RESULT([PostgreSQL support disabled])
+fi
+
+AC_SUBST([LIBLWGEOM_ONLY])
+
+dnl ====================================
 dnl interrupt tests
 dnl ====================================
 INTERRUPTTESTS="no"
