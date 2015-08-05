@@ -6,10 +6,7 @@ env:
 
 addons:
   postgresql: "9.4"
-
- addons:
-   postgresql: "9.4"
-   apt:
+  apt:
     packages:
     - autoconf
     - build-essential
