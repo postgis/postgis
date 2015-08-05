@@ -46,3 +46,6 @@ notifications:
     on_success: change
     on_failure: always
     use_notice: false
+
+after_failure:
+  - cat /tmp/pgis_reg/*
