@@ -28,7 +28,6 @@ uninstall: docs-uninstall comments-uninstall
 clean: docs-clean clean-local
 
 clean-local:
-	rm -f postgis.sql postgis_upgrade.sql
 
 # TODO: drop 'test' target..
 test: check
