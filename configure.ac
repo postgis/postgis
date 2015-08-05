@@ -1340,8 +1340,12 @@ if test "x$SFCGAL" = "xsfcgal"; then
     AC_MSG_RESULT([  SFCGAL config:        ${SFCGAL_CONFIG}])
     AC_MSG_RESULT([  SFCGAL version:       ${SFCGAL_VERSION}])
 fi
-AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
-AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
+if test "x$LIBLWGEOM_ONLY" = "xno"; then
+  AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
+  AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
+else
+  AC_MSG_RESULT([  PostgreSQL support DISABLED])
+fi
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
