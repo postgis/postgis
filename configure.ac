@@ -357,6 +357,19 @@ fi
 AC_SUBST([ICONV_LDFLAGS])
 AC_SUBST([ICONV_CFLAGS])
 
+dnl ====================================
+dnl --without-postgresql
+dnl ====================================
+LIBLWGEOM_ONLY="no"
+AC_ARG_WITH([postgresql],
+    [AS_HELP_STRING([--without-postgresql],
+                    [Disable the postgresql extensions])],
+    [], [])
+if test "x$with_postgresql" = "xno"; then
+    LIBLWGEOM_ONLY="yes"
+    AC_MSG_RESULT([PostgreSQL support disabled])
+fi
+AC_SUBST([LIBLWGEOM_ONLY])
 
 dnl ===========================================================================
 dnl Detect the version of PostgreSQL installed on the system
@@ -1018,22 +1031,6 @@ else
 fi
 
 AC_SUBST([TOPOLOGY])
-
-dnl ====================================
-dnl --without-postgresql
-dnl ====================================
-AC_ARG_WITH([postgresql],
-    [AS_HELP_STRING([--without-postgresql],
-                    [Disable the postgresql extensions])],
-    [], [LIBLWGEOM_ONLY="no"])
-if test "x$with_postgresql" != "xno"; then
-    LIBLWGEOM_ONLY="yes"
-    AC_MSG_RESULT([PostgreSQL support requested])
-else
-    AC_MSG_RESULT([PostgreSQL support disabled])
-fi
-
-AC_SUBST([LIBLWGEOM_ONLY])
 
 dnl ====================================
 dnl interrupt tests
