@@ -104,7 +104,7 @@ SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(5 9.5)');
 SELECT '-- ST_RemoveIsoNode  ------------------------';
 
 -- Isolated node
-SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 1);
+SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 3);
 
 -- Non isolated node (is used by an edge);
 SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 4);
