@@ -32,7 +32,7 @@ script:
   - ./configure
   - make
   - make check
-  - sudo make install
+  - make install
   - make installcheck
 
 notifications:
