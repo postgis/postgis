@@ -15,10 +15,10 @@ lwt_AddIsoEdge        X
 lwt_GetFaceGeometry   X
 lwt_GetFaceEdges      X
 lwt_ChangeEdgeGeom    X
+lwt_RemoveIsoNode     X
 lwt_RemEdgeNewFace
 lwt_RemEdgeModFace
 lwt_ModEdgeHeal
 lwt_NewEdgeHeal
 lwt_MoveIsoNode
-lwt_RemoveIsoNode
 

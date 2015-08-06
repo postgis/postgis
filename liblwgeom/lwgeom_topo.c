@@ -192,6 +192,12 @@ lwt_be_deleteFacesById(const LWT_TOPOLOGY* topo, const LWT_ELEMID* ids, int nume
   CBT2(topo, deleteFacesById, ids, numelems);
 }
 
+static int
+lwt_be_deleteNodesById(const LWT_TOPOLOGY* topo, const LWT_ELEMID* ids, int numelems)
+{
+  CBT2(topo, deleteNodesById, ids, numelems);
+}
+
 LWT_ELEMID
 lwt_be_getNextEdgeId(LWT_TOPOLOGY* topo)
 {
@@ -716,13 +722,14 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
   node_ids[1] = endNode;
   endpoints = lwt_be_getNodeById( topo, node_ids, &num_nodes,
                                              LWT_COL_NODE_ALL );
-  if ( ! endpoints ) {
+  if ( num_nodes < 0 )
+  {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
-  if ( num_nodes < 2 )
+  else if ( num_nodes < 2 )
   {
-    _lwt_release_nodes(endpoints, num_nodes);
+    if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
     lwerror("SQL/MM Spatial exception - non-existent node");
     return -1;
   }
@@ -2186,7 +2193,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   }
 
   endpoints = lwt_be_getNodeById( topo, node_ids, &num_nodes, LWT_COL_NODE_ALL );
-  if ( ! endpoints ) {
+  if ( num_nodes < 0 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
@@ -3345,5 +3352,67 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   LWDEBUG(1, "all done, cleaning up edges");
 
   _lwt_release_edges(oldedge, 1);
+  return 0; /* success */
+}
+
+static LWT_ISO_NODE *
+_lwt_GetIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
+{
+  LWT_ISO_NODE *node;
+  int n = 1;
+
+  node = lwt_be_getNodeById( topo, &nid, &n, LWT_COL_NODE_CONTAINING_FACE );
+  if ( n < 0 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return 0;
+  }
+  if ( n < 1 ) {
+    lwerror("SQL/MM Spatial exception - non-existent node");
+    return 0;
+  }
+  if ( node->containing_face == -1 )
+  {
+    lwfree(node);
+    lwerror("SQL/MM Spatial exception - not isolated node");
+    return 0;
+  }
+
+  return node;
+}
+
+int
+lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
+{
+  LWT_ISO_NODE *node;
+
+  node = _lwt_GetIsoNode( topo, nid );
+  if ( ! node ) return -1;
+
+  lwfree(node);
+  lwerror("lwt_MoveIsoNode not implemented yet");
+  return -1;
+}
+
+int
+lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
+{
+  LWT_ISO_NODE *node;
+  int n = 1;
+
+  node = _lwt_GetIsoNode( topo, nid );
+  if ( ! node ) return -1;
+
+  n = lwt_be_deleteNodesById( topo, &nid, n );
+  if ( n == -1 )
+  {
+    lwerror("SQL/MM Spatial exception - not isolated node");
+    return -1;
+  }
+  if ( n != 1 )
+  {
+    lwerror("Unexpected error: %d nodes deleted when expecting 1", n);
+    return -1;
+  }
+
   return 0; /* success */
 }

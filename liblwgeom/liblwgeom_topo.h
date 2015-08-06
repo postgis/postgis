@@ -179,7 +179,10 @@ typedef struct LWT_BE_CALLBACKS_T {
    *               LWT_COL_NODE_* macros
    *
    * @return an array of nodes
-   *         or NULL on error (@see lastErrorMessage)
+   *         or NULL in the following cases:
+   *         - no edge found ("numelems" is set to 0)
+   *         - error ("numelems" is set to -1)
+   *           (@see lastErrorMessage)
    *
    */
   LWT_ISO_NODE* (*getNodeById) (
@@ -478,6 +481,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    *         or NULL in the following cases:
    *         - no edge found ("numelems" is set to 0)
    *         - error ("numelems" is set to -1)
+   *           (@see lastErrorMessage)
    */
   LWT_ISO_EDGE* (*getEdgeByNode) (
       const LWT_BE_TOPOLOGY* topo,
@@ -711,6 +715,22 @@ typedef struct LWT_BE_CALLBACKS_T {
    */
   int (*topoHasZ) (
       const LWT_BE_TOPOLOGY* topo
+  );
+
+  /**
+   * Delete nodes by id
+   *
+   * @param topo the topology to act upon
+   * @param ids an array of node identifiers
+   * @param numelems number of node identifiers in the ids array
+   *
+   * @return number of nodes being deleted or -1 on error
+   *         (@see lastErroMessage)
+   */
+  int (*deleteNodesById) (
+      const LWT_BE_TOPOLOGY* topo,
+      const LWT_ELEMID* ids,
+      int numelems
   );
 
 
@@ -957,10 +977,12 @@ LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face,
  * @param topo the topology to operate on
  * @param node the identifier of the nod to be moved
  * @param pt the new node position
+ * @return 0 on success, -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
-void lwt_MoveIsoNode(LWT_TOPOLOGY* topo,
-                     LWT_ELEMID node, LWPOINT* pt);
+int lwt_MoveIsoNode(LWT_TOPOLOGY* topo,
+                    LWT_ELEMID node, LWPOINT* pt);
 
 /**
  * Remove an isolated node
@@ -969,9 +991,11 @@ void lwt_MoveIsoNode(LWT_TOPOLOGY* topo,
  *
  * @param topo the topology to operate on
  * @param node the identifier of the nod to be moved
+ * @return 0 on success, -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
-void lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node);
+int lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node);
 
 /**
  * Add an isolated edge connecting two existing isolated nodes
