@@ -2620,7 +2620,7 @@ Datum ST_AddEdgeModFace(PG_FUNCTION_ARGS)
   line = lwgeom_as_lwline(lwgeom);
   if ( ! line ) {
     lwgeom_free(lwgeom);
-	  PG_FREE_IF_COPY(geom, 2);
+	  PG_FREE_IF_COPY(geom, 3);
     lwpgerror("ST_AddEdgeModFace fourth argument must be a line geometry");
     PG_RETURN_NULL();
   }
@@ -2687,7 +2687,7 @@ Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS)
   line = lwgeom_as_lwline(lwgeom);
   if ( ! line ) {
     lwgeom_free(lwgeom);
-	  PG_FREE_IF_COPY(geom, 2);
+	  PG_FREE_IF_COPY(geom, 3);
     lwpgerror("ST_AddEdgeModFace fourth argument must be a line geometry");
     PG_RETURN_NULL();
   }
