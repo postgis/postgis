@@ -1069,10 +1069,12 @@ LWT_ELEMID lwt_RemEdgeModFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
  * For ST_ChangeEdgeGeom
  *
  * @param topo the topology to operate on
- * @param geom the edge geometry
+ * @param curve the edge geometry
+ * @return 0 on success, -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
-void lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWGEOM* geom);
+int lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWLINE* curve);
 
 /**
  * Split an edge by a node, modifying the original edge and adding a new one.
