@@ -23,7 +23,7 @@
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
 #include "liblwgeom_topo.h"
-#define POSTGIS_DEBUG_LEVEL 1
+/*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
@@ -1573,11 +1573,12 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
   StringInfo sql = &sqldata;
 
   initStringInfo(sql);
-  appendStringInfoString(sql, "WITH newfaces AS ( SELECT ");
+  appendStringInfoString(sql, "WITH newfaces(id,mbr) AS ( VALUES ");
   for (i=0; i<numfaces; ++i) {
     const LWT_ISO_FACE* face = &(faces[i]);
-    appendStringInfo(sql,
-      "" INT64_FORMAT " id, ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d) mbr",
+    if ( i ) appendStringInfoChar(sql, ',');
+    appendStringInfo(sql, "(" INT64_FORMAT
+      ", ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d))",
       face->face_id, face->mbr->xmin, face->mbr->ymin,
       face->mbr->xmax, face->mbr->ymax, topo->srid);
   }
@@ -2916,4 +2917,76 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
   state->curr++;
 
   SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  ST_ChangeEdgeGeom(atopology, anedge, acurve) */
+Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_ChangeEdgeGeom);
+Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char buf[64];
+  char* toponame;
+  int ret;
+  LWT_ELEMID edge_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWLINE *line;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  edge_id = PG_GETARG_INT32(1) ;
+
+  geom = PG_GETARG_GSERIALIZED_P(2);
+  lwgeom = lwgeom_from_gserialized(geom);
+  line = lwgeom_as_lwline(lwgeom);
+  if ( ! line ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+    lwpgerror("ST_AddEdgeModFace fourth argument must be a line geometry");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_ChangeEdgeGeom");
+  ret = lwt_ChangeEdgeGeom(topo, edge_id, line);
+  POSTGIS_DEBUG(1, "lwt_ChangeEdgeGeom returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 2);
+  lwt_FreeTopology(topo);
+
+  if ( ret == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+
+  if ( snprintf(buf, 64, "Edge " INT64_FORMAT " changed", edge_id) >= 64 )
+  {
+    buf[63] = '\0';
+  }
+  PG_RETURN_TEXT_P(cstring2text(buf));
 }

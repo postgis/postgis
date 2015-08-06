@@ -479,13 +479,16 @@ lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
 
 /* Check that an edge does not cross an existing node or edge
  *
+ * @param myself the id of an edge to skip, if any
+ *               (for ChangeEdgeGeom). Can use 0 for none.
+ *
  * Return -1 on cross or error, 0 if everything is fine.
  * Note that before returning -1, lwerror is invoked...
  */
 static int
 _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
                         LWT_ELEMID start_node, LWT_ELEMID end_node,
-                        const LWLINE *geom )
+                        const LWLINE *geom, LWT_ELEMID myself )
 {
   int i, num_nodes, num_edges;
   LWT_ISO_EDGE *edges;
@@ -564,6 +567,8 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     GEOSGeometry *eegg;
     char *relate;
     int match;
+
+    if ( edge->edge_id == myself ) continue;
 
     if ( ! edge->geom ) {
       lwerror("Edge %d has NULL geometry!", edge->edge_id);
@@ -771,8 +776,11 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
 
   if ( ! skipISOChecks )
   {
-    if ( _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom ) )
+    if ( _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom, 0 ) )
+    {
+      /* would have called lwerror already, leaking :( */
       return -1;
+    }
   }
 
   /*
@@ -1217,20 +1225,114 @@ typedef struct edgeend_t {
 } edgeend;
 
 /* 
- * Find the first edge encountered going counterclockwise
+ * Get first distinct vertex from endpoint
+ * @param pa the pointarray to seek points in
+ * @param ref the point we want to search a distinct one
+ * @param from vertex index to start from
+ * @param dir  1 to go forward
+ *            -1 to go backward
+ * @return 0 if edge is collapsed (no distinct points)
+ */
+static int
+_lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir, POINT2D *op)
+{
+  int i, toofar, inc;
+  POINT2D fp;
+
+  if ( dir > 0 )
+  {
+    toofar = pa->npoints;
+    inc = 1;
+  }
+  else
+  {
+    toofar = -1;
+    inc = -1;
+  }
+
+  LWDEBUGF(1, "first point is index %d", from);
+  getPoint2d_p(pa, from, &fp);
+  for ( i = from+inc; i != toofar; i += inc )
+  {
+    LWDEBUGF(1, "testing point %d", i);
+    getPoint2d_p(pa, i, op); /* pick next point */
+    if ( p2d_same(op, &fp) ) continue; /* equal to startpoint */
+    /* this is a good one, neither same of start nor of end point */
+    return 1; /* found */
+  }
+
+  /* no distinct vertices found */
+  return 0;
+}
+
+
+/*
+ * Return non-zero on failure (lwerror is invoked in that case)
+ * Possible failures:
+ *  -1 no two distinct vertices exist
+ *  -2 azimuth computation failed for first edge end
+ */
+static int
+_lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
+                                            POINT2D *fp, POINT2D *lp)
+{
+  POINTARRAY *pa = edge->points;
+  POINT2D pt;
+
+  fee->nextCW = fee->nextCCW =
+  lee->nextCW = lee->nextCCW = 0;
+  fee->cwFace = fee->ccwFace =
+  lee->cwFace = lee->ccwFace = -1;
+
+  /* Compute azimuth of first edge end */
+  LWDEBUG(1, "computing azimuth of first edge end");
+  if ( ! _lwt_FirstDistinctVertex2D(pa, fp, 0, 1, &pt) )
+  {
+    lwerror("Invalid edge (no two distinct vertices exist)");
+    return -1;
+  }
+  if ( ! azimuth_pt_pt(fp, &pt, &(fee->myaz)) ) {
+    lwerror("error computing azimuth of first edgeend [%g %g,%g %g]",
+            fp->x, fp->y, pt.x, pt.y);
+    return -2;
+  }
+  LWDEBUGF(1, "azimuth of first edge end [%g %g,%g %g] is %g",
+            fp->x, fp->y, pt.x, pt.y, fee->myaz);
+
+  /* Compute azimuth of second edge end */
+  LWDEBUG(1, "computing azimuth of second edge end");
+  if ( ! _lwt_FirstDistinctVertex2D(pa, lp, pa->npoints-1, -1, &pt) )
+  {
+    lwerror("Invalid edge (no two distinct vertices exist)");
+    return -1;
+  }
+  if ( ! azimuth_pt_pt(lp, &pt, &(lee->myaz)) ) {
+    lwerror("error computing azimuth of last edgeend [%g %g,%g %g]",
+            lp->x, lp->y, pt.x, pt.y);
+    return -2;
+  }
+  LWDEBUGF(1, "azimuth of last edge end [%g %g,%g %g] is %g",
+            lp->x, lp->y, pt.x, pt.y, lee->myaz);
+
+  return 0;
+}
+
+/*
+ * Find the first edges encountered going clockwise and counterclockwise
  * around a node, starting from the given azimuth, and take
- * note of the face on the given azimut's side.
+ * note of the face on the both sides.
  *
  * @param topo the topology to act upon
  * @param node the identifier of the node to analyze
  * @param data input (myaz) / output (nextCW, nextCCW) parameter
  * @param other edgeend, if also incident to given node (closed edge).
+ * @param myedge_id identifier of the edge id that data->myaz belongs to
  * @return number of incident edges found
  *
  */
 static int
 _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
-                        edgeend *other )
+                        edgeend *other, int myedge_id )
 {
   LWT_ISO_EDGE *edges;
   int numedges = 1;
@@ -1268,13 +1370,21 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
   /* For each incident edge-end (1 or 2): */
   for ( i = 0; i < numedges; ++i )
   {
-    LWT_ISO_EDGE *edge = &(edges[i]);
-    LWGEOM *g = lwline_as_lwgeom(edge->geom);
+    LWT_ISO_EDGE *edge;
+    LWGEOM *g;
+    LWGEOM *cleangeom;
+    POINT2D p1, p2;
+    POINTARRAY *pa;
+
+    edge = &(edges[i]);
+
+    if ( edge->edge_id == myedge_id ) continue;
+
+    g = lwline_as_lwgeom(edge->geom);
     /* NOTE: remove_repeated_points call could be replaced by
      * some other mean to pick two distinct points for endpoints */
-    LWGEOM *cleangeom = lwgeom_remove_repeated_points( g, 0 );
-    POINT2D p1, p2;
-    POINTARRAY *pa = lwgeom_as_lwline(cleangeom)->points;
+    cleangeom = lwgeom_remove_repeated_points( g, 0 );
+    pa = lwgeom_as_lwline(cleangeom)->points;
 
     if ( pa->npoints < 2 ) {
       lwgeom_free(cleangeom);
@@ -1402,12 +1512,12 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
               data->myaz, node, data->nextCW, minaz,
               data->nextCCW, maxaz);
 
-  if ( numedges && data->cwFace != data->ccwFace )
+  if ( myedge_id < 1 && numedges && data->cwFace != data->ccwFace )
   {
     if ( data->cwFace != -1 && data->ccwFace != -1 ) {
       lwerror("Corrupted topology: adjacent edges %" LWTFMT_ELEMID " and %" LWTFMT_ELEMID
               " bind different face (%" LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
-              numedges, data->nextCW, data->nextCCW,
+              data->nextCW, data->nextCCW,
               data->cwFace, data->ccwFace);
       return -1;
     }
@@ -2147,7 +2257,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
     }
 
-    if ( _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom ) )
+    if ( _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom, 0 ) )
       return -1;
 
   } /* ! skipChecks */
@@ -2166,7 +2276,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   int isclosed = start_node == end_node;
   int found;
   found = _lwt_FindAdjacentEdges( topo, start_node, &span,
-                                  isclosed ? &epan : NULL );
+                                  isclosed ? &epan : NULL, -1 );
   if ( found ) {
     span.was_isolated = 0;
     newedge.next_right = span.nextCW ? span.nextCW : -newedge.edge_id;
@@ -2190,7 +2300,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   }
 
   found = _lwt_FindAdjacentEdges( topo, end_node, &epan,
-                                  isclosed ? &span : NULL );
+                                  isclosed ? &span : NULL, -1 );
   if ( found ) {
     epan.was_isolated = 0;
     newedge.next_left = epan.nextCW ? epan.nextCW : newedge.edge_id;
@@ -2816,4 +2926,424 @@ lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
 
   *out = seid;
   return nseid;
+}
+
+static GEOSGeometry *
+_lwt_EdgeMotionArea(LWLINE *geom, int isclosed)
+{
+  GEOSGeometry *gg;
+  POINT4D p4d;
+  POINTARRAY *pa;
+  POINTARRAY **pas;
+  LWPOLY *poly;
+  LWGEOM *g;
+
+  pas = lwalloc(sizeof(POINTARRAY*));
+
+  initGEOS(lwnotice, lwgeom_geos_error);
+
+  if ( isclosed )
+  {
+    pas[0] = ptarray_clone_deep( geom->points );
+    poly = lwpoly_construct(0, 0, 1, pas);
+    gg = LWGEOM2GEOS( lwpoly_as_lwgeom(poly), 0 );
+    lwpoly_free(poly); /* should also delete the pointarrays */
+  }
+  else
+  {
+    pa = geom->points;
+    getPoint4d_p(pa, 0, &p4d);
+    pas[0] = ptarray_clone_deep( pa );
+    /* don't bother dup check */
+    if ( LW_FAILURE == ptarray_append_point(pas[0], &p4d, LW_TRUE) )
+    {
+      lwerror("Could not append point to pointarray");
+      return NULL;
+    }
+    poly = lwpoly_construct(0, 0, 1, pas);
+    /* make valid, in case the edge self-intersects on its first-last
+     * vertex segment */
+    g = lwgeom_make_valid(lwpoly_as_lwgeom(poly));
+    if ( ! g )
+    {
+      lwerror("Could not make edge motion area valid");
+      return NULL;
+    }
+    lwpoly_free(poly); /* should also delete the pointarrays */
+    gg = LWGEOM2GEOS(g, 0);
+    lwgeom_free(g);
+  }
+  if ( ! gg )
+  {
+    lwerror("Could not convert old edge area geometry to GEOS: %s",
+            lwgeom_geos_errmsg);
+    return NULL;
+  }
+  return gg;
+}
+
+int
+lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
+{
+  LWT_ISO_EDGE *oldedge;
+  LWT_ISO_EDGE newedge;
+  POINT2D p1, p2, pt;
+  int i;
+  int isclosed = 0;
+
+  /* curve must be simple */
+  if ( ! lwgeom_is_simple(lwline_as_lwgeom(geom)) )
+  {
+    lwerror("SQL/MM Spatial exception - curve not simple");
+    return -1;
+  }
+
+  i = 1;
+  oldedge = lwt_be_getEdgeById(topo, &edge_id, &i, LWT_COL_EDGE_ALL);
+  if ( ! oldedge )
+  {
+    LWDEBUGF(1, "lwt_ChangeEdgeGeom: "
+                "lwt_be_getEdgeById returned NULL and set i=%d", i);
+    if ( i == -1 )
+    {
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+    else if ( i == 0 )
+    {
+      lwerror("SQL/MM Spatial exception - non-existent edge %"
+              LWTFMT_ELEMID, edge_id);
+      return -1;
+    }
+    else
+    {
+      lwerror("Backend coding error: getEdgeById callback returned NULL "
+              "but numelements output parameter has value %d "
+              "(expected 0 or 1)", i);
+    }
+  }
+
+  LWDEBUGF(1, "lwt_ChangeEdgeGeom: "
+              "old edge has %d points, new edge has %d points",
+              oldedge->geom->points->npoints, geom->points->npoints);
+
+  /*
+   * e) Check StartPoint consistency
+   */
+  getPoint2d_p(oldedge->geom->points, 0, &p1);
+  getPoint2d_p(geom->points, 0, &pt);
+  if ( ! p2d_same(&p1, &pt) )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("SQL/MM Spatial exception - "
+            "start node not geometry start point.");
+    return -1;
+  }
+
+  /*
+   * f) Check EndPoint consistency
+   */
+  if ( oldedge->geom->points->npoints < 2 )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Corrupted topology: edge %" LWTFMT_ELEMID
+            " has less than 2 vertices", oldedge->edge_id);
+    return -1;
+  }
+  getPoint2d_p(oldedge->geom->points, oldedge->geom->points->npoints-1, &p2);
+  if ( geom->points->npoints < 2 )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Invalid edge: less than 2 vertices");
+    return -1;
+  }
+  getPoint2d_p(geom->points, geom->points->npoints-1, &pt);
+  if ( ! p2d_same(&pt, &p2) )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("SQL/MM Spatial exception - "
+            "end node not geometry end point.");
+    return -1;
+  }
+
+  /* Not in the specs:
+   * if the edge is closed, check we didn't change winding !
+   *       (should be part of isomorphism checking)
+   */
+  if ( oldedge->start_node == oldedge->end_node )
+  {
+    isclosed = 1;
+#if 1 /* TODO: this is actually bogus as a test */
+    /* check for valid edge (distinct vertices must exist) */
+    if ( ! _lwt_GetInteriorEdgePoint(geom, &pt) )
+    {
+      _lwt_release_edges(oldedge, 1);
+      lwerror("Invalid edge (no two distinct vertices exist)");
+      return -1;
+    }
+#endif
+
+    if ( ptarray_isccw(oldedge->geom->points) !=
+         ptarray_isccw(geom->points) )
+    {
+      _lwt_release_edges(oldedge, 1);
+      lwerror("Edge twist at node POINT(%g %g)", p1.x, p1.y);
+      return -1;
+    }
+  }
+
+  if ( _lwt_CheckEdgeCrossing(topo, oldedge->start_node,
+                                    oldedge->end_node, geom, edge_id ) )
+  {
+    /* would have called lwerror already, leaking :( */
+    _lwt_release_edges(oldedge, 1);
+    return -1;
+  }
+
+  LWDEBUG(1, "lwt_ChangeEdgeGeom: "
+             "edge crossing check passed ");
+
+  /*
+   * Not in the specs:
+   * Check topological isomorphism
+   */
+
+  /* Check that the "motion range" doesn't include any node */
+  // 1. compute combined bbox of old and new edge
+  GBOX mbox; /* motion box */
+  lwgeom_add_bbox((LWGEOM*)oldedge->geom); /* just in case */
+  lwgeom_add_bbox((LWGEOM*)geom); /* just in case */
+  gbox_union(oldedge->geom->bbox, geom->bbox, &mbox);
+  // 2. fetch all nodes in the combined box
+  LWT_ISO_NODE *nodes;
+  int numnodes;
+  nodes = lwt_be_getNodeWithinBox2D(topo, &mbox, &numnodes,
+                                          LWT_COL_NODE_ALL, 0);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", numnodes);
+  if ( numnodes == -1 ) {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  // 3. if any node beside endnodes are found:
+  if ( numnodes > ( 1 + isclosed ? 0 : 1 ) )
+  {{
+    GEOSGeometry *oarea, *narea;
+    const GEOSPreparedGeometry *oareap, *nareap;
+
+    initGEOS(lwnotice, lwgeom_geos_error);
+
+    oarea = _lwt_EdgeMotionArea(oldedge->geom, isclosed);
+    if ( ! oarea )
+    {
+      _lwt_release_edges(oldedge, 1);
+      lwerror("Could not compute edge motion area for old edge");
+      return -1;
+    }
+
+    narea = _lwt_EdgeMotionArea(geom, isclosed);
+    if ( ! oarea )
+    {
+      _lwt_release_edges(oldedge, 1);
+      lwerror("Could not compute edge motion area for new edge");
+      return -1;
+    }
+
+    //   3.2. bail out if any node is in one and not the other
+    oareap = GEOSPrepare( oarea );
+    nareap = GEOSPrepare( narea );
+    for (i=0; i<numnodes; ++i)
+    {
+      LWT_ISO_NODE *n = &(nodes[i]);
+      GEOSGeometry *ngg;
+      int ocont, ncont;
+      size_t sz;
+      char *wkt;
+      if ( n->node_id == oldedge->start_node ) continue;
+      if ( n->node_id == oldedge->end_node ) continue;
+      ngg = LWGEOM2GEOS( lwpoint_as_lwgeom(n->geom) , 0);
+      ocont = GEOSPreparedContains( oareap, ngg );
+      ncont = GEOSPreparedContains( nareap, ngg );
+      GEOSGeom_destroy(ngg);
+      if (ocont == 2 || ncont == 2)
+      {
+        _lwt_release_nodes(nodes, numnodes);
+        GEOSPreparedGeom_destroy(oareap);
+        GEOSGeom_destroy(oarea);
+        GEOSPreparedGeom_destroy(nareap);
+        GEOSGeom_destroy(narea);
+        lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+      if (ocont != ncont)
+      {
+        GEOSPreparedGeom_destroy(oareap);
+        GEOSGeom_destroy(oarea);
+        GEOSPreparedGeom_destroy(nareap);
+        GEOSGeom_destroy(narea);
+        wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 6, &sz);
+        _lwt_release_nodes(nodes, numnodes);
+        lwerror("Edge motion collision at %s", wkt);
+        lwfree(wkt); /* would not necessarely reach this point */
+        return -1;
+      }
+    }
+    GEOSPreparedGeom_destroy(oareap);
+    GEOSGeom_destroy(oarea);
+    GEOSPreparedGeom_destroy(nareap);
+    GEOSGeom_destroy(narea);
+  }}
+  if ( numnodes ) _lwt_release_nodes(nodes, numnodes);
+
+  LWDEBUG(1, "nodes containment check passed");
+
+  /*
+   * Check edge adjacency before
+   * TODO: can be optimized to gather azimuths of all edge ends once
+   */
+
+  edgeend span_pre, epan_pre;
+  /* initialize span_pre.myaz and epan_pre.myaz with existing edge */
+  i = _lwt_InitEdgeEndByLine(&span_pre, &epan_pre,
+                             oldedge->geom, &p1, &p2);
+  if ( i ) return -1; /* lwerror should have been raised */
+  _lwt_FindAdjacentEdges( topo, oldedge->start_node, &span_pre,
+                                  isclosed ? &epan_pre : NULL, edge_id );
+  _lwt_FindAdjacentEdges( topo, oldedge->end_node, &epan_pre,
+                                  isclosed ? &span_pre : NULL, edge_id );
+
+  LWDEBUGF(1, "edges adjacent to old edge are %" LWTFMT_ELEMID
+              " and % (first point), %" LWTFMT_ELEMID
+              " and % (last point)" LWTFMT_ELEMID,
+              span_pre.nextCW, span_pre.nextCCW,
+              epan_pre.nextCW, epan_pre.nextCCW);
+
+  /* update edge geometry */
+  newedge.edge_id = edge_id;
+  newedge.geom = geom;
+  i = lwt_be_updateEdgesById(topo, &newedge, 1, LWT_COL_EDGE_GEOM);
+  if ( i == -1 )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( ! i )
+  {
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Unexpected error: %d edges updated when expecting 1", i);
+    return -1;
+  }
+
+  /*
+   * Check edge adjacency after
+   */
+  edgeend span_post, epan_post;
+  i = _lwt_InitEdgeEndByLine(&span_post, &epan_post, geom, &p1, &p2);
+  if ( i ) return -1; /* lwerror should have been raised */
+  /* initialize epan_post.myaz and epan_post.myaz */
+  i = _lwt_InitEdgeEndByLine(&span_post, &epan_post,
+                             geom, &p1, &p2);
+  if ( i ) return -1; /* lwerror should have been raised */
+  _lwt_FindAdjacentEdges( topo, oldedge->start_node, &span_post,
+                          isclosed ? &epan_post : NULL, edge_id );
+  _lwt_FindAdjacentEdges( topo, oldedge->end_node, &epan_post,
+                          isclosed ? &span_post : NULL, edge_id );
+
+  LWDEBUGF(1, "edges adjacent to new edge are %" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID
+              " (first point), %" LWTFMT_ELEMID
+              " and % (last point)" LWTFMT_ELEMID,
+              span_pre.nextCW, span_pre.nextCCW,
+              epan_pre.nextCW, epan_pre.nextCCW);
+
+
+  /* Bail out if next CW or CCW edge on start node changed */
+  if ( span_pre.nextCW != span_post.nextCW ||
+       span_pre.nextCCW != span_pre.nextCCW )
+  {{
+    LWT_ELEMID nid = oldedge->start_node;
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Edge changed disposition around start node %"
+            LWTFMT_ELEMID, nid);
+    return -1;
+  }}
+
+  /* Bail out if next CW or CCW edge on end node changed */
+  if ( epan_pre.nextCW != epan_post.nextCW ||
+       epan_pre.nextCCW != epan_pre.nextCCW )
+  {{
+    LWT_ELEMID nid = oldedge->end_node;
+    _lwt_release_edges(oldedge, 1);
+    lwerror("Edge changed disposition around end node %"
+            LWTFMT_ELEMID, nid);
+    return -1;
+  }}
+
+  /*
+  -- Update faces MBR of left and right faces
+  -- TODO: think about ways to optimize this part, like see if
+  --       the old edge geometry partecipated in the definition
+  --       of the current MBR (for shrinking) or the new edge MBR
+  --       would be larger than the old face MBR...
+  --
+  */
+  int facestoupdate = 0;
+  LWT_ISO_FACE faces[2];
+  LWGEOM *nface1 = NULL;
+  LWGEOM *nface2 = NULL;
+  if ( oldedge->face_left != 0 )
+  {
+    nface1 = lwt_GetFaceGeometry(topo, oldedge->face_left);
+#if 0
+    {
+    size_t sz;
+    char *wkt = lwgeom_to_wkt(nface1, WKT_ISO, 2, &sz);
+    LWDEBUGF(1, "new geometry of face left (%d): %s", (int)oldedge->face_left, wkt);
+    lwfree(wkt);
+    }
+#endif
+    lwgeom_add_bbox(nface1);
+    faces[facestoupdate].face_id = oldedge->face_left;
+    /* ownership left to nface */
+    faces[facestoupdate++].mbr = nface1->bbox;
+  }
+  if ( oldedge->face_right != 0
+       /* no need to update twice the same face.. */
+       && oldedge->face_right != oldedge->face_left )
+  {
+    nface2 = lwt_GetFaceGeometry(topo, oldedge->face_right);
+#if 0
+    {
+    size_t sz;
+    char *wkt = lwgeom_to_wkt(nface2, WKT_ISO, 2, &sz);
+    LWDEBUGF(1, "new geometry of face right (%d): %s", (int)oldedge->face_right, wkt);
+    lwfree(wkt);
+    }
+#endif
+    lwgeom_add_bbox(nface2);
+    faces[facestoupdate].face_id = oldedge->face_right;
+    faces[facestoupdate++].mbr = nface2->bbox; /* ownership left to nface */
+  }
+  LWDEBUGF(1, "%d faces to update", facestoupdate);
+  if ( facestoupdate )
+  {
+    i = lwt_be_updateFacesById( topo, &(faces[0]), facestoupdate );
+    if ( i != facestoupdate )
+    {
+      if ( nface1 ) lwgeom_free(nface1);
+      if ( nface2 ) lwgeom_free(nface2);
+      _lwt_release_edges(oldedge, 1);
+      if ( i == -1 )
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      else
+        lwerror("Unexpected error: %d faces found when expecting 1", i);
+      return -1;
+    }
+  }
+
+  LWDEBUG(1, "all done, cleaning up edges");
+
+  _lwt_release_edges(oldedge, 1);
+  return 0; /* success */
 }
