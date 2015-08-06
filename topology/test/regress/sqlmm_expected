@@ -37,7 +37,7 @@ ERROR:  SQL/MM Spatial exception - not isolated node
 -- ST_AddIsoNode(2) ------------------------
 ERROR:  SQL/MM Spatial exception - edge crosses node.
 -- ST_RemoveIsoNode  ------------------------
-ERROR:  SQL/MM Spatial exception - not isolated node
+Isolated node 3 removed
 ERROR:  SQL/MM Spatial exception - not isolated node
 -- ST_MoveIsoNode  ------------------------
 ERROR:  SQL/MM Spatial exception - not isolated node
