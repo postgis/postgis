@@ -139,7 +139,7 @@ standard.o: standard.c pagc_api.h
 tokenize.o: tokenize.c pagc_api.h
 
 std_pg_hash.o: std_pg_hash.c std_pg_hash.h pagc_api.h pagc_std_api.h
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll *.control
+EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll
 
 PGXS := @PGXS@
 include $(PGXS)
