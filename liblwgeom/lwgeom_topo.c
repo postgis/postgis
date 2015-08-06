@@ -3193,7 +3193,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     GEOSPreparedGeom_destroy(nareap);
     GEOSGeom_destroy(narea);
   }}
-  _lwt_release_nodes(nodes, numnodes);
+  if ( numnodes ) _lwt_release_nodes(nodes, numnodes);
 
   LWDEBUG(1, "nodes containment check passed");
 
