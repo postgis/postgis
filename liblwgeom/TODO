@@ -1,5 +1,10 @@
 # Status of topology functions (X = done)
 
+lwt_CreateBackendIface X
+lwt_BackendIfaceRegisterCallbacks X
+lwt_FreeBackendIface  X
+lwt_LoadTopology      X
+lwt_FreeTopology      X
 lwt_AddIsoNode        X
 lwt_AddEdgeModFace    X
 lwt_AddEdgeNewFaces   X
@@ -9,12 +14,11 @@ lwt_NewEdgesSplit     X
 lwt_AddIsoEdge        X
 lwt_GetFaceGeometry   X
 lwt_GetFaceEdges      X
-
 lwt_ChangeEdgeGeom    X
-lwt_MoveIsoNode
 lwt_RemEdgeNewFace
 lwt_RemEdgeModFace
 lwt_ModEdgeHeal
 lwt_NewEdgeHeal
+lwt_MoveIsoNode
 lwt_RemoveIsoNode
 
