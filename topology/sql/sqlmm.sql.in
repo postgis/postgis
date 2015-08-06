@@ -1421,38 +1421,8 @@ $$
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode integer)
   RETURNS TEXT AS
-$$
-DECLARE
-  rec RECORD;
-BEGIN
-
-  --
-  -- Atopology and apoint are required
-  -- 
-  IF atopology IS NULL OR anode IS NULL THEN
-    RAISE EXCEPTION
-     'SQL/MM Spatial exception - null argument';
-  END IF;
-
-  --
-  -- Check node isolation.
-  -- 
-  FOR rec IN EXECUTE 'SELECT edge_id FROM '
-    || quote_ident(atopology) || '.edge_data ' ||
-    ' WHERE start_node =  ' || anode ||
-    ' OR end_node = ' || anode 
-  LOOP
-    RAISE EXCEPTION
-     'SQL/MM Spatial exception - not isolated node';
-  END LOOP;
-
-  EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.node '
-    || ' WHERE node_id = ' || anode;
-
-  RETURN 'Isolated node ' || anode || ' removed';
-END
-$$
-LANGUAGE 'plpgsql' VOLATILE;
+	'MODULE_PATHNAME','ST_RemoveIsoNode'
+  LANGUAGE 'c' VOLATILE;
 --} ST_RemoveIsoNode
 
 --{
@@ -1462,9 +1432,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 CREATE OR REPLACE FUNCTION topology.ST_RemIsoNode(varchar, integer)
   RETURNS TEXT AS
-$$
-  SELECT topology.ST_RemoveIsoNode($1, $2)
-$$ LANGUAGE 'sql' VOLATILE;
+	'MODULE_PATHNAME','ST_RemoveIsoNode'
+  LANGUAGE 'c' VOLATILE;
+--} ST_RemIsoNode
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
