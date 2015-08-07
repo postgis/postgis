@@ -116,14 +116,19 @@ SELECT topology.ST_RemoveIsoNode('sqlmm_topology', 4);
 SELECT '-- ST_MoveIsoNode  ------------------------';
 
 -- Isolated node to invalid location (coincident)
-SELECT topology.ST_MoveIsoNode('sqlmm_topology', 2, 'POINT(5 10)');
-SELECT topology.ST_MoveIsoNode('sqlmm_topology', 2, 'POINT(4 4)');
+SELECT topology.ST_MoveIsoNode('sqlmm_topology', 8, 'POINT(5 10)');
+-- Isolated node to invalid location (edge-crossing)
+SELECT topology.ST_MoveIsoNode('sqlmm_topology', 8, 'POINT(5 9)');
 
 -- Non isolated node (is used by an edge);
 SELECT topology.ST_MoveIsoNode('sqlmm_topology', 4, 'POINT(5 4)');
 
 -- Invalid point
 SELECT topology.ST_MoveIsoNode('sqlmm_topology', 2, 'MULTIPOINT(5 4)');
+
+-- Valid move
+SELECT topology.ST_MoveIsoNode('sqlmm_topology', 8, 'POINT(7 11)');
+SELECT topology.ST_MoveIsoNode('sqlmm_topology', 8, 'POINT(7 10)');
 
 -------------------------------------------------------------
 -- ST_RemoveIsoEdge
