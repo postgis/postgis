@@ -426,7 +426,6 @@ lwt_FreeTopology( LWT_TOPOLOGY* topo )
   lwfree(topo);
 }
 
-
 LWT_ELEMID
 lwt_AddIsoNode( LWT_TOPOLOGY* topo, LWT_ELEMID face,
                 LWPOINT* pt, int skipISOChecks )
@@ -2898,7 +2897,7 @@ lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
       nextedge->face_left = nextedge->face_right = -1;
     }
 
-    /* TODO: now "scroll" the list of edges so that the one
+    /* now "scroll" the list of edges so that the one
      * with smaller absolute edge_id is first */
     /* Range is: [prevseid, nseid) -- [inclusive, exclusive) */
     if ( (nseid - prevseid) > 1 )
@@ -3355,6 +3354,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   return 0; /* success */
 }
 
+/* Only return CONTAINING_FACE in the node object */
 static LWT_ISO_NODE *
 _lwt_GetIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
 {
@@ -3384,13 +3384,38 @@ int
 lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
 {
   LWT_ISO_NODE *node;
+  int ret;
 
   node = _lwt_GetIsoNode( topo, nid );
   if ( ! node ) return -1;
 
+  if ( lwt_be_ExistsCoincidentNode(topo, pt) )
+  {
+    lwerror("SQL/MM Spatial exception - coincident node");
+    return -1;
+  }
+
+  if ( lwt_be_ExistsEdgeIntersectingPoint(topo, pt) )
+  {
+    lwerror("SQL/MM Spatial exception - edge crosses node.");
+    return -1;
+  }
+
+  /* TODO: check that the new point is in the same containing face !
+   * See https://trac.osgeo.org/postgis/ticket/3232
+   */
+
+  node->node_id = nid;
+  node->geom = pt;
+  ret = lwt_be_updateNodesById(topo, node, 1,
+                               LWT_COL_NODE_GEOM);
+  if ( ret == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
   lwfree(node);
-  lwerror("lwt_MoveIsoNode not implemented yet");
-  return -1;
+  return 0;
 }
 
 int
@@ -3413,6 +3438,10 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
     lwerror("Unexpected error: %d nodes deleted when expecting 1", n);
     return -1;
   }
+
+  /* TODO: notify to caller about node being removed ?
+   * See https://trac.osgeo.org/postgis/ticket/3231
+   */
 
   return 0; /* success */
 }

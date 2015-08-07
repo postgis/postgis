@@ -2989,7 +2989,7 @@ Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
   if ( ! line ) {
     lwgeom_free(lwgeom);
 	  PG_FREE_IF_COPY(geom, 2);
-    lwpgerror("ST_AddEdgeModFace fourth argument must be a line geometry");
+    lwpgerror("ST_ChangeEdgeGeom third argument must be a line geometry");
     PG_RETURN_NULL();
   }
 
@@ -3084,6 +3084,91 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
 
   if ( snprintf(buf, 64, "Isolated node " INT64_FORMAT
                          " removed", node_id) >= 64 )
+  {
+    buf[63] = '\0';
+  }
+  PG_RETURN_TEXT_P(cstring2text(buf));
+}
+
+/*  ST_MoveIsoNode(atopology, anode, apoint) */
+Datum ST_MoveIsoNode(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MoveIsoNode);
+Datum ST_MoveIsoNode(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char buf[64];
+  char* toponame;
+  int ret;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+  POINT2D p;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  node_id = PG_GETARG_INT32(1) ;
+
+  geom = PG_GETARG_GSERIALIZED_P(2);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 2);
+    lwpgerror("SQL/MM Spatial exception - invalid point");
+    PG_RETURN_NULL();
+  }
+
+  if ( ! getPoint2d_p(pt->point, 0, &p) ) {
+    /* Do not let empty points in, see
+     * https://trac.osgeo.org/postgis/ticket/3234
+     */
+    lwpgerror("SQL/MM Spatial exception - empty point");
+    PG_RETURN_NULL();
+  }
+
+  /* TODO: check point for NaN values ? */
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_MoveIsoNode");
+  ret = lwt_MoveIsoNode(topo, node_id, pt);
+  POSTGIS_DEBUG(1, "lwt_MoveIsoNode returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 2);
+  lwt_FreeTopology(topo);
+
+  if ( ret == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+
+  if ( snprintf(buf, 64, "Isolated Node " INT64_FORMAT
+                         " moved to location %g,%g",
+                         node_id, p.x, p.y) >= 64 )
   {
     buf[63] = '\0';
   }

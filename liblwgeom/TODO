@@ -16,9 +16,9 @@ lwt_GetFaceGeometry   X
 lwt_GetFaceEdges      X
 lwt_ChangeEdgeGeom    X
 lwt_RemoveIsoNode     X
+lwt_MoveIsoNode       X
 lwt_RemEdgeNewFace
 lwt_RemEdgeModFace
 lwt_ModEdgeHeal
 lwt_NewEdgeHeal
-lwt_MoveIsoNode
 
