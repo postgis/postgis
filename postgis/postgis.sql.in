@@ -4868,7 +4868,7 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geome
 	AS $$ 
 	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
 	$$	
-	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE; 
 	
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
