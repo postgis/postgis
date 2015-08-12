@@ -161,7 +161,9 @@ postgis_upgrade.sql.in: postgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@
 
 postgis_upgrade.sql: postgis_drop_before.sql postgis_upgrade.sql.in postgis_drop_after.sql
-	cat $^ > $@
+	echo "BEGIN;" > $@
+	cat $^ >> $@
+	echo "COMMIT;" >> $@
 
 sfcgal_upgrade.sql.in: sfcgal.sql ../utils/postgis_proc_upgrade.pl 
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< UNUSED > $@

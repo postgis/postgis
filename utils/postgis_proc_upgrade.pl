@@ -186,7 +186,7 @@ print qq{
 
 print "LOAD $soname;\n" if ($soname);
 
-print "BEGIN;\n";
+#print "BEGIN;\n";
 print "SET search_path TO $schema;\n" if $schema;
 
 #
@@ -483,7 +483,7 @@ close( INPUT );
 
 print "DROP TABLE _postgis_upgrade_info;\n";
 
-print "COMMIT;\n";
+#print "COMMIT;\n";
 
 1;
 
