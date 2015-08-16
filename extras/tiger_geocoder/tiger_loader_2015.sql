@@ -167,7 +167,7 @@ VALUES('windows', '%WGETTOOL%', '%PGBIN%',
 E'set TMPDIR=${staging_fold}\\temp\\
 set UNZIPTOOL="C:\\Program Files\\7-Zip\\7z.exe"
 set WGETTOOL="C:\\wget\\wget.exe"
-set PGBIN=C:\\Program Files\\PostgreSQL\\9.2\\bin\\
+set PGBIN=C:\\Program Files\\PostgreSQL\\9.4\\bin\\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -191,7 +191,7 @@ VALUES('sh', 'wget', '',
 E'TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/pgsql-9.0/bin
+export PGBIN=/usr/lib/postgresql/9.4/bin/
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres

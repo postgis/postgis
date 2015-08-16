@@ -18,9 +18,16 @@ make install</programlisting>
 	<note><para>The raster support is currently optional, but installed by default. For enabling using the PostgreSQL 9.1+ extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
 	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
 psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
-psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"
 -- if you built with sfcgal support --
 psql -d yourdatabase -c "CREATE EXTENSION postgis_sfcgal;"
+
+-- if you want to install tiger geocoder --
+psql -d yourdatabase -c "CREATE EXTENSION fuzzystrmatch"
+psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"
+
+-- if you installed with pcre 
+-- you should have address standardizer extension as well
+psql -d yourdatabase -c "CREATE EXTENSION address_standardizer;"
 </programlisting>
 	
 	
@@ -1264,13 +1271,13 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
   <sect1 id="loading_extras_tiger_geocoder">
   	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
   	
-	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2011/README</filename> </para>
+	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/README</filename> </para>
 	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
 	<sect2 id="install_tiger_geocoder_extension">
 		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>	
-		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
+		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
 		<orderedlist>
-			<listitem><para>First get binaries for PostGIS 2.1.0 or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
+			<listitem><para>First get binaries for PostGIS 2.1+ or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
 			<para><programlisting>CREATE EXTENSION postgis;		
 CREATE EXTENSION fuzzystrmatch;
@@ -1325,10 +1332,10 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 		</para>
 	
 		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder</command>
 		</para>
 	
-		<para>Edit the <filename>tiger_loader_2012.sql</filename> to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
+		<para>Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file you find, unless you want to load different year) to the paths of your executables server etc or alternatively you can update the <varname>loader_platform</varname> table once installed. If you don't edit this file or the <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions.
 		 </para>
 		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
 			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. </para>

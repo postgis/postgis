@@ -4,8 +4,8 @@ PGHOST=localhost
 PGUSER=postgres
 PGPASSWORD=yourpasswordhere
 THEDB=geocoder
-PSQL_CMD=/usr/bin/psql
-PGCONTRIB=/usr/share/postgresql/contrib
+PSQL_CMD= /usr/lib/postgresql/9.4/bin/psql
+PGCONTRIB=/usr/share/postgresql/9.4/contrib
 #if you are on 9.1+ use the CREATE EXTENSION syntax instead
 ${PSQL_CMD} -d "${THEDB}" -f "${PGCONTRIB}/fuzzystrmatch.sql"
 #${PSQL_CMD} -d "${THEDB}" -c "CREATE EXTENSION fuzzystrmatch" 

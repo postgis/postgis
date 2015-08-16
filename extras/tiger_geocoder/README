@@ -39,6 +39,7 @@ Steps using extensions:
 CREATE EXTENSION postgis;
 
 2) Next:
+CREATE EXTENSION fuzzystrmatch;
 CREATE EXTENSION postgis_tiger_geocoder;
 
 Loading up data:
@@ -62,7 +63,7 @@ WHITESPACE AND POSSIBLY NON-SCRIPT CHARACTERS THAT CAUSE IT TO BREAK.)
 
 -- UNIX /LINUX USERS --
 -- Note even if you want just specific states you need to 
--- do this step since 2011 county, state tables are available only at national level
+-- do this step since 2015 county, state tables are available only at national level
 SELECT loader_generate_nation_script('sh');  
 
 -- After the nation load, generate a bash script suitable for Unix command lines 
