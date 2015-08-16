@@ -733,6 +733,38 @@ typedef struct LWT_BE_CALLBACKS_T {
       int numelems
   );
 
+  /**
+   * Update TopoGeometry objects after an edge removal event
+   *
+   * @param topo the topology to act upon
+   * @param rem_edge identifier of the edge that's been removed
+   *
+   * @return 1 on success, 0 on error (@see lastErrorMessage)
+   *
+   */
+  int (*updateTopoGeomRemEdge) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID rem_edge
+  );
+
+  /**
+   * Update TopoGeometry objects after healing two faces
+   *
+   * @param topo the topology to act upon
+   * @param face1 identifier of the first face
+   * @param face2 identifier of the second face
+   * @param newface identifier of the new face
+   *
+   * @note that newface may or may not be equal to face1 or face2,
+   *       while face1 should never be the same as face2.
+   *
+   * @return 1 on success, 0 on error (@see lastErrorMessage)
+   *
+   */
+  int (*updateTopoGeomFaceHeal) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID face1, LWT_ELEMID face2, LWT_ELEMID newface
+  );
 
 } LWT_BE_CALLBACKS;
 
@@ -1067,7 +1099,8 @@ LWT_ELEMID lwt_AddEdgeNewFaces(LWT_TOPOLOGY* topo,
  *
  * @param topo the topology to operate on
  * @param edge identifier of the edge to be removed
- * @return the id of newly created face or -1 if no new face was created
+ * @return the id of newly created face, 0 if no new face was created
+ *         or -1 on error
  *
  */
 LWT_ELEMID lwt_RemEdgeNewFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
@@ -1082,7 +1115,8 @@ LWT_ELEMID lwt_RemEdgeNewFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
  *
  * @param topo the topology to operate on
  * @param edge identifier of the edge to be removed
- * @return the id of newly created face or -1 if no new face was created
+ * @return the id of newly created face, 0 if no new face was created
+ *         or -1 on error
  *
  */
 LWT_ELEMID lwt_RemEdgeModFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);

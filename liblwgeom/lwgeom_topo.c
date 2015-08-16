@@ -323,9 +323,24 @@ lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LWT_EL
 }
 
 static int
-lwt_be_updateTopoGeomFaceSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_face, LWT_ELEMID new_face1, LWT_ELEMID new_face2)
+lwt_be_updateTopoGeomFaceSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_face,
+                               LWT_ELEMID new_face1, LWT_ELEMID new_face2)
 {
   CBT3(topo, updateTopoGeomFaceSplit, split_face, new_face1, new_face2);
+}
+
+static int
+lwt_be_updateTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id)
+{
+  CBT1(topo, updateTopoGeomRemEdge, edge_id);
+}
+
+static int
+lwt_be_updateTopoGeomFaceHeal(LWT_TOPOLOGY* topo,
+                             LWT_ELEMID face1, LWT_ELEMID face2,
+                             LWT_ELEMID newface)
+{
+  CBT3(topo, updateTopoGeomFaceHeal, face1, face2, newface);
 }
 
 static LWT_ELEMID*
@@ -369,11 +384,21 @@ lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
  ************************************************************************/
 
 static void
+_lwt_release_faces(LWT_ISO_FACE *faces, int num_faces)
+{
+  int i;
+  for ( i=0; i<num_faces; ++i ) {
+    if ( faces[i].mbr ) lwfree(faces[i].mbr);
+  }
+  lwfree(faces);
+}
+
+static void
 _lwt_release_edges(LWT_ISO_EDGE *edges, int num_edges)
 {
   int i;
   for ( i=0; i<num_edges; ++i ) {
-    lwline_release(edges[i].geom);
+    if ( edges[i].geom ) lwline_release(edges[i].geom);
   }
   lwfree(edges);
 }
@@ -383,7 +408,7 @@ _lwt_release_nodes(LWT_ISO_NODE *nodes, int num_nodes)
 {
   int i;
   for ( i=0; i<num_nodes; ++i ) {
-    lwpoint_release(nodes[i].geom);
+    if ( nodes[i].geom ) lwpoint_release(nodes[i].geom);
   }
   lwfree(nodes);
 }
@@ -870,6 +895,7 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
       lwerror("Backend coding error: getEdgeById callback returned NULL "
               "but numelements output parameter has value %d "
               "(expected 0 or 1)", i);
+      return NULL;
     }
   }
 
@@ -3026,6 +3052,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       lwerror("Backend coding error: getEdgeById callback returned NULL "
               "but numelements output parameter has value %d "
               "(expected 0 or 1)", i);
+      return -1;
     }
   }
 
@@ -3444,4 +3471,430 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
    */
 
   return 0; /* success */
+}
+
+/* Used by _lwt_RemEdge to update edge face ref on healing
+ *
+ * @param of old face id (never 0 as you cannot remove face 0)
+ * @param nf new face id
+ * @return 0 on success, -1 on backend error
+ */
+static int
+_lwt_UpdateEdgeFaceRef( LWT_TOPOLOGY *topo, LWT_ELEMID of, LWT_ELEMID nf)
+{
+  LWT_ISO_EDGE sel_edge, upd_edge;
+  int ret;
+
+  assert( of != 0 );
+
+  /* Update face_left for all edges still referencing old face */
+  sel_edge.face_left = of;
+  upd_edge.face_left = nf;
+  ret = lwt_be_updateEdges(topo, &sel_edge, LWT_COL_EDGE_FACE_LEFT,
+                                 &upd_edge, LWT_COL_EDGE_FACE_LEFT,
+                                 NULL, 0);
+  if ( ret == -1 ) return -1;
+
+  /* Update face_right for all edges still referencing old face */
+  sel_edge.face_right = of;
+  upd_edge.face_right = nf;
+  ret = lwt_be_updateEdges(topo, &sel_edge, LWT_COL_EDGE_FACE_RIGHT,
+                                 &upd_edge, LWT_COL_EDGE_FACE_RIGHT,
+                                 NULL, 0);
+  if ( ret == -1 ) return -1;
+
+  return 0;
+}
+
+/* Used by _lwt_RemEdge to update node face ref on healing
+ *
+ * @param of old face id (never 0 as you cannot remove face 0)
+ * @param nf new face id
+ * @return 0 on success, -1 on backend error
+ */
+static int
+_lwt_UpdateNodeFaceRef( LWT_TOPOLOGY *topo, LWT_ELEMID of, LWT_ELEMID nf)
+{
+  LWT_ISO_NODE sel, upd;
+  int ret;
+
+  assert( of != 0 );
+
+  /* Update face_left for all edges still referencing old face */
+  sel.containing_face = of;
+  upd.containing_face = nf;
+  ret = lwt_be_updateNodes(topo, &sel, LWT_COL_NODE_CONTAINING_FACE,
+                                 &upd, LWT_COL_NODE_CONTAINING_FACE,
+                                 NULL, 0);
+  if ( ret == -1 ) return -1;
+
+  return 0;
+}
+
+/* Used by lwt_RemEdgeModFace and lwt_RemEdgeNewFaces */
+static LWT_ELEMID
+_lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
+{
+  int i, nedges, nfaces, fields;
+  LWT_ISO_EDGE *edge = NULL;
+  LWT_ISO_EDGE *upd_edge = NULL;
+  LWT_ISO_EDGE upd_edge_left[2];
+  int nedge_left = 0;
+  LWT_ISO_EDGE upd_edge_right[2];
+  int nedge_right = 0;
+  LWT_ISO_NODE upd_node[2];
+  int nnode = 0;
+  LWT_ISO_FACE *faces = NULL;
+  LWT_ISO_FACE newface;
+  LWT_ELEMID node_ids[2];
+  LWT_ELEMID face_ids[2];
+  int fnode_edges = 0; /* number of edges on the first node (excluded
+                        * the one being removed ) */
+  int lnode_edges = 0; /* number of edges on the last node (excluded
+                        * the one being removed ) */
+
+  i = 1;
+  edge = lwt_be_getEdgeById(topo, &edge_id, &i, LWT_COL_EDGE_ALL);
+  if ( ! edge )
+  {
+    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%d", i);
+    if ( i == -1 )
+    {
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+    else if ( i == 0 )
+    {
+      lwerror("SQL/MM Spatial exception - non-existent edge %"
+              LWTFMT_ELEMID, edge_id);
+      return -1;
+    }
+    else
+    {
+      lwerror("Backend coding error: getEdgeById callback returned NULL "
+              "but numelements output parameter has value %d "
+              "(expected 0 or 1)", i);
+      return -1;
+    }
+  }
+
+  if ( ! lwt_be_updateTopoGeomRemEdge(topo, edge_id) )
+  {
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  lwnotice("Updating next_{right,left}_face of ring edges...");
+
+  /* Update edge linking */
+
+  nedges = 0;
+  node_ids[nedges++] = edge->start_node;
+  if ( edge->end_node != edge->start_node )
+  {
+    node_ids[nedges++] = edge->end_node;
+  }
+  fields = LWT_COL_EDGE_EDGE_ID | LWT_COL_EDGE_START_NODE |
+           LWT_COL_EDGE_END_NODE | LWT_COL_EDGE_NEXT_LEFT |
+           LWT_COL_EDGE_NEXT_RIGHT;
+  upd_edge = lwt_be_getEdgeByNode( topo, &(node_ids[0]), &nedges, fields );
+  if ( nedges == -1 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  nedge_left = nedge_right = 0;
+  for ( i=0; i<nedges; ++i )
+  {
+    LWT_ISO_EDGE *e = &(upd_edge[i]);
+    if ( e->edge_id == edge_id ) continue;
+    if ( e->start_node == edge->start_node || e->end_node == edge->start_node )
+    {
+      ++fnode_edges;
+    }
+    if ( e->start_node == edge->end_node || e->end_node == edge->end_node )
+    {
+      ++lnode_edges;
+    }
+    if ( e->next_left == -edge_id )
+    {
+      upd_edge_left[nedge_left].edge_id = e->edge_id;
+      upd_edge_left[nedge_left++].next_left =
+        edge->next_left != edge_id ? edge->next_left : edge->next_right;
+    }
+    else if ( e->next_left == edge_id )
+    {
+      upd_edge_left[nedge_left].edge_id = e->edge_id;
+      upd_edge_left[nedge_left++].next_left =
+        edge->next_right != -edge_id ? edge->next_right : edge->next_left;
+    }
+
+    if ( e->next_right == -edge_id )
+    {
+      upd_edge_right[nedge_right].edge_id = e->edge_id;
+      upd_edge_right[nedge_right++].next_right =
+        edge->next_left != edge_id ? edge->next_left : edge->next_right;
+    }
+    else if ( e->next_right == edge_id )
+    {
+      upd_edge_right[nedge_right].edge_id = e->edge_id;
+      upd_edge_right[nedge_right++].next_right =
+        edge->next_right != -edge_id ? edge->next_right : edge->next_left;
+    }
+  }
+
+  if ( nedge_left )
+  {
+    LWDEBUGF(1, "updating %d 'next_left' edges", nedge_left);
+    /* update edges in upd_edge_left set next_left */
+    i = lwt_be_updateEdgesById(topo, &(upd_edge_left[0]), nedge_left,
+                               LWT_COL_EDGE_NEXT_LEFT);
+    if ( i == -1 )
+    {
+      _lwt_release_edges(edge, 1);
+      lwfree(upd_edge);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+  if ( nedge_right )
+  {
+    LWDEBUGF(1, "updating %d 'next_right' edges", nedge_right);
+    /* update edges in upd_edge_right set next_right */
+    i = lwt_be_updateEdgesById(topo, &(upd_edge_right[0]), nedge_right,
+                               LWT_COL_EDGE_NEXT_RIGHT);
+    if ( i == -1 )
+    {
+      _lwt_release_edges(edge, 1);
+      lwfree(upd_edge);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+  LWDEBUGF(1, "releasing %d updateable edges in %p", nedges, upd_edge);
+  lwfree(upd_edge);
+
+  /* Id of face that will take up all the space previously
+   * taken by left and right faces of the edge */
+  LWT_ELEMID floodface;
+
+  /* Find floodface, and update its mbr if != 0 */
+  if ( edge->face_left == edge->face_right )
+  {
+    floodface = edge->face_right;
+  }
+  else
+  {
+    /* Two faces healed */
+    if ( edge->face_left == 0 || edge->face_right == 0 )
+    {
+      floodface = 0;
+      LWDEBUG(1, "floodface is universe");
+    }
+    else
+    {
+      /* we choose right face as the face that will remain
+       * to be symmetric with ST_AddEdgeModFace */
+      floodface = edge->face_right;
+      LWDEBUGF(1, "floodface is %" LWTFMT_ELEMID, floodface);
+      if ( modFace )
+      {
+        /* update mbr of floodface as union of mbr of both faces */
+        face_ids[0] = edge->face_left;
+        face_ids[1] = edge->face_right;
+        nfaces = 2;
+        fields = LWT_COL_FACE_ALL;
+        faces = lwt_be_getFaceById(topo, face_ids, &nfaces, fields);
+        if ( nfaces == -1 ) {
+          lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+          return -1;
+        }
+        GBOX *box1=NULL;
+        GBOX *box2=NULL;
+        for ( i=0; i<nfaces; ++i )
+        {
+          if ( faces[i].face_id == edge->face_left )
+          {
+            if ( ! box1 ) box1 = faces[i].mbr;
+            else
+            {
+              i = edge->face_left;
+              _lwt_release_edges(edge, 1);
+              _lwt_release_faces(faces, nfaces);
+              lwerror("corrupted topology: more than 1 face have face_id=%"
+                      LWTFMT_ELEMID, i);
+              return -1;
+            }
+          }
+          else if ( faces[i].face_id == edge->face_right )
+          {
+            if ( ! box2 ) box2 = faces[i].mbr;
+            else
+            {
+              i = edge->face_right;
+              _lwt_release_edges(edge, 1);
+              _lwt_release_faces(faces, nfaces);
+              lwerror("corrupted topology: more than 1 face have face_id=%"
+                      LWTFMT_ELEMID, i);
+              return -1;
+            }
+          }
+          else
+          {
+            i = faces[i].face_id;
+            _lwt_release_edges(edge, 1);
+            _lwt_release_faces(faces, nfaces);
+            lwerror("Backend coding error: getFaceById returned face "
+                    "with non-requested id %" LWTFMT_ELEMID, i);
+            return -1;
+          }
+        }
+        if ( ! box1 ) {
+          i = edge->face_left;
+          _lwt_release_edges(edge, 1);
+          _lwt_release_faces(faces, nfaces);
+          lwerror("corrupted topology: no face have face_id=%"
+                  LWTFMT_ELEMID " (left face for edge %"
+                  LWTFMT_ELEMID ")", i, edge_id);
+          return -1;
+        }
+        if ( ! box2 ) {
+          i = edge->face_right;
+          _lwt_release_edges(edge, 1);
+          _lwt_release_faces(faces, nfaces);
+          lwerror("corrupted topology: no face have face_id=%"
+                  LWTFMT_ELEMID " (right face for edge %"
+                  LWTFMT_ELEMID ")", i, edge_id);
+          return -1;
+        }
+        gbox_merge(box2, box1); /* box1 is now the union of the two */
+        newface.face_id = edge->face_right;
+        newface.mbr = box1;
+        i = lwt_be_updateFacesById( topo, &newface, 1 );
+        _lwt_release_faces(faces, 2);
+        if ( i == -1 )
+        {
+          _lwt_release_edges(edge, 1);
+          lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+          return -1;
+        }
+        if ( i != 1 )
+        {
+          _lwt_release_edges(edge, 1);
+          lwerror("Unexpected error: %d faces updated when expecting 1", i);
+          return -1;
+        }
+      }
+    }
+
+    /* Update face references for edges and nodes still referencing
+     * the removed face(s) */
+
+    if ( edge->face_left != floodface )
+    {
+      if ( -1 == _lwt_UpdateEdgeFaceRef(topo, edge->face_left, floodface) )
+      {
+        _lwt_release_edges(edge, 1);
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+      if ( -1 == _lwt_UpdateNodeFaceRef(topo, edge->face_left, floodface) )
+      {
+        _lwt_release_edges(edge, 1);
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+    }
+
+    if ( edge->face_right != floodface )
+    {
+      if ( -1 == _lwt_UpdateEdgeFaceRef(topo, edge->face_right, floodface) )
+      {
+        _lwt_release_edges(edge, 1);
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+      if ( -1 == _lwt_UpdateNodeFaceRef(topo, edge->face_right, floodface) )
+      {
+        _lwt_release_edges(edge, 1);
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+    }
+
+    /* Update topogeoms on heal */
+    if ( ! lwt_be_updateTopoGeomFaceHeal(topo,
+                                  edge->face_right, edge->face_left,
+                                  floodface) )
+    {
+      _lwt_release_edges(edge, 1);
+      lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  } /* two faces healed */
+
+  /* Delete the edge */
+  i = lwt_be_deleteEdges(topo, edge, LWT_COL_EDGE_EDGE_ID);
+  if ( i == -1 ) {
+    _lwt_release_edges(edge, 1);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  /* If any of the edge nodes remained isolated, set
+   * containing_face = floodface
+   */
+  if ( ! fnode_edges )
+  {
+    upd_node[nnode].node_id = edge->start_node;
+    upd_node[nnode].containing_face = floodface;
+    ++nnode;
+  }
+  if ( edge->end_node != edge->start_node && ! lnode_edges )
+  {
+    upd_node[nnode].node_id = edge->end_node;
+    upd_node[nnode].containing_face = floodface;
+    ++nnode;
+  }
+  if ( nnode )
+  {
+    i = lwt_be_updateNodesById(topo, upd_node, nnode,
+                               LWT_COL_NODE_CONTAINING_FACE);
+    if ( i == -1 ) {
+      _lwt_release_edges(edge, 1);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+
+  if ( edge->face_left != edge->face_right )
+  /* or there'd be no face to remove */
+  {
+    LWT_ELEMID ids[2];
+    int nids = 0;
+    if ( edge->face_right != floodface )
+      ids[nids++] = edge->face_right;
+    if ( edge->face_left != floodface )
+      ids[nids++] = edge->face_left;
+    i = lwt_be_deleteFacesById(topo, ids, nids);
+    if ( i == -1 ) {
+      _lwt_release_edges(edge, 1);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+
+  _lwt_release_edges(edge, 1);
+  return floodface;
+}
+
+LWT_ELEMID
+lwt_RemEdgeModFace( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id )
+{
+  return _lwt_RemEdge( topo, edge_id, 1 );
+}
+
+LWT_ELEMID
+lwt_RemEdgeNewFace( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id )
+{
+  return _lwt_RemEdge( topo, edge_id, 0 );
 }
