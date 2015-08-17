@@ -771,6 +771,52 @@ typedef struct LWT_BE_CALLBACKS_T {
       LWT_ELEMID face1, LWT_ELEMID face2, LWT_ELEMID newface
   );
 
+  /**
+   * Check TopoGeometry objects before a node removal event
+   *
+   * @param topo the topology to act upon
+   * @param rem_node identifier of the node that's been removed
+   * @param e1 identifier of the first connected edge
+   * @param e2 identifier of the second connected edge
+   *
+   * The operation should be forbidden if any TopoGeometry object
+   * exists which contains only one of the two healed edges.
+   *
+   * The operation should also be forbidden if the removed node
+   * takes part in the definition of a TopoGeometry, although
+   * this wasn't the case yet as of PostGIS version 2.1.8:
+   * https://trac.osgeo.org/postgis/ticket/3239
+   *
+   * @return 1 to allow, 0 to forbid the operation
+   *         (reporting reason via lastErrorMessage)
+   *
+   */
+  int (*checkTopoGeomRemNode) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID rem_node,
+      LWT_ELEMID e1,
+      LWT_ELEMID e2
+  );
+
+  /**
+   * Update TopoGeometry objects after healing two edges
+   *
+   * @param topo the topology to act upon
+   * @param edge1 identifier of the first edge
+   * @param edge2 identifier of the second edge
+   * @param newedge identifier of the new edge, taking the space
+   *                previously occupied by both original edges
+   *
+   * @note that newedge may or may not be equal to edge1 or edge2,
+   *       while edge1 should never be the same as edge2.
+   *
+   * @return 1 on success, 0 on error (@see lastErrorMessage)
+   *
+   */
+  int (*updateTopoGeomEdgeHeal) (
+      const LWT_BE_TOPOLOGY* topo,
+      LWT_ELEMID edge1, LWT_ELEMID edge2, LWT_ELEMID newedge
+  );
 } LWT_BE_CALLBACKS;
 
 
@@ -1179,7 +1225,8 @@ LWT_ELEMID lwt_NewEdgesSplit(LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, i
  * @param topo the topology to operate on
  * @param e1 identifier of first edge
  * @param e2 identifier of second edge
- * @return the id of the removed node
+ * @return the id of the removed node or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_ModEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
@@ -1192,7 +1239,8 @@ LWT_ELEMID lwt_ModEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
  * @param topo the topology to operate on
  * @param e1 identifier of first edge
  * @param e2 identifier of second edge
- * @return the id of the removed node
+ * @return the id of the new edge or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_NewEdgeHeal(LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2);
