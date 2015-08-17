@@ -19,6 +19,6 @@ lwt_RemoveIsoNode     X
 lwt_MoveIsoNode       X
 lwt_RemEdgeModFace    X
 lwt_RemEdgeNewFace    X
-lwt_ModEdgeHeal
-lwt_NewEdgeHeal
+lwt_ModEdgeHeal       X
+lwt_NewEdgeHeal       X
 

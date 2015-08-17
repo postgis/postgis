@@ -18,7 +18,7 @@
 
 #include "../postgis_config.h"
 
-/*#define POSTGIS_DEBUG_LEVEL 1*/
+#define POSTGIS_DEBUG_LEVEL 1
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
@@ -337,11 +337,26 @@ lwt_be_checkTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
 }
 
 static int
+lwt_be_checkTopoGeomRemNode(LWT_TOPOLOGY* topo, LWT_ELEMID node_id,
+                            LWT_ELEMID eid1, LWT_ELEMID eid2)
+{
+  CBT3(topo, checkTopoGeomRemNode, node_id, eid1, eid2);
+}
+
+static int
 lwt_be_updateTopoGeomFaceHeal(LWT_TOPOLOGY* topo,
                              LWT_ELEMID face1, LWT_ELEMID face2,
                              LWT_ELEMID newface)
 {
   CBT3(topo, updateTopoGeomFaceHeal, face1, face2, newface);
+}
+
+static int
+lwt_be_updateTopoGeomEdgeHeal(LWT_TOPOLOGY* topo,
+                             LWT_ELEMID edge1, LWT_ELEMID edge2,
+                             LWT_ELEMID newedge)
+{
+  CBT3(topo, updateTopoGeomEdgeHeal, edge1, edge2, newedge);
 }
 
 static LWT_ELEMID*
@@ -3926,4 +3941,458 @@ LWT_ELEMID
 lwt_RemEdgeNewFace( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id )
 {
   return _lwt_RemEdge( topo, edge_id, 0 );
+}
+
+static LWT_ELEMID
+_lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
+                int modEdge )
+{
+  LWT_ELEMID ids[2];
+  LWT_ELEMID commonnode = -1;
+  int caseno = 0;
+  LWT_ISO_EDGE *node_edges;
+  int num_node_edges;
+  LWT_ISO_EDGE *edges;
+  LWT_ISO_EDGE *e1 = NULL;
+  LWT_ISO_EDGE *e2 = NULL;;
+  LWT_ISO_EDGE newedge, updedge, seledge;
+  int nedges, i;
+  int e1sign, e1freenode;
+  int e2sign, e2freenode;
+  POINTARRAY *pa;
+  char buf[256];
+  char *ptr;
+  size_t bufleft = 256;
+
+  ptr = buf;
+
+  /* NOT IN THE SPECS: see if the same edge is given twice.. */
+  if ( eid1 == eid2 )
+  {
+    lwerror("Cannot heal edge %" LWTFMT_ELEMID
+            " with itself, try with another", eid1);
+    return -1;
+  }
+  ids[0] = eid1;
+  ids[1] = eid2;
+  nedges = 2;
+  edges = lwt_be_getEdgeById(topo, ids, &nedges, LWT_COL_EDGE_ALL);
+  if ( nedges == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for ( i=0; i<nedges; ++i )
+  {
+    if ( edges[i].edge_id == eid1 ) {
+      if ( e1 ) {
+        _lwt_release_edges(edges, nedges);
+        lwerror("Corrupted topology: multiple edges have id %"
+                LWTFMT_ELEMID, eid1);
+        return -1;
+      }
+      e1 = &(edges[i]);
+    }
+    else if ( edges[i].edge_id == eid2 ) {
+      if ( e2 ) {
+        _lwt_release_edges(edges, nedges);
+        lwerror("Corrupted topology: multiple edges have id %"
+                LWTFMT_ELEMID, eid2);
+        return -1;
+      }
+      e2 = &(edges[i]);
+    }
+  }
+  if ( ! e1 )
+  {
+    if ( edges ) _lwt_release_edges(edges, nedges);
+    lwerror("SQL/MM Spatial exception - non-existent edge %"
+            LWTFMT_ELEMID, eid1);
+    return -1;
+  }
+  if ( ! e2 )
+  {
+    if ( edges ) _lwt_release_edges(edges, nedges);
+    lwerror("SQL/MM Spatial exception - non-existent edge %"
+            LWTFMT_ELEMID, eid2);
+    return -1;
+  }
+
+  /* NOT IN THE SPECS: See if any of the two edges are closed. */
+  if ( e1->start_node == e1->end_node )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("Edge %" LWTFMT_ELEMID " is closed, cannot heal to edge %"
+            LWTFMT_ELEMID, eid1, eid2);
+    return -1;
+  }
+  if ( e2->start_node == e2->end_node )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("Edge %" LWTFMT_ELEMID " is closed, cannot heal to edge %"
+            LWTFMT_ELEMID, eid2, eid1);
+    return -1;
+  }
+
+  /* Find common node */
+
+  if ( e1->end_node == e2->start_node )
+  {
+    commonnode = e1->end_node;
+    caseno = 1;
+  }
+  else if ( e1->end_node == e2->end_node )
+  {
+    commonnode = e1->end_node;
+    caseno = 2;
+  }
+  /* Check if any other edge is connected to the common node, if found */
+  if ( commonnode != -1 )
+  {
+    num_node_edges = 1;
+    node_edges = lwt_be_getEdgeByNode( topo, &commonnode,
+                                       &num_node_edges, LWT_COL_EDGE_EDGE_ID );
+    if ( num_node_edges == -1 ) {
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+    for (i=0; i<num_node_edges; ++i)
+    {
+      int r;
+      if ( node_edges[i].edge_id == eid1 ) continue;
+      if ( node_edges[i].edge_id == eid2 ) continue;
+      commonnode = -1;
+      /* append to string, for error message */
+      if ( bufleft ) {
+        r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
+                     ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
+        if ( r >= bufleft )
+        {
+          bufleft = 0;
+          buf[252] = '.';
+          buf[253] = '.';
+          buf[254] = '.';
+          buf[255] = '\0';
+        }
+        else
+        {
+          bufleft -= r;
+          ptr += r;
+        }
+      }
+    }
+    lwfree(node_edges);
+  }
+
+  if ( commonnode == -1 )
+  {
+    if ( e1->start_node == e2->start_node )
+    {
+      commonnode = e1->start_node;
+      caseno = 3;
+    }
+    else if ( e1->start_node == e2->end_node )
+    {
+      commonnode = e1->start_node;
+      caseno = 4;
+    }
+    /* Check if any other edge is connected to the common node, if found */
+    if ( commonnode != -1 )
+    {
+      num_node_edges = 1;
+      node_edges = lwt_be_getEdgeByNode( topo, &commonnode,
+                                         &num_node_edges, LWT_COL_EDGE_EDGE_ID );
+      if ( num_node_edges == -1 ) {
+        _lwt_release_edges(edges, nedges);
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+      for (i=0; i<num_node_edges; ++i)
+      {
+        int r;
+        if ( node_edges[i].edge_id == eid1 ) continue;
+        if ( node_edges[i].edge_id == eid2 ) continue;
+        commonnode = -1;
+        /* append to string, for error message */
+        if ( bufleft ) {
+          r = snprintf(ptr, bufleft, "%s%" LWTFMT_ELEMID,
+                       ( ptr==buf ? "" : "," ), node_edges[i].edge_id);
+          if ( r >= bufleft )
+          {
+            bufleft = 0;
+            buf[252] = '.';
+            buf[253] = '.';
+            buf[254] = '.';
+            buf[255] = '\0';
+          }
+          else bufleft -= r;
+        }
+      }
+      if ( num_node_edges ) lwfree(node_edges);
+    }
+  }
+
+  if ( commonnode == -1 )
+  {
+    _lwt_release_edges(edges, nedges);
+    if ( ptr != buf )
+    {
+      lwerror("SQL/MM Spatial exception - other edges connected (%s)",
+              buf);
+    }
+    else
+    {
+      lwerror("SQL/MM Spatial exception - non-connected edges");
+    }
+    return -1;
+  }
+
+  if ( ! lwt_be_checkTopoGeomRemNode(topo, commonnode,
+                                     eid1, eid2 ) )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  /* Construct the geometry of the new edge */
+  switch (caseno)
+  {
+    case 1: /* e1.end = e2.start */
+      pa = ptarray_clone_deep(e1->geom->points);
+      //pa = ptarray_merge(pa, e2->geom->points);
+      ptarray_append_ptarray(pa, e2->geom->points, 0);
+      newedge.start_node = e1->start_node;
+      newedge.end_node = e2->end_node;
+      newedge.next_left = e2->next_left;
+      newedge.next_right = e1->next_right;
+      e1freenode = 1;
+      e2freenode = -1;
+      e2sign = 1;
+      break;
+    case 2: /* e1.end = e2.end */
+    {
+      POINTARRAY *pa2;
+      pa2 = ptarray_clone_deep(e2->geom->points);
+      ptarray_reverse(pa2);
+      pa = ptarray_clone_deep(e1->geom->points);
+      //pa = ptarray_merge(e1->geom->points, pa);
+      ptarray_append_ptarray(pa, pa2, 0);
+      ptarray_free(pa2);
+      newedge.start_node = e1->start_node;
+      newedge.end_node = e2->start_node;
+      newedge.next_left = e2->next_right;
+      newedge.next_right = e1->next_right;
+      e1freenode = 1;
+      e2freenode = 1;
+      e2sign = -1;
+      break;
+    }
+    case 3: /* e1.start = e2.start */
+      pa = ptarray_clone_deep(e2->geom->points);
+      ptarray_reverse(pa);
+      //pa = ptarray_merge(pa, e1->geom->points);
+      ptarray_append_ptarray(pa, e1->geom->points, 0);
+      newedge.end_node = e1->end_node;
+      newedge.start_node = e2->end_node;
+      newedge.next_left = e1->next_left;
+      newedge.next_right = e2->next_left;
+      e1freenode = -1;
+      e2freenode = -1;
+      e2sign = -1;
+      break;
+    case 4: /* e1.start = e2.end */
+      pa = ptarray_clone_deep(e2->geom->points);
+      //pa = ptarray_merge(pa, e1->geom->points);
+      ptarray_append_ptarray(pa, e1->geom->points, 0);
+      newedge.end_node = e1->end_node;
+      newedge.start_node = e2->start_node;
+      newedge.next_left = e1->next_left;
+      newedge.next_right = e2->next_right;
+      e1freenode = -1;
+      e2freenode = 1;
+      e2sign = 1;
+      break;
+    default:
+      pa = NULL;
+      e2freenode = 0;
+      e2sign = 0;
+      _lwt_release_edges(edges, nedges);
+      lwerror("Coding error: caseno=%d should never happen", caseno);
+      break;
+  }
+  newedge.geom = lwline_construct(topo->srid, NULL, pa);
+
+  if ( modEdge )
+  {
+    /* Update data of the first edge */
+    newedge.edge_id = eid1;
+    i = lwt_be_updateEdgesById(topo, &newedge, 1,
+                               LWT_COL_EDGE_NEXT_LEFT|
+                               LWT_COL_EDGE_NEXT_RIGHT |
+                               LWT_COL_EDGE_START_NODE |
+                               LWT_COL_EDGE_END_NODE |
+                               LWT_COL_EDGE_GEOM);
+    if ( i == -1 )
+    {
+      lwline_free(newedge.geom);
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+    else if ( i != 1 )
+    {
+      lwline_free(newedge.geom);
+      if ( edges ) _lwt_release_edges(edges, nedges);
+      lwerror("Unexpected error: %d edges updated when expecting 1", i);
+      return -1;
+    }
+  }
+  else
+  {
+    /* Add new edge */
+    newedge.edge_id = -1;
+    newedge.face_left = e1->face_left;
+    newedge.face_right = e1->face_right;
+    i = lwt_be_insertEdges(topo, &newedge, 1);
+    if ( i == -1 ) {
+      lwline_free(newedge.geom);
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    } else if ( i == 0 ) {
+      lwline_free(newedge.geom);
+      _lwt_release_edges(edges, nedges);
+      lwerror("Insertion of split edge failed (no reason)");
+      return -1;
+    }
+  }
+  lwline_free(newedge.geom);
+
+  /*
+  -- Update next_left_edge/next_right_edge for
+  -- any edge having them still pointing at the edge being removed
+  -- (eid2 only when modEdge, or both otherwise)
+  --
+  -- NOTE:
+  -- e#freenode is 1 when edge# end node was the common node
+  -- and -1 otherwise. This gives the sign of possibly found references
+  -- to its "free" (non connected to other edge) endnode.
+  -- e2sign is -1 if edge1 direction is opposite to edge2 direction,
+  -- or 1 otherwise.
+  --
+  */
+
+  /* update edges connected to e2's boundary from their end node */
+  seledge.next_left = e2freenode * eid2;
+  updedge.next_left = e2freenode * newedge.edge_id * e2sign;
+  i = lwt_be_updateEdges(topo, &seledge, LWT_COL_EDGE_NEXT_LEFT,
+                               &updedge, LWT_COL_EDGE_NEXT_LEFT,
+                               NULL, 0);
+  if ( i == -1 )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  /* update edges connected to e2's boundary from their start node */
+  seledge.next_right = e2freenode * eid2;
+  updedge.next_right = e2freenode * newedge.edge_id * e2sign;
+  i = lwt_be_updateEdges(topo, &seledge, LWT_COL_EDGE_NEXT_RIGHT,
+                               &updedge, LWT_COL_EDGE_NEXT_RIGHT,
+                               NULL, 0);
+  if ( i == -1 )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  if ( ! modEdge )
+  {
+    /* update edges connected to e1's boundary from their end node */
+    seledge.next_left = e1freenode * eid1;
+    updedge.next_left = e1freenode * newedge.edge_id;
+    i = lwt_be_updateEdges(topo, &seledge, LWT_COL_EDGE_NEXT_LEFT,
+                                 &updedge, LWT_COL_EDGE_NEXT_LEFT,
+                                 NULL, 0);
+    if ( i == -1 )
+    {
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+
+    /* update edges connected to e1's boundary from their start node */
+    seledge.next_right = e1freenode * eid1;
+    updedge.next_right = e1freenode * newedge.edge_id;
+    i = lwt_be_updateEdges(topo, &seledge, LWT_COL_EDGE_NEXT_RIGHT,
+                                 &updedge, LWT_COL_EDGE_NEXT_RIGHT,
+                                 NULL, 0);
+    if ( i == -1 )
+    {
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+
+  /* delete the edges (only second on modEdge or both) */
+  i = lwt_be_deleteEdges(topo, e2, LWT_COL_EDGE_EDGE_ID);
+  if ( i == -1 )
+  {
+    _lwt_release_edges(edges, nedges);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( ! modEdge ) {
+    i = lwt_be_deleteEdges(topo, e1, LWT_COL_EDGE_EDGE_ID);
+    if ( i == -1 )
+    {
+      _lwt_release_edges(edges, nedges);
+      lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+      return -1;
+    }
+  }
+
+  _lwt_release_edges(edges, nedges);
+
+  /* delete the common node */
+  i = lwt_be_deleteNodesById( topo, &commonnode, 1 );
+  if ( i == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  /*
+  --
+  -- NOT IN THE SPECS:
+  -- Drop composition rows involving second
+  -- edge, as the first edge took its space,
+  -- and all affected TopoGeom have been previously checked
+  -- for being composed by both edges.
+  */
+  if ( ! lwt_be_updateTopoGeomEdgeHeal(topo,
+                                eid1, eid2, newedge.edge_id) )
+  {
+    lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  return modEdge ? commonnode : newedge.edge_id;
+}
+
+LWT_ELEMID
+lwt_ModEdgeHeal( LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2 )
+{
+  return _lwt_HealEdges( topo, e1, e2, 1 );
+}
+
+LWT_ELEMID
+lwt_NewEdgeHeal( LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2 )
+{
+  return _lwt_HealEdges( topo, e1, e2, 0 );
 }
