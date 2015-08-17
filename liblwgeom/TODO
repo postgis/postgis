@@ -18,7 +18,7 @@ lwt_ChangeEdgeGeom    X
 lwt_RemoveIsoNode     X
 lwt_MoveIsoNode       X
 lwt_RemEdgeModFace    X
-lwt_RemEdgeNewFace
+lwt_RemEdgeNewFace    X
 lwt_ModEdgeHeal
 lwt_NewEdgeHeal
 

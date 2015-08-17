@@ -2007,15 +2007,19 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
 }
 
 static int
-cb_updateTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
-  LWT_ELEMID rem_edge )
+cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
+  LWT_ELEMID rem_edge, LWT_ELEMID face_left, LWT_ELEMID face_right )
 {
   MemoryContext oldcontext = CurrentMemoryContext;
 	int spi_result;
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
+  const char *tg_id, *layer_id;
+  const char *schema_name, *table_name, *col_name;
+  HeapTuple row;
+  TupleDesc tdesc;
 
-  POSTGIS_DEBUG(1, "cb_updateTopoGeomRemEdge enter ");
+  POSTGIS_DEBUG(1, "cb_checkTopoGeomRemEdge enter ");
 
   initStringInfo(sql);
   appendStringInfo( sql, "SELECT r.topogeo_id, r.layer_id, "
@@ -2026,7 +2030,7 @@ cb_updateTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     " AND abs(r.element_id) = " INT64_FORMAT,
     topo->name, topo->id, rem_edge );
 
-  POSTGIS_DEBUGF(1, "cb_updateTopoGeomRemEdge query: %s", sql->data);
+  POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 1: %s", sql->data);
 
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2037,11 +2041,9 @@ cb_updateTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
   }
 
   if ( SPI_processed )
-  {{
-    const char *tg_id, *layer_id;
-    const char *schema_name, *table_name, *col_name;
-    HeapTuple row = SPI_tuptable->vals[0];
-    TupleDesc tdesc = SPI_tuptable->tupdesc;
+  {
+    row = SPI_tuptable->vals[0];
+    tdesc = SPI_tuptable->tupdesc;
 
     tg_id = SPI_getvalue(row, tdesc, 1);
     layer_id = SPI_getvalue(row, tdesc, 2);
@@ -2055,7 +2057,63 @@ cb_updateTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
             tg_id, layer_id, schema_name, table_name,
             col_name, rem_edge);
     return 0;
-  }}
+  }
+
+  
+  if ( face_left != face_right )
+  {
+    POSTGIS_DEBUGF(1, "Deletion of edge " INT64_FORMAT " joins faces "
+                      INT64_FORMAT " and " INT64_FORMAT,
+                      edge_id, face_left, face_right);
+    /*
+      check if any topo_geom is defined only by one of the
+      joined faces. In such case there would be no way to adapt
+      the definition in case of healing, so we'd have to bail out
+    */
+    initStringInfo(sql);
+    appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
+      "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
+      "array_agg(r.element_id) as elems FROM topology.layer l "
+      " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
+      "WHERE l.level = 0 and l.feature_type = 3 "
+      "AND l.topology_id = %d"
+      " AND r.element_id = ANY (ARRAY[" INT64_FORMAT "," INT64_FORMAT
+      "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
+      "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
+      INT64_FORMAT "," INT64_FORMAT "]::int4[]",
+      topo->name, topo->id,
+      face_left, face_right, face_left, face_right );
+
+    POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 2: %s", sql->data);
+    spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+    MemoryContextSwitchTo( oldcontext ); /* switch back */
+
+    if ( spi_result != SPI_OK_SELECT ) {
+      cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
+              spi_result, sql->data);
+      return 0;
+    }
+
+    if ( SPI_processed )
+    {
+      row = SPI_tuptable->vals[0];
+      tdesc = SPI_tuptable->tupdesc;
+
+      tg_id = SPI_getvalue(row, tdesc, 1);
+      layer_id = SPI_getvalue(row, tdesc, 2);
+      schema_name = SPI_getvalue(row, tdesc, 3);
+      table_name = SPI_getvalue(row, tdesc, 4);
+      col_name = SPI_getvalue(row, tdesc, 5);
+
+      cberror(topo->be_data, "TopoGeom %s in layer %s "
+                             "(%s.%s.%s) cannot be represented "
+                             "healing faces " INT64_FORMAT
+                             " and " INT64_FORMAT,
+              tg_id, layer_id, schema_name, table_name,
+              col_name, face_right, face_left);
+      return 0;
+    }
+  }
 
   return 1;
 }
@@ -2071,55 +2129,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
 
   POSTGIS_DEBUG(1, "cb_updateTopoGeomFaceHeal enter ");
 
-  /* 1. check if any basic TopoGeometry is defined by one but not
-   * the other face, return 0 in that case */
-
-  initStringInfo(sql);
-  appendStringInfo( sql, "SELECT t.* FROM ( SELECT r.topogeo_id, "
-    "r.layer_id, l.schema_name, l.table_name, l.feature_column, "
-    "array_agg(r.element_id) as elems FROM topology.layer l "
-    " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
-    "WHERE l.level = 0 and l.feature_type = 3 "
-    "AND l.topology_id = %d"
-    " AND r.element_id = ANY (ARRAY[" INT64_FORMAT "," INT64_FORMAT
-    "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
-    "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
-    INT64_FORMAT "," INT64_FORMAT "]::int4[]",
-    topo->name, topo->id, face1, face2, face1, face2 );
-
-  POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
-
-  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
-  MemoryContextSwitchTo( oldcontext ); /* switch back */
-  if ( spi_result != SPI_OK_SELECT ) {
-    cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
-            spi_result, sql->data);
-    return 0;
-  }
-
-  if ( SPI_processed )
-  {{
-    const char *tg_id, *layer_id;
-    const char *schema_name, *table_name, *col_name;
-    HeapTuple row = SPI_tuptable->vals[0];
-    TupleDesc tdesc = SPI_tuptable->tupdesc;
-
-    tg_id = SPI_getvalue(row, tdesc, 1);
-    layer_id = SPI_getvalue(row, tdesc, 2);
-    schema_name = SPI_getvalue(row, tdesc, 3);
-    table_name = SPI_getvalue(row, tdesc, 4);
-    col_name = SPI_getvalue(row, tdesc, 5);
-
-    cberror(topo->be_data, "TopoGeom %s in layer %s "
-                           "(%s.%s.%s) cannot be represented "
-                           "healing faces " INT64_FORMAT
-                           " and " INT64_FORMAT,
-            tg_id, layer_id, schema_name, table_name,
-            col_name, face1, face2);
-    return 0;
-  }}
-
-  /* 2. delete oldfaces (not equal to newface) from the
+  /* delete oldfaces (not equal to newface) from the
    * set of primitives defining the TopoGeometries found before */
 
   if ( newface == face1 || newface == face2 )
@@ -2132,7 +2142,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
       " AND abs(r.element_id) IN ( " INT64_FORMAT "," INT64_FORMAT ")"
       " AND abs(r.element_id) != " INT64_FORMAT,
       topo->name, topo->id, face1, face2, newface );
-    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2a: %s", sql->data);
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2152,7 +2162,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
       " AND abs(r.element_id) = " INT64_FORMAT,
       topo->name, topo->id, face1 );
-    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2b: %s", sql->data);
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2170,7 +2180,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
       "WHERE l.level = 0 AND l.feature_type = 3 AND l.topology_id = %d"
       " AND l.layer_id = r.layer_id AND r.element_id = " INT64_FORMAT,
       topo->name, newface, topo->id, face2 );
-    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 3: %s", sql->data);
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2: %s", sql->data);
 
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2480,7 +2490,7 @@ static LWT_BE_CALLBACKS be_callbacks = {
     cb_topoGetPrecision,
     cb_topoHasZ,
     cb_deleteNodesById,
-    cb_updateTopoGeomRemEdge,
+    cb_checkTopoGeomRemEdge,
     cb_updateTopoGeomFaceHeal
 };
 
@@ -3404,6 +3414,56 @@ Datum ST_RemEdgeModFace(PG_FUNCTION_ARGS)
   }
 
   SPI_finish();
+
+  PG_RETURN_INT32(ret);
+}
+
+/*  ST_RemEdgeNewFace(atopology, anedge) */
+Datum ST_RemEdgeNewFace(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_RemEdgeNewFace);
+Datum ST_RemEdgeNewFace(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  int ret;
+  LWT_ELEMID node_id;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  node_id = PG_GETARG_INT32(1) ;
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_RemEdgeNewFace");
+  ret = lwt_RemEdgeNewFace(topo, node_id);
+  POSTGIS_DEBUG(1, "lwt_RemEdgeNewFace returned");
+  lwt_FreeTopology(topo);
+  SPI_finish();
+
+  if ( ret <= 0 ) {
+    /* error or no face created */
+    PG_RETURN_NULL();
+  }
 
   PG_RETURN_INT32(ret);
 }

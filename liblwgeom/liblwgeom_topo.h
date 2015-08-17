@@ -734,17 +734,22 @@ typedef struct LWT_BE_CALLBACKS_T {
   );
 
   /**
-   * Update TopoGeometry objects after an edge removal event
+   * Check TopoGeometry objects before an edge removal event
    *
    * @param topo the topology to act upon
    * @param rem_edge identifier of the edge that's been removed
+   * @param face_left identifier of the face on the edge's left side
+   * @param face_right identifier of the face on the edge's right side
    *
-   * @return 1 on success, 0 on error (@see lastErrorMessage)
+   * @return 1 to allow, 0 to forbid the operation
+   *         (reporting reason via lastErrorMessage)
    *
    */
-  int (*updateTopoGeomRemEdge) (
+  int (*checkTopoGeomRemEdge) (
       const LWT_BE_TOPOLOGY* topo,
-      LWT_ELEMID rem_edge
+      LWT_ELEMID rem_edge,
+      LWT_ELEMID face_left,
+      LWT_ELEMID face_right
   );
 
   /**
@@ -1064,7 +1069,7 @@ LWT_ELEMID lwt_AddIsoEdge(LWT_TOPOLOGY* topo,
  *                    consistency actual face containement)
  *
  * @return ID of the newly added edge or null on error
- *            (@see lastErrorMessage)
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_AddEdgeModFace(LWT_TOPOLOGY* topo,
@@ -1115,8 +1120,9 @@ LWT_ELEMID lwt_RemEdgeNewFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
  *
  * @param topo the topology to operate on
  * @param edge identifier of the edge to be removed
- * @return the id of newly created face, 0 if no new face was created
- *         or -1 on error
+ * @return the id of the face that takes the space previously occupied
+ *         by the removed edge, or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_RemEdgeModFace(LWT_TOPOLOGY* topo, LWT_ELEMID edge);

@@ -330,9 +330,10 @@ lwt_be_updateTopoGeomFaceSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_face,
 }
 
 static int
-lwt_be_updateTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id)
+lwt_be_checkTopoGeomRemEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id,
+                            LWT_ELEMID face_left, LWT_ELEMID face_right)
 {
-  CBT1(topo, updateTopoGeomRemEdge, edge_id);
+  CBT3(topo, checkTopoGeomRemEdge, edge_id, face_left, face_right);
 }
 
 static int
@@ -3531,7 +3532,12 @@ _lwt_UpdateNodeFaceRef( LWT_TOPOLOGY *topo, LWT_ELEMID of, LWT_ELEMID nf)
   return 0;
 }
 
-/* Used by lwt_RemEdgeModFace and lwt_RemEdgeNewFaces */
+/* Used by lwt_RemEdgeModFace and lwt_RemEdgeNewFaces
+ *
+ * Returns -1 on error, identifier of the face that takes up the space
+ * previously occupied by the removed edge if modFace is 1, identifier of
+ * the created face (0 if none) if modFace is 0.
+ */
 static LWT_ELEMID
 _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
 {
@@ -3552,6 +3558,8 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
                         * the one being removed ) */
   int lnode_edges = 0; /* number of edges on the last node (excluded
                         * the one being removed ) */
+
+  newface.face_id = 0;
 
   i = 1;
   edge = lwt_be_getEdgeById(topo, &edge_id, &i, LWT_COL_EDGE_ALL);
@@ -3578,7 +3586,8 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
     }
   }
 
-  if ( ! lwt_be_updateTopoGeomRemEdge(topo, edge_id) )
+  if ( ! lwt_be_checkTopoGeomRemEdge(topo, edge_id,
+                                     edge->face_left, edge->face_right) )
   {
     lwerror("%s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -3696,79 +3705,79 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
        * to be symmetric with ST_AddEdgeModFace */
       floodface = edge->face_right;
       LWDEBUGF(1, "floodface is %" LWTFMT_ELEMID, floodface);
-      if ( modFace )
+      /* update mbr of floodface as union of mbr of both faces */
+      face_ids[0] = edge->face_left;
+      face_ids[1] = edge->face_right;
+      nfaces = 2;
+      fields = LWT_COL_FACE_ALL;
+      faces = lwt_be_getFaceById(topo, face_ids, &nfaces, fields);
+      if ( nfaces == -1 ) {
+        lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+        return -1;
+      }
+      GBOX *box1=NULL;
+      GBOX *box2=NULL;
+      for ( i=0; i<nfaces; ++i )
       {
-        /* update mbr of floodface as union of mbr of both faces */
-        face_ids[0] = edge->face_left;
-        face_ids[1] = edge->face_right;
-        nfaces = 2;
-        fields = LWT_COL_FACE_ALL;
-        faces = lwt_be_getFaceById(topo, face_ids, &nfaces, fields);
-        if ( nfaces == -1 ) {
-          lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
-          return -1;
-        }
-        GBOX *box1=NULL;
-        GBOX *box2=NULL;
-        for ( i=0; i<nfaces; ++i )
+        if ( faces[i].face_id == edge->face_left )
         {
-          if ( faces[i].face_id == edge->face_left )
-          {
-            if ( ! box1 ) box1 = faces[i].mbr;
-            else
-            {
-              i = edge->face_left;
-              _lwt_release_edges(edge, 1);
-              _lwt_release_faces(faces, nfaces);
-              lwerror("corrupted topology: more than 1 face have face_id=%"
-                      LWTFMT_ELEMID, i);
-              return -1;
-            }
-          }
-          else if ( faces[i].face_id == edge->face_right )
-          {
-            if ( ! box2 ) box2 = faces[i].mbr;
-            else
-            {
-              i = edge->face_right;
-              _lwt_release_edges(edge, 1);
-              _lwt_release_faces(faces, nfaces);
-              lwerror("corrupted topology: more than 1 face have face_id=%"
-                      LWTFMT_ELEMID, i);
-              return -1;
-            }
-          }
+          if ( ! box1 ) box1 = faces[i].mbr;
           else
           {
-            i = faces[i].face_id;
+            i = edge->face_left;
             _lwt_release_edges(edge, 1);
             _lwt_release_faces(faces, nfaces);
-            lwerror("Backend coding error: getFaceById returned face "
-                    "with non-requested id %" LWTFMT_ELEMID, i);
+            lwerror("corrupted topology: more than 1 face have face_id=%"
+                    LWTFMT_ELEMID, i);
             return -1;
           }
         }
-        if ( ! box1 ) {
-          i = edge->face_left;
+        else if ( faces[i].face_id == edge->face_right )
+        {
+          if ( ! box2 ) box2 = faces[i].mbr;
+          else
+          {
+            i = edge->face_right;
+            _lwt_release_edges(edge, 1);
+            _lwt_release_faces(faces, nfaces);
+            lwerror("corrupted topology: more than 1 face have face_id=%"
+                    LWTFMT_ELEMID, i);
+            return -1;
+          }
+        }
+        else
+        {
+          i = faces[i].face_id;
           _lwt_release_edges(edge, 1);
           _lwt_release_faces(faces, nfaces);
-          lwerror("corrupted topology: no face have face_id=%"
-                  LWTFMT_ELEMID " (left face for edge %"
-                  LWTFMT_ELEMID ")", i, edge_id);
+          lwerror("Backend coding error: getFaceById returned face "
+                  "with non-requested id %" LWTFMT_ELEMID, i);
           return -1;
         }
-        if ( ! box2 ) {
-          i = edge->face_right;
-          _lwt_release_edges(edge, 1);
-          _lwt_release_faces(faces, nfaces);
-          lwerror("corrupted topology: no face have face_id=%"
-                  LWTFMT_ELEMID " (right face for edge %"
-                  LWTFMT_ELEMID ")", i, edge_id);
-          return -1;
-        }
-        gbox_merge(box2, box1); /* box1 is now the union of the two */
-        newface.face_id = edge->face_right;
-        newface.mbr = box1;
+      }
+      if ( ! box1 ) {
+        i = edge->face_left;
+        _lwt_release_edges(edge, 1);
+        _lwt_release_faces(faces, nfaces);
+        lwerror("corrupted topology: no face have face_id=%"
+                LWTFMT_ELEMID " (left face for edge %"
+                LWTFMT_ELEMID ")", i, edge_id);
+        return -1;
+      }
+      if ( ! box2 ) {
+        i = edge->face_right;
+        _lwt_release_edges(edge, 1);
+        _lwt_release_faces(faces, nfaces);
+        lwerror("corrupted topology: no face have face_id=%"
+                LWTFMT_ELEMID " (right face for edge %"
+                LWTFMT_ELEMID ")", i, edge_id);
+        return -1;
+      }
+      gbox_merge(box2, box1); /* box1 is now the union of the two */
+      newface.mbr = box1;
+      if ( modFace )
+      {
+        newface.face_id = floodface;
         i = lwt_be_updateFacesById( topo, &newface, 1 );
         _lwt_release_faces(faces, 2);
         if ( i == -1 )
@@ -3783,6 +3792,26 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
           lwerror("Unexpected error: %d faces updated when expecting 1", i);
           return -1;
         }
+      }
+      else
+      {
+        /* New face replaces the old two faces */
+        newface.face_id = -1;
+        i = lwt_be_insertFaces( topo, &newface, 1 );
+        _lwt_release_faces(faces, 2);
+        if ( i == -1 )
+        {
+          _lwt_release_edges(edge, 1);
+          lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+          return -1;
+        }
+        if ( i != 1 )
+        {
+          _lwt_release_edges(edge, 1);
+          lwerror("Unexpected error: %d faces inserted when expecting 1", i);
+          return -1;
+        }
+        floodface = newface.face_id;
       }
     }
 
@@ -3884,7 +3913,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
   }
 
   _lwt_release_edges(edge, 1);
-  return floodface;
+  return modFace ? floodface : newface.face_id;
 }
 
 LWT_ELEMID
