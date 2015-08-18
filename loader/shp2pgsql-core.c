@@ -544,7 +544,14 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
 
-		for (i = 0; i < out_index; i++)
+		/* 
+		* If we assume that the case of the "big polygon w/o hole 
+		* containing little polygon w/ hold" is ordered so that the 
+		* big polygon comes first, then checking the list in reverse
+		* will assign the little polygon's hole to the little polygon
+		* w/o a lot of extra fancy containment logic here
+		*/
+		for (i = out_index - 1; i >= 0; i--)
 		{
 			int in;
 
@@ -554,7 +561,6 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 				outer = Outer[i];
 				break;
 			}
-			/*fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i])); */
 		}
 
 		if (outer)
@@ -577,7 +583,11 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	}
 
 	*Out = Outer;
-	free(Inner);
+	/* 
+	* Only free the containing Inner array, not the ring elements, because
+	* the rings are now owned by the linked lists in the Outer array elements.
+	*/
+	free(Inner); 
 
 	return out_index;
 }
