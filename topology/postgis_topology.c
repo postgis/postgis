@@ -61,6 +61,8 @@ struct LWT_BE_DATA_T {
    * doring operations.
    */
   bool data_changed;
+
+  int topoLoadFailMessageFlavor; /* 0:sql, 1:AddPoint */
 };
 
 LWT_BE_DATA be_data;
@@ -125,7 +127,11 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   {
     pfree(sqldata.data);
 		//cberror(be, "no topology named '%s' was found", name);
-		cberror(be, "SQL/MM Spatial exception - invalid topology name");
+    if ( be->topoLoadFailMessageFlavor == 1 ) {
+      cberror(be, "No topology with name \"%s\" in topology.topology", name);
+    } else {
+		  cberror(be, "SQL/MM Spatial exception - invalid topology name");
+    }
 	  return NULL;
   }
   if ( SPI_processed > 1 )
@@ -2656,6 +2662,10 @@ _PG_init(void)
    * is valid for the whole backend lifetime */
   old_context = MemoryContextSwitchTo( TopMemoryContext );
 
+  /* initialize backend data */
+  be_data.data_changed = false;
+  be_data.topoLoadFailMessageFlavor = 0;
+
   /* register callbacks against liblwgeom-topo */
   be_iface = lwt_CreateBackendIface(&be_data);
   lwt_BackendIfaceRegisterCallbacks(be_iface, &be_callbacks);
@@ -3899,6 +3909,88 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
   POSTGIS_DEBUG(1, "Calling lwt_GetFaceByPoint");
   node_id = lwt_GetFaceByPoint(topo, pt, tol);
   POSTGIS_DEBUG(1, "lwt_GetFaceByPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
+}
+
+/*  TopoGeo_AddPoint(atopology, point, tolerance) */
+Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPoint);
+Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {{
+    char buf[32];
+    char *ptr;
+    snprintf(buf, 32, "%s", lwtype_name(lwgeom_get_type(lwgeom)));
+    buf[31] = '\0';
+    ptr = buf;
+    while (*ptr) {
+      *ptr = toupper(*ptr);
+      ++ptr;
+    }
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Invalid geometry type (%s) passed to TopoGeo_AddPoint"
+              ", expected POINT", buf );
+    PG_RETURN_NULL();
+  }}
+
+  tol = PG_GETARG_FLOAT8(2);
+  if ( tol < 0 )
+  {
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Tolerance must be >=0");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  {
+    int pre = be_data.topoLoadFailMessageFlavor;
+    be_data.topoLoadFailMessageFlavor = 1;
+    topo = lwt_LoadTopology(be_iface, toponame);
+    be_data.topoLoadFailMessageFlavor = pre;
+  }
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_AddPoint");
+  node_id = lwt_AddPoint(topo, pt, tol);
+  POSTGIS_DEBUG(1, "lwt_AddPoint returned");
   lwgeom_free(lwgeom);
   PG_FREE_IF_COPY(geom, 1);
   lwt_FreeTopology(topo);

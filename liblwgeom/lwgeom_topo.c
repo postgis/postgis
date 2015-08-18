@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <inttypes.h> /* for PRId64 */
 #include <errno.h>
+#include <math.h>
 
 #ifdef WIN32
 # define LWTFMT_ELEMID "lld"
@@ -4582,4 +4583,284 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   if ( num ) _lwt_release_edges(elem, num);
 
   return id;
+}
+
+/* Return the smallest delta that can perturbate
+ * the maximum absolute value of a geometry ordinate
+ */
+static double
+_lwt_minTolerance( LWGEOM *g )
+{
+  const GBOX* gbox;
+  double max;
+
+  gbox = lwgeom_get_bbox(g);
+  if ( ! gbox ) return 0; /* empty */
+  max = FP_ABS(gbox->xmin);
+  if ( max < FP_ABS(gbox->xmax) ) max = FP_ABS(gbox->xmax);
+  if ( max < FP_ABS(gbox->ymin) ) max = FP_ABS(gbox->ymin);
+  if ( max < FP_ABS(gbox->ymax) ) max = FP_ABS(gbox->ymax);
+
+  return 3.6 * pow(10,  - ( 15 - log(max?max:1.0) ) );
+}
+
+#define _LWT_MINTOLERANCE( topo, geom ) ( \
+  topo->precision ?  topo->precision : _lwt_minTolerance(geom) )
+
+LWT_ELEMID
+lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
+{
+  int num, i;
+  double mindist;
+  LWT_ISO_NODE *nodes;
+  LWT_ISO_EDGE *edges;
+  LWGEOM *pt = lwpoint_as_lwgeom(point);
+  int flds;
+  LWT_ELEMID id = 0;
+
+  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, pt );
+
+  /*
+  -- 1. Check if any existing node is closer than the given precision
+  --    and if so pick the closest
+  TODO: use WithinBox2D
+  */
+  flds = LWT_COL_NODE_NODE_ID|LWT_COL_NODE_GEOM;
+  nodes = lwt_be_getNodeWithinDistance2D(topo, point, tol, &num, flds, 0);
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for ( i=0; i<num; ++i )
+  {
+    LWT_ISO_NODE *n = &(nodes[i]);
+    LWGEOM *g = lwpoint_as_lwgeom(n->geom);
+    double dist = lwgeom_mindistance2d(g, pt);
+    if ( dist >= tol ) continue; /* must be closer than tolerated */
+    if ( ! id || dist < mindist )
+    {
+      id = n->node_id;
+      mindist = dist;
+    }
+  }
+  if ( id )
+  {
+    /* found an existing node */
+    if ( nodes ) _lwt_release_nodes(nodes, num);
+    return id;
+  }
+
+  initGEOS(lwnotice, lwgeom_geos_error);
+
+  /*
+  -- 2. Check if any existing edge falls within tolerance
+  --    and if so split it by a point projected on it
+  TODO: use WithinBox2D
+  */
+  flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM;
+  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 1);
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( num )
+  {{
+    /* The point is on or near an edge, split the edge */
+
+    LWT_ISO_EDGE *e = &(edges[0]);
+    LWGEOM *g = lwline_as_lwgeom(e->geom);
+    LWGEOM *prj;
+    int contains;
+    GEOSGeometry *prjg, *gg;
+
+    LWDEBUGF(1, "Splitting edge %" LWTFMT_ELEMID, e->edge_id);
+
+    /* project point to line, split edge by point */
+    prj = lwgeom_closest_point(g, pt);
+    if ( lwgeom_has_z(pt) )
+    {{
+      /*
+      -- This is a workaround for ClosestPoint lack of Z support:
+      -- http://trac.osgeo.org/postgis/ticket/2033
+      */
+      LWGEOM *tmp;
+      double z;
+      POINT4D p4d;
+      LWPOINT *prjpt;
+      /* add Z to "prj" */
+      tmp = lwgeom_force_3dz(prj);
+      prjpt = lwgeom_as_lwpoint(tmp);
+      getPoint4d_p(point->point, 0, &p4d);
+      z = p4d.z;
+      getPoint4d_p(prjpt->point, 0, &p4d);
+      p4d.z = z;
+      ptarray_set_point4d(prjpt->point, 0, &p4d);
+      lwgeom_free(prj);
+      prj = tmp;
+    }}
+    prjg = LWGEOM2GEOS(prj, 0);
+    if ( ! prjg ) {
+      lwgeom_free(prj);
+      _lwt_release_edges(edges, num);
+      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+    gg = LWGEOM2GEOS(g, 0);
+    if ( ! gg ) {
+      lwgeom_free(prj);
+      _lwt_release_edges(edges, num);
+      GEOSGeom_destroy(prjg);
+      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+    contains = GEOSContains(gg, prjg);
+    GEOSGeom_destroy(prjg);
+    GEOSGeom_destroy(gg);
+    if ( contains == 2 )
+    {
+      lwgeom_free(prj);
+      _lwt_release_edges(edges, num);
+      lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
+      return -1;
+    } 
+    if ( ! contains )
+    {{
+      double snaptol;
+      LWGEOM *snapedge;
+      LWLINE *snapline;
+      POINT4D p1, p2;
+
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
+                  " does not contain projected point to it",
+                  e->edge_id);
+
+      /*
+      -- The tolerance must be big enough for snapping to happen
+      -- and small enough to snap only to the projected point.
+      -- Unfortunately ST_Distance returns 0 because it also uses
+      -- a projected point internally, so we need another way.
+      */
+      snaptol = _lwt_minTolerance(prj);
+      snapedge = lwgeom_snap(g, prj, snaptol);
+      snapline = lwgeom_as_lwline(snapedge);
+
+      LWDEBUGF(1, "Edge snapped with tolerance %g", snaptol);
+
+      /* TODO: check if snapping did anything ? */
+#if POSTGIS_DEBUG_LEVEL > 0
+      {
+      size_t sz;
+      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(snapedge, WKT_ISO, 15, &sz);
+      LWDEBUGF(1, "Edge %s snapped became %s", wkt1, wkt2);
+      lwfree(wkt1);
+      lwfree(wkt2);
+      }
+#endif
+
+
+      /*
+      -- Snapping currently snaps the first point below tolerance
+      -- so may possibly move first point. See ticket #1631
+      */
+      getPoint4d_p(e->geom->points, 0, &p1);
+      getPoint4d_p(snapline->points, 0, &p2);
+      LWDEBUGF(1, "Edge first point is %g %g, "
+                  "snapline first point is %g %g",
+                  p1.x, p1.y, p2.x, p2.y);
+      if ( p1.x != p2.x || p1.y != p2.y )
+      {
+        LWDEBUG(1, "Snapping moved first point, re-adding it");
+        if ( LW_SUCCESS != ptarray_insert_point(snapline->points, &p1, 0) )
+        {
+          lwgeom_free(prj);
+          lwgeom_free(snapedge);
+          _lwt_release_edges(edges, num);
+          lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
+          return -1;
+        }
+#if POSTGIS_DEBUG_LEVEL > 0
+        {
+        size_t sz;
+        char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+        LWDEBUGF(1, "Tweaked snapline became %s", wkt1);
+        lwfree(wkt1);
+        }
+#endif
+      }
+#if POSTGIS_DEBUG_LEVEL > 0
+      else {
+        LWDEBUG(1, "Snapping did not move first point");
+      }
+#endif
+
+      if ( -1 == lwt_ChangeEdgeGeom( topo, e->edge_id, snapline ) )
+      {
+        /* TODO: should have invoked lwerror already, leaking memory */
+        lwgeom_free(prj);
+        lwgeom_free(snapedge);
+        _lwt_release_edges(edges, num);
+        lwerror("lwt_ChangeEdgeGeom failed");
+        return -1;
+      }
+      lwgeom_free(snapedge);
+    }}
+#if POSTGIS_DEBUG_LEVEL > 0
+    else
+    {{
+      size_t sz;
+      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(prj, WKT_ISO, 15, &sz);
+      LWDEBUGF(1, "Edge %s contains projected point %s", wkt1, wkt2);
+      lwfree(wkt1);
+      lwfree(wkt2);
+    }}
+#endif
+
+    /* TODO: pass 1 as last argument (skipChecks) ? */
+    id = lwt_ModEdgeSplit( topo, e->edge_id, lwgeom_as_lwpoint(prj), 0 );
+    if ( -1 == id )
+    {
+      /* TODO: should have invoked lwerror already, leaking memory */
+      lwgeom_free(prj);
+      _lwt_release_edges(edges, num);
+      lwerror("lwt_ModEdgeSplit failed");
+      return -1;
+    }
+
+    lwgeom_free(prj);
+    _lwt_release_edges(edges, num);
+  }}
+  else
+  {
+    /* The point is isolated, add it as such */
+    /* TODO: pass 1 as last argument (skipChecks) ? */
+    id = lwt_AddIsoNode(topo, -1, point, 0);
+    if ( -1 == id )
+    {
+      /* should have invoked lwerror already, leaking memory */
+      lwerror("lwt_AddIsoNode failed");
+      return -1;
+    }
+  }
+
+  return id;
+}
+
+LWT_ELEMID*
+lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
+{
+  *nedges = -1;
+  lwerror("Not implemented yet");
+  return NULL;
+}
+
+LWT_ELEMID*
+lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* point, double tol, int* nfaces)
+{
+  *nfaces = -1;
+  lwerror("Not implemented yet");
+  return NULL;
 }

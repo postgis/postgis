@@ -25,6 +25,6 @@ lwt_NewEdgeHeal       X
 lwt_GetFaceByPoint    X
 lwt_GetNodeByPoint    X
 lwt_GetEdgeByPoint    X
-lwt_TopoGeo_AddPoint
+lwt_TopoGeo_AddPoint  X
 lwt_TopoGeo_AddLineString
 lwt_TopoGeo_AddPolygon

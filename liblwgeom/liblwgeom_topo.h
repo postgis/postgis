@@ -846,14 +846,6 @@ void lwt_FreeBackendIface(LWT_BE_IFACE* iface);
  *
  *******************************************************************/
 
-
-/** Element of a TopoGeometry */
-typedef struct LWT_TOPOELEMENT_T {
-  LWT_ELEMID id; /* primitive or topogeometry id */
-  /** primitive type (0:node, 1:edge, 2:face) or layer id */
-  int type;
-} LWT_TOPOELEMENT;
-
 /**
  * Topology errors type
  */
@@ -975,6 +967,7 @@ LWT_ELEMID lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
  */
 LWT_ELEMID lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
 
+
 /*******************************************************************
  *
  * Topology population (non-ISO)
@@ -991,7 +984,8 @@ LWT_ELEMID lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
  * @param point the point to add
  * @param tol snap tolerance, the topology tolerance will be used if 0
  *
- * @return identifier of added (or pre-existing) node
+ * @return identifier of added (or pre-existing) node or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  */
 LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol);
 
@@ -1005,11 +999,12 @@ LWT_ELEMID lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol);
  * @param line the line to add
  * @param tol snap tolerance, the topology tolerance will be used if 0
  * @param nedges output parameter, will be set to number of edges the
- *               line was split into
+ *               line was split into, or -1 on error
+ *               (liblwgeom error handler will be invoked with error message)
  *
  * @return an array of <nedges> edge identifiers that sewed togheter
  *         will build up the input linestring (after snapping). Caller
- *         will need to free the array using lwfree()
+ *         will need to free the array using lwfree(), if not null.
  */
 LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
                         int* nedges);
@@ -1025,36 +1020,15 @@ LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
  * @param poly the polygon to add
  * @param tol snap tolerance, the topology tolerance will be used if 0
  * @param nfaces output parameter, will be set to number of faces the
- *               polygon was split into
+ *               polygon was split into, or -1 on error
+ *               (liblwgeom error handler will be invoked with error message)
  *
  * @return an array of <nfaces> face identifiers that sewed togheter
  *         will build up the input polygon (after snapping). Caller
- *         will need to free the array using lwfree()
+ *         will need to free the array using lwfree(), if not null.
  */
 LWT_ELEMID* lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* point, double tol,
                         int* nfaces);
-
-/**
- * Adds a geometry to the topology
- *
- * The given geometry will snap to existing nodes or
- * edges within given tolerance.
- * Existing edges or faces may be split by the operation.
- *
- * @param topo the topology to operate on
- * @param geom the geometry to add
- * @param tol snap tolerance, the topology tolerance will be used if 0
- * @param nelems output parameter, will be set to number of primitive
- *               elements the geometry was split into.
- *
- * @return an array of <nelems> topoelements that taken togheter
- *         will build up the input geometry (after snapping). Caller
- *         will need to free the array using lwfree()
- *
- * @see lwt_CreateTopoGeom
- */
-LWT_TOPOELEMENT* lwt_AddGeometry(LWT_TOPOLOGY* topo, LWGEOM* geom,
-                                 double tol, int* nelems);
 
 /*******************************************************************
  *
@@ -1085,7 +1059,8 @@ void lwt_CreateTopoGeo(LWT_TOPOLOGY* topo, LWGEOM *geom);
  *                   (coincident nodes, crossing edges,
  *                    actual face containement)
  *
- * @return ID of the newly added node
+ * @return ID of the newly added node, or -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
  *
  */
 LWT_ELEMID lwt_AddIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID face,
