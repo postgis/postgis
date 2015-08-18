@@ -1196,10 +1196,10 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   // TODO: use binary cursor here ?
   hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
   if ( dist ) {
-    appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, dist)",
-                     hexewkb);
+    appendStringInfo(sql, " WHERE ST_DWithin(geom, '%s'::geometry, %g)",
+                     hexewkb, dist);
   } else {
-    appendStringInfo(sql, " WHERE ST_Within(geom, '%s'::geometry)", hexewkb);
+    appendStringInfo(sql, " WHERE ST_Equals(geom, '%s'::geometry)", hexewkb);
   }
   lwfree(hexewkb);
   if ( elems_requested == -1 ) {
