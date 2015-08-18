@@ -560,7 +560,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   /* loop over each node within the edge's gbox */
   nodes = lwt_be_getNodeWithinBox2D( topo, edgebox, &num_nodes,
                                             LWT_COL_NODE_ALL, 0 );
-  lwnotice("lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
+  LWDEBUGF(1, "lwt_be_getNodeWithinBox2D returned %d nodes", num_nodes);
   if ( num_nodes == -1 ) {
     GEOSPreparedGeom_destroy(prepared_edge);
     GEOSGeom_destroy(edgegg);
@@ -2205,7 +2205,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
             p1.x, p1.y, pn.x, pn.y);
     return -1;
   }
-  lwnotice("edge's start node is %g,%g", p1.x, p1.y);
+  LWDEBUGF(1, "edge's start node is %g,%g", p1.x, p1.y);
 
   /* Compute azimuth of last edge end on end node */
   getPoint2d_p(pa, pa->npoints-1, &p2);
@@ -2215,7 +2215,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
             p2.x, p2.y, pn.x, pn.y);
     return -1;
   }
-  lwnotice("edge's end node is %g,%g", p2.x, p2.y);
+  LWDEBUGF(1, "edge's end node is %g,%g", p2.x, p2.y);
 
   /*
    * Check endpoints existance, match with Curve geometry
@@ -2255,7 +2255,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
     }
 
-    lwnotice("Node %d, with geom %p (looking for %d and %d)",
+    LWDEBUGF(1, "Node %d, with geom %p (looking for %d and %d)",
              node->node_id, node->geom, start_node, end_node);
     if ( node->node_id == start_node ) {
       start_node_geom = node->geom;
@@ -3608,7 +3608,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
     return -1;
   }
 
-  lwnotice("Updating next_{right,left}_face of ring edges...");
+  LWDEBUGF(1, "Updating next_{right,left}_face of ring edges...");
 
   /* Update edge linking */
 

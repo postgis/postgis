@@ -746,7 +746,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getEdgeById: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getEdgeById: edge query returned %d rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed ) {
     return NULL;
@@ -1025,7 +1025,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getNodeById: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getNodeById: edge query returned %d rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed ) {
     return NULL;
@@ -1072,7 +1072,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getNodeByFace: edge query returned %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_getNodeByFace: edge query returned %d rows", SPI_processed);
   *numelems = SPI_processed;
   if ( ! SPI_processed ) {
     return NULL;
@@ -1124,7 +1124,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   } else if ( elems_requested > 0 ) {
     appendStringInfo(sql, " LIMIT %d", elems_requested);
   }
-  lwpgnotice("cb_getEdgeWithinDistance2D: query is: %s", sql->data);
+  POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: query is: %s", sql->data);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
@@ -1133,7 +1133,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getEdgeWithinDistance2D: edge query "
+  POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: edge query "
              "(limited by %d) returned %d rows",
              elems_requested, SPI_processed);
   *numelems = SPI_processed;
@@ -1150,7 +1150,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
       dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
       exists = DatumGetBool(dat);
       *numelems = exists ? 1 : 0;
-      lwpgnotice("cb_getEdgeWithinDistance2D: exists ? %d", *numelems);
+      POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: exists ? %d", *numelems);
     }
     return NULL;
   }
@@ -1217,7 +1217,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getNodeWithinDistance2D: node query "
+  POSTGIS_DEBUGF(1, "cb_getNodeWithinDistance2D: node query "
              "(limited by %d) returned %d rows",
              elems_requested, SPI_processed);
   if ( ! SPI_processed ) {
@@ -1449,7 +1449,7 @@ cb_updateEdges( const LWT_BE_TOPOLOGY* topo,
 
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
-  lwpgnotice("cb_updateEdges: update query processed %d rows", SPI_processed);
+  POSTGIS_DEBUGF(1, "cb_updateEdges: update query processed %d rows", SPI_processed);
 
   return SPI_processed;
 }
@@ -2484,7 +2484,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   } else if ( elems_requested > 0 ) {
     appendStringInfo(sql, " LIMIT %d", elems_requested);
   }
-  lwpgnotice("cb_getNodeWithinBox2D: query is: %s", sql->data);
+  POSTGIS_DEBUGF(1,"cb_getNodeWithinBox2D: query is: %s", sql->data);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
@@ -2493,7 +2493,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getNodeWithinBox2D: edge query "
+  POSTGIS_DEBUGF(1, "cb_getNodeWithinBox2D: edge query "
              "(limited by %d) returned %d rows",
              elems_requested, SPI_processed);
   *numelems = SPI_processed;
@@ -2510,7 +2510,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
       dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
       exists = DatumGetBool(dat);
       *numelems = exists ? 1 : 0;
-      lwpgnotice("cb_getNodeWithinBox2D: exists ? %d", *numelems);
+      POSTGIS_DEBUGF(1, "cb_getNodeWithinBox2D: exists ? %d", *numelems);
     }
     return NULL;
   }
@@ -2554,7 +2554,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   } else if ( elems_requested > 0 ) {
     appendStringInfo(sql, " LIMIT %d", elems_requested);
   }
-  lwpgnotice("cb_getEdgeWithinBox2D: query is: %s", sql->data);
+  POSTGIS_DEBUGF(1,"cb_getEdgeWithinBox2D: query is: %s", sql->data);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
@@ -2563,7 +2563,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   }
   pfree(sqldata.data);
 
-  lwpgnotice("cb_getEdgeWithinBox2D: edge query "
+  POSTGIS_DEBUGF(1, "cb_getEdgeWithinBox2D: edge query "
              "(limited by %d) returned %d rows",
              elems_requested, SPI_processed);
   *numelems = SPI_processed;
@@ -2580,7 +2580,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
       dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
       exists = DatumGetBool(dat);
       *numelems = exists ? 1 : 0;
-      lwpgnotice("cb_getEdgeWithinBox2D: exists ? %d", *numelems);
+      POSTGIS_DEBUGF(1, "cb_getEdgeWithinBox2D: exists ? %d", *numelems);
     }
     return NULL;
   }
