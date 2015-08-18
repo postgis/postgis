@@ -18,7 +18,7 @@
 
 #include "../postgis_config.h"
 
-#define POSTGIS_DEBUG_LEVEL 1
+/*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
@@ -4569,8 +4569,12 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
     if ( id && id != eface )
     {
       _lwt_release_edges(elem, num);
-      lwerror("Two or more faces found (%" LWTFMT_ELEMID
-              " and %" LWTFMT_ELEMID ")", id, eface);
+      lwerror("Two or more faces found"
+#if 0 /* debugging */
+              " (%" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID ")", id, eface
+#endif
+             );
       return -1;
     }
     else id = eface;
