@@ -1684,7 +1684,11 @@ ERROR:  Two or more edges found</programlisting>
           <refsection>
             <title>See Also</title>
         
-            <para><xref linkend="AddEdge" />, <xref linkend="GetNodeByPoint" /></para>
+<para>
+<xref linkend="AddEdge" />,
+<xref linkend="GetNodeByPoint" />,
+<xref linkend="GetFaceByPoint" />
+</para>
           </refsection>
         </refentry>
         
@@ -1736,7 +1740,11 @@ ERROR:  Two or more faces found</programlisting>
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="AddFace" />, <xref linkend="GetNodeByPoint" />, <xref linkend="GetEdgeByPoint" /></para>
+<para>
+<xref linkend="AddFace" />,
+<xref linkend="GetNodeByPoint" />,
+<xref linkend="GetEdgeByPoint" />
+</para>
 		</refsection>
 	</refentry>
         
@@ -1797,7 +1805,11 @@ ERROR:  Two or more faces found</programlisting>
           <refsection>
             <title>See Also</title>
         
-            <para><xref linkend="AddEdge" />, <xref linkend="GetEdgeByPoint" /></para>
+<para>
+<xref linkend="AddEdge" />,
+<xref linkend="GetEdgeByPoint" />,
+<xref linkend="GetFaceByPoint" />
+</para>
           </refsection>
         </refentry>
           
