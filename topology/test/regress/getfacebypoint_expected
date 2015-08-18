@@ -23,13 +23,13 @@ t
 2
 3
 4
-4
-4
-4
-0
-0
-3
-4
+t1|4
+t2|4
+t3|4
+t4|0
+t5|0
+t6|3
+t7|4
 ERROR:  Two or more faces found
 ERROR:  Two or more faces found
 Topology 'schema_topo' dropped
