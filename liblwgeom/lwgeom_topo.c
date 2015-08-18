@@ -4508,6 +4508,10 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
   {
     return id;
   }
+  id = 0; /* or it'll be -1 for not found */
+
+  LWDEBUG(1, "No face properly contains query point,"
+             " looking for edges");
 
   /* Not in a face, may be in universe or on edge, let's check
    * for distance */
@@ -4534,12 +4538,22 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
       continue;
     }
 
+    /* don't consider dangling edges */
+    if ( e->face_left == e->face_right )
+    {
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
+                  " is dangling, won't consider it", e->edge_id);
+      continue;
+    }
+
     geom = lwline_as_lwgeom(e->geom);
     dist = lwgeom_mindistance2d_tolerance(geom, qp, tol);
+
+    LWDEBUGF(1, "Distance from edge %" LWTFMT_ELEMID
+                " is %g (tol=%g)", e->edge_id, dist, tol);
+
     /* we won't consider edges too far */
     if ( dist > tol ) continue;
-    /* don't consider dangling edges */
-    if ( e->face_left == e->face_right ) continue;
     if ( e->face_left == 0 ) {
       eface = e->face_right;
     }
@@ -4552,10 +4566,11 @@ lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
       return -1;
     }
 
-    if ( id )
+    if ( id && id != eface )
     {
       _lwt_release_edges(elem, num);
-      lwerror("Two or more faces found");
+      lwerror("Two or more faces found (%" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID ")", id, eface);
       return -1;
     }
     else id = eface;
