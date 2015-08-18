@@ -3957,7 +3957,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   LWT_ISO_EDGE *e2 = NULL;;
   LWT_ISO_EDGE newedge, updedge, seledge;
   int nedges, i;
-  int e1sign, e1freenode;
+  int e1freenode;
   int e2sign, e2freenode;
   POINTARRAY *pa;
   char buf[256];
@@ -4216,6 +4216,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
       break;
     default:
       pa = NULL;
+      e1freenode = 0;
       e2freenode = 0;
       e2sign = 0;
       _lwt_release_edges(edges, nedges);
