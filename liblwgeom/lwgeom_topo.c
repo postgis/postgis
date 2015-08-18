@@ -3608,7 +3608,7 @@ _lwt_RemEdge( LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, int modFace )
     return -1;
   }
 
-  LWDEBUGF(1, "Updating next_{right,left}_face of ring edges...");
+  LWDEBUG(1, "Updating next_{right,left}_face of ring edges...");
 
   /* Update edge linking */
 
