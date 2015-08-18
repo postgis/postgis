@@ -18,7 +18,7 @@
 
 #include "../postgis_config.h"
 
-#define POSTGIS_DEBUG_LEVEL 1
+/*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
@@ -4396,4 +4396,190 @@ LWT_ELEMID
 lwt_NewEdgeHeal( LWT_TOPOLOGY* topo, LWT_ELEMID e1, LWT_ELEMID e2 )
 {
   return _lwt_HealEdges( topo, e1, e2, 0 );
+}
+
+LWT_ELEMID
+lwt_GetNodeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
+{
+  LWT_ISO_NODE *elem;
+  int num;
+  int flds = LWT_COL_NODE_NODE_ID|LWT_COL_NODE_GEOM; /* geom not needed */
+  LWT_ELEMID id = 0;
+  POINT2D qp; /* query point */
+
+  if ( ! getPoint2d_p(pt->point, 0, &qp) )
+  {
+    lwerror("Empty query point");
+    return -1;
+  }
+  elem = lwt_be_getNodeWithinDistance2D(topo, pt, tol, &num, flds, 0);
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  else if ( num )
+  {
+    if ( num > 1 )
+    {
+      _lwt_release_nodes(elem, num);
+      lwerror("Two or more nodes found");
+      return -1;
+    }
+    id = elem[0].node_id;
+  }
+
+  return id;
+}
+
+LWT_ELEMID
+lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
+{
+  LWT_ISO_EDGE *elem;
+  int num, i;
+  int flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM; /* GEOM is not needed */
+  LWT_ELEMID id = 0;
+  LWGEOM *qp = lwpoint_as_lwgeom(pt); /* query point */
+
+  if ( lwgeom_is_empty(qp) )
+  {
+    lwerror("Empty query point");
+    return -1;
+  }
+  elem = lwt_be_getEdgeWithinDistance2D(topo, pt, tol, &num, flds, 0);
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for (i=0; i<num;++i)
+  {
+    LWT_ISO_EDGE *e = &(elem[i]);
+#if 0
+    LWGEOM* geom;
+    double dist;
+
+    if ( ! e->geom )
+    {
+      _lwt_release_edges(elem, num);
+      lwnotice("Corrupted topology: edge %" LWTFMT_ELEMID
+               " has null geometry", e->edge_id);
+      continue;
+    }
+
+    /* Should we check for intersection not being on an endpoint
+     * as documented ? */
+    geom = lwline_as_lwgeom(e->geom);
+    dist = lwgeom_mindistance2d_tolerance(geom, qp, tol);
+    if ( dist > tol ) continue;
+#endif
+
+    if ( id )
+    {
+      _lwt_release_edges(elem, num);
+      lwerror("Two or more edges found");
+      return -1;
+    }
+    else id = e->edge_id;
+  }
+
+  return id;
+}
+
+LWT_ELEMID
+lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
+{
+  LWT_ELEMID id = 0;
+  LWT_ISO_EDGE *elem;
+  int num, i;
+  int flds = LWT_COL_EDGE_EDGE_ID |
+             LWT_COL_EDGE_GEOM |
+             LWT_COL_EDGE_FACE_LEFT |
+             LWT_COL_EDGE_FACE_RIGHT;
+  LWGEOM *qp = lwpoint_as_lwgeom(pt);
+
+  id = lwt_be_getFaceContainingPoint(topo, pt);
+  if ( id == -2 ) {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+
+  if ( id > 0 )
+  {
+    return id;
+  }
+  id = 0; /* or it'll be -1 for not found */
+
+  LWDEBUG(1, "No face properly contains query point,"
+             " looking for edges");
+
+  /* Not in a face, may be in universe or on edge, let's check
+   * for distance */
+  /* NOTE: we never pass a tolerance of 0 to avoid ever using
+   * ST_Within, which doesn't include endpoints matches */
+  elem = lwt_be_getEdgeWithinDistance2D(topo, pt, tol?tol:1e-5, &num, flds, 0);
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for (i=0; i<num; ++i)
+  {
+    LWT_ISO_EDGE *e = &(elem[i]);
+    LWT_ELEMID eface = 0;
+    LWGEOM* geom;
+    double dist;
+
+    if ( ! e->geom )
+    {
+      _lwt_release_edges(elem, num);
+      lwnotice("Corrupted topology: edge %" LWTFMT_ELEMID
+               " has null geometry", e->edge_id);
+      continue;
+    }
+
+    /* don't consider dangling edges */
+    if ( e->face_left == e->face_right )
+    {
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
+                  " is dangling, won't consider it", e->edge_id);
+      continue;
+    }
+
+    geom = lwline_as_lwgeom(e->geom);
+    dist = lwgeom_mindistance2d_tolerance(geom, qp, tol);
+
+    LWDEBUGF(1, "Distance from edge %" LWTFMT_ELEMID
+                " is %g (tol=%g)", e->edge_id, dist, tol);
+
+    /* we won't consider edges too far */
+    if ( dist > tol ) continue;
+    if ( e->face_left == 0 ) {
+      eface = e->face_right;
+    }
+    else if ( e->face_right == 0 ) {
+      eface = e->face_left;
+    }
+    else {
+      _lwt_release_edges(elem, num);
+      lwerror("Two or more faces found");
+      return -1;
+    }
+
+    if ( id && id != eface )
+    {
+      _lwt_release_edges(elem, num);
+      lwerror("Two or more faces found"
+#if 0 /* debugging */
+              " (%" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID ")", id, eface
+#endif
+             );
+      return -1;
+    }
+    else id = eface;
+  }
+  if ( num ) _lwt_release_edges(elem, num);
+
+  return id;
 }

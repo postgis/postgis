@@ -23,7 +23,8 @@
 
 #include "liblwgeom_internal.h" /* for gbox_clone */
 #include "liblwgeom_topo.h"
-#define POSTGIS_DEBUG_LEVEL 1
+
+/*#define POSTGIS_DEBUG_LEVEL 1*/
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
@@ -3709,4 +3710,205 @@ Datum ST_NewEdgeHeal(PG_FUNCTION_ARGS)
   }
 
   PG_RETURN_INT32(ret);
+}
+
+/*  GetNodeByPoint(atopology, point, tolerance) */
+Datum GetNodeByPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetNodeByPoint);
+Datum GetNodeByPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Node geometry must be a point");
+    PG_RETURN_NULL();
+  }
+
+  tol = PG_GETARG_FLOAT8(2);
+  if ( tol < 0 )
+  {
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Tolerance must be >=0");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetNodeByPoint");
+  node_id = lwt_GetNodeByPoint(topo, pt, tol);
+  POSTGIS_DEBUG(1, "lwt_GetNodeByPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
+}
+
+/*  GetEdgeByPoint(atopology, point, tolerance) */
+Datum GetEdgeByPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetEdgeByPoint);
+Datum GetEdgeByPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Node geometry must be a point");
+    PG_RETURN_NULL();
+  }
+
+  tol = PG_GETARG_FLOAT8(2);
+  if ( tol < 0 )
+  {
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Tolerance must be >=0");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetEdgeByPoint");
+  node_id = lwt_GetEdgeByPoint(topo, pt, tol);
+  POSTGIS_DEBUG(1, "lwt_GetEdgeByPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
+}
+
+/*  GetFaceByPoint(atopology, point, tolerance) */
+Datum GetFaceByPoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(GetFaceByPoint);
+Datum GetFaceByPoint(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID node_id;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOINT *pt;
+  LWT_TOPOLOGY *topo;
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  geom = PG_GETARG_GSERIALIZED_P(1);
+  lwgeom = lwgeom_from_gserialized(geom);
+  pt = lwgeom_as_lwpoint(lwgeom);
+  if ( ! pt ) {
+    lwgeom_free(lwgeom);
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Node geometry must be a point");
+    PG_RETURN_NULL();
+  }
+
+  tol = PG_GETARG_FLOAT8(2);
+  if ( tol < 0 )
+  {
+	  PG_FREE_IF_COPY(geom, 1);
+    lwpgerror("Tolerance must be >=0");
+    PG_RETURN_NULL();
+  }
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_GetFaceByPoint");
+  node_id = lwt_GetFaceByPoint(topo, pt, tol);
+  POSTGIS_DEBUG(1, "lwt_GetFaceByPoint returned");
+  lwgeom_free(lwgeom);
+  PG_FREE_IF_COPY(geom, 1);
+  lwt_FreeTopology(topo);
+
+  if ( node_id == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  SPI_finish();
+  PG_RETURN_INT32(node_id);
 }

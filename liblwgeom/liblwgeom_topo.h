@@ -936,6 +936,45 @@ void lwt_DropTopology(LWT_TOPOLOGY* topo);
  */
 void lwt_FreeTopology(LWT_TOPOLOGY* topo);
 
+/**
+ * Retrieve the id of a node at a point location
+ *
+ * @param topo the topology to operate on
+ * @param point the point to use for query
+ * @param tol max distance around the given point to look for a node
+ * @return a node identifier if one is found, 0 if none is found, -1
+ *         on error (multiple nodes within distance).
+ *         The liblwgeom error handler will be invoked in case of error.
+ */
+LWT_ELEMID lwt_GetNodeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
+
+/**
+ * Find the edge-id of an edge that intersects a given point
+ *
+ * @param topo the topology to operate on
+ * @param point the point to use for query
+ * @param tol max distance around the given point to look for an
+ *            intersecting edge
+ * @return an edge identifier if one is found, 0 if none is found, -1
+ *         on error (multiple edges within distance).
+ *         The liblwgeom error handler will be invoked in case of error.
+ */
+LWT_ELEMID lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
+
+/**
+ * Find the face-id of a face containing a given point
+ *
+ * @param topo the topology to operate on
+ * @param point the point to use for query
+ * @param tol max distance around the given point to look for a
+ *            containing face
+ * @return a face identifier if one is found (0 if universe), -1
+ *         on error (multiple faces within distance or point on node
+ *         or edge).
+ *         The liblwgeom error handler will be invoked in case of error.
+ */
+LWT_ELEMID lwt_GetFaceByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol);
+
 /*******************************************************************
  *
  * Topology population (non-ISO)
