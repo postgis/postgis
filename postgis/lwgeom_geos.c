@@ -736,75 +736,24 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_UnaryUnion);
 Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	PG_RETURN_NULL();
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'GEOSUnaryUnion' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GSERIALIZED *geom1;
-	int is3d;
-	int srid;
-	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
-
-	POSTGIS_DEBUG(2, "in ST_UnaryUnion");
+	LWGEOM *lwgeom1, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
-	/* UnaryUnion(empty) == (empty) */
-	if ( gserialized_is_empty(geom1) )
-		PG_RETURN_POINTER(geom1);
 
-	is3d = ( gserialized_has_z(geom1) );
+	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	srid = gserialized_get_srid(geom1);
+	lwresult = lwgeom_unaryunion(lwgeom1);
+	result = geometry_serialize(lwresult) ;
 
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		PG_RETURN_NULL();
-	}
-
-	POSTGIS_DEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
-
-	g3 = GEOSUnaryUnion(g1);
-
-	POSTGIS_DEBUGF(3, "g3=%s", GEOSGeomToWKT(g3));
-
-	GEOSGeom_destroy(g1);
-
-	if (g3 == NULL)
-	{
-		HANDLE_GEOS_ERROR("GEOSUnion");
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-
-	GEOSSetSRID(g3, srid);
-
-	result = GEOS2POSTGIS(g3, is3d);
-
-	GEOSGeom_destroy(g3);
-
-	if (result == NULL)
-	{
-		elog(ERROR, "ST_UnaryUnion failed converting GEOS result Geometry to PostGIS format");
-		PG_RETURN_NULL(); /*never get here */
-	}
-
-	/* compressType(result); */
+	lwgeom_free(lwgeom1) ;
+	lwgeom_free(lwresult) ;
 
 	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 
