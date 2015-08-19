@@ -3646,50 +3646,20 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED	*geom1;
-	GEOSGeometry *g1, *g3;
+	GSERIALIZED *geom1;
 	GSERIALIZED *result;
+	LWGEOM *lwgeom1, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
-	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		PG_RETURN_NULL();
-	}
+	lwresult = lwgeom_linemerge(lwgeom1);
+	result = geometry_serialize(lwresult) ;
 
-	g3 = GEOSLineMerge(g1);
-
-	if (g3 == NULL)
-	{
-		elog(ERROR,"GEOS LineMerge() threw an error!");
-		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); /*never get here */
-	}
-
-
-	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
-
-	GEOSSetSRID(g3, gserialized_get_srid(geom1));
-
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
-
-	if (result == NULL)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		elog(ERROR,"GEOS LineMerge() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); /*never get here */
-	}
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
-
-	/* compressType(result); */
+	lwgeom_free(lwgeom1) ;
+	lwgeom_free(lwresult) ;
 
 	PG_FREE_IF_COPY(geom1, 0);
 

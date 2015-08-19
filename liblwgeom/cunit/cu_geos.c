@@ -66,6 +66,32 @@ static void test_geos_noop(void)
 
 }
 
+static void test_geos_linemerge(void)
+{
+	char *ewkt;
+	char *out_ewkt;
+	LWGEOM *geom1;
+	LWGEOM *geom2;
+
+	ewkt = "MULTILINESTRING((0 0, 0 100),(0 -5, 0 0))";
+	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_linemerge(geom1);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	ASSERT_STRING_EQUAL(out_ewkt, "LINESTRING(0 -5,0 0,0 100)");
+	lwfree(out_ewkt);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	ewkt = "MULTILINESTRING EMPTY";
+	geom1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_linemerge(geom1);
+	out_ewkt = lwgeom_to_ewkt((LWGEOM*)geom2);
+	ASSERT_STRING_EQUAL(out_ewkt, "GEOMETRYCOLLECTION EMPTY");
+	lwfree(out_ewkt);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+}
+
 
 static void test_geos_subdivide(void)
 {
@@ -106,4 +132,5 @@ void geos_suite_setup(void)
 	CU_pSuite suite = CU_add_suite("GEOS", NULL, NULL);
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
+	PG_ADD_TEST(suite, test_geos_linemerge);
 }
