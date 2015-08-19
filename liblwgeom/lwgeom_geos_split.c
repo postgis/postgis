@@ -170,7 +170,7 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 		FLAGS_GET_M(lwline_in->flags));
 	if ( lwline_split_by_point_to(lwline_in, blade_in, out) < 2 )
 	{
-		lwmline_add_lwline(out, lwline_clone(lwline_in));
+		lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
 	}
 
 	/* Turn multiline into collection */
@@ -188,7 +188,7 @@ lwline_split_by_mpoint(const LWLINE* lwline_in, const LWMPOINT* mp)
   out = lwmline_construct_empty(lwline_in->srid,
           FLAGS_GET_Z(lwline_in->flags),
           FLAGS_GET_M(lwline_in->flags));
-  lwmline_add_lwline(out, lwline_clone(lwline_in));
+  lwmline_add_lwline(out, lwline_clone_deep(lwline_in));
 
   for (i=0; i<mp->ngeoms; ++i)
   {

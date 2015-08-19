@@ -545,11 +545,11 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	/* A.Intersection(Empty) == Empty */
 	if ( lwgeom_is_empty(geom2) )
-		return lwgeom_clone(geom2);
+		return lwgeom_clone_deep(geom2);
 
 	/* Empty.Intersection(A) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -689,7 +689,7 @@ lwgeom_unaryunion(const LWGEOM *geom1)
 
 	/* Empty.UnaryUnion() == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -741,11 +741,11 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	/* A.Difference(Empty) == A */
 	if ( lwgeom_is_empty(geom2) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	/* Empty.Intersection(A) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -815,11 +815,11 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	/* A.SymDifference(Empty) == A */
 	if ( lwgeom_is_empty(geom2) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	/* Empty.DymDifference(B) == B */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom2);
+		return lwgeom_clone_deep(geom2);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -890,11 +890,11 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	/* A.Union(empty) == A */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom2);
+		return lwgeom_clone_deep(geom2);
 
 	/* B.Union(empty) == B */
 	if ( lwgeom_is_empty(geom2) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 
 	/* ensure srids are identical */
@@ -971,7 +971,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 
 	/* A.Intersection(Empty) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone_deep(geom1);
 
 	is3d = FLAGS_GET_Z(geom1->flags);
 
