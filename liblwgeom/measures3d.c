@@ -16,6 +16,7 @@
 #include "measures3d.h"
 #include "lwgeom_log.h"
 
+#define LINE_LIMIT (float) (1<< 31)
 
 static inline int
 get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
@@ -79,7 +80,7 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		
 		if(!lwgeom_has_z(lw1) && !lwgeom_has_z(lw2))
 			return lw_dist2d_distanceline(lw1, lw2, srid, mode);	
@@ -100,8 +101,8 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			LWGEOM *new_lw1;
 			x1=thedl2d.p1.x;
 			y1=thedl2d.p1.y;
-			lwpoints[0] = lwpoint_make3dz(srid, x1, y1, FLT_MIN);
-			lwpoints[1] = lwpoint_make3dz(srid, x1, y1, FLT_MAX);
+			lwpoints[0] = lwpoint_make3dz(srid, x1, y1, LINE_LIMIT * (-1));
+			lwpoints[1] = lwpoint_make3dz(srid, x1, y1, LINE_LIMIT);
 			
 			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
 			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
@@ -116,8 +117,8 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			LWGEOM *new_lw2;
 			x2=thedl2d.p2.x;
 			y2=thedl2d.p2.y;			
-			lwpoints[0] = lwpoint_make3dz(srid, x2, y2, FLT_MIN);
-			lwpoints[1] = lwpoint_make3dz(srid, x2, y2, FLT_MAX);
+			lwpoints[0] = lwpoint_make3dz(srid, x2, y2, LINE_LIMIT * (-1));
+			lwpoints[1] = lwpoint_make3dz(srid, x2, y2, LINE_LIMIT);
 			
 			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);	
 			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
@@ -185,7 +186,7 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		
 		
 		if(!lwgeom_has_z(lw1) && !lwgeom_has_z(lw2))
@@ -210,8 +211,8 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			x=thedl2d.p1.x;
 			y=thedl2d.p1.y;
 
-			lwpoints[0] = lwpoint_make3dz(srid, x, y, FLT_MIN);
-			lwpoints[1] = lwpoint_make3dz(srid, x, y, FLT_MAX);
+			lwpoints[0] = lwpoint_make3dz(srid, x, y, LINE_LIMIT * (-1));
+			lwpoints[1] = lwpoint_make3dz(srid, x, y, LINE_LIMIT);
 			
 			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
 			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
@@ -229,8 +230,8 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 			x=thedl2d.p2.x;
 			y=thedl2d.p2.y;
 
-			lwpoints[0] = lwpoint_make3dz(srid, x, y, FLT_MIN);
-			lwpoints[1] = lwpoint_make3dz(srid, x, y, FLT_MAX);
+			lwpoints[0] = lwpoint_make3dz(srid, x, y, LINE_LIMIT * (-1));
+			lwpoints[1] = lwpoint_make3dz(srid, x, y, LINE_LIMIT);
 			
 			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
 			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
@@ -288,7 +289,7 @@ lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 {
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		return lwgeom_maxdistance2d_tolerance(lw1, lw2, tolerance);	
 	}
 	/*double thedist;*/
@@ -325,7 +326,7 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 {
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as 'any value'");
+		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		return lwgeom_mindistance2d_tolerance(lw1, lw2, tolerance);	
 	}
 	DISTPTS3D thedl;
