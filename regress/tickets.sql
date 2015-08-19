@@ -908,5 +908,8 @@ SELECT '#2956', st_astwkb(null,0) is null;
 
 SELECT '#3172', ST_AsText(ST_AddMeasure('LINESTRING(0 0,0 0)', 1, 2));
 
+--SELECT '#3244a', ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));
+--SELECT '#3244b', ST_AsText(ST_3DClosestPoint('POINT(0 0)', 'POINT(0 0 0)'));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
