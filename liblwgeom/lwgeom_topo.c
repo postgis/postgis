@@ -18,7 +18,7 @@
 
 #include "../postgis_config.h"
 
-/*#define POSTGIS_DEBUG_LEVEL 1*/
+#define POSTGIS_DEBUG_LEVEL 1
 #include "lwgeom_log.h"
 
 #include "liblwgeom_internal.h"
@@ -35,6 +35,17 @@
 #else
 # define LWTFMT_ELEMID PRId64
 #endif
+
+/* TODO: move this to lwgeom_log.h */
+#define LWDEBUGG(level, geom, msg, ...) \
+  if (POSTGIS_DEBUG_LEVEL >= level) \
+  do { \
+    size_t sz; \
+    char *wkt1 = lwgeom_to_wkt(geom, WKT_ISO, 15, &sz); \
+    LWDEBUGF(level, msg ": %s", __VA_ARGS__ wkt1); \
+    lwfree(wkt1); \
+  } while (0);
+
 
 /*********************************************************************
  *
@@ -4593,6 +4604,7 @@ _lwt_minTolerance( LWGEOM *g )
 {
   const GBOX* gbox;
   double max;
+  double ret;
 
   gbox = lwgeom_get_bbox(g);
   if ( ! gbox ) return 0; /* empty */
@@ -4601,7 +4613,9 @@ _lwt_minTolerance( LWGEOM *g )
   if ( max < FP_ABS(gbox->ymin) ) max = FP_ABS(gbox->ymin);
   if ( max < FP_ABS(gbox->ymax) ) max = FP_ABS(gbox->ymax);
 
-  return 3.6 * pow(10,  - ( 15 - log(max?max:1.0) ) );
+  ret = 3.6 * pow(10,  - ( 15 - log10(max?max:1.0) ) );
+
+  return ret;
 }
 
 #define _LWT_MINTOLERANCE( topo, geom ) ( \
@@ -4618,6 +4632,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   int flds;
   LWT_ELEMID id = 0;
 
+  /* Get tolerance, if 0 was given */
   if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, pt );
 
   /*
@@ -4849,12 +4864,488 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   return id;
 }
 
+/* Return identifier of an equal edge, 0 if none or -1 on error
+ * (and lwerror gets called on error)
+ */
+static LWT_ELEMID
+_lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge )
+{
+  LWT_ELEMID id;
+  LWT_ISO_EDGE *edges;
+  int num, i;
+  const GBOX *qbox = lwgeom_get_bbox( lwline_as_lwgeom(edge) );
+  GEOSGeometry *edgeg;
+  const int flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM;
+
+  edges = lwt_be_getEdgeWithinBox2D( topo, qbox, &num, flds, 0 );
+  if ( num == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( num )
+  {
+    initGEOS(lwnotice, lwgeom_geos_error);
+
+    edgeg = LWGEOM2GEOS( lwline_as_lwgeom(edge), 0 );
+    if ( ! edgeg )
+    {
+      _lwt_release_edges(edges, num);
+      lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return -1;
+    }
+    for (i=0; i<num; ++i)
+    {
+      LWT_ISO_EDGE *e = &(edges[i]);
+      LWGEOM *g = lwline_as_lwgeom(e->geom);
+      GEOSGeometry *gg;
+      int equals;
+      gg = LWGEOM2GEOS( g, 0 );
+      if ( ! gg )
+      {
+        GEOSGeom_destroy(edgeg);
+        _lwt_release_edges(edges, num);
+        lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+      equals = GEOSEquals(gg, edgeg);
+      GEOSGeom_destroy(gg);
+      if ( equals == 2 )
+      {
+        GEOSGeom_destroy(edgeg);
+        _lwt_release_edges(edges, num);
+        lwerror("GEOSEquals exception: %s", lwgeom_geos_errmsg);
+        return -1;
+      }
+      if ( equals )
+      {
+        id = e->edge_id;
+        GEOSGeom_destroy(edgeg);
+        _lwt_release_edges(edges, num);
+        return id;
+      }
+    }
+    GEOSGeom_destroy(edgeg);
+    _lwt_release_edges(edges, num);
+  }
+
+  return 0;
+}
+
+/*
+ * Add a pre-noded pre-splitted line edge. Used by lwt_AddLine
+ * Return edge id, 0 if none added (empty edge), -1 on error
+ */
+static LWT_ELEMID
+_lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol )
+{
+  LWCOLLECTION *col;
+  LWPOINT *start_point, *end_point;
+  LWGEOM *tmp;
+  LWT_ISO_NODE *node;
+  LWT_ELEMID nid[2]; /* start_node, end_node */
+  LWT_ELEMID id; /* edge id */
+  POINT4D p4d;
+  int nn, i;
+
+  start_point = lwline_get_lwpoint(edge, 0);
+  if ( ! start_point )
+  {
+    lwnotice("Empty component of noded line");
+    return 0; /* must be empty */
+  }
+  nid[0] = lwt_AddPoint( topo, start_point, tol );
+  lwpoint_free(start_point); /* too late if lwt_AddPoint calls lwerror */
+  if ( nid[0] == -1 ) return -1; /* lwerror should have been called */
+
+  end_point = lwline_get_lwpoint(edge, edge->points->npoints-1);
+  if ( ! end_point )
+  {
+    lwerror("could not get last point of line "
+            "after successfully getting first point !?");
+    return -1;
+  }
+  nid[1] = lwt_AddPoint( topo, end_point, tol );
+  lwpoint_free(end_point); /* too late if lwt_AddPoint calls lwerror */
+  if ( nid[1] == -1 ) return -1; /* lwerror should have been called */
+
+  /*
+    -- Added endpoints may have drifted due to tolerance, so
+    -- we need to re-snap the edge to the new nodes before adding it
+  */
+
+  nn = nid[0] == nid[1] ? 1 : 2;
+  node = lwt_be_getNodeById( topo, nid, &nn,
+                             LWT_COL_NODE_NODE_ID|LWT_COL_NODE_GEOM );
+  if ( nn == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  start_point = NULL; end_point = NULL;
+  for (i=0; i<nn; ++i)
+  {
+    if ( node[i].node_id == nid[0] ) start_point = node[i].geom;
+    if ( node[i].node_id == nid[1] ) end_point = node[i].geom;
+  }
+  if ( ! start_point  || ! end_point )
+  {
+    if ( nn ) _lwt_release_nodes(node, nn);
+    lwerror("Could not find just-added nodes % " LWTFMT_ELEMID
+            " and %" LWTFMT_ELEMID, nid[0], nid[1]);
+    return -1;
+  }
+
+  /* snap */
+
+  getPoint4d_p( start_point->point, 0, &p4d );
+  lwline_setPoint4d(edge, 0, &p4d);
+
+  getPoint4d_p( end_point->point, 0, &p4d );
+  lwline_setPoint4d(edge, edge->points->npoints-1, &p4d);
+
+  if ( nn ) _lwt_release_nodes(node, nn);
+
+  /* make valid, after snap (to handle collapses) */
+  tmp = lwgeom_make_valid(lwline_as_lwgeom(edge));
+
+  col = lwgeom_as_lwcollection(tmp);
+  if ( col )
+  {{
+    LWGEOM *tmp2;
+
+    col = lwcollection_extract(col, LINETYPE);
+
+    /* Check if the so-snapped edge collapsed (see #1650) */
+    if ( col->ngeoms == 0 )
+    {
+      lwcollection_free(col);
+      lwgeom_free(tmp);
+      LWDEBUG(1, "Made-valid snapped edge collapsed");
+      return 0;
+    }
+
+    tmp2 = lwgeom_clone_deep( col->geoms[0] );
+    lwgeom_free(tmp);
+    tmp = tmp2;
+    edge = lwgeom_as_lwline(tmp);
+    lwcollection_free(col);
+    if ( ! edge )
+    {
+      /* should never happen */
+      lwerror("lwcollection_extract(LINETYPE) returned a non-line?");
+      return -1;
+    }
+  }}
+  else
+  {
+    edge = lwgeom_as_lwline(tmp);
+    if ( ! edge )
+    {
+      LWDEBUGF(1, "Made-valid snapped edge collapsed to %s",
+                  lwtype_name(lwgeom_get_type(tmp)));
+      lwgeom_free(tmp);
+      return 0;
+    }
+  }
+
+  /* check if the so-snapped edge _now_ exists */
+  id = _lwt_GetEqualEdge ( topo, edge );
+  LWDEBUGF(1, "_lwt_GetEqualEdge returned %" LWTFMT_ELEMID, id);
+  if ( id == -1 )
+  {
+    lwgeom_free(tmp); /* probably too late, due to internal lwerror */
+    return -1;
+  }
+  if ( id ) 
+  {
+    lwgeom_free(tmp); /* possibly takes "edge" down with it */
+    return id;
+  }
+
+  /* No previously existing edge was found, we'll add one */
+  /* TODO: skip checks, I guess ? */
+  id = lwt_AddEdgeModFace( topo, nid[0], nid[1], edge, 0 );
+  LWDEBUGF(1, "lwt_AddEdgeModFace returned %" LWTFMT_ELEMID, id);
+  if ( id == -1 )
+  {
+    lwgeom_free(tmp); /* probably too late, due to internal lwerror */
+    return -1;
+  }
+  lwgeom_free(tmp); /* possibly takes "edge" down with it */
+
+  return id;
+}
+
+/* Simulate split-loop as it was implemented in pl/pgsql version
+ * of TopoGeo_addLinestring */
+static LWGEOM *
+_lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
+{
+  LWCOLLECTION *col = lwgeom_as_lwcollection(nodes);
+  int i;
+  LWGEOM *bg;
+
+  bg = lwgeom_clone_deep(g);
+  if ( ! col->ngeoms ) return bg;
+
+  for (i=0; i<col->ngeoms; ++i)
+  {
+    LWGEOM *g2;
+    g2 = lwgeom_split(bg, col->geoms[i]);
+    lwgeom_free(bg);
+    bg = g2;
+  }
+
+  return bg;
+}
+
 LWT_ELEMID*
 lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 {
-  *nedges = -1;
-  lwerror("Not implemented yet");
-  return NULL;
+  LWGEOM *geomsbuf[1];
+  LWGEOM **geoms;
+  int ngeoms;
+  LWGEOM *noded;
+  LWCOLLECTION *col;
+  LWT_ELEMID *ids;
+  LWT_ISO_EDGE *edges;
+  LWT_ISO_NODE *nodes;
+  int num;
+  int i;
+  GBOX qbox;
+
+  *nedges = -1; /* error condition, by default */
+
+  /* Get tolerance, if 0 was given */
+  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  LWDEBUGF(1, "Working tolerance:%.15g", tol);
+  LWDEBUGF(1, "Input line has srid=%d", line->srid);
+
+  /* 1. Self-node */
+  noded = lwgeom_node((LWGEOM*)line);
+  if ( ! noded ) return NULL; /* should have called lwerror already */
+  LWDEBUGG(1, noded, "Noded");
+
+  qbox = *lwgeom_get_bbox( lwline_as_lwgeom(line) );
+  LWDEBUGF(1, "Line BOX is %.15g %.15g, %.15g %.15g", qbox.xmin, qbox.ymin,
+                                          qbox.xmax, qbox.ymax);
+  gbox_expand(&qbox, tol);
+  LWDEBUGF(1, "BOX expanded by %g is %.15g %.15g, %.15g %.15g",
+              tol, qbox.xmin, qbox.ymin, qbox.xmax, qbox.ymax);
+
+  /* 2. Node to edges falling within tol distance */
+  edges = lwt_be_getEdgeWithinBox2D( topo, &qbox, &num, LWT_COL_EDGE_ALL, 0 );
+  if ( num == -1 )
+  {
+    lwgeom_free(noded);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return NULL;
+  }
+  LWDEBUGF(1, "Line bbox intersects %d edges bboxes", num);
+  if ( num )
+  {{
+    /* collect those whose distance from us is < tol */
+    LWGEOM **nearby = lwalloc(sizeof(LWGEOM *)*num);
+    int nn=0;
+    for (i=0; i<num; ++i)
+    {
+      LWT_ISO_EDGE *e = &(edges[i]);
+      LWGEOM *g = lwline_as_lwgeom(e->geom);
+      double dist = lwgeom_mindistance2d(g, noded);
+      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      nearby[nn++] = g;
+    }
+    if ( nn )
+    {{
+      LWCOLLECTION *col;
+      LWGEOM *iedges; /* just an alias for col */
+      LWGEOM *snapped;
+      LWGEOM *set1, *set2;
+
+      LWDEBUGF(1, "Line intersects %d edges", nn);
+
+      col = lwcollection_construct(COLLECTIONTYPE, topo->srid,
+                                   NULL, nn, nearby);
+      iedges = lwcollection_as_lwgeom(col);
+      LWDEBUGG(1, iedges, "Collected edges");
+      LWDEBUGF(1, "Snapping noded, with srid=%d "
+                  "to interesecting edges, with srid=%d",
+                  noded->srid, iedges->srid);
+      snapped = lwgeom_snap(noded, iedges, tol);
+      lwgeom_free(noded);
+      LWDEBUGG(1, snapped, "Snapped");
+      LWDEBUGF(1, "Diffing snapped, with srid=%d "
+                  "and interesecting edges, with srid=%d",
+                  snapped->srid, iedges->srid);
+      noded = lwgeom_difference(snapped, iedges);
+      LWDEBUGG(1, noded, "Differenced");
+      LWDEBUGF(1, "Intersecting snapped, with srid=%d "
+                  "and interesecting edges, with srid=%d",
+                  snapped->srid, iedges->srid);
+      set1 = lwgeom_intersection(snapped, iedges);
+      LWDEBUGG(1, set1, "Intersected");
+      lwgeom_free(snapped);
+      LWDEBUGF(1, "Linemerging set1, with srid=%d", set1->srid);
+      set2 = lwgeom_linemerge(set1);
+      LWDEBUGG(1, set2, "Linemerged");
+      LWDEBUGG(1, noded, "Noded");
+      lwgeom_free(set1);
+      LWDEBUGF(1, "Unioning noded, with srid=%d "
+                  "and set2, with srid=%d", noded->srid, set2->srid);
+      set1 = lwgeom_union(noded, set2);
+      lwgeom_free(set2);
+      lwgeom_free(noded);
+      noded = set1;
+      LWDEBUGG(1, set1, "Unioned");
+
+      /* will not release the geoms array */
+      lwcollection_release(col);
+    }}
+    lwfree(nearby);
+    _lwt_release_edges(edges, num);
+  }}
+
+  /* 2.1. Node with existing nodes within tol
+   * TODO: check if we should be only considering _isolated_ nodes! */
+  nodes = lwt_be_getNodeWithinBox2D( topo, &qbox, &num, LWT_COL_EDGE_ALL, 0 );
+  if ( num == -1 )
+  {
+    lwgeom_free(noded);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return NULL;
+  }
+  LWDEBUGF(1, "Line bbox intersects %d nodes bboxes", num);
+  if ( num )
+  {{
+    /* collect those whose distance from us is < tol */
+    LWGEOM **nearby = lwalloc(sizeof(LWGEOM *)*num);
+    int nn=0;
+    for (i=0; i<num; ++i)
+    {
+      LWT_ISO_NODE *n = &(nodes[i]);
+      LWGEOM *g = lwpoint_as_lwgeom(n->geom);
+      double dist = lwgeom_mindistance2d(g, noded);
+      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      nearby[nn++] = g;
+    }
+    if ( nn )
+    {{
+      LWCOLLECTION *col;
+      LWGEOM *inodes; /* just an alias for col */
+      LWGEOM *tmp;
+
+      LWDEBUGF(1, "Line intersects %d nodes", nn);
+
+      col = lwcollection_construct(MULTIPOINTTYPE, topo->srid,
+                                   NULL, nn, nearby);
+      inodes = lwcollection_as_lwgeom(col);
+
+      LWDEBUGG(1, inodes, "Collected nodes");
+
+      /* TODO: consider snapping once against all elements
+       *      (rather than once with edges and once with nodes) */
+      tmp = lwgeom_snap(noded, inodes, tol);
+      lwgeom_free(noded);
+      noded = tmp;
+      LWDEBUGG(1, noded, "Node-snapped");
+
+      tmp = _lwt_split_by_nodes(noded, inodes);
+          /* lwgeom_split(noded, inodes); */
+      lwgeom_free(noded);
+      noded = tmp;
+      LWDEBUGG(1, noded, "Node-splitted");
+
+      /* will not release the geoms array */
+      lwcollection_release(col);
+
+      /*
+      -- re-node to account for ST_Snap introduced self-intersections
+      -- See http://trac.osgeo.org/postgis/ticket/1714
+      -- TODO: consider running UnaryUnion once after all noding
+      */
+      tmp = lwgeom_unaryunion(noded);
+      lwgeom_free(noded);
+      noded = tmp;
+      LWDEBUGG(1, noded, "Unary-unioned");
+
+    }}
+    lwfree(nearby);
+    _lwt_release_nodes(nodes, num);
+  }}
+
+  LWDEBUG(1, "XXX");
+  { size_t sz;
+  lwnotice("%s", lwgeom_to_wkt(noded, WKT_ISO, 15, &sz)); }
+  LWDEBUGG(1, noded, "Finally-noded");
+
+  /* 3. For each (now-noded) segment, insert an edge */
+  col = lwgeom_as_lwcollection(noded);
+  if ( col )
+  {
+    LWDEBUG(1, "Noded line was a collection");
+    geoms = col->geoms;
+    ngeoms = col->ngeoms;
+  }
+  else
+  {
+    LWDEBUG(1, "Noded line was a single geom");
+    geomsbuf[0] = noded;
+    geoms = geomsbuf;
+    ngeoms = 1;
+  }
+
+  LWDEBUGF(1, "Line was splitted into %d edges", ngeoms);
+
+  /* TODO: refactor to first add all nodes (re-snapping edges if
+   * needed) and then check all edges for existing already
+   * ( so to save a DB scan for each edge to be added )
+   */
+  ids = lwalloc(sizeof(LWT_ELEMID)*ngeoms);
+  num = 0;
+  for ( i=0; i<ngeoms; ++i )
+  {
+    LWT_ELEMID id;
+    LWGEOM *g = geoms[i];
+
+#if POSTGIS_DEBUG_LEVEL > 0
+    {
+      size_t sz;
+      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+      LWDEBUGF(1, "Component %d of split line is: %s", i, wkt1);
+      lwfree(wkt1);
+    }
+#endif
+
+    id = _lwt_AddLineEdge( topo, lwgeom_as_lwline(g), tol );
+    LWDEBUGF(1, "_lwt_AddLineEdge returned %" LWTFMT_ELEMID, id);
+    if ( id < 0 )
+    {
+      lwgeom_free(noded);
+      lwfree(ids);
+      return NULL;
+    }
+    if ( ! id )
+    {
+      LWDEBUGF(1, "Component %d of split line collapsed", i);
+      continue;
+    }
+
+    LWDEBUGF(1, "Component %d of split line is edge %" LWTFMT_ELEMID,
+                  i, id);
+    ids[num++] = id; /* TODO: skip duplicates */
+  }
+
+  LWDEBUG(1, "YYY");
+  { size_t sz;
+  lwnotice("%s", lwgeom_to_wkt(noded, WKT_ISO, 15, &sz)); }
+  LWDEBUGG(1, noded, "Noded before free");
+  lwgeom_release(noded); /* for some reason freeing this here errors out */
+
+  /* TODO: XXX remove duplicated ids if not done before */
+
+  *nedges = num;
+  return ids;
 }
 
 LWT_ELEMID*
