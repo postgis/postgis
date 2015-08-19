@@ -81,10 +81,10 @@ fi
 
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
-	export CGAL_VER=4.2
-	BOOST_VER=1.53.0
-	#BOOST_VER_WU=1_49_0
-	export BOOST_VER_WU=1_53_0
+	export CGAL_VER=4.6.1
+	BOOST_VER=1.59.0
+	
+	export BOOST_VER_WU=1_59_0
 	export PATH="${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/boost/rel-${BOOST_VER_WU}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
 	
 	#this is a major cludge but only building with pcre support if SFCGAL is built - can't figure out how to do this without passing PCRE

@@ -131,9 +131,9 @@ fi;
 
 if [ -n "$SFCGAL_VER"  ]; then
 	## only copy cgal and sfcgal stuff if sfcgal is packaged
-	export CGAL_VER=4.2
-	export BOOST_VER=1.53.0
-	export BOOST_VER_WU=1_53_0
+	export CGAL_VER=4.6.1
+	export BOOST_VER=1.59.0
+	export BOOST_VER_WU=1_59_0
 	export GMP_VER=5.1.2
 	export MPFR_VER=3.1.2
 	echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
@@ -189,7 +189,13 @@ cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
 echo "GEOS VERSION: ${GEOS_VER} http://trac.osgeo.org/geos" >> $verfile
 echo "GDAL VERSION: ${GDAL_VER} http://trac.osgeo.org/gdal" >> $verfile
 echo "PROJ VERSION: ${PROJ_VER} http://trac.osgeo.org/proj" >> $verfile
-echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
+
+if [ -n "$SFCGAL_VER"  ]; then
+    echo "CGAL VERSION: ${CGAL_VER} http://www.cgal.org" >> $verfile
+    echo "BOOST VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
+    echo "SFCGAL VERSION: ${SFCGAL_VER} http://www.sfcgal.org https://github.com/Oslandia/SFCGAL" >> $verfile
+fi;
+#echo "PAGC ADDRESS STANDARDIZER: http://sourceforge.net/p/pagc/code/HEAD/tree/branches/sew-refactor/postgresql " >> $verfile
 cd ${RELDIR}
 zip -r $package ${RELVERDIR}
 #scp $package robe@www.refractions.net:${DWN}/${REL_PGVER}/buildbot/${RELVERDIR}.zip
