@@ -3815,6 +3815,8 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2353, 2,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2351, 2, 'SQUARE', 'SQ', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2418, 2, 'STN', 'STA', 24, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2935, 2, 'NORTHWEST', 'NW', 22, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2936, 2, 'NORTH', 'NORTH', 1, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2937, 2, 'SOUTH', 'SOUTH', 1, false);
 
 
 SELECT pg_catalog.setval('pagc_lex_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_lex),50000)), true);
@@ -5503,7 +5505,7 @@ INSERT INTO pagc_rules (id, rule) VALUES (1678, '0 2 1 22 -1 1 4 5 7 -1 1 11');
 INSERT INTO pagc_rules (id, rule) VALUES (1679, '0 2 5 -1 1 4 5 -1 1 11');
 INSERT INTO pagc_rules (id, rule) VALUES (1680, '0 2 5 22 -1 1 4 5 7 -1 1 11');
 INSERT INTO pagc_rules (id, rule) VALUES (1681, '0 22 1 -1 1 2 5 -1 1 7');
-INSERT INTO pagc_rules (id, rule) VALUES (1682, '0 22 1 2 -1 1 2 5 6 -1 1 16');
+INSERT INTO pagc_rules (id, rule) VALUES (1682, '0 22 1 2 -1 1 2 5 6 -1 1 17');
 INSERT INTO pagc_rules (id, rule) VALUES (1683, '0 22 5 -1 1 2 5 -1 1 7');
 INSERT INTO pagc_rules (id, rule) VALUES (1684, '0 22 5 2 -1 1 2 5 6 -1 1 16');
 INSERT INTO pagc_rules (id, rule) VALUES (1685, '0 22 2 1 -1 1 2 4 5 -1 1 11');
