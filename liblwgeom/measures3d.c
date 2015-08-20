@@ -689,12 +689,12 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	double a, b, c, d, e, D;
 			
 	/*s1p1 and s1p2 are the same point */
-	if (  ( s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->y) )
+	if (  ( s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->z) )
 	{
 		return lw_dist3d_pt_seg(s1p1,s2p1,s2p2,dl);
 	}
 	/*s2p1 and s2p2 are the same point */
-	if (  ( s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->y) )
+	if (  ( s2p1->x == s2p2->x) && (s2p1->y == s2p2->y) && (s2p1->z == s2p2->z) )
 	{
 		dl->twisted= ((dl->twisted) * (-1));
 		return lw_dist3d_pt_seg(s2p1,s1p1,s1p2,dl);
