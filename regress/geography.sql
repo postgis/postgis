@@ -97,10 +97,10 @@ SELECT
 '#2422' as ticket, gid, radius,
 _ST_DWithin(geog, tgeog, radius, true) AS dwithin_t, 
 _ST_DWithin(geog, tgeog, radius, false) AS dwithin_f, 
-ST_Distance(geog, tgeog, true) AS distance_t, 
-ST_Distance(geog, tgeog, false) AS distance_f, 
-_ST_DistanceUnCached(geog, tgeog) AS distance_uncached, 
-_ST_DistanceTree(geog, tgeog) AS distance_tree
+round(ST_Distance(geog, tgeog, true)::numeric,3) AS distance_t, 
+round(ST_Distance(geog, tgeog, false)::numeric,3) AS distance_f, 
+round(_ST_DistanceUnCached(geog, tgeog)::numeric,3) AS distance_uncached, 
+round(_ST_DistanceTree(geog, tgeog)::numeric,3) AS distance_tree
 FROM dwithgeogbug 
 CROSS JOIN ST_GeogFromText('POINT(-69.83262 43.43636)') AS tgeog
 CROSS JOIN (VALUES (1609),(1600),(1068)) AS t (radius)
