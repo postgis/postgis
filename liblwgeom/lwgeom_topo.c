@@ -3493,7 +3493,7 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
   n = lwt_be_deleteNodesById( topo, &nid, n );
   if ( n == -1 )
   {
-    lwerror("SQL/MM Spatial exception - not isolated node");
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if ( n != 1 )
@@ -3504,6 +3504,84 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
 
   /* TODO: notify to caller about node being removed ?
    * See https://trac.osgeo.org/postgis/ticket/3231
+   */
+
+  return 0; /* success */
+}
+
+int
+lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
+{
+  LWT_ISO_EDGE deledge;
+  LWT_ISO_EDGE *edge;
+  LWT_ELEMID nid[2];
+  int n = 1;
+  int i;
+
+  edge = lwt_be_getEdgeById( topo, &id, &n, LWT_COL_EDGE_START_NODE|
+                                            LWT_COL_EDGE_END_NODE |
+                                            LWT_COL_EDGE_FACE_LEFT |
+                                            LWT_COL_EDGE_FACE_RIGHT );
+  if ( ! edge )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( ! n )
+  {
+    lwerror("SQL/MM Spatial exception - non-existent edge");
+    return -1;
+  }
+  if ( n > 1 )
+  {
+    lwfree(edge);
+    lwerror("Corrupted topology: more than a single edge have id %"
+            LWTFMT_ELEMID, id);
+    return -1;
+  }
+
+  if ( edge[0].face_left != edge[0].face_right )
+  {
+    lwfree(edge);
+    lwerror("SQL/MM Spatial exception - not isolated edge");
+    return -1;
+  }
+
+  nid[0] = edge[0].start_node;
+  nid[1] = edge[0].end_node;
+  lwfree(edge);
+
+  n = 2;
+  edge = lwt_be_getEdgeByNode( topo, nid, &n, LWT_COL_EDGE_EDGE_ID );
+  if ( n == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  for ( i=0; i<n; ++i )
+  {
+    if ( edge[i].edge_id == id ) continue;
+    lwfree(edge);
+    lwerror("SQL/MM Spatial exception - not isolated edge");
+    return -1;
+  }
+  if ( edge ) lwfree(edge);
+
+  deledge.edge_id = id;
+  n = lwt_be_deleteEdges( topo, &deledge, LWT_COL_EDGE_EDGE_ID );
+  if ( n == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return -1;
+  }
+  if ( n != 1 )
+  {
+    lwerror("Unexpected error: %d edges deleted when expecting 1", n);
+    return -1;
+  }
+
+  /* TODO: notify to caller about edge being removed ?
+   * See https://trac.osgeo.org/postgis/ticket/3248
    */
 
   return 0; /* success */

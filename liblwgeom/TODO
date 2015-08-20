@@ -16,6 +16,7 @@ lwt_GetFaceGeometry   X
 lwt_GetFaceEdges      X
 lwt_ChangeEdgeGeom    X
 lwt_RemoveIsoNode     X
+lwt_RemoveIsoEdge     X
 lwt_MoveIsoNode       X
 lwt_RemEdgeModFace    X
 lwt_RemEdgeNewFace    X

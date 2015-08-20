@@ -1113,12 +1113,25 @@ int lwt_MoveIsoNode(LWT_TOPOLOGY* topo,
  * For ST_RemoveIsoNode
  *
  * @param topo the topology to operate on
- * @param node the identifier of the nod to be moved
+ * @param node the identifier of the node to be moved
  * @return 0 on success, -1 on error
  *         (liblwgeom error handler will be invoked with error message)
  *
  */
 int lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID node);
+
+/**
+ * Remove an isolated edge
+ *
+ * For ST_RemIsoEdge
+ *
+ * @param topo the topology to operate on
+ * @param edge the identifier of the edge to be moved
+ * @return 0 on success, -1 on error
+ *         (liblwgeom error handler will be invoked with error message)
+ *
+ */
+int lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID edge);
 
 /**
  * Add an isolated edge connecting two existing isolated nodes

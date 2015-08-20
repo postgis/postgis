@@ -3548,6 +3548,67 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
   PG_RETURN_TEXT_P(cstring2text(buf));
 }
 
+/*  ST_RemIsoEdge(atopology, anedge) */
+Datum ST_RemIsoEdge(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_RemIsoEdge);
+Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char buf[64];
+  char* toponame;
+  int ret;
+  LWT_ELEMID node_id;
+  LWT_TOPOLOGY *topo;
+
+  if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) ) {
+    lwpgerror("SQL/MM Spatial exception - null argument");
+    PG_RETURN_NULL();
+  }
+
+  toponame_text = PG_GETARG_TEXT_P(0);
+  toponame = text2cstring(toponame_text);
+	PG_FREE_IF_COPY(toponame_text, 0);
+
+  node_id = PG_GETARG_INT32(1) ;
+
+  if ( SPI_OK_CONNECT != SPI_connect() ) {
+    lwpgerror("Could not connect to SPI");
+    PG_RETURN_NULL();
+  }
+  be_data.data_changed = false;
+
+  topo = lwt_LoadTopology(be_iface, toponame);
+  pfree(toponame);
+  if ( ! topo ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  POSTGIS_DEBUG(1, "Calling lwt_RemIsoEdge");
+  ret = lwt_RemIsoEdge(topo, node_id);
+  POSTGIS_DEBUG(1, "lwt_RemIsoEdge returned");
+  lwt_FreeTopology(topo);
+
+  if ( ret == -1 ) {
+    /* should never reach this point, as lwerror would raise an exception */
+    SPI_finish();
+    PG_RETURN_NULL();
+  }
+
+  /* TODO: check if any TopoGeometry exists including this point in
+   * its definition ! */
+
+  SPI_finish();
+
+  if ( snprintf(buf, 64, "Isolated edge " INT64_FORMAT
+                         " removed", node_id) >= 64 )
+  {
+    buf[63] = '\0';
+  }
+  PG_RETURN_TEXT_P(cstring2text(buf));
+}
+
 /*  ST_MoveIsoNode(atopology, anode, apoint) */
 Datum ST_MoveIsoNode(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MoveIsoNode);
