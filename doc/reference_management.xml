@@ -837,7 +837,7 @@ GDAL="GDAL 1.11.0, released 2014/04/16" LIBXML="2.7.8" LIBJSON="0.12" RASTER
 
 		<para>Ensures geometry columns have appropriate type modifiers or spatial constraints to ensure they are registered correctly in <varname>geometry_columns</varname> table.</para>
 		
-		<para>For backwards compatibility and for spatial needs such as tble inheritance where each child table may have different geometry type, the old check constraint behavior is still supported. 
+		<para>For backwards compatibility and for spatial needs such as table inheritance where each child table may have different geometry type, the old check constraint behavior is still supported. 
 		If you need the old behavior, you need to pass in the new optional argument as false <varname>use_typmod=false</varname>. When this is done geometry columns will be created with no type modifiers
 		but will have 3 constraints defined.  In particular,
 		this means that every geometry column belonging to a table has at least
