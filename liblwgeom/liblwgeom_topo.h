@@ -416,7 +416,7 @@ typedef struct LWT_BE_CALLBACKS_T {
   );
 
   /**
-   * Get nodes within a 2D bounding box
+   * Get edges whose bounding box overlaps a given 2D bounding box
    *
    * @param topo the topology to act upon
    * @param box the query box
@@ -441,7 +441,7 @@ typedef struct LWT_BE_CALLBACKS_T {
   );
 
   /**
-   * Get edges within a 2D bounding box
+   * Get edges whose bounding box overlaps a given 2D bounding box
    *
    * @param topo the topology to act upon
    * @param box the query box
@@ -817,6 +817,32 @@ typedef struct LWT_BE_CALLBACKS_T {
       const LWT_BE_TOPOLOGY* topo,
       LWT_ELEMID edge1, LWT_ELEMID edge2, LWT_ELEMID newedge
   );
+
+  /**
+   * Get faces whose bounding box overlaps a given 2D bounding box
+   *
+   * @param topo the topology to act upon
+   * @param box the query box
+   * @param numelems output parameter, gets number of elements found
+   *                 if the return is not null, otherwise see @return
+   *                 section for semantic.
+   * @param fields fields to be filled in the returned structure, see
+   *               LWT_COL_FACE_* macros
+   * @param limit max number of faces to return, 0 for no limit, -1
+   *              to only check for existance if a matching row.
+   *
+   * @return an array of faces or null in the following cases:
+   *         - limit=-1 ("numelems" is set to 1 if found, 0 otherwise)
+   *         - limit>0 and no records found ("numelems" is set to 0)
+   *         - error ("numelems" is set to -1)
+   *
+   */
+  LWT_ISO_FACE* (*getFaceWithinBox2D) (
+      const LWT_BE_TOPOLOGY* topo,
+      const GBOX* box,
+      int* numelems, int fields, int limit
+  );
+
 } LWT_BE_CALLBACKS;
 
 

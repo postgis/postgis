@@ -679,7 +679,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 -- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
 	RETURNS SETOF int AS
-	'MODULE_PATHNAME', 'TopoGeo_AddLine'
+	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;
 --} TopoGeo_addLinestring
 
@@ -691,60 +691,8 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, ali
 -- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
 	RETURNS SETOF int AS
-$$
-DECLARE
-  boundary GEOMETRY;
-  fgeom GEOMETRY;
-  rec RECORD;
-  edges INTEGER[];
-  sql TEXT;
-  tol FLOAT8;
-BEGIN
-
-  -- 0. Check arguments
-  IF geometrytype(apoly) != 'POLYGON' THEN
-    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPolygon, expected POLYGON', geometrytype(apoly);
-  END IF;
-
-  -- Get tolerance, if 0 was given
-  tol := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, apoly) );
-
-  -- 1. Extract boundary
-  boundary := ST_Boundary(apoly);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Boundary: %', ST_AsText(boundary);
-#endif
-
-  -- 2. Add boundaries as edges
-  FOR rec IN SELECT (ST_Dump(boundary)).geom LOOP
-    edges := array_cat(edges, array_agg(x)) FROM ( select topology.TopoGeo_addLinestring(atopology, rec.geom, tol) as x ) as foo;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'New edges: %', edges;
-#endif
-  END LOOP;
-
-  -- 3. Find faces covered by input polygon
-  --    NOTE: potential snapping changed polygon edges
-  sql := 'SELECT f.face_id FROM ' || quote_ident(atopology)
-    || '.face f WHERE f.mbr && $1';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG '%', sql;
-#endif
-  FOR rec IN EXECUTE sql USING apoly LOOP
-    -- check for actual containment
-    fgeom := ST_PointOnSurface(topology.ST_GetFaceGeometry(atopology, rec.face_id));
-    IF NOT ST_Covers(apoly, fgeom) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'Face % not covered by input polygon', rec.face_id;
-#endif
-      CONTINUE;
-    END IF;
-    RETURN NEXT rec.face_id;
-  END LOOP;
-
-END
-$$
-LANGUAGE 'plpgsql';
+	'MODULE_PATHNAME', 'TopoGeo_AddPolygon'
+  LANGUAGE 'c' VOLATILE;
 --} TopoGeo_AddPolygon
 
 --{

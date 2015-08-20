@@ -170,7 +170,7 @@ lwt_be_getNodeWithinDistance2D(LWT_TOPOLOGY* topo, LWPOINT* pt,
   CBT5(topo, getNodeWithinDistance2D, pt, dist, numelems, fields, limit);
 }
 
-LWT_ISO_NODE*
+static LWT_ISO_NODE*
 lwt_be_getNodeWithinBox2D( const LWT_TOPOLOGY* topo,
                            const GBOX* box, int* numelems, int fields,
                            int limit )
@@ -178,12 +178,20 @@ lwt_be_getNodeWithinBox2D( const LWT_TOPOLOGY* topo,
   CBT4(topo, getNodeWithinBox2D, box, numelems, fields, limit);
 }
 
-LWT_ISO_EDGE*
+static LWT_ISO_EDGE*
 lwt_be_getEdgeWithinBox2D( const LWT_TOPOLOGY* topo,
                            const GBOX* box, int* numelems, int fields,
                            int limit )
 {
   CBT4(topo, getEdgeWithinBox2D, box, numelems, fields, limit);
+}
+
+static LWT_ISO_FACE*
+lwt_be_getFaceWithinBox2D( const LWT_TOPOLOGY* topo,
+                           const GBOX* box, int* numelems, int fields,
+                           int limit )
+{
+  CBT4(topo, getFaceWithinBox2D, box, numelems, fields, limit);
 }
 
 int
@@ -5353,9 +5361,136 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 }
 
 LWT_ELEMID*
-lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* point, double tol, int* nfaces)
+lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
 {
-  *nfaces = -1;
-  lwerror("Not implemented yet");
-  return NULL;
+  int i;
+  *nfaces = -1; /* error condition, by default */
+  int num;
+  LWT_ISO_FACE *faces;
+  int nfacesinbox;
+  LWT_ELEMID *ids = NULL;
+  GBOX qbox;
+  const GEOSPreparedGeometry *ppoly;
+  GEOSGeometry *polyg;
+
+  /* Get tolerance, if 0 was given */
+  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
+  LWDEBUGF(1, "Working tolerance:%.15g", tol);
+
+  /* Add each ring as an edge */
+  for ( i=0; i<poly->nrings; ++i )
+  {
+    LWLINE *line;
+    POINTARRAY *pa;
+    LWT_ELEMID *eids;
+    int nedges;
+
+    pa = ptarray_clone(poly->rings[i]);
+    line = lwline_construct(topo->srid, NULL, pa);
+    eids = lwt_AddLine( topo, line, tol, &nedges );
+    if ( nedges < 0 ) {
+      /* probably too late as lwt_AddLine invoked lwerror */
+      lwline_free(line);
+      lwerror("Error adding ring %d of polygon", i);
+      return NULL;
+    }
+    lwline_free(line);
+    lwfree(eids);
+  }
+
+  /*
+  -- Find faces covered by input polygon
+  -- NOTE: potential snapping changed polygon edges
+  */
+  qbox = *lwgeom_get_bbox( lwpoly_as_lwgeom(poly) );
+  gbox_expand(&qbox, tol);
+  faces = lwt_be_getFaceWithinBox2D( topo, &qbox, &nfacesinbox,
+                                     LWT_COL_FACE_ALL, 0 );
+  if ( nfacesinbox == -1 )
+  {
+    lwfree(ids);
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
+    return NULL;
+  }
+
+  num = 0;
+  if ( nfacesinbox )
+  {
+    polyg = LWGEOM2GEOS(lwpoly_as_lwgeom(poly), 0);
+    if ( ! polyg )
+    {
+      _lwt_release_faces(faces, nfacesinbox);
+      lwerror("Could not convert poly geometry to GEOS: %s", lwgeom_geos_errmsg);
+      return NULL;
+    }
+    ppoly = GEOSPrepare(polyg);
+    ids = lwalloc(sizeof(LWT_ELEMID)*nfacesinbox);
+    for ( i=0; i<nfacesinbox; ++i )
+    {
+      LWT_ISO_FACE *f = &(faces[i]);
+      LWGEOM *fg;
+      GEOSGeometry *fgg, *sp;
+      int covers;
+
+      /* check if a point on this face surface is covered by our polygon */
+      fg = lwt_GetFaceGeometry( topo, f->face_id );
+      if ( ! fg )
+      {
+        GEOSPreparedGeom_destroy(ppoly);
+        GEOSGeom_destroy(polyg);
+        lwfree(ids);
+        _lwt_release_faces(faces, nfacesinbox);
+        lwerror("Could not get geometry of face %" LWTFMT_ELEMID,
+                f->face_id);
+        return NULL;
+      }
+      /* check if a point on this face's surface is covered by our polygon */
+      fgg = LWGEOM2GEOS(fg, 0);
+      lwgeom_free(fg);
+      if ( ! fgg )
+      {
+        GEOSPreparedGeom_destroy(ppoly);
+        GEOSGeom_destroy(polyg);
+        _lwt_release_faces(faces, nfacesinbox);
+        lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      sp = GEOSPointOnSurface(fgg);
+      GEOSGeom_destroy(fgg);
+      if ( ! sp )
+      {
+        GEOSPreparedGeom_destroy(ppoly);
+        GEOSGeom_destroy(polyg);
+        _lwt_release_faces(faces, nfacesinbox);
+        lwerror("Could not find point on face surface: %s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      covers = GEOSPreparedCovers( ppoly, sp );
+      GEOSGeom_destroy(sp);
+      if (covers == 2)
+      {
+        GEOSPreparedGeom_destroy(ppoly);
+        GEOSGeom_destroy(polyg);
+        _lwt_release_faces(faces, nfacesinbox);
+        lwerror("PreparedCovers error: %s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      if ( ! covers )
+      {
+        continue; /* we're not composed by this face */
+      }
+
+      /* TODO: avoid duplicates ? */
+      ids[num++] = f->face_id;
+    }
+    GEOSPreparedGeom_destroy(ppoly);
+    GEOSGeom_destroy(polyg);
+    _lwt_release_faces(faces, nfacesinbox);
+  }
+
+  /* possibly 0 if non face's surface point was found
+   * to be covered by input polygon */
+  *nfaces = num;
+
+  return ids;
 }
