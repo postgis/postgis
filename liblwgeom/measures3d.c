@@ -16,7 +16,6 @@
 #include "measures3d.h"
 #include "lwgeom_log.h"
 
-#define LINE_LIMIT (float) (1<< 31)
 
 static inline int
 get_3dvector_from_points(POINT3DZ *p1,POINT3DZ *p2, VECTOR3D *v)
@@ -38,6 +37,27 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 	return LW_TRUE;
 }
 
+/**
+This function is used to create a vertical line used for cases where one if the 
+geometries lacks z-values. The vertical line crosses the 2d point that is closest 
+and the z-range is from maxz to minz in the geoemtrie that has z values.
+*/
+static 
+LWGEOM* create_v_line(const LWGEOM *lwgeom,double x, double y, int srid)
+{
+	
+	LWPOINT *lwpoints[2];
+	GBOX gbox;
+	int rv = lwgeom_calculate_gbox(lwgeom, &gbox);
+	
+	if ( rv == LW_FAILURE )
+		return NULL;
+	
+	lwpoints[0] = lwpoint_make3dz(srid, x, y, gbox.zmin);
+	lwpoints[1] = lwpoint_make3dz(srid, x, y, gbox.zmax);
+	
+	 return (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
+}
 
 LWGEOM * 
 lwgeom_closest_line_3d(const LWGEOM *lw1, const LWGEOM *lw2)
@@ -65,7 +85,7 @@ LWGEOM *
 lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 {
 	LWDEBUG(2, "lw_dist3d_distanceline is called");
-	double x1,x2,y1,y2, z1, z2;
+	double x1,x2,y1,y2, z1, z2, x, y;
 	double initdistance = ( mode == DIST_MIN ? FLT_MAX : -1.0);
 	DISTPTS3D thedl;
 	LWPOINT *lwpoints[2];
@@ -95,40 +115,38 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 			lwerror("Some unspecified error.");
 			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
-		
+		LWGEOM *vertical_line;
 		if(!lwgeom_has_z(lw1))
 		{
-			LWGEOM *new_lw1;
-			x1=thedl2d.p1.x;
-			y1=thedl2d.p1.y;
-			lwpoints[0] = lwpoint_make3dz(srid, x1, y1, LINE_LIMIT * (-1));
-			lwpoints[1] = lwpoint_make3dz(srid, x1, y1, LINE_LIMIT);
-			
-			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
-			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
+			x=thedl2d.p1.x;
+			y=thedl2d.p1.y;
+
+			vertical_line = create_v_line(lw2,x,y,srid);
+			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl))
 			{
 				/*should never get here. all cases ought to be error handled earlier*/
+				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
 				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 			}			
+			lwfree(vertical_line);	
 		}	
 		if(!lwgeom_has_z(lw2))
 		{
-			LWGEOM *new_lw2;
-			x2=thedl2d.p2.x;
-			y2=thedl2d.p2.y;			
-			lwpoints[0] = lwpoint_make3dz(srid, x2, y2, LINE_LIMIT * (-1));
-			lwpoints[1] = lwpoint_make3dz(srid, x2, y2, LINE_LIMIT);
+			x=thedl2d.p2.x;
+			y=thedl2d.p2.y;			
 			
-			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);	
-			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
+			vertical_line = create_v_line(lw1,x,y,srid);
+			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl))
 			{
 				/*should never get here. all cases ought to be error handled earlier*/
+				lwfree(vertical_line);
 				lwerror("Some unspecified error.");
-				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-			}						
+				return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}	
+			lwfree(vertical_line);		
 		}			
-		
+				
 	}
 	else
 	{		
@@ -201,45 +219,40 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 		{
 			/*should never get here. all cases ought to be error handled earlier*/
 			lwerror("Some unspecified error.");
-			result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
 		}
 		
+		LWGEOM *vertical_line;
 		if(!lwgeom_has_z(lw1))
 		{
-			LWPOINT *lwpoints[2];
-			LWGEOM *new_lw1;
 			x=thedl2d.p1.x;
 			y=thedl2d.p1.y;
-
-			lwpoints[0] = lwpoint_make3dz(srid, x, y, LINE_LIMIT * (-1));
-			lwpoints[1] = lwpoint_make3dz(srid, x, y, LINE_LIMIT);
 			
-			new_lw1 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
-			if (!lw_dist3d_recursive(new_lw1, lw2, &thedl))
+			vertical_line = create_v_line(lw2,x,y,srid);	
+			if (!lw_dist3d_recursive(vertical_line, lw2, &thedl))
 			{
 				/*should never get here. all cases ought to be error handled earlier*/
+				lwfree(vertical_line);	
 				lwerror("Some unspecified error.");
-				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-			}			
+				return (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
+			}		
+			lwfree(vertical_line);		
 		}	
 				
 		if(!lwgeom_has_z(lw2))
 		{
-			LWPOINT *lwpoints[2];
-			LWGEOM *new_lw2;
 			x=thedl2d.p2.x;
 			y=thedl2d.p2.y;
 
-			lwpoints[0] = lwpoint_make3dz(srid, x, y, LINE_LIMIT * (-1));
-			lwpoints[1] = lwpoint_make3dz(srid, x, y, LINE_LIMIT);
-			
-			new_lw2 = (LWGEOM *)lwline_from_ptarray(srid, 2, lwpoints);		
-			if (!lw_dist3d_recursive(lw1, new_lw2, &thedl))
+			vertical_line = create_v_line(lw1,x,y,srid);
+			if (!lw_dist3d_recursive(lw1, vertical_line, &thedl))
 			{
 				/*should never get here. all cases ought to be error handled earlier*/
+				lwfree(vertical_line);	
 				lwerror("Some unspecified error.");
 				result = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, srid, 0, 0);
-			}			
+			}	
+			lwfree(vertical_line);			
 		}	
 		
 	}
