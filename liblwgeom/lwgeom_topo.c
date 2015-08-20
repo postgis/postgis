@@ -4138,7 +4138,11 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
             buf[254] = '.';
             buf[255] = '\0';
           }
-          else bufleft -= r;
+          else
+          {
+            bufleft -= r;
+            ptr += r;
+          }
         }
       }
       if ( num_node_edges ) lwfree(node_edges);
