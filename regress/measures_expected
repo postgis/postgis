@@ -47,6 +47,10 @@ NOTICE:  One or both of the geometries is missing z-value. The unknown z-value w
 1
 NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
 1
+NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
+POINT Z (0 0 0)
+NOTICE:  One or both of the geometries is missing z-value. The unknown z-value will be regarded as "any value"
+LINESTRING Z (2 1 -1,1.5 1.5 -1)
 emptyPolyArea|0
 emptyLineArea|0
 emptyPointArea|0

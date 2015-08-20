@@ -258,7 +258,8 @@ select st_3ddistance('linestring(0 0,1 1,2 0)'::geometry, 'linestring(0 2 3, 3 2
 --distance with 3d as first point and 2d as second
 select st_3ddistance('linestring(0 0 1,1 1 2,2 0 3)'::geometry, 'linestring(0 2, 3 2)'::geometry);
 
-
+select ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));
+select ST_AsText(ST_3DShortestLine('LINESTRING(2 1, 3 0)', 'LINESTRING(0 0 2, 3 3 -4)'));
 
 
 -- Area of an empty polygon
