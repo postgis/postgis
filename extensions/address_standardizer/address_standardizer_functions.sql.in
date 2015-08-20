@@ -1,30 +1,7 @@
--- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "CREATE EXTENSION address_standardizer" to load this file. \quit
-
 ---------------------------------------------------------------------
 -- Core function to access the PAGC address standardizer
 -- Author: Stephen Woodbridge <woodbri@imaptools.com>
 ---------------------------------------------------------------------
-
-DROP TYPE IF EXISTS stdaddr;
-CREATE TYPE stdaddr AS (
-    building text,
-    house_num text,
-    predir text,
-    qual text,
-    pretype text,
-    name text,
-    suftype text,
-    sufdir text,
-    ruralroute text,
-    extra text,
-    city text,
-    state text,
-    country text,
-    postcode text,
-    box text,
-    unit text
-);
 
 CREATE OR REPLACE FUNCTION standardize_address(
         lextab text,

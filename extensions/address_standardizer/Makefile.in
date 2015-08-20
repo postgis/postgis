@@ -35,7 +35,8 @@ MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
 DATA = address_standardizer_data_us.control us_lex.sql us_gaz.sql us_rules.sql
-DATA_built = sql/address_standardizer.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql   sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql
+DATA_built = sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql   sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql
+
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
@@ -58,10 +59,25 @@ sql/%.sql: %.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}-${MINORVERSION}'g" > $@
 	
-sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer.sql
+sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
+    sql/address_standardizer_functions.sql
+	cat $^ > $@
+	
+sql/address_standardizer.sql: sql/address_standardizer_types.sql \
+    sql/address_standardizer_functions.sql
+	cat $^ > $@
+	
+sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_functions.sql
+	cat $^ > $@
+	
+# upgrade logic for us data extension (to go to next cludge for dev upgrading)
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/address_standardizer_functions.sql
 	cat $^ > $@
 
-
+# upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
+	cat $^ > $@		
+	
 # build us data extension
 sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
 	mkdir -p sql
