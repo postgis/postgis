@@ -38,6 +38,12 @@
 
 #define ABS(x) (x<0?-x:x)
 
+#ifdef WIN32
+# define LWTFMT_ELEMID "lld"
+#else
+# define LWTFMT_ELEMID PRId64
+#endif
+
 /*
  * This is required for builds against pgsql
  */
@@ -286,37 +292,37 @@ addEdgeValues(StringInfo str, const LWT_ISO_EDGE *edge, int fields, int fullEdge
   appendStringInfoChar(str, '(');
   if ( fields & LWT_COL_EDGE_EDGE_ID ) {
     if ( edge->edge_id != -1 )
-      appendStringInfo(str, "" INT64_FORMAT, edge->edge_id);
+      appendStringInfo(str, "%" LWTFMT_ELEMID, edge->edge_id);
     else
       appendStringInfoString(str, "DEFAULT");
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->start_node);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->start_node);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_END_NODE ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->end_node);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->end_node);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->face_left);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->face_left);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->face_right);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->face_right);
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->next_left);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->next_left);
     if ( fullEdgeData )
-      appendStringInfo(str, "," INT64_FORMAT, ABS(edge->next_left));
+      appendStringInfo(str, ",%" LWTFMT_ELEMID, ABS(edge->next_left));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
-    appendStringInfo(str, "%s" INT64_FORMAT, sep, edge->next_right);
+    appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, edge->next_right);
     if ( fullEdgeData )
-      appendStringInfo(str, "," INT64_FORMAT, ABS(edge->next_right));
+      appendStringInfo(str, ",%" LWTFMT_ELEMID, ABS(edge->next_right));
     sep = ",";
   }
   if ( fields & LWT_COL_EDGE_GEOM )
@@ -368,45 +374,45 @@ addEdgeUpdate(StringInfo str, const LWT_ISO_EDGE* edge, int fields,
 
   if ( fields & LWT_COL_EDGE_EDGE_ID ) {
     appendStringInfoString(str, "edge_id ");
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->edge_id);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->edge_id);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
     appendStringInfo(str, "%sstart_node ", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->start_node);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->start_node);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_END_NODE ) {
     appendStringInfo(str, "%send_node", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->end_node);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->end_node);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT ) {
     appendStringInfo(str, "%sleft_face", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->face_left);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->face_left);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
     appendStringInfo(str, "%sright_face", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->face_right);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->face_right);
     sep = sep1;
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
     appendStringInfo(str, "%snext_left_edge", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->next_left);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->next_left);
     sep = sep1;
     if ( fullEdgeData ) {
       appendStringInfo(str, "%s abs_next_left_edge", sep);
-      appendStringInfo(str, "%s " INT64_FORMAT, op, ABS(edge->next_left));
+      appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, ABS(edge->next_left));
     }
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
     appendStringInfo(str, "%snext_right_edge", sep);
-    appendStringInfo(str, "%s " INT64_FORMAT, op, edge->next_right);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, edge->next_right);
     sep = sep1;
     if ( fullEdgeData ) {
       appendStringInfo(str, "%s abs_next_right_edge", sep);
-      appendStringInfo(str, "%s " INT64_FORMAT, op, ABS(edge->next_right));
+      appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, ABS(edge->next_right));
     }
   }
   if ( fields & LWT_COL_EDGE_GEOM ) {
@@ -447,13 +453,13 @@ addNodeUpdate(StringInfo str, const LWT_ISO_NODE* node, int fields,
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
     appendStringInfoString(str, "node_id ");
-    appendStringInfo(str, "%s " INT64_FORMAT, op, node->node_id);
+    appendStringInfo(str, "%s %" LWTFMT_ELEMID, op, node->node_id);
     sep = sep1;
   }
   if ( fields & LWT_COL_NODE_CONTAINING_FACE ) {
     appendStringInfo(str, "%scontaining_face %s", sep, op);
     if ( node->containing_face != -1 ) {
-      appendStringInfo(str, "" INT64_FORMAT, node->containing_face);
+      appendStringInfo(str, "%" LWTFMT_ELEMID, node->containing_face);
     } else {
       appendStringInfoString(str, "null::int");
     }
@@ -513,7 +519,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
     if ( node->node_id != -1 )
-      appendStringInfo(str, "" INT64_FORMAT, node->node_id);
+      appendStringInfo(str, "%" LWTFMT_ELEMID, node->node_id);
     else
       appendStringInfoString(str, "DEFAULT");
     sep = ",";
@@ -521,7 +527,7 @@ addNodeValues(StringInfo str, const LWT_ISO_NODE *node, int fields)
 
   if ( fields & LWT_COL_NODE_CONTAINING_FACE ) {
     if ( node->containing_face != -1 )
-      appendStringInfo(str, "%s" INT64_FORMAT, sep, node->containing_face);
+      appendStringInfo(str, "%s%" LWTFMT_ELEMID, sep, node->containing_face);
     else appendStringInfo(str, "%snull::int", sep);
   }
 
@@ -544,7 +550,7 @@ static void
 addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
 {
   if ( face->face_id != -1 )
-    appendStringInfo(str, "(" INT64_FORMAT, face->face_id);
+    appendStringInfo(str, "(%" LWTFMT_ELEMID, face->face_id);
   else
     appendStringInfoString(str, "(DEFAULT");
 
@@ -780,7 +786,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE edge_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getEdgeById query: %s", sql->data);
@@ -828,12 +834,12 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE start_node IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ") OR end_node IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -883,12 +889,12 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE left_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ") OR right_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -937,7 +943,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE face_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -982,9 +988,9 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
 
   initStringInfo(sql);
   appendStringInfo(sql, "WITH RECURSIVE edgering AS ( "
-    "SELECT " INT64_FORMAT
+    "SELECT %" LWTFMT_ELEMID
     " as signed_edge_id, edge_id, next_left_edge, next_right_edge "
-    "FROM \"%s\".edge_data WHERE edge_id = " INT64_FORMAT " UNION "
+    "FROM \"%s\".edge_data WHERE edge_id = %" LWTFMT_ELEMID " UNION "
     "SELECT CASE WHEN "
     "p.signed_edge_id < 0 THEN p.next_right_edge ELSE p.next_left_edge END, "
     "e.edge_id, e.next_left_edge, e.next_right_edge "
@@ -1034,7 +1040,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
     }
     val = DatumGetInt32(dat);
     edges[i] = val;
-    POSTGIS_DEBUGF(1, "Component %d in ring of edge " INT64_FORMAT
+    POSTGIS_DEBUGF(1, "Component %d in ring of edge %" LWTFMT_ELEMID
                       " is edge %d", i, edge, val);
   }
 
@@ -1060,7 +1066,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE node_id IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getNodeById query: %s", sql->data);
@@ -1106,7 +1112,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, " WHERE containing_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
   POSTGIS_DEBUGF(1, "cb_getNodeByFace query: %s", sql->data);
@@ -1625,7 +1631,7 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
   for (i=0; i<numfaces; ++i) {
     const LWT_ISO_FACE* face = &(faces[i]);
     if ( i ) appendStringInfoChar(sql, ',');
-    appendStringInfo(sql, "(" INT64_FORMAT
+    appendStringInfo(sql, "(%" LWTFMT_ELEMID
       ", ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d))",
       face->face_id, face->mbr->xmin, face->mbr->ymin,
       face->mbr->xmax, face->mbr->ymax, topo->srid);
@@ -1827,7 +1833,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-    "AND abs(r.element_id) = " INT64_FORMAT " AND r.element_type = 2",
+    "AND abs(r.element_id) = %" LWTFMT_ELEMID " AND r.element_type = 2",
     topo->name, (new_edge2 == -1 ? "," : "USING" ), topo->id, split_edge );
   if ( new_edge2 != -1 ) {
     appendStringInfo(sql, " RETURNING %s", proj);
@@ -1892,7 +1898,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
     resetStringInfo(sql);
     appendStringInfo(sql,
       "INSERT INTO \"%s\".relation VALUES ("
-      "%d,%d," INT64_FORMAT ",%d)", topo->name,
+      "%d,%d,%" LWTFMT_ELEMID ",%d)", topo->name,
       topogeo_id, layer_id, negate ? -new_edge1 : new_edge1, element_type);
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -1906,7 +1912,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
       resetStringInfo(sql);
       appendStringInfo(sql,
         "INSERT INTO FROM \"%s\".relation VALUES ("
-        "%d,%d," INT64_FORMAT ",%d", topo->name,
+        "%d,%d,%" LWTFMT_ELEMID ",%d", topo->name,
         topogeo_id, layer_id, negate ? -new_edge2 : new_edge2, element_type);
       spi_result = SPI_execute(sql->data, false, 0);
       MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -1938,8 +1944,8 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
   const char *proj = "r.element_id, r.topogeo_id, r.layer_id, r.element_type";
 
   POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit signalled "
-                    "split of face " INT64_FORMAT " into "
-                    INT64_FORMAT " and " INT64_FORMAT,
+                    "split of face %" LWTFMT_ELEMID " into "
+                    INT64_FORMAT " and %" LWTFMT_ELEMID,
                     split_face, new_face1, new_face2);
 
   initStringInfo(sql);
@@ -1950,7 +1956,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
   }
   appendStringInfo( sql, " FROM \"%s\".relation r %s topology.layer l WHERE "
     "l.topology_id = %d AND l.level = 0 AND l.layer_id = r.layer_id "
-    "AND abs(r.element_id) = " INT64_FORMAT " AND r.element_type = 3",
+    "AND abs(r.element_id) = %" LWTFMT_ELEMID " AND r.element_type = 3",
     topo->name, (new_face2 == -1 ? "," : "USING" ), topo->id, split_face );
   if ( new_face2 != -1 ) {
     appendStringInfo(sql, " RETURNING %s", proj);
@@ -2014,7 +2020,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
     resetStringInfo(sql);
     appendStringInfo(sql,
       "INSERT INTO \"%s\".relation VALUES ("
-      "%d,%d," INT64_FORMAT ",%d)", topo->name,
+      "%d,%d,%" LWTFMT_ELEMID ",%d)", topo->name,
       topogeo_id, layer_id, negate ? -new_face1 : new_face1, element_type);
 
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit query: %s", sql->data);
@@ -2031,7 +2037,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
       resetStringInfo(sql);
       appendStringInfo(sql,
         "INSERT INTO \"%s\".relation VALUES ("
-        "%d,%d," INT64_FORMAT ",%d)", topo->name,
+        "%d,%d,%" LWTFMT_ELEMID ",%d)", topo->name,
         topogeo_id, layer_id, negate ? -new_face2 : new_face2, element_type);
 
       POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit query: %s", sql->data);
@@ -2075,7 +2081,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     "topology.layer l INNER JOIN \"%s\".relation r "
     "ON (l.layer_id = r.layer_id) WHERE l.level = 0 AND "
     "l.feature_type = 2 AND l.topology_id = %d"
-    " AND abs(r.element_id) = " INT64_FORMAT,
+    " AND abs(r.element_id) = %" LWTFMT_ELEMID,
     topo->name, topo->id, rem_edge );
 
   POSTGIS_DEBUGF(1, "cb_checkTopoGeomRemEdge query 1: %s", sql->data);
@@ -2101,7 +2107,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
 
     cberror(topo->be_data, "TopoGeom %s in layer %s "
                            "(%s.%s.%s) cannot be represented "
-                           "dropping edge " INT64_FORMAT,
+                           "dropping edge %" LWTFMT_ELEMID,
             tg_id, layer_id, schema_name, table_name,
             col_name, rem_edge);
     return 0;
@@ -2110,8 +2116,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
   
   if ( face_left != face_right )
   {
-    POSTGIS_DEBUGF(1, "Deletion of edge " INT64_FORMAT " joins faces "
-                      INT64_FORMAT " and " INT64_FORMAT,
+    POSTGIS_DEBUGF(1, "Deletion of edge %" LWTFMT_ELEMID " joins faces "
+                      INT64_FORMAT " and %" LWTFMT_ELEMID,
                       rem_edge, face_left, face_right);
     /*
       check if any topo_geom is defined only by one of the
@@ -2125,10 +2131,10 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
       " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
       "WHERE l.level = 0 and l.feature_type = 3 "
       "AND l.topology_id = %d"
-      " AND r.element_id = ANY (ARRAY[" INT64_FORMAT "," INT64_FORMAT
+      " AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
       "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
       "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
-      INT64_FORMAT "," INT64_FORMAT "]::int4[]",
+      INT64_FORMAT ",%" LWTFMT_ELEMID "]::int4[]",
       topo->name, topo->id,
       face_left, face_right, face_left, face_right );
 
@@ -2155,8 +2161,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
 
       cberror(topo->be_data, "TopoGeom %s in layer %s "
                              "(%s.%s.%s) cannot be represented "
-                             "healing faces " INT64_FORMAT
-                             " and " INT64_FORMAT,
+                             "healing faces %" LWTFMT_ELEMID
+                             " and %" LWTFMT_ELEMID,
               tg_id, layer_id, schema_name, table_name,
               col_name, face_right, face_left);
       return 0;
@@ -2186,10 +2192,10 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
     " INNER JOIN \"%s\".relation r ON (l.layer_id = r.layer_id) "
     "WHERE l.level = 0 and l.feature_type = 2 "
     "AND l.topology_id = %d"
-    " AND abs(r.element_id) = ANY (ARRAY[" INT64_FORMAT "," INT64_FORMAT
+    " AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
     "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
-    INT64_FORMAT "," INT64_FORMAT "]::int4[]",
+    INT64_FORMAT ",%" LWTFMT_ELEMID "]::int4[]",
     topo->name, topo->id,
     edge1, edge2, edge1, edge2 );
 
@@ -2216,8 +2222,8 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
 
     cberror(topo->be_data, "TopoGeom %s in layer %s "
                            "(%s.%s.%s) cannot be represented "
-                           "healing edges " INT64_FORMAT
-                           " and " INT64_FORMAT,
+                           "healing edges %" LWTFMT_ELEMID
+                           " and %" LWTFMT_ELEMID,
             tg_id, layer_id, schema_name, table_name,
             col_name, edge1, edge2);
     return 0;
@@ -2250,8 +2256,8 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
       "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
-      " AND abs(r.element_id) IN ( " INT64_FORMAT "," INT64_FORMAT ")"
-      " AND abs(r.element_id) != " INT64_FORMAT,
+      " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
+      " AND abs(r.element_id) != %" LWTFMT_ELEMID,
       topo->name, topo->id, face1, face2, newface );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query: %s", sql->data);
 
@@ -2271,7 +2277,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
       "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 3"
       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
-      " AND abs(r.element_id) = " INT64_FORMAT,
+      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
       topo->name, topo->id, face1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 1: %s", sql->data);
 
@@ -2287,9 +2293,9 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* update face2 to newface */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
-      "SET element_id = " INT64_FORMAT " FROM topology.layer l "
+      "SET element_id = %" LWTFMT_ELEMID " FROM topology.layer l "
       "WHERE l.level = 0 AND l.feature_type = 3 AND l.topology_id = %d"
-      " AND l.layer_id = r.layer_id AND r.element_id = " INT64_FORMAT,
+      " AND l.layer_id = r.layer_id AND r.element_id = %" LWTFMT_ELEMID,
       topo->name, newface, topo->id, face2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceHeal query 2: %s", sql->data);
 
@@ -2325,8 +2331,8 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
       "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
-      " AND abs(r.element_id) IN ( " INT64_FORMAT "," INT64_FORMAT ")"
-      " AND abs(r.element_id) != " INT64_FORMAT,
+      " AND abs(r.element_id) IN ( %" LWTFMT_ELEMID ",%" LWTFMT_ELEMID ")"
+      " AND abs(r.element_id) != %" LWTFMT_ELEMID,
       topo->name, topo->id, edge1, edge2, newedge );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query: %s", sql->data);
 
@@ -2346,7 +2352,7 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     appendStringInfo( sql, "DELETE FROM \"%s\".relation r "
       "USING topology.layer l WHERE l.level = 0 AND l.feature_type = 2"
       " AND l.topology_id = %d AND l.layer_id = r.layer_id "
-      " AND abs(r.element_id) = " INT64_FORMAT,
+      " AND abs(r.element_id) = %" LWTFMT_ELEMID,
       topo->name, topo->id, edge2 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 1: %s", sql->data);
 
@@ -2362,10 +2368,10 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     initStringInfo(sql);
     /* update edge2 to newedge */
     appendStringInfo( sql, "UPDATE \"%s\".relation r "
-      "SET element_id = " INT64_FORMAT " *(element_id/" INT64_FORMAT
+      "SET element_id = %" LWTFMT_ELEMID " *(element_id/%" LWTFMT_ELEMID
       ") FROM topology.layer l "
       "WHERE l.level = 0 AND l.feature_type = 2 AND l.topology_id = %d"
-      " AND l.layer_id = r.layer_id AND abs(r.element_id) = " INT64_FORMAT,
+      " AND l.layer_id = r.layer_id AND abs(r.element_id) = %" LWTFMT_ELEMID,
       topo->name, newedge, edge1, topo->id, edge1 );
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeHeal query 2: %s", sql->data);
 
@@ -2441,7 +2447,7 @@ cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
   initStringInfo(sql);
   appendStringInfo(sql, "DELETE FROM \"%s\".face WHERE face_id IN (", topo->name);
   for (i=0; i<numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -2478,7 +2484,7 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
   appendStringInfo(sql, "DELETE FROM \"%s\".node WHERE node_id IN (",
                         topo->name);
   for (i=0; i<numelems; ++i) {
-    appendStringInfo(sql, "%s" INT64_FORMAT, (i?",":""), ids[i]);
+    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
 
@@ -3480,7 +3486,7 @@ Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
 
   SPI_finish();
 
-  if ( snprintf(buf, 64, "Edge " INT64_FORMAT " changed", edge_id) >= 64 )
+  if ( snprintf(buf, 64, "Edge %" LWTFMT_ELEMID " changed", edge_id) >= 64 )
   {
     buf[63] = '\0';
   }
@@ -3540,7 +3546,7 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
 
   SPI_finish();
 
-  if ( snprintf(buf, 64, "Isolated node " INT64_FORMAT
+  if ( snprintf(buf, 64, "Isolated node %" LWTFMT_ELEMID
                          " removed", node_id) >= 64 )
   {
     buf[63] = '\0';
@@ -3601,7 +3607,7 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
 
   SPI_finish();
 
-  if ( snprintf(buf, 64, "Isolated edge " INT64_FORMAT
+  if ( snprintf(buf, 64, "Isolated edge %" LWTFMT_ELEMID
                          " removed", node_id) >= 64 )
   {
     buf[63] = '\0';
@@ -3685,7 +3691,7 @@ Datum ST_MoveIsoNode(PG_FUNCTION_ARGS)
 
   SPI_finish();
 
-  if ( snprintf(buf, 64, "Isolated Node " INT64_FORMAT
+  if ( snprintf(buf, 64, "Isolated Node %" LWTFMT_ELEMID
                          " moved to location %g,%g",
                          node_id, p.x, p.y) >= 64 )
   {
@@ -4291,7 +4297,7 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
   }
 
   id = state->elems[state->curr++];
-  POSTGIS_DEBUGF(1, "TopoGeo_AddLinestring: cur:%d, val:" INT64_FORMAT,
+  POSTGIS_DEBUGF(1, "TopoGeo_AddLinestring: cur:%d, val:%" LWTFMT_ELEMID,
                     state->curr-1, id);
 
   result = Int32GetDatum((int32)id);
@@ -4416,7 +4422,7 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
   }
 
   id = state->elems[state->curr++];
-  POSTGIS_DEBUGF(1, "TopoGeo_AddPolygon: cur:%d, val:" INT64_FORMAT,
+  POSTGIS_DEBUGF(1, "TopoGeo_AddPolygon: cur:%d, val:%" LWTFMT_ELEMID,
                     state->curr-1, id);
 
   result = Int32GetDatum((int32)id);
