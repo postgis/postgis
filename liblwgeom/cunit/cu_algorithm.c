@@ -886,7 +886,7 @@ static void test_geohash_point_as_int(void)
 {
 	unsigned int gh;
 	POINT2D p;
-	unsigned int rs;
+	unsigned long long rs;
 	
 	p.x = 50; p.y = 35;
 	gh = geohash_point_as_int(&p);
