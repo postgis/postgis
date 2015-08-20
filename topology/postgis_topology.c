@@ -24,7 +24,7 @@
 #include "liblwgeom_internal.h" /* for gbox_clone */
 #include "liblwgeom_topo.h"
 
-/*#define POSTGIS_DEBUG_LEVEL 1*/
+#define POSTGIS_DEBUG_LEVEL 1
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
@@ -94,6 +94,41 @@ cberror(const LWT_BE_DATA* be_in, const char *fmt, ...)
 	va_end(ap);
 }
 
+static void
+_lwtype_upper_name(int type, char *buf, size_t buflen)
+{
+  char *ptr;
+  snprintf(buf, buflen, "%s", lwtype_name(type));
+  buf[buflen-1] = '\0';
+  ptr = buf;
+  while (*ptr) {
+    *ptr = toupper(*ptr);
+    ++ptr;
+  }
+}
+
+/* Return lwalloc'ed hexwkb representation for a GBOX */
+static char *
+_box2d_to_hexwkb(const GBOX *bbox, int srid)
+{
+  POINTARRAY *pa = ptarray_construct(0, 0, 2);
+  POINT4D p;
+  LWLINE *line;
+  char *hex;
+  size_t sz;
+
+  p.x = bbox->xmin;
+  p.y = bbox->ymin;
+  ptarray_set_point4d(pa, 0, &p);
+  p.x = bbox->xmax;
+  p.y = bbox->ymax;
+  ptarray_set_point4d(pa, 1, &p);
+  line = lwline_construct(srid, NULL, pa);
+  hex = lwgeom_to_hexwkb( lwline_as_lwgeom(line), WKT_EXTENDED, &sz);
+  assert(hex[sz-1] == '\0');
+  return hex;
+}
+
 /* Backend callbacks */
 
 static const char*
@@ -159,6 +194,12 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
     return NULL;
   }
   topo->srid = DatumGetInt32(dat);
+  if ( topo->srid < 0 )
+  {
+    lwnotice("Topology SRID value %d converted to "
+             "the officially unknown SRID value %d", SRID_UNKNOWN);
+    topo->srid = SRID_UNKNOWN;
+  }
 
   topo->precision = 0; /* needed ? */
 
@@ -2472,6 +2513,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   int i;
   int elems_requested = limit;
   LWT_ISO_NODE* nodes;
+  char *hexbox;
 
   initStringInfo(sql);
 
@@ -2481,10 +2523,10 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     appendStringInfoString(sql, "SELECT ");
     addNodeFields(sql, fields);
   }
-  appendStringInfo(sql, " FROM \"%s\".node WHERE geom && "
-                        "ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d)",
-                        topo->name, box->xmin, box->ymin,
-                        box->xmax, box->ymax, topo->srid);
+  hexbox = _box2d_to_hexwkb(box, topo->srid);
+  appendStringInfo(sql, " FROM \"%s\".node WHERE geom && '%s'::geometry",
+                        topo->name, hexbox);
+  lwfree(hexbox);
   if ( elems_requested == -1 ) {
     appendStringInfoString(sql, ")");
   } else if ( elems_requested > 0 ) {
@@ -2542,6 +2584,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   int i;
   int elems_requested = limit;
   LWT_ISO_EDGE* edges;
+  char *hexbox;
 
   initStringInfo(sql);
 
@@ -2551,10 +2594,10 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     appendStringInfoString(sql, "SELECT ");
     addEdgeFields(sql, fields, 0);
   }
-  appendStringInfo(sql, " FROM \"%s\".edge WHERE geom && "
-                        "ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d)",
-                        topo->name, box->xmin, box->ymin,
-                        box->xmax, box->ymax, topo->srid);
+  hexbox = _box2d_to_hexwkb(box, topo->srid);
+  appendStringInfo(sql, " FROM \"%s\".edge WHERE geom && '%s'::geometry",
+                        topo->name, hexbox);
+  lwfree(hexbox);
   if ( elems_requested == -1 ) {
     appendStringInfoString(sql, ")");
   } else if ( elems_requested > 0 ) {
@@ -3248,8 +3291,8 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
     funcctx->user_fctx = state;
 
     /*
-     * Build a tuple description for an
-     * geometry_dump tuple
+     * Build a tuple description for a
+     * getfaceedges_returntype tuple
      */
     tupdesc = RelationNameGetTupleDesc("topology.getfaceedges_returntype");
 
@@ -3946,14 +3989,7 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   pt = lwgeom_as_lwpoint(lwgeom);
   if ( ! pt ) {{
     char buf[32];
-    char *ptr;
-    snprintf(buf, 32, "%s", lwtype_name(lwgeom_get_type(lwgeom)));
-    buf[31] = '\0';
-    ptr = buf;
-    while (*ptr) {
-      *ptr = toupper(*ptr);
-      ++ptr;
-    }
+    _lwtype_upper_name(lwgeom_get_type(lwgeom), buf, 32);
     lwgeom_free(lwgeom);
 	  PG_FREE_IF_COPY(geom, 1);
     lwpgerror("Invalid geometry type (%s) passed to TopoGeo_AddPoint"
@@ -4003,4 +4039,129 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
 
   SPI_finish();
   PG_RETURN_INT32(node_id);
+}
+
+/*  TopoGeo_AddLine(atopology, point, tolerance) */
+Datum TopoGeo_AddLine(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddLine);
+Datum TopoGeo_AddLine(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID *elems;
+  int nelems;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWLINE *ln;
+  LWT_TOPOLOGY *topo;
+  FuncCallContext *funcctx;
+  MemoryContext oldcontext, newcontext;
+  FACEEDGESSTATE *state;
+  Datum result;
+  LWT_ELEMID id;
+
+  if (SRF_IS_FIRSTCALL())
+  {
+    POSTGIS_DEBUG(1, "TopoGeo_AddLine first call");
+    funcctx = SRF_FIRSTCALL_INIT();
+    newcontext = funcctx->multi_call_memory_ctx;
+
+    if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ) {
+      lwpgerror("SQL/MM Spatial exception - null argument");
+      PG_RETURN_NULL();
+    }
+
+    toponame_text = PG_GETARG_TEXT_P(0);
+    toponame = text2cstring(toponame_text);
+    PG_FREE_IF_COPY(toponame_text, 0);
+
+    geom = PG_GETARG_GSERIALIZED_P(1);
+    lwgeom = lwgeom_from_gserialized(geom);
+    ln = lwgeom_as_lwline(lwgeom);
+    if ( ! ln ) {{
+      char buf[32];
+      _lwtype_upper_name(lwgeom_get_type(lwgeom), buf, 32);
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
+      lwpgerror("Invalid geometry type (%s) passed to "
+                "TopoGeo_AddLinestring, expected LINESTRING", buf);
+      PG_RETURN_NULL();
+    }}
+
+    tol = PG_GETARG_FLOAT8(2);
+    if ( tol < 0 )
+    {
+      PG_FREE_IF_COPY(geom, 1);
+      lwpgerror("Tolerance must be >=0");
+      PG_RETURN_NULL();
+    }
+
+    if ( SPI_OK_CONNECT != SPI_connect() ) {
+      lwpgerror("Could not connect to SPI");
+      PG_RETURN_NULL();
+    }
+    be_data.data_changed = false;
+
+    {
+      int pre = be_data.topoLoadFailMessageFlavor;
+      be_data.topoLoadFailMessageFlavor = 1;
+      topo = lwt_LoadTopology(be_iface, toponame);
+      be_data.topoLoadFailMessageFlavor = pre;
+    }
+    oldcontext = MemoryContextSwitchTo( newcontext );
+    pfree(toponame);
+    if ( ! topo ) {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    POSTGIS_DEBUG(1, "Calling lwt_AddLine");
+    elems = lwt_AddLine(topo, ln, tol, &nelems);
+    POSTGIS_DEBUG(1, "lwt_AddLine returned");
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwt_FreeTopology(topo);
+
+    if ( nelems < 0 ) {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    state = lwalloc(sizeof(FACEEDGESSTATE));
+    state->elems = elems;
+    state->nelems = nelems;
+    state->curr = 0;
+    funcctx->user_fctx = state;
+
+    POSTGIS_DEBUG(1, "TopoGeo_AddLinestring calling SPI_finish");
+
+    MemoryContextSwitchTo(oldcontext);
+
+    SPI_finish();
+  }
+
+  POSTGIS_DEBUG(1, "Per-call invocation");
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+  /* get state */
+  state = funcctx->user_fctx;
+
+  if ( state->curr == state->nelems )
+  {
+    POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    SRF_RETURN_DONE(funcctx);
+  }
+
+  id = state->elems[state->curr++];
+  POSTGIS_DEBUGF(1, "TopoGeo_AddLinestring: cur:%d, val:" INT64_FORMAT,
+                    state->curr-1, id);
+
+  result = Int32GetDatum((int32)id);
+
+  SRF_RETURN_NEXT(funcctx, result);
 }
