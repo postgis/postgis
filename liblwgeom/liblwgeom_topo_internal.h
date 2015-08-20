@@ -62,11 +62,6 @@ LWT_ELEMID lwt_be_getFaceContainingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt);
 
 int lwt_be_updateTopoGeomEdgeSplit(LWT_TOPOLOGY* topo, LWT_ELEMID split_edge, LWT_ELEMID new_edge1, LWT_ELEMID new_edge2);
 
-LWT_ISO_NODE* lwt_be_getNodeWithinBox2D( const LWT_TOPOLOGY* topo,
-      const GBOX* box, int* numelems, int fields, int limit);
-
-LWT_ISO_EDGE* lwt_be_getEdgeWithinBox2D( const LWT_TOPOLOGY* topo,
-      const GBOX* box, int* numelems, int fields, int limit);
 
 /************************************************************************
  *

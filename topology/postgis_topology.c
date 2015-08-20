@@ -2644,6 +2644,77 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   return edges;
 }
 
+static LWT_ISO_FACE* 
+cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
+                     int* numelems, int fields, int limit )
+{
+  MemoryContext oldcontext = CurrentMemoryContext;
+	int spi_result;
+  StringInfoData sqldata;
+  StringInfo sql = &sqldata;
+  int i;
+  int elems_requested = limit;
+  LWT_ISO_FACE* faces;
+  char *hexbox;
+
+  initStringInfo(sql);
+
+  if ( elems_requested == -1 ) {
+    appendStringInfoString(sql, "SELECT EXISTS ( SELECT 1");
+  } else {
+    appendStringInfoString(sql, "SELECT ");
+    addFaceFields(sql, fields);
+  }
+  hexbox = _box2d_to_hexwkb(box, topo->srid);
+  appendStringInfo(sql, " FROM \"%s\".face WHERE mbr && '%s'::geometry",
+                        topo->name, hexbox);
+  lwfree(hexbox);
+  if ( elems_requested == -1 ) {
+    appendStringInfoString(sql, ")");
+  } else if ( elems_requested > 0 ) {
+    appendStringInfo(sql, " LIMIT %d", elems_requested);
+  }
+  POSTGIS_DEBUGF(1,"cb_getFaceWithinBox2D: query is: %s", sql->data);
+  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, limit >= 0 ? limit : 0);
+  MemoryContextSwitchTo( oldcontext ); /* switch back */
+  if ( spi_result != SPI_OK_SELECT ) {
+		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+	  *numelems = -1; return NULL;
+  }
+  pfree(sqldata.data);
+
+  POSTGIS_DEBUGF(1, "cb_getFaceWithinBox2D: face query "
+             "(limited by %d) returned %d rows",
+             elems_requested, SPI_processed);
+  *numelems = SPI_processed;
+  if ( ! SPI_processed ) {
+    return NULL;
+  }
+
+  if ( elems_requested == -1 )
+  {
+    /* This was an EXISTS query */
+    {
+      Datum dat;
+      bool isnull, exists;
+      dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
+      exists = DatumGetBool(dat);
+      *numelems = exists ? 1 : 0;
+      POSTGIS_DEBUGF(1, "cb_getFaceWithinBox2D: exists ? %d", *numelems);
+    }
+    return NULL;
+  }
+
+  faces = palloc( sizeof(LWT_ISO_EDGE) * SPI_processed );
+  for ( i=0; i<SPI_processed; ++i )
+  {
+    HeapTuple row = SPI_tuptable->vals[i];
+    fillFaceFields(&faces[i], row, SPI_tuptable->tupdesc, fields);
+  }
+
+  return faces;
+}
+
 
 static LWT_BE_CALLBACKS be_callbacks = {
     cb_lastErrorMessage,
@@ -2682,7 +2753,8 @@ static LWT_BE_CALLBACKS be_callbacks = {
     cb_checkTopoGeomRemEdge,
     cb_updateTopoGeomFaceHeal,
     cb_checkTopoGeomRemNode,
-    cb_updateTopoGeomEdgeHeal
+    cb_updateTopoGeomEdgeHeal,
+    cb_getFaceWithinBox2D
 };
 
 
@@ -4041,10 +4113,10 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
   PG_RETURN_INT32(node_id);
 }
 
-/*  TopoGeo_AddLine(atopology, point, tolerance) */
-Datum TopoGeo_AddLine(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(TopoGeo_AddLine);
-Datum TopoGeo_AddLine(PG_FUNCTION_ARGS)
+/*  TopoGeo_AddLinestring(atopology, point, tolerance) */
+Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddLinestring);
+Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
 {
   text* toponame_text;
   char* toponame;
@@ -4063,7 +4135,7 @@ Datum TopoGeo_AddLine(PG_FUNCTION_ARGS)
 
   if (SRF_IS_FIRSTCALL())
   {
-    POSTGIS_DEBUG(1, "TopoGeo_AddLine first call");
+    POSTGIS_DEBUG(1, "TopoGeo_AddLinestring first call");
     funcctx = SRF_FIRSTCALL_INIT();
     newcontext = funcctx->multi_call_memory_ctx;
 
@@ -4159,6 +4231,131 @@ Datum TopoGeo_AddLine(PG_FUNCTION_ARGS)
 
   id = state->elems[state->curr++];
   POSTGIS_DEBUGF(1, "TopoGeo_AddLinestring: cur:%d, val:" INT64_FORMAT,
+                    state->curr-1, id);
+
+  result = Int32GetDatum((int32)id);
+
+  SRF_RETURN_NEXT(funcctx, result);
+}
+
+/*  TopoGeo_AddPolygon(atopology, poly, tolerance) */
+Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(TopoGeo_AddPolygon);
+Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
+{
+  text* toponame_text;
+  char* toponame;
+  double tol;
+  LWT_ELEMID *elems;
+  int nelems;
+  GSERIALIZED *geom;
+  LWGEOM *lwgeom;
+  LWPOLY *pol;
+  LWT_TOPOLOGY *topo;
+  FuncCallContext *funcctx;
+  MemoryContext oldcontext, newcontext;
+  FACEEDGESSTATE *state;
+  Datum result;
+  LWT_ELEMID id;
+
+  if (SRF_IS_FIRSTCALL())
+  {
+    POSTGIS_DEBUG(1, "TopoGeo_AddPolygon first call");
+    funcctx = SRF_FIRSTCALL_INIT();
+    newcontext = funcctx->multi_call_memory_ctx;
+
+    if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ) {
+      lwpgerror("SQL/MM Spatial exception - null argument");
+      PG_RETURN_NULL();
+    }
+
+    toponame_text = PG_GETARG_TEXT_P(0);
+    toponame = text2cstring(toponame_text);
+    PG_FREE_IF_COPY(toponame_text, 0);
+
+    geom = PG_GETARG_GSERIALIZED_P(1);
+    lwgeom = lwgeom_from_gserialized(geom);
+    pol = lwgeom_as_lwpoly(lwgeom);
+    if ( ! pol ) {{
+      char buf[32];
+      _lwtype_upper_name(lwgeom_get_type(lwgeom), buf, 32);
+      lwgeom_free(lwgeom);
+      PG_FREE_IF_COPY(geom, 1);
+      lwpgerror("Invalid geometry type (%s) passed to "
+                "TopoGeo_AddPolygon, expected POLYGON", buf);
+      PG_RETURN_NULL();
+    }}
+
+    tol = PG_GETARG_FLOAT8(2);
+    if ( tol < 0 )
+    {
+      PG_FREE_IF_COPY(geom, 1);
+      lwpgerror("Tolerance must be >=0");
+      PG_RETURN_NULL();
+    }
+
+    if ( SPI_OK_CONNECT != SPI_connect() ) {
+      lwpgerror("Could not connect to SPI");
+      PG_RETURN_NULL();
+    }
+    be_data.data_changed = false;
+
+    {
+      int pre = be_data.topoLoadFailMessageFlavor;
+      be_data.topoLoadFailMessageFlavor = 1;
+      topo = lwt_LoadTopology(be_iface, toponame);
+      be_data.topoLoadFailMessageFlavor = pre;
+    }
+    oldcontext = MemoryContextSwitchTo( newcontext );
+    pfree(toponame);
+    if ( ! topo ) {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    POSTGIS_DEBUG(1, "Calling lwt_AddPolygon");
+    elems = lwt_AddPolygon(topo, pol, tol, &nelems);
+    POSTGIS_DEBUG(1, "lwt_AddPolygon returned");
+    lwgeom_free(lwgeom);
+    PG_FREE_IF_COPY(geom, 1);
+    lwt_FreeTopology(topo);
+
+    if ( nelems < 0 ) {
+      /* should never reach this point, as lwerror would raise an exception */
+      SPI_finish();
+      PG_RETURN_NULL();
+    }
+
+    state = lwalloc(sizeof(FACEEDGESSTATE));
+    state->elems = elems;
+    state->nelems = nelems;
+    state->curr = 0;
+    funcctx->user_fctx = state;
+
+    POSTGIS_DEBUG(1, "TopoGeo_AddPolygon calling SPI_finish");
+
+    MemoryContextSwitchTo(oldcontext);
+
+    SPI_finish();
+  }
+
+  POSTGIS_DEBUG(1, "Per-call invocation");
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+  /* get state */
+  state = funcctx->user_fctx;
+
+  if ( state->curr == state->nelems )
+  {
+    POSTGIS_DEBUG(1, "We're done, cleaning up all");
+    SRF_RETURN_DONE(funcctx);
+  }
+
+  id = state->elems[state->curr++];
+  POSTGIS_DEBUGF(1, "TopoGeo_AddPolygon: cur:%d, val:" INT64_FORMAT,
                     state->curr-1, id);
 
   result = Int32GetDatum((int32)id);
