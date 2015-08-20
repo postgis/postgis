@@ -234,9 +234,13 @@ int
 geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, int* dwithin)
 {
 	double distance;
-	/* TODO!!! Why does the tolerance stopper in the circ_tree_distance_tree_internal arbitrarily screw up? */
-/*	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) ) */
-	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, FP_TOLERANCE, &distance) ) 
+	/* Ticket #2422, difference between sphere and spheroid distance can trip up the */
+	/* threshold shortcircuit (stopping a calculation before the spheroid distance is actually */
+	/* below the threshold. Lower in the code line, we actually reduce the threshold a little to */
+	/* avoid this. */
+	/* Correct fix: propogate the spheroid information all the way to the bottom of the calculation */
+	/* so the "right thing" can be done in all cases. */
+	if ( LW_SUCCESS == geography_distance_cache_tolerance(fcinfo, g1, g2, s, tolerance, &distance) )
 	{
 		*dwithin = (distance <= (tolerance + FP_TOLERANCE) ? LW_TRUE : LW_FALSE);
 		return LW_SUCCESS;

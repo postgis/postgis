@@ -556,7 +556,10 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	double min_dist = FLT_MAX;
 	double max_dist = FLT_MAX;
 	GEOGRAPHIC_POINT closest1, closest2;
-	double threshold_radians = threshold / spheroid->radius;
+	/* Quietly decrease the threshold just a little to avoid cases where */
+	/* the actual spheroid distance is larger than the sphere distance */
+	/* causing the return value to be larger than the threshold value */
+	double threshold_radians = 0.95 * threshold / spheroid->radius;
 	
 	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
 
@@ -585,7 +588,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 */
 	
 	/* Short circuit if we've already hit the minimum */
-	if( *min_dist <= threshold )
+	if( *min_dist < threshold || *min_dist == 0.0 )
 		return *min_dist;
 	
 	/* If your minimum is greater than anyone's maximum, you can't hold the winner */
