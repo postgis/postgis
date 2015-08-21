@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
   <sect1 id="Tiger_Geocoder">
-	 <sect1info>
-		<abstract>
-			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.   </para>
-			<para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. The latest version updated to use the TIGER 2011 and 2012 census data is located in the <varname>extras/tiger_geocoder/tiger_2011</varname> folder. It defaults to downloading and installing TIGER 2012 files.  </para>
-			<para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
-			<para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
-			<para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
-			    prefixed with the state code e.g <varname>ma_addr</varname>, <varname>ma_edges</varname> etc with constraints to enforce only that state data.  Each of these tables inherits from the tables <varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, etc located in the <varname>tiger schema</varname>. </para>
-			<para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
-			for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.
-			
-		
-			  <note><para>
+     <sect1info>
+        <abstract>
+            <para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.   </para>
+            <para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. The latest version updated to use the TIGER 2011 and 2012 census data is located in the <varname>extras/tiger_geocoder/tiger_2011</varname> folder. It defaults to downloading and installing TIGER 2012 files.  </para>
+            <para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
+            <para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
+            <para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
+                prefixed with the state code e.g <varname>ma_addr</varname>, <varname>ma_edges</varname> etc with constraints to enforce only that state data.  Each of these tables inherits from the tables <varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, etc located in the <varname>tiger schema</varname>. </para>
+            <para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
+            for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.
+            
+        
+              <note><para>
 If you are using tiger geocoder (tiger_2010),
 you can upgrade the scripts using the accompanying upgrade_geocoder.bat
 / .sh scripts in tiger_2011.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011+</varname> is that the county and <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.    If you have data from tiger_2010 and want replace with tiger_2015 refer to <xref linkend="upgrade_tiger_geocoder" />
-			  </para></note>
-			  
-			  <note>
-			  <para>New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
-			  <para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
-			  </para>
-			  <para>The <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />. Refer to <xref linkend="installing_pagc_address_standardizer" /> for compile and installation instructions.</para> 
-		
+              </para></note>
+              
+              <note>
+              <para>New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
+              <para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
+              </para>
+              <para>The <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />. Refer to <xref linkend="installing_pagc_address_standardizer" /> for compile and installation instructions.</para> 
+        
 
 
-			<para>Design:</para>
-			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
-			United States address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location. The higher the rating number the worse the result.</para>
-			<para>The <varname>reverse_geocode</varname> function, introduced in PostGIS 2.0.0 is useful for deriving the street address and cross streets of a GPS location.</para>
-			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
-			<para>It should be robust enough to function properly despite formatting and spelling errors.</para>
-			<para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
-			<para>
-		<note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
-			</para>
-		</abstract>
+            <para>Design:</para>
+            <para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
+            United States address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location. The higher the rating number the worse the result.</para>
+            <para>The <varname>reverse_geocode</varname> function, introduced in PostGIS 2.0.0 is useful for deriving the street address and cross streets of a GPS location.</para>
+            <para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
+            <para>It should be robust enough to function properly despite formatting and spelling errors.</para>
+            <para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
+            <para>
+        <note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
+            </para>
+        </abstract>
      </sect1info>
-	<title>Tiger Geocoder</title>
+    <title>Tiger Geocoder</title>
      
      <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
      <itemizedlist>
-     	<listitem><para><ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
+         <listitem><para><ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
      and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
      Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para></listitem>
-     	<listitem><para><ulink url="http://www.gisgraphy.com/">GIS Graphy</ulink> also utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data.  It comes with a loader to load OSM data and similar to Nominatim is capable of geocoding not just US. Much like Nominatim, it runs as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also has a reverse geocoder among some other neat features.</para></listitem>
+         <listitem><para><ulink url="http://www.gisgraphy.com/">GIS Graphy</ulink> also utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data.  It comes with a loader to load OSM data and similar to Nominatim is capable of geocoding not just US. Much like Nominatim, it runs as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also has a reverse geocoder among some other neat features.</para></listitem>
      </itemizedlist>
-	
+    
     <refentry id="Drop_Indexes_Generate_Script">
-	  <refnamediv>
-		<refname>Drop_Indexes_Generate_Script</refname>
+      <refnamediv>
+        <refname>Drop_Indexes_Generate_Script</refname>
 
-		<refpurpose>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef>
-				<paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef>
+                <paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</para>
-		<para>This is useful for minimizing index bloat that may confuse the query planner or take up unnecessary space.  Use in combination with <xref linkend="Install_Missing_Indexes"/> to add just the indexes used by the geocoder.</para>
-	
-		
-		<para>Availability: 2.0.0</para>
-
-
-	  </refsection>
+        <para>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</para>
+        <para>This is useful for minimizing index bloat that may confuse the query planner or take up unnecessary space.  Use in combination with <xref linkend="Install_Missing_Indexes"/> to add just the indexes used by the geocoder.</para>
+    
+        
+        <para>Availability: 2.0.0</para>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT drop_indexes_generate_script() As actionsql;
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT drop_indexes_generate_script() As actionsql;
 actionsql
 ---------------------------------------------------------
 DROP INDEX tiger.idx_tiger_countysub_lookup_lower_name;
@@ -115,95 +115,95 @@ DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
 :
 :
 </programlisting>
-	
-	  </refsection>
+    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Install_Missing_Indexes"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Drop_Nation_Tables_Generate_Script">
-	  <refnamediv>
-		<refname>Drop_Nation_Tables_Generate_Script</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Install_Missing_Indexes"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Drop_Nation_Tables_Generate_Script">
+      <refnamediv>
+        <refname>Drop_Nation_Tables_Generate_Script</refname>
 
-		<refpurpose>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></funcdef>
-				<paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Drop_Nation_Tables_Generate_Script</function></funcdef>
+                <paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.  This is needed if you are upgrading from <varname>tiger_2010</varname> to <varname>tiger_2011</varname> data.</para>
-	
-		
-		<para>Availability: 2.1.0</para>
-
-
-	  </refsection>
+        <para>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.  This is needed if you are upgrading from <varname>tiger_2010</varname> to <varname>tiger_2011</varname> data.</para>
+    
+        
+        <para>Availability: 2.1.0</para>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT drop_nation_tables_generate_script();
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT drop_nation_tables_generate_script();
 DROP TABLE tiger_data.county_all;
 DROP TABLE tiger_data.county_all_lookup;
 DROP TABLE tiger_data.state_all;
 DROP TABLE tiger_data.ma_county;
 DROP TABLE tiger_data.ma_state;</programlisting>
-	
-	  </refsection>
+    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Nation_Script"/></para>
-	  </refsection>
-	</refentry>
-	
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Nation_Script"/></para>
+      </refsection>
+    </refentry>
+    
     <refentry id="Drop_State_Tables_Generate_Script">
-	  <refnamediv>
-		<refname>Drop_State_Tables_Generate_Script</refname>
+      <refnamediv>
+        <refname>Drop_State_Tables_Generate_Script</refname>
 
-		<refpurpose>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Drop_State_Tables_Generate_Script</function></funcdef>
-				<paramdef><type>text </type> <parameter>param_state</parameter></paramdef>
-				<paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Drop_State_Tables_Generate_Script</function></funcdef>
+                <paramdef><type>text </type> <parameter>param_state</parameter></paramdef>
+                <paramdef choice="opt"><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+            </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.
-		This function is useful for dropping tables of a state just before you reload a state in case something went wrong during your previous load.</para>
-	
-		
-		<para>Availability: 2.0.0</para>
-
-
-	  </refsection>
+        <para>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.
+        This function is useful for dropping tables of a state just before you reload a state in case something went wrong during your previous load.</para>
+    
+        
+        <para>Availability: 2.0.0</para>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT drop_state_tables_generate_script('PA');
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT drop_state_tables_generate_script('PA');
 DROP TABLE tiger_data.pa_addr;
 DROP TABLE tiger_data.pa_county;
 DROP TABLE tiger_data.pa_county_lookup;
@@ -216,76 +216,76 @@ DROP TABLE tiger_data.pa_state;
 DROP TABLE tiger_data.pa_zip_lookup_base;
 DROP TABLE tiger_data.pa_zip_state;
 DROP TABLE tiger_data.pa_zip_state_loc;
-		</programlisting>
-	
-	  </refsection>
+        </programlisting>
+    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script"/></para>
-	  </refsection>
-	</refentry>
-	<refentry id="Geocode">
-	  <refnamediv>
-		<refname>Geocode</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Script"/></para>
+      </refsection>
+    </refentry>
+    <refentry id="Geocode">
+      <refnamediv>
+        <refname>Geocode</refname>
 
-		<refpurpose>Takes in an address as a string (or other normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10, and restrict_region (defaults to NULL)</refpurpose>
-	  </refnamediv>
+        <refpurpose>Takes in an address as a string (or other normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
+            Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10, and restrict_region (defaults to NULL)</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>setof record <function>geocode</function></funcdef>
-			<paramdef><type>varchar </type> <parameter>address</parameter></paramdef>
-			<paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
-			<paramdef choice="opt"><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
-			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>setof record <function>geocode</function></funcdef>
-			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
-			<paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
-			<paramdef choice="opt"><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
-			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>setof record <function>geocode</function></funcdef>
+            <paramdef><type>varchar </type> <parameter>address</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+            <paramdef choice="opt"><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
+            <paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
+          </funcprototype>
+          <funcprototype>
+            <funcdef>setof record <function>geocode</function></funcdef>
+            <paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+            <paramdef choice="opt"><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
+            <paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Takes in an address as a string (or already normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.
-			The geocoded point is defaulted to offset 10 meters from center-line off to side (L/R) of street address is located on.</para>
+        <para>Takes in an address as a string (or already normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
+            Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.
+            The geocoded point is defaulted to offset 10 meters from center-line off to side (L/R) of street address is located on.</para>
 
-		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed, accuracy of geocoding, and to offset point from centerline to side of street address is located on. New parameter max_results useful for specifying ot just return the best result.</para>
-		
-	  </refsection>
+        <para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed, accuracy of geocoding, and to offset point from centerline to side of street address is located on. New parameter max_results useful for specifying ot just return the best result.</para>
+        
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples: Basic</title>
-		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all of MA,MN,CA, RI state Tiger data loaded.</para>
-		<para>Exact matches are faster to compute (61ms)</para>
-		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, 
-	(addy).address As stno, (addy).streetname As street, 
-	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
-	FROM geocode('75 State Street, Boston MA 02109') As g;  
+      <refsection>
+        <title>Examples: Basic</title>
+        <para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all of MA,MN,CA, RI state Tiger data loaded.</para>
+        <para>Exact matches are faster to compute (61ms)</para>
+        <programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, 
+    (addy).address As stno, (addy).streetname As street, 
+    (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+    FROM geocode('75 State Street, Boston MA 02109') As g;  
  rating |        lon        |       lat        | stno | street | styp |  city  | st |  zip  
 --------+-------------------+------------------+------+--------+------+--------+----+-------
       0 | -71.0556722990239 | 42.3589914927049 |   75 | State  | St   | Boston | MA | 02109
 </programlisting>
-		<para>Even if zip is not passed in the geocoder can guess (took about 122-150 ms)</para>
-		<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
-	(addy).address As stno, (addy).streetname As street, 
-	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
-	FROM geocode('226 Hanover Street, Boston, MA',1) As g;  
+        <para>Even if zip is not passed in the geocoder can guess (took about 122-150 ms)</para>
+        <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
+    (addy).address As stno, (addy).streetname As street, 
+    (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+    FROM geocode('226 Hanover Street, Boston, MA',1) As g;  
  rating |         wktlonlat         | stno | street  | styp |  city  | st |  zip  
 --------+---------------------------+------+---------+------+--------+----+-------
       1 | POINT(-71.05528 42.36316) |  226 | Hanover | St   | Boston | MA | 02113
@@ -293,16 +293,16 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 <para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (500ms).</para>
 <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
     (addy).address As stno, (addy).streetname As street, 
-	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
-	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g; 
+    (addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+    FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g; 
  rating |         wktlonlat         | stno | street | styp |  city  | st |  zip  
 --------+---------------------------+------+--------+------+--------+----+-------
      70 | POINT(-71.06459 42.35113) |   31 | Stuart | St   | Boston | MA | 02116
-	</programlisting>
+    </programlisting>
 
 <para>Using to do a batch geocode of addresses. Easiest is to set <varname>max_results=1</varname>. Only process those not yet geocoded (have no rating).</para>
 <programlisting>CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,
-		lon numeric, lat numeric, new_address text, rating integer);
+        lon numeric, lat numeric, new_address text, rating integer);
 
 INSERT INTO addresses_to_geocode(address)
 VALUES ('529 Main Street, Boston MA, 02129'),
@@ -320,14 +320,14 @@ VALUES ('529 Main Street, Boston MA, 02129'),
 -- to ensure we don't regeocode a bad address 
 UPDATE addresses_to_geocode
   SET  (rating, new_address, lon, lat) 
-	= ( COALESCE((g.geo).rating,-1), pprint_addy((g.geo).addy),
-	   ST_X((g.geo).geomout)::numeric(8,5), ST_Y((g.geo).geomout)::numeric(8,5) )
+    = ( COALESCE((g.geo).rating,-1), pprint_addy((g.geo).addy),
+       ST_X((g.geo).geomout)::numeric(8,5), ST_Y((g.geo).geomout)::numeric(8,5) )
 FROM (SELECT addid 
-	FROM addresses_to_geocode 
-	WHERE rating IS NULL ORDER BY addid LIMIT 3) As a
-	LEFT JOIN (SELECT addid, (geocode(address,1)) As geo
+    FROM addresses_to_geocode 
+    WHERE rating IS NULL ORDER BY addid LIMIT 3) As a
+    LEFT JOIN (SELECT addid, (geocode(address,1)) As geo
     FROM addresses_to_geocode As ag
-	WHERE ag.rating IS NULL ORDER BY addid LIMIT 3) As g ON a.addid = g.addid
+    WHERE ag.rating IS NULL ORDER BY addid LIMIT 3) As g ON a.addid = g.addid
 WHERE a.addid = addresses_to_geocode.addid;
 
 result
@@ -342,275 +342,274 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
      2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09428 | 42.35988 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
      3 | 25 Wizard of Oz, Walaford, KS 99912323       |           |          |                                           |     -1
 </programlisting>
-	  </refsection>
-	  <refsection>
-	      <title>Examples: Using Geometry filter</title>
-	      <programlisting>
+      </refsection>
+      <refsection>
+          <title>Examples: Using Geometry filter</title>
+          <programlisting>
 SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
     (addy).address As stno, (addy).streetname As street, 
-	(addy).streettypeabbrev As styp, 
-	(addy).location As city, (addy).stateabbrev As st,(addy).zip 
+    (addy).streettypeabbrev As styp, 
+    (addy).location As city, (addy).stateabbrev As st,(addy).zip 
   FROM geocode('100 Federal Street, MA',
-		3, 
-		(SELECT ST_Union(the_geom) 
-			FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry
-		) As g;
+        3, 
+        (SELECT ST_Union(the_geom) 
+            FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry
+        ) As g;
 
  rating |        wktlonlat         | stno | street  | styp | city | st |  zip
 --------+--------------------------+------+---------+------+------+----+-------
       8 | POINT(-70.96796 42.4659) |  100 | Federal | St   | Lynn | MA | 01905
 Total query runtime: 245 ms.
-	      </programlisting>
-	  </refsection>
+          </programlisting>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Normalize_Address" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/>, <xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Geocode_Intersection">
-	  <refnamediv>
-		<refname>Geocode_Intersection</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Normalize_Address" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/>, <xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Geocode_Intersection">
+      <refnamediv>
+        <refname>Geocode_Intersection</refname>
 
-		<refpurpose>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10</refpurpose>
-	  </refnamediv>
+        <refpurpose>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
+            Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>setof record <function>geocode_intersection</function></funcdef>
-			<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef>
-			<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef>
-			<paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
-			<paramdef choice="opt"><type>text </type> <parameter> in_city</parameter></paramdef>
-			<paramdef choice="opt"><type>text </type> <parameter> in_zip</parameter></paramdef>
-			<paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
-			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
-			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>setof record <function>geocode_intersection</function></funcdef>
+            <paramdef><type>text </type> <parameter> roadway1</parameter></paramdef>
+            <paramdef><type>text </type> <parameter> roadway2</parameter></paramdef>
+            <paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
+            <paramdef choice="opt"><type>text </type> <parameter> in_city</parameter></paramdef>
+            <paramdef choice="opt"><type>text </type> <parameter> in_zip</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+            <paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+            <paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+            <paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10.
-			Returns <varname>normalized_address</varname> (addy) for each, geomout as the point location in nad 83 long lat, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) </para>
+        <para>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
+            Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10.
+            Returns <varname>normalized_address</varname> (addy) for each, geomout as the point location in nad 83 long lat, and the rating.  The lower the rating the more likely the match.  
+            Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) </para>
 
-		<para>Availability: 2.0.0</para>
-		
-	  </refsection>
+        <para>Availability: 2.0.0</para>
+        
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples: Basic</title>
-		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded. Currently a bit slow (3000 ms)</para>
-		<para>Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger 2011 data loaded -- (41ms)</para>
-		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
-			FROM geocode_intersection( 'Haverford St','Germania St', 'MA', 'Boston', '02130',1); 
+      <refsection>
+        <title>Examples: Basic</title>
+        <para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded. Currently a bit slow (3000 ms)</para>
+        <para>Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger 2011 data loaded -- (41ms)</para>
+        <programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
+            FROM geocode_intersection( 'Haverford St','Germania St', 'MA', 'Boston', '02130',1); 
            pprint_addy            |         st_astext          | rating
 ----------------------------------+----------------------------+--------
 98 Haverford St, Boston, MA 02130 | POINT(-71.101375 42.31376) |      0
 </programlisting>
-		<para>Even if zip is not passed in the geocoder can guess (took about 3500 ms on the windows 7 box), on the windows 2003 64-bit 741 ms</para>
-		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
-				FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');
+        <para>Even if zip is not passed in the geocoder can guess (took about 3500 ms on the windows 7 box), on the windows 2003 64-bit 741 ms</para>
+        <programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
+                FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');
           pprint_addy          |        st_astext         | rating
 -------------------------------+--------------------------+--------
  98 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3
  99 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3
 </programlisting>     
-	  </refsection>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Geocode" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Get_Geocode_Setting">
-	  <refnamediv>
-		<refname>Get_Geocode_Setting</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Geocode" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Get_Geocode_Setting">
+      <refnamediv>
+        <refname>Get_Geocode_Setting</refname>
 
-		<refpurpose>Returns value of specific setting stored in tiger.geocode_settings table.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Returns value of specific setting stored in tiger.geocode_settings table.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Get_Geocode_Setting</function></funcdef>
-			<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Get_Geocode_Setting</function></funcdef>
+            <paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Returns value of specific setting stored in tiger.geocode_settings table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are as follows:</para>
-		<screen>              name              | setting |  unit   | category  |                                                             short_desc
---------------------------------+---------+---------+-----------+------------------------------------------------------------------------------------------------------
+        <para>Returns value of specific setting stored in tiger.geocode_settings table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are as follows:</para>
+        <screen>              name              | setting |  unit   | category  |                                                             short_desc
+--------------------------------+---------+---------+-----------+------------------------------------------------------------------------------------------------------------------------------
  debug_geocode_address          | false   | boolean | debug     | outputs debug information in notice log such as queries when geocode_addresss is called if true
  debug_geocode_intersection     | false   | boolean | debug     | outputs debug information in notice log such as queries when geocode_intersection is called if true
- debug_normalize_address        | false   | boolean | debug     | outputs debug information in notice log such as queries 
-                                |         |         |           |   and intermediate expressions when normalize_address is called if true
- debug_reverse_geocode          | false   | boolean | debug     | if true, outputs debug information in notice log such as queries 
-                                                                |  and intermediate expressions when reverse_geocode
- reverse_geocode_numbered_roads | 0       | integer | rating    | For state and county highways, 0 - no preference in name
-                                |         |         |           |  , 1 - prefer the numbered highway name, 2 - prefer local state/county name
- use_pagc_address_parser        | false   | boolean | normalize | If set to true, will try to use the pagc_address normalizer instead of tiger built one	
-</screen>
+ debug_normalize_address        | false   | boolean | debug     | outputs debug information in notice log such as queries and intermediate expressions when normalize_address is called if true
+ debug_reverse_geocode          | false   | boolean | debug     | if true, outputs debug information in notice log such as queries and intermediate expressions when reverse_geocode
+ reverse_geocode_numbered_roads | 0       | integer | rating    | For state and county highways, 0 - no preference in name, 
+                                                                  1 - prefer the numbered highway name, 2 - prefer local state/county name
+ use_pagc_address_parser        | false   | boolean | normalize | If set to true, will try to use the address_standardizer extension (via pagc_normalize_address) 
+                                                                 instead of tiger normalize_address built one    </screen>
 
-		<para>Availability: 2.1.0</para>
-		
-	  </refsection>
+        <para>Changed: 2.2.0 : default settings are now kept in a table called geocode_settings_default. Use customized settingsa re in geocode_settings and only contain those that have been set by user.</para>
+        <para>Availability: 2.1.0</para>
+        
+      </refsection>
 
 
-	  <refsection>
-		<title>Example return debugging setting</title>
-		<programlisting>SELECT get_geocode_setting('debug_geocode_address) As result;
+      <refsection>
+        <title>Example return debugging setting</title>
+        <programlisting>SELECT get_geocode_setting('debug_geocode_address) As result;
 result
 ---------
 false
-		</programlisting>	
-	  </refsection>
+        </programlisting>    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Set_Geocode_Setting" /></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Get_Tract">
-	  <refnamediv>
-		<refname>Get_Tract</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Set_Geocode_Setting" /></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Get_Tract">
+      <refnamediv>
+        <refname>Get_Tract</refname>
 
-		<refpurpose>Returns census tract or field from tract table of where the geometry is located. Default to returning short name of tract.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Returns census tract or field from tract table of where the geometry is located. Default to returning short name of tract.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>get_tract</function></funcdef>
-			<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef>
-			<paramdef choice="opt"><type>text </type> <parameter> output_field=name</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>get_tract</function></funcdef>
+            <paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef>
+            <paramdef choice="opt"><type>text </type> <parameter> output_field=name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Given a geometry will return the census tract location of that geometry. NAD 83 long lat is assumed if no spatial ref sys is specified.</para>
+        <para>Given a geometry will return the census tract location of that geometry. NAD 83 long lat is assumed if no spatial ref sys is specified.</para>
 
-		<para>Availability: 2.0.0</para>
-		
-	  </refsection>
+        <para>Availability: 2.0.0</para>
+        
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples: Basic</title>
-		<programlisting>SELECT get_tract(ST_Point(-71.101375, 42.31376) ) As tract_name;
+      <refsection>
+        <title>Examples: Basic</title>
+        <programlisting>SELECT get_tract(ST_Point(-71.101375, 42.31376) ) As tract_name;
 tract_name
 ---------
 1203.01
-		</programlisting>
-		<programlisting>--this one returns the tiger geoid
+        </programlisting>
+        <programlisting>--this one returns the tiger geoid
 SELECT get_tract(ST_Point(-71.101375, 42.31376), 'tract_id' ) As tract_id;
 tract_id
 ---------
-25025120301</programlisting>		
-	  </refsection>
+25025120301</programlisting>        
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Geocode" />></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Install_Missing_Indexes">
-	  <refnamediv>
-		<refname>Install_Missing_Indexes</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Geocode" />></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Install_Missing_Indexes">
+      <refnamediv>
+        <refname>Install_Missing_Indexes</refname>
 
-		<refpurpose>Finds all tables with key columns used in geocoder joins and filter conditions that are missing used indexes on those columns and will add them.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Finds all tables with key columns used in geocoder joins and filter conditions that are missing used indexes on those columns and will add them.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>boolean <function>Install_Missing_Indexes</function></funcdef>
-			<paramdef></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>Install_Missing_Indexes</function></funcdef>
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins and filters that are missing indexes on those columns and will output the SQL DDL to
-		    define the index for those tables and then execute the generated script. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
-		   This function is a companion to <xref linkend="Missing_Indexes_Generate_Script" /> that in addition to generating the create index script, also executes it.
-		   It is called as part of the <filename>update_geocode.sql</filename> upgrade script.</para>
-	
-		
-		<para>Availability: 2.0.0</para>
-
-
-	  </refsection>
+        <para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins and filters that are missing indexes on those columns and will output the SQL DDL to
+            define the index for those tables and then execute the generated script. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
+           This function is a companion to <xref linkend="Missing_Indexes_Generate_Script" /> that in addition to generating the create index script, also executes it.
+           It is called as part of the <filename>update_geocode.sql</filename> upgrade script.</para>
+    
+        
+        <para>Availability: 2.0.0</para>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT install_missing_indexes();
-		 install_missing_indexes
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT install_missing_indexes();
+         install_missing_indexes
 -------------------------
  t
-		</programlisting>
-	
-	  </refsection>
+        </programlisting>
+    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
-	  </refsection>
-	</refentry>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
+      </refsection>
+    </refentry>
 
-	<refentry id="Loader_Generate_Census_Script">
-	  <refnamediv>
-		<refname>Loader_Generate_Census_Script</refname>
+    <refentry id="Loader_Generate_Census_Script">
+      <refnamediv>
+        <refname>Loader_Generate_Census_Script</refname>
 
-		<refpurpose>Generates a shell script for the specified platform for the specified states that will download Tiger census state tract, bg, and tabblocks data tables, stage and load into <varname>tiger_data</varname> schema. Each state script is returned as a separate record.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a shell script for the specified platform for the specified states that will download Tiger census state tract, bg, and tabblocks data tables, stage and load into <varname>tiger_data</varname> schema. Each state script is returned as a separate record.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>setof text <function>loader_generate_census_script</function></funcdef>
-			<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef>
-			<paramdef><type>text</type> <parameter>os</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>setof text <function>loader_generate_census_script</function></funcdef>
+            <paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef>
+            <paramdef><type>text</type> <parameter>os</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a shell script for the specified platform for the specified states that will download Tiger data census state <varname>tract</varname>, block groups <varname>bg</varname>, and <varname>tabblocks</varname> data tables, stage and load into <varname>tiger_data</varname> schema.  Each state script is returned as a separate record.</para>
-		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. Note the smallest unit it does is a whole state.  It will only
-		process the files in the staging and temp folders.</para>
-		<para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
+        <para>Generates a shell script for the specified platform for the specified states that will download Tiger data census state <varname>tract</varname>, block groups <varname>bg</varname>, and <varname>tabblocks</varname> data tables, stage and load into <varname>tiger_data</varname> schema.  Each state script is returned as a separate record.</para>
+        <para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. Note the smallest unit it does is a whole state.  It will only
+        process the files in the staging and temp folders.</para>
+        <para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
 
-		<orderedlist>
+        <orderedlist>
           <listitem>
             <para><varname>loader_variables</varname> keeps track of various variables such as census site, year, data and staging schemas</para>
           </listitem>
@@ -621,16 +620,16 @@ tract_id
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist> 
-		<para>Availability: 2.0.0 </para>
-		<note><para><xref linkend="Loader_Generate_Script" /> includes this logic, but if you installed tiger geocoder prior to PostGIS 2.0.0 alpha5, you'll need to run this on the states you have already done
-			to get these additional tables.</para></note>
-	  </refsection>
+        <para>Availability: 2.0.0 </para>
+        <note><para><xref linkend="Loader_Generate_Script" /> includes this logic, but if you installed tiger geocoder prior to PostGIS 2.0.0 alpha5, you'll need to run this on the states you have already done
+            to get these additional tables.</para></note>
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<para>Generate script to load up data for select states in Windows shell script format.</para>
-		<programlisting>SELECT loader_generate_census_script(ARRAY['MA'], 'windows');
+      <refsection>
+        <title>Examples</title>
+        <para>Generate script to load up data for select states in Windows shell script format.</para>
+        <programlisting>SELECT loader_generate_census_script(ARRAY['MA'], 'windows');
 -- result --
 set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\25_Massachusetts"
 set TMPDIR=\gisdata\temp\
@@ -652,7 +651,7 @@ del %TMPDIR%\*.* /Q
 %PSQL% -c "CREATE SCHEMA tiger_staging;"
 cd %STATEDIR%
 for /r %%z in (*.zip) do %UNZIPTOOL% e %%z  -o%TMPDIR% 
-cd %TMPDIR%	
+cd %TMPDIR%    
 %PSQL% -c "CREATE TABLE tiger_data.MA_tract(CONSTRAINT pk_MA_tract PRIMARY KEY (tract_id) ) INHERITS(tiger.tract); " 
 %SHP2PGSQL% -c -s 4269 -g the_geom   -W "latin1" tl_2010_25_tract10.dbf tiger_staging.ma_tract10 | %PSQL%
 %PSQL% -c "ALTER TABLE tiger_staging.MA_tract10 RENAME geoid10 TO tract_id;  SELECT loader_load_staged_data(lower('MA_tract10'), lower('MA_tract')); "
@@ -684,41 +683,41 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 :
 : </programlisting>
 
-	  </refsection>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script" /></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Loader_Generate_Script">
-	  <refnamediv>
-		<refname>Loader_Generate_Script</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Script" /></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Loader_Generate_Script">
+      <refnamediv>
+        <refname>Loader_Generate_Script</refname>
 
-		<refpurpose>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into <varname>tiger_data</varname> schema. Each state script is returned as a separate record. Latest version supports Tiger 2010 structural changes and also loads census tract, block groups, and blocks tables.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into <varname>tiger_data</varname> schema. Each state script is returned as a separate record. Latest version supports Tiger 2010 structural changes and also loads census tract, block groups, and blocks tables.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>setof text <function>loader_generate_script</function></funcdef>
-			<paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef>
-			<paramdef><type>text</type> <parameter>os</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>setof text <function>loader_generate_script</function></funcdef>
+            <paramdef><type>text[]</type> <parameter>param_states</parameter></paramdef>
+            <paramdef><type>text</type> <parameter>os</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into <varname>tiger_data</varname> schema.  Each state script is returned as a separate record.</para>
-		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
-		process the files in the staging and temp folders.</para>
-		<para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
+        <para>Generates a shell script for the specified platform for the specified states that will download Tiger data, stage and load into <varname>tiger_data</varname> schema.  Each state script is returned as a separate record.</para>
+        <para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. Note the smallest unit it does is a whole state, but you can overwrite this by downloading the files yourself.  It will only
+        process the files in the staging and temp folders.</para>
+        <para>It uses the following control tables to control the process and different OS shell syntax variations.</para>
 
-		<orderedlist>
+        <orderedlist>
           <listitem>
             <para><varname>loader_variables</varname> keeps track of various variables such as census site, year, data and staging schemas</para>
           </listitem>
@@ -729,16 +728,16 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist> 
-		<para>Availability: 2.0.0 to support Tiger 2010 structured data and load census tract (tract), block groups (bg), and blocks (tabblocks) tables .</para>
+        <para>Availability: 2.0.0 to support Tiger 2010 structured data and load census tract (tract), block groups (bg), and blocks (tabblocks) tables .</para>
 
 
-	  </refsection>
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<para>Generate script to load up data for 2 states in Windows shell script format.</para>
-		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;
+      <refsection>
+        <title>Examples</title>
+        <para>Generate script to load up data for 2 states in Windows shell script format.</para>
+        <programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;
 -- result --
 set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\44_Rhode_Island"
 set TMPDIR=\gisdata\temp\
@@ -756,8 +755,8 @@ set SHP2PGSQL="%PGBIN%shp2pgsql"
 %WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --relative --recursive --level=2 --accept=zip,txt --mirror --reject=html
 :
 :</programlisting>
-		<para>Generate sh script</para>
-		<programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;
+        <para>Generate sh script</para>
+        <programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;
 -- result --
 STATEDIR="/gisdata/www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island" 
 TMPDIR="/gisdata/temp/"
@@ -774,39 +773,39 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
 :
 :</programlisting>
 
-	  </refsection>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Loader_Generate_Nation_Script">
-	  <refnamediv>
-		<refname>Loader_Generate_Nation_Script</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Loader_Generate_Nation_Script">
+      <refnamediv>
+        <refname>Loader_Generate_Nation_Script</refname>
 
-		<refpurpose>Generates a shell script for the specified platform that loads in the county and state lookup tables.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Generates a shell script for the specified platform that loads in the county and state lookup tables.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>loader_generate_nation_script</function></funcdef>
-			<paramdef><type>text</type> <parameter>os</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>loader_generate_nation_script</function></funcdef>
+            <paramdef><type>text</type> <parameter>os</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Generates a shell script for the specified platform that loads in the <varname>county_all</varname>, <varname>county_all_lookup</varname>, <varname>state_all</varname> tables into <varname>tiger_data</varname> schema.  These inherit respectively from the <varname>county</varname>, <varname>county_lookup</varname>, <varname>state</varname> tables in <varname>tiger</varname> schema.</para>
-		<para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. </para>
-		<para>It uses the following control tables <varname>tiger.loader_platform</varname>, <varname>tiger.loader_variables</varname>, and <varname>tiger.loader_lookuptables</varname> to control the process and different OS shell syntax variations.</para>
+        <para>Generates a shell script for the specified platform that loads in the <varname>county_all</varname>, <varname>county_all_lookup</varname>, <varname>state_all</varname> tables into <varname>tiger_data</varname> schema.  These inherit respectively from the <varname>county</varname>, <varname>county_lookup</varname>, <varname>state</varname> tables in <varname>tiger</varname> schema.</para>
+        <para>It uses unzip on Linux (7-zip on Windows by default) and wget to do the downloading. It uses <xref linkend="shp2pgsql_usage" /> to load in the data. </para>
+        <para>It uses the following control tables <varname>tiger.loader_platform</varname>, <varname>tiger.loader_variables</varname>, and <varname>tiger.loader_lookuptables</varname> to control the process and different OS shell syntax variations.</para>
 
-		<orderedlist>
+        <orderedlist>
           <listitem>
             <para><varname>loader_variables</varname> keeps track of various variables such as census site, year, data and staging schemas</para>
           </listitem>
@@ -817,61 +816,61 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
             <para><varname>loader_lookuptables</varname> each record defines a kind of table (state, county), whether to process records in it and how to load them in.  Defines the steps to import data, stage data, add, removes columns, indexes, and constraints for each.  Each table is prefixed with the state and inherits from a table in the tiger schema. e.g. creates <varname>tiger_data.ma_faces</varname> which inherits from <varname>tiger.faces</varname></para>
           </listitem>
         </orderedlist> 
-		<para>Availability: 2.1.0 </para>
-		<note><para>If you were running <varname>tiger_2010</varname> version and you want to reload as state with <varname>tiger_2011</varname>, you'll need to for the very first load generate and run drop statements <xref linkend="Drop_Nation_Tables_Generate_Script" /> before you run this script.</para></note>
-	  </refsection>
+        <para>Availability: 2.1.0 </para>
+        <note><para>If you were running <varname>tiger_2010</varname> version and you want to reload as state with <varname>tiger_2011</varname>, you'll need to for the very first load generate and run drop statements <xref linkend="Drop_Nation_Tables_Generate_Script" /> before you run this script.</para></note>
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<para>Generate script script to load nation data Windows.</para>
-		<programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
-		<para>Generate script to load up data for Linux/Unix systems.</para>
-		<programlisting>SELECT loader_generate_nation_script('sh'); </programlisting>
-	  </refsection>
+      <refsection>
+        <title>Examples</title>
+        <para>Generate script script to load nation data Windows.</para>
+        <programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
+        <para>Generate script to load up data for Linux/Unix systems.</para>
+        <programlisting>SELECT loader_generate_nation_script('sh'); </programlisting>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script" /></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Missing_Indexes_Generate_Script">
-	  <refnamediv>
-		<refname>Missing_Indexes_Generate_Script</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Script" /></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Missing_Indexes_Generate_Script">
+      <refnamediv>
+        <refname>Missing_Indexes_Generate_Script</refname>
 
-		<refpurpose>Finds all tables with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
-		    define the index for those tables.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Finds all tables with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
+            define the index for those tables.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef>
-			<paramdef></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef>
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
-		    define the index for those tables. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
-		    As the geocoder is improved, this function will be updated to accommodate new indexes being used. If this function outputs nothing, it means
-		    all your tables have what we think are the key indexes already in place.</para>
-	
-		
-		<para>Availability: 2.0.0</para>
-
-
-	  </refsection>
+        <para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
+            define the index for those tables. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
+            As the geocoder is improved, this function will be updated to accommodate new indexes being used. If this function outputs nothing, it means
+            all your tables have what we think are the key indexes already in place.</para>
+    
+        
+        <para>Availability: 2.0.0</para>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>SELECT missing_indexes_generate_script();
+      </refsection>
+
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>SELECT missing_indexes_generate_script();
 -- output: This was run on a database that was created before many corrections were made to the loading script ---
 CREATE INDEX idx_tiger_county_countyfp ON tiger.county USING btree(countyfp);
 CREATE INDEX idx_tiger_cousub_countyfp ON tiger.cousub USING btree(countyfp);
@@ -882,44 +881,44 @@ CREATE INDEX idx_tiger_data_ma_county_countyfp ON tiger_data.ma_county USING btr
 CREATE INDEX idx_tiger_data_ma_cousub_countyfp ON tiger_data.ma_cousub USING btree(countyfp);
 CREATE INDEX idx_tiger_data_ma_edges_countyfp ON tiger_data.ma_edges USING btree(countyfp);
 CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree(countyfp);
-		</programlisting>
-	
-	  </refsection>
+        </programlisting>
+    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Install_Missing_Indexes" /></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Normalize_Address">
-	  <refnamediv>
-		<refname>Normalize_Address</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Install_Missing_Indexes" /></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Normalize_Address">
+      <refnamediv>
+        <refname>Normalize_Address</refname>
 
-		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
-		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
-	  </refnamediv>
+        <refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
+        will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data).</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>norm_addy <function>normalize_address</function></funcdef>
-			<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>norm_addy <function>normalize_address</function></funcdef>
+            <paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
-		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
-		<para>This function just uses the various direction/state/suffix lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
-		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
-		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
-		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
+        <para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
+            get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+        <para>This function just uses the various direction/state/suffix lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
+         You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
+        <para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
+        <para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
+        <para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
@@ -953,13 +952,13 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           </listitem>
         </orderedlist>
 
-	  </refsection>
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<para>Output select fields.  Use <xref linkend="Pprint_Addy" /> if you want a pretty textual output.</para>
-		<programlisting>SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
+      <refsection>
+        <title>Examples</title>
+        <para>Output select fields.  Use <xref linkend="Pprint_Addy" /> if you want a pretty textual output.</para>
+        <programlisting>SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
  FROM (SELECT address, normalize_address(address) As na
         FROM addresses_to_geocode) As g;
         
@@ -971,52 +970,52 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
  529 Main Street, Boston MA, 02129                   | Main          | St
  77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave
  25 Wizard of Oz, Walaford, KS 99912323              | Wizard of Oz  | 
-		</programlisting>
-		
-		
+        </programlisting>
+        
+        
 
-	  </refsection>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Geocode"/>, <xref linkend="Pprint_Addy"/></para>
-	  </refsection>
-	</refentry>
-	
-		<refentry id="Pagc_Normalize_Address">
-	  <refnamediv>
-		<refname>Pagc_Normalize_Address</refname>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Geocode"/>, <xref linkend="Pprint_Addy"/></para>
+      </refsection>
+    </refentry>
+    
+        <refentry id="Pagc_Normalize_Address">
+      <refnamediv>
+        <refname>Pagc_Normalize_Address</refname>
 
-		<refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
-		will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data). Requires address_standardizer extension.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This function 
+        will work with just the lookup data packaged with the tiger_geocoder (no need for tiger census data). Requires address_standardizer extension.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef>
-			<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>norm_addy <function>pagc_normalize_address</function></funcdef>
+            <paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
-		    get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
-		<para>This function just uses the various pagc_* lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
-		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
-		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
-		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-		<para>There are slight variations in casing and formatting over the <xref linkend="Normalize_Address" />.</para>
-		<para>Availability: 2.1.0</para>
-		<para>&address_standardizer_required;</para>
-		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
-		<para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
-		<para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>
-		
+        <para>Given a textual street address, returns a composite <varname>norm_addy</varname> type that has road suffix, prefix and type standardized, street, streetname etc. broken into separate fields.  This is the first step in the geocoding process to 
+            get all addresses into normalized postal form. No other data is required aside from what is packaged with the geocoder.</para>
+        <para>This function just uses the various pagc_* lookup tables preloaded with the tiger_geocoder and located in the <varname>tiger</varname> schema, so it doesn't need you to download tiger census data or any other additional data to make use of it.
+         You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
+        <para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
+        <para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
+        <para>There are slight variations in casing and formatting over the <xref linkend="Normalize_Address" />.</para>
+        <para>Availability: 2.1.0</para>
+        <para>&address_standardizer_required;</para>
+        <para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
+        <para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
+        <para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>
+        
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
@@ -1050,12 +1049,12 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           </listitem>
         </orderedlist>
 
-	  </refsection>
+      </refsection>
 
-		<refsection>
-			<title>Examples</title>
-			<para>Single call example</para>
-			<programlisting>
+        <refsection>
+            <title>Examples</title>
+            <para>Single call example</para>
+            <programlisting>
 SELECT addy.*
 FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;
 
@@ -1064,7 +1063,7 @@ FROM pagc_normalize_address('9000 E ROO ST STE 999, Springfield, CO') AS addy;
 ---------+--------------+------------+------------------+---------------+-----------+-------------+-------------+-----+--------
     9000 | E            | ROO        | ST               |               | SUITE 999 | SPRINGFIELD | CO          |     | t</programlisting>
     
-    		<para>Batch call.  There are currently speed issues with the way postgis_tiger_geocoder wraps the address_standardizer.  These will hopefully
+            <para>Batch call.  There are currently speed issues with the way postgis_tiger_geocoder wraps the address_standardizer.  These will hopefully
 be resolved in later editions.  To work around them, if you need speed for batch geocoding to call generate a normaddy  in batch mode, you are encouraged
 to directly call the address_standardizer standardize_address function as shown below which is similar exercise to what we did in <xref linkend="Normalize_Address" /> that uses data created in <xref linkend="Geocode" />.</para>
     
@@ -1085,51 +1084,51 @@ SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
  26 Capen Street, Medford, MA                        | CAPEN         | ST
  124 Mount Auburn St, Cambridge, Massachusetts 02138 | MOUNT AUBURN  | ST
  950 Main Street, Worcester, MA 01610                | MAIN          | ST</programlisting>
-		</refsection>
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Normalize_Address"/>, <xref linkend="Geocode"/></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Pprint_Addy">
-	  <refnamediv>
-		<refname>Pprint_Addy</refname>
+        </refsection>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Normalize_Address"/>, <xref linkend="Geocode"/></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Pprint_Addy">
+      <refnamediv>
+        <refname>Pprint_Addy</refname>
 
-		<refpurpose>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. Usually used in conjunction with normalize_address.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. Usually used in conjunction with normalize_address.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>varchar <function>pprint_addy</function></funcdef>
-			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>varchar <function>pprint_addy</function></funcdef>
+            <paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. No other data is required aside from what is packaged with the geocoder.</para>
-		<para>Usually used in conjunction with <xref linkend="Normalize_Address"/>.</para>
-		
+        <para>Given a <varname>norm_addy</varname> composite type object, returns a pretty print representation of it. No other data is required aside from what is packaged with the geocoder.</para>
+        <para>Usually used in conjunction with <xref linkend="Normalize_Address"/>.</para>
+        
 
-	  </refsection>
+      </refsection>
 
 
-	  <refsection>
-		<title>Examples</title>
-		<para>Pretty print a single address</para>
-		<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
+      <refsection>
+        <title>Examples</title>
+        <para>Pretty print a single address</para>
+        <programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
             pretty_address
 ---------------------------------------
  202 E Fremont St, Las Vegas, NV 89101
-		</programlisting>
-		
-		<para>Pretty print address a table of addresses</para>
-		<programlisting>SELECT address As orig, pprint_addy(normalize_address(address)) As pretty_address
+        </programlisting>
+        
+        <para>Pretty print address a table of addresses</para>
+        <programlisting>SELECT address As orig, pprint_addy(normalize_address(address)) As pretty_address
         FROM addresses_to_geocode;
         
                         orig                         |              pretty_address
@@ -1140,16 +1139,16 @@ SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
  124 Mount Auburn St, Cambridge, Massachusetts 02138 | 124 Mount Auburn St, Cambridge, MA 02138
  950 Main Street, Worcester, MA 01610                | 950 Main St, Worcester, MA 01610</programlisting>
 
-	  </refsection>
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Normalize_Address"/></para>
-	  </refsection>
-	</refentry>
-	
-	<refentry id="Reverse_Geocode">
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Normalize_Address"/></para>
+      </refsection>
+    </refentry>
+    
+    <refentry id="Reverse_Geocode">
       <refnamediv>
         <refname>Reverse_Geocode</refname>
     
@@ -1188,7 +1187,7 @@ SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
           </listitem>
           <listitem>
             <para><varname>addy</varname> is an array of norm_addy (normalized addresses):  These are an array of possible addresses that fit the input point.  The first one in the array is most likely.
-            	Generally there should be only one, except in the case when a point is at the corner of 2 or 3 streets, or the point is somewhere on the road and not off to the side.</para>
+                Generally there should be only one, except in the case when a point is at the corner of 2 or 3 streets, or the point is somewhere on the road and not off to the side.</para>
           </listitem>
           <listitem>
             <para><varname>street</varname> an array of varchar:  These are cross streets (or the street) (streets that intersect or are the street the point is projected to be on).</para>
@@ -1205,7 +1204,7 @@ SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev
         <para>Example of a point at the corner of two streets, but closest to one.  This is approximate location of MIT: 77 Massachusetts Ave, Cambridge, MA 02139  
             Note that although we don't have 3 streets, PostgreSQL will just return null for entries above our upper bound so safe to use.  This includes street ranges</para> 
         <programlisting>SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, 
-        	array_to_string(r.street, ',') As cross_streets 
+            array_to_string(r.street, ',') As cross_streets 
         FROM reverse_geocode(ST_GeomFromText('POINT(-71.093902 42.359446)',4269),true) As r;
        
  result
@@ -1229,7 +1228,7 @@ result
 
 <para>For this one we reuse our geocoded example from <xref linkend="Geocode" /> and we only want the primary address and at most 2 cross streets.</para>
 <programlisting>SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1, 
-	(rg).street[1] As cross1, (rg).street[2] As cross2
+    (rg).street[1] As cross1, (rg).street[2] As cross2
 FROM (SELECT address As actual_addr, lon, lat,
     reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg
     FROM addresses_to_geocode WHERE rating > -1) As foo;
@@ -1257,7 +1256,7 @@ FROM (SELECT address As actual_addr, lon, lat,
         <refname>Topology_Load_Tiger</refname>
     
         <refpurpose>Loads a defined region of tiger data into a PostGIS Topology and transforming the tiger data to spatial reference of the topology
-        	and snapping to the precision tolerance of the topology.</refpurpose>
+            and snapping to the precision tolerance of the topology.</refpurpose>
       </refnamediv>
     
       <refsynopsisdiv>
@@ -1303,7 +1302,7 @@ FROM (SELECT address As actual_addr, lon, lat,
       <refsection>
       <title>Example: Boston, Massachusetts Topology</title>
       <para>Create a topology for Boston, Massachusetts in Mass State Plane Feet (2249) 
-      	with tolerance 0.25 feet and then load in Boston city tiger faces, edges, nodes.</para>
+          with tolerance 0.25 feet and then load in Boston city tiger faces, edges, nodes.</para>
       <programlisting>SELECT topology.CreateTopology('topo_boston', 2249, 0.25);
 createtopology
 --------------
@@ -1332,7 +1331,7 @@ SELECT * FROM
       <refsection>
       <title>Example: Suffolk, Massachusetts Topology</title>
       <para>Create a topology for Suffolk, Massachusetts in Mass State Plane Meters (26986) 
-      	with tolerance 0.25 meters and then load in Suffolk county tiger faces, edges, nodes.</para>
+          with tolerance 0.25 meters and then load in Suffolk county tiger faces, edges, nodes.</para>
       <programlisting>SELECT topology.CreateTopology('topo_suffolk', 26986, 0.25);
 -- this took 56,275 ms ~ 1 minute on Windows 7 32-bit with 5 states of tiger loaded
 -- must have been warmed up after loading boston
@@ -1367,46 +1366,46 @@ SELECT * FROM
       </refsection>
    </refentry>
    
-   	<refentry id="Set_Geocode_Setting">
-	  <refnamediv>
-		<refname>Set_Geocode_Setting</refname>
+       <refentry id="Set_Geocode_Setting">
+      <refnamediv>
+        <refname>Set_Geocode_Setting</refname>
 
-		<refpurpose>Sets a setting that affects behavior of geocoder functions.</refpurpose>
-	  </refnamediv>
+        <refpurpose>Sets a setting that affects behavior of geocoder functions.</refpurpose>
+      </refnamediv>
 
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Set_Geocode_Setting</function></funcdef>
-			<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
-			<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Set_Geocode_Setting</function></funcdef>
+            <paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
+            <paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
 
-	  <refsection>
-		<title>Description</title>
+      <refsection>
+        <title>Description</title>
 
-		<para>Sets value of specific setting stored in <varname>tiger.geocode_settings</varname> table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are listed in <xref linkend="Get_Geocode_Setting" />.</para>
+        <para>Sets value of specific setting stored in <varname>tiger.geocode_settings</varname> table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are listed in <xref linkend="Get_Geocode_Setting" />.</para>
 
-		<para>Availability: 2.1.0</para>
-		
-	  </refsection>
+        <para>Availability: 2.1.0</para>
+        
+      </refsection>
 
 
-	  <refsection>
-		<title>Example return debugging setting</title>
-		<para>If you run <xref linkend="Geocode" /> when this function is true, the NOTICE log will output timing and queries.</para>
-		<programlisting>SELECT set_geocode_setting('debug_geocode_address', 'true') As result;
+      <refsection>
+        <title>Example return debugging setting</title>
+        <para>If you run <xref linkend="Geocode" /> when this function is true, the NOTICE log will output timing and queries.</para>
+        <programlisting>SELECT set_geocode_setting('debug_geocode_address', 'true') As result;
 result
 ---------
-true</programlisting>	
-	  </refsection>
+true</programlisting>    
+      </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para><xref linkend="Get_Geocode_Setting" /></para>
-	  </refsection>
-	</refentry>
+      <!-- Optionally add a "See Also" section -->
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Get_Geocode_Setting" /></para>
+      </refsection>
+    </refentry>
   </sect1>

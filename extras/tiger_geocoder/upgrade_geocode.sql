@@ -234,6 +234,7 @@ SELECT name, abbrev, false
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
  
 SELECT tiger.SetSearchPathForInstall('tiger');
+\i geocode_settings.sql
 -- new census loader
 \i census_loader.sql
 --create parent tables for census

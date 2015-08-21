@@ -50,6 +50,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to tiger_geocoder in control
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
+  	../../extras/tiger_geocoder/geocode_settings.sql \
   ../../extras/tiger_geocoder/tiger_loader_2015.sql \
 	../../extras/tiger_geocoder/utility/utmzone.sql \
 	../../extras/tiger_geocoder/utility/cull_null.sql \
