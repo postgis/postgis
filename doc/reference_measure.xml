@@ -3672,7 +3672,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 				<funcdef>text <function>ST_Relate</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
-				<paramdef><type>int </type> <parameter>BoundaryNodeRule</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>BoundaryNodeRule</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
