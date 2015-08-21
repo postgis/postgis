@@ -1995,14 +1995,20 @@ lwgeom_subdivide(const LWGEOM *geom, int maxvertices)
 	static int startdepth = 0;
 	static int minmaxvertices = 8;
 	LWCOLLECTION *col;
-	GBOX clip = *(lwgeom_get_bbox(geom));
+	GBOX clip;
+	
+	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+
+	if ( lwgeom_is_empty(geom) )
+		return col;
 
 	if ( maxvertices < minmaxvertices )
 	{
+		lwcollection_free(col);
 		lwerror("%s: cannot subdivide to fewer than %d vertices per output", __func__, minmaxvertices);
 	}
-
-	col = lwcollection_construct_empty(COLLECTIONTYPE, geom->srid, lwgeom_has_z(geom), lwgeom_has_m(geom));
+	
+	clip = *(lwgeom_get_bbox(geom));
 	lwgeom_subdivide_recursive(geom, maxvertices, startdepth, col, &clip);
 	lwgeom_set_srid((LWGEOM*)col, geom->srid);
 	return col;
