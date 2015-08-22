@@ -74,5 +74,3 @@ if [ "$MAKE_GARDEN" = "1" ]; then
  echo "Running garden test"
  make garden
 fi
-
-#TODO: do an upgrade from 2.0.5svn, only if we are running PostGIS 2.1
