@@ -152,6 +152,8 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
  
  make check RUNTESTFLAGS=--extension
+ cd extensions/address_standardizer
+ make installcheck
  if [ "$?" != "0" ]; then
   exit $?
  fi
