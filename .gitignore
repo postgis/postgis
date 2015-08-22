@@ -39,6 +39,7 @@ extensions/address_standardizer/address_standardizer.control
 extensions/address_standardizer/address_standardizer_data_us.control
 extensions/address_standardizer/address_standardizer.sql
 extensions/address_standardizer/sql/
+extensions/address_standardizer/results/
 extensions/address_standardizer/us-*.sql
 extensions/postgis/Makefile
 extensions/postgis/postgis.control

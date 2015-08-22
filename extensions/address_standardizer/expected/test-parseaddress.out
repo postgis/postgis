@@ -1,0 +1,17 @@
+\pset pager off
+drop table if exists test_parse_address cascade;
+NOTICE:  table "test_parse_address" does not exist, skipping
+create table test_parse_address (
+    id serial not null primary key,
+    instring text not null,
+    outstring text
+);
+copy test_parse_address (instring, outstring) from stdin;
+select id, instring, outstring as expected, parse_address(instring) as got_result
+  from test_parse_address
+ where instring not like '@@%' and parse_address(instring)::text != outstring;
+ id | instring | expected | got_result 
+----+----------+----------+------------
+(0 rows)
+
+\q

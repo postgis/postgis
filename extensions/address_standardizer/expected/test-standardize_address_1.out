@@ -1,0 +1,12 @@
+select * from parse_address('123 Main Street, Kansas City, MO 45678');
+ num |   street    | street2 |    address1     |    city     | state |  zip  | zipplus | country 
+-----+-------------+---------+-----------------+-------------+-------+-------+---------+---------
+ 123 | Main Street |         | 123 Main Street | Kansas City | MO    | 45678 |         | US
+(1 row)
+
+select * from standardize_address('us_lex'::text, 'us_gaz'::text, 'us_rules'::text, '123 Main Street'::text, 'Kansas City, MO 45678'::text);
+ building | house_num | predir | qual | pretype | name | suftype | sufdir | ruralroute | extra |    city     |  state   | country | postcode | box | unit 
+----------+-----------+--------+------+---------+------+---------+--------+------------+-------+-------------+----------+---------+----------+-----+------
+          | 123       |        |      |         | MAIN | STREET  |        |            |       | KANSAS CITY | MISSOURI |         | 45678    |     | 
+(1 row)
+

@@ -1,0 +1,115 @@
+drop table if exists addresses cascade;
+NOTICE:  table "addresses" does not exist, skipping
+create table addresses (
+  id serial not null primary key,
+  micro text,
+  macro text
+);
+copy addresses (micro,macro) from stdin;
+select (std).* from (
+    select standardize_address('us_lex', 'us_gaz', 'us_rules', micro, macro) as std
+      from addresses) as foo;
+ building | house_num | predir | qual | pretype |     name      |  suftype  | sufdir | ruralroute | extra |    city    |   state   | country | postcode | box |       unit       
+----------+-----------+--------+------+---------+---------------+-----------+--------+------------+-------+------------+-----------+---------+----------+-----+------------------
+          | 1017      |        |      |         | LINWOOD       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT 12
+          | 1029      |        |      |         | ATLANTIC      | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | APARTMENT 302
+          | 1032      |        |      |         | PORTLAND      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 1093      |        |      |         | EDGERTON      | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55130    |     | # FLOOR 2
+          | 111       |        |      |         | KELLOGG       | BOULEVARD | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55101    |     | APARTMENT 3210
+          | 1113      |        |      |         | HAWTHORNE     | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1120      |        |      |         | BARCLAY       | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | APARTMENT 4
+          | 1137      |        |      |         | CHURCHILL     | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55103    |     | 
+          | 1140      |        |      |         | GALTIER       | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 1147      |        |      |         | MINNEHAHA     | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 1167      |        |      |         | BURNQUIST     | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1168      |        |      |         | SUPORNICK     | LANE      |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | APARTMENT A
+          | 1169      |        |      |         | RANDOLPH      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 1223      |        |      |         | BERKELEY      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 125       |        |      |         | MAGNOLIA      | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 1263      |        |      |         | RICE          | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 1305      |        |      |         | CONWAY        | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1341      |        |      |         | CASE          | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1345      |        |      |         | CASE          | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1351      |        |      |         | CONWAY        | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | APARTMENT 10
+          | 1363      |        |      |         | OSCEOLA       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 1377      |        |      |         | MAYNARD       | DRIVE     | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | APARTMENT 168
+          | 1379      |        |      |         | MAYNARD       | DRIVE     | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | APARTMENT 176
+          | 1379      |        |      |         | MAYNARD       | DRIVE     | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | APARTMENT 177
+          | 1388      |        |      |         | BARCLAY       | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1390      |        |      |         | ARONA         | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55108    |     | 
+          | 1435      |        |      |         | GRAND         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT 2
+          | 1484      |        |      |         | ASHLAND       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55101    |     | UNIT 101
+          | 1509      |        |      |         | SUMMIT        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1548      |        |      |         | VAN BUREN     | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 1561      |        |      |         | WHEELOCK      | LANE      |        |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | UNIT 303
+          | 1621      |        |      |         | ASHLAND       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | APARTMENT UPPER
+          | 1636      |        |      |         | WOODBRIDGE    | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 1644      |        |      |         | DAYTON        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | APARTMENT 3
+          | 1709      |        |      |         | LEONE         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 1743      |        |      |         | HIGHLAND      | PARKWAY   |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 1776      |        |      |         | SAINT CLAIR   | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT 107
+          | 1776      |        |      |         | SAINT CLAIR   | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT 205
+          | 1821      |        |      |         | UNIVERSITY    | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | ROOM 336
+          | 1877      |        |      |         | GOODRICH      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT LOWER
+          | 1898      |        |      |         | LACROSSE      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 1899      |        |      |         | BEECHWOOD     | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 1915      |        |      |         | MARSHALL      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | APARTMENT 2
+          | 1940      |        |      |         | NEVADA        | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 1944      |        |      |         | NOKOMIS       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 1962      |        |      |         | SAUNDERS      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 1968      |        |      |         | NEBRASKA      | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 1971      |        |      |         | SARGENT       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 204       |        |      |         | CONGRESS      | STREET    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55107    |     | APARTMENT D
+          | 2085      |        |      |         | GRAND         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55101    |     | APARTMENT 203
+          | 21        |        |      |         | BATTLE CREEK  | PLACE     |        |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 2174      |        |      |         | ELEANOR       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 2224      |        |      |         | MAILAND       | ROAD      |        |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | 
+          | 2272      |        |      |         | BENSON        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | UNIT C
+          | 2285      |        |      |         | BENSON        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 233       |        |      |         | CONCORD       | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55107    |     | 
+          | 235       |        |      |         | MCKNIGHT      | ROAD      | SOUTH  |            |       | SAINT PAUL | MINNESOTA |         | 55119    |     | APARTMENT B4
+          | 2360      |        |      |         | BUFORD        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55108    |     | 
+          | 256       |        |      |         | POINT DOUGLAS | ROAD      | NORTH  |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 261       |        |      |         | UNIVERSITY    | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55130    |     | APARTMENT 303
+          | 2706      |        |      |         | GANNON        | ROAD      |        |            |       | SAINT PAUL | MINNESOTA |         | 55116    |     | 
+          | 289       |        |      |         | 5             | STREET    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55101    |     | UNIT 309
+          | 303       |        |      |         | WILDER        | STREET    | NORTH  |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | # FLOOR 1
+          | 317       |        |      |         | ROBIE         | STREET    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55107    |     | 
+          | 333       |        |      |         | SMITH         | AVENUE    | NORTH  |            |       | SAINT PAUL | MINNESOTA |         | 55102    |     | 
+          | 377       |        |      |         | HAMLINE       | AVENUE    | SOUTH  |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 418       |        |      |         | MARYLAND      | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | APARTMENT 204
+          | 444       |        |      |         | CLINTON       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55107    |     | 
+          | 444       |        |      |         | FERRY         | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 536       |        |      |         | THOMAS        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55103    |     | 
+          | 544       |        |      |         | SIMPSON       | STREET    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 56        |        |      |         | IRVINE        | PARK      |        |            |       | SAINT PAUL | MINNESOTA |         | 55102    |     | 
+          | 597       |        |      |         | BLAIR         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55103    |     | APARTMENT 5
+          | 602       |        |      |         | HUMBOLDT      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55107    |     | 
+          | 605       |        |      |         | CAPITOL       | BOULEVARD |        |            |       | SAINT PAUL | MINNESOTA |         | 55103    |     | APARTMENT B
+          | 617       |        |      |         | ROSE          | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55130    |     | 
+          | 635       |        |      |         | WESTERN       | AVENUE    | NORTH  |            |       | SAINT PAUL | MINNESOTA |         | 55103    |     | 
+          | 660       |        |      |         | 5             | STREET    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | APARTMENT DOWNST
+          | 672       |        |      |         | UNIVERSITY    | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 675       |        |      |         | WHEELOCK      | PARKWAY   | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 70        |        |      |         | IOWA          | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 711       |        |      |         | MARSHALL      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 712       |        |      |         | SNELLING      | AVENUE    | NORTH  |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | APARTMENT 1
+          | 715       |        |      |         | CALIFORNIA    | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 715       |        |      |         | MARSHALL      | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 735       |        |      |         | LINCOLN       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | 
+          | 750       |        |      |         | BLAIR         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 754       |        |      |         | BLAIR         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | # FLOOR 1
+          | 771       |        |      |         | BUTTERNUT     | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55102    |     | 
+          | 812       |        |      |         | 7             | STREET    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 83        |        |      |         | CALIFORNIA    | AVENUE    | WEST   |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | APARTMENT 206
+          | 838       |        |      |         | LAFOND        | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 852       |        |      |         | HOLLY         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55104    |     | 
+          | 859       |        |      |         | OSCEOLA       | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55105    |     | APARTMENT 1
+          | 885       |        |      |         | CASE          | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 927       |        |      |         | WAKEFIELD     | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 93        |        |      |         | MARIA         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 935       |        |      |         | HYACINTH      | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+          | 94        |        |      |         | FRONT         | AVENUE    |        |            |       | SAINT PAUL | MINNESOTA |         | 55117    |     | 
+          | 953       |        |      |         | HYACINTH      | AVENUE    | EAST   |            |       | SAINT PAUL | MINNESOTA |         | 55106    |     | 
+(100 rows)
+

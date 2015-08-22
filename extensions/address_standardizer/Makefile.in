@@ -35,13 +35,21 @@ MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
 DATA = address_standardizer_data_us.control us_lex.sql us_gaz.sql us_rules.sql
-DATA_built = sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql   sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql
+DATA_built = sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql \
+sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
+sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
+sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
+
+EXTRA_CLEAN += sql/*.sql
+
+
 
 DOCS = README.address_standardizer
 PG_CPPFLAGS = @CPPFLAGS@ -g -O0
 
 SHLIB_LINK = @SHLIB_LINK@ -lpcre
 EXTRA_CLEAN = usps-st-city-name.txt mk-st-regexp mk-city-regex test_main
+REGRESS = test-init-extensions test-parseaddress test-standardize_address_1 test-standardize_address_2
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
@@ -117,13 +125,6 @@ usps-st-city-name.txt: usps-st-city-orig.txt usps-st-city-adds.txt
 dist-clean:
 	rm -f mk-st-regexp mk-city-regex usps-st-city-name.txt test_main Makefile
 
-test:
-	@echo "To run the test on parse_address do the follow:"
-	@echo "1. (make && sudo make install) to compile and install extension"
-	@echo "2. create a database and install the address_standardizer extension"
-	@echo "3. psql test_db -f test-parseaddress.sql"
-	@echo "it should report '(0 rows)' if all tests passed or"
-	@echo "report which ones failed."
 
 test_main: $(OBJS_test_main)
 	gcc -o test_main $(OBJS_test_main) $(LDFLAGS) $(LIBS)
