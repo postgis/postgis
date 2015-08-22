@@ -150,6 +150,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp raster/rt_pg/rtpostgis-*.dll ${PGPATHEDB}/lib
  cp -r extensions/*/sql/* ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
+ cp -r extensions/*/*.dll ${PGPATHEDB}/lib
  
  make check RUNTESTFLAGS=--extension
  cd extensions/address_standardizer
