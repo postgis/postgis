@@ -153,7 +153,15 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp -r extensions/*/*.dll ${PGPATHEDB}/lib
  
  make check RUNTESTFLAGS=--extension
+ 
+ ##test address standardizer
+ cd ${POSTGIS_SRC}
  cd extensions/address_standardizer
+ make installcheck
+ 
+ ##test tiger geocoder
+ cd ${POSTGIS_SRC}
+ cd extensions/postgis_tiger_geocoder
  make installcheck
  if [ "$?" != "0" ]; then
   exit $?
