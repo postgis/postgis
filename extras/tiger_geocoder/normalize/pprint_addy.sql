@@ -5,7 +5,7 @@
 -- it applies to foreign influenced roads like Camino (for road)
 CREATE OR REPLACE FUNCTION is_pretype(text) RETURNS boolean AS
 $$
-    SELECT EXISTS(SELECT name FROM street_type_lookup WHERE name = upper($1) AND is_hw );
+    SELECT EXISTS(SELECT name FROM street_type_lookup WHERE upper(name) = upper($1) AND is_hw );
 $$
 LANGUAGE sql IMMUTABLE STRICT; /** I know this should be stable but it's practically immutable :) **/
 
