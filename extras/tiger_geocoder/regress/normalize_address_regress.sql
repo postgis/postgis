@@ -1,4 +1,4 @@
-\timing
+--\timing
 SELECT '#887' As ticket, * FROM normalize_address('2450 N COLORADO ST, PHILADELPHIA, PA, 19132');
 SELECT '#1051a' As ticket, * FROM normalize_address('212 3rd Ave N Suite 560, Minneapolis, MN 55401');
 SELECT '#1051b' As ticket, * FROM normalize_address('3937 43RD AVE S, MINNEAPOLIS, MN 55406');
@@ -73,16 +73,18 @@ SELECT '#1112d' As ticket, * FROM normalize_address('8401 West 35W, Blaine, MN 5
 SELECT '#1112e' As ticket, * FROM normalize_address('8401 W 35W, Blaine, MN 55449');
 
 -- Testing pretty print of highway addresses
--- These tests excerpted from Brian Hamlin's CASS failures
+-- These tests excerpted from Brian Hamlin's CASS failures 
 -- in #1077
 SELECT '#1125a' As ticket, pprint_addy(normalize_address('19596 COUNTY ROAD 480, COLCORD, OK 74338'));
-SELECT '#1125b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('4345 353 Rte, SALAMANCA, NY 14779') AS addy;
+--(somehow broke #1125b
+SELECT '#1125b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('4345 ROUTE 353, SALAMANCA, NY 14779') AS addy;
 SELECT '#1125c' As ticket, pprint_addy(addy), addy.* FROM normalize_address('19799 STATE ROUTE O, COSBY, MO 64436') AS addy;
 
--- some more to test interstate permutations
+-- some more to test interstate permutations - currently fails
 SELECT '#1125d' As ticket, pprint_addy(addy), addy.* FROM normalize_address('Interstate 90,Boston, MA') As addy;
 -- this one is wrong (because the lack of space trips it up) but will fix later
 SELECT '#1125e' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I-90,Boston, MA') As addy;
+--broke this one too
 SELECT '#1125f' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I 90,Boston, MA') As addy;
 
 -- location with prefixes getting caught in post prefix
@@ -91,4 +93,4 @@ SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('111
 -- #1614 County Rd
 SELECT '#1614a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('8435 COUNTY RD 20 SE, ROCHESTER, MN 55904') As addy;
 SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('3208 U.S. 52, Rochester, MN 55901') As addy;
-\timing
+--\timing

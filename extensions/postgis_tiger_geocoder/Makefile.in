@@ -19,6 +19,8 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
                         sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
+REGRESS = test-normalize_address
+REGRESS_OPTS = --load-extension=fuzzystrmatch --load-extension=postgis --load-extension=$(EXTENSION)
 
 PG_CONFIG    =  @PG_CONFIG@
 
@@ -26,13 +28,38 @@ PG91         = $(shell $(PG_CONFIG) --version | $(GREP) -qE " 8\.| 9\.0" && echo
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/*.sql ${SQL_BITS} 
 
+#test address standardizer if also built
+ifeq (@ADDRESS_STANDARDIZER@,address_standardizer)
+	REGRESS +=  test-pagc_normalize_address
+	REGRESS_OPTS += --load-extension=address_standardizer
+endif
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade sql/test-normalize_address.sql  sql/test-pagc_normalize_address.sql expected/test-normalize_address.out expected/test-pagc_normalize_address.out sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql  sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
+	mkdir -p expected
 	cp $< $@
+
+## adding \t .. to force output to be the same as what get in regular regress in tiger folder
+
+
+expected/test-normalize_address.out: ../../extras/tiger_geocoder/regress/normalize_address_regress
+	echo '\t on \a \set ECHO none' > $@
+	cat $^ >> $@
+	
+expected/test-pagc_normalize_address.out: ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress
+	echo '\t on \a \set ECHO none' > $@
+	cat $^ >> $@
+	
+sql/test-normalize_address.sql: ../../extras/tiger_geocoder/regress/normalize_address_regress.sql
+	echo '\t on \a \set ECHO none' > $@
+	cat $^ >> $@
+	
+sql/test-pagc_normalize_address.sql: ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql
+	echo '\t on \a \set ECHO none' > $@
+	cat $^ >> $@
 	
 sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
 	mkdir -p sql
@@ -42,6 +69,11 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql ../postgis_extension_helper_uninstall.sql
 	mkdir -p sql
 	cat $^ > $@
+
+sql/test_normalize_address.sql: ../../extras/tiger_geocoder/regress/normalize_address_regress.sql
+	echo '\a' > $@
+	cat $^ >> $@
+
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
 	mkdir -p sql
 	cp $< $@
@@ -171,8 +203,10 @@ sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extensio
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
-	
+
+#only extension files	
 DATA = $(wildcard sql/*--*.sql)
+EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
 

@@ -673,8 +673,12 @@ in the <varname>extensions</varname> section of the database browser tree and wi
 
 <para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
 <programlisting>CREATE EXTENSION postgis;
-CREATE EXTENSION postgis_topology;
-CREATE EXTENSION postgis_tiger_geocoder;</programlisting>
+CREATE EXTENSION postgis_sfcgal;
+CREATE EXTENSION fuzzystrmatch; --needed for postgis_tiger_geocoder
+--optional used by postgis_tiger_geocoder, or can be used standalone
+CREATE EXTENSION address_standardizer;
+CREATE EXTENSION postgis_tiger_geocoder;
+CREATE EXTENSION postgis_topology;</programlisting>
 
 <para>In psql you can use to see what versions you have installed and also what schema they are installed. </para>
 <programlisting>\connect mygisdb
@@ -726,7 +730,7 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
 	  <para>
 		<command>make check</command>
 	  </para>
-
+	  
 	  <para>
 		The above command will run through various checks and regression tests
 		using the generated library against an actual PostgreSQL database.
@@ -1042,6 +1046,23 @@ Running tests
  uninstall .. ok (4112)
 
 Run tests: 90</programlisting>
+
+	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  So to test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
+	  <para>For address_standardizer</para>
+	  <command>cd extensions/address_standardizer
+	      make install
+	      make installcheck
+	  </command>
+	  
+	  <para>For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions available in your PostgreSQL instance. The address_standardizer tests will also kick in if you built postgis with address_standardizer support</para>
+	  <command>cd extensions/postgis_tiger_geocoder
+	      make install
+	      make installcheck
+	  </command>
+	  <para>output should look like:</para>
+	  <screen>
+	  
+	  </screen>
 	</sect2>
 
 	<sect2>

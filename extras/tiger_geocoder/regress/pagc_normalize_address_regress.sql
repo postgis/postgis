@@ -1,10 +1,13 @@
 SELECT set_geocode_setting('use_pagc_address_parser', 'true');
-\timing
+--\timing
 SELECT '#887' As ticket, * FROM normalize_address('2450 N COLORADO ST, PHILADELPHIA, PA, 19132');
+-- this currently turns 3rd to 3, we want to fix to keep 3rd as is
 SELECT '#1051a' As ticket, * FROM normalize_address('212 3rd Ave N Suite 560, Minneapolis, MN 55401');
+-- this currently turns 43rd to 43, we want to fix to keep 43rd as is
 SELECT '#1051b' As ticket, * FROM normalize_address('3937 43RD AVE S, MINNEAPOLIS, MN 55406');
+-- this currently turns 3rd to 3, we want to fix to keep 3rd as is
 SELECT '#1051c' As ticket, * FROM normalize_address('212 N 3rd Ave, Minneapolis, MN 55401');
--- City missing ,  -- NOTE this one won't normalize right if you don't have MN data loaded
+-- this currently turns 3rd to 3, we want to fix to keep 3rd as is
 SELECT '#1051d' As ticket, * FROM normalize_address('212 3rd Ave N Minneapolis, MN 55401'); 
 -- comma in wrong spot
 SELECT * FROM normalize_address('529 Main Street, Boston MA, 02129');
@@ -23,6 +26,7 @@ SELECT * FROM normalize_address('529 Main Street, Apt 201, Boston, MA');
 SELECT '#1108a' As ticket, * FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129');
 
 -- Partial and Mangled zipcodes
+-- this currently fails and puts MINNEAPOLIS inside internal (seems to be a bug in parse address)
 SELECT '#1073a' As ticket, * FROM normalize_address('212 3rd Ave N, MINNEAPOLIS, MN 553404');
 SELECT '#1073b' As ticket, * FROM normalize_address('212 3rd Ave N, MINNEAPOLIS, MN 55401-');
 SELECT '#1073c' As ticket, * FROM normalize_address('529 Main Street, Boston, MA 021');
@@ -92,5 +96,5 @@ SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('111
 -- #1614 County Rd
 SELECT '#1614a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('8435 COUNTY RD 20 SE, ROCHESTER, MN 55904') As addy;
 SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('3208 U.S. 52, Rochester, MN 55901') As addy;
-\timing
+--\timing
 SELECT set_geocode_setting('use_pagc_address_parser', 'false');

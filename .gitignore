@@ -52,6 +52,8 @@ extensions/postgis_sfcgal/sql_bits/
 extensions/postgis_tiger_geocoder/Makefile
 extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
 extensions/postgis_tiger_geocoder/sql
+extensions/postgis_tiger_geocoder/results
+extensions/postgis_tiger_geocoder/expected
 extensions/postgis_tiger_geocoder/sql_bits/*.sql
 extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder.sql.in
 extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder_minor.sql.in
