@@ -1227,7 +1227,25 @@ Running tests
 . ok (4336)
 
 Run tests: 118
-Failed: 0</programlisting>
+Failed: 0
+
+-- if you built --with-gui, you should see this too
+
+     CUnit - A unit testing framework for C - Version 2.1-2
+     http://cunit.sourceforge.net/
+
+
+Suite: Shapefile Loader File shp2pgsql Test
+  Test: test_ShpLoaderCreate() ...passed
+  Test: test_ShpLoaderDestroy() ...passed
+Suite: Shapefile Loader File pgsql2shp Test
+  Test: test_ShpDumperCreate() ...passed
+  Test: test_ShpDumperDestroy() ...passed
+
+Run Summary:    Type  Total    Ran Passed Failed Inactive
+              suites      2      2    n/a      0        0
+               tests      4      4      4      0        0
+             asserts      4      4      4      0      n/a</programlisting>
 
 	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
 	  <para>For address_standardizer:
