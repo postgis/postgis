@@ -762,195 +762,320 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
 		following:
 	  </para>
 
-	  <programlisting>
-     CUnit - A Unit testing framework for C - Version 2.1-0
+	  <programlisting>    CUnit - A unit testing framework for C - Version 2.1-2
      http://cunit.sourceforge.net/
 
 
-Suite: print_suite
-  Test: test_lwprint_default_format ... passed
-  Test: test_lwprint_format_orders ... passed
-  Test: test_lwprint_optional_format ... passed
-  Test: test_lwprint_oddball_formats ... passed
-  Test: test_lwprint_bad_formats ... passed
-Suite: misc
-  Test: test_misc_force_2d ... passed
-  Test: test_misc_simplify ... passed
-  Test: test_misc_count_vertices ... passed
-  Test: test_misc_area ... passed
-  Test: test_misc_wkb ... passed
-Suite: ptarray
-  Test: test_ptarray_append_point ... passed
-  Test: test_ptarray_append_ptarray ... passed
-  Test: test_ptarray_locate_point ... passed
-  Test: test_ptarray_isccw ... passed
-  Test: test_ptarray_signed_area ... passed
-  Test: test_ptarray_desegmentize ... passed
-  Test: test_ptarray_insert_point ... passed
-  Test: test_ptarray_contains_point ... passed
-  Test: test_ptarrayarc_contains_point ... passed
-Suite: PostGIS Computational Geometry Suite
-  Test: test_lw_segment_side ... passed
-  Test: test_lw_segment_intersects ... passed
-  Test: test_lwline_crossing_short_lines ... passed
-  Test: test_lwline_crossing_long_lines ... passed
-  Test: test_lwline_crossing_bugs ... passed
-  Test: test_lwpoint_set_ordinate ... passed
-  Test: test_lwpoint_get_ordinate ... passed
-  Test: test_point_interpolate ... passed
-  Test: test_lwline_clip ... passed
-  Test: test_lwline_clip_big ... passed
-  Test: test_lwmline_clip ... passed
-  Test: test_geohash_point ... passed
-  Test: test_geohash_precision ... passed
-  Test: test_geohash ... passed
-  Test: test_geohash_point_as_int ... passed
-  Test: test_isclosed ... passed
+Suite: computational_geometry
+  Test: test_lw_segment_side ...passed
+  Test: test_lw_segment_intersects ...passed
+  Test: test_lwline_crossing_short_lines ...passed
+  Test: test_lwline_crossing_long_lines ...passed
+  Test: test_lwline_crossing_bugs ...passed
+  Test: test_lwpoint_set_ordinate ...passed
+  Test: test_lwpoint_get_ordinate ...passed
+  Test: test_point_interpolate ...passed
+  Test: test_lwline_clip ...passed
+  Test: test_lwline_clip_big ...passed
+  Test: test_lwmline_clip ...passed
+  Test: test_geohash_point ...passed
+  Test: test_geohash_precision ...passed
+  Test: test_geohash ...passed
+  Test: test_geohash_point_as_int ...passed
+  Test: test_isclosed ...passed
+  Test: test_lwgeom_simplify ...passed
 Suite: buildarea
-  Test: buildarea1 ... passed
-  Test: buildarea2 ... passed
-  Test: buildarea3 ... passed
-  Test: buildarea4 ... passed
-  Test: buildarea4b ... passed
-  Test: buildarea5 ... passed
-  Test: buildarea6 ... passed
-  Test: buildarea7 ... passed
-Suite: clean
-  Test: test_lwgeom_make_valid ... passed
-Suite: PostGIS Measures Suite
-  Test: test_mindistance2d_tolerance ... passed
-  Test: test_rect_tree_contains_point ... passed
-  Test: test_rect_tree_intersects_tree ... passed
-  Test: test_lwgeom_segmentize2d ... passed
-  Test: test_lwgeom_locate_along ... passed
-  Test: test_lw_dist2d_pt_arc ... passed
-  Test: test_lw_dist2d_seg_arc ... passed
-  Test: test_lw_dist2d_arc_arc ... passed
-  Test: test_lw_arc_length ... passed
-  Test: test_lw_dist2d_pt_ptarrayarc ... passed
-  Test: test_lw_dist2d_ptarray_ptarrayarc ... passed
-Suite: node
-  Test: test_lwgeom_node ... passed
-Suite: WKT Out Suite
-  Test: test_wkt_out_point ... passed
-  Test: test_wkt_out_linestring ... passed
-  Test: test_wkt_out_polygon ... passed
-  Test: test_wkt_out_multipoint ... passed
-  Test: test_wkt_out_multilinestring ... passed
-  Test: test_wkt_out_multipolygon ... passed
-  Test: test_wkt_out_collection ... passed
-  Test: test_wkt_out_circularstring ... passed
-  Test: test_wkt_out_compoundcurve ... passed
-  Test: test_wkt_out_curvpolygon ... passed
-  Test: test_wkt_out_multicurve ... passed
-  Test: test_wkt_out_multisurface ... passed
-Suite: WKT In Suite
-  Test: test_wkt_in_point ... passed
-  Test: test_wkt_in_linestring ... passed
-  Test: test_wkt_in_polygon ... passed
-  Test: test_wkt_in_multipoint ... passed
-  Test: test_wkt_in_multilinestring ... passed
-  Test: test_wkt_in_multipolygon ... passed
-  Test: test_wkt_in_collection ... passed
-  Test: test_wkt_in_circularstring ... passed
-  Test: test_wkt_in_compoundcurve ... passed
-  Test: test_wkt_in_curvpolygon ... passed
-  Test: test_wkt_in_multicurve ... passed
-  Test: test_wkt_in_multisurface ... passed
-  Test: test_wkt_in_tin ... passed
-  Test: test_wkt_in_polyhedralsurface ... passed
-  Test: test_wkt_in_errlocation ... passed
-Suite: WKB Out Suite
-  Test: test_wkb_out_point ... passed
-  Test: test_wkb_out_linestring ... passed
-  Test: test_wkb_out_polygon ... passed
-  Test: test_wkb_out_multipoint ... passed
-  Test: test_wkb_out_multilinestring ... passed
-  Test: test_wkb_out_multipolygon ... passed
-  Test: test_wkb_out_collection ... passed
-  Test: test_wkb_out_circularstring ... passed
-  Test: test_wkb_out_compoundcurve ... passed
-  Test: test_wkb_out_curvpolygon ... passed
-  Test: test_wkb_out_multicurve ... passed
-  Test: test_wkb_out_multisurface ... passed
-  Test: test_wkb_out_polyhedralsurface ... passed
-:
-Suite: Geodetic Suite
-  Test: test_sphere_direction ... passed
-  Test: test_sphere_project ... passed
-  Test: test_lwgeom_area_sphere ... passed
-  Test: test_signum ... passed
-  Test: test_gbox_from_spherical_coordinates ... passed
-:
-  Test: test_geos_noop ... passed
-Suite: Internal Spatial Trees
-  Test: test_tree_circ_create ... passed
-  Test: test_tree_circ_pip ... passed
-  Test: test_tree_circ_pip2 ... passed
-  Test: test_tree_circ_distance ... passed
-Suite: triangulate
-  Test: test_lwgeom_delaunay_triangulation ... passed
-Suite: stringbuffer
-  Test: test_stringbuffer_append ... passed
-  Test: test_stringbuffer_aprintf ... passed
-Suite: surface
-  Test: triangle_parse ... passed
-  Test: tin_parse ... passed
-  Test: polyhedralsurface_parse ... passed
-  Test: surface_dimension ... passed
-Suite: homogenize
-  Test: test_coll_point ... passed
-  Test: test_coll_line ... passed
-  Test: test_coll_poly ... passed
-  Test: test_coll_coll ... passed
-  Test: test_geom ... passed
-  Test: test_coll_curve ... passed
+  Test: buildarea1 ...passed
+  Test: buildarea2 ...passed
+  Test: buildarea3 ...passed
+  Test: buildarea4 ...passed
+  Test: buildarea4b ...passed
+  Test: buildarea5 ...passed
+  Test: buildarea6 ...passed
+  Test: buildarea7 ...passed
+Suite: geometry_clean
+  Test: test_lwgeom_make_valid ...passed
+Suite: clip_by_rectangle
+  Test: test_lwgeom_clip_by_rect ...passed
 Suite: force_sfs
-  Test: test_sfs_11 ... passed
-  Test: test_sfs_12 ... passed
-  Test: test_sqlmm ... passed
-Suite: out_gml
-  Test: out_gml_test_precision ... passed
-  Test: out_gml_test_srid ... passed
-  Test: out_gml_test_dims ... passed
-  Test: out_gml_test_geodetic ... passed
-  Test: out_gml_test_geoms ... passed
-  Test: out_gml_test_geoms_prefix ... passed
-  Test: out_gml_test_geoms_nodims ... passed
-  Test: out_gml2_extent ... passed
-  Test: out_gml3_extent ... passed
-Suite: KML Out Suite
-  Test: out_kml_test_precision ... passed
-  Test: out_kml_test_dims ... passed
-  Test: out_kml_test_geoms ... passed
-  Test: out_kml_test_prefix ... passed
-Suite: GeoJson Out Suite
-  Test: out_geojson_test_precision ... passed
-  Test: out_geojson_test_dims ... passed
-  Test: out_geojson_test_srid ... passed
-  Test: out_geojson_test_bbox ... passed
-  Test: out_geojson_test_geoms ... passed
-Suite: SVG Out Suite
-  Test: out_svg_test_precision ... passed
-  Test: out_svg_test_dims ... passed
-  Test: out_svg_test_relative ... passed
-  Test: out_svg_test_geoms ... passed
-  Test: out_svg_test_srid ... passed
-Suite: X3D Out Suite
-  Test: out_x3d3_test_precision ... passed
-  Test: out_x3d3_test_geoms ... passed
+  Test: test_sfs_11 ...passed
+  Test: test_sfs_12 ...passed
+  Test: test_sqlmm ...passed
+Suite: geodetic
+  Test: test_sphere_direction ...passed
+  Test: test_sphere_project ...passed
+  Test: test_lwgeom_area_sphere ...passed
+  Test: test_signum ...passed
+  Test: test_gbox_from_spherical_coordinates ...passed
+  Test: test_gserialized_get_gbox_geocentric ...passed
+  Test: test_clairaut ...passed
+  Test: test_edge_intersection ...passed
+  Test: test_edge_intersects ...passed
+  Test: test_edge_distance_to_point ...passed
+  Test: test_edge_distance_to_edge ...passed
+  Test: test_lwgeom_distance_sphere ...passed
+  Test: test_lwgeom_check_geodetic ...passed
+  Test: test_gserialized_from_lwgeom ...passed
+  Test: test_spheroid_distance ...passed
+  Test: test_spheroid_area ...passed
+  Test: test_lwpoly_covers_point2d ...passed
+  Test: test_gbox_utils ...passed
+  Test: test_vector_angle ...passed
+  Test: test_vector_rotate ...passed
+  Test: test_lwgeom_segmentize_sphere ...passed
+  Test: test_ptarray_contains_point_sphere ...passed
+  Test: test_ptarray_contains_point_sphere_iowa ...passed
+Suite: GEOS
+  Test: test_geos_noop ...passed
+  Test: test_geos_subdivide ...passed
+  Test: test_geos_linemerge ...passed
+Suite: Clustering
+  Test: basic_test ...passed
+  Test: nonsequential_test ...passed
+  Test: basic_distance_test ...passed
+  Test: single_input_test ...passed
+  Test: empty_inputs_test ...passed
+Suite: Clustering Union-Find
+  Test: test_unionfind_create ...passed
+  Test: test_unionfind_union ...passed
+  Test: test_unionfind_ordered_by_cluster ...passed
+Suite: homogenize
+  Test: test_coll_point ...passed
+  Test: test_coll_line ...passed
+  Test: test_coll_poly ...passed
+  Test: test_coll_coll ...passed
+  Test: test_geom ...passed
+  Test: test_coll_curve ...passed
+Suite: encoded_polyline_input
+  Test: in_encoded_polyline_test_geoms ...passed
+  Test: in_encoded_polyline_test_precision ...passed
+Suite: geojson_input
+  Test: in_geojson_test_srid ...passed
+  Test: in_geojson_test_bbox ...passed
+  Test: in_geojson_test_geoms ...passed
+Suite: twkb_input
+  Test: test_twkb_in_point ...passed
+  Test: test_twkb_in_linestring ...passed
+  Test: test_twkb_in_polygon ...passed
+  Test: test_twkb_in_multipoint ...passed
+  Test: test_twkb_in_multilinestring ...passed
+  Test: test_twkb_in_multipolygon ...passed
+  Test: test_twkb_in_collection ...passed
+  Test: test_twkb_in_precision ...passed
+Suite: serialization/deserialization
+  Test: test_typmod_macros ...passed
+  Test: test_flags_macros ...passed
+  Test: test_serialized_srid ...passed
+  Test: test_gserialized_from_lwgeom_size ...passed
+  Test: test_gbox_serialized_size ...passed
+  Test: test_lwgeom_from_gserialized ...passed
+  Test: test_lwgeom_count_vertices ...passed
+  Test: test_on_gser_lwgeom_count_vertices ...passed
+  Test: test_geometry_type_from_string ...passed
+  Test: test_lwcollection_extract ...passed
+  Test: test_lwgeom_free ...passed
+  Test: test_lwgeom_flip_coordinates ...passed
+  Test: test_f2d ...passed
+  Test: test_lwgeom_clone ...passed
+  Test: test_lwgeom_force_clockwise ...passed
+  Test: test_lwgeom_calculate_gbox ...passed
+  Test: test_lwgeom_is_empty ...passed
+  Test: test_lwgeom_same ...passed
+  Test: test_lwline_from_lwmpoint ...passed
+  Test: test_lwgeom_as_curve ...passed
+  Test: test_lwgeom_scale ...passed
+  Test: test_gserialized_is_empty ...passed
+  Test: test_gbox_same_2d ...passed
+Suite: measures
+  Test: test_mindistance2d_tolerance ...passed
+  Test: test_rect_tree_contains_point ...passed
+  Test: test_rect_tree_intersects_tree ...passed
+  Test: test_lwgeom_segmentize2d ...passed
+  Test: test_lwgeom_locate_along ...passed
+  Test: test_lw_dist2d_pt_arc ...passed
+  Test: test_lw_dist2d_seg_arc ...passed
+  Test: test_lw_dist2d_arc_arc ...passed
+  Test: test_lw_arc_length ...passed
+  Test: test_lw_dist2d_pt_ptarrayarc ...passed
+  Test: test_lw_dist2d_ptarray_ptarrayarc ...passed
+  Test: test_lwgeom_tcpa ...passed
+  Test: test_lwgeom_is_trajectory ...passed
+Suite: effectivearea
+  Test: do_test_lwgeom_effectivearea_lines ...passed
+  Test: do_test_lwgeom_effectivearea_polys ...passed
+Suite: miscellaneous
+  Test: test_misc_force_2d ...passed
+  Test: test_misc_simplify ...passed
+  Test: test_misc_count_vertices ...passed
+  Test: test_misc_area ...passed
+  Test: test_misc_wkb ...passed
+  Test: test_grid ...passed
+Suite: noding
+  Test: test_lwgeom_node ...passed
+Suite: encoded_polyline_output
+  Test: out_encoded_polyline_test_geoms ...passed
+  Test: out_encoded_polyline_test_srid ...passed
+  Test: out_encoded_polyline_test_precision ...passed
+Suite: geojson_output
+  Test: out_geojson_test_precision ...passed
+  Test: out_geojson_test_dims ...passed
+  Test: out_geojson_test_srid ...passed
+  Test: out_geojson_test_bbox ...passed
+  Test: out_geojson_test_geoms ...passed
+Suite: gml_output
+  Test: out_gml_test_precision ...passed
+  Test: out_gml_test_srid ...passed
+  Test: out_gml_test_dims ...passed
+  Test: out_gml_test_geodetic ...passed
+  Test: out_gml_test_geoms ...passed
+  Test: out_gml_test_geoms_prefix ...passed
+  Test: out_gml_test_geoms_nodims ...passed
+  Test: out_gml2_extent ...passed
+  Test: out_gml3_extent ...passed
+Suite: kml_output
+  Test: out_kml_test_precision ...passed
+  Test: out_kml_test_dims ...passed
+  Test: out_kml_test_geoms ...passed
+  Test: out_kml_test_prefix ...passed
+Suite: svg_output
+  Test: out_svg_test_precision ...passed
+  Test: out_svg_test_dims ...passed
+  Test: out_svg_test_relative ...passed
+  Test: out_svg_test_geoms ...passed
+  Test: out_svg_test_srid ...passed
+Suite: x3d_output
+  Test: out_x3d3_test_precision ...passed
+  Test: out_x3d3_test_geoms ...passed
+  Test: out_x3d3_test_option ...passed
+Suite: ptarray
+  Test: test_ptarray_append_point ...passed
+  Test: test_ptarray_append_ptarray ...passed
+  Test: test_ptarray_locate_point ...passed
+  Test: test_ptarray_isccw ...passed
+  Test: test_ptarray_signed_area ...passed
+  Test: test_ptarray_unstroke ...passed
+  Test: test_ptarray_insert_point ...passed
+  Test: test_ptarray_contains_point ...passed
+  Test: test_ptarrayarc_contains_point ...passed
+  Test: test_ptarray_scale ...passed
+Suite: printing
+  Test: test_lwprint_default_format ...passed
+  Test: test_lwprint_format_orders ...passed
+  Test: test_lwprint_optional_format ...passed
+  Test: test_lwprint_oddball_formats ...passed
+  Test: test_lwprint_bad_formats ...passed
+Suite: SFCGAL
+  Test: test_sfcgal_noop ...passed
+Suite: split
+  Test: test_lwline_split_by_point_to ...passed
+  Test: test_lwgeom_split ...passed
+Suite: stringbuffer
+  Test: test_stringbuffer_append ...passed
+  Test: test_stringbuffer_aprintf ...passed
+Suite: surface
+  Test: triangle_parse ...passed
+  Test: tin_parse ...passed
+  Test: polyhedralsurface_parse ...passed
+  Test: surface_dimension ...passed
+Suite: Internal Spatial Trees
+  Test: test_tree_circ_create ...passed
+  Test: test_tree_circ_pip ...passed
+  Test: test_tree_circ_pip2 ...passed
+  Test: test_tree_circ_distance ...passed
+  Test: test_tree_circ_distance_threshold ...passed
+Suite: triangulate
+  Test: test_lwgeom_delaunay_triangulation ...passed
+Suite: twkb_output
+  Test: test_twkb_out_point ...passed
+  Test: test_twkb_out_linestring ...passed
+  Test: test_twkb_out_polygon ...passed
+  Test: test_twkb_out_multipoint ...passed
+  Test: test_twkb_out_multilinestring ...passed
+  Test: test_twkb_out_multipolygon ...passed
+  Test: test_twkb_out_collection ...passed
+  Test: test_twkb_out_idlist ...passed
+Suite: varint
+  Test: test_zigzag ...passed
+  Test: test_varint ...passed
+  Test: test_varint_roundtrip ...passed
+Suite: wkb_input
+  Test: test_wkb_in_point ...passed
+  Test: test_wkb_in_linestring ...passed
+  Test: test_wkb_in_polygon ...passed
+  Test: test_wkb_in_multipoint ...passed
+  Test: test_wkb_in_multilinestring ...passed
+  Test: test_wkb_in_multipolygon ...passed
+  Test: test_wkb_in_collection ...passed
+  Test: test_wkb_in_circularstring ...passed
+  Test: test_wkb_in_compoundcurve ...passed
+  Test: test_wkb_in_curvpolygon ...passed
+  Test: test_wkb_in_multicurve ...passed
+  Test: test_wkb_in_multisurface ...passed
+  Test: test_wkb_in_malformed ...passed
+Suite: wkb_output
+  Test: test_wkb_out_point ...passed
+  Test: test_wkb_out_linestring ...passed
+  Test: test_wkb_out_polygon ...passed
+  Test: test_wkb_out_multipoint ...passed
+  Test: test_wkb_out_multilinestring ...passed
+  Test: test_wkb_out_multipolygon ...passed
+  Test: test_wkb_out_collection ...passed
+  Test: test_wkb_out_circularstring ...passed
+  Test: test_wkb_out_compoundcurve ...passed
+  Test: test_wkb_out_curvpolygon ...passed
+  Test: test_wkb_out_multicurve ...passed
+  Test: test_wkb_out_multisurface ...passed
+  Test: test_wkb_out_polyhedralsurface ...passed
+Suite: wkt_input
+  Test: test_wkt_in_point ...passed
+  Test: test_wkt_in_linestring ...passed
+  Test: test_wkt_in_polygon ...passed
+  Test: test_wkt_in_multipoint ...passed
+  Test: test_wkt_in_multilinestring ...passed
+  Test: test_wkt_in_multipolygon ...passed
+  Test: test_wkt_in_collection ...passed
+  Test: test_wkt_in_circularstring ...passed
+  Test: test_wkt_in_compoundcurve ...passed
+  Test: test_wkt_in_curvpolygon ...passed
+  Test: test_wkt_in_multicurve ...passed
+  Test: test_wkt_in_multisurface ...passed
+  Test: test_wkt_in_tin ...passed
+  Test: test_wkt_in_polyhedralsurface ...passed
+  Test: test_wkt_in_errlocation ...passed
+Suite: wkt_output
+  Test: test_wkt_out_point ...passed
+  Test: test_wkt_out_linestring ...passed
+  Test: test_wkt_out_polygon ...passed
+  Test: test_wkt_out_multipoint ...passed
+  Test: test_wkt_out_multilinestring ...passed
+  Test: test_wkt_out_multipolygon ...passed
+  Test: test_wkt_out_collection ...passed
+  Test: test_wkt_out_circularstring ...passed
+  Test: test_wkt_out_compoundcurve ...passed
+  Test: test_wkt_out_curvpolygon ...passed
+  Test: test_wkt_out_multicurve ...passed
+  Test: test_wkt_out_multisurface ...passed
 
---Run Summary: Type      Total     Ran  Passed  Failed
-               suites       27      27     n/a       0
-               tests       198     198     198       0
-               asserts    1728    1728    1728       0
+Run Summary:    Type  Total    Ran Passed Failed Inactive
+              suites     38     38    n/a      0        0
+               tests    251    251    251      0        0
+             asserts   2468   2468   2468      0      n/a
+
+Elapsed time =    0.298 seconds
 
 Creating database 'postgis_reg' 
 Loading PostGIS into 'postgis_reg' 
-PostgreSQL 9.3beta1 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.4.5-8) 4.4.5, 64-bit
-  Postgis 2.1.0SVN - r11415 - 2013-05-11 02:48:21
-  GEOS: 3.4.0dev-CAPI-1.8.0 r3797
-  PROJ: Rel. 4.7.1, 23 September 2009
+  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis.sql
+  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis_comments.sql
+Loading SFCGAL into 'postgis_reg'
+  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal.sql
+  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal_comments.sql
+PostgreSQL 9.4.4, compiled by Visual C++ build 1800, 32-bit
+  Postgis 2.2.0dev - r13980 - 2015-08-23 06:13:07
+  scripts 2.2.0dev r13980
+  GEOS: 3.5.0-CAPI-1.9.0 r4088
+  PROJ: Rel. 4.9.1, 04 March 2015
+  SFCGAL: 1.1.0
 
 Running tests
 
@@ -976,24 +1101,57 @@ Running tests
  loader/ReprojectPts ........ ok 
  loader/ReprojectPtsGeog ........ ok 
  loader/Latin1 .... ok 
+ loader/Latin1-implicit .... ok 
+ loader/mfile .... ok 
+ dumper/literalsrid ....... ok 
+ dumper/realtable ....... ok 
+ affine .. ok 
+ bestsrid .. ok 
  binary .. ok 
+ boundary .. ok 
+ cluster .. ok 
+ concave_hull .. ok 
+ ctors .. ok 
+ dump .. ok 
+ dumppoints .. ok 
+ empty .. ok 
+ forcecurve .. ok 
+ geography .. ok 
+ in_geohash .. ok 
+ in_gml .. ok 
+ in_kml .. ok 
+ in_encodedpolyline .. ok 
+ iscollection .. ok 
+ legacy .. ok 
+ long_xact .. ok 
+ lwgeom_regress .. ok 
+ measures .. ok 
+ operators .. ok 
+ out_geometry .. ok 
+ out_geography .. ok 
+ polygonize .. ok 
+ polyhedralsurface .. ok 
+ postgis_type_name .. ok 
  regress .. ok 
+ regress_bdpoly .. ok 
  regress_index .. ok 
  regress_index_nulls .. ok 
+ regress_management .. ok 
  regress_selectivity .. ok 
- lwgeom_regress .. ok 
  regress_lrs .. ok 
+ regress_ogc .. ok 
+ regress_ogc_cover .. ok 
+ regress_ogc_prep .. ok 
+ regress_proj .. ok 
+ relate .. ok 
+ remove_repeated_points .. ok 
  removepoint .. ok 
  setpoint .. ok 
  simplify .. ok 
+ simplifyvw .. ok 
+ size .. ok 
  snaptogrid .. ok 
- summary .. ok 
- affine .. ok 
- empty .. ok 
- measures .. ok 
- legacy .. ok 
- long_xact .. ok 
- ctors .. ok 
+ split .. ok 
  sql-mm-serialize .. ok 
  sql-mm-circularstring .. ok 
  sql-mm-compoundcurve .. ok 
@@ -1001,35 +1159,16 @@ Running tests
  sql-mm-general .. ok 
  sql-mm-multicurve .. ok 
  sql-mm-multisurface .. ok 
- polyhedralsurface .. ok 
- polygonize .. ok 
- postgis_type_name .. ok 
- geography .. ok 
- out_geometry .. ok 
- out_geography .. ok 
- in_geohash .. ok 
- in_gml .. ok 
- in_kml .. ok 
- iscollection .. ok 
- regress_ogc .. ok 
- regress_ogc_cover .. ok 
- regress_ogc_prep .. ok 
- regress_bdpoly .. ok 
- regress_proj .. ok 
- regress_management .. ok 
- dump .. ok 
- dumppoints .. ok 
- boundary .. ok 
- wmsservers .. ok 
- wkt .. ok 
- wkb .. ok 
+ swapordinates .. ok 
+ summary .. ok 
+ temporal .. ok 
  tickets .. ok 
+ twkb .. ok 
  typmod .. ok 
- remove_repeated_points .. ok 
- split .. ok 
- relate .. ok 
- bestsrid .. ok 
- concave_hull .. ok 
+ wkb .. ok 
+ wkt .. ok 
+ wmsservers .. ok 
+ knn .. ok 
  hausdorff .. ok 
  regress_buffer_params .. ok 
  offsetcurve .. ok 
@@ -1042,27 +1181,77 @@ Running tests
  clean .. ok 
  relate_bnr .. ok 
  delaunaytriangles .. ok 
+ clipbybox2d .. ok 
+ subdivide .. ok 
  in_geojson .. ok 
- uninstall .. ok (4112)
+ regress_sfcgal .. ok 
+ sfcgal/empty .. ok 
+ sfcgal/geography .. ok 
+ sfcgal/legacy .. ok 
+ sfcgal/measures .. ok 
+ sfcgal/regress_ogc_prep .. ok 
+ sfcgal/regress_ogc .. ok 
+ sfcgal/regress .. ok 
+ sfcgal/tickets .. ok 
+ sfcgal/concave_hull .. ok 
+ sfcgal/wmsservers .. ok 
+ sfcgal/approximatemedialaxis .. ok 
+ uninstall .  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_sfcgal.sql
+  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_postgis.sql
+. ok (4336)
 
-Run tests: 90</programlisting>
+Run tests: 118
+Failed: 0</programlisting>
 
-	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  So to test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
-	  <para>For address_standardizer</para>
+	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
+	  <para>For address_standardizer:
 	  <command>cd extensions/address_standardizer
-	      make install
-	      make installcheck
-	  </command>
+make install
+make installcheck
+	  </command></para>
 	  
-	  <para>For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions available in your PostgreSQL instance. The address_standardizer tests will also kick in if you built postgis with address_standardizer support</para>
+	  <para>Output should look like:
+	  <screen>============== dropping database "contrib_regression" ==============
+DROP DATABASE
+============== creating database "contrib_regression" ==============
+CREATE DATABASE
+ALTER DATABASE
+============== running regression test queries        ==============
+test test-init-extensions     ... ok
+test test-parseaddress        ... ok
+test test-standardize_address_1 ... ok
+test test-standardize_address_2 ... ok
+
+=====================
+ All 4 tests passed.
+=====================</screen></para>
+	  
+	  <para>For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions available in your PostgreSQL instance. The address_standardizer tests will also kick in if you built postgis with address_standardizer support:
 	  <command>cd extensions/postgis_tiger_geocoder
 	      make install
 	      make installcheck
-	  </command>
-	  <para>output should look like:</para>
-	  <screen>
-	  
-	  </screen>
+	  </command></para>
+	  <para>output should look like:
+	  <screen>============== dropping database "contrib_regression" ==============
+DROP DATABASE
+============== creating database "contrib_regression" ==============
+CREATE DATABASE
+ALTER DATABASE
+============== installing fuzzystrmatch               ==============
+CREATE EXTENSION
+============== installing postgis                     ==============
+CREATE EXTENSION
+============== installing postgis_tiger_geocoder      ==============
+CREATE EXTENSION
+============== installing address_standardizer        ==============
+CREATE EXTENSION
+============== running regression test queries        ==============
+test test-normalize_address   ... ok
+test test-pagc_normalize_address ... ok
+
+=====================
+All 2 tests passed.
+=====================</screen></para>
 	</sect2>
 
 	<sect2>
