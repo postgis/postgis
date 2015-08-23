@@ -636,6 +636,25 @@ cd postgis_topology
 make clean
 make 
 make install
+cd ..
+cd postgis_sfcgal
+make clean
+make 
+make install
+
+cd ..
+cd address_standardizer
+make clean
+make 
+make install
+make installcheck
+
+cd ..
+cd postgis_tiger_geocoder
+make clean
+make 
+make install
+make installcheck
 	  </programlisting>
 	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
 	  have the PostGIS binaries already installed on your servers. </para>
@@ -661,11 +680,17 @@ make install
 	 <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -> extensions.</para>
 	 <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
 	 <programlisting>SELECT name, default_version,installed_version 
-FROM pg_available_extensions WHERE name LIKE 'postgis%' ;
-      name       | default_version | installed_version
------------------+-----------------+-------------------
-postgis          | &last_release_version;     | &last_release_version;
-postgis_topology | &last_release_version;      | </programlisting>
+FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';
+
+             name             | default_version | installed_version
+------------------------------+-----------------+-------------------
+ address_standardizer         | &last_release_version;         | &last_release_version; 
+ address_standardizer_data_us | &last_release_version;         | &last_release_version; 
+ postgis                      | &last_release_version;         | &last_release_version; 
+ postgis_sfcgal               | &last_release_version;         |
+ postgis_tiger_geocoder       | &last_release_version;         | &last_release_version; 
+ postgis_topology             | &last_release_version;         |
+(6 rows)</programlisting>
 
 <para>If you have the extension installed in the database you are querying, you'll see mention in the <varname>installed_version</varname> column.  
 If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.14+ will also provide this information
@@ -677,6 +702,7 @@ CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION fuzzystrmatch; --needed for postgis_tiger_geocoder
 --optional used by postgis_tiger_geocoder, or can be used standalone
 CREATE EXTENSION address_standardizer;
+CREATE EXTENSION address_standardizer_data_us;
 CREATE EXTENSION postgis_tiger_geocoder;
 CREATE EXTENSION postgis_topology;</programlisting>
 
@@ -1205,10 +1231,10 @@ Failed: 0</programlisting>
 
 	  <para>The <varname>postgis_tiger_geocoder</varname> and <varname>address_standardizer</varname> extensions, currenlty only support the standard PostgreSQL installcheck.  To test these use the below.  Note: the make install is not necessary if you already did make install at root of PostGIS code folder.</para>
 	  <para>For address_standardizer:
-	  <command>cd extensions/address_standardizer
+	  <programlisting>cd extensions/address_standardizer
 make install
 make installcheck
-	  </command></para>
+	  </programlisting></para>
 	  
 	  <para>Output should look like:
 	  <screen>============== dropping database "contrib_regression" ==============
@@ -1227,10 +1253,10 @@ test test-standardize_address_2 ... ok
 =====================</screen></para>
 	  
 	  <para>For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions available in your PostgreSQL instance. The address_standardizer tests will also kick in if you built postgis with address_standardizer support:
-	  <command>cd extensions/postgis_tiger_geocoder
-	      make install
-	      make installcheck
-	  </command></para>
+	  <programlisting>cd extensions/postgis_tiger_geocoder
+make install
+make installcheck
+	  </programlisting></para>
 	  <para>output should look like:
 	  <screen>============== dropping database "contrib_regression" ==============
 DROP DATABASE
