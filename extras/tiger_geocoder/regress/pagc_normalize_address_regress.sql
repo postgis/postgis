@@ -99,5 +99,9 @@ SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('320
 
 -- #1108 suite gets stuck in post dir
 SELECT '#1108a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129') AS addy;
+
+-- #3259 numbered streets
+SELECT '#3259a' As ticket, * FROM normalize_address('212 Third Ave N Suite 560, Minneapolis, MN 55401');
+SELECT '#3259b' As ticket, * FROM normalize_address('3937 Forty Third AVE S, MINNEAPOLIS, MN 55406');
 --\timing
 SELECT set_geocode_setting('use_pagc_address_parser', 'false');
