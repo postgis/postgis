@@ -166,7 +166,7 @@ ADDRESS *parseaddress(HHash *stH, char *s, int *reterr)
 
     /* get US zipcode components */
 
-    rc = match("\\b(\\d{5})[-\\s]?(\\d{4})?$", s, ovect, 0);
+    rc = match("\\b(\\d{5})[-\\s]{0,1}?(\\d{0,4})?$", s, ovect, 0);
     if (rc >= 2) {
         ret->zip = (char *) palloc0((ovect[3]-ovect[2]+1) * sizeof(char));
         strncpy(ret->zip, s+ovect[2], ovect[3]-ovect[2]);
