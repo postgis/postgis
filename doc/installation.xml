@@ -1556,8 +1556,21 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			
 				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
 			</listitem>
-			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile.  So for example to do the nation load using our new profile we would:</para>
+			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile and copy the scripts to a .sh or .bat file.  So for example to do the nation load and one state using our new profile we would:</para>
 					<programlisting>SELECT Loader_Generate_Nation_Script('debbie');</programlisting>
+					<programlisting>SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');</programlisting>
+			</listitem>
+			<listitem><para>Run the generated scripts.</para></listitem>
+			<listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
+			    <programlisting>SELECT install_missing_indexes();
+vacuum analyze verbose tiger.addr;
+vacuum analyze verbose tiger.edges;
+vacuum analyze verbose tiger.faces;
+vacuum analyze verbose tiger.featnames;
+vacuum analyze verbose tiger.place;
+vacuum analyze verbose tiger.cousub;
+vacuum analyze verbose tiger.county;
+vacuum analyze verbose tiger.state;</programlisting>
 			</listitem>
 		</orderedlist>
 		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
