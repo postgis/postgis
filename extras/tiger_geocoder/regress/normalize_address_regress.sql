@@ -93,4 +93,7 @@ SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('111
 -- #1614 County Rd
 SELECT '#1614a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('8435 COUNTY RD 20 SE, ROCHESTER, MN 55904') As addy;
 SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('3208 U.S. 52, Rochester, MN 55901') As addy;
+
+--internal address prefix sometimes get caught in post dir
+SELECT '#1108a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129') AS addy;
 --\timing
