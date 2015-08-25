@@ -34,10 +34,10 @@ EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULE_big = address_standardizer-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 EXTENSION = address_standardizer
-DATA = address_standardizer_data_us.control 
+DATA = address_standardizer_data_us.control sql/$(EXTENSION).sql sql/$(EXTENSION)_data_us.sql
 
-all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql \
-sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
+all:  sql/address_standardizer.sql sql/address_standardizer--1.0--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION).sql sql/address_standardizer--$(EXTVERSION)--$(EXTVERSION)next.sql sql/address_standardizer--$(EXTVERSION)next--$(EXTVERSION).sql \
+ sql/$(EXTENSION)_data_us.sql sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql sql/$(EXTENSION)_data_us--@POSTGIS_LIB_VERSION@.sql  sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql \
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql \
 sql/test-init-extensions.sql sql/test-parseaddress.sql sql/test-standardize_address_1.sql sql/test-standardize_address_2.sql
 
@@ -89,6 +89,10 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer
 	
 # build us data extension
 sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
+	mkdir -p sql
+	cat $^ > $@
+	
+sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
 	mkdir -p sql
 	cat $^ > $@
 	
@@ -158,6 +162,7 @@ tokenize.o: tokenize.c pagc_api.h
 
 std_pg_hash.o: std_pg_hash.c std_pg_hash.h pagc_api.h pagc_std_api.h
 
+#only extension files	
 DATA += $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql

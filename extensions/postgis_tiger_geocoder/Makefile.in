@@ -205,7 +205,7 @@ sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extensio
 	done
 
 #only extension files	
-DATA = $(wildcard sql/*--*.sql)
+DATA = ${EXTENSION}.control sql/$(EXTENSION).sql $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
