@@ -673,11 +673,11 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( match ) {
       /* error or no interior intersection */
       GEOSGeom_destroy(eegg);
+      GEOSFree(relate);
       if ( match == 2 ) {
         _lwt_release_edges(edges, num_edges);
         GEOSPreparedGeom_destroy(prepared_edge);
         GEOSGeom_destroy(edgegg);
-        GEOSFree(relate);
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
         return -1;
       }
@@ -756,7 +756,8 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
   LWT_ISO_EDGE newedge;
   LWT_ISO_NODE *endpoints;
   LWT_ELEMID containing_face = -1;
-  LWT_ELEMID *node_ids;
+  LWT_ELEMID node_ids[2];
+  LWT_ISO_NODE updated_nodes[2];
   int skipISOChecks = 0;
   POINT2D p1, p2;
 
@@ -788,7 +789,6 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
    *    nodes geoms
    */
   num_nodes = 2;
-  node_ids = lwalloc(sizeof(LWT_ELEMID) * num_nodes);
   node_ids[0] = startNode;
   node_ids[1] = endNode;
   endpoints = lwt_be_getNodeById( topo, node_ids, &num_nodes,
@@ -898,7 +898,6 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
    * the nodes anode and anothernode are no more isolated
    * because now there is an edge connecting them
    */ 
-  LWT_ISO_NODE *updated_nodes = lwalloc(sizeof(LWT_ISO_NODE) * 2);
   updated_nodes[0].node_id = startNode;
   updated_nodes[0].containing_face = -1;
   updated_nodes[1].node_id = endNode;
@@ -2232,7 +2231,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   edgeend epan; /* end point analisys */
   POINT2D p1, pn, p2;
   POINTARRAY *pa;
-  LWT_ELEMID *node_ids;
+  LWT_ELEMID node_ids[2];
   const LWPOINT *start_node_geom = NULL;
   const LWPOINT *end_node_geom = NULL;
   int num_nodes;
@@ -2262,6 +2261,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
 
   pa = lwgeom_as_lwline(cleangeom)->points;
   if ( pa->npoints < 2 ) {
+    lwgeom_free(cleangeom);
     lwerror("Invalid edge (no two distinct vertices exist)");
     return -1;
   }
@@ -2274,11 +2274,13 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   getPoint2d_p(pa, 0, &p1);
   getPoint2d_p(pa, 1, &pn);
   if ( p2d_same(&p1, &pn) ) {
+    lwgeom_free(cleangeom);
     /* Can still happen, for 2-point lines */
     lwerror("Invalid edge (no two distinct vertices exist)");
     return -1;
   }
   if ( ! azimuth_pt_pt(&p1, &pn, &span.myaz) ) {
+    lwgeom_free(cleangeom);
     lwerror("error computing azimuth of first edgeend [%g,%g-%g,%g]",
             p1.x, p1.y, pn.x, pn.y);
     return -1;
@@ -2288,6 +2290,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   /* Compute azimuth of last edge end on end node */
   getPoint2d_p(pa, pa->npoints-1, &p2);
   getPoint2d_p(pa, pa->npoints-2, &pn);
+  lwgeom_free(cleangeom);
   if ( ! azimuth_pt_pt(&p2, &pn, &epan.myaz) ) {
     lwerror("error computing azimuth of last edgeend [%g,%g-%g,%g]",
             p2.x, p2.y, pn.x, pn.y);
@@ -2302,12 +2305,10 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
 
   if ( start_node != end_node ) {
     num_nodes = 2;
-    node_ids = lwalloc(sizeof(LWT_ELEMID)*num_nodes);
     node_ids[0] = start_node;
     node_ids[1] = end_node;
   } else {
     num_nodes = 1;
-    node_ids = lwalloc(sizeof(LWT_ELEMID)*num_nodes);
     node_ids[0] = start_node;
   }
 
