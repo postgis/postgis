@@ -852,6 +852,8 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
     }
   }
 
+  if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
+
   if ( ! skipISOChecks )
   {
     if ( _lwt_CheckEdgeCrossing( topo, startNode, endNode, geom, 0 ) )
