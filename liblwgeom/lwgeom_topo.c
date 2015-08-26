@@ -631,14 +631,16 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
   for ( i=0; i<num_edges; ++i )
   {
     LWT_ISO_EDGE* edge = &(edges[i]);
+    LWT_ELEMID edge_id = edge->edge_id;
     GEOSGeometry *eegg;
     char *relate;
     int match;
 
-    if ( edge->edge_id == myself ) continue;
+    if ( edge_id == myself ) continue;
 
     if ( ! edge->geom ) {
-      lwerror("Edge %d has NULL geometry!", edge->edge_id);
+      _lwt_release_edges(edges, num_edges);
+      lwerror("Edge %d has NULL geometry!", edge_id);
       return -1;
     }
 
@@ -646,11 +648,12 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     if ( ! eegg ) {
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
+      _lwt_release_edges(edges, num_edges);
       lwerror("Could not convert edge geometry to GEOS: %s", lwgeom_geos_errmsg);
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d converted to GEOS", edge->edge_id);
+    LWDEBUGF(2, "Edge %d converted to GEOS", edge_id);
 
     /* check if the edge crosses our edge (not boundary-boundary) */
 
@@ -659,17 +662,19 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       GEOSGeom_destroy(eegg);
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
+      _lwt_release_edges(edges, num_edges);
       lwerror("GEOSRelateBoundaryNodeRule error: %s", lwgeom_geos_errmsg);
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d relate pattern is %s", edge->edge_id, relate);
+    LWDEBUGF(2, "Edge %d relate pattern is %s", edge_id, relate);
 
     match = GEOSRelatePatternMatch(relate, "F********");
     if ( match ) {
       /* error or no interior intersection */
       GEOSGeom_destroy(eegg);
       if ( match == 2 ) {
+        _lwt_release_edges(edges, num_edges);
         GEOSPreparedGeom_destroy(prepared_edge);
         GEOSGeom_destroy(edgegg);
         GEOSFree(relate);
@@ -681,6 +686,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
     match = GEOSRelatePatternMatch(relate, "1FFF*FFF2");
     if ( match ) {
+      _lwt_release_edges(edges, num_edges);
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
@@ -689,13 +695,14 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
         lwerror("SQL/MM Spatial exception - coincident edge %" LWTFMT_ELEMID,
-                edge->edge_id);
+                edge_id);
       }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "1********");
     if ( match ) {
+      _lwt_release_edges(edges, num_edges);
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
@@ -703,14 +710,15 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
       if ( match == 2 ) {
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
-        lwerror("Spatial exception - geometry intersects edge %" LWTFMT_ELEMID,
-                edge->edge_id);
+        lwerror("Spatial exception - geometry intersects edge %"
+                LWTFMT_ELEMID, edge_id);
       }
       return -1;
     }
 
     match = GEOSRelatePatternMatch(relate, "T********");
     if ( match ) {
+      _lwt_release_edges(edges, num_edges);
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
       GEOSGeom_destroy(eegg);
@@ -719,17 +727,18 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
       } else {
         lwerror("SQL/MM Spatial exception - geometry crosses edge %"
-                LWTFMT_ELEMID, edge->edge_id);
+                LWTFMT_ELEMID, edge_id);
       }
       return -1;
     }
 
-    LWDEBUGF(2, "Edge %d analisys completed, it does no harm", edge->edge_id);
+    LWDEBUGF(2, "Edge %d analisys completed, it does no harm", edge_id);
 
     GEOSFree(relate);
     GEOSGeom_destroy(eegg);
   }
-  if ( edges ) lwfree(edges); /* would be NULL if num_edges was 0 */
+  if ( edges ) _lwt_release_edges(edges, num_edges);
+              /* would be NULL if num_edges was 0 */
 
   GEOSPreparedGeom_destroy(prepared_edge);
   GEOSGeom_destroy(edgegg);
