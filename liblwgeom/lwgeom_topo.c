@@ -2271,7 +2271,6 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
       else if ( newedge.face_left != node->containing_face )
       {
-        _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception - geometry crosses an edge"
                 " (endnodes in faces %" LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
                 newedge.face_left, node->containing_face);
@@ -2287,7 +2286,6 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       end_node_geom = node->geom;
     } 
   }
-  if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
 
   if ( ! skipChecks )
   {
