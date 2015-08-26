@@ -2948,7 +2948,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
         lwgeom_free(face);
         lwfree(seid);
         lwerror("No edge (among %d) found to be defining geometry of face %"
-                LWTFMT_ELEMID, face_id);
+                LWTFMT_ELEMID, numfaceedges, face_id);
         return -1;
       }
 
