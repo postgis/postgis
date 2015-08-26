@@ -2271,6 +2271,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       }
       else if ( newedge.face_left != node->containing_face )
       {
+        _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception - geometry crosses an edge"
                 " (endnodes in faces %" LWTFMT_ELEMID " and %" LWTFMT_ELEMID ")",
                 newedge.face_left, node->containing_face);
@@ -2291,6 +2292,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
   {
     if ( ! start_node_geom )
     {
+      if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
       lwerror("SQL/MM Spatial exception - non-existent node");
       return -1;
     }
@@ -2300,6 +2302,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       getPoint2d_p(pa, 0, &pn);
       if ( ! p2d_same(&pn, &p1) )
       {
+        if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception"
                 " - start node not geometry start point."
                 //" - start node not geometry start point (%g,%g != %g,%g).", pn.x, pn.y, p1.x, p1.y
@@ -2310,6 +2313,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
 
     if ( ! end_node_geom )
     {
+      if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
       lwerror("SQL/MM Spatial exception - non-existent node");
       return -1;
     }
@@ -2319,6 +2323,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       getPoint2d_p(pa, 0, &pn);
       if ( ! p2d_same(&pn, &p2) )
       {
+        if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
         lwerror("SQL/MM Spatial exception"
                 " - end node not geometry end point."
                 //" - end node not geometry end point (%g,%g != %g,%g).", pn.x, pn.y, p2.x, p2.y
@@ -2326,6 +2331,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
         return -1;
       }
     }
+
+    if ( num_nodes ) _lwt_release_nodes(endpoints, num_nodes);
 
     if ( _lwt_CheckEdgeCrossing( topo, start_node, end_node, geom, 0 ) )
       return -1;
