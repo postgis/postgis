@@ -603,7 +603,7 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     {
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
-      lwfree(nodes);
+      _lwt_release_nodes(nodes, num_nodes);
       lwerror("GEOS exception on PreparedContains: %s", lwgeom_geos_errmsg);
       return -1;
     }
@@ -611,12 +611,13 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
     {
       GEOSPreparedGeom_destroy(prepared_edge);
       GEOSGeom_destroy(edgegg);
-      lwfree(nodes);
+      _lwt_release_nodes(nodes, num_nodes);
       lwerror("SQL/MM Spatial exception - geometry crosses a node");
       return -1;
     }
   }
-  if ( nodes ) lwfree(nodes); /* may be NULL if num_nodes == 0 */
+  if ( nodes ) _lwt_release_nodes(nodes, num_nodes);
+               /* may be NULL if num_nodes == 0 */
 
   /* loop over each edge within the edge's gbox */
   edges = lwt_be_getEdgeWithinBox2D( topo, edgebox, &num_edges, LWT_COL_EDGE_ALL, 0 );
