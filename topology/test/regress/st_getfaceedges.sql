@@ -28,5 +28,17 @@ SELECT 'F2', (topology.ST_GetFaceEdges('tt', 2)).*;
 
 SELECT 'F0', (topology.ST_GetFaceEdges('tt', 0)).*;
 
+SELECT topology.DropTopology('tt');
 
+-- See https://trac.osgeo.org/postgis/ticket/3265
+SELECT topology.CreateTopology('tt') > 0;
+SELECT '#3265.1', 'E'||topology.TopoGeo_addLinestring('tt',
+  'LINESTRING(150 150, 180 150, 180 180)');
+SELECT '#3265.2', 'E'||topology.TopoGeo_addLinestring('tt',
+  'LINESTRING(150 150, 180 180)');
+SELECT '#3265.3', 'E'||topology.TopoGeo_addLinestring('tt',
+  'LINESTRING(178 170, 178 161, 170 161, 178 170)');
+SELECT '#3265.4', 0, ST_GetFaceEdges('tt', 0);
+SELECT '#3265.5', 1, ST_GetFaceEdges('tt', 1);
+SELECT '#3265.6', 2, ST_GetFaceEdges('tt', 2);
 SELECT topology.DropTopology('tt');

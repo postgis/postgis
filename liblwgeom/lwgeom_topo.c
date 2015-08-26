@@ -2773,7 +2773,8 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     /* ptarray_remove_repeated_points ? */
 
     getPoint2d_p(epa, 0, &p2);
-    LWDEBUGF(1, "Edges's 'first' point is %g,%g", p2.x, p2.y);
+    LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'first' point is %g,%g",
+                isoe->edge_id, p2.x, p2.y);
     LWDEBUGF(1, "Rings's 'from' point is still %g,%g", p1.x, p1.y);
     if ( p2d_same(&p1, &p2) )
     {
@@ -2784,22 +2785,35 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
       for ( j=1; j<epa->npoints; ++j )
       {
         getPoint2d_p(epa, j, &p2);
+        LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'next' point %d is %g,%g",
+                    isoe->edge_id, j, p2.x, p2.y);
         /* we won't check duplicated edge points */
         if ( p2d_same(&p1, &p2) ) continue;
         /* we assume there are no duplicated points in ring */
         getPoint2d_p(ring, from+1, &pt);
-        if ( p2d_same(&pt, &p2) )
-        {
-          match = 1;
-          break; /* no need to check more */
-        }
+        LWDEBUGF(1, "Ring's point %d is %g,%g",
+                    from+1, pt.x, pt.y);
+        match = p2d_same(&pt, &p2);
+        break; /* we want to check a single non-equal next vertex */
       }
+#if POSTGIS_DEBUG_LEVEL > 0
+      if ( match ) {
+        LWDEBUGF(1, "Prev point of edge %" LWTFMT_ELEMID
+                    " matches ring vertex %d", isoe->edge_id, from+1);
+      } else {
+        LWDEBUGF(1, "Prev point of edge %" LWTFMT_ELEMID
+                    " does not match ring vertex %d", isoe->edge_id, from+1);
+      }
+#endif
     }
-    else
+
+    if ( ! match )
     {
-      LWDEBUG(1, "p2d_same(p1,p2) returned false");
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " did not match as forward",
+                 isoe->edge_id;);
       getPoint2d_p(epa, epa->npoints-1, &p2);
-      LWDEBUGF(1, "Edges's 'last' point is %g,%g", p2.x, p2.y);
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'last' point is %g,%g",
+                  isoe->edge_id, p2.x, p2.y);
       if ( p2d_same(&p1, &p2) )
       {
         LWDEBUGF(1, "Last point of edge %" LWTFMT_ELEMID
@@ -2808,17 +2822,27 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
         for ( j=epa->npoints-2; j>=0; --j )
         {
           getPoint2d_p(epa, j, &p2);
+          LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'prev' point %d is %g,%g",
+                      isoe->edge_id, j, p2.x, p2.y);
           /* we won't check duplicated edge points */
           if ( p2d_same(&p1, &p2) ) continue;
           /* we assume there are no duplicated points in ring */
           getPoint2d_p(ring, from+1, &pt);
-          if ( p2d_same(&pt, &p2) )
-          {
-            match = 1;
-            break; /* no need to check more */
-          }
+          LWDEBUGF(1, "Ring's point %d is %g,%g",
+                      from+1, pt.x, pt.y);
+          match = p2d_same(&pt, &p2);
+          break; /* we want to check a single non-equal next vertex */
         }
       }
+#if POSTGIS_DEBUG_LEVEL > 0
+      if ( match ) {
+        LWDEBUGF(1, "Prev point of edge %" LWTFMT_ELEMID
+                    " matches ring vertex %d", isoe->edge_id, from+1);
+      } else {
+        LWDEBUGF(1, "Prev point of edge %" LWTFMT_ELEMID
+                    " does not match ring vertex %d", isoe->edge_id, from+1);
+      }
+#endif
     }
 
     if ( match ) return i;
@@ -2906,7 +2930,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
 #if 0
   {
   size_t sz;
-  char *wkt = lwgeom_to_wkt(face, WKT_ISO, 2, &sz);
+  char *wkt = lwgeom_to_wkt(face, WKT_ISO, 6, &sz);
   LWDEBUGF(1, "Geometry of face %" LWTFMT_ELEMID " is: %s",
               face_id, wkt);
   lwfree(wkt);
@@ -2960,10 +2984,13 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
                   nextedge->edge_id, i, j, j + nextline->points->npoints - 1);
 
 #if 0
+      {
       size_t sz;
+      char *wkt = lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 6, &sz);
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is %s",
-                  nextedge->edge_id,
-lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 2, &sz));
+                  nextedge->edge_id, wkt);
+      lwfree(wkt);
+      }
 #endif
 
       j += nextline->points->npoints - 1;
