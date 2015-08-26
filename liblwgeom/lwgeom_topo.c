@@ -434,7 +434,7 @@ _lwt_release_edges(LWT_ISO_EDGE *edges, int num_edges)
 {
   int i;
   for ( i=0; i<num_edges; ++i ) {
-    if ( edges[i].geom ) lwline_release(edges[i].geom);
+    if ( edges[i].geom ) lwline_free(edges[i].geom);
   }
   lwfree(edges);
 }
@@ -444,7 +444,7 @@ _lwt_release_nodes(LWT_ISO_NODE *nodes, int num_nodes)
 {
   int i;
   for ( i=0; i<num_nodes; ++i ) {
-    if ( nodes[i].geom ) lwpoint_release(nodes[i].geom);
+    if ( nodes[i].geom ) lwpoint_free(nodes[i].geom);
   }
   lwfree(nodes);
 }
