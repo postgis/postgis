@@ -666,10 +666,11 @@ _lwt_CheckEdgeCrossing( LWT_TOPOLOGY* topo,
 
     match = GEOSRelatePatternMatch(relate, "F********");
     if ( match ) {
+      /* error or no interior intersection */
+      GEOSGeom_destroy(eegg);
       if ( match == 2 ) {
         GEOSPreparedGeom_destroy(prepared_edge);
         GEOSGeom_destroy(edgegg);
-        GEOSGeom_destroy(eegg);
         GEOSFree(relate);
         lwerror("GEOSRelatePatternMatch error: %s", lwgeom_geos_errmsg);
         return -1;
