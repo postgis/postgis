@@ -958,6 +958,7 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
     if ( lwt_be_ExistsCoincidentNode(topo, pt) ) /*x*/
     {
       LWDEBUG(1, "lwt_NewEdgesSplit: lwt_be_ExistsCoincidentNode returned");
+      _lwt_release_edges(*oldedge, 1);
       lwerror("SQL/MM Spatial exception - coincident node");
       return NULL;
     }
@@ -968,16 +969,19 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
   split = lwgeom_split((LWGEOM*)(*oldedge)->geom, (LWGEOM*)pt);
   if ( ! split )
   {
+    _lwt_release_edges(*oldedge, 1);
     lwerror("could not split edge by point ?");
     return NULL;
   }
   split_col = lwgeom_as_lwcollection(split);
   if ( ! split_col ) {
+    _lwt_release_edges(*oldedge, 1);
     lwgeom_free(split);
     lwerror("lwgeom_as_lwcollection returned NULL");
     return NULL;
   }
   if (split_col->ngeoms < 2) {
+    _lwt_release_edges(*oldedge, 1);
     lwgeom_free(split);
     lwerror("SQL/MM Spatial exception - point not on edge");
     return NULL;
@@ -1009,14 +1013,14 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   node.geom = pt;
   if ( ! lwt_be_insertNodes(topo, &node, 1) )
   {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if (node.node_id == -1) {
     /* should have been set by backend */
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend coding error: "
             "insertNodes callback did not return node_id");
@@ -1026,7 +1030,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   /* Insert the new edge */
   newedge1.edge_id = lwt_be_getNextEdgeId(topo);
   if ( newedge1.edge_id == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1041,19 +1045,19 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   newedge1.geom = lwgeom_as_lwline(newedge_geom);
   /* lwgeom_split of a line should only return lines ... */
   if ( ! newedge1.geom ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("first geometry in lwgeom_split output is not a line");
     return -1;
   }
   ret = lwt_be_insertEdges(topo, &newedge1, 1);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   } else if ( ret == 0 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Insertion of split edge failed (no reason)");
     return -1;
@@ -1063,7 +1067,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   updedge.geom = lwgeom_as_lwline(oldedge_geom);
   /* lwgeom_split of a line should only return lines ... */
   if ( ! updedge.geom ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("second geometry in lwgeom_split output is not a line");
     return -1;
@@ -1075,17 +1079,17 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_GEOM|LWT_COL_EDGE_NEXT_LEFT|LWT_COL_EDGE_END_NODE,
       NULL, 0);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   } else if ( ret == 0 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Edge being splitted (%d) disappeared during operations?", oldedge->edge_id);
     return -1;
   } else if ( ret > 1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("More than a single edge found with id %d !", oldedge->edge_id);
     return -1;
@@ -1102,7 +1106,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_RIGHT,
       &excedge, LWT_COL_EDGE_EDGE_ID);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1117,7 +1121,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_LEFT,
       &excedge, LWT_COL_EDGE_EDGE_ID);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1126,13 +1130,13 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   /* Update TopoGeometries composition */
   ret = lwt_be_updateTopoGeomEdgeSplit(topo, oldedge->edge_id, newedge1.edge_id, -1);
   if ( ! ret ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
 
-  _lwt_release_edges(oldedge, 1);;
+  _lwt_release_edges(oldedge, 1);
   lwcollection_free(split_col);
 
   /* return new node id */
@@ -1163,13 +1167,13 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   node.geom = pt;
   if ( ! lwt_be_insertNodes(topo, &node, 1) )
   {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if (node.node_id == -1) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     /* should have been set by backend */
     lwerror("Backend coding error: "
@@ -1181,7 +1185,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   seledge.edge_id = edge;
   ret = lwt_be_deleteEdges(topo, &seledge, LWT_COL_EDGE_EDGE_ID);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1190,14 +1194,14 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   /* Get new edges identifiers */
   newedges[0].edge_id = lwt_be_getNextEdgeId(topo);
   if ( newedges[0].edge_id == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   newedges[1].edge_id = lwt_be_getNextEdgeId(topo);
   if ( newedges[1].edge_id == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1218,7 +1222,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   newedges[0].geom = lwgeom_as_lwline(oldedge_geom);
   /* lwgeom_split of a line should only return lines ... */
   if ( ! newedges[0].geom ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("first geometry in lwgeom_split output is not a line");
     return -1;
@@ -1239,7 +1243,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   newedges[1].geom = lwgeom_as_lwline(newedge_geom);
   /* lwgeom_split of a line should only return lines ... */
   if ( ! newedges[1].geom ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("second geometry in lwgeom_split output is not a line");
     return -1;
@@ -1248,11 +1252,11 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   /* Insert both new edges */
   ret = lwt_be_insertEdges(topo, newedges, 2);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   } else if ( ret == 0 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Insertion of split edge failed (no reason)");
     return -1;
@@ -1268,7 +1272,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_RIGHT,
       NULL, 0);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1282,7 +1286,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_RIGHT,
       NULL, 0);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1296,7 +1300,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_LEFT,
       NULL, 0);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1310,7 +1314,7 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
       &updedge, LWT_COL_EDGE_NEXT_LEFT,
       NULL, 0);
   if ( ret == -1 ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_release(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -1319,13 +1323,13 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   /* Update TopoGeometries composition */
   ret = lwt_be_updateTopoGeomEdgeSplit(topo, oldedge->edge_id, newedges[0].edge_id, newedges[1].edge_id);
   if ( ! ret ) {
-    _lwt_release_edges(oldedge, 1);;
+    _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
 
-  _lwt_release_edges(oldedge, 1);;
+  _lwt_release_edges(oldedge, 1);
   lwcollection_free(split_col);
 
   /* return new node id */
@@ -4140,7 +4144,7 @@ _lwt_HealEdges( LWT_TOPOLOGY* topo, LWT_ELEMID eid1, LWT_ELEMID eid2,
   int num_node_edges;
   LWT_ISO_EDGE *edges;
   LWT_ISO_EDGE *e1 = NULL;
-  LWT_ISO_EDGE *e2 = NULL;;
+  LWT_ISO_EDGE *e2 = NULL;
   LWT_ISO_EDGE newedge, updedge, seledge;
   int nedges, i;
   int e1freenode;
