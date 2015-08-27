@@ -1809,6 +1809,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     epa = ptarray_clone_deep(edge->geom->points);
     if ( eid < 0 ) ptarray_reverse(epa);
 
+    /* NOTE: ptarray_merge() releases both input parameters */
     pa = pa ? ptarray_merge(pa, epa) : epa;
   }
   POINTARRAY **points = lwalloc(sizeof(POINTARRAY*));
@@ -1828,6 +1829,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     /* Edge splitted the universe face */
     if ( ! isccw )
     {
+      lwpoly_free(shell);
+      _lwt_release_edges(ring_edges, numedges);
       /* Face on the left side of this ring is the universe face.
        * Next call (for the other side) should create the split face
        */
@@ -1847,15 +1850,21 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       int ret = lwt_be_updateFacesById( topo, &updface, 1 );
       if ( ret == -1 )
       {
+        _lwt_release_edges(ring_edges, numedges);
+        lwpoly_free(shell); /* NOTE: owns shellbox above */
         lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
         return -2;
       }
       if ( ret != 1 )
       {
+        _lwt_release_edges(ring_edges, numedges);
+        lwpoly_free(shell); /* NOTE: owns shellbox above */
         lwerror("Unexpected error: %d faces found when expecting 1", ret);
         return -2;
       }
     }}
+    _lwt_release_edges(ring_edges, numedges);
+    lwpoly_free(shell); /* NOTE: owns shellbox above */
     return -1; /* mbr only was requested */
   }
 
@@ -1869,11 +1878,15 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     oldface = lwt_be_getFaceById(topo, &face, &nfaces, LWT_COL_FACE_ALL);
     if ( nfaces == -1 )
     {
+      lwpoly_free(shell); /* NOTE: owns shellbox */
+      _lwt_release_edges(ring_edges, numedges);
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
       return -2;
     }
     if ( nfaces != 1 )
     {
+      lwpoly_free(shell); /* NOTE: owns shellbox */
+      _lwt_release_edges(ring_edges, numedges);
       lwerror("Unexpected error: %d faces found when expecting 1", nfaces);
       return -2;
     }
@@ -1888,11 +1901,15 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   int ret = lwt_be_insertFaces( topo, &newface, 1 );
   if ( ret == -1 )
   {
+    lwpoly_free(shell); /* NOTE: owns shellbox */
+    _lwt_release_edges(ring_edges, numedges);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -2;
   }
   if ( ret != 1 )
   {
+    lwpoly_free(shell); /* NOTE: owns shellbox */
+    _lwt_release_edges(ring_edges, numedges);
     lwerror("Unexpected error: %d faces inserted when expecting 1", ret);
     return -2;
   }
@@ -1924,6 +1941,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   numfaceedges = 1;
   edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields );
   if ( numfaceedges == -1 ) {
+    _lwt_release_edges(ring_edges, numedges);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -2;
   }
@@ -2014,7 +2032,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 
       epgeom = lwpoint_make2d(0, ep.x, ep.y);
       egg = LWGEOM2GEOS( lwpoint_as_lwgeom(epgeom) , 0);
-      lwpoint_release(epgeom);
+      lwpoint_free(epgeom);
       if ( ! egg ) {
         GEOSPreparedGeom_destroy(prepshell);
         GEOSGeom_destroy(shellgg);
