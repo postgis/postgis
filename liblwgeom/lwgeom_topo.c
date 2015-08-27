@@ -1511,12 +1511,14 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     cleangeom = lwgeom_remove_repeated_points( g, 0 );
     pa = lwgeom_as_lwline(cleangeom)->points;
 
-    if ( pa->npoints < 2 ) {
+    if ( pa->npoints < 2 ) {{
+      LWT_ELEMID id = edge->edge_id;
+      _lwt_release_edges(edges, numedges);
       lwgeom_free(cleangeom);
       lwerror("corrupted topology: edge %" LWTFMT_ELEMID
-              " does not have two distinct points", edge->edge_id);
+              " does not have two distinct points", id);
       return -1;
-    }
+    }}
 
     if ( edge->start_node == node ) {
       getPoint2d_p(pa, 0, &p1);
@@ -1525,12 +1527,14 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
                   " starts on node %" LWTFMT_ELEMID
                   ", edgeend is %g,%g-%g,%g",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
-      if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {
+      if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {{
+        LWT_ELEMID id = edge->edge_id;
+        _lwt_release_edges(edges, numedges);
         lwgeom_free(cleangeom);
         lwerror("error computing azimuth of edge %d first edgeend [%g,%g-%g,%g]",
-                edge->edge_id, p1.x, p1.y, p2.x, p2.y);
+                id, p1.x, p1.y, p2.x, p2.y);
         return -1;
-      }
+      }}
       azdif = az - data->myaz;
       LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
                   ": %g (diff: %g)", edge->edge_id, az, azdif);
@@ -1579,12 +1583,14 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
       LWDEBUGF(1, "edge %" LWTFMT_ELEMID " ends on node %" LWTFMT_ELEMID
                   ", edgeend is %g,%g-%g,%g",
                   edge->edge_id, node, p1.x, p1.y, p2.x, p2.y);
-      if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {
+      if ( ! azimuth_pt_pt(&p1, &p2, &az) ) {{
+        LWT_ELEMID id = edge->edge_id;
+        _lwt_release_edges(edges, numedges);
         lwgeom_free(cleangeom);
         lwerror("error computing azimuth of edge %d last edgeend [%g,%g-%g,%g]",
-                edge->edge_id, p1.x, p1.y, p2.x, p2.y);
+                id, p1.x, p1.y, p2.x, p2.y);
         return -1;
-      }
+      }}
       azdif = az - data->myaz;
       LWDEBUGF(1, "azimuth of edge %" LWTFMT_ELEMID
                   ": %g (diff: %g)", edge->edge_id, az, azdif);
@@ -1627,9 +1633,8 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
     }
 
     lwgeom_free(cleangeom);
-    lwline_free(edge->geom);
   }
-  if ( edges ) lwfree(edges); /* there might be none */
+  if ( numedges ) _lwt_release_edges(edges, numedges);
 
   LWDEBUGF(1, "edges adjacent to azimuth %g"
               " (incident to node %" LWTFMT_ELEMID ")"
@@ -1765,6 +1770,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   i = numedges;
   ring_edges = lwt_be_getEdgeById(topo, edge_ids, &i,
                                   LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM);
+  lwfree( edge_ids );
   if ( i == -1 )
   {
     lwfree( signed_edge_ids );
@@ -2170,6 +2176,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       ngg = LWGEOM2GEOS( lwpoint_as_lwgeom(n->geom), 0 );
       int contains;
       if ( ! ngg ) {
+        _lwt_release_nodes(nodes, numisonodes);
         if ( prepshell ) GEOSPreparedGeom_destroy(prepshell);
         if ( shellgg ) GEOSGeom_destroy(shellgg);
         lwfree(signed_edge_ids);
@@ -2182,6 +2189,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       GEOSGeom_destroy(ngg);
       if ( contains == 2 )
       {
+        _lwt_release_nodes(nodes, numisonodes);
         if ( prepshell ) GEOSPreparedGeom_destroy(prepshell);
         if ( shellgg ) GEOSGeom_destroy(shellgg);
         lwfree(signed_edge_ids);
@@ -2210,13 +2218,12 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
           continue;
         }
       }
-      lwpoint_release(n->geom);
       updated_nodes[nodes_to_update].node_id = n->node_id;
       updated_nodes[nodes_to_update++].containing_face =
                                        newface.face_id;
       LWDEBUGF(1, "Node %d will be updated", n->node_id);
     }
-    lwfree(nodes);
+    _lwt_release_nodes(nodes, numisonodes);
     if ( nodes_to_update )
     {
       int ret = lwt_be_updateNodesById(topo, updated_nodes,
@@ -3136,19 +3143,21 @@ _lwt_EdgeMotionArea(LWLINE *geom, int isclosed)
     /* don't bother dup check */
     if ( LW_FAILURE == ptarray_append_point(pas[0], &p4d, LW_TRUE) )
     {
+      ptarray_free(pas[0]);
+      lwfree(pas);
       lwerror("Could not append point to pointarray");
       return NULL;
     }
-    poly = lwpoly_construct(0, 0, 1, pas);
+    poly = lwpoly_construct(0, NULL, 1, pas);
     /* make valid, in case the edge self-intersects on its first-last
      * vertex segment */
     g = lwgeom_make_valid(lwpoly_as_lwgeom(poly));
+    lwpoly_free(poly); /* should also delete the pointarrays */
     if ( ! g )
     {
       lwerror("Could not make edge motion area valid");
       return NULL;
     }
-    lwpoly_free(poly); /* should also delete the pointarrays */
     gg = LWGEOM2GEOS(g, 0);
     lwgeom_free(g);
   }
