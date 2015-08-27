@@ -2751,6 +2751,8 @@ DECLARE
 	rast_scr_ver text;
 	topo_scr_ver text;
 	json_lib_ver text;
+	sfcgal_lib_ver text;
+	sfcgal_scr_ver text;
 BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
@@ -2765,6 +2767,12 @@ BEGIN
 	END;
 	BEGIN
 		SELECT postgis_sfcgal_version() INTO sfcgalver;
+    BEGIN
+      SELECT postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
+    EXCEPTION
+      WHEN undefined_function THEN
+        sfcgal_scr_ver := 'missing';
+    END;
 	EXCEPTION
 		WHEN undefined_function THEN
 			sfcgalver := NULL;
@@ -2856,6 +2864,10 @@ BEGIN
 
 	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
 		fullver = fullver || ' (raster procs from "' || rast_scr_ver || '" need upgrade)';
+	END IF;
+
+	IF sfcgal_scr_ver IS NOT NULL AND sfcgal_scr_ver != relproc THEN
+    fullver = fullver || ' (sfcgal procs from "' || sfcgal_scr_ver || '" need upgrade)';
 	END IF;
 
 	RETURN fullver;
