@@ -5484,9 +5484,6 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     _lwt_release_nodes(nodes, num);
   }}
 
-  LWDEBUG(1, "XXX");
-  { size_t sz;
-  lwnotice("%s", lwgeom_to_wkt(noded, WKT_ISO, 15, &sz)); }
   LWDEBUGG(1, noded, "Finally-noded");
 
   /* 3. For each (now-noded) segment, insert an edge */
@@ -5546,9 +5543,6 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     ids[num++] = id; /* TODO: skip duplicates */
   }
 
-  LWDEBUG(1, "YYY");
-  { size_t sz;
-  lwnotice("%s", lwgeom_to_wkt(noded, WKT_ISO, 15, &sz)); }
   LWDEBUGG(1, noded, "Noded before free");
   lwgeom_release(noded); /* for some reason freeing this here errors out */
 
