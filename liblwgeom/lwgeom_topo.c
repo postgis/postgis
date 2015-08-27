@@ -37,12 +37,12 @@
 #endif
 
 /* TODO: move this to lwgeom_log.h */
-#define LWDEBUGG(level, geom, msg, ...) \
+#define LWDEBUGG(level, geom, msg) \
   if (POSTGIS_DEBUG_LEVEL >= level) \
   do { \
     size_t sz; \
     char *wkt1 = lwgeom_to_wkt(geom, WKT_ISO, 15, &sz); \
-    LWDEBUGF(level, msg ": %s", __VA_ARGS__ wkt1); \
+    LWDEBUGF(level, msg ": %s", wkt1); \
     lwfree(wkt1); \
   } while (0);
 
@@ -2883,7 +2883,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     if ( ! match )
     {
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " did not match as forward",
-                 isoe->edge_id;);
+                 isoe->edge_id);
       getPoint2d_p(epa, epa->npoints-1, &p2);
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " 'last' point is %g,%g",
                   isoe->edge_id, p2.x, p2.y);
