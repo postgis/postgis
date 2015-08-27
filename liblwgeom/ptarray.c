@@ -604,8 +604,8 @@ ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 	                getPoint_internal(pa2, 0),
 	                ptsize*(pa2->npoints));
 
-	lwfree(pa1);
-	lwfree(pa2);
+	ptarray_free(pa1);
+	ptarray_free(pa2);
 
 	return pa;
 }
