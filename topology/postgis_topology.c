@@ -2133,7 +2133,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
       "AND l.topology_id = %d"
       " AND r.element_id = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
       "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
-      "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
+      "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
       INT64_FORMAT ",%" LWTFMT_ELEMID "]::int4[]",
       topo->name, topo->id,
       face_left, face_right, face_left, face_right );
@@ -2194,7 +2194,7 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
     "AND l.topology_id = %d"
     " AND abs(r.element_id) = ANY (ARRAY[%" LWTFMT_ELEMID ",%" LWTFMT_ELEMID
     "]::int4[]) group by r.topogeo_id, r.layer_id, l.schema_name, "
-    "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY["
+    "l.table_name, l.feature_column ) t WHERE NOT t.elems @> ARRAY[%"
     INT64_FORMAT ",%" LWTFMT_ELEMID "]::int4[]",
     topo->name, topo->id,
     edge1, edge2, edge1, edge2 );
