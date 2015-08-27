@@ -1053,7 +1053,7 @@ LWT_ELEMID* lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol,
  *         will build up the input polygon (after snapping). Caller
  *         will need to free the array using lwfree(), if not null.
  */
-LWT_ELEMID* lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* point, double tol,
+LWT_ELEMID* lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol,
                         int* nfaces);
 
 /*******************************************************************
