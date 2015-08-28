@@ -61,6 +61,8 @@ $$ ;
 
 -- Going from multiple functions to default args
 -- Need to drop old multiple variants to not get in trouble.
+DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry);
+DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry, text);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);

@@ -146,3 +146,4 @@ DROP FUNCTION IF EXISTS geography_gist_join_selectivity(internal, oid, internal,
 
 DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
 DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
+

@@ -1481,16 +1481,10 @@ CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry,text)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsLatLonText(geometry, text)
+CREATE OR REPLACE FUNCTION ST_AsLatLonText(geom geometry, tmpl text DEFAULT '')
 	RETURNS text
 	AS 'MODULE_PATHNAME','LWGEOM_to_latlon'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsLatLonText(geometry)
-	RETURNS text
-	AS $$ SELECT ST_AsLatLonText($1, '') $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromEWKB(bytea)
@@ -2918,8 +2912,8 @@ CREATE OR REPLACE FUNCTION text(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION box3dtobox(box3d)
 	RETURNS box
-	AS 'SELECT box($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	AS 'MODULE_PATHNAME','BOX3D_to_BOX'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry(box2d)
 	RETURNS geometry
