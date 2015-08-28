@@ -92,9 +92,9 @@ PostGIS 2.2.0
   - #2652, Add --upgrade-path switch to run_test.pl
   - #2754, sfcgal wrapped as an extension
   - #2227, Simplification with Visvalingam-Whyatt algorithm
-           ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avén)
+           ST_SimplifyVW, ST_SetEffectiveArea (Nicklas AvÃ¨n)
   - Functions to encode and decode TWKB
-    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
+    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas AvÃ¨n / CartoDB)
 
  * Enhancements *
 
