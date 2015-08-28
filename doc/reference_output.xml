@@ -1085,11 +1085,7 @@ F000000000000000000000000000000000000000000000000');
 			  <funcprototype>
 				<funcdef>text <function>ST_AsLatLonText</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>text <function>ST_AsLatLonText</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
