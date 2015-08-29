@@ -984,6 +984,15 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
     lwerror("SQL/MM Spatial exception - point not on edge");
     return NULL;
   }
+
+#if 0
+  {
+  size_t sz;
+  char *wkt = lwgeom_to_wkt((LWGEOM*)split_col, WKT_EXTENDED, 2, &sz);
+  LWDEBUGF(1, "returning split col: %s", wkt);
+  lwfree(wkt);
+  }
+#endif
   return split_col;
 }
 
@@ -1004,6 +1013,9 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   if ( ! split_col ) return -1; /* should have raised an exception */
   oldedge_geom = split_col->geoms[0];
   newedge_geom = split_col->geoms[1];
+  /* Make sure the SRID is set on the subgeom */
+  ((LWGEOM*)oldedge_geom)->srid = split_col->srid;
+  ((LWGEOM*)newedge_geom)->srid = split_col->srid;
 
   /* Add new node, getting new id back */
   node.node_id = -1;
@@ -1158,6 +1170,9 @@ lwt_NewEdgesSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   if ( ! split_col ) return -1; /* should have raised an exception */
   oldedge_geom = split_col->geoms[0];
   newedge_geom = split_col->geoms[1];
+  /* Make sure the SRID is set on the subgeom */
+  ((LWGEOM*)oldedge_geom)->srid = split_col->srid;
+  ((LWGEOM*)newedge_geom)->srid = split_col->srid;
 
   /* Add new node, getting new id back */
   node.node_id = -1;

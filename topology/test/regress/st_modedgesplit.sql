@@ -2,8 +2,10 @@
 \set VERBOSITY terse
 set client_min_messages to WARNING;
 
+INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( 'EPSG', 4326, 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
+
 -- Import city_data
-\i load_topology.sql
+\i load_topology-4326.sql
 
 -- Save max node id
 select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;
@@ -62,32 +64,32 @@ $$ LANGUAGE 'plpgsql';
 -- }
 
 -- Invalid calls
-SELECT 'invalid', ST_ModEdgeSplit('city_data', 999, 'POINT(36 26, 38 30)');
-SELECT 'invalid', ST_ModEdgeSplit('city_data', 10, 'POINT(28 15)');
-SELECT 'invalid', ST_ModEdgeSplit('', 10, 'POINT(28 14)');
-SELECT 'invalid', ST_ModEdgeSplit(NULL, 10, 'POINT(28 14)');
-SELECT 'invalid', ST_ModEdgeSplit('city_data', NULL, 'POINT(28 14)');
+SELECT 'invalid', ST_ModEdgeSplit('city_data', 999, 'SRID=4326;POINT(36 26, 38 30)');
+SELECT 'invalid', ST_ModEdgeSplit('city_data', 10, 'SRID=4326;POINT(28 15)');
+SELECT 'invalid', ST_ModEdgeSplit('', 10, 'SRID=4326;POINT(28 14)');
+SELECT 'invalid', ST_ModEdgeSplit(NULL, 10, 'SRID=4326;POINT(28 14)');
+SELECT 'invalid', ST_ModEdgeSplit('city_data', NULL, 'SRID=4326;POINT(28 14)');
 SELECT 'invalid', ST_ModEdgeSplit('city_data', 10, NULL);
-SELECT 'invalid', ST_ModEdgeSplit('fake', 10, 'POINT(28 14)');
+SELECT 'invalid', ST_ModEdgeSplit('fake', 10, 'SRID=4326;POINT(28 14)');
 
 -- Non-isolated edge 
-SELECT 'noniso', ST_ModEdgeSplit('city_data', 10, 'POINT(28 14)');
+SELECT 'noniso', ST_ModEdgeSplit('city_data', 10, 'SRID=4326;POINT(28 14)');
 SELECT check_changes();
 
 -- Isolated edge
-SELECT 'iso', ST_ModEdgeSplit('city_data', 25, 'POINT(11 35)');
+SELECT 'iso', ST_ModEdgeSplit('city_data', 25, 'SRID=4326;POINT(11 35)');
 SELECT check_changes();
 
 -- Dangling on end point 
-SELECT 'dangling_end', ST_ModEdgeSplit('city_data', 3, 'POINT(25 32)');
+SELECT 'dangling_end', ST_ModEdgeSplit('city_data', 3, 'SRID=4326;POINT(25 32)');
 SELECT check_changes();
 
 -- Dangling on start point 
-SELECT 'dangling_start', ST_ModEdgeSplit('city_data', 4, 'POINT(45 32)');
+SELECT 'dangling_start', ST_ModEdgeSplit('city_data', 4, 'SRID=4326;POINT(45 32)');
 SELECT check_changes();
 
 -- Splitting closed edge
-SELECT 'closed', ST_ModEdgeSplit('city_data', 1, 'POINT(3 38)');
+SELECT 'closed', ST_ModEdgeSplit('city_data', 1, 'SRID=4326;POINT(3 38)');
 SELECT check_changes();
 
 -- Robustness of edge splitting (#1711)
@@ -99,10 +101,12 @@ DELETE FROM city_data.face where face_id > 0;
 
 CREATE TEMP TABLE t AS
 SELECT
+ST_SetSRID(
 '01020000000400000000000000000034400000000000002440000000000000244000000000000024400000000000002240000000000000284000000000000024400000000000003440'
-::geometry as line, 
+::geometry, 4326) as line, 
+ST_SetSRID(
 '010100000000000000000022400000000000002840'
-::geometry as point,
+::geometry, 4326) as point,
 null::int as edge_id,
 null::int as node_id
 ;
@@ -125,3 +129,4 @@ DROP TABLE t;
 
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
+DELETE FROM spatial_ref_sys where srid = 4326;
