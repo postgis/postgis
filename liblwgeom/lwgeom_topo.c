@@ -921,13 +921,12 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
 
   /* Get edge */
   i = 1;
-  LWDEBUG(1, "lwt_NewEdgesSplit: calling lwt_be_getEdgeById");
+  LWDEBUG(1, "calling lwt_be_getEdgeById");
   *oldedge = lwt_be_getEdgeById(topo, &edge, &i, LWT_COL_EDGE_ALL);
-  LWDEBUGF(1, "lwt_NewEdgesSplit: lwt_be_getEdgeById returned %p", *oldedge);
+  LWDEBUGF(1, "lwt_be_getEdgeById returned %p", *oldedge);
   if ( ! *oldedge )
   {
-    LWDEBUGF(1, "lwt_NewEdgesSplit: "
-                "lwt_be_getEdgeById returned NULL and set i=%d", i);
+    LWDEBUGF(1, "lwt_be_getEdgeById returned NULL and set i=%d", i);
     if ( i == -1 )
     {
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -953,15 +952,15 @@ _lwt_EdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge, LWPOINT* pt, int skipISOChe
    */
   if ( ! skipISOChecks )
   {
-    LWDEBUG(1, "lwt_NewEdgesSplit: calling lwt_be_ExistsCoincidentNode");
+    LWDEBUG(1, "calling lwt_be_ExistsCoincidentNode");
     if ( lwt_be_ExistsCoincidentNode(topo, pt) ) /*x*/
     {
-      LWDEBUG(1, "lwt_NewEdgesSplit: lwt_be_ExistsCoincidentNode returned");
+      LWDEBUG(1, "lwt_be_ExistsCoincidentNode returned");
       _lwt_release_edges(*oldedge, 1);
       lwerror("SQL/MM Spatial exception - coincident node");
       return NULL;
     }
-    LWDEBUG(1, "lwt_NewEdgesSplit: lwt_be_ExistsCoincidentNode returned");
+    LWDEBUG(1, "lwt_be_ExistsCoincidentNode returned");
   }
 
   /* Split edge */
