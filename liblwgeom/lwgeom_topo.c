@@ -41,7 +41,7 @@
   if (POSTGIS_DEBUG_LEVEL >= level) \
   do { \
     size_t sz; \
-    char *wkt1 = lwgeom_to_wkt(geom, WKT_ISO, 15, &sz); \
+    char *wkt1 = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
     LWDEBUGF(level, msg ": %s", wkt1); \
     lwfree(wkt1); \
   } while (0);
@@ -2721,7 +2721,7 @@ _lwt_FaceByEdges(LWT_TOPOLOGY *topo, LWT_ISO_EDGE *edges, int numfaceedges)
 #if 0
   {
   size_t sz;
-  char *wkt = lwgeom_to_wkt(outg, WKT_ISO, 2, &sz);
+  char *wkt = lwgeom_to_wkt(outg, WKT_EXTENDED, 2, &sz);
   LWDEBUGF(1, "_lwt_FaceByEdges returning area: %s", wkt);
   lwfree(wkt);
   }
@@ -2839,7 +2839,7 @@ _lwt_FindNextRingEdge(const POINTARRAY *ring, int from,
     size_t sz;
     LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is %s",
                 isoe->edge_id,
-                lwgeom_to_wkt(lwline_as_lwgeom(edge), WKT_ISO, 2, &sz));
+                lwgeom_to_wkt(lwline_as_lwgeom(edge), WKT_EXTENDED, 2, &sz));
 #endif
 
     /* ptarray_remove_repeated_points ? */
@@ -3002,7 +3002,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
 #if 0
   {
   size_t sz;
-  char *wkt = lwgeom_to_wkt(face, WKT_ISO, 6, &sz);
+  char *wkt = lwgeom_to_wkt(face, WKT_EXTENDED, 6, &sz);
   LWDEBUGF(1, "Geometry of face %" LWTFMT_ELEMID " is: %s",
               face_id, wkt);
   lwfree(wkt);
@@ -3058,7 +3058,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
 #if 0
       {
       size_t sz;
-      char *wkt = lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_ISO, 6, &sz);
+      char *wkt = lwgeom_to_wkt(lwline_as_lwgeom(nextline), WKT_EXTENDED, 6, &sz);
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " is %s",
                   nextedge->edge_id, wkt);
       lwfree(wkt);
@@ -3486,7 +3486,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 #if 0
     {
     size_t sz;
-    char *wkt = lwgeom_to_wkt(nface1, WKT_ISO, 2, &sz);
+    char *wkt = lwgeom_to_wkt(nface1, WKT_EXTENDED, 2, &sz);
     LWDEBUGF(1, "new geometry of face left (%d): %s", (int)oldedge->face_left, wkt);
     lwfree(wkt);
     }
@@ -3504,7 +3504,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 #if 0
     {
     size_t sz;
-    char *wkt = lwgeom_to_wkt(nface2, WKT_ISO, 2, &sz);
+    char *wkt = lwgeom_to_wkt(nface2, WKT_EXTENDED, 2, &sz);
     LWDEBUGF(1, "new geometry of face right (%d): %s", (int)oldedge->face_right, wkt);
     lwfree(wkt);
     }
@@ -4976,8 +4976,8 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 #if POSTGIS_DEBUG_LEVEL > 0
       {
       size_t sz;
-      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
-      char *wkt2 = lwgeom_to_wkt(snapedge, WKT_ISO, 15, &sz);
+      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(snapedge, WKT_EXTENDED, 15, &sz);
       LWDEBUGF(1, "Edge %s snapped became %s", wkt1, wkt2);
       lwfree(wkt1);
       lwfree(wkt2);
@@ -5008,7 +5008,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 #if POSTGIS_DEBUG_LEVEL > 0
         {
         size_t sz;
-        char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+        char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
         LWDEBUGF(1, "Tweaked snapline became %s", wkt1);
         lwfree(wkt1);
         }
@@ -5035,8 +5035,8 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     else
     {{
       size_t sz;
-      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
-      char *wkt2 = lwgeom_to_wkt(prj, WKT_ISO, 15, &sz);
+      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
+      char *wkt2 = lwgeom_to_wkt(prj, WKT_EXTENDED, 15, &sz);
       LWDEBUGF(1, "Edge %s contains projected point %s", wkt1, wkt2);
       lwfree(wkt1);
       lwfree(wkt2);
@@ -5517,7 +5517,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 #if POSTGIS_DEBUG_LEVEL > 0
     {
       size_t sz;
-      char *wkt1 = lwgeom_to_wkt(g, WKT_ISO, 15, &sz);
+      char *wkt1 = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &sz);
       LWDEBUGF(1, "Component %d of split line is: %s", i, wkt1);
       lwfree(wkt1);
     }
