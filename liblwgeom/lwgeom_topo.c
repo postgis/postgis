@@ -5320,6 +5320,7 @@ _lwt_split_by_nodes(const LWGEOM *g, const LWGEOM *nodes)
     lwgeom_free(bg);
     bg = g2;
   }
+  bg->srid = nodes->srid;
 
   return bg;
 }
@@ -5528,6 +5529,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
   {
     LWT_ELEMID id;
     LWGEOM *g = geoms[i];
+    g->srid = noded->srid;
 
 #if POSTGIS_DEBUG_LEVEL > 0
     {
