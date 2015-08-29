@@ -1,8 +1,8 @@
-/**********************************************************************
+﻿/**********************************************************************
  * $Id: bytebuffer.h 12198 2014-01-29 17:49:35Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
- * Copyright 2015 Nicklas Av�n <nicklas.aven@jordogskog.no>
+ * Copyright 2015 Nicklas Avén <nicklas.aven@jordogskog.no>
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following

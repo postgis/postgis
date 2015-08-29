@@ -1,8 +1,8 @@
-/**********************************************************************
+﻿/**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
  *
- * Copyright (C) 2014 Nicklas Av�n
+ * Copyright (C) 2014 Nicklas Avén
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
