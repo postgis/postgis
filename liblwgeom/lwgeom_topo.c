@@ -5628,12 +5628,12 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
       fg = lwt_GetFaceGeometry( topo, f->face_id );
       if ( ! fg )
       {
+        i = f->face_id; /* so we can destroy faces */
         GEOSPreparedGeom_destroy(ppoly);
         GEOSGeom_destroy(polyg);
         lwfree(ids);
         _lwt_release_faces(faces, nfacesinbox);
-        lwerror("Could not get geometry of face %" LWTFMT_ELEMID,
-                f->face_id);
+        lwerror("Could not get geometry of face %" LWTFMT_ELEMID, i);
         return NULL;
       }
       /* check if a point on this face's surface is covered by our polygon */

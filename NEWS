@@ -92,9 +92,9 @@ PostGIS 2.2.0
   - #2652, Add --upgrade-path switch to run_test.pl
   - #2754, sfcgal wrapped as an extension
   - #2227, Simplification with Visvalingam-Whyatt algorithm
-           ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avèn)
+           ST_SimplifyVW, ST_SetEffectiveArea (Nicklas Avén)
   - Functions to encode and decode TWKB
-    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avèn / CartoDB)
+    ST_AsTWKB, ST_GeomFromTWKB (Paul Ramsey / Nicklas Avén / CartoDB)
 
  * Enhancements *
 
@@ -787,7 +787,7 @@ PostGIS 2.0.0
   - Topology support improved, documented, testing, bug fixes 
     (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri,
      Jose Carlos Martinez Llari)
-  - 3D relationship support functions (Nicklas Avèn)
+  - 3D relationship support functions (Nicklas Avén)
     ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
     ST_3DShortestLine
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
