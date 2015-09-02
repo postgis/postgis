@@ -13,6 +13,7 @@
 #include "fmgr.h"
 #include "funcapi.h"
 #include "access/tupmacs.h"
+#include "utils/datum.h"
 #include "utils/array.h"
 #include "utils/lsyscache.h"
 
@@ -130,7 +131,13 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 		if (PG_NARGS() == 3)
 		{
-			p->data = PG_GETARG_DATUM(2);
+			Datum argument = PG_GETARG_DATUM(2);
+			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
+			MemoryContext old = MemoryContextSwitchTo(aggcontext);
+
+			p->data = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
+
+			MemoryContextSwitchTo(old);
 		}
 	}
 	else
