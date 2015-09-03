@@ -89,6 +89,8 @@ IMAGES= \
 	../images/st_longestline02.png \
 	../images/st_longestline03.png \
 	../images/st_minimumboundingcircle01.png \
+	../images/st_minkowskisum01.png \
+	../images/st_minkowskisum02.png \
 	../images/st_offsetcurve01.png \
 	../images/st_offsetcurve02.png \
 	../images/st_offsetcurve03.png \
