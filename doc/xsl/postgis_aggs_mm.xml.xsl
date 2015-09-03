@@ -351,7 +351,7 @@
 								<xsl:choose>
 									<!-- direct support -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'geometry') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geometry')">
-										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when><xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- support via autocast -->
 									<xsl:when test="contains(refsynopsisdiv/funcsynopsis,'box') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'box')">
