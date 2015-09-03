@@ -378,15 +378,18 @@ around ST_StraightSkeleton (slower case).
 		<title>Description</title>
 
                 <para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
+                <para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <ulink url="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</ulink>.</para>
                 <para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
                 
+                <para>Implementation utilizes <ulink url="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</ulink>.</para>
+               
 
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
 	  
 	 <refsection><title>Examples</title>
-	 <para>Minkowski Sum of Linestring and polygon where Linestring cuts thru the polygon</para>
+	 <para>Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle</para>
             <informaltable>
                 <tgroup cols="2">
                     <tbody>
@@ -404,7 +407,7 @@ around ST_StraightSkeleton (slower case).
                                                </para>
                         </entry>
                         <entry>
-                                               <para>
+                           <para>
                             <informalfigure>
                             <mediaobject>
                               <imageobject>
@@ -420,19 +423,60 @@ around ST_StraightSkeleton (slower case).
                 </tgroup>
             </informaltable>
             <programlisting>
--- this creates a geometry collection consisting of the 2 halves of the polygon
--- this is similar to the example we demonstrated in ST_BuildArea
-SELECT ST_MinkowskiSum(line, circle)
+SELECT ST_MinkowskiSum(line, circle))
 FROM (SELECT 
-    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,
-    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;
+    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,
+    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
     
--- result --
- MULTIPOLYGON(((60 99.9999999999998,60.9607359798385 90.2454838991934,63.8060233744357 80.8658283817454,68.4265193848728 72.2214883490198,74.6446609406727 64.6446609406725,82.22148834902 58.4265193848727,90.8658283817456 53.8060233744356,
- 100.245483899194 50.9607359798385,110 50,119.754516100806 50.9607359798385,129.134171618255 53.8060233744357,137.77851165098 58.4265193848728,145.355339059327 64.6446609406727,325.355339059327 244.644660940673,331.573480615127 252.22148834902,
- 336.193976625564 260.865828381746,339.039264020162 270.245483899194,340 280,339.039264020162 289.754516100807,336.193976625564 299.134171618255,331.573480615127 307.77851165098,325.355339059327 315.355339059327,317.77851165098 321.573480615127,309.134171618254 326.193976625564,
- 299.754516100806 329.039264020162,290 330,280.245483899193 329.039264020161,270.865828381745 326.193976625564,262.22148834902 321.573480615127,
- 254.644660940672 315.355339059327,74.6446609406725 135.355339059327,68.4265193848726 127.77851165098,63.8060233744356 119.134171618254,60.9607359798384 109.754516100806,60 99.9999999999998)))
+-- wkt --
+MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
+161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
+            </programlisting>
+            
+        <para>Minkowski Sum of a circle and multipoint</para>
+            <informaltable>
+                <tgroup cols="2">
+                    <tbody>
+                      <row>
+                        <entry>
+                         <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                <imagedata fileref="images/st_minkowskisum03.png" />
+                              </imageobject>
+                              <caption><para>Before Summing</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                          </para>
+                        </entry>
+                        <entry>
+                           <para>
+                            <informalfigure>
+                            <mediaobject>
+                              <imageobject>
+                                  <imagedata fileref="images/st_minkowskisum04.png" />
+                              </imageobject>
+                              <caption><para>After summing: polygon is duplicated and translated to position of points</para></caption>
+                            </mediaobject>
+                            </informalfigure>
+                           </para>
+                        </entry>
+                    </row>
+                    </tbody>
+                </tgroup>
+            </informaltable>
+            <programlisting>SELECT ST_MinkowskiSum(mp, poly)
+FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
+   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
+    ) As foo
+
+    
+-- wkt --
+MULTIPOLYGON(
+    ((70 115,100 135,175 175,225 225,70 115)),
+    ((120 65,150 85,225 125,275 175,120 65))
+    )
             </programlisting>
        </refsection>
 
