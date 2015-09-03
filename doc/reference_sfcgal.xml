@@ -770,7 +770,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  
 	  <refsection>
 	      <title>Example</title>
-	      <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linked="ST_MakeSolid" />.
+	      <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid" />.
 	      Areal geometries have no volume.  Here is an example to demonstrate.</para>
 	      <programlisting>SELECT ST_Volume(geom) As cube_surface_vol, 
 	ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
