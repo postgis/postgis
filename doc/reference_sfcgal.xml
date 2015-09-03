@@ -612,7 +612,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  <refnamediv>
 		<refname>ST_3DArea</refname>
 
-		<refpurpose>Computes area of 3D geometries</refpurpose>
+		<refpurpose>Computes area of 3D surface geometries.  Will return 0 for solids.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -633,7 +633,28 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
+	  
+	  <refsection><title>Examples</title>
+	  <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
+<programlisting>SELECT ST_3DArea(geom) As cube_surface_area, 
+	ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
+  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), 
+    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
+    
+ cube_surface_area | solid_surface_area
+-------------------+--------------------
+                 6 |                  0    </programlisting>
+	  
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
 
+		<para><xref linkend="ST_Area" />, <xref linkend="ST_MakeSolid" />, <xref linkend="ST_IsSolid" />, <xref linkend="ST_Area" /></para>
+	  </refsection>
 	</refentry>
 
 	<refentry id="ST_Tesselate">
