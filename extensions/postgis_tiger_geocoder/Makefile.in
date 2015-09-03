@@ -42,24 +42,21 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p expected
 	cp $< $@
 
+
+expected/test-normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress
+	cat $^ > $@
+	
+expected/test-pagc_normalize_address.out: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress
+	cat $^ > $@
+	
 ## adding \t .. to force output to be the same as what get in regular regress in tiger folder
-
-
-expected/test-normalize_address.out: ../../extras/tiger_geocoder/regress/normalize_address_regress
-	echo '\t on \a \set ECHO none' > $@
-	cat $^ >> $@
+sql/test-normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/normalize_address_regress.sql
+	mkdir -p sql
+	cat $^ > $@
 	
-expected/test-pagc_normalize_address.out: ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress
-	echo '\t on \a \set ECHO none' > $@
-	cat $^ >> $@
-	
-sql/test-normalize_address.sql: ../../extras/tiger_geocoder/regress/normalize_address_regress.sql
-	echo '\t on \a \set ECHO none' > $@
-	cat $^ >> $@
-	
-sql/test-pagc_normalize_address.sql: ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql
-	echo '\t on \a \set ECHO none' > $@
-	cat $^ >> $@
+sql/test-pagc_normalize_address.sql: sql_bits/test_tuples_only_unaligned.sql.in ../../extras/tiger_geocoder/regress/pagc_normalize_address_regress.sql
+	mkdir -p sql
+	cat $^ > $@
 	
 sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql
 	mkdir -p sql
@@ -70,9 +67,6 @@ sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_hel
 	mkdir -p sql
 	cat $^ > $@
 
-sql/test_normalize_address.sql: ../../extras/tiger_geocoder/regress/normalize_address_regress.sql
-	echo '\a' > $@
-	cat $^ >> $@
 
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
 	mkdir -p sql
