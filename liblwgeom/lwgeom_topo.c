@@ -1826,11 +1826,27 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       lwerror("missing edge that was found in ring edges loop");
       return -2;
     }
-    epa = ptarray_clone_deep(edge->geom->points);
-    if ( eid < 0 ) ptarray_reverse(epa);
 
-    /* NOTE: ptarray_merge() releases both input parameters */
-    pa = pa ? ptarray_merge(pa, epa) : epa;
+    if ( pa == NULL )
+    {
+      pa = ptarray_clone_deep(edge->geom->points);
+      if ( eid < 0 ) ptarray_reverse(pa);
+    }
+    else
+    {
+      if ( eid < 0 )
+      {
+        epa = ptarray_clone_deep(edge->geom->points);
+        ptarray_reverse(epa);
+        ptarray_append_ptarray(pa, epa, 0);
+        ptarray_free(epa);
+      }
+      else
+      {
+        /* avoid a clone here */
+        ptarray_append_ptarray(pa, edge->geom->points, 0);
+      }
+    }
   }
   POINTARRAY **points = lwalloc(sizeof(POINTARRAY*));
   points[0] = pa;
