@@ -8176,6 +8176,7 @@ INSERT INTO pagc_rules (id, rule) VALUES (4349, '1 2 11 28 12 -1 10 10 11 13 12 
 INSERT INTO pagc_rules (id, rule) VALUES (4350, '1 2 11 28 29 -1 10 10 11 13 13 -1 0 16');
 INSERT INTO pagc_rules (id, rule) VALUES (4351, '1 2 11 28 29 12 -1 10 10 11 13 13 12 -1 0 17');
 INSERT INTO pagc_rules (id, rule) values (4352, '16 0 22 -1 16 17 17 -1 4 7');
+INSERT INTO pagc_rules (id, rule) VALUES (4353, '0 1 6 -1 1 5 5 -1 1 9');
 INSERT INTO pagc_rules (id, rule) VALUES (4355, '-1');
 
 -- for some reason all rules are coming in as custom.  just force by id

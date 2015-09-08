@@ -4375,6 +4375,7 @@ INSERT INTO us_rules (rule) VALUES ('0 22 6 3 -1 4 2 5 3 -1 1 9');
 INSERT INTO us_rules (rule) VALUES ('0 3 6 -1 4 3 5 -1 1 9');
 INSERT INTO us_rules (rule) VALUES ('0 3 1 2 -1 1 3 5 6 -1 1 17');
 INSERT INTO us_rules (rule) VALUES ('0 3 1 2 22 -1 1 3 5 6 7 -1 1 17');
+INSERT INTO us_rules (rule) VALUES ('0 1 6 -1 1 5 5 -1 1 9');
 INSERT INTO us_rules (rule) VALUES ('-1');
 
 
