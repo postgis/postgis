@@ -357,32 +357,21 @@ fi
 AC_SUBST([ICONV_LDFLAGS])
 AC_SUBST([ICONV_CFLAGS])
 
-dnl ====================================
-dnl --without-postgresql
-dnl ====================================
 LIBLWGEOM_ONLY="no"
-AC_ARG_WITH([postgresql],
-    [AS_HELP_STRING([--without-postgresql],
-                    [Disable the postgresql extensions])],
-    [], [])
-if test "x$with_postgresql" = "xno"; then
-    LIBLWGEOM_ONLY="yes"
-    AC_MSG_RESULT([PostgreSQL support disabled])
-fi
 AC_SUBST([LIBLWGEOM_ONLY])
 
 dnl ===========================================================================
-dnl Detect the version of PostgreSQL installed on the system
+dnl Detect the version of PostgreSQL installed on the system, if needed
 dnl ===========================================================================
 
-AC_ARG_VAR(PG_CONFIG, [PostgreSQL configure command to determine Postgres version to bulid against.])
-AC_ARG_WITH([pgconfig], 
-	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file])], 
+AC_ARG_VAR(PG_CONFIG, [PostgreSQL configure command to determine Postgres version to build against.])
+AC_ARG_WITH([pgconfig],
+	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file or disable postgresql (--without-pgconfig)])],
 	[PG_CONFIG="$withval"], [])
 
 if test "x$PG_CONFIG" = "xno"; then
-	dnl disabling pg_config doesn't make sense
-	AC_MSG_ERROR([Cannot disable pg_config.])
+	LIBLWGEOM_ONLY="yes"
+	AC_MSG_RESULT([PostgreSQL support disabled])
 
 elif test "x$PG_CONFIG" = "x"; then
 	dnl PG_CONFIG was not specified, so search within the current path
@@ -390,7 +379,7 @@ elif test "x$PG_CONFIG" = "x"; then
 
 	dnl If we couldn't find pg_config, display an error
 	if test "x$PG_CONFIG" = "x"; then
-		AC_MSG_ERROR([could not find pg_config within the current path. You may need to try re-running configure with a --with-pg_config parameter.])
+		AC_MSG_ERROR([could not find pg_config within the current path. You may need to re-run configure with a --with-pgconfig parameter.])
 	fi
 else
 	dnl PG_CONFIG was specified; display a message to the user
@@ -405,99 +394,101 @@ else
 	fi
 fi
 
+if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
-dnl ===========================================================================
-dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some 
-dnl distributions such as Debian also include pg_config as part of libpq-dev 
-dnl packages, but don't install the Makefile it points to unless
-dnl the postgresql-server-dev packages are installed :)
-dnl ===========================================================================
+  dnl ===========================================================================
+  dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some 
+  dnl distributions such as Debian also include pg_config as part of libpq-dev 
+  dnl packages, but don't install the Makefile it points to unless
+  dnl the postgresql-server-dev packages are installed :)
+  dnl ===========================================================================
 
-PGXS=`$PG_CONFIG --pgxs`
-if test ! -f $PGXS; then
-	AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
-fi
+  PGXS=`$PG_CONFIG --pgxs`
+  if test ! -f $PGXS; then
+    AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
+  fi
 
-AC_SUBST([PGXS])
+  AC_SUBST([PGXS])
 
+  dnl Extract the version information from pg_config
+  dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
+  dnl the final version. This is to guard against user error... 
+  PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
+  PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
+  PGSQL_FULL_VERSION=`$PG_CONFIG --version`
+  POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
-dnl Extract the version information from pg_config
-dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
-dnl the final version. This is to guard against user error... 
-PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
-PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
-PGSQL_FULL_VERSION=`$PG_CONFIG --version`
-POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
+  PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
+  PGSQL_LIBDIR=`$PG_CONFIG --libdir`
+  PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
-PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
-PGSQL_LIBDIR=`$PG_CONFIG --libdir`
-PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
+  AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
+  dnl Ensure that we are using PostgreSQL >= 9.1
+  if test $POSTGIS_PGSQL_VERSION -lt 91; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.1])
+  fi
 
-AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-dnl Ensure that we are using PostgreSQL >= 9.1
-if test $POSTGIS_PGSQL_VERSION -lt 91; then
-	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.1])
-fi
+  dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
-dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
+  dnl Extract the linker and include flags for the frontend (for programs that use libpq)
+  PGSQL_FE_LDFLAGS=-L`$PG_CONFIG --libdir`" -lpq"
+  PGSQL_FE_CPPFLAGS=-I`$PG_CONFIG --includedir`
 
-dnl Extract the linker and include flags for the frontend (for programs that use libpq)
-PGSQL_FE_LDFLAGS=-L`$PG_CONFIG --libdir`" -lpq"
-PGSQL_FE_CPPFLAGS=-I`$PG_CONFIG --includedir`
+  AC_SUBST([PGSQL_FE_LDFLAGS])
+  AC_SUBST([PGSQL_FE_CPPFLAGS])
 
-AC_SUBST([PGSQL_FE_LDFLAGS])
-AC_SUBST([PGSQL_FE_CPPFLAGS])
+  dnl Extract the include flags for the backend (libpgcommon)
+  PGSRV_INC=`$PG_CONFIG --includedir-server`
+  PGSQL_BE_CPPFLAGS="-I${PGSRV_INC}"
+  dnl Add $PGSRV_INC/port/win32 to MinGW build to pick up netdb.h
+  case $host in
+    *mingw32*)
+      PGSQL_BE_CPPFLAGS="${PGSQL_BE_CPPFLAGS} -I${PGSRV_INC}/port/win32"
+      ;;
+  esac
 
-dnl Extract the include flags for the backend (libpgcommon)
-PGSRV_INC=`$PG_CONFIG --includedir-server`
-PGSQL_BE_CPPFLAGS="-I${PGSRV_INC}"
-dnl Add $PGSRV_INC/port/win32 to MinGW build to pick up netdb.h
-case $host in
-	*mingw32*)
-		PGSQL_BE_CPPFLAGS="${PGSQL_BE_CPPFLAGS} -I${PGSRV_INC}/port/win32"
-		;;
-esac
+  AC_SUBST([PGSQL_BE_CPPFLAGS])
 
-AC_SUBST([PGSQL_BE_CPPFLAGS])
+  dnl Extract the documentation and man page directories
+  PGSQL_DOCDIR=`$PG_CONFIG --docdir`
+  PGSQL_MANDIR=`$PG_CONFIG --mandir`
 
-dnl Extract the documentation and man page directories
-PGSQL_DOCDIR=`$PG_CONFIG --docdir`
-PGSQL_MANDIR=`$PG_CONFIG --mandir`
+  AC_SUBST([PGSQL_DOCDIR])
+  AC_SUBST([PGSQL_MANDIR])
 
-AC_SUBST([PGSQL_DOCDIR])
-AC_SUBST([PGSQL_MANDIR])
+  dnl Extract the locale directory
+  PGSQL_LOCALEDIR=`$PG_CONFIG --localedir`
+  AC_DEFINE_UNQUOTED([PGSQL_LOCALEDIR], ["$PGSQL_LOCALEDIR"], [Location of PostgreSQL locale directory])
 
-dnl Extract the locale directory
-PGSQL_LOCALEDIR=`$PG_CONFIG --localedir`
-AC_DEFINE_UNQUOTED([PGSQL_LOCALEDIR], ["$PGSQL_LOCALEDIR"], [Location of PostgreSQL locale directory])
+  dnl Extract the executable directory
+  PGSQL_BINDIR=`$PG_CONFIG --bindir`
 
-dnl Extract the executable directory
-PGSQL_BINDIR=`$PG_CONFIG --bindir`
+  AC_SUBST([PGSQL_BINDIR])
 
-AC_SUBST([PGSQL_BINDIR])
+  dnl Extract the share directory
+  PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
-dnl Extract the share directory
-PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
+  AC_SUBST([PGSQL_SHAREDIR])
 
-AC_SUBST([PGSQL_SHAREDIR])
+  dnl Ensure that we can parse libpq-fe.h
+  CPPFLAGS_SAVE="$CPPFLAGS"
+  CPPFLAGS="$PGSQL_FE_CPPFLAGS"
+  AC_CHECK_HEADER([libpq-fe.h], [], [AC_MSG_ERROR([could not find libpq-fe.h])])
+  CPPFLAGS="$CPPFLAGS_SAVE"
 
-dnl Ensure that we can parse libpq-fe.h
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$PGSQL_FE_CPPFLAGS"
-AC_CHECK_HEADER([libpq-fe.h], [], [AC_MSG_ERROR([could not find libpq-fe.h])])
-CPPFLAGS="$CPPFLAGS_SAVE"
+  dnl Ensure we can link against libpq
+  LIBS_SAVE="$LIBS"
+  LIBS="$PGSQL_FE_LDFLAGS"
+  AC_CHECK_LIB([pq], [PQserverVersion],
+    [],
+    [AC_MSG_ERROR([could not find libpq])],
+    [])
+  LIBS="$LIBS_SAVE"
 
-dnl Ensure we can link against libpq
-LIBS_SAVE="$LIBS"
-LIBS="$PGSQL_FE_LDFLAGS"
-AC_CHECK_LIB([pq], [PQserverVersion],
-	[],
-	[AC_MSG_ERROR([could not find libpq])],
-	[])
-LIBS="$LIBS_SAVE"
+  AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])	
+  AC_SUBST([POSTGIS_PGSQL_VERSION])
 
-AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])	
-AC_SUBST([POSTGIS_PGSQL_VERSION])
+fi dnl LIBLWGEOM_ONLY != no
 
 
 dnl ===========================================================================
@@ -1344,13 +1335,13 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
   AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 else
-  AC_MSG_RESULT([  PostgreSQL support DISABLED])
+  AC_MSG_RESULT([  PostgreSQL support:   DISABLED])
 fi
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
-AC_MSG_RESULT([  PCRE support:       ${HAVE_PCRE}])
+AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()
