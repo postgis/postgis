@@ -3436,7 +3436,7 @@ INSERT INTO us_rules (rule) VALUES ('18 0 -1 1 1 -1 3 12');
 INSERT INTO us_rules (rule) VALUES ('25 -1 1 -1 3 12');
 INSERT INTO us_rules (rule) VALUES ('21 0 -1 1 1 -1 3 12');
 INSERT INTO us_rules (rule) VALUES ('0 21 -1 1 1 -1 3 9');
-INSERT INTO us_rules (rule) VALUES ('0 0 -1 1 1 -1 3 9');
+INSERT INTO us_rules (rule) VALUES ('0 0 -1 1 1 -1 3 15');
 INSERT INTO us_rules (rule) VALUES ('21 0 0 -1 1 1 1 -1 3 9');
 INSERT INTO us_rules (rule) VALUES ('0 0 21 -1 1 1 1 -1 3 9');
 INSERT INTO us_rules (rule) VALUES ('0 0 18 -1 1 1 1 -1 3 9');

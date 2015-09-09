@@ -104,6 +104,9 @@ SELECT '#1108a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('529
 SELECT '#3259a' As ticket, * FROM normalize_address('212 Third Ave N Suite 560, Minneapolis, MN 55401');
 SELECT '#3259b' As ticket, * FROM normalize_address('3937 Forty Third AVE S, MINNEAPOLIS, MN 55406');
 SELECT '#2981' As ticket, * FROM normalize_address('1566 NEW STATE HWY, RAYNHAM, MA') ;
+SELECT '#2978a' As ticket, * FROM normalize_address('10-20 DORRANCE ST PROVIDENCE RI' ) ;
+SELECT '#2978b' As ticket, * FROM normalize_address('10 20 DORRANCE ST PROVIDENCE RI' ) ;
+SELECT '#2978c' As ticket, * FROM normalize_address('10-20 DORRANCE ST, PROVIDENCE. RI' ) ;
 
 --\timing
 SELECT set_geocode_setting('use_pagc_address_parser', 'false');

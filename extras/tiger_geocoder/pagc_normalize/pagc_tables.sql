@@ -7252,7 +7252,7 @@ INSERT INTO pagc_rules (id, rule) VALUES (3425, '18 0 -1 1 1 -1 3 12');
 INSERT INTO pagc_rules (id, rule) VALUES (3426, '25 -1 1 -1 3 12');
 INSERT INTO pagc_rules (id, rule) VALUES (3427, '21 0 -1 1 1 -1 3 12');
 INSERT INTO pagc_rules (id, rule) VALUES (3428, '0 21 -1 1 1 -1 3 9');
-INSERT INTO pagc_rules (id, rule) VALUES (3429, '0 0 -1 1 1 -1 3 9');
+INSERT INTO pagc_rules (id, rule) VALUES (3429, '0 0 -1 1 1 -1 3 15');
 INSERT INTO pagc_rules (id, rule) VALUES (3430, '21 0 0 -1 1 1 1 -1 3 9');
 INSERT INTO pagc_rules (id, rule) VALUES (3431, '0 0 21 -1 1 1 1 -1 3 9');
 INSERT INTO pagc_rules (id, rule) VALUES (3432, '0 0 18 -1 1 1 1 -1 3 9');
