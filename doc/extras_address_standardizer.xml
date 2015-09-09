@@ -352,7 +352,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refsection>
 					
 			<refsection><title>Output Tokens</title>
-				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linked="rule_types_rank" />.</para>
+				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linkend="rule_types_rank" />.</para>
 			</refsection>
 				
 			<refsection id="rule_types_and_rank"><title>Rule Types and Rank</title>
