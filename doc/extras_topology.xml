@@ -3329,7 +3329,7 @@ SELECT ']}'::text as t
             <para>This function not supported for topogeometries that are geometry collections.  It also can not compare topogeometries from different topologies.</para>
           </note>
           <!-- use this format if new function -->
-        <para>Availability: 1.? </para>
+        <para>Availability: 1.1.0 </para>
         
        
         <!-- Optionally mention 3d support -->
@@ -3355,13 +3355,16 @@ SELECT ']}'::text as t
         <refnamediv>
           <refname>Intersects</refname>
       
-          <refpurpose>Returns true if two topogeometries are composed of the same topology primitives.</refpurpose>
+          <refpurpose>
+Returns true if any pair of primitives from the
+two topogeometries intersect.
+          </refpurpose>
         </refnamediv>
       
         <refsynopsisdiv>
           <funcsynopsis>
             <funcprototype>
-              <funcdef>boolean <function>Equals</function></funcdef>
+              <funcdef>boolean <function>Intersects</function></funcdef>
               <paramdef><type>topogeometry </type> <parameter>tg1</parameter></paramdef>
               <paramdef><type>topogeometry </type> <parameter>tg2</parameter></paramdef>
             </funcprototype>
@@ -3371,7 +3374,10 @@ SELECT ']}'::text as t
         <refsection>
           <title>Description</title>
       
-          <para>Returns true if two topogeometries share primitives or primitives intersect</para>
+          <para>
+Returns true if any pair of primitives from the
+two topogeometries intersect.
+          </para>
       
           <!-- optionally mention that this function uses indexes if appropriate -->
           <note>
@@ -3379,7 +3385,7 @@ SELECT ']}'::text as t
             Also not currently supported for hierarchichal topogeometries (topogeometries composed of other topogeometries).</para>
           </note>
           <!-- use this format if new function -->
-        <para>Availability: 1.? </para>
+        <para>Availability: 1.1.0 </para>
         
        
         <!-- Optionally mention 3d support -->
