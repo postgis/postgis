@@ -147,7 +147,7 @@ into includes in the future for easier maintenance.</para></listitem>
         <refentry id="rulestab">
 			<refnamediv>
 			<refname>rules table</refname>
-				<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence</refpurpose>
+				<refpurpose>The rules table contains a set of rules that maps address input sequence tokens to standardized output sequence. A rule is defined as a set of input tokens followed by -1 (terminator) followed by set of output tokens followed by -1 followed by number denoting kind of rule followed by ranking of rule.</refpurpose>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
@@ -352,42 +352,127 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refsection>
 					
 			<refsection><title>Output Tokens</title>
-				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />.</para>
+				<para>After the first -1 (terminator), follows the output tokens and their order, followed by a terminator <code>-1</code>.  Numbers for corresponding output tokens are listed in <xref linkend="stdaddr" />. What are allowed is dependent on kind of rule.  Output tokens valid for each rule type are listed in <xref linked="rule_types_rank" />.</para>
 			</refsection>
 				
-			<refsection><title>Rule Types and Rank</title>
+			<refsection id="rule_types_and_rank"><title>Rule Types and Rank</title>
 				<para>The final part of the rule is the rule type which is denoted by one of the following, followed by a rule rank.  The rules are ranked from 0 (lowest) to 17 (highest).</para>
-				<variablelist>
-						<varlistentry>
-								<term>MACRO_C</term>
-								<listitem>
-									<para>(token number = "0"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
-								</listitem>
-						</varlistentry>
-						<varlistentry>
-								<term>MICRO_C</term>
-								<listitem>
-									<para>(token number = "1"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
-								</listitem>
-						</varlistentry>
-						<varlistentry>
-								<term>ARC_C</term>
-								<listitem>
-									<para>(token number = "2"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute.</para>
-								</listitem>
-						</varlistentry>
-						<varlistentry>
-								<term>CIVIC_C</term>
-								<listitem>
-									<para>(token number = "3"). The class of rules for parsing the HOUSE attribute.</para>
-								</listitem>
-						</varlistentry>
-						<varlistentry>
-								<term>EXTRA_C</term>
-								<listitem>
-									<para>(token number = "4"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
-								</listitem>
-						</varlistentry>
+				
+				<para><emphasis role="bold">MACRO_C</emphasis></para>
+				<para>(token number = "<emphasis role="bold">0</emphasis>"). The class of rules for parsing MACRO clauses such as <emphasis>PLACE STATE ZIP</emphasis></para>
+				<para><emphasis role="bold">MACRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+                <variablelist>
+                    <varlistentry>
+                            <term>CITY</term>
+                            <listitem>
+                                <para>(token number "10"). Example "Albany"</para>
+                            </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                            <term>STATE</term>
+                            <listitem>
+                                <para>(token number "11"). Example "NY"</para>
+                            </listitem>
+                    </varlistentry>
+                    <varlistentry>
+                            <term>NATION</term>
+                            <listitem>
+                                <para>(token number "12").  This attribute is not used in most reference files. Example "USA"</para>
+                            </listitem>
+                    </varlistentry>
+                     <varlistentry>
+                            <term>POSTAL</term>
+                            <listitem>
+                                <para>(token number "13").  (SADS elements "ZIP CODE" , "PLUS 4" ). This attribute is used for both the US Zip and the Canadian Postal Codes.</para>
+                            </listitem>
+                    </varlistentry>
+                </variablelist>
+                
+               <para><emphasis role="bold">MICRO_C</emphasis></para>
+				<para>(token number = "<emphasis role="bold">1</emphasis>"). The class of rules for parsing full MICRO clauses (such as House, street, sufdir, predir, pretyp, suftype, qualif) (ie ARC_C plus CIVIC_C). These rules are not used in the build phase.</para>
+				<para><emphasis role="bold">MICRO_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+                <variablelist>
+                    <varlistentry><term>HOUSE</term> 
+						<listitem>
+							<para>is a text (token number <code>1</code>): This is the street number on a street. Example <emphasis>75</emphasis> in <code>75 State Street</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>predir</term><listitem>
+							<para> is text (token number <code>2</code>): STREET NAME PRE-DIRECTIONAL such as North, South, East, West etc.</para>
+					</listitem></varlistentry>
+					<varlistentry><term>qual</term> 
+						<listitem>
+								<para>is text (token number <code>3</code>): STREET NAME PRE-MODIFIER Example <emphasis>OLD</emphasis> in <code>3715 OLD HIGHWAY 99</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>pretype</term>
+						<listitem>
+								<para> is text (token number <code>4</code>): STREET PREFIX TYPE</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>street</term>
+							<listitem>
+								<para>is text (token number <code>5</code>): STREET NAME</para>
+							</listitem>
+					</varlistentry>
+					<varlistentry><term>suftype</term>
+						<listitem>
+							<para>is text (token number <code>6</code>): STREET POST TYPE e.g. St, Ave, Cir.  A street type following the root street name. Example <emphasis>STREET</emphasis> in <code>75 State Street</code>.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>sufdir</term>
+						<listitem>
+							<para>is text (token number <code>7</code>): STREET POST-DIRECTIONAL A directional modifier that follows the street name.. Example <emphasis>WEST</emphasis> in <code>3715 TENTH AVENUE WEST</code>.</para>
+						</listitem>
+					</varlistentry>
+                </variablelist>
+				
+				<para><emphasis role="bold">ARC_C</emphasis></para>
+				<para>(token number = "<emphasis role="bold">2</emphasis>"). The class of rules for parsing MICRO clauses, excluding the HOUSE attribute. As such uses same set of output tokens as MICRO_C minus the HOUSE token.</para>
+				
+				<para><emphasis role="bold">CIVIC_C</emphasis></para>
+				<para>(token number = "<emphasis role="bold">3</emphasis>"). The class of rules for parsing the HOUSE attribute.</para>
+
+				<para><emphasis role="bold">EXTRA_C</emphasis></para>
+				<para>(token number = "<emphasis role="bold">4</emphasis>"). The class of rules for parsing EXTRA attributes - attributes excluded from geocoding. These rules are not used in the build phase.</para>
+				
+				<para><emphasis role="bold">EXTRA_C output tokens</emphasis> (excerpted from <ulink url="http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--">http://www.pagcgeo.org/docs/html/pagc-12.html#--r-typ--</ulink>.</para>
+                <variablelist>
+                    <varlistentry><term>BLDNG</term> 
+						<listitem>
+							<para>(token number <code>0</code>):  Unparsed building identifiers and types.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>BOXH</term> 
+						<listitem>
+							<para>i(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>BOXT</term> 
+						<listitem>
+							<para>(token number <code>15</code>): The <emphasis role="bold">3B</emphasis> in <code>BOX 3B</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>RR</term> 
+						<listitem>
+							<para>(token number <code>8</code>): The <emphasis role="bold">RR</emphasis> in <code>RR 7</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>UNITH</term> 
+						<listitem>
+							<para>(token number <code>16</code>): The <emphasis role="bold">APT</emphasis> in <code>APT 3B</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>UNITT</term> 
+						<listitem>
+							<para>(token number <code>17</code>): The <emphasis role="bold">3B</emphasis> in <code>APT 3B</code></para>
+						</listitem>
+					</varlistentry>
+					<varlistentry><term>UNKNWN</term> 
+						<listitem>
+							<para>(token number <code>9</code>): An otherwise unclassified output.</para>
+						</listitem>
+					</varlistentry>
 				</variablelist>
 			</refsection>
 		</refentry>
