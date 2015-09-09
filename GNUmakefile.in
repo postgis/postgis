@@ -23,7 +23,9 @@ all install uninstall noop clean distclean check:
 
 all: postgis_svn_revision.h
 
+ifeq (@LIBLWGEOM_ONLY@,no)
 install: all comments-install
+endif
 
 uninstall: docs-uninstall comments-uninstall
 
