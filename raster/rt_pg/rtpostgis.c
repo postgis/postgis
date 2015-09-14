@@ -139,6 +139,10 @@
 #include "rtpostgis.h"
 #include "rtpg_internal.h"
 
+#ifndef __GNUC__
+# define __attribute__ (x)
+#endif
+
 /*
  * This is required for builds against pgsql
  */
@@ -470,6 +474,9 @@ rt_pg_free(void *ptr)
     pfree(ptr);
 }
 
+static void rt_pg_error(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
+
 static void
 rt_pg_error(const char *fmt, va_list ap)
 {
@@ -481,6 +488,9 @@ rt_pg_error(const char *fmt, va_list ap)
     ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
+static void rt_pg_notice(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
+
 static void
 rt_pg_notice(const char *fmt, va_list ap)
 {
@@ -491,6 +501,9 @@ rt_pg_notice(const char *fmt, va_list ap)
     msg[RT_MSG_MAXLEN]='\0';
     ereport(NOTICE, (errmsg_internal("%s", msg)));
 }
+
+static void rt_pg_debug(const char *fmt, va_list ap)
+  __attribute__(( format(printf,1,0) ));
 
 static void
 rt_pg_debug(const char *fmt, va_list ap)

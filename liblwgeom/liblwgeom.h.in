@@ -175,6 +175,10 @@ typedef enum LWORD_T {
 */
 #define SRID_DEFAULT 4326
 
+#ifndef __GNUC__
+# define __attribute__(x)
+#endif
+
 /**
 * Return a valid SRID from an arbitrary integer
 * Raises a notice if what comes out is different from
@@ -192,8 +196,10 @@ void error_if_srid_mismatch(int srid1, int srid2);
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
-typedef void (*lwreporter)(const char* fmt, va_list ap);
-typedef void (*lwdebuglogger)(int level, const char* fmt, va_list ap);
+typedef void (*lwreporter)(const char* fmt, va_list ap)
+  __attribute__ (( format(printf, 1, 0) ));
+typedef void (*lwdebuglogger)(int level, const char* fmt, va_list ap)
+  __attribute__ (( format(printf, 2,0) ));
 
 /**
 * Install custom memory management and error handling functions you want your

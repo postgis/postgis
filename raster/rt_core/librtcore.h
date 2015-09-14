@@ -139,6 +139,10 @@
 #include "../../postgis_config.h"
 #include "../raster_config.h"
 
+#ifndef __GNUC__
+# define __attribute__ (x)
+#endif
+
 /**
  * Types definitions
  */
@@ -229,7 +233,8 @@ typedef enum {
 typedef void* (*rt_allocator)(size_t size);
 typedef void* (*rt_reallocator)(void *mem, size_t size);
 typedef void  (*rt_deallocator)(void *mem);
-typedef void  (*rt_message_handler)(const char* string, va_list ap);
+typedef void  (*rt_message_handler)(const char* string, va_list ap)
+  __attribute__ (( format(printf,1,0) ));
 
 /****************************************************************************
  * Functions that must be implemented for the raster core function's caller

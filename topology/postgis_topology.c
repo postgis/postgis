@@ -30,10 +30,8 @@
 
 #include <stdarg.h>
 
-#ifdef __GNUC__
-# define GNU_PRINTF23 __attribute__ (( format(printf, 2, 3) ))
-#else
-# define GNU_PRINTF23
+#ifndef __GNUC__
+# define __attribute__ (x)
 #endif
 
 #define ABS(x) (x<0?-x:x)
@@ -84,7 +82,8 @@ struct LWT_BE_TOPOLOGY_T {
 
 /* utility funx */
 
-static void cberror(const LWT_BE_DATA* be, const char *fmt, ...) GNU_PRINTF23;
+static void cberror(const LWT_BE_DATA* be, const char *fmt, ...)
+  __attribute__ (( format(printf, 2, 3) ));
 
 static void
 cberror(const LWT_BE_DATA* be_in, const char *fmt, ...)
