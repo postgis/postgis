@@ -160,8 +160,8 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   spi_result = SPI_execute(sql->data, !be->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
-    pfree(sqldata.data);
 		cberror(be, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  return NULL;
   }
   if ( ! SPI_processed )
@@ -795,6 +795,7 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -850,6 +851,7 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -905,6 +907,7 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -954,6 +957,7 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1009,6 +1013,7 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1074,6 +1079,7 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1121,6 +1127,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1182,6 +1189,7 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1266,6 +1274,7 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -1330,6 +1339,7 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != SPI_OK_INSERT_RETURNING ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return 0;
   }
   pfree(sqldata.data);
@@ -1385,6 +1395,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1440,6 +1451,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1496,6 +1508,7 @@ cb_updateEdges( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1538,6 +1551,7 @@ cb_updateNodes( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1605,6 +1619,7 @@ cb_updateNodesById( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1648,6 +1663,7 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1731,6 +1747,7 @@ cb_updateEdgesById( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1763,6 +1780,7 @@ cb_deleteEdges( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1793,6 +1811,7 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -1846,6 +1865,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != ( new_edge2 == -1 ? SPI_OK_SELECT : SPI_OK_DELETE_RETURNING ) ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return 0;
   }
 
@@ -1905,6 +1925,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_INSERT ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -1919,6 +1940,7 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
       if ( spi_result != SPI_OK_INSERT ) {
         cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
                 spi_result, sql->data);
+        pfree(sqldata.data);
         return 0;
       }
       if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -1969,6 +1991,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != ( new_face2 == -1 ? SPI_OK_SELECT : SPI_OK_DELETE_RETURNING ) ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return 0;
   }
 
@@ -2030,6 +2053,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_INSERT ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2047,6 +2071,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
       if ( spi_result != SPI_OK_INSERT ) {
         cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
                 spi_result, sql->data);
+        pfree(sqldata.data);
         return 0;
       }
       if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2091,6 +2116,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != SPI_OK_SELECT ) {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
     return 0;
   }
 
@@ -2146,6 +2172,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_SELECT ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
 
@@ -2207,6 +2234,7 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
   if ( spi_result != SPI_OK_SELECT ) {
     cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
     return 0;
   }
 
@@ -2267,6 +2295,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_DELETE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2287,6 +2316,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_DELETE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2305,6 +2335,7 @@ cb_updateTopoGeomFaceHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_UPDATE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2342,6 +2373,7 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_DELETE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2362,6 +2394,7 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_DELETE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2381,6 +2414,7 @@ cb_updateTopoGeomEdgeHeal ( const LWT_BE_TOPOLOGY* topo,
     if ( spi_result != SPI_OK_UPDATE ) {
       cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
               spi_result, sql->data);
+      pfree(sqldata.data);
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
@@ -2418,6 +2452,7 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -2;
   }
   pfree(sqldata.data);
@@ -2460,6 +2495,7 @@ cb_deleteFacesById( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -2497,6 +2533,7 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
   {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
+    pfree(sqldata.data);
 	  return -1;
   }
   pfree(sqldata.data);
@@ -2544,6 +2581,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -2615,6 +2653,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
@@ -2686,6 +2725,7 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
+    pfree(sqldata.data);
 	  *numelems = -1; return NULL;
   }
   pfree(sqldata.data);
