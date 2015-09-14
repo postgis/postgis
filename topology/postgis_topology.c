@@ -130,6 +130,7 @@ _box2d_to_hexwkb(const GBOX *bbox, int srid)
   ptarray_set_point4d(pa, 1, &p);
   line = lwline_construct(srid, NULL, pa);
   hex = lwgeom_to_hexwkb( lwline_as_lwgeom(line), WKT_EXTENDED, &sz);
+  lwline_free(line);
   assert(hex[sz-1] == '\0');
   return hex;
 }
