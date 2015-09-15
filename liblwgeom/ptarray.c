@@ -109,7 +109,10 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where)
 
 	/* Error out if we have a bad situation */
 	if ( pa->npoints > pa->maxpoints )
+	{
 		lwerror("npoints (%d) is greated than maxpoints (%d)", pa->npoints, pa->maxpoints);
+		return LW_FAILURE;
+	}
 	
 	/* Check if we have enough storage, add more if necessary */
 	if( pa->npoints == pa->maxpoints )
