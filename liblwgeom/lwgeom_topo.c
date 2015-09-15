@@ -4694,6 +4694,7 @@ lwt_GetNodeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
       return -1;
     }
     id = elem[0].node_id;
+    _lwt_release_nodes(elem, num);
   }
 
   return id;
