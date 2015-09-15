@@ -4750,6 +4750,8 @@ lwt_GetEdgeByPoint(LWT_TOPOLOGY *topo, LWPOINT *pt, double tol)
     else id = e->edge_id;
   }
 
+  if ( num ) _lwt_release_edges(elem, num);
+
   return id;
 }
 
