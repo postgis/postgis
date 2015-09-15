@@ -3619,12 +3619,14 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
 
   if ( lwt_be_ExistsCoincidentNode(topo, pt) )
   {
+    lwfree(node);
     lwerror("SQL/MM Spatial exception - coincident node");
     return -1;
   }
 
   if ( lwt_be_ExistsEdgeIntersectingPoint(topo, pt) )
   {
+    lwfree(node);
     lwerror("SQL/MM Spatial exception - edge crosses node.");
     return -1;
   }
@@ -3638,6 +3640,7 @@ lwt_MoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid, LWPOINT *pt)
   ret = lwt_be_updateNodesById(topo, node, 1,
                                LWT_COL_NODE_GEOM);
   if ( ret == -1 ) {
+    lwfree(node);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
