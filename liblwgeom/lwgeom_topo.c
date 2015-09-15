@@ -1958,7 +1958,8 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     return -2;
   }
   if ( oldface ) {
-    lwfree(oldface); /* NOTE: oldface.mbr is owned by shell */
+    newface.mbr = NULL; /* it is a reference to oldface mbr... */
+    _lwt_release_faces(oldface, 1);
   }
 
   /* Update side location of new face edges */
