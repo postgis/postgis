@@ -1866,6 +1866,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     if ( ! isccw )
     {
       lwpoly_free(shell);
+      lwfree( signed_edge_ids );
       _lwt_release_edges(ring_edges, numedges);
       /* Face on the left side of this ring is the universe face.
        * Next call (for the other side) should create the split face
@@ -1886,6 +1887,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       int ret = lwt_be_updateFacesById( topo, &updface, 1 );
       if ( ret == -1 )
       {
+        lwfree( signed_edge_ids );
         _lwt_release_edges(ring_edges, numedges);
         lwpoly_free(shell); /* NOTE: owns shellbox above */
         lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -1893,12 +1895,14 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
       }
       if ( ret != 1 )
       {
+        lwfree( signed_edge_ids );
         _lwt_release_edges(ring_edges, numedges);
         lwpoly_free(shell); /* NOTE: owns shellbox above */
         lwerror("Unexpected error: %d faces found when expecting 1", ret);
         return -2;
       }
     }}
+    lwfree( signed_edge_ids );
     _lwt_release_edges(ring_edges, numedges);
     lwpoly_free(shell); /* NOTE: owns shellbox above */
     return -1; /* mbr only was requested */
@@ -1914,6 +1918,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     oldface = lwt_be_getFaceById(topo, &face, &nfaces, LWT_COL_FACE_ALL);
     if ( nfaces == -1 )
     {
+      lwfree( signed_edge_ids );
       lwpoly_free(shell); /* NOTE: owns shellbox */
       _lwt_release_edges(ring_edges, numedges);
       lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -1921,6 +1926,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     }
     if ( nfaces != 1 )
     {
+      lwfree( signed_edge_ids );
       lwpoly_free(shell); /* NOTE: owns shellbox */
       _lwt_release_edges(ring_edges, numedges);
       lwerror("Unexpected error: %d faces found when expecting 1", nfaces);
@@ -1937,6 +1943,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   int ret = lwt_be_insertFaces( topo, &newface, 1 );
   if ( ret == -1 )
   {
+    lwfree( signed_edge_ids );
     lwpoly_free(shell); /* NOTE: owns shellbox */
     _lwt_release_edges(ring_edges, numedges);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -1944,6 +1951,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   }
   if ( ret != 1 )
   {
+    lwfree( signed_edge_ids );
     lwpoly_free(shell); /* NOTE: owns shellbox */
     _lwt_release_edges(ring_edges, numedges);
     lwerror("Unexpected error: %d faces inserted when expecting 1", ret);
@@ -1977,6 +1985,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   numfaceedges = 1;
   edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields );
   if ( numfaceedges == -1 ) {
+    lwfree( signed_edge_ids );
     _lwt_release_edges(ring_edges, numedges);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -2;
@@ -2149,11 +2158,13 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
                                    LWT_COL_EDGE_FACE_LEFT);
       if ( ret == -1 )
       {
+        lwfree( signed_edge_ids );
         lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
         return -2;
       }
       if ( ret != forward_edges_count )
       {
+        lwfree( signed_edge_ids );
         lwerror("Unexpected error: %d edges updated when expecting %d",
                 ret, forward_edges_count);
         return -2;
@@ -2168,11 +2179,13 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
                                    LWT_COL_EDGE_FACE_RIGHT);
       if ( ret == -1 )
       {
+        lwfree( signed_edge_ids );
         lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
         return -2;
       }
       if ( ret != backward_edges_count )
       {
+        lwfree( signed_edge_ids );
         lwerror("Unexpected error: %d edges updated when expecting %d",
                 ret, backward_edges_count);
         return -2;
@@ -2193,6 +2206,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   LWT_ISO_NODE *nodes = lwt_be_getNodeByFace(topo, &face,
                                              &numisonodes, fields);
   if ( numisonodes == -1 ) {
+    lwfree( signed_edge_ids );
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -2;
   }
@@ -2260,6 +2274,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
                                        nodes_to_update,
                                        LWT_COL_NODE_CONTAINING_FACE);
       if ( ret == -1 ) {
+        lwfree( signed_edge_ids );
         lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
         return -2;
       }
