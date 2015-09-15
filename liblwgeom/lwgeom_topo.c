@@ -3661,11 +3661,13 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
   n = lwt_be_deleteNodesById( topo, &nid, n );
   if ( n == -1 )
   {
+    lwfree(node);
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if ( n != 1 )
   {
+    lwfree(node);
     lwerror("Unexpected error: %d nodes deleted when expecting 1", n);
     return -1;
   }
@@ -3674,6 +3676,7 @@ lwt_RemoveIsoNode(LWT_TOPOLOGY* topo, LWT_ELEMID nid)
    * See https://trac.osgeo.org/postgis/ticket/3231
    */
 
+  lwfree(node);
   return 0; /* success */
 }
 
