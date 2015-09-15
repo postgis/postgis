@@ -5576,7 +5576,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
   }
 
   LWDEBUGG(1, noded, "Noded before free");
-  lwgeom_release(noded); /* for some reason freeing this here errors out */
+  lwgeom_free(noded);
 
   /* TODO: XXX remove duplicated ids if not done before */
 
