@@ -130,6 +130,25 @@ static void test_lwgeom_make_valid(void)
 	lwgeom_free(gout);
 	lwgeom_free(gin);
 
+	/* Test unclosed polygon */
+
+	gin = lwgeom_from_hexwkb(
+"0103000000010000000400000000000000000024400000000000003640000000000000244000000000000040400000000000003440000000000000404000000000000034400000000000003640",
+		LW_PARSER_CHECK_NONE);
+	CU_ASSERT(gin != NULL);
+
+	gout = lwgeom_make_valid(gin);
+	CU_ASSERT(gout != NULL);
+
+	ewkt = lwgeom_to_ewkt(gout);
+	/* printf("c = %s\n", ewkt); */
+	CU_ASSERT_STRING_EQUAL(ewkt,
+"POLYGON((10 22,10 32,20 32,20 22,10 22))");
+	lwfree(ewkt);
+
+	lwgeom_free(gout);
+	lwgeom_free(gin);
+
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 

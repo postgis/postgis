@@ -205,12 +205,12 @@ POINTARRAY*
 ring_make_geos_friendly(POINTARRAY* ring)
 {
 	POINTARRAY* closedring;
+	POINTARRAY* ring_in = ring;
 
 	/* close the ring if not already closed (2d only) */
 	closedring = ptarray_close2d(ring);
 	if (closedring != ring )
 	{
-		ptarray_free(ring); /* should we do this ? */
 		ring = closedring;
 	}
 
@@ -218,12 +218,14 @@ ring_make_geos_friendly(POINTARRAY* ring)
 
 	while ( ring->npoints < 4 )
 	{
+		POINTARRAY *oring = ring;
 		LWDEBUGF(4, "ring has %d points, adding another", ring->npoints);
 		/* let's add another... */
 		ring = ptarray_addPoint(ring,
 		                        getPoint_internal(ring, 0),
 		                        FLAGS_NDIMS(ring->flags),
 		                        ring->npoints);
+		if ( oring != ring_in ) ptarray_free(oring);
 	}
 
 
@@ -255,10 +257,7 @@ lwpoly_make_geos_friendly(LWPOLY *poly)
 		if ( ring_in != ring_out )
 		{
 			LWDEBUGF(3, "lwpoly_make_geos_friendly: ring %d cleaned, now has %d points", i, ring_out->npoints);
-			/* this may come right from
-			 * the binary representation lands
-			 */
-			/*ptarray_free(ring_in); */
+			ptarray_free(ring_in);
 		}
 		else
 		{
