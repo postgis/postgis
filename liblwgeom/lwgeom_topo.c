@@ -3377,8 +3377,9 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     }
 
     narea = _lwt_EdgeMotionArea(geom, isclosed);
-    if ( ! oarea )
+    if ( ! narea )
     {
+      GEOSGeom_destroy(oarea);
       _lwt_release_edges(oldedge, 1);
       lwerror("Could not compute edge motion area for new edge");
       return -1;
