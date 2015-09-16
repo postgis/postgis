@@ -555,11 +555,12 @@ addFaceValues(StringInfo str, LWT_ISO_FACE *face, int srid)
   else
     appendStringInfoString(str, "(DEFAULT");
 
-  if ( face->mbr ) {
-    appendStringInfo(str, ",ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d))",
-              face->mbr->xmin, face->mbr->ymin,
-              face->mbr->xmax, face->mbr->ymax, srid);
-  } else {
+  if ( face->mbr ) {{
+    char *hexbox;
+    hexbox = _box2d_to_hexwkb(face->mbr, srid);
+    appendStringInfo(str, ",ST_Envelope('%s'::geometry))", hexbox);
+    lwfree(hexbox);
+  }} else {
     appendStringInfoString(str, ",null::geometry)");
   }
 }
@@ -1646,11 +1647,14 @@ cb_updateFacesById( const LWT_BE_TOPOLOGY* topo,
   appendStringInfoString(sql, "WITH newfaces(id,mbr) AS ( VALUES ");
   for (i=0; i<numfaces; ++i) {
     const LWT_ISO_FACE* face = &(faces[i]);
+    char *hexbox = _box2d_to_hexwkb(face->mbr, topo->srid);
+
     if ( i ) appendStringInfoChar(sql, ',');
+
     appendStringInfo(sql, "(%" LWTFMT_ELEMID
-      ", ST_SetSRID(ST_MakeEnvelope(%g,%g,%g,%g),%d))",
-      face->face_id, face->mbr->xmin, face->mbr->ymin,
-      face->mbr->xmax, face->mbr->ymax, topo->srid);
+      ", ST_Envelope('%s'::geometry))",
+      face->face_id, hexbox);
+    lwfree(hexbox);
   }
   appendStringInfo(sql, ") UPDATE \"%s\".face o SET mbr = i.mbr "
                         "FROM newfaces i WHERE o.face_id = i.id",
