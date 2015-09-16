@@ -15,6 +15,7 @@
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
 #include "lib/stringinfo.h"
+#include "access/xact.h" /* for RegisterXactCallback */
 #include "funcapi.h" /* for FuncCallContext */
 #include "executor/spi.h" /* this is what you need to work with SPI */
 #include "inttypes.h" /* for PRId64 */
@@ -2804,6 +2805,14 @@ static LWT_BE_CALLBACKS be_callbacks = {
     cb_getFaceWithinBox2D
 };
 
+static void
+xact_callback(XactEvent event, void *arg)
+{
+  LWT_BE_DATA* data = (LWT_BE_DATA *)arg;
+  POSTGIS_DEBUGF(1, "xact_callback called with event %d", event);
+  data->data_changed = false;
+}
+
 
 /*
  * Module load callback
@@ -2828,6 +2837,9 @@ _PG_init(void)
   be_data.data_changed = false;
   be_data.topoLoadFailMessageFlavor = 0;
 
+  /* hook on transaction end to reset data_changed */
+  RegisterXactCallback(xact_callback, &be_data);
+
   /* register callbacks against liblwgeom-topo */
   be_iface = lwt_CreateBackendIface(&be_data);
   lwt_BackendIfaceRegisterCallbacks(be_iface, &be_callbacks);
@@ -2847,6 +2859,8 @@ void
 _PG_fini(void)
 {
   elog(NOTICE, "Goodbye from PostGIS Topology %s", POSTGIS_VERSION);
+
+  UnregisterXactCallback(xact_callback, &be_data);
   lwt_FreeBackendIface(be_iface);
 }
 
@@ -2889,7 +2903,6 @@ Datum ST_ModEdgeSplit(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -2955,7 +2968,6 @@ Datum ST_NewEdgesSplit(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3032,7 +3044,6 @@ Datum ST_AddIsoNode(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3106,7 +3117,6 @@ Datum ST_AddIsoEdge(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3173,7 +3183,6 @@ Datum ST_AddEdgeModFace(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3240,7 +3249,6 @@ Datum ST_AddEdgeNewFaces(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3295,7 +3303,6 @@ Datum ST_GetFaceGeometry(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3381,7 +3388,6 @@ Datum ST_GetFaceEdges(PG_FUNCTION_ARGS)
       lwpgerror("Could not connect to SPI");
       PG_RETURN_NULL();
     }
-    be_data.data_changed = false;
 
     topo = lwt_LoadTopology(be_iface, toponame);
     oldcontext = MemoryContextSwitchTo( newcontext );
@@ -3502,7 +3508,6 @@ Datum ST_ChangeEdgeGeom(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3561,7 +3566,6 @@ Datum ST_RemoveIsoNode(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3622,7 +3626,6 @@ Datum ST_RemIsoEdge(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3707,7 +3710,6 @@ Datum ST_MoveIsoNode(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3767,7 +3769,6 @@ Datum ST_RemEdgeModFace(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3819,7 +3820,6 @@ Datum ST_RemEdgeNewFace(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3870,7 +3870,6 @@ Datum ST_ModEdgeHeal(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3921,7 +3920,6 @@ Datum ST_NewEdgeHeal(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -3985,7 +3983,6 @@ Datum GetNodeByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -4052,7 +4049,6 @@ Datum GetEdgeByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -4119,7 +4115,6 @@ Datum GetFaceByPoint(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   topo = lwt_LoadTopology(be_iface, toponame);
   pfree(toponame);
@@ -4189,7 +4184,6 @@ Datum TopoGeo_AddPoint(PG_FUNCTION_ARGS)
     lwpgerror("Could not connect to SPI");
     PG_RETURN_NULL();
   }
-  be_data.data_changed = false;
 
   {
     int pre = be_data.topoLoadFailMessageFlavor;
@@ -4281,7 +4275,6 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
       lwpgerror("Could not connect to SPI");
       PG_RETURN_NULL();
     }
-    be_data.data_changed = false;
 
     {
       int pre = be_data.topoLoadFailMessageFlavor;
@@ -4406,7 +4399,6 @@ Datum TopoGeo_AddPolygon(PG_FUNCTION_ARGS)
       lwpgerror("Could not connect to SPI");
       PG_RETURN_NULL();
     }
-    be_data.data_changed = false;
 
     {
       int pre = be_data.topoLoadFailMessageFlavor;
