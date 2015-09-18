@@ -947,7 +947,6 @@ static void combine_lexemes( STAND_PARAM *s_p ,
                              struct morph * morph_p , 
                              DEF *d ) {
    /* -- combine the current Lexeme with the previous one -- */
-    int n ;
     LEXEME *CurLexVector, *PrevLexVector ; 
 
     /* -- find the two lexemes to combine -- */
@@ -956,7 +955,7 @@ static void combine_lexemes( STAND_PARAM *s_p ,
     PrevLexVector -> EndMorph = CurLexVector -> EndMorph ; /* the new end */ 
     PrevLexVector -> Text[ 0 ] = SENTINEL ; 
 
-    n = phrase_from_morphs( morph_p , 
+    phrase_from_morphs( morph_p , 
                             PrevLexVector -> Text , 
                             PrevLexVector -> StartMorph , 
                             PrevLexVector -> EndMorph ) ; 

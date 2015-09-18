@@ -56,7 +56,7 @@ int rules_add_rule_from_str(RULES *rules, char *rule);
 int rules_ready(RULES *rules);
 void rules_free(RULES *rules);
 
-STANDARDIZER *std_init();
+STANDARDIZER *std_init(void);
 int std_use_lex(STANDARDIZER *std, LEXICON *lex);
 int std_use_gaz(STANDARDIZER *std, LEXICON *gaz);
 int std_use_rules(STANDARDIZER *std, RULES *rules);

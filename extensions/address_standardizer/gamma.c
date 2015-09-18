@@ -173,9 +173,7 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
         w ;
     SYMB a ,
          t ;
-    SYMB *rule_start ,
-         *r ,
-         *r_s ;
+    SYMB *rule_start , *r ;
     NODE u ;
     NODE **Trie ;
     KW *keyw ,
@@ -193,7 +191,7 @@ int rules_add_rule(RULES *rules, int num, int *rule) {
     /* get local copies of stuff saved in RULES */
     o_l = rules -> r_p -> output_link ;
     k_s = rules -> r_p -> key_space ;
-    r_s = rules -> r_p -> rule_space ;
+    
     Trie = rules -> Trie ;
     r = rules -> r ;
 
