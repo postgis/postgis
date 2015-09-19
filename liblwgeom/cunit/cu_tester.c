@@ -42,6 +42,7 @@ extern void twkb_in_suite_setup(void);
 extern void libgeom_suite_setup(void);
 extern void measures_suite_setup(void);
 extern void effectivearea_suite_setup(void);
+extern void iterator_suite_setup(void);
 extern void misc_suite_setup(void);
 extern void node_suite_setup(void);
 extern void out_encoded_polyline_suite_setup(void);
@@ -86,6 +87,7 @@ PG_SuiteSetup setupfuncs[] =
 	libgeom_suite_setup,
 	measures_suite_setup,
 	effectivearea_suite_setup,
+	iterator_suite_setup,
 	misc_suite_setup,
 	node_suite_setup,
 	out_encoded_polyline_suite_setup,
@@ -255,18 +257,18 @@ int main(int argc, char *argv[])
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
-  /*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
+	vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+	/*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
 }
 
 static void
 cu_noticereporter(const char *fmt, va_list ap)
 {
-  char buf[MAX_CUNIT_MSG_LENGTH+1];
-  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-  buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  /*fprintf(stderr, "NOTICE: %s\n", buf);*/
+	char buf[MAX_CUNIT_MSG_LENGTH+1];
+	vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+	buf[MAX_CUNIT_MSG_LENGTH]='\0';
+	/*fprintf(stderr, "NOTICE: %s\n", buf);*/
 }
 
 void
