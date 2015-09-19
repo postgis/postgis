@@ -16,7 +16,7 @@
 struct LISTNODE
 {
 	struct LISTNODE* next;
-	LWGEOM* geom;
+	const LWGEOM* geom;
 };
 typedef struct LISTNODE LISTNODE;
 
@@ -27,7 +27,7 @@ typedef struct
 	uint32_t i;
 } LWITERATOR;
 
-void lwiterator_create(LWGEOM* g, LWITERATOR* s);
+void lwiterator_create(const LWGEOM* g, LWITERATOR* s);
 void lwiterator_destroy(LWITERATOR* s);
 int lwiterator_has_next(LWITERATOR* s);
 int lwiterator_next(LWITERATOR* s, POINT4D* p);

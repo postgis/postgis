@@ -14,7 +14,7 @@
 #include "lwiterator.h"
 #include "lwgeom_log.h"
 
-static LISTNODE* prepend_node(LWGEOM* g, LISTNODE* front)
+static LISTNODE* prepend_node(const LWGEOM* g, LISTNODE* front)
 {
 	LISTNODE* n = malloc(sizeof(LISTNODE));
 	n->geom = g;
@@ -30,7 +30,7 @@ static LISTNODE* pop_node(LISTNODE* i)
 	return next;
 }
 
-static int add_lwgeom_to_stack(LWITERATOR*s, LWGEOM* g)
+static int add_lwgeom_to_stack(LWITERATOR*s, const LWGEOM* g)
 {
 	if (lwgeom_is_empty(g))
 		return LW_FAILURE;
@@ -199,7 +199,7 @@ int lwiterator_next(LWITERATOR* s, POINT4D* p)
 }
 
 /* Create a new LWITERATOR over supplied LWGEOM */
-void lwiterator_create(LWGEOM* g, LWITERATOR* s)
+void lwiterator_create(const LWGEOM* g, LWITERATOR* s)
 {
 	s->geoms = NULL;
 	add_lwgeom_to_stack(s, g);
