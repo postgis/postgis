@@ -61,13 +61,7 @@ static void basic_test(void)
 	{
 		LWGEOM* input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
 
-		if (!input)
-		{
-			printf("no parsey");
-		}
-
 		uint32_t itercount = count_points_using_iterator(input);
-		printf("%d: %s\n", itercount, inputs[i]);
 
 		CU_ASSERT_EQUAL(lwgeom_count_vertices(input), itercount);
 		lwgeom_free(input);
