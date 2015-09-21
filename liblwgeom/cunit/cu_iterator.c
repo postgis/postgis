@@ -68,6 +68,41 @@ static void basic_test(void)
 	}
 }
 
+static void test_ordering(void)
+{
+	uint32_t i = 0;
+	LWGEOM* g = lwgeom_from_wkt("GEOMETRYCOLLECTION (POLYGON ((0 0, 0 10, 10 10, 0 10, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1)), MULTIPOINT((4 4), (3 3)))", LW_PARSER_CHECK_NONE);
+
+	POINT2D points[] = { {.x = 0,  .y = 0},
+		{.x = 0,  .y = 10},
+		{.x = 10, .y = 10},
+		{.x = 0,  .y = 10},
+		{.x = 0,  .y = 0},
+		{.x = 1,  .y = 1},
+		{.x = 1,  .y = 2},
+		{.x = 2,  .y = 2},
+		{.x = 2,  .y = 1},
+		{.x = 1,  .y = 1},
+		{.x = 4,  .y = 4},
+		{.x = 3,  .y = 3}
+	};
+
+	LWITERATOR it;
+	lwiterator_create(g, &it);
+
+	POINT4D p;
+
+	for (i = 0; lwiterator_has_next(&it); i++)
+	{
+		lwiterator_next(&it, &p);
+		CU_ASSERT_EQUAL(p.x, points[i].x);
+		CU_ASSERT_EQUAL(p.y, points[i].y);
+	}
+
+	lwiterator_destroy(&it);
+	lwgeom_free(g);
+}
+
 // TODO show that unsupported types are handled gracefully
 
 /*
@@ -78,4 +113,5 @@ void iterator_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("iterator", NULL, NULL);
 	PG_ADD_TEST(suite, basic_test);
+	PG_ADD_TEST(suite, test_ordering);
 }

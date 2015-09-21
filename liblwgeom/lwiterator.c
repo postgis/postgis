@@ -108,11 +108,11 @@ static int advance_poly(LWITERATOR* s)
  * */
 static void lwiterator_unroll_collection(LWITERATOR* s)
 {
-	uint32_t i;
+	int i;
 	LWCOLLECTION* c = (LWCOLLECTION*) s->geoms->geom;
 	s->geoms = pop_node(s->geoms);
 
-	for (i = 0; i < c->ngeoms; i++)
+	for (i = c->ngeoms - 1; i >= 0; i--)
 	{
 		LWGEOM* g = lwcollection_getsubgeom(c, i);
 
