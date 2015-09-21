@@ -1402,11 +1402,16 @@ CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometry, OUT radius double precision)
+    AS 'MODULE_PATHNAME', 'ST_MinimumBoundingRadius'
+    LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+    AS $$ SELECT ST_Buffer(center, radius, segs_per_quarter) FROM ST_MinimumBoundingRadius($1) sq $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAULT false)

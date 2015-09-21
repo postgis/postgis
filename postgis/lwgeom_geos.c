@@ -90,7 +90,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
-Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS);
+Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
@@ -3889,19 +3889,23 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  *
- * ST_MinimumBoundingCircle
+ * ST_MinimumBoundingRadius
  *
  **********************************************************************/
 
-PG_FUNCTION_INFO_V1(ST_MinimumBoundingCircle);
-Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_MinimumBoundingRadius);
+Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* geom;
 	LWGEOM* input;
 	LW_BOUNDINGCIRCLE mbc;
 	LWGEOM* lwcenter;
 	GSERIALIZED* center;
+	TupleDesc resultTupleDesc;
+	HeapTuple resultTuple;
 	Datum result;
+	Datum result_values[2];
+	bool result_is_null[2];
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
@@ -3922,22 +3926,17 @@ Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS)
 	lwgeom_free(input);
 	lwgeom_free(lwcenter); 
 
-	/* Pass quad_segs argument on to the buffer function */
-	if (PG_NARGS() > 1)
-	{
-		int quad_segs = PG_GETARG_INT32(1);
-		char* format_string = palloc(20 * sizeof(char));
-		snprintf(format_string, 20 * sizeof(char), "quad_segs=%d", quad_segs);
+	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
+	BlessTupleDesc(resultTupleDesc);
+	
+	result_values[0] = PointerGetDatum(center);
+	result_is_null[0] = false;
+	result_values[1] = Float8GetDatum(mbc.radius);
+	result_is_null[1] = false;
 
-		result = DirectFunctionCall3(buffer, PointerGetDatum(center), Float8GetDatum(mbc.radius), CStringGetDatum(format_string)); 
+	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
 
-		pfree(format_string);
-	}
-	else
-	{
-		result = DirectFunctionCall2(buffer, PointerGetDatum(center), Float8GetDatum(mbc.radius));
-	}
+	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
 }
-
