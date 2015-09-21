@@ -32,5 +32,6 @@ void lwiterator_destroy(LWITERATOR* s);
 int lwiterator_has_next(LWITERATOR* s);
 int lwiterator_next(LWITERATOR* s, POINT4D* p);
 int lwiterator_peek(LWITERATOR* s, POINT4D* p);
+int extract_points_2d(const LWGEOM* g, POINT2D*** points, uint32_t* num_points);
 
 #endif

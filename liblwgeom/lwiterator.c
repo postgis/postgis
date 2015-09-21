@@ -215,3 +215,41 @@ void lwiterator_destroy(LWITERATOR* s)
 		s->geoms = pop_node(s->geoms);
 	}
 }
+
+
+/* Extract all coordinates from supplied geometry into an array of POINT2D structs */
+int extract_points_2d(const LWGEOM* g, POINT2D*** points, uint32_t* num_points)
+{
+    uint32_t i = 0;
+    LWITERATOR it;
+    POINT4D p;
+   
+    *num_points = lwgeom_count_vertices(g);
+    *points = lwalloc(*num_points * sizeof(POINT2D*));
+
+    lwiterator_create(g, &it);
+	while (lwiterator_has_next(&it))
+	{
+        if (!lwiterator_next(&it, &p))
+        {
+            uint32_t j;
+            for (j = 0; j < i; j++)
+            {
+               lwfree(points[j]); 
+            }
+            lwfree(points);
+            lwiterator_destroy(&it);
+            return LW_FAILURE;
+        }
+
+        (*points)[i] = lwalloc(sizeof(POINT2D));
+        ((*points)[i])->x = p.x;
+        ((*points)[i])->y = p.y;
+
+        i++;
+	}
+
+    lwiterator_destroy(&it);
+    return LW_SUCCESS;
+}
+
