@@ -10,8 +10,8 @@
  *
  **********************************************************************/
 
-#ifndef _LWUNIONFIND
-#define _LWUNIONFIND 1
+#ifndef _LWITERATOR
+#define _LWITERATOR 1
 
 struct LISTNODE
 {
