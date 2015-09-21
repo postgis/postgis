@@ -3000,7 +3000,14 @@ GEOMETRYCOLLECTION(
         </refsection>
         <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_AsText" />, <xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />, <xref linkend="ST_GeometryN" />, <xref linkend="ST_Union" /></para>
+        <para>
+<xref linkend="ST_AsText" />,
+<xref linkend="ST_BuildArea" />,
+<xref linkend="ST_Dump" />,
+<xref linkend="ST_GeometryN" />,
+<xref linkend="ST_Union" />,
+<xref linkend="ST_Subdivide" />
+        </para>
         </refsection>
     </refentry>
 
@@ -3207,7 +3214,10 @@ LINESTRING(112.499999999998 112.499999999998,114.142135623731 114.142135623731,1
 	  <refsection>
 		<title>See Also</title>
 		<para>
-<xref linkend="ST_AsText" />, <xref linkend="ST_ClipByBox2D" />, <xref linkend="ST_Segmentize" />
+<xref linkend="ST_AsText" />,
+<xref linkend="ST_ClipByBox2D" />,
+<xref linkend="ST_Segmentize" />,
+<xref linkend="ST_Split" />
     </para>
 	  </refsection>
 	</refentry>
