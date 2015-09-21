@@ -49,6 +49,7 @@ SA_OBJS = \
 	lwmpoint.o \
 	lwmline.o \
 	lwmpoly.o \
+	lwboundingcircle.o \
 	lwiterator.o \
 	lwcollection.o \
 	lwcircstring.o \

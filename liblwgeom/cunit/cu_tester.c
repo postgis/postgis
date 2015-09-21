@@ -42,6 +42,7 @@ extern void twkb_in_suite_setup(void);
 extern void libgeom_suite_setup(void);
 extern void measures_suite_setup(void);
 extern void effectivearea_suite_setup(void);
+extern void minimum_bounding_circle_suite_setup(void);
 extern void iterator_suite_setup(void);
 extern void misc_suite_setup(void);
 extern void node_suite_setup(void);
@@ -87,6 +88,7 @@ PG_SuiteSetup setupfuncs[] =
 	libgeom_suite_setup,
 	measures_suite_setup,
 	effectivearea_suite_setup,
+	minimum_bounding_circle_suite_setup,
 	iterator_suite_setup,
 	misc_suite_setup,
 	node_suite_setup,
