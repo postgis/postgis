@@ -1403,15 +1403,9 @@ CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry, int)
-	RETURNS geometry
-	AS '$libdir/postgis-2.2', 'ST_MinimumBoundingCircle'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2.0
