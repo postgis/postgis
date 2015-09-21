@@ -29,6 +29,7 @@
 
 /* PostGIS */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
+#include "lwboundingcircle.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
@@ -89,6 +90,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
+Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
@@ -3884,3 +3886,58 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 }
+
+/**********************************************************************
+ *
+ * ST_MinimumBoundingCircle
+ *
+ **********************************************************************/
+
+PG_FUNCTION_INFO_V1(ST_MinimumBoundingCircle);
+Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* geom;
+	LWGEOM* input;
+	LW_BOUNDINGCIRCLE mbc;
+	LWGEOM* lwcenter;
+	GSERIALIZED* center;
+	Datum result;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	input = lwgeom_from_gserialized(geom);
+
+	if (!lwgeom_calculate_mbc(input, &mbc))
+	{
+		lwpgerror("Error calculating minimum bounding circle.");
+		lwgeom_free(input);
+		PG_RETURN_NULL();
+	}
+
+	lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.centre.x, mbc.centre.y);
+	center = geometry_serialize(lwcenter);
+
+	lwgeom_free(input);
+	lwgeom_free(lwcenter); 
+
+	/* Pass quad_segs argument on to the buffer function */
+	if (PG_NARGS() > 1)
+	{
+		int quad_segs = PG_GETARG_INT32(1);
+		char* format_string = palloc(20 * sizeof(char));
+		snprintf(format_string, 20 * sizeof(char), "quad_segs=%d", quad_segs);
+
+		result = DirectFunctionCall3(buffer, PointerGetDatum(center), Float8GetDatum(mbc.radius), CStringGetDatum(format_string)); 
+
+		pfree(format_string);
+	}
+	else
+	{
+		result = DirectFunctionCall2(buffer, PointerGetDatum(center), Float8GetDatum(mbc.radius));
+	}
+
+	PG_RETURN_DATUM(result);
+}
+

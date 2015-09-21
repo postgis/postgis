@@ -1402,6 +1402,18 @@ CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry, int)
+	RETURNS geometry
+	AS '$libdir/postgis-2.2', 'ST_MinimumBoundingCircle'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAULT false)
 	RETURNS geometry
@@ -5311,14 +5323,14 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 ---------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer)
+-- ST_MinimumBoundingCircleOld(inputgeom geometry, segs_per_quarter integer)
 -----------------------------------------------------------------------
 -- Returns the smallest circle polygon that can fully contain a geometry
 -- Defaults to 48 segs per quarter to approximate a circle
 -- Contributed by Bruce Rindahl
 -- Availability: 1.4.0
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircleOld(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry AS
 $BODY$
 	DECLARE
