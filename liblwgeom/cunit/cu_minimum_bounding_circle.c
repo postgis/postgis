@@ -47,7 +47,8 @@ static void basic_test(void)
 		"TRIANGLE ((0 0, 10 0, 10 10, 0 0))",
 		"LINESTRING (17 253, -44 28, 33 11, 26 44)",
 		"MULTIPOINT ((0 0), (0 0), (0 0), (0 0))",
-		"POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))"
+		"POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))",
+		"LINESTRING (-48546889 37039202, -37039202 -48546889)"
 	};
 
 	for (i = 0; i < sizeof(inputs)/sizeof(LWGEOM*); i++)
