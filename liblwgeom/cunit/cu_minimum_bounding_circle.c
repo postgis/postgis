@@ -46,15 +46,13 @@ static void basic_test(void)
 		"POINT (17 253)",
 		"TRIANGLE ((0 0, 10 0, 10 10, 0 0))",
 		"LINESTRING (17 253, -44 28, 33 11, 26 44)",
+		"MULTIPOINT ((0 0), (0 0), (0 0), (0 0))",
+		"POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))"
 	};
 
 	for (i = 0; i < sizeof(inputs)/sizeof(LWGEOM*); i++)
 	{
 		LWGEOM* input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
-		if (!input)
-		{
-			printf("FAILURE TO PARSE");
-		}
 		mbc_test(input);
 		lwgeom_free(input);
 	}
