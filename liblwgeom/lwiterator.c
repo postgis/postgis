@@ -16,7 +16,7 @@
 
 static LISTNODE* prepend_node(const LWGEOM* g, LISTNODE* front)
 {
-	LISTNODE* n = malloc(sizeof(LISTNODE));
+	LISTNODE* n = lwalloc(sizeof(LISTNODE));
 	n->geom = g;
 	n->next = front;
 
