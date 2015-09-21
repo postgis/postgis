@@ -16,19 +16,19 @@
 
 static void mbc_test(LWGEOM* g)
 {
-	CIRCLE result;
-    CU_ASSERT_TRUE(lwgeom_calculate_mbc(g, &result));
+	LW_BOUNDINGCIRCLE result;
+	CU_ASSERT_TRUE(lwgeom_calculate_mbc(g, &result));
 
 	LWITERATOR it;
 	lwiterator_create(g, &it);
 
-    POINT2D p;
+	POINT2D p;
 	POINT4D p4;
 	while (lwiterator_has_next(&it))
 	{
-        lwiterator_next(&it, &p4);
-        p.x = p4.x;
-        p.y = p4.y;
+		lwiterator_next(&it, &p4);
+		p.x = p4.x;
+		p.y = p4.y;
 
 		CU_ASSERT_TRUE(distance2d_pt_pt(&(result.centre), &p) <= result.radius);
 	}
@@ -42,7 +42,7 @@ static void basic_test(void)
 
 	char* inputs[] =
 	{
-        "POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))",
+		"POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))",
 		"POINT (17 253)",
 		"TRIANGLE ((0 0, 10 0, 10 10, 0 0))",
 		"LINESTRING (17 253, -44 28, 33 11, 26 44)",
@@ -51,19 +51,19 @@ static void basic_test(void)
 	for (i = 0; i < sizeof(inputs)/sizeof(LWGEOM*); i++)
 	{
 		LWGEOM* input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
-        if (!input)
-        {
-            printf("FAILURE TO PARSE");
-        }
-        mbc_test(input);
+		if (!input)
+		{
+			printf("FAILURE TO PARSE");
+		}
+		mbc_test(input);
 		lwgeom_free(input);
 	}
 
 }
 
 /*
-** Used by test harness to register the tests in this file.
-*/
+ ** Used by test harness to register the tests in this file.
+ */
 void minimum_bounding_circle_suite_setup(void);
 void minimum_bounding_circle_suite_setup(void)
 {

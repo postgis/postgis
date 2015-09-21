@@ -14,11 +14,7 @@
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
 #include "lwiterator.h"
-
-typedef struct {
-	POINT2D centre;
-	double radius;
-} CIRCLE;
+#include "lwboundingcircle.h"
 
 typedef struct {
 	const POINT2D* p1;
@@ -55,15 +51,13 @@ static int add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
 				break;
 		case 2: support->p3 = p;
 				break;
-        default: printf("CANT DO THAT (%d)\n", num_supporting_points(support));
+		default: return LW_FAILURE;
 	}
 
-
-	// TODO fail when N is too high
 	return LW_SUCCESS;
 }
 
-static int point_inside_circle(const POINT2D* p, const CIRCLE* c)
+static int point_inside_circle(const POINT2D* p, const LW_BOUNDINGCIRCLE* c)
 {
 	if (!c)
 		return LW_FALSE;
@@ -77,159 +71,117 @@ static int point_inside_circle(const POINT2D* p, const CIRCLE* c)
 /* Copied from JTS, Triangle.java */
 static double det(double m00, double m01, double m10, double m11)
 {
-  return m00 * m11 - m01 * m10;
+	return m00 * m11 - m01 * m10;
 }
 
 /* Adapted from JTS, Triangle.java */
 static void circumcentre(const POINT2D* a, const POINT2D* b, const POINT2D* c, POINT2D* result)
 {
-    double cx = c->x;
-    double cy = c->y;
-    double ax = a->x - cx;
-    double ay = a->y - cy;
-    double bx = b->x - cx;
-    double by = b->y - cy;
+	double cx = c->x;
+	double cy = c->y;
+	double ax = a->x - cx;
+	double ay = a->y - cy;
+	double bx = b->x - cx;
+	double by = b->y - cy;
 
-    double denom = 2 * det(ax, ay, bx, by);
-    double numx = det(ay, ax * ax + ay * ay, by, bx * bx + by * by);
-    double numy = det(ax, ax * ax + ay * ay, bx, bx * bx + by * by);
+	double denom = 2 * det(ax, ay, bx, by);
+	double numx = det(ay, ax * ax + ay * ay, by, bx * bx + by * by);
+	double numy = det(ax, ax * ax + ay * ay, bx, bx * bx + by * by);
 
-    result->x = cx - numx / denom;
-    result->y = cy + numy / denom;
+	result->x = cx - numx / denom;
+	result->y = cy + numy / denom;
 }
 
-static void calculate_mbc_1(const SUPPORTING_POINTS* support, CIRCLE* mbc)
+static void calculate_mbc_1(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
 	mbc->radius = 0;
 	(mbc->centre).x = support->p1->x;
 	(mbc->centre).y = support->p1->y;
 }
 
-static void calculate_mbc_2(const SUPPORTING_POINTS* support, CIRCLE* mbc)
+static void calculate_mbc_2(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
 	mbc->centre.x = 0.5*(support->p1->x + support->p2->x);
 	mbc->centre.y = 0.5*(support->p1->y + support->p2->y);
 	mbc->radius = FP_MAX(distance2d_pt_pt(&(mbc->centre), support->p1),
-						 distance2d_pt_pt(&(mbc->centre), support->p2));
+			distance2d_pt_pt(&(mbc->centre), support->p2));
 }
 
-static void calculate_mbc_3(const SUPPORTING_POINTS* support, CIRCLE* mbc)
+static void calculate_mbc_3(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
-    circumcentre(support->p1, support->p2, support->p3, &(mbc->centre));
-    mbc->radius = FP_MAX(FP_MAX(distance2d_pt_pt(&(mbc->centre), support->p1), distance2d_pt_pt(&(mbc->centre), support->p2)), distance2d_pt_pt(&(mbc->centre), support->p3));
-
-    printf("radius=%f\n", mbc->radius);
+	circumcentre(support->p1, support->p2, support->p3, &(mbc->centre));
+	mbc->radius = FP_MAX(FP_MAX(distance2d_pt_pt(&(mbc->centre), support->p1), distance2d_pt_pt(&(mbc->centre), support->p2)), distance2d_pt_pt(&(mbc->centre), support->p3));
 }
 
-static CIRCLE calculate_mbc_from_support(SUPPORTING_POINTS* support) {
-    printf("calculate_mbc %d\n", num_supporting_points(support));
-	CIRCLE mbc;
-	memset(&mbc, 0, sizeof(CIRCLE));
-
+static int calculate_mbc_from_support(SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc) {
 	switch(num_supporting_points(support))
 	{
-        case 0: break;
-		case 1: calculate_mbc_1(support, &mbc);
-                break;
-		case 2: calculate_mbc_2(support, &mbc);
-                break;
-		case 3: calculate_mbc_3(support, &mbc);
-                break;
-        default: printf("BAD BAD BAD\n");
+		case 0: break;
+		case 1: calculate_mbc_1(support, mbc);
+				break;
+		case 2: calculate_mbc_2(support, mbc);
+				break;
+		case 3: calculate_mbc_3(support, mbc);
+				break;
+		default: return LW_FAILURE;
 	}
 
-	printf("%f %f %f\n", mbc.centre.x, mbc.centre.y, mbc.radius);
-	return mbc;
+	return LW_SUCCESS;
 }
 
-static CIRCLE calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support)
+static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
-	CIRCLE mbc;
 	uint32_t i;
 
-    // TODO can I check if support is NULL and create an empty one here, rather than making caller do it?
+	if(!calculate_mbc_from_support(support, mbc))
+	{
+		return LW_FAILURE;
+	}
 
-	mbc = calculate_mbc_from_support(support);
-
-    if (num_supporting_points(support) == 3)
-    {
-        return mbc;
-    }
+	if (num_supporting_points(support) == 3)
+	{
+		return LW_SUCCESS;
+	}
 
 	for (i = 0; i < max_n; i++)
 	{
-		if (!point_inside_circle(points[i], &mbc))
+		if (!point_inside_circle(points[i], mbc))
 		{
 			SUPPORTING_POINTS next_support;
-			clone_supporting_points(support, &next_support);
+			memcpy(&next_support, support, sizeof(SUPPORTING_POINTS));
 
 			add_supporting_point(&next_support, points[i]);
-			mbc = calculate_mbc(points, i, &next_support);
+			calculate_mbc(points, i, &next_support, mbc);
 		}
 	}
 
-	return mbc;
+	return LW_SUCCESS;
 }
 
-// TODO expose this fn more generally somewhere?
-static int extract_points_2d(const LWGEOM* g, POINT2D*** points, uint32_t* num_points)
+int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 {
-    uint32_t i = 0;
-    LWITERATOR it;
-    POINT4D p;
-   
-    *num_points = lwgeom_count_vertices(g);
-    *points = malloc(*num_points * sizeof(POINT2D*));
+	POINT2D** points;
+	uint32_t num_points;
+	uint32_t i;
+	int success;
 
-    lwiterator_create(g, &it);
-	while (lwiterator_has_next(&it))
+	if (!extract_points_2d(g, &points, &num_points))
+		return LW_FAILURE;
+
+	// TODO shuffle points?
+
+	SUPPORTING_POINTS support;
+	support.p1 = NULL;
+	support.p2 = NULL;
+	support.p3 = NULL;
+
+	success = calculate_mbc((const POINT2D**) points, num_points, &support, result);
+
+	for (i = 0; i < num_points; i++)
 	{
-        if (!lwiterator_next(&it, &p))
-        {
-            uint32_t j;
-            for (j = 0; j < i; j++)
-            {
-               lwfree(points[j]); 
-            }
-            lwfree(points);
-            lwiterator_destroy(&it);
-            return LW_FAILURE;
-        }
-
-        (*points)[i] = malloc(sizeof(POINT2D));
-        ((*points)[i])->x = p.x;
-        ((*points)[i])->y = p.y;
-
-        i++;
+		lwfree(points[i]);
 	}
+	lwfree(points);
 
-    lwiterator_destroy(&it);
-    printf("done N=%d\n", *num_points);
-    return LW_SUCCESS;
-}
-
-int lwgeom_calculate_mbc(const LWGEOM* g, CIRCLE* result)
-{
-    POINT2D** points;
-    uint32_t num_points;
-    uint32_t i;
-    if (!extract_points_2d(g, &points, &num_points))
-        return LW_FAILURE;
-
-    // TODO shuffle points?
-
-    SUPPORTING_POINTS support;
-    support.p1 = NULL;
-    support.p2 = NULL;
-    support.p3 = NULL;
-    *result = calculate_mbc((const POINT2D**) points, num_points, &support);
-
-    for (i = 0; i < num_points; i++)
-    {
-        lwfree(points[i]);
-    }
-    lwfree(points);
-    
-    //TODO return something real
-    return LW_SUCCESS;
+	return success;
 }
