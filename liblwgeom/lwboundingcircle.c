@@ -147,11 +147,19 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 	{
 		if (!point_inside_circle(points[i], mbc))
 		{
+			/* We've run into a point that isn't inside our circle.  To fix this, we'll
+			 * go back in time, and re-reun the algorithm for each point we've seen so
+			 * far, with the constraint that the current point must be on the boundary
+			 * of the circle.  Then, we'll continue on in this loop with the modified
+			 * circle that by definition includes the current point. */
 			SUPPORTING_POINTS next_support;
 			memcpy(&next_support, support, sizeof(SUPPORTING_POINTS));
 
 			add_supporting_point(&next_support, points[i]);
-			calculate_mbc(points, i, &next_support, mbc);
+			if (!calculate_mbc(points, i, &next_support, mbc))
+			{
+				return LW_FAILURE;
+			}
 		}
 	}
 
