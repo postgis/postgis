@@ -96,7 +96,7 @@ test check:
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
-	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(TESTS)
+	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(RUNTESTFLAGS) $(TESTS)
 
 cleanup:
 	@sleep 1

@@ -430,7 +430,13 @@ if [ -z "$libver" ]; then
 	echo
 	echo " Something went wrong (no postgis installed in ${DB})." 
 	if [ -z "$db_exists" ]; then
-		echo " For details, check ${TMPDIR}/regress_log"
+	  if test "$VERBOSE" -eq "1"; then
+		 echo "-----------------------------------------------------------------------------"
+		 cat ${TMPDIR}/regress_log
+		 echo "-----------------------------------------------------------------------------"
+	  else
+		 echo " For details, check ${TMPDIR}/regress_log"
+	  fi
 	fi
 	echo
 	exit 1
