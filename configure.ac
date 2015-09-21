@@ -23,7 +23,6 @@ dnl Compilers
 dnl
 AC_PROG_CC
 AC_PROG_CPP
-AC_PROG_CXX
 AC_PROG_GREP
 AC_PATH_PROG([ANT], [ant], [])
 AC_SUBST([ANT])
@@ -1317,7 +1316,6 @@ AC_MSG_RESULT([  PostGIS is now configured for ${host}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
-AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
 AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
