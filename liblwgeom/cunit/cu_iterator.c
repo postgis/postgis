@@ -55,9 +55,12 @@ static void basic_test(void)
 		"GEOMETRYCOLLECTION (POINT (3 7), LINESTRING (0 0, 14 3), GEOMETRYCOLLECTION(POINT (2 8)))",
 		"GEOMETRYCOLLECTION (POINT (3 7), GEOMETRYCOLLECTION(MULTIPOINT ((2 8))))",
 		"GEOMETRYCOLLECTION (POINT (3 7), GEOMETRYCOLLECTION(LINESTRING (2 8, 4 3), POLYGON EMPTY, MULTIPOINT ((2 8), (17 3), EMPTY)))",
+		"CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3)",
+		"COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0))",
+		"CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)))"
 	};
 
-	for (i = 0; i < sizeof(inputs)/sizeof(LWGEOM*); i++)
+	for (i = 0; i < sizeof(inputs)/sizeof(char*); i++)
 	{
 		LWGEOM* input = lwgeom_from_wkt(inputs[i], LW_PARSER_CHECK_NONE);
 

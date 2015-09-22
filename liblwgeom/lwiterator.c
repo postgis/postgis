@@ -142,8 +142,10 @@ int lwiterator_peek(LWITERATOR* s, POINT4D* p)
 		return next_from_point(s, p);
 	case LINETYPE:
 	case TRIANGLETYPE:
+	case CIRCSTRINGTYPE:
 		return next_from_line(s, p);
 	case POLYGONTYPE:
+	case CURVEPOLYTYPE:
 		return next_from_poly(s, p);
 	default:
 		lwerror("Unsupported geometry type for lwiterator_next");
@@ -178,9 +180,11 @@ int lwiterator_next(LWITERATOR* s, POINT4D* p)
 		break;
 	case LINETYPE:
 	case TRIANGLETYPE:
+    case CIRCSTRINGTYPE:
 		points_remain = advance_line(s);
 		break;
 	case POLYGONTYPE:
+    case CURVEPOLYTYPE:
 		points_remain = advance_poly(s);
 		break;
 	default:
