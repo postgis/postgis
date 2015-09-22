@@ -36,11 +36,6 @@ static uint32_t num_supporting_points(SUPPORTING_POINTS* support)
 	return N;
 }
 
-static void clone_supporting_points(SUPPORTING_POINTS* from, SUPPORTING_POINTS* to)
-{
-	memcpy(to, from, sizeof(SUPPORTING_POINTS));
-}
-
 static int add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
 {
 	switch(num_supporting_points(support))
