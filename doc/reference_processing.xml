@@ -1998,7 +1998,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 	  <refsection>
 		<title>Description</title>
 			<para>Returns the smallest circle polygon that can fully contain a geometry. </para>
-			<note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  This number can be increased with little performance penalty to obtain a more accurate result.</para></note>
+			<note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  Because the polygon is an approximation of the minimum bounding circle, some points in the input geometry may not be contained within the polygon.  The approximation can be improved by increasing the number of segments, with little performance penalty.  For applications where a polygonal approximation is not suitable, ST_MinimumBoundingRadius may be used.</para></note>
 
 			<para>It is often used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
@@ -2009,7 +2009,10 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 
 		<para>Availability: 1.4.0 - requires GEOS</para>
 
-
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" /></para>
 	  </refsection>
 
 	  <refsection>
@@ -2043,8 +2046,47 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" /></para>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingRadius" /></para>
 	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MinimumBoundingRadius">
+	<refnamediv>
+		<refname>ST_MinimumBoundingRadius</refname>
+		<refpurpose>Returns the center point and radius of the smallest circle that can fully contain a geometry.</refpurpose>
+	</refnamediv>
+
+	<refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>(geometry, double precision) <function>ST_MinimumBoundingRadius</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+		<title>Description</title>
+		<para>Returns a record containing the center point and radius of the smallest circle that can fully contain a geometry.</para>
+		<para>Can be used in conjunction with <xref linkend="ST_Collect"/> to get the minimum bounding circle of a set of geometries.</para>
+		<para>Availability - 2.2.0</para>
+	</refsection>
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_MinimumBoundingCircle" /></para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>SELECT ST_AsText(center), radius FROM ST_MinimumBoundingRadius('POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))');
+
+                st_astext                 |      radius      
+------------------------------------------+------------------
+ POINT(26284.8418027133 65267.1145090825) | 247.436045591407
+</programlisting>
+	  </refsection>
+
 	</refentry>
 
 	<refentry id="ST_Polygonize">
