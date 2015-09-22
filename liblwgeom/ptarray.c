@@ -1406,6 +1406,7 @@ ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
 	size_t ptsize;
 	size_t ipn, opn;
 	const POINT2D *last_point, *this_point;
+	double tolsq = tolerance * tolerance;
 
 	LWDEBUGF(3, "%s called", __func__);
 
@@ -1431,7 +1432,7 @@ ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
 		this_point = getPoint2d_cp(in, ipn);
 		if ( (ipn == in->npoints-1 && opn==1) || 
 		     (tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) != 0) ||
-		     (tolerance > 0.0 && distance2d_pt_pt(last_point, this_point) > tolerance) )
+		     (tolerance > 0.0 && distance2d_sqr_pt_pt(last_point, this_point) > tolsq) )
 		{
 			/* The point is different from the previous,
 			 * we add it to output */
