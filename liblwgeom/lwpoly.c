@@ -294,7 +294,7 @@ lwpoly_remove_repeated_points(LWPOLY *poly, double tolerance)
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
 	{
-		newrings[i] = ptarray_remove_repeated_points(poly->rings[i], tolerance);
+		newrings[i] = ptarray_remove_repeated_points_minpoints(poly->rings[i], tolerance, 4);
 	}
 
 	return (LWGEOM*)lwpoly_construct(poly->srid,

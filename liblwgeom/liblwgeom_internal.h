@@ -344,6 +344,7 @@ void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D 
 /* 
 * Repeated points
 */
+POINTARRAY *ptarray_remove_repeated_points_minpoints(POINTARRAY *in, double tolerance, int minpoints);
 POINTARRAY *ptarray_remove_repeated_points(POINTARRAY *in, double tolerance);
 LWGEOM* lwmpoint_remove_repeated_points(LWMPOINT *in, double tolerance);
 LWGEOM* lwline_remove_repeated_points(LWLINE *in, double tolerance);

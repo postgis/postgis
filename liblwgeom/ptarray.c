@@ -1400,13 +1400,15 @@ ptarray_longitude_shift(POINTARRAY *pa)
  *
  */
 POINTARRAY *
-ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
+ptarray_remove_repeated_points_minpoints(POINTARRAY *in, double tolerance, int minpoints)
 {
 	POINTARRAY* out;
 	size_t ptsize;
 	size_t ipn, opn;
 	const POINT2D *last_point, *this_point;
 	double tolsq = tolerance * tolerance;
+
+	if ( minpoints < 1 ) minpoints = 1;
 
 	LWDEBUGF(3, "%s called", __func__);
 
@@ -1430,7 +1432,7 @@ ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
 	for ( ipn = 1; ipn < in->npoints; ++ipn)
 	{
 		this_point = getPoint2d_cp(in, ipn);
-		if ( (ipn == in->npoints-1 && opn==1) || 
+		if ( (ipn >= in->npoints-minpoints+1 && opn < minpoints) || 
 		     (tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) != 0) ||
 		     (tolerance > 0.0 && distance2d_sqr_pt_pt(last_point, this_point) > tolsq) )
 		{
@@ -1446,6 +1448,12 @@ ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
 	out->npoints = opn;
 
 	return out;
+}
+
+POINTARRAY *
+ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
+{
+	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }
 
 static void
