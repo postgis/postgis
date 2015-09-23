@@ -29,7 +29,6 @@
 
 /* PostGIS */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
-#include "lwboundingcircle.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
@@ -90,7 +89,6 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
 Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
-Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
@@ -3887,66 +3885,3 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 
 }
 
-/**********************************************************************
- *
- * ST_MinimumBoundingRadius
- *
- **********************************************************************/
-
-PG_FUNCTION_INFO_V1(ST_MinimumBoundingRadius);
-Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED* geom;
-	LWGEOM* input;
-	LW_BOUNDINGCIRCLE mbc;
-	LWGEOM* lwcenter;
-	GSERIALIZED* center;
-	TupleDesc resultTupleDesc;
-	HeapTuple resultTuple;
-	Datum result;
-	Datum result_values[2];
-	bool result_is_null[2];
-
-	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
-
-	geom = PG_GETARG_GSERIALIZED_P(0);
-
-	if (gserialized_is_empty(geom))
-	{
-		lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
-		mbc.radius = 0;
-	}
-	else
-	{
-		input = lwgeom_from_gserialized(geom);
-
-		if (!lwgeom_calculate_mbc(input, &mbc))
-		{
-			lwpgerror("Error calculating minimum bounding circle.");
-			lwgeom_free(input);
-			PG_RETURN_NULL();
-		}
-
-		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.centre.x, mbc.centre.y);
-
-		lwgeom_free(input);
-	}
-
-	center = geometry_serialize(lwcenter);
-	lwgeom_free(lwcenter); 
-
-	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
-	BlessTupleDesc(resultTupleDesc);
-
-	result_values[0] = PointerGetDatum(center);
-	result_is_null[0] = false;
-	result_values[1] = Float8GetDatum(mbc.radius);
-	result_is_null[1] = false;
-
-	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
-
-	result = HeapTupleGetDatum(resultTuple);
-
-	PG_RETURN_DATUM(result);
-}
