@@ -60,6 +60,16 @@ static void basic_test(void)
 
 }
 
+static void test_empty(void)
+{
+	LWGEOM* input = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
+
+	LW_BOUNDINGCIRCLE result;
+	CU_ASSERT_FALSE(lwgeom_calculate_mbc(input, &result));
+	
+	lwgeom_free(input);
+}
+
 /*
  ** Used by test harness to register the tests in this file.
  */
@@ -68,4 +78,5 @@ void minimum_bounding_circle_suite_setup(void)
 {
 	CU_pSuite suite = CU_add_suite("minimum_bounding_circle", NULL, NULL);
 	PG_ADD_TEST(suite, basic_test);
+	PG_ADD_TEST(suite, test_empty);
 }

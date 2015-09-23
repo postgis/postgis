@@ -168,6 +168,9 @@ int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 	uint32_t i;
 	int success;
 
+	if(!g || lwgeom_is_empty(g))
+		return LW_FAILURE;
+
 	if (!extract_points_2d(g, &points, &num_points))
 		return LW_FAILURE;
 
