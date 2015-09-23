@@ -3911,24 +3911,34 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-	input = lwgeom_from_gserialized(geom);
 
-	if (!lwgeom_calculate_mbc(input, &mbc))
+	if (gserialized_is_empty(geom))
 	{
-		lwpgerror("Error calculating minimum bounding circle.");
+		lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		mbc.radius = 0;
+	}
+	else
+	{
+		input = lwgeom_from_gserialized(geom);
+
+		if (!lwgeom_calculate_mbc(input, &mbc))
+		{
+			lwpgerror("Error calculating minimum bounding circle.");
+			lwgeom_free(input);
+			PG_RETURN_NULL();
+		}
+
+		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.centre.x, mbc.centre.y);
+
 		lwgeom_free(input);
-		PG_RETURN_NULL();
 	}
 
-	lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.centre.x, mbc.centre.y);
 	center = geometry_serialize(lwcenter);
-
-	lwgeom_free(input);
 	lwgeom_free(lwcenter); 
 
 	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
 	BlessTupleDesc(resultTupleDesc);
-	
+
 	result_values[0] = PointerGetDatum(center);
 	result_is_null[0] = false;
 	result_values[1] = Float8GetDatum(mbc.radius);
