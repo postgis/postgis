@@ -1105,7 +1105,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.centre.x, mbc.centre.y);
+		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.center.x, mbc.center.y);
 
 		lwgeom_free(input);
 	}

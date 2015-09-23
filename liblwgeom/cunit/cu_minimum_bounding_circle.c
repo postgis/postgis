@@ -30,7 +30,7 @@ static void mbc_test(LWGEOM* g)
 		p.x = p4.x;
 		p.y = p4.y;
 
-		CU_ASSERT_TRUE(distance2d_pt_pt(&(result.centre), &p) <= result.radius);
+		CU_ASSERT_TRUE(distance2d_pt_pt(&(result.center), &p) <= result.radius);
 	}
 
 	lwiterator_destroy(&it);

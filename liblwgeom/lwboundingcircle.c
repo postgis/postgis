@@ -57,7 +57,7 @@ static int point_inside_circle(const POINT2D* p, const LW_BOUNDINGCIRCLE* c)
 	if (!c)
 		return LW_FALSE;
 
-	if (distance2d_pt_pt(p, &(c->centre)) > c->radius)
+	if (distance2d_pt_pt(p, &(c->center)) > c->radius)
 		return LW_FALSE;
 
 	return LW_TRUE;
@@ -70,7 +70,7 @@ static double det(double m00, double m01, double m10, double m11)
 }
 
 /* Adapted from JTS, Triangle.java */
-static void circumcentre(const POINT2D* a, const POINT2D* b, const POINT2D* c, POINT2D* result)
+static void circumcenter(const POINT2D* a, const POINT2D* b, const POINT2D* c, POINT2D* result)
 {
 	double cx = c->x;
 	double cy = c->y;
@@ -90,22 +90,22 @@ static void circumcentre(const POINT2D* a, const POINT2D* b, const POINT2D* c, P
 static void calculate_mbc_1(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
 	mbc->radius = 0;
-	(mbc->centre).x = support->p1->x;
-	(mbc->centre).y = support->p1->y;
+	(mbc->center).x = support->p1->x;
+	(mbc->center).y = support->p1->y;
 }
 
 static void calculate_mbc_2(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
-	mbc->centre.x = 0.5*(support->p1->x + support->p2->x);
-	mbc->centre.y = 0.5*(support->p1->y + support->p2->y);
-	mbc->radius = FP_MAX(distance2d_pt_pt(&(mbc->centre), support->p1),
-			distance2d_pt_pt(&(mbc->centre), support->p2));
+	mbc->center.x = 0.5*(support->p1->x + support->p2->x);
+	mbc->center.y = 0.5*(support->p1->y + support->p2->y);
+	mbc->radius = FP_MAX(distance2d_pt_pt(&(mbc->center), support->p1),
+			distance2d_pt_pt(&(mbc->center), support->p2));
 }
 
 static void calculate_mbc_3(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
-	circumcentre(support->p1, support->p2, support->p3, &(mbc->centre));
-	mbc->radius = FP_MAX(FP_MAX(distance2d_pt_pt(&(mbc->centre), support->p1), distance2d_pt_pt(&(mbc->centre), support->p2)), distance2d_pt_pt(&(mbc->centre), support->p3));
+	circumcenter(support->p1, support->p2, support->p3, &(mbc->center));
+	mbc->radius = FP_MAX(FP_MAX(distance2d_pt_pt(&(mbc->center), support->p1), distance2d_pt_pt(&(mbc->center), support->p2)), distance2d_pt_pt(&(mbc->center), support->p3));
 }
 
 static int calculate_mbc_from_support(SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc) {

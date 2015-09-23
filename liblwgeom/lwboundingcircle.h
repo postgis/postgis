@@ -14,7 +14,7 @@
 #define _LWBOUNDINGCIRCLE 1
 
 typedef struct {
-	POINT2D centre;
+	POINT2D center;
 	double radius;
 } LW_BOUNDINGCIRCLE;
 
