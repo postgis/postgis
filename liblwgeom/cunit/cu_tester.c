@@ -259,18 +259,18 @@ int main(int argc, char *argv[])
 static void
 cu_errorreporter(const char *fmt, va_list ap)
 {
-	vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-	cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
-	/*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
+  vsnprintf (cu_error_msg, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+  cu_error_msg[MAX_CUNIT_MSG_LENGTH]='\0';
+  /*fprintf(stderr, "ERROR: %s\n", cu_error_msg);*/
 }
 
 static void
 cu_noticereporter(const char *fmt, va_list ap)
 {
-	char buf[MAX_CUNIT_MSG_LENGTH+1];
-	vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
-	buf[MAX_CUNIT_MSG_LENGTH]='\0';
-	/*fprintf(stderr, "NOTICE: %s\n", buf);*/
+  char buf[MAX_CUNIT_MSG_LENGTH+1];
+  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+  buf[MAX_CUNIT_MSG_LENGTH]='\0';
+  /*fprintf(stderr, "NOTICE: %s\n", buf);*/
 }
 
 void
