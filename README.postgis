@@ -112,7 +112,7 @@ refuse to proceed. You can specify an alternative ``geos-config`` file using
 the ``--with-geosconfig=/path/to/geos-config`` option.
 
 If GDAL cannot be found, configure will complain and refuse to proceed.
-You can either procede without raster support using ``--without-raster``
+You can either proceed without raster support using ``--without-raster``
 or use ``--with-gdalconfig=/path/to/gdal-config`` option.
 
 By default, both Topology and Raster extensions are enabled in ``./configure``.
@@ -179,7 +179,7 @@ CREATING NEW SPATIAL DATABASES
 PostGIS support must be enabled for each database that requires its usage. 
 Enabling spatial functionality requires a PostgreSQL super-user.
 
-  CREATE EXTENSION postgis;
+    CREATE EXTENSION postgis;
   
 
 UPGRADING EXISTING SPATIAL DATABASES
@@ -193,8 +193,8 @@ Upgrade PostGIS using the "ALTER EXTENSION" facility.
 USAGE
 -----
 
-Try the following example SQL statements to create non-OpenGIS tables and
-geometries::
+Try the following example SQL statements to create tables with
+geometry columns::
 
   CREATE TABLE geom_test ( gid int4, geom geometry, name varchar(25) );
   INSERT INTO geom_test ( gid, geom, name )
@@ -205,7 +205,7 @@ geometries::
     VALUES ( 3, 'MULTIPOINT(3 4,8 9)', '2D Aggregate Point' );
   SELECT * from geom_test WHERE ST_Intersects(geom, ST_MakeEnvelope(2,2,3,3));
 
-The following SQL creates proper OpenGIS entries in the ``SPATIAL_REF_SYS``
+The following SQL creates proper full entries in the ``SPATIAL_REF_SYS``
 and ``GEOMETRY_COLUMNS`` tables, and ensures that all geometries are created
 with an SRID::
 
