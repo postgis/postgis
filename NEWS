@@ -12,11 +12,14 @@ PostGIS 2.2.0
   - #2565, ST_SummaryStats(tablename, rastercolumn, ...) uses
            ST_SummaryStatsAgg()
   - #2567, ST_Count(tablename, rastercolumn, ...) uses ST_CountAgg()
+  - #2842, raster - Hide unselectable tables from raster_overview 
+        and raster_columns
   - By default, PostGIS raster disables all GDAL drivers affecting
     out-db rasters, ST_FromGDALRaster() and ST_AsGDALRaster() variants
   - #3181, POINT EMPTY is now stored as POINT(NaN NaN) in WKB, instead of as MULTIPOINT EMPTY
   - Java binding moved to separate repository:
     https://github.com/postgis/postgis-java
+    
 
  * Deprecated signatures *
 
