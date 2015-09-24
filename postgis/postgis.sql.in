@@ -3169,7 +3169,7 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometr
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry, segs_per_quarter integer DEFAULT 48)
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry
     AS $$ SELECT ST_Buffer(center, radius, segs_per_quarter) FROM ST_MinimumBoundingRadius($1) sq $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
