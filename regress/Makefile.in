@@ -95,6 +95,7 @@ TESTS = \
 	long_xact \
 	lwgeom_regress \
 	measures \
+	minimum_bounding_circle \
 	operators \
 	out_geometry \
 	out_geography \
