@@ -1,8 +1,7 @@
 
 Installing The Tiger Geocoder
 
-This is a customized version of Steve Frost's tiger geocoder revisions
-(http://www.snowman.net/git/tiger_geocoder/).
+This is a customized version of Steve Frost's tiger geocoder revisions.
 
 This version includes a loader that is portable between Linux and
 Windows but loads a full state of data at a time.  The loader helper tables and
