@@ -23,8 +23,6 @@ fi
 
 outdir="postgis-$version"
 
-cd ..
-
 if [ -d "$outdir" ]; then
 	echo "Output directory $outdir already exists."
 	exit 1
