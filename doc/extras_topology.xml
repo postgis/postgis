@@ -2351,7 +2351,7 @@ of an edge.
 
 	<para>
 If any edge crossing the node is found either an exception is raised or
-the edge is splitted, depending on the <varname>allowEdgeSplitting</varname>
+the edge is split, depending on the <varname>allowEdgeSplitting</varname>
 parameter value.
 	</para>
 

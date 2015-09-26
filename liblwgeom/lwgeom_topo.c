@@ -1096,7 +1096,7 @@ lwt_ModEdgeSplit( LWT_TOPOLOGY* topo, LWT_ELEMID edge,
   } else if ( ret == 0 ) {
     _lwt_release_edges(oldedge, 1);
     lwcollection_free(split_col);
-    lwerror("Edge being splitted (%d) disappeared during operations?", oldedge->edge_id);
+    lwerror("Edge being split (%d) disappeared during operations?", oldedge->edge_id);
     return -1;
   } else if ( ret > 1 ) {
     _lwt_release_edges(oldedge, 1);
@@ -1763,7 +1763,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
     }
   }
 
-  LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " splitted face %" LWTFMT_ELEMID " (mbr_only:%d)",
+  LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " split face %" LWTFMT_ELEMID " (mbr_only:%d)",
            sedge, face, mbr_only);
 
   /* Construct a polygon using edges of the ring */
@@ -1862,7 +1862,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
 
   if ( face == 0 )
   {
-    /* Edge splitted the universe face */
+    /* Edge split the universe face */
     if ( ! isccw )
     {
       lwpoly_free(shell);
@@ -5199,7 +5199,7 @@ _lwt_GetEqualEdge( LWT_TOPOLOGY *topo, LWLINE *edge )
 }
 
 /*
- * Add a pre-noded pre-splitted line edge. Used by lwt_AddLine
+ * Add a pre-noded pre-split line edge. Used by lwt_AddLine
  * Return edge id, 0 if none added (empty edge), -1 on error
  */
 static LWT_ELEMID
@@ -5521,7 +5521,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
           /* lwgeom_split(noded, inodes); */
       lwgeom_free(noded);
       noded = tmp;
-      LWDEBUGG(1, noded, "Node-splitted");
+      LWDEBUGG(1, noded, "Node-split");
 
       /* will not release the geoms array */
       lwcollection_release(col);
@@ -5559,7 +5559,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     ngeoms = 1;
   }
 
-  LWDEBUGF(1, "Line was splitted into %d edges", ngeoms);
+  LWDEBUGF(1, "Line was split into %d edges", ngeoms);
 
   /* TODO: refactor to first add all nodes (re-snapping edges if
    * needed) and then check all edges for existing already

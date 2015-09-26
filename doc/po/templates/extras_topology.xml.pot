@@ -2215,7 +2215,7 @@ msgstr ""
 #. Tag: para
 #: extras_topology.xml:2040
 #, no-c-format
-msgid "If any edge crossing the node is found either an exception is raised or the edge is splitted, depending on the <varname>allowEdgeSplitting</varname> parameter value."
+msgid "If any edge crossing the node is found either an exception is raised or the edge is split, depending on the <varname>allowEdgeSplitting</varname> parameter value."
 msgstr ""
 
 #. Tag: para

@@ -366,7 +366,7 @@ BEGIN
   END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Edge % splitted face %', anedge, oface;
+  RAISE DEBUG 'Edge % split face %', anedge, oface;
 #endif
 
   sql := 'WITH ids as ( select row_number() over () as seq, edge '

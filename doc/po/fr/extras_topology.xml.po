@@ -3122,7 +3122,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If any edge crossing the node is found either an exception is raised or the "
-"edge is splitted, depending on the <varname>allowEdgeSplitting</varname> "
+"edge is split, depending on the <varname>allowEdgeSplitting</varname> "
 "parameter value."
 msgstr ""
 
