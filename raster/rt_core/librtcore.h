@@ -79,6 +79,15 @@
 #endif
 #endif
 
+#if defined(__GNU__)    /* GNU/Hurd is also like Linux */
+#if !defined(LINUX)
+#define LINUX
+#endif
+#if !defined(UNIX)
+#define UNIX        /* make sure this is defined */
+#endif
+#endif
+
 #if defined(__MSDOS__)
 #if !defined(MSDOS)
 #define MSDOS       /* make sure this is defined */
