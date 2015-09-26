@@ -148,11 +148,23 @@
                 <varlistentry>
                     <term>-t TILE_SIZE</term>
                     <listitem>
-			<para>
-							Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT or set to the value "auto" to allow the loader to compute an appropriate tile size using the first raster and applied to all rasters.
-			</para>
+                        <para>
+                            Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT or set to the value "auto" to allow the loader to compute an appropriate tile size using the first raster and applied to all rasters.
+                        </para>
                     </listitem>
                 </varlistentry>
+                
+                <varlistentry>
+                    <term>-P</term>
+                    <listitem>
+                        <para>
+                            Pad right-most and bottom-most tiles to guarantee that all tiles
+                            have the same width and height.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                
+                  
                 
                 <varlistentry>
                     <term>-R, --register</term>
@@ -211,6 +223,20 @@
                     <para>Add a column with the name of the file</para>
                   </listitem>
                 </varlistentry>
+                
+                <varlistentry>
+                  <term>-n COLUMN</term>
+                  <listitem>
+                    <para>Specify the name of the filename column. Implies -F.</para>
+                  </listitem>
+                </varlistentry>
+                
+               <varlistentry>
+                  <term>-q</term>
+                  <listitem>
+                    <para>Wrap PostgreSQL identifiers in quotes.</para>
+                  </listitem>
+                </varlistentry>
                
                 <varlistentry>
                   <term>-I</term>
@@ -229,6 +255,17 @@
                     </para>
                   </listitem>
                 </varlistentry>
+                
+                
+                <varlistentry>
+                  <term>-k</term>
+                  <listitem>
+                    <para>
+                        Skip NODATA value checks for each raster band.
+                    </para>
+                  </listitem>
+                </varlistentry>
+                  
                 
                 <varlistentry>
                   <term>-T <varname>tablespace</varname></term>
@@ -250,7 +287,7 @@
      -I flag is used.
                     </para>
                   </listitem>
-								</varlistentry>
+                 </varlistentry>
                 
                <varlistentry>
                   <term>-Y</term>
