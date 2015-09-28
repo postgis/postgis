@@ -86,7 +86,7 @@ if ( $OPT_UPGRADE_PATH )
 {
   if ( ! $OPT_EXTENSIONS )
   {
-    die "--upgrade-path is only supported with --extensions"
+    die "--upgrade-path is only supported with --extension"
   }
   $OPT_UPGRADE = 1; # implied 
   my @path = split ('--', $OPT_UPGRADE_PATH);
