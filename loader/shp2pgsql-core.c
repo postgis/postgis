@@ -1819,7 +1819,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 	stringbuffer_clear(sb);
 
 	/* Create gist index if specified and not in "prepare" mode */
-	if (state->config->createindex)
+	if (state->config->readshape && state->config->createindex)
 	{
 		stringbuffer_aprintf(sb, "CREATE INDEX ON ");
 		/* Schema is optional, include if present. */
