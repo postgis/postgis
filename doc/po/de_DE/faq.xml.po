@@ -594,7 +594,7 @@ msgstr ""
 #: faq.xml:183
 #, no-c-format
 msgid "How do I construct a spatial query?"
-msgstr "Wie erstelle ich eine räumliche Abfrage?
+msgstr "Wie erstelle ich eine räumliche Abfrage?"
 
 #. Tag: para
 #: faq.xml:187
@@ -674,7 +674,7 @@ msgstr ""
 #: faq.xml:216
 #, no-c-format
 msgid "How do I speed up spatial queries on large tables?"
-msgstr "Wie kann ich räumliche Abfragen auf großen Tabellen beschleunigen?
+msgstr "Wie kann ich räumliche Abfragen auf großen Tabellen beschleunigen?"
 
 #. Tag: para
 #: faq.xml:220
