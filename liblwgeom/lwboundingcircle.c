@@ -168,6 +168,10 @@ int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 	uint32_t i;
 	int success;
 
+	result->radius = 0.0;
+	(result->center).x = 0.0;
+	(result->center).y = 0.0;
+
 	if(!g || lwgeom_is_empty(g))
 		return LW_FAILURE;
 
