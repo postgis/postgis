@@ -1,15 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Vincent Picavet <vincent.ml@oslandia.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: 2014-10-13 17:58+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
-"language/fr/)\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2015-09-29 12:23+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
+"fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,18 +25,24 @@ msgid ""
 "can be set globally, by database, by session or by transaction. Best set at "
 "global or database level."
 msgstr ""
+"Cette section liste les variables globales spécifiques de PostGIS appelées "
+"GUC : Grand Unified Custom Variables.\n"
+"Elles peuvent être réglées globalement, par base de données, par session ou "
+"par transaction.\n"
+"Il est préférable de les régler au niveau global ou au niveau de la base de "
+"donnée."
 
 #. Tag: title
 #: reference_guc.xml:8
 #, no-c-format
 msgid "PostGIS Grand Unified Custom Variables (GUCs)"
-msgstr ""
+msgstr "Variables PostGIS GUC ( Grand Unified Custom Variables )"
 
 #. Tag: refname
 #: reference_guc.xml:12
 #, no-c-format
 msgid "postgis.backend"
-msgstr ""
+msgstr "postgis.backend"
 
 #. Tag: refpurpose
 #: reference_guc.xml:13
@@ -44,13 +51,16 @@ msgid ""
 "The backend to service a function where GEOS and SFCGAL overlap. Options: "
 "geos or sfcgal. Defaults to geos."
 msgstr ""
+"Le backend qui sera utilisé par les fonctions lorsque GEOS et SFCGAL se "
+"recouvrent.\n"
+"Options: geos ou sfcgal. Valeur par défaut geos."
 
 #. Tag: title
 #: reference_guc.xml:17 reference_guc.xml:45 reference_guc.xml:95
-#: reference_guc.xml:180
+#: reference_guc.xml:187
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #. Tag: para
 #: reference_guc.xml:18
@@ -61,56 +71,61 @@ msgid ""
 "GEOS and SFCGAL have the same named function. This variable allows you to "
 "override and make sfcgal the backend to service the request."
 msgstr ""
+"Cette GUC n'a de sens que si vous avez compilé PostGIS avec le support "
+"SFCGAL. Par défaut le backend <varname>geos</varname> est utilisé pour les "
+"fonctions proposées à la fois par GEOS et SFCGAL (même nom). Cette variable "
+"permet de surcharger la valeur par défaut et d'utiliser sfcgal comme backend "
+"pour effectuer la requête."
 
 #. Tag: para
 #: reference_guc.xml:19
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilité: 2.1.0"
 
 #. Tag: title
 #: reference_guc.xml:23 reference_guc.xml:69 reference_guc.xml:146
-#: reference_guc.xml:206
+#: reference_guc.xml:213
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #. Tag: para
 #: reference_guc.xml:24
 #, no-c-format
 msgid "Sets backend just for life of connection"
-msgstr ""
+msgstr "Régler le backend juste pour le temps de la connexion"
 
 #. Tag: programlisting
 #: reference_guc.xml:25
 #, no-c-format
 msgid "set postgis.backend = sfcgal;"
-msgstr ""
+msgstr "set postgis.backend = sfcgal;"
 
 #. Tag: para
 #: reference_guc.xml:27
 #, no-c-format
 msgid "Sets backend for new connections to database"
-msgstr ""
+msgstr "Régler le backend pour les nouvelles connexions à une base de données"
 
 #. Tag: programlisting
 #: reference_guc.xml:28
 #, no-c-format
 msgid "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
-msgstr ""
+msgstr "ALTER DATABASE mygisdb SET postgis.backend = sfcgal;"
 
 #. Tag: title
-#: reference_guc.xml:31 reference_guc.xml:79 reference_guc.xml:159
-#: reference_guc.xml:213
+#: reference_guc.xml:31 reference_guc.xml:79 reference_guc.xml:166
+#: reference_guc.xml:220
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Voir aussi"
 
 #. Tag: refname
 #: reference_guc.xml:38
 #, no-c-format
 msgid "postgis.gdal_datapath"
-msgstr ""
+msgstr "postgis.gdal_datapath"
 
 #. Tag: refpurpose
 #: reference_guc.xml:39
@@ -119,6 +134,9 @@ msgid ""
 "A configuration option to assign the value of GDAL's GDAL_DATA option. If "
 "not set, the environmentally set GDAL_DATA variable is used."
 msgstr ""
+"Une option de configuration pour régler la valeur de l'option GDAL_DATA de "
+"GDAL. Si elle n'est pas assignée, la valeur de la variable d'environnement "
+"GDAL_DATA est utilisée."
 
 #. Tag: para
 #: reference_guc.xml:46
@@ -128,6 +146,9 @@ msgid ""
 "The <varname>postgis.gdal_datapath</varname> value should be the complete "
 "physical path to GDAL's data files."
 msgstr ""
+"Une variable GUC PostgreSQL pour régler la valeur de l'option GDAL_DATA de "
+"GDAL. La valeur <varname>postgis.gdal_datapath</varname> devrait être le "
+"chemin physique complet vers les fichiers de données de GDAL."
 
 #. Tag: para
 #: reference_guc.xml:49
@@ -137,6 +158,10 @@ msgid ""
 "data files path is not hard-coded. This option should also be set when "
 "GDAL's data files are not located in GDAL's expected path."
 msgstr ""
+"Cette option de configuration est principalement destinée aux plateformes "
+"Windows où le chemin des fichiers de données de GDAL n'est pas codé en dur. "
+"Cette option devrait aussi être réglée lorsque les fichiers de données GDAL "
+"ne sont pas situés dans le chemin attendu par GDAL."
 
 #. Tag: para
 #: reference_guc.xml:54
@@ -145,12 +170,15 @@ msgid ""
 "This option can be set in PostgreSQL's configuration file postgresql.conf. "
 "It can also be set by connection or transaction."
 msgstr ""
+"Cette option peut être réglée dans le fichier de configuration postgresql."
+"conf de PostgreSQL. Elle peut aussi être réglée par connexion ou par "
+"transaction."
 
 #. Tag: para
-#: reference_guc.xml:58 reference_guc.xml:141 reference_guc.xml:201
+#: reference_guc.xml:58 reference_guc.xml:141 reference_guc.xml:208
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilité : 2.2.0"
 
 #. Tag: para
 #: reference_guc.xml:61
@@ -160,12 +188,17 @@ msgid ""
 "\"http://trac.osgeo.org/gdal/wiki/ConfigOptions\">Configuration Options</"
 "ulink>."
 msgstr ""
+"Des informations complémentaires sur GDAL_DATA sont disponibles dans la "
+"description des  <ulink url=\"http://trac.osgeo.org/gdal/wiki/ConfigOptions"
+"\">Options de configuration</ulink>."
 
 #. Tag: para
 #: reference_guc.xml:70
 #, no-c-format
 msgid "Set and reset <varname>postgis.gdal_datapath</varname>"
 msgstr ""
+"Régler et remettre à la valeur par défaut <varname>postgis.gdal_datapath</"
+"varname>"
 
 #. Tag: programlisting
 #: reference_guc.xml:72
@@ -174,12 +207,14 @@ msgid ""
 "SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
 "SET postgis.gdal_datapath TO default;"
 msgstr ""
+"SET postgis.gdal_datapath TO '/usr/local/share/gdal.hidden';\n"
+"SET postgis.gdal_datapath TO default;"
 
 #. Tag: para
 #: reference_guc.xml:74
 #, no-c-format
 msgid "Setting on windows for a particular database"
-msgstr ""
+msgstr "Réglage pour une base de données spécifique, sous Windows"
 
 #. Tag: programlisting
 #: reference_guc.xml:75
@@ -188,18 +223,20 @@ msgid ""
 "ALTER DATABASE gisdb\n"
 "SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 msgstr ""
+"ALTER DATABASE gisdb\n"
+"SET postgis.gdal_datapath = 'C:/Program Files/PostgreSQL/9.3/gdal-data';"
 
 #. Tag: para
 #: reference_guc.xml:80
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"RT_ST_Transform\"/>"
 
 #. Tag: refname
 #: reference_guc.xml:88
 #, no-c-format
 msgid "postgis.gdal_enabled_drivers"
-msgstr ""
+msgstr "postgis.gdal_enabled_drivers"
 
 #. Tag: refpurpose
 #: reference_guc.xml:89
@@ -302,8 +339,38 @@ msgstr ""
 msgid "Set and reset <varname>postgis.gdal_enabled_drivers</varname>"
 msgstr ""
 
-#. Tag: programlisting
+#. Tag: para
 #: reference_guc.xml:149
+#, no-c-format
+msgid "Sets backend for all new connections to database"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:150
+#, no-c-format
+msgid ""
+"ALTER DATABASE mygisdb SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';"
+msgstr ""
+
+#. Tag: para
+#: reference_guc.xml:152
+#, no-c-format
+msgid ""
+"Sets default enabled drivers for all new connections to server. Requires "
+"super user access and PostgreSQL 9.4+. Also not that database, session, and "
+"user settings override this."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:154
+#, no-c-format
+msgid ""
+"ALTER SYSTEM SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
+"SELECT pg_reload_conf();"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_guc.xml:156
 #, no-c-format
 msgid ""
 "SET postgis.gdal_enabled_drivers TO 'GTiff PNG JPEG';\n"
@@ -311,31 +378,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:151
+#: reference_guc.xml:158
 #, no-c-format
 msgid "Enable all GDAL Drivers"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_guc.xml:152
+#: reference_guc.xml:159
 #, no-c-format
 msgid "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
-msgstr ""
+msgstr "SET postgis.gdal_enabled_drivers = 'ENABLE_ALL';"
 
 #. Tag: para
-#: reference_guc.xml:154
+#: reference_guc.xml:161
 #, no-c-format
 msgid "Disable all GDAL Drivers"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_guc.xml:155
+#: reference_guc.xml:162
 #, no-c-format
 msgid "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
-msgstr ""
+msgstr "SET postgis.gdal_enabled_drivers = 'DISABLE_ALL';"
 
 #. Tag: para
-#: reference_guc.xml:160
+#: reference_guc.xml:167
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_AsGDALRaster\"/>, <xref linkend=\"RT_ST_AsTIFF\"/>, "
@@ -344,19 +411,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_guc.xml:173
+#: reference_guc.xml:180
 #, no-c-format
 msgid "postgis.enable_outdb_rasters"
-msgstr ""
+msgstr "postgis.enable_outdb_rasters"
 
 #. Tag: refpurpose
-#: reference_guc.xml:174
+#: reference_guc.xml:181
 #, no-c-format
 msgid "A boolean configuration option to enable access to out-db raster bands."
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:181
+#: reference_guc.xml:188
 #, no-c-format
 msgid ""
 "A boolean configuration option to enable access to out-db raster bands. This "
@@ -365,7 +432,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:185
+#: reference_guc.xml:192
 #, no-c-format
 msgid ""
 "The initial value of <varname>postgis.enable_outdb_rasters</varname> may "
@@ -375,7 +442,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:190
+#: reference_guc.xml:197
 #, no-c-format
 msgid ""
 "Even if <varname>postgis.enable_outdb_rasters</varname> is True, the GUC "
@@ -384,7 +451,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:196
+#: reference_guc.xml:203
 #, no-c-format
 msgid ""
 "In the standard PostGIS installation, <varname>postgis.enable_outdb_rasters</"
@@ -392,13 +459,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_guc.xml:207
+#: reference_guc.xml:214
 #, no-c-format
 msgid "Set and reset <varname>postgis.enable_outdb_rasters</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_guc.xml:209
+#: reference_guc.xml:216
 #, no-c-format
 msgid ""
 "SET postgis.enable_outdb_rasters TO True;\n"
@@ -406,3 +473,7 @@ msgid ""
 "SET postgis.enable_outdb_rasters = True;\n"
 "SET postgis.enable_outdb_rasters = False;"
 msgstr ""
+"SET postgis.enable_outdb_rasters TO True;\n"
+"SET postgis.enable_outdb_rasters = default;\n"
+"SET postgis.enable_outdb_rasters = True;\n"
+"SET postgis.enable_outdb_rasters = False;"

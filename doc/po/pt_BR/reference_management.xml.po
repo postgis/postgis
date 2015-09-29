@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
+# Translators:
+# Dauro Lima Sobrinho <daurolima@gmail.com>, 2014
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2015-09-29 12:23+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
+"language/pt_BR/)\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Tag: title
 #: reference_management.xml:3
@@ -25,7 +27,7 @@ msgstr ""
 #: reference_management.xml:7
 #, no-c-format
 msgid "AddGeometryColumn"
-msgstr ""
+msgstr "AddGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:9
@@ -81,7 +83,7 @@ msgstr ""
 #: reference_management.xml:863
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descrição"
 
 #. Tag: para
 #: reference_management.xml:94
@@ -135,21 +137,21 @@ msgstr ""
 #: reference_management.xml:117 reference_management.xml:194
 #, no-c-format
 msgid "&sfs_compliant;"
-msgstr ""
+msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_management.xml:118 reference_management.xml:195
 #: reference_management.xml:869
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_management.xml:119 reference_management.xml:196
 #: reference_management.xml:870
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_management.xml:120
@@ -170,7 +172,7 @@ msgstr ""
 #: reference_management.xml:873
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Exemplos"
 
 #. Tag: programlisting
 #: reference_management.xml:126
@@ -253,7 +255,7 @@ msgstr ""
 #: reference_management.xml:886
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Veja também"
 
 #. Tag: para
 #: reference_management.xml:132
@@ -262,12 +264,14 @@ msgid ""
 ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
 ">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 msgstr ""
+", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/"
+">, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
 
 #. Tag: refname
 #: reference_management.xml:138
 #, no-c-format
 msgid "DropGeometryColumn"
-msgstr ""
+msgstr "DropGeometryColumn"
 
 #. Tag: refpurpose
 #: reference_management.xml:140
@@ -340,7 +344,7 @@ msgstr ""
 #: reference_management.xml:216
 #, no-c-format
 msgid "DropGeometryTable"
-msgstr ""
+msgstr "DropGeometryTable"
 
 #. Tag: refpurpose
 #: reference_management.xml:218
@@ -395,6 +399,17 @@ msgid ""
 "-- The above is now equivalent to --\n"
 "DROP TABLE my_schema.my_spatial_table;"
 msgstr ""
+"SELECT DropGeometryTable ('my_schema','my_spatial_table');\n"
+"\n"
+"----RESULT output ---\n"
+"\n"
+"my_schema.my_spatial_table dropped.\n"
+"\n"
+"\n"
+"\n"
+"-- The above is now equivalent to --\n"
+"\n"
+"DROP TABLE my_schema.my_spatial_table;"
 
 #. Tag: para
 #: reference_management.xml:274
@@ -403,12 +418,14 @@ msgid ""
 ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
 ">"
 msgstr ""
+", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/"
+">"
 
 #. Tag: refname
 #: reference_management.xml:281
 #, no-c-format
 msgid "PostGIS_Full_Version"
-msgstr ""
+msgstr "PostGIS_Full_Version"
 
 #. Tag: refpurpose
 #: reference_management.xml:283
@@ -446,6 +463,19 @@ msgid ""
 "RASTER\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Full_Version();\n"
+"\n"
+"postgis_full_version\n"
+"\n"
+"----------------------------------------------------------------------------------\n"
+"\n"
+"POSTGIS=\"2.2.0dev r12699\" GEOS=\"3.5.0dev-CAPI-1.9.0 r3989\" SFCGAL="
+"\"1.0.4\" PROJ=\"Rel. 4.8.0, 6 March 2012\" \n"
+"\n"
+"GDAL=\"GDAL 1.11.0, released 2014/04/16\" LIBXML=\"2.7.8\" LIBJSON=\"0.12\" "
+"RASTER\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:314
@@ -455,12 +485,15 @@ msgid ""
 "\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:327
 #, no-c-format
 msgid "PostGIS_GEOS_Version"
-msgstr ""
+msgstr "PostGIS_GEOS_Version"
 
 #. Tag: refpurpose
 #: reference_management.xml:329
@@ -494,6 +527,15 @@ msgid ""
 " 3.1.0-CAPI-1.5.0\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_GEOS_Version();\n"
+"\n"
+"postgis_geos_version\n"
+"\n"
+"----------------------\n"
+"\n"
+"3.1.0-CAPI-1.5.0\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:359
@@ -508,7 +550,7 @@ msgstr ""
 #: reference_management.xml:369
 #, no-c-format
 msgid "PostGIS_LibXML_Version"
-msgstr ""
+msgstr "PostGIS_LibXML_Version"
 
 #. Tag: refpurpose
 #: reference_management.xml:371
@@ -546,6 +588,15 @@ msgid ""
 " 2.7.6\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_LibXML_Version();\n"
+"\n"
+"postgis_libxml_version\n"
+"\n"
+"----------------------\n"
+"\n"
+"2.7.6\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:401
@@ -555,12 +606,15 @@ msgid ""
 "\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
+"\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:411
 #, no-c-format
 msgid "PostGIS_Lib_Build_Date"
-msgstr ""
+msgstr "PostGIS_Lib_Build_Date"
 
 #. Tag: refpurpose
 #: reference_management.xml:413
@@ -592,12 +646,21 @@ msgid ""
 " 2008-06-21 17:53:21\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Lib_Build_Date();\n"
+"\n"
+"postgis_lib_build_date\n"
+"\n"
+"------------------------\n"
+"\n"
+"2008-06-21 17:53:21\n"
+"\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_management.xml:441
 #, no-c-format
 msgid "PostGIS_Lib_Version"
-msgstr ""
+msgstr "PostGIS_Lib_Version"
 
 #. Tag: refpurpose
 #: reference_management.xml:443
@@ -630,6 +693,15 @@ msgid ""
 " 1.3.3\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Lib_Version();\n"
+"\n"
+"postgis_lib_version\n"
+"\n"
+"---------------------\n"
+"\n"
+"1.3.3\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:472
@@ -639,12 +711,15 @@ msgid ""
 "\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
 "<xref linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, "
+"<xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:482
 #, no-c-format
 msgid "PostGIS_PROJ_Version"
-msgstr ""
+msgstr "PostGIS_PROJ_Version"
 
 #. Tag: refpurpose
 #: reference_management.xml:484
@@ -678,6 +753,15 @@ msgid ""
 " Rel. 4.4.9, 29 Oct 2004\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_PROJ_Version();\n"
+"\n"
+"postgis_proj_version\n"
+"\n"
+"-------------------------\n"
+"\n"
+"Rel. 4.4.9, 29 Oct 2004\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:514 reference_management.xml:556
@@ -687,12 +771,15 @@ msgid ""
 "\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:524
 #, no-c-format
 msgid "PostGIS_Scripts_Build_Date"
-msgstr ""
+msgstr "PostGIS_Scripts_Build_Date"
 
 #. Tag: refpurpose
 #: reference_management.xml:526
@@ -730,6 +817,15 @@ msgid ""
 " 2007-08-18 09:09:26\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Build_Date();\n"
+"\n"
+"postgis_scripts_build_date\n"
+"\n"
+"-------------------------\n"
+"\n"
+"2007-08-18 09:09:26\n"
+"\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_management.xml:566
@@ -787,6 +883,15 @@ msgid ""
 " 1.5.0SVN\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Installed();\n"
+"\n"
+"postgis_scripts_installed\n"
+"\n"
+"-------------------------\n"
+"\n"
+"1.5.0SVN\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:608
@@ -795,6 +900,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
 "\"PostGIS_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
+"\"PostGIS_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:614
@@ -844,6 +951,15 @@ msgid ""
 " 1.3.4SVN\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Scripts_Released();\n"
+"\n"
+"postgis_scripts_released\n"
+"\n"
+"-------------------------\n"
+"\n"
+"1.3.4SVN\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:654
@@ -852,6 +968,8 @@ msgid ""
 ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
 "\"PostGIS_Lib_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:660
@@ -891,6 +1009,15 @@ msgid ""
 " 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
 "(1 row)"
 msgstr ""
+"SELECT PostGIS_Version();\n"
+"\n"
+"postgis_version\n"
+"\n"
+"---------------------------------------\n"
+"\n"
+"1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+"\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_management.xml:691
@@ -900,6 +1027,9 @@ msgid ""
 "\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
 "linkend=\"PostGIS_PROJ_Version\"/>"
 msgstr ""
+", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
+"\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref "
+"linkend=\"PostGIS_PROJ_Version\"/>"
 
 #. Tag: refname
 #: reference_management.xml:701
@@ -944,7 +1074,7 @@ msgstr ""
 #: reference_management.xml:730
 #, no-c-format
 msgid ""
-"For backwards compatibility and for spatial needs such as tble inheritance "
+"For backwards compatibility and for spatial needs such as table inheritance "
 "where each child table may have different geometry type, the old check "
 "constraint behavior is still supported. If you need the old behavior, you "
 "need to pass in the new optional argument as false "
@@ -1159,7 +1289,7 @@ msgstr ""
 #: reference_management.xml:875
 #, no-c-format
 msgid "SELECT UpdateGeometrySRID('roads','geom',4326);"
-msgstr ""
+msgstr "SELECT UpdateGeometrySRID('roads','geom',4326);"
 
 #. Tag: para
 #: reference_management.xml:877
@@ -1175,6 +1305,11 @@ msgid ""
 "  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326) \n"
 "    USING ST_SetSRID(geom,4326);"
 msgstr ""
+"ALTER TABLE roads \n"
+"\n"
+"ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326) \n"
+"\n"
+"USING ST_SetSRID(geom,4326);"
 
 #. Tag: para
 #: reference_management.xml:880
@@ -1194,9 +1329,13 @@ msgid ""
 " ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING "
 "ST_Transform(ST_SetSRID(geom,4326),3857) ;"
 msgstr ""
+"ALTER TABLE roads \n"
+"\n"
+"ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING "
+"ST_Transform(ST_SetSRID(geom,4326),3857) ;"
 
 #. Tag: para
 #: reference_management.xml:888
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
