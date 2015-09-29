@@ -22,6 +22,23 @@ typedef struct {
 	const POINT2D* p3;
 } SUPPORTING_POINTS;
 
+static SUPPORTING_POINTS supporting_points_create()
+{
+	SUPPORTING_POINTS s;
+	s.p1 = NULL;
+	s.p2 = NULL;
+	s.p3 = NULL;
+
+	return s;
+}
+
+static void lwboundingcircle_clear(LW_BOUNDINGCIRCLE* c)
+{
+	c->radius = 0.0;
+	(c->center).x = 0.0;
+	(c->center).y = 0.0;
+}
+
 static uint32_t num_supporting_points(SUPPORTING_POINTS* support)
 {
 	uint32_t N = 0;
@@ -96,16 +113,27 @@ static void calculate_mbc_1(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE*
 
 static void calculate_mbc_2(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
+	double d1, d2;
+
 	mbc->center.x = 0.5*(support->p1->x + support->p2->x);
 	mbc->center.y = 0.5*(support->p1->y + support->p2->y);
-	mbc->radius = FP_MAX(distance2d_pt_pt(&(mbc->center), support->p1),
-			distance2d_pt_pt(&(mbc->center), support->p2));
+
+	d1 = distance2d_pt_pt(&(mbc->center), support->p1);
+	d2 = distance2d_pt_pt(&(mbc->center), support->p2);
+
+	mbc->radius = FP_MAX(d1, d2);
 }
 
 static void calculate_mbc_3(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
 {
+	double d1, d2, d3;
 	circumcenter(support->p1, support->p2, support->p3, &(mbc->center));
-	mbc->radius = FP_MAX(FP_MAX(distance2d_pt_pt(&(mbc->center), support->p1), distance2d_pt_pt(&(mbc->center), support->p2)), distance2d_pt_pt(&(mbc->center), support->p3));
+
+	d1 = distance2d_pt_pt(&(mbc->center), support->p1);
+	d2 = distance2d_pt_pt(&(mbc->center), support->p2);
+	d3 = distance2d_pt_pt(&(mbc->center), support->p3);
+
+	mbc->radius = FP_MAX(FP_MAX(d1, d2), d3);
 }
 
 static int calculate_mbc_from_support(SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc) {
@@ -135,6 +163,11 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 
 	if (num_supporting_points(support) == 3)
 	{
+		/* If we're entering the function with three supporting points already, our circle
+		 * is already fully constrained - we couldn't add another supporting point if we
+		 * needed to. So, there's no point in proceeding further.  Welzl (1991) provides 
+		 * a much better explanation of why this works.
+		 * */
 		return LW_SUCCESS;
 	}
 
@@ -143,7 +176,7 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 		if (!point_inside_circle(points[i], mbc))
 		{
 			/* We've run into a point that isn't inside our circle.  To fix this, we'll
-			 * go back in time, and re-reun the algorithm for each point we've seen so
+			 * go back in time, and re-run the algorithm for each point we've seen so
 			 * far, with the constraint that the current point must be on the boundary
 			 * of the circle.  Then, we'll continue on in this loop with the modified
 			 * circle that by definition includes the current point. */
@@ -163,28 +196,24 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 
 int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 {
+	SUPPORTING_POINTS support = supporting_points_create();
 	POINT2D** points;
 	uint32_t num_points;
 	uint32_t i;
 	int success;
 
-	result->radius = 0.0;
-	(result->center).x = 0.0;
-	(result->center).y = 0.0;
-
-	if(!g || lwgeom_is_empty(g))
+	if(g == NULL || lwgeom_is_empty(g))
 		return LW_FAILURE;
 
 	if (!extract_points_2d(g, &points, &num_points))
 		return LW_FAILURE;
 
-	// TODO shuffle points?
+	lwboundingcircle_clear(result);
 
-	SUPPORTING_POINTS support;
-	support.p1 = NULL;
-	support.p2 = NULL;
-	support.p3 = NULL;
-
+	/* Technically, a randomized algorithm would demand that we shuffle the input points
+	 * before we call calculate_mbc().  However, we make the (perhaps poor) assumption that 
+	 * the order we happen to find the points is as good as random, or close enough.
+	 * */
 	success = calculate_mbc((const POINT2D**) points, num_points, &support, result);
 
 	for (i = 0; i < num_points; i++)
