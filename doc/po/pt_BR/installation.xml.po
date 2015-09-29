@@ -325,9 +325,9 @@ msgid ""
 "be used to compile PostGIS, but we find far fewer problems when compiling "
 "with <filename>gcc</filename>."
 msgstr ""
-"Compilador GNU C (<filename> gcc</ filename>). Alguns outros compiladores "
+"Compilador GNU C (<filename> gcc</filename>). Alguns outros compiladores "
 "ANSI C podem ser utilizados para compilar o PostGIS, mas nós encontramos "
-"menos problemas ao compilar com  <filename>gcc</ filename>."
+"menos problemas ao compilar com  <filename>gcc</filename>."
 
 #. Tag: para
 #: installation.xml:88
@@ -571,7 +571,7 @@ msgid ""
 "This will create a directory called <varname>postgis-&last_release_version;</"
 "varname> in the current working directory."
 msgstr ""
-"Isto irá criar um diretório chamado <varname>postgis-& last_release_version;"
+"Isto irá criar um diretório chamado <varname>postgis-&last_release_version;"
 "</varname> no diretório de trabalho atual."
 
 #. Tag: para
@@ -827,7 +827,7 @@ msgid ""
 msgstr ""
 "O PostgreSQL oferece um utilitário chamado <command>pg_config</command> para "
 "habilitar extensões como o PostGIS a localizar a instalação do PostgreSQL. "
-"Use o parâmetro (<command>--with-pgconfig=/path/to/pg_config</command) para "
+"Use o parâmetro (<command>--with-pgconfig=/path/to/pg_config</command> para "
 "especificar manualmente uma instalação específica do PostgreSQL que será "
 "usada pelo PostGIS."
 
@@ -885,7 +885,7 @@ msgid ""
 msgstr ""
 "A Proj4 é uma bilbioteca pra reprojeção de coordenadas, na qual o PostGIS "
 "depende. Use este parâmetro (<command>--with-projdir=/path/to/projdir</"
-"command) para especificar manualmente uma instalação do Proj4 que o PostGIS "
+"command> para especificar manualmente uma instalação do Proj4 que o PostGIS "
 "irá utilizar para compilação."
 
 #. Tag: para
@@ -1024,7 +1024,7 @@ msgid ""
 "successfully. Ready to install.</code>\""
 msgstr ""
 "A última linha da saída deve ser \"<code>PostGIS was built successfully. "
-"Ready to install.</code.\""
+"Ready to install.</code>.\""
 
 #. Tag: para
 #: installation.xml:561
