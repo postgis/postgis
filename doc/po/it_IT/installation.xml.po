@@ -2,12 +2,14 @@
 #
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013
+# pibinko <pibinko@gmail.com>, 2013
+# Sandro Santilli <strk@keybit.net>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
+"PO-Revision-Date: 2015-09-29 20:46+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
@@ -21,7 +23,7 @@ msgstr ""
 #: installation.xml:3
 #, no-c-format
 msgid "PostGIS Installation"
-msgstr ""
+msgstr "Installazione PostGIS"
 
 #. Tag: para
 #: installation.xml:5
@@ -40,6 +42,8 @@ msgstr "Versione sintetica"
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
 msgstr ""
+"Per compilare, assumendo di avere tutte le dipendenze nel percorso di "
+"ricerca:"
 
 #. Tag: programlisting
 #: installation.xml:12
@@ -51,6 +55,11 @@ msgid ""
 "make\n"
 "make install"
 msgstr ""
+"tar xvfz postgis-&last_release_version;.tar.gz\n"
+"cd postgis-&last_release_version;\n"
+"./configure\n"
+"make\n"
+"make install"
 
 #. Tag: para
 #: installation.xml:13
@@ -59,6 +68,8 @@ msgid ""
 "Once postgis is installed, it needs to be enabled in each individual "
 "database you want to use it in."
 msgstr ""
+"Una volta installato PostGIS, bisogna abilitarlo individualmente nei "
+"database in cui si vuole usare."
 
 #. Tag: para
 #: installation.xml:14
@@ -69,6 +80,11 @@ msgid ""
 "Using the extension enable process is preferred and more user-friendly. To "
 "spatially enable your database:"
 msgstr ""
+"Il supporto per i raster è attualmente opzionale, ma installato di default. "
+"Per abilitare l'uso di PostGIS come estensione (supportato da PostgreSQL "
+"9.1+) è necessario il supporto raster. Usare PostGIS come estensione è il "
+"procedimento preferito e maggiormente user-friendly. Per abilitare "
+"spazialmente il tuo database:"
 
 #. Tag: programlisting
 #: installation.xml:15
@@ -87,6 +103,18 @@ msgid ""
 "-- you should have address standardizer extension as well\n"
 "psql -d yourdatabase -c \"CREATE EXTENSION address_standardizer;\""
 msgstr ""
+"psql -d yourdatabase -c \"CREATE EXTENSION postgis;\"\n"
+"psql -d yourdatabase -c \"CREATE EXTENSION postgis_topology;\"\n"
+"-- if you built with sfcgal support --\n"
+"psql -d yourdatabase -c \"CREATE EXTENSION postgis_sfcgal;\"\n"
+"\n"
+"-- if you want to install tiger geocoder --\n"
+"psql -d yourdatabase -c \"CREATE EXTENSION fuzzystrmatch\"\n"
+"psql -d yourdatabase -c \"CREATE EXTENSION postgis_tiger_geocoder;\"\n"
+"\n"
+"-- if you installed with pcre \n"
+"-- you should have address standardizer extension as well\n"
+"psql -d yourdatabase -c \"CREATE EXTENSION address_standardizer;\""
 
 #. Tag: para
 #: installation.xml:18
@@ -97,6 +125,10 @@ msgid ""
 "extensions, or switching from a non-extension install to an extension "
 "install."
 msgstr ""
+"Vedi <xref linkend=\"make_install_postgis_extensions\"/> per maggiori "
+"informazioni riguardo l'ispezione delle estensioni installate/disponibili e "
+"il loro aggiornamento, o per passare da un'installazione semplice ad una per "
+"estensioni."
 
 #. Tag: para
 #: installation.xml:20
@@ -2360,9 +2392,9 @@ msgid ""
 "You can later run <filename>uninstall_legacy.sql</filename> to get rid of "
 "the deprecated functions after you are done with restoring and cleanup."
 msgstr ""
-"Potete successivamente eseguire <filename>uninstall_legacy.sql</filename> per "
-"sbarazzarvi delle funzioni obsolete, dopo che avete concluso il ripristino e "
-"la pulizia del database."
+"Potete successivamente eseguire <filename>uninstall_legacy.sql</filename> "
+"per sbarazzarvi delle funzioni obsolete, dopo che avete concluso il "
+"ripristino e la pulizia del database."
 
 #. Tag: title
 #: installation.xml:866
