@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 

@@ -28,8 +28,9 @@ include $(PGXS)
 SHELL = @SHELL@
 INSTALL = $(SHELL) ../install-sh
 
+SCRIPTS_built = postgis_restore.pl
+
 SCRIPTS = \
-	postgis_restore.pl \
 	create_undef.pl \
 	svn_repo_revision.pl \
 	postgis_proc_upgrade.pl \
@@ -71,18 +72,6 @@ update-restore:
 
 postgis_restore.pl: postgis_restore.pl.in
 	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
-
-installdir:
-	@mkdir -p "$(DESTDIR)$(datadir)/$(MODULEDIR)"
-
-uninstall: 
-	@rm -f "$(DESTDIR)$(datadir)/$(MODULEDIR)/postgis_restore.pl"
-
-install: installdir 
-	$(LIBTOOL) --mode=install $(INSTALL) postgis_restore.pl "$(DESTDIR)$(datadir)/$(MODULEDIR)/postgis_restore.pl"
-
-clean:
-	rm -f postgis_restore.pl
 
 distclean: clean
 	rm -f Makefile

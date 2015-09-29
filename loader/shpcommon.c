@@ -196,3 +196,86 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
   return 1;
 }
 
+/*
+* Code page info will come out of dbfopen as either a bare codepage number
+* (e.g. 1256) or as "LDID/1234" from the DBF hreader. We want to look up 
+* the equivalent iconv encoding string so we can use iconv to transcode
+* the data into UTF8
+*/
+char *
+codepage2encoding(const char *cpg)
+{
+    int cpglen;
+    int is_ldid = 0;
+    int num, i;
+    
+    /* Do nothing on nothing. */
+    if ( ! cpg ) return NULL;
+    
+    /* Is this an LDID string? */
+    /* If so, note it and move past the "LDID/" tag */
+    cpglen = strlen(cpg);
+    if ( strstr(cpg, "LDID/") )
+    {
+        if ( cpglen > 5 )
+        {
+            cpg += 5;
+            is_ldid = 1;
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    
+    /* Read the number */
+    num = atoi(cpg);
+    
+    /* Can we find this number in our lookup table? */
+    for ( i = is_ldid ; i < num_code_pages; i++ )
+    {
+        if ( is_ldid )
+        {
+            if ( code_pages[i].ldid == num )
+                return strdup(code_pages[i].iconv);
+        }
+        else
+        {
+            if ( code_pages[i].cpg == num )
+                return strdup(code_pages[i].iconv);
+        }
+    }
+    
+    /* Didn't find a matching entry */
+    return NULL;
+    
+}
+
+/*
+* In the case where data is coming out of the database in some wierd encoding
+* we want to look up the appropriate code page entry to feed to DBFCreateEx
+*/
+char *
+encoding2codepage(const char *encoding)
+{
+	int i;
+	for ( i = 0; i < num_code_pages; i++ )
+	{
+		if ( strcasecmp(encoding, code_pages[i].pg) == 0 )
+		{
+			if ( code_pages[i].ldid == 0xFF )
+			{
+				return strdup("UTF-8");
+			}
+			else
+			{
+				char *codepage = NULL;
+				asprintf(&codepage, "LDID/%d", code_pages[i].ldid);
+				return codepage;
+			}
+		}
+	}
+
+	/* OK, we give up, pretend it's UTF8 */
+	return strdup("UTF-8");
+}

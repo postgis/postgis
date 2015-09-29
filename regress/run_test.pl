@@ -86,7 +86,7 @@ if ( $OPT_UPGRADE_PATH )
 {
   if ( ! $OPT_EXTENSIONS )
   {
-    die "--upgrade-path is only supported with --extensions"
+    die "--upgrade-path is only supported with --extension"
   }
   $OPT_UPGRADE = 1; # implied 
   my @path = split ('--', $OPT_UPGRADE_PATH);
@@ -95,6 +95,11 @@ if ( $OPT_UPGRADE_PATH )
   $OPT_UPGRADE_TO = $path[1]
     || die "Malformed upgrade path, <from>--<to> expected, $OPT_UPGRADE_PATH given";
   print "Upgrade path: ${OPT_UPGRADE_FROM} --> ${OPT_UPGRADE_TO}\n";
+}
+
+if ( $OPT_EXTENSIONS )
+{
+	$OPT_WITH_RASTER = 1; # implied
 }
 
 
@@ -1241,6 +1246,10 @@ sub prepare_spatial_extensions
 	my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
 	my $sql = "CREATE EXTENSION postgis";
 	if ( $OPT_UPGRADE_FROM ) {
+		if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+			prepare_spatial();
+			return;
+		}
 		$sql .= " VERSION '" . $OPT_UPGRADE_FROM . "'";
 	}
 
@@ -1375,6 +1384,10 @@ sub upgrade_spatial_extensions
     my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
     my $nextver = $OPT_UPGRADE_TO ? "${OPT_UPGRADE_TO}" : "${libver}next";
     my $sql = "ALTER EXTENSION postgis UPDATE TO '${nextver}'";
+
+    if ( $OPT_UPGRADE_FROM eq "unpackaged" ) {
+      $sql = "CREATE EXTENSION postgis VERSION '${nextver}' FROM unpackaged";
+    }
 
     print "Upgrading PostGIS in '${DB}' using: ${sql}\n" ;
 

@@ -9,7 +9,9 @@
  *
  **********************************************************************/
 
-#include "liblwgeom_internal.h"
+#include "../postgis_config.h"
+/*#define POSTGIS_DEBUG_LEVEL 4*/
+#include "liblwgeom_internal.h" /* NOTE: includes lwgeom_log.h */
 #include "lwgeom_log.h"
 #include <math.h>
 

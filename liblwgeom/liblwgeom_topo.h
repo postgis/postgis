@@ -380,7 +380,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * Update TopoGeometry objects after an edge split event
    *
    * @param topo the topology to act upon
-   * @param split_edge identifier of the edge that was splitted.
+   * @param split_edge identifier of the edge that was split.
    * @param new_edge1 identifier of the first new edge that was created
    *        as a result of edge splitting.
    * @param new_edge2 identifier of the second new edge that was created
@@ -517,7 +517,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * Update TopoGeometry objects after a face split event
    *
    * @param topo the topology to act upon
-   * @param split_face identifier of the face that was splitted.
+   * @param split_face identifier of the face that was split.
    * @param new_face1 identifier of the first new face that was created
    *        as a result of face splitting.
    * @param new_face2 identifier of the second new face that was created

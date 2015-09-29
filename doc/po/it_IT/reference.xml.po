@@ -2,15 +2,16 @@
 #
 # Translators:
 # aghisla <a.ghisla@gmail.com>, 2013
+# aghisla <a.ghisla@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: 2013-11-28 13:58+0000\n"
-"Last-Translator: aghisla <a.ghisla@gmail.com>\n"
-"Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/"
-"postgis-1/language/it_IT/)\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2015-09-29 12:24+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
+"language/it_IT/)\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -58,16 +59,12 @@ msgstr ""
 
 #. Tag: chapter
 #: reference.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&reference_type; &reference_guc; &reference_management; "
 "&reference_constructor; &reference_accessor; &reference_editor; "
 "&reference_output; &reference_operator; &reference_measure; "
 "&reference_sfcgal; &reference_processing; &reference_lrs; "
-"&reference_transaction; &reference_misc; &reference_exception;"
-msgstr ""
-"&reference_type; &reference_management; &reference_constructor; "
-"&reference_accessor; &reference_editor; &reference_output; "
-"&reference_operator; &reference_measure; &reference_processing; "
-"&reference_lrs; &reference_transaction; &reference_misc; "
+"&reference_temporal; &reference_transaction; &reference_misc; "
 "&reference_exception;"
+msgstr ""

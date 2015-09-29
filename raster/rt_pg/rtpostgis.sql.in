@@ -8250,7 +8250,8 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 -- The metadata is documented in the PostGIS Raster specification:
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01
 ------------------------------------------------------------------------------
-
+-- Availability: 2.0.0
+-- Changed: 2.2.0
 CREATE OR REPLACE VIEW raster_columns AS
 	SELECT
 		current_database() AS r_table_catalog,
@@ -8281,7 +8282,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND c.relkind = ANY(ARRAY['r'::char, 'v'::char, 'm'::char, 'f'::char])
-		AND NOT pg_is_other_temp_schema(c.relnamespace);
+		AND NOT pg_is_other_temp_schema(c.relnamespace)  AND has_table_privilege(c.oid, 'SELECT'::text);
 
 ------------------------------------------------------------------------------
 -- overview constraint functions
@@ -8357,7 +8358,8 @@ CREATE OR REPLACE FUNCTION _drop_overview_constraint(ovschema name, ovtable name
 ------------------------------------------------------------------------------
 -- RASTER_OVERVIEWS
 ------------------------------------------------------------------------------
-
+-- Availability: 2.0.0
+-- Changed: 2.2.0
 CREATE OR REPLACE VIEW raster_overviews AS
 	SELECT
 		current_database() AS o_table_catalog,
@@ -8384,7 +8386,7 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND s.consrc LIKE '%_overview_constraint(%'
-		AND NOT pg_is_other_temp_schema(c.relnamespace);
+		AND NOT pg_is_other_temp_schema(c.relnamespace)  AND has_table_privilege(c.oid, 'SELECT'::text);
 
 ------------------------------------------------------------------------------
 -- AddOverviewConstraints

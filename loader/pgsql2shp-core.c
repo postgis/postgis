@@ -1217,6 +1217,11 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 		strcat(connstring, conn->database);
 	}
 
+	if ( ! getenv("PGCLIENTENCODING") )
+	{
+		strcat(connstring, " client_encoding=UTF8");
+	}
+
 	return connstring;
 }
 
@@ -1417,8 +1422,19 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	else
 		state->shp_file = state->table;
 
-	/* Create the dbf file */
-	state->dbf = DBFCreate(state->shp_file);
+	/* Create the dbf file: */
+	/* If there's a user-specified encoding hanging around, try and use that. */
+	/* Otherwise, just use UTF-8 encoding, since that's usually our client encoding. */
+	if ( getenv("PGCLIENTENCODING") )
+	{
+		char *codepage = encoding2codepage(getenv("PGCLIENTENCODING"));
+		state->dbf = DBFCreateEx(state->shp_file, codepage);
+	}
+	else
+	{
+		state->dbf = DBFCreateEx(state->shp_file, "UTF-8");
+	}
+		
 	if (!state->dbf)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Could not create dbf file %s"), state->shp_file);

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -81,7 +81,7 @@ msgid "&T_support;"
 msgstr ""
 
 #. Tag: title
-#: reference_misc.xml:34 reference_misc.xml:76 reference_misc.xml:118 reference_misc.xml:188 reference_misc.xml:258 reference_misc.xml:312 reference_misc.xml:360 reference_misc.xml:404 reference_misc.xml:453 reference_misc.xml:497
+#: reference_misc.xml:34 reference_misc.xml:76 reference_misc.xml:118 reference_misc.xml:188 reference_misc.xml:258 reference_misc.xml:312 reference_misc.xml:360 reference_misc.xml:404 reference_misc.xml:453 reference_misc.xml:500
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -111,7 +111,7 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_misc.xml:41 reference_misc.xml:83 reference_misc.xml:125 reference_misc.xml:195 reference_misc.xml:264 reference_misc.xml:318 reference_misc.xml:365 reference_misc.xml:411 reference_misc.xml:460 reference_misc.xml:504
+#: reference_misc.xml:41 reference_misc.xml:83 reference_misc.xml:125 reference_misc.xml:195 reference_misc.xml:264 reference_misc.xml:318 reference_misc.xml:365 reference_misc.xml:411 reference_misc.xml:460 reference_misc.xml:507
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -648,7 +648,7 @@ msgstr ""
 #. Tag: refname
 #: reference_misc.xml:468
 #, no-c-format
-msgid "ST_Point_Inside_Circle"
+msgid "ST_PointInsideCircle"
 msgstr ""
 
 #. Tag: refpurpose
@@ -660,13 +660,13 @@ msgstr ""
 #. Tag: funcprototype
 #: reference_misc.xml:475
 #, no-c-format
-msgid "<funcdef>boolean <function>ST_Point_Inside_Circle</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> <paramdef><type>float </type> <parameter>center_x</parameter></paramdef> <paramdef><type>float </type> <parameter>center_y</parameter></paramdef> <paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
+msgid "<funcdef>boolean <function>ST_PointInsideCircle</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> <paramdef><type>float </type> <parameter>center_x</parameter></paramdef> <paramdef><type>float </type> <parameter>center_y</parameter></paramdef> <paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
 #: reference_misc.xml:488
 #, no-c-format
-msgid "The syntax for this functions is point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;). Returns the true if the geometry is a point and is inside the circle. Returns false otherwise."
+msgid "The syntax for this functions is ST_PointInsideCircle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;). Returns the true if the geometry is a point and is inside the circle. Returns false otherwise."
 msgstr ""
 
 #. Tag: para
@@ -675,12 +675,24 @@ msgstr ""
 msgid "This only works for points as the name suggests"
 msgstr ""
 
+#. Tag: para
+#: reference_misc.xml:494
+#, no-c-format
+msgid "Availability: 1.2"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:495
+#, no-c-format
+msgid "Changed: 2.2.0 In prior versions this used to be called ST_Point_Inside_Circle"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_misc.xml:499
+#: reference_misc.xml:502
 #, no-c-format
 msgid ""
-      "SELECT ST_Point_Inside_Circle(ST_Point(1,2), 0.5, 2, 3);\n"
-      " st_point_inside_circle\n"
+      "SELECT ST_PointInsideCircle(ST_Point(1,2), 0.5, 2, 3);\n"
+      " st_pointinsidecircle\n"
       "------------------------\n"
       " t"
 msgstr ""

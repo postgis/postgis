@@ -1,16 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# vpicavet <vincent.ml@oslandia.com>, 2013-2014
+# Vincent Picavet <vincent.ml@oslandia.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: 2014-06-10 13:15+0000\n"
-"Last-Translator: vpicavet <vincent.ml@oslandia.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/postgis-1/"
-"language/fr/)\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2015-09-29 12:23+0000\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
+"fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,9 +25,9 @@ msgstr "Référencement linéaire"
 
 #. Tag: refname
 #: reference_lrs.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_LineInterpolatePoint"
-msgstr "ST_Line_Interpolate_Point"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_lrs.xml:9
@@ -43,17 +43,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_lrs.xml:15
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>a_fraction</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_fraction</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Line_Interpolate_Point</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>a_fraction</parameter></"
-"paramdef>"
 
 #. Tag: title
 #: reference_lrs.xml:24 reference_lrs.xml:86 reference_lrs.xml:138
@@ -77,13 +73,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:30 reference_lrs.xml:149
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
 msgstr ""
-"Voir <xref linkend=\"ST_Line_Locate_Point\"/> pour calculer l'emplacement de "
-"la ligne le plus proche d'un Point."
 
 #. Tag: para
 #: reference_lrs.xml:34
@@ -176,19 +170,17 @@ msgstr "Voir aussi"
 
 #. Tag: para
 #: reference_lrs.xml:62
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
 "linkend=\"ST_LineLocatePoint\"/>"
 msgstr ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Length\"/>, <xref "
-"linkend=\"ST_Line_Locate_Point\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:68
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_LineLocatePoint"
-msgstr "ST_Line_Locate_Point"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_lrs.xml:70
@@ -201,17 +193,13 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_lrs.xml:77
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
-"<funcdef>float <function>ST_LineLocatePoint</function></funcdef> "
+"<funcdef>float8 <function>ST_LineLocatePoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
 "paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
 "paramdef>"
 msgstr ""
-"<funcdef>float <function>ST_Line_Locate_Point</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></"
-"paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:88
@@ -224,14 +212,12 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:92
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "You can use the returned location to extract a Point (<xref linkend="
 "\"ST_LineInterpolatePoint\"/>) or a substring (<xref linkend="
 "\"ST_LineSubstring\"/>)."
 msgstr ""
-", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_Line_Interpolate_Point"
-"\"/>, <xref linkend=\"ST_Line_Substring\"/>"
 
 #. Tag: para
 #: reference_lrs.xml:95
@@ -292,19 +278,17 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:112
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_LineInterpolatePoint\"/"
 ">, <xref linkend=\"ST_LineSubstring\"/>"
 msgstr ""
-", <xref linkend=\"ST_Length2D\"/>, <xref linkend=\"ST_Line_Interpolate_Point"
-"\"/>, <xref linkend=\"ST_Line_Substring\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:118
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "ST_LineSubstring"
-msgstr "ST_Line_Substring"
+msgstr ""
 
 #. Tag: refpurpose
 #: reference_lrs.xml:120
@@ -317,19 +301,14 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_lrs.xml:128
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LineSubstring</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>startfraction</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>endfraction</"
+"paramdef> <paramdef><type>float8 </type> <parameter>startfraction</"
+"parameter></paramdef> <paramdef><type>float8 </type> <parameter>endfraction</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_Line_Substring</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>a_linestring</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>startfraction</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>endfraction</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:140
@@ -417,13 +396,11 @@ msgstr ""
 
 #. Tag: para
 #: reference_lrs.xml:180
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LineInterpolatePoint\"/>, <xref linkend=\"ST_LineMerge"
 "\"/>"
 msgstr ""
-", <xref linkend=\"ST_Line_Interpolate_Point\"/>, <xref linkend=\"ST_LineMerge"
-"\"/>"
 
 #. Tag: refname
 #: reference_lrs.xml:186
@@ -446,15 +423,10 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>a_measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float </type> <parameter>offset</"
+"paramdef> <paramdef><type>float8 </type> <parameter>a_measure</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_LocateAlong</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>a_measure</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float </type> <parameter>offset</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:207
@@ -566,17 +538,11 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float </type> <parameter>offset</"
+"<paramdef><type>float8 </type> <parameter>measure_start</parameter></"
+"paramdef> <paramdef><type>float8 </type> <parameter>measure_end</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>float8 </type> <parameter>offset</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_LocateBetween</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>measure_start</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>measure_end</parameter></"
-"paramdef> <paramdef choice=\"opt\"><type>float </type> <parameter>offset</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:265
@@ -659,15 +625,10 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float </type> "
+"paramdef> <paramdef><type>float8 </type> <parameter>elevation_start</"
+"parameter></paramdef> <paramdef><type>float8 </type> "
 "<parameter>elevation_end</parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>elevation_start</"
-"parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>elevation_end</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:316
@@ -762,13 +723,10 @@ msgstr ""
 #: reference_lrs.xml:349
 #, no-c-format
 msgid ""
-"<funcdef>float <function>ST_InterpolatePoint</function></funcdef> "
+"<funcdef>float8 <function>ST_InterpolatePoint</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 msgstr ""
-"<funcdef>float <function>ST_InterpolatePoint</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:361
@@ -816,11 +774,8 @@ msgstr "ST_AddMeasure"
 #: reference_lrs.xml:387
 #, no-c-format
 msgid ""
-"<refpurpose>Return a derived geometry with measure elements linearly "
-"interpolated between the start and end points. If the geometry has no "
-"measure dimension, one is added. If the geometry has a measure dimension, it "
-"is over-written with new values. Only LINESTRINGS and MULTILINESTRINGS are "
-"supported.</refpurpose>"
+"Return a derived geometry with measure elements linearly interpolated "
+"between the start and end points."
 msgstr ""
 
 #. Tag: funcprototype
@@ -829,24 +784,19 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>measure_end</"
+"paramdef> <paramdef><type>float8 </type> <parameter>measure_start</"
+"parameter></paramdef> <paramdef><type>float8 </type> <parameter>measure_end</"
 "parameter></paramdef>"
 msgstr ""
-"<funcdef>geometry <function>ST_AddMeasure</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom_mline</parameter></"
-"paramdef> <paramdef><type>float </type> <parameter>measure_start</"
-"parameter></paramdef> <paramdef><type>float </type> <parameter>measure_end</"
-"parameter></paramdef>"
 
 #. Tag: para
 #: reference_lrs.xml:405
 #, no-c-format
 msgid ""
-"<para>Return a derived geometry with measure elements linearly interpolated "
+"Return a derived geometry with measure elements linearly interpolated "
 "between the start and end points. If the geometry has no measure dimension, "
 "one is added. If the geometry has a measure dimension, it is over-written "
-"with new values. Only LINESTRINGS and MULTILINESTRINGS are supported.</para>"
+"with new values. Only LINESTRINGS and MULTILINESTRINGS are supported."
 msgstr ""
 
 #. Tag: para

@@ -5,10 +5,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
-"PO-Revision-Date: 2014-10-18 11:10+0000\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/postgis/"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,9 @@ msgstr ""
 #: reference_operator.xml:546 reference_operator.xml:599
 #: reference_operator.xml:654 reference_operator.xml:712
 #: reference_operator.xml:765 reference_operator.xml:818
-#: reference_operator.xml:883 reference_operator.xml:950
+#: reference_operator.xml:899 reference_operator.xml:974
+#: reference_operator.xml:1035 reference_operator.xml:1089
+#: reference_operator.xml:1154
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -119,8 +121,8 @@ msgstr ""
 #: reference_operator.xml:502 reference_operator.xml:556
 #: reference_operator.xml:611 reference_operator.xml:665
 #: reference_operator.xml:722 reference_operator.xml:775
-#: reference_operator.xml:843 reference_operator.xml:900
-#: reference_operator.xml:964
+#: reference_operator.xml:843 reference_operator.xml:922
+#: reference_operator.xml:992 reference_operator.xml:1049
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -152,7 +154,9 @@ msgstr ""
 #: reference_operator.xml:562 reference_operator.xml:617
 #: reference_operator.xml:671 reference_operator.xml:728
 #: reference_operator.xml:781 reference_operator.xml:848
-#: reference_operator.xml:916 reference_operator.xml:968
+#: reference_operator.xml:938 reference_operator.xml:996
+#: reference_operator.xml:1053 reference_operator.xml:1116
+#: reference_operator.xml:1172
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -176,7 +180,7 @@ msgstr ""
 #: reference_operator.xml:87
 #, no-c-format
 msgid ""
-"Returns <varname>TRUE</varname> if A's 3D bounding box intersects B's 3D "
+"Returns <varname>TRUE</varname> if A's n-D bounding box intersects B's n-D "
 "bounding box."
 msgstr ""
 
@@ -1064,46 +1068,46 @@ msgstr ""
 #. Tag: refpurpose
 #: reference_operator.xml:857
 #, no-c-format
-msgid ""
-"Returns the distance between two points. For point / point checks it uses "
-"floating point accuracy (as opposed to the double precision accuracy of the "
-"underlying point geometry). For other geometry types the distance between "
-"the floating point bounding box centroids is returned. Useful for doing "
-"distance ordering and nearest neighbor limits using KNN gist functionality."
+msgid "Returns the 2D distance between A and B."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_operator.xml:864
+#. Tag: funcsynopsis
+#: reference_operator.xml:863
 #, no-c-format
 msgid ""
-"<funcdef>double precision <function>&lt;-&gt;</function></funcdef> "
-"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
-"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
-msgstr ""
-
-#. Tag: para
-#: reference_operator.xml:885
-#, no-c-format
-msgid ""
-"The <varname>&lt;-&gt;</varname> operator returns distance between two "
-"points read from the spatial index for points (float precision). For other "
-"geometries it returns the distance from centroid of bounding box of "
-"geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
-"\">approximate</emphasis> distance ordering."
+"<funcprototype> <funcdef>double precision <function>&lt;-&gt;</function></"
+"funcdef> <paramdef> <type>geometry </type> <parameter>A</parameter> </"
+"paramdef> <paramdef> <type>geometry </type> <parameter>B</parameter> </"
+"paramdef> </funcprototype> <funcprototype> <funcdef>double precision "
+"<function>&lt;-&gt;</function></funcdef> <paramdef> <type>geography </type> "
+"<parameter>A</parameter> </paramdef> <paramdef> <type>geography </type> "
+"<parameter>B</parameter> </paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:888 reference_operator.xml:954
+#: reference_operator.xml:901
 #, no-c-format
 msgid ""
-"This operand will make use of any indexes that may be available on the "
+"The <varname>&lt;-&gt;</varname> operator returns the 2D distance between "
+"two geometries. Used in the \"ORDER BY\" clause provides index-assisted "
+"nearest-neighbor result sets. For PostgreSQL below 9.5 only gives centroid "
+"distance of bounding boxes and for PostgreSQL 9.5+, does true KNN distance "
+"search giving true distance between geometries, and distance sphere for "
+"geographies."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:910
+#, no-c-format
+msgid ""
+"This operand will make use of 2D GiST indexes that may be available on the "
 "geometries. It is different from other operators that use spatial indexes in "
 "that the spatial index is only used when the operator is in the ORDER BY "
 "clause."
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:891
+#: reference_operator.xml:911 reference_operator.xml:1104
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant (not in a "
@@ -1112,7 +1116,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:892
+#: reference_operator.xml:912
 #, no-c-format
 msgid ""
 "Refer to <ulink url=\"http://workshops.opengeo.org/postgis-intro/knn.html"
@@ -1121,13 +1125,35 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:894 reference_operator.xml:959
+#: reference_operator.xml:914
 #, no-c-format
-msgid "Availability: 2.0.0 only available for PostgreSQL 9.1+"
+msgid ""
+"Enhanced: 2.2.0 -- True KNN (\"K nearest neighbor\") behavior for geometry "
+"and geography for PostgreSQL 9.5+. Note for geography KNN is based on sphere "
+"rather than spheroid. For PostgreSQL 9.4 and below, geography support is new "
+"but only supports centroid box."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:915
+#, no-c-format
+msgid ""
+"Changed: 2.2.0 -- For PostgreSQL 9.5 users, old Hybrid syntax may be slower, "
+"so you'll want to get rid of that hack if you are running your code only on "
+"PostGIS 2.2+ 9.5+. See examples below."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:916
+#, no-c-format
+msgid ""
+"Availability: 2.0.0 -- Weak KNN provides nearest neighbors based on geometry "
+"centroid distances instead of true distances. Exact results for points, "
+"inexact for all other types. Available for PostgreSQL 9.1+"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:901
+#: reference_operator.xml:923
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
@@ -1151,13 +1177,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:902
+#: reference_operator.xml:924
 #, no-c-format
 msgid "Then the KNN raw answer:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:905
+#: reference_operator.xml:927
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
@@ -1168,34 +1194,37 @@ msgid ""
 "        d         | edabbr | vaabbr\n"
 "------------------+--------+--------\n"
 "                0 | ALQ    | 128\n"
-" 5579.67450712005 | ALQ    | 001\n"
 " 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
 " 8694.20710669982 | ALQ    | 129B\n"
 " 9564.24289057111 | ALQ    | 130\n"
-"  6083.4207708641 | ALQ    | 131\n"
 "  12089.665931705 | ALQ    | 127\n"
-"  24795.264503022 | ALQ    | 124\n"
-" 24587.6584922302 | ALQ    | 123\n"
-" 26764.2555463114 | ALQ    | 125\n"
+" 18472.5531479404 | ALQ    | 002\n"
 "(10 rows)"
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:906
+#: reference_operator.xml:928
 #, no-c-format
 msgid ""
-"Note the misordering in the actual distances and the different entries that "
-"actually show up in the top 10."
+"If you run \"EXPLAIN ANALYZE\" on the two queries you would see a "
+"performance improvement for the second."
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:910
+#: reference_operator.xml:932
 #, no-c-format
-msgid "Finally the hybrid:"
+msgid ""
+"For users running with PostgreSQL &lt; 9.5, use a hybrid query to find the "
+"true nearest neighbors. First a CTE query using the index-assisted KNN, then "
+"an exact query to get correct ordering:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_operator.xml:913
+#: reference_operator.xml:935
 #, no-c-format
 msgid ""
 "<![CDATA[WITH index_query AS (\n"
@@ -1223,31 +1252,117 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:917
+#: reference_operator.xml:939
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_operator.xml:923
+#: reference_operator.xml:945
+#, no-c-format
+msgid "<refname>|=|</refname>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:947
+#, no-c-format
+msgid ""
+"Returns the distance between A and B trajectories at their closest point of "
+"approach."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:954
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>|=|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:976
+#, no-c-format
+msgid ""
+"The <varname>|=|</varname> operator returns the 3D distance between two "
+"trajectories (See <xref linkend=\"ST_IsValidTrajectory\"/>). This is the "
+"same as <xref linkend=\"ST_DistanceCPA\"/> but as an operator it can be used "
+"for doing nearest neightbor searches using an N-dimensional index (requires "
+"PostgreSQL 9.5.0 or higher)."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:984
+#, no-c-format
+msgid ""
+"This operand will make use of ND GiST indexes that may be available on the "
+"geometries. It is different from other operators that use spatial indexes in "
+"that the spatial index is only used when the operator is in the ORDER BY "
+"clause."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:985
+#, no-c-format
+msgid ""
+"Index only kicks in if one of the geometries is a constant (not in a "
+"subquery/cte). e.g. 'SRID=3005;LINESTRINGM(0 0 0,0 0 1)'::geometry instead "
+"of a.geom"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:987
+#, no-c-format
+msgid "Availability: 2.2.0. Index-supported only available for PostgreSQL 9.5+"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:993
+#, no-c-format
+msgid ""
+"-- Save a literal query trajectory in a psql variable...\n"
+"\\set qt 'ST_AddMeasure(ST_MakeLine(ST_MakePointM(-350,300,0),"
+"ST_MakePointM(-410,490,0)),10,20)'\n"
+"-- Run the query !\n"
+"SELECT track_id, dist FROM (\n"
+"  SELECT track_id, ST_DistanceCPA(tr,:qt) dist\n"
+"  FROM trajectories\n"
+"  ORDER BY tr |=| :qt\n"
+"  LIMIT 5\n"
+") foo;\n"
+" track_id        dist\n"
+"----------+-------------------\n"
+"      395 | 0.576496831518066\n"
+"      380 |  5.06797130410151\n"
+"      390 |  7.72262293958322\n"
+"      385 |   9.8004461358071\n"
+"      405 |  10.9534397988433\n"
+"(5 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:997
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_IsValidTrajectory\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:1007
 #, no-c-format
 msgid "&lt;#&gt;"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_operator.xml:925
+#: reference_operator.xml:1009
 #, no-c-format
-msgid ""
-"Returns the distance between bounding box of 2 geometries. For point / point "
-"checks it's almost the same as distance (though may be different since the "
-"bounding box is at floating point accuracy and geometries are double "
-"precision). Useful for doing distance ordering and nearest neighbor limits "
-"using KNN gist functionality."
+msgid "Returns the 2D distance between A and B bounding boxes."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_operator.xml:931
+#: reference_operator.xml:1016
 #, no-c-format
 msgid ""
 "<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
@@ -1256,25 +1371,41 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:952
+#: reference_operator.xml:1037
 #, no-c-format
 msgid ""
-"The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between "
-"two floating point bounding boxes read from the spatial index if available. "
-"Useful for doing nearest neighbor <emphasis role=\"strong\">approximate</"
-"emphasis> distance ordering."
+"The <varname>&lt;#&gt;</varname> operator returns distance between two "
+"floating point bounding boxes, possibly reading them from a spatial index "
+"(PostgreSQL 9.1+ required). Useful for doing nearest neighbor <emphasis role="
+"\"strong\">approximate</emphasis> distance ordering."
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:957
+#: reference_operator.xml:1039 reference_operator.xml:1158
+#, no-c-format
+msgid ""
+"This operand will make use of any indexes that may be available on the "
+"geometries. It is different from other operators that use spatial indexes in "
+"that the spatial index is only used when the operator is in the ORDER BY "
+"clause."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1042
 #, no-c-format
 msgid ""
 "Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
 "(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
 msgstr ""
 
+#. Tag: para
+#: reference_operator.xml:1044
+#, no-c-format
+msgid "Availability: 2.0.0 -- KNN only available for PostgreSQL 9.1+"
+msgstr ""
+
 #. Tag: programlisting
-#: reference_operator.xml:965
+#: reference_operator.xml:1050
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT *\n"
@@ -1309,9 +1440,108 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_operator.xml:969
+#: reference_operator.xml:1054
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_centroid"
-"\"/>"
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_knn\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:1060
+#, no-c-format
+msgid "&lt;&lt;-&gt;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1062
+#, no-c-format
+msgid ""
+"Returns the n-D distance between the centroids of A and B bounding boxes."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:1070
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>&lt;&lt;-&gt;&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1091
+#, no-c-format
+msgid ""
+"The <varname>&lt;&lt;-&gt;&gt;</varname> operator returns the n-D "
+"(euclidean) distance between the centroids of the bounding boxes of two "
+"geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
+"\">approximate</emphasis> distance ordering."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1098
+#, no-c-format
+msgid ""
+"This operand will make use of n-D GiST indexes that may be available on the "
+"geometries. It is different from other operators that use spatial indexes in "
+"that the spatial index is only used when the operator is in the ORDER BY "
+"clause."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1110 reference_operator.xml:1167
+#, no-c-format
+msgid "Availability: 2.2.0 -- KNN only available for PostgreSQL 9.1+"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1117
+#, no-c-format
+msgid ", <xref linkend=\"geometry_distance_knn\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:1126
+#, no-c-format
+msgid "&lt;&lt;#&gt;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:1128
+#, no-c-format
+msgid "Returns the n-D distance between A and B bounding boxes."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:1135
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>&lt;&lt;#&gt;&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1156
+#, no-c-format
+msgid ""
+"The <varname>&lt;&lt;#&gt;&gt;</varname> operator returns distance between "
+"two floating point bounding boxes, possibly reading them from a spatial "
+"index (PostgreSQL 9.1+ required). Useful for doing nearest neighbor "
+"<emphasis role=\"strong\">approximate</emphasis> distance ordering."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1161
+#, no-c-format
+msgid ""
+"Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
+"(ST_GeomFromText('POINT(1 2)') &lt;&lt;#&gt;&gt; geom) instead of g1.geom "
+"&lt;&lt;#&gt;&gt;."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:1173
+#, no-c-format
+msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ""

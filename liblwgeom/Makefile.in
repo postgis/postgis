@@ -10,6 +10,7 @@
 # **********************************************************************
 
 CC = @CC@
+CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ @JSON_CPPFLAGS@
 LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LDFLAGS@
 NUMERICFLAGS = @NUMERICFLAGS@
@@ -22,9 +23,9 @@ SHELL = @SHELL@
 INSTALL = $(SHELL) ../install-sh
 LIBTOOL = @LIBTOOL@
 
-IFACE_CURRENT = $(shell expr @POSTGIS_MAJOR_VERSION@ + @POSTGIS_MINOR_VERSION@ )
-IFACE_AGE = @POSTGIS_MINOR_VERSION@
-IFACE_REV = $(subst dev,,@POSTGIS_MICRO_VERSION@)
+IFACE_CURRENT = @LIBLWGEOM_CURRENT@
+IFACE_AGE = @LIBLWGEOM_AGE@
+IFACE_REV = @LIBLWGEOM_REV@
 
 VERSION_INFO = $(IFACE_CURRENT):$(IFACE_REV):$(IFACE_AGE)
 
@@ -186,10 +187,10 @@ check: liblwgeom.la
 
 # Command to build each of the .lo files
 $(LT_SA_OBJS): %.lo: %.c
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(LT_NM_OBJS): %.lo: %.c
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y

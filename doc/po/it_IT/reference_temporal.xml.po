@@ -1,0 +1,325 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-29 12:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_temporal.xml:3
+#, no-c-format
+msgid "Temporal Support"
+msgstr ""
+
+#. Tag: refname
+#: reference_temporal.xml:8
+#, no-c-format
+msgid "ST_IsValidTrajectory"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_temporal.xml:9
+#, no-c-format
+msgid "Returns <varname>true</varname> if the geometry is a valid trajectory."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_temporal.xml:16
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_temporal.xml:24 reference_temporal.xml:76
+#: reference_temporal.xml:132 reference_temporal.xml:185
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:26
+#, no-c-format
+msgid ""
+"Tell if a geometry encodes a valid trajectory. Valid trajectories are "
+"encoded as LINESTRING with M value growing from each vertex to the next."
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:32
+#, no-c-format
+msgid ""
+"Valid trajectories are expected as input to some spatio-temporal queries "
+"like <xref linkend=\"ST_ClosestPointOfApproach\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:37 reference_temporal.xml:90
+#: reference_temporal.xml:141 reference_temporal.xml:197
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:38 reference_temporal.xml:91
+#: reference_temporal.xml:142 reference_temporal.xml:198
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_temporal.xml:43 reference_temporal.xml:96
+#: reference_temporal.xml:147 reference_temporal.xml:203
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_temporal.xml:44
+#, no-c-format
+msgid ""
+"-- A valid trajectory\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(\n"
+"  ST_MakePointM(0,0,1),\n"
+"  ST_MakePointM(0,1,2))\n"
+");\n"
+" t\n"
+"\n"
+"-- An invalid trajectory\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), "
+"ST_MakePointM(0,1,0)));\n"
+"NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n"
+" st_isvalidtrajectory\n"
+"----------------------\n"
+" f"
+msgstr ""
+
+#. Tag: title
+#: reference_temporal.xml:49 reference_temporal.xml:102
+#: reference_temporal.xml:153 reference_temporal.xml:209
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: refname
+#: reference_temporal.xml:59
+#, no-c-format
+msgid "ST_ClosestPointOfApproach"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_temporal.xml:60
+#, no-c-format
+msgid ""
+"Returns the measure at which points interpolated along two lines are closest."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_temporal.xml:67
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:78
+#, no-c-format
+msgid ""
+"Returns the smallest measure at which point interpolated along the given "
+"lines are at the smallest distance. Inputs must be valid trajectories as "
+"checked by <xref linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the "
+"trajectories do not overlap on the M range."
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:85
+#, no-c-format
+msgid ""
+"See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
+"given measure."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_temporal.xml:97
+#, no-c-format
+msgid ""
+"-- Return the time in which two objects moving between 10:00 and 11:00\n"
+"-- are closest to each other and their distance at that point\n"
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+"), cpa AS (\n"
+"  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp\n"
+"), points AS (\n"
+"  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,\n"
+"         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb\n"
+"  FROM inp, cpa\n"
+")\n"
+"SELECT to_timestamp(m) t,\n"
+"       ST_Distance(pa,pb) distance\n"
+"FROM points, cpa;\n"
+"\n"
+"               t               |     distance\n"
+"-------------------------------+------------------\n"
+" 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:103
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
+"<xref linkend=\"ST_AddMeasure\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_temporal.xml:115
+#, no-c-format
+msgid "ST_DistanceCPA"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_temporal.xml:116
+#, no-c-format
+msgid ""
+"Returns the distance between closest points of approach in two trajectories."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_temporal.xml:123
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:134
+#, no-c-format
+msgid ""
+"Returns the minimum distance two moving objects have ever been each-other. "
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
+"overlap on the M range."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_temporal.xml:148
+#, no-c-format
+msgid ""
+"-- Return the minimum distance of two objects moving between 10:00 and "
+"11:00\n"
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+")\n"
+"SELECT ST_DistanceCPA(a,b) distance FROM inp;\n"
+"\n"
+"     distance\n"
+"------------------\n"
+" 1.96036833151395"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:154
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_temporal.xml:166
+#, no-c-format
+msgid "ST_CPAWithin"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_temporal.xml:167
+#, no-c-format
+msgid ""
+"Returns true if the trajectories' closest points of approach are within the "
+"specified distance."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_temporal.xml:175
+#, no-c-format
+msgid ""
+"<funcdef>float8 <function>ST_CPAWithin</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
+"<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:187
+#, no-c-format
+msgid ""
+"Checks whether two moving objects have ever been within the specified max "
+"distance."
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:191
+#, no-c-format
+msgid ""
+"Inputs must be valid trajectories as checked by <xref linkend="
+"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
+"overlap on the M range."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_temporal.xml:204
+#, no-c-format
+msgid ""
+"WITH inp AS ( SELECT\n"
+"  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) a,\n"
+"  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n"
+"    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
+"    extract(epoch from '2015-05-26 11:00'::timestamptz)\n"
+"  ) b\n"
+")\n"
+"SELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;\n"
+"\n"
+" st_cpawithin |     distance\n"
+"--------------+------------------\n"
+" t            | 1.96521473776207"
+msgstr ""
+
+#. Tag: para
+#: reference_temporal.xml:210
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
+"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgstr ""
