@@ -10,6 +10,7 @@
 # **********************************************************************
 
 CC = @CC@
+CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ @JSON_CPPFLAGS@
 LDFLAGS = @LDFLAGS@ @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj @JSON_LDFLAGS@
 NUMERICFLAGS = @NUMERICFLAGS@
@@ -184,10 +185,10 @@ check: liblwgeom.la
 
 # Command to build each of the .lo files
 $(LT_SA_OBJS): %.lo: %.c
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(LT_NM_OBJS): %.lo: %.c
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 lwin_wkt_parse.c lwin_wkt_parse.h: lwin_wkt_parse.y
 	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
