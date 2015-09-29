@@ -1171,11 +1171,19 @@ FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::xml)) As
 FROM  st_gdaldrivers()
 WHERE short_name = 'JPEG') As g;
 
-    oname    |  otype  |           descrip
--------------+---------+-----------------------------
- PROGRESSIVE | boolean |
- QUALITY     | int     | good=100, bad=0, default=75
- WORLDFILE   | boolean |
+       oname        |  otype  |      descrip
+--------------------+---------+-------------------------------------------------
+ PROGRESSIVE        | boolean | whether to generate a progressive JPEG
+ QUALITY            | int     | good=100, bad=0, default=75
+ WORLDFILE          | boolean | whether to geneate a worldfile
+ INTERNAL_MASK      | boolean | whether to generate a validity mask
+ COMMENT            | string  | Comment
+ SOURCE_ICC_PROFILE | string  | ICC profile encoded in Base64
+ EXIF_THUMBNAIL     | boolean | whether to generate an EXIF thumbnail(overview).
+                                By default its max dimension will be 128
+ THUMBNAIL_WIDTH    | int     | Forced thumbnail width
+ THUMBNAIL_HEIGHT   | int     | Forced thumbnail height
+(9 rows)
 </programlisting>
 
 <programlisting>
