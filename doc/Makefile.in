@@ -399,7 +399,7 @@ endif
 check-localized:
 	@for lang in $(translations); do \
     echo "Creating html for language $$lang..."; \
-    $(MAKE) -C po/$$lang check; \
+    $(MAKE) -C po/$$lang local-check; \
   done
 
 

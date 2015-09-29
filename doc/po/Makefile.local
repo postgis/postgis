@@ -9,6 +9,9 @@ local-html: symlinks
 local-pdf: symlinks
 	$(MAKE) pdf
 
+local-check: symlinks
+	$(MAKE) check
+
 symlinks:
 	rm -f html; ln -s ../../html html
 	rm -f xsl; ln -s ../../xsl xsl
