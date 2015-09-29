@@ -2360,7 +2360,7 @@ msgid ""
 "You can later run <filename>uninstall_legacy.sql</filename> to get rid of "
 "the deprecated functions after you are done with restoring and cleanup."
 msgstr ""
-"Potete successivamente eseguire ilename>uninstall_legacy.sql</filename> per "
+"Potete successivamente eseguire <filename>uninstall_legacy.sql</filename> per "
 "sbarazzarvi delle funzioni obsolete, dopo che avete concluso il ripristino e "
 "la pulizia del database."
 
