@@ -49,12 +49,6 @@ Release procedure
   been reported (extract from ChangeLog).
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
-- make sure to run the extensions/make_unpackaged.sql on 
-  about to release version  and copy contents to  
-  (TODO: we need to automate this) 
-    postgis/sql_bits/postgis--unpackages.sql.in
-    postgis_topology/sql_bits/topology_unpackaged.sql.in
-    postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
 - Update Version.config to drop the "dev" suffix
 - Commit all changes
 - Tag branch:  
