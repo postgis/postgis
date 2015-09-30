@@ -737,7 +737,10 @@ BEGIN
     || quote_literal(apoint::text) || '::geometry,'
     || tol || ') ORDER BY ST_Distance('
     || quote_literal(apoint::text)
-    || '::geometry, a.geom) LIMIT 1;';
+    || '::geometry, a.geom), '
+    || 'CASE WHEN ST_Within(ST_ClosestPoint(a.geom, '
+    || quote_literal(apoint::text)
+    || '::geometry), a.geom) THEN 0 ELSE 1 END LIMIT 1';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
