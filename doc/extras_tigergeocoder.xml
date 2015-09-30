@@ -10,7 +10,9 @@
             <para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
                 prefixed with the state code e.g <varname>ma_addr</varname>, <varname>ma_edges</varname> etc with constraints to enforce only that state data.  Each of these tables inherits from the tables <varname>addr</varname>, <varname>faces</varname>, <varname>edges</varname>, etc located in the <varname>tiger schema</varname>. </para>
             <para>All the geocode functions only reference the base tables, so there is no requirement that the data schema be called <varname>tiger_data</varname> or that data can't be further partitioned into other schemas -- e.g a different schema
-            for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.
+            for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
+            
+            <para>For instructions on how enable the extension in your database and also to load data using it, refer to Refer to <xref linkend="install_tiger_geocoder_extension" />.</para>
             
         
               <note><para>
@@ -22,7 +24,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
               <note>
               <para>New in PostGIS 2.2.0 release is support for Tiger 2015 data and inclusion of Address Standardizer as part of PostGIS.</para>
               <para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
-              </para>
+             
               <para>The <xref linkend="Pagc_Normalize_Address" /> function as a drop in replacement for in-built <xref linkend="Normalize_Address" />. Refer to <xref linkend="installing_pagc_address_standardizer" /> for compile and installation instructions.</para> 
         
 
