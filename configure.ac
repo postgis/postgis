@@ -71,6 +71,15 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -ffloat-store], [dummy_cv_fflo
 AC_SUBST([NUMERICFLAGS])
 
 dnl
+dnl Exporting used library symbols in the module is a source of
+issues,
+dnl see https://trac.osgeo.org/postgis/ticket/3281
+dnl
+EXCLUDELIBS_LDFLAGS=""
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports --exclude-libs], [_cv_exclude_libs], [[-Wl,--exclude-libs,ALL]], [], [EXCLUDELIBS_LDFLAGS="-Wl,--exclude-libs,ALL"], [])
+AC_SUBST([EXCLUDELIBS_LDFLAGS])
+
+dnl
 dnl Define executable suffix for use with the loader Makefiles
 dnl
 EXESUFFIX="$ac_cv_exeext"
@@ -927,7 +936,7 @@ AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $CPPFLAGS"
 AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $EXCLUDELIBS_LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
