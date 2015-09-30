@@ -77,7 +77,7 @@ struct LWT_BE_TOPOLOGY_T {
   char *name;
   int id;
   int srid;
-  int precision;
+  double precision;
   int hasZ;
 };
 
@@ -156,7 +156,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT id,srid FROM topology.topology "
+  appendStringInfo(sql, "SELECT id,srid,precision FROM topology.topology "
                         "WHERE name = '%s'", name);
   spi_result = SPI_execute(sql->data, !be->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -208,10 +208,17 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
     topo->srid = SRID_UNKNOWN;
   }
 
-  topo->precision = 0; /* needed ? */
+  dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 3, &isnull);
+  if ( isnull ) {
+		lwnotice("Topology '%s' has null precision, taking as 0", name);
+    topo->precision = 0; /* TODO: should this be -1 instead ? */
+  } else {
+    topo->precision = DatumGetFloat8(dat);
+  }
 
-  POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has id %d, srid %d",
-             name, topo->id, topo->srid);
+  POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
+                    "id %d, srid %d, precision %g",
+             name, topo->id, topo->srid, topo->precision);
 
   return topo;
 }
