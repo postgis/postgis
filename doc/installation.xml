@@ -1564,10 +1564,10 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			
 				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
 			</listitem>
-			<listitem>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
-where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</listitem>
-            <listitem>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
-the folder where the loader extracts the downloaded tiger data.</listitem>
+			<listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
+where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
+            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
+the folder where the loader extracts the downloaded tiger data.</para></listitem>
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile and copy the scripts to a .sh or .bat file.  So for example to do the nation load and one state using our new profile we would:</para>
 					<programlisting>SELECT Loader_Generate_Nation_Script('debbie');</programlisting>
 					<programlisting>SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');</programlisting>
