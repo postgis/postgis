@@ -176,3 +176,9 @@ N|74|0|POINT(10 0)
 N|75||POINT(0 20)
 E|73|sn74|en75
 Topology 'city_data' dropped
+t3280.start|t
+t3280|L11
+t3280|L22
+t3280|L1b4
+t3280|L1b2
+t3280.end|Topology 'bug3280' dropped

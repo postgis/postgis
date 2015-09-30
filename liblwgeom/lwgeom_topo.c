@@ -42,6 +42,7 @@
   do { \
     size_t sz; \
     char *wkt1 = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
+    /* char *wkt1 = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
     LWDEBUGF(level, msg ": %s", wkt1); \
     lwfree(wkt1); \
   } while (0);
@@ -4887,19 +4888,40 @@ _lwt_minTolerance( LWGEOM *g )
 #define _LWT_MINTOLERANCE( topo, geom ) ( \
   topo->precision ?  topo->precision : _lwt_minTolerance(geom) )
 
+typedef struct scored_pointer_t {
+  void *ptr;
+  double score;
+} scored_pointer;
+
+static int
+compare_scored_pointer(const void *si1, const void *si2)
+{
+	double a = ((scored_pointer *)si1)->score;
+	double b = ((scored_pointer *)si2)->score;
+	if ( a < b )
+		return -1;
+	else if ( a > b )
+		return 1;
+	else
+		return 0;
+}
+
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
   int num, i;
   double mindist;
-  LWT_ISO_NODE *nodes;
-  LWT_ISO_EDGE *edges;
+  LWT_ISO_NODE *nodes, *nodes2;
+  LWT_ISO_EDGE *edges, *edges2;
   LWGEOM *pt = lwpoint_as_lwgeom(point);
   int flds;
   LWT_ELEMID id = 0;
+  scored_pointer *sorted;
 
   /* Get tolerance, if 0 was given */
   if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, pt );
+
+  LWDEBUGG(1, pt, "Adding point");
 
   /*
   -- 1. Check if any existing node is closer than the given precision
@@ -4913,23 +4935,50 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
-  for ( i=0; i<num; ++i )
+  if ( num )
   {
-    LWT_ISO_NODE *n = &(nodes[i]);
-    LWGEOM *g = lwpoint_as_lwgeom(n->geom);
-    double dist = lwgeom_mindistance2d(g, pt);
-    if ( dist >= tol ) continue; /* must be closer than tolerated */
-    if ( ! id || dist < mindist )
+    LWDEBUGF(1, "New point is within %.15g units of %d nodes", tol, num);
+    /* Order by distance if there are more than a single return */
+    if ( num > 1 )
+    {{
+      sorted= lwalloc(sizeof(scored_pointer)*num);
+      for (i=0; i<num; ++i)
+      {
+        sorted[i].ptr = nodes+i;
+        sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
+        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " distance: %.15g",
+          ((LWT_ISO_NODE*)(sorted[i].ptr))->node_id, sorted[i].score);
+      }
+      qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+      nodes2 = lwalloc(sizeof(LWT_ISO_NODE)*num);
+      for (i=0; i<num; ++i)
+      {
+        nodes2[i] = *((LWT_ISO_NODE*)sorted[i].ptr);
+      }
+      lwfree(sorted);
+      lwfree(nodes);
+      nodes = nodes2;
+    }}
+
+    for ( i=0; i<num; ++i )
     {
-      id = n->node_id;
-      mindist = dist;
+      LWT_ISO_NODE *n = &(nodes[i]);
+      LWGEOM *g = lwpoint_as_lwgeom(n->geom);
+      double dist = lwgeom_mindistance2d(g, pt);
+      /* TODO: move this check in the previous sort scan ... */
+      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      if ( ! id || dist < mindist )
+      {
+        id = n->node_id;
+        mindist = dist;
+      }
     }
-  }
-  if ( id )
-  {
-    /* found an existing node */
-    if ( nodes ) _lwt_release_nodes(nodes, num);
-    return id;
+    if ( id )
+    {
+      /* found an existing node */
+      if ( nodes ) _lwt_release_nodes(nodes, num);
+      return id;
+    }
   }
 
   initGEOS(lwnotice, lwgeom_geos_error);
@@ -4940,17 +4989,42 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   TODO: use WithinBox2D
   */
   flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM;
-  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 1);
+  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 0);
   if ( num == -1 )
   {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if ( num )
-  {{
-    /* The point is on or near an edge, split the edge */
+  {
+  LWDEBUGF(1, "New point is within %.15g units of %d edges", tol, num);
 
-    LWT_ISO_EDGE *e = &(edges[0]);
+  /* Order by distance if there are more than a single return */
+  if ( num > 1 )
+  {{
+    sorted = lwalloc(sizeof(scored_pointer)*num);
+    for (i=0; i<num; ++i)
+    {
+      sorted[i].ptr = edges+i;
+      sorted[i].score = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), pt);
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g",
+        ((LWT_ISO_EDGE*)(sorted[i].ptr))->edge_id, sorted[i].score);
+    }
+    qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+    edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
+    for (i=0; i<num; ++i)
+    {
+      edges2[i] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+    }
+    lwfree(sorted);
+    lwfree(edges);
+    edges = edges2;
+  }}
+
+  for (i=0; i<num; ++i)
+  {
+    /* The point is on or near an edge, split the edge */
+    LWT_ISO_EDGE *e = &(edges[i]);
     LWGEOM *g = lwline_as_lwgeom(e->geom);
     LWGEOM *prj;
     int contains;
@@ -5016,6 +5090,15 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
                   " does not contain projected point to it",
                   e->edge_id);
+
+      /* In order to reduce the robustness issues, we'll pick
+       * an edge that contains the projected point, if possible */
+      if ( i+1 < num )
+      {
+        LWDEBUG(1, "But there's another to check");
+        lwgeom_free(prj);
+        continue;
+      }
 
       /*
       -- The tolerance must be big enough for snapping to happen
@@ -5112,8 +5195,10 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     }
 
     lwgeom_free(prj);
-    _lwt_release_edges(edges, num);
-  }}
+    break; /* we only want to snap a single edge */
+  }
+  _lwt_release_edges(edges, num);
+  }
   else
   {
     /* The point is isolated, add it as such */
