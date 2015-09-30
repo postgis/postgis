@@ -8,6 +8,7 @@ PostGIS 2.1.9
   - #3222, Fix uninitialized stddev in stats computation
   - #2283, Import nested holey multipolygons correctly
   - #3245, Ensure lwgeom/geos returns are fully owned
+  - #3281, Do not export liblwgeom symbols from the PostgreSQL module
 
 PostGIS 2.1.8
 2015/07/07
