@@ -52,6 +52,9 @@
 #define LIBLWGEOM_VERSION_MINOR "@POSTGIS_MINOR_VERSION@"
 #define LIBLWGEOM_GEOS_VERSION "@POSTGIS_GEOS_VERSION@"
 
+/** Return lwgeom version string (not to be freed) */
+const char* lwgeom_version(void);
+
 /**
 * Return types for functions with status returns.
 */

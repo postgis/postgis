@@ -17,11 +17,26 @@
 #include <stdio.h>
 #include <errno.h>
 #include <assert.h>
+#include "../postgis_svn_revision.h"
 
 /*
  * Lower this to reduce integrity checks
  */
 #define PARANOIA_LEVEL 1
+
+const char *
+lwgeom_version()
+{
+  static char *ptr = NULL;
+  static char buf[256];
+  if ( ! ptr )
+  {
+    ptr = buf;
+    snprintf(ptr, 256, LIBLWGEOM_VERSION" r%d", POSTGIS_SVN_REVISION);
+  }
+
+  return ptr;
+}
 
 
 /**********************************************************************

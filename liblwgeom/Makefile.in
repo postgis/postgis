@@ -23,6 +23,8 @@ SHELL = @SHELL@
 INSTALL = $(SHELL) ../install-sh
 LIBTOOL = @LIBTOOL@
 
+SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+
 IFACE_CURRENT = @LIBLWGEOM_CURRENT@
 IFACE_AGE = @LIBLWGEOM_AGE@
 IFACE_REV = @LIBLWGEOM_REV@
@@ -162,7 +164,7 @@ $(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h $(SA_HEADERS)
 
 liblwgeom.la: $(LT_OBJS)
 	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) \
-             -version-info $(VERSION_INFO) $(LDFLAGS) -o $@
+             -release $(SOVER) -version-info $(VERSION_INFO) $(LDFLAGS) -o $@
 
 maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
