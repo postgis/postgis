@@ -38,6 +38,7 @@ PostGIS 2.2.0
 
   - Topology API in liblwgeom
     (Sandro Santilli / Regione Toscana - SITA)
+  - New lwgeom_version method in liblwgeom
   - New lwgeom_unaryunion method in liblwgeom
   - New lwgeom_linemerge method in liblwgeom
   - New lwgeom_is_simple method in liblwgeom
