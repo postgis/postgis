@@ -20,5 +20,5 @@ n3 As (SELECT start_n, MAX(COALESCE(s.n,start_n)) As end_n
 FROM n2 LEFT JOIN s ON( s.n >= n2.start_n AND s.n < n2.next_set_n)
 GROUP BY start_n, next_set_n
 ORDER BY start_n)
-SELECT 'NOT (' || string_agg('srid BETWEEN ' || start_n || ' AND ' || end_n, ' OR ' ORDER BY start_n) || ') '
+SELECT 'WHERE NOT (' || string_agg('srid BETWEEN ' || start_n || ' AND ' || end_n, ' OR ' ORDER BY start_n) || ') '
 FROM n3 ;
