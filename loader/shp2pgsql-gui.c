@@ -2548,9 +2548,9 @@ pgui_create_about_dialog(void)
 {
 	const char *authors[] =
 	{
-		"Paul Ramsey <pramsey@opengeo.org>",
+		"Paul Ramsey <pramsey@cleverelephant.ca>",
 		"Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>",
-		"Mark Leslie <mark.leslie@lisasoft.com>",
+		"Mark Leslie <mark.s.leslie@gmail.com>",
 		NULL
 	};
 	
