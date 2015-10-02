@@ -149,8 +149,8 @@ if [ -n "$SFCGAL_VER"  ]; then
 	
 	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
-	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
-	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
+	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
+	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
 fi;
 #cp ${MINGPROJECTS}/libxml/rel-libxml2-2.7.8w${OS_BUILD}/bin/*.dll  $outdir/bin/
 cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
@@ -177,7 +177,7 @@ cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/pgsql2shp.exe ${RELDIR}/${RELVERDIR}/bin
 cp loader/.libs/shp2pgsql-gui.exe ${RELDIR}/${RELVERDIR}/bin/postgisgui
-cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
+#cp liblwgeom/.libs/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
 
 #shp2pgsql-gui now has dependency on geos (though in theory it shouldn't)
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}/bin/*.dll ${RELDIR}/${RELVERDIR}/bin/postgisgui
