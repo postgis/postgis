@@ -9125,8 +9125,7 @@ FROM (
 				</refnamediv>
 
 				<refsynopsisdiv>
-					<funcsynopsis>
-
+					<funcsynopsis>    						
 						<funcprototype>
 							<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
 							<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></paramdef>
@@ -9177,6 +9176,18 @@ FROM (
 							<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
 							<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
 							<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+							<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+						</funcprototype>
+						
+						<funcprototype>
+							<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+							<paramdef><type>nband</type> <parameter>integer</parameter></paramdef>
+							<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+							<paramdef><type>float8[] </type> <parameter>mask</parameter></paramdef>
+							<paramdef><type>boolean </type> <parameter>weighted</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+							<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
 							<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
 						</funcprototype>
 
@@ -9235,6 +9246,24 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 									Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
 								</para>
 
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>mask</term>
+							<listitem>
+								<para>
+									An n-dimenional array (matrix) of numbers used to set pixels in raster to nodata.
+								</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>weighted</term>
+							<listitem>
+								<para>
+									boolean (true/false) to denote if a mask should be weighted or not (only applies to proto that takes a mask).
+								</para>
 							</listitem>
 						</varlistentry>
 
@@ -9320,6 +9349,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 						Variant 4 operate upon two rasters with one band per raster. See example Variant 4.
 					</para>
 
+					<para>Availability: 2.2.0: Ability to add a mask</para>
 					<para>Availability: 2.1.0</para>
 
 				</refsection>
@@ -9502,6 +9532,7 @@ WHERE t1.rid = 1
 					</programlisting>
 
 				</refsection>
+
 
 				<refsection>
 					<title>See Also</title>
