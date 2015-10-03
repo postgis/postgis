@@ -22,7 +22,6 @@
 #include <sys/stat.h>
 #include <iconv.h>
 
-#include "../postgis_config.h"
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "shpcommon.h"
