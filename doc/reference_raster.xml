@@ -8973,8 +8973,8 @@ FROM funky_shapes;
 					  <funcprototype>
 							<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
-							<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+							<paramdef><type>geometry </type> <parameter>geomin</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
@@ -8988,27 +8988,27 @@ FROM funky_shapes;
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
 							<paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					</funcsynopsis>
@@ -9041,7 +9041,7 @@ FROM funky_shapes;
 					</para>
 
 					<para>
-						In all variants, if no band number is specified band 1 is assumed.
+						In all variants, if no band number is specified band 1 is assumed.  If you need an intersection between a raster and geometry that returns a raster, refer to <xref linkend="RT_ST_Clip" />.
 					</para>
 
 					<note>
@@ -9102,12 +9102,6 @@ FROM (
    2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) | 250
    2 |   3 | GEOMETRYCOLLECTION EMPTY
 					</programlisting>
-				</refsection>
-
-				<refsection>
-					<title>Example: Raster, Geometry -- resulting is a raster</title>
-					<para>Examples coming soon</para>
-					<!-- TODO: EXAMPLES coming soon -->
 				</refsection>
 
 				<refsection>
