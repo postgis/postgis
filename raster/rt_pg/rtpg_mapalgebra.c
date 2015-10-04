@@ -652,14 +652,14 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		break;
 	      default:
 		rtpg_nmapalgebra_arg_destroy(arg);
-		elog(ERROR,"RASTER_nMapAlgerbra: Mask data type must be FLOAT8 or FLOAT4.");
+		elog(ERROR,"RASTER_nMapAlgebra: Mask data type must be FLOAT8 or FLOAT4.");
 		PG_RETURN_NULL();
 	}
 
 	ndims = ARR_NDIM(maskArray);
 	
 	if( ndims != 2 ){ 
-	  elog(ERROR, "RASTER_nMapAlgerbra: Mask Must be a 2D array.");
+	  elog(ERROR, "RASTER_nMapAlgebra: Mask Must be a 2D array.");
 	  rtpg_nmapalgebra_arg_destroy(arg);
 	  PG_RETURN_NULL();
 	}
@@ -668,7 +668,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 
 
 	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
-	  elog(ERROR,"RASTER_nMapAlgerbra: Mask dimenstions must be odd.");
+	  elog(ERROR,"RASTER_nMapAlgebra: Mask dimensions must be odd.");
 	  rtpg_nmapalgebra_arg_destroy(arg);
 	  PG_RETURN_NULL();
 	} 
@@ -685,7 +685,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
                         pfree(maskElements);
                         pfree(maskNulls);
                 }
-		elog(ERROR, "RASTER_nMapAlgerbra: Could not deconstruct new values array.");
+		elog(ERROR, "RASTER_nMapAlgebra: Could not deconstruct new values array.");
                 rtpg_nmapalgebra_arg_destroy(arg);
 		PG_RETURN_NULL();
 	}
@@ -719,7 +719,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	    i++;
 	  }
 	}
-	/*set mask dimenstions*/ 
+	/*set mask dimensions*/ 
 	arg->mask->dimx = maskDims[0];
 	arg->mask->dimy = maskDims[1];
 	if ( maskDims[0] == 1 && maskDims[1] == 1){

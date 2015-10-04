@@ -311,8 +311,8 @@ rt_errorstate rt_pixel_set_to_array(
 
 	/* make sure that the dimx and dimy match mask */
 	if( mask != NULL) {
-	  if ( dim[0] != mask-> dimx || dim[1] != mask->dimy ){
-	    rterror("rt_pixel_set_array: mask dimentions do not match given dims");
+	  if ( dim[0] != mask->dimx || dim[1] != mask->dimy ){
+	    rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d", mask->dimx, mask->dimy,  dim[0],  dim[1]);
 	    return ES_ERROR;
 	  }
 	  

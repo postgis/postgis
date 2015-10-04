@@ -1,12 +1,12 @@
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
@@ -52,10 +52,10 @@ NOTICE:  userargs = <NULL>
 0100000100000000000000F03F000000000000F0BF000000000000F03F000000000000F0BF0000000000000000000000000000000000000000020002004400FFFFFFFF
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask Must be a 2D array.
+ERROR:  RASTER_nMapAlgebra: Mask Must be a 2D array.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask Must be a 2D array.
+ERROR:  RASTER_nMapAlgebra: Mask Must be a 2D array.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
@@ -230,10 +230,10 @@ NOTICE:  userargs = <NULL>
 0100000100000000000000F03F000000000000F0BF000000000000F03F000000000000F0BF0000000000000000000000000000000000000000020002004400FFFFFFFF
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
@@ -279,10 +279,10 @@ NOTICE:  userargs = <NULL>
 0100000100000000000000F03F000000000000F0BF000000000000F03F000000000000F0BF0000000000000000000000000000000000000000020002004400FFFFFFFF
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask Must be a 2D array.
+ERROR:  RASTER_nMapAlgebra: Mask Must be a 2D array.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask Must be a 2D array.
+ERROR:  RASTER_nMapAlgebra: Mask Must be a 2D array.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
@@ -457,13 +457,13 @@ NOTICE:  userargs = <NULL>
 0100000100000000000000F03F000000000000F0BF000000000000F03F000000000000F0BF0000000000000000000000000000000000000000020002004400FFFFFFFF
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask dimenstions must be odd.
+ERROR:  RASTER_nMapAlgebra: Mask dimensions must be odd.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
-ERROR:  RASTER_nMapAlgerbra: Mask Must be a 2D array.
+ERROR:  RASTER_nMapAlgebra: Mask Must be a 2D array.
 NOTICE:  First argument (nband) of rastbandarg at index 0 is NULL. Assuming NULL raster
 NOTICE:  All input rasters are NULL. Returning NULL
 NOTICE:  All input rasters do not have bands at indicated indexes. Returning empty raster
