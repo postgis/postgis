@@ -540,7 +540,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_32intersection01.png" />
+                        <imagedata fileref="images/st_3dintersection01.png" />
                       </imageobject>
                       <caption><para>What's left after removing geom2</para></caption>
                     </mediaobject>
