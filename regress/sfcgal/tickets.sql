@@ -374,7 +374,7 @@ SELECT '#689', ST_CoveredBy(ST_GeomFromText('POLYGON EMPTY'), ST_GeomFromText('L
 
 -- #690 --
 SELECT '#690';
-SELECT ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
+SELECT encode(ST_AsEWKB(ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')),'ndr'),'hex') As result;
 
 -- #693 --
 SELECT '#693a', ST_AsText(ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))'));

@@ -246,7 +246,7 @@ select '149', ST_AsText(ST_segmentize('GEOMETRYCOLLECTION EMPTY'::geometry, 0.5)
 
 select '150', ST_AsEWKT(ST_ForceCollection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
-select '151', ST_MakeEnvelope(0, 0, 1, 1, 4326);
+select '151', encode(ST_AsEWKB(ST_MakeEnvelope(0, 0, 1, 1, 4326),'ndr'),'hex');
 select '152', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, 4326));
 select '152.1', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1)) = ST_SRID('POINT(0 0)'::geometry);
 select '152.2', ST_SRID(ST_SetSRID(ST_MakeEnvelope(0, 0, 1, 1), 4326));
@@ -260,7 +260,7 @@ select '158', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECT
 select '159', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), POINT(1 1)),LINESTRING(2 2, 3 3))',3));
 select '160', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), POINT(1 1)),LINESTRING(2 2, 3 3))',1));
 select '161', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), GEOMETRYCOLLECTION(POINT(1 1))),LINESTRING(2 2, 3 3))',2));
-select '162', ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'),ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
+select '162', encode(ST_AsEWKB(ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'),ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')),'ndr'),'hex') As result;
 select '163', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))');
 select '164', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 1))');
 select '165', ST_AsEWKT('POLYGON((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0.1 1))');
