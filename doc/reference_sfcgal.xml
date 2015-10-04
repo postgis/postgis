@@ -501,16 +501,57 @@ MULTIPOLYGON(
 
 	  <refsection>
 		<title>Description</title>
-
+		<para>Return a geometry that is the shared portion between geom1 and geom2.</para>
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
-	  		<refsection>
-		<title>Examples: 3D linestring and Polygon</title>	
+	 
+	  <refsection>
+		<title>Examples</title>	
+		<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+            <informaltable>
+            <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry><para>
+                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1, 
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2;
+                </programlisting>
+                <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference01.png" />
+                      </imageobject>
+                      <caption><para>Original 3D geometries overlaid. geom2 is shown semi-transparent</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              <entry><para>
+              <programlisting>SELECT ST_3DIntersection(geom1,geom2)
+FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1, 
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+              <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_32intersection01.png" />
+                      </imageobject>
+                      <caption><para>What's left after removing geom2</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              </row>
+             </tbody>
+            </tgroup>
+        </informaltable>
+		
+		<para>3D linestrings and polygons</para>
 		<programlisting>	SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt
 FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
  CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;
@@ -594,7 +635,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
                 <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_difference01.png" />
+                        <imagedata fileref="images/st_3ddifference01.png" />
                       </imageobject>
                       <caption><para>Original 3D geometries overlaid. geom2 is the part that will be removed.</para></caption>
                     </mediaobject>
@@ -609,7 +650,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <informalfigure>
                     <mediaobject>
                       <imageobject>
-                        <imagedata fileref="images/st_difference02.png" />
+                        <imagedata fileref="images/st_3ddifference02.png" />
                       </imageobject>
                       <caption><para>What's left after removing geom2</para></caption>
                     </mediaobject>
@@ -622,15 +663,15 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 	      
 	  </refsection>
 	  
-	    <refsection>
-		<title>See Also</title>
-
-                <para>
-        <xref linkend="ST_Extrude" />,
-        <xref linkend="ST_AsX3D" />,
-        <xref linkend="ST_3DUnion" />
-                </para>
-        </refsection>
+      <refsection>
+        <title>See Also</title>
+        
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
+            <xref linkend="ST_3DUnion" />
+        </para>
+      </refsection>
 	</refentry>
 
 	<refentry id="ST_3DUnion">
