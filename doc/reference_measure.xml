@@ -33,6 +33,7 @@
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
 			<para>Availability: 2.0.0</para>
+			<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		  </refsection>
 	
 		  <refsection>
@@ -130,6 +131,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
         <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 	  </refsection>
 
 	  <refsection>
@@ -410,6 +412,7 @@ SELECT ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geo
 		</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
@@ -509,6 +512,7 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
         <para>&P_support;</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 	  </refsection>
 
 	  <refsection>
@@ -573,6 +577,7 @@ SELECT ST_3DMaxDistance(
 		</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
