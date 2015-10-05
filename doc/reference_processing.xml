@@ -818,7 +818,7 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 	  <refnamediv>
 		<refname>ST_CurveToLine</refname>
 
-		<refpurpose>Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON</refpurpose>
+		<refpurpose>Converts a CIRCULARSTRING/CURVEPOLYGON to a LINESTRING/POLYGON</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1814,7 +1814,7 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  <refnamediv>
 		<refname>ST_LineToCurve</refname>
 
-		<refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON</refpurpose>
+		<refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVEPOLYGON</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
