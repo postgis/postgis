@@ -634,112 +634,115 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		}
 	}
 
-	noerr = 1;
-	
 	/* mask (7) */
 
 	if( PG_ARGISNULL(7) ){
-	  pfree(arg->mask);
-	  arg->mask = NULL;
-	}else{
-	maskArray = PG_GETARG_ARRAYTYPE_P(7);
-	etype = ARR_ELEMTYPE(maskArray);
-	get_typlenbyvalalign(etype,&typlen,&typbyval,&typalign);
+		pfree(arg->mask);
+		arg->mask = NULL;
+	}
+	else {
+		maskArray = PG_GETARG_ARRAYTYPE_P(7);
+		etype = ARR_ELEMTYPE(maskArray);
+		get_typlenbyvalalign(etype,&typlen,&typbyval,&typalign);
+
+		switch (etype) {
+			case FLOAT4OID:
+			case FLOAT8OID:
+				break;
+			default:
+				rtpg_nmapalgebra_arg_destroy(arg);
+				elog(ERROR,"RASTER_nMapAlgebra: Mask data type must be FLOAT8 or FLOAT4");
+				PG_RETURN_NULL();
+		}
+
+		ndims = ARR_NDIM(maskArray);
+
+		if (ndims != 2) { 
+			elog(ERROR, "RASTER_nMapAlgebra: Mask Must be a 2D array");
+			rtpg_nmapalgebra_arg_destroy(arg);
+			PG_RETURN_NULL();
+		}
 	
-	switch(etype){
-	      case FLOAT4OID:
-	      case FLOAT8OID:
-		break;
-	      default:
-		rtpg_nmapalgebra_arg_destroy(arg);
-		elog(ERROR,"RASTER_nMapAlgebra: Mask data type must be FLOAT8 or FLOAT4.");
-		PG_RETURN_NULL();
-	}
+		maskDims = ARR_DIMS(maskArray);
 
-	ndims = ARR_NDIM(maskArray);
+		if (maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0) {
+			elog(ERROR,"RASTER_nMapAlgebra: Mask dimensions must be odd");
+			rtpg_nmapalgebra_arg_destroy(arg);
+			PG_RETURN_NULL();
+		} 
 	
-	if( ndims != 2 ){ 
-	  elog(ERROR, "RASTER_nMapAlgebra: Mask Must be a 2D array.");
-	  rtpg_nmapalgebra_arg_destroy(arg);
-	  PG_RETURN_NULL();
-	}
-	
-	maskDims = ARR_DIMS(maskArray);
+		deconstruct_array(
+			maskArray,
+			etype,
+			typlen, typbyval,typalign,
+			&maskElements,&maskNulls,&num
+		);
 
+		if (num < 1 || num != (maskDims[0] * maskDims[1])) {
+			if (num) {
+				pfree(maskElements);
+				pfree(maskNulls);
+			}
+			elog(ERROR, "RASTER_nMapAlgebra: Could not deconstruct new values array");
+			rtpg_nmapalgebra_arg_destroy(arg);
+			PG_RETURN_NULL();
+		}
 
-	if ( maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0 ){
-	  elog(ERROR,"RASTER_nMapAlgebra: Mask dimensions must be odd.");
-	  rtpg_nmapalgebra_arg_destroy(arg);
-	  PG_RETURN_NULL();
-	} 
-	
-	deconstruct_array(
-			  maskArray,
-			  etype,
-			  typlen, typbyval,typalign,
-			  &maskElements,&maskNulls,&num
-			  );
+		/* allocate mem for mask array */
+		arg->mask->values = palloc(sizeof(double*)* maskDims[0]);
+		arg->mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
+		for (i = 0; i < maskDims[0]; i++) {
+			arg->mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
+			arg->mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
+		}
 
-	if (num < 1 || num != (maskDims[0] * maskDims[1])) {
-                if (num) {
-                        pfree(maskElements);
-                        pfree(maskNulls);
-                }
-		elog(ERROR, "RASTER_nMapAlgebra: Could not deconstruct new values array.");
-                rtpg_nmapalgebra_arg_destroy(arg);
-		PG_RETURN_NULL();
-	}
+		/* place values in to mask */
+		i = 0;
+		for (y = 0; y < maskDims[0]; y++) {
+			for (x = 0; x < maskDims[1]; x++) {
+				if (maskNulls[i]) {
+					arg->mask->values[y][x] = 0;
+					arg->mask->nodata[y][x] = 1;
+				}
+				else {
+					switch (etype) {
+						case FLOAT4OID:
+							arg->mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
+							arg->mask->nodata[y][x] = 0;
+							break;
+						case FLOAT8OID:
+							arg->mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
+							arg->mask->nodata[y][x] = 0;
+					}
+				}
+				i++;
+			}
+		}
 
-
-	/* allocate mem for mask array */
-	arg->mask->values = palloc(sizeof(double*)* maskDims[0]);
-	arg->mask->nodata =  palloc(sizeof(int*)*maskDims[0]);
-	for(i = 0; i < maskDims[0]; i++){
-	  arg->mask->values[i] = (double*) palloc(sizeof(double) * maskDims[1]);
-	  arg->mask->nodata[i] = (int*) palloc(sizeof(int) * maskDims[1]);
-	}
-	/* place values in to mask */
-	i = 0;
-	for( y = 0; y < maskDims[0]; y++ ){
-	  for( x = 0; x < maskDims[1]; x++){
-	    if(maskNulls[i]){
-	      arg->mask->values[y][x] = 0;
-	      arg->mask->nodata[y][x] = 1;
-	    }else{
-	      switch(etype){
-	      case FLOAT4OID:
-		arg->mask->values[y][x] = (double) DatumGetFloat4(maskElements[i]);
-		arg->mask->nodata[y][x] = 0;
-		break;
-	      case FLOAT8OID:
-		arg->mask->values[y][x] = (double) DatumGetFloat8(maskElements[i]);
-		arg->mask->nodata[y][x] = 0;
-	      }
-	    }
-	    i++;
-	  }
-	}
-	/*set mask dimensions*/ 
-	arg->mask->dimx = maskDims[0];
-	arg->mask->dimy = maskDims[1];
-	if ( maskDims[0] == 1 && maskDims[1] == 1){
-	  arg->distance[0] = 0;
-	  arg->distance[1] = 0;
-	}else{
-	  arg->distance[0] = maskDims[0] % 2;
-	  arg->distance[1] = maskDims[1] % 2;
-	}
+		/*set mask dimensions*/ 
+		arg->mask->dimx = maskDims[0];
+		arg->mask->dimy = maskDims[1];
+		if (maskDims[0] == 1 && maskDims[1] == 1) {
+			arg->distance[0] = 0;
+			arg->distance[1] = 0;
+		}
+		else {
+			arg->distance[0] = maskDims[0] % 2;
+			arg->distance[1] = maskDims[1] % 2;
+		}
 	}/*end if else argisnull*/
 
 	/* (8) weighted boolean */
-	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8) ){
-	  if ( arg->mask != NULL ) 
-	    arg->mask->weighted = 0;
+	if (PG_ARGISNULL(8) || !PG_GETARG_BOOL(8)) {
+		if (arg->mask != NULL) 
+			arg->mask->weighted = 0;
 	}else{
-	  if(arg->mask !=NULL )
-	    arg->mask->weighted = 1;
+		if(arg->mask !=NULL)
+			arg->mask->weighted = 1;
 	}
 
+	noerr = 1;
+	
 	/* all rasters are empty, return empty raster */
 	if (allempty == arg->numraster) {
 		elog(NOTICE, "All input rasters are empty. Returning empty raster");

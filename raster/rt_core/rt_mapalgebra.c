@@ -1348,7 +1348,7 @@ rt_raster_iterator(
 
 				/* convert set of rt_pixel to 2D array */
 				status = rt_pixel_set_to_array(
-					npixels, status,mask,
+					npixels, status, mask,
 					x, y,
 					distancex, distancey,
 					&(_param->arg->values[i]),
