@@ -221,7 +221,7 @@
 
 		<sect1 id="PostGIS_Curved_GeometryFunctions">
 			<title>PostGIS Curved Geometry Support Functions</title>
-			<para>The functions given below are PostGIS functions that can use CIRCULARSTRING, CURVEDPOLYGON, and other curved geometry types</para>
+			<para>The functions given below are PostGIS functions that can use CIRCULARSTRING, CURVEPOLYGON, and other curved geometry types</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='//refentry'>
