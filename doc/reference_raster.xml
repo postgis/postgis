@@ -9253,7 +9253,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 							<term>mask</term>
 							<listitem>
 								<para>
-									An n-dimenional array (matrix) of numbers used to set pixels in raster to nodata.
+									An n-dimenional array (matrix) of numbers used to filter what cells get passed to map algebra call-back function. 0 means a neighbor cell value should be treated as no-data and 1 means value should be treated as data.  If weight is set to true, then the values, are used as multipliers to multiple the pixel value of that value in the neighborhood position.
 								</para>
 							</listitem>
 						</varlistentry>
@@ -9262,7 +9262,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 							<term>weighted</term>
 							<listitem>
 								<para>
-									boolean (true/false) to denote if a mask should be weighted or not (only applies to proto that takes a mask).
+									boolean (true/false) to denote if a mask value should be weighted (multiplied by original value) or not (only applies to proto that takes a mask).
 								</para>
 							</listitem>
 						</varlistentry>
@@ -9514,6 +9514,29 @@ FROM foo
 					<title>Examples: Variant 4</title>
 
 					<para>Two rasters, two bands</para>
+					<programlisting>
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
+	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		t1.rast, 2,
+		t2.rast, 1,
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo t1
+CROSS JOIN foo t2
+WHERE t1.rid = 1
+	AND t2.rid = 2
+					</programlisting>
+
+				</refsection>
+				
+				<refsection>
+					<title>Examples: Using Masks</title>
+
+					<para>Create our dummy table</para>
 					<programlisting>
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
