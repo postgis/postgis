@@ -701,6 +701,60 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
+	  
+	  	  <refsection>
+	      <title>Examples</title>
+	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
+            <informaltable>
+            <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry><para>
+                <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1, 
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2;
+                </programlisting>
+                <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3ddifference01.png" />
+                      </imageobject>
+                      <caption><para>Original 3D geometries overlaid. geom2 is the one with transparency.</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              <entry><para>
+              <programlisting>SELECT ST_3DUnion(geom1,geom2)
+FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
+ 50, 'quad_segs=2'),0,0,30) AS geom1, 
+        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
+ 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
+              <informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_3dunion01.png" />
+                      </imageobject>
+                      <caption><para>Union of geom1 and geom2</para></caption>
+                    </mediaobject>
+                  </informalfigure></para>
+              </entry>
+              </row>
+             </tbody>
+            </tgroup>
+            </informaltable>
+	      
+	  </refsection>
+	  
+      <refsection>
+        <title>See Also</title>
+        
+        <para>
+            <xref linkend="ST_Extrude" />,
+            <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
+            <xref linkend="ST_3DDifference" />
+        </para>
+      </refsection>
 	</refentry>
 
 
