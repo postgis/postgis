@@ -9535,24 +9535,96 @@ WHERE t1.rid = 1
 				
 				<refsection>
 					<title>Examples: Using Masks</title>
-
-					<para>Create our dummy table</para>
 					<programlisting>
-WITH foo AS (
-	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
-	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
-)
-SELECT
-	ST_MapAlgebra(
-		t1.rast, 2,
-		t2.rast, 1,
-		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
-	) AS rast
-FROM foo t1
-CROSS JOIN foo t2
-WHERE t1.rid = 1
-	AND t2.rid = 2
+WITH foo AS (SELECT 
+   ST_SetBandNoDataValue(
+ST_SetValue(ST_SetValue(ST_AsRaster(
+		ST_Buffer(
+			ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'), 
+			200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),
+  'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )
+SELECT 'original' AS title, rast
+FROM foo
+UNION ALL
+SELECT 'no mask mean value' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
+FROM foo
+UNION ALL
+SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure, 
+    '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast
+FROM foo
+
+UNION ALL
+SELECT 'mask weighted only consider neighbors, exclude center multi otehr pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure, 
+    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
+FROM foo;
 					</programlisting>
+					
+				<informaltable>
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask01.png" />
+													</imageobject>
+													<caption>
+														<para>original</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask02.png" />
+													</imageobject>
+													<caption>
+														<para>no mask mean value (same as having all 1s in mask matrix)</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+								</row>
+								<row>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask03.png" />
+													</imageobject>
+													<caption>
+														<para>mask only consider neighbors, exclude center</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask04.png" />
+													</imageobject>
+													<caption>
+														<para>mask weighted only consider neighbors, exclude center multi other pixel values by 2</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</informaltable>
 
 				</refsection>
 
