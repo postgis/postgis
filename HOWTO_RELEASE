@@ -53,8 +53,8 @@ Release procedure
 - Commit all changes
 - Tag branch:  
    $ base=http://svn.osgeo.org/postgis/
-   $ rev=x.x.0
-   $ svn copy -m "Tagged release $rev" $base/trunk $base/tags/$rev
+   $ rev=2.2.x
+   $ svn copy -m "Tagged release $rev" $base/branches/2.2 $base/tags/$rev
 - Run: sh make_dist.sh $rev (or use debbie for this)
 - Build and test generated tarball (including extension upgrade)
 - Copy tarball to web site and edit downloads page
