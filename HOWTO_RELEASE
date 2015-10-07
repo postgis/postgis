@@ -65,7 +65,7 @@ Release procedure
     - osgeo-discuss
 - Update web sites
     - PostGIS News
-    - https://svn.osgeo.org/postgis/web/_content/posts
+      - https://svn.osgeo.org/postgis/web/_content/posts
        a) create a new Post for current year making sure the page name starts with mm-dd
        b) Update links on https://svn.osgeo.org/postgis/web/_content/pages/source.html
        c) commit and wait 5 minutes to see changes on website
@@ -75,7 +75,6 @@ Release procedure
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
        Or just be lazy and bug Regina Obe do this.
-    - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)
 - Update Trac and make old Milestone as completed
