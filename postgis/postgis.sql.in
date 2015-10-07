@@ -1634,13 +1634,13 @@ CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterIntersecting(geometry[])
     RETURNS geometry[]
-    AS '$libdir/postgis-2.2', 'clusterintersecting_garray'
+    AS 'MODULE_PATHNAME',  'clusterintersecting_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
     RETURNS geometry[]
-    AS '$libdir/postgis-2.2', 'cluster_within_distance_garray'
+    AS 'MODULE_PATHNAME',  'cluster_within_distance_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
