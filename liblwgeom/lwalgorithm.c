@@ -835,7 +835,9 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	/* Return error if we are being fed something outside our working bounds */
 	if ( gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90 )
 	{
-		lwerror("Geohash requires inputs in decimal degrees.");
+		lwerror("Geohash requires inputs in decimal degrees, got (%g %g, %g %g).",
+			 gbox.xmin, gbox.ymin,
+			 gbox.xmax, gbox.ymax);
 		return NULL;
 	}
 
