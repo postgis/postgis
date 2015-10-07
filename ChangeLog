@@ -1,3 +1,668 @@
+2015-10-06 21:23  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14200] doc/reference_processing.xml: Add x-refs between cluster
+	  functions
+
+2015-10-06 00:08  Regina Obe <lr@pcorp.us>
+
+	* [r14199] doc/html/images/st_mapalgebramask01.png,
+	  doc/html/images/st_mapalgebramask02.png,
+	  doc/html/images/st_mapalgebramask03.png,
+	  doc/html/images/st_mapalgebramask04.png,
+	  doc/reference_raster.xml: #2603: provide a lame example with
+	  hopes to come up with a better one in future.
+
+2015-10-05 22:47  Regina Obe <lr@pcorp.us>
+
+	* [r14198] doc/reference_raster.xml: update explanation of what
+	  mask and weight do.
+
+2015-10-05 20:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14196] doc/reference_processing.xml,
+	  doc/xsl/postgis_aggs_mm.xml.xsl: #2916, they are 'curvepolygon'
+	  not 'curvedpolygon'
+
+2015-10-05 17:37  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r14195] raster/rt_core/rt_mapalgebra.c,
+	  raster/rt_core/rt_pixel.c, raster/rt_pg/rtpg_mapalgebra.c,
+	  raster/test/regress/rt_mapalgebra_mask_expected: syntax cleanup
+
+2015-10-05 16:44  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r14194] raster/test/regress/rt_mapalgebra_mask_expected: code
+	  cleanup
+
+2015-10-05 16:26  Regina Obe <lr@pcorp.us>
+
+	* [r14193] raster/test/regress/rt_mapalgebra_mask.sql: #3314 missed
+	  some spots forcing order of results
+
+2015-10-05 15:59  Regina Obe <lr@pcorp.us>
+
+	* [r14192] raster/test/regress/rt_mapalgebra_mask.sql,
+	  raster/test/regress/rt_mapalgebra_mask_expected: #3314: change
+	  mask test to use st_dumpvalues to avoid endian differences. Also
+	  force sort of records (since SQL doesn't guarantee sort will be
+	  the same across systems) for multi record results
+
+2015-10-05 15:02  Regina Obe <lr@pcorp.us>
+
+	* [r14191] doc/reference_sfcgal.xml: fix invalid caption on
+	  ST_3DIntersection image (too much copy paste)
+
+2015-10-05 13:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14190] postgis: ignore build files
+
+2015-10-05 01:39  Regina Obe <lr@pcorp.us>
+
+	* [r14189] doc/html/images/st_3dunion01.png,
+	  doc/reference_sfcgal.xml: Add ST_3DUnion example to complete the
+	  ST_3DDifference, ST_3DIntersection, ST_3DUnion trilogy
+
+2015-10-04 23:40  Regina Obe <lr@pcorp.us>
+
+	* [r14188] doc/reference_sfcgal.xml: another typo in path
+
+2015-10-04 23:28  Regina Obe <lr@pcorp.us>
+
+	* [r14187] doc/html/images/st_3dintersection01.png,
+	  doc/reference_sfcgal.xml: add an ST_3DIntersection graphic. Fix
+	  graphic link on ST_3DDifference
+
+2015-10-04 22:54  Regina Obe <lr@pcorp.us>
+
+	* [r14186] doc/html/images/st_3ddifference01.png,
+	  doc/html/images/st_3ddifference02.png, doc/reference_sfcgal.xml:
+	  Put in example of ST_3DDifference and fix a typo
+
+2015-10-04 20:47  Regina Obe <lr@pcorp.us>
+
+	* [r14185] raster/rt_core/rt_pixel.c,
+	  raster/rt_pg/rtpg_mapalgebra.c,
+	  raster/test/regress/rt_mapalgebra_mask_expected: #3315: fix typos
+	  in error messages for map algebra mask and provide more
+	  descriptive error about dimension mismatch
+
+2015-10-04 17:37  Regina Obe <lr@pcorp.us>
+
+	* [r14184] regress/sfcgal/regress_expected,
+	  regress/sfcgal/tickets_expected: #3314 patch from sebastic for
+	  big endian
+
+2015-10-04 16:36  Regina Obe <lr@pcorp.us>
+
+	* [r14183] doc/reference_measure.xml: #3298 document change in
+	  behavior of ST_3DClosestPoint, ST_3DShortestLine,
+	  ST_3DLongestLine, ST_3DMaxDistance
+
+2015-10-04 15:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14182] regress/sfcgal/regress.sql, regress/sfcgal/tickets.sql:
+	  Force output to little endian, #3314
+
+2015-10-04 07:55  Regina Obe <lr@pcorp.us>
+
+	* [r14181] doc/reference_accessor.xml: Add note that ST_Summary now
+	  supports tins and curves. 2.1.8 just returned unknown type for
+	  these. ST_Summary now tells the type (though I think it does a
+	  sucky job on reporting subelements of multisurface)
+
+2015-10-03 19:51  Regina Obe <lr@pcorp.us>
+
+	* [r14180] doc/reference_measure.xml: put a note enhancment only
+	  availabe if compiled with proj 4.9+ for all geographiclib
+	  enhanced function. (also change to use ST_GeogFromText instead of
+	  the painfully long ST_GeographyFromText alias)
+
+2015-10-03 19:05  Nicklas Avén <nicklas.aven@jordogskog.no>
+
+	* [r14179] liblwgeom/measures3d.c: Fix for #3298, open for
+	  multi-geometries with mixed dim or 2d in 3d measurment functions
+
+2015-10-03 18:28  Regina Obe <lr@pcorp.us>
+
+	* [r14178] doc/reference_raster.xml: #2603: add weighted and mask
+	  args
+
+2015-10-03 16:20  Regina Obe <lr@pcorp.us>
+
+	* [r14177] doc/reference_raster.xml: #1748: change arg names in
+	  raster ST_Intersection docs to agree with arg names installed.
+	  Also get rid of coming soon raster/geom that returns raster --
+	  that's called ST_Clip. Put in a note about that for people
+	  looking at ST_Intersection wanting ST_Clip. Get rid of default
+	  args that aren't default at all (we have more protos than we need
+	  - may want to consider removing them in 2.3 and replacing with
+	  default args)
+
+2015-10-03 06:12  Sandro Santilli <strk@keybit.net>
+
+	* [r14176] loader/pgsql2shp-core.h: Drop postgis_config.h include
+	  from header file (#2303)
+	  
+	  It's better to only include build config header from C files.
+
+2015-10-02 23:05  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14175] loader/shp2pgsql-gui.c: Update emails, #3309
+
+2015-10-02 15:11  Regina Obe <lr@pcorp.us>
+
+	* [r14174] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh: #3308
+	  patch winnie's build and packaging and regress to go back to
+	  static linking.
+
+2015-10-02 05:40  Regina Obe <lr@pcorp.us>
+
+	* [r14173] ci/winnie/package_postgis.sh: #3308 gui loader on
+	  windows doesn't work -- add in the extra dependencies introduced
+	  by PostGIS 2.2 :(
+
+2015-10-01 20:13  Sandro Santilli <strk@keybit.net>
+
+	* [r14172] NEWS: Add item about the new "lwgeom_version" function
+	  in liblwgeom
+
+2015-10-01 20:09  Sandro Santilli <strk@keybit.net>
+
+	* [r14171] liblwgeom/Makefile.in, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/lwgeom_api.c, postgis/lwgeom_functions_basic.c,
+	  postgis/postgis.sql.in: Add check for liblwgeom version mismatch
+	  in postgis_full_version()
+	  
+	  Adds a postgis_liblwgeom_version() function accessible to SQL.
+
+2015-10-01 04:39  Regina Obe <lr@pcorp.us>
+
+	* [r14170] extensions/compute_srid_contiguous_ranges.sql,
+	  extensions/postgis/sql_bits/mark_editable_objects.sql.in: update
+	  srid exclude range for proper dump/restore preserve of custom
+	  spatial ref. Add WHERE to compute_srid.. so its an easier cut and
+	  paster to editable routine
+
+2015-09-30 15:37  Sandro Santilli <strk@keybit.net>
+
+	* [r14156] topology/postgis_topology.c: Honour topology-wide
+	  precision configuration (#3304)
+	  
+	  NOTE: only 2.2.0-RC1 was published with this bug present
+
+2015-09-30 13:57  Sandro Santilli <strk@keybit.net>
+
+	* [r14155] liblwgeom/lwgeom_topo.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected_newsnap,
+	  topology/test/regress/topogeo_addlinestring_expected_oldsnap:
+	  Improve robustness of adding points to topology (#3280)
+	  
+	  When multiple edges are within tolerance from the added point,
+	  give preference to snapping to the one which contains a point
+	  projected to it.
+	  
+	  Also, make sure to sort nodes and edges by distance before
+	  considering them for matching or snapping, which is what
+	  was done in previous versions.
+
+2015-09-30 04:33  Regina Obe <lr@pcorp.us>
+
+	* [r14149] doc/extras_tigergeocoder.xml, doc/installation.xml: try
+	  to fix illegal abstract (with note (instead of para)) and
+	  listltiem with no para
+
+2015-09-30 03:19  Regina Obe <lr@pcorp.us>
+
+	* [r14148] doc/extras_tigergeocoder.xml, doc/installation.xml:
+	  update tiger instructions to be comprehensive (next step will be
+	  to delete them from README os have only one source to edit). Also
+	  add a note about using GUC for raster settings (instead of less
+	  cross-platform environment approach)
+
+2015-09-29 21:25  Sandro Santilli <strk@keybit.net>
+
+	* [r14147] doc/Makefile.in, doc/po/Makefile.local: Fix check-local
+	  rule to properly setup symlinks
+
+2015-09-29 21:15  Sandro Santilli <strk@keybit.net>
+
+	* [r14146] doc/po/it_IT/installation.xml.po: Update italian
+	  installation transation
+
+2015-09-29 20:38  Regina Obe <lr@pcorp.us>
+
+	* [r14145] ci/debbie/postgis_doc_translations.sh: commit debbie's
+	  translation script and add the check_localized call. (Switched
+	  debbie's job alreayd to use this script instead of the one from
+	  buildbot svn)
+
+2015-09-29 20:10  Sandro Santilli <strk@keybit.net>
+
+	* [r14143] doc/po/it_IT/installation.xml.po: Fix it_IT translation
+	  of installation.xml.po
+
+2015-09-29 20:09  Sandro Santilli <strk@keybit.net>
+
+	* [r14142] doc/Makefile.in: Add "check-localized" rule in
+	  doc/Makefile (#3302)
+
+2015-09-29 19:36  Sandro Santilli <strk@keybit.net>
+
+	* [r14141] doc/po/pt_BR/installation.xml.po: Fix pt_BR translation
+	  of installation.xml.po
+
+2015-09-29 19:29  Sandro Santilli <strk@keybit.net>
+
+	* [r14140] doc/po/de_DE/extras.xml.po,
+	  doc/po/de_DE/extras_address_standardizer.xml.po,
+	  doc/po/de_DE/extras_historytable.xml.po,
+	  doc/po/de_DE/extras_tigergeocoder.xml.po,
+	  doc/po/de_DE/extras_topology.xml.po, doc/po/de_DE/faq.xml.po,
+	  doc/po/de_DE/faq_raster.xml.po, doc/po/de_DE/installation.xml.po,
+	  doc/po/de_DE/introduction.xml.po,
+	  doc/po/de_DE/performance_tips.xml.po,
+	  doc/po/de_DE/postgis.xml.po, doc/po/de_DE/reference.xml.po,
+	  doc/po/de_DE/reference_accessor.xml.po,
+	  doc/po/de_DE/reference_constructor.xml.po,
+	  doc/po/de_DE/reference_editor.xml.po,
+	  doc/po/de_DE/reference_exception.xml.po,
+	  doc/po/de_DE/reference_guc.xml.po,
+	  doc/po/de_DE/reference_lrs.xml.po,
+	  doc/po/de_DE/reference_management.xml.po,
+	  doc/po/de_DE/reference_measure.xml.po,
+	  doc/po/de_DE/reference_misc.xml.po,
+	  doc/po/de_DE/reference_operator.xml.po,
+	  doc/po/de_DE/reference_output.xml.po,
+	  doc/po/de_DE/reference_processing.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/de_DE/reference_sfcgal.xml.po,
+	  doc/po/de_DE/reference_temporal.xml.po,
+	  doc/po/de_DE/reference_transaction.xml.po,
+	  doc/po/de_DE/reference_type.xml.po,
+	  doc/po/de_DE/release_notes.xml.po, doc/po/de_DE/reporting.xml.po,
+	  doc/po/de_DE/using_postgis_app.xml.po,
+	  doc/po/de_DE/using_postgis_dataman.xml.po,
+	  doc/po/de_DE/using_raster_dataman.xml.po: update-po after new
+	  german translation was added
+
+2015-09-29 19:29  Sandro Santilli <strk@keybit.net>
+
+	* [r14139] doc/po/de_DE/Makefile: Add missing Makefile to build
+	  german documentation
+
+2015-09-29 19:15  Sandro Santilli <strk@keybit.net>
+
+	* [r14138] doc/po/de_DE/faq.xml.po: Add missing ending quotes in
+	  german faq translations (#3293)
+
+2015-09-29 19:10  Sandro Santilli <strk@keybit.net>
+
+	* [r14137] doc/po/de_DE/faq.xml.po: Update German translation of
+	  FAQs (#3293)
+
+2015-09-29 17:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14136] liblwgeom/g_box.c, regress/tickets.sql,
+	  regress/tickets_expected: #3300, Box3D for curves calculation fix
+
+2015-09-29 14:47  Sandro Santilli <strk@keybit.net>
+
+	* [r14135] doc/Makefile.in, doc/po/de_DE,
+	  doc/po/de_DE/extras.xml.po,
+	  doc/po/de_DE/extras_address_standardizer.xml.po,
+	  doc/po/de_DE/extras_historytable.xml.po,
+	  doc/po/de_DE/extras_tigergeocoder.xml.po,
+	  doc/po/de_DE/extras_topology.xml.po, doc/po/de_DE/faq.xml.po,
+	  doc/po/de_DE/faq_raster.xml.po, doc/po/de_DE/installation.xml.po,
+	  doc/po/de_DE/introduction.xml.po,
+	  doc/po/de_DE/performance_tips.xml.po,
+	  doc/po/de_DE/postgis.xml.po, doc/po/de_DE/reference.xml.po,
+	  doc/po/de_DE/reference_accessor.xml.po,
+	  doc/po/de_DE/reference_constructor.xml.po,
+	  doc/po/de_DE/reference_editor.xml.po,
+	  doc/po/de_DE/reference_exception.xml.po,
+	  doc/po/de_DE/reference_guc.xml.po,
+	  doc/po/de_DE/reference_lrs.xml.po,
+	  doc/po/de_DE/reference_management.xml.po,
+	  doc/po/de_DE/reference_measure.xml.po,
+	  doc/po/de_DE/reference_misc.xml.po,
+	  doc/po/de_DE/reference_operator.xml.po,
+	  doc/po/de_DE/reference_output.xml.po,
+	  doc/po/de_DE/reference_processing.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/de_DE/reference_sfcgal.xml.po,
+	  doc/po/de_DE/reference_transaction.xml.po,
+	  doc/po/de_DE/reference_type.xml.po: Add german (partial)
+	  translation from transifex
+
+2015-09-29 14:47  Sandro Santilli <strk@keybit.net>
+
+	* [r14134] doc/po/es/reference_temporal.xml.po,
+	  doc/po/fr/reference_temporal.xml.po,
+	  doc/po/it_IT/reference_temporal.xml.po,
+	  doc/po/ko_KR/reference_temporal.xml.po,
+	  doc/po/pl/reference_temporal.xml.po,
+	  doc/po/pt_BR/reference_temporal.xml.po: Add missing
+	  reference_temporal.xml.po files
+
+2015-09-29 14:46  Sandro Santilli <strk@keybit.net>
+
+	* [r14133] doc/po/es/extras_address_standardizer.xml.po,
+	  doc/po/es/extras_tigergeocoder.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq.xml.po,
+	  doc/po/es/faq_raster.xml.po, doc/po/es/installation.xml.po,
+	  doc/po/es/introduction.xml.po, doc/po/es/postgis.xml.po,
+	  doc/po/es/reference.xml.po, doc/po/es/reference_accessor.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_guc.xml.po, doc/po/es/reference_lrs.xml.po,
+	  doc/po/es/reference_management.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_misc.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_sfcgal.xml.po,
+	  doc/po/es/release_notes.xml.po,
+	  doc/po/es/using_raster_dataman.xml.po,
+	  doc/po/fr/extras_address_standardizer.xml.po,
+	  doc/po/fr/extras_tigergeocoder.xml.po,
+	  doc/po/fr/extras_topology.xml.po, doc/po/fr/faq.xml.po,
+	  doc/po/fr/faq_raster.xml.po, doc/po/fr/installation.xml.po,
+	  doc/po/fr/introduction.xml.po, doc/po/fr/postgis.xml.po,
+	  doc/po/fr/reference.xml.po, doc/po/fr/reference_accessor.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_guc.xml.po, doc/po/fr/reference_lrs.xml.po,
+	  doc/po/fr/reference_management.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_misc.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/reference_sfcgal.xml.po,
+	  doc/po/fr/release_notes.xml.po,
+	  doc/po/fr/using_raster_dataman.xml.po,
+	  doc/po/it_IT/extras_address_standardizer.xml.po,
+	  doc/po/it_IT/extras_tigergeocoder.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po, doc/po/it_IT/faq.xml.po,
+	  doc/po/it_IT/faq_raster.xml.po, doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/introduction.xml.po, doc/po/it_IT/postgis.xml.po,
+	  doc/po/it_IT/reference.xml.po,
+	  doc/po/it_IT/reference_accessor.xml.po,
+	  doc/po/it_IT/reference_constructor.xml.po,
+	  doc/po/it_IT/reference_editor.xml.po,
+	  doc/po/it_IT/reference_guc.xml.po,
+	  doc/po/it_IT/reference_lrs.xml.po,
+	  doc/po/it_IT/reference_management.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/it_IT/reference_misc.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_output.xml.po,
+	  doc/po/it_IT/reference_processing.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/reference_sfcgal.xml.po,
+	  doc/po/it_IT/release_notes.xml.po,
+	  doc/po/it_IT/using_raster_dataman.xml.po,
+	  doc/po/ko_KR/extras_address_standardizer.xml.po,
+	  doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po, doc/po/ko_KR/faq.xml.po,
+	  doc/po/ko_KR/faq_raster.xml.po, doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/introduction.xml.po, doc/po/ko_KR/postgis.xml.po,
+	  doc/po/ko_KR/reference.xml.po,
+	  doc/po/ko_KR/reference_accessor.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_guc.xml.po,
+	  doc/po/ko_KR/reference_lrs.xml.po,
+	  doc/po/ko_KR/reference_management.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_misc.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/reference_sfcgal.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/ko_KR/using_raster_dataman.xml.po,
+	  doc/po/pl/extras_address_standardizer.xml.po,
+	  doc/po/pl/extras_tigergeocoder.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/faq.xml.po,
+	  doc/po/pl/faq_raster.xml.po, doc/po/pl/installation.xml.po,
+	  doc/po/pl/introduction.xml.po, doc/po/pl/postgis.xml.po,
+	  doc/po/pl/reference.xml.po, doc/po/pl/reference_accessor.xml.po,
+	  doc/po/pl/reference_constructor.xml.po,
+	  doc/po/pl/reference_editor.xml.po,
+	  doc/po/pl/reference_guc.xml.po, doc/po/pl/reference_lrs.xml.po,
+	  doc/po/pl/reference_management.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pl/reference_misc.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_output.xml.po,
+	  doc/po/pl/reference_processing.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/reference_sfcgal.xml.po,
+	  doc/po/pl/release_notes.xml.po,
+	  doc/po/pl/using_raster_dataman.xml.po,
+	  doc/po/pt_BR/extras_address_standardizer.xml.po,
+	  doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po, doc/po/pt_BR/faq.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po, doc/po/pt_BR/postgis.xml.po,
+	  doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_guc.xml.po,
+	  doc/po/pt_BR/reference_lrs.xml.po,
+	  doc/po/pt_BR/reference_management.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_misc.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/reference_sfcgal.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po: Update translation
+	  files from transifex
+
+2015-09-29 12:54  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14132] loader/shp2pgsql-core.c: #2473, only create spatial
+	  index if there's a shape file
+
+2015-09-29 12:38  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14131] HOWTO_RELEASE: Remove old deprcated manual steps
+
+2015-09-29 12:31  Sandro Santilli <strk@keybit.net>
+
+	* [r14130] doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/faq.xml.pot,
+	  doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/postgis.xml.pot,
+	  doc/po/templates/reference.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_guc.xml.pot,
+	  doc/po/templates/reference_lrs.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_misc.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/reference_sfcgal.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/using_raster_dataman.xml.pot: Update translation
+	  templates
+
+2015-09-29 12:31  Sandro Santilli <strk@keybit.net>
+
+	* [r14129] doc/.tx/config,
+	  doc/po/templates/reference_temporal.xml.pot: Add
+	  reference_temporal.xml translation resource
+
+2015-09-29 11:43  Sandro Santilli <strk@keybit.net>
+
+	* [r14128] liblwgeom/Makefile.in, loader/Makefile.in: Honor build
+	  flags in liblwgeom and loader dirs (#3291)
+	  
+	  Patch by Markus Wanner <markus@bluegap.ch>
+
+2015-09-29 11:38  Sandro Santilli <strk@keybit.net>
+
+	* [r14127] loader/shp2pgsql-gui.1: Strip BOM out of manpage (#3292)
+	  
+	  Thanks Markus Wanner <markus@bluegap.ch>
+
+2015-09-29 11:25  Sandro Santilli <strk@keybit.net>
+
+	* [r14126] regress/delaunaytriangles.sql,
+	  regress/delaunaytriangles_expected: Add 3D tests for
+	  ST_DelaunayTriangles (#2301)
+
+2015-09-29 11:12  Sandro Santilli <strk@keybit.net>
+
+	* [r14125] utils/Makefile.in: Do not override
+	  install/uninstall/clean targets from PGXS (#3284)
+
+2015-09-29 03:30  Regina Obe <lr@pcorp.us>
+
+	* [r14123] doc/reference_guc.xml, doc/reference_raster.xml: fix
+	  typo in tag provide example for enable driver and database and
+	  system level
+
+2015-09-29 03:20  Regina Obe <lr@pcorp.us>
+
+	* [r14122] doc/reference_raster.xml:
+
+2015-09-29 03:14  Regina Obe <lr@pcorp.us>
+
+	* [r14121] doc/reference_raster.xml: update ST_GDALDrivers example
+	  to demonstrate how to enable all drivers and also show some cool
+	  new offerings in GDAL 2.0
+
+2015-09-28 07:40  Sandro Santilli <strk@keybit.net>
+
+	* [r14119] regress/run_test.pl: Add support for creating extension
+	  from unpackaged (#3296)
+	  
+	  Use: ./run_test.pl --extension --upgrade-path unpackaged--2.2.0
+
+2015-09-28 07:15  Sandro Santilli <strk@keybit.net>
+
+	* [r14118] regress/run_test.pl: Typo in help message
+
+2015-09-26 16:42  Regina Obe <lr@pcorp.us>
+
+	* [r14117] doc/using_raster_dataman.xml: #3043: Some raster2pgsql
+	  options are not documented
+
+2015-09-26 15:48  Regina Obe <lr@pcorp.us>
+
+	* [r14116] raster/test/regress/check_gdal.sql,
+	  raster/test/regress/check_gdal_expected: #3297 fix check_gdal
+	  regress test to not test initial state (so not sensitive to users
+	  default postgis.gdal_enabled_drivers settings
+
+2015-09-26 14:30  Regina Obe <lr@pcorp.us>
+
+	* [r14115] loader/shpcommon.h: #3289 - spelling mistakes -- apply
+	  remainder shplib provided by sebastic
+
+2015-09-26 10:49  Sandro Santilli <strk@keybit.net>
+
+	* [r14114] raster/rt_core/librtcore.h: Detect GNU/Hurd and treat it
+	  like Linux just as BSD (#3295)
+
+2015-09-26 10:17  Sandro Santilli <strk@keybit.net>
+
+	* [r14113] doc/extras_topology.xml,
+	  doc/po/es/extras_topology.xml.po,
+	  doc/po/fr/extras_topology.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/pl/extras_topology.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po,
+	  doc/po/templates/extras_topology.xml.pot,
+	  liblwgeom/liblwgeom_topo.h, liblwgeom/lwgeom_topo.c,
+	  liblwgeom/lwout_wkt.c, topology/sql/sqlmm.sql.in: Minor spelling
+	  fixes (#3288)
+	  
+	  recieved -> received
+	  splitted -> split
+	  
+	  The "Portuguese" once were left untouched because inside
+	  external shapelib component.
+	  
+	  Thanks to Markus Wanner <markus@bluegap.ch>
+	  and Bas Couwenberg <sebastic@debian.org>
+
+2015-09-25 18:03  Regina Obe <lr@pcorp.us>
+
+	* [r14110] doc/extras_tigergeocoder.xml: Get rid of obsolete
+	  comments
+
+2015-09-25 11:53  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14109] make_dist.sh: Build in place
+
+2015-09-25 07:27  Regina Obe <lr@pcorp.us>
+
+	* [r14108] extras/tiger_geocoder/README: #3286 get rid of obsolete
+	  link
+
+2015-09-24 22:05  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14105] make_dist.sh: Build output one dir lower
+
+2015-09-24 19:12  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14103] configure.ac, liblwgeom/Makefile.in: Allow building with
+	  an "RC" version number
+
+2015-09-24 19:00  Regina Obe <lr@pcorp.us>
+
+	* [r14101] extras/tiger_geocoder/README: #3286: update README
+
+2015-09-24 17:44  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14098] extensions/postgis/META.json: Reformat
+
+2015-09-24 17:43  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14097] extensions/postgis/META.json: Update pgxn file
+
+2015-09-24 17:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14096] README.postgis: Spling errata
+
+2015-09-24 17:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14095] doc/release_notes.xml: Add 2.2 release notes, en-link'en
+	  ticket numbers
+
+2015-09-24 16:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14094] ChangeLog: Update Changelog with Makefile rule
+
+2015-09-24 16:15  Regina Obe <lr@pcorp.us>
+
+	* [r14093] NEWS, raster/rt_pg/rtpostgis.sql.in: #2842 Hide
+	  unselectable tables from raster_overview and raster_columns
+
 2015-09-24 13:31  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r14092] ChangeLog: Update changelog
