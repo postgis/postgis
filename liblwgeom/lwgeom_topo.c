@@ -1391,7 +1391,7 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir
   }
 
   LWDEBUGF(1, "first point is index %d", from);
-  getPoint2d_p(pa, from, &fp);
+  fp = *ref; /* getPoint2d_p(pa, from, &fp); */
   for ( i = from+inc; i != toofar; i += inc )
   {
     LWDEBUGF(1, "testing point %d", i);
@@ -3497,7 +3497,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 
   /* Bail out if next CW or CCW edge on start node changed */
   if ( span_pre.nextCW != span_post.nextCW ||
-       span_pre.nextCCW != span_pre.nextCCW )
+       span_pre.nextCCW != span_post.nextCCW )
   {{
     LWT_ELEMID nid = oldedge->start_node;
     _lwt_release_edges(oldedge, 1);
@@ -3508,7 +3508,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 
   /* Bail out if next CW or CCW edge on end node changed */
   if ( epan_pre.nextCW != epan_post.nextCW ||
-       epan_pre.nextCCW != epan_pre.nextCCW )
+       epan_pre.nextCCW != epan_post.nextCCW )
   {{
     LWT_ELEMID nid = oldedge->end_node;
     _lwt_release_edges(oldedge, 1);
@@ -4910,7 +4910,7 @@ LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
   int num, i;
-  double mindist;
+  double mindist = FLT_MAX;
   LWT_ISO_NODE *nodes, *nodes2;
   LWT_ISO_EDGE *edges, *edges2;
   LWGEOM *pt = lwpoint_as_lwgeom(point);
