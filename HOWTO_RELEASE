@@ -1,15 +1,19 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2014-05-14
+Date: 2015-10-08
 
 Versioning Scheme
 -----------------
 
-Release version is composed by POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION
-and POSTGIS_MICRO_VERSION components.
+*PostGIS*
+
+PostGIS release version is composed by POSTGIS_MAJOR_VERSION,
+POSTGIS_MINOR_VERSION and POSTGIS_MICRO_VERSION components, all
+set in Version.config.
 
 By default only [POSTGIS_MICRO_VERSION] increments between releases.
-Starting at PostGIS 2.1 in development  POSTGIS_MICRO_VERSION should have a dev at the end
+Starting at PostGIS 2.1 in development  POSTGIS_MICRO_VERSION should have
+a "dev" string at the end
 
 [POSTGIS_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
 additions have been introduced (one or two functions can be considered
@@ -22,6 +26,15 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
 So for example if you just release 2.1.1, then the 2.1 branch should have
 POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
+
+*Liblwgeom*
+
+Liblwgeom versioning is composed by by LIBLWGEOM_IFACE_CUR,
+LIBLWGEOM_IFACE_AGE and LIBLWGEOM_IFACE_REV; all set and documented
+in Version.config.
+
+The liblwgeom versioning represents compatibility of the library
+within a PostGIS minor version.
 
 Requirements
 ------------

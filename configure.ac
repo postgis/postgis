@@ -98,11 +98,11 @@ AC_SUBST([POSTGIS_MINOR_VERSION])
 AC_SUBST([POSTGIS_MICRO_VERSION])
 
 dnl
-dnl Convert PostGIS version info into liblwgeom libtool-happy numbers
+dnl Liblwgeom version information imported from Version.config
 dnl
-LIBLWGEOM_CURRENT=`expr $POSTGIS_MAJOR_VERSION + $POSTGIS_MINOR_VERSION`
-LIBLWGEOM_AGE=$POSTGIS_MINOR_VERSION
-LIBLWGEOM_REV=`echo $POSTGIS_MICRO_VERSION | perl -p -e 's/(\d+)\w*\d*/$1/g'`
+LIBLWGEOM_CURRENT=`cat Version.config | grep LIBLWGEOM_IFACE_CUR | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_AGE=`cat Version.config | grep LIBLWGEOM_IFACE_AGE | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_REV=`cat Version.config | grep LIBLWGEOM_IFACE_REV | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 AC_SUBST([LIBLWGEOM_CURRENT])
 AC_SUBST([LIBLWGEOM_AGE])
 AC_SUBST([LIBLWGEOM_REV])
