@@ -112,7 +112,7 @@ PostGIS 2.2.0
 
   - #3223, Add memcmp short-circuit to ST_Equals (Daniel Baston)
   - #3227, Tiger geocoder upgraded to support Tiger 2015 census
-  - #2278, Make liblwgeom potentially compatible between releases
+  - #2278, Make liblwgeom potentially ABI-compatible between micro releases
   - #897, ST_AsX3D support for GeoCoordinates and systems "GD" "WE"
            ability to flip x/y axis (use option = 2, 3)
   - ST_Split: allow splitting lines by multilines, multipoints
