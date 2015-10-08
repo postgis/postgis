@@ -85,9 +85,9 @@ AC_SUBST([EXESUFFIX])
 dnl
 dnl Version Information imported from Version.config 
 dnl
-POSTGIS_MAJOR_VERSION=`cat Version.config | grep POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_MINOR_VERSION=`cat Version.config | grep POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_MICRO_VERSION=`cat Version.config | grep POSTGIS_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MAJOR_VERSION=`cat Version.config | grep ^POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MINOR_VERSION=`cat Version.config | grep ^POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MICRO_VERSION=`cat Version.config | grep ^POSTGIS_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 
 AC_DEFINE_UNQUOTED([POSTGIS_MAJOR_VERSION], ["$POSTGIS_MAJOR_VERSION"], [PostGIS major version])
 AC_DEFINE_UNQUOTED([POSTGIS_MINOR_VERSION], ["$POSTGIS_MINOR_VERSION"], [PostGIS minor version])
@@ -100,9 +100,9 @@ AC_SUBST([POSTGIS_MICRO_VERSION])
 dnl
 dnl Liblwgeom version information imported from Version.config
 dnl
-LIBLWGEOM_CURRENT=`cat Version.config | grep LIBLWGEOM_IFACE_CUR | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-LIBLWGEOM_AGE=`cat Version.config | grep LIBLWGEOM_IFACE_AGE | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-LIBLWGEOM_REV=`cat Version.config | grep LIBLWGEOM_IFACE_REV | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_CURRENT=`cat Version.config | grep ^LIBLWGEOM_IFACE_CUR | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_AGE=`cat Version.config | grep ^LIBLWGEOM_IFACE_AGE | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_REV=`cat Version.config | grep ^LIBLWGEOM_IFACE_REV | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 AC_SUBST([LIBLWGEOM_CURRENT])
 AC_SUBST([LIBLWGEOM_AGE])
 AC_SUBST([LIBLWGEOM_REV])
