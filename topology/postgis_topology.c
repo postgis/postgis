@@ -883,21 +883,22 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_EDGE*
 cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* ids, int* numelems, int fields)
+      const LWT_ELEMID* ids, int* numelems, int fields,
+      const GBOX *box)
 {
   LWT_ISO_EDGE *edges;
 	int spi_result;
   MemoryContext oldcontext = CurrentMemoryContext;
-
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
+  char *hexbox;
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
   appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
-  appendStringInfoString(sql, " WHERE left_face IN (");
+  appendStringInfoString(sql, " WHERE ( left_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
@@ -907,7 +908,13 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   for (i=0; i<*numelems; ++i) {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
-  appendStringInfoString(sql, ")");
+  appendStringInfoString(sql, ") )");
+  if ( box )
+  {
+    hexbox = _box2d_to_hexwkb(box, topo->srid);
+    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
+    lwfree(hexbox);
+  }
 
   POSTGIS_DEBUGF(1, "cb_getEdgeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
@@ -1111,7 +1118,8 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* ids, int* numelems, int fields)
+      const LWT_ELEMID* ids, int* numelems, int fields,
+      const GBOX *box)
 {
   LWT_ISO_NODE *nodes;
 	int spi_result;
@@ -1119,6 +1127,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
+  char *hexbox;
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
@@ -1130,6 +1139,12 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
+  if ( box )
+  {
+    hexbox = _box2d_to_hexwkb(box, topo->srid);
+    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
+    lwfree(hexbox);
+  }
   POSTGIS_DEBUGF(1, "cb_getNodeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);

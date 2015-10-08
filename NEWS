@@ -3,7 +3,7 @@ PostGIS 2.2.1
 
  * Bug Fixes *
 
-
+  - #3321, Fix performance regression in topology loading
 
 
 PostGIS 2.2.0

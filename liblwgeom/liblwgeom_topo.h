@@ -618,7 +618,9 @@ typedef struct LWT_BE_CALLBACKS_T {
   );
 
   /**
+   * \brief
    * Get edges that have any of the given faces on the left or right side
+   * and optionally whose bounding box overlaps the given one.
    *
    * @param topo the topology to act upon
    * @param ids an array of face identifiers
@@ -628,6 +630,8 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                 section for semantic.
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_EDGE_* macros
+   * @param box optional bounding box to further restrict matches, use
+   *            NULL for no further restriction.
    *
    * @return an array of edges identifiers or NULL in the following cases:
    *         - no edge found ("numelems" is set to 0)
@@ -635,7 +639,8 @@ typedef struct LWT_BE_CALLBACKS_T {
    */
   LWT_ISO_EDGE* (*getEdgeByFace) (
       const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* ids, int* numelems, int fields
+      const LWT_ELEMID* ids, int* numelems, int fields,
+      const GBOX *box
   );
 
   /**
@@ -649,6 +654,8 @@ typedef struct LWT_BE_CALLBACKS_T {
    *                 otherwise see @return section for semantic.
    * @param fields fields to be filled in the returned structure, see
    *               LWT_COL_NODE_* macros
+   * @param box optional bounding box to further restrict matches, use
+   *            NULL for no further restriction.
    *
    * @return an array of nodes or NULL in the following cases:
    *         - no nod found ("numelems" is set to 0)
@@ -656,7 +663,8 @@ typedef struct LWT_BE_CALLBACKS_T {
    */
   LWT_ISO_NODE* (*getNodeByFace) (
       const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* faces, int* numelems, int fields
+      const LWT_ELEMID* faces, int* numelems, int fields,
+      const GBOX *box
   );
 
   /**
