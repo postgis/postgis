@@ -248,16 +248,16 @@ lwt_be_getEdgeByNode(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
 
 static LWT_ISO_EDGE*
 lwt_be_getEdgeByFace(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                   int* numelems, int fields)
+                   int* numelems, int fields, const GBOX *box)
 {
-  CBT3(topo, getEdgeByFace, ids, numelems, fields);
+  CBT4(topo, getEdgeByFace, ids, numelems, fields, box);
 }
 
 static LWT_ISO_NODE*
 lwt_be_getNodeByFace(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                   int* numelems, int fields)
+                   int* numelems, int fields, const GBOX *box)
 {
-  CBT3(topo, getNodeByFace, ids, numelems, fields);
+  CBT4(topo, getNodeByFace, ids, numelems, fields, box);
 }
 
 LWT_ISO_EDGE*
@@ -1985,7 +1985,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
                LWT_COL_EDGE_GEOM
                ;
   numfaceedges = 1;
-  edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields, newface.mbr );
   if ( numfaceedges == -1 ) {
     lwfree( signed_edge_ids );
     _lwt_release_edges(ring_edges, numedges);
@@ -2206,7 +2206,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   int numisonodes = 1;
   fields = LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM;
   LWT_ISO_NODE *nodes = lwt_be_getNodeByFace(topo, &face,
-                                             &numisonodes, fields);
+                                             &numisonodes, fields, newface.mbr);
   if ( numisonodes == -1 ) {
     lwfree( signed_edge_ids );
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -2800,7 +2800,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
            LWT_COL_EDGE_FACE_LEFT |
            LWT_COL_EDGE_FACE_RIGHT
            ;
-  edges = lwt_be_getEdgeByFace( topo, &faceid, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &faceid, &numfaceedges, fields, NULL );
   if ( numfaceedges == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return NULL;
@@ -3017,7 +3017,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
            LWT_COL_EDGE_FACE_LEFT |
            LWT_COL_EDGE_FACE_RIGHT
            ;
-  edges = lwt_be_getEdgeByFace( topo, &face_id, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &face_id, &numfaceedges, fields, NULL );
   if ( numfaceedges == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
