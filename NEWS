@@ -3,6 +3,7 @@ PostGIS 2.2.1
 
  * Bug Fixes *
 
+  - #3329, Fix robustness regression in TopoGeo_addPoint
   - #3321, Fix performance regression in topology loading
 
 

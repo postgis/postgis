@@ -5002,6 +5002,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   /* Order by distance if there are more than a single return */
   if ( num > 1 )
   {{
+    int j;
     sorted = lwalloc(sizeof(scored_pointer)*num);
     for (i=0; i<num; ++i)
     {
@@ -5012,10 +5013,18 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     }
     qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
     edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
-    for (i=0; i<num; ++i)
+    for (j=0, i=0; i<num; ++i)
     {
-      edges2[i] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+      if ( sorted[i].score == sorted[0].score )
+      {
+        edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+      }
+      else
+      {
+        lwline_free(((LWT_ISO_EDGE*)sorted[i].ptr)->geom);
+      }
     }
+    num = j;
     lwfree(sorted);
     lwfree(edges);
     edges = edges2;
