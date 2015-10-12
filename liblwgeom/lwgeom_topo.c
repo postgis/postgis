@@ -3578,6 +3578,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       return -1;
     }
   }
+  if ( nface1 ) lwgeom_free(nface1);
+  if ( nface2 ) lwgeom_free(nface2);
 
   LWDEBUG(1, "all done, cleaning up edges");
 
