@@ -196,7 +196,7 @@ else
 	$TMPDIR = tempdir( CLEANUP => 0 );
 }
 
-mkdir $TMPDIR if ( ! -d $TMPDIR );
+mkpath $TMPDIR if ( ! -d $TMPDIR );
 
 # Set log name
 my $REGRESS_LOG = "${TMPDIR}/regress_log";
