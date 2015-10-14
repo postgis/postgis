@@ -75,15 +75,15 @@ this to work.
 
     apt-get install libjson0-dev
 
-* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended) needed for raster support
-  Also needed to install PostGIS using CREATE EXTENSION postgis; syntax
+* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended)
 
   GDAL (http://gdal.org) is *required* if you want to compile PostGIS 
-  with raster support.  To compile without raster support you 
-  must ``./configure --without-raster``
+  with raster or extension support. To compile without raster support you
+  must ``./configure --without-raster`` (also disables extension)
   
 * CGAL 4.1+ and SFCGAL (Optional) needed for advanced 3D support
-https://github.com/Oslandia/SFCGAL
+
+  https://github.com/Oslandia/SFCGAL
 
 
 CONFIGURATION
