@@ -6,6 +6,7 @@
 				<refname>ST_Buffer</refname>
 
 				<refpurpose>
+(T)
 Returns a geometry covering all points within a given distance
 from the input geometry.
 			</refpurpose>
@@ -1679,6 +1680,7 @@ SELECT ST_AsText(
 			<refname>ST_Intersection</refname>
 
 			<refpurpose>
+(T)
 Returns a geometry that represents the shared portion of geomA and geomB.
 			</refpurpose>
 		</refnamediv>
