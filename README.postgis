@@ -117,11 +117,11 @@ or use ``--with-gdalconfig=/path/to/gdal-config`` option.
 
 By default, both Topology and Raster extensions are enabled in ``./configure``.
 
-If you want to compile PostGIS *without* Raster support, you must provide the
-``--without-raster`` option.
+If you want to compile PostGIS *without* Raster support,
+you must provide the ``--without-raster`` option.
 
-If you want to compile PostGIS *without* Topology support, you must provide the
-``--without-topology`` option.
+If you want to compile PostGIS *without* Topology support,
+you must provide the ``--without-topology`` option.
 
 PostGIS will be compiled with sfcgal support if it is found.
 You can explicitly state the location with --with-sfcgal=path/to/sfcgal
