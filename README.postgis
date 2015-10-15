@@ -123,8 +123,8 @@ If you want to compile PostGIS *without* Raster support, you must provide the
 If you want to compile PostGIS *without* Topology support, you must provide the
 ``--without-topology`` option.
 
-PostGIS will be compiled with sfcgal support if it is found.  You can explicitly
-state the location with --with-sfcgal=path/to/sfcgal
+PostGIS will be compiled with sfcgal support if it is found.
+You can explicitly state the location with --with-sfcgal=path/to/sfcgal
 
 See ``./configure --help`` for more options.
 
