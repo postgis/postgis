@@ -103,6 +103,15 @@ endif
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
 
+../../liblwgeom/.libs/liblwgeom.a:
+	$(MAKE) -C ../../liblwgeom
+
+../rt_core/librtcore.a:
+	$(MAKE) -C ../rt_core
+
+../../libpgcommon/libpgcommon.a:
+	$(MAKE) -C ../../libpgcommon
+
 # Objects dependencies
 # NOTE: the .a deps are really only link-time dependencies, but at this
 #       time I dunno how to wncode those
