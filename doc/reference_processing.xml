@@ -2829,7 +2829,7 @@ LINESTRING(5 2,7 25,10 10)
 		<note><para>Note that returned geometry might lose its
 				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
 		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
-		<note><para>The output geoemtry will lose all previous information in the M-values</para></note>
+		<note><para>The output geometry will lose all previous information in the M-values</para></note>
 		<note><para>This function handles 3D and the third dimmension will affect the effective area</para></note>
 		<para>Availability: 2.2.0</para>
 	  </refsection>
