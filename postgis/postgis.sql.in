@@ -1922,7 +1922,7 @@ BEGIN
 		 pg_attribute a,
 		 pg_type t,
 		 pg_namespace n
-	WHERE (c.relkind = 'r' OR c.relkind = 'v')
+	WHERE c.relkind IN('r','v','f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -1939,7 +1939,7 @@ BEGIN
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind = 'r'
+		WHERE c.relkind IN( 'r', 'f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2010,7 +2010,7 @@ BEGIN
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind = 'r'
+		WHERE c.relkind IN('r', 'f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
