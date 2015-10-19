@@ -12,7 +12,7 @@ contribute to every project of the [Open Source Geospatial Foundation]
 As we understand you might not want to setup a new account, simply
 filing a pull request on one of the [PostGIS code mirrors]
 (https://trac.osgeo.org/postgis/wiki/CodeMirrors) is also welcome,
-but it is easier for such a contributions to miss our radars unless
+but it is easier for such contributions to miss our radars unless
 it _also_ has a matching Trac ticket.
 
 If you intend to be involved for more than an occasional patch we
