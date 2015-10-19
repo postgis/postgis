@@ -1934,7 +1934,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
     be used at all.
     All your custom records with invalid SRIDs will be retained,
     with those > 999999 moved into the reserved range, but the
-    spatial_ref_sys table would loose a check constraint guarding
+    spatial_ref_sys table would lose a check constraint guarding
     for that invariant to hold and possibly also its primary key
     ( when multiple invalid SRIDS get converted to the same reserved
     SRID value ).
