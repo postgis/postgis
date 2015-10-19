@@ -1570,7 +1570,7 @@ SRID=3785;POINT(-13732990.8753491 6178458.96425423)
 			grid.</para>
 
 		<note>
-		  <para>The returned geometry might loose its simplicity (see
+		  <para>The returned geometry might lose its simplicity (see
 		  <xref linkend="ST_IsSimple" />).</para>
 		</note>
 
@@ -1687,7 +1687,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 
 		<note>
 		  <para>
-		  The returned geometry might loose its simplicity (see
+		  The returned geometry might lose its simplicity (see
 		  <xref linkend="ST_IsSimple" />) and validity (see 
 		  <xref linkend="ST_IsValid" />).
 		  </para>
