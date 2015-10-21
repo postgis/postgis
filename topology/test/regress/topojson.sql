@@ -92,5 +92,10 @@ SELECT 'A3-vanilla', feature_name, topology.AsTopoJSON(feature, null)
  WHERE feature_name IN ('P6')
  ORDER BY feature_name;
 
+SELECT 'P1-vanilla', feature_name, topology.AsTopoJSON(feature, null)
+ FROM features.traffic_signs
+ WHERE feature_name IN ('S2')
+ ORDER BY feature_name;
+
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;

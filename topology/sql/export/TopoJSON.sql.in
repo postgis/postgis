@@ -22,6 +22,9 @@
 --
 -- text AsTopoJSON(TopoGeometry, edgeMapTable)
 --
+-- Format specification here:
+-- http://github.com/mbostock/topojson-specification/blob/master/README.md
+--
 -- }{
 CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMapTable regclass)
   RETURNS text AS
@@ -56,12 +59,12 @@ BEGIN
   SELECT name FROM topology.topology into toponame
               WHERE id = tg.topology_id;
 
-  -- Puntual TopoGeometry
+  -- TODO: implement scale ?
+
+  -- Puntal TopoGeometry, simply delegate to AsGeoJSON
   IF tg.type = 1 THEN
-    -- TODO: implement scale ?
-    --json := ST_AsGeoJSON(topology.Geometry(tg));
-    --return json;
-    RAISE EXCEPTION 'TopoJSON export does not support puntual objects';
+    json := ST_AsGeoJSON(topology.Geometry(tg));
+    return json;
   ELSIF tg.type = 2 THEN -- lineal
 
     FOR rec IN SELECT (ST_Dump(topology.Geometry(tg))).geom

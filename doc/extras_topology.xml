@@ -3266,11 +3266,16 @@ in the "edgeMapTable" table.
     </note>
 
 		<para>
-A full TopoJSON document will be need to contain, in addition to the snippets returned by this function, the actual arcs plus some headers. See the <ulink url="http://github.com/mbostock/topojson/wiki/Specification">TopoJSON specification</ulink>.
+A full TopoJSON document will be need to contain, in
+addition to the snippets returned by this function,
+the actual arcs plus some headers. See the <ulink
+url="http://github.com/mbostock/topojson-specification/blob/master/README.md"
+>TopoJSON specification</ulink>.
 		</para>
               
                 <!-- use this format if new function -->
                 <para>Availability: 2.1.0 </para>
+                <para>Enhanced: 2.2.1 added support for puntal inputs</para>
 			</refsection>
 		
 		
