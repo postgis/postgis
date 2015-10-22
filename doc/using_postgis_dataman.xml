@@ -1570,8 +1570,8 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
             </listitem>
 
             <listitem>
-              <para><ulink url="http://gis.hsr.ch/wiki/images/3/3d/9dem_springer.pdf">Dimensionally 
-              Extended Nine-Intersection Model (DE-9IM) by Christian Strobl</ulink></para>
+                <para><ulink url="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally 
+              Extended Nine-Intersection Model (DE-9IM)</ulink></para>
             </listitem>
             <listitem>
               <para><ulink url="http://docs.geotools.org/latest/userguide/library/jts/dim9.html">GeoTools: Point Set Theory and the DE-9IM Matrix</ulink></para>

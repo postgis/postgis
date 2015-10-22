@@ -345,7 +345,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		<para>GeoJSON format is generally more efficient than other formats for use in ajax mapping.
 			One popular javascript client that supports this is Open Layers.
 			Example of its use is   <ulink
-			url="http://openlayers.org/dev/examples/vector-formats.html">OpenLayers GeoJSON Example</ulink>
+                url="http://openlayers.org/en/v3.10.1/examples/geojson.html">OpenLayers GeoJSON Example</ulink>
 		</para>
 		<programlisting>SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;
 					   st_asgeojson
