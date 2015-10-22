@@ -12131,7 +12131,7 @@ WHERE rid = 2;
 
 					<note>
 						<para>
-							For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
+                            For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
 						</para>
 					</note>
 
@@ -12459,7 +12459,7 @@ GROUP BY t1.rast;
 
 					<note>
 						<para>
-							For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
+                            For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
 						</para>
 					</note>
 

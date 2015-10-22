@@ -1364,8 +1364,7 @@
         attitude to SRID handling. Simplifies code and drops build depend on
         GNU trove.</para>
 
-        <para>Added EJB2 support generously donated by the "Geodetix s.r.l.
-        Company" <ulink url="http://www.geodetix.it/">http://www.geodetix.it/</ulink></para>
+        <para>Added EJB2 support generously donated by the "Geodetix s.r.l. Company" </para>
 
         <para>Added EJB3 tutorial / examples donated by Norman Barker
         &lt;nbarker@ittvis.com&gt;</para>
