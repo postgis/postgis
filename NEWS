@@ -159,6 +159,31 @@ PostGIS 2.2.0
     smaller files for ease of long-term maintenance and development
   - #1220, lwerror and lwnotice function became internal to liblwgeom
 
+PostGIS 2.1.8
+2015/07/07
+
+ * Bug Fixes *
+
+  - #3159, do not force a bbox cache on ST_Affine
+  - #3018, GROUP BY geography sometimes returns duplicate rows
+  - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3094, Malformed GeoJSON inputs crash backend
+  - #3104, st_asgml introduces random characters in ID field
+  - #3155, Remove liblwgeom.h on make uninstall
+  - #3177, gserialized_is_empty cannot handle nested empty cases
+  - Fix crash in ST_LineLocatePoint
+
+
+PostGIS 2.1.7
+2015/03/30
+
+ * Bug Fixes *
+
+  - #3086, ST_DumpValues() crashes backend on cleanup with invalid
+           band indexes
+  - #3088, Do not (re)define strcasestr in a liblwgeom.h
+  - #3094, Malformed GeoJSON inputs crash backend
+  
 PostGIS 2.1.6
 2015/03/20
 
