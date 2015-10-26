@@ -664,11 +664,14 @@ dnl ===========================================================================
 AC_ARG_WITH([sfcgal], 
 	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])], 
 	[SFCGAL_CONFIG="$withval"], 
-	[AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])])
+	[with_sfcgal=yes])
 
 HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
+  if test "x$with_sfcgal" = "xyes"; then
+	  AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])
+  fi
 	if test -x "$SFCGAL_CONFIG"; then
 		SFCGAL_VERSION=`$SFCGAL_CONFIG --version` || AC_MSG_ERROR([cannot determine sfcgal version (tried with $SFCGAL_CONFIG --version)])
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
