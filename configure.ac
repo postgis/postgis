@@ -664,12 +664,12 @@ dnl ===========================================================================
 AC_ARG_WITH([sfcgal], 
 	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])], 
 	[SFCGAL_CONFIG="$withval"], 
-	[with_sfcgal=yes])
+	[with_sfcgal=auto])
 
 HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
-  if test "x$with_sfcgal" = "xyes"; then
+  if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
 	  AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])
   fi
 	if test -x "$SFCGAL_CONFIG"; then
@@ -695,7 +695,7 @@ if test "x$with_sfcgal" != "xno"; then
 		fi
 
 	else
-		if test "x$with_sfcgal" != "x"; then
+		if test "x$with_sfcgal" != "xauto"; then
 			AC_MSG_ERROR([sfcgal-config cannot be found. Please install sfcgal])
 		fi
 	fi
