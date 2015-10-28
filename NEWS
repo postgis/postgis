@@ -3,6 +3,7 @@ PostGIS 2.2.1
 
  * Bug Fixes *
 
+  - #3349, Fix installation path of postgis_topology scripts
   - #3329, Fix robustness regression in TopoGeo_addPoint
   - #3321, Fix performance regression in topology loading
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
