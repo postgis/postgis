@@ -1770,7 +1770,7 @@ BEGIN
   END IF;
 
   --
-  -- Check node existance
+  -- Check edge existance
   -- 
   ok = false;
   FOR edge IN EXECUTE 'SELECT * FROM '
@@ -1785,7 +1785,7 @@ BEGIN
   END IF;
 
   --
-  -- Check node isolation
+  -- Check edge isolation
   -- 
   IF edge.left_face != edge.right_face THEN
     RAISE EXCEPTION
@@ -1811,7 +1811,16 @@ BEGIN
   EXECUTE 'DELETE FROM ' || quote_ident(atopology) || '.edge_data '
     || ' WHERE edge_id = ' || anedge;
 
+  --
+  -- Set endnodes isolated
+  --
+  EXECUTE 'UPDATE ' || quote_ident(atopology) || '.node '
+    || ' SET containing_face = ' || edge.left_face
+    || ' WHERE node_id in ( '
+    || edge.start_node || ',' || edge.end_node || ')';
+
   RETURN 'Isolated edge ' || anedge || ' removed';
+
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
