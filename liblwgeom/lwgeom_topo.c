@@ -3691,6 +3691,8 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
   LWT_ISO_EDGE deledge;
   LWT_ISO_EDGE *edge;
   LWT_ELEMID nid[2];
+  LWT_ISO_NODE upd_node[2];
+  LWT_ELEMID containing_face;
   int n = 1;
   int i;
 
@@ -3722,6 +3724,7 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
     lwerror("SQL/MM Spatial exception - not isolated edge");
     return -1;
   }
+  containing_face = edge[0].face_left;
 
   nid[0] = edge[0].start_node;
   nid[1] = edge[0].end_node;
@@ -3753,6 +3756,22 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
   if ( n != 1 )
   {
     lwerror("Unexpected error: %d edges deleted when expecting 1", n);
+    return -1;
+  }
+
+  upd_node[0].node_id = nid[0];
+  upd_node[0].containing_face = containing_face;
+  n = 1;
+  if ( nid[1] != nid[0] ) {
+    upd_node[1].node_id = nid[1];
+    upd_node[1].containing_face = containing_face;
+    ++n;
+  }
+  n = lwt_be_updateNodesById(topo, upd_node, n,
+                               LWT_COL_NODE_CONTAINING_FACE);
+  if ( n == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
 
