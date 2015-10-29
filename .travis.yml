@@ -30,7 +30,7 @@ notifications:
   email: false
   irc:
     channels:
-      - "irc.freenode.org#postgis"
+      - "irc.freenode.org#postgis-activity"
     on_success: change
     on_failure: always
     use_notice: false
