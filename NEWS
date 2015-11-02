@@ -11,6 +11,8 @@ PostGIS 2.1.9
   - #3245, Ensure lwgeom/geos returns are fully owned
   - #3281, Do not export liblwgeom symbols from the PostgreSQL module
   - #3280, Fix topology import of almost collinear linestrings
+  - #3355, Fix geography ST_Segmentize() does not add geodetic box
+  			ST_Intersects and other relationship functions always return false as result.
 
 PostGIS 2.1.8
 2015/07/07

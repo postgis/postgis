@@ -2,6 +2,24 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+      <title>Release 2.1.9</title>
+      <para>Release date: 2015-XX-XX</para>
+      <para>This is a critical bug fix release.</para>
+      <simplesect>
+        <title>Bug Fixes</title>
+        <para>#3198, ST_AddEdgeModFace docs report wrong side of new face</para>
+        <para>#3196, do not let DropTopology drop non-topology schemes</para>
+        <para>#3222, Fix uninitialized stddev in stats computation</para>
+        <para>#2283, Import nested holey multipolygons correctly</para>
+        <para>#3245, Ensure lwgeom/geos returns are fully owned</para>
+        <para>#3281, Do not export liblwgeom symbols from the PostgreSQL module</para>
+        <para>#3280, Fix topology import of almost collinear linestrings</para>
+        <para>#3355, Fix geography ST_Segmentize() does not add geodetic box.
+                    ST_Intersects and other relationship functions always return false as result.</para>
+      </simplesect>
+    </sect1>
 	
     <sect1>
       <title>Release 2.1.8</title>
