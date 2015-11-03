@@ -1066,21 +1066,21 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double max_seg_length;
 	uint32_t type1;
-
+	
 	/* Get our geometry object loaded into memory. */
 	g1 = PG_GETARG_GSERIALIZED_P(0);
 	type1 = gserialized_get_type(g1);
-
+	
 	/* Convert max_seg_length from metric units to radians */
 	max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
-
+	
 	/* We can't densify points or points, reflect them back */
 	if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
 		PG_RETURN_POINTER(g1);
-
+	
 	/* Deserialize */
 	lwgeom1 = lwgeom_from_gserialized(g1);
-
+	
 	/* Calculate the densified geometry */
 	lwgeom2 = lwgeom_segmentize_sphere(lwgeom1, max_seg_length);
 	
@@ -1093,7 +1093,7 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
 	PG_FREE_IF_COPY(g1, 0);
-
+	
 	PG_RETURN_POINTER(g2);
 }
 

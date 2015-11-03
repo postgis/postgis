@@ -598,19 +598,16 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 		);
 	}
 
-	/* Recalculate the boxes after re-setting the geodetic bit */
+	/* force recalculate of box by dropping */
 	lwgeom_drop_bbox(lwgeom);
 	
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, -1);
 
-	/*
-	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED.
-	*/
+
 	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(g_ser);
-
 }
 
 PG_FUNCTION_INFO_V1(geometry_from_geography);
