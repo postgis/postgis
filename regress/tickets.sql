@@ -913,5 +913,17 @@ SELECT '#3172', ST_AsText(ST_AddMeasure('LINESTRING(0 0,0 0)', 1, 2));
 
 SELECT '#3300', ST_AsText(ST_SnapToGrid(Box2D('CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036),(-71.1821 42.4036,-71.3821 42.6036,-71.3821 42.4036,-71.1821 42.4036))'::Geometry)::geometry,0.0001));
 
+SELECT '#3355',  ST_Intersects(
+         'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography
+       , ST_Segmentize('LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography, 47487290)::geography);
+
+SELECT '#3356', ST_Summary(wkt::geometry) As wkt_geom, 
+   ST_Summary(wkt::geography) As wkt_geog,
+   ST_Summary(wkt::geometry::geography) As geom_geog
+FROM (VALUES (
+     'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::text ),
+ ('LINESTRING(124.983539 1.419224,91.181596 29.647798, 91.28 29.647)'::text  ) ) As f(wkt)
+ORDER BY wkt;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

@@ -214,7 +214,7 @@ ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0
-#1596|Point[BGS]
+#1596|Point[GS]
 #1695|MULTIPOLYGON EMPTY
 #1697.1|0
 #1697.2|0
@@ -277,3 +277,6 @@ ERROR:  invalid GML representation
 #2956|t
 #3172|LINESTRING M (0 0 1,0 0 2)
 #3300|POLYGON((-71.7821 42.2622,-71.7821 42.9067,-71.029 42.9067,-71.029 42.2622,-71.7821 42.2622))
+#3355|t
+#3356|LineString[] with 2 points|LineString[GS] with 2 points|LineString[GS] with 2 points
+#3356|LineString[B] with 3 points|LineString[BGS] with 3 points|LineString[BGS] with 3 points
