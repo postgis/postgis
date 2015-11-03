@@ -1084,6 +1084,9 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 	/* Calculate the densified geometry */
 	lwgeom2 = lwgeom_segmentize_sphere(lwgeom1, max_seg_length);
 	
+	/* force recalculate of box by dropping */
+	lwgeom_drop_bbox(lwgeom2);
+	
 	g2 = gserialized_geography_from_lwgeom(lwgeom2, -1);
 	
 	/* Clean up */
