@@ -89,6 +89,14 @@
 		</varlistentry>
 		
 		<varlistentry>
+			<term>Dan Baston</term>
+			
+			<listitem>
+			  <para>Geometry clustering function additions, other geometry algorithm enhancements, and general user support</para>
+			</listitem>
+		</varlistentry>
+		
+		<varlistentry>
 			<term>Olivier Courtin</term>
 			<listitem>
 			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
