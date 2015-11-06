@@ -600,8 +600,10 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 
 	/* force recalculate of box by dropping */
 	lwgeom_drop_bbox(lwgeom);
-	
-	g_ser = gserialized_geography_from_lwgeom(lwgeom, -1);
+
+	lwgeom_set_geodetic(lwgeom, true);	
+	/* We are trusting geography_serialize will add a box for us if needed */	
+	g_ser = geography_serialize(lwgeom);
 
 
 	lwgeom_free(lwgeom);

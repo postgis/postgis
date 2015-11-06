@@ -1092,8 +1092,8 @@ Datum geography_segmentize(PG_FUNCTION_ARGS)
 	
 	/* Recalculate the boxes after re-setting the geodetic bit */
 	lwgeom_drop_bbox(lwgeom2);
-	lwgeom_add_bbox(lwgeom2);
 	
+	/* We are trusting geography_serialize will add a box if needed */	
 	g2 = geography_serialize(lwgeom2);
 	
 	/* Clean up */
