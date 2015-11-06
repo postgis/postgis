@@ -602,7 +602,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	lwgeom_drop_bbox(lwgeom);
 
 	lwgeom_set_geodetic(lwgeom, true);	
-	/* We are trusting geography_serialize will add a box for us if needed */	
+	/* We are trusting geography_serialize will add a box if needed */	
 	g_ser = geography_serialize(lwgeom);
 
 
