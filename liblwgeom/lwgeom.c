@@ -1103,6 +1103,10 @@ void lwgeom_free(LWGEOM *lwgeom)
 int lwgeom_needs_bbox(const LWGEOM *geom)
 {
 	assert(geom);
+
+	if ( FLAGS_GET_GEODETIC(geom->flags) )
+		return LW_TRUE;
+	
 	if ( geom->type == POINTTYPE )
 	{
 		return LW_FALSE;
