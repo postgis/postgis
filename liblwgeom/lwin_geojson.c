@@ -399,7 +399,7 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz, int root_srid)
 				{
 					json_object* points = json_object_array_get_idx( poObjPoly, j );
 					
-					if( json_type_array == json_object_get_type( poObjPoly ) )
+					if( json_type_array == json_object_get_type( points ) )
 					{
 
 						POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
