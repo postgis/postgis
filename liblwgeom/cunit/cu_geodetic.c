@@ -905,7 +905,7 @@ static void test_gserialized_from_lwgeom(void)
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, POINTTYPE );
 	inspect = (double*)g;
-	CU_ASSERT_EQUAL(inspect[6], 0.2);
+	CU_ASSERT_EQUAL(inspect[3], 0.2);
 	lwgeom_free(geom);
 	lwfree(g);
 
