@@ -10,7 +10,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#define POSTGIS_TOPOLOGY_DEBUG 1
+/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
 
 -- {
 --  Convert a simple geometry to a topologically-defined one
