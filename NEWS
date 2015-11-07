@@ -1,5 +1,5 @@
 PostGIS 2.2.1
-2015/10/XX
+2015/11/XX
 
  * Bug Fixes *
 
@@ -9,6 +9,8 @@ PostGIS 2.2.1
   - #3329, Fix robustness regression in TopoGeo_addPoint
   - #3321, Fix performance regression in topology loading
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
+  - #3355 geography ST_Segmentize has geometry bbox 
+  - #3360, _raster_constraint_info_scale invalid input syntax
 
 
 PostGIS 2.2.0
