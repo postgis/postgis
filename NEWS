@@ -3,7 +3,6 @@ PostGIS 2.1.9
 
  * Bug Fixes *
 
-  - #3351, set endnodes isolation on ST_RemoveIsoEdge
   - #3198, ST_AddEdgeModFace docs report wrong side of new face
   - #3196, do not let DropTopology drop non-topology schemes
   - #3222, Fix uninitialized stddev in stats computation
@@ -11,8 +10,12 @@ PostGIS 2.1.9
   - #3245, Ensure lwgeom/geos returns are fully owned
   - #3281, Do not export liblwgeom symbols from the PostgreSQL module
   - #3280, Fix topology import of almost collinear linestrings
+  - #3351, Set endnodes isolation on ST_RemoveIsoEdge
   - #3355, Fix geography ST_Segmentize() does not add geodetic box
-  			ST_Intersects and other relationship functions always return false as result.
+           ST_Intersects and other relationship functions
+           always return false as result.
+  - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
+           definition
 
 PostGIS 2.1.8
 2015/07/07
