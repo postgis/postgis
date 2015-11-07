@@ -10,6 +10,8 @@ PostGIS 2.0.8
   - #3094, Malformed GeoJSON inputs crash backend
   - #3018, GROUP BY geography sometimes returns duplicate rows
   - #3155, Remove liblwgeom.h on make uninstall
+  - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
+           definition
 
 
 PostGIS 2.0.7
