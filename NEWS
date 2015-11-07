@@ -10,6 +10,8 @@ PostGIS 2.2.1
   - #3321, Fix performance regression in topology loading
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
   - #3355 geography ST_Segmentize has geometry bbox 
+  - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
+           definition
   - #3360, _raster_constraint_info_scale invalid input syntax
 
 
