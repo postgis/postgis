@@ -41,4 +41,9 @@ custom_search_path|0
 #1790.3|0|0
 #1968.1|0
 #1968.2|0
+#3359.setval|1|2|1
+#3359.line.1|1
+#3359.line.2|2
+#3359.area.1|1
+#3359.area.2|2
 Topology 'tt' dropped

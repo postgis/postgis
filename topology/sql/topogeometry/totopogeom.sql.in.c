@@ -10,6 +10,8 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+#define POSTGIS_TOPOLOGY_DEBUG 1
+
 -- {
 --  Convert a simple geometry to a topologically-defined one
 --
@@ -26,8 +28,8 @@ DECLARE
   rec RECORD;
   rec2 RECORD;
   tg topology.TopoGeometry;
-  elems INT[][];
-  elem INT[];
+  elems TEXT[];
+  elem TEXT;
   sql TEXT;
   typ TEXT;
   tolerance FLOAT8;
@@ -134,10 +136,11 @@ BEGIN
          topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
        END as primitive
     LOOP
-      elem := ARRAY[rec.dims+1, rec2.primitive];
+      elem := ARRAY[rec.dims+1, rec2.primitive]::text;
       IF elems @> ARRAY[elem] THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
 RAISE DEBUG 'Elem % already in %', elem, elems;
+RAISE DEBUG '% @> ARRAY[%] returned true', elems, elem;
 #endif
       ELSE
 #ifdef POSTGIS_TOPOLOGY_DEBUG
