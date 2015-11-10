@@ -925,5 +925,7 @@ FROM (VALUES (
  ('LINESTRING(124.983539 1.419224,91.181596 29.647798, 91.28 29.647)'::text  ) ) As f(wkt)
 ORDER BY wkt;
 
+SELECT '#3367', ST_AsText(ST_RemoveRepeatedPoints('POLYGON EMPTY'::geometry));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

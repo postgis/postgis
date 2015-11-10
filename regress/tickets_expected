@@ -280,3 +280,4 @@ ERROR:  invalid GML representation
 #3355|t
 #3356|LineString[] with 2 points|LineString[GS] with 2 points|LineString[GS] with 2 points
 #3356|LineString[B] with 3 points|LineString[BGS] with 3 points|LineString[BGS] with 3 points
+#3367|POLYGON EMPTY
