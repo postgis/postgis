@@ -1409,6 +1409,11 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in, double tolerance)
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
 	         lwtype_name(in->type));
 
+	if(lwgeom_is_empty(in)) 
+	{
+		return lwgeom_clone_deep(in);
+	}
+
 	switch (in->type)
 	{
 	case MULTIPOINTTYPE:
