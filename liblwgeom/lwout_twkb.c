@@ -151,7 +151,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 			/* from the last point but instead the distance from our */
 			/* last accumulated point. This is important to not build up an */
 			/* accumulated error when rounding the coordinates */
-			nextdelta[j] = (int64_t) lround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
+			nextdelta[j] = (int64_t) llround(globals->factor[j] * dbl_ptr[j]) - ts->accum_rels[j];
 			LWDEBUGF(4, "deltavalue: %d, ", nextdelta[j]);
 			diff += llabs(nextdelta[j]);
 		}
