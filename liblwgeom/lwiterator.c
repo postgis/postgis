@@ -16,14 +16,22 @@
 struct LISTNODE
 {
 	struct LISTNODE* next;
-	LWGEOM* geom;
+	void* item;
 };
 typedef struct LISTNODE LISTNODE;
 
+/* The LWPOINTITERATOR consists of two stacks of items to process: a stack
+ * of geometries, and a stack of POINTARRAYs extracted from those geometries.
+ * The index "i" refers to the "next" point, which is found at the top of the
+ * pointarrays stack.
+ *
+ * When the pointarrays stack is depleted, we pull a geometry from the geometry
+ * stack to replenish it.
+ */
 struct LWPOINTITERATOR
 {
 	LISTNODE* geoms;
-	uint32_t ring;
+	LISTNODE* pointarrays;
 	uint32_t i;
 	char allow_modification;
 };
@@ -31,10 +39,10 @@ struct LWPOINTITERATOR
 typedef struct LWPOINTITERATOR LWPOINTITERATOR;
 
 static LISTNODE*
-prepend_node(LWGEOM* g, LISTNODE* front)
+prepend_node(void* g, LISTNODE* front)
 {
 	LISTNODE* n = lwalloc(sizeof(LISTNODE));
-	n->geom = g;
+	n->item = g;
 	n->next = front;
 
 	return n;
@@ -58,83 +66,57 @@ add_lwgeom_to_stack(LWPOINTITERATOR* s, LWGEOM* g)
 	return LW_SUCCESS;
 }
 
-/* Attempts to retrieve the next point from active point geometry */
-static int
-next_from_point(LWPOINTITERATOR* s, POINT4D* p)
+/** Return a pointer to the first of one or more LISTNODEs holding the POINTARRAYs
+ *  of a geometry.  Will not handle GeometryCollections.
+ */
+static LISTNODE*
+extract_pointarrays_from_lwgeom(LWGEOM* g)
 {
-	LWPOINT* point = (LWPOINT*) s->geoms->geom;
-
-	return getPoint4d_p(point->point, 0, p);
-}
-
-/* Attempts to retrieve the next point from active line geometry */
-static int
-next_from_line(LWPOINTITERATOR* s, POINT4D* p)
-{
-	LWLINE* line = (LWLINE*) s->geoms->geom;
-
-	return getPoint4d_p(line->points, s->i, p);
-}
-
-/* Attempts to retrieve the next point from active polygon geometry */
-static int
-next_from_poly(LWPOINTITERATOR* s, POINT4D* p)
-{
-	LWPOLY* poly = (LWPOLY*) s->geoms->geom;
-
-	return getPoint4d_p(poly->rings[s->ring], s->i, p);
-}
-
-/* Attempts to advance to the next vertex in active line geometry
- * Returns LW_TRUE if it exists, LW_FALSE otherwise
- * */
-static int
-advance_line(LWPOINTITERATOR* s)
-{
-	LWLINE* line = (LWLINE*) s->geoms->geom;
-	s->i += 1;
-
-	if (s->i < line->points->npoints)
-		return LW_TRUE;
-	else
-		return LW_FALSE;
-}
-
-/* Attempts to advance to the next vertex in active polygon geometry
- * Returns LW_TRUE if it exists, LW_FALSE otherwise
- * */
-static int
-advance_poly(LWPOINTITERATOR* s)
-{
-	LWPOLY* poly = (LWPOLY*) s->geoms->geom;
-	s->i += 1;
-
-	/* Are there any more points left in this ring? */
-	if (s->i < poly->rings[s->ring]->npoints)
-		return LW_TRUE;
-
-	/* We've finished with the current ring.  Reset our
-	 * counter, and advance to the next ring. */
-	s->i = 0;
-	s->ring += 1;
-
-	/* Does this ring exist? */
-	if (s->ring < poly->nrings)
+	switch(lwgeom_get_type(g))
 	{
-		return LW_TRUE;
+	case POINTTYPE:
+		return prepend_node(lwgeom_as_lwpoint(g)->point, NULL);
+	case LINETYPE:
+		return prepend_node(lwgeom_as_lwline(g)->points, NULL);
+	case TRIANGLETYPE:
+		return prepend_node(lwgeom_as_lwtriangle(g)->points, NULL);
+	case CIRCSTRINGTYPE:
+		return prepend_node(lwgeom_as_lwcircstring(g)->points, NULL);
+	case POLYGONTYPE:
+	{
+		LISTNODE* n = NULL;
+
+		LWPOLY* p = lwgeom_as_lwpoly(g);
+		int i;
+		for (i = p->nrings - 1; i >= 0; i--)
+		{
+			n = prepend_node(p->rings[i], n);
+		}
+
+		return n;
+	}
+	default:
+		lwerror("Unsupported geometry type for lwpointiterator");
 	}
 
-	return LW_FALSE;
+	return NULL;
 }
 
-/* Removes a GeometryCollection from the iterator stack, and adds
- * the components of the GeometryCollection to the stack.
- * */
+/** Remove an LWCOLLECTION from the iterator stack, and add the components of the
+ *  LWCOLLECTIONs to the stack.
+ */
 static void
-lwpointiterator_unroll_collection(LWPOINTITERATOR* s)
+unroll_collection(LWPOINTITERATOR* s)
 {
 	int i;
-	LWCOLLECTION* c = (LWCOLLECTION*) s->geoms->geom;
+	LWCOLLECTION* c;
+
+	if (!s->geoms)
+	{
+		return;
+	}
+
+	c = (LWCOLLECTION*) s->geoms->item;
 	s->geoms = pop_node(s->geoms);
 
 	for (i = c->ngeoms - 1; i >= 0; i--)
@@ -145,88 +127,93 @@ lwpointiterator_unroll_collection(LWPOINTITERATOR* s)
 	}
 }
 
+/** Unroll LWCOLLECTIONs from the top of the stack, as necessary, until the element at the
+ *  top of the stack is not a LWCOLLECTION.
+ */
+static void
+unroll_collections(LWPOINTITERATOR* s)
+{
+	while(s->geoms && lwgeom_is_collection(s->geoms->item))
+	{
+		unroll_collection(s);
+	}
+}
+
+static int
+lwpointiterator_advance(LWPOINTITERATOR* s)
+{
+	s->i += 1;
+
+	/* We've reached the end of our current POINTARRAY.  Try to see if there
+	 * are any more POINTARRAYS on the stack. */
+	if (s->pointarrays && s->i >= ((POINTARRAY*) s->pointarrays->item)->npoints)
+	{
+		s->pointarrays = pop_node(s->pointarrays);
+		s->i = 0;
+	}
+
+	/* We don't have a current POINTARRAY.  Pull a geometry from the stack, and
+	 * decompose it into its POINTARRARYs. */
+	if (!s->pointarrays)
+	{
+		LWGEOM* g;
+		unroll_collections(s);
+
+		if (!s->geoms)
+		{
+			return LW_FAILURE;
+		}
+
+		s->i = 0;
+		g = s->geoms->item;
+		s->pointarrays = extract_pointarrays_from_lwgeom(g);
+
+		s->geoms = pop_node(s->geoms);
+	}
+
+	if (!s->pointarrays)
+	{
+		return LW_FAILURE;
+	}
+	return LW_SUCCESS;
+}
+
+/* Public API implementation */
+
 int
 lwpointiterator_peek(LWPOINTITERATOR* s, POINT4D* p)
 {
-	if (s->geoms == NULL)
-		return LW_FAILURE;
-	if (s->geoms->geom == NULL)
+	if (!lwpointiterator_has_next(s))
 		return LW_FAILURE;
 
-	while(lwgeom_is_collection(s->geoms->geom))
-	{
-		lwpointiterator_unroll_collection(s);
-	}
-
-	switch(s->geoms->geom->type)
-	{
-	case POINTTYPE:
-		return next_from_point(s, p);
-	case LINETYPE:
-	case TRIANGLETYPE:
-	case CIRCSTRINGTYPE:
-		return next_from_line(s, p);
-	case POLYGONTYPE:
-		return next_from_poly(s, p);
-	default:
-		lwerror("Unsupported geometry type for lwpointiterator_next");
-		return LW_FAILURE;
-	}
-
-	return LW_SUCCESS;
+	return getPoint4d_p(s->pointarrays->item, s->i, p);
 }
 
 int
 lwpointiterator_has_next(LWPOINTITERATOR* s)
 {
-	POINT4D p;
-	if (lwpointiterator_peek(s, &p))
-		return LW_TRUE;
-	return LW_FALSE;
+	return (s->pointarrays && s->i < ((POINTARRAY*) s->pointarrays->item)->npoints);
 }
 
 int
 lwpointiterator_next(LWPOINTITERATOR* s, POINT4D* p)
 {
-	char points_remain;
-
-	if (!lwpointiterator_peek(s, p))
-		return LW_FALSE;
-
-	switch(s->geoms->geom->type)
-	{
-	case POINTTYPE:
-		points_remain = LW_FALSE;
-		break;
-	case LINETYPE:
-	case TRIANGLETYPE:
-	case CIRCSTRINGTYPE:
-		points_remain = advance_line(s);
-		break;
-	case POLYGONTYPE:
-		points_remain = advance_poly(s);
-		break;
-	default:
-		lwerror("Unsupported geometry type for lwpointiterator_next");
+	if (!lwpointiterator_has_next(s))
 		return LW_FAILURE;
-	}
 
-	if (!points_remain)
-	{
-		s->i = 0;
-		s->ring = 0;
-		s->geoms = pop_node(s->geoms);
-	}
+	/* If p is NULL, just advance without reading */
+	if (p && !lwpointiterator_peek(s, p))
+		return LW_FAILURE;
 
+	lwpointiterator_advance(s);
 	return LW_SUCCESS;
 }
 
 int
 lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p)
 {
-	POINTARRAY* pa;
-	LWGEOM* g;
-	POINT4D throwaway;
+	if (!lwpointiterator_has_next(s))
+		return LW_FAILURE;
 
 	if (!s->allow_modification)
 	{
@@ -234,42 +221,10 @@ lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p)
 		return LW_FAILURE;
 	}
 
-	if (!lwpointiterator_has_next(s))
-	{
-		return LW_FAILURE;
-	}
+	ptarray_set_point4d(s->pointarrays->item, s->i, p);
 
-	while(lwgeom_is_collection(s->geoms->geom))
-	{
-		lwpointiterator_unroll_collection(s);
-	}
-
-	g = s->geoms->geom;
-	switch(lwgeom_get_type(g))
-	{
-	case POINTTYPE:
-		pa = lwgeom_as_lwpoint(g)->point;
-		break;
-	case LINETYPE:
-		pa = lwgeom_as_lwline(g)->points;
-		break;
-	case TRIANGLETYPE:
-		pa = lwgeom_as_lwtriangle(g)->points;
-		break;
-	case CIRCSTRINGTYPE:
-		pa = lwgeom_as_lwcircstring(g)->points;
-		break;
-	case POLYGONTYPE:
-		pa = lwgeom_as_lwpoly(g)->rings[s->ring];
-		break;
-	default:
-		lwerror("Unsupported geometry type for lwpointiterator_next");
-		return LW_FAILURE;
-	}
-
-	ptarray_set_point4d(pa, s->i, p);
-
-	return lwpointiterator_next(s, &throwaway);
+	lwpointiterator_advance(s);
+	return LW_SUCCESS;
 }
 
 LWPOINTITERATOR*
@@ -287,15 +242,16 @@ lwpointiterator_create_rw(LWGEOM* g)
 	LWPOINTITERATOR* it = lwalloc(sizeof(LWPOINTITERATOR));
 
 	it->geoms = NULL;
-	add_lwgeom_to_stack(it, g);
-	it->ring = 0;
+	it->pointarrays = NULL;
 	it->i = 0;
 	it->allow_modification = LW_TRUE;
+
+	add_lwgeom_to_stack(it, g);
+	lwpointiterator_advance(it);
 
 	return it;
 }
 
-/* Destroy the LWPOINTITERATOR */
 void
 lwpointiterator_destroy(LWPOINTITERATOR* s)
 {
@@ -303,5 +259,11 @@ lwpointiterator_destroy(LWPOINTITERATOR* s)
 	{
 		s->geoms = pop_node(s->geoms);
 	}
+
+	while (s->pointarrays != NULL)
+	{
+		s->pointarrays = pop_node(s->pointarrays);
+	}
+
 	lwfree(s);
 }

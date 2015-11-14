@@ -147,6 +147,75 @@ test_modification(void)
 }
 
 static void
+test_no_memory_leaked_when_iterator_is_partially_used(void)
+{
+	LWGEOM* g = lwgeom_from_wkt("GEOMETRYCOLLECTION (POINT (3 7), GEOMETRYCOLLECTION(LINESTRING (2 8, 4 3), POLYGON EMPTY, MULTIPOINT ((2 8), (17 3), EMPTY)))", LW_PARSER_CHECK_NONE);
+
+	LWPOINTITERATOR* it = lwpointiterator_create(g);
+	lwpointiterator_next(it, NULL);
+	lwpointiterator_next(it, NULL);
+
+	lwpointiterator_destroy(it);
+	lwgeom_free(g);
+}
+
+static void
+test_mixed_rw_access(void)
+{
+	uint32_t i = 0;
+	LWGEOM* g = lwgeom_from_wkt("GEOMETRYCOLLECTION (POINT (3 7), GEOMETRYCOLLECTION(LINESTRING (2 8, 4 3), POLYGON EMPTY, MULTIPOINT ((2 8), (17 3), EMPTY)))", LW_PARSER_CHECK_NONE);
+	LWPOINTITERATOR* it1 = lwpointiterator_create_rw(g);
+	LWPOINTITERATOR* it2 = lwpointiterator_create(g);
+
+	/* Flip the coordinates of the 3rd point */
+	while(lwpointiterator_has_next(it1))
+	{
+		if (i == 2)
+		{
+			POINT4D p;
+			double tmp;
+
+			lwpointiterator_peek(it1, &p);
+			tmp = p.x;
+			p.x = p.y;
+			p.y = tmp;
+
+			lwpointiterator_modify_next(it1, &p);
+		}
+		else
+		{
+			lwpointiterator_next(it1, NULL);
+		}
+		i++;
+	}
+	CU_ASSERT_EQUAL(5, i); /* Every point was visited */
+	lwpointiterator_destroy(it1);
+
+	/* Verify that the points are as expected */
+	POINT2D points[] =
+	{
+		{ .x = 3, .y = 7 },
+		{ .x = 2, .y = 8 },
+		{ .x = 3, .y = 4 },
+		{ .x = 2, .y = 8 },
+		{ .x = 17, .y = 3}
+	};
+
+	for (i = 0; lwpointiterator_has_next(it2); i++)
+	{
+		POINT4D p;
+
+		lwpointiterator_next(it2, &p);
+
+		CU_ASSERT_EQUAL(p.x, points[i].x);
+		CU_ASSERT_EQUAL(p.y, points[i].y);
+	}
+
+	lwpointiterator_destroy(it2);
+	lwgeom_free(g);
+}
+
+static void
 test_ordering(void)
 {
 	uint32_t i = 0;
@@ -190,5 +259,7 @@ void iterator_suite_setup(void)
 	PG_ADD_TEST(suite, test_point_count);
 	PG_ADD_TEST(suite, test_ordering);
 	PG_ADD_TEST(suite, test_modification);
+	PG_ADD_TEST(suite, test_mixed_rw_access);
 	PG_ADD_TEST(suite, test_cannot_modify_read_only);
+	PG_ADD_TEST(suite, test_no_memory_leaked_when_iterator_is_partially_used);
 }

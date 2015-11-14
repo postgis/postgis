@@ -1631,7 +1631,8 @@ extern int lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p);
 
 /**
  * Attempts to assign the next point in the iterator to p, and advances
- * the iterator to the next point.
+ * the iterator to the next point.  If p is NULL, the iterator will be
+ * advanced without reading a point.
  * Returns LW_TRUE if the assignment was successful, LW_FALSE otherwise.
  * */
 extern int lwpointiterator_next(LWPOINTITERATOR* s, POINT4D* p);
