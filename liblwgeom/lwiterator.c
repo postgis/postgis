@@ -36,8 +36,6 @@ struct LWPOINTITERATOR
 	char allow_modification;
 };
 
-typedef struct LWPOINTITERATOR LWPOINTITERATOR;
-
 static LISTNODE*
 prepend_node(void* g, LISTNODE* front)
 {
