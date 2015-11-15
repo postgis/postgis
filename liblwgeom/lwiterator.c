@@ -190,7 +190,9 @@ lwpointiterator_peek(LWPOINTITERATOR* s, POINT4D* p)
 int
 lwpointiterator_has_next(LWPOINTITERATOR* s)
 {
-	return (s->pointarrays && s->i < ((POINTARRAY*) s->pointarrays->item)->npoints);
+	if (s->pointarrays && s->i < ((POINTARRAY*) s->pointarrays->item)->npoints)
+        return LW_TRUE;
+    return LW_FALSE;
 }
 
 int
