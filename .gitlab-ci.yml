@@ -1,0 +1,18 @@
+test:
+  script:
+    - apt-get update -qq
+    - apt-get install -y
+        postgresql-9.4 postgresql-server-dev-9.4
+        build-essential autoconf libtool libcunit1-dev
+        xsltproc docbook-xsl docbook-mathml dblatex
+        libproj-dev libgdal-dev libgeos-dev libjson0-dev
+    - lsb_release -a
+    - uname -a
+    - service postgresql start
+    - su -l postgres -c "createuser -s `whoami`"
+    - ./autogen.sh
+    - ./configure
+    - make
+    - make check RUNTESTFLAGS=-v
+    - make install
+    - make installcheck
