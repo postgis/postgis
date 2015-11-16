@@ -191,8 +191,8 @@ int
 lwpointiterator_has_next(LWPOINTITERATOR* s)
 {
 	if (s->pointarrays && s->i < ((POINTARRAY*) s->pointarrays->item)->npoints)
-        return LW_TRUE;
-    return LW_FALSE;
+		return LW_TRUE;
+	return LW_FALSE;
 }
 
 int
