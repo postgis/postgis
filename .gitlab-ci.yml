@@ -14,5 +14,5 @@ test:
     - ./configure
     - make
     - make check RUNTESTFLAGS=-v
-    - make install
-    - make installcheck
+    #- make install
+    #- make installcheck
