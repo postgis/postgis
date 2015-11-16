@@ -335,10 +335,12 @@ static void test_wkt_in_errlocation(void)
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
+	if ( fabs(12 - p.errlocation) >= 1.5 ) {
+		printf("Unexpected errlocation: %d\n", p.errlocation);
+		printf(" message: %s\n", p.message);
+	}
 	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
 
-//	printf("errlocation %d\n", p.errlocation);
-//	printf("message %s\n", p.message);
 
 	lwgeom_parser_result_free(&p);
 
