@@ -3,12 +3,16 @@ test:
     - apt-get update -qq
     - apt-get install -y
         flex bison
-        postgresql-9.4 postgresql-server-dev-9.4
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
         libproj-dev libgdal-dev libgeos-dev libjson0-dev
     - lsb_release -a
     - uname -a
+    - echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+    - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+    - apt-get update -qq
+    - apt-get install -y
+        postgresql-9.1 postgresql-server-dev-9.1
     - service postgresql start
     - su -l postgres -c "createuser -s `whoami`"
     - ./autogen.sh
