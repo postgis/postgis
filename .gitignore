@@ -2,6 +2,10 @@
 *.la
 .libs
 *.lo
+*.exe
+*.dll
+*.res
+*.marks
 gmon.out
 install-sh
 postgis_svn_revision.h
