@@ -99,7 +99,7 @@ void triangle_parse(void)
 
 	/* geography support */
 	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", LW_PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), TRIANGLETYPE);
 	lwgeom_free(geom);
 	lwfree(g);
@@ -225,7 +225,7 @@ void tin_parse(void)
 
 	/* geography support */
 	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), TINTYPE);
 	lwgeom_free(geom);
 	lwfree(g);
@@ -362,7 +362,7 @@ void polyhedralsurface_parse(void)
 
 	/* geography support */
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), POLYHEDRALSURFACETYPE);
 	lwgeom_free(geom);
 	lwfree(g);

@@ -903,7 +903,7 @@ static size_t gserialized_from_gbox(const GBOX *gbox, uint8_t *buf)
 
 /* Public function */
 
-GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, int is_geodetic, size_t *size)
+GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 {
 	size_t expected_size = 0;
 	size_t return_size = 0;

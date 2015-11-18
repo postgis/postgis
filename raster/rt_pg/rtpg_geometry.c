@@ -102,7 +102,7 @@ Datum RASTER_envelope(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	gser = gserialized_from_lwgeom(geom, 0, &gser_size);
+	gser = gserialized_from_lwgeom(geom, &gser_size);
 	lwgeom_free(geom);
 
 	SET_VARSIZE(gser, gser_size);
@@ -181,7 +181,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	gser = gserialized_from_lwgeom(geom, 0, &gser_size);
+	gser = gserialized_from_lwgeom(geom, &gser_size);
 	lwgeom_free(geom);
 
 	SET_VARSIZE(gser, gser_size);
@@ -323,7 +323,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		/* convert LWGEOM to GSERIALIZED */
-		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(geomval2[call_cntr].geom), 0, &gser_size);
+		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(geomval2[call_cntr].geom), &gser_size);
 		lwgeom_free(lwpoly_as_lwgeom(geomval2[call_cntr].geom));
 
 		values[0] = PointerGetDatum(gser);
@@ -625,7 +625,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		/* convert LWGEOM to GSERIALIZED */
-		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, 0, &gser_size);
+		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, &gser_size);
 		lwgeom_free(pix2[call_cntr].geom);
 
 		values[0] = PointerGetDatum(gser);
