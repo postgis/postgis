@@ -1598,6 +1598,52 @@ extern void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2);
 */
 extern LWGEOM* lwgeom_flip_coordinates(LWGEOM *in);
 
+struct LWPOINTITERATOR;
+typedef struct LWPOINTITERATOR LWPOINTITERATOR;
+
+/**
+ * Create a new LWPOINTITERATOR over supplied LWGEOM*
+ */
+extern LWPOINTITERATOR* lwpointiterator_create(const LWGEOM* g);
+
+/**
+ * Create a new LWPOINTITERATOR over supplied LWGEOM*
+ * Supports modification of coordinates during iteration.
+ */
+extern LWPOINTITERATOR* lwpointiterator_create_rw(LWGEOM* g);
+
+/** 
+ * Free all memory associated with the iterator
+ */
+extern void lwpointiterator_destroy(LWPOINTITERATOR* s);
+
+/**
+ * Returns LW_TRUE if there is another point available in the iterator.
+ */
+extern int lwpointiterator_has_next(LWPOINTITERATOR* s);
+
+/**
+ * Attempts to replace the next point int the iterator with p, and advances
+ * the iterator to the next point.
+ * Returns LW_SUCCESS if the assignment was successful, LW_FAILURE otherwise.
+ * */
+extern int lwpointiterator_modify_next(LWPOINTITERATOR* s, const POINT4D* p);
+
+/**
+ * Attempts to assign the next point in the iterator to p, and advances
+ * the iterator to the next point.  If p is NULL, the iterator will be
+ * advanced without reading a point.
+ * Returns LW_SUCCESS if the assignment was successful, LW_FAILURE otherwise.
+ * */
+extern int lwpointiterator_next(LWPOINTITERATOR* s, POINT4D* p);
+
+/**
+ * Attempts to assigns the next point in the iterator to p.  Does not advance.
+ * Returns LW_SUCCESS if the assignment was successful, LW_FAILURE otherwise.
+ */
+extern int lwpointiterator_peek(LWPOINTITERATOR* s, POINT4D* p);
+
+
 /**
 * Convert a single hex digit into the corresponding char
 */

@@ -906,6 +906,12 @@ SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geog
 
 SELECT '#2956', st_astwkb(null,0) is null;
 
+-- #2996 --
+WITH 
+  input AS (SELECT 'SRID=4326;POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))'::geometry AS geom),
+  mbc   AS (SELECT (mb).center, (mb).radius FROM (SELECT ST_MinimumBoundingRadius(geom) mb FROM input) sq)
+SELECT '#2996', radius = ST_Length(ST_LongestLine(geom, center)) FROM input, mbc;
+
 SELECT '#3172', ST_AsText(ST_AddMeasure('LINESTRING(0 0,0 0)', 1, 2));
 
 --SELECT '#3244a', ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));

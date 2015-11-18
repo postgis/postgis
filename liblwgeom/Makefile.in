@@ -52,6 +52,7 @@ SA_OBJS = \
 	lwmpoint.o \
 	lwmline.o \
 	lwmpoly.o \
+	lwboundingcircle.o \
 	lwcollection.o \
 	lwcircstring.o \
 	lwcompound.o \
@@ -64,6 +65,7 @@ SA_OBJS = \
 	lwin_geojson.o \
 	lwin_wkb.o \
 	lwin_twkb.o \
+	lwiterator.o \
 	lwout_wkt.o \
 	lwout_twkb.o \
 	lwin_wkt_parse.o \

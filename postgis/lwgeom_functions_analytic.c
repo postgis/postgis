@@ -11,14 +11,21 @@
  **********************************************************************/
 
 #include "postgres.h"
+#include "funcapi.h"
 #include "fmgr.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"  /* For FP comparators. */
+#include "lwboundingcircle.h"
 #include "lwgeom_pg.h"
 #include "math.h"
 #include "lwgeom_rtree.h"
 #include "lwgeom_functions_analytic.h"
 
+#if POSTGIS_PGSQL_VERSION >= 93
+#include "access/htup_details.h"
+#else
+#include "access/htup.h"
+#endif
 
 /***********************************************************************
  * Simple Douglas-Peucker line simplification.
@@ -33,6 +40,7 @@
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
+Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
 
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -1054,4 +1062,69 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 /*******************************************************************************
  * End of "Fast Winding Number Inclusion of a Point in a Polygon" derivative.
  ******************************************************************************/
+
+/**********************************************************************
+ *
+ * ST_MinimumBoundingRadius
+ *
+ **********************************************************************/
+
+PG_FUNCTION_INFO_V1(ST_MinimumBoundingRadius);
+Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* geom;
+	LWGEOM* input;
+	LW_BOUNDINGCIRCLE mbc;
+	LWGEOM* lwcenter;
+	GSERIALIZED* center;
+	TupleDesc resultTupleDesc;
+	HeapTuple resultTuple;
+	Datum result;
+	Datum result_values[2];
+	bool result_is_null[2];
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+
+    /* Empty geometry?  Return POINT EMPTY with zero radius */
+	if (gserialized_is_empty(geom))
+	{
+		lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+		mbc.radius = 0;
+	}
+	else
+	{
+		input = lwgeom_from_gserialized(geom);
+
+		if (!lwgeom_calculate_mbc(input, &mbc))
+		{
+			lwpgerror("Error calculating minimum bounding circle.");
+			lwgeom_free(input);
+			PG_RETURN_NULL();
+		}
+
+		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.center.x, mbc.center.y);
+
+		lwgeom_free(input);
+	}
+
+	center = geometry_serialize(lwcenter);
+	lwgeom_free(lwcenter); 
+
+	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
+	BlessTupleDesc(resultTupleDesc);
+
+	result_values[0] = PointerGetDatum(center);
+	result_is_null[0] = false;
+	result_values[1] = Float8GetDatum(mbc.radius);
+	result_is_null[1] = false;
+
+	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
+
+	result = HeapTupleGetDatum(resultTuple);
+
+	PG_RETURN_DATUM(result);
+}
 

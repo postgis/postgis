@@ -3884,3 +3884,4 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 }
+
