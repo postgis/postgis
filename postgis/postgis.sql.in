@@ -1634,13 +1634,13 @@ CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterIntersecting(geometry[])
     RETURNS geometry[]
-    AS '$libdir/postgis-2.2', 'clusterintersecting_garray'
+    AS 'MODULE_PATHNAME',  'clusterintersecting_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
     RETURNS geometry[]
-    AS '$libdir/postgis-2.2', 'cluster_within_distance_garray'
+    AS 'MODULE_PATHNAME',  'cluster_within_distance_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1922,7 +1922,7 @@ BEGIN
 		 pg_attribute a,
 		 pg_type t,
 		 pg_namespace n
-	WHERE (c.relkind = 'r' OR c.relkind = 'v')
+	WHERE c.relkind IN('r','v','f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -1939,7 +1939,7 @@ BEGIN
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind = 'r'
+		WHERE c.relkind IN( 'r', 'f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2010,7 +2010,7 @@ BEGIN
 			 pg_attribute a,
 			 pg_type t,
 			 pg_namespace n
-		WHERE c.relkind = 'r'
+		WHERE c.relkind IN('r', 'f')
 		AND t.typname = 'geometry'
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -2683,6 +2683,10 @@ CREATE OR REPLACE FUNCTION postgis_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_liblwgeom_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
@@ -2738,6 +2742,7 @@ DECLARE
 	cgalver text;
 	gdalver text;
 	libxmlver text;
+	liblwgeomver text;
 	dbproc text;
 	relproc text;
 	fullver text;
@@ -2771,6 +2776,7 @@ BEGIN
 		WHEN undefined_function THEN
 			sfcgalver := NULL;
 	END;
+	SELECT postgis_liblwgeom_version() INTO liblwgeomver;
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
@@ -2810,6 +2816,11 @@ BEGIN
 	END IF;
 
 	fullver = fullver || '"';
+
+	IF liblwgeomver != relproc THEN
+		fullver = fullver || ' (liblwgeom version mismatch: "' || liblwgeomver || '")';
+	END IF;
+
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';

@@ -58,7 +58,7 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Got typmod(srid = %d, type = %d, hasz = %d, hasm = %d)", srid, type, hasz, hasm);
 
 	/* No SRID or type or dimensionality? Then no typmod at all. Return empty string. */
-	if ( ! ( srid || type || hasz || hasz ) )
+	if ( ! ( srid || type || hasz || hasm ) )
 	{
 		*str = '\0';
 		PG_RETURN_CSTRING(str);

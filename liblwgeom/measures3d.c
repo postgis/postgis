@@ -37,18 +37,6 @@ get_3dcross_product(VECTOR3D *v1,VECTOR3D *v2, VECTOR3D *v)
 	return LW_TRUE;
 }
 
-/**
-Used for check compability before sending control to 2D calculations
-in case of mixed dimmentionality*/
-static inline int
-supported_type(const LWGEOM *lwg)
-{
-	int	t = lwg->type;
-	if(t==POINTTYPE || t==LINETYPE || t==POLYGONTYPE)
-		return LW_TRUE;
-	else
-		return LW_FALSE;
-}
 
 /**
 This function is used to create a vertical line used for cases where one if the 
@@ -113,10 +101,6 @@ lw_dist3d_distanceline(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode)
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		if(!supported_type(lw1))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw1->type));
-		if(!supported_type(lw2))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw2->type));
 		
 		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		
@@ -221,15 +205,9 @@ lw_dist3d_distancepoint(const LWGEOM *lw1, const LWGEOM *lw2, int srid, int mode
 	/*If not, send it to 2D-calculations which will give the same result*/
 	/*as an infinite z-value at one or two of the geometries*/
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
-	{
-		if(!supported_type(lw1))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw1->type));
-		if(!supported_type(lw2))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw2->type));
-		
+	{		
 		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
-		
-		
+				
 		if(!lwgeom_has_z(lw1) && !lwgeom_has_z(lw2))
 			return lw_dist2d_distancepoint(lw1, lw2, srid, mode);
 			
@@ -325,11 +303,6 @@ lwgeom_maxdistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 {
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		if(!supported_type(lw1))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw1->type));
-		if(!supported_type(lw2))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw2->type));
-		
 		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
 		return lwgeom_maxdistance2d_tolerance(lw1, lw2, tolerance);	
 	}
@@ -367,12 +340,8 @@ lwgeom_mindistance3d_tolerance(const LWGEOM *lw1, const LWGEOM *lw2, double tole
 {
 	if(!lwgeom_has_z(lw1) || !lwgeom_has_z(lw2))
 	{
-		if(!supported_type(lw1))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw1->type));
-		if(!supported_type(lw2))
-			lwerror("Unsupported geometry type: %s", lwtype_name(lw2->type));
-
 		lwnotice("One or both of the geometries is missing z-value. The unknown z-value will be regarded as \"any value\"");
+		
 		return lwgeom_mindistance2d_tolerance(lw1, lw2, tolerance);	
 	}
 	DISTPTS3D thedl;

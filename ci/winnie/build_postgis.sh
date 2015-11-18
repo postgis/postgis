@@ -139,5 +139,10 @@ fi;
 if [ "$POSTGIS_MINOR_VERSION" == "0" ] ; then
 cp ${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/include/json/json_object.h.for_compile ${MINGPROJECTS}/json-c/rel-${JSON_VER}w${OS_BUILD}${GCC_TYPE}/include/json/json_object.h
 fi;
+
+
+#patch liblwgeom generated make to get rid of dynamic linking
+sed -i 's/LDFLAGS += -no-undefined//g' liblwgeom/Makefile
+
 make && make install
 

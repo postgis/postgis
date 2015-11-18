@@ -85,9 +85,9 @@ AC_SUBST([EXESUFFIX])
 dnl
 dnl Version Information imported from Version.config 
 dnl
-POSTGIS_MAJOR_VERSION=`cat Version.config | grep POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_MINOR_VERSION=`cat Version.config | grep POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_MICRO_VERSION=`cat Version.config | grep POSTGIS_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MAJOR_VERSION=`cat Version.config | grep ^POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MINOR_VERSION=`cat Version.config | grep ^POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+POSTGIS_MICRO_VERSION=`cat Version.config | grep ^POSTGIS_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 
 AC_DEFINE_UNQUOTED([POSTGIS_MAJOR_VERSION], ["$POSTGIS_MAJOR_VERSION"], [PostGIS major version])
 AC_DEFINE_UNQUOTED([POSTGIS_MINOR_VERSION], ["$POSTGIS_MINOR_VERSION"], [PostGIS minor version])
@@ -98,11 +98,11 @@ AC_SUBST([POSTGIS_MINOR_VERSION])
 AC_SUBST([POSTGIS_MICRO_VERSION])
 
 dnl
-dnl Convert PostGIS version info into liblwgeom libtool-happy numbers
+dnl Liblwgeom version information imported from Version.config
 dnl
-LIBLWGEOM_CURRENT=`expr $POSTGIS_MAJOR_VERSION + $POSTGIS_MINOR_VERSION`
-LIBLWGEOM_AGE=$POSTGIS_MINOR_VERSION
-LIBLWGEOM_REV=`echo $POSTGIS_MICRO_VERSION | perl -p -e 's/(\d+)\w*\d*/$1/g'`
+LIBLWGEOM_CURRENT=`cat Version.config | grep ^LIBLWGEOM_IFACE_CUR | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_AGE=`cat Version.config | grep ^LIBLWGEOM_IFACE_AGE | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+LIBLWGEOM_REV=`cat Version.config | grep ^LIBLWGEOM_IFACE_REV | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 AC_SUBST([LIBLWGEOM_CURRENT])
 AC_SUBST([LIBLWGEOM_AGE])
 AC_SUBST([LIBLWGEOM_REV])
@@ -664,11 +664,14 @@ dnl ===========================================================================
 AC_ARG_WITH([sfcgal], 
 	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])], 
 	[SFCGAL_CONFIG="$withval"], 
-	[AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])])
+	[with_sfcgal=auto])
 
 HAVE_SFCGAL="no"
 
 if test "x$with_sfcgal" != "xno"; then
+  if test "x$with_sfcgal" = "xyes" -o "x$with_sfcgal" = "xauto"; then
+	  AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])
+  fi
 	if test -x "$SFCGAL_CONFIG"; then
 		SFCGAL_VERSION=`$SFCGAL_CONFIG --version` || AC_MSG_ERROR([cannot determine sfcgal version (tried with $SFCGAL_CONFIG --version)])
 		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
@@ -692,7 +695,7 @@ if test "x$with_sfcgal" != "xno"; then
 		fi
 
 	else
-		if test "x$with_sfcgal" != "x"; then
+		if test "x$with_sfcgal" != "xauto"; then
 			AC_MSG_ERROR([sfcgal-config cannot be found. Please install sfcgal])
 		fi
 	fi

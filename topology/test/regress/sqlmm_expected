@@ -47,7 +47,11 @@ ERROR:  SQL/MM Spatial exception - invalid point
 Isolated Node 8 moved to location 7,11
 Isolated Node 8 moved to location 7,10
 -- ST_RemoveIsoEdge ---------------------
+#3351.1|4|
+#3351.1|5|
 Isolated edge 1 removed
+#3351.2|4|0
+#3351.2|5|0
 -- ST_NewEdgesSplit  ---------------------
 9
 Topology 'sqlmm_topology' dropped

@@ -11,6 +11,7 @@
 
 #include "CUnit/Basic.h"
 #include "cu_tester.h"
+#include "../liblwgeom_internal.h"
 
 #include "../lwboundingcircle.c"
 
@@ -19,21 +20,19 @@ static void mbc_test(LWGEOM* g)
 	LW_BOUNDINGCIRCLE result;
 	CU_ASSERT_TRUE(lwgeom_calculate_mbc(g, &result));
 
-	LWITERATOR it;
-	lwiterator_create(g, &it);
+	LWPOINTITERATOR* it = lwpointiterator_create(g);
 
 	POINT2D p;
 	POINT4D p4;
-	while (lwiterator_has_next(&it))
+	while (lwpointiterator_next(it, &p4))
 	{
-		lwiterator_next(&it, &p4);
 		p.x = p4.x;
 		p.y = p4.y;
 
 		CU_ASSERT_TRUE(distance2d_pt_pt(&(result.center), &p) <= result.radius);
 	}
 
-	lwiterator_destroy(&it);
+	lwpointiterator_destroy(it);
 }
 
 static void basic_test(void)

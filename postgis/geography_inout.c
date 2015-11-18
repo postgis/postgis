@@ -598,26 +598,18 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 		);
 	}
 
-	/*
-	** Serialize our lwgeom and set the geodetic flag so subsequent
-	** functions do the right thing.
-	*/
-	lwgeom_set_geodetic(lwgeom, true);
-	
-	/* Recalculate the boxes after re-setting the geodetic bit */
+	/* force recalculate of box by dropping */
 	lwgeom_drop_bbox(lwgeom);
-	lwgeom_add_bbox(lwgeom);
-	
+
+	lwgeom_set_geodetic(lwgeom, true);	
+	/* We are trusting geography_serialize will add a box if needed */	
 	g_ser = geography_serialize(lwgeom);
 
-	/*
-	** Replace the unaligned lwgeom with a new aligned one based on GSERIALIZED.
-	*/
+
 	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(g_ser);
-
 }
 
 PG_FUNCTION_INFO_V1(geometry_from_geography);

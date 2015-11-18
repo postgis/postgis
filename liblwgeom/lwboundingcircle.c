@@ -11,9 +11,7 @@
  **********************************************************************/
 
 #include <string.h>
-#include "liblwgeom.h"
 #include "liblwgeom_internal.h"
-#include "lwiterator.h"
 #include "lwboundingcircle.h"
 
 typedef struct {
@@ -197,16 +195,38 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 {
 	SUPPORTING_POINTS support = supporting_points_create();
-	POINT2D** points;
+	LWPOINTITERATOR* it;
 	uint32_t num_points;
+	POINT2D** points;
+	POINT4D p;
 	uint32_t i;
 	int success;
 
 	if(g == NULL || lwgeom_is_empty(g))
 		return LW_FAILURE;
 
-	if (!extract_points_2d(g, &points, &num_points))
-		return LW_FAILURE;
+	num_points = lwgeom_count_vertices(g);
+	it = lwpointiterator_create(g);
+	points = lwalloc(num_points * sizeof(POINT2D*));
+	for (i = 0; i < num_points; i++)
+	{
+		if(!lwpointiterator_next(it, &p))
+		{
+			uint32_t j;
+			for (j = 0; j < i; j++)
+			{
+				lwfree(points[j]);
+			}
+			lwpointiterator_destroy(it);
+			lwfree(points);
+			return LW_FAILURE;
+		}
+
+		points[i] = lwalloc(sizeof(POINT2D));
+		points[i]->x = p.x;
+		points[i]->y = p.y;
+	}
+	lwpointiterator_destroy(it);
 
 	lwboundingcircle_clear(result);
 

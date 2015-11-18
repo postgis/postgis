@@ -34,6 +34,7 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_version(PG_FUNCTION_ARGS);
+Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_svn_version(PG_FUNCTION_ARGS);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS);
@@ -134,6 +135,14 @@ PG_FUNCTION_INFO_V1(postgis_version);
 Datum postgis_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_VERSION;
+	text *result = cstring2text(ver);
+	PG_RETURN_TEXT_P(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_liblwgeom_version);
+Datum postgis_liblwgeom_version(PG_FUNCTION_ARGS)
+{
+	const char *ver = lwgeom_version();
 	text *result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }

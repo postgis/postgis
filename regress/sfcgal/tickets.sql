@@ -63,8 +63,8 @@ SELECT '#65', ST_AsGML(ST_GeometryFromText('CURVEPOLYGON(CIRCULARSTRING(4 2,3 -1
 SELECT '#66', ST_AsText((ST_Dump(ST_GeomFromEWKT('CIRCULARSTRING(0 0,1 1,2 2)'))).geom);
 
 -- #68 --
-SELECT '#68a', ST_AsText(ST_Shift_Longitude(ST_GeomFromText('MULTIPOINT(1 3, 4 5)')));
-SELECT '#68b', ST_AsText(ST_Shift_Longitude(ST_GeomFromText('CIRCULARSTRING(1 3, 4 5, 6 7)')));
+SELECT '#68a', ST_AsText(ST_ShiftLongitude(ST_GeomFromText('MULTIPOINT(1 3, 4 5)')));
+SELECT '#68b', ST_AsText(ST_ShiftLongitude(ST_GeomFromText('CIRCULARSTRING(1 3, 4 5, 6 7)')));
 
 -- #69 --
 SELECT '#69', ST_AsText(ST_Translate(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),1,2));
@@ -335,7 +335,7 @@ END As the_geom
 FROM vs, generate_series(-10,50,10) As i CROSS JOIN generate_series(40,70, 20) As j ORDER BY i, j, i*j LIMIT 1;
 
 -- #677 --
-SELECT '#677',round(ST_Distance_Spheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
+SELECT '#677',round(ST_DistanceSpheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
 
 -- #680 --
 SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom), 'NDR'),'hex') As result FROM ((SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(50,70, 20) AS j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, i*j*m)) As foo1 LIMIT 1;
@@ -374,7 +374,7 @@ SELECT '#689', ST_CoveredBy(ST_GeomFromText('POLYGON EMPTY'), ST_GeomFromText('L
 
 -- #690 --
 SELECT '#690';
-SELECT ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')) As result;
+SELECT encode(ST_AsEWKB(ST_MakeLine(ST_GeomFromText('POINT(-11.1111111 40)'), ST_GeomFromText('LINESTRING(-11.1111111 70,70 -11.1111111)')),'ndr'),'hex') As result;
 
 -- #693 --
 SELECT '#693a', ST_AsText(ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))'));

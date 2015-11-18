@@ -396,6 +396,12 @@ check: $(XML_INPUTS)
 	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
 endif
 
+check-localized:
+	@for lang in $(translations); do \
+    echo "Creating html for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-check; \
+  done
+
 
 requirements_not_met_xsltproc:
 	@echo

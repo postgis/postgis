@@ -1060,7 +1060,7 @@ SELECT
 
     <para>Creates a LineString from an Encoded Polyline string.</para>
     <para>See http://developers.google.com/maps/documentation/utilities/polylinealgorithm</para>
-
+    <para>Availability: 2.2.0</para>
     </refsection>
 
     <refsection>

@@ -135,7 +135,26 @@ SELECT topology.ST_MoveIsoNode('sqlmm_topology', 8, 'POINT(7 10)');
 -------------------------------------------------------------
 SELECT '-- ST_RemoveIsoEdge ---------------------';
 
+CREATE TEMP TABLE edge1_endnodes AS
+  WITH edge AS (
+    SELECT start_node,end_node
+    FROM sqlmm_topology.edge_data
+    WHERE edge_id = 1
+  )
+  SELECT start_node id FROM edge UNION
+  SELECT end_node FROM edge;
+SELECT '#3351.1', node_id, containing_face
+ FROM sqlmm_topology.node where node_id in (
+    SELECT id FROM edge1_endnodes
+  )
+ ORDER BY node_id;
 SELECT topology.ST_RemoveIsoEdge('sqlmm_topology', 1);
+SELECT '#3351.2', node_id, containing_face
+ FROM sqlmm_topology.node where node_id in (
+    SELECT id FROM edge1_endnodes
+  )
+ ORDER BY node_id;
+DROP TABLE edge1_endnodes;
 
 -------------------------------------------------------------
 -- ST_NewEdgesSplit

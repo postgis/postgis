@@ -200,6 +200,26 @@ SELECT 'tgup1.3', id(t.g), st_area(t.g), count(r.*)
   WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
   GROUP BY id(t.g), st_area(t.g);
 
+-- http://trac.osgeo.org/postgis/ticket/3359
+-- NOTE: requires identifier of the second edge to be 2
+TRUNCATE tt.relation CASCADE;
+TRUNCATE tt.edge_data CASCADE;
+TRUNCATE tt.node CASCADE;
+DELETE FROM tt.face WHERE face_id > 0;
+SELECT '#3359.setval',
+       setval('tt.edge_data_edge_id_seq', 1, false),
+       -- face_id is intentionally set to 2
+       setval('tt.face_face_id_seq', 2, false),
+       setval('tt.node_node_id_seq', 1, false);
+SELECT '#3359.line.1', ST_Length(toTopoGeom('LINESTRING (0 0,1 0)'
+::geometry, 'tt', 3));
+SELECT '#3359.line.2', ST_Length(toTopoGeom('LINESTRING (0 0,1 0,1 1)'
+::geometry, 'tt', 3));
+SELECT '#3359.area.1', ST_Area(toTopoGeom('POLYGON ((0 0,1 0,1 1,0 1,0 0))'
+::geometry, 'tt', 4));
+SELECT '#3359.area.2', ST_Area(toTopoGeom('POLYGON ((0 0,1 0,1 2,0 2,0 0))'
+::geometry, 'tt', 4));
+
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
 DROP TABLE tt.f_lineal;

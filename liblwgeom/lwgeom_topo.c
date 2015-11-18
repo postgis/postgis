@@ -42,6 +42,7 @@
   do { \
     size_t sz; \
     char *wkt1 = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
+    /* char *wkt1 = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
     LWDEBUGF(level, msg ": %s", wkt1); \
     lwfree(wkt1); \
   } while (0);
@@ -247,16 +248,16 @@ lwt_be_getEdgeByNode(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
 
 static LWT_ISO_EDGE*
 lwt_be_getEdgeByFace(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                   int* numelems, int fields)
+                   int* numelems, int fields, const GBOX *box)
 {
-  CBT3(topo, getEdgeByFace, ids, numelems, fields);
+  CBT4(topo, getEdgeByFace, ids, numelems, fields, box);
 }
 
 static LWT_ISO_NODE*
 lwt_be_getNodeByFace(LWT_TOPOLOGY* topo, const LWT_ELEMID* ids,
-                   int* numelems, int fields)
+                   int* numelems, int fields, const GBOX *box)
 {
-  CBT3(topo, getNodeByFace, ids, numelems, fields);
+  CBT4(topo, getNodeByFace, ids, numelems, fields, box);
 }
 
 LWT_ISO_EDGE*
@@ -1390,7 +1391,7 @@ _lwt_FirstDistinctVertex2D(const POINTARRAY* pa, POINT2D *ref, int from, int dir
   }
 
   LWDEBUGF(1, "first point is index %d", from);
-  getPoint2d_p(pa, from, &fp);
+  fp = *ref; /* getPoint2d_p(pa, from, &fp); */
   for ( i = from+inc; i != toofar; i += inc )
   {
     LWDEBUGF(1, "testing point %d", i);
@@ -1984,7 +1985,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
                LWT_COL_EDGE_GEOM
                ;
   numfaceedges = 1;
-  edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &face, &numfaceedges, fields, newface.mbr );
   if ( numfaceedges == -1 ) {
     lwfree( signed_edge_ids );
     _lwt_release_edges(ring_edges, numedges);
@@ -2205,7 +2206,7 @@ _lwt_AddFaceSplit( LWT_TOPOLOGY* topo,
   int numisonodes = 1;
   fields = LWT_COL_NODE_NODE_ID | LWT_COL_NODE_GEOM;
   LWT_ISO_NODE *nodes = lwt_be_getNodeByFace(topo, &face,
-                                             &numisonodes, fields);
+                                             &numisonodes, fields, newface.mbr);
   if ( numisonodes == -1 ) {
     lwfree( signed_edge_ids );
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
@@ -2799,7 +2800,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
            LWT_COL_EDGE_FACE_LEFT |
            LWT_COL_EDGE_FACE_RIGHT
            ;
-  edges = lwt_be_getEdgeByFace( topo, &faceid, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &faceid, &numfaceedges, fields, NULL );
   if ( numfaceedges == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return NULL;
@@ -3016,7 +3017,7 @@ lwt_GetFaceEdges(LWT_TOPOLOGY* topo, LWT_ELEMID face_id, LWT_ELEMID **out )
            LWT_COL_EDGE_FACE_LEFT |
            LWT_COL_EDGE_FACE_RIGHT
            ;
-  edges = lwt_be_getEdgeByFace( topo, &face_id, &numfaceedges, fields );
+  edges = lwt_be_getEdgeByFace( topo, &face_id, &numfaceedges, fields, NULL );
   if ( numfaceedges == -1 ) {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
@@ -3496,7 +3497,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 
   /* Bail out if next CW or CCW edge on start node changed */
   if ( span_pre.nextCW != span_post.nextCW ||
-       span_pre.nextCCW != span_pre.nextCCW )
+       span_pre.nextCCW != span_post.nextCCW )
   {{
     LWT_ELEMID nid = oldedge->start_node;
     _lwt_release_edges(oldedge, 1);
@@ -3507,7 +3508,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
 
   /* Bail out if next CW or CCW edge on end node changed */
   if ( epan_pre.nextCW != epan_post.nextCW ||
-       epan_pre.nextCCW != epan_pre.nextCCW )
+       epan_pre.nextCCW != epan_post.nextCCW )
   {{
     LWT_ELEMID nid = oldedge->end_node;
     _lwt_release_edges(oldedge, 1);
@@ -3577,6 +3578,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
       return -1;
     }
   }
+  if ( nface1 ) lwgeom_free(nface1);
+  if ( nface2 ) lwgeom_free(nface2);
 
   LWDEBUG(1, "all done, cleaning up edges");
 
@@ -3688,6 +3691,8 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
   LWT_ISO_EDGE deledge;
   LWT_ISO_EDGE *edge;
   LWT_ELEMID nid[2];
+  LWT_ISO_NODE upd_node[2];
+  LWT_ELEMID containing_face;
   int n = 1;
   int i;
 
@@ -3719,6 +3724,7 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
     lwerror("SQL/MM Spatial exception - not isolated edge");
     return -1;
   }
+  containing_face = edge[0].face_left;
 
   nid[0] = edge[0].start_node;
   nid[1] = edge[0].end_node;
@@ -3750,6 +3756,22 @@ lwt_RemIsoEdge(LWT_TOPOLOGY* topo, LWT_ELEMID id)
   if ( n != 1 )
   {
     lwerror("Unexpected error: %d edges deleted when expecting 1", n);
+    return -1;
+  }
+
+  upd_node[0].node_id = nid[0];
+  upd_node[0].containing_face = containing_face;
+  n = 1;
+  if ( nid[1] != nid[0] ) {
+    upd_node[1].node_id = nid[1];
+    upd_node[1].containing_face = containing_face;
+    ++n;
+  }
+  n = lwt_be_updateNodesById(topo, upd_node, n,
+                               LWT_COL_NODE_CONTAINING_FACE);
+  if ( n == -1 )
+  {
+    lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
 
@@ -4887,19 +4909,40 @@ _lwt_minTolerance( LWGEOM *g )
 #define _LWT_MINTOLERANCE( topo, geom ) ( \
   topo->precision ?  topo->precision : _lwt_minTolerance(geom) )
 
+typedef struct scored_pointer_t {
+  void *ptr;
+  double score;
+} scored_pointer;
+
+static int
+compare_scored_pointer(const void *si1, const void *si2)
+{
+	double a = ((scored_pointer *)si1)->score;
+	double b = ((scored_pointer *)si2)->score;
+	if ( a < b )
+		return -1;
+	else if ( a > b )
+		return 1;
+	else
+		return 0;
+}
+
 LWT_ELEMID
 lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
 {
   int num, i;
-  double mindist;
-  LWT_ISO_NODE *nodes;
-  LWT_ISO_EDGE *edges;
+  double mindist = FLT_MAX;
+  LWT_ISO_NODE *nodes, *nodes2;
+  LWT_ISO_EDGE *edges, *edges2;
   LWGEOM *pt = lwpoint_as_lwgeom(point);
   int flds;
   LWT_ELEMID id = 0;
+  scored_pointer *sorted;
 
   /* Get tolerance, if 0 was given */
   if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, pt );
+
+  LWDEBUGG(1, pt, "Adding point");
 
   /*
   -- 1. Check if any existing node is closer than the given precision
@@ -4913,23 +4956,50 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
-  for ( i=0; i<num; ++i )
+  if ( num )
   {
-    LWT_ISO_NODE *n = &(nodes[i]);
-    LWGEOM *g = lwpoint_as_lwgeom(n->geom);
-    double dist = lwgeom_mindistance2d(g, pt);
-    if ( dist >= tol ) continue; /* must be closer than tolerated */
-    if ( ! id || dist < mindist )
+    LWDEBUGF(1, "New point is within %.15g units of %d nodes", tol, num);
+    /* Order by distance if there are more than a single return */
+    if ( num > 1 )
+    {{
+      sorted= lwalloc(sizeof(scored_pointer)*num);
+      for (i=0; i<num; ++i)
+      {
+        sorted[i].ptr = nodes+i;
+        sorted[i].score = lwgeom_mindistance2d(lwpoint_as_lwgeom(nodes[i].geom), pt);
+        LWDEBUGF(1, "Node %" LWTFMT_ELEMID " distance: %.15g",
+          ((LWT_ISO_NODE*)(sorted[i].ptr))->node_id, sorted[i].score);
+      }
+      qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+      nodes2 = lwalloc(sizeof(LWT_ISO_NODE)*num);
+      for (i=0; i<num; ++i)
+      {
+        nodes2[i] = *((LWT_ISO_NODE*)sorted[i].ptr);
+      }
+      lwfree(sorted);
+      lwfree(nodes);
+      nodes = nodes2;
+    }}
+
+    for ( i=0; i<num; ++i )
     {
-      id = n->node_id;
-      mindist = dist;
+      LWT_ISO_NODE *n = &(nodes[i]);
+      LWGEOM *g = lwpoint_as_lwgeom(n->geom);
+      double dist = lwgeom_mindistance2d(g, pt);
+      /* TODO: move this check in the previous sort scan ... */
+      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      if ( ! id || dist < mindist )
+      {
+        id = n->node_id;
+        mindist = dist;
+      }
     }
-  }
-  if ( id )
-  {
-    /* found an existing node */
-    if ( nodes ) _lwt_release_nodes(nodes, num);
-    return id;
+    if ( id )
+    {
+      /* found an existing node */
+      if ( nodes ) _lwt_release_nodes(nodes, num);
+      return id;
+    }
   }
 
   initGEOS(lwnotice, lwgeom_geos_error);
@@ -4940,17 +5010,51 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   TODO: use WithinBox2D
   */
   flds = LWT_COL_EDGE_EDGE_ID|LWT_COL_EDGE_GEOM;
-  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 1);
+  edges = lwt_be_getEdgeWithinDistance2D(topo, point, tol, &num, flds, 0);
   if ( num == -1 )
   {
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return -1;
   }
   if ( num )
-  {{
-    /* The point is on or near an edge, split the edge */
+  {
+  LWDEBUGF(1, "New point is within %.15g units of %d edges", tol, num);
 
-    LWT_ISO_EDGE *e = &(edges[0]);
+  /* Order by distance if there are more than a single return */
+  if ( num > 1 )
+  {{
+    int j;
+    sorted = lwalloc(sizeof(scored_pointer)*num);
+    for (i=0; i<num; ++i)
+    {
+      sorted[i].ptr = edges+i;
+      sorted[i].score = lwgeom_mindistance2d(lwline_as_lwgeom(edges[i].geom), pt);
+      LWDEBUGF(1, "Edge %" LWTFMT_ELEMID " distance: %.15g",
+        ((LWT_ISO_EDGE*)(sorted[i].ptr))->edge_id, sorted[i].score);
+    }
+    qsort(sorted, num, sizeof(scored_pointer), compare_scored_pointer);
+    edges2 = lwalloc(sizeof(LWT_ISO_EDGE)*num);
+    for (j=0, i=0; i<num; ++i)
+    {
+      if ( sorted[i].score == sorted[0].score )
+      {
+        edges2[j++] = *((LWT_ISO_EDGE*)sorted[i].ptr);
+      }
+      else
+      {
+        lwline_free(((LWT_ISO_EDGE*)sorted[i].ptr)->geom);
+      }
+    }
+    num = j;
+    lwfree(sorted);
+    lwfree(edges);
+    edges = edges2;
+  }}
+
+  for (i=0; i<num; ++i)
+  {
+    /* The point is on or near an edge, split the edge */
+    LWT_ISO_EDGE *e = &(edges[i]);
     LWGEOM *g = lwline_as_lwgeom(e->geom);
     LWGEOM *prj;
     int contains;
@@ -5016,6 +5120,15 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
       LWDEBUGF(1, "Edge %" LWTFMT_ELEMID
                   " does not contain projected point to it",
                   e->edge_id);
+
+      /* In order to reduce the robustness issues, we'll pick
+       * an edge that contains the projected point, if possible */
+      if ( i+1 < num )
+      {
+        LWDEBUG(1, "But there's another to check");
+        lwgeom_free(prj);
+        continue;
+      }
 
       /*
       -- The tolerance must be big enough for snapping to happen
@@ -5112,8 +5225,10 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
     }
 
     lwgeom_free(prj);
-    _lwt_release_edges(edges, num);
-  }}
+    break; /* we only want to snap a single edge */
+  }
+  _lwt_release_edges(edges, num);
+  }
   else
   {
     /* The point is isolated, add it as such */

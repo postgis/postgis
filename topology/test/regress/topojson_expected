@@ -49,4 +49,5 @@ E33
 E34
 E35
 A3-vanilla|P6|{ "type": "MultiPolygon", "arcs": [[[-33],[30,25],[1]],[[-34],[34]]]}
+P1-vanilla|S2|{"type":"MultiPoint","coordinates":[[35,14]]}
 Topology 'city_data' dropped

@@ -77,7 +77,7 @@ struct LWT_BE_TOPOLOGY_T {
   char *name;
   int id;
   int srid;
-  int precision;
+  double precision;
   int hasZ;
 };
 
@@ -156,7 +156,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT id,srid FROM topology.topology "
+  appendStringInfo(sql, "SELECT id,srid,precision FROM topology.topology "
                         "WHERE name = '%s'", name);
   spi_result = SPI_execute(sql->data, !be->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -208,10 +208,17 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
     topo->srid = SRID_UNKNOWN;
   }
 
-  topo->precision = 0; /* needed ? */
+  dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 3, &isnull);
+  if ( isnull ) {
+		lwnotice("Topology '%s' has null precision, taking as 0", name);
+    topo->precision = 0; /* TODO: should this be -1 instead ? */
+  } else {
+    topo->precision = DatumGetFloat8(dat);
+  }
 
-  POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has id %d, srid %d",
-             name, topo->id, topo->srid);
+  POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
+                    "id %d, srid %d, precision %g",
+             name, topo->id, topo->srid, topo->precision);
 
   return topo;
 }
@@ -876,21 +883,22 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_EDGE*
 cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* ids, int* numelems, int fields)
+      const LWT_ELEMID* ids, int* numelems, int fields,
+      const GBOX *box)
 {
   LWT_ISO_EDGE *edges;
 	int spi_result;
   MemoryContext oldcontext = CurrentMemoryContext;
-
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
+  char *hexbox;
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
   appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
-  appendStringInfoString(sql, " WHERE left_face IN (");
+  appendStringInfoString(sql, " WHERE ( left_face IN (");
   // add all identifiers here
   for (i=0; i<*numelems; ++i) {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
@@ -900,7 +908,13 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   for (i=0; i<*numelems; ++i) {
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
-  appendStringInfoString(sql, ")");
+  appendStringInfoString(sql, ") )");
+  if ( box )
+  {
+    hexbox = _box2d_to_hexwkb(box, topo->srid);
+    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
+    lwfree(hexbox);
+  }
 
   POSTGIS_DEBUGF(1, "cb_getEdgeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
@@ -1104,7 +1118,8 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
 
 static LWT_ISO_NODE*
 cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
-      const LWT_ELEMID* ids, int* numelems, int fields)
+      const LWT_ELEMID* ids, int* numelems, int fields,
+      const GBOX *box)
 {
   LWT_ISO_NODE *nodes;
 	int spi_result;
@@ -1112,6 +1127,7 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
+  char *hexbox;
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
@@ -1123,6 +1139,12 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
     appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
   }
   appendStringInfoString(sql, ")");
+  if ( box )
+  {
+    hexbox = _box2d_to_hexwkb(box, topo->srid);
+    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
+    lwfree(hexbox);
+  }
   POSTGIS_DEBUGF(1, "cb_getNodeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
   spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);

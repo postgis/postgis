@@ -8973,8 +8973,8 @@ FROM funky_shapes;
 					  <funcprototype>
 							<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
-							<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+							<paramdef><type>geometry </type> <parameter>geomin</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
@@ -8988,27 +8988,27 @@ FROM funky_shapes;
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
 							<paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					  <funcprototype>
 							<funcdef>raster <function>ST_Intersection</function></funcdef>
 							<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
 							<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-							<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
-							<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+							<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>returnband</parameter></paramdef>
+							<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 					  </funcprototype>
 
 					</funcsynopsis>
@@ -9041,7 +9041,7 @@ FROM funky_shapes;
 					</para>
 
 					<para>
-						In all variants, if no band number is specified band 1 is assumed.
+						In all variants, if no band number is specified band 1 is assumed.  If you need an intersection between a raster and geometry that returns a raster, refer to <xref linkend="RT_ST_Clip" />.
 					</para>
 
 					<note>
@@ -9105,12 +9105,6 @@ FROM (
 				</refsection>
 
 				<refsection>
-					<title>Example: Raster, Geometry -- resulting is a raster</title>
-					<para>Examples coming soon</para>
-					<!-- TODO: EXAMPLES coming soon -->
-				</refsection>
-
-				<refsection>
 					<title>See Also</title>
 					<para>
 						<xref linkend="geomval" />, 
@@ -9131,8 +9125,7 @@ FROM (
 				</refnamediv>
 
 				<refsynopsisdiv>
-					<funcsynopsis>
-
+					<funcsynopsis>    						
 						<funcprototype>
 							<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
 							<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></paramdef>
@@ -9183,6 +9176,18 @@ FROM (
 							<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
 							<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
 							<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+							<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+						</funcprototype>
+						
+						<funcprototype>
+							<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+							<paramdef><type>nband</type> <parameter>integer</parameter></paramdef>
+							<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+							<paramdef><type>float8[] </type> <parameter>mask</parameter></paramdef>
+							<paramdef><type>boolean </type> <parameter>weighted</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+							<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+							<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
 							<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
 						</funcprototype>
 
@@ -9241,6 +9246,24 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 									Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
 								</para>
 
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>mask</term>
+							<listitem>
+								<para>
+									An n-dimenional array (matrix) of numbers used to filter what cells get passed to map algebra call-back function. 0 means a neighbor cell value should be treated as no-data and 1 means value should be treated as data.  If weight is set to true, then the values, are used as multipliers to multiple the pixel value of that value in the neighborhood position.
+								</para>
+							</listitem>
+						</varlistentry>
+						
+						<varlistentry>
+							<term>weighted</term>
+							<listitem>
+								<para>
+									boolean (true/false) to denote if a mask value should be weighted (multiplied by original value) or not (only applies to proto that takes a mask).
+								</para>
 							</listitem>
 						</varlistentry>
 
@@ -9326,6 +9349,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 						Variant 4 operate upon two rasters with one band per raster. See example Variant 4.
 					</para>
 
+					<para>Availability: 2.2.0: Ability to add a mask</para>
 					<para>Availability: 2.1.0</para>
 
 				</refsection>
@@ -9508,6 +9532,102 @@ WHERE t1.rid = 1
 					</programlisting>
 
 				</refsection>
+				
+				<refsection>
+					<title>Examples: Using Masks</title>
+					<programlisting>
+WITH foo AS (SELECT 
+   ST_SetBandNoDataValue(
+ST_SetValue(ST_SetValue(ST_AsRaster(
+		ST_Buffer(
+			ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), 5,'join=bevel'), 
+			200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),
+  'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )
+SELECT 'original' AS title, rast
+FROM foo
+UNION ALL
+SELECT 'no mask mean value' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure) AS rast
+FROM foo
+UNION ALL
+SELECT 'mask only consider neighbors, exclude center' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure, 
+    '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast
+FROM foo
+
+UNION ALL
+SELECT 'mask weighted only consider neighbors, exclude center multi otehr pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::regprocedure, 
+    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast
+FROM foo;
+					</programlisting>
+					
+				<informaltable>
+						<tgroup cols="2">
+							<tbody>
+								<row>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask01.png" />
+													</imageobject>
+													<caption>
+														<para>original</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask02.png" />
+													</imageobject>
+													<caption>
+														<para>no mask mean value (same as having all 1s in mask matrix)</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+								</row>
+								<row>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask03.png" />
+													</imageobject>
+													<caption>
+														<para>mask only consider neighbors, exclude center</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+									<entry>
+										<para>
+											<informalfigure>
+												<mediaobject>
+													<imageobject>
+														<imagedata fileref="images/st_mapalgebramask04.png" />
+													</imageobject>
+													<caption>
+														<para>mask weighted only consider neighbors, exclude center multi other pixel values by 2</para>
+													</caption>
+												</mediaobject>
+											</informalfigure>
+										</para>
+									</entry>
+								</row>
+							</tbody>
+						</tgroup>
+					</informaltable>
+
+				</refsection>
+
 
 				<refsection>
 					<title>See Also</title>
@@ -12011,7 +12131,7 @@ WHERE rid = 2;
 
 					<note>
 						<para>
-							For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
+                            For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
 						</para>
 					</note>
 
@@ -12339,7 +12459,7 @@ GROUP BY t1.rast;
 
 					<note>
 						<para>
-							For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
+                            For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
 						</para>
 					</note>
 

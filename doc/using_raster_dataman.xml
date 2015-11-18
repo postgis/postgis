@@ -799,8 +799,7 @@ $$ LANGUAGE plpythonu;]]></programlisting>
    		</sect2>
    		<sect2 id="RasterOutput_PSQL">
    			<title>Outputting Rasters with PSQL</title>
-   			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack and based on one of the suggestions outlined in
-   				<ulink url="http://people.planetpostgresql.org/andrew/index.php?/archives/196-Clever-trick-challenge.html">Clever Trick Challenge -- Outputting bytea with psql</ulink> that piggy backs on PostgreSQL somewhat legacy large object support.  To use first launch your psql commandline connected to your database.
+   			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack that piggy backs on PostgreSQL somewhat legacy large object support.  To use first launch your psql commandline connected to your database.
    			</para>
    			<para>Unlike the python approach, this approach creates the file on your local computer.</para>
    			<screen>SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes

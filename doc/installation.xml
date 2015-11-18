@@ -56,8 +56,8 @@ psql -d yourdatabase -f sfcgal_comments.sql
 	  steps.
 	</para>
 	
-	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables:
-	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment.</para>
+	<para>As of PostGIS 2.1.3, out-of-db rasters and all raster drivers are disabled by default. In order to re-enable these, you need to set the following environment variables
+	<varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. For PostGIS 2.2, you can use the more cross-platform approach of setting the corresponding <xref linkend="PostGIS_GUC" />.</para>
 	
 	<para>If you want to enable offline raster:</para>
 	<programlisting>POSTGIS_ENABLE_OUTDB_RASTERS=1</programlisting>
@@ -1535,7 +1535,15 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
 			<para><programlisting>CREATE EXTENSION postgis;		
 CREATE EXTENSION fuzzystrmatch;
-CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para></listitem>
+--this one is optional if you want to use the rules based standardizer (pagc_normalize_address)
+CREATE EXTENSION address_standardizer; 
+CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para>
+
+<para>If you already have postgis_tiger_geocoder extension installed, and just want to update to the latest run:</para>
+<programlisting>ALTER EXTENSION postgis UPDATE;
+ALTER EXTENSION postgis_tiger_geocoder UPDATE;</programlisting>
+<para>If you made custom entries or changes to <varname>tiger.loader_platform</varname> and <varname>tiger.loader_variables</varname> you may need to update these.</para>
+</listitem>
 			<listitem><para>To confirm your install is working correctly, run this sql in your database:</para>
 				<programlisting>SELECT na.address, na.streetname,na.streettypeabbrev, na.zip
 	FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;</programlisting>
@@ -1556,11 +1564,16 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 			
 				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
 			</listitem>
+			<listitem><para>Create a folder called <filename>gisdata</filename> on root of server or your local pc if you have a fast network connection to the server. This folder is
+where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
+            <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
+the folder where the loader extracts the downloaded tiger data.</para></listitem>
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile and copy the scripts to a .sh or .bat file.  So for example to do the nation load and one state using our new profile we would:</para>
 					<programlisting>SELECT Loader_Generate_Nation_Script('debbie');</programlisting>
 					<programlisting>SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');</programlisting>
 			</listitem>
-			<listitem><para>Run the generated scripts.</para></listitem>
+
+			<listitem><para>Run the generated commandline scripts.</para></listitem>
 			<listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
 			    <programlisting>SELECT install_missing_indexes();
 vacuum analyze verbose tiger.addr;
@@ -1921,7 +1934,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
     be used at all.
     All your custom records with invalid SRIDs will be retained,
     with those > 999999 moved into the reserved range, but the
-    spatial_ref_sys table would loose a check constraint guarding
+    spatial_ref_sys table would lose a check constraint guarding
     for that invariant to hold and possibly also its primary key
     ( when multiple invalid SRIDS get converted to the same reserved
     SRID value ).

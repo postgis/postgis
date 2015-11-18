@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.2.0
-:Date: 2014-MM-DD
+:Version: 2.3.0
+:Date: 2016-XX-XX
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -75,15 +75,15 @@ this to work.
 
     apt-get install libjson0-dev
 
-* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended) needed for raster support
-  Also needed to install PostGIS using CREATE EXTENSION postgis; syntax
+* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended)
 
   GDAL (http://gdal.org) is *required* if you want to compile PostGIS 
-  with raster support.  To compile without raster support you 
-  must ``./configure --without-raster``
+  with raster or extension support. To compile without raster support you
+  must ``./configure --without-raster`` (also disables extension)
   
 * CGAL 4.1+ and SFCGAL (Optional) needed for advanced 3D support
-https://github.com/Oslandia/SFCGAL
+
+  https://github.com/Oslandia/SFCGAL
 
 
 CONFIGURATION
@@ -117,14 +117,14 @@ or use ``--with-gdalconfig=/path/to/gdal-config`` option.
 
 By default, both Topology and Raster extensions are enabled in ``./configure``.
 
-If you want to compile PostGIS *without* Raster support, you must provide the
-``--without-raster`` option.
+If you want to compile PostGIS *without* Raster support,
+you must provide the ``--without-raster`` option.
 
-If you want to compile PostGIS *without* Topology support, you must provide the
-``--without-topology`` option.
+If you want to compile PostGIS *without* Topology support,
+you must provide the ``--without-topology`` option.
 
-PostGIS will be compiled with sfcgal support if it is found.  You can explicitly
-state the location with --with-sfcgal=path/to/sfcgal
+PostGIS will be compiled with sfcgal support if it is found.
+You can explicitly state the location with --with-sfcgal=path/to/sfcgal
 
 See ``./configure --help`` for more options.
 

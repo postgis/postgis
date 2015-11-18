@@ -1,5 +1,12 @@
+PostGIS 2.3.0
+2015/XX/XX
+
+ * Important / Breaking Changes *
+ * Deprecated signatures *
+ * New Features *
+
 PostGIS 2.2.0
-2015/09/DD
+2015/10/07
 
  * Important / Breaking Changes *
 
@@ -38,6 +45,7 @@ PostGIS 2.2.0
 
   - Topology API in liblwgeom
     (Sandro Santilli / Regione Toscana - SITA)
+  - New lwgeom_version method in liblwgeom
   - New lwgeom_unaryunion method in liblwgeom
   - New lwgeom_linemerge method in liblwgeom
   - New lwgeom_is_simple method in liblwgeom
@@ -103,7 +111,7 @@ PostGIS 2.2.0
 
   - #3223, Add memcmp short-circuit to ST_Equals (Daniel Baston)
   - #3227, Tiger geocoder upgraded to support Tiger 2015 census
-  - #2278, Make liblwgeom compatible between minor releases
+  - #2278, Make liblwgeom potentially ABI-compatible between micro releases
   - #897, ST_AsX3D support for GeoCoordinates and systems "GD" "WE"
            ability to flip x/y axis (use option = 2, 3)
   - ST_Split: allow splitting lines by multilines, multipoints
@@ -150,6 +158,31 @@ PostGIS 2.2.0
     smaller files for ease of long-term maintenance and development
   - #1220, lwerror and lwnotice function became internal to liblwgeom
 
+PostGIS 2.1.8
+2015/07/07
+
+ * Bug Fixes *
+
+  - #3159, do not force a bbox cache on ST_Affine
+  - #3018, GROUP BY geography sometimes returns duplicate rows
+  - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3094, Malformed GeoJSON inputs crash backend
+  - #3104, st_asgml introduces random characters in ID field
+  - #3155, Remove liblwgeom.h on make uninstall
+  - #3177, gserialized_is_empty cannot handle nested empty cases
+  - Fix crash in ST_LineLocatePoint
+
+
+PostGIS 2.1.7
+2015/03/30
+
+ * Bug Fixes *
+
+  - #3086, ST_DumpValues() crashes backend on cleanup with invalid
+           band indexes
+  - #3088, Do not (re)define strcasestr in a liblwgeom.h
+  - #3094, Malformed GeoJSON inputs crash backend
+  
 PostGIS 2.1.6
 2015/03/20
 

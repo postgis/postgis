@@ -61,7 +61,7 @@ SELECT '#65', ST_AsGML(ST_GeometryFromText('CURVEPOLYGON(CIRCULARSTRING(4 2,3 -1
 SELECT '#66', ST_AsText((ST_Dump(ST_GeomFromEWKT('CIRCULARSTRING(0 0,1 1,2 2)'))).geom);
 
 -- #68 --
-SELECT '#68a', ST_AsText(ST_Shift_Longitude(ST_GeomFromText('MULTIPOINT(1 3, 4 5)')));
+SELECT '#68a', ST_AsText(ST_ShiftLongitude(ST_GeomFromText('MULTIPOINT(1 3, 4 5)')));
 SELECT '#68b', ST_AsText(ST_ShiftLongitude(ST_GeomFromText('CIRCULARSTRING(1 3, 4 5, 6 7)')));
 
 -- #69 --
@@ -325,7 +325,7 @@ SELECT '#650', ST_AsText(ST_Collect(ARRAY[ST_MakePoint(0,0), ST_MakePoint(1,1), 
 SELECT '#667', ST_AsEWKT(ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(40,70, 20) As j ORDER BY i, j, i*j LIMIT 1;
 
 -- #677 --
-SELECT '#677.deprecated',round(ST_Distance_Spheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
+SELECT '#677.deprecated',round(ST_DistanceSpheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
 SELECT '#677',round(ST_DistanceSpheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,-10 55,-10 70,5 40,-10 40)))'), ST_GeomFromEWKT('MULTIPOINT(20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)'), 'SPHEROID["GRS_1980",6378137,298.257222101]')) As result;
 
 -- #680 --
@@ -916,6 +916,22 @@ SELECT '#3172', ST_AsText(ST_AddMeasure('LINESTRING(0 0,0 0)', 1, 2));
 
 --SELECT '#3244a', ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));
 --SELECT '#3244b', ST_AsText(ST_3DClosestPoint('POINT(0 0)', 'POINT(0 0 0)'));
+
+SELECT '#3300', ST_AsText(ST_SnapToGrid(Box2D('CURVEPOLYGON(CIRCULARSTRING(-71.0821 42.3036,-71.4821 42.3036,-71.7821 42.7036,-71.0821 42.7036,-71.0821 42.3036),(-71.1821 42.4036,-71.3821 42.6036,-71.3821 42.4036,-71.1821 42.4036))'::Geometry)::geometry,0.0001));
+
+SELECT '#3355',  ST_Intersects(
+         'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography
+       , ST_Segmentize('LINESTRING(124.983539 1.419224,91.181596 29.647798)'::geography, 47487290)::geography);
+
+SELECT '#3356', ST_Summary(wkt::geometry) As wkt_geom, 
+   ST_Summary(wkt::geography) As wkt_geog,
+   ST_Summary(wkt::geometry::geography) As geom_geog
+FROM (VALUES (
+     'LINESTRING(124.983539 1.419224,91.181596 29.647798)'::text ),
+ ('LINESTRING(124.983539 1.419224,91.181596 29.647798, 91.28 29.647)'::text  ) ) As f(wkt)
+ORDER BY wkt;
+
+SELECT '#3367', ST_AsText(ST_RemoveRepeatedPoints('POLYGON EMPTY'::geometry));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

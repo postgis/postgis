@@ -28,7 +28,6 @@ OBJS=	\
 	cu_clean.o \
 	cu_print.o \
 	cu_minimum_bounding_circle.o \
-	cu_iterator.o \
 	cu_misc.o \
 	cu_ptarray.o \
 	cu_geodetic.o \
@@ -60,6 +59,7 @@ OBJS=	\
 	cu_in_wkb.o \
 	cu_in_wkt.o \
 	cu_in_encoded_polyline.o \
+	cu_iterator.o \
 	cu_varint.o \
 	cu_unionfind.o \
 	cu_tester.o

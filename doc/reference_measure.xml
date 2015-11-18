@@ -33,6 +33,7 @@
 			<!-- Optionally mention supports Polyhedral Surface  -->
 			<para>&P_support;</para>
 			<para>Availability: 2.0.0</para>
+			<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		  </refsection>
 	
 		  <refsection>
@@ -130,6 +131,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
         <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 	  </refsection>
 
 	  <refsection>
@@ -410,6 +412,7 @@ SELECT ST_3DIntersects('TIN(((0 0,1 0,0 1,0 0)))'::geometry, 'POINT(.1 .1)'::geo
 		</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
@@ -509,6 +512,7 @@ SELECT ST_AsEWKT(ST_3DLongestLine(line,pt)) AS lol3d_line_pt,
         <para>&P_support;</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 	  </refsection>
 
 	  <refsection>
@@ -573,6 +577,7 @@ SELECT ST_3DMaxDistance(
 		</para>
 
 		<para>Availability: 2.0.0</para>
+		<para>Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z.</para>
 		<para>&Z_support;</para>
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
@@ -669,7 +674,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		  To measure around the faster but less accurate sphere, use ST_Area(geog,false).
 		  </para>
 		  	<para>Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced.</para>
-			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
+			<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
 		 	<para>&sfs_compliant;</para>
 		 	<para>&sqlmm_compliant; SQL-MM 3: 8.1.2, 9.5.3</para>
 		 	<para>&P_support;</para>
@@ -766,7 +771,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 
 			<para>Availability: 1.1.0</para>
 			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
-			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
+			<para>Enhanced: 2.2.0 measurement on spheroid performed with GeographicLib for improved accuracy and robustness.  Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
 			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
 				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
 		</refsection>
@@ -1984,7 +1989,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://boundlessgeo.com/2012/07/making-geography-faster/">Making Geography faster</ulink> for details.</para>
 		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
-		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness.</para>
+		<para>Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for improved accuracy and robustness. Requires Proj &gt;= 4.9.0 to take advantage of the new feature.</para>
 	  </refsection>
 
 	  <refsection>
@@ -2025,8 +2030,8 @@ st_distance
 <programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
 SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist 
 FROM (SELECT
-	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
-	ST_GeographyFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
+	ST_GeogFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
+	ST_GeogFromText('SRID=4326;LINESTRING(-72.1260 42.45, -72.123 42.1546)') As gg2
 	) As foo  ;
 
   spheroid_dist   |   sphere_dist
