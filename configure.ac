@@ -422,7 +422,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl ===========================================================================
 
   PGXS=`$PG_CONFIG --pgxs`
-  if test ! -f $PGXS; then
+  if test "x$PGXS" = "x" -o ! -f "$PGXS"; then
     AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
   fi
 
