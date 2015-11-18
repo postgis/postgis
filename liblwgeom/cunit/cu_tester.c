@@ -38,6 +38,7 @@ extern void unionfind_suite_setup(void);
 extern void homogenize_suite_setup(void);
 extern void in_encoded_polyline_suite_setup(void);
 extern void in_geojson_suite_setup(void);
+extern void iterator_suite_setup(void);
 extern void twkb_in_suite_setup(void);
 extern void libgeom_suite_setup(void);
 extern void measures_suite_setup(void);
@@ -82,6 +83,7 @@ PG_SuiteSetup setupfuncs[] =
 #if HAVE_LIBJSON
 	in_geojson_suite_setup,
 #endif
+    iterator_suite_setup,
 	twkb_in_suite_setup,
 	libgeom_suite_setup,
 	measures_suite_setup,
