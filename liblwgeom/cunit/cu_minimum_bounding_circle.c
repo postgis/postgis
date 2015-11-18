@@ -13,12 +13,10 @@
 #include "cu_tester.h"
 #include "../liblwgeom_internal.h"
 
-#include "../lwboundingcircle.c"
-
 static void mbc_test(LWGEOM* g)
 {
-	LW_BOUNDINGCIRCLE result;
-	CU_ASSERT_TRUE(lwgeom_calculate_mbc(g, &result));
+	LWBOUNDINGCIRCLE* result = lwgeom_calculate_mbc(g);
+	CU_ASSERT_TRUE(result != NULL);
 
 	LWPOINTITERATOR* it = lwpointiterator_create(g);
 
@@ -29,9 +27,10 @@ static void mbc_test(LWGEOM* g)
 		p.x = p4.x;
 		p.y = p4.y;
 
-		CU_ASSERT_TRUE(distance2d_pt_pt(&(result.center), &p) <= result.radius);
+		CU_ASSERT_TRUE(distance2d_pt_pt(result->center, &p) <= result->radius);
 	}
 
+	lwboundingcircle_destroy(result);
 	lwpointiterator_destroy(it);
 }
 
@@ -63,8 +62,8 @@ static void test_empty(void)
 {
 	LWGEOM* input = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
 
-	LW_BOUNDINGCIRCLE result;
-	CU_ASSERT_FALSE(lwgeom_calculate_mbc(input, &result));
+	LWBOUNDINGCIRCLE* result = lwgeom_calculate_mbc(input);
+	CU_ASSERT_TRUE(result == NULL);
 	
 	lwgeom_free(input);
 }

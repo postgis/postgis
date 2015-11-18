@@ -4,6 +4,7 @@
  * http://postgis.net
  *
  * Copyright 2015 Daniel Baston <dbaston@gmail.com>
+ * Copyright 2001 Vivid Solutions
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -19,24 +20,25 @@ typedef struct {
 	const POINT2D* p3;
 } SUPPORTING_POINTS;
 
-static SUPPORTING_POINTS supporting_points_create()
+static SUPPORTING_POINTS*
+supporting_points_create()
 {
-	SUPPORTING_POINTS s;
-	s.p1 = NULL;
-	s.p2 = NULL;
-	s.p3 = NULL;
+	SUPPORTING_POINTS* s = lwalloc(sizeof(SUPPORTING_POINTS));
+	s->p1 = NULL;
+	s->p2 = NULL;
+	s->p3 = NULL;
 
 	return s;
 }
 
-static void lwboundingcircle_clear(LW_BOUNDINGCIRCLE* c)
+static void
+supporting_points_destroy(SUPPORTING_POINTS* s)
 {
-	c->radius = 0.0;
-	(c->center).x = 0.0;
-	(c->center).y = 0.0;
+	lwfree(s);
 }
 
-static uint32_t num_supporting_points(SUPPORTING_POINTS* support)
+static uint32_t
+num_supporting_points(SUPPORTING_POINTS* support)
 {
 	uint32_t N = 0;
 
@@ -50,7 +52,8 @@ static uint32_t num_supporting_points(SUPPORTING_POINTS* support)
 	return N;
 }
 
-static int add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
+static int
+add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
 {
 	switch(num_supporting_points(support))
 	{
@@ -66,25 +69,26 @@ static int add_supporting_point(SUPPORTING_POINTS* support, const POINT2D* p)
 	return LW_SUCCESS;
 }
 
-static int point_inside_circle(const POINT2D* p, const LW_BOUNDINGCIRCLE* c)
+static int
+point_inside_circle(const POINT2D* p, const LWBOUNDINGCIRCLE* c)
 {
 	if (!c)
 		return LW_FALSE;
 
-	if (distance2d_pt_pt(p, &(c->center)) > c->radius)
+	if (distance2d_pt_pt(p, c->center) > c->radius)
 		return LW_FALSE;
 
 	return LW_TRUE;
 }
 
-/* Copied from JTS, Triangle.java */
-static double det(double m00, double m01, double m10, double m11)
+static double
+det(double m00, double m01, double m10, double m11)
 {
 	return m00 * m11 - m01 * m10;
 }
 
-/* Adapted from JTS, Triangle.java */
-static void circumcenter(const POINT2D* a, const POINT2D* b, const POINT2D* c, POINT2D* result)
+static void
+circumcenter(const POINT2D* a, const POINT2D* b, const POINT2D* c, POINT2D* result)
 {
 	double cx = c->x;
 	double cy = c->y;
@@ -101,39 +105,44 @@ static void circumcenter(const POINT2D* a, const POINT2D* b, const POINT2D* c, P
 	result->y = cy + numy / denom;
 }
 
-static void calculate_mbc_1(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
+static void
+calculate_mbc_1(const SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
 {
 	mbc->radius = 0;
-	(mbc->center).x = support->p1->x;
-	(mbc->center).y = support->p1->y;
+	mbc->center->x = support->p1->x;
+	mbc->center->y = support->p1->y;
 }
 
-static void calculate_mbc_2(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
+static void
+calculate_mbc_2(const SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
 {
 	double d1, d2;
 
-	mbc->center.x = 0.5*(support->p1->x + support->p2->x);
-	mbc->center.y = 0.5*(support->p1->y + support->p2->y);
+	mbc->center->x = 0.5*(support->p1->x + support->p2->x);
+	mbc->center->y = 0.5*(support->p1->y + support->p2->y);
 
-	d1 = distance2d_pt_pt(&(mbc->center), support->p1);
-	d2 = distance2d_pt_pt(&(mbc->center), support->p2);
+	d1 = distance2d_pt_pt(mbc->center, support->p1);
+	d2 = distance2d_pt_pt(mbc->center, support->p2);
 
 	mbc->radius = FP_MAX(d1, d2);
 }
 
-static void calculate_mbc_3(const SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
+static void
+calculate_mbc_3(const SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
 {
 	double d1, d2, d3;
-	circumcenter(support->p1, support->p2, support->p3, &(mbc->center));
+	circumcenter(support->p1, support->p2, support->p3, mbc->center);
 
-	d1 = distance2d_pt_pt(&(mbc->center), support->p1);
-	d2 = distance2d_pt_pt(&(mbc->center), support->p2);
-	d3 = distance2d_pt_pt(&(mbc->center), support->p3);
+	d1 = distance2d_pt_pt(mbc->center, support->p1);
+	d2 = distance2d_pt_pt(mbc->center, support->p2);
+	d3 = distance2d_pt_pt(mbc->center, support->p3);
 
 	mbc->radius = FP_MAX(FP_MAX(d1, d2), d3);
 }
 
-static int calculate_mbc_from_support(SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc) {
+static int
+calculate_mbc_from_support(SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
+{
 	switch(num_supporting_points(support))
 	{
 		case 0: break;
@@ -149,7 +158,8 @@ static int calculate_mbc_from_support(SUPPORTING_POINTS* support, LW_BOUNDINGCIR
 	return LW_SUCCESS;
 }
 
-static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support, LW_BOUNDINGCIRCLE* mbc)
+static int
+calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POINTS* support, LWBOUNDINGCIRCLE* mbc)
 {
 	uint32_t i;
 
@@ -191,9 +201,31 @@ static int calculate_mbc(const POINT2D** points, uint32_t max_n, SUPPORTING_POIN
 	return LW_SUCCESS;
 }
 
-int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
+static LWBOUNDINGCIRCLE*
+lwboundingcircle_create()
 {
-	SUPPORTING_POINTS support = supporting_points_create();
+	LWBOUNDINGCIRCLE* c = lwalloc(sizeof(LWBOUNDINGCIRCLE));
+	c->center = lwalloc(sizeof(POINT2D));
+
+	c->radius = 0.0;
+	c->center->x = 0.0;
+	c->center->y = 0.0;
+
+	return c;
+}
+
+void
+lwboundingcircle_destroy(LWBOUNDINGCIRCLE* c)
+{
+	lwfree(c->center);
+	lwfree(c);
+}
+
+LWBOUNDINGCIRCLE*
+lwgeom_calculate_mbc(const LWGEOM* g)
+{
+	SUPPORTING_POINTS* support;
+	LWBOUNDINGCIRCLE* result;
 	LWPOINTITERATOR* it;
 	uint32_t num_points;
 	POINT2D** points;
@@ -227,19 +259,23 @@ int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result)
 	}
 	lwpointiterator_destroy(it);
 
-	lwboundingcircle_clear(result);
-
+	support = supporting_points_create();
+	result = lwboundingcircle_create();
 	/* Technically, a randomized algorithm would demand that we shuffle the input points
 	 * before we call calculate_mbc().  However, we make the (perhaps poor) assumption that 
 	 * the order we happen to find the points is as good as random, or close enough.
 	 * */
-	success = calculate_mbc((const POINT2D**) points, num_points, &support, result);
+	success = calculate_mbc((const POINT2D**) points, num_points, support, result);
 
 	for (i = 0; i < num_points; i++)
 	{
 		lwfree(points[i]);
 	}
 	lwfree(points);
+	supporting_points_destroy(support);
 
-	return success;
+	if (!success)
+		return NULL;
+
+	return result;
 }

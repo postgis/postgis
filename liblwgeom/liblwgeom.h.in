@@ -1569,9 +1569,11 @@ extern double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s);
 extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 
 typedef struct {
-	POINT2D center;
+	POINT2D* center;
 	double radius;
-} LW_BOUNDINGCIRCLE;
+} LWBOUNDINGCIRCLE;
+
+extern void lwboundingcircle_destroy(LWBOUNDINGCIRCLE* c);
 
 /* Calculates the minimum circle that encloses all of the points in g, using a
  * two-dimensional implementation of the algorithm proposed in:
@@ -1583,9 +1585,9 @@ typedef struct {
  * Available online at the time of this writing at 
  * https://www.inf.ethz.ch/personal/emo/PublFiles/SmallEnclDisk_LNCS555_91.pdf
  *
- * Returns LW_SUCCESS if the circle could be calculated, LW_FAILURE otherwise.
+ * Returns NULL if the circle could not be calculated.
  */
-int lwgeom_calculate_mbc(const LWGEOM* g, LW_BOUNDINGCIRCLE* result);
+extern LWBOUNDINGCIRCLE* lwgeom_calculate_mbc(const LWGEOM* g);
 
 /**
 * Remove repeated points!

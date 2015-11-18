@@ -15,7 +15,6 @@
 #include "fmgr.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"  /* For FP comparators. */
-#include "lwboundingcircle.h"
 #include "lwgeom_pg.h"
 #include "math.h"
 #include "lwgeom_rtree.h"
@@ -1074,7 +1073,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* geom;
 	LWGEOM* input;
-	LW_BOUNDINGCIRCLE mbc;
+	LWBOUNDINGCIRCLE* mbc = NULL;
 	LWGEOM* lwcenter;
 	GSERIALIZED* center;
 	TupleDesc resultTupleDesc;
@@ -1082,6 +1081,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	Datum result;
 	Datum result_values[2];
 	bool result_is_null[2];
+	double radius = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
@@ -1092,21 +1092,23 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	if (gserialized_is_empty(geom))
 	{
 		lwcenter = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
-		mbc.radius = 0;
 	}
 	else
 	{
 		input = lwgeom_from_gserialized(geom);
+		mbc = lwgeom_calculate_mbc(input);
 
-		if (!lwgeom_calculate_mbc(input, &mbc))
+		if (!mbc)
 		{
 			lwpgerror("Error calculating minimum bounding circle.");
 			lwgeom_free(input);
 			PG_RETURN_NULL();
 		}
 
-		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc.center.x, mbc.center.y);
+		lwcenter = (LWGEOM*) lwpoint_make2d(input->srid, mbc->center->x, mbc->center->y);
+		radius = mbc->radius;
 
+		lwboundingcircle_destroy(mbc);
 		lwgeom_free(input);
 	}
 
@@ -1118,7 +1120,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 
 	result_values[0] = PointerGetDatum(center);
 	result_is_null[0] = false;
-	result_values[1] = Float8GetDatum(mbc.radius);
+	result_values[1] = Float8GetDatum(radius);
 	result_is_null[1] = false;
 
 	resultTuple = heap_form_tuple(resultTupleDesc, result_values, result_is_null);
