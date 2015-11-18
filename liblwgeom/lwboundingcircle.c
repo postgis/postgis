@@ -12,7 +12,6 @@
 
 #include <string.h>
 #include "liblwgeom_internal.h"
-#include "lwboundingcircle.h"
 
 typedef struct {
 	const POINT2D* p1;
