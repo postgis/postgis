@@ -7,7 +7,7 @@ SELECT 2,  ST_Voronoi(NULL) IS NULL;
 SELECT 3,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, 0, NULL) IS NULL;
 SELECT 4,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, NULL, true) IS NULL;
 -- Tolerance can't be negative
--- SELECT 5,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, -2);
+SELECT 5,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, -2);
 -- Output types are correct
 SELECT 6,  GeometryType(ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)')) = 'GEOMETRYCOLLECTION';
 SELECT 7,  GeometryType(ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, 0, false)) = 'MULTILINESTRING';

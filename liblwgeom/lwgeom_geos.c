@@ -1713,23 +1713,48 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance,
 #endif /* POSTGIS_GEOS_VERSION < 34 */
 }
 
+static
+GEOSCoordSequence* lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
+{
+	uint32_t i = 0;
+	uint8_t num_dims = 2;
+	LWPOINTITERATOR* it;
+	GEOSCoordSequence* coords;
+	POINT4D tmp;
+
+	coords = GEOSCoordSeq_create(num_points, num_dims);
+	if (!coords)
+		return NULL;
+
+	it = lwpointiterator_create(g);
+	while(lwpointiterator_next(it, &tmp))
+	{
+		if(!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
+		{
+			GEOSCoordSeq_destroy(coords);
+			lwpointiterator_destroy(it);
+			return NULL;
+		}
+		i++;
+	}
+	lwpointiterator_destroy(it);
+
+	return coords;
+}
+
 LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges) {
 #if POSTGIS_GEOS_VERSION < 35
 	lwerror("lwgeom_voronoi_diagram: GEOS 3.5 or higher required");
 	return NULL;
 #else
-	LWGEOM *lwgeom_result;
-	const uint8_t num_dims = 2;
-	char is_3d = LW_FALSE;
-	uint32_t i;
 	uint32_t num_points = lwgeom_count_vertices(g);
+	LWGEOM *lwgeom_result;
+	char is_3d = LW_FALSE;
 	int srid = lwgeom_get_srid(g);
-	LWPOINTITERATOR* it;
 	GEOSCoordSequence* coords;
 	GEOSGeometry* geos_geom;
 	GEOSGeometry* geos_env = NULL;
 	GEOSGeometry* geos_result;
-	POINT4D tmp;
 
 	if (num_points < 2)
 	{
@@ -1745,24 +1770,10 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 	 * supported by GEOS, and reduces the memory requirements in cases of many geometries
 	 * with few points (such as LWMPOINT).
 	 */
-    coords = GEOSCoordSeq_create(num_points, num_dims);
+	coords = lwgeom_get_geos_coordseq_2d(g, num_points);
 	if (!coords)
 		return NULL;
 
-	i = 0;
-	it = lwpointiterator_create(g);
-	while(lwpointiterator_next(it, &tmp))
-	{
-		if(!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
-		{
-			GEOSCoordSeq_destroy(coords);
-			lwpointiterator_destroy(it);
-			return NULL;
-		}
-		i++;
-	}
-	lwpointiterator_destroy(it);
-			
 	geos_geom = GEOSGeom_createLineString(coords);
 	if (!geos_geom)
 	{
@@ -1780,9 +1791,7 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 		GEOSGeom_destroy(geos_env);
 
 	if (!geos_result)
-	{
 		return NULL;
-	}
 
 	lwgeom_result = GEOS2LWGEOM(geos_result, is_3d);
 	GEOSGeom_destroy(geos_result);
