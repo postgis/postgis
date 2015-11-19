@@ -3884,3 +3884,80 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 }
+
+/******************************************
+ *
+ * ST_Voronoi
+ *
+ * Returns a Voronoi diagram constructed 
+ * from the points of the input geometry.
+ *
+ ******************************************/
+Datum ST_Voronoi(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Voronoi);
+Datum ST_Voronoi(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 35
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_Voronoi' function (3.5.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 35 */
+	GSERIALIZED* input;
+	GSERIALIZED* clip;
+	GSERIALIZED* result;	
+	LWGEOM* lwgeom_input;
+	LWGEOM* lwgeom_result;
+	double tolerance;
+	GBOX clip_envelope;
+	int custom_clip_envelope;
+	int return_polygons;
+
+	/* If we have a null geometry, tolerance, or return type, it's not 
+	 * clear what we're being asked to do. */
+	if (PG_ARGISNULL(0) || PG_ARGISNULL(2) || PG_ARGISNULL(3))
+		PG_RETURN_NULL();
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	custom_clip_envelope = !PG_ARGISNULL(1);
+	tolerance = PG_GETARG_FLOAT8(2);
+	return_polygons = !PG_GETARG_BOOL(3);
+
+	if (tolerance < 0)
+	{
+		lwpgerror("Tolerance must be a positive number.");
+		PG_RETURN_NULL();
+	}
+	
+	/* Read our clipping envelope, if applicable. */
+	if (custom_clip_envelope) {
+		clip = PG_GETARG_GSERIALIZED_P(1);
+		if (!gserialized_get_gbox_p(clip, &clip_envelope))
+		{
+			lwpgerror("Could not determine envelope of clipping geometry.");
+			PG_FREE_IF_COPY(clip, 0);		
+			PG_RETURN_NULL();
+		}
+		PG_FREE_IF_COPY(clip, 0);		
+	}
+
+	lwgeom_input = lwgeom_from_gserialized(input);
+	lwgeom_result = lwgeom_voronoi_diagram(lwgeom_input, custom_clip_envelope ? &clip_envelope : NULL, tolerance, return_polygons);
+	lwgeom_free(lwgeom_input);
+
+	if (!lwgeom_result)
+	{
+		lwpgerror("Error computing Voronoi diagram.");
+		PG_FREE_IF_COPY(input, 0);
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwgeom_result);
+	lwgeom_free(lwgeom_result);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 35 */
+}

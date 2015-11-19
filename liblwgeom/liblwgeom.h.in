@@ -2223,5 +2223,18 @@ LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
  */
 LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int edgeOnly);
 
+/**
+ * Take vertices of a geometry and build the Voronoi diagram
+ *
+ * @param geom the input geometry
+ * @param env an optional envelope clip rectangle
+ * @param tolerance an optional snapping tolerance for improved tolerance
+ * @param edgeOnly
+ *
+ *  const Geometry *g, const Geometry *env, double tolerance, int onlyEdges
+ *
+ */
+LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int edgeOnly);
+
 #endif /* !defined _LIBLWGEOM_H  */
 
