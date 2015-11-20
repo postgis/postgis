@@ -156,7 +156,7 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  cp -r extensions/*/*.control ${PGPATHEDB}/share/extension
  cp -r extensions/*/*.dll ${PGPATHEDB}/lib
  
- make check RUNTESTFLAGS=--extension
+ make check RUNTESTFLAGS="--extension -v"
  
  ##test address standardizer
  cd ${POSTGIS_SRC}
