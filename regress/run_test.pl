@@ -209,7 +209,7 @@ print "TMPDIR is $TMPDIR\n";
 # Prepare the database
 ##################################################################
 
-my @dblist = grep(/$DB/, split(/\n/, `psql -Xl`));
+my @dblist = grep(/\b$DB\b/, split(/\n/, `psql -Xl`));
 my $dbcount = @dblist;
 
 if ( $dbcount == 0 )
