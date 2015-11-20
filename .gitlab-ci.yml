@@ -15,4 +15,4 @@ test:
     - make
     - make check RUNTESTFLAGS=-v
     - make install
-    - make installcheck
+    - make installcheck RUNTESTFLAGS=-v
