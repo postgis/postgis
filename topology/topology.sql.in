@@ -1993,6 +1993,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/topogeometry/cleartopogeom.sql.in"
 #include "sql/topogeometry/simplify.sql.in"
 #include "sql/topogeometry/totopogeom.sql.in"
+#include "sql/topogeometry/topogeom_edit.sql.in"
 
 --  Exports
 #include "sql/export/gml.sql.in"
