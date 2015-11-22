@@ -1729,6 +1729,14 @@ GEOSCoordSequence* lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_poi
 	it = lwpointiterator_create(g);
 	while(lwpointiterator_next(it, &tmp))
 	{
+		if(i >= num_points)
+		{
+			lwerror("Incorrect num_points provided to lwgeom_get_geos_coordseq_2d");
+			GEOSCoordSeq_destroy(coords);
+			lwpointiterator_destroy(it);
+			return NULL;
+		}
+
 		if(!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
 		{
 			GEOSCoordSeq_destroy(coords);
