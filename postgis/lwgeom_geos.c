@@ -1946,7 +1946,6 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2021,7 +2020,6 @@ Datum contains(PG_FUNCTION_ARGS)
 	/*
 	** short-circuit 1: if geom2 bounding box is not completely inside
 	** geom1 bounding box we can prematurely return FALSE.
-	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2156,7 +2154,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	/*
 	* short-circuit: if geom2 bounding box is not completely inside
 	* geom1 bounding box we can prematurely return FALSE.
-	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2245,7 +2242,6 @@ Datum covers(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
 	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2399,7 +2395,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
 	 * geom2 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2519,7 +2514,6 @@ Datum crosses(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2592,7 +2586,6 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2749,7 +2742,6 @@ Datum touches(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
@@ -2817,7 +2809,6 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return TRUE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
