@@ -19,3 +19,29 @@ UPGRADEABLE_VERSIONS = \
 	2.1.9 \
 	2.2.0 \
 	2.2.1
+
+check-installed-upgrades:
+	MODULE=$(EXTENSION); \
+	TOVER=$(EXTVERSION); \
+  EXDIR=`$(PG_CONFIG) --sharedir`/extension; \
+	echo MODULE=$${MODULE}; \
+	echo TOVER=$${TOVER}; \
+	echo EXDIR=$${EXDIR}; \
+  ls $${EXDIR}/$${MODULE}--*--$${TOVER}.sql \
+        | grep -v unpackaged \
+        | while read fname; do \
+    p=`echo "$${fname}" | sed "s/.*$${MODULE}--//;s/\.sql$$//"`;  \
+    FROM=`echo $${p} | sed 's/--.*//'`; \
+    FF="$${EXDIR}/$${MODULE}--$${FROM}.sql"; \
+    if test -f "$${FF}"; then \
+      echo "Testing upgrade path $$p"; \
+      $(MAKE) -C ../.. installcheck \
+        RUNTESTFLAGS="-v --extension --upgrade-path $$p" \
+        || { \
+        echo "Upgrade path $$p failed FF=$${FF}"; \
+        exit 1; }; \
+    else \
+        echo "No install available for upgradeable ext version $${FROM}"; \
+    fi; \
+  done; \
+
