@@ -1571,7 +1571,7 @@ extern int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwge
 /**
 * Remove repeated points!
 */
-extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in, double tolerance);
+extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance);
 
 extern char lwtriangle_is_repeated_points(LWTRIANGLE *triangle);
 

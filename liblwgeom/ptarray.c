@@ -1400,7 +1400,7 @@ ptarray_longitude_shift(POINTARRAY *pa)
  *
  */
 POINTARRAY *
-ptarray_remove_repeated_points_minpoints(POINTARRAY *in, double tolerance, int minpoints)
+ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints)
 {
 	POINTARRAY* out;
 	size_t ptsize;
@@ -1451,7 +1451,7 @@ ptarray_remove_repeated_points_minpoints(POINTARRAY *in, double tolerance, int m
 }
 
 POINTARRAY *
-ptarray_remove_repeated_points(POINTARRAY *in, double tolerance)
+ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
 {
 	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }

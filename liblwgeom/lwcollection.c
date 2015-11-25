@@ -437,7 +437,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 }
 
 LWGEOM*
-lwcollection_remove_repeated_points(LWCOLLECTION *coll, double tolerance)
+lwcollection_remove_repeated_points(const LWCOLLECTION *coll, double tolerance)
 {
 	uint32_t i;
 	LWGEOM **newgeoms;

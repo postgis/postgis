@@ -286,7 +286,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 }
 
 LWGEOM*
-lwpoly_remove_repeated_points(LWPOLY *poly, double tolerance)
+lwpoly_remove_repeated_points(const LWPOLY *poly, double tolerance)
 {
 	uint32_t i;
 	POINTARRAY **newrings;

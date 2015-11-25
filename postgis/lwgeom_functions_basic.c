@@ -2607,7 +2607,10 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 	g_out = geometry_serialize(lwgeom_out);
 
 	if ( lwgeom_out != lwgeom_in )
+	{
 		lwgeom_free(lwgeom_out);
+	}
+
 	lwgeom_free(lwgeom_in);
 
 	PG_FREE_IF_COPY(g_in, 0);
