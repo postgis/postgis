@@ -90,6 +90,29 @@ static void test_lw_segment_side(void)
 
 }
 
+static void test_lw_arc_center(void)
+{
+/* double lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result); */
+	POINT2D c1;
+	double d1;
+	POINT2D p1, p2, p3;
+
+	p1.x = 2047538.600;
+	p1.y = 7268770.435;
+	p2.x = 2047538.598;
+	p2.y = 7268770.435;
+	p3.x = 2047538.596;
+	p3.y = 7268770.436;
+
+	d1 = lw_arc_center(&p1, &p2, &p3, &c1);
+
+	CU_ASSERT_DOUBLE_EQUAL(d1, 0.0046097720751, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(c1.x, 2047538.599, 0.001);
+	CU_ASSERT_DOUBLE_EQUAL(c1.y, 7268770.4395, 0.001);
+	
+	// printf("lw_arc_center: (%12.12g, %12.12g) %12.12g\n", c1.x, c1.y, d1);
+}
+
 /*
 ** Test crossings side.
 */
@@ -983,4 +1006,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_geohash_point_as_int);
 	PG_ADD_TEST(suite,test_isclosed);
 	PG_ADD_TEST(suite,test_lwgeom_simplify);
+	PG_ADD_TEST(suite,test_lw_arc_center);
 }
