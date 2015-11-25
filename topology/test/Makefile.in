@@ -51,6 +51,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/topogeo_addlinestring.sql \
 	regress/topogeo_addpoint.sql \
 	regress/topogeo_addpolygon.sql \
+  regress/topogeom_edit.sql \
 	regress/topogeometry_type.sql \
 	regress/topojson.sql \
   regress/topologysummary.sql \

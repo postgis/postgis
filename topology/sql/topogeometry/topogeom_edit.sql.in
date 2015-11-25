@@ -1,0 +1,95 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.net
+--
+-- Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
+
+-- {
+--  Add an element to a TopoGeometry definition
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.TopoGeom_addElement(tg topology.TopoGeometry, el topology.TopoElement)
+  RETURNS topology.TopoGeometry
+AS
+$$
+DECLARE
+  toponame TEXT;
+  sql TEXT;
+BEGIN
+
+  -- Get topology name
+  BEGIN
+    SELECT name
+    FROM topology.topology
+      INTO STRICT toponame WHERE id = topology_id(tg);
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RAISE EXCEPTION 'No topology with name "%" in topology.topology',
+        atopology;
+  END;
+
+  -- Insert new element
+  sql := format('INSERT INTO %s.relation'
+         '(topogeo_id,layer_id,element_id,element_type)'
+         ' VALUES($1,$2,$3,$4)', quote_ident(toponame));
+  BEGIN
+    EXECUTE sql USING id(tg), layer_id(tg), el[1], el[2];
+  EXCEPTION
+    WHEN unique_violation THEN
+      -- already present, let go
+    WHEN OTHERS THEN
+      RAISE EXCEPTION 'Got % (%)', SQLERRM, SQLSTATE;
+  END;
+
+  RETURN tg;
+
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+-- }
+
+-- {
+--  Remove an element from a TopoGeometry definition
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.TopoGeom_remElement(tg topology.TopoGeometry, el topology.TopoElement)
+  RETURNS topology.TopoGeometry
+AS
+$$
+DECLARE
+  toponame TEXT;
+  sql TEXT;
+BEGIN
+
+  -- Get topology name
+  BEGIN
+    SELECT name
+    FROM topology.topology
+      INTO STRICT toponame WHERE id = topology_id(tg);
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RAISE EXCEPTION 'No topology with name "%" in topology.topology',
+        atopology;
+  END;
+
+  -- Delete the element
+  sql := format('DELETE FROM %s.relation WHERE '
+         'topogeo_id = $1 AND layer_id = $2 AND '
+         'element_id = $3 AND element_type = $4',
+         quote_ident(toponame));
+  EXECUTE sql USING id(tg), layer_id(tg), el[1], el[2];
+
+  RETURN tg;
+
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE STRICT;
+-- }
