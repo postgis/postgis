@@ -16,6 +16,8 @@ PostGIS 2.1.9
            always return false as result.
   - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
            definition
+  - #3375, crash in repeated point removal for collection(point)
+
 
 PostGIS 2.1.8
 2015/07/07

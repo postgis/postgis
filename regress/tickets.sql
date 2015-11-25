@@ -879,5 +879,9 @@ SELECT '#2712', ST_AsText(ST_Segmentize('LINESTRING EMPTY'::geometry, 0.5));
 SELECT '#2788', valid, reason, ST_AsText(location) from ST_IsValidDetail('POLYGON((0 0, 0 1, 2 1, 2 2, 1 2, 1 0, 0 0))'::geometry);
 SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography);
 
+SELECT '#3367', ST_AsText(ST_RemoveRepeatedPoints('POLYGON EMPTY'::geometry));
+SELECT '#3375', ST_AsText(ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION(POINT(1 1))'::geometry));
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

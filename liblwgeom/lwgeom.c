@@ -1341,6 +1341,11 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
 	         lwtype_name(in->type));
 
+	if(lwgeom_is_empty(in)) 
+	{
+		return lwgeom_clone_deep(in);
+	}
+
 	switch (in->type)
 	{
 	case MULTIPOINTTYPE:
@@ -1363,7 +1368,7 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	case TRIANGLETYPE:
 	case TINTYPE:
 		/* No point is repeated for a single point, or for Triangle or TIN */
-		return in;
+		return lwgeom_clone_deep(in);
 
 	case CIRCSTRINGTYPE:
 	case COMPOUNDTYPE:
@@ -1371,12 +1376,12 @@ extern LWGEOM* lwgeom_remove_repeated_points(LWGEOM *in)
 	case CURVEPOLYTYPE:
 	case MULTISURFACETYPE:
 		/* Dunno how to handle these, will return untouched */
-		return in;
+		return lwgeom_clone_deep(in);
 
 	default:
 		lwnotice("lwgeom_remove_repeated_points: unsupported geometry type: %s",
 		         lwtype_name(in->type));
-		return in;
+		return lwgeom_clone_deep(in);
 		break;
 	}
 	return 0;
