@@ -12,6 +12,7 @@ PostGIS 2.0.8
   - #3155, Remove liblwgeom.h on make uninstall
   - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
            definition
+  - #3375, crash in remove repeated points
 
 
 PostGIS 2.0.7
