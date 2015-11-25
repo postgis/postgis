@@ -5,7 +5,8 @@ PostGIS 2.3.0
  * Deprecated signatures *
  * New Features *
 
-  - TopoGeom_addElement, TopoGeom_remElement (Sando Santilli)
+  - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
+  - populate_topology_layer (Sandro Santilli)
 
 PostGIS 2.2.0
 2015/10/07
