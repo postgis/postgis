@@ -13,6 +13,7 @@ PostGIS 2.2.1
   - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
            definition
   - #3360, _raster_constraint_info_scale invalid input syntax
+  - #3375, crash in repeated point removal for collection(point)
 
 
 PostGIS 2.2.0
