@@ -17,7 +17,8 @@ PostGIS 2.1.9
   - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
            definition
   - #3375, crash in repeated point removal for collection(point)
-
+  - #3378, Fix handling of hierarchical TopoGeometries with
+           of multiple topologies
 
 PostGIS 2.1.8
 2015/07/07
