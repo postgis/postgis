@@ -138,6 +138,23 @@ static void test_grid(void)
 	lwgeom_free(geomgrid);		
 }
 
+static void test_clone(void)
+{
+	static char *wkt = "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0))),POINT(1 1),LINESTRING(2 3,4 5))";
+	LWGEOM *geom1 = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
+	LWGEOM *geom2;
+	
+	/* Free in "backwards" order */
+	geom2 = lwgeom_clone(geom1);
+	lwgeom_free(geom1);
+	lwgeom_free(geom2);
+
+	/* Free in "forewards" order */
+	geom1 = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
+	geom2 = lwgeom_clone(geom1);
+	lwgeom_free(geom2);
+	lwgeom_free(geom1);
+}
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -152,4 +169,5 @@ void misc_suite_setup(void)
 	PG_ADD_TEST(suite, test_misc_area);
 	PG_ADD_TEST(suite, test_misc_wkb);
 	PG_ADD_TEST(suite, test_grid);
+	PG_ADD_TEST(suite, test_clone);
 }
