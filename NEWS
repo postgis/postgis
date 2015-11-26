@@ -14,6 +14,8 @@ PostGIS 2.2.1
            definition
   - #3360, _raster_constraint_info_scale invalid input syntax
   - #3375, crash in repeated point removal for collection(point)
+  - #3378, Fix handling of hierarchical TopoGeometries with
+           of multiple topologies
 
 
 PostGIS 2.2.0
