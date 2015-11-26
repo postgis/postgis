@@ -44,6 +44,7 @@
 #include <assert.h>
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
+/* #define PARANOIA_LEVEL 2 */
 #undef LWGEOM_PROFILE_MAKEVALID
 
 
@@ -951,6 +952,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	}
 	}
 
+#if PARANOIA_LEVEL > 1
 	/*
 	 * Now check if every point of input is also found
 	 * in output, or abort by returning NULL
@@ -958,10 +960,6 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	 * Input geometry was lwgeom_in
 	 */
 	{
-		const int paranoia = 2;
-		/* TODO: check if the result is valid */
-		if (paranoia)
-		{
 			int loss;
 			GEOSGeometry *pi, *po, *pd;
 
@@ -981,8 +979,8 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 				lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
 				/* return NULL */
 			}
-		}
 	}
+#endif /* PARANOIA_LEVEL > 1 */
 
 
 	return gout;
