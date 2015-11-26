@@ -595,6 +595,7 @@ BEGIN
   IF child IS NOT NULL THEN
     SELECT level + 1 FROM topology.layer
       WHERE layer_id = child
+        AND topology_id = topoid
       INTO newlevel;
     IF newlevel IS NULL THEN
       RAISE EXCEPTION 'Child layer % does not exist in topology "%"', child, toponame;
@@ -1105,13 +1106,21 @@ DECLARE
   query2 text;
   lyr RECORD;
   ok bool;
+  topoid INTEGER;
 BEGIN
+
+  -- Get topology id
+  SELECT id INTO topoid
+    FROM topology.topology WHERE name = toponame;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Topology % does not exist', quote_literal(toponame);
+  END IF;
 
   -- Get layer info
   ok = false;
-  FOR rec IN EXECUTE 'SELECT * FROM '
-       ' topology.layer '
-       ' WHERE layer_id = ' || layerid
+  FOR rec IN EXECUTE 'SELECT * FROM topology.layer '
+       ' WHERE layer_id = $1 AND topology_id = $2'
+       USING layerid, topoid
   LOOP
     lyr = rec;
     ok = true;
