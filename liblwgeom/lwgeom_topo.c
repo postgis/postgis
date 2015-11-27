@@ -5590,7 +5590,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 
   /* 2.1. Node with existing nodes within tol
    * TODO: check if we should be only considering _isolated_ nodes! */
-  nodes = lwt_be_getNodeWithinBox2D( topo, &qbox, &num, LWT_COL_EDGE_ALL, 0 );
+  nodes = lwt_be_getNodeWithinBox2D( topo, &qbox, &num, LWT_COL_NODE_ALL, 0 );
   if ( num == -1 )
   {
     lwgeom_free(noded);
