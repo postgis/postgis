@@ -118,6 +118,48 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+static char
+is_poly(const GSERIALIZED* g)
+{
+    int type = gserialized_get_type(g);
+    return type == POLYGONTYPE || type == MULTIPOLYGONTYPE;
+}
+
+static char
+is_point(const GSERIALIZED* g)
+{
+	int type = gserialized_get_type(g);
+	return type == POINTTYPE || type == MULTIPOINTTYPE;
+}
+
+/* utility function that checks a LWPOINT and a GSERIALIZED poly against
+ * a cache.  Serialized poly may be a multipart.
+ */
+static int
+pip_short_circuit(RTREE_POLY_CACHE* poly_cache, const LWPOINT* point, const GSERIALIZED* gpoly)
+{
+	int result;
+
+	if ( poly_cache && poly_cache->ringIndices )
+	{
+        result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
+	}
+	else
+	{
+		LWGEOM* poly = lwgeom_from_gserialized(gpoly);
+		if ( lwgeom_get_type(poly) == POLYGONTYPE )
+		{
+			result = point_in_polygon(lwgeom_as_lwpoly(poly), point);
+		}
+		else
+		{
+			result = point_in_multipolygon(lwgeom_as_lwmpoly(poly), point);
+		}
+		lwgeom_free(poly);
+	}
+
+	return result;
+}
 
 /**
  *  @brief Compute the Hausdorff distance thanks to the corresponding GEOS function
@@ -1621,10 +1663,6 @@ Datum contains(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1, *g2;
 	GBOX box1, box2;
-	int type1, type2;
-	LWGEOM *lwgeom;
-	LWPOINT *point;
-	RTREE_POLY_CACHE *poly_cache;
 	int result;
 	PrepGeomCache *prep_cache;
 
@@ -1657,48 +1695,55 @@ Datum contains(PG_FUNCTION_ARGS)
 	** short-circuit 2: if geom2 is a point and geom1 is a polygon
 	** call the point-in-polygon function.
 	*/
-	type1 = gserialized_get_type(geom1);
-	type2 = gserialized_get_type(geom2);
-	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
+	if (is_poly(geom1) && is_point(geom2)) 
 	{
+		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
+		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
+		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		int retval;
+	
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		lwgeom = lwgeom_from_gserialized(geom1);
-		point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
+		if (gserialized_get_type(gpoint) == POINTTYPE) {
+			LWGEOM* point = lwgeom_from_gserialized(gpoint);
+			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
+			lwgeom_free(point);
 
-		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
+			retval = (pip_result == 1); /* completely inside */
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			uint32_t i;
+			int found_completely_inside = LW_FALSE;
 
-		poly_cache = GetRtreeCache(fcinfo, geom1);
+			retval = LW_TRUE;
+			for (i = 0; i < mpoint->ngeoms; i++)
+			{
+				/* We need to find at least one point that's completely inside the
+				 * polygons (pip_result == 1).  As long as we have one point that's
+				 * completely inside, we can have as many as we want on the boundary
+				 * itself. (pip_result == 0)
+				 */
+				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
+				if (pip_result == 1)
+					found_completely_inside = LW_TRUE;
 
-		if ( poly_cache && poly_cache->ringIndices )
-		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-		}
-		else if ( type1 == POLYGONTYPE )
-		{
-			result = point_in_polygon((LWPOLY*)lwgeom, point);
-		}
-		else if ( type1 == MULTIPOLYGONTYPE )
-		{
-			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
-		}
-		else
-		{
-			/* Gulp! Should not be here... */
-			elog(ERROR,"Type isn't poly or multipoly!");
+				if (pip_result == -1) /* completely outside */
+				{
+					retval = LW_FALSE;
+					break;
+				}
+			}
+
+			retval = retval && found_completely_inside;
+			lwmpoint_free(mpoint);
+		} else {
+			/* Never get here */
+			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
 		}
-		lwgeom_free(lwgeom);
-		lwpoint_free(point);
+
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		if ( result == 1 ) /* completely inside */
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
+		PG_RETURN_BOOL(retval);
 	}
 	else
 	{
@@ -1846,10 +1891,6 @@ Datum covers(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2;
 	int result;
 	GBOX box1, box2;
-	int type1, type2;
-	LWGEOM *lwgeom;
-	LWPOINT *point;
-	RTREE_POLY_CACHE *poly_cache;
 	PrepGeomCache *prep_cache;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1878,50 +1919,45 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom2 is a point and geom1 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = gserialized_get_type(geom1);
-	type2 = gserialized_get_type(geom2);
-	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
+	if (is_poly(geom1) && is_point(geom2))
 	{
+		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
+		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
+		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		int retval;
+
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+		if (gserialized_get_type(gpoint) == POINTTYPE) {
+			LWGEOM* point = lwgeom_from_gserialized(gpoint);
+			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
+			lwgeom_free(point);
 
-		lwgeom = lwgeom_from_gserialized(geom1);
-		point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
+			retval = (pip_result != -1); /* not outside */
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			uint32_t i;
 
-		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
+			retval = LW_TRUE;
+			for (i = 0; i < mpoint->ngeoms; i++)
+			{
+				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
+				if (pip_result == -1)
+				{
+					retval = LW_FALSE;
+					break;
+				}
+			}
 
-		poly_cache = GetRtreeCache(fcinfo, geom1);
-
-		if ( poly_cache && poly_cache->ringIndices )
-		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-		}
-		else if ( type1 == POLYGONTYPE )
-		{
-			result = point_in_polygon((LWPOLY*)lwgeom, point);
-		}
-		else if ( type1 == MULTIPOLYGONTYPE )
-		{
-			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
-		}
-		else
-		{
-			/* Gulp! Should not be here... */
-			elog(ERROR,"Type isn't poly or multipoly!");
+			lwmpoint_free(mpoint);
+		} else {
+			/* Never get here */
+			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
 		}
 
-		lwgeom_free(lwgeom);
-		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		if ( result != -1 ) /* not outside */
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
+		PG_RETURN_BOOL(retval);
 	}
 	else
 	{
@@ -1999,10 +2035,6 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g2;
 	int result;
 	GBOX box1, box2;
-	LWGEOM *lwgeom;
-	LWPOINT *point;
-	int type1, type2;
-	RTREE_POLY_CACHE *poly_cache;
 	char *patt = "**F**F***";
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -2033,48 +2065,48 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = gserialized_get_type(geom1);
-	type2 = gserialized_get_type(geom2);
-	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
-	{
+	if (is_point(geom1) && is_poly(geom2)) {
+		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
+		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
+		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		int retval;
+
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+		if (gserialized_get_type(gpoint) == POINTTYPE) {
+			LWGEOM* point = lwgeom_from_gserialized(gpoint);
+			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
+			lwgeom_free(point);
 
-		point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom1));
-		lwgeom = lwgeom_from_gserialized(geom2);
+			retval = (pip_result != -1); /* not outside */
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			uint32_t i;
 
-		poly_cache = GetRtreeCache(fcinfo, geom2);
+			retval = LW_TRUE;
+			for (i = 0; i < mpoint->ngeoms; i++)
+			{
+				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
+				if (pip_result == -1)
+				{
+					retval = LW_FALSE;
+					break;
+				}
+			}
 
-		if ( poly_cache && poly_cache->ringIndices )
-		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-		}
-		else if ( type2 == POLYGONTYPE )
-		{
-			result = point_in_polygon((LWPOLY*)lwgeom, point);
-		}
-		else if ( type2 == MULTIPOLYGONTYPE )
-		{
-			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
-		}
-		else
-		{
-			/* Gulp! Should not be here... */
-			elog(ERROR,"Type isn't poly or multipoly!");
+			lwmpoint_free(mpoint);
+		} else {
+			/* Never get here */
+			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
 		}
 
-		lwgeom_free(lwgeom);
-		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		if ( result != -1 ) /* not outside */
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
+		PG_RETURN_BOOL(retval);
+	}
+	else
+	{
+		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", type1, type2);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2181,19 +2213,13 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
 PG_FUNCTION_INFO_V1(geos_intersects);
 Datum geos_intersects(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
-	GSERIALIZED *serialized_poly;
 	int result;
 	GBOX box1, box2;
-	int type1, type2, polytype;
-	LWPOINT *point;
-	LWGEOM *lwgeom;
-	RTREE_POLY_CACHE *poly_cache;
 	PrepGeomCache *prep_cache;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -2223,61 +2249,45 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if the geoms are a point and a polygon,
 	 * call the point_outside_polygon function.
 	 */
-	type1 = gserialized_get_type(geom1);
-	type2 = gserialized_get_type(geom2);
-	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	if ((is_point(geom1) && is_poly(geom2)) || (is_poly(geom1) && is_point(geom2)))
 	{
+		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
+		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
+		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
+		int retval;
+
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+		if (gserialized_get_type(gpoint) == POINTTYPE) {
+			LWGEOM* point = lwgeom_from_gserialized(gpoint);
+			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
+			lwgeom_free(point);
 
-		if ( type1 == POINTTYPE )
-		{
-			point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom1));
-			lwgeom = lwgeom_from_gserialized(geom2);
-			serialized_poly = geom2;
-			polytype = type2;
-		}
-		else
-		{
-			point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
-			lwgeom = lwgeom_from_gserialized(geom1);
-			serialized_poly = geom1;
-			polytype = type1;
-		}
+			retval = (pip_result != -1); /* not outside */
+		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			uint32_t i;
 
-		poly_cache = GetRtreeCache(fcinfo, serialized_poly);
+			retval = LW_FALSE;
+			for (i = 0; i < mpoint->ngeoms; i++)
+			{
+				int pip_result = pip_short_circuit(cache, mpoint->geoms[i], gpoly);
+				if (pip_result != -1) /* not outside */
+				{
+					retval = LW_TRUE;
+					break;
+				}
+			}
 
-		if ( poly_cache && poly_cache->ringIndices )
-		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-		}
-		else if ( polytype == POLYGONTYPE )
-		{
-			result = point_in_polygon((LWPOLY*)lwgeom, point);
-		}
-		else if ( polytype == MULTIPOLYGONTYPE )
-		{
-			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
-		}
-		else
-		{
-			/* Gulp! Should not be here... */
-			elog(ERROR,"Type isn't poly or multipoly!");
+			lwmpoint_free(mpoint);
+		} else {
+			/* Never get here */
+			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
 		}
 
-		lwgeom_free(lwgeom);
-		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		if ( result != -1 ) /* not outside */
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
+		PG_RETURN_BOOL(retval);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2367,7 +2377,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+			gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
