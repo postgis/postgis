@@ -565,17 +565,17 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		/* No, we need to calculate it from the full object. */
 		GBOX gbox;
 		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
-		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
+
+		gbox_init(&gbox);
+
+		if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
-			lwgeom_free(lwgeom);
 			return LW_FAILURE;
 		}
-		lwgeom_free(lwgeom);
 		result = box2df_from_gbox_p(&gbox, box2df);
 	}
-	
+
 	if ( result == LW_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got box2df %s", box2df_to_string(box2df));
