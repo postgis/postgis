@@ -4,8 +4,10 @@
 SELECT 1,  32145 = ST_SRID(ST_Voronoi('SRID=32145;MULTIPOINT (0 0, 1 1, 2 2)'));
 -- NULL -> NULL
 SELECT 2,  ST_Voronoi(NULL) IS NULL;
-SELECT 3,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, 0, NULL) IS NULL;
-SELECT 4,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, NULL, true) IS NULL;
+-- NULL tolerance produces error
+SELECT 3,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, NULL);
+-- NULL return_polygons produces error
+SELECT 4,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, 0, NULL);
 -- Tolerance can't be negative
 SELECT 5,  ST_Voronoi('MULTIPOINT (0 0, 1 1, 2 2)', NULL, -2);
 -- Output types are correct

@@ -3914,23 +3914,35 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 	int custom_clip_envelope;
 	int return_polygons;
 
-	/* If we have a null geometry, tolerance, or return type, it's not 
-	 * clear what we're being asked to do. */
-	if (PG_ARGISNULL(0) || PG_ARGISNULL(2) || PG_ARGISNULL(3))
+	/* Return NULL on NULL geometry */
+	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	input = PG_GETARG_GSERIALIZED_P(0);
-	custom_clip_envelope = !PG_ARGISNULL(1);
+	/* Read our tolerance value */
+	if (PG_ARGISNULL(2))
+	{
+		lwpgerror("Tolerance must be a positive number.");
+		PG_RETURN_NULL();
+	}
+
 	tolerance = PG_GETARG_FLOAT8(2);
-	return_polygons = !PG_GETARG_BOOL(3);
 
 	if (tolerance < 0)
 	{
 		lwpgerror("Tolerance must be a positive number.");
 		PG_RETURN_NULL();
 	}
+
+	/* Are we returning lines or polygons? */
+	if (PG_ARGISNULL(3))
+	{
+		lwpgerror("return_polygons must be true or false.");
+		PG_RETURN_NULL();
+	}
+	return_polygons = PG_GETARG_BOOL(3);
 	
 	/* Read our clipping envelope, if applicable. */
+	custom_clip_envelope = !PG_ARGISNULL(1);
 	if (custom_clip_envelope) {
 		clip = PG_GETARG_GSERIALIZED_P(1);
 		if (!gserialized_get_gbox_p(clip, &clip_envelope))
@@ -3942,8 +3954,11 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(clip, 0);		
 	}
 
+	/* Read our input geometry */
+	input = PG_GETARG_GSERIALIZED_P(0);
+
 	lwgeom_input = lwgeom_from_gserialized(input);
-	lwgeom_result = lwgeom_voronoi_diagram(lwgeom_input, custom_clip_envelope ? &clip_envelope : NULL, tolerance, return_polygons);
+	lwgeom_result = lwgeom_voronoi_diagram(lwgeom_input, custom_clip_envelope ? &clip_envelope : NULL, tolerance, !return_polygons);
 	lwgeom_free(lwgeom_input);
 
 	if (!lwgeom_result)
