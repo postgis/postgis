@@ -1712,3 +1712,101 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance,
 	
 #endif /* POSTGIS_GEOS_VERSION < 34 */
 }
+
+static
+GEOSCoordSequence* lwgeom_get_geos_coordseq_2d(const LWGEOM* g, uint32_t num_points)
+{
+	uint32_t i = 0;
+	uint8_t num_dims = 2;
+	LWPOINTITERATOR* it;
+	GEOSCoordSequence* coords;
+	POINT4D tmp;
+
+	coords = GEOSCoordSeq_create(num_points, num_dims);
+	if (!coords)
+		return NULL;
+
+	it = lwpointiterator_create(g);
+	while(lwpointiterator_next(it, &tmp))
+	{
+		if(i >= num_points)
+		{
+			lwerror("Incorrect num_points provided to lwgeom_get_geos_coordseq_2d");
+			GEOSCoordSeq_destroy(coords);
+			lwpointiterator_destroy(it);
+			return NULL;
+		}
+
+		if(!GEOSCoordSeq_setX(coords, i, tmp.x) || !GEOSCoordSeq_setY(coords, i, tmp.y))
+		{
+			GEOSCoordSeq_destroy(coords);
+			lwpointiterator_destroy(it);
+			return NULL;
+		}
+		i++;
+	}
+	lwpointiterator_destroy(it);
+
+	return coords;
+}
+
+LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges) {
+#if POSTGIS_GEOS_VERSION < 35
+	lwerror("lwgeom_voronoi_diagram: GEOS 3.5 or higher required");
+	return NULL;
+#else
+	uint32_t num_points = lwgeom_count_vertices(g);
+	LWGEOM *lwgeom_result;
+	char is_3d = LW_FALSE;
+	int srid = lwgeom_get_srid(g);
+	GEOSCoordSequence* coords;
+	GEOSGeometry* geos_geom;
+	GEOSGeometry* geos_env = NULL;
+	GEOSGeometry* geos_result;
+
+	if (num_points < 2)
+	{
+		LWCOLLECTION* empty = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(g), 0, 0);
+		return lwcollection_as_lwgeom(empty);
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	/* Instead of using the standard LWGEOM2GEOS transformer, we read the vertices of the
+	 * LWGEOM directly and put them into a single GEOS CoordinateSeq that can be used to
+	 * define a LineString.  This allows us to process geometry types that may not be 
+	 * supported by GEOS, and reduces the memory requirements in cases of many geometries
+	 * with few points (such as LWMPOINT).
+	 */
+	coords = lwgeom_get_geos_coordseq_2d(g, num_points);
+	if (!coords)
+		return NULL;
+
+	geos_geom = GEOSGeom_createLineString(coords);
+	if (!geos_geom)
+	{
+		GEOSCoordSeq_destroy(coords);
+		return NULL;
+	}
+
+	if (env)
+		geos_env = GBOX2GEOS(env);
+
+	geos_result = GEOSVoronoiDiagram(geos_geom, geos_env, tolerance, output_edges);
+
+	GEOSGeom_destroy(geos_geom);
+	if (env)
+		GEOSGeom_destroy(geos_env);
+
+	if (!geos_result)
+		return NULL;
+
+	lwgeom_result = GEOS2LWGEOM(geos_result, is_3d);
+	GEOSGeom_destroy(geos_result);
+
+	lwgeom_set_srid(lwgeom_result, srid);
+
+	return lwgeom_result;
+#endif /* POSTGIS_GEOS_VERSION < 35 */
+}
+

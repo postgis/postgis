@@ -206,10 +206,11 @@ endif
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 	# GEOS-3.5 adds:
-	# ST_ClipByBox2d
+	# ST_ClipByBox2d, ST_Subdivide, ST_Voronoi
 	TESTS += \
 		clipbybox2d \
-		subdivide
+		subdivide \
+		voronoi
 endif
 
 
