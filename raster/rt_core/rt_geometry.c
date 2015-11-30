@@ -470,18 +470,10 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		rtdealloc(gv);
 
 		/* create geometry collection */
-#if POSTGIS_GEOS_VERSION >= 33
 		gc = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, geomscount);
-#else
-		gc = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, geomscount);
-#endif
 
 		if (gc == NULL) {
-#if POSTGIS_GEOS_VERSION >= 33
 			rterror("rt_raster_surface: Could not create GEOS GEOMETRYCOLLECTION from set of pixel polygons");
-#else
-			rterror("rt_raster_surface: Could not create GEOS MULTIPOLYGON from set of pixel polygons");
-#endif
 
 			for (i = 0; i < geomscount; i++)
 				GEOSGeom_destroy(geoms[i]);
@@ -490,20 +482,13 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		}
 
 		/* run the union */
-#if POSTGIS_GEOS_VERSION >= 33
 		gunion = GEOSUnaryUnion(gc);
-#else
-		gunion = GEOSUnionCascaded(gc);
-#endif
+
 		GEOSGeom_destroy(gc);
 		rtdealloc(geoms);
 
 		if (gunion == NULL) {
-#if POSTGIS_GEOS_VERSION >= 33
 			rterror("rt_raster_surface: Could not union the pixel polygons using GEOSUnaryUnion()");
-#else
-			rterror("rt_raster_surface: Could not union the pixel polygons using GEOSUnionCascaded()");
-#endif
 			return ES_ERROR;
 		}
 
@@ -516,10 +501,6 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 		*/
 		do {
 			LWGEOM *mpolyValid = NULL;
-
-#if POSTGIS_GEOS_VERSION < 33
-			break;
-#endif
 
 			if (GEOSisValid(gunion))
 				break;
@@ -1253,11 +1234,6 @@ rt_raster_gdal_polygonize(
 			if not, try to make valid
 		*/
 		do {
-#if POSTGIS_GEOS_VERSION < 33
-			/* nothing can be done if the geometry was invalid if GEOS < 3.3 */
-			break;
-#endif
-
 			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom, 0);
 			if (ggeom == NULL) {
 				rtwarn("Cannot test geometry for validity");

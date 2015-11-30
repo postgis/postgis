@@ -227,15 +227,6 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 			LWDEBUGF(4, "Point: %g,%g", p2d->x, p2d->y);
 		}
 
-#if POSTGIS_GEOS_VERSION < 33
-		/* Make sure we don't pass any infinite values down into GEOS */
-		/* GEOS 3.3+ is supposed to  handle this stuff OK */
-		if ( isinf(p2d->x) || isinf(p2d->y) || (dims == 3 && isinf(p3d->z)) )
-			lwerror("Infinite coordinate value found in geometry.");
-		if ( isnan(p2d->x) || isnan(p2d->y) || (dims == 3 && isnan(p3d->z)) )
-			lwerror("NaN coordinate value found in geometry.");
-#endif
-
 		GEOSCoordSeq_setX(sq, i, p2d->x);
 		GEOSCoordSeq_setY(sq, i, p2d->y);
 		
@@ -349,23 +340,13 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		LWPOLY *lwpoly = NULL;
 		LWLINE *lwl = NULL;
 		LWCOLLECTION *lwc = NULL;
-#if POSTGIS_GEOS_VERSION < 33
-		POINTARRAY *pa = NULL;
-#endif
 		
 	case POINTTYPE:
 		lwp = (LWPOINT *)lwgeom;
 		
 		if ( lwgeom_is_empty(lwgeom) )
 		{
-#if POSTGIS_GEOS_VERSION < 33
-			pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
-			sq = ptarray_to_GEOSCoordSeq(pa);
-			shell = GEOSGeom_createLinearRing(sq);
-			g = GEOSGeom_createPolygon(shell, NULL, 0);
-#else
 			g = GEOSGeom_createEmptyPolygon();
-#endif
 		}
 		else
 		{
@@ -401,14 +382,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		lwpoly = (LWPOLY *)lwgeom;
 		if ( lwgeom_is_empty(lwgeom) )
 		{
-#if POSTGIS_GEOS_VERSION < 33
-			POINTARRAY *pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
-			sq = ptarray_to_GEOSCoordSeq(pa);
-			shell = GEOSGeom_createLinearRing(sq);
-			g = GEOSGeom_createPolygon(shell, NULL, 0);
-#else
 			g = GEOSGeom_createEmptyPolygon();
-#endif
 		}
 		else
 		{
@@ -1413,14 +1387,6 @@ lwgeom_geos_noop(const LWGEOM* geom_in)
 LWGEOM*
 lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this lwgeom library "
-	        "was compiled against (%d) doesn't support "
-	        "'Snap' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	return NULL;
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	int srid, is3d;
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM* out;
@@ -1470,20 +1436,11 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 	GEOSGeom_destroy(g3);
 
 	return out;
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 LWGEOM*
 lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "'SharedPaths' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	return NULL;
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM *out;
 	int is3d, srid;
@@ -1532,15 +1489,11 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 	}
 
 	return out;
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 LWGEOM*
 lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
 {
-#if POSTGIS_GEOS_VERSION < 32
-	lwerror("lwgeom_offsetcurve: GEOS 3.2 or higher required");
-#else
 	GEOSGeometry *g1, *g3;
 	LWGEOM *lwgeom_result;
 	LWGEOM *lwgeom_in = lwline_as_lwgeom(lwline);
@@ -1554,14 +1507,8 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 		return NULL;
 	}
 
-#if POSTGIS_GEOS_VERSION < 33
-	/* Size is always positive for GEOSSingleSidedBuffer, and a flag determines left/right */
-	g3 = GEOSSingleSidedBuffer(g1, size < 0 ? -size : size,
-	                           quadsegs, joinStyle, mitreLimit,
-	                           size < 0 ? 0 : 1);
-#else
 	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
-#endif
+
 	/* Don't need input geometry anymore */
 	GEOSGeom_destroy(g1);
 
@@ -1584,8 +1531,6 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 	}
 
 	return lwgeom_result;
-	
-#endif /* POSTGIS_GEOS_VERSION < 32 */
 }
 
 LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d) {

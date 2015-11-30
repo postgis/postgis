@@ -18,7 +18,6 @@
 
 static void test_lwline_split_by_point_to(void)
 {
-#if POSTGIS_GEOS_VERSION >= 33
 	LWLINE *line;
 	LWPOINT *point;
 	LWMLINE *coll;
@@ -76,8 +75,6 @@ static void test_lwline_split_by_point_to(void)
 
 	lwcollection_free((LWCOLLECTION*)coll);
 	lwline_free(line);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 static void test_lwgeom_split(void)

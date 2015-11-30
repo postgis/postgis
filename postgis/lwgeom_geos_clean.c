@@ -52,11 +52,6 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_MakeValid);
 Datum ST_MakeValid(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	elog(ERROR, "You need GEOS-3.3.0 or up for ST_MakeValid");
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
@@ -91,10 +86,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	out = geometry_serialize(lwgeom_out);
 
 	PG_RETURN_POINTER(out);
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
-
-#if POSTGIS_GEOS_VERSION >= 33
 
 /* Uses GEOS internally */
 static LWGEOM* lwgeom_clean(LWGEOM* lwgeom_in);
@@ -138,18 +130,11 @@ lwgeom_clean(LWGEOM* lwgeom_in)
 	return lwgeom_out;
 }
 
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
-
 
 Datum ST_CleanGeometry(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_CleanGeometry);
 Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	elog(ERROR, "You need GEOS-3.3.0 or up for ST_CleanGeometry");
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
@@ -175,7 +160,5 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 
 	out = geometry_serialize(lwgeom_out);
 	PG_RETURN_POINTER(out);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 

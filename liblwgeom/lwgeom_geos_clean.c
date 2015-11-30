@@ -381,7 +381,6 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 	return noded;
 }
 
-#if POSTGIS_GEOS_VERSION >= 33
 /*
  * We expect initGEOS being called already.
  * Will return NULL on error (expect error handler being called by then)
@@ -1065,6 +1064,4 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	lwgeom_out->srid = lwgeom_in->srid;
 	return lwgeom_out;
 }
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 

@@ -41,7 +41,6 @@
 	
 static void test_lwgeom_make_valid(void)
 {
-#if POSTGIS_GEOS_VERSION >= 33
 	LWGEOM *gin, *gout, *gexp;
 	char *ewkt;
 
@@ -148,8 +147,6 @@ static void test_lwgeom_make_valid(void)
 
 	lwgeom_free(gout);
 	lwgeom_free(gin);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 /* TODO: add more tests ! */
