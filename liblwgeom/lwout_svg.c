@@ -547,54 +547,78 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 {
 	int i, end;
 	char *ptr;
-	char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	POINT2D pt, lpt;
+	char sx[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	char sy[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
+	const POINT2D *pt;
+
+	double f = 1.0;
+	double dx, dy, x, y, accum_x, accum_y;
 
 	ptr = output;
+
+	if (precision >= 0) 
+	{
+		f = pow(10, precision);
+	}
 
 	if (close_ring) end = pa->npoints;
 	else end = pa->npoints - 1;
 
 	/* Starting point */
-	getPoint2d_p(pa, 0, &pt);
+	pt = getPoint2d_cp(pa, 0);
 
-	if (fabs(pt.x) < OUT_MAX_DOUBLE)
-		sprintf(x, "%.*f", precision, pt.x);
+	x = round(pt->x*f)/f;
+	y = round(pt->y*f)/f;
+
+	if (fabs(x) < OUT_MAX_DOUBLE)
+		sprintf(sx, "%.*f", precision, x);
 	else
-		sprintf(x, "%g", pt.x);
-	trim_trailing_zeros(x);
+		sprintf(sx, "%g", x);
+	trim_trailing_zeros(sx);
 
-	if (fabs(pt.y) < OUT_MAX_DOUBLE)
-		sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1 : pt.y);
+	if (fabs(y) < OUT_MAX_DOUBLE)
+		sprintf(sy, "%.*f", precision, fabs(y) ? y * -1 : y);
 	else
-		sprintf(y, "%g", fabs(pt.y) ? pt.y * -1 : pt.y);
-	trim_trailing_zeros(y);
+		sprintf(sy, "%g", fabs(y) ? y * -1 : y);
+	trim_trailing_zeros(sy);
 
-	ptr += sprintf(ptr,"%s %s l", x, y);
+	ptr += sprintf(ptr,"%s %s l", sx, sy);
+	
+	/* accum */
+	accum_x = x;
+	accum_y = y;
 
 	/* All the following ones */
 	for (i=1 ; i < end ; i++)
 	{
-		lpt = pt;
+		// lpt = pt;
 
-		getPoint2d_p(pa, i, &pt);
-		if (fabs(pt.x -lpt.x) < OUT_MAX_DOUBLE)
-			sprintf(x, "%.*f", precision, pt.x -lpt.x);
+		pt = getPoint2d_cp(pa, i);
+		
+		x = round(pt->x*f)/f;
+		y = round(pt->y*f)/f;
+		dx = x - accum_x;
+		dy = y - accum_y;
+		
+		if (fabs(dx) < OUT_MAX_DOUBLE)
+			sprintf(sx, "%.*f", precision, dx);
 		else
-			sprintf(x, "%g", pt.x -lpt.x);
-		trim_trailing_zeros(x);
+			sprintf(sx, "%g", dx);
+		trim_trailing_zeros(sx);
 
 		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
-		if (fabs(pt.y -lpt.y) < OUT_MAX_DOUBLE)
-			sprintf(y, "%.*f", precision,
-			        fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
+		if (fabs(dy) < OUT_MAX_DOUBLE)
+			sprintf(sy, "%.*f", precision,
+			        fabs(dy) ? dy * -1: dy);
 		else
-			sprintf(y, "%g",
-			        fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
-		trim_trailing_zeros(y);
+			sprintf(sy, "%g",
+			        fabs(dy) ? dy * -1: dy);
+		trim_trailing_zeros(sy);
+		
+		accum_x += dx;
+		accum_y += dy;
 
-		ptr += sprintf(ptr," %s %s", x, y);
+		ptr += sprintf(ptr," %s %s", sx, sy);
 	}
 
 	return (ptr-output);
