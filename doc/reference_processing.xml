@@ -2689,6 +2689,7 @@ LINESTRING(241.42 38.38,241.8 38.45)
 			<funcdef>geometry <function>ST_Simplify</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+			<paramdef><type>boolean</type> <parameter>preserveCollapsed</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2701,6 +2702,12 @@ LINESTRING(241.42 38.38,241.8 38.45)
 				any kind of geometry. Since simplification occurs on a
 				object-by-object basis you can also feed a GeometryCollection to
 				this function.</para>
+        
+    <para>The "preserve collapsed" flag will retain objects that would otherwise
+      be too small given the tolerance. For example, a 1m long line simplified with a 10m 
+      tolerance. If the preserve flag is given, the line will not disappear. This flag
+      is useful for rendering engines, to avoid having large numbers of very
+      small objects disappear from a map leaving surprising gaps.</para>
 
 		<note><para>Note that returned geometry might lose its
 				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
