@@ -97,6 +97,7 @@ PostGIS 2.2.0
   - #2349, Support for encoded_polyline input/output (Kashif Rasul)
   - #2159, report libjson version from postgis_full_version()
   - #2770, ST_MemSize(raster)
+  - #2093, ST_Simplify(geom, tol, preserveCollapsed) new parameter
   - Add postgis_noop(raster)
   - Added missing variants of ST_TPI(), ST_TRI() and ST_Roughness()
   - Added GUC postgis.gdal_enabled_drivers to specify GDAL config
