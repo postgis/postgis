@@ -3,6 +3,7 @@ PostGIS 2.2.1
 
  * Bug Fixes *
 
+  - #2232, avoid accumulated error in SVG rounding
   - #3351, set endnodes isolation on ST_RemoveIsoEdge
            (and lwt_RemIsoEdge)
   - #3349, Fix installation path of postgis_topology scripts
