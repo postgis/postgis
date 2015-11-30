@@ -86,7 +86,12 @@ static void PreparedCacheInit(MemoryContext context);
 static void PreparedCacheReset(MemoryContext context);
 static void PreparedCacheDelete(MemoryContext context);
 static bool PreparedCacheIsEmpty(MemoryContext context);
+#if POSTGIS_PGSQL_VERSION >= 96
+static void PreparedCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals);
+#else
 static void PreparedCacheStats(MemoryContext context, int level);
+#endif
+
 #ifdef MEMORY_CONTEXT_CHECKING
 static void PreparedCacheCheck(MemoryContext context);
 #endif
@@ -160,14 +165,18 @@ PreparedCacheIsEmpty(MemoryContext context)
 }
 
 static void
+#if POSTGIS_PGSQL_VERSION >= 96
+PreparedCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
+#else
 PreparedCacheStats(MemoryContext context, int level)
+#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
 	 * (see postgis-devel archives July 2007)
+	   fprintf(stderr, "%s: Prepared context\n", context->name);
 	 */
 
-	fprintf(stderr, "%s: Prepared context\n", context->name);
 }
 
 #ifdef MEMORY_CONTEXT_CHECKING

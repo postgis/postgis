@@ -92,7 +92,13 @@ static void PROJ4SRSCacheInit(MemoryContext context);
 static void PROJ4SRSCacheDelete(MemoryContext context);
 static void PROJ4SRSCacheReset(MemoryContext context);
 static bool PROJ4SRSCacheIsEmpty(MemoryContext context);
+
+#if POSTGIS_PGSQL_VERSION >= 96
+static void PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals);
+#else
 static void PROJ4SRSCacheStats(MemoryContext context, int level);
+#endif
+
 #ifdef MEMORY_CONTEXT_CHECKING
 static void PROJ4SRSCacheCheck(MemoryContext context);
 #endif
@@ -165,7 +171,11 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 }
 
 static void
+#if POSTGIS_PGSQL_VERSION >= 96
+PROJ4SRSCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
+#else
 PROJ4SRSCacheStats(MemoryContext context, int level)
+#endif
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
