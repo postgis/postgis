@@ -3,6 +3,7 @@ PostGIS 2.1.9
 
  * Bug Fixes *
 
+  - #2232, avoid accumulated error in SVG rounding
   - #3198, ST_AddEdgeModFace docs report wrong side of new face
   - #3196, do not let DropTopology drop non-topology schemes
   - #3222, Fix uninitialized stddev in stats computation
