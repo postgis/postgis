@@ -550,7 +550,7 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	char *ptr;
 	char sx[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
 	char sy[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-	const POINT2D *pt;
+	POINT2D pt;
 
 	double f = 1.0;
 	double dx, dy, x, y, accum_x, accum_y;
@@ -566,10 +566,10 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	else end = pa->npoints - 1;
 
 	/* Starting point */
-	pt = getPoint2d_cp(pa, 0);
+	getPoint2d_p(pa, 0, &pt);
 
-	x = round(pt->x*f)/f;
-	y = round(pt->y*f)/f;
+	x = round(pt.x*f)/f;
+	y = round(pt.y*f)/f;
 
 	if (fabs(x) < OUT_MAX_DOUBLE)
 		sprintf(sx, "%.*f", precision, x);
@@ -594,10 +594,10 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	{
 		// lpt = pt;
 
-		pt = getPoint2d_cp(pa, i);
+		getPoint2d_p(pa, i, &pt);
 		
-		x = round(pt->x*f)/f;
-		y = round(pt->y*f)/f;
+		x = round(pt.x*f)/f;
+		y = round(pt.y*f)/f;
 		dx = x - accum_x;
 		dy = y - accum_y;
 		
