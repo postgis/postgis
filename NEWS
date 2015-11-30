@@ -3,6 +3,7 @@ PostGIS 2.0.8
 
  * Bug Fixes *
 
+  - #2232, avoid accumulated error in SVG rounding
   - #3351, set endnodes isolation on ST_RemoveIsoEdge
   - #3196, do not let DropTopology drop non-topology schemes
   - #3198, ST_AddEdgeModFace docs report wrong side of new face
