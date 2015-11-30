@@ -345,7 +345,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 	GSERIALIZED *g;
 
 	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
-	g = gserialized_from_lwgeom(lwg, 1, 0);
+	g = gserialized_from_lwgeom(lwg, 0);
 	lwgeom_free(lwg);
 	return lwgeom_from_gserialized(g);
 }
@@ -799,7 +799,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt, GSERIALIZED **g)
 
 	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(lwg->flags, 1);
-	*g = gserialized_from_lwgeom(lwg, 1, 0);
+	*g = gserialized_from_lwgeom(lwg, 0);
 	lwgeom_free(lwg);
 	return lwgeom_from_gserialized(*g);
 }
@@ -901,7 +901,7 @@ static void test_gserialized_from_lwgeom(void)
 
 	geom = lwgeom_from_wkt("POINT(0 0.2)", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom,  0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, POINTTYPE );
 	inspect = (double*)g;
@@ -911,7 +911,7 @@ static void test_gserialized_from_lwgeom(void)
 
 	geom = lwgeom_from_wkt("POLYGON((-1 -1, -1 2.5, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom, 0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, POLYGONTYPE );
 	inspect = (double*)g;
@@ -921,7 +921,7 @@ static void test_gserialized_from_lwgeom(void)
 
 	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0.1, 1 1))", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
-	g = gserialized_from_lwgeom(geom, 1, 0);
+	g = gserialized_from_lwgeom(geom, 0);
 	type = gserialized_get_type(g);
 	CU_ASSERT_EQUAL( type, MULTILINETYPE );
 	inspect = (double*)g;

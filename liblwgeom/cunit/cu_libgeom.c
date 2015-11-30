@@ -283,7 +283,7 @@ static void test_lwgeom_from_gserialized(void)
 		geom = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		lwgeom_add_bbox(geom);
 		if ( geom->bbox ) gbox_float_round(geom->bbox);
-		g = gserialized_from_lwgeom(geom, 0, 0);
+		g = gserialized_from_lwgeom(geom, 0);
 
 		geom2 = lwgeom_from_gserialized(g);
 		out_ewkt = lwgeom_to_ewkt(geom2);
@@ -337,7 +337,7 @@ static void test_gserialized_is_empty(void)
 	{
 		// i = 11;
 		LWGEOM *lw = lwgeom_from_wkt(cases[i].wkt, LW_PARSER_CHECK_NONE);
-		GSERIALIZED *g = gserialized_from_lwgeom(lw, 0, 0);
+		GSERIALIZED *g = gserialized_from_lwgeom(lw, 0);
 		int ie = gserialized_is_empty(g);
 		// printf("%s: we say %d, they say %d\n", cases[i].wkt, cases[i].isempty, ie);
 		CU_ASSERT_EQUAL(ie, cases[i].isempty);
@@ -420,7 +420,7 @@ static void test_on_gser_lwgeom_count_vertices(void)
 
 	lwgeom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
-	g_ser1 = gserialized_from_lwgeom(lwgeom, 1, &ret_size);
+	g_ser1 = gserialized_from_lwgeom(lwgeom, &ret_size);
 	lwgeom_free(lwgeom);
 
 	lwgeom = lwgeom_from_gserialized(g_ser1);
@@ -1055,7 +1055,7 @@ void test_gbox_same_2d(void)
     /* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
      * but still equal according to gbox_same_2d_float.
      */
-    GSERIALIZED* s3 = gserialized_from_lwgeom(g3, LW_FALSE, NULL);
+    GSERIALIZED* s3 = gserialized_from_lwgeom(g3, NULL);
     GBOX s3box;
     gserialized_read_gbox_p(s3, &s3box);
 

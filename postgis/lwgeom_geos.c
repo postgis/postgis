@@ -1375,7 +1375,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	if (lwgeom_result == NULL)
 		lwpgerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");
 
-	gser_result = gserialized_from_lwgeom(lwgeom_result, 0, 0);
+	gser_result = gserialized_from_lwgeom(lwgeom_result, 0);
 	lwgeom_free(lwgeom_input);
 	lwgeom_free(lwgeom_result);
 	PG_RETURN_POINTER(gser_result);
@@ -3566,7 +3566,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	result_array_data = palloc(nclusters * sizeof(Datum));
 	for (i=0; i<nclusters; ++i)
 	{
-		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], 0, NULL));
+		result_array_data[i] = PointerGetDatum(gserialized_from_lwgeom(lw_results[i], NULL));
 		lwgeom_free(lw_results[i]);
 	}
 	pfree(lw_results);
