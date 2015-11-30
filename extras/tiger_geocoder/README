@@ -20,7 +20,7 @@ for further details about function use, refer to:
 http://postgis.net/docs/manual-dev/Extras.html#Tiger_Geocoder
 
 Refer to http://postgis.net/docs/manual-dev/postgis_installation.html#install_tiger_geocoder_extension 
-for installing and upgarding from extensions.
+for installing, upgrading, and loading data from extensions.
 
 Note that installing by script approach is now deprecated, but covered in: 
 http://postgis.net/docs/manual-dev/postgis_installation.html#install_tiger_geocoder
