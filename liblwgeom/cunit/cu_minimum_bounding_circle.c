@@ -27,7 +27,12 @@ static void mbc_test(LWGEOM* g)
 		p.x = p4.x;
 		p.y = p4.y;
 
-		CU_ASSERT_TRUE(distance2d_pt_pt(result->center, &p) <= result->radius);
+		/* We need to store the distance in a variable before the assert so that 
+		 * it is rounded from its 80-bit representation (on x86) down to 64 bits. 
+		 * */
+		double d = distance2d_pt_pt(result->center, &p);
+
+		CU_ASSERT_TRUE(d <= result->radius);
 	}
 
 	lwboundingcircle_destroy(result);
