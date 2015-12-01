@@ -317,11 +317,9 @@ static void test_raster_surface() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
-#if POSTGIS_GEOS_VERSION >= 33
+
 	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))");
-#else
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))");
-#endif
+
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
@@ -333,11 +331,9 @@ static void test_raster_surface() {
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT(mpoly != NULL);
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
-#if POSTGIS_GEOS_VERSION >= 33
+
 	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 -1,1 0,5 0,5 -5,4 -5,0 -5,0 -1,1 -1),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))");
-#else
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))");
-#endif
+
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
 	mpoly = NULL;

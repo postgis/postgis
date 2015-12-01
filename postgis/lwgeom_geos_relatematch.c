@@ -40,14 +40,6 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RelateMatch);
 Datum ST_RelateMatch(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwpgerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_RelateMatch' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	char *mat, *pat;
 	text *mat_text, *pat_text;
 	int result;
@@ -72,8 +64,5 @@ Datum ST_RelateMatch(PG_FUNCTION_ARGS)
 
 	lwfree(mat); lwfree(pat);
 	PG_RETURN_BOOL(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
-
 }
 

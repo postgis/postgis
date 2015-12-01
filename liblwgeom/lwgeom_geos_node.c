@@ -85,13 +85,6 @@ lwgeom_extract_endpoints(const LWGEOM* lwg)
 static LWGEOM*
 lwgeom_extract_unique_endpoints(const LWGEOM* lwg)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "'GEOSUnaryUnion' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	return NULL;
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	LWGEOM* ret;
 	GEOSGeometry *gepu;
 	LWMPOINT *epall = lwgeom_extract_endpoints(lwg);
@@ -120,7 +113,6 @@ lwgeom_extract_unique_endpoints(const LWGEOM* lwg)
 	}
 
 	return ret;
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 /* exported */
@@ -128,13 +120,6 @@ extern LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
 LWGEOM*
 lwgeom_node(const LWGEOM* lwgeom_in)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "'GEOSUnaryUnion' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	return NULL;
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GEOSGeometry *g1, *gu, *gm;
 	LWGEOM *ep, *lines;
 	LWCOLLECTION *col, *tc;
@@ -254,6 +239,5 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 
 	lines->srid = lwgeom_in->srid;
 	return (LWGEOM*)lines;
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 

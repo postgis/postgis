@@ -116,13 +116,6 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(hausdorffdistance);
 Datum hausdorffdistance(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 32
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_HausdorffDistance' function (3.2.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1;
@@ -169,7 +162,6 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(result);
-#endif
 }
 
 /**
@@ -182,13 +174,6 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(hausdorffdistancedensify);
 Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 32
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_HausdorffDistance' function (3.2.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GEOSGeometry *g1;
@@ -236,7 +221,6 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(result);
-#endif
 }
 
 
@@ -250,7 +234,6 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
-#if POSTGIS_GEOS_VERSION >= 33
 {
 	/*
 	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
@@ -435,297 +418,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(gser_out);
 }
-
-#else
-{
-/* For GEOS < 3.3, use the old CascadedUnion function for polygons and
-   brute force two-by-two for other types. */
-	ArrayType *array;
-	int is3d = 0;
-	int nelems = 0;
-	GSERIALIZED *result = NULL;
-	GSERIALIZED *pgis_geom = NULL;
-	GEOSGeometry * g1 = NULL;
-	GEOSGeometry * g2 = NULL;
-	GEOSGeometry * geos_result = NULL;
-	int srid = SRID_UNKNOWN;
-	int count;
-
-	ArrayIterator iterator;
-	Datum value;
-	bool isnull;
-
-	int gotsrid = 0;
-	int allpolys = 1;
-
-	if ( PG_ARGISNULL(0) )
-		PG_RETURN_NULL();
-	
-	array = PG_GETARG_ARRAYTYPE_P(0);
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-	
-	POSTGIS_DEBUGF(3, "%s: number of elements: %d", __func__, nelems);
-
-	/* Zero elements in array? return NULL */
-	if ( nelems == 0 ) 
-		PG_RETURN_NULL();
-
-	/*
-	** First, see if all our elements are POLYGON/MULTIPOLYGON
-	** If they are, we can use UnionCascaded for faster results.
-	*/
-	count = 0;
-#if POSTGIS_PGSQL_VERSION >= 95	
-	iterator = array_create_iterator(array, 0, NULL);
-#else
-	iterator = array_create_iterator(array, 0);
-#endif
-	while( array_iterate(iterator, &value, &isnull) )
-	{
-		GSERIALIZED *pggeom;
-		int pgtype;
-		
-		/* Don't do anything for NULL values */
-		if ( isnull )
-			continue;
-
-		pggeom = (GSERIALIZED *)DatumGetPointer(value);
-		pgtype = gserialized_get_type(pggeom);
-		
-		if ( ! gotsrid ) /* Initialize SRID */
-		{
-			srid = gserialized_get_srid(pggeom);
-			gotsrid = 1;
-			if ( gserialized_has_z(pggeom) ) is3d = 1;
-		}
-		else
-		{
-			error_if_srid_mismatch(srid, gserialized_get_srid(pggeom));
-		}
-
-		if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
-		{
-			allpolys = 0;
-			break;
-		}
-		
-		count++;
-	}
-	array_free_iterator(iterator);
-
-	/* All the components are null? Return null */
-	if ( count == 0 )
-		PG_RETURN_NULL();
-
-	/* Just one non-null component? Return that */
-	if ( count == 1 && nelems == 1 )
-		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
-
-	/* Ok, we really need geos now ;) */
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-
-	if ( allpolys )
-	{
-		/*
-		** Everything is polygonal, so let's run the cascaded polygon union!
-		*/
-		int geoms_size = nelems;
-		int curgeom = 0;
-		GEOSGeometry **geoms = NULL;
-		geoms = palloc(sizeof(GEOSGeometry *) * geoms_size);
-		/*
-		** We need to convert the array of GSERIALIZED into a GEOS MultiPolygon.
-		** First make an array of GEOS Polygons.
-		*/
-#if POSTGIS_PGSQL_VERSION >= 95	
-		iterator = array_create_iterator(array, 0, NULL);
-#else
-		iterator = array_create_iterator(array, 0);
-#endif
-		while( array_iterate(iterator, &value, &isnull) )
-		{
-			GEOSGeometry* g;
-			GSERIALIZED *pggeom;
-			int pgtype;
-							
-			/* Don't do anything for NULL values */
-			if ( isnull )
-				continue;
-
-			pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-			pgtype = gserialized_get_type(pggeom);
-
-			if ( pgtype == POLYGONTYPE )
-			{
-				if ( curgeom == geoms_size )
-				{
-					geoms_size *= 2;
-					geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
-				}
-				g = (GEOSGeometry *)POSTGIS2GEOS(pggeom);
-				if ( 0 == g )   /* exception thrown at construction */
-				{
-					/* TODO: release GEOS allocated memory ! */
-					HANDLE_GEOS_ERROR("One of the geometries in the set "
-				                    "could not be converted to GEOS");
-					PG_RETURN_NULL();
-				}
-				geoms[curgeom] = g;
-				curgeom++;
-			}
-			if ( pgtype == MULTIPOLYGONTYPE )
-			{
-				int j = 0;
-				LWMPOLY *lwmpoly = (LWMPOLY*)lwgeom_from_gserialized(pggeom);;
-				for ( j = 0; j < lwmpoly->ngeoms; j++ )
-				{
-					GEOSGeometry* g;
-					if ( curgeom == geoms_size )
-					{
-						geoms_size *= 2;
-						geoms = repalloc( geoms, sizeof(GEOSGeom) * geoms_size );
-					}
-					/* This builds a LWPOLY on top of the serialized form */
-					g = LWGEOM2GEOS(lwpoly_as_lwgeom(lwmpoly->geoms[j], 0));
-					if ( 0 == g )   /* exception thrown at construction */
-					{
-						/* TODO: cleanup all GEOS memory */
-						HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
-						PG_RETURN_NULL();
-					}
-					geoms[curgeom++] = g;
-				}
-				lwmpoly_free(lwmpoly);
-			}
-
-		}
-		array_free_iterator(iterator);
-		
-		/*
-		** Take our GEOS Polygons and turn them into a GEOS MultiPolygon,
-		** then pass that into cascaded union.
-		*/
-		if (curgeom > 0)
-		{
-			g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
-			if ( ! g1 )
-			{
-				/* TODO: cleanup geoms memory */
-				HANDLE_GEOS_ERROR("Could not create MULTIPOLYGON from geometry array");
-				PG_RETURN_NULL();
-			}
-			g2 = GEOSUnionCascaded(g1);
-			GEOSGeom_destroy(g1);
-			if ( ! g2 )
-			{
-				HANDLE_GEOS_ERROR("GEOSUnionCascaded");
-				PG_RETURN_NULL();
-			}
-
-			GEOSSetSRID(g2, srid);
-			result = GEOS2POSTGIS(g2, is3d);
-			GEOSGeom_destroy(g2);
-		}
-		else
-		{
-			/* All we found were NULLs, so let's return NULL */
-			PG_RETURN_NULL();
-		}
-	}
-	else
-	{
-		/*
-		** Heterogeneous result, let's slog through this one union at a time.
-		*/
-
-#if POSTGIS_PGSQL_VERSION >= 95	
-		iterator = array_create_iterator(array, 0, NULL);
-#else
-		iterator = array_create_iterator(array, 0);
-#endif
-		while( array_iterate(iterator, &value, &isnull) )
-		{
-			GSERIALIZED *geom;
-							
-			/* Don't do anything for NULL values */
-			if ( isnull )
-				continue;
-			
-			geom = (GSERIALIZED *)DatumGetPointer(value);
-			pgis_geom = geom;
-
-			POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
-
-			/* Check is3d flag */
-			if ( gserialized_has_z(geom) ) is3d = 1;
-
-			/* Check SRID homogeneity and initialize geos result */
-			if ( ! geos_result )
-			{
-				geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
-				if ( 0 == geos_result )   /* exception thrown at construction */
-				{
-					HANDLE_GEOS_ERROR("geometry could not be converted to GEOS");
-					PG_RETURN_NULL();
-				}
-				srid = gserialized_get_srid(geom);
-				POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(gserialized_get_type(geom)));
-			}
-			else
-			{
-				error_if_srid_mismatch(srid, gserialized_get_srid(geom));
-
-                g1 = POSTGIS2GEOS(pgis_geom);
-                if ( 0 == g1 )   /* exception thrown at construction */
-                {
-                    /* TODO: release GEOS allocated memory ! */
-                    HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-                    PG_RETURN_NULL();
-                }
-
-				POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-				               call, i, lwtype_name(gserialized_get_type(geom)));
-
-				g2 = GEOSUnion(g1, geos_result);
-				if ( g2 == NULL )
-				{
-					GEOSGeom_destroy((GEOSGeometry *)g1);
-					GEOSGeom_destroy((GEOSGeometry *)geos_result);
-					HANDLE_GEOS_ERROR("GEOSUnion");
-				}
-				GEOSGeom_destroy((GEOSGeometry *)g1);
-				GEOSGeom_destroy((GEOSGeometry *)geos_result);
-				geos_result = g2;
-			}
-		}
-		array_free_iterator(iterator);
-
-		/* If geos_result is set then we found at least one non-NULL geometry */
-		if (geos_result)
-		{
-			GEOSSetSRID(geos_result, srid);
-			result = GEOS2POSTGIS(geos_result, is3d);
-			GEOSGeom_destroy(geos_result);
-		}
-		else
-		{
-			/* All we found were NULLs, so let's return NULL */
-			PG_RETURN_NULL();
-		}
-
-	}
-
-	if ( result == NULL )
-	{
-		/* Union returned a NULL geometry */
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(result);
-
-}
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 /**
  * @example ST_UnaryUnion {@link #geomunion} SELECT ST_UnaryUnion(
@@ -1186,28 +878,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	}
 
-#if POSTGIS_GEOS_VERSION >= 32
-
 	g3 = GEOSBufferWithStyle(g1, size, quadsegs, endCapStyle, joinStyle, mitreLimit);
 	GEOSGeom_destroy(g1);
-
-#else /* POSTGIS_GEOS_VERSION < 32 */
-
-	if ( mitreLimit != DEFAULT_MITRE_LIMIT ||
-	        endCapStyle != DEFAULT_ENDCAP_STYLE ||
-	        joinStyle != DEFAULT_JOIN_STYLE )
-	{
-		lwpgerror("The GEOS version this PostGIS binary "
-		        "was compiled against (%d) doesn't support "
-		        "specifying a mitre limit != %d or styles different "
-		        "from 'round' (needs 3.2 or higher)",
-		        DEFAULT_MITRE_LIMIT, POSTGIS_GEOS_VERSION);
-	}
-
-	g3 = GEOSBuffer(g1,size,quadsegs);
-	GEOSGeom_destroy(g1);
-
-#endif /* POSTGIS_GEOS_VERSION < 32 */
 
 	if (g3 == NULL)
 	{
@@ -1239,15 +911,6 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_OffsetCurve);
 Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 32
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "ST_OffsetCurve function "
-	        "(needs 3.2 or higher)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL(); /* never get here */
-#else
-
 	GSERIALIZED	*gser_input;
 	GSERIALIZED *gser_result;
 	LWGEOM *lwgeom_input;
@@ -1379,8 +1042,6 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom_input);
 	lwgeom_free(lwgeom_result);
 	PG_RETURN_POINTER(gser_result);
-
-#endif /* POSTGIS_GEOS_VERSION < 32 */
 }
 
 
@@ -1694,29 +1355,12 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	bool result;
 	GEOSGeom g1;
-#if POSTGIS_GEOS_VERSION < 33
-	GBOX box1;
-#endif
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Empty.IsValid() == TRUE */
 	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_BOOL(true);
-
-#if POSTGIS_GEOS_VERSION < 33
-	/* Short circuit and return FALSE if we have infinite coordinates */
-	/* GEOS 3.3+ is supposed to  handle this stuff OK */
-	if ( gserialized_get_gbox_p(geom1, &box1) )
-	{
-		if ( isinf(box1.xmax) || isinf(box1.ymax) || isinf(box1.xmin) || isinf(box1.ymin) ||
-		        isnan(box1.xmax) || isnan(box1.ymax) || isnan(box1.xmin) || isnan(box1.ymin)  )
-		{
-			lwpgnotice("Geometry contains an Inf or NaN coordinate");
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-#endif
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -1761,30 +1405,8 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	char *reason_str = NULL;
 	text *result = NULL;
 	const GEOSGeometry *g1 = NULL;
-#if POSTGIS_GEOS_VERSION < 33
-	GBOX box;
-#endif
 
 	geom = PG_GETARG_GSERIALIZED_P(0);
-
-#if POSTGIS_GEOS_VERSION < 33
-	/* Short circuit and return if we have infinite coordinates */
-	/* GEOS 3.3+ is supposed to  handle this stuff OK */
-	if ( gserialized_get_gbox_p(geom, &box) )
-	{
-		if ( isinf(box.xmax) || isinf(box.ymax) || isinf(box.xmin) || isinf(box.ymin) ||
-		        isnan(box.xmax) || isnan(box.ymax) || isnan(box.xmin) || isnan(box.ymin)  )
-		{
-			const char *rsn = "Geometry contains an Inf or NaN coordinate";
-			size_t len = strlen(rsn);
-			result = palloc(VARHDRSZ + len);
-			SET_VARSIZE(result, VARHDRSZ + len);
-			memcpy(VARDATA(result), rsn, len);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_POINTER(result);
-		}
-	}
-#endif
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -1806,10 +1428,8 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 		result = cstring2text(lwgeom_geos_errmsg);
 	}
 
-
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
-
 }
 
 /*
@@ -1819,14 +1439,6 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(isvaliddetail);
 Datum isvaliddetail(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'isValidDetail' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
-
 	GSERIALIZED *geom = NULL;
 	const GEOSGeometry *g1 = NULL;
 	char *values[3]; /* valid bool, reason text, location geometry */
@@ -1913,8 +1525,6 @@ Datum isvaliddetail(PG_FUNCTION_ARGS)
 	heap_freetuple(tuple);
 
 	PG_RETURN_HEAPTUPLEHEADER(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
 /**
@@ -2928,9 +2538,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	GEOSGeometry *g1, *g2;
 	char *relate_str;
 	text *result;
-#if POSTGIS_GEOS_VERSION >= 33
 	int bnr = GEOSRELATE_BNR_OGC;
-#endif
 
 	POSTGIS_DEBUG(2, "in relate_full()");
 
@@ -2941,16 +2549,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	if ( PG_NARGS() > 2 )
 	{
-#if POSTGIS_GEOS_VERSION >= 33
 		bnr = PG_GETARG_INT32(2);
-#else
-		lwpgerror("The GEOS version this PostGIS binary "
-			"was compiled against (%d) doesn't support "
-			"specifying a boundary node rule with ST_Relate"
-			" (3.3.0+ required)",
-			POSTGIS_GEOS_VERSION);
-		PG_RETURN_NULL();
-#endif
 	}
 
 	errorIfGeometryCollection(geom1,geom2);
@@ -2980,11 +2579,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g1));
 	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
-#if POSTGIS_GEOS_VERSION >= 33
 	relate_str = GEOSRelateBoundaryNodeRule(g1, g2, bnr);
-#else
-	relate_str = GEOSRelate(g1, g2);
-#endif
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -3682,13 +3277,6 @@ Datum ST_Snap(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_Snap);
 Datum ST_Snap(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_Snap' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GSERIALIZED *geom1, *geom2, *result;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
 	double tolerance;
@@ -3710,9 +3298,6 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
 	lwgeom_free(lwresult);
 
 	PG_RETURN_POINTER(result);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
-
 }
 
 /*
@@ -3792,13 +3377,6 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_SharedPaths);
 Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_SharedPaths' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GSERIALIZED *geom1, *geom2, *out;
 	LWGEOM *g1, *g2, *lwgeom_out;
 
@@ -3825,9 +3403,6 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 	PG_RETURN_POINTER(out);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
-
 }
 
 
@@ -3843,13 +3418,6 @@ Datum ST_Node(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_Node);
 Datum ST_Node(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION < 33
-	lwpgerror("The GEOS version this PostGIS binary "
-	        "was compiled against (%d) doesn't support "
-	        "'ST_Node' function (3.3.0+ required)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL();
-#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GSERIALIZED *geom1, *out;
 	LWGEOM *g1, *lwgeom_out;
 
@@ -3871,8 +3439,5 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(out);
-
-#endif /* POSTGIS_GEOS_VERSION >= 33 */
-
 }
 
