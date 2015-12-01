@@ -47,7 +47,6 @@ distclean-local: clean-local
 	rm -f GNUmakefile
 	rm -f config.log config.cache config.status 
 	rm -f postgis_config.h
-	rm -f java/jdbc/Makefile
 
 maintainer-clean-local: distclean-local
 
@@ -59,7 +58,6 @@ maintainer-clean:
 	$(MAKE) -C doc maintainer-clean
 	$(MAKE) -C postgis maintainer-clean
 	$(MAKE) -C liblwgeom maintainer-clean
-	$(MAKE) -C java/jdbc maintainer-clean
 	$(MAKE) maintainer-clean-local
 	rm -f configure
 

@@ -24,8 +24,6 @@ dnl
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GREP
-AC_PATH_PROG([ANT], [ant], [])
-AC_SUBST([ANT])
 
 dnl
 dnl SQL Preprocessor
