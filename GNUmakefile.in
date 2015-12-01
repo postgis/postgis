@@ -49,6 +49,9 @@ distclean-local: clean-local
 	rm -f postgis_config.h
 
 maintainer-clean-local: distclean-local
+	rm -f configure
+	rm -f config.guess config.rpath config.sub
+	rm -f libtool install-sh ltmain.sh
 
 maintainer-clean: 
 	@echo '------------------------------------------------------'
@@ -59,7 +62,6 @@ maintainer-clean:
 	$(MAKE) -C postgis maintainer-clean
 	$(MAKE) -C liblwgeom maintainer-clean
 	$(MAKE) maintainer-clean-local
-	rm -f configure
 
 garden:
 	@echo '------------------------------------------------------'
