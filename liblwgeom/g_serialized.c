@@ -227,7 +227,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 
 		gbox->xmin = gbox->xmax = dptr[i++];
 		gbox->ymin = gbox->ymax = dptr[i++];
-        gbox->flags = g->flags;
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			gbox->zmin = gbox->zmax = dptr[i++];
@@ -263,7 +263,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
 		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
 	
-        gbox->flags = g->flags;
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			/* Advance to Z */
@@ -310,7 +310,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		/* Read the doubles from the one point */
 		gbox->xmin = gbox->xmax = dptr[i++];
 		gbox->ymin = gbox->ymax = dptr[i++];
-        gbox->flags = g->flags;
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			gbox->zmin = gbox->zmax = dptr[i++];
@@ -355,7 +355,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
 		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
 	
-        gbox->flags = g->flags;
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			/* Advance to Z */
