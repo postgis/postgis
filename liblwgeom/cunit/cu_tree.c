@@ -346,7 +346,7 @@ static void test_tree_circ_distance_threshold(void)
 
 	for ( j = 0; j < npolys; j++ )
 	{
-		LWGEOM *lwg1 = lwgeom_from_hexwkb(txt_poly2, LW_PARSER_CHECK_NONE);
+		LWGEOM *lwg1 = lwgeom_from_hexwkb(polys[j], LW_PARSER_CHECK_NONE);
 		LWGEOM *lwg2 = lwgeom_from_wkt("POINT(-69.83262 43.43636)", LW_PARSER_CHECK_NONE);
 	
 		CIRC_NODE *c1 = lwgeom_calculate_circ_tree(lwg1);
