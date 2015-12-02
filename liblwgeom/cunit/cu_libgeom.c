@@ -1217,8 +1217,8 @@ void libgeom_suite_setup(void)
 	PG_ADD_TEST(suite, test_lwgeom_as_curve);
 	PG_ADD_TEST(suite, test_lwgeom_scale);
 	PG_ADD_TEST(suite, test_gserialized_is_empty);
-    PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_no_box_when_empty);
-    PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_gets_correct_box);
-    PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_fails_for_unsupported_cases);
-    PG_ADD_TEST(suite, test_gbox_same_2d);
+	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_no_box_when_empty);
+	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_gets_correct_box);
+	PG_ADD_TEST(suite, test_gserialized_peek_gbox_p_fails_for_unsupported_cases);
+	PG_ADD_TEST(suite, test_gbox_same_2d);
 }
