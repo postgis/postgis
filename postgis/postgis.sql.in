@@ -3516,6 +3516,36 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
+--------------------------------------------------------------------------------
+-- ST_Voronoi
+--------------------------------------------------------------------------------
+
+-- ST_Voronoi(g1 geometry, clip geometry, tolerance float8, return_polygons boolean)
+--
+-- Builds a Voronoi Diagram from the vertices of the supplied geometry.
+--
+-- By default, the diagram will be extended to an envelope larger than the
+-- input points.
+--
+-- If a second geometry is supplied, the diagram will be extended to fill the 
+-- envelope of the second geometry, unless that is smaller than the default
+-- envelope.
+--
+-- If a tolerance is given it will be used to snap the input points
+-- each-other.
+--
+-- If return_polygons is true, returns a GeometryCollection of polygons.
+-- If return_polygons is false, returns a MultiLineString.
+--
+-- Availability: 2.3.0
+-- Requires GEOS >= 3.5.0
+--
+CREATE OR REPLACE FUNCTION ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, tolerance float8 DEFAULT 0.0, return_polygons boolean DEFAULT true)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_Voronoi'
+       LANGUAGE 'c' IMMUTABLE
+       COST 100;
+
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
