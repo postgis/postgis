@@ -577,7 +577,7 @@ GEOMETRYCOLLECTION(
 		<refsynopsisdiv>
 			<funcsynopsis>
 				<funcprototype>
-					<funcdef>boolean
+					<funcdef>geometry
 						<function>ST_ForceRHR</function></funcdef>
 						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
 				</funcprototype>
