@@ -259,7 +259,7 @@ asgeojson_poly_size(const LWPOLY *poly, char *srs, GBOX *bbox, int precision)
 	if (srs) size += asgeojson_srs_size(srs);
 	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(poly->flags), precision);
 	size += sizeof("\"coordinates\":[");
-	for (i=0, size=0; i<poly->nrings; i++)
+	for (i=0; i<poly->nrings; i++)
 	{
 		size += pointArray_geojson_size(poly->rings[i], precision);
 		size += sizeof("[]");
