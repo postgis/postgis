@@ -227,6 +227,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 
 		gbox->xmin = gbox->xmax = dptr[i++];
 		gbox->ymin = gbox->ymax = dptr[i++];
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			gbox->zmin = gbox->zmax = dptr[i++];
@@ -262,6 +263,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
 		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
 	
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			/* Advance to Z */
@@ -286,19 +288,29 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		double *dptr = (double*)(g->data);
 		int *iptr = (int*)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
-	
+		int npoints;
+
 		/* This only works with single-entry multipoints */
 		if ( ngeoms != 1 )
 			return LW_FAILURE;
 
+		/* Npoints is at <multipointtype><ngeoms><pointtype><npoints> */
+		npoints = iptr[3];
+
+		/* The check below is necessary because we can have a MULTIPOINT
+		 * that contains a single, empty POINT (ngeoms = 1, npoints = 0) */
+		if ( npoints != 1 )
+			return LW_FAILURE;
+
 		/* Move forward two doubles (four ints) */
 		/* Past <multipointtype><ngeoms> */
-		/* Past <pointtype><emtpyflat> */
+		/* Past <pointtype><npoints> */
 		i += 2;
 
 		/* Read the doubles from the one point */
 		gbox->xmin = gbox->xmax = dptr[i++];
 		gbox->ymin = gbox->ymax = dptr[i++];
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			gbox->zmin = gbox->zmax = dptr[i++];
@@ -319,7 +331,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		int *iptr = (int*)(g->data);
 		int ngeoms = iptr[1]; /* Read the ngeoms */
 		int npoints;
-	
+
 		/* This only works with 1-line multilines */
 		if ( ngeoms != 1 )
 			return LW_FAILURE;
@@ -343,6 +355,7 @@ static int gserialized_peek_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		gbox->ymin = FP_MIN(dptr[i], dptr[i+ndims]);
 		gbox->ymax = FP_MAX(dptr[i], dptr[i+ndims]);
 	
+		gbox->flags = g->flags;
 		if ( FLAGS_GET_Z(g->flags) )
 		{
 			/* Advance to Z */
