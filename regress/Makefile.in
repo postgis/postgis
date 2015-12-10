@@ -84,6 +84,7 @@ TESTS = \
 	dump \
 	dumppoints \
 	empty \
+	estimatedextent \
 	forcecurve \
 	geography \
 	in_geohash \
