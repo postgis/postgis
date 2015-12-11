@@ -191,7 +191,7 @@ VALUES('sh', 'wget', '',
 E'TMPDIR="${staging_fold}/temp/"
 UNZIPTOOL=unzip
 WGETTOOL="/usr/bin/wget"
-export PGBIN=/usr/lib/postgresql/9.4/bin/
+export PGBIN=/usr/lib/postgresql/9.4/bin
 export PGPORT=5432
 export PGHOST=localhost
 export PGUSER=postgres
