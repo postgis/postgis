@@ -916,7 +916,7 @@ double sphere_distance(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 */
 double sphere_distance_cartesian(const POINT3D *s, const POINT3D *e)
 {
-	return acos(dot_product(s, e));
+	return acos(FP_MIN(1.0, dot_product(s, e)));
 }
 
 /**
