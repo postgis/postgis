@@ -3,25 +3,25 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2010 Sandro Santilli <strk@keybit.net>
+ * PostGIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
  *
- * This is free software; you can redistribute and/or modify it under
- * the terms of the GNU General Public Licence. See the COPYING file.
+ * PostGIS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
  *
  **********************************************************************
  *
- * ST_RelateMatch
- *
- * DE9 Intersection Matrix pattern matching
- *
- * Developed by Sandro Santilli (strk@keybit.net) for Faunalia
- * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
- * Informativo per la Gestione del Territorio e dell' Ambiente
- * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il
- * trattamento di dati geografici basati su QuantumGIS e Postgis (CIG
- * 0494241492)"
+ * Copyright (C) 2010 Sandro Santilli <strk@keybit.net>
  *
  **********************************************************************/
+
 
 #include "postgres.h"
 #include "fmgr.h"

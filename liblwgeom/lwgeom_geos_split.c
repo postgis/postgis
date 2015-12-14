@@ -3,37 +3,25 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2011-2015 Sandro Santilli <strk@keybit.net>
+ * PostGIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
  *
- * This is free software; you can redistribute and/or modify it under
- * the terms of the GNU General Public Licence. See the COPYING file.
+ * PostGIS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
  *
  **********************************************************************
  *
- * Split (multi)polygon by line, line by (multi)line
- * or (multi)polygon boundary, line by point.
- * Returns at most components as a collection.
- * First element of the collection is always the part which
- * remains after the cut, while the second element is the
- * part which has been cut out. We arbitrarely take the part
- * on the *right* of cut lines as the part which has been cut out.
- * For a line cut by a point the part which remains is the one
- * from start of the line to the cut point.
- *
- * Author: Sandro Santilli <strk@keybit.net>
- *
- * Work done for Faunalia (http://www.faunalia.it) with fundings
- * from Regione Toscana - Sistema Informativo per il Governo
- * del Territorio e dell'Ambiente (RT-SIGTA).
- *
- * Thanks to the PostGIS community for sharing poly/line ideas [1]
- *
- * [1] http://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString
- *
- * Further evolved for RT-SITA to allow splitting lines by multilines
- * and (multi)polygon boundaries (CIG 6002233F59)
+ * Copyright 2011-2015 Sandro Santilli <strk@keybit.net>
  *
  **********************************************************************/
+
 
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"

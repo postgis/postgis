@@ -3,36 +3,25 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
+ * PostGIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
  *
- * This is free software; you can redistribute and/or modify it under
- * the terms of the GNU General Public Licence. See the COPYING file.
+ * PostGIS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PostGIS.  If not, see <http://www.gnu.org/licenses/>.
  *
  **********************************************************************
  *
- * ST_MakeValid
- *
- * Attempts to make an invalid geometries valid w/out losing
- * points.
- *
- * Polygons may become lines or points or a collection of
- * polygons lines and points (collapsed ring cases).
- *
- * Author: Sandro Santilli <strk@keybit.net>
- *
- * Work done for Faunalia (http://www.faunalia.it) with fundings
- * from Regione Toscana - Sistema Informativo per il Governo
- * del Territorio e dell'Ambiente (RT-SIGTA).
- *
- * Thanks to Dr. Horst Duester for previous work on a plpgsql version
- * of the cleanup logic [1]
- *
- * Thanks to Andrea Peri for recommandations on constraints.
- *
- * [1] http://www.sogis1.so.ch/sogis/dl/postgis/cleanGeometry.sql
- *
+ * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>
  *
  **********************************************************************/
+
 
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"
