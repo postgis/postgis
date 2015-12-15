@@ -961,6 +961,11 @@ CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
 -- ST_ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text,boolean) RETURNS box2d AS
+	'MODULE_PATHNAME', 'gserialized_estimated_extent'
+	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
