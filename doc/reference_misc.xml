@@ -180,6 +180,15 @@ all_em|grabone   | grab_rest
 			<paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+			<paramdef><type>boolean </type> <parameter>parent_ony</parameter></paramdef>
+		  </funcprototype>
+
+
+		  <funcprototype>
+			<funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
+			<paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
@@ -195,7 +204,12 @@ all_em|grabone   | grab_rest
 
 		<para>Return the 'estimated' extent of the given spatial table.
 			The estimated is taken from the geometry column's statistics. The
-			current schema will be used if not specified.</para>
+			current schema will be used if not specified. The default behavior
+			is to also use statistics collected from children tables (tables
+			with INHERITS) if available. If 'parent_ony' is set to TRUE, only
+			statistics for the given table are used and children tables are
+			ignored.
+		</para>
 
 		<para>For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM
 		ANALYZE and resulting extent will be about 95% of the real

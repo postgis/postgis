@@ -835,13 +835,27 @@ pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 * by the selectivity functions and the debugging functions.
 */
 static ND_STATS*
-pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode)
+pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode, bool only_parent)
 {
-	HeapTuple stats_tuple;
+	HeapTuple stats_tuple = NULL;
 	ND_STATS *nd_stats;
 
-	/* First pull the stats tuple */
-	stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
+	/* First pull the stats tuple for the whole tree */
+	if ( ! only_parent )
+	{
+		POSTGIS_DEBUGF(2, "searching whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+		stats_tuple = SearchSysCache3(STATRELATT, table_oid, att_num, TRUE);
+		if ( stats_tuple )
+			POSTGIS_DEBUGF(2, "found whole tree stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+	}
+	/* Fall-back to main table stats only, if not found for whole tree or explicitly ignored */
+	if ( only_parent || ! stats_tuple )
+	{
+		POSTGIS_DEBUGF(2, "searching parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+		stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
+		if ( stats_tuple )
+		POSTGIS_DEBUGF(2, "found parent table stats for \"%s\"", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
+	}
 	if ( ! stats_tuple )
 	{
 		POSTGIS_DEBUGF(2, "stats for \"%s\" do not exist", get_rel_name(table_oid)? get_rel_name(table_oid) : "NULL");
@@ -864,9 +878,12 @@ pg_get_nd_stats(const Oid table_oid, AttrNumber att_num, int mode)
 * Pull the stats object from the PgSQL system catalogs. The
 * debugging functions are taking human input (table names)
 * and columns, so we have to look those up first.
+* In case of parent tables whith INHERITS, when "only_parent"
+* is TRUE this function only searchs for stats in the parent 
+* table ignoring any statistic collected from the children.
 */
 static ND_STATS*
-pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode)
+pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode, bool only_parent)
 {
 	const char *att_name = text2cstring(att_text);
 	AttrNumber att_num;
@@ -887,7 +904,7 @@ pg_get_nd_stats_by_name(const Oid table_oid, const text *att_text, int mode)
 		return NULL;
 	}
 	
-	return pg_get_nd_stats(table_oid, att_num, mode);
+	return pg_get_nd_stats(table_oid, att_num, mode, only_parent);
 }
 
 /**
@@ -1187,8 +1204,8 @@ Datum gserialized_gist_joinsel(PG_FUNCTION_ARGS)
 	                 get_rel_name(relid1) ? get_rel_name(relid1) : "NULL", relid1, get_rel_name(relid2) ? get_rel_name(relid2) : "NULL", relid2); 
 
 	/* Pull the stats from the stats system. */
-	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode);
-	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode);
+	stats1 = pg_get_nd_stats(relid1, var1->varattno, mode, FALSE);
+	stats2 = pg_get_nd_stats(relid2, var2->varattno, mode, FALSE);
 
 	/* If we can't get stats, we have to stop here! */
 	if ( ! stats1 )
@@ -1930,13 +1947,18 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 	char *str;
 	text *json;
 	int mode = 2; /* default to 2D mode */
-	
+	bool only_parent = FALSE; /* default to whole tree stats */
+
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(2) )
 		mode = text_p_get_mode(PG_GETARG_TEXT_P(2));
 
+	/* Check if we've been asked to only use stats from parent */
+	if ( ! PG_ARGISNULL(3) )
+		only_parent = PG_GETARG_BOOL(3);
+
 	/* Retrieve the stats object */
-	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode);
+	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, only_parent);
 	if ( ! nd_stats )
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
 		
@@ -1969,7 +1991,7 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS)
 		mode = text_p_get_mode(PG_GETARG_TEXT_P(3));
 
 	/* Retrieve the stats object */
-	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode);
+	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode, FALSE);
 	
 	if ( ! nd_stats )
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
@@ -2005,8 +2027,8 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 
 
 	/* Retrieve the stats object */
-	nd_stats1 = pg_get_nd_stats_by_name(table_oid1, att_text1, mode);
-	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode);
+	nd_stats1 = pg_get_nd_stats_by_name(table_oid1, att_text1, mode, FALSE);
+	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode, FALSE);
 
 	if ( ! nd_stats1 ) 
 		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid1), text2cstring(att_text1));
@@ -2175,8 +2197,20 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	Oid tbl_oid;
 	ND_STATS *nd_stats;
 	GBOX *gbox;
+	bool only_parent = FALSE;
 
-	if ( PG_NARGS() == 3 )
+	if ( PG_NARGS() == 4 )
+	{
+		nsp = text2cstring(PG_GETARG_TEXT_P(0));
+		tbl = text2cstring(PG_GETARG_TEXT_P(1));
+		col = PG_GETARG_TEXT_P(2);
+		only_parent = PG_GETARG_BOOL(3);
+		nsp_tbl = palloc(strlen(nsp) + strlen(tbl) + 6);
+		sprintf(nsp_tbl, "\"%s\".\"%s\"", nsp, tbl);
+		tbl_oid = DatumGetObjectId(DirectFunctionCall1(regclassin, CStringGetDatum(nsp_tbl)));
+		pfree(nsp_tbl);
+	}
+	else if ( PG_NARGS() == 3 )
 	{
 		nsp = text2cstring(PG_GETARG_TEXT_P(0));
 		tbl = text2cstring(PG_GETARG_TEXT_P(1));
@@ -2202,7 +2236,7 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	}
 
 	/* Estimated extent only returns 2D bounds, so use mode 2 */
-	nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2);
+	nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
 	
 	/* Error out on no stats */
 	if ( ! nd_stats ) 
