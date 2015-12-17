@@ -5,6 +5,8 @@ PostGIS 2.3.0
  * Deprecated signatures *
  * New Features *
 
+  - #3391, Add table inheritance support in ST_EstimatedExtent
+    (Alessandro Pasotti)
   - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
   - populate_topology_layer (Sandro Santilli)
   - #2259 ST_Voronoi (Dan Baston)
