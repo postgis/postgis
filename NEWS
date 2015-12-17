@@ -17,6 +17,7 @@ PostGIS 2.2.1
   - #3375, crash in repeated point removal for collection(point)
   - #3378, Fix handling of hierarchical TopoGeometries with
            of multiple topologies
+  - #3388, Fix missing end-points in ST_Removepoints
 
 
 PostGIS 2.2.0
