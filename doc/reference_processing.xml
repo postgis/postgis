@@ -3653,4 +3653,43 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 		</para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_GeneratePoints">
+	  <refnamediv>
+		<refname>ST_GeneratePoints</refname>
+
+		<refpurpose>Converts a polygon or multi-polygon into a multi-point composed of randomly location points within the original areas.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
+			<paramdef>
+				<parameter>g</parameter>
+				<type>geometry</type> 
+			</paramdef>
+			<paramdef>
+				<parameter>npoints</parameter>
+				<type>numeric</type> 
+			</paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			ST_GeneratePoints generates pseudo-random points until the requested number are
+			found within the input area.
+		</para>	
+			
+		<para>Availability: 2.3.0</para>
+	  </refsection>
+
+	</refentry>
+	
+	
 </sect1>

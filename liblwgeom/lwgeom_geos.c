@@ -29,6 +29,7 @@
 #include "lwgeom_log.h"
 
 #include <stdlib.h>
+#include <time.h>
 
 LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d);
 
@@ -1545,6 +1546,265 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	return lwgeom_result;
 }
+
+
+static void shuffle(void *array, size_t n, size_t size) {
+    char tmp[size];
+    char *arr = array;
+    size_t stride = size;
+
+    if (n > 1) {
+        size_t i;
+        for (i = 0; i < n - 1; ++i) {
+            size_t rnd = (size_t) rand();
+            size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
+
+            memcpy(tmp, arr + j * stride, size);
+            memcpy(arr + j * stride, arr + i * stride, size);
+            memcpy(arr + i * stride, tmp, size);
+        }
+    }
+}
+
+LWMPOINT*
+lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
+{
+	double area, bbox_area, bbox_width, bbox_height;
+	GBOX bbox;
+	const LWGEOM *lwgeom = (LWGEOM*)lwpoly;
+	int sample_npoints, sample_sqrt, sample_width, sample_height;
+	double sample_cell_size;
+	int i, j;
+	int iterations = 0;
+	int npoints_generated = 0;
+	int npoints_tested = 0;
+	GEOSGeometry *g;
+	const GEOSPreparedGeometry *gprep;
+	GEOSGeometry *gpt;
+	GEOSCoordSequence *gseq;
+	LWMPOINT *mpt;
+	int srid = lwgeom_get_srid(lwgeom);
+	int done = 0;
+	int *cells;
+
+	if (lwgeom_get_type(lwgeom) != POLYGONTYPE)
+	{
+		lwerror("%s: only polygons supported", __func__);
+		return NULL;
+	}
+	
+	if (npoints == 0 || lwgeom_is_empty(lwgeom))
+	{
+		return NULL;
+		// return lwmpoint_construct_empty(lwgeom_get_srid(poly), lwgeom_has_z(poly), lwgeom_has_m(poly));
+	}
+	
+	if (!lwpoly->bbox) 
+	{
+		lwgeom_calculate_gbox(lwgeom, &bbox);
+	}
+	else
+	{
+		bbox = *(lwpoly->bbox);
+	}
+	area = lwpoly_area(lwpoly);
+	bbox_width = bbox.xmax - bbox.xmin;
+	bbox_height = bbox.ymax - bbox.ymin;
+	bbox_area = bbox_width * bbox_height;
+
+	if (area == 0.0 || bbox_area == 0.0)
+	{
+		lwerror("%s: zero area input polygon, TBD", __func__);
+		return NULL;
+	}
+	
+	/* Gross up our test set a bit to increase odds of getting */
+	/* coverage in one pass */
+	sample_npoints = npoints * bbox_area / area;
+	
+	/* We're going to generate points using a sample grid */
+	/* as described http://lin-ear-th-inking.blogspot.ca/2010/05/more-random-points-in-jts.html */
+	/* to try and get a more uniform "random" set of points */
+	/* So we have to figure out how to stick a grid into our box */
+	sample_sqrt = lround(sqrt(sample_npoints));
+	if (sample_sqrt == 0)
+		sample_sqrt = 1;
+	
+	/* Calculate the grids we're going to randomize within */
+	if (bbox_width > bbox_height)
+	{
+		sample_width = sample_sqrt;
+		sample_height = ceil((double)sample_npoints / (double)sample_width);
+		sample_cell_size = bbox_width / sample_width;
+	}
+	else
+	{
+		sample_height = sample_sqrt;
+		sample_width = ceil((double)sample_npoints / (double)sample_height);
+		sample_cell_size = bbox_height / sample_height;
+	}
+	
+	/* Prepare the polygon for fast true/false testing */
+	initGEOS(lwnotice, lwgeom_geos_error);
+	g = (GEOSGeometry *)LWGEOM2GEOS(lwgeom, 0);
+	if (!g)
+	{
+		lwerror("%s: Geometry could not be converted to GEOS: %s", __func__, lwgeom_geos_errmsg);
+		return NULL;
+	}
+	gprep = GEOSPrepare(g);
+	
+	/* Get an empty multi-point ready to return */
+	mpt = lwmpoint_construct_empty(srid, 0, 0);
+	
+	/* Init random number generator */
+	srand(time(NULL));
+
+	/* Now we fill in an array of cells, and then shuffle that array, */
+	/* so we can visit the cells in random order to avoid visual ugliness */
+	/* caused by visiting them sequentially */
+	cells = lwalloc(2*sizeof(int)*sample_height*sample_width);
+	for (i = 0; i < sample_width; i++)
+	{
+		for (j = 0; j < sample_height; j++)
+		{
+			cells[2*(i*sample_height+j)] = i;
+			cells[2*(i*sample_height+j)+1] = j;
+		}
+	}
+	shuffle(cells, sample_height*sample_width, 2*sizeof(int));
+	
+	/* Start testing points */
+	while (npoints_generated < npoints)
+	{
+		iterations++;
+		for (i = 0; i < sample_width*sample_height; i++)
+		{
+			int contains = 0;
+			double y = bbox.ymin + cells[2*i] * sample_cell_size;
+			double x = bbox.xmin + cells[2*i+1] * sample_cell_size;
+			x += rand() * sample_cell_size / RAND_MAX;
+			y += rand() * sample_cell_size / RAND_MAX;
+			if (x >= bbox.xmax || y >= bbox.ymax)
+				continue;
+
+			gseq = GEOSCoordSeq_create(1, 2);
+			GEOSCoordSeq_setX(gseq, 0, x);
+			GEOSCoordSeq_setY(gseq, 0, y);
+			gpt = GEOSGeom_createPoint(gseq);
+
+			contains = GEOSPreparedIntersects(gprep, gpt);
+			
+	        GEOSGeom_destroy(gpt);
+
+			if (contains == 2)
+			{
+		        GEOSPreparedGeom_destroy(gprep);
+		        GEOSGeom_destroy(g);
+		        lwerror("%s: GEOS exception on PreparedContains: %s", __func__, lwgeom_geos_errmsg);
+		        return NULL;
+			}
+			if (contains)
+			{
+				npoints_generated++;
+				mpt = lwmpoint_add_lwpoint(mpt, lwpoint_make2d(srid, x, y));
+				if (npoints_generated == npoints)
+				{
+					done = 1;
+					break;
+				}
+			}
+			
+			/* Short-circuit check for ctrl-c occasionally */
+			npoints_tested++;
+			if (npoints_tested % 10000 == 0)
+			{
+				LW_ON_INTERRUPT(GEOSPreparedGeom_destroy(gprep); GEOSGeom_destroy(g); return NULL);
+			}
+			
+			if (done) break;
+		}
+		if (done || iterations > 100) break;
+	}
+	
+	GEOSPreparedGeom_destroy(gprep);
+	GEOSGeom_destroy(g);
+	lwfree(cells);
+	
+	return mpt;
+}
+
+
+/*
+* Allocate points to sub-geometries by area, then call lwgeom_poly_to_points
+* and bundle up final result in a single multipoint.
+*/
+LWMPOINT*
+lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
+{
+	const LWGEOM *lwgeom = (LWGEOM*)lwmpoly;
+	double area;
+	int i;
+	LWMPOINT *mpt = NULL;
+	
+	if (lwgeom_get_type(lwgeom) != MULTIPOLYGONTYPE)
+	{
+		lwerror("%s: only multipolygons supported", __func__);
+		return NULL;		
+	}
+	if (npoints == 0 || lwgeom_is_empty(lwgeom))
+	{
+		return NULL;
+	}
+	
+	area = lwgeom_area(lwgeom);
+	
+	for (i = 0; i < lwmpoly->ngeoms; i++)
+	{
+		double sub_area = lwpoly_area(lwmpoly->geoms[i]);
+		int sub_npoints = lround(npoints * sub_area / area);
+		if(sub_npoints > 0)
+		{
+			LWMPOINT *sub_mpt = lwpoly_to_points(lwmpoly->geoms[i], sub_npoints);
+			if (!mpt) 
+			{
+				mpt = sub_mpt;
+			}
+			else
+			{
+				int j;
+				for (j = 0; j < sub_mpt->ngeoms; j++)
+				{
+					mpt = lwmpoint_add_lwpoint(mpt, sub_mpt->geoms[j]);
+				}
+				/* Just free the shell, leave the underlying lwpoints alone, as they
+				   are now owed by the returning multipoint */
+				lwgeom_release((LWGEOM*)sub_mpt);
+			}
+		}
+	}
+	
+	return mpt;
+}
+
+
+LWMPOINT*
+lwgeom_to_points(const LWGEOM *lwgeom, int npoints)
+{
+	switch(lwgeom_get_type(lwgeom))
+	{
+		case MULTIPOLYGONTYPE:
+			return lwmpoly_to_points((LWMPOLY*)lwgeom, npoints);
+		case POLYGONTYPE:
+			return lwpoly_to_points((LWPOLY*)lwgeom, npoints);
+		default:
+			lwerror("%s: unsupported geometry type '%s'", __func__, lwtype_name(lwgeom_get_type(lwgeom)));
+			return NULL;	
+	}
+}
+
+
+
 
 LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d) {
 	int type = GEOSGeomTypeId(geom);

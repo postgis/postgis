@@ -10,6 +10,7 @@ PostGIS 2.3.0
   - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
   - populate_topology_layer (Sandro Santilli)
   - #2259 ST_Voronoi (Dan Baston)
+  - #3339 ST_GeneratePoints (Paul Ramsey)
 
 PostGIS 2.2.0
 2015/10/07

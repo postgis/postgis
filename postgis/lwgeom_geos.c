@@ -33,6 +33,7 @@
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
+#include "utils/numeric.h"
 
 #if POSTGIS_PGSQL_VERSION >= 93
 #include "access/htup_details.h"
@@ -916,6 +917,47 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(result);
 }
+
+
+
+/*
+* Generate a field of random points within the area of a 
+* polygon or multipolygon. Throws an error for other geometry
+* types.
+*/
+Datum ST_GeneratePoints(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_GeneratePoints);
+Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED	*gser_input;
+	GSERIALIZED *gser_result;
+	LWGEOM *lwgeom_input;
+	LWGEOM *lwgeom_result;
+	int32 npoints;
+
+	gser_input = PG_GETARG_GSERIALIZED_P(0);
+	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
+	
+	/* Smartasses get nothing back */
+	if (npoints < 0)
+		PG_RETURN_NULL();
+	
+	/* Types get checked in the code, we'll keep things small out there */
+	lwgeom_input = lwgeom_from_gserialized(gser_input);
+	lwgeom_result = (LWGEOM*)lwgeom_to_points(lwgeom_input, npoints);
+	lwgeom_free(lwgeom_input);
+	PG_FREE_IF_COPY(gser_input, 0);
+	
+	/* Return null as null */
+	if (!lwgeom_result)
+		PG_RETURN_NULL();
+
+	/* Serialize and return */
+	gser_result = gserialized_from_lwgeom(lwgeom_result, 0);
+	lwgeom_free(lwgeom_result);
+	PG_RETURN_POINTER(gser_result);
+}
+
 
 /*
 * Compute at offset curve to a line

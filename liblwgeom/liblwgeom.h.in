@@ -1440,6 +1440,13 @@ extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
 extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 
+/*
+ * Point density functions
+ */ 
+extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, int npoints);
+extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, int npoints);
+extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, int npoints);
+
 /**
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */

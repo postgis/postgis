@@ -982,6 +982,47 @@ static void test_lwgeom_simplify(void)
 		lwfree(ewkt);
 }
 
+
+
+static void test_point_density(void)
+{
+	LWGEOM *geom;
+	LWMPOINT *mpt;
+	// char *ewkt;
+
+	/* POLYGON */
+	geom = lwgeom_from_wkt("POLYGON((1 0,0 1,1 2,2 1,1 0))", LW_PARSER_CHECK_NONE);
+	mpt = lwgeom_to_points(geom, 100);
+	CU_ASSERT_EQUAL(mpt->ngeoms,100);
+	// ewkt = lwgeom_to_ewkt((LWGEOM*)mpt);
+	// printf("%s\n", ewkt);
+	// lwfree(ewkt);
+	lwmpoint_free(mpt);
+
+	mpt = lwgeom_to_points(geom, 1);
+	CU_ASSERT_EQUAL(mpt->ngeoms,1);
+	lwmpoint_free(mpt);
+
+	mpt = lwgeom_to_points(geom, 0);
+	CU_ASSERT_EQUAL(mpt, NULL);
+
+	lwgeom_free(geom);
+
+	/* MULTIPOLYGON */
+	geom = lwgeom_from_wkt("MULTIPOLYGON(((10 0,0 10,10 20,20 10,10 0)),((0 0,5 0,5 5,0 5,0 0)))", LW_PARSER_CHECK_NONE);
+
+	mpt = lwgeom_to_points(geom, 1000);
+	CU_ASSERT_EQUAL(mpt->ngeoms,1000);
+	lwmpoint_free(mpt);
+
+	mpt = lwgeom_to_points(geom, 1);
+	CU_ASSERT_EQUAL(mpt->ngeoms,1);
+	lwmpoint_free(mpt);
+
+	lwgeom_free(geom);
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1007,4 +1048,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_isclosed);
 	PG_ADD_TEST(suite,test_lwgeom_simplify);
 	PG_ADD_TEST(suite,test_lw_arc_center);
+	PG_ADD_TEST(suite,test_point_density);
 }
