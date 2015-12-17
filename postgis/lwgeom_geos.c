@@ -136,7 +136,7 @@ is_point(const GSERIALIZED* g)
  * a cache.  Serialized poly may be a multipart.
  */
 static int
-pip_short_circuit(RTREE_POLY_CACHE* poly_cache, const LWPOINT* point, const GSERIALIZED* gpoly)
+pip_short_circuit(RTREE_POLY_CACHE* poly_cache, LWPOINT* point, GSERIALIZED* gpoly)
 {
 	int result;
 
@@ -1703,13 +1703,16 @@ Datum contains(PG_FUNCTION_ARGS)
 		int retval;
 	
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE) {
+		if (gserialized_get_type(gpoint) == POINTTYPE)
+		{
 			LWGEOM* point = lwgeom_from_gserialized(gpoint);
 			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
 			lwgeom_free(point);
 
 			retval = (pip_result == 1); /* completely inside */
-		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		}
+		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
+		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
 			uint32_t i;
 			int found_completely_inside = LW_FALSE;
@@ -1735,7 +1738,9 @@ Datum contains(PG_FUNCTION_ARGS)
 
 			retval = retval && found_completely_inside;
 			lwmpoint_free(mpoint);
-		} else {
+		}
+		else
+		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -1927,13 +1932,16 @@ Datum covers(PG_FUNCTION_ARGS)
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE) {
+		if (gserialized_get_type(gpoint) == POINTTYPE)
+		{
 			LWGEOM* point = lwgeom_from_gserialized(gpoint);
 			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		}
+		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
+		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
 			uint32_t i;
 
@@ -1949,7 +1957,9 @@ Datum covers(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		} else {
+		} 
+		else 
+		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -2065,20 +2075,24 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	if (is_point(geom1) && is_poly(geom2)) {
+	if (is_point(geom1) && is_poly(geom2))
+	{
 		GSERIALIZED* gpoly  = is_poly(geom1) ? geom1 : geom2;
 		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
 		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE) {
+		if (gserialized_get_type(gpoint) == POINTTYPE)
+		{
 			LWGEOM* point = lwgeom_from_gserialized(gpoint);
 			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		}
+		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
+		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
 			uint32_t i;
 
@@ -2094,7 +2108,9 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		} else {
+		}
+		else 
+		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
@@ -2257,13 +2273,16 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		int retval;
 
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-		if (gserialized_get_type(gpoint) == POINTTYPE) {
+		if (gserialized_get_type(gpoint) == POINTTYPE)
+		{
 			LWGEOM* point = lwgeom_from_gserialized(gpoint);
 			int pip_result = pip_short_circuit(cache, lwgeom_as_lwpoint(point), gpoly);
 			lwgeom_free(point);
 
 			retval = (pip_result != -1); /* not outside */
-		} else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE) {
+		}
+		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
+		{
 			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
 			uint32_t i;
 
@@ -2279,7 +2298,9 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 			}
 
 			lwmpoint_free(mpoint);
-		} else {
+		}
+		else
+		{
 			/* Never get here */
 			elog(ERROR,"Type isn't point or multipoint!");
 			PG_RETURN_NULL();
