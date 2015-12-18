@@ -64,6 +64,7 @@ IMAGES= \
 	../images/st_extrude01.png \
 	../images/st_extrude03.png \
 	../images/st_generatepoints01.png \
+	../images/st_generatepoints02.png \
 	../images/st_issimple01.png \
 	../images/st_issimple02.png \
 	../images/st_issimple03.png \

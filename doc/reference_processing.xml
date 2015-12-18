@@ -3700,7 +3700,8 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 						<para><informalfigure>
 						<mediaobject>
 						  <imageobject>
-							<imagedata fileref="images/st_buffer01.png" />
+							<imagedata fileref="images/st_generatepoints01.png" />
+						  </imageobject>" />
 						  </imageobject>
 						  <caption><para>Original Polygon</para></caption>
 						</mediaobject>
@@ -3711,7 +3712,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 					<entry><para><informalfigure>
 						<mediaobject>
 						  <imageobject>
-							<imagedata fileref="images/st_generatepoints01.png" />
+							<imagedata fileref="images/st_generatepoints02.png" />
 						  </imageobject>
 						  <caption><para>Generated 12 Points overlaid on top of original polygon</para></caption>
 						</mediaobject>
