@@ -3458,8 +3458,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
                                   isclosed ? &span_pre : NULL, edge_id );
 
   LWDEBUGF(1, "edges adjacent to old edge are %" LWTFMT_ELEMID
-              " and % (first point), %" LWTFMT_ELEMID
-              " and % (last point)" LWTFMT_ELEMID,
+              " and %" LWTFMT_ELEMID " (first point), %" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID " (last point)",
               span_pre.nextCW, span_pre.nextCCW,
               epan_pre.nextCW, epan_pre.nextCCW);
 
@@ -3496,9 +3496,8 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
                           isclosed ? &span_post : NULL, edge_id );
 
   LWDEBUGF(1, "edges adjacent to new edge are %" LWTFMT_ELEMID
-              " and %" LWTFMT_ELEMID
-              " (first point), %" LWTFMT_ELEMID
-              " and % (last point)" LWTFMT_ELEMID,
+              " and %" LWTFMT_ELEMID " (first point), %" LWTFMT_ELEMID
+              " and %" LWTFMT_ELEMID " (last point)",
               span_pre.nextCW, span_pre.nextCCW,
               epan_pre.nextCW, epan_pre.nextCCW);
 
