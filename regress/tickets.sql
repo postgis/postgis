@@ -911,6 +911,21 @@ SELECT '#3368', ST_AsTWKB('0106000000010000000103000000010000001F0000007CCD1788E
 
 SELECT '#3375', ST_AsText(ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION(POINT(0 -7))'::geometry, 1000));
 
+-- #3399
+WITH g as (
+select 'POLYGON((1 0, 0 1, 1 2, 2 1, 1 0))'::geometry as geom
+),
+n as (
+select n from unnest(ARRAY[-1,0,1,10,100,1000]) n
+),
+pts as (
+  select n,(st_dump(st_generatepoints(geom, n))).geom from g,n 
+)
+select '#3399' as t, n, count(*) from
+g, pts
+where st_contains(g.geom, pts.geom)
+group by n;
+
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
