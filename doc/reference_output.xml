@@ -798,7 +798,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
             </listitem>
         
             <listitem>
-              <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currenlty the only GeoCoordinate type supported.  <ulink url="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</ulink>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
+              <para>2: Output coordinates in GeoSpatial GeoCoordinates.  This option will throw an error if geometries are not in WGS 84 long lat (srid: 4326). This is currently the only GeoCoordinate type supported.  <ulink url="http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference">Refer to X3D specs specifying a spatial reference system.</ulink>. Default output will be <code>GeoCoordinate geoSystem='"GD" "WE" "longitude_first"'</code>.  If
               you prefer the X3D default of  <code>GeoCoordinate geoSystem='"GD" "WE" "latitude_first"'</code> use <code>(2 + 1)</code> = <code>3</code> </para>
             </listitem>
         </itemizedlist>
@@ -973,7 +973,7 @@ x3dfrag
 
 		<para>Return a GeoHash representation (<ulink url="http://en.wikipedia.org/wiki/Geohash">http://en.wikipedia.org/wiki/Geohash</ulink>) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
 
-		<para>If no <varname>maxchars</varname> is specficified ST_GeoHash returns a GeoHash based on full precision of the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
+		<para>If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash based on full precision of the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
 
 		<para>If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash with at most that many characters so a possibly lower precision representation of the input geometry. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 

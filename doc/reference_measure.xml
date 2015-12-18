@@ -1530,7 +1530,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 	  returns <varname>TRUE</varname> if their intersection "spatially cross", that is, the
 	  geometries have some, but not all interior points in common. The
 	  intersection of the interiors of the geometries must not be the empty
-	  set and must have a dimensionality less than the the maximum dimension
+	  set and must have a dimensionality less than the maximum dimension
 	  of the two input geometries. Additionally, the intersection of the two
 	  geometries must not equal either of the source geometries. Otherwise, it
 	  returns <varname>FALSE</varname>.</para>

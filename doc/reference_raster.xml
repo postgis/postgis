@@ -2083,7 +2083,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 				</para>
 
 				<para>
-					If <varname>padwithnodata</varname> = FALSE, edge tiles on the right and bottom sides of the raster may have different dimensions than the rest of the tiles. If <varname>padwithnodata</varname> = TRUE, all tiles will have the same dimensions with the possibilty that edge tiles being padded with NODATA values.  If raster band(s) do not have NODATA value(s) specified, one can be specified by setting <varname>nodataval</varname>.
+					If <varname>padwithnodata</varname> = FALSE, edge tiles on the right and bottom sides of the raster may have different dimensions than the rest of the tiles. If <varname>padwithnodata</varname> = TRUE, all tiles will have the same dimensions with the possibility that edge tiles being padded with NODATA values.  If raster band(s) do not have NODATA value(s) specified, one can be specified by setting <varname>nodataval</varname>.
 				</para>
 
 				<note>
@@ -2267,7 +2267,7 @@ raster coverage (<varname>tab</varname>, <varname>col</varname>).
 				</para>
 
 				<para>
-					If <varname>srid</varname> is NULL, the function will try to autmatically assign the SRID from the GDAL raster. If <varname>srid</varname> is provided, the value provided will override any automatically assigned SRID.
+					If <varname>srid</varname> is NULL, the function will try to automatically assign the SRID from the GDAL raster. If <varname>srid</varname> is provided, the value provided will override any automatically assigned SRID.
 				</para>
 
 				<para>Availability: 2.1.0</para>
