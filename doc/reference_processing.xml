@@ -3701,7 +3701,6 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 						<mediaobject>
 						  <imageobject>
 							<imagedata fileref="images/st_generatepoints01.png" />
-						  </imageobject>" />
 						  </imageobject>
 						  <caption><para>Original Polygon</para></caption>
 						</mediaobject>
