@@ -575,7 +575,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 		<para>Return a geometry from a GeoHash string. The geometry will be a polygon representing the GeoHash bounds.</para>
 
-		<para>If no <varname>precision</varname> is specficified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string.</para>
+		<para>If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string.</para>
 
 		<para>If <varname>precision</varname> is specified ST_GeomFromGeoHash will use that many characters from the GeoHash to create the polygon.</para>
 
@@ -2122,7 +2122,7 @@ SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography
 
 		<para>Return a point from a GeoHash string. The point represents the center point of the GeoHash.</para>
 
-		<para>If no <varname>precision</varname> is specficified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string.</para>
+		<para>If no <varname>precision</varname> is specified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string.</para>
 
 		<para>If <varname>precision</varname> is specified ST_PointFromGeoHash will use that many characters from the GeoHash to create the point.</para>
 
