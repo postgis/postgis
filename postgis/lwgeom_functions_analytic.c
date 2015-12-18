@@ -55,10 +55,10 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
 
 
-double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
-int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
-int point_in_ring(POINTARRAY *pts, POINT2D *point);
-int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point);
+static double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
+static int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
+static int point_in_ring(POINTARRAY *pts, const POINT2D *point);
+static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point);
 
 
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
@@ -644,7 +644,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
  *          <0 for a point to the right of the segment,
  *          0 for a point on the segment
  */
-double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
+static double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point)
 {
 	return ((seg2->x-seg1->x)*(point->y-seg1->y)-(point->x-seg1->x)*(seg2->y-seg1->y));
 }
@@ -658,7 +658,7 @@ double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
  * returns: 1 if the point is not outside the bounds of the segment
  *          0 if it is
  */
-int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
+static int isOnSegment(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point)
 {
 	double maxX;
 	double maxY;
@@ -708,13 +708,13 @@ int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
  * return 1 iff point is inside ring pts
  * return 0 iff point is on ring pts
  */
-int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
+static int point_in_ring_rtree(RTREE_NODE *root, const POINT2D *point)
 {
 	int wn = 0;
 	int i;
 	double side;
-	POINT2D seg1;
-	POINT2D seg2;
+	const POINT2D *seg1;
+	const POINT2D *seg2;
 	LWMLINE *lines;
 
 	POSTGIS_DEBUG(2, "point_in_ring called.");
@@ -725,18 +725,17 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 
 	for (i=0; i<lines->ngeoms; i++)
 	{
-		getPoint2d_p(lines->geoms[i]->points, 0, &seg1);
-		getPoint2d_p(lines->geoms[i]->points, 1, &seg2);
+		seg1 = getPoint2d_cp(lines->geoms[i]->points, 0);
+		seg2 = getPoint2d_cp(lines->geoms[i]->points, 1);
 
+		side = determineSide(seg1, seg2, point);
 
-		side = determineSide(&seg1, &seg2, point);
-
-		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1->x, seg1->y, seg2->x, seg2->y);
 		POSTGIS_DEBUGF(3, "side result: %.8f", side);
-		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y), FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y));
 
 		/* zero length segments are ignored. */
-		if (((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12)
+		if (((seg2->x - seg1->x)*(seg2->x - seg1->x) + (seg2->y - seg1->y)*(seg2->y - seg1->y)) < 1e-12*1e-12)
 		{
 			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
@@ -747,7 +746,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		/* WAS: if (fabs(side) < 1e-12), see #852 */
 		if (side == 0.0)
 		{
-			if (isOnSegment(&seg1, &seg2, point) == 1)
+			if (isOnSegment(seg1, seg2, point) == 1)
 			{
 				POSTGIS_DEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
 
@@ -760,7 +759,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
+		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -771,7 +770,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
+		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 
@@ -792,31 +791,30 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
  * return 1 iff point is inside ring pts
  * return 0 iff point is on ring pts
  */
-int point_in_ring(POINTARRAY *pts, POINT2D *point)
+static int point_in_ring(POINTARRAY *pts, const POINT2D *point)
 {
 	int wn = 0;
 	int i;
 	double side;
-	POINT2D seg1;
-	POINT2D seg2;
+	const POINT2D* seg1;
+	const POINT2D* seg2;
 
 	POSTGIS_DEBUG(2, "point_in_ring called.");
 
-
+    seg2 = getPoint2d_cp(pts, 0);
 	for (i=0; i<pts->npoints-1; i++)
 	{
-		getPoint2d_p(pts, i, &seg1);
-		getPoint2d_p(pts, i+1, &seg2);
+		seg1 = seg2;
+		seg2 = getPoint2d_cp(pts, i+1);
 
+		side = determineSide(seg1, seg2, point);
 
-		side = determineSide(&seg1, &seg2, point);
-
-		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1->x, seg1->y, seg2->x, seg2->y);
 		POSTGIS_DEBUGF(3, "side result: %.8f", side);
-		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y), FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y));
 
 		/* zero length segments are ignored. */
-		if (((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12)
+		if (((seg2->x - seg1->x)*(seg2->x - seg1->x) + (seg2->y - seg1->y)*(seg2->y - seg1->y)) < 1e-12*1e-12)
 		{
 			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
@@ -827,7 +825,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		/* WAS: if (fabs(side) < 1e-12), see #852 */
 		if (side == 0.0)
 		{
-			if (isOnSegment(&seg1, &seg2, point) == 1)
+			if (isOnSegment(seg1, seg2, point) == 1)
 			{
 				POSTGIS_DEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
 
@@ -840,7 +838,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		 * then the line is to the right of the point and
 		 * circling counter-clockwise, so incremement.
 		 */
-		if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
+		if (FP_CONTAINS_BOTTOM(seg1->y, point->y, seg2->y) && side>0)
 		{
 			POSTGIS_DEBUG(3, "incrementing winding number.");
 
@@ -851,7 +849,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		 * then the line is to the right of the point and circling
 		 * clockwise, so decrement.
 		 */
-		else if (FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
+		else if (FP_CONTAINS_BOTTOM(seg2->y, point->y, seg1->y) && side<0)
 		{
 			POSTGIS_DEBUG(3, "decrementing winding number.");
 
