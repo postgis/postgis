@@ -110,6 +110,31 @@ static void test_unionfind_path_compression(void)
 	UF_destroy(uf);
 }
 
+static void test_unionfind_collapse_cluster_ids(void)
+{
+	UNIONFIND* uf = UF_create(10);
+	
+	uf->clusters[0] = 8;
+	uf->clusters[1] = 5;
+	uf->clusters[2] = 5;
+	uf->clusters[3] = 5;
+	uf->clusters[4] = 7;
+	uf->clusters[5] = 5;
+	uf->clusters[6] = 8;
+	uf->clusters[7] = 7;
+	uf->clusters[8] = 8;
+	uf->clusters[9] = 7;
+
+	/* 5 -> 0
+	 * 7 -> 1
+	 * 8 -> 2
+	 */
+	uint32_t expected_collapsed_ids[] = { 2, 0, 0, 0, 1, 0, 2, 1, 2, 1 };
+	uint32_t* collapsed_ids = UF_get_collapsed_cluster_ids(uf);
+
+	CU_ASSERT_EQUAL(0, memcmp(collapsed_ids, expected_collapsed_ids, 10*sizeof(uint32_t)));
+}
+
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
@@ -118,4 +143,5 @@ void unionfind_suite_setup(void)
 	PG_ADD_TEST(suite, test_unionfind_union);
 	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
 	PG_ADD_TEST(suite, test_unionfind_path_compression);
+	PG_ADD_TEST(suite, test_unionfind_collapse_cluster_ids);
 }
