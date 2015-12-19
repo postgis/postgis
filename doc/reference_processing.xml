@@ -415,6 +415,113 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
     </para>
 	  </refsection>
 	</refentry>
+	
+	    <refentry id="ST_ClusterIntersecting">
+      <refnamediv>
+        <refname>ST_ClusterIntersecting</refname>
+
+        <refpurpose>Aggregate.  Returns an array with the connected components of a set of geometries</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>ST_ClusterIntersecting is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents an interconnected set of geometries.</para>
+
+        <para>Availability: 2.2.0 - requires GEOS </para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>
+WITH testdata AS
+  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
+		       'LINESTRING (5 5, 4 4)'::geometry,
+		       'LINESTRING (6 6, 7 7)'::geometry,
+		       'LINESTRING (0 0, -1 -1)'::geometry,
+		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+
+SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
+
+--result
+
+st_astext
+---------
+GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
+        </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para>
+          <xref linkend="ST_ClusterWithin" />,
+        </para>
+      </refsection>
+
+    </refentry>
+
+	<refentry id="ST_ClusterWithin">
+      <refnamediv>
+        <refname>ST_ClusterWithin</refname>
+
+        <refpurpose>Aggregate.  Returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef>
+            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+            <paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</para>
+
+        <para>Availability: 2.2.0 - requires GEOS</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        <programlisting>
+WITH testdata AS
+  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
+		       'LINESTRING (5 5, 4 4)'::geometry,
+		       'LINESTRING (6 6, 7 7)'::geometry,
+		       'LINESTRING (0 0, -1 -1)'::geometry,
+		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
+
+SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
+
+--result
+
+st_astext
+---------
+GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
+GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
+        </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para>
+          <xref linkend="ST_ClusterIntersecting" />,
+        </para>
+      </refsection>
+
+    </refentry>
 
 	<refentry id="ST_Collect">
 	  <refnamediv>
@@ -533,6 +640,8 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
+	
+	
 	<refentry id="ST_ConcaveHull">
 	  <refnamediv>
 		<refname>ST_ConcaveHull</refname>
@@ -1613,67 +1722,82 @@ POINT(2 1)
 	  </refsection>
 
 	</refentry>
-
-	<refentry id="ST_SwapOrdinates">
+	
+	<refentry id="ST_GeneratePoints">
 	  <refnamediv>
-		<refname>ST_SwapOrdinates</refname>
-		<refpurpose>Returns a version of the given geometry with
-				given ordinate values swapped.
-    </refpurpose>
+		<refname>ST_GeneratePoints</refname>
+
+		<refpurpose>Converts a polygon or multi-polygon into a multi-point composed of randomly location points within the original areas.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-			<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>
+			<funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
+			<paramdef>
+				<parameter>g</parameter>
+				<type>geometry</type> 
+			</paramdef>
+			<paramdef>
+				<parameter>npoints</parameter>
+				<type>numeric</type> 
+			</paramdef>
 		  </funcprototype>
+		
 		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
+		</refsynopsisdiv>
+		
+		<refsection>
 		<title>Description</title>
+		
 		<para>
-Returns a version of the given geometry with given ordinates swapped.
-    </para>
-		<para>
-The <varname>ords</varname> parameter is a 2-characters string naming
-the ordinates to swap. Valid names are: x,y,z and m.
-    </para>
-		<para>Availability: 2.2.0</para>
-		<para>&curve_support;</para>
-	  	<para>&Z_support;</para>
-	  	<para>&M_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Example</title>
-		<programlisting><![CDATA[
--- Scale M value by 2
-SELECT ST_AsText(
-  ST_SwapOrdinates(
-    ST_Scale(
-      ST_SwapOrdinates(g,'xm'),
-      2, 1
-    ),
-  'xm')
-) FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;
-     st_astext
---------------------
- POINT ZM (0 0 0 4)
-		 ]]></programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-		<para> <xref linkend="ST_FlipCoordinates" /> </para>
-	  </refsection>
-
+			ST_GeneratePoints generates pseudo-random points until the requested number are
+			found within the input area.
+		</para>	
+			
+		<para>Availability: 2.3.0</para>
+		</refsection>
+	  
+		<refsection>
+			<title>Examples</title>
+		
+			<informaltable>
+			  <tgroup cols="2">
+				<tbody>
+				  <row>
+					<entry>
+						<para><informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_generatepoints01.png" />
+						  </imageobject>
+						  <caption><para>Original Polygon</para></caption>
+						</mediaobject>
+						</informalfigure>
+						</para>
+					</entry>
+					
+					<entry><para><informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_generatepoints02.png" />
+						  </imageobject>
+						  <caption><para>Generated 12 Points overlaid on top of original polygon</para></caption>
+						</mediaobject>
+					  </informalfigure>
+						<programlisting>SELECT ST_GeneratePoints(
+	ST_Buffer(
+		ST_GeomFromText(
+		'LINESTRING(50 50,150 150,150 50)'
+		), 10, 'endcap=round join=round'), 12);</programlisting>
+					</para></entry>
+				  </row>
+			</tbody>
+			</tgroup>
+		</informaltable>
+		</refsection>
 	</refentry>
+
 
 	<refentry id="ST_Intersection">
 		<refnamediv>
@@ -3276,8 +3400,67 @@ LINESTRING(112.499999999998 112.499999999998,114.142135623731 114.142135623731,1
     </para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_SwapOrdinates">
+	  <refnamediv>
+		<refname>ST_SwapOrdinates</refname>
+		<refpurpose>Returns a version of the given geometry with
+				given ordinate values swapped.
+    </refpurpose>
+	  </refnamediv>
 
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
 
+	  <refsection>
+		<title>Description</title>
+		<para>
+Returns a version of the given geometry with given ordinates swapped.
+    </para>
+		<para>
+The <varname>ords</varname> parameter is a 2-characters string naming
+the ordinates to swap. Valid names are: x,y,z and m.
+    </para>
+		<para>Availability: 2.2.0</para>
+		<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
+	  	<para>&M_support;</para>
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Example</title>
+		<programlisting><![CDATA[
+-- Scale M value by 2
+SELECT ST_AsText(
+  ST_SwapOrdinates(
+    ST_Scale(
+      ST_SwapOrdinates(g,'xm'),
+      2, 1
+    ),
+  'xm')
+) FROM ( SELECT 'POINT ZM (0 0 0 2)'::geometry g ) foo;
+     st_astext
+--------------------
+ POINT ZM (0 0 0 4)
+		 ]]></programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para> <xref linkend="ST_FlipCoordinates" /> </para>
+	  </refsection>
+
+	</refentry>
 
 <refentry id="ST_Union">
   <refnamediv>
@@ -3416,114 +3599,6 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 		</para>
 	  </refsection>
 	</refentry>
-
-    <refentry id="ST_ClusterWithin">
-      <refnamediv>
-        <refname>ST_ClusterWithin</refname>
-
-        <refpurpose>Aggregate.  Returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
-            <paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>ST_ClusterWithin is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents a set of geometries separated by no more than the specified distance.</para>
-
-        <para>Availability: 2.2.0 - requires GEOS</para>
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-        <programlisting>
-WITH testdata AS
-  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-		       'LINESTRING (5 5, 4 4)'::geometry,
-		       'LINESTRING (6 6, 7 7)'::geometry,
-		       'LINESTRING (0 0, -1 -1)'::geometry,
-		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
-
-SELECT ST_AsText(unnest(ST_ClusterWithin(geom, 1.4))) FROM testdata;
-
---result
-
-st_astext
----------
-GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
-GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
-        </programlisting>
-      </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-          <xref linkend="ST_ClusterIntersecting" />,
-        </para>
-      </refsection>
-
-    </refentry>
-
-
-    <refentry id="ST_ClusterIntersecting">
-      <refnamediv>
-        <refname>ST_ClusterIntersecting</refname>
-
-        <refpurpose>Aggregate.  Returns an array with the connected components of a set of geometries</refpurpose>
-      </refnamediv>
-
-      <refsynopsisdiv>
-        <funcsynopsis>
-          <funcprototype>
-            <funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
-          </funcprototype>
-        </funcsynopsis>
-      </refsynopsisdiv>
-
-      <refsection>
-        <title>Description</title>
-
-        <para>ST_ClusterIntersecting is an aggregate function that returns an array of GeometryCollections, where each GeometryCollection represents an interconnected set of geometries.</para>
-
-        <para>Availability: 2.2.0 - requires GEOS </para>
-      </refsection>
-
-      <refsection>
-        <title>Examples</title>
-        <programlisting>
-WITH testdata AS
-  (SELECT unnest(ARRAY['LINESTRING (0 0, 1 1)'::geometry,
-		       'LINESTRING (5 5, 4 4)'::geometry,
-		       'LINESTRING (6 6, 7 7)'::geometry,
-		       'LINESTRING (0 0, -1 -1)'::geometry,
-		       'POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))'::geometry]) AS geom)
-
-SELECT ST_AsText(unnest(ST_ClusterIntersecting(geom))) FROM testdata;
-
---result
-
-st_astext
----------
-GEOMETRYCOLLECTION(LINESTRING(0 0,1 1),LINESTRING(5 5,4 4),LINESTRING(0 0,-1 -1),POLYGON((0 0,4 0,4 4,0 4,0 0)))
-GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
-        </programlisting>
-      </refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-          <xref linkend="ST_ClusterWithin" />,
-        </para>
-      </refsection>
-
-    </refentry>
 
 	<refentry id="ST_UnaryUnion">
 	  <refnamediv>
@@ -3720,82 +3795,5 @@ MULTILINESTRING((135.555555555556 270,36.8181818181818 92.2727272727273),(36.818
 			<xref linkend="ST_Collect" />
 		</para>
 	  </refsection>
-	</refentry>
-	
-	<refentry id="ST_GeneratePoints">
-	  <refnamediv>
-		<refname>ST_GeneratePoints</refname>
-
-		<refpurpose>Converts a polygon or multi-polygon into a multi-point composed of randomly location points within the original areas.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_GeneratePoints</function></funcdef>
-			<paramdef>
-				<parameter>g</parameter>
-				<type>geometry</type> 
-			</paramdef>
-			<paramdef>
-				<parameter>npoints</parameter>
-				<type>numeric</type> 
-			</paramdef>
-		  </funcprototype>
-		
-		</funcsynopsis>
-		</refsynopsisdiv>
-		
-		<refsection>
-		<title>Description</title>
-		
-		<para>
-			ST_GeneratePoints generates pseudo-random points until the requested number are
-			found within the input area.
-		</para>	
-			
-		<para>Availability: 2.3.0</para>
-		</refsection>
-	  
-		<refsection>
-			<title>Examples</title>
-		
-			<informaltable>
-			  <tgroup cols="2">
-				<tbody>
-				  <row>
-					<entry>
-						<para><informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_generatepoints01.png" />
-						  </imageobject>
-						  <caption><para>Original Polygon</para></caption>
-						</mediaobject>
-						</informalfigure>
-						</para>
-					</entry>
-					
-					<entry><para><informalfigure>
-						<mediaobject>
-						  <imageobject>
-							<imagedata fileref="images/st_generatepoints02.png" />
-						  </imageobject>
-						  <caption><para>Generated 12 Points overlaid on top of original polygon</para></caption>
-						</mediaobject>
-					  </informalfigure>
-						<programlisting>SELECT ST_GeneratePoints(
-	ST_Buffer(
-		ST_GeomFromText(
-		'LINESTRING(50 50,150 150,150 50)'
-		), 10, 'endcap=round join=round'), 12);</programlisting>
-					</para></entry>
-				  </row>
-			</tbody>
-			</tgroup>
-		</informaltable>
-		</refsection>
-	</refentry>
-	
-	
+	</refentry>	
 </sect1>
