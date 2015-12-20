@@ -1005,6 +1005,7 @@ static void test_point_density(void)
 
 	mpt = lwgeom_to_points(geom, 0);
 	CU_ASSERT_EQUAL(mpt, NULL);
+	lwmpoint_free(mpt);
 
 	lwgeom_free(geom);
 
