@@ -87,6 +87,29 @@ static void test_unionfind_ordered_by_cluster(void)
 	lwfree(ids_by_cluster);
 }
 
+static void test_unionfind_path_compression(void)
+{
+	UNIONFIND* uf = UF_create(5);
+	uint32_t i;
+
+	uf->clusters[1] = 0;
+	uf->clusters[2] = 1;
+	uf->clusters[3] = 2;
+	uf->clusters[4] = 3;
+
+	/* Calling "find" on a leaf should attach all nodes between the root and the
+	 * leaf directly to the root. */
+	uint32_t root = UF_find(uf, 4);
+	for (i = 0; i < uf->N; i++)
+	{
+		/* Verify that all cluster references have been updated to point
+		 * directly to the root. */
+		CU_ASSERT_EQUAL(root, uf->clusters[i]);
+	}
+
+	UF_destroy(uf);
+}
+
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
@@ -94,4 +117,5 @@ void unionfind_suite_setup(void)
 	PG_ADD_TEST(suite, test_unionfind_create);
 	PG_ADD_TEST(suite, test_unionfind_union);
 	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
+	PG_ADD_TEST(suite, test_unionfind_path_compression);
 }

@@ -47,11 +47,17 @@ UF_destroy(UNIONFIND* uf)
 uint32_t
 UF_find (UNIONFIND* uf, uint32_t i)
 {
-	while (uf->clusters[i] != i)
-	{
-		uf->clusters[i] = uf->clusters[uf->clusters[i]];
-		i = uf->clusters[i];
+	uint32_t base = i;
+	while (uf->clusters[base] != base) {
+		base = uf->clusters[base];
 	}
+
+	while (i != base) {
+		uint32_t next = uf->clusters[i];
+		uf->clusters[i] = base;
+		i = next;
+	}
+
 	return i;
 }
 
