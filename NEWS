@@ -18,6 +18,7 @@ PostGIS 2.2.1
   - #3378, Fix handling of hierarchical TopoGeometries
            in presence of multiple topologies
   - #3388, Fix missing end-points in ST_Removepoints
+  - #3404, ST_ClusterWithin crashes backend
 
 
 PostGIS 2.2.0
