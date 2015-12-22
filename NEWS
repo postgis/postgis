@@ -10,13 +10,13 @@ PostGIS 2.2.1
   - #3329, Fix robustness regression in TopoGeo_addPoint
   - #3321, Fix performance regression in topology loading
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
-  - #3355 geography ST_Segmentize has geometry bbox 
-  - #3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry
-           definition
+  - #3355, geography ST_Segmentize has geometry bbox 
+  - #3359, Fix toTopoGeom loss of low-id primitives from
+           TopoGeometry definition
   - #3360, _raster_constraint_info_scale invalid input syntax
   - #3375, crash in repeated point removal for collection(point)
-  - #3378, Fix handling of hierarchical TopoGeometries with
-           of multiple topologies
+  - #3378, Fix handling of hierarchical TopoGeometries
+           in presence of multiple topologies
   - #3388, Fix missing end-points in ST_Removepoints
 
 
