@@ -23,6 +23,8 @@ IMAGES= \
 	../images/de9im02.png \
 	../images/st_azimuth01.png \
 	../images/st_azimuth02.png \
+	../images/st_boundary01.png \
+	../images/st_boundary02.png \
 	../images/st_buffer01.png \
 	../images/st_buffer02.png \
 	../images/st_buffer03.png \
