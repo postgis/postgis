@@ -17,6 +17,7 @@ PostGIS 2.0.8
   - #3378, Fix handling of hierarchical TopoGeometries with
            of multiple topologies
   - #3389, Buffer overflow in lwgeom_to_geojson
+  - #3393, ST_Area NaN on some polygons
 
 
 PostGIS 2.0.7
