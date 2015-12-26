@@ -1903,50 +1903,60 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
   }
 
   ntopogeoms = SPI_processed;
-  for ( i=0; i<ntopogeoms; ++i )
+  if ( ntopogeoms )
   {
-    HeapTuple row = SPI_tuptable->vals[i];
-    TupleDesc tdesc = SPI_tuptable->tupdesc;
-    int negate;
-    int element_id;
-    int topogeo_id;
-    int layer_id;
-    int element_type;
-
-    if ( ! getNotNullInt32( row, tdesc, 1, &element_id ) ) {
-		  cberror(topo->be_data,
-        "unexpected null element_id in \"%s\".relation",
-        topo->name);
-	    return 0;
-    }
-    negate = ( element_id < 0 );
-
-    if ( ! getNotNullInt32( row, tdesc, 2, &topogeo_id ) ) {
-		  cberror(topo->be_data,
-        "unexpected null topogeo_id in \"%s\".relation",
-        topo->name);
-	    return 0;
-    }
-
-    if ( ! getNotNullInt32( row, tdesc, 3, &layer_id ) ) {
-		  cberror(topo->be_data,
-        "unexpected null layer_id in \"%s\".relation",
-        topo->name);
-	    return 0;
-    }
-
-    if ( ! getNotNullInt32( row, tdesc, 4, &element_type ) ) {
-		  cberror(topo->be_data,
-        "unexpected null element_type in \"%s\".relation",
-        topo->name);
-	    return 0;
-    }
-
     resetStringInfo(sql);
-    appendStringInfo(sql,
-      "INSERT INTO \"%s\".relation VALUES ("
-      "%d,%d,%" LWTFMT_ELEMID ",%d)", topo->name,
-      topogeo_id, layer_id, negate ? -new_edge1 : new_edge1, element_type);
+    appendStringInfo(sql, "INSERT INTO \"%s\".relation VALUES ", topo->name);
+    for ( i=0; i<ntopogeoms; ++i )
+    {
+      HeapTuple row = SPI_tuptable->vals[i];
+      TupleDesc tdesc = SPI_tuptable->tupdesc;
+      int negate;
+      int element_id;
+      int topogeo_id;
+      int layer_id;
+      int element_type;
+
+      if ( ! getNotNullInt32( row, tdesc, 1, &element_id ) ) {
+        cberror(topo->be_data,
+          "unexpected null element_id in \"%s\".relation",
+          topo->name);
+        return 0;
+      }
+      negate = ( element_id < 0 );
+
+      if ( ! getNotNullInt32( row, tdesc, 2, &topogeo_id ) ) {
+        cberror(topo->be_data,
+          "unexpected null topogeo_id in \"%s\".relation",
+          topo->name);
+        return 0;
+      }
+
+      if ( ! getNotNullInt32( row, tdesc, 3, &layer_id ) ) {
+        cberror(topo->be_data,
+          "unexpected null layer_id in \"%s\".relation",
+          topo->name);
+        return 0;
+      }
+
+      if ( ! getNotNullInt32( row, tdesc, 4, &element_type ) ) {
+        cberror(topo->be_data,
+          "unexpected null element_type in \"%s\".relation",
+          topo->name);
+        return 0;
+      }
+
+      if ( i ) appendStringInfoChar(sql, ',');
+      appendStringInfo(sql, "(%d,%d,%" LWTFMT_ELEMID ",%d)",
+        topogeo_id, layer_id, negate ? -new_edge1 : new_edge1, element_type);
+      if ( new_edge2 != -1 ) {
+        resetStringInfo(sql);
+        appendStringInfo(sql,
+          ",VALUES (%d,%d,%" LWTFMT_ELEMID ",%d",
+          topogeo_id, layer_id, negate ? -new_edge2 : new_edge2, element_type);
+      }
+    }
+    POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit query: %s", sql->data);
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
     if ( spi_result != SPI_OK_INSERT ) {
@@ -1956,28 +1966,11 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
       return 0;
     }
     if ( SPI_processed ) topo->be_data->data_changed = true;
-    if ( new_edge2 != -1 ) {
-      resetStringInfo(sql);
-      appendStringInfo(sql,
-        "INSERT INTO FROM \"%s\".relation VALUES ("
-        "%d,%d,%" LWTFMT_ELEMID ",%d", topo->name,
-        topogeo_id, layer_id, negate ? -new_edge2 : new_edge2, element_type);
-      spi_result = SPI_execute(sql->data, false, 0);
-      MemoryContextSwitchTo( oldcontext ); /* switch back */
-      if ( spi_result != SPI_OK_INSERT ) {
-        cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
-                spi_result, sql->data);
-        pfree(sqldata.data);
-        return 0;
-      }
-      if ( SPI_processed ) topo->be_data->data_changed = true;
-    }
   }
-
-  /* TODO: release string info ! */
 
   POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit: updated %d topogeoms", ntopogeoms);
 
+  pfree(sqldata.data);
   return 1;
 }
 

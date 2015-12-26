@@ -33,11 +33,12 @@ closed|27
 N|27||POINT(3 38)
 E|1|sn1|en27|nl31|nr-31|lf1|rf0
 E|31|sn27|en1|nl1|nr-1|lf1|rf0
-robust.1|E32|N30
-N|28||POINT(20 10)
-N|29||POINT(10 20)
-N|30||POINT(9 12)
-E|32|sn28|en30|nl33|nr32|lf0|rf0
-E|33|sn30|en29|nl-33|nr-32|lf0|rf0
+L1
+#3407|28
+N|28||POINT(28 22)
+E|7|sn17|en28|nl32|nr-19|lf0|rf4
+E|32|sn28|en18|nl8|nr-7|lf0|rf4
+seq_reset|1|1|1
+robust.1|E1|N3
 robust.2|t|t
 Topology 'city_data' dropped
