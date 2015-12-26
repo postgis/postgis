@@ -461,6 +461,20 @@ SELECT 'T28', 'E'||edge_id, next_left_edge, next_right_edge,
     UNION VALUES (4),(5) )
   ORDER BY edge_id;
 
+--
+-- Split a face referenced by multiple TopoGeometries
+--
+-- See https://trac.osgeo.org/postgis/ticket/3407
+--
+INSERT INTO city_data.fp VALUES ('F17',
+  topology.CreateTopoGeom('city_data', 3, 1, '{{17,3}}'));
+INSERT INTO newedge SELECT 29 as id, topology.st_addedgemodface('city_data',
+  14, 16, 'LINESTRING(21 14, 9 22)');
+SELECT 'T29', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN (21, 33, 19, 34,
+  ( SELECT edge_id FROM newedge WHERE id = 29 ) )
+  ORDER BY edge_id;
 
 ---------------------------------------------------------------------
 -- Check new relations and faces status
@@ -489,4 +503,3 @@ SELECT 'F'||face_id, st_astext(mbr) FROM city_data.face ORDER BY face_id;
 
 DROP TABLE newedge;
 SELECT topology.DropTopology('city_data');
-
