@@ -215,12 +215,12 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 
 	if ( gserialized_get_type(geom1) != LINETYPE )
 	{
-		elog(ERROR,"line_locate_point: 1st arg isnt a line");
+		elog(ERROR,"line_locate_point: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
 	if ( gserialized_get_type(geom2) != POINTTYPE )
 	{
-		elog(ERROR,"line_locate_point: 2st arg isnt a point");
+		elog(ERROR,"line_locate_point: 2st arg isn't a point");
 		PG_RETURN_NULL();
 	}
 

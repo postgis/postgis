@@ -76,7 +76,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS)
 
 	if (strstr(str,"SPHEROID") !=  str )
 	{
-		elog(ERROR,"SPHEROID parser - doesnt start with SPHEROID");
+		elog(ERROR,"SPHEROID parser - doesn't start with SPHEROID");
 		pfree(sphere);
 		PG_RETURN_NULL();
 	}
@@ -374,7 +374,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 }
 
 /*
- *  For some lat/long points, the above method doesnt calculate the distance very well.
+ *  For some lat/long points, the above method doesn't calculate the distance very well.
  *  Typically this is for two lat/long points that are very very close together (<10cm).
  *  This gets worse closer to the equator.
  *

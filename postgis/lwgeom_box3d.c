@@ -63,7 +63,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	if (strstr(str,"BOX3D(") !=  str )
 	{
 		pfree(box);
-		elog(ERROR,"BOX3D parser - doesnt start with BOX3D(");
+		elog(ERROR,"BOX3D parser - doesn't start with BOX3D(");
 		PG_RETURN_NULL();
 	}
 

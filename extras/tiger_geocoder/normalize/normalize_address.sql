@@ -194,7 +194,7 @@ BEGIN
 
   -- Pull out the full street information, defined as everything between the
   -- address and the state.  This includes the location.
-  -- This doesnt need to be done if location has already been found.
+  -- This doesn't need to be done if location has already been found.
   IF result.location IS NULL THEN
     IF addressString IS NOT NULL THEN
       IF state IS NOT NULL THEN

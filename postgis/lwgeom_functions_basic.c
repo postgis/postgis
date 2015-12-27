@@ -2408,13 +2408,13 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 
 	if (geom1->type != POLYGONTYPE)
 	{
-		elog(ERROR,"optimistic_overlap: first arg isnt a polygon\n");
+		elog(ERROR,"optimistic_overlap: first arg isn't a polygon\n");
 		PG_RETURN_NULL();
 	}
 
 	if (geom2->type != POLYGONTYPE &&  geom2->type != MULTIPOLYGONTYPE)
 	{
-		elog(ERROR,"optimistic_overlap: 2nd arg isnt a [multi-]polygon\n");
+		elog(ERROR,"optimistic_overlap: 2nd arg isn't a [multi-]polygon\n");
 		PG_RETURN_NULL();
 	}
 

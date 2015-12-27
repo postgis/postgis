@@ -140,13 +140,13 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 	if ( distance < 0 || distance > 1 )
 	{
-		elog(ERROR,"line_interpolate_point: 2nd arg isnt within [0,1]");
+		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
 	if ( gserialized_get_type(gser) != LINETYPE )
 	{
-		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		elog(ERROR,"line_interpolate_point: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
 
@@ -480,13 +480,13 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	if ( from < 0 || from > 1 )
 	{
-		elog(ERROR,"line_interpolate_point: 2nd arg isnt within [0,1]");
+		elog(ERROR,"line_interpolate_point: 2nd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
 	if ( to < 0 || to > 1 )
 	{
-		elog(ERROR,"line_interpolate_point: 3rd arg isnt within [0,1]");
+		elog(ERROR,"line_interpolate_point: 3rd arg isn't within [0,1]");
 		PG_RETURN_NULL();
 	}
 
@@ -602,7 +602,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		elog(ERROR,"line_substring: 1st arg isnt a line");
+		elog(ERROR,"line_substring: 1st arg isn't a line");
 		PG_RETURN_NULL();
 	}
 
