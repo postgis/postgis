@@ -66842,7 +66842,7 @@
 
 2004-02-05 20:31  David Blasby <dblasby@gmail.com>
 
-	* [r443] postgis_proj.c: Optimized the curvature method (doesnt
+	* [r443] postgis_proj.c: Optimized the curvature method (doesn't
 	  have to calculate e2)
 
 2004-02-05 20:21  David Blasby <dblasby@gmail.com>
