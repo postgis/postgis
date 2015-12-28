@@ -189,6 +189,7 @@ Datum cluster_within_distance_window(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		initGEOS(lwnotice, lwgeom_geos_error);
 		geoms = lwalloc(ngeoms * sizeof(LWGEOM*));
 		uf = UF_create(ngeoms);
 		for (i = 0; i < ngeoms; i++)
