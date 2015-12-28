@@ -1446,19 +1446,26 @@ ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance,
 	for ( ipn = 1; ipn < in->npoints; ++ipn)
 	{
 		this_point = getPoint2d_cp(in, ipn);
-		if ( (ipn >= in->npoints-minpoints+1 && opn < minpoints) || /* need extra points to hit minponts */
-			 (ipn == in->npoints-1 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) != 0) || /* last point (and not exact dupe) */
-		     (tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) != 0) || /* not an exact dupe */
-		     (tolerance > 0.0 && distance2d_sqr_pt_pt(last_point, this_point) > tolsq) ) /* not within the removal tolerance */
+		if ( ipn < in->npoints-minpoints+1 || opn >= minpoints ) /* need extra points to hit minponts */
 		{
-			/* 
-			 * The point is different (see above) from the previous,
-			 * so we add it to output 
-			 */
-			memcpy(getPoint_internal(out, opn++), getPoint_internal(in, ipn), ptsize);
-			last_point = this_point;
-			LWDEBUGF(3, " Point %d differs from point %d. Out points: %d", ipn, ipn-1, opn);
+			if (
+				(tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) == 0) || /* exact dupe */
+				(tolerance > 0.0 && distance2d_sqr_pt_pt(last_point, this_point) <= tolsq) /* within the removal tolerance */
+			) continue;
 		}
+
+		/*
+		 * The point is different (see above) from the previous,
+		 * so we add it to output
+		 */
+		memcpy(getPoint_internal(out, opn++), getPoint_internal(in, ipn), ptsize);
+		last_point = this_point;
+		LWDEBUGF(3, " Point %d differs from point %d. Out points: %d", ipn, ipn-1, opn);
+	}
+	/* Keep the last point */
+	if ( memcmp(last_point, getPoint_internal(in, ipn-1), ptsize) != 0 )
+	{
+		memcpy(getPoint_internal(out, opn-1), getPoint_internal(in, ipn-1), ptsize);
 	}
 
 	LWDEBUGF(3, " in:%d out:%d", out->npoints, opn);
