@@ -17,6 +17,8 @@
 #include "lwgeom_geos.h"
 #include "lwunionfind.h"
 
+static const int STRTREE_NODE_CAPACITY = 10;
+
 /* Utility struct used to pass information to the GEOSSTRtree_query callback */
 struct UnionIfIntersectingContext
 {
@@ -58,7 +60,7 @@ static struct STRTree
 make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 {
 	struct STRTree tree;
-	tree.tree = GEOSSTRtree_create(num_geoms);
+	tree.tree = GEOSSTRtree_create(STRTREE_NODE_CAPACITY);
 	if (tree.tree == NULL)
 	{
 		return tree;

@@ -22,6 +22,7 @@ PostGIS 2.2.1
   - #3404, ST_ClusterWithin crashes backend
   - #3407, Fix crash on splitting a face or an edge
            defining multiple TopoGeometry objects
+  - #3411, Clustering functions not using spatial index
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
 
 
