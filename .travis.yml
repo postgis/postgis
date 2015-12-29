@@ -7,6 +7,8 @@ addons:
 
 before_install:
   - sudo apt-get update -qq
+  - apt-cache search libgeos
+  - false
   - sudo apt-get install -y
       postgresql-9.4 postgresql-server-dev-9.4
       build-essential autoconf libtool libcunit1-dev
