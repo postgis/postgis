@@ -6,6 +6,7 @@ addons:
   postgresql: "9.4"
 
 before_install:
+  - sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
   - apt-cache search libgeos
   - false
