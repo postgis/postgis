@@ -3955,6 +3955,13 @@ CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	AS 'MODULE_PATHNAME', 'centroid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_GeometricMedian(g geometry, tolerance float8 DEFAULT 1e-8, max_iter int DEFAULT 10000)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_GeometricMedian'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: IsRing(geometry)
 CREATE OR REPLACE FUNCTION ST_IsRing(geometry)
 	RETURNS boolean

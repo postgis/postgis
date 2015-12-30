@@ -1023,6 +1023,29 @@ static void test_point_density(void)
 	lwgeom_free(geom);
 }
 
+static void test_median_handles_3d_correctly(void)
+{
+	LWGEOM* g = lwgeom_from_wkt("MULTIPOINT ((1 3), (4 7), (2 9), (0 4), (2 2))", LW_PARSER_CHECK_NONE);
+	LWGEOM* gz = lwgeom_from_wkt("MULTIPOINT Z ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", LW_PARSER_CHECK_NONE);
+	LWGEOM* gm = lwgeom_from_wkt("MULTIPOINT M ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", LW_PARSER_CHECK_NONE);
+	LWGEOM* gzm = lwgeom_from_wkt("MULTIPOINT ZM ((1 3 4 5), (4 7 8 6), (2 9 1 7), (0 4 4 8), (2 2 3 9))", LW_PARSER_CHECK_NONE);
+
+	LWPOINT* result = lwgeom_median(g, 1e-8, 100);
+	LWPOINT* result_z = lwgeom_median(gz, 1e-8, 100);
+	LWPOINT* result_m = lwgeom_median(gm, 1e-8, 100);
+	LWPOINT* result_zm = lwgeom_median(gzm, 1e-8, 100);
+
+	CU_ASSERT_EQUAL(2, lwgeom_ndims((LWGEOM*) result));
+	CU_ASSERT_EQUAL(3, lwgeom_ndims((LWGEOM*) result_z));
+	CU_ASSERT_EQUAL(2, lwgeom_ndims((LWGEOM*) result_m));
+	CU_ASSERT_EQUAL(3, lwgeom_ndims((LWGEOM*) result_zm));
+
+	lwgeom_free(g);
+	lwpoint_free(result);
+	lwpoint_free(result_z);
+	lwpoint_free(result_m);
+	lwpoint_free(result_zm);
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -1050,4 +1073,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lwgeom_simplify);
 	PG_ADD_TEST(suite,test_lw_arc_center);
 	PG_ADD_TEST(suite,test_point_density);
+	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
 }

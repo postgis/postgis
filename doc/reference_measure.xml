@@ -2551,6 +2551,115 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 
 	</refentry>
 
+	<refentry id="ST_GeometricMedian">
+	  <refnamediv>
+		  <refname>
+			  ST_GeometricMedian
+		  </refname>
+
+		<refpurpose>
+			Returns the geometric median of a MultiPoint.
+		</refpurpose>
+	  </refnamediv>
+
+	<refsynopsisdiv>
+	  <funcsynopsis>
+		<funcprototype>
+			<funcdef>geometry
+				<function>
+					ST_GeometricMedian
+				</function>
+			</funcdef>
+
+			<paramdef>
+				<type>
+					geometry
+				</type>
+				<parameter>
+					g
+				</parameter>
+			</paramdef>
+
+			<paramdef>
+				<type>
+					float8
+				</type>
+				<parameter>
+					tolerance
+				</parameter>
+			</paramdef>
+
+			<paramdef>
+				<type>
+					int
+				</type>
+				<parameter>
+					max_iter
+				</parameter>
+			</paramdef>
+
+		</funcprototype>
+	  </funcsynopsis>
+	</refsynopsisdiv>
+
+	<refsection>
+	  <title>Description</title>
+
+	  <para>
+		  Computes the approximate geometric median of a MultiPoint geometry
+		  using the Weiszfeld algorithm.  The geometric median provides a 
+		  centrality measure that is less sensitive to outlier points than 
+		  the centroid.
+		
+		  The algorithm will iterate until the distance change between 
+		  successive iterations is less than the supplied <varname>tolerance</varname>
+		  parameter.  If this condition has not been met after <varname>max_iterations</varname>
+		  iterations, the function will produce an error and exit.
+	  </para>
+
+	  <para>Availability: 2.3.0</para>
+	  <para>&Z_support;</para>
+  </refsection>
+  <refsection>
+	  <para>
+		  <informalfigure>
+			  <mediaobject>
+					<imageobject>
+						<imagedata fileref="images/st_geometricmedian01.png" />
+					</imageobject>
+
+					<caption>
+						<para>
+						Comparison of the centroid (turquoise point) and geometric
+						median (red point) of a four-point MultiPoint (yellow points).
+						</para>
+					</caption>
+			  </mediaobject>
+		</informalfigure>
+	  </para>
+
+	  <programlisting>
+WITH test AS (
+SELECT 'MULTIPOINT((0 0), (1 1), (2 2), (200 200))'::geometry geom)
+SELECT
+  ST_AsText(ST_Centroid(geom)) centroid, 
+  ST_AsText(ST_GeometricMedian(geom)) median
+FROM test;
+      centroid      |                 median                 
+--------------------+----------------------------------------
+ POINT(50.75 50.75) | POINT(1.9761550281255 1.9761550281255)
+(1 row)
+	  </programlisting>
+	</refsection>
+	
+	<refsection>
+	  <title>See Also</title>
+
+	  <para><xref linkend="ST_Centroid"/></para>
+	</refsection>
+
+	</refentry>
+
 	<refentry id="ST_HasArc">
 	  <refnamediv>
 		<refname>ST_HasArc</refname>
