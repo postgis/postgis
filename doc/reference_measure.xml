@@ -858,9 +858,6 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 	  Geometries of highest dimension (since the lower-dimension geometries
 	  contribute zero "weight" to the centroid).</para>
 
-	  <note><para>Computation will be more accurate if performed by the GEOS
-	  module (enabled at compile time).</para></note>
-
 	  <para>&sfs_compliant;</para>
  	  <para>&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5</para>
 	</refsection>
