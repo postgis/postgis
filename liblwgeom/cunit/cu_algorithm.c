@@ -1023,28 +1023,83 @@ static void test_point_density(void)
 	lwgeom_free(geom);
 }
 
-static void test_median_handles_3d_correctly(void)
+static void do_median_dims_check(char* wkt, int expected_dims)
 {
-	LWGEOM* g = lwgeom_from_wkt("MULTIPOINT ((1 3), (4 7), (2 9), (0 4), (2 2))", LW_PARSER_CHECK_NONE);
-	LWGEOM* gz = lwgeom_from_wkt("MULTIPOINT Z ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", LW_PARSER_CHECK_NONE);
-	LWGEOM* gm = lwgeom_from_wkt("MULTIPOINT M ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", LW_PARSER_CHECK_NONE);
-	LWGEOM* gzm = lwgeom_from_wkt("MULTIPOINT ZM ((1 3 4 5), (4 7 8 6), (2 9 1 7), (0 4 4 8), (2 2 3 9))", LW_PARSER_CHECK_NONE);
-
+	LWGEOM* g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	LWPOINT* result = lwgeom_median(g, 1e-8, 100);
-	LWPOINT* result_z = lwgeom_median(gz, 1e-8, 100);
-	LWPOINT* result_m = lwgeom_median(gm, 1e-8, 100);
-	LWPOINT* result_zm = lwgeom_median(gzm, 1e-8, 100);
 
-	CU_ASSERT_EQUAL(2, lwgeom_ndims((LWGEOM*) result));
-	CU_ASSERT_EQUAL(3, lwgeom_ndims((LWGEOM*) result_z));
-	CU_ASSERT_EQUAL(2, lwgeom_ndims((LWGEOM*) result_m));
-	CU_ASSERT_EQUAL(3, lwgeom_ndims((LWGEOM*) result_zm));
+	CU_ASSERT_EQUAL(expected_dims, lwgeom_ndims((LWGEOM*) result));
 
 	lwgeom_free(g);
 	lwpoint_free(result);
-	lwpoint_free(result_z);
-	lwpoint_free(result_m);
-	lwpoint_free(result_zm);
+}
+static void test_median_handles_3d_correctly(void)
+{
+	do_median_dims_check("MULTIPOINT ((1 3), (4 7), (2 9), (0 4), (2 2))", 2);
+	do_median_dims_check("MULTIPOINT Z ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", 3);
+	do_median_dims_check("MULTIPOINT M ((1 3 4), (4 7 8), (2 9 1), (0 4 4), (2 2 3))", 2);
+	do_median_dims_check("MULTIPOINT ZM ((1 3 4 5), (4 7 8 6), (2 9 1 7), (0 4 4 8), (2 2 3 9))", 3);
+}
+
+static void do_median_test(char* input, char* expected)
+{
+	LWGEOM* g = lwgeom_from_wkt(input, LW_PARSER_CHECK_NONE);
+	LWPOINT* expected_result = lwgeom_as_lwpoint(lwgeom_from_wkt(expected, LW_PARSER_CHECK_NONE));
+	POINT3DZ actual_pt;
+	POINT3DZ expected_pt;
+
+	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, 1000);
+	int passed = LW_TRUE;
+	
+	lwpoint_getPoint3dz_p(result, &actual_pt);
+	lwpoint_getPoint3dz_p(expected_result, &expected_pt);
+
+	passed = passed && lwgeom_is_empty((LWGEOM*) expected_result) == lwgeom_is_empty((LWGEOM*) result);
+	passed = passed && (lwgeom_has_z((LWGEOM*) expected_result) == lwgeom_has_z((LWGEOM*) result));
+
+	if (!lwgeom_is_empty((LWGEOM*) result))
+	{
+		passed = passed && FP_EQUALS(actual_pt.x, expected_pt.x);
+		passed = passed && FP_EQUALS(actual_pt.y, expected_pt.y);
+		passed = passed && (!lwgeom_has_z((LWGEOM*) expected_result) || FP_EQUALS(actual_pt.z, expected_pt.z));
+	}
+
+	if (!passed)
+		printf("median_test expected %s got %s\n", lwgeom_to_ewkt((LWGEOM*) expected_result), lwgeom_to_ewkt((LWGEOM*) result));
+
+	CU_ASSERT_TRUE(passed);
+
+	lwgeom_free(g);
+	lwpoint_free(expected_result);
+	lwpoint_free(result);
+}
+
+static void test_median_robustness(void)
+{
+	/* A simple implementation of Weiszfeld's algorithm will fail if the median is equal
+	 * to any one of the inputs, during any iteration of the algorithm.
+	 *
+	 * Because the algorithm uses the centroid as a starting point, this situation will
+	 * occur in the test case below.
+	 */
+	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 1))", "POINT (0 0)");
+
+	/* Same as above but 3D, and shifter */
+	do_median_test("MULTIPOINT ((1 -1 3), (1 0 2), (2 1 1))", "POINT (1 0 2)");
+
+	/* Starting point is duplicated */
+	do_median_test("MULTIPOINT ((0 -1), (0 0), (0 0), (0 1))", "POINT (0 0)");
+
+	/* Cube */
+	do_median_test("MULTIPOINT ((10 10 10), (10 20 10), (20 10 10), (20 20 10), (10 10 20), (10 20 20), (20 10 20), (20 20 20))",
+				   "POINT (15 15 15)");
+
+	/* Some edge cases */
+	do_median_test("MULTIPOINT EMPTY", "POINT EMPTY");
+	do_median_test("MULTIPOINT (EMPTY)", "POINT EMPTY");
+	do_median_test("POINT (7 6)", "POINT (7 6)");
+	do_median_test("POINT (7 6 2)", "POINT (7 6 2)");
+	do_median_test("MULTIPOINT ((7 6 2), EMPTY)", "POINT (7 6 2)");
 }
 
 /*
@@ -1074,4 +1129,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lw_arc_center);
 	PG_ADD_TEST(suite,test_point_density);
 	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
+	PG_ADD_TEST(suite,test_median_robustness);
 }

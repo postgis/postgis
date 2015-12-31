@@ -24,7 +24,7 @@
 
 #include <float.h>
 
-#include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
 static void
@@ -44,19 +44,66 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 	POINT3D next = { 0, 0, 0 };
 	double delta;
 	double denom = 0;
+	char hit = LW_FALSE;
 
 	calc_distances_3d(curr, points, npoints, distances);
 
 	for (i = 0; i < npoints; i++)
 	{
-		denom += 1.0 / distances[i];
+		if (distances[i] == 0)
+			hit = LW_TRUE;
+		else
+			denom += 1.0 / distances[i];
 	}
 
 	for (i = 0; i < npoints; i++)
 	{
-		next.x += (points[i].x / distances[i]) / denom;
-		next.y += (points[i].y / distances[i]) / denom;
-		next.z += (points[i].z / distances[i]) / denom;
+		if (distances[i] > 0)
+		{
+			next.x += (points[i].x / distances[i]) / denom;
+			next.y += (points[i].y / distances[i]) / denom;
+			next.z += (points[i].z / distances[i]) / denom;
+		}
+	}
+
+	/* If any of the intermediate points in the calculation is found in the
+	 * set of input points, the standard Weiszfeld method gets stuck with a
+	 * divide-by-zero.
+	 *
+	 * To get ourselves out of the hole, we follow an alternate procedure to
+	 * get the next iteration, as described in:
+	 *
+	 * Vardi, Y. and Zhang, C. (2011) "A modified Weiszfeld algorithm for the
+	 * Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
+	 * DOI 10.1007/s101070100222
+	 *
+	 * Available online at the time of this writing at 
+	 * http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
+	 */
+	if (hit)
+	{
+		double dx = 0;
+		double dy = 0;
+		double dz = 0;
+		double r_inv;
+		POINT3D alt;
+		for (i = 0; i < npoints; i++)
+		{
+			if (distances[i] > 0)
+			{
+				dx += (points[i].x - curr->x) / distances[i];
+				dy += (points[i].y - curr->y) / distances[i];
+				dz += (points[i].y - curr->z) / distances[i];
+			}
+		}
+
+		r_inv = 1.0 / sqrt ( dx*dx + dy*dy + dz*dz );
+
+		alt.x = FP_MAX(0, 1.0 - r_inv)*next.x + FP_MIN(1.0, r_inv)*curr->x;
+		alt.y = FP_MAX(0, 1.0 - r_inv)*next.y + FP_MIN(1.0, r_inv)*curr->y;
+		alt.z = FP_MAX(0, 1.0 - r_inv)*next.z + FP_MIN(1.0, r_inv)*curr->z;
+
+		next = alt;
 	}
 
 	delta = distance3d_pt_pt(curr, &next);
@@ -119,7 +166,10 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter)
 	POINT3D median;
 
 	if (npoints == 0)
+	{
+		lwfree(points);
 		return lwpoint_construct_empty(g->srid, 0, 0);
+	}
 
 	median = init_guess(points, npoints);
 
