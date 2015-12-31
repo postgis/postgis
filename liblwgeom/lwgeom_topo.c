@@ -428,6 +428,43 @@ lwt_be_ExistsEdgeIntersectingPoint(LWT_TOPOLOGY* topo, LWPOINT* pt)
  *
  ************************************************************************/
 
+static LWGEOM *
+_lwt_toposnap(LWGEOM *src, LWGEOM *tgt, double tol)
+{
+  LWGEOM *tmp = src;
+  LWGEOM *tmp2;
+  int changed;
+  int iterations = 0;
+
+  int maxiterations = lwgeom_count_vertices(tgt);
+
+  /* GEOS snapping can be unstable */
+  /* See https://trac.osgeo.org/geos/ticket/760 */
+  do {
+    LWGEOM *tmp3;
+    tmp2 = lwgeom_snap(tmp, tgt, tol);
+    ++iterations;
+    changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
+#if GEOS_NUMERIC_VERSION < 30309
+    /* Up to GEOS-3.3.8, snapping could duplicate points */
+    if ( changed ) {
+      tmp3 = lwgeom_remove_repeated_points( tmp2, 0 );
+      lwgeom_free(tmp2);
+      tmp2 = tmp3;
+      changed = ( lwgeom_count_vertices(tmp2) != lwgeom_count_vertices(tmp) );
+    }
+#endif /* GEOS_NUMERIC_VERSION < 30309 */
+    LWDEBUGF(2, "After iteration %d, geometry changed ? %d (%d vs %d vertices)", iterations, changed, lwgeom_count_vertices(tmp2), lwgeom_count_vertices(tmp));
+    if ( tmp != src ) lwgeom_free(tmp);
+    tmp = tmp2;
+  } while ( changed && iterations <= maxiterations );
+
+  LWDEBUGF(1, "It took %d/%d iterations to properly snap",
+              iterations, maxiterations);
+
+  return tmp;
+}
+
 static void
 _lwt_release_faces(LWT_ISO_FACE *faces, int num_faces)
 {
@@ -5144,7 +5181,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
       -- a projected point internally, so we need another way.
       */
       snaptol = _lwt_minTolerance(prj);
-      snapedge = lwgeom_snap(g, prj, snaptol);
+      snapedge = _lwt_toposnap(g, prj, snaptol);
       snapline = lwgeom_as_lwline(snapedge);
 
       LWDEBUGF(1, "Edge snapped with tolerance %g", snaptol);
@@ -5561,7 +5598,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       LWDEBUGF(1, "Snapping noded, with srid=%d "
                   "to interesecting edges, with srid=%d",
                   noded->srid, iedges->srid);
-      snapped = lwgeom_snap(noded, iedges, tol);
+      snapped = _lwt_toposnap(noded, iedges, tol);
       lwgeom_free(noded);
       LWDEBUGG(1, snapped, "Snapped");
       LWDEBUGF(1, "Diffing snapped, with srid=%d "
@@ -5634,7 +5671,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
 
       /* TODO: consider snapping once against all elements
        *      (rather than once with edges and once with nodes) */
-      tmp = lwgeom_snap(noded, inodes, tol);
+      tmp = _lwt_toposnap(noded, inodes, tol);
       lwgeom_free(noded);
       noded = tmp;
       LWDEBUGG(1, noded, "Node-snapped");

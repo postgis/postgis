@@ -276,3 +276,17 @@ SELECT 't3280', 'L1b' || topology.TopoGeo_AddLinestring('bug3280', geom)
  ORDER BY 1;
 SELECT 't3280.end', topology.DropTopology('bug3280');
 
+-- See http://trac.osgeo.org/postgis/ticket/3412
+SELECT 't3412.start', CreateTopology('bug3412', 0, 0.001) > 0;
+SELECT 't3412.L1', TopoGeo_AddLinestring('bug3412',
+'LINESTRING(
+599671.37 4889664.32,
+599665.52 4889680.18,
+599671.37 4889683.4,
+599671.37 4889781.87
+)'
+::geometry, 0);
+SELECT 't3412.L2', TopoGeo_AddLinestring('bug3412',
+'0102000000020000003AB42BBFEE4C22410010C5A997A6524167BB5DBDEE4C224117FE3DA85FA75241'
+::geometry, 0);
+SELECT 't3412.end', DropTopology('bug3412');
