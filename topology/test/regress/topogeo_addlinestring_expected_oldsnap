@@ -182,3 +182,10 @@ t3280|L22
 t3280|L1b4
 t3280|L1b2
 t3280.end|Topology 'bug3280' dropped
+t3412.start|t
+t3412.L1|1
+t3412.L2|2
+t3412.L2|3
+t3412.L2|5
+t3412.L2|4
+t3412.end|Topology 'bug3412' dropped
