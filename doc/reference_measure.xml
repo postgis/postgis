@@ -2620,7 +2620,8 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  <para>Availability: 2.3.0</para>
 	  <para>&Z_support;</para>
   </refsection>
-  <refsection>
+    <refsection>
+      <title>Examples</title>
 	  <para>
 		  <informalfigure>
 			  <mediaobject>
@@ -2637,7 +2638,6 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			  </mediaobject>
 		</informalfigure>
 	  </para>
-
 	  <programlisting>
 WITH test AS (
 SELECT 'MULTIPOINT((0 0), (1 1), (2 2), (200 200))'::geometry geom)
