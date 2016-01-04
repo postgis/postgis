@@ -645,6 +645,9 @@ into includes in the future for easier maintenance.</para></listitem>
 			<title>Description</title>
 	
 			<para>Returns an <xref linkend="stdaddr" /> form of an input address utilizing <xref linkend="lextab" /> table name, <xref linkend="gaztab" />, and <xref linkend="rulestab" /> table names and an address.</para>
+			
+			<para>Variant 1: Takes an address as a single line.</para>
+			<para>Variant 2: Takes an address as 2 parts.  A <varname>micro</varname> consisting of standard first line of postal address e.g. <code>house_num street</code>, and a macro consisting of standard postal second line of an address e.g <code>city, state postal_code country</code>.</para> 
 
 			<!-- use this format if new function -->
 		<para>Availability: 2.2.0</para>
@@ -655,9 +658,11 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Examples</title>
 			<para>Using address_standardizer_data_us extension</para>
-			<programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once
-SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', 
-			   'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');</programlisting>
+			<programlisting>CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once</programlisting>
+			
+<para>Variant 1: Single line address.  This doesn't work well with non-US addresses</para>
+<programlisting>SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', 
+			   'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109');</programlisting>
 			<screen>house_num |    name    | suftype |  city  | country |     state     |      unit
 ----------+------------+---------+--------+---------+---------------+-----------------
 1         | DEVONSHIRE | PLACE   | BOSTON | USA     | MASSACHUSETTS | # PENTHOUSE 301</screen>
@@ -668,7 +673,7 @@ SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_ad
       <para>Make easier to read we'll dump output using hstore extension CREATE EXTENSION hstore; you need to install</para>
       <programlisting>SELECT (each(hstore(p))).*  
  FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
-   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234') As p;</programlisting>
+   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As p;</programlisting>
        <screen>    key     |      value
 ------------+-----------------
  box        |
@@ -689,6 +694,31 @@ SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_ad
  ruralroute |
 (16 rows)       
  			</screen>
+ 	
+<para>Variant 2: As a two part Address</para>
+<programlisting>SELECT (each(hstore(p))).*  
+ FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', 
+   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, US') As p;</programlisting>
+<screen>    key     |      value
+------------+-----------------
+ box        |
+ city       | BOSTON
+ name       | DEVONSHIRE
+ qual       |
+ unit       | # PENTHOUSE 301
+ extra      |
+ state      | MA
+ predir     |
+ sufdir     |
+ country    | USA
+ pretype    |
+ suftype    | PL
+ building   |
+ postcode   | 02109
+ house_num  | 1
+ ruralroute |
+(16 rows)</screen>
+
 		</refsection>
 	
 		<!-- Optionally add a "See Also" section -->
