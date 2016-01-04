@@ -630,11 +630,6 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_left)"
                       " has int32 val of %d", colno, val);
   }
-#if POSTGIS_DEBUG_LEVEL > 1
-  else {
-    edge->face_left = 6767; /* debugging */
-  }
-#endif
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
@@ -646,11 +641,6 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_right)"
                       " has int32 val of %d", colno, val);
   }
-#if POSTGIS_DEBUG_LEVEL > 1
-  else {
-    edge->face_right = 6767; /* debugging */
-  }
-#endif
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
@@ -683,11 +673,6 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
       edge->geom = NULL;
     }
   }
-#if POSTGIS_DEBUG_LEVEL > 1
-  else {
-    edge->geom = (void*)0x67676767; /* debugging */
-  }
-#endif
 }
 
 static void
@@ -717,11 +702,6 @@ fillNodeFields(LWT_ISO_NODE* node, HeapTuple row, TupleDesc rowdesc, int fields)
       node->geom = NULL;
     }
   }
-#if POSTGIS_DEBUG_LEVEL > 1
-  else {
-    node->geom = (void*)0x67676767; /* debugging */
-  }
-#endif
 }
 
 static void
@@ -757,11 +737,6 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
       face->mbr = NULL;
     }
   }
-#if POSTGIS_DEBUG_LEVEL > 1
-  else {
-    face->mbr = (void*)0x67676767; /* debugging */
-  }
-#endif
 }
 
 /* return 0 on failure (null) 1 otherwise */
