@@ -73,7 +73,7 @@ dnl Exporting used library symbols in the module is a source of issues,
 dnl see https://trac.osgeo.org/postgis/ticket/3281
 dnl
 EXCLUDELIBS_LDFLAGS=""
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports --exclude-libs], [_cv_exclude_libs], [[-Wl,--exclude-libs,ALL]], [], [EXCLUDELIBS_LDFLAGS="-Wl,--exclude-libs,ALL"], [])
+AC_LIBTOOL_LINKER_OPTION([if $compiler supports --exclude-libs], [_cv_exclude_libs], [[-Wl,--exclude-libs,ALL]], [EXCLUDELIBS_LDFLAGS="-Wl,--exclude-libs,ALL"])
 AC_SUBST([EXCLUDELIBS_LDFLAGS])
 
 dnl

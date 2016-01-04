@@ -24,6 +24,7 @@ PostGIS 2.2.1
            defining multiple TopoGeometry objects
   - #3411, Clustering functions not using spatial index
   - #3412, Improve robustness of snapping step in TopoGeo_addLinestring
+  - #3415, Fix OSX 10.9 build under pkgsrc
   - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
 
 
