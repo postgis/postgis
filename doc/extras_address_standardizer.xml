@@ -597,12 +597,40 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Examples</title>
 	
-			<programlisting>SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234');
+			<para>Single Addresss</para>
+			<programlisting>SELECT num, street, city, zip, zipplus 
+	FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;</programlisting>
+<screen>	
  num |      street      |  city  |  zip  | zipplus
 -----+------------------+--------+-------+---------
- 1   | Devonshire Place | Boston | 02109 | 1234			
-</programlisting>
+ 1   | Devonshire Place | Boston | 02109 | 1234		</screen>	
 
+			<para>Table of addresses</para>
+			<programlisting>-- basic table
+CREATE TABLE places(addid serial PRIMARY KEY, address text);
+
+INSERT INTO places(address)
+VALUES ('529 Main Street, Boston MA, 02129'),
+ ('77 Massachusetts Avenue, Cambridge, MA 02139'),
+ ('25 Wizard of Oz, Walaford, KS 99912323'),
+ ('26 Capen Street, Medford, MA'),
+ ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),
+ ('950 Main Street, Worcester, MA 01610');
+
+ -- parse the addresses 
+ -- if you want all fields you can use (a).*
+SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a).zipplus
+FROM (SELECT addid, parse_address(address) As a
+ FROM places) AS p;</programlisting>
+<screen> addid | num |        street        |   city    | state |  zip  | zipplus
+-------+-----+----------------------+-----------+-------+-------+---------
+     1 | 529 | Main Street          | Boston    | MA    | 02129 |
+     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |
+     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323
+     4 | 26  | Capen Street         | Medford   | MA    |       |
+     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |
+     6 | 950 | Main Street          | Worcester | MA    | 01610 |
+(6 rows)</screen>
 		</refsection>
 	
 		<!-- Optionally add a "See Also" section -->
