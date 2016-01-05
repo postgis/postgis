@@ -148,3 +148,13 @@ DROP TABLE t;
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
 DELETE FROM spatial_ref_sys where srid = 4326;
+
+-- See https://trac.osgeo.org/postgis/ticket/3401
+SELECT 't3401.start', CreateTopology('bug3401') > 1;
+SELECT 't3401.N1', ST_AddIsoNode('bug3401', 0, ST_MakePoint(-180, 0));
+SELECT 't3401.N2', ST_AddIsoNode('bug3401', 0, ST_MakePoint(0, 0));
+SELECT 't3401.L1', ST_AddIsoEdge('bug3401', 1, 2, 'LINESTRING(-180 0, 0 0)'::geometry);
+SELECT 't3401.valid_before', * FROM ValidateTopology('bug3401');
+SELECT 't3401.split', ST_ModEdgeSplit('bug3401', 1, ST_MakePoint(-20, 0));
+SELECT 't3401.valid_after', * FROM ValidateTopology('bug3401');
+SELECT 't3401.end', DropTopology('bug3401');

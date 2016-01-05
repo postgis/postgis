@@ -22,6 +22,7 @@ PostGIS 2.2.1
   - #3390, Compilation under Alpine Linux 3.2
   			gives an error when compiling the postgis and postgis_topology extension
   - #3393, ST_Area NaN for some polygons
+  - #3401, Improve ST_Split robustness on 32bit systems
   - #3404, ST_ClusterWithin crashes backend
   - #3407, Fix crash on splitting a face or an edge
            defining multiple TopoGeometry objects

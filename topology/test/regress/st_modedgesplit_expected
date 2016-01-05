@@ -42,3 +42,9 @@ seq_reset|1|1|1
 robust.1|E1|N3
 robust.2|t|t
 Topology 'city_data' dropped
+t3401.start|t
+t3401.N1|1
+t3401.N2|2
+t3401.L1|1
+t3401.split|3
+t3401.end|Topology 'bug3401' dropped
