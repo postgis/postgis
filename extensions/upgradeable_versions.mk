@@ -20,6 +20,10 @@ UPGRADEABLE_VERSIONS = \
 	2.2.0 \
 	2.2.1
 
+# This is to avoid forcing "check-installed-upgrades" as a default
+# rule, see https://trac.osgeo.org/postgis/ticket/3420
+all:
+
 check-installed-upgrades:
 	MODULE=$(EXTENSION); \
 	TOVER=$(EXTVERSION); \
