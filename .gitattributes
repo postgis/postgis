@@ -7,3 +7,4 @@
 GNUmakefile.in eol=lf
 *_expected  eol=lf
 *.dmp       eol=lf
+ChangeLog eol=lf
