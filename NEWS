@@ -12,6 +12,40 @@ PostGIS 2.3.0
   - #2259 ST_Voronoi (Dan Baston)
   - #3339 ST_GeneratePoints (Paul Ramsey)
 
+PostGIS 2.2.1
+2016/01/06
+
+ * Bug Fixes *
+
+  - #2232, avoid accumulated error in SVG rounding
+  - #3321, Fix performance regression in topology loading
+  - #3329, Fix robustness regression in TopoGeo_addPoint
+  - #3349, Fix installation path of postgis_topology scripts
+  - #3351, set endnodes isolation on ST_RemoveIsoEdge
+           (and lwt_RemIsoEdge)
+  - #3355, geography ST_Segmentize has geometry bbox 
+  - #3359, Fix toTopoGeom loss of low-id primitives from
+           TopoGeometry definition
+  - #3360, _raster_constraint_info_scale invalid input syntax
+  - #3375, crash in repeated point removal for collection(point)
+  - #3378, Fix handling of hierarchical TopoGeometries
+           in presence of multiple topologies
+  - #3380, #3402, Decimate lines on topology load
+  - #3388, #3410, Fix missing end-points in ST_Removepoints
+  - #3389, Buffer overflow in lwgeom_to_geojson
+  - #3390, Compilation under Alpine Linux 3.2 gives an error when
+           compiling the postgis and postgis_topology extensions
+  - #3393, ST_Area NaN for some polygons
+  - #3401, Improve ST_Split robustness on 32bit systems
+  - #3404, ST_ClusterWithin crashes backend
+  - #3407, Fix crash on splitting a face or an edge
+           defining multiple TopoGeometry objects
+  - #3411, Clustering functions not using spatial index
+  - #3412, Improve robustness of snapping step in TopoGeo_addLinestring
+  - #3415, Fix OSX 10.9 build under pkgsrc
+  - Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]
+
+
 PostGIS 2.2.0
 2015/10/07
 
