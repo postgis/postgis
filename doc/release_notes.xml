@@ -4,7 +4,44 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
-		  <title>Release 2.2.0</title>
+    	<title>Release 2.2.1</title>
+		  <para>Release date: 2016/01/06</para>
+		  <para>This is a bug fix and performance improvement release.</para>
+		  
+		  <simplesect>
+			<title>New Features</title>
+			  <para>#2232, avoid accumulated error in SVG rounding</para>
+			  <para>#3321, Fix performance regression in topology loading</para>
+			  <para>#3329, Fix robustness regression in TopoGeo_addPoint</para>
+			  <para>#3349, Fix installation path of postgis_topology scripts</para>
+			  <para>#3351, set endnodes isolation on ST_RemoveIsoEdge
+					   (and lwt_RemIsoEdge)</para>
+			  <para>#3355, geography ST_Segmentize has geometry bbox </para>
+			  <para>#3359, Fix toTopoGeom loss of low-id primitives from
+					   TopoGeometry definition</para>
+			  <para>#3360, _raster_constraint_info_scale invalid input syntax</para>
+			  <para>#3375, crash in repeated point removal for collection(point)</para>
+			  <para>#3378, Fix handling of hierarchical TopoGeometries
+					   in presence of multiple topologies</para>
+			  <para>#3380, #3402, Decimate lines on topology load</para>
+			  <para>#3388, #3410, Fix missing end-points in ST_Removepoints</para>
+			  <para>#3389, Buffer overflow in lwgeom_to_geojson</para>
+			  <para>#3390, Compilation under Alpine Linux 3.2
+						gives an error when compiling the postgis and postgis_topology extension</para>
+			  <para>#3393, ST_Area NaN for some polygons</para>
+			  <para>#3401, Improve ST_Split robustness on 32bit systems</para>
+			  <para>#3404, ST_ClusterWithin crashes backend</para>
+			  <para>#3407, Fix crash on splitting a face or an edge
+					   defining multiple TopoGeometry objects</para>
+			  <para>#3411, Clustering functions not using spatial index</para>
+			  <para>#3412, Improve robustness of snapping step in TopoGeo_addLinestring</para>
+			  <para>#3415, Fix OSX 10.9 build under pkgsrc</para>
+			  <para>Fix memory leak in lwt_ChangeEdgeGeom [liblwgeom]</para>
+		  </simplesect>
+   </sect1>
+    
+    <sect1>
+    	<title>Release 2.2.0</title>
 		  <para>Release date: 2015/10/07</para>
       <para>This is a new feature release, with new functions, improved performance, and other goodies.</para>
       <simplesect>
