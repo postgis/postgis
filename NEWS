@@ -24,7 +24,7 @@ PostGIS 2.2.1
   - #3378, Fix handling of hierarchical TopoGeometries
            in presence of multiple topologies
   - #3380, #3402, Decimate lines on topology load
-  - #3388, #3410, Fix missing end-points in ST_Removepoints
+  - #3388, #3410, Fix missing end-points in ST_RemoveRepeatedPoints
   - #3389, Buffer overflow in lwgeom_to_geojson
   - #3390, Compilation under Alpine Linux 3.2 gives an error when
            compiling the postgis and postgis_topology extensions
