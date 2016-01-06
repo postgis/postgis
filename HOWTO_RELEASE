@@ -63,6 +63,8 @@ Release procedure
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
 - Update Version.config to drop the "dev" suffix
+- Add the "dev" suffixed version in extensions/upgradeable_versions.mk
+  and ensure all the previous released minor versions are listed in it
 - Commit all changes
 - Tag branch:  
    $ base=http://svn.osgeo.org/postgis/
@@ -92,7 +94,4 @@ Release procedure
     - Twitter (we all love twitter don't we)
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
-- Ensure all the previous released minor versions are listed in
-  extension/upgradeable_versions.mk including the one you just released
-
-
+- Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
