@@ -79,20 +79,41 @@ struct lwgeom_backend_definition lwgeom_backends[LWGEOM_NUM_BACKENDS] = {
 char* lwgeom_backend_name;
 struct lwgeom_backend_definition* lwgeom_backend = &lwgeom_backends[0];
 
+#if POSTGIS_PGSQL_VERSION >= 91
 static void lwgeom_backend_switch( const char* newvalue, void* extra )
 {
-    int i;
+	int i;
 
-    if (!newvalue) { return; }
+	if (!newvalue) { return; }
 
-    for ( i = 0; i < LWGEOM_NUM_BACKENDS; ++i ) {
-	if ( !strcmp(lwgeom_backends[i].name, newvalue) ) {
-	    lwgeom_backend = &lwgeom_backends[i];
-	    return;
+	for ( i = 0; i < LWGEOM_NUM_BACKENDS; ++i ) {
+		if ( !strcmp(lwgeom_backends[i].name, newvalue) ) {
+			lwgeom_backend = &lwgeom_backends[i];
+			return;
+		}
 	}
-    }
-    lwerror("Can't find %s geometry backend", newvalue );
+	lwerror("Can't find %s geometry backend", newvalue );
 }
+#else
+static const char * lwgeom_backend_switch( const char* newvalue, bool doit, GucSource source )
+{
+	int i;
+
+	if (!newvalue) 
+		return NULL;
+
+	for (i = 0; i < LWGEOM_NUM_BACKENDS; ++i) 
+	{
+		if (!strcmp(lwgeom_backends[i].name, newvalue)) 
+		{
+			lwgeom_backend = &lwgeom_backends[i];
+			return newvalue;
+		}
+	}
+	lwerror("Can't find %s geometry backend", newvalue );
+	return NULL;
+}
+#endif
 
 void lwgeom_init_backend()
 {
