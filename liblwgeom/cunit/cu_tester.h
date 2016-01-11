@@ -23,10 +23,11 @@ void cu_error_msg_reset(void);
 /* Our internal callback to register Suites with the main tester */
 typedef void (*PG_SuiteSetup)(void);
 
+#define ASSERT_DOUBLE_EQUAL_TOLERANCE 10e-8
 #define ASSERT_DOUBLE_EQUAL(o,e) do { \
-  if ( o != e ) \
+  if ( fabs((double)o-(double)e) > ASSERT_DOUBLE_EQUAL_TOLERANCE ) \
     fprintf(stderr, "[%s:%d]\n Expected: %g\n Obtained: %g\n", __FILE__, __LINE__, (double)(e), (o)); \
-  CU_ASSERT_EQUAL(o,(double)e); \
+  CU_ASSERT_DOUBLE_EQUAL((double)o,(double)e,ASSERT_DOUBLE_EQUAL_TOLERANCE); \
 } while (0);
 
 #define ASSERT_INT_EQUAL(o,e) do { \
