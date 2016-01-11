@@ -45,6 +45,7 @@ DECLARE
   old_search_path TEXT;
   all_faces int[];
   faces int[];
+  bounding_edges int[];
   visited_face int;
   shell_faces int[];
   visited_edges int[];
@@ -131,6 +132,13 @@ BEGIN
     looking_for_holes := false;
     shell_faces := ARRAY[]::int[];
 
+    SELECT array_agg(edge_id)
+    FROM edge_data e
+    WHERE
+         ( e.left_face = ANY ( faces ) OR
+           e.right_face = ANY ( faces ) )
+    INTO bounding_edges;
+
     LOOP -- {
 
       arcs := NULL;
@@ -148,14 +156,11 @@ _edges AS (
          e.left_face = ANY ( faces ) as lf,
          e.right_face = ANY ( faces ) as rf
   FROM edge e
-  WHERE ( e.left_face = ANY ( faces ) OR
-          e.right_face = ANY ( faces ) )
+  WHERE edge_id = ANY (bounding_edges)
+          AND NOT e.edge_id = ANY ( visited_edges )
 ),
 _leftmost_non_dangling_edge AS (
-  SELECT * FROM _edges e
-    WHERE ( e.lf or e.rf ) AND ( e.lf != e.rf )
-          AND NOT e.edge_id = ANY ( visited_edges )
-      -- TODO: and not in visited ?
+  SELECT e.* FROM _edges e WHERE e.lf != e.rf
   ORDER BY geom LIMIT 1
 ),
 _edgepath AS (
