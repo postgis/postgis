@@ -258,6 +258,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 		{
 			mindist = dist;
 			seg=i;
+			if ( mindist == 0.0 ) break; /* can't be closer than ON line */
 		}
 		p1 = p2;
 	}
@@ -273,11 +274,18 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 
 	/*
 	 * We need to project the
-	 * point on the closest segment.
+	 * point on the closest segment,
+	 * to interpolate Z and M if needed
 	 */
 	getPoint4d_p(ipa, seg, &p1);
 	getPoint4d_p(ipa, seg+1, &p2);
 	closest_point_on_segment(&pt, &p1, &p2, &pt_projected);
+	/* But X and Y we want the ones of the input point,
+	 * as on some architectures the interpolation math moves the
+	 * coordinates (see #3422)
+	 */
+	pt_projected.x = pt.x;
+	pt_projected.y = pt.y;
 
 	LWDEBUGF(3, "Projected point:(%g %g), seg:%d, p1:(%g %g), p2:(%g %g)", pt_projected.x, pt_projected.y, seg, p1.x, p1.y, p2.x, p2.y);
 
