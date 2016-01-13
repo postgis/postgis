@@ -5,6 +5,7 @@ PostGIS 2.2.2dev
 
   - #3422, Improve ST_Split robustness on standard precision double
            systems (arm64, ppc64el, s390c, powerpc, ...)
+  - #3427, Update spatial_ref_sys to EPSG version 8.8
 
 PostGIS 2.2.1
 2016/01/06
