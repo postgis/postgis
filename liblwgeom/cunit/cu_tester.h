@@ -41,3 +41,6 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_STRING_EQUAL(o,e); \
 } while (0);
 
+/* Utility functions */
+void do_transformation_test(char *input_wkt, char *expected_wkt, LWGEOM* (*transfn)(LWGEOM*));
+
