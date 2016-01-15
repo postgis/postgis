@@ -10,6 +10,8 @@
  *
  **********************************************************************/
 
+#include "liblwgeom.h"
+
 #define MAX_CUNIT_ERROR_LENGTH 512
 
 #define PG_ADD_TEST(suite, testfunc) CU_add_test(suite, #testfunc, testfunc)
