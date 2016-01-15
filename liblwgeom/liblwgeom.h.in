@@ -1337,7 +1337,7 @@ extern LWLINE *lwline_removepoint(LWLINE *line, uint32_t which);
 extern void lwline_setPoint4d(LWLINE *line, uint32_t which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, uint32_t nholes, const LWLINE **holes);
 extern LWTRIANGLE *lwtriangle_from_lwline(const LWLINE *shell);
-
+extern LWMPOINT *lwmpoint_from_lwgeom(const LWGEOM *g); /* Extract the coordinates of an LWGEOM into an LWMPOINT */
 
 /* Some point accessors */
 extern double lwpoint_get_x(const LWPOINT *point);
