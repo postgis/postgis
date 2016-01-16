@@ -11,6 +11,7 @@ PostGIS 2.3.0
   - populate_topology_layer (Sandro Santilli)
   - #2259 ST_Voronoi (Dan Baston)
   - #3339 ST_GeneratePoints (Paul Ramsey)
+  - #3428 ST_Points (Dan Baston)
 
 PostGIS 2.2.1
 2016/01/06
