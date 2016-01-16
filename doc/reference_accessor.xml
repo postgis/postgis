@@ -2081,6 +2081,60 @@ POINT(3 2)
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_Points">
+		<refnamediv>
+			<refname>ST_Points</refname>
+			<refpurpose>Returns a MultiPoint containing all of the coordinates of a geometry.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_Points</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Returns a MultiPoint containing all of the coordinates of a
+				geometry.  Does not remove points that are duplicated in
+				the input geometry, including start and end points of ring geometries.
+				(If this behavior is undesired, duplicates may be removed using 
+				<xref linkend="ST_RemoveRepeatedPoints" />).
+			</para>
+				
+			<para>
+				M and Z ordinates will be preserved if present.
+			</para>
+
+			<para>&curve_support;</para>
+			<para>&Z_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+		
+			<programlisting>SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));
+
+--result
+MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)
+			</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_RemoveRepeatedPoints" /></para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>

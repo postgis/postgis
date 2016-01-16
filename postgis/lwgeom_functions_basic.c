@@ -2806,3 +2806,26 @@ Datum ST_Scale(PG_FUNCTION_ARGS)
 
   PG_RETURN_POINTER(ret);
 }
+
+Datum ST_Points(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Points);
+Datum ST_Points(PG_FUNCTION_ARGS)
+{
+	if (PG_ARGISNULL(0))
+	{
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		GSERIALIZED* geom = PG_GETARG_GSERIALIZED_P(0);
+		GSERIALIZED* ret;
+		LWGEOM* lwgeom = lwgeom_from_gserialized(geom);
+		LWMPOINT* result = lwmpoint_from_lwgeom(lwgeom);
+
+		lwgeom_free(lwgeom);
+
+		ret = geometry_serialize(lwmpoint_as_lwgeom(result));
+		lwmpoint_free(result);
+		PG_RETURN_POINTER(ret);
+	}
+}

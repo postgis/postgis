@@ -120,3 +120,20 @@ lwmpoint_remove_repeated_points(const LWMPOINT *mpoint, double tolerance)
 
 }
 
+LWMPOINT*
+lwmpoint_from_lwgeom(const LWGEOM *g)
+{
+	LWPOINTITERATOR* it = lwpointiterator_create(g);
+	int has_z = lwgeom_has_z(g);
+	int has_m = lwgeom_has_m(g);
+	LWMPOINT* result = lwmpoint_construct_empty(g->srid, has_z, has_m);
+	POINT4D p;
+
+	while(lwpointiterator_next(it, &p)) {
+		LWPOINT* lwp = lwpoint_make(g->srid, has_z, has_m, &p);
+		lwmpoint_add_lwpoint(result, lwp);
+	}
+
+	lwpointiterator_destroy(it);
+	return result;
+}

@@ -3313,6 +3313,12 @@ CREATE OR REPLACE FUNCTION ST_Boundary(geometry)
 	AS 'MODULE_PATHNAME','boundary'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Points(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Points'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: symdifference(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
