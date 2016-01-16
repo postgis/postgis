@@ -159,13 +159,15 @@ static void test_clone(void)
 static void test_lwmpoint_from_lwgeom(void)
 {
 	/* This cast is so ugly, we only want to do it once.  And not even that. */
-	LWGEOM* (*transfn)(LWGEOM*) = (LWGEOM* (*)(LWGEOM*)) &lwmpoint_from_lwgeom;
+	LWGEOM* (*to_points)(LWGEOM*) = (LWGEOM* (*)(LWGEOM*)) &lwmpoint_from_lwgeom;
 
-	do_transformation_test("MULTIPOLYGON (EMPTY)", "MULTIPOINT EMPTY", transfn);
-	do_transformation_test("POINT (30 10)", "MULTIPOINT ((30 10))", transfn);
-	do_transformation_test("LINESTRING Z (30 10 4,10 30 5,40 40 6)", "MULTIPOINT Z (30 10 4,10 30 5,40 40 6)", transfn);
-	do_transformation_test("POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))", "MULTIPOINT(35 10,45 45,15 40,10 20,35 10,20 30,35 35,30 20,20 30)", transfn);
-	do_transformation_test("MULTIPOINT M (10 40 1,40 30 2,20 20 3,30 10 4)", "MULTIPOINT M (10 40 1,40 30 2,20 20 3,30 10 4)", transfn);
+	do_fn_test(to_points, "MULTIPOLYGON (EMPTY)", "MULTIPOINT EMPTY");
+	do_fn_test(to_points, "POINT (30 10)", "MULTIPOINT ((30 10))");
+	do_fn_test(to_points, "LINESTRING Z (30 10 4,10 30 5,40 40 6)", "MULTIPOINT Z (30 10 4,10 30 5, 40 40 6)");
+	do_fn_test(to_points, "POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))", "MULTIPOINT(35 10,45 45,15 40,10 20,35 10,20 30,35 35,30 20,20 30)");
+	do_fn_test(to_points, "MULTIPOINT M (10 40 1,40 30 2,20 20 3,30 10 4)", "MULTIPOINT M (10 40 1,40 30 2,20 20 3,30 10 4)");
+	do_fn_test(to_points, "COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0))", "MULTIPOINT(0 0, 2 0, 2 1, 2 3, 4 3, 4 3, 4 5, 1 4, 0 0)");
+	do_fn_test(to_points, "TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)))", "MULTIPOINT (80 130, 50 160, 80 70, 80 130, 50 160, 10 190, 10 70, 50 160)");
 }
 
 /*

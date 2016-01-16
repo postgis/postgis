@@ -287,16 +287,16 @@ cu_error_msg_reset()
  * - cleans up
  */
 void
-do_transformation_test(char *input_wkt, char *expected_wkt, LWGEOM* (*transfn)(LWGEOM*))
+do_fn_test(LWGEOM* (*transfn)(LWGEOM*), char *input_wkt, char *expected_wkt)
 {
 	LWGEOM* input = lwgeom_from_wkt(input_wkt, LW_PARSER_CHECK_NONE);
 	LWGEOM* expected = lwgeom_from_wkt(expected_wkt, LW_PARSER_CHECK_NONE);
-	LWGEOM* actual = transfn(input);
+	LWGEOM* observed = transfn(input);
 
-	CU_ASSERT_TRUE(lwgeom_same(expected, actual));
+	ASSERT_LWGEOM_EQUAL(observed, expected);
 
 	lwgeom_free(input);
 	lwgeom_free(expected);
-	lwgeom_free(actual);
+	lwgeom_free(observed);
 }
 

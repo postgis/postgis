@@ -43,6 +43,16 @@ typedef void (*PG_SuiteSetup)(void);
   CU_ASSERT_STRING_EQUAL(o,e); \
 } while (0);
 
-/* Utility functions */
-void do_transformation_test(char *input_wkt, char *expected_wkt, LWGEOM* (*transfn)(LWGEOM*));
+#define ASSERT_LWGEOM_EQUAL(o, e) do { \
+	if ( !lwgeom_same(o, e) ) { \
+		char* wkt_o = lwgeom_to_ewkt(o); \
+		char* wkt_e = lwgeom_to_ewkt(e); \
+		fprintf(stderr, "[%s:%d]\n Expected: %s\n Obtained: %s\n", __FILE__, __LINE__, (wkt_o), (wkt_e)); \
+		lwfree(wkt_o); \
+		lwfree(wkt_e); \
+	} \
+	CU_ASSERT_TRUE(lwgeom_same(o, e)); \
+} while(0);
 
+/* Utility functions */
+void do_fn_test(LWGEOM* (*transfn)(LWGEOM*), char *input_wkt, char *expected_wkt);
