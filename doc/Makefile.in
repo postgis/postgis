@@ -21,7 +21,7 @@
 # that we could produce a large number of files (think chunked HTML)
 #
 
-translations = it_IT pt_BR fr es pl ko_KR de_DE
+translations = it_IT pt_BR fr es pl ko_KR de_DE ja
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -182,8 +182,10 @@ update-po: $(XML_INPUTS_POT)
   done
 
 pull-tx:
-	tx pull --all
-	$(MAKE) update-po
+	@for lang in $(translations); do \
+    tx pull -l $$lang; \
+  done; \
+  $(MAKE) update-po
 
 push-tx:
 	tx push -s -t --skip
