@@ -640,7 +640,7 @@ ptarray_clone_deep(const POINTARRAY *in)
 
 	out->flags = in->flags;
 	out->npoints = in->npoints;
-	out->maxpoints = in->maxpoints;
+	out->maxpoints = in->npoints;
 
 	FLAGS_SET_READONLY(out->flags, 0);
 
