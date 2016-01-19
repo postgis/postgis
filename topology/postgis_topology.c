@@ -204,7 +204,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   if ( topo->srid < 0 )
   {
     lwnotice("Topology SRID value %d converted to "
-             "the officially unknown SRID value %d", SRID_UNKNOWN);
+             "the officially unknown SRID value %d", topo->srid, SRID_UNKNOWN);
     topo->srid = SRID_UNKNOWN;
   }
 
