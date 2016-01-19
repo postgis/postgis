@@ -22,6 +22,7 @@ PostGIS 2.1.9
            of multiple topologies
   - #3389, Buffer overflow in lwgeom_to_geojson
   - #3393, ST_Area NaN for some polygons
+  - #3436, memory handling mistake in ptarray_clone_deep 
 
 PostGIS 2.1.8
 2015/07/07
