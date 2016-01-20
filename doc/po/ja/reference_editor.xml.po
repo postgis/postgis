@@ -1505,7 +1505,7 @@ msgid ""
 "allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
 "supported dimensions. Missing dimensions in the <varname>factor</varname> "
 "point are equivalant to no scaling the corresponding dimension."
-msgstr "ジオメトリと<varname>factor</varname>を引数に取る形式では、XY、XYM、XYZ、XYZMのポイントに、各次元の乗数を設定することができます。varname>factor</varname>のポイントで次元の欠落がある場合には、対応する次元の拡大縮小を行いません。"
+msgstr "ジオメトリと<varname>factor</varname>を引数に取る形式では、XY、XYM、XYZ、XYZMのポイントに、各次元の乗数を設定することができます。<varname>factor</varname>のポイントで次元の欠落がある場合には、対応する次元の拡大縮小を行いません。"
 
 #. Tag: para
 #: reference_editor.xml:1014 reference_editor.xml:1589

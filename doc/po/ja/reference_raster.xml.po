@@ -4978,7 +4978,7 @@ msgstr "<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef> <para
 msgid ""
 "<para>Returns the polygon geometry that bounds the pixel for a particular "
 "row and column.</para>"
-msgstr "<para>指定した行と列のピクセルの境界となるジオメトリを返します。<・para>"
+msgstr "<para>指定した行と列のピクセルの境界となるジオメトリを返します。</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:3140
