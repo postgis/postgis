@@ -1,0 +1,277 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 21:04+0000\n"
+"PO-Revision-Date: 2016-01-13 00:26+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Tag: para
+#: reference_type.xml:5
+#, no-c-format
+msgid ""
+"This section lists the PostgreSQL data types installed by PostGIS. Note we "
+"describe the casting behavior of these which is very important especially "
+"when designing your own functions."
+msgstr "本節では、PostGISによってインストールされるPostgreSQLデータ型を挙げます。特にユーザ定義関数をデザインする際に大変重要なキャストの挙動を記載しています。"
+
+#. Tag: para
+#: reference_type.xml:8
+#, no-c-format
+msgid ""
+"A Cast is when one type is coerced into another type. PostgreSQL is unique "
+"from most databases in that it allows you to define casting behavior for "
+"custom types and the functions used for casting. A cast can be specified as "
+"automatic in which case, you do not have to do a CAST(myfoo As otherfootype)"
+" or myfoo::otherfootype if you are feeding it to a function that only works "
+"with otherfootype and there is an automatic cast in place for it."
+msgstr "ある型が他の型に強制されることをキャストといいます。PostgreSQLは、ほとんどのデータベースと異なり、カスタム型のキャストの挙動と、キャストのために使われる関数を定義することができます。キャストは自動的に指定することができます。この場合は、otherfootypeでしか動作しない関数にmyfooを渡す場合で、自動キャストがある場合には、CAST(myfoo AS otherfootype)やmyfoo::otherfootypeというものを必要としません。"
+
+#. Tag: para
+#: reference_type.xml:13
+#, no-c-format
+msgid ""
+"The danger of relying on automatic cast behavior is when you have an "
+"overloaded function say one that takes a box2d and one that takes a box3d "
+"but no geometry. What happens is that both functions are equally good to use"
+" with geometry since geometry has an autocast for both -- so you end up with"
+" an ambiguous function error. To force PostgreSQL to choose, you do a "
+"CAST(mygeom As box3d) or mygeom::box3d."
+msgstr "自動キャストの挙動に頼る危険性は、関数をオーバロードするときに出てきます。たとえば、box2dを取るものとbox3dとを取るものがあるけれどもジオメトリをとるものが無いとします。どちらの関数とも、ジオメトリは両方に自動キャストするので、ジオメトリを使って良いことになります。-- しかし、あいまいな関数エラーで終わります。PostgreSQLに強制的に選択させるために、CAST(mygeom As box3d)またはmygeom::box3dを実行します。"
+
+#. Tag: para
+#: reference_type.xml:17
+#, no-c-format
+msgid ""
+"<emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST "
+"to text (presumably because of the magical unknown type), so no defined "
+"CASTS for that need to be present for you to CAST an object to text."
+msgstr "<emphasis>少なくともPostgreSQL 8.3では</emphasis>、全て文字列にキャストできます(おそらく、不思議な未知の型のためです)。オブジェクトを文字列にキャストするために表現するキャストの定義は必要ありません。"
+
+#. Tag: title
+#: reference_type.xml:20
+#, no-c-format
+msgid "PostgreSQL PostGIS Geometry/Geography/Box Types"
+msgstr "PostgreSQL PostGIS Geometry/Geography/Box型"
+
+#. Tag: refname
+#: reference_type.xml:24
+#, no-c-format
+msgid "<refname>box2d</refname>"
+msgstr "<refname>box2d</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:25
+#, no-c-format
+msgid ""
+"A box composed of x min, ymin, xmax, ymax. Often used to return the 2d "
+"enclosing box of a geometry."
+msgstr "xmin, ymin, xmax, ymaxで作られるボックス。しばしばジオメトリを囲む2次元のボックスを返すために使われます。"
+
+#. Tag: title
+#: reference_type.xml:29 reference_type.xml:40 reference_type.xml:79
+#: reference_type.xml:136 reference_type.xml:155
+#, no-c-format
+msgid "Description"
+msgstr "説明"
+
+#. Tag: para
+#: reference_type.xml:30
+#, no-c-format
+msgid ""
+"box2d is a spatial data type used to represent the enclosing box of a "
+"geometry or set of geometries. ST_Extent in earlier versions prior to "
+"PostGIS 1.4 would return a box2d."
+msgstr "box2dは、ジオメトリまたはジオメトリ集合を囲むボックスを表現するPostGIS空間データ型です。PostGIS 1.4より前のST_Extentはbox2dを返しました。"
+
+#. Tag: refname
+#: reference_type.xml:35
+#, no-c-format
+msgid "<refname>box3d</refname>"
+msgstr "<refname>box3d</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:36
+#, no-c-format
+msgid ""
+"A box composed of x min, ymin, zmin, xmax, ymax, zmax. Often used to return "
+"the 3d extent of a geometry or collection of geometries."
+msgstr "xmin, ymin, zmin, xmax, ymax, zmaxで作られるボックス。しばしばジオメトリやジオメトリのコレクションの3次元範囲を返すために使われます。"
+
+#. Tag: para
+#: reference_type.xml:41
+#, no-c-format
+msgid ""
+"box3d is a postgis spatial data type used to represent the enclosing box of "
+"a geometry or set of geometries. ST_3DExtent returns a box3d object."
+msgstr "box3dは、ジオメトリまたはジオメトリ集合を囲むボックスを表現するPostGIS空間データ型です。ST_3DExtentはbox3dオブジェクトを返します。"
+
+#. Tag: title
+#: reference_type.xml:45 reference_type.xml:84 reference_type.xml:160
+#, no-c-format
+msgid "Casting Behavior"
+msgstr "キャストの挙動"
+
+#. Tag: para
+#: reference_type.xml:46 reference_type.xml:85 reference_type.xml:161
+#, no-c-format
+msgid ""
+"This section lists the automatic as well as explicit casts allowed for this "
+"data type"
+msgstr "本節では、このデータ型で許容される明示的なキャストと自動キャストの一覧を挙げます。"
+
+#. Tag: entry
+#: reference_type.xml:51 reference_type.xml:90 reference_type.xml:166
+#, no-c-format
+msgid "Cast To"
+msgstr "キャスト先"
+
+#. Tag: entry
+#: reference_type.xml:52 reference_type.xml:91 reference_type.xml:167
+#, no-c-format
+msgid "Behavior"
+msgstr "挙動"
+
+#. Tag: entry
+#: reference_type.xml:55 reference_type.xml:94
+#, no-c-format
+msgid "<entry>box</entry>"
+msgstr "<entry>box</entry>"
+
+#. Tag: entry
+#: reference_type.xml:56 reference_type.xml:60 reference_type.xml:64
+#: reference_type.xml:95 reference_type.xml:99 reference_type.xml:103
+#: reference_type.xml:107 reference_type.xml:111 reference_type.xml:115
+#, no-c-format
+msgid "automatic"
+msgstr "自動"
+
+#. Tag: entry
+#: reference_type.xml:59 reference_type.xml:98
+#, no-c-format
+msgid "<entry>box2d</entry>"
+msgstr "<entry>box2d</entry>"
+
+#. Tag: entry
+#: reference_type.xml:63 reference_type.xml:170
+#, no-c-format
+msgid "<entry>geometry</entry>"
+msgstr "<entry>geometry</entry>"
+
+#. Tag: refname
+#: reference_type.xml:74
+#, no-c-format
+msgid "<refname>geometry</refname>"
+msgstr "<refname>geometry</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:75
+#, no-c-format
+msgid "Planar spatial data type."
+msgstr "平面空間データ型。"
+
+#. Tag: para
+#: reference_type.xml:80
+#, no-c-format
+msgid ""
+"geometry is a fundamental postgis spatial data type used to represent a "
+"feature in the Euclidean coordinate system."
+msgstr "geometryは基礎的なPostGIS空間データ型です。ユークリッド座標系上の地物を表現するために使われます。"
+
+#. Tag: entry
+#: reference_type.xml:102
+#, no-c-format
+msgid "<entry>box3d</entry>"
+msgstr "<entry>box3d</entry>"
+
+#. Tag: entry
+#: reference_type.xml:106
+#, no-c-format
+msgid "bytea"
+msgstr "bytea"
+
+#. Tag: entry
+#: reference_type.xml:110
+#, no-c-format
+msgid "<entry>geography</entry>"
+msgstr "<entry>geography</entry>"
+
+#. Tag: entry
+#: reference_type.xml:114
+#, no-c-format
+msgid "text"
+msgstr "text"
+
+#. Tag: title
+#: reference_type.xml:123 reference_type.xml:143 reference_type.xml:179
+#, no-c-format
+msgid "See Also"
+msgstr "関連情報"
+
+#. Tag: refname
+#: reference_type.xml:130
+#, no-c-format
+msgid "geometry_dump"
+msgstr "geometry_dump"
+
+#. Tag: refpurpose
+#: reference_type.xml:131
+#, no-c-format
+msgid ""
+"A spatial datatype with two fields - geom (holding a geometry object) and "
+"path[] (a 1-d array holding the position of the geometry within the dumped "
+"object.)"
+msgstr "geom (ジオメトリオブジェクトを保持)とpath[] (ダンプされたオブジェクト内のジオメトリの位置を保持する1次元配列)とからなる二つのフィールドを持つ空間データ型。"
+
+#. Tag: para
+#: reference_type.xml:137
+#, no-c-format
+msgid ""
+"geometry_dump is a compound data type consisting of a geometry object "
+"referenced by the .geom field and path[] a 1-dimensional integer array "
+"(starting at 1 e.g. path[1] to get first element) array that defines the "
+"navigation path within the dumped geometry to find this element. It is used "
+"by the ST_Dump* family of functions as an output type to explode a more "
+"complex geometry into its constituent parts and location of parts."
+msgstr "geometry_dumpは、geomフィールドで参照するジオメトリオブジェクトと1次元整数配列のpath[] (1始まりで、path[1]が最初の要素)からなる複合データ型です。 ST_Dump*関数群に使われます。これらの関数は複雑なジオメトリを複数の要素とその位置に分解します。"
+
+#. Tag: refname
+#: reference_type.xml:150
+#, no-c-format
+msgid "<refname>geography</refname>"
+msgstr "<refname>geography</refname>"
+
+#. Tag: refpurpose
+#: reference_type.xml:151
+#, no-c-format
+msgid "Ellipsoidal spatial data type."
+msgstr "回転楕円体空間データ型。"
+
+#. Tag: para
+#: reference_type.xml:156
+#, no-c-format
+msgid ""
+"geography is a spatial data type used to represent a feature in the round-"
+"earth coordinate system."
+msgstr "geographyは球面座標系での地物表現に使われる空間データ型です。"
+
+#. Tag: entry
+#: reference_type.xml:171
+#, no-c-format
+msgid "explicit"
+msgstr "明示的なキャスト"
+
+#. Tag: para
+#: reference_type.xml:180
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Geography\"/>"
+msgstr ", <xref linkend=\"PostGIS_Geography\"/>"

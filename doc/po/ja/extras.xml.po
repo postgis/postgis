@@ -1,0 +1,39 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-10-14 22:30+0000\n"
+"PO-Revision-Date: 2016-01-13 00:26+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Tag: title
+#: extras.xml:3
+#, no-c-format
+msgid "PostGIS Extras"
+msgstr "PostGIS追加機能"
+
+#. Tag: para
+#: extras.xml:5
+#, no-c-format
+msgid ""
+"This chapter documents features found in the extras folder of the PostGIS "
+"source tarballs and source repository. These are not always packaged with "
+"PostGIS binary releases, but are usually plpgsql based or standard shell "
+"scripts that can be run as is."
+msgstr "本章では、PostGISのソースアーカイブとソースレポジトリのextrasフォルダにある機能を記述します。 これらは必ずPostGISバイナリ版に同梱されているものではありませんが、通常は実行可能なplpgsqlベースのものまたは標準的なシェルスクリプトです。"
+
+#. Tag: chapter
+#: extras.xml:6
+#, no-c-format
+msgid "&extras_tigergeocoder;"
+msgstr "&extras_tigergeocoder;"
