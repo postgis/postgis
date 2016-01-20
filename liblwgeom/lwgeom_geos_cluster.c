@@ -31,24 +31,12 @@
 
 static const int STRTREE_NODE_CAPACITY = 10;
 
-/* Utility struct used to pass information to the GEOSSTRtree_query callback */
-struct UnionIfIntersectingContext
+/* Utility struct used to accumulate geometries in GEOSSTRtree_query callback */
+struct QueryContext
 {
-	UNIONFIND* uf;
-	char error;
-	uint32_t* p;
-	const GEOSPreparedGeometry* prep;
-	GEOSGeometry** geoms;
-};
-
-/* Utility struct used to pass information to the GEOSSTRtree_query callback */
-struct UnionIfDWithinContext
-{
-	UNIONFIND* uf;
-	char error;
-	uint32_t* p;
-	LWGEOM** geoms;
-	double tolerance;
+	void** items_found;
+	uint32_t items_found_size;
+	uint32_t num_items_found;
 };
 
 /* Utility struct to keep GEOSSTRtree and associated structures to be freed after use */
@@ -62,8 +50,6 @@ struct STRTree
 
 static struct STRTree make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom);
 static void destroy_strtree(struct STRTree tree);
-static void union_if_intersecting(void* item, void* userdata);
-static void union_if_dwithin(void* item, void* userdata);
 static int union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf);
 static int combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clustersGeoms, uint32_t* num_clusters, char is_lwgeom);
 
@@ -91,16 +77,16 @@ make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 		}
 		else
 		{
-            const GBOX* box = lwgeom_get_bbox(geoms[i]);
-            if (box)
-            {
-                tree.envelopes[i] = GBOX2GEOS(box);
-            } 
-            else
-            {
-                /* Empty geometry */
-                tree.envelopes[i] = GEOSGeom_createEmptyPolygon();
-            }
+			const GBOX* box = lwgeom_get_bbox(geoms[i]);
+			if (box)
+			{
+				tree.envelopes[i] = GBOX2GEOS(box);
+			} 
+			else
+			{
+				/* Empty geometry */
+				tree.envelopes[i] = GEOSGeom_createEmptyPolygon();
+			}
 		}
 		GEOSSTRtree_insert(tree.tree, tree.envelopes[i], &(tree.geom_ids[i]));
 	}
@@ -122,162 +108,145 @@ destroy_strtree(struct STRTree tree)
 	lwfree(tree.envelopes);
 }
 
-/* Callback function for GEOSSTRtree_query */
 static void
-union_if_intersecting(void* item, void* userdata)
+query_accumulate(void* item, void* userdata)
 {
-	struct UnionIfIntersectingContext *cxt = userdata;
-	if (cxt->error)
+	struct QueryContext *cxt = userdata;
+	if (!cxt->items_found)
 	{
-		return;
+		cxt->items_found_size = 8;
+		cxt->items_found = lwalloc(cxt->items_found_size * sizeof(void*));
 	}
-	uint32_t q = *((uint32_t*) item);
-	uint32_t p = *(cxt->p);
 
-	if (p != q && UF_find(cxt->uf, p) != UF_find(cxt->uf, q))
+	if (cxt->num_items_found >= cxt->items_found_size)
 	{
-		int geos_type = GEOSGeomTypeId(cxt->geoms[p]);
-		int geos_result;
-
-		/* Don't build prepared a geometry around a Point or MultiPoint -
-		 * there are some problems in the implementation, and it's not clear
-		 * there would be a performance benefit in any case.  (See #3433)
-		 */
-		if (geos_type != GEOS_POINT && geos_type != GEOS_MULTIPOINT)
-		{
-			/* Lazy initialize prepared geometry */
-			if (cxt->prep == NULL)
-			{
-				cxt->prep = GEOSPrepare(cxt->geoms[p]);
-			}
-			geos_result = GEOSPreparedIntersects(cxt->prep, cxt->geoms[q]);
-		}
-		else
-		{
-			geos_result = GEOSIntersects(cxt->geoms[p], cxt->geoms[q]);
-		}
-		if (geos_result > 1)
-		{
-			cxt->error = geos_result;
-			return;
-		}
-		if (geos_result)
-		{
-			UF_union(cxt->uf, p, q);
-		}
+		cxt->items_found_size = 2 * cxt->items_found_size;
+		cxt->items_found = lwrealloc(cxt->items_found, cxt->items_found_size * sizeof(void*));
 	}
-}
-
-/* Callback function for GEOSSTRtree_query */
-static void
-union_if_dwithin(void* item, void* userdata)
-{
-	struct UnionIfDWithinContext *cxt = userdata;
-	if (cxt->error)
-	{
-		return;
-	}
-	uint32_t q = *((uint32_t*) item);
-	uint32_t p = *(cxt->p);
-
-	if (p != q && UF_find(cxt->uf, p) != UF_find(cxt->uf, q))
-	{
-		double mindist = lwgeom_mindistance2d_tolerance(cxt->geoms[p], cxt->geoms[q], cxt->tolerance);
-		if (mindist == FLT_MAX)
-		{
-			cxt->error = 1;
-			return;
-		}
-
-		if (mindist <= cxt->tolerance)
-		{
-			UF_union(cxt->uf, p, q);
-		}
-	}
+	cxt->items_found[cxt->num_items_found++] = item;
 }
 
 /* Identify intersecting geometries and mark them as being in the same set */
 static int
 union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf)
 {
-	uint32_t i;
+	uint32_t p, i;
+	struct STRTree tree;
+	struct QueryContext cxt =
+	{
+		.items_found = NULL,
+		.num_items_found = 0,
+		.items_found_size = 0
+	};
+	int success = LW_SUCCESS;
 
 	if (num_geoms <= 1)
-	{
 		return LW_SUCCESS;
-	}
 
-	struct STRTree tree = make_strtree((void**) geoms, num_geoms, 0);
+	tree = make_strtree((void**) geoms, num_geoms, 0);
 	if (tree.tree == NULL)
 	{
 		destroy_strtree(tree);
 		return LW_FAILURE;
 	}
-	for (i = 0; i < num_geoms; i++)
+
+	for (p = 0; p < num_geoms; p++)
 	{
-        if (GEOSisEmpty(geoms[i]))
-        {
-            continue;
-        }
-
-		struct UnionIfIntersectingContext cxt =
+		if (GEOSisEmpty(geoms[p]))
 		{
-			.uf = uf,
-			.error = 0,
-			.p = &i,
-			.prep = NULL,
-			.geoms = geoms
-		};
-		GEOSGeometry* query_envelope = GEOSEnvelope(geoms[i]);
-		GEOSSTRtree_query(tree.tree, query_envelope, &union_if_intersecting, &cxt);
-
-		GEOSGeom_destroy(query_envelope);
-		GEOSPreparedGeom_destroy(cxt.prep);
-		if (cxt.error)
-		{
-			return LW_FAILURE;
+			continue;
 		}
+
+		GEOSGeometry* query_envelope = GEOSEnvelope(geoms[p]);
+
+		cxt.num_items_found = 0;
+
+		GEOSSTRtree_query(tree.tree, query_envelope, &query_accumulate, &cxt);
+		const GEOSPreparedGeometry* prep = NULL;
+
+		for (i = 0; i < cxt.num_items_found; i++)
+		{
+			uint32_t q = *((uint32_t*) cxt.items_found[i]);
+
+			if (p != q && UF_find(uf, p) != UF_find(uf, q))
+			{
+				int geos_type = GEOSGeomTypeId(geoms[p]);
+				int geos_result;
+
+				/* Don't build prepared a geometry around a Point or MultiPoint -
+				 * there are some problems in the implementation, and it's not clear
+				 * there would be a performance benefit in any case.  (See #3433)
+				 */
+				if (geos_type != GEOS_POINT && geos_type != GEOS_MULTIPOINT)
+				{
+					/* Lazy initialize prepared geometry */
+					if (prep == NULL)
+					{
+						prep = GEOSPrepare(geoms[p]);
+					}
+					geos_result = GEOSPreparedIntersects(prep, geoms[q]);
+				}
+				else
+				{
+					geos_result = GEOSIntersects(geoms[p], geoms[q]);
+				}
+				if (geos_result > 1)
+				{
+					success = LW_FAILURE;
+					break;
+				}
+				else if (geos_result)
+				{
+					UF_union(uf, p, q);
+				}
+			}
+		}
+
+		if (prep)
+			GEOSPreparedGeom_destroy(prep);
+		GEOSGeom_destroy(query_envelope);
+
+		if (!success)
+			break;
 	}
 
+	if (cxt.items_found)
+		lwfree(cxt.items_found);
+
 	destroy_strtree(tree);
-	return LW_SUCCESS;
+	return success;
 }
 
 /* Identify geometries within a distance tolerance and mark them as being in the same set */
 static int
 union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double tolerance)
 {
-	uint32_t i;
+	uint32_t p, i;
+	struct STRTree tree;
+	struct QueryContext cxt =
+	{
+		.items_found = NULL,
+		.num_items_found = 0,
+		.items_found_size = 0
+	};
+	int success = LW_SUCCESS;
 
 	if (num_geoms <= 1)
-	{
 		return LW_SUCCESS;
-	}
 
-	struct STRTree tree = make_strtree((void**) geoms, num_geoms, 1);
+	tree = make_strtree((void**) geoms, num_geoms, 1);
 	if (tree.tree == NULL)
 	{
 		destroy_strtree(tree);
 		return LW_FAILURE;
 	}
 
-	for (i = 0; i < num_geoms; i++)
+	for (p = 0; p < num_geoms; p++)
 	{
-		struct UnionIfDWithinContext cxt =
-		{
-			.uf = uf,
-			.error = 0,
-			.p = &i,
-			.geoms = geoms,
-			.tolerance = tolerance
-		};
+		if (lwgeom_is_empty(geoms[p]))
+			continue;
 
-        const GBOX* geom_extent = lwgeom_get_bbox(geoms[i]);
-        if (!geom_extent)
-        {
-            /* Empty geometry */
-            continue;
-        }
+		const GBOX* geom_extent = lwgeom_get_bbox(geoms[p]);
 		GBOX* query_extent = gbox_clone(geom_extent);
 		gbox_expand(query_extent, tolerance);
 		GEOSGeometry* query_envelope = GBOX2GEOS(query_extent);
@@ -288,18 +257,40 @@ union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, d
 			return LW_FAILURE;
 		}
 
-		GEOSSTRtree_query(tree.tree, query_envelope, &union_if_dwithin, &cxt);
+		cxt.num_items_found = 0;
+		GEOSSTRtree_query(tree.tree, query_envelope, &query_accumulate, &cxt);
+		for (i = 0; i < cxt.num_items_found; i++)
+		{
+			uint32_t q = *((uint32_t*) cxt.items_found[i]);
+
+			if (p != q && UF_find(uf, p) != UF_find(uf, q))
+			{
+				double mindist = lwgeom_mindistance2d_tolerance(geoms[p], geoms[q], tolerance);
+				if (mindist == FLT_MAX)
+				{
+					success = LW_FAILURE;
+					break;
+				}
+
+				if (mindist <= tolerance)
+				{
+					UF_union(uf, p, q);
+				}
+			}
+		}
 
 		lwfree(query_extent);
 		GEOSGeom_destroy(query_envelope);
-		if (cxt.error)
-		{
-			return LW_FAILURE;
-		}
+
+		if (!success)
+			break;
 	}
 
+	if (cxt.items_found)
+		lwfree(cxt.items_found);
+
 	destroy_strtree(tree);
-	return LW_SUCCESS;
+	return success;
 }
 
 /** Takes an array of GEOSGeometry* and constructs an array of GEOSGeometry*, where each element in the constructed
