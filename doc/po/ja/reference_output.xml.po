@@ -1,0 +1,2055 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"PO-Revision-Date: 2016-01-08 14:04+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Tag: title
+#: reference_output.xml:4
+#, no-c-format
+msgid "Geometry Outputs"
+msgstr "ジオメトリ出力"
+
+#. Tag: refname
+#: reference_output.xml:7
+#, no-c-format
+msgid "ST_AsBinary"
+msgstr "ST_AsBinary"
+
+#. Tag: refpurpose
+#: reference_output.xml:8
+#, no-c-format
+msgid ""
+"Return the Well-Known Binary (WKB) representation of the geometry/geography "
+"without SRID meta data."
+msgstr "ジオメトリ/ジオグラフィのSRIDメタデータのないWell-Known Binary (WKB)表現を返します"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:12
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type>"
+" <parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsBinary</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+
+#. Tag: title
+#: reference_output.xml:35 reference_output.xml:109 reference_output.xml:162
+#: reference_output.xml:238 reference_output.xml:339 reference_output.xml:440
+#: reference_output.xml:496 reference_output.xml:561 reference_output.xml:604
+#: reference_output.xml:726 reference_output.xml:774 reference_output.xml:828
+#: reference_output.xml:905 reference_output.xml:952
+#, no-c-format
+msgid "Description"
+msgstr "説明"
+
+#. Tag: para
+#: reference_output.xml:37
+#, no-c-format
+msgid ""
+"Returns the Well-Known Binary representation of the geometry. There are 2 "
+"variants of the function. The first variant takes no endian encoding "
+"parameter and defaults to server machine endian. The second variant takes a "
+"second argument denoting the encoding - using little-endian ('NDR') or big-"
+"endian ('XDR') encoding."
+msgstr "ジオメトリのWell-Knwon Binary表現を返します。2つの形式があります。一つ目の形式では、エンディアンエンコーディングのパラメータを取らずにサーバ機のエンディアンとします。二つ目の形式では、第2引数にリトルエンディアン ('NDR')かビッグエンディアン ('XDR')を使ってエンコーディングを明示します。"
+
+#. Tag: para
+#: reference_output.xml:40 reference_output.xml:113
+#, no-c-format
+msgid ""
+"This is useful in binary cursors to pull data out of the database without "
+"converting it to a string representation."
+msgstr "データを文字列表現に変換せずにデータベース外に引き出すためのバイナリカーソルに使えます。"
+
+#. Tag: para
+#: reference_output.xml:44
+#, no-c-format
+msgid ""
+"The WKB spec does not include the SRID. To get the WKB with SRID format use "
+"ST_AsEWKB"
+msgstr "WKB仕様ではSRIDは入りません。SRIDを持つOGC WKBの書式を得るにはST_AsEWKBを使用します。"
+
+#. Tag: para
+#: reference_output.xml:47
+#, no-c-format
+msgid ""
+"ST_AsBinary is the reverse of <xref linkend=\"ST_GeomFromWKB\"/> for "
+"geometry. Use <xref linkend=\"ST_GeomFromWKB\"/> to convert to a postgis "
+"geometry from ST_AsBinary representation."
+msgstr "ST_AsBinaryはジオメトリに対する<xref linkend=\"ST_GeomFromWKB\"/>の逆です。PostGISジオメトリをST_AsBinary表現から変換するには<xref linkend=\"ST_GeomFromWKB\"/>を使います。"
+
+#. Tag: para
+#: reference_output.xml:51
+#, no-c-format
+msgid ""
+"The default behavior in PostgreSQL 9.0 has been changed to output bytea in "
+"hex encoding. ST_AsBinary is the reverse of <xref "
+"linkend=\"ST_GeomFromWKB\"/> for geometry. If your GUI tools require the old"
+" behavior, then SET bytea_output='escape' in your database."
+msgstr "PostgreSQL 9.0でのデフォルトの挙動が、16進数エンコーディングに変わりました。ST_AsBinaryはジオメトリに対する<xref linkend=\"ST_GeomFromWKB\"/>の反対です。GUIツールが古い挙動を求める場合には、データベースでSET bytea_output='escape'を実行して下さい。"
+
+#. Tag: para
+#: reference_output.xml:55 reference_output.xml:121
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
+"introduced."
+msgstr "Enhanced: 2.0.0 多面体サーフェス対応、三角対応、TIN対応が導入されました。"
+
+#. Tag: para
+#: reference_output.xml:56
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for higher coordinate dimensions was introduced."
+msgstr "Enhanced: 2.0.0 高次元が導入されました。"
+
+#. Tag: para
+#: reference_output.xml:57
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for specifying endian with geography was introduced."
+msgstr "Enhanced: 2.0.0 ジオグラフィでのエンディアン指定が導入されました。"
+
+#. Tag: para
+#: reference_output.xml:58 reference_output.xml:279 reference_output.xml:383
+#, no-c-format
+msgid "Availability: 1.5.0 geography support was introduced."
+msgstr "Availability: 1.5.0 ジオグラフィが導入されました。"
+
+#. Tag: para
+#: reference_output.xml:59
+#, no-c-format
+msgid ""
+"Changed: 2.0.0 Inputs to this function can not be unknown -- must be "
+"geometry. Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no "
+"longer valid and you will get an <code>n st_asbinary(unknown) is not unique "
+"error</code>. Code like that needs to be changed to "
+"<code>ST_AsBinary('POINT(1 2)'::geometry);</code>. If that is not possible, "
+"then install <filename>legacy.sql</filename>."
+msgstr "Changed: 2.0.0 この関数への入力は不明な型にすることができなくなり、必ずジオメトリでなければなりません。<code>ST_AsBinary('POINT(1 2)')</code>といった構築ではもはや妥当ではなく、<code>n st_asbinary(unknown) is not unique error</code>が得られます。このようなコードは<code>ST_AsBinary('POINT(1 2)'::geometry);</code>に変更する必要があります。これが不可能な場合には<filename>legacy.sql</filename>をインストールして下さい。"
+
+#. Tag: para
+#: reference_output.xml:61 reference_output.xml:790
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.1"
+msgstr "&sfs_compliant; s2.1.1.1"
+
+#. Tag: para
+#: reference_output.xml:62
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.37"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
+
+#. Tag: para
+#: reference_output.xml:63 reference_output.xml:123 reference_output.xml:177
+#: reference_output.xml:449 reference_output.xml:740 reference_output.xml:792
+#, no-c-format
+msgid "&curve_support;"
+msgstr "&curve_support;"
+
+#. Tag: para
+#: reference_output.xml:64 reference_output.xml:124 reference_output.xml:178
+#: reference_output.xml:390 reference_output.xml:683
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
+#. Tag: para
+#: reference_output.xml:65 reference_output.xml:125 reference_output.xml:179
+#: reference_output.xml:391 reference_output.xml:686
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
+#. Tag: para
+#: reference_output.xml:66 reference_output.xml:122 reference_output.xml:176
+#: reference_output.xml:281 reference_output.xml:389 reference_output.xml:448
+#: reference_output.xml:523 reference_output.xml:681
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: title
+#: reference_output.xml:71 reference_output.xml:130 reference_output.xml:184
+#: reference_output.xml:285 reference_output.xml:453 reference_output.xml:527
+#: reference_output.xml:580 reference_output.xml:744 reference_output.xml:797
+#: reference_output.xml:857 reference_output.xml:919 reference_output.xml:961
+#, no-c-format
+msgid "Examples"
+msgstr "例"
+
+#. Tag: programlisting
+#: reference_output.xml:73
+#, no-c-format
+msgid ""
+"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                   st_asbinary\n"
+"--------------------------------\n"
+"\\001\\003\\000\\000\\000\\001\\000\\000\\000\\005\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\360?\\000\\000\\000\\000\\000\\000\n"
+"\\360?\\000\\000\\000\\000\\000\\000\\360?\\000\\000\n"
+"\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                   st_asbinary\n--------------------------------\n\\001\\003\\000\\000\\000\\001\\000\\000\\000\\005\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\360?\\000\\000\\000\\000\\000\\000\n\\360?\\000\\000\\000\\000\\000\\000\\360?\\000\\000\n\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: programlisting
+#: reference_output.xml:74
+#, no-c-format
+msgid ""
+"SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n"
+"                   st_asbinary\n"
+"--------------------------------\n"
+"\\000\\000\\000\\000\\003\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\n"
+"\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsBinary(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n                   st_asbinary\n--------------------------------\n\\000\\000\\000\\000\\003\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\n\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: title
+#: reference_output.xml:79 reference_output.xml:138 reference_output.xml:191
+#: reference_output.xml:409 reference_output.xml:531 reference_output.xml:748
+#: reference_output.xml:804 reference_output.xml:928 reference_output.xml:966
+#, no-c-format
+msgid "See Also"
+msgstr "関連情報"
+
+#. Tag: para
+#: reference_output.xml:80
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref "
+"linkend=\"ST_AsText\"/>,"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsTWKB\"/>, <xref linkend=\"ST_AsText\"/>,"
+
+#. Tag: refname
+#: reference_output.xml:90
+#, no-c-format
+msgid "ST_AsEWKB"
+msgstr "ST_AsEWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:91
+#, no-c-format
+msgid ""
+"Return the Well-Known Binary (WKB) representation of the geometry with SRID "
+"meta data."
+msgstr "ジオメトリのSRIDメタデータが付いたWell-Known Binary (WKB)表現を返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:95
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>text "
+"</type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:110
+#, no-c-format
+msgid ""
+"Returns the Well-Known Binary representation of the geometry with SRID "
+"metadata. There are 2 variants of the function. The first variant takes no "
+"endian encoding parameter and defaults to little endian. The second variant "
+"takes a second argument denoting the encoding - using little-endian ('NDR') "
+"or big-endian ('XDR') encoding."
+msgstr "ジオメトリのSRIDメタデータが付いWell-Knwon Binary表現を返します。二つの形式があります。一つ目の形式では、エンディアンエンコーディングのパラメータを取らずにサーバ機のエンディアンとします。ふたつめの形式では、第2引数にリトルエンディアン ('NDR')かビッグエンディアン ('XDR')を使ってエンコーディングを明示します。"
+
+#. Tag: para
+#: reference_output.xml:116
+#, no-c-format
+msgid ""
+"The WKB spec does not include the SRID. To get the OGC WKB format use "
+"ST_AsBinary"
+msgstr "WKB仕様ではSRIDは入りません。SRIDを持たないOGC WKBの書式を得るにはST_AsBinaryを使用します。"
+
+#. Tag: para
+#: reference_output.xml:119
+#, no-c-format
+msgid ""
+"ST_AsEWKB is the reverse of ST_GeomFromEWKB. Use ST_GeomFromEWKB to convert "
+"to a postgis geometry from ST_AsEWKB representation."
+msgstr "ST_AsEWKBはジオメトリに対するST_GeomFromEWKBの逆です。PostGISジオメトリをST_AsEWKB表現から変換するにはST_GeomFromEWKBを使います。"
+
+#. Tag: programlisting
+#: reference_output.xml:132
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                   st_asewkb\n"
+"--------------------------------\n"
+"\\001\\003\\000\\000 \\346\\020\\000\\000\\001\\000\n"
+"\\000\\000\\005\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\360?\\000\\000\\000\\000\\000\\000\\360?\n"
+"\\000\\000\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n"
+"\\000\\360?\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"(1 row)"
+msgstr "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                   st_asewkb\n--------------------------------\n\\001\\003\\000\\000 \\346\\020\\000\\000\\001\\000\n\\000\\000\\005\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\360?\\000\\000\\000\\000\\000\\000\\360?\n\\000\\000\\000\\000\\000\\000\\360?\\000\\000\\000\\000\\000\n\\000\\360?\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n(1 row)"
+
+#. Tag: programlisting
+#: reference_output.xml:133
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n"
+"                   st_asewkb\n"
+"--------------------------------\n"
+"\\000 \\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n"
+"000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n"
+"\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\n"
+"\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n"
+"\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
+msgstr "SELECT ST_AsEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326), 'XDR');\n                   st_asewkb\n--------------------------------\n\\000 \\000\\000\\003\\000\\000\\020\\346\\000\\000\\000\\001\\000\\000\\000\\005\\000\\000\\000\\000\\\n000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000?\n\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\\000\\000?\\360\\000\\000\\000\\000\n\\000\\000?\\360\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\n\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000\\000"
+
+#. Tag: para
+#: reference_output.xml:139
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_SRID\"/>"
+
+#. Tag: refname
+#: reference_output.xml:144
+#, no-c-format
+msgid "ST_AsEWKT"
+msgstr "ST_AsEWKT"
+
+#. Tag: refpurpose
+#: reference_output.xml:145
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry with SRID "
+"meta data."
+msgstr "ジオメトリのSRIDメタデータが付いたWell-Known Text (WKT)表現を返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:149
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsEWKT</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsEWKT</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:164
+#, no-c-format
+msgid ""
+"Returns the Well-Known Text representation of the geometry prefixed with the"
+" SRID."
+msgstr "ジオメトリのSRIDメタデータが前に付いたWell-Known Text (WKT)表現を返します。"
+
+#. Tag: para
+#: reference_output.xml:167
+#, no-c-format
+msgid ""
+"The WKT spec does not include the SRID. To get the OGC WKT format use "
+"ST_AsText"
+msgstr "WKT仕様ではSRIDは入りません。SRIDを持たないOGC WKTの書式を得るにはST_AsTextを使用します。"
+
+#. Tag: para
+#: reference_output.xml:169 reference_output.xml:782
+#, no-c-format
+msgid ""
+"WKT format does not maintain precision so to prevent floating truncation, "
+"use ST_AsBinary or ST_AsEWKB format for transport."
+msgstr "WKT書式は精度はあまり維持しませんので、浮動小数点数の打ち切りをさせないために、ST_AsBinaryかST_AsEWKB書式を使用して運んで下さい。"
+
+#. Tag: para
+#: reference_output.xml:173
+#, no-c-format
+msgid ""
+"ST_AsEWKT is the reverse of <xref linkend=\"ST_GeomFromEWKT\"/>. Use <xref "
+"linkend=\"ST_GeomFromEWKT\"/> to convert to a postgis geometry from "
+"ST_AsEWKT representation."
+msgstr "ST_AsEWKTは<xref linkend=\"ST_GeomFromEWKT\"/>の逆です。ST_AsEWKT表現をPostGISジオメトリに変換するには<xref linkend=\"ST_GeomFromEWKT\"/>を使います。"
+
+#. Tag: para
+#: reference_output.xml:175
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 support for Geography, Polyhedral surfaces, Triangles and "
+"TIN was introduced."
+msgstr "Enhanced: 2.0.0 ジオグラフィ対応、多面体サーフェス対応、三角形対応、TIN対応が導入されました。"
+
+#. Tag: programlisting
+#: reference_output.xml:186
+#, no-c-format
+msgid ""
+"SELECT ST_AsEWKT('0103000020E61000000100000005000000000000\n"
+"                        000000000000000000000000000000000000000000000000000000\n"
+"                        F03F000000000000F03F000000000000F03F000000000000F03\n"
+"                        F000000000000000000000000000000000000000000000000'::geometry);\n"
+"\n"
+"                   st_asewkt\n"
+"--------------------------------\n"
+"SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018\n"
+"E20A4100000000485F024100000000000000400000000018\n"
+"E20A4100000000305C02410000000000000840')\n"
+"\n"
+"--st_asewkt---\n"
+"CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)"
+msgstr "SELECT ST_AsEWKT('0103000020E61000000100000005000000000000\n                        000000000000000000000000000000000000000000000000000000\n                        F03F000000000000F03F000000000000F03F000000000000F03\n                        F000000000000000000000000000000000000000000000000'::geometry);\n\n                   st_asewkt\n--------------------------------\nSRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))\n(1 row)\n\nSELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018\nE20A4100000000485F024100000000000000400000000018\nE20A4100000000305C02410000000000000840')\n\n--st_asewkt---\nCIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)"
+
+#. Tag: para
+#: reference_output.xml:192
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
+"linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+
+#. Tag: refname
+#: reference_output.xml:201
+#, no-c-format
+msgid "ST_AsGeoJSON"
+msgstr "ST_AsGeoJSON"
+
+#. Tag: refpurpose
+#: reference_output.xml:203
+#, no-c-format
+msgid "Return the geometry as a GeoJSON element."
+msgstr "GeoJSON要素としてジオメトリを返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:207
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>"
+" <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGeoJSON</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>"
+" <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGeoJSON</function></funcdef> <paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:240
+#, no-c-format
+msgid ""
+"Return the geometry as a Geometry Javascript Object Notation (GeoJSON) "
+"element. (Cf <ulink url=\"http://geojson.org/geojson-spec.html\">GeoJSON "
+"specifications 1.0</ulink>). 2D and 3D Geometries are both supported. "
+"GeoJSON only support SFS 1.1 geometry type (no curve support for example)."
+msgstr "Geometry JavaScript Object Noation (GeoJSON)要素としてジオメトリを返します (<ulink url=\"http://geojson.org/geojson-spec.html\">GeoJSON specifications 1.0</ulink>参照)。2次元と3次元のジオメトリの両方に対応しています。GeoJSONはSFS 1.1ジオメトリタイプのみ対応します (たとえば曲線は対応していません)。"
+
+#. Tag: para
+#: reference_output.xml:246
+#, no-c-format
+msgid ""
+"The gj_version parameter is the major version of the GeoJSON spec. If "
+"specified, must be 1. This represents the spec version of GeoJSON."
+msgstr "gj_versionパラメタはGeoJSON仕様のメジャーバージョンです。指定した場合1でなければなりません。これはGeoJSONの仕様の版を表現します。"
+
+#. Tag: para
+#: reference_output.xml:248
+#, no-c-format
+msgid ""
+"The third argument may be used to reduce the maximum number of decimal "
+"places used in output (defaults to 15)."
+msgstr "第3引数は、出力の最大有効桁数を減らすために使われることがあります (デフォルトは15です)。"
+
+#. Tag: para
+#: reference_output.xml:251
+#, no-c-format
+msgid ""
+"The last 'options' argument could be used to add Bbox or Crs in GeoJSON "
+"output:"
+msgstr "最後の'options'引数は、GeoJSON出力の中にBboxまたはCrsを追加するために使います。与える値は次の通りです。"
+
+#. Tag: para
+#: reference_output.xml:255
+#, no-c-format
+msgid "0: means no option (default value)"
+msgstr "0: オプションなし (デフォルト値)"
+
+#. Tag: para
+#: reference_output.xml:259
+#, no-c-format
+msgid "1: GeoJSON Bbox"
+msgstr "1: GeoJSON Bbox"
+
+#. Tag: para
+#: reference_output.xml:263
+#, no-c-format
+msgid "2: GeoJSON Short CRS (e.g EPSG:4326)"
+msgstr "2: GeoJSON Short CRS (たとえば EPSG:4326)"
+
+#. Tag: para
+#: reference_output.xml:267
+#, no-c-format
+msgid "4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr "4: GeoJSON Long CRS (たとえば urn:ogc:def:crs:EPSG:4326)"
+
+#. Tag: para
+#: reference_output.xml:271
+#, no-c-format
+msgid "Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
+msgstr "一つ目の形式: ST_AsGeoJSON(geom) / precision=15 version=1 options=0"
+
+#. Tag: para
+#: reference_output.xml:272
+#, no-c-format
+msgid "Version 2: ST_AsGeoJSON(geom, precision) / version=1 options=0"
+msgstr "二つ目の形式: ST_AsGeoJSON(geom, precision) / version=1 options=0"
+
+#. Tag: para
+#: reference_output.xml:273
+#, no-c-format
+msgid "Version 3: ST_AsGeoJSON(geom, precision, options) / version=1"
+msgstr "三つ目の形式: ST_AsGeoJSON(geom, precision, options) / version=1"
+
+#. Tag: para
+#: reference_output.xml:274
+#, no-c-format
+msgid "Version 4: ST_AsGeoJSON(gj_version, geom) / precision=15 options=0"
+msgstr "四つ目の形式: ST_AsGeoJSON(gj_version, geom) / precision=15 options=0"
+
+#. Tag: para
+#: reference_output.xml:275
+#, no-c-format
+msgid "Version 5: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
+msgstr "五つ目の形式: ST_AsGeoJSON(gj_version, geom, precision) /options=0"
+
+#. Tag: para
+#: reference_output.xml:276
+#, no-c-format
+msgid "Version 6: ST_AsGeoJSON(gj_version, geom, precision,options)"
+msgstr "六つ目の形式: ST_AsGeoJSON(gj_version, geom, precision,options)"
+
+#. Tag: para
+#: reference_output.xml:278
+#, no-c-format
+msgid "Availability: 1.3.4"
+msgstr "Availability: 1.3.4"
+
+#. Tag: para
+#: reference_output.xml:280
+#, no-c-format
+msgid "Changed: 2.0.0 support default args and named args."
+msgstr "Changed: 2.0.0 デフォルト引数と名前付き引数に対応しました。"
+
+#. Tag: para
+#: reference_output.xml:286
+#, no-c-format
+msgid ""
+"GeoJSON format is generally more efficient than other formats for use in "
+"ajax mapping. One popular javascript client that supports this is Open "
+"Layers. Example of its use is <ulink "
+"url=\"http://openlayers.org/dev/examples/vector-formats.html\">OpenLayers "
+"GeoJSON Example</ulink>"
+msgstr "GeoJSON書式は一般的にAjaxマッピングでの使用に効果的です。OpenLayersはこれをサポートする有名なJavaSciprクライアントです。使用例が<ulink url=\"http://openlayers.org/dev/examples/vector-formats.html\">OpenLayers GeoJSON Example</ulink>にあります。"
+
+#. Tag: programlisting
+#: reference_output.xml:291
+#, no-c-format
+msgid ""
+"SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n"
+"                                           st_asgeojson\n"
+"-----------------------------------------------------------------------------------------------------------\n"
+"\n"
+"{\"type\":\"MultiLineString\",\"coordinates\":[[[-89.734634999999997,31.492072000000000],\n"
+"[-89.734955999999997,31.492237999999997]]]}\n"
+"(1 row)\n"
+"--3d point\n"
+"SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n"
+"\n"
+"st_asgeojson\n"
+"-----------------------------------------------------------------------------------------\n"
+" {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
+msgstr "SELECT ST_AsGeoJSON(the_geom) from fe_edges limit 1;\n                                           st_asgeojson\n-----------------------------------------------------------------------------------------------------------\n\n{\"type\":\"MultiLineString\",\"coordinates\":[[[-89.734634999999997,31.492072000000000],\n[-89.734955999999997,31.492237999999997]]]}\n(1 row)\n--3d point\nSELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');\n\nst_asgeojson\n-----------------------------------------------------------------------------------------\n {\"type\":\"LineString\",\"coordinates\":[[1,2,3],[4,5,6]]}"
+
+#. Tag: refname
+#: reference_output.xml:296
+#, no-c-format
+msgid "ST_AsGML"
+msgstr "ST_AsGML"
+
+#. Tag: refpurpose
+#: reference_output.xml:297
+#, no-c-format
+msgid "Return the geometry as a GML version 2 or 3 element."
+msgstr "GML第2版または第3版としてジオメトリを返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:301
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype>"
+" <funcdef>text <function>ST_AsGML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=null</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> "
+"<parameter>version</parameter></paramdef> <paramdef><type>geography </type> "
+"<parameter>geog</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=null</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> "
+"</funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=null</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsGML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=null</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>id=null</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:341
+#, no-c-format
+msgid ""
+"Return the geometry as a Geography Markup Language (GML) element. The "
+"version parameter, if specified, may be either 2 or 3. If no version "
+"parameter is specified then the default is assumed to be 2. The precision "
+"argument may be used to reduce the maximum number of decimal places "
+"(<varname>maxdecimaldigits</varname>) used in output (defaults to 15)."
+msgstr "Geography Markup Language (GML)要素としてジオメトリを返します。 versionパラメータは、指定した場合には、2または3となります。version引数が無い場合は、2と仮定します。 precision引数は、出力の最大有効桁数 (<varname>maxdecimaldigits</varname>)を減らすために使います (デフォルトは15です)。"
+
+#. Tag: para
+#: reference_output.xml:346
+#, no-c-format
+msgid "GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version"
+msgstr "GML2では2.1.2版を参照し、GML3では3.1.1を参照します。"
+
+#. Tag: para
+#: reference_output.xml:347
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. It could be used to define CRS output "
+"type in GML output, and to declare data as lat/lon:"
+msgstr "最後の'options'引数はビットフィールドです。GML出力のCRS出力型を定義するために、また緯度/経度でデータを宣言するために使います。"
+
+#. Tag: para
+#: reference_output.xml:351
+#, no-c-format
+msgid "0: GML Short CRS (e.g EPSG:4326), default value"
+msgstr "0: GML Short CRS (たとえば EPSG:4326), デフォルト値"
+
+#. Tag: para
+#: reference_output.xml:355
+#, no-c-format
+msgid "1: GML Long CRS (e.g urn:ogc:def:crs:EPSG::4326)"
+msgstr "1: GML Long CRS (たとえば urn:ogc:def:crs:EPSG:4326)"
+
+#. Tag: para
+#: reference_output.xml:359
+#, no-c-format
+msgid "2: For GML 3 only, remove srsDimension attribute from output."
+msgstr "2: GML 3のみ対応。srsDimension属性を出力から削除します。"
+
+#. Tag: para
+#: reference_output.xml:363
+#, no-c-format
+msgid ""
+"4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for "
+"lines."
+msgstr "4: GML 3のみ対応。線について&lt;Curve&gt;でなく&lt;LineString&gt;要素を使います。"
+
+#. Tag: para
+#: reference_output.xml:367
+#, no-c-format
+msgid ""
+"16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume "
+"that data are planars. This option is useful for GML 3.1.1 output only, "
+"related to axis order. So if you set it, it will swap the coordinates so "
+"order is lat lon instead of database lon lat."
+msgstr "16: データは緯度/経度 (すなわち SRID=4326)です。デフォルトではデータは平面上にあると仮定します。このオプションはGML 3.1.1による出力でのみ使われ、軸のオーダに関連します。これを設定すると、座標の順序を入れ替えるので、データベースの経度/緯度の順でなく緯度/経度の順になります。"
+
+#. Tag: para
+#: reference_output.xml:373
+#, no-c-format
+msgid "32: Output the box of the geometry (envelope)."
+msgstr "32: ジオメトリのボックス (エンベロープ)を出力します。"
+
+#. Tag: para
+#: reference_output.xml:378
+#, no-c-format
+msgid ""
+"The 'namespace prefix' argument may be used to specify a custom namespace "
+"prefix or no prefix (if empty). If null or omitted 'gml' prefix is used"
+msgstr "'namespace prefix'引数は、カスタム名前空間のプリフィクスを指定したり、名前空間プリフィクスを指定しない (空にした場合)ために使用します。NULLを指定するか省略した場合には、'gml'プレフィクスを使用します。"
+
+#. Tag: para
+#: reference_output.xml:382
+#, no-c-format
+msgid "Availability: 1.3.2"
+msgstr "Availability: 1.3.2"
+
+#. Tag: para
+#: reference_output.xml:384
+#, no-c-format
+msgid ""
+"Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was "
+"introduced to allow using LineString instead of Curve tag for lines. GML3 "
+"Support for Polyhedral surfaces and TINS was introduced. Option 32 was "
+"introduced to output the box."
+msgstr "Enhanced: 2.0.0 プレフィクスが導入されました。 GML 3用であるoptionsの4は、曲線のかわりにラインストリングを使えるようにするためのものです。GML 3の多面体サーフェスとTINが導入されました。optionsの32はボックスを出力するために導入されました。"
+
+#. Tag: para
+#: reference_output.xml:385
+#, no-c-format
+msgid "Changed: 2.0.0 use default named args"
+msgstr "Changed: 2.0.0 デフォルトの名前付き引数を使います。"
+
+#. Tag: para
+#: reference_output.xml:386
+#, no-c-format
+msgid "Enhanced: 2.1.0 id support was introduced, for GML 3."
+msgstr "Enhanced: 2.1.0 GML 3用にidが導入されました。"
+
+#. Tag: para
+#: reference_output.xml:388
+#, no-c-format
+msgid "Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS."
+msgstr "ST_AsGMLのGML 3版以上では多面体サーフェスとTINに対応しています。"
+
+#. Tag: title
+#: reference_output.xml:395
+#, no-c-format
+msgid "Examples: Version 2"
+msgstr "例: 2版"
+
+#. Tag: programlisting
+#: reference_output.xml:396
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"                st_asgml\n"
+"                --------\n"
+"                <gml:Polygon srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>"
+msgstr "<![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n                st_asgml\n                --------\n                <gml:Polygon srsName=\"EPSG:4326\"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>"
+
+#. Tag: title
+#: reference_output.xml:399
+#, no-c-format
+msgid "Examples: Version 3"
+msgstr "例: 3版"
+
+#. Tag: programlisting
+#: reference_output.xml:400
+#, no-c-format
+msgid ""
+"-- Flip coordinates and output extended EPSG (16 | 1)--\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);\n"
+"                        st_asgml\n"
+"                        --------\n"
+"                <gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>"
+msgstr "-- 座標を入れ替え、拡張EPSGで出力 (16 | 1)--\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);\n                        st_asgml\n                        --------\n                <gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:401
+#, no-c-format
+msgid ""
+"-- Output the envelope (32) --\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);\n"
+"                st_asgml\n"
+"                --------\n"
+"        <gml:Envelope srsName=\"EPSG:4326\">\n"
+"                <gml:lowerCorner>1 2</gml:lowerCorner>\n"
+"                <gml:upperCorner>10 20</gml:upperCorner>\n"
+"        </gml:Envelope>]]>"
+msgstr "-- エンベロープ出力 (32) --\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);\n                st_asgml\n                --------\n        <gml:Envelope srsName=\"EPSG:4326\">\n                <gml:lowerCorner>1 2</gml:lowerCorner>\n                <gml:upperCorner>10 20</gml:upperCorner>\n        </gml:Envelope>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:403
+#, no-c-format
+msgid ""
+"-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --\n"
+"<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);\n"
+"        st_asgml\n"
+"        --------\n"
+"<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">\n"
+"        <gml:lowerCorner>2 1</gml:lowerCorner>\n"
+"        <gml:upperCorner>20 10</gml:upperCorner>\n"
+"</gml:Envelope>]]>"
+msgstr "-- エンベロープ出力 (32)、座標入れ替え (経度緯度を緯度経度に)、Long CRS(1)\n = 32 | 16 | 1 = 49 --\n<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);\n        st_asgml\n        --------\n<gml:Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\">\n        <gml:lowerCorner>2 1</gml:lowerCorner>\n        <gml:upperCorner>20 10</gml:upperCorner>\n</gml:Envelope>]]>"
+
+#. Tag: programlisting
+#: reference_output.xml:405
+#, no-c-format
+msgid ""
+"-- Polyhedral Example --\n"
+"SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n"
+"        st_asgml\n"
+"        --------\n"
+"<![CDATA[ <gml:PolyhedralSurface>\n"
+"<gml:polygonPatches>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"   <gml:PolygonPatch>\n"
+"                <gml:exterior>\n"
+"                          <gml:LinearRing>\n"
+"                                   <gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>\n"
+"                          </gml:LinearRing>\n"
+"                </gml:exterior>\n"
+"   </gml:PolygonPatch>\n"
+"</gml:polygonPatches>\n"
+"</gml:PolyhedralSurface>]]>"
+msgstr "-- 多面体の例 --\nSELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));\n        st_asgml\n        --------\n<![CDATA[ <gml:PolyhedralSurface>\n<gml:polygonPatches>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 0 0 1 0 1 1 0 1 0 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n   <gml:PolygonPatch>\n                <gml:exterior>\n                          <gml:LinearRing>\n                                   <gml:posList srsDimension=\"3\">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList>\n                          </gml:LinearRing>\n                </gml:exterior>\n   </gml:PolygonPatch>\n</gml:polygonPatches>\n</gml:PolyhedralSurface>]]>"
+
+#. Tag: refname
+#: reference_output.xml:418
+#, no-c-format
+msgid "ST_AsHEXEWKB"
+msgstr "ST_AsHEXEWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:420
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding."
+msgstr "ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDS)またはビッグエンディアン (XDR)のどちらかのエンコーディングを使います。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:425
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type>"
+" <parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:442
+#, no-c-format
+msgid ""
+"Returns a Geometry in HEXEWKB format (as text) using either little-endian "
+"(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is"
+" used."
+msgstr "ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDS)またはビッグエンディアン (XDR)のどちらかのエンコーディングを使います。エンコーディングを指定しない場合はNDRを使います。"
+
+#. Tag: para
+#: reference_output.xml:446
+#, no-c-format
+msgid "Availability: 1.2.2"
+msgstr "Availability: 1.2.2"
+
+#. Tag: programlisting
+#: reference_output.xml:454
+#, no-c-format
+msgid ""
+"SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"                which gives same answer as\n"
+"\n"
+"                SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;\n"
+"\n"
+"                st_ashexewkb\n"
+"                --------\n"
+"                0103000020E6100000010000000500\n"
+"                00000000000000000000000000000000\n"
+"                00000000000000000000000000000000F03F\n"
+"                000000000000F03F000000000000F03F000000000000F03\n"
+"                F000000000000000000000000000000000000000000000000"
+msgstr "SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n                which gives same answer as\n\n                SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;\n\n                st_ashexewkb\n                --------\n                0103000020E6100000010000000500\n                00000000000000000000000000000000\n                00000000000000000000000000000000F03F\n                000000000000F03F000000000000F03F000000000000F03\n                F000000000000000000000000000000000000000000000000"
+
+#. Tag: refname
+#: reference_output.xml:460
+#, no-c-format
+msgid "ST_AsKML"
+msgstr "ST_AsKML"
+
+#. Tag: refpurpose
+#: reference_output.xml:462
+#, no-c-format
+msgid ""
+"Return the geometry as a KML element. Several variants. Default version=2, "
+"default precision=15"
+msgstr "ジオメトリをKML要素で返します。いくつかの形式があります。デフォルトはversion=2, precision=15です。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:466
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>text </type> "
+"<parameter>nprefix=NULL</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> <paramdef><type>integer </type> <parameter>version</parameter></paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:498
+#, no-c-format
+msgid ""
+"Return the geometry as a Keyhole Markup Language (KML) element. There are "
+"several variants of this function. maximum number of decimal places used in "
+"output (defaults to 15), version default to 2 and default namespace is no "
+"prefix."
+msgstr "ジオメトリをKeyhole Markup Language (KML)要素で返します。この関数にはいくつかの形式があります。出力に使われる小数位の最大数のデフォルトは15で、デフォルトのバージョンは2で、デフォルトの名前空間はプリフィクス無しです。"
+
+#. Tag: para
+#: reference_output.xml:502
+#, no-c-format
+msgid ""
+"Version 1: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / "
+"maxdecimaldigits=15"
+msgstr "一つ目の形式: ST_AsKML(geom_or_geog, maxdecimaldigits) / version=2 / maxdecimaldigits=15 "
+
+#. Tag: para
+#: reference_output.xml:503
+#, no-c-format
+msgid ""
+"Version 2: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) "
+"maxdecimaldigits=15 / nprefix=NULL"
+msgstr "二つ目の形式: ST_AsKML(version, geom_or_geog, maxdecimaldigits, nprefix) maxdecimaldigits=15 / nprefix=NULL"
+
+#. Tag: para
+#: reference_output.xml:506
+#, no-c-format
+msgid ""
+"Requires PostGIS be compiled with Proj support. Use <xref "
+"linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled"
+" in."
+msgstr "PostGISがProj対応でコンパイルされている必要があります。<xref linkend=\"PostGIS_Full_Version\"/>を使ってProj対応でコンパイルされているか確認して下さい。"
+
+#. Tag: para
+#: reference_output.xml:510
+#, no-c-format
+msgid ""
+"Availability: 1.2.2 - later variants that include version param came in "
+"1.3.2"
+msgstr "Availability: 1.2.2 - versionパラメータが付く形式は1.3.2からです。"
+
+#. Tag: para
+#: reference_output.xml:513
+#, no-c-format
+msgid "Enhanced: 2.0.0 - Add prefix namespace. Default is no prefix"
+msgstr "Enhanced: 2.0.0 - プレフィクス名前空間を追加しました。デフォルトではプリフィクス無しです。"
+
+#. Tag: para
+#: reference_output.xml:516
+#, no-c-format
+msgid "Changed: 2.0.0 - uses default args and supports named args"
+msgstr "Changed: 2.0.0 - デフォルト引数と名前付き引数に対応しました。"
+
+#. Tag: para
+#: reference_output.xml:520
+#, no-c-format
+msgid "AsKML output will not work with geometries that do not have an SRID"
+msgstr "AsKML出力はSRIDを持たないジオメトリでは動作しません。"
+
+#. Tag: programlisting
+#: reference_output.xml:528
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                st_askml\n"
+"                --------\n"
+"                <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>\n"
+"\n"
+"                --3d linestring\n"
+"                SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');\n"
+"                <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                st_askml\n                --------\n                <Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>\n\n                -- 3次元ラインストリング\n                SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');\n                <LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>\n                ]]>"
+
+#. Tag: para
+#: reference_output.xml:533
+#, no-c-format
+msgid ", <xref linkend=\"ST_AsGML\"/>"
+msgstr ", <xref linkend=\"ST_AsGML\"/>"
+
+#. Tag: refname
+#: reference_output.xml:538
+#, no-c-format
+msgid "ST_AsSVG"
+msgstr "ST_AsSVG"
+
+#. Tag: refpurpose
+#: reference_output.xml:540
+#, no-c-format
+msgid ""
+"Returns a Geometry in SVG path data given a geometry or geography object."
+msgstr "ジオメトリまたはジオグラフィで与えられたSVGパスデータによるジオメトリを返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:544
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>rel=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>rel=0</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsSVG</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>rel=0</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:563
+#, no-c-format
+msgid ""
+"Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as "
+"second argument to have the path data implemented in terms of relative "
+"moves, the default (or 0) uses absolute moves. Third argument may be used to"
+" reduce the maximum number of decimal digits used in output (defaults to "
+"15). Point geometries will be rendered as cx/cy when 'rel' arg is 0, x/y "
+"when 'rel' is 1. Multipoint geometries are delimited by commas (\",\"), "
+"GeometryCollection geometries are delimited by semicolons (\";\")."
+msgstr "Scalar Vector Graphics (SVG)としてジオメトリを返します。 第2引数に1を指定すると、相対移動によるパスデータ実装を返し、絶対移動の場合はデフォルト (または0)とします。第3引数は、出力の十進数の最大桁数を減らすために使います (デフォルトは15です)。ポイントジオメトリは、'rel'が0のときはポイントはcx/cyに、'rel'が1のときはx/yに、それぞれ出力されます。マルチポイントはコンマ (\",\")で区切られ、ジオメトリコレクションはセミコロン (\";\")で区切られます。"
+
+#. Tag: para
+#: reference_output.xml:573
+#, no-c-format
+msgid ""
+"Availability: 1.2.2. Availability: 1.4.0 Changed in PostGIS 1.4.0 to include"
+" L command in absolute path to conform to <ulink "
+"url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>"
+msgstr "Availability: 1.2.2. Availability: 1.4.0 PostGIS 1.4.0で<ulink url=\"http://www.w3.org/TR/SVG/paths.html#PathDataBNF\">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink>に従うため、絶対パスにLコマンドが入りました。"
+
+#. Tag: para
+#: reference_output.xml:576
+#, no-c-format
+msgid "Changed: 2.0.0 to use default args and support named args"
+msgstr "Changed: 2.0.0 - デフォルト引数と名前付き引数に対応しました。"
+
+#. Tag: programlisting
+#: reference_output.xml:581
+#, no-c-format
+msgid ""
+"SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n"
+"\n"
+"                st_assvg\n"
+"                --------\n"
+"                M 0 0 L 0 -1 1 -1 1 0 Z"
+msgstr "SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));\n\n                st_assvg\n                --------\n                M 0 0 L 0 -1 1 -1 1 0 Z"
+
+#. Tag: refname
+#: reference_output.xml:587
+#, no-c-format
+msgid "ST_AsX3D"
+msgstr "ST_AsX3D"
+
+#. Tag: refpurpose
+#: reference_output.xml:589
+#, no-c-format
+msgid ""
+"Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2"
+"-X3DEncodings-XML"
+msgstr "ジオメトリをX3Dノード要素書式　(ISO-IEC-19776-1.2-X3DEncodings-XML)で返します。"
+
+#. Tag: funcprototype
+#: reference_output.xml:594
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsX3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef "
+"choice=\"opt\"><type>integer </type> "
+"<parameter>options=0</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsX3D</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:606
+#, no-c-format
+msgid ""
+"Returns a geometry as an X3D xml formatted node element <ulink "
+"url=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/standards/number/19776-1</ulink>."
+" If <varname>maxdecimaldigits</varname> (precision) is not specified then "
+"defaults to 15."
+msgstr "X3D XMLで表されたノード要素 <ulink url=\"http://www.web3d.org/standards/number/19776-1\">http://www.web3d.org/standards/number/19776-1</ulink>としたジオメトリを返します。<varname>maxdecimaldigits</varname> (精度)を指定しない場合には、デフォルトは15です。"
+
+#. Tag: para
+#: reference_output.xml:608
+#, no-c-format
+msgid ""
+"There are various options for translating PostGIS geometries to X3D since "
+"X3D geometry types don't map directly to PostGIS geometry types and some "
+"newer X3D types that might be better mappings we have avoided since most "
+"rendering tools don't currently support them. These are the mappings we have"
+" settled on. Feel free to post a bug ticket if you have thoughts on the idea"
+" or ways we can allow people to denote their preferred mappings."
+msgstr "PostGISジオメトリをX3Dに変換するための任意引数が様々あります。X3Dジオメトリ型は、PostGISジオメトリタイプに対応付けされていないためです。また、より良い対応付けになると思われるものの、ほとんどのレンダリングツールが今のところは対応していないため、開発者が避けてきた新しいX3Dタイプに対応付けをしていないためでもあります。これらは開発者が決定した対応付けです。開発者が皆さんにより好まれる対応付けを示せるようなアイデアや方法に関する考えを持っているなら、お気軽にバグチケットを出して下さい。"
+
+#. Tag: para
+#: reference_output.xml:610
+#, no-c-format
+msgid "Below is how we currently map PostGIS 2D/3D types to X3D types"
+msgstr "次に現在PostGIS 2次元/3次元型からX3D型への対応付けを示します。"
+
+#. Tag: para
+#: reference_output.xml:613
+#, no-c-format
+msgid ""
+"The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
+"denote whether to represent coordinates with X3D GeoCoordinates Geospatial "
+"node and also whether to flip the x/y axis. By default, "
+"<code>ST_AsX3D</code> outputs in database form (long,lat or X,Y), but X3D "
+"default of lat/lon, y/x may be preferred."
+msgstr "'options'引数はビットフィールドです。PostGIS 2.2以上では、これはX3D GeoCoordinates Geospatialノードを表現するかどうか、また、X/Y軸を反対にするかどうかで使います。<code>ST_AsX3D</code>は、デフォルトではデータベースの形式(経度, 緯度またはX, Y)で出力しますが、X3Dのlat/lon, y/xのデフォルトが好まれるでしょう。"
+
+#. Tag: para
+#: reference_output.xml:617
+#, no-c-format
+msgid ""
+"0: X/Y in database order (e.g. long/lat = X,Y is standard database order), "
+"default value, and non-spatial coordinates (just regular old Coordinate "
+"tag)."
+msgstr "0: データベース内のX/Y順 (経度/緯度=X, Yが標準です)とします。デフォルト値です。非空間座標 (一般的な古いCoordinate要素です)です。"
+
+#. Tag: para
+#: reference_output.xml:621
+#, no-c-format
+msgid ""
+"1: Flip X and Y. If used in conjunction with the GeoCoordinate option "
+"switch, then output will be default \"latitude_first\" and coordinates will "
+"be flipped as well."
+msgstr "1: XとYを反対にします。GeoCoordinate任意スイッチと併せて使用されると、出力は\"latitude_first\" (緯度が先)となり、座標が同じように反対になります。"
+
+#. Tag: para
+#: reference_output.xml:625
+#, no-c-format
+msgid ""
+"2: Output coordinates in GeoSpatial GeoCoordinates. This option will throw "
+"an error if geometries are not in WGS 84 long lat (srid: 4326). This is "
+"currenlty the only GeoCoordinate type supported. <ulink "
+"url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference\">Refer"
+" to X3D specs specifying a spatial reference system.</ulink>. Default output"
+" will be <code>GeoCoordinate geoSystem='\"GD\" \"WE\" "
+"\"longitude_first\"'</code>. If you prefer the X3D default of "
+"<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code> use "
+"<code>(2 + 1)</code> = <code>3</code>"
+msgstr "2: GeoSpatial GeoCoordinates内の出力座標。WGS 84経度緯度 (SRID: 4326)でない場合にエラーが投げられます。現在はGeoCoordinate型のみ対応します。X3D仕様の<ulink url=\"http://www.web3d.org/documents/specifications/19775-1/V3.2/Part01/components/geodata.html#Specifyingaspatialreference\">specifying a spatial reference system.</ulink>を参照して下さい。デフォルト出力は<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"'</code>となります。X3Dのデフォルトである<code>GeoCoordinate geoSystem='\"GD\" \"WE\" \"latitude_first\"'</code>とするには、<code>(2 + 1)</code> = <code>3</code>とします。"
+
+#. Tag: entry
+#: reference_output.xml:635
+#, no-c-format
+msgid "PostGIS Type"
+msgstr "PostGISタイプ"
+
+#. Tag: entry
+#: reference_output.xml:636
+#, no-c-format
+msgid "2D X3D Type"
+msgstr "2次元X3Dタイプ"
+
+#. Tag: entry
+#: reference_output.xml:637
+#, no-c-format
+msgid "3D X3D Type"
+msgstr "3次元X3Dタイプ"
+
+#. Tag: entry
+#: reference_output.xml:642
+#, no-c-format
+msgid "LINESTRING"
+msgstr "LINESTRING"
+
+#. Tag: entry
+#: reference_output.xml:643 reference_output.xml:648
+#, no-c-format
+msgid "not yet implemented - will be PolyLine2D"
+msgstr "未実装 - PolyLine2Dの予定"
+
+#. Tag: entry
+#: reference_output.xml:644
+#, no-c-format
+msgid "LineSet"
+msgstr "LineSet"
+
+#. Tag: entry
+#: reference_output.xml:647
+#, no-c-format
+msgid "MULTILINESTRING"
+msgstr "MULTILINESTRING"
+
+#. Tag: entry
+#: reference_output.xml:649
+#, no-c-format
+msgid "IndexedLineSet"
+msgstr "IndexedLineSet"
+
+#. Tag: entry
+#: reference_output.xml:652
+#, no-c-format
+msgid "MULTIPOINT"
+msgstr "MULTIPOINT"
+
+#. Tag: entry
+#: reference_output.xml:653
+#, no-c-format
+msgid "Polypoint2D"
+msgstr "Polypoint2D"
+
+#. Tag: entry
+#: reference_output.xml:654
+#, no-c-format
+msgid "PointSet"
+msgstr "PointSet"
+
+#. Tag: entry
+#: reference_output.xml:657
+#, no-c-format
+msgid "POINT"
+msgstr "POINT"
+
+#. Tag: entry
+#: reference_output.xml:658 reference_output.xml:659
+#, no-c-format
+msgid "outputs the space delimited coordinates"
+msgstr "空白区切り座標値を出力"
+
+#. Tag: entry
+#: reference_output.xml:662
+#, no-c-format
+msgid "(MULTI) POLYGON, POLYHEDRALSURFACE"
+msgstr "(MULTI) POLYGON, POLYHEDRALSURFACE"
+
+#. Tag: entry
+#: reference_output.xml:663
+#, no-c-format
+msgid "Invalid X3D markup"
+msgstr "不正なX3Dマークアップ"
+
+#. Tag: entry
+#: reference_output.xml:664
+#, no-c-format
+msgid "IndexedFaceSet (inner rings currently output as another faceset)"
+msgstr "IndexedFaceSet (内環は現在は他のfacesetとして出力)"
+
+#. Tag: entry
+#: reference_output.xml:667
+#, no-c-format
+msgid "<entry>TIN</entry>"
+msgstr "<entry>TIN</entry>"
+
+#. Tag: entry
+#: reference_output.xml:668
+#, no-c-format
+msgid "TriangleSet2D (Not Yet Implemented)"
+msgstr "TriangleSet2D (未実装)"
+
+#. Tag: entry
+#: reference_output.xml:669
+#, no-c-format
+msgid "IndexedTriangleSet"
+msgstr "IndexedTriangleSet"
+
+#. Tag: para
+#: reference_output.xml:674
+#, no-c-format
+msgid ""
+"2D geometry support not yet complete. Inner rings currently just drawn as "
+"separate polygons. We are working on these."
+msgstr "2次元ジオメトリ対応はまだ不完全です。 内環は現在は分けられたポリゴンとして描画されるだけです。作業中です。"
+
+#. Tag: para
+#: reference_output.xml:675
+#, no-c-format
+msgid ""
+"Lots of advancements happening in 3D space particularly with <ulink "
+"url=\"http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5\">X3D"
+" Integration with HTML5</ulink>"
+msgstr "3次元空間については、特に<ulink url=\"http://www.web3d.org/x3d/wiki/index.php/X3D_and_HTML5#Goals:_X3D_and_HTML5\">X3D Integration with HTML5</ulink>によって、よく進展しています。"
+
+#. Tag: para
+#: reference_output.xml:676
+#, no-c-format
+msgid ""
+"There is also a nice open source X3D viewer you can use to view rendered "
+"geometries. Free Wrl <ulink "
+"url=\"http://freewrl.sourceforge.net/\">http://freewrl.sourceforge.net/</ulink>"
+" binaries available for Mac, Linux, and Windows. Use the FreeWRL_Launcher "
+"packaged to view the geometries."
+msgstr "また、描画されたジオメトリを閲覧するための素晴らしいオープンソースのX3Dビューアがあります。Free Wrl <ulink url=\"http://freewrl.sourceforge.net/\">http://freewrl.sourceforge.net/</ulink>のバイナリがMac, Linux, Windows用であります。ジオメトリを見るためのパッケージであるFreeWRL_Launcherを使います。"
+
+#. Tag: para
+#: reference_output.xml:677
+#, no-c-format
+msgid ""
+"Also check out <ulink "
+"url=\"https://github.com/robe2/postgis_x3d_viewer\">PostGIS minimalist X3D "
+"viewer</ulink> that utilizes this function and <ulink "
+"url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</ulink>."
+msgstr "また、この関数と<ulink url=\"http://www.x3dom.org/\">x3dDom html/js open source toolkit</ulink>を用いる<ulink url=\"https://github.com/robe2/postgis_x3d_viewer\">PostGIS minimalist X3D viewer</ulink>をチェックアウトしてみて下さい。"
+
+#. Tag: para
+#: reference_output.xml:678
+#, no-c-format
+msgid "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
+msgstr "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
+
+#. Tag: para
+#: reference_output.xml:679
+#, no-c-format
+msgid ""
+"Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) "
+"flipping. Look at options for details."
+msgstr "Enhanced: 2.2.0: GeoCoordinatesと軸 (x/y, 経度/緯度)の反転に対応しました。詳細はoptionsを見て下さい。"
+
+#. Tag: title
+#: reference_output.xml:691
+#, no-c-format
+msgid ""
+"Example: Create a fully functional X3D document - This will generate a cube "
+"that is viewable in FreeWrl and other X3D viewers."
+msgstr "例: 完全に機能するX3D文書の作成 - FreeWrlや他のX3Dビューアで見ることができる立方体を生成しています。"
+
+#. Tag: programlisting
+#: reference_output.xml:692
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n"
+"<X3D>\n"
+"  <Scene>\n"
+"    <Transform>\n"
+"      <Shape>\n"
+"       <Appearance>\n"
+"            <Material emissiveColor=''0 0 1''/>   \n"
+"       </Appearance> ' || \n"
+"       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||\n"
+"      '</Shape>\n"
+"    </Transform>\n"
+"  </Scene>\n"
+"</X3D>' As x3ddoc;]]>\n"
+"\n"
+"                x3ddoc\n"
+"                --------\n"
+"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n"
+"<X3D>\n"
+"  <Scene>\n"
+"    <Transform>\n"
+"      <Shape>\n"
+"       <Appearance>\n"
+"            <Material emissiveColor='0 0 1'/>   \n"
+"       </Appearance> \n"
+"       <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'>\n"
+"            <Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' />\n"
+"      </IndexedFaceSet>\n"
+"      </Shape>\n"
+"    </Transform>\n"
+"  </Scene>\n"
+"</X3D>]]>"
+msgstr "<![CDATA[SELECT '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n<X3D>\n  <Scene>\n    <Transform>\n      <Shape>\n       <Appearance>\n            <Material emissiveColor=''0 0 1''/>   \n       </Appearance> ' || \n       ST_AsX3D( ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ||\n      '</Shape>\n    </Transform>\n  </Scene>\n</X3D>' As x3ddoc;]]>\n\n                x3ddoc\n                --------\n<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.0//EN\" \"http://www.web3d.org/specifications/x3d-3.0.dtd\">\n<X3D>\n  <Scene>\n    <Transform>\n      <Shape>\n       <Appearance>\n            <Material emissiveColor='0 0 1'/>   \n       </Appearance> \n       <IndexedFaceSet  coordIndex='0 1 2 3 -1 4 5 6 7 -1 8 9 10 11 -1 12 13 14 15 -1 16 17 18 19 -1 20 21 22 23'>\n            <Coordinate point='0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0 1 0 0 1 0 1 0 0 1 1 1 0 1 1 1 1 0 1 1 0 0 0 1 0 0 1 1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 1' />\n      </IndexedFaceSet>\n      </Shape>\n    </Transform>\n  </Scene>\n</X3D>]]>"
+
+#. Tag: title
+#: reference_output.xml:695
+#, no-c-format
+msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
+msgstr "例: 高さ3単位で精度が6桁の八角柱"
+
+#. Tag: programlisting
+#: reference_output.xml:696
+#, no-c-format
+msgid ""
+"SELECT ST_AsX3D(\n"
+"ST_Translate(\n"
+"    ST_Force_3d(\n"
+"        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,\n"
+"    3)\n"
+"  ,6) As x3dfrag;\n"
+"\n"
+"x3dfrag\n"
+"--------\n"
+"<![CDATA[<IndexedFaceSet coordIndex=\"0 1 2 3 4 5 6 7\">\n"
+"    <Coordinate point=\"15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 \" />\n"
+"</IndexedFaceSet>]]>"
+msgstr "SELECT ST_AsX3D(\nST_Translate(\n    ST_Force_3d(\n        ST_Buffer(ST_Point(10,10),5, 'quad_segs=2')), 0,0,\n    3)\n  ,6) As x3dfrag;\n\nx3dfrag\n--------\n<![CDATA[<IndexedFaceSet coordIndex=\"0 1 2 3 4 5 6 7\">\n    <Coordinate point=\"15 10 3 13.535534 6.464466 3 10 5 3 6.464466 6.464466 3 5 10 3 6.464466 13.535534 3 10 15 3 13.535534 13.535534 3 \" />\n</IndexedFaceSet>]]>"
+
+#. Tag: title
+#: reference_output.xml:699
+#, no-c-format
+msgid "Example: TIN"
+msgstr "例: TIN"
+
+#. Tag: programlisting
+#: reference_output.xml:700
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
+"                0 0 0, \n"
+"                0 0 1, \n"
+"                0 1 0, \n"
+"                0 0 0\n"
+"            )), ((\n"
+"                0 0 0, \n"
+"                0 1 0, \n"
+"                1 1 0, \n"
+"                0 0 0\n"
+"            ))\n"
+"            )')) As x3dfrag;]]>\n"
+"\n"
+"                x3dfrag\n"
+"                --------\n"
+"<![CDATA[<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
+msgstr "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n                0 0 0, \n                0 0 1, \n                0 1 0, \n                0 0 0\n            )), ((\n                0 0 0, \n                0 1 0, \n                1 1 0, \n                0 0 0\n            ))\n            )')) As x3dfrag;]]>\n\n                x3dfrag\n                --------\n<![CDATA[<IndexedTriangleSet  index='0 1 2 3 4 5'><Coordinate point='0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
+
+#. Tag: title
+#: reference_output.xml:703
+#, no-c-format
+msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
+msgstr "例: 閉じたラインストリング (穴のあるポリゴンの境界)"
+
+#. Tag: programlisting
+#: reference_output.xml:704
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsX3D(\n"
+"                    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),\n"
+"  (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))') \n"
+") As x3dfrag;]]>\n"
+"\n"
+"                x3dfrag\n"
+"                --------\n"
+"<![CDATA[<IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>\n"
+"    <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />\n"
+" </IndexedLineSet>]]>"
+msgstr "<![CDATA[SELECT ST_AsX3D(\n                    ST_GeomFromEWKT('MULTILINESTRING((20 0 10,16 -12 10,0 -16 10,-12 -12 10,-20 0 10,-12 16 10,0 24 10,16 16 10,20 0 10),\n  (12 0 10,8 8 10,0 12 10,-8 8 10,-8 0 10,-8 -4 10,0 -8 10,8 -4 10,12 0 10))') \n) As x3dfrag;]]>\n\n                x3dfrag\n                --------\n<![CDATA[<IndexedLineSet  coordIndex='0 1 2 3 4 5 6 7 0 -1 8 9 10 11 12 13 14 15 8'>\n    <Coordinate point='20 0 10 16 -12 10 0 -16 10 -12 -12 10 -20 0 10 -12 16 10 0 24 10 16 16 10 12 0 10 8 8 10 0 12 10 -8 8 10 -8 0 10 -8 -4 10 0 -8 10 8 -4 10 ' />\n </IndexedLineSet>]]>"
+
+#. Tag: refname
+#: reference_output.xml:710
+#, no-c-format
+msgid "ST_GeoHash"
+msgstr "ST_GeoHash"
+
+#. Tag: refpurpose
+#: reference_output.xml:712
+#, no-c-format
+msgid "Return a GeoHash representation of the geometry."
+msgstr "ジオメトリのGeoHash表現を返します。"
+
+#. Tag: funcprototype
+#: reference_output.xml:717
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_GeoHash</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_GeoHash</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:728
+#, no-c-format
+msgid ""
+"Return a GeoHash representation (<ulink "
+"url=\"http://en.wikipedia.org/wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>)"
+" of the geometry. A GeoHash encodes a point into a text form that is "
+"sortable and searchable based on prefixing. A shorter GeoHash is a less "
+"precise representation of a point. It can also be thought of as a box, that "
+"contains the actual point."
+msgstr "ジオメトリのGeoHash表現 (<ulink url=\"http://en.wikipedia.org/wiki/Geohash\">http://en.wikipedia.org/wiki/Geohash</ulink>)を返します。GeoHashによって、ポイントは、prefixingに基づいてソートと検索が可能なテキスト形式にエンコードされます。短いGeoHashは低精度のポイント表現です。実際の点を含むボックスとも考えられます。"
+
+#. Tag: para
+#: reference_output.xml:730
+#, no-c-format
+msgid ""
+"If no <varname>maxchars</varname> is specficified ST_GeoHash returns a "
+"GeoHash based on full precision of the input geometry type. Points return a "
+"GeoHash with 20 characters of precision (about enough to hold the full "
+"double precision of the input). Other types return a GeoHash with a variable"
+" amount of precision, based on the size of the feature. Larger features are "
+"represented with less precision, smaller features with more precision. The "
+"idea is that the box implied by the GeoHash will always contain the input "
+"feature."
+msgstr "<varname>maxchars</varname>を指定しなかった場合には、ST_GeoHashは、入力ジオメトリタイプの、完全な精度に基づくGeoHashを返します。ポイントについては20文字の精度を持つGeoHashを返します (入力の倍精度を完全に保持するのに概ね十分です)。他のタイプでは可変的な精度量を持つGeoHashを返します。大きなフィーチャーは低精度で表現され、小さいフィーチャーは高精度で表現されます。GeoHashが含むボックスは常に入力フィーチャーを含むとようにしています。"
+
+#. Tag: para
+#: reference_output.xml:732
+#, no-c-format
+msgid ""
+"If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
+"with at most that many characters so a possibly lower precision "
+"representation of the input geometry. For non-points, the starting point of "
+"the calculation is the center of the bounding box of the geometry."
+msgstr "<varname>maxchars</varname>を指定した場合には、ST_GeoHashは、最高でもその文字数によるGeoHashを返し、入力ジオメトリはおそらく低精度表現となります。ポイント以外では、計算の開始点はジオメトリのバウンディングボックスの中心となります。"
+
+#. Tag: para
+#: reference_output.xml:734
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr "Availability: 1.4.0"
+
+#. Tag: para
+#: reference_output.xml:737
+#, no-c-format
+msgid ""
+"ST_GeoHash will not work with geometries that are not in geographic "
+"(lon/lat) coordinates."
+msgstr "ST_GeoHashはジオグラフィ (経度緯度)座標系では動作しません。"
+
+#. Tag: programlisting
+#: reference_output.xml:745
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n"
+"\n"
+"         st_geohash\n"
+"----------------------\n"
+" c0w3hf1s70w3hf1s70w3\n"
+"\n"
+"SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);\n"
+"\n"
+" st_geohash\n"
+"------------\n"
+" c0w3h\n"
+"                ]]>"
+msgstr "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n\n         st_geohash\n----------------------\n c0w3hf1s70w3hf1s70w3\n\nSELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);\n\n st_geohash\n------------\n c0w3h\n                ]]>"
+
+#. Tag: refname
+#: reference_output.xml:756
+#, no-c-format
+msgid "ST_AsText"
+msgstr "ST_AsText"
+
+#. Tag: refpurpose
+#: reference_output.xml:757
+#, no-c-format
+msgid ""
+"Return the Well-Known Text (WKT) representation of the geometry/geography "
+"without SRID metadata."
+msgstr "ジオメトリ/ジオグラフィのSRIDメタデータのないWell-Known Text (WKT)表現を返します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:761
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>text "
+"<function>ST_AsText</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>g1</parameter></paramdef> </funcprototype>"
+msgstr "<funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>ST_AsText</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:776
+#, no-c-format
+msgid "Returns the Well-Known Text representation of the geometry/geography."
+msgstr "ジオメトリ/ジオグラフィのWell-Knwon Text表現を返します。"
+
+#. Tag: para
+#: reference_output.xml:779
+#, no-c-format
+msgid ""
+"The WKT spec does not include the SRID. To get the SRID as part of the data,"
+" use the non-standard PostGIS <xref linkend=\"ST_AsEWKT\"/>"
+msgstr "WKT仕様ではSRIDは入りません。SRIDを持つOGC WKTの書式を得るには、OGC標準ではないPostGIS <xref linkend=\"ST_AsEWKT\"/>を使用します。"
+
+#. Tag: para
+#: reference_output.xml:786
+#, no-c-format
+msgid ""
+"ST_AsText is the reverse of <xref linkend=\"ST_GeomFromText\"/>. Use <xref "
+"linkend=\"ST_GeomFromText\"/> to convert to a postgis geometry from "
+"ST_AsText representation."
+msgstr "ST_AsTextは<xref linkend=\"ST_GeomFromText\"/>の逆です。ST_AsText表現をPostGISジオメトリに変換するには<xref linkend=\"ST_GeomFromText\"/>使います。"
+
+#. Tag: para
+#: reference_output.xml:789
+#, no-c-format
+msgid "Availability: 1.5 - support for geography was introduced."
+msgstr "Availability: 1.5 - ジオグラフィ対応が導入されました。"
+
+#. Tag: para
+#: reference_output.xml:791
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
+msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
+
+#. Tag: programlisting
+#: reference_output.xml:799
+#, no-c-format
+msgid ""
+"SELECT ST_AsText('01030000000100000005000000000000000000\n"
+"000000000000000000000000000000000000000000000000\n"
+"F03F000000000000F03F000000000000F03F000000000000F03\n"
+"F000000000000000000000000000000000000000000000000');\n"
+"\n"
+"                   st_astext\n"
+"--------------------------------\n"
+" POLYGON((0 0,0 1,1 1,1 0,0 0))\n"
+"(1 row)"
+msgstr "SELECT ST_AsText('01030000000100000005000000000000000000\n000000000000000000000000000000000000000000000000\nF03F000000000000F03F000000000000F03F000000000000F03\nF000000000000000000000000000000000000000000000000');\n\n                   st_astext\n--------------------------------\n POLYGON((0 0,0 1,1 1,1 0,0 0))\n(1 row)"
+
+#. Tag: para
+#: reference_output.xml:806 reference_output.xml:929
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
+msgstr ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+
+#. Tag: refname
+#: reference_output.xml:813
+#, no-c-format
+msgid "ST_AsLatLonText"
+msgstr "ST_AsLatLonText"
+
+#. Tag: refpurpose
+#: reference_output.xml:814
+#, no-c-format
+msgid ""
+"Return the Degrees, Minutes, Seconds representation of the given point."
+msgstr "与えられたポイントの度・分・秒表現を返します。"
+
+#. Tag: funcprototype
+#: reference_output.xml:819
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsLatLonText</function></funcdef> <paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> <paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:830
+#, no-c-format
+msgid "Returns the Degrees, Minutes, Seconds representation of the point."
+msgstr "ポイントの度・分・秒表現を返します。"
+
+#. Tag: para
+#: reference_output.xml:833
+#, no-c-format
+msgid ""
+"It is assumed the point is in a lat/lon projection. The X (lon) and Y (lat) "
+"coordinates are normalized in the output to the \"normal\" range (-180 to "
+"+180 for lon, -90 to +90 for lat)."
+msgstr "緯度/経度座標系のポイントを前提としています。X(経度)とY(緯度)座標系は「正常な」範囲 (経度は-180から180、緯度は-90から90)に正常化されます。"
+
+#. Tag: para
+#: reference_output.xml:836
+#, no-c-format
+msgid ""
+"The text parameter is a format string containing the format for the "
+"resulting text, similar to a date format string. Valid tokens are \"D\" for "
+"degrees, \"M\" for minutes, \"S\" for seconds, and \"C\" for cardinal "
+"direction (NSEW). DMS tokens may be repeated to indicate desired width and "
+"precision (\"SSS.SSSS\" means \" 1.0023\")."
+msgstr "text引数は結果文字列のための書式を含む書式文字列です。日付書式文字列に近いものです。妥当なトークンは\"D\"が度、\"M\"が分、\"S\"が秒、\"C\" (cardinal direction)が4方位 (NSEW)です。DMSトークンは、求める幅と精度で示すために、繰り返せます (\"SSS.SSSS\"では\" 1.0023\"になります)。"
+
+#. Tag: para
+#: reference_output.xml:841
+#, no-c-format
+msgid ""
+"\"M\", \"S\", and \"C\" are optional. If \"C\" is omitted, degrees are shown"
+" with a \"-\" sign if south or west. If \"S\" is omitted, minutes will be "
+"shown as decimal with as many digits of precision as you specify. If \"M\" "
+"is also omitted, degrees are shown as decimal with as many digits precision "
+"as you specify."
+msgstr "\"M\"と\"S\"と\"C\"は必須ではありません。\"C\"が省略された場合には、南または西の場合には\"-\"符号がついたうえで、指定した精度で、度が表示されます。\"M\"も省略された場合には、指定した精度の桁数で十進の度が表示されます。"
+
+#. Tag: para
+#: reference_output.xml:846
+#, no-c-format
+msgid ""
+"If the format string is omitted (or zero-length) a default format will be "
+"used."
+msgstr "書式文字列が省略された (または長さが0の)場合には、デフォルトの書式が使われます。"
+
+#. Tag: para
+#: reference_output.xml:852
+#, no-c-format
+msgid "Availability: 2.0"
+msgstr "Availability: 2.0"
+
+#. Tag: para
+#: reference_output.xml:858
+#, no-c-format
+msgid "Default format."
+msgstr "デフォルト書式。"
+
+#. Tag: programlisting
+#: reference_output.xml:859
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n"
+"      st_aslatlontext       \n"
+"----------------------------\n"
+" 2°19'29.928\"S 3°14'3.243\"W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)'));\n      st_aslatlontext       \n----------------------------\n 2°19'29.928\"S 3°14'3.243\"W"
+
+#. Tag: para
+#: reference_output.xml:860
+#, no-c-format
+msgid "Providing a format (same as the default)."
+msgstr "書式を指定 (デフォルトと同じ)。"
+
+#. Tag: programlisting
+#: reference_output.xml:861
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n"
+"      st_aslatlontext       \n"
+"----------------------------\n"
+" 2°19'29.928\"S 3°14'3.243\"W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"C'));\n      st_aslatlontext       \n----------------------------\n 2°19'29.928\"S 3°14'3.243\"W"
+
+#. Tag: para
+#: reference_output.xml:862
+#, no-c-format
+msgid "Characters other than D, M, S, C and . are just passed through."
+msgstr "D, M, S, C以外の文字は通過するだけです。"
+
+#. Tag: programlisting
+#: reference_output.xml:863
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));\n"
+"                                   st_aslatlontext                                    \n"
+"--------------------------------------------------------------------------------------\n"
+" 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D degrees, M minutes, S seconds to the C'));\n                                   st_aslatlontext                                    \n--------------------------------------------------------------------------------------\n 2 degrees, 19 minutes, 30 seconds to the S 3 degrees, 14 minutes, 3 seconds to the W"
+
+#. Tag: para
+#: reference_output.xml:864
+#, no-c-format
+msgid "Signed degrees instead of cardinal directions."
+msgstr "4方位文字でなく符号で示された度。"
+
+#. Tag: programlisting
+#: reference_output.xml:865
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n"
+"      st_aslatlontext       \n"
+"----------------------------\n"
+" -2°19'29.928\" -3°14'3.243\""
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D°M''S.SSS\"'));\n      st_aslatlontext       \n----------------------------\n -2°19'29.928\" -3°14'3.243\""
+
+#. Tag: para
+#: reference_output.xml:866
+#, no-c-format
+msgid "Decimal degrees."
+msgstr "十進の度。"
+
+#. Tag: programlisting
+#: reference_output.xml:867
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));\n"
+"          st_aslatlontext          \n"
+"-----------------------------------\n"
+" 2.3250 degrees S 3.2342 degrees W"
+msgstr "SELECT (ST_AsLatLonText('POINT (-3.2342342 -2.32498)', 'D.DDDD degrees C'));\n          st_aslatlontext          \n-----------------------------------\n 2.3250 degrees S 3.2342 degrees W"
+
+#. Tag: para
+#: reference_output.xml:868
+#, no-c-format
+msgid "Excessively large values are normalized."
+msgstr "過大な値が正常化されます。"
+
+#. Tag: programlisting
+#: reference_output.xml:869
+#, no-c-format
+msgid ""
+"SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n"
+"        st_aslatlontext        \n"
+"-------------------------------\n"
+" 72°19'29.928\"S 57°45'56.757\"E"
+msgstr "SELECT (ST_AsLatLonText('POINT (-302.2342342 -792.32498)'));\n        st_aslatlontext        \n-------------------------------\n 72°19'29.928\"S 57°45'56.757\"E"
+
+#. Tag: refname
+#: reference_output.xml:877
+#, no-c-format
+msgid "ST_AsTWKB"
+msgstr "ST_AsTWKB"
+
+#. Tag: refpurpose
+#: reference_output.xml:878
+#, no-c-format
+msgid "Returns the geometry as TWKB, aka \"Tiny Well-Known Binary\""
+msgstr "TWKB (Tiny Well-Known Binary)としてジオメトリを出力します。"
+
+#. Tag: funcsynopsis
+#: reference_output.xml:882
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer"
+" </type> <parameter>decimaldigits_z=0</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean "
+"</type> <parameter>include_sizes=false</parameter></paramdef> "
+"<paramdef><type>boolean </type> <parameter>include_bounding "
+"boxes=false</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>bytea <function>ST_AsTWKB</function></funcdef> "
+"<paramdef><type>geometry[] </type> "
+"<parameter>geometries</parameter></paramdef> <paramdef><type>bigint[] "
+"</type> <parameter>unique_ids</parameter></paramdef> <paramdef><type>integer"
+" </type> <parameter>decimaldigits_xy=0</parameter></paramdef> "
+"<paramdef><type>integer </type> "
+"<parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer "
+"</type> <parameter>decimaldigits_m=0</parameter></paramdef> "
+"<paramdef><type>boolean </type> "
+"<parameter>include_sizes=false</parameter></paramdef> "
+"<paramdef><type>boolean </type> "
+"<parameter>include_bounding_boxes=false</parameter></paramdef> "
+"</funcprototype>"
+msgstr "<funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_bounding boxes=false</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsTWKB</function></funcdef> <paramdef><type>geometry[] </type> <parameter>geometries</parameter></paramdef> <paramdef><type>bigint[] </type> <parameter>unique_ids</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_xy=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_z=0</parameter></paramdef> <paramdef><type>integer </type> <parameter>decimaldigits_m=0</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_sizes=false</parameter></paramdef> <paramdef><type>boolean </type> <parameter>include_bounding_boxes=false</parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:906
+#, no-c-format
+msgid ""
+"Returns the geometry in TWKB (Tiny Well-Known Binary) format. TWKB is a "
+"<ulink "
+"url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">compressed"
+" binary format</ulink> with a focus on minimizing the size of the output."
+msgstr "TWKB (Tiny Well-Known Binary) 書式としてジオメトリを返します。\nTWKBは、出力サイズを最小化することに焦点を当てた<ulink url=\"https://github.com/TWKB/Specification/blob/master/twkb.md\">compressed binary format</ulink> (圧縮バイナリ書式)です。"
+
+#. Tag: para
+#: reference_output.xml:907
+#, no-c-format
+msgid ""
+"The decimal digits parameters control how much precision is stored in the "
+"output. By default, values are rounded to the nearest unit before encoding. "
+"If you want to transfer more precision, increase the number. For example, a "
+"value of 1 implies that the first digit to the right of the decimal point "
+"will be preserved."
+msgstr "decimaldigitsパラメータによって、出力に持たせる精度を制御できます。デフォルトでは、符号化前に値は単位上の最近値に丸められます。精度が高いものを転送したいなら、これの数字を大きくします。たとえば、1の値は小数点の右に1桁の数字が保存されます。"
+
+#. Tag: para
+#: reference_output.xml:908
+#, no-c-format
+msgid ""
+"The sizes and bounding boxes parameters control whether optional information"
+" about the encoded length of the object and the bounds of the object are "
+"included in the output. By default they are not. Do not turn them on unless "
+"your client software has a use for them, as they just use up space (and "
+"saving space is the point of TWKB)."
+msgstr "include_sizesとinclude_bounding_boxesパラメータによって、符号化オブジェクトの長さに関する任意情報の有無やオブジェクトの境界の有無を制御できます。デフォルトでは、無しです。クライアントソフトウェアが、これらの情報を使用しないなら、このパラメータを有効にしないで下さい。空白が増える (しかも空白の抑制がTWKBのポイントである)ためです。"
+
+#. Tag: para
+#: reference_output.xml:909
+#, no-c-format
+msgid ""
+"The array-input form of the function is used to convert a collection of "
+"geometries and unique identifiers into a TWKB collection that preserves the "
+"identifiers. This is useful for clients that expect to unpack a collection "
+"and then access further information about the objects inside. You can create"
+" the arrays using the <ulink url=\"http://www.postgresql.org/docs/9.4/static"
+"/functions-aggregate.html\">array_agg</ulink> function. The other parameters"
+" operate the same as for the simple form of the function."
+msgstr "配列入力の形式は、ジオメトリのコレクションを変換して、一意の識別子をTWKBコレクションを持たせるためのものです。これは、コレクションを展開して、オブジェクト内部に関する情報にさらにアクセスするのに使えます。<ulink url=\"http://www.postgresql.org/docs/9.4/static/functions-aggregate.html\">array_agg</ulink>関数を使用して配列を生成できます。他のパラメータは、単純な形式のものと同じです。"
+
+#. Tag: para
+#: reference_output.xml:911
+#, no-c-format
+msgid ""
+"The format specification is available online at <ulink "
+"url=\"https://github.com/TWKB/Specification\">https://github.com/TWKB/Specification</ulink>,"
+" and code for building a JavaScript client can be found at <ulink "
+"url=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>."
+msgstr "書式仕様は<ulink url=\"https://github.com/TWKB/Specification\">https://github.com/TWKB/Specification</ulink>にあります。JavaScriptクライアントを構築するプログラムは<ulink url=\"https://github.com/TWKB/twkb.js\">https://github.com/TWKB/twkb.js</ulink>にあります。"
+
+#. Tag: para
+#: reference_output.xml:914 reference_output.xml:957
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr "Availability: 2.2.0"
+
+#. Tag: programlisting
+#: reference_output.xml:920
+#, no-c-format
+msgid ""
+"SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);\n"
+"                 st_astwkb                  \n"
+"--------------------------------------------\n"
+"\\x02000202020808"
+msgstr "SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);\n                 st_astwkb                  \n--------------------------------------------\n\\x02000202020808"
+
+#. Tag: para
+#: reference_output.xml:921
+#, no-c-format
+msgid ""
+"To create an aggregate TWKB object including identifiers aggregate the "
+"desired geometries and objects first, using \"array_agg()\", then call the "
+"appropriate TWKB function."
+msgstr "識別子の集計を含むTWKBオブジェクトの集計を生成するには、まず、\"array_agg()\"を使って求めるジオメトリとオブジェクトを集計して、その後に適切なTWKB関数を呼んでいます。"
+
+#. Tag: programlisting
+#: reference_output.xml:923
+#, no-c-format
+msgid ""
+"SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;\n"
+"                 st_astwkb                  \n"
+"--------------------------------------------\n"
+"\\x040402020400000202"
+msgstr "SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;\n                 st_astwkb                  \n--------------------------------------------\n\\x040402020400000202"
+
+#. Tag: refname
+#: reference_output.xml:937
+#, no-c-format
+msgid "ST_AsEncodedPolyline"
+msgstr "ST_AsEncodedPolyline"
+
+#. Tag: refpurpose
+#: reference_output.xml:938
+#, no-c-format
+msgid "Returns an Encoded Polyline from a LineString geometry."
+msgstr "ラインストリングジオメトリから符号化したポリラインを返します。"
+
+#. Tag: funcprototype
+#: reference_output.xml:943
+#, no-c-format
+msgid ""
+"<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>precision=5</parameter></paramdef>"
+msgstr "<funcdef>text <function>ST_AsEncodedPolyline</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>precision=5</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:954
+#, no-c-format
+msgid "Returns the geometry as an Encoded Polyline."
+msgstr "符号化したポリラインとしてジオメトリを返します。"
+
+#. Tag: programlisting
+#: reference_output.xml:962
+#, no-c-format
+msgid ""
+"ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));\n"
+"--result--\n"
+"|_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+msgstr "ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));\n-- 結果 --\n|_p~iF~ps|U_ulLnnqC_mqNvxq`@"
