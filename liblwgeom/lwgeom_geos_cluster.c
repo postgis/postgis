@@ -136,12 +136,26 @@ union_if_intersecting(void* item, void* userdata)
 
 	if (p != q && UF_find(cxt->uf, p) != UF_find(cxt->uf, q))
 	{
-		/* Lazy initialize prepared geometry */
-		if (cxt->prep == NULL)
+		int geos_type = GEOSGeomTypeId(cxt->geoms[p]);
+		int geos_result;
+
+		/* Don't build prepared a geometry around a Point or MultiPoint -
+		 * there are some problems in the implementation, and it's not clear
+		 * there would be a performance benefit in any case.  (See #3433)
+		 */
+		if (geos_type != GEOS_POINT && geos_type != GEOS_MULTIPOINT)
 		{
-			cxt->prep = GEOSPrepare(cxt->geoms[p]);
+			/* Lazy initialize prepared geometry */
+			if (cxt->prep == NULL)
+			{
+				cxt->prep = GEOSPrepare(cxt->geoms[p]);
+			}
+			geos_result = GEOSPreparedIntersects(cxt->prep, cxt->geoms[q]);
 		}
-		int geos_result = GEOSPreparedIntersects(cxt->prep, cxt->geoms[q]);
+		else
+		{
+			geos_result = GEOSIntersects(cxt->geoms[p], cxt->geoms[q]);
+		}
 		if (geos_result > 1)
 		{
 			cxt->error = geos_result;

@@ -238,6 +238,23 @@ static void empty_inputs_test(void)
 	perform_cluster_within_distance_test(1, wkt_inputs, 2, expected_outputs, 2);
 }
 
+static void multipoint_test(void)
+{
+	/* See #3433 */
+	char* wkt_inputs_mp[] = { "MULTIPOINT ((0 0), (0 1))", "POINT (0 0)"};
+	char* expected_outputs_mp[] = { "GEOMETRYCOLLECTION(MULTIPOINT ((0 0), (0 1)), POINT (0 0))"};
+
+	char* wkt_inputs_gc[] = { "GEOMETRYCOLLECTION (POINT (0 0), POINT (0 1))", "POINT (0 0)"};
+	char* expected_outputs_gc[] = { "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION (POINT (0 0), POINT (0 1)), POINT (0 0))"};
+
+	char* wkt_inputs_pt[] = { "POINT (3 3)", "POINT (3 3)"};
+	char* expected_outputs_pt[] = { "GEOMETRYCOLLECTION(POINT (3 3), POINT (3 3))"};
+
+	perform_cluster_intersecting_test(wkt_inputs_mp, 2, expected_outputs_mp, 1);
+	perform_cluster_intersecting_test(wkt_inputs_gc, 2, expected_outputs_gc, 1);
+	perform_cluster_intersecting_test(wkt_inputs_pt, 2, expected_outputs_pt, 1);
+}
+
 void geos_cluster_suite_setup(void);
 void geos_cluster_suite_setup(void)
 {
@@ -247,4 +264,5 @@ void geos_cluster_suite_setup(void)
 	PG_ADD_TEST(suite, basic_distance_test);
 	PG_ADD_TEST(suite, single_input_test);
 	PG_ADD_TEST(suite, empty_inputs_test);
+	PG_ADD_TEST(suite, multipoint_test);
 }
