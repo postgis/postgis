@@ -30,6 +30,15 @@ SELECT 'within104', ST_within('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 1
 SELECT 'within105', ST_within(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex 
 SELECT 'within106', ST_within(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
+-- PIP - multipoint within polygon
+SELECT 'within107', ST_within('MULTIPOINT(5 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+SELECT 'within108', ST_within('MULTIPOINT(5 5, 5 7)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint on vertices of polygon
+SELECT 'within109', ST_within('MULTIPOINT(0 0, 10 10)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint partly outside of polygon
+SELECT 'within110', ST_within('MULTIPOINT(5 5, 15 7)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint not fully within polygon (but at least one point still fully within, so "within" passes)
+SELECT 'within111', ST_within('MULTIPOINT(5 5, 10 10)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point within polygon
 SELECT 'disjoint100', ST_disjoint('POINT(5 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point on polygon vertex
@@ -72,6 +81,25 @@ SELECT 'intersects104', ST_intersects('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 
 SELECT 'intersects105', ST_intersects(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex
 SELECT 'intersects106', ST_intersects(ST_GeomFromText('POINT(521543 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
+-- PIP - multipoint on polygon vertex
+SELECT 'intersects111', ST_Intersects('MULTIPOINT ((0 0))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint outside polygon
+SELECT 'intersects112', ST_intersects('MULTIPOINT ((-1 0))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint on polygon edge
+SELECT 'intersects113', ST_intersects('MULTIPOINT ((0 5))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+SELECT 'intersects114', ST_intersects('MULTIPOINT ((0 5), (0 8))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint in line with polygon edge
+SELECT 'intersects115', ST_intersects('MULTIPOINT ((0 12))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint vertically aligned with polygon vertex 
+SELECT 'intersects116', ST_intersects(ST_GeomFromText('MULTIPOINT ((521513 5377804))', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
+-- PIP - repeated vertex
+SELECT 'intersects117', ST_intersects(ST_GeomFromText('MULTIPOINT ((521543 5377804))', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
+-- PIP - multipoint within polygon
+SELECT 'intersects118', ST_intersects('MULTIPOINT ((5 5))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+SELECT 'intersects119', ST_intersects('MULTIPOINT ((5 5), (7 7))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+-- PIP - multipoint partially within polygon
+SELECT 'intersects120', ST_intersects('MULTIPOINT ((5 5),  (15 5))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
+SELECT 'intersects121', ST_intersects('MULTIPOINT ((15 5), (5 5))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point within polygon
 SELECT 'intersects150', ST_intersects('POINT(5 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point on polygon vertex
@@ -100,11 +128,29 @@ SELECT 'contains104', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geom
 SELECT 'contains105', ST_contains(ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
 -- PIP - repeated vertex 
 SELECT 'contains106', ST_contains(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
+-- PIP - multipoint within polygon
+SELECT 'contains110', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((5 5))'::geometry);
+-- PIP - multipoint on vertex of polygon
+SELECT 'contains111', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((0 0))'::geometry);
+SELECT 'contains112', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((0 0), (10 0))'::geometry);
+-- PIP - multipoint outside polygon
+SELECT 'contains113', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((-1 0))'::geometry);
+-- PIP - multipoint partially outside polygon
+SELECT 'contains114', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((-1 0), (5 5))'::geometry);
+SELECT 'contains115', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((5 5), (-1 0))'::geometry);
+-- PIP - point on edge of polygon
+SELECT 'contains116', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((0 5))'::geometry);
+-- PIP - point in line with polygon edge
+SELECT 'contains117', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((0 12))'::geometry);
+-- PIP - multipoint within polygon
+SELECT 'contains118', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((5 5), (7 7))'::geometry);
+-- PIP - point on edge of polygon and within
+SELECT 'contains119', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((0 5), (5 5))'::geometry);
 -- moved here from regress.sql
 select 'within119', ST_within('LINESTRING(-1 -1, -1 101, 101 101, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
 select 'within120', ST_within('LINESTRING(-1 -1, -1 100, 101 100, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
-SELECT 'contains110', ST_Contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'LINESTRING(1 10, 9 10, 9 8)'::geometry);
-SELECT 'contains111', ST_Contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'LINESTRING(1 10, 10 10, 10 8)'::geometry);
+SELECT 'contains120', ST_Contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'LINESTRING(1 10, 9 10, 9 8)'::geometry);
+SELECT 'contains121', ST_Contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'LINESTRING(1 10, 10 10, 10 8)'::geometry);
 SELECT 'within130', ST_Within('LINESTRING(1 10, 9 10, 9 8)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 SELECT 'within131', ST_Within('LINESTRING(1 10, 10 10, 10 8)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 SELECT 'overlaps', ST_overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry,'POINT(5 5)'::geometry);
