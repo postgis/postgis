@@ -3678,6 +3678,12 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
 
+-- Availability: 2.3
+CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8, int)
+	RETURNS pgis_abs
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c';
+
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
 	RETURNS geometry[]
@@ -3710,6 +3716,12 @@ CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
+	RETURNS geometry[]
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c';
+
+-- Availability: 2.3
+CREATE OR REPLACE FUNCTION pgis_geometry_dbscan_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
@@ -3763,6 +3775,13 @@ CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_clusterwithin_finalfn
+	);
+
+-- Availability: 2.3
+CREATE AGGREGATE ST_DBSCAN (geometry, float8, int) (
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_dbscan_finalfn
 	);
 
 -- Availability: 1.2.2

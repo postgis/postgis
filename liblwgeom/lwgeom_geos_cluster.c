@@ -152,17 +152,15 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 
 	for (p = 0; p < num_geoms; p++)
 	{
-		if (GEOSisEmpty(geoms[p]))
-		{
-			continue;
-		}
+		const GEOSPreparedGeometry* prep = NULL;
+		GEOSGeometry* query_envelope;
 
-		GEOSGeometry* query_envelope = GEOSEnvelope(geoms[p]);
+		if (GEOSisEmpty(geoms[p]))
+			continue;
 
 		cxt.num_items_found = 0;
-
+		query_envelope = GEOSEnvelope(geoms[p]);
 		GEOSSTRtree_query(tree.tree, query_envelope, &query_accumulate, &cxt);
-		const GEOSPreparedGeometry* prep = NULL;
 
 		for (i = 0; i < cxt.num_items_found; i++)
 		{
@@ -217,82 +215,6 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 	return success;
 }
 
-/* Identify geometries within a distance tolerance and mark them as being in the same set */
-static int
-union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double tolerance)
-{
-	uint32_t p, i;
-	struct STRTree tree;
-	struct QueryContext cxt =
-	{
-		.items_found = NULL,
-		.num_items_found = 0,
-		.items_found_size = 0
-	};
-	int success = LW_SUCCESS;
-
-	if (num_geoms <= 1)
-		return LW_SUCCESS;
-
-	tree = make_strtree((void**) geoms, num_geoms, 1);
-	if (tree.tree == NULL)
-	{
-		destroy_strtree(tree);
-		return LW_FAILURE;
-	}
-
-	for (p = 0; p < num_geoms; p++)
-	{
-		if (lwgeom_is_empty(geoms[p]))
-			continue;
-
-		const GBOX* geom_extent = lwgeom_get_bbox(geoms[p]);
-		GBOX* query_extent = gbox_clone(geom_extent);
-		gbox_expand(query_extent, tolerance);
-		GEOSGeometry* query_envelope = GBOX2GEOS(query_extent);
-
-		if (!query_envelope)
-		{
-			destroy_strtree(tree);
-			return LW_FAILURE;
-		}
-
-		cxt.num_items_found = 0;
-		GEOSSTRtree_query(tree.tree, query_envelope, &query_accumulate, &cxt);
-		for (i = 0; i < cxt.num_items_found; i++)
-		{
-			uint32_t q = *((uint32_t*) cxt.items_found[i]);
-
-			if (p != q && UF_find(uf, p) != UF_find(uf, q))
-			{
-				double mindist = lwgeom_mindistance2d_tolerance(geoms[p], geoms[q], tolerance);
-				if (mindist == FLT_MAX)
-				{
-					success = LW_FAILURE;
-					break;
-				}
-
-				if (mindist <= tolerance)
-				{
-					UF_union(uf, p, q);
-				}
-			}
-		}
-
-		lwfree(query_extent);
-		GEOSGeom_destroy(query_envelope);
-
-		if (!success)
-			break;
-	}
-
-	if (cxt.items_found)
-		lwfree(cxt.items_found);
-
-	destroy_strtree(tree);
-	return success;
-}
-
 /** Takes an array of GEOSGeometry* and constructs an array of GEOSGeometry*, where each element in the constructed
  *  array is a GeometryCollection representing a set of interconnected geometries. Caller is responsible for
  *  freeing the input array, but not for destroying the GEOSGeometry* items inside it.  */
@@ -319,10 +241,109 @@ cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** c
 int
 cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters)
 {
+	int min_points = 1;
+	return cluster_dbscan(geoms, num_geoms, tolerance, min_points, clusterGeoms, num_clusters);
+}
+
+
+static int
+dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geoms, uint32_t p, double eps)
+{
+	cxt->num_items_found = 0;
+
+	const GBOX* geom_extent = lwgeom_get_bbox(geoms[p]);
+	GBOX* query_extent = gbox_clone(geom_extent);
+	gbox_expand(query_extent, eps);
+	GEOSGeometry* query_envelope = GBOX2GEOS(query_extent);
+
+	if (!query_envelope)
+		return LW_FAILURE;
+
+	GEOSSTRtree_query(tree, query_envelope, &query_accumulate, cxt);
+
+	lwfree(query_extent);
+	GEOSGeom_destroy(query_envelope);
+
+	return LW_SUCCESS;
+}
+
+static int
+union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points)
+{
+	uint32_t p, i;
+	struct STRTree tree;
+	struct QueryContext cxt =
+	{
+		.items_found = NULL,
+		.num_items_found = 0,
+		.items_found_size = 0
+	};
+	int success = LW_SUCCESS;
+
+	if (num_geoms <= 1)
+		return LW_SUCCESS;
+
+	tree = make_strtree((void**) geoms, num_geoms, 1);
+	if (tree.tree == NULL)
+	{
+		destroy_strtree(tree);
+		return LW_FAILURE;
+	}
+
+	for (p = 0; p < num_geoms; p++)
+	{
+		uint32_t num_neighbors = 0;
+		uint32_t* neighbors;
+
+		if (lwgeom_is_empty(geoms[p]))
+			continue;
+
+		dbscan_update_context(tree.tree, &cxt, geoms, p, eps);
+		neighbors = lwalloc(cxt.num_items_found * sizeof(uint32_t*));
+
+		for (i = 0; i < cxt.num_items_found; i++)
+		{
+			uint32_t q = *((uint32_t*) cxt.items_found[i]);
+
+			double mindist = lwgeom_mindistance2d_tolerance(geoms[p], geoms[q], eps);
+			if (mindist == FLT_MAX)
+			{
+				success = LW_FAILURE;
+				break;
+			}
+
+			if (mindist <= eps)
+				neighbors[num_neighbors++] = q;
+		}
+
+		if (num_neighbors >= min_points)
+		{
+			for (i = 0; i < num_neighbors; i++)
+			{
+				UF_union(uf, p, neighbors[i]);
+			}
+		}
+
+		lwfree(neighbors);
+
+		if (!success)
+			break;
+	}
+
+	if (cxt.items_found)
+		lwfree(cxt.items_found);
+
+	destroy_strtree(tree);
+	return success;
+}
+
+int
+cluster_dbscan(LWGEOM** geoms, uint32_t num_geoms, double eps, uint32_t min_points, LWGEOM*** clusterGeoms, uint32_t* num_clusters)
+{
 	int cluster_success;
 	UNIONFIND* uf = UF_create(num_geoms);
 
-	if (union_pairs_within_distance(geoms, num_geoms, uf, tolerance) == LW_FAILURE)
+	if (union_dbscan(geoms, num_geoms, uf, eps, min_points) == LW_FAILURE)
 	{
 		UF_destroy(uf);
 		return LW_FAILURE;

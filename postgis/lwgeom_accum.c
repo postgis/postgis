@@ -41,6 +41,7 @@
 /* Local prototypes */
 Datum PGISDirectFunctionCall1(PGFunction func, Datum arg1);
 Datum PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2);
+Datum PGISDirectFunctionCall3(PGFunction func, Datum arg1, Datum arg2, Datum arg3);
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -77,13 +78,13 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 ** To pass the internal ArrayBuildState pointer between the
 ** transfn and finalfn we need to wrap it into a custom type first,
 ** the pgis_abs type in our case.  The extra "data" member can optionally
-** be used to pass an additional constant argument to a finalizer function.
+** be used to pass a additional constant arguments to a finalizer function.
 */
 
 typedef struct
 {
 	ArrayBuildState *a;
-	Datum data;
+	Datum* data; /* TODO figure out if this is safe?  Will pgs_abs end up with a different size on 32vs64 bit systems? */
 }
 pgis_abs;
 
@@ -141,17 +142,23 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 	{
 		p = (pgis_abs*) palloc(sizeof(pgis_abs));
 		p->a = NULL;
-		p->data = (Datum) NULL;
+		p->data = (Datum*) NULL;
 
-		if (PG_NARGS() == 3)
+		if (PG_NARGS() > 2)
 		{
-			Datum argument = PG_GETARG_DATUM(2);
-			Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2);
-			MemoryContext old = MemoryContextSwitchTo(aggcontext);
+			uint32_t nextra_args = PG_NARGS() - 2;
+			uint32_t i;
+			
+			p->data = palloc(nextra_args * sizeof(Datum));
+			for(i = 0; i < nextra_args; i++)
+			{
+				Datum argument = PG_GETARG_DATUM(2 + i);
+				Oid dataOid = get_fn_expr_argtype(fcinfo->flinfo, 2 + i);
+				MemoryContext old = MemoryContextSwitchTo(aggcontext);
+				p->data[i] = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
+				MemoryContextSwitchTo(old);
+			}
 
-			p->data = datumCopy(argument, get_typbyval(dataOid), get_typlen(dataOid));
-
-			MemoryContextSwitchTo(old);
 		}
 	}
 	else
@@ -360,14 +367,29 @@ pgis_geometry_clusterwithin_finalfn(PG_FUNCTION_ARGS)
 
 	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
-	if (!p->data)
-	{
-		elog(ERROR, "Tolerance not defined");
+	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
+	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data[0]);
+	if (!result)
 		PG_RETURN_NULL();
-	}
+
+	PG_RETURN_DATUM(result);
+}
+
+PG_FUNCTION_INFO_V1(pgis_geometry_dbscan_finalfn);
+Datum
+pgis_geometry_dbscan_finalfn(PG_FUNCTION_ARGS)
+{
+	pgis_abs *p;
+	Datum result = 0;
+	Datum geometry_array = 0;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall2( cluster_within_distance_garray, geometry_array, p->data);
+	result = PGISDirectFunctionCall3( cluster_within_distance_garray, geometry_array, p->data[0], p->data[1]);
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -416,10 +438,10 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 
 #if POSTGIS_PGSQL_VERSION > 90
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 2, InvalidOid, NULL, NULL);
 #else
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 2, NULL, NULL);
 #endif
 
 	fcinfo.arg[0] = arg1;
@@ -435,3 +457,38 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 
 	return result;
 }
+
+/**
+* A modified version of PostgreSQL's DirectFunctionCall3 which allows NULL results; this
+* is required for aggregates that return NULL.
+*/
+Datum
+PGISDirectFunctionCall3(PGFunction func, Datum arg1, Datum arg2, Datum arg3)
+{
+	FunctionCallInfoData fcinfo;
+	Datum           result;
+
+#if POSTGIS_PGSQL_VERSION > 90
+
+	InitFunctionCallInfoData(fcinfo, NULL, 3, InvalidOid, NULL, NULL);
+#else
+
+	InitFunctionCallInfoData(fcinfo, NULL, 3, NULL, NULL);
+#endif
+
+	fcinfo.arg[0] = arg1;
+	fcinfo.arg[1] = arg2;
+	fcinfo.arg[2] = arg3;
+	fcinfo.argnull[0] = false;
+	fcinfo.argnull[1] = false;
+	fcinfo.argnull[2] = false;
+
+	result = (*func) (&fcinfo);
+
+	/* Check for null result, returning a "NULL" Datum if indicated */
+	if (fcinfo.isnull)
+		return (Datum) 0;
+
+	return result;
+}
+
