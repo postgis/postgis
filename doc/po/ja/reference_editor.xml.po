@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
-"PO-Revision-Date: 2016-01-06 11:36+0000\n"
+"POT-Creation-Date: 2016-01-21 10:21+0000\n"
+"PO-Revision-Date: 2016-01-26 16:26+0900\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
 #: reference_editor.xml:3
@@ -30,42 +31,44 @@ msgstr "ST_AddPoint"
 #. Tag: refpurpose
 #: reference_editor.xml:8
 #, no-c-format
-msgid ""
-"Adds a point to a LineString before point &lt;position&gt; (0-based index)."
+msgid "Adds a point to a LineString before point &lt;position&gt; (0-based index)."
 msgstr "ラインストリングに対して指定した&lt;position&gt; (0はじまり)の前にポイントを追加します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:13
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-" <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</"
+"parameter></paramdef>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:20
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_AddPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-" <paramdef><type>geometry</type> <parameter>point</parameter></paramdef> "
-"<paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></paramdef> <paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</"
+"parameter></paramdef> <paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_AddPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</"
+"parameter></paramdef> <paramdef><type>integer</type> <parameter>position</parameter></paramdef>"
 
 #. Tag: title
-#: reference_editor.xml:30 reference_editor.xml:89 reference_editor.xml:148
-#: reference_editor.xml:194 reference_editor.xml:237 reference_editor.xml:280
-#: reference_editor.xml:321 reference_editor.xml:362 reference_editor.xml:416
-#: reference_editor.xml:445 reference_editor.xml:491 reference_editor.xml:536
-#: reference_editor.xml:578 reference_editor.xml:629 reference_editor.xml:672
-#: reference_editor.xml:706 reference_editor.xml:739 reference_editor.xml:783
-#: reference_editor.xml:832 reference_editor.xml:879 reference_editor.xml:928
-#: reference_editor.xml:998 reference_editor.xml:1064
-#: reference_editor.xml:1106 reference_editor.xml:1149
-#: reference_editor.xml:1226 reference_editor.xml:1304
-#: reference_editor.xml:1440 reference_editor.xml:1523
-#: reference_editor.xml:1577
+#: reference_editor.xml:30 reference_editor.xml:89 reference_editor.xml:148 reference_editor.xml:194
+#: reference_editor.xml:237 reference_editor.xml:280 reference_editor.xml:321
+#: reference_editor.xml:362 reference_editor.xml:416 reference_editor.xml:445
+#: reference_editor.xml:491 reference_editor.xml:536 reference_editor.xml:578
+#: reference_editor.xml:629 reference_editor.xml:672 reference_editor.xml:706
+#: reference_editor.xml:739 reference_editor.xml:783 reference_editor.xml:832
+#: reference_editor.xml:879 reference_editor.xml:928 reference_editor.xml:998
+#: reference_editor.xml:1064 reference_editor.xml:1106 reference_editor.xml:1149
+#: reference_editor.xml:1226 reference_editor.xml:1304 reference_editor.xml:1440
+#: reference_editor.xml:1523 reference_editor.xml:1577
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -74,9 +77,11 @@ msgstr "説明"
 #: reference_editor.xml:32
 #, no-c-format
 msgid ""
-"Adds a point to a LineString before point &lt;position&gt; (0-based index). "
-"Third parameter can be omitted or set to -1 for appending."
-msgstr "ラインストリングに対して指定した&lt;position&gt; (0はじまり)の前にポイントを追加します。第3引数に-1を指定すると末尾に追加できます。"
+"Adds a point to a LineString before point &lt;position&gt; (0-based index). Third parameter can be "
+"omitted or set to -1 for appending."
+msgstr ""
+"ラインストリングに対して指定した&lt;position&gt; (0はじまり)の前にポイントを追加します。第3引数に-1"
+"を指定すると末尾に追加できます。"
 
 #. Tag: para
 #: reference_editor.xml:35 reference_editor.xml:543 reference_editor.xml:709
@@ -86,30 +91,28 @@ msgid "Availability: 1.1.0"
 msgstr "Availability: 1.1.0"
 
 #. Tag: para
-#: reference_editor.xml:36 reference_editor.xml:111 reference_editor.xml:159
-#: reference_editor.xml:202 reference_editor.xml:244 reference_editor.xml:326
-#: reference_editor.xml:372 reference_editor.xml:421 reference_editor.xml:454
-#: reference_editor.xml:500 reference_editor.xml:710 reference_editor.xml:792
-#: reference_editor.xml:842 reference_editor.xml:890 reference_editor.xml:941
-#: reference_editor.xml:1018 reference_editor.xml:1113
-#: reference_editor.xml:1257 reference_editor.xml:1531
+#: reference_editor.xml:36 reference_editor.xml:111 reference_editor.xml:159 reference_editor.xml:202
+#: reference_editor.xml:244 reference_editor.xml:326 reference_editor.xml:372
+#: reference_editor.xml:421 reference_editor.xml:454 reference_editor.xml:500
+#: reference_editor.xml:710 reference_editor.xml:792 reference_editor.xml:842
+#: reference_editor.xml:890 reference_editor.xml:941 reference_editor.xml:1018
+#: reference_editor.xml:1113 reference_editor.xml:1257 reference_editor.xml:1531
 #: reference_editor.xml:1590
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: title
-#: reference_editor.xml:40 reference_editor.xml:117 reference_editor.xml:164
-#: reference_editor.xml:207 reference_editor.xml:250 reference_editor.xml:291
-#: reference_editor.xml:332 reference_editor.xml:378 reference_editor.xml:459
-#: reference_editor.xml:506 reference_editor.xml:548 reference_editor.xml:600
-#: reference_editor.xml:644 reference_editor.xml:680 reference_editor.xml:714
-#: reference_editor.xml:745 reference_editor.xml:801 reference_editor.xml:848
-#: reference_editor.xml:897 reference_editor.xml:949 reference_editor.xml:1026
-#: reference_editor.xml:1078 reference_editor.xml:1117
-#: reference_editor.xml:1165 reference_editor.xml:1262
-#: reference_editor.xml:1338 reference_editor.xml:1468
-#: reference_editor.xml:1536 reference_editor.xml:1596
+#: reference_editor.xml:40 reference_editor.xml:117 reference_editor.xml:164 reference_editor.xml:207
+#: reference_editor.xml:250 reference_editor.xml:291 reference_editor.xml:332
+#: reference_editor.xml:378 reference_editor.xml:459 reference_editor.xml:506
+#: reference_editor.xml:548 reference_editor.xml:600 reference_editor.xml:644
+#: reference_editor.xml:680 reference_editor.xml:714 reference_editor.xml:745
+#: reference_editor.xml:801 reference_editor.xml:848 reference_editor.xml:897
+#: reference_editor.xml:949 reference_editor.xml:1026 reference_editor.xml:1078
+#: reference_editor.xml:1117 reference_editor.xml:1165 reference_editor.xml:1262
+#: reference_editor.xml:1338 reference_editor.xml:1468 reference_editor.xml:1536
+#: reference_editor.xml:1596
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -127,26 +130,41 @@ msgid ""
 "                WHERE ST_IsClosed(the_geom) = false;\n"
 "\n"
 "                --Adding point to a 3-d line\n"
-"                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));\n"
+"                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), "
+"ST_MakePoint(1, 2, 3)));\n"
 "\n"
 "                --result\n"
 "                st_asewkt\n"
 "                ----------\n"
 "                LINESTRING(0 0 1,1 1 1,1 2 3)"
-msgstr "-- テーブル内の全てのラインストリングのうち閉じていないものについて、\n-- 最初のポイントを末尾に追加することで、\n-- 全てのラインストリングが閉じていることを保証します\n                UPDATE sometable\n                SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))\n                FROM sometable\n                WHERE ST_IsClosed(the_geom) = false;\n\n                --Adding point to a 3-d line\n                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));\n\n                --result\n                st_asewkt\n                ----------\n                LINESTRING(0 0 1,1 1 1,1 2 3)"
+msgstr ""
+"-- テーブル内の全てのラインストリングのうち閉じていないものについて、\n"
+"-- 最初のポイントを末尾に追加することで、\n"
+"-- 全てのラインストリングが閉じていることを保証します\n"
+"                UPDATE sometable\n"
+"                SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))\n"
+"                FROM sometable\n"
+"                WHERE ST_IsClosed(the_geom) = false;\n"
+"\n"
+"                --Adding point to a 3-d line\n"
+"                SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), "
+"ST_MakePoint(1, 2, 3)));\n"
+"\n"
+"                --result\n"
+"                st_asewkt\n"
+"                ----------\n"
+"                LINESTRING(0 0 1,1 1 1,1 2 3)"
 
 #. Tag: title
-#: reference_editor.xml:44 reference_editor.xml:124 reference_editor.xml:171
-#: reference_editor.xml:214 reference_editor.xml:257 reference_editor.xml:298
-#: reference_editor.xml:339 reference_editor.xml:387 reference_editor.xml:465
-#: reference_editor.xml:512 reference_editor.xml:553 reference_editor.xml:605
-#: reference_editor.xml:649 reference_editor.xml:685 reference_editor.xml:718
-#: reference_editor.xml:808 reference_editor.xml:855 reference_editor.xml:904
-#: reference_editor.xml:956 reference_editor.xml:1033
-#: reference_editor.xml:1083 reference_editor.xml:1121
-#: reference_editor.xml:1173 reference_editor.xml:1269
-#: reference_editor.xml:1413 reference_editor.xml:1490
-#: reference_editor.xml:1549 reference_editor.xml:1603
+#: reference_editor.xml:44 reference_editor.xml:124 reference_editor.xml:171 reference_editor.xml:214
+#: reference_editor.xml:257 reference_editor.xml:298 reference_editor.xml:339
+#: reference_editor.xml:387 reference_editor.xml:465 reference_editor.xml:512
+#: reference_editor.xml:553 reference_editor.xml:605 reference_editor.xml:649
+#: reference_editor.xml:685 reference_editor.xml:718 reference_editor.xml:808
+#: reference_editor.xml:855 reference_editor.xml:904 reference_editor.xml:956
+#: reference_editor.xml:1033 reference_editor.xml:1083 reference_editor.xml:1121
+#: reference_editor.xml:1173 reference_editor.xml:1269 reference_editor.xml:1413
+#: reference_editor.xml:1490 reference_editor.xml:1549 reference_editor.xml:1603
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -167,78 +185,114 @@ msgstr "ST_Affine"
 #: reference_editor.xml:53
 #, no-c-format
 msgid ""
-"<refpurpose>Applies a 3d affine transformation to the geometry to do things "
-"like translate, rotate, scale in one step.</refpurpose>"
-msgstr "<refpurpose>3次元アフィン変換をジオメトリに適用して移動、回転、拡大縮小を一度に行います。</refpurpose>"
+"<refpurpose>Applies a 3d affine transformation to the geometry to do things like translate, "
+"rotate, scale in one step.</refpurpose>"
+msgstr ""
+"<refpurpose>3次元アフィン変換をジオメトリに適用して移動、回転、拡大縮小を一度に行います。</"
+"refpurpose>"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:57
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>a</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>b</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>c</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>d</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>e</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>f</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>g</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>h</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>i</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>zoff</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>a</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>b</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>d</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>e</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>xoff</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>yoff</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>a</parameter></paramdef> <paramdef><type>float </type> <parameter>b</parameter></paramdef> <paramdef><type>float </type> <parameter>c</parameter></paramdef> <paramdef><type>float </type> <parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</parameter></paramdef> <paramdef><type>float </type> <parameter>f</parameter></paramdef> <paramdef><type>float </type> <parameter>g</parameter></paramdef> <paramdef><type>float </type> <parameter>h</parameter></paramdef> <paramdef><type>float </type> <parameter>i</parameter></paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> <paramdef><type>float </type> <parameter>yoff</parameter></paramdef> <paramdef><type>float </type> <parameter>zoff</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>a</parameter></paramdef> <paramdef><type>float </type> <parameter>b</parameter></paramdef> <paramdef><type>float </type> <parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</parameter></paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> <paramdef><type>float </type> <parameter>yoff</parameter></paramdef> </funcprototype>"
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>a</parameter></paramdef> <paramdef><type>float </type> <parameter>b</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>c</parameter></paramdef> <paramdef><type>float "
+"</type> <parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>f</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>g</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>h</parameter></paramdef> <paramdef><type>float </type> <parameter>i</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>zoff</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>a</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>b</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Affine</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>a</parameter></paramdef> <paramdef><type>float </type> <parameter>b</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>c</parameter></paramdef> <paramdef><type>float "
+"</type> <parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>f</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>g</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>h</parameter></paramdef> <paramdef><type>float </type> <parameter>i</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>zoff</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry "
+"<function>ST_Affine</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>a</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>b</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>d</parameter></paramdef> <paramdef><type>float </type> <parameter>e</parameter></"
+"paramdef> <paramdef><type>float </type> <parameter>xoff</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>yoff</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:91
 #, no-c-format
 msgid ""
-"<para>Applies a 3d affine transformation to the geometry to do things like "
-"translate, rotate, scale in one step.</para>"
+"<para>Applies a 3d affine transformation to the geometry to do things like translate, rotate, "
+"scale in one step.</para>"
 msgstr "<para>3次元アフィン変換をジオメトリに適用して移動、回転、拡大縮小を一度に行います。</para>"
 
 #. Tag: para
 #: reference_editor.xml:92
 #, no-c-format
 msgid ""
-"Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting> represents the transformation matrix <programlisting>/ a  b  c  xoff \\\n"
+"Version 1: The call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </"
+"programlisting> represents the transformation matrix <programlisting>/ a  b  c  xoff \\\n"
 "| d  e  f  yoff |\n"
 "| g  h  i  zoff |\n"
-"\\ 0  0  0     1 /</programlisting> and the vertices are transformed as follows: <programlisting>x' = a*x + b*y + c*z + xoff\n"
+"\\ 0  0  0     1 /</programlisting> and the vertices are transformed as follows: "
+"<programlisting>x' = a*x + b*y + c*z + xoff\n"
 "y' = d*x + e*y + f*z + yoff\n"
-"z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale functions below are expressed via such an affine transformation."
-msgstr "一つ目の形式では、次のように関数を呼んでいます。<programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting> これは次のような変換行列を表現しています。<programlisting>/ a  b  c  xoff \\\n| d  e  f  yoff |\n| g  h  i  zoff |\n\\ 0  0  0     1 /</programlisting>次のようにも表現できます。<programlisting>x' = a*x + b*y + c*z + xoff\ny' = d*x + e*y + f*z + yoff\nz' = g*x + h*y + i*z + zoff</programlisting>全ての移動/拡大縮小関数はこのようなアフィン変換を経由しています。"
+"z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale functions below are "
+"expressed via such an affine transformation."
+msgstr ""
+"一つ目の形式では、次のように関数を呼んでいます。<programlisting>ST_Affine(geom, a, b, c, d, e, f, "
+"g, h, i, xoff, yoff, zoff) </programlisting> これは次のような変換行列を表現しています。"
+"<programlisting>/ a  b  c  xoff \\\n"
+"| d  e  f  yoff |\n"
+"| g  h  i  zoff |\n"
+"\\ 0  0  0     1 /</programlisting>次のようにも表現できます。<programlisting>x' = a*x + b*y + c*z "
+"+ xoff\n"
+"y' = d*x + e*y + f*z + yoff\n"
+"z' = g*x + h*y + i*z + zoff</programlisting>全ての移動/拡大縮小関数はこのようなアフィン変換を経由し"
+"ています。"
 
 #. Tag: para
 #: reference_editor.xml:99
 #, no-c-format
 msgid ""
-"Version 2: Applies a 2d affine transformation to the geometry. The call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> represents the transformation matrix <programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n"
+"Version 2: Applies a 2d affine transformation to the geometry. The call "
+"<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting> represents the "
+"transformation matrix <programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n"
 "|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
 "|  0  0  1     0  |       \\  0  0     1  /\n"
-"\\  0  0  0     1  /</programlisting> and the vertices are transformed as follows: <programlisting>x' = a*x + b*y + xoff\n"
+"\\  0  0  0     1  /</programlisting> and the vertices are transformed as follows: "
+"<programlisting>x' = a*x + b*y + xoff\n"
 "y' = d*x + e*y + yoff\n"
 "z' = z </programlisting> This method is a subcase of the 3D method above."
-msgstr "二つ目の形式では、2次元アフィン変換をジオメトリに適用します。次のように関数を呼んでいます。<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>これは次のような変換行列を表現しています。<programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n|  0  0  1     0  |       \\  0  0     1  /\n\\  0  0  0     1  /</programlisting>頂点は次のように変換されます。<programlisting>x' = a*x + b*y + xoff\ny' = d*x + e*y + yoff\nz' = z </programlisting>このメソッドは上述の3次元メソッドの特異ケースです。"
+msgstr ""
+"二つ目の形式では、2次元アフィン変換をジオメトリに適用します。次のように関数を呼んでいます。"
+"<programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>これは次のような変換行列を"
+"表現しています。<programlisting>/  a  b  0  xoff  \\       /  a  b  xoff  \\\n"
+"|  d  e  0  yoff  | rsp.  |  d  e  yoff  |\n"
+"|  0  0  1     0  |       \\  0  0     1  /\n"
+"\\  0  0  0     1  /</programlisting>頂点は次のように変換されます。<programlisting>x' = a*x + b*y "
+"+ xoff\n"
+"y' = d*x + e*y + yoff\n"
+"z' = z </programlisting>このメソッドは上述の3次元メソッドの特異ケースです。"
 
 #. Tag: para
 #: reference_editor.xml:105 reference_editor.xml:789 reference_editor.xml:839
 #: reference_editor.xml:887 reference_editor.xml:936 reference_editor.xml:1015
 #, no-c-format
-msgid ""
-"Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
-"introduced."
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced."
 msgstr "Enhanced: 2.0.0 多面体サーフェス対応、三角対応、TIN対応が導入されました。"
 
 #. Tag: para
@@ -249,13 +303,14 @@ msgstr "Availability: 1.1.2 AffineからST_Affineに名称変更しました。"
 
 #. Tag: para
 #: reference_editor.xml:107 reference_editor.xml:939 reference_editor.xml:1011
-#: reference_editor.xml:1458 reference_editor.xml:1528
-#: reference_editor.xml:1586
+#: reference_editor.xml:1458 reference_editor.xml:1528 reference_editor.xml:1586
 #, no-c-format
 msgid ""
-"Prior to 1.3.4, this function crashes if used with geometries that contain "
-"CURVES. This is fixed in 1.3.4+"
-msgstr "1.3.4より前では、曲線を含むジオメトリで使用すると、この関数はクラッシュします。これは1.3.4以上で訂正されています。"
+"Prior to 1.3.4, this function crashes if used with geometries that contain CURVES. This is fixed "
+"in 1.3.4+"
+msgstr ""
+"1.3.4より前では、曲線を含むジオメトリで使用すると、この関数はクラッシュします。これは1.3.4以上で訂"
+"正されています。"
 
 #. Tag: para
 #: reference_editor.xml:109 reference_editor.xml:158 reference_editor.xml:200
@@ -280,8 +335,8 @@ msgstr "&T_support;"
 #: reference_editor.xml:245 reference_editor.xml:286 reference_editor.xml:327
 #: reference_editor.xml:373 reference_editor.xml:420 reference_editor.xml:502
 #: reference_editor.xml:793 reference_editor.xml:942 reference_editor.xml:1019
-#: reference_editor.xml:1161 reference_editor.xml:1462
-#: reference_editor.xml:1532 reference_editor.xml:1591
+#: reference_editor.xml:1161 reference_editor.xml:1462 reference_editor.xml:1532
+#: reference_editor.xml:1591
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -291,7 +346,8 @@ msgstr "&curve_support;"
 #, no-c-format
 msgid ""
 "--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();\n"
-" SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n"
+" SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, "
+"1,  0, 0, 0)) As using_affine,\n"
 "         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
 "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n"
 "        using_affine         |        using_rotate\n"
@@ -300,21 +356,41 @@ msgid ""
 "(1 row)\n"
 "\n"
 "--Rotate a 3d line 180 degrees in both the x and z axis\n"
-"SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n"
+"SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), "
+"0, sin(pi()), cos(pi()), 0, 0, 0))\n"
 "        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n"
 "           st_asewkt\n"
 "-------------------------------\n"
 " LINESTRING(-1 -2 -3,-1 -4 -3)\n"
 "(1 row)"
-msgstr "-- 3次元ラインストリングをZ軸で180度回転させます。\n-- ST_RotateZ()を冗長にしたものです。\n SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,\n         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n        using_affine         |        using_rotate\n-----------------------------+-----------------------------\n LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n(1 row)\n\n-- 3次元ラインストリングをX軸とZ軸で180度回転させます。\nSELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))\n        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n           st_asewkt\n-------------------------------\n LINESTRING(-1 -2 -3,-1 -4 -3)\n(1 row)"
+msgstr ""
+"-- 3次元ラインストリングをZ軸で180度回転させます。\n"
+"-- ST_RotateZ()を冗長にしたものです。\n"
+" SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, "
+"1,  0, 0, 0)) As using_affine,\n"
+"         ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n"
+"        using_affine         |        using_rotate\n"
+"-----------------------------+-----------------------------\n"
+" LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)\n"
+"(1 row)\n"
+"\n"
+"-- 3次元ラインストリングをX軸とZ軸で180度回転させます。\n"
+"SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), "
+"0, sin(pi()), cos(pi()), 0, 0, 0))\n"
+"        FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;\n"
+"           st_asewkt\n"
+"-------------------------------\n"
+" LINESTRING(-1 -2 -3,-1 -4 -3)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_editor.xml:126
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref "
-"linkend=\"ST_TransScale\"/>"
-msgstr ", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref linkend=\"ST_TransScale\"/>"
+", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref linkend=\"ST_TransScale\"/>"
+msgstr ""
+", <xref linkend=\"ST_Scale\"/>, <xref linkend=\"ST_Translate\"/>, <xref linkend=\"ST_TransScale\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:132
@@ -326,26 +402,31 @@ msgstr "ST_Force2D"
 #: reference_editor.xml:134
 #, no-c-format
 msgid ""
-"Forces the geometries into a \"2-dimensional mode\" so that all output "
-"representations will only have the X and Y coordinates."
-msgstr "ジオメトリを「2次元モード」に強制させます。全ての出力表現はXY座標値のみを持つことになります。"
+"Forces the geometries into a \"2-dimensional mode\" so that all output representations will only "
+"have the X and Y coordinates."
+msgstr ""
+"ジオメトリを「2次元モード」に強制させます。全ての出力表現はXY座標値のみを持つことになります。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:140
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Force2D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Force2D</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Force2D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Force2D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:150
 #, no-c-format
 msgid ""
-"Forces the geometries into a \"2-dimensional mode\" so that all output "
-"representations will only have the X and Y coordinates. This is useful for "
-"force OGC-compliant output (since OGC only specifies 2-D geometries)."
-msgstr "ジオメトリを「2次元モード」に強制させます。全ての出力表現はXY座標値のみを持つことになります。OGC準拠の出力 (OGCは2次元ジオメトリのみ策定しています)に強制するために使われます。"
+"Forces the geometries into a \"2-dimensional mode\" so that all output representations will only "
+"have the X and Y coordinates. This is useful for force OGC-compliant output (since OGC only "
+"specifies 2-D geometries)."
+msgstr ""
+"ジオメトリを「2次元モード」に強制させます。全ての出力表現はXY座標値のみを持つことになります。OGC準"
+"拠の出力 (OGCは2次元ジオメトリのみ策定しています)に強制するために使われます。"
 
 #. Tag: para
 #: reference_editor.xml:155 reference_editor.xml:198 reference_editor.xml:241
@@ -364,7 +445,8 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_2Dと呼ばれます。"
 #: reference_editor.xml:166
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
 "                st_asewkt\n"
 "-------------------------------------\n"
 "CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)\n"
@@ -374,7 +456,18 @@ msgid ""
 "                                  st_asewkt\n"
 "----------------------------------------------\n"
 " POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
-msgstr "SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n                st_asewkt\n-------------------------------------\nCIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)\n\nSELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));\n\n                                  st_asewkt\n----------------------------------------------\n POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
+msgstr ""
+"SELECT ST_AsEWKT(ST_Force2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
+"                st_asewkt\n"
+"-------------------------------------\n"
+"CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));\n"
+"\n"
+"                                  st_asewkt\n"
+"----------------------------------------------\n"
+" POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))"
 
 #. Tag: refname
 #: reference_editor.xml:179
@@ -392,17 +485,21 @@ msgstr "ジオメトリをXYZモードに強制します。これはST_Force_3DZ
 #: reference_editor.xml:186
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Force3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Force3D</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Force3D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Force3D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:196
 #, no-c-format
 msgid ""
-"Forces the geometries into XYZ mode. This is an alias for ST_Force_3DZ. If a"
-" geometry has no Z component, then a 0 Z coordinate is tacked on."
-msgstr "ジオメトリをXYZモードに強制します。これはST_Force_3DZの別名です。ジオメトリがZ値を持っていない場合は0のZ値を追加します。"
+"Forces the geometries into XYZ mode. This is an alias for ST_Force_3DZ. If a geometry has no Z "
+"component, then a 0 Z coordinate is tacked on."
+msgstr ""
+"ジオメトリをXYZモードに強制します。これはST_Force_3DZの別名です。ジオメトリがZ値を持っていない場合"
+"は0のZ値を追加します。"
 
 #. Tag: para
 #: reference_editor.xml:199
@@ -415,7 +512,8 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3Dと呼ばれます。"
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
-"                SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"                SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 "
+"7 2, 5 6 2)')));\n"
 "                                   st_asewkt\n"
 "-----------------------------------------------\n"
 " CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
@@ -426,15 +524,30 @@ msgid ""
 "                                                 st_asewkt\n"
 "--------------------------------------------------------------\n"
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
-msgstr "-- 既に3次元ジオメトリになっている場合は何も起きません\n                SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n                                   st_asewkt\n-----------------------------------------------\n CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n\n\nSELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));\n\n                                                 st_asewkt\n--------------------------------------------------------------\n POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
+msgstr ""
+"-- 既に3次元ジオメトリになっている場合は何も起きません\n"
+"                SELECT ST_AsEWKT(ST_Force3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 "
+"7 2, 5 6 2)')));\n"
+"                                   st_asewkt\n"
+"-----------------------------------------------\n"
+" CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));\n"
+"\n"
+"                                                 st_asewkt\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:216
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
-"linkend=\"ST_Force_3DZ\"/>"
-msgstr ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3DZ\"/>"
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3DZ\"/"
+">"
+msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3DZ\"/"
+">"
 
 #. Tag: refname
 #: reference_editor.xml:222
@@ -452,17 +565,21 @@ msgstr "ジオメトリをXYZモードに強制します。これはST_Force_3D�
 #: reference_editor.xml:229
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Force3DZ</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Force3DZ</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:239
 #, no-c-format
 msgid ""
-"Forces the geometries into XYZ mode. This is a synonym for ST_Force3DZ. If a"
-" geometry has no Z component, then a 0 Z coordinate is tacked on."
-msgstr "ジオメトリをXYZモードに強制します。これはST_Force_3Dと同義です。ジオメトリがZ値を持っていない場合は0のZ値を追加します。"
+"Forces the geometries into XYZ mode. This is a synonym for ST_Force3DZ. If a geometry has no Z "
+"component, then a 0 Z coordinate is tacked on."
+msgstr ""
+"ジオメトリをXYZモードに強制します。これはST_Force_3Dと同義です。ジオメトリがZ値を持っていない場合は"
+"0のZ値を追加します。"
 
 #. Tag: para
 #: reference_editor.xml:242
@@ -475,7 +592,8 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3DZと呼ばれます。"
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
-"SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
 "                                   st_asewkt\n"
 "-----------------------------------------------\n"
 " CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
@@ -486,15 +604,28 @@ msgid ""
 "                                                 st_asewkt\n"
 "--------------------------------------------------------------\n"
 " POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
-msgstr "-- 既に3次元ジオメトリになっている場合は何も起きません\nSELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n                                   st_asewkt\n-----------------------------------------------\n CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n\n\nSELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));\n\n                                                 st_asewkt\n--------------------------------------------------------------\n POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
+msgstr ""
+"-- 既に3次元ジオメトリになっている場合は何も起きません\n"
+"SELECT ST_AsEWKT(ST_Force3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
+"                                   st_asewkt\n"
+"-----------------------------------------------\n"
+" CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));\n"
+"\n"
+"                                                 st_asewkt\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:259 reference_editor.xml:341
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
-"linkend=\"ST_Force_3D\"/>"
-msgstr ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/>"
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/>"
+msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:265
@@ -512,17 +643,21 @@ msgstr "ジオメトリをXYMモードに強制します。"
 #: reference_editor.xml:272
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Force3DM</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Force3DM</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Force3DM</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Force3DM</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:282
 #, no-c-format
 msgid ""
-"Forces the geometries into XYM mode. If a geometry has no M component, then "
-"a 0 M coordinate is tacked on. If it has a Z component, then Z is removed"
-msgstr "ジオメトリをXYMモードに強制します。ジオメトリがM値を持っていない場合は0のM値を追加します。Z値を持っている場合はZ値は除去されます。"
+"Forces the geometries into XYM mode. If a geometry has no M component, then a 0 M coordinate is "
+"tacked on. If it has a Z component, then Z is removed"
+msgstr ""
+"ジオメトリをXYMモードに強制します。ジオメトリがM値を持っていない場合は0のM値を追加します。Z値を持っ"
+"ている場合はZ値は除去されます。"
 
 #. Tag: para
 #: reference_editor.xml:285
@@ -535,7 +670,8 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3DMと呼ばれます。"
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
-"SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
 "                                   st_asewkt\n"
 "------------------------------------------------\n"
 " CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)\n"
@@ -546,15 +682,30 @@ msgid ""
 "                                                  st_asewkt\n"
 "---------------------------------------------------------------\n"
 " POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
-msgstr "-- 既に3次元ジオメトリになっている場合は何も起きません\nSELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n                                   st_asewkt\n------------------------------------------------\n CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)\n\n\nSELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n\n                                                  st_asewkt\n---------------------------------------------------------------\n POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
+msgstr ""
+"-- 既に3次元ジオメトリになっている場合は何も起きません\n"
+"SELECT ST_AsEWKT(ST_Force3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
+"                                   st_asewkt\n"
+"------------------------------------------------\n"
+" CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n"
+"\n"
+"                                                  st_asewkt\n"
+"---------------------------------------------------------------\n"
+" POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))"
 
 #. Tag: para
 #: reference_editor.xml:300 reference_editor.xml:389
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref "
-"linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
-msgstr ", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>"
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/"
+">, <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ""
+", <xref linkend=\"ST_Force2D\"/>, <xref linkend=\"ST_Force_3DM\"/>, <xref linkend=\"ST_Force_3D\"/"
+">, <xref linkend=\"ST_GeomFromEWKT\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:306
@@ -572,16 +723,16 @@ msgstr "ジオメトリをXYZMモードに強制します。"
 #: reference_editor.xml:313
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Force4D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Force4D</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Force4D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Force4D</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:323
 #, no-c-format
-msgid ""
-"Forces the geometries into XYZM mode. 0 is tacked on for missing Z and M "
-"dimensions."
+msgid "Forces the geometries into XYZM mode. 0 is tacked on for missing Z and M dimensions."
 msgstr "ジオメトリをXYZMモードに強制します。Z値やM値が無い場合は0を追加します。"
 
 #. Tag: para
@@ -595,19 +746,36 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_4Dと呼ばれます。"
 #, no-c-format
 msgid ""
 "--Nothing happens to an already 3D geometry\n"
-"SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n"
+"SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
 "                                                st_asewkt\n"
 "---------------------------------------------------------\n"
 " CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)\n"
 "\n"
 "\n"
 "\n"
-"SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n"
+"SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 "
+"1))'));\n"
 "\n"
 "                                                                          st_asewkt\n"
 "--------------------------------------------------------------------------------------\n"
 " MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 1,1 1 0 1))"
-msgstr "-- 既に3次元ジオメトリになっている場合は何も起きません\nSELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));\n                                                st_asewkt\n---------------------------------------------------------\n CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)\n\n\n\nSELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n\n                                                                          st_asewkt\n--------------------------------------------------------------------------------------\n MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 1,1 1 0 1))"
+msgstr ""
+"-- 既に3次元ジオメトリになっている場合は何も起きません\n"
+"SELECT ST_AsEWKT(ST_Force4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 "
+"2)')));\n"
+"                                                st_asewkt\n"
+"---------------------------------------------------------\n"
+" CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)\n"
+"\n"
+"\n"
+"\n"
+"SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 "
+"1))'));\n"
+"\n"
+"                                                                          st_asewkt\n"
+"--------------------------------------------------------------------------------------\n"
+" MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 1,1 1 0 1))"
 
 #. Tag: refname
 #: reference_editor.xml:347
@@ -625,25 +793,28 @@ msgstr "ジオメトリをジオメトリコレクションに変換します。
 #: reference_editor.xml:354
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_ForceCollection</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ForceCollection</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:364
 #, no-c-format
 msgid ""
-"Converts the geometry into a GEOMETRYCOLLECTION. This is useful for "
-"simplifying the WKB representation."
+"Converts the geometry into a GEOMETRYCOLLECTION. This is useful for simplifying the WKB "
+"representation."
 msgstr "ジオメトリをジオメトリコレクションに変換します。これはWKB表現を単純化するのに便利です。"
 
 #. Tag: para
 #: reference_editor.xml:368
 #, no-c-format
 msgid ""
-"Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. "
-"This is fixed in 1.3.4+"
-msgstr "Availability: 1.2.2 1.3.4より前は、曲線を含むジオメトリで使うとクラッシュしました。これは1.3.4以上では訂正されています。"
+"Availability: 1.2.2, prior to 1.3.4 this function will crash with Curves. This is fixed in 1.3.4+"
+msgstr ""
+"Availability: 1.2.2 1.3.4より前は、曲線を含むジオメトリで使うとクラッシュしました。これは1.3.4以上"
+"では訂正されています。"
 
 #. Tag: para
 #: reference_editor.xml:369
@@ -655,19 +826,35 @@ msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_Collectionと呼ばれます
 #: reference_editor.xml:380
 #, no-c-format
 msgid ""
-"SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n"
+"SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 "
+"1))'));\n"
 "\n"
 "                                                                   st_asewkt\n"
 "----------------------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))\n"
 "\n"
 "\n"
-"  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));\n"
+"  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406)'));\n"
 "                                                                   st_astext\n"
 "--------------------------------------------------------------------------------\n"
 " GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
 "(1 row)"
-msgstr "SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));\n\n                                                                   st_asewkt\n----------------------------------------------------------------------------------\n GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))\n\n\n  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)'));\n                                                                   st_astext\n--------------------------------------------------------------------------------\n GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n(1 row)"
+msgstr ""
+"SELECT  ST_AsEWKT(ST_ForceCollection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 "
+"1))'));\n"
+"\n"
+"                                                                   st_asewkt\n"
+"----------------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))\n"
+"\n"
+"\n"
+"  SELECT ST_AsText(ST_ForceCollection('CIRCULARSTRING(220227 150406,2220227 150407,220227 "
+"150406)'));\n"
+"                                                                   st_astext\n"
+"--------------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION(CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
+"(1 row)"
 
 #. Tag: programlisting
 #: reference_editor.xml:382
@@ -691,7 +878,25 @@ msgid ""
 "  POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
 "  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))\n"
 ")"
-msgstr "-- 多面体の例 --\nSELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))'))\n\n                                                                   st_asewkt\n----------------------------------------------------------------------------------\nGEOMETRYCOLLECTION(\n  POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n  POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n  POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n  POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n  POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))\n)"
+msgstr ""
+"-- 多面体の例 --\n"
+"SELECT ST_AsEWKT(ST_ForceCollection('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n"
+" ((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n"
+" ((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n"
+" ((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n"
+" ((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
+" ((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1)))'))\n"
+"\n"
+"                                                                   st_asewkt\n"
+"----------------------------------------------------------------------------------\n"
+"GEOMETRYCOLLECTION(\n"
+"  POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0)),\n"
+"  POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0)),\n"
+"  POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0)),\n"
+"  POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0)),\n"
+"  POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0)),\n"
+"  POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))\n"
+")"
 
 #. Tag: refname
 #: reference_editor.xml:396
@@ -709,13 +914,17 @@ msgstr "SFS 1.1ジオメトリタイプのみ使うようジオメトリに強�
 #: reference_editor.xml:402
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef>"
-" <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_ForceSFS</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>version</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>text </type> <parameter>version</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>text </"
+"type> <parameter>version</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_ForceSFS</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>text </"
+"type> <parameter>version</parameter></paramdef> </funcprototype>"
 
 #. Tag: refname
 #: reference_editor.xml:428
@@ -726,29 +935,30 @@ msgstr "ST_ForceRHR"
 #. Tag: refpurpose
 #: reference_editor.xml:430
 #, no-c-format
-msgid ""
-"Forces the orientation of the vertices in a polygon to follow the Right-"
-"Hand-Rule."
+msgid "Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule."
 msgstr "ポリゴンの頂点の方向を右回りに強制します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:436
 #, no-c-format
 msgid ""
-"<funcdef>boolean <function>ST_ForceRHR</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
+"<funcdef>geometry <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:447
 #, no-c-format
 msgid ""
-"Forces the orientation of the vertices in a polygon to follow the Right-"
-"Hand-Rule. In GIS terminology, this means that the area that is bounded by "
-"the polygon is to the right of the boundary. In particular, the exterior "
-"ring is orientated in a clockwise direction and the interior rings in a "
-"counter-clockwise direction."
-msgstr "ポリゴンの頂点の方向を右回りに強制します。GIS用語では、ポリゴンで境界が作られた範囲は、境界線の右側になります。特に外環は時計回り方向で内環は反時計回りになります。"
+"Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule. In GIS "
+"terminology, this means that the area that is bounded by the polygon is to the right of the "
+"boundary. In particular, the exterior ring is orientated in a clockwise direction and the interior "
+"rings in a counter-clockwise direction."
+msgstr ""
+"ポリゴンの頂点の方向を右回りに強制します。GIS用語では、ポリゴンで境界が作られた範囲は、境界線の右側"
+"になります。特に外環は時計回り方向で内環は反時計回りになります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:461
@@ -763,7 +973,16 @@ msgid ""
 "--------------------------------------------------------------\n"
 " POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))\n"
 "(1 row)"
-msgstr "SELECT ST_AsEWKT(\n  ST_ForceRHR(\n        'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'\n  )\n);\n                                                  st_asewkt\n--------------------------------------------------------------\n POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))\n(1 row)"
+msgstr ""
+"SELECT ST_AsEWKT(\n"
+"  ST_ForceRHR(\n"
+"        'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'\n"
+"  )\n"
+");\n"
+"                                                  st_asewkt\n"
+"--------------------------------------------------------------\n"
+" POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_editor.xml:467
@@ -787,19 +1006,23 @@ msgstr "該当する場合は、ジオメトリを曲線タイプに変換しま
 #: reference_editor.xml:482
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_ForceCurve</function></funcdef> <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
+"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>g</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>g</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:493
 #, no-c-format
 msgid ""
-"Turns a geometry into its curved representation, if applicable: lines become"
-" compoundcurves, multilines become multicurves polygons become curvepolygons"
-" multipolygons become multisurfaces. If the geometry input is already a "
-"curved representation returns back same as input."
-msgstr "可能ならジオメトリを曲線表現に変更します。ラインは複合曲線になり、マルチラインはマルチ曲線になり、ポリゴンは曲線ポリゴンになり、マルチポリゴンはマルチサーフェスになります。入力ジオメトリが既に曲線表現であるなら、入力と同じ値が返されます。"
+"Turns a geometry into its curved representation, if applicable: lines become compoundcurves, "
+"multilines become multicurves polygons become curvepolygons multipolygons become multisurfaces. If "
+"the geometry input is already a curved representation returns back same as input."
+msgstr ""
+"可能ならジオメトリを曲線表現に変更します。ラインは複合曲線になり、マルチラインはマルチ曲線になり、"
+"ポリゴンは曲線ポリゴンになり、マルチポリゴンはマルチサーフェスになります。入力ジオメトリが既に曲線"
+"表現であるなら、入力と同じ値が返されます。"
 
 #. Tag: para
 #: reference_editor.xml:499
@@ -820,7 +1043,16 @@ msgid ""
 "----------------------------------------------------------------------\n"
 " CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))\n"
 "(1 row)"
-msgstr "SELECT ST_AsText(\n  ST_ForceCurve(\n        'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry\n  )\n);\n                              st_astext\n----------------------------------------------------------------------\n CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))\n(1 row)"
+msgstr ""
+"SELECT ST_AsText(\n"
+"  ST_ForceCurve(\n"
+"        'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'::geometry\n"
+"  )\n"
+");\n"
+"                              st_astext\n"
+"----------------------------------------------------------------------\n"
+" CURVEPOLYGON Z ((0 0 2,5 0 2,0 5 2,0 0 2),(1 1 2,1 3 2,3 1 2,1 1 2))\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_editor.xml:520
@@ -831,35 +1063,36 @@ msgstr "ST_LineMerge"
 #. Tag: refpurpose
 #: reference_editor.xml:522
 #, no-c-format
-msgid ""
-"Returns a (set of) LineString(s) formed by sewing together a "
-"MULTILINESTRING."
+msgid "Returns a (set of) LineString(s) formed by sewing together a MULTILINESTRING."
 msgstr "MULTILINESTRINGをまとめ合わせて形成されるラインストリング (またはその集合)を返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:528
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_LineMerge</function></funcdef> "
-"<paramdef><type>geometry </type> "
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> <paramdef><type>geometry </type> "
 "<parameter>amultilinestring</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_LineMerge</function></funcdef> <paramdef><type>geometry </type> <parameter>amultilinestring</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_LineMerge</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>amultilinestring</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:538
 #, no-c-format
 msgid ""
-"Returns a (set of) LineString(s) formed by sewing together the constituent "
-"line work of a MULTILINESTRING."
+"Returns a (set of) LineString(s) formed by sewing together the constituent line work of a "
+"MULTILINESTRING."
 msgstr "MULTILINESTRINGをまとめ合わせて形成されるラインストリング (またはその集合)を返します。"
 
 #. Tag: para
 #: reference_editor.xml:540
 #, no-c-format
 msgid ""
-"Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry"
-" collection into this function, it will return an empty GEOMETRYCOLLECTION"
-msgstr "MULTILINESTRING/LINESTRINGに対してのみ使用して下さい。ポリゴンやジオメトリコレクションに対してこの関数を使うと、空のGEOMETRYCOLLECTIONが返ります。"
+"Only use with MULTILINESTRING/LINESTRINGs. If you feed a polygon or geometry collection into this "
+"function, it will return an empty GEOMETRYCOLLECTION"
+msgstr ""
+"MULTILINESTRING/LINESTRINGに対してのみ使用して下さい。ポリゴンやジオメトリコレクションに対してこの"
+"関数を使うと、空のGEOMETRYCOLLECTIONが返ります。"
 
 #. Tag: para
 #: reference_editor.xml:544
@@ -888,7 +1121,24 @@ msgid ""
 "st_astext\n"
 "----------------\n"
 "MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
-msgstr "SELECT ST_AsText(ST_LineMerge(\nST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')\n                )\n);\nst_astext\n--------------------------------------------------------------------------------------------------\nLINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n(1 row)\n\n-- マージできない場合は、元のマルチラインストリングが返ります\nSELECT ST_AsText(ST_LineMerge(\nST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))')\n)\n);\nst_astext\n----------------\nMULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
+msgstr ""
+"SELECT ST_AsText(ST_LineMerge(\n"
+"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')\n"
+"                )\n"
+");\n"
+"st_astext\n"
+"--------------------------------------------------------------------------------------------------\n"
+"LINESTRING(-29 -27,-30 -29.7,-36 -31,-45 -33,-46 -32)\n"
+"(1 row)\n"
+"\n"
+"-- マージできない場合は、元のマルチラインストリングが返ります\n"
+"SELECT ST_AsText(ST_LineMerge(\n"
+"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45.2 -33.2,-46 -32))')\n"
+")\n"
+");\n"
+"st_astext\n"
+"----------------\n"
+"MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))"
 
 #. Tag: para
 #: reference_editor.xml:554
@@ -906,30 +1156,36 @@ msgstr "ST_CollectionExtract"
 #: reference_editor.xml:562
 #, no-c-format
 msgid ""
-"Given a (multi)geometry, returns a (multi)geometry consisting only of "
-"elements of the specified type."
-msgstr "(マルチ)ジオメトリを与えると、指定したタイプの要素でのみ構成される (マルチ)ジオメトリを返します。"
+"Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified "
+"type."
+msgstr ""
+"(マルチ)ジオメトリを与えると、指定したタイプの要素でのみ構成される (マルチ)ジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:569
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> "
-"<paramdef><type>geometry </type> "
-"<parameter>collection</parameter></paramdef> <paramdef><type>integer </type>"
-" <parameter>type</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef> <paramdef><type>integer </type> <parameter>type</parameter></paramdef>"
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>collection</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>type</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_CollectionExtract</function></funcdef> <paramdef><type>geometry </"
+"type> <parameter>collection</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>type</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:580
 #, no-c-format
 msgid ""
-"Given a (multi)geometry, returns a (multi)geometry consisting only of "
-"elements of the specified type. Sub-geometries that are not the specified "
-"type are ignored. If there are no sub-geometries of the right type, an EMPTY"
-" geometry will be returned. Only points, lines and polygons are supported. "
-"Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
-msgstr "(マルチ)ジオメトリを与えると、指定したタイプの要素でのみ構成される (マルチ)ジオメトリを返します。指定したタイプでないジオメトリ要素は無視されます。正しいタイプのジオメトリ要素が無い場合はEMPTYジオメトリが返ります。ポイント、ラインストリング、ポリゴンのみをサポートします。番号は、1==ポイント, 2==ラインストリング, 3==ポリゴンです。"
+"Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified "
+"type. Sub-geometries that are not the specified type are ignored. If there are no sub-geometries "
+"of the right type, an EMPTY geometry will be returned. Only points, lines and polygons are "
+"supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON."
+msgstr ""
+"(マルチ)ジオメトリを与えると、指定したタイプの要素でのみ構成される (マルチ)ジオメトリを返します。指"
+"定したタイプでないジオメトリ要素は無視されます。正しいタイプのジオメトリ要素が無い場合はEMPTYジオメ"
+"トリが返ります。ポイント、ラインストリング、ポリゴンのみをサポートします。番号は、1==ポイント, 2=="
+"ラインストリング, 3==ポリゴンです。"
 
 #. Tag: para
 #: reference_editor.xml:586
@@ -941,38 +1197,62 @@ msgstr "Availability: 1.5.0"
 #: reference_editor.xml:588
 #, no-c-format
 msgid ""
-"Prior to 1.5.3 this function returned non-collection inputs untouched, no "
-"matter type. In 1.5.3 non-matching single geometries result in a NULL "
-"return. In of 2.0.0 every case of missing match results in a typed EMPTY "
-"return."
-msgstr "1.5.3より前では、この関数は、非コクレションの入力については手を付けずに問題のないタイプで返しました。1.5.3では、適合しない単一ジオメトリについてはNULLを返しました。2.0.0では、適合するジオメトリが無い場合は常にEMPTYを返すようになりました。"
+"Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type. In 1.5.3 "
+"non-matching single geometries result in a NULL return. In of 2.0.0 every case of missing match "
+"results in a typed EMPTY return."
+msgstr ""
+"1.5.3より前では、この関数は、非コクレションの入力については手を付けずに問題のないタイプで返しまし"
+"た。1.5.3では、適合しない単一ジオメトリについてはNULLを返しました。2.0.0では、適合するジオメトリが"
+"無い場合は常にEMPTYを返すようになりました。"
 
 #. Tag: para
 #: reference_editor.xml:594 reference_editor.xml:635
 #, no-c-format
 msgid ""
-"When specifying 3 == POLYGON a multipolygon is returned even when the edges "
-"are shared. This results in an invalid multipolygon for many cases such as "
-"applying this function on an <xref linkend=\"ST_Split\"/> result."
-msgstr "3 == POLYGONを指定すると、エッジが共有されていたとしてもマルチポリゴンが返ります。この関数を<xref linkend=\"ST_Split\"/>の結果への適用の多くの場合に不正なマルチポリゴンとなります。"
+"When specifying 3 == POLYGON a multipolygon is returned even when the edges are shared. This "
+"results in an invalid multipolygon for many cases such as applying this function on an <xref "
+"linkend=\"ST_Split\"/> result."
+msgstr ""
+"3 == POLYGONを指定すると、エッジが共有されていたとしてもマルチポリゴンが返ります。この関数を<xref "
+"linkend=\"ST_Split\"/>の結果への適用の多くの場合に不正なマルチポリゴンとなります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:602
 #, no-c-format
 msgid ""
 "-- Constants: 1 == POINT, 2 == LINESTRING, 3 == POLYGON\n"
-"SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+"0)))'),1));\n"
 "st_astext\n"
 "---------------\n"
 "MULTIPOINT(0 0)\n"
 "(1 row)\n"
 "\n"
-"SELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
 "st_astext\n"
 "---------------\n"
 "MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
 "(1 row)"
-msgstr "-- 定数: 1 == ポイント, 2 == ラインストリング, 3 == ポリゴン\nSELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))'),1));\nst_astext\n---------------\nMULTIPOINT(0 0)\n(1 row)\n\nSELECT ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1)),LINESTRING(2 2, 3 3))'),2));\nst_astext\n---------------\nMULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n(1 row)"
+msgstr ""
+"-- 定数: 1 == ポイント, 2 == ラインストリング, 3 == ポリゴン\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 "
+"0)))'),1));\n"
+"st_astext\n"
+"---------------\n"
+"MULTIPOINT(0 0)\n"
+"(1 row)\n"
+"\n"
+"SELECT "
+"ST_AsText(ST_CollectionExtract(ST_GeomFromText('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(LINESTRING(0 "
+"0, 1 1)),LINESTRING(2 2, 3 3))'),2));\n"
+"st_astext\n"
+"---------------\n"
+"MULTILINESTRING((0 0, 1 1), (2 2, 3 3))\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_editor.xml:606
@@ -989,28 +1269,29 @@ msgstr "ST_CollectionHomogenize"
 #. Tag: refpurpose
 #: reference_editor.xml:614
 #, no-c-format
-msgid ""
-"Given a geometry collection, returns the \"simplest\" representation of the "
-"contents."
+msgid "Given a geometry collection, returns the \"simplest\" representation of the contents."
 msgstr "ジオメトリコレクションを与えると、「最も単純な」表現を返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:621
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> "
-"<paramdef><type>geometry </type> "
-"<parameter>collection</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> <paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>"
+"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>collection</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>collection</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:631
 #, no-c-format
 msgid ""
-"Given a geometry collection, returns the \"simplest\" representation of the "
-"contents. Singletons will be returned as singletons. Collections that are "
-"homogeneous will be returned as the appropriate multi-type."
-msgstr "ジオメトリコレクションを与えると、「最も単純な」表現を返します。非マルチなタイプは非マルチのタイプを返します。同質なコレクションは適切なマルチ系タイプを返します。"
+"Given a geometry collection, returns the \"simplest\" representation of the contents. Singletons "
+"will be returned as singletons. Collections that are homogeneous will be returned as the "
+"appropriate multi-type."
+msgstr ""
+"ジオメトリコレクションを与えると、「最も単純な」表現を返します。非マルチなタイプは非マルチのタイプ"
+"を返します。同質なコレクションは適切なマルチ系タイプを返します。"
 
 #. Tag: para
 #: reference_editor.xml:639
@@ -1035,7 +1316,20 @@ msgid ""
 "        ---------------------\n"
 "         MULTIPOINT(0 0,1 1)\n"
 "        (1 row)"
-msgstr "SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));        \n\n        st_astext\n        ------------\n         POINT(0 0)\n        (1 row)\n\n  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));        \n\n        st_astext\n        ---------------------\n         MULTIPOINT(0 0,1 1)\n        (1 row)"
+msgstr ""
+"SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));        \n"
+"\n"
+"        st_astext\n"
+"        ------------\n"
+"         POINT(0 0)\n"
+"        (1 row)\n"
+"\n"
+"  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));        \n"
+"\n"
+"        st_astext\n"
+"        ---------------------\n"
+"         MULTIPOINT(0 0,1 1)\n"
+"        (1 row)"
 
 #. Tag: para
 #: reference_editor.xml:650
@@ -1053,24 +1347,28 @@ msgstr "ST_Multi"
 #: reference_editor.xml:658
 #, no-c-format
 msgid ""
-"<refpurpose>Returns the geometry as a MULTI* geometry. If the geometry is "
-"already a MULTI*, it is returned unchanged.</refpurpose>"
-msgstr "<refpurpose>マルチ系ジオメトリを返します。ジオメトリが既にマルチ系なら変更せずに返します。</refpurpose>"
+"<refpurpose>Returns the geometry as a MULTI* geometry. If the geometry is already a MULTI*, it is "
+"returned unchanged.</refpurpose>"
+msgstr ""
+"<refpurpose>マルチ系ジオメトリを返します。ジオメトリが既にマルチ系なら変更せずに返します。</"
+"refpurpose>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:664
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Multi</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Multi</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Multi</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Multi</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:674
 #, no-c-format
 msgid ""
-"<para>Returns the geometry as a MULTI* geometry. If the geometry is already "
-"a MULTI*, it is returned unchanged.</para>"
+"<para>Returns the geometry as a MULTI* geometry. If the geometry is already a MULTI*, it is "
+"returned unchanged.</para>"
 msgstr "<para>マルチ系ジオメトリを返します。ジオメトリが既にマルチ系なら変更せずに返します。</para>"
 
 #. Tag: programlisting
@@ -1081,10 +1379,19 @@ msgid ""
 "                        743265 2967450,743265.625 2967416,743238 2967416))')));\n"
 "                        st_astext\n"
 "                        --------------------------------------------------------------------------------------------------\n"
-"                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,\n"
+"                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 "
+"2967416,\n"
 "                        743238 2967416)))\n"
 "                        (1 row)"
-msgstr "SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,\n                        743265 2967450,743265.625 2967416,743238 2967416))')));\n                        st_astext\n                        --------------------------------------------------------------------------------------------------\n                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,\n                        743238 2967416)))\n                        (1 row)"
+msgstr ""
+"SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,\n"
+"                        743265 2967450,743265.625 2967416,743238 2967416))')));\n"
+"                        st_astext\n"
+"                        --------------------------------------------------------------------------------------------------\n"
+"                        MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 "
+"2967416,\n"
+"                        743238 2967416)))\n"
+"                        (1 row)"
 
 #. Tag: refname
 #: reference_editor.xml:692
@@ -1102,18 +1409,21 @@ msgstr "ラインストリングからポイントを削除します。オフセ
 #: reference_editor.xml:697
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-" <paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_RemovePoint</function></funcdef> <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> <parameter>offset</parameter></paramdef>"
+"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> <parameter>offset</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_RemovePoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> <parameter>offset</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:708
 #, no-c-format
-msgid ""
-"Removes point from a linestring. Useful for turning a closed ring into an "
-"open line string"
-msgstr "ラインストリングからポイントを削除します。閉じたリングを開いたラインストリングに変えるのに使います。"
+msgid "Removes point from a linestring. Useful for turning a closed ring into an open line string"
+msgstr ""
+"ラインストリングからポイントを削除します。閉じたリングを開いたラインストリングに変えるのに使いま"
+"す。"
 
 #. Tag: programlisting
 #: reference_editor.xml:715
@@ -1125,7 +1435,13 @@ msgid ""
 "        SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)\n"
 "        FROM sometable\n"
 "        WHERE ST_IsClosed(the_geom) = true;"
-msgstr "-- 終点を削除して閉じたラインストリングが無いこを保障します。\n-- 下の例ではthe_geomはラインストリングであると仮定しています。\nUPDATE sometable\n        SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)\n        FROM sometable\n        WHERE ST_IsClosed(the_geom) = true;"
+msgstr ""
+"-- 終点を削除して閉じたラインストリングが無いこを保障します。\n"
+"-- 下の例ではthe_geomはラインストリングであると仮定しています。\n"
+"UPDATE sometable\n"
+"        SET the_geom = ST_RemovePoint(the_geom, ST_NPoints(the_geom) - 1)\n"
+"        FROM sometable\n"
+"        WHERE ST_IsClosed(the_geom) = true;"
 
 #. Tag: para
 #: reference_editor.xml:719
@@ -1149,9 +1465,11 @@ msgstr "頂点の順序を逆にしたジオメトリを返します。"
 #: reference_editor.xml:731
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Reverse</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Reverse</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Reverse</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Reverse</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:741
@@ -1171,7 +1489,15 @@ msgid ""
 "                line         |     reverseline\n"
 "---------------------+----------------------\n"
 "LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
-msgstr "SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As reverseline\nFROM\n(SELECT ST_MakeLine(ST_MakePoint(1,2),\n                ST_MakePoint(1,10)) As the_geom) as foo;\n-- 結果\n                line         |     reverseline\n---------------------+----------------------\nLINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
+msgstr ""
+"SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As reverseline\n"
+"FROM\n"
+"(SELECT ST_MakeLine(ST_MakePoint(1,2),\n"
+"                ST_MakePoint(1,10)) As the_geom) as foo;\n"
+"-- 結果\n"
+"                line         |     reverseline\n"
+"---------------------+----------------------\n"
+"LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
 
 #. Tag: refname
 #: reference_editor.xml:752
@@ -1190,37 +1516,44 @@ msgstr "ジオメトリを、原点について反時計回りにrotRadiasnぶ�
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>rotRadians</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>x0</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Rotate</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> "
-"<paramdef><type>geometry</type> "
-"<parameter>pointOrigin</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> <paramdef><type>float</type> <parameter>x0</parameter></paramdef> <paramdef><type>float</type> <parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef> <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef> </funcprototype>"
+"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</"
+"type> <parameter>rotRadians</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>x0</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef> <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></"
+"paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</"
+"type> <parameter>rotRadians</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>x0</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y0</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geometry <function>ST_Rotate</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef> <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:785
 #, no-c-format
 msgid ""
-"Rotates geometry rotRadians counter-clockwise about the origin. The rotation"
-" origin can be specified either as a POINT geometry, or as x and y "
-"coordinates. If the origin is not specified, the geometry is rotated about "
-"POINT(0 0)."
-msgstr "ジオメトリを、原点について反時計回りにrotRadiasnぶん回転させます。原点はPOINTジオメトリか、xとyの座標値を指定します。原点を指定しない場合にはPOINT(0,0)について回転させます。"
+"Rotates geometry rotRadians counter-clockwise about the origin. The rotation origin can be "
+"specified either as a POINT geometry, or as x and y coordinates. If the origin is not specified, "
+"the geometry is rotated about POINT(0 0)."
+msgstr ""
+"ジオメトリを、原点について反時計回りにrotRadiasnぶん回転させます。原点はPOINTジオメトリか、xとyの座"
+"標値を指定します。原点を指定しない場合にはPOINT(0,0)について回転させます。"
 
 #. Tag: para
 #: reference_editor.xml:790
 #, no-c-format
-msgid ""
-"Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
-"were added."
+msgid "Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added."
 msgstr "Enhanced: 2.0.0 回転の原点を指定するパラメタを追加しました。"
 
 #. Tag: para
@@ -1254,15 +1587,36 @@ msgid ""
 "--------------------------------------------------------------\n"
 " LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
 "(1 row)"
-msgstr "-- 180度回転\nSELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n               st_asewkt\n---------------------------------------\n LINESTRING(-50 -160,-50 -50,-100 -50)\n(1 row)\n\n-- x=50,y=160で反時計回りに30度回転\nSELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));\n                                 st_asewkt\n---------------------------------------------------------------------------\n LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)\n(1 row)\n\n-- 重心位置で時計回りに60度回転\nSELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\nFROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;\n                           st_asewkt\n--------------------------------------------------------------\n LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n(1 row)"
+msgstr ""
+"-- 180度回転\n"
+"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));\n"
+"               st_asewkt\n"
+"---------------------------------------\n"
+" LINESTRING(-50 -160,-50 -50,-100 -50)\n"
+"(1 row)\n"
+"\n"
+"-- x=50,y=160で反時計回りに30度回転\n"
+"SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));\n"
+"                                 st_asewkt\n"
+"---------------------------------------------------------------------------\n"
+" LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)\n"
+"(1 row)\n"
+"\n"
+"-- 重心位置で時計回りに60度回転\n"
+"SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))\n"
+"FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;\n"
+"                           st_asewkt\n"
+"--------------------------------------------------------------\n"
+" LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_editor.xml:810
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
-"linkend=\"ST_RotateZ\"/>"
-msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
+", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
+msgstr ""
+", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:816
@@ -1280,10 +1634,13 @@ msgstr "ジオメトリをX軸についてrotRadiansぶん回転させます。"
 #: reference_editor.xml:823
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_RotateX</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_RotateX</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+"<funcdef>geometry <function>ST_RotateX</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_RotateX</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:834
@@ -1295,10 +1652,11 @@ msgstr "ジオメトリgeomAをX軸についてrotRadiansぶん回転させま�
 #: reference_editor.xml:836
 #, no-c-format
 msgid ""
-"<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, "
-"sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
-msgstr "<code>ST_RotateX(geomA, rotRadians)</code>は<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>の短縮版です。"
+"<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, "
+"cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
+msgstr ""
+"<code>ST_RotateX(geomA, rotRadians)</code>は<code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -"
+"sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>の短縮版です。"
 
 #. Tag: para
 #: reference_editor.xml:840
@@ -1315,7 +1673,12 @@ msgid ""
 "                 st_asewkt\n"
 "---------------------------\n"
 " LINESTRING(1 -3 2,1 -1 1)"
-msgstr "-- ラインをX軸について90度回転\nSELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n                 st_asewkt\n---------------------------\n LINESTRING(1 -3 2,1 -1 1)"
+msgstr ""
+"-- ラインをX軸について90度回転\n"
+"SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n"
+"                 st_asewkt\n"
+"---------------------------\n"
+" LINESTRING(1 -3 2,1 -1 1)"
 
 #. Tag: para
 #: reference_editor.xml:857
@@ -1339,10 +1702,13 @@ msgstr "ジオメトリgeomAをY軸についてrotRadiansぶん回転させま�
 #: reference_editor.xml:870
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_RotateY</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_RotateY</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+"<funcdef>geometry <function>ST_RotateY</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_RotateY</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:881
@@ -1354,10 +1720,13 @@ msgstr "ジオメトリgeomAをY軸についてrotRadiansぶん回転させま�
 #: reference_editor.xml:883
 #, no-c-format
 msgid ""
-"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
-"<code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, "
-"-sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
-msgstr "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
+"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, "
+"cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</"
+"code>."
+msgstr ""
+"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, "
+"cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</"
+"code>."
 
 #. Tag: para
 #: reference_editor.xml:886
@@ -1374,7 +1743,12 @@ msgid ""
 "                 st_asewkt\n"
 "---------------------------\n"
 " LINESTRING(3 2 -1,1 1 -1)"
-msgstr "-- ラインをY軸について90度回転\n SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n                 st_asewkt\n---------------------------\n LINESTRING(3 2 -1,1 1 -1)"
+msgstr ""
+"-- ラインをY軸について90度回転\n"
+" SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n"
+"                 st_asewkt\n"
+"---------------------------\n"
+" LINESTRING(3 2 -1,1 1 -1)"
 
 #. Tag: para
 #: reference_editor.xml:906
@@ -1398,10 +1772,13 @@ msgstr "ジオメトリをZ軸についてrotRadiansぶん回転させます。"
 #: reference_editor.xml:919
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_RotateZ</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
+"<funcdef>geometry <function>ST_RotateZ</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_RotateZ</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>rotRadians</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:930
@@ -1419,10 +1796,12 @@ msgstr "この関数はST_Rotateと同じです。"
 #: reference_editor.xml:933
 #, no-c-format
 msgid ""
-"<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT "
-"ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), "
-"cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
-msgstr "<code>ST_RotateZ(geomA, rotRadians)</code>は<code>SELECT ST_Affine(geomA, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>の短縮版です。"
+"<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT ST_Affine(geomA, "
+"cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</"
+"code>."
+msgstr ""
+"<code>ST_RotateZ(geomA, rotRadians)</code>は<code>SELECT ST_Affine(geomA, cos(rotRadians), -"
+"sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>の短縮版です。"
 
 #. Tag: para
 #: reference_editor.xml:938
@@ -1446,8 +1825,23 @@ msgid ""
 "\n"
 "                                                                                                           st_asewkt\n"
 "----------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))"
-msgstr "-- ラインをZ軸について90度回転\nSELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n                 st_asewkt\n---------------------------\n LINESTRING(-2 1 3,-1 1 1)\n\n-- 曲線化した円をZ軸について回転\nSELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\nFROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As the_geom) As foo;\n\n                                                                                                           st_asewkt\n----------------------------------------------------------------------------------------------------------------------------\n CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))"
+" CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 "
+"231.87867965644,-567 237))"
+msgstr ""
+"-- ラインをZ軸について90度回転\n"
+"SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));\n"
+"                 st_asewkt\n"
+"---------------------------\n"
+" LINESTRING(-2 1 3,-1 1 1)\n"
+"\n"
+"-- 曲線化した円をZ軸について回転\n"
+"SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))\n"
+"FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As the_geom) As foo;\n"
+"\n"
+"                                                                                                           st_asewkt\n"
+"----------------------------------------------------------------------------------------------------------------------------\n"
+" CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 "
+"231.87867965644,-567 237))"
 
 #. Tag: para
 #: reference_editor.xml:958
@@ -1465,47 +1859,57 @@ msgstr "ST_Scale"
 #: reference_editor.xml:966
 #, no-c-format
 msgid ""
-"Scales the geometry to a new size by multiplying the ordinates with the "
-"parameters. Ie: ST_Scale(geom, Xfactor, Yfactor, Zfactor)."
-msgstr "パラメータで軸を乗算してジオメトリを新しいサイズに拡大縮小します。ST_Scale(geom, Xfactor, Yfactor, Zfactor)となります。"
+"Scales the geometry to a new size by multiplying the ordinates with the parameters. Ie: "
+"ST_Scale(geom, Xfactor, Yfactor, Zfactor)."
+msgstr ""
+"パラメータで軸を乗算してジオメトリを新しいサイズに拡大縮小します。ST_Scale(geom, Xfactor, Yfactor, "
+"Zfactor)となります。"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:973
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef> "
-"</funcprototype> <funcprototype> <funcdef>geometry "
-"<function>ST_Scale</function></funcdef> <paramdef><type>geometry </type> "
-"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>XFactor</parameter></paramdef> <paramdef><type>float</type> "
-"<parameter>YFactor</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Scale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>factor</parameter></paramdef> "
-"</funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> <paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>geometry</type> <parameter>factor</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>geometry</"
+"type> <parameter>factor</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> <paramdef><type>geometry "
+"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>geometry</"
+"type> <parameter>factor</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:1000
 #, no-c-format
 msgid ""
-"Scales the geometry to a new size by multiplying the ordinates with the "
-"corresponding factor parameters."
+"Scales the geometry to a new size by multiplying the ordinates with the corresponding factor "
+"parameters."
 msgstr "対応するパラメータで軸を乗算してジオメトリを新しいサイズに拡大縮小します。"
 
 #. Tag: para
 #: reference_editor.xml:1004
 #, no-c-format
 msgid ""
-"The version taking a geometry as the <varname>factor</varname> parameter "
-"allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
-"supported dimensions. Missing dimensions in the <varname>factor</varname> "
-"point are equivalant to no scaling the corresponding dimension."
-msgstr "ジオメトリと<varname>factor</varname>を引数に取る形式では、XY、XYM、XYZ、XYZMのポイントに、各次元の乗数を設定することができます。<varname>factor</varname>のポイントで次元の欠落がある場合には、対応する次元の拡大縮小を行いません。"
+"The version taking a geometry as the <varname>factor</varname> parameter allows passing a 2d, 3dm, "
+"3dz or 4d point to set scaling factor for all supported dimensions. Missing dimensions in the "
+"<varname>factor</varname> point are equivalent to no scaling the corresponding dimension."
+msgstr ""
+"ジオメトリと<varname>factor</varname>を引数に取る形式では、XY、XYM、XYZ、XYZMのポイントに、各次元の"
+"乗数を設定することができます。<varname>factor</varname>のポイントで次元の欠落がある場合には、対応す"
+"る次元の拡大縮小を行いません。"
 
 #. Tag: para
 #: reference_editor.xml:1014 reference_editor.xml:1589
@@ -1516,9 +1920,7 @@ msgstr "Availability: 1.1.0"
 #. Tag: para
 #: reference_editor.xml:1016
 #, no-c-format
-msgid ""
-"Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was "
-"introduced."
+msgid "Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was introduced."
 msgstr "Enhanced: 2.2.0 全ての次元の拡大縮小の対応 (ジオメトリによる引数指定)を導入しました"
 
 #. Tag: para
@@ -1549,7 +1951,25 @@ msgid ""
 "                               st_asewkt\n"
 "----------------------------------------\n"
 " LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)"
-msgstr "-- 一つ目: X, Y, Zの拡大縮小\nSELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));\n                          st_asewkt\n--------------------------------------\n LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)\n\n-- 二つ目: X, Yの拡大縮小\n SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));\n                        st_asewkt\n----------------------------------\n LINESTRING(0.5 1.5 3,0.5 0.75 1)\n\n-- 三つ目: X, Y, Z, Mの拡大縮小\n SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),\n   ST_MakePoint(0.5, 0.75, 2, -1)));\n                               st_asewkt\n----------------------------------------\n LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)"
+msgstr ""
+"-- 一つ目: X, Y, Zの拡大縮小\n"
+"SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));\n"
+"                          st_asewkt\n"
+"--------------------------------------\n"
+" LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)\n"
+"\n"
+"-- 二つ目: X, Yの拡大縮小\n"
+" SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));\n"
+"                        st_asewkt\n"
+"----------------------------------\n"
+" LINESTRING(0.5 1.5 3,0.5 0.75 1)\n"
+"\n"
+"-- 三つ目: X, Y, Z, Mの拡大縮小\n"
+" SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)'),\n"
+"   ST_MakePoint(0.5, 0.75, 2, -1)));\n"
+"                               st_asewkt\n"
+"----------------------------------------\n"
+" LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)"
 
 #. Tag: para
 #: reference_editor.xml:1035
@@ -1567,35 +1987,43 @@ msgstr "ST_Segmentize"
 #: reference_editor.xml:1043
 #, no-c-format
 msgid ""
-"Return a modified geometry/geography having no segment longer than the given"
-" distance. Distance computation is performed in 2d only. For geometry, "
-"length units are in units of spatial reference. For geography, units are in "
-"meters."
-msgstr "与えられた距離より長い辺を持たないジオメトリ/ジオグラフィに編集して返します。距離計算は2次元のみで行います。ジオメトリの場合、距離の単位は空間参照系の単位です。ジオグラフィの場合、メートル単位となります。"
+"Return a modified geometry/geography having no segment longer than the given distance. Distance "
+"computation is performed in 2d only. For geometry, length units are in units of spatial reference. "
+"For geography, units are in meters."
+msgstr ""
+"与えられた距離より長い辺を持たないジオメトリ/ジオグラフィに編集して返します。距離計算は2次元のみで"
+"行います。ジオメトリの場合、距離の単位は空間参照系の単位です。ジオグラフィの場合、メートル単位とな"
+"ります。"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:1049
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_Segmentize</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geom</parameter></paramdef> <paramdef><type>float </type>"
-" <parameter>max_segment_length</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geography "
-"<function>ST_Segmentize</function></funcdef> <paramdef><type>geography "
-"</type> <parameter>geog</parameter></paramdef> <paramdef><type>float </type>"
-" <parameter>max_segment_length</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>float </type> <parameter>max_segment_length</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geography <function>ST_Segmentize</function></funcdef> <paramdef><type>geography </type> <parameter>geog</parameter></paramdef> <paramdef><type>float </type> <parameter>max_segment_length</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>max_segment_length</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Segmentize</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>geog</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>max_segment_length</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>max_segment_length</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>geography <function>ST_Segmentize</function></funcdef> <paramdef><type>geography </type> "
+"<parameter>geog</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>max_segment_length</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:1066
 #, no-c-format
 msgid ""
-"Returns a modified geometry having no segment longer than the given "
-"<varname>max_segment_length</varname>. Distance computation is performed in "
-"2d only. For geometry, length units are in units of spatial reference. For "
-"geography, units are in meters."
-msgstr "<varname>max_segment_length</varname>より長い辺を持たないジオメトリ/ジオグラフィに編集して返します。距離計算は2次元のみで行います。ジオメトリの場合、距離の単位は空間参照系の単位です。ジオグラフィの場合、メートル単位となります。"
+"Returns a modified geometry having no segment longer than the given <varname>max_segment_length</"
+"varname>. Distance computation is performed in 2d only. For geometry, length units are in units of "
+"spatial reference. For geography, units are in meters."
+msgstr ""
+"<varname>max_segment_length</varname>より長い辺を持たないジオメトリ/ジオグラフィに編集して返しま"
+"す。距離計算は2次元のみで行います。ジオメトリの場合、距離の単位は空間参照系の単位です。ジオグラフィ"
+"の場合、メートル単位となります。"
 
 #. Tag: para
 #: reference_editor.xml:1069 reference_editor.xml:1530
@@ -1613,20 +2041,21 @@ msgstr "Enhanced: 2.1.0 ジオグラフィ対応が導入されました。"
 #: reference_editor.xml:1071
 #, no-c-format
 msgid ""
-"Changed: 2.1.0 As a result of the introduction of geography support: The "
-"construct <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> "
-"will result in ambiguous function error. You need to have properly typed "
-"object e.g. a geometry/geography column, use ST_GeomFromText, "
-"ST_GeogFromText or <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 "
-"4)'::geometry,0.5);</code>"
-msgstr "Changed: 2.1.0 ジオグラフィ対応導入の結果として、<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code>では、あいまいな関数呼び出しエラーとなります。確実にタイプを指定したオブジェクトを持たせる必要があります。たとえば、ジオメトリ/ジオグラフィカラムであったり、ST_GeomFromText, ST_GeogFromTextを使ったり、<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code>としたりします。"
+"Changed: 2.1.0 As a result of the introduction of geography support: The construct <code>SELECT "
+"ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> will result in ambiguous function error. You "
+"need to have properly typed object e.g. a geometry/geography column, use ST_GeomFromText, "
+"ST_GeogFromText or <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code>"
+msgstr ""
+"Changed: 2.1.0 ジオグラフィ対応導入の結果として、<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 "
+"4)',0.5);</code>では、あいまいな関数呼び出しエラーとなります。確実にタイプを指定したオブジェクトを"
+"持たせる必要があります。たとえば、ジオメトリ/ジオグラフィカラムであったり、ST_GeomFromText, "
+"ST_GeogFromTextを使ったり、<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code>"
+"としたりします。"
 
 #. Tag: para
 #: reference_editor.xml:1073
 #, no-c-format
-msgid ""
-"This will only increase segments. It will not lengthen segments shorter than"
-" max length"
+msgid "This will only increase segments. It will not lengthen segments shorter than max length"
 msgstr "この関数によって辺の数が増えるだけです。最大長より短い辺の長さを伸ばすことはしません。"
 
 #. Tag: programlisting
@@ -1647,9 +2076,27 @@ msgid ""
 "SELECT ST_AsText(ST_Segmentize(ST_GeomFromText('POLYGON((-29 28, -30 40, -29 28))'),10));\n"
 "st_astext\n"
 "-----------------------\n"
-"POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0345424175512,-29 28))\n"
+"POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0345424175512,-29 "
+"28))\n"
 "(1 row)"
-msgstr "SELECT ST_AsText(ST_Segmentize(\nST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')\n                ,5)\n);\nst_astext\n--------------------------------------------------------------------------------------------------\nMULTILINESTRING((-29 -27,-30 -29.7,-34.886615700134 -30.758766735029,-36 -31,\n-40.8809353009198 -32.0846522890933,-45 -33),\n(-45 -33,-46 -32))\n(1 row)\n\nSELECT ST_AsText(ST_Segmentize(ST_GeomFromText('POLYGON((-29 28, -30 40, -29 28))'),10));\nst_astext\n-----------------------\nPOLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0345424175512,-29 28))\n(1 row)"
+msgstr ""
+"SELECT ST_AsText(ST_Segmentize(\n"
+"ST_GeomFromText('MULTILINESTRING((-29 -27,-30 -29.7,-36 -31,-45 -33),(-45 -33,-46 -32))')\n"
+"                ,5)\n"
+");\n"
+"st_astext\n"
+"--------------------------------------------------------------------------------------------------\n"
+"MULTILINESTRING((-29 -27,-30 -29.7,-34.886615700134 -30.758766735029,-36 -31,\n"
+"-40.8809353009198 -32.0846522890933,-45 -33),\n"
+"(-45 -33,-46 -32))\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_AsText(ST_Segmentize(ST_GeomFromText('POLYGON((-29 28, -30 40, -29 28))'),10));\n"
+"st_astext\n"
+"-----------------------\n"
+"POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0345424175512,-29 "
+"28))\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_editor.xml:1090
@@ -1667,21 +2114,25 @@ msgstr "ラインストリングのN番目を与えられたポイントに置�
 #: reference_editor.xml:1096
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
-"<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
-" <paramdef><type>integer</type> "
-"<parameter>zerobasedposition</parameter></paramdef> "
-"<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_SetPoint</function></funcdef> <paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> <parameter>zerobasedposition</parameter></paramdef> <paramdef><type>geometry</type> <parameter>point</parameter></paramdef>"
+"<funcdef>geometry <function>ST_SetPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> "
+"<parameter>zerobasedposition</parameter></paramdef> <paramdef><type>geometry</type> "
+"<parameter>point</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_SetPoint</function></funcdef> <paramdef><type>geometry</type> "
+"<parameter>linestring</parameter></paramdef> <paramdef><type>integer</type> "
+"<parameter>zerobasedposition</parameter></paramdef> <paramdef><type>geometry</type> "
+"<parameter>point</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1108
 #, no-c-format
 msgid ""
-"Replace point N of linestring with given point. Index is 0-based. This is "
-"especially useful in triggers when trying to maintain relationship of joints"
-" when one vertex moves."
-msgstr "ラインストリングのN番目を与えられたポイントに置き換えます。インデクスは0はじまりです。これは、頂点がひとつ動いた時に接続のリレーションシップを維持しようとする場合のトリガに特に便利です。"
+"Replace point N of linestring with given point. Index is 0-based. This is especially useful in "
+"triggers when trying to maintain relationship of joints when one vertex moves."
+msgstr ""
+"ラインストリングのN番目を与えられたポイントに置き換えます。インデクスは0はじまりです。これは、頂点"
+"がひとつ動いた時に接続のリレーションシップを維持しようとする場合のトリガに特に便利です。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1118
@@ -1694,20 +2145,36 @@ msgid ""
 " LINESTRING(-1 1,-1 3)\n"
 "\n"
 "---Change last point in a line string (lets play with 3d linestring this time)\n"
-"SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))\n"
+"SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, "
+"ST_GeomFromEWKT('POINT(-1 1 3)')))\n"
 "FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As foo;\n"
 "           st_asewkt\n"
 "-----------------------\n"
 "LINESTRING(-1 2 3,-1 3 4,-1 1 3)"
-msgstr "-- ラインストリング先頭のポイントを-1 3から-1 1に変更\nSELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));\n           st_astext\n-----------------------\n LINESTRING(-1 1,-1 3)\n\n-- ラインストリング末尾のポイントを変更 (3次元ラインストリングでやってみます)\nSELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))\nFROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As foo;\n           st_asewkt\n-----------------------\nLINESTRING(-1 2 3,-1 3 4,-1 1 3)"
+msgstr ""
+"-- ラインストリング先頭のポイントを-1 3から-1 1に変更\n"
+"SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));\n"
+"           st_astext\n"
+"-----------------------\n"
+" LINESTRING(-1 1,-1 3)\n"
+"\n"
+"-- ラインストリング末尾のポイントを変更 (3次元ラインストリングでやってみます)\n"
+"SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, "
+"ST_GeomFromEWKT('POINT(-1 1 3)')))\n"
+"FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As foo;\n"
+"           st_asewkt\n"
+"-----------------------\n"
+"LINESTRING(-1 2 3,-1 3 4,-1 1 3)"
 
 #. Tag: para
 #: reference_editor.xml:1122
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
-"linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
-msgstr ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
+", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref linkend=\"ST_PointN\"/>, "
+"<xref linkend=\"ST_RemovePoint\"/>"
+msgstr ""
+", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref linkend=\"ST_PointN\"/>, "
+"<xref linkend=\"ST_RemovePoint\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:1128
@@ -1725,28 +2192,34 @@ msgstr "ジオメトリのSRIDを特定の整数値に設定します。"
 #: reference_editor.xml:1136
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_SetSRID</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_SetSRID</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geom</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</"
+"parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1151
 #, no-c-format
 msgid ""
-"Sets the SRID on a geometry to a particular integer value. Useful in "
-"constructing bounding boxes for queries."
-msgstr "ジオメトリのSRIDを特定の整数値に設定します。クエリのためのバウンディングボックスを生成する際に使います。"
+"Sets the SRID on a geometry to a particular integer value. Useful in constructing bounding boxes "
+"for queries."
+msgstr ""
+"ジオメトリのSRIDを特定の整数値に設定します。クエリのためのバウンディングボックスを生成する際に使い"
+"ます。"
 
 #. Tag: para
 #: reference_editor.xml:1155
 #, no-c-format
 msgid ""
-"This function does not transform the geometry coordinates in any way - it "
-"simply sets the meta data defining the spatial reference system the geometry"
-" is assumed to be in. Use <xref linkend=\"ST_Transform\"/> if you want to "
-"transform the geometry into a new projection."
-msgstr "この関数はジオメトリを変換せず、ジオメトリが仮定する空間参照系を定義するメタデータを設定するだけです。ジオメトリを新しい投影法に変換したい場合は<xref linkend=\"ST_Transform\"/>を使います。"
+"This function does not transform the geometry coordinates in any way - it simply sets the meta "
+"data defining the spatial reference system the geometry is assumed to be in. Use <xref linkend="
+"\"ST_Transform\"/> if you want to transform the geometry into a new projection."
+msgstr ""
+"この関数はジオメトリを変換せず、ジオメトリが仮定する空間参照系を定義するメタデータを設定するだけで"
+"す。ジオメトリを新しい投影法に変換したい場合は<xref linkend=\"ST_Transform\"/>を使います。"
 
 #. Tag: para
 #: reference_editor.xml:1160
@@ -1767,14 +2240,15 @@ msgid ""
 "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=4326;POINT(-123.365556 48.428611)"
-msgstr "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n-- EWKT表現 (ST_AsEWKTでラップして表示します) --\nSRID=4326;POINT(-123.365556 48.428611)"
+msgstr ""
+"SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
+"-- EWKT表現 (ST_AsEWKTでラップして表示します) --\n"
+"SRID=4326;POINT(-123.365556 48.428611)"
 
 #. Tag: para
 #: reference_editor.xml:1168
 #, no-c-format
-msgid ""
-"-- Mark a point as WGS 84 long lat and then transform to web mercator "
-"(Spherical Mercator) --"
+msgid "-- Mark a point as WGS 84 long lat and then transform to web mercator (Spherical Mercator) --"
 msgstr "-- ポイントをWGS84経度緯度に設定したうえで、WEBメルカトル(球面メルカトル)に変換 --"
 
 #. Tag: programlisting
@@ -1784,16 +2258,20 @@ msgid ""
 "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;\n"
 "-- the ewkt representation (wrap with ST_AsEWKT) -\n"
 "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
-msgstr "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;\n-- EWKT表現 (ST_AsEWKTでラップします) --\nSRID=3785;POINT(-13732990.8753491 6178458.96425423)"
+msgstr ""
+"SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) As spere_merc;\n"
+"-- EWKT表現 (ST_AsEWKTでラップします) --\n"
+"SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 
 #. Tag: para
 #: reference_editor.xml:1175
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref "
-"linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
-msgstr ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
+msgstr ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend=\"ST_SRID\"/>, <xref "
+"linkend=\"ST_Transform\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:1182
@@ -1811,69 +2289,87 @@ msgstr "入力ジオメトリの全ての点を規則的なグリッドにスナ
 #: reference_editor.xml:1190
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>originX</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>originY</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeY</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeY</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>size</parameter></paramdef> </funcprototype> "
-"<funcprototype> <funcdef>geometry "
-"<function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry "
-"</type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry "
-"</type> <parameter>pointOrigin</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeY</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeZ</parameter></paramdef> <paramdef><type>float "
-"</type> <parameter>sizeM</parameter></paramdef> </funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>originX</parameter></paramdef> <paramdef><type>float </type> <parameter>originY</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>size</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry </type> <parameter>pointOrigin</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeZ</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeM</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>originX</parameter></paramdef> <paramdef><type>float </type> <parameter>originY</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>sizeX</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>sizeY</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_SnapToGrid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>size</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry "
+"</type> <parameter>pointOrigin</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>sizeZ</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>sizeM</parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>originX</parameter></paramdef> <paramdef><type>float </type> <parameter>originY</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>sizeX</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>sizeY</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_SnapToGrid</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>size</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry "
+"</type> <parameter>pointOrigin</parameter></paramdef> <paramdef><type>float </type> "
+"<parameter>sizeX</parameter></paramdef> <paramdef><type>float </type> <parameter>sizeY</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>sizeZ</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>sizeM</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:1228
 #, no-c-format
 msgid ""
-"Variant 1,2,3: Snap all points of the input geometry to the grid defined by "
-"its origin and cell size. Remove consecutive points falling on the same "
-"cell, eventually returning NULL if output points are not enough to define a "
-"geometry of the given type. Collapsed geometries in a collection are "
-"stripped from it. Useful for reducing precision."
-msgstr "1, 2, 3番目の形式では、入力ジオメトリの全てのポイントを原点とセルサイズを定めたグリッドにスナップします。同じセルに落ちた、連続するポイントを削除します。引数ジオメトリのジオメトリタイプを定義できないポイントしか残らなかった場合は、NULLを返します。コレクション内で崩壊したジオメトリはそこから削除されます。精度を落とすのに使います。"
+"Variant 1,2,3: Snap all points of the input geometry to the grid defined by its origin and cell "
+"size. Remove consecutive points falling on the same cell, eventually returning NULL if output "
+"points are not enough to define a geometry of the given type. Collapsed geometries in a collection "
+"are stripped from it. Useful for reducing precision."
+msgstr ""
+"1, 2, 3番目の形式では、入力ジオメトリの全てのポイントを原点とセルサイズを定めたグリッドにスナップし"
+"ます。同じセルに落ちた、連続するポイントを削除します。引数ジオメトリのジオメトリタイプを定義できな"
+"いポイントしか残らなかった場合は、NULLを返します。コレクション内で崩壊したジオメトリはそこから削除"
+"されます。精度を落とすのに使います。"
 
 #. Tag: para
 #: reference_editor.xml:1236
 #, no-c-format
 msgid ""
-"Variant 4: Introduced 1.1.0 - Snap all points of the input geometry to the "
-"grid defined by its origin (the second argument, must be a point) and cell "
-"sizes. Specify 0 as size for any dimension you don't want to snap to a grid."
-msgstr "4番目の形式は、1.1.0で導入されました。入力ジオメトリの全てのポイントを原点 (第2引数で指定するもので、ポイントでなければなりません)とセルサイズを定めたグリッドにスナップします。グリッドにスナップしたくない次元についてはサイズに0を指定します。"
+"Variant 4: Introduced 1.1.0 - Snap all points of the input geometry to the grid defined by its "
+"origin (the second argument, must be a point) and cell sizes. Specify 0 as size for any dimension "
+"you don't want to snap to a grid."
+msgstr ""
+"4番目の形式は、1.1.0で導入されました。入力ジオメトリの全てのポイントを原点 (第2引数で指定するもの"
+"で、ポイントでなければなりません)とセルサイズを定めたグリッドにスナップします。グリッドにスナップし"
+"たくない次元についてはサイズに0を指定します。"
 
 #. Tag: para
 #: reference_editor.xml:1242
 #, no-c-format
-msgid ""
-"The returned geometry might loose its simplicity (see <xref "
-"linkend=\"ST_IsSimple\"/>)."
-msgstr "返されるジオメトリは単純性を失う可能性があります (<xref linkend=\"ST_IsSimple\"/>を参照して下さい)。"
+msgid "The returned geometry might lose its simplicity (see <xref linkend=\"ST_IsSimple\"/>)."
+msgstr ""
+"返されるジオメトリは単純性を失う可能性があります (<xref linkend=\"ST_IsSimple\"/>を参照して下さ"
+"い)。"
 
 #. Tag: para
 #: reference_editor.xml:1247
 #, no-c-format
 msgid ""
-"Before release 1.1.0 this function always returned a 2d geometry. Starting "
-"at 1.1.0 the returned geometry will have same dimensionality as the input "
-"one with higher dimension values untouched. Use the version taking a second "
-"geometry argument to define all grid dimensions."
-msgstr "1.1.0版より前では、この関数は常に2次元ジオメトリを返しました。1.1.0版からは、返されるジオメトリの次元数は、入力値のうちで手のつけられていない最大の次元と同じになります。全てのグリッドの次元を定義するには、第2引数にジオメトリを取る形式を使って下さい。"
+"Before release 1.1.0 this function always returned a 2d geometry. Starting at 1.1.0 the returned "
+"geometry will have same dimensionality as the input one with higher dimension values untouched. "
+"Use the version taking a second geometry argument to define all grid dimensions."
+msgstr ""
+"1.1.0版より前では、この関数は常に2次元ジオメトリを返しました。1.1.0版からは、返されるジオメトリの次"
+"元数は、入力値のうちで手のつけられていない最大の次元と同じになります。全てのグリッドの次元を定義す"
+"るには、第2引数にジオメトリを取る形式を使って下さい。"
 
 #. Tag: para
 #: reference_editor.xml:1254
@@ -1896,7 +2392,8 @@ msgid ""
 "   SET the_geom = ST_SnapToGrid(the_geom, 0.001);\n"
 "\n"
 "SELECT ST_AsText(ST_SnapToGrid(\n"
-"                        ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'),\n"
+"                        ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 "
+"3.23748667)'),\n"
 "                        0.001)\n"
 "                );\n"
 "                          st_astext\n"
@@ -1913,23 +2410,56 @@ msgid ""
 " LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)\n"
 "\n"
 "\n"
-"--With a 4d geometry - the ST_SnapToGrid(geom,size) only touches x and y coords but keeps m and z the same\n"
+"--With a 4d geometry - the ST_SnapToGrid(geom,size) only touches x and y coords but keeps m and z "
+"the same\n"
 "SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.3456,\n"
 "                4.111111 3.2374897 3.1234 1.1111)'),\n"
 "           0.01)      );\n"
 "                                                st_asewkt\n"
 "---------------------------------------------------------\n"
 " LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
-msgstr "-- 10^-3のグリッドに基づく精度にジオメトリをスナップさせます\nUPDATE mytable\n   SET the_geom = ST_SnapToGrid(the_geom, 0.001);\n\nSELECT ST_AsText(ST_SnapToGrid(\n                        ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'),\n                        0.001)\n                );\n                          st_astext\n-------------------------------------\n LINESTRING(1.112 2.123,4.111 3.237)\n --Snap a 4d geometry\nSELECT ST_AsEWKT(ST_SnapToGrid(\n        ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 2.3456 1.11111,\n                4.111111 3.2374897 3.1234 1.1111, -1.11111112 2.123 2.3456 1.1111112)'),\n ST_GeomFromEWKT('POINT(1.12 2.22 3.2 4.4444)'),\n 0.1, 0.1, 0.1, 0.01) );\n                                                                  st_asewkt\n------------------------------------------------------------------------------\n LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)\n\n\n-- 4次元ジオメトリ - ST_SnapToGrid(geom, size)は、X座標とY座標のみ変更します\n-- M値とZ値は同じになります\nSELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.3456,\n                4.111111 3.2374897 3.1234 1.1111)'),\n           0.01)      );\n                                                st_asewkt\n---------------------------------------------------------\n LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
+msgstr ""
+"-- 10^-3のグリッドに基づく精度にジオメトリをスナップさせます\n"
+"UPDATE mytable\n"
+"   SET the_geom = ST_SnapToGrid(the_geom, 0.001);\n"
+"\n"
+"SELECT ST_AsText(ST_SnapToGrid(\n"
+"                        ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 "
+"3.23748667)'),\n"
+"                        0.001)\n"
+"                );\n"
+"                          st_astext\n"
+"-------------------------------------\n"
+" LINESTRING(1.112 2.123,4.111 3.237)\n"
+" --Snap a 4d geometry\n"
+"SELECT ST_AsEWKT(ST_SnapToGrid(\n"
+"        ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 2.3456 1.11111,\n"
+"                4.111111 3.2374897 3.1234 1.1111, -1.11111112 2.123 2.3456 1.1111112)'),\n"
+" ST_GeomFromEWKT('POINT(1.12 2.22 3.2 4.4444)'),\n"
+" 0.1, 0.1, 0.1, 0.01) );\n"
+"                                                                  st_asewkt\n"
+"------------------------------------------------------------------------------\n"
+" LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)\n"
+"\n"
+"\n"
+"-- 4次元ジオメトリ - ST_SnapToGrid(geom, size)は、X座標とY座標のみ変更します\n"
+"-- M値とZ値は同じになります\n"
+"SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.3456,\n"
+"                4.111111 3.2374897 3.1234 1.1111)'),\n"
+"           0.01)      );\n"
+"                                                st_asewkt\n"
+"---------------------------------------------------------\n"
+" LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
 
 #. Tag: para
 #: reference_editor.xml:1271
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
-"linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
-"linkend=\"ST_Simplify\"/>"
-msgstr ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Simplify\"/>"
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/"
+">, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Simplify\"/>"
+msgstr ""
+", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/"
+">, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Simplify\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:1284
@@ -1940,56 +2470,62 @@ msgstr "ST_Snap"
 #. Tag: refpurpose
 #: reference_editor.xml:1286
 #, no-c-format
-msgid ""
-"Snap segments and vertices of input geometry to vertices of a reference "
-"geometry."
+msgid "Snap segments and vertices of input geometry to vertices of a reference geometry."
 msgstr "入力ジオメトリの辺と頂点を参照ジオメトリの頂点にスナップします。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1294
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Snap</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>input</parameter></paramdef> "
-"<paramdef><type>geometry </type> <parameter>reference</parameter></paramdef>"
-" <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Snap</function></funcdef> <paramdef><type>geometry </type> <parameter>input</parameter></paramdef> <paramdef><type>geometry </type> <parameter>reference</parameter></paramdef> <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Snap</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>input</parameter></paramdef> <paramdef><type>geometry </type> <parameter>reference</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Snap</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>input</parameter></paramdef> <paramdef><type>geometry </type> <parameter>reference</"
+"parameter></paramdef> <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1306
 #, no-c-format
 msgid ""
-"Snaps the vertices and segments of a geometry another Geometry's vertices. A"
-" snap distance tolerance is used to control where snapping is performed."
-msgstr "入力ジオメトリの辺と頂点を、もう一つのジオメトリの頂点にスナップします。スナップが実行される位置を制御するにはスナップ距離許容値を使います。"
+"Snaps the vertices and segments of a geometry another Geometry's vertices. A snap distance "
+"tolerance is used to control where snapping is performed."
+msgstr ""
+"入力ジオメトリの辺と頂点を、もう一つのジオメトリの頂点にスナップします。スナップが実行される位置を"
+"制御するにはスナップ距離許容値を使います。"
 
 #. Tag: para
 #: reference_editor.xml:1311
 #, no-c-format
 msgid ""
-"Snapping one geometry to another can improve robustness for overlay "
-"operations by eliminating nearly-coincident edges (which cause problems "
-"during noding and intersection calculation)."
-msgstr "ひとつのジオメトリからもう一つへの変換によって、近傍エッジ (ノード生成とインタセクション計算で問題を引き起こします)を除くことになり、オーバレイ演算のロバスト性が改善されます。"
+"Snapping one geometry to another can improve robustness for overlay operations by eliminating "
+"nearly-coincident edges (which cause problems during noding and intersection calculation)."
+msgstr ""
+"ひとつのジオメトリからもう一つへの変換によって、近傍エッジ (ノード生成とインタセクション計算で問題"
+"を引き起こします)を除くことになり、オーバレイ演算のロバスト性が改善されます。"
 
 #. Tag: para
 #: reference_editor.xml:1318
 #, no-c-format
 msgid ""
-"Too much snapping can result in invalid topology being created, so the "
-"number and location of snapped vertices is decided using heuristics to "
-"determine when it is safe to snap. This can result in some potential snaps "
-"being omitted, however."
-msgstr "あまりに多数のスナップを行った場合には、生成されるトポロジが不正になる可能性があります。いつスナップが安全かを判定するために、ヒューリスティックにスナップされた頂点の数と位置が決めるしかありません。しかし、省略された潜在的なスナップになりえます。"
+"Too much snapping can result in invalid topology being created, so the number and location of "
+"snapped vertices is decided using heuristics to determine when it is safe to snap. This can result "
+"in some potential snaps being omitted, however."
+msgstr ""
+"あまりに多数のスナップを行った場合には、生成されるトポロジが不正になる可能性があります。いつスナッ"
+"プが安全かを判定するために、ヒューリスティックにスナップされた頂点の数と位置が決めるしかありませ"
+"ん。しかし、省略された潜在的なスナップになりえます。"
 
 #. Tag: para
 #: reference_editor.xml:1327
 #, no-c-format
 msgid ""
-"The returned geometry might loose its simplicity (see <xref "
-"linkend=\"ST_IsSimple\"/>) and validity (see <xref "
-"linkend=\"ST_IsValid\"/>)."
-msgstr "返されるジオメトリは単純さを失うかも知れません(<xref linkend=\"ST_IsSimple\"/>参照)し、妥当性を失うかも知れません(<xref linkend=\"ST_IsValid\"/>参照)。"
+"The returned geometry might lose its simplicity (see <xref linkend=\"ST_IsSimple\"/>) and validity "
+"(see <xref linkend=\"ST_IsValid\"/>)."
+msgstr ""
+"返されるジオメトリは単純さを失うかも知れません (<xref linkend=\"ST_IsSimple\"/>参照)し、妥当性を失"
+"うかも知れません (<xref linkend=\"ST_IsValid\"/>参照)。"
 
 #. Tag: para
 #: reference_editor.xml:1334
@@ -2007,9 +2543,11 @@ msgstr "マルチポリゴンとラインストリング (スナップ前)"
 #: reference_editor.xml:1362
 #, no-c-format
 msgid ""
-"A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new"
-" multipolygon is shown with reference linestring"
-msgstr "ラインストリングに1.01の許容距離でマルチポリゴンをスナップします。新しいマルチポリゴンはラインストリングにつながります。"
+"A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new multipolygon is shown "
+"with reference linestring"
+msgstr ""
+"ラインストリングに1.01の許容距離でマルチポリゴンをスナップします。新しいマルチポリゴンはラインスト"
+"リングにつながります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1366
@@ -2029,15 +2567,31 @@ msgid ""
 "---------------------------------------------------------------------\n"
 " MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),\n"
 " (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
-msgstr "SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS polysnapped\nFROM (SELECT \n   ST_GeomFromText('MULTIPOLYGON(\n     ((26 125, 26 200, 126 200, 126 125, 26 125 ),\n      ( 51 150, 101 150, 76 175, 51 150 )), \n      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n                \n        ) As foo;\n\n                             polysnapped\n---------------------------------------------------------------------\n MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),\n (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
+msgstr ""
+"SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS polysnapped\n"
+"FROM (SELECT \n"
+"   ST_GeomFromText('MULTIPOLYGON(\n"
+"     ((26 125, 26 200, 126 200, 126 125, 26 125 ),\n"
+"      ( 51 150, 101 150, 76 175, 51 150 )), \n"
+"      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n"
+"       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n"
+"                \n"
+"        ) As foo;\n"
+"\n"
+"                             polysnapped\n"
+"---------------------------------------------------------------------\n"
+" MULTIPOLYGON(((26 125,26 200,126 200,126 125,101 100,26 125),\n"
+" (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
 #: reference_editor.xml:1373
 #, no-c-format
 msgid ""
-"A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new"
-" multipolygon is shown with reference linestring"
-msgstr "マルチラインストリングに1.25の許容距離でマルチポリゴンをスナップします。新しいマルチポリゴンはラインストリングにつながります。"
+"A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new multipolygon is shown "
+"with reference linestring"
+msgstr ""
+"マルチラインストリングに1.25の許容距離でマルチポリゴンをスナップします。新しいマルチポリゴンはライ"
+"ンストリングにつながります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1377
@@ -2059,15 +2613,33 @@ msgid ""
 "---------------------------------------------------------------------\n"
 "MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),\n"
 "(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
-msgstr "SELECT ST_AsText(\n    ST_Snap(poly,line, ST_Distance(poly,line)*1.25)\n  ) AS polysnapped\nFROM (SELECT \n  ST_GeomFromText('MULTIPOLYGON(\n    (( 26 125, 26 200, 126 200, 126 125, 26 125 ),\n      ( 51 150, 101 150, 76 175, 51 150 )),\n      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n                \n        ) As foo;\n\n                             polysnapped\n---------------------------------------------------------------------\nMULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),\n(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
+msgstr ""
+"SELECT ST_AsText(\n"
+"    ST_Snap(poly,line, ST_Distance(poly,line)*1.25)\n"
+"  ) AS polysnapped\n"
+"FROM (SELECT \n"
+"  ST_GeomFromText('MULTIPOLYGON(\n"
+"    (( 26 125, 26 200, 126 200, 126 125, 26 125 ),\n"
+"      ( 51 150, 101 150, 76 175, 51 150 )),\n"
+"      (( 151 100, 151 200, 176 175, 151 100 )))') As poly,\n"
+"       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n"
+"                \n"
+"        ) As foo;\n"
+"\n"
+"                             polysnapped\n"
+"---------------------------------------------------------------------\n"
+"MULTIPOLYGON(((5 107,26 200,126 200,126 125,101 100,54 84,5 107),\n"
+"(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
 #: reference_editor.xml:1386
 #, no-c-format
 msgid ""
-"The linestring snapped to the original multipolygon at tolerance 1.01 of "
-"distance. The new linestring is shown with reference multipolygon"
-msgstr "元のマルチポリゴンに1.01の許容距離でラインストリングをスナップします。新しいラインストリングはマルチポリゴンにつながります。"
+"The linestring snapped to the original multipolygon at tolerance 1.01 of distance. The new "
+"linestring is shown with reference multipolygon"
+msgstr ""
+"元のマルチポリゴンに1.01の許容距離でラインストリングをスナップします。新しいラインストリングはマル"
+"チポリゴンにつながります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1390
@@ -2087,15 +2659,31 @@ msgid ""
 "              linesnapped\n"
 "----------------------------------------\n"
 " LINESTRING(5 107,26 125,54 84,101 100)"
-msgstr "SELECT ST_AsText(\n   ST_Snap(line, poly, ST_Distance(poly,line)*1.01)\n  ) AS linesnapped\nFROM (SELECT \n  ST_GeomFromText('MULTIPOLYGON(\n     ((26 125, 26 200, 126 200, 126 125, 26 125),\n      (51 150, 101 150, 76 175, 51 150 )), \n      ((151 100, 151 200, 176 175, 151 100)))') As poly,\n       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n        ) As foo;\n\n              linesnapped\n----------------------------------------\n LINESTRING(5 107,26 125,54 84,101 100)"
+msgstr ""
+"SELECT ST_AsText(\n"
+"   ST_Snap(line, poly, ST_Distance(poly,line)*1.01)\n"
+"  ) AS linesnapped\n"
+"FROM (SELECT \n"
+"  ST_GeomFromText('MULTIPOLYGON(\n"
+"     ((26 125, 26 200, 126 200, 126 125, 26 125),\n"
+"      (51 150, 101 150, 76 175, 51 150 )), \n"
+"      ((151 100, 151 200, 176 175, 151 100)))') As poly,\n"
+"       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line\n"
+"        ) As foo;\n"
+"\n"
+"              linesnapped\n"
+"----------------------------------------\n"
+" LINESTRING(5 107,26 125,54 84,101 100)"
 
 #. Tag: para
 #: reference_editor.xml:1398
 #, no-c-format
 msgid ""
-"The linestring snapped to the original multipolygon at tolerance 1.25 of "
-"distance. The new linestring is shown with reference multipolygon"
-msgstr "元のマルチポリゴンに1.25の許容距離でラインストリングをスナップします。新しいラインストリングはマルチポリゴンにつながります。"
+"The linestring snapped to the original multipolygon at tolerance 1.25 of distance. The new "
+"linestring is shown with reference multipolygon"
+msgstr ""
+"元のマルチポリゴンに1.25の許容距離でラインストリングをスナップします。新しいラインストリングはマル"
+"チポリゴンにつながります。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1402
@@ -2114,7 +2702,20 @@ msgid ""
 "              linesnapped\n"
 "---------------------------------------\n"
 "LINESTRING(26 125,54 84,101 100)"
-msgstr "SELECT ST_AsText(\n ST_Snap(line, poly, ST_Distance(poly,line)*1.25)\n  ) AS linesnapped\nFROM (SELECT \n  ST_GeomFromText('MULTIPOLYGON(\n     (( 26 125, 26 200, 126 200, 126 125, 26 125 ),\n      (51 150, 101 150, 76 175, 51 150 )), \n      ((151 100, 151 200, 176 175, 151 100 )))') As poly,\n       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line        \n        ) As foo;\n              linesnapped\n---------------------------------------\nLINESTRING(26 125,54 84,101 100)"
+msgstr ""
+"SELECT ST_AsText(\n"
+" ST_Snap(line, poly, ST_Distance(poly,line)*1.25)\n"
+"  ) AS linesnapped\n"
+"FROM (SELECT \n"
+"  ST_GeomFromText('MULTIPOLYGON(\n"
+"     (( 26 125, 26 200, 126 200, 126 125, 26 125 ),\n"
+"      (51 150, 101 150, 76 175, 51 150 )), \n"
+"      ((151 100, 151 200, 176 175, 151 100 )))') As poly,\n"
+"       ST_GeomFromText('LINESTRING (5 107, 54 84, 101 100)') As line        \n"
+"        ) As foo;\n"
+"              linesnapped\n"
+"---------------------------------------\n"
+"LINESTRING(26 125,54 84,101 100)"
 
 #. Tag: refname
 #: reference_editor.xml:1423
@@ -2126,54 +2727,63 @@ msgstr "ST_Transform"
 #: reference_editor.xml:1425
 #, no-c-format
 msgid ""
-"Returns a new geometry with its coordinates transformed to the SRID "
-"referenced by the integer parameter."
+"Returns a new geometry with its coordinates transformed to the SRID referenced by the integer "
+"parameter."
 msgstr "整数パラメータで参照されるSRIDに座標変換し、新しいジオメトリを返します。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1431
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Transform</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
+"<funcdef>geometry <function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_Transform</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>g1</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></"
+"paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1442
 #, no-c-format
 msgid ""
-"Returns a new geometry with its coordinates transformed to spatial reference"
-" system referenced by the SRID integer parameter. The destination SRID must "
-"exist in the <varname>SPATIAL_REF_SYS</varname> table."
-msgstr "SRID整数パラメータで参照される空間参系に座標変換し、新しいジオメトリを返します。変換先SRIDは<varname>SPATIAL_REF_SYS</varname>テーブルに存在しなければなりません。"
+"Returns a new geometry with its coordinates transformed to spatial reference system referenced by "
+"the SRID integer parameter. The destination SRID must exist in the <varname>SPATIAL_REF_SYS</"
+"varname> table."
+msgstr ""
+"SRID整数パラメータで参照される空間参系に座標変換し、新しいジオメトリを返します。変換先SRIDは"
+"<varname>SPATIAL_REF_SYS</varname>テーブルに存在しなければなりません。"
 
 #. Tag: para
 #: reference_editor.xml:1445
 #, no-c-format
 msgid ""
-"ST_Transform is often confused with ST_SetSRID(). ST_Transform actually "
-"changes the coordinates of a geometry from one spatial reference system to "
-"another, while ST_SetSRID() simply changes the SRID identifier of the "
-"geometry"
-msgstr "ST_TransformはしばしばST_SetSRIDと混同されます。ST_Transformは実際にジオメトリの座標を、ある空間参照系から他のものに変換します。ST_SetSRIDは単にジオメトリのSRIDを変更するだけです。"
+"ST_Transform is often confused with ST_SetSRID(). ST_Transform actually changes the coordinates of "
+"a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the "
+"SRID identifier of the geometry"
+msgstr ""
+"ST_TransformはしばしばST_SetSRIDと混同されます。ST_Transformは実際にジオメトリの座標を、ある空間参"
+"照系から他のものに変換します。ST_SetSRIDは単にジオメトリのSRIDを変更するだけです。"
 
 #. Tag: para
 #: reference_editor.xml:1450
 #, no-c-format
 msgid ""
-"Requires PostGIS be compiled with Proj support. Use <xref "
-"linkend=\"PostGIS_Full_Version\"/> to confirm you have proj support compiled"
-" in."
-msgstr "PostGISがProj対応でコンパイルされている必要があります。<xref linkend=\"PostGIS_Full_Version\"/>を使ってProj対応でコンパイルされているか確認して下さい。"
+"Requires PostGIS be compiled with Proj support. Use <xref linkend=\"PostGIS_Full_Version\"/> to "
+"confirm you have proj support compiled in."
+msgstr ""
+"PostGISがProj対応でコンパイルされている必要があります。<xref linkend=\"PostGIS_Full_Version\"/>を"
+"使ってProj対応でコンパイルされているか確認して下さい。"
 
 #. Tag: para
 #: reference_editor.xml:1454
 #, no-c-format
 msgid ""
-"If using more than one transformation, it is useful to have a functional "
-"index on the commonly used transformations to take advantage of index usage."
-msgstr "一つ以上の変換を行う場合は、インデクスの利点を得るために、使用する変換に関する関数インデクスを持つと便利です。"
+"If using more than one transformation, it is useful to have a functional index on the commonly "
+"used transformations to take advantage of index usage."
+msgstr ""
+"一つ以上の変換を行う場合は、インデクスの利点を得るために、使用する変換に関する関数インデクスを持つ"
+"と便利です。"
 
 #. Tag: para
 #: reference_editor.xml:1461
@@ -2202,24 +2812,48 @@ msgid ""
 "(1 row)\n"
 "\n"
 "--3D Circular String example\n"
-"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 "
+"2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
 "\n"
 "                                 st_asewkt\n"
 "--------------------------------------------------------------------------------------\n"
-" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 "
+"2,\n"
 " -71.1775844305465 42.3903826677917 3,\n"
 " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
-msgstr "SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,\n        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;\n\n wgs_geom\n---------------------------\n POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,\n-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684\n8522251 42.3902896512902));\n(1 row)\n\n-- 3次元曲線ストリングの例\nSELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));\n\n                                 st_asewkt\n--------------------------------------------------------------------------------------\n SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 2,\n -71.1775844305465 42.3903826677917 3,\n -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
+msgstr ""
+"SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,\n"
+"        743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;\n"
+"\n"
+" wgs_geom\n"
+"---------------------------\n"
+" POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,\n"
+"-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684\n"
+"8522251 42.3902896512902));\n"
+"(1 row)\n"
+"\n"
+"-- 3次元曲線ストリングの例\n"
+"SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 "
+"2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
+"\n"
+"                                 st_asewkt\n"
+"--------------------------------------------------------------------------------------\n"
+" SRID=4326;CIRCULARSTRING(-71.1776848522251 42.3902896512902 1,-71.1776843766326 42.3903829478009 "
+"2,\n"
+" -71.1775844305465 42.3903826677917 3,\n"
+" -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 
 #. Tag: para
 #: reference_editor.xml:1471
 #, no-c-format
 msgid ""
-"Example of creating a partial functional index. For tables where you are not"
-" sure all the geometries will be filled in, its best to use a partial index "
-"that leaves out null geometries which will both conserve space and make your"
-" index smaller and more efficient."
-msgstr "部分関数インデクスを作る例です。全てのジオメトリが入っているとは確信できないテーブルのためには、スペースの節約とインデクスを小さく効率的にするために、NULLジオメトリを無視する部分インデクスを使うのが最善です。"
+"Example of creating a partial functional index. For tables where you are not sure all the "
+"geometries will be filled in, its best to use a partial index that leaves out null geometries "
+"which will both conserve space and make your index smaller and more efficient."
+msgstr ""
+"部分関数インデクスを作る例です。全てのジオメトリが入っているとは確信できないテーブルのためには、ス"
+"ペースの節約とインデクスを小さく効率的にするために、NULLジオメトリを無視する部分インデクスを使うの"
+"が最善です。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1473
@@ -2230,7 +2864,12 @@ msgid ""
 "  USING gist\n"
 "  (ST_Transform(the_geom, 26986))\n"
 "  WHERE the_geom IS NOT NULL;"
-msgstr "CREATE INDEX idx_the_geom_26986_parcels\n  ON parcels\n  USING gist\n  (ST_Transform(the_geom, 26986))\n  WHERE the_geom IS NOT NULL;"
+msgstr ""
+"CREATE INDEX idx_the_geom_26986_parcels\n"
+"  ON parcels\n"
+"  USING gist\n"
+"  (ST_Transform(the_geom, 26986))\n"
+"  WHERE the_geom IS NOT NULL;"
 
 #. Tag: title
 #: reference_editor.xml:1477
@@ -2242,20 +2881,23 @@ msgstr "変換の挙動の設定"
 #: reference_editor.xml:1478
 #, no-c-format
 msgid ""
-"Sometimes coordinate transformation involving a grid-shift can fail, for "
-"example if PROJ.4 has not been built with grid-shift files or the coordinate"
-" does not lie within the range for which the grid shift is defined. By "
-"default, PostGIS will throw an error if a grid shift file is not present, "
-"but this behaviour can be configured on a per-SRID basis by altering the "
-"proj4text value within the spatial_ref_sys table."
-msgstr "グリッドシフトを含む座標変換は、ときどき失敗します。たとえば、PROJ.4にグリッドシフトファイルを付けてビルドされていなかった場合や、座標がグリッドシフト定義の範囲内に無い、といった場合です。デフォルトでは、PostGISはグリッドシフトファイルが無い場合はエラーを投げますが、この挙動は、spatial_ref_sysテーブルのproj4text値を変更することで、SRID毎の原則を設定することができます。"
+"Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not "
+"been built with grid-shift files or the coordinate does not lie within the range for which the "
+"grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not "
+"present, but this behaviour can be configured on a per-SRID basis by altering the proj4text value "
+"within the spatial_ref_sys table."
+msgstr ""
+"グリッドシフトを含む座標変換は、ときどき失敗します。たとえば、PROJ.4にグリッドシフトファイルを付け"
+"てビルドされていなかった場合や、座標がグリッドシフト定義の範囲内に無い、といった場合です。デフォル"
+"トでは、PostGISはグリッドシフトファイルが無い場合はエラーを投げますが、この挙動は、spatial_ref_sys"
+"テーブルのproj4text値を変更することで、SRID毎の原則を設定することができます。"
 
 #. Tag: para
 #: reference_editor.xml:1479
 #, no-c-format
 msgid ""
-"For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
-"the following +nadgrids parameter:"
+"For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids "
+"parameter:"
 msgstr "たとえば、proj4textパラメータ +datum=NAD87 は次に示す+nadgridsパラメータの短縮形です。"
 
 #. Tag: programlisting
@@ -2268,19 +2910,22 @@ msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 #: reference_editor.xml:1481
 #, no-c-format
 msgid ""
-"The @ prefix means no error is reported if the files are not present, but if"
-" the end of the list is reached with no file having been appropriate (ie. "
-"found and overlapping) then an error is issued."
-msgstr "接頭辞@は、ファイルが無くてもエラー報告をしないという意味ですが、適切だった (発見されてオーバラップした)ファイルがないままリストの終わりに達した場合はエラーが出ます。"
+"The @ prefix means no error is reported if the files are not present, but if the end of the list "
+"is reached with no file having been appropriate (ie. found and overlapping) then an error is "
+"issued."
+msgstr ""
+"接頭辞@は、ファイルが無くてもエラー報告をしないという意味ですが、適切だった (発見されてオーバラップ"
+"した)ファイルがないままリストの終わりに達した場合はエラーが出ます。"
 
 #. Tag: para
 #: reference_editor.xml:1482
 #, no-c-format
 msgid ""
-"If, conversely, you wanted to ensure that at least the standard files were "
-"present, but that if all files were scanned without a hit a null "
-"transformation is applied you could use:"
-msgstr "逆に、少なくとも標準的なファイルが確実にあって欲しいけれども、該当が無いまま全てのファイルが走査された場合に、NULL変換としたいなら、次が使えます。"
+"If, conversely, you wanted to ensure that at least the standard files were present, but that if "
+"all files were scanned without a hit a null transformation is applied you could use:"
+msgstr ""
+"逆に、少なくとも標準的なファイルが確実にあって欲しいけれども、該当が無いまま全てのファイルが走査さ"
+"れた場合に、NULL変換としたいなら、次が使えます。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1483
@@ -2292,28 +2937,33 @@ msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 #: reference_editor.xml:1484
 #, no-c-format
 msgid ""
-"The null grid shift file is a valid grid shift file covering the whole world"
-" and applying no shift. So for a complete example, if you wanted to alter "
-"PostGIS so that transformations to SRID 4267 that didn't lie within the "
-"correct range did not throw an ERROR, you would use the following:"
-msgstr "NULLグリッドシフトファイルは、世界全体をカバーして、シフトを行わない、妥当なグリッドシフトファイルです。 完全な例のために、正しい範囲にないSRID 4267への変換でエラーが投げられないようPostGISを変えたいなら、次のようにします。"
+"The null grid shift file is a valid grid shift file covering the whole world and applying no "
+"shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID "
+"4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:"
+msgstr ""
+"NULLグリッドシフトファイルは、世界全体をカバーして、シフトを行わない、妥当なグリッドシフトファイル"
+"です。 完全な例のために、正しい範囲にないSRID 4267への変換でエラーが投げられないようPostGISを変えた"
+"いなら、次のようにします。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1485
 #, no-c-format
 msgid ""
-"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
-"+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid"
-" = 4267;"
-msgstr "UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;"
+"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,"
+"@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;"
+msgstr ""
+"UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,"
+"@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;"
 
 #. Tag: para
 #: reference_editor.xml:1492
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
-"linkend=\"UpdateGeometrySRID\"/>"
-msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"UpdateGeometrySRID\"/>"
+", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"UpdateGeometrySRID"
+"\"/>"
+msgstr ""
+", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"UpdateGeometrySRID"
+"\"/>"
 
 #. Tag: refname
 #: reference_editor.xml:1498
@@ -2325,35 +2975,43 @@ msgstr "ST_Translate"
 #: reference_editor.xml:1500
 #, no-c-format
 msgid ""
-"Translates the geometry to a new location using the numeric parameters as "
-"offsets. Ie: ST_Translate(geom, X, Y) or ST_Translate(geom, X, Y,Z)."
-msgstr "整数パラメータをオフセットにして新しい位置にジオメトリを移動させます。ST_Translate(geom, X, Y)またはST_Translate(geom, X, Y, Z)になります。"
+"Translates the geometry to a new location using the numeric parameters as offsets. Ie: "
+"ST_Translate(geom, X, Y) or ST_Translate(geom, X, Y,Z)."
+msgstr ""
+"整数パラメータをオフセットにして新しい位置にジオメトリを移動させます。ST_Translate(geom, X, Y)また"
+"はST_Translate(geom, X, Y, Z)になります。"
 
 #. Tag: funcsynopsis
 #: reference_editor.xml:1505
 #, no-c-format
 msgid ""
-"<funcprototype> <funcdef>geometry "
-"<function>ST_Translate</function></funcdef> <paramdef><type>geometry </type>"
-" <parameter>g1</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltax</parameter></paramdef> <paramdef><type>float </type> "
-"<parameter>deltay</parameter></paramdef> </funcprototype> <funcprototype> "
-"<funcdef>geometry <function>ST_Translate</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>deltax</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>deltay</parameter></paramdef> "
-"<paramdef><type>float </type> <parameter>deltaz</parameter></paramdef> "
-"</funcprototype>"
-msgstr "<funcprototype> <funcdef>geometry <function>ST_Translate</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Translate</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </type> <parameter>deltay</parameter></paramdef> <paramdef><type>float </type> <parameter>deltaz</parameter></paramdef> </funcprototype>"
+"<funcprototype> <funcdef>geometry <function>ST_Translate</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </type> <parameter>deltay</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Translate</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>deltay</parameter></paramdef> <paramdef><type>float </type> <parameter>deltaz</"
+"parameter></paramdef> </funcprototype>"
+msgstr ""
+"<funcprototype> <funcdef>geometry <function>ST_Translate</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </type> <parameter>deltay</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Translate</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>float </type> <parameter>deltax</parameter></paramdef> <paramdef><type>float </"
+"type> <parameter>deltay</parameter></paramdef> <paramdef><type>float </type> <parameter>deltaz</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_editor.xml:1525
 #, no-c-format
 msgid ""
-"Returns a new geometry whose coordinates are translated delta x,delta "
-"y,delta z units. Units are based on the units defined in spatial reference "
-"(SRID) for this geometry."
-msgstr "deltax, deltay, deltazぶん移動した新しいジオメトリを返します。単位は、このジオメトリの空間参照系 (SRID)で定義された単位です。"
+"Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are "
+"based on the units defined in spatial reference (SRID) for this geometry."
+msgstr ""
+"deltax, deltay, deltazぶん移動した新しいジオメトリを返します。単位は、このジオメトリの空間参照系 "
+"(SRID)で定義された単位です。"
 
 #. Tag: para
 #: reference_editor.xml:1537
@@ -2365,12 +3023,19 @@ msgstr "ポイントを経度1度ぶん移動させます。"
 #: reference_editor.xml:1538
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;\n"
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As "
+"wgs_transgeomtxt;\n"
 "\n"
 "        wgs_transgeomtxt\n"
 "        ---------------------\n"
 "        POINT(-70.01 42.37)"
-msgstr "SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;\n\n        wgs_transgeomtxt\n        ---------------------\n        POINT(-70.01 42.37)"
+msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As "
+"wgs_transgeomtxt;\n"
+"\n"
+"        wgs_transgeomtxt\n"
+"        ---------------------\n"
+"        POINT(-70.01 42.37)"
 
 #. Tag: para
 #: reference_editor.xml:1539
@@ -2382,11 +3047,17 @@ msgstr "ラインストリングを緯度1度ぶん、経度1/2度ぶん移動�
 #: reference_editor.xml:1540
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 "
+"42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
 "                   wgs_transgeomtxt\n"
 "        ---------------------------------------\n"
 "        LINESTRING(-70.01 42.87,-70.11 42.88)"
-msgstr "SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n                   wgs_transgeomtxt\n        ---------------------------------------\n        LINESTRING(-70.01 42.87,-70.11 42.88)"
+msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 "
+"42.38)',4326),1,0.5)) As wgs_transgeomtxt;\n"
+"                   wgs_transgeomtxt\n"
+"        ---------------------------------------\n"
+"        LINESTRING(-70.01 42.87,-70.11 42.88)"
 
 #. Tag: para
 #: reference_editor.xml:1541
@@ -2402,7 +3073,11 @@ msgid ""
 "        st_asewkt\n"
 "        ---------\n"
 "        POINT(5 12 3)"
-msgstr "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n        st_asewkt\n        ---------\n        POINT(5 12 3)"
+msgstr ""
+"SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
+"        st_asewkt\n"
+"        ---------\n"
+"        POINT(5 12 3)"
 
 #. Tag: para
 #: reference_editor.xml:1543
@@ -2414,11 +3089,19 @@ msgstr "曲線とポイントを移動させます。"
 #: reference_editor.xml:1544
 #, no-c-format
 msgid ""
-"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
+"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 "
+"5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
 "                                                                                                                 st_astext\n"
 "------------------------------------------------------------------------------------------------------------\n"
-" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),POINT(2 5))"
-msgstr "SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n                                                                                                                 st_astext\n------------------------------------------------------------------------------------------------------------\n GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),POINT(2 5))"
+" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),"
+"POINT(2 5))"
+msgstr ""
+"SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 3,3.12 0.878,1 0,-1.121 "
+"5.1213,6 7, 8 9,4 3))','POINT(1 3)'),1,2));\n"
+"                                                                                                                 st_astext\n"
+"------------------------------------------------------------------------------------------------------------\n"
+" GEOMETRYCOLLECTION(CURVEPOLYGON(CIRCULARSTRING(5 5,4.12 2.878,2 2,-0.121 7.1213,7 9,9 11,5 5)),"
+"POINT(2 5))"
 
 #. Tag: para
 #: reference_editor.xml:1550
@@ -2436,38 +3119,48 @@ msgstr "ST_TransScale"
 #: reference_editor.xml:1558
 #, no-c-format
 msgid ""
-"<refpurpose>Translates the geometry using the deltaX and deltaY args, then "
-"scales it using the XFactor, YFactor args, working in 2D only.</refpurpose>"
-msgstr "<refpurpose>deltaXとdeltaY引数を使ってジオメトリを移動させ、XFactor,YFactor引数で拡大縮小させます。2次元でのみ動作します。</refpurpose>"
+"<refpurpose>Translates the geometry using the deltaX and deltaY args, then scales it using the "
+"XFactor, YFactor args, working in 2D only.</refpurpose>"
+msgstr ""
+"<refpurpose>deltaXとdeltaY引数を使ってジオメトリを移動させ、XFactor,YFactor引数で拡大縮小させます。"
+"2次元でのみ動作します。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_editor.xml:1565
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_TransScale</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> "
-"<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
-msgstr "<funcdef>geometry <function>ST_TransScale</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>deltaX</parameter></paramdef> <paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> <paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> <paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
+"<funcdef>geometry <function>ST_TransScale</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>deltaX</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> <paramdef><type>float</"
+"type> <parameter>YFactor</parameter></paramdef>"
+msgstr ""
+"<funcdef>geometry <function>ST_TransScale</function></funcdef> <paramdef><type>geometry </type> "
+"<parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>deltaX</"
+"parameter></paramdef> <paramdef><type>float</type> <parameter>deltaY</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef> <paramdef><type>float</"
+"type> <parameter>YFactor</parameter></paramdef>"
 
 #. Tag: para
 #: reference_editor.xml:1579
 #, no-c-format
 msgid ""
-"<para>Translates the geometry using the deltaX and deltaY args, then scales "
-"it using the XFactor, YFactor args, working in 2D only.</para>"
-msgstr "<para>deltaXとdeltaY引数を使ってジオメトリを移動させ、XFactor,YFactor引数で拡大縮小させます。2次元でのみ動作します。</para>"
+"<para>Translates the geometry using the deltaX and deltaY args, then scales it using the XFactor, "
+"YFactor args, working in 2D only.</para>"
+msgstr ""
+"<para>deltaXとdeltaY引数を使ってジオメトリを移動させ、XFactor,YFactor引数で拡大縮小させます。2次元"
+"でのみ動作します。</para>"
 
 #. Tag: para
 #: reference_editor.xml:1582
 #, no-c-format
 msgid ""
-"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is "
-"short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1,"
-" deltaX*XFactor, deltaY*YFactor, 0)</code>."
-msgstr "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>は<code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>の短縮版です。"
+"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-hand for "
+"<code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</"
+"code>."
+msgstr ""
+"<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>は<code>ST_Affine(geomA, "
+"XFactor, 0, 0, 0, YFactor, 0, 0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>の短縮版です。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1598
@@ -2479,15 +3172,37 @@ msgid ""
 " LINESTRING(1.5 6 3,1.5 4 1)\n"
 "\n"
 "\n"
-"--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4\n"
+"--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and "
+"scale it 3,4\n"
 "  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));\n"
 "                                                                                                                  st_astext\n"
 "------------------------------------------------------------------------------------------------------------------------------\n"
-" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))"
-msgstr "SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));\n                  st_asewkt\n-----------------------------\n LINESTRING(1.5 6 3,1.5 4 1)\n\n\n-- ポイントのバッファから得た近似円を曲線に変換したうえで\n-- (1, 2)だけ移動させ、(3, 4)倍に拡大します\n  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));\n                                                                                                                  st_astext\n------------------------------------------------------------------------------------------------------------------------------\n CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))"
+" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 "
+"2284.48528137424,714 2276))"
+msgstr ""
+"SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));\n"
+"                  st_asewkt\n"
+"-----------------------------\n"
+" LINESTRING(1.5 6 3,1.5 4 1)\n"
+"\n"
+"\n"
+"-- ポイントのバッファから得た近似円を曲線に変換したうえで\n"
+"-- (1, 2)だけ移動させ、(3, 4)倍に拡大します\n"
+"  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));\n"
+"                                                                                                                  st_astext\n"
+"------------------------------------------------------------------------------------------------------------------------------\n"
+" CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 "
+"2284.48528137424,714 2276))"
 
 #. Tag: para
 #: reference_editor.xml:1605
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Translate\"/>"
+
+#~ msgid ""
+#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
+#~ "<parameter>g</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
+#~ "<parameter>g</parameter></paramdef>"
