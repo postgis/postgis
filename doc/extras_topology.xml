@@ -231,7 +231,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
             <refsynopsisdiv>
                 <funcsynopsis>
                      <funcprototype>
-                        <funcdef>text <function>AddTopoGeometryColumn</function></funcdef>
+                        <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
                         <paramdef><type>varchar </type>
                         <parameter>topology_name</parameter></paramdef>
                         
@@ -248,7 +248,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                         <parameter>feature_type</parameter></paramdef>
                     </funcprototype>
                     <funcprototype>
-                        <funcdef>text <function>AddTopoGeometryColumn</function></funcdef>
+                        <funcdef>integer <function>AddTopoGeometryColumn</function></funcdef>
                         
                         <paramdef><type>varchar </type>
                         <parameter>topology_name</parameter></paramdef>
