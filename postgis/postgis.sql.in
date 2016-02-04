@@ -2668,15 +2668,28 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION postgis_transform_geometry(geometry,text,text,int)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','transform_geom'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
 -- PostGIS equivalent of old function: transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','transform'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','transform_to_proj'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','transform_from_proj_to_proj'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','transform_from_proj_to_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 
