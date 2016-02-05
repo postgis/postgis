@@ -156,7 +156,7 @@ lwmpoint_extract_points_3d(const LWMPOINT* g, uint32_t* ngeoms)
 }
 
 LWPOINT*
-lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter)
+lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
 	uint32_t npoints; /* we need to count this ourselves so we can exclude empties */
 	uint32_t i;
@@ -183,7 +183,7 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter)
 	lwfree(points);
 	lwfree(distances);
 
-	if (delta > tol)
+	if (fail_if_not_converged && delta > tol)
 	{
 		lwerror("Median failed to converge within %g after %d iterations.", tol, max_iter);
 		return NULL;
@@ -200,14 +200,14 @@ lwmpoint_median(const LWMPOINT* g, double tol, uint32_t max_iter)
 }
 
 LWPOINT*
-lwgeom_median(const LWGEOM* g, double tol, uint32_t max_iter)
+lwgeom_median(const LWGEOM* g, double tol, uint32_t max_iter, char fail_if_not_converged)
 {
 	switch( lwgeom_get_type(g) )
 	{
 		case POINTTYPE:
 			return lwpoint_clone(lwgeom_as_lwpoint(g));
 		case MULTIPOINTTYPE:
-			return lwmpoint_median(lwgeom_as_lwmpoint(g), tol, max_iter);
+			return lwmpoint_median(lwgeom_as_lwmpoint(g), tol, max_iter, fail_if_not_converged);
 		default:
 			lwerror("Unsupported geometry type in lwgeom_median");
 			return NULL;

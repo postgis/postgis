@@ -1156,6 +1156,7 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 	LWGEOM* input;
 	LWPOINT* lwresult;
 	double tolerance;
+	bool fail_if_not_converged;
 	uint32_t max_iter;
 
 	if (PG_ARGISNULL(0))
@@ -1163,6 +1164,7 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 
 	tolerance = PG_GETARG_FLOAT8(1);
 	max_iter = PG_GETARG_INT32(2);
+	fail_if_not_converged = PG_GETARG_BOOL(3);
 
 	if (tolerance < 0)
 	{
@@ -1179,7 +1181,7 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 	geom = PG_GETARG_GSERIALIZED_P(0);
 	input = lwgeom_from_gserialized(geom);
 
-	lwresult = lwgeom_median(input, tolerance, max_iter);
+	lwresult = lwgeom_median(input, tolerance, max_iter, fail_if_not_converged);
 	lwgeom_free(input);
 
 	if(!lwresult)

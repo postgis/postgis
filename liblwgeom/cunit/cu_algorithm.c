@@ -1026,13 +1026,14 @@ static void test_point_density(void)
 static void do_median_dims_check(char* wkt, int expected_dims)
 {
 	LWGEOM* g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
-	LWPOINT* result = lwgeom_median(g, 1e-8, 100);
+	LWPOINT* result = lwgeom_median(g, 1e-8, 100, LW_FALSE);
 
 	CU_ASSERT_EQUAL(expected_dims, lwgeom_ndims((LWGEOM*) result));
 
 	lwgeom_free(g);
 	lwpoint_free(result);
 }
+
 static void test_median_handles_3d_correctly(void)
 {
 	do_median_dims_check("MULTIPOINT ((1 3), (4 7), (2 9), (0 4), (2 2))", 2);
@@ -1048,7 +1049,7 @@ static void do_median_test(char* input, char* expected)
 	POINT3DZ actual_pt;
 	POINT3DZ expected_pt;
 
-	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, 1000);
+	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, 1000, LW_TRUE);
 	int passed = LW_TRUE;
 	
 	lwpoint_getPoint3dz_p(result, &actual_pt);

@@ -2598,6 +2598,15 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 				</parameter>
 			</paramdef>
 
+			<paramdef>
+				<type>
+					boolean
+				</type>
+				<parameter>
+					fail_if_not_converged
+				</parameter>
+			</paramdef>
+
 		</funcprototype>
 	  </funcsynopsis>
 	</refsynopsisdiv>
@@ -2614,7 +2623,8 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		  The algorithm will iterate until the distance change between 
 		  successive iterations is less than the supplied <varname>tolerance</varname>
 		  parameter.  If this condition has not been met after <varname>max_iterations</varname>
-		  iterations, the function will produce an error and exit.
+		  iterations, the function will produce an error and exit, unless <varname>fail_if_not_converged</varname>
+		  is set to false.
 	  </para>
 
 	  <para>Availability: 2.3.0</para>
