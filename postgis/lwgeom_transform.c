@@ -114,7 +114,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == SRID_UNKNOWN)
 	{
-		elog(ERROR,"tranform: destination SRID = %d",SRID_UNKNOWN);
+		elog(ERROR,"transform: destination SRID = %d",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 

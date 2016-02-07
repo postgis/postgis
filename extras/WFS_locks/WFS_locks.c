@@ -137,7 +137,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode != SPI_OK_SELECT )
-		elog(ERROR, "couldnt execute to test for lock aquire: %s", query);
+		elog(ERROR, "couldnt execute to test for lock acquire: %s", query);
 
 	if (SPI_processed >0)
 	{
