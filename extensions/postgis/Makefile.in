@@ -74,15 +74,25 @@ sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
 sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 
+# we need to also drop this temporary function from the extension
+# for casts that are being dropped we need to drop them 
+# from extension only if they are in the existension so we use our postgis_extension_drop..
+# so that it will silently fail if cast is not in extension
 sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-	    -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
+		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
+		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
+		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
 	$< > $@
 
+#don't drop casts just yet since we don't have provision to remove from extension yet
+#need to also drop temporary functions from extenions since it gets auto-added
 sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade.sql 
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-	    -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
-	$< > $@
+		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
+		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
+	 	 $< > $@
 
 
 ../../doc/raster_comments.sql:
@@ -93,8 +103,13 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 
 #postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: come up with a better name
+#TODO: what about postgis_drop_after.sql ? where does it fit ??
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade.sql sql_bits/rtpostgis_upgrade.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+	# NOTE: good functions are always re-added by the upgrade scripts,
+	#       so unregistering them all here ensures the removed ones
+	#       can be removed on upgrade.
+	echo "SELECT postgis_extension_remove_objects('postgis', 'FUNCTION');" >> $@
 	cat $^ >> $@
 
 sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
