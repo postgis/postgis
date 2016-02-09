@@ -82,19 +82,13 @@ sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/
 # so that it will silently fail if cast is not in extension
 sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
-		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
-		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
+	    -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
 	$< > $@
 
-#don't drop casts just yet since we don't have provision to remove from extension yet
-#need to also drop temporary functions from extenions since it gets auto-added
 sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade.sql 
-		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
-		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
-		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
-		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
-	 	 $< > $@
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+	    -e "s/^\(DROP .*\);/SELECT postgis_extension_drop_if_exists('${EXTENSION}', '\1');\n\1;/" \
+	$< > $@
 
 
 ../../doc/raster_comments.sql:
