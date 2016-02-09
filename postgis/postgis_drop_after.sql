@@ -161,3 +161,5 @@ DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint
 DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint,bool); -- temporarely introduced before 2.2.0 final
 DROP FUNCTION IF EXISTS pgis_twkb_accum_transfn(internal,geometry,integer,bigint,bool,bool); -- temporarely introduced before 2.2.0 final
 DROP FUNCTION IF EXISTS pgis_twkb_accum_finalfn(internal); -- temporarely introduced before 2.2.0 final
+
+DROP FUNCTION IF EXISTS  st_seteffectivearea(geometry, double precision); -- temporarely introduced before 2.2.0 final
