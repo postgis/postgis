@@ -1197,13 +1197,19 @@ sub count_db_objects
 ##################################################################
 # Create the spatial database
 ##################################################################
+sub create_db
+{
+	my $cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
+	return system($cmd);
+}
+
 sub create_spatial 
 {
 	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
-	$cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
-	$rv = system($cmd);
+  $rv = create_db();
+
 	$cmd = "createlang plpgsql $DB >> $REGRESS_LOG 2>&1";
 	$rv = system($cmd);
 
@@ -1529,7 +1535,7 @@ sub dump_restore
 		die;
   }
 
-  $rv = system("createdb ${DB} >> $REGRESS_LOG 2>&1");
+  $rv = create_db();
   if ( $rv ) {
     fail("Could not create ${DB}", $REGRESS_LOG);
 		die;
