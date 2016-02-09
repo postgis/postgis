@@ -1539,7 +1539,20 @@ sub dump_restore
   if ( $rv ) {
     fail("Could not restore ${DB}", $REGRESS_LOG);
     die;
-  };
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    # We need to re-add "topology" to the search_path as it is lost
+    # on dump/reload, see https://trac.osgeo.org/postgis/ticket/3454
+    my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+    my $cmd = "psql $psql_opts -c \"SELECT topology.AddToSearchPath('topology')\" $DB >> $REGRESS_LOG 2>&1";
+    $rv = system($cmd);
+    if ( $rv ) {
+      fail("Error encountered adding topology to search path after restore", $REGRESS_LOG);
+      die;
+    }
+  }
 
   unlink($DBDUMP);
 
