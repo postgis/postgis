@@ -103,9 +103,12 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 
 #postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: come up with a better name
-#TODO: what about postgis_drop_after.sql ? where does it fit ??
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/postgis_upgrade.sql sql_bits/rtpostgis_upgrade.sql ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
+	# NOTE: good functions are always re-added by the upgrade scripts,
+	#       so unregistering them all here ensures the removed ones
+	#       can be removed on upgrade.
+	echo "SELECT postgis_extension_remove_objects('postgis', 'FUNCTION');" >> $@
 	cat $^ >> $@
 
 sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
