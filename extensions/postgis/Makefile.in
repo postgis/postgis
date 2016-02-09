@@ -59,6 +59,7 @@ sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/postgis.sql: ../../postgis/postgis.sql
+	mkdir -p sql_bits/
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 
 ../../doc/postgis_comments.sql:
