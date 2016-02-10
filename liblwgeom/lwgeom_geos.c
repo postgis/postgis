@@ -2017,7 +2017,10 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 		GEOSGeom_destroy(geos_env);
 
 	if (!geos_result)
+	{
+		lwerror("GEOSVoronoiDiagram: %s", lwgeom_geos_errmsg);
 		return NULL;
+	}
 
 	lwgeom_result = GEOS2LWGEOM(geos_result, is_3d);
 	GEOSGeom_destroy(geos_result);
