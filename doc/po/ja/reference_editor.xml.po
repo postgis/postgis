@@ -1,19 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:26+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-01 19:58+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -439,7 +438,7 @@ msgstr "Enhanced: 2.0.0 多面体サーフェス対応が導入されました�
 #: reference_editor.xml:156
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_2D."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_2Dと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_2Dと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:166
@@ -479,7 +478,7 @@ msgstr "ST_Force3D"
 #: reference_editor.xml:181
 #, no-c-format
 msgid "Forces the geometries into XYZ mode. This is an alias for ST_Force3DZ."
-msgstr "ジオメトリをXYZモードに強制します。これはST_Force_3DZの別名です。"
+msgstr "ジオメトリをXYZモードに強制します。これはST_Force3DZの別名です。"
 
 #. Tag: funcprototype
 #: reference_editor.xml:186
@@ -505,7 +504,7 @@ msgstr ""
 #: reference_editor.xml:199
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3D."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3Dと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_3Dと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:209
@@ -578,14 +577,14 @@ msgid ""
 "Forces the geometries into XYZ mode. This is a synonym for ST_Force3DZ. If a geometry has no Z "
 "component, then a 0 Z coordinate is tacked on."
 msgstr ""
-"ジオメトリをXYZモードに強制します。これはST_Force_3Dと同義です。ジオメトリがZ値を持っていない場合は"
+"ジオメトリをXYZモードに強制します。これはST_Force3DZと同義です。ジオメトリがZ値を持っていない場合は"
 "0のZ値を追加します。"
 
 #. Tag: para
 #: reference_editor.xml:242
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DZ."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3DZと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_3DZと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:252
@@ -663,7 +662,7 @@ msgstr ""
 #: reference_editor.xml:285
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_3DM."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_3DMと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_3DMと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:293
@@ -739,7 +738,7 @@ msgstr "ジオメトリをXYZMモードに強制します。Z値やM値が無い
 #: reference_editor.xml:325
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_4D."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_4Dと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_4Dと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:334
@@ -820,7 +819,7 @@ msgstr ""
 #: reference_editor.xml:369
 #, no-c-format
 msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Force_Collection."
-msgstr "Changed: 2.1.0 2.0.xより後ではST_Force_Collectionと呼ばれます。"
+msgstr "Changed: 2.1.0 2.0.xの間はST_Force_Collectionと呼ばれていました。"
 
 #. Tag: programlisting
 #: reference_editor.xml:380
@@ -1724,9 +1723,8 @@ msgid ""
 "cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</"
 "code>."
 msgstr ""
-"<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for <code>ST_Affine(geomA, "
-"cos(rotRadians), 0, sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</"
-"code>."
+"<code>ST_RotateY(geomA, rotRadians)</code>は<code>ST_Affine(geomA, cos(rotRadians), 0, "
+"sin(rotRadians), 0, 1, 0, -sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>の短縮版です。"
 
 #. Tag: para
 #: reference_editor.xml:886
@@ -2132,7 +2130,7 @@ msgid ""
 "triggers when trying to maintain relationship of joints when one vertex moves."
 msgstr ""
 "ラインストリングのN番目を与えられたポイントに置き換えます。インデクスは0はじまりです。これは、頂点"
-"がひとつ動いた時に接続のリレーションシップを維持しようとする場合のトリガに特に便利です。"
+"が一つ動いた時に接続のリレーションシップを維持しようとする場合のトリガに特に便利です。"
 
 #. Tag: programlisting
 #: reference_editor.xml:1118
@@ -2381,7 +2379,7 @@ msgstr "Availability: 1.0.0RC1"
 #: reference_editor.xml:1255
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
-msgstr "Availability: 1.1.0 - ZとMのサポート"
+msgstr "Availability: 1.1.0 - Z値とM値に対応するようになりました"
 
 #. Tag: programlisting
 #: reference_editor.xml:1264
@@ -2502,8 +2500,8 @@ msgid ""
 "Snapping one geometry to another can improve robustness for overlay operations by eliminating "
 "nearly-coincident edges (which cause problems during noding and intersection calculation)."
 msgstr ""
-"ひとつのジオメトリからもう一つへの変換によって、近傍エッジ (ノード生成とインタセクション計算で問題"
-"を引き起こします)を除くことになり、オーバレイ演算のロバスト性が改善されます。"
+"一つのジオメトリからもう一つへの変換によって、近傍エッジ (ノード生成とインタセクション計算で問題を"
+"引き起こします)を除くことになり、オーバレイ演算のロバスト性が改善されます。"
 
 #. Tag: para
 #: reference_editor.xml:1318
@@ -2531,7 +2529,7 @@ msgstr ""
 #: reference_editor.xml:1334
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 GEOS 3.3.0以降が必要です。"
+msgstr "Availability: 2.0.0 GEOS 3.3.0以上が必要です。"
 
 #. Tag: para
 #: reference_editor.xml:1351
@@ -2832,7 +2830,7 @@ msgstr ""
 "8522251 42.3902896512902));\n"
 "(1 row)\n"
 "\n"
-"-- 3次元曲線ストリングの例\n"
+"--3D Circular String example\n"
 "SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT('SRID=2249;CIRCULARSTRING(743238 2967416 1,743238 "
 "2967450 2,743265 2967450 3,743265.625 2967416 3,743238 2967416 4)'),4326));\n"
 "\n"
@@ -3199,10 +3197,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Translate\"/>"
-
-#~ msgid ""
-#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> "
-#~ "<parameter>g</parameter></paramdef>"

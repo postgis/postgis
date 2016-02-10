@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 14:18+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:21+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -702,8 +700,8 @@ msgid ""
 "standard OGC interface"
 msgstr ""
 ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_BdPolyFromText\"/>, "
-"<xref linkend=\"ST_BdMPolyFromText\"/>wrappers to this function with "
-"standard OGC interface"
+"<xref linkend=\"ST_BdMPolyFromText\"/> (この関数を標準OGCインタフェースにする"
+"ためのラッパ)"
 
 #. Tag: refname
 #: reference_processing.xml:285
@@ -784,7 +782,7 @@ msgstr "ST_ClusterIntersecting"
 msgid ""
 "Aggregate. Returns an array with the connected components of a set of "
 "geometries"
-msgstr "集計関数です。ジオメトリの集合の接続された要素の配列を返します。"
+msgstr "集約関数です。ジオメトリの集合の接続された要素の配列を返します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:339
@@ -804,8 +802,8 @@ msgid ""
 "GeometryCollections, where each GeometryCollection represents an "
 "interconnected set of geometries."
 msgstr ""
-"ST_ClusterIntersectingはジオメトリコレクションの配列を返す集計関数です。要素"
-"は相互接続されるジオメトリの集合です。"
+"ST_ClusterIntersectingはジオメトリコレクションの配列を返す集約関数です。配列"
+"の要素は、相互接続されるジオメトリの集合を表現します。"
 
 #. Tag: para
 #: reference_processing.xml:351 reference_processing.xml:389
@@ -873,8 +871,8 @@ msgid ""
 "GeometryCollection represents a set of geometries separated by no more than "
 "the specified distance."
 msgstr ""
-"集約関数です。ジオメトリコレクションの配列を返します。要素は、指定した距離で"
-"分割されたジオメトリの集合を表現します。"
+"集約関数です。ジオメトリコレクションの配列を返します。配列の要素は、指定した"
+"距離で分割されたジオメトリの集合を表現します。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:376
@@ -896,8 +894,8 @@ msgid ""
 "GeometryCollections, where each GeometryCollection represents a set of "
 "geometries separated by no more than the specified distance."
 msgstr ""
-"ST_ClusterWithinは、ジオメトリコレクションの配列を返す集約関数です。要素は、"
-"指定した距離で分割されたジオメトリの集合を表現します。"
+"ST_ClusterWithinは、ジオメトリコレクションの配列を返す集約関数です。配列の要"
+"素は、指定した距離で分割されたジオメトリの集合を表現します。"
 
 #. Tag: programlisting
 #: reference_processing.xml:394
@@ -985,8 +983,8 @@ msgid ""
 "takes a set of geometries and collects them into a single ST_Geometry."
 msgstr ""
 "出力タイプはMULTI系またはGEOMETRYCOLLECTIONです。二つの形式があります。 一つ"
-"目は、2つのジオメトリをまとめるものです。二つ目は、ジオメトリの集合を取って単"
-"一のST_Geometryにまとめる集計関数です。"
+"目は、二つのジオメトリをまとめるものです。二つ目は、ジオメトリの集合を取って"
+"単一のST_Geometryにまとめる集約関数です。"
 
 #. Tag: para
 #: reference_processing.xml:435
@@ -999,8 +997,8 @@ msgid ""
 "\"SELECT ST_Collect(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN\" will return a "
 "separate GEOMETRYCOLLECTION for each distinct value of ATTRCOLUMN."
 msgstr ""
-"集計関数版: この関数は、ジオメトリの集合からGEOMETRYCOLLECTIONまたはMULTI系を"
-"返します。ST_Collect()関数はPostgreSQL用語で言うところの「集計関数」です。"
+"集約関数版: この関数は、ジオメトリの集合からGEOMETRYCOLLECTIONまたはMULTI系を"
+"返します。ST_Collect()関数はPostgreSQL用語で言うところの「集約関数」です。"
 "SUM()やMEAN()と同じ方法でデータ行での操作を行うことを意味します。たとえ"
 "ば、\"SELECT ST_Collect(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN\"は"
 "ATTRCOLUMNの異なった値ごとに、別々のGEOMETRYCOLLECTIONを返します。"
@@ -1012,7 +1010,7 @@ msgid ""
 "Non-Aggregate version: This function returns a geometry being a collection "
 "of two input geometries. Output type can be a MULTI* or a GEOMETRYCOLLECTION."
 msgstr ""
-"非集計関数版: この関数は、二つの入力ジオメトリをまとめたジオメトリを返しま"
+"非集約関数版: この関数は、二つの入力ジオメトリをまとめたジオメトリを返しま"
 "す。出力タイプはMULTI系またはGEOMETRYCOLLECTIONです。"
 
 #. Tag: para
@@ -1083,7 +1081,7 @@ msgid ""
 "postgis-users/2008-June/020331.html\">http://postgis.refractions.net/"
 "pipermail/postgis-users/2008-June/020331.html</ulink>)"
 msgstr ""
-"集計関数の例 (<ulink url=\"http://postgis.refractions.net/pipermail/postgis-"
+"集約関数の例 (<ulink url=\"http://postgis.refractions.net/pipermail/postgis-"
 "users/2008-June/020331.html\">http://postgis.refractions.net/pipermail/"
 "postgis-users/2008-June/020331.html</ulink>)"
 
@@ -1109,7 +1107,7 @@ msgstr ""
 #: reference_processing.xml:469 reference_processing.xml:2561
 #, no-c-format
 msgid "Non-Aggregate example"
-msgstr "非集計関数の例"
+msgstr "非集約関数の例"
 
 #. Tag: programlisting
 #: reference_processing.xml:470
@@ -1282,7 +1280,7 @@ msgid ""
 "get the concave hull of a set of points/linestring/polygons "
 "ST_ConcaveHull(ST_Collect(somepointfield), 0.80)."
 msgstr ""
-"通常はMULTI系とジオメトリコレクションに使われます。 集計関数ではないのです"
+"通常はMULTI系とジオメトリコレクションに使われます。 集約関数ではないのです"
 "が、ST_CollectやST_Unionと併用して、ポイント/ラインストリング/ポリゴンの凹包"
 "を得ることができます。\"ST_ConcaveHull(ST_Collect(somepointfield), 0.80)\"と"
 "いったようにします。"
@@ -1632,7 +1630,7 @@ msgid ""
 "an aggregate - you can use it in conjunction with ST_Collect to get the "
 "convex hull of a set of points. ST_ConvexHull(ST_Collect(somepointfield))."
 msgstr ""
-"通常はMULTI系まはたジオメトリカラムを使いますが、集計関数ではありません - "
+"通常はMULTI系まはたジオメトリカラムを使いますが、集約関数ではありません - "
 "ST_Collectと併用してST_ConvexHull(ST_Collect(somepointfield))とすると、ポイン"
 "トの集合の凸包を得ることができます。"
 
@@ -1987,7 +1985,7 @@ msgstr ""
 "150419.895736857 1.05435185700189,....AD INFINITUM ....\n"
 "        220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)\n"
 "\n"
-"-- 2つの区分だけで4分の1円を近似\n"
+"-- 二つの区分だけで4分の1円を近似\n"
 "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 "
 "150415,220227 150505,220227 150406)'),2));\n"
 "st_astext\n"
@@ -2038,7 +2036,7 @@ msgstr ""
 "%E3%83%89%E3%83%AD%E3%83%8D%E3%83%BC%E5%9B%B3\">ドロネー三角形</ulink>を返し"
 "ます。出力はポリゴンのコレクション (flags=0の場合)、MULTILINESTRING (flags=1"
 "の場合)、TIN(flags=2の場合)のいずれかになります。いずれの場合も、入力の頂点を"
-"いっしょにスナップするために許容誤差が使われます。"
+"一緒にスナップするために許容誤差が使われます。"
 
 #. Tag: para
 #: reference_processing.xml:774
@@ -2427,7 +2425,7 @@ msgstr ""
 #: reference_processing.xml:957
 #, no-c-format
 msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
-msgstr "Availability: PostGIS 1.0.0RC1 PostgreSQL 7.3以上が必要です。 "
+msgstr "Availability: PostGIS 1.0.0RC1 PostgreSQL 7.3以上が必要です。"
 
 #. Tag: para
 #: reference_processing.xml:959
@@ -2672,7 +2670,7 @@ msgstr ""
 "の座標です。<varname>POLYGON</varname>が与えられた場合には、<varname>{i,j}</"
 "varname>のpathが返ります。ここで、<varname>i</varname>は環番号 (1が外環で、内"
 "環が続きます)で、<varname>j</varname>は<varname>POINT</varname>を列挙するもの"
-"です (1はじまり)。"
+"です (1始まり)。"
 
 #. Tag: para
 #: reference_processing.xml:1015
@@ -2736,7 +2734,7 @@ msgstr ""
 #: reference_processing.xml:1028
 #, no-c-format
 msgid "Standard Geometry Examples"
-msgstr "標準的な例"
+msgstr "標準的なジオメトリの例"
 
 #. Tag: programlisting
 #: reference_processing.xml:1038
@@ -3205,8 +3203,8 @@ msgid ""
 "Returns a version of the given geometry with X and Y axis flipped. Useful "
 "for people who have built latitude/longitude features and need to fix them."
 msgstr ""
-"与えられたジオメトリのX軸とY軸とを入れ替えたものを返します。緯度/経度の地物を"
-"構築して、これを訂正したい場合に使えます。"
+"与えられたジオメトリのX軸とY軸とを入れ替えたものを返します。緯度/経度のフィー"
+"チャーを構築して、これを訂正したい場合に使えます。"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1108
@@ -3888,7 +3886,7 @@ msgid ""
 "an array and then unions"
 msgstr ""
 "ST_Unionと同じですが、メモリフレンドリ (少ないメモリ使用、多いCPU時間)です。"
-"この集計関数は、最初に配列を作って結合していくST_Union集計関数と対象的に、一"
+"この集約関数は、最初に配列を作って結合していくST_Union集約関数と対象的に、一"
 "つずつ前の結果にジオメトリを結合させることによって動作します。"
 
 #. Tag: programlisting
@@ -3960,9 +3958,9 @@ msgid ""
 "bounding circle of a set of geometries. "
 "ST_MinimumBoundingCircle(ST_Collect(somepointfield))."
 msgstr ""
-"しばしば、MULTI系とジオメトリコレクションで使用します。しかし、集計関数ではあ"
-"りません。ST_Collectと併用して、ジオメトリの集合の最小バウンディング円を得ま"
-"す。ST_MinimumBoundingCircle(ST_Collect(somepointfield))とします。"
+"しばしば、MULTI系とジオメトリコレクションで使用します。しかし、集約関数ではあ"
+"りません。ST_Collectと併用して、ジオメトリの集合の最小包含円を得ます。"
+"ST_MinimumBoundingCircle(ST_Collect(somepointfield))とします。"
 
 #. Tag: para
 #: reference_processing.xml:1469
@@ -3971,8 +3969,8 @@ msgid ""
 "The ratio of the area of a polygon divided by the area of its Minimum "
 "Bounding Circle is often referred to as the Roeck test."
 msgstr ""
-"ポリゴンの面積を最小バウンディング円の面積で割った割合は、しばしばRoeckテスト"
-"として参照されます。"
+"ポリゴンの面積を最小包含円の面積で割った割合は、しばしばRoeckテストとして参照"
+"されます。"
 
 #. Tag: para
 #: reference_processing.xml:1471
@@ -4007,8 +4005,8 @@ msgid ""
 "Minimum bounding circle of a point and linestring. Using 8 segs to "
 "approximate a quarter circle"
 msgstr ""
-"ポイントとラインストリングの最小バウンディング円です。4分の1円の近似に8区分使"
-"用しています。"
+"ポイントとラインストリングの最小包含円です。4分の1円の近似に8区分使用していま"
+"す。"
 
 #. Tag: programlisting
 #: reference_processing.xml:1490
@@ -4109,8 +4107,8 @@ msgid ""
 "Can be used in conjunction with <xref linkend=\"ST_Collect\"/> to get the "
 "minimum bounding circle of a set of geometries."
 msgstr ""
-"ジオメトリの集合の最小バウンディング円を得るには<xref linkend=\"ST_Collect\"/"
-">と併用します。"
+"ジオメトリの集合の最小包含円を得るには<xref linkend=\"ST_Collect\"/>と併用し"
+"ます。"
 
 #. Tag: para
 #: reference_processing.xml:1517
@@ -4157,7 +4155,7 @@ msgid ""
 "Aggregate. Creates a GeometryCollection containing possible polygons formed "
 "from the constituent linework of a set of geometries."
 msgstr ""
-"集計関数。ジオメトリの集合のラインから形成されうるポリゴンを含むジオメトリコ"
+"集約関数。ジオメトリの集合のラインから形成されうるポリゴンを含むジオメトリコ"
 "レクションを生成します。"
 
 #. Tag: funcsynopsis
@@ -4310,7 +4308,7 @@ msgstr ""
 #: reference_processing.xml:1617 reference_processing.xml:2613
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要 "
+msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要です。"
 
 #. Tag: para
 #: reference_processing.xml:1619
@@ -4413,7 +4411,7 @@ msgid ""
 "key=value pairs to tweak operations as follows:"
 msgstr ""
 "任意指定の第3引数では、空白区切りのkey=valueペアの一覧を指定して、次のような"
-"操作をすることができます。 "
+"操作をすることができます。"
 
 #. Tag: para
 #: reference_processing.xml:1688
@@ -4806,7 +4804,7 @@ msgstr ""
 #: reference_processing.xml:1860
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 GEOS 3.3.0以降が必要です。"
+msgstr "Availability: 2.0.0 GEOS 3.3.0以上が必要です。"
 
 #. Tag: title
 #: reference_processing.xml:1863
@@ -4917,9 +4915,9 @@ msgid ""
 "result would be a 0-360 version of the data to be plotted in a 180 centric "
 "map</refpurpose>"
 msgstr ""
-"<refpurpose>ジオメトリの全ての地物の全ての構成要素の全てのポイント/頂点を読"
-"み、経度が0未満なら360を足します。結果は、180度を中心とした地図にプロットされ"
-"る0度から360度の間にあるデータとなります。</refpurpose>"
+"<refpurpose>ジオメトリの全てのフィーチャーの全ての構成要素の全てのポイント/頂"
+"点を読み、経度が0未満なら360を足します。結果は、180度を中心とした地図にプロッ"
+"トされる0度から360度の間にあるデータとなります。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_processing.xml:1923
@@ -4940,9 +4938,9 @@ msgid ""
 "result would be a 0-360 version of the data to be plotted in a 180 centric "
 "map</para>"
 msgstr ""
-"<para>ジオメトリの全ての地物の全ての構成要素の全てのポイント/頂点を読み、経度"
-"が0未満なら360を足します。結果は、180度を中心とした地図にプロットされる0度か"
-"ら360度の間にあるデータとなります。</para>"
+"<para>ジオメトリの全てのフィーチャーの全ての構成要素の全てのポイント/頂点を読"
+"み、経度が0未満なら360を足します。結果は、180度を中心とした地図にプロットされ"
+"る0度から360度の間にあるデータとなります。</para>"
 
 #. Tag: para
 #: reference_processing.xml:1937
@@ -4964,13 +4962,13 @@ msgstr ""
 #: reference_processing.xml:1944
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
-msgstr "Enhanced: 2.0.0で、多面体サーフェス対応とTIN対応が導入されました。"
+msgstr "Enhanced: 2.0.0 多面体サーフェス対応とTIN対応が導入されました。"
 
 #. Tag: para
 #: reference_processing.xml:1945
 #, no-c-format
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
-msgstr "ご注意: この関数は2.0.0で\"ST_Shift_Longitude\"から解明されました。"
+msgstr "ご注意: この関数は2.0.0で\"ST_Shift_Longitude\"から名称変更しました。"
 
 #. Tag: programlisting
 #: reference_processing.xml:1954
@@ -5087,7 +5085,7 @@ msgid ""
 "Note that returned geometry might lose its simplicity (see <xref linkend="
 "\"ST_IsSimple\"/>)"
 msgstr ""
-"返されるジオメトリは単純さ (<xref linkend=\"ST_IsSimple\"/>参照)を失うことが"
+"返されるジオメトリは単純性 (<xref linkend=\"ST_IsSimple\"/>参照)を失うことが"
 "あります。"
 
 #. Tag: para
@@ -5556,7 +5554,7 @@ msgid ""
 "When a (multi)polygon is passed as as the blade, its linear component (the "
 "boundary) is used for cutting the input."
 msgstr ""
-"(MULTI)ポリゴンを刃として渡すと、線形の要素 (境界)が入力の分割に使われます。"
+"(MULTI)ポリゴンを刃として渡すと、線要素 (境界)が入力の分割に使われます。"
 
 #. Tag: para
 #: reference_processing.xml:2198
@@ -5605,7 +5603,7 @@ msgid ""
 "POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 "
 "62.2214883490198,53.8060233744357 ..))"
 msgstr ""
-"-- 2つの半分になったポリゴンからなるジオメトリコレクションを生成します\n"
+"-- 二つの半分になったポリゴンからなるジオメトリコレクションを生成します\n"
 "-- ST_BuildAreaでの例に似ています\n"
 "SELECT ST_Split(circle, line)\n"
 "FROM (SELECT \n"
@@ -5733,7 +5731,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 #: reference_processing.xml:2332
 #, no-c-format
 msgid "The original linestrings shown together"
-msgstr "元のラインストリングを下に示します。"
+msgstr "二つある元のラインストリングの両方"
 
 #. Tag: para
 #: reference_processing.xml:2344
@@ -5757,7 +5755,7 @@ msgid ""
 "---------\n"
 "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
 msgstr ""
-"-- 2次元では安全です - 2つのラインストリングの対称差\n"
+"-- 2次元では安全です - 二つのラインストリングの対称差\n"
 "SELECT ST_AsText(\n"
 "        ST_SymDifference(\n"
 "                ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
@@ -5948,7 +5946,7 @@ msgstr ""
 msgid ""
 "Useful in conjunction with ST_Segmentize to create additional vertices that "
 "can then be used for splitting"
-msgstr "分割に使うことができる頂点の追加にST_Segmentizeと併用します。"
+msgstr "分割に使うことができる頂点の追加にST_Segmentizeを併用します"
 
 #. Tag: programlisting
 #: reference_processing.xml:2431
@@ -6052,7 +6050,7 @@ msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
 "ordinates to swap. Valid names are: x,y,z and m."
 msgstr ""
-"<varname>ords</varname>引数は2文字の漏れ実で、入れ替える座標名を示します。座"
+"<varname>ords</varname>引数は2文字の文字列で、入れ替える座標名を示します。座"
 "標名はx, y, z, mが有効です。"
 
 #. Tag: programlisting
@@ -6138,9 +6136,9 @@ msgid ""
 "no intersecting regions."
 msgstr ""
 "MULTI系、単一ジオメトリ、ジオメトリコレクションのいずれでも出力されます。二つ"
-"の形式があります。一つ目は、2つのジオメトリからインタセクトしている領域の無い"
-"新しいジオメトリを返します。二つ目は、ジオメトリの集合を取り、インタセクトし"
-"ている領域の無い単一のST_Geometryを返すものです。"
+"の形式があります。一つ目は、二つのジオメトリを結合して、インタセクトしている"
+"領域の無い新しいジオメトリを返します。二つ目は、ジオメトリの集合を結合して、"
+"インタセクトしている領域の無い単一のST_Geometryを返すものです。"
 
 #. Tag: para
 #: reference_processing.xml:2527
@@ -6152,8 +6150,8 @@ msgid ""
 "rows of data, in the same way the SUM() and AVG() functions do and like most "
 "aggregates, it also ignores NULL geometries."
 msgstr ""
-"集計関数版: この関数は、ジオメトリの集合から、MULTI系ジオメトリまたは非MULTI"
-"系ジオメトリを返します。ST_Union()関数は、PostgreSQL用語で言うところの「集計"
+"集約関数版: この関数は、ジオメトリの集合から、MULTI系ジオメトリまたは非MULTI"
+"系ジオメトリを返します。ST_Union()関数は、PostgreSQL用語で言うところの「集約"
 "関数」です。SUM()やMEAN()と同じ方法でデータリストの操作を行い、NULLジオメトリ"
 "を無視することを意味します。"
 
@@ -6165,7 +6163,7 @@ msgid ""
 "input geometries. Output type can be a MULTI*, NON-MULTI or "
 "GEOMETRYCOLLECTION. If any are NULL, then NULL is returned."
 msgstr ""
-"非集計関数版: この関数は二つの入力ジオメトリの結合したジオメトリを返します。"
+"非集約関数版: この関数は二つの入力ジオメトリの結合したジオメトリを返します。"
 "出力型はMULTI系、非MULTI系またはGEOMETRYCOLLECTIONです。入力が全てNULLなら"
 "NULLを返します。"
 
@@ -6189,8 +6187,8 @@ msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
 "\"Union\" because UNION is an SQL reserved word."
 msgstr ""
-"ご注意: この関数は以前は、\"Union\"から改名してGeomUnion()と呼ばれていまし"
-"た。UNIONはSQLの予約語であるためです。"
+"ご注意: この関数は以前は、\"Union\"から名称変更してGeomUnion()と呼ばれていま"
+"した。UNIONはSQLの予約語であるためです。"
 
 #. Tag: para
 #: reference_processing.xml:2546
@@ -6650,35 +6648,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Collect\"/>"
 msgstr ", <xref linkend=\"ST_Collect\"/>"
-
-#~ msgid ""
-#~ "The circle is approximated by a polygon with a default of 48 segments per "
-#~ "quarter circle. This number can be increased with little performance "
-#~ "penalty to obtain a more accurate result."
-#~ msgstr ""
-#~ "円は、デフォルトでは、4分の1円に対して48区分を使用した近似円です。より精度"
-#~ "良い結果を得るには、この数を増やします。ほとんどパフォーマンス上のペナル"
-#~ "ティは増えません。"
-
-#~ msgid ""
-#~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
-#~ msgstr ""
-#~ "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
-#~ "<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> "
-#~ "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
-
-#~ msgid ""
-#~ "A linestring that get the efffective area calculated. All points is "
-#~ "returned since we give 0 as themin area threashold"
-#~ msgstr ""
-#~ "ラインストリング計算された有効領域を得るラインストリング。0を最小領域のし"
-#~ "きい値として与えると、全てのポイントが帰ります。"
-
-#~ msgid ""
-#~ "Sets for each vertex point it's effective area, and can by filtring on "
-#~ "this area return a simplified geometry"
-#~ msgstr ""
-#~ "有効領域となる個々の頂点を置きます。この領域でフィルタリングをすることで、"
-#~ "簡略化したジオメトリを得ることができます。"

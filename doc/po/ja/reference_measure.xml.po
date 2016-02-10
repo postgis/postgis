@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-# Kayama Yoichi <yoichi.kayama@gmail.com>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:29+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:16+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -78,7 +76,7 @@ msgid ""
 "shortest line. The 3D length of the 3D shortest line is the 3D distance."
 msgstr ""
 "g1上の、g2に最も近い3次元ポイントを返します。3次元最短線の一つ目のポイントです。3次元最短線の長さは、3"
-"次元距離とは同じになです。"
+"次元距離と同じです。"
 
 #. Tag: para
 #: reference_measure.xml:32 reference_measure.xml:98 reference_measure.xml:151 reference_measure.xml:213
@@ -112,9 +110,9 @@ msgid ""
 "Changed: 2.2.0 - if 2 2D geometries are input, a 2D point is returned (instead of old behavior "
 "assuming 0 for missing Z). In case of 2D and 3D, Z is no longer assumed to be 0 for missing Z."
 msgstr ""
-"Changed: 2.2.0 - 二つの2次元ジオメトリが入力である場合には、2次元ポイントが返ります (古い振る舞いでは、"
-"存在しないZの値について0を仮定していました)。2次元と3次元の場合には、もはや、存在しないZの値について0を"
-"仮定しません。"
+"Changed: 2.2.0 - 二つの2次元ジオメトリが入力である場合には、2次元ポイントが返ります (古い挙動では、存在"
+"しないZの値について0を仮定していました)。2次元と3次元の場合には、もはや、存在しないZの値について0を仮定"
+"しません。"
 
 #. Tag: title
 #: reference_measure.xml:40 reference_measure.xml:109 reference_measure.xml:160 reference_measure.xml:220
@@ -299,8 +297,8 @@ msgid ""
 "For geometry type returns the 3-dimensional minimum cartesian distance between two geometries in "
 "projected units (spatial ref units)."
 msgstr ""
-"ジオメトリ型については、二つのジオメトリの、3次元の最小デカルト距離 (空間参照系に基づきます)を、投影法"
-"の単位で返します。"
+"ジオメトリ型について、二つのジオメトリの、3次元の最小デカルト距離 (空間参照系に基づきます)を、投影法の"
+"単位で返します。"
 
 #. Tag: para
 #: reference_measure.xml:101 reference_measure.xml:154
@@ -724,9 +722,9 @@ msgid ""
 "of the line this function returns will always be the same as <xref linkend=\"ST_3DMaxDistance\"/> "
 "returns for g1 and g2."
 msgstr ""
-"二つのジオメトリの3次元長が最長となるポイントを返します。見つかった最長線が複数ある場合は、最初のものの"
-"み返します。返されるラインは常にg1側を始点、g2側を終点とします。この関数が返すラインの3次元の長さは、常"
-"に始点をg1に終点をg2にそれぞれ指定した場合の<xref linkend=\"ST_3DMaxDistance\"/>が返す値と同じになりま"
+"二つのジオメトリの3次元長が最長となるラインを返します。見つかった最長線が複数ある場合は、最初のもののみ"
+"返します。返されるラインは常にg1側を始点、g2側を終点とします。この関数が返すラインの3次元の長さは、常に"
+"始点をg1に終点をg2にそれぞれ指定した場合の<xref linkend=\"ST_3DMaxDistance\"/>が返す値と同じになりま"
 "す。"
 
 #. Tag: para
@@ -965,10 +963,10 @@ msgid ""
 "end in g2. The 3D length of the line this function returns will always be the same as <xref linkend="
 "\"ST_3DDistance\"/> returns for g1 and g2."
 msgstr ""
-"二つのジオメトリの3次元長が最短となるポイントを返します。見つかった最短線が複数ある場合は、最初のものの"
-"み返します。g1とg2が1点のみでインタセクトする場合は、インタセクション点を開始点と終了点とします。g1とg2"
-"が1点より多くインタセクトする場合は、同じ点を開始点と終了点としますが、その点は不定です。返されるライン"
-"は常にg1側を始点、g2側を終点とします。この関数が返すラインの長さは、常にg1とg2を指定した場合の<xref "
+"二つのジオメトリの3次元長が最短となるラインを返します。見つかった最短線が複数ある場合は、最初のもののみ"
+"返します。g1とg2が1点のみでインタセクトする場合は、インタセクション点を開始点と終了点とします。g1とg2が"
+"1点より多くインタセクトする場合は、同じ点を開始点と終了点としますが、その点は不定です。返されるラインは"
+"常にg1側を始点、g2側を終点とします。この関数が返すラインの長さは、常にg1とg2を指定した場合の<xref "
 "linkend=\"ST_3DDistance\"/>が返す値と同じになります。"
 
 #. Tag: para
@@ -1214,7 +1212,7 @@ msgid ""
 "meters. Note this is in square feet because 2249 is Massachusetts State Plane Feet and transformed "
 "area is in square meters since EPSG:26986 is state plane Massachusetts meters"
 msgstr ""
-"平方フィートの面積を返すものと、マサチューセッツ州メートル平面(EPSG:26986)に変換して平方メートルを得る"
+"平方フィートの面積を返すものと、マサチューセッツ州メートル平面 (EPSG:26986)に変換して平方メートルを得る"
 "ものです。EPSG:2249はマサチューセッツ州フィート平面であり、EPSG:26986はマサチューセッツ州メートル平面で"
 "あることに注意して下さい。"
 
@@ -1427,7 +1425,7 @@ msgstr ""
 #: reference_measure.xml:591
 #, no-c-format
 msgid "Green: the start Point(25,45) with its vertical. Yellow: degA_B as the path to travel (azimuth)."
-msgstr "緑: 開始点(25,45)で、鉛直方向に行きます。黄: degA_Bを示す行程(方位)です。"
+msgstr "緑: 開始点 (25,45)で、鉛直方向に行きます。黄: degA_Bを示す行程 (方位)です。"
 
 #. Tag: para
 #: reference_measure.xml:600
@@ -1778,7 +1776,7 @@ msgstr "ご注意: これは論理値を返して整数を返さないのが「�
 #: reference_measure.xml:852
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - same as within(geometry B, geometry A)"
-msgstr "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - same as within(geometry B, geometry A)"
+msgstr "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - within(geometry B, geometry A)と同じ"
 
 #. Tag: para
 #: reference_measure.xml:854
@@ -2375,12 +2373,11 @@ msgid ""
 "intersection of the two geometries must not equal either of the source geometries. Otherwise, it "
 "returns <varname>FALSE</varname>."
 msgstr ""
-"<function>ST_Crosses</function> takes two geometry objects and returns <varname>TRUE</varname> if "
-"their intersection \"spatially cross\", that is, the geometries have some, but not all interior points "
-"in common. The intersection of the interiors of the geometries must not be the empty set and must have "
-"a dimensionality less than the maximum dimension of the two input geometries. Additionally, the "
-"intersection of the two geometries must not equal either of the source geometries. Otherwise, it "
-"returns <varname>FALSE</varname>."
+"<function>ST_Crosses</function>は、二つのジオメトリをとり、インタセクションが「空間的にクロスする」、す"
+"なわちジオメトリが共通の内部の点を持ち、かつそうでない点を持つ場合に<varname>TRUE</varname>を返します。"
+"ジオメトリの内部のインタセクションは、空集合であってはならず、二つのジオメトリの最大次元より低い次元で"
+"なければなりません。さらに言うと、二つのジオメトリのインタセクションは、元のジオメトリのいずれとも一致"
+"してはなりません。これらを満たさない場合には<varname>FALSE</varname>を返します。"
 
 #. Tag: para
 #: reference_measure.xml:1209
@@ -2946,13 +2943,13 @@ msgstr ""
 #: reference_measure.xml:1590
 #, no-c-format
 msgid "Enhanced: 2.1.0 - support for curved geometries was introduced."
-msgstr "Enhanced: 2.1.0 - support for curved geometries was introduced."
+msgstr "Enhanced: 2.1.0 - 曲線ジオメトリ対応が導入されました。"
 
 #. Tag: title
 #: reference_measure.xml:1595
 #, no-c-format
 msgid "Basic Geometry Examples"
-msgstr "Basic Geometry Examples"
+msgstr "基本的なジオメトリの例"
 
 #. Tag: programlisting
 #: reference_measure.xml:1597
@@ -3252,8 +3249,8 @@ msgid ""
 "the same geometry the function will return the distance between the two vertices most far from each "
 "other in that geometry."
 msgstr ""
-"二つのラインストリングの最大2次元距離を投影法の単位で返します。g1とg2が同じジオメトリの場合には、ジオメ"
-"トリ内の最も遠くなる頂点の距離を返します。"
+"二つのジオメトリの最大2次元距離を投影法の単位で返します。g1とg2が同じジオメトリの場合には、ジオメトリ内"
+"の最も遠くなる頂点の距離を返します。"
 
 #. Tag: para
 #: reference_measure.xml:1717
@@ -3661,7 +3658,7 @@ msgstr "3次元ジオメトリの場合にはST_3DDWithinを使います。"
 #: reference_measure.xml:1962
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
-msgstr "Availability: 1.5.0 ジオグラフィが導入されました。"
+msgstr "Availability: 1.5.0 ジオグラフィ対応が導入されました。"
 
 #. Tag: para
 #: reference_measure.xml:1963
@@ -3760,8 +3757,8 @@ msgid ""
 msgstr ""
 "与えられたジオメトリ表現が「空間的に同じ」場合にTRUEを返します。'='よりも「よりよい」答を得るために使い"
 "ます。空間的に同じということは、ST_Within(A,B) = trueかつST_Within(B,A) = trueとなります。また、ポイン"
-"トの順序が違っても同じジオメトリ構造となります。構成ポイントの順序の確認にはST_OrderingEqualsを使用しま"
-"す (ST_OrderingEqualsはポイントのオーダが同じかを確認するよりも若干厳しくなります)。"
+"トの順序が違ってもジオメトリ構造ならtrueとなります。構成ポイントの順序の確認にはST_OrderingEqualsを使用"
+"します (ST_OrderingEqualsはポイントのオーダが同じかを確認するよりも若干厳しくなります)。"
 
 #. Tag: para
 #: reference_measure.xml:2009
@@ -4064,9 +4061,9 @@ msgid ""
 "reference system of the geometry."
 msgstr ""
 "ジオメトリについては、LINESTRING, MULTILINESTRING, ST_Curve, ST_MultiCurveの場合には、ジオメトリの2次元"
-"デカルト距離を返します。面ジオメトリに対しては0を返します。面ジオメトリに対してはST_Perimeterを使いま"
-"す。計測単位はジオメトリの空間参照系の単位になります。ジオグラフィについては、領域ジオメトリに対する周"
-"囲長関数としての働きもします。"
+"デカルト距離を返します。面ジオメトリに対しては0を返します。面ジオメトリに対しては<xref linkend="
+"\"ST_Perimeter\"/>を使います。計測単位はジオメトリの空間参照系の単位になります。ジオグラフィについて"
+"は、領域ジオメトリに対する周囲長関数としての働きもします。"
 
 #. Tag: para
 #: reference_measure.xml:2178
@@ -4098,8 +4095,8 @@ msgid ""
 "in line with geometry behavior. Please use ST_Perimeter if you want the perimeter of a polygon"
 msgstr ""
 "Changed: 2.0.0 大幅な変更 -- 以前の版ではジオグラフィのPOLYGONやMULTIPOLYGONへの適用によってPOLYGONや"
-"MULTIPOLYGONの周囲長を返しました。2.0.0版ではジオメトリの振る舞いに従うため0を返すように変更しました。"
-"ポリゴンの周囲長を求める場合は、ST_Perimeterを使います。"
+"MULTIPOLYGONの周囲長を返しました。2.0.0版ではジオメトリの挙動に従うため0を返すように変更しました。ポリ"
+"ゴンの周囲長を求める場合は、ST_Perimeterを使います。"
 
 #. Tag: para
 #: reference_measure.xml:2185
@@ -5665,7 +5662,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 #: reference_measure.xml:2904
 #, no-c-format
 msgid "Enhanced: 2.0.0 - added support for specifying boundary node rule (requires GEOS &gt;= 3.0)."
-msgstr "Enhanced: 2.0.0 - 境界ノード規則が追加されました (GEOS 3,0以上が必要です)。"
+msgstr "Enhanced: 2.0.0 - 境界ノード規則が追加されました (GEOS 3.0以上が必要です)。"
 
 #. Tag: programlisting
 #: reference_measure.xml:2911
@@ -5782,7 +5779,7 @@ msgstr ""
 #: reference_measure.xml:2945
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要"
+msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要です。"
 
 #. Tag: programlisting
 #: reference_measure.xml:2951
@@ -6169,6 +6166,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_IsValid\"/>"
 msgstr ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_IsValid\"/>"
-
-#~ msgid "Computation will be more accurate if performed by the GEOS module (enabled at compile time)."
-#~ msgstr "GEOSモジュールを使用することで計算は高精度になります (コンパイル時に有効にします)。"

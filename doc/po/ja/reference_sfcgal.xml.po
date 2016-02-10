@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:13+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-01-28 16:53+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: para
@@ -335,7 +333,7 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "ST_StraightSkeleton (slower case)."
 msgstr ""
-"ストレートスケルトンを基に、入力された面の近似的な中心軸を返します。可能な版"
+"ストレートスケルトンを基に、入力された面の近似的な中心軸を返します。可能な版 "
 "(1.2.0以上)でビルドすると、SFCGAL独自APIを使います。そうでない場合は"
 "ST_StraightSkeleton (遅い)のラップとなります。"
 
@@ -436,7 +434,7 @@ msgstr "ST_ForceLHR"
 #: reference_sfcgal.xml:333
 #, no-c-format
 msgid "Force LHR orientation"
-msgstr "LHR(Left Hand Rule)方向に強制します。"
+msgstr "LHR (Left Hand Rule)方向に強制します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:338
@@ -648,7 +646,7 @@ msgstr "ST_3DIntersection"
 #: reference_sfcgal.xml:466
 #, no-c-format
 msgid "Perform 3D intersection"
-msgstr "3次元のインタセクトした（共有する）部分を計算します。"
+msgstr "3次元のインタセクトした （共有する）部分を計算します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:471
@@ -999,7 +997,7 @@ msgstr "ST_3DArea"
 #: reference_sfcgal.xml:692
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
-msgstr "3次元の面ジオメトリの免責を計算します。立体の場合は0を返します。"
+msgstr "3次元の面ジオメトリの面積を計算します。立体の場合は0を返します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:697
@@ -1018,7 +1016,7 @@ msgid ""
 "Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
 "not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
-"ご注意: デフォルトでは、WKTから生成されたPolyhedralSurfaceは面じおめとりで、"
+"ご注意: デフォルトでは、WKTから生成されたPolyhedralSurfaceは面ジオメトリで、"
 "立体ではありません。サーフェス面を持ちます。立体に変換すると、面を持ちませ"
 "ん。"
 
@@ -1235,7 +1233,7 @@ msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
-"3次元立体の堆積を計算します。面ジオメトリは (閉じていても)0を返します。"
+"3次元立体の体積を計算します。面ジオメトリは (閉じていても)0を返します。"
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:826

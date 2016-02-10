@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:22+0000\n"
-"PO-Revision-Date: 2016-01-26 16:35+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:18+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -31,8 +29,8 @@ msgid ""
 "currently available in PostGIS Raster. There are other functions which are required support functions "
 "to the raster objects which are not of use to a general user."
 msgstr ""
-"ここで挙げる関数は、PostGISラスタにとって必要と思われるもので、現在PostGISラスタで有効なものです。一般"
-"的なユーザが利用しない、ラスタオブジェクトに対して求められるサポート関数があります。"
+"ここで挙げる関数は、PostGISラスタにとって必要と思われるもので、現在PostGISラスタで有効なものです。他"
+"に、一般的なユーザが利用しない、ラスタオブジェクトに対して求められるサポート関数があります。"
 
 #. Tag: para
 #: reference_raster.xml:9
@@ -419,8 +417,8 @@ msgid ""
 "Rasters can be georeferenced."
 msgstr ""
 "rasterは、JPEG, TIFF, PNG, デジタル標高モデルといったラスタデータを表現する空間データ型です。ラスタはそ"
-"れぞれ1以上のバンドを持ち、バンドはそれぞれにピクセルの集合を持ちます。ラスタは地理参照することができま"
-"す。"
+"れぞれ1以上のバンドを持ち、バンドはそれぞれにピクセルの集合を持ちます。ラスタには地理参照を与えることが"
+"できます。"
 
 #. Tag: para
 #: reference_raster.xml:175
@@ -519,8 +517,8 @@ msgid ""
 "defines how to map old band values to new band values. ( means &gt;, ) means less than, ] &lt; or "
 "equal, [ means &gt; or equal"
 msgstr ""
-" コンマ区切りの範囲表現。古い値から新しい値にマップする方法を定義します。 '('は「これより大き"
-"い」、')'は「これより小さい」、'['は「これ以上」、']'は「これ以下」、をそれぞれ示します。"
+"コンマ区切りの範囲表現。古い値から新しい値にマップする方法を定義します。 '('は「これより大きい」、')'は"
+"「これより小さい」、'['は「これ以上」、']'は「これ以下」、をそれぞれ示します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:221
@@ -558,7 +556,7 @@ msgstr "<parameter>pixeltype </parameter><type>text</type>"
 #: reference_raster.xml:228
 #, no-c-format
 msgid "One of defined pixel types as described in <xref linkend=\"RT_ST_BandPixelType\"/>"
-msgstr "<xref linkend=\"RT_ST_BandPixelType\"/>の記述にあるピクセルタイプの1つ。"
+msgstr "<xref linkend=\"RT_ST_BandPixelType\"/>の記述にあるピクセルタイプの一つ。"
 
 #. Tag: term
 #: reference_raster.xml:231
@@ -709,7 +707,7 @@ msgid ""
 "<refpurpose>A composite type used as input into the ST_Union function defining the bands to be "
 "processed and behavior of the UNION operation.</refpurpose>"
 msgstr ""
-"<refpurpose>ST_Union関数の入力に使う複合型です。処理するバンドとUNION処理のふるまいを定義します。</"
+"<refpurpose>ST_Union関数の入力に使う複合型です。処理するバンドと結合処理の挙動を定義します。</"
 "refpurpose>"
 
 #. Tag: para
@@ -718,8 +716,7 @@ msgstr ""
 msgid ""
 "<para>A composite type used as input into the ST_Union function defining the bands to be processed and "
 "behavior of the UNION operation.</para>"
-msgstr ""
-"<para>ST_Union関数の入力に使う複合型です。処理するバンドとUNION処理のふるまいを定義します。</para>"
+msgstr "<para>ST_Union関数の入力に使う複合型です。処理するバンドと結合処理の挙動を定義します。</para>"
 
 #. Tag: para
 #: reference_raster.xml:365
@@ -738,7 +735,7 @@ msgstr "<parameter>uniontype </parameter> <type>text</type>"
 #, no-c-format
 msgid "Type of UNION operation. One of defined types as described in <xref linkend=\"RT_ST_Union\"/>."
 msgstr ""
-"UNION処理の種別。<xref linkend=\"RT_ST_Union\"/>に記述がある、定義された種別のうち一つを取ります。"
+"結合処理の種別。<xref linkend=\"RT_ST_Union\"/>に記述がある、定義された種別のうち一つを取ります。"
 
 #. Tag: title
 #: reference_raster.xml:399
@@ -2320,12 +2317,12 @@ msgid ""
 "the max of the pixel type is specified, then the initial value is set to the highest value allowed by "
 "the pixel type."
 msgstr ""
-"与えられたタイプで、与えられた初期値にし、与えられたNODATA値を付した新しいバンドを追加したラスタを返し"
-"ます。インデクス位置を指定していない場合には、バンドは末尾に追加されます。<varname>fromband</varname>が"
-"指定されない場合には、1番バンドと仮定します。ピクセルタイプは<xref linkend=\"RT_ST_BandPixelType\"/>で"
-"指定されているピクセルタイプの文字列表現です。既存のインデクスが指定された場合には、以降のバンドは全て1"
-"以上足されたインデクスになります。初期値としてピクセルタイプの最大値を超えた値が指定された場合には、初"
-"期値にピクセルタイプの許容最大値が指定されます。"
+"与えられた位置 (インデクス)に、与えられたタイプで、与えられた初期値にし、与えられたNODATA値を付した新し"
+"いバンドを追加したラスタを返します。インデクス位置を指定していない場合には、バンドは末尾に追加されま"
+"す。<varname>fromband</varname>が指定されない場合には、1番バンドと仮定します。ピクセルタイプは<xref "
+"linkend=\"RT_ST_BandPixelType\"/>で指定されているピクセルタイプの文字列表現です。既存のインデクスが指定"
+"された場合には、以降のバンドは全て1足されたインデクスになります。初期値としてピクセルタイプの最大値を超"
+"えた値が指定された場合には、初期値にピクセルタイプの許容最大値が指定されます。"
 
 #. Tag: para
 #: reference_raster.xml:1217
@@ -2363,13 +2360,13 @@ msgstr ""
 #: reference_raster.xml:1229
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for addbandarg added."
-msgstr "Enhanced: 2.1.0では、addbandarg対応が追加されました。"
+msgstr "Enhanced: 2.1.0 addbandarg対応が追加されました。"
 
 #. Tag: para
 #: reference_raster.xml:1230
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for new out-db bands added."
-msgstr "Enhanced: 2.1.0では、out-dbバンドが追加されました。"
+msgstr "Enhanced: 2.1.0 out-dbバンドが追加されました。"
 
 #. Tag: title
 #: reference_raster.xml:1234
@@ -2923,8 +2920,8 @@ msgid ""
 "those on the line render path, or whose center point is within the polygon."
 msgstr ""
 "任意引数<varname>touched</varname>は、デフォルトではFALSEになります。GDALのALL_TOUCHEDラスタ化オプショ"
-"ンに相当し、ラインまたはポリゴンに接触するピクセルが描画されます。ライン上または中心点がポリゴン内部に"
-"あるピクセルが描画されます。"
+"ンに相当し、ラインまたはポリゴンに接触するピクセルが描画されます。ライン上にあるか中心点がポリゴン内部"
+"にあるピクセルが描画されるだけではありません。"
 
 #. Tag: para
 #: reference_raster.xml:1438
@@ -3259,8 +3256,8 @@ msgid ""
 "The last version use a single parameter to specify the pixel size (pixelsize). scalex is set to this "
 "argument and scaley is set to the negative value of this argument. skewx and skewy are set to 0."
 msgstr ""
-"最後の形式では、ピクセルサイズを1つの引数 (pixelsize)で指定しています。scalexはこの引数に、scaleyは引数"
-"の正負逆の数に、それぞれ設定され、skewxとskewyは0に設定されます。"
+"最後の形式では、ピクセルサイズを一つの引数 (pixelsize)で指定しています。scalexはこの引数に、scaleyは引"
+"数の正負逆の数に、それぞれ設定され、skewxとskewyは0に設定されます。"
 
 #. Tag: para
 #: reference_raster.xml:1609
@@ -3278,7 +3275,7 @@ msgid ""
 "bands to it and maybe edit it. Refer to <xref linkend=\"RT_ST_AddBand\"/> to define bands and <xref "
 "linkend=\"RT_ST_SetValue\"/> to set initial pixel values."
 msgstr ""
-"SRIDが設定されていない場合には、デフォルトは0です。空ラスタを生成した後に、バンドを追加や編集を行うこと"
+"SRIDが設定されていない場合には、デフォルトは0です。空ラスタを生成した後に、バンドの追加や編集を行うこと"
 "になります。<xref linkend=\"RT_ST_AddBand\"/>でバンドを定義し、<xref linkend=\"RT_ST_SetValue\"/>で初期"
 "ピクセル値を設定します。"
 
@@ -3681,9 +3678,9 @@ msgid ""
 "(<varname>ext</varname>) with data coming from the specified raster coverage (<varname>tab</varname>, "
 "<varname>col</varname>)."
 msgstr ""
-"指定された縮尺 (<varname>sfx</varname>, <varname>sfy</varname>)と最大サイズ (<varname>sfx</varname>, "
-"<varname>sfy</varname>)を持ち、指定された範囲 (<varname>ext</varname>)を包含し、指定されたラスタカバ"
-"レッジ (<varname>tab</varname>, <varname>col</varname>)からのデータを持つタイルの集合を返します。"
+"指定された縮尺 (<varname>sfx</varname>, <varname>sfy</varname>)と最大サイズ (<varname>tw</varname>, "
+"<varname>th</varname>)を持ち、指定された範囲 (<varname>ext</varname>)を包含し、指定されたラスタカバレッ"
+"ジ (<varname>tab</varname>, <varname>col</varname>)からのデータを持つタイルの集合を返します。"
 
 #. Tag: refname
 #: reference_raster.xml:1761
@@ -3824,9 +3821,9 @@ msgid ""
 "in a <ulink url=\"http://en.wikipedia.org/wiki/World_file\">world file</ulink>. Default is GDAL if no "
 "type specified. type is string 'GDAL' or 'ESRI'."
 msgstr ""
-"GDAL書式または一般的に<ulink url=\"http://en.wikipedia.org/wiki/World_file\">world file</ulink>でみられ"
-"るESRI書式の地理参照メタデータを返します。書式を指定したいない場合のデフォルトはGDALです。書式"
-"は'GDAL'または'ESRI'の文字列です。"
+"GDAL書式または一般的に<ulink url=\"http://en.wikipedia.org/wiki/World_file\">world file</ulink> (英語版"
+"WikiPedia)でみられるESRI書式の地理参照メタデータを返します。書式を指定したいない場合のデフォルトはGDAL"
+"です。書式は'GDAL'または'ESRI'の文字列です。"
 
 #. Tag: para
 #: reference_raster.xml:1831 reference_raster.xml:4068
@@ -4580,10 +4577,10 @@ msgid ""
 "respective dimension of the raster, it will return coordinates outside of the raster assuming the "
 "raster's grid is applicable outside the raster's bounds."
 msgstr ""
-"ラスタの指定した列と行における左上隅の地理座標X値とY値 (経度と緯度)を返します。列と行の番号は1始まりで"
-"す。X値とY値の単位は、地理参照されたラスタの地理単位です。列と行の数字は1始まりですが、引数に0、負数ま"
-"たはラスタのピクセル範囲を超える値が渡されている場合には、ラスタのグリッドがラスタ範囲外に適用できると"
-"仮定して、範囲外の座標を返します。"
+"ラスタの指定した列と行における左上隅の地理座標X値とY値 (経度と緯度)を返します。X値とY値の単位は、地理参"
+"照されたラスタの地理単位です。列と行の数字は1始まりですが、引数に0、負数またはラスタのピクセル範囲を超"
+"える値が渡されている場合には、ラスタのグリッドがラスタ範囲外に適用できると仮定して、範囲外の座標を返し"
+"ます。"
 
 #. Tag: programlisting
 #: reference_raster.xml:2244
@@ -5154,7 +5151,7 @@ msgstr "ST_Summary"
 #: reference_raster.xml:2515
 #, no-c-format
 msgid "<refpurpose>Returns a text summary of the contents of the raster.</refpurpose>"
-msgstr "<refpurpose>ラスタの中身の概要が文字で返されます。</refpurpose>"
+msgstr "<refpurpose>ラスタの中身の概要が文字列で返されます。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_raster.xml:2520
@@ -5170,7 +5167,7 @@ msgstr ""
 #: reference_raster.xml:2530
 #, no-c-format
 msgid "<para>Returns a text summary of the contents of the raster.</para>"
-msgstr "<para>ラスタの中身の概要が文字で返されます。</para>"
+msgstr "<para>ラスタの中身の概要が文字列で返されます。</para>"
 
 #. Tag: programlisting
 #: reference_raster.xml:2537
@@ -5563,7 +5560,7 @@ msgid ""
 "Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw) "
 "represented in world spatial reference system of raster."
 msgstr ""
-"ラスタの空間参照系に基づくポイントジオメトリ (pt)またはX,Y座標値 (xw,yw)に対応するラスタのっ行を返しま"
+"ラスタの空間参照系に基づくポイントジオメトリ (pt)またはX,Y座標値 (xw,yw)に対応するラスタの行を返しま"
 "す。"
 
 #. Tag: funcsynopsis
@@ -5599,7 +5596,7 @@ msgid ""
 "skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the "
 "raster."
 msgstr ""
-"ラスタの空間参照系に基づくポイントジオメトリ (pt)またはX,Y座標値 (xw,yw)に対応するラスタのっ行を返しま"
+"ラスタの空間参照系に基づくポイントジオメトリ (pt)またはX,Y座標値 (xw,yw)に対応するラスタの行を返しま"
 "す。ラスタがスキューされている場合には、ポイントかxwとywの両方かが必要です。ラスタがスキューされていな"
 "い場合には、ywを指定すれば十分です。ワールド座標系はラスタの空間参照系です。"
 
@@ -5679,13 +5676,13 @@ msgstr ""
 #: reference_raster.xml:2843
 #, no-c-format
 msgid "If raster contains no bands then an error is thrown."
-msgstr "ラスタがバンドを持たない場合にはエラーが投げられます。 "
+msgstr "ラスタがバンドを持たない場合にはエラーが投げられます。"
 
 #. Tag: para
 #: reference_raster.xml:2848
 #, no-c-format
 msgid "If band has no NODATA value, nodatavalue will be NULL."
-msgstr "バンドにNODATA値が無い場合には、nodatabalueはNULLになります。"
+msgstr "バンドにNODATA値が無い場合には、nodatavalueはNULLになります。"
 
 #. Tag: programlisting
 #: reference_raster.xml:2857
@@ -5954,7 +5951,7 @@ msgstr "ST_BandPath"
 #, no-c-format
 msgid "Returns system file path to a band stored in file system. If no bandnum specified, 1 is assumed."
 msgstr ""
-" ファイルシステムに格納されているバンドのシステムファイルパスを返します。バンド番号が指定されていない場"
+"ファイルシステムに格納されているバンドのシステムファイルパスを返します。バンド番号が指定されていない場"
 "合には、1番と仮定します。"
 
 #. Tag: funcprototype
@@ -6287,8 +6284,8 @@ msgid ""
 "ST_PixelAsPolygons returns one polygon geometry for every pixel. This is different than "
 "ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value."
 msgstr ""
-"ST_PixelAsPolygonsは、ピクセルごとに一つのポリゴンジオメトリを返します。ST_DumpAsPolygonsとは、一つのジ"
-"オメトリに対して、同じ値となる一つ以上のピクセルを表現する点で違います。"
+"ST_PixelAsPolygonsは、ピクセルごとに一つのポリゴンジオメトリを返します。ST_DumpAsPolygonsとは、 一つの"
+"ジオメトリが同じ値となる一つ以上のピクセルを表現する点で違います。"
 
 #. Tag: para
 #: reference_raster.xml:3186
@@ -6308,7 +6305,7 @@ msgstr "Enhanced: 2.1.0 任意引数exclude_nodata_valueが追加されました
 #: reference_raster.xml:3193 reference_raster.xml:3287 reference_raster.xml:3381
 #, no-c-format
 msgid "Changed: 2.1.1 Changed behavior of exclude_nodata_value."
-msgstr "Changed: 2.1.1 exclude_nodata_valueの振る舞いを変更しました。"
+msgstr "Changed: 2.1.1 exclude_nodata_valueの挙動を変更しました。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3198
@@ -6741,7 +6738,7 @@ msgid ""
 "from metadata of raster."
 msgstr ""
 "指定したバンドにおけるcolumnx, rowyで指定したピクセルまたは指定したジオメトリポイントに対応するピクセル"
-"の値を返します。 バンド番号は1始まりで、指定しない場合には、1番と仮定します。 "
+"の値を返します。 バンド番号は1始まりで、指定しない場合には、1番と仮定します。"
 "<varname>exclude_nodata_value</varname>がFALSEに設定された場合には、NODATAピクセルを含む全てのピクセル"
 "がインタセクトするかが考慮され、値を返します。<varname>exclude_nodata_value</varname>を渡さない場合に"
 "は、ラスタのメタデータから読みます。"
@@ -6798,7 +6795,7 @@ msgid ""
 "<varname>exclude_nodata_value</varname> is set to false, then all pixels are considered."
 msgstr ""
 "指定したバンドにおけるcolumnx, rowyで指定したピクセルまたは指定したジオメトリポイントに対応するピクセル"
-"の値を返します。 バンド番号は1始まりで、指定しない場合には、1番と仮定します。 "
+"の値を返します。 バンド番号は1始まりで、指定しない場合には、1番と仮定します。"
 "<varname>exclude_nodata_value</varname>がTRUEに設定された場合には、非NODATAピクセルのみが考慮されます。"
 "<varname>exclude_nodata_value</varname>がFALSEに設定された場合には、全てのピクセルが考慮されます。"
 
@@ -7656,7 +7653,7 @@ msgid ""
 msgstr ""
 "与えられたバンドのcolumnX, columnYか、ラスタと同じ空間参照系のジオメトリポイントで指定されたピクセルの"
 "値または指定したジオメトリとインタセクトするピクセル群の値を設定することから得られる、変更されたラスタ"
-"を返します。"
+"を返します。バンド番号は1始まりで、指定しない場合には、1番と仮定します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3672
@@ -7861,8 +7858,7 @@ msgstr ""
 msgid ""
 "Returns modified raster resulting from setting specified pixels to new value(s) for the designated "
 "band."
-msgstr ""
-"ラスタの列と行またはジオメトリを与えられた指定したバンドでの特定のピクセルの値を新しい値に変更します。"
+msgstr "指定されたバンドに値を設定して、変更されたラスタを返します。"
 
 #. Tag: para
 #: reference_raster.xml:3795
@@ -7884,10 +7880,10 @@ msgid ""
 "<varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). "
 "See example Variant 1."
 msgstr ""
-"1番目の形式では、設定するピクセルを<varname>columnx</varname>, <varname>rowy</varname>のピクセル座標で"
+"一つ目の形式では、設定するピクセルを<varname>columnx</varname>, <varname>rowy</varname>のピクセル座標で"
 "決定し、 範囲を<varname>newvalueset</varname>配列で決定します。<varname>noset</varname>によって、ピクセ"
 "ルを<varname>newvalueset</varname>内にある値で、一部を設定されないようにすることができます (PostgreSQL"
-"は不調和配列、ジャグ配列を許さないため)。1番目の形式の例をご覧ください。"
+"は不調和配列、ジャグ配列を許さないため)。一つ目の形式の例をご覧ください。"
 
 #. Tag: para
 #: reference_raster.xml:3803
@@ -7897,9 +7893,9 @@ msgid ""
 "of a boolean <varname>noset</varname> array. Elements in <varname>newvalueset</varname> with the "
 "<varname>nosetvalue</varname> value with be skipped. See example Variant 2."
 msgstr ""
-"2番目の形式では、1番目の形式と似ていますが、倍精度浮動小数点数のスカラ値である<varname>nosetvalue</"
+"二つ目の形式では、一つ目の形式と似ていますが、倍精度浮動小数点数のスカラ値である<varname>nosetvalue</"
 "varname>を<varname>noset</varname>配列の代わりに使う点が違います。<varname>nosetvalue</varname>の値にな"
-"る<varname>newvalueset</varname>内の要素の設定は行いません。2番目の形式の例をご覧下さい。"
+"る<varname>newvalueset</varname>内の要素の設定は行いません。二つ目の形式の例をご覧下さい。"
 
 #. Tag: para
 #: reference_raster.xml:3807
@@ -7909,8 +7905,8 @@ msgid ""
 "<varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. See "
 "example Variant 3."
 msgstr ""
-"3番目の形式では、設定するピクセルを<varname>columnx</varname>, <varname>rowy</varname>のピクセル座標と"
-"<varname>width</varname>, <varname>height</varname>.で決定します。3番目の形式の例をご覧ください。"
+"三つ目の形式では、設定するピクセルを<varname>columnx</varname>, <varname>rowy</varname>のピクセル座標と"
+"<varname>width</varname>, <varname>height</varname>.で決定します。三つ目の形式の例をご覧ください。"
 
 #. Tag: para
 #: reference_raster.xml:3811
@@ -7919,8 +7915,8 @@ msgid ""
 "Variant 4 is the same as Variant 3 with the exception that it assumes that the first band's pixels of "
 "<varname>rast</varname> will be set."
 msgstr ""
-"4番目の形式では、<varname>rast</varname>の1番目のバンドのピクセルを設定すると仮定する点を除いては、3番"
-"目の形式と同じです。"
+"四つ目の形式では、<varname>rast</varname>の1番バンドのピクセルを設定すると仮定する点を除いては、三つ目"
+"の形式と同じです。"
 
 #. Tag: para
 #: reference_raster.xml:3815
@@ -7931,17 +7927,17 @@ msgid ""
 "where the longitude and latitude of each point is used to set a pixel directly. Otherwise, the "
 "geometries are converted to rasters and then iterated through in one pass. See example Variant 5."
 msgstr ""
-"5番目の形式では、設定するピクセルを<xref linkend=\"geomval\"/>の配列で決定します。配列内の全てのジオメ"
+"五つ目の形式では、設定するピクセルを<xref linkend=\"geomval\"/>の配列で決定します。配列内の全てのジオメ"
 "トリのタイプがPOINTまたはMULTIPOINTである場合には、ポイントごとの経度と緯度がピクセルの設定に直接使うた"
-"めのショートカットに使われます。他の場合には、ジオメトリはラスタに変換され一つずつ渡されます。5番目の形"
-"式の例をご覧下さい。"
+"めのショートカットに使われます。他の場合には、ジオメトリはラスタに変換され一つずつ渡されます。五つ目の"
+"形式の例をご覧下さい。"
 
 #. Tag: title
 #: reference_raster.xml:3824 reference_raster.xml:6757 reference_raster.xml:8363
 #: reference_raster.xml:8806 reference_raster.xml:8903 reference_raster.xml:9031
 #, no-c-format
 msgid "Examples: Variant 1"
-msgstr "例: 1番目の形式"
+msgstr "例: 一つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3826
@@ -8308,7 +8304,7 @@ msgstr ""
 #: reference_raster.xml:8908 reference_raster.xml:9036
 #, no-c-format
 msgid "Examples: Variant 2"
-msgstr "例: 2番目の形式"
+msgstr "例: 二つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3839
@@ -8494,7 +8490,7 @@ msgstr ""
 #: reference_raster.xml:3846 reference_raster.xml:4791
 #, no-c-format
 msgid "Examples: Variant 3"
-msgstr "例: 3番目の形式"
+msgstr "例: 三つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3848
@@ -8678,7 +8674,7 @@ msgstr ""
 #: reference_raster.xml:3855
 #, no-c-format
 msgid "Examples: Variant 5"
-msgstr "例: 5番目の形式"
+msgstr "例: 五つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3857
@@ -8748,7 +8744,7 @@ msgstr ""
 #: reference_raster.xml:3859
 #, no-c-format
 msgid "The following shows that geomvals later in the array can overwrite prior geomvals"
-msgstr "次の例では、geomvals内の後のジオメトリで前のジオメトリを上書きできることを示しています。"
+msgstr "配列内における後のgeomvalsで前のgeomvalsを上書きできることを示しています。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3860
@@ -9217,7 +9213,7 @@ msgid ""
 "Set Georeference 6 georeference parameters in a single call. Numbers should be separated by white "
 "space. Accepts inputs in GDAL or ESRI format. Default is GDAL."
 msgstr ""
-"地理参照6パラメタを1度に設定します。数値は空白で区切ります。GDALまたはESRI書式の入力を受け付けます。デ"
+"地理参照6パラメタを一度に設定します。数値は空白で区切ります。GDALまたはESRI書式の入力を受け付けます。デ"
 "フォルトはGDALです。"
 
 #. Tag: funcsynopsis
@@ -9255,8 +9251,8 @@ msgid ""
 "Set Georeference 6 georeference parameters in a single call. Accepts inputs in 'GDAL' or 'ESRI' "
 "format. Default is GDAL. If 6 coordinates are not provided will return null."
 msgstr ""
-"地理参照6パラメタを1度に設定します。'GDAL'または'ESRI'書式の入力を受け付けます。デフォルトはGDALです。6"
-"パラメタが与えられない場合には、NULLを返します。"
+"地理参照6パラメタを一度に設定します。'GDAL'または'ESRI'書式の入力を受け付けます。デフォルトはGDALです。"
+"6パラメタが与えられない場合には、NULLを返します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:4070
@@ -9881,8 +9877,8 @@ msgid ""
 "but produce the worst interpolation."
 msgstr ""
 "新しいピクセル値は、リサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形"
-"補間 ('Bilinear')、3次補完 ('Cubic')、3次スプライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用"
-"います。デフォルトは最も早いですが最も悪い内挿を行う最近傍補完です。"
+"補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用"
+"います。デフォルトは最も早いですが最も悪い内挿を行う最近傍補間です。"
 
 #. Tag: para
 #: reference_raster.xml:4370 reference_raster.xml:4437
@@ -9981,8 +9977,8 @@ msgid ""
 "algorithm. Default is NearestNeighbor."
 msgstr ""
 "スケール (ピクセルサイズ)だけを調整するリサンプリングを行います。新しいピクセル値のリサンプリングアルゴ"
-"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3"
-"次スプライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用います。デフォルトは最近傍補完です。"
+"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3"
+"次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最近傍補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4407
@@ -10021,9 +10017,9 @@ msgid ""
 "algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation."
 msgstr ""
 "スケール (ピクセルサイズ)だけを調整するリサンプリングを行います。新しいピクセル値のリサンプリングアルゴ"
-"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3"
-"次スプライン補完 ('CubicSpline')、ランツォシュ補完 ('Lanczos')を用います。デフォルトは最も早いですが最"
-"も悪い内挿を行う最近傍補完です。"
+"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3"
+"次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最も早いですが最も"
+"悪い内挿を行う最近傍補間です。"
 
 #. Tag: para
 #: reference_raster.xml:4433
@@ -10135,8 +10131,8 @@ msgid ""
 "resampling algorithm. Default is NearestNeighbor."
 msgstr ""
 "キュー (回転パラメタ)だけを調整するリサンプリングを行います。新しいピクセル値のリサンプリングアルゴリズ"
-"ムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3次ス"
-"プライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用います。デフォルトは最近傍補完です。"
+"ムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次ス"
+"プライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最近傍補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4475
@@ -10176,9 +10172,9 @@ msgid ""
 "interpolation."
 msgstr ""
 "スキュー (回転パラメタ)だけを調整するリサンプリングを行います。新しいピクセル値のリサンプリングアルゴリ"
-"ズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3次"
-"スプライン補完 ('CubicSpline')、ランツォシュ補完 ('Lanczos')を用います。デフォルトは最も早いですが最も"
-"悪い内挿を行う最近傍補完です。"
+"ズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次"
+"スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最も早いですが最も悪"
+"い内挿を行う最近傍補間です。"
 
 #. Tag: para
 #: reference_raster.xml:4501
@@ -10266,8 +10262,8 @@ msgid ""
 "is NearestNeighbor."
 msgstr ""
 "グリッドにスナップすることでラスタをリサンプリングします。新しいピクセル値のリサンプリングアルゴリズム"
-"として最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3次スプ"
-"ライン補完 ('CubicSpline')、ランチョス補完('Lanczos')を用います。デフォルトは最近傍補完です。"
+"として最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプ"
+"ライン補間 ('CubicSpline')、ランチョス補間('Lanczos')を用います。デフォルトは最近傍補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4537
@@ -10330,9 +10326,9 @@ msgid ""
 msgstr ""
 "任意のピクセル隅 (gridx &amp; gridy)と、任意引数としてピクセルサイズ (scalex &amp; scaley)によって定義"
 "されるグリッドにスナップすることでラスタをリサンプリングします。新しいピクセル値のリサンプリングアルゴ"
-"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補完 ('Cubic')、3"
-"次スプライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用います。デフォルトは最も早いですが最も"
-"悪い内挿を行う最近傍補完です。"
+"リズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補間 ('Bilinear')、3次補間 ('Cubic')、3"
+"次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用います。デフォルトは最も早いですが最も"
+"悪い内挿を行う最近傍補間です。"
 
 #. Tag: para
 #: reference_raster.xml:4578
@@ -10468,14 +10464,14 @@ msgid ""
 "fastest but results in the worst interpolation."
 msgstr ""
 "新しいピクセル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補"
-"間 ('Bilinear')、3次補完 ('Cubic')、3次スプライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用い"
-"ます。デフォルトは最も早いですが最も悪い内挿を行う最近傍補完です。"
+"間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を用い"
+"ます。デフォルトは最も早いですが最も悪い内挿を行う最近傍補間です。"
 
 #. Tag: para
 #: reference_raster.xml:4656
 #, no-c-format
 msgid "Variant 1 expects the actual width/height of the output raster."
-msgstr "1番目の形式では、出力ラスタの実際の幅、高さを予定しています。"
+msgstr "一つ目の形式では、出力ラスタの実際の幅、高さを予定しています。"
 
 #. Tag: para
 #: reference_raster.xml:4660
@@ -10483,7 +10479,7 @@ msgstr "1番目の形式では、出力ラスタの実際の幅、高さを予�
 msgid ""
 "Variant 2 expects decimal values between zero (0) and one (1) indicating the percentage of the input "
 "raster's width/height."
-msgstr "2番目の形式では、0から1の間の値で、入力ラスタの幅、高さに対する比率を指定しています。"
+msgstr "二つ目の形式では、0から1の間の値で、入力ラスタの幅、高さに対する比率を指定しています。"
 
 #. Tag: para
 #: reference_raster.xml:4664
@@ -10492,7 +10488,7 @@ msgid ""
 "Variant 3 takes either the actual width/height of the output raster or a textual percentage (\"20%\") "
 "indicating the percentage of the input raster's width/height."
 msgstr ""
-"3番目の形式では、出力ラスタの実際の幅、高さを取るか、文字列による入力ラスタの幅、高さに対する百分率 "
+"三つ目の形式では、出力ラスタの実際の幅、高さを取るか、文字列による入力ラスタの幅、高さに対する百分率 "
 "(\"20%\")を取ります。"
 
 #. Tag: para
@@ -10607,10 +10603,10 @@ msgid ""
 "using specified resampling algorithm. Options are NearestNeighbor, Bilinear, Cubic, CubicSpline, "
 "Lanczos defaulting to NearestNeighbor."
 msgstr ""
-"スタを既知の空間参照系から他の既知の空間参照系に、指定したリサンプリングアルゴリズムで投影変換します。"
-"新しいピクセル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線形補"
-"間 ('Bilinear')、3次補完 ('Cubic')、3次スプライン補完 ('CubicSpline')、ランチョス補完 ('Lanczos')を用い"
-"ます。デフォルトは最近傍補完です。"
+"ラスタを既知の空間参照系から他の既知の空間参照系に、指定したリサンプリングアルゴリズムで投影変換しま"
+"す。新しいピクセル値のリサンプリングアルゴリズムとして最近傍補間 ('NearestNeighbor' (米式綴り方))、双線"
+"形補間 ('Bilinear')、3次補間 ('Cubic')、3次スプライン補間 ('CubicSpline')、ランチョス補間 ('Lanczos')を"
+"用います。デフォルトは最近傍補間です。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:4693
@@ -10686,8 +10682,8 @@ msgid ""
 "transformed raster will be transformed to the spatial reference system (SRID) of the reference raster "
 "and be aligned (ST_SameAlignment = TRUE) to the reference raster."
 msgstr ""
-"3番目の形式は、他の形式と違い、<varname>alignto</varname>として参照ラスタが求められます。投影変換したラ"
-"スタは参照ラスタの空間参照系 (SRID)に投影変換して、参照ラスタと同じアラインメントを持つようにします "
+"三つ目の形式は、他の形式と違い、<varname>alignto</varname>として参照ラスタが求められます。投影変換した"
+"ラスタは参照ラスタの空間参照系 (SRID)に投影変換して、参照ラスタと同じアラインメントを持つようにします "
 "(ST_SameAlignmentがTRUEになるようにします)。"
 
 #. Tag: para
@@ -10763,7 +10759,7 @@ msgstr "WGS84経度緯度に変換した後 (wgs_84)"
 #: reference_raster.xml:4780
 #, no-c-format
 msgid "After transform to wgs 84 long lat with bilinear algorithm instead of NN default (wgs_84_bilin)"
-msgstr "最近傍補完の代わりに双線形補間を使ってWGS84経度緯度に変換した後 (wgs_84_bilin)"
+msgstr "最近傍補間の代わりに双線形補間を使ってWGS84経度緯度に変換した後 (wgs_84_bilin)"
 
 #. Tag: para
 #: reference_raster.xml:4793
@@ -11073,11 +11069,11 @@ msgid ""
 "\n"
 "select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true"
 msgstr ""
-"-- ラスタカラムを1つ持つダミーテーブルを生成します\n"
+"-- ラスタカラムを一つ持つダミーテーブルを生成します\n"
 "create table dummy_rast (rid integer, rast raster);\n"
 "\n"
 "-- 2バンドでバンドごとに1ピクセルを持つラスタを追加します\n"
-"-- 一つめのバンドにはnodatavalueとピクセル値をともに3とし、\n"
+"-- 一つ目のバンドにはnodatavalueとピクセル値をともに3とし、\n"
 "-- 二つめのバンドにはnodatavalue=13とピクセル値=4とします。\n"
 "insert into dummy_rast values(1,\n"
 "(\n"
@@ -11233,7 +11229,7 @@ msgid ""
 "The ST_Count(rastertable, rastercolumn, ...) variants are deprecated as of 2.2.0. Use <xref linkend="
 "\"RT_ST_CountAgg\"/> instead."
 msgstr ""
-"ST_Count(rastertable, rastercolumn, ...)の形式は2.2.0で比推奨関数となりました。代わりに<xref linkend="
+"ST_Count(rastertable, rastercolumn, ...)の形式は2.2.0で非推奨関数となりました。代わりに<xref linkend="
 "\"RT_ST_CountAgg\"/>を使います。"
 
 #. Tag: programlisting
@@ -11278,7 +11274,7 @@ msgid ""
 "defaults to band 1. If exclude_nodata_value is set to true, will only count pixels that are not equal "
 "to the NODATA value."
 msgstr ""
-"集計関数です。ラスタ集合の与えられたバンドのピクセル数を返します。バンドが指定されていない場合には、1番"
+"集約関数です。ラスタ集合の与えられたバンドのピクセル数を返します。バンドが指定されていない場合には、1番"
 "と仮定します。exclude_nodata_valueをTRUEに設定している場合には、NODATA値と等しくないピクセルのみを数え"
 "ます。"
 
@@ -12117,7 +12113,7 @@ msgid ""
 "This example took 574ms on PostGIS windows 64-bit with all of Boston Buildings and aerial Tiles (tiles "
 "each 150x150 pixels ~ 134,000 tiles), ~102,000 building records"
 msgstr ""
-"この例は、ボストンの建物の全て (102,000件)と空中写真タイル (150x150ピクセルで134,000タイル)とで、"
+"この例は、ボストンの建物の全て (約102,000件)と空中写真タイル (150x150ピクセルで約134,000タイル)とで、"
 "Windows 64ビット上のPostGISで計算したところ、574ミリ秒かかりました。"
 
 #. Tag: programlisting
@@ -12263,7 +12259,7 @@ msgid ""
 "Aggregate. Returns summarystats consisting of count, sum, mean, stddev, min, max for a given raster "
 "band of a set of raster. Band 1 is assumed is no band is specified."
 msgstr ""
-"集計関数です。ラスタ集合の指定したバンドについて、ピクセル数、合計値、平均値、標準偏差、最小値、最大値"
+"集約関数です。ラスタ集合の指定したバンドについて、ピクセル数、合計値、平均値、標準偏差、最小値、最大値"
 "からなる統計情報の概要を返します。バンドを指定しない場合には、1番と仮定します。"
 
 #. Tag: funcsynopsis
@@ -13084,7 +13080,7 @@ msgid ""
 "of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
 "<varname>nbands</varname> 出力バンドの配列 (JPEGでは3要素が最大です)で、バンドの並び順はRGBです。たとえ"
-"ばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番バンドを赤にそれぞれ対応させます。"
+"ばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番バンドを青にそれぞれ対応させます。"
 
 #. Tag: para
 #: reference_raster.xml:5714
@@ -13232,7 +13228,7 @@ msgid ""
 "the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
 "<varname>nbands</varname> 出力バンドの配列 (PNGでは3要素が最大です)で、バンドの並び順はRGBです。たとえ"
-"ばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番バンドを赤にそれぞれ対応させます。"
+"ばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番バンドを青にそれぞれ対応させます。"
 
 #. Tag: para
 #: reference_raster.xml:5805
@@ -13549,8 +13545,8 @@ msgid ""
 "mgis/colororthos2008.htm\">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane "
 "Meters."
 msgstr ""
-"MssGISサイト<ulink url=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial Orthos</ulink>に"
-"あるマサチューセッツ空中写真データを使った例です。座標はメートル単位のマサチューセッツ州平面です。"
+"MassGISサイト<ulink url=\"http://www.mass.gov/mgis/colororthos2008.htm\">MassGIS Aerial Orthos</ulink>"
+"にあるマサチューセッツ空中写真データを使った例です。座標はメートル単位のマサチューセッツ州平面です。"
 
 #. Tag: title
 #: reference_raster.xml:6013
@@ -13755,7 +13751,7 @@ msgid ""
 "<varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the "
 "value and the color components."
 msgstr ""
-"<varname>colormap</varname>は先に定義された色マップまたは値を定義する行の集合と色要素のキーワードです。"
+"<varname>colormap</varname>は事前定義された色マップまたは値を定義する行の集合と色要素のキーワードです。"
 
 #. Tag: para
 #: reference_raster.xml:6194
@@ -13771,7 +13767,7 @@ msgid ""
 "gray."
 msgstr ""
 "<varname>grayscale</varname>または<varname>greyscale</varname> 1個の8BUIバンドからなるラスタで、グレー"
-"の陰影。"
+"の陰影です。"
 
 #. Tag: para
 #: reference_raster.xml:6205
@@ -13780,7 +13776,7 @@ msgid ""
 "<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with colors going from blue to green "
 "to red."
 msgstr ""
-"<varname>pseudocolor</varname>4個の8BUIバンド (RGBA)からなるラスタで、青から緑、赤に移るものです。"
+"<varname>pseudocolor</varname> 4個の8BUIバンド (RGBA)からなるラスタで、青から緑、赤に移るものです。"
 
 #. Tag: para
 #: reference_raster.xml:6210
@@ -13858,7 +13854,7 @@ msgid ""
 "<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend the colors between the "
 "given pixel values"
 msgstr ""
-"<varname>INTERPOLATE</varname> 与えられたピクセル値の間での滑らかな色合成のための線型補完に使います。"
+"<varname>INTERPOLATE</varname> 与えられたピクセル値の間での滑らかな色合成のための線形補間に使います。"
 
 #. Tag: para
 #: reference_raster.xml:6242
@@ -14198,10 +14194,10 @@ msgid ""
 "intersecting only with a nodata value area of a raster returns an empty geometry. They are normally "
 "excluded from the results by the proper usage of ST_Intersect in the WHERE clause."
 msgstr ""
-"前半の3形式は、geomvalの集合を返すもので、ベクタ形状を引数に取ります。ラスタは初めにgeomval行の集合にベ"
-"クトル化されます (ST_DumpAsPolygonを使用)。これらの行はPostGIS関数のST_Intersection(geometry, geometry)"
-"を使ってジオメトリとインタセクトさせます。NODATA値の領域とだけインタセクトするジオメトリについては空ジ"
-"オメトリを返します。通常はWHERE節でST_Intersectsを使って結果から確実に排除します。"
+"前半の三つの形式は、geomvalの集合を返すもので、ベクタ形状を引数に取ります。ラスタは初めにgeomval行の集"
+"合にベクトル化されます (ST_DumpAsPolygonを使用)。これらの行はPostGIS関数のST_Intersection(geometry, "
+"geometry)を使ってジオメトリとインタセクトさせます。NODATA値の領域とだけインタセクトするジオメトリについ"
+"ては空ジオメトリを返します。通常はWHERE節でST_Intersectsを使って結果から確実に排除します。"
 
 #. Tag: para
 #: reference_raster.xml:6467
@@ -14221,8 +14217,8 @@ msgid ""
 "The other variants, returning a raster, works in raster space. They are using the two rasters version "
 "of ST_MapAlgebraExpr to perform the intersection."
 msgstr ""
-"他の形式は、ラスタを引数に取り、ラスタを返します。ST_MapAlgebraExprの2ラスタを取る形式を使って、インタ"
-"セクトしている部分を取得します。"
+"他の形式は、ラスタを引数に取り、ラスタを返します。ST_MapAlgebraExprの二つのラスタを取る形式を使って、イ"
+"ンタセクトしている部分を取得します。"
 
 #. Tag: para
 #: reference_raster.xml:6475
@@ -14277,7 +14273,7 @@ msgid ""
 "the two rasters version of <xref linkend=\"RT_ST_MapAlgebraExpr2\"/>."
 msgstr ""
 "NODATA値に遭遇した時の、結果範囲や返された物に関して、より多くの制御を行いたい場合には、<xref linkend="
-"\"RT_ST_MapAlgebraExpr2\"/>の2ラスタを取る形式を使います。"
+"\"RT_ST_MapAlgebraExpr2\"/>の二つのラスタを取る形式を使います。"
 
 #. Tag: para
 #: reference_raster.xml:6494
@@ -14555,7 +14551,7 @@ msgid ""
 "many bands. See example Variant 1."
 msgstr ""
 "<varname>rastbandargset</varname>によって、多数のラスタと多数のバンドにおいて地図代数処理が使用できま"
-"す。1番目の形式の例を見て下さい。"
+"す。一つ目の形式の例を見て下さい。"
 
 #. Tag: term
 #: reference_raster.xml:6623
@@ -14605,7 +14601,7 @@ msgid ""
 "arguments."
 msgstr ""
 "<varname>callbackfunc</varname>引数は、SQLまたはPL/pgSQL関数の名前とシグニチャでなければならず、"
-"regprocedureにキャストしなければなりません。PL/pgSQL関数の例は次の通りです。 <programlisting>\n"
+"regprocedureにキャストしなければなりません。PL/pgSQL関数の例は次の通りです。<programlisting>\n"
 "CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], position integer[][], "
 "VARIADIC userargs text[])\n"
 "        RETURNS double precision\n"
@@ -14616,11 +14612,11 @@ msgstr ""
 "        $$ LANGUAGE 'plpgsql' IMMUTABLE;\n"
 "                                                                        </programlisting> "
 "<varname>callbackfunc</varname>は、三つの引数を持たなければなりません。すなわち、3次元倍精度浮動小数点"
-"数配列、2次元整数配列、VARIADICの1次元文字列配列です。1番目の引数<varname>value</varname>は、全ての入力"
-"ラスタからの値 (倍精度浮動小数点数)の配列です。3次元 (1始まり)は、ラスタ番号、行、列です。2番目の引数"
-"<varname>position</varname>は、出力ラスタと入力ラスタからのピクセル位置の集合です。一つ目の次元の添え"
+"数配列、2次元整数配列、VARIADICの1次元文字列配列です。一つ目の引数<varname>value</varname>は、全ての入"
+"力ラスタからの値 (倍精度浮動小数点数)の配列です。3次元 (1始まり)は、ラスタ番号、行、列です。二つ目の引"
+"数<varname>position</varname>は、出力ラスタと入力ラスタからのピクセル位置の集合です。一つ目の次元の添え"
 "字 (0はじまりです)はラスタ番号です。一つ目の次元の添え字が0の場合に指される位置は、出力ラスタのピクセル"
-"位置です。二つ目の次元はXとYからなる二つの要素を持ちます。3番目の引数<varname>userargs</varname>はユー"
+"位置です。二つ目の次元はXとYからなる二つの要素を持ちます。三つ目の引数<varname>userargs</varname>はユー"
 "ザ定義関数特有の引数としてそのまま渡されます。"
 
 #. Tag: para
@@ -14637,7 +14633,7 @@ msgid ""
 msgstr ""
 "<type>regprocedure</type>引数をSQL関数に渡すには、完全な関数シグネチャが求められます。"
 "<type>regprocedure</type>へのキャストが必要です。上のPL/pgSQL関数を引数として渡すには、引数のSQLは次の"
-"ようにします。 <programlisting>\n"
+"ようにします。<programlisting>\n"
 "'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure\n"
 "                                                                        </programlisting> 引数は関数名"
 "と引数の型を含み、関数名と引数を引用符で括り、かつ<type>regprocedure</type>にキャストする点に注意が必要"
@@ -14696,7 +14692,7 @@ msgid ""
 "specify <varname>pixeltype</varname>."
 msgstr ""
 "<varname>pixeltype</varname>を渡した場合には、新しいラスタの一つのバンドが、そのピクセルタイプになりま"
-"す。pixeltypeにNULLを渡したり指定しなかった場合には、新しいラスタのピクセルタイプは、一つめのラスタ "
+"す。pixeltypeにNULLを渡したり指定しなかった場合には、新しいラスタのピクセルタイプは、一つ目のラスタ "
 "(extenttypeがINTERSECTION, UNION, FIRST, CUSTOMの場合)か、適切なラスタ (extenttypeがSECOND, LASTの場合)"
 "の指定したバンドと同じピクセルタイプになります。疑問を感じたら常に<varname>pixeltype</varname>を渡しま"
 "す。"
@@ -14741,7 +14737,7 @@ msgid ""
 "varname>. See example 4 of Variant 1."
 msgstr ""
 "<varname>extentype</varname>がCUSTOMである場合には、ラスタは<varname>customextent</varname>で提供されま"
-"す。1番目の形式の例4をご覧下さい。"
+"す。一つ目の形式の例4をご覧下さい。"
 
 #. Tag: term
 #: reference_raster.xml:6700
@@ -14791,7 +14787,7 @@ msgid ""
 "trailing text arguments are passed through to the specified <varname>callbackfunc</varname>, and are "
 "contained in the <varname>userargs</varname> argument."
 msgstr ""
-"<varname>callbackfunc</varname>の3番目の引数は<type>variadic text</type>配列です。全ての文字列引数は指"
+"<varname>callbackfunc</varname>の三つ目の引数は<type>variadic text</type>配列です。全ての文字列引数は指"
 "定された<varname>callbackfunc</varname>にそのまま渡され、<varname>userargs</varname>引数に含まれます。"
 
 #. Tag: para
@@ -14825,24 +14821,24 @@ msgid ""
 "Variant 1 accepts an array of <varname>rastbandarg</varname> allowing the use of a map algebra "
 "operation on many rasters and/or many bands. See example Variant 1."
 msgstr ""
-"1番目の形式では、多数のラスタやバンドで地図代数演算が使えるようになるための<varname>rastbandarg</"
-"varname>配列を受け付けます。1番目の形式の例をご覧下さい。"
+"一つ目の形式では、多数のラスタやバンドで地図代数演算が使えるようになるための<varname>rastbandarg</"
+"varname>配列を受け付けます。一つ目の形式の例をご覧下さい。"
 
 #. Tag: para
 #: reference_raster.xml:6743
 #, no-c-format
 msgid "Variants 2 and 3 operate upon one or more bands of one raster. See example Variant 2 and 3."
 msgstr ""
-"2番目と3番目の形式では、一つのラスタにおける一つ以上のバンドについて演算を行います。2番目の形式と3番目"
-"の形式の例をご覧下さい。"
+"二つ目と三つ目の形式では、一つのラスタにおける一つ以上のバンドについて演算を行います。二つ目の形式と三"
+"つ目の形式の例をご覧下さい。"
 
 #. Tag: para
 #: reference_raster.xml:6747
 #, no-c-format
 msgid "Variant 4 operate upon two rasters with one band per raster. See example Variant 4."
 msgstr ""
-"4番目の形式では、二つのラスタにおいて、それぞれ一つずつのバンドについて演算を行います。4番目の形式の例"
-"をご覧下さい。"
+"四つ目の形式では、二つのラスタにおいて、それぞれ一つずつのバンドについて演算を行います。四つ目の形式の"
+"例をご覧下さい。"
 
 #. Tag: para
 #: reference_raster.xml:6751
@@ -14965,7 +14961,7 @@ msgid ""
 "Complete example of tiles of a coverage with neighborhood. This query only works with PostgreSQL 9.1 "
 "or higher."
 msgstr ""
-"近隣ピクセルを併用したカバレッジのタイルの完全な例です。クエリはPostgreSQL 9,1以上でのみ動作します。"
+"近隣ピクセルを併用したカバレッジのタイルの完全な例です。クエリはPostgreSQL 9.1以上でのみ動作します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:6769
@@ -15168,7 +15164,7 @@ msgstr ""
 #: reference_raster.xml:6776
 #, no-c-format
 msgid "Examples: Variants 2 and 3"
-msgstr "例: 2番目の形式と3番目の形式"
+msgstr "例: 二つ目の形式と三つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:6779
@@ -15226,7 +15222,7 @@ msgstr ""
 #: reference_raster.xml:6786
 #, no-c-format
 msgid "Examples: Variant 4"
-msgstr "例: 4番目の形式"
+msgstr "例: 四つ目の形式"
 
 #. Tag: para
 #: reference_raster.xml:6788
@@ -15373,8 +15369,8 @@ msgid ""
 "<refpurpose>Expression version - Returns a one-band raster given one or two input rasters, band "
 "indexes and one or more user-specified SQL expressions.</refpurpose>"
 msgstr ""
-"<refpurpose>数式版 - 一つ以上の入力ラスタ、バンド番号、一つ以上のユーザ定義SQL式から一つのバンドを持つ"
-"ラスタを返します。</refpurpose>"
+"<refpurpose>数式版 - 一つか二つの入力ラスタ、バンド番号、一つ以上のユーザ定義SQL式から一つのバンドを持"
+"つラスタを返します。</refpurpose>"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:6888
@@ -15445,14 +15441,14 @@ msgid ""
 "<para>Expression version - Returns a one-band raster given one or two input rasters, band indexes and "
 "one or more user-specified SQL expressions.</para>"
 msgstr ""
-"<para>数式版 - 一つ以上の入力ラスタ、バンド番号、一つ以上のユーザ定義SQL式から一つのバンドを持つラスタ"
-"を返します。</para>"
+"<para>数式版 - 一つか二つの入力ラスタ、バンド番号、一つ以上のユーザ定義SQL式から一つのバンドを持つラス"
+"タを返します。</para>"
 
 #. Tag: title
 #: reference_raster.xml:6947
 #, no-c-format
 msgid "Description: Variants 1 and 2 (one raster)"
-msgstr "説明: 1番目の形式と2番目の形式 (一つのラスタ)"
+msgstr "説明: 一つ目の形式と二つ目の形式 (一つのラスタ)"
 
 #. Tag: para
 #: reference_raster.xml:6949
@@ -15463,9 +15459,10 @@ msgid ""
 "varname> is not provided, band 1 is assumed. The new raster will have the same georeference, width, "
 "and height as the original raster but will only have one band."
 msgstr ""
-"<varname>expression</varname>で定義された妥当なPostgreSQL代数演算を入力ラスタ (rast)に適用して、一つの"
-"バンドを持つラスタを生成します。 <varname>nband</varname>が指定されない場合には、1番バンドと仮定しま"
-"す。新しいラスタは、元のラスタと同じ地理参照、幅、高さになりますが、バンドは一つだけとなります。"
+"<varname>expression</varname>で定義された妥当なPostgreSQL代数演算を入力ラスタ (<varname>rast</varname>)"
+"に適用して、一つのバンドを持つラスタを生成します。<varname>nband</varname>が指定されない場合には、1番バ"
+"ンドと仮定します。新しいラスタは、元のラスタと同じ地理参照、幅、高さになりますが、バンドは一つだけとな"
+"ります。"
 
 #. Tag: para
 #: reference_raster.xml:6953 reference_raster.xml:7155 reference_raster.xml:7603
@@ -15513,7 +15510,7 @@ msgstr "<varname>[rast.y]</varname> - 演算対象ピクセルの行 (1始まり
 #: reference_raster.xml:6979
 #, no-c-format
 msgid "Description: Variants 3 and 4 (two raster)"
-msgstr "説明: 3番目と4番目の形式 (二つのラスタ)"
+msgstr "説明: 三つ目と四つ目の形式 (二つのラスタ)"
 
 #. Tag: para
 #: reference_raster.xml:6981 reference_raster.xml:7275
@@ -15528,7 +15525,7 @@ msgid ""
 msgstr ""
 "<varname>expression</varname>で定義された妥当な二つのバンドへのPostgreSQL代数演算を入力ラスタ (rast1, "
 "rast2)に適用して、一つのバンドを持つラスタを生成します。nband1, nband2が指定されない場合には、1番バンド"
-"と仮定します。新しいラスタは、一つめのラスタと同じアラインメント (スケール、スキュー、ピクセル隅)を持ち"
+"と仮定します。新しいラスタは、一つ目のラスタと同じアラインメント (スケール、スキュー、ピクセル隅)を持ち"
 "ます。新しいラスタは、<varname>extenttype</varname>引数で定義される範囲になります。"
 
 #. Tag: term
@@ -15564,7 +15561,7 @@ msgstr ""
 #: reference_raster.xml:7005 reference_raster.xml:7301
 #, no-c-format
 msgid "Controls the extent of resulting raster"
-msgstr "新しいラスタの範囲を制御します。 "
+msgstr "新しいラスタの範囲を制御します。"
 
 #. Tag: para
 #: reference_raster.xml:7011 reference_raster.xml:7304
@@ -15611,7 +15608,7 @@ msgid ""
 "pixels have values."
 msgstr ""
 "<varname>rast1</varname>がNODATA値で、特にrast2ピクセルに値がある時に、<varname>rast2</varname>だけを返"
-"すか返すべき値を定義する定数を含む第数式です。"
+"すか返すべき値を定義する定数を含む代数式です。"
 
 #. Tag: term
 #: reference_raster.xml:7042 reference_raster.xml:7337
@@ -15714,7 +15711,7 @@ msgstr "<varname>[rast2.y]</varname> - <varname>rast2</varname>の演算対象�
 #: reference_raster.xml:7092
 #, no-c-format
 msgid "Examples: Variants 1 and 2"
-msgstr "例: 1番目の形式と2番目の形式"
+msgstr "例: 一つ目の形式と二つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:7094
@@ -15738,7 +15735,7 @@ msgstr ""
 #: reference_raster.xml:7098
 #, no-c-format
 msgid "Examples: Variant 3 and 4"
-msgstr "例: 3番目の形式と4番目の形式"
+msgstr "例: 三つ目の形式と四つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:7100
@@ -15798,8 +15795,8 @@ msgid ""
 "operation on the input raster band and of pixeltype provided. Band 1 is assumed if no band is "
 "specified."
 msgstr ""
-"1バンド版: 入力バンドに対する妥当なPostgreSQL代数演算で形成された、指定したピクセルタイプの1バンドのラ"
-"スタを生成します。バンドを指定しない場合には、1番を仮定します。"
+"1バンド版: 入力バンドに対する妥当なPostgreSQL代数演算で形成された、指定したピクセルタイプとなる1バンド"
+"ラスタを生成します。バンドを指定しない場合には、1番を仮定します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:7121
@@ -15843,7 +15840,7 @@ msgid ""
 "height as the original raster but will only have one band."
 msgstr ""
 "入力ラスタ (<varname>rast</varname>)に対して<varname>expression</varname>で定義される妥当なPostgreSQL代"
-"数演算で形成されるラスタを返します。生成されるラスタは指定したピクセルタイプの1バンドのラスタです。"
+"数演算で形成されるラスタを返します。生成されるラスタは指定したピクセルタイプとなる1バンドラスタです。"
 "<varname>band</varname>を指定しない場合には、1番と仮定します。新しいラスタは、元のラスタと同じ地理参"
 "照、幅、高さを持ちますが、一つのバンドしか持ちません。"
 
@@ -15864,7 +15861,7 @@ msgstr ""
 msgid ""
 "Create a new 1 band raster from our original that is a function of modulo 2 of the original raster "
 "band."
-msgstr "元のラスタから1バンドのラスタを生成します。元のラスタバンドの値について2で割った余りが入ります。"
+msgstr "元のラスタから1バンドラスタを生成します。元のラスタバンドの値について2で割った余りが入ります。"
 
 #. Tag: programlisting
 #: reference_raster.xml:7170
@@ -16014,7 +16011,7 @@ msgid ""
 "map algebra and remaining 2 bands unaltered."
 msgstr ""
 "新しい3バンドラスタを生成します。元の3バンドラスタと同じピクセルタイプです。1番バンドは地図代数関数に"
-"よって変更され、あとの2バンドは値が代わりません。"
+"よって変更され、残りの2バンドは値が代わりません。"
 
 #. Tag: programlisting
 #: reference_raster.xml:7213
@@ -16068,10 +16065,10 @@ msgid ""
 "the grid defined by the first raster and have its extent defined by the \"extenttype\" parameter. "
 "Values for \"extenttype\" can be: INTERSECTION, UNION, FIRST, SECOND."
 msgstr ""
-"2バンド版: 二つの入力バンドに対する妥当なPostgreSQL代数演算で形成された、指定したピクセルタイプの1バン"
-"ドのラスタを生成します。バンドを指定しない場合には、どちらも1番と仮定します。結果ラスタは、一つめのラス"
-"タのアラインメント (スケール、スキュー、ピクセル角位置)にあわされます。範囲は\"extenttype\"引数で定義さ"
-"れます。取りうる\"extenttype\"の値はINTERSECTION, UNION, FIRST, SECONDです。"
+"2バンド版: 二つの入力バンドに対する妥当なPostgreSQL代数演算で形成された、指定したピクセルタイプとなる1"
+"バンドラスタを生成します。バンドを指定しない場合には、どちらも1番と仮定します。結果ラスタは、一つ目のラ"
+"スタのアラインメント (スケール、スキュー、ピクセル角位置)にあわされます。範囲は\"extenttype\"引数で定義"
+"されます。取りうる\"extenttype\"の値はINTERSECTION, UNION, FIRST, SECONDです。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:7237
@@ -16383,7 +16380,7 @@ msgstr ""
 "-- 演算の順序の注意: 全てのラスタを必要なピクセル範囲に切り抜いています\n"
 "(SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom\n"
 "        FROM aerials.o_2_boston AS r INNER JOIN\n"
-"-- あとでインタセクトできるように対象区画を結合して1つのジオメトリにします\n"
+"-- あとでインタセクトできるように対象区画を結合して一つのジオメトリにします\n"
 "                (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom \n"
 "                  FROM landparcels WHERE pid IN('0303890000', '0303900000')) As g\n"
 "                ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))\n"
@@ -16437,8 +16434,8 @@ msgid ""
 "1 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the "
 "input raster band and of pixeltype prodived. Band 1 is assumed if no band is specified."
 msgstr ""
-"1バンド版 - 入力バンドに対する妥当なPostgreSQL関数で形成された、指定したピクセルタイプの1バンドのラスタ"
-"を生成します。バンドを指定しない場合には、1番と仮定します。"
+"1バンド版 - 入力バンドに対する妥当なPostgreSQL関数で形成された、指定したピクセルタイプとなる1バンドラス"
+"タを生成します。バンドを指定しない場合には、1番と仮定します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:7532
@@ -16526,9 +16523,9 @@ msgid ""
 "georeference, width, and height as the original raster but will only have one band."
 msgstr ""
 "入力ラスタ (<varname>rast</varname>)に対して<varname>onerasteruserfunc</varname>で指定される妥当な"
-"PostgreSQL関数で形成されたラスタを返します。生成されるラスタは指定したピクセルタイプの1バンドのラスタで"
-"す。bandを指定しない場合には、1番と仮定します。新しいラスタは、元のラスタと同じ地理参照、幅、高さを持ち"
-"ますが、一つのバンドしか持ちません。"
+"PostgreSQL関数で形成されたラスタを返します。生成されるラスタは指定したピクセルタイプとなる1バンドラスタ"
+"です。<varname>band</varname>を指定しない場合には、1番と仮定します。新しいラスタは、元のラスタと同じ地"
+"理参照、幅、高さを持ちますが、一つのバンドしか持ちません。"
 
 #. Tag: para
 #: reference_raster.xml:7605
@@ -16550,7 +16547,7 @@ msgid ""
 "through to the <varname>userfunction</varname>."
 msgstr ""
 "<varname>onerasteruserfunc</varname>引数は SQL関数またはPL/pgSQL関数のシグネチャで、regprocedureにキャ"
-"ストします。大変単純で本当に使えないPL/pgSQL関数の例を挙げます。 <programlisting>CREATE OR REPLACE "
+"ストします。大変単純で本当に使えないPL/pgSQL関数の例を挙げます。<programlisting>CREATE OR REPLACE "
 "FUNCTION simple_function(pixel FLOAT, pos INTEGER[], VARIADIC args TEXT[])\n"
 "    RETURNS FLOAT\n"
 "    AS $$ BEGIN\n"
@@ -16574,7 +16571,7 @@ msgid ""
 "type>."
 msgstr ""
 "<type>regprodedure</type>引数をSQL関数に渡す際は完全な関数シグネチャと<type>regprocedure</type>型への"
-"キャストが求められます。 上のPL/pgSQL関数を引数に取るには、引数のSQLは次のようにします。 "
+"キャストが求められます。 上のPL/pgSQL関数を引数に取るには、引数のSQLは次のようにします。"
 "<programlisting>'simple_function(float,integer[],text[])'::regprocedure</programlisting> 引数は関数名と"
 "引数の型を含み、関数名と引数を引用符で括り、かつ<type>regprocedure</type>にキャストする点に注意が必要で"
 "す。"
@@ -16839,8 +16836,8 @@ msgid ""
 "input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified. Extent type "
 "defaults to INTERSECTION if not specified."
 msgstr ""
-"2バンド版 - 二つの入力バンドに対する妥当なPostgreSQL関数で形成された、指定したピクセルタイプの1バンドの"
-"ラスタを生成します。バンドを指定しない場合には、1番と仮定します。\"extenttype\"のデフォルトは"
+"2バンド版 - 二つの入力バンドに対する妥当なPostgreSQL関数で形成された、指定したピクセルタイプとなる1バン"
+"ドラスタを生成します。バンドを指定しない場合には、1番と仮定します。\"extenttype\"のデフォルトは"
 "INTERSECTIONです。"
 
 #. Tag: funcsynopsis
@@ -16890,7 +16887,7 @@ msgid ""
 "only have one band."
 msgstr ""
 "二つの入力ラスタ (<varname>rast1</varname>, <varname>rast2</varname>)に対して<varname>tworastuserfunc</"
-"varname>で指定される妥当なPostgreSQL関数で形成されるラスタを返します。 <varname>band1</varname>または"
+"varname>で指定される妥当なPostgreSQL関数で形成されるラスタを返します。<varname>band1</varname>または"
 "<varname>band2</varname>が指定されていない場合には、1番と仮定します。新しいラスタは、元のラスタと同じ地"
 "理参照、幅、高さを持ちますが、一つのバンドしか持ちません。"
 
@@ -16928,9 +16925,8 @@ msgid ""
 "varname>."
 msgstr ""
 "<varname>tworastuserfunc</varname>引数はSQL関数またはPL/pgSQL関数のシグネチャで、regprocedureにキャスト"
-"します。大変単純で本当に使えないPL/pgSQL関数の例を挙げます。 <programlisting>CREATE OR REPLACE "
-"FUNCTION simple_function_for_two_rasters(pixel1 FLOAT, pixel2 FLOAT, pos INTEGER[], VARIADIC args "
-"TEXT[])\n"
+"します。大変単純で本当に使えないPL/pgSQL関数の例を挙げます。<programlisting>CREATE OR REPLACE FUNCTION "
+"simple_function_for_two_rasters(pixel1 FLOAT, pixel2 FLOAT, pos INTEGER[], VARIADIC args TEXT[])\n"
 "    RETURNS FLOAT\n"
 "    AS $$ BEGIN\n"
 "        RETURN 0.0;\n"
@@ -16954,7 +16950,7 @@ msgid ""
 "cast to a <type>regprocedure</type>."
 msgstr ""
 "<type>regprodedure</type>引数をSQL関数に渡す際は完全な関数シグネチャと<type>regprocedure</type>型への"
-"キャストが求められます。上のPL/pgSQL関数を引数に取るには、引数のSQLは次のようにします。 "
+"キャストが求められます。上のPL/pgSQL関数を引数に取るには、引数のSQLは次のようにします。"
 "<programlisting>'simple_function(double precision, double precision, integer[], text[])'::"
 "regprocedure</programlisting> 引数は関数名と引数の型を含み、関数名と引数を引用符で括り、かつ"
 "<type>regprocedure</type>にキャストする点に注意が必要です。"
@@ -17256,9 +17252,9 @@ msgid ""
 "values as an array of numbers, for each pixel, returns the result from the user function, replacing "
 "pixel value of currently inspected pixel with the function result."
 msgstr ""
-"(1バンド版)入力ラスタバンドの近傍の値を与えたPL/pgSQLユーザ定義関数の結果からなるラスタを返します。ユー"
-"ザ定義関数は近傍のピクセル値を数の配列として取り、ピクセル毎に、ユーザ定義関数からの結果を返し、現在の"
-"対象ピクセルのピクセル値を関数の返り値に置き換えます。"
+"(1バンド版) 入力ラスタバンドの近傍の値を与えたPL/pgSQLユーザ定義関数の結果からなるラスタを返します。"
+"ユーザ定義関数は近傍のピクセル値を数の配列として取り、ピクセル毎に、ユーザ定義関数からの結果を返し、現"
+"在の対象ピクセルのピクセル値を関数の返り値に置き換えます。"
 
 #. Tag: term
 #: reference_raster.xml:7836
@@ -17708,7 +17704,7 @@ msgstr "例: 単一バンドで32BFのラスタをの可視ラスタへの高度
 #: reference_raster.xml:7990
 #, no-c-format
 msgid "Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has only one 32bf band"
-msgstr "32BFバンドを1つ持つだけのラスタから3つのバンド (8BUI, 8BUI, 8BUI可視ラスタ)を生成します。"
+msgstr "32BFバンドを一つ持つだけのラスタから三つのバンド (8BUI, 8BUI, 8BUI可視ラスタ)を生成します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:7991
@@ -18089,7 +18085,7 @@ msgstr "ST_InvDistWeight4ma"
 #: reference_raster.xml:8173
 #, no-c-format
 msgid "Raster processing function that interpolates a pixel's value from the pixel's neighborhood."
-msgstr "近隣のピクセル値の内挿補完を行うラスタ処理関数です。"
+msgstr "近隣のピクセル値の内挿補間を行うラスタ処理関数です。"
 
 #. Tag: funcprototype
 #: reference_raster.xml:8178
@@ -18109,7 +18105,7 @@ msgstr ""
 #: reference_raster.xml:8190
 #, no-c-format
 msgid "Calculate an interpolated value for a pixel using the Inverse Distance Weighted method."
-msgstr "近隣のピクセル値の逆距離加重法 (IDW=Inverse Distance Weighted method)による内挿補完を行います。"
+msgstr "近隣のピクセル値の逆距離加重法 (IDW=Inverse Distance Weighted method)による内挿補間を行います。"
 
 #. Tag: para
 #: reference_raster.xml:8192
@@ -18124,7 +18120,7 @@ msgid ""
 msgstr ""
 "<varname>userargsに</varname>渡される、二つの任意引数があります。一つ目は、逆距離加重法の式に与える0か"
 "ら1の間を取る冪数 (下の式の変数k)です。指定しない場合には、デフォルトは1とします。二つ目は、対象ピクセ"
-"ルの値が近隣セルからの補完値に含まれている場合にのみ適用される重み率です。指定せず、かつ対象ピクセルが"
+"ルの値が近隣セルからの補間値に含まれている場合にのみ適用される重み率です。指定せず、かつ対象ピクセルが"
 "値を持っている場合には、そのピクセルの持つ値が返されます。"
 
 #. Tag: para
@@ -18484,7 +18480,7 @@ msgid ""
 "the pixel of interest's interpolated value from <xref linkend=\"RT_ST_InvDistWeight4ma\"/>. This "
 "function is particularly useful when the neighborhood is sparsely populated."
 msgstr ""
-"この関数の意図は、<xref linkend=\"RT_ST_InvDistWeight4ma\"/>から対象ピクセルの内挿補完された値の有用性"
+"この関数の意図は、<xref linkend=\"RT_ST_InvDistWeight4ma\"/>から対象ピクセルの内挿補間された値の有用性"
 "を判断することを補助するのに有益なデータポイントを提供することです。この関数は近隣セルの密度が小さい時"
 "に特に使えます。"
 
@@ -18799,7 +18795,7 @@ msgstr "<varname>units</varname>がDEGREESの時、値は0から360度の間で�
 #: reference_raster.xml:8790
 #, no-c-format
 msgid "If slope of pixel is zero, aspect of pixel is -1."
-msgstr "ピクセルの勾配が0の場合には、傾斜方向は-1とします。"
+msgstr "ピクセルの傾斜角が0の場合には、傾斜方向は-1とします。"
 
 #. Tag: para
 #: reference_raster.xml:8795
@@ -18810,7 +18806,7 @@ msgid ""
 "ulink> and <ulink url=\"http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
 "context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS Field Guide - Aspect Images</ulink>."
 msgstr ""
-"勾配、傾斜方向、陰影起伏に関する詳細情報については、<ulink url=\"http://webhelp.esri.com/"
+"傾斜角、傾斜方向、陰影起伏に関する詳細情報については、<ulink url=\"http://webhelp.esri.com/"
 "arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\">ESRI - How hillshade works</ulink>と"
 "<ulink url=\"http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
 "context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS Field Guide - Aspect Images</ulink>をご覧下さ"
@@ -19028,7 +19024,7 @@ msgid ""
 "pixels. Return pixel values are between 0 and 255."
 msgstr ""
 "与えられた方位、高度、明度、スケールの入力を使って標高ラスタバンドの仮想照明を返します。地図代数を使っ"
-"て、陰影図方程式を隣接ピクセルに適用します。"
+"て、陰影図方程式を隣接ピクセルに適用します。返されるピクセル値は0と255の間です。"
 
 #. Tag: para
 #: reference_raster.xml:8870
@@ -19277,7 +19273,7 @@ msgstr "ST_Slope"
 #, no-c-format
 msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. Useful for analyzing terrain."
-msgstr "標高ラスタバンドの勾配 (デフォルトでは度単位)を返します。地形解析に使えます。"
+msgstr "標高ラスタバンドの傾斜角 (デフォルトでは度単位)を返します。地形解析に使えます。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:8977
@@ -19320,8 +19316,8 @@ msgid ""
 "Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and "
 "applies the slope equation to neighboring pixels."
 msgstr ""
-"標高ラスタバンドの勾配 (デフォルトでは度単位)を返します。地図代数を使って、勾配方程式を隣接ピクセルに適"
-"用します。"
+"標高ラスタバンドの傾斜角 (デフォルトでは度単位)を返します。地図代数を使って、傾斜角方程式を隣接ピクセル"
+"に適用します。"
 
 #. Tag: para
 #: reference_raster.xml:9006
@@ -19330,7 +19326,7 @@ msgid ""
 "<varname>units</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES "
 "(default), PERCENT."
 msgstr ""
-"<varname>units</varname>は勾配の単位を示します。取りえる値はRADIANS, DEGREES (デフォルト), PERCENTで"
+"<varname>units</varname>は傾斜角の単位を示します。取りえる値はRADIANS, DEGREES (デフォルト), PERCENTで"
 "す。"
 
 #. Tag: para
@@ -19340,8 +19336,8 @@ msgid ""
 "If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will "
 "be interpolated using <xref linkend=\"RT_ST_InvDistWeight4ma\"/> before computing the surface slope."
 msgstr ""
-"<varname>interpolate_nodata</varname>がTRUEの場合には、入力ラスタのNODATAピクセルの値は表面勾配を計算す"
-"る前に<xref linkend=\"RT_ST_InvDistWeight4ma\"/>を使って内挿を行います。"
+"<varname>interpolate_nodata</varname>がTRUEの場合には、入力ラスタのNODATAピクセルの値は表面傾斜角を計算"
+"する前に<xref linkend=\"RT_ST_InvDistWeight4ma\"/>を使って内挿を行います。"
 
 #. Tag: para
 #: reference_raster.xml:9019
@@ -19352,7 +19348,7 @@ msgid ""
 "ulink> and <ulink url=\"http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
 "context=FieldGuide&amp;file=Slope_Images.html\">ERDAS Field Guide - Slope Images</ulink>."
 msgstr ""
-"勾配、傾斜方向、陰影起伏に関する詳細情報については、<ulink url=\"http://webhelp.esri.com/"
+"傾斜角、傾斜方向、陰影起伏に関する詳細情報については、<ulink url=\"http://webhelp.esri.com/"
 "arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works\">ESRI - How hillshade works</ulink>と"
 "<ulink url=\"http://e2b.erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
 "context=FieldGuide&amp;file=Slope_Images.html\">ERDAS Field Guide - Slope Images</ulink>をご覧下さい。"
@@ -19603,7 +19599,7 @@ msgstr ""
 #: reference_raster.xml:9158
 #, no-c-format
 msgid "Raster to Geometry"
-msgstr "ラスタからジオメトリ"
+msgstr "ラスタからジオメトリを生成する関数"
 
 #. Tag: refname
 #: reference_raster.xml:9162
@@ -19712,8 +19708,8 @@ msgid ""
 "shaped and non-skewed rasters, this gives more or less the same result as ST_Envelope so only useful "
 "for irregularly shaped or skewed rasters."
 msgstr ""
-"BandNoDataValue値のピクセルを含むラスタの凸包ジオメトリを返します。一般的な形状でスキューのないラスタで"
-"は、ST_Envelopeと同じ結果になります。不規則な形状をしているかスキューのあるラスタでのみ使います。"
+"NoDataValue値のピクセルを含むラスタの凸包ジオメトリを返します。一般的な形状でスキューのないラスタでは、"
+"ST_Envelopeと同じ結果になります。不規則な形状をしているかスキューのあるラスタでのみ使います。"
 
 #. Tag: para
 #: reference_raster.xml:9224
@@ -19723,7 +19719,7 @@ msgid ""
 "subtly different from ST_ConvexHull which does not floor."
 msgstr ""
 "ST_Envelopeは、座標値の小数部を切り捨て、ラスタのまわりに小さなバッファを追加します。小数部の切り捨てを"
-"行わないST_ConvexHullの答えと若干異なります。"
+"行わないST_ConvexHullの答と若干異なります。"
 
 #. Tag: para
 #: reference_raster.xml:9231
@@ -20035,7 +20031,7 @@ msgid ""
 "Return the convex hull geometry of the raster excluding NODATA pixels. If <varname>nband</varname> is "
 "NULL, all bands of the raster are considered."
 msgstr ""
-"NODATA値を除いたラスタの凸包ジオメトリを返します。 <varname>nband</varname>がNULLの場合には、ラスタの全"
+"NODATA値を除いたラスタの凸包ジオメトリを返します。<varname>nband</varname>がNULLの場合には、ラスタの全"
 "てのバンドが考慮されます。"
 
 #. Tag: programlisting
@@ -20358,7 +20354,7 @@ msgstr ""
 #: reference_raster.xml:10848 reference_raster.xml:10941
 #, no-c-format
 msgid "This operand will make use of any indexes that may be available on the rasters."
-msgstr "これのオペランドは、ラスタで使用できるインデックスを使用します。"
+msgstr "これのオペランドは、ラスタで使用できるインデクスを使用します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:9494
@@ -20393,8 +20389,7 @@ msgstr "&amp;&lt;"
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is to the left of B's."
 msgstr ""
-"AのバウンディングボックスがBのバウンディングボックスをオーバラップするか、Bのバウンディングボックスの左"
-"にある場合に<varname>TRUE</varname>を返します。"
+"AのバウンディングボックスがBのバウンディングボックスの左にある場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_raster.xml:9507
@@ -20425,7 +20420,7 @@ msgstr ""
 #: reference_raster.xml:9532 reference_raster.xml:9577
 #, no-c-format
 msgid "This operand will make use of any indexes that may be available on the geometries."
-msgstr "これのオペランドは、ジオメトリで使用できるインデックスを使用します。"
+msgstr "これのオペランドは、ジオメトリで使用できるインデクスを使用します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:9539
@@ -20580,8 +20575,8 @@ msgid ""
 "This operand will NOT make use of any indexes that may be available on the rasters. Use <xref linkend="
 "\"RT_Raster_Same\"/> instead. This operator exists mostly so one can group by the raster column."
 msgstr ""
-"この演算子は、ラスタで利用できるインデクスを使いません。代わりに<xref linkend=\"RT_Raster_Same\"/>を使"
-"います。この演算子はラスタカラムのGROUP BYに使うのがほとんどです。"
+"これのオペランドは、ラスタで利用できるインデクスを使いません。代わりに<xref linkend=\"RT_Raster_Same\"/"
+">を使います。この演算子はラスタカラムのGROUP BYに使うのがほとんどです。"
 
 #. Tag: refname
 #: reference_raster.xml:9638
@@ -20633,7 +20628,7 @@ msgstr ""
 #: reference_raster.xml:9690 reference_raster.xml:9810
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
-msgstr "これのオペランドは、ラスタのインデックスを使用します。"
+msgstr "これのオペランドは、ラスタのインデクスを使用します。"
 
 #. Tag: para
 #: reference_raster.xml:9692
@@ -20892,7 +20887,7 @@ msgstr "ST_ContainsProperly"
 #, no-c-format
 msgid "Return true if rastB intersects the interior of rastA but not the boundary or exterior of rastA."
 msgstr ""
-"rastBがrastAの中でインタセクトし、かつrastAの内部で境界がインタセクトしない場合にTRUEを返します。"
+"rastBがrastAの内部でインタセクトし、かつrastAの境界とも外部ともインタセクトしない場合にTRUEを返します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:9925
@@ -20923,16 +20918,16 @@ msgid ""
 "raster is considered in the test. If the band number is provided, only those pixels with value (not "
 "NODATA) are considered in the test."
 msgstr ""
-"rastBがrastAの中でインタセクトし、かつrastAの内部で境界がインタセクトしない場合には、rastAはrastBに対し"
-"てContainsProperly (確実に包含している)です。バンド番号が指定されていないかNULLに指定されている場合に"
-"は、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ (NODATAでない)"
-"ピクセルについてテストします。"
+"rastBがrastAの内部でインタセクトし、かつrastAの境界とも外部ともインタセクトしない場合には、rastAはrastB"
+"に対してContainsProperly (確実に包含している)です。バンド番号が指定されていないかNULLに指定されている場"
+"合には、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ (NODATAで"
+"ない)ピクセルについてテストします。"
 
 #. Tag: para
 #: reference_raster.xml:9968
 #, no-c-format
 msgid "Raster rastA does not contain properly itself but does contain itself."
-msgstr "rastAは自身にはContainsProperlyではありません。"
+msgstr "rastAは自身にはContainsProperlyではありませんが、Containsです。 "
 
 #. Tag: para
 #: reference_raster.xml:9979
@@ -20980,7 +20975,7 @@ msgstr "ST_Covers"
 #: reference_raster.xml:10004
 #, no-c-format
 msgid "Return true if no points of raster rastB lie outside raster rastA."
-msgstr " rastBがrastAの外部に点を持たない場合にTRUEを返します。"
+msgstr "rastBがrastAの外部に点を持たない場合にTRUEを返します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:10010
@@ -21010,9 +21005,9 @@ msgid ""
 "number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. "
 "If the band number is provided, only those pixels with value (not NODATA) are considered in the test."
 msgstr ""
-"rastAの外部にrastBの点が無い場合には、rastAはrastBに対してCoverです。バンド番号が指定されていないかNULL"
-"に指定されている場合には、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合には、"
-"値を持つ (NODATAでない)ピクセルについてテストします。"
+"rastAの外部にrastBの点が無い場合には、rastAはrastBに対してCoversです。バンド番号が指定されていないか"
+"NULLに指定されている場合には、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合に"
+"は、値を持つ (NODATAでない)ピクセルについてテストします。"
 
 #. Tag: para
 #: reference_raster.xml:10060
@@ -21171,9 +21166,9 @@ msgid ""
 "not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the "
 "band number is provided, only those pixels with value (not NODATA) are considered in the test."
 msgstr ""
-"rastAがrastBとインタセクトしない場合には、rastAはrastBに対してDisjointです。バンド番号が指定されていな"
-"いかNULLに指定されている場合には、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場"
-"合には、値を持つ (NODATAでない)ピクセルについてテストします。"
+"rastAがrastBとインタセクトしない場合には、rastAとrastBはDisjointです。バンド番号が指定されていないか"
+"NULLに指定されている場合には、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合に"
+"は、値を持つ (NODATAでない)ピクセルについてテストします。"
 
 #. Tag: para
 #: reference_raster.xml:10216
@@ -21306,7 +21301,7 @@ msgstr ""
 #: reference_raster.xml:10350
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
-msgstr "Enhanced: 2.0.0 ラスタ/ラスタのインタセクトに対応するようになりました。"
+msgstr "Enhanced: 2.0.0 ラスタ/ラスタのインタセクト対応が導入されました。"
 
 #. Tag: para
 #: reference_raster.xml:10355
@@ -21315,8 +21310,8 @@ msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants changed to match that of "
 "ST_Intersects(geometry, raster)."
 msgstr ""
-"Changed: 2.1.0 ST_Intersects(raster, geometry)形式の振る舞いが ST_Intersects(geometry, raster)とあうよ"
-"うに変更されました。"
+"Changed: 2.1.0 ST_Intersects(raster, geometry)形式の挙動が ST_Intersects(geometry, raster)とあうように"
+"変更されました。"
 
 #. Tag: programlisting
 #: reference_raster.xml:10364
@@ -21352,7 +21347,7 @@ msgstr "ST_Overlaps"
 #: reference_raster.xml:10379
 #, no-c-format
 msgid "Return true if raster rastA and rastB intersect but one does not completely contain the other."
-msgstr "rastAとrastBがインタセクトして、かつ一方が完全にもう一方に包含されるとTRUEを返します。"
+msgstr "rastAとrastBがインタセクトして、かつ一方がもう一方に完全には包含されない場合にはTRUEを返します。"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:10385
@@ -21383,10 +21378,10 @@ msgid ""
 "only the convex hull of the raster is considered in the test. If the band number is provided, only "
 "those pixels with value (not NODATA) are considered in the test."
 msgstr ""
-"rastAがrastBをオーバラップする場合にTRUEを返します。rastAとrastBがインタセクトして、かつ一方が完全にも"
-"う一方に包含されるという意味です。バンド番号が指定されていないかNULLに指定されている場合には、ラスタの"
-"凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ (NODATAでない)ピクセルにつ"
-"いてテストします。"
+"rastAがrastBをオーバラップする場合にTRUEを返します。rastAとrastBがインタセクトして、かつ一方がもう一方"
+"に完全には包含されない場合にはいう意味です。バンド番号が指定されていないかNULLに指定されている場合に"
+"は、ラスタの凸包のみを考慮してテストします。バンド番号が指定されている場合には、値を持つ (NODATAでない)"
+"ピクセルについてテストします。"
 
 #. Tag: para
 #: reference_raster.xml:10435
@@ -21572,7 +21567,7 @@ msgid ""
 "PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions "
 "do."
 msgstr ""
-"集計関数版 (三つ目の形式): ラスタ集合から、全てのラスタが同じアラインメントを持つ場合にTRUEを返します。"
+"集約関数版 (三つ目の形式): ラスタ集合から、全てのラスタが同じアラインメントを持つ場合にTRUEを返します。"
 "ST_SameAlignment()関数はPostgreSQLの用語で言うところの「集約」関数です。SUM()やAVG()といった複数のデー"
 "タ行での操作を意味します。"
 
@@ -21580,7 +21575,7 @@ msgstr ""
 #: reference_raster.xml:10632
 #, no-c-format
 msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
-msgstr "Enhanced: 2.1.0 集計関数版の追加"
+msgstr "Enhanced: 2.1.0 集約関数版の追加"
 
 #. Tag: title
 #: reference_raster.xml:10636
@@ -22009,12 +22004,3 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DWithin\"/>"
 msgstr ", <xref linkend=\"RT_ST_DWithin\"/>"
-
-#~ msgid "In all variants, if no band number is specified band 1 is assumed."
-#~ msgstr "全ての形式で、バンド番号がない場合には、1番を仮定します。"
-
-#~ msgid "Example: Raster, Geometry -- resulting is a raster"
-#~ msgstr "例: ラスタ、ジオメトリ-- ラスタを得る"
-
-#~ msgid "Examples coming soon"
-#~ msgstr "近日公開"

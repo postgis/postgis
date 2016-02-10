@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:31+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-07 17:40+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -89,7 +87,7 @@ msgid ""
 "second argument denoting the encoding - using little-endian ('NDR') or big-"
 "endian ('XDR') encoding."
 msgstr ""
-"ジオメトリのWell-Knwon Binary表現を返します。2つの形式があります。一つ目の形"
+"ジオメトリのWell-Knwon Binary表現を返します。二つの形式があります。一つ目の形"
 "式では、エンディアンエンコーディングのパラメータを取らずにサーバ機のエンディ"
 "アンとします。二つ目の形式では、第2引数にリトルエンディアン ('NDR')かビッグエ"
 "ンディアン ('XDR')を使ってエンコーディングを明示します。"
@@ -364,9 +362,8 @@ msgid ""
 msgstr ""
 "ジオメトリのSRIDメタデータが付いWell-Knwon Binary表現を返します。二つの形式が"
 "あります。一つ目の形式では、エンディアンエンコーディングのパラメータを取らず"
-"にサーバ機のエンディアンとします。ふたつめの形式では、第2引数にリトルエンディ"
-"アン ('NDR')かビッグエンディアン ('XDR')を使ってエンコーディングを明示しま"
-"す。"
+"にサーバ機のエンディアンとします。二つ目の形式では、第2引数にリトルエンディア"
+"ン ('NDR')かビッグエンディアン ('XDR')を使ってエンコーディングを明示します。"
 
 #. Tag: para
 #: reference_output.xml:116
@@ -933,7 +930,7 @@ msgstr ""
 #: reference_output.xml:351
 #, no-c-format
 msgid "0: GML Short CRS (e.g EPSG:4326), default value"
-msgstr "0: GML Short CRS (たとえば EPSG:4326), デフォルト値"
+msgstr "0: GML Short CRS (たとえば EPSG:4326)、デフォルト値"
 
 #. Tag: para
 #: reference_output.xml:355
@@ -1271,7 +1268,7 @@ msgid ""
 "Returns a Geometry in HEXEWKB format (as text) using either little-endian "
 "(NDR) or big-endian (XDR) encoding."
 msgstr ""
-"ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDS)ま"
+"ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDR)ま"
 "たはビッグエンディアン (XDR)のどちらかのエンコーディングを使います。"
 
 #. Tag: funcsynopsis
@@ -1300,7 +1297,7 @@ msgid ""
 "(NDR) or big-endian (XDR) encoding. If no encoding is specified, then NDR is "
 "used."
 msgstr ""
-"ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDS)ま"
+"ジオメトリのHEXEWKB表現を (文字列として)返します。リトルエンディアン (NDR)ま"
 "たはビッグエンディアン (XDR)のどちらかのエンコーディングを使います。エンコー"
 "ディングを指定しない場合はNDRを使います。"
 
@@ -1681,7 +1678,7 @@ msgstr ""
 #: reference_output.xml:610
 #, no-c-format
 msgid "Below is how we currently map PostGIS 2D/3D types to X3D types"
-msgstr "次に現在PostGIS 2次元/3次元型からX3D型への対応付けを示します。"
+msgstr "次に現時点のPostGIS 2次元/3次元型からX3D型への対応付けを示します。"
 
 #. Tag: para
 #: reference_output.xml:613
@@ -2330,7 +2327,8 @@ msgid ""
 "ST_AsText representation."
 msgstr ""
 "ST_AsTextは<xref linkend=\"ST_GeomFromText\"/>の逆です。ST_AsText表現を"
-"PostGISジオメトリに変換するには<xref linkend=\"ST_GeomFromText\"/>使います。"
+"PostGISジオメトリに変換するには<xref linkend=\"ST_GeomFromText\"/>を使いま"
+"す。"
 
 #. Tag: para
 #: reference_output.xml:789
@@ -2752,9 +2750,9 @@ msgid ""
 "desired geometries and objects first, using \"array_agg()\", then call the "
 "appropriate TWKB function."
 msgstr ""
-"識別子の集計を含むTWKBオブジェクトの集計を生成するには、ま"
-"ず、\"array_agg()\"を使って求めるジオメトリとオブジェクトを集計して、その後に"
-"適切なTWKB関数を呼んでいます。"
+"識別子を含むTWKBオブジェクトの集計を生成するには、まず、\"array_agg()\"を使っ"
+"て求めるジオメトリとオブジェクトを集計して、その後に適切なTWKB関数を呼んでい"
+"ます。"
 
 #. Tag: programlisting
 #: reference_output.xml:923

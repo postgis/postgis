@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:22+0000\n"
-"PO-Revision-Date: 2016-01-26 16:42+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-01-27 20:47+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -305,7 +303,7 @@ msgid ""
 "index, separate with comma (,). If unspecified, all bands of raster will be "
 "extracted."
 msgstr ""
-"ラスタから抽出するバンドのインデクス (1はじまり)。1より多いバンドを抽出するに"
+"ラスタから抽出するバンドのインデクス (1始まり)。1より多いバンドを抽出するに"
 "は、コンマ(,)で区切ります。指定しない場合、全てのバンドが抽出されます。"
 
 #. Tag: term
@@ -461,7 +459,7 @@ msgstr "ファイル名カラムの名前を指定します。-Fを暗に含み�
 #: using_raster_dataman.xml:237
 #, no-c-format
 msgid "Wrap PostgreSQL identifiers in quotes."
-msgstr "PostgreSQL識別子に引用符を付けます。"
+msgstr "PostgreSQL 識別子に引用符を付けます。 "
 
 #. Tag: term
 #: using_raster_dataman.xml:242
@@ -1233,7 +1231,7 @@ msgid ""
 msgstr ""
 "<varname>pixel_types</varname> バンドごとのピクセルタイプを定義する配列です。"
 "この配列の要素数はバンド数と同じです。pixel_typesは、<xref linkend="
-"\"RT_ST_BandPixelType\"/>で定義されるピクセルタイプのひとつを取ります。"
+"\"RT_ST_BandPixelType\"/>で定義されるピクセルタイプの一つを取ります。"
 
 #. Tag: para
 #: using_raster_dataman.xml:420
@@ -1311,10 +1309,10 @@ msgstr ""
 "ラムに関する情報のカタログで、オーバビューを用いる際に知っておくと便利な情報"
 "も持ちます。オーバビューテーブルは<varname>raster_columns</varname>と"
 "<varname>raster_overviews</varname>の両方のカタログに入れられます。オーバ"
-"ビューもラスタのひとつであるのは確かですが、より高い解像度テーブルの解像度を"
-"落としたカリカチュアになるという特殊な目的を満たすためでもあるからです。ラス"
-"タをロードする際に<varname>-l</varname>スイッチを使うと、オーバビューが主ラス"
-"タテーブルと一緒に生成されます。もしくは、<xref linkend="
+"ビューもラスタの一つであるのは確かですが、より高い解像度テーブルの解像度を落"
+"としたカリカチュアになるという特殊な目的を満たすためでもあるからです。ラスタ"
+"をロードする際に<varname>-l</varname>スイッチを使うと、オーバビューが主ラスタ"
+"テーブルと一緒に生成されます。もしくは、<xref linkend="
 "\"RT_AddOverviewConstraints\"/>を使うと手動で生成できます。"
 
 #. Tag: para
@@ -1481,13 +1479,13 @@ msgstr ""
 "レベル1は元ファイルと同じです。レベル2は、元ファイルの4分の1になります。たと"
 "えば、5000x5000ピクセルの画像ファイルのフォルダがあるとして、125x125に分ける"
 "場合、画像ファイルごとに(5000*5000)/(125*125) = 1600行のレコードを持ち、"
-"<varname>o_2</varname>テーブル(レベル2)はceiling(1600/Power(2,2)) = 400行、"
+"<varname>o_2</varname>テーブル (レベル2)はceiling(1600/Power(2,2)) = 400行、"
 "<varname>o_3</varname>(レベル3)ではceiling(1600/Power(2,3) ) = 200行のレコー"
-"ドを持ちます。ピクセルがタイルサイズで割り切れない場合、スクラップタイル(完全"
-"には値が入っていない)が得られます。raster2pgsqlによって生成される個々のオーバ"
-"ビュータイルは、元となるラスタと同じピクセル数を持ち、個々のピクセルの表現範"
-"囲 (オリジナルの Power(2,overview_factor)ピクセル分)が低い解像度になっている"
-"点に注意して下さい。"
+"ドを持ちます。ピクセルがタイルサイズで割り切れない場合、スクラップタイル (完"
+"全には値が入っていない)が得られます。raster2pgsqlによって生成される個々のオー"
+"バビュータイルは、元となるラスタと同じピクセル数を持ち、個々のピクセルの表現"
+"範囲 (オリジナルの Power(2,overview_factor)ピクセル分)が低い解像度になってい"
+"る点に注意して下さい。"
 
 #. Tag: title
 #: using_raster_dataman.xml:484

@@ -1,21 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 15:03+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:03+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -74,11 +71,11 @@ msgid ""
 "database. If you want to experiment with PostGIS topology and need some "
 "data, check out <xref linkend=\"Topology_Load_Tiger\"/>."
 msgstr ""
-"トポロジベースのGISデータベースの例として<ulink url=\"http://www.census.gov/"
-"geo/www/tiger/overview.html\">US Census Topologically Integrated Geographic "
-"Encoding and Reference System (TIGER)</ulink>があります。PostGISトポロジの試"
-"験がしたくて、何らかのデータが必要なら<xref linkend=\"Topology_Load_Tiger\"/>"
-"をご覧下さい"
+"トポロジベースのGISデータベースの例として<ulink url=\"https://www.census.gov/"
+"geo/maps-data/data/tiger.html\">US Census Topologically Integrated "
+"Geographic Encoding and Referencing System (TIGER)</ulink>があります。PostGIS"
+"トポロジの試験がしたくて、何らかのデータが必要なら<xref linkend="
+"\"Topology_Load_Tiger\"/>をご覧下さい"
 
 #. Tag: para
 #: extras_topology.xml:8
@@ -148,8 +145,8 @@ msgid ""
 "especially when designing your own functions."
 msgstr ""
 "本節では、PostGISトポロジでインストールされるPostgreSQLデータ型の一覧を挙げま"
-"す。独自に関数をデザインする際に特に重要となる、キャストでの振る舞いを記述し"
-"ていることにご注意ください。"
+"す。独自に関数をデザインする際に特に重要となる、キャストでの挙動を記述してい"
+"ることにご注意ください。"
 
 #. Tag: title
 #: extras_topology.xml:23
@@ -444,7 +441,7 @@ msgstr ""
 #: extras_topology.xml:131
 #, no-c-format
 msgid "Topology Domains"
-msgstr "トポロジドメイン"
+msgstr "Topology Domains"
 
 #. Tag: refname
 #: extras_topology.xml:135
@@ -633,7 +630,7 @@ msgstr ""
 "-------\n"
 "{{1,2},{4,3}}\n"
 "\n"
-"-- トポロジに同梱されている配列集計関数 --\n"
+"-- トポロジに同梱されている配列集約関数 --\n"
 "SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea\n"
 "  FROM generate_series(1,4) As e CROSS JOIN generate_series(1,3) As t;\n"
 "  tea\n"
@@ -998,7 +995,7 @@ msgid ""
 "Takes a topology name and provides summary totals of types of objects in "
 "topology."
 msgstr ""
-"トポロジ名を取り、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
+"トポロジ名を取得し、トポロジ内のオブジェクトの型に関する概要の全体を提供しま"
 "す。"
 
 #. Tag: para
@@ -1095,7 +1092,7 @@ msgstr ""
 #: extras_topology.xml:433
 #, no-c-format
 msgid "Error"
-msgstr "Error"
+msgstr "エラー"
 
 #. Tag: entry
 #: extras_topology.xml:433
@@ -1223,8 +1220,8 @@ msgid ""
 "Enhanced: 2.0.0 more efficient edge crossing detection and fixes for false "
 "positives that were existent in prior versions."
 msgstr ""
-"Enhanced: 2.0.0では、より効果的なエッジ交差検出が可能になり、以前の版で残って"
-"いた偽陽性を解決しています。"
+"Enhanced: 2.0.0 より効果的なエッジ交差検出が可能になり、以前の版で残っていた"
+"偽陽性を解決しています。"
 
 #. Tag: para
 #: extras_topology.xml:493
@@ -1694,7 +1691,7 @@ msgid ""
 "Adds a point to an existing topology using a tolerance and possibly "
 "splitting an existing edge."
 msgstr ""
-"許容差を使って既存のトポロジにポイントを追加し、可能ならエッジを分割します。 "
+"許容差を使って既存のトポロジにポイントを追加し、可能ならエッジを分割します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:733
@@ -2425,7 +2422,7 @@ msgstr "Availability: 1.1.0"
 #: extras_topology.xml:1271
 #, no-c-format
 msgid "Enhanced: 2.0.0 adds topological consistency enforcement"
-msgstr "Enhanced: 2.0.0版で、トポロジ整合性の強制を追加しました。"
+msgstr "Enhanced: 2.0.0 トポロジ整合性の強制を追加しました。"
 
 #. Tag: para
 #: extras_topology.xml:1275
@@ -2981,7 +2978,7 @@ msgstr ""
 #: extras_topology.xml:1617 extras_topology.xml:1667 extras_topology.xml:1718
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要 "
+msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要です。"
 
 #. Tag: para
 #: extras_topology.xml:1623 extras_topology.xml:1724
@@ -3078,7 +3075,7 @@ msgstr ""
 #: extras_topology.xml:1659
 #, no-c-format
 msgid "If the point doesn't intersect a face, returns 0 (zero)."
-msgstr "ポイントがフェイスにインタセクトしない場合には.、0を返します。"
+msgstr "ポイントがフェイスにインタセクトしない場合には、0を返します。"
 
 #. Tag: para
 #: extras_topology.xml:1660
@@ -3987,7 +3984,7 @@ msgstr ""
 #: extras_topology.xml:2206
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 GEOS 3.3.0以降が必要です。"
+msgstr "Availability: 2.0.0 GEOS 3.3.0以上が必要です。"
 
 #. Tag: programlisting
 #: extras_topology.xml:2212
@@ -4134,8 +4131,8 @@ msgid ""
 msgstr ""
 "既存フェイスの新規登録が実行される時(force_new=true)、そのエッジ内の既存の"
 "フェイスへの参照のダングルを解決しません。また、関連テーブルのノードと既存"
-"フェイスのレコードのMBR(訳注: 最小境界矩形)フィールドの更新も行いません。これ"
-"に対応するのは、この関数を呼び出した側です。"
+"フェイスのレコードのMBR (訳注: 最小境界矩形)フィールドの更新も行いません。こ"
+"れに対応するのは、この関数を呼び出した側です。"
 
 #. Tag: para
 #: extras_topology.xml:2278
@@ -4313,8 +4310,8 @@ msgid ""
 "Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
 "<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 msgstr ""
-"<xref linkend=\"ST_Simplify\"/> (ジオメトリ), <xref linkend=\"ST_IsSimple\"/"
-">, <xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
+"Geometry <xref linkend=\"ST_Simplify\"/>, <xref linkend=\"ST_IsSimple\"/>, "
+"<xref linkend=\"ST_IsValid\"/>, <xref linkend=\"ST_ModEdgeSplit\"/>"
 
 #. Tag: para
 #: extras_topology.xml:2338
@@ -4693,7 +4690,7 @@ msgstr ""
 #: extras_topology.xml:2477
 #, no-c-format
 msgid "Enhanced: 2.1.0 adds the version taking an existing TopoGeometry."
-msgstr "Enhanced: 2.1.0版では、既存のTopoGeometryを取る形式が追加されました。"
+msgstr "Enhanced: 2.1.0 既存のTopoGeometryを取る形式が追加されました。"
 
 #. Tag: para
 #: extras_topology.xml:2481
@@ -4934,7 +4931,7 @@ msgstr ""
 #: extras_topology.xml:2589
 #, no-c-format
 msgid "TopoGeom_addElement"
-msgstr "GetTopoGeomElements"
+msgstr "TopoGeom_addElement"
 
 #. Tag: refpurpose
 #: extras_topology.xml:2590
@@ -4961,7 +4958,7 @@ msgid ""
 "Adds a <xref linkend=\"topoelement\"/> to the definition of a TopoGeometry "
 "object. Does not error out if the element is already part of the definition."
 msgstr ""
-"TopoGeometryオブジェクトの形状を<xref linkend=\"topoelement\"/>に追加します。"
+"TopoGeometryオブジェクトの形状に<xref linkend=\"topoelement\"/>を追加します。"
 "要素が既に定義の一部になっている場合は、エラーになりません。"
 
 #. Tag: para
@@ -5561,7 +5558,7 @@ msgstr "AsTopoJSON"
 #: extras_topology.xml:2904
 #, no-c-format
 msgid "Returns the TopoJSON representation of a topogeometry."
-msgstr "opoGeometryのTopoJSON表現を返します。"
+msgstr "TopoGeometryのTopoJSON表現を返します。"
 
 #. Tag: funcprototype
 #: extras_topology.xml:2909
@@ -5821,7 +5818,7 @@ msgstr "&Z_support;"
 #: extras_topology.xml:3005 extras_topology.xml:3061
 #, no-c-format
 msgid "<!--TODO: Need example -->"
-msgstr ""
+msgstr "<!--TODO: Need example -->"
 
 #. Tag: para
 #: extras_topology.xml:3012
@@ -5879,11 +5876,3 @@ msgstr ""
 "この関数はジオメトリコレクションのTopoGeometryに対応していません。異なるトポ"
 "ロジからなるTopoGeometryとの比較もできません。また、現在のところ、階層"
 "TopoGeometry (他のTopoGeometryからなるTopoGeometry)に対応していません。"
-
-#~ msgid ""
-#~ ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>"
-#~ msgstr ""
-#~ ", <xref linkend=\"topoelementarray\"/>, <xref linkend=\"topogeometry\"/>"
-
-#~ msgid ", <xref linkend=\"topoelement\"/>"
-#~ msgstr ", <xref linkend=\"topoelement\"/>"

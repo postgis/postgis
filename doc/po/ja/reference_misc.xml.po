@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:30+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:17+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -33,7 +31,7 @@ msgstr "ST_Accum"
 #: reference_misc.xml:9
 #, no-c-format
 msgid "<refpurpose>Aggregate. Constructs an array of geometries.</refpurpose>"
-msgstr "<refpurpose>集計関数です。ジオメトリの配列を生成します。</refpurpose>"
+msgstr "<refpurpose>集約関数です。ジオメトリの配列を生成します。</refpurpose>"
 
 #. Tag: funcprototype
 #: reference_misc.xml:14
@@ -60,7 +58,7 @@ msgstr "説明"
 #: reference_misc.xml:24
 #, no-c-format
 msgid "<para>Aggregate. Constructs an array of geometries.</para>"
-msgstr "<para>集計関数です。ジオメトリの配列を生成します。</para>"
+msgstr "<para>集約関数です。ジオメトリの配列を生成します。</para>"
 
 #. Tag: para
 #: reference_misc.xml:25 reference_misc.xml:68 reference_misc.xml:109
@@ -362,9 +360,9 @@ msgid ""
 msgstr ""
 "与えられた空間テーブルの「見積もられた」範囲を返します。ジオメトリカラムの統"
 "計情報から見積もります。指定されていない場合は現在のスキーマが使われます。デ"
-"フォルトの振る舞いでは、子テーブル (継承されたテーブル)が存在するなら、そこか"
-"ら集めた統計情報も使用します。'parent_ony'でTRUEが渡された場合には、与えられ"
-"たテーブルの統計情報のみを使い、子テーブルは無視します。"
+"フォルトの挙動では、子テーブル (継承されたテーブル)が存在するなら、そこから集"
+"めた統計情報も使用します。'parent_ony'でTRUEが渡された場合には、与えられた"
+"テーブルの統計情報のみを使い、子テーブルは無視します。"
 
 #. Tag: para
 #: reference_misc.xml:178
@@ -622,7 +620,7 @@ msgstr "ST_Extent"
 msgid ""
 "an aggregate function that returns the bounding box that bounds rows of "
 "geometries."
-msgstr "ジオメトリのバウンディングボックスを返す集計関数です。"
+msgstr "ジオメトリのバウンディングボックスを返す集約関数です。"
 
 #. Tag: funcprototype
 #: reference_misc.xml:291
@@ -646,7 +644,7 @@ msgid ""
 "AVG() functions do."
 msgstr ""
 "ST_Extentは、ジオメトリの集合を囲むバウンディングボックスを返します。"
-"ST_Extentは、PostgreSQL用語で言うところの「集計関数」です。SUM()やMEAN()と同"
+"ST_Extentは、PostgreSQL用語で言うところの「集約関数」です。SUM()やMEAN()と同"
 "じ方法でデータリストの操作を行うことを意味します。"
 
 #. Tag: para
@@ -674,9 +672,9 @@ msgid ""
 "ST_SetSRID to force it back into a geometry with SRID meta data. The "
 "coordinates are in the units of the spatial ref of the orginal geometries."
 msgstr ""
-"Since ST_Extent returns a bounding box, the SRID meta-data is lost. Use "
-"ST_SetSRID to force it back into a geometry with SRID meta data. The "
-"coordinates are in the units of the spatial ref of the orginal geometries."
+"ST_Extentはバウンディングボックスを返しますが、SRIDメタデータは失います。"
+"ST_SetSRIDを使って、SRIDメタデータをジオメトリに強制的に戻します。座標値の単"
+"位は元のジオメトリの空間参照系の単位です。"
 
 #. Tag: para
 #: reference_misc.xml:312
@@ -685,8 +683,8 @@ msgid ""
 "ST_Extent will return boxes with only an x and y component even with (x,y,z) "
 "coordinate geometries. To maintain x,y,z use ST_3DExtent instead."
 msgstr ""
-"ST_Extent will return boxes with only an x and y component even with (x,y,z) "
-"coordinate geometries. To maintain x,y,z use ST_3DExtent instead."
+"ST_Extentは(X,Y,Z)を持っていても、X値とY値のボックスを返します。X,Y,Zを維持す"
+"るにはST_Extent3Dを使います。"
 
 #. Tag: para
 #: reference_misc.xml:316
@@ -783,7 +781,7 @@ msgstr "ST_3DExtent"
 msgid ""
 "an aggregate function that returns the box3D bounding box that bounds rows "
 "of geometries."
-msgstr "ジオメトリのbox3Dバウンディングボックスを返す集計関数です。"
+msgstr "ジオメトリのbox3Dバウンディングボックスを返す集約関数です。"
 
 #. Tag: funcprototype
 #: reference_misc.xml:345
@@ -807,7 +805,7 @@ msgid ""
 "data, in the same way the SUM() and AVG() functions do."
 msgstr ""
 "ST_3DExtentはジオメトリの集合を囲むbox3d (Z座標を含む)のバウンディングボック"
-"スを返します。ST_Extentは、PostgreSQL用語で言うところの「集計関数」です。"
+"スを返します。ST_Extentは、PostgreSQL用語で言うところの「集約関数」です。"
 "SUM()やMEAN()と同じ方法でデータリストの操作を行うことを意味します。"
 
 #. Tag: para
@@ -1169,22 +1167,3 @@ msgstr ""
 " st_pointinsidecircle\n"
 "------------------------\n"
 " t"
-
-#~ msgid ""
-#~ "<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
-#~ "funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
-#~ "paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
-#~ "paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box2d "
-#~ "<function>ST_EstimatedExtent</function></funcdef> <paramdef><type>text </"
-#~ "type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </"
-#~ "type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype>"
-#~ msgstr ""
-#~ "<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></"
-#~ "funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></"
-#~ "paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></"
-#~ "paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</"
-#~ "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box2d "
-#~ "<function>ST_EstimatedExtent</function></funcdef> <paramdef><type>text </"
-#~ "type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </"
-#~ "type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype>"

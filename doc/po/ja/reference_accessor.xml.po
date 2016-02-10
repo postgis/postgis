@@ -1,20 +1,18 @@
 # SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PostGIS\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-01-21 10:21+0000\n"
-"PO-Revision-Date: 2016-01-26 16:25+0900\n"
-"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
-"Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
-"ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2016-02-10 19:14+0900\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
+"Language: ja\n"
 "X-Generator: Poedit 1.8.6\n"
 
 #. Tag: title
@@ -456,7 +454,7 @@ msgid ""
 "130), \n"
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 msgstr ""
-"-- -- ST_AsText 出力\n"
+"-- ST_AsText 出力\n"
 "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 "
 "130), \n"
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
@@ -732,9 +730,9 @@ msgstr ""
 "Changed: 2.0.0では単一ジオメトリのMULTILINESTRINGで動作しなくなりました。単一"
 "のラインストリングからなるMULTILINESTRINGについては幸運にも動いていて、最初の"
 "ポイントを返していました。2.0.0では他のMULTILINESTRINGと同様にNULLを返すよう"
-"になりました。古い振る舞いは記載されていませんでしたが、LINESTRINGとして格納"
-"されているデータを持っていると思われる人々は2.0でNULLが返って来ることを経験す"
-"ることでしょう。"
+"になりました。古い挙動は記載されていませんでしたが、LINESTRINGとして格納され"
+"ているデータを持っていると思われる人々は2.0でNULLが返って来ることを経験するこ"
+"とでしょう。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:279
@@ -850,8 +848,7 @@ msgstr ""
 msgid ""
 "Availability: 1.5.0 behavior changed to output double precision instead of "
 "float4"
-msgstr ""
-"Availability: 1.5.0 振る舞いが変更され出力がfloat4からfloat8になりました。"
+msgstr "Availability: 1.5.0 挙動が変更され出力がfloat4からfloat8になりました。"
 
 #. Tag: para
 #: reference_accessor.xml:326 reference_accessor.xml:775
@@ -1192,8 +1189,8 @@ msgid ""
 "POLYHEDRALSURFACE Otherwise, return NULL."
 msgstr ""
 "GEOMETRYCOLLECTION, (MULTI)POINT, (MULTI)LINESTRING, MULTICURVE, "
-"(MULTI)POLYGON, POLYHEDRALSURFACEの場合には、1始まりでN番目のジオメトリを返し"
-"ます。それ以外の場合にはNULLを返します。"
+"(MULTI)POLYGON, POLYHEDRALSURFACEの場合には、1はじまりでN番目のジオメトリを返"
+"します。それ以外の場合にはNULLを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:472
@@ -2410,7 +2407,8 @@ msgstr ""
 msgid ""
 "Returns text stating if a geometry is valid or not an if not valid, a reason "
 "why."
-msgstr "ジオメトリが妥当か否かを示す文字列を返し、不正な場合は理由を返します。"
+msgstr ""
+"ジオメトリが妥当か否かを示すテキストを返し、不正な場合は理由を返します。"
 
 #. Tag: para
 #: reference_accessor.xml:987
@@ -2487,7 +2485,7 @@ msgid ""
 "------------------\n"
 " Valid Geometry"
 msgstr ""
-"-- 試験に成功した5つのレコードを除いた最初の3つのレコード\n"
+"-- 試験に成功した5レコードを除いた最初の3レコード\n"
 "SELECT gid, ST_IsValidReason(the_geom) as validity_info\n"
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
@@ -2607,7 +2605,7 @@ msgstr ""
 #: reference_accessor.xml:1054
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
-msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要 "
+msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要です。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1062
@@ -2652,7 +2650,7 @@ msgid ""
 "-------+--------+----------\n"
 " t     |        |"
 msgstr ""
-"-- 試験に成功した5つのレコードを除いた最初の3つのレコード\n"
+"-- 試験に成功した5レコードを除いた最初の3レコード\n"
 "SELECT gid, reason(ST_IsValidDetail(the_geom)), "
 "ST_AsText(location(ST_IsValidDetail(the_geom))) as location \n"
 "FROM\n"
@@ -3003,7 +3001,7 @@ msgid ""
 "not a collection/MULTI type. 2.0.0+ now returns 1 for single geometries e.g "
 "POLYGON, LINESTRING, POINT."
 msgstr ""
-"Changed: 2.0.0より前の版では、ジオメトリがコレクション/マルチ系でない場合には"
+"Changed: 2.0.0 前の版では、ジオメトリがコレクション/マルチ系でない場合には"
 "NULLを返しました。2.0.0以上では、POLYGON, LINESTRING, POINTといった単一ジオメ"
 "トリについては1を返します。"
 
@@ -3068,9 +3066,8 @@ msgid ""
 "will work with POLYGON and return NULL for a MULTIPOLYGON type or any other "
 "type"
 msgstr ""
-"ジオメトリのポリゴンの内環数を返します。この関数はポリゴンとマルチポリゴンの"
-"両方で動作します。ジオメトリにマルチポリゴンが存在しない場合はNULLを返しま"
-"す。"
+"ジオメトリのポリゴンの内環数を返します。この関数はポリゴンで動作します。マル"
+"チポリゴンや、それ以外の場合には、NULLを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1290
@@ -3545,7 +3542,7 @@ msgid ""
 "duplicates may be removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
 msgstr ""
 "ジオメトリの全ての座標値からなるマルチポイントを返します。入力ジオメトリの重"
-"複ポイントを削除しません (この振る舞いを望まない場合には<xref linkend="
+"複ポイントを削除しません (この挙動を望まない場合には<xref linkend="
 "\"ST_RemoveRepeatedPoints\"/>を使って消します)。環ジオメトリの開始点と終了点"
 "も削除しません。"
 
@@ -4066,7 +4063,7 @@ msgid ""
 "since that will not auto-cast."
 msgstr ""
 "この関数はbox3dのみ定義していますが、ジオメトリとbox2dに定義されている自動"
-"キャストの振る舞いによって、box2dとジオメトリでも動作します。ジオメトリまたは"
+"キャストの挙動によって、box2dとジオメトリでも動作します。ジオメトリまたは"
 "box2dの文字列表現については、自動キャストしないため、与えることはできません。"
 
 #. Tag: programlisting
@@ -4850,6 +4847,3 @@ msgstr ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
 "\"/>, <xref linkend=\"ST_ZMax\"/>"
-
-#~ msgid ", <xref linkend=\"ST_MakePolygon\"/>"
-#~ msgstr ", <xref linkend=\"ST_MakePolygon\"/>"
