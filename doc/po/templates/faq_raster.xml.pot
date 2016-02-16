@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 #. Tag: para
 #: faq_raster.xml:14
 #, no-c-format
-msgid "As of PostGIS 2.1.3 and 2.0.5, a security change was made to by default disable all GDAL drivers and out of db rasters. The release notes are at <ulink url=\"/2014/05/19/postgis-2.0.6_and_2.1.3\">PostGIS 2.0.6, 2.1.3 security release</ulink>. In order to reenable specific drivers or all drivers and reenable out of database support, refer to <xref linkend=\"install_short_version\"/>."
+msgid "As of PostGIS 2.1.3 and 2.0.5, a security change was made to by default disable all GDAL drivers and out of db rasters. The release notes are at <ulink url=\"http://postgis.net/2014/05/19/postgis-2.0.6_and_2.1.3\">PostGIS 2.0.6, 2.1.3 security release</ulink>. In order to reenable specific drivers or all drivers and reenable out of database support, refer to <xref linkend=\"install_short_version\"/>."
 msgstr ""
 
 #. Tag: para
@@ -53,13 +53,13 @@ msgstr ""
 #. Tag: para
 #: faq_raster.xml:36
 #, no-c-format
-msgid "There is a full length beginner tutorial <ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01\"> Intersecting vector buffers with large raster coverage using PostGIS Raster</ulink>. Jorge has a series of blog articles on PostGIS Raster that demonstrate how to load raster data as well as cross compare to same tasks in Oracle GeoRaster. Check out <ulink url=\"http://gis4free.wordpress.com/category/postgis-raster/\">Jorge's PostGIS Raster / Oracle GeoRaster Series</ulink>. There is a whole chapter (more than 35 pages of content) dedicated to PostGIS Raster with free code and data downloads at <ulink url=\"http://www.postgis.us/chapter_13\">PostGIS in Action - Raster chapter</ulink>. You can <ulink url=\"http://www.postgis.us/page_buy_book\">buy PostGIS in Action</ulink> now from Manning in hard-copy (significant discounts for bulk purchases) or just the E-book format. You can also buy from Amazon and various other book distributors. All hard-copy books come with a free coupon to download the E-book version."
+msgid "There is a full length beginner tutorial <ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRasterTutorial01\"> Intersecting vector buffers with large raster coverage using PostGIS Raster</ulink>. Jorge has a series of blog articles on PostGIS Raster that demonstrate how to load raster data as well as cross compare to same tasks in Oracle GeoRaster. Check out <ulink url=\"http://gis4free.wordpress.com/category/postgis-raster/\">Jorge's PostGIS Raster / Oracle GeoRaster Series</ulink>. There is a whole chapter (more than 35 pages of content) dedicated to PostGIS Raster with free code and data downloads at <ulink url=\"https://www.manning.com/books/postgis-in-action-second-edition\">PostGIS in Action - Raster chapter</ulink>. You can <ulink url=\"http://www.postgis.us/page_buy_book\">buy PostGIS in Action</ulink> now from Manning in hard-copy (significant discounts for bulk purchases) or just the E-book format. You can also buy from Amazon and various other book distributors. All hard-copy books come with a free coupon to download the E-book version."
 msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:43
 #, no-c-format
-msgid "Here is a review from a PostGIS Raster user <ulink url=\"http://fuzzytolerance.info/code/postgis-raster-ftw/\">PostGIS raster applied to land classification urban forestry</ulink>"
+msgid "Here is a review from a PostGIS Raster user <ulink url=\"http://fuzzytolerance.info/blog/2010/10/25/2010-10-26-postgis-raster-ftw/\">PostGIS raster applied to land classification urban forestry</ulink>"
 msgstr ""
 
 #. Tag: para
@@ -269,7 +269,7 @@ msgstr ""
 #. Tag: para
 #: faq_raster.xml:147
 #, no-c-format
-msgid "PostGIS Raster is undergoing many changes. If you want to get the latest nightly build for Windows -- then check out the Tamas Szekeres nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and MapServer executables and PostGIS Raster driver built-in. Just click the SDK bat and run your commands from there. <ulink url=\"http://vbkto.dyndns.org/sdk/\">http://vbkto.dyndns.org/sdk/</ulink>. Also available are VS project files."
+msgid "PostGIS Raster is undergoing many changes. If you want to get the latest nightly build for Windows -- then check out the Tamas Szekeres nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and MapServer executables and PostGIS Raster driver built-in. Just click the SDK bat and run your commands from there. <ulink url=\"www.gisinternals.com\">http://www.gisinternals.com</ulink>. Also available are VS project files."
 msgstr ""
 
 #. Tag: para
@@ -293,7 +293,7 @@ msgstr ""
 #. Tag: para
 #: faq_raster.xml:163
 #, no-c-format
-msgid "In theory any tool that renders data using GDAL can support PostGIS raster data or support it with fairly minimal effort. Again for Windows, Tamas' binaries <ulink url=\"http://vbkto.dyndns.org/sdk/\">http://vbkto.dyndns.org/sdk/</ulink> are a good choice if you don't want the hassle of having to setup to compile your own."
+msgid "In theory any tool that renders data using GDAL can support PostGIS raster data or support it with fairly minimal effort. Again for Windows, Tamas' binaries <ulink url=\"www.gisinternals.com\">http://www.gisinternals.com</ulink> are a good choice if you don't want the hassle of having to setup to compile your own."
 msgstr ""
 
 #. Tag: para

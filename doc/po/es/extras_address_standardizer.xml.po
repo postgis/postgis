@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2015-09-29 12:22+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -163,7 +163,7 @@ msgstr ""
 #. Tag: title
 #: extras_address_standardizer.xml:49 extras_address_standardizer.xml:153
 #: extras_address_standardizer.xml:486 extras_address_standardizer.xml:528
-#: extras_address_standardizer.xml:586 extras_address_standardizer.xml:641
+#: extras_address_standardizer.xml:586 extras_address_standardizer.xml:646
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -188,7 +188,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:52 extras_address_standardizer.xml:593
-#: extras_address_standardizer.xml:647
+#: extras_address_standardizer.xml:655
 #, no-c-format
 msgid "&address_standardizer_required;"
 msgstr ""
@@ -1297,42 +1297,98 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:592 extras_address_standardizer.xml:646
+#: extras_address_standardizer.xml:592 extras_address_standardizer.xml:654
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: title
-#: extras_address_standardizer.xml:598 extras_address_standardizer.xml:652
+#: extras_address_standardizer.xml:598 extras_address_standardizer.xml:660
 #, no-c-format
 msgid "Examples"
 msgstr ""
 
-#. Tag: programlisting
+#. Tag: para
 #: extras_address_standardizer.xml:600
 #, no-c-format
+msgid "Single Addresss"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_address_standardizer.xml:601
+#, no-c-format
 msgid ""
-"SELECT num, street, city, zip, zipplus FROM parse_address('1 Devonshire "
-"Place, Boston, MA 02109-1234');\n"
-" num |      street      |  city  |  zip  | zipplus\n"
+"SELECT num, street, city, zip, zipplus \n"
+"        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
+msgstr ""
+
+#. Tag: screen
+#: extras_address_standardizer.xml:602
+#, no-c-format
+msgid ""
+"num |      street      |  city  |  zip  | zipplus\n"
 "-----+------------------+--------+-------+---------\n"
 " 1   | Devonshire Place | Boston | 02109 | 1234"
 msgstr ""
 
+#. Tag: para
+#: extras_address_standardizer.xml:604
+#, no-c-format
+msgid "Table of addresses"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_address_standardizer.xml:605
+#, no-c-format
+msgid ""
+"-- basic table\n"
+"CREATE TABLE places(addid serial PRIMARY KEY, address text);\n"
+"\n"
+"INSERT INTO places(address)\n"
+"VALUES ('529 Main Street, Boston MA, 02129'),\n"
+" ('77 Massachusetts Avenue, Cambridge, MA 02139'),\n"
+" ('25 Wizard of Oz, Walaford, KS 99912323'),\n"
+" ('26 Capen Street, Medford, MA'),\n"
+" ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
+" ('950 Main Street, Worcester, MA 01610');\n"
+"\n"
+" -- parse the addresses \n"
+" -- if you want all fields you can use (a).*\n"
+"SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a)."
+"zipplus\n"
+"FROM (SELECT addid, parse_address(address) As a\n"
+" FROM places) AS p;"
+msgstr ""
+
+#. Tag: screen
+#: extras_address_standardizer.xml:606
+#, no-c-format
+msgid ""
+"addid | num |        street        |   city    | state |  zip  | zipplus\n"
+"-------+-----+----------------------+-----------+-------+-------+---------\n"
+"     1 | 529 | Main Street          | Boston    | MA    | 02129 |\n"
+"     2 | 77  | Massachusetts Avenue | Cambridge | MA    | 02139 |\n"
+"     3 | 25  | Wizard of Oz         | Walaford  | KS    | 99912 | 323\n"
+"     4 | 26  | Capen Street         | Medford   | MA    |       |\n"
+"     5 | 124 | Mount Auburn St      | Cambridge | MA    | 02138 |\n"
+"     6 | 950 | Main Street          | Worcester | MA    | 01610 |\n"
+"(6 rows)"
+msgstr ""
+
 #. Tag: title
-#: extras_address_standardizer.xml:606 extras_address_standardizer.xml:666
+#: extras_address_standardizer.xml:611 extras_address_standardizer.xml:682
 #, no-c-format
 msgid "See Also"
 msgstr ""
 
 #. Tag: refname
-#: extras_address_standardizer.xml:614
+#: extras_address_standardizer.xml:619
 #, no-c-format
 msgid "standardize_address"
 msgstr ""
 
 #. Tag: refpurpose
-#: extras_address_standardizer.xml:616
+#: extras_address_standardizer.xml:621
 #, no-c-format
 msgid ""
 "Returns an stdaddr form of an input address utilizing lex, gaz, and rule "
@@ -1340,7 +1396,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: extras_address_standardizer.xml:620
+#: extras_address_standardizer.xml:625
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>stdaddr <function>standardize_address</function></"
@@ -1358,7 +1414,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:643
+#: extras_address_standardizer.xml:648
 #, no-c-format
 msgid ""
 "Returns an <xref linkend=\"stdaddr\"/> form of an input address utilizing "
@@ -1367,25 +1423,53 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:653
+#: extras_address_standardizer.xml:650
+#, no-c-format
+msgid "Variant 1: Takes an address as a single line."
+msgstr ""
+
+#. Tag: para
+#: extras_address_standardizer.xml:651
+#, no-c-format
+msgid ""
+"Variant 2: Takes an address as 2 parts. A <varname>micro</varname> "
+"consisting of standard first line of postal address e.g. <code>house_num "
+"street</code>, and a macro consisting of standard postal second line of an "
+"address e.g <code>city, state postal_code country</code>."
+msgstr ""
+
+#. Tag: para
+#: extras_address_standardizer.xml:661
 #, no-c-format
 msgid "Using address_standardizer_data_us extension"
 msgstr ""
 
 #. Tag: programlisting
-#: extras_address_standardizer.xml:654
+#: extras_address_standardizer.xml:662
 #, no-c-format
 msgid ""
-"CREATE EXTENSION address_standardizer_data_us; -- only needs to be done "
-"once\n"
+"CREATE EXTENSION address_standardizer_data_us; -- only needs to be done once"
+msgstr ""
+
+#. Tag: para
+#: extras_address_standardizer.xml:664
+#, no-c-format
+msgid ""
+"Variant 1: Single line address. This doesn't work well with non-US addresses"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_address_standardizer.xml:665
+#, no-c-format
+msgid ""
 "SELECT house_num, name, suftype, city, country, state, unit  FROM "
 "standardize_address('us_lex', \n"
 "                           'us_gaz', 'us_rules', 'One Devonshire Place, PH "
-"301, Boston, MA 02109-1234');"
+"301, Boston, MA 02109');"
 msgstr ""
 
 #. Tag: screen
-#: extras_address_standardizer.xml:655
+#: extras_address_standardizer.xml:666
 #, no-c-format
 msgid ""
 "house_num |    name    | suftype |  city  | country |     state     |      "
@@ -1397,7 +1481,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:656
+#: extras_address_standardizer.xml:667
 #, no-c-format
 msgid ""
 "Using tables packaged with tiger geocoder. This example only works if you "
@@ -1405,7 +1489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: extras_address_standardizer.xml:657
+#: extras_address_standardizer.xml:668
 #, no-c-format
 msgid ""
 "SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
@@ -1414,7 +1498,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:659
+#: extras_address_standardizer.xml:670
 #, no-c-format
 msgid ""
 "Make easier to read we'll dump output using hstore extension CREATE "
@@ -1422,17 +1506,17 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: extras_address_standardizer.xml:660
+#: extras_address_standardizer.xml:671
 #, no-c-format
 msgid ""
 "SELECT (each(hstore(p))).*  \n"
 " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
-"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA "
-"02109-1234') As p;"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As "
+"p;"
 msgstr ""
 
 #. Tag: screen
-#: extras_address_standardizer.xml:661
+#: extras_address_standardizer.xml:672 extras_address_standardizer.xml:676
 #, no-c-format
 msgid ""
 "key     |      value\n"
@@ -1457,7 +1541,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_address_standardizer.xml:668
+#: extras_address_standardizer.xml:674
+#, no-c-format
+msgid "Variant 2: As a two part Address"
+msgstr ""
+
+#. Tag: programlisting
+#: extras_address_standardizer.xml:675
+#, no-c-format
+msgid ""
+"SELECT (each(hstore(p))).*  \n"
+" FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
+"   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, "
+"US') As p;"
+msgstr ""
+
+#. Tag: para
+#: extras_address_standardizer.xml:684
 #, no-c-format
 msgid ""
 ", <xref linkend=\"rulestab\"/>, <xref linkend=\"lextab\"/>, <xref linkend="

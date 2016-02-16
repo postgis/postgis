@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2015-09-29 12:25+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -2211,13 +2211,10 @@ msgstr "Extraer un raster con PSQL"
 
 #. Tag: para
 #: using_raster_dataman.xml:533
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Sadly PSQL doesn't have easy to use built-in functionality for outputting "
-"binaries. This is a bit of a hack and based on one of the suggestions "
-"outlined in <ulink url=\"http://people.planetpostgresql.org/andrew/index."
-"php?/archives/196-Clever-trick-challenge.html\">Clever Trick Challenge -- "
-"Outputting bytea with psql</ulink> that piggy backs on PostgreSQL somewhat "
+"binaries. This is a bit of a hack that piggy backs on PostgreSQL somewhat "
 "legacy large object support. To use first launch your psql commandline "
 "connected to your database."
 msgstr ""
@@ -2230,7 +2227,7 @@ msgstr ""
 "comandos psql conectando a tu base de datos."
 
 #. Tag: para
-#: using_raster_dataman.xml:536
+#: using_raster_dataman.xml:535
 #, no-c-format
 msgid ""
 "Unlike the python approach, this approach creates the file on your local "
@@ -2239,7 +2236,7 @@ msgstr ""
 "A diferencia del enfoque de python, este, crea el fichero en tu equipo local."
 
 #. Tag: screen
-#: using_raster_dataman.xml:537
+#: using_raster_dataman.xml:536
 #, no-c-format
 msgid ""
 "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"
