@@ -53,6 +53,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
+Datum ST_GeometricMedian(PG_FUNCTION_ARGS);
 
 
 static double determineSide(const POINT2D *seg1, const POINT2D *seg2, const POINT2D *point);
@@ -1139,5 +1140,58 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
+}
+
+/**********************************************************************
+ *
+ * ST_GeometricMedian
+ *
+ **********************************************************************/
+
+PG_FUNCTION_INFO_V1(ST_GeometricMedian);
+Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* geom;
+	GSERIALIZED* result;
+	LWGEOM* input;
+	LWPOINT* lwresult;
+	double tolerance;
+	bool fail_if_not_converged;
+	uint32_t max_iter;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	tolerance = PG_GETARG_FLOAT8(1);
+	max_iter = PG_GETARG_INT32(2);
+	fail_if_not_converged = PG_GETARG_BOOL(3);
+
+	if (tolerance < 0)
+	{
+		lwpgerror("Tolerance must be positive.");
+		PG_RETURN_NULL();
+	}
+
+	if (max_iter < 0)
+	{
+		lwpgerror("Maximum iterations must be positive.");
+		PG_RETURN_NULL();
+	}
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	input = lwgeom_from_gserialized(geom);
+
+	lwresult = lwgeom_median(input, tolerance, max_iter, fail_if_not_converged);
+	lwgeom_free(input);
+
+	if(!lwresult)
+	{
+		lwpgerror("Error computing geometric median.");
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwpoint_as_lwgeom(lwresult));
+	
+	PG_RETURN_POINTER(result);
 }
 

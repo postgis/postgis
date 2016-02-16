@@ -1447,6 +1447,12 @@ extern LWMPOINT *lwpoly_to_points(const LWPOLY *poly, int npoints);
 extern LWMPOINT *lwmpoly_to_points(const LWMPOLY *mpoly, int npoints);
 extern LWMPOINT *lwgeom_to_points(const LWGEOM *lwgeom, int npoints);
 
+/*
+ * Geometric median
+ */
+extern LWPOINT* lwgeom_median(const LWGEOM *g, double tol, uint32_t maxiter, char fail_if_not_converged);
+extern LWPOINT* lwmpoint_median(const LWMPOINT *g, double tol, uint32_t maxiter, char fail_if_not_converged);
+
 /**
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */
