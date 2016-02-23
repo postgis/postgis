@@ -9,6 +9,8 @@ PostGIS 2.2.2dev
   - #3427, Update spatial_ref_sys to EPSG version 8.8
   - #3433, ST_ClusterIntersecting incorrect for MultiPoints
   - #3436, memory handling mistake in ptarray_clone_deep
+  - #3461, ST_GeomFromKML crashes Postgres when there are 
+           innerBoundaryIs and no outerBoundaryIs
 
 PostGIS 2.2.1
 2016/01/06
