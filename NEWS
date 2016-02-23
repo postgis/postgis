@@ -23,6 +23,9 @@ PostGIS 2.1.9
   - #3389, Buffer overflow in lwgeom_to_geojson
   - #3393, ST_Area NaN for some polygons
   - #3436, memory handling mistake in ptarray_clone_deep 
+  - #3461, ST_GeomFromKML crashes Postgres when there are 
+           innerBoundaryIs and no outerBoundaryIs
+
 
 PostGIS 2.1.8
 2015/07/07
