@@ -544,12 +544,22 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	int where = PG_GETARG_INT32(1);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	LWPOINT *lwpoint = NULL;
-	int type = lwgeom->type;
-	
-	/* Can't handle crazy index! */
-	if ( where < 1 )
-		PG_RETURN_NULL();
-
+	int type = lwgeom->type; 
+    
+	/* If index in negativ, count backward */  
+	if( where < 1 ){
+        int count = -1; 
+        if ( type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
+            count = lwgeom_count_vertices(lwgeom);
+        
+        if(count >0){  //only work if we found the total point number
+            //converting where to positive backward indexing, +1 because 1 indexing
+            where = where + count + 1;
+        }
+        if (where < 1)
+            PG_RETURN_NULL();
+    }
+    
 	if ( type == LINETYPE || type == CIRCSTRINGTYPE )
 	{
 		/* OGC index starts at one, so we substract first. */
