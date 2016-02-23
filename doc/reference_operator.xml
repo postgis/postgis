@@ -91,6 +91,204 @@ FROM ( VALUES
 		  </refsection>
 		</refentry>
 
+		<refentry id="overlaps_geometry_box2df">
+		  <refnamediv>
+			<refname>&amp;&amp;(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box intersects a 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df</type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the cached 2D bounding box of geometry A intersects the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakePoint(1,1) &amp;&amp; ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_box2df_geometry">
+		  <refnamediv>
+			<refname>&amp;&amp;(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) intersects a geometry's (cached) 2D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A intersects the cached 2D bounding box of geometry B, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; ST_MakePoint(1,1) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_box2df_box2df">
+		  <refnamediv>
+			<refname>&amp;&amp;(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if two 2D float precision bounding boxes (BOX2DF) intersect each other.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if two 2D bounding boxes A and B intersect each other, using float precision. This means that if A (or B) is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; ST_MakeBox2D(ST_MakePoint(1,1), ST_MakePoint(3,3)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="geometry_overlaps_nd">
 		  <refnamediv>
 			<refname>&amp;&amp;&amp;</refname>
@@ -174,6 +372,192 @@ FROM ( VALUES
 			<title>See Also</title>
 
 			<para><xref linkend="geometry_overlaps" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_geometry_gidx">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(geometry,gidx)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's (cached) n-D bounding box intersects a n-D float precision bounding box (GIDX).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the cached n-D bounding box of geometry A intersects the n-D bounding box B, using float precision. This means that if B is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakePoint(1,1,1) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_nd_gidx_geometry" />,
+				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_gidx_geometry">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(gidx,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a n-D float precision bounding box (GIDX) intersects a geometry's (cached) n-D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the n-D bounding box A intersects the cached n-D bounding box of geometry B, using float precision. This means that if A is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_MakePoint(1,1,1) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_nd_geometry_gidx" />,
+				<xref linkend="overlaps_nd_gidx_gidx" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="overlaps_nd_gidx_gidx">
+		  <refnamediv>
+			<refname>&amp;&amp;&amp;(gidx,gidx)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if two n-D float precision bounding boxes (GIDX) intersect each other.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>gidx </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</varname> if two n-D bounding boxes A and B intersect each other, using float precision. This means that if A (or B) is a (double precision) box3d, it will be internally converted to a float precision 3D bounding box (GIDX)</para>
+
+			<note><para>This operator is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+			<para>&T_support;</para>
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;
+
+ overlaps
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+                                <xref linkend="overlaps_nd_geometry_gidx" />,
+                                <xref linkend="overlaps_nd_gidx_geometry" /></para>
 		  </refsection>
 		</refentry>
 
@@ -786,6 +1170,204 @@ FROM
 		  </refsection>
 		</refentry>
 
+		<refentry id="is_contained_geometry_box2df">
+		  <refnamediv>
+			<refname>@(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained into a 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the A geometry's 2D bounding box is contained the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="is_contained_box2df_geometry">
+		  <refnamediv>
+			<refname>@(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) is contained into a geometry's 2D bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A is contained into the B geometry's 2D bounding box, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="is_contained_box2df_box2df">
+		  <refnamediv>
+			<refname>@(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) is contained into another 2D float precision bounding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>@</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A is contained into the 2D bounding box B, using float precision. This means that if A (or B) is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;
+
+ is_contained
+--------------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" /></para>
+		  </refsection>
+		</refentry>
+
 		<refentry id="ST_Geometry_Overabove">
 		  <refnamediv>
 			<refname>|&amp;&gt;</refname>
@@ -989,6 +1571,204 @@ FROM
 			<title>See Also</title>
 
 			<para><xref linkend="ST_Geometry_Contained" />, <xref linkend="geometry_overlaps" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="contains_geometry_box2df">
+		  <refnamediv>
+			<refname>~(geometry,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a geometry's 2D bonding box contains a 2D float precision bounding box (GIDX).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box of a geometry A contains the 2D bounding box B, using float precision. This means that if B is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="contains_box2df_geometry">
+		  <refnamediv>
+			<refname>~(box2df,geometry)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) contains a geometry's 2D bonding box.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A contains the B geometry's bounding box, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_box2df" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="contains_box2df_box2df">
+		  <refnamediv>
+			<refname>~(box2df,box2df)</refname>
+
+			<refpurpose>Returns <varname>TRUE</varname> if a 2D float precision bounding box (BOX2DF) contains another 2D float precision bounding box (BOX2DF).</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>boolean <function>~</function></funcdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>box2df </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D bounding box A contains the 2D bounding box B, using float precision. This means that if A is a (double precision) box2d, it will be internally converted to a float precision 2D bounding box (BOX2DF)</para>
+
+			<note><para>This operand is intended to be used internally by BRIN indexes, more
+				than by users.</para></note>
+
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>&curve_support;</para>
+			<para>&P_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) AS contains;
+
+ contains
+----------
+ t
+(1 row)</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para>
+				<xref linkend="overlaps_geometry_box2df" />,
+				<xref linkend="overlaps_box2df_geometry" />,
+				<xref linkend="overlaps_box2df_box2df" />,
+				<xref linkend="contains_geometry_box2df" />,
+				<xref linkend="contains_box2df_geometry" />,
+				<xref linkend="is_contained_geometry_box2df" />,
+				<xref linkend="is_contained_box2df_geometry" />,
+				<xref linkend="is_contained_box2df_box2df" /></para>
 		  </refsection>
 		</refentry>
 

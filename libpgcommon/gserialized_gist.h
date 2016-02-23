@@ -24,6 +24,7 @@ typedef struct
 ** 4 bytes varsize + 4 dimensions * 2 ordinates * 4 bytes float size = 36 bytes
 */
 #define GIDX_MAX_SIZE 36
+#define GIDX_MAX_DIM 4
 
 
 /**********************************************************************
@@ -94,5 +95,6 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
 /* Remove the box from a disk serialization */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
+int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
 
 

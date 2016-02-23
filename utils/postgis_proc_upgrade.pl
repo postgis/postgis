@@ -390,6 +390,37 @@ EOF
 		}
 	}
 
+	# This code handles operator family by creating them if we are doing a major upgrade
+	if ( /^create operator family\s+(\w+)\s+USING\s+(\w+)\s*/i )
+	{
+		my $opfname = $1;
+		my $amname = $2;
+		my $def = $_;
+		my $opfsig = $opfname . " " . $amname;
+		while(<INPUT>)
+		{
+			$def .= $_;
+			last if /\);/;
+		}
+
+	my $last_updated = parse_last_updated($comment);
+	if ( ! $last_updated ) {
+		print STDERR "WARNING: no last updated info for operator family '${opfname}'\n";
+		$last_updated = find_last_updated("opfamilies", $opfsig);
+	}
+	print "-- Operator family ${opfsig} -- LastUpdated: ${last_updated}\n";
+	print <<"EOF";
+DO LANGUAGE 'plpgsql'
+\$postgis_proc_upgrade\$
+BEGIN
+  IF $last_updated > version_from_num FROM _postgis_upgrade_info THEN
+    EXECUTE \$postgis_proc_upgrade_parsed_def\$ $def \$postgis_proc_upgrade_parsed_def\$;
+  END IF;
+END
+\$postgis_proc_upgrade\$;
+EOF
+	}
+
 	# This code handles operator classes by creating them if we are doing a major upgrade
 	if ( /^create operator class\s+(\w+)\s*/i )
 	{
