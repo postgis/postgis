@@ -1,7 +1,8 @@
 -- Repeat all tests with new function names.
 --  Out of range indexes
 SELECT ST_SetPoint('LINESTRING(0 0, 1 1, 2 2)', 3, 'POINT(9 9)');
-SELECT ST_SetPoint('LINESTRING(0 0, 1 1, 2 2)', -1, 'POINT(9 9)');
+SELECT ST_asewkt(ST_SetPoint('LINESTRING(0 0, 1 1, 2 2)', -1, 'POINT(9 9)'));
+SELECT ST_SetPoint('LINESTRING(0 0, 1 1, 2 2)', -10, 'POINT(9 9)');
 
 --  Invalid inputs
 SELECT ST_SetPoint('MULTIPOINT(0 0, 1 1, 2 2)', 3, 'POINT(9 9)');
