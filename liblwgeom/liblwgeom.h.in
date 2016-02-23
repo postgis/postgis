@@ -132,8 +132,9 @@ typedef enum LWORD_T {
 
 /**
 * Macros for manipulating the 'flags' byte. A uint8_t used as follows: 
-* ---RGBMZ
-* Three unused bits, followed by ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
+* VVSRGBMZ
+* Version bit, followed by 
+* Validty, Solid, ReadOnly, Geodetic, HasBBox, HasM and HasZ flags.
 */
 #define FLAGS_GET_Z(flags) ((flags) & 0x01)
 #define FLAGS_GET_M(flags) (((flags) & 0x02)>>1)
