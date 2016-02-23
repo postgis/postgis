@@ -3578,6 +3578,13 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
   if ( oldedge->face_left != 0 )
   {
     nface1 = lwt_GetFaceGeometry(topo, oldedge->face_left);
+    if ( ! nface1 )
+    {
+      lwerror("lwt_ChangeEdgeGeom could not construct face %"
+                 PRId64 ", on the left of edge %" PRId64,
+                oldedge->face_left, edge_id);
+      return -1;
+    }
 #if 0
     {
     size_t sz;
@@ -3596,6 +3603,13 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
        && oldedge->face_right != oldedge->face_left )
   {
     nface2 = lwt_GetFaceGeometry(topo, oldedge->face_right);
+    if ( ! nface2 )
+    {
+      lwerror("lwt_ChangeEdgeGeom could not construct face %"
+                 PRId64 ", on the right of edge %" PRId64,
+                oldedge->face_right, edge_id);
+      return -1;
+    }
 #if 0
     {
     size_t sz;
