@@ -5699,12 +5699,12 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       LWDEBUGF(1, "Diffing snapped, with srid=%d "
                   "and interesecting edges, with srid=%d",
                   snapped->srid, iedges->srid);
-      noded = lwgeom_difference(snapped, iedges);
+      noded = lwgeom_difference(snapped, iedges, NULL);
       LWDEBUGG(1, noded, "Differenced");
       LWDEBUGF(1, "Intersecting snapped, with srid=%d "
                   "and interesecting edges, with srid=%d",
                   snapped->srid, iedges->srid);
-      set1 = lwgeom_intersection(snapped, iedges);
+      set1 = lwgeom_intersection(snapped, iedges, NULL);
       LWDEBUGG(1, set1, "Intersected");
       lwgeom_free(snapped);
       LWDEBUGF(1, "Linemerging set1, with srid=%d", set1->srid);
@@ -5714,7 +5714,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       lwgeom_free(set1);
       LWDEBUGF(1, "Unioning noded, with srid=%d "
                   "and set2, with srid=%d", noded->srid, set2->srid);
-      set1 = lwgeom_union(noded, set2);
+      set1 = lwgeom_union(noded, set2, NULL);
       lwgeom_free(set2);
       lwgeom_free(noded);
       noded = set1;
@@ -5785,7 +5785,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       -- See http://trac.osgeo.org/postgis/ticket/1714
       -- TODO: consider running UnaryUnion once after all noding
       */
-      tmp = lwgeom_unaryunion(noded);
+      tmp = lwgeom_unaryunion(noded, NULL);
       lwgeom_free(noded);
       noded = tmp;
       LWDEBUGG(1, noded, "Unary-unioned");

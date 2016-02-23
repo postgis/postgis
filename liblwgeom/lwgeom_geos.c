@@ -208,7 +208,6 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 }
 
 
-
 GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *);
 
 
@@ -476,6 +475,38 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 	return g;
 }
 
+static GEOSGeometry*
+geos_set_precision(GEOSGeometry* g, double precision, int flags)
+{
+	GEOSGeometry* g_p = NULL;
+	if (!g)
+		return NULL;
+#if POSTGIS_GEOS_VERSION >= 36
+	g_p = GEOSGeom_setPrecision(g, precision, flags);
+#else
+	lwerror("GEOS 3.6+ is required for precision-aware overlay operations.");
+#endif
+	GEOSGeom_destroy(g);
+	return g_p;
+}
+
+GEOSGeometry*
+LWGEOM2GEOS_PREC(const LWGEOM* g, int autofix, const double* precision)
+{
+	GEOSGeometry* geos_geom;
+
+	geos_geom = LWGEOM2GEOS(g, autofix);
+	if (!geos_geom)
+	{
+		return NULL;
+    }
+
+	if (precision)
+		return geos_set_precision(geos_geom, *precision, GEOS_PREC_NO_TOPO | GEOS_PREC_KEEP_COLLAPSED);
+
+	return geos_geom;
+}
+
 const char*
 lwgeom_geos_version()
 {
@@ -524,7 +555,7 @@ lwgeom_normalize(const LWGEOM *geom1)
 }
 
 LWGEOM *
-lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
+lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2, const double *op_precision)
 {
 	LWGEOM *result ;
 	GEOSGeometry *g1, *g2, *g3 ;
@@ -549,18 +580,18 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	LWDEBUG(3, "intersection() START");
 
-	g1 = LWGEOM2GEOS(geom1, 0);
+	g1 = LWGEOM2GEOS_PREC(geom1, LW_FALSE, op_precision);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL ;
 	}
 
-	g2 = LWGEOM2GEOS(geom2, 0);
+	g2 = LWGEOM2GEOS_PREC(geom2, LW_FALSE, op_precision);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
-		lwerror("Second argument geometry could not be converted to GEOS.");
 		GEOSGeom_destroy(g1);
+		lwerror("Second argument geometry could not be converted to GEOS.");
 		return NULL ;
 	}
 
@@ -668,7 +699,7 @@ lwgeom_linemerge(const LWGEOM *geom1)
 }
 
 LWGEOM *
-lwgeom_unaryunion(const LWGEOM *geom1)
+lwgeom_unaryunion(const LWGEOM *geom1, const double* op_precision)
 {
 	LWGEOM *result ;
 	GEOSGeometry *g1, *g3 ;
@@ -681,7 +712,7 @@ lwgeom_unaryunion(const LWGEOM *geom1)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1, 0);
+	g1 = LWGEOM2GEOS_PREC(geom1, LW_FALSE, op_precision);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -689,10 +720,18 @@ lwgeom_unaryunion(const LWGEOM *geom1)
 	}
 
 	g3 = GEOSUnaryUnion(g1);
+	GEOSGeom_destroy(g1);
+
+	/* As of GEOS 3.6 r4118, GEOSUnaryUnion doesn't snap generated
+	 * coordinates to the geometry's precision model.  So we manually force
+	 * the coordinates to be rounded here before converting back into an
+	 * LWGEOM.
+	 */
+	if (op_precision)
+		g3 = geos_set_precision(g3, *op_precision, 0);
 
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		lwerror("Error performing unaryunion: %s",
 		        lwgeom_geos_errmsg);
 		return NULL; /* never get here */
@@ -706,21 +745,19 @@ lwgeom_unaryunion(const LWGEOM *geom1)
 
 	if (result == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		lwerror("Error performing unaryunion: GEOS2LWGEOM: %s",
 		        lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 
-	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
 	return result ;
 }
 
 LWGEOM *
-lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
+lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2, const double *op_precision)
 {
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM *result;
@@ -743,14 +780,14 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1, 0);
+	g1 = LWGEOM2GEOS_PREC(geom1, LW_FALSE, op_precision);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2, 0);
+	g2 = LWGEOM2GEOS_PREC(geom2, 0, op_precision);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
 		GEOSGeom_destroy(g1);
@@ -794,7 +831,7 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 }
 
 LWGEOM *
-lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
+lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2, const double* op_precision)
 {
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM *result;
@@ -817,7 +854,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1, 0);
+	g1 = LWGEOM2GEOS_PREC(geom1, LW_FALSE, op_precision);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -825,7 +862,7 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2, 0);
+	g2 = LWGEOM2GEOS_PREC(geom2, LW_FALSE, op_precision);
 
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
@@ -921,7 +958,7 @@ lwgeom_centroid(const LWGEOM* geom)
 }
 
 LWGEOM*
-lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
+lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2, const double* op_precision)
 {
 	int is3d;
 	int srid;
@@ -947,7 +984,7 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = LWGEOM2GEOS(geom1, 0);
+	g1 = LWGEOM2GEOS_PREC(geom1, LW_FALSE, op_precision);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -955,7 +992,7 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 		return NULL;
 	}
 
-	g2 = LWGEOM2GEOS(geom2, 0);
+	g2 = LWGEOM2GEOS_PREC(geom2, LW_FALSE, op_precision);
 
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{

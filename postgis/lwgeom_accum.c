@@ -235,10 +235,20 @@ pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();   /* returns null iff no input values */
 
+
 	p = (pgis_abs*) PG_GETARG_POINTER(0);
 
 	geometry_array = pgis_accum_finalfn(p, CurrentMemoryContext, fcinfo);
-	result = PGISDirectFunctionCall1( pgis_union_geometry_array, geometry_array );
+
+	if (p->data)
+	{
+		result = PGISDirectFunctionCall2( pgis_union_geometry_array, geometry_array, p->data);
+	}
+	else
+	{
+		result = PGISDirectFunctionCall1( pgis_union_geometry_array, geometry_array );
+	}
+
 	if (!result)
 		PG_RETURN_NULL();
 
@@ -416,7 +426,7 @@ PGISDirectFunctionCall2(PGFunction func, Datum arg1, Datum arg2)
 
 #if POSTGIS_PGSQL_VERSION > 90
 
-	InitFunctionCallInfoData(fcinfo, NULL, 1, InvalidOid, NULL, NULL);
+	InitFunctionCallInfoData(fcinfo, NULL, 2, InvalidOid, NULL, NULL);
 #else
 
 	InitFunctionCallInfoData(fcinfo, NULL, 1, NULL, NULL);

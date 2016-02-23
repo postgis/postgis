@@ -2146,13 +2146,13 @@ const char* lwgeom_geos_version(void);
 LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
 LWGEOM *lwgeom_normalize(const LWGEOM *geom);
-LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
-LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
-LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
-LWGEOM *lwgeom_centroid(const LWGEOM* geom);
-LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2, const double* op_precision);
+LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2, const double* op_precision);
+LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2, const double* op_precision);
+LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2, const double* op_precision);
 LWGEOM *lwgeom_linemerge(const LWGEOM *geom1);
-LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1);
+LWGEOM *lwgeom_centroid(const LWGEOM* geom);
+LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1, const double* op_precision);
 LWGEOM *lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double y1);
 LWCOLLECTION *lwgeom_subdivide(const LWGEOM *geom, int maxvertices);
 

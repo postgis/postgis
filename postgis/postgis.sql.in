@@ -3182,6 +3182,13 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, op_precision double precision)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','intersection'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
 -- PostGIS equivalent function: buffer(geometry,float8)
 CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8)
 	RETURNS geometry
@@ -3342,6 +3349,12 @@ CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME','difference'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry, op_precision double precision)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','difference'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: boundary(geometry)
 CREATE OR REPLACE FUNCTION ST_Boundary(geometry)
 	RETURNS geometry
@@ -3366,8 +3379,20 @@ CREATE OR REPLACE FUNCTION ST_symmetricdifference(geom1 geometry, geom2 geometry
 	AS 'MODULE_PATHNAME','symdifference'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_symmetricdifference(geom1 geometry, geom2 geometry, op_precision double precision)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','symdifference'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: GeomUnion(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geomunion'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry, op_precision double precision)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geomunion'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -3375,6 +3400,12 @@ CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
 -- Availability: 2.0.0
 -- Requires: GEOS-3.3.0
 CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','ST_UnaryUnion'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry, op_precision double precision)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_UnaryUnion'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -3775,9 +3806,22 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Union (geometry[], op_precision double precision)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Union (
 	basetype = geometry,
+	sfunc = pgis_geometry_accum_transfn,
+	stype = pgis_abs,
+	finalfunc = pgis_geometry_union_finalfn
+	);
+
+-- Availability: 2.3.0
+CREATE AGGREGATE ST_Union (geometry, double precision) (
 	sfunc = pgis_geometry_accum_transfn,
 	stype = pgis_abs,
 	finalfunc = pgis_geometry_union_finalfn
