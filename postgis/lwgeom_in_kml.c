@@ -384,6 +384,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 	int ring;
 	xmlNodePtr xa, xb;
 	POINTARRAY **ppa = NULL;
+	int outer_rings = 0;
 
 	for (xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
@@ -407,8 +408,13 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			        || (!*hasz && !ptarray_isclosed2d(ppa[0]))
 			        ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
 				lwerror("invalid KML representation");
+
+			outer_rings++;
 		}
 	}
+
+	if (outer_rings != 1)
+		lwerror("invalid KML representation");
 
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
