@@ -1023,7 +1023,17 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=15</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>text <function>ST_AsText</function></funcdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>precision=15</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -1031,7 +1041,8 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns the Well-Known Text representation of the geometry/geography.</para>
+			<para>Returns the Well-Known Text representation of the geometry/geography. The optional integer precision
+				parameter can specify the number of significant digits in the output doubles.</para>
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
@@ -1045,11 +1056,11 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			</note>
 
 			<para>Availability: 1.5 - support for geography was introduced.</para>
+			<para>Enhanced: 2.3 - optional parameter precision introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.25</para>
 			<para>&curve_support;</para>
 		  </refsection>
-
 
 		  <refsection>
 			<title>Examples</title>
@@ -1063,6 +1074,20 @@ F000000000000000000000000000000000000000000000000');
 --------------------------------
  POLYGON((0 0,0 1,1 1,1 0,0 0))
 (1 row)</programlisting>
+
+			<para>Providing the precision is optional.</para>
+
+			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'))
+          st_astext
+------------------------------
+ POINT(111.1111111 1.1111111)
+(1 row)</programlisting>
+
+			<programlisting>SELECT ST_AsText(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)'),2)
+st_astext
+--------------------
+POINT(1.1e+02 1.1)
+(1 row)</programlisting>
 		  </refsection>
 
 		  <!-- Optionally add a "See Also" section -->
@@ -1072,7 +1097,6 @@ F000000000000000000000000000000000000000000000000');
 			<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" /></para>
 		  </refsection>
 	</refentry>
-
 
 	<refentry id="ST_AsLatLonText">
 		  <refnamediv>
