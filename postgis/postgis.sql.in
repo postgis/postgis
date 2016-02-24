@@ -3726,12 +3726,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c';
 
--- Availability: 2.3
-CREATE OR REPLACE FUNCTION pgis_geometry_dbscan_finalfn(pgis_abs)
-	RETURNS geometry[]
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
-
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
