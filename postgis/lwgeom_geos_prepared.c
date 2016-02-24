@@ -316,7 +316,17 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	{
 		lwpgerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
-	}
+    }
+
+	/*
+	 * Avoid creating a PreparedPoint around a Point or a MultiPoint.
+	 * Consider changing this behavior in the future if supported GEOS
+	 * versions correctly handle prepared points and multipoints and
+	 * provide a performance benefit.
+	 * See https://trac.osgeo.org/postgis/ticket/3437
+	 */
+	if (lwgeom_get_type(lwgeom) == POINTTYPE || lwgeom_get_type(lwgeom) == MULTIPOINTTYPE)
+		return LW_FAILURE;
 	
 	prepcache->geom = LWGEOM2GEOS( lwgeom , 0);
 	if ( ! prepcache->geom ) return LW_FAILURE;

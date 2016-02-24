@@ -919,5 +919,20 @@ SELECT '#3368', ST_AsTWKB('0106000000010000000103000000010000001F0000007CCD1788E
 
 SELECT '#3375', ST_AsText(ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION(POINT(0 -7))'::geometry, 1000));
 
+-- #3437
+WITH
+mp AS (SELECT ST_Collect(ST_MakePoint(-c, c*c)) AS geom FROM generate_series(1, 5) c),
+p  AS (SELECT (ST_Dump(geom)).geom FROM mp)
+SELECT '#3437a' AS t, count(*) FROM mp INNER JOIN p ON ST_Intersects(mp.geom, p.geom)
+UNION ALL
+SELECT '#3437b' AS t, count(*) FROM mp INNER JOIN p ON ST_Contains(mp.geom, p.geom)
+UNION ALL
+SELECT '#3437c' AS t, count(*) FROM mp INNER JOIN p ON ST_ContainsProperly(mp.geom, p.geom)
+UNION ALL
+SELECT '#3437d' AS t, count(*) FROM mp INNER JOIN p ON ST_Covers(mp.geom, p.geom)
+UNION ALL
+SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom);
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
