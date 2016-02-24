@@ -476,6 +476,31 @@ SELECT 'T29', 'E'||edge_id, next_left_edge, next_right_edge,
   ( SELECT edge_id FROM newedge WHERE id = 29 ) )
   ORDER BY edge_id;
 
+--
+-- Attempt to add an edge to a topology with conflicting
+-- side-locations (face left/right information)
+--
+-- See https://trac.osgeo.org/postgis/ticket/3464
+
+--BEGIN; prot
+-- Break face info for edge 6
+UPDATE city_data.edge_data SET left_face = left_face + 1
+  WHERE edge_id = 6;
+-- First attempt to add edge, expect to find corrupted topology
+SELECT '#3464.1', topology.ST_AddEdgeModFace('city_data', 16, 19,
+ 'LINESTRING(9 22,28 25,47 22)');
+-- Break face info for edges 21
+UPDATE city_data.edge_data SET left_face = left_face + 1
+  WHERE edge_id = 21;
+-- Second attempt to add an edge splitting the now-conflicting face
+SELECT '#3464.2', topology.ST_AddEdgeModFace('city_data', 16, 19,
+ 'LINESTRING(9 22,28 25,47 22)');
+-- Restore face info for edge 6 and 21
+UPDATE city_data.edge_data SET left_face = left_face - 1
+  WHERE edge_id in ( 6, 21 );
+
+--BEGIN; prot;
+
 ---------------------------------------------------------------------
 -- Check new relations and faces status
 ---------------------------------------------------------------------
