@@ -2143,6 +2143,7 @@ LWGEOM *lwgeom_normalize(const LWGEOM *geom);
 LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
+LWGEOM *lwgeom_centroid(const LWGEOM* geom);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_linemerge(const LWGEOM *geom1);
 LWGEOM *lwgeom_unaryunion(const LWGEOM *geom1);
@@ -2278,6 +2279,17 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int 
  * Requires GEOS-3.5.0 or higher
  */
 LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double tolerance, int output_edges);
+
+/**
+* Take a list of LWGEOMs and a number of clusters and return an integer
+* array indicating which cluster each geometry is in.
+*
+* @param geoms the input array of LWGEOM pointers
+* @param ngeoms the number of elements in the array
+* @param k the number of clusters to calculate
+*/
+int * lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k);
+
 
 #endif /* !defined _LIBLWGEOM_H  */
 

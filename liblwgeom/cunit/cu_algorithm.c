@@ -1023,6 +1023,46 @@ static void test_point_density(void)
 	lwgeom_free(geom);
 }
 
+static void test_kmeans(void)
+{
+	static int cluster_size = 100;
+	static int num_clusters = 4;
+	static double spread = 1.5;
+	int N = cluster_size * num_clusters;
+	LWGEOM **geoms;
+	int i, j, k=0;
+	int *r;
+
+	geoms = lwalloc(sizeof(LWGEOM*) * N);
+
+	for (j = 0; j < num_clusters; j++) {
+		for (i = 0; i < cluster_size; i++)
+		{
+			double u1 = 1.0 * random() / RAND_MAX;
+			double u2 = 1.0 * random() / RAND_MAX;
+			double z1 = spread * j + sqrt(-2*log2(u1))*cos(2*M_PI*u2);
+			double z2 = spread * j + sqrt(-2*log2(u1))*sin(2*M_PI*u2);
+
+			LWPOINT *lwp = lwpoint_make2d(SRID_UNKNOWN, z1, z2);
+			geoms[k++] = lwpoint_as_lwgeom(lwp);
+		}
+	}
+
+	r = lwgeom_cluster_2d_kmeans((const LWGEOM **)geoms, N, num_clusters);
+
+	// for (i = 0; i < k; i++)
+	// {
+	// 	printf("[%d] %s\n", r[i], lwgeom_to_ewkt(geoms[i]));
+	// }
+
+	/* Clean up */
+	lwfree(r);
+	for (i = 0; i < k; i++)
+		lwgeom_free(geoms[i]);
+	lwfree(geoms);
+
+	return;
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -1050,4 +1090,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_lwgeom_simplify);
 	PG_ADD_TEST(suite,test_lw_arc_center);
 	PG_ADD_TEST(suite,test_point_density);
+	PG_ADD_TEST(suite,test_kmeans);
 }

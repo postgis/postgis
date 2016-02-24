@@ -113,6 +113,8 @@ SA_OBJS = \
 	lwgeom_transform.o \
 	lwunionfind.o \
 	effectivearea.o \
+	lwkmeans.o \
+	kmeans.o \
 	varint.o
 
 NM_OBJS = \

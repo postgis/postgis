@@ -37,6 +37,27 @@ stringbuffer_create(void)
 	return stringbuffer_create_with_size(STRINGBUFFER_STARTSIZE);
 }
 
+static void
+stringbuffer_init_with_size(stringbuffer_t *s, size_t size)
+{
+	s->str_start = lwalloc(size);
+	s->str_end = s->str_start;
+	s->capacity = size;
+	memset(s->str_start, 0, size);
+}
+
+void
+stringbuffer_release(stringbuffer_t *s)
+{
+	if ( s->str_start ) lwfree(s->str_start);
+}
+
+void
+stringbuffer_init(stringbuffer_t *s)
+{
+	stringbuffer_init_with_size(s, STRINGBUFFER_STARTSIZE);
+}
+
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.
 */
@@ -46,10 +67,7 @@ stringbuffer_create_with_size(size_t size)
 	stringbuffer_t *s;
 
 	s = lwalloc(sizeof(stringbuffer_t));
-	s->str_start = lwalloc(size);
-	s->str_end = s->str_start;
-	s->capacity = size;
-	memset(s->str_start,0,size);
+	stringbuffer_init_with_size(s, size);
 	return s;
 }
 
@@ -59,7 +77,7 @@ stringbuffer_create_with_size(size_t size)
 void 
 stringbuffer_destroy(stringbuffer_t *s)
 {
-	if ( s->str_start ) lwfree(s->str_start);
+	stringbuffer_release(s);
 	if ( s ) lwfree(s);
 }
 
