@@ -16,7 +16,15 @@ select 'ST_MakeLine_agg1', ST_AsText(ST_MakeLine(g)) from (
  values ('POINT(0 0)'),
         ('LINESTRING(1 1, 10 0)'),
         ('LINESTRING(10 0, 20 20)'),
-        ('POINT(40 4)')
+        ('POINT(40 4)'),
+        ('POINT(40 4)'),
+        ('POINT(40 5)')
+) as foo(g);
+
+select 'ST_MakeLine_agg2', ST_AsText(ST_MakeLine(g)) from (
+ values ('POINT(0 0)'),
+        ('LINESTRING(0 0, 1 0)'),
+        ('POINT(1 0)')
 ) as foo(g);
 
 -- postgis-users/2006-July/012788.html
