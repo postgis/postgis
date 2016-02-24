@@ -2023,12 +2023,12 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<title>Description</title>
 
 		<para>Return the Nth point in a single linestring or circular linestring in the
-			geometry. If N is negativ, counts backward, so that -1 is the last point. Return NULL if there is no linestring in the
+			geometry. If N is negative, counts backward, so that -1 is the last point. Return NULL if there is no linestring in the
 			geometry.</para>
 
 		<note>
 			  <para>Index is 1-based as for OGC specs since version 0.8.0.
-              Backward indexing (negativ index) is not in OGC
+              Backward indexing (negative index) is not in OGC
 			  Previous versions implemented this as 0-based instead.</para>
 		</note>
 

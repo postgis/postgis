@@ -2249,7 +2249,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	LWLINE *line;
 	LWPOINT *lwpoint;
 	POINT4D newpoint;
-	uint32 which;
+	int32 which;
 
 	POSTGIS_DEBUG(2, "LWGEOM_setpoint_linestring called.");
 
@@ -2279,9 +2279,12 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
 	}
-	if ( which > line->points->npoints-1 )
+    if(which < 0){//dealing with the negative indexing that means backward indexing
+        which = which + line->points->npoints ;
+    }
+	if ( which > line->points->npoints-1 || which < 0 )
 	{
-		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints-1);
+		elog(ERROR, "abs(Point index) out of range (-)(%d..%d)", 0, line->points->npoints-1);
 		PG_RETURN_NULL();
 	}
 
