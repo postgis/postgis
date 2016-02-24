@@ -267,7 +267,7 @@ dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geom
 	return LW_SUCCESS;
 }
 
-static int
+int
 union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points)
 {
 	uint32_t p, i;

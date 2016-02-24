@@ -1648,6 +1648,12 @@ CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
     AS 'MODULE_PATHNAME',  'cluster_within_distance_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3
+CREATE OR REPLACE FUNCTION ST_ClusterDBSCAN (geometry, eps float8, minpoints int)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'ST_ClusterDBSCAN'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
@@ -3775,13 +3781,6 @@ CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_clusterwithin_finalfn
-	);
-
--- Availability: 2.3
-CREATE AGGREGATE ST_DBSCAN (geometry, float8, int) (
-	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
-	FINALFUNC = pgis_geometry_dbscan_finalfn
 	);
 
 -- Availability: 1.2.2

@@ -52,4 +52,7 @@ void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
  * same cluster are contiguous in the array */
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
 
+/* Replace the cluster ids in a UNIONFIND with sequential ids starting at zero. */
+uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf);
+
 #endif

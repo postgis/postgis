@@ -83,6 +83,7 @@ PG_OBJS= \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o \
 	lwgeom_transform.o \
+	lwgeom_window.o \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
