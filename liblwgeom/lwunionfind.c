@@ -134,6 +134,33 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 	lwfree(cluster_id_ptr_by_elem_id);
 	return ordered_ids;
 }
+
+uint32_t*
+UF_get_collapsed_cluster_ids(UNIONFIND* uf)
+{
+	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
+	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
+	uint32_t last_old_id, current_new_id, i;
+
+	last_old_id = UF_find(uf, ordered_components[0]);
+	current_new_id = 0;
+	for (i = 0; i < uf->N; i++)
+	{
+		uint32_t j = ordered_components[i];
+		uint32_t current_old_id = UF_find(uf, j);
+
+		if (current_old_id != last_old_id)
+			current_new_id++;
+
+		new_ids[j] = current_new_id;
+		last_old_id = current_old_id;
+	}
+
+	lwfree(ordered_components);
+
+	return new_ids;
+}
+
 static int
 cmp_int(const void *a, const void *b)
 {
