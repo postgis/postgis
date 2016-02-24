@@ -385,50 +385,80 @@ _PG_init(void) {
 
 	/* Define custom GUC variables. */
 
-	DefineCustomStringVariable(
-		"postgis.gdal_datapath", /* name */
-		"Path to GDAL data files.", /* short_desc */
-		"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
-		&gdal_datapath, /* valueAddr */
-		NULL, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
+	if ( postgis_guc_find_option("postgis.gdal_datapath") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_datapath");
+	}
+	else
+	{
+		DefineCustomStringVariable(
+			"postgis.gdal_datapath", /* name */
+			"Path to GDAL data files.", /* short_desc */
+			"Physical path to directory containing GDAL data files (sets the GDAL_DATA config option).", /* long_desc */
+			&gdal_datapath, /* valueAddr */
+			NULL, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
+			NULL, /* GucStringCheckHook check_hook */
 #endif
-		rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
+			rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
-	DefineCustomStringVariable(
-		"postgis.gdal_enabled_drivers", /* name */
-		"Enabled GDAL drivers.", /* short_desc */
-		"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
-		&gdal_enabled_drivers, /* valueAddr */
-		boot_postgis_gdal_enabled_drivers, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
+	if ( postgis_guc_find_option("postgis.gdal_enabled_drivers") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.gdal_enabled_drivers");
+	}
+	else
+	{
+		DefineCustomStringVariable(
+			"postgis.gdal_enabled_drivers", /* name */
+			"Enabled GDAL drivers.", /* short_desc */
+			"List of enabled GDAL drivers by short name. To enable/disable all drivers, use 'ENABLE_ALL' or 'DISABLE_ALL' (sets the GDAL_SKIP config option).", /* long_desc */
+			&gdal_enabled_drivers, /* valueAddr */
+			boot_postgis_gdal_enabled_drivers, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
+			NULL, /* GucStringCheckHook check_hook */
 #endif
-		rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
+			rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
-	DefineCustomBoolVariable(
-		"postgis.enable_outdb_rasters", /* name */
-		"Enable Out-DB raster bands", /* short_desc */
-		"If true, rasters can access data located outside the database", /* long_desc */
-		&enable_outdb_rasters, /* valueAddr */
-		boot_postgis_enable_outdb_rasters, /* bootValue */
-		PGC_SUSET, /* GucContext context */
-		0, /* int flags */
+	if ( postgis_guc_find_option("postgis.enable_outdb_rasters") )
+	{
+		/* In this narrow case the previously installed GUC is tied to the callback in */
+		/* the previously loaded library. Probably this is happening during an */
+		/* upgrade, so the old library is where the callback ties to. */
+		elog(WARNING, "'%s' is already set and cannot be changed until you reconnect", "postgis.enable_outdb_rasters");
+	}
+	else
+	{
+		DefineCustomBoolVariable(
+			"postgis.enable_outdb_rasters", /* name */
+			"Enable Out-DB raster bands", /* short_desc */
+			"If true, rasters can access data located outside the database", /* long_desc */
+			&enable_outdb_rasters, /* valueAddr */
+			boot_postgis_enable_outdb_rasters, /* bootValue */
+			PGC_SUSET, /* GucContext context */
+			0, /* int flags */
 #if POSTGIS_PGSQL_VERSION >= 91
-		NULL, /* GucStringCheckHook check_hook */
+			NULL, /* GucStringCheckHook check_hook */
 #endif
-		rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
-		NULL  /* GucShowHook show_hook */
-	);
+			rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
+			NULL  /* GucShowHook show_hook */
+		);
+	}
 
 	/* free memory allocations */
 	pfree(boot_postgis_gdal_enabled_drivers);

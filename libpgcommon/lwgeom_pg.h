@@ -60,6 +60,13 @@ void pg_install_lwgeom_handlers(void);
 
 #endif /* POSTGIS_DEBUG_LEVEL */
 
+/*
+* GUC name search functions stolen from PostgreSQL to
+* support searching for already-defined GUC variables
+*/
+int postgis_guc_name_compare(const char *namea, const char *nameb);
+int postgis_guc_var_compare(const void *a, const void *b);
+int postgis_guc_find_option(const char *name);
 
 /*
  * Standard macro for reporting parser errors to PostgreSQL

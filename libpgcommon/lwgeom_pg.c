@@ -16,8 +16,10 @@
 
 #include <postgres.h>
 #include <fmgr.h>
-#include <executor/spi.h>
 #include <miscadmin.h>
+#include <executor/spi.h>
+#include <utils/guc.h>
+#include <utils/guc_tables.h>
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
@@ -279,3 +281,81 @@ lwpgerror(const char *fmt, ...)
 
 	va_end(ap);
 }
+
+
+/*
+ * the bare comparison function for GUC names
+ */
+int
+postgis_guc_name_compare(const char *namea, const char *nameb)
+{
+	/*
+	 * The temptation to use strcasecmp() here must be resisted, because the
+	 * array ordering has to remain stable across setlocale() calls. So, build
+	 * our own with a simple ASCII-only downcasing.
+	 */
+	while (*namea && *nameb)
+	{
+		char		cha = *namea++;
+		char		chb = *nameb++;
+
+		if (cha >= 'A' && cha <= 'Z')
+			cha += 'a' - 'A';
+		if (chb >= 'A' && chb <= 'Z')
+			chb += 'a' - 'A';
+		if (cha != chb)
+			return cha - chb;
+	}
+	if (*namea)
+		return 1;				/* a is longer */
+	if (*nameb)
+		return -1;				/* b is longer */
+	return 0;
+}
+
+/*
+ * comparator for qsorting and bsearching guc_variables array
+ */
+int
+postgis_guc_var_compare(const void *a, const void *b)
+{
+	const struct config_generic *confa = *(struct config_generic * const *) a;
+	const struct config_generic *confb = *(struct config_generic * const *) b;
+
+	return postgis_guc_name_compare(confa->name, confb->name);
+}
+
+/* 
+* This is copied from the top half of the find_option function 
+* in postgresql's guc.c. We search the guc_variables for our option.
+* Then we make sure it's not a placeholder. Only then are we sure 
+* we have a potential conflict, of the sort experienced during an 
+* extension upgrade.
+*/
+int
+postgis_guc_find_option(const char *name)
+{
+	const char **key = &name;
+	struct config_generic **res;
+
+	/*
+	 * By equating const char ** with struct config_generic *, we are assuming
+	 * the name field is first in config_generic.
+	 */
+	res = (struct config_generic **) bsearch((void *) &key,
+		 (void *) get_guc_variables(),
+		 GetNumConfigOptions(),
+		 sizeof(struct config_generic *),
+		 postgis_guc_var_compare);
+	
+	/* Found nothing? Good */
+	if ( ! res ) return 0;
+	 
+	/* Hm, you found something, but maybe it's just a placeholder? */
+	/* We'll consider a placehold a "not found" */
+	if ( (*res)->flags & GUC_CUSTOM_PLACEHOLDER )
+		return 0;
+		
+	return 1;
+}
+
