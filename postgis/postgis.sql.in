@@ -3797,9 +3797,9 @@ CREATE AGGREGATE ST_MakeLine (
 --------------------------------------------------------------------------------
 
 -- Availability: 2.3.0
-CREATE FUNCTION ST_KMeans(geom geometry, k integer)
+CREATE FUNCTION ST_ClusterKMeans(geom geometry, k integer)
   RETURNS integer
-  AS 'MODULE_PATHNAME', 'ST_KMeans'
+  AS 'MODULE_PATHNAME', 'ST_ClusterKMeans'
   LANGUAGE 'c' VOLATILE STRICT WINDOW;
 
 

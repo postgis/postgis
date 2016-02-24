@@ -38,7 +38,7 @@
 #include "lwgeom_pg.h"
 
 extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
-extern Datum ST_KMeans(PG_FUNCTION_ARGS);
+extern Datum ST_ClusterKMeans(PG_FUNCTION_ARGS);
 
 typedef struct {
 	bool	isdone;
@@ -159,8 +159,8 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(context->cluster_assignments[row].cluster_id);
 }
 
-PG_FUNCTION_INFO_V1(ST_KMeans);
-Datum ST_KMeans(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_ClusterKMeans);
+Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 {
 	WindowObject winobj = PG_WINDOW_OBJECT();
 	kmeans_context *context;

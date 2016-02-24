@@ -4160,4 +4160,52 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_IsValid"/></para>
 	  </refsection>
 	</refentry>
+  
+	<refentry id="ST_ClusterKMeans">
+	  <refnamediv>
+		<refname>ST_ClusterKMeans</refname>
+
+		<refpurpose>Windowing function that returns integer for cluster each input geometry is in.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_ClusterKMeans</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>geom</parameter></paramdef>
+
+			<paramdef><type>integer </type>
+			<parameter>number_of_clusters</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+      <title>Description</title>
+
+      <para>Returns 2D distance based 
+        <ulink url="https://en.wikipedia.org/wiki/K-means_clustering">k-means</ulink> 
+        cluster number for each input geometry. The distance used for clustering is the 
+        distance between the centroids of the geometries.
+      </para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+		    <programlisting>
+SELECT ST_ClusterKMeans(geom, 5) over (), geom, parcel_id 
+FROM parcels;
+</programlisting>
+    </refsection>
+
+    <refsection>
+		  <title>See Also</title>
+      <!-- <para><xref linkend="ST_ClusterDBSCAN"/></para> -->
+      <para>See also ST_ClusterDBSCAN</para>
+	  </refsection>
+	</refentry>  
+  
+  
 </sect1>
