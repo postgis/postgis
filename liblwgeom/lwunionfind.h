@@ -27,6 +27,7 @@
 #define _LWUNIONFIND 1
 
 #include "liblwgeom.h"
+#include "lwgeom_geos.h"
 
 typedef struct
 {
@@ -51,5 +52,18 @@ void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
 /* Return an array of component ids, where components that are in the
  * same cluster are contiguous in the array */
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
+
+/* Replace the cluster ids in a UNIONFIND with sequential ids starting at zero. */
+uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf);
+
+/* Union all pairs of geometries that intersect, so that they are assigned to the
+ * same cluster.
+ */
+int union_intersecting_pairs(GEOSGeometry** geoms, UNIONFIND* uf);
+
+/* Union all pairs of geometries within a tolerance distance, so that they are assigned
+ * to the same cluster.
+ */
+int union_pairs_within_distance(LWGEOM** geoms, UNIONFIND* uf, double tolerance);
 
 #endif

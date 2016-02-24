@@ -64,7 +64,6 @@ static struct STRTree make_strtree(void** geoms, uint32_t num_geoms, char is_lwg
 static void destroy_strtree(struct STRTree tree);
 static void union_if_intersecting(void* item, void* userdata);
 static void union_if_dwithin(void* item, void* userdata);
-static int union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf);
 static int combine_geometries(UNIONFIND* uf, void** geoms, uint32_t num_geoms, void*** clustersGeoms, uint32_t* num_clusters, char is_lwgeom);
 
 /** Make a GEOSSTRtree of either GEOSGeometry* or LWGEOM* pointers */
@@ -91,16 +90,16 @@ make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 		}
 		else
 		{
-            const GBOX* box = lwgeom_get_bbox(geoms[i]);
-            if (box)
-            {
-                tree.envelopes[i] = GBOX2GEOS(box);
-            } 
-            else
-            {
-                /* Empty geometry */
-                tree.envelopes[i] = GEOSGeom_createEmptyPolygon();
-            }
+			const GBOX* box = lwgeom_get_bbox(geoms[i]);
+			if (box)
+			{
+				tree.envelopes[i] = GBOX2GEOS(box);
+			} 
+			else
+			{
+				/* Empty geometry */
+				tree.envelopes[i] = GEOSGeom_createEmptyPolygon();
+			}
 		}
 		GEOSSTRtree_insert(tree.tree, tree.envelopes[i], &(tree.geom_ids[i]));
 	}
@@ -197,28 +196,28 @@ union_if_dwithin(void* item, void* userdata)
 }
 
 /* Identify intersecting geometries and mark them as being in the same set */
-static int
-union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf)
+int
+union_intersecting_pairs(GEOSGeometry** geoms, UNIONFIND* uf)
 {
 	uint32_t i;
 
-	if (num_geoms <= 1)
+	if (uf->N <= 1)
 	{
 		return LW_SUCCESS;
 	}
 
-	struct STRTree tree = make_strtree((void**) geoms, num_geoms, 0);
+	struct STRTree tree = make_strtree((void**) geoms, uf->N, 0);
 	if (tree.tree == NULL)
 	{
 		destroy_strtree(tree);
 		return LW_FAILURE;
 	}
-	for (i = 0; i < num_geoms; i++)
+	for (i = 0; i < uf->N; i++)
 	{
-        if (GEOSisEmpty(geoms[i]))
-        {
-            continue;
-        }
+		if (GEOSisEmpty(geoms[i]))
+		{
+			continue;
+		}
 
 		struct UnionIfIntersectingContext cxt =
 		{
@@ -244,24 +243,24 @@ union_intersecting_pairs(GEOSGeometry** geoms, uint32_t num_geoms, UNIONFIND* uf
 }
 
 /* Identify geometries within a distance tolerance and mark them as being in the same set */
-static int
-union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double tolerance)
+int
+union_pairs_within_distance(LWGEOM** geoms, UNIONFIND* uf, double tolerance)
 {
 	uint32_t i;
 
-	if (num_geoms <= 1)
+	if (uf->N <= 1)
 	{
 		return LW_SUCCESS;
 	}
 
-	struct STRTree tree = make_strtree((void**) geoms, num_geoms, 1);
+	struct STRTree tree = make_strtree((void**) geoms, uf->N, 1);
 	if (tree.tree == NULL)
 	{
 		destroy_strtree(tree);
 		return LW_FAILURE;
 	}
 
-	for (i = 0; i < num_geoms; i++)
+	for (i = 0; i < uf->N; i++)
 	{
 		struct UnionIfDWithinContext cxt =
 		{
@@ -272,12 +271,12 @@ union_pairs_within_distance(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, d
 			.tolerance = tolerance
 		};
 
-        const GBOX* geom_extent = lwgeom_get_bbox(geoms[i]);
-        if (!geom_extent)
-        {
-            /* Empty geometry */
-            continue;
-        }
+		const GBOX* geom_extent = lwgeom_get_bbox(geoms[i]);
+		if (!geom_extent)
+		{
+			/* Empty geometry */
+			continue;
+		}
 		GBOX* query_extent = gbox_clone(geom_extent);
 		gbox_expand(query_extent, tolerance);
 		GEOSGeometry* query_envelope = GBOX2GEOS(query_extent);
@@ -311,7 +310,7 @@ cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** c
 	int cluster_success;
 	UNIONFIND* uf = UF_create(num_geoms);
 
-	if (union_intersecting_pairs(geoms, num_geoms, uf) == LW_FAILURE)
+	if (union_intersecting_pairs(geoms, uf) == LW_FAILURE)
 	{
 		UF_destroy(uf);
 		return LW_FAILURE;
@@ -331,7 +330,7 @@ cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LW
 	int cluster_success;
 	UNIONFIND* uf = UF_create(num_geoms);
 
-	if (union_pairs_within_distance(geoms, num_geoms, uf, tolerance) == LW_FAILURE)
+	if (union_pairs_within_distance(geoms, uf, tolerance) == LW_FAILURE)
 	{
 		UF_destroy(uf);
 		return LW_FAILURE;

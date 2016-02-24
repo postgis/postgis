@@ -1642,11 +1642,25 @@ CREATE OR REPLACE FUNCTION ST_ClusterIntersecting(geometry[])
     AS 'MODULE_PATHNAME',  'clusterintersecting_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3
+-- TODO is there some way the ST_ClusterIntersecting name can be reused for this purpose?
+CREATE OR REPLACE FUNCTION ST_ClusterIntersectingW(geometry)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'cluster_intersecting_window'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW;
+
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
     RETURNS geometry[]
     AS 'MODULE_PATHNAME',  'cluster_within_distance_garray'
     LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3
+-- TODO is there some way the ST_ClusterWithin name can be reused for this purpose?
+CREATE OR REPLACE FUNCTION ST_ClusterWithinW(geometry, float8)
+	RETURNS int
+	AS 'MODULE_PATHNAME', 'cluster_within_distance_window'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
