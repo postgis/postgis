@@ -1038,8 +1038,8 @@ static void test_kmeans(void)
 	for (j = 0; j < num_clusters; j++) {
 		for (i = 0; i < cluster_size; i++)
 		{
-			double u1 = 1.0 * random() / RAND_MAX;
-			double u2 = 1.0 * random() / RAND_MAX;
+			double u1 = 1.0 * rand() / RAND_MAX;
+			double u2 = 1.0 * rand() / RAND_MAX;
 			double z1 = spread * j + sqrt(-2*log2(u1))*cos(2*M_PI*u2);
 			double z2 = spread * j + sqrt(-2*log2(u1))*sin(2*M_PI*u2);
 
