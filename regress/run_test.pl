@@ -423,7 +423,8 @@ foreach $TEST (@ARGV)
 	{
 		print " skipped (can't read any ${TEST}.{sql,dbf,tif,dmp})\n";
 		$SKIP++;
-		next;
+		# Even though we skipped this test, we will still run the cleanup
+		# scripts
 	}
 
 	if ( -r "${TEST}-post.sql" )
