@@ -2005,7 +2005,7 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<refname>ST_PointN</refname>
 
 		<refpurpose>Return the Nth point in the first linestring or circular linestring in the
-			geometry. Return NULL if there is no linestring in the
+			geometry. Negative counts backward. Return NULL if there is no linestring in the
 			geometry.</refpurpose>
 	  </refnamediv>
 
@@ -2023,11 +2023,12 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<title>Description</title>
 
 		<para>Return the Nth point in a single linestring or circular linestring in the
-			geometry. Return NULL if there is no linestring in the
+			geometry. If N is negative, counts backward, so that -1 is the last point. Return NULL if there is no linestring in the
 			geometry.</para>
 
 		<note>
 			  <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Backward indexing (negative index) is not in OGC
 			  Previous versions implemented this as 0-based instead.</para>
 		</note>
 
@@ -2042,7 +2043,10 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<para>&curve_support;</para>
 		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
 	  versions of PostGIS -- a single line multilinestring would work happily with this
-	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para></note>
+	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para>
+      <para> Changed: 2.3.0 : negative indexing available (-1 is last point)
+    </para>
+      </note>
 
 	  </refsection>
 
@@ -2071,6 +2075,15 @@ SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 2)'),2));
 st_astext
 ----------
 POINT(3 2)
+
+SELECT st_astext(f)
+FROM ST_GeometryFromtext('LINESTRING(0 0 0, 1 1 1, 2 2 2)') as g
+	,ST_PointN(g, -2) AS f -- 1 based index 
+
+st_astext
+----------
+"POINT Z (1 1 1)"
+
 </programlisting>
 	  </refsection>
 
