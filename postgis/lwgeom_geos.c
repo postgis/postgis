@@ -1273,8 +1273,10 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom, *result;
-	GEOSGeometry *geosgeom, *geosresult;
-
+	GEOSGeometry *geosgeom, *geosresult; 
+	LWGEOM *igeom = NULL, *linear_geom = NULL;
+	int32 perQuad= 16;
+	int type = 0; 
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Empty.Centroid() == Point Empty */
@@ -1287,6 +1289,21 @@ Datum centroid(PG_FUNCTION_ARGS)
 		result = geometry_serialize(lwpoint_as_lwgeom(lwp));
 		lwpoint_free(lwp);
 		PG_RETURN_POINTER(result);
+	}
+	
+	type = gserialized_get_type(geom) ;
+	/* Converting curve geometry to linestring if necessary*/
+	if(type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
+	{/* curve geometry?*/
+		igeom = lwgeom_from_gserialized(geom);
+		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
+		linear_geom = lwgeom_stroke(igeom, perQuad);
+		lwgeom_free(igeom);
+		if (linear_geom == NULL) 
+			PG_RETURN_NULL();
+		 
+		geom = geometry_serialize(linear_geom);
+		lwgeom_free(linear_geom);
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);

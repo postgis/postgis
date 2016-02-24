@@ -852,7 +852,12 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 	  thought in terms of area. If an empty geometry is supplied, an empty
 	  <varname>GEOMETRYCOLLECTION</varname> is returned. If
 	  <varname>NULL</varname> is supplied, <varname>NULL</varname> is
-	  returned.</para>
+	  returned.
+	  If <varname>CIRCULARSTRING</varname> or <varname>COMPOUNDCURVE</varname>
+	  are supplied, they are converted to linestring wtih CurveToLine first,
+	  then same than for  <varname>LINESTRING</varname> 
+	  </para>
+	  <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
 
 	  <para>The centroid is equal to the centroid of the set of component
 	  Geometries of highest dimension (since the lower-dimension geometries
@@ -926,7 +931,20 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 				st_astext
 ------------------------------------------
  POINT(2.30769230769231 3.30769230769231)
-(1 row)</programlisting>
+(1 row)
+
+SELECT ST_AsText(ST_centroid(g))
+FROM  ST_GeomFromText('CIRCULARSTRING(0 2, -1 1,0 0, 0.5 0, 1 0, 2 1, 1 2, 0.5 2, 0 2)')  AS g ; 
+------------------------------------------
+POINT(0.5 1)
+
+
+SELECT ST_AsText(ST_centroid(g))
+FROM  ST_GeomFromText('COMPOUNDCURVE(CIRCULARSTRING(0 2, -1 1,0 0),(0 0, 0.5 0, 1 0),CIRCULARSTRING( 1 0, 2 1, 1 2),(1 2, 0.5 2, 0 2))' ) AS g;
+------------------------------------------
+POINT(0.5 1)
+
+</programlisting>
 	</refsection>
 
 	<refsection>
