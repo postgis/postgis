@@ -85,6 +85,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	kmeans_result result;
 	int *seen;
 	int sidx = 0;
+	int initialized = 0;
 
 	assert(k>0);
 	assert(ngeoms>0);
@@ -149,8 +150,9 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		config.objs[i] = (Pointer)cp;
 
 		/* Since we're already here, let's calculate the extrema of the set */
-		if (i == 0)
+		if (!initialized)
 		{
+			initialized = 1;
 			min = *cp;
 			max = *cp;
 		}
