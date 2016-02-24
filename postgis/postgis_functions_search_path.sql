@@ -37,7 +37,8 @@ EXECUTE 'set search_path TO ' || quote_ident(param_postgis_schema);
 EXECUTE 'ALTER FUNCTION st_transform(geometry, integer) SET search_path=' || quote_ident(param_postgis_schema) || ';';
 
 -- PostGIS raster funcs
+EXECUTE 'ALTER FUNCTION _raster_constraint_nodata_values(raster) SET search_path=' || quote_ident(param_postgis_schema) || ';';
+EXECUTE 'ALTER FUNCTION _raster_constraint_out_db(raster) SET search_path=' || quote_ident(param_postgis_schema) || ';';
 EXECUTE 'ALTER FUNCTION _raster_constraint_pixel_types(raster) SET search_path=' || quote_ident(param_postgis_schema) || ';';
-EXECUTE 'ALTER FUNCTION _raster_constraint_info_regular_blocking(name,name,name) SET search_path=' || quote_ident(param_postgis_schema) || ';';
 END;
 $$
