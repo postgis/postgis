@@ -6,6 +6,8 @@
 *.dll
 *.res
 *.marks
+*.swp
+*.orig
 gmon.out
 install-sh
 postgis_svn_revision.h
@@ -152,3 +154,5 @@ doc/sfcgal_comments.sql
 postgis/sfcgal.sql
 postgis/uninstall_sfcgal.sql
 *.pdf
+.idea/*
+.syntastic_c_config
