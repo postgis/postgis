@@ -11,6 +11,7 @@ PostGIS 2.3.0
   - populate_topology_layer (Sandro Santilli)
   - #2259 ST_Voronoi (Dan Baston)
   - #3339 ST_GeneratePoints (Paul Ramsey)
+  - #3362 ST_ClusterDBSCAN (Dan Baston) 
   - #3428 ST_Points (Dan Baston)
   - #3465 ST_KMeans (Paul Ramsey)
 
