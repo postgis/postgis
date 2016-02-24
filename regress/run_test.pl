@@ -52,6 +52,7 @@ my $OPT_CLEAN = 0;
 my $OPT_NODROP = 0;
 my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
+my $OPT_DUMPRESTORE = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
 my $OPT_WITH_SFCGAL = 0;
@@ -69,6 +70,7 @@ GetOptions (
 	'nodrop' => \$OPT_NODROP, 
 	'upgrade' => \$OPT_UPGRADE,
 	'upgrade-path=s' => \$OPT_UPGRADE_PATH,
+	'dumprestore' => \$OPT_DUMPRESTORE,
 	'nocreate' => \$OPT_NOCREATE,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
@@ -332,6 +334,11 @@ if ( $OPT_UPGRADE )
   $libver = sql("select postgis_lib_version()");
 }
 
+if ( $OPT_DUMPRESTORE )
+{
+  dump_restore();
+}
+
 
 ##################################################################
 # Report PostGIS environment
@@ -490,6 +497,8 @@ Options:
   -v, --verbose   be verbose about failures
   --nocreate      do not create the regression database on start
   --upgrade       source the upgrade scripts on start
+  --upgrade-path  upgrade path, format <from>--<to>
+  --dumprestore   dump and restore spatially-enabled db before running tests
   --nodrop        do not drop the regression database on exit
   --raster        load also raster extension
   --topology      load also topology extension
@@ -497,7 +506,6 @@ Options:
   --clean         cleanup test logs on exit
   --expect        save obtained output as expected
   --extension     load using extensions
-  --upgrade-path  upgrade path, format <from>--<to>
 };
 
 }
@@ -1189,13 +1197,19 @@ sub count_db_objects
 ##################################################################
 # Create the spatial database
 ##################################################################
+sub create_db
+{
+	my $cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
+	return system($cmd);
+}
+
 sub create_spatial 
 {
 	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
-	$cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
-	$rv = system($cmd);
+  $rv = create_db();
+
 	$cmd = "createlang plpgsql $DB >> $REGRESS_LOG 2>&1";
 	$rv = system($cmd);
 
@@ -1500,6 +1514,56 @@ sub uninstall_spatial
 	
 	return 0;
 }  
+
+# Dump and restore the database
+sub dump_restore
+{
+  my $DBDUMP = $TMPDIR . '/' . $DB . ".dump";
+  my $rv;
+
+	print "Dumping and restoring database '${DB}'\n";
+
+  $rv = system("pg_dump -Fc ${DB} -f ${DBDUMP} >> $REGRESS_LOG 2>&1");
+  if ( $rv ) {
+    fail("Could not dump ${DB}", $REGRESS_LOG);
+		die;
+  }
+
+  $rv = system("dropdb ${DB} >> $REGRESS_LOG 2>&1");
+  if ( $rv ) {
+    fail("Could not drop ${DB}", $REGRESS_LOG);
+		die;
+  }
+
+  $rv = create_db();
+  if ( $rv ) {
+    fail("Could not create ${DB}", $REGRESS_LOG);
+		die;
+  }
+
+  $rv = system("pg_restore -d ${DB} ${DBDUMP} >> $REGRESS_LOG 2>&1");
+  if ( $rv ) {
+    fail("Could not restore ${DB}", $REGRESS_LOG);
+    die;
+  }
+
+  if ( $OPT_WITH_TOPO )
+  {
+    # We need to re-add "topology" to the search_path as it is lost
+    # on dump/reload, see https://trac.osgeo.org/postgis/ticket/3454
+    my $psql_opts = "--no-psqlrc --variable ON_ERROR_STOP=true";
+    my $cmd = "psql $psql_opts -c \"SELECT topology.AddToSearchPath('topology')\" $DB >> $REGRESS_LOG 2>&1";
+    $rv = system($cmd);
+    if ( $rv ) {
+      fail("Error encountered adding topology to search path after restore", $REGRESS_LOG);
+      die;
+    }
+  }
+
+  unlink($DBDUMP);
+
+  return 1;
+}
 
 sub diff
 {

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -977,12 +977,12 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_editor.xml:436
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<funcdef>boolean <function>ST_ForceRHR</function></funcdef> "
+"<funcdef>geometry <function>ST_ForceRHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 msgstr ""
-"<funcdef>boolean <function>ST_ForceRHR</function></funcdef> "
+"<funcdef>geometry <function>ST_ForceCurve</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 
 #. Tag: para
@@ -2020,7 +2020,7 @@ msgid ""
 "The version taking a geometry as the <varname>factor</varname> parameter "
 "allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all "
 "supported dimensions. Missing dimensions in the <varname>factor</varname> "
-"point are equivalant to no scaling the corresponding dimension."
+"point are equivalent to no scaling the corresponding dimension."
 msgstr ""
 
 #. Tag: para
@@ -2407,7 +2407,7 @@ msgstr ""
 #: reference_editor.xml:1242
 #, no-c-format
 msgid ""
-"The returned geometry might loose its simplicity (see <xref linkend="
+"The returned geometry might lose its simplicity (see <xref linkend="
 "\"ST_IsSimple\"/>)."
 msgstr ""
 
@@ -2544,7 +2544,7 @@ msgstr ""
 #: reference_editor.xml:1327
 #, no-c-format
 msgid ""
-"The returned geometry might loose its simplicity (see <xref linkend="
+"The returned geometry might lose its simplicity (see <xref linkend="
 "\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
 
@@ -3079,3 +3079,10 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Translate\"/>"
+
+#~ msgid ""
+#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> "
+#~ "<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"

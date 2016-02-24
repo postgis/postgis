@@ -1066,6 +1066,7 @@ SELECT ST_AsText(
 		invalid geometries where the result is always false regardless or not defined.</para>
 
 		<para>Performed by the GEOS module</para>
+		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
@@ -1369,8 +1370,9 @@ ST_Point      | t          | t              | f           | f
 			the geometries. To avoid index use, use the function
 			_ST_Covers.</para>
 
-		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
+		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 		<para>Availability: 1.5 - support for geography was introduced. </para>
+		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>
 
 		<para>NOTE: this is the "allowable" version that returns a
 			boolean, not an integer.</para>
@@ -2640,6 +2642,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument for geometry version.  The geography
 			version supports GEOMETRYCOLLECTION since its a thin wrapper around distance implementation.</para>
 	  </important>
+	  <para>Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 			<para>Performed by the GEOS module (for geometry), geography is native</para>
 			<para>Availability: 1.5 support for geography was introduced.</para>
@@ -4099,6 +4102,8 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 		the two geometries are considered spatially equal.</para>
 
 		<para>Performed by the GEOS module</para>
+		
+		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 
 		<important>
 		  <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>

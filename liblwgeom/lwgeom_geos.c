@@ -866,6 +866,60 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	return result;
 }
 
+LWGEOM *
+lwgeom_centroid(const LWGEOM* geom)
+{
+	GEOSGeometry *g, *g_centroid;
+	LWGEOM *centroid;
+	int srid, is3d;
+
+	if (lwgeom_is_empty(geom))
+	{
+		LWPOINT *lwp = lwpoint_construct_empty(
+		                   lwgeom_get_srid(geom),
+		                   lwgeom_has_z(geom),
+		                   lwgeom_has_m(geom));
+		return lwpoint_as_lwgeom(lwp);
+	}
+
+	srid = lwgeom_get_srid(geom);
+	is3d = lwgeom_has_z(geom);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	g = LWGEOM2GEOS(geom, 0);
+
+	if (0 == g)   /* exception thrown at construction */
+	{
+		lwerror("Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	g_centroid = GEOSGetCentroid(g);
+	GEOSGeom_destroy(g);
+
+	if (g_centroid == NULL)
+	{
+		lwerror("GEOSGetCentroid: %s", lwgeom_geos_errmsg);
+		return NULL; /*never get here */
+	}
+
+	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g_centroid));
+
+	GEOSSetSRID(g_centroid, srid);
+
+	centroid = GEOS2LWGEOM(g_centroid, is3d);
+	GEOSGeom_destroy(g_centroid);
+
+	if (centroid == NULL)
+	{
+		lwerror("GEOS GEOSGetCentroid() threw an error (result postgis geometry formation)!");
+		return NULL ; /*never get here */
+	}
+
+	return centroid;
+}
+
 LWGEOM*
 lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 {
@@ -2017,7 +2071,10 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 		GEOSGeom_destroy(geos_env);
 
 	if (!geos_result)
+	{
+		lwerror("GEOSVoronoiDiagram: %s", lwgeom_geos_errmsg);
 		return NULL;
+	}
 
 	lwgeom_result = GEOS2LWGEOM(geos_result, is_3d);
 	GEOSGeom_destroy(geos_result);

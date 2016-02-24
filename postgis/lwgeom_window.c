@@ -18,6 +18,7 @@
  *
  **********************************************************************
  *
+ * Copyright 2016 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2016 Daniel Baston <dbaston@gmail.com>
  *
  **********************************************************************/
@@ -36,26 +37,29 @@
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 
-Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
+extern Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS);
+extern Datum ST_KMeans(PG_FUNCTION_ARGS);
 
-struct cluster_result
+typedef struct {
+	bool	isdone;
+	bool	isnull;
+	int		result[1];
+	/* variable length */
+} kmeans_context;
+
+typedef struct
 {
 	uint32_t cluster_id;
 	char is_null;        /* NULL may result from a NULL geometry input, or it may be used by 
 							algorithms such as DBSCAN that do not assign all inputs to a
 							cluster. */
-};
+} dbscan_cluster_result;
 
-typedef struct cluster_result cluster_result;
-
-struct cluster_context
+typedef struct
 {
 	char is_error;
-	cluster_result cluster_assignments[1];
-};
-
-
-typedef struct cluster_context cluster_context;
+	dbscan_cluster_result cluster_assignments[1];
+} dbscan_context;
 
 static LWGEOM*
 read_lwgeom_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
@@ -67,7 +71,7 @@ read_lwgeom_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
 		/* So that the indexes in our clustering input array can match our partition positions,
 		 * 		 * toss an empty point into the clustering inputs, as a pass-through.
 		 * 		 		 * NOTE: this will cause gaps in the output cluster id sequence.
-		 * 		 		 		 * */
+		  		 		 		 * */
 		return lwpoint_as_lwgeom(lwpoint_construct_empty(0, 0, 0));
 	}
 
@@ -81,7 +85,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 	WindowObject win_obj = PG_WINDOW_OBJECT();
 	uint32_t row = WinGetCurrentPosition(win_obj);
 	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);	
-	cluster_context* context = WinGetPartitionLocalMemory(win_obj, sizeof(cluster_context) + ngeoms * sizeof(cluster_result));
+	dbscan_context* context = WinGetPartitionLocalMemory(win_obj, sizeof(dbscan_context) + ngeoms * sizeof(dbscan_cluster_result));
 
 	if (row == 0) /* beginning of the partition; do all of the work now */
 	{
@@ -153,4 +157,90 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	PG_RETURN_INT32(context->cluster_assignments[row].cluster_id);
+}
+
+PG_FUNCTION_INFO_V1(ST_KMeans);
+Datum ST_KMeans(PG_FUNCTION_ARGS)
+{
+	WindowObject winobj = PG_WINDOW_OBJECT();
+	kmeans_context *context;
+	int64 curpos, rowcount;
+
+	rowcount = WinGetPartitionRowCount(winobj);
+	context = (kmeans_context *)
+		WinGetPartitionLocalMemory(winobj,
+			sizeof(kmeans_context) + sizeof(int) * rowcount);
+
+	if (!context->isdone)
+	{
+		int       i, k, N;
+		bool      isnull, isout;
+		LWGEOM    **geoms;
+		int       *r;
+
+		/* What is K? If it's NULL or invalid, we can't procede */
+		k = DatumGetInt32(WinGetFuncArgCurrent(winobj, 1, &isnull));
+		if (isnull || k <= 0)
+		{
+			context->isdone = true;
+			context->isnull = true;
+			PG_RETURN_NULL();
+		}
+
+		/* We also need a non-zero N */
+		N = (int) WinGetPartitionRowCount(winobj);
+		if (N <= 0)
+		{
+			context->isdone = true;
+			context->isnull = true;
+			PG_RETURN_NULL();
+		}
+
+		/* Read all the geometries from the partition window into a list */
+		geoms = palloc(sizeof(LWGEOM*) * N);
+		for (i = 0; i < N; i++)
+		{
+			GSERIALIZED *g;
+			Datum arg = WinGetFuncArgInPartition(winobj, 0, i,
+						WINDOW_SEEK_HEAD, false, &isnull, &isout);
+
+			/* Null geometries are entered as NULL pointers */
+			if (isnull)
+			{
+				geoms[i] = NULL;
+				continue;
+			}
+
+			g = (GSERIALIZED*)PG_DETOAST_DATUM_COPY(arg);
+			geoms[i] = lwgeom_from_gserialized(g);
+		}
+
+		/* Calculate k-means on the list! */
+		r = lwgeom_cluster_2d_kmeans((const LWGEOM **)geoms, N, k);
+
+		/* Clean up */
+		for (i = 0; i < N; i++)
+			if (geoms[i])
+				lwgeom_free(geoms[i]);
+
+		pfree(geoms);
+
+		if (!r)
+		{
+			context->isdone = true;
+			context->isnull = true;
+			PG_RETURN_NULL();
+		}
+
+		/* Safe the result */
+		memcpy(context->result, r, sizeof(int) * N);
+		pfree(r);
+		context->isdone = true;
+	}
+
+	if (context->isnull)
+		PG_RETURN_NULL();
+
+	curpos = WinGetCurrentPosition(winobj);
+	PG_RETURN_INT32(context->result[curpos]);
 }

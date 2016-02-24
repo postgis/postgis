@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -676,7 +676,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:478
 #, no-c-format
-msgid "If no <varname>precision</varname> is specficified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string."
+msgid "If no <varname>precision</varname> is specified ST_GeomFromGeoHash returns a polygon based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para
@@ -1243,6 +1243,12 @@ msgstr ""
 #: reference_constructor.xml:817
 #, no-c-format
 msgid "See http://developers.google.com/maps/documentation/utilities/polylinealgorithm"
+msgstr ""
+
+#. Tag: para
+#: reference_constructor.xml:818
+#, no-c-format
+msgid "Availability: 2.2.0"
 msgstr ""
 
 #. Tag: programlisting
@@ -2322,7 +2328,7 @@ msgstr ""
 #. Tag: para
 #: reference_constructor.xml:1694
 #, no-c-format
-msgid "If no <varname>precision</varname> is specficified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string."
+msgid "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns a point based on full precision of the input GeoHash string."
 msgstr ""
 
 #. Tag: para

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2014-10-15 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -3258,11 +3258,9 @@ msgstr ""
 
 #. Tag: ulink
 #: using_postgis_dataman.xml:1379
-#, no-c-format
-msgid ""
-"Dimensionally Extended Nine-Intersection Model (DE-9IM) by Christian Strobl"
-msgstr ""
-"Dimensionally Extended Nine-Intersection Model (DE-9IM) por Christian Strobl"
+#, fuzzy, no-c-format
+msgid "Dimensionally Extended Nine-Intersection Model (DE-9IM)"
+msgstr "Modelo de intersección 9 dimensionalmente extendido(DE-9IM)"
 
 #. Tag: ulink
 #: using_postgis_dataman.xml:1383
@@ -5129,6 +5127,13 @@ msgstr ""
 "-----+--------------+------------------\n"
 "12   | SPALLUMCHEEN | 257374619.430216\n"
 "(1 row)"
+
+#~ msgid ""
+#~ "Dimensionally Extended Nine-Intersection Model (DE-9IM) by Christian "
+#~ "Strobl"
+#~ msgstr ""
+#~ "Dimensionally Extended Nine-Intersection Model (DE-9IM) por Christian "
+#~ "Strobl"
 
 #~ msgid ""
 #~ "<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:"

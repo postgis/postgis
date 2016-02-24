@@ -44,6 +44,8 @@ stringbuffer_t;
 
 extern stringbuffer_t *stringbuffer_create_with_size(size_t size);
 extern stringbuffer_t *stringbuffer_create(void);
+extern void stringbuffer_init(stringbuffer_t *s);
+extern void stringbuffer_release(stringbuffer_t *s);
 extern void stringbuffer_destroy(stringbuffer_t *sb);
 extern void stringbuffer_clear(stringbuffer_t *sb);
 void stringbuffer_set(stringbuffer_t *sb, const char *s);

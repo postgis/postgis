@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2013-11-27 16:31+0000\n"
 "Last-Translator: Sandro Santilli <strk@keybit.net>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/postgis-1/"
@@ -2487,8 +2487,7 @@ msgstr ""
 #. Tag: ulink
 #: using_postgis_dataman.xml:1379
 #, no-c-format
-msgid ""
-"Dimensionally Extended Nine-Intersection Model (DE-9IM) by Christian Strobl"
+msgid "Dimensionally Extended Nine-Intersection Model (DE-9IM)"
 msgstr ""
 
 #. Tag: ulink

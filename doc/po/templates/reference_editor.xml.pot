@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -593,7 +593,7 @@ msgstr ""
 #. Tag: funcprototype
 #: reference_editor.xml:436
 #, no-c-format
-msgid "<funcdef>boolean <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
+msgid "<funcdef>geometry <function>ST_ForceRHR</function></funcdef> <paramdef><type>geometry</type> <parameter>g</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -1240,7 +1240,7 @@ msgstr ""
 #. Tag: para
 #: reference_editor.xml:1004
 #, no-c-format
-msgid "The version taking a geometry as the <varname>factor</varname> parameter allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all supported dimensions. Missing dimensions in the <varname>factor</varname> point are equivalant to no scaling the corresponding dimension."
+msgid "The version taking a geometry as the <varname>factor</varname> parameter allows passing a 2d, 3dm, 3dz or 4d point to set scaling factor for all supported dimensions. Missing dimensions in the <varname>factor</varname> point are equivalent to no scaling the corresponding dimension."
 msgstr ""
 
 #. Tag: para
@@ -1514,7 +1514,7 @@ msgstr ""
 #. Tag: para
 #: reference_editor.xml:1242
 #, no-c-format
-msgid "The returned geometry might loose its simplicity (see <xref linkend=\"ST_IsSimple\"/>)."
+msgid "The returned geometry might lose its simplicity (see <xref linkend=\"ST_IsSimple\"/>)."
 msgstr ""
 
 #. Tag: para
@@ -1615,7 +1615,7 @@ msgstr ""
 #. Tag: para
 #: reference_editor.xml:1327
 #, no-c-format
-msgid "The returned geometry might loose its simplicity (see <xref linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
+msgid "The returned geometry might lose its simplicity (see <xref linkend=\"ST_IsSimple\"/>) and validity (see <xref linkend=\"ST_IsValid\"/>)."
 msgstr ""
 
 #. Tag: para
