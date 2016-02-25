@@ -32,4 +32,3 @@ ST_Angle_3_pts|1.5707963267949
 ERROR:  Operation on mixed SRID geometries
 ERROR:  Empty geometry
 ST_Angle_2_lines|4.71238898038469
-
