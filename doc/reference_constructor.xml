@@ -1439,7 +1439,7 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
-		<refpurpose>Creates a Linestring from point or line geometries.</refpurpose>
+		<refpurpose>Creates a Linestring from point, multipoint, or line geometries.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1466,17 +1466,21 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<title>Description</title>
 
 		<para>ST_MakeLine comes in 3 forms: a spatial aggregate that takes
-			rows of point-or-line geometries and returns a line string, a function that takes an array of point-or-lines, and a regular function that takes two point-or-line geometries. You
+			rows of point, multipoint, or line geometries and returns a line string, a
+			function that takes an array of point, multipoint, or line, and a regular
+			function that takes two point, multipoint, or line geometries. You
 			might want to use a subselect to order points before feeding them
 			to  the aggregate version of this function.</para>
 
+		<para>Inputs other than point, multipoint, or lines are ignored.</para>
 		<para>
-			When adding line components a common node is removed from the output.
+			When adding line components common nodes at the beginning of lines are removed from the output. Common nodes in point and multipoint inputs are not removed.
 		</para>
 
 		<para>&Z_support;</para>
 		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
 		<para>Availability: 2.0.0 -  Support for linestring input elements was introduced</para>
+		<para>Availability: 2.0.0 -  Support for multipoint input elements was introduced</para>
 		</refsection>
 
 		<refsection>

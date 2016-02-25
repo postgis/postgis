@@ -1408,8 +1408,9 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 		
 		geom = (GSERIALIZED *)DatumGetPointer(value);
 
-		if ( gserialized_get_type(geom) != POINTTYPE && 
-		     gserialized_get_type(geom) != LINETYPE ) 
+		if ( gserialized_get_type(geom) != POINTTYPE &&
+		     gserialized_get_type(geom) != LINETYPE &&
+		     gserialized_get_type(geom) != MULTIPOINTTYPE)
 		{
 			continue;
 		}
