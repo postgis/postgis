@@ -825,7 +825,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 		<refnamediv>
 		  <refname>ST_Angle</refname>
 
-		  <refpurpose>Returns the angle in radian measured clokwise between 3 points, or the angle measured clockwise between 2 vectors. Vectors can be described with 4 points or 2 lines.</refpurpose>
+		  <refpurpose>Returns the angle between 3 points, or between 2 vectors (4 points or 2 lines).</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -834,7 +834,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			  <paramdef><type>geometry </type><parameter>point1</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point2</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>point3</parameter></paramdef>
-			  <paramdef><type>geometry </type><parameter>point4</parameter></paramdef>
+			  <paramdef choice="opt"><type>geometry </type><parameter>point4</parameter></paramdef>
 			</funcprototype> 
 			<funcprototype>
 			  <funcdef>float <function>ST_Angle</function></funcdef>
@@ -851,7 +851,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			For 4 points,compute the angle measured clockwise of P1P2,P3P4.
 			Results are always positive, between 0 and 2*Pi radians.
 			
-			Uses ST_Azimuth.
+			Uses azimuth of pairs or points.
 			</para>
 			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para> 
 			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para> 

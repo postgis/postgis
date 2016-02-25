@@ -2438,7 +2438,8 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	double az1,az2 ;
 	double result;
 	int srids[4];
-	int i = 0 ;  
+	int i = 0 ; 
+	int j = 0 ;
 	int n_args = 0; 
 
 	/* extract points while it is possible*/
@@ -2452,6 +2453,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			n_args = i ; 
 			if (n_args < 3)
 				lwpgerror("Empty geometry"); 
+				PG_RETURN_NULL() ;
 			break; 
 		}
 		
@@ -2485,7 +2487,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	/* compute azimuth for the 2 pairs of points
 	 * note that angle is not defined identically for 3 points or 4 points*/ 
 	if (n_args == 3)
-	{
+	{/* we rely on azimuth to complain if points are identical */
 		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
 			PG_RETURN_NULL(); 
 		if ( ! azimuth_pt_pt(&points[2], &points[1], &az2) )
@@ -2493,7 +2495,7 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	} else
 	{
 		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
-		PG_RETURN_NULL();
+			PG_RETURN_NULL();
 		if ( ! azimuth_pt_pt(&points[2], &points[3], &az2) )
 			PG_RETURN_NULL(); 
 	}
