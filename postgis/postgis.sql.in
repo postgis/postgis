@@ -1291,6 +1291,12 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_azimuth'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default 'POINT EMPTY'::geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_angle'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 ------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------

@@ -102,6 +102,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
+Datum LWGEOM_angle(PG_FUNCTION_ARGS); 
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
@@ -2419,6 +2420,87 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 }
+
+/**
+ * Compute the angle between 4 or 4 points
+ * given Point geometries.
+ * @return NULL on exception (same point).
+ * 		Return radians otherwise.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_angle);
+Datum LWGEOM_angle(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom;
+	LWGEOM *geom_unser;
+	LWPOINT *lwpoint;
+	POINT2D points[4]; 
+	double az1,az2 ;
+	double result;
+	int srids[4];
+	int i = 0 ;  
+	int n_args = 0; 
+
+	/* extract points while it is possible*/
+	n_args = PG_NARGS() ;
+	for(i=0; i<n_args; i++)
+	{
+		geom = PG_GETARG_GSERIALIZED_P(i);
+		geom_unser = lwgeom_from_gserialized(geom) ; 
+		if (lwgeom_is_empty(geom_unser) == true)
+		{/*4th arg is not set, don't use it*/
+			n_args = i ; 
+			if (n_args < 3)
+				lwpgerror("Empty geometry"); 
+			break; 
+		}
+		
+		lwpoint = lwgeom_as_lwpoint(geom_unser);
+		if ( ! lwpoint )
+		{
+			PG_FREE_IF_COPY(geom, i);
+			lwpgerror("Argument must be POINT geometries");
+			PG_RETURN_NULL();
+		}
+		srids[i] = lwpoint->srid;
+		/* Extract first point */
+		if ( ! getPoint2d_p(lwpoint->point, 0, &points[i]) )
+		{
+			PG_FREE_IF_COPY(geom, i);
+			lwpgerror("Error extracting point");
+			PG_RETURN_NULL();
+		}
+		lwpoint_free(lwpoint);
+		PG_FREE_IF_COPY(geom, i);
+		
+		if ( i>0 )
+		{ /*checking that srid are egals 2 by 2*/
+			if ( srids[i] != srids[i-1])
+			{
+				lwpgerror("Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
+			}
+		}
+	}
+	/* compute azimuth for the 2 pairs of points
+	 * note that angle is not defined identically for 3 points or 4 points*/ 
+	if (n_args == 3)
+	{
+		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
+			PG_RETURN_NULL(); 
+		if ( ! azimuth_pt_pt(&points[2], &points[1], &az2) )
+			PG_RETURN_NULL(); 
+	} else
+	{
+		if ( ! azimuth_pt_pt(&points[0], &points[1], &az1) )
+		PG_RETURN_NULL();
+		if ( ! azimuth_pt_pt(&points[2], &points[3], &az2) )
+			PG_RETURN_NULL(); 
+	}
+	result = az2-az1 ;
+	result += (result<0) * 2 * M_PI ; /* we dont want negative angle*/
+	PG_RETURN_FLOAT8(result);
+}
+
 
 /*
  * optimistic_overlap(Polygon P1, Multipolygon MP2, double dist)
