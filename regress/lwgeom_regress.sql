@@ -135,3 +135,18 @@ SELECT 'BoundingDiagonal5', ST_AsEwkt(ST_BoundingDiagonal(
 SELECT 'BoundingDiagonal6', ST_AsEwkt(ST_BoundingDiagonal(
     'SRID=3857;POLYGON M EMPTY'::geometry
 ));
+
+
+--- ST_Azimuth
+SELECT 'ST_Azimuth_regular' , round(ST_Azimuth(geom1,geom2)::numeric,4)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, CAST('POINT(1 0)' AS geometry) AS geom2 ; 
+SELECT 'ST_Azimuth_same_point' , ST_Azimuth(geom1,geom1)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1 ; 
+SELECT 'ST_Azimuth_mixed_srid' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('POINT(1 0)',4326) AS geom2; 
+SELECT 'ST_Azimuth_not_point' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('LINESTRING(1 0 ,2 0)',4326) AS geom2; 
+SELECT 'ST_Azimuth_null_geom' , ST_Azimuth(geom1,geom2)
+FROM CAST('POINT(0 1)' AS geometry) AS geom1, ST_GeomFromText('EMPTY') AS geom2; 
+
+--- ST_Angle
