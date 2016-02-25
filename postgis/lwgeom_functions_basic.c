@@ -2422,10 +2422,11 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 }
 
 /**
- * Compute the angle between 4 or 4 points
+ * Compute the angle defined by 3 points or the angle between 2 vectors
+ * defined by 4 points
  * given Point geometries.
  * @return NULL on exception (same point).
- * 		Return radians otherwise.
+ * 		Return radians otherwise (always positive).
  */
 PG_FUNCTION_INFO_V1(LWGEOM_angle);
 Datum LWGEOM_angle(PG_FUNCTION_ARGS)
