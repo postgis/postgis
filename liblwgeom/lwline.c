@@ -165,12 +165,13 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 LWLINE *
 lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 {
- 	int i;
+	int i;
 	int hasz = LW_FALSE;
 	int hasm = LW_FALSE;
 	POINTARRAY *pa;
 	LWLINE *line;
 	POINT4D pt;
+	LWPOINTITERATOR* it;
 
 	/*
 	 * Find output dimensions, check integrity
@@ -182,7 +183,9 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 		if ( hasz && hasm ) break; /* Nothing more to learn! */
 	}
 
-	/* ngeoms should be a guess about how many points we have in input */
+	/*
+	 * ngeoms should be a guess about how many points we have in input.
+	 * It's an underestimate for lines and multipoints */
 	pa = ptarray_construct_empty(hasz, hasm, ngeoms);
 	
 	for ( i=0; i < ngeoms; i++ )
@@ -198,7 +201,20 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 		}
 		else if ( g->type == LINETYPE )
 		{
+			/*
+			 * Append the new line points, de-duplicating against the previous points.
+			 * Duplicated points internal to the linestring are untouched.
+			 */
 			ptarray_append_ptarray(pa, ((LWLINE*)g)->points, -1);
+		}
+		else if ( g->type == MULTIPOINTTYPE )
+		{
+			it = lwpointiterator_create(g);
+			while(lwpointiterator_next(it, &pt))
+			{
+				ptarray_append_point(pa, &pt, LW_TRUE);
+			}
+			lwpointiterator_destroy(it);
 		}
 		else
 		{
