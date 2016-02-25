@@ -742,25 +742,13 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 2.1.x
+-- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
 	RETURNS geography
 	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 2.1.x
-CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
-	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 2.1.x
-CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
-	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
--- Availability: 2.1.x
+-- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
 	RETURNS geography
 	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
@@ -772,11 +760,13 @@ CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
 	$$ SELECT ST_Buffer($1::geometry, $2);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, integer)
 	RETURNS geometry AS
 	$$ SELECT ST_Buffer($1::geometry, $2, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
 	RETURNS geometry AS
 	$$ SELECT ST_Buffer($1::geometry, $2, $3);  $$
