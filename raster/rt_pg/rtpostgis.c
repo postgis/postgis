@@ -381,10 +381,10 @@ _PG_init(void) {
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
-	/* TODO: Install raster callbacks (see rt_init_allocators)??? */
+	/* Install rtcore handlers */
+	rt_init_allocators();
 
 	/* Define custom GUC variables. */
-
 	if ( postgis_guc_find_option("postgis.gdal_datapath") )
 	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */

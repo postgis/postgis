@@ -2279,6 +2279,8 @@ main(int argc, char **argv) {
 	GDALDriverH drv = NULL;
 	char *tmp = NULL;
 
+	rt_init_allocators();
+	
 #ifdef USE_NLS
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
