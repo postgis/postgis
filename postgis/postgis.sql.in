@@ -2661,7 +2661,6 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-
 ---------------------------------------------------------------
 -- PROJ support
 ---------------------------------------------------------------
@@ -2674,6 +2673,17 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_SetSRID(geometry,int4)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_SRID(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION postgis_transform_geometry(geometry,text,text,int)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','transform_geom'
@@ -2685,6 +2695,25 @@ CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	AS 'MODULE_PATHNAME','transform'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
+  RETURNS geometry AS
+'SELECT postgis_transform_geometry($1, proj4text, $2, 0)
+FROM spatial_ref_sys WHERE srid=ST_SRID($1);'
+  LANGUAGE sql IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj text)
+  RETURNS geometry AS
+'SELECT postgis_transform_geometry($1, $2, $3, 0)'
+  LANGUAGE sql IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
+  RETURNS geometry AS
+'SELECT postgis_transform_geometry($1, $2, proj4text, $3)
+FROM spatial_ref_sys WHERE srid=$3;'
+  LANGUAGE sql IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
@@ -4340,17 +4369,6 @@ CREATE OR REPLACE FUNCTION ST_IsEmpty(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_isempty'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_SRID(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_SetSRID(geometry,int4)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-	
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea

@@ -122,22 +122,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	int32 result_srid ;
 	char *pj_errstr;
 
-
-
 	result_srid = PG_GETARG_INT32(3);
-	if (result_srid == SRID_UNKNOWN)
-	{
-		elog(ERROR,"transform: destination SRID = %d",SRID_UNKNOWN);
-		PG_RETURN_NULL();
-	}
-
 	geom = PG_GETARG_GSERIALIZED_P_COPY(0);
-	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
-	{
-		pfree(geom);
-		elog(ERROR,"transform_geom: source SRID = %d",SRID_UNKNOWN);
-		PG_RETURN_NULL();
-	}
 
 	/* Set the search path if we haven't already */
 	SetPROJ4LibPath();
