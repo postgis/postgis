@@ -33,9 +33,17 @@ SELECT 'ST_StraightSkeleton', ST_AsText(ST_StraightSkeleton('POLYGON((1 1,2 1,2 
 -- Backend switch tests
 SET postgis.backend = 'geos';
 SELECT 'intersection_geos', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
+-- geos isvalid on unsupported type
+SELECT 'isvalid_geos', st_isvalid(st_extrude('polygon((0 0,1 0,1 1,0 1,0 0))',0,0,1));
 
 SET postgis.backend = 'sfcgal';
 SELECT 'intersection_sfcgal', ST_astext(ST_intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
+SELECT 'isvalid_sfcgal', st_isvalid(st_extrude('polygon((0 0,1 0,1 1,0 1,0 0))',0,0,1));
+
+SELECT 'validate_hasflag', ST_HasValidityFlag(ST_Validate('POINT(0 0)'));
+SELECT 'validate_returns_null', ST_Validate('POLYGON((0 0,1 1,0 1,1 0,0 0))');
+SELECT 'hasvalidflag', ST_HasValidityFlag('POINT(0 0)');
+SELECT 'extrude_output_is_valid', ST_HasValidityFlag(ST_Extrude('polygon((0 0,1 0,1 1,0 1,0 0))',0,0,1));
 
 SET postgis.backend = 'foo';
 SET postgis.backend = '';
