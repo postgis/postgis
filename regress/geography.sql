@@ -107,6 +107,13 @@ CROSS JOIN (VALUES (1609),(1600),(1068)) AS t (radius)
 ORDER BY distance_t;
 DROP TABLE dwithgeogbug;
 
+-- Test segmentize on geography
+-- Check that the maximum sphere distance over all the segments is lesser than the max distance used for segmentize
+WITH
+seg as (select ST_Segmentize('LINESTRING(0 0 10,0 90 20)'::geography, 50000)::geometry as geom),
+dumped as (SELECT (st_dumppoints(geom)).path[1] as id, (st_dumppoints(geom)).geom from seg)
+SELECT 'segmentize_geography', max(st_distance(d1.geom::geography, d2.geom::geography, false))::int FROM dumped as d1, dumped as d2 where d2.id = d1.id + 1;
+
 -- Clean up spatial_ref_sys
 DELETE FROM spatial_ref_sys WHERE srid IN (4269,4326);
     

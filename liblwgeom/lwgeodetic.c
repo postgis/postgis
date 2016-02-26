@@ -1550,7 +1550,6 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 	int hasm = ptarray_has_m(pa_in);
 	int pa_in_offset = 0; /* input point offset */
 	POINT4D p1, p2, p;
-	POINT3D q1, q2, q, qn;
 	GEOGRAPHIC_POINT g1, g2, g;
 	double d;
 	
@@ -1592,32 +1591,21 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 		{
 			int nsegs = 1 + d / max_seg_length;
 			int i;
-			double dx, dy, dz, dzz = 0, dmm = 0;
-			
-			geog2cart(&g1, &q1);
-			geog2cart(&g2, &q2);
-			
-			dx = (q2.x - q1.x) / nsegs;
-			dy = (q2.y - q1.y) / nsegs;
-			dz = (q2.z - q1.z) / nsegs;
-			
+			double dx, dy, dzz = 0, dmm = 0;
+			g = g1;
+			dx = (g2.lat - g1.lat) / nsegs;
+			dy = (g2.lon - g1.lon) / nsegs;
+
 			/* The independent Z/M values on the ptarray */
 			if ( hasz ) dzz = (p2.z - p1.z) / nsegs;
 			if ( hasm ) dmm = (p2.m - p1.m) / nsegs;
 			
-			q = q1;
 			p = p1;
-			
 			for ( i = 0; i < nsegs - 1; i++ )
 			{
 				/* Move one increment forwards */
-				q.x += dx; q.y += dy; q.z += dz;
-				qn = q;
-				normalize(&qn);
-				
-				/* Back to spherical coordinates */
-				cart2geog(&qn, &g);
-				/* Back to lon/lat */
+				g.lat += dx;
+				g.lon += dy;
 				p.x = rad2deg(g.lon);
 				p.y = rad2deg(g.lat);
 				if ( hasz )
