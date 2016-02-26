@@ -25,6 +25,8 @@ PostGIS 2.1.9
   - #3436, memory handling mistake in ptarray_clone_deep 
   - #3461, ST_GeomFromKML crashes Postgres when there are 
            innerBoundaryIs and no outerBoundaryIs
+  - #3429, upgrading to 2.2 or 2.3 can cause crash/hang on some 
+           platforms
 
 
 PostGIS 2.1.8
