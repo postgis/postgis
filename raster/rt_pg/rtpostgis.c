@@ -414,6 +414,12 @@ _PG_init(void) {
 	char *env_postgis_enable_outdb_rasters = NULL;
 	bool boot_postgis_enable_outdb_rasters = false;
 
+	/* Install liblwgeom handlers */
+	pg_install_lwgeom_handlers();
+
+	/* Install rtcore handlers */
+	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_debug, rt_pg_notice);
+
 	/*
 	 use POSTGIS_GDAL_ENABLED_DRIVERS to set the bootValue
 	 of GUC postgis.gdal_enabled_drivers
@@ -461,14 +467,7 @@ _PG_init(void) {
 		boot_postgis_enable_outdb_rasters ? "TRUE" : "FALSE"
 	);
 
-	/* Install liblwgeom handlers */
-	pg_install_lwgeom_handlers();
-
-	/* Install rtcore handlers */
-	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_debug, rt_pg_notice);
-
 	/* Define custom GUC variables. */
-
 	DefineCustomStringVariable(
 		"postgis.gdal_datapath", /* name */
 		"Path to GDAL data files.", /* short_desc */

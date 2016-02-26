@@ -239,14 +239,3 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 
 	return band;
 }
-
-void rt_init_allocators(void) {
-	rt_set_handlers(
-		default_rt_allocator,
-		default_rt_reallocator,
-		default_rt_deallocator,
-		cu_error_reporter,
-		default_rt_info_handler,
-		default_rt_warning_handler
-	);
-}

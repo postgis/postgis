@@ -40,9 +40,8 @@
  * of non-PostGIS applications using rt_core.
  *
  * Programs using this library should set up the default memory managers and error
- * handlers by implementing an rt_init_allocators() function, which can be as
- * a wrapper around the rt_install_default_allocators() function if you want
- * no special handling for memory management and error reporting.
+ * handlers by calling rt_set_handlers() function, or the rt_install_default_allocators() 
+ * function if you want no special handling for memory management and error reporting.
  *
  **/
 
@@ -245,27 +244,12 @@ typedef void  (*rt_deallocator)(void *mem);
 typedef void  (*rt_message_handler)(const char* string, va_list ap)
   __attribute__ (( format(printf,1,0) ));
 
-/****************************************************************************
- * Functions that must be implemented for the raster core function's caller
- * (for example: rt_pg functions, test functions, future loader/exporter)
- ****************************************************************************/
-
-/**
- * Supply the memory management and error handling functions you want your
- * application to use
- */
-extern void rt_init_allocators(void);
-
-/*********************************************************************/
-
-
 /*******************************************************************
  * Functions that may be used by the raster core function's caller
  * (for example: rt_pg functions, test functions, future loader/exporter)
  *******************************************************************/
 /**
  * Apply the default memory management (malloc() and free()) and error handlers.
- * Called inside rt_init_allocators() generally.
  */
 extern void rt_install_default_allocators(void);
 

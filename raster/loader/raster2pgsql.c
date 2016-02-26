@@ -60,7 +60,8 @@ loader_rt_info_handler(const char *fmt, va_list ap) {
 	va_end(ap);
 }
 
-void rt_init_allocators(void) {
+static void 
+rt_init_allocators(void) {
 	rt_set_handlers(
 		default_rt_allocator,
 		default_rt_reallocator,
@@ -2284,6 +2285,9 @@ main(int argc, char **argv) {
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+
+	/* Set up memory handling */
+	rt_init_allocators();
 
 	/* no args, show usage */
 	if (argc == 1) {
