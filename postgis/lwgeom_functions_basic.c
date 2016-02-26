@@ -2439,50 +2439,84 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	double result;
 	int srids[4];
 	int i = 0 ; 
-	int j = 0 ;
-	int n_args = 0; 
+	int err_code = 0; 
+	int n_args = PG_NARGS(); 
 
-	/* extract points while it is possible*/
-	n_args = PG_NARGS() ;
+	/* no deserialize, checking for common error first*/
+	for(i=0; i<n_args; i++)
+	{
+		geom = PG_GETARG_GSERIALIZED_P(i); 
+		if (gserialized_is_empty(geom) )
+		{/* empty geom */
+			if (i==3)
+			{
+				n_args = 3 ;
+			}
+			else
+			{
+				err_code = 1 ;
+				break ;
+			}
+		} else
+		{
+			if(gserialized_get_type(geom) != POINTTYPE)
+			{/* geom type */
+				err_code = 2 ;
+				break;
+			}
+			else
+			{
+				srids[i] = gserialized_get_srid(geom) ; 
+				if(srids[0] != srids[i])
+				{/* error on srid*/
+					err_code = 3 ;
+					break;
+				}
+			}
+		}
+		PG_FREE_IF_COPY(geom, i);
+	}
+	if (err_code >0)
+		switch (err_code){
+			default: /*always executed*/
+			PG_FREE_IF_COPY(geom, i);
+			
+			case 1:
+			lwpgerror("Empty geometry"); 
+			PG_RETURN_NULL() ;
+			break;
+			
+			case 2:
+			lwpgerror("Argument must be POINT geometries");
+			PG_RETURN_NULL();
+			break;
+			
+			case 3:
+			lwpgerror("Operation on mixed SRID geometries");
+			PG_RETURN_NULL();
+			break;
+		}
+	/* extract points */
 	for(i=0; i<n_args; i++)
 	{
 		geom = PG_GETARG_GSERIALIZED_P(i);
 		geom_unser = lwgeom_from_gserialized(geom) ; 
-		if (lwgeom_is_empty(geom_unser) == true)
-		{/*4th arg is not set, don't use it*/
-			n_args = i ; 
-			if (n_args < 3)
-				lwpgerror("Empty geometry"); 
-				PG_RETURN_NULL() ;
-			break; 
-		}
+		lwpoint = lwgeom_as_lwpoint(geom_unser); 
+		if (!lwpoint)
+		{ 
+			lwpgerror("Error unserializing geometry"); 
+			PG_RETURN_NULL() ;
+		} 
 		
-		lwpoint = lwgeom_as_lwpoint(geom_unser);
-		if ( ! lwpoint )
-		{
-			PG_FREE_IF_COPY(geom, i);
-			lwpgerror("Argument must be POINT geometries");
-			PG_RETURN_NULL();
-		}
-		srids[i] = lwpoint->srid;
-		/* Extract first point */
 		if ( ! getPoint2d_p(lwpoint->point, 0, &points[i]) )
-		{
+		{ 
 			PG_FREE_IF_COPY(geom, i);
 			lwpgerror("Error extracting point");
 			PG_RETURN_NULL();
 		}
-		lwpoint_free(lwpoint);
+		lwfree(geom_unser);
+		/* dont do lwpoint_free(lwpoint); , this memory is needed ! */
 		PG_FREE_IF_COPY(geom, i);
-		
-		if ( i>0 )
-		{ /*checking that srid are egals 2 by 2*/
-			if ( srids[i] != srids[i-1])
-			{
-				lwpgerror("Operation on mixed SRID geometries");
-				PG_RETURN_NULL();
-			}
-		}
 	}
 	/* compute azimuth for the 2 pairs of points
 	 * note that angle is not defined identically for 3 points or 4 points*/ 
