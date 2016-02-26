@@ -2431,7 +2431,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_angle);
 Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom;
+	GSERIALIZED * seri_geoms[4];
 	LWGEOM *geom_unser;
 	LWPOINT *lwpoint;
 	POINT2D points[4]; 
@@ -2439,14 +2439,15 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 	double result;
 	int srids[4];
 	int i = 0 ; 
+	int j = 0;
 	int err_code = 0; 
 	int n_args = PG_NARGS(); 
 
 	/* no deserialize, checking for common error first*/
 	for(i=0; i<n_args; i++)
 	{
-		geom = PG_GETARG_GSERIALIZED_P(i); 
-		if (gserialized_is_empty(geom) )
+		seri_geoms[i] = PG_GETARG_GSERIALIZED_P(i); 
+		if (gserialized_is_empty(seri_geoms[i]) )
 		{/* empty geom */
 			if (i==3)
 			{
@@ -2459,14 +2460,14 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			}
 		} else
 		{
-			if(gserialized_get_type(geom) != POINTTYPE)
+			if(gserialized_get_type(seri_geoms[i]) != POINTTYPE)
 			{/* geom type */
 				err_code = 2 ;
 				break;
 			}
 			else
 			{
-				srids[i] = gserialized_get_srid(geom) ; 
+				srids[i] = gserialized_get_srid(seri_geoms[i]) ; 
 				if(srids[0] != srids[i])
 				{/* error on srid*/
 					err_code = 3 ;
@@ -2474,12 +2475,12 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 				}
 			}
 		}
-		PG_FREE_IF_COPY(geom, i);
 	}
 	if (err_code >0)
 		switch (err_code){
 			default: /*always executed*/
-			PG_FREE_IF_COPY(geom, i);
+			for (j=0;j<=i;j++)
+				PG_FREE_IF_COPY(seri_geoms[j], j);
 			
 			case 1:
 			lwpgerror("Empty geometry"); 
@@ -2498,26 +2499,30 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 		}
 	/* extract points */
 	for(i=0; i<n_args; i++)
-	{
-		geom = PG_GETARG_GSERIALIZED_P(i);
-		geom_unser = lwgeom_from_gserialized(geom) ; 
+	{ 
+		geom_unser = lwgeom_from_gserialized(seri_geoms[i]) ; 
 		lwpoint = lwgeom_as_lwpoint(geom_unser); 
 		if (!lwpoint)
 		{ 
+			for (j=0;j<n_args;j++)
+				PG_FREE_IF_COPY(seri_geoms[j], j);
 			lwpgerror("Error unserializing geometry"); 
 			PG_RETURN_NULL() ;
 		} 
 		
 		if ( ! getPoint2d_p(lwpoint->point, 0, &points[i]) )
 		{ 
-			PG_FREE_IF_COPY(geom, i);
+			for (j=0;j<n_args;j++)
+				PG_FREE_IF_COPY(seri_geoms[j], j);
 			lwpgerror("Error extracting point");
 			PG_RETURN_NULL();
 		}
 		lwfree(geom_unser);
-		/* dont do lwpoint_free(lwpoint); , this memory is needed ! */
-		PG_FREE_IF_COPY(geom, i);
+		/* dont do lwpoint_free(lwpoint); , this memory is needed ! */ 
 	}
+	for (j=0;j<n_args;j++)
+		PG_FREE_IF_COPY(seri_geoms[j], j);
+
 	/* compute azimuth for the 2 pairs of points
 	 * note that angle is not defined identically for 3 points or 4 points*/ 
 	if (n_args == 3)
