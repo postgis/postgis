@@ -115,7 +115,7 @@ static void test_util_gdal_open() {
 
 	char *disable_all = GDAL_DISABLE_ALL;
 	char *enabled = "GTiff JPEG PNG";
-	char *enabled_vsi = "GTiff JPEG PNG VSICURL";
+	// char *enabled_vsi = "GTiff JPEG PNG VSICURL";
 
 	rt_util_gdal_register_all(1);
 

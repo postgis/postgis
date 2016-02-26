@@ -126,8 +126,7 @@ static struct rt_context_t ctx_t = {
 
 
 /**
- * This function is normally called by rt_init_allocators when no special memory
- * management is needed. Useful in raster core testing and in the (future)
+ * Useful in raster core testing and in the (future)
  * loader, when we need to use raster core functions but we don't have
  * PostgreSQL backend behind. We must take care of memory by ourselves in those
  * situations
@@ -145,7 +144,7 @@ rt_install_default_allocators(void)
 
 
 /**
- * This function is called by rt_init_allocators when the PostgreSQL backend is
+ * This function is called when the PostgreSQL backend is
  * taking care of the memory and we want to use palloc family
  */
 void
