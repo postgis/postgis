@@ -12,6 +12,8 @@ PostGIS 2.2.2dev
   - #3437, ST_Intersects incorrect for MultiPoints
   - #3461, ST_GeomFromKML crashes Postgres when there are 
            innerBoundaryIs and no outerBoundaryIs
+  - #3429, upgrading to 2.3 or from 2.1 can cause loop/hang on some 
+           platforms
 
 PostGIS 2.2.1
 2016/01/06
