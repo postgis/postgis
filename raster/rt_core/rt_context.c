@@ -36,6 +36,14 @@
 * rt_context
 ******************************************************************************/
 
+/* Functions definitions */
+void * init_rt_allocator(size_t size);
+void * init_rt_reallocator(void * mem, size_t size);
+void init_rt_deallocator(void * mem);
+void init_rt_errorreporter(const char * fmt, va_list ap);
+void init_rt_warnreporter(const char * fmt, va_list ap);
+void init_rt_inforeporter(const char * fmt, va_list ap);
+
 /*
  * Default allocators
  *
@@ -116,12 +124,12 @@ struct rt_context_t {
 
 /* Static variable, to be used for all rt_core functions */
 static struct rt_context_t ctx_t = {
-    .alloc = default_rt_allocator,
-    .realloc = default_rt_reallocator,
-    .dealloc = default_rt_deallocator,
-    .err = default_rt_error_handler,
-    .warn = default_rt_warning_handler,
-    .info = default_rt_info_handler
+    .alloc = init_rt_allocator,
+    .realloc = init_rt_reallocator,
+    .dealloc = init_rt_deallocator,
+    .err = init_rt_errorreporter,
+    .warn = init_rt_warnreporter,
+    .info = init_rt_inforeporter
 };
 
 
@@ -161,6 +169,66 @@ rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
     ctx_t.info = info_handler;
     ctx_t.warn = warning_handler;
 }
+
+/**
+ * Initialisation allocators
+ *
+ * These are used the first time any of the allocators are called to enable
+ * executables/libraries that link into raster to be able to set up their own
+ * allocators. This is mainly useful for older PostgreSQL versions that don't
+ * have functions that are called upon startup.
+ **/
+void *
+init_rt_allocator(size_t size)
+{
+    rt_init_allocators();
+
+    return ctx_t.alloc(size);
+}
+
+void
+init_rt_deallocator(void *mem)
+{
+    rt_init_allocators();
+
+    ctx_t.dealloc(mem);
+}
+
+
+void *
+init_rt_reallocator(void *mem, size_t size)
+{
+    rt_init_allocators();
+
+    return ctx_t.realloc(mem, size);
+}
+
+void
+init_rt_inforeporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+
+    (*ctx_t.info)(fmt, ap);
+}
+
+void
+init_rt_warnreporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+
+    (*ctx_t.warn)(fmt, ap);
+}
+
+
+void
+init_rt_errorreporter(const char *fmt, va_list ap)
+{
+    rt_init_allocators();
+
+    (*ctx_t.err)(fmt, ap);
+
+}
+
 
 
 /**
