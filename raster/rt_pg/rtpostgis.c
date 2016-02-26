@@ -381,7 +381,7 @@ _PG_init(void) {
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
-	/* TODO: Install raster callbacks (see rt_init_allocators)??? */
+	/* TODO: Install raster callbacks (see rt_init_allocators23)??? */
 
 	/* Define custom GUC variables. */
 
@@ -548,7 +548,7 @@ rt_pg_debug(const char *fmt, va_list ap)
 
 
 void
-rt_init_allocators(void)
+rt_init_allocators23(void)
 {
     /* raster callback - install raster handlers */
     rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,

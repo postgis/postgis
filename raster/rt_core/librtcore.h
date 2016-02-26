@@ -40,7 +40,7 @@
  * of non-PostGIS applications using rt_core.
  *
  * Programs using this library should set up the default memory managers and error
- * handlers by implementing an rt_init_allocators() function, which can be as
+ * handlers by implementing an rt_init_allocators23() function, which can be as
  * a wrapper around the rt_install_default_allocators() function if you want
  * no special handling for memory management and error reporting.
  *
@@ -254,7 +254,7 @@ typedef void  (*rt_message_handler)(const char* string, va_list ap)
  * Supply the memory management and error handling functions you want your
  * application to use
  */
-extern void rt_init_allocators(void);
+extern void rt_init_allocators23(void);
 
 /*********************************************************************/
 
@@ -265,7 +265,7 @@ extern void rt_init_allocators(void);
  *******************************************************************/
 /**
  * Apply the default memory management (malloc() and free()) and error handlers.
- * Called inside rt_init_allocators() generally.
+ * Called inside rt_init_allocators23() generally.
  */
 extern void rt_install_default_allocators(void);
 

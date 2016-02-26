@@ -134,7 +134,7 @@ static struct rt_context_t ctx_t = {
 
 
 /**
- * This function is normally called by rt_init_allocators when no special memory
+ * This function is normally called by rt_init_allocators23 when no special memory
  * management is needed. Useful in raster core testing and in the (future)
  * loader, when we need to use raster core functions but we don't have
  * PostgreSQL backend behind. We must take care of memory by ourselves in those
@@ -153,7 +153,7 @@ rt_install_default_allocators(void)
 
 
 /**
- * This function is called by rt_init_allocators when the PostgreSQL backend is
+ * This function is called by rt_init_allocators23 when the PostgreSQL backend is
  * taking care of the memory and we want to use palloc family
  */
 void
@@ -181,7 +181,7 @@ rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
 void *
 init_rt_allocator(size_t size)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     return ctx_t.alloc(size);
 }
@@ -189,7 +189,7 @@ init_rt_allocator(size_t size)
 void
 init_rt_deallocator(void *mem)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     ctx_t.dealloc(mem);
 }
@@ -198,7 +198,7 @@ init_rt_deallocator(void *mem)
 void *
 init_rt_reallocator(void *mem, size_t size)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     return ctx_t.realloc(mem, size);
 }
@@ -206,7 +206,7 @@ init_rt_reallocator(void *mem, size_t size)
 void
 init_rt_inforeporter(const char *fmt, va_list ap)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     (*ctx_t.info)(fmt, ap);
 }
@@ -214,7 +214,7 @@ init_rt_inforeporter(const char *fmt, va_list ap)
 void
 init_rt_warnreporter(const char *fmt, va_list ap)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     (*ctx_t.warn)(fmt, ap);
 }
@@ -223,7 +223,7 @@ init_rt_warnreporter(const char *fmt, va_list ap)
 void
 init_rt_errorreporter(const char *fmt, va_list ap)
 {
-    rt_init_allocators();
+    rt_init_allocators23();
 
     (*ctx_t.err)(fmt, ap);
 
