@@ -95,6 +95,78 @@ extern char enable_outdb_rasters;
 #define ENV_POSTGIS_GDAL_ENABLED_DRIVERS "POSTGIS_GDAL_ENABLED_DRIVERS"
 #define ENV_POSTGIS_ENABLE_OUTDB_RASTERS "POSTGIS_ENABLE_OUTDB_RASTERS"
 
+
+/* ---------------------------------------------------------------- */
+/*  Memory allocation / error reporting hooks                       */
+/* ---------------------------------------------------------------- */
+
+static void *
+rt_pg_alloc(size_t size)
+{
+    void * result;
+
+    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", (long int) size);
+
+    result = palloc(size);
+
+    return result;
+}
+
+static void *
+rt_pg_realloc(void *mem, size_t size)
+{
+    void * result;
+
+    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", (long int) size);
+
+    if (mem)
+        result = repalloc(mem, size);
+
+    else
+        result = palloc(size);
+
+    return result;
+}
+
+static void
+rt_pg_free(void *ptr)
+{
+    POSTGIS_RT_DEBUG(5, "rt_pfree called");
+    pfree(ptr);
+}
+
+static void
+rt_pg_error(const char *fmt, va_list ap)
+{
+#define ERRMSG_MAXLEN 256
+
+    char errmsg[ERRMSG_MAXLEN+1];
+
+    vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
+
+    errmsg[ERRMSG_MAXLEN]='\0';
+    ereport(ERROR, (errmsg_internal("%s", errmsg)));
+}
+
+static void
+rt_pg_notice(const char *fmt, va_list ap)
+{
+    char *msg;
+
+    /*
+     * This is a GNU extension.
+     * Dunno how to handle errors here.
+     */
+    if (!lw_vasprintf (&msg, fmt, ap))
+    {
+        va_end (ap);
+        return;
+    }
+    ereport(NOTICE, (errmsg_internal("%s", msg)));
+    free(msg);
+}
+
+
 /* rtpg_assignHookGDALEnabledDrivers() should only be called by _PG_init */
 static void
 rtpg_assignHookGDALEnabledDrivers() {
@@ -261,6 +333,12 @@ rtpg_assignHookGDALEnabledDrivers() {
 void _PG_init(void) {
 	char *env_postgis_enable_outdb_rasters = NULL;
 
+	/* Install liblwgeom handlers */
+	pg_install_lwgeom_handlers();
+
+	/* Install rt_api handlers */
+	rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error, rt_pg_notice, rt_pg_notice);
+
 	/*
 	 * use POSTGIS_ENABLE_OUTDB_RASTERS to enable access to out-db rasters
 	 */
@@ -290,10 +368,6 @@ void _PG_init(void) {
 	 */
 	rtpg_assignHookGDALEnabledDrivers();
 
-	/* Install liblwgeom handlers */
-	pg_install_lwgeom_handlers();
-
-    /* TODO: Install raster callbacks (see rt_init_allocators) */
 }
 
 /***************************************************************
@@ -19409,85 +19483,5 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
-}
-
-/* ---------------------------------------------------------------- */
-/*  Memory allocation / error reporting hooks                       */
-/*  TODO: reuse the ones in libpgcommon ?                           */
-/* ---------------------------------------------------------------- */
-
-static void *
-rt_pg_alloc(size_t size)
-{
-    void * result;
-
-    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", (long int) size);
-
-    result = palloc(size);
-
-    return result;
-}
-
-static void *
-rt_pg_realloc(void *mem, size_t size)
-{
-    void * result;
-
-    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", (long int) size);
-
-    if (mem)
-        result = repalloc(mem, size);
-
-    else
-        result = palloc(size);
-
-    return result;
-}
-
-static void
-rt_pg_free(void *ptr)
-{
-    POSTGIS_RT_DEBUG(5, "rt_pfree called");
-    pfree(ptr);
-}
-
-static void
-rt_pg_error(const char *fmt, va_list ap)
-{
-#define ERRMSG_MAXLEN 256
-
-    char errmsg[ERRMSG_MAXLEN+1];
-
-    vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
-
-    errmsg[ERRMSG_MAXLEN]='\0';
-    ereport(ERROR, (errmsg_internal("%s", errmsg)));
-}
-
-static void
-rt_pg_notice(const char *fmt, va_list ap)
-{
-    char *msg;
-
-    /*
-     * This is a GNU extension.
-     * Dunno how to handle errors here.
-     */
-    if (!lw_vasprintf (&msg, fmt, ap))
-    {
-        va_end (ap);
-        return;
-    }
-    ereport(NOTICE, (errmsg_internal("%s", msg)));
-    free(msg);
-}
-
-
-void
-rt_init_allocators(void)
-{
-    /* raster callback - install raster handlers */
-    rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,
-            rt_pg_notice, rt_pg_notice);
 }
 
