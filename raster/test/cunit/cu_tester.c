@@ -240,7 +240,7 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	return band;
 }
 
-void rt_init_allocators(void) {
+void rt_init_allocators23(void) {
 	rt_set_handlers(
 		default_rt_allocator,
 		default_rt_reallocator,

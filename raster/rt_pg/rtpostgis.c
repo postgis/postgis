@@ -180,7 +180,7 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 
 /* postgis.gdal_enabled_drivers */
 static void
-rtpg_assignHookGDALEnabledDrivers23(const char *enabled_drivers, void *extra) {
+rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int enable_all = 0;
 	int disable_all = 0;
 
@@ -381,10 +381,10 @@ _PG_init(void) {
 	/* Install liblwgeom handlers */
 	pg_install_lwgeom_handlers();
 
-	/* Install rtcore handlers */
-	rt_init_allocators();
+	/* TODO: Install raster callbacks (see rt_init_allocators23)??? */
 
 	/* Define custom GUC variables. */
+
 	if ( postgis_guc_find_option("postgis.gdal_datapath") )
 	{
 		/* In this narrow case the previously installed GUC is tied to the callback in */
@@ -430,7 +430,7 @@ _PG_init(void) {
 #if POSTGIS_PGSQL_VERSION >= 91
 			NULL, /* GucStringCheckHook check_hook */
 #endif
-			rtpg_assignHookGDALEnabledDrivers23, /* GucStringAssignHook assign_hook */
+			rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
 	}
@@ -548,7 +548,7 @@ rt_pg_debug(const char *fmt, va_list ap)
 
 
 void
-rt_init_allocators(void)
+rt_init_allocators23(void)
 {
     /* raster callback - install raster handlers */
     rt_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,

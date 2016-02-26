@@ -60,7 +60,7 @@ loader_rt_info_handler(const char *fmt, va_list ap) {
 	va_end(ap);
 }
 
-void rt_init_allocators(void) {
+void rt_init_allocators23(void) {
 	rt_set_handlers(
 		default_rt_allocator,
 		default_rt_reallocator,
@@ -2279,8 +2279,6 @@ main(int argc, char **argv) {
 	GDALDriverH drv = NULL;
 	char *tmp = NULL;
 
-	rt_init_allocators();
-	
 #ifdef USE_NLS
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
