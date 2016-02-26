@@ -111,6 +111,8 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
 
+Datum has_validity_flag(PG_FUNCTION_ARGS);
+
 
 /*------------------------------------------------------------------*/
 
@@ -2833,4 +2835,18 @@ Datum ST_Points(PG_FUNCTION_ARGS)
 		lwmpoint_free(result);
 		PG_RETURN_POINTER(ret);
 	}
+}
+
+PG_FUNCTION_INFO_V1(has_validity_flag);
+Datum has_validity_flag(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input;
+	int fl;
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+
+	fl = FLAGS_GET_VALID(input->flags);
+	
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_BOOL(fl);
 }

@@ -4369,6 +4369,12 @@ CREATE OR REPLACE FUNCTION ST_IsEmpty(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_isempty'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_HasValidityFlag(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'has_validity_flag'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea
