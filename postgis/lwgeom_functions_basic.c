@@ -2517,8 +2517,8 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 			lwpgerror("Error extracting point");
 			PG_RETURN_NULL();
 		}
-		lwfree(geom_unser);
-		/* dont do lwpoint_free(lwpoint); , this memory is needed ! */ 
+		/* lwfree(geom_unser);don't do, lw may rely on this memory
+		lwpoint_free(lwpoint); dont do , this memory is needed ! */ 
 	}
 	for (j=0;j<n_args;j++)
 		PG_FREE_IF_COPY(seri_geoms[j], j);
