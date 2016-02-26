@@ -272,7 +272,7 @@ rtpg_assignHookGDALDataPath(const char *newpath, void *extra) {
 
 /* postgis.gdal_enabled_drivers */
 static void
-rtpg_assignHookGDALEnabledDrivers23(const char *enabled_drivers, void *extra) {
+rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 	int enable_all = 0;
 	int disable_all = 0;
 
@@ -522,7 +522,7 @@ _PG_init(void) {
 #if POSTGIS_PGSQL_VERSION >= 91
 			NULL, /* GucStringCheckHook check_hook */
 #endif
-			rtpg_assignHookGDALEnabledDrivers23, /* GucStringAssignHook assign_hook */
+			rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
 	}
