@@ -1082,7 +1082,7 @@ SELECT ST_AsText(
           <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink> 
           algorithm.  An input geometry will be added to a cluster if it is 
           within <varname>eps</varname> distance of at least
-          <varname>minpoints</varname> other input geometries.  Unlike <xref linked="ST_ClusterKMeans" />, it does not require to specify the number of
+          <varname>minpoints</varname> other input geometries.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require to specify the number of
           clusters for each dataset, but instead uses the desired input distance <varname>eps</varname> at optimal cluster size for each cluster.
       </para>
       <para>Availability: 2.3.0 - requires GEOS </para>
