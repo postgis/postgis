@@ -37,6 +37,8 @@ IMAGES= \
 	../images/st_buildarea02.png \
 	../images/st_closestpoint01.png \
 	../images/st_closestpoint02.png \
+	../images/st_clusterkmeans01.png \
+	../images/st_clusterkmeans02.png \
 	../images/st_centroid01.png \
 	../images/st_centroid02.png \
 	../images/st_centroid03.png \

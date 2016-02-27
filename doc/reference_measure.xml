@@ -1211,10 +1211,83 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 
     <refsection>
       <title>Examples</title>
-		    <programlisting>
-SELECT ST_ClusterKMeans(geom, 5) over (), geom, parcel_id 
-FROM parcels;
+      		<para>Generate dummy set of parcels for examples</para>
+      		<programlisting>CREATE TABLE parcels AS 
+SELECT lpad((row_number() over())::text,3,'0') As parcel_id, geom, 
+	('{residential, commercial}'::text[])[1 + mod(row_number()OVER(),2)] As type
+FROM 
+    ST_Subdivide(ST_Buffer('LINESTRING(50 100, 98 100, 100 150)'::geometry,
+    40, 'endcap=square'),8) As geom;
 </programlisting>
+    
+    	<informaltable>
+			  <tgroup cols="1">
+				<tbody>
+				  <row>
+				  	<entry>
+						<para><informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_clusterkmean01.png" />
+						  </imageobject>
+						  <caption><para>Original Parcels</para></caption>
+						</mediaobject>
+						</informalfigure>
+						</para>
+					</entry>
+					<entry><para><informalfigure>
+						<mediaobject>
+						  <imageobject>
+							<imagedata fileref="images/st_clusterkmean02.png" />
+						  </imageobject>
+						  <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
+						</mediaobject>
+					  </informalfigure>
+						<programlisting>SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom 
+FROM parcels;
+-- result
+ cid | parcel_id |        geom
+-----+-----------+------------------------
+   0 | 001       | 01030000000100000006..
+   1 | 002       | 01030000000100000007..
+   1 | 003       | 01030000000100000007..
+   1 | 004       | 01030000000100000005..
+   1 | 005       | 01030000000100000007..
+   1 | 006       | 01030000000100000006..
+   1 | 007       | 01030000000100000006..
+   2 | 008       | 01030000000100000005..
+   2 | 009       | 01030000000100000007..
+   2 | 010       | 01030000000100000006..
+   2 | 011       | 01030000000100000005..
+   3 | 012       | 01030000000100000005..
+(12 rows)</programlisting>
+					</para></entry>
+				  </row>
+			</tbody>
+			</tgroup>
+		</informaltable>
+
+		    <programlisting> -- Partitioning parcel clusters by type
+SELECT ST_ClusterKMeans(geom,3) over (PARTITION BY type) AS cid, parcel_id, type
+FROM parcels;
+-- result
+ cid | parcel_id |    type
+-----+-----------+-------------
+   0 | 001       | commercial
+   1 | 003       | commercial
+   1 | 005       | commercial
+   1 | 007       | commercial
+   2 | 009       | commercial
+   2 | 011       | commercial
+   1 | 010       | residential
+   1 | 002       | residential
+   0 | 008       | residential
+   2 | 004       | residential
+   2 | 012       | residential
+   2 | 006       | residential
+(12 rows)
+</programlisting>
+
     </refsection>
 
     <refsection>
@@ -1222,7 +1295,7 @@ FROM parcels;
           <para>
               <xref linkend="ST_ClusterDBSCAN"/>,
               <xref linkend="ST_ClusterIntersecting" />,
-              <xref linkend="ST_ClusterWithin" /> 
+              <xref linkend="ST_ClusterWithin" />, <xref linkend="ST_Subdivide" />
           </para>
 	  </refsection>
 	</refentry>  
