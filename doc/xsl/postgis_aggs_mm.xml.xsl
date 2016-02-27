@@ -44,6 +44,35 @@
 			</xsl:for-each>
 			</itemizedlist>
 		</sect1>
+		
+		<sect1 id="PostGIS_Window_Functions">
+			<title>PostGIS Window Functions</title>
+			<para>The functions given below are spatial window functions provided with PostGIS that can be used just like any other sql window function such as row_numer(), lead(), lag(). All these require an SQL OVER() clause.</para>
+			<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+			<xsl:for-each select='//refentry'>
+				<xsl:sort select="refnamediv/refname"/>
+				<xsl:variable name='comment'>
+					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+				</xsl:variable>
+				<xsl:variable name="refid">
+					<xsl:value-of select="@id" />
+				</xsl:variable>
+				<xsl:variable name="refname">
+					<xsl:value-of select="refnamediv/refname" />
+				</xsl:variable>
+
+			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
+				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
+					<xsl:choose>
+						<xsl:when test="contains(paramdef/type,' winset')">
+							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:for-each>
+			</xsl:for-each>
+			</itemizedlist>
+		</sect1>
 
 		<sect1 id="PostGIS_SQLMM_Functions">
 			<title>PostGIS SQL-MM Compliant Functions</title>

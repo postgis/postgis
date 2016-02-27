@@ -1062,7 +1062,7 @@ SELECT ST_AsText(
 		  <funcprototype>
 			<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef>
 
-			<paramdef><type>geometry </type>
+			<paramdef><type>geometry winset </type>
 			<parameter>geom</parameter></paramdef>
 
 			<paramdef><type>float8 </type>
@@ -1130,7 +1130,7 @@ GROUP BY cid;
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+            <paramdef><type>geometry set</type> <parameter>g</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -1187,7 +1187,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
 		  <funcprototype>
 			<funcdef>integer <function>ST_ClusterKMeans</function></funcdef>
 
-			<paramdef><type>geometry </type>
+			<paramdef><type>geometry winset </type>
 			<parameter>geom</parameter></paramdef>
 
 			<paramdef><type>integer </type>
@@ -1235,7 +1235,7 @@ FROM parcels;
         <funcsynopsis>
           <funcprototype>
             <funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef>
-            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+            <paramdef><type>geometry set </type> <parameter>g</parameter></paramdef>
             <paramdef><type>float8 </type> <parameter>distance</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
