@@ -2565,8 +2565,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       /* side-location conflict */
       lwerror("Side-location conflict: "
               "new edge starts in face"
-               " %" PRId64 " and ends in face"
-               " %" PRId64,
+               " %" LWTFMT_ELEMID " and ends in face"
+               " %" LWTFMT_ELEMID,
               newedge.face_right, epan.ccwFace
       );
       return -1;
@@ -2577,8 +2577,8 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
       /* side-location conflict */
       lwerror("Side-location conflict: "
               "new edge starts in face"
-               " %" PRId64 " and ends in face"
-               " %" PRId64,
+               " %" LWTFMT_ELEMID " and ends in face"
+               " %" LWTFMT_ELEMID,
               newedge.face_left, epan.cwFace
       );
       return -1;
@@ -2894,7 +2894,7 @@ lwt_GetFaceGeometry(LWT_TOPOLOGY* topo, LWT_ELEMID faceid)
     lwfree( face );
     if ( i > 1 ) {
       lwerror("Corrupted topology: multiple face records have face_id=%"
-              PRId64, faceid);
+              LWTFMT_ELEMID, faceid);
       return NULL;
     }
     /* Face has no boundary edges, we'll return EMPTY, see
@@ -3607,7 +3607,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     if ( ! nface1 )
     {
       lwerror("lwt_ChangeEdgeGeom could not construct face %"
-                 PRId64 ", on the left of edge %" PRId64,
+                 LWTFMT_ELEMID ", on the left of edge %" LWTFMT_ELEMID,
                 oldedge->face_left, edge_id);
       return -1;
     }
@@ -3632,7 +3632,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
     if ( ! nface2 )
     {
       lwerror("lwt_ChangeEdgeGeom could not construct face %"
-                 PRId64 ", on the right of edge %" PRId64,
+                 LWTFMT_ELEMID ", on the right of edge %" LWTFMT_ELEMID,
                 oldedge->face_right, edge_id);
       return -1;
     }
