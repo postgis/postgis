@@ -1054,7 +1054,7 @@ SELECT ST_AsText(
 	  <refnamediv>
 		<refname>ST_ClusterDBSCAN</refname>
 
-        <refpurpose>Windowing function that returns integer id for the cluster each input geometry is in.</refpurpose>
+        <refpurpose>Windowing function that returns integer id for the cluster each input geometry is in based on 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm.</refpurpose>
     </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1079,11 +1079,13 @@ SELECT ST_AsText(
 
       <para>Returns cluster number for each input geometry, based on a 2D 
           implementation of the 
-          <ulink url="https://en.wikipedia.org/wiki/DBSCAN">DBSCAN</ulink> 
+          <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink> 
           algorithm.  An input geometry will be added to a cluster if it is 
           within <varname>eps</varname> distance of at least
-          <varname>minpoints</varname> other input geometries.
+          <varname>minpoints</varname> other input geometries.  Unlike <xref linked="ST_ClusterKMeans" />, it does not require to specify the number of
+          clusters for each dataset, but instead uses the desired input distance <varname>eps</varname> at optimal cluster size for each cluster.
       </para>
+      <para>Availability: 2.3.0 - requires GEOS </para>
     </refsection>
 
     <refsection>
@@ -1098,7 +1100,7 @@ FROM parcels;
 
 
         <para>
-            Combining parcels with the same cluster number into a single geometry:
+            Combining parcels with the same cluster number into a single geometry. This uses named argument calling
         </para>
 		    <programlisting>
 SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS ids_in_cluster FROM (
@@ -1204,6 +1206,7 @@ GEOMETRYCOLLECTION(LINESTRING(6 6,7 7))
         cluster number for each input geometry. The distance used for clustering is the 
         distance between the centroids of the geometries.
       </para>
+      <para>Availability: 2.3.0 - requires GEOS </para>
     </refsection>
 
     <refsection>
