@@ -1228,7 +1228,7 @@ FROM
 						<para><informalfigure>
 						<mediaobject>
 						  <imageobject>
-							<imagedata fileref="images/st_clusterkmean01.png" />
+							<imagedata fileref="images/st_clusterkmeans01.png" />
 						  </imageobject>
 						  <caption><para>Original Parcels</para></caption>
 						</mediaobject>
@@ -1238,7 +1238,7 @@ FROM
 					<entry><para><informalfigure>
 						<mediaobject>
 						  <imageobject>
-							<imagedata fileref="images/st_clusterkmean02.png" />
+							<imagedata fileref="images/st_clusterkmeans02.png" />
 						  </imageobject>
 						  <caption><para>Parcels color-coded by cluster number (cid)</para></caption>
 						</mediaobject>
