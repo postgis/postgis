@@ -196,6 +196,12 @@ Datum ST_ClusterKMeans(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		/* Error out if N < K */
+		if (N<k)
+		{
+			lwpgerror("K (%d) must be smaller than the number of rows in the group (%d)", k, N);
+		}
+
 		/* Read all the geometries from the partition window into a list */
 		geoms = palloc(sizeof(LWGEOM*) * N);
 		for (i = 0; i < N; i++)

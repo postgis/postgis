@@ -260,6 +260,7 @@ kmeans(kmeans_config *config)
 	assert(config->centers);
 	assert(config->k);
 	assert(config->clusters);
+	assert(config->k < config->num_objs);
 
 	/* Zero out cluster numbers, just in case user forgets */
 	memset(config->clusters, 0, clusters_sz);

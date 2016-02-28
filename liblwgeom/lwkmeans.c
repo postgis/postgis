@@ -90,6 +90,11 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	assert(k>0);
 	assert(ngeoms>0);
 	assert(geoms);
+	
+	if (ngeoms<k)
+	{
+		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
+	}
 
 	/* We'll hold the temporary centroid objects here */
 	centroids = lwalloc(sizeof(LWGEOM*) * ngeoms);
