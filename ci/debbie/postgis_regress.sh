@@ -13,6 +13,7 @@ set -e
 # export GDAL_VER=2.0
 # export MAKE_GARDEN=1
 # export MAKE_EXTENSION=0
+# export DUMP_RESTORE=1
 
 ## end variables passed in by jenkins
 
@@ -70,6 +71,15 @@ if [ "$MAKE_EXTENSION" = "1" ]; then
  echo "Running extension testing"
  make install
  make check RUNTESTFLAGS=--extension
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
+if [ "$DUMP_RESTORE" = "1" ]; then
+ echo "Dum restore test"
+ make install
+ make check RUNTESTFLAGS="-v --dumprestore"
  if [ "$?" != "0" ]; then
   exit $?
  fi
