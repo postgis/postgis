@@ -172,6 +172,15 @@ if [ "$MAKE_EXTENSION" == "1" ]; then
  fi
 fi
 
+if [ "$DUMP_RESTORE" = "1" ]; then
+ echo "Dum restore test"
+ make install
+ make check RUNTESTFLAGS="-v --dumprestore"
+ if [ "$?" != "0" ]; then
+  exit $?
+ fi
+fi
+
 if [ "$MAKE_GARDEN" == "1" ]; then
  export PGUSER=postgres
  make garden
