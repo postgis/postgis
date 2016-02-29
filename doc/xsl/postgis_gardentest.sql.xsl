@@ -8,7 +8,7 @@
 			using a garden variety of geometries.  Its intent is to flag major crashes.
 	 ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='testversion'>2.2.0</xsl:variable>
+	<xsl:variable name='testversion'>2.3.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
@@ -31,7 +31,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log22</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log23</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -473,6 +473,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
+
 				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')]) + count(paramdef/parameter[contains(text(),'geomjson')]) + count(paramdef/parameter[contains(text(),'geomkml')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
@@ -488,6 +489,18 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 					</xsl:when>
 					<xsl:otherwise>
 					  <xsl:value-of select="'Other'"/>
+					</xsl:otherwise>
+				  </xsl:choose>
+				</xsl:variable>
+				
+				<!-- is a window function -->
+				<xsl:variable name='over_clause'>
+					 <xsl:choose>
+					 	<xsl:when test="paramdef/type[contains(text(),'winset')]">
+					 		<xsl:value-of select="'OVER()'"/>
+					 	</xsl:when>
+					<xsl:otherwise>
+					  <xsl:value-of select="''"/>
 					</xsl:otherwise>
 				  </xsl:choose>
 				</xsl:variable>
@@ -507,15 +520,16 @@ COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions for both geometry and geography -->
-<!-- put functions that take only one geometry/geography no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
-	<xsl:when test="($numparamgeoms = '1' or $numparamgeogs = '1')  and not(contains($fnexclude,funcdef/function))" >
+<!-- put functions that take only one geometry/geography no need to cross with another geom collection, these are unary geom, aggregates, window and so forth -->
+<!-- for window functions we need to put in OVER() -->
+	<xsl:when test="($numparamgeoms = '1' or $numparamgeogs = '1')  and not(contains($fnexclude,funcdef/function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing';
 
 	INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" />  <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text>','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@ID" />', clock_timestamp(),
 			  	'<xsl:call-template name="escapesinglequotes">
- <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />) As result
+ <xsl:with-param name="arg1">SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)<xsl:value-of select="$over_clause" />  As result
 							FROM (<xsl:value-of select="." />) As foo1
 				LIMIT 3;</xsl:with-param></xsl:call-template>');
 BEGIN;
@@ -624,7 +638,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(parameter,'geomjson'))">
 						<xsl:text>ST_AsGeoJSON(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
+					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set') or contains(type,'geometry winset') ) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) = '1' )">

@@ -1068,7 +1068,7 @@ SELECT ST_AsText(
 			<paramdef><type>float8 </type>
 			<parameter>eps</parameter></paramdef>
 
-			<paramdef><type>int </type>
+			<paramdef><type>integer </type>
 			<parameter>minpoints</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
