@@ -23,6 +23,7 @@ script:
   - ./configure
   - make
   - make check
+  - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
   - make installcheck
 
