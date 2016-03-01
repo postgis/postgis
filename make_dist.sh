@@ -84,9 +84,9 @@ cd "$owd"
 # a development branch
 if test "$tag" = "trunk"; then
   echo "Tweaking version for development snapshot"
-  VMAJ=`grep POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
-  VMIN=`grep POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
-  VMIC=`grep POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VMAJ=`grep ^POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VMIN=`grep ^POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
+  VMIC=`grep ^POSTGIS_MICRO_VERSION "$outdir"/Version.config | cut -d= -f2`
   VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
   newoutdir=postgis-${version}
