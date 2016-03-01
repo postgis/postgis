@@ -22,7 +22,6 @@ version=dev
 if [ -n "$1" ]; then
   if [ "$1" = "-b" ]; then
     shift
-    version=$1
     tag="branches/$1"
   else
     version="$1"
@@ -82,7 +81,7 @@ cd "$owd"
 
 # Find a better version name when fetching
 # a development branch
-if test "$tag" = "trunk"; then
+if test "$version" = "dev"; then
   echo "Tweaking version for development snapshot"
   VMAJ=`grep ^POSTGIS_MAJOR_VERSION "$outdir"/Version.config | cut -d= -f2`
   VMIN=`grep ^POSTGIS_MINOR_VERSION "$outdir"/Version.config | cut -d= -f2`
