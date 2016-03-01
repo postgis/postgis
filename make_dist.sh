@@ -9,6 +9,9 @@
 # -- postgis-1.1.0.tar.gz 
 # sh make_dist.sh 1.1.0
 #
+# -- postgis-2.2.tar.gz  (from a branch)
+# sh make_dist.sh -b 2.2
+#
 # NOTE: will not work prior to 1.1.0
 #
 #
@@ -17,8 +20,14 @@ tag=trunk
 version=dev
 
 if [ -n "$1" ]; then
-	version="$1"
-	tag="tags/$version"
+  if [ "$1" = "-b" ]; then
+    shift
+    version=$1
+    tag="branches/$1"
+  else
+    version="$1"
+    tag="tags/$version"
+  fi
 fi
 
 outdir="postgis-$version"
