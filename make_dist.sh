@@ -90,7 +90,7 @@ if test "$tag" = "trunk"; then
   VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
   newoutdir=postgis-${version}
-  mv -vi "$outdir" "$newoutdir"
+  mv -vT --backup=t "$outdir" "$newoutdir"
   outdir=${newoutdir}
 fi
 
