@@ -14,5 +14,7 @@ test:
     - ./configure
     - make
     - make check RUNTESTFLAGS=-v
+    - make check RUNTESTFLAGS="-v --dumprestore"
     - make install
     - make installcheck RUNTESTFLAGS=-v
+    - make installcheck RUNTESTFLAGS="-v --dumprestore"
