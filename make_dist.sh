@@ -18,14 +18,21 @@
 
 tag=trunk
 version=dev
+git=no
+
+[ -d ".git" ] && git=yes
+[ "$git" = "yes" ] && tag=svn-$tag
 
 if [ -n "$1" ]; then
   if [ "$1" = "-b" ]; then
     shift
     tag="branches/$1"
+    [ "$git" = "yes" ] && tag=svn-$1
+    branch=yes
   else
     version="$1"
     tag="tags/$version"
+    [ "$git" = "yes" ] && tag=$1
   fi
 fi
 
@@ -36,11 +43,18 @@ if [ -d "$outdir" ]; then
 	exit 1
 fi
 
-echo "Exporting tag $tag"
-svnurl="http://svn.osgeo.org/postgis/$tag"
-svn export $svnurl "$outdir"
-if [ $? -gt 0 ]; then
-	exit 1
+if [ "$git" = "no" ]; then
+  echo "Exporting tag $tag"
+  svnurl="http://svn.osgeo.org/postgis/$tag"
+  svn export $svnurl "$outdir"
+  if [ $? -gt 0 ]; then
+    exit 1
+  fi
+else
+  git clone -b $tag . $outdir || exit 1
+  #cd $outdir
+  #git checkout $tag || exit 1
+  #cd -
 fi
 
 echo "Removing ignore files, make_dist.sh and HOWTO_RELEASE"
@@ -77,6 +91,10 @@ echo "Running make distclean"
 owd="$PWD"
 cd "$outdir"
 make distclean
+if [ "$git" = "yes" ]; then
+  echo "Removing .git dir"
+  rm -rf .git
+fi
 cd "$owd"
 
 # Find a better version name when fetching
