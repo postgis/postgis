@@ -23,8 +23,10 @@ script:
   - ./configure
   - make
   - make check
+  - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
   - make installcheck
+  - make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
