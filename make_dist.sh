@@ -14,11 +14,25 @@
 #
 # NOTE: will not work prior to 1.1.0
 #
+# ENVIRONMENT VARIABLES:
+#
+#   CONFIGURE_ARGS    passed to ./configure call
+#   MAKE              useed for builds (defaults to "make")
+#
 #
 
 tag=trunk
 version=dev
 git=no
+
+# Define in environment if necessary to get postgis to configure,
+# which is only done to build comments.
+#CONFIGURE_ARGS=
+
+# Define in environment if Gnu make is not make (e.g., gmake).
+if [ "$MAKE" = "" ]; then
+    MAKE=make
+fi
 
 [ -d ".git" ] && git=yes
 [ "$git" = "yes" ] && tag=svn-$tag
@@ -66,7 +80,7 @@ echo "Running autogen.sh; ./configure"
 owd="$PWD"
 cd "$outdir"
 ./autogen.sh
-./configure
+./configure ${CONFIGURE_ARGS}
 # generating postgis_svn_revision.h for >= 2.0.0 tags 
 if test -f utils/svn_repo_revision.pl; then 
 	echo "Generating postgis_svn_revision.h"
@@ -79,18 +93,18 @@ cd "$owd"
 echo "Generating documentation"
 owd="$PWD"
 cd "$outdir"/doc
-make comments
+${MAKE} comments
 if [ $? -gt 0 ]; then
 	exit 1
 fi
-make clean # won't drop the comment files
+${MAKE} clean # won't drop the comment files
 cd "$owd"
 
 # Run make distclean
 echo "Running make distclean"
 owd="$PWD"
 cd "$outdir"
-make distclean
+${MAKE} distclean
 if [ "$git" = "yes" ]; then
   echo "Removing .git dir"
   rm -rf .git
