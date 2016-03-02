@@ -8,7 +8,7 @@ Winnie:
  [![Build Status](http://winnie.postgis.net:1500/buildStatus/icon?job=PostGIS_trunk)]
  (http://winnie.postgis.net:1500/view/PostGIS/job/PostGIS_trunk/)
 GitLab-CI:
- [![Gitlab-CI](https://gitlab.com/ci/projects/3944/status.png?ref=svn-trunk)]
+ [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
  (https://gitlab.com/ci/projects/3944?ref=svn-trunk)
 
 This file is here to play nicely with modern code repository facilities.
