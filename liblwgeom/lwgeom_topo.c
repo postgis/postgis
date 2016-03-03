@@ -3465,7 +3465,7 @@ lwt_ChangeEdgeGeom(LWT_TOPOLOGY* topo, LWT_ELEMID edge_id, LWLINE *geom)
         GEOSGeom_destroy(oarea);
         GEOSPreparedGeom_destroy(nareap);
         GEOSGeom_destroy(narea);
-        wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 6, &sz);
+        wkt = lwgeom_to_wkt(lwpoint_as_lwgeom(n->geom), WKT_ISO, 15, &sz);
         _lwt_release_nodes(nodes, numnodes);
         lwerror("Edge motion collision at %s", wkt);
         lwfree(wkt); /* would not necessarely reach this point */
