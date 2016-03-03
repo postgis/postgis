@@ -21,9 +21,7 @@
 #
 #
 
-tag=trunk
 version=dev
-git=no
 
 # Define in environment if necessary to get postgis to configure,
 # which is only done to build comments.
@@ -34,14 +32,27 @@ if [ "$MAKE" = "" ]; then
     MAKE=make
 fi
 
-[ -d ".git" ] && git=yes
-[ "$git" = "yes" ] && tag=svn-$tag
+if [ -d ".git" ]; then
+ git=yes
+ # Extract tag from git or default to trunk
+ tag=`git branch | grep \* | awk '{print $2}'`
+else
+ git=no
+ # Extract tag from svn or default to trunk
+ tag=`svn info 2> /dev/null | grep ^URL | sed 's/.*\///'`
+ [ -z "$tag" ] && tag=trunk
+ [ "$tag" != "trunk" ] && tag=branches/$tag
+fi
 
 if [ -n "$1" ]; then
   if [ "$1" = "-b" ]; then
     shift
-    tag="branches/$1"
-    [ "$git" = "yes" ] && tag=svn-$1
+    if [ "$git" = "yes" ]; then
+      tag=svn-$1
+    else
+      tag="$1"
+      [ "$tag" != "trunk" ] && tag="branches/$tag"
+    fi
     branch=yes
   else
     version="$1"
