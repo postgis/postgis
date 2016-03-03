@@ -19,16 +19,18 @@ static double lwkmeans_pt_distance(const Pointer a, const Pointer b)
 static int lwkmeans_pt_closest(const Pointer * objs, size_t num_objs, const Pointer a)
 {
 	int i;
-	double d, d_closest;
-	double closest;
+	double d;
+	double d_closest = FLT_MAX;
+	int closest = -1;
 
-	assert(num_objs>0);
+	assert(num_objs > 0);
 
-	d_closest = lwkmeans_pt_distance(objs[0], a);
-	closest = 0;
-
-	for (i = 1; i < num_objs; i++)
+	for (i = 0; i < num_objs; i++)
 	{
+		/* Skip nulls/empties */
+		if (!objs[i])
+			continue;
+
 		d = lwkmeans_pt_distance(objs[i], a);
 		if (d < d_closest)
 		{
@@ -189,6 +191,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 
 		/* Find the data point closest to the calculated point */
 		closest = lwkmeans_pt_closest(config.objs, config.num_objs, &p);
+		
+		/* If something is terrible wrong w/ data, cannot find a closest */
+		if (closest < 0)
+			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");
 
 		/* Ensure we aren't already using that point as a seed */
 		j = 0;
