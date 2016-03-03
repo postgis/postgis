@@ -121,7 +121,8 @@ if test "$version" = "dev"; then
   VREV=`cat "$outdir"/postgis_svn_revision.h | awk '{print $3}'`
   version="${VMAJ}.${VMIN}.${VMIC}-r${VREV}"
   newoutdir=postgis-${version}
-  mv -vT --backup=t "$outdir" "$newoutdir"
+  rm -rf ${newoutdir}
+  mv -v "$outdir" "$newoutdir"
   outdir=${newoutdir}
 fi
 
