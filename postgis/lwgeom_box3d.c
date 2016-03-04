@@ -347,6 +347,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	{
 		POINTARRAY **pas = NULL;
 		LWGEOM **geoms = NULL;
+		LWGEOM *geom;
 		int ngeoms = 6, i;
 		LWPOLY **lwpolys = NULL;
 
@@ -517,8 +518,13 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 
 		Assert(i == ngeoms);
 
-		result = geometry_serialize((LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
-				SRID_UNKNOWN, NULL, ngeoms, geoms));
+		geom = (LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
+				SRID_UNKNOWN, NULL, ngeoms, geoms);
+
+		FLAGS_SET_SOLID(geom->flags, 1);
+
+
+		result = geometry_serialize(geom);
 
 		for (i=0; i<ngeoms; i++)
 		{
@@ -527,6 +533,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		}
 		lwfree(pas);
 		lwfree(lwpolys);
+		lwfree(geoms);
+		lwfree(geom);
 	}
 
 	gserialized_set_srid(result, box->srid);
