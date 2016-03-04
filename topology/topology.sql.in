@@ -1739,6 +1739,11 @@ BEGIN
   ||',''face'',''mbr'','||quote_literal(srid)
   ||',''POLYGON'',2)'; -- 2d only mbr is good enough
 
+  -- Face standard view description
+  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
+    || '.face IS '
+       '''Contains face topology primitives''';
+
   -------------} END OF face CREATION
 
 
@@ -1765,6 +1770,11 @@ BEGIN
   'SELECT AddGeometryColumn('||quote_literal(atopology)
   ||',''node'',''geom'','||quote_literal(srid)
   ||',''POINT'',' || ndims || ')';
+
+  -- Node standard view description
+  EXECUTE 'COMMENT ON TABLE ' || quote_ident(atopology)
+    || '.node IS '
+       '''Contains node topology primitives''';
 
   --------------} END OF node CREATION
 
@@ -1826,7 +1836,7 @@ BEGIN
        ' left_face, right_face, geom FROM '
     || quote_ident(atopology) || '.edge_data';
 
-  -- edge standard view description
+  -- Edge standard view description
   EXECUTE 'COMMENT ON VIEW ' || quote_ident(atopology)
     || '.edge IS '
        '''Contains edge topology primitives''';
