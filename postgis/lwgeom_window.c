@@ -69,13 +69,13 @@ read_lwgeom_from_partition(WindowObject win_obj, uint32_t i, bool* is_null)
 
 	if (*is_null) {
 		/* So that the indexes in our clustering input array can match our partition positions,
-		 * 		 * toss an empty point into the clustering inputs, as a pass-through.
-		 * 		 		 * NOTE: this will cause gaps in the output cluster id sequence.
-		  		 		 		 * */
+		 * toss an empty point into the clustering inputs, as a pass-through.
+		 * NOTE: this will cause gaps in the output cluster id sequence.
+		 * */
 		return lwpoint_as_lwgeom(lwpoint_construct_empty(0, 0, 0));
 	}
 
-	g = (GSERIALIZED*) PG_DETOAST_DATUM(arg);
+	g = (GSERIALIZED*) PG_DETOAST_DATUM_COPY(arg);
 	return lwgeom_from_gserialized(g);
 }
 
