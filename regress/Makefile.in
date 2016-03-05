@@ -87,6 +87,7 @@ TESTS = \
 	estimatedextent \
 	forcecurve \
 	geography \
+	geometric_median \
 	in_geohash \
 	in_gml \
 	in_kml \

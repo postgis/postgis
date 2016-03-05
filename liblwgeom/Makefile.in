@@ -79,6 +79,7 @@ SA_OBJS = \
 	lwin_wkb.o \
 	lwin_twkb.o \
 	lwiterator.o \
+	lwgeom_median.o \
 	lwout_wkt.o \
 	lwout_twkb.o \
 	lwin_wkt_parse.o \
