@@ -3,8 +3,6 @@
   <title>PostGIS Frequently Asked Questions</title>
 
   <qandaset>
-  
-    <qandaset>
      <qandaentry id="faq_mat_views_restore">
       <question>
         <para>My materialized views involving ST_Distance geography and other functions do not restore</para>
@@ -15,15 +13,14 @@
         <para>As of PostGIS 2.2.2
         there is a script in share/contrib/postgis-2.2/postgis_proc_set_search_path.sql that will set the search_path of most postgis functions.  To use
         when restoring data:</para>
-        <programlisting>
--- make sure to install in same schema as your backup was installed in
+        <programlisting>-- make sure to install in same schema as your backup was installed in
 CREATE EXTENSION postgis;
 \i postgis_proc_set_search_path.sql
 -- then restore your data</programlisting>
 		<para>Keep in mind the search path was not set for functions relationship functions like <varname>ST_Intersects</varname>, <varname>ST_DWithin</varname> since these rely on SQL-inlining to force index usage, and such behavior would get broken if FUNCTION search_path is applied.  In these cases, we suggest if you need these in materialized views, to explicitly call the hidden _ST_.. function instead accompanied by &amp;&amp;.  So for example:</para>
-		<programlisting>CREATE MATERIALIZED VIEW vwmat_something AS
+		<programlisting><![CDATA[CREATE MATERIALIZED VIEW vwmat_something AS
 SELECT ...
-FROM a INNER JOIN b ON ( a.geom &amp;&amp; b.geom AND _ST_Intersects(a.geo, b.geom) );
+FROM a INNER JOIN b ON ( a.geom &&; b.geom AND _ST_Intersects(a.geo, b.geom) );]]></programlisting>
       </answer>
     </qandaentry>
     
