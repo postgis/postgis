@@ -98,6 +98,7 @@ while(<INPUT>)
 		my $funchead = $1; #contains function header except the end )
 		my $endhead = 0;
 		my $endfunchead = $2;
+		my $search_path_safe = 0; # we can put a search path on it without disrupting spatial index use
 		if ($2 eq ')') ## reached end of header
 		{
 			$endhead = 1;
@@ -129,8 +130,25 @@ while(<INPUT>)
 		#strip off default args from the function header
 		$funchead =~ s/(default\s+[A-Za-z\.\+\-0-9\'\[\]\:\s]*)//ig;
 		
+		#check to see if function is STRICT or c or plpgsql
+		# we can't put search path on non-STRICT sql since search path breaks SQL inlining
+		# breaking sql inlining will break use of spatial index
+		my $endfunc = 0;
+		while(<INPUT>)
+		{
+			$endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /i;
+			if ( $endfunc == 1 ){
+				$search_path_safe = 1 if /LANGUAGE\s+[\']*(c|plpgsql)/i;
+				$search_path_safe = 1 if /STRICT/i;
+			}
+			last if ( $endfunc && /\;/ );
+		}
 
-		print "EXECUTE 'ALTER FUNCTION $funchead $endfunchead SET search_path=' || quote_ident(param_postgis_schema) || ';';\n";
+		
+		if ($search_path_safe == 1)
+		{
+			print "EXECUTE 'ALTER FUNCTION $funchead $endfunchead SET search_path=' || quote_ident(param_postgis_schema) || ';';\n";
+		}
 	}
 
 }
@@ -139,7 +157,7 @@ close( INPUT );
 
 ## End of DO
 print 'END;';
-print '$$';
+print '$$;';
 
 __END__
  

@@ -37,7 +37,7 @@ ifeq ($(PG91),yes)
 	
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
-sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/spatial_ref_sys_config_dump.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
+sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_proc_set_search_path.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/rtpostgis_proc_set_search_path.sql sql_bits/spatial_ref_sys_config_dump.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	mkdir -p sql
 	echo '\echo Use "CREATE EXTENSION $(EXTENSION)" to load this file. \quit' > $@
 	cat $^ >> $@
@@ -70,6 +70,12 @@ sql_bits/postgis.sql: ../../postgis/postgis.sql
 
 sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
 	cp $< $@
+	
+sql_bits/postgis_proc_set_search_path.sql: ../../postgis/postgis_proc_set_search_path.sql
+	cp $< $@
+	
+sql_bits/rtpostgis_proc_set_search_path.sql: ../../raster/rt_pg/rtpostgis_proc_set_search_path.sql
+	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
@@ -78,10 +84,10 @@ sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl
 	../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
-sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade.sql
+sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade.sql sql_bits/rtpostgis_proc_set_search_path.sql 
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
-sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade.sql 
+sql_bits/postgis_upgrade.sql: ../../postgis/postgis_upgrade.sql sql_bits/postgis_proc_set_search_path.sql 
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
 
 
