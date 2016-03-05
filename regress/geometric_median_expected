@@ -6,3 +6,6 @@ t5|t
 t6|t
 t7|t
 t8|t
+t9|f
+ERROR:  Median failed to converge within 2e-6 after 1 iterations.
+t11|f

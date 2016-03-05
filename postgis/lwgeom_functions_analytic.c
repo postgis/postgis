@@ -1156,21 +1156,28 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 	LWGEOM* input;
 	LWPOINT* lwresult;
 	double tolerance;
+	bool compute_tolerance_from_box;
 	bool fail_if_not_converged;
-	uint32_t max_iter;
+	int max_iter;
 
+	/* Read and validate our input arguments */
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
 
-	tolerance = PG_GETARG_FLOAT8(1);
-	max_iter = PG_GETARG_INT32(2);
-	fail_if_not_converged = PG_GETARG_BOOL(3);
+	compute_tolerance_from_box = PG_ARGISNULL(1);
 
-	if (tolerance < 0)
+	if (!compute_tolerance_from_box)
 	{
-		lwpgerror("Tolerance must be positive.");
-		PG_RETURN_NULL();
+		tolerance = PG_GETARG_FLOAT8(1);
+		if (tolerance < 0)
+		{
+			lwpgerror("Tolerance must be positive.");
+			PG_RETURN_NULL();
+		}
 	}
+
+	max_iter = PG_ARGISNULL(2) ? -1 : PG_GETARG_INT32(2);
+	fail_if_not_converged = PG_ARGISNULL(3) ? LW_FALSE : PG_GETARG_BOOL(3);
 
 	if (max_iter < 0)
 	{
@@ -1178,8 +1185,36 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	/* OK, inputs are valid. */
 	geom = PG_GETARG_GSERIALIZED_P(0);
 	input = lwgeom_from_gserialized(geom);
+
+	if (compute_tolerance_from_box)
+	{
+		/* Compute a default tolerance based on the smallest dimension
+		 * of the geometry's bounding box.
+		 */
+		static const double min_default_tolerance = 1e-8;
+		static const double tolerance_coefficient = 1e-6;
+		const GBOX* box = lwgeom_get_bbox(input);
+
+		if (!box)
+		{
+			tolerance = min_default_tolerance;
+		}
+		else
+		{
+			double min_dim = FP_MIN(box->xmax - box->xmin, box->ymax - box->ymin);
+			if (lwgeom_has_z(input))
+				min_dim = FP_MIN(min_dim, box->zmax - box->zmin);
+
+			/* Apply a lower bound to the computed default tolerance to
+			 * avoid a tolerance of zero in the case of collinear 
+			 * points.
+			 */
+			tolerance = FP_MAX(min_default_tolerance, tolerance_coefficient * min_dim);
+		}
+	}
 
 	lwresult = lwgeom_median(input, tolerance, max_iter, fail_if_not_converged);
 	lwgeom_free(input);

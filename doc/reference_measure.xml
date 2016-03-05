@@ -2625,6 +2625,9 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		  parameter.  If this condition has not been met after <varname>max_iterations</varname>
 		  iterations, the function will produce an error and exit, unless <varname>fail_if_not_converged</varname>
 		  is set to false.
+
+		  If a tolerance value is not provided, a default tolerance value
+		  will be calculated based on the extent of the input geometry.
 	  </para>
 
 	  <para>Availability: 2.3.0</para>
