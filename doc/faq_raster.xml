@@ -3,6 +3,22 @@
   <title>PostGIS Raster Frequently Asked Questions</title>
 
   <qandaset>
+     <qandaentry id="faq_raster_data_not_restore">
+      <question>
+        <para>My raster data does not restore.</para>
+      </question>
+
+      <answer>
+        <para>Raster data does not restore as a result of constraints that rely on schema postgis is installed in to be in search path. As of PostGIS 2.2.2
+        there is a script in share/contrib/postgis-2.2/postgis_proc_set_search_path.sql that will set the search_path of all raster functions.  To use
+        when restoring data:</para>
+        <programlisting>
+-- make sure to install in same schema as your backup was installed in
+CREATE EXTENSION postgis;
+\i rtpostgis_proc_set_search_path.sql
+-- then restore your data</programlisting>
+      </answer>
+    </qandaentry>
   
      <qandaentry id="faq_security_change_1">
       <question>
