@@ -2130,6 +2130,9 @@ st_astext
 
 			<para>&curve_support;</para>
 			<para>&Z_support;</para>
+
+			<para>Availability: 2.3.0</para>
+
 		</refsection>
 
 		<refsection>
