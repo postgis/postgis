@@ -445,7 +445,7 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
             break;
         case MULTIPOLYGONTYPE:
             x3dtype = "IndexedFaceSet";
-            ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
+            ptr += sprintf(ptr, "<%s %s convex='false' coordIndex='", x3dtype, defid);
             ptr += asx3d3_mpoly_coordindex((const LWMPOLY *)col, ptr);
             ptr += sprintf(ptr, "'>");
             break;
@@ -511,8 +511,8 @@ asx3d3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts,
 	size_t size;
 	size_t defidlen = strlen(defid);
 
-	if ( X3D_USE_GEOCOORDS(opts) ) size = sizeof("<IndexedFaceSet coordIndex=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' />") + defidlen;
-	else size = sizeof("<IndexedFaceSet coordIndex=''><Coordinate point='' />") + defidlen;
+	if ( X3D_USE_GEOCOORDS(opts) ) size = sizeof("<IndexedFaceSet convex='false' coordIndex=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' />") + defidlen;
+	else size = sizeof("<IndexedFaceSet convex='false' coordIndex=''><Coordinate point='' />") + defidlen;
 	
 
 	for (i=0; i<psur->ngeoms; i++)
@@ -540,7 +540,7 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 	ptr = output;
 
 	/* Open outmost tag */
-	ptr += sprintf(ptr, "<IndexedFaceSet %s coordIndex='",defid);
+	ptr += sprintf(ptr, "<IndexedFaceSet convex='false' %s coordIndex='",defid);
 
 	j = 0;
 	for (i=0; i<psur->ngeoms; i++)
