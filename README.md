@@ -11,7 +11,7 @@ GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
  (https://gitlab.com/ci/projects/3944?ref=svn-trunk)
 
- [![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/postgis.png)]
+Chat with us: [![IRC channel](https://img.shields.io/irc/%23postgis.png)]
  (https://kiwiirc.com/client/irc.freenode.net/?&theme=cli#postgis)
 
 This file is here to play nicely with modern code repository facilities.
