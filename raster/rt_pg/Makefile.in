@@ -120,6 +120,7 @@ rtpostgis_upgrade.sql: rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql.in rt
 	echo 'COMMIT;' >> $@
 	
 rtpostgis_proc_set_search_path.sql: rtpostgis.sql ../../utils/postgis_proc_set_search_path.pl
+	$(PERL) ../../utils/postgis_proc_set_search_path.pl $< UNUSED > $@
 
 uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
