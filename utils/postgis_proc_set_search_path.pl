@@ -95,13 +95,20 @@ while(<INPUT>)
 
 	if ( /^create or replace function([^\)]+)([\)]{0,1})/i )
 	{
-		my $funchead = $1; #contains function header except the end )
+		my $funchead = $1; # contains function header except the end )
 		my $endhead = 0;
 		my $endfunchead = $2;
-		my $search_path_safe = 0; # we can put a search path on it without disrupting spatial index use
+		my $search_path_safe = -1; # we can put a search path on it without disrupting spatial index use
+		
 		if ($2 eq ')') ## reached end of header
 		{
 			$endhead = 1;
+		}
+		
+		if ( /add(geometry|overview|raster)/i){
+			# can't put search_path on addgeometrycolumn or addrasterconstraints 
+			# since table names are sometimes passed in non-qualified
+			$search_path_safe = 0; 
 		}
 		
 		#raster folks decided to break their func head in multiple lines 
@@ -137,7 +144,7 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			$endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /i;
-			if ( $endfunc == 1 ){
+			if ( $endfunc == 1 && $search_path_safe == -1 ){
 				$search_path_safe = 1 if /LANGUAGE\s+[\']*(c|plpgsql)/i;
 				$search_path_safe = 1 if /STRICT/i;
 			}
