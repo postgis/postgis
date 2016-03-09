@@ -345,196 +345,50 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POINTARRAY **pas = NULL;
+		POINT4D points[8];
 		LWGEOM **geoms = NULL;
-		LWGEOM *geom;
-		int ngeoms = 6, i;
-		LWPOLY **lwpolys = NULL;
+		LWGEOM *geom = NULL;
+		int ngeoms = 6;
+
+		/* Initialize the 8 vertices of the box */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymax, box->zmin };
+		points[2] = (POINT4D) { box->xmax, box->ymax, box->zmin };
+		points[3] = (POINT4D) { box->xmax, box->ymin, box->zmin };
+		points[4] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+		points[5] = (POINT4D) { box->xmin, box->ymax, box->zmax };
+		points[6] = (POINT4D) { box->xmax, box->ymax, box->zmax };
+		points[7] = (POINT4D) { box->xmax, box->ymin, box->zmax };
 
 		geoms = (LWGEOM **) lwalloc(sizeof(LWGEOM *) * ngeoms);
 
-		/*
-		 * Prepare 6 point arrays and 6 polyons for the 6 faces of the polyhedral
-		 */
-		lwpolys = lwalloc(sizeof(LWPOLY *) * ngeoms);
-		pas = lwalloc(sizeof(POINTARRAY *) * ngeoms);
-		for (i=0; i<ngeoms; i++)
-		{
-			pas[i] = ptarray_construct_empty(1, 0, 5);
-			lwpolys[i] = lwpoly_construct(SRID_UNKNOWN, NULL, 1, &pas[i]);
-		}
-
-		i = 0;
-
-		/* bottom */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		/* top */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		/* left */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		/* right */
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		/* back */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		/* front */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pas[i], &pt, LW_TRUE);
-
-		geoms[i] = lwpoly_as_lwgeom(lwpolys[i]);
-		i++;
-
-		Assert(i == ngeoms);
+		/* add bottom polygon */
+		geoms[0] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
+						&points[1], &points[2], &points[3])));
+		/* add top polygon */
+		geoms[1] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[4],
+						&points[5], &points[6], &points[7])));
+		/* add left polygon */
+		geoms[2] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
+						&points[4], &points[5], &points[1])));
+		/* add right polygon */
+		geoms[3] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[3],
+						&points[7], &points[6], &points[2])));
+		/* add back polygon */
+		geoms[4] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
+						&points[4], &points[7], &points[3])));
+		/* add front polygon */
+		geoms[5] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[1],
+						&points[5], &points[6], &points[2])));
 
 		geom = (LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
 				SRID_UNKNOWN, NULL, ngeoms, geoms);
 
 		FLAGS_SET_SOLID(geom->flags, 1);
 
-
 		result = geometry_serialize(geom);
 
-		for (i=0; i<ngeoms; i++)
-		{
-			lwfree(pas[i]);
-			lwfree(lwpolys[i]);
-		}
-		lwfree(pas);
-		lwfree(lwpolys);
-		lwfree(geoms);
-		lwfree(geom);
+		lwcollection_free((LWCOLLECTION *) geom);
 	}
 
 	gserialized_set_srid(result, box->srid);
