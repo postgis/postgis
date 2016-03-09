@@ -165,3 +165,7 @@ DROP FUNCTION IF EXISTS pgis_twkb_accum_finalfn(internal); -- temporarely introd
 DROP FUNCTION IF EXISTS st_seteffectivearea(geometry, double precision); -- temporarely introduced before 2.2.0 final
 
 DROP FUNCTION IF EXISTS geometry_distance_box_nd(geometry,geometry); -- temporarely introduced before 2.2.0 final
+
+-- pgis_abs type was increased from 8 bytes in 2.1 to 16 bytes in 2.2
+-- See #3460
+UPDATE pg_type SET typlen=16 WHERE typname='pgis_abs' AND typlen=8;
