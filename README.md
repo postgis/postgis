@@ -21,7 +21,7 @@ https://trac.osgeo.org/postgis/
 
 Use your preferred client, if configured:
 
- irc://irc.freenode.net/#postgis
+ - [irc://irc.freenode.net/#postgis](irc://irc.freenode.net/#postgis)
 
 Or try a web client like:
  - [qwebirc@freenode](https://webchat.freenode.net/#postgis)
