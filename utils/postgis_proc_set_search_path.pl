@@ -105,9 +105,10 @@ while(<INPUT>)
 			$endhead = 1;
 		}
 		
-		if ( /add(geometry|overview|raster)/i){
+		if ( /((add|drop)[\_]*(geometry|overview|raster)|internal)/i){
 			# can't put search_path on addgeometrycolumn or addrasterconstraints 
 			# since table names are sometimes passed in non-qualified
+			# also can't work on some functions that take internals
 			$search_path_safe = 0; 
 		}
 		
