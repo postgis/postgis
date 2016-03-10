@@ -494,6 +494,12 @@ GEOSGeometry*
 LWGEOM2GEOS_PREC(const LWGEOM* g, int autofix, const double* precision)
 {
 	GEOSGeometry* geos_geom;
+	int flags;
+#if POSTGIS_GEOS_VERSION >= 36
+	flags = GEOS_PREC_NO_TOPO | GEOS_PREC_KEEP_COLLAPSED;
+#else
+	flags = 0;
+#endif
 
 	geos_geom = LWGEOM2GEOS(g, autofix);
 	if (!geos_geom)
@@ -502,7 +508,7 @@ LWGEOM2GEOS_PREC(const LWGEOM* g, int autofix, const double* precision)
     }
 
 	if (precision)
-		return geos_set_precision(geos_geom, *precision, GEOS_PREC_NO_TOPO | GEOS_PREC_KEEP_COLLAPSED);
+		return geos_set_precision(geos_geom, *precision, flags);
 
 	return geos_geom;
 }
