@@ -112,6 +112,14 @@ while(<INPUT>)
 			$search_path_safe = 0; 
 		}
 		
+		if ( /st_transform/i){
+			# st_transform functions query spatial_ref_sys
+			# so could fail in materialized views and spatial indexes,
+			# though often all done in C
+			$search_path_safe = 1; 
+		}
+
+		
 		#raster folks decided to break their func head in multiple lines 
 		# so we need to do this crazy thing
 		if ($endhead != 1)
@@ -146,8 +154,12 @@ while(<INPUT>)
 		{
 			$endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /i;
 			if ( $endfunc == 1 && $search_path_safe == -1 ){
-				$search_path_safe = 1 if /LANGUAGE\s+[\']*(c|plpgsql)/i;
+				$search_path_safe = 1 if /LANGUAGE\s+[\']*(plpgsql)/i;
 				$search_path_safe = 1 if /STRICT/i;
+				#exclude C functions unless we've include, 
+				# in most cases except ST_Transform
+				# c functions don't call dependent functions or tables
+				$search_path_safe = 0 if /LANGUAGE\s+[\']*(c)/i;
 			}
 			last if ( $endfunc && /\;/ );
 		}
@@ -155,7 +167,7 @@ while(<INPUT>)
 		
 		if ($search_path_safe == 1)
 		{
-			print "EXECUTE 'ALTER FUNCTION $funchead $endfunchead SET search_path=' || quote_ident(param_postgis_schema) || ';';\n";
+			print "EXECUTE 'ALTER FUNCTION $funchead $endfunchead SET search_path=' || quote_ident(param_postgis_schema) || ',pg_catalog;';\n";
 		}
 	}
 
