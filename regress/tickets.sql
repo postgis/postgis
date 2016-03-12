@@ -924,7 +924,8 @@ pts as (
 select '#3399' as t, n, count(*) from
 g, pts
 where st_contains(g.geom, pts.geom)
-group by n;
+group by n
+ORDER BY n;
 
 -- #3461
 SELECT '#3461', ST_GeomFromKML('<Polygon>
