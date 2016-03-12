@@ -40,7 +40,7 @@ BEGIN
   			var_restrict_geom = ST_SnapToGrid(ST_Transform(restrict_geom, 4269), 0.000001);
   		END IF;
   END IF;
-  var_bfilter := ' SELECT zcta5ce FROM zcta5 AS zc  
+  var_bfilter := ' SELECT zcta5ce FROM tiger.zcta5 AS zc  
                     WHERE zc.statefp = ' || quote_nullable(in_statefp) || ' 
                         AND ST_Intersects(zc.the_geom, ' || quote_literal(var_restrict_geom::text) || '::geometry)  ' ;
 
@@ -57,7 +57,7 @@ BEGIN
     --This signals bad zip input, only use the range if it falls in the place zip range
     IF length(parsed.zip) != 5 AND parsed.location IS NOT NULL THEN 
          stmt := 'SELECT ARRAY(SELECT DISTINCT zip
-          FROM zip_lookup_base AS z
+          FROM tiger.zip_lookup_base AS z
          WHERE z.statefp = $1
                AND  z.zip = ANY($3) AND lower(z.city) LIKE lower($2) || ''%''::text '  || COALESCE(' AND z.zip IN(' || var_bfilter || ')', '') || ')::varchar[] AS zip ORDER BY zip' ;
          EXECUTE stmt INTO zip_info USING in_statefp, parsed.location, zip_info.zip;
@@ -77,7 +77,7 @@ BEGIN
   -- If no good zips just include all for the location
   -- We do a like instead of absolute check since tiger sometimes tacks things like Town at end of places
     stmt := 'SELECT ARRAY(SELECT DISTINCT zip
-          FROM zip_lookup_base AS z
+          FROM tiger.zip_lookup_base AS z
          WHERE z.statefp = $1
                AND  lower(z.city) LIKE lower($2) || ''%''::text '  || COALESCE(' AND z.zip IN(' || var_bfilter || ')', '') || ')::varchar[] AS zip ORDER BY zip' ;
     EXECUTE stmt INTO zip_info USING in_statefp, parsed.location;
@@ -103,7 +103,7 @@ BEGIN
          || '    sufdirabrv, prequalabr)  
 							)
 						As rank
-                		FROM featnames As f INNER JOIN addr As ad ON (f.tlid = ad.tlid) 
+                		FROM tiger.featnames As f INNER JOIN tiger.addr As ad ON (f.tlid = ad.tlid) 
                     WHERE $10 = f.statefp AND $10 = ad.statefp 
                     	'
                     || CASE WHEN length(parsed.streetName) > 5  THEN ' AND (lower(f.fullname) LIKE (COALESCE($5 || '' '','''') || lower($2) || ''%'')::text OR lower(f.name) = lower($2) OR soundex(f.name) = soundex($2) ) ' ELSE  ' AND lower(f.name) = lower($2) ' END 
@@ -160,10 +160,10 @@ BEGIN
                 a.zip,
                 p.name as place
 
-                FROM  a INNER JOIN edges As b ON (a.statefp = b.statefp AND a.tlid = b.tlid  '
+                FROM  a INNER JOIN tiger.edges As b ON (a.statefp = b.statefp AND a.tlid = b.tlid  '
                || ')
-                    INNER JOIN faces AS f ON ($10 = f.statefp AND ( (b.tfidl = f.tfid AND a.side = ''L'') OR (b.tfidr = f.tfid AND a.side = ''R'' ) )) 
-                    INNER JOIN place p ON ($10 = p.statefp AND f.placefp = p.placefp ' 
+                    INNER JOIN tiger.faces AS f ON ($10 = f.statefp AND ( (b.tfidl = f.tfid AND a.side = ''L'') OR (b.tfidr = f.tfid AND a.side = ''R'' ) )) 
+                    INNER JOIN tiger.place p ON ($10 = p.statefp AND f.placefp = p.placefp ' 
           || CASE WHEN parsed.location > '' AND zip_info.zip IS NULL THEN ' AND ( lower(p.name) LIKE (lower($3::text) || ''%'')  ) ' ELSE '' END          
           || ')
                 WHERE a.statefp = $10  AND  b.statefp = $10   '
@@ -174,7 +174,7 @@ BEGIN
            ORDER BY 10 ,  11 DESC 
            LIMIT 20 
             ) AS sub 
-          JOIN state s ON ($10 = s.statefp) 
+          JOIN tiger.state s ON ($10 = s.statefp) 
             ORDER BY 1,2,3,4,5,6,7,9 
           LIMIT 20) As foo ORDER BY sub_rating, exact_address DESC LIMIT  ' || max_results*10 ;
          
@@ -347,7 +347,7 @@ BEGIN
          || '            AND $1::integer <= greatest_hn(b.fromhn,b.tohn) '
          || '            AND ($1 % 2)::numeric::integer = (to_number(b.fromhn,''99999999'') % 2)'
          || '    as exact_address, a.name, a.prequalabr, a.pretypabrv '
-         || '  FROM featnames a join addr b ON (a.tlid = b.tlid AND a.statefp = b.statefp  )'
+         || '  FROM tiger.featnames a join tiger.addr b ON (a.tlid = b.tlid AND a.statefp = b.statefp  )'
          || '  WHERE'
          || '        a.statefp = ' || quote_literal(zip_info.statefp) || ' AND a.mtfcc LIKE ''S%''  '
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
@@ -358,14 +358,14 @@ BEGIN
          || '  ORDER BY 11'
          || '  LIMIT 20'
          || '    ) AS sub'
-         || '  JOIN edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid AND e.mtfcc LIKE ''S%'' ' 
+         || '  JOIN tiger.edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid AND e.mtfcc LIKE ''S%'' ' 
          ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
-         || '  JOIN state s ON (' || quote_literal(zip_info.statefp) || ' = s.statefp)'
-         || '  JOIN faces f ON (' || quote_literal(zip_info.statefp) || ' = f.statefp AND (e.tfidl = f.tfid OR e.tfidr = f.tfid))'
-         || '  LEFT JOIN zip_lookup_base zip ON (sub.zip = zip.zip AND zip.statefp=' || quote_literal(zip_info.statefp) || ')'
-         || '  LEFT JOIN place p ON (' || quote_literal(zip_info.statefp) || ' = p.statefp AND f.placefp = p.placefp)'
-         || '  LEFT JOIN county co ON (' || quote_literal(zip_info.statefp) || ' = co.statefp AND f.countyfp = co.countyfp)'
-         || '  LEFT JOIN cousub cs ON (' || quote_literal(zip_info.statefp) || ' = cs.statefp AND cs.cosbidfp = sub.statefp || co.countyfp || f.cousubfp)'
+         || '  JOIN tiger.state s ON (' || quote_literal(zip_info.statefp) || ' = s.statefp)'
+         || '  JOIN tiger.faces f ON (' || quote_literal(zip_info.statefp) || ' = f.statefp AND (e.tfidl = f.tfid OR e.tfidr = f.tfid))'
+         || '  LEFT JOIN tiger.zip_lookup_base zip ON (sub.zip = zip.zip AND zip.statefp=' || quote_literal(zip_info.statefp) || ')'
+         || '  LEFT JOIN tiger.place p ON (' || quote_literal(zip_info.statefp) || ' = p.statefp AND f.placefp = p.placefp)'
+         || '  LEFT JOIN tiger.county co ON (' || quote_literal(zip_info.statefp) || ' = co.statefp AND f.countyfp = co.countyfp)'
+         || '  LEFT JOIN tiger.cousub cs ON (' || quote_literal(zip_info.statefp) || ' = cs.statefp AND cs.cosbidfp = sub.statefp || co.countyfp || f.cousubfp)'
          || ' WHERE'
          || '  ( (sub.side = ''L'' and e.tfidl = f.tfid) OR (sub.side = ''R'' and e.tfidr = f.tfid) ) '
          || ' ORDER BY 1,2,3,4,5,6,7,9'

@@ -48,7 +48,7 @@ BEGIN
     var_sql := '
     WITH 
     	a1 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM (SELECT * FROM featnames 
+    				FROM (SELECT * FROM tiger.featnames 
     							WHERE statefp = $1 AND ( lower(name) = $2  ' ||
     							CASE WHEN length(var_na_road.streetName) > 5 THEN ' or  lower(fullname) LIKE $6 || ''%'' ' ELSE '' END || ')' 
     							|| ')  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) As addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
@@ -57,10 +57,10 @@ BEGIN
     				LIMIT 50000
     			  ),
         a2 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM (SELECT * FROM featnames 
+    				FROM (SELECT * FROM tiger.featnames 
     							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
     							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
-    							|| ' )  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    							|| ' )  AS f LEFT JOIN (SELECT * FROM tiger.addr AS addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[])  or addr.zip IS NULL 
     			ORDER BY CASE WHEN lower(f.fullname) = $7 THEN 0 ELSE 1 END
     				LIMIT 50000
@@ -68,13 +68,13 @@ BEGIN
     	 e1 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
     	 			FROM a1 As a
-    					INNER JOIN  edges AS e ON (e.statefp = a.statefp AND a.tlid = e.tlid)
+    					INNER JOIN  tiger.edges AS e ON (e.statefp = a.statefp AND a.tlid = e.tlid)
     				WHERE e.statefp = $1 
     				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
     				LIMIT 5000) ,
     	e2 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
-    				FROM (SELECT * FROM edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
+    				FROM (SELECT * FROM tiger.edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
     					INNER JOIN e1 ON (e.statefp = e1.statefp AND ST_Intersects(e.the_geom, e1.the_geom) 
     					AND ARRAY[e.tnidf, e.tnidt] && ARRAY[e1.tnidf, e1.tnidt] )
     					
@@ -101,8 +101,8 @@ BEGIN
                     FROM e1 
                             INNER JOIN e2 ON (
                                     ST_Intersects(e1.the_geom, e2.the_geom)  ) 
-                             INNER JOIN (SELECT * FROM faces WHERE statefp = $1) As fa1 ON (e1.tfid = fa1.tfid  )
-                          LEFT JOIN place AS p ON (fa1.placefp = p.placefp AND p.statefp = $1 )
+                             INNER JOIN (SELECT * FROM tiger.faces WHERE statefp = $1) As fa1 ON (e1.tfid = fa1.tfid  )
+                          LEFT JOIN tiger.place AS p ON (fa1.placefp = p.placefp AND p.statefp = $1 )
                        ORDER BY e1.tlid, e1.side, a_rating LIMIT $9*4 )
     SELECT address, fedirp , fename, fetype,fedirs,place, zip , geom, a_rating 
         FROM segs ORDER BY a_rating LIMIT  $9';

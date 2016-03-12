@@ -74,7 +74,7 @@ BEGIN
               )
             *
            FROM
-             geocode_address(IN_ADDY, max_results, restrict_geom) a
+             tiger.geocode_address(IN_ADDY, max_results, restrict_geom) a
            ORDER BY
               (a.addy).address,
               (a.addy).predirabbrev,
@@ -109,7 +109,7 @@ BEGIN
 
   -- No zip code, try state/location, need both or we'll get too much stuffs.
   IF IN_ADDY.zip IS NOT NULL OR (IN_ADDY.stateAbbrev IS NOT NULL AND IN_ADDY.location IS NOT NULL) THEN
-    FOR rec in SELECT * FROM geocode_location(IN_ADDY, restrict_geom) As b ORDER BY b.rating LIMIT max_results
+    FOR rec in SELECT * FROM tiger.geocode_location(IN_ADDY, restrict_geom) As b ORDER BY b.rating LIMIT max_results
     LOOP
       ADDY := rec.addy;
       GEOMOUT := rec.geomout;
