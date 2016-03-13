@@ -884,7 +884,7 @@ extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoi
 
 /**
 * Append a point to the end of an existing #POINTARRAY 
-* If allow_duplicate is LW_TRUE, then a duplicate point will
+* If allow_duplicate is LW_FALSE, then a duplicate point will
 * not be added.
 */
 extern int ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int allow_duplicates);
