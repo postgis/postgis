@@ -252,94 +252,49 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	}
 	else if (box->xmin == box->xmax)
 	{
+		POINT4D points[4];
 		LWPOLY *lwpoly;
-		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+		points[2] = (POINT4D) { box->xmin, box->ymax, box->zmax };
+		points[3] = (POINT4D) { box->xmin, box->ymax, box->zmin };
 
-		ppa[0] = pa;
-		lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		lwpoly = lwpoly_construct_rectangle(1,0, &points[0], &points[1],
+				&points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
 	}
 	else if (box->ymin == box->ymax)
 	{
+		POINT4D points[4];
 		LWPOLY *lwpoly;
-		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+		points[2] = (POINT4D) { box->xmax, box->ymin, box->zmax };
+		points[3] = (POINT4D) { box->xmax, box->ymin, box->zmin };
 
-		ppa[0] = pa;
-		lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		lwpoly = lwpoly_construct_rectangle(1, 0, &points[0], &points[1],
+				&points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
 	}
 	else if (box->zmin == box->zmax)
 	{
+		POINT4D points[4];
 		LWPOLY *lwpoly;
-		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY *));
 
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		pt.z = box->zmin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymax, box->zmin };
+		points[2] = (POINT4D) { box->xmax, box->ymax, box->zmin };
+		points[3] = (POINT4D) { box->xmax, box->ymin, box->zmin };
 
-		ppa[0] = pa;
-		lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		lwpoly = lwpoly_construct_rectangle(1, 0, &points[0], &points[1],
+				&points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
 	}
@@ -363,23 +318,23 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		geoms = (LWGEOM **) lwalloc(sizeof(LWGEOM *) * ngeoms);
 
 		/* add bottom polygon */
-		geoms[0] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
-						&points[1], &points[2], &points[3])));
+		geoms[0] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[0],
+					&points[1], &points[2], &points[3]));
 		/* add top polygon */
-		geoms[1] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[4],
-						&points[5], &points[6], &points[7])));
+		geoms[1] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[4],
+						&points[5], &points[6], &points[7]));
 		/* add left polygon */
-		geoms[2] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
-						&points[4], &points[5], &points[1])));
+		geoms[2] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[0],
+						&points[4], &points[5], &points[1]));
 		/* add right polygon */
-		geoms[3] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[3],
-						&points[7], &points[6], &points[2])));
+		geoms[3] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[3],
+					&points[7], &points[6], &points[2]));
 		/* add back polygon */
-		geoms[4] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[0],
-						&points[4], &points[7], &points[3])));
+		geoms[4] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[0],
+					&points[4], &points[7], &points[3]));
 		/* add front polygon */
-		geoms[5] = (lwpoly_as_lwgeom(lwpoly_construct_rectangle(&points[1],
-						&points[5], &points[6], &points[2])));
+		geoms[5] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(1, 0, &points[1],
+					&points[5], &points[6], &points[2]));
 
 		geom = (LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
 				SRID_UNKNOWN, NULL, ngeoms, geoms);
