@@ -1303,7 +1303,7 @@ extern LWMPOINT *lwmpoint_construct(int srid, const POINTARRAY *pa);
 extern LWLINE* lwline_construct(int srid, GBOX *bbox, POINTARRAY *points);
 extern LWCIRCSTRING* lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points);
 extern LWPOLY* lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points);
-extern LWPOLY* lwpoly_construct_rectangle(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *p4);
+extern LWPOLY* lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D *p4);
 extern LWCURVEPOLY* lwcurvepoly_construct(int srid, GBOX *bbox, uint32_t nrings, LWGEOM **geoms);
 extern LWTRIANGLE* lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points);
 extern LWCOLLECTION* lwcollection_construct(uint8_t type, int srid, GBOX *bbox, uint32_t ngeoms, LWGEOM **geoms); 
