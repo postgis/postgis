@@ -129,7 +129,12 @@ select '76a',ST_OrderingEquals('LINESTRING(1 1, 2 2)'::GEOMETRY,'LINESTRING(1 1,
 select '106',box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
 
 -- box3d only type is only used for indexing -- NEVER use one yourself
-select '107',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
+select '107a',ST_AsEWKT(geometry('BOX3D(0 0 0, 0 0 0 )'::BOX3D));
+select '107b',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 0 0 )'::BOX3D));
+select '107c',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 0 )'::BOX3D));
+select '107d',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 0 7 )'::BOX3D));
+select '107e',ST_AsEWKT(geometry('BOX3D(0 0 0, 0 7 7 )'::BOX3D));
+select '107f',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
 
 --- debug function testing
 
