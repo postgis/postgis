@@ -199,69 +199,159 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	POINT4D pt;
 
-
 	/**
 	 * Alter BOX3D cast so that a valid geometry is always
 	 * returned depending upon the size of the BOX3D. The
 	 * code makes the following assumptions:
 	 *     - If the BOX3D is a single point then return a
 	 *     POINT geometry
-	 *     - If the BOX3D represents either a horizontal or
-	 *     vertical line, return a LINESTRING geometry
-	 *     - Otherwise return a POLYGON
+	 *     - If the BOX3D represents a line in any of X, Y
+	 *     or Z dimension, return a LINESTRING geometry
+	 *     - If the BOX3D represents a plane in the X, Y,
+	 *     or Z dimension, return a POLYGON geometry
+	 *     - Otherwise return a POLYHEDRALSURFACE geometry
 	 */
 
-	pa = ptarray_construct_empty(0, 0, 5);
+	pa = ptarray_construct_empty(LW_TRUE, LW_FALSE, 5);
 
-	if ( (box->xmin == box->xmax) && (box->ymin == box->ymax) )
+	/* BOX3D is a point */
+	if ( (box->xmin == box->xmax) && (box->ymin == box->ymax) &&
+			(box->zmin == box->zmax) )
 	{
 		LWPOINT *lwpt = lwpoint_construct(SRID_UNKNOWN, NULL, pa);
 
 		pt.x = box->xmin;
 		pt.y = box->ymin;
+		pt.z = box->zmin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		result = geometry_serialize(lwpoint_as_lwgeom(lwpt));
+		lwpoint_free(lwpt);
 	}
-	else if (box->xmin == box->xmax ||
-	         box->ymin == box->ymax)
+	/* BOX3D is a line */
+	else if (((box->xmin == box->xmax ||
+			   box->ymin == box->ymax) &&
+			   box->zmin == box->zmax) ||
+		     ((box->xmin == box->xmax ||
+			   box->zmin == box->zmax) &&
+			   box->ymin == box->ymax) ||
+		     ((box->ymin == box->ymax ||
+			   box->zmin == box->zmax) &&
+			   box->xmin == box->xmax))
 	{
 		LWLINE *lwline = lwline_construct(SRID_UNKNOWN, NULL, pa);
 
 		pt.x = box->xmin;
 		pt.y = box->ymin;
+		pt.z = box->zmin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymax;
+		pt.z = box->zmax;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		result = geometry_serialize(lwline_as_lwgeom(lwline));
+		lwline_free(lwline);
 	}
+	/* BOX3D is a polygon in the X plane */
+	else if (box->xmin == box->xmax)
+	{
+		POINT4D points[4];
+		LWPOLY *lwpoly;
+
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymax, box->zmin };
+		points[2] = (POINT4D) { box->xmin, box->ymax, box->zmax };
+		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+				&points[0], &points[1], &points[2], &points[3]);
+		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
+		lwpoly_free(lwpoly);
+	}
+	/* BOX3D is a polygon in the Y plane */
+	else if (box->ymin == box->ymax)
+	{
+		POINT4D points[4];
+		LWPOLY *lwpoly;
+
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmax, box->ymin, box->zmin };
+		points[2] = (POINT4D) { box->xmax, box->ymin, box->zmax };
+		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+				&points[0], &points[1], &points[2], &points[3]);
+		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
+		lwpoly_free(lwpoly);
+	}
+	/* BOX3D is a polygon in the Z plane */
+	else if (box->zmin == box->zmax)
+	{
+		POINT4D points[4];
+		LWPOLY *lwpoly;
+
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymax, box->zmin };
+		points[2] = (POINT4D) { box->xmax, box->ymax, box->zmin };
+		points[3] = (POINT4D) { box->xmax, box->ymin, box->zmin };
+
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+			   	&points[0], &points[1], &points[2], &points[3]);
+		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
+		lwpoly_free(lwpoly);
+	}
+	/* BOX3D is a polyhedron */
 	else
 	{
-		LWPOLY *lwpoly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, &pa);
+		POINT4D points[8];
+		static const int ngeoms = 6;
+		LWGEOM **geoms = (LWGEOM **) lwalloc(sizeof(LWGEOM *) * ngeoms);
+		LWGEOM *geom = NULL;
 
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 8 vertices of the box */
+		points[0] = (POINT4D) { box->xmin, box->ymin, box->zmin };
+		points[1] = (POINT4D) { box->xmin, box->ymax, box->zmin };
+		points[2] = (POINT4D) { box->xmax, box->ymax, box->zmin };
+		points[3] = (POINT4D) { box->xmax, box->ymin, box->zmin };
+		points[4] = (POINT4D) { box->xmin, box->ymin, box->zmax };
+		points[5] = (POINT4D) { box->xmin, box->ymax, box->zmax };
+		points[6] = (POINT4D) { box->xmax, box->ymax, box->zmax };
+		points[7] = (POINT4D) { box->xmax, box->ymin, box->zmax };
 
-		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
-		
+		/* add bottom polygon */
+		geoms[0] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[0], &points[1], &points[2], &points[3]));
+		/* add top polygon */
+		geoms[1] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[4], &points[5], &points[6], &points[7]));
+		/* add left polygon */
+		geoms[2] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[0], &points[1], &points[5], &points[4]));
+		/* add right polygon */
+		geoms[3] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[3], &points[2], &points[6], &points[7]));
+		/* add back polygon */
+		geoms[4] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[0], &points[3], &points[7], &points[4]));
+		/* add front polygon */
+		geoms[5] = lwpoly_as_lwgeom(lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
+				   	&points[1], &points[2], &points[6], &points[5]));
+
+		geom = (LWGEOM *) lwcollection_construct(POLYHEDRALSURFACETYPE,
+				SRID_UNKNOWN, NULL, ngeoms, geoms);
+
+		FLAGS_SET_SOLID(geom->flags, 1);
+
+		result = geometry_serialize(geom);
+		lwcollection_free((LWCOLLECTION *) geom);
 	}
 
 	gserialized_set_srid(result, box->srid);
+
 	PG_RETURN_POINTER(result);
 }
 

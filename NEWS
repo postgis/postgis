@@ -2,6 +2,8 @@ PostGIS 2.3.0
 2015/XX/XX
 
  * Important / Breaking Changes *
+  - #3466, Casting from box3d to geometry now returns a 3D
+	       geometry (Julien Rouhaud)
  * Deprecated signatures *
  * New Features *
 

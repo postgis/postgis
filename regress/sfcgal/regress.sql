@@ -178,7 +178,12 @@ select '105','MULTIPOINT(-0.0001 0, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::
 select '106',box3d('MULTIPOINT(0 0, 7 7)'::GEOMETRY) as bvol;
 
 -- box3d only type is only used for indexing -- NEVER use one yourself
-select '107',ST_AsEWKT(geometry('BOX3D(0 0 0, 7 7 7 )'::BOX3D));
+select '107a',ST_AsEWKT(geometry('BOX3D(1 2 3, 1 2 3 )'::BOX3D));
+select '107b',ST_AsEWKT(geometry('BOX3D(2 3 3, 7 3 3 )'::BOX3D));
+select '107c',ST_AsEWKT(geometry('BOX3D(2 3 5, 6 8 5 )'::BOX3D));
+select '107d',ST_AsEWKT(geometry('BOX3D(1 -1 4, 2 -1 9 )'::BOX3D));
+select '107e',ST_AsEWKT(geometry('BOX3D(-1 3 5, -1 6 8 )'::BOX3D));
+select '107f',ST_AsEWKT(geometry('BOX3D(1 2 3, 4 5 6 )'::BOX3D));
 
 --- debug function testing
 

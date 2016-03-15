@@ -494,29 +494,18 @@ Datum BOX2D_to_LWGEOM(PG_FUNCTION_ARGS)
 	}
 	else
 	{
+		POINT4D points[4];
 		LWPOLY *poly;
-		POINTARRAY **ppa = lwalloc(sizeof(POINTARRAY*));
 
-		/* Assign coordinates to point array */
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmax;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
-		pt.x = box->xmin;
-		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, LW_TRUE);
+		/* Initialize the 4 vertices of the polygon */
+		points[0] = (POINT4D) { box->xmin, box->ymin };
+		points[1] = (POINT4D) { box->xmin, box->ymax };
+		points[2] = (POINT4D) { box->xmax, box->ymax };
+		points[3] = (POINT4D) { box->xmax, box->ymin };
 
 		/* Construct polygon */
-		ppa[0] = pa;
-		poly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
+		poly = lwpoly_construct_rectangle(LW_FALSE, LW_FALSE, &points[0], &points[1],
+				&points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(poly));
 		lwpoly_free(poly);
 	}
