@@ -66,7 +66,7 @@ SELECT 'kml_version_03', ST_AsKML(-4, geography(GeomFromEWKT('SRID=4326;POINT(1 
 SELECT 'kml_prefix_01', ST_AsKML(2, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, '');
 SELECT 'kml_prefix_02', ST_AsKML(2, geography(GeomFromEWKT('SRID=4326;POINT(1 2)')), 0, 'kml');
 
--- Projected 
+-- Projected
 -- National Astronomical Observatory of Colombia - Bogota, Colombia (Placemark)
 SELECT 'kml_projection_01', ST_AsKML(geography(GeomFromEWKT('SRID=102189;POINT(1000000 1000000)')), 3);
 
@@ -136,6 +136,15 @@ SELECT 'geojson_options_13', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1
 SELECT 'geojson_options_14', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 6);
 SELECT 'geojson_options_15', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
 SELECT 'geojson_options_16', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
+
+
+--
+-- Text
+--
+
+-- Precision
+SELECT 'text_precision_01', ST_AsText(geography(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)')));
+SELECT 'text_precision_02', ST_AsText(geography(GeomFromEWKT('SRID=4326;POINT(111.1111111 1.1111111)')),2);
 
 
 --
