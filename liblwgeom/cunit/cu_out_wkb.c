@@ -21,6 +21,7 @@
 ** Global variable to hold hex WKB strings
 */
 char *s;
+size_t s_size;
 
 /*
 ** The suite initialization function.
@@ -61,17 +62,19 @@ static void cu_wkb(char *wkt)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, NULL);
+	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, &s_size);
 	lwgeom_free(g);
 }
 
-
-/* parisc and mips (at least some processors) have a different nan representation from other arches. */
-#if !defined(__hppa__) && !defined(__mips__)
-# define nan_val( v1, v2)  v1
-#else
-# define nan_val( v1, v2)  v2
-#endif
+static void cu_wkb_empty_point_check(char *hex)
+{
+	LWGEOM *g;
+	g = lwgeom_from_hexwkb(hex, LW_PARSER_CHECK_NONE);
+	CU_ASSERT(g != NULL);
+	CU_ASSERT(lwgeom_is_empty(g));
+	CU_ASSERT(g->type == POINTTYPE);
+	lwgeom_free(g);	
+}
 
 static void test_wkb_out_point(void)
 {
@@ -82,24 +85,19 @@ static void test_wkb_out_point(void)
 	CU_ASSERT_STRING_EQUAL(s,"0060000001000000043FF00000000000003FF00000000000003FF0000000000000");
 	
 	cu_wkb("POINT EMPTY");
-	CU_ASSERT_STRING_EQUAL(s, nan_val("00000000017FF80000000000007FF8000000000000",
-					  "00000000017FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF"));
-
+	cu_wkb_empty_point_check(s);
+	
 	cu_wkb("SRID=4326;POINT EMPTY");
-	CU_ASSERT_STRING_EQUAL(s, nan_val("0020000001000010E67FF80000000000007FF8000000000000",
-					  "0020000001000010E67FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF"));
+	cu_wkb_empty_point_check(s);
 
 	cu_wkb("POINT Z EMPTY");
-	CU_ASSERT_STRING_EQUAL(s, nan_val("00800000017FF80000000000007FF80000000000007FF8000000000000",
-					  "00800000017FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF"));
+	cu_wkb_empty_point_check(s);
 
 	cu_wkb("POINT M EMPTY");
-	CU_ASSERT_STRING_EQUAL(s, nan_val("00400000017FF80000000000007FF80000000000007FF8000000000000",
-					  "00400000017FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF"));
+	cu_wkb_empty_point_check(s);
 
 	cu_wkb("POINT ZM EMPTY");
-	CU_ASSERT_STRING_EQUAL(s, nan_val("00C00000017FF80000000000007FF80000000000007FF80000000000007FF8000000000000",
-					  "00C00000017FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF7FF7FFFFFFFFFFFF"));
+	cu_wkb_empty_point_check(s);
 }
 
 static void test_wkb_out_linestring(void)
