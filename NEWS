@@ -19,6 +19,7 @@ PostGIS 2.2.2dev
   - #3490, Raster data restore issues, materialized views
   		   Scripts postgis_proc_set_search_path.sql, rtpostgis_proc_set_search_path.sql
   		   refere to http://postgis.net/docs/manual-2.2/RT_FAQ.html#faq_raster_data_not_restore
+  - #3426, failing POINT EMPTY tests on fun architectures
 
 PostGIS 2.2.1
 2016/01/06
