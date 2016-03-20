@@ -1258,7 +1258,7 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
     <refsection>
     <title>Description</title>
 
-    <para>Returns the geometry as an Encoded Polyline.</para>
+    <para>Returns the geometry as an Encoded Polyline.  This is a format very useful if you are using google maps</para>
 
 
     <para>Availability: 2.2.0</para>
@@ -1266,16 +1266,39 @@ SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;
 
     <refsection>
     <title>Examples</title>
+<para>Basic </para>
 <programlisting>
-ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
+SELECT ST_AsEncodedPolyline(GeomFromEWKT('SRID=4326;LINESTRING(-120.2 38.5,-120.95 40.7,-126.453 43.252)'));
 --result--
 |_p~iF~ps|U_ulLnnqC_mqNvxq`@
 </programlisting>
+
+<para>Use in conjunction with geography linestring and geography segmentize, and put on google maps</para>
+<programlisting>-- the SQL for Boston to San Francisco, segments every 100 KM
+SELECT ST_AsEncodedPolyline(
+	ST_Segmentize(
+		ST_GeogFromText('LINESTRING(-71.0519 42.4935,-122.4483 37.64)'), 
+			100000)::geometry) As encodedFlightPath;</programlisting>
+
+
+<para>javascript will look something like this where $ variable you replace with query result</para>
+<programlisting><![CDATA[
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry"></script>
+<script type="text/javascript">
+     flightPath = new google.maps.Polyline({
+            path:  google.maps.geometry.encoding.decodePath("$encodedFlightPath"),
+            map: map,
+            strokeColor: '#0000CC',
+            strokeOpacity: 1.0,
+            strokeWeight: 4
+        });
+</script>
+]]></programlisting>
 </refsection>
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_LineFromEncodedPolyline" /></para>
+    <para><xref linkend="ST_LineFromEncodedPolyline" />, <xref linked="ST_Segmentize" /></para>
     </refsection>
 </refentry>
   </sect1>
