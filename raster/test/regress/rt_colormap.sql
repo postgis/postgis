@@ -127,7 +127,7 @@ SELECT
 	rid,
 	(ST_DumpValues(rast)).*
 FROM raster_colormap_out
-ORDER BY 1, 2;
+ORDER BY 1, 2, nband;
 
 DROP TABLE IF EXISTS raster_colormap_in;
 DROP TABLE IF EXISTS raster_colormap_out;
