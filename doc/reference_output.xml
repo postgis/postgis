@@ -1298,7 +1298,7 @@ SELECT ST_AsEncodedPolyline(
     <!-- Optionally add a "See Also" section -->
     <refsection>
     <title>See Also</title>
-    <para><xref linkend="ST_LineFromEncodedPolyline" />, <xref linked="ST_Segmentize" /></para>
+    <para><xref linkend="ST_LineFromEncodedPolyline" />, <xref linkend="ST_Segmentize" /></para>
     </refsection>
 </refentry>
   </sect1>
