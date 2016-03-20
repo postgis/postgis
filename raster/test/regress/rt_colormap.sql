@@ -123,7 +123,7 @@ WHERE rid = 2
 ;
 
 SELECT
-	testid
+	testid,
 	rid,
 	(ST_DumpValues(rast)).*
 FROM raster_colormap_out
