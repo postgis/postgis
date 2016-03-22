@@ -1,3 +1,325 @@
+2016-03-20 05:07  Regina Obe <lr@pcorp.us>
+
+	* [r14791] doc/reference_output.xml: fix typo in last commit
+
+2016-03-20 04:54  Regina Obe <lr@pcorp.us>
+
+	* [r14790] doc/reference_output.xml: Example of using
+	  ST_AsEncodedPath with google maps
+
+2016-03-17 16:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14787] NEWS, liblwgeom/cunit/cu_out_wkb.c: fix failing tests on
+	  POINT EMPTY, closes #3426
+
+2016-03-10 23:18  Regina Obe <lr@pcorp.us>
+
+	* [r14771] utils/postgis_proc_set_search_path.pl: Exclude all c
+	  functions from schema qual except ST_Transform we know calls
+	  spatial_ref_sys and is an issue in materialized views and spatial
+	  indexes.
+	  References #3490 for 2.2
+
+2016-03-10 07:02  Regina Obe <lr@pcorp.us>
+
+	* [r14770] utils/postgis_proc_set_search_path.pl: avoid adding
+	  search_path to functions that take internals for input
+	  closes #3497 for 2.2
+	  reference #3490 cleanup avoid drop* functsion as well.
+
+2016-03-09 13:07  Daniel Baston <dbaston@gmail.com>
+
+	* [r14767] NEWS, postgis/postgis_drop_after.sql: #3460,
+	  ST_ClusterWithin 'tolerance not defined' error after upgrade
+
+2016-03-08 19:54  Regina Obe <lr@pcorp.us>
+
+	* [r14763] utils/postgis_proc_set_search_path.pl: exclude
+	  addgeometry*, addraster*, addoverview* from seach_path function
+	  setting.
+	  These in calls that don't take schema use the current search_path
+	  to find table.
+	  Closes #3495 for 2.2
+
+2016-03-08 16:05  Regina Obe <lr@pcorp.us>
+
+	* [r14761] raster/rt_pg/Makefile.in: fix
+	  rtpostgis_proc_set_search_path.sql build.
+	  Closes #2485
+
+2016-03-08 15:54  Regina Obe <lr@pcorp.us>
+
+	* [r14760] raster/rt_pg/Makefile.in: Add
+	  rtpostgis_proc_set_search_path.sql to target install.
+	  Closes #2485
+
+2016-03-06 00:32  Regina Obe <lr@pcorp.us>
+
+	* [r14756] NEWS: References #3435 for PostGIS 2.2 add to release
+	  notes
+
+2016-03-06 00:30  Regina Obe <lr@pcorp.us>
+
+	* [r14755] liblwgeom/cunit/cu_out_x3d.c, liblwgeom/lwout_x3d.c: Use
+	  Tomvantilburg suggestion and just hard-code convex='false' for
+	  all IndexedFaceSets.
+	  Corrects the output of wrongly rendered without affecting true
+	  convex
+	  References #3435 for PostGIS 2.2 (fix).
+
+2016-03-05 20:53  Regina Obe <lr@pcorp.us>
+
+	* [r14754] doc/faq.xml: fix invalid markup in last committ
+	  references #3490
+
+2016-03-05 20:36  Regina Obe <lr@pcorp.us>
+
+	* [r14753] doc/faq.xml: FAQ about materialized views sometimes not
+	  restoring in backup.
+	  References #3490
+
+2016-03-05 06:57  Regina Obe <lr@pcorp.us>
+
+	* [r14752] NEWS, doc/faq_raster.xml, postgis/Makefile.in,
+	  raster/rt_pg/Makefile.in, utils/postgis_proc_set_search_path.pl:
+	  Script to set search path for raster and postgis functions
+	  To fix database restore issues and materialized views
+	  Closes #3490
+	  Closes #3485
+	  Closes #3277
+	  Closes #3012
+
+2016-03-03 11:34  Sandro Santilli <strk@keybit.net>
+
+	* [r14741] liblwgeom/lwgeom_topo.c: Give more decimal digits in
+	  edge-motion collision detection point
+
+2016-03-03 10:38  Sandro Santilli <strk@keybit.net>
+
+	* [r14739] make_dist.sh: Update make_dist.sh from trunk
+	  
+	  Closes #3165 and #3482
+
+2016-02-27 08:10  Regina Obe <lr@pcorp.us>
+
+	* [r14712] doc/reference_measure.xml, doc/reference_processing.xml:
+	  Mark ST_ClusterWithin and ST_ClusterIntersecting as taking
+	  geometry sets
+	  (so they are flagged as aggregates)
+	  Move them to measurement and relationships section so matches 2.3
+	  docs
+
+2016-02-26 14:35  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14707] NEWS: #3429, news entry
+
+2016-02-26 11:17  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14703] raster/loader/raster2pgsql.c,
+	  raster/rt_core/librtcore.h, raster/rt_core/rt_context.c,
+	  raster/rt_pg/rtpostgis.c, raster/test/cunit/cu_tester.c: Expunge
+	  all trace of rt_init_allocators
+
+2016-02-26 10:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14702] raster/rt_core/rt_context.c, raster/rt_pg/rtpostgis.c:
+	  Change allocators to init with direct call instead of lazy load
+	  (#3429)
+
+2016-02-24 16:46  Daniel Baston <dbaston@gmail.com>
+
+	* [r14687] NEWS, postgis/lwgeom_geos_prepared.c,
+	  regress/tickets.sql, regress/tickets_expected: #3437,
+	  ST_Intersects incorrect for MultiPoints
+
+2016-02-23 16:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14668] NEWS, postgis/lwgeom_in_kml.c: #3461 ST_GeomFromKML
+	  crashes Postgres when there are innerBoundaryIs and no
+	  outerBoundaryIs
+
+2016-02-23 16:38  Sandro Santilli <strk@keybit.net>
+
+	* [r14667] NEWS, liblwgeom/lwgeom_topo.c: Fix crash on
+	  face-collapsing edge change
+	  
+	  See #3463
+
+2016-02-09 22:05  Sandro Santilli <strk@keybit.net>
+
+	* [r14658] regress/run_test.pl: Ensure restored database is created
+	  the same as the initial one
+	  
+	  Fixes ORDER BY consistency, probably also with the loader tests
+	  already tweaked to workaround this
+	  
+	  See #3444
+
+2016-02-09 18:20  Sandro Santilli <strk@keybit.net>
+
+	* [r14656] regress/run_test.pl: Re-append "topology" schema on
+	  restore, with --dumprestore
+	  
+	  See #3454
+
+2016-02-09 16:40  Sandro Santilli <strk@keybit.net>
+
+	* [r14653] regress/loader/Arc.select.sql,
+	  regress/loader/ArcM.select.sql, regress/loader/ArcZ.select.sql,
+	  regress/loader/MultiPoint.select.sql,
+	  regress/loader/MultiPointM.select.sql,
+	  regress/loader/MultiPointZ.select.sql,
+	  regress/loader/PointZ.select.sql,
+	  regress/loader/Polygon.select.sql,
+	  regress/loader/PolygonM.select.sql,
+	  regress/loader/PolygonZ.select.sql,
+	  regress/loader/TSIPolygon.select.sql,
+	  regress/loader/TSTIPolygon.select.sql,
+	  regress/loader/TSTPolygon.select.sql: Do not rely on storage
+	  order on querying loaded shapefiles
+	  
+	  Fixes runs with RUNTESTFLAGS=--dumprestore
+	  See #3444
+
+2016-02-09 16:18  Sandro Santilli <strk@keybit.net>
+
+	* [r14652] regress/run_test.pl: Add --dumprestore switch to
+	  ./run_test.pl
+	  
+	  See #3444
+
+2016-02-09 14:22  Sandro Santilli <strk@keybit.net>
+
+	* [r14650] extensions/postgis/Makefile.in: Really generate
+	  system_ref_sys config dump for extension
+	  
+	  Closes #3443
+
+2016-02-09 10:55  Sandro Santilli <strk@keybit.net>
+
+	* [r14647] postgis/postgis_drop_after.sql: Drop temporarely added
+	  geometry_distance_box_nd(geometry,geometry)
+	  
+	  Closes #3450
+
+2016-02-09 10:43  Sandro Santilli <strk@keybit.net>
+
+	* [r14645] postgis/postgis_drop_after.sql: Drop temporarely
+	  existing deprecated st_effectivearea signature
+	  
+	  See #3450
+
+2016-02-09 10:14  Sandro Santilli <strk@keybit.net>
+
+	* [r14643] postgis/postgis_drop_after.sql: Drop temporarely added
+	  tkwb aggregate and functions
+	  
+	  These were added during 2.2.0 development
+	  but removed before going final.
+	  
+	  See #3450
+
+2016-02-09 10:12  Sandro Santilli <strk@keybit.net>
+
+	* [r14642] extensions/postgis/Makefile.in: Wrap every DROP to first
+	  unregister object from postgis extension
+	  
+	  Also drop temporarely introduced ST_AsTWKB signature.
+	  See #3450
+
+2016-02-07 05:50  Regina Obe <lr@pcorp.us>
+
+	* [r14628] doc/xsl/postgis_aggs_mm.xml.xsl,
+	  extras/WFS_locks/WFS_locks.c, postgis/long_xact.c,
+	  postgis/lwgeom_transform.c: Spelling error fixes from Sebastiaan
+	  Couwenberg for 2.2
+	  closes #3449
+
+2016-01-28 10:25  Sandro Santilli <strk@keybit.net>
+
+	* [r14619] extensions/compute_srid_contiguous_ranges.sql,
+	  extensions/postgis/Makefile.in,
+	  extensions/postgis/sql_bits/mark_editable_objects.sql.in,
+	  utils/create_spatial_ref_sys_config_dump.pl: Automatically
+	  generate system_ref_sys config dump for extension
+	  
+	  See #3443
+
+2016-01-20 12:18  Daniel Baston <dbaston@gmail.com>
+
+	* [r14612] NEWS, liblwgeom/cunit/cu_geos_cluster.c,
+	  liblwgeom/lwgeom_geos_cluster.c: #3433, ST_ClusterIntersecting
+	  gives incorrect result for MultiPoints
+
+2016-01-19 17:07  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14609] NEWS, liblwgeom/ptarray.c: #3436, memory handling
+	  mistake in ptarray_clone_deep
+
+2016-01-19 09:18  Sandro Santilli <strk@keybit.net>
+
+	* [r14606] topology/postgis_topology.c: Fix bogus call to lwnotice
+	  (missing param)
+
+2016-01-15 17:25  Sandro Santilli <strk@keybit.net>
+
+	* [r14602] doc/extras_tigergeocoder.xml: Typo
+
+2016-01-14 14:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14600] spatial_ref_sys.sql: Remove VACUUM statement from
+	  spatial_ref_sys
+
+2016-01-13 18:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14598] NEWS, spatial_ref_sys.sql: #3427, update spatial_ref_sys
+	  to EPSG 8.8
+
+2016-01-13 11:35  Sandro Santilli <strk@keybit.net>
+
+	* [r14595] NEWS, liblwgeom/cunit/cu_tester.h,
+	  liblwgeom/lwgeom_geos_split.c: Avoid any drift of cutter point on
+	  lines split
+	  
+	  Should fix splitting operations on at least arm64, ppc64el and
+	  s390x.
+	  See #3422 and #3401 (for 2.2 branch)
+	  
+	  Also turn ASSERT_DOUBLE_EQUAL back to a tolerance-free check
+	  (better use a different name for tolerance-aware check,
+	  so caller can decide)
+
+2016-01-13 00:36  Regina Obe <lr@pcorp.us>
+
+	* [r14592] liblwgeom/cunit/cu_out_wkb.c: Patch from Sebastiaan
+	  Couwenberg to fix test_wkb_out_point failure on hppa & mips.
+	  references #3426
+
+2016-01-11 14:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r14589] liblwgeom/cunit/cu_tester.h: #3422, double tests not
+	  passing on all architectures
+
+2016-01-07 06:36  Sandro Santilli <strk@keybit.net>
+
+	* [r14583] liblwgeom/lwgeom_topo.c: ST_AddEdge*: avoid db access
+	  for edges known to be dangling
+
+2016-01-06 17:30  Sandro Santilli <strk@keybit.net>
+
+	* [r14579] NEWS: Fix typos
+
+2016-01-06 15:14  Sandro Santilli <strk@keybit.net>
+
+	* [r14576] HOWTO_RELEASE: Reword the upgradeable_extensions.mk step
+	  
+	  I really hope this will become automated in the future
+
+2016-01-06 11:55  Regina Obe <lr@pcorp.us>
+
+	* [r14571] ChangeLog: regenerated using make ChangeLog instead of
+	  manually running svn2cl
+
 2016-01-06 11:39  Regina Obe <lr@pcorp.us>
 
 	* [r14569] authors.git: less scammy

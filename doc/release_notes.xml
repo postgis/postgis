@@ -4,6 +4,27 @@
     <subtitle>Release Notes</subtitle>
 
     <sect1>
+      <title>Release 2.2.2</title>
+        <para>Release date: 2016/03/22</para>
+        <para>This is a bug fix and performance improvement release.</para>
+  		  <simplesect>
+  			  <title>New Features</title>
+          <para>#3463, Fix crash on face-collapsing edge change</para>
+          <para>#3422, Improve ST_Split robustness on standard precision double systems (arm64, ppc64el, s390c, powerpc, ...)</para>
+          <para>#3427, Update spatial_ref_sys to EPSG version 8.8</para>
+          <para>#3433, ST_ClusterIntersecting incorrect for MultiPoints</para>
+          <para>#3435, ST_AsX3D fix rendering of concave geometries</para>
+          <para>#3436, memory handling mistake in ptarray_clone_deep</para>
+          <para>#3437, ST_ClusterIntersecting incorrect for MultiPoints</para>
+          <para>#3461, ST_GeomFromKML crashes Postgres when there are innerBoundaryIs and no outerBoundaryIs</para>
+          <para>#3429, upgrading to 2.3 or from 2.1 can cause loop/hang on some platforms</para>
+          <para>#3460, ST_ClusterWithin 'Tolerance not defined' error after upgrade</para>
+          <para>#3490, Raster data restore issues, materialized views. Scripts postgis_proc_set_search_path.sql, rtpostgis_proc_set_search_path.sql refer to http://postgis.net/docs/manual-2.2/RT_FAQ.html#faq_raster_data_not_restore</para>
+          <para>#3426, failing POINT EMPTY tests on fun architectures</para>
+  		  </simplesect>
+    </sect1>
+
+    <sect1>
     	<title>Release 2.2.1</title>
 		  <para>Release date: 2016/01/06</para>
 		  <para>This is a bug fix and performance improvement release.</para>
