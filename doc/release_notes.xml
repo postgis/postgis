@@ -15,7 +15,7 @@
           <para>#3433, ST_ClusterIntersecting incorrect for MultiPoints</para>
           <para>#3435, ST_AsX3D fix rendering of concave geometries</para>
           <para>#3436, memory handling mistake in ptarray_clone_deep</para>
-          <para>#3437, ST_ClusterIntersecting incorrect for MultiPoints</para>
+          <para>#3437, ST_Intersects incorrect for MultiPoints</para>
           <para>#3461, ST_GeomFromKML crashes Postgres when there are innerBoundaryIs and no outerBoundaryIs</para>
           <para>#3429, upgrading to 2.3 or from 2.1 can cause loop/hang on some platforms</para>
           <para>#3460, ST_ClusterWithin 'Tolerance not defined' error after upgrade</para>
