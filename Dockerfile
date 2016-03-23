@@ -1,4 +1,4 @@
-FROM postgis_build_env
+FROM dbaston/postgis_build_env
 
 ADD . /postgis
 USER root
