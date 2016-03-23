@@ -1,21 +1,13 @@
-env:
-  global:
-    - RUNTESTFLAGS=-v
-
-addons:
-  postgresql: "9.4"
-
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y
-      postgresql-9.4 postgresql-server-dev-9.4
-      build-essential autoconf libtool libcunit1-dev
-      xsltproc docbook-xsl docbook-mathml dblatex
-      libproj-dev libgdal-dev libgeos-dev libjson0-dev
-  - dpkg -l | grep postgresql
-  - ./autogen.sh
+sudo: required
 
 language: c
+
+services:
+    - docker
+
+before_install:
+    docker build -t postgis_test .
+    docker run postgis_test
 
 compiler: gcc
 
