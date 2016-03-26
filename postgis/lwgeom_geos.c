@@ -3626,10 +3626,10 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 		if (!gserialized_get_gbox_p(clip, &clip_envelope))
 		{
 			lwpgerror("Could not determine envelope of clipping geometry.");
-			PG_FREE_IF_COPY(clip, 0);		
+			PG_FREE_IF_COPY(clip, 1);
 			PG_RETURN_NULL();
 		}
-		PG_FREE_IF_COPY(clip, 0);		
+		PG_FREE_IF_COPY(clip, 1);
 	}
 
 	/* Read our input geometry */
