@@ -1907,6 +1907,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 		/* Copy end to start to allow a new end value in next iteration */
 		e1.start = e1.end;
 		A1 = A2;
+		LW_ON_INTERRUPT(return -1.0);
 	}
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
 

@@ -3,6 +3,8 @@ PostGIS 2.2.3
 
  * Bug Fixes *
 
+  - #3524, Add interruptibility to geography brute-force distance 
+           calculation
 
 
 PostGIS 2.2.2
