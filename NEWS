@@ -5,6 +5,7 @@ PostGIS 2.2.3
 
   - #3524, Add interruptibility to geography brute-force distance 
            calculation
+  - #3522, Handle POINT and MULTIPOINT correctly in ST_Subdivide
 
 
 PostGIS 2.2.2

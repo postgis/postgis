@@ -1912,10 +1912,20 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	}
 	
 	if ( width == 0.0 && height == 0.0 )
-		return 0;
+	{
+		if ( geom->type == POINTTYPE )
+		{
+			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+			return 1;			
+		}
+		else
+		{
+			return 0;
+		}
+	}
 	
 	/* Always just recurse into collections */
-	if ( lwgeom_is_collection(geom) )
+	if ( lwgeom_is_collection(geom) && geom->type != MULTIPOINTTYPE )
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		int n = 0;

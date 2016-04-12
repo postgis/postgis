@@ -933,6 +933,7 @@ SELECT '#3437d' AS t, count(*) FROM mp INNER JOIN p ON ST_Covers(mp.geom, p.geom
 UNION ALL
 SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom);
 
+SELECT '#3522', ST_AsText(ST_Subdivide(ST_GeomFromText('POINT(1 1)',4326),10));
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
