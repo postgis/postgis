@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
@@ -70,7 +70,7 @@ msgstr "線に沿った内挿点を返します。第1引数は LINESTRINGでな
 msgid ""
 "See <xref linkend=\"ST_LineLocatePoint\"/> for computing the line location "
 "nearest to a Point."
-msgstr "ポイントに最も近いライン位置の計算については<xref linkend=\"ST_Line_Locate_Point\"/>を参照して下さい。"
+msgstr "ポイントに最も近いライン位置の計算については<xref linkend=\"ST_LineLocatePoint\"/>を参照して下さい。"
 
 #. Tag: para
 #: reference_lrs.xml:34
