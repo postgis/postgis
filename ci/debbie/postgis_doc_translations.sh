@@ -61,12 +61,12 @@ make html-localized
 # make -C po/pl/ local-html
 # make -C po/ko_KR/ local-html
 
-#make pdf-localized
-
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 cp -R html/images/* /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
+#add back make pdf but after html copy so will work even if pdf generation fails
+make pdf-localized
 cp -R po/*/*.pdf /var/www/postgis_stuff/
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 chmod -R 755 /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}*.pdf
