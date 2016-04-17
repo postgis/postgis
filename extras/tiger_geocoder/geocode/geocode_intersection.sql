@@ -1,6 +1,6 @@
  /*** 
  * 
- * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
+ * Copyright (C) 2011-2016 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given two roadways, state and optional city, zip
 -- Will return addresses that are at the intersecton of those roadways
@@ -140,7 +140,7 @@ BEGIN
         ADDY.stateAbbrev      := in_state;
         ADDY.zip              := results.zip;
         ADDY.parsed := TRUE;
-        ADDY.address := results.address;
+        ADDY.address := substring(results.address FROM '[0-9]+')::integer;
         
         GEOMOUT := results.geom;
         RATING := results.a_rating;

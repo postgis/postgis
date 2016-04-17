@@ -392,7 +392,7 @@ BEGIN
       END IF;
 
       IF results.exact_address THEN
-        ADDY.address := parsed.address;
+        ADDY.address := substring(parsed.address FROM '[0-9]+')::integer;
       ELSE
         ADDY.address := NULL;
       END IF;
