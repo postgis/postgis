@@ -140,7 +140,7 @@ BEGIN
         ADDY.stateAbbrev      := in_state;
         ADDY.zip              := results.zip;
         ADDY.parsed := TRUE;
-        ADDY.address := results.address;
+        ADDY.address := substring(results.address FROM '[0-9]+')::integer;
         
         GEOMOUT := results.geom;
         RATING := results.a_rating;
