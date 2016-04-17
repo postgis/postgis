@@ -8,11 +8,18 @@
 -- Use case example an address at the intersection of 2 streets: 
 -- SELECT pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('School St', 'Washington St', 'MA', 'Boston','02117');
 --DROP FUNCTION tiger.geocode_intersection(text,text,text,text,text,integer);
-CREATE OR REPLACE FUNCTION geocode_intersection(IN roadway1 text, IN roadway2 text, IN in_state text, IN in_city text DEFAULT '', IN in_zip text DEFAULT '', 
-IN num_results integer DEFAULT 10,  OUT ADDY NORM_ADDY,
-    OUT GEOMOUT GEOMETRY,
-    OUT RATING INTEGER) RETURNS SETOF record AS
-$$
+CREATE OR REPLACE FUNCTION geocode_intersection(
+    IN roadway1 text,
+    IN roadway2 text,
+    IN in_state text,
+    IN in_city text DEFAULT ''::text,
+    IN in_zip text DEFAULT ''::text,
+    IN num_results integer DEFAULT 10,
+    OUT addy norm_addy,
+    OUT geomout geometry,
+    OUT rating integer)
+  RETURNS SETOF record AS
+$BODY$
 DECLARE
     var_na_road norm_addy;
     var_na_inter1 norm_addy;
@@ -51,7 +58,7 @@ BEGIN
     				FROM (SELECT * FROM tiger.featnames 
     							WHERE statefp = $1 AND ( lower(name) = $2  ' ||
     							CASE WHEN length(var_na_road.streetName) > 5 THEN ' or  lower(fullname) LIKE $6 || ''%'' ' ELSE '' END || ')' 
-    							|| ')  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) As addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    							|| ')  AS f LEFT JOIN (SELECT * FROM tiger.addr As addr WHERE addr.statefp = $1) As addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[]) OR addr.zip IS NULL 
     				ORDER BY CASE WHEN lower(f.fullname) = $6 THEN 0 ELSE 1 END
     				LIMIT 50000
@@ -60,7 +67,7 @@ BEGIN
     				FROM (SELECT * FROM tiger.featnames 
     							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
     							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
-    							|| ' )  AS f LEFT JOIN (SELECT * FROM tiger.addr AS addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    							|| ' )  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[])  or addr.zip IS NULL 
     			ORDER BY CASE WHEN lower(f.fullname) = $7 THEN 0 ELSE 1 END
     				LIMIT 50000
@@ -75,7 +82,7 @@ BEGIN
     	e2 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
     				FROM (SELECT * FROM tiger.edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
-    					INNER JOIN e1 ON (e.statefp = e1.statefp AND ST_Intersects(e.the_geom, e1.the_geom) 
+    					INNER JOIN e1 ON (e.statefp = e1.statefp  
     					AND ARRAY[e.tnidf, e.tnidt] && ARRAY[e1.tnidf, e1.tnidt] )
     					
     				WHERE (lower(e.fullname) = $7 or lower(a.name) LIKE $4 || ''%'')
@@ -100,7 +107,7 @@ BEGIN
                                 AS a_rating  
                     FROM e1 
                             INNER JOIN e2 ON (
-                                    ST_Intersects(e1.the_geom, e2.the_geom)  ) 
+                                  ARRAY[e2.tnidf, e2.tnidt] && ARRAY[e1.tnidf, e1.tnidt]  ) 
                              INNER JOIN (SELECT * FROM tiger.faces WHERE statefp = $1) As fa1 ON (e1.tfid = fa1.tfid  )
                           LEFT JOIN tiger.place AS p ON (fa1.placefp = p.placefp AND p.statefp = $1 )
                        ORDER BY e1.tlid, e1.side, a_rating LIMIT $9*4 )
@@ -141,8 +148,8 @@ BEGIN
 	END LOOP;
 	RETURN;
 END;
-$$
+$BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 1000
   ROWS 10;
-ALTER FUNCTION geocode_intersection(IN text, IN text, IN text, IN text, IN text, IN integer) SET join_collapse_limit='2';
+ALTER FUNCTION geocode_intersection(text, text, text, text, text, integer) SET join_collapse_limit='2';
