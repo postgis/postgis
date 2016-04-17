@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION geocode_intersection(
     OUT geomout geometry,
     OUT rating integer)
   RETURNS SETOF record AS
-$BODY$
+$$
 DECLARE
     var_na_road norm_addy;
     var_na_inter1 norm_addy;
@@ -67,7 +67,7 @@ BEGIN
     				FROM (SELECT * FROM tiger.featnames 
     							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
     							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
-    							|| ' )  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    							|| ' )  AS f LEFT JOIN (SELECT * FROM tiger.addr As addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[])  or addr.zip IS NULL 
     			ORDER BY CASE WHEN lower(f.fullname) = $7 THEN 0 ELSE 1 END
     				LIMIT 50000
@@ -148,7 +148,7 @@ BEGIN
 	END LOOP;
 	RETURN;
 END;
-$BODY$
+$$
   LANGUAGE plpgsql IMMUTABLE
   COST 1000
   ROWS 10;
