@@ -9,7 +9,7 @@ Winnie:
  (http://winnie.postgis.net:1500/view/PostGIS/job/PostGIS_trunk/)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
- (https://gitlab.com/ci/projects/3944?ref=svn-trunk)
+ (https://gitlab.com/postgis/postgis/commits/svn-trunk)
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
