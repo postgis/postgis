@@ -8,8 +8,8 @@ Winnie:
  [![Build Status](http://winnie.postgis.net:1500/buildStatus/icon?job=PostGIS_2.2)]
  (http://winnie.postgis.net:1500/view/PostGIS/job/PostGIS_2.2/)
 GitLab-CI:
- [![Build Status](http://gitlab.com/ci/projects/3944/status.png?ref=svn-2.2)]
- (http://gitlab.com/ci/projects/3944?ref=svn-2.2)
+ [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-2.2/build.svg)]
+ (https://gitlab.com/postgis/postgis/commits/svn-2.2)
 
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
