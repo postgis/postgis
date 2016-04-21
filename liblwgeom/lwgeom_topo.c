@@ -943,7 +943,7 @@ lwt_AddIsoEdge( LWT_TOPOLOGY* topo, LWT_ELEMID startNode,
    *
    * the nodes anode and anothernode are no more isolated
    * because now there is an edge connecting them
-   */ 
+   */
   updated_nodes[0].node_id = startNode;
   updated_nodes[0].containing_face = -1;
   updated_nodes[1].node_id = endNode;
@@ -1409,7 +1409,7 @@ typedef struct edgeend_t {
   double myaz; /* azimuth of edgeend geometry */
 } edgeend;
 
-/* 
+/*
  * Get first distinct vertex from endpoint
  * @param pa the pointarray to seek points in
  * @param ref the point we want to search a distinct one
@@ -1749,7 +1749,7 @@ _lwt_GetInteriorEdgePoint(const LWLINE* edge, POINT2D* ip)
   /* interpolate if start point != end point */
 
   if ( p2d_same(&fp, &lp) ) return 0; /* no distinct points in edge */
- 
+
   ip->x = fp.x + ( (lp.x - fp.x) * 0.5 );
   ip->y = fp.y + ( (lp.y - fp.y) * 0.5 );
 
@@ -2456,10 +2456,10 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
              node->node_id, node->geom, start_node, end_node);
     if ( node->node_id == start_node ) {
       start_node_geom = node->geom;
-    } 
+    }
     if ( node->node_id == end_node ) {
       end_node_geom = node->geom;
-    } 
+    }
   }
 
   if ( ! skipChecks )
@@ -2655,7 +2655,7 @@ _lwt_AddEdge( LWT_TOPOLOGY* topo,
     }
   }
 
-  /* Link prev_right to us 
+  /* Link prev_right to us
    * (if it's not us already) */
   if ( llabs(prev_right) != newedge.edge_id )
   {
@@ -5196,7 +5196,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
       _lwt_release_edges(edges, num);
       lwerror("GEOS exception on Contains: %s", lwgeom_geos_errmsg);
       return -1;
-    } 
+    }
     if ( ! contains )
     {{
       double snaptol;
@@ -5541,7 +5541,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol )
     lwgeom_free(tmp); /* probably too late, due to internal lwerror */
     return -1;
   }
-  if ( id ) 
+  if ( id )
   {
     lwgeom_free(tmp); /* possibly takes "edge" down with it */
     return id;
@@ -5567,7 +5567,7 @@ _lwt_AddLineEdge( LWT_TOPOLOGY* topo, LWLINE* edge, double tol )
       lwgeom_free(tmp); /* probably too late, due to internal lwerror */
       return -1;
     }
-    if ( id ) 
+    if ( id )
     {
       lwgeom_free(tmp); /* takes "edge" down with it */
       return id;
