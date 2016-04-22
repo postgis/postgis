@@ -38,6 +38,7 @@
 */
 LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
 GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g, int autofix);
+GEOSGeometry * LWGEOM2GEOS_PREC(const LWGEOM *g, int autofix, const double* precision);
 GEOSGeometry * GBOX2GEOS(const GBOX *g);
 GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 

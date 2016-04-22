@@ -284,18 +284,15 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 /**
  * @brief This is the final function for GeomUnion
  * 			aggregate. Will have as input an array of Geometries.
- * 			Will iteratively call GEOSUnion on the GEOS-converted
- * 			versions of them and return PGIS-converted version back.
- * 			Changing combination order *might* speed up performance.
+ * 			Combines the geometries into a GeometryCollection, and then
+ * 			calls UnaryUnion on the GeometryCollection.
  */
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 {
-	/*
-	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
-	** terminal collection from the ST_Union aggregate
-	*/
 	ArrayType *array;
+	double op_precision = -1; /* silence compiler warning */
+	bool fixed_precision = PG_NARGS() > 1;
 
 	ArrayIterator iterator;
 	Datum value;
@@ -306,13 +303,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *gser_out = NULL;
 
-	GEOSGeometry *g = NULL;
-	GEOSGeometry *g_union = NULL;
-	GEOSGeometry **geoms = NULL;
+	LWGEOM** geoms = NULL;
 
 	int srid = SRID_UNKNOWN;
 
 	int empty_type = 0;
+
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(1);
 
 	/* Null array, null geometry (should be empty?) */
 	if ( PG_ARGISNULL(0) )
@@ -353,14 +351,14 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	/*
-	** Collect the non-empty inputs and stuff them into a GEOS collection
+	** Collect the non-empty inputs and stuff them into a LWCOLLECTION
 	*/
 	geoms_size = nelems;
-	geoms = palloc(sizeof(GEOSGeometry*) * geoms_size);
+	geoms = palloc(sizeof(LWGEOM*) * geoms_size);
 
 	/*
-	** We need to convert the array of GSERIALIZED into a GEOS collection.
-	** First make an array of GEOS geometries.
+	** We need to convert the array of GSERIALIZED into a LWGEOM collection.
+	** First make an array of LWGEOMs.
 	*/
 #if POSTGIS_PGSQL_VERSION >= 95	
 	iterator = array_create_iterator(array, 0, NULL);
@@ -387,7 +385,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			/* Initialize SRID/dimensions info */
 			srid = gserialized_get_srid(gser_in);
 			is3d = gserialized_has_z(gser_in);
-			gotsrid = 1;
+			gotsrid = LW_TRUE;
 		}
 
 		/* Don't include empties in the union */
@@ -402,13 +400,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
+			LWGEOM* g = lwgeom_from_gserialized(gser_in);
 
 			/* Uh oh! Exception thrown at construction... */
 			if ( ! g )  
 			{
-				HANDLE_GEOS_ERROR("One of the geometries in the set "
-				                  "could not be converted to GEOS");
+				lwpgerror("Error reading geometry array.");
 				PG_RETURN_NULL();
 			}
 
@@ -416,7 +413,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			if ( curgeom == geoms_size )
 			{
 				geoms_size *= 2;
-				geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
+				geoms = repalloc( geoms, sizeof(LWGEOM*) * geoms_size );
 			}
 
 			geoms[curgeom] = g;
@@ -427,29 +424,22 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	array_free_iterator(iterator);
 
 	/*
-	** Take our GEOS geometries and turn them into a GEOS collection,
-	** then pass that into cascaded union.
+	** Take our geometries and turn them into a collection,
+	** then pass that into the unary union function.
 	*/
 	if (curgeom > 0)
 	{
-		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, curgeom);
+		LWGEOM* g = lwcollection_as_lwgeom(lwcollection_construct(COLLECTIONTYPE, srid, NULL, curgeom, geoms));
+		LWGEOM* lwresult;
+
 		if ( ! g )
 		{
-			HANDLE_GEOS_ERROR("Could not create GEOS COLLECTION from geometry array");
+			HANDLE_GEOS_ERROR("Could not create collection from geometry array");
 			PG_RETURN_NULL();
 		}
 
-		g_union = GEOSUnaryUnion(g);
-		GEOSGeom_destroy(g);
-		if ( ! g_union )
-		{
-			HANDLE_GEOS_ERROR("GEOSUnaryUnion");
-			PG_RETURN_NULL();
-		}
-
-		GEOSSetSRID(g_union, srid);
-		gser_out = GEOS2POSTGIS(g_union, is3d);
-		GEOSGeom_destroy(g_union);
+		lwresult = lwgeom_unaryunion(g, fixed_precision ? &op_precision : NULL);
+		gser_out = geometry_serialize(lwresult);
 	}
 	/* No real geometries in our array, any empties? */
 	else
@@ -486,14 +476,18 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *result;
+	double op_precision;
+	bool fixed_precision = PG_NARGS() > 1;
 	LWGEOM *lwgeom1, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(1);
 
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 
-	lwresult = lwgeom_unaryunion(lwgeom1);
+	lwresult = lwgeom_unaryunion(lwgeom1, fixed_precision ? &op_precision : NULL);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -518,6 +512,8 @@ Datum geos_geomunion(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
+	double op_precision;
+	bool fixed_precision = PG_NARGS() > 2;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -526,7 +522,10 @@ Datum geos_geomunion(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_union(lwgeom1, lwgeom2) ;
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(2);
+
+	lwresult = lwgeom_union(lwgeom1, lwgeom2, fixed_precision ? &op_precision : NULL) ;
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -551,6 +550,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
+	double op_precision;
+	bool fixed_precision = PG_NARGS() > 2;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -559,7 +560,10 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_symdifference(lwgeom1, lwgeom2) ;
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(2);
+
+	lwresult = lwgeom_symdifference(lwgeom1, lwgeom2, fixed_precision ? &op_precision : NULL) ;
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -1148,6 +1152,8 @@ Datum geos_intersection(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
+	double op_precision;
+	bool fixed_precision = PG_NARGS() > 2;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1156,7 +1162,11 @@ Datum geos_intersection(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_intersection(lwgeom1, lwgeom2) ;
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(2);
+
+	lwresult = lwgeom_intersection(lwgeom1, lwgeom2, fixed_precision ? &op_precision : NULL);
+
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -1180,6 +1190,8 @@ Datum geos_difference(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
 	GSERIALIZED *result;
+	double op_precision;
+	bool fixed_precision = PG_NARGS() > 2;
 	LWGEOM *lwgeom1, *lwgeom2, *lwresult ;
 
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
@@ -1188,7 +1200,10 @@ Datum geos_difference(PG_FUNCTION_ARGS)
 	lwgeom1 = lwgeom_from_gserialized(geom1) ;
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
-	lwresult = lwgeom_difference(lwgeom1, lwgeom2) ;
+	if (fixed_precision)
+		op_precision = PG_GETARG_FLOAT8(2);
+
+	lwresult = lwgeom_difference(lwgeom1, lwgeom2, fixed_precision ? &op_precision : NULL);
 	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
@@ -1357,7 +1372,6 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 
 #else /* POSTGIS_GEOS_VERSION >= 35 */
-
 	GSERIALIZED *geom1;
 	GSERIALIZED *result;
 	LWGEOM *lwgeom1, *lwresult ;
@@ -2953,7 +2967,7 @@ LWGEOM** ARRAY2LWGEOM(ArrayType* array, uint32_t nelems,  int* is3d, int* srid)
 		lw_geoms[i] = lwgeom_from_gserialized(geom);
 		if (!lw_geoms[i]) /* error in creation */
 		{
-			lwpgerror("Geometry deserializing geometry");
+			lwpgerror("Error deserializing geometry");
 			return NULL;
 		}
 		if (!gotsrid)

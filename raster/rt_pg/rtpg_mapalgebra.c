@@ -3089,7 +3089,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	tmpgeom = lwgeom_intersection(rastgeom, geom);
+	tmpgeom = lwgeom_intersection(rastgeom, geom, NULL);
 	lwgeom_free(rastgeom);
 	lwgeom_free(geom);
 	PG_FREE_IF_COPY(gser, 2);

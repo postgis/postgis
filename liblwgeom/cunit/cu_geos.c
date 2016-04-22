@@ -123,6 +123,23 @@ static void test_geos_subdivide(void)
 #endif
 }
 
+static void test_geos_precision(void)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	return;
+#else
+	LWGEOM* g1 = lwgeom_from_wkt("MULTIPOINT (0 0, 1 1)", LW_PARSER_CHECK_NONE);
+	LWGEOM* g2 = lwgeom_from_wkt("MULTIPOINT (1 1, 2 2)", LW_PARSER_CHECK_NONE);
+
+	double tol = 1e2;
+	LWGEOM* result = lwgeom_intersection(g1, g2, &tol);
+
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	lwgeom_free(result);
+#endif
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -133,4 +150,5 @@ void geos_suite_setup(void)
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);
+	PG_ADD_TEST(suite, test_geos_precision);
 }
