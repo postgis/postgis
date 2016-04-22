@@ -53,25 +53,25 @@
 --------------
  LINESTRING
 </programlisting>
-		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 			--result
 			POLYHEDRALSURFACE
 			</programlisting>
 <programlisting>SELECT GeometryType(geom) as result
   FROM
-    (SELECT 
+    (SELECT
        ST_GeomFromEWKT('TIN (((
-                0 0 0, 
-                0 0 1, 
-                0 1 0, 
+                0 0 0,
+                0 0 1,
+                0 1 0,
                 0 0 0
             )), ((
-                0 0 0, 
-                0 1 0, 
-                1 1 0, 
+                0 0 0,
+                0 1 0,
+                1 1 0,
                 0 0 0
             ))
             )')  AS geom
@@ -157,21 +157,21 @@ MULTIPOINT(100 150,160 170)
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>SELECT ST_Boundary(geom)
-FROM (SELECT 
-'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ), 
+FROM (SELECT
+'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 130 ),
 	( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) As f;
 				</programlisting>
 <screen>-- ST_AsText output
-MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130), 
+MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),
 	(70 40,100 50,120 80,80 110,50 90,70 40))
 </screen>
 						</para></entry>
 					  </row>
-					
+
 		</tbody>
 		</tgroup>
 	</informaltable>
-	
+
 		 <programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));
 st_astext
 -----------
@@ -446,7 +446,7 @@ SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0,
 --------------------------------------------------------------
  POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
 (1 row)
-	
+
 SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As envelopewkt
 	FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, 1.0000001 0, 0 0))'::geometry As geom) As foo;
 
@@ -682,37 +682,37 @@ SELECT gid, n, ST_GeometryN(the_geom, n)
 FROM sometable CROSS JOIN generate_series(1,100) n
 WHERE n &lt;= ST_NumGeometries(the_geom);</programlisting>
 	  </refsection>
-	  
+
 <refsection><title>Polyhedral Surfaces, TIN and Triangle Examples</title>
 <programlisting>-- Polyhedral surface example
 -- Break a Polyhedral surface into its faces
 SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt
-  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( 
-((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
-((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
-((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  
-((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
+((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )')  AS p_geom )  AS a;
 
                 geom_ewkt
 ------------------------------------------
  POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))</programlisting>
-    
-<programlisting>-- TIN --		
+
+<programlisting>-- TIN --
 SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
   FROM
-    (SELECT 
+    (SELECT
        ST_GeomFromEWKT('TIN (((
-                0 0 0, 
-                0 0 1, 
-                0 1 0, 
+                0 0 0,
+                0 0 1,
+                0 1 0,
                 0 0 0
             )), ((
-                0 0 0, 
-                0 1 0, 
-                1 1 0, 
+                0 0 0,
+                0 1 0,
+                1 1 0,
                 0 0 0
             ))
             )')  AS geom
@@ -763,33 +763,33 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 			<programlisting>SELECT ST_GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
 			--result
 			ST_LineString</programlisting>
-			
-			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+
+			<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 			--result
 			ST_PolyhedralSurface</programlisting>
-			
-		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+
+		<programlisting>SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 			--result
 			ST_PolyhedralSurface</programlisting>
-			
+
 		<programlisting>SELECT ST_GeometryType(geom) as result
   FROM
-    (SELECT 
+    (SELECT
        ST_GeomFromEWKT('TIN (((
-                0 0 0, 
-                0 0 1, 
-                0 1 0, 
+                0 0 0,
+                0 0 1,
+                0 1 0,
                 0 0 0
             )), ((
-                0 0 0, 
-                0 1 0, 
-                1 1 0, 
+                0 0 0,
+                0 1 0,
+                1 1 0,
                 0 0 0
             ))
             )')  AS geom
@@ -904,7 +904,7 @@ FROM (SELECT ST_BuildArea(
 		  <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
 		  PostGIS returns <varname>NULL</varname>.</para>
 		</note>
-		
+
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
@@ -946,15 +946,15 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
  t
 (1 row)</programlisting>
 	  </refsection>
-	  
+
 	  	  <refsection>
 		<title>Polyhedral Surface Examples</title>
 
 		<programlisting>
 		-- A cube --
-		SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 
  st_isclosed
@@ -963,9 +963,9 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 
 
  -- Same as cube but missing a side --
- SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+ SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));
 
  st_isclosed
@@ -1019,7 +1019,7 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
                     that are empty or that contain a single element.
                   </para>
                 </note>
-		
+
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 
@@ -1485,7 +1485,7 @@ The 'flags' argument is a bitfield. It can have the following values:
 
 		<programlisting>
 --First 3 Rejects from a successful quintuplet experiment
-SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location 
+SELECT gid, reason(ST_IsValidDetail(the_geom)), ST_AsText(location(ST_IsValidDetail(the_geom))) as location
 FROM
 (SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As the_geom, gid
 FROM (SELECT ST_Buffer(ST_MakePoint(x1*10,y1), z1) As buff, x1*10 + y1*100 + z1*1000 As gid
@@ -1741,7 +1741,7 @@ SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 
 			number of geometries, for single geometries will return 1, otherwise return NULL.</para>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
-			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type. 
+			<para>Changed: 2.0.0 In prior versions this would return NULL if the geometry was not a collection/MULTI type.
 				2.0.0+ now returns 1 for single geometries e.g POLYGON, LINESTRING, POINT.</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 9.1.4</para>
 			<para>&Z_support;</para>
@@ -1847,7 +1847,7 @@ GROUP BY gid, field1,field2;
 		<para><xref linkend="ST_NumInteriorRings" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_NumPatches">
 	  <refnamediv>
 		<refname>ST_NumPatches</refname>
@@ -1879,9 +1879,9 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+		<programlisting>SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));
 		--result
 		6
@@ -1937,7 +1937,7 @@ GROUP BY gid, field1,field2;
 		<para><xref linkend="ST_NPoints" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_PatchN">
 	  <refnamediv>
 		<refname>ST_PatchN</refname>
@@ -1962,7 +1962,7 @@ GROUP BY gid, field1,field2;
 
 		<para>>Return the 1-based Nth geometry (face) if the geometry is a
 			POLYHEDRALSURFACE, POLYHEDRALSURFACEM.
-			Otherwise, return NULL.  This  returns the same answer as ST_GeometryN for Polyhedral Surfaces.  
+			Otherwise, return NULL.  This  returns the same answer as ST_GeometryN for Polyhedral Surfaces.
 				Using ST_GemoetryN is faster.</para>
 
 		<note>
@@ -1988,9 +1988,9 @@ GROUP BY gid, field1,field2;
 --Extract the 2nd face of the polyhedral surface
 SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt
 FROM (
-VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )')) ) As foo(geom);
 
               geomewkt
@@ -2085,7 +2085,7 @@ POINT(3 2)
 
 SELECT st_astext(f)
 FROM ST_GeometryFromtext('LINESTRING(0 0 0, 1 1 1, 2 2 2)') as g
-	,ST_PointN(g, -2) AS f -- 1 based index 
+	,ST_PointN(g, -2) AS f -- 1 based index
 
 st_astext
 ----------
@@ -2127,10 +2127,10 @@ st_astext
 				Returns a MultiPoint containing all of the coordinates of a
 				geometry.  Does not remove points that are duplicated in
 				the input geometry, including start and end points of ring geometries.
-				(If this behavior is undesired, duplicates may be removed using 
+				(If this behavior is undesired, duplicates may be removed using
 				<xref linkend="ST_RemoveRepeatedPoints" />).
 			</para>
-				
+
 			<para>
 				M and Z ordinates will be preserved if present.
 			</para>
@@ -2144,7 +2144,7 @@ st_astext
 
 		<refsection>
 			<title>Examples</title>
-		
+
 			<programlisting>SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 10))'));
 
 --result
@@ -2314,10 +2314,10 @@ Returns a text summary of the contents of the geometry.
                 </para>
 	<!-- Optionally mention Circular String Support -->
 	<para>&curve_support;</para>
-	
+
 	<!-- Optionally mention supports Polyhedral Surface  -->
 	<para>&P_support;</para>
-	
+
 	<!-- Optionally mention support for Triangles and TINS  -->
 	<para>&T_support;</para>
 		<para>Availability: 1.2.2</para>
@@ -2332,7 +2332,7 @@ Returns a text summary of the contents of the geometry.
 		<programlisting>
 =# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
         ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;
-            geom             |          geog    
+            geom             |          geog
 -----------------------------+--------------------------
  LineString[B] with 2 points | Polygon[BGS] with 1 rings
                              | ring 0 has 5 points
@@ -2429,7 +2429,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_XMax" />, <xref linkend="ST_XMin" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
 	  </refsection>
 	</refentry>
-	
+
 		<refentry id="ST_XMax">
 	  <refnamediv>
 		<refname>ST_XMax</refname>
@@ -2621,7 +2621,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 		<para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_YMax" />, <xref linkend="ST_YMin" />, <xref linkend="ST_Z" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_YMax">
 	  <refnamediv>
 		<refname>ST_YMax</refname>
@@ -2806,7 +2806,7 @@ st_ymin
 		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_ZMax" />, <xref linkend="ST_ZMin" /> </para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_ZMax">
 	  <refnamediv>
 		<refname>ST_ZMax</refname>
@@ -2934,7 +2934,7 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 		<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_NDims" />, <xref linkend="ST_Dimension" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_ZMin">
 	  <refnamediv>
 		<refname>ST_ZMin</refname>
