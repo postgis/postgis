@@ -1313,6 +1313,13 @@ Allowed <varname>flags</varname> are documented in <xref linkend="ST_IsValidDeta
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.9</para>
 
+		<note>
+			<para>
+Neither OGC-SFS nor SQL-MM specifications include a flag argument
+for ST_IsValid. The flag is a PostGIS extension.
+			</para>
+		</note>
+
 
 	  </refsection>
 
