@@ -2361,6 +2361,133 @@ FROM (SELECT
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_MinimumClearance">
+		<refnamediv>
+			<refname>ST_MinimumClearance</refname>
+			<refpurpose>Returns the minimum clearance of a geometry, a measure a geometry's robustness.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>float <function>ST_MinimumClearance</function></funcdef>
+					<paramdef><type>geometry </type><parameter>g</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			It is not uncommon to have a geometry that, while meeting the criteria for validity according to ST_IsValid (polygons)
+			or ST_IsSimple (lines), would become invalid if one of the vertices moved by a slight distance, as can happen during 
+			conversion to text-based formats (such as WKT, KML, GML GeoJSON), or binary formats that do not use double-precision 
+			floating point coordinates (MapInfo TAB).
+		</para>
+
+		<para>
+			A geometry's "minimum clearance" is the smallest distance by which a vertex of the geometry could be moved to produce
+			an invalid geometry.  It can be thought of as a quantitative measure of a geometry's robustness, where increasing values
+			of minimum clearance indicate increasing robustness.
+		</para>
+
+		<para>
+			If a geometry has a minimum clearance of <varname>e</varname>, it can be said that:
+			<itemizedlist>
+				<listitem>
+					<para>
+						No two distinct vertices in the geometry are separated by less than <varname>e</varname>.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						No vertex is closer than <varname>e</varname> to a line segement of which it is not an endpoint.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+
+		<para>
+			If no minimum clearance exists for a geometry (for example, a single point, or a multipoint whose points are identical), then
+			ST_MinimumClearance will return Infinity.
+		</para>
+
+		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');
+ st_minimumclearance 
+---------------------
+             0.00032
+     </programlisting> 
+
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+			<xref linkend="ST_MinimumClearanceLine" /> 
+		</para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_MinimumClearanceLine">
+		<refnamediv>
+			<refname>ST_MinimumClearanceLine</refname>
+			<refpurpose>Returns the two-point LineString spanning a geometry's minimum clearance.</refpurpose>
+		</refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g</parameter></paramdef>
+
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			Returns the two-point LineString spanning a geometry's minimum clearance.  If the geometry does not have a minimum
+			clearance, <varname>LINESTRING EMPTY</varname> will be returned.
+		</para>
+
+		<para>Availability: 2.3.0 - requires GEOS &gt;= 3.6.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		  <title>Examples</title>
+		  <programlisting>
+SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))'));
+st_astext           
+-------------------------------
+LINESTRING(0.5 0.00032,0.5 0)
+		  </programlisting>
+	  </refsection>
+
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+			<xref linkend="ST_MinimumClearance" /> 
+		</para>
+	  </refsection>
+
+	</refentry>
+
+
 	<refentry id="ST_HausdorffDistance">
 	  <refnamediv>
 		<refname>ST_HausdorffDistance</refname>

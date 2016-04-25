@@ -216,6 +216,12 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 35),1)
 		voronoi
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 36),1)
+	# GEOS-3.6 adds:
+	# ST_MinimumClearance
+	TESTS += \
+		minimum_clearance
+endif
 
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:

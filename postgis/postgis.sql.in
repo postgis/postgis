@@ -4001,6 +4001,18 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_MinimumClearance(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_MinimumClearance'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_MinimumClearanceLine(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MinimumClearanceLine'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- PostGIS equivalent function: Centroid(geometry)
 CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	RETURNS geometry

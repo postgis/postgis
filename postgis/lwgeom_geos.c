@@ -3662,3 +3662,98 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
+
+/******************************************
+ *
+ * ST_MinimumClearance
+ *
+ * Returns the minimum clearance of a geometry.
+ *
+ ******************************************/
+Datum ST_MinimumClearance(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumClearance);
+Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_MinimumClearance' function (3.6.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 36 */
+	GSERIALIZED* input;
+	GEOSGeometry* input_geos;
+	int error;
+	double result;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)   /* exception thrown at construction */
+	{
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		PG_RETURN_NULL();
+	}
+
+	error = GEOSMinimumClearance(input_geos, &result);
+	GEOSGeom_destroy(input_geos);
+	if (error)
+	{
+		HANDLE_GEOS_ERROR("Error computing minimum clearance");
+		PG_RETURN_NULL();
+	}
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_FLOAT8(result);
+#endif
+}
+
+/******************************************
+ *
+ * ST_MinimumClearanceLine
+ *
+ * Returns the minimum clearance line of a geometry.
+ *
+ ******************************************/
+Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumClearanceLine);
+Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_MinimumClearanceLine' function (3.6.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 36 */
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	GEOSGeometry* input_geos;
+	GEOSGeometry* result_geos;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)   /* exception thrown at construction */
+	{
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		PG_RETURN_NULL();
+	}
+
+	result_geos = GEOSMinimumClearanceLine(input_geos);
+	GEOSGeom_destroy(input_geos);
+	if (!result_geos)
+	{
+		HANDLE_GEOS_ERROR("Error computing minimum clearance");
+		PG_RETURN_NULL();
+	}
+
+	result = GEOS2POSTGIS(result_geos, LW_FALSE);
+	GEOSGeom_destroy(result_geos);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+#endif
+}
