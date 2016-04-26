@@ -3731,10 +3731,12 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	GEOSGeometry* input_geos;
 	GEOSGeometry* result_geos;
+	int srid;
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
 	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
 	input_geos = POSTGIS2GEOS(input);
 	if (!input_geos)   /* exception thrown at construction */
 	{
@@ -3750,6 +3752,7 @@ Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	GEOSSetSRID(result_geos, srid);
 	result = GEOS2POSTGIS(result_geos, LW_FALSE);
 	GEOSGeom_destroy(result_geos);
 
