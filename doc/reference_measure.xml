@@ -2364,7 +2364,7 @@ FROM (SELECT
 	<refentry id="ST_MinimumClearance">
 		<refnamediv>
 			<refname>ST_MinimumClearance</refname>
-			<refpurpose>Returns the minimum clearance of a geometry, a measure a geometry's robustness.</refpurpose>
+			<refpurpose>Returns the minimum clearance of a geometry, a measure of a geometry's robustness.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
