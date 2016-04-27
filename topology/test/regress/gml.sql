@@ -137,7 +137,7 @@ CREATE TABLE visited (element_type int, element_id int);
 SELECT feature_name||'-visited', topology.AsGML(feature,
        '', 15, 2, 'visited'::regclass) FROM features.city_streets
        WHERE feature_name IN ('R2')
-       ORDER BY 2 DESC;
+       ORDER BY feature_name;
 
 -- S1 visits N14
 -- S3 visits (N6)
