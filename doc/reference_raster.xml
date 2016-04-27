@@ -4283,8 +4283,8 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
 					<funcprototype>
 						<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>x</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>y</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
