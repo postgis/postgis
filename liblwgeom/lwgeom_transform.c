@@ -153,7 +153,7 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 		if (*pj_errno_ref == -38)
 		{
 			lwnotice("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.");
-			lwerror("transform: couldn't project point (%g %g %g): %s (%d)", 
+			lwerror("transform: couldn't project point (%g %g %g): %s (%d)",
 			        orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
 			return 0;
 		}

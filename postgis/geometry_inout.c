@@ -177,7 +177,7 @@ Datum path_to_geometry(PG_FUNCTION_ARGS)
 	for ( i = 0; i < path->npts; i++ )
 	{
 		p = path->p[i];
-		pt.x = p.x; 
+		pt.x = p.x;
 		pt.y = p.y;
 		ptarray_append_point(pa, &pt, LW_FALSE);
 	}
@@ -276,7 +276,7 @@ Datum polygon_to_geometry(PG_FUNCTION_ARGS)
 	{
 		POINT4D pt;
 		p = polygon->p[i % polygon->npts];
-		pt.x = p.x; 
+		pt.x = p.x;
 		pt.y = p.y;
 		ptarray_append_point(pa, &pt, LW_FALSE);
 	}

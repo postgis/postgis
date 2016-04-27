@@ -21,8 +21,8 @@
 
 
 /**
- * Escape strings that are to be used as part of a PostgreSQL connection string. If no 
- * characters require escaping, simply return the input pointer. Otherwise return a 
+ * Escape strings that are to be used as part of a PostgreSQL connection string. If no
+ * characters require escaping, simply return the input pointer. Otherwise return a
  * new allocated string.
  */
 char *
@@ -134,7 +134,7 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
   char linebuffer[1024];
   char *tmpstr;
   int curmapsize, fieldnamesize;
-  
+
   /* Read column map file and load the colmap_dbffieldnames
    * and colmap_pgfieldnames arrays */
   fptr = fopen(filename, "r");
@@ -145,22 +145,22 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
                      filename);
     return 0;
   }
-  
+
   /* First count how many columns we have... */
   while (fgets(linebuffer, 1024, fptr) != NULL) ++map->size;
-  
+
   /* Now we know the final size, allocate the arrays and load the data */
   fseek(fptr, 0, SEEK_SET);
   map->pgfieldnames = (char **)malloc(sizeof(char *) * map->size);
   map->dbffieldnames = (char **)malloc(sizeof(char *) * map->size);
-  
+
   /* Read in a line at a time... */
   curmapsize = 0;
   while (fgets(linebuffer, 1024, fptr) != NULL)
   {
     /* Split into two separate strings: pgfieldname and dbffieldname */
     /* First locate end of first column (pgfieldname) */
-    fieldnamesize = strcspn(linebuffer, "\t\n "); 
+    fieldnamesize = strcspn(linebuffer, "\t\n ");
     tmpstr = linebuffer;
 
     /* Allocate memory and copy the string ensuring it is terminated */
@@ -170,23 +170,23 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 
     /* Now swallow up any whitespace */
     tmpstr = linebuffer + fieldnamesize;
-    tmpstr += strspn(tmpstr, "\t\n "); 
+    tmpstr += strspn(tmpstr, "\t\n ");
 
     /* Finally locate end of second column (dbffieldname) */
-    fieldnamesize = strcspn(tmpstr, "\t\n "); 
+    fieldnamesize = strcspn(tmpstr, "\t\n ");
 
     /* Allocate memory and copy the string ensuring it is terminated */
     map->dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
     strncpy(map->dbffieldnames[curmapsize], tmpstr, fieldnamesize);
     map->dbffieldnames[curmapsize][fieldnamesize] = '\0';
-    
+
     /* Error out if the dbffieldname is > 10 chars */
     if (strlen(map->dbffieldnames[curmapsize]) > 10)
     {
       snprintf(errbuf, errbuflen, _("ERROR: column map file specifies a DBF field name \"%s\" which is longer than 10 characters"), map->dbffieldnames[curmapsize]);
       return 0;
     }
-    
+
     ++curmapsize;
   }
 
@@ -198,7 +198,7 @@ colmap_read(const char *filename, colmap *map, char *errbuf, size_t errbuflen)
 
 /*
 * Code page info will come out of dbfopen as either a bare codepage number
-* (e.g. 1256) or as "LDID/1234" from the DBF hreader. We want to look up 
+* (e.g. 1256) or as "LDID/1234" from the DBF hreader. We want to look up
 * the equivalent iconv encoding string so we can use iconv to transcode
 * the data into UTF8
 */
@@ -208,10 +208,10 @@ codepage2encoding(const char *cpg)
     int cpglen;
     int is_ldid = 0;
     int num, i;
-    
+
     /* Do nothing on nothing. */
     if ( ! cpg ) return NULL;
-    
+
     /* Is this an LDID string? */
     /* If so, note it and move past the "LDID/" tag */
     cpglen = strlen(cpg);
@@ -227,10 +227,10 @@ codepage2encoding(const char *cpg)
             return NULL;
         }
     }
-    
+
     /* Read the number */
     num = atoi(cpg);
-    
+
     /* Can we find this number in our lookup table? */
     for ( i = is_ldid ; i < num_code_pages; i++ )
     {
@@ -245,10 +245,10 @@ codepage2encoding(const char *cpg)
                 return strdup(code_pages[i].iconv);
         }
     }
-    
+
     /* Didn't find a matching entry */
     return NULL;
-    
+
 }
 
 /*

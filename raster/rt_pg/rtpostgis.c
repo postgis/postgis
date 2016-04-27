@@ -355,7 +355,7 @@ rtpg_assignHookGDALEnabledDrivers(const char *enabled_drivers, void *extra) {
 						strlen(gdal_skip) + 1 + strlen(drv_set[i].short_name) + 1
 					)
 				);
-				strcat(gdal_skip, " "); 
+				strcat(gdal_skip, " ");
 			}
 			strcat(gdal_skip, drv_set[i].short_name);
 		}

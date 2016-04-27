@@ -507,7 +507,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeometry* new_cut_edges=0;
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: building area from %d edges", GEOSGetNumGeometries(geos_cut_edges)); 
+    lwnotice("ST_MakeValid: building area from %d edges", GEOSGetNumGeometries(geos_cut_edges));
 #endif
 
 		/*
@@ -536,7 +536,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 */
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries", GEOSGetNumGeometries(geos_cut_edges)); 
+    lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries", GEOSGetNumGeometries(geos_cut_edges));
 #endif
 
 		/*
@@ -557,7 +557,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		}
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: running SymDifference with new area"); 
+    lwnotice("ST_MakeValid: running SymDifference with new area");
 #endif
 
 		/*
@@ -587,12 +587,12 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 *             left, so we don't need to reconsider
 		 *             the whole original boundaries
 		 *
-		 * NOTE: this is an expensive operation. 
+		 * NOTE: this is an expensive operation.
 		 *
 		 */
 
 #ifdef LWGEOM_PROFILE_MAKEVALID
-    lwnotice("ST_MakeValid: computing new cut_edges (GEOSDifference)"); 
+    lwnotice("ST_MakeValid: computing new cut_edges (GEOSDifference)");
 #endif
 
 		new_cut_edges = GEOSDifference(geos_cut_edges, new_area_bound);

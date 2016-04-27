@@ -272,7 +272,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		*/
 
 		/* raster has bands */
-		numbands = rt_raster_get_num_bands(raster); 
+		numbands = rt_raster_get_num_bands(raster);
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);

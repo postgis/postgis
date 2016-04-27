@@ -57,7 +57,7 @@ END;
 '
 LANGUAGE 'plpgsql';
 
-CREATE TABLE rt_gist_grid_test AS 
+CREATE TABLE rt_gist_grid_test AS
     SELECT * FROM makegrid(10, 10, 'BOX(-100 -100, 100 100)', 1, 1);
 
 CREATE TABLE rt_gist_query_test AS

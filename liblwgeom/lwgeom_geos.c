@@ -221,10 +221,10 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 	const POINT2D *p2d;
 	GEOSCoordSeq sq;
 
-	if ( FLAGS_GET_Z(pa->flags) ) 
+	if ( FLAGS_GET_Z(pa->flags) )
 		dims = 3;
 
-	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) ) 
+	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) )
 		lwerror("Error creating GEOS Coordinate Sequence");
 
 	for ( i=0; i < pa->npoints; i++ )
@@ -244,7 +244,7 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 		GEOSCoordSeq_setX(sq, i, p2d->x);
 		GEOSCoordSeq_setY(sq, i, p2d->y);
 		
-		if ( dims == 3 ) 
+		if ( dims == 3 )
 			GEOSCoordSeq_setZ(sq, i, p3d->z);
 	}
 	return sq;
@@ -260,14 +260,14 @@ ptarray_to_GEOSLinearRing(const POINTARRAY *pa, int autofix)
 	if ( autofix )
 	{
 		/* check ring for being closed and fix if not */
-		if ( ! ptarray_is_closed_2d(pa) ) 
+		if ( ! ptarray_is_closed_2d(pa) )
 		{
 			npa = ptarray_addPoint(pa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
 			pa = npa;
 		}
 		/* TODO: check ring for having at least 4 vertices */
 #if 0
-		while ( pa->npoints < 4 ) 
+		while ( pa->npoints < 4 )
 		{
 			npa = ptarray_addPoint(npa, getPoint_internal(pa, 0), FLAGS_NDIMS(pa->flags), pa->npoints);
 		}
@@ -286,7 +286,7 @@ GBOX2GEOS(const GBOX *box)
 	GEOSGeometry* envelope;
 	GEOSGeometry* ring;
 	GEOSCoordSequence* seq = GEOSCoordSeq_create(5, 2);
-	if (!seq) 
+	if (!seq)
 	{
 		return NULL;
 	}
@@ -307,14 +307,14 @@ GBOX2GEOS(const GBOX *box)
 	GEOSCoordSeq_setY(seq, 4, box->ymin);
 
 	ring = GEOSGeom_createLinearRing(seq);
-	if (!ring) 
+	if (!ring)
 	{
 		GEOSCoordSeq_destroy(seq);
 		return NULL;
 	}
 
 	envelope = GEOSGeom_createPolygon(ring, NULL, 0);
-	if (!envelope) 
+	if (!envelope)
 	{
 		GEOSGeom_destroy(ring);
 		return NULL;
@@ -1140,7 +1140,7 @@ findFaceHoles(Face** faces, int nfaces)
 		const GEOSGeometry *f2er;
         Face* f2 = faces[j];
         if ( f2->parent ) continue; /* hole already assigned */
-        f2er = GEOSGetExteriorRing(f2->geom); 
+        f2er = GEOSGetExteriorRing(f2->geom);
         /* TODO: can be optimized as the ring would have the
          *       same vertices, possibly in different order.
          *       maybe comparing number of points could already be
@@ -1260,7 +1260,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
    * Example:
    *
    *   +---------------+
-   *   |     L0        |  L0 has no parents 
+   *   |     L0        |  L0 has no parents
    *   |  +---------+  |
    *   |  |   L1    |  |  L1 is an hole of L0
    *   |  |  +---+  |  |
@@ -1270,7 +1270,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
    *   |  +---------+  |
    *   |               |
    *   +---------------+
-   * 
+   *
    * See http://trac.osgeo.org/postgis/ticket/1806
    *
    */
@@ -1569,7 +1569,7 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in, 0);
-	if ( ! g1 ) 
+	if ( ! g1 )
 	{
 		lwerror("lwgeom_offsetcurve: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
@@ -1653,7 +1653,7 @@ lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
 		// return lwmpoint_construct_empty(lwgeom_get_srid(poly), lwgeom_has_z(poly), lwgeom_has_m(poly));
 	}
 	
-	if (!lwpoly->bbox) 
+	if (!lwpoly->bbox)
 	{
 		lwgeom_calculate_gbox(lwgeom, &bbox);
 	}
@@ -1820,7 +1820,7 @@ lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
 		if(sub_npoints > 0)
 		{
 			LWMPOINT *sub_mpt = lwpoly_to_points(lwmpoly->geoms[i], sub_npoints);
-			if (!mpt) 
+			if (!mpt)
 			{
 				mpt = sub_mpt;
 			}
@@ -1941,7 +1941,7 @@ LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance,
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in, 0);
-	if ( ! g1 ) 
+	if ( ! g1 )
 	{
 		lwerror("lwgeom_delaunay_triangulation: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
@@ -2046,7 +2046,7 @@ LWGEOM* lwgeom_voronoi_diagram(const LWGEOM* g, const GBOX* env, double toleranc
 
 	/* Instead of using the standard LWGEOM2GEOS transformer, we read the vertices of the
 	 * LWGEOM directly and put them into a single GEOS CoordinateSeq that can be used to
-	 * define a LineString.  This allows us to process geometry types that may not be 
+	 * define a LineString.  This allows us to process geometry types that may not be
 	 * supported by GEOS, and reduces the memory requirements in cases of many geometries
 	 * with few points (such as LWMPOINT).
 	 */

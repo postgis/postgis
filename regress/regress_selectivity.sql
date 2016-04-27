@@ -13,7 +13,7 @@ drop table no_stats_join;
 
 -- Table with uniformly variable density, highest at 1,1, lowest at 10,10
 create table regular_overdots as
-with 
+with
 ij as ( select i, j from generate_series(1, 10) i, generate_series(1, 10) j),
 iijj as (select generate_series(1, i) as a, generate_series(1, j) b from ij)
 select st_makepoint(a, b) as g from iijj;

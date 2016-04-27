@@ -453,7 +453,7 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 * Support function. Based on two datums return true if
 * they satisfy the predicate and false otherwise.
 */
-static int 
+static int
 gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 {
 	/* Put aside some stack memory and use it for GIDX pointers. */
@@ -651,7 +651,7 @@ static double gidx_distance_m(const GIDX *a, const GIDX *b)
 /**
 * Return a #GSERIALIZED with an expanded bounding box.
 */
-GSERIALIZED* 
+GSERIALIZED*
 gserialized_expand(GSERIALIZED *g, double distance)
 {
 	char boxmem[GIDX_MAX_SIZE];
@@ -674,8 +674,8 @@ gserialized_expand(GSERIALIZED *g, double distance)
 * GiST N-D Index Operator Functions
 */
 
-/* 
-* Do centroid to centroid n-d distance if you don't have 
+/*
+* Do centroid to centroid n-d distance if you don't have
 * re-check available (PgSQL 9.5+), do "real" n-d distance
 * if you do
 */
@@ -764,7 +764,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 			m1 = lwgeom_interpolate_point(lw2, lwp2);
 			lwpoint_free(lwp2);
 		}
-		else 
+		else
 		{
 			usebox = true;
 		}
@@ -909,7 +909,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 		     || ! isfinite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			gidx_set_unknown(bbox_out);
-			gistentryinit(*entry_out, 
+			gistentryinit(*entry_out,
 			              PointerGetDatum(gidx_copy(bbox_out)),
 			              entry_in->rel, entry_in->page,
 			              entry_in->offset, FALSE);
@@ -1186,9 +1186,9 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	double distance;
 
 	POSTGIS_DEBUGF(3, "[GIST] '%s' function called", __func__);
- 
+
 	/* We are using '13' as the gist geography distance <-> strategy number */
-	if ( strategy != 13  ) 
+	if ( strategy != 13  )
 	{
 		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
@@ -1255,7 +1255,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	double distance;
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
- 
+
 	/* Strategy 13 is <<->> */
 	/* Strategy 20 is |=| */
 	if ( strategy != 13 && strategy != 20 ) {
@@ -1716,7 +1716,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 ** The GIDX key must be defined as a PostgreSQL type, even though it is only
 ** ever used internally. These no-op stubs are used to bind the type.
 */
-PG_FUNCTION_INFO_V1(gidx_in); 
+PG_FUNCTION_INFO_V1(gidx_in);
 Datum gidx_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
@@ -1724,7 +1724,7 @@ Datum gidx_in(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(NULL);
 }
 
-PG_FUNCTION_INFO_V1(gidx_out); 
+PG_FUNCTION_INFO_V1(gidx_out);
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
   GIDX *box = (GIDX *) PG_GETARG_POINTER(0);

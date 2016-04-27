@@ -26,7 +26,7 @@
 
 
 
-typedef struct 
+typedef struct
 {
     int ldid;
     int cpg;
@@ -142,7 +142,7 @@ typedef struct colmap_t {
 } colmap;
 
 /**
- * Read the content of filename into a symbol map 
+ * Read the content of filename into a symbol map
  *
  * The content of the file is lines of two names separated by
  * white space and no trailing or leading space:

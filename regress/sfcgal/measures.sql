@@ -25,7 +25,7 @@ select 'dist', ST_Distance(a,b), ST_Distance(b,a) from (
 	) as foo;
 
 --#1502
-SELECT '#1502', ST_Dwithin(a,b,0.0)  from 
+SELECT '#1502', ST_Dwithin(a,b,0.0)  from
 (SELECT 'LINESTRING(-97364 -97364, 9736.4 9736.4)'::geometry a, 'POINT(0 0)'::geometry b ) foo;
 
 --st_shortestline
@@ -80,7 +80,7 @@ select 'distancetest1',
 	st_astext(st_shortestline(b,a)),
 	st_astext(st_longestline(a,b)),
 	st_astext(st_longestline(b,a)) from (
-select 
+select
 	ST_GeomFromText('MULTILINESTRING((17 16, 16 17, 17 18, 17 17, 17 16), (28 35,29 39, 30 35))') as a,
 	ST_GeomFromText('MULTIPOLYGON(((-1 -1, -1 25, 25 25, 25 -1, -1 -1), (14 14,19 14,19 19,14 19,14 14)),((33 35,35 35,35 40,33 40,33 35)))') as b
 ) as foo;
@@ -94,7 +94,7 @@ select  'distancetest2',
 	round(st_y(st_endpoint(st_shortestline(a,b)))::numeric, 10),	
 	st_astext(st_longestline(a,b)),
 	st_astext(st_longestline(b,a)) from (
-select 
+select
 	ST_GeomFromText('LINESTRING(-40 -20 , 4 2)') as a,
 	ST_GeomFromText('LINESTRING(-10 20, 1 -2)') as b
 ) as foo;
@@ -106,7 +106,7 @@ select 'distancepoly1',
 	st_astext(st_shortestline(b,a)),
 	st_astext(st_longestline(a,b)),
 	st_astext(st_longestline(b,a)) from (
-select 
+select
 	ST_GeomFromText('MULTIPOLYGON(((17 16,16 17,17 18,17 17,17 16)), ((28 35,30 35,29 39,28 35)))') as a,
 	ST_GeomFromText('MULTIPOLYGON(((-1 -1, -1 25, 25 25, 25 -1, -1 -1), (14 14,19 14,19 19,14 19,14 14)),((33 35,33 40, 35 40, 35 35, 33 35)))') as b
 ) as foo;
@@ -260,5 +260,5 @@ select 'emptyMultiPointArea', st_area('MULTIPOINT EMPTY');
 -- Area of an empty collection
 select 'emptyCollectionArea', st_area('GEOMETRYCOLLECTION EMPTY');
 
--- 
+--
 select 'spheroidLength1', round(ST_LengthSpheroid('MULTILINESTRING((-118.584 38.374,-118.583 38.5),(-71.05957 42.3589 , -71.061 43))'::geometry,'SPHEROID["GRS_1980",6378137,298.257222101]'::spheroid)::numeric,5);

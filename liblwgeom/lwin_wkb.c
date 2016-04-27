@@ -32,7 +32,7 @@
 /**
 * Used for passing the parse state between the parsing functions.
 */
-typedef struct 
+typedef struct
 {
 	const uint8_t *wkb; /* Points to start of WKB */
 	size_t wkb_size; /* Expected size of WKB */
@@ -119,18 +119,18 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 
 
 /**
-* Check that we are not about to read off the end of the WKB 
+* Check that we are not about to read off the end of the WKB
 * array.
 */
 static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 {
 	if( (s->pos + next) > (s->wkb + s->wkb_size) )
 		lwerror("WKB structure does not match expected size!");
-} 
+}
 
 /**
 * Take in an unknown kind of wkb type number and ensure it comes out
-* as an extended WKB type number (with Z/M/SRID flags masked onto the 
+* as an extended WKB type number (with Z/M/SRID flags masked onto the
 * high bits).
 */
 static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
@@ -174,10 +174,10 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 
 	switch (wkb_simple_type)
 	{
-		case WKB_POINT_TYPE: 
+		case WKB_POINT_TYPE:
 			s->lwtype = POINTTYPE;
 			break;
-		case WKB_LINESTRING_TYPE: 
+		case WKB_LINESTRING_TYPE:
 			s->lwtype = LINETYPE;
 			break;
 		case WKB_POLYGON_TYPE:
@@ -192,7 +192,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_MULTIPOLYGON_TYPE:
 			s->lwtype = MULTIPOLYGONTYPE;
 			break;
-		case WKB_GEOMETRYCOLLECTION_TYPE: 
+		case WKB_GEOMETRYCOLLECTION_TYPE:
 			s->lwtype = COLLECTIONTYPE;
 			break;
 		case WKB_CIRCULARSTRING_TYPE:
@@ -207,7 +207,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_MULTICURVE_TYPE:
 			s->lwtype = MULTICURVETYPE;
 			break;
-		case WKB_MULTISURFACE_TYPE: 
+		case WKB_MULTISURFACE_TYPE:
 			s->lwtype = MULTISURFACETYPE;
 			break;
 		case WKB_POLYHEDRALSURFACE_TYPE:
@@ -373,10 +373,10 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 /**
 * POINT
-* Read a WKB point, starting just after the endian byte, 
+* Read a WKB point, starting just after the endian byte,
 * type number and optional srid number.
 * Advance the parse state forward appropriately.
-* WKB point has just a set of doubles, with the quantity depending on the 
+* WKB point has just a set of doubles, with the quantity depending on the
 * dimension of the point, so this looks like a special case of the above
 * with only one point.
 */
@@ -430,9 +430,9 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 
 /**
 * LINESTRING
-* Read a WKB linestring, starting just after the endian byte, 
-* type number and optional srid number. Advance the parse state 
-* forward appropriately. 
+* Read a WKB linestring, starting just after the endian byte,
+* type number and optional srid number. Advance the parse state
+* forward appropriately.
 * There is only one pointarray in a linestring. Optionally
 * check for minimal following of rules (two point minimum).
 */
@@ -454,9 +454,9 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 
 /**
 * CIRCULARSTRING
-* Read a WKB circularstring, starting just after the endian byte, 
-* type number and optional srid number. Advance the parse state 
-* forward appropriately. 
+* Read a WKB circularstring, starting just after the endian byte,
+* type number and optional srid number. Advance the parse state
+* forward appropriately.
 * There is only one pointarray in a linestring. Optionally
 * check for minimal following of rules (three point minimum,
 * odd number of points).
@@ -485,9 +485,9 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 
 /**
 * POLYGON
-* Read a WKB polygon, starting just after the endian byte, 
-* type number and optional srid number. Advance the parse state 
-* forward appropriately. 
+* Read a WKB polygon, starting just after the endian byte,
+* type number and optional srid number. Advance the parse state
+* forward appropriately.
 * First read the number of rings, then read each ring
 * (which are structured as point arrays)
 */
@@ -538,9 +538,9 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 
 /**
 * TRIANGLE
-* Read a WKB triangle, starting just after the endian byte, 
-* type number and optional srid number. Advance the parse state 
-* forward appropriately. 
+* Read a WKB triangle, starting just after the endian byte,
+* type number and optional srid number. Advance the parse state
+* forward appropriately.
 * Triangles are encoded like polygons in WKB, but more like linestrings
 * as lwgeometries.
 */
@@ -623,7 +623,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 
 /**
 * COLLECTION, MULTIPOINTTYPE, MULTILINETYPE, MULTIPOLYGONTYPE, COMPOUNDTYPE,
-* MULTICURVETYPE, MULTISURFACETYPE, 
+* MULTICURVETYPE, MULTISURFACETYPE,
 * TINTYPE
 */
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
@@ -754,10 +754,10 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 /**
 * WKB inputs *must* have a declared size, to prevent malformed WKB from reading
 * off the end of the memory segment (this stops a malevolent user from declaring
-* a one-ring polygon to have 10 rings, causing the WKB reader to walk off the 
+* a one-ring polygon to have 10 rings, causing the WKB reader to walk off the
 * end of the memory).
 *
-* Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD, 
+* Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD,
 * LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
 LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check)
@@ -777,7 +777,7 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 	s.pos = wkb;
 	
 	/* Hand the check catch-all values */
-	if ( check & LW_PARSER_CHECK_NONE ) 
+	if ( check & LW_PARSER_CHECK_NONE )
 		s.check = 0;
 	else
 		s.check = check;

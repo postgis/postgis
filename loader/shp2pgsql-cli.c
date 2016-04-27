@@ -58,7 +58,7 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
-	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n" 
+	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
                   "      Note that indexes will still use the default tablespace unless the\n"
                   "      -X flag is also used.\n"));
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
@@ -270,7 +270,7 @@ main (int argc, char **argv)
 		/* OK, this is a schema-qualified table name... */
 		if (chrptr)
 		{
-			if ( chrptr == strptr ) 
+			if ( chrptr == strptr )
 			{
 				/* ".something" ??? */
 				usage();

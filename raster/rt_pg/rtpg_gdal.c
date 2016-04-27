@@ -131,7 +131,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 	/* apply SRID if set */
 	if (srid != -1)
 		rt_raster_set_srid(raster, srid);
- 
+
 	pgraster = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
 	if (!pgraster)
@@ -274,7 +274,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	/* NULL srid means use raster's srid */
 	if (PG_ARGISNULL(3))
 		srid = rt_raster_get_srid(raster);
-	else 
+	else
 		srid = PG_GETARG_INT32(3);
 
 	/* get srs from srid */

@@ -145,7 +145,7 @@ void printLWPOLY(LWPOLY *poly)
 
 /* @brief Clone LWLINE object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWPOLY *
 lwpoly_clone(const LWPOLY *g)
@@ -182,13 +182,13 @@ lwpoly_clone_deep(const LWPOLY *g)
 * Add a ring to a polygon. Point array will be referenced, not copied.
 */
 int
-lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa) 
+lwpoly_add_ring(LWPOLY *poly, POINTARRAY *pa)
 {
-	if( ! poly || ! pa ) 
+	if( ! poly || ! pa )
 		return LW_FAILURE;
 		
 	/* We have used up our storage, add some more. */
-	if( poly->nrings >= poly->maxrings ) 
+	if( poly->nrings >= poly->maxrings )
 	{
 		int new_maxrings = 2 * (poly->nrings + 1);
 		poly->rings = lwrealloc(poly->rings, new_maxrings * sizeof(POINTARRAY*));
@@ -400,7 +400,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist, int preserve_collapsed
 		/* We'll still let holes collapse, but if we're preserving */
 		/* and this is a shell, we ensure it is kept */
 		if ( preserve_collapsed && i == 0 )
-			minvertices = 4; 
+			minvertices = 4;
 			
 		opts = ptarray_simplify(ipoly->rings[i], dist, minvertices);
 
@@ -444,7 +444,7 @@ lwpoly_area(const LWPOLY *poly)
 	double poly_area = 0.0;
 	int i;
 	
-	if ( ! poly ) 
+	if ( ! poly )
 		lwerror("lwpoly_area called with null polygon pointer!");
 
 	for ( i=0; i < poly->nrings; i++ )
@@ -453,14 +453,14 @@ lwpoly_area(const LWPOLY *poly)
 		double ringarea = 0.0;
 
 		/* Empty or messed-up ring. */
-		if ( ring->npoints < 3 ) 
-			continue; 
+		if ( ring->npoints < 3 )
+			continue;
 		
 		ringarea = fabs(ptarray_signed_area(ring));
 		if ( i == 0 ) /* Outer ring, positive area! */
-			poly_area += ringarea; 
+			poly_area += ringarea;
 		else /* Inner ring, negative area! */
-			poly_area -= ringarea; 
+			poly_area -= ringarea;
 	}
 
 	return poly_area;
@@ -508,7 +508,7 @@ lwpoly_is_closed(const LWPOLY *poly)
 {
 	int i = 0;
 	
-	if ( poly->nrings == 0 ) 
+	if ( poly->nrings == 0 )
 		return LW_TRUE;
 		
 	for ( i = 0; i < poly->nrings; i++ )
@@ -528,7 +528,7 @@ lwpoly_is_closed(const LWPOLY *poly)
 	return LW_TRUE;
 }
 
-int 
+int
 lwpoly_startpoint(const LWPOLY* poly, POINT4D* pt)
 {
 	if ( poly->nrings < 1 )
@@ -603,7 +603,7 @@ LWPOLY* lwpoly_grid(const LWPOLY *poly, const gridspec *grid)
 
 	LWDEBUGF(3, "lwpoly_grid: simplified polygon with %d rings", opoly->nrings);
 
-	if ( ! opoly->nrings ) 
+	if ( ! opoly->nrings )
 	{
 		lwpoly_free(opoly);
 		return NULL;

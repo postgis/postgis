@@ -60,7 +60,7 @@ loader_rt_info_handler(const char *fmt, va_list ap) {
 	va_end(ap);
 }
 
-static void 
+static void
 rt_init_allocators(void) {
 	rt_set_handlers(
 		default_rt_allocator,
@@ -384,7 +384,7 @@ usage() {
 	));
 	printf(_(
 		"  -l <overview factor> Create overview of the raster. For more than\n"
-		"      one factor, separate with comma(,). Overview table name follows\n" 
+		"      one factor, separate with comma(,). Overview table name follows\n"
 		"      the pattern o_<overview factor>_<table>. Created overview is\n"
 		"      stored in the database and is not affected by -R.\n"
 	));
@@ -1734,7 +1734,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	/* number of tiles */
 	if (info->tile_size[0] != info->dim[0])
 		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
-	if (info->tile_size[1] != info->dim[1]) 
+	if (info->tile_size[1] != info->dim[1])
 		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
 
 	/* estimate size of 1 tile */

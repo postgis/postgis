@@ -8,7 +8,7 @@
 -- NOTE: This function is provided merely as an example since a C version was implemented and is now provided in rtpostgis.sql
 
 CREATE OR REPLACE FUNCTION ST_AddBand(rast1 raster, rast2 raster, band int, index int)
-    RETURNS raster AS 
+    RETURNS raster AS
     $$
     DECLARE
         newraster raster;

@@ -12,13 +12,13 @@ SELECT AddGeometryColumn('features','traffic_signs','the_geom',-1,'MULTIPOINT',2
 
 --ALTER TABLE features.city_streets ADD the_geom geometry;
 UPDATE features.city_streets set the_geom =
-  st_multi(topology.Geometry(feature)); 
+  st_multi(topology.Geometry(feature));
 
 --ALTER TABLE features.traffic_signs ADD the_geom geometry;
 UPDATE features.traffic_signs set the_geom =
-  st_multi(topology.Geometry(feature)); 
+  st_multi(topology.Geometry(feature));
 
 --ALTER TABLE features.land_parcels ADD the_geom geometry;
 UPDATE features.land_parcels set the_geom =
-  st_multi(topology.Geometry(feature)); 
+  st_multi(topology.Geometry(feature));
 

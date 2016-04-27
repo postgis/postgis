@@ -69,7 +69,7 @@ SELECT 'linestring_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinate
 -- srsName handle
 SELECT 'linestring_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString srsName="EPSG:4326"><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString>'));
 
--- ERROR: empty coordinates 
+-- ERROR: empty coordinates
 SELECT 'linestring_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates></gml:coordinates></gml:LineString>'));
 SELECT 'linestring_5', ST_AsEWKT(ST_GeomFromGML('<gml:LineString></gml:LineString>'));
 
@@ -92,16 +92,16 @@ SELECT 'curve_2', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineSt
 -- srsName handle
 SELECT 'curve_3', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="EPSG:4326"><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 
--- ERROR: empty coordinates 
+-- ERROR: empty coordinates
 SELECT 'curve_4', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="EPSG:4326"><gml:segments><gml:LineStringSegment><gml:posList></gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 SELECT 'curve_5', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="EPSG:4326"><gml:segments><gml:LineStringSegment></gml:LineStringSegment></gml:segments></gml:Curve>'));
 SELECT 'curve_6', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="EPSG:4326"><gml:segments></gml:segments></gml:Curve>'));
 SELECT 'curve_7', ST_AsEWKT(ST_GeomFromGML('<gml:Curve srsName="EPSG:4326"></gml:Curve>'));
 
--- linear interpolation 
+-- linear interpolation
 SELECT 'curve_8', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 
--- ERROR: wrong interpolation 
+-- ERROR: wrong interpolation
 SELECT 'curve_9', ST_AsEWKT(ST_GeomFromGML('<gml:Curve><gml:segments><gml:LineStringSegment interpolation="spline"><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>'));
 
 -- XML not elements handle
@@ -134,7 +134,7 @@ SELECT 'polygon_1', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs>
 -- srsName handle
 SELECT 'polygon_2', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'));
 
--- ERROR: In exterior ring: Last point is not the same as the first one 
+-- ERROR: In exterior ring: Last point is not the same as the first one
 SELECT 'polygon_3', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'));
 
 -- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
@@ -143,7 +143,7 @@ SELECT 'polygon_4', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs>
 -- ERROR: Only 3 points in exterior ring
 SELECT 'polygon_5', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'polygon_6', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates></gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'));
 SELECT 'polygon_7', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'));
 SELECT 'polygon_8', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs></gml:outerBoundaryIs></gml:Polygon>'));
@@ -161,7 +161,7 @@ SELECT 'polygon_12', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs
 -- ERROR: Only 3 points in interior ring
 SELECT 'polygon_13', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>7,8 9,10 7,8</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>'));
 
--- ERROR: In interior ring: Last point is not the same as the first one 
+-- ERROR: In interior ring: Last point is not the same as the first one
 SELECT 'polygon_14', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>7,8 9,10 11,12 7,9</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>'));
 
 -- ERROR: In interior 3D ring: Last point is not the same as the first one in Z
@@ -170,7 +170,7 @@ SELECT 'polygon_15', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs
 -- GML 2 - 3 rings
 SELECT 'polygon_16', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>7,8 9,10 11,12 7,8</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>13,14 15,16 17,18 13,14</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon>'));
 
--- GML 3 
+-- GML 3
 SELECT 'polygon_17', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>7,8 9,10 11,12 7,8</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon>'));
 
 -- Mixed dimension in rings
@@ -179,9 +179,9 @@ SELECT 'polygon_19', ST_AsEWKT(ST_GeomFromGML('<gml:Polygon><gml:exterior><gml:L
 
 
 
--- 
+--
 -- LinearRing
--- 
+--
 
 -- 2D LinearRing
 SELECT 'linearring_1', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing>'));
@@ -189,7 +189,7 @@ SELECT 'linearring_1', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 
 -- srsName handle
 SELECT 'linearring_2', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing srsName="EPSG:4326"><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing>'));
 
--- ERROR: Last point is not the same as the first one 
+-- ERROR: Last point is not the same as the first one
 SELECT 'linearring_3', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 5 6 1 3</gml:posList></gml:LinearRing>'));
 
 -- ERROR: Last point is not the same as the first one in Z
@@ -198,7 +198,7 @@ SELECT 'linearring_4', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 
 -- ERROR: Only 3 points
 SELECT 'linearring_5', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList>1 2 3 4 1 3</gml:posList></gml:LinearRing>'));
 
--- ERROR: Empty coordinates 
+-- ERROR: Empty coordinates
 SELECT 'linearring_6', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing><gml:posList></gml:posList></gml:LinearRing>'));
 SELECT 'linearring_7', ST_AsEWKT(ST_GeomFromGML('<gml:LinearRing></gml:LinearRing>'));
 
@@ -216,7 +216,7 @@ SELECT 'triangle_1', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:
 -- srsName handle
 SELECT 'triangle_2', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
 
--- ERROR: Last point is not the same as the first one 
+-- ERROR: Last point is not the same as the first one
 SELECT 'triangle_3', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surfacne>'));
 
 -- ERROR: Last point is not the same as the first one in Z
@@ -225,7 +225,7 @@ SELECT 'triangle_4', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:
 -- ERROR: Only 3 points
 SELECT 'triangle_5', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Triangle>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'triangle_6', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:Triangle>'));
 SELECT 'triangle_7', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle><gml:exterior></gml:exterior></gml:Triangle>'));
 SELECT 'triangle_8', ST_AsEWKT(ST_GeomFromGML('<gml:Triangle></gml:Triangle>'));
@@ -251,7 +251,7 @@ SELECT 'surface_1', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Pol
 -- srsName handle
 SELECT 'surface_2', ST_AsEWKT(ST_GeomFromGML('<gml:Surface srsName="EPSG:4326"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
--- ERROR: In exterior ring: Last point is not the same as the first one 
+-- ERROR: In exterior ring: Last point is not the same as the first one
 SELECT 'surface_3', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,0</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 -- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
@@ -260,7 +260,7 @@ SELECT 'surface_4', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Pol
 -- ERROR: Only 3 points in exterior ring
 SELECT 'surface_5', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'surface_6', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 SELECT 'surface_7', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 SELECT 'surface_8', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch></gml:PolygonPatch></gml:patches></gml:Surface>'));
@@ -279,7 +279,7 @@ SELECT 'surface_13', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 -- ERROR: Only 3 points in interior ring
 SELECT 'surface_14', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>7,8 9,10 7,8</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
--- ERROR: In interior ring: Last point is not the same as the first one 
+-- ERROR: In interior ring: Last point is not the same as the first one
 SELECT 'surface_15', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>7,8 9,10 11,12 7,0</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 -- ERROR: In interior 3D ring: Last point is not the same as the first one in Z
@@ -301,7 +301,7 @@ SELECT 'surface_21', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:Po
 -- ERROR: interpolation not planar
 SELECT 'surface_22', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch interpolation="not_planar"><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
--- ERROR: interior but no exterior 
+-- ERROR: interior but no exterior
 SELECT 'surface_23', ST_AsEWKT(ST_GeomFromGML('<gml:Surface><gml:patches><gml:PolygonPatch><gml:interior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>'));
 
 
@@ -318,7 +318,7 @@ SELECT 'mpoint_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMember><g
 -- srsName handle
 SELECT 'mpoint_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
 
--- Empty MultiPoints 
+-- Empty MultiPoints
 SELECT 'mpoint_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMember></gml:pointMember></gml:MultiPoint>'));
 SELECT 'mpoint_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint></gml:MultiPoint>'));
 
@@ -379,7 +379,7 @@ SELECT 'mcurve_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><g
 -- srsName handle
 SELECT 'mcurve_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 
--- Empty Curve 
+-- Empty Curve
 SELECT 'mcurve_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember></gml:curveMember></gml:MultiCurve>'));
 SELECT 'mcurve_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve></gml:MultiCurve>'));
 
@@ -446,7 +446,7 @@ SELECT 'msurface_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMem
 -- srsName handle
 SELECT 'msurface_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:4326"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
--- Empty MultiSurface 
+-- Empty MultiSurface
 SELECT 'msurface_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMember></gml:surfaceMember></gml:MultiSurface>'));
 SELECT 'msurface_5', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface></gml:MultiSurface>'));
 
@@ -480,7 +480,7 @@ SELECT 'polyhedralsurface_1', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><
 -- srsName handle
 SELECT 'polyhedralsurface_2', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface srsName="EPSG:4326"><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
--- ERROR: In exterior ring: Last point is not the same as the first one 
+-- ERROR: In exterior ring: Last point is not the same as the first one
 SELECT 'polyhedralsurface_3', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 0 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
 -- ERROR: In exterior 3D ring: Last point is not the same as the first one in Z
@@ -489,7 +489,7 @@ SELECT 'polyhedralsurface_4', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><
 -- ERROR: Only 3 points in exterior ring
 SELECT 'polyhedralsurface_5', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'polyhedralsurface_6', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 SELECT 'polyhedralsurface_7', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior></gml:exterior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 SELECT 'polyhedralsurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
@@ -516,7 +516,7 @@ SELECT 'polyhedralsurface_15', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface>
 -- ERROR: Only 3 points in interior ring
 SELECT 'polyhedralsurface_16', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 10 11 12</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
--- ERROR: In interior ring: Last point is not the same as the first one 
+-- ERROR: In interior ring: Last point is not the same as the first one
 SELECT 'polyhedralsurface_17', ST_AsEWKT(ST_GeomFromGML('<gml:PolyhedralSurface><gml:polygonPatches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="3">10 11 12 13 14 15 16 17 18 10 0 12</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:polygonPatches></gml:PolyhedralSurface>'));
 
 -- ERROR: In interior 3D ring: Last point is not the same as the first one in Z
@@ -552,7 +552,7 @@ SELECT 'tin_1', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><g
 -- srsName handle
 SELECT 'tin_2', ST_AsEWKT(ST_GeomFromGML('<gml:Tin srsName="EPSG:4326"><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
 
--- ERROR: Last point is not the same as the first one 
+-- ERROR: Last point is not the same as the first one
 SELECT 'tin_3', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 7 8 9 1 0 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
 
 -- ERROR: Last point is not the same as the first one in Z
@@ -561,7 +561,7 @@ SELECT 'tin_4', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><g
 -- ERROR: Only 3 points in exterior ring
 SELECT 'tin_5', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">1 2 3 4 5 6 1 2 3</gml:posList></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
 
--- ERROR: Empty exterior ring coordinates 
+-- ERROR: Empty exterior ring coordinates
 SELECT 'tin_6', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior><gml:LinearRing></gml:LinearRing></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
 SELECT 'tin_7', ST_AsEWKT(ST_GeomFromGML('<gml:Tin><gml:patches><gml:Triangle><gml:exterior></gml:exterior></gml:Triangle></gml:patches></gml:Tin>'));
 
@@ -598,16 +598,16 @@ SELECT 'tin_18', ST_AsEWKT(ST_GeomFromGML('<gml:TriangulatedSurface><gml:triangl
 -- GeometryCollection
 --
 
--- 1 simple geom 
+-- 1 simple geom
 SELECT 'collection_1', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 2 simples geom
 SELECT 'collection_2', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>3 4 5 6</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember></gml:MultiGeometry>'));
 
--- 1 multi geom 
+-- 1 multi geom
 SELECT 'collection_3', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember></gml:MultiGeometry>'));
 
--- 2 multi geom 
+-- 2 multi geom
 SELECT 'collection_4', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry><gml:geometryMember><gml:MultiPoint><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>3 4</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember><gml:geometryMember><gml:MultiCurve><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>9 10 11 12</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:geometryMember></gml:MultiGeometry>'));
 
 -- 2 multi geom and 2 simples
@@ -675,22 +675,22 @@ SELECT 'srs_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName=""><gml:pos>1 2</g
 -- ERROR: srsName is defined as -1
 SELECT 'srs_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point srsName="EPSG:-1"><gml:pos>1 2</gml:pos></gml:Point>'));
 
--- Reverse axis with all kind of simples geometry types 
+-- Reverse axis with all kind of simples geometry types
 SELECT 'srs_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::4326"><gml:geometryMember><gml:Point><gml:pos srsDimension="2">1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:LineString><gml:posList srsDimension="2">3 4 5 6</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="2">7 8 9 10</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">11 12 13 14 15 16 11 12</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">17 18 19 20 21 22 17 18</gml:posList></gml:LinearRing></gml:interior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">23 24 25 26 27 28 23 24</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList srsDimension="2">25 26 27 28 29 30 25 26</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember></gml:MultiGeometry>'));
 
--- Reverse axis with severals multi geometry types 
+-- Reverse axis with severals multi geometry types
 -- TODO
 
 
 
 --
 -- GML Namespace
--- 
+--
 
 -- GML namespace
 SELECT 'ns_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns:gml="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
 
--- GML namespace without explicit prefix 
+-- GML namespace without explicit prefix
 SELECT 'ns_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point xmlns="http://www.opengis.net/gml"><gml:coordinates>1,2</gml:coordinates></gml:Point>'));
 
 -- GML 3.2 namespace
@@ -758,16 +758,16 @@ SELECT 'coordinates_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates>1
 -- ERROR: Begin on comma
 SELECT 'coordinates_11', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>,1 2,3</gml:coordinates></gml:LineString>'));
 
--- Whitespaces before and after 
+-- Whitespaces before and after
 SELECT 'coordinates_12', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates> 1,2 3,4 </gml:coordinates></gml:LineString>'));
-SELECT 'coordinates_13', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates> 
-								1,2 3,4  
+SELECT 'coordinates_13', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>
+								1,2 3,4
 						   </gml:coordinates></gml:LineString>'));
 
 -- Mixed dimension
 SELECT 'coordinates_14', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>1,2,3 4,5</gml:coordinates></gml:LineString>'));
 
--- ERROR: Spaces insides 
+-- ERROR: Spaces insides
 SELECT 'coordinates_15', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>1, 2 3, 4</gml:coordinates></gml:LineString>'));
 SELECT 'coordinates_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates>1,2  3,4</gml:coordinates></gml:LineString>'));
 
@@ -783,7 +783,7 @@ SELECT 'coordinates_17', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordina
 -- Specify default CS separator
 SELECT 'coordinates_cs_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates cs="," >1,2</gml:coordinates></gml:Point>'));
 
--- ERROR: wrong CS separator 
+-- ERROR: wrong CS separator
 SELECT 'coordinates_cs_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates cs=";" >1,2</gml:coordinates></gml:Point>'));
 
 -- Specify a CS separator
@@ -792,13 +792,13 @@ SELECT 'coordinates_cs_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates
 -- ERROR: CS separator is a number
 SELECT 'coordinates_cs_4', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates cs="0" >102</gml:coordinates></gml:Point>'));
 
--- ERROR: CS separator is multichar 
+-- ERROR: CS separator is multichar
 SELECT 'coordinates_cs_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coordinates cs="||" >1||2</gml:coordinates></gml:Point>'));
 
 -- Specify default TS separator
 SELECT 'coordinates_cs_6', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates ts=" ">1,2 3,4</gml:coordinates></gml:LineString>'));
 
--- ERROR: wrong TS separator 
+-- ERROR: wrong TS separator
 SELECT 'coordinates_cs_7', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates ts=" ">1,2;3,4</gml:coordinates></gml:LineString>'));
 
 -- Specify a TS separator
@@ -807,19 +807,19 @@ SELECT 'coordinates_cs_8', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordi
 -- ERROR: TS separator is a number
 SELECT 'coordinates_cs_9', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates ts="0">1,203,4</gml:coordinates></gml:LineString>'));
 
--- ERROR: TS separator is multichar 
+-- ERROR: TS separator is multichar
 SELECT 'coordinates_cs_10', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates ts="||">1,2||3,4</gml:coordinates></gml:LineString>'));
 
 -- Specify default Decimal separator
 SELECT 'coordinates_cs_11', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates decimal=".">1.1,2.2 3.3,4.4</gml:coordinates></gml:LineString>'));
 
--- ERROR: wrong Decimal separator 
+-- ERROR: wrong Decimal separator
 SELECT 'coordinates_cs_12', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates decimal=";">1;1,2;2 3;3,4;4</gml:coordinates></gml:LineString>'));
 
 -- ERROR: Decimal separator is a number
 SELECT 'coordinates_cs_13', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates decimal="0">101,202 303,404</gml:coordinates></gml:LineString>'));
 
--- ERROR: Decimal separator is multichar 
+-- ERROR: Decimal separator is multichar
 SELECT 'coordinates_cs_14', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coordinates decimal="||">1||1,2||2 3||3,4||4</gml:coordinates></gml:LineString>'));
 
 -- CS and TS and Decimal together
@@ -858,13 +858,13 @@ SELECT 'pos_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos></gml:pos></gml:Po
 SELECT 'pos_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos> </gml:pos></gml:Point>'));
 SELECT 'pos_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>  </gml:pos></gml:Point>'));
 
--- Whitespaces before and after 
+-- Whitespaces before and after
 SELECT 'pos_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos> 1 2 </gml:pos></gml:Point>'));
 SELECT 'pos_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>  1 2  </gml:pos></gml:Point>'));
-SELECT 'pos_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos> 
+SELECT 'pos_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>
 		 			         1 2
 				           </gml:pos></gml:Point>'));
--- Several Spaces insides 
+-- Several Spaces insides
 SELECT 'pos_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1  2</gml:pos></gml:Point>'));
 
 -- ERROR: Junk
@@ -896,7 +896,7 @@ SELECT 'poslist_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>1 2 3
 SELECT 'poslist_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList> 1 2 3 4 </gml:posList></gml:LineString>'));
 SELECT 'poslist_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>  1 2 3 4  </gml:posList></gml:LineString>'));
 SELECT 'poslist_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:posList>
-	      						1 2 3 4  
+	      						1 2 3 4
 						</gml:posList></gml:LineString>'));
 
 -- explicit 2 dimension
@@ -955,10 +955,10 @@ SELECT 'xlink_1', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://ww
 -- ERROR: xlink:href destination is not defined
 SELECT 'xlink_2', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p2"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
--- ERROR: no href 
+-- ERROR: no href
 SELECT 'xlink_3', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" /></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
--- ERROR: empty href 
+-- ERROR: empty href
 SELECT 'xlink_4', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href=""/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: no sharp char in href
@@ -970,7 +970,7 @@ SELECT 'xlink_6', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://ww
 -- ERROR: wrong xlink namespace
 SELECT 'xlink_7', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://foo.net"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
--- ERROR: no xlink:type 
+-- ERROR: no xlink:type
 SELECT 'xlink_8', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointProperty><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointProperty><gml:pointProperty><gml:Point xlink:href="#p1"/></gml:pointProperty><gml:pos>3 4</gml:pos></gml:LineString>'));
 
 -- ERROR: xlink:type not simple
@@ -982,37 +982,37 @@ SELECT 'xlink_10', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://w
 -- xlink with pointRep
 SELECT 'xlink_11', ST_AsEWKT(ST_GeomFromGML('<gml:LineString xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:pointRep><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:pointRep><gml:pointRep><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:pointRep><gml:pos>3 4</gml:pos></gml:LineString>'));
 
--- xlink on a point 
+-- xlink on a point
 SELECT 'xlink_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Point gml:id="p1"><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Point xlink:type="simple" xlink:href="#p1"/></gml:geometryMember></gml:MultiGeometry>'));
 
 -- xlink on a linestring
 SELECT 'xlink_13', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:LineString gml:id="l1"><gml:posList>1 2 3 4</gml:posList></gml:LineString></gml:geometryMember><gml:geometryMember><gml:LineString xlink:type="simple" xlink:href="#l1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a curve 
+-- xlink on a curve
 SELECT 'xlink_14', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Curve gml:id="c1"><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember><gml:geometryMember><gml:Curve xlink:type="simple" xlink:href="#c1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a polygon 
+-- xlink on a polygon
 SELECT 'xlink_15', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Polygon gml:id="p1"><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:geometryMember><gml:geometryMember><gml:Polygon xlink:type="simple" xlink:href="#p1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a surface 
+-- xlink on a surface
 SELECT 'xlink_16', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:Surface gml:id="s1"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface></gml:geometryMember><gml:geometryMember><gml:Surface xlink:type="simple" xlink:href="#s1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multipoint 
+-- xlink on a multipoint
 SELECT 'xlink_17', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiPoint gml:id="mp1"><gml:pointMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></gml:geometryMember><gml:geometryMember><gml:MultiPoint xlink:type="simple" xlink:href="#mp1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multiline 
+-- xlink on a multiline
 SELECT 'xlink_18', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiLineString gml:id="ml1"><gml:lineStringMember><gml:LineString><gml:posList>1 2 3 4</gml:posList></gml:LineString></gml:lineStringMember></gml:MultiLineString></gml:geometryMember><gml:geometryMember><gml:MultiLineString xlink:type="simple" xlink:href="#ml1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multicurve 
+-- xlink on a multicurve
 SELECT 'xlink_19', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiCurve gml:id="mc1"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve></gml:geometryMember><gml:geometryMember><gml:MultiCurve xlink:type="simple" xlink:href="#mc1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multipolygon 
+-- xlink on a multipolygon
 SELECT 'xlink_20', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiPolygon gml:id="mp1"><gml:polygonMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:polygonMember></gml:MultiPolygon></gml:geometryMember><gml:geometryMember><gml:MultiPolygon xlink:type="simple" xlink:href="#mp1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multisurface 
+-- xlink on a multisurface
 SELECT 'xlink_21', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiSurface gml:id="ms1"><gml:surfaceMember><gml:Surface><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface></gml:surfaceMember></gml:MultiSurface></gml:geometryMember><gml:geometryMember><gml:MultiSurface xlink:type="simple" xlink:href="#ms1"/></gml:geometryMember></gml:MultiGeometry>'));
 
--- xlink on a multigeometry 
+-- xlink on a multigeometry
 SELECT 'xlink_22', ST_AsEWKT(ST_GeomFromGML('<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"><gml:geometryMember><gml:MultiGeometry gml:id="mg1"><gml:geometryMember><gml:Point><gml:pos>1 2</gml:pos></gml:Point></gml:geometryMember></gml:MultiGeometry></gml:geometryMember><gml:geometryMember><gml:MultiGeometry xlink:type="simple" xlink:href="#mg1"/></gml:geometryMember></gml:MultiGeometry>'));
 
 -- ERROR circular ref
@@ -1230,15 +1230,15 @@ SELECT 'coord_5', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:Z>1</gml:
 SELECT 'coord_6', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X></gml:X><gml:Y></gml:Y></gml:coord></gml:Point>'));
 SELECT 'coord_7', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord></gml:coord></gml:Point>'));
 
--- ERROR space in coord 
+-- ERROR space in coord
 SELECT 'coord_8', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y> </gml:Y></gml:coord></gml:Point>'));
 SELECT 'coord_9', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y>   </gml:Y></gml:coord></gml:Point>'));
 
 -- Spaces before and after coord
 SELECT 'coord_10', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y> 2 </gml:Y></gml:coord></gml:Point>'));
 SELECT 'coord_11', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y>  2  </gml:Y></gml:coord></gml:Point>'));
-SELECT 'coord_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y>  
-	                  				2   
+SELECT 'coord_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:coord><gml:X>1</gml:X><gml:Y>
+	                  				2
 					     </gml:Y></gml:coord></gml:Point>'));
 
 -- Several coords
@@ -1259,7 +1259,7 @@ SELECT 'coord_16', ST_AsEWKT(ST_GeomFromGML('<gml:LineString><gml:coord> <!-- --
 -- Several digits
 SELECT 'double_1', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1234567890</gml:pos></gml:Point>'));
 
--- Sign +/- 
+-- Sign +/-
 SELECT 'double_2', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1</gml:pos></gml:Point>'));
 SELECT 'double_3', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 +1</gml:pos></gml:Point>'));
 
@@ -1288,7 +1288,7 @@ SELECT 'double_12', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 a</gml:pos><
 SELECT 'double_13', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1a</gml:pos></gml:Point>'));
 SELECT 'double_14', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1a2</gml:pos></gml:Point>'));
 
--- Exp 
+-- Exp
 SELECT 'double_15', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1e2</gml:pos></gml:Point>'));
 SELECT 'double_16', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1E+2</gml:pos></gml:Point>'));
 SELECT 'double_17', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1e-2</gml:pos></gml:Point>'));
@@ -1307,14 +1307,14 @@ SELECT 'double_23', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1e</gml:pos>
 SELECT 'double_24', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1e2.3</gml:pos></gml:Point>'));
 SELECT 'double_25', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 1E2.3</gml:pos></gml:Point>'));
 
--- ERROR: spaces inside 
+-- ERROR: spaces inside
 SELECT 'double_26', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 - 1.23</gml:pos></gml:Point>'));
 SELECT 'double_27', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1 .23</gml:pos></gml:Point>'));
 SELECT 'double_28', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1. 23</gml:pos></gml:Point>'));
 SELECT 'double_29', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23 E2</gml:pos></gml:Point>'));
 SELECT 'double_30', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 -1.23E 2</gml:pos></gml:Point>'));
 
--- ERROR: Junk 
+-- ERROR: Junk
 SELECT 'double_31', ST_AsEWKT(ST_GeomFromGML('<gml:Point><gml:pos>1 $0%@#$^%#</gml:pos></gml:Point>'));
 
 

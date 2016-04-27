@@ -16,31 +16,31 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.traffic_signs 
+ FROM features.traffic_signs
  WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
  ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.traffic_signs 
+ FROM features.traffic_signs
  WHERE feature_name IN ('S1', 'S2', 'S3', 'S4' )
  ORDER BY feature_name;
 
 -- Again with no prefix, no srsDimension (opt+=2)
 -- and swapped lat/lon (opt+=16) and short CRS
 SELECT feature_name||'-latlon', topology.AsGML(feature, '', 15, 18)
- FROM features.traffic_signs 
+ FROM features.traffic_signs
  WHERE feature_name IN ('S4');
 
---- } Puntual single-element 
+--- } Puntual single-element
 
 --- Puntual multi element {
 
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.traffic_signs 
+ FROM features.traffic_signs
  WHERE feature_name IN ('N1N2N3');
 
---- } Puntual multi-element 
+--- } Puntual multi-element
 
 --- Lineal single element {
 
@@ -52,13 +52,13 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.city_streets 
+ FROM features.city_streets
  WHERE feature_name IN ('R3', 'R4' )
  ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.city_streets 
+ FROM features.city_streets
  WHERE feature_name IN ('R3', 'R4' )
  ORDER BY feature_name;
 
@@ -74,13 +74,13 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.city_streets 
+ FROM features.city_streets
  WHERE feature_name IN ('R1', 'R2' )
  ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.city_streets 
+ FROM features.city_streets
  WHERE feature_name IN ('R1', 'R2' )
  ORDER BY feature_name;
 
@@ -104,7 +104,7 @@ SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
  FROM features.land_parcels WHERE feature_name IN ('P4', 'P5')
  ORDER BY feature_name;
 
---- } Areal single-element 
+--- } Areal single-element
 
 --- Areal multi-element {
 
@@ -116,17 +116,17 @@ SELECT feature_name||'-vanilla', topology.AsGML(feature)
 
 -- Output again but with no prefix
 SELECT feature_name||'-noprefix', topology.AsGML(feature, '')
- FROM features.land_parcels 
+ FROM features.land_parcels
  WHERE feature_name IN ('P1', 'P2', 'P3' )
  ORDER BY feature_name;
 
 -- Output again with custom prefix
 SELECT feature_name||'-customprefix', topology.AsGML(feature, 'cstm')
- FROM features.land_parcels 
+ FROM features.land_parcels
  WHERE feature_name IN ('P1', 'P2', 'P3' )
  ORDER BY feature_name;
 
---- } Areal multi-element 
+--- } Areal multi-element
 
 --- { Visited table bookkeeping
 
@@ -159,7 +159,7 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
        ORDER BY feature_name;
 
 -- P2 visits F4,F7
---           E7,E17,E18,E13,E20,E19 
+--           E7,E17,E18,E13,E20,E19
 --           N17,N18,(N13),N10,N9,(N14),N17
 -- P1 visits F3,F6
 --           F3-> E6,(E19),(E9),(E21)
@@ -197,7 +197,7 @@ SELECT feature_name||'-visited-idprefix', topology.AsGML(feature,
 
 -- Output in GML2
 SELECT feature_name||'-gml2' as name, topology.AsGML(feature,'',0,2,NULL,'',2)
- FROM features.city_streets 
+ FROM features.city_streets
  WHERE feature_name IN ('R1', 'R2', 'R3', 'R4' )
 UNION
 SELECT feature_name||'-gml2', topology.AsGML(feature,'',0,2,NULL,'',2)

@@ -589,7 +589,7 @@ LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid)
 	for (i=0; i<coll->ngeoms; i++)
 	{
 		LWGEOM *g = lwgeom_grid(coll->geoms[i], grid);
-		if ( g ) 
+		if ( g )
 			lwcollection_add_lwgeom(newcoll, g);
 	}
 

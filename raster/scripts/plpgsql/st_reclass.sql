@@ -4,14 +4,14 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
--- NOTE: The ST_Reclass() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- NOTE: The ST_Reclass() function is already implemented in C. This plpgsql script is provided only as an example.
 -- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
 -- Use with caution.
 ----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
                       band int,
-                                      reclassexpr text) 
-    RETURNS raster AS 
+                                      reclassexpr text)
+    RETURNS raster AS
     $$
     DECLARE
     -- Create a new raster without the band we will reclassify

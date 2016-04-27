@@ -134,7 +134,7 @@ static void test_util_gdal_open() {
 	CU_ASSERT(ds == NULL);
 
 	/* enabled drivers with VSICURL */
-	/* disabled as we don't want network access as a requirement 
+	/* disabled as we don't want network access as a requirement
 	gdal_enabled_drivers = enabled_vsi;
 	ds = rt_util_gdal_open("/vsicurl/http://download.osgeo.org/gdal/data/gtiff/small_world.tif", GA_ReadOnly, 0);
 	CU_ASSERT(ds != NULL);

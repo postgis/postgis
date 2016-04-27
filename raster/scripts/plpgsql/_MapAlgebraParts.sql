@@ -2,7 +2,7 @@
 --
 --
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
--- 
+--
 ----------------------------------------------------------------------
 
 -- Note: The functions found in this file are for exclusive usage of ST_MapAlgebra2
@@ -181,8 +181,8 @@ CREATE OR REPLACE FUNCTION _MapAlgebraPartsGeom(nx int,
                                                 r2x int,
                                                 r2y int,
                                                 r2w int,
-                                                r2h int) 
-    RETURNS SETOF geometry AS 
+                                                r2h int)
+    RETURNS SETOF geometry AS
     $$
     DECLARE
     BEGIN
@@ -200,8 +200,8 @@ CREATE OR REPLACE FUNCTION _MapAlgebraAllPartsGeom(r1x int,
                                                 r2x int,
                                                 r2y int,
                                                 r2w int,
-                                                r2h int) 
-    RETURNS SETOF geometry AS 
+                                                r2h int)
+    RETURNS SETOF geometry AS
     $$
     DECLARE
 	z int[];
@@ -225,8 +225,8 @@ CREATE OR REPLACE FUNCTION _MapAlgebraAllPartsGeom(r1x int,
 
 SELECT asbinary(_MapAlgebraAllPartsGeom(0, 0, 1, 1, 1, 0, 1, 1))
 
-CREATE OR REPLACE FUNCTION X1W1X2W2() 
-    RETURNS SETOF record AS 
+CREATE OR REPLACE FUNCTION X1W1X2W2()
+    RETURNS SETOF record AS
     $$
     DECLARE
 	x1w1x2w2 record;
@@ -262,8 +262,8 @@ CREATE OR REPLACE FUNCTION X1W1X2W2()
     $$
     LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION Y1H1Y2H2() 
-    RETURNS SETOF record AS 
+CREATE OR REPLACE FUNCTION Y1H1Y2H2()
+    RETURNS SETOF record AS
     $$
     DECLARE
 	y1h1y2h2 record;
@@ -299,17 +299,17 @@ CREATE OR REPLACE FUNCTION Y1H1Y2H2()
     $$
     LANGUAGE 'plpgsql';
 
-_MapAlgebraParts(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) 
+_MapAlgebraParts(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h)
 
 SELECT nx, x1, w1, x2, w2 FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int);
 
-SELECT nx, ny, x1, w1, x2, w2, y1, h1, y2, h2 
+SELECT nx, ny, x1, w1, x2, w2, y1, h1, y2, h2
 FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int), Y1H1Y2H2() as (ny int, y1 int, h1 int, y2 int, h2 int);
 
-SELECT nx, ny, x1, w1, x2, w2, y1, h1, y2, h2, asbinary(_MapAlgebraPartsGeom(nx, ny, x1, y1, w1, h1, x2, y2, w2, h2)) 
+SELECT nx, ny, x1, w1, x2, w2, y1, h1, y2, h2, asbinary(_MapAlgebraPartsGeom(nx, ny, x1, y1, w1, h1, x2, y2, w2, h2))
 FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int), Y1H1Y2H2() as (ny int, y1 int, h1 int, y2 int, h2 int);
 
-SELECT asbinary(_MapAlgebraPartsGeom(nx, ny, x1, y1, w1, h1, x2, y2, w2, h2)) 
+SELECT asbinary(_MapAlgebraPartsGeom(nx, ny, x1, y1, w1, h1, x2, y2, w2, h2))
 FROM X1W1X2W2() as (nx int, x1 int, w1 int, x2 int, w2 int), Y1H1Y2H2() as (ny int, y1 int, h1 int, y2 int, h2 int);
 
 

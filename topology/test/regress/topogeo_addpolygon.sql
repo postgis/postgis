@@ -30,8 +30,8 @@ BEGIN
     o := rec.xx;
     RETURN NEXT;
   END LOOP;
-  
-  -- Check effect on edges 
+
+  -- Check effect on edges
   sql := '
   WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
        edge_limits AS ( SELECT max FROM city_data.limits WHERE what = ''edge''::text )

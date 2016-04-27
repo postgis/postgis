@@ -12,10 +12,10 @@ select '#1434.1',ST_GeomFromGeoJSON('{ "type": "Point", "crashme": [100.0, 0.0] 
 select '#1434.2',ST_GeomFromGeoJSON('crashme');;
 select '#1434.3',ST_GeomFromGeoJSON('');
 select '#1434.4',ST_GeomFromGeoJSON('{}');
-select '#1434.5',ST_GeomFromGeoJSON('{"type":"Point","coordinates":[]}'); 
-select '#1434.6',ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[]]}'); 
-select '#1434.7',ST_GeomFromGeoJSON('{"type":"MultiPoint"}'); 
-select '#1434.8',ST_GeomFromGeoJSON('{"type":"Point"}'); 
+select '#1434.5',ST_GeomFromGeoJSON('{"type":"Point","coordinates":[]}');
+select '#1434.6',ST_GeomFromGeoJSON('{"type":"MultiPoint","coordinates":[[]]}');
+select '#1434.7',ST_GeomFromGeoJSON('{"type":"MultiPoint"}');
+select '#1434.8',ST_GeomFromGeoJSON('{"type":"Point"}');
 
 -- #2130 --
 SELECT '#2130', ST_NPoints(ST_GeomFromGeoJSON('{"type":"MultiPolygon","coordinates":[[[[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,32],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,32],[-117,32],[-117,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-116,32],[-117,32],[-117,32],[-117,32],[-117,32]],[[-117,33],[-117,33],[-117,33],[-117,33],[-117,33],[-117,32],[-117,33]]]]}'));

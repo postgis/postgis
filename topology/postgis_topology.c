@@ -2123,7 +2123,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     return 0;
   }
 
-  
+
   if ( face_left != face_right )
   {
     POSTGIS_DEBUGF(1, "Deletion of edge %" LWTFMT_ELEMID " joins faces %"
@@ -2530,7 +2530,7 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
   return SPI_processed;
 }
 
-static LWT_ISO_NODE* 
+static LWT_ISO_NODE*
 cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {
@@ -2602,7 +2602,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   return nodes;
 }
 
-static LWT_ISO_EDGE* 
+static LWT_ISO_EDGE*
 cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {
@@ -2674,7 +2674,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   return edges;
 }
 
-static LWT_ISO_FACE* 
+static LWT_ISO_FACE*
 cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {

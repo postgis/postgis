@@ -125,7 +125,7 @@ static rt_raster fillRasterToPolygonize(int hasnodata, double nodataval) {
 		for (x = 0; x < rt_band_get_width(band); ++x)
 			for (y = 0; y < rt_band_get_height(band); ++y)
 				rt_band_set_pixel(band, x, y, 0.0, NULL);
-	} 
+	}
 
 	rt_band_set_pixel(band, 3, 1, 1.8, NULL);
 	rt_band_set_pixel(band, 4, 1, 1.8, NULL);

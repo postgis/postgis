@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 ----
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
@@ -10,7 +10,7 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- Author: Regina Obe <lr@pcorp.us>
---  
+--
 -- This drops extension helper functions
 -- and should be called at the end of the extension upgrade file
 DROP FUNCTION postgis_extension_remove_objects(text, text);

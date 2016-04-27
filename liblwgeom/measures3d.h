@@ -48,16 +48,16 @@ typedef struct
 
 typedef struct
 {
-	double	x,y,z;  
+	double	x,y,z;
 }
-VECTOR3D; 
+VECTOR3D;
 
 typedef struct
 {
 	POINT3DZ		pop;  /*Point On Plane*/
 	VECTOR3D	pv;  /*Perpendicular normal vector*/
 }
-PLANE3D; 
+PLANE3D;
 
 
 /*

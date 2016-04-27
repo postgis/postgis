@@ -27,9 +27,9 @@ BEGIN
  var_rec := standardize_address('pagc_lex'
        , 'pagc_gaz'
        , 'pagc_rules'
-, COALESCE(var_parse_rec.address1,''), 
+, COALESCE(var_parse_rec.address1,''),
    COALESCE(', ' || var_parse_rec.city,'') || COALESCE(', ' || var_parse_rec.state, '') || COALESCE(' ' || var_parse_rec.zip,'')  ) ;
- 
+
  -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
   result.address := to_number(substring(var_rec.house_num, '[0-9]+'), '99999999999');
    --get rid of extraneous spaces before we return
@@ -38,7 +38,7 @@ BEGIN
   result.location := trim(var_rec.city);
   result.stateAbbrev := trim(var_rec.state);
   --this should be broken out separately like pagc, but normalizer doesn't have a slot for it
-  result.streettypeAbbrev := trim(COALESCE(var_rec.suftype, var_rec.pretype)); 
+  result.streettypeAbbrev := trim(COALESCE(var_rec.suftype, var_rec.pretype));
   result.preDirAbbrev := trim(var_rec.predir);
   result.postDirAbbrev := trim(var_rec.sufdir);
   result.internal := trim(var_rec.unit);

@@ -1,9 +1,9 @@
 
 /**********************************************************************
-**  GIDX structure. 
+**  GIDX structure.
 **
-**  This is an n-dimensional (practically, the 
-**  implementation is 2-4 dimensions) box used for index keys. The 
+**  This is an n-dimensional (practically, the
+**  implementation is 2-4 dimensions) box used for index keys. The
 **  coordinates are anonymous, so we can have any number of dimensions.
 **  The sizeof a GIDX is 1 + 2 * ndims * sizeof(float).
 **  The order of values in a GIDX is
@@ -27,9 +27,9 @@ typedef struct
 
 
 /**********************************************************************
-**  BOX2DF structure. 
+**  BOX2DF structure.
 **
-**  This is a 2-dimensional key for simple cartesian indexes, 
+**  This is a 2-dimensional key for simple cartesian indexes,
 **  with backwards compatible behavior to previous indexes in
 **  PostGIS
 */
@@ -43,7 +43,7 @@ typedef struct
 /*********************************************************************************
 ** GIDX support functions.
 **
-** We put the GIDX support here rather than libgeom because it is a specialized 
+** We put the GIDX support here rather than libgeom because it is a specialized
 ** type only used for indexing purposes. It also makes use of some PgSQL
 ** infrastructure like the VARSIZE() macros.
 */
@@ -56,7 +56,7 @@ void gidx_expand(GIDX *a, float d);
 
 
 /* Generate human readable form for GIDX. */
-char* gidx_to_string(GIDX *a) ; 
+char* gidx_to_string(GIDX *a) ;
 
 /* typedef to correct array-bounds checking for casts to GIDX - do not
    use this ANYWHERE except in the casts below */
@@ -65,7 +65,7 @@ typedef float _gidx_float_array[sizeof(float) * 2 * 4];
 /* Returns number of dimensions for this GIDX */
 #define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
 /* Minimum accessor. */
-#define GIDX_GET_MIN(gidx, dimension) (*((_gidx_float_array *)(&(gidx)->c)))[2*(dimension)] 
+#define GIDX_GET_MIN(gidx, dimension) (*((_gidx_float_array *)(&(gidx)->c)))[2*(dimension)]
 /* Maximum accessor. */
 #define GIDX_GET_MAX(gidx, dimension) (*((_gidx_float_array *)(&(gidx)->c)))[2*(dimension)+1]
 /* Minimum setter. */

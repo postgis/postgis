@@ -34,7 +34,7 @@
 ** [3] N. Beckmann, H.-P. Kriegel, R. Schneider, B. Seeger. The R*tree: an
 **     efficient and robust access method for points and rectangles.
 **     Proceedings of the ACM SIGMOD Conference. June 1990.
-** [4] A. Korotkov, "A new double sorting-based node splitting algorithm for R-tree", 
+** [4] A. Korotkov, "A new double sorting-based node splitting algorithm for R-tree",
 **     http://syrcose.ispras.ru/2011/files/SYRCoSE2011_Proceedings.pdf#page=36
 */
 
@@ -81,7 +81,7 @@ static int g2d_counter_internal = 0;
 #endif
 
 /*
-** GiST 2D key stubs 
+** GiST 2D key stubs
 */
 Datum box2df_out(PG_FUNCTION_ARGS);
 Datum box2df_in(PG_FUNCTION_ARGS);
@@ -171,7 +171,7 @@ static bool box2df_intersection(const BOX2DF *a, const BOX2DF *b, BOX2DF *n)
 {
 	POSTGIS_DEBUGF(5, "calculating intersection of %s with %s", box2df_to_string(a), box2df_to_string(b));
 
-	if( a == NULL || b == NULL || n == NULL ) 
+	if( a == NULL || b == NULL || n == NULL )
 		return FALSE;
 		
 	n->xmax = Min(a->xmax, b->xmax);
@@ -192,7 +192,7 @@ static float box2df_size(const BOX2DF *a)
 {
 	float result;
 
-	if ( a == NULL ) 
+	if ( a == NULL )
 		return (float)0.0;
 		
 	if ( (a->xmax <= a->xmin) || (a->ymax <= a->ymin) )
@@ -225,7 +225,7 @@ static float box2df_union_size(const BOX2DF *a, const BOX2DF *b)
 	if ( b == NULL )
 		return box2df_size(a);
 
-	result = ((double)Max(a->xmax,b->xmax) - (double)Min(a->xmin,b->xmin)) * 
+	result = ((double)Max(a->xmax,b->xmax) - (double)Min(a->xmin,b->xmin)) *
  	         ((double)Max(a->ymax,b->ymax) - (double)Min(a->ymin,b->ymin));
 
 	POSTGIS_DEBUGF(5, "union size of %s and %s is %.8g", box2df_to_string(a), box2df_to_string(b), result);
@@ -254,13 +254,13 @@ static inline void box2df_validate(BOX2DF *b)
 {
 	float tmp;
 	POSTGIS_DEBUGF(5,"validating box2df (%s)", box2df_to_string(b));
-	if ( b->xmax < b->xmin ) 
+	if ( b->xmax < b->xmin )
 	{
 		tmp = b->xmin;
 		b->xmin = b->xmax;
 		b->xmax = tmp;
 	}
-	if ( b->ymax < b->ymin ) 
+	if ( b->ymax < b->ymin )
 	{
 		tmp = b->ymin;
 		b->ymin = b->ymax;
@@ -404,7 +404,7 @@ static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
 
 #if POSTGIS_PGSQL_VERSION < 95
 /**
-* Calculate the The node_box_edge->query_centroid distance 
+* Calculate the The node_box_edge->query_centroid distance
 * between the boxes.
 */
 static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
@@ -474,10 +474,10 @@ static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *qu
 			elog(ERROR, "%s: reached unreachable code", __func__);
         }
     }
-    
+
     return sqrt(d);
 }
-#endif 
+#endif
 
 /* Quick distance function */
 static inline double pt_distance(double ax, double ay, double bx, double by)
@@ -541,7 +541,7 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 * full object and return the box based on that. If no box is available,
 * return #LW_FAILURE, otherwise #LW_SUCCESS.
 */
-static int 
+static int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	GSERIALIZED *gpart;
@@ -551,7 +551,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	POSTGIS_DEBUG(4, "entered function");
 
 	/*
-	** The most info we need is the 8 bytes of serialized header plus the 
+	** The most info we need is the 8 bytes of serialized header plus the
 	** of floats necessary to hold the bounding box.
 	*/
 	if (VARATT_IS_EXTENDED(gsdatum))
@@ -604,7 +604,7 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 * Support function. Based on two datums return true if
 * they satisfy the predicate and false otherwise.
 */
-static int 
+static int
 gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 {
 	BOX2DF b1, b2, *br1=NULL, *br2=NULL;
@@ -633,14 +633,14 @@ Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS)
 {
 	BOX2DF b1, b2;
 	Datum gs1 = PG_GETARG_DATUM(0);
-	Datum gs2 = PG_GETARG_DATUM(1);    
+	Datum gs2 = PG_GETARG_DATUM(1);
 	
 	POSTGIS_DEBUG(3, "entered function");
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ( (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
 	     (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) )
-	{	    
+	{	
 		double distance = box2df_distance_leaf_centroid(&b1, &b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
@@ -653,14 +653,14 @@ Datum gserialized_distance_box_2d(PG_FUNCTION_ARGS)
 {
 	BOX2DF b1, b2;
 	Datum gs1 = PG_GETARG_DATUM(0);
-	Datum gs2 = PG_GETARG_DATUM(1);    
+	Datum gs2 = PG_GETARG_DATUM(1);
 	
 	POSTGIS_DEBUG(3, "entered function");
 
 	/* Must be able to build box for each argument (ie, not empty geometry). */
 	if ( (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
 	     (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) )
-	{	    
+	{	
 		double distance = box2df_distance(&b1, &b2);
 		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
 		PG_RETURN_FLOAT8(distance);
@@ -1063,7 +1063,7 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 /*
 ** GiST support function. Take in a query and an entry and return the "distance"
 ** between them.
-** 
+**
 ** Given an index entry p and a query value q, this function determines the
 ** index entry's "distance" from the query value. This function must be
 ** supplied if the operator class contains any ordering operators. A query
@@ -1072,7 +1072,7 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 ** with the operator's semantics. For a leaf index entry the result just
 ** represents the distance to the index entry; for an internal tree node, the
 ** result must be the smallest distance that any child entry could have.
-** 
+**
 ** Strategy 13 = true distance tests <->
 ** Strategy 14 = box-based distance tests <#>
 */
@@ -1090,7 +1090,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
 
-	/* We are using '13' as the gist true-distance <-> strategy number 
+	/* We are using '13' as the gist true-distance <-> strategy number
 	*  and '14' as the gist distance-between-boxes <#> strategy number */
 	if ( strategy != 13 && strategy != 14 ) {
 		elog(ERROR, "unrecognized strategy number: %d", strategy);

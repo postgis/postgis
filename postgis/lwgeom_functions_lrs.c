@@ -748,7 +748,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 	if ( lwout == NULL )
 	{
-		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 
+		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE,
 		            gserialized_get_srid(gin), hasz, hasm);
 	}
 

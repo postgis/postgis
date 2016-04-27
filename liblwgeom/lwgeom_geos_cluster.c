@@ -81,7 +81,7 @@ make_strtree(void** geoms, uint32_t num_geoms, char is_lwgeom)
 			if (box)
 			{
 				tree.envelopes[i] = GBOX2GEOS(box);
-			} 
+			}
 			else
 			{
 				/* Empty geometry */

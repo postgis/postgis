@@ -232,7 +232,7 @@ Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
 	
     mindist = lwgeom_mindistance3d_tolerance(lwgeom1,lwgeom2,0.0);
-    
+
     PG_FREE_IF_COPY(geom1, 0);
     PG_FREE_IF_COPY(geom2, 1);
     /*empty geometries cases should be right handled since return from underlying

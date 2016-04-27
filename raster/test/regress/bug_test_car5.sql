@@ -20,7 +20,7 @@
 -- on 32-bit platform. The problem was reproduced on 32-bit
 -- Unix 32-bit system (Linux, Ubuntu 8.10) and was not reproduced on
 -- Unix 64-bit system (Linux, Ubuntu 9.04).
--- 
+--
 -- There is likely a bug related to reaster data alignment.
 -- Problem leaked in SVN trunk r3951.
 -----------------------------------------------------------------------

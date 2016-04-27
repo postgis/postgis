@@ -507,7 +507,7 @@ pgui_event_popup_delete(GtkWidget *widget, GdkEvent *event, gpointer data)
 /* === Progress window functions === */
 
 static void
-pgui_action_progress_cancel(GtkDialog *dialog, gint response_id, gpointer user_data) 
+pgui_action_progress_cancel(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
 	/* Stop the current import */
 	is_running = FALSE;
@@ -592,7 +592,7 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 		config->readshape = 0;
 		
 		/* There will be no spatial column so don't create a spatial index */
-		config->createindex = 0; 
+		config->createindex = 0;
 	}
 	else
 		config->readshape = 1;
@@ -718,7 +718,7 @@ update_table_chooser_from_database()
 				geocol_name = PQgetvalue(geocol_result, j, PQfnumber(geocol_result, "attname"));
 			
 				gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
-				gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter, 
+				gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter,
 						TABLECHOOSER_GEOCOL_COMBO_TEXT, geocol_name,
 						-1);
 			}
@@ -729,7 +729,7 @@ update_table_chooser_from_database()
 			geocol_name = NULL;
 			
 			gtk_list_store_insert_before(dumper_geocol_combo_list, &geocol_iter, (GtkTreeIter *)TABLECHOOSER_GEOCOL_COMBO_TEXT);
-			gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter, 
+			gtk_list_store_set(dumper_geocol_combo_list, &geocol_iter,
 						TABLECHOOSER_GEOCOL_COMBO_TEXT, _("(None)"),
 						-1);
 		}	
@@ -975,7 +975,7 @@ add_loader_file_config_to_list(SHPLOADERCONFIG *loader_file_config)
 	                   IMPORT_SRID_COLUMN, srid,
 	                   IMPORT_MODE_COLUMN, _("Create"),
 	                   -1);	
-		   
+		
 	/* Update the filename field width */
 	update_filename_field_width();
 	
@@ -1026,10 +1026,10 @@ create_new_table_config(GtkTreeIter *iter)
 	memcpy(dumper_table_config, global_dumper_config, sizeof(SHPDUMPERCONFIG));
 	
 	/* Grab the values from the current iter */
-	gtk_tree_model_get(GTK_TREE_MODEL(chooser_filtered_table_list_store), iter, 
+	gtk_tree_model_get(GTK_TREE_MODEL(chooser_filtered_table_list_store), iter,
 			   TABLECHOOSER_SCHEMA_COLUMN, &schema,
 			   TABLECHOOSER_TABLE_COLUMN, &table,
-			   TABLECHOOSER_GEO_COLUMN, &geocol, 
+			   TABLECHOOSER_GEO_COLUMN, &geocol,
 			   TABLECHOOSER_HASGEO_COLUMN, &hasgeo,
 			   -1);	
 	
@@ -1064,7 +1064,7 @@ add_dumper_table_config_to_list(SHPDUMPERCONFIG *dumper_table_config, GtkListSto
 			   EXPORT_GEOMETRY_COLUMN, dumper_table_config->geo_col_name,
 			   EXPORT_FILENAME_COLUMN, dumper_table_config->shp_file,
 			   -1);
-			  
+			
 	/* If we have supplied the table_chooser store for additional information, use it */
 	if (chooser_liststore)
 	{
@@ -1072,7 +1072,7 @@ add_dumper_table_config_to_list(SHPDUMPERCONFIG *dumper_table_config, GtkListSto
 		gtk_tree_model_get(GTK_TREE_MODEL(chooser_liststore), chooser_iter,
 				   TABLECHOOSER_GEO_LISTSTORE_COLUMN, &geocol_liststore,
 				   -1);
-				   
+				
 		gtk_list_store_set(export_table_list_store, &iter,
 				   EXPORT_GEOMETRY_LISTSTORE_COLUMN, geocol_liststore,
 				   -1);
@@ -1225,7 +1225,7 @@ validate_remote_loader_columns(SHPLOADERCONFIG *config, PGresult *result)
 						/* Flag a warning if we can't find a match */
 						if (!found)
 						{
-							pgui_logf(_("Warning: DBF Field '%s' within file %s could not be matched to a column within table %s.%s"), 
+							pgui_logf(_("Warning: DBF Field '%s' within file %s could not be matched to a column within table %s.%s"),
 								  state->field_names[i], config->shp_file, config->schema, config->table);
 							response = SHPLOADERWARN;
 						}
@@ -1535,7 +1535,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		}
 
 		/* For progress display, only show the "core" filename */
-		for (i = strlen(loader_file_config->shp_file); i >= 0 
+		for (i = strlen(loader_file_config->shp_file); i >= 0
 			&& loader_file_config->shp_file[i - 1] != '\\' && loader_file_config->shp_file[i - 1] != '/'; i--);
 
 		progress_shapefile = malloc(strlen(loader_file_config->shp_file));
@@ -1578,10 +1578,10 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		{
             int numrecords = ShpLoaderGetRecordCount(state);
             int records_per_tick = (numrecords / 200) - 1;
-            
-            if ( records_per_tick < 1 ) 
+
+            if ( records_per_tick < 1 )
                 records_per_tick = 1;
-		    
+		
 			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 			if (state->config->dump_format)
 			{
@@ -2152,7 +2152,7 @@ pgui_action_handle_tree_combo(GtkCellRendererCombo *combo,
 	}
 	
 	/* Update the selection in the listview with the text from the combo */
-	gtk_tree_model_get(GTK_TREE_MODEL(loader_mode_combo_list), new_iter, LOADER_MODE_COMBO_TEXT, &combo_text, -1); 
+	gtk_tree_model_get(GTK_TREE_MODEL(loader_mode_combo_list), new_iter, LOADER_MODE_COMBO_TEXT, &combo_text, -1);
 	gtk_list_store_set(import_file_list_store, &iter, IMPORT_MODE_COLUMN, combo_text, -1);
 	
 	return;	
@@ -2319,7 +2319,7 @@ pgui_action_handle_table_geocol_combo(GtkCellRendererCombo *combo,
 		dumper_table_config->geo_col_name = strdup(geocol_name);
 	}
 	
-	gtk_list_store_set(export_table_list_store, &iter, 
+	gtk_list_store_set(export_table_list_store, &iter,
 			   EXPORT_GEOMETRY_COLUMN, geocol_name,
 			   -1);
 	
@@ -2367,7 +2367,7 @@ pgui_action_handle_dumper_edit(GtkCellRendererText *renderer,
 /* === Connection Window functions === */
 
 /* Set the connection details UI from the current configuration */
-static void 
+static void
 update_conn_ui_from_conn_config(void)
 {
 	if (conn->username)
@@ -2569,7 +2569,7 @@ pgui_create_filechooser_dialog(void)
 	GtkFileFilter *file_filter_shape;
 	
 	/* Create the dialog */
-	dialog_filechooser = gtk_file_chooser_dialog_new( _("Select a Shape File"), GTK_WINDOW (window_main), 
+	dialog_filechooser = gtk_file_chooser_dialog_new( _("Select a Shape File"), GTK_WINDOW (window_main),
 		GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
 	/* Filter for .shp files */
@@ -2596,7 +2596,7 @@ pgui_create_folderchooser_dialog(void)
 	GtkFileFilter *file_filter_shape;
 	
 	/* Create the dialog */
-	dialog_folderchooser = gtk_file_chooser_dialog_new( _("Select an output folder"), GTK_WINDOW (window_main), 
+	dialog_folderchooser = gtk_file_chooser_dialog_new( _("Select an output folder"), GTK_WINDOW (window_main),
 		GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_STOCK_CANCEL, GTK_RESPONSE_CLOSE, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 
 	/* Filter for .shp files */
@@ -2813,9 +2813,9 @@ pgui_create_tablechooser_dialog()
 	/* Because we want to do selective filtering on the treeview content, we now implement a GtkTreeModel
 	   filter on top of the original tree model */
 	chooser_filtered_table_list_store = (GtkListStore *)gtk_tree_model_filter_new(GTK_TREE_MODEL(chooser_table_list_store), NULL);
-	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(chooser_filtered_table_list_store), 
+	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(chooser_filtered_table_list_store),
 					(GtkTreeModelFilterVisibleFunc)table_chooser_visibility_func, NULL, NULL);
-					 
+					
 	/* Create the view and such */
 	chooser_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(chooser_filtered_table_list_store));
 	chooser_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(chooser_tree));
@@ -2992,29 +2992,29 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_srid_column);
 
 	/* Mode Combo Field */
-	loader_mode_combo_list = gtk_list_store_new(LOADER_MODE_COMBO_COLUMNS, 
+	loader_mode_combo_list = gtk_list_store_new(LOADER_MODE_COMBO_COLUMNS,
 					G_TYPE_STRING,
 					G_TYPE_CHAR);
 	
 	gtk_list_store_insert(loader_mode_combo_list, &iter, CREATE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
-	                   LOADER_MODE_COMBO_TEXT, _("Create"), 
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'c',			   
+	                   LOADER_MODE_COMBO_TEXT, _("Create"),
+			   LOADER_MODE_COMBO_OPTION_CHAR, 'c',			
 			   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, APPEND_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
-	                   LOADER_MODE_COMBO_TEXT, _("Append"), 
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'a', 
+	                   LOADER_MODE_COMBO_TEXT, _("Append"),
+			   LOADER_MODE_COMBO_OPTION_CHAR, 'a',
 			   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, DELETE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
-	                   LOADER_MODE_COMBO_TEXT, _("Delete"), 
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'd', 
+	                   LOADER_MODE_COMBO_TEXT, _("Delete"),
+			   LOADER_MODE_COMBO_OPTION_CHAR, 'd',
 			   -1);
 	gtk_list_store_insert(loader_mode_combo_list, &iter, PREPARE_MODE);
 	gtk_list_store_set(loader_mode_combo_list, &iter,
-	                   LOADER_MODE_COMBO_TEXT, _("Prepare"), 
-			   LOADER_MODE_COMBO_OPTION_CHAR, 'p', 
+	                   LOADER_MODE_COMBO_TEXT, _("Prepare"),
+			   LOADER_MODE_COMBO_OPTION_CHAR, 'p',
 			   -1);
 	loader_mode_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(loader_mode_combo_list));
 	import_mode_renderer = gtk_cell_renderer_combo_new();
@@ -3146,10 +3146,10 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	export_geom_column_renderer = gtk_cell_renderer_combo_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(export_geom_column_combo),
 	                           export_geom_column_renderer, TRUE);
-	g_object_set(export_geom_column_renderer, 
+	g_object_set(export_geom_column_renderer,
 		     "editable", TRUE,
 		     "has-entry", FALSE,
-	             "text-column", TABLECHOOSER_GEOCOL_COMBO_TEXT, 
+	             "text-column", TABLECHOOSER_GEOCOL_COMBO_TEXT,
 		     NULL);
 	export_geom_column = gtk_tree_view_column_new_with_attributes(_("Geo Column"),
 	               export_geom_column_renderer,
@@ -3253,7 +3253,7 @@ pgui_create_connection_window()
 	entry_pg_db   = gtk_entry_new();
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), label, 0, 1, 3, 4 );
 	gtk_table_attach_defaults(GTK_TABLE(table_pg), entry_pg_db, 1, 3, 3, 4 );
-			 
+			
 	/* Add table into containing frame */
 	gtk_container_add(GTK_CONTAINER(frame_pg), table_pg);
 

@@ -144,7 +144,7 @@ main(int argc, char **argv)
 				/* OK, this is a schema-qualified table name... */
       if (chrptr)
       {
-        if ( chrptr == strptr ) 
+        if ( chrptr == strptr )
         {
           /* table is ".something" display help  */
           usage(0);

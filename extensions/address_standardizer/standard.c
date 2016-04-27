@@ -1,4 +1,4 @@
-/* -- standard.c 
+/* -- standard.c
 
 interface for the standardizer
 
@@ -43,7 +43,7 @@ static char __spacer__[] = " \\-.)}>_" ;
 
 #define TERM_AND_LENGTH \
 	*__dest__ = SENTINEL ; \
-	n = strlen(__scan_buf__) 
+	n = strlen(__scan_buf__)
 
 #define RETURN_NEW_MORPH(TOKEN_ARG) \
 	if (!new_morph(__stand_param__,TOKEN_ARG,__scan_buf__,n))\
@@ -53,7 +53,7 @@ static char __spacer__[] = " \\-.)}>_" ;
 	return __src__
 
 #define COLLECT_LOOKAHEAD \
-	*__dest__++ = a ; __src__++ ; *__dest__++ = b ; __src__++ 
+	*__dest__++ = a ; __src__++ ; *__dest__++ = b ; __src__++
 
 #define COLLECT_WHILE(COND) \
 	do { *__dest__++ = a ; __src__++ ; a = *__src__ ; } while (COND)
@@ -138,9 +138,9 @@ static int _Scan_String_(STAND_PARAM *__stand_param__ ,char *__in_str__ )
 		}
 	}
 	return FALSE ;
-}  
+}
 
-static char * _Scan_Next_( STAND_PARAM *__stand_param__,char * __in_ptr__) 
+static char * _Scan_Next_( STAND_PARAM *__stand_param__,char * __in_ptr__)
 {
 	int n ;
 	char __scan_buf__[MAXSTRLEN] ;
@@ -366,7 +366,7 @@ int std_use_rules(STANDARDIZER *std, RULES *rules)
 
 int std_ready_standardizer(STANDARDIZER *std)
 {
-    std -> misc_stand = 
+    std -> misc_stand =
         init_stand_context(std -> pagc_p, std -> err_p, 1);
 
     if (std -> misc_stand == NULL)
@@ -542,7 +542,7 @@ STDADDR *std_standardize(STANDARDIZER *std, char *address, char *city, char *sta
 	<remarks>set up process level, opens the lexicons and rules
 		and default definitions for the tokenizer</remarks>
 	<calls><functionref='(gamma.c) create_rules'/>, <functionref='(lexicon.c) create_lexicon'/>,
-		<functionref='(tokenize.c) setup_default_defs'/> and 
+		<functionref='(tokenize.c) setup_default_defs'/> and
 		<functionref='(analyze.c) install_def_block_table'/></calls>
 </summary>
 =========================================================================*/
@@ -557,13 +557,13 @@ int init_stand_process(PAGC_GLOBAL *__pagc_global__ ,const char *__rule_name__, 
 	{
 		return FALSE ;
 	}
-	if ((__pagc_global__->poi_lexicon = create_lexicon(__pagc_global__ ,__featword_name__ ,NULL)) == NULL) 
+	if ((__pagc_global__->poi_lexicon = create_lexicon(__pagc_global__ ,__featword_name__ ,NULL)) == NULL)
 	{
 		return FALSE ;
 	}
 #ifdef GAZ_LEXICON
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on _start_state_ = MACRO </revision> --*/
-	if ((__pagc_global__->gaz_lexicon = create_lexicon(__pagc_global__,__gazetteer_name__,NULL)) == NULL) 
+	if ((__pagc_global__->gaz_lexicon = create_lexicon(__pagc_global__,__gazetteer_name__,NULL)) == NULL)
 	{
 		return FALSE ;
 	}
@@ -582,7 +582,7 @@ int init_stand_process(PAGC_GLOBAL *__pagc_global__ ,const char *__rule_name__, 
 	<function name='standard.c (close_stand_process)'/>
 	<remarks> Called on exit to close down standardizer </remarks>
 	<calls> <functionref='(tokenize.c) remove_default_defs'/>,
-		<functionref='(gamma.c) destroy_rules'/> and 
+		<functionref='(gamma.c) destroy_rules'/> and
 		<functionref='lexicon.c (destroy_lexicon)'/></calls>
 </summary>
 =========================================================================*/
@@ -604,7 +604,7 @@ void close_stand_process(PAGC_GLOBAL * __pagc_global__)
 	/*-- <revision date='2012-06-01'> Add gaz_lexicon to be triggered on _start_state_ = MACRO </revision> --*/
 #ifdef GAZ_LEXICON
     DBG("destroy_lexicon(__pagc_global__->gaz_lexicon)");
-	destroy_lexicon(__pagc_global__->gaz_lexicon) ; 
+	destroy_lexicon(__pagc_global__->gaz_lexicon) ;
 #endif
 }
 
@@ -653,9 +653,9 @@ STAND_PARAM *init_stand_context(PAGC_GLOBAL *__pagc_global__,ERR_PARAM *__err_pa
 		<macroref='FREE_AND_NULL'/></calls>
 <summary>
 =========================================================================*/
-void close_stand_context( STAND_PARAM *__stand_param__ ) 
+void close_stand_context( STAND_PARAM *__stand_param__ )
 {
-	if (__stand_param__ == NULL) 
+	if (__stand_param__ == NULL)
 	{
 		return ;
 	}

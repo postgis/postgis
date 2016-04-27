@@ -731,7 +731,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 	 * See note on SET_VARSIZE in rt_raster_serialize function above.
 	 */
 
-	/* Allocate memory for deserialized raster header */ 
+	/* Allocate memory for deserialized raster header */
 	RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for deserialized raster header");
 	rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
 	if (!rast) {

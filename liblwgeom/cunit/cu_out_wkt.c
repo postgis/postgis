@@ -20,7 +20,7 @@
 /*
 ** Global variable to hold WKT strings
 */
-char *s = NULL; 
+char *s = NULL;
 
 /*
 ** The suite initialization function.
@@ -47,7 +47,7 @@ static char* cu_wkt(char *wkt, uint8_t variant)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
-	if ( ! g ) 
+	if ( ! g )
 	{
 		printf("error converting '%s' to lwgeom\n", wkt);
 		exit(0);

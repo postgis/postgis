@@ -697,23 +697,23 @@ Datum sfcgal_extrude(PG_FUNCTION_ARGS)
     srid_t srid;
 
     sfcgal_postgis_init();
-    
+
     input = PG_GETARG_GSERIALIZED_P(0);
     srid = gserialized_get_srid(input);
 
     geom = POSTGIS2SFCGALGeometry(input);
     PG_FREE_IF_COPY(input, 0);
-    
+
     dx = PG_GETARG_FLOAT8(1);
     dy = PG_GETARG_FLOAT8(2);
     dz = PG_GETARG_FLOAT8(3);
-    
+
     result = sfcgal_geometry_extrude(geom, dx, dy, dz);
     sfcgal_geometry_delete(geom);
-    
+
     output = SFCGALGeometry2POSTGIS(result, 0, srid);
     sfcgal_geometry_delete(result);
-    
+
     PG_RETURN_POINTER(output);
 }
 

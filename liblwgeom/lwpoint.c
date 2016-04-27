@@ -215,7 +215,7 @@ void printLWPOINT(LWPOINT *point)
 
 /* @brief Clone LWPOINT object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWPOINT *
 lwpoint_clone(const LWPOINT *g)

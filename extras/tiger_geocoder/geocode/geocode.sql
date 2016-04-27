@@ -29,7 +29,7 @@ BEGIN
 
     RETURN NEXT;
   END LOOP;*/
- 
+
   RETURN QUERY SELECT g.addy, g.geomout, g.rating FROM geocode(ADDY, max_results, restrict_geom) As g ORDER BY g.rating;
 
 END;
@@ -37,7 +37,7 @@ $_$ LANGUAGE plpgsql STABLE;
 
 
 CREATE OR REPLACE FUNCTION geocode(
-    IN_ADDY NORM_ADDY, 
+    IN_ADDY NORM_ADDY,
     max_results integer DEFAULT 10,
     restrict_geom geometry DEFAULT null,
     OUT ADDY NORM_ADDY,

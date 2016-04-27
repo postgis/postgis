@@ -363,7 +363,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
  * NOTE: wkb is in *binary* not hex form.
  *
  * NOTE: this function parses EWKB (extended form)
- *       which also contains SRID info. 
+ *       which also contains SRID info.
  */
 PG_FUNCTION_INFO_V1(LWGEOMFromEWKB);
 Datum LWGEOMFromEWKB(PG_FUNCTION_ARGS)
@@ -472,7 +472,7 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
  	bytea *result;
 	srs_precision sp;
 	
-	/*check for null input since we cannot have the sql-function as strict. 
+	/*check for null input since we cannot have the sql-function as strict.
 	That is because we use null as default for optional ID*/	
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 	
@@ -545,7 +545,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
  	bytea *result;
 
 	/* The first two arguments are required */
-	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) ) 
+	if ( PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1) )
 		PG_RETURN_NULL();
 
 	arr_geoms = PG_GETARG_ARRAYTYPE_P(0);
@@ -571,7 +571,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 	iter_ids = array_create_iterator(arr_ids, 0);
 #endif
 
-	while( array_iterate(iter_geoms, &val_geom, &null_geom) && 
+	while( array_iterate(iter_geoms, &val_geom, &null_geom) &&
 	       array_iterate(iter_ids, &val_id, &null_id) )
 	{
 		LWGEOM *geom;
@@ -593,7 +593,7 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 			has_m = lwgeom_has_m(geom);
 			col = lwcollection_construct_empty(COLLECTIONTYPE, lwgeom_get_srid(geom), has_z, has_m);
 		}
-		if ( ! idlist ) 
+		if ( ! idlist )
 			idlist = palloc0(num_geoms * sizeof(int64_t));
 
 		
@@ -663,11 +663,11 @@ Datum TWKBFromLWGEOMArray(PG_FUNCTION_ARGS)
 		variant |= TWKB_BBOX;
 
 	/* Write out the TWKB */
-	twkb = lwgeom_to_twkb_with_idlist(lwcollection_as_lwgeom(col), 
-	                                  idlist, variant, 
-	                                  sp.precision_xy, sp.precision_z, sp.precision_m, 
+	twkb = lwgeom_to_twkb_with_idlist(lwcollection_as_lwgeom(col),
+	                                  idlist, variant,
+	                                  sp.precision_xy, sp.precision_z, sp.precision_m,
 	                                  &twkb_size);
-					  
+					
 	/* Convert to a bytea return type */
 	result = palloc(twkb_size + VARHDRSZ);
 	memcpy(VARDATA(result), twkb, twkb_size);
@@ -734,13 +734,13 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	Datum result;
 
 	/* Unwrap the PgSQL text type into a cstring */
-	wkt = text2cstring(wkt_text); 
+	wkt = text2cstring(wkt_text);
 	
 	/* Now we call over to the geometry_in function */
 	result = DirectFunctionCall1(LWGEOM_in, CStringGetDatum(wkt));
 
 	/* Return null on null */
-	if ( ! result ) 
+	if ( ! result )
 		PG_RETURN_NULL();
 
 	PG_RETURN_DATUM(result);
@@ -801,7 +801,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(
 	  DatumGetPointer(
 	    DirectFunctionCall1(
-	      WKBFromLWGEOM, 
+	      WKBFromLWGEOM,
 	      PG_GETARG_DATUM(0)
 	    )));
 }
@@ -814,7 +814,7 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(
 	  DatumGetPointer(
 	    DirectFunctionCall1(
-	      WKBFromLWGEOM, 
+	      WKBFromLWGEOM,
 	      PG_GETARG_DATUM(0)
 	    )));
 }

@@ -22,7 +22,7 @@
  *
  **********************************************************************/
 
- 
+
  #include "effectivearea.h"
 
 
@@ -58,7 +58,7 @@ initiate_minheap(int npoints)
 }
 
 
-static void 
+static void
 destroy_minheap(MINHEAP tree)
 {
 	lwfree(tree.key_array);
@@ -106,7 +106,7 @@ static int cmpfunc (const void * a, const void * b)
 {
 	double v1 =  (*(areanode**)a)->area;
 	double v2 = (*(areanode**)b)->area;
-	/*qsort gives unpredictable results when comaping identical values. 
+	/*qsort gives unpredictable results when comaping identical values.
 	If two values is the same we force returning the last point in hte point array.
 	That way we get the same ordering on diffreent machines and pllatforms*/
 	if (v1==v2)
@@ -535,7 +535,7 @@ static LWCOLLECTION* lwcollection_set_effective_area(const LWCOLLECTION *igeom,i
 
 	return out;
 }
- 
+
 
 LWGEOM* lwgeom_set_effective_area(const LWGEOM *igeom,int set_area, double trshld)
 {

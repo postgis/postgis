@@ -265,7 +265,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		points[2] = (POINT4D) { box->xmin, box->ymax, box->zmax };
 		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
 
-		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				&points[0], &points[1], &points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
@@ -282,7 +282,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		points[2] = (POINT4D) { box->xmax, box->ymin, box->zmax };
 		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
 
-		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				&points[0], &points[1], &points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
@@ -450,7 +450,7 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 }
 
 /**
-* Used in the ST_Extent and ST_Extent3D aggregates, does not read the 
+* Used in the ST_Extent and ST_Extent3D aggregates, does not read the
 * serialized cached bounding box (since that is floating point)
 * but calculates the box in full from the underlying geometry.
 */

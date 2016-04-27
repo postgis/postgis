@@ -124,8 +124,8 @@ static void test_sphere_project(void)
 	CU_ASSERT_DOUBLE_EQUAL(s.lon, 0.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(s.lat, 0.0, 1e-14);
 
-	geographic_point_init(0, 0.2, &e);  
-	geographic_point_init(0, 0.4, &s);  
+	geographic_point_init(0, 0.2, &e);
+	geographic_point_init(0, 0.4, &s);
 	dist1 = sphere_distance(&s, &e);
 	dir1 = sphere_direction(&e, &s, dist1);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "0.2 0 0.4 0" */
@@ -133,42 +133,42 @@ static void test_sphere_project(void)
 	CU_ASSERT_DOUBLE_EQUAL(dist1, 0.0034906585039887, 1e-14);
 
 	geographic_point_init(0, 1, &s); /* same start point for remainder of tests */
-	geographic_point_init(0, 2, &e);  
+	geographic_point_init(0, 2, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 0" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
 	
-	geographic_point_init(1, 1, &e);  
+	geographic_point_init(1, 1, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 89.991273575329292895136 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
-	geographic_point_init(0, 0, &e);  
+	geographic_point_init(0, 0, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 0" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, M_PI, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174532925199433, 1e-14);
 
-	geographic_point_init(-1, 1, &e);  
+	geographic_point_init(-1, 1, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 1 -1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, -89.991273575329292895136 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0174506342314906, 1e-14);
 
-	geographic_point_init(1, 2, &e);  
+	geographic_point_init(1, 2, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 2 1" */
 	CU_ASSERT_DOUBLE_EQUAL(dir2, 44.978182941465044354783 * M_PI / 180.0, 1e-14);
 	CU_ASSERT_DOUBLE_EQUAL(dist2, 0.0246782972905467, 1e-14);
 
-	geographic_point_init(-1, 0, &e);  
+	geographic_point_init(-1, 0, &e);
 	dist2 = sphere_distance(&s, &e);
 	dir2 = sphere_direction(&s, &e, dist2);
 	/* GeodSolve -i -E -p 16 -e 1 0 --input-string "1 0 0 -1" */
@@ -210,7 +210,7 @@ static void cross_product_stability(void)
 		/* Ramsey */
 		unit_normal(&A1, &A2, &Nc);
 
-		if ( i > 0 ) 
+		if ( i > 0 )
 		{
 			printf("\n- %d -------------------- %.24g ------------------------\n", i, p2.y);
 			printf("Skea:         %.24g,%.24g,%.24g\n", Nr.x, Nr.y, Nr.z);
@@ -571,7 +571,7 @@ static void line2pts(const char *wkt, POINT3D *A1, POINT3D *A2)
 	POINTARRAY *pa;
 	POINT2D p1, p2;
 	GEOGRAPHIC_POINT g1, g2;
-	if ( ! l ) 
+	if ( ! l )
 	{
 		printf("BAD WKT FOUND in test_edge_intersects:\n  %s\n\n", wkt);
 		exit(0);
@@ -762,7 +762,7 @@ static void test_edge_distance_to_point(void)
 	// printf("CLOSE POINT(%g %g)\n", closest.lon,  closest.lat);
 	// printf(" ORIG POINT(%g %g)\n", g.lon, g.lat);
 	CU_ASSERT_DOUBLE_EQUAL(g.lat, closest.lat, 0.00001);
-	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		 
+	CU_ASSERT_DOUBLE_EQUAL(g.lon, closest.lon, 0.00001);		
 }
 
 static void test_edge_distance_to_edge(void)

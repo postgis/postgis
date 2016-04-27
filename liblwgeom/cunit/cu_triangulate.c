@@ -29,7 +29,7 @@ static void test_lwgeom_delaunay_triangulation(void)
 
 	tmp = lwgeom_delaunay_triangulation(in, 0, 0);
 	lwgeom_free(in);
-	out = lwgeom_normalize(tmp); 
+	out = lwgeom_normalize(tmp);
 	lwgeom_free(tmp);
 
         wkt = lwgeom_to_ewkt(out);

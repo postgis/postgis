@@ -32,13 +32,13 @@ CREATE TABLE rt_utility_test (
     rast raster
 );
 
-INSERT INTO rt_utility_test 
+INSERT INTO rt_utility_test
 VALUES ( 1, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:0,0 srid:9102707 width:1217 height:1156',
         26919, 1217, 1156, --- SRID, width, height
         5, -5, 782325.5, 26744042.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -63,13 +63,13 @@ VALUES ( 1, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:0,0 srid:9102707 
 )::raster
 );
 
-INSERT INTO rt_utility_test 
+INSERT INTO rt_utility_test
 VALUES ( 2, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:3,3 srid:9102707 width:1217 height:1156',
         26919, 1217, 1156, --- SRID, width, height
         5, -5, 782325.5, 26744042.5, 3, 3, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -94,13 +94,13 @@ VALUES ( 2, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:3,3 srid:9102707 
 )::raster
 );
 
-INSERT INTO rt_utility_test 
+INSERT INTO rt_utility_test
 VALUES ( 3, '6000x6000, ip:-75,50 scale:0.000833333333333333,-0.000833333333333333 skew:0,0 srid:4326 width:6000 height:6000',
         4326, 6000, 6000, --- SRID, width, height
         0.000833333333333333, -0.000833333333333333, -75, 50, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -125,13 +125,13 @@ VALUES ( 3, '6000x6000, ip:-75,50 scale:0.000833333333333333,-0.0008333333333333
 )::raster
 );
 
-INSERT INTO rt_utility_test 
+INSERT INTO rt_utility_test
 VALUES ( 4, '6000x6000, ip:-75.5533328537098,49.2824585505576 scale:0.000805965234044584,-0.00080596523404458 skew:0.000211812383858707,0.000211812383858704 srid:4326 width:6000 height:6000',
         4326, 6000, 6000, --- SRID, width, height
         0.000805965234044584, -0.00080596523404458, -75.5533328537098, 49.2824585505576, 0.000211812383858707, 0.000211812383858704, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -157,176 +157,176 @@ VALUES ( 4, '6000x6000, ip:-75.5533328537098,49.2824585505576 scale:0.0008059652
 );
 
 -----------------------------------------------------------------------
--- Test 1 - ST_WorldTorastercoordx(rast raster, xw float8, yw float8) 
+-- Test 1 - ST_WorldTorastercoordx(rast raster, xw float8, yw float8)
 -----------------------------------------------------------------------
 
 SELECT 'test 1.1', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
-                                ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
+                                ipx,
                                 ipy
                                ), 0) != 1;
 
 SELECT 'test 1.2', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
-                                scalex * (width - 1) + skewx * (height - 1) + ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
+                                scalex * (width - 1) + skewx * (height - 1) + ipx,
                                 skewy * (width - 1) + scaley * (height - 1) + ipy
                                ), 0) != width;
 
 SELECT 'test 1.3', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
-                                scalex * width + skewx * height + ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
+                                scalex * width + skewx * height + ipx,
                                 skewy * width + scaley * height + ipy
                                ), 0) != width + 1;
 
 -----------------------------------------------------------------------
--- Test 2 - ST_WorldTorastercoordx(rast raster, xw float8) 
+-- Test 2 - ST_WorldTorastercoordx(rast raster, xw float8)
 -----------------------------------------------------------------------
 
 SELECT 'test 2.1', id, name
     FROM rt_utility_test
-    WHERE skewx = 0 and 
-          COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE skewx = 0 and
+          COALESCE(ST_WorldTorastercoordx(rast,
                                 ipx
                                ), 0) != 1;
 
 SELECT 'test 2.2', id, name
     FROM rt_utility_test
-    WHERE skewx = 0 and 
-          COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE skewx = 0 and
+          COALESCE(ST_WorldTorastercoordx(rast,
                                 scalex * (width - 1) + ipx
                                ), 0) != width;
 
 SELECT 'test 2.3', id, name
     FROM rt_utility_test
-    WHERE skewx = 0 and 
-          COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE skewx = 0 and
+          COALESCE(ST_WorldTorastercoordx(rast,
                                 scalex * width + ipx
                                ), 0) != width + 1;
 
 SELECT 'test 2.4', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
                                 ipx
                                ), 0) != 1;
 
 -----------------------------------------------------------------------
--- Test 3 - ST_WorldTorastercoordx(rast raster, pt geometry) 
+-- Test 3 - ST_WorldTorastercoordx(rast raster, pt geometry)
 -----------------------------------------------------------------------
 
 SELECT 'test 3.1', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
                                 st_makepoint(
-                                             ipx, 
+                                             ipx,
                                              ipy
                                             )
                                ), 0) != 1;
 
 SELECT 'test 3.2', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
                                 st_makepoint(
-                                             scalex * (width - 1) + skewx * (height - 1) + ipx, 
+                                             scalex * (width - 1) + skewx * (height - 1) + ipx,
                                              skewy * (width - 1) + scaley * (height - 1) + ipy
                                             )
                                ), 0) != width;
 
 SELECT 'test 3.3', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordx(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordx(rast,
                                 st_makepoint(
-                                             scalex * width + skewx * height + ipx, 
+                                             scalex * width + skewx * height + ipx,
                                              skewy * width + scaley * height + ipy
                                             )
                                ), 0) != width + 1;
 
 -----------------------------------------------------------------------
--- Test 4 - ST_WorldTorastercoordy(rast raster, xw float8, yw float8) 
+-- Test 4 - ST_WorldTorastercoordy(rast raster, xw float8, yw float8)
 -----------------------------------------------------------------------
 
 SELECT 'test 4.1', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
-                                ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
+                                ipx,
                                 ipy
                                ), 0) != 1;
 
 SELECT 'test 4.2', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
-                                scalex * (width - 1) + skewx * (height - 1) + ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
+                                scalex * (width - 1) + skewx * (height - 1) + ipx,
                                 skewy * (width - 1) + scaley * (height - 1) + ipy
                                ), 0) != height;
 
 SELECT 'test 4.3', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
-                                scalex * width + skewx * height + ipx, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
+                                scalex * width + skewx * height + ipx,
                                 skewy * width + scaley * height + ipy
                                ), 0) != height + 1;
 
 -----------------------------------------------------------------------
--- Test 5 - ST_WorldTorastercoordy(rast raster, yw float8) 
+-- Test 5 - ST_WorldTorastercoordy(rast raster, yw float8)
 -----------------------------------------------------------------------
 
 SELECT 'test 5.1', id, name
     FROM rt_utility_test
-    WHERE skewy = 0 and 
-          COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE skewy = 0 and
+          COALESCE(ST_WorldTorastercoordy(rast,
                                 ipy
                                ), 0) != 1;
 
 SELECT 'test 5.2', id, name
     FROM rt_utility_test
-    WHERE skewy = 0 and 
-          COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE skewy = 0 and
+          COALESCE(ST_WorldTorastercoordy(rast,
                                 scaley * (height - 1) + ipy
                                ), 0) != height;
 
 SELECT 'test 5.3', id, name
     FROM rt_utility_test
-    WHERE skewy = 0 and 
-          COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE skewy = 0 and
+          COALESCE(ST_WorldTorastercoordy(rast,
                                 scaley * height + ipy
                                ), 0) != height + 1;
 
 SELECT 'test 5.4', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
                                 ipy
                                ), 0) != 1;
 
 
 -----------------------------------------------------------------------
--- Test 6 - ST_WorldTorastercoordy(rast raster, pt geometry) 
+-- Test 6 - ST_WorldTorastercoordy(rast raster, pt geometry)
 -----------------------------------------------------------------------
 
 SELECT 'test 6.1', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
                                 st_makepoint(
-                                             ipx, 
+                                             ipx,
                                              ipy
                                             )
                                ), 0) != 1;
 
 SELECT 'test 6.2', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
                                 st_makepoint(
-                                             scalex * (width - 1) + skewx * (height - 1) + ipx, 
+                                             scalex * (width - 1) + skewx * (height - 1) + ipx,
                                              skewy * (width - 1) + scaley * (height - 1) + ipy
                                             )
                                ), 0) != height;
 
 SELECT 'test 6.3', id, name
     FROM rt_utility_test
-    WHERE COALESCE(ST_WorldTorastercoordy(rast, 
+    WHERE COALESCE(ST_WorldTorastercoordy(rast,
                                 st_makepoint(
-                                             scalex * width + skewx * height + ipx, 
+                                             scalex * width + skewx * height + ipx,
                                              skewy * width + scaley * height + ipy
                                             )
                                ), 0) != height + 1;
@@ -338,7 +338,7 @@ SELECT 'test 6.3', id, name
 SELECT 'test 7.1', id, name
     FROM rt_utility_test
     WHERE COALESCE(ST_RasterToworldcoordx(rast, 1, 1), 0)::numeric != ipx::numeric;
-    
+
 SELECT 'test 7.2', id, name
     FROM rt_utility_test
     WHERE COALESCE(ST_RasterToworldcoordx(rast, width, height), 0)::numeric != (scalex * (width - 1) + skewx * (height - 1) + ipx)::numeric;
@@ -350,7 +350,7 @@ SELECT 'test 7.2', id, name
 SELECT 'test 8.1', id, name
     FROM rt_utility_test
     WHERE skewx = 0 and COALESCE(ST_RasterToworldcoordx(rast, 1), 0)::numeric != ipx::numeric;
-    
+
 SELECT 'test 8.2', id, name
     FROM rt_utility_test
     WHERE skewx = 0 and COALESCE(ST_RasterToworldcoordx(rast, width), 0)::numeric != (scalex * (width - 1) + ipx)::numeric;
@@ -358,7 +358,7 @@ SELECT 'test 8.2', id, name
 SELECT 'test 8.3', id, name
     FROM rt_utility_test
     WHERE COALESCE(ST_RasterToworldcoordx(rast, 1), 0)::numeric != ipx::numeric;
- 
+
 -----------------------------------------------------------------------
 -- Test 9 - ST_RasterToworldcoordy(rast raster, xr int, yr int)
 -----------------------------------------------------------------------
@@ -366,19 +366,19 @@ SELECT 'test 8.3', id, name
 SELECT 'test 9.1', id, name
     FROM rt_utility_test
     WHERE COALESCE(ST_RasterToworldcoordy(rast, 1, 1), 0)::numeric != ipy::numeric;
-    
+
 SELECT 'test 9.2', id, name
     FROM rt_utility_test
     WHERE round(COALESCE(ST_RasterToworldcoordy(rast, width, height), 0)::numeric, 10) != round((skewy * (width - 1) + scaley * (height - 1) + ipy)::numeric, 10);
 
 -----------------------------------------------------------------------
--- Test 10 - ST_RasterToworldcoordy(rast raster, yr int) 
+-- Test 10 - ST_RasterToworldcoordy(rast raster, yr int)
 -----------------------------------------------------------------------
 
 SELECT 'test 10.1', id, name
     FROM rt_utility_test
     WHERE skewy = 0 and COALESCE(ST_RasterToworldcoordy(rast, 1, 1), 0)::numeric != ipy::numeric;
-    
+
 SELECT 'test 10.2', id, name
     FROM rt_utility_test
     WHERE skewy = 0 and COALESCE(ST_RasterToworldcoordy(rast, width, height), 0)::numeric != (scaley * (height - 1) + ipy)::numeric;
@@ -386,7 +386,7 @@ SELECT 'test 10.2', id, name
 SELECT 'test 10.3', id, name
     FROM rt_utility_test
     WHERE COALESCE(ST_RasterToworldcoordy(rast, 1), 0)::numeric != ipy::numeric;
-    
+
 -----------------------------------------------------------------------
 -- Test 11 - st_minpossiblevalue(pixtype text)
 -----------------------------------------------------------------------

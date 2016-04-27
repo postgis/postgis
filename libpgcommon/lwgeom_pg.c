@@ -34,9 +34,9 @@
 #define PGC_ERRMSG_MAXLEN 256
 
 /**
-* Utility to convert cstrings to textp pointers 
+* Utility to convert cstrings to textp pointers
 */
-text* 
+text*
 cstring2text(const char *cstring)
 {
 	text *output;
@@ -48,7 +48,7 @@ cstring2text(const char *cstring)
 		
 	sz = strlen(cstring);
 	output = palloc(sz + VARHDRSZ);
-	if ( ! output ) 
+	if ( ! output )
 		return NULL;
 	SET_VARSIZE(output, sz + VARHDRSZ);
 	if ( sz )
@@ -325,11 +325,11 @@ postgis_guc_var_compare(const void *a, const void *b)
 	return postgis_guc_name_compare(confa->name, confb->name);
 }
 
-/* 
-* This is copied from the top half of the find_option function 
+/*
+* This is copied from the top half of the find_option function
 * in postgresql's guc.c. We search the guc_variables for our option.
-* Then we make sure it's not a placeholder. Only then are we sure 
-* we have a potential conflict, of the sort experienced during an 
+* Then we make sure it's not a placeholder. Only then are we sure
+* we have a potential conflict, of the sort experienced during an
 * extension upgrade.
 */
 int
@@ -350,7 +350,7 @@ postgis_guc_find_option(const char *name)
 	
 	/* Found nothing? Good */
 	if ( ! res ) return 0;
-	 
+	
 	/* Hm, you found something, but maybe it's just a placeholder? */
 	/* We'll consider a placehold a "not found" */
 	if ( (*res)->flags & GUC_CUSTOM_PLACEHOLDER )

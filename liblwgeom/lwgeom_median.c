@@ -77,7 +77,7 @@ iterate_3d(POINT3D* curr, const POINT3D* points, uint32_t npoints, double* dista
 	 * Fermat-Weber location problem."  Math. Program., Ser. A 90: 559-566.
 	 * DOI 10.1007/s101070100222
 	 *
-	 * Available online at the time of this writing at 
+	 * Available online at the time of this writing at
 	 * http://www.stat.rutgers.edu/home/cunhui/papers/43.pdf
 	 */
 	if (hit)

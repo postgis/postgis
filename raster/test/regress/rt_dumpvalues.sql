@@ -106,7 +106,7 @@ DROP TABLE IF EXISTS raster_tile;
 CREATE TABLE raster_tile AS
     WITH foo AS (
         SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL
-        SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast 
+        SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast
     )
     SELECT ST_Union(rast) AS rast FROM foo;
 WITH foo AS (SELECT ST_Tile(rast, 3, 3, TRUE) AS rast FROM raster_tile) SELECT (ST_DumpValues(rast, array[1,2,3])).* FROM foo;

@@ -59,8 +59,8 @@ int gserialized_is_geodetic(const GSERIALIZED *gser)
 {
 	  return FLAGS_GET_GEODETIC(gser->flags);
 }
- 
-uint32_t gserialized_max_header_size(void) 
+
+uint32_t gserialized_max_header_size(void)
 {
 	/* read GSERIALIZED size + max bbox according gbox_serialized_size (2 + Z + M) + 1 int for type */
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);
@@ -91,7 +91,7 @@ int32_t gserialized_get_srid(const GSERIALIZED *s)
 	srid = (srid<<11)>>11;
 	
 	/* 0 is our internal unknown value. We'll map back and forth here for now */
-	if ( srid == 0 ) 
+	if ( srid == 0 )
 		return SRID_UNKNOWN;
 	else
 		return clamp_srid(srid);
@@ -948,7 +948,7 @@ GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size)
 	}
 	
 	/*
-	** Harmonize the flags to the state of the lwgeom 
+	** Harmonize the flags to the state of the lwgeom
 	*/
 	if ( geom->bbox )
 		FLAGS_SET_BBOX(geom->flags, 1);
@@ -1297,7 +1297,7 @@ LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g)
 
 	lwgeom = lwgeom_from_gserialized_buffer(data_ptr, g_flags, &g_size);
 
-	if ( ! lwgeom ) 
+	if ( ! lwgeom )
 		lwerror("lwgeom_from_gserialized: unable create geometry"); /* Ooops! */
 
 	lwgeom->type = g_type;

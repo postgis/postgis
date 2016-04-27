@@ -387,7 +387,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in) ) 
+	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in) )
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -409,7 +409,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in) ) 
+	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in) )
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -431,7 +431,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 4d */
-	if ( gserialized_ndims(pg_geom_in) == 4 ) 
+	if ( gserialized_ndims(pg_geom_in) == 4 )
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -516,7 +516,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
 	if ( gserialized_has_bbox(geom) ) {
-		switch (gserialized_get_type(geom)) 
+		switch (gserialized_get_type(geom))
 		{
 			case MULTIPOINTTYPE:
 			case MULTILINETYPE:
@@ -1134,9 +1134,9 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	type1 = lwgeoms[0]->type;
 	type2 = lwgeoms[1]->type;
 	
-	if ( (type1 == type2) && (!lwgeom_is_collection(lwgeoms[0])) ) 
+	if ( (type1 == type2) && (!lwgeom_is_collection(lwgeoms[0])) )
 		outtype = lwtype_get_collectiontype(type1);
-	else 
+	else
 		outtype = COLLECTIONTYPE;
 
 	POSTGIS_DEBUGF(3, " outtype = %d", outtype);
@@ -1546,7 +1546,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	lwline_free((LWLINE*)shell);
 	PG_FREE_IF_COPY(pglwg1, 0);
 
-	for (i=0; i<nholes; i++) 
+	for (i=0; i<nholes; i++)
 	{
 		lwline_free((LWLINE*)holes[i]);
 	}
@@ -1801,13 +1801,13 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	ingeom = PG_GETARG_GSERIALIZED_P(0);
 	dist = PG_GETARG_FLOAT8(1);
-	type = gserialized_get_type(ingeom); 
+	type = gserialized_get_type(ingeom);
 
 	/* Avoid types we cannot segmentize. */
-	if ( (type == POINTTYPE) || 
-	     (type == MULTIPOINTTYPE) || 
-	     (type == TRIANGLETYPE) || 
-	     (type == TINTYPE) || 
+	if ( (type == POINTTYPE) ||
+	     (type == MULTIPOINTTYPE) ||
+	     (type == TRIANGLETYPE) ||
+	     (type == TINTYPE) ||
 	     (type == POLYHEDRALSURFACETYPE) )
 	{
 		PG_RETURN_POINTER(ingeom);
@@ -2076,7 +2076,7 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 
 	/* Pull only a small amount of the tuple, enough to get the type. */
 	/* header + srid/flags + bbox? + type number */
-	size = VARHDRSZ + 8 + 32 + 4;  
+	size = VARHDRSZ + 8 + 32 + 4;
 
 	geom = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, size);
 
@@ -2788,7 +2788,7 @@ Datum ST_Scale(PG_FUNCTION_ARGS)
   }
   if ( ! lwpoint->point->npoints )
   {
-    /* empty point, return input untouched */ 
+    /* empty point, return input untouched */
     lwgeom_free(lwgeom1);
     lwgeom_free(lwgeom2);
     PG_FREE_IF_COPY(geom2, 1);

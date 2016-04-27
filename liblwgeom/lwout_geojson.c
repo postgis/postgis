@@ -53,9 +53,9 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 
 	if ( precision > OUT_MAX_DOUBLE_PRECISION ) precision = OUT_MAX_DOUBLE_PRECISION;
 
-	if (has_bbox) 
+	if (has_bbox)
 	{
-		/* Whether these are geography or geometry, 
+		/* Whether these are geography or geometry,
 		   the GeoJSON expects a cartesian bounding box */
 		lwgeom_calculate_gbox_cartesian(geom, &tmp);
 		bbox = &tmp;

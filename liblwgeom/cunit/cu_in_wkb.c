@@ -72,7 +72,7 @@ static void cu_wkb_in(char *wkt)
 
 	/* Turn WKT into geom */
 	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
-	if ( pr.errcode ) 
+	if ( pr.errcode )
 	{
 		printf("ERROR: %s\n", pr.message);
 		printf("POSITION: %d\n", pr.errlocation);
@@ -152,7 +152,7 @@ static void test_wkb_in_polygon(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_multipoint(void) 
+static void test_wkb_in_multipoint(void)
 {
 	cu_wkb_in("SRID=4;MULTIPOINT(0 0 0,0 1 0,1 1 0,1 0 0,0 0 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -183,7 +183,7 @@ static void test_wkb_in_collection(void)
 
 }
 
-static void test_wkb_in_circularstring(void) 
+static void test_wkb_in_circularstring(void)
 {
 	cu_wkb_in("CIRCULARSTRING(0 -2,-2 0,0 2,2 0,0 -2)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
@@ -195,13 +195,13 @@ static void test_wkb_in_circularstring(void)
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_compoundcurve(void) 
+static void test_wkb_in_compoundcurve(void)
 {
 	cu_wkb_in("COMPOUNDCURVE(CIRCULARSTRING(0 0 0, 0.26794919243112270647255365849413 1 3, 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1),(0.5857864376269049511983112757903 1.4142135623730950488016887242097 1,2 0 0,0 0 0))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 }
 
-static void test_wkb_in_curvpolygon(void) 
+static void test_wkb_in_curvpolygon(void)
 {
 	cu_wkb_in("CURVEPOLYGON(CIRCULARSTRING(-2 0 0 0,-1 -1 1 2,0 0 2 4,1 -1 3 6,2 0 4 8,0 2 2 4,-2 0 0 0),(-1 0 1 2,0 0.5 2 4,1 0 3 6,0 1 3 4,-1 0 1 2))");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);

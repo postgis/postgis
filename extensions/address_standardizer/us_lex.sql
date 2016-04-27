@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS us_lex (
     seq integer,
     word text,
     stdword text,
-    token integer, is_custom boolean NOT NULL DEFAULT true, CONSTRAINT pk_us_lex PRIMARY KEY(id) 
+    token integer, is_custom boolean NOT NULL DEFAULT true, CONSTRAINT pk_us_lex PRIMARY KEY(id)
 );
 
 -- this will be needed for upgrading to prevent purging of custom entries

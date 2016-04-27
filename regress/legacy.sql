@@ -1,5 +1,5 @@
 --
--- These tests serve the purpose of ensuring compatibility with 
+-- These tests serve the purpose of ensuring compatibility with
 -- old versions of postgis users.
 --
 -- Their use rely on loading the legacy.sql script.

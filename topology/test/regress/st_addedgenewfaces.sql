@@ -15,7 +15,7 @@ SELECT topology.ST_AddEdgeModFace('city_data', 5, 5,
 SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 6,
  'LINESTRING(36 38, 41 40, 57 33)');
 
--- Non-existent node 
+-- Non-existent node
 SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 60000,
  'LINESTRING(36 38,57 33)');
 SELECT topology.ST_AddEdgeNewFaces('city_data', 60000, 6,
@@ -59,15 +59,15 @@ SELECT 'L' || topology.AddTopoGeometryColumn('city_data',
 
 -- Feature composed by face 3 and face 4
 INSERT INTO city_data.fp VALUES ('F3,F4',
-  topology.CreateTopoGeom('city_data', 3, 1, '{{3,3},{4,3}}')); 
+  topology.CreateTopoGeom('city_data', 3, 1, '{{3,3},{4,3}}'));
 
 CREATE TABLE city_data.fc(id varchar);
 SELECT 'L' || topology.AddTopoGeometryColumn('city_data',
   'city_data', 'fc', 'g', 'COLLECTION');
 
--- Feature composed by face 5 and node 4 
+-- Feature composed by face 5 and node 4
 INSERT INTO city_data.fc VALUES ('F5,N4',
-  topology.CreateTopoGeom('city_data', 4, 2, '{{5,3},{4,1}}')); 
+  topology.CreateTopoGeom('city_data', 4, 2, '{{5,3},{4,1}}'));
 
 
 ---------------------------------------------------------------------
@@ -86,7 +86,7 @@ SELECT 1 as id, topology.st_addedgenewfaces('city_data', 14, 18,
   'LINESTRING(21 14, 35 22)') as edge_id INTO newedge;
 SELECT 'T1', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (19, 7, 17, 10, 
+  city_data.edge WHERE edge_id IN (19, 7, 17, 10,
   ( SELECT edge_id FROM newedge WHERE id = 1 ) )
   ORDER BY edge_id;
 
@@ -102,7 +102,7 @@ INSERT INTO newedge SELECT 2, topology.st_addedgenewfaces('city_data',
   12, 18, 'LINESTRING(47 14, 35 22)');
 SELECT 'T2', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (17, 8, 15, 11, 
+  city_data.edge WHERE edge_id IN (17, 8, 15, 11,
   ( SELECT edge_id FROM newedge WHERE id = 2 ) )
   ORDER BY edge_id;
 
@@ -118,7 +118,7 @@ INSERT INTO newedge SELECT 3, topology.st_addedgenewfaces('city_data',
   12, 10, 'LINESTRING(47 14, 35 6)');
 SELECT 'T3', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (11, 16, 14, 18, 
+  city_data.edge WHERE edge_id IN (11, 16, 14, 18,
   ( SELECT edge_id FROM newedge WHERE id = 3 ) )
   ORDER BY edge_id;
 
@@ -134,7 +134,7 @@ INSERT INTO newedge SELECT 4, topology.st_addedgenewfaces('city_data',
   9, 13, 'LINESTRING(21 6, 35 14)');
 SELECT 'T4', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (20, 10, 18, 13, 
+  city_data.edge WHERE edge_id IN (20, 10, 18, 13,
   ( SELECT edge_id FROM newedge WHERE id = 4 ) )
   ORDER BY edge_id;
 
@@ -222,7 +222,7 @@ INSERT INTO newedge SELECT 12, topology.st_addedgenewfaces('city_data',
   1, 1, 'LINESTRING(8 30, 5 27, 11 27, 8 30)');
 SELECT 'T12', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (1, 
+  city_data.edge WHERE edge_id IN (1,
   ( SELECT edge_id FROM newedge WHERE id = 12 ) )
   ORDER BY edge_id;
 
@@ -233,7 +233,7 @@ INSERT INTO newedge SELECT 13, topology.st_addedgenewfaces('city_data',
   2, 2, 'LINESTRING(25 30, 28 27, 22 27, 25 30)');
 SELECT 'T13', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (2, 
+  city_data.edge WHERE edge_id IN (2,
   ( SELECT edge_id FROM newedge WHERE id = 13 ) )
   ORDER BY edge_id;
 
@@ -246,7 +246,7 @@ INSERT INTO newedge SELECT 14, topology.st_addedgenewfaces('city_data',
   23, 1, 'LINESTRING(9 33, 8 30)');
 SELECT 'T14', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN (1, 
+  city_data.edge WHERE edge_id IN (1,
   ( SELECT edge_id FROM newedge WHERE id = 14 ) )
   ORDER BY edge_id;
 SELECT 'N' || node_id, containing_face
@@ -303,7 +303,7 @@ INSERT INTO newedge SELECT 18, topology.st_addedgenewfaces('city_data',
   25, 26,  'LINESTRING(35 28, 35 45, 63 45, 63 25, 39 25, 39 28)');
 SELECT 'T18', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 4, 5, 43, 
+  city_data.edge WHERE edge_id IN ( 4, 5, 43,
   ( SELECT edge_id FROM newedge WHERE id = 18 ) )
   ORDER BY edge_id;
 
@@ -326,7 +326,7 @@ INSERT INTO newedge SELECT 20, topology.st_addedgenewfaces('city_data',
   10, 11,  'LINESTRING(35 6, 35 6, 44 0, 47 6, 47 6)');
 SELECT 'T20', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 36,  14, 16, 
+  city_data.edge WHERE edge_id IN ( 36,  14, 16,
   ( SELECT edge_id FROM newedge WHERE id = 20 ) )
   ORDER BY edge_id;
 
@@ -344,7 +344,7 @@ SELECT 'T21', 'E'||edge_id, next_left_edge, next_right_edge,
   ORDER BY edge_id;
 
 --
--- Split a face containing an hole 
+-- Split a face containing an hole
 -- Faces on both sides contain isolated nodes.
 --
 SELECT 'T22-', 'N' || topology.st_addisonode('city_data', 32, 'POINT(26 36)'), 32;
@@ -354,7 +354,7 @@ INSERT INTO newedge SELECT 22, topology.st_addedgenewfaces('city_data',
   3, 3,  'LINESTRING(25 35, 27 35, 26 34, 25 35)');
 SELECT 'T22', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (22, 16)
     UNION VALUES (2),(3) )
   ORDER BY edge_id;
@@ -370,7 +370,7 @@ INSERT INTO newedge SELECT 23, topology.st_addedgenewfaces('city_data',
   2, 3,  'LINESTRING(25 30, 29 32, 29 37, 25 35)');
 SELECT 'T23', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (13, 23, 22, 16)
     UNION VALUES (2),(3) )
   ORDER BY edge_id;
@@ -383,7 +383,7 @@ SELECT 'T23', 'N' || node_id, containing_face FROM
 -- This version goes clockwise
 -- All involved faces contain isolated nodes
 --
-SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(19.5 37.5)'), 39; 
+SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(19.5 37.5)'), 39;
 SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(19 38)'), 39;
 SELECT 'T24-', 'N' || st_addisonode('city_data', 31, 'POINT(20.5 35)'), 31;
 SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(20.5 34)'), 39;
@@ -393,7 +393,7 @@ INSERT INTO newedge SELECT 24, topology.st_addedgenewfaces('city_data',
   30, 30,  'LINESTRING(19.5 37.5, 24.5 37.5, 19.5 32.5, 19.5 37.5)');
 SELECT 'T24', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (24, 23, 16)
     UNION VALUES (2),(3) )
   ORDER BY edge_id;
@@ -410,7 +410,7 @@ INSERT INTO newedge SELECT 25, topology.st_addedgenewfaces('city_data',
   31, 31,  'LINESTRING(19 38, 19 31, 26 38, 19 38)');
 SELECT 'T25', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (25, 24, 23, 16)
     UNION VALUES (2),(3) )
   ORDER BY edge_id;
@@ -425,7 +425,7 @@ INSERT INTO newedge SELECT 26, topology.st_addedgenewfaces('city_data',
   5, 6,  'LINESTRING(36 38, 57 33)');
 SELECT 'T26', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (26, 17, 18)
     UNION VALUES (4),(5) )
   ORDER BY edge_id;
@@ -439,7 +439,7 @@ INSERT INTO newedge SELECT 27, topology.st_addedgenewfaces('city_data',
   5, 6, 'LINESTRING(36 38, 50 38, 57 33)');
 SELECT 'T27', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (27, 17, 18, 26)
     UNION VALUES (4),(5) )
   ORDER BY edge_id;
@@ -456,7 +456,7 @@ INSERT INTO newedge SELECT 28, topology.st_addedgenewfaces('city_data',
   7, 7, 'LINESTRING(41 40, 38 40, 41 43, 41 40)');
 SELECT 'T28', 'E'||edge_id, next_left_edge, next_right_edge,
   left_face, right_face FROM
-  city_data.edge WHERE edge_id IN ( 
+  city_data.edge WHERE edge_id IN (
     SELECT edge_id FROM newedge WHERE id IN (26, 27, 28, 17, 18)
     UNION VALUES (4),(5) )
   ORDER BY edge_id;

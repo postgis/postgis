@@ -37,7 +37,7 @@ v_gid text;           --checks the name of the pk column in p_table
 v_table_sql text;
 
 --SQL statement that will perform an update on geometry_columns
-v_update_geometry_sql text; 
+v_update_geometry_sql text;
 
 --SQL statement that will perform an update on historic_tables
 v_update_history_sql text;
@@ -57,7 +57,7 @@ BEGIN
 	--end sql
 	
 	--generate sql for creating the historic table
-	v_table_sql:= 'CREATE TABLE ' || v_history_table || 
+	v_table_sql:= 'CREATE TABLE ' || v_history_table ||
 	'(' ||
 	'history_id serial not null,' ||
 	'date_added timestamp not null default now(),' ||
@@ -83,7 +83,7 @@ BEGIN
 	--insert into historic_tables
 	v_update_history_sql:='INSERT INTO public.historic_information(table_id,table_name,primary_field,geometry_field) VALUES (' ||
 	'DEFAULT,' ||
-	quote_literal(v_history_table) || ',' || 
+	quote_literal(v_history_table) || ',' ||
 	quote_literal(v_gid) || ',' ||
 	quote_literal(p_geometry_field) || ');';
 	--end update historic tables
@@ -121,7 +121,7 @@ BEGIN
 	'INSERT INTO ' || p_schema || '.' || p_table || '_history VALUES(' ||
 	'DEFAULT,' || --history_id nextval()
 	'DEFAULT,' || --date_added now()
-	'NULL,' || --date_deleted 
+	'NULL,' || --date_deleted
 	quote_literal('INSERT') || ',' || --operation
 	'DEFAULT,' ||
 	'NEW.' || p_gid_field || ',' ||
@@ -154,7 +154,7 @@ BEGIN
 	'INSERT INTO ' || p_schema || '.' || p_table || '_history VALUES (' ||
 	'DEFAULT,' || --history_id nextval()
 	'DEFAULT,' || --date_added now()
-	'NULL,' || --date_deleted 
+	'NULL,' || --date_deleted
 	quote_literal('INSERT') || ',' || --operation
 	'DEFAULT,' ||
 	'NEW.' || p_gid_field || ',' ||

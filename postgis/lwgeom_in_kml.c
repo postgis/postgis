@@ -424,7 +424,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			if (ppa[0]->npoints < 4)
 				lwpgerror("invalid KML representation");
 
-			if ((!*hasz && !ptarray_is_closed_2d(ppa[0])) || 
+			if ((!*hasz && !ptarray_is_closed_2d(ppa[0])) ||
 			    ( *hasz && !ptarray_is_closed_3d(ppa[0])))
 			{
 				POINT4D pt;
@@ -438,7 +438,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 	
 	if (outer_rings != 1)
 		lwpgerror("invalid KML representation");
-		 
+		
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
 
@@ -460,7 +460,7 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			if (ppa[ring]->npoints < 4)
 				lwpgerror("invalid KML representation");
 
-			if ((!*hasz && !ptarray_is_closed_2d(ppa[ring])) || 
+			if ((!*hasz && !ptarray_is_closed_2d(ppa[ring])) ||
 			    ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
 			{
 				POINT4D pt;

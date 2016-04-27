@@ -8,12 +8,12 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --
 -- Author: Regina Obe and Leo Hsu <lr@pcorp.us>
---  
+--
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
 SELECT tiger.SetSearchPathForInstall('tiger');
 
-CREATE OR REPLACE FUNCTION install_geocode_settings() 
+CREATE OR REPLACE FUNCTION install_geocode_settings()
 	RETURNS void AS
 $$
 DECLARE var_temp text;
@@ -31,7 +31,7 @@ BEGIN
 	TRUNCATE TABLE geocode_settings_default;
 	INSERT INTO geocode_settings_default(name,setting,unit,category,short_desc)
 		SELECT f.*
-		FROM 
+		FROM
 		(VALUES ('debug_geocode_address', 'false', 'boolean','debug', 'outputs debug information in notice log such as queries when geocode_addresss is called if true')
 			, ('debug_geocode_intersection', 'false', 'boolean','debug', 'outputs debug information in notice log such as queries when geocode_intersection is called if true')
 			, ('debug_normalize_address', 'false', 'boolean','debug', 'outputs debug information in notice log such as queries and intermediate expressions when normalize_address is called if true')
@@ -59,7 +59,7 @@ CREATE OR REPLACE FUNCTION set_geocode_setting(setting_name text, setting_value 
 RETURNS text AS
 $$
 INSERT INTO geocode_settings(name, setting, unit, category, short_desc)
-SELECT name, setting, unit, category, short_desc 
+SELECT name, setting, unit, category, short_desc
     FROM geocode_settings_default
     WHERE name NOT IN(SELECT name FROM geocode_settings);
 

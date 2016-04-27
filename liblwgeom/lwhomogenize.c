@@ -176,7 +176,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
 					bcol->ngeoms=0; lwcollection_free(bcol);
 				}
-				else 
+				else
 				{
 					lwcollection_add_lwgeom(outcol, lwcollection_as_lwgeom(bcol));
 				}
@@ -211,7 +211,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 	LWGEOM *hgeom;
 
 	/* EMPTY Geometry */
-	if (lwgeom_is_empty(geom)) 
+	if (lwgeom_is_empty(geom))
 	{
 		if( lwgeom_is_collection(geom) )
 		{
@@ -260,7 +260,7 @@ lwgeom_homogenize(const LWGEOM *geom)
 		}
 	
 		/* Work on anonymous collections separately */
-		case COLLECTIONTYPE: 
+		case COLLECTIONTYPE:
 			return lwcollection_homogenize((LWCOLLECTION *) geom);
 	}
 

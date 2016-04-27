@@ -181,7 +181,7 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 
 	/*
 	 * Reintroduce endpoints from input, using split-line-by-point.
-	 * Note that by now we can be sure that each point splits at 
+	 * Note that by now we can be sure that each point splits at
 	 * most _one_ segment as any point shared by multiple segments
 	 * would already be a node. Also we can be sure that any of
 	 * the segments endpoints won't split any other segment.

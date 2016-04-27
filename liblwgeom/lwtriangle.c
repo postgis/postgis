@@ -93,7 +93,7 @@ void printLWTRIANGLE(LWTRIANGLE *triangle)
 
 /* @brief Clone LWTRIANGLE object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWTRIANGLE *
 lwtriangle_clone(const LWTRIANGLE *g)
@@ -180,7 +180,7 @@ int lwtriangle_is_empty(const LWTRIANGLE *triangle)
 }
 
 /**
- * Find the area of the outer ring 
+ * Find the area of the outer ring
  */
 double
 lwtriangle_area(const LWTRIANGLE *triangle)
@@ -208,17 +208,17 @@ lwtriangle_area(const LWTRIANGLE *triangle)
 double
 lwtriangle_perimeter(const LWTRIANGLE *triangle)
 {
-	if( triangle->points ) 
+	if( triangle->points )
 		return ptarray_length(triangle->points);
-	else 
+	else
 		return 0.0;
 }
 
 double
 lwtriangle_perimeter_2d(const LWTRIANGLE *triangle)
 {
-	if( triangle->points ) 
+	if( triangle->points )
 		return ptarray_length_2d(triangle->points);
-	else 
+	else
 		return 0.0;
 }

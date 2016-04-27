@@ -790,7 +790,7 @@ static void test_lwgeom_force_clockwise(void)
 	geom2 = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	lwgeom_force_clockwise(geom2);
 	
-	/** use same check instead of strcmp to account 
+	/** use same check instead of strcmp to account
 	  for difference in endianness **/
 	CU_ASSERT( lwgeom_same(geom, geom2) );
 	lwgeom_free(geom);
@@ -1052,7 +1052,7 @@ void test_gbox_same_2d(void)
 
     CU_ASSERT_TRUE(gbox_same_2d(g1->bbox, g2->bbox));
     CU_ASSERT_FALSE(gbox_same_2d(g1->bbox, g3->bbox));
-    
+
     /* Serializing a GBOX with precise coordinates renders the boxes not strictly equal,
      * but still equal according to gbox_same_2d_float.
      */

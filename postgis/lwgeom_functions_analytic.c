@@ -194,7 +194,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
-		opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1); 
+		opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
 		ptarray_set_point4d(opa, 0, &pt);
 		
 		point = lwpoint_construct(line->srid, NULL, opa);
@@ -226,7 +226,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		{
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
-			opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1); 
+			opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
 			ptarray_set_point4d(opa, 0, &pt);
 			point = lwpoint_construct(line->srid, NULL, opa);
 			PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
@@ -237,7 +237,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1); 
+	opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
 	ptarray_set_point4d(opa, 0, &pt);
 	point = lwpoint_construct(line->srid, NULL, opa);
 	PG_FREE_IF_COPY(gser, 0);
@@ -349,7 +349,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) 
+	if ( in_lwgeom->bbox )
 		lwgeom_add_bbox(out_lwgeom);
 
 
@@ -957,7 +957,7 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
                 	}
                 }
                 /* increment the index by the total number of rings in the sub-poly */
-                /* we do this here in case we short-cutted out of the poly before looking at all the rings */ 
+                /* we do this here in case we short-cutted out of the poly before looking at all the rings */
                 i += ringCounts[p];
 	}
 
@@ -1125,7 +1125,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	}
 
 	center = geometry_serialize(lwcenter);
-	lwgeom_free(lwcenter); 
+	lwgeom_free(lwcenter);
 
 	get_call_result_type(fcinfo, NULL, &resultTupleDesc);
 	BlessTupleDesc(resultTupleDesc);
@@ -1209,7 +1209,7 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 				min_dim = FP_MIN(min_dim, box->zmax - box->zmin);
 
 			/* Apply a lower bound to the computed default tolerance to
-			 * avoid a tolerance of zero in the case of collinear 
+			 * avoid a tolerance of zero in the case of collinear
 			 * points.
 			 */
 			tolerance = FP_MAX(min_default_tolerance, tolerance_coefficient * min_dim);

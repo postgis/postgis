@@ -87,8 +87,8 @@ void lwnotice(const char *fmt, ...);
 void lwerror(const char *fmt, ...);
 
 /**
- * Write a debug message out. 
- * Don't call this function directly, use the 
+ * Write a debug message out.
+ * Don't call this function directly, use the
  * macros, LWDEBUG() or LWDEBUGF(), for
  * efficiency.
  * @ingroup logging

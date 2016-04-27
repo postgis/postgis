@@ -20,7 +20,7 @@
 
 BEGIN;
 
--- 3. Create feature tables  
+-- 3. Create feature tables
 
 CREATE SCHEMA features;
 

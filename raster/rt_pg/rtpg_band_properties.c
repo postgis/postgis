@@ -330,7 +330,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
 	}
 
 	result = (text *) palloc(VARHDRSZ + strlen(bandpath) + 1);
-	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1); 
+	SET_VARSIZE(result, VARHDRSZ + strlen(bandpath) + 1);
 	strcpy((char *) VARDATA(result), bandpath);
 
 	rt_band_destroy(band);

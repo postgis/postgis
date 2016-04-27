@@ -96,7 +96,7 @@ void printLWLINE(LWLINE *line)
 
 /* @brief Clone LWLINE object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWLINE *
 lwline_clone(const LWLINE *g)
@@ -277,7 +277,7 @@ lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 
 	if ( pa->npoints > 0 )
 		line = lwline_construct(srid, NULL, pa);
-	else 
+	else
 		line = lwline_construct_empty(srid, hasz, hasm);
 	
 	return line;
@@ -298,7 +298,7 @@ lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 	char hasm = lwgeom_has_m(lwgeom);
 	uint32_t npoints = mpoint->ngeoms;
 
-	if ( lwgeom_is_empty(lwgeom) ) 
+	if ( lwgeom_is_empty(lwgeom) )
 	{
 		return lwline_construct_empty(srid, hasz, hasm);
 	}
@@ -564,7 +564,7 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 		/* Return null for collapse */
-		else 
+		else
 		{
 			ptarray_free(pa);
 			return NULL;

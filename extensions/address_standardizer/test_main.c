@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
         argc -= 2;
         argv += 2;
     }
-    else if (argc != 1) 
+    else if (argc != 1)
         Usage();
 
     std = std_init();
@@ -291,7 +291,7 @@ static int standardize_command_line( STANDARDIZER *std ,
               MAXSTRLEN ) ;
       input_str[ 0 ] = SENTINEL ;
       /* -- get user's input -- */
-      if ( ( !get_input_line( input_str , stdin ) ) || 
+      if ( ( !get_input_line( input_str , stdin ) ) ||
            ( strncmp( input_str , "exit" , 4 ) == 0 ) ||
            ( strncmp( input_str , "quit" , 4 ) == 0 ) ||
            ( strncmp( input_str , "done" , 4 ) == 0 )

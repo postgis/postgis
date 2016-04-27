@@ -119,7 +119,7 @@ void printLWCIRCSTRING(LWCIRCSTRING *curve)
 
 /* @brief Clone LWCIRCSTRING object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWCIRCSTRING *
 lwcircstring_clone(const LWCIRCSTRING *g)
@@ -313,7 +313,7 @@ LWPOINT* lwcircstring_get_lwpoint(const LWCIRCSTRING *circ, int where) {
 }
 
 /*
-* Snap to grid 
+* Snap to grid
 */
 LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid)
 {

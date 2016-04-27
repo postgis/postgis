@@ -855,7 +855,7 @@ projFileCreate(SHPDUMPERSTATE *state)
 }
 
 
-static int 
+static int
 getTableInfo(SHPDUMPERSTATE *state)
 {
 
@@ -1178,7 +1178,7 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 	char *connstring;
 	int connlen;
 	
-	connlen = 64 + 
+	connlen = 64 +
 		(conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
 		(conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
 		(conn->database ? strlen(conn->database) : 0);
@@ -1480,7 +1480,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			if (!state->geo_col_name)
 			{
 				/* If either no geo* column name was provided (in which case this is
-				   the first match) or we match the provided column name, we have 
+				   the first match) or we match the provided column name, we have
 				   found our geo* column */
 				if (!state->config->geo_col_name || !strcmp(state->config->geo_col_name, pgfieldname))
 				{
@@ -1989,7 +1989,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 	if (state->geo_col_name)
 		geocolnum = PQfnumber(state->fetchres, "_geoX");
 
-	/* Process the next record within the batch. First write out all of 
+	/* Process the next record within the batch. First write out all of
 	the non-geo fields */
 	for (i = 0; i < state->fieldcount; i++)
 	{

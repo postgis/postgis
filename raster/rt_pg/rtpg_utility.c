@@ -113,7 +113,7 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 
 	/*
 		correct pixsize of unsigned pixel types
-		example: for PT_8BUI, the value is CHAR_MIN but if char is signed, 
+		example: for PT_8BUI, the value is CHAR_MIN but if char is signed,
 			the value returned is -127 instead of 0.
 	*/
 	switch (pixtype) {

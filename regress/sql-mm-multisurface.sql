@@ -210,7 +210,7 @@ UPDATE public.multisurface
                 4 11 4,
                 7 8 7)))')
         WHERE id = 1;
-UPDATE public.multisurface        
+UPDATE public.multisurface
         SET the_geom_3dm = ST_geomfromewkt('MULTISURFACEM(CURVEPOLYGON(CIRCULARSTRING(
                 -2 0 0,
                 -1 -1 2,
@@ -250,7 +250,7 @@ UPDATE public.multisurface
                 4 11,
                 7 8)))')
         WHERE id = 1;
-        
+
 SELECT 'asbinary01', encode(ST_AsBinary(the_geom_2d, 'ndr'), 'hex') FROM public.multisurface;
 SELECT 'asbinary02', encode(ST_AsBinary(the_geom_3dm, 'ndr'), 'hex') FROM public.multisurface;
 SELECT 'asbinary03', encode(ST_AsBinary(the_geom_3dz, 'ndr'), 'hex') FROM public.multisurface;

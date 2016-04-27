@@ -26,7 +26,7 @@
 
 
 /*
-* Specific tree types include all the generic slots and 
+* Specific tree types include all the generic slots and
 * their own slots for their trees. We put the implementation
 * for the CircTreeGeomCache here because we can't shove
 * the PgSQL specific bits of the code (fcinfo) back into
@@ -34,10 +34,10 @@
 */
 typedef struct {
 	int                     type;       // <GeomCache>
-	GSERIALIZED*                geom1;      // 
-	GSERIALIZED*                geom2;      // 
-	size_t                      geom1_size; // 
-	size_t                      geom2_size; // 
+	GSERIALIZED*                geom1;      //
+	GSERIALIZED*                geom2;      //
+	size_t                      geom1_size; //
+	size_t                      geom2_size; //
 	int32                       argnum;     // </GeomCache>
 	CIRC_NODE*                  index;
 } CircTreeGeomCache;
@@ -69,7 +69,7 @@ static int
 CircTreeFreer(GeomCache* cache)
 {
 	CircTreeGeomCache* circ_cache = (CircTreeGeomCache*)cache;
-	if ( circ_cache->index ) 
+	if ( circ_cache->index )
 	{
 		circ_tree_free(circ_cache->index);
 		circ_cache->index = 0;
@@ -139,7 +139,7 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const POINT4D* in_poi
 		{
 			POINT2D pt2d_outside; /* latlon */
 			POINT2D pt2d_inside;
-			pt2d_inside.x = in_point->x; 
+			pt2d_inside.x = in_point->x;
 			pt2d_inside.y = in_point->y;
 			/* Calculate a definitive outside point */
 			gbox_pt_outside(&gbox1, &pt2d_outside);
@@ -221,7 +221,7 @@ geography_distance_cache_tolerance(FunctionCallInfoData* fcinfo, const GSERIALIZ
 		}
 		
 		circtree = lwgeom_calculate_circ_tree(lwgeom);
-		if ( geomtype == POLYGONTYPE || geomtype == MULTIPOLYGONTYPE ) 
+		if ( geomtype == POLYGONTYPE || geomtype == MULTIPOLYGONTYPE )
 		{
 			POINT2D p2d;
 			circ_tree_get_point(circtree_cached, &p2d);
@@ -292,7 +292,7 @@ geography_tree_distance(const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHE
 	{
 		*distance = 0.0;
 	}
-	else 
+	else
 	{
 		/* Calculate tree/tree distance */
 		*distance = circ_tree_distance_tree(circ_tree1, circ_tree2, s, tolerance);

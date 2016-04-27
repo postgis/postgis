@@ -1,7 +1,7 @@
 set client_min_messages to WARNING;
 \set VERBOSITY terse
 
--- Usual city_data input 
+-- Usual city_data input
 
 \i load_topology.sql
 

@@ -136,7 +136,7 @@ static void gbox_from_gidx(GIDX *a, GBOX *gbox, int flags)
 * encompasses the objects. For geography objects returns geocentric bounding
 * box, for geometry objects returns cartesian bounding box.
 */
-int 
+int
 gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 {
 	char gboxmem[GIDX_MAX_SIZE];
@@ -154,8 +154,8 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 
 /**
 * Update the bounding box of a #GSERIALIZED, allocating a fresh one
-* if there is not enough space to just write the new box in. 
-* <em>WARNING</em> if a new object needs to be created, the 
+* if there is not enough space to just write the new box in.
+* <em>WARNING</em> if a new object needs to be created, the
 * input pointer will have to be freed by the caller! Check
 * to see if input == output. Returns null if there's a problem
 * like mismatched dimensions.
@@ -244,7 +244,7 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
 * full object and return the box based on that. If no box is available,
 * return #LW_FAILURE, otherwise #LW_SUCCESS.
 */
-int 
+int
 gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 {
 	GSERIALIZED *gpart;

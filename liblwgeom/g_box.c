@@ -311,7 +311,7 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
-int 
+int
 gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 {
 
@@ -327,7 +327,7 @@ gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
-int 
+int
 gbox_contains_2d(const GBOX *g1, const GBOX *g2)
 {
 	if ( ( g2->xmin < g1->xmin ) || ( g2->xmax > g1->xmax ) ||
@@ -338,7 +338,7 @@ gbox_contains_2d(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
-int 
+int
 gbox_contains_point2d(const GBOX *g, const POINT2D *p)
 {
 	if ( ( g->xmin <= p->x ) && ( g->xmax >= p->x ) &&
@@ -641,8 +641,8 @@ static int lwcollection_calculate_gbox_cartesian(LWCOLLECTION *coll, GBOX *gbox)
 	{
 		if ( lwgeom_calculate_gbox_cartesian((LWGEOM*)(coll->geoms[i]), &subbox) == LW_SUCCESS )
 		{
-			/* Keep a copy of the sub-bounding box for later 
-			if ( coll->geoms[i]->bbox ) 
+			/* Keep a copy of the sub-bounding box for later
+			if ( coll->geoms[i]->bbox )
 				lwfree(coll->geoms[i]->bbox);
 			coll->geoms[i]->bbox = gbox_copy(&subbox); */
 			if ( first )

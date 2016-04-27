@@ -156,14 +156,14 @@ select '95','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(1.0001 0, 2 2)'::GEO
 select '96','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(0 1, 1 2)'::GEOMETRY as bool;
 select '97','MULTIPOINT(0 0, 1 1)'::GEOMETRY && 'MULTIPOINT(0 1.0001, 1 2)'::GEOMETRY as bool;
 
---- contains 
+--- contains
 
 select '98','MULTIPOINT(0 0, 10 10)'::GEOMETRY ~ 'MULTIPOINT(5 5, 7 7)'::GEOMETRY as bool;
 select '99','MULTIPOINT(5 5, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 select '100','MULTIPOINT(0 0, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 select '101','MULTIPOINT(-0.0001 0, 7 7)'::GEOMETRY ~ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
 
---- contained by 
+--- contained by
 
 select '102','MULTIPOINT(0 0, 10 10)'::GEOMETRY @ 'MULTIPOINT(5 5, 7 7)'::GEOMETRY as bool;
 select '103','MULTIPOINT(5 5, 7 7)'::GEOMETRY @ 'MULTIPOINT(0 0, 10 10)'::GEOMETRY as bool;
@@ -207,7 +207,7 @@ create table TEST(a GEOMETRY, b GEOMETRY);
 \i regress_biginsert.sql
 
 
----test basic ops on this 
+---test basic ops on this
 
 select '121',box3d(a) as box3d_a, box3d(b) as box3d_b from TEST;
 
@@ -218,7 +218,7 @@ select '125',a &>b from TEST;
 
 select '126',a ~= b from TEST;
 select '127',a @ b from TEST;
-select '128',a ~ b from TEST; 
+select '128',a ~ b from TEST;
 
 select '129', ST_MemSize(PostGIS_DropBBOX(a)), ST_MemSize(PostGIS_DropBBOX(b)) from TEST;
 

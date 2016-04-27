@@ -39,7 +39,7 @@ static void RTreeFree(RTREE_NODE* root);
 /**
 * Allocate a fresh clean RTREE_POLY_CACHE
 */
-static RTREE_POLY_CACHE* 
+static RTREE_POLY_CACHE*
 RTreeCacheCreate()
 {
 	RTREE_POLY_CACHE* result;
@@ -52,7 +52,7 @@ RTreeCacheCreate()
 * Recursively frees the child nodes, the interval and the line before
 * freeing the root node.
 */
-static void 
+static void
 RTreeFree(RTREE_NODE* root)
 {
 	POSTGIS_DEBUGF(2, "RTreeFree called for %p", root);
@@ -72,7 +72,7 @@ RTreeFree(RTREE_NODE* root)
 /**
 * Free the cache object and all the sub-objects properly.
 */
-static void 
+static void
 RTreeCacheClear(RTREE_POLY_CACHE* cache)
 {
 	int g, r, i;
@@ -95,9 +95,9 @@ RTreeCacheClear(RTREE_POLY_CACHE* cache)
 
 
 /**
- * Returns 1 if min < value <= max, 0 otherwise. 
+ * Returns 1 if min < value <= max, 0 otherwise.
 */
-static uint32 
+static uint32
 IntervalIsContained(RTREE_INTERVAL* interval, double value)
 {
 	return FP_CONTAINS_INCL(interval->min, value, interval->max) ? 1 : 0;
@@ -106,7 +106,7 @@ IntervalIsContained(RTREE_INTERVAL* interval, double value)
 /**
 * Creates an interval with the total extents of the two given intervals.
 */
-static RTREE_INTERVAL* 
+static RTREE_INTERVAL*
 RTreeMergeIntervals(RTREE_INTERVAL *inter1, RTREE_INTERVAL *inter2)
 {
 	RTREE_INTERVAL *interval;
@@ -144,7 +144,7 @@ RTreeCreateInterval(double value1, double value2)
 /**
 * Creates an interior node given the children.
 */
-static RTREE_NODE* 
+static RTREE_NODE*
 RTreeCreateInteriorNode(RTREE_NODE* left, RTREE_NODE* right)
 {
 	RTREE_NODE *parent;
@@ -165,7 +165,7 @@ RTreeCreateInteriorNode(RTREE_NODE* left, RTREE_NODE* right)
 /**
 * Creates a leaf node given the pointer to the start point of the segment.
 */
-static RTREE_NODE* 
+static RTREE_NODE*
 RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
 {
 	RTREE_NODE *parent;
@@ -214,7 +214,7 @@ RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
 * Creates an rtree given a pointer to the point array.
 * Must copy the point array.
 */
-static RTREE_NODE* 
+static RTREE_NODE*
 RTreeCreate(POINTARRAY* pointArray)
 {
 	RTREE_NODE* root;
@@ -275,10 +275,10 @@ RTreeCreate(POINTARRAY* pointArray)
 }
 
 
-/** 
-* Merges two multilinestrings into a single multilinestring. 
+/**
+* Merges two multilinestrings into a single multilinestring.
 */
-static LWMLINE* 
+static LWMLINE*
 RTreeMergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 {
 	LWGEOM **geoms;
@@ -312,7 +312,7 @@ RTreeMergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 * LWGEOM* this function builds and stores an RTREE_POLY_CACHE into the provided
 * GeomCache object.
 */
-static int 
+static int
 RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 {
 	int i, p, r;
@@ -391,7 +391,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 }
 
 /**
-* Callback function sent into the GetGeomCache generic caching system. On a 
+* Callback function sent into the GetGeomCache generic caching system. On a
 * cache miss, this function clears the cached index object.
 */
 static int

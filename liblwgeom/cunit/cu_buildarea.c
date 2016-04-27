@@ -178,9 +178,9 @@ static void buildarea4(void)
 
 /*
        +-----------+
-       |  +-----+  | This time the innermost ring has 
+       |  +-----+  | This time the innermost ring has
        |  | +-+ |  | more points than the other (outer) two.
-       |  | | | |  | 
+       |  | | | |  |
        |  | +-+ |  |
        |  +-----+  |
        +-----------+
@@ -213,13 +213,13 @@ static void buildarea4b(void)
 }
 
 /*
-       +---------------+   
-       |  +---------+  |   
-       |  | +--+--+ |  |   
-       |  | |  |  | |  |   
-       |  | +--+--+ |  |   
-       |  +---------+  |   
-       +---------------+   
+       +---------------+
+       |  +---------+  |
+       |  | +--+--+ |  |
+       |  | |  |  | |  |
+       |  | +--+--+ |  |
+       |  +---------+  |
+       +---------------+
 */
 static void buildarea5(void)
 {

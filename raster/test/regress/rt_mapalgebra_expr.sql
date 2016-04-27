@@ -1,7 +1,7 @@
 SET client_min_messages TO warning;
 
-CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8)
     LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[])
-    RETURNS FLOAT AS 
+    RETURNS FLOAT AS
     $$
     BEGIN
         IF pixel IS NULL THEN
@@ -19,11 +19,11 @@ CREATE OR REPLACE FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[])
         END IF;
         RETURN pixel + 20;
     END;
-    $$ 
+    $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
-    RETURNS FLOAT AS 
+    RETURNS FLOAT AS
     $$
     DECLARE
         x float := 0;
@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
         END IF;
         RETURN pixel + x;
     END;
-    $$ 
+    $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[])
@@ -146,14 +146,14 @@ SELECT 'T12',
   ST_Value(rast, 3, 4) = 3
   FROM ST_MapAlgebra(
     ST_AddBand(
-      ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, 0.001, 0, 0, 4269), 
-      '8BUI'::text, 
-      1, 
+      ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, 0.001, 0, 0, 4269),
+      '8BUI'::text,
+      1,
       0
-    ), 
-    '32BUI', 
+    ),
+    '32BUI',
     '[rast.x]'
-  ) AS rast; 
+  ) AS rast;
 
 DROP FUNCTION ST_TestRaster(ulx float8, uly float8, val float8);
 DROP FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[]);

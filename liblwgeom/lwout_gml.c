@@ -1092,7 +1092,7 @@ asgml3_poly(const LWPOLY *poly, const char *srs, int precision, int opts, int is
 	return output;
 }
 
-static size_t 
+static size_t
 asgml3_compound_size(const LWCOMPOUND *col, const char *srs, int precision, int opts, const char *prefix, const char *id )
 {
 	int i;
@@ -1134,7 +1134,7 @@ asgml3_compound_size(const LWCOMPOUND *col, const char *srs, int precision, int 
 	return size;
 }
 
-static size_t 
+static size_t
 asgml3_compound_buf(const LWCOMPOUND *col, const char *srs, char *output, int precision, int opts, const char *prefix, const char *id)
 {
 	LWGEOM *subgeom;

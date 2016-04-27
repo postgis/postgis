@@ -5,22 +5,22 @@
 --
 -- Exemple
 -- SELECT gt.id,
---        (aws).count, 
+--        (aws).count,
 --        (aws).distinctcount,
---        (aws).geom, 
---        (aws).totalarea, 
---        (aws).meanarea, 
---        (aws).totalperimeter, 
---        (aws).meanperimeter, 
---        (aws).weightedsum, 
---        (aws).weightedmean, 
---        (aws).maxareavalue, 
---        (aws).minareavalue, 
---        (aws).maxcombinedareavalue, 
---        (aws).mincombinedareavalue, 
---        (aws).sum, 
---        (aws).mean, 
---        (aws).max, 
+--        (aws).geom,
+--        (aws).totalarea,
+--        (aws).meanarea,
+--        (aws).totalperimeter,
+--        (aws).meanperimeter,
+--        (aws).weightedsum,
+--        (aws).weightedmean,
+--        (aws).maxareavalue,
+--        (aws).minareavalue,
+--        (aws).maxcombinedareavalue,
+--        (aws).mincombinedareavalue,
+--        (aws).sum,
+--        (aws).mean,
+--        (aws).max,
 --        (aws).min
 -- FROM (SELECT ST_AreaWeightedSummaryStats(gv) aws
 --       FROM (SELECT ST_Intersection(rt.rast, gt.geom) gv
@@ -44,11 +44,11 @@ CREATE TYPE arealweightedstats AS (
     weightedmean double precision,
     maxareavalue double precision,
     minareavalue double precision,
-    maxcombinedareavalue double precision, 
-    mincombinedareavalue double precision, 
-    sum double precision, 
-    mean double precision, 
-    max  double precision, 
+    maxcombinedareavalue double precision,
+    mincombinedareavalue double precision,
+    sum double precision,
+    mean double precision,
+    max  double precision,
     min double precision
 );
 
@@ -62,9 +62,9 @@ CREATE TYPE arealweightedstatsstate AS (
     weightedsum double precision,
     maxareavalue double precision[],
     minareavalue double precision[],
-    combinedweightedareas double precision[], 
-    sum double precision, 
-    max double precision, 
+    combinedweightedareas double precision[],
+    sum double precision,
+    max double precision,
     min double precision
 );
 
@@ -72,7 +72,7 @@ CREATE TYPE arealweightedstatsstate AS (
 -- geomval_arealweightedstate
 -- State function used by the ST_AreaWeightedSummaryStats aggregate
 CREATE OR REPLACE FUNCTION geomval_arealweightedstate(aws arealweightedstatsstate, gv geomval)
-    RETURNS arealweightedstatsstate 
+    RETURNS arealweightedstatsstate
     AS $$
     DECLARE
         i int;
@@ -81,35 +81,35 @@ CREATE OR REPLACE FUNCTION geomval_arealweightedstate(aws arealweightedstatsstat
         newgeom geometry := ($2).geom;
         geomtype text := GeometryType(($2).geom);
     BEGIN
-        IF geomtype = 'GEOMETRYCOLLECTION' THEN 
+        IF geomtype = 'GEOMETRYCOLLECTION' THEN
             newgeom := ST_CollectionExtract(newgeom, 3);
         END IF;
-        IF newgeom IS NULL OR ST_IsEmpty(newgeom) OR geomtype = 'POINT' OR geomtype = 'LINESTRING' OR geomtype = 'MULTIPOINT' OR geomtype = 'MULTILINESTRING' THEN 
+        IF newgeom IS NULL OR ST_IsEmpty(newgeom) OR geomtype = 'POINT' OR geomtype = 'LINESTRING' OR geomtype = 'MULTIPOINT' OR geomtype = 'MULTILINESTRING' THEN
             ret := aws;
-        ELSEIF $1 IS NULL THEN 
-            ret := (1, 
-                    ARRAY[($2).val], 
+        ELSEIF $1 IS NULL THEN
+            ret := (1,
+                    ARRAY[($2).val],
                     newgeom,
                     ST_Area(newgeom),
                     ST_Perimeter(newgeom),
-                    ($2).val * ST_Area(newgeom), 
-                    ARRAY[ST_Area(newgeom), ($2).val], 
-                    ARRAY[ST_Area(newgeom), ($2).val], 
-                    ARRAY[ST_Area(newgeom)], 
-                    ($2).val, 
-                    ($2).val, 
-                    ($2).val 
+                    ($2).val * ST_Area(newgeom),
+                    ARRAY[ST_Area(newgeom), ($2).val],
+                    ARRAY[ST_Area(newgeom), ($2).val],
+                    ARRAY[ST_Area(newgeom)],
+                    ($2).val,
+                    ($2).val,
+                    ($2).val
                    )::arealweightedstatsstate;
         ELSE
             -- Search for the new value in the array of distinct values
             SELECT n FROM generate_series(1, array_length(($1).distinctvalues, 1)) n WHERE (($1).distinctvalues)[n] = ($2).val INTO i;
-RAISE NOTICE 'i=% ',i;            
+RAISE NOTICE 'i=% ',i;
             -- If the value already exists, increment the corresponding area with the new area
             IF NOT i IS NULL THEN
                 newcombinedweightedareas[i] := newcombinedweightedareas[i] + ST_Area(newgeom);
             END IF;
-            ret := (($1).count + 1, 
-                    CASE WHEN i IS NULL THEN array_append(($1).distinctvalues, ($2).val) ELSE ($1).distinctvalues END, 
+            ret := (($1).count + 1,
+                    CASE WHEN i IS NULL THEN array_append(($1).distinctvalues, ($2).val) ELSE ($1).distinctvalues END,
                     ST_Union(($1).unionedgeom, newgeom),
                     ($1).totalarea + ST_Area(newgeom),
                     ($1).totalperimeter + ST_Perimeter(newgeom),
@@ -128,16 +128,16 @@ RAISE NOTICE 'i=% ',i;
     LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION geomval_arealweightedstate(aws arealweightedstatsstate, geom geometry, val double precision)
-    RETURNS arealweightedstatsstate 
+    RETURNS arealweightedstatsstate
     AS $$
         SELECT geomval_arealweightedstate($1, ($2, $3)::geomval);
     $$ LANGUAGE 'SQL';
 
 ---------------------------------------------------------------------
 -- geomval_arealweightedfinal
--- Final function used by the ST_AreaWeightedSummaryStats aggregate 
+-- Final function used by the ST_AreaWeightedSummaryStats aggregate
 CREATE OR REPLACE FUNCTION geomval_arealweightedfinal(aws arealweightedstatsstate)
-    RETURNS arealweightedstats 
+    RETURNS arealweightedstats
     AS $$
     DECLARE
         a RECORD;
@@ -156,7 +156,7 @@ CREATE OR REPLACE FUNCTION geomval_arealweightedfinal(aws arealweightedstatsstat
             IF a.warea < minarea THEN
                 imin := a.n;
                 minarea = a.warea;
-            END IF;    
+            END IF;
         END LOOP;
 
         ret := (($1).count,
@@ -173,7 +173,7 @@ CREATE OR REPLACE FUNCTION geomval_arealweightedfinal(aws arealweightedstatsstat
                 (($1).distinctvalues)[imax],
                 (($1).distinctvalues)[imin],
                 ($1).sum,
-                ($1).sum / ($1).count, 
+                ($1).sum / ($1).count,
                 ($1).max,
                 ($1).min
                )::arealweightedstats;
@@ -202,22 +202,22 @@ CREATE AGGREGATE ST_AreaWeightedSummaryStats(geometry, double precision) (
 
 
 SELECT id,
-       (aws).count, 
+       (aws).count,
        (aws).distinctcount,
-       (aws).geom, 
-       (aws).totalarea, 
-       (aws).meanarea, 
-       (aws).totalperimeter, 
-       (aws).meanperimeter, 
-       (aws).weightedsum, 
-       (aws).weightedmean, 
-       (aws).maxareavalue, 
-       (aws).minareavalue, 
-       (aws).maxcombinedareavalue, 
-       (aws).mincombinedareavalue, 
-       (aws).sum, 
-       (aws).mean, 
-       (aws).max, 
+       (aws).geom,
+       (aws).totalarea,
+       (aws).meanarea,
+       (aws).totalperimeter,
+       (aws).meanperimeter,
+       (aws).weightedsum,
+       (aws).weightedmean,
+       (aws).maxareavalue,
+       (aws).minareavalue,
+       (aws).maxcombinedareavalue,
+       (aws).mincombinedareavalue,
+       (aws).sum,
+       (aws).mean,
+       (aws).max,
        (aws).min
 FROM (SELECT ST_AreaWeightedSummaryStats((geom, weight)::geomval) as aws, id
       FROM (SELECT ST_GeomFromEWKT('SRID=4269;POLYGON((0 0,0 10, 10 10, 10 0, 0 0))') as geom, 'a' as id, 100 as weight

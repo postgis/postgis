@@ -378,7 +378,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		gser_in = (GSERIALIZED *)DatumGetPointer(value);
 
 		/* Check for SRID mismatch in array elements */
-		if ( gotsrid ) 
+		if ( gotsrid )
 		{
 			error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
 		}
@@ -405,7 +405,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
 
 			/* Uh oh! Exception thrown at construction... */
-			if ( ! g )  
+			if ( ! g )
 			{
 				HANDLE_GEOS_ERROR("One of the geometries in the set "
 				                  "could not be converted to GEOS");
@@ -963,7 +963,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 
 /*
-* Generate a field of random points within the area of a 
+* Generate a field of random points within the area of a
 * polygon or multipolygon. Throws an error for other geometry
 * types.
 */
@@ -1273,10 +1273,10 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom, *result;
-	GEOSGeometry *geosgeom, *geosresult; 
+	GEOSGeometry *geosgeom, *geosresult;
 	LWGEOM *igeom = NULL, *linear_geom = NULL;
 	int32 perQuad= 16;
-	int type = 0; 
+	int type = 0;
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Empty.Centroid() == Point Empty */
@@ -1299,9 +1299,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
 		linear_geom = lwgeom_stroke(igeom, perQuad);
 		lwgeom_free(igeom);
-		if (linear_geom == NULL) 
+		if (linear_geom == NULL)
 			PG_RETURN_NULL();
-		 
+		
 		geom = geometry_serialize(linear_geom);
 		lwgeom_free(linear_geom);
 	}
@@ -1403,7 +1403,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom1);
 	PG_FREE_IF_COPY(geom1, 0);
 
-	if ( lwresult == NULL ) 
+	if ( lwresult == NULL )
 		PG_RETURN_NULL();
 
 	result = geometry_serialize(lwresult) ;
@@ -3028,7 +3028,7 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 			}
 			return NULL;
 		}
-       	 
+       	
         i++;
 	}
 
@@ -3567,7 +3567,7 @@ Datum ST_Node(PG_FUNCTION_ARGS)
  *
  * ST_Voronoi
  *
- * Returns a Voronoi diagram constructed 
+ * Returns a Voronoi diagram constructed
  * from the points of the input geometry.
  *
  ******************************************/
