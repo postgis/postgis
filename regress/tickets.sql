@@ -886,6 +886,16 @@ WITH
   mbc   AS (SELECT (mb).center, (mb).radius FROM (SELECT ST_MinimumBoundingRadius(geom) mb FROM input) sq)
 SELECT '#2996', radius = ST_Length(ST_LongestLine(geom, center)) FROM input, mbc;
 
+-- #3119 --
+SELECT '#3119a', floor(ST_LengthSpheroid('SRID=4326;LINESTRING (-72.640965 42.11867, -72.6395 42.1187)', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
+-- polygons are also handled
+SELECT '#3119b', floor(ST_LengthSpheroid('SRID=4326;POLYGON ((-72.640965 42.11867, -72.6395 42.1187, -72.64065 42.11819, -72.640965 42.11867))', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
+-- for polygons with holes, all rings are considered
+SELECT '#3119c', floor(ST_LengthSpheroid('SRID=4326;POLYGON ((-72.640965 42.11819, -72.640965 42.1187, -72.6395 42.1187, -72.6395 42.11819, -72.640965 42.11819),
+          (-72.63965 42.118305, -72.64083 42.118305, -72.64083 42.118595, -72.63965 42.118595, -72.63965 42.118305))', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
+-- triangles also work
+SELECT '#3119d', floor(ST_LengthSpheroid('SRID=4326;TRIANGLE ((-72.640965 42.11867, -72.6395 42.1187, -72.64065 42.11819, -72.640965 42.11867))', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
+
 SELECT '#3172', ST_AsText(ST_AddMeasure('LINESTRING(0 0,0 0)', 1, 2));
 
 --SELECT '#3244a', ST_AsText(ST_3DClosestPoint('POINT(0 0 0)', 'POINT(0 0)'));
