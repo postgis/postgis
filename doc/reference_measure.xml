@@ -2843,7 +2843,7 @@ ST_3DLength
 	  <refnamediv>
 		<refname>ST_Length_Spheroid</refname>
 
-		<refpurpose>Calculates the 2D or 3D length of a linestring/multilinestring on an ellipsoid. This
+        <refpurpose>Calculates the 2D or 3D length/perimeter of a geometry on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
 			longitude/latitude and a length is desired without reprojection.</refpurpose>
 	  </refnamediv>
@@ -2852,7 +2852,7 @@ ST_3DLength
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>float <function>ST_Length_Spheroid</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>a_geometry</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -2861,22 +2861,18 @@ ST_3DLength
 	  <refsection>
 		<title>Description</title>
 
-		<para>Calculates the length of a geometry on an ellipsoid. This
+        <para>Calculates the length/perimeter of a geometry on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
 			longitude/latitude and a length is desired without reprojection.
 			The ellipsoid is a separate database type and can be constructed
 			as follows:</para>
 
-		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
-		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
 
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
-		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 
 		<para>&Z_support;</para>
 	  </refsection>
-
 
 	  <refsection>
 		<title>Examples</title>
@@ -2922,7 +2918,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	  <refnamediv>
 		<refname>ST_Length2D_Spheroid</refname>
 
-		<refpurpose>Calculates the 2D length of a linestring/multilinestring on an ellipsoid. This
+        <refpurpose>Calculates the 2D length/perimeter of a geometry on an ellipsoid. This
 			is useful if the coordinates of the geometry are in
 			longitude/latitude and a length is desired without reprojection.  </refpurpose>
 	  </refnamediv>
@@ -2931,7 +2927,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>a_geometry</parameter></paramdef>
 			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -2946,12 +2942,9 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 			The ellipsoid is a separate database type and can be constructed
 			as follows:</para>
 
-		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
-		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
 
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
-		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
 		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_3DLength_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
 
 	  </refsection>
