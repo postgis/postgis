@@ -1811,7 +1811,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2030,7 +2030,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2181,7 +2181,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
