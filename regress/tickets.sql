@@ -962,5 +962,8 @@ SELECT '#3437d' AS t, count(*) FROM mp INNER JOIN p ON ST_Covers(mp.geom, p.geom
 UNION ALL
 SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom);
 
+-- #3470
+SELECT '#3470', ST_Polygonize(ARRAY[NULL]::geometry[]) IS NULL;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
