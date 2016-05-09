@@ -38,6 +38,7 @@ BEGIN
 			, ('debug_reverse_geocode', 'false', 'boolean','debug', 'if true, outputs debug information in notice log such as queries and intermediate expressions when reverse_geocode')
 			, ('reverse_geocode_numbered_roads', '0', 'integer','rating', 'For state and county highways, 0 - no preference in name, 1 - prefer the numbered highway name, 2 - prefer local state/county name')
 			, ('use_pagc_address_parser', 'false', 'boolean','normalize', 'If set to true, will try to use the address_standardizer extension (via pagc_normalize_address) instead of tiger normalize_address built on')
+			, ('zip_penalty', '2', 'numeric','rating', 'As input to rating will add (ref_zip - tar_zip)*zip_penalty where ref_zip is input address and tar_zip is a target address candidate')
 		) f(name,setting,unit,category,short_desc);
 		
 	-- delete entries that are the same as default values 	

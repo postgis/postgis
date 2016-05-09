@@ -14,6 +14,7 @@ DECLARE
   var_restrict_geom geometry := NULL;
   var_bfilter text := null;
   var_bestrating integer := NULL;
+  var_zip_penalty numeric := get_geocode_setting('zip_penalty')::numeric*1.00;
 BEGIN
   IF parsed.streetName IS NULL THEN
     -- A street name must be given.  Think about it.
@@ -90,7 +91,7 @@ BEGIN
   stmt := 'WITH a AS
   	( SELECT *
   		FROM (SELECT f.*, ad.side, ad.zip, ad.fromhn, ad.tohn,
-  					RANK() OVER(ORDER BY ' || CASE WHEN parsed.zip > '' THEN ' diff_zip(ad.zip,$7) + ' ELSE '' END
+  					RANK() OVER(ORDER BY ' || CASE WHEN parsed.zip > '' THEN ' diff_zip(ad.zip,$7)*$11 + ' ELSE '' END
 						||' CASE WHEN lower(f.name) = lower($2) THEN 0 ELSE levenshtein_ignore_case(f.name, lower($2) )  END +
 						levenshtein_ignore_case(f.fullname, lower($2 || '' '' || COALESCE($4,'''')) )
 						+ CASE WHEN (greatest_hn(ad.fromhn,ad.tohn) % 2)::integer = ($1 % 2)::integer THEN 0 ELSE 1 END
@@ -120,10 +121,10 @@ BEGIN
          || '    sub.zip as zip,'
          || '    interpolate_from_address($1, sub.fromhn,'
          || '        sub.tohn, sub.the_geom, sub.side) as address_geom,'
-         || '       sub.sub_rating + '
-         || CASE WHEN parsed.zip > '' THEN '  least(coalesce(diff_zip($7 , sub.zip),0), 10)::integer  '
+         || '       (sub.sub_rating + '
+         || CASE WHEN parsed.zip > '' THEN '  least(coalesce(diff_zip($7 , sub.zip),0), 20)*$11  '
             ELSE '1' END::text
-         || ' + coalesce(levenshtein_ignore_case($3, sub.place),5)'
+         || ' + coalesce(levenshtein_ignore_case($3, sub.place),5) )::integer'
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address, sub.tohn, sub.fromhn '
          || ' FROM ('
@@ -146,8 +147,8 @@ BEGIN
          ||              '(least_hn($1::text,least_hn(b.fromhn,b.tohn)::text)::numeric /'
          ||              ' (greatest(1,greatest_hn($1::text,greatest_hn(b.fromhn,b.tohn)::text))) )'
          ||              ') * 5)::integer + 5'
-         || '        END'
-         || '    as sub_rating,$1::integer >= least_hn(b.fromhn,b.tohn) '
+         || '        END::integer'
+         || '    AS sub_rating,$1::integer >= least_hn(b.fromhn,b.tohn) '
          || '            AND $1::integer <= greatest_hn(b.fromhn,b.tohn) '
          || '            AND ($1 % 2)::numeric::integer = (to_number(b.fromhn,''99999999'') % 2)'
          || '    as exact_address, b.name, b.prequalabr, b.pretypabrv, b.tfidr, b.tfidl, b.the_geom, b.place '
@@ -180,9 +181,9 @@ BEGIN
 
   IF var_debug THEN
          RAISE NOTICE 'stmt: %',
-            replace(replace( replace(
+            replace( replace( replace(
                 replace(
-                replace(replace( replace(replace(replace(replace(stmt, '$10', quote_nullable(in_statefp) ), '$2',quote_nullable(parsed.streetName)),'$3',
+                replace(replace( replace(replace(replace(replace( replace(stmt,'$11', var_zip_penalty::text), '$10', quote_nullable(in_statefp) ), '$2',quote_nullable(parsed.streetName)),'$3',
                 quote_nullable(parsed.location)), '$4', quote_nullable(parsed.streetTypeAbbrev) ),
                 '$5', quote_nullable(parsed.preDirAbbrev) ),
                    '$6', quote_nullable(parsed.postDirAbbrev) ),
@@ -193,7 +194,7 @@ BEGIN
         --RAISE NOTICE 'EXECUTE query_base_geo(%,%,%,%,%,%,%,%,%); ', parsed.address,quote_nullable(parsed.streetName), quote_nullable(parsed.location), quote_nullable(parsed.streetTypeAbbrev), quote_nullable(parsed.preDirAbbrev), quote_nullable(parsed.postDirAbbrev), quote_nullable(parsed.zip), quote_nullable(var_restrict_geom::text), quote_nullable(zip_info.zip);
         --RAISE NOTICE 'DEALLOCATE query_base_geo;';
     END IF;
-    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip, var_restrict_geom, zip_info.zip, in_statefp LOOP
+    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip, var_restrict_geom, zip_info.zip, in_statefp, var_zip_penalty LOOP
 
         -- If we found a match with an exact street, then don't bother
         -- trying to do non-exact matches
@@ -217,7 +218,7 @@ BEGIN
         ADDY.parsed := TRUE;
 
         GEOMOUT := results.address_geom;
-        RATING := results.sub_rating;
+        RATING := results.sub_rating::integer;
         var_n := var_n + 1;
 
         IF var_bestrating IS NULL THEN
@@ -260,7 +261,7 @@ BEGIN
         FROM zip_state WHERE zip_state.zip = $2
             AND (' || quote_nullable(in_statefp) || ' IS NULL OR zip_state.statefp = ' || quote_nullable(in_statefp) || ')
           ' || COALESCE(' AND zip_state.zip IN(' || var_bfilter || ')', '') ||
-        ' UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
+        ' UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0))*$3 As pref
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || '
                    AND lower($1) = lower(zip_state_loc.place) '  || COALESCE(' AND zip_state_loc.zip IN(' || var_bfilter || ')', '') ||
@@ -301,7 +302,7 @@ BEGIN
         --JOIN (VALUES (true),(false)) as b(exact) on TRUE
       WHERE statefp IS NOT NULL
       GROUP BY statefp,location,zip,exact, pref ORDER BY exact desc, pref, zip  **/
-  FOR zip_info IN EXECUTE var_sql USING parsed.location, parsed.zip  LOOP
+  FOR zip_info IN EXECUTE var_sql USING parsed.location, parsed.zip, var_zip_penalty  LOOP
   -- For zip distance metric we consider both the distance of zip based on numeric as well aa levenshtein
   -- We use the prequalabr (these are like Old, that may or may not appear in front of the street name)
   -- We also treat pretypabr as fetype since in normalize we treat these as streetypes  and highways usually have the type here
@@ -316,10 +317,10 @@ BEGIN
          || '    sub.zip as zip,'
          || '    interpolate_from_address($1, sub.fromhn,'
          || '        sub.tohn, e.the_geom, sub.side) as address_geom,'
-         || '       sub.sub_rating + '
-         || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip($7 , sub.zip),0) *1.00/2)::integer, coalesce(levenshtein_ignore_case($7, sub.zip),0) ) '
+         || '       (sub.sub_rating + '
+         || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip($7 , sub.zip),0) *$9)::integer, coalesce(levenshtein_ignore_case($7, sub.zip)*$9,0) ) '
             ELSE '3' END::text
-         || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5)'
+         || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5) )::integer'
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address '
          || ' FROM ('
@@ -356,7 +357,7 @@ BEGIN
                  ELSE '    AND ( soundex($2) = soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
-         || '  LIMIT 20'
+         || '  LIMIT 200'
          || '    ) AS sub'
          || '  JOIN tiger.edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid AND e.mtfcc LIKE ''S%'' '
          ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
@@ -373,8 +374,8 @@ BEGIN
          ;
     IF var_debug THEN
         RAISE NOTICE '%', stmt;
-        RAISE NOTICE 'PREPARE query_base_geo(integer, varchar,varchar,varchar,varchar,varchar,varchar,geometry) As %', stmt;
-        RAISE NOTICE 'EXECUTE query_base_geo(%,%,%,%,%,%,%,%); ', parsed.address,quote_nullable(parsed.streetName), quote_nullable(parsed.location), quote_nullable(parsed.streetTypeAbbrev), quote_nullable(parsed.preDirAbbrev), quote_nullable(parsed.postDirAbbrev), quote_nullable(parsed.zip), quote_nullable(var_restrict_geom::text);
+        RAISE NOTICE 'PREPARE query_base_geo(integer, varchar,varchar,varchar,varchar,varchar,varchar,geometry,numeric) As %', stmt;
+        RAISE NOTICE 'EXECUTE query_base_geo(%,%,%,%,%,%,%,%,%); ', parsed.address,quote_nullable(parsed.streetName), quote_nullable(parsed.location), quote_nullable(parsed.streetTypeAbbrev), quote_nullable(parsed.preDirAbbrev), quote_nullable(parsed.postDirAbbrev), quote_nullable(parsed.zip), quote_nullable(var_restrict_geom::text), quote_nullable(var_zip_penalty);
         RAISE NOTICE 'DEALLOCATE query_base_geo;';
     END IF;
     -- If we got an exact street match then when we hit the non-exact
@@ -383,7 +384,7 @@ BEGIN
         RETURN;
     END IF;
 
-    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip, var_restrict_geom LOOP
+    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip, var_restrict_geom, var_zip_penalty LOOP
 
       -- If we found a match with an exact street, then don't bother
       -- trying to do non-exact matches
@@ -392,7 +393,7 @@ BEGIN
       END IF;
 
       IF results.exact_address THEN
-        ADDY.address := substring(parsed.address FROM '[0-9]+')::integer;
+        ADDY.address := substring(parsed.address::text FROM '[0-9]+')::integer;
       ELSE
         ADDY.address := NULL;
       END IF;
@@ -407,7 +408,7 @@ BEGIN
       ADDY.parsed := TRUE;
 
       GEOMOUT := results.address_geom;
-      RATING := results.sub_rating;
+      RATING := results.sub_rating::integer;
       var_n := var_n + 1;
 
       -- If our ratings go above 99 exit because its a really bad match
