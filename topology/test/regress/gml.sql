@@ -177,12 +177,9 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
 --           E13-> (N9),(N10) # N9 visited by P1-visited.E20, N10 above
 --
 SELECT feature_name||'-visited', topology.AsGML(feature,
-       '', 15, 2, 'visited'::regclass) FROM
-       (
-        SELECT * FROM features.land_parcels
+       '', 15, 2, 'visited'::regclass) FROM features.land_parcels
         WHERE feature_name IN ('P1', 'P2')
-        ORDER BY feature_name ASC
-       ) foo ORDER BY feature_name DESC;
+        ORDER BY feature_name;
 
 -- F3F4 visits (F3),(F4)
 SELECT feature_name||'-visited', topology.AsGML(feature,
