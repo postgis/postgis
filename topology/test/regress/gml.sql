@@ -158,15 +158,24 @@ SELECT feature_name||'-visited', topology.AsGML(feature,
        WHERE feature_name IN ('N1N6N14')
        ORDER BY feature_name;
 
--- P2 visits F4,F7
---           E7,E17,E18,E13,E20,E19
---           N17,N18,(N13),N10,N9,(N14),N17
 -- P1 visits F3,F6
---           F3-> E6,(E19),(E9),(E21)
---           F4-> E22,(E9),(E20),E12
---           E6-> N16,(N17)
---           E22-> N8,(N15)
---           E12-> (N8),(N9)
+--           F3-> E6,E19,(E9),E21
+--           F6-> (E9),E20,E12,E22
+--           E6-> N16,N17
+--           E19-> (N14),(N17) # N14 visited by S1-visited, N17 by E6 above
+--           E21-> (N15),(N16) # N15 visited by R1-visited, N16 by E6 above
+--           E20-> N9,(N14) # N14 visited by S1-visited
+--           E12-> N8,(N9) # N9 visited by E20 above
+--           E22-> (N8),(N15) # N8 visited above, N15 by R1-visited
+--
+-- P2 visits F4,F7
+--           F4-> E7,E17,(E10),(E19) # E10 by R1-visited, E19 by P1-visited
+--           F7-> (E10),E18,E13,(E20) # E10 by R1-visited, E20 by P1-visited
+--           E7-> (N17),N18 # N17 visited by P1-visited.E6
+--           E17-> (N13),(N18) # N13 by R1-visited, N18 by E7 above
+--           E18-> N10,(N13) # N13 by R1-visited
+--           E13-> (N9),(N10) # N9 visited by P1-visited.E20, N10 above
+--
 SELECT feature_name||'-visited', topology.AsGML(feature,
        '', 15, 2, 'visited'::regclass) FROM
        (
