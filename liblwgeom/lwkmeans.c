@@ -81,13 +81,13 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	LWGEOM **centroids;
 	POINT2D *centers_raw;
 	const POINT2D *cp;
-	POINT2D min, max;
+	POINT2D min = { FLT_MAX, FLT_MAX };
+	POINT2D max = { FLT_MIN, FLT_MIN };
 	double dx, dy;
 	kmeans_config config;
 	kmeans_result result;
 	int *seen;
 	int sidx = 0;
-	int initialized = 0;
 
 	assert(k>0);
 	assert(ngeoms>0);
@@ -157,19 +157,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 		config.objs[i] = (Pointer)cp;
 
 		/* Since we're already here, let's calculate the extrema of the set */
-		if (!initialized)
-		{
-			initialized = 1;
-			min = *cp;
-			max = *cp;
-		}
-		else
-		{
-			if (cp->x < min.x) min.x = cp->x;
-			if (cp->y < min.y) min.y = cp->y;
-			if (cp->x > max.x) max.x = cp->x;
-			if (cp->y > max.y) max.y = cp->y;
-		}
+		if (cp->x < min.x) min.x = cp->x;
+		if (cp->y < min.y) min.y = cp->y;
+		if (cp->x > max.x) max.x = cp->x;
+		if (cp->y > max.y) max.y = cp->y;
 	}
 
 	/*
