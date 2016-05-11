@@ -1155,7 +1155,8 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 	GSERIALIZED* result;
 	LWGEOM* input;
 	LWPOINT* lwresult;
-	double tolerance;
+	static const double min_default_tolerance = 1e-8;
+	double tolerance = min_default_tolerance;
 	bool compute_tolerance_from_box;
 	bool fail_if_not_converged;
 	int max_iter;
@@ -1194,15 +1195,10 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 		/* Compute a default tolerance based on the smallest dimension
 		 * of the geometry's bounding box.
 		 */
-		static const double min_default_tolerance = 1e-8;
 		static const double tolerance_coefficient = 1e-6;
 		const GBOX* box = lwgeom_get_bbox(input);
 
-		if (!box)
-		{
-			tolerance = min_default_tolerance;
-		}
-		else
+		if (box)
 		{
 			double min_dim = FP_MIN(box->xmax - box->xmin, box->ymax - box->ymin);
 			if (lwgeom_has_z(input))
