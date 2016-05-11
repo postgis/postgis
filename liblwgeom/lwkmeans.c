@@ -81,8 +81,8 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	LWGEOM **centroids;
 	POINT2D *centers_raw;
 	const POINT2D *cp;
-	POINT2D min = { DBL_MAX, DBL_MAX };
-	POINT2D max = { DBL_MIN, DBL_MIN };
+	POINT2D min = { DBL_MAX,   DBL_MAX };
+	POINT2D max = { -DBL_MAX, -DBL_MAX };
 	double dx, dy;
 	kmeans_config config;
 	kmeans_result result;
