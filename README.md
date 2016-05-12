@@ -5,7 +5,7 @@ Debbie:
  [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_2.2)]
  (https://debbie.postgis.net/view/PostGIS/job/PostGIS_2.2/)
 Winnie:
- [![Build Status](http://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.2)]
+ [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.2)]
  (https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.2/)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-2.2/build.svg)]
