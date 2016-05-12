@@ -2,11 +2,11 @@ Travis:
  [![Build Status](https://secure.travis-ci.org/postgis/postgis.png?branch=svn-2.2)]
  (http://travis-ci.org/postgis/postgis)
 Debbie:
- [![Build Status](http://debbie.postgis.net:8080/buildStatus/icon?job=PostGIS_2.2)]
- (http://debbie.postgis.net:8080/view/PostGIS/job/PostGIS_2.2/)
+ [![Build Status](https://debbie.postgis.net/buildStatus/icon?job=PostGIS_2.2)]
+ (https://debbie.postgis.net/view/PostGIS/job/PostGIS_2.2/)
 Winnie:
- [![Build Status](http://winnie.postgis.net:1500/buildStatus/icon?job=PostGIS_2.2)]
- (http://winnie.postgis.net:1500/view/PostGIS/job/PostGIS_2.2/)
+ [![Build Status](http://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_2.2)]
+ (https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_2.2/)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-2.2/build.svg)]
  (https://gitlab.com/postgis/postgis/commits/svn-2.2)
