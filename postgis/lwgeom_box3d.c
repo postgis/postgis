@@ -56,6 +56,7 @@ Datum BOX3D_xmax(PG_FUNCTION_ARGS);
 Datum BOX3D_ymax(PG_FUNCTION_ARGS);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS);
 Datum BOX3D_combine(PG_FUNCTION_ARGS);
+Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS);
 
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
@@ -515,6 +516,34 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	result->srid = srid;
 
 	PG_FREE_IF_COPY(geom, 1);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_combine_BOX3D);
+Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
+{
+	BOX3D *box0 = (BOX3D*)(PG_ARGISNULL(0) ? NULL : PG_GETARG_POINTER(0));
+	BOX3D *box1 = (BOX3D*)(PG_ARGISNULL(1) ? NULL : PG_GETARG_POINTER(1));
+	BOX3D *result;
+
+	if (box0 && !box1)
+		PG_RETURN_POINTER(box0);
+
+	if (box1 && !box0)
+		PG_RETURN_POINTER(box1);
+
+	if (!box1 && !box0)
+		PG_RETURN_NULL();
+	
+	result = palloc(sizeof(BOX3D));
+	result->xmax = Max(box0->xmax, box1->xmax);
+	result->ymax = Max(box0->ymax, box1->ymax);
+	result->zmax = Max(box0->zmax, box1->zmax);
+	result->xmin = Min(box0->xmin, box1->xmin);
+	result->ymin = Min(box0->ymin, box1->ymin);
+	result->zmin = Min(box0->zmin, box1->zmin);
+	result->srid = box0->srid;
+	
 	PG_RETURN_POINTER(result);
 }
 

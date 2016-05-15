@@ -23,6 +23,7 @@ PostGIS 2.3.0
   - #3428, ST_Points (Dan Baston)
   - #3465, ST_ClusterKMeans (Paul Ramsey)
   - #3469, ST_MakeLine with MULTIPOINTs (Paul Norman)
+  - #3549, Support PgSQL 9.6 parallel query mode, as far as possible
 
 PostGIS 2.2.2
 2016/03/22
