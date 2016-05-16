@@ -34,7 +34,7 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me [-v] [-s schema] <dumpfile>
+Usage:	$me [-v] [-L TOC] [-s schema] <dumpfile>
         Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
         First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
         Then create a new database: createdb NEWDB
@@ -46,12 +46,14 @@ Usage:	$me [-v] [-s schema] <dumpfile>
         Finally, pass the dump to this script and feed output to psql:
            $me MYDB.dmp | psql NEWDB
         The -v switch writes detailed report on stderr.
+        Use -L to provide a TOC rather than extracting it from the dump.
         Use -s if you installed PostGIS in a custom schema.
 
 };
 
 my $DEBUG = 0;
 my $POSTGIS_SCHEMA;
+my $POSTGIS_TOC;
 
 # NOTE: the SRID limits here are being discussed:
 # http://lists.osgeo.org/pipermail/postgis-devel/2012-February/018440.html
@@ -65,6 +67,9 @@ while (@ARGV && $ARGV[0] =~ /^-/) {
   }
   elsif ( $arg eq '-s' ) {
     $POSTGIS_SCHEMA = shift(@ARGV);
+  }
+  elsif ( $arg eq '-L' ) {
+    $POSTGIS_TOC = shift(@ARGV);
   }
   elsif ( $arg eq '--' ) {
     last;
@@ -106,9 +111,13 @@ while(my $l = <DATA>) {
 # are part of PostGIS
 #
 
-print STDERR "  Writing manifest of things to read from dump file...\n";
+if(!defined($POSTGIS_TOC)) {
+  print STDERR "  Writing manifest of things to read from dump file...\n";
 
-open( DUMP, "pg_restore -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
+  open( DUMP, "pg_restore -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
+} else {
+  open( DUMP, '<' . $POSTGIS_TOC) || die "$me:\tCannot open TOC file '$POSTGIS_TOC'\n";
+}
 open( MANIFEST, ">$manifest" ) || die "$me:\tCannot open manifest file '$manifest'\n";
 while( my $l = <DUMP> ) {
 

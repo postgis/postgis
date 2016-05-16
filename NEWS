@@ -10,6 +10,8 @@ PostGIS 2.3.0
 
  * New Features *
 
+  - Add support for custom TOC in postgis_restore.pl
+    (Christoph Moench-Tegeder)
   - #3391, Add table inheritance support in ST_EstimatedExtent
            (Alessandro Pasotti)
   - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
