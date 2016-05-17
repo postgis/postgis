@@ -115,7 +115,7 @@ CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'gserialized_analyze_nd'
-	LANGUAGE 'c' VOLATILE STRICT _PARALLEL;
+	LANGUAGE 'c' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
 	RETURNS geometry
@@ -894,7 +894,7 @@ CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
   $$ SELECT _postgis_deprecate('ST_Shift_Longitude', 'ST_ShiftLongitude', '2.2.0');
     SELECT ST_ShiftLongitude($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------------
 --  BOX3D FUNCTIONS
@@ -1020,7 +1020,7 @@ BEGIN
 	END LOOP;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
@@ -1028,7 +1028,7 @@ CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
     SELECT ST_FindExtent($1,$2,$3);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
@@ -1048,7 +1048,7 @@ BEGIN
 	END LOOP;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
@@ -1056,7 +1056,7 @@ CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Find_Extent', 'ST_FindExtent', '2.2.0');
     SELECT ST_FindExtent($1,$2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -------------------------------------------
 -- other lwgeom functions
@@ -1171,7 +1171,7 @@ CREATE OR REPLACE FUNCTION ST_length_spheroid(geometry, spheroid)
   $$ SELECT _postgis_deprecate('ST_Length_Spheroid', 'ST_LengthSpheroid', '2.2.0');
     SELECT ST_LengthSpheroid($1,$2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Length2DSpheroid(geometry, spheroid)
@@ -1187,7 +1187,7 @@ CREATE OR REPLACE FUNCTION ST_length2d_spheroid(geometry, spheroid)
   $$ SELECT _postgis_deprecate('ST_Length2D_Spheroid', 'ST_Length2DSpheroid', '2.2.0');
     SELECT ST_Length2DSpheroid($1,$2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DPerimeter(geometry)
@@ -1239,7 +1239,7 @@ CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,s
   $$ SELECT _postgis_deprecate('ST_Distance_Spheroid', 'ST_DistanceSpheroid', '2.2.0');
     SELECT ST_DistanceSpheroid($1,$2,$3);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Minimum distance. 2d only.
 
@@ -1263,7 +1263,7 @@ CREATE OR REPLACE FUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
   $$ SELECT _postgis_deprecate('ST_Point_Inside_Circle', 'ST_PointInsideCircle', '2.2.0');
     SELECT ST_PointInsideCircle($1,$2,$3,$4);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
@@ -1289,7 +1289,7 @@ CREATE OR REPLACE FUNCTION ST_force_2d(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_2d', 'ST_Force2D', '2.1.0');
     SELECT ST_Force2D($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry)
@@ -1305,7 +1305,7 @@ CREATE OR REPLACE FUNCTION ST_force_3dz(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_3dz', 'ST_Force3DZ', '2.1.0');
     SELECT ST_Force3DZ($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
@@ -1321,7 +1321,7 @@ CREATE OR REPLACE FUNCTION ST_force_3d(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_3d', 'ST_Force3D', '2.1.0');
     SELECT ST_Force3D($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
@@ -1337,7 +1337,7 @@ CREATE OR REPLACE FUNCTION ST_force_3dm(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_3dm', 'ST_Force3DM', '2.1.0');
     SELECT ST_Force3DM($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
@@ -1353,7 +1353,7 @@ CREATE OR REPLACE FUNCTION ST_force_4d(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_4d', 'ST_Force4D', '2.1.0');
     SELECT ST_Force4D($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceCollection(geometry)
@@ -1369,7 +1369,7 @@ CREATE OR REPLACE FUNCTION ST_force_collection(geometry)
   $$ SELECT _postgis_deprecate('ST_Force_Collection', 'ST_ForceCollection', '2.1.0');
     SELECT ST_ForceCollection($1);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
@@ -1454,7 +1454,7 @@ CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
-	LANGUAGE 'c' VOLATILE STRICT _PARALLEL
+	LANGUAGE 'c' VOLATILE STRICT
 	COST 10;
 	
 -- Deprecation in 1.5.0
@@ -1806,7 +1806,7 @@ CREATE OR REPLACE FUNCTION ST_Dump(geometry)
 CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- _ST_DumpPoints()
@@ -2348,7 +2348,7 @@ BEGIN
 	RETURN ret;
 END;
 $$
-LANGUAGE 'plpgsql' STABLE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT _PARALLEL;
 
 ----------------------------------------------------------------------------
 -- ADDGEOMETRYCOLUMN ( <table>, <column>, <srid>, <type>, <dim> )
@@ -2695,7 +2695,7 @@ BEGIN
 	return sr;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 ---------------------------------------------------------------
 -- PROJ support
@@ -2707,7 +2707,7 @@ BEGIN
 	RETURN proj4text::text FROM spatial_ref_sys WHERE srid= $1;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SetSRID(geometry,int4)
@@ -3141,7 +3141,7 @@ CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
   $$ SELECT _postgis_deprecate('ST_Line_Interpolate_Point', 'ST_LineInterpolatePoint', '2.1.0');
     SELECT ST_LineInterpolatePoint($1, $2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
@@ -3156,7 +3156,7 @@ CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
   $$ SELECT _postgis_deprecate('ST_Line_Substring', 'ST_LineSubstring', '2.1.0');
      SELECT ST_LineSubstring($1, $2, $3);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
@@ -3171,7 +3171,7 @@ CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
   $$ SELECT _postgis_deprecate('ST_Line_Locate_Point', 'ST_LineLocatePoint', '2.1.0');
      SELECT ST_LineLocatePoint($1, $2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 -- Deprecation in 2.0.0 replaced by ST_LocateBetween
@@ -3179,7 +3179,7 @@ CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 -- Deprecation in 2.0.0 replaced by ST_LocateAlong
@@ -3187,7 +3187,7 @@ CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS $$ SELECT ST_locate_between_measures($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8) 
@@ -3457,7 +3457,7 @@ CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256)
 	RETURNS setof geometry
 	AS 'MODULE_PATHNAME', 'ST_Subdivide'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
 
@@ -3720,7 +3720,7 @@ CREATE AGGREGATE ST_3DExtent(
 CREATE OR REPLACE FUNCTION ST_Collect(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'c' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MemCollect(
@@ -3736,7 +3736,7 @@ CREATE AGGREGATE ST_MemCollect(
 CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_MemUnion (
@@ -3756,12 +3756,12 @@ CREATE AGGREGATE ST_MemUnion (
 CREATE OR REPLACE FUNCTION pgis_abs_in(cstring)
 	RETURNS pgis_abs
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION pgis_abs_out(pgis_abs)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE TYPE pgis_abs (
@@ -3843,7 +3843,7 @@ CREATE AGGREGATE ST_Accum (
 CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Union (
@@ -4075,13 +4075,13 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry)
 CREATE OR REPLACE FUNCTION ST_MinimumClearance(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'ST_MinimumClearance'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_MinimumClearanceLine(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_MinimumClearanceLine'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: Centroid(geometry)
 CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
@@ -4189,13 +4189,13 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geom_from_geojson'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION postgis_libjson_version()
 	RETURNS text
 	AS 'MODULE_PATHNAME','postgis_libjson_version'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ----------------------------------------------------------------------
 -- ENCODED POLYLINE INPUT
@@ -4253,7 +4253,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsGML(2, $1, $2, $3, null, null); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
 
 -- ST_AsGML(version, geom, precision, option)
 -- Availability: 1.4.0
@@ -4265,7 +4265,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5, $6); $$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 -----------------------------------------------------------------------
 -- KML OUTPUT
@@ -4274,7 +4274,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigit
 CREATE OR REPLACE FUNCTION _ST_AsKML(int4,geometry, int4, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'
-	LANGUAGE 'c' IMMUTABLE
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL
 	COST 5000;
 
 -- Availability: 1.2.2
@@ -4282,7 +4282,7 @@ CREATE OR REPLACE FUNCTION _ST_AsKML(int4,geometry, int4, text)
 CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsKML(2, ST_Transform($1,4326), $2, null); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
 
 -- ST_AsKML(version, geom, precision, text)
 -- Availability: 2.0.0
@@ -4290,7 +4290,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, $4); $$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 
 -----------------------------------------------------------------------
@@ -4303,14 +4303,14 @@ CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigit
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1000;
 
 -- _ST_AsGeoJson(version, geom, precision, options)
 CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geometry, int4, int4)
 	RETURNS TEXT
 	AS $$ SELECT ST_AsGeoJson($2::geometry, $3::int4, $4::int4); $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT  _PARALLEL;
 
 -- ST_AsGeoJson(version, geom, precision,options)
 -- Changed 2.0.0 to use default args and named args
@@ -4338,19 +4338,19 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 CREATE OR REPLACE FUNCTION ST_Box2dFromGeoHash(text, int4 DEFAULT NULL)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','box2d_from_geohash'
-	LANGUAGE 'c' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- ST_PointFromGeoHash(geohash text, precision int4)
 CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, int4 DEFAULT NULL)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','point_from_geohash'
-	LANGUAGE 'c' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- ST_GeomFromGeoHash(geohash text, precision int4)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
 	RETURNS geometry
 	AS $$ SELECT CAST(ST_Box2dFromGeoHash($1, $2) AS geometry); $$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 ------------------------------------------------------------------------
 -- OGC defined
@@ -4359,70 +4359,70 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
 CREATE OR REPLACE FUNCTION ST_NumPoints(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_numpoints_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: NumGeometries(geometry)
 CREATE OR REPLACE FUNCTION ST_NumGeometries(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_numgeometries_collection'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: GeometryN(geometry)
 CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_geometryn_collection'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: Dimension(geometry)
 CREATE OR REPLACE FUNCTION ST_Dimension(geometry)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_dimension'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- PostGIS equivalent function: ExteriorRing(geometry)
 CREATE OR REPLACE FUNCTION ST_ExteriorRing(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_exteriorring_polygon'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: NumInteriorRings(geometry)
 CREATE OR REPLACE FUNCTION ST_NumInteriorRings(geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NumInteriorRing(geometry)
 	RETURNS integer
 	AS 'MODULE_PATHNAME','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: InteriorRingN(geometry)
 CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_interiorringn_polygon'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Deprecation in 1.2.3 -- this should not be deprecated (2011-01-04 robe)
 CREATE OR REPLACE FUNCTION GeometryType(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'LWGEOM_getTYPE'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10; -- COST guessed from ST_GeometryType(geometry)
 
 -- Not quite equivalent to GeometryType
 CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 	RETURNS text
 	AS 'MODULE_PATHNAME', 'geometry_geometrytype'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_pointn_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
@@ -4432,7 +4432,7 @@ CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
 	THEN ST_NumGeometries($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
@@ -4442,84 +4442,85 @@ CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	THEN ST_GeometryN($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_startpoint_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function of old EndPoint(geometry)
 CREATE OR REPLACE FUNCTION ST_EndPoint(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_endpoint_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: IsClosed(geometry)
 CREATE OR REPLACE FUNCTION ST_IsClosed(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_isclosed'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- PostGIS equivalent function: IsEmpty(geometry)
 CREATE OR REPLACE FUNCTION ST_IsEmpty(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_isempty'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 	
 -- PostGIS equivalent of old function: AsBinary(geometry)
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 	
 -- PostGIS equivalent function: AsText(geometry)
 CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asText'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 750; --guess
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeometryFromText(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeometryFromText(text, int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromText(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: ST_GeometryFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_GeomFromText(text, int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 	
 -- PostGIS equivalent function: ST_GeometryFromText(text)
 -- SQL/MM alias for ST_GeomFromText
 CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'c' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
@@ -4529,7 +4530,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 
 -- PostGIS equivalent function: PointFromText(text, int4)
@@ -4541,7 +4542,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromText(text)
@@ -4551,7 +4552,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: LineFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_LineFromText(text, int4)
@@ -4561,7 +4562,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text, int4)
 	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
@@ -4571,7 +4572,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: ST_PolygonFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
@@ -4581,19 +4582,19 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
 	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT ST_PolyFromText($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_PolyFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: MLineFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MLineFromText(text, int4)
@@ -4604,7 +4605,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text, int4)
 	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
@@ -4614,20 +4615,20 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MLineFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT ST_MLineFromText($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: MPointFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text, int4)
@@ -4637,7 +4638,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text, int4)
 	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
@@ -4647,13 +4648,13 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MPointFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: MPolyFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
@@ -4663,7 +4664,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 --Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
@@ -4673,19 +4674,19 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT ST_MPolyFromText($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MPolyFromText($1)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
@@ -4696,7 +4697,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text)
@@ -4707,19 +4708,19 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text)
 	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: GeomFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea, int)
 	RETURNS geometry
 	AS 'SELECT ST_SetSRID(ST_GeomFromWKB($1), $2)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: PointFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
@@ -4729,7 +4730,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea)
@@ -4739,7 +4740,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: LineFromWKB(bytea, int)
 CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea, int)
@@ -4749,7 +4750,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea)
@@ -4759,7 +4760,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea, int)
@@ -4769,7 +4770,7 @@ CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea)
@@ -4779,7 +4780,7 @@ CREATE OR REPLACE FUNCTION ST_LinestringFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: PolyFromWKB(text, int)
 CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea, int)
@@ -4789,7 +4790,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea)
@@ -4799,7 +4800,7 @@ CREATE OR REPLACE FUNCTION ST_PolyFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea, int)
@@ -4809,7 +4810,7 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea)
@@ -4819,7 +4820,7 @@ CREATE OR REPLACE FUNCTION ST_PolygonFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: MPointFromWKB(text, int)
 CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
@@ -4829,7 +4830,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 
 -- Availability: 1.2.2
@@ -4840,7 +4841,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea, int)
@@ -4850,7 +4851,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea)
@@ -4860,7 +4861,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPointFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineFromWKB(bytea)
@@ -4870,7 +4871,7 @@ CREATE OR REPLACE FUNCTION ST_MultiLineFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- PostGIS equivalent function: MLineFromWKB(text, int)
 CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea, int)
@@ -4880,7 +4881,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea)
@@ -4890,7 +4891,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 -- PostGIS equivalent function: MPolyFromWKB(bytea, int)
@@ -4901,7 +4902,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea)
@@ -4911,7 +4912,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
@@ -4921,7 +4922,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 
 -- Availability: 1.2.2
@@ -4932,7 +4933,7 @@ CREATE OR REPLACE FUNCTION ST_MultiPolyFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea, int)
@@ -4943,7 +4944,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea, int)
 	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 
 -- Availability: 1.2.2
@@ -4955,7 +4956,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 --New functions
 
@@ -4965,38 +4966,38 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 CREATE OR REPLACE FUNCTION _ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance2d_linestring'
-	LANGUAGE 'c' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
 	
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'SELECT _ST_MaxDistance(ST_ConvexHull($1), ST_ConvexHull($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL; 
 
 CREATE OR REPLACE FUNCTION ST_ClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_closestpoint'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_ShortestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_shortestline2d'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION _ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longestline2d'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'SELECT _ST_LongestLine(ST_ConvexHull($1), ST_ConvexHull($2))'
-	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL; 
 
 CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin'
-	LANGUAGE 'c' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
 
 CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
@@ -5061,7 +5062,7 @@ BEGIN
 	RETURN geom;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 --
 -- SFSQL 1.1
@@ -5098,7 +5099,7 @@ BEGIN
 	RETURN geom;
 END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 /* Should we include the .sql directly here ? */
 #include "long_xact.sql.in"
@@ -5235,7 +5236,7 @@ SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integ
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%srid(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT;
+LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 -- Deprecation in 2.2.0
@@ -5252,7 +5253,7 @@ SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%ndims(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT;
+LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 
 -- support function to pull out geometry type from constraint check
 -- will return pretty name instead of ugly name
@@ -5271,7 +5272,7 @@ SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%geometrytype(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT;
+LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 -- Changed: 2.1.8 significant performance improvement for constraint based columns
@@ -5421,7 +5422,7 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry, integer)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_curve_segmentize'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 --
 -- SQL-MM
 --
@@ -5432,17 +5433,17 @@ CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry, integer)
 -- the default value of 32 segments per quarter circle
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry)
 	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32)'
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_has_arc'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 	
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
@@ -5467,7 +5468,7 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geome
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'c' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
 	
 -- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
@@ -5475,14 +5476,14 @@ CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	AS $$ 
 	SELECT ST_SetSRID(ST_MakePolygon($1), $2)
 	$$	
-	LANGUAGE 'sql' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL; 
 	
 -- PostGIS equivalent function: GeomFromWKB(WKB bytea))
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
-	LANGUAGE 'c' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL; 
 	
 ---
 -- Linear referencing functions
@@ -5491,26 +5492,26 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, FromMeasure float8, ToMeasure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_LocateBetween'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 	
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_LocateAlong'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Only accepts LINESTRING as parameters.
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(Geometry geometry, FromElevation float8, ToElevation float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'ST_InterpolatePoint'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ---------------------------------------------------------------
 -- END
@@ -5597,7 +5598,7 @@ $$
 	
 	END;
 $$
-  LANGUAGE plpgsql IMMUTABLE STRICT;
+  LANGUAGE plpgsql IMMUTABLE STRICT _PARALLEL;
   
 CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
 $$
@@ -5749,7 +5750,7 @@ $$
             RETURN var_resultgeom;
 	END;
 $$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 -- ST_ConcaveHull and Helper functions end here --
 
 -----------------------------------------------------------------------
