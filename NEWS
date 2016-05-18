@@ -1,5 +1,5 @@
 PostGIS 2.3.0
-2015/XX/XX
+2016/XX/XX
 
  * Important / Breaking Changes *
 
@@ -12,6 +12,9 @@ PostGIS 2.3.0
 
   - Add support for custom TOC in postgis_restore.pl
     (Christoph Moench-Tegeder)
+  - Add support for negative indexing in ST_PointN and ST_SetPoint
+    (Rémi Cura)
+  - Add parameters for geography ST_Buffer (Thomas Bonfort)
   - #3391, Add table inheritance support in ST_EstimatedExtent
            (Alessandro Pasotti)
   - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
@@ -26,7 +29,15 @@ PostGIS 2.3.0
   - #3465, ST_ClusterKMeans (Paul Ramsey)
   - #3469, ST_MakeLine with MULTIPOINTs (Paul Norman)
   - #3549, Support PgSQL 9.6 parallel query mode, as far as possible
+    (Paul Ramsey)
   - #3557, Geometry function costs based on query stats (Paul Norman)
+
+ * Performance Enhancements *
+
+  - #75, Enhancement to PIP short circuit (Dan Baston)
+  - #3383, Avoid deserializing small geometries during index operations
+    (Dan Baston)
+  - #3400, Minor optimization of PIP routines (Dan Baston)
 
 PostGIS 2.2.2
 2016/03/22
