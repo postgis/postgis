@@ -248,5 +248,18 @@ select '190', ST_Points(NULL) IS NULL;
 select '191', ST_AsText(ST_Points('MULTICURVE EMPTY'));
 select '192', ST_AsText(ST_Points('POLYGON((35 10,45 45,15 40,10 20,35 10),(20 30,35 35,30 20,20 30))'));
 
+select '200', ST_Expand(null::geometry, 1);
+select '201', ST_AsText(ST_Expand('LINESTRING (1 2 3, 10 20 30)'::geometry, 1));
+select '202', ST_AsText(ST_Expand('LINESTRINGM (1 2 3, 10 20 30)'::geometry, 1));
+select '203', ST_AsText(ST_Expand('LINESTRING (1 2, 10 20)'::geometry, 3));
+select '204', ST_AsText(ST_Expand('POLYGON EMPTY'::geometry, 4));
+select '205', ST_AsText(ST_Expand('POINT EMPTY'::geometry, 2));
+select '206', ST_AsText(ST_Expand('POINT (2 3)'::geometry, 0));
+select '207', ST_AsText(ST_Expand('LINESTRING (1 2, 3 4)'::geometry, 0));
+select '208', ST_AsText(ST_Expand('POINT (0 0)'::geometry, -1));
+select '209', ST_AsText(ST_Expand('LINESTRING (0 0, 10 10)'::geometry, -4));
+select '210', ST_Expand(null::box3d, 1);
+select '211', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1);
+
 -- Drop test table
 DROP table test;
