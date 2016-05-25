@@ -2265,6 +2265,11 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		elog(ERROR, "First argument must be a LINESTRING");
 		PG_RETURN_NULL();
 	}
+	if ( lwgeom_is_empty(lwg) )
+	{
+		elog(ERROR, "Cannot set point values on EMPTY geometry, use ST_AddPoint to add points");
+		PG_RETURN_NULL();
+	}
 	if ( which > line->points->npoints-1 )
 	{
 		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints-1);
