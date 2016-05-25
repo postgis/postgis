@@ -27,6 +27,7 @@ PostGIS 2.1.9
            innerBoundaryIs and no outerBoundaryIs
   - #3429, upgrading to 2.2 or 2.3 can cause crash/hang on some 
            platforms
+  - #3565, ST_SetPoint can crash backend
 
 
 PostGIS 2.1.8

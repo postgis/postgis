@@ -883,5 +883,8 @@ SELECT '#3367', ST_AsText(ST_RemoveRepeatedPoints('POLYGON EMPTY'::geometry));
 SELECT '#3375', ST_AsText(ST_RemoveRepeatedPoints('GEOMETRYCOLLECTION(POINT(1 1))'::geometry));
 
 
+-- #3565
+SELECT '#3565',ST_SetPoint(st_geomfromtext('LINESTRING EMPTY'), 0, ST_MakePoint(1,1));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
