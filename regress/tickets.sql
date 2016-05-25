@@ -774,5 +774,8 @@ SELECT '#2168',  ST_Distance(g1,g2)::numeric(16,8)  As dist_g1_g2, ST_Distance(g
   
 SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geography);
 
+-- #3565
+SELECT '#3565',ST_SetPoint(st_geomfromtext('LINESTRING EMPTY'), 0, ST_MakePoint(1,1));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

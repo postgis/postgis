@@ -21,6 +21,7 @@ PostGIS 2.0.8
   - #3436, memory handling mistake in ptarray_clone_deep
   - #3461, ST_GeomFromKML crashes Postgres when there are 
            innerBoundaryIs and no outerBoundaryIs
+  - #3565, ST_SetPoint can crash backend
 
 
 PostGIS 2.0.7
