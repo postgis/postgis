@@ -1628,7 +1628,7 @@ POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))
 
 			<para>Creates a Polygon formed by the given shell. Input
 				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
-			<para>Variant 1: takes one closed linestring.</para>
+			<para>Variant 1:  Takes one closed linestring.</para>
 			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
 			holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
 			ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
@@ -1666,7 +1666,7 @@ POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
 			  </programlisting>
 		</refsection>
 		<refsection>
-			<title>Examples: Outter shell with inner shells</title>
+			<title>Examples: Outer shell with inner shells</title>
 
 			<para>Build a donut with an ant hole</para>
 		   <programlisting>
@@ -1682,11 +1682,11 @@ FROM
 		</programlisting>
 		<para>Build province boundaries with holes
 		representing lakes in the province from a set of
-		province polygons/multipolygons and water line strings
-		this is an example of using PostGIS ST_Accum
-		<note><para>The use of CASE because feeding a null array into
-		ST_MakePolygon results in NULL</para></note>
-		<note><para>the use of left join to guarantee we get all provinces back even if they have no lakes</para></note></para>
+		province polygons/multipolygons and water linestrings.
+		This is an example of using PostGIS ST_Accum.
+		<note><para>The CASE construct is used because feeding a null array into
+		ST_MakePolygon results in NULL.</para></note>
+		<note><para>A left join is used to guarantee we get all provinces back even if they have no lakes.</para></note></para>
 		<programlisting>
 	SELECT p.gid, p.province_name,
 		CASE WHEN
