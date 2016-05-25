@@ -907,10 +907,10 @@ LINESTRING(1 2,4 5,7 8)
 
 			<!-- optionally mention that this function uses indexes if appropriate -->
 			<note>
-				<para>There are 2 variants of ST_GeomFromText function, the first takes no SRID and returns a geometry
-					with no defined spatial reference system.  The second takes a spatial reference id as the second argument
-					and returns an ST_Geometry that includes this srid as part of its meta-data.  The srid must be defined
-					in the spatial_ref_sys table.</para>
+				<para>There are two variants of ST_GeomFromText function.  The first takes no SRID and returns a geometry
+					with no defined spatial reference system (SRID=0).  The second takes a SRID as the second argument
+					and returns a geometry that includes this SRID as part of its metadata.
+				</para>
 			</note>
 
 			<para>&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite.</para>
