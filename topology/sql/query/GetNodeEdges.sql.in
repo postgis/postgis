@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -60,4 +60,4 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql' STABLE;
---} GetRingEdges
+--} GetNodeEdges
