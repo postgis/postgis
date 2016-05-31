@@ -14,6 +14,10 @@ insert_final_newline = true
 [*.{c,h}]
 indent_style = tab
 
+# topology C files want space indentation
+[topology/*.{c,h}]
+indent_style = space
+
 # Makefiles want tab indentation
 [{Makefile.in,Makefile,GNUmakefile.in}]
 indent_style = tab
