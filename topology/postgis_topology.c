@@ -79,6 +79,7 @@ struct LWT_BE_TOPOLOGY_T {
   int srid;
   double precision;
   int hasZ;
+  Oid geometryOID;
 };
 
 /* utility funx */
@@ -156,7 +157,8 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT id,srid,precision FROM topology.topology "
+  appendStringInfo(sql, "SELECT id,srid,precision,null::geometry"
+                        " FROM topology.topology "
                         "WHERE name = '%s'", name);
   spi_result = SPI_execute(sql->data, !be->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -215,6 +217,9 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   } else {
     topo->precision = DatumGetFloat8(dat);
   }
+
+  /* we're dynamically querying geometry type here */
+  topo->geometryOID = SPI_tuptable->tupdesc->attrs[3]->atttypid;
 
   POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
                     "id %d, srid %d, precision %g",
@@ -2418,20 +2423,31 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   Datum dat;
   LWT_ELEMID face_id;
   size_t hexewkb_size;
-  char *hexewkb;
+  SPIPlanPtr plan;
+  GSERIALIZED *pts;
+  Datum values[1];
+  Oid argtypes[1];
 
   initStringInfo(sql);
 
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  pts = geometry_serialize(lwpoint_as_lwgeom(pt));
+  if ( ! pts ) {
+    cberror(topo->be_data, "%s:%d: could not serialize query point",
+            __FILE__, __LINE__);
+    return -2;
+  }
   /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
-  appendStringInfo(sql, "SELECT face_id FROM \"%s\".face "
-                        "WHERE mbr && '%s'::geometry AND ST_Contains("
-     "topology.ST_GetFaceGeometry('%s', face_id), "
-     "'%s'::geometry) LIMIT 1",
-      topo->name, hexewkb, topo->name, hexewkb);
-  lwfree(hexewkb);
+  appendStringInfo(sql,
+                   "SELECT face_id FROM \"%s\".face "
+                   "WHERE mbr && $1 AND _ST_Contains("
+                   "topology.ST_GetFaceGeometry('%s', face_id), $1)"
+                   " LIMIT 1",
+                   topo->name, topo->name);
 
-  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 1);
+  values[0] = PointerGetDatum(pts);
+  argtypes[0] = topo->geometryOID;
+  spi_result = SPI_execute_with_args(sql->data, 1, argtypes, values, NULL,
+                                     !topo->be_data->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
