@@ -14,6 +14,8 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
+#include "utils/array.h" /* for ArrayType */
+#include "catalog/pg_type.h" /* for INT4OID */
 #include "lib/stringinfo.h"
 #include "access/xact.h" /* for RegisterXactCallback */
 #include "funcapi.h" /* for FuncCallContext */
@@ -114,15 +116,13 @@ _lwtype_upper_name(int type, char *buf, size_t buflen)
   }
 }
 
-/* Return lwalloc'ed hexwkb representation for a GBOX */
-static char *
-_box2d_to_hexwkb(const GBOX *bbox, int srid)
+/* Return an lwalloc'ed geometrical representation of the box */
+static LWGEOM *
+_box2d_to_lwgeom(const GBOX *bbox, int srid)
 {
   POINTARRAY *pa = ptarray_construct(0, 0, 2);
   POINT4D p;
   LWLINE *line;
-  char *hex;
-  size_t sz;
 
   p.x = bbox->xmin;
   p.y = bbox->ymin;
@@ -131,8 +131,18 @@ _box2d_to_hexwkb(const GBOX *bbox, int srid)
   p.y = bbox->ymax;
   ptarray_set_point4d(pa, 1, &p);
   line = lwline_construct(srid, NULL, pa);
-  hex = lwgeom_to_hexwkb( lwline_as_lwgeom(line), WKT_EXTENDED, &sz);
-  lwline_free(line);
+  return lwline_as_lwgeom(line);
+}
+
+/* Return lwalloc'ed hexwkb representation for a GBOX */
+static char *
+_box2d_to_hexwkb(const GBOX *bbox, int srid)
+{
+  char *hex;
+  size_t sz;
+  LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
+  hex = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz);
+  lwgeom_free(geom);
   assert(hex[sz-1] == '\0');
   return hex;
 }
@@ -872,34 +882,47 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
-  char *hexbox;
+  ArrayType *array_ids;
+  Datum *datum_ids;
+  Datum values[2];
+  Oid argtypes[2];
+  int nargs = 1;
+  GSERIALIZED *gser = NULL;
+
+  datum_ids = palloc(sizeof(Datum)*(*numelems));
+  for (i=0; i<*numelems; ++i) datum_ids[i] = Int32GetDatum(ids[i]);
+  array_ids = construct_array(datum_ids, *numelems, INT4OID, 4, true, 's');
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
-  appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
-  appendStringInfoString(sql, " WHERE ( left_face IN (");
-  // add all identifiers here
-  for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
-  }
-  appendStringInfoString(sql, ") OR right_face IN (");
-  // add all identifiers here
-  for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
-  }
-  appendStringInfoString(sql, ") )");
+  appendStringInfo(sql, " FROM \"%s\".edge_data"
+                        " WHERE ( left_face = ANY($1) "
+                        " OR right_face = ANY ($1) )",
+                   topo->name);
+
+  values[0] = PointerGetDatum(array_ids);
+  argtypes[0] = INT4ARRAYOID;
+
   if ( box )
   {
-    hexbox = _box2d_to_hexwkb(box, topo->srid);
-    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
-    lwfree(hexbox);
+    LWGEOM *g = _box2d_to_lwgeom(box, topo->srid);
+    gser = geometry_serialize(g);
+    lwgeom_free(g);
+    appendStringInfo(sql, " AND geom && $2");
+
+    values[1] = PointerGetDatum(gser);
+    argtypes[1] = topo->geometryOID;
+    ++nargs;
   }
 
   POSTGIS_DEBUGF(1, "cb_getEdgeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
 
-  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  spi_result = SPI_execute_with_args(sql->data, nargs, argtypes, values, NULL,
+                                     !topo->be_data->data_changed, 0);
+  pfree(array_ids); /* not needed anymore */
+  if ( gser ) pfree(gser); /* not needed anymore */
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
@@ -2422,8 +2445,6 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   bool isnull;
   Datum dat;
   LWT_ELEMID face_id;
-  size_t hexewkb_size;
-  SPIPlanPtr plan;
   GSERIALIZED *pts;
   Datum values[1];
   Oid argtypes[1];
