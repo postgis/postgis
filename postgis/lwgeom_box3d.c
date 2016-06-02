@@ -369,15 +369,37 @@ expand_box3d(BOX3D *box, double d)
 	box->zmax += d;
 }
 
+static void
+expand_box3d_xyz(BOX3D *box, double dx, double dy, double dz)
+{
+	box->xmin -= dx;
+	box->xmax += dx;
+	box->ymin -= dy;
+	box->ymax += dy;
+	box->zmin -= dz;
+	box->zmax += dz;
+}
+
 PG_FUNCTION_INFO_V1(BOX3D_expand);
 Datum BOX3D_expand(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	double d = PG_GETARG_FLOAT8(1);
 	BOX3D *result = (BOX3D *)palloc(sizeof(BOX3D));
-
 	memcpy(result, box, sizeof(BOX3D));
-	expand_box3d(result, d);
+
+	if (PG_NARGS() == 2) {
+		/* Expand the box the same amount in all directions */
+		double d = PG_GETARG_FLOAT8(1);
+		expand_box3d(result, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+		double dz = PG_GETARG_FLOAT8(3);
+
+		expand_box3d_xyz(result, dx, dy, dz);
+	}
 
 	PG_RETURN_POINTER(result);
 }

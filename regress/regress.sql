@@ -260,6 +260,22 @@ select '208', ST_AsText(ST_Expand('POINT (0 0)'::geometry, -1));
 select '209', ST_AsText(ST_Expand('LINESTRING (0 0, 10 10)'::geometry, -4));
 select '210', ST_Expand(null::box3d, 1);
 select '211', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1);
+select '212', ST_Expand(null::box2d, 1);
+select '213', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4);
+
+select '214', ST_Expand(null::geometry, 1, 1, 1, 1);
+select '215', ST_AsText(ST_Expand('LINESTRING (1 2 3, 10 20 30)'::geometry, 1, 4, 2, 7));
+
+select '216', ST_AsText(ST_Expand('LINESTRINGM (1 2 3, 10 20 30)'::geometry, 1, 4, 2, 7));
+select '217', ST_AsText(ST_Expand('LINESTRING (1 2, 10 20)'::geometry, 1, 4, 2, 7));
+select '218', ST_AsText(ST_Expand('POLYGON EMPTY'::geometry, 4, 3, 1, 1));
+select '219', ST_AsText(ST_Expand('POINT EMPTY'::geometry, 2, 3, 1, -1));
+select '220', ST_AsText(ST_Expand('POINT (2 3)'::geometry, 0, 4, -2, 8));
+select '221', ST_AsText(ST_Expand('POINT (0 0)'::geometry, -1, -2));
+select '222', ST_Expand(null::box3d, 1, 1, 1);
+select '223', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1, -1, 7);
+select '224', ST_Expand(null::box2d, 1, 1);
+select '225', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4, 2);
 
 -- Drop test table
 DROP table test;

@@ -123,6 +123,26 @@ void gbox_expand(GBOX *g, double d)
 	}
 }
 
+void gbox_expand_xyzm(GBOX *g, double dx, double dy, double dz, double dm)
+{
+	g->xmin -= dx;
+	g->xmax += dx;
+	g->ymin -= dy;
+	g->ymax += dy;
+
+	if (FLAGS_GET_Z(g->flags))
+	{
+		g->zmin -= dz;
+		g->zmax += dz;
+	}
+
+	if (FLAGS_GET_M(g->flags))
+	{
+		g->mmin -= dm;
+		g->mmax += dm;
+	}
+}
+
 int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 {
 	if ( ( ! g1 ) && ( ! g2 ) )

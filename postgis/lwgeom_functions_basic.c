@@ -1564,10 +1564,6 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	double d = PG_GETARG_FLOAT8(1);
-	POINT4D pt;
-	POINTARRAY *pa;
-	POINTARRAY **ppa;
 	LWPOLY *poly;
 	GSERIALIZED *result;
 	GBOX gbox;
@@ -1588,43 +1584,31 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(geom);
 	}
 
-	gbox_expand(&gbox, d);
+	if (PG_NARGS() == 2)
+	{
+		/* Expand the box the same amount in all directions */
+		double d = PG_GETARG_FLOAT8(1);
+		gbox_expand(&gbox, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+		double dz = PG_GETARG_FLOAT8(3);
+		double dm = PG_GETARG_FLOAT8(4);
 
-	pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 5);
-	
-	/* Assign coordinates to POINT2D array */
-	pt.x = gbox.xmin;
-	pt.y = gbox.ymin;
-	pt.z = gbox.zmin;
-	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-	pt.x = gbox.xmin;
-	pt.y = gbox.ymax;
-	pt.z = gbox.zmin;
-	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-	pt.x = gbox.xmax;
-	pt.y = gbox.ymax;
-	pt.z = gbox.zmax;
-	pt.m = gbox.mmax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-	pt.x = gbox.xmax;
-	pt.y = gbox.ymin;
-	pt.z = gbox.zmax;
-	pt.m = gbox.mmax;
-	ptarray_append_point(pa, &pt, LW_TRUE);
-	pt.x = gbox.xmin;
-	pt.y = gbox.ymin;
-	pt.z = gbox.zmin;
-	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, LW_TRUE);
+		gbox_expand_xyzm(&gbox, dx, dy, dz, dm);
+	}
 
-	/* Construct point array */
-	ppa = lwalloc(sizeof(POINTARRAY*));
-	ppa[0] = pa;
+	{
+		POINT4D p1 = { gbox.xmin, gbox.ymin, gbox.zmin, gbox.mmin };
+		POINT4D p2 = { gbox.xmin, gbox.ymax, gbox.zmin, gbox.mmin };
+		POINT4D p3 = { gbox.xmax, gbox.ymax, gbox.zmax, gbox.mmax };
+		POINT4D p4 = { gbox.xmax, gbox.ymin, gbox.zmax, gbox.mmax };
 
-	/* Construct polygon  */
-	poly = lwpoly_construct(lwgeom->srid, NULL, 1, ppa);
+		poly = lwpoly_construct_rectangle(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), &p1, &p2, &p3, &p4);
+	}
+
 	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
 
 	/* Construct GSERIALIZED  */

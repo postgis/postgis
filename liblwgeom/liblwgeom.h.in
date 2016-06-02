@@ -1825,6 +1825,11 @@ extern int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout);
 extern void gbox_expand(GBOX *g, double d);
 
 /**
+* Move the box minimums down and the maximums up by the distances provided.
+*/
+extern void gbox_expand_xyzm(GBOX *g, double dx, double dy, double dz, double dm);
+
+/**
 * Initialize a #GBOX using the values of the point.
 */
 extern int gbox_init_point3d(const POINT3D *p, GBOX *gbox);

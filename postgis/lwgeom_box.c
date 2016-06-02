@@ -378,11 +378,21 @@ PG_FUNCTION_INFO_V1(BOX2D_expand);
 Datum BOX2D_expand(PG_FUNCTION_ARGS)
 {
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	double d = PG_GETARG_FLOAT8(1);
 	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
-
 	memcpy(result, box, sizeof(GBOX));
-    gbox_expand(result, d);
+
+	if (PG_NARGS() == 2)
+	{
+		double d = PG_GETARG_FLOAT8(1);
+		gbox_expand(result, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+
+		gbox_expand_xyzm(result, dx, dy, 0, 0);
+	}
 
 	PG_RETURN_POINTER(result);
 }

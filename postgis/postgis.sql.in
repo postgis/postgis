@@ -941,7 +941,13 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 -----------------------------------------------------------------------------
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
+CREATE OR REPLACE FUNCTION ST_Expand(box2d,float8)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2D_expand'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Expand(box box2d, dx float8, dy float8)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME', 'BOX2D_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -1416,8 +1422,22 @@ CREATE OR REPLACE FUNCTION ST_Expand(box3d,float8)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 25;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Expand(box box3d, dx float8, dy float8, dz float8 DEFAULT 0)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_expand'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 25;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Expand(geometry,float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 25;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Expand(geom geometry, dx float8, dy float8, dz float8 DEFAULT 0, dm float8 DEFAULT 0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
