@@ -125,14 +125,35 @@ static void test_unionfind_collapse_cluster_ids(void)
 	uf->clusters[8] = 8;
 	uf->clusters[9] = 7;
 
+	uf->cluster_sizes[0] = 3;
+	uf->cluster_sizes[1] = 4;
+	uf->cluster_sizes[2] = 4;
+	uf->cluster_sizes[3] = 4;
+	uf->cluster_sizes[4] = 3;
+	uf->cluster_sizes[5] = 4;
+	uf->cluster_sizes[6] = 3;
+	uf->cluster_sizes[7] = 3;
+	uf->cluster_sizes[8] = 3;
+	uf->cluster_sizes[9] = 3;
+
 	/* 5 -> 0
 	 * 7 -> 1
 	 * 8 -> 2
 	 */
-	uint32_t expected_collapsed_ids[] = { 2, 0, 0, 0, 1, 0, 2, 1, 2, 1 };
-	uint32_t* collapsed_ids = UF_get_collapsed_cluster_ids(uf);
+	uint32_t expected_collapsed_ids[] = { 3, 1, 1, 1, 2, 1, 3, 2, 3, 2 };
+	uint32_t* collapsed_ids = UF_get_collapsed_cluster_ids(uf, 1, 0);
 
 	CU_ASSERT_EQUAL(0, memcmp(collapsed_ids, expected_collapsed_ids, 10*sizeof(uint32_t)));
+
+	lwfree(collapsed_ids);
+
+	uint32_t expected_collapsed_ids2[] = { 999, 1, 1, 1, 999, 1, 999, 999, 999, 999 };
+	collapsed_ids = UF_get_collapsed_cluster_ids(uf, 4, 999);
+
+	CU_ASSERT_EQUAL(0, memcmp(collapsed_ids, expected_collapsed_ids2, 10*sizeof(uint32_t)));
+
+	lwfree(collapsed_ids);
+	UF_destroy(uf);
 }
 
 void unionfind_suite_setup(void);

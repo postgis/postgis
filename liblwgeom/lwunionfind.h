@@ -45,14 +45,20 @@ void UF_destroy(UNIONFIND* uf);
 /* Identify the cluster id associated with specified component id */
 uint32_t UF_find(UNIONFIND* uf, uint32_t i);
 
-/* Merge the clusters that contain the two specified components ids */
+/* Get the size of the cluster associated with the specified component id */
+uint32_t UF_size(UNIONFIND* uf, uint32_t i);
+
+/* Merge the clusters that contain the two specified component ids */
 void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
 
 /* Return an array of component ids, where components that are in the
  * same cluster are contiguous in the array */
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
 
-/* Replace the cluster ids in a UNIONFIND with sequential ids starting at zero. */
-uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf);
+/* Replace the cluster ids in a UNIONFIND with sequential ids starting at one. 
+ * If min_cluster_size is greater than 1, any clusters with fewer than
+ * min_cluster_size items will be assigned to noise_cluster_id.
+ * */
+uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, uint32_t min_cluster_size, uint32_t noise_cluster_id);
 
 #endif

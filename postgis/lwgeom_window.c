@@ -143,10 +143,23 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		result_ids = UF_get_collapsed_cluster_ids(uf);
+		result_ids = UF_get_collapsed_cluster_ids(uf, minpoints, 0);
 		for (i = 0; i < ngeoms; i++)
 		{
-			context->cluster_assignments[i].cluster_id = result_ids[i];
+			if (result_ids[i] == 0)
+			{
+				context->cluster_assignments[i].is_null = LW_TRUE;
+			}
+			else
+			{
+				/* We overloaded the zero cluster ID above to tag "noise" geometries
+				 * that are not part of any cluster.  Now that those have been
+				 * properly converted into NULLs, we need to subtract one from 
+				 * the collapsed cluster IDs so that we get a zero-based sequence, 
+				 * consistent with our good friend ST_ClusterKMeans.
+				 */
+				context->cluster_assignments[i].cluster_id = result_ids[i] - 1;
+			}
 		}
 
 		lwfree(result_ids);

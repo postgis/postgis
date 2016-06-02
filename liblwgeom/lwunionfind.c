@@ -74,6 +74,12 @@ UF_find (UNIONFIND* uf, uint32_t i)
 	return i;
 }
 
+uint32_t
+UF_size (UNIONFIND* uf, uint32_t i)
+{
+    return uf->cluster_sizes[UF_find(uf, i)];
+}
+
 void
 UF_union(UNIONFIND* uf, uint32_t i, uint32_t j)
 {
@@ -136,24 +142,32 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 }
 
 uint32_t*
-UF_get_collapsed_cluster_ids(UNIONFIND* uf)
+UF_get_collapsed_cluster_ids(UNIONFIND* uf, uint32_t min_cluster_size, uint32_t noise_cluster_id)
 {
 	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
 	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
 	uint32_t last_old_id, current_new_id, i;
 
 	last_old_id = UF_find(uf, ordered_components[0]);
-	current_new_id = 0;
+	current_new_id = 1;
 	for (i = 0; i < uf->N; i++)
 	{
 		uint32_t j = ordered_components[i];
-		uint32_t current_old_id = UF_find(uf, j);
 
-		if (current_old_id != last_old_id)
-			current_new_id++;
+		if (UF_size(uf, j) < min_cluster_size)
+		{
+			new_ids[j] = noise_cluster_id;
+		}
+		else
+		{
+			uint32_t current_old_id = UF_find(uf, j);
 
-		new_ids[j] = current_new_id;
-		last_old_id = current_old_id;
+			if (current_old_id != last_old_id)
+				current_new_id++;
+
+			new_ids[j] = current_new_id;
+			last_old_id = current_old_id;
+		}
 	}
 
 	lwfree(ordered_components);
