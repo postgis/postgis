@@ -1564,6 +1564,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
+	int srid = lwgeom_get_srid(lwgeom);
 	LWPOLY *poly;
 	GSERIALIZED *result;
 	GBOX gbox;
@@ -1610,6 +1611,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
+	lwgeom_set_srid(lwpoly_as_lwgeom(poly), srid);
 
 	/* Construct GSERIALIZED  */
 	result = geometry_serialize(lwpoly_as_lwgeom(poly));

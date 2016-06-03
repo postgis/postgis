@@ -276,6 +276,7 @@ select '222', ST_Expand(null::box3d, 1, 1, 1);
 select '223', ST_Expand('BOX3D(-1 3 5, -1 6 8)'::BOX3D, 1, -1, 7);
 select '224', ST_Expand(null::box2d, 1, 1);
 select '225', ST_Expand('BOX(-2 3, -1 6'::BOX2D, 4, 2);
+select '226', ST_SRID(ST_Expand('SRID=4326;POINT (0 0)'::geometry, 1))=4326;
 
 -- Drop test table
 DROP table test;
