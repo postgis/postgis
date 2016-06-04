@@ -7,6 +7,8 @@ PostGIS 2.2.3
            calculation
   - #3522, Handle POINT and MULTIPOINT correctly in ST_Subdivide
   - #3565, ST_SetPoint can crash backend
+  - #3571, Install desktop file and application icons 
+           for shp2pgsql-gui (Sebastiaan Couwenberg)
 
 
 PostGIS 2.2.2
