@@ -43,8 +43,7 @@ GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
 int cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** clusterGeoms, uint32_t* num_clusters);
 int cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
-int cluster_dbscan(LWGEOM** geoms, uint32_t num_geoms, double eps, uint32_t min_points, LWGEOM*** clusterGeoms, uint32_t* num_clusters);
-int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points);
+int union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** is_in_cluster_ret);
 
 POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 

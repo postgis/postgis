@@ -1077,15 +1077,37 @@ SELECT ST_AsText(
 	  <refsection>
       <title>Description</title>
 
-      <para>Returns cluster number for each input geometry, based on a 2D 
-          implementation of the 
+	  <para>
+		  Returns cluster number for each input geometry, based on a 2D implementation of the 
           <ulink url="https://en.wikipedia.org/wiki/DBSCAN">Density-based spatial clustering of applications with noise (DBSCAN)</ulink> 
-          algorithm.  An input geometry will be added to a cluster if it is 
-          within <varname>eps</varname> distance of at least
-          <varname>minpoints</varname> other input geometries.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of
-          clusters to be specified, but instead uses the desired distance (<varname>eps</varname>) and density(<varname>minpoints</varname>) parameters 
-          to construct each cluster.  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
-      </para>
+		  algorithm.  Unlike <xref linkend="ST_ClusterKMeans" />, it does not require the number of clusters to be specified, but instead 
+		  uses the desired distance (<varname>eps</varname>) and density(<varname>minpoints</varname>) parameters to construct each cluster.
+	  </para>
+		  
+	  <para>
+		  An input geometry will be added to a cluster if it is either:
+		  <itemizedlist>
+			  <listitem>
+				  A "core" geometry, that is within <varname>eps</varname> distance of at least <varname>minpoints</varname> other input geometries, or
+			  </listitem>
+			  <listitem>
+				  A "border" geometry, that is within <varname>eps</varname> distance of a core geometry.
+			  </listitem>
+		  </itemizedlist>
+		</para>
+
+		<para>
+		  Note that border geometries may be within <varname>eps</varname> distance of core geometries in more than one cluster; in this
+		  case, either assignment would be correct, and the border geometry will be arbitrarily asssigned to one of the available clusters.
+		  In these cases, it is possible for a correct cluster to be generated with fewer than <varname>minpoints</varname> geometries.
+		  When assignment of a border geometry is ambiguous, repeated calls to ST_ClusterDBSCAN will produce identical results if an ORDER BY 
+		  clause is included in the window definition, but cluster assignments may differ from other implementations of the same algorithm.
+	  </para>
+
+	  <para>
+		  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
+	  </para>
+
       <para>Availability: 2.3.0 - requires GEOS </para>
     </refsection>
 

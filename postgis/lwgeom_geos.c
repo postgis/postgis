@@ -3191,7 +3191,6 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	LWGEOM** lw_inputs;
 	LWGEOM** lw_results;
 	double tolerance;
-	int min_points;
 	int srid=SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
@@ -3212,17 +3211,6 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (PG_NARGS() < 3)
-		min_points = 1;
-	else
-		min_points = PG_GETARG_INT32(2);
-
-	if (min_points < 1)
-	{
-		lwpgerror("min_points must be a positive number.");
-		PG_RETURN_NULL();
-	}
-
 	nelems = array_nelems_not_null(array);
 
 	POSTGIS_DEBUGF(3, "cluster_within_distance_garray: number of non-null elements: %d", nelems);
@@ -3240,7 +3228,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (cluster_dbscan(lw_inputs, nelems, tolerance, min_points, &lw_results, &nclusters) != LW_SUCCESS)
+	if (cluster_within_distance(lw_inputs, nelems, tolerance, &lw_results, &nclusters) != LW_SUCCESS)
 	{
 		elog(ERROR, "cluster_within: Error performing clustering");
 		PG_RETURN_NULL();

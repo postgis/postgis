@@ -92,6 +92,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		uint32_t i;
 		uint32_t* result_ids;
 		LWGEOM** geoms;
+		char* is_in_cluster;
 		UNIONFIND* uf;
 		bool tolerance_is_null;
 		bool minpoints_is_null;
@@ -127,7 +128,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 			}
 		}
 
-		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints) == LW_SUCCESS)
+		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints, &is_in_cluster) == LW_SUCCESS)
 			context->is_error = LW_FALSE;
 
 		for (i = 0; i < ngeoms; i++)
@@ -139,26 +140,21 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		if (context->is_error)
 		{
 			UF_destroy(uf);
+			lwfree(is_in_cluster);
 			lwpgerror("Error during clustering");
 			PG_RETURN_NULL();
 		}
 
-		result_ids = UF_get_collapsed_cluster_ids(uf, minpoints, 0);
+		result_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 		for (i = 0; i < ngeoms; i++)
 		{
-			if (result_ids[i] == 0)
+			if (!is_in_cluster[i])
 			{
 				context->cluster_assignments[i].is_null = LW_TRUE;
 			}
 			else
 			{
-				/* We overloaded the zero cluster ID above to tag "noise" geometries
-				 * that are not part of any cluster.  Now that those have been
-				 * properly converted into NULLs, we need to subtract one from 
-				 * the collapsed cluster IDs so that we get a zero-based sequence, 
-				 * consistent with our good friend ST_ClusterKMeans.
-				 */
-				context->cluster_assignments[i].cluster_id = result_ids[i] - 1;
+				context->cluster_assignments[i].cluster_id = result_ids[i];
 			}
 		}
 

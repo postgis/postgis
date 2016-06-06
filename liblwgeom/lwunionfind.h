@@ -56,9 +56,9 @@ void UF_union(UNIONFIND* uf, uint32_t i, uint32_t j);
 uint32_t* UF_ordered_by_cluster(UNIONFIND* uf);
 
 /* Replace the cluster ids in a UNIONFIND with sequential ids starting at one. 
- * If min_cluster_size is greater than 1, any clusters with fewer than
- * min_cluster_size items will be assigned to noise_cluster_id.
+ * If is_in_cluster array is provided, it will be used to skip any indexes
+ * that are not in a cluster.
  * */
-uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, uint32_t min_cluster_size, uint32_t noise_cluster_id);
+uint32_t* UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster);
 
 #endif

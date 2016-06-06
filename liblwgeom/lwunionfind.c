@@ -142,25 +142,25 @@ UF_ordered_by_cluster(UNIONFIND* uf)
 }
 
 uint32_t*
-UF_get_collapsed_cluster_ids(UNIONFIND* uf, uint32_t min_cluster_size, uint32_t noise_cluster_id)
+UF_get_collapsed_cluster_ids(UNIONFIND* uf, const char* is_in_cluster)
 {
 	uint32_t* ordered_components = UF_ordered_by_cluster(uf);
 	uint32_t* new_ids = lwalloc(uf->N * sizeof(uint32_t));
 	uint32_t last_old_id, current_new_id, i;
+	char encountered_cluster = LW_FALSE;
 
-	last_old_id = UF_find(uf, ordered_components[0]);
-	current_new_id = 1;
+	current_new_id = 0;
 	for (i = 0; i < uf->N; i++)
 	{
 		uint32_t j = ordered_components[i];
-
-		if (UF_size(uf, j) < min_cluster_size)
-		{
-			new_ids[j] = noise_cluster_id;
-		}
-		else
+		if (!is_in_cluster || is_in_cluster[j])
 		{
 			uint32_t current_old_id = UF_find(uf, j);
+			if (!encountered_cluster)
+			{
+				encountered_cluster = LW_TRUE;
+				last_old_id = current_old_id;
+			}
 
 			if (current_old_id != last_old_id)
 				current_new_id++;

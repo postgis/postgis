@@ -235,16 +235,6 @@ cluster_intersecting(GEOSGeometry** geoms, uint32_t num_geoms, GEOSGeometry*** c
 	return cluster_success;
 }
 
-/** Takes an array of LWGEOM* and constructs an array of LWGEOM*, where each element in the constructed array is a
- *  GeometryCollection representing a set of geometries separated by no more than the specified tolerance. Caller is
- *  responsible for freeing the input array, but not the LWGEOM* items inside it. */
-int
-cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters)
-{
-	int min_points = 1;
-	return cluster_dbscan(geoms, num_geoms, tolerance, min_points, clusterGeoms, num_clusters);
-}
-
 
 static int
 dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geoms, uint32_t p, double eps)
@@ -268,7 +258,7 @@ dbscan_update_context(GEOSSTRtree* tree, struct QueryContext* cxt, LWGEOM** geom
 }
 
 int
-union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points)
+union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint32_t min_points, char** in_a_cluster_ret)
 {
 	uint32_t p, i;
 	struct STRTree tree;
@@ -279,6 +269,8 @@ union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint
 		.items_found_size = 0
 	};
 	int success = LW_SUCCESS;
+	char* in_a_cluster;
+	char* is_in_core;
 
 	if (num_geoms <= 1)
 		return LW_SUCCESS;
@@ -289,6 +281,11 @@ union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint
 		destroy_strtree(tree);
 		return LW_FAILURE;
 	}
+
+	in_a_cluster = lwalloc(num_geoms * sizeof(char));
+	memset(in_a_cluster, 0, num_geoms * sizeof(char));
+	is_in_core = lwalloc(num_geoms * sizeof(char));
+	memset(is_in_core, 0, num_geoms * sizeof(char));
 
 	for (p = 0; p < num_geoms; p++)
 	{
@@ -313,22 +310,52 @@ union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint
 			}
 
 			if (mindist <= eps)
+			{
 				neighbors[num_neighbors++] = q;
+			}
 		}
+
+		if (!success)
+			break;
 
 		if (num_neighbors >= min_points)
 		{
+			in_a_cluster[p] = LW_TRUE;
+			is_in_core[p] = LW_TRUE;
+
 			for (i = 0; i < num_neighbors; i++)
 			{
-				UF_union(uf, p, neighbors[i]);
+				uint32_t q = neighbors[i];
+
+				if (in_a_cluster[q])
+				{
+					/* Can we merge p's cluster with q's cluster?  We can do this only
+					 * if both p and q are considered _core_ points of their respective
+					 * clusters.
+					 */
+					 if (is_in_core[q])
+					 {
+						 UF_union(uf, p, q);
+					 }
+				}
+				else
+				{
+					UF_union(uf, p, q);
+					in_a_cluster[q] = LW_TRUE;
+				}
 			}
 		}
 
 		lwfree(neighbors);
-
-		if (!success)
-			break;
 	}
+
+	lwfree(is_in_core);
+
+	/* Either pass in_a_cluster to our caller, or free it. */
+	if (in_a_cluster_ret)
+		*in_a_cluster_ret = in_a_cluster;
+	else
+		lwfree(in_a_cluster);
 
 	if (cxt.items_found)
 		lwfree(cxt.items_found);
@@ -337,13 +364,16 @@ union_dbscan(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double eps, uint
 	return success;
 }
 
+/** Takes an array of LWGEOM* and constructs an array of LWGEOM*, where each element in the constructed array is a
+ *  GeometryCollection representing a set of geometries separated by no more than the specified tolerance. Caller is
+ *  responsible for freeing the input array, but not the LWGEOM* items inside it. */
 int
-cluster_dbscan(LWGEOM** geoms, uint32_t num_geoms, double eps, uint32_t min_points, LWGEOM*** clusterGeoms, uint32_t* num_clusters)
+cluster_within_distance(LWGEOM** geoms, uint32_t num_geoms, double tolerance, LWGEOM*** clusterGeoms, uint32_t* num_clusters)
 {
 	int cluster_success;
 	UNIONFIND* uf = UF_create(num_geoms);
 
-	if (union_dbscan(geoms, num_geoms, uf, eps, min_points) == LW_FAILURE)
+	if (union_dbscan(geoms, num_geoms, uf, tolerance, 1, NULL) == LW_FAILURE)
 	{
 		UF_destroy(uf);
 		return LW_FAILURE;
