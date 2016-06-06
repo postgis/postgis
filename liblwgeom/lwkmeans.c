@@ -216,6 +216,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	lwfree(config.centers);
 	lwfree(centers_raw);
 	lwfree(centroids);
+	lwfree(seen);
 
 	/* Good result */
 	if (result == KMEANS_OK)
