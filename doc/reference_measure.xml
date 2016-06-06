@@ -1087,11 +1087,15 @@ SELECT ST_AsText(
 	  <para>
 		  An input geometry will be added to a cluster if it is either:
 		  <itemizedlist>
-			  <listitem>
-				  A "core" geometry, that is within <varname>eps</varname> distance of at least <varname>minpoints</varname> other input geometries, or
+              <listitem>
+                  <para>
+                      A "core" geometry, that is within <varname>eps</varname> distance of at least <varname>minpoints</varname> other input geometries, or
+                  </para>
 			  </listitem>
 			  <listitem>
-				  A "border" geometry, that is within <varname>eps</varname> distance of a core geometry.
+                  <para>
+                      A "border" geometry, that is within <varname>eps</varname> distance of a core geometry.
+                  </para>
 			  </listitem>
 		  </itemizedlist>
 		</para>
