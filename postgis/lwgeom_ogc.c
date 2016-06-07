@@ -177,8 +177,8 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
 	text *type_text;
-	static int type_str_len = 32;
-	char type_str[type_str_len];
+	static int type_str_len = 31;
+	char type_str[type_str_len + 1];
 
 	/* Read just the header from the toasted tuple */
 	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
