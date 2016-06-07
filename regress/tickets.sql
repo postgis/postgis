@@ -966,8 +966,5 @@ SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom
 SELECT '#3470', ST_Polygonize(ARRAY[NULL]::geometry[]) IS NULL;
 SELECT '#3470b', ST_Area(ST_Polygonize(ARRAY[NULL, 'LINESTRING (0 0, 10 0, 10 10)', NULL, 'LINESTRING (0 0, 10 10)', NULL]::geometry[]));
 
--- #3573
-SELECT '#3573', 'POINT M (0 0 13)'::geometry <<->> 'LINESTRING M (0 0 5, 0 1 6)'::geometry;
-
 -- Clean up
 DELETE FROM spatial_ref_sys;

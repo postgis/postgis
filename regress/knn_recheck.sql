@@ -220,3 +220,6 @@ ORDER BY a.gid, true_rn;
 
 DROP TABLE knn_recheck_geom_nd;
 
+-- #3573
+SELECT '#3573', 'POINT M (0 0 13)'::geometry <<->> 'LINESTRING M (0 0 5, 0 1 6)'::geometry;
+
