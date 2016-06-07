@@ -746,7 +746,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 		else if ( lwgeom_get_type(lw2) == LINETYPE )
 		{
 			LWPOINT *lwp2 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 1);
-			m1 = lwgeom_interpolate_point(lw2, lwp2);
+			m2 = lwgeom_interpolate_point(lw2, lwp2);
 			lwpoint_free(lwp2);
 		}
 		else 
