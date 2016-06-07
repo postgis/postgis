@@ -950,8 +950,5 @@ SELECT '#3470b', ST_Area(ST_Polygonize(ARRAY[NULL, 'LINESTRING (0 0, 10 0, 10 10
 -- #3565
 SELECT '#3565',ST_SetPoint(st_geomfromtext('LINESTRING EMPTY'), 0, ST_MakePoint(1,1));
 
--- #3573
-SELECT '#3573', 'POINT M (0 0 13)'::geometry <<->> 'LINESTRING M (0 0 5, 0 1 6)'::geometry;
-
 -- Clean up
 DELETE FROM spatial_ref_sys;
