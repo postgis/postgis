@@ -1374,7 +1374,7 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %ld rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return 0;
   }
@@ -1429,7 +1429,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %ld rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return -1;
   }
@@ -1485,7 +1485,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %ld rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return -1;
   }
