@@ -1849,7 +1849,7 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
   if ( SPI_processed != 1 ) {
-		cberror(topo->be_data, "processed %ld rows, expected 1", SPI_processed);
+		cberror(topo->be_data, "processed %d rows, expected 1", SPI_processed);
 	  return -1;
   }
 
