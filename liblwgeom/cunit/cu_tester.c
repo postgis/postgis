@@ -23,6 +23,9 @@ cu_errorreporter(const char *fmt, va_list ap);
 static void
 cu_noticereporter(const char *fmt, va_list ap);
 
+static void
+cu_debuglogger(int level, const char *fmt, va_list ap);
+
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */
 extern void print_suite_setup();
@@ -140,6 +143,7 @@ int main(int argc, char *argv[])
 
 	/* Install the custom error handler */
 	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, cu_noticereporter);
+	lwgeom_set_debuglogger(cu_debuglogger);
 
 	/* Initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
@@ -271,6 +275,15 @@ cu_noticereporter(const char *fmt, va_list ap)
   vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
   buf[MAX_CUNIT_MSG_LENGTH]='\0';
   /*fprintf(stderr, "NOTICE: %s\n", buf);*/
+}
+
+static void
+cu_debuglogger(int level, const char *fmt, va_list ap)
+{
+  char buf[MAX_CUNIT_MSG_LENGTH+1];
+  vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
+  buf[MAX_CUNIT_MSG_LENGTH]='\0';
+  fprintf(stderr, "DEBUG%d: %s\n", level, buf);
 }
 
 void
