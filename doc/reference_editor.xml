@@ -5,8 +5,7 @@
 		<refentry id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
-			<refpurpose>Adds a point to a LineString before point &lt;position&gt;
-				(0-based index).</refpurpose>
+			<refpurpose>Add a point to a LineString.</refpurpose>
 		  </refnamediv>
 		  <refsynopsisdiv>
 			<funcsynopsis>
@@ -66,7 +65,7 @@
 	  <refnamediv>
 		<refname>ST_Affine</refname>
 
-		<refpurpose>Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.</refpurpose>
+		<refpurpose>Apply a 3d affine transformation to a geometry.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -174,8 +173,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	  <refnamediv>
 		<refname>ST_Force2D</refname>
 
-		<refpurpose>Forces the geometries into a "2-dimensional mode" so that
-		all output representations will only have the X and Y coordinates.</refpurpose>
+		<refpurpose>Force the geometries into a "2-dimensional mode".</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -232,7 +230,7 @@ SELECT  ST_AsEWKT(ST_Force2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3
 	  <refnamediv>
 		<refname>ST_Force3D</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is an alias for ST_Force3DZ.</refpurpose>
+		<refpurpose>Force the geometries into XYZ mode.  This is an alias for ST_Force3DZ.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -288,7 +286,7 @@ SELECT  ST_AsEWKT(ST_Force3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refnamediv>
 		<refname>ST_Force3DZ</refname>
 
-		<refpurpose>Forces the geometries into XYZ mode.  This is a synonym for ST_Force3D.</refpurpose>
+		<refpurpose>Force the geometries into XYZ mode.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -344,7 +342,7 @@ SELECT  ST_AsEWKT(ST_Force3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
 	  <refnamediv>
 		<refname>ST_Force3DM</refname>
 
-		<refpurpose>Forces the geometries into XYM mode.</refpurpose>
+		<refpurpose>Force the geometries into XYM mode.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -399,7 +397,7 @@ SELECT  ST_AsEWKT(ST_Force3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 
 	  <refnamediv>
 		<refname>ST_Force4D</refname>
 
-		<refpurpose>Forces the geometries into XYZM mode.  </refpurpose>
+		<refpurpose>Force the geometries into XYZM mode.  </refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -455,7 +453,7 @@ SELECT  ST_AsEWKT(ST_Force4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,
 	  <refnamediv>
 		<refname>ST_ForceCollection</refname>
 
-		<refpurpose>Converts the geometry into a GEOMETRYCOLLECTION.</refpurpose>
+		<refpurpose>Convert the geometry into a GEOMETRYCOLLECTION.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -538,7 +536,7 @@ GEOMETRYCOLLECTION(
 	  <refnamediv>
 		<refname>ST_ForceSFS</refname>
 
-		<refpurpose>Forces the geometries to use SFS 1.1 geometry types only.</refpurpose>
+		<refpurpose>Force the geometries to use SFS 1.1 geometry types only.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -570,7 +568,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
 
-			<refpurpose>Forces the orientation of the vertices in a polygon to follow the
+			<refpurpose>Force the orientation of the vertices in a polygon to follow the
 				Right-Hand-Rule.</refpurpose>
 		</refnamediv>
 
@@ -625,7 +623,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_ForceCurve</refname>
 
-			<refpurpose>Upcasts a geometry into its curved type, if applicable.</refpurpose>
+			<refpurpose>Upcast a geometry into its curved type, if applicable.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -678,7 +676,7 @@ GEOMETRYCOLLECTION(
 		<refnamediv>
 			<refname>ST_LineMerge</refname>
 
-			<refpurpose>Returns a (set of) LineString(s) formed by sewing together
+			<refpurpose>Return a (set of) LineString(s) formed by sewing together
 			a MULTILINESTRING.</refpurpose>
 		</refnamediv>
 
@@ -736,7 +734,7 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 			<refname>ST_CollectionExtract</refname>
 
 			<refpurpose>
-Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
+Given a (multi)geometry, return a (multi)geometry consisting only of elements of the specified type.
 			</refpurpose>
 		</refnamediv>
 
@@ -800,7 +798,7 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 				<refname>ST_CollectionHomogenize</refname>
 
 				<refpurpose>
-	Given a geometry collection, returns the "simplest" representation of the contents.
+	Given a geometry collection, return the "simplest" representation of the contents.
 				</refpurpose>
 			</refnamediv>
 
@@ -858,8 +856,7 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		<refnamediv>
 			<refname>ST_Multi</refname>
 
-			<refpurpose>Returns the geometry as a MULTI* geometry. If the geometry
-				is already a MULTI*, it is returned unchanged.</refpurpose>
+			<refpurpose>Return the geometry as a MULTI* geometry.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -901,7 +898,7 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		<refnamediv>
 			<refname>ST_Normalize</refname>
 
-			<refpurpose>Returns the geometry in its canonical form.</refpurpose>
+			<refpurpose>Return the geometry in its canonical form.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -961,7 +958,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 	<refentry id="ST_RemovePoint">
 	  <refnamediv>
 		<refname>ST_RemovePoint</refname>
-		<refpurpose>Removes point from a linestring. Offset is 0-based.</refpurpose>
+		<refpurpose>Remove point from a linestring.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
@@ -976,7 +973,7 @@ SELECT ST_AsText(ST_Normalize(ST_GeomFromText(
 	  <refsection>
 		<title>Description</title>
 
-		<para>Removes point from a linestring.  Useful for turning a closed ring into an open line string</para>
+		<para>Remove a point from a linestring, given its 0-based index. Useful for turning a closed ring into an open line string</para>
 		<para>Availability: 1.1.0</para>
 	  	<para>&Z_support;</para>
 	  </refsection>
@@ -1001,7 +998,7 @@ UPDATE sometable
 	<refentry id="ST_Reverse">
 	  <refnamediv>
 		<refname>ST_Reverse</refname>
-		<refpurpose>Returns the geometry with vertex order reversed.</refpurpose>
+		<refpurpose>Return the geometry with vertex order reversed.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1299,10 +1296,7 @@ FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As 
 	  <refnamediv>
 		<refname>ST_Scale</refname>
 
-		<refpurpose>Scales the geometry to a new size by multiplying the
-			ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor,
-			Zfactor).
-			</refpurpose>
+		<refpurpose>Scale a geometry by given factors.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1397,8 +1391,7 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 			<refname>ST_Segmentize</refname>
 
 			<refpurpose>Return a modified geometry/geography having no segment longer than the
-			given distance.  Distance computation is performed in 2d
-			only. For geometry, length units are in units of spatial reference.  For geography, units are in meters.</refpurpose>
+			given distance.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -1461,8 +1454,7 @@ POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0
 	<refentry id="ST_SetPoint">
 		  <refnamediv>
 			<refname>ST_SetPoint</refname>
-			<refpurpose>Replace point N of linestring with given point. Index is
-			0-based. Negative indexes are counted backwards, so that -1 is the last point.</refpurpose>
+			<refpurpose>Replace point of a linestring with a given point.</refpurpose>
 		  </refnamediv>
 		  <refsynopsisdiv>
 			 <funcsynopsis>
@@ -1522,7 +1514,7 @@ LINESTRING(0 0,1 1,0 0,3 3,4 4)
 	  <refnamediv>
 		<refname>ST_SetSRID</refname>
 
-		<refpurpose>Sets the SRID on a geometry to a particular integer
+		<refpurpose>Set the SRID on a geometry to a particular integer
 		value.</refpurpose>
 	  </refnamediv>
 
@@ -1915,7 +1907,7 @@ LINESTRING(26 125,54 84,101 100)
 	  <refnamediv>
 		<refname>ST_Transform</refname>
 
-		<refpurpose>Returns a new geometry with its coordinates transformed to
+		<refpurpose>Return a new geometry with its coordinates transformed to
 			a different spatial reference.</refpurpose>
 	  </refnamediv>
 
@@ -2078,8 +2070,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refnamediv>
 		<refname>ST_Translate</refname>
 
-		<refpurpose>Translates the geometry to a new location using the numeric
-			parameters as offsets. Ie: ST_Translate(geom, X, Y) or  ST_Translate(geom, X, Y,Z).</refpurpose>
+		<refpurpose>Translate a geometry by given offsets.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2154,9 +2145,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refnamediv>
 		<refname>ST_TransScale</refname>
 
-		<refpurpose>Translates the geometry using the deltaX and deltaY args,
-			then scales it using the XFactor, YFactor args, working in 2D only.
-			</refpurpose>
+		<refpurpose>Translate a geometry by given factors and offsets.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
