@@ -1752,7 +1752,7 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 			p4d.z = a->gfac * x + a->hfac * y + a->ifac * z + a->zoff;
 			ptarray_set_point4d(pa, i, &p4d);
 
-			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
+			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, z, p4d.x, p4d.y, p4d.z);
 		}
 	}
 	else
@@ -1768,7 +1768,7 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 			p4d.y = a->dfac * x + a->efac * y + a->yoff;
 			ptarray_set_point4d(pa, i, &p4d);
 
-			LWDEBUGF(3, " POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
+			LWDEBUGF(3, " POINT %g %g => %g %g", x, y, p4d.x, p4d.y);
 		}
 	}
 
