@@ -447,7 +447,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		// i is index of lwgeom geometry, j is index of geos geometry - skip empty collection entries
 		for (i=0; i<ngeoms; ++i)
 		{
-			if (lwgeom_is_empty(lwgeom)) continue; // skip empty
+			if (lwgeom_is_empty(lwc->geoms[i])) continue; // skip empty
 			GEOSGeometry* g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if ( ! g )
 			{
@@ -455,7 +455,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 				free(geoms);
 				return NULL;
 			}
-			geoms[++j] = g;
+			geoms[j++] = g;
 		}
 		g = GEOSGeom_createCollection(geostype, geoms, j);
 		if ( geoms ) free(geoms);
