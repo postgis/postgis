@@ -10,6 +10,7 @@ PostGIS 2.2.3
   - #3571, Install desktop file and application icons 
            for shp2pgsql-gui (Sebastiaan Couwenberg)
   - #3573, Operator <<->> incorrectly calculates m distance
+  - #3579, Crash in LWGEOM2GEOS
 
 
 PostGIS 2.2.2

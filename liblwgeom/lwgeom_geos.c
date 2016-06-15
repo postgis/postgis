@@ -327,7 +327,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 	/*
 	LWGEOM *tmp;
 	*/
-	uint32_t ngeoms, i;
+	uint32_t ngeoms, i, j;
 	int geostype;
 #if LWDEBUG_LEVEL >= 4
 	char *wkt;
@@ -456,18 +456,24 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 		if ( ngeoms > 0 )
 			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
 
+		j = 0;
 		for (i=0; i<ngeoms; ++i)
 		{
-			GEOSGeometry* g = LWGEOM2GEOS(lwc->geoms[i], 0);
+			GEOSGeometry* g;
+			
+			if( lwgeom_is_empty(lwc->geoms[i]) )
+				continue;
+			
+			g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if ( ! g )
 			{
 				while (i) GEOSGeom_destroy(geoms[--i]);
 				free(geoms);
 				return NULL;
 			}
-			geoms[i] = g;
+			geoms[j++] = g;
 		}
-		g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
+		g = GEOSGeom_createCollection(geostype, geoms, j);
 		if ( geoms ) free(geoms);
 		if ( ! g ) return NULL;
 		break;
