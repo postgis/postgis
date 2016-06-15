@@ -904,7 +904,7 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		<refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_Normalized</function></funcdef>
+				<funcdef>geometry <function>ST_Normalize</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
