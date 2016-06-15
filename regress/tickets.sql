@@ -966,5 +966,29 @@ SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom
 SELECT '#3470', ST_Polygonize(ARRAY[NULL]::geometry[]) IS NULL;
 SELECT '#3470b', ST_Area(ST_Polygonize(ARRAY[NULL, 'LINESTRING (0 0, 10 0, 10 10)', NULL, 'LINESTRING (0 0, 10 10)', NULL]::geometry[]));
 
+-- #3579
+with
+        params as (
+        select
+            11 :: float as sidewalk_offset,
+            1 :: float  as epsilon
+    ),
+        road as (
+-- L-shaped road, 10 m
+        select 'SRID=3857;LINESTRING(10 0, 0 0, 0 10)' :: geometry as geom
+    ),
+        sidewalks as (
+        select ST_Collect(
+                   ST_OffsetCurve(geom, sidewalk_offset),
+                   ST_OffsetCurve(geom, -sidewalk_offset)
+               ) geom
+        from road, params
+    )
+select
+    '#3579', ST_Intersects(road.geom, sidewalks.geom),
+-- should be false
+    ST_Intersects(ST_Buffer(road.geom, sidewalk_offset + epsilon), sidewalks.geom) -- should be true
+from road, sidewalks, params;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
