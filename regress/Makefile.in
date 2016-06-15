@@ -98,6 +98,7 @@ TESTS = \
 	lwgeom_regress \
 	measures \
 	minimum_bounding_circle \
+	normalize \
 	operators \
 	out_geometry \
 	out_geography \

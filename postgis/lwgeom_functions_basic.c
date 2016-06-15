@@ -1900,6 +1900,33 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out);
 }
 
+Datum ST_Normalize(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Normalize);
+Datum ST_Normalize(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *in, *out;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+
+	POSTGIS_DEBUG(2, "ST_Normalize called");
+
+	in = PG_GETARG_GSERIALIZED_P_COPY(0);
+
+	lwgeom_in = lwgeom_from_gserialized(in);
+	POSTGIS_DEBUGF(3, "Deserialized: %s", lwgeom_summary(lwgeom_in, 0));
+
+	lwgeom_out = lwgeom_normalize(lwgeom_in);
+	POSTGIS_DEBUGF(3, "Normalized: %s", lwgeom_summary(lwgeom_out, 0));
+
+	out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_in);
+	lwgeom_free(lwgeom_out);
+
+	PG_FREE_IF_COPY(in, 0);
+
+	PG_RETURN_POINTER(out);
+}
+
+
 /**
  *  @return:
  *   0==2d

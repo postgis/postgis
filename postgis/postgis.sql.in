@@ -1477,6 +1477,13 @@ CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	LANGUAGE 'c' VOLATILE STRICT
 	COST 10;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_Normalize(geom geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_Normalize'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 20; -- 20 as it delegates to GEOS
+
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
 	RETURNS smallint
