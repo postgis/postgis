@@ -28,6 +28,7 @@ PostGIS 2.1.9
   - #3429, upgrading to 2.2 or 2.3 can cause crash/hang on some 
            platforms
   - #3565, ST_SetPoint can crash backend
+  - #3579, Crash in LWGEOM2GEOS
 
 
 PostGIS 2.1.8

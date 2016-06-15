@@ -262,3 +262,4 @@ ERROR:  invalid GML representation
 #3367|POLYGON EMPTY
 #3375|GEOMETRYCOLLECTION(POINT(1 1))
 ERROR:  Cannot set point values on EMPTY geometry, use ST_AddPoint to add points
+#3579|f|t
