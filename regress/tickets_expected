@@ -245,3 +245,4 @@ ERROR:  invalid GML representation
 #2168|5340.76237395|5340.76237395|0
 #2870|Point[G]
 ERROR:  Cannot set point values on EMPTY geometry, use ST_AddPoint to add points
+#3579|f|t

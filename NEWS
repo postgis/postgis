@@ -22,6 +22,7 @@ PostGIS 2.0.8
   - #3461, ST_GeomFromKML crashes Postgres when there are 
            innerBoundaryIs and no outerBoundaryIs
   - #3565, ST_SetPoint can crash backend
+  - #3579, Crash in LWGEOM2GEOS
 
 
 PostGIS 2.0.7
