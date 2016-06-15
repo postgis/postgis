@@ -2,7 +2,7 @@
 # *
 # * PostGIS - Spatial Types for PostgreSQL
 # * http://postgis.net
-# * 
+# *
 # * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
 # * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
 # * Copyright (C) 2008-2009 Mark Cave-Ayland
@@ -32,7 +32,7 @@ INTERRUPTTESTS=@INTERRUPTTESTS@
 # colons in drive letters will break PATH.
 PGSQL_BINDIR=$(shell cd "@PGSQL_BINDIR@" && pwd)
 
-# Where we put our regression installation 
+# Where we put our regression installation
 ifeq ($(MINGWBUILD),1)
 	srcdir=$(shell bash -c "pwd -W")
 else
@@ -40,7 +40,7 @@ else
 endif
 REGRESS_INSTALLDIR=$(srcdir)/00-regress-install
 
-# 
+#
 # Put path from pg_config into front of search path
 #
 PATH := $(PGSQL_BINDIR):$(PATH)
@@ -166,7 +166,7 @@ endif
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	# GEOS-3.3 adds:
 	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
-	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
+	# ST_Snap, ST_UnaryUnion, ST_MakeClean
 	TESTS += \
 		offsetcurve \
 		relatematch \
@@ -183,7 +183,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
 	# ST_DelaunayTriangles
 	TESTS += \
-		delaunaytriangles 
+		delaunaytriangles
 endif
 
 
@@ -203,7 +203,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	TESTS += \
 		interrupt_buffer
 endif
-		 
+
 endif
 
 
@@ -227,7 +227,7 @@ ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
 	# ST_GeomFromGeoJSON()
 	TESTS += \
-		in_geojson 
+		in_geojson
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)
