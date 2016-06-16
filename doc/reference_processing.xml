@@ -2645,10 +2645,7 @@ MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))
 	  <refnamediv>
 		<refname>ST_ShiftLongitude</refname>
 
-		<refpurpose>Reads every point/vertex in every component of every feature
-			in a geometry, and if the longitude coordinate is &lt;0, adds 360
-			to it. The result would be a 0-360 version of the data to be
-			plotted in a 180 centric map</refpurpose>
+		<refpurpose>Toggle geometry coordinates between -180..180 and 0..360 ranges.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
