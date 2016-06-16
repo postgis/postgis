@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2016 Sandro Santilli <strk@kbt.net>
+ * Copyright 2016 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -52,7 +52,7 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	box_in = lwgeom_get_bbox(geom_in);
 	if ( ! box_in ) {
 		/* must be empty */
-		return lwgeom_clone(geom_in);
+		return lwgeom_clone_deep(geom_in);
 	}
 
 	LWDEBUGF(2, "BOX X range is %g..%g, cutx:%g, amount:%g", box_in->xmin, box_in->xmax, cutx, amount);
@@ -61,18 +61,17 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	if ( ( amount < 0 && box_in->xmin >= cutx ) || ( amount > 0 && box_in->xmax <= cutx ) )
 	{
 		split = lwgeom_clone_deep(geom_in);
-		LWDEBUG(2, "returning the translated geometry");
 		lwgeom_affine(split, &affine);
+		LWDEBUGG(2, split, "returning the translated geometry");
 		return split;
 	}
-
-//DEBUG2: [lwgeom_wrapx.c:lwgeom_split_wrapx:58] BOX X range is 8..10, cutx:8, amount:-10
 
 	/* Check if geometry is fully on the side needing no shift */
 	if ( ( amount < 0 && box_in->xmax <= cutx ) || ( amount > 0 && box_in->xmin >= cutx ) )
 	{
-		LWDEBUG(2, "returning the cloned geometry");
-		return lwgeom_clone_deep(geom_in);
+		split = lwgeom_clone_deep(geom_in);
+		LWDEBUGG(2, split, "returning the cloned geometry");
+		return split;
 	}
 
 	/* We need splitting here */
@@ -91,19 +90,28 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 	/* split by blade */
 	split = lwgeom_split(geom_in, blade);
 	lwgeom_free(blade);
+	if ( ! split ) {
+		lwerror("%s:%d - lwgeom_split_wrapx:  %s", __FILE__, __LINE__, lwgeom_geos_errmsg);
+		return NULL;
+	}
+	LWDEBUGG(2, split, "split geometry");
+
 
 	/* iterate over components, translate if needed */
 	const LWCOLLECTION *col = lwgeom_as_lwcollection(split);
 	if ( ! col ) {
 		/* not split, this is unexpected */
 		lwnotice("WARNING: unexpected lack of split in lwgeom_split_wrapx");
-		return lwgeom_clone(geom_in);
+		return lwgeom_clone_deep(geom_in);
 	}
 	LWCOLLECTION *col_out = lwcollection_wrapx(col, cutx, amount);
 	lwgeom_free(split);
 
 	/* unary-union the result (homogenize too ?) */
 	LWGEOM* out = lwgeom_unaryunion(lwcollection_as_lwgeom(col_out));
+	LWDEBUGF(2, "col_out:%p, unaryunion_out:%p", col_out, out);
+	LWDEBUGG(2, out, "unary-unioned");
+
 	lwcollection_free(col_out);
 
 	return out;
@@ -112,9 +120,10 @@ lwgeom_split_wrapx(const LWGEOM* geom_in, double cutx, double amount)
 static LWCOLLECTION*
 lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 {
-	LWGEOM** wrap_geoms=NULL;
+	LWGEOM** wrap_geoms;
 	LWCOLLECTION* out;
 	size_t i;
+	int outtype = lwcoll_in->type;
 
 	wrap_geoms = lwalloc(lwcoll_in->ngeoms * sizeof(LWGEOM*));
 	if ( ! wrap_geoms )
@@ -125,18 +134,30 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 
 	for (i=0; i<lwcoll_in->ngeoms; ++i)
 	{
+		LWDEBUGF(3, "Wrapping collection element %d", i);
 		wrap_geoms[i] = lwgeom_wrapx(lwcoll_in->geoms[i], cutx, amount);
 		/* an exception should prevent this from ever returning NULL */
 		if ( ! wrap_geoms[i] ) {
-			while (--i>=0) lwgeom_free(wrap_geoms[i]);
+			lwnotice("Error wrapping geometry, cleaning up");
+			while ((--i)>=0) {
+				lwnotice("cleaning geometry %d (%p)", i, wrap_geoms[i]);
+				lwgeom_free(wrap_geoms[i]);
+			}
 			lwfree(wrap_geoms);
+			lwnotice("cleanup complete");
 			return NULL;
+		}
+	  if ( outtype != COLLECTIONTYPE ) {
+			if ( MULTITYPE[wrap_geoms[i]->type] != outtype )
+			{
+				outtype = COLLECTIONTYPE;
+			}
 		}
 	}
 
 	/* Now wrap_geoms has wrap_geoms_size geometries */
-	out = lwcollection_construct(lwcoll_in->type, lwcoll_in->srid,
-	                             NULL, lwcoll_in->ngeoms, wrap_geoms);
+	out = lwcollection_construct(outtype, lwcoll_in->srid, NULL,
+	                             lwcoll_in->ngeoms, wrap_geoms);
 
 	return out;
 }
@@ -146,15 +167,24 @@ LWGEOM*
 lwgeom_wrapx(const LWGEOM* lwgeom_in, double cutx, double amount)
 {
 	/* Nothing to wrap in an empty geom */
-	if ( lwgeom_is_empty(lwgeom_in) ) return lwgeom_clone(lwgeom_in);
+	if ( lwgeom_is_empty(lwgeom_in) )
+	{
+		LWDEBUG(2, "geom is empty, cloning");
+		return lwgeom_clone_deep(lwgeom_in);
+	}
 
 	/* Nothing to wrap if shift amount is zero */
-	if ( amount == 0 ) return lwgeom_clone(lwgeom_in);
+	if ( amount == 0 )
+	{
+		LWDEBUG(2, "amount is zero, cloning");
+		return lwgeom_clone_deep(lwgeom_in);
+	}
 
 	switch (lwgeom_in->type)
 	{
 	case LINETYPE:
 	case POLYGONTYPE:
+		LWDEBUG(2, "split-wrapping line or polygon");
 		return lwgeom_split_wrapx(lwgeom_in, cutx, amount);
 
 	case POINTTYPE:
@@ -177,6 +207,7 @@ lwgeom_wrapx(const LWGEOM* lwgeom_in, double cutx, double amount)
 	case MULTIPOLYGONTYPE:
 	case MULTILINETYPE:
 	case COLLECTIONTYPE:
+		LWDEBUG(2, "collection-wrapping multi");
 		return lwcollection_as_lwgeom(
 						lwcollection_wrapx((const LWCOLLECTION*)lwgeom_in, cutx, amount)
 					 );
