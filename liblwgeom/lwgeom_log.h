@@ -95,7 +95,7 @@
 
 /* Empty prototype that can be optimised away by the compiler
  * for non-debug builds */
-#define LWDEBUGGF(level, geom, msg) \
+#define LWDEBUGGF(level, geom, fmt, ...) \
         ((void) 0)
 
 #endif /* POSTGIS_DEBUG_LEVEL <= 0 */
