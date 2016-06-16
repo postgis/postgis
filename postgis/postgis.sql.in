@@ -887,6 +887,12 @@ CREATE OR REPLACE FUNCTION ST_ShiftLongitude(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION ST_WrapX(geom geometry, wrap float8, move float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_WrapX'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 -- Availability: 1.2.2
 -- Deprecation in 2.2.0
 CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)

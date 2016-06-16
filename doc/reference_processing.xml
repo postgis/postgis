@@ -2703,7 +2703,73 @@ LINESTRING(241.42 38.38,241.8 38.45)
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_AsEWKT" /></para>
+		<para>
+      <xref linkend="ST_WrapX" />
+    </para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_WrapX">
+	  <refnamediv>
+		<refname>ST_WrapX</refname>
+
+		<refpurpose>Wrap a geometry around an X value.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_WrapX</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>wrap</parameter></paramdef>
+			<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+    <para>
+This function splits the input geometries and then moves every resulting
+component falling on the right (for negative 'move') or on the left (for
+positive 'move') of given 'wrap' line in the direction specified by the
+'move' parameter, finally re-unioning the pieces togheter.
+    </para>
+
+		<note><para>
+This is useful to "recenter" long-lat input to have features
+of interest not spawned from one side to the other.
+    </para></note>
+
+		<para>Availability: 2.3.0</para>
+
+		<para>&Z_support;</para>
+<!-- TODO: check these
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+-->
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>
+-- Move all components of the given geometries whose bounding box
+-- falls completely on the left of x=0 to +360
+select ST_WrapX(the_geom, 0, 360);
+
+-- Move all components of the given geometries whose bounding box
+-- falls completely on the left of x=-30 to +360
+select ST_WrapX(the_geom, -30, 360);
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Shift_Longitude" /></para>
 	  </refsection>
 	</refentry>
 

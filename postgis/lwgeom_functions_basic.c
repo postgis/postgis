@@ -110,6 +110,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
 Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
+Datum ST_WrapX(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -1055,6 +1056,37 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	pfree(geom);
 
 	PG_RETURN_POINTER(ret);
+}
+
+PG_FUNCTION_INFO_V1(ST_WrapX);
+Datum ST_WrapX(PG_FUNCTION_ARGS)
+{
+	Datum gdatum;
+	GSERIALIZED *geom_in;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	GSERIALIZED *geom_out;
+	double cutx;
+	double amount;
+
+	POSTGIS_DEBUG(2, "ST_WrapX called.");
+
+	gdatum = PG_GETARG_DATUM(0);
+	cutx = PG_GETARG_FLOAT8(1);
+	amount = PG_GETARG_FLOAT8(2);
+
+	//if ( ! amount ) PG_RETURN_DATUM(gdatum);
+
+	geom_in = ((GSERIALIZED *)PG_DETOAST_DATUM(gdatum));
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+
+	lwgeom_out = lwgeom_wrapx(lwgeom_in, cutx, amount);
+	geom_out = geometry_serialize(lwgeom_out);
+
+	lwgeom_free(lwgeom_in);
+	lwgeom_free(lwgeom_out);
+	PG_FREE_IF_COPY(geom_in, 0);
+
+	PG_RETURN_POINTER(geom_out);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_inside_circle_point);

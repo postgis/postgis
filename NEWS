@@ -17,6 +17,7 @@ PostGIS 2.3.0
   - Add parameters for geography ST_Buffer (Thomas Bonfort)
   - TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)
   - populate_topology_layer (Sandro Santilli)
+  - #454,  ST_WrapX and lwgeom_wrapx (Sandro Santilli)
   - #1758, ST_Normalize (Sandro Santilli)
   - #2259, ST_Voronoi (Dan Baston)
   - #2991, Enable ST_Transform to use PROJ.4 text (Mike Toews)

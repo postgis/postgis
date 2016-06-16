@@ -68,6 +68,7 @@ extern void wkb_out_suite_setup(void);
 extern void surface_suite_setup(void);
 extern void wkb_in_suite_setup(void);
 extern void wkt_in_suite_setup(void);
+extern void wrapx_suite_setup(void);
 
 
 /* AND ADD YOUR SUITE SETUP FUNCTION HERE (2 of 2) */
@@ -117,6 +118,7 @@ PG_SuiteSetup setupfuncs[] =
 	wkb_out_suite_setup,
 	wkt_in_suite_setup,
 	wkt_out_suite_setup,
+	wrapx_suite_setup,
 	NULL
 };
 
@@ -274,7 +276,7 @@ cu_noticereporter(const char *fmt, va_list ap)
   char buf[MAX_CUNIT_MSG_LENGTH+1];
   vsnprintf (buf, MAX_CUNIT_MSG_LENGTH, fmt, ap);
   buf[MAX_CUNIT_MSG_LENGTH]='\0';
-  /*fprintf(stderr, "NOTICE: %s\n", buf);*/
+  fprintf(stderr, "NOTICE: %s\n", buf);
 }
 
 static void

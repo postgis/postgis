@@ -62,6 +62,7 @@ OBJS=	\
 	cu_iterator.o \
 	cu_varint.o \
 	cu_unionfind.o \
+	cu_wrapx.o \
 	cu_tester.o
 
 ifeq (@SFCGAL@,sfcgal)

@@ -112,6 +112,7 @@ SA_OBJS = \
 	lwgeom_geos_split.o \
 	lwgeom_topo.o \
 	lwgeom_transform.o \
+	lwgeom_wrapx.o \
 	lwunionfind.o \
 	effectivearea.o \
 	lwkmeans.o \

@@ -1218,6 +1218,20 @@ extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 
 void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
+/**
+ * @brief wrap geometry on given cut x value
+ *
+ * For a positive amount, shifts anything that is on the left
+ * of "cutx" to the right by the given amount.
+ *
+ * For a negative amount, shifts anything that is on the right
+ * of "cutx" to the left by the given absolute amount.
+ *
+ * @param cutx the X value to perform wrapping on
+ * @param amount shift amount and wrapping direction
+ */
+LWGEOM *lwgeom_wrapx(const LWGEOM *lwgeom, double cutx, double amount);
+
 
 /**
 * @brief Check whether or not a lwgeom is big enough to warrant a bounding box.
