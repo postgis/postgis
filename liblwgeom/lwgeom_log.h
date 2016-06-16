@@ -52,6 +52,18 @@
                 __FILE__, __func__, __LINE__, __VA_ARGS__); \
         } while (0);
 
+/* Display a notice and a WKT representation of a geometry
+ * at the given debug level */
+#define LWDEBUGG(level, geom, msg) \
+  if (POSTGIS_DEBUG_LEVEL >= level) \
+  do { \
+    size_t sz; \
+    char *wkt = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
+    /* char *wkt = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
+    LWDEBUGF(level, msg ": %s", wkt); \
+    lwfree(wkt); \
+  } while (0);
+
 #else /* POSTGIS_DEBUG_LEVEL <= 0 */
 
 /* Empty prototype that can be optimised away by the compiler
@@ -62,6 +74,11 @@
 /* Empty prototype that can be optimised away by the compiler
  * for non-debug builds */
 #define LWDEBUGF(level, msg, ...) \
+        ((void) 0)
+
+/* Empty prototype that can be optimised away by the compiler
+ * for non-debug builds */
+#define LWDEBUGG(level, geom, msg) \
         ((void) 0)
 
 #endif /* POSTGIS_DEBUG_LEVEL <= 0 */

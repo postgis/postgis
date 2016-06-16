@@ -44,18 +44,6 @@
 # define LWTFMT_ELEMID PRId64
 #endif
 
-/* TODO: move this to lwgeom_log.h */
-#define LWDEBUGG(level, geom, msg) \
-  if (POSTGIS_DEBUG_LEVEL >= level) \
-  do { \
-    size_t sz; \
-    char *wkt1 = lwgeom_to_wkt(geom, WKT_EXTENDED, 15, &sz); \
-    /* char *wkt1 = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz); */ \
-    LWDEBUGF(level, msg ": %s", wkt1); \
-    lwfree(wkt1); \
-  } while (0);
-
-
 /*********************************************************************
  *
  * Backend iface
