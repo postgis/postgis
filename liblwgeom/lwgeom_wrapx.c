@@ -122,7 +122,7 @@ lwcollection_wrapx(const LWCOLLECTION* lwcoll_in, double cutx, double amount)
 {
 	LWGEOM** wrap_geoms;
 	LWCOLLECTION* out;
-	size_t i;
+	int i;
 	int outtype = lwcoll_in->type;
 
 	wrap_geoms = lwalloc(lwcoll_in->ngeoms * sizeof(LWGEOM*));
