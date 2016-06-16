@@ -751,9 +751,9 @@ SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt
 			<para>Returns the type of the geometry as a string. EG: 'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from GeometryType(geometry) in the case of the string and ST in front that is returned, as well as the fact that it will not indicate whether the geometry is measured.</para>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces was introduced.</para>
-		 	<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
-		 	<para>&Z_support;</para>
-		 	<para>&P_support;</para>
+			<para>&sqlmm_compliant;	SQL-MM 3: 5.1.4</para>
+			<para>&Z_support;</para>
+			<para>&P_support;</para>
 
 		</refsection>
 
@@ -947,7 +947,7 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 (1 row)</programlisting>
 	  </refsection>
 
-	  	  <refsection>
+		  <refsection>
 		<title>Polyhedral Surface Examples</title>
 
 		<programlisting>
@@ -1650,7 +1650,7 @@ SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 150407,222020 1
 			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 			<para>&Z_support;</para>
 			<para>&curve_support;</para>
-	  		<para>&P_support;</para>
+			<para>&P_support;</para>
 
 		</refsection>
 

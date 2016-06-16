@@ -10,12 +10,12 @@
   including full OpenGIS support, advanced topological constructs (coverages,
   surfaces, networks), desktop user interface tools for viewing and editing
   GIS data, and web-based access tools.</para>
-  
- 
+
+
   <para>PostGIS is an incubation project of the OSGeo Foundation. PostGIS is being continually improved and funded by many FOSS4G Developers as well
     as corporations all over the world that gain great benefit from its functionality and versatility.</para>
-  
-  
+
+
 
   <sect1 id="psc">
 	<title>Project Steering Committee</title>
@@ -35,16 +35,16 @@
 		   and new function enhancements.</para>
 		</listitem>
 	  </varlistentry>
-	 
+
 	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Buildbot Maintenance, windows production and experimental builds, Documentation, general user support on PostGIS newsgroup,  
-		  X3D support, Tiger Geocoder Support, management functions,  and 
+		  <para>Buildbot Maintenance, windows production and experimental builds, Documentation, general user support on PostGIS newsgroup,
+		  X3D support, Tiger Geocoder Support, management functions,  and
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
 	  </varlistentry>
-	  
+
 	  <varlistentry>
 		<term>Bborie Park</term>
 		<listitem>
@@ -55,11 +55,11 @@
 	  <varlistentry>
 		<term>Paul Ramsey (Chair)</term>
 		<listitem>
-		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, PointCloud (in development), GEOS functionality integration and alignment with 
+		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, PointCloud (in development), GEOS functionality integration and alignment with
 		  GEOS releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
-	  
+
 	  <varlistentry>
 		<term>Sandro Santilli</term>
 
@@ -67,56 +67,56 @@
 		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases, Topology support, and Raster framework and low level api functions.</para>
 		</listitem>
 	  </varlistentry>
-	  
+
 	</variablelist>
   </sect1>
   <sect1 id="credits_core_present">
-  	<title>Core Contributors Present</title>
-  	<variablelist>
+	<title>Core Contributors Present</title>
+	<variablelist>
 		<varlistentry>
 			<term>Jorge Arévalo</term>
 			<listitem>
 			  <para>Raster development, GDAL driver support, loader</para>
 			</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 			<term>Nicklas Avén</term>
-			
+
 			<listitem>
 			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Tiny WKB output format (TWKB) (in development) and general user support</para>
 			</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 			<term>Dan Baston</term>
-			
+
 			<listitem>
 			  <para>Geometry clustering function additions, other geometry algorithm enhancements, and general user support</para>
 			</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 			<term>Olivier Courtin</term>
 			<listitem>
 			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 			<term>Mateusz Loskot</term>
 			<listitem>
 			  <para>CMake support for PostGIS, built original raster loader in python and low level raster api functions</para>
 			</listitem>
-		</varlistentry>	
-				
+		</varlistentry>
+
 		<varlistentry>
 			<term>Pierre Racine</term>
 			<listitem>
 			  <para>Raster overall architecture, prototyping, programming support</para>
 			</listitem>
 		</varlistentry>
-			
+
 		<varlistentry>
 			<term>David Zwarg</term>
 			<listitem>
@@ -135,7 +135,7 @@
 		  <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
 		</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 		<term>Kevin Neufeld</term>
 		<listitem>
@@ -143,25 +143,25 @@
 		  on PostGIS newsgroup, and PostGIS maintenance function enhancements.</para>
 		</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 		<term>Dave Blasby</term>
-		
+
 		<listitem>
 		  <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
 		  objects, index bindings, and many of the server side analytical
 		  functions.</para>
 		</listitem>
 		</varlistentry>
-		
+
 		<varlistentry>
 		<term>Jeff Lounsbury</term>
 		<listitem>
 		  <para>Original development of the Shape file loader/dumper. Current PostGIS Project Owner representative.</para>
 		</listitem>
 		</varlistentry>
-		
-		
+
+
 		<varlistentry>
 		<term>Mark Leslie</term>
 		<listitem>
@@ -239,7 +239,7 @@ Vincent Picavet
 		  </para>
 		</listitem>
 	  </varlistentry>
-	  
+
 	  <varlistentry>
 		<term>Corporate Sponsors</term>
 
@@ -285,7 +285,7 @@ U.S Department of State (HIU),
 Zonar Systems</para>
 		</listitem>
 	  </varlistentry>
-	  
+
 	   <varlistentry>
 		<term>Crowd Funding Campaigns</term>
 
@@ -305,16 +305,16 @@ Zonar Systems</para>
 		  geometry operations library, and the algorithmic work of Martin
 		  Davis in making it all work, ongoing maintenance and support of
 		  Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey and others.</para>
-		  
+
 		  <para>The <ulink url="http://trac.osgeo.org/gdal/">GDAL</ulink>
-		  Geospatial Data Abstraction Library, by Frank Warmerdam and others is used to 
+		  Geospatial Data Abstraction Library, by Frank Warmerdam and others is used to
 		  power much of the raster functionality introduced in PostGIS 2.0.0. In kind, improvements needed in GDAL
 		  to support PostGIS are contributed back to the GDAL project.</para>
 
 		  <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
 		  cartographic projection library, and the work of Gerald Evenden and
 		  Frank Warmerdam in creating and maintaining it.</para>
-		  
+
 		  <para>Last but not least, the <ulink url="http://www.postgresql.org">PostgreSQL DBMS</ulink>,
 		  The giant that PostGIS stands on.  Much of the speed and flexibility of PostGIS would not be possible without
 		  the extensibility, great query planner, GIST index, and plethora of SQL features provided by PostgreSQL.</para>

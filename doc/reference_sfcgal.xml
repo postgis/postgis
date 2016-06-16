@@ -2,20 +2,20 @@
 <sect1 id="reference_sfcgal">
 	<sect1info>
 		<abstract>
-				<para> 
-            SFCGAL is a C++ wrapper  library around CGAL that provides advanced 2D and 3D functions. 
+				<para>
+            SFCGAL is a C++ wrapper  library around CGAL that provides advanced 2D and 3D functions.
             For robustness, geometry coordinates have an exact rational number representation.
         </para>
-        <para> 
-            Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>. 
-            To load the functions create extension postgis_sfcgal. 
+        <para>
+            Installation instructions of the library can be found on SFCGAL home page <ulink url="http://www.sfcgal.org">http://www.sfcgal.org</ulink>.
+            To load the functions create extension postgis_sfcgal.
         </para>
         <para>
           Some SFCGAL functions replace standard ones (ST_Intersects, ST_Intersection, ST_Difference, ST_Union, ST_Area and ST_Distance), to switch between standard functions and SFCGAL function use:
 	<programlisting>SET postgis.backend = sfcgal;</programlisting>
 	and
 	<programlisting>SET postgis.backend = geos;</programlisting>
-        
+
         </para>
 		</abstract>
 	</sect1info>
@@ -77,11 +77,11 @@
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection><title>Examples</title>
 	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
-	  		
-	  	 <informaltable>
+
+		 <informaltable>
 				  <tgroup cols="2">
 					<tbody>
 					  <row>
@@ -110,7 +110,7 @@
 						  </informalfigure></para>
 					  </entry>
 					  </row>
-					  
+
 					<row>
 						<entry><para>
 						<programlisting>SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')</programlisting>
@@ -173,11 +173,11 @@
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection><title>Examples</title>
-	  		<programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
-	  		
-	  	 <informaltable>
+			<programlisting>SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+
+		 <informaltable>
 				  <tgroup cols="2">
 					<tbody>
 					  <row>
@@ -239,11 +239,11 @@ around ST_StraightSkeleton (slower case).
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection><title>Examples</title>
-	  		<programlisting>SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
-	  		
-	  	 <informaltable>
+			<programlisting>SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));</programlisting>
+
+		 <informaltable>
 				  <tgroup cols="1">
 					<tbody>
 					  <row>
@@ -380,14 +380,14 @@ around ST_StraightSkeleton (slower case).
                 <para>This function performs a 2D minkowski sum of a point, line or polygon with a polygon.</para>
                 <para>A minkowski sum of two geometries A and B is the set of all points that are the sum of any point in A and B. Minkowski sums are often used in motion planning and computer-aided design. More details on <ulink url="https://en.wikipedia.org/wiki/Minkowski_addition">Wikipedia Minkowski addition</ulink>.</para>
                 <para>The first parameter can be any 2D geometry (point, linestring, polygon). If a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, leading to possible cases of invalidity. The second parameter must be a 2D polygon.</para>
-                
+
                 <para>Implementation utilizes <ulink url="http://doc.cgal.org/latest/Minkowski_sum_2/">CGAL 2D Minkowskisum</ulink>.</para>
-               
+
 
 		<para>Availability: 2.1.0</para>
 		<para>&sfcgal_required;</para>
 	  </refsection>
-	  
+
 	 <refsection><title>Examples</title>
 	 <para>Minkowski Sum of Linestring and circle polygon where Linestring cuts thru the circle</para>
             <informaltable>
@@ -424,15 +424,15 @@ around ST_StraightSkeleton (slower case).
             </informaltable>
             <programlisting>
 SELECT ST_MinkowskiSum(line, circle))
-FROM (SELECT 
+FROM (SELECT
     ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,
     ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;
-    
+
 -- wkt --
 MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,
 161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))
             </programlisting>
-            
+
         <para>Minkowski Sum of a polygon and multipoint</para>
             <informaltable>
                 <tgroup cols="2">
@@ -471,7 +471,7 @@ FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,
    'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly
     ) As foo
 
-    
+
 -- wkt --
 MULTIPOLYGON(
     ((70 115,100 135,175 175,225 225,70 115)),
@@ -508,9 +508,9 @@ MULTIPOLYGON(
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	 
+
 	  <refsection>
-		<title>Examples</title>	
+		<title>Examples</title>
 		<para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
             <informaltable>
             <tgroup cols="2">
@@ -518,7 +518,7 @@ MULTIPOLYGON(
               <row>
                 <entry><para>
                 <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2;
                 </programlisting>
@@ -534,7 +534,7 @@ MULTIPOLYGON(
               <entry><para>
               <programlisting>SELECT ST_3DIntersection(geom1,geom2)
 FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
               <informalfigure>
@@ -550,7 +550,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
              </tbody>
             </tgroup>
         </informaltable>
-		
+
 		<para>3D linestrings and polygons</para>
 		<programlisting>	SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt
 FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring
@@ -560,33 +560,33 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 --------------------------------
  LINESTRING Z (1 1 8,0.5 0.5 8)
 		</programlisting>
-		
+
 		<para>Cube (closed Polyhedral Surface) and Polygon Z</para>
 		<programlisting>SELECT ST_AsText(ST_3DIntersection(
-		ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
-	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'), 
+		ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),
 	'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))</programlisting>
 		<screen>TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))</screen>
-		
+
 		<para>Intersection of 2 solids that result in volumetric intersection is also a solid (ST_Dimension returns 3)</para>
 		<programlisting>SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),
  ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));</programlisting>
- 	<screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
- 	((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
- 	((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
- 	((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
- 	((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
- 	((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
- 	((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
- 	((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
- 	((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
- 	((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
- 	((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
- 	((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
- 	((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
- 	((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
+	<screen>POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),
+	((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),
+	((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),
+	((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),
+	((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),
+	((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),
+	((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),
+	((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),
+	((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),
+	((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),
+	((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),
+	((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),
+	((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),
+	((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))</screen>
 
 	  </refsection>
 
@@ -618,7 +618,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection>
 	      <title>Examples</title>
 	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
@@ -628,7 +628,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
               <row>
                 <entry><para>
                 <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2;
                 </programlisting>
@@ -644,7 +644,7 @@ FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
               <entry><para>
               <programlisting>SELECT ST_3DDifference(geom1,geom2)
 FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
               <informalfigure>
@@ -660,12 +660,12 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
              </tbody>
             </tgroup>
             </informaltable>
-	      
+
 	  </refsection>
-	  
+
       <refsection>
         <title>See Also</title>
-        
+
         <para>
             <xref linkend="ST_Extrude" />,
             <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
@@ -693,7 +693,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 
 	  <refsection>
 		<title>Description</title>
-		
+
 
 		<para>Availability: 2.2.0</para>
 		<para>&sfcgal_required;</para>
@@ -701,8 +701,8 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
-	  	  <refsection>
+
+		  <refsection>
 	      <title>Examples</title>
 	        <para>3D images were generated using PostGIS <xref linkend="ST_AsX3D" /> and rendering in HTML using <ulink url="http://www.x3dom.org">X3Dom HTML Javascript rendering library</ulink>.</para>
             <informaltable>
@@ -711,7 +711,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <row>
                 <entry><para>
                 <programlisting>SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2;
                 </programlisting>
@@ -727,7 +727,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
               <entry><para>
               <programlisting>SELECT ST_3DUnion(geom1,geom2)
 FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
- 50, 'quad_segs=2'),0,0,30) AS geom1, 
+ 50, 'quad_segs=2'),0,0,30) AS geom1,
         ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),
  50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;</programlisting>
               <informalfigure>
@@ -743,12 +743,12 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
              </tbody>
             </tgroup>
             </informaltable>
-	      
+
 	  </refsection>
-	  
+
       <refsection>
         <title>See Also</title>
-        
+
         <para>
             <xref linkend="ST_Extrude" />,
             <xref linkend="ST_AsX3D" />,  <xref linkend="ST_3DIntersection" />
@@ -783,22 +783,22 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection><title>Examples</title>
 	  <para>Note: By default a PolyhedralSurface built from WKT is a surface geometry, not solid.  It therefore has surface area.  Once converted to a solid, no area.</para>
-<programlisting>SELECT ST_3DArea(geom) As cube_surface_area, 
+<programlisting>SELECT ST_3DArea(geom) As cube_surface_area,
 	ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area
-  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
-    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
-    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), 
+  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
     ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-    
+
  cube_surface_area | solid_surface_area
 -------------------+--------------------
                  6 |                  0    </programlisting>
-	  
+
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -832,16 +832,16 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection><title>Examples</title>
 	  <informaltable>
 				  <tgroup cols="2">
 					<tbody>
 					  <row>
 						<entry><para>
-						<programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+						<programlisting>SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+		((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+		((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 		((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');</programlisting>
 						<informalfigure>
 							<mediaobject>
@@ -853,9 +853,9 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 						  </informalfigure></para>
 					  </entry>
 					  <entry><para>
-					  <programlisting>SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
+					  <programlisting>SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
 	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));</programlisting></para>
 		<para>ST_AsText output:</para>
 		<screen>TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),
@@ -875,7 +875,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 						  </informalfigure></para>
 					  </entry>
 					  </row>
-					  
+
 					  <row>
 						<entry><para>
 						<programlisting>SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;</programlisting>
@@ -889,7 +889,7 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 						  </informalfigure></para>
 					  </entry>
 					  <entry><para>
-					  <programlisting>SELECT 
+					  <programlisting>SELECT
 	ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);</programlisting>
 	</para>
 	<para>ST_AsText output</para>
@@ -938,26 +938,26 @@ FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
-	  
+
 	  <refsection>
 	      <title>Example</title>
 	      <para>When closed surfaces are created with WKT, they are treated as areal rather than solid.  To make them solid, you need to use <xref linkend="ST_MakeSolid" />.
 	      Areal geometries have no volume.  Here is an example to demonstrate.</para>
-	      <programlisting>SELECT ST_Volume(geom) As cube_surface_vol, 
+	      <programlisting>SELECT ST_Volume(geom) As cube_surface_vol,
 	ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol
-  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), 
-    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
-    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), 
-    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), 
+  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
     ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);
-    
+
  cube_surface_vol | solid_surface_vol
 ------------------+-------------------
                 0 |                 1
 	      </programlisting>
 	  </refsection>
-	  
+
 	  <refsection>
 		<title>See Also</title>
 

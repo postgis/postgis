@@ -101,7 +101,7 @@
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
-	
+
 		<refentry id="ST_Box2dFromGeoHash">
 	  <refnamediv>
 		<refname>ST_Box2dFromGeoHash</refname>
@@ -158,7 +158,7 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 		<para><xref linkend="ST_GeoHash" />, <xref linkend="ST_GeomFromGeoHash" />, <xref linkend="ST_PointFromGeoHash" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeogFromText">
 		  <refnamediv>
 			<refname>ST_GeogFromText</refname>
@@ -177,9 +177,9 @@ SELECT ST_Box2dFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 0);
 			<para>Returns a geography object from the well-known text or extended well-known representation. SRID 4326 is assumed if unspecified.
 				This is an alias for ST_GeographyFromText.  Points are always expressed in long lat form.</para>
 		  </refsection>
-		  
+
 		 <refsection>
-		 	<title>Examples</title>
+			<title>Examples</title>
 			<programlisting>
 --- converting lon lat coords to geography
 ALTER TABLE sometable ADD COLUMN geog geography(POINT,4326);
@@ -218,7 +218,7 @@ SELECT ST_AsEWKT(ST_GeogFromText('SRID=4267;POINT(-77.0092 38.889588)'));
 			<para><xref linkend="ST_GeogFromText" />, <xref linkend="ST_AsText" /></para>
 		  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeogFromWKB">
 	  <refnamediv>
 		<refname>ST_GeogFromWKB</refname>
@@ -508,13 +508,13 @@ SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 15
 </programlisting>
 <programlisting>
 --Polyhedral Surface example
-SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( 
-	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  
-	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), 
-	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), 
-	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  
-	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  
-	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) 
+SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
+	((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),
+	((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),
+	((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),
+	((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),
+	((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),
+	((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))
 )');
 </programlisting>
 	  </refsection>
@@ -655,14 +655,14 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 		<para>GML allow mixed dimensions (2D and 3D inside the same MultiGeometry for instance). As PostGIS geometries don't, ST_GeomFromGML convert the whole geometry to 2D if a missing Z dimension is found once.</para>
-		
+
 		<para>GML support mixed SRS inside the same MultiGeometry. As PostGIS geometries don't, ST_GeomFromGML, in this case, reproject all subgeometries to the SRS root node. If no srsName attribute available for the GML root node, the function throw an error.</para>
-		
+
 		<para>ST_GeomFromGML function is not pedantic about an explicit GML namespace. You could avoid to mention it explicitly for common usages. But you need it if you want to use XLink feature inside GML.</para>
 		<note>
 			<para>ST_GeomFromGML function not support SQL/MM curves geometries.</para>
 		</note>
-		
+
 	  </refsection>
 
 	  <refsection>
@@ -679,7 +679,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 	  <refsection>
 		<title>Examples - XLink usage</title>
 		<programlisting>SELECT <![CDATA[ST_GeomFromGML('
-		<gml:LineString xmlns:gml="http://www.opengis.net/gml" 
+		<gml:LineString xmlns:gml="http://www.opengis.net/gml"
 				xmlns:xlink="http://www.w3.org/1999/xlink"
 				srsName="urn:ogc:def:crs:EPSG::4269">
 			<gml:pointProperty>
@@ -692,7 +692,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		</gml:LineString>');]]>);
 		</programlisting>
 	  </refsection>
-	  
+
 	 <refsection>
 		<title>Examples - Polyhedral Surface</title>
 		<programlisting>SELECT ST_AsEWKT(<![CDATA[ST_GeomFromGML('
@@ -705,27 +705,27 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 0 1 0 1 1 0 1 0 0 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 0 1 0 0 1 0 1 0 0 1 0 0 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">1 1 0 1 1 1 1 0 1 1 0 0 1 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 1 0 0 1 1 1 1 1 1 1 0 0 1 0</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
   <gml:PolygonPatch>
     <gml:exterior>
-    	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
+	<gml:LinearRing><gml:posList srsDimension="3">0 0 1 1 0 1 1 1 1 0 1 1 0 0 1</gml:posList></gml:LinearRing>
     </gml:exterior>
   </gml:PolygonPatch>
 </gml:polygonPatches>
@@ -747,7 +747,7 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsGML" />, <xref linkend="ST_GMLToSQL" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeomFromGeoJSON">
 	  <refnamediv>
 		<refname>ST_GeomFromGeoJSON</refname>
@@ -767,13 +767,13 @@ SELECT ST_AsText(ST_GeomFromGeoHash('9qqj7nmxncgyy4d0dbxqz0', 10));
 		<title>Description</title>
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
-		
+
 		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
 			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
 		<para>&Z_support;</para>
 	  </refsection>
- 
+
 	 <refsection>
 		<title>Examples</title>
 		<programlisting>SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')) As wkt;
@@ -787,7 +787,7 @@ SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"LineString","coordinates":[[1,2,3]
 wkt
 -------------------
 LINESTRING(1 2,4 5,7 8)
-</programlisting> 
+</programlisting>
 	  </refsection>
 
 
@@ -796,7 +796,7 @@ LINESTRING(1 2,4 5,7 8)
 		<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_GeomFromKML">
 	  <refnamediv>
 		<refname>ST_GeomFromKML</refname>
@@ -831,14 +831,14 @@ LINESTRING(1 2,4 5,7 8)
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
 		</note>
-		
+
 	  </refsection>
 
 	  <refsection>
 		<title>Examples - A single geometry with srsName</title>
 		<programlisting>SELECT ST_GeomFromKML('<![CDATA[
 		<LineString>
-			<coordinates>-71.1663,42.2614 
+			<coordinates>-71.1663,42.2614
 				-71.1667,42.2616</coordinates>
 		</LineString>']]>);
 		</programlisting>
@@ -855,19 +855,19 @@ LINESTRING(1 2,4 5,7 8)
 			<refname>ST_GMLToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from GML representation.  This is an alias name for ST_GeomFromGML</refpurpose>
 		  </refnamediv>
-	  	<refsynopsisdiv>
+		<refsynopsisdiv>
 			<funcsynopsis>
-		  	<funcprototype>
+			<funcprototype>
 				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
-		  	</funcprototype>
-		  	<funcprototype>
+			</funcprototype>
+			<funcprototype>
 				<funcdef>geometry <function>ST_GMLToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>geomgml</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-		  	</funcprototype>
+			</funcprototype>
 			</funcsynopsis>
-	  	</refsynopsisdiv>
+		</refsynopsisdiv>
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
@@ -1007,7 +1007,7 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table 
+		<programlisting>--Although bytea rep contains single \, these need to be escaped when inserting into a table
 		-- unless standard_conforming_strings is set to on.
 SELECT ST_AsEWKT(
 ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
@@ -1490,15 +1490,15 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 			in the order of the travel.</para>
 
 		<programlisting>
--- For pre-PostgreSQL 9.0 - this usually works, 
+-- For pre-PostgreSQL 9.0 - this usually works,
 -- but the planner may on occasion choose not to respect the order of the subquery
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 	FROM (SELECT gps_track,gps_time, the_geom
 			FROM gps_points ORDER BY gps_track, gps_time) As gps
 	GROUP BY gps.gps_track;</programlisting>
-	
+
 		<programlisting>
--- If you are using PostgreSQL 9.0+ 
+-- If you are using PostgreSQL 9.0+
 -- (you can use the new ORDER BY support for aggregates)
 -- this is a guaranteed way to get a correctly ordered linestring
 -- Your order by part can order by more than one column if needed
@@ -1577,7 +1577,7 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 
 			<para>Creates a rectangular Polygon formed from the minima and maxima. by the given shell. Input
 				values must be in SRS specified by the SRID.  If no SRID is specified the unknown spatial reference system is assumed</para>
-				
+
 			<para>Availability: 1.5</para>
 			<para>Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was introduced.</para>
 
@@ -2082,7 +2082,7 @@ SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.976
 
 		<programlisting>SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)</programlisting>
 	  </refsection>
-	  
+
 	  <refsection>
 		<title>Examples: Geography</title>
 
@@ -2102,7 +2102,7 @@ SELECT ST_Transform(ST_SetSRID(ST_Point(3637510, 3014852),2273),4326)::geography
 		<para><xref linkend="Geography_Basics" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
-	
+
 		<refentry id="ST_PointFromGeoHash">
 	  <refnamediv>
 		<refname>ST_PointFromGeoHash</refname>
