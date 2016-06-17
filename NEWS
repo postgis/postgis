@@ -29,6 +29,7 @@ PostGIS 2.1.9
            platforms
   - #3565, ST_SetPoint can crash backend
   - #3579, Crash in LWGEOM2GEOS
+  - #3583, Crash in ST_GeomFromGeoJSON on malformed multipolygon
 
 
 PostGIS 2.1.8
