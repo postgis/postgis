@@ -990,5 +990,9 @@ select
     ST_Intersects(ST_Buffer(road.geom, sidewalk_offset + epsilon), sidewalks.geom) -- should be true
 from road, sidewalks, params;
 
+-- #3583
+Select '#3583', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon", "coordinates":[[[139.10030364990232,35.16777444430609],5842.4224490305424]]}')); 
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
