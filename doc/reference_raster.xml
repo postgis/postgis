@@ -13177,8 +13177,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 			overlaps or is to the left of the bounding box of raster B, or more accurately, overlaps or is NOT to the right
 			of the bounding box of raster B.</para>
 
-			<note><para>This operand will make use of any indexes that may be available on the
-				geometries.</para></note>
+			<note><para>This operand will make use of any indexes that may be available on the rasters.</para></note>
 		  </refsection>
 
 		  <refsection>
