@@ -41,6 +41,7 @@ PostGIS 2.3.0
   - #3383, Avoid deserializing small geometries during index operations
     (Dan Baston)
   - #3400, Minor optimization of PIP routines (Dan Baston)
+  - Make adding a line to topology interruptible (Sandro Santilli)
 
 PostGIS 2.2.2
 2016/03/22

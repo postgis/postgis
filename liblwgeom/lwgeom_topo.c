@@ -5659,6 +5659,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     int nn=0;
     for (i=0; i<num; ++i)
     {
+      LW_ON_INTERRUPT(return NULL);
       LWT_ISO_EDGE *e = &(edges[i]);
       LWGEOM *g = lwline_as_lwgeom(e->geom);
       LWDEBUGF(2, "Computing distance from edge %d having %d points", i, e->geom->points->npoints);
