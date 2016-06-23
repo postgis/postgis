@@ -5651,7 +5651,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     lwerror("Backend error: %s", lwt_be_lastErrorMessage(topo->be_iface));
     return NULL;
   }
-  LWDEBUGF(1, "Line bbox intersects %d edges bboxes", num);
+  LWDEBUGF(1, "Line has %d points, its bbox intersects %d edges bboxes", line->points->npoints, num);
   if ( num )
   {{
     /* collect those whose distance from us is < tol */
@@ -5661,10 +5661,12 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
     {
       LWT_ISO_EDGE *e = &(edges[i]);
       LWGEOM *g = lwline_as_lwgeom(e->geom);
+      LWDEBUGF(2, "Computing distance from edge %d having %d points", i, e->geom->points->npoints);
       double dist = lwgeom_mindistance2d(g, noded);
       if ( dist >= tol ) continue; /* must be closer than tolerated */
       nearby[nn++] = g;
     }
+    LWDEBUGF(2, "Found %d lines closer than tolerance (%g)", nn, tol);
     if ( nn )
     {{
       LWCOLLECTION *col;
