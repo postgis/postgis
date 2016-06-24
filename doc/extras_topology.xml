@@ -1344,7 +1344,7 @@ Changes the shape of an edge without affecting the topology structure.
 		</para>
                 <para>
 If any arguments are null, the given edge does not exist in
-the <varname>node</varname> table of the topology schema, the
+the <varname>edge</varname> table of the topology schema, the
 <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the
 <varname>anode</varname> and <varname>anothernode</varname> are not the
 start and endpoints of <varname>acurve</varname> or the modification would
@@ -1701,7 +1701,7 @@ SELECT topology.ST_NewEdgesSplit('ma_topo', 2,  ST_GeomFromText('POINT(227578.5 
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- Add an isolated node with no face  --
+-- Remove an isolated node with no face  --
 SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
          result
 -------------------------
@@ -3358,7 +3358,7 @@ The table, if given, is expected to have an "arc_id" field of type "serial" and 
 
 		<note>
 <para>
-Arc indices in the TopoJSONjoutput are 0-based but they are 1-based
+Arc indices in the TopoJSON output are 0-based but they are 1-based
 in the "edgeMapTable" table.
 </para>
     </note>
