@@ -482,6 +482,44 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 	return g;
 }
 
+GEOSGeometry*
+make_geos_point(double x, double y)
+{
+	GEOSCoordSequence* seq = GEOSCoordSeq_create(1, 2);
+	GEOSGeometry* geom = NULL;
+
+	if (!seq)
+		return NULL;
+
+	GEOSCoordSeq_setX(seq, 0, x);
+	GEOSCoordSeq_setY(seq, 0, y);
+
+	geom = GEOSGeom_createPoint(seq);
+	if (!geom)
+		GEOSCoordSeq_destroy(seq);
+	return geom;
+}
+
+GEOSGeometry*
+make_geos_segment(double x1, double y1, double x2, double y2)
+{
+	GEOSCoordSequence* seq = GEOSCoordSeq_create(2, 2);
+	GEOSGeometry* geom = NULL;
+
+	if (!seq)
+		return NULL;
+
+	GEOSCoordSeq_setX(seq, 0, x1);
+	GEOSCoordSeq_setY(seq, 0, y1);
+	GEOSCoordSeq_setX(seq, 1, x2);
+	GEOSCoordSeq_setY(seq, 1, y2);
+
+	geom = GEOSGeom_createLineString(seq);
+	if (!geom)
+		GEOSCoordSeq_destroy(seq);
+	return geom;
+}
+
 const char*
 lwgeom_geos_version()
 {
