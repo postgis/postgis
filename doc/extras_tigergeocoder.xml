@@ -13,13 +13,13 @@
             for each state, as long as all the tables inherit from the tables in the <varname>tiger</varname> schema.</para>
 
 
-            <para>For instructions on how enable the extension in your database and also to load data using it, refer to Refer to <xref linkend="install_tiger_geocoder_extension" />.</para>
+            <para>For instructions on how to enable the extension in your database and also to load data using it, refer to <xref linkend="install_tiger_geocoder_extension" />.</para>
 
 
              <para> <note><para>
 If you are using tiger geocoder (tiger_2010),
 you can upgrade the scripts using the accompanying upgrade_geocoder.bat
-/ .sh scripts in extras/tiger.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011+</varname> is that the county and <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.    If you have data from tiger_2010 and want replace with tiger_2015 refer to <xref linkend="upgrade_tiger_geocoder" />
+/ .sh scripts in extras/tiger.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011+</varname> is that the <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.    If you have data from tiger_2010 and want to replace with tiger_2015, refer to <xref linkend="upgrade_tiger_geocoder" />
               </para></note>
 
               <note>
@@ -48,7 +48,7 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
      <para>There are a couple other open source geocoders for PostGIS, that unlike tiger geocoder have the advantage of multi-country geocoding support</para>
      <itemizedlist>
          <listitem><para><ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
-     and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
+     uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
      Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para></listitem>
          <listitem><para><ulink url="http://www.gisgraphy.com/">GIS Graphy</ulink> also utilizes PostGIS and like Nominatim works with OpenStreetMap (OSM) data.  It comes with a loader to load OSM data and similar to Nominatim is capable of geocoding not just US. Much like Nominatim, it runs as a webservice and relies on Java 1.5, Servlet apps, Solr. GisGraphy is cross-platform and also has a reverse geocoder among some other neat features.</para></listitem>
      </itemizedlist>
@@ -133,7 +133,7 @@ DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
       <refnamediv>
         <refname>Drop_Nation_Tables_Generate_Script</refname>
 
-        <refpurpose>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or stae code followed by <varname>county</varname> or <varname>state</varname>.</refpurpose>
+        <refpurpose>Generates a script that drops all tables in the specified schema that start with <varname>county_all</varname>, <varname>state_all</varname> or state code followed by <varname>county</varname> or <varname>state</varname>.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -268,7 +268,7 @@ DROP TABLE tiger_data.pa_zip_state_loc;
             Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.
             The geocoded point is defaulted to offset 10 meters from center-line off to side (L/R) of street address is located on.</para>
 
-        <para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed, accuracy of geocoding, and to offset point from centerline to side of street address is located on. New parameter max_results useful for specifying ot just return the best result.</para>
+        <para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed, accuracy of geocoding, and to offset point from centerline to side of street address is located on. The new parameter <varname>max_results</varname> useful for specifying number of best results or just returning the best result.</para>
 
       </refsection>
 
@@ -378,8 +378,7 @@ Total query runtime: 245 ms.
       <refnamediv>
         <refname>Geocode_Intersection</refname>
 
-        <refpurpose>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.
-            Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10</refpurpose>
+        <refpurpose>Takes in 2 streets that intersect and a state, city, zip, and outputs a set of possible locations on the first cross street that is at the intersection, also includes a geomout as the point location in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each location, and the rating. The lower the rating the more likely the match. Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10. Uses Tiger data (edges, faces, addr), PostgreSQL fuzzy string matching (soundex, levenshtein).</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -470,7 +469,7 @@ Total query runtime: 245 ms.
  use_pagc_address_parser        | false   | boolean | normalize | If set to true, will try to use the address_standardizer extension (via pagc_normalize_address)
                                                                  instead of tiger normalize_address built one    </screen>
 
-        <para>Changed: 2.2.0 : default settings are now kept in a table called geocode_settings_default. Use customized settingsa re in geocode_settings and only contain those that have been set by user.</para>
+        <para>Changed: 2.2.0 : default settings are now kept in a table called geocode_settings_default. Use customized settingsa are in geocode_settings and only contain those that have been set by user.</para>
         <para>Availability: 2.1.0</para>
 
       </refsection>
