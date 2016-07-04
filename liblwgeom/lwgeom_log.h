@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011 Sandro Santilli <strk.io>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2007-2008 Mark Cave-Ayland
  * Copyright 2001-2006 Refractions Research Inc.

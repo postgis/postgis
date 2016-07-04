@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2014 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2014 Sandro Santilli <strk.io>
  * Copyright (C) 2013 Nicklas Avén
  *
  **********************************************************************/

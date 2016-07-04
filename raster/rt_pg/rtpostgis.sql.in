@@ -4,7 +4,7 @@
 -- PostGIS Raster - Raster Type for PostGIS
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
--- Copyright (c) 2009-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (c) 2009-2012 Sandro Santilli <strk.io>
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>

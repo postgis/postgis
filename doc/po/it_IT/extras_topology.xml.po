@@ -2,14 +2,14 @@
 #
 # Translators:
 # pibinko <pibinko@gmail.com>, 2014
-# Sandro Santilli <strk@keybit.net>, 2013
+# Sandro Santilli <strk.io>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-02-16 08:54+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk.io>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"

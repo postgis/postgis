@@ -3,7 +3,7 @@
 # Translators:
 # pibinko <pibinko@gmail.com>, 2013
 # pibinko <pibinko@gmail.com>, 2013
-# Sandro Santilli <strk@keybit.net>, 2014
+# Sandro Santilli <strk.io>, 2014
 # Stefano Costa <steko@iosa.it>, 2013
 msgid ""
 msgstr ""

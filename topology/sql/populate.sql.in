@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010-2012 Sandro Santilli <strk.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -77,7 +77,7 @@ $$ LANGUAGE 'plpgsql' STABLE STRICT;
 --
 -- The newly added nodes have no containing face.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
@@ -203,7 +203,7 @@ LANGUAGE 'sql' VOLATILE;
 -- and links to itself as per next left/right edge.
 -- Calling code is expected to do further linking.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
@@ -389,7 +389,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  o The polygon boundary is not fully defined by existing edges.
 --  o The polygon overlaps an existing face.
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].

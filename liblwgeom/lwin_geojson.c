@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2013 Sandro Santilli <strk@keybit.net>
+ * Copyright 2013 Sandro Santilli <strk.io>
  * Copyright 2011 Kashif Rasul <kashif.rasul@gmail.com>
  *
  **********************************************************************/

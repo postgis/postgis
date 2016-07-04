@@ -44,7 +44,7 @@
  * No checks are done to avoid introduction of self-intersections.
  * No topology relations are considered.
  *
- * --strk@keybit.net;
+ * --strk.io;
  ***********************************************************************/
 
 
@@ -130,7 +130,7 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 
 	
 /***********************************************************************
- * --strk@keybit.net;
+ * --strk.io;
  ***********************************************************************/
 
 /***********************************************************************
@@ -296,7 +296,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
  *     DP epsilon values - please tell me if you know more about this.
  *
  *
- * --strk@keybit.net;
+ * --strk.io;
  *
  ***********************************************************************/
 
@@ -483,7 +483,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 
 
 /***********************************************************************
- * --strk@keybit.net
+ * --strk.io
  ***********************************************************************/
 
 Datum LWGEOM_line_substring(PG_FUNCTION_ARGS);

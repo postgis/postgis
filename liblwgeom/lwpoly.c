@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012 Sandro Santilli <strk.io>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  **********************************************************************/
