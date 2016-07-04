@@ -4368,10 +4368,10 @@ Datum TopoGeo_AddLinestring(PG_FUNCTION_ARGS)
     }}
 
     tol = PG_GETARG_FLOAT8(2);
-    if ( tol < 0 )
+    if ( tol < -1 )
     {
       PG_FREE_IF_COPY(geom, 1);
-      lwpgerror("Tolerance must be >=0");
+      lwpgerror("Tolerance must be >=-1");
       PG_RETURN_NULL();
     }
 
