@@ -6764,7 +6764,7 @@ _lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol, int
   LWT_ELEMID id = 0;
 
   /* Get tolerance, if 0 was given */
-  if (!tol)
+  if ( tol == -1 )
     tol = _LWT_MINTOLERANCE(topo, pt);
 
   LWDEBUGG(1, pt, "Adding point");
@@ -7168,7 +7168,7 @@ _lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges,
   *nedges = -1; /* error condition, by default */
 
   /* Get tolerance, if 0 was given */
-  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
   LWDEBUGF(1, "Input line has srid=%d", line->srid);
 
@@ -7605,7 +7605,7 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   }
 
   /* Get tolerance, if 0 was given */
-  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
+  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
   lwt_LoadPolygon(topo, poly, tol);

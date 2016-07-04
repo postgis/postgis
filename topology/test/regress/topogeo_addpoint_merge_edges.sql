@@ -12,7 +12,7 @@ BEGIN
     PERFORM topology.DropTopology ('topo');
   END IF;
 
-  PERFORM topology.CreateTopology ('topo');
+  PERFORM topology.CreateTopology ('topo', 0, prec);
   CREATE TABLE topo.fl(lbl text, g geometry);
   PERFORM topology.AddTopoGeometryColumn('topo','topo','fl','tg','LINESTRING');
   CREATE TABLE topo.fa(lbl text, g geometry);
@@ -62,7 +62,7 @@ BEGIN
   IF debug THEN
     set client_min_messages to DEBUG;
   END IF;
-  PERFORM topology.TopoGeo_addPoint('topo', point, prec);
+  PERFORM topology.TopoGeo_addPoint('topo', point);
   IF debug THEN
     set client_min_messages to WARNING;
   END IF;

@@ -18,7 +18,7 @@
 --  See http://trac.osgeo.org/postgis/ticket/1017
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.toTopoGeom(ageom Geometry, atopology varchar, alayer int, atolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.toTopoGeom(ageom Geometry, atopology varchar, alayer int, atolerance float8 DEFAULT -1)
   RETURNS topology.TopoGeometry
 AS
 $$
@@ -122,7 +122,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  adding its components to a pre-existing TopoGeometry
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.toTopoGeom(ageom Geometry, tg topology.TopoGeometry, atolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.toTopoGeom(ageom Geometry, tg topology.TopoGeometry, atolerance float8 DEFAULT -1)
   RETURNS topology.TopoGeometry
 AS
 $$

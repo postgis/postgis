@@ -1,6 +1,13 @@
 PostGIS 3.7.0dev
 xxxx/xx/xx
 
+* Breaking Changes *
+
+ - #5688, [topology] topology building functions now interpret tolerance 0
+          (old default) to really mean 0 and want -1 (new default) to mean
+          "use topology precision" (Sandro Santilli)
+
+
 * New Features *
 
  - #5993, [topology] Add max_edges parameter to TopoGeo_AddLinestring

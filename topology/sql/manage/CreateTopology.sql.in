@@ -22,11 +22,8 @@
 -- id.
 --
 -- Availability: 3.6.0
---
--- Changed: 3.6.0
--- merges all previous variants with defaults and uses bigint for IDs
--- if user passes usesLargeIds=true, and allows user defined topology id.
 -- Replaces CreateTopology(varchar, integer, float8, boolean) deprecated in 3.6.0
+--
 CREATE OR REPLACE FUNCTION topology.CreateTopology(atopology name, srid integer DEFAULT 0, prec float8 DEFAULT 0, hasZ boolean DEFAULT false, topoid integer default 0, usesLargeIDs boolean default false)
 RETURNS integer
 AS

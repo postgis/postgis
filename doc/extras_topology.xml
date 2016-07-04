@@ -1368,10 +1368,10 @@ ANALYZE themselves, to use updated statistics.
 						<funcdef>integer <function>CreateTopology</function></funcdef>
 						<paramdef><type>name </type> <parameter>topology_schema_name</parameter></paramdef>
 						<paramdef choice="opt"><type>integer </type> <parameter>srid</parameter></paramdef>
-						<paramdef choice="opt"><type>double precision </type> <parameter>prec</parameter></paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter>hasz</parameter></paramdef>
-                        <paramdef choice="opt"><type>integer </type> <parameter>topoid</parameter></paramdef>
-                        <paramdef choice="opt"><type>boolean </type> <parameter>useslargeids</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>prec=0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>hasz=false</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>topoid=0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>useslargeids=false</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1403,7 +1403,8 @@ ANALYZE themselves, to use updated statistics.
 
                 <!-- use this format if new function -->
                 <para role="availability" conformance="1.1">Availability: 1.1</para>
-                <para role="enhanced" conformance="2.0">Enhanced: 2.0 added the signature accepting hasZ</para>
+                <para role="enhanced" conformance="2.0">Enhanced: 2.0 added support for <varname>hasZ</varname>.</para>
+                <para role="enhanced" conformance="3.6.0">Enhanced: 3.6.0 added <varname>topoid</varname> and <varname>usesLargeIDs</varname> parameters.</para>
 			</refsection>
 
 
@@ -3747,14 +3748,14 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
-					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance=-1</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
-					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance=-1</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3781,6 +3782,7 @@ Existing TopoGeometry objects (with the possible exception of
                 <para>
 When <varname>tolerance</varname> is given it will be used to snap the
 input geometry to existing primitives.
+The special value -1 (default) means use the topology precision as tolerance.
                 </para>
 
                 <para>
@@ -3798,6 +3800,7 @@ replace the old one see <xref linkend="clearTopoGeom"/>.
                 <!-- use this format if new function -->
                 <para role="availability" conformance="2.0">Availability: 2.0</para>
                 <para role="enhanced" conformance="2.1.0">Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
+                <para role="changed" conformance="3.7.0">Changed: 3.7.0 changes meaning of tolerance 0 to really mean 0 and -1 (new default) to request using the topology precision.</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -3813,8 +3816,7 @@ new_layer_id
 -----------
 1
 
---use new layer id in populating the new topogeometry column
--- we add the topogeoms to the new layer with 0 tolerance
+-- use new layer id in populating the new topogeometry column
 INSERT INTO nei_topo(nei, topo)
 SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1)
 FROM neighborhoods

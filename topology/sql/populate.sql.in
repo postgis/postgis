@@ -727,8 +727,9 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  Add a Point into a topology, with an optional tolerance
 --
 -- Changed: 3.6.0 uses bigint for IDs
+-- Changed: 3.7.0 have tolerance default to -1 (automatic)
 -- Replaces topogeo_addpoint(varchar, geometry, float8) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT -1)
 	RETURNS bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPoint'
   LANGUAGE 'c' VOLATILE;
@@ -740,8 +741,9 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint g
 --  Add a LineString into a topology
 --
 -- Changed: 3.6.0 uses bigint for IDs
+-- Changed: 3.7.0 have tolerance default to -1 (automatic)
 -- Replaces topogeo_addlinestring(varchar, geometry, float8) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0, max_edges int DEFAULT -1)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT -1, max_edges int DEFAULT -1)
 	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestring'
   LANGUAGE 'c' VOLATILE;
@@ -753,8 +755,9 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddLinestring(atopology varchar, ali
 --  Add a Polygon into a topology
 --
 -- Changed: 3.6.0 uses bigint for IDs
+-- Changed: 3.7.0 have tolerance default to -1 (automatic)
 -- Replaces topogeo_addpolygon(varchar, geometry, float8) deprecated in 3.6.0
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT -1)
 	RETURNS SETOF bigint AS
 	'MODULE_PATHNAME', 'TopoGeo_AddPolygon'
   LANGUAGE 'c' VOLATILE;
@@ -766,8 +769,9 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 --  Load a Geometry into a topology
 --
 -- Availability: 3.5.0
+-- Changed: 3.7.0 have tolerance default to -1 (automatic)
 --
-CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT -1)
 	RETURNS void AS
 	'MODULE_PATHNAME', 'TopoGeo_LoadGeometry'
   LANGUAGE 'c' VOLATILE;
@@ -778,7 +782,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_LoadGeometry(atopology varchar, ageo
 --
 --  Add a Geometry into a topology
 --
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT -1)
 	RETURNS void AS
 $$
 DECLARE
@@ -791,7 +795,8 @@ LANGUAGE 'plpgsql';
 
 
 -- Internal function used by ST_CreateTopoGeo
-CREATE OR REPLACE FUNCTION topology._TopoGeo_AddLinestringNoFace(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+-- Changed: 3.7.0 have tolerance default to -1 (automatic)
+CREATE OR REPLACE FUNCTION topology._TopoGeo_AddLinestringNoFace(atopology varchar, aline geometry, tolerance float8 DEFAULT -1)
 	RETURNS void AS
 	'MODULE_PATHNAME', 'TopoGeo_AddLinestringNoFace'
   LANGUAGE 'c' VOLATILE STRICT;
