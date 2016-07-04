@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2004-2015 Sandro Santilli <strk.io>
+ * Copyright (C) 2004-2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2006 Mark Leslie <mark.leslie@lisasoft.com>
  * Copyright (C) 2008-2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * Copyright (C) 2009-2015 Paul Ramsey <pramsey@cleverelephant.ca>

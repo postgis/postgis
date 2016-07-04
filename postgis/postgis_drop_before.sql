@@ -4,7 +4,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk.io>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2010-2013 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2009      Paul Ramsey <pramsey@cleverelephant.ca>
 --

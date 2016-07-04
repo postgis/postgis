@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2012-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2012-2015 Sandro Santilli <strk.io>
+ * Copyright (C) 2012-2015 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 

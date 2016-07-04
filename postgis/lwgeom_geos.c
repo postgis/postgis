@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2009-2014 Sandro Santilli <strk.io>
+ * Copyright 2009-2014 Sandro Santilli <strk@kbt.io>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2001-2003 Refractions Research Inc.
  *
@@ -3392,7 +3392,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
  * from start of the line to the cut point.
  *
  *
- * Author: Sandro Santilli <strk.io>
+ * Author: Sandro Santilli <strk@kbt.io>
  *
  * Work done for Faunalia (http://www.faunalia.it) with fundings
  * from Regione Toscana - Sistema Informativo per il Governo
@@ -3444,7 +3444,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
  * Return the set of paths shared between two linear geometries,
  * and their direction (same or opposite).
  *
- * Developed by Sandro Santilli (strk.io) for Faunalia
+ * Developed by Sandro Santilli (strk@kbt.io) for Faunalia
  * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
  * Informativo per la Gestione del Territorio e dell' Ambiente
  * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il

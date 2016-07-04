@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015 Sandro Santilli <strk.io>
+ * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey
  *
  **********************************************************************/

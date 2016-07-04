@@ -4,7 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2015 Daniel Baston <dbaston@gmail.com>
- * Copyright (C) 2012 Sandro Santilli <strk.io>
+ * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.

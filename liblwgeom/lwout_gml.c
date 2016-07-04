@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2011 Sandro Santilli <strk.io>
+ * Copyright 2011 Sandro Santilli <strk@kbt.io>
  * Copyright 2010-2012 Oslandia
  * Copyright 2001-2003 Refractions Research Inc.
  *

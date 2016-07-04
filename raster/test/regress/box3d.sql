@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --
--- Copyright (c) 2009 Sandro Santilli <strk.io>, David Zwarg <dzwarg@azavea.com>
+-- Copyright (c) 2009 Sandro Santilli <strk@kbt.io>, David Zwarg <dzwarg@azavea.com>
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU General Public License
