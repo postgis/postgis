@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -11,7 +11,7 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 -- {
---  Clear the contents of a TopoGeometry 
+--  Clear the contents of a TopoGeometry
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.clearTopoGeom(tg topology.TopoGeometry)

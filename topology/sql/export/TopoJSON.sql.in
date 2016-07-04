@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -152,7 +152,7 @@ BEGIN
       FOR rec in -- {
 WITH RECURSIVE
 _edges AS (
-  SELECT e.*, 
+  SELECT e.*,
          e.left_face = ANY ( faces ) as lf,
          e.right_face = ANY ( faces ) as rf
   FROM edge e
@@ -298,9 +298,9 @@ FROM _edgepath
     RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsTopoJSON';
 
   END IF;
-	
+
   RETURN json;
-	
+
 END
 $$ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 -- } AsTopoJSON(TopoGeometry, visited_table)

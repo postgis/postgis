@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -66,7 +66,7 @@ BEGIN
   END IF;
 
 
-  -- 
+  --
   -- Check type compatibility and create empty TopoGeometry
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
   --
@@ -187,7 +187,7 @@ BEGIN
   END IF;
 
 
-  -- 
+  --
   -- Check type compatibility and set TopoGeometry type
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
   --
@@ -230,7 +230,7 @@ BEGIN
         'Unexpected feature dimension %', ST_Dimension(ageom);
   END IF;
 
-  -- Now that we have an empty topogeometry, we loop over distinct components 
+  -- Now that we have an empty topogeometry, we loop over distinct components
   -- and add them to the definition of it. We add them as soon
   -- as possible so that each element can further edit the
   -- definition by splitting

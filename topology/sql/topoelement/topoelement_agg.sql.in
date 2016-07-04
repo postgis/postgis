@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
@@ -10,7 +10,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- TopoElement management functions 
+-- TopoElement management functions
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
