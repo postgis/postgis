@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2016-02-16 08:33+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -369,22 +369,23 @@ msgid ""
 "Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
 "Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
 "Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
-"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Kashif Rasul, Klaus "
-"Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de "
-"Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, "
-"Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita Shulga, "
-"Norman Vine, Rafal Magda, Ralph Mason, Richard Greenwood, Silvio Grosso, "
-"Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
+"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
+"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
+"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
+"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
+"Vincent Picavet"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:242
+#: introduction.xml:244
 #, no-c-format
 msgid "Corporate Sponsors"
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:245
+#: introduction.xml:247
 #, no-c-format
 msgid ""
 "These are corporate entities that have contributed developer time, hosting, "
@@ -394,7 +395,7 @@ msgstr ""
 "한 기업들"
 
 #. Tag: para
-#: introduction.xml:246
+#: introduction.xml:248
 #, no-c-format
 msgid ""
 "In alphabetical order: Arrival 3D, Associazione Italiana per l'Informazione "
@@ -402,22 +403,22 @@ msgid ""
 "CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, "
 "Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
 "Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
-"AG, Michigan Tech Research Institute, Natural Resources Canada, Norwegian "
-"Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, Oslandia, "
-"Palantir Technologies, Paragon Corporation, R3 GIS, Refractions Research, "
-"Regione Toscana - SITA, Safe Software, Sirius Corporation plc, Stadt Uster, "
-"UC Davis Center for Vectorborne Diseases, University of Laval, U.S "
-"Department of State (HIU), Zonar Systems"
+"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
+"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
+"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
+"U.S Department of State (HIU), Zonar Systems"
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:287
+#: introduction.xml:290
 #, no-c-format
 msgid "Crowd Funding Campaigns"
 msgstr "크라우드 펀딩 캠페인 "
 
 #. Tag: para
-#: introduction.xml:290
+#: introduction.xml:293
 #, no-c-format
 msgid ""
 "Crowd funding campaigns are campaigns we run to get badly wanted features "
@@ -432,7 +433,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:291
+#: introduction.xml:294
 #, no-c-format
 msgid ""
 "PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink "
@@ -444,7 +445,7 @@ msgstr ""
 "두 번의 성공적인 캠페인을 진행했습니다."
 
 #. Tag: para
-#: introduction.xml:292
+#: introduction.xml:295
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgistopology\"><emphasis role="
@@ -458,7 +459,7 @@ msgstr ""
 "개인이 250 달러씩 지원했습니다."
 
 #. Tag: para
-#: introduction.xml:293
+#: introduction.xml:296
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
@@ -469,13 +470,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: introduction.xml:298
+#: introduction.xml:301
 #, no-c-format
 msgid "Important Support Libraries"
 msgstr "주요 지원 라이브러리"
 
 #. Tag: para
-#: introduction.xml:301
+#: introduction.xml:304
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink> geometry "
@@ -489,7 +490,7 @@ msgstr ""
 "지원 작업."
 
 #. Tag: para
-#: introduction.xml:306
+#: introduction.xml:309
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink> Geospatial Data "
@@ -503,7 +504,7 @@ msgstr ""
 "필요한 GDAL의 개선부분들은GDAL 프로젝트에 재 기여됨. "
 
 #. Tag: para
-#: introduction.xml:311
+#: introduction.xml:314
 #, no-c-format
 msgid ""
 "The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
@@ -515,7 +516,7 @@ msgstr ""
 "의 작업."
 
 #. Tag: para
-#: introduction.xml:315
+#: introduction.xml:318
 #, no-c-format
 msgid ""
 "Last but not least, the <ulink url=\"http://www.postgresql.org\">PostgreSQL "
@@ -530,13 +531,13 @@ msgstr ""
 "양한 SQL 기능들이 없이는 불가능 했음."
 
 #. Tag: title
-#: introduction.xml:324
+#: introduction.xml:327
 #, no-c-format
 msgid "More Information"
 msgstr "추가 정보"
 
 #. Tag: para
-#: introduction.xml:328
+#: introduction.xml:331
 #, no-c-format
 msgid ""
 "The latest software, documentation and news items are available at the "
@@ -545,7 +546,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: introduction.xml:334
+#: introduction.xml:337
 #, no-c-format
 msgid ""
 "More information about the GEOS geometry operations library is available "
@@ -556,7 +557,7 @@ msgstr ""
 "osgeo.org/geos/\"> http://trac.osgeo.org/geos/</ulink>에서 확인 가능"
 
 #. Tag: para
-#: introduction.xml:340
+#: introduction.xml:343
 #, no-c-format
 msgid ""
 "More information about the Proj4 reprojection library is available at <ulink "
@@ -566,7 +567,7 @@ msgstr ""
 "org/proj/\">http://trac.osgeo.org/proj/</ulink> 에서 확인 가능"
 
 #. Tag: para
-#: introduction.xml:346
+#: introduction.xml:349
 #, no-c-format
 msgid ""
 "More information about the PostgreSQL database server is available at the "
@@ -578,7 +579,7 @@ msgstr ""
 "가능."
 
 #. Tag: para
-#: introduction.xml:352
+#: introduction.xml:355
 #, no-c-format
 msgid ""
 "More information about GiST indexing is available at the PostgreSQL GiST "
@@ -590,7 +591,7 @@ msgstr ""
 "~megera/postgres/gist/</ulink>에서 확인 가능."
 
 #. Tag: para
-#: introduction.xml:358
+#: introduction.xml:361
 #, no-c-format
 msgid ""
 "More information about MapServer internet map server is available at <ulink "
@@ -600,7 +601,7 @@ msgstr ""
 "org/\">http://mapserver.org</ulink> 에서 확인 가능."
 
 #. Tag: para
-#: introduction.xml:364
+#: introduction.xml:367
 #, no-c-format
 msgid ""
 "The &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple "

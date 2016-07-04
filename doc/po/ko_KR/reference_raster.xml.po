@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk.io>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -65,7 +65,7 @@ msgid ""
 "INSERT INTO dummy_rast(rid, rast)\n"
 "VALUES (1,\n"
 "('01' -- little endian (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version (uint16 0)\n"
 "||\n"
 "'0000' -- nBands (uint16 0)\n"
@@ -187,16 +187,16 @@ msgstr ""
 #: reference_raster.xml:9218 reference_raster.xml:9266
 #: reference_raster.xml:9317 reference_raster.xml:9365
 #: reference_raster.xml:9407 reference_raster.xml:9481
-#: reference_raster.xml:9526 reference_raster.xml:9571
-#: reference_raster.xml:9616 reference_raster.xml:9685
-#: reference_raster.xml:9732 reference_raster.xml:9805
-#: reference_raster.xml:9873 reference_raster.xml:9962
-#: reference_raster.xml:10047 reference_raster.xml:10128
-#: reference_raster.xml:10209 reference_raster.xml:10338
-#: reference_raster.xml:10422 reference_raster.xml:10502
-#: reference_raster.xml:10621 reference_raster.xml:10668
-#: reference_raster.xml:10740 reference_raster.xml:10837
-#: reference_raster.xml:10930
+#: reference_raster.xml:9526 reference_raster.xml:9570
+#: reference_raster.xml:9615 reference_raster.xml:9684
+#: reference_raster.xml:9731 reference_raster.xml:9804
+#: reference_raster.xml:9872 reference_raster.xml:9961
+#: reference_raster.xml:10046 reference_raster.xml:10127
+#: reference_raster.xml:10208 reference_raster.xml:10337
+#: reference_raster.xml:10421 reference_raster.xml:10501
+#: reference_raster.xml:10620 reference_raster.xml:10667
+#: reference_raster.xml:10739 reference_raster.xml:10836
+#: reference_raster.xml:10929
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -272,15 +272,15 @@ msgstr ""
 #: reference_raster.xml:9143 reference_raster.xml:9193
 #: reference_raster.xml:9238 reference_raster.xml:9291
 #: reference_raster.xml:9337 reference_raster.xml:9380
-#: reference_raster.xml:9419 reference_raster.xml:9630
-#: reference_raster.xml:9698 reference_raster.xml:9751
-#: reference_raster.xml:9817 reference_raster.xml:9908
-#: reference_raster.xml:9993 reference_raster.xml:10074
-#: reference_raster.xml:10155 reference_raster.xml:10239
-#: reference_raster.xml:10368 reference_raster.xml:10449
-#: reference_raster.xml:10529 reference_raster.xml:10642
-#: reference_raster.xml:10686 reference_raster.xml:10773
-#: reference_raster.xml:10868 reference_raster.xml:10961
+#: reference_raster.xml:9419 reference_raster.xml:9629
+#: reference_raster.xml:9697 reference_raster.xml:9750
+#: reference_raster.xml:9816 reference_raster.xml:9907
+#: reference_raster.xml:9992 reference_raster.xml:10073
+#: reference_raster.xml:10154 reference_raster.xml:10238
+#: reference_raster.xml:10367 reference_raster.xml:10448
+#: reference_raster.xml:10528 reference_raster.xml:10641
+#: reference_raster.xml:10685 reference_raster.xml:10772
+#: reference_raster.xml:10867 reference_raster.xml:10960
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -958,8 +958,8 @@ msgstr ""
 #: reference_raster.xml:8639 reference_raster.xml:8714
 #: reference_raster.xml:8800 reference_raster.xml:8896
 #: reference_raster.xml:9024 reference_raster.xml:9488
-#: reference_raster.xml:9740 reference_raster.xml:9812
-#: reference_raster.xml:10631
+#: reference_raster.xml:9739 reference_raster.xml:9811
+#: reference_raster.xml:10630
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
@@ -987,7 +987,7 @@ msgid ""
 "pixel_types, nodata_values\n"
 "        FROM raster_columns\n"
 "        WHERE r_table_name = 'myrasters';\n"
-"        \n"
+"\n"
 " srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
 "pixel_types| nodata_values\n"
 "------+---------+---------+-------------+-------------+-----------"
@@ -1185,14 +1185,14 @@ msgstr ""
 #: reference_raster.xml:9187 reference_raster.xml:9230
 #: reference_raster.xml:9286 reference_raster.xml:9331
 #: reference_raster.xml:9375 reference_raster.xml:9414
-#: reference_raster.xml:9492 reference_raster.xml:9537
-#: reference_raster.xml:9582 reference_raster.xml:9745
-#: reference_raster.xml:9901 reference_raster.xml:9988
-#: reference_raster.xml:10069 reference_raster.xml:10150
-#: reference_raster.xml:10231 reference_raster.xml:10363
-#: reference_raster.xml:10444 reference_raster.xml:10524
-#: reference_raster.xml:10681 reference_raster.xml:10768
-#: reference_raster.xml:10863 reference_raster.xml:10956
+#: reference_raster.xml:9492 reference_raster.xml:9536
+#: reference_raster.xml:9581 reference_raster.xml:9744
+#: reference_raster.xml:9900 reference_raster.xml:9987
+#: reference_raster.xml:10068 reference_raster.xml:10149
+#: reference_raster.xml:10230 reference_raster.xml:10362
+#: reference_raster.xml:10443 reference_raster.xml:10523
+#: reference_raster.xml:10680 reference_raster.xml:10767
+#: reference_raster.xml:10862 reference_raster.xml:10955
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -1210,7 +1210,7 @@ msgid ""
 "pixel_types, nodata_values\n"
 "        FROM raster_columns\n"
 "        WHERE r_table_name = 'myrasters';\n"
-"        \n"
+"\n"
 " srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
 "pixel_types| nodata_values\n"
 "------+---------+---------+-------------+-------------+-----------"
@@ -1398,7 +1398,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "SELECT PostGIS_GDAL_Version();\n"
-"       postgis_gdal_version        \n"
+"       postgis_gdal_version\n"
 "-----------------------------------\n"
 " GDAL 1.11dev, released 2013/04/13"
 msgstr ""
@@ -1709,7 +1709,7 @@ msgid ""
 "SELECT (xpath('@name', g.opt))[1]::text As oname,\n"
 "       (xpath('@type', g.opt))[1]::text As otype,\n"
 "       (xpath('@description', g.opt))[1]::text As descrip,\n"
-"       array_to_string(xpath('Value/text()', g.opt),', ') As vals \n"
+"       array_to_string(xpath('Value/text()', g.opt),', ') As vals\n"
 "FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::"
 "xml)) As opt\n"
 "FROM  st_gdaldrivers()\n"
@@ -1717,7 +1717,7 @@ msgid ""
 "\n"
 "       oname        |     otype     |                               "
 "descrip                                |                                   "
-"vals                                    \n"
+"vals\n"
 "--------------------+---------------"
 "+----------------------------------------------------------------------"
 "+---------------------------------------------------------------------------\n"
@@ -1725,33 +1725,33 @@ msgid ""
 "|                                                                      | "
 "NONE, LZW, PACKBITS, JPEG, CCITTRLE, CCITTFAX3, CCITTFAX4, DEFLATE\n"
 " PREDICTOR          | int           | Predictor "
-"Type                                                       | \n"
+"Type                                                       |\n"
 " JPEG_QUALITY       | int           | JPEG quality "
-"1-100                                                   | \n"
+"1-100                                                   |\n"
 " ZLEVEL             | int           | DEFLATE compression level "
-"1-9                                        | \n"
+"1-9                                        |\n"
 " NBITS              | int           | BITS for sub-byte files (1-7), sub-"
-"uint16 (9-15), sub-uint32 (17-31) | \n"
+"uint16 (9-15), sub-uint32 (17-31) |\n"
 " INTERLEAVE         | string-select "
 "|                                                                      | "
 "BAND, PIXEL\n"
 " TILED              | boolean       | Switch to tiled "
-"format                                               | \n"
+"format                                               |\n"
 " TFW                | boolean       | Write out world "
-"file                                                 | \n"
+"file                                                 |\n"
 " RPB                | boolean       | Write out .RPB (RPC) "
-"file                                            | \n"
+"file                                            |\n"
 " BLOCKXSIZE         | int           | Tile "
-"Width                                                           | \n"
+"Width                                                           |\n"
 " BLOCKYSIZE         | int           | Tile/Strip "
-"Height                                                    | \n"
+"Height                                                    |\n"
 " PHOTOMETRIC        | string-select "
 "|                                                                      | "
 "MINISBLACK, MINISWHITE, PALETTE, RGB, CMYK, YCBCR, CIELAB, ICCLAB, ITULAB\n"
 " SPARSE_OK          | boolean       | Can newly created files have missing "
-"blocks?                         | \n"
+"blocks?                         |\n"
 " ALPHA              | boolean       | Mark first extrasample as being "
-"alpha                                | \n"
+"alpha                                |\n"
 " PROFILE            | string-select "
 "|                                                                      | "
 "GDALGeoTIFF, GeoTIFF, BASELINE\n"
@@ -1763,7 +1763,7 @@ msgid ""
 " ENDIANNESS         | string-select | Force endianness of created file. For "
 "DEBUG purpose mostly           | NATIVE, INVERTED, LITTLE, BIG\n"
 " COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source "
-"dataset (CreateCopy())             | \n"
+"dataset (CreateCopy())             |\n"
 "(19 rows)"
 msgstr ""
 
@@ -1833,12 +1833,12 @@ msgstr ""
 #: reference_raster.xml:8217 reference_raster.xml:8502
 #: reference_raster.xml:8950 reference_raster.xml:9083
 #: reference_raster.xml:9134 reference_raster.xml:9371
-#: reference_raster.xml:9625 reference_raster.xml:9897
-#: reference_raster.xml:9984 reference_raster.xml:10065
-#: reference_raster.xml:10146 reference_raster.xml:10227
-#: reference_raster.xml:10440 reference_raster.xml:10520
-#: reference_raster.xml:10677 reference_raster.xml:10764
-#: reference_raster.xml:10859 reference_raster.xml:10952
+#: reference_raster.xml:9624 reference_raster.xml:9896
+#: reference_raster.xml:9983 reference_raster.xml:10064
+#: reference_raster.xml:10145 reference_raster.xml:10226
+#: reference_raster.xml:10439 reference_raster.xml:10519
+#: reference_raster.xml:10676 reference_raster.xml:10763
+#: reference_raster.xml:10858 reference_raster.xml:10951
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr ""
@@ -2051,7 +2051,7 @@ msgid ""
 "-- Add another band of type 8 bit unsigned integer with pixels initialized "
 "to 200\n"
 "UPDATE dummy_rast\n"
-"    SET rast = ST_AddBand(rast,'8BUI'::text,200)  \n"
+"    SET rast = ST_AddBand(rast,'8BUI'::text,200)\n"
 "WHERE rid = 1;"
 msgstr ""
 
@@ -2064,28 +2064,28 @@ msgid ""
 "-- uses addbandargs\n"
 "INSERT INTO dummy_rast(rid,rast)\n"
 "    VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, "
-"0), \n"
+"0),\n"
 "        ARRAY[\n"
 "                ROW(1, '1BB'::text, 0, NULL),\n"
 "                ROW(2, '4BUI'::text, 0, NULL)\n"
 "                        ]::addbandarg[]\n"
 "     )\n"
 "    );\n"
-"    \n"
+"\n"
 "-- output meta data of raster bands to verify all is right --\n"
 "SELECT  (bmd).*\n"
-"FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd \n"
+"FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd\n"
 "    FROM dummy_rast WHERE rid = 10) AS foo;\n"
-" --result --   \n"
+" --result --\n"
 " pixeltype | nodatavalue | isoutdb | path\n"
 "-----------+----------------+-------------+---------+------\n"
 " 1BB       |             | f       |\n"
 " 4BUI      |             | f       |\n"
-" \n"
-" \n"
+"\n"
+"\n"
 "-- output meta data of raster -\n"
 "SELECT  (rmd).width, (rmd).height, (rmd).numbands\n"
-"FROM (SELECT ST_MetaData(rast) As rmd \n"
+"FROM (SELECT ST_MetaData(rast) As rmd\n"
 "    FROM dummy_rast WHERE rid = 10) AS foo;\n"
 "-- result --\n"
 " upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy "
@@ -2121,11 +2121,11 @@ msgid ""
 "        ARRAY[]::integer[]\n"
 ");\n"
 "\n"
-" bandnum | pixeltype | nodatavalue | isoutdb | path \n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
 "---------+-----------+-------------+---------+------\n"
-"       1 | 8BUI      |           0 | f       | \n"
-"       2 | 32BF      |          -1 | f       | \n"
-"       3 | 32BUI     |          12 | f       | \n"
+"       1 | 8BUI      |           0 | f       |\n"
+"       2 | 32BF      |          -1 | f       |\n"
+"       3 | 32BUI     |          12 | f       |\n"
 "       4 | 16BUI     |           2 | f       |"
 msgstr ""
 
@@ -2133,7 +2133,7 @@ msgstr ""
 #: reference_raster.xml:1246
 #, no-c-format
 msgid ""
-"-- Aggregate the 1st band of a table of like rasters into a single raster \n"
+"-- Aggregate the 1st band of a table of like rasters into a single raster\n"
 "-- with as many bands as there are test_types and as many rows (new rasters) "
 "as there are mice\n"
 "-- NOTE: The ORDER BY test_type is only supported in PostgreSQL 9.0+\n"
@@ -2144,7 +2144,7 @@ msgid ""
 "-- For mouse lovers: No mice were harmed in this exercise\n"
 "SELECT\n"
 "        mouse,\n"
-"        ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast \n"
+"        ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast\n"
 "FROM mice_studies\n"
 "GROUP BY mouse;"
 msgstr ""
@@ -2169,7 +2169,7 @@ msgid ""
 "        ARRAY[]::integer[]\n"
 ");\n"
 "\n"
-" bandnum | pixeltype | nodatavalue | isoutdb | path \n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
 "---------+-----------+-------------+---------+------\n"
 "       1 | 8BUI      |             | t       | /home/raster/mytestraster."
 "tif\n"
@@ -2488,7 +2488,7 @@ msgid ""
 "        ST_AsRaster(\n"
 "                ST_Buffer(\n"
 "                        ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), "
-"10,'join=bevel'), \n"
+"10,'join=bevel'),\n"
 "                        200,200,ARRAY['8BUI', '8BUI', '8BUI'], "
 "ARRAY[118,154,118], ARRAY[0,0,0]));"
 msgstr ""
@@ -2564,14 +2564,14 @@ msgstr ""
 msgid ""
 "-- Make 2 new rasters: 1 containing band 1 of dummy, second containing band "
 "2 of dummy and then reclassified as a 2BUI\n"
-"SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1, \n"
+"SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,\n"
 " ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2\n"
 "FROM (\n"
 "    SELECT ST_Band(rast) As rast1, ST_Reclass(ST_Band(rast,3), '100-200):1, "
 "[200-254:2', '2BUI') As rast2\n"
 "        FROM dummy_rast\n"
 "        WHERE rid = 2) As foo;\n"
-"        \n"
+"\n"
 " numb1 | pix1 | numb2 | pix2\n"
 "-------+------+-------+------\n"
 "     1 | 8BUI |     1 | 2BUI"
@@ -2584,14 +2584,14 @@ msgid ""
 "-- Return bands 2 and 3. Using array cast syntax\n"
 "SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "num_bands\n"
 "----------\n"
 "2\n"
-"    \n"
+"\n"
 "-- Return bands 2 and 3. Use array to define bands\n"
 "SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "WHERE rid=2;"
 msgstr ""
 
@@ -2619,9 +2619,9 @@ msgstr ""
 msgid ""
 "--Make a new raster with 2nd band of original and 1st band repeated twice,\n"
 "and another with just the third band\n"
-"SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,  \n"
-"        ST_Band(rast, 3) As sing_band \n"
-"FROM samples.than_chunked \n"
+"SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,\n"
+"        ST_Band(rast, 3) As sing_band\n"
+"FROM samples.than_chunked\n"
 "WHERE rid=35;"
 msgstr ""
 
@@ -2728,10 +2728,10 @@ msgid ""
 "\n"
 "-- output meta data of rasters we just added\n"
 "SELECT rid, (md).*\n"
-"FROM (SELECT rid, ST_MetaData(rast) As md \n"
+"FROM (SELECT rid, ST_MetaData(rast) As md\n"
 "        FROM dummy_rast\n"
 "        WHERE rid IN(3,4)) As foo;\n"
-"        \n"
+"\n"
 "-- output --\n"
 " rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
 "skewy | srid | numbands\n"
@@ -2859,7 +2859,7 @@ msgid ""
 "        ST_DumpValues(rast)\n"
 "FROM baz;\n"
 "\n"
-"              st_dumpvalues               \n"
+"              st_dumpvalues\n"
 "------------------------------------------\n"
 " (1,\"{{1,1,1},{1,1,1},{1,1,1}}\")\n"
 " (2,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
@@ -2916,7 +2916,7 @@ msgid ""
 "        ST_DumpValues(rast)\n"
 "FROM baz;\n"
 "\n"
-"              st_dumpvalues               \n"
+"              st_dumpvalues\n"
 "------------------------------------------\n"
 " (1,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
 " (1,\"{{20,20,20},{20,20,20},{20,20,20}}\")\n"
@@ -3040,7 +3040,7 @@ msgid ""
 "ORDER BY rid;\n"
 "\n"
 " rid |         metadata          |    stats1     |    stats2     |     "
-"stats3     \n"
+"stats3\n"
 "-----+---------------------------+---------------+---------------"
 "+----------------\n"
 "   1 | (0,0,2,2,1,-1,0,0,0,3)    | (4,4,1,0,1,1) | (4,8,2,0,2,2) | "
@@ -3106,8 +3106,8 @@ msgstr ""
 #: reference_raster.xml:1833
 #, no-c-format
 msgid ""
-"scalex \n"
-"skewy \n"
+"scalex\n"
+"skewy\n"
 "skewx\n"
 "scaley\n"
 "upperleftx\n"
@@ -3124,8 +3124,8 @@ msgstr ""
 #: reference_raster.xml:1835
 #, no-c-format
 msgid ""
-"scalex \n"
-"skewy \n"
+"scalex\n"
+"skewy\n"
 "skewx\n"
 "scaley\n"
 "upperleftx + scalex*0.5\n"
@@ -3233,8 +3233,8 @@ msgid ""
 "st_isempty |\n"
 "-----------+\n"
 "f          |\n"
-"                       \n"
-"                        \n"
+"\n"
+"\n"
 "SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))\n"
 "st_isempty |\n"
 "-----------+\n"
@@ -3301,7 +3301,7 @@ msgstr ""
 msgid ""
 "SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, "
 "'8BUI')) As rast_mem;\n"
-"                \n"
+"\n"
 "                rast_mem\n"
 "                --------\n"
 "                22568"
@@ -3342,7 +3342,7 @@ msgstr ""
 #: reference_raster.xml:1989
 #, no-c-format
 msgid ""
-"SELECT rid, (foo.md).*  \n"
+"SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_MetaData(rast) As md\n"
 "FROM dummy_rast) As foo;\n"
 "\n"
@@ -3551,7 +3551,7 @@ msgid ""
 "As skewx,\n"
 "        ST_SkewY(rast) As skewy\n"
 "        FROM dummy_rast;\n"
-"        \n"
+"\n"
 "        rastwidth | pixwidth | scalex | scaley | skewx | skewy\n"
 "        -----------+----------+--------+--------+-------+----------\n"
 "        10 |        2 |      2 |      3 |     0 |        0\n"
@@ -3568,7 +3568,7 @@ msgid ""
 "        ST_SkewY(rast) As skewy\n"
 "        FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast\n"
 "        FROM dummy_rast) As skewed;\n"
-"        \n"
+"\n"
 "        rastwidth |     pixwidth      | scalex | scaley | skewx | skewy\n"
 "        -----------+-------------------+--------+--------+-------"
 "+----------\n"
@@ -3724,7 +3724,7 @@ msgid ""
 "        (ST_RasterToWorldCoord(rast,2, 2)).*\n"
 "FROM dummy_rast\n"
 "\n"
-" rid | longitude  | latitude | longitude |  latitude  \n"
+" rid | longitude  | latitude | longitude |  latitude\n"
 "-----+------------+----------+-----------+------------\n"
 "   1 |        0.5 |      0.5 |       2.5 |        3.5\n"
 "   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95"
@@ -3746,7 +3746,7 @@ msgid ""
 "        FROM dummy_rast\n"
 ") As foo\n"
 "\n"
-" rid | longitude  | latitude | longitude | latitude  \n"
+" rid | longitude  | latitude | longitude | latitude\n"
 "-----+------------+----------+-----------+-----------\n"
 "   1 |        0.5 |      0.5 |     203.5 |       6.5\n"
 "   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9"
@@ -3820,9 +3820,8 @@ msgstr ""
 #: reference_raster.xml:2303
 #, no-c-format
 msgid ""
-"-- non-skewed raster providing column is "
-"sufficient                                        \n"
-"SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord, \n"
+"-- non-skewed raster providing column is sufficient\n"
+"SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,\n"
 "        ST_RasterToWorldCoordX(rast,2) As x2coord,\n"
 "        ST_ScaleX(rast) As pixelx\n"
 "FROM dummy_rast;\n"
@@ -3837,8 +3836,8 @@ msgstr ""
 #: reference_raster.xml:2305
 #, no-c-format
 msgid ""
-"-- for fun lets skew it                                \n"
-"SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord, \n"
+"-- for fun lets skew it\n"
+"SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,\n"
 "        ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,\n"
 "        ST_ScaleX(rast) As pixelx\n"
 "FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As "
@@ -3918,9 +3917,8 @@ msgstr ""
 #: reference_raster.xml:2357
 #, no-c-format
 msgid ""
-"-- non-skewed raster providing row is "
-"sufficient                                        \n"
-"SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord, \n"
+"-- non-skewed raster providing row is sufficient\n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,\n"
 "        ST_RasterToWorldCoordY(rast,3) As y2coord,\n"
 "        ST_ScaleY(rast) As pixely\n"
 "FROM dummy_rast;\n"
@@ -3935,8 +3933,8 @@ msgstr ""
 #: reference_raster.xml:2359
 #, no-c-format
 msgid ""
-"-- for fun lets skew it                                \n"
-"SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord, \n"
+"-- for fun lets skew it\n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,\n"
 "        ST_RasterToWorldCoordY(rast,2,3) As y2coord,\n"
 "        ST_ScaleY(rast) As pixely\n"
 "FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;\n"
@@ -3991,7 +3989,7 @@ msgid ""
 "SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as "
 "rot FROM dummy_rast;\n"
 "\n"
-" rid |        rot \n"
+" rid |        rot\n"
 "-----+-------------------\n"
 "   1 | 0.785398163397448\n"
 "   2 | 0.785398163397448"
@@ -4036,7 +4034,7 @@ msgstr ""
 #: reference_raster.xml:2430 reference_raster.xml:2466
 #, no-c-format
 msgid ""
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast;\n"
 "\n"
@@ -4200,7 +4198,7 @@ msgid ""
 "        )\n"
 ");\n"
 "\n"
-"                            st_summary                            \n"
+"                            st_summary\n"
 "------------------------------------------------------------------\n"
 " Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+\n"
 "     band 1 of pixtype 8BUI is in-db with NODATA value of 0      +\n"
@@ -4399,7 +4397,7 @@ msgid ""
 "ST_SRID(rast)))).*\n"
 "FROM dummy_rast;\n"
 "\n"
-" rid | columnx |   rowy    | columnx |   rowy    \n"
+" rid | columnx |   rowy    | columnx |   rowy\n"
 "-----+---------+-----------+---------+-----------\n"
 "   1 | 1713964 |         7 | 1713964 |         7\n"
 "   2 |       2 | 115864471 |       2 | 115864471"
@@ -4468,9 +4466,8 @@ msgstr ""
 #: reference_raster.xml:2751
 #, no-c-format
 msgid ""
-"SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord, \n"
-"                ST_WorldToRasterCoordX(rast,3427927.8,20.5) As "
-"xcoord_xwyw, \n"
+"SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord,\n"
+"                ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw,\n"
 "                ST_WorldToRasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 "
 "20.5)',ST_SRID(rast))) As ptxcoord\n"
 "FROM dummy_rast;\n"
@@ -4542,9 +4539,8 @@ msgstr ""
 #: reference_raster.xml:2806
 #, no-c-format
 msgid ""
-"SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord, \n"
-"                ST_WorldToRasterCoordY(rast,3427927.8,20.5) As "
-"ycoord_xwyw, \n"
+"SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord,\n"
+"                ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw,\n"
 "                ST_WorldToRasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 "
 "20.5)',ST_SRID(rast))) As ptycoord\n"
 "FROM dummy_rast;\n"
@@ -4609,7 +4605,7 @@ msgstr ""
 #: reference_raster.xml:2857
 #, no-c-format
 msgid ""
-"SELECT rid, (foo.md).*  \n"
+"SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_BandMetaData(rast,1) As md\n"
 "FROM dummy_rast WHERE rid=2) As foo;\n"
 "\n"
@@ -4658,7 +4654,7 @@ msgstr ""
 #: reference_raster.xml:2892
 #, no-c-format
 msgid ""
-"SELECT ST_BandNoDataValue(rast,1) As bnval1, \n"
+"SELECT ST_BandNoDataValue(rast,1) As bnval1,\n"
 "    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As "
 "bnval3\n"
 "FROM dummy_rast\n"
@@ -4730,7 +4726,7 @@ msgid ""
 "insert into dummy_rast values(1,\n"
 "(\n"
 "'01' -- little endian (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version (uint16 0)\n"
 "||\n"
 "'0200' -- nBands (uint16 0)\n"
@@ -4755,7 +4751,7 @@ msgid ""
 "||\n"
 "'6' -- hasnodatavalue and isnodata value set to true.\n"
 "||\n"
-"'2' -- first band type (4BUI) \n"
+"'2' -- first band type (4BUI)\n"
 "||\n"
 "'03' -- novalue==3\n"
 "||\n"
@@ -4923,7 +4919,7 @@ msgstr ""
 #: reference_raster.xml:3060
 #, no-c-format
 msgid ""
-"SELECT ST_BandPixelType(rast,1) As btype1, \n"
+"SELECT ST_BandPixelType(rast,1) As btype1,\n"
 "    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;\n"
@@ -4968,8 +4964,8 @@ msgstr ""
 #: reference_raster.xml:3097
 #, no-c-format
 msgid ""
-"SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2, \n"
-"ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands \n"
+"SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2,\n"
+"ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands\n"
 "FROM dummy_rast;\n"
 "\n"
 "rid | hb1 | hb2 | hb4 | numbands\n"
@@ -5022,8 +5018,8 @@ msgstr ""
 msgid ""
 "-- get raster pixel polygon\n"
 "SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom\n"
-"FROM dummy_rast As foo \n"
-"        CROSS JOIN generate_series(1,2) As i \n"
+"FROM dummy_rast As foo\n"
+"        CROSS JOIN generate_series(1,2) As i\n"
 "        CROSS JOIN generate_series(1,1) As j\n"
 "WHERE rid=2;\n"
 "\n"
@@ -5118,11 +5114,11 @@ msgid ""
 "SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom\n"
 "FROM (SELECT ST_PixelAsPolygons(\n"
 "                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, "
-"0, 0, 0.001, -0.001, 0.001, 0.001, 4269), \n"
-"                                                    '8BUI'::text, 1, 0), \n"
-"                                         2, 2, 10), \n"
+"0, 0, 0.001, -0.001, 0.001, 0.001, 4269),\n"
+"                                                    '8BUI'::text, 1, 0),\n"
+"                                         2, 2, 10),\n"
 "                             1, 1, NULL)\n"
-") gv \n"
+") gv\n"
 ") foo;\n"
 "\n"
 " x | y | val |                geom\n"
@@ -5183,7 +5179,7 @@ msgid ""
 "SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
 "\n"
-"   st_astext    \n"
+"   st_astext\n"
 "----------------\n"
 " POINT(0.5 0.5)"
 msgstr ""
@@ -5249,7 +5245,7 @@ msgid ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* "
 "FROM dummy_rast WHERE rid = 2) foo;\n"
 "\n"
-" x | y | val |          st_astext           \n"
+" x | y | val |          st_astext\n"
 "---+---+-----+------------------------------\n"
 " 1 | 1 | 253 | POINT(3427927.75 5793244)\n"
 " 2 | 1 | 254 | POINT(3427927.8 5793244)\n"
@@ -5308,8 +5304,8 @@ msgstr ""
 msgid ""
 "<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
+"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
 msgstr ""
 
 #. Tag: para
@@ -5327,7 +5323,7 @@ msgid ""
 "SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
 "\n"
-"  st_astext   \n"
+"  st_astext\n"
 "--------------\n"
 " POINT(1.5 2)"
 msgstr ""
@@ -5383,7 +5379,7 @@ msgstr ""
 msgid ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, "
 "1)).* FROM dummy_rast WHERE rid = 2) foo;\n"
-" x | y | val |           st_astext            \n"
+" x | y | val |           st_astext\n"
 "---+---+-----+--------------------------------\n"
 " 1 | 1 | 253 | POINT(3427927.775 5793243.975)\n"
 " 2 | 1 | 254 | POINT(3427927.825 5793243.975)\n"
@@ -5450,21 +5446,21 @@ msgid ""
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
 "paramdef> <paramdef><type>geometry </type> <parameter>pt</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>x</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>y</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>x</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>y</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype>"
 msgstr ""
@@ -5502,8 +5498,8 @@ msgid ""
 " rid | b1pval | b2pval\n"
 "-----+--------+--------\n"
 "   2 |    252 |     79\n"
-"   \n"
-"   \n"
+"\n"
+"\n"
 "-- general fictitious example using a real table\n"
 "SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval\n"
 "FROM sometable\n"
@@ -5514,7 +5510,7 @@ msgstr ""
 #: reference_raster.xml:3454
 #, no-c-format
 msgid ""
-"SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval, \n"
+"SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,\n"
 "    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval\n"
 "FROM dummy_rast\n"
 "WHERE rid=2;\n"
@@ -5529,7 +5525,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--- Get all values in bands 1,2,3 of each pixel --\n"
-"SELECT x, y, ST_Value(rast, 1, x, y) As b1val, \n"
+"SELECT x, y, ST_Value(rast, 1, x, y) As b1val,\n"
 "        ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
 "FROM dummy_rast CROSS JOIN\n"
 "generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y\n"
@@ -5555,10 +5551,10 @@ msgid ""
 "--- Get all values in bands 1,2,3 of each pixel same as above but returning "
 "the upper left point point of each pixel --\n"
 "SELECT ST_AsText(ST_SetSRID(\n"
-"        ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x, \n"
-"                ST_UpperLeftY(rast) + ST_ScaleY(rast)*y), \n"
+"        ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,\n"
+"                ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),\n"
 "                ST_SRID(rast))) As uplpt\n"
-"    , ST_Value(rast, 1, x, y) As b1val, \n"
+"    , ST_Value(rast, 1, x, y) As b1val,\n"
 "        ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
 "FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
@@ -5576,23 +5572,23 @@ msgstr ""
 #: reference_raster.xml:3459
 #, no-c-format
 msgid ""
-"--- Get a polygon formed by union of all pixels \n"
+"--- Get a polygon formed by union of all pixels\n"
 "        that fall in a particular value range and intersect particular "
 "polygon --\n"
 "SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
 "FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
-"                ST_UpperLeftX(rast), ST_UpperLeftY(rast), \n"
+"                ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
 "                        ST_UpperLeftX(rast) + ST_ScaleX(rast),\n"
 "                        ST_UpperLeftY(rast) + ST_ScaleY(rast), 0\n"
 "                        ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
 "                ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
 "        FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
-"WHERE rid =  2 \n"
+"WHERE rid =  2\n"
 "        AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo\n"
-"WHERE  \n"
+"WHERE\n"
 "        ST_Intersects(\n"
-"                pixpolyg, \n"
+"                pixpolyg,\n"
 "                ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
 "5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
 "                ) AND b2val != 254;\n"
@@ -5627,27 +5623,27 @@ msgstr ""
 msgid ""
 "--- Checking all the pixels of a large raster tile can take a long time.\n"
 "--- You can dramatically improve speed at some lose of precision by orders "
-"of magnitude \n"
+"of magnitude\n"
 "--  by sampling pixels using the step optional parameter of "
-"generate_series.  \n"
+"generate_series.\n"
 "--  This next example does the same as previous but by checking 1 for every "
 "4 (2x2) pixels and putting in the last checked\n"
 "--  putting in the checked pixel as the value for subsequent 4\n"
-"        \n"
+"\n"
 "SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
 "FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
-"                ST_UpperLeftX(rast), ST_UpperLeftY(rast), \n"
+"                ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
 "                        ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,\n"
 "                        ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0\n"
 "                        ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
 "                ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
 "        FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y\n"
-"WHERE rid =  2 \n"
+"WHERE rid =  2\n"
 "        AND x &lt;= ST_Width(rast)  AND y &lt;= ST_Height(rast)  ) As foo\n"
-"WHERE  \n"
+"WHERE\n"
 "        ST_Intersects(\n"
-"                pixpolyg, \n"
+"                pixpolyg,\n"
 "                ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
 "5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
 "                ) AND b2val != 254;\n"
@@ -5783,7 +5779,7 @@ msgid ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-" value | nearestvalue \n"
+" value | nearestvalue\n"
 "-------+--------------\n"
 "     1 |            1"
 msgstr ""
@@ -5821,7 +5817,7 @@ msgid ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-" value | nearestvalue \n"
+" value | nearestvalue\n"
 "-------+--------------\n"
 "       |            1"
 msgstr ""
@@ -5945,7 +5941,7 @@ msgid ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"         st_neighborhood         \n"
+"         st_neighborhood\n"
 "---------------------------------\n"
 " {{NULL,1,1},{1,1,NULL},{1,1,1}}"
 msgstr ""
@@ -5976,7 +5972,7 @@ msgid ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"       st_neighborhood        \n"
+"       st_neighborhood\n"
 "------------------------------\n"
 " {{1,1,1},{1,NULL,1},{1,1,1}}"
 msgstr ""
@@ -6007,7 +6003,7 @@ msgid ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"      st_neighborhood      \n"
+"      st_neighborhood\n"
 "---------------------------\n"
 " {{1,0,1},{1,1,1},{0,1,1}}"
 msgstr ""
@@ -6295,7 +6291,7 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -6343,13 +6339,13 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   9\n"
 " 1 | 2 |   9\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -6393,13 +6389,13 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   9\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -6447,13 +6443,13 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
-" 1 | 1 |   \n"
+" 1 | 1 |\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -6503,7 +6499,7 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -6554,7 +6550,7 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -6607,7 +6603,7 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -6657,13 +6653,13 @@ msgid ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   1\n"
 " 2 | 1 |   1\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   1\n"
 " 3 | 2 |   9\n"
@@ -6698,7 +6694,7 @@ msgid ""
 "ORDER BY rid, gid;\n"
 "\n"
 " rid | gid |                                                                "
-"st_dumpvalues                                                                \n"
+"st_dumpvalues\n"
 "-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   1 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},"
@@ -6747,7 +6743,7 @@ msgid ""
 "ORDER BY t1.rid, t2.gid, t3.gid;\n"
 "\n"
 " rid | gid | gid |                                                    "
-"st_dumpvalues                                                    \n"
+"st_dumpvalues\n"
 "-----+-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   1 |   2 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},"
@@ -6787,7 +6783,7 @@ msgid ""
 "ORDER BY t1.rid, t2.gid, t3.gid;\n"
 "\n"
 " rid | gid | gid |                                                    "
-"st_dumpvalues                                                    \n"
+"st_dumpvalues\n"
 "-----+-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   2 |   1 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},"
@@ -6853,7 +6849,7 @@ msgid ""
 "        (ST_DumpValues(rast)).*\n"
 "FROM foo;\n"
 "\n"
-" nband |                       valarray                       \n"
+" nband |                       valarray\n"
 "-------+------------------------------------------------------\n"
 "     1 | {{1,1,1},{1,1,1},{1,1,1}}\n"
 "     2 | {{3,3,3},{3,3,3},{3,3,3}}\n"
@@ -6874,7 +6870,7 @@ msgid ""
 "        (ST_DumpValues(rast, ARRAY[3, 1])).*\n"
 "FROM foo;\n"
 "\n"
-" nband |                       valarray                       \n"
+" nband |                       valarray\n"
 "-------+------------------------------------------------------\n"
 "     3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}\n"
 "     1 | {{1,1,1},{1,1,1},{1,1,1}}\n"
@@ -6990,7 +6986,7 @@ msgid ""
 "                , 1, ARRAY[1, 255]) AS pixels\n"
 ") AS foo\n"
 "\n"
-" val | x | y \n"
+" val | x | y\n"
 "-----+---+---\n"
 "   1 | 1 | 2\n"
 "   1 | 1 | 3\n"
@@ -7122,7 +7118,7 @@ msgid ""
 "FROM foo\n"
 "\n"
 " rid |     upperleftx     |     upperlefty     | width | height | scalex | "
-"scaley | skewx | skewy | srid | numbands \n"
+"scaley | skewx | skewy | srid | numbands\n"
 "-----+--------------------+--------------------+-------+--------+--------"
 "+--------+-------+-------+------+----------\n"
 "   0 |                  0 |                  0 |     5 |      5 |      1 "
@@ -7177,9 +7173,9 @@ msgstr ""
 #: reference_raster.xml:4121
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "  ST_ScaleX(rast1), ST_ScaleY(rast1), ST_SkewX(rast1), ST_SkewY(rast1),\n"
-"  ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2) \n"
+"  ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2)\n"
 "FROM (\n"
 "  SELECT ST_SetRotation(rast, 15) AS rast1, rast as rast2 FROM dummy_rast\n"
 ") AS foo;\n"
@@ -7255,7 +7251,7 @@ msgstr ""
 #: reference_raster.xml:4169
 #, no-c-format
 msgid ""
-"UPDATE dummy_rast \n"
+"UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5)\n"
 "WHERE rid = 2;\n"
 "\n"
@@ -7273,7 +7269,7 @@ msgstr ""
 #: reference_raster.xml:4170
 #, no-c-format
 msgid ""
-"UPDATE dummy_rast \n"
+"UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5, 0.55)\n"
 "WHERE rid = 2;\n"
 "\n"
@@ -7334,9 +7330,9 @@ msgstr ""
 #: reference_raster.xml:4212
 #, no-c-format
 msgid ""
-"-- Example 1                    \n"
+"-- Example 1\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;\n"
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast WHERE rid = 1;\n"
 "\n"
@@ -7356,10 +7352,10 @@ msgstr ""
 msgid ""
 "-- Example 2 set both to same number:\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;\n"
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast WHERE rid = 1;\n"
-"                        \n"
+"\n"
 " rid | skewx | skewy |    georef\n"
 "-----+-------+-------+--------------\n"
 "   1 |     0 |     0 | 2.0000000000\n"
@@ -7458,7 +7454,7 @@ msgstr ""
 #: reference_raster.xml:4293
 #, no-c-format
 msgid ""
-"SELECT ST_SetUpperLeft(rast,-71.01,42.37)  \n"
+"SELECT ST_SetUpperLeft(rast,-71.01,42.37)\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;"
 msgstr ""
@@ -7599,7 +7595,7 @@ msgid ""
 "        SELECT\n"
 "                rast AS orig,\n"
 "                ST_Resample(rast,100,100) AS reduce_100\n"
-"        FROM aerials.boston \n"
+"        FROM aerials.boston\n"
 "        WHERE ST_Intersects(rast,\n"
 "                ST_Transform(\n"
 "                        ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, "
@@ -7838,7 +7834,7 @@ msgid ""
 "-- the original raster pixel size\n"
 "SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
 "-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"                                        \n"
+"\n"
 "-- the rescaled raster raster pixel size\n"
 "SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
 "0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))"
@@ -7955,7 +7951,7 @@ msgid ""
 "-- the original raster pixel size\n"
 "SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
 "-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"                                        \n"
+"\n"
 "-- the rescaled raster raster pixel size\n"
 "SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
 "0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))"
@@ -8065,7 +8061,7 @@ msgstr ""
 msgid ""
 "WITH foo AS(\n"
 "SELECT\n"
-"        1 AS rid, \n"
+"        1 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -8075,7 +8071,7 @@ msgid ""
 "        , '50%', '500') AS rast\n"
 "UNION ALL\n"
 "SELECT\n"
-"        2 AS rid, \n"
+"        2 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -8085,7 +8081,7 @@ msgid ""
 "        , 500, 100) AS rast\n"
 "UNION ALL\n"
 "SELECT\n"
-"        3 AS rid, \n"
+"        3 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -8099,7 +8095,7 @@ msgid ""
 "SELECT rid, (meta).* FROM bar\n"
 "\n"
 " rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
-"skewy | srid | numbands \n"
+"skewy | srid | numbands\n"
 "-----+------------+------------+-------+--------+--------+--------+-------"
 "+-------+------+----------\n"
 "   1 |          0 |          0 |   500 |    500 |      1 |     -1 |     0 "
@@ -8221,15 +8217,15 @@ msgstr ""
 msgid ""
 "SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,\n"
 "  ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after\n"
-"        FROM \n"
+"        FROM\n"
 "        ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84\n"
 "  ,  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin\n"
-"                FROM aerials.o_2_boston \n"
+"                FROM aerials.o_2_boston\n"
 "                        WHERE ST_Intersects(rast,\n"
 "                                ST_Transform(ST_MakeEnvelope(-71.128, "
 "42.2392,-71.1277, 42.2397, 4326),26986) )\n"
 "                LIMIT 1) As foo;\n"
-"                                                \n"
+"\n"
 " w_before | w_after | h_before | h_after\n"
 "----------+---------+----------+---------\n"
 "      200 |     228 |      200 |     170"
@@ -8308,7 +8304,7 @@ msgid ""
 "        ST_SameAlignment(aligned) AS aligned\n"
 "FROM baz\n"
 "\n"
-" rast | not_aligned | aligned \n"
+" rast | not_aligned | aligned\n"
 "------+-------------+---------\n"
 " t    | f           | t"
 msgstr ""
@@ -8371,25 +8367,25 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- change just first band no data value\n"
-"UPDATE dummy_rast \n"
-"        SET rast = ST_SetBandNoDataValue(rast,1, 254)  \n"
+"UPDATE dummy_rast\n"
+"        SET rast = ST_SetBandNoDataValue(rast,1, 254)\n"
 "WHERE rid = 2;\n"
 "\n"
 "-- change no data band value of bands 1,2,3\n"
-"UPDATE dummy_rast \n"
-"        SET rast = \n"
+"UPDATE dummy_rast\n"
+"        SET rast =\n"
 "                ST_SetBandNoDataValue(\n"
 "                        ST_SetBandNoDataValue(\n"
 "                                ST_SetBandNoDataValue(\n"
 "                                        rast,1, 254)\n"
 "                                ,2,99),\n"
-"                                3,108)  \n"
+"                                3,108)\n"
 "                WHERE rid = 2;\n"
-"                \n"
+"\n"
 "-- wipe out the nodata value this will ensure all pixels are considered for "
 "all processing functions\n"
-"UPDATE dummy_rast \n"
-"        SET rast = ST_SetBandNoDataValue(rast,1, NULL)  \n"
+"UPDATE dummy_rast\n"
+"        SET rast = ST_SetBandNoDataValue(rast,1, NULL)\n"
 "WHERE rid = 2;"
 msgstr ""
 
@@ -8438,7 +8434,7 @@ msgid ""
 "insert into dummy_rast values(1,\n"
 "(\n"
 "'01' -- little endian (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version (uint16 0)\n"
 "||\n"
 "'0200' -- nBands (uint16 0)\n"
@@ -8464,7 +8460,7 @@ msgid ""
 "'4' -- hasnodatavalue set to true, isnodata value set to false (when it "
 "should be true)\n"
 "||\n"
-"'2' -- first band type (4BUI) \n"
+"'2' -- first band type (4BUI)\n"
 "||\n"
 "'03' -- novalue==3\n"
 "||\n"
@@ -8578,10 +8574,10 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--example will count all pixels not 249 and one will count all pixels.  --\n"
-"SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, \n"
+"SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata,\n"
 "        ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"                                    \n"
+"\n"
 "rid | exclude_nodata | include_nodata\n"
 "-----+----------------+----------------\n"
 "   2 |             23 |             25"
@@ -8688,7 +8684,7 @@ msgid ""
 "        ST_CountAgg(rast, 1, TRUE)\n"
 "FROM foo;\n"
 "\n"
-" st_countagg \n"
+" st_countagg\n"
 "-------------\n"
 "          20\n"
 "(1 row)"
@@ -8862,7 +8858,7 @@ msgid ""
 "FROM (SELECT rid, band, ST_Histogram(rast, band) As stats\n"
 "    FROM dummy_rast CROSS JOIN generate_series(1,3) As band\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 " band |  min  |  max  | count | percent\n"
 "------+-------+-------+-------+---------\n"
 "    1 |   249 |   250 |     2 |    0.08\n"
@@ -8894,9 +8890,9 @@ msgstr ""
 msgid ""
 "SELECT (stats).*\n"
 "FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 "    min     |    max     | count | percent\n"
 "------------+------------+-------+---------\n"
 "         78 | 107.333333 |     9 |    0.36\n"
@@ -8906,14 +8902,14 @@ msgid ""
 " 195.333333 | 224.666667 |     1 |    0.04\n"
 " 224.666667 |        254 |     5 |     0.2\n"
 "(6 rows)\n"
-"    \n"
+"\n"
 "-- Same as previous but we explicitly control the pixel value range of each "
-"bin.  \n"
+"bin.\n"
 "SELECT (stats).*\n"
 "FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "     WHERE rid=2) As foo;\n"
-"     \n"
+"\n"
 "  min  |  max  | count | percent\n"
 "-------+-------+-------+----------\n"
 "    78 |  78.5 |     1 |     0.08\n"
@@ -9035,15 +9031,15 @@ msgid ""
 "FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvq).quantile;\n"
-"                                                                \n"
+"\n"
 " quantile | value\n"
 "----------+-------\n"
 "     0.25 |   253\n"
 "     0.75 |   254\n"
-"   \n"
+"\n"
 "SELECT ST_Quantile(rast, 0.75) As value\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "value\n"
 "------\n"
 "  254"
@@ -9056,15 +9052,15 @@ msgid ""
 "--real live example.  Quantile of all pixels in band 2 intersecting a "
 "geometry\n"
 "SELECT rid, (ST_Quantile(rast,2)).* As pvc\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
 "            )\n"
 "ORDER BY value, quantile,rid\n"
 ";\n"
-"                                \n"
-"    \n"
+"\n"
+"\n"
 " rid | quantile | value\n"
 "-----+----------+-------\n"
 "   1 |        0 |     0\n"
@@ -9185,7 +9181,7 @@ msgid ""
 "FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats\n"
 "    FROM dummy_rast CROSS JOIN generate_series(1,3) As band\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 " rid | band | count | sum  |    mean    |  stddev   | min | max\n"
 "-----+------+-------+------+------------+-----------+-----+-----\n"
 "   2 |    1 |    23 | 5821 | 253.086957 |  1.248061 | 250 | 254\n"
@@ -9212,10 +9208,10 @@ msgstr ""
 #: reference_raster.xml:5327
 #, no-c-format
 msgid ""
-"WITH \n"
+"WITH\n"
 "-- our features of interest\n"
 "   feat AS (SELECT gid As building_id, geom_26986 As geom FROM buildings AS "
-"b \n"
+"b\n"
 "    WHERE gid IN(100, 103,150)\n"
 "   ),\n"
 "-- clip band 2 of raster tiles to boundaries of builds\n"
@@ -9225,7 +9221,7 @@ msgid ""
 "FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,2,geom)) As stats\n"
 "    FROM aerials.boston\n"
 "                INNER JOIN feat\n"
-"        ON ST_Intersects(feat.geom,rast) \n"
+"        ON ST_Intersects(feat.geom,rast)\n"
 " ) As foo\n"
 " )\n"
 "-- finally summarize stats\n"
@@ -9258,20 +9254,20 @@ msgid ""
 "SELECT band, (stats).*\n"
 "FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats\n"
 "    FROM generate_series(1,3) As band) As foo;\n"
-"                                    \n"
+"\n"
 " band |  count  |  sum   |       mean       |      stddev      | min | max\n"
 "------+---------+--------+------------------+------------------+-----+-----\n"
 "    1 | 8450000 | 725799 | 82.7064349112426 | 45.6800222638537 |   0 | 255\n"
 "    2 | 8450000 | 700487 | 81.4197705325444 | 44.2161184161765 |   0 | 255\n"
 "    3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255\n"
-"    \n"
+"\n"
 "-- For a table -- will get better speed if set sampling to less than 100%\n"
 "-- Here we set to 25% and get a much faster answer\n"
 "SELECT band, (stats).*\n"
 "FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As "
 "stats\n"
 "    FROM generate_series(1,3) As band) As foo;\n"
-"                                    \n"
+"\n"
 " band |  count  |  sum   |       mean       |      stddev      | min | max\n"
 "------+---------+--------+------------------+------------------+-----+-----\n"
 "    1 | 2112500 | 180686 | 82.6890480473373 | 45.6961043857248 |   0 | 255\n"
@@ -9382,7 +9378,7 @@ msgid ""
 "        FROM foo\n"
 ") bar;\n"
 "\n"
-" count |  round  | round  | round |  round  | round \n"
+" count |  round  | round  | round |  round  | round\n"
 "-------+---------+--------+-------+---------+-------\n"
 "    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142\n"
 "(1 row)"
@@ -9545,7 +9541,7 @@ msgid ""
 "FROM (SELECT ST_ValueCount(rast) As pvc\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvc).value;\n"
-"                                                                \n"
+"\n"
 " value | count\n"
 "-------+-------\n"
 "   250 |     2\n"
@@ -9553,13 +9549,13 @@ msgid ""
 "   252 |     2\n"
 "   253 |     6\n"
 "   254 |    12\n"
-"   \n"
+"\n"
 "-- Example will coount all pixels of band 1 including 249 --\n"
 "SELECT (pvc).*\n"
 "FROM (SELECT ST_ValueCount(rast,1,false) As pvc\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvc).value;\n"
-"                                    \n"
+"\n"
 " value | count\n"
 "-------+-------\n"
 "   249 |     2\n"
@@ -9568,7 +9564,7 @@ msgid ""
 "   252 |     2\n"
 "   253 |     6\n"
 "   254 |    12\n"
-"   \n"
+"\n"
 "-- Example will count only non-nodata value pixels of band 2\n"
 "SELECT (pvc).*\n"
 "FROM (SELECT ST_ValueCount(rast,2) As pvc\n"
@@ -9593,20 +9589,20 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--real live example.  Count all the pixels in an aerial raster tile band 2 "
-"intersecting a geometry \n"
+"intersecting a geometry\n"
 "-- and return only the pixel band values that have a count > 500\n"
 "SELECT (pvc).value, SUM((pvc).count) As total\n"
 "FROM (SELECT ST_ValueCount(rast,2) As pvc\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
-"             ) \n"
+"             )\n"
 "        ) As foo\n"
 "    GROUP BY (pvc).value\n"
 "    HAVING SUM((pvc).count) > 500\n"
 "    ORDER BY (pvc).value;\n"
-"    \n"
+"\n"
 " value | total\n"
 "-------+-----\n"
 "    51 | 502\n"
@@ -9620,8 +9616,8 @@ msgid ""
 "-- Just return count of pixels in each raster tile that have value of 100 of "
 "tiles that intersect  a specific geometry --\n"
 "SELECT rid, ST_ValueCount(rast,2,100) As count\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
 "             ) ;\n"
@@ -9809,8 +9805,8 @@ msgid ""
 "FROM dummy_rast WHERE rid=2;\n"
 "\n"
 "-- Out GeoTiff with jpeg compression, 90% quality\n"
-"SELECT ST_AsGDALRaster(rast, 'GTiff',  \n"
-"  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'], \n"
+"SELECT ST_AsGDALRaster(rast, 'GTiff',\n"
+"  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'],\n"
 "  4269) As rasttiff\n"
 "FROM dummy_rast WHERE rid=2;"
 msgstr ""
@@ -9925,11 +9921,11 @@ msgid ""
 "-- output first 3 bands 75% quality\n"
 "SELECT ST_AsJPEG(rast) As rastjpg\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "-- output only first band as 90% quality\n"
 "SELECT ST_AsJPEG(rast,1,90) As rastjpg\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "-- output first 3 bands (but make band 2 Red, band 1 green, and band 3 blue, "
 "progressive and 90% quality\n"
 "SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As "
@@ -10003,11 +9999,11 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:5800 reference_raster.xml:5883
+#: reference_raster.xml:5800
 #, no-c-format
 msgid ""
-"<varname>nbands</varname> is an array of bands to export (note that max is 3 "
-"for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
+"<varname>nbands</varname> is an array of bands to export (note that max is 4 "
+"for PNG) and the order of the bands is RGBA. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
 
@@ -10106,6 +10102,15 @@ msgid ""
 "There are many variants of the function with many options. If no spatial "
 "reference SRS text is present, the spatial reference of the raster is used. "
 "These are itemized below:"
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:5883
+#, no-c-format
+msgid ""
+"<varname>nbands</varname> is an array of bands to export (note that max is 3 "
+"for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band "
+"3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
 
 #. Tag: para
@@ -10364,7 +10369,7 @@ msgid ""
 "-- Only difference is we don't specify a specific band to clip\n"
 "-- so all bands are clipped\n"
 "SELECT ST_Clip(rast,\n"
-"          ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20), \n"
+"          ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),\n"
 "          false\n"
 "        ) from aerials.boston\n"
 "WHERE rid = 4;"
@@ -10581,7 +10586,7 @@ msgid ""
 "SELECT\n"
 "        ST_Union(rast)\n"
 "FROM (\n"
-"        SELECT \n"
+"        SELECT\n"
 "                ST_AsRaster(\n"
 "                        ST_Rotate(\n"
 "                                ST_Buffer(\n"
@@ -10925,8 +10930,8 @@ msgid ""
 "   2 |   2 | POINT(3427927.8 "
 "5793243.8)                                                                        "
 "| 253\n"
-"   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)           "
-"| 252\n"
+"   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)        | "
+"252\n"
 "   2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) "
 "| 250\n"
 "   2 |   3 | GEOMETRYCOLLECTION EMPTY"
@@ -11494,7 +11499,7 @@ msgid ""
 "                ) AS rast\n"
 "        FROM src t1\n"
 "        JOIN foo t2\n"
-"                ON t1.rid = t2.rid \n"
+"                ON t1.rid = t2.rid\n"
 ")\n"
 "SELECT\n"
 "        rid,\n"
@@ -11594,12 +11599,12 @@ msgstr ""
 #: reference_raster.xml:6795
 #, no-c-format
 msgid ""
-"WITH foo AS (SELECT \n"
+"WITH foo AS (SELECT\n"
 "   ST_SetBandNoDataValue(\n"
 "ST_SetValue(ST_SetValue(ST_AsRaster(\n"
 "                ST_Buffer(\n"
 "                        ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), "
-"5,'join=bevel'), \n"
+"5,'join=bevel'),\n"
 "                        200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), "
 "ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),\n"
 "  'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )\n"
@@ -11613,14 +11618,14 @@ msgid ""
 "UNION ALL\n"
 "SELECT 'mask only consider neighbors, exclude center' AS title, "
 "ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::"
-"regprocedure, \n"
+"regprocedure,\n"
 "    '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast\n"
 "FROM foo\n"
 "\n"
 "UNION ALL\n"
 "SELECT 'mask weighted only consider neighbors, exclude center multi otehr "
 "pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double "
-"precision[], int[], text[])'::regprocedure, \n"
+"precision[], int[], text[])'::regprocedure,\n"
 "    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast\n"
 "FROM foo;"
 msgstr ""
@@ -12170,7 +12175,7 @@ msgid ""
 "     252 |      2\n"
 "     253 |      3\n"
 "     254 |      3\n"
-"     \n"
+"\n"
 "SELECT\n"
 "        ST_BandPixelType(map_rast2) As b1pixtyp\n"
 "FROM dummy_rast\n"
@@ -12212,7 +12217,7 @@ msgid ""
 "                                ST_MakeEmptyRaster(rast_view),\n"
 "                                ST_MapAlgebraExpr(rast_view,1,"
 "NULL,'tan([rast])*[rast]')\n"
-"                        ), \n"
+"                        ),\n"
 "                        ST_Band(rast_view,2)\n"
 "                ),\n"
 "                ST_Band(rast_view, 3) As rast_view_ma\n"
@@ -12306,7 +12311,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "--Create a cool set of rasters --\n"
-"DROP TABLE IF EXISTS fun_shapes; \n"
+"DROP TABLE IF EXISTS fun_shapes;\n"
 "CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast "
 "raster);\n"
 "\n"
@@ -12317,20 +12322,20 @@ msgid ""
 "901930,26986),200,200,'8BUI',0,0));\n"
 "\n"
 "INSERT INTO fun_shapes(fun_name,rast)\n"
-"WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' ) \n"
+"WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' )\n"
 "SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, "
-"900930),26986), 1000), \n"
+"900930),26986), 1000),\n"
 "                        ref.rast,'8BUI', 10, 0) As rast\n"
 "FROM ref\n"
 "UNION ALL\n"
-"SELECT 'rand bubbles', \n"
-"                         ST_AsRaster( \n"
-"                         (SELECT ST_Collect(geom)\n"
+"SELECT 'rand bubbles',\n"
+"                        ST_AsRaster(\n"
+"                        (SELECT ST_Collect(geom)\n"
 "        FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, "
 "900930 + j*random()*100),26986), random()*20) As geom\n"
 "                        FROM generate_series(1,10) As i, "
 "generate_series(1,10) As j\n"
-"                        ) As foo ), ref.rast,'8BUI', 200, 0) \n"
+"                        ) As foo ), ref.rast,'8BUI', 200, 0)\n"
 "FROM ref;\n"
 "\n"
 "--map them -\n"
@@ -12340,10 +12345,10 @@ msgid ""
 "                ST_MapAlgebraExpr(\n"
 "                        area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', "
 "'[rast2.val]', '[rast1.val]') As unionrast\n"
-"FROM \n"
+"FROM\n"
 "  (SELECT rast FROM fun_shapes WHERE\n"
 " fun_name = 'area') As area\n"
-"CROSS JOIN  (SELECT rast \n"
+"CROSS JOIN  (SELECT rast\n"
 "FROM fun_shapes WHERE\n"
 " fun_name = 'rand bubbles') As bub"
 msgstr ""
@@ -12371,26 +12376,26 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- we use ST_AsPNG to render the image so all single band ones look grey --\n"
-"WITH mygeoms \n"
+"WITH mygeoms\n"
 "    AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(1,5),10) As geom\n"
 "            UNION ALL\n"
-"            SELECT 3 AS bnum, \n"
+"            SELECT 3 AS bnum,\n"
 "                ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 "
 "50)'), 10,'join=bevel') As geom\n"
 "            UNION ALL\n"
-"            SELECT 1 As bnum, \n"
+"            SELECT 1 As bnum,\n"
 "                ST_Buffer(ST_GeomFromText('LINESTRING(60 50,150 150,150 "
 "50)'), 5,'join=bevel') As geom\n"
 "            ),\n"
 "   -- define our canvas to be 1 to 1 pixel to geometry\n"
 "   canvas\n"
-"    AS (SELECT ST_AddBand(ST_MakeEmptyRaster(200, \n"
-"        200, \n"
+"    AS (SELECT ST_AddBand(ST_MakeEmptyRaster(200,\n"
+"        200,\n"
 "        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0) , '8BUI'::"
 "text,0) As rast\n"
 "        FROM (SELECT ST_Extent(geom) As e,\n"
-"                    Max(ST_SRID(geom)) As srid \n"
-"                    from mygeoms \n"
+"                    Max(ST_SRID(geom)) As srid\n"
+"                    from mygeoms\n"
 "                    ) As foo\n"
 "            ),\n"
 "   rbands AS (SELECT ARRAY(SELECT ST_MapAlgebraExpr(canvas.rast, "
@@ -12451,7 +12456,7 @@ msgid ""
 "        FROM aerials.o_2_boston AS r INNER JOIN\n"
 "-- union our parcels of interest so they form a single geometry we can later "
 "intersect with\n"
-"                (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom \n"
+"                (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom\n"
 "                  FROM landparcels WHERE pid IN('0303890000', '0303900000')) "
 "As g\n"
 "                ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))\n"
@@ -12465,7 +12470,7 @@ msgid ""
 "ST_Union(rast,3)] ) As clipped,geom\n"
 "FROM pr\n"
 "GROUP BY geom)\n"
-"-- return our final raster which is the unioned shard with \n"
+"-- return our final raster which is the unioned shard with\n"
 "-- with the overlay of our parcel boundaries\n"
 "-- add first 2 bands, then mapalgebra of 3rd band + geometry\n"
 "SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])\n"
@@ -12721,7 +12726,7 @@ msgid ""
 "     252 |      2\n"
 "     253 |      3\n"
 "     254 |      3\n"
-"     \n"
+"\n"
 "SELECT ST_BandPixelType(map_rast2) As b1pixtyp\n"
 "FROM dummy_rast WHERE rid = 2;\n"
 "\n"
@@ -12751,7 +12756,7 @@ msgid ""
 "                        ST_MakeEmptyRaster(rast_view),\n"
 "                        ST_MapAlgebraFct(rast_view,1,"
 "NULL,'rast_plus_tan(float,integer[],text[])'::regprocedure)\n"
-"                ), \n"
+"                ),\n"
 "                ST_Band(rast_view,2)\n"
 "        ),\n"
 "        ST_Band(rast_view, 3) As rast_view_ma\n"
@@ -12869,7 +12874,7 @@ msgstr ""
 #: reference_raster.xml:7734
 #, no-c-format
 msgid ""
-"The third argument to the <varname>tworastuserfunc</varname> is a "
+"The fourst argument to the <varname>tworastuserfunc</varname> is a "
 "<type>variadic text</type> array. All trailing text arguments to any <xref "
 "linkend=\"RT_ST_MapAlgebraFct2\"/> call are passed through to the specified "
 "<varname>tworastuserfunc</varname>, and are contained in the "
@@ -12920,33 +12925,33 @@ msgid ""
 "CREATE TABLE map_shapes(rid serial PRIMARY KEY, rast raster, bnum integer, "
 "descrip text);\n"
 "INSERT INTO map_shapes(rast,bnum, descrip)\n"
-"WITH mygeoms \n"
+"WITH mygeoms\n"
 "    AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(90,90),30) As geom, 'circle' "
 "As descrip\n"
 "            UNION ALL\n"
-"            SELECT 3 AS bnum, \n"
+"            SELECT 3 AS bnum,\n"
 "                ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 "
 "50)'), 15) As geom, 'big road' As descrip\n"
 "            UNION ALL\n"
-"            SELECT 1 As bnum, \n"
+"            SELECT 1 As bnum,\n"
 "                ST_Translate(ST_Buffer(ST_GeomFromText('LINESTRING(60 50,150 "
 "150,150 50)'), 8,'join=bevel'), 10,-6) As geom, 'small road' As descrip\n"
 "            ),\n"
 "   -- define our canvas to be 1 to 1 pixel to geometry\n"
 "   canvas\n"
-"    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250, \n"
-"        250, \n"
+"    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250,\n"
+"        250,\n"
 "        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0 ) , '8BUI'::"
 "text,0) As rast\n"
 "        FROM (SELECT ST_Extent(geom) As e,\n"
-"                    Max(ST_SRID(geom)) As srid \n"
-"                    from mygeoms \n"
+"                    Max(ST_SRID(geom)) As srid\n"
+"                    from mygeoms\n"
 "                    ) As foo\n"
 "            )\n"
 "-- return our rasters aligned with our canvas\n"
 "SELECT ST_AsRaster(m.geom, canvas.rast, '8BUI', 240) As rast, bnum, descrip\n"
 "                FROM mygeoms AS m CROSS JOIN canvas\n"
-"UNION ALL \n"
+"UNION ALL\n"
 "SELECT canvas.rast, 4, 'canvas'\n"
 "FROM canvas;\n"
 "\n"
@@ -12954,12 +12959,12 @@ msgid ""
 "INSERT INTO map_shapes(rast,bnum,descrip)\n"
 "SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands "
 "overlay fct union (canvas)'\n"
-"        FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast, \n"
+"        FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast,\n"
 "                        'raster_mapalgebra_union(double precision, double "
 "precision, integer[], text[])'::regprocedure, '8BUI', 'FIRST')\n"
 "                FROM map_shapes As m1 CROSS JOIN map_shapes As m2\n"
-"                        WHERE m1.descrip = 'canvas' AND m2.descrip &lt;&gt; "
-"'canvas' ORDER BY m2.bnum) As rasts) As foo;"
+"        WHERE m1.descrip = 'canvas' AND m2.descrip &lt;&gt; 'canvas' ORDER "
+"BY m2.bnum) As rasts) As foo;"
 msgstr ""
 
 #. Tag: para
@@ -13005,15 +13010,13 @@ msgid ""
 "                RETURN NULL;\n"
 "        END;\n"
 "        $$ LANGUAGE 'plpgsql' VOLATILE COST 1000;\n"
-"        \n"
+"\n"
 "SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,\n"
 "                        'raster_mapalgebra_userargs(double precision, double "
 "precision, integer[], text[])'::regprocedure,\n"
-"                                '8BUI', 'INTERSECT', "
-"'100','200','200','0') \n"
+"                                '8BUI', 'INTERSECT', '100','200','200','0')\n"
 "                FROM map_shapes As m1\n"
-"                        WHERE m1.descrip = 'map bands overlay fct union "
-"(canvas)';"
+"        WHERE m1.descrip = 'map bands overlay fct union (canvas)';"
 msgstr ""
 
 #. Tag: para
@@ -13234,13 +13237,13 @@ msgid ""
 "    END;\n"
 "    $$\n"
 "LANGUAGE 'plpgsql' IMMUTABLE COST 1000;\n"
-"    \n"
+"\n"
 "-- now we apply to our raster averaging pixels within 2 pixels of each other "
 "in X and Y direction --\n"
 "SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,\n"
 "                'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', "
 "NULL) As nn_with_border\n"
-"        FROM katrinas_rescaled \n"
+"        FROM katrinas_rescaled\n"
 "        limit 1;"
 msgstr ""
 
@@ -13344,8 +13347,8 @@ msgid ""
 "UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, "
 "88-100:11-15, 101-254:0-0', '4BUI',0) WHERE rid = 2;\n"
 "\n"
-"SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval, \n"
-"    ST_Value(reclass_rast, 2, i, j) As reclassval, \n"
+"SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval,\n"
+"    ST_Value(reclass_rast, 2, i, j) As reclassval,\n"
 "    ST_Value(reclass_rast, 2, i, j, false) As reclassval_include_nodata\n"
 "FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN "
 "generate_series(1,3) AS j\n"
@@ -13384,7 +13387,7 @@ msgstr ""
 #: reference_raster.xml:7985
 #, no-c-format
 msgid ""
-"UPDATE dummy_rast SET reclass_rast = \n"
+"UPDATE dummy_rast SET reclass_rast =\n"
 "    ST_Reclass(rast,\n"
 "        ROW(2,'0-87]:1-10, (87-100]:11-15, (101-254]:0-0', '4BUI',NULL)::"
 "reclassarg,\n"
@@ -13394,8 +13397,8 @@ msgid ""
 "        ) WHERE rid = 2;\n"
 "\n"
 "SELECT i as col, j as row,ST_Value(rast,1,i,j) As ov1,  "
-"ST_Value(reclass_rast, 1, i, j) As rv1, \n"
-"    ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2, \n"
+"ST_Value(reclass_rast, 1, i, j) As rv1,\n"
+"    ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2,\n"
 "    ST_Value(rast,3,i,j) As ov3, ST_Value(reclass_rast, 3, i, j) As rv3\n"
 "FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN "
 "generate_series(1,3) AS j\n"
@@ -13434,17 +13437,16 @@ msgstr ""
 #, no-c-format
 msgid ""
 "ALTER TABLE wind ADD COLUMN rast_view raster;\n"
-"UPDATE wind \n"
+"UPDATE wind\n"
 "        set rast_view = ST_AddBand( NULL,\n"
 "        ARRAY[\n"
-"                ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, "
-"'8BUI'::text,0),\n"
-"                ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, "
-"'8BUI'::text,0),  \n"
-"                ST_Reclass(rast,1,'0-32]:0,(32-100:100-255'::text, '8BUI'::"
-"text,0)\n"
-"                ]\n"
-"                );"
+"        ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, '8BUI'::"
+"text,0),\n"
+"        ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, '8BUI'::"
+"text,0),\n"
+"        ST_Reclass(rast,1,'0-32]:0,(32-100:100-255'::text, '8BUI'::text,0)\n"
+"        ]\n"
+"        );"
 msgstr ""
 
 #. Tag: para
@@ -13724,13 +13726,13 @@ msgstr ""
 #: reference_raster.xml:8151
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -13877,13 +13879,13 @@ msgstr ""
 #: reference_raster.xml:8290
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -13940,13 +13942,13 @@ msgstr ""
 #: reference_raster.xml:8365
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -13958,13 +13960,13 @@ msgstr ""
 #: reference_raster.xml:8372
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], "
 "integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)\n"
 "       ,  2, 2)\n"
-"  FROM dummy_rast \n"
+"  FROM dummy_rast\n"
 "   WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -14020,13 +14022,13 @@ msgstr ""
 #: reference_raster.xml:8452
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -14132,13 +14134,13 @@ msgstr ""
 #: reference_raster.xml:8575
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -14187,13 +14189,13 @@ msgstr ""
 #: reference_raster.xml:8646
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -14240,13 +14242,13 @@ msgstr ""
 #: reference_raster.xml:8721
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -14394,8 +14396,8 @@ msgid ""
 "        ST_DumpValues(ST_Aspect(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                                                                                                    st_dumpvalues                                                                   \n"
-"                                  \n"
+"                                                                                                    st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "----------------------------------\n"
 " (1,\"{{315,341.565063476562,0,18.4349479675293,45},"
@@ -14591,8 +14593,8 @@ msgid ""
 "        ST_DumpValues(ST_Hillshade(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                                                                                                                       st_dumpvalues                                                \n"
-"                                                                       \n"
+"                                                                                                                       st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "-----------------------------------------------------------------------\n"
 " (1,\"{{NULL,NULL,NULL,NULL,NULL},"
@@ -14801,8 +14803,8 @@ msgid ""
 "        ST_DumpValues(ST_Slope(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                            st_dumpvalues                                                                                                                                           \n"
-"                                                                     \n"
+"                            st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "---------------------------------------------------------------------\n"
@@ -15070,7 +15072,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- Note envelope and convexhull are more or less the same\n"
-"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, \n"
+"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,\n"
 "        ST_AsText(ST_Envelope(rast)) As env\n"
 "FROM dummy_rast WHERE rid=1;\n"
 "\n"
@@ -15086,13 +15088,13 @@ msgstr ""
 #: reference_raster.xml:9233
 #, no-c-format
 msgid ""
-"-- now we skew the raster \n"
+"-- now we skew the raster\n"
 "-- note how the convex hull and envelope are now different\n"
-"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, \n"
+"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,\n"
 "        ST_AsText(ST_Envelope(rast)) As env\n"
-"FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast \n"
+"FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast\n"
 "        FROM dummy_rast WHERE rid=1) As foo;\n"
-"        \n"
+"\n"
 "                        convhull                        |                "
 "env\n"
 "--------------------------------------------------------"
@@ -15190,7 +15192,7 @@ msgid ""
 "SELECT val, ST_AsText(geom) As geomwkt\n"
 "FROM (\n"
 "SELECT (ST_DumpAsPolygons(rast)).*\n"
-"FROM dummy_rast \n"
+"FROM dummy_rast\n"
 "WHERE rid = 2\n"
 ") As foo\n"
 "WHERE val BETWEEN 249 and 251\n"
@@ -15201,16 +15203,16 @@ msgid ""
 "+--------------------------------------------------------------------------\n"
 " 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 "
 "5793243.85,\n"
-"                 3427928 5793243.95,3427927.95 5793243.95))\n"
+"                3427928 5793243.95,3427927.95 5793243.95))\n"
 " 250 | POLYGON((3427927.75 5793243.9,3427927.75 5793243.85,3427927.8 "
 "5793243.85,\n"
-"                 3427927.8 5793243.9,3427927.75 5793243.9))\n"
+"                3427927.8 5793243.9,3427927.75 5793243.9))\n"
 " 250 | POLYGON((3427927.8 5793243.8,3427927.8 5793243.75,3427927.85 "
 "5793243.75,\n"
-"                 3427927.85 5793243.8, 3427927.8 5793243.8))\n"
+"                3427927.85 5793243.8, 3427927.8 5793243.8))\n"
 " 251 | POLYGON((3427927.75 5793243.85,3427927.75 5793243.8,3427927.8 "
 "5793243.8,\n"
-"                 3427927.8 5793243.85,3427927.75 5793243.85))"
+"                3427927.8 5793243.85,3427927.75 5793243.85))"
 msgstr ""
 
 #. Tag: para
@@ -15272,7 +15274,7 @@ msgid ""
 "-----+--------------------------------------------------------------------\n"
 "   1 | POLYGON((0 0,20 0,20 60,0 60,0 0))\n"
 "   2 | POLYGON((3427927 5793243,3427928 5793243,\n"
-"                   3427928 5793244,3427927 5793244, 3427927 5793243))"
+"                3427928 5793244,3427927 5793244, 3427927 5793243))"
 msgstr ""
 
 #. Tag: para
@@ -15356,8 +15358,7 @@ msgid ""
 "FROM foo\n"
 "\n"
 "               hull               |                mhull                "
-"|               mhull_1               |               "
-"mhull_2               \n"
+"|               mhull_1               |               mhull_2\n"
 "----------------------------------+-------------------------------------"
 "+-------------------------------------"
 "+-------------------------------------\n"
@@ -15425,7 +15426,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "-- by default no data band value is 0 or not set, so polygon will return a "
-"square polygon        \n"
+"square polygon\n"
 "SELECT ST_AsText(ST_Polygon(rast)) As geomwkt\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;\n"
@@ -15434,8 +15435,8 @@ msgid ""
 "--------------------------------------------\n"
 "MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 "
 "5793243.75,3427927.75 5793243.75,3427927.75 5793244)))\n"
-"                 \n"
-"                 \n"
+"\n"
+"\n"
 "-- now we change the no data value of first band\n"
 "UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,1,254)\n"
 "WHERE rid = 2;\n"
@@ -15527,9 +15528,9 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9485 reference_raster.xml:9737
-#: reference_raster.xml:10747 reference_raster.xml:10848
-#: reference_raster.xml:10941
+#: reference_raster.xml:9485 reference_raster.xml:9532
+#: reference_raster.xml:9736 reference_raster.xml:10746
+#: reference_raster.xml:10847 reference_raster.xml:10940
 #, no-c-format
 msgid ""
 "This operand will make use of any indexes that may be available on the "
@@ -15583,16 +15584,8 @@ msgid ""
 "bounding box of raster B."
 msgstr ""
 
-#. Tag: para
-#: reference_raster.xml:9532 reference_raster.xml:9577
-#, no-c-format
-msgid ""
-"This operand will make use of any indexes that may be available on the "
-"geometries."
-msgstr ""
-
 #. Tag: programlisting
-#: reference_raster.xml:9539
+#: reference_raster.xml:9538
 #, no-c-format
 msgid ""
 "SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&lt; B.rast As overleft\n"
@@ -15612,20 +15605,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9545
+#: reference_raster.xml:9544
 #, no-c-format
 msgid "&amp;&gt;"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9547
+#: reference_raster.xml:9546
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is to the right of B's."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9552
+#: reference_raster.xml:9551
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
@@ -15634,7 +15627,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9573
+#: reference_raster.xml:9572
 #, no-c-format
 msgid ""
 "The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if "
@@ -15643,8 +15636,16 @@ msgid ""
 "bounding box of raster B."
 msgstr ""
 
+#. Tag: para
+#: reference_raster.xml:9576
+#, no-c-format
+msgid ""
+"This operand will make use of any indexes that may be available on the "
+"geometries."
+msgstr ""
+
 #. Tag: programlisting
-#: reference_raster.xml:9584
+#: reference_raster.xml:9583
 #, no-c-format
 msgid ""
 "SELECT A.rid As a_rid, B.rid As b_rid, A.rast &amp;&gt; B.rast As overright\n"
@@ -15664,13 +15665,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9590
+#: reference_raster.xml:9589
 #, no-c-format
 msgid "&#61;"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9592
+#: reference_raster.xml:9591
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
@@ -15678,7 +15679,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9597
+#: reference_raster.xml:9596
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>&#61;</function></funcdef> <paramdef> "
@@ -15687,7 +15688,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9618
+#: reference_raster.xml:9617
 #, no-c-format
 msgid ""
 "The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
@@ -15698,7 +15699,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9622
+#: reference_raster.xml:9621
 #, no-c-format
 msgid ""
 "This operand will NOT make use of any indexes that may be available on the "
@@ -15707,13 +15708,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9638
+#: reference_raster.xml:9637
 #, no-c-format
 msgid "<refname>@</refname>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9640
+#: reference_raster.xml:9639
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contained by B's. "
@@ -15721,7 +15722,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:9644
+#: reference_raster.xml:9643
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>@</function></funcdef> <paramdef> "
@@ -15736,7 +15737,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9687
+#: reference_raster.xml:9686
 #, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the "
@@ -15745,37 +15746,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9690 reference_raster.xml:9810
+#: reference_raster.xml:9689 reference_raster.xml:9809
 #, no-c-format
 msgid "This operand will use spatial indexes on the rasters."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9692
+#: reference_raster.xml:9691
 #, no-c-format
 msgid "Availability: 2.0.0 raster @ raster, raster @ geometry introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9693
+#: reference_raster.xml:9692
 #, no-c-format
 msgid "Availability: 2.0.5 geometry @ raster introduced"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9706
+#: reference_raster.xml:9705
 #, no-c-format
 msgid "<refname>~=</refname>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9708
+#: reference_raster.xml:9707
 #, no-c-format
 msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:9713
+#: reference_raster.xml:9712
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>raster </"
@@ -15784,7 +15785,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9734
+#: reference_raster.xml:9733
 #, no-c-format
 msgid ""
 "The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
@@ -15792,7 +15793,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9746
+#: reference_raster.xml:9745
 #, no-c-format
 msgid ""
 "Very useful usecase is for taking two sets of single band rasters that are "
@@ -15801,7 +15802,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:9747
+#: reference_raster.xml:9746
 #, no-c-format
 msgid ""
 "SELECT ST_AddBand(prec.rast, alt.rast) As new_rast\n"
@@ -15809,19 +15810,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9752
+#: reference_raster.xml:9751
 #, no-c-format
 msgid ", <xref linkend=\"RT_Raster_EQ\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9758
+#: reference_raster.xml:9757
 #, no-c-format
 msgid "<refname>~</refname>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9760
+#: reference_raster.xml:9759
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if A's bounding box is contains B's. Uses "
@@ -15829,7 +15830,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:9764
+#: reference_raster.xml:9763
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>~</function></funcdef> <paramdef> "
@@ -15844,7 +15845,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9807
+#: reference_raster.xml:9806
 #, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
@@ -15853,19 +15854,19 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:9825
+#: reference_raster.xml:9824
 #, no-c-format
 msgid "Raster and Raster Band Spatial Relationships"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9829
+#: reference_raster.xml:9828
 #, no-c-format
 msgid "ST_Contains"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9830
+#: reference_raster.xml:9829
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastB lie in the exterior of raster rastA "
@@ -15874,7 +15875,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:9836
+#: reference_raster.xml:9835
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Contains</function></funcdef> "
@@ -15889,7 +15890,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9875
+#: reference_raster.xml:9874
 #, no-c-format
 msgid ""
 "Raster rastA contains rastB if and only if no points of rastB lie in the "
@@ -15901,10 +15902,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9880 reference_raster.xml:9973
-#: reference_raster.xml:10054 reference_raster.xml:10135
-#: reference_raster.xml:10345 reference_raster.xml:10429
-#: reference_raster.xml:10509
+#: reference_raster.xml:9879 reference_raster.xml:9972
+#: reference_raster.xml:10053 reference_raster.xml:10134
+#: reference_raster.xml:10344 reference_raster.xml:10428
+#: reference_raster.xml:10508
 #, no-c-format
 msgid ""
 "This function will make use of any indexes that may be available on the "
@@ -15912,7 +15913,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9886
+#: reference_raster.xml:9885
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -15921,7 +15922,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9892
+#: reference_raster.xml:9891
 #, no-c-format
 msgid ""
 "ST_Contains() is the inverse of ST_Within(). So, ST_Contains(rastA, rastB) "
@@ -15929,7 +15930,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:9903
+#: reference_raster.xml:9902
 #, no-c-format
 msgid ""
 "-- specified band numbers\n"
@@ -15937,39 +15938,39 @@ msgid ""
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;\n"
 "\n"
 "NOTICE:  The first raster provided has no bands\n"
-" rid | rid | st_contains \n"
+" rid | rid | st_contains\n"
 "-----+-----+-------------\n"
-"   1 |   1 | \n"
+"   1 |   1 |\n"
 "   1 |   2 | f"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:9905
+#: reference_raster.xml:9904
 #, no-c-format
 msgid ""
 "-- no band numbers specified\n"
 "SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;\n"
-" rid | rid | st_contains \n"
+" rid | rid | st_contains\n"
 "-----+-----+-------------\n"
 "   1 |   1 | t\n"
 "   1 |   2 | f"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9909
+#: reference_raster.xml:9908
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Within\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:9918
+#: reference_raster.xml:9917
 #, no-c-format
 msgid "ST_ContainsProperly"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:9919
+#: reference_raster.xml:9918
 #, no-c-format
 msgid ""
 "Return true if rastB intersects the interior of rastA but not the boundary "
@@ -15977,7 +15978,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:9925
+#: reference_raster.xml:9924
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_ContainsProperly</function></"
@@ -15992,7 +15993,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9964
+#: reference_raster.xml:9963
 #, no-c-format
 msgid ""
 "Raster rastA contains properly rastB if rastB intersects the interior of "
@@ -16003,13 +16004,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9968
+#: reference_raster.xml:9967
 #, no-c-format
 msgid "Raster rastA does not contain properly itself but does contain itself."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9979
+#: reference_raster.xml:9978
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16018,38 +16019,38 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:9990
+#: reference_raster.xml:9989
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_containsproperly \n"
+" rid | rid | st_containsproperly\n"
 "-----+-----+---------------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | f"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:9994
+#: reference_raster.xml:9993
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Contains\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10003
+#: reference_raster.xml:10002
 #, no-c-format
 msgid "ST_Covers"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10004
+#: reference_raster.xml:10003
 #, no-c-format
 msgid "Return true if no points of raster rastB lie outside raster rastA."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10010
+#: reference_raster.xml:10009
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Covers</function></funcdef> "
@@ -16064,7 +16065,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10049
+#: reference_raster.xml:10048
 #, no-c-format
 msgid ""
 "Raster rastA covers rastB if and only if no points of rastB lie in the "
@@ -16075,7 +16076,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10060
+#: reference_raster.xml:10059
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16084,38 +16085,38 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10071
+#: reference_raster.xml:10070
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_covers \n"
+" rid | rid | st_covers\n"
 "-----+-----+-----------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10075
+#: reference_raster.xml:10074
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_CoveredBy\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10084
+#: reference_raster.xml:10083
 #, no-c-format
 msgid "ST_CoveredBy"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10085
+#: reference_raster.xml:10084
 #, no-c-format
 msgid "Return true if no points of raster rastA lie outside raster rastB."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10091
+#: reference_raster.xml:10090
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_CoveredBy</function></funcdef> "
@@ -16130,7 +16131,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10130
+#: reference_raster.xml:10129
 #, no-c-format
 msgid ""
 "Raster rastA is covered by rastB if and only if no points of rastA lie in "
@@ -16141,7 +16142,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10141
+#: reference_raster.xml:10140
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16150,38 +16151,38 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10152
+#: reference_raster.xml:10151
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_coveredby \n"
+" rid | rid | st_coveredby\n"
 "-----+-----+--------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10156
+#: reference_raster.xml:10155
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Covers\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10165
+#: reference_raster.xml:10164
 #, no-c-format
 msgid "ST_Disjoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10166
+#: reference_raster.xml:10165
 #, no-c-format
 msgid "Return true if raster rastA does not spatially intersect rastB."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10172
+#: reference_raster.xml:10171
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Disjoint</function></funcdef> "
@@ -16196,7 +16197,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10211
+#: reference_raster.xml:10210
 #, no-c-format
 msgid ""
 "Raster rastA and rastB are disjointed if they do not share any space "
@@ -16207,13 +16208,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10216
+#: reference_raster.xml:10215
 #, no-c-format
 msgid "This function does NOT use any indexes."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10222
+#: reference_raster.xml:10221
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16221,7 +16222,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10233
+#: reference_raster.xml:10232
 #, no-c-format
 msgid ""
 "-- rid = 1 has no bands, hence the NOTICE and the NULL value for "
@@ -16230,40 +16231,40 @@ msgid ""
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
 "NOTICE:  The second raster provided has no bands\n"
-" rid | rid | st_disjoint \n"
+" rid | rid | st_disjoint\n"
 "-----+-----+-------------\n"
-"   2 |   1 | \n"
+"   2 |   1 |\n"
 "   2 |   2 | f"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10235
+#: reference_raster.xml:10234
 #, no-c-format
 msgid ""
 "-- this time, without specifying band numbers\n"
 "SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_disjoint \n"
+" rid | rid | st_disjoint\n"
 "-----+-----+-------------\n"
 "   2 |   1 | t\n"
 "   2 |   2 | f"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10248
+#: reference_raster.xml:10247
 #, no-c-format
 msgid "ST_Intersects"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10249
+#: reference_raster.xml:10248
 #, no-c-format
 msgid "Return true if raster rastA spatially intersects raster rastB."
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10253
+#: reference_raster.xml:10252
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Intersects</function></"
@@ -16292,7 +16293,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10340
+#: reference_raster.xml:10339
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially intersects raster rastB. If the band "
@@ -16302,13 +16303,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10350
+#: reference_raster.xml:10349
 #, no-c-format
 msgid "Enhanced: 2.0.0 support raster/raster intersects was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10355
+#: reference_raster.xml:10354
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants "
@@ -16316,31 +16317,31 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10364
+#: reference_raster.xml:10363
 #, no-c-format
 msgid ""
 "-- different bands of same raster\n"
 "SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;\n"
 "\n"
-" st_intersects \n"
+" st_intersects\n"
 "---------------\n"
 " t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10369
+#: reference_raster.xml:10368
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_Disjoint\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10378
+#: reference_raster.xml:10377
 #, no-c-format
 msgid "ST_Overlaps"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10379
+#: reference_raster.xml:10378
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB intersect but one does not completely "
@@ -16348,7 +16349,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10385
+#: reference_raster.xml:10384
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Overlaps</function></funcdef> "
@@ -16363,7 +16364,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10424
+#: reference_raster.xml:10423
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially overlaps raster rastB. This means that "
@@ -16374,7 +16375,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10435
+#: reference_raster.xml:10434
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16382,25 +16383,25 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10446
+#: reference_raster.xml:10445
 #, no-c-format
 msgid ""
 "-- comparing different bands of same raster\n"
 "SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;\n"
 "\n"
-" st_overlaps \n"
+" st_overlaps\n"
 "-------------\n"
 " f"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10458
+#: reference_raster.xml:10457
 #, no-c-format
 msgid "ST_Touches"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10459
+#: reference_raster.xml:10458
 #, no-c-format
 msgid ""
 "Return true if raster rastA and rastB have at least one point in common but "
@@ -16408,7 +16409,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10465
+#: reference_raster.xml:10464
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Touches</function></funcdef> "
@@ -16423,7 +16424,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10504
+#: reference_raster.xml:10503
 #, no-c-format
 msgid ""
 "Return true if raster rastA spatially touches raster rastB. This means that "
@@ -16435,7 +16436,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10515
+#: reference_raster.xml:10514
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16443,26 +16444,26 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10526
+#: reference_raster.xml:10525
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_touches \n"
+" rid | rid | st_touches\n"
 "-----+-----+------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | f"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10538
+#: reference_raster.xml:10537
 #, no-c-format
 msgid "ST_SameAlignment"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10540
+#: reference_raster.xml:10539
 #, no-c-format
 msgid ""
 "Returns true if rasters have same skew, scale, spatial ref, and offset "
@@ -16471,7 +16472,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10544
+#: reference_raster.xml:10543
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_SameAlignment</function></"
@@ -16499,7 +16500,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10623
+#: reference_raster.xml:10622
 #, no-c-format
 msgid ""
 "Non-Aggregate version (Variants 1 and 2): Returns true if the two rasters "
@@ -16511,7 +16512,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10627
+#: reference_raster.xml:10626
 #, no-c-format
 msgid ""
 "Aggregate version (Variant 3): From a set of rasters, returns true if all "
@@ -16521,19 +16522,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10632
+#: reference_raster.xml:10631
 #, no-c-format
 msgid "Enhanced: 2.1.0 addition of Aggegrate variant"
 msgstr ""
 
 #. Tag: title
-#: reference_raster.xml:10636
+#: reference_raster.xml:10635
 #, no-c-format
 msgid "Examples: Rasters"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10638
+#: reference_raster.xml:10637
 #, no-c-format
 msgid ""
 "SELECT ST_SameAlignment(\n"
@@ -16547,7 +16548,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10639
+#: reference_raster.xml:10638
 #, no-c-format
 msgid ""
 "SELECT ST_SameAlignment(A.rast,b.rast)\n"
@@ -16564,7 +16565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10643
+#: reference_raster.xml:10642
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_NotSameAlignmentReason\"/>, <xref linkend="
@@ -16572,13 +16573,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10653
+#: reference_raster.xml:10652
 #, no-c-format
 msgid "ST_NotSameAlignmentReason"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10654
+#: reference_raster.xml:10653
 #, no-c-format
 msgid ""
 "<refpurpose>Returns text stating if rasters are aligned and if not aligned, "
@@ -16586,7 +16587,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_raster.xml:10659
+#: reference_raster.xml:10658
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_NotSameAlignmentReason</function></funcdef> "
@@ -16595,7 +16596,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10669
+#: reference_raster.xml:10668
 #, no-c-format
 msgid ""
 "<para>Returns text stating if rasters are aligned and if not aligned, a "
@@ -16603,7 +16604,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10672
+#: reference_raster.xml:10671
 #, no-c-format
 msgid ""
 "If there are several reasons why the rasters are not aligned, only one "
@@ -16611,7 +16612,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10682
+#: reference_raster.xml:10681
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -16625,26 +16626,26 @@ msgid ""
 "        )\n"
 ";\n"
 "\n"
-" st_samealignment |            st_notsamealignmentreason            \n"
+" st_samealignment |            st_notsamealignmentreason\n"
 "------------------+-------------------------------------------------\n"
 " f                | The rasters have different scales on the X axis\n"
 "(1 row)"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10687
+#: reference_raster.xml:10686
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_SameAlignment\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10696
+#: reference_raster.xml:10695
 #, no-c-format
 msgid "ST_Within"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10697
+#: reference_raster.xml:10696
 #, no-c-format
 msgid ""
 "Return true if no points of raster rastA lie in the exterior of raster rastB "
@@ -16653,7 +16654,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10703
+#: reference_raster.xml:10702
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Within</function></funcdef> "
@@ -16668,7 +16669,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10742
+#: reference_raster.xml:10741
 #, no-c-format
 msgid ""
 "Raster rastA is within rastB if and only if no points of rastA lie in the "
@@ -16680,7 +16681,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10753
+#: reference_raster.xml:10752
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16689,7 +16690,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10759
+#: reference_raster.xml:10758
 #, no-c-format
 msgid ""
 "ST_Within() is the inverse of ST_Contains(). So, ST_Within(rastA, rastB) "
@@ -16697,20 +16698,20 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10770
+#: reference_raster.xml:10769
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_within \n"
+" rid | rid | st_within\n"
 "-----+-----+-----------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10774
+#: reference_raster.xml:10773
 #, no-c-format
 msgid ""
 ", <xref linkend=\"RT_ST_Contains\"/>, <xref linkend=\"RT_ST_DWithin\"/>, "
@@ -16718,13 +16719,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10785
+#: reference_raster.xml:10784
 #, no-c-format
 msgid "ST_DWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10786
+#: reference_raster.xml:10785
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -16732,7 +16733,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10792
+#: reference_raster.xml:10791
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DWithin</function></funcdef> "
@@ -16749,7 +16750,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10839
+#: reference_raster.xml:10838
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are within the specified distance of "
@@ -16760,7 +16761,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10843 reference_raster.xml:10936
+#: reference_raster.xml:10842 reference_raster.xml:10935
 #, no-c-format
 msgid ""
 "The distance is specified in units defined by the spatial reference system "
@@ -16769,7 +16770,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10854
+#: reference_raster.xml:10853
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16777,32 +16778,32 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10865
+#: reference_raster.xml:10864
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_dwithin \n"
+" rid | rid | st_dwithin\n"
 "-----+-----+------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10869
+#: reference_raster.xml:10868
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DFullyWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_raster.xml:10878
+#: reference_raster.xml:10877
 #, no-c-format
 msgid "ST_DFullyWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_raster.xml:10879
+#: reference_raster.xml:10878
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -16810,7 +16811,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_raster.xml:10885
+#: reference_raster.xml:10884
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DFullyWithin</function></"
@@ -16828,7 +16829,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10932
+#: reference_raster.xml:10931
 #, no-c-format
 msgid ""
 "Return true if rasters rastA and rastB are fully within the specified "
@@ -16839,7 +16840,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10947
+#: reference_raster.xml:10946
 #, no-c-format
 msgid ""
 "To test the spatial relationship of a raster and a geometry, use ST_Polygon "
@@ -16847,20 +16848,20 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_raster.xml:10958
+#: reference_raster.xml:10957
 #, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_dfullywithin \n"
+" rid | rid | st_dfullywithin\n"
 "-----+-----+-----------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
 msgstr ""
 
 #. Tag: para
-#: reference_raster.xml:10962
+#: reference_raster.xml:10961
 #, no-c-format
 msgid ", <xref linkend=\"RT_ST_DWithin\"/>"
 msgstr ""

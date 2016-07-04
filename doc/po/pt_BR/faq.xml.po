@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
 "Last-Translator: Sandro Santilli <strk.io>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -314,10 +314,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:85
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"-- this should return no records if all your geom fields are filled "
-"in        \n"
+"-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
 "-- isto deve retornar zero registros se todos os seus campos geométricos "
@@ -493,12 +492,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:166
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
@@ -539,11 +538,11 @@ msgstr "O valor de retorno deve se parecer com algum assim:"
 
 #. Tag: programlisting
 #: faq.xml:177
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
 "id | name | geom\n"
@@ -622,11 +621,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT id, the_geom \n"
-"FROM thetable \n"
-"WHERE \n"
+"SELECT id, the_geom\n"
+"FROM thetable\n"
+"WHERE\n"
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
 "SELECT id, the_geom\n"
@@ -875,9 +874,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:330
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT * FROM geotable \n"
+"SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
 "SELECT * FROM geotable\n"

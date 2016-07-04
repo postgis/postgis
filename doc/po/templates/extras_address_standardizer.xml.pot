@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1110,7 +1110,7 @@ msgstr ""
 #: extras_address_standardizer.xml:601
 #, no-c-format
 msgid ""
-      "SELECT num, street, city, zip, zipplus \n"
+      "SELECT num, street, city, zip, zipplus\n"
       "        FROM parse_address('1 Devonshire Place, Boston, MA 02109-1234') AS a;"
 msgstr ""
 
@@ -1144,7 +1144,7 @@ msgid ""
       " ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),\n"
       " ('950 Main Street, Worcester, MA 01610');\n"
       "\n"
-      " -- parse the addresses \n"
+      " -- parse the addresses\n"
       " -- if you want all fields you can use (a).*\n"
       "SELECT addid, (a).num, (a).street, (a).city, (a).state, (a).zip, (a).zipplus\n"
       "FROM (SELECT addid, parse_address(address) As a\n"
@@ -1230,7 +1230,7 @@ msgstr ""
 #: extras_address_standardizer.xml:665
 #, no-c-format
 msgid ""
-      "SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex', \n"
+      "SELECT house_num, name, suftype, city, country, state, unit  FROM standardize_address('us_lex',\n"
       "                           'us_gaz', 'us_rules', 'One Devonshire Place, PH 301, Boston, MA 02109');"
 msgstr ""
 
@@ -1253,7 +1253,7 @@ msgstr ""
 #: extras_address_standardizer.xml:668
 #, no-c-format
 msgid ""
-      "SELECT *  FROM standardize_address('tiger.pagc_lex', \n"
+      "SELECT *  FROM standardize_address('tiger.pagc_lex',\n"
       "         'tiger.pagc_gaz', 'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109-1234');"
 msgstr ""
 
@@ -1267,8 +1267,8 @@ msgstr ""
 #: extras_address_standardizer.xml:671
 #, no-c-format
 msgid ""
-      "SELECT (each(hstore(p))).*  \n"
-      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
+      "SELECT (each(hstore(p))).*\n"
+      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
       "   'tiger.pagc_rules', 'One Devonshire Place, PH 301, Boston, MA 02109') As p;"
 msgstr ""
 
@@ -1307,8 +1307,8 @@ msgstr ""
 #: extras_address_standardizer.xml:675
 #, no-c-format
 msgid ""
-      "SELECT (each(hstore(p))).*  \n"
-      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz', \n"
+      "SELECT (each(hstore(p))).*\n"
+      " FROM standardize_address('tiger.pagc_lex', 'tiger.pagc_gaz',\n"
       "   'tiger.pagc_rules', 'One Devonshire Place, PH 301', 'Boston, MA 02109, US') As p;"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -168,7 +168,7 @@ msgstr ""
 #: faq.xml:85
 #, no-c-format
 msgid ""
-      "-- this should return no records if all your geom fields are filled in        \n"
+      "-- this should return no records if all your geom fields are filled in\n"
       "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
 
@@ -265,10 +265,10 @@ msgstr ""
 #: faq.xml:166
 #, no-c-format
 msgid ""
-      "INSERT INTO gtest (ID, NAME, GEOM) \n"
+      "INSERT INTO gtest (ID, NAME, GEOM)\n"
       "VALUES (\n"
-      "  1, \n"
-      "  'First Geometry', \n"
+      "  1,\n"
+      "  'First Geometry',\n"
       "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
       ");"
 msgstr ""
@@ -303,7 +303,7 @@ msgstr ""
 msgid ""
       "id | name           | geom\n"
       "----+----------------+-----------------------------\n"
-      "  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
+      "  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
       "(1 row)"
 msgstr ""
 
@@ -341,9 +341,9 @@ msgstr ""
 #: faq.xml:210
 #, no-c-format
 msgid ""
-      "SELECT id, the_geom \n"
-      "FROM thetable \n"
-      "WHERE \n"
+      "SELECT id, the_geom\n"
+      "FROM thetable\n"
+      "WHERE\n"
       "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
 
@@ -477,7 +477,7 @@ msgstr ""
 #: faq.xml:330
 #, no-c-format
 msgid ""
-      "SELECT * FROM geotable \n"
+      "SELECT * FROM geotable\n"
       "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
 
