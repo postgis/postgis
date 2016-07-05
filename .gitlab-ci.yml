@@ -1,7 +1,6 @@
 test:
   script:
-    - apt-get update -qq
-    - apt-get install -y
+    - apt-get update -qq && apt-get install -y
         flex bison
         build-essential autoconf libtool libcunit1-dev
         xsltproc docbook-xsl docbook-mathml dblatex
