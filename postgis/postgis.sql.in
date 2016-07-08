@@ -5768,7 +5768,6 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
     FUNCTION      2        geom2d_brin_inclusion_add_value(internal, internal, internal, internal) ,
     FUNCTION      3        brin_inclusion_consistent(internal, internal, internal) ,
     FUNCTION      4        brin_inclusion_union(internal, internal, internal) ,
-    FUNCTION     14        st_isempty(geometry) ,
   STORAGE box2df;
 
 ALTER OPERATOR FAMILY brin_geometry_inclusion_family_2d USING brin ADD
