@@ -64,6 +64,7 @@ usage()
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
                   "      This applies to the primary key, and the spatial index if\n"
                   "      the -I flag is used.\n" ));
+	printf(_( "  --  End of options. Use this for unusual file names starting with '-' \n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
 }
 
@@ -95,8 +96,12 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
 	{
+		// can not do this inside the switch case
+		if ('-' == c)
+			break;
+
 		switch (c)
 		{
 		case 'c':
