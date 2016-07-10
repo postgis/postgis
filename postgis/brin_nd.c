@@ -14,7 +14,6 @@
 Datum gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum
 		newval, bool isnull, int dims_wanted);
 
-
 /*
  * As for the GiST case, geographies are converted into GIDX before
  * they are added to the other index keys
@@ -85,8 +84,34 @@ gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
 	/* create a new GIDX in stack memory, maximum dimensions */
 	gidx_geom = (GIDX *) gboxmem;
 
-	if(gserialized_datum_get_gidx_p(newval, gidx_geom) == LW_FAILURE)
-		elog(ERROR, "Error while extracting the gidx from the geom");
+	/*
+	 * check other cases where it is not possible to retrieve a box
+	 */
+	if (gserialized_datum_get_gidx_p(newval, gidx_geom) == LW_FAILURE)
+	{
+		/*
+		 * Empty entries have to be supported in the opclass: test the passed
+		 * new value for emptiness; if it returns true, we need to set the
+		 * "contains empty" flag in the element (unless already set).
+		 */
+		if (is_gserialized_from_datum_empty(newval))
+		{
+			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
+			{
+				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
+				PG_RETURN_BOOL(true);
+			}
+
+			PG_RETURN_BOOL(false);
+		} else
+		{
+			/*
+			 * in case the entry is not empty and it is not possible to
+			 * retrieve a box, raise an error
+			 */
+			elog(ERROR, "Error while extracting the gidx from the geom");
+		}
+	}
 
 	/* Get the actual dimension of the geometry */
 	dims_geom = GIDX_NDIMS(gidx_geom);

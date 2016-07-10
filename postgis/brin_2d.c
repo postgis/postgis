@@ -16,9 +16,9 @@ Datum
 geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 {
 	BrinValues *column = (BrinValues *) PG_GETARG_POINTER(1);
-	Datum newval = PG_GETARG_DATUM(2);
-	bool		isnull = PG_GETARG_BOOL(3);
-	BOX2DF box_geom, *box_key;
+	Datum      newval = PG_GETARG_DATUM(2);
+	bool	   isnull = PG_GETARG_BOOL(3);
+	BOX2DF     box_geom, *box_key;
 
 	/*
 	 * If the new value is null, we record that we saw it if it's the first
@@ -33,8 +33,33 @@ geom2d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(true);
 	}
 
+	/*
+	 * check other cases where it is not possible to retrieve a box
+	 */
 	if (gserialized_datum_get_box2df_p(newval, &box_geom) == LW_FAILURE)
-		elog(ERROR, "Error while extracting the box2df from the geom");
+	{
+		/*
+		 * Empty entries have to be supported in the opclass: test the passed
+		 * new value for emptiness; if it returns true, we need to set the
+		 * "contains empty" flag in the element (unless already set).
+		 */
+		if (is_gserialized_from_datum_empty(newval)) {
+			if (!DatumGetBool(column->bv_values[INCLUSION_CONTAINS_EMPTY]))
+			{
+				column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(true);
+				PG_RETURN_BOOL(true);
+			}
+
+			PG_RETURN_BOOL(false);
+		} else
+		{
+			/*
+			 * in case the entry is not empty and it is not possible to
+			 * retrieve a box, raise an error
+			 */
+			elog(ERROR, "Error while extracting the box2df from the geom");
+		}
+	}
 
 	/* if the recorded value is null, we just need to store the box2df */
 	if (column->bv_allnulls)

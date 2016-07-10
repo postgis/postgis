@@ -47,7 +47,7 @@ SQL_OBJS=$(SQL_objs)
 endif
 
 ifeq (@HAVE_BRIN@,yes)
-BRIN_OBJ= brin_2d.o brin_nd.o
+BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
 

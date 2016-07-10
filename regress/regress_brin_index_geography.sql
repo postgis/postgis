@@ -28,21 +28,27 @@ $$;
 -- BRIN indexes
 
 -- 2D
-CREATE INDEX brin_geog on test using brin (the_geog);
+CREATE INDEX brin_geog on test using brin (the_geog) WITH (pages_per_range = 10);
 
 set enable_indexscan = off;
 set enable_bitmapscan = off;
 set enable_seqscan = on;
 
-SELECT 'scan_seq', qnodes('select * from test where the_geog && ST_GeographyFromText(''SRID=4326;POLYGON((15. 49.,15. 49.00005,14.99999 49.00005,14.99999 49.,15. 49.))'')');
- select num,ST_astext(the_geog) from test where the_geog && ST_GeographyFromText('SRID=4326;POLYGON((15. 49.,15. 49.00005,14.99999 49.00005,14.99999 49.,15. 49.))') order by num;
+SELECT 'scan_seq', qnodes('select * from test where the_geog && ST_GeographyFromText(''SRID=4326;POLYGON((43. 42.,43. 43.,42. 43.,42. 42.,43. 42.))'')');
+ select num,ST_astext(the_geog) from test where the_geog && ST_GeographyFromText('SRID=4326;POLYGON((43. 42.,43. 43.,42. 43.,42. 42.,43. 42.))') order by num;
+
+SELECT 'scan_seq', qnodes('SELECT * FROM test WHERE the_geog IS NULL');
+ SELECT COUNT(num) FROM test WHERE the_geog IS NULL;
 
 set enable_indexscan = off;
 set enable_bitmapscan = on;
 set enable_seqscan = off;
 
-SELECT 'scan_idx', qnodes('select * from test where the_geog && ST_GeographyFromText(''SRID=4326;POLYGON((15. 49.,15. 49.00005,14.99999 49.00005,14.99999 49.,15. 49.))'')');
- select num,ST_astext(the_geog) from test where the_geog && ST_GeographyFromText('SRID=4326;POLYGON((15. 49.,15. 49.00005,14.99999 49.00005,14.99999 49.,15. 49.))') order by num;
+SELECT 'scan_idx', qnodes('select * from test where the_geog && ST_GeographyFromText(''SRID=4326;POLYGON((43. 42.,43. 43.,42. 43.,42. 42.,43. 42.))'')');
+ select num,ST_astext(the_geog) from test where the_geog && ST_GeographyFromText('SRID=4326;POLYGON((43. 42.,43. 43.,42. 43.,42. 42.,43. 42.))') order by num;
+
+SELECT 'scan_idx', qnodes('SELECT * FROM test WHERE the_geog IS NULL');
+ SELECT COUNT(num) FROM test WHERE the_geog IS NULL;
 
 DROP INDEX brin_geog;
 

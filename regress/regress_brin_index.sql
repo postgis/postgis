@@ -59,7 +59,7 @@ SELECT 'scan_idx', qnodes('select * from test where the_geom @ ST_MakePoint(0,0)
 DROP INDEX brin_2d;
 
 -- 3D
-CREATE INDEX brin_3d on test using brin (the_geom using brin_geometry_inclusion_ops_3d);
+CREATE INDEX brin_3d on test using brin (the_geom brin_geometry_inclusion_ops_3d);
 
 set enable_indexscan = off;
 set enable_bitmapscan = off;
@@ -78,7 +78,7 @@ SELECT 'scan_idx', qnodes('select * from test where the_geom &&& ST_MakePoint(0,
 DROP INDEX brin_3d;
 
 -- 4D
-CREATE INDEX brin_4d on test using brin (the_geom using brin_geometry_inclusion_ops_4d);
+CREATE INDEX brin_4d on test using brin (the_geom brin_geometry_inclusion_ops_4d);
 
 set enable_indexscan = off;
 set enable_bitmapscan = off;

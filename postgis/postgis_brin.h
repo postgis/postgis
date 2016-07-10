@@ -20,3 +20,4 @@
 #define INCLUSION_UNMERGEABLE		1
 #define INCLUSION_CONTAINS_EMPTY	2
 
+bool is_gserialized_from_datum_empty(Datum the_datum);
