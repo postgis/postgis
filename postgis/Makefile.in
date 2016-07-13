@@ -78,7 +78,9 @@ PG_OBJS= \
 	geography_btree.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
-	geometry_inout.o
+	geometry_inout.o \
+	geobuf.pb-c.o \
+	geobuf.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)

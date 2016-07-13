@@ -4118,6 +4118,17 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 	AS $$ SELECT ST_AsGeoJson($2::geometry, $3::int4, $4::int4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+-----------------------------------------------------------------------
+-- GEOBUF OUTPUT
+-- Availability: 2.3.0
+-----------------------------------------------------------------------
+
+-- ST_AsGeobuf(query, geom_name)
+CREATE OR REPLACE FUNCTION ST_AsGeobuf(text, text)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asGeobuf'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)
 ------------------------------------------------------------------------

@@ -15,17 +15,21 @@
 
 #include "float.h" /* for DBL_DIG */
 #include "postgres.h"
+#include "utils/builtins.h"
 #include "executor/spi.h"
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
+#include "lwgeom_log.h"
 #include "liblwgeom.h"
 #include "lwgeom_export.h"
+#include "geobuf.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS);
 Datum LWGEOM_asGeoJson_old(PG_FUNCTION_ARGS);
+Datum LWGEOM_asGeobuf(PG_FUNCTION_ARGS);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS);
@@ -461,6 +465,40 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
+#define POSTGIS_DEBUG_LEVEL 4
+
+/**
+ * Encode query result to Geobuf
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asGeobuf);
+Datum LWGEOM_asGeobuf(PG_FUNCTION_ARGS)
+{
+	void *buf;
+	size_t buf_size;
+	bytea *result;
+	text *query_text;
+	char *query;
+	text *geom_name_text;
+	char *geom_name;
+
+	query_text = PG_GETARG_TEXT_P(0);
+	query = text_to_cstring(query_text);
+	geom_name_text = PG_GETARG_TEXT_P(1);
+	geom_name = text_to_cstring(geom_name_text);
+
+	SPI_connect();
+	SPI_execute(query, true, 0);
+
+	buf = encode_to_geobuf(&buf_size, geom_name);
+
+	SPI_finish();
+
+	result = palloc(buf_size + VARHDRSZ);
+	memcpy(VARDATA(result), buf, buf_size);
+
+	SET_VARSIZE(result, buf_size + VARHDRSZ);
+	PG_RETURN_BYTEA_P(result);
+}
 
 /**
  * SVG features
