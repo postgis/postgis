@@ -57,7 +57,9 @@ extern void out_svg_suite_setup(void);
 extern void twkb_out_suite_setup(void);
 extern void out_x3d_suite_setup(void);
 extern void ptarray_suite_setup(void);
+#if HAVE_SFCGAL
 extern void sfcgal_suite_setup(void);
+#endif
 extern void split_suite_setup(void);
 extern void stringbuffer_suite_setup(void);
 extern void tree_suite_setup(void);
