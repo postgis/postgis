@@ -64,8 +64,10 @@ usage()
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
                   "      This applies to the primary key, and the spatial index if\n"
                   "      the -I flag is used.\n" ));
-	printf(_( "  --  End of options. Use this for unusual file names starting with '-' \n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
+	printf( "\n" );
+	printf(_( "  An argument of `--' disables further option processing.\n" ));
+	printf(_( "  (useful for unusual file names starting with '-')\n" ));
 }
 
 
@@ -152,7 +154,7 @@ main (int argc, char **argv)
 		case 'm':
 			config->column_map_filename = pgis_optarg;
 			break;
-			
+
 		case 'k':
 			config->quoteidentifiers = 1;
 			break;
@@ -299,7 +301,7 @@ main (int argc, char **argv)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
-		
+
 		/* Remove the extension, if present */
 		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{
