@@ -465,8 +465,6 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
-#define POSTGIS_DEBUG_LEVEL 4
-
 /**
  * Encode query result to Geobuf
  */

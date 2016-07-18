@@ -8,7 +8,7 @@ Data__Geometry *encode_geometry(int row, char *geom_name);
 void encode_properties(int row, Data__Feature *feature, uint32_t *properties, char *geom_name);
 
 int get_geom_index(char *geom_name);
-LWGEOM* get_lwgeom(int row, char *geom_name);
+LWGEOM *get_lwgeom(int row, char *geom_name);
 
 Data__Geometry *encode_point(LWPOINT *lwgeom);
 Data__Geometry *encode_line(LWLINE *lwline);
@@ -210,8 +210,8 @@ int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset) {
     return coords;
 }
 
-Data__Geometry* encode_geometry(int row, char *geom_name) {
-    LWGEOM* lwgeom = get_lwgeom(row, geom_name);
+Data__Geometry *encode_geometry(int row, char *geom_name) {
+    LWGEOM *lwgeom = get_lwgeom(row, geom_name);
     int type = lwgeom->type;
     switch (type)
 	{
@@ -265,7 +265,7 @@ void *encode_to_geobuf(size_t *len, char *geom_name) {
     data.data_type_case = DATA__DATA_TYPE_FEATURE_COLLECTION;
     data.feature_collection = &feature_collection;
     feature_collection.n_features = count;
-    feature_collection.features = malloc (sizeof (Data__Feature*) * count);
+    feature_collection.features = malloc (sizeof (Data__Feature *) * count);
     for (i = 0; i < count; i++) {
         feature_collection.features[i] = encode_feature(i, geom_name, properties);
     }
