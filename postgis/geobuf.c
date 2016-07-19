@@ -1,24 +1,22 @@
 #include "geobuf.h"
 
-int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset);
-
 void tupdesc_analyze(char ***keys, uint32_t **properties, char *geom_name);
-Data__Feature *encode_feature(int row, char *geom_name, uint32_t *properties);
-Data__Geometry *encode_geometry(int row, char *geom_name);
-void encode_properties(int row, Data__Feature *feature, uint32_t *properties, char *geom_name);
-
 int get_geom_index(char *geom_name);
 LWGEOM *get_lwgeom(int row, char *geom_name);
 
+Data__Feature *encode_feature(int row, char *geom_name, uint32_t *properties);
+void encode_properties(int row, Data__Feature *feature, uint32_t *properties, char *geom_name);
+
+Data__Geometry *encode_geometry(LWGEOM *lwgeom);
 Data__Geometry *encode_point(LWPOINT *lwgeom);
 Data__Geometry *encode_line(LWLINE *lwline);
 Data__Geometry *encode_poly(LWPOLY* lwpoly);
 Data__Geometry *encode_mpoint(LWMPOINT *lwmgeom);
-/*
 Data__Geometry *encode_mline(LWMLINE *lwmline);
 Data__Geometry *encode_mpoly(LWMPOLY* lwmpoly);
 Data__Geometry *encode_collection(LWCOLLECTION* lwcollection);
-*/
+
+int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset);
 
 void tupdesc_analyze(char ***keys, uint32_t **properties, char *geom_name) {
     int i, c = 0;
@@ -159,6 +157,44 @@ Data__Geometry *encode_line(LWLINE *lwline) {
     return geometry;
 }
 
+Data__Geometry *encode_mline(LWMLINE *lwmline) {
+    int i, cc, n_lengths;
+    POINTARRAY *pa;
+    Data__Geometry *geometry;
+    int offset;
+    uint32_t *lengths;
+    int64_t *coords = NULL;
+
+    geometry = malloc (sizeof (Data__Geometry));
+    data__geometry__init(geometry);
+    geometry->type = DATA__GEOMETRY__TYPE__MULTILINESTRING;
+
+    n_lengths = lwmline->ngeoms;
+
+    if (n_lengths == 0) return geometry;
+    
+    lengths = malloc (sizeof (uint32_t) * n_lengths);
+    
+    cc = 0;
+    offset = 0;
+    for (i = 0; i < n_lengths; i++) {
+        pa = lwmline->geoms[i]->points;
+        coords = encode_coords(pa, coords, pa->npoints, offset);
+        offset += pa->npoints * 2;
+        lengths[i] = pa->npoints;
+        cc += offset;
+    }
+
+    if (n_lengths > 1) {
+        geometry->n_lengths = n_lengths;
+        geometry->lengths = lengths;
+    }
+    geometry->n_coords = cc;
+    geometry->coords = coords;
+
+    return geometry;
+}
+
 Data__Geometry *encode_poly(LWPOLY *lwpoly) {
     int i, cc, n_lengths;
     POINTARRAY *pa;
@@ -197,6 +233,77 @@ Data__Geometry *encode_poly(LWPOLY *lwpoly) {
     return geometry;
 }
 
+Data__Geometry *encode_mpoly(LWMPOLY* lwmpoly) {
+    int i, j, c, cc, n_lengths, n_rings;
+    POINTARRAY *pa;
+    Data__Geometry *geometry;
+    int offset;
+    uint32_t *lengths;
+    int64_t *coords = NULL;
+
+    geometry = malloc (sizeof (Data__Geometry));
+    data__geometry__init(geometry);
+    geometry->type = DATA__GEOMETRY__TYPE__MULTIPOLYGON;
+
+    n_lengths = lwmpoly->ngeoms;
+
+    if (n_lengths == 0) return geometry;
+    
+    // TODO: need to defer allocation
+    lengths = malloc (sizeof (uint32_t) * 100);
+    
+    c = 0;
+    cc = 0;
+    offset = 0;
+    lengths[c++] = n_lengths;
+    for (i = 0; i < n_lengths; i++) {
+        n_rings = lwmpoly->geoms[i]->nrings;
+        lengths[c++] = n_rings;
+        for (j = 0; j < n_rings; j++) {
+            pa = lwmpoly->geoms[i]->rings[j];
+            coords = encode_coords(pa, coords, pa->npoints - 1, offset);
+            offset += (pa->npoints - 1) * 2;
+            lengths[c++] = pa->npoints - 1;
+            cc += offset;
+        }
+    }
+
+    if (c > 1) {
+        geometry->n_lengths = c;
+        geometry->lengths = lengths;
+    }
+    geometry->n_coords = cc;
+    geometry->coords = coords;
+
+    return geometry;
+}
+
+Data__Geometry *encode_collection(LWCOLLECTION* lwcollection) {
+    int i, n_lengths;
+    Data__Geometry *geometry;
+    Data__Geometry **geometries;
+
+    geometry = malloc (sizeof (Data__Geometry));
+    data__geometry__init(geometry);
+    geometry->type = DATA__GEOMETRY__TYPE__GEOMETRYCOLLECTION;
+
+    n_lengths = lwcollection->ngeoms;
+
+    if (n_lengths == 0) return geometry;
+    
+    geometries = malloc (sizeof (Data__Geometry *) * n_lengths);
+    for (i = 0; i < n_lengths; i++) {
+        LWGEOM *lwgeom = lwcollection->geoms[i];
+        Data__Geometry *geom = encode_geometry(lwgeom);
+        geometries[i] = geom;
+    }
+
+    geometry->n_geometries = n_lengths;
+    geometry->geometries = geometries;
+
+    return geometry;
+}
+
 int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset) {
     int i, c;
     int64_t *dimsum;
@@ -206,8 +313,8 @@ int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset) {
     if (offset == 0) {
         coords = malloc(sizeof (int64_t) * len * 2);
     } else {
-        // TODO: should not be offset * 2 but crash otherwise?
-        coords = realloc(coords, sizeof (int64_t) * ((len * 2) + offset*2));
+        // TODO: should not be offset * 20 but crash otherwise?
+        coords = realloc(coords, sizeof (int64_t) * ((len * 2) + offset*20));
     }
 
     c = offset;
@@ -220,8 +327,7 @@ int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset) {
     return coords;
 }
 
-Data__Geometry *encode_geometry(int row, char *geom_name) {
-    LWGEOM *lwgeom = get_lwgeom(row, geom_name);
+Data__Geometry *encode_geometry(LWGEOM *lwgeom) {
     int type = lwgeom->type;
     switch (type)
 	{
@@ -233,12 +339,12 @@ Data__Geometry *encode_geometry(int row, char *geom_name) {
 		return encode_poly((LWPOLY*)lwgeom);
 	case MULTIPOINTTYPE:
 		return encode_mpoint((LWMPOINT*)lwgeom);
-	/*case MULTILINETYPE:
-		return encode_point((LWPOINT*)lwgeom);
+	case MULTILINETYPE:
+		return encode_mline((LWMLINE*)lwgeom);
 	case MULTIPOLYGONTYPE:
-		return encode_point((LWPOINT*)lwgeom);
+		return encode_mpoly((LWMPOLY*)lwgeom);
 	case COLLECTIONTYPE:
-		return encode_point((LWPOINT*)lwgeom);*/
+		return encode_collection((LWCOLLECTION*)lwgeom);
 	default:
 		lwerror("encode_geometry: '%s' geometry type not supported",
 		        lwtype_name(type));
@@ -248,9 +354,11 @@ Data__Geometry *encode_geometry(int row, char *geom_name) {
 
 Data__Feature *encode_feature(int row, char *geom_name, uint32_t *properties) {
     Data__Feature *feature;
+    LWGEOM *lwgeom;
     feature = malloc (sizeof (Data__Feature));
     data__feature__init(feature);
-    feature->geometry = encode_geometry(row, geom_name);
+    lwgeom = get_lwgeom(row, geom_name);
+    feature->geometry = encode_geometry(lwgeom);
     if (properties != NULL) {
         encode_properties(row, feature, properties, geom_name);
     }
