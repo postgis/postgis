@@ -13,8 +13,8 @@ LWGEOM *get_lwgeom(int row, char *geom_name);
 Data__Geometry *encode_point(LWPOINT *lwgeom);
 Data__Geometry *encode_line(LWLINE *lwline);
 Data__Geometry *encode_poly(LWPOLY* lwpoly);
-/*
 Data__Geometry *encode_mpoint(LWMPOINT *lwmgeom);
+/*
 Data__Geometry *encode_mline(LWMLINE *lwmline);
 Data__Geometry *encode_mpoly(LWMPOLY* lwmpoly);
 Data__Geometry *encode_collection(LWCOLLECTION* lwcollection);
@@ -113,25 +113,33 @@ Data__Geometry *encode_point(LWPOINT *lwpoint) {
     return geometry;
 }
 
-/*
 Data__Geometry *encode_mpoint(LWMPOINT *lwmpoint) {
+    int i, n_lengths;
     POINTARRAY *pa;
     Data__Geometry *geometry;
+    int64_t *coords = NULL;
 
     geometry = malloc (sizeof (Data__Geometry));
     data__geometry__init(geometry);
     geometry->type = DATA__GEOMETRY__TYPE__MULTIPOINT;
 
-    pa = lwmpoint->points;
+    n_lengths = lwmpoint->ngeoms;
 
-    if (pa->npoints == 0) return geometry;
+    if (n_lengths == 0) return geometry;
+    
+    pa = ptarray_construct_empty(0, 0, n_lengths);
 
-    geometry->n_coords = pa->npoints * 2;
-    geometry->coords = encode_coords(pa, NULL, pa->npoints, 0);
+    for (i = 0; i < n_lengths; i++) {
+        POINT4D pt;
+        getPoint4d_p(lwmpoint->geoms[i]->point, 0, &pt);
+        ptarray_append_point(pa, &pt, 0);
+    }
+
+    geometry->n_coords = n_lengths * 2;
+    geometry->coords = encode_coords(pa, coords, n_lengths, 0);
 
     return geometry;
 }
-*/
 
 Data__Geometry *encode_line(LWLINE *lwline) {
     POINTARRAY *pa;
@@ -191,21 +199,23 @@ Data__Geometry *encode_poly(LWPOLY *lwpoly) {
 
 int64_t *encode_coords(POINTARRAY *pa, int64_t *coords, int len, int offset) {
     int i, c;
-    int64_t *dim;
+    int64_t *dimsum;
 
-    dim = calloc(2, sizeof (int64_t));
+    dimsum = calloc(2, sizeof (int64_t));
+
     if (offset == 0) {
         coords = malloc(sizeof (int64_t) * len * 2);
     } else {
-        coords = realloc(coords, sizeof (int64_t) * (len + offset) * 2);
+        // TODO: should not be offset * 2 but crash otherwise?
+        coords = realloc(coords, sizeof (int64_t) * ((len * 2) + offset*2));
     }
 
     c = offset;
     for (i = 0; i < len; i++) {
         const POINT2D *pt;
         pt = getPoint2d_cp(pa, i);
-        dim[0] += coords[c++] = pt->x * 10e5 - dim[0];
-        dim[1] += coords[c++] = pt->y * 10e5 - dim[1];
+        dimsum[0] += coords[c++] = pt->x * 10e5 - dimsum[0];
+        dimsum[1] += coords[c++] = pt->y * 10e5 - dimsum[1];
     }
     return coords;
 }
@@ -221,9 +231,9 @@ Data__Geometry *encode_geometry(int row, char *geom_name) {
 		return encode_line((LWLINE*)lwgeom);
 	case POLYGONTYPE:
 		return encode_poly((LWPOLY*)lwgeom);
-	/*case MULTIPOINTTYPE:
-		return encode_point((LWPOINT*)lwgeom);
-	case MULTILINETYPE:
+	case MULTIPOINTTYPE:
+		return encode_mpoint((LWMPOINT*)lwgeom);
+	/*case MULTILINETYPE:
 		return encode_point((LWPOINT*)lwgeom);
 	case MULTIPOLYGONTYPE:
 		return encode_point((LWPOINT*)lwgeom);
