@@ -1,6 +1,7 @@
 # See http://readme.drone.io/0.5/usage/overview
 pipeline:
   clone:
+    image: git
     depth: 50
     recursive: false
   build:
