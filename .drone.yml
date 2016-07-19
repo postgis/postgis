@@ -1,5 +1,8 @@
-# See http://readme.drone.io/usage/overview
+# See http://readme.drone.io/0.5/usage/overview
 pipeline:
+  clone:
+    depth: 50
+    recursive: false
   build:
     image: docker.kbt.io/postgis/build-test:trisquel
     commands:
