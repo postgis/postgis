@@ -1299,7 +1299,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->schema, state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema,
 			                     state->config->table);
 		}
 		else
@@ -1310,7 +1310,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\";\n", state->config->table);
 		}
 	}
 
