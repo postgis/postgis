@@ -9,7 +9,7 @@ pipeline:
     image: docker.kbt.io/postgis/build-test:trisquel
     commands:
       - ./autogen.sh
-      - ./configure
+      - ./configure CFLAGS="-O0 -Wall"
       - make
   check:
     image: docker.kbt.io/postgis/build-test:trisquel
