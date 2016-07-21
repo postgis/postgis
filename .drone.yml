@@ -1,10 +1,11 @@
 # See http://readme.drone.io/usage/overview
 pipeline:
   build:
+    # See https://git.osgeo.org/gogs/postgis/postgis-docker
     image: docker.kbt.io/postgis/build-test:trisquel
     commands:
       - service postgresql start
       - ./autogen.sh
-      - ./configure
+      - ./configure CFLAGS="-O0 -Wall"
       - make
       - make check
