@@ -3,9 +3,8 @@ pipeline:
   build:
     image: docker.kbt.io/postgis/build-test:trisquel
     commands:
-      - service postgresql start &
       - ./autogen.sh
       - ./configure
       - make
-      - wait 1 # for postgresql start
+      - service postgresql start
       - make check
