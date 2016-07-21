@@ -7,9 +7,9 @@ pipeline:
   build:
     image: docker.kbt.io/postgis/build-test:trisquel
     commands:
-      - service postgresql start
-      - su -l postgres -c "createuser -s `whoami`"
+      - service postgresql start &
       - ./autogen.sh
       - ./configure
       - make
+      - wait 1 # postgresql service start
       - make check
