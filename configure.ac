@@ -187,7 +187,7 @@ CAN_BUILD_PDF=${CAN_BUILD_COMMENTS}
 AC_PATH_PROG([IMAGEMAGICK], [convert], [])
 if test "x$IMAGEMAGICK" = "x"; then
 	AC_MSG_WARN([ImageMagick does not seem to be installed. Documentation cannot be built])
-  CAN_BUILD_COMMENTS=no
+  CAN_BUILD_PDF=no
 fi
 
 
