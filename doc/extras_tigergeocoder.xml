@@ -732,6 +732,8 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
           </listitem>
         </orderedlist>
         <para>Availability: 2.0.0 to support Tiger 2010 structured data and load census tract (tract), block groups (bg), and blocks (tabblocks) tables .</para>
+        <note><para>If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates long text.  To fix, change 
+         <emphasis>File -&gt; Options -&gt; Query Tool -&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger than 50000 characters.</para></note>
 
 
       </refsection>
@@ -739,14 +741,17 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
 
       <refsection>
         <title>Examples</title>
+        <para>Using psql where gistest is your database and <filename>/gisdata/data_load.sh</filename> is the file to create with the shell commands to run.</para>
+        <programlisting><![CDATA[psql -U postgres -h localhost -d gistest -A -t \
+ -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')" > /gisdata/data_load.sh;]]>
+</programlisting>
         <para>Generate script to load up data for 2 states in Windows shell script format.</para>
         <programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;
 -- result --
-set STATEDIR="\gisdata\www2.census.gov\geo\pvs\tiger2010st\44_Rhode_Island"
 set TMPDIR=\gisdata\temp\
 set UNZIPTOOL="C:\Program Files\7-Zip\7z.exe"
 set WGETTOOL="C:\wget\wget.exe"
-set PGBIN=C:\Program Files\PostgreSQL\8.4\bin\
+set PGBIN=C:\Program Files\PostgreSQL\9.4\bin\
 set PGPORT=5432
 set PGHOST=localhost
 set PGUSER=postgres
@@ -754,25 +759,33 @@ set PGPASSWORD=yourpasswordhere
 set PGDATABASE=geocoder
 set PSQL="%PGBIN%psql"
 set SHP2PGSQL="%PGBIN%shp2pgsql"
+cd \gisdata
 
-%WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --relative --recursive --level=2 --accept=zip,txt --mirror --reject=html
+cd \gisdata
+%WGETTOOL% ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html
+cd \gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE
 :
 :</programlisting>
         <para>Generate sh script</para>
         <programlisting>SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;
 -- result --
-STATEDIR="/gisdata/www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island"
 TMPDIR="/gisdata/temp/"
 UNZIPTOOL=unzip
-PGPORT=5432
-PGHOST=localhost
-PGUSER=postgres
-PGPASSWORD=yourpasswordhere
-PGDATABASE=geocoder
-PSQL=psql
-SHP2PGSQ=shp2pgsql
+WGETTOOL="/usr/bin/wget"
+export PGBIN=/usr/lib/postgresql/9.4/bin
+export PGPORT=5432
+export PGHOST=localhost
+export PGUSER=postgres
+export PGPASSWORD=yourpasswordhere
+export PGDATABASE=geocoder
+PSQL=${PGBIN}/psql
+SHP2PGSQL=${PGBIN}/shp2pgsql
+cd /gisdata
 
-wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --relative --recursive --level=2 --accept=zip,txt --mirror --reject=html
+cd /gisdata
+wget ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-parent --relative --recursive --level=2 --accept=zip --mirror --reject=html
+cd /gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE
+rm -f ${TMPDIR}/*.*
 :
 :</programlisting>
 
@@ -781,7 +794,7 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
       <!-- Optionally add a "See Also" section -->
       <refsection>
         <title>See Also</title>
-        <para></para>
+        <para><xref linkend="install_tiger_geocoder_extension" />, <xref linkend="Loader_Generate_Nation_Script" /></para>
       </refsection>
     </refentry>
 
