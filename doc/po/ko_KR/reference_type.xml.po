@@ -1,20 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2012-09-14 21:04+0000\n"
-"PO-Revision-Date: 2013-11-28 13:31+0000\n"
-"Last-Translator: BJ Jang <qgis.tr.kr@gmail.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/postgis-1/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"PO-Revision-Date: 2016-07-24 01:47+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: para
@@ -24,10 +24,7 @@ msgid ""
 "This section lists the PostgreSQL data types installed by PostGIS. Note we "
 "describe the casting behavior of these which is very important especially "
 "when designing your own functions."
-msgstr ""
-"이 섹션에서는 PostGIS에 의해 설치된 PostgreSQL의 데이터 유형을 나열합니다. 다"
-"음은 우리가 자신의 함수를 설계할 때 특히 중요한 이들의 캐스팅 동작을 설명합니"
-"다."
+msgstr "이 단원에서 PostGIS이 설치한 PostgreSQL 데이터 유형을 소개합니다. 사용자 자신의 함수를 설계할 때 특히 중요한 이 유형들의 형변환 습성(cast behavior)을 설명한다는 점에 주의하십시오."
 
 #. Tag: para
 #: reference_type.xml:8
@@ -36,16 +33,10 @@ msgid ""
 "A Cast is when one type is coerced into another type. PostgreSQL is unique "
 "from most databases in that it allows you to define casting behavior for "
 "custom types and the functions used for casting. A cast can be specified as "
-"automatic in which case, you do not have to do a CAST(myfoo As otherfootype) "
-"or myfoo::otherfootype if you are feeding it to a function that only works "
+"automatic in which case, you do not have to do a CAST(myfoo As otherfootype)"
+" or myfoo::otherfootype if you are feeding it to a function that only works "
 "with otherfootype and there is an automatic cast in place for it."
-msgstr ""
-"캐스트란 한 유형을 다른 유형으로 강제 변환하는 때를 말합니다. PostgreSQL은 사"
-"용자 정의 유형을 위한 캐스팅 동작 및 캐스팅에 사용되는 함수들을 정의할 수 있"
-"도록 한다는 점에서 대부분의 데이터베이스보다 특별합니다. otherfootype 유형만 "
-"처리하거나 자동 캐스트가 포함된 함수에 사용할 때처럼, CAST(myfoo As "
-"otherfootype) 또는 myfoo::otherfootype를 명시적으로 수행할 필요가 없는 상황에"
-"서 캐스트는 자동으로 설정될 수 있습니다. "
+msgstr "한 유형이 다른 유형으로 강제 형변환될 때 캐스트(cast)된다고 합니다. PostgreSQL은 사용자 정의 유형을 위한 형변환 습성 및 형변환에 사용되는 함수들을 정의할 수 있도록 한다는 점에서 대부분의 데이터베이스보다 특별합니다. 자동 형변환을 설정할 수 있는 경우가 있는데, 오직 otherfootype을 사용할 때만 동작하는 함수의 해당 위치에 자동 형변환이 있어서 CAST(otherfootype으로서의 myfoo) 또는 myfoo::otherfootype을 할 필요가 없는 경우입니다."
 
 #. Tag: para
 #: reference_type.xml:13
@@ -53,17 +44,11 @@ msgstr ""
 msgid ""
 "The danger of relying on automatic cast behavior is when you have an "
 "overloaded function say one that takes a box2d and one that takes a box3d "
-"but no geometry. What happens is that both functions are equally good to use "
-"with geometry since geometry has an autocast for both -- so you end up with "
-"an ambiguous function error. To force PostgreSQL to choose, you do a "
+"but no geometry. What happens is that both functions are equally good to use"
+" with geometry since geometry has an autocast for both -- so you end up with"
+" an ambiguous function error. To force PostgreSQL to choose, you do a "
 "CAST(mygeom As box3d) or mygeom::box3d."
-msgstr ""
-"자동 캐스트 동작을 사용할 때 발생할 수 있는 위험은 하나는 Box2D를 사용하고 "
-"또 하나는 지오메트리가 없는 Box3D를 사용하는 오버로드 된 함수를 사용하는 경"
-"우 입니다. 지오메트리가 두 함수 모두를 위한 자동캐스트를 가지고 있기 때문에 "
-"만약 두 함수 모두 지오메트리와 함께 사용한다면 어떤 일이 발생할까요? -- 결국 "
-"모호한 함수 오류가 발생할 것입니다. 이런 경우 PostgreSQL이 받아들일 수 있도"
-"록 CAST(mygeom As box3d) 또는 mygeom::box3d 캐스트를 사용해야 합니다."
+msgstr "오버로드된 함수가 있을 경우, 자동 형변환 습성에 의존하는 경우의 위험성을 알 수 있습니다. box2d를 사용하는 함수와 box3d를 사용하지만 도형은 사용하지 않는 함수가 있다고 해봅시다. 이때 두 함수 모두 도형과 함께 사용하기 좋습니다. 도형이 두 함수 모두에 자동 형변환을 지원하기 때문입니다. 결국 모호한 함수 오류가 발생할 것입니다. 강제로 PostgreSQL가 선택하게 하려면, CAST(mygeom As box3d) 또는 mygeom::box3d를 하십시오."
 
 #. Tag: para
 #: reference_type.xml:17
@@ -72,16 +57,13 @@ msgid ""
 "<emphasis>At least as of PostgreSQL 8.3</emphasis> - Everything can be CAST "
 "to text (presumably because of the magical unknown type), so no defined "
 "CASTS for that need to be present for you to CAST an object to text."
-msgstr ""
-"<emphasis>적어도 PostgreSQL 8.3기준에서</emphasis> (아마도 신비한 알 수 없는 "
-"타입 때문에) 모든 객체는 텍스트로 캐스트 될 수 있습니다. 따라서 객체를 텍스트"
-"로 캐스트 하기 위해 별도로 정의된 캐스트는 없습니다."
+msgstr "<emphasis>적어도 PostgreSQL 8.3기준으로</emphasis> (아마도 알려지지 않은 신비한 유형 덕분에) 모든 객체를 텍스트로 형변환할 수 있습니다. 따라서 객체를 텍스트로 형변환하기 위해 별도로 정의된 캐스트는 없습니다."
 
 #. Tag: title
 #: reference_type.xml:20
 #, no-c-format
 msgid "PostgreSQL PostGIS Geometry/Geography/Box Types"
-msgstr "PostgreSQL PostGIS Geometry/Geography/Box 유형"
+msgstr "PostgreSQL PostGIS 도형/지리형/상자 유형"
 
 #. Tag: refname
 #: reference_type.xml:24
@@ -95,9 +77,7 @@ msgstr "<refname>box2d</refname>"
 msgid ""
 "A box composed of x min, ymin, xmax, ymax. Often used to return the 2d "
 "enclosing box of a geometry."
-msgstr ""
-"xmin, ymin, xmax, ymax로 구성된 박스. 지오메트리 또는 지오메트리 컬렉션의 2차"
-"원 공간범위-2D Extent를 반환하는데 주로 사용됩니다."
+msgstr "xmin, ymin, xmax, ymax로 구성된 상자입니다. 도형을 둘러싼 2D 상자를 반환하는 데 주로 쓰입니다."
 
 #. Tag: title
 #: reference_type.xml:29 reference_type.xml:40 reference_type.xml:79
@@ -113,9 +93,7 @@ msgid ""
 "box2d is a spatial data type used to represent the enclosing box of a "
 "geometry or set of geometries. ST_Extent in earlier versions prior to "
 "PostGIS 1.4 would return a box2d."
-msgstr ""
-"box2d는 지오메트리나 지오메트리 셋을 둘러싸는 박스를 표현하는데 사용하는 공"
-"간 데이터 타입입니다. PostGIS 1.4 이전 버전으 ST_Extent는 box2d를 반환합니다."
+msgstr "box2d는 도형 또는 도형 집합을 둘러싸는 상자를 표현하는 데 쓰이는 공간 데이터 유형입니다. PostGIS 1.4 이전 버전의 ST_Extent가 box2d를 반환할 것입니다."
 
 #. Tag: refname
 #: reference_type.xml:35
@@ -129,9 +107,7 @@ msgstr "<refname>box3d</refname>"
 msgid ""
 "A box composed of x min, ymin, zmin, xmax, ymax, zmax. Often used to return "
 "the 3d extent of a geometry or collection of geometries."
-msgstr ""
-"xmin, ymin, zmin, xmax, ymax, zmax로 구성된 박스. 지오메트리 또는 지오메트리 "
-"컬렉션의 3차원 공간범위-3D Extent를 반환하는데 주로 사용됩니다."
+msgstr "xmin, ymin, zmin, xmax, ymax, zmax로 구성된 상자입니다. 도형 또는 도형 집합의 3D 범위를 반환하는 데 주로 쓰입니다."
 
 #. Tag: para
 #: reference_type.xml:41
@@ -139,15 +115,13 @@ msgstr ""
 msgid ""
 "box3d is a postgis spatial data type used to represent the enclosing box of "
 "a geometry or set of geometries. ST_3DExtent returns a box3d object."
-msgstr ""
-"box3d 지오메트리 또는 지오메트리 셋의 범위를 표현하는데 사용되는 postgis 공"
-"간 데이터 타입입니다. ST_3DExtent는 box3d 객체를 반환합니다."
+msgstr "box3d는 도형 또는 도형 집합을 둘러싸는 상자를 표현하는 데 쓰이는 PostGIS 공간 데이터 유형입니다. ST_3DExtent가 box3d 객체를 반환할 것입니다."
 
 #. Tag: title
 #: reference_type.xml:45 reference_type.xml:84 reference_type.xml:160
 #, no-c-format
 msgid "Casting Behavior"
-msgstr "캐스팅 동작"
+msgstr "형변환 습성"
 
 #. Tag: para
 #: reference_type.xml:46 reference_type.xml:85 reference_type.xml:161
@@ -155,9 +129,7 @@ msgstr "캐스팅 동작"
 msgid ""
 "This section lists the automatic as well as explicit casts allowed for this "
 "data type"
-msgstr ""
-"이 섹션에는 자동 형변환 뿐만 아니라 이 데이터 유형에 허용되는 명시적 캐스팅"
-"이 나열됩니다. "
+msgstr "이 단원에서 이런 데이터 유형에 사용할 수 있는 자동 형변환은 물론 명시적인 형변환도 소개합니다."
 
 #. Tag: entry
 #: reference_type.xml:51 reference_type.xml:90 reference_type.xml:166
@@ -169,7 +141,7 @@ msgstr "변환 대상"
 #: reference_type.xml:52 reference_type.xml:91 reference_type.xml:167
 #, no-c-format
 msgid "Behavior"
-msgstr "동작"
+msgstr "습성"
 
 #. Tag: entry
 #: reference_type.xml:55 reference_type.xml:94
@@ -207,7 +179,7 @@ msgstr "<refname>geometry</refname>"
 #: reference_type.xml:75
 #, no-c-format
 msgid "Planar spatial data type."
-msgstr "평면 공간 데이터 타입."
+msgstr "평면 공간 데이터 유형"
 
 #. Tag: para
 #: reference_type.xml:80
@@ -215,9 +187,7 @@ msgstr "평면 공간 데이터 타입."
 msgid ""
 "geometry is a fundamental postgis spatial data type used to represent a "
 "feature in the Euclidean coordinate system."
-msgstr ""
-"geometry는 기초적인 postgis 공간 데이터 타입으로 유클리드 좌표계에서 피처를 "
-"기술하는데 사용됩니다."
+msgstr "도형은 기초적인 PostGIS 공간 데이터 유형으로, 유클리드 좌표계에 있는 피처를 표현하는 데 쓰입니다."
 
 #. Tag: entry
 #: reference_type.xml:102
@@ -247,7 +217,7 @@ msgstr "text"
 #: reference_type.xml:123 reference_type.xml:143 reference_type.xml:179
 #, no-c-format
 msgid "See Also"
-msgstr "관련 정보"
+msgstr "참고"
 
 #. Tag: refname
 #: reference_type.xml:130
@@ -262,9 +232,7 @@ msgid ""
 "A spatial datatype with two fields - geom (holding a geometry object) and "
 "path[] (a 1-d array holding the position of the geometry within the dumped "
 "object.)"
-msgstr ""
-"공간 데이터 타입은 두 필드를 가집니다 - geom(지오메트리 객체를 보관)와 path[]"
-"(1차원 배열로 덤프된 오브젝트에서 지오메트리의 위치를 보관)"
+msgstr "(도형 객체를 담고 있는) geom과 (덤프된 객체 내부에 있는 도형의 위치를 담고 있는 1차원 배열인) path[], 두 개의 필드를 가진 공간 데이터 유형입니다."
 
 #. Tag: para
 #: reference_type.xml:137
@@ -276,12 +244,7 @@ msgid ""
 "navigation path within the dumped geometry to find this element. It is used "
 "by the ST_Dump* family of functions as an output type to explode a more "
 "complex geometry into its constituent parts and location of parts."
-msgstr ""
-"geometry_dump은 복합 데이터 타입으로 .geom 필드와 path[]로 구성되는 지오메트"
-"리 오브젝트입니다. path는 1차원 정수 배열(1에서부터 시작. 예: path[1]의 첫번"
-"째 요소)로 부어 넣어진 지오메트리에서의 내비게이션 경로를 정의하는 배열입니"
-"다. 이것은  ST_Dump* 계열의 함수에서 더 복잡한 형상을 이를 구성하는 부분이나 "
-"부분의 위치로 분해하기 위한 출력 타입으로 사용됩니다."
+msgstr "geometry_dump은 복합 데이터 유형으로, .geom 필드가 참조하는 도형 객체와 해당 요소를 찾기 위한, 덤프된 도형 내부에 있는 탐색 경로를 정의하는 path[] 1차원 정수 배열(1에서 시작하므로 첫 번째 요소를 얻으려면 path[1]을 사용)로 구성됩니다. ST_Dump* 계열 함수가 더 복잡한 도형을 구성 요소의 조각들로, 그리고 해당 조각들의 위치로 분해하기 위해 이 유형을 출력물 유형으로 이용합니다."
 
 #. Tag: refname
 #: reference_type.xml:150
@@ -293,7 +256,7 @@ msgstr "<refname>geography</refname>"
 #: reference_type.xml:151
 #, no-c-format
 msgid "Ellipsoidal spatial data type."
-msgstr "구면 공간 데이터 유형"
+msgstr "타원체 공간 데이터 유형"
 
 #. Tag: para
 #: reference_type.xml:156
@@ -301,9 +264,7 @@ msgstr "구면 공간 데이터 유형"
 msgid ""
 "geography is a spatial data type used to represent a feature in the round-"
 "earth coordinate system."
-msgstr ""
-"geography는 지구곡면 좌표계에서 피처를 표현하는데 사용되는 공간 데이터 타입입"
-"니다."
+msgstr "지리형은 지구 곡면(round-earth) 좌표계에 있는 피처를 표현하는 데 쓰이는 공간 데이터 유형입니다."
 
 #. Tag: entry
 #: reference_type.xml:171

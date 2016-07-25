@@ -1,96 +1,96 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2012-09-14 17:50+0000\n"
-"PO-Revision-Date: 2013-11-26 14:23+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/postgis-1/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"PO-Revision-Date: 2016-06-28 09:12+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
 #: reporting.xml:3
 #, no-c-format
 msgid "Reporting Problems"
-msgstr ""
+msgstr "문제점 보고하기"
 
 #. Tag: title
 #: reporting.xml:6
 #, no-c-format
 msgid "Reporting Software Bugs"
-msgstr ""
+msgstr "소프트웨어 버그 보고하기"
 
 #. Tag: para
 #: reporting.xml:8
 #, no-c-format
 msgid ""
-"Reporting bugs effectively is a fundamental way to help PostGIS development. "
-"The most effective bug report is that enabling PostGIS developers to "
+"Reporting bugs effectively is a fundamental way to help PostGIS development."
+" The most effective bug report is that enabling PostGIS developers to "
 "reproduce it, so it would ideally contain a script triggering it and every "
 "information regarding the environment in which it was detected. Good enough "
 "info can be extracted running <code>SELECT postgis_full_version()</code> "
 "[for postgis] and <code>SELECT version()</code> [for postgresql]."
-msgstr ""
+msgstr "버그를 보고하는 것은 실질적으로 PostGIS 개발을 도와주는 근본적인 방법입니다. 가장 효과적인 버그 리포트는 PostGIS 개발자들이 해당 버그를 다시 재현할 수 있도록 하는 것이기 때문에, 이상적으로는 버그를 유발한 스크립트 및 버그가 발생한 환경에 관련된 모든 정보를 담고 있어야 할 것입니다. (PostGIS의 경우) <code>SELECT postgis_full_version()</code> 을, 그리고 (PostgreSQL의 경우) <code>SELECT version()</code> 을 실행하면 쓸 만한 정보를 추출할 수 있습니다."
 
 #. Tag: para
 #: reporting.xml:16
 #, no-c-format
 msgid ""
 "If you aren't using the latest release, it's worth taking a look at its "
-"<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</"
-"ulink> first, to find out if your bug has already been fixed."
-msgstr ""
+"<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release "
+"changelog</ulink> first, to find out if your bug has already been fixed."
+msgstr "최신 배포판을 사용하지 않을 경우, 먼저 <ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</ulink> 를 살펴보고 사용자의 버그가 이미 수정됐는지 알아보는 것도 중요합니다."
 
 #. Tag: para
 #: reporting.xml:21
 #, no-c-format
 msgid ""
-"Using the <ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug tracker</"
-"ulink> will ensure your reports are not discarded, and will keep you "
-"informed on its handling process. Before reporting a new bug please query "
-"the database to see if it is a known one, and if it is please add any new "
-"information you have about it."
-msgstr ""
+"Using the <ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug "
+"tracker</ulink> will ensure your reports are not discarded, and will keep "
+"you informed on its handling process. Before reporting a new bug please "
+"query the database to see if it is a known one, and if it is please add any "
+"new information you have about it."
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug tracker</ulink> 를 이용하면 사용자의 보고가 무시되지 않으며, 사용자에게 어떻게 처리되고 있는지 계속 알려줄 것입니다. 새 버그를 보고하기 전에 이미 알려진 버그인지 아닌지 알아보기 위해 데이터베이스를 쿼리해보십시오. 그리고 진행중인 버그일 경우, 사용자가 어떤 새로운 정보라도 가지고 있다면 추가해주십시오."
 
 #. Tag: para
 #: reporting.xml:28
 #, no-c-format
 msgid ""
-"You might want to read Simon Tatham's paper about <ulink url=\"http://www."
-"chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
-"ulink> before filing a new report."
-msgstr ""
+"You might want to read Simon Tatham's paper about <ulink "
+"url=\"http://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report "
+"Bugs Effectively</ulink> before filing a new report."
+msgstr "새 보고를 작성하기 전에 <ulink url=\"http://www.chiark.greenend.org.uk/~sgtatham/bugs.html\">효과적으로 버그를 보고하는 방법</ulink> 에 대한 사이먼 테이섬(Simon Tatham)의 글을 읽어보는 편이 좋습니다."
 
 #. Tag: title
 #: reporting.xml:34
 #, no-c-format
 msgid "Reporting Documentation Issues"
-msgstr ""
+msgstr "문서 문제점 보고하기"
 
 #. Tag: para
 #: reporting.xml:36
 #, no-c-format
 msgid ""
-"The documentation should accurately reflect the features and behavior of the "
-"software. If it doesn't, it could be because of a software bug or because "
+"The documentation should accurately reflect the features and behavior of the"
+" software. If it doesn't, it could be because of a software bug or because "
 "the documentation is in error or deficient."
-msgstr ""
+msgstr "문서는 소프트웨어의 기능 및 습성을 정확하게 반영해야 합니다. 그렇지 않을 경우, 소프트웨어 버그 때문이거나 문서에 오류 또는 결함이 있기 때문일 수 있습니다."
 
 #. Tag: para
 #: reporting.xml:40
 #, no-c-format
 msgid ""
-"Documentation issues can also be reported to the <ulink url=\"http://trac."
-"osgeo.org/postgis\">PostGIS bug tracker</ulink>."
-msgstr ""
+"Documentation issues can also be reported to the <ulink "
+"url=\"http://trac.osgeo.org/postgis\">PostGIS bug tracker</ulink>."
+msgstr "문서 문제점 또한 <ulink url=\"http://trac.osgeo.org/postgis\">PostGIS bug tracker</ulink> 로 보고할 수 있습니다."
 
 #. Tag: para
 #: reporting.xml:44
@@ -98,7 +98,7 @@ msgstr ""
 msgid ""
 "If your revision is trivial, just describe it in a new bug tracker issue, "
 "being specific about its location in the documentation."
-msgstr ""
+msgstr "사용자의 정정 사항이 사소할 경우, 그냥 문서의 어떤 위치에 있는지 정확하게 밝힌 상태로 새 버그 트래커 이슈에 설명한 다음 발행하십시오."
 
 #. Tag: para
 #: reporting.xml:47
@@ -107,25 +107,25 @@ msgid ""
 "If your changes are more extensive, a Subversion patch is definitely "
 "preferred. This is a four step process on Unix (assuming you already have "
 "<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
-msgstr ""
+msgstr "사용자의 정정 사항이 좀 더 광범위할 경우, Subversion 패치를 이용하는 편이 훨씬 좋습니다. 다음은 유닉스 상의 4단계 과정입니다(사용자가 이미 <ulink url=\"http://subversion.apache.org/\">Subversion</ulink> 을 설치했다고 가정합니다):"
 
 #. Tag: para
 #: reporting.xml:54
 #, no-c-format
 msgid "Check out a copy of PostGIS' Subversion trunk. On Unix, type:"
-msgstr ""
+msgstr "PostGIS의 Subversion 트렁크(trunk)의 복사본을 확인하십시오. 유닉스 상에서 다음과 같이 입력합니다:"
 
 #. Tag: command
 #: reporting.xml:57
 #, no-c-format
 msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
-msgstr ""
+msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/"
 
 #. Tag: para
 #: reporting.xml:60
 #, no-c-format
 msgid "This will be stored in the directory ./trunk"
-msgstr ""
+msgstr "이 복사본을 \"./trunk\" 디렉터리에 저장할 것입니다."
 
 #. Tag: para
 #: reporting.xml:64
@@ -133,22 +133,22 @@ msgstr ""
 msgid ""
 "Make your changes to the documentation with your favorite text editor. On "
 "Unix, type (for example):"
-msgstr ""
+msgstr "문서에 대한 사용자의 정정 사항을 원하는 편집기로 수정하십시오. 유닉스 상에서 (예를 들어) 다음과 같이 입력합니다:"
 
 #. Tag: command
 #: reporting.xml:67
 #, no-c-format
 msgid "vim trunk/doc/postgis.xml"
-msgstr ""
+msgstr "vim trunk/doc/postgis.xml"
 
 #. Tag: para
 #: reporting.xml:69
 #, no-c-format
 msgid ""
 "Note that the documentation is written in DocBook XML rather than HTML, so "
-"if you are not familiar with it please follow the example of the rest of the "
-"documentation."
-msgstr ""
+"if you are not familiar with it please follow the example of the rest of the"
+" documentation."
+msgstr "문서가 HTML이 아니라 DocBook XML 서식으로 작성된다는 점에 주의하십시오. 따라서 사용자가 DocBook XML에 익숙하지 않다면, 문서의 다른 부분에 있는 예를 따라주십시오."
 
 #. Tag: para
 #: reporting.xml:75
@@ -156,16 +156,16 @@ msgstr ""
 msgid ""
 "Make a patch file containing the differences from the master copy of the "
 "documentation. On Unix, type:"
-msgstr ""
+msgstr "문서의 복사본 원본으로부터 변경 사항을 담고 있는 패치 파일을 만드십시오. 유닉스 상에서 다음과 같이 입력합니다:"
 
 #. Tag: command
 #: reporting.xml:78
 #, no-c-format
 msgid "svn diff trunk/doc/postgis.xml &gt; doc.patch"
-msgstr ""
+msgstr "svn diff trunk/doc/postgis.xml &gt; doc.patch"
 
 #. Tag: para
 #: reporting.xml:83
 #, no-c-format
 msgid "Attach the patch to a new issue in bug tracker."
-msgstr ""
+msgstr "새 버그 트래커 이슈에 패치 파일을 첨부하십시오."

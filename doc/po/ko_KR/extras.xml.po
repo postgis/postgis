@@ -1,26 +1,26 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-10-14 22:30+0000\n"
-"PO-Revision-Date: 2014-10-14 22:34+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/postgis-1/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"PO-Revision-Date: 2016-06-27 02:53+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
 #: extras.xml:3
 #, no-c-format
 msgid "PostGIS Extras"
-msgstr ""
+msgstr "PostGIS 추가 기능"
 
 #. Tag: para
 #: extras.xml:5
@@ -30,10 +30,10 @@ msgid ""
 "source tarballs and source repository. These are not always packaged with "
 "PostGIS binary releases, but are usually plpgsql based or standard shell "
 "scripts that can be run as is."
-msgstr ""
+msgstr "이 장에서는 PostGIS 소스 TAR 파일 및 소스 저장소의 \"extras\" 폴더에서 찾을 수 있는 기능에 대해 문서화합니다. 이 기능들이 항상 PostGIS 바이너리 배포판에 함께 패키징되지는 않지만, 일반적으로 PL/pgSQL 기반이거나 또는 그대로 실행할 수 있는 표준 셸 스크립트입니다."
 
 #. Tag: chapter
 #: extras.xml:6
 #, no-c-format
 msgid "&extras_tigergeocoder;"
-msgstr ""
+msgstr "&extras_tigergeocoder;"

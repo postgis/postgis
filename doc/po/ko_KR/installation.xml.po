@@ -1,34 +1,34 @@
 # SOME DESCRIPTIVE TITLE.
-#
+# 
 # Translators:
 # BJ Jang <qgis.tr.kr@gmail.com>, 2013
 # Hyungjoo Lee <procarrie@hotmail.com>, 2013
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
-"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
-"language/ko_KR/)\n"
-"Language: ko_KR\n"
+"PO-Revision-Date: 2016-07-24 01:58+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
 #: installation.xml:3
 #, no-c-format
 msgid "PostGIS Installation"
-msgstr ""
+msgstr "PostGIS 설치"
 
 #. Tag: para
 #: installation.xml:5
 #, no-c-format
 msgid "This chapter details the steps required to install PostGIS."
-msgstr "이 장에서는 PostGIS를 설치하기 위해 요구되는 모든 과정들을 설명합니다."
+msgstr "이 장에서는 PostGIS 설치에 요구되는 모든 과정을 설명합니다."
 
 #. Tag: title
 #: installation.xml:10
@@ -40,7 +40,7 @@ msgstr "짧은 설명"
 #: installation.xml:11
 #, no-c-format
 msgid "To compile assuming you have all the dependencies in your search path:"
-msgstr ""
+msgstr "사용자의 검색 경로에 모든 의존성이 설정되어 있을 깨 컴파일하려면:"
 
 #. Tag: programlisting
 #: installation.xml:12
@@ -51,7 +51,7 @@ msgid ""
 "./configure\n"
 "make\n"
 "make install"
-msgstr ""
+msgstr "tar xvfz postgis-&last_release_version;.tar.gz\ncd postgis-&last_release_version;\n./configure\nmake\nmake install"
 
 #. Tag: para
 #: installation.xml:13
@@ -59,7 +59,7 @@ msgstr ""
 msgid ""
 "Once postgis is installed, it needs to be enabled in each individual "
 "database you want to use it in."
-msgstr ""
+msgstr "PostGIS가 설치되면, PostGIS를 사용하고자 하는 모든 데이터베이스 각각에서 활성화해야 합니다."
 
 #. Tag: para
 #: installation.xml:14
@@ -69,7 +69,7 @@ msgid ""
 "enabling using the PostgreSQL 9.1+ extensions model raster is required. "
 "Using the extension enable process is preferred and more user-friendly. To "
 "spatially enable your database:"
-msgstr ""
+msgstr "현재 래스터 지원은 옵션으로 선택할 수 있지만, 설치에 기본적으로 포함됩니다. 래스터 지원을 활성화시키려면 PostgreSQL 9.1+ 확장 프로그램 모델 래스터를 사용해야 합니다. 확장 프로그램 활성화 처리가 좀 더 사용자 친화적이고 선호되는 방법입니다. 사용자 데이터베이스를 공간적으로 활성화시키려면:"
 
 #. Tag: programlisting
 #: installation.xml:15
@@ -87,17 +87,17 @@ msgid ""
 "-- if you installed with pcre\n"
 "-- you should have address standardizer extension as well\n"
 "psql -d yourdatabase -c \"CREATE EXTENSION address_standardizer;\""
-msgstr ""
+msgstr "psql -d yourdatabase -c \"CREATE EXTENSION postgis;\"\npsql -d yourdatabase -c \"CREATE EXTENSION postgis_topology;\"\n-- SFCGAL 지원과 함께 빌드했을 경우 --\npsql -d yourdatabase -c \"CREATE EXTENSION postgis_sfcgal;\"\n\n-- TIGER 지오코더를 설치하려 할 경우 --\npsql -d yourdatabase -c \"CREATE EXTENSION fuzzystrmatch\"\npsql -d yourdatabase -c \"CREATE EXTENSION postgis_tiger_geocoder;\"\n\n-- PCRE와 함께 설치한 경우\n-- 주소 표준화 도구 확장 프로그램도 설치해야 합니다.\npsql -d yourdatabase -c \"CREATE EXTENSION address_standardizer;\""
 
 #. Tag: para
 #: installation.xml:18
 #, no-c-format
 msgid ""
-"Please refer to <xref linkend=\"make_install_postgis_extensions\"/> for more "
-"details about querying installed/available extensions and upgrading "
+"Please refer to <xref linkend=\"make_install_postgis_extensions\"/> for more"
+" details about querying installed/available extensions and upgrading "
 "extensions, or switching from a non-extension install to an extension "
 "install."
-msgstr ""
+msgstr "설치된/사용가능한 확장 프로그램을 쿼리하거나, 확장 프로그램을 업그레이드하거나, 확장 프로그램 제외 설치를 확장 프로그램 포함 설치로 변환하는 데 대한 상세한 정보는 <xref linkend=\"make_install_postgis_extensions\"/> 를 참조하십시오."
 
 #. Tag: para
 #: installation.xml:20
@@ -106,15 +106,15 @@ msgid ""
 "For those running who decided for some reason not to compile with raster "
 "support, or just are old-fashioned, here are longer more painful "
 "instructions for you:"
-msgstr ""
+msgstr "어떤 이유에서든 래스터 지원을 제외하고 컴파일했거나, 그저 구식을 선호하는 사용자를 위한 더 길고 더 강력한 지침이 존재합니다."
 
 #. Tag: para
 #: installation.xml:21
 #, no-c-format
 msgid ""
-"All the .sql files once installed will be installed in share/contrib/postgis-"
-"&last_minor_version; folder of your PostgreSQL install"
-msgstr ""
+"All the .sql files once installed will be installed in "
+"share/contrib/postgis-&last_minor_version; folder of your PostgreSQL install"
+msgstr "설치시 모든 .sql 파일은 사용자의 PostgreSQL 설치 디렉터리의 share/contrib/postgis-&last_minor_version; 폴더에 설치됩니다."
 
 #. Tag: programlisting
 #: installation.xml:24
@@ -132,7 +132,7 @@ msgid ""
 "--if you built with sfcgal support --\n"
 "psql -d yourdatabase -f sfcgal.sql\n"
 "psql -d yourdatabase -f sfcgal_comments.sql"
-msgstr ""
+msgstr "createdb yourdatabase\ncreatelang plpgsql yourdatabase\npsql -d yourdatabase -f postgis.sql\npsql -d yourdatabase -f postgis_comments.sql\npsql -d yourdatabase -f spatial_ref_sys.sql\npsql -d yourdatabase -f rtpostgis.sql\npsql -d yourdatabase -f raster_comments.sql\npsql -d yourdatabase -f topology.sql\npsql -d yourdatabase -f topology_comments.sql\n-- SFCGAL 지원과 함께 빌드했을 경우 --\npsql -d yourdatabase -f sfcgal.sql\npsql -d yourdatabase -f sfcgal_comments.sql"
 
 #. Tag: para
 #: installation.xml:26
@@ -140,9 +140,7 @@ msgstr ""
 msgid ""
 "The rest of this chapter goes into detail each of the above installation "
 "steps."
-msgstr ""
-"이 장 나머지 부분에서는 위에서 설명된 각 설치 순서에 관한 자세한 정보를 다룹"
-"니다."
+msgstr "이 장 나머지 부분에서는 앞에 설명한 각 설치 순서에 관해 더 자세히 다룹니다."
 
 #. Tag: para
 #: installation.xml:31
@@ -152,41 +150,41 @@ msgid ""
 "by default. In order to re-enable these, you need to set the following "
 "environment variables <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> and "
 "<varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> in the server environment. "
-"For PostGIS 2.2, you can use the more cross-platform approach of setting the "
-"corresponding <xref linkend=\"PostGIS_GUC\"/>."
-msgstr ""
+"For PostGIS 2.2, you can use the more cross-platform approach of setting the"
+" corresponding <xref linkend=\"PostGIS_GUC\"/>."
+msgstr "PostGIS 2.1.3 버전부터 DB 외부 래스터(out-of-db raster; 래스터를 DB에 넣지 않고 Path만 넣는 방식)와 모든 래스터 드라이버는 기본적으로 비활성화되어 있습니다. 이를 다시 활성화하려면 서버 환경에서 다음 <varname>POSTGIS_GDAL_ENABLED_DRIVERS</varname> 와 <varname>POSTGIS_ENABLE_OUTDB_RASTERS</varname> 환경변수들을 설정해야 합니다. PostGIS 2.2 버전의 경우, <xref linkend=\"PostGIS_GUC\"/> 에 해당하는 보다 크로스 플랫폼적인 설정 방식을 쓸 수 있습니다."
 
 #. Tag: para
 #: installation.xml:34
 #, no-c-format
 msgid "If you want to enable offline raster:"
-msgstr ""
+msgstr "오프라인 래스터를 활성화하고자 할 경우:"
 
 #. Tag: programlisting
 #: installation.xml:35
 #, no-c-format
 msgid "POSTGIS_ENABLE_OUTDB_RASTERS=1"
-msgstr ""
+msgstr "POSTGIS_ENABLE_OUTDB_RASTERS=1"
 
 #. Tag: para
 #: installation.xml:36
 #, no-c-format
 msgid "Any other setting or no setting at all will disable out of db rasters."
-msgstr ""
+msgstr "설정을 이와 다르게 하거나, 아예 하지 않을 경우 DB 외부 래스터가 비활성화될 것입니다."
 
 #. Tag: para
 #: installation.xml:37
 #, no-c-format
 msgid ""
-"In order to enable all GDAL drivers available in your GDAL install, set this "
-"environment variable as follows"
-msgstr ""
+"In order to enable all GDAL drivers available in your GDAL install, set this"
+" environment variable as follows"
+msgstr "사용자가 설치한 GDAL에서 사용 가능한 모든 GDAL 드라이버를 활성화하려면, 환경변수를 다음과 같이 설정하십시오."
 
 #. Tag: programlisting
 #: installation.xml:38
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=ENABLE_ALL"
 
 #. Tag: para
 #: installation.xml:39
@@ -194,19 +192,19 @@ msgstr ""
 msgid ""
 "If you want to only enable specific drivers, set your environment variable "
 "as follows:"
-msgstr ""
+msgstr "특정 드라이버들만 활성화하고자 한다면, 환경변수를 다음과 같이 설정하십시오."
 
 #. Tag: programlisting
 #: installation.xml:40
 #, no-c-format
 msgid "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
-msgstr ""
+msgstr "POSTGIS_GDAL_ENABLED_DRIVERS=\"GTiff PNG JPEG GIF XYZ\""
 
 #. Tag: para
 #: installation.xml:42
 #, no-c-format
 msgid "If you are on windows, do not quote the driver list"
-msgstr ""
+msgstr "윈도우 환경일 경우 드라이버 목록에 따옴표를 쓰지 않습니다."
 
 #. Tag: para
 #: installation.xml:44
@@ -214,22 +212,22 @@ msgstr ""
 msgid ""
 "Setting environment variables varies depending on OS. For PostgreSQL "
 "installed on Ubuntu or Debian via apt-postgresql, the preferred way is to "
-"edit <filename>/etc/postgresql/<replaceable>9.3</replaceable>/"
-"<replaceable>main</replaceable>/environment</filename> where 9.3 refers to "
-"version of PostgreSQL and main refers to the cluster."
-msgstr ""
+"edit "
+"<filename>/etc/postgresql/<replaceable>9.3</replaceable>/<replaceable>main</replaceable>/environment</filename>"
+" where 9.3 refers to version of PostgreSQL and main refers to the cluster."
+msgstr "환경변수 설정 작업은 OS에 따라 달라집니다. apt-postgresql을 통해 우분투 또는 데비안에 설치된 PostgreSQL의 경우 <filename>/etc/postgresql/<replaceable>9.3</replaceable>/<replaceable>main</replaceable>/environment</filename> 을 편집하는 방식이 선호됩니다. 이때 9.3은 PostgreSQL의 버전이고 main은 클러스터를 가리킵니다."
 
 #. Tag: para
 #: installation.xml:47
 #, no-c-format
 msgid ""
 "On windows, if you are running as a service, you can set via System "
-"variables which for Windows 7 you can get to by right-clicking on Computer-"
-"&gt;Properties Advanced System Settings or in explorer navigating to "
-"<varname>Control Panel\\All Control Panel Items\\System</varname>. Then "
+"variables which for Windows 7 you can get to by right-clicking on "
+"Computer-&gt;Properties Advanced System Settings or in explorer navigating "
+"to <varname>Control Panel\\All Control Panel Items\\System</varname>. Then "
 "clicking <emphasis>Advanced System Settings -&gt;Advanced->Environment "
 "Variables</emphasis> and adding new system variables."
-msgstr ""
+msgstr "윈도우의 경우, 서비스 형태로 실행하고 있다면 Computer-&gt;Properties Advanced System Settings를 오른쪽 클릭하거나(윈도우7) 파일 탐색기에서 <varname>Control Panel\\All Control Panel Items\\System</varname> 을 찾아 시스템 변수를 설정할 수 있습니다. 그 다음 <emphasis>Advanced System Settings -&gt;Advanced->Environment Variables</emphasis> 를 클릭해서 새 시스템 변수를 추가하십시오."
 
 #. Tag: para
 #: installation.xml:49
@@ -237,26 +235,25 @@ msgstr ""
 msgid ""
 "After you set the environment variables, you'll need to restart your "
 "PostgreSQL service for the changes to take effect."
-msgstr ""
+msgstr "환경변수를 설정한 다음, 변경 사항을 적용하려면 PostgreSQL 서비스를 재시작해야 합니다."
 
 #. Tag: title
 #: installation.xml:53
 #, no-c-format
 msgid "Install Requirements"
-msgstr ""
+msgstr "설치 요구사항"
 
 #. Tag: para
 #: installation.xml:55
 #, no-c-format
 msgid "PostGIS has the following requirements for building and usage:"
-msgstr ""
-"PostGIS를 구축하고 사용하기 위해서는 다음과 같은 요구사항들이 필요합니다."
+msgstr "PostGIS를 빌드하고 사용하기 위해서는 다음과 같은 요구사항들을 만족해야 합니다."
 
 #. Tag: emphasis
 #: installation.xml:60
 #, no-c-format
 msgid "Required"
-msgstr "필수사항"
+msgstr "필수 사항"
 
 #. Tag: para
 #: installation.xml:65
@@ -264,26 +261,18 @@ msgstr "필수사항"
 msgid ""
 "PostgreSQL &min_postgres_version; or higher. A complete installation of "
 "PostgreSQL (including server headers) is required. PostgreSQL is available "
-"from <ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org </"
-"ulink> ."
-msgstr ""
-"PostgreSQL &min_postgres_version; 혹은 그 이후 버전. PostgreSQL의 완전 설치"
-"(서버 헤더 포함)가 필요합니다. PostgreSQL은 <ulink url=\"http://www."
-"postgresql.org\"> http://www.postgresql.org </ulink>에서 이용 가능합니다."
+"from <ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org "
+"</ulink> ."
+msgstr "PostgreSQL &min_postgres_version; 또는 이후 버전. PostgreSQL을 (서버 헤더 포함) 완전 설치해야 합니다. PostgreSQL은 <ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org </ulink>에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:74
 #, no-c-format
 msgid ""
 "For a full PostgreSQL / PostGIS support matrix and PostGIS/GEOS support "
-"matrix refer to <ulink url=\"http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/"
-"UsersWikiPostgreSQLPostGIS</ulink>"
-msgstr ""
-"전체 PostgreSQL / PostGIS 지원 매트릭스 및 PostGIS/GEOS 지원 매트릭스는 "
-"<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS"
-"\">http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>를 참"
-"조하십시오."
+"matrix refer to <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink>"
+msgstr "전체 PostgreSQL/PostGIS 지원 매트릭스 및 PostGIS/GEOS 지원 매트릭스는 <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS\">http://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS</ulink> 를 참조하십시오."
 
 #. Tag: para
 #: installation.xml:80
@@ -292,26 +281,18 @@ msgid ""
 "GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can "
 "be used to compile PostGIS, but we find far fewer problems when compiling "
 "with <filename>gcc</filename>."
-msgstr ""
-"GNU C compiler (<filename>gcc</filename>). 그 밖에 다른 ANSI C 컴파일러들이 "
-"PostGIS를 컴파일하기 위해 사용될 수 있으나 <filename>gcc</filename>로 컴파일 "
-"했을 경우 훨씬 적은 오류가 발생됩니다. "
+msgstr "GNU C 컴파일러(<filename>gcc</filename>). PostGIS를 컴파일하기 위해 그 밖에 다른 ANSI C 컴파일러들을 사용할 수 있으나 <filename>gcc</filename> 로 컴파일했을 경우 오류가 훨씬 적게 발생합니다. "
 
 #. Tag: para
 #: installation.xml:88
 #, no-c-format
 msgid ""
-"GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many "
-"systems, GNU <filename>make</filename> is the default version of make. Check "
-"the version by invoking <filename>make -v</filename>. Other versions of "
-"<filename>make</filename> may not process the PostGIS <filename>Makefile</"
-"filename> properly."
-msgstr ""
-"GNU Make (<filename>gmake</filename> 혹은 <filename>make</filename>). 많은 시"
-"스템들에서 GNU <filename>make</filename>는 make의 기본 버전입니다. "
-"<filename>make -v</filename>를 통해 버전을 확인하십시오. 다른 make버전들의 경"
-"우 PostGIS <filename>Makefile</filename>을 제대로 처리하지 못할 수 도 있습니"
-"다."
+"GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many"
+" systems, GNU <filename>make</filename> is the default version of make. "
+"Check the version by invoking <filename>make -v</filename>. Other versions "
+"of <filename>make</filename> may not process the PostGIS "
+"<filename>Makefile</filename> properly."
+msgstr "GNU Make(<filename>gmake</filename> 또는 <filename>make</filename>). 많은 시스템들에서 GNU <filename>make</filename> 는 make의 기본 버전입니다. <filename>make -v</filename>를 통해 버전을 확인하십시오. 다른 버전의 make는 PostGIS <filename>Makefile</filename>을 제대로 처리하지 못 할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:98
@@ -321,11 +302,7 @@ msgid ""
 "used to provide coordinate reprojection support within PostGIS. Proj4 is "
 "available for download from <ulink url=\"http://trac.osgeo.org/proj/\"> "
 "http://trac.osgeo.org/proj/ </ulink> ."
-msgstr ""
-"Proj4 투영 및 좌표변환 라이브러리 4.6.0 또는 그 이상 버전.  Proj4 라이브러리"
-"는 PostGIS 내에서 투영 및 좌표변환을 제공하기 위해서 사용됩니다.  proj4는 "
-"<ulink url=\"http://trac.osgeo.org/proj/\"> http://trac.osgeo.org/proj/ </"
-"ulink>에서 다운로드 가능합니다."
+msgstr "Proj4 재투영 라이브러리 4.6.0 또는 이후 버전.  Proj4 라이브러리는 PostGIS 내에서 좌표 재투영을 제공하는 데 사용됩니다.  Proj4는 <ulink url=\"http://trac.osgeo.org/proj/\"> http://trac.osgeo.org/proj/ </ulink> 에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:110
@@ -333,12 +310,12 @@ msgstr ""
 msgid ""
 "GEOS geometry library, version 3.3 or greater, but GEOS 3.5+ is recommended "
 "to take full advantage of all the new functions and features. Without GEOS "
-"3.5, you will be missing some major enhancements such as <xref linkend="
-"\"ST_ClipByBox2D\"/> and <xref linkend=\"ST_Subdivide\"/>. GEOS is available "
-"for download from <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac."
-"osgeo.org/geos/ </ulink> and 3.4+ is backward-compatible with older versions "
-"so fairly safe to upgrade."
-msgstr ""
+"3.5, you will be missing some major enhancements such as <xref "
+"linkend=\"ST_ClipByBox2D\"/> and <xref linkend=\"ST_Subdivide\"/>. GEOS is "
+"available for download from <ulink url=\"http://trac.osgeo.org/geos/\"> "
+"http://trac.osgeo.org/geos/ </ulink> and 3.4+ is backward-compatible with "
+"older versions so fairly safe to upgrade."
+msgstr "GEOS 도형 라이브러리 3.3 또는 이후 버전이 필요하지만, 모든 새로운 함수 및 기능을 완전히 사용하려면 GEOS 3.5 이상 버전을 권장합니다. GEOS 3.5 버전이 없다면 <xref linkend=\"ST_ClipByBox2D\"/> 및 <xref linkend=\"ST_Subdivide\"/> 등과 같은 주요 개선 사항을 놓치게 될 겁니다. GEOS는 <ulink url=\"http://trac.osgeo.org/geos/\">http://trac.osgeo.org/geos/</ulink> 에서 다운로드할 수 있으며, 3.4 이상 버전은 구 버전들과 호환되므로 안전하게 업그레이드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:119
@@ -346,13 +323,9 @@ msgstr ""
 msgid ""
 "LibXML2, version 2.5.x or higher. LibXML2 is currently used in some imports "
 "functions (ST_GeomFromGML and ST_GeomFromKML). LibXML2 is available for "
-"download from <ulink url=\"http://xmlsoft.org/downloads.html\">http://"
-"xmlsoft.org/downloads.html</ulink>."
-msgstr ""
-"LibXML2, version 2.5.x 또는 그 이상 버전. LibXML은 몇 가지 imports 기능 "
-"(ST_GeomFromGML 및 ST_GeomFromKML)에 사용되고 있습니다. LibXML2는  <ulink "
-"url=\"http://xmlsoft.org/downloads.html\">http://xmlsoft.org/downloads.html</"
-"ulink> 에서 다운로드 가능합니다."
+"download from <ulink "
+"url=\"http://xmlsoft.org/downloads.html\">http://xmlsoft.org/downloads.html</ulink>."
+msgstr "LibXML2, version 2.5.x 또는 이후 버전. LibXML2는 현재 몇몇 임포트 함수(ST_GeomFromGML 및 ST_GeomFromKML)에 사용되고 있습니다. LibXML2는 <ulink url=\"http://xmlsoft.org/downloads.html\">http://xmlsoft.org/downloads.html</ulink> 에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:126
@@ -360,27 +333,27 @@ msgstr ""
 msgid ""
 "JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON "
 "via the function ST_GeomFromGeoJson. JSON-C is available for download from "
-"<ulink url=\"https://github.com/json-c/json-c/releases\">https://github.com/"
-"json-c/json-c/releases/</ulink>."
-msgstr ""
+"<ulink "
+"url=\"https://github.com/json-c/json-c/releases\">https://github.com/json-c/json-c/releases/</ulink>."
+msgstr "JSON-C 0.9 또는 이후 버전. JSON-C는 현재 ST_GeomFromGeoJson 함수를 통해 GeoJSON을 임포트하는 데 사용되고 있습니다. JSON-C는 <ulink url=\"https://github.com/json-c/json-c/releases\">https://github.com/json-c/json-c/releases/</ulink> 에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:134
 #, no-c-format
 msgid ""
 "GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since "
-"some things will not work well or behavior differently with lower versions). "
-"This is required for raster support and to be able to install with "
+"some things will not work well or behavior differently with lower versions)."
+" This is required for raster support and to be able to install with "
 "<code>CREATE EXTENSION postgis</code> so highly recommended for those "
-"running 9.1+. <ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource"
-"\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
-msgstr ""
+"running 9.1+. <ulink "
+"url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
+msgstr "GDAL 1.8 또는 이후 버전(구 버전에서 제대로 동작하지 않거나 다르게 동작하는 기능들이 있으므로 1.9 이상 버전을 강력히 권장합니다). GDAL은 래스터 지원에 필요하며, <code>CREATE EXTENSION postgis</code> 명령어를 통해 설치할 수 있으므로 PostgreSQL 9.1 이상 버전을 실행하는 사용자에게 특히 권장합니다. <ulink url=\"http://trac.osgeo.org/gdal/wiki/DownloadSource\">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>."
 
 #. Tag: emphasis
 #: installation.xml:142
 #, no-c-format
 msgid "Optional"
-msgstr "선택사항"
+msgstr "선택 사항"
 
 #. Tag: para
 #: installation.xml:147
@@ -391,7 +364,7 @@ msgid ""
 "Keep in mind other extensions may have a requires postgis extension which "
 "will prevent you from installing them unless you install postgis as an "
 "extension. So it is highly recommended you compile with GDAL support."
-msgstr ""
+msgstr "사용자가 래스터 기능을 원하지 않고 <code>CREATE EXTENSION postgis</code> 와 함께 설치하지 않아도 될 경우에만 (가(假)선택적) GDAL을 빼놓을 수 있습니다. PostGIS를 확장 프로그램으로서 설치하지 않는다면, 다른 확장 프로그램을 설치하지 못 하게 막는 필수 PostGIS 확장 프로그램이 있을 수도 있다는 점을 기억하십시오. 따라서 GDAL 지원과 함께 컴파일할 것을 강력히 권장합니다."
 
 #. Tag: para
 #: installation.xml:151
@@ -399,95 +372,83 @@ msgstr ""
 msgid ""
 "Also make sure to enable the drivers you want to use as described in <xref "
 "linkend=\"install_short_version\"/>."
-msgstr ""
+msgstr "또 <xref linkend=\"install_short_version\"/> 에 설명된 대로 사용자가 사용하길 원하는 드라이버를 활성화하는 작업도 잊지 마십시오."
 
 #. Tag: para
 #: installation.xml:154
 #, no-c-format
 msgid ""
-"GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader. "
-"<ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink> ."
-msgstr ""
-"shp2pgsql-gui 쉐입 파일 로더를 캄파일 하기 위한 GTK (GTK+2.0, 2.8+ 요구됨). "
-"<ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink> ."
+"GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader."
+" <ulink url=\"http://www.gtk.org/\"> http://www.gtk.org/ </ulink> ."
+msgstr "shapefile 로더 shp2pgsql-gui 를 컴파일하기 위한 GTK(GTK+2.0, 2.8+ 필요). <ulink url=\"http://www.gtk.org/\">http://www.gtk.org/</ulink>."
 
 #. Tag: para
 #: installation.xml:164
 #, no-c-format
 msgid ""
 "SFCGAL, version 1.1 (or higher) could be used to provide additional 2D and "
-"3D advanced analysis functions to PostGIS cf <xref linkend=\"reference_sfcgal"
-"\"/>. And also allow to use SFCGAL rather than GEOS for some 2D functions "
-"provided by both backends (like ST_Intersection or ST_Area, for instance). A "
-"PostgreSQL configuration variable <code>postgis.backend</code> allow end "
-"user to control which backend he want to use if SFCGAL is installed (GEOS by "
-"default). Nota: SFCGAL 1.2 require at least CGAL 4.3 and Boost 1.54 (cf: "
-"<ulink url=\"http://oslandia.github.io/SFCGAL/installation.html\">http://"
-"oslandia.github.io/SFCGAL/installation.html</ulink>) <ulink url=\"https://"
-"github.com/Oslandia/SFCGAL\">https://github.com/Oslandia/SFCGAL</ulink>."
-msgstr ""
+"3D advanced analysis functions to PostGIS cf <xref "
+"linkend=\"reference_sfcgal\"/>. And also allow to use SFCGAL rather than "
+"GEOS for some 2D functions provided by both backends (like ST_Intersection "
+"or ST_Area, for instance). A PostgreSQL configuration variable "
+"<code>postgis.backend</code> allow end user to control which backend he want"
+" to use if SFCGAL is installed (GEOS by default). Nota: SFCGAL 1.2 require "
+"at least CGAL 4.3 and Boost 1.54 (cf: <ulink "
+"url=\"http://oslandia.github.io/SFCGAL/installation.html\">http://oslandia.github.io/SFCGAL/installation.html</ulink>)"
+" <ulink "
+"url=\"https://github.com/Oslandia/SFCGAL\">https://github.com/Oslandia/SFCGAL</ulink>."
+msgstr "PostGIS에 추가적인 2D 및 3D 고급 분석 기능을 제공하는 데 SFCGAL 1.1 (또는 그 이후) 버전을 사용할 수 있습니다. <xref linkend=\"reference_sfcgal\"/> 를 참조하십시오. 또 양쪽 백엔드가 제공하는 GEOS의 몇몇 2D 기능 대신 (예를 들어 ST_Intersection 또는 ST_Area) SFCGAL을 사용하게 할 수도 있습니다. SFCGAL을 설치했을 경우 (기본적으로는 GEOS 설치) PostgreSQL 설정 변수 <code>postgis.backend</code> 를 통해 말단 사용자가 원하는 백엔드를 조정할 수 있습니다. 주의: SFCGAL 1.2버전은 최소 CGAL 4.3과 Boost 1.54를 필요로 합니다(<ulink url=\"http://oslandia.github.io/SFCGAL/installation.html\">http://oslandia.github.io/SFCGAL/installation.html</ulink> 참조). <ulink url=\"https://github.com/Oslandia/SFCGAL\">https://github.com/Oslandia/SFCGAL</ulink>."
 
 #. Tag: para
 #: installation.xml:172
 #, no-c-format
 msgid ""
-"In order to build the <xref linkend=\"Address_Standardizer\"/> you will also "
-"need PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> "
-"(which generally is already installed on nix systems). <code>Regex::"
-"Assemble</code> perl CPAN package is only needed if you want to rebuild the "
-"data encoded in <filename>parseaddress-stcities.h</filename>. <xref linkend="
-"\"Address_Standardizer\"/> will automatically be built if it detects a PCRE "
-"library, or you pass in a valid <varname>--with-pcre-dir=/path/to/pcre</"
-"varname> during configure."
-msgstr ""
+"In order to build the <xref linkend=\"Address_Standardizer\"/> you will also"
+" need PCRE <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> "
+"(which generally is already installed on nix systems). "
+"<code>Regex::Assemble</code> perl CPAN package is only needed if you want to"
+" rebuild the data encoded in <filename>parseaddress-stcities.h</filename>. "
+"<xref linkend=\"Address_Standardizer\"/> will automatically be built if it "
+"detects a PCRE library, or you pass in a valid <varname>--with-pcre-"
+"dir=/path/to/pcre</varname> during configure."
+msgstr "<xref linkend=\"Address_Standardizer\"/> 를 빌드하려면 <ulink url=\"http://www.pcre.org\">PCRE</ulink> 도 필요합니다(일반적으로 유닉스 파생 시스템에 이미 설치되어 있습니다). <filename>parseaddress-stcities.h</filename> 파일에 인코딩되어 있는 데이터를 다시 빌드하려 하는 경우에만 <code>Regex::Assemble</code> 펄 CPAN 패키지가 필요합니다. <xref linkend=\"Address_Standardizer\"/> 는 PCRE 라이브러리를 감지할 경우 자동적으로 빌드될 것입니다. 또는 설정 과정에서 유효한 <varname>--with-pcre-dir=/path/to/pcre</varname> 경로 변수를 입력할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:179
 #, no-c-format
 msgid ""
 "CUnit (<filename>CUnit</filename>). This is needed for regression testing. "
-"<ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</"
-"ulink>"
-msgstr ""
-"CUnit (<filename>CUnit</filename>). 이 것은 회기검증을 위해 필요합니다. "
-"<ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</"
-"ulink>"
+"<ulink "
+"url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</ulink>"
+msgstr "CUnit(<filename>CUnit</filename>). 회기 검증을 하는 데 필요합니다. <ulink url=\"http://cunit.sourceforge.net/\">http://cunit.sourceforge.net/</ulink>"
 
 #. Tag: para
 #: installation.xml:185
 #, no-c-format
 msgid ""
 "DocBook (<filename>xsltproc</filename>) is required for building the "
-"documentation. Docbook is available from <ulink url=\"http://www.docbook.org/"
-"\"> http://www.docbook.org/ </ulink> ."
-msgstr ""
-"DocBook(<filename>xsltproc</filename>)은 문서를 발행할 때 필요합니다.  "
-"DocBook은 <ulink url=\"http://www.docbook.org/\"> http://www.docbook.org/ </"
-"ulink>에서 이용 가능합니다."
+"documentation. Docbook is available from <ulink "
+"url=\"http://www.docbook.org/\"> http://www.docbook.org/ </ulink> ."
+msgstr "DocBook(<filename>xsltproc</filename>)은 문서를 발행할 때 필요합니다.  DocBook은 <ulink url=\"http://www.docbook.org/\"> http://www.docbook.org/ </ulink>에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:196
 #, no-c-format
 msgid ""
 "DBLatex (<filename>dblatex</filename>) is required for building the "
-"documentation in PDF format. DBLatex is available from <ulink url=\"http://"
-"dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink> ."
-msgstr ""
-"DBLatex(<filename>dblatex</filename>)는 PDF 형식의 문서를 만들 때 필요합니"
-"다. DBLatex는 <ulink url=\"http://dblatex.sourceforge.net/\"> http://dblatex."
-"sourceforge.net/ </ulink>에서 이용 가능합니다."
+"documentation in PDF format. DBLatex is available from <ulink "
+"url=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ "
+"</ulink> ."
+msgstr "DBLatex(<filename>dblatex</filename>)는 PDF 형식의 문서를 발행할 때 필요합니다. DBLatex는 <ulink url=\"http://dblatex.sourceforge.net/\"> http://dblatex.sourceforge.net/ </ulink>에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:207
 #, no-c-format
 msgid ""
 "ImageMagick (<filename>convert</filename>) is required to generate the "
-"images used in the documentation. ImageMagick is available from <ulink url="
-"\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
-msgstr ""
-"ImageMagick(<filename>convert</filename>) 는 설명서에 사용된 이미지를 생성하"
-"는 데 필요합니다. ImageMagick는 <ulink url=\"http://www.imagemagick.org/\"> "
-"http://www.imagemagick.org/ </ulink>에서 이용 가능합니다. "
+"images used in the documentation. ImageMagick is available from <ulink "
+"url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink> ."
+msgstr "ImageMagick(<filename>convert</filename>)은 문서에 사용되는 이미지를 생성하는 데 필요합니다. ImageMagick은 <ulink url=\"http://www.imagemagick.org/\"> http://www.imagemagick.org/ </ulink>에서 다운로드할 수 있습니다."
 
 #. Tag: title
 #: installation.xml:220
@@ -499,9 +460,9 @@ msgstr "소스 획득"
 #: installation.xml:222
 #, no-c-format
 msgid ""
-"Retrieve the PostGIS source archive from the downloads website <ulink url="
-"\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
-msgstr ""
+"Retrieve the PostGIS source archive from the downloads website <ulink "
+"url=\"&postgis_download_url;\"> &postgis_download_url; </ulink>"
+msgstr "PostGIS 소스 압축파일을 다운로드 웹사이트 <ulink url=\"&postgis_download_url;\"> &postgis_download_url; </ulink> 에서 다운로드하십시오."
 
 #. Tag: programlisting
 #: installation.xml:229
@@ -509,55 +470,49 @@ msgstr ""
 msgid ""
 "wget &postgis_download_url;\n"
 "tar -xvzf postgis-&last_release_version;.tar.gz"
-msgstr ""
+msgstr "wget &postgis_download_url;\ntar -xvzf postgis-&last_release_version;.tar.gz"
 
 #. Tag: para
 #: installation.xml:231
 #, no-c-format
 msgid ""
-"This will create a directory called <varname>postgis-&last_release_version;</"
-"varname> in the current working directory."
-msgstr ""
-"이렇게 하면 <varname>postgis-&last_release_version;</varname>라는 이름의 디렉"
-"토리가  현재 작업 디렉토리에 생길 것입니다."
+"This will create a directory called "
+"<varname>postgis-&last_release_version;</varname> in the current working "
+"directory."
+msgstr "이 명령어를 실행하면 현재 작업 디렉토리에 <varname>postgis-&last_release_version;</varname> (이)라는 명칭의 디렉터리가 생길 것입니다."
 
 #. Tag: para
 #: installation.xml:237
 #, no-c-format
 msgid ""
-"Alternatively, checkout the source from the <ulink url=\"http://subversion."
-"apache.org/\"> svn </ulink> repository <ulink url=\"http://svn.osgeo.org/"
-"postgis/trunk/\"> http://svn.osgeo.org/postgis/trunk/ </ulink> ."
-msgstr ""
-"다른 방법으로, <ulink url=\"http://subversion.apache.org/\"> svn </ulink>의 "
-"저장소 <ulink url=\"http://svn.osgeo.org/postgis/trunk/\"> http://svn.osgeo."
-"org/postgis/trunk/ </ulink>에서 소스를 checkout 받을 수 있습니다."
+"Alternatively, checkout the source from the <ulink "
+"url=\"http://subversion.apache.org/\"> svn </ulink> repository <ulink "
+"url=\"http://svn.osgeo.org/postgis/trunk/\"> "
+"http://svn.osgeo.org/postgis/trunk/ </ulink> ."
+msgstr "다른 방법으로는, <ulink url=\"http://subversion.apache.org/\"> svn </ulink> 저장소 <ulink url=\"http://svn.osgeo.org/postgis/trunk/\"> http://svn.osgeo.org/postgis/trunk/ </ulink>에서 소스를 체크아웃(checkout)할 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:249
 #, no-c-format
 msgid ""
-"svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-"
-"&last_release_version;"
-msgstr ""
-"svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-"
-"&last_release_version;"
+"svn checkout http://svn.osgeo.org/postgis/trunk/ "
+"postgis-&last_release_version;"
+msgstr "svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;"
 
 #. Tag: para
 #: installation.xml:251
 #, no-c-format
 msgid ""
-"Change into the newly created <varname>postgis-&last_release_version;</"
-"varname> directory to continue the installation."
-msgstr ""
-"설치를 계속하려면 새로 만든 <varname>postgis-&last_release_version;</"
-"varname> 디렉토리로 이동합니다."
+"Change into the newly created "
+"<varname>postgis-&last_release_version;</varname> directory to continue the "
+"installation."
+msgstr "설치를 계속하려면 새로 만든 <varname>postgis-&last_release_version;</varname> 디렉터리로 이동합니다."
 
 #. Tag: title
 #: installation.xml:259
 #, no-c-format
 msgid "Compiling and Install from Source: Detailed"
-msgstr ""
+msgstr "소스를 컴파일하고 설치하기: 상세 설명"
 
 #. Tag: para
 #: installation.xml:262
@@ -566,37 +521,29 @@ msgid ""
 "Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In "
 "many cases compilation is only necessary if you want the most bleeding edge "
 "versions or you are a package maintainer."
-msgstr ""
-"많은 OS 시스템들은 현재 PostgreSQL/PostGIS를 위한 사전 설치된 패키지들을 포함"
-"하고 있습니다. 많은 경우에, 최첨단 버전이 필요하시거나 꼭 패키지를 사용해야 "
-"할 상황이 아니라면 컴파일이 필요하지 않습니다. "
+msgstr "현재 많은 OS 시스템들이 PostgreSQL/PostGIS용 사전 구축된 패키지를 포함하고 있습니다. 많은 경우, 최첨단 버전이 필요하거나 패키지 관리자인 경우가 아니라면 컴파일할 필요가 없습니다."
 
 #. Tag: para
 #: installation.xml:267
 #, no-c-format
 msgid ""
-"This section includes general compilation instructions, if you are compiling "
-"for Windows etc or another OS, you may find additional more detailed help at "
-"<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS "
-"User contributed compile guides</ulink> and <ulink url=\"http://trac.osgeo."
-"org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>."
-msgstr ""
-"이 단원에서는 일반적 컴파일에 대한 설명을 하고 있으므로, 더 상세한 설명은 원"
-"한다면 <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall"
-"\">PostGIS User contributed compile guides</ulink>와 <ulink url=\"http://"
-"trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink>를 참조하십"
-"시오."
+"This section includes general compilation instructions, if you are compiling"
+" for Windows etc or another OS, you may find additional more detailed help "
+"at <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS User "
+"contributed compile guides</ulink> and <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev "
+"Wiki</ulink>."
+msgstr "이 단원에서는 일반적인 컴파일에 대해 설명하고 있으므로, 더 상세한 설명을 원할 경우 <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiInstall\">PostGIS User contributed compile guides</ulink> 와 <ulink url=\"http://trac.osgeo.org/postgis/wiki/DevWikiMain\">PostGIS Dev Wiki</ulink> 를 참조하십시오."
 
 #. Tag: para
 #: installation.xml:269
 #, no-c-format
 msgid ""
-"Pre-Built Packages for various OS are listed in <ulink url=\"http://trac."
-"osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>"
-msgstr ""
-"다양한 OS를 지원하는 미리 빌드된 패키지들은 <ulink url=\"http://trac.osgeo."
-"org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink>에 나"
-"열되어 있습니다."
+"Pre-Built Packages for various OS are listed in <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-"
+"built Packages</ulink>"
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiPackages\">PostGIS Pre-built Packages</ulink> 에서 다양한 OS를 지원하는 사전 빌드된 패키지들을 확인할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:270
@@ -604,19 +551,12 @@ msgstr ""
 msgid ""
 "If you are a windows user, you can get stable builds via Stackbuilder or "
 "<ulink url=\"http://www.postgis.org/download/windows/\">PostGIS Windows "
-"download site</ulink> We also have <ulink url=\"http://www.postgis.org/"
-"download/windows/experimental.php\">very bleeding-edge windows experimental "
-"builds</ulink> that are built usually once or twice a week or whenever "
-"anything exciting happens. You can use these to experiment with the in "
-"progress releases of PostGIS"
-msgstr ""
-"만약 윈도우 사용자라면  Stackbuilder 또는 <ulink url=\"http://www.postgis."
-"org/download/windows/\">PostGIS Windows download site</ulink>을 통해 안정적"
-"인 버전을 받을 수 있습니다. 우리는 또한 1~2주에 한번 혹은 뭔가 특이한 일이 일"
-"어날 경우 빌드를 하는 <ulink url=\"http://www.postgis.org/download/windows/"
-"experimental.php\">very bleeding-edge windows experimental builds</ulink>을 "
-"가지고 있습니다. 사용자는 이것들을 이용해 PostGIS의 진보된 배포본을 경험해보"
-"실 수 있습니다."
+"download site</ulink> We also have <ulink "
+"url=\"http://www.postgis.org/download/windows/experimental.php\">very "
+"bleeding-edge windows experimental builds</ulink> that are built usually "
+"once or twice a week or whenever anything exciting happens. You can use "
+"these to experiment with the in progress releases of PostGIS"
+msgstr "만약 윈도우 사용자라면  Stackbuilder 또는 <ulink url=\"http://www.postgis.org/download/windows/\">PostGIS Windows download site</ulink> 를 통해 안정적인 버전을 받을 수 있습니다. 또 1~2주에 한 번 혹은 뭔가 특이한 일이 일어날 경우 빌드를 하는 <ulink url=\"http://www.postgis.org/download/windows/experimental.php\">very bleeding-edge windows experimental builds</ulink> 가 있습니다. 사용자는 이를 통해 진행중인 PostGIS 배포본을 실행해볼 수 있습니다."
 
 #. Tag: para
 #: installation.xml:275
@@ -627,24 +567,16 @@ msgid ""
 "PostgreSQL server headers access in order to compile. It can be built "
 "against PostgreSQL versions &min_postgres_version; or higher. Earlier "
 "versions of PostgreSQL are <emphasis>not</emphasis> supported."
-msgstr ""
-"PostGIS 모듈은 PostgreSQL 백엔드 서버의 확장 기능입니다. PostGIS "
-"&last_release_version;은 컴파일 하기 위해 full PostgreSQL 서버 헤더로의 접근"
-"을 <emphasis>필요</emphasis>로 합니다. 이는 PostgreSQL "
-"&min_postgres_version; 버전 또는 이상 버전을 이용해 빌드됩니다. 그 이전 버전"
-"의 PostgreSQL에서는 <emphasis>지원되지 않습니다</emphasis>. "
+msgstr "PostGIS 모듈은 PostgreSQL 백엔드 서버로의 확장 프로그램입니다. PostGIS &last_release_version; 를 컴파일하기 위해서는 완전한 PostgreSQL 서버 헤더 접근이 <emphasis>필요</emphasis>합니다. 이때 PostgreSQL &min_postgres_version; 또는 이후 버전을 대상으로 컴파일할 수 있습니다. PostgreSQL 이전 버전은 지원하지 <emphasis>않습니다</emphasis>"
 
 #. Tag: para
 #: installation.xml:283
 #, no-c-format
 msgid ""
-"Refer to the PostgreSQL installation guides if you haven't already installed "
-"PostgreSQL. <ulink url=\"http://www.postgresql.org\"> http://www.postgresql."
-"org </ulink> ."
-msgstr ""
-"아직 PostgreSQL을 설치하지 않으셨다면 PostgreSQL 설치 가이드를 참조하십시오. "
-"<ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org </"
-"ulink> ."
+"Refer to the PostgreSQL installation guides if you haven't already installed"
+" PostgreSQL. <ulink url=\"http://www.postgresql.org\"> "
+"http://www.postgresql.org </ulink> ."
+msgstr "아직 PostgreSQL을 설치하지 않았다면 PostgreSQL 설치 지침서를 참조하십시오. <ulink url=\"http://www.postgresql.org\"> http://www.postgresql.org </ulink> ."
 
 #. Tag: para
 #: installation.xml:293
@@ -652,9 +584,7 @@ msgstr ""
 msgid ""
 "For GEOS functionality, when you install PostgresSQL you may need to "
 "explicitly link PostgreSQL against the standard C++ library:"
-msgstr ""
-"GEOS 기능을 위해서는 PostgreSQL설치 시 표준 C++ 라이브러리에 대한 명확한 연결"
-"이 필요할 수도 있습니다. "
+msgstr "GEOS 기능성을 위해 PostgreSQL설치 시 표준 C++ 라이브러리를 명확하게 링크해야 할 수도 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:298
@@ -668,39 +598,33 @@ msgstr "LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]"
 msgid ""
 "This is a workaround for bogus C++ exceptions interaction with older "
 "development tools. If you experience weird problems (backend unexpectedly "
-"closed or similar things) try this trick. This will require recompiling your "
-"PostgreSQL from scratch, of course."
-msgstr ""
-"이는 구버전 개발 도구 이용시 bogus C++ exceptions interaction을 해결하는 방법"
-"입니다. 만약 사용자가 이상한 문제(백엔드의 급작스러운 끊어짐이나 비슷한 증상)"
-"를 격는다면 PostgreSQL을 다시 컴파일 해야 할 수도 있습니다."
+"closed or similar things) try this trick. This will require recompiling your"
+" PostgreSQL from scratch, of course."
+msgstr "이것은 구 버전 개발 도구 이용시 거짓 C++ 예외 상호작용을 피하기 위한 방법입니다. 만약 사용자가 이상한 문제(백엔드가 갑자기 끊어진다거나 또는 비슷한 증상)를 겪는다면 PostgreSQL을 다시 컴파일해야 할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:308
 #, no-c-format
 msgid ""
-"The following steps outline the configuration and compilation of the PostGIS "
-"source. They are written for Linux users and will not work on Windows or Mac."
-msgstr ""
-"다음의 단계들은 PostGIS 소스에 대한 설정과 편집에 대한 과정을 설명합니다. 이"
-"는 리눅스 사용자들을 위한 것이므로 윈도우 또는 맥은 해당되지 않습니다. "
+"The following steps outline the configuration and compilation of the PostGIS"
+" source. They are written for Linux users and will not work on Windows or "
+"Mac."
+msgstr "다음은 PostGIS 소스를 설정하고 취합하는 단계를 설명합니다. 리눅스 사용자를 위한 설명이므로 윈도우 또는 맥 사용자에겐 해당되지 않습니다. "
 
 #. Tag: title
 #: installation.xml:315
 #, no-c-format
 msgid "Configuration"
-msgstr "리눅스 설치를 위한 설정"
+msgstr "설정"
 
 #. Tag: para
 #: installation.xml:317
 #, no-c-format
 msgid ""
-"As with most linux installations, the first step is to generate the Makefile "
-"that will be used to build the source code. This is done by running the "
+"As with most linux installations, the first step is to generate the Makefile"
+" that will be used to build the source code. This is done by running the "
 "shell script"
-msgstr ""
-"대부분의 리눅스 설치에서 첫 번째 단계는 소스 코드를 빌드하는 데 사용할 "
-"Makeﬁle을 생성하는 것입니다.  Makeﬁle은 쉘 스크립트 실행을 통해 만들어집니다."
+msgstr "대부분의 리눅스 설치에서 첫 번째 단계는 소스 코드를 빌드하는 데 사용할 Makeﬁle을 생성하는 것입니다. 셸 스크립트를 실행해서 Makeﬁle을 작성합니다."
 
 #. Tag: para
 #: installation.xml:327
@@ -710,65 +634,48 @@ msgid ""
 "locate the required components and libraries needed to build the PostGIS "
 "source code on your system. Although this is the most common usage of "
 "<command>./configure</command>, the script accepts several parameters for "
-"those who have the required libraries and programs in non-standard locations."
-msgstr ""
-"추가적인 파라미터 없이 사용하면, 이 명령은 자동적으로 PostGIS 소스 코드를 시"
-"스템에 설치하기 위해 필요한 필수 구성 요소들과 라이브러리를 설치하기 위한 시"
-"도를 합니다. <command>./configure</command> 명령 만으로 필요한 라이브러리와 "
-"비 표준 경로에 설치된 프로그램을 찾아냅니다."
+"those who have the required libraries and programs in non-standard "
+"locations."
+msgstr "추가 파라미터 없이 사용하면, 이 명령은 자동적으로 PostGIS 소스코드를 사용자 시스템에 빌드하는 데 필요한 필수 구성 요소들과 라이브러리의 위치를 확인하려 합니다. <command>./configure</command> 명령어의 가장 흔한 사용법이긴 하지만, 이 스크립트는 비표준적인 위치에 있는 필수 라이브러리와 프로그램들에 대한 몇몇 파라미터를 받습니다."
 
 #. Tag: para
 #: installation.xml:336
 #, no-c-format
 msgid ""
 "The following list shows only the most commonly used parameters. For a "
-"complete list, use the <command>--help</command> or <command>--help=short</"
-"command> parameters."
-msgstr ""
-"아래 리스트는 가장 일반적으로 사용되는 매개변수들 만을 나열한 것입니다. 전체 "
-"목록을 원하신다면 <command>--help</command> 또는<command>--help=short</"
-"command>를 파라미터를 사용하십시오. "
+"complete list, use the <command>--help</command> or "
+"<command>--help=short</command> parameters."
+msgstr "다음은 가장 많이 사용되는 파라미터들만 나열한 목록입니다. 전체 목록은 <command>--help</command> 또는 <command>--help=short</command> 파라미터를 사용하십시오. "
 
 #. Tag: para
 #: installation.xml:346
 #, no-c-format
 msgid ""
-"This is the location the PostGIS libraries and SQL scripts will be installed "
-"to. By default, this location is the same as the detected PostgreSQL "
+"This is the location the PostGIS libraries and SQL scripts will be installed"
+" to. By default, this location is the same as the detected PostgreSQL "
 "installation."
-msgstr ""
-"이는 PostGIS 라이브러리와 SQL 스크립트들이 설치될 경로입니다. 기본적으로 "
-"PostgreSQL가 설치된 경로와 같은 곳에 설치됩니다."
+msgstr "PostGIS 라이브러리와 SQL 스크립트가 설치될 경로입니다. 기본적으로 PostgreSQL가 설치된 경로와 같은 곳에 설치됩니다."
 
 #. Tag: para
 #: installation.xml:353
 #, no-c-format
 msgid ""
 "This parameter is currently broken, as the package will only install into "
-"the PostgreSQL installation directory. Visit <ulink url=\"http://trac.osgeo."
-"org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </ulink> "
-"to track this bug."
-msgstr ""
-"이 파라미터는 현재 작동되지 않습니다. 따라서, 현재는 PostgreSQL 설치 경로에"
-"만 설치될 것입니다. 해당 버그 추적을 위해서는 <ulink url=\"http://trac.osgeo."
-"org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </ulink> "
-"를 참조하십시오."
+"the PostgreSQL installation directory. Visit <ulink "
+"url=\"http://trac.osgeo.org/postgis/ticket/635\"> "
+"http://trac.osgeo.org/postgis/ticket/635 </ulink> to track this bug."
+msgstr "이 파라미터는 현재 작동되지 않습니다. 패키지가 PostgreSQL 설치 경로에만 설치될 것이기 때문입니다. 해당 버그를 추적하려면 <ulink url=\"http://trac.osgeo.org/postgis/ticket/635\"> http://trac.osgeo.org/postgis/ticket/635 </ulink> 를 참조하십시오."
 
 #. Tag: para
 #: installation.xml:368
 #, no-c-format
 msgid ""
 "PostgreSQL provides a utility called <command>pg_config</command> to enable "
-"extensions like PostGIS to locate the PostgreSQL installation directory. Use "
-"this parameter (<command>--with-pgconfig=/path/to/pg_config</command>) to "
+"extensions like PostGIS to locate the PostgreSQL installation directory. Use"
+" this parameter (<command>--with-pgconfig=/path/to/pg_config</command>) to "
 "manually specify a particular PostgreSQL installation that PostGIS will "
 "build against."
-msgstr ""
-"PostgreSQL은 <command>pg_config</command> 라 불리는 유틸리티를 제공합니다.  "
-"pg_config는 PostGIS와 같은 extension들이 PostgreSQL 설치 디렉토리의 정확한 위"
-"치를 찾는 것을 가능케 합니다. PostGIS를 기반으로 설치될 특정 PostgreSQL 설치"
-"를 수동으로 명시하기 위해서는 이 매개변수 (<command>--with-pgconfig=/path/to/"
-"pg_config</command>)를 사용하십시오."
+msgstr "PostgreSQL은 PostGIS 같은 확장 프로그램이 PostgreSQL 설치 디렉토리의 위치를 확인하게 해주는 <command>pg_config</command> 라는 유틸리티를 제공합니다. PostGIS 빌드 시 대상이 될 특정 PostgreSQL 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-pgconfig=/path/to/pg_config</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:382
@@ -779,12 +686,7 @@ msgid ""
 "the GDAL installation directory. Use this parameter (<command>--with-"
 "gdalconfig=/path/to/gdal-config</command>) to manually specify a particular "
 "GDAL installation that PostGIS will build against."
-msgstr ""
-"GDAL는 래스터 지원을 위한 기능을 제공하는 필수 라이브러리로, GDAL 설치 위치"
-"를 알려주어 소프트웨어 설치를 활성화 하기 위해 <command>gdal-config</command>"
-"를 지원합니다. 이 매개변수 (<command>--with-gdalconfig=/path/to/gdal-config</"
-"command>) 를 이용하면 수동으로 지정된 특정 GDAL 설치본을 기반으로 PostGIS가 "
-"빌드 됩니다."
+msgstr "GDAL은 래스터 지원을 위한 기능을 제공하는 필수 라이브러리로, GDAL 설치 디렉터리의 위치를 확인하는 소프트웨어 설치를 활성화하기 위한 <command>gdal-config</command>를 지원합니다. PostGIS 빌드 시 대상이 될 특정 GDAL 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-gdalconfig=/path/to/gdal-config</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:396
@@ -792,15 +694,10 @@ msgstr ""
 msgid ""
 "GEOS, a required geometry library, provides a utility called <command>geos-"
 "config</command> to enable software installations to locate the GEOS "
-"installation directory. Use this parameter (<command>--with-geosconfig=/path/"
-"to/geos-config</command>) to manually specify a particular GEOS installation "
-"that PostGIS will build against."
-msgstr ""
-"GEOS는 필수 지오메트리 라이브러리로, GEOS 설치 디렉토리를 알려줘 소프트웨어 "
-"설치를 활성화하기 위해 <command>geos-config</command>라 불리는 유틸리티 호출"
-"을 지원합니다. 이 매개변수 (<command>--with-geosconfig=/path/to/geos-config</"
-"command>) 를 이용하면 수동으로 지정된 특정 GEOS 설치본을 기반으로 PostGIS가 "
-"빌드 됩니다."
+"installation directory. Use this parameter (<command>--with-"
+"geosconfig=/path/to/geos-config</command>) to manually specify a particular "
+"GEOS installation that PostGIS will build against."
+msgstr "GEOS는 필수 도형 라이브러리로, GEOS 설치 디렉터리의 위치를 확인하는 소프트웨어 설치를 활성화하기 위한 <command>geos-config</command>라는 유틸리티를 제공합니다. PostGIS 빌드 시 대상이 될 특정 GEOS 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-geosconfig=/path/to/geos-config</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:410
@@ -809,18 +706,11 @@ msgid ""
 "LibXML is the library required for doing GeomFromKML/GML processes. It "
 "normally is found if you have libxml installed, but if not or you want a "
 "specific version used, you'll need to point PostGIS at a specific "
-"<filename>xml2-config</filename> confi file to enable software installations "
-"to locate the LibXML installation directory. Use this parameter (<command>>--"
-"with-xml2config=/path/to/xml2-config</command>) to manually specify a "
+"<filename>xml2-config</filename> confi file to enable software installations"
+" to locate the LibXML installation directory. Use this parameter (<command"
+">>--with-xml2config=/path/to/xml2-config</command>) to manually specify a "
 "particular LibXML installation that PostGIS will build against."
-msgstr ""
-"LibXML은 GeomFromKML/GML 프로세스를 진행하기 위해 필요한 라이브러리입니다. 이"
-"것은Libxml 을 설치하면 찾을 수 있습니다. Libxml을 설치하지 않았거나 특정 버전"
-"을 원하신다면 PostGIS를 <filename>xml2-config</filename>라고 하는 설정 파일"
-"에 명시해야 합니다. xml2-config 설정 파일은 소프트웨어가 LibXML 설치 경로에 "
-"위치할 수 있도록 합니다. PostGIS에 사용할 특정 LibXML 설치를 수동으로 명시하"
-"기 위해서는 이 매개변수(<command>>--with-xml2config=/path/to/xml2-config</"
-"command>)를 사용하십시오. "
+msgstr "LibXML은 GeomFromKML/GML 프로세스를 진행하기 위해 필요한 라이브러리입니다. 일반적으로 libxml을 설치하면 찾을 수 있지만, 설치하지 않았거나 특정 버전을 사용하기 바랄 경우 LibXML 설치 디렉터리의 위치를 확인하는 소프트웨어 설치를 활성화하기 위해 <filename>xml2-config</filename>라는 설정 파일에 PostGIS의 위치를 지정해야 합니다. PostGIS 빌드 시 대상이 될 특정 LibXML 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-xml2config=/path/to/xml2-config</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:428
@@ -829,16 +719,13 @@ msgid ""
 "Proj4 is a reprojection library required by PostGIS. Use this parameter "
 "(<command>--with-projdir=/path/to/projdir</command>) to manually specify a "
 "particular Proj4 installation directory that PostGIS will build against."
-msgstr ""
-"Proj4 는 투영 및 좌표변환 라이브러리입니다. PostGIS를 기반으로 설치될 특정 "
-"Proj4 설치를 수동으로 명시하기 위해서는 이 매개변수  (<command>--with-"
-"projdir=/path/to/projdir</command>)를 사용하십시오. "
+msgstr "Proj4는 PostGIS 필수 재투영 라이브러리입니다. PostGIS 빌드 시 대상이 될 특정 Proj4 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-projdir=/path/to/projdir</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:440
 #, no-c-format
 msgid "Directory where iconv is installed."
-msgstr "iconv가 설치되는 경로 "
+msgstr "iconv 설치 경로"
 
 #. Tag: para
 #: installation.xml:449
@@ -849,11 +736,7 @@ msgid ""
 "parameter (<command>--with-jsondir=/path/to/jsondir</command>) to manually "
 "specify a particular JSON-C installation directory that PostGIS will build "
 "against."
-msgstr ""
-"<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink>는  MIT-라이"
-"센스의 JSON 라이브러리로 PostGIS ST_GeomFromJSON 지원에 필요합니다. PostGIS"
-"를 기반으로 설치될 특정 JSON-C 설치를 수동으로 명시하기 위해서는 이 매개변"
-"수  (<command>--with-jsondir=/path/to/jsondir</command>)를 사용하십시오. "
+msgstr "<ulink url=\"http://oss.metaparadigm.com/json-c/\">JSON-C</ulink> 는  MIT-라이선스의 JSON 라이브러리로, PostGIS의 ST_GeomFromJSON 지원에 필요합니다. PostGIS 빌드 시 대상이 될 특정 JSON-C 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-jsondir=/path/to/jsondir</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:461
@@ -861,10 +744,10 @@ msgstr ""
 msgid ""
 "<ulink url=\"http://www.pcre.org/\">PCRE</ulink> is an BSD-licensed Perl "
 "Compatible Regular Expression library required by address_standardizer "
-"extension. Use this parameter (<command>--with-pcredir=/path/to/pcredir</"
-"command>) to manually specify a particular PCRE installation directory that "
-"PostGIS will build against."
-msgstr ""
+"extension. Use this parameter (<command>--with-"
+"pcredir=/path/to/pcredir</command>) to manually specify a particular PCRE "
+"installation directory that PostGIS will build against."
+msgstr "<ulink url=\"http://www.pcre.org/\">PCRE</ulink> 는 BSD-라이선스의 펄 호환 가능 정규 표현식 라이브러리로, address_standardizer 확장 프로그램이 필요합니다. PostGIS 빌드 시 대상이 될 특정 PCRE 설치 디렉터리를 사용자가 직접 설정하려면 이 파라미터(<command>--with-pcredir=/path/to/pcredir</command>)를 사용하십시오."
 
 #. Tag: para
 #: installation.xml:473
@@ -872,33 +755,26 @@ msgstr ""
 msgid ""
 "Compile the data import GUI (requires GTK+2.0). This will create shp2pgsql-"
 "gui graphical interface to shp2pgsql."
-msgstr ""
-"데이터 가져오기 GUI 컴파일 (requires GTK+2.0). 이것은 shp2pgsql-gui, "
-"shp2pgsql을 위한 그래픽적인 인테페이스를 만듭니다."
+msgstr "데이터 임포트 GUI 컴파일(GTK+2.0 필요). shp2pgsql-gui의 shp2pgsql에 대한 그래픽 인테페이스를 생성합니다."
 
 #. Tag: para
 #: installation.xml:482
 #, no-c-format
 msgid ""
-"Compile with raster support. This will build rtpostgis-"
-"&last_release_version; library and rtpostgis.sql file. This may not be "
-"required in final release as plan is to build in raster support by default."
-msgstr ""
-"래스터 지원이 되도록 빌드합니다. 이것은 rtpostgis-&last_release_version; 라이"
-"브러리와 rtpostgis.sql 파일을 빌드합니다. 최종 배포본에서는 래스터 지원을 기"
-"본으로 지원할 것이기 때문에 필요로 하지 않을 것입니다. "
+"Compile with raster support. This will build "
+"rtpostgis-&last_release_version; library and rtpostgis.sql file. This may "
+"not be required in final release as plan is to build in raster support by "
+"default."
+msgstr "래스터 지원이 되도록 컴파일. rtpostgis-&last_release_version; 라이브러리와 rtpostgis.sql 파일을 빌드합니다. 최종 배포본에서는 기본적으로 래스터 지원을 빌드할 것이기 때문에 필요하지 않을 수도 있습니다. "
 
 #. Tag: para
 #: installation.xml:491
 #, no-c-format
 msgid ""
 "Compile with topology support. This will build the topology.sql file. There "
-"is no corresponding library as all logic needed for topology is in postgis-"
-"&last_release_version; library."
-msgstr ""
-"토폴로지 지원과 함께 빌드합니다. 이것은 topology.sql 파일을 빌드할 것입니다. "
-"이것에 상응하는 다른 라이브러리는 postgis-&last_release_version; 라이브러리 "
-"내에 존재하지 않습니다. "
+"is no corresponding library as all logic needed for topology is in "
+"postgis-&last_release_version; library."
+msgstr "지형 지원이 되도록 빌드합니다. topology.sql 파일을 빌드할 것입니다. 지형에 필요한 모든 논리가 postgis-&last_release_version; 라이브러리 내에 존재하기 때문에, 이에 상응하는 다른 라이브러리는 없습니다."
 
 #. Tag: para
 #: installation.xml:500
@@ -907,39 +783,31 @@ msgid ""
 "By default PostGIS will try to detect gettext support and compile with it, "
 "however if you run into incompatibility issues that cause breakage of "
 "loader, you can disable it entirely with this command. Refer to ticket "
-"<ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo."
-"org/postgis/ticket/748</ulink> for an example issue solved by configuring "
-"with this. NOTE: that you aren't missing much by turning this off. This is "
-"used for international help/label support for the GUI loader which is not "
-"yet documented and still experimental."
-msgstr ""
-"기본적으로 PostGIS는 gettext 지원을 검출하고 함께 컴파일 하지만, 만약 사용자"
-"가 로더의 파손으로 인한 불일치 문제에 봉착한다면, 이 명령어로 완전히 이를 무"
-"력화 할 수 있습니다. 자세한 내용은 <ulink url=\"http://trac.osgeo.org/"
-"postgis/ticket/748\">http://trac.osgeo.org/postgis/ticket/748</ulink>을 참조"
-"하십시오. 참고: 이것은 아직은 실험적이고 문서화 되지 않은 GUI 로더의 국제적 "
-"도움말/라벨 지원을 위한 것으로 미사용으로 설정한다고 해서 크게 놓치는 것은 없"
-"습니다."
+"<ulink "
+"url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo.org/postgis/ticket/748</ulink>"
+" for an example issue solved by configuring with this. NOTE: that you aren't"
+" missing much by turning this off. This is used for international help/label"
+" support for the GUI loader which is not yet documented and still "
+"experimental."
+msgstr "기본적으로 PostGIS는 gettext 지원을 감지해서 함께 컴파일하지만, 로더의 파손을 야기하는 비호환성 문제가 발생할 경우 이 명령어로 gettext 지원을 완전히 비활성화시킬 수 있습니다. 이런 방법으로 설정을 변경해서 문제를 해결하는 예는 버그 티켓 <ulink url=\"http://trac.osgeo.org/postgis/ticket/748\">http://trac.osgeo.org/postgis/ticket/748</ulink> 을 참조하십시오. 주의: gettext 지원을 끈다고 해서 별다른 문제는 없습니다. gettext 지원은 아직 문서화되지도 않았고 검증중에 있는 GUI 로더 용 국제 도움말/라벨 지원에 사용됩니다."
 
 #. Tag: para
 #: installation.xml:511
 #, no-c-format
 msgid ""
-"By default PostGIS will not install with sfcgal support without this switch. "
-"<varname>PATH</varname> is an optional argument that allows to specify an "
+"By default PostGIS will not install with sfcgal support without this switch."
+" <varname>PATH</varname> is an optional argument that allows to specify an "
 "alternate PATH to sfcgal-config."
-msgstr ""
+msgstr "기본적으로 PostGIS는 이 스위치 없이는 sfcgal 지원과 함께 설치되지 않습니다. <varname>PATH</varname> 는 sfcgal-config를 가리키는 대체 경로를 지정하도록 해주는 선택적인 인자입니다."
 
 #. Tag: para
 #: installation.xml:519
 #, no-c-format
 msgid ""
-"If you obtained PostGIS from the SVN <ulink url=\"http://svn.osgeo.org/"
-"postgis/trunk/\"> repository </ulink> , the first step is really to run the "
-"script"
-msgstr ""
-"PostGIS를 SVN <ulink url=\"http://svn.osgeo.org/postgis/trunk/\"> repository "
-"</ulink>에서 획득하셨다면, 먼저 아래 스크립트를 실행하십시오."
+"If you obtained PostGIS from the SVN <ulink "
+"url=\"http://svn.osgeo.org/postgis/trunk/\"> repository </ulink> , the first"
+" step is really to run the script"
+msgstr "PostGIS를 SVN <ulink url=\"http://svn.osgeo.org/postgis/trunk/\">저장소</ulink> 에서 얻었다면, 먼저 다음 스크립트를 실행하십시오."
 
 #. Tag: para
 #: installation.xml:531
@@ -947,20 +815,16 @@ msgstr ""
 msgid ""
 "This script will generate the <command>configure</command> script that in "
 "turn is used to customize the installation of PostGIS."
-msgstr ""
-"이 스크립트는 <command>configure</command> 스크립트를 생성해줍니다. 이는 차례"
-"로 PostGIS 설치본의 사용자화를 위해 이용됩니다."
+msgstr "이 스크립트는 <command>configure</command> 스크립트를 생성하는데, 이 스크립트는 PostGIS의 사용자 지정 설치를 위해 이용됩니다."
 
 #. Tag: para
 #: installation.xml:536
 #, no-c-format
 msgid ""
-"If you instead obtained PostGIS as a tarball, running <command>./autogen.sh</"
-"command> is not necessary as <command>configure</command> has already been "
-"generated."
-msgstr ""
-"만약 tar 파일 형태로 PostGIS를 획득하셨다면 이미 <command>configure</command>"
-"가 생성되었기 때문에 <command>./autogen.sh</command> 실행은 필요하지 않습니다"
+"If you instead obtained PostGIS as a tarball, running "
+"<command>./autogen.sh</command> is not necessary as "
+"<command>configure</command> has already been generated."
+msgstr "만약 tar 파일 형태로 PostGIS를 얻었다면 이미 <command>configure</command> 가 생성되었기 때문에 <command>./autogen.sh</command> 를 실행할 필요는 없습니다."
 
 #. Tag: title
 #: installation.xml:545
@@ -974,7 +838,7 @@ msgstr "빌드"
 msgid ""
 "Once the Makefile has been generated, building PostGIS is as simple as "
 "running"
-msgstr "한번 Makefile이 생성되면 PostGIS 빌드는 매우 쉽습니다."
+msgstr "일단 Makefile이 생성되면 PostGIS 빌드 작업은 실행만큼이나 쉽습니다."
 
 #. Tag: para
 #: installation.xml:556
@@ -982,9 +846,7 @@ msgstr "한번 Makefile이 생성되면 PostGIS 빌드는 매우 쉽습니다."
 msgid ""
 "The last line of the output should be \"<code>PostGIS was built "
 "successfully. Ready to install.</code>\""
-msgstr ""
-"이 때 결과 표시 마지막 줄에 \"<code>PostGIS was built successfully. Ready to "
-"install.</code>\"이 나타나야 합니다."
+msgstr "산출물의 마지막 줄에 \"<code>PostGIS was built successfully. Ready to install.</code>\"이란 문장이 보여야 합니다."
 
 #. Tag: para
 #: installation.xml:561
@@ -996,13 +858,7 @@ msgid ""
 "postgis_comments.sql and other package comments files raster_comments.sql, "
 "topology_comments.sql are also packaged in the tar.gz distribution in the "
 "doc folder so no need to make comments if installing from the tar ball."
-msgstr ""
-"PostGIS v1.4.0을 기준으로 모든 기능들은 문서화를 통해 생성된 주석을 가지고 있"
-"습니다. 공간 데이터베이스에 주석을 넣고 싶으시다면 docbook을 필요로 하는 명령"
-"어를 실행시키십시오. postgis_comments.sql과 다른 패키지 주석 파일들인 "
-"raster_comments.sql, topology_comments.sql 들은 doc폴더 내 tar.gz 배포 파일"
-"에 패키징 되어 있으므로, tar 파일로부터 설치를 한 경우에는 따로 주석을 만들 "
-"필요가 없습니다"
+msgstr "PostGIS 1.4.0 버전부터, 모든 함수는 문서에서 생성된 주석을 달고 있습니다. 이후 공간 데이터베이스에 이 주석들을 넣고 싶다면 docbook을 필요로 하는 명령어를 실행하십시오. postgis_comments.sql과 다른 패키지 주석 파일인 raster_comments.sql, topology_comments.sql 은 doc 폴더 안의 tar.gz 배포 파일에 패키징되어 있으므로, tar 파일로부터 설치한 경우에는 따로 주석을 만들 필요가 없습니다."
 
 #. Tag: command
 #: installation.xml:571 installation.xml:595
@@ -1015,18 +871,13 @@ msgstr "make comments"
 #, no-c-format
 msgid ""
 "Introduced in PostGIS 2.0. This generates html cheat sheets suitable for "
-"quick reference or for student handouts. This requires xsltproc to build and "
-"will generate 4 files in doc folder <filename>topology_cheatsheet.html</"
-"filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, "
-"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
-"html</filename>"
-msgstr ""
-"PostGIS 2.0에 포함되었습니다. 이것은 빠른 참조 또는 학습용 유인물에 적합한 참"
-"조 자료 html을 생성합니다. 생성을 위해서는 xsltproc가 요구되며 doc 폴더 내에 "
+"quick reference or for student handouts. This requires xsltproc to build and"
+" will generate 4 files in doc folder "
 "<filename>topology_cheatsheet.html</filename>, "
 "<filename>tiger_geocoder_cheatsheet.html</filename>, "
-"<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet."
-"html</filename> 4개의 파일을 생성합니다. "
+"<filename>raster_cheatsheet.html</filename>, "
+"<filename>postgis_cheatsheet.html</filename>"
+msgstr "PostGIS 2.0 버전부터 소개되었습니다. 빠른 참조 또는 학습용 유인물에 적합한 참조 자료(cheat sheet) html 파일을 생성합니다. 파일 생성에 xsltproc가 필요하며, doc 폴더 안에 다음<filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, <filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename> 4개의 파일을 생성할 것입니다."
 
 #. Tag: para
 #: installation.xml:579
@@ -1035,10 +886,7 @@ msgid ""
 "You can download some pre-built ones available in html and pdf from <ulink "
 "url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study "
 "Guides</ulink>"
-msgstr ""
-"html과 pdf 형식으로 미리 만들어진 파일들을 <ulink url=\"http://www.postgis."
-"us/study_guides\">PostGIS / PostgreSQL Study Guides</ulink>에서 다운로드 받으"
-"실 수 있습니다."
+msgstr "html 및 pdf 형식으로 미리 만들어진 파일들을 <ulink url=\"http://www.postgis.us/study_guides\">PostGIS / PostgreSQL Study Guides</ulink> 에서 다운로드받을 수 있습니다."
 
 #. Tag: command
 #: installation.xml:582
@@ -1050,7 +898,7 @@ msgstr "make cheatsheets"
 #: installation.xml:587
 #, no-c-format
 msgid "Building PostGIS Extensions and Deploying them"
-msgstr "PostGIS Extensions 빌드 및 배포"
+msgstr "PostGIS 확장 프로그램 빌드 및 배포"
 
 #. Tag: para
 #: installation.xml:589
@@ -1058,9 +906,7 @@ msgstr "PostGIS Extensions 빌드 및 배포"
 msgid ""
 "The PostGIS extensions are built and installed automatically if you are "
 "using PostgreSQL 9.1+."
-msgstr ""
-"PostgreSQL 9.1 이상을 사용 중이라면 PostGIS extentions은 자동적으로 빌드 및 "
-"설치됩니다. "
+msgstr "PostgreSQL 9.1 이상 버전을 사용중이라면 PostGIS 확장 프로그램은 자동적으로 빌드 및 설치됩니다."
 
 #. Tag: para
 #: installation.xml:592
@@ -1069,10 +915,7 @@ msgid ""
 "If you are building from source repository, you need to build the function "
 "descriptions first. These get built if you have docbook installed. You can "
 "also manually build with the statement:"
-msgstr ""
-"소스 저장소로부터 생성할 경우에는, 먼저 function descriptions 부터 빌드해야 "
-"합니다. docbook을 설치하셨다면  빌드할 수 있고, 다음 명령을 통해 수동으로 생"
-"성할 수도 있습니다: "
+msgstr "소스 저장소로부터 빌드할 경우, 먼저 함수 설명(function description)부터 빌드해야 합니다. docbook을 설치한 경우 빌드됩니다. 다음 명령어를 통해 직접 생성할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:597
@@ -1080,9 +923,7 @@ msgstr ""
 msgid ""
 "Building the comments is not necessary if you are building from a release "
 "tar ball since these are packaged pre-built with the tar ball already."
-msgstr ""
-"만약 사용자가 tar 파일 배포본을 이용해 빌드한다면  미리 빌드된 것이 tar 파일"
-"과 함께 배포됨으로 comments를 따로 빌드할 필요가 없습니다. "
+msgstr "사용자가 tar 파일 배포본으로부터 빌드한다면  미리 빌드된 주석이 tar 파일과 함께 패키지되기 때문에 주석을 따로 빌드할 필요가 없습니다."
 
 #. Tag: para
 #: installation.xml:598
@@ -1092,10 +933,7 @@ msgid ""
 "automatically build as part of the make install process. You can if needed "
 "build from the extensions folders or copy files if you need them on a "
 "different server."
-msgstr ""
-"만약 PostgreSQL 9.1을 기반으로 빌드 중이라면 extensions은 설치 과정의 일환으"
-"로 자동 빌드될 것입니다. 만약 필요하다면 extensions 폴더로부터의 빌드하거나 "
-"또는 다른 서버에서 필요한 파일을 복사할 수 있습니다. "
+msgstr "PostgreSQL 9.1 버전을 대상으로 빌드하는 경우, make install 과정의 한 단계에서 확장 프로그램을 자동적으로 빌드할 것입니다. 필요할 경우 확장 프로그램 폴더로부터 빌드하거나, 다른 서버에서 필요할 경우 파일을 복사할 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:600
@@ -1130,20 +968,17 @@ msgid ""
 "make\n"
 "make install\n"
 "make installcheck"
-msgstr ""
+msgstr "cd extensions\ncd postgis\nmake clean\nmake\nmake install\ncd ..\ncd postgis_topology\nmake clean\nmake\nmake install\ncd ..\ncd postgis_sfcgal\nmake clean\nmake\nmake install\n\ncd ..\ncd address_standardizer\nmake clean\nmake\nmake install\nmake installcheck\n\ncd ..\ncd postgis_tiger_geocoder\nmake clean\nmake\nmake install\nmake installcheck"
 
 #. Tag: para
 #: installation.xml:601
 #, no-c-format
 msgid ""
 "The extension files will always be the same for the same version of PostGIS "
-"regardless of OS, so it is fine to copy over the extension files from one OS "
-"to another as long as you have the PostGIS binaries already installed on "
+"regardless of OS, so it is fine to copy over the extension files from one OS"
+" to another as long as you have the PostGIS binaries already installed on "
 "your servers."
-msgstr ""
-"extension 파일은 OS에 상관없이 PostGIS버전만 같으면 적용에 문제가 없습니다. "
-"그러므로 PostGIS binaries가 설치된 서버에 확장 파일만 복사해도 문제가 없습니"
-"다. "
+msgstr "PostGIS 버전만 같다면 OS에 상관없이 확장 프로그램 파일은 언제나 동일할 것입니다. 따라서 사용자 서버에 이미 PostGIS 바이너리가 설치되어 있다면 한 OS에서 다른 OS로 확장 프로그램 파일만 복사해도 문제가 없습니다."
 
 #. Tag: para
 #: installation.xml:603
@@ -1151,14 +986,10 @@ msgstr ""
 msgid ""
 "If you want to install the extensions manually on a separate server "
 "different from your development, You need to copy the following files from "
-"the extensions folder into the <filename>PostgreSQL / share / extension</"
-"filename> folder of your PostgreSQL install as well as the needed binaries "
-"for regular PostGIS if you don't have them already on the server."
-msgstr ""
-"만약 extension을 수동으로 또는 다른 서버에 설치하고 싶으면 다음 파일들을 사용"
-"자의 PostgreSQL 설치경로의  <filename>PostgreSQL / share / extension</"
-"filename> 폴더에 있는 extensions 폴더에서 복사하여 PostGIS가 설치되지 않은 서"
-"버에 필요한 바이너리 파일들을 넣어 주십시오."
+"the extensions folder into the <filename>PostgreSQL / share / "
+"extension</filename> folder of your PostgreSQL install as well as the needed"
+" binaries for regular PostGIS if you don't have them already on the server."
+msgstr "만약 확장 프로그램을 사용자 개발 서버가 아닌 다른 서버에 직접 설치하고 싶다면, 다음 파일들을 확장 프로그램 폴더에서 다른 서버에 있는 PostgreSQL 설치 경로의 <filename>PostgreSQL / share / extension</filename> 폴더에 복사해야 합니다. 이때 해당 서버에 PostGIS가 설치되어 있지 않다면 정식 PostGIS의 바이너리 또한 복사해줘야 합니다."
 
 #. Tag: para
 #: installation.xml:610
@@ -1167,10 +998,7 @@ msgid ""
 "These are the control files that denote information such as the version of "
 "the extension to install if not specified. <filename>postgis.control, "
 "postgis_topology.control</filename>."
-msgstr ""
-"이것들이 지정되지 않은 경우 설치할 수 있는 extension 의 버전 등의 정보를 나타"
-"내는 제어 파일입니다. <filename>postgis.control, postgis_topology.control</"
-"filename>."
+msgstr "<filename>postgis.control, postgis_topology.control</filename> 은, 지정되어 있지 않을 경우, 설치할 확장 프로그램의 버전 등과 같은 정보를 표시하는 제어 파일입니다."
 
 #. Tag: para
 #: installation.xml:616
@@ -1178,13 +1006,9 @@ msgstr ""
 msgid ""
 "All the files in the /sql folder of each extension. Note that these need to "
 "be copied to the root of the PostgreSQL share/extension folder "
-"<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/"
-"postgis_topology/sql/*.sql</filename>"
-msgstr ""
-"각 extension의 /sql 폴더에 모든 파일들이 있습니다. 다음 파일들은 postgreSQL"
-"의 share/extension 폴더의 루트에 복사 되어야 함에 주의하십시오. "
-"<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/"
-"postgis_topology/sql/*.sql</filename>"
+"<filename>extensions/postgis/sql/*.sql</filename>, "
+"<filename>extensions/postgis_topology/sql/*.sql</filename>"
+msgstr "<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/postgis_topology/sql/*.sql</filename> 은 각 확장 프로그램의 /sql 폴더 안의 모든 파일들을 나타냅니다. PostgreSQL의 share/extension 폴더 루트에 복사해야 한다는 점을 주의하십시오."
 
 #. Tag: para
 #: installation.xml:622
@@ -1193,10 +1017,7 @@ msgid ""
 "Once you do that, you should see <varname>postgis</varname>, "
 "<varname>postgis_topology</varname> as available extensions in PgAdmin -> "
 "extensions."
-msgstr ""
-"이렇게 한 다음, 사용자는 사용 가능한 extensions으로 <varname>postgis</"
-"varname>, <varname>postgis_topology</varname> 을 PgAdmin -> extensions에서 "
-"볼 수 있을 것입니다."
+msgstr "복사가 끝나면, PgAdmin -> extensions 메뉴에서 <varname>postgis</varname>, <varname>postgis_topology</varname> 가 사용할 수 있는 확장 프로그램으로 나타난 것을 볼 수 있을 겁니다."
 
 #. Tag: para
 #: installation.xml:623
@@ -1204,49 +1025,37 @@ msgstr ""
 msgid ""
 "If you are using psql, you can verify that the extensions are installed by "
 "running this query:"
-msgstr ""
-"만약 psql을 이용 중이라면 다음의 쿼리를 실행함으로써 확인할 수 있습니다."
+msgstr "만약 PSQL을 이용하고 있다면 다음 쿼리를 실행해서 확장 프로그램이 설치된 것을 확인할 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:624
 #, no-c-format
 msgid ""
 "SELECT name, default_version,installed_version\n"
-"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address"
-"%';\n"
+"FROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';\n"
 "\n"
 "             name             | default_version | installed_version\n"
 "------------------------------+-----------------+-------------------\n"
-" address_standardizer         | &last_release_version;         | "
-"&last_release_version;\n"
-" address_standardizer_data_us | &last_release_version;         | "
-"&last_release_version;\n"
-" postgis                      | &last_release_version;         | "
-"&last_release_version;\n"
+" address_standardizer         | &last_release_version;         | &last_release_version;\n"
+" address_standardizer_data_us | &last_release_version;         | &last_release_version;\n"
+" postgis                      | &last_release_version;         | &last_release_version;\n"
 " postgis_sfcgal               | &last_release_version;         |\n"
-" postgis_tiger_geocoder       | &last_release_version;         | "
-"&last_release_version;\n"
+" postgis_tiger_geocoder       | &last_release_version;         | &last_release_version;\n"
 " postgis_topology             | &last_release_version;         |\n"
 "(6 rows)"
-msgstr ""
+msgstr "SELECT name, default_version,installed_version\nFROM pg_available_extensions WHERE name LIKE 'postgis%' or name LIKE 'address%';\n\n             name             | default_version | installed_version\n------------------------------+-----------------+-------------------\n address_standardizer         | &last_release_version;         | &last_release_version;\n address_standardizer_data_us | &last_release_version;         | &last_release_version;\n postgis                      | &last_release_version;         | &last_release_version;\n postgis_sfcgal               | &last_release_version;         |\n postgis_tiger_geocoder       | &last_release_version;         | &last_release_version;\n postgis_topology             | &last_release_version;         |\n(6 rows)"
 
 #. Tag: para
 #: installation.xml:626
 #, no-c-format
 msgid ""
-"If you have the extension installed in the database you are querying, you'll "
-"see mention in the <varname>installed_version</varname> column. If you get "
-"no records back, it means you don't have postgis extensions installed on the "
-"server at all. PgAdmin III 1.14+ will also provide this information in the "
+"If you have the extension installed in the database you are querying, you'll"
+" see mention in the <varname>installed_version</varname> column. If you get "
+"no records back, it means you don't have postgis extensions installed on the"
+" server at all. PgAdmin III 1.14+ will also provide this information in the "
 "<varname>extensions</varname> section of the database browser tree and will "
 "even allow upgrade or uninstall by right-clicking."
-msgstr ""
-"만약 사용자가 쿼리하는 데이터베이스에 extension이 설치되어 있다면, 사용자는 "
-"<varname>installed_version</varname> 컬럼에서 이름을 볼 수 있습니다. 만약 아"
-"무 레코드도 없다면 서버에 postgis extension이 전혀 설치되어 있지 않음을 뜻합"
-"니다. PgAdmin III 1.14이상 버전에서는 데이터베이스 탐색 트리의 "
-"<varname>extensions</varname>에서 마우스 오른쪽 버튼 클릭을 통해 업그레이드 "
-"또는 삭제를 허용합니다. "
+msgstr "사용자가 쿼리한 데이터베이스에 확장 프로그램이 설치되었다면 <varname>installed_version</varname> 열에 언급된 것을 볼 수 있을 겁니다. 반환되는 레코드가 없다면, 애초에 해당 서버에 PostGIS 확장 프로그램이 설치되지 않았다는 뜻입니다. PgAdmin III 1.14 이상 버전 또한 데이터베이스 브라우저 트리의 <varname>extensions</varname> 부분에서 이 정보를 제공하며, 오른쪽 클릭을 통해 확장 프로그램을 업그레이드 또는 설치 해제할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:630
@@ -1255,10 +1064,7 @@ msgid ""
 "If you have the extensions available, you can install postgis extension in "
 "your database of choice by either using pgAdmin extension interface or "
 "running these sql commands:"
-msgstr ""
-"extension이 이용 가능한 상태라면 pgAdmin extension 인터페이스 또는 다음의 "
-"sql 명령을 실행함으로써 선택한 데이터베이스 안에 postgis extension을 설치할 "
-"수 있습니다:"
+msgstr "이용 가능한 확장 프로그램이 있다면, pgAdmin 확장 프로그램 인터페이스 또는 다음 sql 명령어를 통해 사용자가 선택한 데이터베이스에 PostGIS 확장 프로그램을 설치할 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:631
@@ -1272,7 +1078,7 @@ msgid ""
 "CREATE EXTENSION address_standardizer_data_us;\n"
 "CREATE EXTENSION postgis_tiger_geocoder;\n"
 "CREATE EXTENSION postgis_topology;"
-msgstr ""
+msgstr "CREATE EXTENSION postgis;\nCREATE EXTENSION postgis_sfcgal;\nCREATE EXTENSION fuzzystrmatch; --needed for postgis_tiger_geocoder\n--optional used by postgis_tiger_geocoder, or can be used standalone\nCREATE EXTENSION address_standardizer;\nCREATE EXTENSION address_standardizer_data_us;\nCREATE EXTENSION postgis_tiger_geocoder;\nCREATE EXTENSION postgis_topology;"
 
 #. Tag: para
 #: installation.xml:633
@@ -1280,7 +1086,7 @@ msgstr ""
 msgid ""
 "In psql you can use to see what versions you have installed and also what "
 "schema they are installed."
-msgstr ""
+msgstr "PSQL에서 다음 명령어를 사용하면 어떤 버전을 설치했는지, 어떤 스키마로 설치했는지 알 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:634
@@ -1289,7 +1095,7 @@ msgid ""
 "\\connect mygisdb\n"
 "\\x\n"
 "\\dx postgis*"
-msgstr ""
+msgstr "\\connect mygisdb\n\\x\n\\dx postgis*"
 
 #. Tag: screen
 #: installation.xml:636
@@ -1314,46 +1120,35 @@ msgid ""
 "Version     | &last_release_version;\n"
 "Schema      | topology\n"
 "Description | PostGIS topology spatial types and functions"
-msgstr ""
+msgstr "List of installed extensions\n-[ RECORD 1 ]-------------------------------------------------\n-\nName        | postgis\nVersion     | &last_release_version;\nSchema      | public\nDescription | PostGIS geometry, geography, and raster spat..\n-[ RECORD 2 ]-------------------------------------------------\n-\nName        | postgis_tiger_geocoder\nVersion     | &last_release_version;\nSchema      | tiger\nDescription | PostGIS tiger geocoder and reverse geocoder\n-[ RECORD 3 ]-------------------------------------------------\n-\nName        | postgis_topology\nVersion     | &last_release_version;\nSchema      | topology\nDescription | PostGIS topology spatial types and functions"
 
 #. Tag: para
 #: installation.xml:638
 #, no-c-format
 msgid ""
-"Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</"
-"varname>, <varname>topology</varname> can not be explicitly backed up. They "
-"can only be backed up when the respective <varname>postgis</varname> or "
-"<varname>postgis_topology</varname> extension is backed up, which only seems "
-"to happen when you backup the whole database. As of PostGIS 2.0.1, only srid "
-"records not packaged with PostGIS are backed up when the database is backed "
-"up so don't go around changing srids we package and expect your changes to "
-"be there. Put in a ticket if you find an issue. The structures of extension "
-"tables are never backed up since they are created with <code>CREATE "
-"EXTENSION</code> and assumed to be the same for a given version of an "
-"extension. These behaviors are built into the current PostgreSQL extension "
-"model, so nothing we can do about it."
-msgstr ""
-"<varname>spatial_ref_sys</varname>, <varname>layer</varname>, "
-"<varname>topology</varname> 확장 테이블은 백업되지 않습니다. 이것들은 "
-"<varname>postgis</varname> 또는 <varname>postgis_topology</varname> extension"
-"이 백업이 될 경우에만 백업이 가능합니다. 이는 전체 데이터베이스가 백업될 때에"
-"만 발생한다고 볼 수 있습니다. PosgGIS 2.0.1에서는 데이터베이스 백업시 srid 레"
-"코드만이 백업됩니다. 이와 관한 문제를 발견하면 trac 티켓을 발행해주십시오. "
-"extension 테이블의 구조들은  <code>CREATE EXTENSION</code>과 함께 생성되기 때"
-"문에 백업되지 않습니다. 이러한 방식은 PostgreSQL extension 모델에 적용되기 때"
-"문에 조치를 취할 수 있는 방법이 없습니다. "
+"Extension tables <varname>spatial_ref_sys</varname>, "
+"<varname>layer</varname>, <varname>topology</varname> can not be explicitly "
+"backed up. They can only be backed up when the respective "
+"<varname>postgis</varname> or <varname>postgis_topology</varname> extension "
+"is backed up, which only seems to happen when you backup the whole database."
+" As of PostGIS 2.0.1, only srid records not packaged with PostGIS are backed"
+" up when the database is backed up so don't go around changing srids we "
+"package and expect your changes to be there. Put in a ticket if you find an "
+"issue. The structures of extension tables are never backed up since they are"
+" created with <code>CREATE EXTENSION</code> and assumed to be the same for a"
+" given version of an extension. These behaviors are built into the current "
+"PostgreSQL extension model, so nothing we can do about it."
+msgstr "<varname>spatial_ref_sys</varname>, <varname>layer</varname>, <varname>topology</varname> 확장 프로그램 테이블을 확실히 백업할 수는 없습니다. <varname>postgis</varname> 또는 <varname>postgis_topology</varname> 확장 프로그램을 각각 백업하는 경우에만 -- 데이터베이스 전체를 백업해야 확장 프로그램이 백업되는 것 같습니다 -- 확장 프로그램 테이블을 백업할 수 있습니다. PostGIS 2.0.1 버전부터 데이터베이스를 백업할 때 PostGIS로 패키지하지 않은 SRID 레코드만 백업되기 때문에, 패키징한 SRID를 변경한 다음 그 변경사항이 남아 있으리라고 기대하지는 마십시오. 문제점을 발견했다면 버그 티켓을 제출하십시오. 확장 프로그램 테이블의 구조는 <code>CREATE EXTENSION</code> 으로 생성되었으며 확장 프로그램의 주어진 버전에서 동일할 것으로 가정하므로 백업되지 않습니다. 이런 동작은 현재 PostgreSQL 확장 프로그램 모델에 내장되어 있기 때문에 어떻게 할 수 있는 방법은 없습니다."
 
 #. Tag: para
 #: installation.xml:643
 #, no-c-format
 msgid ""
 "If you installed &last_release_version;, without using our wonderful "
-"extension system, you can change it to be extension based by first upgrading "
-"to the latest micro version running the upgrade scripts: "
-"<filename>postgis_upgrade_22_minor.sql</filename>,"
-"<filename>raster_upgrade_22_minor.sql</filename>,"
-"<filename>topology_upgrade_22_minor.sql</filename>."
-msgstr ""
+"extension system, you can change it to be extension based by first upgrading"
+" to the latest micro version running the upgrade scripts: "
+"<filename>postgis_upgrade_22_minor.sql</filename>,<filename>raster_upgrade_22_minor.sql</filename>,<filename>topology_upgrade_22_minor.sql</filename>."
+msgstr "우리의 멋진 확장 프로그램 시스템 없이 &last_release_version; 을 설치했다면, 먼저 다음 업그레이드 스크립트를 실행해서 확장 프로그램 기반 최신 버전으로 변경할 수 있습니다: <filename>postgis_upgrade_22_minor.sql</filename>,<filename>raster_upgrade_22_minor.sql</filename>,<filename>topology_upgrade_22_minor.sql</filename>."
 
 #. Tag: para
 #: installation.xml:644
@@ -1361,9 +1156,7 @@ msgstr ""
 msgid ""
 "If you installed postgis without raster support, you'll need to install "
 "raster support first (using the full <filename>rtpostgis.sql</filename>"
-msgstr ""
-"만일 래스터 지원없이 postgis를 설치했다면, 래스터 지원을 먼저 설치 해야 합니"
-"다. (전체  <filename>rtpostgis.sql</filename> 이용"
+msgstr "만일 래스터 지원 없이 PostGIS를 설치했다면, 래스터 지원을 먼저 설치해야 합니다(<filename>rtpostgis.sql</filename> 전체 사용)."
 
 #. Tag: para
 #: installation.xml:645
@@ -1371,9 +1164,7 @@ msgstr ""
 msgid ""
 "Then you can run the below commands to package the functions in their "
 "respective extension."
-msgstr ""
-"그런 다음 extension기능 패키지를 설치하기 위한 다음 명령을 실행할 수 있습니"
-"다."
+msgstr "그런 다음 확장 프로그램 각각의 함수들을 패키징하기 위한 다음 명령어들을 실행할 수 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:646
@@ -1382,7 +1173,7 @@ msgid ""
 "CREATE EXTENSION postgis FROM unpackaged;\n"
 "CREATE EXTENSION postgis_topology FROM unpackaged;\n"
 "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
-msgstr ""
+msgstr "CREATE EXTENSION postgis FROM unpackaged;\nCREATE EXTENSION postgis_topology FROM unpackaged;\nCREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
 #. Tag: title
 #: installation.xml:652
@@ -1394,7 +1185,7 @@ msgstr "테스트"
 #: installation.xml:654
 #, no-c-format
 msgid "If you wish to test the PostGIS build, run"
-msgstr "만약 PostGIS 빌드를 테스트하고 싶다면, 실행하십시오."
+msgstr "만약 PostGIS 빌드를 테스트하고 싶다면, 다음을 실행하십시오."
 
 #. Tag: command
 #: installation.xml:659
@@ -1406,11 +1197,9 @@ msgstr "make check"
 #: installation.xml:662
 #, no-c-format
 msgid ""
-"The above command will run through various checks and regression tests using "
-"the generated library against an actual PostgreSQL database."
-msgstr ""
-"위 명령어는 활성 PostgreSQL 데이터베이스 바탕으로 생성된 라이브러리를 이용하"
-"여 다양한 확인과 회귀 테스트를 실행할 것입니다. "
+"The above command will run through various checks and regression tests using"
+" the generated library against an actual PostgreSQL database."
+msgstr "이 명령어는 실제 PostgreSQL 데이터베이스를 대상으로 생성된 라이브러리를 이용하여 여러 가지 검사 및 회귀 테스트를 실행할 것입니다. "
 
 #. Tag: para
 #: installation.xml:668
@@ -1419,34 +1208,27 @@ msgid ""
 "If you configured PostGIS using non-standard PostgreSQL, GEOS, or Proj4 "
 "locations, you may need to add their library locations to the "
 "LD_LIBRARY_PATH environment variable."
-msgstr ""
-"PostgreSQL, GEOS, 또는 Proj4를 표준이 아닌 경로에 설치한 경우, "
-"LD_LIBRARY_PATH 환경 변수에 해당 라이브러리 경로를 설정해주어야 합니다."
+msgstr "표준이 아닌 PostgreSQL, GEOS, 또는 Proj4 위치를 이용해서 PostGIS를 설치한 경우, LD_LIBRARY_PATH 환경변수에 해당 라이브러리 경로를 설정해주어야 할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:676
 #, no-c-format
 msgid ""
-"Currently, the <command>make check</command> relies on the <code>PATH</code> "
-"and <code>PGPORT</code> environment variables when performing the checks - "
+"Currently, the <command>make check</command> relies on the <code>PATH</code>"
+" and <code>PGPORT</code> environment variables when performing the checks - "
 "it does <emphasis>not</emphasis> use the PostgreSQL version that may have "
-"been specified using the configuration parameter <command>--with-pgconfig</"
-"command>. So make sure to modify your PATH to match the detected PostgreSQL "
-"installation during configuration or be prepared to deal with the impending "
-"headaches."
-msgstr ""
-"현재, <command>make check</command> 검사들을 실시할 때에는 <code>PATH</code>"
-"와 <code>PGPORT</code> 환경 변수를 따릅니다. PostgreSQL의 설정 매개변수인 "
-"<command>--with-pgconfig</command>에 명시되어 있어도 이것을 적용하지 "
-"<emphasis>않습니다</emphasis>. 따라서, PostgreSQL 설치시의 환경설정과 일치하"
-"도록 PATH를 수정해주십시오."
+"been specified using the configuration parameter <command>--with-"
+"pgconfig</command>. So make sure to modify your PATH to match the detected "
+"PostgreSQL installation during configuration or be prepared to deal with the"
+" impending headaches."
+msgstr "현재 <command>make check</command> 명령어로 검사 작업을 할 때, 설정 파라미터 <command>--with-pgconfig</command> 를 통해 지정되었을 수도 있는 PostgreSQL 버전을 사용하지 <emphasis>않고</emphasis> <code>PATH</code> 및 <code>PGPORT</code> 환경변수에 의존합니다. 따라서 설정 과정에서 PostgreSQL 설치 경로와 일치하도록 사용자의 PATH를 수정하거나, 또는 곧 닥칠 두통에 대비하십시오."
 
 #. Tag: para
 #: installation.xml:688
 #, no-c-format
 msgid ""
 "If successful, the output of the test should be similar to the following:"
-msgstr "성공하였다면 테스트의 결과는 아래와 비슷하게 나올 것입니다:"
+msgstr "성공했다면 테스트 결과는 아래와 비슷하게 나올 것입니다:"
 
 #. Tag: programlisting
 #: installation.xml:693
@@ -1755,15 +1537,11 @@ msgid ""
 "\n"
 "Creating database 'postgis_reg'\n"
 "Loading PostGIS into 'postgis_reg'\n"
-"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/"
-"postgis/postgis.sql\n"
-"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/"
-"postgis/postgis_comments.sql\n"
+"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis.sql\n"
+"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis_comments.sql\n"
 "Loading SFCGAL into 'postgis_reg'\n"
-"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/"
-"postgis/sfcgal.sql\n"
-"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/"
-"postgis/sfcgal_comments.sql\n"
+"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal.sql\n"
+"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal_comments.sql\n"
 "PostgreSQL 9.4.4, compiled by Visual C++ build 1800, 32-bit\n"
 "  Postgis 2.2.0dev - r13980 - 2015-08-23 06:13:07\n"
 "  scripts 2.2.0dev r13980\n"
@@ -1890,10 +1668,8 @@ msgid ""
 " sfcgal/concave_hull .. ok\n"
 " sfcgal/wmsservers .. ok\n"
 " sfcgal/approximatemedialaxis .. ok\n"
-" uninstall .  /projects/postgis/branches/2.2/regress/00-regress-install/"
-"share/contrib/postgis/uninstall_sfcgal.sql\n"
-"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/"
-"postgis/uninstall_postgis.sql\n"
+" uninstall .  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_sfcgal.sql\n"
+"  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_postgis.sql\n"
 ". ok (4336)\n"
 "\n"
 "Run tests: 118\n"
@@ -1916,7 +1692,7 @@ msgid ""
 "              suites      2      2    n/a      0        0\n"
 "               tests      4      4      4      0        0\n"
 "             asserts      4      4      4      0      n/a"
-msgstr ""
+msgstr "CUnit - A unit testing framework for C - Version 2.1-2\n     http://cunit.sourceforge.net/\n\n\nSuite: computational_geometry\n  Test: test_lw_segment_side ...passed\n  Test: test_lw_segment_intersects ...passed\n  Test: test_lwline_crossing_short_lines ...passed\n  Test: test_lwline_crossing_long_lines ...passed\n  Test: test_lwline_crossing_bugs ...passed\n  Test: test_lwpoint_set_ordinate ...passed\n  Test: test_lwpoint_get_ordinate ...passed\n  Test: test_point_interpolate ...passed\n  Test: test_lwline_clip ...passed\n  Test: test_lwline_clip_big ...passed\n  Test: test_lwmline_clip ...passed\n  Test: test_geohash_point ...passed\n  Test: test_geohash_precision ...passed\n  Test: test_geohash ...passed\n  Test: test_geohash_point_as_int ...passed\n  Test: test_isclosed ...passed\n  Test: test_lwgeom_simplify ...passed\nSuite: buildarea\n  Test: buildarea1 ...passed\n  Test: buildarea2 ...passed\n  Test: buildarea3 ...passed\n  Test: buildarea4 ...passed\n  Test: buildarea4b ...passed\n  Test: buildarea5 ...passed\n  Test: buildarea6 ...passed\n  Test: buildarea7 ...passed\nSuite: geometry_clean\n  Test: test_lwgeom_make_valid ...passed\nSuite: clip_by_rectangle\n  Test: test_lwgeom_clip_by_rect ...passed\nSuite: force_sfs\n  Test: test_sfs_11 ...passed\n  Test: test_sfs_12 ...passed\n  Test: test_sqlmm ...passed\nSuite: geodetic\n  Test: test_sphere_direction ...passed\n  Test: test_sphere_project ...passed\n  Test: test_lwgeom_area_sphere ...passed\n  Test: test_signum ...passed\n  Test: test_gbox_from_spherical_coordinates ...passed\n  Test: test_gserialized_get_gbox_geocentric ...passed\n  Test: test_clairaut ...passed\n  Test: test_edge_intersection ...passed\n  Test: test_edge_intersects ...passed\n  Test: test_edge_distance_to_point ...passed\n  Test: test_edge_distance_to_edge ...passed\n  Test: test_lwgeom_distance_sphere ...passed\n  Test: test_lwgeom_check_geodetic ...passed\n  Test: test_gserialized_from_lwgeom ...passed\n  Test: test_spheroid_distance ...passed\n  Test: test_spheroid_area ...passed\n  Test: test_lwpoly_covers_point2d ...passed\n  Test: test_gbox_utils ...passed\n  Test: test_vector_angle ...passed\n  Test: test_vector_rotate ...passed\n  Test: test_lwgeom_segmentize_sphere ...passed\n  Test: test_ptarray_contains_point_sphere ...passed\n  Test: test_ptarray_contains_point_sphere_iowa ...passed\nSuite: GEOS\n  Test: test_geos_noop ...passed\n  Test: test_geos_subdivide ...passed\n  Test: test_geos_linemerge ...passed\nSuite: Clustering\n  Test: basic_test ...passed\n  Test: nonsequential_test ...passed\n  Test: basic_distance_test ...passed\n  Test: single_input_test ...passed\n  Test: empty_inputs_test ...passed\nSuite: Clustering Union-Find\n  Test: test_unionfind_create ...passed\n  Test: test_unionfind_union ...passed\n  Test: test_unionfind_ordered_by_cluster ...passed\nSuite: homogenize\n  Test: test_coll_point ...passed\n  Test: test_coll_line ...passed\n  Test: test_coll_poly ...passed\n  Test: test_coll_coll ...passed\n  Test: test_geom ...passed\n  Test: test_coll_curve ...passed\nSuite: encoded_polyline_input\n  Test: in_encoded_polyline_test_geoms ...passed\n  Test: in_encoded_polyline_test_precision ...passed\nSuite: geojson_input\n  Test: in_geojson_test_srid ...passed\n  Test: in_geojson_test_bbox ...passed\n  Test: in_geojson_test_geoms ...passed\nSuite: twkb_input\n  Test: test_twkb_in_point ...passed\n  Test: test_twkb_in_linestring ...passed\n  Test: test_twkb_in_polygon ...passed\n  Test: test_twkb_in_multipoint ...passed\n  Test: test_twkb_in_multilinestring ...passed\n  Test: test_twkb_in_multipolygon ...passed\n  Test: test_twkb_in_collection ...passed\n  Test: test_twkb_in_precision ...passed\nSuite: serialization/deserialization\n  Test: test_typmod_macros ...passed\n  Test: test_flags_macros ...passed\n  Test: test_serialized_srid ...passed\n  Test: test_gserialized_from_lwgeom_size ...passed\n  Test: test_gbox_serialized_size ...passed\n  Test: test_lwgeom_from_gserialized ...passed\n  Test: test_lwgeom_count_vertices ...passed\n  Test: test_on_gser_lwgeom_count_vertices ...passed\n  Test: test_geometry_type_from_string ...passed\n  Test: test_lwcollection_extract ...passed\n  Test: test_lwgeom_free ...passed\n  Test: test_lwgeom_flip_coordinates ...passed\n  Test: test_f2d ...passed\n  Test: test_lwgeom_clone ...passed\n  Test: test_lwgeom_force_clockwise ...passed\n  Test: test_lwgeom_calculate_gbox ...passed\n  Test: test_lwgeom_is_empty ...passed\n  Test: test_lwgeom_same ...passed\n  Test: test_lwline_from_lwmpoint ...passed\n  Test: test_lwgeom_as_curve ...passed\n  Test: test_lwgeom_scale ...passed\n  Test: test_gserialized_is_empty ...passed\n  Test: test_gbox_same_2d ...passed\nSuite: measures\n  Test: test_mindistance2d_tolerance ...passed\n  Test: test_rect_tree_contains_point ...passed\n  Test: test_rect_tree_intersects_tree ...passed\n  Test: test_lwgeom_segmentize2d ...passed\n  Test: test_lwgeom_locate_along ...passed\n  Test: test_lw_dist2d_pt_arc ...passed\n  Test: test_lw_dist2d_seg_arc ...passed\n  Test: test_lw_dist2d_arc_arc ...passed\n  Test: test_lw_arc_length ...passed\n  Test: test_lw_dist2d_pt_ptarrayarc ...passed\n  Test: test_lw_dist2d_ptarray_ptarrayarc ...passed\n  Test: test_lwgeom_tcpa ...passed\n  Test: test_lwgeom_is_trajectory ...passed\nSuite: effectivearea\n  Test: do_test_lwgeom_effectivearea_lines ...passed\n  Test: do_test_lwgeom_effectivearea_polys ...passed\nSuite: miscellaneous\n  Test: test_misc_force_2d ...passed\n  Test: test_misc_simplify ...passed\n  Test: test_misc_count_vertices ...passed\n  Test: test_misc_area ...passed\n  Test: test_misc_wkb ...passed\n  Test: test_grid ...passed\nSuite: noding\n  Test: test_lwgeom_node ...passed\nSuite: encoded_polyline_output\n  Test: out_encoded_polyline_test_geoms ...passed\n  Test: out_encoded_polyline_test_srid ...passed\n  Test: out_encoded_polyline_test_precision ...passed\nSuite: geojson_output\n  Test: out_geojson_test_precision ...passed\n  Test: out_geojson_test_dims ...passed\n  Test: out_geojson_test_srid ...passed\n  Test: out_geojson_test_bbox ...passed\n  Test: out_geojson_test_geoms ...passed\nSuite: gml_output\n  Test: out_gml_test_precision ...passed\n  Test: out_gml_test_srid ...passed\n  Test: out_gml_test_dims ...passed\n  Test: out_gml_test_geodetic ...passed\n  Test: out_gml_test_geoms ...passed\n  Test: out_gml_test_geoms_prefix ...passed\n  Test: out_gml_test_geoms_nodims ...passed\n  Test: out_gml2_extent ...passed\n  Test: out_gml3_extent ...passed\nSuite: kml_output\n  Test: out_kml_test_precision ...passed\n  Test: out_kml_test_dims ...passed\n  Test: out_kml_test_geoms ...passed\n  Test: out_kml_test_prefix ...passed\nSuite: svg_output\n  Test: out_svg_test_precision ...passed\n  Test: out_svg_test_dims ...passed\n  Test: out_svg_test_relative ...passed\n  Test: out_svg_test_geoms ...passed\n  Test: out_svg_test_srid ...passed\nSuite: x3d_output\n  Test: out_x3d3_test_precision ...passed\n  Test: out_x3d3_test_geoms ...passed\n  Test: out_x3d3_test_option ...passed\nSuite: ptarray\n  Test: test_ptarray_append_point ...passed\n  Test: test_ptarray_append_ptarray ...passed\n  Test: test_ptarray_locate_point ...passed\n  Test: test_ptarray_isccw ...passed\n  Test: test_ptarray_signed_area ...passed\n  Test: test_ptarray_unstroke ...passed\n  Test: test_ptarray_insert_point ...passed\n  Test: test_ptarray_contains_point ...passed\n  Test: test_ptarrayarc_contains_point ...passed\n  Test: test_ptarray_scale ...passed\nSuite: printing\n  Test: test_lwprint_default_format ...passed\n  Test: test_lwprint_format_orders ...passed\n  Test: test_lwprint_optional_format ...passed\n  Test: test_lwprint_oddball_formats ...passed\n  Test: test_lwprint_bad_formats ...passed\nSuite: SFCGAL\n  Test: test_sfcgal_noop ...passed\nSuite: split\n  Test: test_lwline_split_by_point_to ...passed\n  Test: test_lwgeom_split ...passed\nSuite: stringbuffer\n  Test: test_stringbuffer_append ...passed\n  Test: test_stringbuffer_aprintf ...passed\nSuite: surface\n  Test: triangle_parse ...passed\n  Test: tin_parse ...passed\n  Test: polyhedralsurface_parse ...passed\n  Test: surface_dimension ...passed\nSuite: Internal Spatial Trees\n  Test: test_tree_circ_create ...passed\n  Test: test_tree_circ_pip ...passed\n  Test: test_tree_circ_pip2 ...passed\n  Test: test_tree_circ_distance ...passed\n  Test: test_tree_circ_distance_threshold ...passed\nSuite: triangulate\n  Test: test_lwgeom_delaunay_triangulation ...passed\nSuite: twkb_output\n  Test: test_twkb_out_point ...passed\n  Test: test_twkb_out_linestring ...passed\n  Test: test_twkb_out_polygon ...passed\n  Test: test_twkb_out_multipoint ...passed\n  Test: test_twkb_out_multilinestring ...passed\n  Test: test_twkb_out_multipolygon ...passed\n  Test: test_twkb_out_collection ...passed\n  Test: test_twkb_out_idlist ...passed\nSuite: varint\n  Test: test_zigzag ...passed\n  Test: test_varint ...passed\n  Test: test_varint_roundtrip ...passed\nSuite: wkb_input\n  Test: test_wkb_in_point ...passed\n  Test: test_wkb_in_linestring ...passed\n  Test: test_wkb_in_polygon ...passed\n  Test: test_wkb_in_multipoint ...passed\n  Test: test_wkb_in_multilinestring ...passed\n  Test: test_wkb_in_multipolygon ...passed\n  Test: test_wkb_in_collection ...passed\n  Test: test_wkb_in_circularstring ...passed\n  Test: test_wkb_in_compoundcurve ...passed\n  Test: test_wkb_in_curvpolygon ...passed\n  Test: test_wkb_in_multicurve ...passed\n  Test: test_wkb_in_multisurface ...passed\n  Test: test_wkb_in_malformed ...passed\nSuite: wkb_output\n  Test: test_wkb_out_point ...passed\n  Test: test_wkb_out_linestring ...passed\n  Test: test_wkb_out_polygon ...passed\n  Test: test_wkb_out_multipoint ...passed\n  Test: test_wkb_out_multilinestring ...passed\n  Test: test_wkb_out_multipolygon ...passed\n  Test: test_wkb_out_collection ...passed\n  Test: test_wkb_out_circularstring ...passed\n  Test: test_wkb_out_compoundcurve ...passed\n  Test: test_wkb_out_curvpolygon ...passed\n  Test: test_wkb_out_multicurve ...passed\n  Test: test_wkb_out_multisurface ...passed\n  Test: test_wkb_out_polyhedralsurface ...passed\nSuite: wkt_input\n  Test: test_wkt_in_point ...passed\n  Test: test_wkt_in_linestring ...passed\n  Test: test_wkt_in_polygon ...passed\n  Test: test_wkt_in_multipoint ...passed\n  Test: test_wkt_in_multilinestring ...passed\n  Test: test_wkt_in_multipolygon ...passed\n  Test: test_wkt_in_collection ...passed\n  Test: test_wkt_in_circularstring ...passed\n  Test: test_wkt_in_compoundcurve ...passed\n  Test: test_wkt_in_curvpolygon ...passed\n  Test: test_wkt_in_multicurve ...passed\n  Test: test_wkt_in_multisurface ...passed\n  Test: test_wkt_in_tin ...passed\n  Test: test_wkt_in_polyhedralsurface ...passed\n  Test: test_wkt_in_errlocation ...passed\nSuite: wkt_output\n  Test: test_wkt_out_point ...passed\n  Test: test_wkt_out_linestring ...passed\n  Test: test_wkt_out_polygon ...passed\n  Test: test_wkt_out_multipoint ...passed\n  Test: test_wkt_out_multilinestring ...passed\n  Test: test_wkt_out_multipolygon ...passed\n  Test: test_wkt_out_collection ...passed\n  Test: test_wkt_out_circularstring ...passed\n  Test: test_wkt_out_compoundcurve ...passed\n  Test: test_wkt_out_curvpolygon ...passed\n  Test: test_wkt_out_multicurve ...passed\n  Test: test_wkt_out_multisurface ...passed\n\nRun Summary:    Type  Total    Ran Passed Failed Inactive\n              suites     38     38    n/a      0        0\n               tests    251    251    251      0        0\n             asserts   2468   2468   2468      0      n/a\n\nElapsed time =    0.298 seconds\n\nCreating database 'postgis_reg'\nLoading PostGIS into 'postgis_reg'\n  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis.sql\n  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/postgis_comments.sql\nLoading SFCGAL into 'postgis_reg'\n  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal.sql\n  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/sfcgal_comments.sql\nPostgreSQL 9.4.4, compiled by Visual C++ build 1800, 32-bit\n  Postgis 2.2.0dev - r13980 - 2015-08-23 06:13:07\n  scripts 2.2.0dev r13980\n  GEOS: 3.5.0-CAPI-1.9.0 r4088\n  PROJ: Rel. 4.9.1, 04 March 2015\n  SFCGAL: 1.1.0\n\nRunning tests\n\n loader/Point .............. ok\n loader/PointM .............. ok\n loader/PointZ .............. ok\n loader/MultiPoint .............. ok\n loader/MultiPointM .............. ok\n loader/MultiPointZ .............. ok\n loader/Arc .............. ok\n loader/ArcM .............. ok\n loader/ArcZ .............. ok\n loader/Polygon .............. ok\n loader/PolygonM .............. ok\n loader/PolygonZ .............. ok\n loader/TSTPolygon ......... ok\n loader/TSIPolygon ......... ok\n loader/TSTIPolygon ......... ok\n loader/PointWithSchema ..... ok\n loader/NoTransPoint ......... ok\n loader/NotReallyMultiPoint ......... ok\n loader/MultiToSinglePoint ......... ok\n loader/ReprojectPts ........ ok\n loader/ReprojectPtsGeog ........ ok\n loader/Latin1 .... ok\n loader/Latin1-implicit .... ok\n loader/mfile .... ok\n dumper/literalsrid ....... ok\n dumper/realtable ....... ok\n affine .. ok\n bestsrid .. ok\n binary .. ok\n boundary .. ok\n cluster .. ok\n concave_hull .. ok\n ctors .. ok\n dump .. ok\n dumppoints .. ok\n empty .. ok\n forcecurve .. ok\n geography .. ok\n in_geohash .. ok\n in_gml .. ok\n in_kml .. ok\n in_encodedpolyline .. ok\n iscollection .. ok\n legacy .. ok\n long_xact .. ok\n lwgeom_regress .. ok\n measures .. ok\n operators .. ok\n out_geometry .. ok\n out_geography .. ok\n polygonize .. ok\n polyhedralsurface .. ok\n postgis_type_name .. ok\n regress .. ok\n regress_bdpoly .. ok\n regress_index .. ok\n regress_index_nulls .. ok\n regress_management .. ok\n regress_selectivity .. ok\n regress_lrs .. ok\n regress_ogc .. ok\n regress_ogc_cover .. ok\n regress_ogc_prep .. ok\n regress_proj .. ok\n relate .. ok\n remove_repeated_points .. ok\n removepoint .. ok\n setpoint .. ok\n simplify .. ok\n simplifyvw .. ok\n size .. ok\n snaptogrid .. ok\n split .. ok\n sql-mm-serialize .. ok\n sql-mm-circularstring .. ok\n sql-mm-compoundcurve .. ok\n sql-mm-curvepoly .. ok\n sql-mm-general .. ok\n sql-mm-multicurve .. ok\n sql-mm-multisurface .. ok\n swapordinates .. ok\n summary .. ok\n temporal .. ok\n tickets .. ok\n twkb .. ok\n typmod .. ok\n wkb .. ok\n wkt .. ok\n wmsservers .. ok\n knn .. ok\n hausdorff .. ok\n regress_buffer_params .. ok\n offsetcurve .. ok\n relatematch .. ok\n isvaliddetail .. ok\n sharedpaths .. ok\n snap .. ok\n node .. ok\n unaryunion .. ok\n clean .. ok\n relate_bnr .. ok\n delaunaytriangles .. ok\n clipbybox2d .. ok\n subdivide .. ok\n in_geojson .. ok\n regress_sfcgal .. ok\n sfcgal/empty .. ok\n sfcgal/geography .. ok\n sfcgal/legacy .. ok\n sfcgal/measures .. ok\n sfcgal/regress_ogc_prep .. ok\n sfcgal/regress_ogc .. ok\n sfcgal/regress .. ok\n sfcgal/tickets .. ok\n sfcgal/concave_hull .. ok\n sfcgal/wmsservers .. ok\n sfcgal/approximatemedialaxis .. ok\n uninstall .  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_sfcgal.sql\n  /projects/postgis/branches/2.2/regress/00-regress-install/share/contrib/postgis/uninstall_postgis.sql\n. ok (4336)\n\nRun tests: 118\nFailed: 0\n\n-- --with-gui 옵션으로 빌드했을 경우, 다음 내용도 볼 수 있어야 합니다.\n\n     CUnit - A unit testing framework for C - Version 2.1-2\n     http://cunit.sourceforge.net/\n\n\nSuite: Shapefile Loader File shp2pgsql Test\n  Test: test_ShpLoaderCreate() ...passed\n  Test: test_ShpLoaderDestroy() ...passed\nSuite: Shapefile Loader File pgsql2shp Test\n  Test: test_ShpDumperCreate() ...passed\n  Test: test_ShpDumperDestroy() ...passed\n\nRun Summary:    Type  Total    Ran Passed Failed Inactive\n              suites      2      2    n/a      0        0\n               tests      4      4      4      0        0\n             asserts      4      4      4      0      n/a"
 
 #. Tag: para
 #: installation.xml:695
@@ -1924,16 +1700,16 @@ msgstr ""
 msgid ""
 "The <varname>postgis_tiger_geocoder</varname> and "
 "<varname>address_standardizer</varname> extensions, currenlty only support "
-"the standard PostgreSQL installcheck. To test these use the below. Note: the "
-"make install is not necessary if you already did make install at root of "
+"the standard PostgreSQL installcheck. To test these use the below. Note: the"
+" make install is not necessary if you already did make install at root of "
 "PostGIS code folder."
-msgstr ""
+msgstr "<varname>postgis_tiger_geocoder</varname> 와 <varname>address_standardizer</varname> 확장 프로그램은 현재 표준 PostgreSQL 설치검사(installcheck)만을 지원합니다. 이 확장 프로그램들을 테스트하려면 다음을 실행하십시오. 주의: 이미 PostGIS 코드 폴더의 루트에서 make install을 실행했다면 다시 실행할 필요는 없습니다."
 
 #. Tag: para
 #: installation.xml:696
 #, no-c-format
 msgid "For address_standardizer:"
-msgstr ""
+msgstr "address_standardizer의 경우:"
 
 #. Tag: programlisting
 #: installation.xml:697
@@ -1942,13 +1718,13 @@ msgid ""
 "cd extensions/address_standardizer\n"
 "make install\n"
 "make installcheck"
-msgstr ""
+msgstr "cd extensions/address_standardizer\nmake install\nmake installcheck"
 
 #. Tag: para
 #: installation.xml:699
 #, no-c-format
 msgid "Output should look like:"
-msgstr ""
+msgstr "다음과 같은 결과가 나와야 합니다:"
 
 #. Tag: screen
 #: installation.xml:700
@@ -1968,7 +1744,7 @@ msgid ""
 "=====================\n"
 " All 4 tests passed.\n"
 "====================="
-msgstr ""
+msgstr "============== dropping database \"contrib_regression\" ==============\nDROP DATABASE\n============== creating database \"contrib_regression\" ==============\nCREATE DATABASE\nALTER DATABASE\n============== running regression test queries        ==============\ntest test-init-extensions     ... ok\ntest test-parseaddress        ... ok\ntest test-standardize_address_1 ... ok\ntest test-standardize_address_2 ... ok\n\n=====================\n All 4 tests passed.\n====================="
 
 #. Tag: para
 #: installation.xml:702
@@ -1977,7 +1753,7 @@ msgid ""
 "For tiger geocoder, make sure you have postgis and fuzzystrmatch extensions "
 "available in your PostgreSQL instance. The address_standardizer tests will "
 "also kick in if you built postgis with address_standardizer support:"
-msgstr ""
+msgstr "TIGER 지오코딩 도구의 경우, 사용자의 PostgreSQL 인스턴스 안에서 PostGIS 및 fuzzystrmatch 확장 프로그램을 이용할 수 있는지 확인하십시오. address_standardizer 지원이 되도록 PostGIS를 빌드했다면 address_standardizer 테스트도 함께 실행될 것입니다."
 
 #. Tag: programlisting
 #: installation.xml:703
@@ -1986,13 +1762,13 @@ msgid ""
 "cd extensions/postgis_tiger_geocoder\n"
 "make install\n"
 "make installcheck"
-msgstr ""
+msgstr "cd extensions/postgis_tiger_geocoder\nmake install\nmake installcheck"
 
 #. Tag: para
 #: installation.xml:704
 #, no-c-format
 msgid "output should look like:"
-msgstr ""
+msgstr "다음과 같은 결과가 나와야 합니다:"
 
 #. Tag: screen
 #: installation.xml:705
@@ -2018,7 +1794,7 @@ msgid ""
 "=====================\n"
 "All 2 tests passed.\n"
 "====================="
-msgstr ""
+msgstr "============== dropping database \"contrib_regression\" ==============\nDROP DATABASE\n============== creating database \"contrib_regression\" ==============\nCREATE DATABASE\nALTER DATABASE\n============== installing fuzzystrmatch               ==============\nCREATE EXTENSION\n============== installing postgis                     ==============\nCREATE EXTENSION\n============== installing postgis_tiger_geocoder      ==============\nCREATE EXTENSION\n============== installing address_standardizer        ==============\nCREATE EXTENSION\n============== running regression test queries        ==============\ntest test-normalize_address   ... ok\ntest test-pagc_normalize_address ... ok\n\n=====================\nAll 2 tests passed.\n====================="
 
 #. Tag: title
 #: installation.xml:709
@@ -2030,7 +1806,7 @@ msgstr "설치"
 #: installation.xml:711
 #, no-c-format
 msgid "To install PostGIS, type"
-msgstr "PostGIS 설치를 위해서 다음을 입력하십시오."
+msgstr "PostGIS를 설치하려면 다음을 입력하십시오."
 
 #. Tag: command
 #: installation.xml:716
@@ -2045,19 +1821,15 @@ msgid ""
 "This will copy the PostGIS installation files into their appropriate "
 "subdirectory specified by the <command>--prefix</command> configuration "
 "parameter. In particular:"
-msgstr ""
-"이것은 <command>--prefix</command> 설정 파라미터에 정의된 하위 경로에 "
-"PostGIS 설치 파일을 복사할 것입니다."
+msgstr "이렇게 하면 <command>--prefix</command> 설정 파라미터에 지정된 적절한 하위 디렉터리에 PostGIS 설치 파일을 복사할 것입니다."
 
 #. Tag: para
 #: installation.xml:727
 #, no-c-format
 msgid ""
-"The loader and dumper binaries are installed in <filename>[prefix]/bin</"
-"filename>."
-msgstr ""
-"로더(loader)와 덤퍼 바이너리 들은 <filename>[prefix]/bin</filename>에 설치됩"
-"니다."
+"The loader and dumper binaries are installed in "
+"<filename>[prefix]/bin</filename>."
+msgstr "로더(loader) 및 덤퍼(dumper) 바이너리는 <filename>[prefix]/bin</filename> 에 설치됩니다."
 
 #. Tag: para
 #: installation.xml:734
@@ -2065,16 +1837,14 @@ msgstr ""
 msgid ""
 "The SQL files, such as <filename>postgis.sql</filename>, are installed in "
 "<filename>[prefix]/share/contrib</filename>."
-msgstr ""
-"<filename>postgis.sql</filename>와 같은 SQL 파일들은 <filename>[prefix]/"
-"share/contrib</filename>에 설치됩니다."
+msgstr "<filename>postgis.sql</filename> 와 같은 SQL 파일들은 <filename>[prefix]/share/contrib</filename> 에 설치됩니다."
 
 #. Tag: para
 #: installation.xml:741
 #, no-c-format
 msgid ""
 "The PostGIS libraries are installed in <filename>[prefix]/lib</filename>."
-msgstr "PostGIS 라이브러리들은 <filename>[prefix]/lib</filename>에 설치됩니다."
+msgstr "PostGIS 라이브러리들은 <filename>[prefix]/lib</filename> 에 설치됩니다."
 
 #. Tag: para
 #: installation.xml:748
@@ -2084,11 +1854,7 @@ msgid ""
 "generate the <filename>postgis_comments.sql</filename>, "
 "<filename>raster_comments.sql</filename> file, install the sql file by "
 "running"
-msgstr ""
-"만약 기존에 <filename>postgis_comments.sql</filename>, "
-"<filename>raster_comments.sql</filename>  파일을 생성하기 위해 <command>make "
-"comments</command> 명령어를 실행한 적이 있으시다면, 다음을 실행해 sql 파일을 "
-"설치하십시오."
+msgstr "만약 이미 <filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</filename>  파일을 생성하기 위해 <command>make comments</command> 명령어를 실행했다면, 다음을 실행해 sql 파일을 설치하십시오."
 
 #. Tag: command
 #: installation.xml:755
@@ -2100,20 +1866,18 @@ msgstr "make comments-install"
 #: installation.xml:759
 #, no-c-format
 msgid ""
-"<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
-"filename>, <filename>topology_comments.sql</filename> was separated from the "
-"typical build and installation targets since with it comes the extra "
-"dependency of <command>xsltproc</command>."
-msgstr ""
-"<command>xsltproc</command>의 적용 이후 일반적인 설치로부터 "
-"<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</"
-"filename>, <filename>topology_comments.sql</filename>는 분리되었습니다."
+"<filename>postgis_comments.sql</filename>, "
+"<filename>raster_comments.sql</filename>, "
+"<filename>topology_comments.sql</filename> was separated from the typical "
+"build and installation targets since with it comes the extra dependency of "
+"<command>xsltproc</command>."
+msgstr "<filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</filename>, <filename>topology_comments.sql</filename> 은 <command>xsltproc</command> 에 추가 의존성을 가지기 때문에 일반적인 빌드 및 설치 대상으로부터 분리되었습니다."
 
 #. Tag: title
 #: installation.xml:769
 #, no-c-format
 msgid "Create a spatially-enabled database on PostgreSQL lower than 9.1"
-msgstr "PostgreSQL 9.1 미만 버전에 공간정보 가능 데이터베이스 생성하기"
+msgstr "PostgreSQL 9.1 미만 버전에 공간정보 처리 가능한 데이터베이스 생성"
 
 #. Tag: para
 #: installation.xml:771
@@ -2121,9 +1885,7 @@ msgstr "PostgreSQL 9.1 미만 버전에 공간정보 가능 데이터베이스 �
 msgid ""
 "The first step in creating a PostGIS database is to create a simple "
 "PostgreSQL database."
-msgstr ""
-"PostGIS 데이터베이스를 생성하기 위한 첫 번째 절차는 간단한 PostgreSQL 데이터"
-"베이스를 생성하는 것입니다."
+msgstr "PostGIS 데이터베이스를 생성하기 위한 첫 번째 단계는 단순한 PostgreSQL 데이터베이스를 생성하는 것입니다."
 
 #. Tag: command
 #: installation.xml:777 installation.xml:874
@@ -2140,11 +1902,7 @@ msgid ""
 "the PL/pgSQL language in your new database. This is accomplish by the "
 "command below command. For PostgreSQL 8.4+, this is generally already "
 "installed"
-msgstr ""
-"많은 PostGIS 기능들은 PL/pgSQL procedural 언어로 쓰여져 있습니다. 따라서, 새"
-"로운 데이터베이스에 PL/pgSQL을 활성화하는 것이 PostGIS 데이터베이스를 생성하"
-"기 위한 두 번째 단계입니다. 이는 아래 명령어를 통해 가능하고, PostgreSQL 8.4"
-"이상 버전의 경우에는 일반적으로 이미 설치되어 있습니다."
+msgstr "많은 PostGIS 함수들이 PL/pgSQL 절차형 언어로 작성됩니다. 그러므로 PostGIS 데이터베이스를 생성하기 위한 두 번째 단계는 새로운 데이터베이스에 PL/pgSQL 언어를 활성화하는 것입니다. 다음 명령어를 실행해서 활성화할 수 있습니다. PostgreSQL 8.4 이상 버전의 경우, 일반적으로 이미 설치되어 있습니다."
 
 #. Tag: command
 #: installation.xml:788
@@ -2160,10 +1918,7 @@ msgid ""
 "loading the <filename>postgis.sql</filename> definitions file (located in "
 "<filename>[prefix]/share/contrib</filename> as specified during the "
 "configuration step)."
-msgstr ""
-"이제 <filename>postgis.sql</filename> definitions 파일을 로딩함으로써 (환경설"
-"정시  <filename>[prefix]/share/contrib</filename>에 경로 설정) PostGIS 객체 "
-"및 함수 정의를 데이터베이스에 로딩하십시오. "
+msgstr "이제 <filename>postgis.sql</filename> 정의 파일(설정 단계에서 지정한 대로 <filename>[prefix]/share/contrib</filename> 안에 있습니다)을 로드해서 PostGIS 오브젝트 및 함수 정의를 사용자 데이터베이스에 로드하십시오."
 
 #. Tag: command
 #: installation.xml:799
@@ -2175,15 +1930,11 @@ msgstr "psql -d [yourdatabase] -f postgis.sql"
 #: installation.xml:802
 #, no-c-format
 msgid ""
-"For a complete set of EPSG coordinate system definition identifiers, you can "
-"also load the <filename>spatial_ref_sys.sql</filename> definitions file and "
-"populate the <varname>spatial_ref_sys</varname> table. This will permit you "
-"to perform ST_Transform() operations on geometries."
-msgstr ""
-"EPSG 좌표계 정의 식별자의 완전한 세팅을 위해서는<filename>spatial_ref_sys."
-"sql</filename> 정의 파일을 로드 할 수 있으며 <varname>spatial_ref_sys</"
-"varname> 테이블을 추가할 수 있습니다. 이것은 ST_Transform() 기능을 수행할 수 "
-"있게 해줍니다."
+"For a complete set of EPSG coordinate system definition identifiers, you can"
+" also load the <filename>spatial_ref_sys.sql</filename> definitions file and"
+" populate the <varname>spatial_ref_sys</varname> table. This will permit you"
+" to perform ST_Transform() operations on geometries."
+msgstr "EPSG 좌표계 정의 식별자를 완전히 설치하려면, <filename>spatial_ref_sys.sql</filename> 정의 파일을 로드해서 <varname>spatial_ref_sys</varname> 테이블에 채울 수도 있습니다. 이렇게 하면 ST_Transform() 작업을 수행할 수 있습니다."
 
 #. Tag: command
 #: installation.xml:810
@@ -2199,11 +1950,7 @@ msgid ""
 "load the <filename>postgis_comments.sql</filename> into your spatial "
 "database. The comments can be viewed by simply typing <command>\\dd "
 "[function_name]</command> from a <command>psql</command> terminal window."
-msgstr ""
-"주석을 PostGIS 기능에 추가하고 싶은 경우에는 공간 데이터베이스에 "
-"<filename>postgis_comments.sql</filename> 을 로딩하는 것이 첫 번째 과정입니"
-"다. 주석은 <command>psql</command> 터미널 창에서 <command>\\dd "
-"[function_name]</command>을 입력하여 조회할 수 있습니다. "
+msgstr "주석을 PostGIS 함수에 추가하고 싶다면 마지막으로 공간 데이터베이스에 <filename>postgis_comments.sql</filename> 을 로드합니다. <command>PSQL</command> 터미널 창에서 <command>\\dd [function_name]</command> 을 입력하는 것만으로도 주석을 조회할 수 있습니다."
 
 #. Tag: command
 #: installation.xml:821
@@ -2230,9 +1977,7 @@ msgid ""
 "Install raster support comments. This will provide quick help info for each "
 "raster function using psql or PgAdmin or any other PostgreSQL tool that can "
 "show function comments"
-msgstr ""
-"래스터 지원 주석 설치. psql, PgAdmin또는 다른 PostgreSQL 도구에서 각각의 래스"
-"터 기능을 위한 빠른 도움말을 제공합니다."
+msgstr "래스터 지원 주석 설치. 이렇게 하면 PSQL, PgAdmin 또는 함수 주석을 표출할 수 있는 어떤 PostgreSQL 도구를 사용해도 각 래스터 함수에 대한 빠른 도움말 정보를 제공할 것입니다."
 
 #. Tag: command
 #: installation.xml:838
@@ -2244,7 +1989,7 @@ msgstr "psql -d [yourdatabase] -f raster_comments.sql"
 #: installation.xml:840
 #, no-c-format
 msgid "Install topology support"
-msgstr "토폴로지 지원 설치"
+msgstr "지형 지원 설치"
 
 #. Tag: command
 #: installation.xml:845
@@ -2259,9 +2004,7 @@ msgid ""
 "Install topology support comments. This will provide quick help info for "
 "each topology function / type using psql or PgAdmin or any other PostgreSQL "
 "tool that can show function comments"
-msgstr ""
-"토폴로지 지원 주석 설치. Psql, PgAdmin또는 다른 PostgreSQL 도구에서 토폴로지 "
-"기능을 위한 빠른 도움말을 제공합니다."
+msgstr "지형 지원 주석 설치. 이렇게 하면 PSQL, PgAdmin 또는 함수 주석을 표출할 수 있는 어떤 PostgreSQL 도구를 사용해도 각 지형 함수/유형에 대한 빠른 도움말 정보를 제공할 것입니다."
 
 #. Tag: command
 #: installation.xml:854
@@ -2273,9 +2016,9 @@ msgstr "psql -d [yourdatabase] -f topology/topology_comments.sql"
 #: installation.xml:857 installation.xml:894
 #, no-c-format
 msgid ""
-"If you plan to restore an old backup from prior versions in this new db, run:"
-msgstr ""
-"만약 새로운 DB에 기존 버전의 백업을 복원하고 싶다면 다음을 실행하십시오:"
+"If you plan to restore an old backup from prior versions in this new db, "
+"run:"
+msgstr "만약 이 새 DB에 이전 버전의 백업을 복원하고 싶다면 다음을 실행하십시오:"
 
 #. Tag: command
 #: installation.xml:858 installation.xml:895
@@ -2290,13 +2033,9 @@ msgid ""
 "There is an alternative <filename>legacy_minimal.sql</filename> you can run "
 "instead which will install barebones needed to recover tables and work with "
 "apps like MapServer and GeoServer. If you have views that use things like "
-"distance / length etc, you'll need the full blown <filename>legacy.sql</"
-"filename>"
-msgstr ""
-"대안으로 <filename>legacy_minimal.sql</filename>이 있습니다. 이는 테이블을 복"
-"원하고 MapServer와 Geoserver와 같은 소프트웨어와 연동하는 등의 설치를 대신하"
-"여 실행할 수 있습니다. 거리 / 길이 등과 같은 뷰 들을 가지고 계신다면 완전한 "
-"<filename>legacy.sql</filename>이 필요합니다."
+"distance / length etc, you'll need the full blown "
+"<filename>legacy.sql</filename>"
+msgstr "MapServer와 GeoServer 같은 응용 프로그램과 연동하는 테이블을 복구하는 데 필요한 베어본(barebone)을 설치하는 대신 실행할 수 있는 <filename>legacy_minimal.sql</filename> 이라는 대안이 있습니다. 거리, 길이 등과 같은 정보를 표출하는 뷰(view)가 있을 경우, 완전한 <filename>legacy.sql</filename> 이 필요할 것입니다."
 
 #. Tag: para
 #: installation.xml:862 installation.xml:897
@@ -2304,15 +2043,13 @@ msgstr ""
 msgid ""
 "You can later run <filename>uninstall_legacy.sql</filename> to get rid of "
 "the deprecated functions after you are done with restoring and cleanup."
-msgstr ""
-"복구와 청소를 마친 뒤 앞으로 사용하지 않을 기능들을 제거하기 위해서는 "
-"<filename>uninstall_legacy.sql</filename>을 실행하십시오."
+msgstr "복구 및 청소(cleanup)를 마친 뒤 앞으로 사용하지 않을 함수들을 제거하려면 이후 <filename>uninstall_legacy.sql</filename>을 실행할 수 있습니다."
 
 #. Tag: title
 #: installation.xml:866
 #, no-c-format
 msgid "Creating a spatial database using EXTENSIONS"
-msgstr "EXTENSIONS을 활용한 공간 데이터베이스 생성"
+msgstr "확장 프로그램을 활용한 공간 데이터베이스 생성"
 
 #. Tag: para
 #: installation.xml:868
@@ -2320,9 +2057,7 @@ msgstr "EXTENSIONS을 활용한 공간 데이터베이스 생성"
 msgid ""
 "If you are using PostgreSQL 9.1+ and have compiled and installed the "
 "extensions/ postgis modules, you can create a spatial database the new way."
-msgstr ""
-"Postgre 9.1이상 버전을 사용하고 계시고 extensions/ postgis 모듈을 컴파일하고 "
-"설치하였다면 공간 데이터베이스를 이 방법으로 생성하실 수 있습니다. "
+msgstr "PostgreSQL 9.1 이상 버전을 사용하며 확장 프로그램/PostGIS 모듈을 컴파일하고 설치했다면 다음과 같은 새로운 방법으로 공간 데이터베이스를 생성할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:877
@@ -2331,10 +2066,7 @@ msgid ""
 "The core postgis extension installs PostGIS geometry, geography, raster, "
 "spatial_ref_sys and all the functions and comments with a simple: "
 "<programlisting>CREATE EXTENSION postgis;</programlisting> command."
-msgstr ""
-"핵심 postgis extension은 PostGIS의 도형. 지리, 래스터, spatial_ref_sys 및 모"
-"든 기능들과 주석을 간단한 명령어로 설치합니다 <programlisting>CREATE "
-"EXTENSION postgis;</programlisting> "
+msgstr "핵심 PostGIS 확장 프로그램은 <programlisting>CREATE EXTENSION postgis;</programlisting> 라는 단순한 명령어를 통해 PostGIS의 도형(geometry), 지리(geography), 래스터, spatial_ref_sys 및 모든 함수와 주석을 설치합니다."
 
 #. Tag: command
 #: installation.xml:883
@@ -2347,9 +2079,7 @@ msgstr "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis;\""
 #, no-c-format
 msgid ""
 "Topology is packaged as a separate extension and installable with command:"
-msgstr ""
-"토폴로지는 별도 extension로써 패키지화 되어 있고, 아래의 명령어로 설치 가능합"
-"니다:"
+msgstr "지형(topology)은 별도의 확장 프로그램으로 패키징되어 있고, 다음 명령어로 설치할 수 있습니다:"
 
 #. Tag: command
 #: installation.xml:891
@@ -2361,7 +2091,7 @@ msgstr "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis_topology;\""
 #: installation.xml:900
 #, no-c-format
 msgid "Installing and Using the address standardizer"
-msgstr ""
+msgstr "주소 표준화 도구 설치 및 활용"
 
 #. Tag: para
 #: installation.xml:901
@@ -2370,35 +2100,35 @@ msgid ""
 "The <code>address_standardizer</code> extension used to be a separate "
 "package that required separate download. From PostGIS 2.2 on, it is now "
 "bundled in. For more information about the address_standardize, what it "
-"does, and how to configure it for your needs, refer to <xref linkend="
-"\"Address_Standardizer\"/>."
-msgstr ""
+"does, and how to configure it for your needs, refer to <xref "
+"linkend=\"Address_Standardizer\"/>."
+msgstr "<code>address_standardizer</code> 확장 프로그램은 별도로 다운로드해야 하는 별도의 패키지였습니다. PostGIS 2.2 버전부터는 내장되어 있습니다. 이 확장 프로그램이 무슨 일을 하고 사용자의 필요에 따라 어떻게 설정하는지에 대한 자세한 정보는 <xref linkend=\"Address_Standardizer\"/> 를 참조하십시오."
 
 #. Tag: para
 #: installation.xml:903
 #, no-c-format
 msgid ""
-"This standardizer can be used in conjunction with the PostGIS packaged tiger "
-"geocoder extension as a replacement for the <xref linkend=\"Normalize_Address"
-"\"/> discussed. To use as replacement refer to <xref linkend="
-"\"tiger_pagc_address_standardizing\"/>. You can also use it as a building "
-"block for your own geocoder or use it to standardize your addresses for "
-"easier compare of addresses."
-msgstr ""
+"This standardizer can be used in conjunction with the PostGIS packaged tiger"
+" geocoder extension as a replacement for the <xref "
+"linkend=\"Normalize_Address\"/> discussed. To use as replacement refer to "
+"<xref linkend=\"tiger_pagc_address_standardizing\"/>. You can also use it as"
+" a building block for your own geocoder or use it to standardize your "
+"addresses for easier compare of addresses."
+msgstr "이 표준화 도구는 <xref linkend=\"Normalize_Address\"/> 대신 PostGIS 용으로 패키징된 TIGER 지오코딩 도구(geocoder)와 함께 쓰일 수 있습니다. 이렇게 대신 사용하는 방법은 <xref linkend=\"tiger_pagc_address_standardizing\"/> 을 참조하십시오. 주소 표준화 도구를 사용자의 다른 지오코딩 도구를 위한 구성 요소(building block)로 사용하거나, 주소를 더 쉽게 비교하기 위해 사용자 주소를 표준화하는 데 사용할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:907
 #, no-c-format
 msgid ""
 "The address standardizer relies on PCRE which is usually already installed "
-"on many Nix systems, but you can download the latest at: <ulink url=\"http://"
-"www.pcre.org\">http://www.pcre.org</ulink>. If during <xref linkend="
-"\"installation_configuration\"/>, PCRE is found, then the address "
+"on many Nix systems, but you can download the latest at: <ulink "
+"url=\"http://www.pcre.org\">http://www.pcre.org</ulink>. If during <xref "
+"linkend=\"installation_configuration\"/>, PCRE is found, then the address "
 "standardizer extension will automatically be built. If you have a custom "
 "pcre install you want to use instead, pass to configure <code>--with-"
-"pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the "
-"root folder for your pcre include and lib directories."
-msgstr ""
+"pcredir=/path/to/pcre</code> where <filename>/path/to/pcre</filename> is the"
+" root folder for your pcre include and lib directories."
+msgstr "주소 표준화 도구는 PCRE에 의존성을 갖습니다. PCRE는 많은 유닉스 파생 시스템에 일반적으로 이미 설치되어 있지만, <ulink url=\"http://www.pcre.org\">http://www.pcre.org</ulink> 에서 최신 버전을 다운로드할 수 있습니다. <xref linkend=\"installation_configuration\"/> 과정에서 PCRE를 찾았다면, 주소 표준화 도구 확장 프로그램을 자동적으로 빌드할 것입니다. 사용자가 사용하고자 하는 PCRE를 따로 설치한 경우, 설정 파라미터 <code>--with-pcredir=/path/to/pcre</code> 의 <filename>/path/to/pcre</filename> 부분에 사용자의 PCRE include 및 lib 디렉터리의 루트 폴더를 입력하십시오."
 
 #. Tag: para
 #: installation.xml:910
@@ -2407,26 +2137,26 @@ msgid ""
 "For Windows users, the PostGIS 2.1+ bundle is packaged with the "
 "address_standardizer already so no need to compile and can move straight to "
 "<code>CREATE EXTENSION</code> step."
-msgstr ""
+msgstr "윈도우 사용자의 경우 PostGIS 2.1 이상 버전 번들은 이미address_standardizer와 함께 패키징되어 있으므로 컴파일할 필요없이 바로 <code>CREATE EXTENSION</code> 단계로 건너뛸 수 있습니다."
 
 #. Tag: para
 #: installation.xml:913
 #, no-c-format
 msgid ""
 "Once you have installed, you can connect to your database and run the SQL:"
-msgstr ""
+msgstr "설치를 완료했다면 사용자 데이터베이스에 연결해서 SQL을 실행할 수 있습니다:"
 
 #. Tag: programlisting
 #: installation.xml:914
 #, no-c-format
 msgid "CREATE EXTENSION address_standardizer;"
-msgstr ""
+msgstr "CREATE EXTENSION address_standardizer;"
 
 #. Tag: para
 #: installation.xml:916
 #, no-c-format
 msgid "The following test requires no rules, gaz, or lex tables"
-msgstr ""
+msgstr "다음 테스트에는 어떤 rules, gaz, 또는 lex 테이블도 필요없습니다."
 
 #. Tag: programlisting
 #: installation.xml:917
@@ -2434,13 +2164,13 @@ msgstr ""
 msgid ""
 "SELECT num, street, city, state, zip\n"
 " FROM parse_address('1 Devonshire Place, Boston, MA 02109');"
-msgstr ""
+msgstr "SELECT num, street, city, state, zip\n FROM parse_address('1 Devonshire Place, Boston, MA 02109');"
 
 #. Tag: para
 #: installation.xml:918
 #, no-c-format
 msgid "Output should be"
-msgstr ""
+msgstr "다음과 같은 결과가 나와야 합니다:"
 
 #. Tag: screen
 #: installation.xml:919
@@ -2449,13 +2179,13 @@ msgid ""
 "num |         street         |  city  | state |  zip\n"
 "-----+------------------------+--------+-------+-------\n"
 " 1   | Devonshire Place PH301 | Boston | MA    | 02109"
-msgstr ""
+msgstr "num |         street         |  city  | state |  zip\n-----+------------------------+--------+-------+-------\n 1   | Devonshire Place PH301 | Boston | MA    | 02109"
 
 #. Tag: title
 #: installation.xml:921
 #, no-c-format
 msgid "Installing Regex::Assemble"
-msgstr ""
+msgstr "Regex::Assemble 설치"
 
 #. Tag: para
 #: installation.xml:922
@@ -2464,44 +2194,44 @@ msgid ""
 "Perl Regex:Assemble is no longer needed for compiling address_standardizer "
 "extension since the files it generates are part of the source tree. However "
 "if you need to edit the <filename>usps-st-city-orig.txt</filename> or "
-"<filename>usps-st-city-orig.txt usps-st-city-adds.tx</filename>, you need to "
-"rebuild <filename>parseaddress-stcities.h</filename> which does require "
+"<filename>usps-st-city-orig.txt usps-st-city-adds.tx</filename>, you need to"
+" rebuild <filename>parseaddress-stcities.h</filename> which does require "
 "Regex:Assemble."
-msgstr ""
+msgstr "address_standardizer 확장 프로그램을 컴파일하는 데 펄 Regex:Assemble은 더 이상 필요없습니다. 펄 Regex:Assemble이 생성하는 파일들이 소스 트리의 일부로 통합되었기 때문입니다. 하지만 <filename>usps-st-city-orig.txt</filename> 또는 <filename>usps-st-city-orig.txt usps-st-city-adds.tx</filename> 파일을 편집해야 할 경우, <filename>parseaddress-stcities.h</filename> 를 다시 빌드해야 하는데 이때 Regex:Assemble이 필요합니다."
 
 #. Tag: programlisting
 #: installation.xml:923
 #, no-c-format
 msgid "cpan Regexp::Assemble"
-msgstr ""
+msgstr "cpan Regexp::Assemble"
 
 #. Tag: para
 #: installation.xml:924
 #, no-c-format
 msgid "or if you are on Ubuntu / Debian you might need to do"
-msgstr ""
+msgstr "또는 우분투/데비안 시스템의 경우 다음 작업을 해야 할 수도 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:925
 #, no-c-format
 msgid "sudo perl -MCPAN -e \"install Regexp::Assemble\""
-msgstr ""
+msgstr "sudo perl -MCPAN -e \"install Regexp::Assemble\""
 
 #. Tag: title
 #: installation.xml:930
 #, no-c-format
 msgid "Installing, Upgrading Tiger Geocoder and loading data"
-msgstr "Tiger Geocoder의 설치, 업그레이드 및 데이터 불러오기"
+msgstr "TIGER 지오코딩 도구의 설치, 업그레이드 및 데이터 로딩"
 
 #. Tag: para
 #: installation.xml:932
 #, no-c-format
 msgid ""
-"Extras like Tiger geocoder may not be packaged in your PostGIS distribution, "
-"but will always be available in the postgis-&last_release_version;.tar.gz "
+"Extras like Tiger geocoder may not be packaged in your PostGIS distribution,"
+" but will always be available in the postgis-&last_release_version;.tar.gz "
 "file. The instructions provided here are also available in the "
 "<filename>extras/tiger_geocoder/README</filename>"
-msgstr ""
+msgstr "TIGER 지오코딩 도구 같은 추가 프로그램이 사용자의 PostGIS 배포판에 패키징되어 있지 않을 수도 있지만, postgis-&last_release_version;.tar.gz 파일에는 언제나 포함되어 있을 것입니다. 이 문서에서 제공하는 지침은 <filename>extras/tiger_geocoder/README</filename> 에서도 볼 수 있습니다."
 
 #. Tag: para
 #: installation.xml:933
@@ -2510,24 +2240,21 @@ msgid ""
 "If you are on Windows and you don't have tar installed, you can use <ulink "
 "url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink> to unzip the "
 "PostGIS tarball."
-msgstr ""
-"Tar를 인스톨하지 않으셨고 윈도우를 사용하고 계시다면 PostGIS Tar 파일의 압축"
-"을 풀기 위해 <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</"
-"ulink>를 이용하십시오. "
+msgstr "윈도우 사용자이며 tar를 설치하지 않았다면, PostGIS tar 파일의 압축을 풀기 위해 <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>를 이용할 수 있습니다."
 
 #. Tag: title
 #: installation.xml:935
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database: Using Extension"
-msgstr ""
+msgstr "TIGER 지오코딩 도구로 사용자의 PostGIS 데이터베이스 활성화: 확장 프로그램 이용"
 
 #. Tag: para
 #: installation.xml:936
 #, no-c-format
 msgid ""
-"If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of "
-"the new extension model for installing tiger geocoder. To do so:"
-msgstr ""
+"If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of"
+" the new extension model for installing tiger geocoder. To do so:"
+msgstr "PostgreSQL 9.1 이상 버전과 PostGIS 2.1 이상 버전을 사용중이라면, TIGER 지오코딩 도구를 설치하는 데 새로운 확장 프로그램 모델을 활용할 수 있습니다. 그 방법은 다음과 같습니다."
 
 #. Tag: para
 #: installation.xml:938
@@ -2535,7 +2262,7 @@ msgstr ""
 msgid ""
 "First get binaries for PostGIS 2.1+ or compile and install as usual. This "
 "should install the necessary extension files as well for tiger geocoder."
-msgstr ""
+msgstr "먼저 PostGIS 2.1 이상 버전의 바이너리를 다운로드하거나 컴파일해서 일반적인 방법으로 설치하십시오. TIGER 지오코딩 도구는 물론 필수 확장 프로그램도 함께 설치될 것입니다."
 
 #. Tag: para
 #: installation.xml:939
@@ -2544,9 +2271,9 @@ msgid ""
 "Connect to your database via psql or pgAdmin or some other tool and run the "
 "following SQL commands. Note that if you are installing in a database that "
 "already has postgis, you don't need to do the first step. If you have "
-"<varname>fuzzystrmatch</varname> extension already installed, you don't need "
-"to do the second step either."
-msgstr ""
+"<varname>fuzzystrmatch</varname> extension already installed, you don't need"
+" to do the second step either."
+msgstr "PSQL, pgAdmin 또는 다른 도구를 통해 사용자 데이터베이스에 연결해서 다음 SQL 명령어를 실행하십시오. 이미 PostGIS가 설치된 데이터베이스에 설치하는 경우, 첫 번째 단계를 수행할 필요는 없다는 사실을 주의하십시오. 이미 <varname>fuzzystrmatch</varname> 확장 프로그램이 설치되어 있다면 이 두 번째 단계도 수행할 필요가 없습니다."
 
 #. Tag: programlisting
 #: installation.xml:940
@@ -2554,11 +2281,10 @@ msgstr ""
 msgid ""
 "CREATE EXTENSION postgis;\n"
 "CREATE EXTENSION fuzzystrmatch;\n"
-"--this one is optional if you want to use the rules based standardizer "
-"(pagc_normalize_address)\n"
+"--this one is optional if you want to use the rules based standardizer (pagc_normalize_address)\n"
 "CREATE EXTENSION address_standardizer;\n"
 "CREATE EXTENSION postgis_tiger_geocoder;"
-msgstr ""
+msgstr "CREATE EXTENSION postgis;\nCREATE EXTENSION fuzzystrmatch;\n-- 규칙 기반 표준화 도구(pagc_normalize_address)를 이용하고자 할 경우 이 명령어는 선택적입니다.\nCREATE EXTENSION address_standardizer;\nCREATE EXTENSION postgis_tiger_geocoder;"
 
 #. Tag: para
 #: installation.xml:942
@@ -2566,33 +2292,31 @@ msgstr ""
 msgid ""
 "If you already have postgis_tiger_geocoder extension installed, and just "
 "want to update to the latest run:"
-msgstr ""
+msgstr "이미 postgis_tiger_geocoder 확장 프로그램을 설치했고 최신 버전으로 업데이트만 하고자 할 경우:"
 
 #. Tag: programlisting
 #: installation.xml:943
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE;\n"
 "ALTER EXTENSION postgis_tiger_geocoder UPDATE;"
-msgstr ""
-"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
-"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
+msgstr "ALTER EXTENSION postgis UPDATE;\nALTER EXTENSION postgis_tiger_geocoder UPDATE;"
 
 #. Tag: para
 #: installation.xml:944
 #, no-c-format
 msgid ""
-"If you made custom entries or changes to <varname>tiger.loader_platform</"
-"varname> and <varname>tiger.loader_variables</varname> you may need to "
-"update these."
-msgstr ""
+"If you made custom entries or changes to "
+"<varname>tiger.loader_platform</varname> and "
+"<varname>tiger.loader_variables</varname> you may need to update these."
+msgstr "<varname>tiger.loader_platform</varname> 과<varname>tiger.loader_variables</varname> 에 사용자 지정 항목을 만들었거나 변경한 경우 이 테이블들도 업데이트해야 할 수도 있습니다."
 
 #. Tag: para
 #: installation.xml:946
 #, no-c-format
 msgid ""
 "To confirm your install is working correctly, run this sql in your database:"
-msgstr ""
+msgstr "제대로 설치되었는지 확인하려면 사용자 데이터베이스에 다음 SQL을 실행하십시오:"
 
 #. Tag: programlisting
 #: installation.xml:947
@@ -2600,13 +2324,13 @@ msgstr ""
 msgid ""
 "SELECT na.address, na.streetname,na.streettypeabbrev, na.zip\n"
 "        FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;"
-msgstr ""
+msgstr "SELECT na.address, na.streetname,na.streettypeabbrev, na.zip\n        FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;"
 
 #. Tag: para
 #: installation.xml:948
 #, no-c-format
 msgid "Which should output"
-msgstr ""
+msgstr "다음과 같은 결과가 나와야 합니다:"
 
 #. Tag: screen
 #: installation.xml:949
@@ -2615,7 +2339,7 @@ msgid ""
 "address | streetname | streettypeabbrev |  zip\n"
 "---------+------------+------------------+-------\n"
 "           1 | Devonshire | Pl               | 02109"
-msgstr ""
+msgstr "address | streetname | streettypeabbrev |  zip\n---------+------------+------------------+-------\n           1 | Devonshire | Pl               | 02109"
 
 #. Tag: para
 #: installation.xml:951
@@ -2623,28 +2347,27 @@ msgstr ""
 msgid ""
 "Create a new record in <varname>tiger.loader_platform</varname> table with "
 "the paths of your executables and server."
-msgstr ""
+msgstr "<varname>tiger.loader_platform</varname> 테이블에 사용자의 실행 파일과 서버의 경로를 새 레코드로 생성하십시오."
 
 #. Tag: para
 #: installation.xml:952
 #, no-c-format
 msgid ""
-"So for example to create a profile called debbie that follows <code>sh</"
-"code> convention. You would do:"
-msgstr ""
+"So for example to create a profile called debbie that follows "
+"<code>sh</code> convention. You would do:"
+msgstr "예를 들어 <code>sh</code> 규약(convention)을 따르는 debbie라는 프로파일을 생성하려면 다음과 같이 해야 합니다."
 
 #. Tag: programlisting
 #: installation.xml:953
 #, no-c-format
 msgid ""
-"INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, "
-"unzip_command, psql, path_sep,\n"
+"INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep,\n"
 "                   loader, environ_set_command, county_process_command)\n"
 "SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,\n"
 "           loader, environ_set_command, county_process_command\n"
 "  FROM tiger.loader_platform\n"
 "  WHERE os = 'sh';"
-msgstr ""
+msgstr "INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep,\n                   loader, environ_set_command, county_process_command)\nSELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,\n           loader, environ_set_command, county_process_command\n  FROM tiger.loader_platform\n  WHERE os = 'sh';"
 
 #. Tag: para
 #: installation.xml:954
@@ -2652,7 +2375,7 @@ msgstr ""
 msgid ""
 "And then edit the paths in the <emphasis>declare_sect</emphasis> column to "
 "those that fit Debbie's pg, unzip,shp2pgsql, psql, etc path locations."
-msgstr ""
+msgstr "그 다음 debbie의 pg, unzip,shp2pgsql, PSQL 등의 경로 위치에 맞도록 <emphasis>declare_sect</emphasis> 열의 경로를 편집하십시오."
 
 #. Tag: para
 #: installation.xml:956
@@ -2661,7 +2384,7 @@ msgid ""
 "If you don't edit this <varname>loader_platform</varname> table, it will "
 "just contain common case locations of items and you'll have to edit the "
 "generated script after the script is generated."
-msgstr ""
+msgstr "이 <varname>loader_platform</varname> 테이블을 편집하지 않을 경우, 각 항목의 흔히 있는(common case) 위치만을 담게 되며 스크립트가 생생된 후 생성된 스크립트를 직접 편집해야 할 것입니다."
 
 #. Tag: para
 #: installation.xml:958
@@ -2672,9 +2395,9 @@ msgid ""
 "folder is where the tiger files will be downloaded to and processed. If you "
 "are not happy with having the folder on the root of the server, or simply "
 "want to change to a different folder for staging, then edit the field "
-"<varname>staging_fold</varname> in the <varname>tiger.loader_variables</"
-"varname> table."
-msgstr ""
+"<varname>staging_fold</varname> in the "
+"<varname>tiger.loader_variables</varname> table."
+msgstr "서버의 루트, 또는 서버에 충분히 빠른 네트워크로 연결된 경우 사용자 PC의 루트에 <filename>gisdata</filename> 라는 폴더를 생성하십시오. 이 폴더로 TIGER 파일을 다운로드해서 처리할 것입니다. 서버의 루트에 폴더를 만드는 게 마음에 안 들거나, 또는 단순히 다른 폴더로 변경하고 싶다면, <varname>tiger.loader_variables</varname> 테이블의 <varname>staging_fold</varname> 항목을 편집하십시오."
 
 #. Tag: para
 #: installation.xml:960
@@ -2683,43 +2406,44 @@ msgid ""
 "Create a folder called temp in the <filename>gisdata</filename> folder or "
 "whereever you designated the <varname>staging_fold</varname> to be. This "
 "will be the folder where the loader extracts the downloaded tiger data."
-msgstr ""
+msgstr "<filename>gisdata</filename> 폴더 또는 사용자가 <varname>staging_fold</varname> 에 지정한  폴더 안에 temp라는 폴더를 생성하십시오. 다운로드한 TIGER 데이터를 로더가 이 temp 폴더에 압축해제할 것입니다."
 
 #. Tag: para
 #: installation.xml:962
 #, no-c-format
 msgid ""
 "Then run the <xref linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
-"linkend=\"Loader_Generate_Script\"/> SQL functions make sure to use the name "
-"of your custom profile and copy the scripts to a .sh or .bat file. So for "
+"linkend=\"Loader_Generate_Script\"/> SQL functions make sure to use the name"
+" of your custom profile and copy the scripts to a .sh or .bat file. So for "
 "example to do the nation load and one state using our new profile we would:"
-msgstr ""
+msgstr "그 다음 <xref linkend=\"Loader_Generate_Nation_Script\"/> 및 <xref linkend=\"Loader_Generate_Script\"/> SQL 함수를 실행하십시오. 사용자가 지정한 프로파일 명칭을 사용하는지, 스크립트를 .sh 또는 .bat 파일로 복사했는지 확인하십시오. 예를 들어 nation 로드 작업 시 앞에서 만든 새 프로파일을 사용하려면 다음과 같이 해야 합니다:"
 
 #. Tag: programlisting
 #: installation.xml:963
 #, no-c-format
 msgid "SELECT Loader_Generate_Nation_Script('debbie');"
-msgstr ""
+msgstr "SELECT Loader_Generate_Nation_Script('debbie');"
 
 #. Tag: programlisting
 #: installation.xml:964
 #, no-c-format
 msgid "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');"
-msgstr ""
+msgstr "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');"
 
 #. Tag: para
 #: installation.xml:967
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Run the generated commandline scripts."
-msgstr "생성된 drop SQL 문장을 실행하십시오."
+msgstr "생성된 명령어 스크립트를 실행하십시오."
 
 #. Tag: para
 #: installation.xml:968
 #, no-c-format
 msgid ""
-"After you are done loading all data or at a stopping point, it's a good idea "
-"to analyze all the tiger tables to update the stats (include inherited stats)"
-msgstr ""
+"After you are done loading all data or at a stopping point, it's a good idea"
+" to analyze all the tiger tables to update the stats (include inherited "
+"stats)"
+msgstr "모든 데이터를 로딩한 다음 또는 어떤 정지 지점에서 모든 TIGER 테이블을 분석해서 (상속된 통계를 포함한) 통계(stat)를 업데이트하는 것이 좋습니다."
 
 #. Tag: programlisting
 #: installation.xml:969
@@ -2734,13 +2458,13 @@ msgid ""
 "vacuum analyze verbose tiger.cousub;\n"
 "vacuum analyze verbose tiger.county;\n"
 "vacuum analyze verbose tiger.state;"
-msgstr ""
+msgstr "SELECT install_missing_indexes();\nvacuum analyze verbose tiger.addr;\nvacuum analyze verbose tiger.edges;\nvacuum analyze verbose tiger.faces;\nvacuum analyze verbose tiger.featnames;\nvacuum analyze verbose tiger.place;\nvacuum analyze verbose tiger.cousub;\nvacuum analyze verbose tiger.county;\nvacuum analyze verbose tiger.state;"
 
 #. Tag: title
 #: installation.xml:972
 #, no-c-format
 msgid "Converting a Tiger Geocoder Regular Install to Extension Model"
-msgstr ""
+msgstr "TIGER 지오코딩 도구 정규 설치를 확장 프로그램 모델로 변환"
 
 #. Tag: para
 #: installation.xml:973
@@ -2748,7 +2472,7 @@ msgstr ""
 msgid ""
 "If you installed the tiger geocoder without using the extension model, you "
 "can convert to the extension model as follows:"
-msgstr ""
+msgstr "확장 프로그램 모델을 사용하지 않고 TIGER 지오코딩 도구를 설치했다면, 다음과 같이 확장 프로그램 모델로 변환시킬 수 있습니다:"
 
 #. Tag: para
 #: installation.xml:975
@@ -2756,40 +2480,40 @@ msgstr ""
 msgid ""
 "Follow instructions in <xref linkend=\"upgrade_tiger_geocoder\"/> for the "
 "non-extension model upgrade."
-msgstr ""
+msgstr "확장 프로그램 제외(non-extension) 모델을 업그레이드하려면 <xref linkend=\"upgrade_tiger_geocoder\"/> 의 지침을 따라해보십시오."
 
 #. Tag: para
 #: installation.xml:976
 #, no-c-format
 msgid ""
 "Connect to your database with psql or pgAdmin and run the following command:"
-msgstr ""
+msgstr "PSQL 또는 pgAdmin을 통해 사용자 데이터베이스에 연결하고 다음 명령어를 실행하십시오:"
 
 #. Tag: programlisting
 #: installation.xml:977
 #, no-c-format
 msgid "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
-msgstr ""
+msgstr "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
 #. Tag: title
 #: installation.xml:984
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database: Not Using Extensions"
-msgstr ""
+msgstr "TIGER 지오코딩 도구로 사용자의 PostGIS 데이터베이스 활성화: 확장 프로그램 없이"
 
 #. Tag: para
 #: installation.xml:985
 #, no-c-format
 msgid "First install PostGIS using the prior instructions."
-msgstr "우선 앞의 설명에 따라 PostGIS를 설치하십시오. "
+msgstr "먼저 앞에서 설명한 바에 따라 PostGIS를 설치하십시오."
 
 #. Tag: para
 #: installation.xml:989 installation.xml:1049
 #, no-c-format
 msgid ""
-"If you don't have an extras folder, download <ulink url="
-"\"&postgis_download_url;\">&postgis_download_url;</ulink>"
-msgstr ""
+"If you don't have an extras folder, download <ulink "
+"url=\"&postgis_download_url;\">&postgis_download_url;</ulink>"
+msgstr "extras 폴더가 없을 경우, <ulink url=\"&postgis_download_url;\">&postgis_download_url;</ulink> 에서 다운로드하십시오."
 
 #. Tag: command
 #: installation.xml:994 installation.xml:1054
@@ -2801,7 +2525,7 @@ msgstr "tar xvfz postgis-&last_release_version;.tar.gz"
 #: installation.xml:998
 #, no-c-format
 msgid "cd postgis-&last_release_version;/extras/tiger_geocoder"
-msgstr ""
+msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder"
 
 #. Tag: para
 #: installation.xml:1001
@@ -2812,11 +2536,11 @@ msgid ""
 "executables server etc or alternatively you can update the "
 "<varname>loader_platform</varname> table once installed. If you don't edit "
 "this file or the <varname>loader_platform</varname> table, it will just "
-"contain common case locations of items and you'll have to edit the generated "
-"script after the fact when you run the <xref linkend="
-"\"Loader_Generate_Nation_Script\"/> and <xref linkend="
-"\"Loader_Generate_Script\"/> SQL functions."
-msgstr ""
+"contain common case locations of items and you'll have to edit the generated"
+" script after the fact when you run the <xref "
+"linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
+"linkend=\"Loader_Generate_Script\"/> SQL functions."
+msgstr "<filename>tiger_loader_2015.sql</filename> (또는 다른 년도를 로드하고자 할 경우, 사용자가 찾을 수 있는 최신 로더)를 사용자의 실행 가능한 서버 등의 경로로 편집하거나, 그 대신 설치 완료 후 <varname>loader_platform</varname> 테이블을 업데이트할 수도 있습니다. 이 파일 또는 <varname>loader_platform</varname> 테이블을 편집지 않는다면, 각 항목의 흔히 쓰이는(common case) 위치만 담게 되어 <xref linkend=\"Loader_Generate_Nation_Script\"/> 및 <xref linkend=\"Loader_Generate_Script\"/> SQL 함수를 실행해서 생성된 스크립트를 직접 편집해야 할 것입니다."
 
 #. Tag: para
 #: installation.xml:1003
@@ -2824,10 +2548,10 @@ msgstr ""
 msgid ""
 "If you are installing Tiger geocoder for the first time edit either the "
 "<filename>create_geocode.bat</filename> script If you are on windows or the "
-"<filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with "
-"your PostgreSQL specific settings and run the corresponding script from the "
-"commandline."
-msgstr ""
+"<filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with"
+" your PostgreSQL specific settings and run the corresponding script from the"
+" commandline."
+msgstr "TIGER 지오코딩 도구를 처음 설치하는 경우, 윈도우 시스템이라면 <filename>create_geocode.bat</filename> 스크립트를, Linux/Unix/Mac OSX 시스템이라면 <filename>create_geocode.sh</filename> 를 사용자의 PostgreSQL에 특화된 설정으로 편집한 다음 명령 프롬프트에서 각각 상응하는 스크립트를 실행하십시오."
 
 #. Tag: para
 #: installation.xml:1007
@@ -2836,10 +2560,7 @@ msgid ""
 "Verify that you now have a <varname>tiger</varname> schema in your database "
 "and that it is part of your database search_path. If it is not, add it with "
 "a command something along the line of:"
-msgstr ""
-"<varname>tiger</varname> 스키마가 데이터베이스에 있는 지와 사용제 데이터베이"
-"스 search_path에 해당되는 지를 확인하십시오. 안되어 있다면 아래 명령을 함께 "
-"추가하십시오."
+msgstr "<varname>tiger</varname> 스키마가 데이터베이스에 있는지와 사용자 데이터베이스의 search_path에 포함되는지 검증하십시오. 아닐 경우, 다음과 같은 명령어와 함께 추가하십시오."
 
 #. Tag: programlisting
 #: installation.xml:1007
@@ -2853,67 +2574,59 @@ msgstr "ALTER DATABASE geocoder SET search_path=public, tiger;"
 msgid ""
 "The normalizing address functionality works more or less without any data "
 "except for tricky addresses. Run this test and verify things look like this:"
-msgstr ""
-"표준화 주소 기능은 까다로운 주소를 제외하고는 동작합니다. 아래와 비슷하게 나"
-"오는지 테스트 해보십시오."
+msgstr "정규화된 주소 기능은 까다로운 주소를 제외하고는 동작합니다. 이 테스트를 실행한 결과가 다음처럼 보이는지 검증하십시오."
 
 #. Tag: programlisting
 #: installation.xml:1009
 #, no-c-format
 msgid ""
-"SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-"Nevada 89101')) As pretty_address;\n"
+"SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;\n"
 "pretty_address\n"
 "---------------------------------------\n"
 "202 E Fremont St, Las Vegas, NV 89101"
-msgstr ""
-"SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
-"Nevada 89101')) As pretty_address;\n"
-"pretty_address\n"
-"---------------------------------------\n"
-"202 E Fremont St, Las Vegas, NV 89101"
+msgstr "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;\npretty_address\n---------------------------------------\n202 E Fremont St, Las Vegas, NV 89101"
 
 #. Tag: title
 #: installation.xml:1012
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
-msgstr ""
+msgstr "주소 표준화 도구를 TIGER 지오코딩 도구와 함께 사용"
 
 #. Tag: para
 #: installation.xml:1013
 #, no-c-format
 msgid ""
-"One of the many complaints of folks is the address normalizer function <xref "
-"linkend=\"Normalize_Address\"/> function that normalizes an address for "
+"One of the many complaints of folks is the address normalizer function <xref"
+" linkend=\"Normalize_Address\"/> function that normalizes an address for "
 "prepping before geocoding. The normalizer is far from perfect and trying to "
 "patch its imperfectness takes a vast amount of resources. As such we have "
 "integrated with another project that has a much better address standardizer "
 "engine. To use this new address_standardizer, you compile the extension as "
 "described in <xref linkend=\"installing_pagc_address_standardizer\"/> and "
 "install as an extension in your database."
-msgstr ""
+msgstr "사용자들의 많은 불평 가운데 하나는 주소 정규화 도구 <xref linkend=\"Normalize_Address\"/> 함수가 지오코딩 작업 전 준비 과정에서 주소를 정규화한다는 것입니다. 정규화 도구는 완벽하지 않아 그 불완전함을 수정하려면 막대한 노력이 필요합니다. 그래서 우리는 훨씬 나은 주소 표준화 도구 엔진을 가진 또다른 프로젝트와 통합시켰습니다. 이 새로운 address_standardizer를 이용하려면, <xref linkend=\"installing_pagc_address_standardizer\"/> 에 설명된 대로 확장 프로그램을 컴파일해서 사용자 데이터베이스에 확장 프로그램으로 설치하십시오."
 
 #. Tag: para
 #: installation.xml:1016
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
-"<code>postgis_tiger_geocoder</code>, then the <xref linkend="
-"\"Pagc_Normalize_Address\"/> can be used instead of <xref linkend="
-"\"Normalize_Address\"/>. This extension is tiger agnostic, so can be used "
-"with other data sources such as international addresses. The tiger geocoder "
-"extension does come packaged with its own custom versions of <xref linkend="
-"\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref linkend=\"gaztab\"/> "
-"(<code>tiger.pagc_gaz</code>), and <xref linkend=\"lextab\"/> (<code>tiger."
-"pagc_lex</code>). These you can add and update to improve your standardizing "
-"experience for your own needs."
-msgstr ""
+"<code>postgis_tiger_geocoder</code>, then the <xref "
+"linkend=\"Pagc_Normalize_Address\"/> can be used instead of <xref "
+"linkend=\"Normalize_Address\"/>. This extension is tiger agnostic, so can be"
+" used with other data sources such as international addresses. The tiger "
+"geocoder extension does come packaged with its own custom versions of <xref "
+"linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref "
+"linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), and <xref "
+"linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>). These you can add and "
+"update to improve your standardizing experience for your own needs."
+msgstr "<code>postgis_tiger_geocoder</code> 를 설치했던 데이터베이스에 이 확장 프로그램을 설치했다면, <xref linkend=\"Normalize_Address\"/> 대신 <xref linkend=\"Pagc_Normalize_Address\"/> 를 이용할 수 있습니다. 이 확장 프로그램은 TIGER 유무와 상관없이 동작하므로, 국제 주소와 같은 다른 데이터 소스와 함께 사용할 수 있습니다. 실제로 TIGER 지오코딩 도구 확장 프로그램은 <xref linkend=\"rulestab\"/> ( <code>tiger.pagc_rules</code>) , <xref linkend=\"gaztab\"/> (<code>tiger.pagc_gaz</code>), 그리고 <xref linkend=\"lextab\"/> (<code>tiger.pagc_lex</code>) 자체 수정 버전과 함께 패키징되어 있습니다. 사용자 자신의 필요에 따라 이들을 추가하고 업데이트해서 표준화 작업 과정을 향상시킬 수 있습니다."
 
 #. Tag: title
 #: installation.xml:1019
 #, no-c-format
 msgid "Loading Tiger Data"
-msgstr "Tiger Data 불러오기"
+msgstr "TIGER 데이터 로드"
 
 #. Tag: para
 #: installation.xml:1020
@@ -2922,10 +2635,7 @@ msgid ""
 "The instructions for loading data are available in a more detailed form in "
 "the <filename>extras/tiger_geocoder/tiger_2011/README</filename>. This just "
 "includes the general steps."
-msgstr ""
-"Tiger 데이터를 로딩하기 위한 보다 자세한 설명은 <filename>extras/"
-"tiger_geocoder/tiger_2011/README</filename>에서 이용 가능합니다. 여기서는 일"
-"반적인 과정만 안내해 드립니다."
+msgstr "TIGER 데이터를 로드하는 데 대한 자세한 설명을<filename>extras/tiger_geocoder/tiger_2011/README</filename> 에서 볼 수 있습니다. 이 문서에서는 개괄적인 단계만 설명합니다."
 
 #. Tag: para
 #: installation.xml:1021
@@ -2936,27 +2646,22 @@ msgid ""
 "state into its own separate set of state tables. Each state table inherits "
 "from the tables defined in <varname>tiger</varname> schema so that its "
 "sufficient to just query those tables to access all the data and drop a set "
-"of state tables at any time using the <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/> if you need to reload a state or "
-"just don't need a state anymore."
-msgstr ""
-"인구조사 웹사이트에서 필요한 주의 데이터를 다운로드 받습니다. 압축을 풀면 주 "
-"단위로 별개의 세트로 이뤄져 있습니다. 각 주 테이블은 <varname>tiger</varname>"
-"스키마 정의에 따라 접속 및 쿼리 할 수 있고, <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>를 다시 불러오거나 삭제하는 등의 작업"
-"을 실시할 수 있습니다."
+"of state tables at any time using the <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/> if you need to reload a "
+"state or just don't need a state anymore."
+msgstr "데이터 로드 과정은 다음과 같습니다. 해당 국가의 인구조사 웹사이트에서 필요한 지역의 데이터를 다운로드합니다. 파일의 압축을 해제한 다음 각 행정구역의 데이터를 대응하는 각각의 행정구역 테이블로 로드합니다. 각 행정구역 테이블은 <varname>tiger</varname> 스키마에 정의된 테이블을 상속하기 때문에, 어떤 행정구역을 다시 로드해야 하거나 더 이상 어떤 행정구역이 필요없을 경우 언제라도 <xref linkend=\"Drop_State_Tables_Generate_Script\"/> 를 통해 테이블을 쿼리해서 모든 데이터에 접근하거나 행정구역 테이블을 드롭시킬 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1023
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
-msgstr "데이터를 로딩하기 위해서는 다음과 같은 도구들이 필요합니다:"
+msgstr "데이터를 로드하려면 다음과 같은 도구들이 필요합니다:"
 
 #. Tag: para
 #: installation.xml:1025
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
-msgstr "인구조사 웹사이트에서 받은 압축 파일을 풀기 위한 툴"
+msgstr "인구조사 웹사이트에서 받은 .zip 파일을 풀기 위한 도구."
 
 #. Tag: para
 #: installation.xml:1026
@@ -2964,19 +2669,15 @@ msgstr "인구조사 웹사이트에서 받은 압축 파일을 풀기 위한 �
 msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
 "already installed on most Unix like platforms."
-msgstr ""
-"Unix 계열 시스템에서는 대부분 <varname>unzip</varname>으로 해제할 수 있습니"
-"다."
+msgstr "Unix 계열 시스템의 경우: 대부분의 Unix 계열 시스템에는 일반적으로 이미 <varname>unzip</varname> 실행 파일이 설치되어 있습니다."
 
 #. Tag: para
 #: installation.xml:1027
 #, no-c-format
 msgid ""
-"For Windows, 7-zip which is a free compress/uncompress tool you can download "
-"from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
-msgstr ""
-"윈도우의 경우, 무료 압축/압축해제 툴인 7-zip이 <ulink url=\"http://www.7-zip."
-"org/\">http://www.7-zip.org/</ulink>에서 다운로드 가능합니다."
+"For Windows, 7-zip which is a free compress/uncompress tool you can download"
+" from <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink>"
+msgstr "윈도우의 경우: 무료 압축/압축해제 툴인 7-zip을 <ulink url=\"http://www.7-zip.org/\">http://www.7-zip.org/</ulink> 에서 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1029
@@ -2984,7 +2685,7 @@ msgstr ""
 msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
 "when you install PostGIS."
-msgstr "PostGIS 기본 설치시 설치되는 <filename>shp2pgsql</filename> 명령"
+msgstr "<filename>shp2pgsql</filename> 명령어는 PostGIS 설치시 기본적으로 설치됩니다."
 
 #. Tag: para
 #: installation.xml:1030
@@ -2992,21 +2693,15 @@ msgstr "PostGIS 기본 설치시 설치되는 <filename>shp2pgsql</filename> 명
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
 "most Unix/Linux systems."
-msgstr ""
-"웹 다운로드 툴인 <filename>wget</filename>은 대부분의Unix/Linux 시스템에 설치"
-"되어 있습니다."
+msgstr "웹 다운로드 도구인 <filename>wget</filename>은 대부분의 Unix/Linux 시스템에 일반적으로 설치되어 있습니다."
 
 #. Tag: para
 #: installation.xml:1031
 #, no-c-format
 msgid ""
-"If you are on windows, you can get pre-compiled binaries from <ulink url="
-"\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32."
-"sourceforge.net/packages/wget.htm</ulink>"
-msgstr ""
-"윈도우를 사용 중이면 <ulink url=\"http://gnuwin32.sourceforge.net/packages/"
-"wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink>에서 다운"
-"로드 가능합니다."
+"If you are on windows, you can get pre-compiled binaries from <ulink "
+"url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink>"
+msgstr "윈도우를 사용중이라면 <ulink url=\"http://gnuwin32.sourceforge.net/packages/wget.htm\">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> 에서 미리 컴파일된 바이너리를 다운로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1034
@@ -3017,8 +2712,9 @@ msgid ""
 "state data, you need to load the nation wide data which you do with <xref "
 "linkend=\"Loader_Generate_Nation_Script\"/>. Which will generate a loader "
 "script for you. <xref linkend=\"Loader_Generate_Nation_Script\"/> is a one-"
-"time step that should be done for upgrading (from 2010) and for new installs."
-msgstr ""
+"time step that should be done for upgrading (from 2010) and for new "
+"installs."
+msgstr "tiger_2010을 업그레이드하는 경우, 먼저 <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/> 를 생성한 다음 실행해야 합니다. 행정구역 데이터를 로드하기 전에 로더 스크립트를 생성하는 <xref linkend=\"Loader_Generate_Nation_Script\"/> 를 통해 전국 데이터를 로드해야 합니다. <xref linkend=\"Loader_Generate_Nation_Script\"/> 를 사용하면 (2010년에서) 업그레이드는 물론 새로운 설치까지 한번에 끝날 것입니다."
 
 #. Tag: para
 #: installation.xml:1036
@@ -3028,7 +2724,7 @@ msgid ""
 "generate a data load script for your platform for the states you desire. "
 "Note that you can install these piecemeal. You don't have to load all the "
 "states you want all at once. You can load them as you need them."
-msgstr ""
+msgstr "사용자의 플랫폼에서 사용자가 지정한 행정구역 데이터를 로드하는 스크립트를 생성하려면 <xref linkend=\"Loader_Generate_Script\"/> 를 참조하십시오. 이 데이터들을 개별적으로 로드할 수 있다는 점을 기억하십시오. 사용자가 지정한 모든 행정구역을 한번에 로드하지 않아도 됩니다. 필요할 때마다 로드할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1039
@@ -3037,10 +2733,7 @@ msgid ""
 "After the states you desire have been loaded, make sure to run the: "
 "<programlisting>SELECT install_missing_indexes();</programlisting> as "
 "described in <xref linkend=\"Install_Missing_Indexes\"/>."
-msgstr ""
-"원하는 데이터가 로딩이 된 후  <xref linkend=\"Install_Missing_Indexes\"/>에"
-"서 설명된 대로 다음을 실행하십시오: <programlisting>SELECT "
-"install_missing_indexes();</programlisting>"
+msgstr "사용자가 지정한 행정구역 데이터를 로드한 다음, <xref linkend=\"Install_Missing_Indexes\"/> 에 설명된 대로 <programlisting>SELECT install_missing_indexes();</programlisting> 를 꼭 실행하십시오."
 
 #. Tag: para
 #: installation.xml:1041
@@ -3048,25 +2741,23 @@ msgstr ""
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
 "address in your state using <xref linkend=\"Geocode\"/>"
-msgstr ""
-"실행이 잘되는지 확인하려면  <xref linkend=\"Geocode\"/>를 이용하여 해당 주의 "
-"주소를 변환시켜 보십시오. "
+msgstr "작업이 제대로 됐는지 확인하려면 <xref linkend=\"Geocode\"/> 를 이용해서 사용자의 행정구역에 있는 주소에 지오코딩을 실행해보십시오."
 
 #. Tag: title
 #: installation.xml:1044
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install"
-msgstr "Tiger Geocoder 업그레이드"
+msgstr "TIGER 지오코딩 도구 설치 업그레이드"
 
 #. Tag: para
 #: installation.xml:1045
 #, no-c-format
 msgid ""
 "If you have Tiger Geocoder packaged with 2.0+ already installed, you can "
-"upgrade the functions at any time even from an interim tar ball if there are "
-"fixes you badly need. This will only work for Tiger geocoder not installed "
+"upgrade the functions at any time even from an interim tar ball if there are"
+" fixes you badly need. This will only work for Tiger geocoder not installed "
 "with extensions."
-msgstr ""
+msgstr "PostGIS 2.0 이상 버전과 함께 패키징된 TIGER 지오코딩 도구를 이미 설치했다면, 그리고 사용자가 간절히 바라는 수정 사항이 있다면, 언제라도, 심지어 tar 파일 내부에서도 함수를 업그레이드할 수 있습니다. 이 작업은 확장 프로그램과 함께 설치되지 않은 TIGER 지오코딩 도구라야만 가능합니다."
 
 #. Tag: command
 #: installation.xml:1058
@@ -3079,35 +2770,32 @@ msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 #, no-c-format
 msgid ""
 "Locate the <filename>upgrade_geocoder.bat</filename> script If you are on "
-"windows or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/"
-"Unix/Mac OSX. Edit the file to have your postgis database credentials."
-msgstr ""
+"windows or the <filename>upgrade_geocoder.sh</filename> if you are on "
+"Linux/Unix/Mac OSX. Edit the file to have your postgis database credentials."
+msgstr "윈도우 시스템이라면 <filename>upgrade_geocoder.bat</filename> 스크립트를, Linux/Unix/Mac OSX 시스템이라면 <filename>upgrade_geocoder.sh</filename> 스크립트를 찾으십시오. 사용자의 PostGIS 데이터베이스 사양에 맞춰 파일을 편집하십시오."
 
 #. Tag: para
 #: installation.xml:1064
 #, no-c-format
 msgid ""
-"If you are upgrading from 2010 or 2011, make sure to unremark out the loader "
-"script line so you get the latest script for loading 2012 data."
-msgstr ""
+"If you are upgrading from 2010 or 2011, make sure to unremark out the loader"
+" script line so you get the latest script for loading 2012 data."
+msgstr "2010이나 2011을 업그레이드하는 경우, 로더 스크립트의 해당 라인을 주석 처리(unremark out)해야 2012 데이터를 로드하기 위한 최신 스크립트를 얻을 수 있다는 점을 기억하십시오."
 
 #. Tag: para
 #: installation.xml:1065
 #, no-c-format
 msgid "Then run th corresponding script from the commandline."
-msgstr ""
+msgstr "명령 프롬프트에서 각 플랫폼에 상응하는 스크립트를 실행하십시오."
 
 #. Tag: para
 #: installation.xml:1069
 #, no-c-format
 msgid ""
-"Next drop all nation tables and load up the new ones. Generate a drop script "
-"with this SQL statement as detailed in <xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>"
-msgstr ""
-"다음으로 모든 nation 테이블을 drop 하고 새로 불러옵니다. 이 SQL 문장으로 "
-"drop 스크립트를 만듭니다. 자세한 내용은 다음을 참고하십시오. <xref linkend="
-"\"Drop_Nation_Tables_Generate_Script\"/>"
+"Next drop all nation tables and load up the new ones. Generate a drop script"
+" with this SQL statement as detailed in <xref "
+"linkend=\"Drop_Nation_Tables_Generate_Script\"/>"
+msgstr "다음으로 모든 nation 테이블을 드롭하고 새 테이블을 불러옵니다. <xref linkend=\"Drop_Nation_Tables_Generate_Script\"/> 에 자세히 설명되어 있는 다음 SQL 선언문으로 드롭 스크립트를 생성하십시오."
 
 #. Tag: programlisting
 #: installation.xml:1070
@@ -3119,7 +2807,7 @@ msgstr "SELECT drop_nation_tables_generate_script();"
 #: installation.xml:1071
 #, no-c-format
 msgid "Run the generated drop SQL statements."
-msgstr "생성된 drop SQL 문장을 실행하십시오."
+msgstr "생성된 드롭 SQL 선언문을 실행하십시오."
 
 #. Tag: para
 #: installation.xml:1072
@@ -3127,9 +2815,7 @@ msgstr "생성된 drop SQL 문장을 실행하십시오."
 msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
 "<xref linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ""
-"이 SELECT 구문으로 nation load 스크립트를 생성합니다. 자세한 내용을 다음을 참"
-"고하십시오. <xref linkend=\"Loader_Generate_Nation_Script\"/>"
+msgstr "<xref linkend=\"Loader_Generate_Nation_Script\"/> 에 자세히 설명되어 있는 이 SELECT 선언문으로 nation 로드 스크립트를 생성하십시오."
 
 #. Tag: emphasis
 #: installation.xml:1073
@@ -3147,7 +2833,7 @@ msgstr "SELECT loader_generate_nation_script('windows');"
 #: installation.xml:1075
 #, no-c-format
 msgid "For unix/linux"
-msgstr "unix/linux 용"
+msgstr "Unix/Linux 용"
 
 #. Tag: programlisting
 #: installation.xml:1076
@@ -3159,12 +2845,9 @@ msgstr "SELECT loader_generate_nation_script('sh');"
 #: installation.xml:1077
 #, no-c-format
 msgid ""
-"Refer to <xref linkend=\"tiger_geocoder_loading_data\"/> for instructions on "
-"how to run the generate script. This only needs to be done once."
-msgstr ""
-"생성된 스크립트를 어떻게 실행하는지 배우시려면 <xref linkend="
-"\"tiger_geocoder_loading_data\"/>을 참고하십시오. 이것은 단지 한번만 하면 됩"
-"니다."
+"Refer to <xref linkend=\"tiger_geocoder_loading_data\"/> for instructions on"
+" how to run the generate script. This only needs to be done once."
+msgstr "생성된 스크립트를 실행하는 방법에 대해서는 <xref linkend=\"tiger_geocoder_loading_data\"/> 를 참조하십시오. 이 작업은 딱 한번만 하면 됩니다."
 
 #. Tag: para
 #: installation.xml:1078
@@ -3172,45 +2855,35 @@ msgstr ""
 msgid ""
 "You can have a mix of 2010/2011 state tables and can upgrade each state "
 "separately. Before you upgrade a state to 2011, you first need to drop the "
-"2010 tables for that state using <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>."
-msgstr ""
-"사용자는 2010/2011 state 테이블을 합칠 수도 있고 각 state 별로 업그레이드 할 "
-"수도 있습니다. state를 2011로 업데이트 하기 전에, <xref linkend="
-"\"Drop_State_Tables_Generate_Script\"/>을 이용해 2010 테이블들을 drop 해야 합"
-"니다. "
+"2010 tables for that state using <xref "
+"linkend=\"Drop_State_Tables_Generate_Script\"/>."
+msgstr "2010/2011 행정구역 테이블을 합칠 수도 있고 각 행정구역을 개별적으로 각각 업그레이드할 수도 있습니다. 어떤 행정구역을 2011년으로 업그레이드하기 전에, 먼저 <xref linkend=\"Drop_State_Tables_Generate_Script\"/> 를 이용해서 해당 행정구역의 2010년 테이블을 드롭해야 합니다."
 
 #. Tag: title
 #: installation.xml:1084
 #, no-c-format
 msgid "Create a spatially-enabled database from a template"
-msgstr "템플릿을 이용하여 공간 데이터베이스 생성하기"
+msgstr "템플릿을 이용해서 공간정보 처리 가능한 데이터베이스 생성"
 
 #. Tag: para
 #: installation.xml:1086
 #, no-c-format
 msgid ""
 "Some packaged distributions of PostGIS (in particular the Win32 installers "
-"for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template database "
-"called <varname>template_postgis</varname>. If the "
+"for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template database"
+" called <varname>template_postgis</varname>. If the "
 "<varname>template_postgis</varname> database exists in your PostgreSQL "
 "installation then it is possible for users and/or applications to create "
-"spatially-enabled databases using a single command. Note that in both cases, "
-"the database user must have been granted the privilege to create new "
+"spatially-enabled databases using a single command. Note that in both cases,"
+" the database user must have been granted the privilege to create new "
 "databases."
-msgstr ""
-"일부 PostGIS 배포 패키지(특히 PostGIS1.1.5 이상 버전의 Win32 인스톨러)는 "
-"<varname>template_postgis</varname>라 불리는 템플릿 데이터베이스를 포함하고 "
-"있습니다. PostgreSQL에 <varname>template_postgis</varname> 데이터베이스가 존"
-"재하고 있다면 사용자 또는 응용프로그램에서 공간 데이터베이스를 간단한 명령어"
-"를 통해 생성 가능합니다. 두 경우 모두 새로운 데이터베이스들을 생성할 수 있는 "
-"권한을 사용자가 가지고 있어야 한다는 점을 주의하십시오."
+msgstr "일부 PostGIS 배포 패키지(특히 PostGIS 1.1.5 이상 버전의 Win32 인스톨러)는 <varname>template_postgis</varname> 라는 템플릿 데이터베이스에 PostGIS 함수들을 로드합니다. 사용자의 PostgreSQL 설치에 <varname>template_postgis</varname> 데이터베이스가 존재한다면 사용자 그리고/또는 응용 프로그램이 단일 명령어를 통해 공간정보를 처리 가능한(spatially-enabled) 데이터베이스를 생성할 수 있습니다. 두 경우 모두 데이터베이스 사용자가 새로운 데이터베이스를 생성할 수 있는 권한을 가지고 있어야 한다는 점을 주의하십시오."
 
 #. Tag: para
 #: installation.xml:1097
 #, no-c-format
 msgid "From the shell:"
-msgstr "쉘에서:"
+msgstr "셸(shell)에서:"
 
 #. Tag: programlisting
 #: installation.xml:1101
@@ -3222,7 +2895,7 @@ msgstr "# createdb -T template_postgis my_spatial_db"
 #: installation.xml:1103
 #, no-c-format
 msgid "From SQL:"
-msgstr "SQL 에서:"
+msgstr "SQL에서:"
 
 #. Tag: programlisting
 #: installation.xml:1107
@@ -3242,19 +2915,15 @@ msgstr "업그레이드"
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
 "replacement or introduction of new PostGIS object definitions."
-msgstr ""
-"공간 데이터베이스 업그레이드는 대체할 또는 새로운 PostGIS 객체 정의를 요구하"
-"기 때문에 까다로울 수 있습니다."
+msgstr "기존 공간 데이터베이스를 업그레이드하는 작업은 새 PostGIS 객체 정의 또는 이를 대신할 것이 필요하기 때문에 까다로울 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1118
 #, no-c-format
 msgid ""
-"Unfortunately not all definitions can be easily replaced in a live database, "
-"so sometimes your best bet is a dump/reload process."
-msgstr ""
-"안타깝게도 실제 데이터베이스 내에서 모든 정의들이 쉽게 대체될 수 있지 않습니"
-"다. 그러므로 때론 dump/reload 방식이 최고의 선택일 수 있습니다."
+"Unfortunately not all definitions can be easily replaced in a live database,"
+" so sometimes your best bet is a dump/reload process."
+msgstr "안타깝게도 실제 실행중인 데이터베이스 내에서는 모든 정의들을 쉽게 대체할 수 있는 것이 아닙니다. 따라서 덤프/리로드(dump/reload) 방식이 최고의 선택일 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1123
@@ -3262,9 +2931,7 @@ msgstr ""
 msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
 "a HARD UPGRADE procedure for major releases."
-msgstr ""
-"PostGIS는 사소하거나 버그 수정 버전을 위한 SOFT UPGRADE와 주요 버전을 위한 "
-"HARD UPGRADE를 제공합니다."
+msgstr "PostGIS는 버그 수정 또는 사소한 배포판을 위한 소프트 업그레이드와 주요 배포판을 위한 하드 업그레이드를 제공합니다."
 
 #. Tag: para
 #: installation.xml:1128
@@ -3273,9 +2940,7 @@ msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
 "data. If you use the -Fc flag to pg_dump you will always be able to restore "
 "the dump with a HARD UPGRADE."
-msgstr ""
-"PostGIS 업그레이드에 앞서 데이터를 미리 백업해두시는 것은 언제나 중요합니다. "
-"pg_dump를 할 때 –Fc flag를 이용하면HARD UPGRADE시 dump를 복원할 수 있습니다. "
+msgstr "PostGIS 업그레이드에 앞서 언제나 데이터를 미리 백업해두는 것이 중요합니다. pg_dump 실행시 –Fc 플래그(flag)를 이용하면 하드 업그레이드 작업시 언제나 덤프를 복원할 수 있을 것입니다."
 
 #. Tag: title
 #: installation.xml:1135
@@ -3288,19 +2953,16 @@ msgstr "소프트 업그레이드"
 #, no-c-format
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
-"using the extension model as well. If you installed using the old sql script "
-"way, then you should upgrade using the sql script way. Please refer to the "
+"using the extension model as well. If you installed using the old sql script"
+" way, then you should upgrade using the sql script way. Please refer to the "
 "appropriate."
-msgstr ""
-"extension을 포함하여 데이터베이스를 설치하실 경우, extension 모델 또한 업그레"
-"이드 하여야 합니다. 이전 SQL 스크립트 방식으로 설치한 경우, 마찬가지로 SQL 스"
-"크립트 방식으로 업그레이드해야 합니다. 부록을 참고해 주십시오."
+msgstr "확장 프로그램을 이용해서 사용자 데이터베이스를 설치한 경우, 업그레이드 또한 확장 프로그램을 이용해야 합니다. 구식 SQL 스크립트 방식으로 설치한 경우, 마찬가지로 SQL 스크립트 방식으로 업그레이드해야 합니다. 사용자 상황에 맞는 방법을 이용하십시오."
 
 #. Tag: title
 #: installation.xml:1140
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
-msgstr "9.1+ 이전이나 extension 없는 소프트 업그레이드"
+msgstr "9.1 미만 버전 또는 확장 프로그램 제외 소프트 업그레이드"
 
 #. Tag: para
 #: installation.xml:1141
@@ -3309,10 +2971,7 @@ msgid ""
 "This section applies only to those who installed PostGIS not using "
 "extensions. If you have extensions and try to upgrade with this approach "
 "you'll get messages like:"
-msgstr ""
-"이 단원은 extension 없이 PostGIS를 설치한 경우만 해당됩니다. 만약 extension"
-"가 있으신 상태에서 이 단원에서 설명하는대로 설치를 하시면 아래와 같은 메시지"
-"를 받게 되실 것입니다:"
+msgstr "이 단원은 확장 프로그램을 이용하지 않고 PostGIS를 설치한 경우에만 해당합니다. 만약 확장 프로그램을 설치한 상태에서 이 단원에서 설명하는대로 업그레이드한다면 다음과 같은 메시지를 받게 될 것입니다:"
 
 #. Tag: programlisting
 #: installation.xml:1142
@@ -3325,21 +2984,22 @@ msgstr "can't drop ... because postgis extension depends on it"
 #, no-c-format
 msgid ""
 "After compiling and installing (make install) you should find a "
-"<filename>postgis_upgrade.sql</filename> and <filename>rtpostgis_upgrade."
-"sql</filename> in the installation folders. For example <filename>/usr/share/"
-"postgresql/9.3/contrib/postgis_upgrade.sql</filename>. Install the "
-"<filename>postgis_upgrade.sql</filename>. If you have raster functionality "
-"installed, you will also need to install the <filename>/usr/share/"
-"postgresql/9.3/contrib/postgis_upgrade.sql</filename>. If you are moving "
-"from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior to r7409, you need "
-"to do a HARD UPGRADE."
-msgstr ""
+"<filename>postgis_upgrade.sql</filename> and "
+"<filename>rtpostgis_upgrade.sql</filename> in the installation folders. For "
+"example "
+"<filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>. "
+"Install the <filename>postgis_upgrade.sql</filename>. If you have raster "
+"functionality installed, you will also need to install the "
+"<filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename>. "
+"If you are moving from PostGIS 1.* to PostGIS 2.* or from PostGIS 2.* prior "
+"to r7409, you need to do a HARD UPGRADE."
+msgstr "컴파일 및 설치(make install)가 끝나면 설치 폴더에 <filename>postgis_upgrade.sql</filename> 과 <filename>rtpostgis_upgrade.sql</filename> 이 있을 것입니다. 예를 들면 <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename> 과 같은 경로에 말입니다. <filename>postgis_upgrade.sql</filename> 을 설치하십시오. 래스터 기능을 설치했다면, <filename>/usr/share/postgresql/9.3/contrib/postgis_upgrade.sql</filename> 도 설치해야 합니다. PostGIS 1.* 버전에서 2.* 버전으로 또는 PostGIS 2.* r7409 이전 버전에서 업그레이드하는 경우 하드 업그레이드 작업을 해야 합니다."
 
 #. Tag: programlisting
 #: installation.xml:1147
 #, no-c-format
 msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
-msgstr ""
+msgstr "psql -f postgis_upgrade.sql -d your_spatial_database"
 
 #. Tag: para
 #: installation.xml:1149
@@ -3348,34 +3008,28 @@ msgid ""
 "The same procedure applies to raster and topology extensions, with upgrade "
 "files named <filename>rtpostgis_upgrade*.sql</filename> and "
 "<filename>topology_upgrade*.sql</filename> respectively. If you need them:"
-msgstr ""
-"<filename>rtpostgis_upgrade*.sql</filename>과 <filename>topology_upgrade*."
-"sql</filename>라는 이름을 가진 파일을 통해 똑같은 절차가 래스터 및 토폴로지 "
-"extension에도 적용됩니다. "
+msgstr "래스터 및 지형 확장 프로그램에도 동일한 절차가 적용됩니다. 이때 업그레이드 파일은 각각 <filename>rtpostgis_upgrade*.sql</filename> 과 <filename>topology_upgrade*.sql</filename> 입니다. 이 작업이 필요할 경우:"
 
 #. Tag: programlisting
 #: installation.xml:1157
 #, no-c-format
 msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
-msgstr ""
+msgstr "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
 
 #. Tag: programlisting
 #: installation.xml:1158
 #, no-c-format
 msgid "psql -f topology_upgrade.sql -d your_spatial_database"
-msgstr ""
+msgstr "psql -f topology_upgrade.sql -d your_spatial_database"
 
 #. Tag: para
 #: installation.xml:1161
 #, no-c-format
 msgid ""
-"If you can't find the <filename>postgis_upgrade*.sql</filename> specific for "
-"upgrading your version you are using a version too early for a soft upgrade "
-"and need to do a HARD UPGRADE."
-msgstr ""
-"만약 버전 업그레이드를 위해 맞는 <filename>postgis_upgrade*.sql</filename>을 "
-"찾을 수 없다면, 이는 너무 초기 사용하고 계신다는 것을 의미하며 HARD UPGRADE"
-"가 필요합니다."
+"If you can't find the <filename>postgis_upgrade*.sql</filename> specific for"
+" upgrading your version you are using a version too early for a soft upgrade"
+" and need to do a HARD UPGRADE."
+msgstr "사용자의 버전을 업그레이드하기 위한 특정 <filename>postgis_upgrade*.sql</filename> 스크립트를 찾을 수 없다면 소프트 업그레이드를 하기에는 사용자의 버전이 너무 이전 것이라는 의미입니다. 이럴 경우 하드 업그레이드 작업을 해야 합니다."
 
 #. Tag: para
 #: installation.xml:1167
@@ -3384,15 +3038,13 @@ msgid ""
 "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
 "about the need to run this kind of upgrade using a \"procs need upgrade\" "
 "message."
-msgstr ""
-"The <xref linkend=\"PostGIS_Full_Version\"/>을 이용하면 이러한 종류의 업그레"
-"이드가 필요할 경우 “procs need upgrade” 메시지를 통해 알려드릴 것입니다. "
+msgstr "<xref linkend=\"PostGIS_Full_Version\"/> 함수는 \"procs need upgrade\" 메시지를 통해 이런 종류의 업그레이드가 필요한지에 대해 알려줍니다."
 
 #. Tag: title
 #: installation.xml:1174
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
-msgstr "9.1 버전 이상의 extension을 이용한 소프트 업그래이드"
+msgstr "확장 프로그램을 통한 9.1 버전 이상의 소프트 업그레이드"
 
 #. Tag: para
 #: installation.xml:1175
@@ -3401,9 +3053,7 @@ msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
 "upgrade using extensions as well. Doing a minor upgrade with extensions, is "
 "fairly painless."
-msgstr ""
-"extension과 함께 PostGIS를 설치한 경우 extension 또한 업그레이드 하셔야 합니"
-"다. Extension에 대한 사소한 업그레이드는 어렵지 않습니다. "
+msgstr "확장 프로그램과 함께 PostGIS를 설치한 경우, 마찬가지로 확장 프로그램을 이용해서 업그레이드해야 합니다. 확장 프로그램을 통한 사소한 업그레이드는 쉬운 편입니다."
 
 #. Tag: programlisting
 #: installation.xml:1176
@@ -3411,15 +3061,13 @@ msgstr ""
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
-msgstr ""
-"ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
-"ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
+msgstr "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\nALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
 
 #. Tag: para
 #: installation.xml:1177
 #, no-c-format
 msgid "If you get an error notice something like:"
-msgstr "만약 다음과 같은 에러 메시지가 보인다면:"
+msgstr "다음과 같은 에러 메시지가 표출되는 경우:"
 
 #. Tag: programlisting
 #: installation.xml:1178
@@ -3431,16 +3079,16 @@ msgstr "No migration path defined for ... to &last_release_version;"
 #: installation.xml:1179
 #, no-c-format
 msgid ""
-"Then you'll need to backup your database, create a fresh one as described in "
-"<xref linkend=\"create_new_db_extensions\"/> and then restore your backup "
+"Then you'll need to backup your database, create a fresh one as described in"
+" <xref linkend=\"create_new_db_extensions\"/> and then restore your backup "
 "ontop of this new database."
-msgstr ""
+msgstr "사용자 데이터베이스를 백업하고, <xref linkend=\"create_new_db_extensions\"/> 에서 설명하는 대로 새로운 데이터베이스를 생성한 다음 이 새 데이터베이스에 사용자의 백업을 복원해야 합니다."
 
 #. Tag: para
 #: installation.xml:1180
 #, no-c-format
 msgid "If you get a notice message like:"
-msgstr ""
+msgstr "다음과 같은 에러 메시지가 표출되는 경우:"
 
 #. Tag: programlisting
 #: installation.xml:1181
@@ -3448,7 +3096,7 @@ msgstr ""
 msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
 "installed"
-msgstr ""
+msgstr "Version \"&last_release_version;\" of extension \"postgis\" is already installed"
 
 #. Tag: para
 #: installation.xml:1182
@@ -3456,10 +3104,10 @@ msgstr ""
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
 "<emphasis role=\"bold\">UNLESS</emphasis> you're attempting to upgrade from "
-"an SVN version to the next (which doesn't get a new version number); in that "
-"case you can append \"next\" to the version string, and next time you'll "
+"an SVN version to the next (which doesn't get a new version number); in that"
+" case you can append \"next\" to the version string, and next time you'll "
 "need to drop the \"next\" suffix again:"
-msgstr ""
+msgstr "이미 모든 것이 최신 상태라는 뜻이므로 무시해도 괜찮습니다. 한 SVN 버전에서 다음 버전으로 (실제 버전은 올라가지 않습니다) 업그레이드하려는 게 <emphasis role=\"bold\">아니라면</emphasis> 말입니다. 이런 경우엔 버전 문자열에 \"next\"를 덧붙일 수 있습니다. 다음 업그레이드 작업시 이 \"next\" 접미사(suffix)를 다시 삭제해야 할 것입니다."
 
 #. Tag: programlisting
 #: installation.xml:1188
@@ -3467,7 +3115,7 @@ msgstr ""
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
-msgstr ""
+msgstr "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\nALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
 
 #. Tag: para
 #: installation.xml:1189
@@ -3477,13 +3125,13 @@ msgid ""
 "often skip the reinstallation of postgis extension before restoring since "
 "the backup just has <code>CREATE EXTENSION postgis</code> and thus picks up "
 "the newest latest version during restore."
-msgstr ""
+msgstr "원래 버전을 지정하지 않고 PostGIS를 설치한 경우, 복원 작업 전에 PostGIS 확장 프로그램을 재설치하는 과정을 건너뛸 수도 있습니다. 백업 파일에 <code>CREATE EXTENSION postgis</code> 가 포함되어 있으므로 복원 작업 도중 최신 버전을 받아오기 때문입니다."
 
 #. Tag: title
 #: installation.xml:1196
 #, no-c-format
 msgid "Hard upgrade"
-msgstr "하드 업그래이드"
+msgstr "하드 업그레이드"
 
 #. Tag: para
 #: installation.xml:1198
@@ -3492,82 +3140,63 @@ msgid ""
 "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
 "need a HARD UPGRADE when PostGIS objects' internal storage changes or when "
 "SOFT UPGRADE is not possible. The <link linkend=\"release_notes\">Release "
-"Notes</link> appendix reports for each version whether you need a dump/"
-"reload (HARD UPGRADE) to upgrade."
-msgstr ""
-"HARD UPGRADE는 full dump/reload를 의미합니다. HARD UPGRADE는 PostGIS 객체의 "
-"내부 스토리지가 변화하지만 SOFT UPGRADE는 그렇지 않습니다. <link linkend="
-"\"release_notes\">Release Notes</link> 부록에서 덤프/리로드(하드 업그레이드)"
-"가 필요한 버전에 대해 알려줍니다. "
+"Notes</link> appendix reports for each version whether you need a "
+"dump/reload (HARD UPGRADE) to upgrade."
+msgstr "하드 업그레이드란 PostGIS를 사용 가능한(postgis-enabled) 데이터베이스의 완전한 덤프/리로드(dump/reload)를 뜻합니다. PostGIS 객체의 내부 저장소가 변경되거나 또는 소프트 업그레이드를 할 수 없을 경우 하드 업그레이드가 필요합니다. <link linkend=\"release_notes\">Release Notes</link> 부록에서 업그레이드 시 덤프/리로드(하드 업그레이드)가 필요한 버전에 대해 각각 설명하고 있습니다."
 
 #. Tag: para
 #: installation.xml:1207
 #, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore.pl script which "
-"takes care of skipping from the dump all definitions which belong to PostGIS "
-"(including old ones), allowing you to restore your schemas and data into a "
+"takes care of skipping from the dump all definitions which belong to PostGIS"
+" (including old ones), allowing you to restore your schemas and data into a "
 "database with PostGIS installed without getting duplicate symbol errors or "
 "bringing forward deprecated objects."
-msgstr ""
-"덤프/리로드 프로세스는 PostGIS(구 버전들 포함)의 덤프를 건너뛸 수 있도록 하"
-"는 postgis_restore.pl script의 지원을 받습니다. 이것은 심볼 등 중복 파일로 인"
-"한 문제나 더 이상 사용되지 않는 객체들을 불러오지 않고 설치된 PostGIS의 데이"
-"터베이스에 스키마와 데이터가 복구할 수 있게 합니다. "
+msgstr "덤프/리로드 과정은 PostGIS(구 버전들 포함)에 속해 있는 모든 정의를 덤프하는 작업을 건너뛸 수 있도록 하는 postgis_restore.pl 스크립트의 지원을 받습니다. 이 스크립트를 사용하면 심볼이 중복되거나 더 이상 필요없는 객체를 그대로 가져오는 오류 없이 PostGIS가 설치된 데이터베이스에 사용자의 스키마 및 데이터를 복원할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1216
 #, no-c-format
 msgid ""
-"Supplementary instructions for windows users are available at <ulink url="
-"\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
+"Supplementary instructions for windows users are available at <ulink "
+"url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard "
 "upgrade</ulink>."
-msgstr ""
-"윈도우 사용자를 위한 추가적인 지침이 <ulink url=\"http://trac.osgeo.org/"
-"postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</ulink>에 있습니다."
+msgstr "윈도우 사용자를 위한 추가적인 지침을 <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade\">Windows Hard upgrade</ulink> 에서 확인할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1219
 #, no-c-format
 msgid "The Procedure is as follows:"
-msgstr "절차는 다음과 같습니다:"
+msgstr "하드 업그레이드 절차는 다음과 같습니다:"
 
 #. Tag: para
 #: installation.xml:1227
 #, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
-"call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v) "
-"output. The user can be the owner of the db, need not be postgres super "
+"call it <varname>olddb</varname>) include binary blobs (-b) and verbose (-v)"
+" output. The user can be the owner of the db, need not be postgres super "
 "account."
-msgstr ""
-"binary blobs이 있는 경우 (-b) 및 진행 상세정보를 원하면 (-v) 옵션을 포함하여 "
-"업그레이드를 원하는 데이터베이스(<varname>olddb</varname>라 부릅시다)의 "
-"\"custom-format\" 덤프를 생성하십시오. 사용자는 데이터베이스의 소유자이면 되"
-"며, postgres 슈퍼 계정일 필요는 없습니다."
+msgstr "업그레이드하고자 하는 데이터베이스의 \"사용자 지정 유형(custom-format)\" 덤프(<varname>olddb</varname>라고 합시다)를 BLOB(-b)과 상세 진행 정보(-v) 출력을 포함해서 생성합니다. 사용자가 꼭 PostgreSQL 슈퍼 계정일 필요는 없고, DB의 소유자일 수는 있습니다."
 
 #. Tag: programlisting
 #: installation.xml:1235
 #, no-c-format
 msgid ""
-"pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
-"backup\" olddb"
-msgstr ""
-"pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
-"backup\" olddb"
+"pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "
+"\"/somepath/olddb.backup\" olddb"
+msgstr "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb.backup\" olddb"
 
 #. Tag: para
 #: installation.xml:1241
 #, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
-"database as <varname>newdb</varname>. Please refer to <xref linkend="
-"\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/> for "
-"instructions on how to do this."
-msgstr ""
-"<varname>newdb</varname>라 칭할 새로운 데이터베이스를 만드십시오. 어떻게 하는"
-"지 알고 싶다면  <xref linkend=\"create_new_db\"/>와 <xref linkend="
-"\"create_new_db_extensions\"/>을 참조하십시오."
+"database as <varname>newdb</varname>. Please refer to <xref "
+"linkend=\"create_new_db\"/> and <xref linkend=\"create_new_db_extensions\"/>"
+" for instructions on how to do this."
+msgstr "새 데이터베이스에 PostGIS를 새로 설치하십시오. 이 데이터베이스를 <varname>newdb</varname> 라고 하겠습니다. 이 작업을 어떻게 하는지에 대해서는 <xref linkend=\"create_new_db\"/> 및 <xref linkend=\"create_new_db_extensions\"/> 을 참조하십시오."
 
 #. Tag: para
 #: installation.xml:1248
@@ -3575,34 +3204,23 @@ msgstr ""
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
 "will not override existing ones in spatial_ref_sys. This is to ensure that "
-"fixes in the official set will be properly propagated to restored databases. "
-"If for any reason you really want your own overrides of standard entries "
+"fixes in the official set will be properly propagated to restored databases."
+" If for any reason you really want your own overrides of standard entries "
 "just don't load the spatial_ref_sys.sql file when creating the new db."
-msgstr ""
-"덤프에서 발견되는 spatial_ref_sys 목록은 복구되지만 spatial_ref_sys에 있는 항"
-"목을 덮어 쓰지는 않을 것입니다. 이것은 공식 세트에서 변경된 것이 복구된 데이"
-"터베이스와 맞도록 보장하기 위한 것입니다. 만약 어떤 이유로 덮어쓰기를 원하신"
-"다면 새 DB를 생성할 때 spatial_ref_sys.sql을 로드 하지 마십시오."
+msgstr "덤프에 담겨 있는 spatial_ref_sys 항목들은 복구되지만, spatial_ref_sys에 있는 기존 항목을 덮어쓰지는 않을 것입니다. 공식 패키지에 있는 수정 사항이 복원된 데이터베이스에서도 제대로 유지되도록 하기 위해서 입니다. 어떤 이유에서건 사용자의 덤프 항목을 표준 항목에 덮어씌우고자 할 경우, 새 DB 생성시 spatial_ref_sys.sql 파일을 로드하지 않기만 하면 됩니다."
 
 #. Tag: para
 #: installation.xml:1258
 #, no-c-format
 msgid ""
-"If your database is really old or you know you've been using long deprecated "
-"functions in your views and functions, you might need to load "
+"If your database is really old or you know you've been using long deprecated"
+" functions in your views and functions, you might need to load "
 "<filename>legacy.sql</filename> for all your functions and views etc. to "
-"properly come back. Only do this if _really_ needed. Consider upgrading your "
-"views and functions before dumping instead, if possible. The deprecated "
-"functions can be later removed by loading <filename>uninstall_legacy.sql</"
-"filename>."
-msgstr ""
-"가지고 계신 데이터베이스가 아주 구버전이거나 가지고 계신 뷰나 기능들의 기능들"
-"이 더 이상 사용되지 않는다면 모든 함수, 뷰, 기타가 잘 구성되도록 "
-"<filename>legacy.sql</filename> 로딩을 필요로 할 수도 있습니다. _정말로_ 필요"
-"할 경우에만 이를 실행하십시오. 가능하다면 덤핑을 하기 전에 뷰 및 기능들을 업"
-"그레이드 할 수 있는지 먼저 확인하십시오. <filename>uninstall_legacy.sql</"
-"filename>을 통해 더 이상 사용되지 않고 앞으로는 사라지게 될 기능들을 제거할 "
-"수 있습니다."
+"properly come back. Only do this if _really_ needed. Consider upgrading your"
+" views and functions before dumping instead, if possible. The deprecated "
+"functions can be later removed by loading "
+"<filename>uninstall_legacy.sql</filename>."
+msgstr "사용자 데이터베이스가 아주 구버전이거나 사용자 뷰 또는 기능에서 오래 전에 필요없어진 함수를 이용한다는 사실을 알고 있다면, 사용자의 모든 기능 및 뷰 등을 제대로 돌려놓기 위해 <filename>legacy.sql</filename> 을 로드해야 할 수도 있습니다. 정말로 필요할 경우에만 이 작업을 수행하십시오. 가능하다면 이 작업 대신 덤핑하기 전에 사용자 뷰 및 기능을 업그레이드하는 것도 고려해보십시오. 더 이상 필요없어진 기능들은 나중에 <filename>uninstall_legacy.sql</filename> 을 로드해서 제거할 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1274
@@ -3611,67 +3229,48 @@ msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
 "postgis_restore.pl. Unexpected errors, if any, will be printed to the "
 "standard error stream by psql. Keep a log of those."
-msgstr ""
-"postgis_restore.pl을 사용하여 새로운 <varname>newdb</varname>데이터베이스에 "
-"백업을 복구시키십시오. 예상치 못한 에러들이 발생하면 psql에 의해 표시될 것입"
-"니다. 그 결과 로그를 보관하십시오. "
+msgstr "사용자의 새로운 <varname>newdb</varname> 데이터베이스에 사용자 백업을 postgis_restore.pl 스크립트를 이용해서 복원하십시오. 예상 밖의 오류가 하나라도 발생한다면 PSQL이 표준 오류 스트림으로 표출할 것입니다. 이 오류 로그를 삭제하지 마십시오."
 
 #. Tag: programlisting
 #: installation.xml:1282
 #, no-c-format
 msgid ""
-"perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
-"-p 5432 -U postgres newdb 2> errors.txt"
-msgstr ""
-"perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
-"-p 5432 -U postgres newdb 2> errors.txt"
+"perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost"
+" -p 5432 -U postgres newdb 2> errors.txt"
+msgstr "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt"
 
 #. Tag: para
 #: installation.xml:1288
 #, no-c-format
 msgid "Errors may arise in the following cases:"
-msgstr "다음과 같은 경우에 에러들이 발생할 수 있습니다:"
+msgstr "다음과 같은 경우에 오류가 발생할 수 있습니다:"
 
 #. Tag: para
 #: installation.xml:1294
 #, no-c-format
 msgid ""
 "Some of your views or functions make use of deprecated PostGIS objects. In "
-"order to fix this you may try loading <filename>legacy.sql</filename> script "
-"prior to restore or you'll have to restore to a version of PostGIS which "
+"order to fix this you may try loading <filename>legacy.sql</filename> script"
+" prior to restore or you'll have to restore to a version of PostGIS which "
 "still contains those objects and try a migration again after porting your "
-"code. If the <filename>legacy.sql</filename> way works for you, don't forget "
-"to fix your code to stop using deprecated functions and drop them loading "
+"code. If the <filename>legacy.sql</filename> way works for you, don't forget"
+" to fix your code to stop using deprecated functions and drop them loading "
 "<filename>uninstall_legacy.sql</filename>."
-msgstr ""
-"일부 뷰 또는 기능에서 더 이상 사용되지 않고 사라지게 될 PosgtGIS 객체들을 사"
-"용하는 경우입니다. 이러한 문제를 해결하기 위해서 복구에 앞서<filename>legacy."
-"sql</filename>를 로딩하거나 해당 객체들을 PostGIS에 복구한 다음 마이그레이션"
-"을 다시 시도해 보십시오. <filename>legacy.sql</filename>을 이용하는 방법이 "
-"잘 작동했다면, 사용자 코드에서 더 이상 유효하지 않은 함수의 사용을 중단하고 "
-"<filename>uninstall_legacy.sql</filename>을 로딩해 이것들을 제거하는 것을 잊"
-"지 마십시오."
+msgstr "사용자 뷰 또는 기능의 일부가 더 이상 필요없는 PosgtGIS 객체를 사용하는 경우입니다. 이 문제를 해결하려면 복원에 앞서<filename>legacy.sql</filename> 를 로드하거나, 아직 해당 객체를 포함하고 있는 PostGIS 버전을 복구하고 사용자 코드를 포팅한 다음 이송(migration)을 시도해야 할 것입니다. <filename>legacy.sql</filename> 방식이 잘 작동했다면, 더 이상 필요없는 않은 함수들의 사용을 중단하도록 사용자 코드를 수정하고 <filename>uninstall_legacy.sql</filename> 을 로드해서 이들을 삭제하는 것을 잊지 마십시오."
 
 #. Tag: para
 #: installation.xml:1306
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
 "value. Valid SRID values are bigger than 0 and smaller than 999000. Values "
 "in the 999000.999999 range are reserved for internal use while values > "
-"999999 can't be used at all. All your custom records with invalid SRIDs will "
-"be retained, with those > 999999 moved into the reserved range, but the "
+"999999 can't be used at all. All your custom records with invalid SRIDs will"
+" be retained, with those > 999999 moved into the reserved range, but the "
 "spatial_ref_sys table would lose a check constraint guarding for that "
 "invariant to hold and possibly also its primary key ( when multiple invalid "
 "SRIDS get converted to the same reserved SRID value )."
-msgstr ""
-"덤프 파일 중 spatial_ref_sys의 사용자 레코드에 잘못된 SRID 값이 있는 경우입니"
-"다. 올바른 SRID 값은 0보다 크며 999000 보다 작습니다. 999000.999999 범위 내 "
-"값들은 내부 사용을 위한 것이고, 999999보다 큰 값들은 사용될 수 없습니다. 인"
-"식 불가능한 SIRD의 모든 커스텀 기록들은 유지됩니다. 999999보다 큰 모든 기록들"
-"은 보관되는 범위로 이동되지만 spatial_ref_sys 테이블을 변함없이 유지하지 위"
-"한 체크 제약 가이드와 기본키는 유실될 수 있습니다. (다수의 인식 불가능한 "
-"SRIDS가 똑같은 예약 SRID 값으로 전환되는 경우)."
+msgstr "덤프 파일 내부에 있는 spatial_ref_sys의 사용자 지정 레코드 가운데 일부는 유효하지 않은 SRID 값을 가지고 있습니다. 유효한 SRID 값은 0보다 크고 999,000보다 작습니다. 999000에서 999999까지의 값은 내부용으로 할당되어 있는 반면 999,999보다 큰 값은 전혀 쓸 수도 없습니다. 유효하지 않은 SRID 값을 가진 모든 사용자 지정 레코드는 유지될 것입니다. 999,999보다 큰 값은 할당된 범위로 이동되지만, spatial_ref_sys 테이블이 담을 수 있는 불변값을 보호하는 CHECK 제약조건을 잃게 될 수도 있고, 또 (복수의 유효하지 않은 SRID가 할당된 SRID 값 가운데 동일한 값으로 변환될 때) 기본 키(primary key)도 잃게 될 수 있습니다."
 
 #. Tag: para
 #: installation.xml:1320
@@ -3681,11 +3280,7 @@ msgid ""
 "value (maybe in the 910000..910999 range), convert all your tables to the "
 "new srid (see <xref linkend=\"UpdateGeometrySRID\"/>), delete the invalid "
 "entry from spatial_ref_sys and re-construct the check(s) with:"
-msgstr ""
-"이 문제를 해결하기 위해선 사용자 SRS를 유효한 값의 SRID로 복사하고(아마도"
-"910000..910999 범위), 모든 테이블들을 새로운 SRID로 전환하셔야 합니다. "
-"(<xref linkend=\"UpdateGeometrySRID\"/> 참조), 또한 spatial_ref_sys에서 잘못"
-"된 목록을 지우고 check(들)을 다음처럼 재구축 하십시오:"
+msgstr "이 문제를 해결하기 위해선 사용자 지정 SRS를 유효한 값의 SRID로 (아마도910000~910999 범위로) 복사하고, 모든 테이블을 새 SRID로 전환한 다음(<xref linkend=\"UpdateGeometrySRID\"/> 참조), 다음과 같이 spatial_ref_sys에서 유효하지 않은 항목을 삭제하고 CHECK 제약조건(들)을 재구성해야 합니다:"
 
 #. Tag: programlisting
 #: installation.xml:1327
@@ -3693,9 +3288,7 @@ msgstr ""
 msgid ""
 "ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check "
 "(srid &gt; 0 AND srid &lt; 999000 );"
-msgstr ""
-"ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check "
-"(srid &gt; 0 AND srid &lt; 999000 );"
+msgstr "ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );"
 
 #. Tag: programlisting
 #: installation.xml:1329
@@ -3707,7 +3300,7 @@ msgstr "ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));"
 #: installation.xml:1340
 #, no-c-format
 msgid "Common Problems during installation"
-msgstr ""
+msgstr "설치 과정에서 흔히 발생하는 문제들"
 
 #. Tag: para
 #: installation.xml:1341
@@ -3715,32 +3308,22 @@ msgstr ""
 msgid ""
 "There are several things to check when your installation or upgrade doesn't "
 "go as you expected."
-msgstr ""
-"인스톨이나 업그레이드 시 잘 되지 않을 경우 확인해야 할 몇 가지 사항은 아래와 "
-"같습니다."
+msgstr "설치 또는 업그레이드가 잘 되지 않을 경우 확인해야 할 몇 가지 사항이 있습니다."
 
 #. Tag: para
 #: installation.xml:1348
 #, no-c-format
 msgid ""
 "Check that you have installed PostgreSQL &min_postgres_version; or newer, "
-"and that you are compiling against the same version of the PostgreSQL source "
-"as the version of PostgreSQL that is running. Mix-ups can occur when your "
-"(Linux) distribution has already installed PostgreSQL, or you have otherwise "
-"installed PostgreSQL before and forgotten about it. PostGIS will only work "
+"and that you are compiling against the same version of the PostgreSQL source"
+" as the version of PostgreSQL that is running. Mix-ups can occur when your "
+"(Linux) distribution has already installed PostgreSQL, or you have otherwise"
+" installed PostgreSQL before and forgotten about it. PostGIS will only work "
 "with PostgreSQL &min_postgres_version; or newer, and strange, unexpected "
-"error messages will result if you use an older version. To check the version "
-"of PostgreSQL which is running, connect to the database using psql and run "
+"error messages will result if you use an older version. To check the version"
+" of PostgreSQL which is running, connect to the database using psql and run "
 "this query:"
-msgstr ""
-"PostgreSQL &min_postgres_version; 또는 그 보다 최신 버전을 설치하셨는지 체크"
-"하십시오. 현재 작동하고 계시는 PostgreSQL의 버전과 동일한 PostgreSQL 소스 버"
-"전을 바탕으로 컴파일하였는지 확인해주십시오. (Linux) 배포본이 이미 PostgreSQL"
-"이 설치된 경우 중복 설치가 될 수 있고, 또는 이전에 설치한 사실을 잊어버렸을 "
-"수도 있습니다. PostGIS는 PostgreSQL &min_postgres_version; 또는 그 이상 버전"
-"에서 작동되므로 구 버전을 이용 시 예상하지 못한 에러들이 발생할 수 있습니다. "
-"어떤 PostgreSQL 버전이 작동하고 있는지 확인하기 위해서는 psql을 통하여 데이터"
-"베이스에 접속해 다음의 쿼리를 실행하십시오:"
+msgstr "PostgreSQL &min_postgres_version; 버전 또는 그 이상 버전을 설치했는지, 현재 실행되고 있는 PostgreSQL 버전과 동일한 버전의 PostgreSQL 소스를 바탕으로 컴파일했는지 확인하십시오. 사용자의 (Linux) 배포판이 이미 PostgreSQL을 설치했거나, 또는 이전에 설치한 사실을 잊어버린 경우 중복 설치가 될 수 있습니다. PostGIS는 PostgreSQL &min_postgres_version; 이상 버전에서만 작동하므로 구 버전 이용시 이상하고 예상치 못 한 오류들이 발생할 수 있습니다. 현재 실행중인 PostgreSQL 버전을 확인하려면 PSQL을 통해 데이터베이스에 연결해서 다음 쿼리를 실행하십시오:"
 
 #. Tag: programlisting
 #: installation.xml:1361
@@ -3753,11 +3336,9 @@ msgstr "SELECT version();"
 #, no-c-format
 msgid ""
 "If you are running an RPM based distribution, you can check for the "
-"existence of pre-installed packages using the <command>rpm</command> command "
-"as follows: <command>rpm -qa | grep postgresql</command>"
-msgstr ""
-"RPM 방식이라면 다음과 같은 <command>rpm</command> 커맨드로 이전 설치 패키지"
-"의 존재를 확인할 수 있습니다:  <command>rpm -qa | grep postgresql</command>"
+"existence of pre-installed packages using the <command>rpm</command> command"
+" as follows: <command>rpm -qa | grep postgresql</command>"
+msgstr "RPM 기반 배포판을 실행중이라면 다음과 같은 <command>rpm</command> 명령어로 이전에 설치된 패키지의 존재를 확인할 수 있습니다:  <command>rpm -qa | grep postgresql</command>"
 
 #. Tag: para
 #: installation.xml:1371
@@ -3765,8 +3346,7 @@ msgstr ""
 msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
 "already has PostGIS installed."
-msgstr ""
-"만약 업그레이드가 실패하면 기존 PostGIS설치 버전으로 복원하셔야 합니다. "
+msgstr "업그레이드가 실패한 경우, 기존 PostGIS가 설치된 데이터베이스로 복원해야 합니다."
 
 #. Tag: programlisting
 #: installation.xml:1372
@@ -3778,26 +3358,20 @@ msgstr "SELECT postgis_full_version();"
 #: installation.xml:1376
 #, no-c-format
 msgid ""
-"Also check that configure has correctly detected the location and version of "
-"PostgreSQL, the Proj4 library and the GEOS library."
-msgstr ""
-"또한 PostreSQL, Proj4 라이브러리 및 GEOS 라이브러리에 대한 버전과 경로에 대"
-"한 설정이 올바른지 확인하십시오."
+"Also check that configure has correctly detected the location and version of"
+" PostgreSQL, the Proj4 library and the GEOS library."
+msgstr "또 설정 과정에서 PostreSQL, Proj4 라이브러리 및 GEOS 라이브러리의 버전과 경로를 제대로 감지했는지 확인하십시오."
 
 #. Tag: para
 #: installation.xml:1383
 #, no-c-format
 msgid ""
-"The output from configure is used to generate the <filename>postgis_config."
-"h</filename> file. Check that the <varname>POSTGIS_PGSQL_VERSION</varname>, "
-"<varname>POSTGIS_PROJ_VERSION</varname> and <varname>POSTGIS_GEOS_VERSION</"
-"varname> variables have been set correctly."
-msgstr ""
-"설정은 <filename>postgis_config.h</filename>h 파일을 생성하기 위해 사용됩니"
-"다. \n"
-"<varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</"
-"varname> and <varname>POSTGIS_GEOS_VERSION</varname> 변수가 정확한지 확인하십"
-"시오."
+"The output from configure is used to generate the "
+"<filename>postgis_config.h</filename> file. Check that the "
+"<varname>POSTGIS_PGSQL_VERSION</varname>, "
+"<varname>POSTGIS_PROJ_VERSION</varname> and "
+"<varname>POSTGIS_GEOS_VERSION</varname> variables have been set correctly."
+msgstr "설정 과정에서 나온 결과물은 <filename>postgis_config.h</filename> 파일을 생성하는 데 사용됩니다. <varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</varname> 및<varname>POSTGIS_GEOS_VERSION</varname> 변수가 정확히 설정됐는지 확인하십시오."
 
 #. Tag: title
 #: installation.xml:1396
@@ -3811,9 +3385,7 @@ msgstr "로더/덤퍼"
 msgid ""
 "The data loader and dumper are built and installed automatically as part of "
 "the PostGIS build. To build and install them manually:"
-msgstr ""
-"데이터 로더와 덤퍼는 PostGIS의 한 부분으로서 자동적으로 설치 및 생성됩니다. "
-"로더와 덤퍼를 수동으로 설치하기 위해서는:"
+msgstr "데이터 로더와 덤퍼는 PostGIS 빌드 작업의 한 부분으로, 자동적으로 빌드 및 설치됩니다. 로더와 덤퍼를 수동으로 설치하려면:"
 
 #. Tag: programlisting
 #: installation.xml:1403
@@ -3822,10 +3394,7 @@ msgid ""
 "# cd postgis-&last_release_version;/loader\n"
 "# make\n"
 "# make install"
-msgstr ""
-"# cd postgis-&last_release_version;/loader\n"
-"# make\n"
-"# make install"
+msgstr "# cd postgis-&last_release_version;/loader\n# make\n# make install"
 
 #. Tag: para
 #: installation.xml:1405
@@ -3836,8 +3405,4 @@ msgid ""
 "called <filename>pgsql2shp</filename> and converts PostGIS tables (or "
 "queries) into ESRI Shape files. For more verbose documentation, see the "
 "online help, and the manual pages."
-msgstr ""
-"로더는 <filename>shp2pgsql</filename>이라고 불리며 ESRI Shape 파일을 PostGIS/"
-"PostgreSQL 다루기 알맞도록 전환합니다. 덤퍼는 <filename>pgsql2shp</filename>"
-"이라 불리며 PostGIS 테이블(또는 쿼리들)을 ESRI Shape파일로 전환합니다. 보다 "
-"더 상세한 설명을 원하신다면 온라인 도움말과 매뉴얼을 참조하십시오."
+msgstr "로더는 <filename>shp2pgsql</filename> 이라고 불리며 PostGIS/PostgreSQL에 로드하기 위해 ESRI shapefile을 SQL에 적합하도록 변환합니다. 덤퍼는 <filename>pgsql2shp</filename> 이라 불리며 PostGIS 테이블(또는 쿼리)을 ESRI shapefile로 전환합니다. 더 상세한 설명을 원한다면 온라인 도움말 및 사용자 지침서를 참조하십시오."

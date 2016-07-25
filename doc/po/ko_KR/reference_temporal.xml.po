@@ -1,37 +1,38 @@
 # SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2015-09-29 12:15+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2016-06-11 09:01+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Tag: title
 #: reference_temporal.xml:3
 #, no-c-format
 msgid "Temporal Support"
-msgstr ""
+msgstr "시계열 지원"
 
 #. Tag: refname
 #: reference_temporal.xml:8
 #, no-c-format
 msgid "ST_IsValidTrajectory"
-msgstr ""
+msgstr "ST_IsValidTrajectory"
 
 #. Tag: refpurpose
 #: reference_temporal.xml:9
 #, no-c-format
 msgid "Returns <varname>true</varname> if the geometry is a valid trajectory."
-msgstr ""
+msgstr "도형이 유효한 궤적(trajectory)일 경우 <varname>true</varname> 를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:16
@@ -39,14 +40,14 @@ msgstr ""
 msgid ""
 "<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>boolean <function>ST_IsValidTrajectory</function></funcdef> <paramdef><type>geometry </type> <parameter>line</parameter></paramdef>"
 
 #. Tag: title
 #: reference_temporal.xml:24 reference_temporal.xml:76
 #: reference_temporal.xml:132 reference_temporal.xml:185
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #. Tag: para
 #: reference_temporal.xml:26
@@ -54,7 +55,7 @@ msgstr ""
 msgid ""
 "Tell if a geometry encodes a valid trajectory. Valid trajectories are "
 "encoded as LINESTRING with M value growing from each vertex to the next."
-msgstr ""
+msgstr "도형이 유효한 궤적을 인코딩하고 있는지 말해줍니다. 유효한 궤적이란 각 꼭짓점에서 다음 꼭짓점으로, 순차적으로 커지는 M값을 가진 라인스트링으로 인코딩돼 있다는 뜻입니다."
 
 #. Tag: para
 #: reference_temporal.xml:32
@@ -62,28 +63,28 @@ msgstr ""
 msgid ""
 "Valid trajectories are expected as input to some spatio-temporal queries "
 "like <xref linkend=\"ST_ClosestPointOfApproach\"/>"
-msgstr ""
+msgstr "<xref linkend=\"ST_ClosestPointOfApproach\"/> 함수 같은 몇몇 시공간계열 쿼리가 유효한 궤적을 입력받을 것입니다."
 
 #. Tag: para
 #: reference_temporal.xml:37 reference_temporal.xml:90
 #: reference_temporal.xml:141 reference_temporal.xml:197
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_temporal.xml:38 reference_temporal.xml:91
 #: reference_temporal.xml:142 reference_temporal.xml:198
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: title
 #: reference_temporal.xml:43 reference_temporal.xml:96
 #: reference_temporal.xml:147 reference_temporal.xml:203
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "예시"
 
 #. Tag: programlisting
 #: reference_temporal.xml:44
@@ -97,33 +98,33 @@ msgid ""
 " t\n"
 "\n"
 "-- An invalid trajectory\n"
-"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), "
-"ST_MakePointM(0,1,0)));\n"
+"SELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));\n"
 "NOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n"
 " st_isvalidtrajectory\n"
 "----------------------\n"
 " f"
-msgstr ""
+msgstr "-- 유효한 궤적\nSELECT ST_IsValidTrajectory(ST_MakeLine(\n  ST_MakePointM(0,0,1),\n  ST_MakePointM(0,1,2))\n);\n t\n\n-- 유효하지 않은 궤적\nSELECT ST_IsValidTrajectory(ST_MakeLine(ST_MakePointM(0,0,1), ST_MakePointM(0,1,0)));\nNOTICE:  Measure of vertex 1 (0) not bigger than measure of vertex 0 (1)\n st_isvalidtrajectory\n----------------------\n f"
 
 #. Tag: title
 #: reference_temporal.xml:49 reference_temporal.xml:102
 #: reference_temporal.xml:153 reference_temporal.xml:209
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "참고"
 
 #. Tag: refname
 #: reference_temporal.xml:59
 #, no-c-format
 msgid "ST_ClosestPointOfApproach"
-msgstr ""
+msgstr "ST_ClosestPointOfApproach"
 
 #. Tag: refpurpose
 #: reference_temporal.xml:60
 #, no-c-format
 msgid ""
-"Returns the measure at which points interpolated along two lines are closest."
-msgstr ""
+"Returns the measure at which points interpolated along two lines are "
+"closest."
+msgstr "두 라인을 따라 보간된 포인트들이 가장 가까운 위치의 척도를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:67
@@ -132,7 +133,7 @@ msgid ""
 "<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>float8 <function>ST_ClosestPointOfApproach</function></funcdef> <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_temporal.xml:78
@@ -140,9 +141,9 @@ msgstr ""
 msgid ""
 "Returns the smallest measure at which point interpolated along the given "
 "lines are at the smallest distance. Inputs must be valid trajectories as "
-"checked by <xref linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the "
-"trajectories do not overlap on the M range."
-msgstr ""
+"checked by <xref linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the"
+" trajectories do not overlap on the M range."
+msgstr "입력 라인들을 따라 보간된 포인트들이 가장 가까운 거리에 있는 위치의 가장 적은 척도를 반환합니다. <xref linkend=\"ST_IsValidTrajectory\"/> 로 확인한 유효한 궤적을 입력해야만 합니다. 궤적들이 M 범위 상에서 중첩하지 않을 경우 NULL을 반환합니다."
 
 #. Tag: para
 #: reference_temporal.xml:85
@@ -150,7 +151,7 @@ msgstr ""
 msgid ""
 "See <xref linkend=\"ST_LocateAlong\"/> for getting the actual points at the "
 "given measure."
-msgstr ""
+msgstr "주어진 척도의 위치에 있는 실제 포인트를 얻으려면 <xref linkend=\"ST_LocateAlong\"/> 함수를 참조하십시오."
 
 #. Tag: programlisting
 #: reference_temporal.xml:97
@@ -181,7 +182,7 @@ msgid ""
 "               t               |     distance\n"
 "-------------------------------+------------------\n"
 " 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
-msgstr ""
+msgstr "-- 10시부터 11시까지 움직인 두 객체가 서로 가장 가까워진 시간 및\n-- 그 시점에서 두 객체의 거리를 반환합니다.\nWITH inp AS ( SELECT\n  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) a,\n  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) b\n), cpa AS (\n  SELECT ST_ClosestPointOfApproach(a,b) m FROM inp\n), points AS (\n  SELECT ST_Force3DZ(ST_GeometryN(ST_LocateAlong(a,m),1)) pa,\n         ST_Force3DZ(ST_GeometryN(ST_LocateAlong(b,m),1)) pb\n  FROM inp, cpa\n)\nSELECT to_timestamp(m) t,\n       ST_Distance(pa,pb) distance\nFROM points, cpa;\n\n               t               |     distance\n-------------------------------+------------------\n 2015-05-26 10:45:31.034483+02 | 1.96036833151395"
 
 #. Tag: para
 #: reference_temporal.xml:103
@@ -189,20 +190,20 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, "
 "<xref linkend=\"ST_AddMeasure\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"ST_LocateAlong\"/>, <xref linkend=\"ST_AddMeasure\"/>"
 
 #. Tag: refname
 #: reference_temporal.xml:115
 #, no-c-format
 msgid "ST_DistanceCPA"
-msgstr ""
+msgstr "ST_DistanceCPA"
 
 #. Tag: refpurpose
 #: reference_temporal.xml:116
 #, no-c-format
 msgid ""
 "Returns the distance between closest points of approach in two trajectories."
-msgstr ""
+msgstr "두 궤적에서 가장 가깝게 접근한 포인트들 사이의 거리를 반환합니다."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:123
@@ -211,24 +212,23 @@ msgid ""
 "<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>float8 <function>ST_DistanceCPA</function></funcdef> <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_temporal.xml:134
 #, no-c-format
 msgid ""
 "Returns the minimum distance two moving objects have ever been each-other. "
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do not "
-"overlap on the M range."
-msgstr ""
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. Null is returned if the trajectories do "
+"not overlap on the M range."
+msgstr "두 움직이는 객체들이 서로 가장 가까웠을 때의 최소 거리를 반환합니다. <xref linkend=\"ST_IsValidTrajectory\"/> 로 확인한 유효한 궤적을 입력해야만 합니다. 궤적들이 M 범위 상에서 중첩하지 않을 경우 NULL을 반환합니다."
 
 #. Tag: programlisting
 #: reference_temporal.xml:148
 #, no-c-format
 msgid ""
-"-- Return the minimum distance of two objects moving between 10:00 and "
-"11:00\n"
+"-- Return the minimum distance of two objects moving between 10:00 and 11:00\n"
 "WITH inp AS ( SELECT\n"
 "  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n"
 "    extract(epoch from '2015-05-26 10:00'::timestamptz),\n"
@@ -244,21 +244,21 @@ msgid ""
 "     distance\n"
 "------------------\n"
 " 1.96036833151395"
-msgstr ""
+msgstr "-- 10시부터 11시까지 움직인 두 객체가 서로 가장 가까워진 최소 거리를 반환합니다.\nWITH inp AS ( SELECT\n  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) a,\n  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) b\n)\nSELECT ST_DistanceCPA(a,b) distance FROM inp;\n\n     distance\n------------------\n 1.96036833151395"
 
 #. Tag: para
 #: reference_temporal.xml:154
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
-msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgstr ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend=\"ST_AddMeasure\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
 
 #. Tag: refname
 #: reference_temporal.xml:166
 #, no-c-format
 msgid "ST_CPAWithin"
-msgstr ""
+msgstr "ST_CPAWithin"
 
 #. Tag: refpurpose
 #: reference_temporal.xml:167
@@ -266,7 +266,7 @@ msgstr ""
 msgid ""
 "Returns true if the trajectories' closest points of approach are within the "
 "specified distance."
-msgstr ""
+msgstr "두 궤적에서 가장 가까이 접근한 포인트들 사이의 거리가 설정한 거리 이하일 경우 참을 반환합니다."
 
 #. Tag: funcprototype
 #: reference_temporal.xml:175
@@ -276,7 +276,7 @@ msgid ""
 "<paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> "
 "<paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> "
 "<paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>"
-msgstr ""
+msgstr "<funcdef>float8 <function>ST_CPAWithin</function></funcdef> <paramdef><type>geometry </type> <parameter>track1</parameter></paramdef> <paramdef><type>geometry </type> <parameter>track2</parameter></paramdef> <paramdef><type>float8 </type> <parameter>maxdist</parameter></paramdef>"
 
 #. Tag: para
 #: reference_temporal.xml:187
@@ -284,16 +284,16 @@ msgstr ""
 msgid ""
 "Checks whether two moving objects have ever been within the specified max "
 "distance."
-msgstr ""
+msgstr "움직이는 두 객체가 설정한 최대 거리 이하로 가까워진 적이 있는지 확인합니다."
 
 #. Tag: para
 #: reference_temporal.xml:191
 #, no-c-format
 msgid ""
-"Inputs must be valid trajectories as checked by <xref linkend="
-"\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do not "
-"overlap on the M range."
-msgstr ""
+"Inputs must be valid trajectories as checked by <xref "
+"linkend=\"ST_IsValidTrajectory\"/>. False is returned if the trajectories do"
+" not overlap on the M range."
+msgstr "<xref linkend=\"ST_IsValidTrajectory\"/> 로 확인한 유효한 궤적을 입력해야만 합니다. 궤적들이 M 범위 상에서 중첩하지 않을 경우 NULL을 반환합니다."
 
 #. Tag: programlisting
 #: reference_temporal.xml:204
@@ -314,12 +314,12 @@ msgid ""
 " st_cpawithin |     distance\n"
 "--------------+------------------\n"
 " t            | 1.96521473776207"
-msgstr ""
+msgstr "WITH inp AS ( SELECT\n  ST_AddMeasure('LINESTRING Z (0 0 0, 10 0 5)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) a,\n  ST_AddMeasure('LINESTRING Z (0 2 10, 12 1 2)'::geometry,\n    extract(epoch from '2015-05-26 10:00'::timestamptz),\n    extract(epoch from '2015-05-26 11:00'::timestamptz)\n  ) b\n)\nSELECT ST_CPAWithin(a,b,2), ST_DistanceCPA(a,b) distance FROM inp;\n\n st_cpawithin |     distance\n--------------+------------------\n t            | 1.96521473776207"
 
 #. Tag: para
 #: reference_temporal.xml:210
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend="
-"\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
-msgstr ""
+", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref "
+"linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
+msgstr ", <xref linkend=\"ST_ClosestPointOfApproach\"/>, <xref linkend=\"ST_DistanceCPA\"/>, <xref linkend=\"geometry_distance_cpa\"/>"
