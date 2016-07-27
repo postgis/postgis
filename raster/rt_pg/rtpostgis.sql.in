@@ -5728,7 +5728,7 @@ CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
 
 CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry && $2::geometry'
+    AS 'select $1::geometry OPERATOR(@extschema@.&&) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- raster/geometry functions
@@ -5748,7 +5748,7 @@ CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry && $2'
+    AS 'select $1::geometry OPERATOR(@extschema@.&&) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
     
 -- geometry/raster functions
@@ -5768,7 +5768,7 @@ CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
-    AS 'select $1 && $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.&&) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
     
 ------------------------------------------------------------------------------
@@ -6110,13 +6110,13 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 ra
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_intersects(st_convexhull($1), st_convexhull($3)) ELSE _st_intersects($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_intersects(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_intersects($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_intersects($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_intersects($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6137,7 +6137,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 
 		_geom := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
-			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
+			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM @extschema@.ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
 		IF ST_Intersects(geom, _geom) IS NOT TRUE THEN
@@ -6146,8 +6146,8 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 			RETURN TRUE;
 		END IF;
 
-		SELECT ST_Collect(t.geom) INTO _geom FROM ST_PixelAsPolygons(rast, nband) AS t;
-		RETURN ST_Intersects(geom, _geom);
+		SELECT @extschema@.ST_Collect(t.geom) INTO _geom FROM @extschema@.ST_PixelAsPolygons(rast, nband) AS t;
+		RETURN @extschema@.ST_Intersects(geom, _geom);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE
 	COST 1000;
@@ -6155,7 +6155,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
-	$$ SELECT $1 && $2::geometry AND _st_intersects($1, $2, $3); $$
+	$$ SELECT $1 OPERATOR(@extschema@.&&) $2::geometry AND @extschema@._st_intersects($1, $2, $3); $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6165,13 +6165,13 @@ CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integ
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry && $2 AND _st_intersects($2, $1, $3) $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) $2 AND @extschema@._st_intersects($2, $1, $3) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry && $3 AND _st_intersects($3, $1, $2) $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) $3 AND @extschema@._st_intersects($3, $1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6187,13 +6187,13 @@ CREATE OR REPLACE FUNCTION _st_overlaps(rast1 raster, nband1 integer, rast2 rast
 
 CREATE OR REPLACE FUNCTION st_overlaps(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_overlaps(st_convexhull($1), st_convexhull($3)) ELSE _st_overlaps($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_overlaps(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE _st_overlaps($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_overlaps(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_overlaps($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_overlaps($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6209,13 +6209,13 @@ CREATE OR REPLACE FUNCTION _st_touches(rast1 raster, nband1 integer, rast2 raste
 
 CREATE OR REPLACE FUNCTION st_touches(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_touches(st_convexhull($1), st_convexhull($3)) ELSE _st_touches($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_touches(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_touches($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_touches(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_touches($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_touches($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6231,13 +6231,13 @@ CREATE OR REPLACE FUNCTION _st_contains(rast1 raster, nband1 integer, rast2 rast
 
 CREATE OR REPLACE FUNCTION st_contains(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_contains(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_contains(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_contains($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_contains(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_contains($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_contains($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6253,13 +6253,13 @@ CREATE OR REPLACE FUNCTION _st_containsproperly(rast1 raster, nband1 integer, ra
 
 CREATE OR REPLACE FUNCTION st_containsproperly(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_containsproperly(st_convexhull($1), st_convexhull($3)) ELSE _st_containsproperly($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_containsproperly(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_containsproperly($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_containsproperly(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_containsproperly($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_containsproperly($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6275,13 +6275,13 @@ CREATE OR REPLACE FUNCTION _st_covers(rast1 raster, nband1 integer, rast2 raster
 
 CREATE OR REPLACE FUNCTION st_covers(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_covers(st_convexhull($1), st_convexhull($3)) ELSE _st_covers($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_covers(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_covers($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_covers(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_covers($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_covers($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6297,13 +6297,13 @@ CREATE OR REPLACE FUNCTION _st_coveredby(rast1 raster, nband1 integer, rast2 ras
 
 CREATE OR REPLACE FUNCTION st_coveredby(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_coveredby(st_convexhull($1), st_convexhull($3)) ELSE _st_coveredby($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_coveredby(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_coveredby($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_coveredby(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_coveredby($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_coveredby($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6313,19 +6313,19 @@ CREATE OR REPLACE FUNCTION st_coveredby(rast1 raster, rast2 raster)
 
 CREATE OR REPLACE FUNCTION _st_within(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT _st_contains($3, $4, $1, $2) $$
+	AS $$ SELECT @extschema@._st_contains($3, $4, $1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_within(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_within(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($3, $4, $1, $2) END $$
+	AS $$ SELECT $1 OPERATOR(@extschema@.&&) $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._st_within(@extschema@.st_convexhull($1), @extschema@.st_convexhull($3)) ELSE @extschema@._st_contains($3, $4, $1, $2) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_within(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_within($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.st_within($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6341,13 +6341,13 @@ CREATE OR REPLACE FUNCTION _st_dwithin(rast1 raster, nband1 integer, rast2 raste
 
 CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry && ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry && ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_dwithin(st_convexhull($1), st_convexhull($3), $5) ELSE _st_dwithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_dwithin(st_convexhull($1), st_convexhull($3), $5) ELSE _st_dwithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, rast2 raster, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT st_dwithin($1, NULL::integer, $2, NULL::integer, $3) $$
+	AS $$ SELECT @extschema@.st_dwithin($1, NULL::integer, $2, NULL::integer, $3) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -6363,7 +6363,7 @@ CREATE OR REPLACE FUNCTION _st_dfullywithin(rast1 raster, nband1 integer, rast2 
 
 CREATE OR REPLACE FUNCTION st_dfullywithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry && ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry && ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_dfullywithin(st_convexhull($1), st_convexhull($3), $5) ELSE _st_dfullywithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_dfullywithin(st_convexhull($1), st_convexhull($3), $5) ELSE _st_dfullywithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
