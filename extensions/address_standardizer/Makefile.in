@@ -170,4 +170,4 @@ EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged-
 
 PGXS := @PGXS@
 include $(PGXS)
-
+PERL = @PERL@
