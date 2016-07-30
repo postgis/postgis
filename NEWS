@@ -11,6 +11,9 @@ PostGIS 2.2.3
            for shp2pgsql-gui (Sebastiaan Couwenberg)
   - #3573, Operator <<->> incorrectly calculates m distance
   - #3579, Crash in LWGEOM2GEOS
+  - #3515, tiger_data not being backed up
+  - #3602, perl as found by configure is not used 
+  			in tiger extension, postgis_sfcgal, address_standardizer  
 
 
 PostGIS 2.2.2
