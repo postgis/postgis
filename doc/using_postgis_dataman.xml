@@ -2178,6 +2178,72 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	  built.</para>
 	</sect2>
 
+	<sect2 id="brin_indexes">
+	  <title>BRIN Indexes</title>
+
+	  <para>BRIN stands for "Block Range Index" and is a generic form of
+	  indexing that has been introduced in PostgreSQL 9.5. BRIN is a lossy kind
+	  of index, and its main usage is to provide a compromise for both read and
+	  write performance. It's primary goal is to handle very large tables for
+	  which some of the columns have some natural correlation with their
+	  physical location within the table.  In addition to GIS indexing, BRIN is
+	  used to speed up searches on various kinds of regular or irregular data
+	  structures (integer, arrays etc).</para>
+
+	  <para>Once a GIS data table exceeds a few thousand rows, you will want
+	  to build an index to speed up spatial searches of the data (unless all
+	  your searches are based on attributes, in which case you'll want to
+      build a normal index on the attribute fields). GiST indexes are really
+      performant as long as their size doesn't exceed the amount of RAM
+      available for the database, and as long as you can afford the storage
+      size, and the penalty in write workload. Otherwise, BRIN index can be
+      considered as an alternative. </para>
+
+      <para>The idea of a BRIN index is to store only the bouding box englobing
+      all the geometries contained in all the rows in a set of table blocks,
+      called a range.  Obviously, this indexing method will only be efficient
+      if the data is physically ordered in a way where the resulting bouding
+      boxes for block ranges will be mutually exclusive. The resulting index
+      will be really small, but will be less efficient than a GiST index in
+      many cases.</para>
+
+	  <para>Building a BRIN index is way less intensive than building a GiST
+	  index. It's quite common to build a BRIN index in more than ten time less
+	  than a GiST index would have required. As a BRIN index only store one
+	  bouding box for one to many table blocks, it's pretty common to consume
+	  up to a thousand time less disk space for this kind of indexes.</para>
+
+      <para>You can choose the number of blocks to summarize in a range. If you
+      decrease this number, the index will be bigger but will probably help to
+      get better performance.</para>
+
+	  <para>The syntax for building a BRIN index on a "geometry" column is as
+	  follows:</para>
+
+	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ); </programlisting></para>
+	  <para>The above syntax will always build a 2D-index.  To get the 3d-dimensional index supported in PostGIS 2.0+ for the geometry type, you can create one using this syntax</para>
+	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] brin_geometry_inclusion_ops_3d);</programlisting>
+	  <para>These above syntaxes will use the default number or block in a range, which is 128. To specify the number of blocks you want to summarise in a range, you can create one using this syntax</para>
+	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ) WITH (pages_per_range = [number]); </programlisting></para>
+
+          <para>Also the "geography" datatype is supported for BRIN indexing. The
+          syntax for building a BRIN index on a "geometry" column is as follows:</para>
+
+          <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geographyfield] ); </programlisting></para>
+          <para>The above syntax will always build a 2D-index for geospatial objetcs on the spheroid. </para>
+
+          <para>Currently, just the "inclusion support" is considered here, meaning
+          that just <varname>&amp;&amp;</varname>, <varname>~</varname> and
+          <varname>@</varname> operators can be used for the 2D cases (both for
+          "geometry" and for "geography"), and just the <varname>&amp;&amp;&amp;</varname>
+          operator can be used for the 3D geometries. There is no support
+          for kNN searches at the moment.</para>
+
+	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];
+-- This is only needed for PostgreSQL 7.4 installations and below
+SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
+	</sect2>
+
 	<sect2>
 	  <title>Using Indexes</title>
 

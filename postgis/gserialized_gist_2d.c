@@ -116,6 +116,15 @@ Datum gserialized_overbelow_2d(PG_FUNCTION_ARGS);
 Datum gserialized_distance_box_2d(PG_FUNCTION_ARGS);
 Datum gserialized_distance_centroid_2d(PG_FUNCTION_ARGS);
 
+#if POSTGIS_PGSQL_VERSION > 94
+Datum gserialized_contains_box2df_geom_2d(PG_FUNCTION_ARGS);
+Datum gserialized_contains_box2df_box2df_2d(PG_FUNCTION_ARGS);
+Datum gserialized_within_box2df_geom_2d(PG_FUNCTION_ARGS);
+Datum gserialized_within_box2df_box2df_2d(PG_FUNCTION_ARGS);
+Datum gserialized_overlaps_box2df_geom_2d(PG_FUNCTION_ARGS);
+Datum gserialized_overlaps_box2df_box2df_2d(PG_FUNCTION_ARGS);
+#endif
+
 /*
 ** true/false test function type
 */
@@ -541,7 +550,7 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 * full object and return the box based on that. If no box is available,
 * return #LW_FAILURE, otherwise #LW_SUCCESS.
 */
-static int
+int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	GSERIALIZED *gpart;
@@ -621,8 +630,84 @@ gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 	return LW_FALSE;
 }
 
+#if POSTGIS_PGSQL_VERSION > 94
+static int
+gserialized_datum_predicate_box2df_geom_2d(const BOX2DF *br1, Datum gs2, box2df_predicate predicate)
+{
+	BOX2DF b2, *br2=NULL;
+	POSTGIS_DEBUG(3, "entered function");
 
+	if (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) br2 = &b2;
 
+	if ( predicate(br1, br2) )
+	{
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", br1 ? box2df_to_string(&b1) : "(null)", br2 ? box2df_to_string(&b2) : "(null)");
+		return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
+/***********************************************************************
+* BRIN 2-D Index Operator Functions
+*/
+
+PG_FUNCTION_INFO_V1(gserialized_contains_box2df_geom_2d);
+Datum gserialized_contains_box2df_geom_2d(PG_FUNCTION_ARGS)
+{
+	POSTGIS_DEBUG(3, "entered function");
+        if ( gserialized_datum_predicate_box2df_geom_2d((BOX2DF*)PG_GETARG_POINTER(0), PG_GETARG_DATUM(1), box2df_contains) == LW_TRUE )
+                PG_RETURN_BOOL(TRUE);
+
+        PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_contains_box2df_box2df_2d);
+Datum gserialized_contains_box2df_box2df_2d(PG_FUNCTION_ARGS)
+{
+	if ( box2df_contains((BOX2DF *)PG_GETARG_POINTER(0), (BOX2DF *)PG_GETARG_POINTER(1)))
+		PG_RETURN_BOOL(TRUE);
+
+	PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_within_box2df_geom_2d);
+Datum gserialized_within_box2df_geom_2d(PG_FUNCTION_ARGS)
+{
+	POSTGIS_DEBUG(3, "entered function");
+        if ( gserialized_datum_predicate_box2df_geom_2d((BOX2DF*)PG_GETARG_POINTER(0), PG_GETARG_DATUM(1), box2df_within) == LW_TRUE )
+                PG_RETURN_BOOL(TRUE);
+
+        PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_within_box2df_box2df_2d);
+Datum gserialized_within_box2df_box2df_2d(PG_FUNCTION_ARGS)
+{
+        if ( box2df_within((BOX2DF *)PG_GETARG_POINTER(0), (BOX2DF *)PG_GETARG_POINTER(1)))
+                PG_RETURN_BOOL(TRUE);
+
+        PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_overlaps_box2df_geom_2d);
+Datum gserialized_overlaps_box2df_geom_2d(PG_FUNCTION_ARGS)
+{
+        POSTGIS_DEBUG(3, "entered function");
+        if ( gserialized_datum_predicate_box2df_geom_2d((BOX2DF*)PG_GETARG_POINTER(0), PG_GETARG_DATUM(1), box2df_overlaps) == LW_TRUE )
+                PG_RETURN_BOOL(TRUE);
+
+        PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_overlaps_box2df_box2df_2d);
+Datum gserialized_overlaps_box2df_box2df_2d(PG_FUNCTION_ARGS)
+{
+        if ( box2df_overlaps((BOX2DF *)PG_GETARG_POINTER(0), (BOX2DF *)PG_GETARG_POINTER(1)))
+                PG_RETURN_BOOL(TRUE);
+
+        PG_RETURN_BOOL(FALSE);
+}
+#endif
 
 /***********************************************************************
 * GiST 2-D Index Operator Functions

@@ -23,6 +23,7 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
 HAVE_SFCGAL=@HAVE_SFCGAL@
+HAVE_BRIN=@HAVE_BRIN@
 MINGWBUILD=@MINGWBUILD@
 INTERRUPTTESTS=@INTERRUPTTESTS@
 
@@ -229,6 +230,13 @@ ifeq ($(HAVE_JSON),yes)
 	# ST_GeomFromGeoJSON()
 	TESTS += \
 		in_geojson
+endif
+
+ifeq ($(HAVE_BRIN),yes)
+	TESTS += \
+		regress_brin_index \
+		regress_brin_index_3d \
+		regress_brin_index_geography
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)

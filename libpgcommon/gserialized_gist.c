@@ -374,6 +374,7 @@ GIDX* gidx_new(int ndims)
 {
 	size_t size = GIDX_SIZE(ndims);
 	GIDX *g = (GIDX*)palloc(size);
+	Assert( (ndims <= GIDX_MAX_DIM) && (size <= GIDX_MAX_SIZE) );
 	POSTGIS_DEBUGF(5,"created new gidx of %d dimensions, size %d", ndims, (int)size);
 	SET_VARSIZE(g, size);
 	return g;
