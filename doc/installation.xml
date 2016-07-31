@@ -42,10 +42,13 @@ createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
 psql -d yourdatabase -f spatial_ref_sys.sql
-psql -d yourdatabase -f rtpostgis.sql
-psql -d yourdatabase -f raster_comments.sql
 psql -d yourdatabase -f topology.sql
 psql -d yourdatabase -f topology_comments.sql
+
+-- only if you compiled with raster (GDAL)
+psql -d yourdatabase -f rtpostgis.sql
+psql -d yourdatabase -f raster_comments.sql
+
 --if you built with sfcgal support --
 psql -d yourdatabase -f sfcgal.sql
 psql -d yourdatabase -f sfcgal_comments.sql
@@ -1358,11 +1361,46 @@ All 2 tests passed.
 	</sect2>
   </sect1>
 
-  <sect1 id="create_new_db">
-	<title>Create a spatially-enabled database on PostgreSQL lower than 9.1</title>
+  <sect1 id="create_new_db_extensions">
+	<title>Creating a spatial database using EXTENSIONS</title>
 
 	<para>
-	  The first step in creating a PostGIS database is to create a simple
+	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/ postgis modules, you
+	 can create a spatial database the new way.
+	</para>
+
+	<para>
+	  <command>createdb [yourdatabase]</command>
+	</para>
+
+	<para>
+	  The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments with a simple:
+	  <programlisting>CREATE EXTENSION postgis;</programlisting> command.
+	</para>
+
+	<para>
+	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis;"</command>
+	</para>
+
+	<para>
+	  Topology is packaged as a separate extension and installable with command:
+	</para>
+
+	<para>
+	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
+	</para>
+
+	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
+	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
+
+	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
+  </sect1>
+  
+    <sect1 id="create_new_db">
+	<title>Create a spatially-enabled database without using extensions</title>
+
+	<note><para>This is generally only needed if you built-PostGIS without raster support. Since raster functions are part of the postgis extension, extension support is not enabled if PostGIS is built without raster.</para></note>
+	<para> The first step in creating a PostGIS database is to create a simple
 	  PostgreSQL database.
 	</para>
 
@@ -1451,41 +1489,6 @@ All 2 tests passed.
 	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
 	<note><para>There is an alternative <filename>legacy_minimal.sql</filename> you can run instead which will install barebones needed to recover tables and work with apps like MapServer
 	and GeoServer. If you have views that use things like distance / length etc, you'll need the full blown <filename>legacy.sql</filename></para></note>
-
-	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
-  </sect1>
-
-  <sect1 id="create_new_db_extensions">
-	<title>Creating a spatial database using EXTENSIONS</title>
-
-	<para>
-	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/ postgis modules, you
-	 can create a spatial database the new way.
-	</para>
-
-	<para>
-	  <command>createdb [yourdatabase]</command>
-	</para>
-
-	<para>
-	  The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments with a simple:
-	  <programlisting>CREATE EXTENSION postgis;</programlisting> command.
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis;"</command>
-	</para>
-
-	<para>
-	  Topology is packaged as a separate extension and installable with command:
-	</para>
-
-	<para>
-	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
-	</para>
-
-	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
-	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
 
 	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>

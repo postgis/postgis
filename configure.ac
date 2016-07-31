@@ -439,9 +439,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.1
-  if test $POSTGIS_PGSQL_VERSION -lt 91; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.1])
+  dnl Ensure that we are using PostgreSQL >= 9.2
+  if test $POSTGIS_PGSQL_VERSION -lt 92; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.2])
   fi
 
   HAVE_BRIN=no
