@@ -46,6 +46,9 @@ DATA_built=$(SQL_built)
 SQL_OBJS=$(SQL_objs)
 endif
 
+ifeq (@HAVE_BRIN@,yes)
+BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
+endif
 
 
 # SQL preprocessor
@@ -87,6 +90,7 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	$(BRIN_OBJ) \
 	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \

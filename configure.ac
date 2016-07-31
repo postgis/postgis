@@ -444,6 +444,11 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.1])
   fi
 
+  HAVE_BRIN=no
+  if test $POSTGIS_PGSQL_VERSION -gt 94; then
+    HAVE_BRIN=yes
+  fi
+
   dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
   dnl Extract the linker and include flags for the frontend (for programs that use libpq)
@@ -503,6 +508,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])	
   AC_SUBST([POSTGIS_PGSQL_VERSION])
+  AC_SUBST([HAVE_BRIN])
 
 fi dnl LIBLWGEOM_ONLY != no
 

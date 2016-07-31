@@ -4,7 +4,7 @@ PostGIS 2.3.0
  * Important / Breaking Changes *
 
   - #3466, Casting from box3d to geometry now returns a 3D
-           geometry (Julien Rouhaud)
+           geometry (2nd Quadrant, Julien Rouhaud)
 
  * Deprecated signatures *
 
@@ -33,8 +33,9 @@ PostGIS 2.3.0
   - #3465, ST_ClusterKMeans (Paul Ramsey)
   - #3469, ST_MakeLine with MULTIPOINTs (Paul Norman)
   - #3549, Support PgSQL 9.6 parallel query mode, as far as possible
-    (Paul Ramsey)
+    (Paul Ramsey, Regina Obe)
   - #3557, Geometry function costs based on query stats (Paul Norman)
+  - #3591, Add support for BRIN indexes (2nd Quadrant, Giuseppe Broccolo, Julien Rouhaud)
 
  * Performance Enhancements *
 
