@@ -90,11 +90,13 @@ ERROR:  RASTER_histogramCoverage: Cannot get summary stats of coverage
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test1" does not exist at character 82
+-10.000|-3.429|10|0.500
+-3.429|3.142|10|0.500
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast1" does not exist at character 50
+-10.000|-3.429|10|0.500
+-3.429|3.142|10|0.500
 COMMIT
 RELEASE
 COMMIT
