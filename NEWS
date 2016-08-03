@@ -4,7 +4,7 @@ PostGIS 2.3.0
  * Important / Breaking Changes *
 
   - #3466, Casting from box3d to geometry now returns a 3D
-           geometry (Julien Rouhaud of Diablo)
+           geometry (Julien Rouhaud of Dalibo)
 
  * Deprecated signatures *
 
@@ -36,7 +36,7 @@ PostGIS 2.3.0
     (Paul Ramsey, Regina Obe)
   - #3557, Geometry function costs based on query stats (Paul Norman)
   - #3591, Add support for BRIN indexes 
-		  (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud and Ronan Dunklau of Diablo)
+		  (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud and Ronan Dunklau of Dalibo)
 
  * Performance Enhancements *
 
