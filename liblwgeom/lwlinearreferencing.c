@@ -524,11 +524,6 @@ lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from,
 		}
 	}
 
-	if ( ! lwgeom_out || lwgeom_out->ngeoms == 0 ) /* Nothing left after clip. */
-	{
-		return NULL;
-	}
-
 	return lwgeom_out;
 
 }

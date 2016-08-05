@@ -23,6 +23,12 @@ select 'LINEZM_3', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 10, 
 select 'LINEZM_4', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 20, 10 0 0 0)', 2, 18));
 select 'LINEZM_5', ST_AsText(ST_LocateBetween('LINESTRING(0 10 100 0, 0 0 0 20, 0 10 10 40, 10 0 0 0)', 2, 18));
 select 'LINEZM_6', ST_AsText(ST_LocateBetween('LINESTRING(0 10 10 40, 10 0 0 0)', 2, 2));
+-- #3119 --
+select '#3119a', ST_AsText(ST_LocateBetweenElevations('LINESTRING Z(0 0 0, 10 10 10)'::geometry, 11, 11));
+
+-- Multilinestrings
+-- #3119 --
+select '#3119b', ST_AsText(ST_LocateBetweenElevations('MULTILINESTRING Z((0 0 0, 10 10 10))'::geometry, 11, 11));
 
 --- line_locate_point
 
