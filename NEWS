@@ -32,6 +32,7 @@ PostGIS 2.1.9
   - #3583, Crash in ST_GeomFromGeoJSON on malformed multipolygon
   - #3607, Fix inconsistency with multilinestring in
            ST_LocateBetweenElevations (Artur Zakirov)
+  - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
 
 
 PostGIS 2.1.8
