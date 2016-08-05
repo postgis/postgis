@@ -169,7 +169,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'W':
-			config->encoding = pgis_optarg;
+			config->encoding = strdup(pgis_optarg);
 			break;
 
 		case 'N':

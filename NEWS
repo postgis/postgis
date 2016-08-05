@@ -16,6 +16,7 @@ PostGIS 2.2.3
   			in tiger extension, postgis_sfcgal, address_standardizer  
   - #3607, Fix inconsistency with multilinestring in
            ST_LocateBetweenElevations (Artur Zakirov)
+  - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
 
 
 PostGIS 2.2.2
