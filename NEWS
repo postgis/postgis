@@ -37,6 +37,8 @@ PostGIS 2.3.0
   - #3557, Geometry function costs based on query stats (Paul Norman)
   - #3591, Add support for BRIN indexes 
 		  (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud and Ronan Dunklau of Dalibo)
+  - #3496 Make postgis non-relocateable (for extension install), schema qualify calls in functions (Regina Obe)
+		Should resolve once and for all for extensions #3494, #3486, #3076 
 
  * Performance Enhancements *
 
