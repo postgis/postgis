@@ -71,7 +71,8 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql ../
 #they can be dropped but we need to remove
 #them from the extension first
 sql/topology_upgrade.sql:  ../../topology/topology_upgrade.sql
-	 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
+	mkdir -p sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
 sql_minor_upgrade: extlock.sql ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
