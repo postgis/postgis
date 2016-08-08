@@ -76,6 +76,7 @@ sql_bits/postgis_proc_set_search_path.sql: ../../postgis/postgis_proc_set_search
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql
+	mkdir -p sql_bits
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl
