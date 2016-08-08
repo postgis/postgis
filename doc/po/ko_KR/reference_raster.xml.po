@@ -15812,8 +15812,8 @@ msgid ""
 "representing the shared portion of two rasters or the geometrical "
 "intersection of a vectorization of the raster and a geometry.</refpurpose>"
 msgstr ""
-"두 래스터의 공유 부분을 표현하는, 또는 벡터화된 래스터와 도형의 기하학적 교차"
-"를 표현하는 래스터 또는 도형-픽셀값 쌍의 집합을 반환합니다."
+"<refpurpose>두 래스터의 공유 부분을 표현하는, 또는 벡터화된 래스터와 도형의 기하학적 교차"
+"를 표현하는 래스터 또는 도형-픽셀값 쌍의 집합을 반환합니다.</refpurpose>"
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:6399
