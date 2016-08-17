@@ -94,7 +94,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 #also remove tiger_data from extension if it is part of it
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
   	../../extras/tiger_geocoder/geocode_settings.sql \
-  ../../extras/tiger_geocoder/tiger_loader_2015.sql \
+  ../../extras/tiger_geocoder/tiger_loader_2016.sql \
 	../../extras/tiger_geocoder/utility/utmzone.sql \
 	../../extras/tiger_geocoder/utility/cull_null.sql \
 	../../extras/tiger_geocoder/utility/nullable_levenshtein.sql \
@@ -129,7 +129,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/geocode_settings.sql \
 	../../extras/tiger_geocoder/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_loader_2015.sql \
+	../../extras/tiger_geocoder/tiger_loader_2016.sql \
 	../../extras/tiger_geocoder/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/utility/utmzone.sql \
 	../../extras/tiger_geocoder/utility/cull_null.sql \
