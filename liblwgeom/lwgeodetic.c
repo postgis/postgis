@@ -1591,21 +1591,26 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 		{
 			int nsegs = 1 + d / max_seg_length;
 			int i;
-			double dx, dy, dzz = 0, dmm = 0;
-			g = g1;
-			dx = (g2.lat - g1.lat) / nsegs;
-			dy = (g2.lon - g1.lon) / nsegs;
+			double dzz = 0, dmm = 0;
+			double delta = d / nsegs;
 
 			/* The independent Z/M values on the ptarray */
 			if ( hasz ) dzz = (p2.z - p1.z) / nsegs;
 			if ( hasm ) dmm = (p2.m - p1.m) / nsegs;
 			
+			g = g1;
 			p = p1;
 			for ( i = 0; i < nsegs - 1; i++ )
 			{
+				GEOGRAPHIC_POINT gn;
+				double heading;
+
+				/* Compute the current heading to the destination */
+				heading = sphere_direction(&g, &g2, (nsegs-i) * delta);
 				/* Move one increment forwards */
-				g.lat += dx;
-				g.lon += dy;
+				sphere_project(&g, delta, heading, &gn);
+				g = gn;
+
 				p.x = rad2deg(g.lon);
 				p.y = rad2deg(g.lat);
 				if ( hasz )
