@@ -55,13 +55,13 @@ dnl
 dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
 dnl
 WARNFLAGS=""
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], []) 
-AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [_cv_misprot], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], []) 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [_cv_wall], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], [])
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [_cv_misprot], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], [])
 AC_SUBST([WARNFLAGS])
 
 dnl
 dnl For some GCC versions and platforms, floating point issues need to be
-dnl ironed out. 
+dnl ironed out.
 NUMERICFLAGS=""
 AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -ffloat-store], [dummy_cv_ffloat_store], [-ffloat-store], [], [NUMERICFLAGS="$NUMERICFLAGS -ffloat-store"], [])
 AC_SUBST([NUMERICFLAGS])
@@ -81,7 +81,7 @@ EXESUFFIX="$ac_cv_exeext"
 AC_SUBST([EXESUFFIX])
 
 dnl
-dnl Version Information imported from Version.config 
+dnl Version Information imported from Version.config
 dnl
 POSTGIS_MAJOR_VERSION=`cat Version.config | grep ^POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 POSTGIS_MINOR_VERSION=`cat Version.config | grep ^POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
@@ -131,12 +131,12 @@ AC_CHECK_FUNC(vasprintf, AC_DEFINE([HAVE_VASPRINTF]))
 AC_CHECK_FUNC(asprintf, AC_DEFINE([HAVE_ASPRINTF]))
 AC_FUNC_FSEEKO()
 
-dnl 
+dnl
 dnl First see if we have isfinite in basic header
 dnl then check to see if it's a GNU extension
 dnl
-AC_CHECK_DECL(isfinite, 
-  [AC_DEFINE([HAVE_ISFINITE])], 
+AC_CHECK_DECL(isfinite,
+  [AC_DEFINE([HAVE_ISFINITE])],
   [],
   [#include <math.h>])
 
@@ -147,14 +147,14 @@ AC_CHECK_DECL(isfinite,
   AC_DEFINE([HAVE_GNU_ISFINITE]),
   [],
   [[
-    #define _GNU_SOURCE 
+    #define _GNU_SOURCE
     #include <math.h>
   ]])
 
-dnl 
-dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 
-dnl for in-place regression tests 
-dnl 
+dnl
+dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths
+dnl for in-place regression tests
+dnl
 case $host_os in
          *mingw*)
                  MINGWBUILD=1
@@ -213,17 +213,17 @@ dnl
 dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
 dnl
 
-AC_ARG_WITH([xsldir], 
-	[AS_HELP_STRING([--with-xsldir=PATH], [specify the directory containing the docbook.xsl stylesheet])], 
+AC_ARG_WITH([xsldir],
+	[AS_HELP_STRING([--with-xsldir=PATH], [specify the directory containing the docbook.xsl stylesheet])],
 	[XSLBASE="$withval"], [XSLBASE=""])
 
 XSLBASE_AUTO=""
 if test "x$XSLBASE" = "x"; then
-	dnl If the user did not specify a directory for the docbook 
+	dnl If the user did not specify a directory for the docbook
 	dnl stylesheet, choose the first directory
 	dnl that matches from the following list
 	SEARCHPATH="
-		/usr/share/sgml/docbook/xsl-stylesheets 
+		/usr/share/sgml/docbook/xsl-stylesheets
 		/usr/share/xml/docbook/stylesheet/nwalsh
 		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
 		/opt/local/share/xsl/docbook-xsl
@@ -237,17 +237,17 @@ if test "x$XSLBASE" = "x"; then
 		fi
 	done
 
-	dnl Check to see if the automatically searched paths above located a 
+	dnl Check to see if the automatically searched paths above located a
 	dnl valid Docbook stylesheet
 	if test "x$XSLBASE_AUTO" = "x"; then
 		AC_MSG_WARN([could not locate Docbook stylesheets required to build the documentation])
 	fi
 else
-	dnl The user specified an alternate directory so make sure everything 
+	dnl The user specified an alternate directory so make sure everything
 	dnl looks sensible
 	if test ! -d "$XSLBASE"; then
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
-	fi 
+	fi
 
 	if test ! -f "$XSLBASE/html/docbook.xsl"; then
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
@@ -255,9 +255,9 @@ else
 fi
 
 dnl
-dnl If XSLBASE has been set then at this point we know it must be 
+dnl If XSLBASE has been set then at this point we know it must be
 dnl valid and so we can just use it. If XSLBASE_AUTO has been set, and XSLBASE
-dnl is empty then a valid stylesheet was found in XSLBASE_AUTO so we 
+dnl is empty then a valid stylesheet was found in XSLBASE_AUTO so we
 dnl should use that. Otherwise just continue silently with a blank XSLBASE
 dnl variable which will trigger the error message in the documentation Makefile
 dnl
@@ -273,8 +273,8 @@ AC_SUBST([XSLBASE])
 dnl
 dnl Let's see if we can find mathml2.dtd
 dnl
-AC_ARG_WITH([mathmldtd], 
-	[AS_HELP_STRING([--with-mathmldtd=PATH], [specify the dtd path for mathml2.dtd])], 
+AC_ARG_WITH([mathmldtd],
+	[AS_HELP_STRING([--with-mathmldtd=PATH], [specify the dtd path for mathml2.dtd])],
 	[MATHML2_DTD="$withval"], [MATHML2_DTD=""])
 dnl TODO: get more paths to add here...
 if test "x$MATHML2_DTD" = "x"; then
@@ -294,9 +294,9 @@ AC_SUBST([MATHML2_DTD])
 dnl ===========================================================================
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
-dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile 
-dnl as CUnit is the only compile-time dependency that cannot obtain any 
-dnl specialised flags using a --with-X parameter, and so we allow this 
+dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile
+dnl as CUnit is the only compile-time dependency that cannot obtain any
+dnl specialised flags using a --with-X parameter, and so we allow this
 dnl information to be passed in if required.
 dnl ===========================================================================
 
@@ -308,21 +308,21 @@ AC_CHECK_HEADER([CUnit/CUnit.h], [
 	[
 	AC_MSG_WARN([could not locate CUnit required for unit tests])
 	])
-	
+
 AC_SUBST([CUNIT_CPPFLAGS])
 AC_SUBST([CUNIT_LDFLAGS])
 
 
 dnl ===========================================================================
-dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion 
+dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion
 dnl if available)
 dnl ===========================================================================
 
 ICONV_CFLAGS=""
 ICONV_LDFLAGS=""
 
-AC_ARG_WITH([libiconv], 
-	[AS_HELP_STRING([--with-libiconv=PATH], [specify a path to non-default libiconv installation])], 
+AC_ARG_WITH([libiconv],
+	[AS_HELP_STRING([--with-libiconv=PATH], [specify a path to non-default libiconv installation])],
 	[LIBICONV_PATH="$withval"], [LIBICONV_PATH=""])
 
 LDFLAGS_SAVE="$LDFLAGS"
@@ -353,7 +353,7 @@ if test "x$HAVE_ICONV_H" = "x1"; then
 				dnl No iconv library was found; issue a warning to the console
 				AC_MSG_ERROR([Could not find libiconv. Please install libiconv and libiconv-devel.])
 			fi
-		fi	
+		fi
 	fi
 else
 	dnl No iconv header was found; issue a warning to the console
@@ -413,8 +413,8 @@ fi
 if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   dnl ===========================================================================
-  dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some 
-  dnl distributions such as Debian also include pg_config as part of libpq-dev 
+  dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some
+  dnl distributions such as Debian also include pg_config as part of libpq-dev
   dnl packages, but don't install the Makefile it points to unless
   dnl the postgresql-server-dev packages are installed :)
   dnl ===========================================================================
@@ -428,7 +428,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   dnl Extract the version information from pg_config
   dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
-  dnl the final version. This is to guard against user error... 
+  dnl the final version. This is to guard against user error...
   PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
   PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
   PGSQL_FULL_VERSION=`$PG_CONFIG --version`
@@ -449,7 +449,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     HAVE_BRIN=yes
   fi
 
-  dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
+  dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS
 
   dnl Extract the linker and include flags for the frontend (for programs that use libpq)
   PGSQL_FE_LDFLAGS=-L`$PG_CONFIG --libdir`" -lpq"
@@ -506,7 +506,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
     [])
   LIBS="$LIBS_SAVE"
 
-  AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])	
+  AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])
   AC_SUBST([POSTGIS_PGSQL_VERSION])
   AC_SUBST([HAVE_BRIN])
 
@@ -533,8 +533,8 @@ dnl Detect libxml2 if it is installed
 dnl (needed to GeomFromGML and GeomFromKML functions)
 dnl ===========================================================================
 
-AC_ARG_WITH([xml2config], 
-	[AS_HELP_STRING([--with-xml2config=FILE], [specify an alternative xml2-config file])], 
+AC_ARG_WITH([xml2config],
+	[AS_HELP_STRING([--with-xml2config=FILE], [specify an alternative xml2-config file])],
 	[XML2CONFIG="$withval"], [XML2CONFIG=""])
 
 if test "x$XML2CONFIG" = "x"; then
@@ -554,12 +554,12 @@ else
 			AC_MSG_RESULT([Using user-specified xml2-config file: $XML2CONFIG])
 		else
 			AC_MSG_ERROR([the user-specified xml2-config file $XML2CONFIG does not exist])
-		fi	
+		fi
 	fi
 fi
 
 
-dnl Extract the linker and include flags 
+dnl Extract the linker and include flags
 XML2_LDFLAGS=`$XML2CONFIG --libs`
 XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
@@ -588,8 +588,8 @@ dnl ===========================================================================
 dnl Detect the version of GEOS installed on the system
 dnl ===========================================================================
 
-AC_ARG_WITH([geosconfig], 
-	[AS_HELP_STRING([--with-geosconfig=FILE], [specify an alternative geos-config file])], 
+AC_ARG_WITH([geosconfig],
+	[AS_HELP_STRING([--with-geosconfig=FILE], [specify an alternative geos-config file])],
 	[GEOSCONFIG="$withval"], [GEOSCONFIG=""])
 
 if test "x$GEOSCONFIG" = "x"; then
@@ -609,19 +609,19 @@ else
 			AC_MSG_RESULT([Using user-specified geos-config file: $GEOSCONFIG])
 		else
 			AC_MSG_ERROR([the user-specified geos-config file $GEOSCONFIG does not exist])
-		fi	
+		fi
 	fi
 fi
 
 dnl Extract the version information from geos_config
-dnl Note: we extract the major & minor separately, ensure they are numeric, 
-dnl and then combine to give the final version. 
-dnl This is to guard against user error... 
+dnl Note: we extract the major & minor separately, ensure they are numeric,
+dnl and then combine to give the final version.
+dnl This is to guard against user error...
 GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
 GEOS_PATCH_VERSION=`$GEOSCONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
-if test "x$GEOS_PATCH_VERSION" = "x"; then 
-	GEOS_PATCH_VERSION="0"; 
+if test "x$GEOS_PATCH_VERSION" = "x"; then
+	GEOS_PATCH_VERSION="0";
 fi
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
@@ -635,7 +635,7 @@ if test ! "$GEOS_NUMERIC_VERSION" -ge 30300; then
 	AC_MSG_ERROR([PostGIS requires GEOS >= 3.3.0])
 fi
 
-dnl Extract the linker and include flags 
+dnl Extract the linker and include flags
 GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
 GEOS_CPPFLAGS=-I`$GEOSCONFIG --includes`
 AC_SUBST([GEOS_LDFLAGS])
@@ -656,7 +656,7 @@ AC_CHECK_LIB([geos_c], [initGEOS],
 	[])
 LIBS="$LIBS_SAVE"
 
-AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])	
+AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS library version])
 AC_SUBST([POSTGIS_GEOS_VERSION])
 AC_SUBST([GEOS_NUMERIC_VERSION])
 
@@ -665,9 +665,9 @@ dnl ===========================================================================
 dnl SFCGAL library support
 dnl ===========================================================================
 
-AC_ARG_WITH([sfcgal], 
-	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])], 
-	[SFCGAL_CONFIG="$withval"], 
+AC_ARG_WITH([sfcgal],
+	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])],
+	[SFCGAL_CONFIG="$withval"],
 	[with_sfcgal=auto])
 
 HAVE_SFCGAL="no"
@@ -703,7 +703,7 @@ if test "x$with_sfcgal" != "xno"; then
 			AC_MSG_ERROR([sfcgal-config cannot be found. Please install sfcgal])
 		fi
 	fi
-fi 
+fi
 
 AC_SUBST([SFCGAL_VERSION])
 AC_SUBST([SFCGAL_CPPFLAGS])
@@ -721,8 +721,8 @@ dnl ===========================================================================
 GETTEXT_CFLAGS=""
 GETTEXT_LDFLAGS=""
 
-AC_ARG_WITH([gettext], 
-	[AS_HELP_STRING([--with-gettext=PATH], [specify a path to non-default gettext installation])], 
+AC_ARG_WITH([gettext],
+	[AS_HELP_STRING([--with-gettext=PATH], [specify a path to non-default gettext installation])],
 	[GETTEXT_PATH="$withval"], [GETTEXT_PATH="yes"])
 
 LDFLAGS_SAVE="$LDFLAGS"
@@ -755,23 +755,23 @@ dnl ===========================================================================
 dnl Detect the version of PROJ.4 installed
 dnl ===========================================================================
 
-AC_ARG_WITH([projdir], 
-	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ.4 installation directory])], 
+AC_ARG_WITH([projdir],
+	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ.4 installation directory])],
 	[PROJDIR="$withval"], [PROJDIR=""])
 
 if test ! "x$PROJDIR" = "x"; then
-	dnl Make sure that the directory exists 
+	dnl Make sure that the directory exists
 	if test "x$PROJDIR" = "xyes"; then
 		AC_MSG_ERROR([you must specify a parameter to --with-projdir, e.g. --with-projdir=/path/to])
 	else
 		if test -d "$PROJDIR"; then
 			AC_MSG_RESULT([Using user-specified proj directory: $PROJDIR])
 
-			dnl Add the include directory to PROJ_CPPFLAGS	
-			PROJ_CPPFLAGS="-I$PROJDIR/include"	
+			dnl Add the include directory to PROJ_CPPFLAGS
+			PROJ_CPPFLAGS="-I$PROJDIR/include"
 			PROJ_LDFLAGS="-L$PROJDIR/lib"
 		else
-			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found]) 
+			AC_MSG_ERROR([the --with-projdir directory "$PROJDIR" cannot be found])
 		fi
 	fi
 fi
@@ -780,7 +780,7 @@ fi
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$PROJ_CPPFLAGS"
-AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])])	
+AC_CHECK_HEADER([proj_api.h], [], [AC_MSG_ERROR([could not find proj_api.h - you may need to specify the directory of a PROJ.4 installation using --with-projdir])])
 
 dnl Return the PROJ.4 version number
 AC_PROJ_VERSION([POSTGIS_PROJ_VERSION])
@@ -791,7 +791,7 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 AC_SUBST([PROJ_CPPFLAGS])
 AC_SUBST([PROJ_LDFLAGS])
 
-dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath) 
+dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath)
 if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
 	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
 fi
@@ -841,7 +841,7 @@ CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$JSON_CPPFLAGS"
 AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [
   AC_CHECK_HEADER([json-c/json.h], [HAVE_JSON=yes; HAVE_JSON_C=yes], [])
-])	
+])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libjson
@@ -871,13 +871,13 @@ dnl ===========================================================================
 dnl Detect GTK+2.0 for GUI
 dnl ===========================================================================
 
-AC_ARG_WITH([gui], 
-	[AS_HELP_STRING([--with-gui], [compile the data import GUI (requires GTK+2.0)])], 
+AC_ARG_WITH([gui],
+	[AS_HELP_STRING([--with-gui], [compile the data import GUI (requires GTK+2.0)])],
 	[GUI="yes"], [GUI="no"])
 
 if test "x$GUI" = "xyes"; then
 	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GKT+2.0)])
-	dnl Try to find the GTK libs with pkgconfig 
+	dnl Try to find the GTK libs with pkgconfig
 	AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
 
 	dnl Add -mwindows to MinGW GUI build
@@ -904,11 +904,11 @@ AC_SUBST([IGE_MAC_LIBS])
 dnl ===========================================================================
 dnl Allow the user to enable debugging with --enable-debug
 dnl
-dnl Currently we default to debug level 4. See DEBUG for more information. 
+dnl Currently we default to debug level 4. See DEBUG for more information.
 dnl
 
-AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debugging messages]), 
-	[POSTGIS_DEBUG_LEVEL=4], [POSTGIS_DEBUG_LEVEL=0]) 
+AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debugging messages]),
+	[POSTGIS_DEBUG_LEVEL=4], [POSTGIS_DEBUG_LEVEL=0])
 
 AC_DEFINE_UNQUOTED([POSTGIS_DEBUG_LEVEL], [$POSTGIS_DEBUG_LEVEL], [PostGIS library debug level (0=disabled)])
 
@@ -916,8 +916,8 @@ dnl ===========================================================================
 dnl Allow the user to enable GEOS profiling with --enable-profile
 dnl
 
-AC_ARG_ENABLE([profile], AC_HELP_STRING([--enable-profile], [Enable GEOS profiling messages]), 
-	[POSTGIS_PROFILE=1], [POSTGIS_PROFILE=0]) 
+AC_ARG_ENABLE([profile], AC_HELP_STRING([--enable-profile], [Enable GEOS profiling messages]),
+	[POSTGIS_PROFILE=1], [POSTGIS_PROFILE=0])
 
 AC_DEFINE_UNQUOTED([POSTGIS_PROFILE], [$POSTGIS_PROFILE], [Enable GEOS profiling (0=disabled)])
 
@@ -946,7 +946,7 @@ AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
 dnl ===========================================================================
-dnl Other parameters 
+dnl Other parameters
 dnl
 
 dnl Always enable BBOX caching by default
@@ -969,50 +969,50 @@ if test "x$with_address_standardizer" != "xno"; then
     dnl ===========================================================================
     LDFLAGS="$LDFLAGS_SAVE"
     CFLAGS="$CFLAGS_SAVE"
-    
+
     CHECK_PCRE=yes
     HAVE_PCRE=no
     ADDRESS_STANDARDIZER="address_standardizer"
-    AC_ARG_WITH([pcredir], 
-        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])], 
+    AC_ARG_WITH([pcredir],
+        [AS_HELP_STRING([--with-pcredir=PATH], [specify the PCRE installation directory])],
         [PCREDIR="$withval"], [PCREDIR=""])
-    
+
     if test ! "x$PCREDIR" = "x"; then
-        dnl Make sure that the directory exists 
+        dnl Make sure that the directory exists
         if test "x$PCREDIR" = "xyes"; then
             AC_MSG_ERROR([you must specify a parameter to --with-pcredir, e.g. --with-pcredir=/path/to])
         else
             if test -d "$PCREDIR"; then
                 AC_MSG_RESULT([Using user-specified PCRE directory: $PCREDIR])
-    
-                dnl Add the include directory to PCRE_CPPFLAGS	
-                PCRE_CPPFLAGS="-I$PCREDIR/include"	
+
+                dnl Add the include directory to PCRE_CPPFLAGS
+                PCRE_CPPFLAGS="-I$PCREDIR/include"
                 PCRE_LDFLAGS="-L$PCREDIR/lib"
             else
-                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found]) 
+                AC_MSG_ERROR([the --with-pcredir directory "$PCREDIR" cannot be found])
             fi
         fi
     fi
-    
-    
+
+
     dnl Check that we can find the pcre.h header file
     CPPFLAGS_SAVE="$CPPFLAGS"
     CPPFLAGS="$PCRE_CPPFLAGS"
-    
-    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])	
+
+    AC_CHECK_HEADER([pcre.h], [HAVE_PCRE=yes], [ADDRESS_STANDARDIZER=""])
     AC_SUBST([PCRE])
     AC_SUBST([HAVE_PCRE])
     AC_SUBST([ADDRESS_STANDARDIZER])
-    
+
     dnl Return the PCRE version number
     AC_DEFINE_UNQUOTED([PCRE_VERSION], [$PCRE_VERSION], [PCRE library version])
     AC_SUBST([PCRE_VERSION])
     CPPFLAGS="$CPPFLAGS_SAVE"
-    
+
     AC_SUBST([PCRE_CPPFLAGS])
     AC_SUBST([PCRE_LDFLAGS])
-    
-    
+
+
 
 else
     ADDRESS_STANDARDIZER=""
@@ -1087,7 +1087,7 @@ if test "x$with_raster" != "xno"; then
 	RASTER="raster"
 	AC_MSG_RESULT([RASTER: Raster support requested])
 
-	AC_CONFIG_HEADERS([raster/raster_config.h]) 
+	AC_CONFIG_HEADERS([raster/raster_config.h])
 
 	dnl
 	dnl Raster Version Information imported from raster/Version.config
@@ -1185,7 +1185,7 @@ if test "x$with_raster" != "xno"; then
 			AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
 		fi
 
-		AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])	
+		AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])
 		AC_SUBST([POSTGIS_GDAL_VERSION])
 
 		dnl Check that OGR is enabled
@@ -1197,7 +1197,7 @@ if test "x$with_raster" != "xno"; then
 		fi
 		AC_MSG_RESULT([$OGR_ENABLED])
 
-		dnl Extract the linker and include flags 
+		dnl Extract the linker and include flags
 		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
 		dnl LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
 		LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
@@ -1302,37 +1302,37 @@ dnl ===========================================================================
 dnl Output the relevant files
 dnl ===========================================================================
 
-AC_OUTPUT([GNUmakefile 
+AC_OUTPUT([GNUmakefile
    extensions/Makefile
-   extensions/postgis/Makefile 
-   extensions/postgis/postgis.control 
-   extensions/postgis_sfcgal/Makefile 
-   extensions/postgis_sfcgal/postgis_sfcgal.control 
-   extensions/postgis_topology/Makefile 
-   extensions/postgis_topology/postgis_topology.control 
-   extensions/postgis_tiger_geocoder/Makefile 
-   extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control 
-   extensions/address_standardizer/Makefile 
+   extensions/postgis/Makefile
+   extensions/postgis/postgis.control
+   extensions/postgis_sfcgal/Makefile
+   extensions/postgis_sfcgal/postgis_sfcgal.control
+   extensions/postgis_topology/Makefile
+   extensions/postgis_topology/postgis_topology.control
+   extensions/postgis_tiger_geocoder/Makefile
+   extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
+   extensions/address_standardizer/Makefile
    extensions/address_standardizer/address_standardizer.control
-   extensions/address_standardizer/address_standardizer_data_us.control    
-   liblwgeom/Makefile 
-   liblwgeom/cunit/Makefile 
-   liblwgeom/liblwgeom.h 
-   libpgcommon/Makefile 
-   libpgcommon/cunit/Makefile 
-   postgis/Makefile 
-   postgis/sqldefines.h 
-   loader/Makefile 
-   loader/cunit/Makefile 
-   topology/Makefile 
-   topology/test/Makefile 
-   regress/Makefile 
-   doc/Makefile 
-   doc/Makefile.comments 
-   doc/html/image_src/Makefile 
-   utils/Makefile 
+   extensions/address_standardizer/address_standardizer_data_us.control
+   liblwgeom/Makefile
+   liblwgeom/cunit/Makefile
+   liblwgeom/liblwgeom.h
+   libpgcommon/Makefile
+   libpgcommon/cunit/Makefile
+   postgis/Makefile
+   postgis/sqldefines.h
+   loader/Makefile
+   loader/cunit/Makefile
+   topology/Makefile
+   topology/test/Makefile
+   regress/Makefile
+   doc/Makefile
+   doc/Makefile.comments
+   doc/html/image_src/Makefile
+   utils/Makefile
    $RT_MAKEFILE_LIST])
-    
+
 dnl ===========================================================================
 dnl Display the configuration status information
 dnl ===========================================================================
