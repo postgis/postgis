@@ -429,9 +429,10 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Extract the version information from pg_config
   dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
   dnl the final version. This is to guard against user error...
-  PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\1/'`
-  PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
   PGSQL_FULL_VERSION=`$PG_CONFIG --version`
+  PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
+  PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
+  PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*develop.*/0/'`
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
   PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
