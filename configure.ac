@@ -432,7 +432,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_FULL_VERSION=`$PG_CONFIG --version`
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
-  PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*develop.*/0/'`
+  PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*devel.*/0/'`
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
   PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
