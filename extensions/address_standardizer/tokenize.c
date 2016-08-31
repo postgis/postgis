@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <stddef.h>
 #include "pagc_api.h"
 
-static SYMB precedes_identifier_list[] = { BOXT , ROAD , UNITH , PRETYP , BUILDH , RR , FAIL } ;
+static SYMB precedes_identifier_list[] = { BOXT , ROAD , AMPERS, UNITH , PRETYP , BUILDH , RR , FAIL } ;
 static SYMB precedes_route_list[] = { TYPE , QUALIF , PROV , FAIL } ;
 #ifdef COMBINE_FRACTS_WITH_NUMBS
 static SYMB FractL[] = { FRACT , FAIL } ;
