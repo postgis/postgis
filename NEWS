@@ -6,6 +6,10 @@ PostGIS 2.3.0
   - #3466, Casting from box3d to geometry now returns a 3D
            geometry (Julien Rouhaud of Dalibo)
 
+  - #3604, pgcommon/Makefile.in orders 
+	       CFLAGS incorrectly leading to wrong liblwgeom.h
+		   (Greg Troxel)
+
  * Deprecated signatures *
 
  * New Features *
