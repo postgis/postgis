@@ -1108,9 +1108,9 @@ SELECT ST_AsText(
 		  clause is included in the window definition, but cluster assignments may differ from other implementations of the same algorithm.
 	  </para>
 
-	  <para>
+	  <note><para>
 		  Input geometries that do not meet the criteria to join any other cluster will be assigned a cluster number of NULL.
-	  </para>
+	  </para></note>
 
       <para>Availability: 2.3.0 - requires GEOS </para>
     </refsection>
