@@ -641,7 +641,7 @@ gserialized_datum_predicate_box2df_geom_2d(const BOX2DF *br1, Datum gs2, box2df_
 
 	if ( predicate(br1, br2) )
 	{
-		POSTGIS_DEBUGF(3, "got boxes %s and %s", br1 ? box2df_to_string(&b1) : "(null)", br2 ? box2df_to_string(&b2) : "(null)");
+		POSTGIS_DEBUGF(3, "got boxes %s", br2 ? box2df_to_string(&b2) : "(null)");
 		return LW_TRUE;
 	}
 	return LW_FALSE;
