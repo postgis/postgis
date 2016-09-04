@@ -126,7 +126,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -192,7 +192,7 @@ FROM ( VALUES
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -258,7 +258,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -410,7 +410,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -472,7 +472,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -534,7 +534,7 @@ FROM ( VALUES
 			<note><para>This operator is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
@@ -1205,7 +1205,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1271,7 +1271,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1337,7 +1337,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1609,7 +1609,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1675,7 +1675,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
@@ -1741,7 +1741,7 @@ FROM
 			<note><para>This operand is intended to be used internally by BRIN indexes, more
 				than by users.</para></note>
 
-			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced.</para>
+			<para>Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. Requires PostgreSQL 9.5+.</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 		  </refsection>
