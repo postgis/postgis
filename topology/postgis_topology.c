@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -14,6 +14,8 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
+#include "utils/array.h" /* for ArrayType */
+#include "catalog/pg_type.h" /* for INT4OID */
 #include "lib/stringinfo.h"
 #include "access/xact.h" /* for RegisterXactCallback */
 #include "funcapi.h" /* for FuncCallContext */
@@ -79,6 +81,7 @@ struct LWT_BE_TOPOLOGY_T {
   int srid;
   double precision;
   int hasZ;
+  Oid geometryOID;
 };
 
 /* utility funx */
@@ -113,15 +116,13 @@ _lwtype_upper_name(int type, char *buf, size_t buflen)
   }
 }
 
-/* Return lwalloc'ed hexwkb representation for a GBOX */
-static char *
-_box2d_to_hexwkb(const GBOX *bbox, int srid)
+/* Return an lwalloc'ed geometrical representation of the box */
+static LWGEOM *
+_box2d_to_lwgeom(const GBOX *bbox, int srid)
 {
   POINTARRAY *pa = ptarray_construct(0, 0, 2);
   POINT4D p;
   LWLINE *line;
-  char *hex;
-  size_t sz;
 
   p.x = bbox->xmin;
   p.y = bbox->ymin;
@@ -130,8 +131,18 @@ _box2d_to_hexwkb(const GBOX *bbox, int srid)
   p.y = bbox->ymax;
   ptarray_set_point4d(pa, 1, &p);
   line = lwline_construct(srid, NULL, pa);
-  hex = lwgeom_to_hexwkb( lwline_as_lwgeom(line), WKT_EXTENDED, &sz);
-  lwline_free(line);
+  return lwline_as_lwgeom(line);
+}
+
+/* Return lwalloc'ed hexwkb representation for a GBOX */
+static char *
+_box2d_to_hexwkb(const GBOX *bbox, int srid)
+{
+  char *hex;
+  size_t sz;
+  LWGEOM *geom = _box2d_to_lwgeom(bbox, srid);
+  hex = lwgeom_to_hexwkb(geom, WKT_EXTENDED, &sz);
+  lwgeom_free(geom);
   assert(hex[sz-1] == '\0');
   return hex;
 }
@@ -156,7 +167,8 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   MemoryContext oldcontext = CurrentMemoryContext;
 
   initStringInfo(sql);
-  appendStringInfo(sql, "SELECT id,srid,precision FROM topology.topology "
+  appendStringInfo(sql, "SELECT id,srid,precision,null::geometry"
+                        " FROM topology.topology "
                         "WHERE name = '%s'", name);
   spi_result = SPI_execute(sql->data, !be->data_changed, 0);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -215,6 +227,9 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   } else {
     topo->precision = DatumGetFloat8(dat);
   }
+
+  /* we're dynamically querying geometry type here */
+  topo->geometryOID = SPI_tuptable->tupdesc->attrs[3]->atttypid;
 
   POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
                     "id %d, srid %d, precision %g",
@@ -867,34 +882,47 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
   StringInfoData sqldata;
   StringInfo sql = &sqldata;
   int i;
-  char *hexbox;
+  ArrayType *array_ids;
+  Datum *datum_ids;
+  Datum values[2];
+  Oid argtypes[2];
+  int nargs = 1;
+  GSERIALIZED *gser = NULL;
+
+  datum_ids = palloc(sizeof(Datum)*(*numelems));
+  for (i=0; i<*numelems; ++i) datum_ids[i] = Int32GetDatum(ids[i]);
+  array_ids = construct_array(datum_ids, *numelems, INT4OID, 4, true, 's');
 
   initStringInfo(sql);
   appendStringInfoString(sql, "SELECT ");
   addEdgeFields(sql, fields, 0);
-  appendStringInfo(sql, " FROM \"%s\".edge_data", topo->name);
-  appendStringInfoString(sql, " WHERE ( left_face IN (");
-  // add all identifiers here
-  for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
-  }
-  appendStringInfoString(sql, ") OR right_face IN (");
-  // add all identifiers here
-  for (i=0; i<*numelems; ++i) {
-    appendStringInfo(sql, "%s%" LWTFMT_ELEMID, (i?",":""), ids[i]);
-  }
-  appendStringInfoString(sql, ") )");
+  appendStringInfo(sql, " FROM \"%s\".edge_data"
+                        " WHERE ( left_face = ANY($1) "
+                        " OR right_face = ANY ($1) )",
+                   topo->name);
+
+  values[0] = PointerGetDatum(array_ids);
+  argtypes[0] = INT4ARRAYOID;
+
   if ( box )
   {
-    hexbox = _box2d_to_hexwkb(box, topo->srid);
-    appendStringInfo(sql, " AND geom && '%s'::geometry", hexbox);
-    lwfree(hexbox);
+    LWGEOM *g = _box2d_to_lwgeom(box, topo->srid);
+    gser = geometry_serialize(g);
+    lwgeom_free(g);
+    appendStringInfo(sql, " AND geom && $2");
+
+    values[1] = PointerGetDatum(gser);
+    argtypes[1] = topo->geometryOID;
+    ++nargs;
   }
 
   POSTGIS_DEBUGF(1, "cb_getEdgeByFace query: %s", sql->data);
   POSTGIS_DEBUGF(1, "data_changed is %d", topo->be_data->data_changed);
 
-  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 0);
+  spi_result = SPI_execute_with_args(sql->data, nargs, argtypes, values, NULL,
+                                     !topo->be_data->data_changed, 0);
+  pfree(array_ids); /* not needed anymore */
+  if ( gser ) pfree(gser); /* not needed anymore */
   MemoryContextSwitchTo( oldcontext ); /* switch back */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s", spi_result, sql->data);
@@ -1346,7 +1374,7 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %d rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return 0;
   }
@@ -1401,7 +1429,7 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %d rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return -1;
   }
@@ -1457,7 +1485,7 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %d rows, expected %d",
+		cberror(topo->be_data, "processed %u rows, expected %d",
             SPI_processed, numelems);
 	  return -1;
   }
@@ -2123,7 +2151,7 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     return 0;
   }
 
-  
+
   if ( face_left != face_right )
   {
     POSTGIS_DEBUGF(1, "Deletion of edge %" LWTFMT_ELEMID " joins faces %"
@@ -2417,22 +2445,32 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   bool isnull;
   Datum dat;
   LWT_ELEMID face_id;
-  size_t hexewkb_size;
-  char *hexewkb;
+  GSERIALIZED *pts;
+  Datum values[1];
+  Oid argtypes[1];
 
   initStringInfo(sql);
 
-  hexewkb = lwgeom_to_hexwkb(lwpoint_as_lwgeom(pt), WKB_EXTENDED, &hexewkb_size);
+  pts = geometry_serialize(lwpoint_as_lwgeom(pt));
+  if ( ! pts ) {
+    cberror(topo->be_data, "%s:%d: could not serialize query point",
+            __FILE__, __LINE__);
+    return -2;
+  }
   /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
-  appendStringInfo(sql, "SELECT face_id FROM \"%s\".face "
-                        "WHERE mbr && '%s'::geometry AND ST_Contains("
-     "topology.ST_GetFaceGeometry('%s', face_id), "
-     "'%s'::geometry) LIMIT 1",
-      topo->name, hexewkb, topo->name, hexewkb);
-  lwfree(hexewkb);
+  appendStringInfo(sql,
+                   "SELECT face_id FROM \"%s\".face "
+                   "WHERE mbr && $1 AND _ST_Contains("
+                   "topology.ST_GetFaceGeometry('%s', face_id), $1)"
+                   " LIMIT 1",
+                   topo->name, topo->name);
 
-  spi_result = SPI_execute(sql->data, !topo->be_data->data_changed, 1);
+  values[0] = PointerGetDatum(pts);
+  argtypes[0] = topo->geometryOID;
+  spi_result = SPI_execute_with_args(sql->data, 1, argtypes, values, NULL,
+                                     !topo->be_data->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
+  pfree(pts); /* not needed anymore */
   if ( spi_result != SPI_OK_SELECT ) {
 		cberror(topo->be_data, "unexpected return (%d) from query execution: %s",
             spi_result, sql->data);
@@ -2530,7 +2568,7 @@ cb_deleteNodesById( const LWT_BE_TOPOLOGY* topo,
   return SPI_processed;
 }
 
-static LWT_ISO_NODE* 
+static LWT_ISO_NODE*
 cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {
@@ -2602,7 +2640,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   return nodes;
 }
 
-static LWT_ISO_EDGE* 
+static LWT_ISO_EDGE*
 cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {
@@ -2674,7 +2712,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
   return edges;
 }
 
-static LWT_ISO_FACE* 
+static LWT_ISO_FACE*
 cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
                      int* numelems, int fields, int limit )
 {

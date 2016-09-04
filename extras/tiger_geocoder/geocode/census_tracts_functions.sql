@@ -1,5 +1,5 @@
- /*** 
- * 
+ /***
+ *
  * Copyright (C) 2012 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given a geometry try will try to determine the tract.
@@ -23,7 +23,7 @@ BEGIN
 		IF ST_SRID(loc_geom) = 4269 THEN
 			var_loc_geom := loc_geom;
 		ELSIF ST_SRID(loc_geom) > 0 THEN
-			var_loc_geom := ST_Transform(loc_geom, 4269); 
+			var_loc_geom := ST_Transform(loc_geom, 4269);
 		ELSE --If srid is unknown, assume its 4269
 			var_loc_geom := ST_SetSRID(loc_geom, 4269);
 		END IF;
@@ -31,7 +31,7 @@ BEGIN
 			var_loc_geom := ST_Centroid(var_loc_geom);
 		END IF;
 	END IF;
-	-- Determine state tables to check 
+	-- Determine state tables to check
 	-- this is needed to take advantage of constraint exclusion
 	IF var_debug THEN
 		RAISE NOTICE 'Get matching states start: %', clock_timestamp();

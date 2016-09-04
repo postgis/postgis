@@ -2,7 +2,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  *
- * Copyright (C) 2011      Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011      Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2008      Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * Copyright (C) 2004-2007 Refractions Research Inc.
@@ -99,7 +99,7 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 */
 
 /**
-* Remove the embedded bounding box 
+* Remove the embedded bounding box
 */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
@@ -116,7 +116,7 @@ GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 
 /**
-* Pull out a gbox bounding box as fast as possible. 
+* Pull out a gbox bounding box as fast as possible.
 * Tries to read cached box from front of serialized vardata.
 * If no cached box, calculates box from scratch.
 * Fails on empty.
@@ -124,20 +124,20 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 
 /**
-* Convert cstrings (null-terminated byte array) to textp pointers 
+* Convert cstrings (null-terminated byte array) to textp pointers
 * (PgSQL varlena structure with VARSIZE header).
 */
 text* cstring2text(const char *cstring);
 
 /**
-* Convert textp (PgSQL varlena structure with VARSIZE header) to 
-* cstrings (null-terminated byte array). 
+* Convert textp (PgSQL varlena structure with VARSIZE header) to
+* cstrings (null-terminated byte array).
 */
 char* text2cstring(const text *textptr);
 
-/* 
+/*
  * For PostgreSQL >= 8.5 redefine the STATRELATT macro to its
- * new value of STATRELATTINH 
+ * new value of STATRELATTINH
  */
 #if POSTGIS_PGSQL_VERSION >= 85
 	#define STATRELATT STATRELATTINH

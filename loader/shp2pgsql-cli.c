@@ -58,13 +58,16 @@ usage()
 	          "      attribute column. (default: \"UTF-8\")\n" ));
 	printf(_( "  -N <policy> NULL geometries handling policy (insert*,skip,abort).\n" ));
 	printf(_( "  -n  Only import DBF file.\n" ));
-	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n" 
+	printf(_( "  -T <tablespace> Specify the tablespace for the new table.\n"
                   "      Note that indexes will still use the default tablespace unless the\n"
                   "      -X flag is also used.\n"));
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
                   "      This applies to the primary key, and the spatial index if\n"
                   "      the -I flag is used.\n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
+	printf( "\n" );
+	printf(_( "  An argument of `--' disables further option processing.\n" ));
+	printf(_( "  (useful for unusual file names starting with '-')\n" ));
 }
 
 
@@ -95,8 +98,12 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "-acdeg:ikm:nps:t:wDGIN:ST:W:X:")) != EOF)
 	{
+		// can not do this inside the switch case
+		if ('-' == c)
+			break;
+
 		switch (c)
 		{
 		case 'c':
@@ -147,7 +154,7 @@ main (int argc, char **argv)
 		case 'm':
 			config->column_map_filename = pgis_optarg;
 			break;
-			
+
 		case 'k':
 			config->quoteidentifiers = 1;
 			break;
@@ -169,7 +176,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'W':
-			config->encoding = pgis_optarg;
+			config->encoding = strdup(pgis_optarg);
 			break;
 
 		case 'N':
@@ -270,7 +277,7 @@ main (int argc, char **argv)
 		/* OK, this is a schema-qualified table name... */
 		if (chrptr)
 		{
-			if ( chrptr == strptr ) 
+			if ( chrptr == strptr )
 			{
 				/* ".something" ??? */
 				usage();
@@ -294,7 +301,7 @@ main (int argc, char **argv)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
-		
+
 		/* Remove the extension, if present */
 		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{

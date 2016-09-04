@@ -52,19 +52,21 @@ mkdir images
 cp html/images/* images 
 #make epub
 #make -e chunked-html 2>&1 | tee -a doc-errors.log
-make update-po
-make -C po/es/ local-html
-make -C po/fr/ local-html
-make -C po/it_IT/ local-html
-make -C po/pt_BR/ local-html
-make -C po/pl/ local-html
-make -C po/ko_KR/ local-html
-make pdf-localized
+#make update-po
+make html-localized
+# make -C po/es/ local-html
+# make -C po/fr/ local-html
+# make -C po/it_IT/ local-html
+# make -C po/pt_BR/ local-html
+# make -C po/pl/ local-html
+# make -C po/ko_KR/ local-html
 
 cp -R html/*.*  /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 cp -R html/images/* /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/images
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 
+#add back make pdf but after html copy so will work even if pdf generation fails
+make pdf-localized
 cp -R po/*/*.pdf /var/www/postgis_stuff/
 chmod -R 755 /var/www/postgis_docs/manual-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}
 chmod -R 755 /var/www/postgis_stuff/postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}*.pdf

@@ -101,11 +101,11 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test_quantile1" does not exist at character 82
+3.142
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast2" does not exist at character 50
+3.142
 COMMIT
 RELEASE
 SAVEPOINT

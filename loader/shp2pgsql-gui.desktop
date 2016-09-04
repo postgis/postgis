@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=shp2pgsql-gui
+GenericName=GUI for Shapefile to PostGIS import tool
+Comment=Import shapefiles into PostGIS databases
+Categories=Geography;Science;Geoscience;
+Exec=shp2pgsql-gui
+Icon=shp2pgsql-gui
+Terminal=false
+Keywords=spatial;postgis;postgresql;gis;

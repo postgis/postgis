@@ -9,13 +9,13 @@ CREATE TYPE geomvalxy AS (
 );
 -----------------------------------------------------------------------
 -- ST_PixelAsPoints
--- Return all the pixels of a raster as a record composed of a point geometry, a value, a x and a y raster coordinate. 
+-- Return all the pixels of a raster as a record composed of a point geometry, a value, a x and a y raster coordinate.
 -- Should be called like this:
 -- SELECT (gv).geom, (gv).val, (gv).x, (gv).y FROM (SELECT ST_PixelAsPoints(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
 DROP FUNCTION IF EXISTS ST_PixelAsPoints(rast raster, band integer);
-CREATE OR REPLACE FUNCTION ST_PixelAsPoints(rast raster, band integer) 
-    RETURNS SETOF geomvalxy AS 
+CREATE OR REPLACE FUNCTION ST_PixelAsPoints(rast raster, band integer)
+    RETURNS SETOF geomvalxy AS
     $$
     DECLARE
         rast alias for $1;
@@ -39,7 +39,7 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPoints(rast raster, band integer)
     LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS ST_PixelAsPoints(rast raster);
-CREATE FUNCTION ST_PixelAsPoints(raster) RETURNS SETOF geomvalxy AS 
+CREATE FUNCTION ST_PixelAsPoints(raster) RETURNS SETOF geomvalxy AS
 $$
     SELECT ST_PixelAsPoints($1, 1);
 $$

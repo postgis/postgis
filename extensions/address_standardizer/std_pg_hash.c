@@ -210,7 +210,7 @@ static void
 CreateStdHash(void)
 {
     HASHCTL ctl;
-    
+
     ctl.keysize = sizeof(MemoryContext);
     ctl.entrysize = sizeof(StdHashEntry);
     ctl.hash = mcxt_ptr_hash_std;

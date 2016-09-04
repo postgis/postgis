@@ -14,8 +14,8 @@ CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADI
 --
 --Test rasters
 --
-CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -43,7 +43,7 @@ SELECT
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
 -- Test negative width neighborhood. Original raster returned.
-SELECT 
+SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(
@@ -52,7 +52,7 @@ SELECT
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
 -- Test negative height neighborhood. Original raster returned.
-SELECT 
+SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(
@@ -61,8 +61,8 @@ SELECT
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
 -- Test has no nodata value. Should return null and 7.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(
       ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
@@ -70,80 +70,80 @@ SELECT
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 ---- Test NULL nodatamode. Should return null and null.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) IS NULL
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 ---- Test default nodatamode (ignore). Should return null and 8.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, NULL, NULL), 2, 2
   ) = 8
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 ---- Test ignore nodatamode. Should return null and 8.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'ignore', NULL), 2, 2
   ) = 8
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 ---- Test value nodatamode. Should return null and null.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
-  ) IS NULL 
+  ) IS NULL
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 -- Test value nodatamode. Should return null and 9.
-SELECT 
-  ST_Value(rast, 1, 1) IS NULL, 
+SELECT
+  ST_Value(rast, 1, 1) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
   ) = 9
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 1, 1, NULL) AS rast;
 
 -- Test value nodatamode. Should return null and 0.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '-8', NULL), 2, 2
   ) = 0
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 -- Test value nodatamode. Should return null and 128.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
   ) = 128
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 -- Test value nodatamode. Should return null and null.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'abcd', NULL), 2, 2
   ) IS NULL
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 -- Test ST_Sum user function. Should be 1 and 9.
-SELECT 
-  ST_Value(rast, 2, 2) = 1, 
+SELECT
+  ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 9
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
 -- Test ST_Sum user function on a no nodata value raster. Should be null and -1.
-SELECT 
-  ST_Value(rast, 2, 2) IS NULL, 
+SELECT
+  ST_Value(rast, 2, 2) IS NULL,
   ST_Value(
     ST_MapAlgebraFctNgb(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = -1
@@ -158,16 +158,16 @@ SELECT
  FROM ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 2), 1, NULL) AS rast;
 
 -- Test pixeltype 1. No error, changed to 32BF
-SELECT 
-  ST_Value(rast, 2, 2) = 2, 
+SELECT
+  ST_Value(rast, 2, 2) = 2,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, '4BUId', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 18
  FROM ST_TestRasterNgb(3, 3, 2) AS rast;
 
 -- Test pixeltype 1. Should return 1 and 3.
-SELECT 
-  ST_Value(rast, 2, 2) = 1, 
+SELECT
+  ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, '2BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 3
@@ -208,8 +208,8 @@ SELECT
 SELECT
   ST_NRings(geom) = 2,
   ST_NumInteriorRings(geom) = 1,
-  ST_Area(geom) = 16, 
-  val = 9, 
+  ST_Area(geom) = 16,
+  val = 9,
   ST_Area(ST_BuildArea(ST_InteriorRingN(geom, 1))) = 9
  FROM (SELECT
     (ST_DumpAsPolygons(
@@ -220,7 +220,7 @@ SELECT
 -- Test that the neighborhood function leaves a border of NODATA,
 -- and the center pyramids when summed twice, ignoring NODATA values
 SELECT
-  COUNT(*) = 9, SUM(ST_Area(geom)) = 9, SUM(val) = ((36+54+36) + (54+81+54) + (36+54+36)) 
+  COUNT(*) = 9, SUM(ST_Area(geom)) = 9, SUM(val) = ((36+54+36) + (54+81+54) + (36+54+36))
  FROM (SELECT
     (ST_DumpAsPolygons(
       ST_MapAlgebraFctNgb(
@@ -242,7 +242,7 @@ SELECT
    FROM ST_TestRasterNgb(5, 5, 1) AS rast) AS foo;
 
 -- test a user function that nullifies everything
-SELECT 
+SELECT
   ST_Value(rast, 2, 2) = 2,
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Nullage(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
@@ -252,7 +252,7 @@ SELECT
 -- 'dog ate my homework' test
 -- raster initialized to one NODATA value, then a literal value passed in as the 'nodatamode' parameter.
 -- expect that the cells processed by the neighborhoods would be replaced by the 'nodatamode' parameter value, and not NODATA.
-SELECT 
+SELECT
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, '8BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
   ) = 200

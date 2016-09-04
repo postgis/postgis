@@ -37,7 +37,7 @@ SELECT topology.ST_AddIsoEdge('tt', 10000, 2, 'LINESTRING(0 0, 1 1)');
 SELECT topology.ST_AddIsoEdge('tt', 1, 2, 'LINESTRING(0 0, 1 1)');
 SELECT topology.ST_AddIsoEdge('tt', 1, 2, 'LINESTRING(0 1, 10 0)');
 
--- Node crossing 
+-- Node crossing
 SELECT topology.ST_AddIsoEdge('tt', 1, 2, 'LINESTRING(0 0, 10 0)');
 
 -- Good one

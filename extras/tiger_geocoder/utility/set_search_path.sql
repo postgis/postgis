@@ -1,5 +1,5 @@
- /*** 
- * 
+ /***
+ *
  * Copyright (C) 2012 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- Adds a schema to  the front of search path so that functions, tables etc get installed by default in set schema
@@ -15,7 +15,7 @@ DECLARE
 BEGIN
 	SELECT reset_val INTO var_cur_search_path FROM pg_settings WHERE name = 'search_path';
 
-	EXECUTE 'SET search_path = ' || quote_ident(a_schema_name) || ', ' || var_cur_search_path; 
+	EXECUTE 'SET search_path = ' || quote_ident(a_schema_name) || ', ' || var_cur_search_path;
 	var_result := a_schema_name || ' has been made primary for install ';
   RETURN var_result;
 END

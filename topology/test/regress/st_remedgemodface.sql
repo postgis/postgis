@@ -30,18 +30,18 @@ DECLARE
   q text;
 BEGIN
   sql1 := 'node_id,
-      containing_face 
+      containing_face
   		FROM city_data.node';
   sql2 := 'node_id, containing_face
   		FROM orig_node_summary';
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
           ') UNION ( ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
        ') ORDER BY node_id, op';
 
@@ -57,7 +57,7 @@ CREATE OR REPLACE FUNCTION save_edges()
 RETURNS VOID
 AS $$
   TRUNCATE orig_edge_summary;
-  INSERT INTO orig_edge_summary 
+  INSERT INTO orig_edge_summary
   SELECT edge_id,
     next_left_edge, next_right_edge, left_face, right_face
     FROM city_data.edge_data;
@@ -83,11 +83,11 @@ BEGIN
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
           ') UNION ( ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
        ') order by edge_id, op';
 
@@ -103,7 +103,7 @@ CREATE OR REPLACE FUNCTION save_faces()
 RETURNS VOID
 AS $$
   TRUNCATE orig_face_summary;
-  INSERT INTO orig_face_summary 
+  INSERT INTO orig_face_summary
   SELECT face_id, mbr
     FROM city_data.face;
 $$ LANGUAGE 'sql';
@@ -121,11 +121,11 @@ BEGIN
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''+'',' || sql2 ||
           ') UNION ( ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql2 ||
-          ' EXCEPT ' || 
+          ' EXCEPT ' ||
           'SELECT ' || quote_literal(lbl) || ',''-'',' || sql1 ||
        ') ORDER BY face_id, op';
 
@@ -207,7 +207,7 @@ SELECT * FROM check_edges('RM(20)/edges');
 SELECT * FROM check_faces('RM(20)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing face 
+-- Universe flooding existing face
 SELECT 'RM(15)', topology.ST_RemEdgeModFace('city_data', 15);
 SELECT * FROM check_nodes('RM(15)/nodes');
 SELECT * FROM check_edges('RM(15)/edges');
@@ -215,7 +215,7 @@ SELECT * FROM check_faces('RM(15)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge starting from the closing node and
 -- going inside.
 -- Closed edge is in CW order.
@@ -225,7 +225,7 @@ SELECT * FROM check_edges('RM(2)/edges');
 SELECT * FROM check_faces('RM(2)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge coming from inside and ending to the closing node
 -- Closed edge is in CW order.
 -- Requires reconstructing the outer ring
@@ -241,7 +241,7 @@ SELECT * FROM check_edges('RM(27)/edges');
 SELECT * FROM check_faces('RM(27)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge coming from inside and ending to the closing node
 -- Closed edge is in CCW order.
 -- Requires reconstructing the outer ring
@@ -257,7 +257,7 @@ SELECT * FROM check_edges('RM(28)/edges');
 SELECT * FROM check_faces('RM(28)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge starting from closing node and going inside.
 -- Closed edge is in CCW order.
 -- Requires reconstructing the outer ring
@@ -291,7 +291,7 @@ SELECT * FROM check_faces('RM(31)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
 -- Universe flooding existing single-edge (closed) face
--- with dangling edges both inside 
+-- with dangling edges both inside
 -- Closed edge in CW order.
 -- Requires reconstructing the outer ring
 SELECT 'NE(32)', topology.ST_AddEdgeNewFaces('city_data', 3, 3, 'SRID=4326;LINESTRING(25 35, 18 35, 18 40, 28 40, 28 27, 18 27, 25 35)');
@@ -307,7 +307,7 @@ SELECT * FROM check_faces('RM(32)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
 -- Universe flooding existing single-edge (closed) face
--- with dangling edges both inside 
+-- with dangling edges both inside
 -- Closed edge in CCW order.
 -- Requires reconstructing the outer ring
 SELECT 'NE(33)', topology.ST_AddEdgeNewFaces('city_data', 3, 3,
@@ -323,7 +323,7 @@ SELECT * FROM check_edges('RM(33)/edges');
 SELECT * FROM check_faces('RM(33)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge starting from closing node and going outside.
 -- Closed edge is in CW order.
 -- Requires reconstructing the outer ring
@@ -340,7 +340,7 @@ SELECT * FROM check_edges('RM(34)/edges');
 SELECT * FROM check_faces('RM(34)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
--- Universe flooding existing single-edge (closed) face 
+-- Universe flooding existing single-edge (closed) face
 -- with dangling edge starting from closing node and going outside.
 -- Closed edge is in CCW order.
 -- Requires reconstructing the outer ring
@@ -362,7 +362,7 @@ SELECT topology.DropTopology('city_data');
 
 
 -------------------------------------------------------------------------
--- Now test in presence of features 
+-- Now test in presence of features
 -------------------------------------------------------------------------
 -- {
 
@@ -394,7 +394,7 @@ SELECT '*RM(8)', topology.ST_RemEdgeModFace('city_data', 8); -- face_right=8
 SELECT '*RM(15)', topology.ST_RemEdgeModFace('city_data', 15); -- face_left=8
 
 -- Check that no land_parcel objects had topology changed
-SELECT 'RM(11)', feature_name, 
+SELECT 'RM(11)', feature_name,
  ST_Equals( ST_Multi(feature::geometry), ST_Multi(the_geom) ) as unchanged
  FROM features.land_parcels;
 

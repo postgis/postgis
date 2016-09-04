@@ -1,4 +1,4 @@
--- helper function to determine if street type 
+-- helper function to determine if street type
 -- should be put before or after the street name
 -- note in streettype lookup this is misnamed as is_hw
 -- because I originally thought only highways had that behavior

@@ -56,6 +56,7 @@ Datum BOX3D_xmax(PG_FUNCTION_ARGS);
 Datum BOX3D_ymax(PG_FUNCTION_ARGS);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS);
 Datum BOX3D_combine(PG_FUNCTION_ARGS);
+Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS);
 
 /**
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
@@ -265,7 +266,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		points[2] = (POINT4D) { box->xmin, box->ymax, box->zmax };
 		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
 
-		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				&points[0], &points[1], &points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
@@ -282,7 +283,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		points[2] = (POINT4D) { box->xmax, box->ymin, box->zmax };
 		points[3] = (POINT4D) { box->xmin, box->ymin, box->zmax };
 
-		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE, 
+		lwpoly = lwpoly_construct_rectangle(LW_TRUE, LW_FALSE,
 				&points[0], &points[1], &points[2], &points[3]);
 		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		lwpoly_free(lwpoly);
@@ -368,15 +369,37 @@ expand_box3d(BOX3D *box, double d)
 	box->zmax += d;
 }
 
+static void
+expand_box3d_xyz(BOX3D *box, double dx, double dy, double dz)
+{
+	box->xmin -= dx;
+	box->xmax += dx;
+	box->ymin -= dy;
+	box->ymax += dy;
+	box->zmin -= dz;
+	box->zmax += dz;
+}
+
 PG_FUNCTION_INFO_V1(BOX3D_expand);
 Datum BOX3D_expand(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	double d = PG_GETARG_FLOAT8(1);
 	BOX3D *result = (BOX3D *)palloc(sizeof(BOX3D));
-
 	memcpy(result, box, sizeof(BOX3D));
-	expand_box3d(result, d);
+
+	if (PG_NARGS() == 2) {
+		/* Expand the box the same amount in all directions */
+		double d = PG_GETARG_FLOAT8(1);
+		expand_box3d(result, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+		double dz = PG_GETARG_FLOAT8(3);
+
+		expand_box3d_xyz(result, dx, dy, dz);
+	}
 
 	PG_RETURN_POINTER(result);
 }
@@ -450,7 +473,7 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 }
 
 /**
-* Used in the ST_Extent and ST_Extent3D aggregates, does not read the 
+* Used in the ST_Extent and ST_Extent3D aggregates, does not read the
 * serialized cached bounding box (since that is floating point)
 * but calculates the box in full from the underlying geometry.
 */
@@ -515,6 +538,34 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	result->srid = srid;
 
 	PG_FREE_IF_COPY(geom, 1);
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_combine_BOX3D);
+Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
+{
+	BOX3D *box0 = (BOX3D*)(PG_ARGISNULL(0) ? NULL : PG_GETARG_POINTER(0));
+	BOX3D *box1 = (BOX3D*)(PG_ARGISNULL(1) ? NULL : PG_GETARG_POINTER(1));
+	BOX3D *result;
+
+	if (box0 && !box1)
+		PG_RETURN_POINTER(box0);
+
+	if (box1 && !box0)
+		PG_RETURN_POINTER(box1);
+
+	if (!box1 && !box0)
+		PG_RETURN_NULL();
+	
+	result = palloc(sizeof(BOX3D));
+	result->xmax = Max(box0->xmax, box1->xmax);
+	result->ymax = Max(box0->ymax, box1->ymax);
+	result->zmax = Max(box0->zmax, box1->zmax);
+	result->xmin = Min(box0->xmin, box1->xmin);
+	result->ymin = Min(box0->ymin, box1->ymin);
+	result->zmin = Min(box0->zmin, box1->zmin);
+	result->srid = box0->srid;
+	
 	PG_RETURN_POINTER(result);
 }
 

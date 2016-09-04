@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2014 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2014 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -42,7 +42,23 @@ static void test_lwgeom_clip_by_rect(void)
 	CU_ASSERT_STRING_EQUAL(wkt, tmp)
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
-  /* Disjoint polygon */
+	wkt = "MULTIPOINT EMPTY";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
+	tmp = lwgeom_to_ewkt(out);
+	/* printf("%s\n", tmp); */
+	CU_ASSERT_STRING_EQUAL(wkt, tmp)
+	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+
+	wkt = "MULTIPOINT(0 0, 6 6, 7 5)";
+	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	out = lwgeom_clip_by_rect(in, 5, 0, 10, 10);
+	tmp = lwgeom_to_ewkt(out);
+	/* printf("%s\n", tmp); */
+	CU_ASSERT_STRING_EQUAL("MULTIPOINT(6 6,7 5)", tmp)
+	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
+
+	/* Disjoint polygon */
 	wkt = "POLYGON((311017 4773762,311016 4773749,311006 4773744,310990 4773748,310980 4773758,310985 4773771,311003 4773776,311017 4773762))";
 	in = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	out = lwgeom_clip_by_rect(in, -80, -80, 80, 80);

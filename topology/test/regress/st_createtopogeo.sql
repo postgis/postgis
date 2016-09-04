@@ -29,7 +29,7 @@ AS $$
 DECLARE
  sql text;
 BEGIN
-  sql := 'select ' || quote_literal(lbl) || '::text, 
+  sql := 'select ' || quote_literal(lbl) || '::text,
        ( select count(node_id) || '' nodes'' from t.node ) as nodes,
        ( select count(edge_id) || '' edges'' from t.edge ) as edges,
        ( select count(face_id) || '' faces'' from t.face
@@ -42,7 +42,7 @@ $$ LANGUAGE 'plpgsql';
 -- Invalid geometries
 select null from ( select topology.CreateTopology('t', 4326) > 0 ) as ct;
 select topology.st_createtopogeo('t', null); -- Invalid geometry
-select 'invalid_srid', topology.st_createtopogeo('t', 'POINT(0 0)'); 
+select 'invalid_srid', topology.st_createtopogeo('t', 'POINT(0 0)');
 select null from ( select topology.DropTopology('t') ) as dt;
 
 -- Single point
@@ -214,7 +214,7 @@ select * from print_elements_count('T15');
 select * from print_isolated_nodes('T15');
 select null from ( select topology.DropTopology('t') ) as dt;
 
--- Three mergeable lines 
+-- Three mergeable lines
 select null from ( select topology.CreateTopology('t') > 0 ) as ct;
 select 'T16', st_asewkt(g) FROM (
 SELECT g, topology.st_createtopogeo('t', g) FROM ( SELECT

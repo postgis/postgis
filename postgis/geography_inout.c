@@ -159,7 +159,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
 		lwgeom = lwgeom_from_hexwkb(str, LW_PARSER_CHECK_NONE);
 		/* Error out if something went sideways */
-		if ( ! lwgeom ) 
+		if ( ! lwgeom )
 			ereport(ERROR,(errmsg("parse error - invalid geometry")));
 	}
 	/* WKT then. */
@@ -305,7 +305,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 
 	/* Revert lat/lon only with long SRS */
 	if (option & 1) lwopts |= LW_GML_IS_DEGREE;
-	if (option & 2) lwopts &= ~LW_GML_IS_DIMS; 
+	if (option & 2) lwopts &= ~LW_GML_IS_DIMS;
 
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
@@ -316,7 +316,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 1);
 
 	/* Return null on null */
-	if ( ! gml ) 
+	if ( ! gml )
 		PG_RETURN_NULL();
 
 	/* Turn string result into text for return */

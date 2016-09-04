@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013 Nathaneil Hunter Clay <clay.nathaniel@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -40,7 +40,7 @@
  * of non-PostGIS applications using rt_core.
  *
  * Programs using this library should set up the default memory managers and error
- * handlers by calling rt_set_handlers() function, or rt_install_default_allocators() 
+ * handlers by calling rt_set_handlers() function, or rt_install_default_allocators()
  * if you want no special handling for memory management and error reporting.
  *
  **/
@@ -108,10 +108,10 @@
 #endif
 #endif
 
-#if defined(sun) || defined(__sun) 
-#if !defined(UNIX) 
-#define UNIX 
-#endif 
+#if defined(sun) || defined(__sun)
+#if !defined(UNIX)
+#define UNIX
+#endif
 #endif
 
 /* if we are in Unix define stricmp to be strcasecmp and strnicmp to */
@@ -702,7 +702,7 @@ rt_errorstate rt_band_get_pixel_line(
 );
 
 /**
- * Get pixel value. If band's isnodata flag is TRUE, value returned 
+ * Get pixel value. If band's isnodata flag is TRUE, value returned
  * will be the band's NODATA value
  *
  * @param band : the band to get pixel value from
@@ -796,7 +796,7 @@ int rt_band_clamped_value_is_nodata(rt_band band, double val);
  * Correct value when clamped value is equal to clamped NODATA value.
  * Correction does NOT occur if unclamped value is exactly unclamped
  * NODATA value.
- * 
+ *
  * @param band : the band whose NODATA value will be used for comparison
  * @param val : the value to compare to the NODATA value and correct
  * @param *newval : pointer to corrected value
@@ -814,7 +814,7 @@ rt_band_corrected_clamped_value(
 /**
  * Compute summary statistics for a band
  *
- * @param band : the band to query for summary stats 
+ * @param band : the band to query for summary stats
  * @param exclude_nodata_value : if non-zero, ignore nodata values
  * @param sample : percentage of pixels to sample
  * @param inc_vals : flag to include values in return struct
@@ -933,7 +933,7 @@ rt_valuecount rt_band_get_value_count(
 
 /**
  * Returns new band with values reclassified
- * 
+ *
  * @param srcband : the band who's values will be reclassified
  * @param pixtype : pixel type of the new band
  * @param hasnodata : indicates if the band has a nodata value
@@ -1432,7 +1432,7 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface);
  * Returns a set of "geomval" value, one for each group of pixel
  * sharing the same value for the provided band.
  *
- * A "geomval" value is a complex type composed of a geometry 
+ * A "geomval" value is a complex type composed of a geometry
  * in LWPOLY representation (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
  *
@@ -1524,7 +1524,7 @@ rt_raster rt_raster_from_band(rt_raster raster, uint32_t *bandNums,
 
 /**
  * Replace band at provided index with new band
- * 
+ *
  * @param raster: raster of band to be replaced
  * @param band : new band to add to raster
  * @param index : index of band to replace (0-based)

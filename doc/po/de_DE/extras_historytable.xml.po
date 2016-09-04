@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2015-09-29 11:54+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/postgis/postgis/"
 "language/de_DE/)\n"
 "Language: de_DE\n"
@@ -82,11 +82,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_historytable.xml:16
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"history_id      | integer                     | not null default \n"
+"history_id      | integer                     | not null default\n"
 " date_added      | timestamp without time zone | not null default now()\n"
-" date_deleted    | timestamp without time zone | \n"
+" date_deleted    | timestamp without time zone |\n"
 " last_operation  | character varying(30)       | not null\n"
 " active_user     | character varying(90)       | not null default "
 "\"current_user\"()\n"
@@ -164,10 +164,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_historytable.xml:34
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT * FROM roads_history \n"
-"    WHERE date_added &lt; 'January 1, 2001' AND \n"
+"SELECT * FROM roads_history\n"
+"    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 msgstr ""
 "SELECT * FROM roads_history \n"
@@ -302,23 +302,23 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_historytable.xml:107
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
 "SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
-"                                \n"
+"\n"
 "SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\n"
 "register_table\n"
 "--------------\n"
 "t\n"
 "\n"
-"INSERT INTO roads(road_name, geom) \n"
+"INSERT INTO roads(road_name, geom)\n"
 "  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
 "832202,231627.5 832250.5)',26986));\n"
 "\n"
 "-- check transaction detail --\n"
-"SELECT date_added, last_operation, current_version \n"
-"FROM roads_history \n"
+"SELECT date_added, last_operation, current_version\n"
+"FROM roads_history\n"
 "WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
 "\n"
 "       date_added       | last_operation | current_version\n"

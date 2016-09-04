@@ -31,7 +31,7 @@ BEGIN
     o := rec.xx;
     RETURN NEXT;
   END LOOP;
-  
+
   -- Check effect on edges (there should be one split)
   sql := '
   WITH node_limits AS ( SELECT max FROM city_data.limits WHERE what = ''node''::text ),
@@ -82,7 +82,7 @@ SELECT check_changes();
 SELECT 'noniso_ex', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(35 6, 35 14)');
 SELECT check_changes();
 
--- Existing non-isolated edge within tolerance 
+-- Existing non-isolated edge within tolerance
 SELECT 'noniso_ex_tol', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(35 7, 35 13)', 2);
 SELECT check_changes();
 
@@ -90,7 +90,7 @@ SELECT check_changes();
 SELECT 'contained', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(35 8, 35 12)');
 SELECT check_changes();
 
--- Overlapping 
+-- Overlapping
 SELECT 'overlap', TopoGeo_addLineString('city_data', 'SRID=4326;LINESTRING(45 22, 49 22)') ORDER BY 2;
 SELECT check_changes();
 
@@ -135,9 +135,9 @@ SELECT * FROM ValidateTopology('city_data');
 -- See http://trac.osgeo.org/postgis/ticket/1631
 
 -- clean all up first
-DELETE FROM city_data.edge_data; 
-DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data;
+DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1631.1', TopoGeo_addLineString('city_data',
   'SRID=4326;LINESTRING(556267.56295432 144887.06663814,556267.566 144888)'
@@ -154,11 +154,11 @@ SELECT * FROM ValidateTopology('city_data');
 -- See http://trac.osgeo.org/postgis/ticket/1641
 
 -- clean all up first
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1641.1', TopoGeo_addLineString('city_data',
-  'SRID=4326;LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
+  'SRID=4326;LINESTRING(-0.223586 0.474301, 0.142550 0.406124)'
 ) ORDER BY 2;
 SELECT check_changes();
 -- Use a tolerance
@@ -173,11 +173,11 @@ SELECT * FROM ValidateTopology('city_data');
 
 -- Now w/out explicit tolerance (will use local min)
 -- clean all up first
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1641.3', TopoGeo_addLineString('city_data',
-  'SRID=4326;LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
+  'SRID=4326;LINESTRING(-0.223586 0.474301, 0.142550 0.406124)'
 ) ORDER BY 2;
 SELECT check_changes();
 SELECT '#1641.4', TopoGeo_addLineString('city_data',
@@ -190,8 +190,8 @@ SELECT * FROM ValidateTopology('city_data');
 
 -- See http://trac.osgeo.org/postgis/ticket/1650
 
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1650.1' UNION ALL
 SELECT '#1650.2' || TopoGeo_addLineString('city_data',
@@ -208,10 +208,10 @@ SELECT check_changes();
 SELECT * FROM ValidateTopology('city_data');
 
 -- Test snapping of line over a node
--- See http://trac.osgeo.org/postgis/ticket/1654 
+-- See http://trac.osgeo.org/postgis/ticket/1654
 
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1654.1', 'N', ST_AddIsoNode('city_data', 0, 'SRID=4326;POINT(0 0)');
 SELECT check_changes();
@@ -223,11 +223,11 @@ SELECT check_changes();
 -- Consistency check
 SELECT * FROM ValidateTopology('city_data');
 
--- Test snapping of new edge endpoints 
--- See http://trac.osgeo.org/postgis/ticket/1706 
+-- Test snapping of new edge endpoints
+-- See http://trac.osgeo.org/postgis/ticket/1706
 
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1706.1', 'E', TopoGeo_AddLineString('city_data',
  'SRID=4326;LINESTRING(20 10, 10 10, 9 12, 10 20)');
@@ -241,11 +241,11 @@ SELECT check_changes();
 -- Consistency check
 SELECT * FROM ValidateTopology('city_data');
 
--- Test noding after snap 
--- See http://trac.osgeo.org/postgis/ticket/1714 
+-- Test noding after snap
+-- See http://trac.osgeo.org/postgis/ticket/1714
 
-DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
-DELETE FROM city_data.face where face_id > 0; 
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node;
+DELETE FROM city_data.face where face_id > 0;
 
 SELECT '#1714.1', 'N', AddNode('city_data', 'SRID=4326;POINT(10 0)', false, true);
 SELECT check_changes();

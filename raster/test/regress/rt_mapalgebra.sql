@@ -217,7 +217,7 @@ ELSE
 			) AS rast
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
-			ON t1.rid = t2.rid 
+			ON t1.rid = t2.rid
 	)
 	SELECT
 		rid,
@@ -250,7 +250,7 @@ ELSE
 			) AS rast
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
-			ON t1.rid = t2.rid 
+			ON t1.rid = t2.rid
 	)
 	SELECT
 		rid,
@@ -284,7 +284,7 @@ ELSE
 			) AS rast
 		FROM raster_nmapalgebra_in t1
 		JOIN foo t2
-			ON t1.rid = t2.rid 
+			ON t1.rid = t2.rid
 	)
 	SELECT
 		rid,
@@ -697,6 +697,6 @@ SELECT
 FROM raster_nmapalgebra_in
 WHERE rid IN (2);
 
-DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]); 
-DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]); 
-DROP TABLE IF EXISTS raster_nmapalgebra_in; 
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test(double precision[], int[], text[]);
+DROP FUNCTION IF EXISTS raster_nmapalgebra_test_bad_return(double precision[], int[], text[]);
+DROP TABLE IF EXISTS raster_nmapalgebra_in;

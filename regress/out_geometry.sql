@@ -81,7 +81,7 @@ SELECT 'kml_version_03', ST_AsKML(-4, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 SELECT 'kml_prefix_01', ST_AsKML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, '');
 SELECT 'kml_prefix_02', ST_AsKML(2, GeomFromEWKT('SRID=4326;POINT(1 2)'), 0, 'kml');
 
--- Projected 
+-- Projected
 -- National Astronomical Observatory of Colombia - Bogota, Colombia (Placemark)
 SELECT 'kml_projection_01', ST_AsKML(ST_GeomFromEWKT('SRID=102189;POINT(1000000 1000000)'), 3);
 
@@ -160,11 +160,11 @@ SELECT 'geojson_options_15', ST_AsGeoJson(GeomFromEWKT('SRID=0;LINESTRING(1 1, 2
 SELECT 'geojson_options_16', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 7);
 
 -- Out and in to PostgreSQL native geometric types
-WITH p AS ( SELECT '((0,0),(0,1),(1,1),(1,0),(0,0))'::text AS p ) 
+WITH p AS ( SELECT '((0,0),(0,1),(1,1),(1,0),(0,0))'::text AS p )
   SELECT 'pgcast_01', p = p::polygon::geometry::polygon::text FROM p;
-WITH p AS ( SELECT '[(0,0),(1,1)]'::text AS p ) 
+WITH p AS ( SELECT '[(0,0),(1,1)]'::text AS p )
   SELECT 'pgcast_02', p = p::path::geometry::path::text FROM p;
-WITH p AS ( SELECT '(1,1)'::text AS p ) 
+WITH p AS ( SELECT '(1,1)'::text AS p )
   SELECT 'pgcast_03', p = p::point::geometry::point::text FROM p;
 SELECT 'pgcast_03','POLYGON EMPTY'::geometry::polygon IS NULL;
 SELECT 'pgcast_04','LINESTRING EMPTY'::geometry::path IS NULL;

@@ -15,9 +15,9 @@ SELECT 'covers104', ST_Covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(-
 SELECT 'covers105', ST_Covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(0 5)');
 -- PIP - point in line with polygon edge
 SELECT 'covers106', ST_Covers('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(0 12)');
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'covers107', ST_Covers(ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
--- PIP - repeated vertex 
+-- PIP - repeated vertex
 SELECT 'covers108', ST_Covers(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
 -- CoveredBy cases
 SELECT 'coveredby100', ST_CoveredBy('LINESTRING(1 10, 9 10, 9 8)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
@@ -32,8 +32,8 @@ SELECT 'coveredby104', ST_CoveredBy('POINT(-1 0)', 'POLYGON((0 0, 0 10, 10 10, 1
 SELECT 'coveredby105', ST_CoveredBy('POINT(0 5)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 -- PIP - point in line with polygon edge
 SELECT 'coveredby106', ST_CoveredBy('POINT(0 12)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'coveredby107', ST_CoveredBy(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
--- PIP - repeated vertex 
+-- PIP - repeated vertex
 SELECT 'coveredby108', ST_CoveredBy(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 

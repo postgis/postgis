@@ -15,10 +15,10 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE;
 
-CREATE TEMP TABLE _inputs AS 
+CREATE TEMP TABLE _inputs AS
 SELECT 1::int as id, ST_Collect(g) g FROM (
  SELECT ST_MakeLine(
-   ST_Point(cos(radians(x)),sin(radians(270-x))), 
+   ST_Point(cos(radians(x)),sin(radians(270-x))),
    ST_Point(sin(radians(x)),cos(radians(60-x)))
    ) g
  FROM generate_series(1,720) x

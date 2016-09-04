@@ -3,14 +3,14 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
- * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com> 
+ * Copyright (C) 2013 Bborie Park <dustymugs@gmail.com>
  * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -73,7 +73,7 @@ rt_raster_new(uint32_t width, uint32_t height) {
 	ret->srid = SRID_UNKNOWN;
 
 	ret->numBands = 0;
-	ret->bands = NULL; 
+	ret->bands = NULL;
 
 	return ret;
 }
@@ -749,7 +749,7 @@ rt_raster_set_geotransform_matrix(rt_raster raster,
  * @param yw : output parameter, Y ordinate of the geographical point
  * @param gt : input/output parameter, 3x2 geotransform matrix
  *
- * @return ES_NONE if success, ES_ERROR if error 
+ * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate
 rt_raster_cell_to_geopoint(
@@ -2400,7 +2400,7 @@ typedef struct _rti_rasterize_arg_t* _rti_rasterize_arg;
 struct _rti_rasterize_arg_t {
 	uint8_t noband;
 
-	uint32_t numbands; 
+	uint32_t numbands;
 
 	OGRSpatialReferenceH src_sr;
 

@@ -1,8 +1,8 @@
 set client_min_messages to WARNING;
 
--- 
+--
 -- ST_InitTopoGeo
--- 
+--
 
 SELECT regexp_replace(ST_InitTopoGeo('sqlmm_topology'), 'id:[0-9]*', 'id:x');
 
@@ -33,7 +33,7 @@ SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(10 0)');
 SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(10.000000000000001 0)');
 SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(7 10)');
 
--- non-existent face specification 
+-- non-existent face specification
 SELECT topology.ST_AddIsoNode('sqlmm_topology', 1, 'POINT(20 0)');
 
 -- using other then point
@@ -71,7 +71,7 @@ SELECT topology.ST_AddIsoEdge('sqlmm_topology', 10000, 2, 'LINESTRING(0 0, 1 1)'
 SELECT topology.ST_AddIsoEdge('sqlmm_topology', 1, 2, 'LINESTRING(0 0, 1 1)');
 SELECT topology.ST_AddIsoEdge('sqlmm_topology', 1, 2, 'LINESTRING(0 1, 10 0)');
 
--- Node crossing 
+-- Node crossing
 SELECT topology.ST_AddIsoEdge('sqlmm_topology', 1, 2, 'LINESTRING(0 0, 10 0)');
 
 -- Good ones
@@ -94,7 +94,7 @@ SELECT topology.ST_AddIsoEdge('sqlmm_topology', 1, 2, 'LINESTRING(0 0, 2 20, 10 
 
 SELECT '-- ST_AddIsoNode(2) ------------------------';
 
--- ST_AddIsoNode edge-crossing node 
+-- ST_AddIsoNode edge-crossing node
 SELECT topology.ST_AddIsoNode('sqlmm_topology', NULL, 'POINT(5 9.5)');
 
 -------------------------------------------------------------

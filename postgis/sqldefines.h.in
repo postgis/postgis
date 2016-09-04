@@ -13,6 +13,12 @@
 #define POSTGIS_LIBXML2_VERSION @POSTGIS_LIBXML2_VERSION@
 #define POSTGIS_SFCGAL_VERSION @POSTGIS_SFCGAL_VERSION@
 
+#if POSTGIS_PGSQL_VERSION >= 96
+#define _PARALLEL PARALLEL SAFE
+#else
+#define _PARALLEL
+#endif
+
 /*
  * Define the build date and the version number
  * (these substitiutions are done with extra quotes sinces CPP

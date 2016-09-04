@@ -376,7 +376,7 @@ lwgeom_as_curve(const LWGEOM *lwgeom)
 
 
 /**
-* Free the containing LWGEOM and the associated BOX. Leave the underlying 
+* Free the containing LWGEOM and the associated BOX. Leave the underlying
 * geoms/points/point objects intact. Useful for functions that are stripping
 * out subcomponents of complex objects, or building up new temporary objects
 * on top of subcomponents.
@@ -402,7 +402,7 @@ lwgeom_release(LWGEOM *lwgeom)
 
 /* @brief Clone LWGEOM object. Serialized point lists are not copied.
  *
- * @see ptarray_clone 
+ * @see ptarray_clone
  */
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
@@ -439,8 +439,8 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	}
 }
 
-/** 
-* Deep-clone an #LWGEOM object. #POINTARRAY <em>are</em> copied. 
+/**
+* Deep-clone an #LWGEOM object. #POINTARRAY <em>are</em> copied.
 */
 LWGEOM *
 lwgeom_clone_deep(const LWGEOM *lwgeom)
@@ -589,7 +589,7 @@ lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad)
 	center.x = cx;
 	center.y = cy;
 
-	if ( distance2d_pt_pt(pt, &center) < rad ) 
+	if ( distance2d_pt_pt(pt, &center) < rad )
 		return LW_TRUE;
 
 	return LW_FALSE;
@@ -620,7 +620,7 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 }
 
-void 
+void
 lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox)
 {
 	if ( lwgeom_is_empty(lwgeom) ) return;
@@ -775,7 +775,7 @@ lwgeom_force_sfs(LWGEOM *geom, int version)
 
 			case COLLECTIONTYPE:
 				col = (LWCOLLECTION*)geom;
-				for ( i = 0; i < col->ngeoms; i++ ) 
+				for ( i = 0; i < col->ngeoms; i++ )
 					col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i], version);
 
 				return lwcollection_as_lwgeom((LWCOLLECTION*)geom);
@@ -821,7 +821,7 @@ lwgeom_force_sfs(LWGEOM *geom, int version)
 		/* Collection */
 		case COLLECTIONTYPE:
 			col = (LWCOLLECTION*)geom;
-			for ( i = 0; i < col->ngeoms; i++ ) 
+			for ( i = 0; i < col->ngeoms; i++ )
 				col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i], version);
 
 			return lwcollection_as_lwgeom((LWCOLLECTION*)geom);
@@ -831,35 +831,35 @@ lwgeom_force_sfs(LWGEOM *geom, int version)
 	}
 }
 
-int32_t 
+int32_t
 lwgeom_get_srid(const LWGEOM *geom)
 {
 	if ( ! geom ) return SRID_UNKNOWN;
 	return geom->srid;
 }
 
-uint32_t 
+uint32_t
 lwgeom_get_type(const LWGEOM *geom)
 {
 	if ( ! geom ) return 0;
 	return geom->type;
 }
 
-int 
+int
 lwgeom_has_z(const LWGEOM *geom)
 {
 	if ( ! geom ) return LW_FALSE;
 	return FLAGS_GET_Z(geom->flags);
 }
 
-int 
+int
 lwgeom_has_m(const LWGEOM *geom)
 {
 	if ( ! geom ) return LW_FALSE;
 	return FLAGS_GET_M(geom->flags);
 }
 
-int 
+int
 lwgeom_ndims(const LWGEOM *geom)
 {
 	if ( ! geom ) return 0;
@@ -956,7 +956,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 	}
 }
 
-int 
+int
 lwgeom_is_closed(const LWGEOM *geom)
 {
 	int type = geom->type;
@@ -987,10 +987,10 @@ lwgeom_is_closed(const LWGEOM *geom)
 		LWCOLLECTION *col = lwgeom_as_lwcollection(geom);
 		int i;
 		int closed;
-		for ( i = 0; i < col->ngeoms; i++ ) 
+		for ( i = 0; i < col->ngeoms; i++ )
 		{
 			closed = lwgeom_is_closed(col->geoms[i]);
-			if ( ! closed ) 
+			if ( ! closed )
 				return LW_FALSE;
 		}
 		return LW_TRUE;
@@ -1000,7 +1000,7 @@ lwgeom_is_closed(const LWGEOM *geom)
 	return LW_TRUE;
 }
 
-int 
+int
 lwgeom_is_collection(const LWGEOM *geom)
 {
 	if( ! geom ) return LW_FALSE;
@@ -1035,7 +1035,7 @@ lwtype_is_collection(uint8_t type)
 /**
 * Given an lwtype number, what homogeneous collection can hold it?
 */
-int 
+int
 lwtype_get_collectiontype(uint8_t type)
 {
 	switch (type)
@@ -1169,7 +1169,7 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 		result = 1;
 		break;
 	case TRIANGLETYPE:
-	case CIRCSTRINGTYPE: 
+	case CIRCSTRINGTYPE:
 	case LINETYPE:
 		result = lwline_count_vertices((LWLINE *)geom);
 		break;
@@ -1198,8 +1198,8 @@ int lwgeom_count_vertices(const LWGEOM *geom)
 }
 
 /**
-* For an #LWGEOM, returns 0 for points, 1 for lines, 
-* 2 for polygons, 3 for volume, and the max dimension 
+* For an #LWGEOM, returns 0 for points, 1 for lines,
+* 2 for polygons, 3 for volume, and the max dimension
 * of a collection.
 */
 int lwgeom_dimension(const LWGEOM *geom)
@@ -1219,7 +1219,7 @@ int lwgeom_dimension(const LWGEOM *geom)
 	case POINTTYPE:
 	case MULTIPOINTTYPE:
 		return 0;
-	case CIRCSTRINGTYPE: 
+	case CIRCSTRINGTYPE:
 	case LINETYPE:
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
@@ -1264,13 +1264,13 @@ int lwgeom_count_rings(const LWGEOM *geom)
 	int result = 0;
 	
 	/* Null? Empty? Zero. */
-	if( ! geom || lwgeom_is_empty(geom) ) 
+	if( ! geom || lwgeom_is_empty(geom) )
 		return 0;
 
 	switch (geom->type)
 	{
 	case POINTTYPE:
-	case CIRCSTRINGTYPE: 
+	case CIRCSTRINGTYPE:
 	case COMPOUNDTYPE:
 	case MULTICURVETYPE:
 	case MULTIPOINTTYPE:
@@ -1422,7 +1422,7 @@ extern LWGEOM* lwgeom_remove_repeated_points(const LWGEOM *in, double tolerance)
 	LWDEBUGF(4, "lwgeom_remove_repeated_points got type %s",
 	         lwtype_name(in->type));
 
-	if(lwgeom_is_empty(in)) 
+	if(lwgeom_is_empty(in))
 	{
 		return lwgeom_clone_deep(in);
 	}
@@ -1542,7 +1542,7 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	}
 
 	/* only refresh bbox if X or Y changed */
-	if ( in->bbox && (o1 < 2 || o2 < 2) ) 
+	if ( in->bbox && (o1 < 2 || o2 < 2) )
 	{
 		lwgeom_drop_bbox(in);
 		lwgeom_add_bbox(in);
@@ -1706,7 +1706,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 	int type = geom->type;
 	int i;
 
-	switch(type) 
+	switch(type)
 	{
 		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
@@ -1742,7 +1742,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 					lwgeom_affine(c->geoms[i], affine);
 				}
 			}
-			else 
+			else
 			{
 				lwerror("lwgeom_affine: unable to handle type '%s'", lwtype_name(type));
 			}
@@ -1757,7 +1757,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 	int type = geom->type;
 	int i;
 
-	switch(type) 
+	switch(type)
 	{
 		/* Take advantage of fact tht pt/ln/circ/tri have same memory structure */
 		case POINTTYPE:
@@ -1793,7 +1793,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 					lwgeom_scale(c->geoms[i], factor);
 				}
 			}
-			else 
+			else
 			{
 				lwerror("lwgeom_scale: unable to handle type '%s'", lwtype_name(type));
 			}
@@ -1802,7 +1802,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 
 	/* Recompute bbox if needed */
 
-	if ( geom->bbox ) 
+	if ( geom->bbox )
 	{
 		/* TODO: expose a gbox_scale function */
 		geom->bbox->xmin *= factor->x;
@@ -1819,7 +1819,7 @@ lwgeom_scale(LWGEOM *geom, const POINT4D *factor)
 LWGEOM*
 lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 {
-	switch(type) 
+	switch(type)
 	{
 		case POINTTYPE:
 			return lwpoint_as_lwgeom(lwpoint_construct_empty(srid, hasz, hasm));
@@ -1852,7 +1852,7 @@ lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
 	if ( ! lwgeom )
 		return LW_FAILURE;
 		
-	switch( lwgeom->type ) 
+	switch( lwgeom->type )
 	{
 		case POINTTYPE:
 			return ptarray_startpoint(((LWPOINT*)lwgeom)->point, pt);
@@ -1905,7 +1905,7 @@ lwgeom_grid(const LWGEOM *lwgeom, const gridspec *grid)
 
 
 /* Prototype for recursion */
-static int 
+static int
 lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOLLECTION *col, const GBOX *clip);
 
 static int
@@ -1925,10 +1925,20 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	}
 	
 	if ( width == 0.0 && height == 0.0 )
-		return 0;
+	{
+		if ( geom->type == POINTTYPE )
+		{
+			lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
+			return 1;			
+		}
+		else
+		{
+			return 0;
+		}
+	}
 	
 	/* Always just recurse into collections */
-	if ( lwgeom_is_collection(geom) )
+	if ( lwgeom_is_collection(geom) && geom->type != MULTIPOINTTYPE )
 	{
 		LWCOLLECTION *incol = (LWCOLLECTION*)geom;
 		int n = 0;
@@ -2038,7 +2048,7 @@ lwgeom_is_trajectory(const LWGEOM *geom)
 {
 	int type = geom->type;
 
-	if( type != LINETYPE ) 
+	if( type != LINETYPE )
 	{
 		lwnotice("Geometry is not a LINESTRING");
 		return LW_FALSE;

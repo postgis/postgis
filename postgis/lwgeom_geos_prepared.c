@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007 Refractions Research Inc.
  *
@@ -294,12 +294,12 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 * Given a generic GeomCache, and a geometry to prepare,
 * prepare a PrepGeomCache and stick it into the GeomCache->index
 * slot. The PrepGeomCache includes the original GEOS geometry,
-* and the GEOS prepared geometry, and a pointer to the 
-* MemoryContext where the callback functions are registered. 
-* 
+* and the GEOS prepared geometry, and a pointer to the
+* MemoryContext where the callback functions are registered.
+*
 * This function is passed into the generic GetGeomCache function
 * so that it can build an appropriate indexed structure in the case
-* of a cache hit when there is no indexed structure yet 
+* of a cache hit when there is no indexed structure yet
 * available to return.
 */
 static int
@@ -330,8 +330,8 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		AddPrepGeomHashEntry( pghe );		
 	}
 	
-	/* 
-	* Hum, we shouldn't be asked to build a new cache on top of 
+	/*
+	* Hum, we shouldn't be asked to build a new cache on top of
 	* an existing one. Error.
 	*/
 	if ( prepcache->argnum || prepcache->geom || prepcache->prepared_geom )
@@ -375,7 +375,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 
 /**
 * This function is passed into the generic GetGeomCache function
-* in the case of a cache miss, so that it can free the particular 
+* in the case of a cache miss, so that it can free the particular
 * indexed structure being managed.
 *
 * In the case of prepared geometry, we want to leave the actual
@@ -392,8 +392,8 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	if ( ! prepcache )
 		return LW_FAILURE;
 
-	/* 
-	* Clear out the references to the soon-to-be-freed GEOS objects 
+	/*
+	* Clear out the references to the soon-to-be-freed GEOS objects
 	* from the callback hash entry
 	*/
 	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
@@ -405,7 +405,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	pghe->geom = 0;
 	pghe->prepared_geom = 0;
 
-	/* 
+	/*
 	* Free the GEOS objects and free the index tree
 	*/
 	POSTGIS_DEBUGF(3, "PrepGeomCacheFreeer: freeing %p argnum %d", prepcache, prepcache->argnum);

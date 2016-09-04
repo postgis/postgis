@@ -32,13 +32,13 @@ CREATE TABLE rt_properties_test (
     rast raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
         10, 10, 20, --- SRID, width, height
         2, 3, 0.5, 0.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -63,13 +63,13 @@ VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:12, width:1, height:1',
         12, 1, 1, --- SRID, width, height
          5, 5, 2.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -94,13 +94,13 @@ VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:12, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -125,13 +125,13 @@ VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -154,15 +154,15 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 ||
 '0100' -- height (uint16 1)
 )::raster
-); 
+);
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 1, 1, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -187,13 +187,13 @@ VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_properties_test 
+INSERT INTO rt_properties_test
 VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
          0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 3, 7, --- georeference
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -216,99 +216,99 @@ VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
 ||
 '0100' -- height (uint16 1)
 )::raster
-); 
+);
 
 -----------------------------------------------------------------------
 -- st_georeference (default)
 -----------------------------------------------------------------------
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '2.0000000000EOL0.0000000000EOL0.0000000000EOL3.0000000000EOL0.5000000000EOL0.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL2.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 3;
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 4;
 
-SELECT 
+SELECT
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
-    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast)::text, E'\n', E'EOL') =
     '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 5;
 
 -----------------------------------------------------------------------
 -- st_georeference (GDAL)
 -----------------------------------------------------------------------
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '2.0000000000EOL0.0000000000EOL0.0000000000EOL3.0000000000EOL0.5000000000EOL0.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL2.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 3;
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 4;
 
-SELECT 
+SELECT
     replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
-    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') =
     '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 5;
 
 -----------------------------------------------------------------------
@@ -317,44 +317,44 @@ WHERE id = 5;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '2.0000000000EOL0.0000000000EOL0.0000000000EOL3.0000000000EOL1.5000000000EOL2.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL5.0000000000EOL5.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 3;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 4;
 
 SELECT
 	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
-	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') =
     '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 5;
 
 
@@ -365,19 +365,19 @@ WHERE id = 5;
 SELECT
     -- all 6 parameters must be numeric
     st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 nodata') IS NULL
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 SELECT
     -- must have 6 parameters
     st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000') IS NULL
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
 SELECT
     -- any whitespace accepted between parameters as well as ' '
     st_setgeoreference(rast,E'2.0000000000	1.0000000000\n2.0000000000\t3.0000000000	1.5000000000	2.0000000000') IS NOT NULL
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 -----------------------------------------------------------------------
@@ -387,7 +387,7 @@ WHERE id = 2;
 SELECT
     -- raster arg is null
     st_setgeoreference(null,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000') IS NULL
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 -----------------------------------------------------------------------
@@ -399,7 +399,7 @@ SELECT
 	st_scaley(rast) = 3,
 	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 4,
 	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000')) = 6
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 SELECT
@@ -407,7 +407,7 @@ SELECT
 	st_skewy(rast) = 0,
 	st_skewx(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000')) = 2,
 	st_skewy(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000')) = 1
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
 SELECT
@@ -415,7 +415,7 @@ SELECT
 	st_upperlefty(rast) = 2.5,
 	st_upperleftx(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000')) = 1.5,
 	st_upperlefty(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000')) = 2.0
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 -----------------------------------------------------------------------
@@ -427,7 +427,7 @@ SELECT
 	st_scaley(rast) = 3,
 	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 4,
 	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','GDAL')) = 6
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 SELECT
@@ -435,7 +435,7 @@ SELECT
 	st_skewy(rast) = 0,
 	st_skewx(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','GDAL')) = 2,
 	st_skewy(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','GDAL')) = 1
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
 SELECT
@@ -443,7 +443,7 @@ SELECT
 	st_upperlefty(rast) = 2.5,
 	st_upperleftx(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','GDAL')) = 1.5,
 	st_upperlefty(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','GDAL')) = 2.0
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 -----------------------------------------------------------------------
@@ -455,7 +455,7 @@ SELECT
 	st_scaley(rast) = 3,
 	st_scalex(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 4,
 	st_scaley(st_setgeoreference(rast,'4.0000000000 0.0000000000 0.0000000000 6.0000000000 1.5000000000 2.0000000000','ESRI')) = 6
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 0;
 
 SELECT
@@ -463,7 +463,7 @@ SELECT
 	st_skewy(rast) = 0,
 	st_skewx(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','ESRI')) = 2,
 	st_skewy(st_setgeoreference(rast,'2.0000000000 1.0000000000 2.0000000000 3.0000000000 1.5000000000 2.0000000000','ESRI')) = 1
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 1;
 
 SELECT
@@ -471,7 +471,7 @@ SELECT
 	st_upperlefty(rast) = 2.5,
 	st_upperleftx(st_setgeoreference(rast,'2.0000000000 0.0000000000 0.0000000000 3.0000000000 1.0000000000 2.5000000000','ESRI')) = 0,
 	st_upperlefty(st_setgeoreference(rast,'2.0000000000 0.0000000000 0.0000000000 3.0000000000 1.0000000000 2.5000000000','ESRI')) = 1
-FROM rt_properties_test 
+FROM rt_properties_test
 WHERE id = 2;
 
 -----------------------------------------------------------------------

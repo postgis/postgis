@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2004-2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2004-2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2006 Mark Leslie <mark.leslie@lisasoft.com>
  * Copyright (C) 2008-2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  * Copyright (C) 2009-2015 Paul Ramsey <pramsey@cleverelephant.ca>
@@ -188,7 +188,7 @@ default_errorreporter(const char *fmt, va_list ap)
 }
 
 /**
- * This function is called by programs which want to set up custom handling 
+ * This function is called by programs which want to set up custom handling
  * for memory management and error reporting
  *
  * Only non-NULL values change their respective handler
@@ -212,7 +212,7 @@ lwgeom_set_debuglogger(lwdebuglogger debuglogger) {
 	if ( debuglogger ) lwdebug_var = debuglogger;
 }
 
-const char* 
+const char*
 lwtype_name(uint8_t type)
 {
 	if ( type > 15 )

@@ -54,5 +54,24 @@ typedef void (*PG_SuiteSetup)(void);
 	CU_ASSERT_TRUE(lwgeom_same(o, e)); \
 } while(0);
 
+#define ASSERT_INTARRAY_EQUAL(o, e, n) do { \
+	size_t i = 0; \
+	for (i = 0; i < n; i++) { \
+		if (o[i] != e[i]) { \
+			fprintf(stderr, "[%s:%d]", __FILE__, __LINE__); \
+			fprintf(stderr, "\nExpected: ["); \
+			for (i = 0; i < n; i++) \
+				fprintf(stderr, " %d", e[i]); \
+			fprintf(stderr, " ]\nObtained: ["); \
+			for (i = 0; i < n; i++) \
+				fprintf(stderr, " %d", o[i]); \
+			fprintf(stderr, " ]\n"); \
+			CU_FAIL(); \
+			break; \
+		} \
+	} \
+	CU_PASS(); \
+} while(0);
+
 /* Utility functions */
 void do_fn_test(LWGEOM* (*transfn)(LWGEOM*), char *input_wkt, char *expected_wkt);

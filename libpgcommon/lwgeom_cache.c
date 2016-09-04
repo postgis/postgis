@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -16,15 +16,15 @@
 #include "../postgis_config.h"
 #include "lwgeom_cache.h"
 
-/* 
-* Generic statement caching infrastructure. We cache 
+/*
+* Generic statement caching infrastructure. We cache
 * the following kinds of objects:
-* 
+*
 *   geometries-with-trees
 *      PreparedGeometry, RTree, CIRC_TREE, RECT_TREE
 *   srids-with-projections
 *      projPJ
-* 
+*
 * Each GenericCache* has a type, and after that
 * some data. Similar to generic LWGEOM*. Test that
 * the type number is what you expect before casting
@@ -35,11 +35,11 @@ typedef struct {
 	char data[1];
 } GenericCache;
 
-/* 
-* Although there are only two basic kinds of 
+/*
+* Although there are only two basic kinds of
 * cache entries, the actual trees stored in the
 * geometries-with-trees pattern are quite diverse,
-* and they might be used in combination, so we have 
+* and they might be used in combination, so we have
 * one slot for each tree type as well as a slot for
 * projections.
 */
@@ -48,25 +48,25 @@ typedef struct {
 } GenericCacheCollection;
 
 /**
-* Utility function to read the upper memory context off a function call 
+* Utility function to read the upper memory context off a function call
 * info data.
 */
-static MemoryContext 
+static MemoryContext
 FIContext(FunctionCallInfoData* fcinfo)
 {
 	return fcinfo->flinfo->fn_mcxt;
 }
 
 /**
-* Get the generic collection off the statement, allocate a 
+* Get the generic collection off the statement, allocate a
 * new one if we don't have one already.
-*/ 
-static GenericCacheCollection* 
+*/
+static GenericCacheCollection*
 GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
 {
 	GenericCacheCollection* cache = fcinfo->flinfo->fn_extra;
 
-	if ( ! cache ) 
+	if ( ! cache )
 	{
 		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(GenericCacheCollection));
 		memset(cache, 0, sizeof(GenericCacheCollection));
@@ -115,12 +115,12 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 }
 
 /**
-* Get an appropriate (based on the entry type number) 
+* Get an appropriate (based on the entry type number)
 * GeomCache entry from the generic cache if one exists.
 * Returns a cache pointer if there is a cache hit and we have an
 * index built and ready to use. Returns NULL otherwise.
 */
-GeomCache*            
+GeomCache*
 GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
 {
 	GeomCache* cache;

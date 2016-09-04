@@ -58,7 +58,7 @@ lwcompound_is_closed(const LWCOMPOUND *compound)
 	if ( memcmp(getPoint_internal( (POINTARRAY *)compound->geoms[0]->data, 0),
 	            getPoint_internal( (POINTARRAY *)compound->geoms[compound->ngeoms - 1]->data,
 	                               npoints - 1),
-	            size) ) 
+	            size) )
 	{
 		return LW_FALSE;
 	}
@@ -146,7 +146,7 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt)
 	return LW_FAILURE;
 }
 
-int 
+int
 lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 {
 	int i;
@@ -164,7 +164,7 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 			lwline = lwgeom_as_lwline(lwgeom);
 			if ( comp->ngeoms == 1 )
 			{
-				return ptarray_contains_point(lwline->points, pt); 
+				return ptarray_contains_point(lwline->points, pt);
 			}
 			else
 			{
@@ -191,7 +191,7 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 		}
 
 		/* Propogate boundary condition */
-		if ( result == LW_BOUNDARY ) 
+		if ( result == LW_BOUNDARY )
 			return LW_BOUNDARY;
 
 		wn += winding_number;
@@ -214,7 +214,7 @@ lwcompound_construct_from_lwline(const LWLINE *lwline)
   return ogeom;
 }
 
-LWPOINT* 
+LWPOINT*
 lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
 {
 	int i;

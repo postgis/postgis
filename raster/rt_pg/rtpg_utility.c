@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 
 	/*
 		correct pixsize of unsigned pixel types
-		example: for PT_8BUI, the value is CHAR_MIN but if char is signed, 
+		example: for PT_8BUI, the value is CHAR_MIN but if char is signed,
 			the value returned is -127 instead of 0.
 	*/
 	switch (pixtype) {

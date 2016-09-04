@@ -91,7 +91,7 @@ lw_seg_length(const POINT2D *A1, const POINT2D *A2)
 }
 
 /**
-* Returns true if P is on the same side of the plane partition 
+* Returns true if P is on the same side of the plane partition
 * defined by A1/A3 as A2 is. Only makes sense if P has already been
 * determined to be on the circle defined by A1/A2/A3.
 */
@@ -118,7 +118,7 @@ lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 int
 lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 {
-	if ( A1->x == A2->x && A2->x == A3->x && 
+	if ( A1->x == A2->x && A2->x == A3->x &&
 	     A1->y == A2->y && A2->y == A3->y )
 		return LW_TRUE;
 	else
@@ -143,7 +143,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
-	if ( radius_A < 0 ) 
+	if ( radius_A < 0 )
 	{
         double dx = A1->x - A3->x;
         double dy = A1->y - A3->y;
@@ -158,11 +158,11 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	/* Determine the orientation of the arc */
 	a2_side = lw_segment_side(A1, A3, A2);
 
-	/* The side of the A1/A3 line that A2 falls on dictates the sweep  
+	/* The side of the A1/A3 line that A2 falls on dictates the sweep
 	   direction from A1 to A3. */
-	if ( a2_side == -1 ) 
+	if ( a2_side == -1 )
 		clockwise = LW_TRUE;
-	else 
+	else
 		clockwise = LW_FALSE;
 		
 	/* Angles of each point that defines the arc section */
@@ -175,7 +175,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 		if ( a1 > a3 )
 			angle = a1 - a3;
 		else
-			angle = 2*M_PI + a1 - a3; 
+			angle = 2*M_PI + a1 - a3;
 	}
 	else
 	{
@@ -218,8 +218,8 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 		return -1 * side_A2;
 	}
 	
-	/* 
-	* Q is inside the arc boundary, so it's not on the side we 
+	/*
+	* Q is inside the arc boundary, so it's not on the side we
 	* might think from examining only the end points
 	*/
 	if ( d < radius_A && side_Q == side_A2 )
@@ -346,7 +346,7 @@ pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
 }
 
 
-static int 
+static int
 lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 	double minq=FP_MIN(q1->x,q2->x);

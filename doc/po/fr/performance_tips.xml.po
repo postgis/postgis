@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2014-10-18 10:29+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2014-10-20 15:58+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/postgis/language/"
 "fr/)\n"
 "Language: fr\n"
@@ -167,10 +167,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:61
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
 msgstr ""
 "SELECT "
@@ -189,10 +189,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:66
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT geom_column \n"
-"FROM mytable \n"
+"SELECT geom_column\n"
+"FROM mytable\n"
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 msgstr ""
 "SELECT geom_column \n"
@@ -260,9 +260,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:93
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
+"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "HINT: You may be able to work around this by marking column \"the_geom\" NOT "
 "NULL."
@@ -284,9 +284,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:98
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
 "ALTER TABLE"
 msgstr ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
@@ -327,9 +327,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:116
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"
+"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
 "UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"

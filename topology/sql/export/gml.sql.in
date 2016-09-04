@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010, 2011 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -14,7 +14,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- Developed by Sandro Santilli <strk@keybit.net>
+-- Developed by Sandro Santilli <strk@kbt.io>
 -- for Faunalia (http://www.faunalia.it) with funding from
 -- Regione Toscana - Sistema Informativo per la Gestione del Territorio
 -- e dell' Ambiente [RT-SIGTA].
@@ -105,7 +105,7 @@ BEGIN
     IF visited IS NOT NULL THEN
       gml = gml || ' xlink:href="#' || idprefix || 'N' || start_node || '" />';
     ELSE
-      -- Mark as visited 
+      -- Mark as visited
       EXECUTE 'INSERT INTO ' || visitedTable::text
         || '(element_type, element_id) VALUES (1, '
         || start_node || ')';
@@ -130,7 +130,7 @@ BEGIN
     IF visited IS NOT NULL THEN
       gml = gml || ' xlink:href="#' || idprefix || 'N' || end_node || '" />';
     ELSE
-      -- Mark as visited 
+      -- Mark as visited
       EXECUTE 'INSERT INTO ' || visitedTable::text
         || '(element_type, element_id) VALUES (1, '
         || end_node || ')';
@@ -326,7 +326,7 @@ BEGIN
           gml = gml || ' xlink:href="#' || idprefix || 'N' || rec.element_id || '" />';
           CONTINUE;
         ELSE
-          -- Mark as visited 
+          -- Mark as visited
           EXECUTE 'INSERT INTO ' || visitedTable::text
             || '(element_type, element_id) VALUES (1, '
             || rec.element_id || ')';
@@ -423,7 +423,7 @@ BEGIN
           gml = gml || ' xlink:href="#' || idprefix || 'F' || rec.face_id || '" />';
           CONTINUE;
         ELSE
-          -- Mark as visited 
+          -- Mark as visited
           EXECUTE 'INSERT INTO ' || visitedTable::text
             || '(element_type, element_id) VALUES (3, '
             || rec.face_id || ')';
@@ -442,10 +442,10 @@ BEGIN
     RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsGML';
 
   END IF;
-	
+
 
   RETURN gml;
-	
+
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
@@ -470,7 +470,7 @@ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 
 --{
 --
--- API FUNCTION 
+-- API FUNCTION
 --
 -- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable)
 --
@@ -485,7 +485,7 @@ $$ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 
 --{
 --
--- API FUNCTION 
+-- API FUNCTION
 --
 -- text AsGML(TopoGeometry, nsprefix, precision, options)
 --
@@ -494,12 +494,12 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, nsprefix tex
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, $3, $4, NULL);
-$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table 
+$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table
 -- } AsGML(TopoGeometry, nsprefix, precision, options)
 
 --{
 --
--- API FUNCTION 
+-- API FUNCTION
 --
 -- text AsGML(TopoGeometry, nsprefix)
 --
@@ -508,7 +508,7 @@ CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, nsprefix tex
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, 15, 1, NULL);
-$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table 
+$$ LANGUAGE 'sql' STABLE; -- does NOT write into visited table
 -- } AsGML(TopoGeometry, nsprefix)
 
 --{

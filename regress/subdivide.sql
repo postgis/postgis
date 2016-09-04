@@ -22,3 +22,5 @@ WITH g AS (SELECT 'POLYGON((132 10,119 23,85 35,68 29,66 28,49 42,32 56,22 64,32
 SELECT '3' As rn, full_area::numeric(10,3) = SUM(ST_Area(gs.geom))::numeric(10,3), COUNT(gs.geom) As num_pieces, MAX(ST_NPoints(gs.geom)) As max_vert
 FROM gs
 GROUP BY gs.full_area;
+
+SELECT '#3522', ST_AsText(ST_Subdivide(ST_GeomFromText('POINT(1 1)',4326),10));

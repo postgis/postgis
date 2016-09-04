@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION ST_MinPossibleValue(pixeltype text)
     DECLARE
         newval int := 0;
     BEGIN
-        newval := CASE 
+        newval := CASE
             WHEN pixeltype = '1BB' THEN 0
             WHEN pixeltype = '2BUI' THEN 0
             WHEN pixeltype = '4BUI' THEN 0
@@ -34,8 +34,8 @@ CREATE OR REPLACE FUNCTION ST_MinPossibleValue(pixeltype text)
 --
 --Test rasters
 --
-CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
+    RETURNS raster AS
     $$
     DECLARE
     BEGIN
@@ -45,14 +45,14 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
     LANGUAGE 'plpgsql';
 
 --------------------------------------------------------------------
--- ST_MapAlgebraFctNgb - (one raster version) Return a raster which values 
---                 are the result of a PLPGSQL user function involving a 
+-- ST_MapAlgebraFctNgb - (one raster version) Return a raster which values
+--                 are the result of a PLPGSQL user function involving a
 --                 neighborhood of values from the input raster band.
--- Arguments 
+-- Arguments
 -- rast raster -  Raster on which the user function is evaluated.
 -- band integer - Band number of the raster to be evaluated. Default to 1.
 -- pixeltype text - Pixeltype assigned to the resulting raster. User function
---                  results are truncated to this type. Default to the 
+--                  results are truncated to this type. Default to the
 --                  pixeltype of the first raster.
 -- ngbwidth integer - The width of the neighborhood, in cells.
 -- ngbheight integer - The heigh of the neighborhood, in cells.
@@ -60,8 +60,8 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
 -- args variadic text[] - Arguments to pass into the user function.
 --------------------------------------------------------------------
 DROP FUNCTION IF EXISTS ST_MapAlgebraFctNgb(rast raster, band integer, pixeltype text, ngbwidth integer, ngbheight integer, userfunction text, nodatamode text, variadic args text[]);
-CREATE OR REPLACE FUNCTION ST_MapAlgebraFctNgb(rast raster, band integer, pixeltype text, ngbwidth integer, ngbheight integer, userfunction text, nodatamode text, variadic args text[]) 
-    RETURNS raster AS 
+CREATE OR REPLACE FUNCTION ST_MapAlgebraFctNgb(rast raster, band integer, pixeltype text, ngbwidth integer, ngbheight integer, userfunction text, nodatamode text, variadic args text[])
+    RETURNS raster AS
     $$
     DECLARE
         width integer;
@@ -91,22 +91,22 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebraFctNgb(rast raster, band integer, pixelt
         newrast := ST_MakeEmptyRaster(width, height, ST_UpperLeftX(rast), ST_UpperLeftY(rast), ST_ScaleX(rast), ST_ScaleY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast));
 
         -- If this new raster is empty (width = 0 OR height = 0) then there is nothing to compute and we return it right now
-        IF ST_IsEmpty(newrast) THEN 
+        IF ST_IsEmpty(newrast) THEN
             RAISE NOTICE 'ST_MapAlgebraFctNgb: Raster is empty. Returning an empty raster';
             RETURN newrast;
         END IF;
-        
+
         -- Check if rast has the required band. Otherwise return a raster without band
-        IF ST_HasNoBand(rast, band) THEN 
+        IF ST_HasNoBand(rast, band) THEN
             RAISE NOTICE 'ST_MapAlgebraFctNgb: Raster does not have the required band. Returning a raster without a band';
             RETURN newrast;
         END IF;
-        
+
         -- Set the new pixeltype
         newpixeltype := pixeltype;
         IF newpixeltype IS NULL THEN
             newpixeltype := ST_BandPixelType(rast, band);
-        ELSIF newpixeltype != '1BB' AND newpixeltype != '2BUI' AND newpixeltype != '4BUI' AND newpixeltype != '8BSI' AND newpixeltype != '8BUI' AND 
+        ELSIF newpixeltype != '1BB' AND newpixeltype != '2BUI' AND newpixeltype != '4BUI' AND newpixeltype != '8BSI' AND newpixeltype != '8BUI' AND
                newpixeltype != '16BSI' AND newpixeltype != '16BUI' AND newpixeltype != '32BSI' AND newpixeltype != '32BUI' AND newpixeltype != '32BF' AND newpixeltype != '64BF' THEN
             RAISE EXCEPTION 'ST_MapAlgebraFctNgb: Invalid pixeltype "%". Aborting.', newpixeltype;
         END IF;
@@ -118,8 +118,8 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebraFctNgb(rast raster, band integer, pixelt
             newnodatavalue := ST_MinPossibleValue(newpixeltype);
         END IF;
 
-        -- We set the initial value of the future band to nodata value. 
-        -- If nodatavalue is null then the raster will be initialise to ST_MinPossibleValue 
+        -- We set the initial value of the future band to nodata value.
+        -- If nodatavalue is null then the raster will be initialise to ST_MinPossibleValue
         -- but all the values should be recomputed anyway.
         newinitialvalue := newnodatavalue;
 
@@ -127,7 +127,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebraFctNgb(rast raster, band integer, pixelt
         IF ST_BandIsNoData(rast, band) THEN
             RETURN ST_AddBand(newrast, newpixeltype, newinitialvalue, newnodatavalue);
         END IF;
-        
+
         --Create the raster receiving all the computed values. Initialize it to the new initial value.
         newrast := ST_AddBand(newrast, newpixeltype, newinitialvalue, newnodatavalue);
 
@@ -216,8 +216,8 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
 --SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL));
 
 -- Test has no nodata value. Should return null and 7.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(
 --      ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL
@@ -225,56 +225,56 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 2, 2, NULL) AS rast;
 --
 -- Test NULL nodatamode. Should return null and null.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
 --  ) IS NULL
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 2, 2, NULL) AS rast;
 --
 -- Test ignore nodatamode. Should return null and 8.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'ignore', NULL), 2, 2
 --  ) = 8
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 2, 2, NULL) AS rast;
 --
 -- Test value nodatamode. Should return null and null.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'value', NULL), 2, 2
---  ) IS NULL 
+--  ) IS NULL
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 2, 2, NULL) AS rast;
 --
 -- Test value nodatamode. Should return null and 9.
---SELECT 
---  ST_Value(rast, 1, 1) IS NULL, 
+--SELECT
+--  ST_Value(rast, 1, 1) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'value', NULL), 2, 2
 --  ) = 9
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 1, 1, NULL) AS rast;
 --
 -- Test value nodatamode. Should return null and 0.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', '-8', NULL), 2, 2
 --  ) = 0
 -- FROM ST_SetValue(ST_TestRaster(3, 3, 1), 2, 2, NULL) AS rast;
 --
 -- Test ST_Sum user function. Should be 1 and 9.
---SELECT 
---  ST_Value(rast, 2, 2) = 1, 
+--SELECT
+--  ST_Value(rast, 2, 2) = 1,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
 --  ) = 9
 -- FROM ST_TestRaster(3, 3, 1) AS rast;
 --
 -- Test ST_Sum user function on a no nodata value raster. Should be null and -1.
---SELECT 
---  ST_Value(rast, 2, 2) IS NULL, 
+--SELECT
+--  ST_Value(rast, 2, 2) IS NULL,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
 --  ) = -1
@@ -289,16 +289,16 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
 -- FROM ST_SetBandNoDataValue(ST_TestRaster(3, 3, 2), 1, NULL) AS rast;
 --
 -- Test pixeltype 1. Should return an error.
---SELECT 
---  ST_Value(rast, 2, 2), 
+--SELECT
+--  ST_Value(rast, 2, 2),
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, '4BUId', 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
 --  )
 -- FROM ST_TestRaster(3, 3, 2) AS rast;
 --
 -- Test pixeltype 1. Should return 1 and 3.
---SELECT 
---  ST_Value(rast, 2, 2) = 1, 
+--SELECT
+--  ST_Value(rast, 2, 2) = 1,
 --  ST_Value(
 --    ST_MapAlgebraFctNgb(rast, 1, '2BUI', 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
 --  ) = 3
@@ -340,8 +340,8 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
 --SELECT
 --  ST_NRings(geom) = 2,
 --  ST_NumInteriorRings(geom) = 1,
---  ST_Area(geom) = 16, 
---  val = 9, 
+--  ST_Area(geom) = 16,
+--  val = 9,
 --  ST_Area(ST_BuildArea(ST_InteriorRingN(geom, 1))) = 9
 -- FROM (SELECT
 --    (ST_DumpAsPolygons(
@@ -352,7 +352,7 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
 -- Test that the neighborhood function leaves a border of NODATA,
 -- and the center pyramids when summed twice, ignoring NODATA values
 --SELECT
---  COUNT(*) = 9, SUM(ST_Area(geom)) = 9, SUM(val) = ((36+54+36) + (54+81+54) + (36+54+36)) 
+--  COUNT(*) = 9, SUM(ST_Area(geom)) = 9, SUM(val) = ((36+54+36) + (54+81+54) + (36+54+36))
 --  --ST_AsText(geom), ST_Area(geom), val
 -- FROM (SELECT
 --    (ST_DumpAsPolygons(

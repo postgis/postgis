@@ -152,7 +152,7 @@ int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double
 
 /**
 * Notes for rewrite
-* 
+*
 * Define separate POINT types for 2-d-points-in-radiands and 3-d-points-in-geocentric
 * Maintain consistent units (radians?) throughout all calculations
 * Put an index pointer onto LWGEOM itself, and cache the indexed LWGEOM instead of a bare tree

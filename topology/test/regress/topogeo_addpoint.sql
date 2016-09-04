@@ -29,7 +29,7 @@ SELECT 'noniso_ex', TopoGeo_addPoint('city_data', 'POINT(25 30)');
 -- Existing non-isolated node within tolerance (closer to edge)
 SELECT 'noniso_ex_tol', TopoGeo_addPoint('city_data', 'POINT(26 30.2)', 3);
 
--- Splitting edge 
+-- Splitting edge
 SELECT 'split', TopoGeo_addPoint('city_data', 'POINT(26 30.2)', 1);
 
 -- Check effect on nodes
@@ -40,7 +40,7 @@ ORDER BY n.node_id;
 
 -- Check effect on edges (there should be one split)
 WITH limits AS ( SELECT max FROM city_data.limits WHERE what = 'node'::text )
-SELECT 'E', n.edge_id, n.start_node, n.end_node 
+SELECT 'E', n.edge_id, n.start_node, n.end_node
  FROM city_data.edge n, limits m
  WHERE n.start_node > m.max
     OR n.end_node > m.max

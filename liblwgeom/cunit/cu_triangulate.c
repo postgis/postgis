@@ -4,7 +4,7 @@
  * http://postgis.net
  *
  * Copyright (C) 2015 Daniel Baston <dbaston@gmail.com>
- * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -29,7 +29,7 @@ static void test_lwgeom_delaunay_triangulation(void)
 
 	tmp = lwgeom_delaunay_triangulation(in, 0, 0);
 	lwgeom_free(in);
-	out = lwgeom_normalize(tmp); 
+	out = lwgeom_normalize(tmp);
 	lwgeom_free(tmp);
 
         wkt = lwgeom_to_ewkt(out);

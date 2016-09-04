@@ -35,7 +35,7 @@ SELECT 'p6',  topology.addNode('nodes', 'POINT(0 20)'); -- good
 -- Now allow computing containing face:
 SELECT 'p7',  topology.addNode('nodes', 'POINT(5 25)', false, true);
 
--- Check all nodes 
+-- Check all nodes
 SELECT node_id, containing_face, st_astext(geom) from nodes.node
 ORDER by node_id;
 

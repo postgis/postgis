@@ -255,6 +255,41 @@ static void multipoint_test(void)
 	perform_cluster_intersecting_test(wkt_inputs_pt, 2, expected_outputs_pt, 1);
 }
 
+static void dbscan_test(void)
+{
+	char* wkt_inputs[] = { "POINT (0 0)", "POINT (-1 0)", "POINT (-1 -0.1)", "POINT (-1 0.1)",
+		                   "POINT (1 0)",
+						   "POINT (2 0)", "POINT (3  0)", "POINT ( 3 -0.1)", "POINT ( 3 0.1)" };
+	uint32_t num_geoms = sizeof(wkt_inputs) / sizeof(char*);
+	LWGEOM** geoms = WKTARRAY2LWGEOM(wkt_inputs, num_geoms);
+	UNIONFIND* uf = UF_create(num_geoms);
+	uint32_t* ids;
+	char* in_a_cluster;
+	uint32_t i;
+
+	/* Although POINT (1 0) and POINT (2 0) are within eps distance of each other,
+	 * they do not connect the two clusters because POINT (1 0) is not a core point.
+	 * See #3572
+	 */
+	double eps = 1.01;
+	uint32_t min_points = 5;
+	uint32_t expected_ids[] = { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 };
+
+	union_dbscan(geoms, num_geoms, uf, eps, min_points, &in_a_cluster);
+	ids = UF_get_collapsed_cluster_ids(uf, in_a_cluster);
+
+	ASSERT_INTARRAY_EQUAL(ids, expected_ids, num_geoms);
+
+	UF_destroy(uf);
+	for (i = 0; i < num_geoms; i++)
+	{
+		lwgeom_free(geoms[i]);
+	}
+	lwfree(geoms);
+	lwfree(in_a_cluster);
+	lwfree(ids);
+}
+
 void geos_cluster_suite_setup(void);
 void geos_cluster_suite_setup(void)
 {
@@ -265,4 +300,5 @@ void geos_cluster_suite_setup(void)
 	PG_ADD_TEST(suite, single_input_test);
 	PG_ADD_TEST(suite, empty_inputs_test);
 	PG_ADD_TEST(suite, multipoint_test);
+	PG_ADD_TEST(suite, dbscan_test);
 }

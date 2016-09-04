@@ -23,11 +23,11 @@ CREATE TABLE rt_bytea_test (
         rast raster
     );
 
-INSERT INTO rt_bytea_test 
+INSERT INTO rt_bytea_test
 VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -52,11 +52,11 @@ VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0 srid:10 width:10 height:20',
 )::raster
 );
 
-INSERT INTO rt_bytea_test 
+INSERT INTO rt_bytea_test
 VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:1, width:1, height:1',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -81,11 +81,11 @@ VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0, srid:1, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_bytea_test 
+INSERT INTO rt_bytea_test
 VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -110,11 +110,11 @@ VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
 )::raster
 );
 
-INSERT INTO rt_bytea_test 
+INSERT INTO rt_bytea_test
 VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -137,13 +137,13 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 ||
 '0100' -- height (uint16 1)
 )::raster
-); 
+);
 
 -----------------------------------------------------------------------
 --- Test HEX
 -----------------------------------------------------------------------
 
-SELECT 
+SELECT
 	id,
     name
 FROM rt_bytea_test
@@ -155,7 +155,7 @@ WHERE
 --- Test Base64
 -----------------------------------------------------------------------
 
-SELECT 
+SELECT
 	id,
     name
 FROM rt_bytea_test
@@ -167,7 +167,7 @@ WHERE
 --- Test Binary
 -----------------------------------------------------------------------
 
-SELECT 
+SELECT
 	id,
     name
 FROM rt_bytea_test

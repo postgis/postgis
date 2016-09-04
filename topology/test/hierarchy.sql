@@ -38,7 +38,7 @@ INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
     (SELECT topoelementarray_agg(ARRAY[id(feature), 1])
      FROM features.land_parcels
-     WHERE feature_name in ('F3','F6')) 
+     WHERE feature_name in ('F3','F6'))
   ));
 
 --
@@ -71,8 +71,8 @@ INSERT INTO features.big_streets VALUES ('R4', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_streets'),
     (SELECT topoelementarray_agg(ARRAY[id(feature), 3])
      FROM features.city_streets
-     WHERE feature_name in ('R4')) 
-  )); 
+     WHERE feature_name in ('R4'))
+  ));
 
 --
 -- Signs

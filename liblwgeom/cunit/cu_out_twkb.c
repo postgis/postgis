@@ -204,24 +204,24 @@ static void test_twkb_out_idlist(void)
 	idlist[0] = 2;
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, 0);
-	// printf("TWKB: %s\n",s);   
-	// printf("WKT: %s\n",w);   
+	// printf("TWKB: %s\n",s);
+	// printf("WKT: %s\n",w);
 	CU_ASSERT_STRING_EQUAL(s,"040402040802020101");		
 	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
 
-	/* 
+	/*
 	04 06 multipoint, size/idlist
 	07 size 7 bytes
 	02 two geometries
 	0408 idlist (2, 4)
 	0202 first point @ 1,1
-	0101 second point offset -1,-1 
+	0101 second point offset -1,-1
 	*/
 	idlist[0] = 2;
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, TWKB_SIZE);
 	// printf("TWKB: %s\n",s);
-	// printf("WKT: %s\n",w);   
+	// printf("WKT: %s\n",w);
 	CU_ASSERT_STRING_EQUAL(s,"04060702040802020101");		
 	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
 
@@ -238,7 +238,7 @@ static void test_twkb_out_idlist(void)
 	idlist[1] = 4;
 	cu_twkb_idlist("MULTIPOINT(1 1, 0 0)",idlist, 0, 0, 0, TWKB_SIZE | TWKB_BBOX);
 	// printf("TWKB: %s\n",s);
-	// printf("WKT: %s\n",w);   
+	// printf("WKT: %s\n",w);
 	CU_ASSERT_STRING_EQUAL(s,"04070B0002000202040802020101");		
 	CU_ASSERT_STRING_EQUAL(w,"MULTIPOINT(1 1,0 0)");		
 

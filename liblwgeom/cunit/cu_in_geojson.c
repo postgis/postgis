@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright 2013 Sandro Santilli <strk@keybit.net>
+ * Copyright 2013 Sandro Santilli <strk@kbt.io>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -26,7 +26,7 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
 	size_t size;
 
 	g = lwgeom_from_geojson(in, &srs);
-	if ( ! g ) 
+	if ( ! g )
 	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, cu_error_msg);
 		CU_ASSERT(g != NULL);
@@ -35,26 +35,26 @@ static void do_geojson_test(const char * exp, char * in, char * exp_srs, int pre
 
 	h = lwgeom_to_wkt(g, WKT_EXTENDED, 15, &size);
 
-	if (strcmp(h, exp)) 
+	if (strcmp(h, exp))
 	{
 		fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp, h);
 		CU_ASSERT_STRING_EQUAL(h, exp);
 	}
 
-	if ( exp_srs ) 
+	if ( exp_srs )
 	{
-		if ( ! srs ) 
+		if ( ! srs )
 		{
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: (null)\n", in, exp_srs);
 			CU_ASSERT_EQUAL(srs, exp_srs);
 		}
-		else if (strcmp(srs, exp_srs)) 
+		else if (strcmp(srs, exp_srs))
 		{
 			fprintf(stderr, "\nIn:   %s\nExp:  %s\nObt: %s\n", in, exp_srs, srs);
 			CU_ASSERT_STRING_EQUAL(srs, exp_srs);
 		}
-	} 
-	else if ( srs ) 
+	}
+	else if ( srs )
 	{
 		fprintf(stderr, "\nIn:   %s\nExp:  (null)\nObt: %s\n", in, srs);
 		CU_ASSERT_EQUAL(srs, exp_srs);

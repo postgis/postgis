@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011  OpenGeo.org 
+ * Copyright (C) 2011  OpenGeo.org
  *
  **********************************************************************/
 
@@ -46,8 +46,8 @@ static void handleInterrupt(int sig);
 
 #ifdef WIN32
 static void interruptCallback() {
-  if (UNBLOCKED_SIGNAL_QUEUE()) 
-    pgwin32_dispatch_queued_signals(); 
+  if (UNBLOCKED_SIGNAL_QUEUE())
+    pgwin32_dispatch_queued_signals();
 }
 #endif
 
@@ -59,10 +59,10 @@ void
 _PG_init(void)
 {
 
-  coreIntHandler = pqsignal(SIGINT, handleInterrupt); 
+  coreIntHandler = pqsignal(SIGINT, handleInterrupt);
 
 #ifdef WIN32
-#if POSTGIS_GEOS_VERSION >= 34 
+#if POSTGIS_GEOS_VERSION >= 34
   GEOS_interruptRegisterCallback(interruptCallback);
 #endif
   lwgeom_register_interrupt_callback(interruptCallback);
@@ -129,7 +129,7 @@ handleInterrupt(int sig)
 {
   printf("Interrupt requested\n"); fflush(stdout);
 
-#if POSTGIS_GEOS_VERSION >= 34 
+#if POSTGIS_GEOS_VERSION >= 34
   GEOS_interruptRequest();
 #endif
 

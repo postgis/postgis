@@ -570,7 +570,7 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 
 	ptr = output;
 
-	if (precision >= 0) 
+	if (precision >= 0)
 	{
 		f = pow(10, precision);
 	}

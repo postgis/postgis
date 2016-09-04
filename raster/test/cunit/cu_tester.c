@@ -15,7 +15,7 @@
 #include "cu_tester.h"
 
 /* Internal funcs */
-static void 
+static void
 cu_error_reporter(const char *fmt, va_list ap);
 
 /* ADD YOUR SUITE SETUP FUNCTION HERE (1 of 2) */

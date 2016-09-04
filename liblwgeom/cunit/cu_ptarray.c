@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2008 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under
@@ -41,7 +41,7 @@ static void test_ptarray_append_point(void)
 	POINT4D p;
 
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1 1)"));
-	p.x = 1; 
+	p.x = 1;
 	p.y = 1;
 	ptarray_append_point(line->points, &p, LW_TRUE);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
@@ -63,35 +63,35 @@ static void test_ptarray_insert_point(void)
 	POINT4D p;
 
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
-	p.x = 1; 
+	p.x = 1;
 	p.y = 1;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
 	ASSERT_STRING_EQUAL(wkt,"LINESTRING(1 1)");
 	lwfree(wkt);
 
-	p.x = 2; 
+	p.x = 2;
 	p.y = 20;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
 	ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,1 1)");
 	lwfree(wkt);
 
-	p.x = 3; 
+	p.x = 3;
 	p.y = 30;
 	ptarray_insert_point(line->points, &p, 1);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
 	ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,3 30,1 1)");
 	lwfree(wkt);
 
-	p.x = 4; 
+	p.x = 4;
 	p.y = 40;
 	ptarray_insert_point(line->points, &p, 0);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
 	ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1)");
 	lwfree(wkt);
 
-	p.x = 5; 
+	p.x = 5;
 	p.y = 50;
 	ptarray_insert_point(line->points, &p, 4);
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
@@ -314,7 +314,7 @@ static void test_ptarray_isccw(void)
 	lwpoly_free(poly);
 }
 
-static void test_ptarray_signed_area() 
+static void test_ptarray_signed_area()
 {
 	LWLINE *line;
 	double area;
@@ -342,7 +342,7 @@ static void test_ptarray_signed_area()
 
 
 
-static void test_ptarray_unstroke() 
+static void test_ptarray_unstroke()
 {
 	LWGEOM *in, *out;
 	char *str;
@@ -420,8 +420,8 @@ static void test_ptarray_unstroke()
 	// printf("%s\n", str);
 	lwfree(str);		
 	
-	// See http://trac.osgeo.org/postgis/ticket/2425 
-	// and http://trac.osgeo.org/postgis/ticket/2420 
+	// See http://trac.osgeo.org/postgis/ticket/2425
+	// and http://trac.osgeo.org/postgis/ticket/2420
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10,0 0)");
 	out = lwgeom_unstroke(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
@@ -460,7 +460,7 @@ static void test_ptarray_unstroke()
 
 }
 
-static void test_ptarray_contains_point() 
+static void test_ptarray_contains_point()
 {
 /* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt, int *winding_number) */
 
@@ -549,7 +549,7 @@ static void test_ptarray_contains_point()
 	lwline_free(lwline);
 }
 
-static void test_ptarrayarc_contains_point() 
+static void test_ptarrayarc_contains_point()
 {
 	/* int ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
 
@@ -687,7 +687,7 @@ static void test_ptarrayarc_contains_point()
 	lwline_free(lwline);
 }
 
-static void test_ptarray_scale() 
+static void test_ptarray_scale()
 {
   LWLINE *line;
   POINTARRAY *pa;
@@ -704,28 +704,28 @@ static void test_ptarray_scale()
   wktout = lwgeom_to_text(lwline_as_lwgeom(line));
   ASSERT_STRING_EQUAL(wktout, wkt);
   lwfree(wktout);
-  
+
   factor.x = 2;
   wkt = "LINESTRING ZM (0 1 2 3,2 2 3 0,-4 -3 0 -1,-6 0 -1 -2)";
   ptarray_scale(pa, &factor);
   wktout = lwgeom_to_text(lwline_as_lwgeom(line));
   ASSERT_STRING_EQUAL(wktout, wkt);
   lwfree(wktout);
-  
+
   factor.x = 1; factor.y = 3;
   wkt = "LINESTRING ZM (0 3 2 3,2 6 3 0,-4 -9 0 -1,-6 0 -1 -2)";
   ptarray_scale(pa, &factor);
   wktout = lwgeom_to_text(lwline_as_lwgeom(line));
   ASSERT_STRING_EQUAL(wktout, wkt);
   lwfree(wktout);
-  
+
   factor.x = 1; factor.y = 1; factor.z = -2;
   wkt = "LINESTRING ZM (0 3 -4 3,2 6 -6 0,-4 -9 -0 -1,-6 0 2 -2)";
   ptarray_scale(pa, &factor);
   wktout = lwgeom_to_text(lwline_as_lwgeom(line));
   ASSERT_STRING_EQUAL(wktout, wkt);
   lwfree(wktout);
-  
+
   factor.x = 1; factor.y = 1; factor.z = 1; factor.m = 2;
   wkt = "LINESTRING ZM (0 3 -4 6,2 6 -6 0,-4 -9 -0 -2,-6 0 2 -4)";
   ptarray_scale(pa, &factor);

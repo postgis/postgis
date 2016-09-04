@@ -15,7 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 #include "CUnit/CUnit.h"
-#include "liblwgeom_internal.h" 
+#include "liblwgeom_internal.h"
 #include "varint.h"
 #include "cu_tester.h"
 
@@ -38,7 +38,7 @@ static void do_test_u32_varint(uint32_t nr, int expected_size, char* expected_re
 	uint8_t buf[16];
 	
 	size = varint_u32_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 
 	CU_ASSERT_EQUAL(size, expected_size);
@@ -55,7 +55,7 @@ static void do_test_s32_varint(int32_t nr,int expected_size, char* expected_res)
 	char *hex;
 	
 	size = varint_s32_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
@@ -73,7 +73,7 @@ static void do_test_u64_varint(uint64_t nr,int expected_size, char* expected_res
 	char *hex;
 	
 	size = varint_u64_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}
@@ -91,7 +91,7 @@ static void do_test_s64_varint(int64_t nr,int expected_size, char* expected_res)
 	char *hex;
 	
 	size = varint_s64_encode_buf(nr, buf);
-	if ( size != expected_size ) 
+	if ( size != expected_size )
 	{
 		printf("Expected: %d\nObtained: %d\n", expected_size, size);
 	}

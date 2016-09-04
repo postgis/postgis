@@ -215,7 +215,7 @@ SELECT
 	round(stddev::numeric, 3),
 	round(min::numeric, 3),
 	round(max::numeric, 3)
-FROM ST_SummaryStats('test1', 'rast');
+FROM ST_SummaryStats('test_summarystats', 'rast');
 ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
 SAVEPOINT test;
@@ -226,7 +226,7 @@ SELECT
 	round(stddev::numeric, 3),
 	round(min::numeric, 3),
 	round(max::numeric, 3)
-FROM ST_SummaryStats('test_summarystats', 'rast1');
+FROM ST_SummaryStats('test_summarystats', 'rast');
 ROLLBACK TO SAVEPOINT test;
 RELEASE SAVEPOINT test;
 SAVEPOINT test;

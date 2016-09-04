@@ -1,4 +1,4 @@
-/* -- lexicon.c 
+/* -- lexicon.c
 
 This file reads the lexicon definitions into a chained
 hash table and handles the lookups of words in the hash table,
@@ -40,7 +40,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 /* -- local prototypes -- */
 static unsigned calc_hash( char * ) ;
-static ENTRY **create_hash_table( ERR_PARAM * ) ; 
+static ENTRY **create_hash_table( ERR_PARAM * ) ;
 static int add_dict_entry( ERR_PARAM *, ENTRY ** , char * , int , SYMB , char * ) ;
 
 #ifndef BUILD_API
@@ -49,7 +49,7 @@ static int read_lexicon( ERR_PARAM *, ENTRY ** , FILE * ) ;
 #endif
 
 LEXICON *lex_init( ERR_PARAM *err_p ) ;
-static int append_new_def( ERR_PARAM *, ENTRY * , SYMB , char * , int ) ; 
+static int append_new_def( ERR_PARAM *, ENTRY * , SYMB , char * , int ) ;
 static unsigned elf_hash( char * ) ;
 void print_lexicon( ENTRY ** hash_table ) ;
 
@@ -111,9 +111,9 @@ ENTRY **create_lexicon( PAGC_GLOBAL *glo_p ,
                         const char *gaz_name ) {
    /* -- called by init_stand_process to read in the Lexicon and set up the
       definitions in memory for hash table access -- */
-   FILE *gaz_file , 
+   FILE *gaz_file ,
         *dict_file ;
-   ENTRY **hash_table ; 
+   ENTRY **hash_table ;
 
    if ( (hash_table = create_hash_table( glo_p -> process_errors ) ) == NULL ) {
        return NULL ;
@@ -122,9 +122,9 @@ ENTRY **create_lexicon( PAGC_GLOBAL *glo_p ,
    if ( gaz_name != NULL ) {
       if ( ( gaz_file = open_aux_file( glo_p ,
                                        gaz_name ) ) == NULL )
-         return NULL ; 
+         return NULL ;
       if ( !read_lexicon( glo_p -> process_errors ,
-                          hash_table , 
+                          hash_table ,
                           gaz_file ) ) {
           fclose( gaz_file ) ;
           return NULL ;
@@ -136,7 +136,7 @@ ENTRY **create_lexicon( PAGC_GLOBAL *glo_p ,
                                      lex_name ) ) == NULL )
       return NULL  ;
    if ( !read_lexicon( glo_p -> process_errors ,
-                       hash_table , 
+                       hash_table ,
                        dict_file ) ) {
        fclose( dict_file ) ;
        return NULL ;
@@ -148,13 +148,13 @@ ENTRY **create_lexicon( PAGC_GLOBAL *glo_p ,
 /* ----------------------------------------------------
 lexicon.c (read_lexicon) -
 called by lexicon.c (create_lexicon) for each file
-calls convert_field, add_dict_entry  
+calls convert_field, add_dict_entry
 returns FALSE if error encountered
 stdio.h (fgets,feof,sscanf)
 uses macro BLANK_STRING
 -------------------------------------------------------*/
 static int read_lexicon( ERR_PARAM *err_p ,
-                         ENTRY **hash_table , 
+                         ENTRY **hash_table ,
                          FILE *CFile ) {
    char record_buffer[ MAXSTRLEN ] ;
    char lookup_str[ MAXTEXT ] ;
@@ -167,8 +167,8 @@ static int read_lexicon( ERR_PARAM *err_p ,
    while ( !feof( CFile ) ) {
       /* -- read in each line of the csv file and add to hash table -- */
       BLANK_STRING(record_buffer) ;
-      fgets( record_buffer , 
-             MAXSTRLEN , 
+      fgets( record_buffer ,
+             MAXSTRLEN ,
              CFile ) ;
 
 #ifdef SEW_NOT_SURE_IF_WE_NEED_THIS
@@ -197,7 +197,7 @@ static int read_lexicon( ERR_PARAM *err_p ,
       next_str = convert_field( standard_str ,
                                 next_str ) ;
       if ( add_dict_entry( err_p ,
-                           hash_table , 
+                           hash_table ,
                            lookup_str ,
                            ( num_def - 1 ) ,
                            cur_token ,
@@ -226,7 +226,7 @@ static char *convert_field( char *buf ,
       return NULL ;
    while ( ( c = *s++ ) != SENTINEL ) {
       if ( c == '\"' ||
-           c == '\r' ) 
+           c == '\r' )
          continue ; /* -- ignore quotes and carriage returns -- */
       /* -- zero terminate field and record delimiters -- */
       if ( c == '\n' ||
@@ -256,7 +256,7 @@ void destroy_lexicon(ENTRY ** hash_table)
 	{
 		return ;
 	}
-	for (__i__ = 0 ;__i__ < LEXICON_HTABSIZE ;__i__++ ) 
+	for (__i__ = 0 ;__i__ < LEXICON_HTABSIZE ;__i__++ )
 	{
 		for (__E__ = hash_table[__i__] ;__E__ != NULL ;__E__ = __F__)
 		{
@@ -302,7 +302,7 @@ called by lexicon.c (add_dict_entry)
 calls lexicon.c (calc_hash)
 string.h (strcmp)
 -------------------------------------------------------*/
-ENTRY *find_entry(ENTRY **hash_table,char *lookup_str) 
+ENTRY *find_entry(ENTRY **hash_table,char *lookup_str)
 {
 	/* -- called to create a lexeme -- */
 	ENTRY *__E__ ;
@@ -325,8 +325,8 @@ lexicon.c (elf_hash)
 called by lexicon.c (calc_hash)
 -------------------------------------------------------*/
 static unsigned elf_hash( char *key_str ) {
-  unsigned h , 
-           g , 
+  unsigned h ,
+           g ,
            c ;
 
   h = 0 ;
@@ -366,7 +366,7 @@ static ENTRY **create_hash_table(ERR_PARAM *err_p)
 	unsigned __i__ ;
 	ENTRY **__hash_table__ ;
 	PAGC_CALLOC_STRUC(__hash_table__,ENTRY *,LEXICON_HTABSIZE,err_p,NULL) ;
-	for (__i__ = 0 ;__i__ < LEXICON_HTABSIZE ;__i__++ ) 
+	for (__i__ = 0 ;__i__ < LEXICON_HTABSIZE ;__i__++ )
 	{
 		__hash_table__[__i__] = NULL ;
 	}
@@ -381,7 +381,7 @@ uses macro PAGC_ALLOC_STRUC , PAGC_STORE_STR, RET_ERR
 return ERR_FAIL if error
 -------------------------------------------------------*/
 static int add_dict_entry( ERR_PARAM *err_p ,
-                           ENTRY **hash_table , 
+                           ENTRY **hash_table ,
                            char *lookup_str ,
                            int def_num ,
                            SYMB t ,
@@ -391,13 +391,13 @@ static int add_dict_entry( ERR_PARAM *err_p ,
    E = find_entry( hash_table ,
                    lookup_str ) ;
    if ( E == NULL ) {
-      unsigned hash_index ; 
+      unsigned hash_index ;
 
       PAGC_ALLOC_STRUC(E,ENTRY,err_p,ERR_FAIL);
       /* -- add the Lookup string to the record -- */
       PAGC_STORE_STR(E->Lookup,lookup_str,err_p,ERR_FAIL) ;
       /* -- add new entry to beginning of table -- */
-      hash_index = calc_hash( lookup_str ) ; 
+      hash_index = calc_hash( lookup_str ) ;
 
       E -> Next = hash_table[ hash_index ] ; /* -- collision chain -- */
       hash_table[ hash_index ] = E ;
@@ -407,7 +407,7 @@ static int add_dict_entry( ERR_PARAM *err_p ,
                                         FALSE ,
                                         err_p ) ) == NULL ) {
           return ERR_FAIL ;
-      }  
+      }
   } else {
       int err_stat ;
       if ( E -> DefList == NULL ) {
@@ -437,10 +437,10 @@ static int append_new_def( ERR_PARAM *err_p ,
                            ENTRY *E ,
                            SYMB t ,
                            char *text ,
-                           int def_num ) { 
+                           int def_num ) {
 
-   DEF *D, 
-       *pd, 
+   DEF *D,
+       *pd,
        *cd ;
    for ( cd = E -> DefList , pd = NULL ;
          cd != NULL ;
@@ -468,10 +468,10 @@ static int append_new_def( ERR_PARAM *err_p ,
 }
 
 /*--------------------------------------------------------------------
-lexicon.c (create_def) 
+lexicon.c (create_def)
 called by lexicon.c (append_new_def) tokenize.c (setup_default_defs)
 allocate memory for lexicon entry.
-Pflag is TRUE for default entries 
+Pflag is TRUE for default entries
 returns NULL for allocation error
 uses macro PAGC_ALLOC_STRUC, PAGC_STORE_STR
 -------------------------------------------------------------------- */

@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
  *
- * Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -112,12 +112,12 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
 
 	/*
-	** Linestring vs its start point 
+	** Linestring vs its start point
 	*/
 	DIST2DTEST("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
 
 	/*
-	** Linestring vs its end point 
+	** Linestring vs its end point
 	*/
 	DIST2DTEST("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
 
@@ -132,13 +132,13 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
 
 	/*
-	* Circular string and point 
+	* Circular string and point
 	*/
 	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "POINT(0 0)", 1);
 	DIST2DTEST("CIRCULARSTRING(-3 0, -2 0, -1 0, 0 1, 1 0)", "POINT(0 0)", 1);
 
 	/*
-	* Circular string and Circular string 
+	* Circular string and Circular string
 	*/
 	DIST2DTEST("CIRCULARSTRING(-1 0, 0 1, 1 0)", "CIRCULARSTRING(0 0, 1 -1, 2 0)", 1);
 
@@ -174,7 +174,7 @@ static void test_mindistance2d_tolerance(void)
 	DIST2DTEST(cs1, "CURVEPOLYGON(CIRCULARSTRING(1 4, 2 5, 3 4, 2 3, 1 4))", 0.0);
 
 	/*
-	* MultiSurface and CurvePolygon 
+	* MultiSurface and CurvePolygon
 	*/
 	static char *cs2 = "MULTISURFACE(POLYGON((0 0,0 4,4 4,4 0,0 0)),CURVEPOLYGON(CIRCULARSTRING(8 2,10 4,12 2,10 0,8 2)))";
 	DIST2DTEST(cs2, "CURVEPOLYGON(CIRCULARSTRING(5 2,6 3,7 2,6 1,5 2))", 1);
@@ -628,7 +628,7 @@ test_lw_dist2d_seg_arc(void)
 static void
 test_lw_dist2d_arc_arc(void)
 {
-	/* lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, 
+	/* lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 	                     const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
 	                     DISTPTS *dl) */
 	DISTPTS dl;

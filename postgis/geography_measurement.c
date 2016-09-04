@@ -75,7 +75,7 @@ Datum geography_distance_knn(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double distance;
 	double tolerance = FP_TOLERANCE;
-	bool use_spheroid = false; /* must use sphere, can't get index to harmonize with spheroid */ 
+	bool use_spheroid = false; /* must use sphere, can't get index to harmonize with spheroid */
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -138,7 +138,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	GSERIALIZED *g2 = NULL;
 	double distance;
 	double tolerance = FP_TOLERANCE;
-	bool use_spheroid = true; 
+	bool use_spheroid = true;
 	SPHEROID s;
 
 	/* Get our geometry objects loaded into memory. */
@@ -148,7 +148,7 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 	/* Read our tolerance value. */
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 		tolerance = PG_GETARG_FLOAT8(2);
-    
+
 	/* Read our calculation type. */
 	if ( PG_NARGS() > 3 && ! PG_ARGISNULL(3) )
 		use_spheroid = PG_GETARG_BOOL(3);
@@ -706,7 +706,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	gbox_pt_outside(&gbox, &pt);
 
 	lwpoint = (LWGEOM*) lwpoint_make2d(4326, pt.x, pt.y);
-	/* TODO: Investigate where this is used, this was probably not 
+	/* TODO: Investigate where this is used, this was probably not
 	* returning a geography object before. How did this miss checking
 	*/
 	lwgeom_set_geodetic(lwpoint, true);
@@ -861,7 +861,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	/* Are these data antarctic? Lambert Azimuthal Equal Area South. */
 	if ( center.y < -70.0 && ywidth < 45.0 )
 	{
-		PG_RETURN_INT32(SRID_SOUTH_LAMBERT); 
+		PG_RETURN_INT32(SRID_SOUTH_LAMBERT);
 	}
 
 	/*
@@ -889,7 +889,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	** Can we fit into a custom LAEA area? (30 degrees high, variable width) 
+	** Can we fit into a custom LAEA area? (30 degrees high, variable width)
 	** We will allow overlap into adjoining areas, but use a slightly narrower test (25) to try
 	** and minimize the worst case.
 	** Again, we are hoping the dateline doesn't trip us up much
@@ -932,7 +932,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 
 /*
 ** geography_project(GSERIALIZED *g, distance, azimuth)
-** returns point of projection given start point, 
+** returns point of projection given start point,
 ** azimuth in radians (bearing) and distance in meters
 */
 PG_FUNCTION_INFO_V1(geography_project);

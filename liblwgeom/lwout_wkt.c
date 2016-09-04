@@ -64,15 +64,15 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 
 /*
 * Write an empty token out, padding with a space if
-* necessary. 
+* necessary.
 */
 static void empty_to_wkt_sb(stringbuffer_t *sb)
 {
 	if ( ! strchr(" ,(", stringbuffer_lastchar(sb)) ) /* "EMPTY" */
-	{ 
-		stringbuffer_append(sb, " "); 
+	{
+		stringbuffer_append(sb, " ");
 	}
-	stringbuffer_append(sb, "EMPTY"); 
+	stringbuffer_append(sb, "EMPTY");
 }
 
 /*
@@ -155,7 +155,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)line, sb, variant);
 	}
 	if ( lwline_is_empty(line) )
-	{  
+	{
 		empty_to_wkt_sb(sb);
 		return;
 	}
@@ -513,7 +513,7 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 }
 
 /*
-* TRIANGLE 
+* TRIANGLE
 */
 static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int precision, uint8_t variant)
 {
@@ -523,14 +523,14 @@ static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int 
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)tri, sb, variant);
 	}
 	if ( lwtriangle_is_empty(tri) )
-	{  
+	{
 		empty_to_wkt_sb(sb);
 		return;
 	}
 
 	stringbuffer_append(sb, "("); /* Triangles have extraneous brackets */
 	ptarray_to_wkt_sb(tri->points, sb, precision, variant);
-	stringbuffer_append(sb, ")"); 
+	stringbuffer_append(sb, ")");
 }
 
 /*

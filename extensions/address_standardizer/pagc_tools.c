@@ -1,4 +1,4 @@
-/* -- pagc_tools.c 
+/* -- pagc_tools.c
 
 Various and miscellaneous functions.
 
@@ -90,27 +90,27 @@ static const char *InSymbNames[] = {
    "QUAD",
 } ;
 
-/* ------------------------------------------------------------ 
+/* ------------------------------------------------------------
    ISO 8859 character set may pop up in some files. After 1998
-   TigerLine will use them. 
+   TigerLine will use them.
 ------------------------------------------------------------- */
 void convert_latin_one ( char *inp ) {
    unsigned char *str ;
 
-   for ( str = ( unsigned char * ) inp ; 
-         *str != SENTINEL ; 
+   for ( str = ( unsigned char * ) inp ;
+         *str != SENTINEL ;
          str++ ) {
       unsigned char ch ;
       ch = *str ;
-      /* ------------------------------------------- 
+      /* -------------------------------------------
          if bit 7 is set, reset bit 5 so both upper
-         and lower case can be done together 
+         and lower case can be done together
       --------------------------------------------- */
       if ( ch & 0x80 ) {
          ch &= 0xDF ;
-         /* ----------------------------------------- 
+         /* -----------------------------------------
             reduce letters with diacritical marks to
-            their unmarked base letters 
+            their unmarked base letters
          ------------------------------------------ */
          if ( ch >= 0xC0 &&
               ch <= 0xC6 )
@@ -132,19 +132,19 @@ void convert_latin_one ( char *inp ) {
          else if ( ch >= 0xdd && ch < 0xdf )
             ch = 'Y' ;
          else
-            /* ------------------------------- 
+            /* -------------------------------
                just clear the top bit so it
                won't gum up the edit distance
-               machinery 
+               machinery
             -------------------------------- */
             ch &= 0x7f ;
       }
       *str = ch ;
    }
 
-   /* ---------------------------------------------- 
+   /* ----------------------------------------------
    while we're at it, add a newline to the end
-      because the lexical scanner likes it like that 
+      because the lexical scanner likes it like that
    ----------------------------------------------- */
    *str++ = '\n' ;
    *str = SENTINEL ;
@@ -158,7 +158,7 @@ void char_append( const char *div ,
       return ;
    /* -- skip the delimitor if dest is empty -- */
    if ( *dest == SENTINEL ) {
-      append_string_to_max( dest , 
+      append_string_to_max( dest ,
                             ( char * ) src ,
                             max_wid ) ;
       return ;
@@ -182,7 +182,7 @@ int out_symb_value( const char *src ) {
    for ( i = 0 ;
          i < MAXOUTSYM ;
          i++ ) {
-      if ( strcmp( src , 
+      if ( strcmp( src ,
                    OutSymbNames[ i ] ) == 0 )
          return i ;
    }
@@ -234,10 +234,10 @@ void parse_file_name( const char *input_path_name ,
 	while ( ( end_ptr > input_path_name ) && NOT_PATH_DELIMITOR(*end_ptr) ) {
 		end_ptr -- ;
 	}
-	/* --------------------------------------------------------------- 
+	/* ---------------------------------------------------------------
 	either end_ptr has the last delimitor or it is at string start.
 		If the first case, we need to increment to get the filename and
-		need to copy everything up to and including for the path. 
+		need to copy everything up to and including for the path.
 	-----------------------------------------------------------------*/
 	/* -- copy from beg to endptr to output path -- */
 	dest = output_head ;
@@ -283,7 +283,7 @@ void combine_path_file( char global_path_separator ,
    combine_buf[ 0 ] = global_path_separator ;
    combine_buf[ 1 ] = SENTINEL ;
 
-   if ( ( input_head != NULL ) && 
+   if ( ( input_head != NULL ) &&
         ( input_head[ 0 ] != SENTINEL ) ) {
       append_string_to_max( output_path_name ,
                             input_head ,
@@ -304,7 +304,7 @@ void combine_path_file( char global_path_separator ,
 void upper_case( char *d ,
                  const char *s ) {
    /* -- make an uppercase copy in d of string in s -- */
-   for ( ; 
+   for ( ;
          *s != SENTINEL ;
          s++ ) {
       *d++ = ( islower( *s )? toupper( *s ) : *s ) ;
@@ -329,7 +329,7 @@ void fast_reverse_endian( char *location_to_reverse , int bytes_to_reverse ) {
 		char a  = *start_byte_ptr ;
 		*start_byte_ptr = *end_byte_ptr ;
 		*end_byte_ptr = a ;
-	}                     
+	}
 }
 
 /*=================================================================
@@ -343,7 +343,7 @@ void append_string_to_max( char *dest_buf_start ,
    char *d_ptr , *s_ptr , *buf_end ;
 
    /* -- move to end of current contents of buffer -- */
-   d_ptr = dest_buf_start ; 
+   d_ptr = dest_buf_start ;
    while ( ( a = *d_ptr ) != SENTINEL ) {
       d_ptr ++ ;
    }
@@ -357,14 +357,14 @@ void append_string_to_max( char *dest_buf_start ,
 #endif
       exit( 1 ) ;
 #else
-      /* TODO if postgresql we can throw and error or notice 
+      /* TODO if postgresql we can throw and error or notice
          but for now we will just truncate the string */
       *d_ptr = SENTINEL ;
       return;
 #endif
    }
    s_ptr = src_str_start ;
-   while ( ( ( a = *s_ptr++ ) != SENTINEL ) && 
+   while ( ( ( a = *s_ptr++ ) != SENTINEL ) &&
            ( d_ptr != buf_end ) ) {
       *d_ptr++ = a ;
    }
@@ -381,7 +381,7 @@ int establish_directory( char * c_w_d ,
                          char * p_s ) {
    char *c_w_d_ptr ;
 
-   c_w_d_ptr = getcwd( c_w_d , 
+   c_w_d_ptr = getcwd( c_w_d ,
                        ( PATHNAME_LEN - 1 ) ) ;
    if ( c_w_d_ptr  == NULL ) {
       return FALSE ;
@@ -417,18 +417,18 @@ int establish_directory( char * c_w_d ,
 #ifdef MSYS_POSIX
 /*------------------------------------------------------------------
 pagc_tools.c (conform_directory_separator)
--- called only if compiled with MSYS_POSIX defined ..... 
+-- called only if compiled with MSYS_POSIX defined .....
 -- transform non-POSIX directory separators to conform with POSIX --
 called by init_global
 string.h (strlen)
 -------------------------------------------------------------------*/
 static void conform_directory_separator( char * path_name ) {
-   int i , 
-       pn_len ;   
+   int i ,
+       pn_len ;
 
    pn_len = strlen( path_name ) ;
-   for ( i = 0 ; 
-         i < pn_len ; 
+   for ( i = 0 ;
+         i < pn_len ;
          i++ ) {
       if ( path_name[ i ] == BACK_SLASH ) {
          path_name[ i ] = FORE_SLASH ;

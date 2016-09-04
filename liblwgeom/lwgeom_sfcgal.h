@@ -42,6 +42,6 @@ LWGEOM2SFCGAL(const LWGEOM* geom);
 
 /* No Operation SFCGAL function, used (only) for cunit tests
  * Take a PostGIS geometry, send it to SFCGAL and return it unchanged
- */ 
+ */
 LWGEOM*
 lwgeom_sfcgal_noop(const LWGEOM* geom_in);

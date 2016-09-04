@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -44,7 +44,7 @@ BEGIN
   -- Update faces sequence
   EXECUTE 'SELECT setval(' || quote_literal(
       quote_ident(newtopo) || '.face_face_id_seq'
-    ) || ', (SELECT last_value FROM ' 
+    ) || ', (SELECT last_value FROM '
     || quote_ident(atopology) || '.face_face_id_seq))';
 
   -- Copy nodes
@@ -54,7 +54,7 @@ BEGIN
   -- Update node sequence
   EXECUTE 'SELECT setval(' || quote_literal(
       quote_ident(newtopo) || '.node_node_id_seq'
-    ) || ', (SELECT last_value FROM ' 
+    ) || ', (SELECT last_value FROM '
     || quote_ident(atopology) || '.node_node_id_seq))';
 
   -- Copy edges
@@ -64,20 +64,20 @@ BEGIN
   -- Update edge sequence
   EXECUTE 'SELECT setval(' || quote_literal(
       quote_ident(newtopo) || '.edge_data_edge_id_seq'
-    ) || ', (SELECT last_value FROM ' 
+    ) || ', (SELECT last_value FROM '
     || quote_ident(atopology) || '.edge_data_edge_id_seq))';
 
-  -- Copy layers and their TopoGeometry sequences 
+  -- Copy layers and their TopoGeometry sequences
   FOR rec IN SELECT * FROM topology.layer WHERE topology_id = oldtopo_id
   LOOP
     INSERT INTO topology.layer (topology_id, layer_id, feature_type,
-      level, child_id, schema_name, table_name, feature_column) 
+      level, child_id, schema_name, table_name, feature_column)
       VALUES (newtopo_id, rec.layer_id, rec.feature_type,
               rec.level, rec.child_id, newtopo,
               'LAYER' ||  rec.layer_id, '');
     -- Create layer's TopoGeometry sequences
-    EXECUTE 'SELECT last_value FROM ' 
-      || quote_ident(atopology) || '.topogeo_s_' || rec.layer_id 
+    EXECUTE 'SELECT last_value FROM '
+      || quote_ident(atopology) || '.topogeo_s_' || rec.layer_id
       INTO STRICT n;
     EXECUTE 'CREATE SEQUENCE ' || quote_ident(newtopo)
       || '.topogeo_s_' || rec.layer_id;

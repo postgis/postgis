@@ -2,7 +2,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.net
- * 
+ *
  * Copyright (C) 2008 OpenGeo.org
  * Copyright (C) 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
  *
@@ -56,7 +56,7 @@ int GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geomet
 
 
 /* Return allocated string containing UTF8 string converted from encoding fromcode */
-static int 
+static int
 utf8(const char *fromcode, char *inputbuf, char **outputbuf)
 {
 	iconv_t cd;
@@ -524,9 +524,9 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		pt2.x = inner->list[1].x;
 		pt2.y = inner->list[1].y;
 
-		/* 
-		* If we assume that the case of the "big polygon w/o hole 
-		* containing little polygon w/ hold" is ordered so that the 
+		/*
+		* If we assume that the case of the "big polygon w/o hole
+		* containing little polygon w/ hold" is ordered so that the
 		* big polygon comes first, then checking the list in reverse
 		* will assign the little polygon's hole to the little polygon
 		* w/o a lot of extra fancy containment logic here
@@ -563,11 +563,11 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	}
 
 	*Out = Outer;
-	/* 
+	/*
 	* Only free the containing Inner array, not the ring elements, because
 	* the rings are now owned by the linked lists in the Outer array elements.
 	*/
-	free(Inner); 
+	free(Inner);
 
 	return out_index;
 }
@@ -1299,7 +1299,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->schema, state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\".\"%s\";\n", state->config->schema,
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\".\"%s\";\n", state->config->schema,
 			                     state->config->table);
 		}
 		else
@@ -1310,7 +1310,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 				                     state->config->table, state->geo_col);
 			}
 
-			stringbuffer_aprintf(sb, "DROP TABLE \"%s\";\n", state->config->table);
+			stringbuffer_aprintf(sb, "DROP TABLE IF EXISTS \"%s\";\n", state->config->table);
 		}
 	}
 

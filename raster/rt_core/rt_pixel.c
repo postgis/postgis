@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2013  Nathaniel Hunter Clay <clay.nathaniel@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -315,7 +315,7 @@ rt_errorstate rt_pixel_set_to_array(
 	    rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d", mask->dimx, mask->dimy,  dim[0],  dim[1]);
 	    return ES_ERROR;
 	  }
-	  
+	
 	  if (mask->values == NULL || mask->nodata == NULL) {
 	    rterror("rt_pixel_set_array: Invalid mask");
 	    return ES_ERROR;
@@ -389,7 +389,7 @@ rt_errorstate rt_pixel_set_to_array(
 			nodatas[_y][_x] = 0;
 		}
 		/* mask */
-		else { 
+		else {
 			/* unweighted (boolean) mask */
 			if (mask->weighted == 0) {
 				/* pixel is set to zero or nodata */

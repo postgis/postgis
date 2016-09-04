@@ -1,4 +1,4 @@
-/* -- tokenize.c 
+/* -- tokenize.c
 
 This module takes the lexical scanner's output, possibly recombining
 it, looking it up in the lexicon for possible definitions, preparing
@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include <stddef.h>
 #include "pagc_api.h"
 
-static SYMB precedes_identifier_list[] = { BOXT , ROAD , UNITH , PRETYP , BUILDH , RR , FAIL } ;
+static SYMB precedes_identifier_list[] = { BOXT , ROAD , AMPERS, UNITH , PRETYP , BUILDH , RR , FAIL } ;
 static SYMB precedes_route_list[] = { TYPE , QUALIF , PROV , FAIL } ;
 #ifdef COMBINE_FRACTS_WITH_NUMBS
 static SYMB FractL[] = { FRACT , FAIL } ;
@@ -46,20 +46,20 @@ static int next_morph( STAND_PARAM * ) ;
 static int no_space( LEXEME * , struct morph * ) ;
 static int process_lexeme( STAND_PARAM * , int , int ) ;
 static int is_route( ENTRY * ) ;
-static int is_direction_letter( LEXEME * , LEXEME *, struct morph * ,DEF **, char * ) ; 
+static int is_direction_letter( LEXEME * , LEXEME *, struct morph * ,DEF **, char * ) ;
 #ifdef EXPRESS_ORDINALS
 static int is_ordinal_suffix( LEXEME * , LEXEME *, struct morph * ,DEF **, char * ) ;
 #endif
-static int is_zip( STAND_PARAM * , DEF ** , struct morph * ) ; 
-static void fix_mixed( STAND_PARAM * , DEF **, struct morph * ) ; 
-static void reunite_mixed( STAND_PARAM * , DEF ** , struct morph * , char * ) ; 
-static void mark_hyphen_unit( int , LEXEME * , struct morph * , DEF ** ) ; 
-static void numeric_tail( STAND_PARAM * , DEF ** , struct morph *, char * ) ; 
-static DEF *new_defs( struct morph * , DEF ** , ENTRY * , int , char * ) ; 
-static int set_lexeme( STAND_PARAM *, int , int , DEF *, char * ) ; 
-static void reset_lexeme( LEXEME * ) ; 
+static int is_zip( STAND_PARAM * , DEF ** , struct morph * ) ;
+static void fix_mixed( STAND_PARAM * , DEF **, struct morph * ) ;
+static void reunite_mixed( STAND_PARAM * , DEF ** , struct morph * , char * ) ;
+static void mark_hyphen_unit( int , LEXEME * , struct morph * , DEF ** ) ;
+static void numeric_tail( STAND_PARAM * , DEF ** , struct morph *, char * ) ;
+static DEF *new_defs( struct morph * , DEF ** , ENTRY * , int , char * ) ;
+static int set_lexeme( STAND_PARAM *, int , int , DEF *, char * ) ;
+static void reset_lexeme( LEXEME * ) ;
 static void combine_lexemes( STAND_PARAM * , struct morph * , DEF * ) ;
-static int phrase_from_morphs( struct morph * , char * , int  , int ) ; 
+static int phrase_from_morphs( struct morph * , char * , int  , int ) ;
 
 #define MAKE_DEFAULT_DEF_FIRST(DTOKEN,TOKEN) \
    if ( ( glo_p -> default_def[DTOKEN] = create_def(TOKEN,NULL,0,TRUE,glo_p->process_errors) ) == NULL) \
@@ -133,8 +133,8 @@ tokenize.c (process_input)
 return FALSE on error (too many lexemes)
 calls tokenize.c (process_lexeme)
 --------------------------------------------------------- */
-int process_input( STAND_PARAM *s_p ) { 
-  /* -- process all the morphs not yet made into lexemes 
+int process_input( STAND_PARAM *s_p ) {
+  /* -- process all the morphs not yet made into lexemes
      -- called by scanner -- */
 
 
@@ -147,7 +147,7 @@ int process_input( STAND_PARAM *s_p ) {
      if ( s_p -> base_morph == ERR_FAIL ) {
         return FALSE ;
      }
-     s_p -> LexNum++ ; 
+     s_p -> LexNum++ ;
   }
   return TRUE ;
 }
@@ -161,16 +161,16 @@ calls tokenize.c (process_lexeme) and util.c (upper_case)
 calls tokenize.c (next_morph)
 uses macros CLIENT_ERR, RET_ERR1
 --------------------------------------------------------- */
-int new_morph( STAND_PARAM *s_p , 
+int new_morph( STAND_PARAM *s_p ,
                DEFDEF t ,
                const char *s ,
                int length ) {
-   struct morph *morph_vector; 
-   int i , j ; 
+   struct morph *morph_vector;
+   int i , j ;
 
-   morph_vector = s_p -> morph_array ; 
+   morph_vector = s_p -> morph_array ;
    /* -- called by scanner to do one morpheme -- */
-   i = s_p -> cur_morph ; 
+   i = s_p -> cur_morph ;
    j = s_p -> base_morph ;
 
    if ( length >= MAXTEXT ) {
@@ -181,15 +181,15 @@ int new_morph( STAND_PARAM *s_p ,
                 FALSE) ;
    }
 
-   morph_vector[ i ]. Term = 0 ; 
-   morph_vector[ i ] . Sym = t ; 
+   morph_vector[ i ]. Term = 0 ;
+   morph_vector[ i ] . Sym = t ;
    /* -- Lexicon is in upper case - we need to match. -- */
-   upper_case( morph_vector[ i ] . Text , 
+   upper_case( morph_vector[ i ] . Text ,
                s ) ;
-   morph_vector[ i ] . TextLen = length ; 
+   morph_vector[ i ] . TextLen = length ;
 
    /* -- Is it time to look for a phrase? -- */
-   
+
    if ( i == ( j + MAXPHRASE - 1 ) ) {
       if ( ( s_p -> base_morph = process_lexeme( s_p ,
                                                  i ,
@@ -199,7 +199,7 @@ int new_morph( STAND_PARAM *s_p ,
       }
       s_p -> LexNum++ ;
    }
-   return ( next_morph( s_p ) ) ; 
+   return ( next_morph( s_p ) ) ;
 }
 
 /*-----------------------------------------------------
@@ -209,7 +209,7 @@ called by new_morph
 return FALSE if too many
 uses macros CLIENT_ERR, RET_ERR
 ------------------------------------------------------*/
-static int next_morph( STAND_PARAM *s_p ) { 
+static int next_morph( STAND_PARAM *s_p ) {
    if ( s_p -> cur_morph++ > MAXMORPHS ) {
       CLIENT_ERR( s_p -> errors ) ;
       RET_ERR( "next_morph: Too many morphemes in input",
@@ -224,7 +224,7 @@ tokenize.c (set_term)
 called by standard.l (yylex)
 adds a terminator to a morph
 ------------------------------------------------------*/
-void set_term( STAND_PARAM *s_p , 
+void set_term( STAND_PARAM *s_p ,
                int c ,
                const char *s ) {
 
@@ -250,13 +250,13 @@ void set_term( STAND_PARAM *s_p ,
 tokenize.c (no_space)
 called by tokenize.c (reunite_mixed, is_direction_letter)
 --------------------------------------------------------*/
-static int no_space( LEXEME *lex_p , 
+static int no_space( LEXEME *lex_p ,
                      struct morph *morph_p  ) {
    int k ;
 
-   k = lex_p -> EndMorph ; 
-   return ( ( ( morph_p + k ) -> Term == 0 )? 
-              TRUE : 
+   k = lex_p -> EndMorph ;
+   return ( ( ( morph_p + k ) -> Term == 0 )?
+              TRUE :
               FALSE ) ;
 }
 
@@ -271,7 +271,7 @@ void initialize_morphs( STAND_PARAM *s_p ) {
    s_p -> cur_morph = 0 ;
    s_p -> base_morph = 0 ;
    s_p -> LexNum = 0 ;
-   for ( i = FIRST_LEX_POS ; 
+   for ( i = FIRST_LEX_POS ;
          i < MAXLEX ;
          i++ ) {
       reset_lexeme( s_p -> lex_vector + i ) ;
@@ -288,27 +288,27 @@ calls (lexicon.c) find_entry
 MACROS: BLANK_STRING
 string.h (strncmp)
 -----------------------------------------------------------*/
-static int process_lexeme( STAND_PARAM *s_p , 
-                           int cur_m, 
+static int process_lexeme( STAND_PARAM *s_p ,
+                           int cur_m,
                            int base_m ) {
    int Ceiling ;
    ENTRY *cur_entry ;
    char LTarget[ MAXSTRLEN ] ;
-   struct morph *morph_ptr ; 
-   DEF **d_p ; 
+   struct morph *morph_ptr ;
+   DEF **d_p ;
    LEXEME *lex_p ;
 
-   d_p = s_p -> default_def ; 
-   morph_ptr = s_p -> morph_array ; 
+   d_p = s_p -> default_def ;
+   morph_ptr = s_p -> morph_array ;
    BLANK_STRING(LTarget) ;
    cur_entry = NULL ;
-   for ( Ceiling = cur_m ; 
-         Ceiling >= base_m ; 
+   for ( Ceiling = cur_m ;
+         Ceiling >= base_m ;
          Ceiling-- ) {
       /* -- Combine the morphs into a phrase from cur_morph to Ceiling -- */
-      Ceiling = phrase_from_morphs( morph_ptr , 
-                                    LTarget, 
-                                    base_m, 
+      Ceiling = phrase_from_morphs( morph_ptr ,
+                                    LTarget,
+                                    base_m,
                                     Ceiling ) ;
 
       if ( ( cur_entry = find_entry( s_p -> lexicon , /* 2007-11-20 hash table */
@@ -317,23 +317,23 @@ static int process_lexeme( STAND_PARAM *s_p ,
             necessary to establish that the entry does not subsume a
             more appropriate entry. -- */
 
-         lex_p = s_p -> lex_vector + s_p -> LexNum - 1 ; 
+         lex_p = s_p -> lex_vector + s_p -> LexNum - 1 ;
          if ( ( Ceiling > base_m ) &&
               ( base_m > 0 ) &&
-              ( !strncmp( LTarget, 
-                          "ST ", 
+              ( !strncmp( LTarget,
+                          "ST ",
                           3 ) ) ) {
             /* -- have we preempted street or saint by state? -- */
             /* -- and what about at the end of the address? -- */
             if ( is_route( cur_entry ) ) {
-               if ( find_def_type( lex_p -> DefList, 
+               if ( find_def_type( lex_p -> DefList,
                                    precedes_route_list ) ) {
                  /* -- if the previous lexeme is any of the categories
                     on precedes_route_list, we're okay -- */
                   break ;
                }
                /* -- reject if preceded by a number -- */
-               if ( find_def_type( lex_p -> DefList , 
+               if ( find_def_type( lex_p -> DefList ,
                                    NumberL ) )
 
                   continue ;
@@ -351,11 +351,11 @@ static int process_lexeme( STAND_PARAM *s_p ,
       add the new lexeme to the list -- */
 
    /* -- pass LTarget to new_defs -- */
-   if ( !set_lexeme( s_p , 
+   if ( !set_lexeme( s_p ,
                      base_m,
                      Ceiling,
-                     new_defs( morph_ptr , 
-                               d_p , 
+                     new_defs( morph_ptr ,
+                               d_p ,
                                cur_entry,
                                base_m ,
                                LTarget ),
@@ -363,18 +363,18 @@ static int process_lexeme( STAND_PARAM *s_p ,
        return ERR_FAIL ;
    }
    /* -- Handle reactants and reunite broken alphanumeric strings -- */
-   reunite_mixed( s_p , 
-                  d_p , 
-                  morph_ptr , 
+   reunite_mixed( s_p ,
+                  d_p ,
+                  morph_ptr ,
                   LTarget ) ;
 
-   mark_hyphen_unit( s_p -> LexNum , 
-                     s_p -> lex_vector , 
-                     morph_ptr , 
+   mark_hyphen_unit( s_p -> LexNum ,
+                     s_p -> lex_vector ,
+                     morph_ptr ,
                      d_p  ) ;
    /* -- return position of next unprocessed morpheme -- */
    return ( Ceiling + 1 ) ;
-}  
+}
 
 /*-----------------------------------------------------
 tokenize.c (is_route)
@@ -401,15 +401,15 @@ called by tokenize.c (numeric_tail)
 call tokenize.c (no_space)
 string.h (strlen)
 ------------------------------------------------------*/
-static int is_direction_letter( LEXEME *cur_lex_p , 
-                                LEXEME *prev_lex_p , 
+static int is_direction_letter( LEXEME *cur_lex_p ,
+                                LEXEME *prev_lex_p ,
                                 struct morph *morph_p ,
-                                DEF **d_p , 
+                                DEF **d_p ,
                                 char *LT ) {
    char c ;
 
    if ( ( strlen( LT ) == 1 ) &&
-        ( no_space( prev_lex_p, 
+        ( no_space( prev_lex_p,
                     morph_p   ) ) ) {
        c = *LT ;
        switch ( c ) {
@@ -427,17 +427,17 @@ static int is_direction_letter( LEXEME *cur_lex_p ,
 }
 
 #ifdef EXPRESS_ORDINALS
-static int is_ordinal_suffix( LEXEME *cur_lex_p , 
+static int is_ordinal_suffix( LEXEME *cur_lex_p ,
                               LEXEME *prev_lex_p ,
                               struct morph *morph_p ,
                               DEF **d_p ,
                               char *LT ) {
    int prev_len ;
-   char Ult, 
+   char Ult,
         Penult ;
 
    if ( ( strlen( LT ) != 2 ) ||
-        ( no_space( prev_lex_p, 
+        ( no_space( prev_lex_p,
                     morph_p   ) ) ) {
       return FALSE ;
    }
@@ -487,8 +487,8 @@ called by tokenize.c (reunite_mixed)
 calls tokenize.c (combine_lexemes, no_space, find_def_type)
 string.h (strlen) ctype.h (isalpha,isdigit)
 -----------------------------------------------------------*/
-static int is_zip( STAND_PARAM *s_p , 
-                   DEF **d_p , 
+static int is_zip( STAND_PARAM *s_p ,
+                   DEF **d_p ,
                    struct morph *morph_p  ) {
    /* -- Canadian Postal Code and US zip code -
       called by reunite_mixed -- */
@@ -496,12 +496,12 @@ static int is_zip( STAND_PARAM *s_p ,
    char *cur_txt ;
    int alt_state ;
    int tl ;
-   LEXEME *cur_lex_p ; 
+   LEXEME *cur_lex_p ;
 
-   cur_lex_p = s_p -> lex_vector + s_p -> LexNum ; 
-   cur_txt = cur_lex_p -> Text ; 
+   cur_lex_p = s_p -> lex_vector + s_p -> LexNum ;
+   cur_txt = cur_lex_p -> Text ;
    tl = strlen( cur_txt ) ;
-   if ( ( find_def_type( cur_lex_p -> DefList, 
+   if ( ( find_def_type( cur_lex_p -> DefList,
                          NumberL ) ) &&
         ( tl > 3 ) ) {
       /* -- US Zip code -- */
@@ -509,17 +509,17 @@ static int is_zip( STAND_PARAM *s_p ,
          return FALSE ;
       }
       if ( isalpha( *cur_txt ) ) {
- 
+
          return FALSE ;
       }
-      d = ( ( tl == 4 )? DZIPT : 
+      d = ( ( tl == 4 )? DZIPT :
                          DZIPH ) ;
-      cur_lex_p -> DefList = d_p[ d ] ; 
+      cur_lex_p -> DefList = d_p[ d ] ;
       return TRUE ;
    }
 
    /* -- Canadian postal codes -- */
-   if ( s_p -> LexNum < 2 ) { 
+   if ( s_p -> LexNum < 2 ) {
       return FALSE ;
    }
    if ( tl != 1 ) {
@@ -535,14 +535,14 @@ static int is_zip( STAND_PARAM *s_p ,
       }
    }
    cur_lex_p-- ;
-   cur_txt = cur_lex_p -> Text ; 
-   if ( !no_space( cur_lex_p , 
+   cur_txt = cur_lex_p -> Text ;
+   if ( !no_space( cur_lex_p ,
                    morph_p  ) ) {
       return FALSE ;
    }
    /* -- First check if lexeme created for Mixed, with a
       length of 2 on the last pass -- */
-   if ( find_def_type( cur_lex_p -> DefList , 
+   if ( find_def_type( cur_lex_p -> DefList ,
                        MixedL ) ) {
 
       if ( strlen( cur_txt ) != 2 ) {
@@ -569,9 +569,9 @@ static int is_zip( STAND_PARAM *s_p ,
          }
       }
       /* -- if it ends with a digit, it's the tail -- */
-      d = ( ( alt_state ) ? DPOSTT : 
+      d = ( ( alt_state ) ? DPOSTT :
                             DPOSTH ) ;
-      combine_lexemes( s_p , 
+      combine_lexemes( s_p ,
                        morph_p ,
                        d_p[ d ]  ) ;
       return TRUE;
@@ -593,8 +593,8 @@ static int is_zip( STAND_PARAM *s_p ,
       }
    }
 
-   cur_lex_p -- ; 
-   cur_txt = cur_lex_p -> Text ; 
+   cur_lex_p -- ;
+   cur_txt = cur_lex_p -> Text ;
 
    /* -- Now look for a character, not followed by a space, which must be
       a number if the current character is a number, and a letter if the
@@ -602,7 +602,7 @@ static int is_zip( STAND_PARAM *s_p ,
    if ( strlen( cur_txt ) != 1 ) {
       return FALSE;
    }
-   if ( !no_space( cur_lex_p , 
+   if ( !no_space( cur_lex_p ,
                    morph_p  ) ) {
       return FALSE;
    }
@@ -616,12 +616,12 @@ static int is_zip( STAND_PARAM *s_p ,
 
    /* -- if it ends with a digit, it's the tail -- */
 
-   d = ( ( alt_state ) ? DPOSTT : 
+   d = ( ( alt_state ) ? DPOSTT :
                          DPOSTH ) ;
-   combine_lexemes( s_p , 
-                    morph_p , 
+   combine_lexemes( s_p ,
+                    morph_p ,
                     d_p[ d ]  ) ;
-   combine_lexemes( s_p , 
+   combine_lexemes( s_p ,
                     morph_p  ,
                     d_p[ d ]  ) ;
    return TRUE ;
@@ -632,24 +632,24 @@ tokenize.c (fix_mixed)
 called by tokenize.c (reunite_mixed)
 calls tokenize.c (combine_lexemes, no_space, find_def_type)
 ----------------------------------------------------------*/
-static void fix_mixed( STAND_PARAM *s_p , 
-                       DEF **d_p , 
+static void fix_mixed( STAND_PARAM *s_p ,
+                       DEF **d_p ,
                        struct morph *morph_p  ) {
    /* -- recombine alphabet sequences and numeric sequences split apart by
       the lexical scanner - but only if they form an identifier. -- */
-   LEXEME *cur_lex_p, *prev_lex_p ; 
+   LEXEME *cur_lex_p, *prev_lex_p ;
 
 
-   cur_lex_p = s_p -> lex_vector + s_p -> LexNum ; 
-   prev_lex_p = cur_lex_p - 1 ; 
+   cur_lex_p = s_p -> lex_vector + s_p -> LexNum ;
+   prev_lex_p = cur_lex_p - 1 ;
 
-   if ( s_p -> LexNum < 2 ) 
+   if ( s_p -> LexNum < 2 )
       return ;
-   if ( !no_space( prev_lex_p , 
+   if ( !no_space( prev_lex_p ,
                    morph_p  ) ) {
       return ;
    }
-   if ( !find_def_type( cur_lex_p -> DefList ,  
+   if ( !find_def_type( cur_lex_p -> DefList ,
                         mixed_components ) ) {
       return ;
    }
@@ -658,41 +658,41 @@ static void fix_mixed( STAND_PARAM *s_p ,
       preceding it. If the previous item was mixed and not a postal code,
       then we'll just merge this one in right away. -- */
 
-   if ( find_def_type( prev_lex_p -> DefList , 
+   if ( find_def_type( prev_lex_p -> DefList ,
                        MixedL ) &&
-        !find_def_type( prev_lex_p -> DefList , 
+        !find_def_type( prev_lex_p -> DefList ,
                         PostalL ) ) {
       /* -- if the previous item is mixed and not a postal code -- */
 
-      combine_lexemes( s_p , 
-                       morph_p , 
+      combine_lexemes( s_p ,
+                       morph_p ,
                        d_p[ DMIXED ]  ) ;
       return ;
    }
 
    /* -- The previous lexeme must be of the right kind to do a mix -- */
-   if ( !find_def_type( prev_lex_p -> DefList , 
+   if ( !find_def_type( prev_lex_p -> DefList ,
                       mixed_components ) ) {
       return ;
    }
    /* -- If a road comes before a mixed, it might also be a PROV -- */
-   if ( find_def_type( prev_lex_p -> DefList ,  
+   if ( find_def_type( prev_lex_p -> DefList ,
                      RoadL ) &&
-        !find_def_type( prev_lex_p -> DefList , 
+        !find_def_type( prev_lex_p -> DefList ,
                       ProvL ) ) {
       return ;
    }
 
    /* -- a mixed identifier only follows certain types -- */
 
-   prev_lex_p -- ; 
-   if ( !find_def_type( prev_lex_p -> DefList , 
+   prev_lex_p -- ;
+   if ( !find_def_type( prev_lex_p -> DefList ,
                         precedes_identifier_list ) ) {
       return ;
    }
 
-   combine_lexemes( s_p , 
-                    morph_p , 
+   combine_lexemes( s_p ,
+                    morph_p ,
                     d_p[ DMIXED ]  ) ;
    return ;
 }
@@ -702,26 +702,26 @@ tokenize.c (reunite_mixed)
 called by tokenize.c (process_lexeme)
 calls tokenize.c (is_zip, numeric_tail, fix_mixed)
 ------------------------------------------------------*/
-static void reunite_mixed( STAND_PARAM *s_p , 
-                           DEF **d_p , 
-                           struct morph *morph_p , 
+static void reunite_mixed( STAND_PARAM *s_p ,
+                           DEF **d_p ,
+                           struct morph *morph_p ,
                            char *LT ) {
    /* -- called by process_lexeme -- */
 
-   if ( is_zip( s_p , 
+   if ( is_zip( s_p ,
                 d_p ,
                 morph_p  ) ) {
       return ; /* -- handle postal and zip codes -- */
    }
-   
-   numeric_tail( s_p , 
-                 d_p , 
-                 morph_p , 
+
+   numeric_tail( s_p ,
+                 d_p ,
+                 morph_p ,
                  LT ) ;
 
 
-   fix_mixed( s_p , 
-              d_p , 
+   fix_mixed( s_p ,
+              d_p ,
               morph_p ) ; /* -- handle mixed identifiers -- */
 }
 
@@ -730,30 +730,30 @@ tokenize.c (mark_hyphen_unit)
 called by tokenize.c (process_lexeme)
 calls tokenize.c (find_def_type)
 ------------------------------------------------------*/
-static void mark_hyphen_unit( int n , 
-                              LEXEME *lex_p , 
-                              struct morph *morph_p , 
+static void mark_hyphen_unit( int n ,
+                              LEXEME *lex_p ,
+                              struct morph *morph_p ,
                               DEF **def_ptr  ) {
 
    /* -- if the current lexeme is the second and the previous is terminated
       by a hyphen and both are numbers, redefine the previous lexeme to
       be a unittail. -- */
 
-   LEXEME *cur_lex_p ; 
+   LEXEME *cur_lex_p ;
 
-   cur_lex_p = lex_p + n ; 
-   if ( ( n != 1 ) || 
-        ( !find_def_type( ( cur_lex_p ) -> DefList , 
+   cur_lex_p = lex_p + n ;
+   if ( ( n != 1 ) ||
+        ( !find_def_type( ( cur_lex_p ) -> DefList ,
                           NumberL ) ) ||
-        ( !find_def_type( ( cur_lex_p - 1 ) -> DefList, 
+        ( !find_def_type( ( cur_lex_p - 1 ) -> DefList,
                           NumberL ) ) ) {
       return ;
    }
-   
-   cur_lex_p -- ; 
+
+   cur_lex_p -- ;
    if ( ( morph_p + ( cur_lex_p  -> EndMorph  ) ) -> Term == 3  ) {
       /* -- overwrite the old deflist -- */
-      cur_lex_p -> DefList = def_ptr[DUNIT] ;  
+      cur_lex_p -> DefList = def_ptr[DUNIT] ;
    }
 }
 
@@ -763,52 +763,52 @@ tokenize.c (numeric_tail)
 called by tokenize.c (reunite_mixed )
 calls tokenize.c (combine_lexemes, find_def_type, is_direction_letter)
 ----------------------------------------------------------------------*/
-static void numeric_tail( STAND_PARAM *s_p , 
-                          DEF **d_p , 
-                          struct morph *morph_p , 
+static void numeric_tail( STAND_PARAM *s_p ,
+                          DEF **d_p ,
+                          struct morph *morph_p ,
                           char *LT ) {
 
    /* -- all subsequent items follow a number -- */
    int n ;
-   LEXEME *prev_lex_p , *cur_lex_p ; 
+   LEXEME *prev_lex_p , *cur_lex_p ;
 
 
-   n = s_p -> LexNum ; 
+   n = s_p -> LexNum ;
    if ( n < 1 )
       return  ;
-   cur_lex_p = s_p -> lex_vector + n ; 
-   prev_lex_p = cur_lex_p - 1 ; 
-   if ( !find_def_type( prev_lex_p -> DefList , 
+   cur_lex_p = s_p -> lex_vector + n ;
+   prev_lex_p = cur_lex_p - 1 ;
+   if ( !find_def_type( prev_lex_p -> DefList ,
                         NumberL ) ) {
       return ;
    }
-   if ( is_direction_letter( cur_lex_p , 
-                             prev_lex_p , 
-                             morph_p , 
-                             d_p , 
+   if ( is_direction_letter( cur_lex_p ,
+                             prev_lex_p ,
+                             morph_p ,
+                             d_p ,
                              LT ) ) {
       return ;
    }
 
 #ifdef COMBINE_FRACTS_WITH_NUMBS
-   if ( find_def_type( cur_lex_p -> DefList , 
+   if ( find_def_type( cur_lex_p -> DefList ,
                        FractL ) ) {
 
-      combine_lexemes( s_p , 
-                       morph_p , 
+      combine_lexemes( s_p ,
+                       morph_p ,
                        d_p[ DNUMBER ] )  ;
       return ;
    }
 #endif
 
 #ifdef EXPRESS_ORDINALS
-   if ( is_ordinal_suffix( cur_lex_p , 
+   if ( is_ordinal_suffix( cur_lex_p ,
                            prev_lex_p ,
                            morph_p ,
                            d_p ,
                            LT ) ) {
-      combine_lexemes( s_p , 
-                       morph_p , 
+      combine_lexemes( s_p ,
+                       morph_p ,
                        d_p[ DORD ] ) ;
       return ;
    }
@@ -821,8 +821,8 @@ tokenize.c (new_defs)
 called by tokenize.c (process_lexemes)
 MACROS: BLANK_STRING
 ------------------------------------------------------*/
-static DEF *new_defs( struct morph *morph_p , 
-                      DEF **d_p , 
+static DEF *new_defs( struct morph *morph_p ,
+                      DEF **d_p ,
                       ENTRY *Cur ,
                       int pos ,
                       char *LTarget ) {
@@ -834,7 +834,7 @@ static DEF *new_defs( struct morph *morph_p ,
       check context - but implementation has all sorts of pitfalls - maybe
       later -- */
 
-   s = ( morph_p + pos ) -> Sym ; 
+   s = ( morph_p + pos ) -> Sym ;
 
    if ( Cur != NULL ) {
       return( Cur -> DefList );
@@ -843,25 +843,25 @@ static DEF *new_defs( struct morph *morph_p ,
       the Target is copied into the lexeme -- */
 
 #ifndef EXPRESS_ORDINALS
-   if ( s == DORD ) { 
+   if ( s == DORD ) {
       /* -- remove the suffix -- */
       BLANK_STRING((LTarget + strlen(LTarget) - 2)) ;
    }
 #endif
 
    /* -- if no entry was found, just use the default list -- */
-   return ( d_p[ s ]  ) ; 
+   return ( d_p[ s ]  ) ;
 }
 
 /*-----------------------------------------------------
 tokenize.c (is_symb_on_list)
 called by tokenize.c (find_def_type, is_route)
 ------------------------------------------------------*/
-int is_symb_on_list( SYMB a , 
+int is_symb_on_list( SYMB a ,
                      SYMB *List ) {
    SYMB *s ;
-   for ( s = List ; 
-         *s != FAIL ; 
+   for ( s = List ;
+         *s != FAIL ;
          s++ )
       if ( *s == a )
          return TRUE ;
@@ -876,11 +876,11 @@ calls tokenize.c (is_symb_on_list)
 called by tokenize.c (process_lexeme etc)
 return TRUE if found
 ------------------------------------------------------*/
-int find_def_type( DEF *df , 
+int find_def_type( DEF *df ,
                    SYMB *slist ) {
    DEF *d ;
 
-   for ( d = df ; 
+   for ( d = df ;
          d != NULL ;
          d = d -> Next )
      if ( is_symb_on_list( d -> Type ,
@@ -892,27 +892,27 @@ int find_def_type( DEF *df ,
 /*-----------------------------------------------------
 tokenize.c (set_lexeme)
 called by tokenize.c (process_lexeme)
-MACROS: CLIENT_ERR, RET_ERR1 
+MACROS: CLIENT_ERR, RET_ERR1
 string.h (strcpy)
 ------------------------------------------------------*/
-static int set_lexeme( STAND_PARAM *s_p , 
+static int set_lexeme( STAND_PARAM *s_p ,
                        int Start ,
-                       int End , 
+                       int End ,
                        DEF *start_def ,
                        char *text ) {
    LEXEME *L ;
-   int n ; 
+   int n ;
 
    /* -- we need a limit -- */
-   if ( ( n = s_p -> LexNum ) >= MAXLEX ) { 
+   if ( ( n = s_p -> LexNum ) >= MAXLEX ) {
       CLIENT_ERR( s_p -> errors ) ;
       RET_ERR1( "set_lexeme: %s is one too many lexemes" ,
                 text ,
                 s_p -> errors ,
                 FALSE ) ;
    }
-   L = s_p -> lex_vector + n ; 
-   strcpy( L -> Text , 
+   L = s_p -> lex_vector + n ;
+   strcpy( L -> Text ,
            text ) ;
    L -> DefList = start_def ;
    L -> StartMorph = Start ;
@@ -925,14 +925,14 @@ tokenize.c (reset_lexeme)
 called by tokenize.c (combine_lexemes, initialize_morphs)
 NULL out the lexeme's text buffer
 --------------------------------------------------------*/
-static void reset_lexeme( LEXEME *lex_p ) { 
+static void reset_lexeme( LEXEME *lex_p ) {
    int i ;
    char *s ;
 
-   lex_p -> DefList = NULL ; 
-   s = lex_p -> Text ; 
-   for ( i = 0 ; 
-         i < MAXTEXT ; 
+   lex_p -> DefList = NULL ;
+   s = lex_p -> Text ;
+   for ( i = 0 ;
+         i < MAXTEXT ;
          i++ ) {
       *( s + i ) = SENTINEL ;
    }
@@ -943,26 +943,26 @@ tokenize.c (combine_lexemes)
 called by tokenize.c (is_zip, fix_mixed , numeric tail)
 calls tokenize.c (phrase_from_morphs, reset_lexeme)
 ------------------------------------------------------*/
-static void combine_lexemes( STAND_PARAM *s_p , 
-                             struct morph * morph_p , 
+static void combine_lexemes( STAND_PARAM *s_p ,
+                             struct morph * morph_p ,
                              DEF *d ) {
    /* -- combine the current Lexeme with the previous one -- */
-    LEXEME *CurLexVector, *PrevLexVector ; 
+    LEXEME *CurLexVector, *PrevLexVector ;
 
     /* -- find the two lexemes to combine -- */
-    CurLexVector = s_p -> lex_vector + s_p -> LexNum ; 
-    PrevLexVector = CurLexVector - 1 ; 
-    PrevLexVector -> EndMorph = CurLexVector -> EndMorph ; /* the new end */ 
-    PrevLexVector -> Text[ 0 ] = SENTINEL ; 
+    CurLexVector = s_p -> lex_vector + s_p -> LexNum ;
+    PrevLexVector = CurLexVector - 1 ;
+    PrevLexVector -> EndMorph = CurLexVector -> EndMorph ; /* the new end */
+    PrevLexVector -> Text[ 0 ] = SENTINEL ;
 
-    phrase_from_morphs( morph_p , 
-                            PrevLexVector -> Text , 
-                            PrevLexVector -> StartMorph , 
-                            PrevLexVector -> EndMorph ) ; 
-    
+    phrase_from_morphs( morph_p ,
+                            PrevLexVector -> Text ,
+                            PrevLexVector -> StartMorph ,
+                            PrevLexVector -> EndMorph ) ;
+
     PrevLexVector -> DefList = d ; /* - overwrite old deflist -- */
-    reset_lexeme( CurLexVector ) ; 
-    s_p -> LexNum-- ; 
+    reset_lexeme( CurLexVector ) ;
+    s_p -> LexNum-- ;
 }
 
 /*--------------------------------------------------------
@@ -971,28 +971,28 @@ called by tokenize.c (process_lexemes , combine_lexemes)
 concatenate the morph strings into a single string
 uses macro BLANK_STRING
 ---------------------------------------------------------*/
-static int phrase_from_morphs( struct morph *morph_vector , 
-                               char *Dest , 
-                               int beg , 
+static int phrase_from_morphs( struct morph *morph_vector ,
+                               char *Dest ,
+                               int beg ,
                                int end ) {
-   int i , 
+   int i ,
        a ;
 
-   BLANK_STRING(Dest) ; 
+   BLANK_STRING(Dest) ;
    strcpy( Dest ,
            morph_vector[ beg ] . Text ) ;
-   for ( i = beg + 1 ; 
-         i <= end ; 
+   for ( i = beg + 1 ;
+         i <= end ;
          i++ ) {
       /* -- No breaks in the middle of a phrase -- */
-      
+
       a = morph_vector[ i - 1 ] . Term ;
       if ( a == 1 )
          return ( i - 1 ) ; /* -- indicate last morph used -- */
       if ( a > 1 ) {
          append_string_to_max( Dest ,
                                " " ,
-                               MAXSTRLEN ) ; 
+                               MAXSTRLEN ) ;
       }
       append_string_to_max( Dest,
                             morph_vector[ i ] . Text ,

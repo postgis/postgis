@@ -3,16 +3,16 @@ set client_min_messages to WARNING;
 SELECT topology.CreateTopology('tt') > 0;
 
 SELECT 'e1',  topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
--- Equal edge 
+-- Equal edge
 SELECT 'e*1', topology.addEdge('tt', 'LINESTRING(0 0, 8 0)');
 
 -- Failing cases (should all raise exceptions) -------
 
--- Contained with endpoint contact 
+-- Contained with endpoint contact
 SELECT 'e*2', topology.addEdge('tt', 'LINESTRING(1 0, 8 0)');
--- Contained with no endpoint contact 
+-- Contained with no endpoint contact
 SELECT 'e*3', topology.addEdge('tt', 'LINESTRING(1 0, 7 0)');
--- Overlapping 
+-- Overlapping
 SELECT 'e*4', topology.addEdge('tt', 'LINESTRING(1 0, 9 0)');
 -- Contains with endpoint contact
 SELECT 'e*5', topology.addEdge('tt', 'LINESTRING(0 0, 9 0)');
@@ -20,11 +20,11 @@ SELECT 'e*5', topology.addEdge('tt', 'LINESTRING(0 0, 9 0)');
 SELECT 'e*6', topology.addEdge('tt', 'LINESTRING(-1 0, 9 0)');
 -- Touches middle with endpoint
 SELECT 'e*7', topology.addEdge('tt', 'LINESTRING(5 0, 5 10)');
--- Crosses 
+-- Crosses
 SELECT 'e*8', topology.addEdge('tt', 'LINESTRING(5 -10, 5 10)');
 -- Is touched on the middle by endpoint
 SELECT 'e*9', topology.addEdge('tt', 'LINESTRING(0 -10, 0 10)');
--- Touches middle with internal vertex 
+-- Touches middle with internal vertex
 SELECT 'e*10', topology.addEdge('tt', 'LINESTRING(0 10, 5 0, 5 10)');
 
 -- Endpoint touching cases (should succeed) ------

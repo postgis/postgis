@@ -94,7 +94,7 @@ static void out_geojson_test_precision(void)
 	    NULL, 15, 0);
 
 	/* small numbers */
-  /* NOTE: precision of 300 will be converted to max precision (15) 
+  /* NOTE: precision of 300 will be converted to max precision (15)
    *       and being there no significant digit within that range
    *       only zeroes will be returned
    * See http://trac.osgeo.org/postgis/ticket/2051#comment:11

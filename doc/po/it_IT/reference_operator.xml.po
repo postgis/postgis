@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
 "language/it_IT/)\n"
 "Language: it_IT\n"
@@ -252,10 +252,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:128
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
-"AS overlaps_3d, \n"
+"AS overlaps_3d,\n"
 "                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
 "overlaps_2d\n"
 "FROM ( VALUES\n"
@@ -292,10 +292,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:134
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
-"AS overlaps_3zm, \n"
+"AS overlaps_3zm,\n"
 "                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
 "overlaps_2d\n"
 "FROM ( VALUES\n"
@@ -810,7 +810,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:504
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
 "geometry;\n"
@@ -843,7 +843,7 @@ msgid ""
 "-- In versions prior to 2.0, this used to return true --\n"
 " SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =\n"
 "        ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;\n"
-"        \n"
+"\n"
 "--pt_intersect --\n"
 "f"
 msgstr ""
@@ -1437,11 +1437,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:923
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
-"geometry) as d,edabbr, vaabbr \n"
-"FROM va2005 \n"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
 "ORDER BY d limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1485,11 +1485,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:927
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
-"geometry) as d,edabbr, vaabbr \n"
-"FROM va2005 \n"
+"geometry) as d,edabbr, vaabbr\n"
+"FROM va2005\n"
 "ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1506,6 +1506,24 @@ msgid ""
 " 18472.5531479404 | ALQ    | 002\n"
 "(10 rows)"
 msgstr ""
+"<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
+"geometry) as d,edabbr, vaabbr \n"
+"FROM va2005 \n"
+"ORDER BY d limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
 
 #. Tag: para
 #: reference_operator.xml:928
@@ -1526,15 +1544,15 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:935
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[WITH index_query AS (\n"
 "  SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,"
 "edabbr, vaabbr\n"
-"          FROM va2005\n"
-"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) \n"
-"  SELECT * \n"
-"          FROM index_query \n"
+"        FROM va2005\n"
+"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100)\n"
+"  SELECT *\n"
+"        FROM index_query\n"
 "  ORDER BY d limit 10;]]>\n"
 "\n"
 "        d         | edabbr | vaabbr\n"
@@ -1733,20 +1751,20 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_operator.xml:1050
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[SELECT *\n"
 "FROM (\n"
-"SELECT b.tlid, b.mtfcc, \n"
+"SELECT b.tlid, b.mtfcc,\n"
 "        b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 "
 "2948576,\n"
 "                745787 2948499,745740 2948468,745712 2948438,\n"
-"                745690 2948384,745677 2948319)',2249) As b_dist, \n"
+"                745690 2948384,745677 2948319)',2249) As b_dist,\n"
 "                ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 "
 "2948672,745954 2948576,\n"
 "                745787 2948499,745740 2948468,745712 2948438,\n"
 "                745690 2948384,745677 2948319)',2249)) As act_dist\n"
-"    FROM bos_roads As b \n"
+"    FROM bos_roads As b\n"
 "    ORDER BY b_dist, b.tlid\n"
 "    LIMIT 100) As foo\n"
 "    ORDER BY act_dist, tlid LIMIT 10;]]>\n"

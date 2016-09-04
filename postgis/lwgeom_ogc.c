@@ -177,8 +177,8 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser;
 	text *type_text;
-	static int type_str_len = 32;
-	char type_str[type_str_len];
+	static int type_str_len = 31;
+	char type_str[type_str_len + 1];
 
 	/* Read just the header from the toasted tuple */
 	gser = PG_GETARG_GSERIALIZED_P_SLICE(0, 0, gserialized_max_header_size());
@@ -200,7 +200,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 
 /**
-* numpoints(LINESTRING) -- return the number of points in the 
+* numpoints(LINESTRING) -- return the number of points in the
 * linestring, or NULL if it is not a linestring
 */
 PG_FUNCTION_INFO_V1(LWGEOM_numpoints_linestring);
@@ -366,7 +366,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( poly->bbox ) 
+		if ( poly->bbox )
 			bbox = gbox_copy(poly->bbox);
 
 		line = lwline_construct(poly->srid, bbox, extring);
@@ -383,7 +383,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		* If the input geom has a bbox, use it for
 		* the output geom, as exterior ring makes it up !
 		*/
-		if ( triangle->bbox ) 
+		if ( triangle->bbox )
 			bbox = gbox_copy(triangle->bbox);
 		line = lwline_construct(triangle->srid, bbox, triangle->points);
 
@@ -499,7 +499,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		ring = poly->rings[wanted_index];
 
 		/* COMPUTE_BBOX==TAINTING */
-		if ( poly->bbox ) 
+		if ( poly->bbox )
 		{
 			bbox = lwalloc(sizeof(GBOX));
 			ptarray_calculate_gbox_cartesian(ring, bbox);
@@ -546,10 +546,10 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint = NULL;
 	int type = lwgeom->type;
 
-	/* If index is negative, count backward */  
+	/* If index is negative, count backward */
 	if( where < 1 )
 	{
-		int count = -1; 
+		int count = -1;
 		if ( type == LINETYPE || type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
 			count = lwgeom_count_vertices(lwgeom);
 		if(count >0)
@@ -707,8 +707,8 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.m);
 }
 
-/** 
-* ST_StartPoint(GEOMETRY) 
+/**
+* ST_StartPoint(GEOMETRY)
 * @return the first point of a linestring.
 * 		Return NULL if there is no LINESTRING
 */
@@ -800,7 +800,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	}
 
 	/* read user-requested SRID if any */
-	if ( PG_NARGS() > 1 ) 
+	if ( PG_NARGS() > 1 )
 		lwgeom_set_srid(lwgeom, PG_GETARG_INT32(1));
 
 	geom_result = geometry_serialize(lwgeom);
@@ -814,7 +814,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
  * 		return a geometry.
  *
  * @note that this is a wrapper around
- * 		lwgeom_from_wkb, where we throw 
+ * 		lwgeom_from_wkb, where we throw
  *      a warning if ewkb passed in
  * 		accept EWKB.
  */

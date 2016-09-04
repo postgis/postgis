@@ -1,8 +1,8 @@
--- ST_Dimension on 2D: not closed 
+-- ST_Dimension on 2D: not closed
 SELECT 'dimension_01', ST_Dimension('POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0)))'::geometry);
 SELECT 'dimension_02', ST_Dimension('GEOMETRYCOLLECTION(POLYHEDRALSURFACE(((0 0,0 0,0 1,0 0))))'::geometry);
 
--- ST_Dimension on 3D: closed 
+-- ST_Dimension on 3D: closed
 SELECT 'dimension_03', ST_Dimension('POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))'::geometry);
 SELECT 'dimension_04', ST_Dimension('GEOMETRYCOLLECTION(POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0))))'::geometry);
 

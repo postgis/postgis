@@ -138,13 +138,13 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 	/*
 	* #3031: If a user is handing us a MULTIPOINT EMPTY but trying to fit it into
 	* a POINT geometry column, there's a strong chance the reason she has
-	* a MULTIPOINT EMPTY because we gave it to her during data dump, 
-	* converting the internal POINT EMPTY into a EWKB MULTIPOINT EMPTY 
+	* a MULTIPOINT EMPTY because we gave it to her during data dump,
+	* converting the internal POINT EMPTY into a EWKB MULTIPOINT EMPTY
 	* (because EWKB doesn't have a clean way to represent POINT EMPTY).
-	* In such a case, it makes sense to turn the MULTIPOINT EMPTY back into a 
+	* In such a case, it makes sense to turn the MULTIPOINT EMPTY back into a
 	* point EMPTY, rather than throwing an error.
 	*/
-	if ( typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE && 
+	if ( typmod_type == POINTTYPE && geom_type == MULTIPOINTTYPE &&
 	     gserialized_is_empty(gser) )
 	{
 		LWPOINT *empty_point = lwpoint_construct_empty(geom_srid, geom_z, geom_m);
@@ -243,7 +243,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 	                  &elem_values, NULL, &n);
 
 	/* Set the SRID to the default value first */
-	if ( is_geography) 
+	if ( is_geography)
 	    TYPMOD_SET_SRID(typmod, SRID_DEFAULT);
 	else
 	    TYPMOD_SET_SRID(typmod, SRID_UNKNOWN);

@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Kwon.Yongchan <ruvyn@naver.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"PO-Revision-Date: 2016-07-23 00:00+0000\n"
+"Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
 "language/ko_KR/)\n"
 "Language: ko_KR\n"
@@ -24,6 +25,9 @@ msgid ""
 "functions. For robustness, geometry coordinates have an exact rational "
 "number representation."
 msgstr ""
+"SFCGAL은 고급 2D 및 3D 함수를 제공하는 CGAL을 둘러싼 C++ 래퍼(wrapper) 라이브"
+"러리입니다. 강력한 기능을 위해, 도형 좌표가 정밀한 유리수 표현식을 가지고 있"
+"습니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:9
@@ -33,6 +37,9 @@ msgid ""
 "<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>. To load "
 "the functions create extension postgis_sfcgal."
 msgstr ""
+"SFCGAL 홈페이지 <ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</"
+"ulink> 에서 이 라이브러리의 설치 지침을 찾아볼 수 있습니다. 함수들을 로드하려"
+"면 확장 프로그램 postgis_sfcgal을 생성하십시오."
 
 #. Tag: para
 #: reference_sfcgal.xml:13
@@ -43,36 +50,40 @@ msgid ""
 "standard functions and SFCGAL function use: <programlisting>SET postgis."
 "backend = sfcgal;</programlisting> and"
 msgstr ""
+"SFCGAL 함수 가운데 일부가 표준 함수(ST_Intersects, ST_Intersection, "
+"ST_Difference, ST_Union, ST_Area and ST_Distance)를 대체합니다. 표준 함수와 "
+"SFCGAL 함수를 서로 바꿔가며 사용하려면: <programlisting>SET postgis.backend "
+"= sfcgal;</programlisting> 그리고"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:17
 #, no-c-format
 msgid "SET postgis.backend = geos;"
-msgstr ""
+msgstr "SET postgis.backend = geos;"
 
 #. Tag: title
 #: reference_sfcgal.xml:22
 #, no-c-format
 msgid "SFCGAL Functions"
-msgstr ""
+msgstr "SFCGAL 함수"
 
 #. Tag: refname
 #: reference_sfcgal.xml:25
 #, no-c-format
 msgid "postgis_sfcgal_version"
-msgstr ""
+msgstr "postgis_sfcgal_version"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:27
 #, no-c-format
 msgid "Returns the version of SFCGAL in use"
-msgstr ""
+msgstr "실행중인 SFCGAL의 버전을 반환합니다."
 
 #. Tag: funcdef
 #: reference_sfcgal.xml:33
 #, no-c-format
 msgid "text <function>postgis_sfcgal_version</function>"
-msgstr ""
+msgstr "text <function>postgis_sfcgal_version</function>"
 
 #. Tag: title
 #: reference_sfcgal.xml:40 reference_sfcgal.xml:72 reference_sfcgal.xml:165
@@ -83,7 +94,7 @@ msgstr ""
 #: reference_sfcgal.xml:903
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "설명"
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:74 reference_sfcgal.xml:167
@@ -91,7 +102,7 @@ msgstr ""
 #: reference_sfcgal.xml:482 reference_sfcgal.xml:707 reference_sfcgal.xml:745
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "2.1.0 버전부터 사용할 수 있습니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:43 reference_sfcgal.xml:75 reference_sfcgal.xml:168
@@ -102,7 +113,7 @@ msgstr ""
 #: reference_sfcgal.xml:906
 #, no-c-format
 msgid "&sfcgal_required;"
-msgstr ""
+msgstr "&sfcgal_required;"
 
 #. Tag: para
 #: reference_sfcgal.xml:44 reference_sfcgal.xml:76 reference_sfcgal.xml:169
@@ -112,7 +123,7 @@ msgstr ""
 #: reference_sfcgal.xml:838 reference_sfcgal.xml:879 reference_sfcgal.xml:907
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:77 reference_sfcgal.xml:170
@@ -122,7 +133,7 @@ msgstr ""
 #: reference_sfcgal.xml:880 reference_sfcgal.xml:908
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:46 reference_sfcgal.xml:78 reference_sfcgal.xml:171
@@ -132,19 +143,19 @@ msgstr ""
 #: reference_sfcgal.xml:881 reference_sfcgal.xml:909
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refname
 #: reference_sfcgal.xml:54
 #, no-c-format
 msgid "ST_Extrude"
-msgstr ""
+msgstr "ST_Extrude"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
 #, no-c-format
 msgid "Extrude a surface to a related volume"
-msgstr ""
+msgstr "표면을 관련 입체로 돌출시킵니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:61
@@ -156,6 +167,11 @@ msgid ""
 "<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
 "<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
 
 #. Tag: title
 #: reference_sfcgal.xml:81 reference_sfcgal.xml:174 reference_sfcgal.xml:240
@@ -163,7 +179,7 @@ msgstr ""
 #: reference_sfcgal.xml:641 reference_sfcgal.xml:714 reference_sfcgal.xml:752
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "예시"
 
 #. Tag: para
 #: reference_sfcgal.xml:82 reference_sfcgal.xml:491 reference_sfcgal.xml:567
@@ -174,6 +190,9 @@ msgid ""
 "rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML "
 "Javascript rendering library</ulink>."
 msgstr ""
+"PostGIS <xref linkend=\"ST_AsX3D\"/> 를 통해 3차원 영상을 생성한 다음 <ulink "
+"url=\"http://www.x3dom.org\">X3Dom HTML 자바스크립트 렌더링 라이브러리</"
+"ulink> 를 이용해서 HTML로 렌더링합니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:89
@@ -182,12 +201,14 @@ msgid ""
 "SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
 "  50, 'quad_segs=2'),0,0,30);"
 msgstr ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+"  50, 'quad_segs=2'),0,0,30);"
 
 #. Tag: para
 #: reference_sfcgal.xml:95
 #, no-c-format
 msgid "Original octagon formed from buffering point"
-msgstr ""
+msgstr "버퍼를 적용한 포인트에서 생성된 원본 팔각형"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:100
@@ -196,24 +217,28 @@ msgid ""
 "ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
 " 50, 'quad_segs=2'),0,0,30);"
 msgstr ""
+"ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30);"
 
 #. Tag: para
 #: reference_sfcgal.xml:106
 #, no-c-format
 msgid "Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ"
 msgstr ""
+"Z축을 따라 30단위만큼 돌출된 육각형이 다면체 표면 Z(PolyhedralSurfaceZ)을 생"
+"성합니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:114
 #, no-c-format
 msgid "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
-msgstr ""
+msgstr "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
 
 #. Tag: para
 #: reference_sfcgal.xml:120
 #, no-c-format
 msgid "Original linestring"
-msgstr ""
+msgstr "원본 라인스트링"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:125
@@ -222,31 +247,35 @@ msgid ""
 "SELECT ST_Extrude(\n"
 " ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
 msgstr ""
+"SELECT ST_Extrude(\n"
+" ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
 
 #. Tag: para
 #: reference_sfcgal.xml:131
 #, no-c-format
 msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
 msgstr ""
+"Z축을 따라 돌출된 라인스트링이 다면체 표면 Z(PolyhedralSurfaceZ)을 생성합니"
+"다."
 
 #. Tag: title
 #: reference_sfcgal.xml:141 reference_sfcgal.xml:263 reference_sfcgal.xml:602
 #: reference_sfcgal.xml:677 reference_sfcgal.xml:720 reference_sfcgal.xml:851
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "참고"
 
 #. Tag: refname
 #: reference_sfcgal.xml:150
 #, no-c-format
 msgid "ST_StraightSkeleton"
-msgstr ""
+msgstr "ST_StraightSkeleton"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:152
 #, no-c-format
 msgid "Compute a straight skeleton from a geometry"
-msgstr ""
+msgstr "도형으로부터 직선 골격(straight skeleton)을 계산합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:157
@@ -255,6 +284,8 @@ msgid ""
 "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:175
@@ -263,30 +294,32 @@ msgid ""
 "SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 "
 "10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 msgstr ""
+"SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 "
+"10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 
 #. Tag: para
 #: reference_sfcgal.xml:186 reference_sfcgal.xml:791
 #, no-c-format
 msgid "Original polygon"
-msgstr ""
+msgstr "원본 폴리곤"
 
 #. Tag: para
 #: reference_sfcgal.xml:195
 #, no-c-format
 msgid "Straight Skeleton of polygon"
-msgstr ""
+msgstr "폴리곤의 직선 골격"
 
 #. Tag: refname
 #: reference_sfcgal.xml:209
 #, no-c-format
 msgid "ST_ApproximateMedialAxis"
-msgstr ""
+msgstr "ST_ApproximateMedialAxis"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:211
 #, no-c-format
 msgid "Compute the approximate medial axis of an areal geometry."
-msgstr ""
+msgstr "면 도형의 근사 중심축을 계산합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:216
@@ -295,6 +328,8 @@ msgid ""
 "<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:226
@@ -305,13 +340,17 @@ msgid ""
 "(1.2.0+). Otherwise the function is just a wrapper around "
 "ST_StraightSkeleton (slower case)."
 msgstr ""
+"입력 면 도형의 직선 골격을 바탕으로 근사 중심축(approximate medial axis)을 반"
+"환합니다. 사용 가능한 버전(1.2.0 이상)에 대해 빌드했을 때 SFCGAL에 특화된 API"
+"를 이용합니다. 그렇지 않을 경우 이 함수는 (더 느린) ST_StraightSkeleton 함수"
+"를 둘러싼 래퍼(wrapper)에 불과합니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:233 reference_sfcgal.xml:558 reference_sfcgal.xml:633
 #: reference_sfcgal.xml:836 reference_sfcgal.xml:877 reference_sfcgal.xml:905
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:241
@@ -320,24 +359,26 @@ msgid ""
 "SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, "
 "10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 msgstr ""
+"SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, "
+"10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
 
 #. Tag: para
 #: reference_sfcgal.xml:252
 #, no-c-format
 msgid "A polygon and its approximate medial axis"
-msgstr ""
+msgstr "폴리곤과 그 근사 중심축"
 
 #. Tag: refname
 #: reference_sfcgal.xml:273
 #, no-c-format
 msgid "ST_IsPlanar"
-msgstr ""
+msgstr "ST_IsPlanar"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:275
 #, no-c-format
 msgid "Check if a surface is or not planar"
-msgstr ""
+msgstr "표면이 평면인지 아닌지 확인합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:280
@@ -346,6 +387,8 @@ msgid ""
 "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:290
@@ -354,18 +397,20 @@ msgid ""
 "Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
 "out in 2.1 release."
 msgstr ""
+"2.2.0 버전부터 사용할 수 있습니다. 원래 2.1.0 버전에 문서화됐지만 2.1 배포판"
+"에서는 실수로 빠졌습니다."
 
 #. Tag: refname
 #: reference_sfcgal.xml:302
 #, no-c-format
 msgid "ST_Orientation"
-msgstr ""
+msgstr "ST_Orientation"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:304
 #, no-c-format
 msgid "Determine surface orientation"
-msgstr ""
+msgstr "표면의 방향(orientation)을 결정합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:309
@@ -374,6 +419,8 @@ msgid ""
 "<funcdef>integer <function>ST_Orientation</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>integer <function>ST_Orientation</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:319
@@ -382,18 +429,20 @@ msgid ""
 "The function only applies to polygons. It returns -1 if the polygon is "
 "counterclockwise oriented and 1 if the polygon is clockwise oriented."
 msgstr ""
+"이 함수는 폴리곤에만 적용됩니다. 폴리곤이 반시계 방향이면 -1을, 시계 방향이"
+"면 1을 반환합니다."
 
 #. Tag: refname
 #: reference_sfcgal.xml:331
 #, no-c-format
 msgid "ST_ForceLHR"
-msgstr ""
+msgstr "ST_ForceLHR"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:333
 #, no-c-format
 msgid "Force LHR orientation"
-msgstr ""
+msgstr "LHR(Left Hand Reverse; 시계 방향) 방향을 강제합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:338
@@ -402,18 +451,20 @@ msgid ""
 "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:359
 #, no-c-format
 msgid "ST_MinkowskiSum"
-msgstr ""
+msgstr "ST_MinkowskiSum"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:361
 #, no-c-format
 msgid "Performs Minkowski sum"
-msgstr ""
+msgstr "민코프스키 합계를 수행합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:366
@@ -423,6 +474,9 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:377
@@ -431,6 +485,8 @@ msgid ""
 "This function performs a 2D minkowski sum of a point, line or polygon with a "
 "polygon."
 msgstr ""
+"이 함수는 폴리곤과, 포인트, 라인 또는 폴리곤의 2차원 민코프스키 합계를 수행합"
+"니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:378
@@ -441,6 +497,11 @@ msgid ""
 "planning and computer-aided design. More details on <ulink url=\"https://en."
 "wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
 msgstr ""
+"두 도형 A와 B의 민코프스키 합계란 A와 B에 있는 모든 포인트를 합한, 모든 포인"
+"트들의 집합입니다. 민코프스키 합계는 운동 계획(motion planning) 및 "
+"CAD(computer-aided design) 분야에서 자주 사용됩니다. 자세한 내용은 <ulink "
+"url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski "
+"addition</ulink> 을 참조하십시오."
 
 #. Tag: para
 #: reference_sfcgal.xml:379
@@ -451,6 +512,10 @@ msgid ""
 "leading to possible cases of invalidity. The second parameter must be a 2D "
 "polygon."
 msgstr ""
+"첫 번째 파라미터는 어떤 2차원 도형(포인트, 라인스트링, 폴리곤)도 될 수 있습니"
+"다. 만약 3차원 도형을 입력할 경우, Z 좌표를 0으로 강제해서 2차원으로 변환하"
+"기 때문에 유효하지 않은 도형으로 변할 가능성이 있습니다. 두 번째 파라미터는 2"
+"차원 폴리곤이어야만 합니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:381
@@ -459,6 +524,8 @@ msgid ""
 "Implementation utilizes <ulink url=\"http://doc.cgal.org/latest/"
 "Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
 msgstr ""
+"구현하는 데 <ulink url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL "
+"2D Minkowskisum</ulink> 을 활용합니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:389
@@ -467,28 +534,30 @@ msgid ""
 "Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
 "the circle"
 msgstr ""
+"라인스트링이 원을 뚫고 지나가는 경우 라인스트링과 원형 폴리곤의 민코프스키 합"
+"계"
 
 #. Tag: para
 #: reference_sfcgal.xml:401 reference_sfcgal.xml:436
 #, no-c-format
 msgid "Before Summing"
-msgstr ""
+msgstr "합계 전"
 
 #. Tag: para
 #: reference_sfcgal.xml:413
 #, no-c-format
 msgid "After summing"
-msgstr ""
+msgstr "합계 후"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:422
 #, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
-"FROM (SELECT \n"
+"FROM (SELECT\n"
 "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 "
 "54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 "
@@ -509,19 +578,43 @@ msgid ""
 "76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 "
 "65.8527096604838,30 59.9999999999999)))"
 msgstr ""
+"SELECT ST_MinkowskiSum(line, circle))\n"
+"FROM (SELECT\n"
+"    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
+"    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
+"\n"
+"-- WKT --\n"
+"MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 "
+"54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 "
+"43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 "
+"35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 "
+"30.5764415879031,60.0000000000001 30,65.8527096604839 "
+"30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 "
+"35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 "
+"128.786796564404,174.944088369076 133.332893009412,177.716385975339 "
+"138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 "
+"155.852709660484,177.716385975339 161.480502970953,174.944088369076 "
+"166.667106990588,171.213203435596 171.213203435596,166.667106990588 "
+"174.944088369076,\n"
+"161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 "
+"180,144.147290339516 179.423558412097,138.519497029047 "
+"177.716385975339,133.332893009412 174.944088369076,128.786796564403 "
+"171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 "
+"76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 "
+"65.8527096604838,30 59.9999999999999)))"
 
 #. Tag: para
 #: reference_sfcgal.xml:424
 #, no-c-format
 msgid "Minkowski Sum of a polygon and multipoint"
-msgstr ""
+msgstr "폴리곤과 멀티 포인트의 민코프스키 합계"
 
 #. Tag: para
 #: reference_sfcgal.xml:448
 #, no-c-format
 msgid ""
 "After summing: polygon is duplicated and translated to position of points"
-msgstr ""
+msgstr "합계 후: 폴리곤을 복제해서 포인트의 위치로 번역합니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:457
@@ -532,25 +625,36 @@ msgid ""
 "   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n"
 "    ) As foo\n"
 "\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(\n"
 "    ((70 115,100 135,175 175,225 225,70 115)),\n"
 "    ((120 65,150 85,225 125,275 175,120 65))\n"
 "    )"
 msgstr ""
+"SELECT ST_MinkowskiSum(mp, poly)\n"
+"FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,\n"
+"   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n"
+"    ) As foo\n"
+"\n"
+"\n"
+"-- WKT --\n"
+"MULTIPOLYGON(\n"
+"    ((70 115,100 135,175 175,225 225,70 115)),\n"
+"    ((120 65,150 85,225 125,275 175,120 65))\n"
+"    )"
 
 #. Tag: refname
 #: reference_sfcgal.xml:464
 #, no-c-format
 msgid "ST_3DIntersection"
-msgstr ""
+msgstr "ST_3DIntersection"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:466
 #, no-c-format
 msgid "Perform 3D intersection"
-msgstr ""
+msgstr "3차원 교차를 수행합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:471
@@ -560,28 +664,35 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:481
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
-msgstr ""
+msgstr "geom1과 geom2가 공유하는 부분을 도형으로 반환합니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:497 reference_sfcgal.xml:573 reference_sfcgal.xml:648
 #, no-c-format
 msgid ""
 "SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2;"
 msgstr ""
+"SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2;"
 
 #. Tag: para
 #: reference_sfcgal.xml:503
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
-msgstr ""
+msgstr "원본 3차원 도형들이 중첩합니다. geom2를 반투명하게 표현했습니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:508
@@ -589,22 +700,27 @@ msgstr ""
 msgid ""
 "SELECT ST_3DIntersection(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DIntersection(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:514
 #, no-c-format
 msgid "Intersection of geom1 and geom2"
-msgstr ""
+msgstr "geom1과 geom2가 교차한 부분"
 
 #. Tag: para
 #: reference_sfcgal.xml:523
 #, no-c-format
 msgid "3D linestrings and polygons"
-msgstr ""
+msgstr "3차원 라인스트링과 폴리곤"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:524
@@ -620,12 +736,21 @@ msgid ""
 "--------------------------------\n"
 " LINESTRING Z (1 1 8,0.5 0.5 8)"
 msgstr ""
+"SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt\n"
+"FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 "
+"10)') AS linestring\n"
+" CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') "
+"AS polygon;\n"
+"\n"
+"              wkt\n"
+"--------------------------------\n"
+" LINESTRING Z (1 1 8,0.5 0.5 8)"
 
 #. Tag: para
 #: reference_sfcgal.xml:526
 #, no-c-format
 msgid "Cube (closed Polyhedral Surface) and Polygon Z"
-msgstr ""
+msgstr "정육면체(닫힌 다면체 표면)과 폴리곤 Z"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:527
@@ -633,14 +758,23 @@ msgstr ""
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
 "                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
-"0 1 0, 0 0 0)), \n"
+"0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
-"0 0 1)) )'), \n"
+"0 0 1)) )'),\n"
 "        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
 msgstr ""
+"SELECT ST_AsText(ST_3DIntersection(\n"
+"                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
+"0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
+"0 0 1)) )'),\n"
+"        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
 
 #. Tag: screen
 #: reference_sfcgal.xml:528
@@ -648,6 +782,7 @@ msgstr ""
 msgid ""
 "TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))"
 msgstr ""
+"TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))"
 
 #. Tag: para
 #: reference_sfcgal.xml:530
@@ -656,6 +791,8 @@ msgid ""
 "Intersection of 2 solids that result in volumetric intersection is also a "
 "solid (ST_Dimension returns 3)"
 msgstr ""
+"두 물체의 입체 교차 또한 물체인 두 물체가 교차하는 부분(ST_Dimension 함수가 3"
+"을 반환)"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:531
@@ -665,6 +802,9 @@ msgid ""
 "geometry,10,1),0,0,30),\n"
 " ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
 msgstr ""
+"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::"
+"geometry,10,1),0,0,30),\n"
+" ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
 
 #. Tag: screen
 #: reference_sfcgal.xml:532
@@ -672,44 +812,71 @@ msgstr ""
 msgid ""
 "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
 "10,13.3333333333333 13.3333333333333 10)),\n"
-"         ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
 "13.3333333333333 10,20 20 10)),\n"
-"         ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
-"         ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
+"        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
 "0,13.3333333333333 13.3333333333333 10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
 "13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
 "10,20 20 0)),\n"
-"         ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),"
-"((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 "
-"13.3333333333333 10)),\n"
-"         ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
 "10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
 "10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
-"         ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
+"        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
 "10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
 "((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
-"         ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
 "10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
 "((11 11 10,11 29 10,2 20 10,11 11 10)))"
 msgstr ""
+"POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
+"10,13.3333333333333 13.3333333333333 10)),\n"
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
+"13.3333333333333 10,20 20 10)),\n"
+"        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
+"0,13.3333333333333 13.3333333333333 10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
+"13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
+"10,20 20 0)),\n"
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
+"10)),\n"
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
+"10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
+"10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
+"10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"((11 11 10,11 29 10,2 20 10,11 11 10)))"
 
 #. Tag: refname
 #: reference_sfcgal.xml:540
 #, no-c-format
 msgid "ST_3DDifference"
-msgstr ""
+msgstr "ST_3DDifference"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:542
 #, no-c-format
 msgid "Perform 3D difference"
-msgstr ""
+msgstr "3차원 차이를 수행합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:547
@@ -719,19 +886,22 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:557
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
-msgstr ""
+msgstr "geom2의 일부분이 아닌 geom1의 부분을 반환합니다."
 
 #. Tag: para
 #: reference_sfcgal.xml:579
 #, no-c-format
 msgid ""
 "Original 3D geometries overlaid. geom2 is the part that will be removed."
-msgstr ""
+msgstr "원본 3차원 도형들이 중첩합니다. geom2가 제거될 부분을 나타냅니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:584
@@ -739,16 +909,21 @@ msgstr ""
 msgid ""
 "SELECT ST_3DDifference(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DDifference(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:590
 #, no-c-format
 msgid "What's left after removing geom2"
-msgstr ""
+msgstr "geom2를 제거하고 남은 부분"
 
 #. Tag: para
 #: reference_sfcgal.xml:604
@@ -757,18 +932,20 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:614
 #, no-c-format
 msgid "ST_3DUnion"
-msgstr ""
+msgstr "ST_3DUnion"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:616
 #, no-c-format
 msgid "Perform 3D union"
-msgstr ""
+msgstr "3차원 통합을 수행합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:621
@@ -778,12 +955,15 @@ msgid ""
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
 "<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_3DUnion</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:654
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
-msgstr ""
+msgstr "원본 3차원 도형들이 중첩합니다. geom2를 반투명하게 표현했습니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:659
@@ -791,16 +971,21 @@ msgstr ""
 msgid ""
 "SELECT ST_3DUnion(geom1,geom2)\n"
 "FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
-" 50, 'quad_segs=2'),0,0,30) AS geom1, \n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DUnion(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:665
 #, no-c-format
 msgid "Union of geom1 and geom2"
-msgstr ""
+msgstr "geom1과 geom2의 통합"
 
 #. Tag: para
 #: reference_sfcgal.xml:679
@@ -809,18 +994,20 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DDifference\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:690
 #, no-c-format
 msgid "ST_3DArea"
-msgstr ""
+msgstr "ST_3DArea"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:692
 #, no-c-format
 msgid "Computes area of 3D surface geometries. Will return 0 for solids."
-msgstr ""
+msgstr "3차원 표면 도형의 면적을 계산합니다. 입체일 경우 0을 반환할 것입니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:697
@@ -829,6 +1016,8 @@ msgid ""
 "<funcdef>float<function>ST_3DArea</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
+"<funcdef>float<function>ST_3DArea</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:715
@@ -837,24 +1026,39 @@ msgid ""
 "Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
 "not solid. It therefore has surface area. Once converted to a solid, no area."
 msgstr ""
+"주의: 기본적으로 KWT로부터 빌드된 다면체 표면은 표면 도형이지 입체가 아닙니"
+"다. 따라서 표면 면적을 구할 수 있습니다. 입체로 변환하면, 면적을 구할 수 없습"
+"니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:716
 #, no-c-format
 msgid ""
-"SELECT ST_3DArea(geom) As cube_surface_area, \n"
+"SELECT ST_3DArea(geom) As cube_surface_area,\n"
 "        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_area | solid_surface_area\n"
 "-------------------+--------------------\n"
 "                 6 |                  0"
 msgstr ""
+"SELECT ST_3DArea(geom) As cube_surface_area,\n"
+"        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
+"\n"
+" cube_surface_area | solid_surface_area\n"
+"-------------------+--------------------\n"
+"                 6 |                  0"
 
 #. Tag: para
 #: reference_sfcgal.xml:722
@@ -863,12 +1067,14 @@ msgid ""
 ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
 "linkend=\"ST_Area\"/>"
 msgstr ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:728
 #, no-c-format
 msgid "ST_Tesselate"
-msgstr ""
+msgstr "ST_Tesselate"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:730
@@ -877,6 +1083,8 @@ msgid ""
 "Perform surface Tesselation of a polygon or polyhedralsurface and returns as "
 "a TIN or collection of TINS"
 msgstr ""
+"폴리곤 또는 다면체 표면의 표면 다듬기(tesselation) 작업을 수행한 다음 TIN 또"
+"는 TIN 집합으로 반환합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:735
@@ -885,6 +1093,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
 #: reference_sfcgal.xml:744
@@ -893,44 +1103,60 @@ msgid ""
 "Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
 "returns a TIN representation via the process of tesselation using triangles."
 msgstr ""
+"[멀티]폴리곤 또는 다면체 표면 같은 표면 도형을 입력받아 삼각형을 이용한 다듬"
+"기(모자이크) 과정을 거친 TIN 표현식을 반환합니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:758
 #, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
-"0 0)), \n"
+"0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )');"
 msgstr ""
+"SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
+"0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
+"1, 0 1 1, 0 0 1)) )');"
 
 #. Tag: para
 #: reference_sfcgal.xml:764
 #, no-c-format
 msgid "Original Cube"
-msgstr ""
+msgstr "원본 정육면체"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:769
 #, no-c-format
 msgid ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
-"1 1, 0 1 0, 0 0 0)), \n"
+"1 1, 0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
 "0 0 1)) )'));"
 msgstr ""
+"SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
+"1 1, 0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
+"0 0 1)) )'));"
 
 #. Tag: para
 #: reference_sfcgal.xml:770
 #, no-c-format
 msgid "ST_AsText output:"
-msgstr ""
+msgstr "ST_AsText 출력물:"
 
 #. Tag: screen
 #: reference_sfcgal.xml:771
@@ -944,12 +1170,19 @@ msgid ""
 "        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),\n"
 "        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))"
 msgstr ""
+"TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),\n"
+"        ((0 0 0,0 1 0,1 1 0,0 0 0)),\n"
+"        ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),\n"
+"        ((0 0 1,0 0 0,1 0 0,0 0 1)),\n"
+"        ((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),\n"
+"        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),\n"
+"        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))"
 
 #. Tag: para
 #: reference_sfcgal.xml:777
 #, no-c-format
 msgid "Tesselated Cube with triangles colored"
-msgstr ""
+msgstr "삼각형을 색으로 구분한 다듬어진 정육면체"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:785
@@ -958,21 +1191,26 @@ msgid ""
 "SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, "
 "10 190 ))'::geometry;"
 msgstr ""
+"SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, "
+"10 190 ))'::geometry;"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:796
 #, no-c-format
 msgid ""
-"SELECT \n"
+"SELECT\n"
 "        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
 "160, 120 190, 10 190 ))'::geometry);"
 msgstr ""
+"SELECT\n"
+"        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
+"160, 120 190, 10 190 ))'::geometry);"
 
 #. Tag: para
 #: reference_sfcgal.xml:798
 #, no-c-format
 msgid "ST_AsText output"
-msgstr ""
+msgstr "ST_AsText 출력물:"
 
 #. Tag: screen
 #: reference_sfcgal.xml:799
@@ -982,18 +1220,21 @@ msgid ""
 "         ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),\n"
 " ((120 190,10 190,50 160,120 190)))"
 msgstr ""
+"TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),\n"
+"         ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),\n"
+" ((120 190,10 190,50 160,120 190)))"
 
 #. Tag: para
 #: reference_sfcgal.xml:805
 #, no-c-format
 msgid "Tesselated Polygon"
-msgstr ""
+msgstr "다듬어진 폴리곤"
 
 #. Tag: refname
 #: reference_sfcgal.xml:819
 #, no-c-format
 msgid "ST_Volume"
-msgstr ""
+msgstr "ST_Volume"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:821
@@ -1002,6 +1243,8 @@ msgid ""
 "Computes the volume of a 3D solid. If applied to surface (even closed) "
 "geometries will return 0."
 msgstr ""
+"3차원 입체의 부피를 계산합니다. 표면 도형을 입력하면 (닫힌 도형일지라도) 0을 "
+"반환할 것입니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:826
@@ -1010,12 +1253,14 @@ msgid ""
 "<funcdef>float <function>ST_Volume</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
+"<funcdef>float <function>ST_Volume</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: title
 #: reference_sfcgal.xml:844
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "예시"
 
 #. Tag: para
 #: reference_sfcgal.xml:845
@@ -1025,36 +1270,51 @@ msgid ""
 "than solid. To make them solid, you need to use <xref linkend=\"ST_MakeSolid"
 "\"/>. Areal geometries have no volume. Here is an example to demonstrate."
 msgstr ""
+"WKT로 닫힌 표면을 생성했을 때, 입체라기보다는 면으로 취급됩니다. 이 닫힌 표면"
+"을 입체로 만들려면, <xref linkend=\"ST_MakeSolid\"/> 함수를 이용해야 합니다. "
+"면 도형은 부피가 없습니다. 다음은 그 사실을 보여주는 예시입니다."
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:847
 #, no-c-format
 msgid ""
-"SELECT ST_Volume(geom) As cube_surface_vol, \n"
+"SELECT ST_Volume(geom) As cube_surface_vol,\n"
 "        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_vol | solid_surface_vol\n"
 "------------------+-------------------\n"
 "                0 |                 1"
 msgstr ""
+"SELECT ST_Volume(geom) As cube_surface_vol,\n"
+"        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
+"\n"
+" cube_surface_vol | solid_surface_vol\n"
+"------------------+-------------------\n"
+"                0 |                 1"
 
 #. Tag: para
 #: reference_sfcgal.xml:853
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:860
 #, no-c-format
 msgid "ST_MakeSolid"
-msgstr ""
+msgstr "ST_MakeSolid"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:862
@@ -1064,6 +1324,8 @@ msgid ""
 "solid, the input geometry must be a closed Polyhedral Surface or a closed "
 "TIN."
 msgstr ""
+"도형을 입체로 지정합니다. 어떤 확인 작업도 수행하지 않습니다. 유효한 입체를 "
+"얻으려면, 입력 도형이 닫힌 다면체 표면 또는 닫힌 TIN이어야만 합니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:867
@@ -1072,18 +1334,20 @@ msgid ""
 "<funcdef>geometry<function>ST_MakeSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry<function>ST_MakeSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:888
 #, no-c-format
 msgid "ST_IsSolid"
-msgstr ""
+msgstr "ST_IsSolid"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:890
 #, no-c-format
 msgid "Test if the geometry is a solid. No validity check is performed."
-msgstr ""
+msgstr "도형이 입체인지 테스트합니다. 어떤 유효성 검사도 수행하지 않습니다."
 
 #. Tag: funcprototype
 #: reference_sfcgal.xml:895
@@ -1092,3 +1356,5 @@ msgid ""
 "<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
 "<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"

@@ -137,7 +137,7 @@ const char dumb_upper_map[128] = "..............................................
 
 static char dump_toupper(int in)
 {
-	if ( in < 0 || in > 127 ) 
+	if ( in < 0 || in > 127 )
 		return '.';
 	return dumb_upper_map[in];
 }

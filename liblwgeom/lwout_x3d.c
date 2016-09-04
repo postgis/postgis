@@ -442,7 +442,7 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
         case MULTIPOINTTYPE:
             x3dtype = "PointSet";
             if ( dimension == 2 ){ /** Use Polypoint2D instead **/
-                x3dtype = "Polypoint2D";   
+                x3dtype = "Polypoint2D";
                 ptr += sprintf(ptr, "<%s %s point='", x3dtype, defid);
             }
             else {
@@ -466,7 +466,7 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
             return 0;
     }
     if (dimension == 3){
-		if ( X3D_USE_GEOCOORDS(opts) ) 
+		if ( X3D_USE_GEOCOORDS(opts) )
 			ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ((opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 		else
         	ptr += sprintf(ptr, "<Coordinate point='");
@@ -496,7 +496,7 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
 	if (dimension == 3){
 	    ptr += sprintf(ptr, "' /></%s>", x3dtype);
 	}
-	else { ptr += sprintf(ptr, "' />"); }    
+	else { ptr += sprintf(ptr, "' />"); }
 	return (ptr-output);
 }
 
@@ -574,7 +574,7 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 		j += k;
 	}
 
-	if ( X3D_USE_GEOCOORDS(opts) ) 
+	if ( X3D_USE_GEOCOORDS(opts) )
 		ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 	else ptr += sprintf(ptr, "'><Coordinate point='");
 

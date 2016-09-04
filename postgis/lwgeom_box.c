@@ -121,7 +121,7 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 
 	/* Cannot box empty! */
 	if ( lwgeom_is_empty(lwgeom) )
-		PG_RETURN_NULL(); 
+		PG_RETURN_NULL();
 
 	/* Cannot calculate box? */
 	if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
@@ -378,12 +378,22 @@ PG_FUNCTION_INFO_V1(BOX2D_expand);
 Datum BOX2D_expand(PG_FUNCTION_ARGS)
 {
 	GBOX *box = (GBOX *)PG_GETARG_POINTER(0);
-	double d = PG_GETARG_FLOAT8(1);
 	GBOX *result = (GBOX *)palloc(sizeof(GBOX));
-
 	memcpy(result, box, sizeof(GBOX));
-    gbox_expand(result, d);
-    
+
+	if (PG_NARGS() == 2)
+	{
+		double d = PG_GETARG_FLOAT8(1);
+		gbox_expand(result, d);
+	}
+	else
+	{
+		double dx = PG_GETARG_FLOAT8(1);
+		double dy = PG_GETARG_FLOAT8(2);
+
+		gbox_expand_xyzm(result, dx, dy, 0, 0);
+	}
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -538,7 +548,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process X min/max */
 	min = lwpoint_get_x(minpoint);
 	max = lwpoint_get_x(maxpoint);
-	if ( min > max ) 
+	if ( min > max )
 	{
 		tmp = min;
 		min = max;
@@ -550,7 +560,7 @@ Datum BOX2D_construct(PG_FUNCTION_ARGS)
 	/* Process Y min/max */
 	min = lwpoint_get_y(minpoint);
 	max = lwpoint_get_y(maxpoint);
-	if ( min > max ) 
+	if ( min > max )
 	{
 		tmp = min;
 		min = max;

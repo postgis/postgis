@@ -114,14 +114,40 @@ $(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
 
-install: installdir 
+install-desktop:
+ifdef gtk_build
+	mkdir -p $(DESTDIR)$(datadir)/applications
+	$(INSTALL_DATA) shp2pgsql-gui.desktop $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
+endif
+
+ICON_SIZES = 8x8 16x16 22x22 24x24 32x32 36x36 40x40 42x42 48x48 64x64
+
+install-icons:
+ifdef gtk_build
+	for size in $(ICON_SIZES); do \
+		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps; \
+		$(INSTALL_DATA) icons/hicolor/$${size}/apps/shp2pgsql-gui.png $(DESTDIR)$(datadir)/icons/hicolor/$${size}/apps/shp2pgsql-gui.png; \
+	done
+endif
+
+install: installdir install-desktop install-icons
 ifdef gtk_build
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-GUI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"
 endif
 	$(LIBTOOL) --mode=install $(INSTALL) $(PGSQL2SHP-CLI) "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=install $(INSTALL) $(SHP2PGSQL-CLI) "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 
-uninstall:
+uninstall-desktop:
+ifdef gtk_build
+	rm -f $(DESTDIR)$(datadir)/applications/shp2pgsql-gui.desktop
+endif
+
+uninstall-icons:
+ifdef gtk_build
+	rm -f $(DESTDIR)$(datadir)/icons/hicolor/*/apps/shp2pgsql-gui.png
+endif
+
+uninstall: uninstall-desktop uninstall-icons
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(PGSQL2SHP-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-CLI)"
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(bindir)/$(SHP2PGSQL-GUI)"

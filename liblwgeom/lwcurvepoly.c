@@ -74,7 +74,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	int i;
 	
 	/* Can't do anything with NULLs */
-	if( ! poly || ! ring ) 
+	if( ! poly || ! ring )
 	{
 		LWDEBUG(4,"NULL inputs!!! quitting");
 		return LW_FAILURE;

@@ -4,7 +4,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2010-2012 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2009      Paul Ramsey <pramsey@cleverelephant.ca>
 --
@@ -55,10 +55,10 @@ DROP FUNCTION IF EXISTS box2d_overlap(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_same(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
 DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry,int4); -- this one changed to use default args 
-DROP FUNCTION IF EXISTS ST_AsGeoJson(geography,int4); -- this one changed to use default args 
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geography); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geometry,int4); -- this one changed to use default args
+DROP FUNCTION IF EXISTS ST_AsGeoJson(geography,int4); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geography); -- this one changed to use default args
 DROP FUNCTION IF EXISTS ST_AsGeoJson(int4,geometry,int4); -- this one changed to use default args
@@ -112,8 +112,8 @@ DROP FUNCTION IF EXISTS st_geometry(text);
 DROP FUNCTION IF EXISTS st_geometry(bytea);
 DROP FUNCTION IF EXISTS st_bytea(geometry);
 DROP FUNCTION IF EXISTS st_addbbox(geometry);
-DROP FUNCTION IF EXISTS st_dropbbox(geometry); 
-DROP FUNCTION IF EXISTS st_hasbbox(geometry); 
+DROP FUNCTION IF EXISTS st_dropbbox(geometry);
+DROP FUNCTION IF EXISTS st_hasbbox(geometry);
 DROP FUNCTION IF EXISTS cache_bbox();
 DROP FUNCTION IF EXISTS st_cache_bbox();
 DROP FUNCTION IF EXISTS ST_GeoHash(geometry); -- changed to use default args

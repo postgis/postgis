@@ -1,5 +1,5 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- 
+--
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://www.postgis.net
 --
@@ -30,14 +30,14 @@ BEGIN
 		var_result := a_schema_name || ' already in database search_path';
 	ELSE
 		var_cur_search_path := var_cur_search_path || ', '
-                        || quote_ident(a_schema_name); 
+                        || quote_ident(a_schema_name);
 		EXECUTE 'ALTER DATABASE ' || quote_ident(current_database())
                               || ' SET search_path = ' || var_cur_search_path;
 		var_result := a_schema_name || ' has been added to end of database search_path ';
 	END IF;
 
 	EXECUTE 'SET search_path = ' || var_cur_search_path;
-  
+
   RETURN var_result;
 END
 $$

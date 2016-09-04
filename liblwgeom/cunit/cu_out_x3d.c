@@ -99,7 +99,7 @@ static void out_x3d3_test_geoms(void)
 
 	/* TODO: Polygon - with internal ring - the answer is clearly wrong */
 	/** do_x3d3_test(
-	    "POLYGON((0 1 3,2 3 3,4 5 3,0 1 3),(6 7 3,8 9 3,10 11 3,6 7 3))", 
+	    "POLYGON((0 1 3,2 3 3,4 5 3,0 1 3),(6 7 3,8 9 3,10 11 3,6 7 3))",
 	        "",
 	    NULL, 0); **/
 

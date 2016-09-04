@@ -17,8 +17,8 @@ CREATE TYPE geomvalxy AS (
 -- Should be called like this:
 -- SELECT (gv).geom, (gv).val FROM (SELECT ST_PixelAsPolygons(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer) 
-    RETURNS SETOF geomvalxy AS 
+CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer)
+    RETURNS SETOF geomvalxy AS
     $$
     DECLARE
         rast alias for $1;
@@ -47,7 +47,7 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer)
     $$
     LANGUAGE 'plpgsql';
 
-CREATE FUNCTION ST_PixelAsPolygons(raster) RETURNS SETOF geomvalxy AS 
+CREATE FUNCTION ST_PixelAsPolygons(raster) RETURNS SETOF geomvalxy AS
 $$
     SELECT ST_PixelAsPolygons($1, 1);
 $$

@@ -4,19 +4,23 @@ EXTENSION    = postgis_sfcgal
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 GREP = @GREP@
+PERL = @PERL@
 
-MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | \
+						$(PERL) -pe 's/\d.\d.(\d+)[a-zA-Z]*\d*/$1/'
+
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
-                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(PERL) -pe 's/\d\.\d\.(.*)/\1/' | \
                         $(GREP) "[a-zA-Z]" | \
-                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+                        $(PERL) -pe 's/\d+[a-zA-Z]+(\d+)/\1/'
+
 MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
 PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
 
 PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
-                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        $(PERL) -pe 's/\d\.\d\.(.*)/\1/' | \
                         $(GREP) "[a-zA-Z]" | \
-                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
+                        $(PERL) -pe 's/(\d+[a-zA-Z]+)\d*/\1/'
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
@@ -45,18 +49,18 @@ sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/sfcgal_upgrade_
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
 	mkdir -p sql
 	cp $< $@
-	
+
 sql_bits/sfcgal.sql: ../../postgis/sfcgal.sql
 	mkdir -p sql_bits
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
-	
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
+
 ../../doc/sfcgal_comments.sql:
 	$(MAKE) -C ../../doc comments
-	
+
 sql_bits/sfcgal_comments.sql: ../../doc/sfcgal_comments.sql
 	mkdir -p sql_bits
 	cp $< $@
-	
+
 #grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values and extra junk
@@ -66,7 +70,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/sfcgal.sql ../../utils
 
 sql_bits/sfcgal_upgrade.sql : ../../postgis/sfcgal_upgrade.sql
 	mkdir -p sql_bits
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql_bits/sfcgal_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/sfcgal_upgrade.sql ../../doc/sfcgal_comments.sql ../postgis_extension_helper_uninstall.sql
 	mkdir -p sql_bits
@@ -87,3 +91,4 @@ distclean: clean
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
+PERL = @PERL@

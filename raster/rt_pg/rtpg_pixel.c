@@ -9,7 +9,7 @@
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
- * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008-2009 Sandro Santilli <strk@kbt.io>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -272,7 +272,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		*/
 
 		/* raster has bands */
-		numbands = rt_raster_get_num_bands(raster); 
+		numbands = rt_raster_get_num_bands(raster);
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);

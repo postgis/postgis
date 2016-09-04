@@ -476,9 +476,9 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 }
 
 /**
-* Returns a pointer into the POINTARRAY serialized_ptlist, 
+* Returns a pointer into the POINTARRAY serialized_ptlist,
 * suitable for reading from. This is very high performance
-* and declared const because you aren't allowed to muck with the 
+* and declared const because you aren't allowed to muck with the
 * values, only read them.
 */
 const POINT2D*

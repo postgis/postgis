@@ -86,7 +86,7 @@ INSERT INTO test_data VALUES
 --
 SELECT id,wkt FROM test_data WHERE
        ST_asEWKT(geometry(wkt)) != wkt  OR
-       ST_asEWKT(geometry(wkb_xdr)) != wkt OR 
+       ST_asEWKT(geometry(wkb_xdr)) != wkt OR
        ST_asEWKT(geometry(wkb_ndr)) != wkt OR
        ST_asBinary(geometry(wkb_ndr)) != ST_asBinary(geometry(wkb_xdr)) OR
        ST_asBinary(geometry(wkt)) != ST_asBinary(geometry(wkb_xdr));

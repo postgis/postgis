@@ -85,7 +85,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_stroke(igeom, perQuad);
 	lwgeom_free(igeom);
 	
-	if (ogeom == NULL) 
+	if (ogeom == NULL)
 		PG_RETURN_NULL();
 		
 	ret = geometry_serialize(ogeom);

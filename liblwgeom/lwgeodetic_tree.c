@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2012-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2012-2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2012-2015 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -36,7 +36,7 @@ static double circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_N
 /**
 * Internal nodes have their point references set to NULL.
 */
-static inline int 
+static inline int
 circ_node_is_leaf(const CIRC_NODE* node)
 {
 	return (node->num_nodes == 0);
@@ -46,7 +46,7 @@ circ_node_is_leaf(const CIRC_NODE* node)
 * Recurse from top of node tree and free all children.
 * does not free underlying point array.
 */
-void 
+void
 circ_tree_free(CIRC_NODE* node)
 {
 	int i;
@@ -63,7 +63,7 @@ circ_tree_free(CIRC_NODE* node)
 /**
 * Create a new leaf node, storing pointers back to the end points for later.
 */
-static CIRC_NODE* 
+static CIRC_NODE*
 circ_node_leaf_new(const POINTARRAY* pa, int i)
 {
 	POINT2D *p1, *p2;
@@ -105,7 +105,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->num_nodes = 0;
 	node->nodes = NULL;
 	node->edge_num = i;
-    
+
 	/* Zero out metadata */
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
@@ -117,7 +117,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 /**
 * Return a point node (zero radius, referencing one point)
 */
-static CIRC_NODE* 
+static CIRC_NODE*
 circ_node_leaf_point_new(const POINTARRAY* pa)
 {
 	CIRC_NODE* tree = lwalloc(sizeof(CIRC_NODE));
@@ -134,9 +134,9 @@ circ_node_leaf_point_new(const POINTARRAY* pa)
 }
 
 /**
-* Comparing on geohash ensures that nearby nodes will be close 
+* Comparing on geohash ensures that nearby nodes will be close
 * to each other in the list.
-*/  
+*/
 static int
 circ_node_compare(const void* v1, const void* v2)
 {
@@ -180,7 +180,7 @@ circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 }
 
 /**
-* Where the circ_center_spherical() function fails, we need a fall-back. The failures 
+* Where the circ_center_spherical() function fails, we need a fall-back. The failures
 * happen in short arcs, where the spherical distance between two points is practically
 * the same as the straight-line distance, so our fallback will be to use the straight-line
 * between the two to calculate the new projected center. For proportions far from 0.5
@@ -225,7 +225,7 @@ circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 * Create a new internal node, calculating the new measure range for the node,
 * and storing pointers to the child nodes.
 */
-static CIRC_NODE* 
+static CIRC_NODE*
 circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 {
 	CIRC_NODE *node = NULL;
@@ -248,7 +248,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	/* Merge each remaining circle into the new circle */
 	for ( i = 1; i < num_nodes; i++ )
 	{
-		c1 = new_center; 
+		c1 = new_center;
 		r1 = new_radius;
 		
 		dist = sphere_distance(&c1, &(c[i]->center));
@@ -349,7 +349,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 /**
 * Build a tree of nodes from a point array, one node per edge.
 */
-CIRC_NODE* 
+CIRC_NODE*
 circ_tree_new(const POINTARRAY* pa)
 {
 	int num_edges;
@@ -413,7 +413,7 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 	int num_parents = 0;
 	int j;
 
-	/* TODO, roll geom_type *up* as tree is built, changing to collection types as simple types are merged 
+	/* TODO, roll geom_type *up* as tree is built, changing to collection types as simple types are merged
 	 * TODO, change the distance algorithm to drive down to simple types first, test pip on poly/other cases, then test edges
 	 */
 
@@ -493,8 +493,8 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	
 	LWDEBUG(3, "entered");
 	
-	/* 
-	* If the stabline doesn't cross within the radius of a node, there's no 
+	/*
+	* If the stabline doesn't cross within the radius of a node, there's no
 	* way it can cross.
 	*/
 		
@@ -556,7 +556,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	return 0;
 }
 
-static double 
+static double
 circ_node_min_distance(const CIRC_NODE* n1, const CIRC_NODE* n2)
 {
 	double d = sphere_distance(&(n1->center), &(n2->center));
@@ -569,7 +569,7 @@ circ_node_min_distance(const CIRC_NODE* n1, const CIRC_NODE* n2)
 	return d - r1 - r2;
 }
 
-static double 
+static double
 circ_node_max_distance(const CIRC_NODE *n1, const CIRC_NODE *n2)
 {
 	return sphere_distance(&(n1->center), &(n2->center)) + n1->radius + n2->radius;
@@ -599,7 +599,7 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	}
 }
 
-static double 
+static double
 circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2)
 {	
 	double max;
@@ -793,7 +793,7 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
 
 	if (circ_node_is_leaf(node))
 	{
-		printf("%*s[%d] C(%.5g %.5g) R(%.5g) ((%.5g %.5g),(%.5g,%.5g))", 
+		printf("%*s[%d] C(%.5g %.5g) R(%.5g) ((%.5g %.5g),(%.5g,%.5g))",
 		  3*depth + 6, "NODE", node->edge_num,
 		  node->center.lon, node->center.lat,
 		  node->radius,
@@ -809,12 +809,12 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
   			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
   		}				
   		printf("\n");
-		  
+		
 	}	
 	else
 	{
-		printf("%*s C(%.5g %.5g) R(%.5g)", 
-		  3*depth + 6, "NODE", 
+		printf("%*s C(%.5g %.5g) R(%.5g)",
+		  3*depth + 6, "NODE",
 		  node->center.lon, node->center.lat,
 		  node->radius
 		);

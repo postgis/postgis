@@ -40,7 +40,7 @@
 #define DIST_MAX		-1
 #define DIST_MIN		1
 
-/** 
+/**
 * Structure used in distance-calculations
 */
 typedef struct
@@ -103,7 +103,7 @@ int struct_cmp_by_measure(const void *a, const void *b);
 int lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1,POINTARRAY *l2, DISTPTS *dl,  GBOX *box1, GBOX *box2);
 
 /*
-* Distance calculation primitives. 
+* Distance calculation primitives.
 */
 int lw_dist2d_pt_pt  (const POINT2D *P,  const POINT2D *Q,  DISTPTS *dl);
 int lw_dist2d_pt_seg (const POINT2D *P,  const POINT2D *A1, const POINT2D *A2, DISTPTS *dl);

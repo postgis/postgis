@@ -11,7 +11,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 0, '1x1 no bands, no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -37,7 +37,7 @@ VALUES ( 0, '1x1 no bands, no transform',
 ,
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0000' -- nBands (uint16 0)
@@ -67,7 +67,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 1, '1x1 single band (1BB) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -99,7 +99,7 @@ VALUES ( 1, '1x1 single band (1BB) no transform',
 ,
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -135,7 +135,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 2, '1x1 single band (2BUI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -153,7 +153,7 @@ VALUES ( 2, '1x1 single band (2BUI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -166,7 +166,7 @@ VALUES ( 2, '1x1 single band (2BUI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -201,7 +201,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 3, '1x1 single band (4BUI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -219,7 +219,7 @@ VALUES ( 3, '1x1 single band (4BUI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -232,7 +232,7 @@ VALUES ( 3, '1x1 single band (4BUI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -267,7 +267,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 4, '1x1 single band (8BSI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -285,7 +285,7 @@ VALUES ( 4, '1x1 single band (8BSI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -298,7 +298,7 @@ VALUES ( 4, '1x1 single band (8BSI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -333,7 +333,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 5, '1x1 single band (8BUI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -351,7 +351,7 @@ VALUES ( 5, '1x1 single band (8BUI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -364,7 +364,7 @@ VALUES ( 5, '1x1 single band (8BUI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -399,7 +399,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 6, '1x1 single band (16BSI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -417,7 +417,7 @@ VALUES ( 6, '1x1 single band (16BSI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -430,7 +430,7 @@ VALUES ( 6, '1x1 single band (16BSI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -465,7 +465,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 7, '1x1 single band (16BUI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -483,7 +483,7 @@ VALUES ( 7, '1x1 single band (16BUI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -496,7 +496,7 @@ VALUES ( 7, '1x1 single band (16BUI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -531,7 +531,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 8, '1x1 single band (32BSI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -549,7 +549,7 @@ VALUES ( 8, '1x1 single band (32BSI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -562,7 +562,7 @@ VALUES ( 8, '1x1 single band (32BSI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -589,7 +589,7 @@ VALUES ( 8, '1x1 single band (32BSI) no transform',
 ||
 '00000000' -- novalue==0
 ||
-'FFFFFFFF' -- pixel(0,0)==-1 ? 
+'FFFFFFFF' -- pixel(0,0)==-1 ?
 ) );
 
 -- 1x1, single band of type 32BUI, no transform, scale 1:1
@@ -597,7 +597,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 9, '1x1 single band (32BUI) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -615,7 +615,7 @@ VALUES ( 9, '1x1 single band (32BUI) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -628,7 +628,7 @@ VALUES ( 9, '1x1 single band (32BUI) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -663,7 +663,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 11, '1x1 single band (32BF) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -681,7 +681,7 @@ VALUES ( 11, '1x1 single band (32BF) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -694,7 +694,7 @@ VALUES ( 11, '1x1 single band (32BF) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -729,7 +729,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 11, '1x1 single band (64BF) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -747,7 +747,7 @@ VALUES ( 11, '1x1 single band (64BF) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -760,7 +760,7 @@ VALUES ( 11, '1x1 single band (64BF) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)
@@ -797,7 +797,7 @@ INSERT INTO rt_io_test (id, name, hexwkb_ndr, hexwkb_xdr)
 VALUES ( 12, '1x1 single band (64BF external) no transform',
 (
 '01' -- little endian (uint8 ndr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0100' -- nBands (uint16 1)
@@ -815,7 +815,7 @@ VALUES ( 12, '1x1 single band (64BF external) no transform',
 '0000000000000000' -- skewY (float64 0)
 ||
 '0A000000' -- SRID (int32 10)
-|| 
+||
 '0100' -- width (uint16 1)
 ||
 '0100' -- height (uint16 1)
@@ -830,7 +830,7 @@ VALUES ( 12, '1x1 single band (64BF external) no transform',
 ),
 (
 '00' -- big endian (uint8 xdr)
-|| 
+||
 '0000' -- version (uint16 0)
 ||
 '0001' -- nBands (uint16 1)

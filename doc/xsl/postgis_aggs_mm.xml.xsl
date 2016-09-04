@@ -481,6 +481,9 @@
 
 	   <sect1 id="NewFunctions">
 			<title>New, Enhanced or changed PostGIS Functions</title>
+			<note><para>PostGIS 2.3.0: PostgreSQL 9.6+ support for parallel queries.</para></note>
+			<note><para>PostGIS 2.3.0: PostgreSQL 9.4+ support for BRIN indexes. Refer to <xref linkend="brin_indexes" />.</para></note>
+			<note><para>PostGIS 2.3.0: Tiger Geocoder upgraded to work with TIGER 2016 data.</para></note>
 			<sect2 id="NewFunctions_2_3">
 				<title>PostGIS Functions new or enhanced in 2.3</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>

@@ -50,7 +50,7 @@ typedef struct {
 typedef struct
 {
 	uint32_t cluster_id;
-	char is_null;        /* NULL may result from a NULL geometry input, or it may be used by 
+	char is_null;        /* NULL may result from a NULL geometry input, or it may be used by
 							algorithms such as DBSCAN that do not assign all inputs to a
 							cluster. */
 } dbscan_cluster_result;
@@ -92,6 +92,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		uint32_t i;
 		uint32_t* result_ids;
 		LWGEOM** geoms;
+		char* is_in_cluster;
 		UNIONFIND* uf;
 		bool tolerance_is_null;
 		bool minpoints_is_null;
@@ -127,7 +128,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 			}
 		}
 
-		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints) == LW_SUCCESS)
+		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints, &is_in_cluster) == LW_SUCCESS)
 			context->is_error = LW_FALSE;
 
 		for (i = 0; i < ngeoms; i++)
@@ -139,14 +140,22 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		if (context->is_error)
 		{
 			UF_destroy(uf);
+			lwfree(is_in_cluster);
 			lwpgerror("Error during clustering");
 			PG_RETURN_NULL();
 		}
 
-		result_ids = UF_get_collapsed_cluster_ids(uf);
+		result_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 		for (i = 0; i < ngeoms; i++)
 		{
-			context->cluster_assignments[i].cluster_id = result_ids[i];
+			if (!is_in_cluster[i])
+			{
+				context->cluster_assignments[i].is_null = LW_TRUE;
+			}
+			else
+			{
+				context->cluster_assignments[i].cluster_id = result_ids[i];
+			}
 		}
 
 		lwfree(result_ids);

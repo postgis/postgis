@@ -174,7 +174,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
-	if  ( empty1 != empty2 ) 
+	if  ( empty1 != empty2 )
 	{
     result = FALSE;
 	}

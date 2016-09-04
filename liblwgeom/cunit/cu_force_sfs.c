@@ -41,7 +41,7 @@ static void do_type_test(char * in, int type)
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_force_sfs(g, 110);
 	if(h->type != type)
-		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n", 
+		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n",
 			in, lwtype_name(h->type), lwtype_name(type));
 	CU_ASSERT_EQUAL(h->type, type);
 	lwgeom_free(h);

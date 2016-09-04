@@ -15,7 +15,7 @@
  * option is discussed in more detail in shapelib.html.
  *
  * --
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -72,8 +72,8 @@
  *
  * Revision 1.41  2007/12/15 20:25:32  bram
  * dbfopen.c now reads the Code Page information from the DBF file, and exports
- * this information as a string through the DBFGetCodePage function.  This is 
- * either the number from the LDID header field ("LDID/<number>") or as the 
+ * this information as a string through the DBFGetCodePage function.  This is
+ * either the number from the LDID header field ("LDID/<number>") or as the
  * content of an accompanying .CPG file.  When creating a DBF file, the code can
  * be set using DBFCreateEx.
  *
@@ -164,7 +164,7 @@ extern "C" {
 /*      is disabled.                                                    */
 /* -------------------------------------------------------------------- */
 #define DISABLE_MULTIPATCH_MEASURE
-    
+
 /* -------------------------------------------------------------------- */
 /*      SHPAPI_CALL                                                     */
 /*                                                                      */
@@ -211,7 +211,7 @@ extern "C" {
 #ifndef SHPAPI_CALL1
 #  define SHPAPI_CALL1(x)      x SHPAPI_CALL
 #endif
-    
+
 /* -------------------------------------------------------------------- */
 /*      Macros for controlling CVSID and ensuring they don't appear     */
 /*      as unreferenced variables resulting in lots of warnings.        */
@@ -281,7 +281,7 @@ typedef	struct
     SAFile 	fpSHX;
 
     int		nShapeType;				/* SHPT_* */
-    
+
     unsigned int 	nFileSize;				/* SHP file */
 
     int         nRecords;
@@ -344,7 +344,7 @@ typedef struct
     int		nParts;
     int		*panPartStart;
     int		*panPartType;
-    
+
     int		nVertices;
     double	*padfX;
     double	*padfY;
@@ -373,7 +373,7 @@ typedef struct
 SHPHandle SHPAPI_CALL
       SHPOpen( const char * pszShapeFile, const char * pszAccess );
 SHPHandle SHPAPI_CALL
-      SHPOpenLL( const char *pszShapeFile, const char *pszAccess, 
+      SHPOpenLL( const char *pszShapeFile, const char *pszAccess,
                  SAHooks *psHooks );
 SHPHandle SHPAPI_CALL
       SHPCreate( const char * pszShapeFile, int nShapeType );
@@ -394,15 +394,15 @@ void SHPAPI_CALL
 void SHPAPI_CALL
       SHPComputeExtents( SHPObject * psObject );
 SHPObject SHPAPI_CALL1(*)
-      SHPCreateObject( int nSHPType, int nShapeId, int nParts, 
+      SHPCreateObject( int nSHPType, int nShapeId, int nParts,
                        const int * panPartStart, const int * panPartType,
-                       int nVertices, 
+                       int nVertices,
                        const double * padfX, const double * padfY,
                        const double * padfZ, const double * padfM );
 SHPObject SHPAPI_CALL1(*)
       SHPCreateSimpleObject( int nSHPType, int nVertices,
-                             const double * padfX, 
-                             const double * padfY, 
+                             const double * padfX,
+                             const double * padfY,
                              const double * padfZ );
 
 int SHPAPI_CALL
@@ -440,17 +440,17 @@ typedef struct shape_tree_node
 
     int		nSubNodes;
     struct shape_tree_node *apsSubNode[MAX_SUBNODE];
-    
+
 } SHPTreeNode;
 
 typedef struct
 {
     SHPHandle   hSHP;
-    
+
     int		nMaxDepth;
     int		nDimension;
     int         nTotalCount;
-    
+
     SHPTreeNode	*psRoot;
 } SHPTree;
 
@@ -481,8 +481,8 @@ int    SHPAPI_CALL1(*)
 int     SHPAPI_CALL
       SHPCheckBoundsOverlap( double *, double *, double *, double *, int );
 
-int SHPAPI_CALL1(*) 
-SHPSearchDiskTree( FILE *fp, 
+int SHPAPI_CALL1(*)
+SHPSearchDiskTree( FILE *fp,
                    double *padfBoundsMin, double *padfBoundsMax,
                    int *pnShapeCount );
 
@@ -513,7 +513,7 @@ typedef	struct
 
     int         nWorkFieldLength;
     char        *pszWorkField;
-    
+
     int		bNoHeader;
     int		bUpdated;
 
@@ -572,7 +572,7 @@ int SHPAPI_CALL
                          char chType, int nWidth, int nDecimals );
 
 DBFFieldType SHPAPI_CALL
-      DBFGetFieldInfo( DBFHandle psDBF, int iField, 
+      DBFGetFieldInfo( DBFHandle psDBF, int iField,
                        char * pszFieldName, int * pnWidth, int * pnDecimals );
 
 int SHPAPI_CALL
@@ -590,7 +590,7 @@ int     SHPAPI_CALL
       DBFIsAttributeNULL( DBFHandle hDBF, int iShape, int iField );
 
 int SHPAPI_CALL
-      DBFWriteIntegerAttribute( DBFHandle hDBF, int iShape, int iField, 
+      DBFWriteIntegerAttribute( DBFHandle hDBF, int iShape, int iField,
                                 int nFieldValue );
 int SHPAPI_CALL
       DBFWriteDoubleAttribute( DBFHandle hDBF, int iShape, int iField,
@@ -613,12 +613,12 @@ int SHPAPI_CALL
       DBFWriteTuple(DBFHandle psDBF, int hEntity, void * pRawTuple );
 
 int SHPAPI_CALL DBFIsRecordDeleted( DBFHandle psDBF, int iShape );
-int SHPAPI_CALL DBFMarkRecordDeleted( DBFHandle psDBF, int iShape, 
+int SHPAPI_CALL DBFMarkRecordDeleted( DBFHandle psDBF, int iShape,
                                       int bIsDeleted );
 
 DBFHandle SHPAPI_CALL
       DBFCloneEmpty(DBFHandle psDBF, const char * pszFilename );
- 
+
 void	SHPAPI_CALL
       DBFClose( DBFHandle hDBF );
 void    SHPAPI_CALL

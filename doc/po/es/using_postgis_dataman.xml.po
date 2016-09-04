@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-02-16 08:54+0000\n"
+"POT-Creation-Date: 2016-07-04 13:02+0000\n"
 "PO-Revision-Date: 2014-10-15 16:44+0000\n"
-"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
 "language/es/)\n"
 "Language: es\n"
@@ -836,9 +836,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:311
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"CREATE TABLE global_points ( \n"
+"CREATE TABLE global_points (\n"
 "    id SERIAL PRIMARY KEY,\n"
 "    name VARCHAR(64),\n"
 "    location GEOGRAPHY(POINT,4326)\n"
@@ -1817,10 +1817,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:624
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "CREATE TABLE ROADS ( ID int4\n"
-"                  , ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );"
+"                , ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );"
 msgstr ""
 "CREATE TABLE ROADS ( ID int4\n"
 "                  , ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );"
@@ -2051,14 +2051,14 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:677
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "--Lets say you have a view created like this\n"
 "CREATE VIEW  public.vwmytablemercator AS\n"
 "        SELECT gid, ST_Transform(geom,3395) As geom, f_name\n"
 "        FROM public.mytable;\n"
-"        \n"
-"-- For it to register correctly in PostGIS 2.0+ \n"
+"\n"
+"-- For it to register correctly in PostGIS 2.0+\n"
 "-- You need to cast the geometry\n"
 "--\n"
 "DROP VIEW public.vwmytablemercator;\n"
@@ -2066,7 +2066,7 @@ msgid ""
 "        SELECT gid, ST_Transform(geom,3395)::geometry(Geometry, 3395) As "
 "geom, f_name\n"
 "        FROM public.mytable;\n"
-"        \n"
+"\n"
 "-- If you know the geometry type for sure is a 2D POLYGON then you could do\n"
 "DROP VIEW public.vwmytablemercator;\n"
 "CREATE VIEW  public.vwmytablemercator AS\n"
@@ -2098,7 +2098,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:678
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "--Lets say you created a derivative table by doing a bulk insert\n"
 "SELECT poi.gid, poi.geom, citybounds.city_name\n"
@@ -2108,11 +2108,11 @@ msgid ""
 "--Create 2d index on new table\n"
 "CREATE INDEX idx_myschema_myspecialpois_geom_gist\n"
 "  ON myschema.my_special_pois USING gist(geom);\n"
-"  \n"
-"-- If your points are 3D points or 3M points, \n"
+"\n"
+"-- If your points are 3D points or 3M points,\n"
 "-- then you might want to create an nd index instead of a 2d index\n"
 "-- like so\n"
-"CREATE INDEX my_special_pois_geom_gist_nd \n"
+"CREATE INDEX my_special_pois_geom_gist_nd\n"
 "        ON my_special_pois USING gist(geom gist_geometry_ops_nd);\n"
 "\n"
 "--To manually register this new table's geometry column in geometry_columns\n"
@@ -2122,10 +2122,10 @@ msgid ""
 "-- to make the column typmod based.\n"
 "-- For PostGIS prior to 2.0, this technique can also be used to register "
 "views\n"
-"SELECT populate_geometry_columns('myschema.my_special_pois'::regclass); \n"
+"SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);\n"
 "\n"
 "--If you are using PostGIS 2.0 and for whatever reason, you\n"
-"-- you need the old constraint based definition behavior \n"
+"-- you need the old constraint based definition behavior\n"
 "-- (such as case of inherited tables where all children do not have the same "
 "type and srid)\n"
 "-- set new optional  use_typmod argument to false\n"
@@ -2219,7 +2219,7 @@ msgstr ""
 
 #. Tag: screen
 #: using_postgis_dataman.xml:687
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Table \"public.pois_ny\"\n"
 "  Column   |         Type          |                       Modifiers\n"
@@ -2237,7 +2237,7 @@ msgid ""
 "Check constraints:\n"
 "    \"enforce_dims_geom_2160\" CHECK (st_ndims(geom_2160) = 2)\n"
 "    \"enforce_geotype_geom_2160\" CHECK (geometrytype(geom_2160) = 'POINT'::"
-"text \n"
+"text\n"
 "        OR geom_2160 IS NULL)\n"
 "    \"enforce_srid_geom_2160\" CHECK (st_srid(geom_2160) = 2160)"
 msgstr ""
@@ -2269,10 +2269,10 @@ msgstr "En geometry_columns, ambas se registran de forma correcta"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:689
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"SELECT f_table_name, f_geometry_column, srid, type \n"
-"        FROM geometry_columns \n"
+"SELECT f_table_name, f_geometry_column, srid, type\n"
+"        FROM geometry_columns\n"
 "        WHERE f_table_name = 'pois_ny';"
 msgstr ""
 "SELECT f_table_name, f_geometry_column, srid, type \n"
@@ -2301,15 +2301,15 @@ msgstr "De todas formas -- si queremos crear una vista de la siguiente forma"
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:692
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"CREATE VIEW vw_pois_ny_parks AS \n"
-"SELECT * \n"
-"  FROM pois_ny \n"
+"CREATE VIEW vw_pois_ny_parks AS\n"
+"SELECT *\n"
+"  FROM pois_ny\n"
 "  WHERE cat='park';\n"
-"  \n"
-"SELECT f_table_name, f_geometry_column, srid, type \n"
-"        FROM geometry_columns \n"
+"\n"
+"SELECT f_table_name, f_geometry_column, srid, type\n"
+"        FROM geometry_columns\n"
 "        WHERE f_table_name = 'vw_pois_ny_parks';"
 msgstr ""
 "CREATE VIEW vw_pois_ny_parks AS \n"
@@ -2358,17 +2358,17 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:699
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "DROP VIEW vw_pois_ny_parks;\n"
-"CREATE VIEW vw_pois_ny_parks AS \n"
+"CREATE VIEW vw_pois_ny_parks AS\n"
 "SELECT gid, poi_name, cat\n"
 "  , geom\n"
-"  , geom_2160::geometry(POINT,2160) As geom_2160 \n"
-"  FROM pois_ny \n"
+"  , geom_2160::geometry(POINT,2160) As geom_2160\n"
+"  FROM pois_ny\n"
 "  WHERE cat='park';\n"
-"SELECT f_table_name, f_geometry_column, srid, type \n"
-"        FROM geometry_columns \n"
+"SELECT f_table_name, f_geometry_column, srid, type\n"
+"        FROM geometry_columns\n"
 "        WHERE f_table_name = 'vw_pois_ny_parks';"
 msgstr ""
 "DROP VIEW vw_pois_ny_parks;\n"
@@ -3196,12 +3196,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: using_postgis_dataman.xml:1362
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "-- Identify road segments that cross on a line\n"
 "SELECT a.id\n"
 "FROM roads a, roads b\n"
-"WHERE a.id != b.id \n"
+"WHERE a.id != b.id\n"
 "AND a.geom &amp;&amp; b.geom\n"
 "AND ST_Relate(a.geom, b.geom, '1*1***1**');"
 msgstr ""

@@ -154,7 +154,7 @@ INSERT INTO raster_setvalues_out VALUES (
 	SELECT ST_SetValues(
 		rast, 1,
 		1, 1,
-		5, 3, 
+		5, 3,
 		100
 	)
 	FROM raster_setvalues_rast
@@ -165,7 +165,7 @@ INSERT INTO raster_setvalues_out VALUES (
 	SELECT ST_SetValues(
 		rast, 1,
 		1, 1,
-		5, 3, 
+		5, 3,
 		NULL
 	)
 	FROM raster_setvalues_rast
@@ -176,7 +176,7 @@ INSERT INTO raster_setvalues_out VALUES (
 	SELECT ST_SetValues(
 		rast, 1,
 		1, 1,
-		5, 3, 
+		5, 3,
 		0
 	)
 	FROM raster_setvalues_rast

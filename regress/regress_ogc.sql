@@ -26,9 +26,9 @@ SELECT 'within102', ST_within('POINT(-1 0)'::geometry, 'POLYGON((0 0, 0 10, 10 1
 SELECT 'within103', ST_within('POINT(0 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'within104', ST_within('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'within105', ST_within(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
--- PIP - repeated vertex 
+-- PIP - repeated vertex
 SELECT 'within106', ST_within(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - multipoint within polygon
 SELECT 'within107', ST_within('MULTIPOINT(5 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
@@ -49,9 +49,9 @@ SELECT 'disjoint102', ST_disjoint('POINT(-1 0)'::geometry, 'POLYGON((0 0, 0 10, 
 SELECT 'disjoint103', ST_disjoint('POINT(0 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'disjoint104', ST_disjoint('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'disjoint105', ST_disjoint(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
--- PIP - repeated vertex 
+-- PIP - repeated vertex
 SELECT 'disjoint106', ST_disjoint(ST_GeomFromText('POINT(521543 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - point within polygon
 SELECT 'disjoint150', ST_disjoint('POINT(5 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
@@ -63,7 +63,7 @@ SELECT 'disjoint152', ST_disjoint('POINT(-1 0)'::geometry, 'POLYGON((0 0, 0 10, 
 SELECT 'disjoint153', ST_disjoint('POINT(0 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'disjoint154', ST_disjoint('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'disjoint155', ST_disjoint(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex
 SELECT 'disjoint156', ST_disjoint(ST_GeomFromText('POINT(521543 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
@@ -77,7 +77,7 @@ SELECT 'intersects102', ST_intersects('POINT(-1 0)'::geometry, 'POLYGON((0 0, 0 
 SELECT 'intersects103', ST_intersects('POINT(0 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'intersects104', ST_intersects('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'intersects105', ST_intersects(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex
 SELECT 'intersects106', ST_intersects(ST_GeomFromText('POINT(521543 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
@@ -90,7 +90,7 @@ SELECT 'intersects113', ST_intersects('MULTIPOINT ((0 5))'::geometry, 'POLYGON((
 SELECT 'intersects114', ST_intersects('MULTIPOINT ((0 5), (0 8))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - multipoint in line with polygon edge
 SELECT 'intersects115', ST_intersects('MULTIPOINT ((0 12))'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - multipoint vertically aligned with polygon vertex 
+-- PIP - multipoint vertically aligned with polygon vertex
 SELECT 'intersects116', ST_intersects(ST_GeomFromText('MULTIPOINT ((521513 5377804))', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex
 SELECT 'intersects117', ST_intersects(ST_GeomFromText('MULTIPOINT ((521543 5377804))', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
@@ -110,7 +110,7 @@ SELECT 'intersects152', ST_intersects('POINT(-1 0)'::geometry, 'POLYGON((0 0, 0 
 SELECT 'intersects153', ST_intersects('POINT(0 5)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'intersects154', ST_intersects('POINT(0 12)'::geometry, 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'intersects155', ST_intersects(ST_GeomFromText('POINT(521513 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- PIP - repeated vertex
 SELECT 'intersects156', ST_intersects(ST_GeomFromText('POINT(521543 5377804)', 32631), ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
@@ -124,9 +124,9 @@ SELECT 'contains102', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geom
 SELECT 'contains103', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'POINT(0 5)'::geometry);
 -- PIP - point in line with polygon edge
 SELECT 'contains104', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'POINT(0 12)'::geometry);
--- PIP - point vertically aligned with polygon vertex 
+-- PIP - point vertically aligned with polygon vertex
 SELECT 'contains105', ST_contains(ST_GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
--- PIP - repeated vertex 
+-- PIP - repeated vertex
 SELECT 'contains106', ST_contains(ST_GeomFromText('POLYGON((521526 5377783, 521482 5377811, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631), ST_GeomFromText('POINT(521513 5377804)', 32631));
 -- PIP - multipoint within polygon
 SELECT 'contains110', ST_contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry, 'MULTIPOINT ((5 5))'::geometry);

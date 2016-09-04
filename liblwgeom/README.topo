@@ -1,6 +1,6 @@
 About topology support in liblwgeom
 -----------------------------------
- Author: Sandro Santilli <strk@keybit.net>
+ Author: Sandro Santilli <strk@kbt.io>
  Last modified: Jun 13, 2015
 
 The topology support in liblwgeom exposes an API to create and manage

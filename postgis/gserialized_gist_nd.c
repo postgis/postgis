@@ -100,8 +100,20 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS);
 */
 Datum gserialized_overlaps(PG_FUNCTION_ARGS);
 Datum gserialized_contains(PG_FUNCTION_ARGS);
+#if POSTGIS_PGSQL_VERSION > 94
+Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS);
+Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS);
+#endif
 Datum gserialized_within(PG_FUNCTION_ARGS);
+#if POSTGIS_PGSQL_VERSION > 94
+Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS);
+Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS);
+#endif
 Datum gserialized_distance_nd(PG_FUNCTION_ARGS);
+#if POSTGIS_PGSQL_VERSION > 94
+Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS);
+Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS);
+#endif
 
 /*
 ** GIDX true/false test function type
@@ -453,7 +465,7 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 * Support function. Based on two datums return true if
 * they satisfy the predicate and false otherwise.
 */
-static int 
+static int
 gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 {
 	/* Put aside some stack memory and use it for GIDX pointers. */
@@ -475,6 +487,49 @@ gserialized_datum_predicate(Datum gs1, Datum gs2, gidx_predicate predicate)
 	}
 	return LW_FALSE;
 }
+
+#if POSTGIS_PGSQL_VERSION > 94
+static int
+gserialized_datum_predicate_gidx_geom(GIDX *gidx1, Datum gs2, gidx_predicate predicate)
+{
+   /* Put aside some stack memory and use it for GIDX pointers. */
+   char boxmem2[GIDX_MAX_SIZE];
+   GIDX *gidx2 = (GIDX*)boxmem2;
+
+   POSTGIS_DEBUG(3, "entered function");
+
+   /* Must be able to build box for gs2 arguement (ie, not empty geometry)
+      and predicate function to return true. */
+   if ( (gserialized_datum_get_gidx_p(gs2, gidx2) == LW_SUCCESS) &&
+         predicate(gidx1, gidx2) )
+   {
+       POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
+       return LW_TRUE;
+   }
+   return LW_FALSE;
+}
+
+static int
+gserialized_datum_predicate_geom_gidx(Datum gs1, GIDX *gidx2, gidx_predicate predicate)
+{
+   /* Put aside some stack memory and use it for GIDX pointers. */
+   char boxmem2[GIDX_MAX_SIZE];
+   GIDX *gidx1 = (GIDX*)boxmem2;
+
+   POSTGIS_DEBUG(3, "entered function");
+
+   /* Must be able to build box for gs2 arguement (ie, not empty geometry)
+      and predicate function to return true. */
+   if ( (gserialized_datum_get_gidx_p(gs1, gidx1) == LW_SUCCESS) &&
+         predicate(gidx1, gidx2) )
+   {
+       POSTGIS_DEBUGF(3, "got boxes %s and %s", gidx_to_string(gidx1), gidx_to_string(gidx2));
+       return LW_TRUE;
+   }
+   return LW_FALSE;
+}
+#endif
+
 
 /**
 * Calculate the centroid->centroid distance between the boxes.
@@ -651,7 +706,7 @@ static double gidx_distance_m(const GIDX *a, const GIDX *b)
 /**
 * Return a #GSERIALIZED with an expanded bounding box.
 */
-GSERIALIZED* 
+GSERIALIZED*
 gserialized_expand(GSERIALIZED *g, double distance)
 {
 	char boxmem[GIDX_MAX_SIZE];
@@ -674,8 +729,8 @@ gserialized_expand(GSERIALIZED *g, double distance)
 * GiST N-D Index Operator Functions
 */
 
-/* 
-* Do centroid to centroid n-d distance if you don't have 
+/*
+* Do centroid to centroid n-d distance if you don't have
 * re-check available (PgSQL 9.5+), do "real" n-d distance
 * if you do
 */
@@ -761,10 +816,10 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 		else if ( lwgeom_get_type(lw2) == LINETYPE )
 		{
 			LWPOINT *lwp2 = lwline_get_lwpoint(lwgeom_as_lwline(closest), 1);
-			m1 = lwgeom_interpolate_point(lw2, lwp2);
+			m2 = lwgeom_interpolate_point(lw2, lwp2);
 			lwpoint_free(lwp2);
 		}
-		else 
+		else
 		{
 			usebox = true;
 		}
@@ -806,6 +861,36 @@ Datum gserialized_within(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 }
 
+#if POSTGIS_PGSQL_VERSION > 94
+/*
+** '~' and operator function. Based on a GIDX and a serialized return true if
+** the first is contained by the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_gidx_geom_within);
+Datum gserialized_gidx_geom_within(PG_FUNCTION_ARGS)
+{
+   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+
+   if ( gserialized_datum_predicate_geom_gidx(PG_GETARG_DATUM(1), gidx, gidx_contains) == LW_TRUE )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+/*
+** '~' and operator function. Based on two GIDX return true if
+** the first is contained by the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_within);
+Datum gserialized_gidx_gidx_within(PG_FUNCTION_ARGS)
+{
+   if ( gidx_contains((GIDX *)PG_GETARG_POINTER(1), (GIDX *)PG_GETARG_POINTER(0)))
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+#endif
+
 /*
 ** '@' and operator function. Based on two serialized return true if
 ** the first contains the second.
@@ -821,6 +906,56 @@ Datum gserialized_contains(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 }
 
+#if POSTGIS_PGSQL_VERSION > 94
+/*
+** '@' and operator function. Based on a GIDX and a serialized return true if
+** the first contains the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_gidx_geom_contains);
+Datum gserialized_gidx_geom_contains(PG_FUNCTION_ARGS)
+{
+   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+
+   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_contains) == LW_TRUE )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+/*
+** '@' and operator function. Based on two GIDX return true if
+** the first contains the second.
+*/
+PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_contains);
+Datum gserialized_gidx_gidx_contains(PG_FUNCTION_ARGS)
+{
+   if ( gidx_contains((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)))
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_gidx_geom_same);
+Datum gserialized_gidx_geom_same(PG_FUNCTION_ARGS)
+{
+   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+
+   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_equals) == LW_TRUE )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_same);
+Datum gserialized_gidx_gidx_same(PG_FUNCTION_ARGS)
+{
+   if ( gidx_equals((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+#endif
+
 /*
 ** '&&' operator function. Based on two serialized return true if
 ** they overlap and false otherwise.
@@ -835,6 +970,42 @@ Datum gserialized_overlaps(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(FALSE);
 }
+
+#if POSTGIS_PGSQL_VERSION > 94
+/*
+ * This is the cross-operator for the geographies
+ */
+PG_FUNCTION_INFO_V1(gserialized_gidx_geog_overlaps);
+Datum gserialized_gidx_geog_overlaps(PG_FUNCTION_ARGS)
+{
+   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+
+   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_gidx_geom_overlaps);
+Datum gserialized_gidx_geom_overlaps(PG_FUNCTION_ARGS)
+{
+   GIDX *gidx = (GIDX *)PG_GETARG_POINTER(0);
+
+   if ( gserialized_datum_predicate_gidx_geom(gidx, PG_GETARG_DATUM(1), gidx_overlaps) == LW_TRUE )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(gserialized_gidx_gidx_overlaps);
+Datum gserialized_gidx_gidx_overlaps(PG_FUNCTION_ARGS)
+{
+   if ( gidx_overlaps((GIDX *)PG_GETARG_POINTER(0), (GIDX *)PG_GETARG_POINTER(1)) )
+       PG_RETURN_BOOL(TRUE);
+
+   PG_RETURN_BOOL(FALSE);
+}
+#endif
 
 /***********************************************************************
 * GiST Index  Support Functions
@@ -909,7 +1080,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 		     || ! isfinite(GIDX_GET_MIN(bbox_out, i)) )
 		{
 			gidx_set_unknown(bbox_out);
-			gistentryinit(*entry_out, 
+			gistentryinit(*entry_out,
 			              PointerGetDatum(gidx_copy(bbox_out)),
 			              entry_in->rel, entry_in->page,
 			              entry_in->offset, FALSE);
@@ -1186,9 +1357,9 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 	double distance;
 
 	POSTGIS_DEBUGF(3, "[GIST] '%s' function called", __func__);
- 
+
 	/* We are using '13' as the gist geography distance <-> strategy number */
-	if ( strategy != 13  ) 
+	if ( strategy != 13  )
 	{
 		elog(ERROR, "unrecognized strategy number: %d", strategy);
 		PG_RETURN_FLOAT8(FLT_MAX);
@@ -1255,7 +1426,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 	double distance;
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
- 
+
 	/* Strategy 13 is <<->> */
 	/* Strategy 20 is |=| */
 	if ( strategy != 13 && strategy != 20 ) {
@@ -1716,7 +1887,7 @@ Datum gserialized_gist_picksplit(PG_FUNCTION_ARGS)
 ** The GIDX key must be defined as a PostgreSQL type, even though it is only
 ** ever used internally. These no-op stubs are used to bind the type.
 */
-PG_FUNCTION_INFO_V1(gidx_in); 
+PG_FUNCTION_INFO_V1(gidx_in);
 Datum gidx_in(PG_FUNCTION_ARGS)
 {
 	ereport(ERROR,(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
@@ -1724,7 +1895,7 @@ Datum gidx_in(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(NULL);
 }
 
-PG_FUNCTION_INFO_V1(gidx_out); 
+PG_FUNCTION_INFO_V1(gidx_out);
 Datum gidx_out(PG_FUNCTION_ARGS)
 {
   GIDX *box = (GIDX *) PG_GETARG_POINTER(0);

@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007-2008 Mark Cave-Ayland
  * Copyright (C) 2001-2006 Refractions Research Inc.
@@ -93,7 +93,7 @@
 #define WKB_BYTE_SIZE 1 /* Internal use only */
 
 /**
-* Well-Known Binary (WKB) Geometry Types 
+* Well-Known Binary (WKB) Geometry Types
 */
 #define WKB_POINT_TYPE 1
 #define WKB_LINESTRING_TYPE 2
@@ -210,7 +210,7 @@ LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist, int 
 int signum(double n);
 
 /*
-* The possible ways a pair of segments can interact. Returned by lw_segment_intersects 
+* The possible ways a pair of segments can interact. Returned by lw_segment_intersects
 */
 enum CG_SEGMENT_INTERSECTION_TYPE {
     SEG_ERROR = -1,
@@ -233,29 +233,29 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 double lwpoint_get_ordinate(const POINT4D *p, char ordinate);
 void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value);
 
-/* 
+/*
 * Generate an interpolated coordinate p given an interpolation value and ordinate to apply it to
 */
 int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value);
 
 
 /**
-* Clip a line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+* Clip a line based on the from/to range of one of its ordinates. Use for m- and z- clipping
 */
 LWCOLLECTION *lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to);
 
 /**
-* Clip a multi-line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+* Clip a multi-line based on the from/to range of one of its ordinates. Use for m- and z- clipping
 */
 LWCOLLECTION *lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from, double to);
 
 /**
-* Clip a multi-point based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+* Clip a multi-point based on the from/to range of one of its ordinates. Use for m- and z- clipping
 */
 LWCOLLECTION *lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to);
 
 /**
-* Clip a point based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+* Clip a point based on the from/to range of one of its ordinates. Use for m- and z- clipping
 */
 LWCOLLECTION *lwpoint_clip_to_ordinate_range(const LWPOINT *mpoint, char ordinate, double from, double to);
 
@@ -354,7 +354,7 @@ int lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt);
  */
 void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D *B, POINT4D *ret);
 
-/* 
+/*
 * Repeated points
 */
 POINTARRAY *ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints);
@@ -403,7 +403,7 @@ LWCIRCSTRING* lwcircstring_grid(const LWCIRCSTRING *line, const gridspec *grid);
 POINTARRAY* ptarray_grid(const POINTARRAY *pa, const gridspec *grid);
 
 /*
-* What side of the line formed by p1 and p2 does q fall? 
+* What side of the line formed by p1 and p2 does q fall?
 * Returns -1 for left and 1 for right and 0 for co-linearity
 */
 int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q);
@@ -431,7 +431,7 @@ int lwgeom_contains_point(const LWGEOM *geom, const POINT2D *pt);
 * Return 2 if the point is on the interior of the line (only case in which
 * a split happens).
 *
-* NOTE: the components pushed to the output vector have their SRID stripped 
+* NOTE: the components pushed to the output vector have their SRID stripped
 */
 int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 

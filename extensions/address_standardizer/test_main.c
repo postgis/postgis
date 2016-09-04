@@ -103,6 +103,7 @@ int parse_rule(char *buf, int *rule)
         if (p == q) break;
         p = q;
         nr++;
+        assert(nr < RULESIZE);
         r++;
     }
 
@@ -111,7 +112,7 @@ int parse_rule(char *buf, int *rule)
 
 void Usage()
 {
-        printf("Usage: test_main [-o n] \n");
+        printf("Usage: test_main [-o n] lex.txt gaz.txt rules.txt \n");
         printf("       -o n = options bit flag\n");
         printf("          1 = print lexicon\n");
         printf("          2 = print gazeteer\n");
@@ -139,15 +140,18 @@ int main(int argc, char *argv[])
     int err;
     int cnt;
     int option = 0;
+    char *flex;
+    char *fgaz;
+    char *frules;
 
     FILE *in;
 
-    if (argc == 3 && !strcmp(argv[1], "-o")) {
+    if (argc > 3 && !strcmp(argv[1], "-o")) {
         option = strtol(argv[2], NULL, 10);
         argc -= 2;
         argv += 2;
     }
-    else if (argc != 1) 
+    else if (argc != 4)
         Usage();
 
     std = std_init();
@@ -156,7 +160,8 @@ int main(int argc, char *argv[])
     lex = lex_init(std->err_p);
     assert(lex);
 
-    in = fopen(LEXIN, "rb");
+    flex = argv[1];
+    in = fopen(flex, "rb");
     assert(in);
 
     cnt = 0;
@@ -184,7 +189,8 @@ int main(int argc, char *argv[])
     gaz = lex_init(std->err_p);
     assert(gaz);
 
-    in = fopen(GAZIN, "rb");
+    fgaz = argv[2];
+    in = fopen(fgaz, "rb");
     assert(in);
 
     cnt = 0;
@@ -215,7 +221,8 @@ int main(int argc, char *argv[])
 
     /* ************ RULES **************** */
 
-    in = fopen(RULESIN, "rb");
+    frules = argv[3];
+    in = fopen(frules, "rb");
     assert(in);
 
     cnt = 0;
@@ -291,7 +298,7 @@ static int standardize_command_line( STANDARDIZER *std ,
               MAXSTRLEN ) ;
       input_str[ 0 ] = SENTINEL ;
       /* -- get user's input -- */
-      if ( ( !get_input_line( input_str , stdin ) ) || 
+      if ( ( !get_input_line( input_str , stdin ) ) ||
            ( strncmp( input_str , "exit" , 4 ) == 0 ) ||
            ( strncmp( input_str , "quit" , 4 ) == 0 ) ||
            ( strncmp( input_str , "done" , 4 ) == 0 )

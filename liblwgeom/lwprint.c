@@ -19,7 +19,7 @@
  **********************************************************************
  *
  * Copyright (C) 2010-2015 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -340,7 +340,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	{
 		lwerror("Bad format, degrees (DD.DDD) number of digits was greater than our working limit.");
 	}
-	if(deg_piece >= 0) 
+	if(deg_piece >= 0)
 	{
 		sprintf(pieces[deg_piece], "%*.*f", deg_digits, deg_dec_digits, degrees);
 	}

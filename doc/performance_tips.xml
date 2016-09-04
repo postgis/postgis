@@ -58,14 +58,14 @@
       column that "caches" the bbox, and matching against this. In our
       example, the commands are like:</para>
 
-      <programlisting>SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); 
+      <programlisting>SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');
 UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));</programlisting>
 
       <para>Now change your query to use the &amp;&amp; operator against bbox
       instead of geom_column, like:</para>
 
-      <programlisting>SELECT geom_column 
-FROM mytable 
+      <programlisting>SELECT geom_column
+FROM mytable
 WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
 
       <para>Of course, if you change or add rows to mytable, you have to keep
@@ -93,14 +93,14 @@ WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
     GIST indices because GIST indices simply ignores NULL values, you get an
     error message like:</para>
 
-    <programlisting>lwgeom=# CLUSTER my_geom_index ON my_table; 
+    <programlisting>lwgeom=# CLUSTER my_geom_index ON my_table;
 ERROR: cannot cluster when index access method does not handle null values
 HINT: You may be able to work around this by marking column "the_geom" NOT NULL.</programlisting>
 
     <para>As the HINT message tells you, one can work around this deficiency
     by adding a "not null" constraint to the table:</para>
 
-    <programlisting>lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; 
+    <programlisting>lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;
 ALTER TABLE</programlisting>
 
     <para>Of course, this will not work if you in fact need NULL values in
@@ -119,7 +119,7 @@ ALTER TABLE</programlisting>
     overhead for large geometries. To avoid this overhead, it may be feasible
     to pre-drop those additional dimensions once and forever:</para>
 
-    <programlisting>UPDATE mytable SET the_geom = ST_Force2D(the_geom); 
+    <programlisting>UPDATE mytable SET the_geom = ST_Force2D(the_geom);
 VACUUM FULL ANALYZE mytable;</programlisting>
 
     <para>Note that if you added your geometry column using
@@ -147,8 +147,8 @@ VACUUM FULL ANALYZE mytable;</programlisting>
     use of PostGIS (for example, static data and complex analysis vs frequently
     updated data and lots of users) these changes can provide significant
     speedups to your queries.</para>
-    
-    <para>For a more tips (and better formatting), the original presentation 
+
+    <para>For a more tips (and better formatting), the original presentation
         is at
         <ulink url="http://2007.foss4g.org/presentations/view.php?abstract_id=117">
         http://2007.foss4g.org/presentations/view.php?abstract_id=117</ulink>.
@@ -156,15 +156,15 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
       <sect2>
         <title>Startup</title>
-        
+
         <para>
           These settings are configured in postgresql.conf:
         </para>
-        
+
         <para>
           <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS">checkpoint_segments</ulink>
         </para>
-        
+
         <itemizedlist>
           <listitem>
             <para>
@@ -174,7 +174,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
           </listitem>
           <listitem>
             <para>
-              Set to at least 10 or 30 for databases with heavy write activity, or 
+              Set to at least 10 or 30 for databases with heavy write activity, or
               more for large database loads. Another article on the topic worth reading  <ulink url="http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm">Greg Smith: Checkpoint and Background writer</ulink>
             </para>
           </listitem>
@@ -184,11 +184,11 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             </para>
           </listitem>
         </itemizedlist>
-        
+
         <para>
            <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</ulink>
         </para>
-        
+
         <itemizedlist>
           <listitem>
             <para>
@@ -200,15 +200,15 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               This is generally used for table partitioning.  If you are running PostgreSQL versions below 8.4, set to "on" to ensure the query planner will optimize as desired.
 			  As of PostgreSQL 8.4, the default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
 			  it will force the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
-			  and not pay the planner penalty otherwise. 
+			  and not pay the planner penalty otherwise.
             </para>
           </listitem>
         </itemizedlist>
-        
+
         <para>
            <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</ulink>
         </para>
-        
+
         <itemizedlist>
           <listitem>
             <para>
@@ -220,16 +220,16 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               Set to about 1/3 to 3/4 of available RAM
             </para>
           </listitem>
-        </itemizedlist>        
+        </itemizedlist>
       </sect2>
-      
+
       <sect2>
         <title>Runtime</title>
-        
+
         <para>
           <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</ulink> (the memory used for sort operations and complex queries)
         </para>
-        
+
         <itemizedlist>
           <listitem>
             <para>
@@ -243,7 +243,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
           </listitem>
           <listitem>
             <para>
-              Adjust down for many concurrent users or low RAM.  
+              Adjust down for many concurrent users or low RAM.
             </para>
           </listitem>
           <listitem>
@@ -255,11 +255,11 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             </para>
           </listitem>
         </itemizedlist>
-        
+
         <para>
           <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</ulink> (used for VACUUM, CREATE INDEX, etc.)
         </para>
-        
+
         <itemizedlist>
           <listitem>
             <para>
@@ -281,8 +281,8 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             </para>
           </listitem>
         </itemizedlist>
-       
+
       </sect2>
-      
+
   </sect1>
-</chapter>    
+</chapter>

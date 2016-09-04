@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
  * Copyright (C) 2011 Paul Ramsey
  *
  **********************************************************************/
@@ -535,11 +535,6 @@ lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from,
 		{
 			lwgeom_out->type = COLLECTIONTYPE;
 		}
-	}
-
-	if ( ! lwgeom_out || lwgeom_out->ngeoms == 0 ) /* Nothing left after clip. */
-	{
-		return NULL;
 	}
 
 	return lwgeom_out;

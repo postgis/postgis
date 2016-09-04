@@ -4,7 +4,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011-2012 Sandro Santilli <strk@kbt.io>
 -- Copyright (C) 2010-2013 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2009      Paul Ramsey <pramsey@cleverelephant.ca>
 --
@@ -22,16 +22,16 @@
 DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer,boolean);
 DROP FUNCTION IF EXISTS ST_MakeEnvelope(float8, float8, float8, float8);
 --changed name of prec arg to be consistent with ST_AsGML/KML
-DROP FUNCTION IF EXISTS ST_AsX3D(geometry, integer, integer); 
+DROP FUNCTION IF EXISTS ST_AsX3D(geometry, integer, integer);
 --changed name of arg: http://trac.osgeo.org/postgis/ticket/1606
 DROP FUNCTION IF EXISTS UpdateGeometrySRID(varchar,varchar,varchar,varchar,integer);
 
---deprecated and removed in 2.1 
--- Hack to fix 2.0 naming 
+--deprecated and removed in 2.1
+-- Hack to fix 2.0 naming
 -- We can't just drop it since its bound to opclass
 -- See ticket 2279 for why we need to do this
 -- We can get rid of this DO code when 3.0 comes along
-DO  language 'plpgsql' $$ 
+DO  language 'plpgsql' $$
 BEGIN
 	-- fix geometry ops --
 	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::text = 'geometry_gist_sel_2d') THEN

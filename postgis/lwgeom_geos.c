@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2009-2014 Sandro Santilli <strk@keybit.net>
+ * Copyright 2009-2014 Sandro Santilli <strk@kbt.io>
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright 2001-2003 Refractions Research Inc.
  *
@@ -378,7 +378,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		gser_in = (GSERIALIZED *)DatumGetPointer(value);
 
 		/* Check for SRID mismatch in array elements */
-		if ( gotsrid ) 
+		if ( gotsrid )
 		{
 			error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
 		}
@@ -405,7 +405,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
 
 			/* Uh oh! Exception thrown at construction... */
-			if ( ! g )  
+			if ( ! g )
 			{
 				HANDLE_GEOS_ERROR("One of the geometries in the set "
 				                  "could not be converted to GEOS");
@@ -963,7 +963,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 
 /*
-* Generate a field of random points within the area of a 
+* Generate a field of random points within the area of a
 * polygon or multipolygon. Throws an error for other geometry
 * types.
 */
@@ -1273,10 +1273,10 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom, *result;
-	GEOSGeometry *geosgeom, *geosresult; 
+	GEOSGeometry *geosgeom, *geosresult;
 	LWGEOM *igeom = NULL, *linear_geom = NULL;
 	int32 perQuad= 16;
-	int type = 0; 
+	int type = 0;
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Empty.Centroid() == Point Empty */
@@ -1299,9 +1299,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(geom, 0); /*free memory, we already have a lwgeom geometry copy*/
 		linear_geom = lwgeom_stroke(igeom, perQuad);
 		lwgeom_free(igeom);
-		if (linear_geom == NULL) 
+		if (linear_geom == NULL)
 			PG_RETURN_NULL();
-		 
+		
 		geom = geometry_serialize(linear_geom);
 		lwgeom_free(linear_geom);
 	}
@@ -1403,7 +1403,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom1);
 	PG_FREE_IF_COPY(geom1, 0);
 
-	if ( lwresult == NULL ) 
+	if ( lwresult == NULL )
 		PG_RETURN_NULL();
 
 	result = geometry_serialize(lwresult) ;
@@ -1811,7 +1811,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2030,7 +2030,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -2181,7 +2181,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", type1, type2);
+		POSTGIS_DEBUGF(3, "CoveredBy: type1: %d, type2: %d", gserialized_get_type(geom1), gserialized_get_type(geom2));
 	}
 
 	initGEOS(lwpgnotice, lwgeom_geos_error);
@@ -3028,7 +3028,7 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 			}
 			return NULL;
 		}
-       	 
+       	
         i++;
 	}
 
@@ -3060,7 +3060,6 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(polygonize_garray);
 Datum polygonize_garray(PG_FUNCTION_ARGS)
 {
-	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
 	uint32 nelems, i;
@@ -3068,7 +3067,6 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GEOSGeometry *geos_result;
 	const GEOSGeometry **vgeoms;
 	int srid=SRID_UNKNOWN;
-	size_t offset;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
@@ -3077,47 +3075,21 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	call++;
 #endif
 
-	datum = PG_GETARG_DATUM(0);
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 
-	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+	array = PG_GETARG_ARRAYTYPE_P(0);
+	nelems = array_nelems_not_null(array);
 
-	array = DatumGetArrayTypeP(datum);
+	if (nelems == 0)
+		PG_RETURN_NULL();
 
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-	POSTGIS_DEBUGF(3, "polygonize_garray: number of elements: %d", nelems);
-
-	if ( nelems == 0 ) PG_RETURN_NULL();
+	POSTGIS_DEBUGF(3, "polygonize_garray: number of non-null elements: %d", nelems);
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
-	vgeoms = palloc(sizeof(GEOSGeometry *)*nelems);
-	offset = 0;
-	for (i=0; i<nelems; i++)
-	{
-		GEOSGeometry* g;
-		GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(VARSIZE(geom));
-		if ( ! is3d ) is3d = gserialized_has_z(geom);
-
-		g = (GEOSGeometry *)POSTGIS2GEOS(geom);
-		if ( 0 == g )   /* exception thrown at construction */
-		{
-			HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
-			PG_RETURN_NULL();
-		}
-		vgeoms[i] = g;
-		if ( ! i )
-		{
-			srid = gserialized_get_srid(geom);
-		}
-		else
-		{
-			error_if_srid_mismatch(srid, gserialized_get_srid(geom));
-		}
-	}
+	vgeoms = (const GEOSGeometry**) ARRAY2GEOS(array, nelems, &is3d, &srid);
 
 	POSTGIS_DEBUG(3, "polygonize_garray: invoking GEOSpolygonize");
 
@@ -3139,10 +3111,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /*never get here */
 	}
 
-	/*compressType(result); */
-
 	PG_RETURN_POINTER(result);
-
 }
 
 
@@ -3222,7 +3191,6 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 	LWGEOM** lw_inputs;
 	LWGEOM** lw_results;
 	double tolerance;
-	int min_points;
 	int srid=SRID_UNKNOWN;
 
 	/* Parameters used to construct a result array */
@@ -3243,17 +3211,6 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (PG_NARGS() < 3)
-		min_points = 1;
-	else
-		min_points = PG_GETARG_INT32(2);
-
-	if (min_points < 1)
-	{
-		lwpgerror("min_points must be a positive number.");
-		PG_RETURN_NULL();
-	}
-
 	nelems = array_nelems_not_null(array);
 
 	POSTGIS_DEBUGF(3, "cluster_within_distance_garray: number of non-null elements: %d", nelems);
@@ -3271,7 +3228,7 @@ Datum cluster_within_distance_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (cluster_dbscan(lw_inputs, nelems, tolerance, min_points, &lw_results, &nclusters) != LW_SUCCESS)
+	if (cluster_within_distance(lw_inputs, nelems, tolerance, &lw_results, &nclusters) != LW_SUCCESS)
 	{
 		elog(ERROR, "cluster_within: Error performing clustering");
 		PG_RETURN_NULL();
@@ -3435,7 +3392,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
  * from start of the line to the cut point.
  *
  *
- * Author: Sandro Santilli <strk@keybit.net>
+ * Author: Sandro Santilli <strk@kbt.io>
  *
  * Work done for Faunalia (http://www.faunalia.it) with fundings
  * from Regione Toscana - Sistema Informativo per il Governo
@@ -3487,7 +3444,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
  * Return the set of paths shared between two linear geometries,
  * and their direction (same or opposite).
  *
- * Developed by Sandro Santilli (strk@keybit.net) for Faunalia
+ * Developed by Sandro Santilli (strk@kbt.io) for Faunalia
  * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
  * Informativo per la Gestione del Territorio e dell' Ambiente
  * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il
@@ -3567,7 +3524,7 @@ Datum ST_Node(PG_FUNCTION_ARGS)
  *
  * ST_Voronoi
  *
- * Returns a Voronoi diagram constructed 
+ * Returns a Voronoi diagram constructed
  * from the points of the input geometry.
  *
  ******************************************/
@@ -3626,10 +3583,10 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 		if (!gserialized_get_gbox_p(clip, &clip_envelope))
 		{
 			lwpgerror("Could not determine envelope of clipping geometry.");
-			PG_FREE_IF_COPY(clip, 0);		
+			PG_FREE_IF_COPY(clip, 1);
 			PG_RETURN_NULL();
 		}
-		PG_FREE_IF_COPY(clip, 0);		
+		PG_FREE_IF_COPY(clip, 1);
 	}
 
 	/* Read our input geometry */
@@ -3661,4 +3618,102 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
+}
+
+/******************************************
+ *
+ * ST_MinimumClearance
+ *
+ * Returns the minimum clearance of a geometry.
+ *
+ ******************************************/
+Datum ST_MinimumClearance(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumClearance);
+Datum ST_MinimumClearance(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_MinimumClearance' function (3.6.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 36 */
+	GSERIALIZED* input;
+	GEOSGeometry* input_geos;
+	int error;
+	double result;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)   /* exception thrown at construction */
+	{
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		PG_RETURN_NULL();
+	}
+
+	error = GEOSMinimumClearance(input_geos, &result);
+	GEOSGeom_destroy(input_geos);
+	if (error)
+	{
+		HANDLE_GEOS_ERROR("Error computing minimum clearance");
+		PG_RETURN_NULL();
+	}
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_FLOAT8(result);
+#endif
+}
+
+/******************************************
+ *
+ * ST_MinimumClearanceLine
+ *
+ * Returns the minimum clearance line of a geometry.
+ *
+ ******************************************/
+Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_MinimumClearanceLine);
+Datum ST_MinimumClearanceLine(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 36
+	lwpgerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_MinimumClearanceLine' function (3.6.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 36 */
+	GSERIALIZED* input;
+	GSERIALIZED* result;
+	GEOSGeometry* input_geos;
+	GEOSGeometry* result_geos;
+	int srid;
+
+	initGEOS(lwpgnotice, lwgeom_geos_error);
+
+	input = PG_GETARG_GSERIALIZED_P(0);
+	srid = gserialized_get_srid(input);
+	input_geos = POSTGIS2GEOS(input);
+	if (!input_geos)   /* exception thrown at construction */
+	{
+		HANDLE_GEOS_ERROR("Geometry could not be converted to GEOS");
+		PG_RETURN_NULL();
+	}
+
+	result_geos = GEOSMinimumClearanceLine(input_geos);
+	GEOSGeom_destroy(input_geos);
+	if (!result_geos)
+	{
+		HANDLE_GEOS_ERROR("Error computing minimum clearance");
+		PG_RETURN_NULL();
+	}
+
+	GEOSSetSRID(result_geos, srid);
+	result = GEOS2POSTGIS(result_geos, LW_FALSE);
+	GEOSGeom_destroy(result_geos);
+
+	PG_FREE_IF_COPY(input, 0);
+	PG_RETURN_POINTER(result);
+#endif
 }

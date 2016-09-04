@@ -177,7 +177,7 @@ static void test_band_get_nearest_pixel() {
 
 	rtn = rt_pixel_set_to_array(
 		npixels, rtn, NULL,
-		-1, 1, 
+		-1, 1,
 		1, 1,
 		&value,
 		&nodata,
@@ -438,19 +438,19 @@ static void test_pixel_set_to_array(){
 		1,
 		&npixels
 	);
-       
+
        CU_ASSERT_EQUAL(rtn,8);
-       
+
        	rtn = rt_pixel_set_to_array(
 		npixels, rtn, mask,
-		4,4, 
+		4,4,
 		1, 1,
 		&value,
 		&nodata,
 		&dimx, &dimy
 	);
-				  
-       
+				
+
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
        CU_ASSERT_EQUAL(dimx, 3);
@@ -477,7 +477,7 @@ static void test_pixel_set_to_array(){
 	mask->dimx = maskX;
 	mask->dimy = maskY;
 	mask->weighted = 0;
-       
+
 
        rtn = rt_band_get_nearest_pixel(
 		band,
@@ -486,19 +486,19 @@ static void test_pixel_set_to_array(){
 		1,
 		&npixels
 	);
-       
+
        CU_ASSERT_EQUAL(rtn,8);
-       
+
        	rtn = rt_pixel_set_to_array(
 		npixels, rtn, mask,
-		4,4, 
+		4,4,
 		1, 1,
 		&value,
 		&nodata,
 		&dimx, &dimy
 	);
-				  
-       
+				
+
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
        CU_ASSERT_EQUAL(dimx, 3);
@@ -534,19 +534,19 @@ static void test_pixel_set_to_array(){
 		1,
 		&npixels
 	);
-       
+
        CU_ASSERT_EQUAL(rtn,8);
-       
+
        	rtn = rt_pixel_set_to_array(
 		npixels, rtn, mask,
-		4,4, 
+		4,4,
 		1, 1,
 		&value,
 		&nodata,
 		&dimx, &dimy
 	);
-				  
-       
+				
+
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
        CU_ASSERT_EQUAL(dimx, 3);

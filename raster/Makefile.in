@@ -2,7 +2,7 @@
 #
 # Master Makefile used to build WKT Raster
 #
-# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+# Copyright (c) 2009 Sandro Santilli <strk@kbt.io>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

@@ -7,7 +7,7 @@
 #
 # PostGIS documentation build Makefile
 #
-# Copyright 2003-2012 Sandro Santilli <strk@keybit.net>
+# Copyright 2003-2012 Sandro Santilli <strk@kbt.io>
 # Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
 # Copyright 2009-2011 Regina Obe <lr@pcorp.us>
 # Copyright 2008-2010 Mark Cave-Ayland
