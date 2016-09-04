@@ -46,6 +46,7 @@ PostGIS 2.3.0
 		Should resolve once and for all for extensions #3494, #3486, #3076 
 		
   - #3547, Update tiger geocoder to support TIGER 2016
+   and to support both http and ftp.
 
  * Performance Enhancements *
 
