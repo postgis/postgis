@@ -35,3 +35,9 @@ SELECT 't102', id, ST_ClusterDBSCAN(geom, eps := 0.8, minpoints := 4) OVER () fr
 /* minpoints = 3, but eps too small to form cluster on left */
 SELECT 't103', id, ST_ClusterDBSCAN(geom, eps := 0.6, minpoints := 3) OVER () from dbscan_inputs;
 
+-- #3612
+SELECT 't3612a', ST_ClusterDBSCAN(foo1.the_geom, 20.1, 5)OVER()  As result
+							FROM ((SELECT geom  As the_geom
+									FROM (VALUES ( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2503 1,-71.132 42.2502 3,-71.1323 42.2504 -2,-71.1322 42.2505 1,-71.1319 42.2503 0))') ),
+											( ST_GeomFromEWKT('SRID=4326;POLYGONM((-71.1319 42.2512 0,-71.1318 42.2511 20,-71.1317 42.2511 -20,-71.1317 42.251 5,-71.1317 42.2509 4,-71.132 42.2511 6,-71.1319 42.2512 30))') ) ) As g(geom))) As foo1 LIMIT 3;
+SELECT 't3612b', ST_ClusterDBSCAN( ST_Point(1,1), 20.1, 5) OVER();

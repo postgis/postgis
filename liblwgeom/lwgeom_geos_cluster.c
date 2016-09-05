@@ -323,6 +323,14 @@ union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, doub
 	};
 	int success = LW_SUCCESS;
 
+	if (in_a_cluster_ret)
+	{
+		char* in_a_cluster = lwalloc(num_geoms * sizeof(char));
+		for (i = 0; i < num_geoms; i++)
+			in_a_cluster[i] = LW_TRUE;
+		*in_a_cluster_ret = in_a_cluster;
+	}
+
 	if (num_geoms <= 1)
 		return LW_SUCCESS;
 
@@ -358,14 +366,6 @@ union_dbscan_minpoints_1(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, doub
 		}
 	}
 
-	if (in_a_cluster_ret)
-	{
-		char* in_a_cluster = lwalloc(num_geoms * sizeof(char));
-		for (i = 0; i < num_geoms; i++)
-			in_a_cluster[i] = LW_TRUE;
-		*in_a_cluster_ret = in_a_cluster;
-	}
-
 	if (cxt.items_found)
 		lwfree(cxt.items_found);
 
@@ -390,9 +390,19 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 	char* in_a_cluster;
 	char* is_in_core;
 
+	in_a_cluster = lwalloc(num_geoms * sizeof(char));
+	memset(in_a_cluster, 0, num_geoms * sizeof(char));
+
+	if (in_a_cluster_ret)
+		*in_a_cluster_ret = in_a_cluster;
+
 	/* Bail if we don't even have enough inputs to make a cluster. */
 	if (num_geoms <= min_points)
+	{
+		if (!in_a_cluster_ret)
+			lwfree(in_a_cluster);
 		return LW_SUCCESS;
+	}
 
 	tree = make_strtree((void**) geoms, num_geoms, LW_TRUE);
 	if (tree.tree == NULL)
@@ -401,8 +411,6 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 		return LW_FAILURE;
 	}
 
-	in_a_cluster = lwalloc(num_geoms * sizeof(char));
-	memset(in_a_cluster, 0, num_geoms * sizeof(char));
 	is_in_core = lwalloc(num_geoms * sizeof(char));
 	memset(is_in_core, 0, num_geoms * sizeof(char));
 	neighbors = lwalloc(min_points * sizeof(uint32_t));
@@ -488,10 +496,8 @@ union_dbscan_general(LWGEOM** geoms, uint32_t num_geoms, UNIONFIND* uf, double e
 	lwfree(neighbors);
 	lwfree(is_in_core);
 
-	/* Either pass in_a_cluster to our caller, or free it. */
-	if (in_a_cluster_ret)
-		*in_a_cluster_ret = in_a_cluster;
-	else
+	/* Free in_a_cluster if we're not giving it to our caller */
+	if (!in_a_cluster_ret)
 		lwfree(in_a_cluster);
 
 	if (cxt.items_found)

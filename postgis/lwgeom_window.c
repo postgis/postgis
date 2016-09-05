@@ -92,7 +92,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		uint32_t i;
 		uint32_t* result_ids;
 		LWGEOM** geoms;
-		char* is_in_cluster;
+		char* is_in_cluster = NULL;
 		UNIONFIND* uf;
 		bool tolerance_is_null;
 		bool minpoints_is_null;
@@ -128,7 +128,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 			}
 		}
 
-		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints, &is_in_cluster) == LW_SUCCESS)
+		if (union_dbscan(geoms, ngeoms, uf, tolerance, minpoints, minpoints > 1 ? &is_in_cluster : NULL) == LW_SUCCESS)
 			context->is_error = LW_FALSE;
 
 		for (i = 0; i < ngeoms; i++)
@@ -140,7 +140,8 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		if (context->is_error)
 		{
 			UF_destroy(uf);
-			lwfree(is_in_cluster);
+			if (is_in_cluster)
+				lwfree(is_in_cluster);
 			lwpgerror("Error during clustering");
 			PG_RETURN_NULL();
 		}
@@ -148,7 +149,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 		result_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 		for (i = 0; i < ngeoms; i++)
 		{
-			if (!is_in_cluster[i])
+			if (minpoints > 1 && !is_in_cluster[i])
 			{
 				context->cluster_assignments[i].is_null = LW_TRUE;
 			}
