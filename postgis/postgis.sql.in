@@ -3653,8 +3653,9 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 25000;
 
+
 --------------------------------------------------------------------------------
--- ST_Voronoi
+-- _ST_Voronoi
 --------------------------------------------------------------------------------
 
 -- ST_Voronoi(g1 geometry, clip geometry, tolerance float8, return_polygons boolean)
@@ -3677,12 +3678,25 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
 -- Availability: 2.3.0
 -- Requires GEOS >= 3.5.0
 --
-CREATE OR REPLACE FUNCTION ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, tolerance float8 DEFAULT 0.0, return_polygons boolean DEFAULT true)
+
+CREATE OR REPLACE FUNCTION _ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, tolerance float8 DEFAULT 0.0, return_polygons boolean DEFAULT true)
        RETURNS geometry
        AS 'MODULE_PATHNAME', 'ST_Voronoi'
        LANGUAGE 'c' IMMUTABLE _PARALLEL
        COST 25000; -- Guessed cost
 
+
+CREATE OR REPLACE FUNCTION ST_VoronoiPolygons(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
+       RETURNS geometry
+       AS $$ SELECT _ST_Voronoi(g1, extend_to, tolerance, true) $$
+       LANGUAGE SQL IMMUTABLE _PARALLEL
+       COST 25000; -- Guessed cost
+
+CREATE OR REPLACE FUNCTION ST_VoronoiLines(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
+       RETURNS geometry
+       AS $$ SELECT _ST_Voronoi(g1, extend_to, tolerance, false) $$
+       LANGUAGE SQL IMMUTABLE _PARALLEL
+       COST 25000; -- Guessed cost
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions

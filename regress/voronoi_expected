@@ -1,7 +1,6 @@
 1|t
 2|t
 ERROR:  Tolerance must be a positive number.
-ERROR:  return_polygons must be true or false.
 ERROR:  Tolerance must be a positive number.
 6|t
 7|t
