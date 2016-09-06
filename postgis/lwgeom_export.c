@@ -622,9 +622,9 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 	PG_FREE_IF_COPY(geom, 0);
 	
-	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
+	if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
 	{
-		precision = PG_GETARG_INT32(2);
+		precision = PG_GETARG_INT32(1);
 		if ( precision < 0 ) precision = 5;
 	}
 

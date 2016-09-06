@@ -41,7 +41,7 @@ kml_projection_01|<Point><coordinates>-74.078,4.596</coordinates></Point>
 encoded_polyline_01|_p~iF~ps|U_ulLnnqC_mqNvxq`@
 encoded_polyline_02|_p~iF~ps|U_ulLnnqC_mqNvxq`@
 ERROR:  Only SRID 4326 is supported.
-encoded_polyline_04|_p~iFlhz|UuksL`wjCivjNvxq`@
+encoded_polyline_04|_izlhAd}oidF{}jgCxotj@chtxCn`{nI
 svg_empty_geom|
 svg_option_01|M 1 -1 L 4 -4 5 -7
 svg_option_02|M 1 -1 l 3 -3 1 -3

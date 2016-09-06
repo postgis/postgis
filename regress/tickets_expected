@@ -293,3 +293,6 @@ ERROR:  invalid GML representation
 #3470b|50
 ERROR:  Cannot set point values on EMPTY geometry, use ST_AddPoint to add points
 #3579|f|t
+#3583|MULTIPOLYGON Z (EMPTY)
+#3627a|o}~~|AdshNoSsBgd@eGoBlm@wKhj@~@?
+#3627b|t

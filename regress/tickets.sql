@@ -974,5 +974,12 @@ select
     ST_Intersects(ST_Buffer(road.geom, sidewalk_offset + epsilon), sidewalks.geom) -- should be true
 from road, sidewalks, params;
 
+-- #3583
+Select '#3583', ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPolygon", "coordinates":[[[139.10030364990232,35.16777444430609],5842.4224490305424]]}')); 
+
+-- #3627
+SELECT '#3627a', ST_AsEncodedPolyline('SRID=4326;LINESTRING(-0.250691 49.283048,-0.250633 49.283376,-0.250502 49.283972,-0.251245 49.284028,-0.251938 49.284232,-0.251938 49.2842)', 6);
+SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline(geom, 7), 7)) FROM (VALUES ('SRID=4326;LINESTRING (0 0, 1 1)')) AS v (geom);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
