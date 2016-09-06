@@ -55,9 +55,6 @@ else
 	export svnurl="http://svn.osgeo.org/postgis/tags/${POSTGIS_MINOR_VER}.${POSTGIS_MICRO_VERSION}"
 fi;
 
-if [[ "$POSTGIS_MINOR_VER"  == 2.2 ]] ; then
-	export svnurl="http://svn.osgeo.org/postgis/branches/trunk"
-fi;
 #export POSTGIS_SRC=${PROJECTS}/postgis/trunk
 #POSTGIS_SVN_REVISION=will_be_passed_in_by_bot
 export GDAL_DATA="${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal"
@@ -129,7 +126,6 @@ if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
   if [ "$POSTGIS_MINOR_VERSION" > "0" ] ; then
     ## only copy pagc standardizer components for 2.1+
     cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
-    cp -p ${PGPATH}/lib/address*.dll $outdir/lib
     # cp -p ${PGPATH}/share/extension/address*.* $outdir/share/extension
     # cp -p ${PGPATH}/share/extension/us-*.sql $outdir/share/extension
   fi;
@@ -189,6 +185,7 @@ cp topology/topology_upgrade_*.sql ${RELDIR}/${RELVERDIR}/share/contrib/postgis-
 #cp extras/* ${RELDIR}/${RELVERDIR}/share/contrib/postgis-${POSTGIS_MINOR_VER}/extras
 cp -r extensions/*/sql/* ${RELDIR}/${RELVERDIR}/share/extension
 cp -r extensions/*/*.control ${RELDIR}/${RELVERDIR}/share/extension
+cp -r extensions/*/*.dll ${RELDIR}/${RELVERDIR}/lib #only address_standardizer in theory has this
 #cp extensions/postgis_topology/sql/* ${RELDIR}/${RELVERDIR}/share/extension
 #cp extensions/postgis_topology/*.control ${RELDIR}/${RELVERDIR}/share/extension
 cp -r ${RELDIR}/packaging_notes/* ${RELDIR}/${RELVERDIR}/
