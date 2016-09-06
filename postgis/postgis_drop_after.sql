@@ -146,6 +146,7 @@ DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
 DROP FUNCTION IF EXISTS st_removerepeatedpoints(geometry);
+DROP FUNCTION IF EXISTS st_voronoi(geometry, geometry, double precision, boolean); --temporarely introduced before 2.3.0 final
 
 DROP FUNCTION IF EXISTS geometry_gist_sel_2d (internal, oid, internal, int4);
 DROP FUNCTION IF EXISTS geometry_gist_joinsel_2d(internal, oid, internal, smallint);

@@ -3688,13 +3688,13 @@ CREATE OR REPLACE FUNCTION _ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, 
 
 CREATE OR REPLACE FUNCTION ST_VoronoiPolygons(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
        RETURNS geometry
-       AS $$ SELECT _ST_Voronoi(g1, extend_to, tolerance, true) $$
+       AS $$ SELECT @extschema@._ST_Voronoi(g1, extend_to, tolerance, true) $$
        LANGUAGE SQL IMMUTABLE _PARALLEL
        COST 25000; -- Guessed cost
 
 CREATE OR REPLACE FUNCTION ST_VoronoiLines(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
        RETURNS geometry
-       AS $$ SELECT _ST_Voronoi(g1, extend_to, tolerance, false) $$
+       AS $$ SELECT @extschema@._ST_Voronoi(g1, extend_to, tolerance, false) $$
        LANGUAGE SQL IMMUTABLE _PARALLEL
        COST 25000; -- Guessed cost
 
