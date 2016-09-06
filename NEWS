@@ -6,9 +6,8 @@ PostGIS 2.3.0
   - #3466, Casting from box3d to geometry now returns a 3D
            geometry (Julien Rouhaud of Dalibo)
 
-  - #3604, pgcommon/Makefile.in orders 
-	       CFLAGS incorrectly leading to wrong liblwgeom.h
-		   (Greg Troxel)
+  - #3604, pgcommon/Makefile.in orders CFLAGS incorrectly leading to
+           wrong liblwgeom.h (Greg Troxel)
 
  * Deprecated signatures *
 
@@ -37,26 +36,27 @@ PostGIS 2.3.0
   - #3465, ST_ClusterKMeans (Paul Ramsey)
   - #3469, ST_MakeLine with MULTIPOINTs (Paul Norman)
   - #3549, Support PgSQL 9.6 parallel query mode, as far as possible
-    (Paul Ramsey, Regina Obe)
+           (Paul Ramsey, Regina Obe)
   - #3557, Geometry function costs based on query stats (Paul Norman)
   - #3591, Add support for BRIN indexes. PostgreSQL 9.4+ required.
-		  (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud and Ronan Dunklau of Dalibo)
-  - #3496, Make postgis non-relocateable (for extension install), 
-		schema qualify calls in functions (Regina Obe)
-		Should resolve once and for all for extensions #3494, #3486, #3076 
-		
+           (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud
+            and Ronan Dunklau of Dalibo)
+  - #3496, Make postgis non-relocateable for extension install,
+           schema qualify calls in functions (Regina Obe)
+           Should resolve once and for all for extensions #3494, #3486, #3076
   - #3547, Update tiger geocoder to support TIGER 2016
-   and to support both http and ftp.
+           and to support both http and ftp.
 
  * Performance Enhancements *
 
   - #75, Enhancement to PIP short circuit (Dan Baston)
   - #3383, Avoid deserializing small geometries during index operations
-    (Dan Baston)
+           (Dan Baston)
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
-  - #3613, Segmentize geography using equal length segments, (Hugo Mercier of Oslandia) 
-  
+  - #3613, Segmentize geography using equal length segments
+           (Hugo Mercier of Oslandia)
+
 PostGIS 2.3.0beta1
 2016/09/06
 See PostGIS 2.3.0 section for details
