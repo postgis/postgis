@@ -19,7 +19,8 @@ UPGRADEABLE_VERSIONS = \
 	2.1.9 \
 	2.2.0 \
 	2.2.1 \
-	2.2.2
+	2.2.2 \
+	2.3.0dev
 
 # This is to avoid forcing "check-installed-upgrades" as a default
 # rule, see https://trac.osgeo.org/postgis/ticket/3420

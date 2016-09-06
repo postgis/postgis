@@ -56,6 +56,10 @@ PostGIS 2.3.0
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
   - #3613, Segmentize geography using equal length segments, (Hugo Mercier of Oslandia) 
+  
+PostGIS 2.3.0beta1
+2016/09/06
+See PostGIS 2.3.0 section for details
 
 PostGIS 2.2.2
 2016/03/22

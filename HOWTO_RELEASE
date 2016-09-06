@@ -91,7 +91,8 @@ Release procedure
        and make appropriate edits and then just run.
        Or just be lazy and bug Regina Obe do this.
     - Wikipedia
-    - Twitter (we all love twitter don't we)
+    - Twitter
+       This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
 - Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
