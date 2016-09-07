@@ -1,4 +1,7 @@
 SET client_min_messages TO warning;
+
+CREATE SCHEMA oschm;
+SET search_path TO oschm,public;
 CREATE TABLE res1 AS SELECT
   ST_AddBand(
     ST_MakeEmptyRaster(10, 10, x, y, 1, -1, 0, 0, 0)
@@ -52,3 +55,5 @@ DROP TABLE o_8_res1;
 DROP TABLE o_4_res1;
 DROP TABLE o_2_res1;
 DROP TABLE res1;
+DROP SCHEMA oschm;
+DISCARD ALL; -- resets change in search_path
