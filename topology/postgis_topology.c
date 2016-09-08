@@ -589,12 +589,13 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     if ( isnull ) {
       lwpgwarning("Found edge with NULL edge_id");
       edge->edge_id = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (edge_id)"
+                        " has int32 val of %d",
+                        colno, val);
+      edge->edge_id = val;
     }
-    val = DatumGetInt32(dat);
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (edge_id)"
-                      " has int32 val of %d",
-                      colno, val);
-    edge->edge_id = val;
 
   }
   if ( fields & LWT_COL_EDGE_START_NODE ) {
@@ -602,66 +603,72 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     if ( isnull ) {
       lwpgwarning("Found edge with NULL start_node");
       edge->start_node = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (start_node)"
+                        " has int32 val of %d", colno, val);
+      edge->start_node = val;
     }
-    val = DatumGetInt32(dat);
-    edge->start_node = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (start_node)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_END_NODE ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL end_node");
       edge->end_node = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (end_node)"
+                        " has int32 val of %d", colno, val);
+      edge->end_node = val;
     }
-    val = DatumGetInt32(dat);
-    edge->end_node = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (end_node)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_FACE_LEFT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL face_left");
       edge->face_left = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_left)"
+                        " has int32 val of %d", colno, val);
+      edge->face_left = val;
     }
-    val = DatumGetInt32(dat);
-    edge->face_left = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_left)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_FACE_RIGHT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL face_right");
       edge->face_right = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_right)"
+                        " has int32 val of %d", colno, val);
+      edge->face_right = val;
     }
-    val = DatumGetInt32(dat);
-    edge->face_right = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (face_right)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_NEXT_LEFT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL next_left");
       edge->next_left = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_left)"
+                        " has int32 val of %d", colno, val);
+      edge->next_left = val;
     }
-    val = DatumGetInt32(dat);
-    edge->next_left = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_left)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_NEXT_RIGHT ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL next_right");
       edge->next_right = -1;
+    } else {
+      val = DatumGetInt32(dat);
+      POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_right)"
+                        " has int32 val of %d", colno, val);
+      edge->next_right = val;
     }
-    val = DatumGetInt32(dat);
-    edge->next_right = val;
-    POSTGIS_DEBUGF(2, "fillEdgeFields: colno%d (next_right)"
-                      " has int32 val of %d", colno, val);
   }
   if ( fields & LWT_COL_EDGE_GEOM ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
