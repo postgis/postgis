@@ -612,7 +612,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL end_node");
-      edge->start_node = -1;
+      edge->end_node = -1;
     }
     val = DatumGetInt32(dat);
     edge->end_node = val;
@@ -623,7 +623,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL face_left");
-      edge->start_node = -1;
+      edge->face_left = -1;
     }
     val = DatumGetInt32(dat);
     edge->face_left = val;
@@ -634,7 +634,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL face_right");
-      edge->start_node = -1;
+      edge->face_right = -1;
     }
     val = DatumGetInt32(dat);
     edge->face_right = val;
@@ -645,7 +645,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL next_left");
-      edge->start_node = -1;
+      edge->next_left = -1;
     }
     val = DatumGetInt32(dat);
     edge->next_left = val;
@@ -656,7 +656,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( isnull ) {
       lwpgwarning("Found edge with NULL next_right");
-      edge->start_node = -1;
+      edge->next_right = -1;
     }
     val = DatumGetInt32(dat);
     edge->next_right = val;
