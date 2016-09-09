@@ -3,6 +3,7 @@ PostGIS 2.2.3
 
  * Bug Fixes *
 
+  - #3628, Fix lack of support for capitalized-Y in SwapOrdinates
   - #3524, Add interruptibility to geography brute-force distance 
            calculation
   - #3522, Handle POINT and MULTIPOINT correctly in ST_Subdivide
