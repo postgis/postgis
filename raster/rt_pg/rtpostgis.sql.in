@@ -8797,7 +8797,8 @@ BEGIN
   PERFORM AddOverviewConstraints(sinfo.sch, ttab, col,
                                  sinfo.sch, sinfo.tab, col, factor);
 
-  RETURN ttab;
+    -- return the schema as well as the table
+  RETURN sinfo.sch||'.'||ttab;
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
