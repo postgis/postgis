@@ -2639,7 +2639,7 @@ Datum ST_FlipCoordinates(PG_FUNCTION_ARGS)
 static LWORD ordname2ordval(char n)
 {
   if ( n == 'x' || n == 'X' ) return LWORD_X;
-  if ( n == 'y' || n == 'y' ) return LWORD_Y;
+  if ( n == 'y' || n == 'Y' ) return LWORD_Y;
   if ( n == 'z' || n == 'Z' ) return LWORD_Z;
   if ( n == 'm' || n == 'M' ) return LWORD_M;
   lwpgerror("Invalid ordinate name '%c'. Expected x,y,z or m", n);
