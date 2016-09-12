@@ -2253,8 +2253,10 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	nd_stats = pg_get_nd_stats_by_name(tbl_oid, col, 2, only_parent);
 	
 	/* Error out on no stats */
-	if ( ! nd_stats )
-		elog(ERROR, "stats for \"%s.%s\" do not exist", tbl, text2cstring(col));
+	if ( ! nd_stats ) {
+		elog(WARNING, "stats for \"%s.%s\" do not exist", tbl, text2cstring(col));
+		PG_RETURN_NULL();
+	}
 
 	/* Construct the box */
 	gbox = palloc(sizeof(GBOX));

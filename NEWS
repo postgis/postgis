@@ -8,6 +8,9 @@ PostGIS 2.3.0
 
   - #3604, pgcommon/Makefile.in orders CFLAGS incorrectly leading to
            wrong liblwgeom.h (Greg Troxel)
+   
+  - #3396, ST_EstimatedExtent, throw WARNING instead of ERROR
+           (Regina Obe)
 
  * Deprecated signatures *
 
