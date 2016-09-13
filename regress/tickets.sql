@@ -950,6 +950,13 @@ SELECT '#3470b', ST_Area(ST_Polygonize(ARRAY[NULL, 'LINESTRING (0 0, 10 0, 10 10
 -- #3565
 SELECT '#3565',ST_SetPoint(st_geomfromtext('LINESTRING EMPTY'), 0, ST_MakePoint(1,1));
 
+-- #3569
+WITH clustr AS (
+      SELECT ST_Polygonize(ST_MakeEnvelope(1, 2, 3, 4)) AS geom
+    )
+    SELECT '#3569', ST_CollectionHomogenize(geom)::box2d
+    FROM clustr;
+
 -- #3579
 with
         params as (

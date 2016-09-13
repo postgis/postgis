@@ -14,6 +14,8 @@ PostGIS 2.2.3
   - #3573, Operator <<->> incorrectly calculates m distance
   - #3579, Crash in LWGEOM2GEOS
   - #3515, tiger_data not being backed up
+  - #3569, Incorrect coordinates returned by ST_CollectionHomogenize
+           (Dan Baston)
   - #3602, perl as found by configure is not used 
            in tiger extension, postgis_sfcgal, address_standardizer  
   - #3607, Fix inconsistency with multilinestring in

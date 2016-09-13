@@ -2584,14 +2584,17 @@ Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS)
 
 	lwoutput = lwgeom_homogenize(lwgeom);
 	lwgeom_free(lwgeom);
-	PG_FREE_IF_COPY(input, 0);
 
 	if ( ! lwoutput )
+	{
 		PG_RETURN_NULL();
+		PG_FREE_IF_COPY(input, 0);
+	}
 
 	output = geometry_serialize(lwoutput);
 	lwgeom_free(lwoutput);
 
+	PG_FREE_IF_COPY(input, 0);
 	PG_RETURN_POINTER(output);
 }
 
