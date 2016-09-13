@@ -966,6 +966,13 @@ SELECT '#3437e' AS t, count(*) FROM mp INNER JOIN p ON ST_Within(p.geom, mp.geom
 SELECT '#3470', ST_Polygonize(ARRAY[NULL]::geometry[]) IS NULL;
 SELECT '#3470b', ST_Area(ST_Polygonize(ARRAY[NULL, 'LINESTRING (0 0, 10 0, 10 10)', NULL, 'LINESTRING (0 0, 10 10)', NULL]::geometry[]));
 
+-- #3569
+WITH clustr AS (
+      SELECT ST_Polygonize(ST_MakeEnvelope(1, 2, 3, 4)) AS geom
+    )
+    SELECT '#3569', ST_CollectionHomogenize(geom)::box2d
+    FROM clustr;
+
 -- #3579
 with
         params as (

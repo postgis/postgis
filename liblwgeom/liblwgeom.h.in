@@ -1042,7 +1042,12 @@ extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
 
 extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
-/* Given a generic geometry/collection, return the "simplest" form. */
+/* Given a generic geometry/collection, return the "simplest" form.
+ * The elements of the homogenized collection are references to the
+ * input geometry; a deep clone is not performed.
+ * TODO: consider returning a geometry that does not reference the
+ * input
+ * */
 extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
 
 
