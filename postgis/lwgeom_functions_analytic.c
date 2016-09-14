@@ -53,6 +53,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
 Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS);
+Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS);
 Datum ST_GeometricMedian(PG_FUNCTION_ARGS);
 
 
@@ -1110,7 +1111,7 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 		input = lwgeom_from_gserialized(geom);
 		mbc = lwgeom_calculate_mbc(input);
 
-		if (!mbc)
+		if (!(mbc && mbc->center))
 		{
 			lwpgerror("Error calculating minimum bounding circle.");
 			lwgeom_free(input);
@@ -1140,6 +1141,61 @@ Datum ST_MinimumBoundingRadius(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(resultTuple);
 
 	PG_RETURN_DATUM(result);
+}
+
+/**********************************************************************
+ *
+ * ST_MinimumBoundingCircle
+ *
+ **********************************************************************/
+
+PG_FUNCTION_INFO_V1(ST_MinimumBoundingCircle);
+Datum ST_MinimumBoundingCircle(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* geom;
+	LWGEOM* input;
+	LWBOUNDINGCIRCLE* mbc = NULL;
+	LWGEOM* lwcircle;
+	GSERIALIZED* center;
+	int segs_per_quarter;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	geom = PG_GETARG_GSERIALIZED_P(0);
+	segs_per_quarter = PG_GETARG_INT32(1);
+
+	/* Empty geometry? Return POINT EMPTY */
+	if (gserialized_is_empty(geom))
+	{
+		lwcircle = (LWGEOM*) lwpoint_construct_empty(gserialized_get_srid(geom), LW_FALSE, LW_FALSE);
+	}
+	else
+	{
+		input = lwgeom_from_gserialized(geom);
+		mbc = lwgeom_calculate_mbc(input);
+
+		if (!(mbc && mbc->center))
+		{
+			lwpgerror("Error calculating minimum bounding circle.");
+			lwgeom_free(input);
+			PG_RETURN_NULL();
+		}
+
+		/* Zero radius? Return a point. */
+		if (mbc->radius == 0)
+			lwcircle = lwpoint_as_lwgeom(lwpoint_make2d(input->srid, mbc->center->x, mbc->center->y));
+		else
+			lwcircle = lwpoly_as_lwgeom(lwpoly_construct_circle(input->srid, mbc->center->x, mbc->center->y, mbc->radius, segs_per_quarter, LW_TRUE));
+
+		lwboundingcircle_destroy(mbc);
+		lwgeom_free(input);
+	}
+
+	center = geometry_serialize(lwcircle);
+	lwgeom_free(lwcircle);
+
+	PG_RETURN_POINTER(center);
 }
 
 /**********************************************************************

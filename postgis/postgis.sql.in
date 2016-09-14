@@ -3305,9 +3305,9 @@ CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometr
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
-	RETURNS geometry
-    AS $$ SELECT @extschema@.ST_Buffer(center, radius, segs_per_quarter) FROM @extschema@.ST_MinimumBoundingRadius($1) sq $$
-	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_MinimumBoundingCircle'
+    LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0 - requires GEOS-3.2 or higher
 CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params text DEFAULT '')

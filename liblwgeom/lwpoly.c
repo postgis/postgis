@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
@@ -90,6 +91,45 @@ lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
 
 	lwpoly_add_ring(lwpoly, pa);
 
+	return lwpoly;
+}
+
+LWPOLY*
+lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
+{
+	const int segments = 4*segments_per_quarter;
+	const double theta = 2*M_PI / segments;
+	LWPOLY *lwpoly;
+	POINTARRAY *pa;
+	POINT4D pt;
+	uint32_t i;
+
+	if (segments_per_quarter < 1)
+	{
+		lwerror("Need at least one segment per quarter-circle.");
+		return NULL;
+	}
+
+	if (radius < 0)
+	{
+		lwerror("Radius must be positive.");
+		return NULL;
+	}
+
+	lwpoly = lwpoly_construct_empty(srid, LW_FALSE, LW_FALSE);
+	pa = ptarray_construct_empty(LW_FALSE, LW_FALSE, segments + 1);
+
+	if (exterior)
+		radius *= sqrt(1 + pow(tan(theta/2), 2));
+
+	for (i = 0; i <= segments; i++)
+	{
+		pt.x = x + radius*sin(i * theta);
+		pt.y = y + radius*cos(i * theta);
+		ptarray_append_point(pa, &pt, LW_TRUE);
+	}
+
+	lwpoly_add_ring(lwpoly, pa);
 	return lwpoly;
 }
 

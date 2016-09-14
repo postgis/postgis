@@ -1102,6 +1102,46 @@ static void test_point_density(void)
 	lwgeom_free(geom);
 }
 
+static void test_lwpoly_construct_circle(void)
+{
+	LWPOLY* p;
+	GBOX* g;
+	const int srid = 4326;
+	const int segments_per_quad = 17;
+	const int x = 10;
+	const int y = 20;
+	const int r = 5;
+
+	/* With normal arguments you should get something circle-y */
+	p = lwpoly_construct_circle(srid, x, y, r, segments_per_quad, LW_TRUE);
+
+	ASSERT_INT_EQUAL(lwgeom_count_vertices(p), segments_per_quad * 4 + 1);
+	ASSERT_INT_EQUAL(lwgeom_get_srid(lwpoly_as_lwgeom(p)), srid)
+
+	g = lwgeom_get_bbox(lwpoly_as_lwgeom(p));
+	CU_ASSERT_DOUBLE_EQUAL(g->xmin, x-r, 0.1);
+	CU_ASSERT_DOUBLE_EQUAL(g->xmax, x+r, 0.1);
+	CU_ASSERT_DOUBLE_EQUAL(g->ymin, y-r, 0.1);
+	CU_ASSERT_DOUBLE_EQUAL(g->ymax, y+r, 0.1);
+
+	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(p), M_PI*5*5, 0.1);
+
+	lwpoly_free(p);
+
+	/* No segments? No circle. */
+	p = lwpoly_construct_circle(srid, x, y, r, 0, LW_TRUE);
+	CU_ASSERT_TRUE(p == NULL);
+
+	/* Negative radius? No circle. */
+	p = lwpoly_construct_circle(srid, x, y, -1e-3, segments_per_quad, LW_TRUE);
+	CU_ASSERT_TRUE(p == NULL);
+
+	/* Zero radius? Invalid circle */
+	p = lwpoly_construct_circle(srid, x, y, 0, segments_per_quad, LW_TRUE);
+	CU_ASSERT_TRUE(p != NULL);
+	lwpoly_free(p);
+}
+
 static void test_kmeans(void)
 {
 	static int cluster_size = 100;
@@ -1172,4 +1212,5 @@ void algorithms_suite_setup(void)
 	PG_ADD_TEST(suite,test_kmeans);
 	PG_ADD_TEST(suite,test_median_handles_3d_correctly);
 	PG_ADD_TEST(suite,test_median_robustness);
+	PG_ADD_TEST(suite,test_lwpoly_construct_circle);
 }
