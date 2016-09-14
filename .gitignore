@@ -8,6 +8,8 @@
 *.marks
 *.swp
 *.orig
+*.gcda
+*.gcno
 gmon.out
 install-sh
 postgis_svn_revision.h
