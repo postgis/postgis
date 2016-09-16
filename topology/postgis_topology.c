@@ -203,6 +203,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
   if ( isnull ) {
 		cberror(be, "Topology '%s' has null identifier", name);
+    SPI_freetuptable(SPI_tuptable);
     return NULL;
   }
   topo->id = DatumGetInt32(dat);
@@ -210,6 +211,7 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &isnull);
   if ( isnull ) {
 		cberror(be, "Topology '%s' has null SRID", name);
+    SPI_freetuptable(SPI_tuptable);
     return NULL;
   }
   topo->srid = DatumGetInt32(dat);
@@ -234,6 +236,8 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
                     "id %d, srid %d, precision %g",
              name, topo->id, topo->srid, topo->precision);
+
+  SPI_freetuptable(SPI_tuptable);
 
   return topo;
 }
@@ -594,6 +598,7 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
   Datum dat;
   int val;
   GSERIALIZED *geom;
+  LWGEOM *lwg;
   int colno = 0;
 
   POSTGIS_DEBUGF(2, "fillEdgeFields: got %d atts and fields %x",
@@ -687,10 +692,16 @@ fillEdgeFields(LWT_ISO_EDGE* edge, HeapTuple row, TupleDesc rowdesc, int fields)
   }
   if ( fields & LWT_COL_EDGE_GEOM ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
-    if ( ! isnull ) {
-      geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(dat);
-      edge->geom = lwgeom_as_lwline(lwgeom_from_gserialized(geom));
-    } else {
+    if ( ! isnull ) {{
+      MemoryContext oldcontext = CurrentMemoryContext;
+      geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
+      lwg = lwgeom_from_gserialized(geom);
+      MemoryContextSwitchTo( TopMemoryContext );
+      edge->geom = lwgeom_as_lwline(lwgeom_clone_deep(lwg));
+      MemoryContextSwitchTo( oldcontext ); /* switch back */
+      lwgeom_free(lwg);
+      if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom); /* IF_COPY */
+    }} else {
       lwpgwarning("Found edge with NULL geometry !");
       edge->geom = NULL;
     }
@@ -703,6 +714,7 @@ fillNodeFields(LWT_ISO_NODE* node, HeapTuple row, TupleDesc rowdesc, int fields)
   bool isnull;
   Datum dat;
   GSERIALIZED *geom;
+  LWGEOM *lwg;
   int colno = 0;
 
   if ( fields & LWT_COL_NODE_NODE_ID ) {
@@ -717,8 +729,11 @@ fillNodeFields(LWT_ISO_NODE* node, HeapTuple row, TupleDesc rowdesc, int fields)
   if ( fields & LWT_COL_NODE_GEOM ) {
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( ! isnull ) {
-      geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(dat);
-      node->geom = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom));
+      geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
+      lwg = lwgeom_from_gserialized(geom);
+      node->geom = lwgeom_as_lwpoint(lwgeom_clone_deep(lwg));
+      lwgeom_free(lwg);
+      if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom); /* IF_COPY */
     } else {
       lwpgnotice("Found node with NULL geometry !");
       node->geom = NULL;
@@ -744,7 +759,7 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
     dat = SPI_getbinval(row, rowdesc, ++colno, &isnull);
     if ( ! isnull ) {
       /* NOTE: this is a geometry of which we want to take (and clone) the BBOX */
-      geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(dat);
+      geom = (GSERIALIZED *)PG_DETOAST_DATUM(dat);
       g = lwgeom_from_gserialized(geom);
       box = lwgeom_get_bbox(g);
       if ( box ) {
@@ -753,6 +768,8 @@ fillFaceFields(LWT_ISO_FACE* face, HeapTuple row, TupleDesc rowdesc, int fields)
         lwpgnotice("Found face with EMPTY MBR !");
         face->mbr = NULL;
       }
+      lwgeom_free(g);
+      if ( DatumGetPointer(dat) != (Pointer)geom ) pfree(geom);
     } else {
       /* NOTE: perfectly fine for universe face */
       POSTGIS_DEBUG(1, "Found face with NULL MBR");
@@ -819,6 +836,8 @@ cb_getEdgeById(const LWT_BE_TOPOLOGY* topo,
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
   }
 
+  SPI_freetuptable(SPI_tuptable);
+
   return edges;
 }
 
@@ -874,6 +893,8 @@ cb_getEdgeByNode(const LWT_BE_TOPOLOGY* topo,
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return edges;
 }
@@ -951,6 +972,8 @@ cb_getEdgeByFace(const LWT_BE_TOPOLOGY* topo,
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
   }
 
+  SPI_freetuptable(SPI_tuptable);
+
   return edges;
 }
 
@@ -1000,6 +1023,8 @@ cb_getFacesById(const LWT_BE_TOPOLOGY* topo,
     HeapTuple row = SPI_tuptable->vals[i];
     fillFaceFields(&faces[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return faces;
 }
@@ -1075,6 +1100,8 @@ cb_getRingEdges(const LWT_BE_TOPOLOGY* topo,
                       " is edge %d", i, edge, val);
   }
 
+  SPI_freetuptable(SPI_tuptable);
+
   return edges;
 }
 
@@ -1122,6 +1149,8 @@ cb_getNodeById(const LWT_BE_TOPOLOGY* topo,
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return nodes;
 }
@@ -1178,6 +1207,8 @@ cb_getNodeByFace(const LWT_BE_TOPOLOGY* topo,
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return nodes;
 }
@@ -1247,6 +1278,9 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
       *numelems = exists ? 1 : 0;
       POSTGIS_DEBUGF(1, "cb_getEdgeWithinDistance2D: exists ? %d", *numelems);
     }
+
+    SPI_freetuptable(SPI_tuptable);
+
     return NULL;
   }
 
@@ -1256,6 +1290,8 @@ cb_getEdgeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return edges;
 }
@@ -1330,6 +1366,9 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
       exists = DatumGetBool(dat);
       *numelems = exists ? 1 : 0;
     }
+
+    SPI_freetuptable(SPI_tuptable);
+
     return NULL;
   }
   else
@@ -1341,6 +1380,9 @@ cb_getNodeWithinDistance2D(const LWT_BE_TOPOLOGY* topo,
       fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
     }
     *numelems = SPI_processed;
+
+    SPI_freetuptable(SPI_tuptable);
+
     return nodes;
   }
 }
@@ -1394,6 +1436,8 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
     fillNodeFields(&nodes[i], SPI_tuptable->vals[i],
       SPI_tuptable->tupdesc, LWT_COL_NODE_NODE_ID);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return 1;
 }
@@ -1452,6 +1496,8 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
     }
   }
 
+  SPI_freetuptable(SPI_tuptable);
+
   return SPI_processed;
 }
 
@@ -1507,6 +1553,8 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
         SPI_tuptable->tupdesc, LWT_COL_FACE_FACE_ID);
     }
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return SPI_processed;
 }
@@ -1867,6 +1915,9 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
 	  return -1;
   }
   edge_id = DatumGetInt64(dat); /* sequences return 64bit integers */
+
+  SPI_freetuptable(SPI_tuptable);
+
   return edge_id;
 }
 
@@ -1966,6 +2017,9 @@ cb_updateTopoGeomEdgeSplit ( const LWT_BE_TOPOLOGY* topo,
           topogeo_id, layer_id, negate ? -new_edge2 : new_edge2, element_type);
       }
     }
+
+    SPI_freetuptable(SPI_tuptable);
+
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomEdgeSplit query: %s", sql->data);
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2086,6 +2140,8 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
       }
     }
 
+    SPI_freetuptable(SPI_tuptable);
+
     POSTGIS_DEBUGF(1, "cb_updateTopoGeomFaceSplit query: %s", sql->data);
     spi_result = SPI_execute(sql->data, false, 0);
     MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -2095,6 +2151,7 @@ cb_updateTopoGeomFaceSplit ( const LWT_BE_TOPOLOGY* topo,
       pfree(sqldata.data);
       return 0;
     }
+
     if ( SPI_processed ) topo->be_data->data_changed = true;
   }
 
@@ -2149,6 +2206,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
     schema_name = SPI_getvalue(row, tdesc, 3);
     table_name = SPI_getvalue(row, tdesc, 4);
     col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
 
     cberror(topo->be_data, "TopoGeom %s in layer %s "
                            "(%s.%s.%s) cannot be represented "
@@ -2205,6 +2264,8 @@ cb_checkTopoGeomRemEdge ( const LWT_BE_TOPOLOGY* topo,
       schema_name = SPI_getvalue(row, tdesc, 3);
       table_name = SPI_getvalue(row, tdesc, 4);
       col_name = SPI_getvalue(row, tdesc, 5);
+
+      SPI_freetuptable(SPI_tuptable);
 
       cberror(topo->be_data, "TopoGeom %s in layer %s "
                              "(%s.%s.%s) cannot be represented "
@@ -2267,6 +2328,8 @@ cb_checkTopoGeomRemNode ( const LWT_BE_TOPOLOGY* topo,
     schema_name = SPI_getvalue(row, tdesc, 3);
     table_name = SPI_getvalue(row, tdesc, 4);
     col_name = SPI_getvalue(row, tdesc, 5);
+
+    SPI_freetuptable(SPI_tuptable);
 
     cberror(topo->be_data, "TopoGeom %s in layer %s "
                            "(%s.%s.%s) cannot be represented "
@@ -2493,10 +2556,12 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   dat = SPI_getbinval( SPI_tuptable->vals[0],
                        SPI_tuptable->tupdesc, 1, &isnull );
   if ( isnull ) {
+    SPI_freetuptable(SPI_tuptable);
 		cberror(topo->be_data, "corrupted topology: face with NULL face_id");
 	  return -2;
   }
   face_id = DatumGetInt32(dat);
+  SPI_freetuptable(SPI_tuptable);
   return face_id;
 }
 
@@ -2631,6 +2696,7 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
       bool isnull, exists;
       dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
       exists = DatumGetBool(dat);
+      SPI_freetuptable(SPI_tuptable);
       *numelems = exists ? 1 : 0;
       POSTGIS_DEBUGF(1, "cb_getNodeWithinBox2D: exists ? %d", *numelems);
     }
@@ -2643,6 +2709,8 @@ cb_getNodeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     HeapTuple row = SPI_tuptable->vals[i];
     fillNodeFields(&nodes[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return nodes;
 }
@@ -2704,6 +2772,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
       dat = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &isnull);
       exists = DatumGetBool(dat);
       *numelems = exists ? 1 : 0;
+      SPI_freetuptable(SPI_tuptable);
       POSTGIS_DEBUGF(1, "cb_getEdgeWithinBox2D: exists ? %d", *numelems);
     }
     return NULL;
@@ -2715,6 +2784,8 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     HeapTuple row = SPI_tuptable->vals[i];
     fillEdgeFields(&edges[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return edges;
 }
@@ -2778,6 +2849,9 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
       *numelems = exists ? 1 : 0;
       POSTGIS_DEBUGF(1, "cb_getFaceWithinBox2D: exists ? %d", *numelems);
     }
+
+    SPI_freetuptable(SPI_tuptable);
+
     return NULL;
   }
 
@@ -2787,6 +2861,8 @@ cb_getFaceWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     HeapTuple row = SPI_tuptable->vals[i];
     fillFaceFields(&faces[i], row, SPI_tuptable->tupdesc, fields);
   }
+
+  SPI_freetuptable(SPI_tuptable);
 
   return faces;
 }
