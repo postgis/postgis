@@ -6423,12 +6423,17 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 					<title>Examples</title>
 					<para>A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015.</para>
 					
-					<programlisting>-- the original raster pixel size
-SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+					<programlisting>-- the original raster non-rotated
+SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
+
+-- result
+0
 					
--- the rescaled raster raster pixel size
-SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))
-                    </programlisting>
+-- the reskewed raster raster rotation
+SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));
+
+-- result
+-0.982793723247329</programlisting>
 					
 			</refsection>
 
@@ -6506,12 +6511,16 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 					<title>Examples</title>
 					<para>A simple example snapping a raster to a slightly different grid.</para>
 					
-					<programlisting>-- the original raster pixel size
-SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+					<programlisting>-- the original raster upper left X
+SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
+-- result
+0
 					
--- the rescaled raster raster pixel size
-SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))
-                    </programlisting>
+-- the upper left of raster after snapping
+SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));
+
+--result
+-0.0008</programlisting>
 					
 			</refsection>
 

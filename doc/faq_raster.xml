@@ -264,7 +264,7 @@ END
       </question>
 
       <answer>
-        <para>The function is not unique error happens if one of your arguments is a textual representation of a geometry instead of a geometry.  In these cases, PostgreSQL marks the textual representation as an unknown type, which means it can fall into the st_intersects(raster, geometry) or st_intersects(raster,raster) thus resulting in a non-unique case since both functions can in theory support your request.  To prevent this, you need to cast the geometry to a geometry.</para>
+        <para>The function is not unique error happens if one of your arguments is a textual representation of a geometry instead of a geometry.  In these cases, PostgreSQL marks the textual representation as an unknown type, which means it can fall into the st_intersects(raster, geometry) or st_intersects(raster,raster) thus resulting in a non-unique case since both functions can in theory support your request.  To prevent this, you need to cast the textual representation of the geometry to a geometry.</para>
         <para>For example if your code looks like this:</para>
         <programlisting>SELECT rast
  FROM my_raster

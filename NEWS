@@ -28,6 +28,7 @@ PostGIS 2.2.3
            (Christian Quest / Dan Baston)
   - #3501 use ST_Union instead of ST_Collect to compute 
           raster max extent constraint
+  - Numerous documentation corrections from ruvyn
 
 
 PostGIS 2.2.2
