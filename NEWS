@@ -26,6 +26,8 @@ PostGIS 2.2.3
            perl @INC fix (Sebastiaan Couwenberg)
   - #3627, Encoded polyline functions ignore precision parameter
            (Christian Quest / Dan Baston)
+  - #3501 use ST_Union instead of ST_Collect to compute 
+          raster max extent constraint
 
 
 PostGIS 2.2.2
