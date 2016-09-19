@@ -7148,7 +7148,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 
 		cn := 'enforce_max_extent_' || $3;
 
-		sql := 'SELECT st_ashexewkb(st_envelope(st_union(st_envelope('
+		sql := 'SELECT @extschema@.st_ashexewkb( @extschema@.st_envelope( @extschema@.st_union( @extschema@.st_envelope('
 			|| quote_ident($3)
 			|| ')))) FROM '
 			|| fqtn;
