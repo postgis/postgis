@@ -7202,7 +7202,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, ras
 
 		cn := 'enforce_same_alignment_' || $3;
 
-		sql := 'SELECT st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM st_metadata((SELECT '
+		sql := 'SELECT @extschema@.st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM @extschema@.st_metadata((SELECT '
 			|| quote_ident($3)
 			|| ' FROM ' || fqtn || ' LIMIT 1))';
 		BEGIN
@@ -7342,7 +7342,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 
 		-- metadata
 		BEGIN
-			sql := 'WITH foo AS (SELECT ST_Metadata(' || quote_ident($3) || ') AS meta, ST_ConvexHull(' || quote_ident($3) || ') AS hull FROM ' || fqtn || ') SELECT max((meta).scalex), max((meta).scaley), max((meta).skewx), max((meta).skewy), max((meta).width), max((meta).height), ST_Union(hull) FROM foo';
+			sql := 'WITH foo AS (SELECT @extschema@.ST_Metadata(' || quote_ident($3) || ') AS meta, @extschema@.ST_ConvexHull(' || quote_ident($3) || ') AS hull FROM ' || fqtn || ') SELECT max((meta).scalex), max((meta).scaley), max((meta).skewx), max((meta).skewy), max((meta).width), max((meta).height), @extschema@.ST_Union(hull) FROM foo';
 			EXECUTE sql INTO _scalex, _scaley, _skewx, _skewy, _tilewidth, _tileheight, _covextent;
 		EXCEPTION WHEN OTHERS THEN
 			RAISE DEBUG 'Unable to get coverage metadata for %.%: % (%)',
@@ -7352,7 +7352,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name,
 
 		-- rasterize extent
 		BEGIN
-			_covrast := ST_AsRaster(_covextent, _scalex, _scaley, '8BUI', 1, 0, NULL, NULL, _skewx, _skewy);
+			_covrast := @extschema@.ST_AsRaster(_covextent, _scalex, _scaley, '8BUI', 1, 0, NULL, NULL, _skewx, _skewy);
 			IF _covrast IS NULL THEN
 				RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint: % (%)',
           SQLERRM, SQLSTATE;
@@ -7441,7 +7441,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_num_bands(rastschema name, ras
 
 		cn := 'enforce_num_bands_' || $3;
 
-		sql := 'SELECT st_numbands(' || quote_ident($3)
+		sql := 'SELECT @extschema@.st_numbands(' || quote_ident($3)
 			|| ') FROM ' || fqtn
 			|| ' LIMIT 1';
 		BEGIN
@@ -7454,7 +7454,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_num_bands(rastschema name, ras
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_numbands(' || quote_ident($3)
+			|| ' CHECK (@extschema@.st_numbands(' || quote_ident($3)
 			|| ') = ' || attr
 			|| ')';
 		RETURN  @extschema@._add_raster_constraint(cn, sql);
@@ -7703,7 +7703,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rastta
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (_raster_constraint_out_db(' || quote_ident($3)
+			|| ' CHECK ( @extschema@._raster_constraint_out_db(' || quote_ident($3)
 			|| ') = ''{';
 		FOR x in 1..max LOOP
 			IF attr[x] IS FALSE THEN
