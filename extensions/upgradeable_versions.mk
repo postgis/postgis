@@ -21,7 +21,8 @@ UPGRADEABLE_VERSIONS = \
 	2.2.1 \
 	2.2.2 \
 	2.3.0dev \
-	2.3.0beta1
+	2.3.0beta1 \
+	2.3.0rc1dev
 
 # This is to avoid forcing "check-installed-upgrades" as a default
 # rule, see https://trac.osgeo.org/postgis/ticket/3420
