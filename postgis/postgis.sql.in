@@ -2380,7 +2380,7 @@ BEGIN
 	RETURN ret;
 END;
 $$
-LANGUAGE 'plpgsql' STABLE STRICT _PARALLEL;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 ----------------------------------------------------------------------------
 -- ADDGEOMETRYCOLUMN ( <table>, <column>, <srid>, <type>, <dim> )
