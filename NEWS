@@ -26,7 +26,9 @@ PostGIS 2.3.0
   - #454,  ST_WrapX and lwgeom_wrapx (Sandro Santilli)
   - #1758, ST_Normalize (Sandro Santilli)
   - #2236, shp2pgsql -d now emits "DROP TABLE IF EXISTS"
-  - #2259, ST_Voronoi (Dan Baston)
+  - #2259, ST_VoronoiPolygons and ST_VoronoiLines (Dan Baston)
+  - #2841 and #2996, ST_MinimumBoundingRadius and new ST_MinimumBoundingCircle 
+           implementation using Welzl's algorithm (Dan Baston)
   - #2991, Enable ST_Transform to use PROJ.4 text (Mike Toews)
   - #3059, Allow passing per-dimension parameters in ST_Expand (Dan Baston)
   - #3339, ST_GeneratePoints (Paul Ramsey)
@@ -49,6 +51,8 @@ PostGIS 2.3.0
            Should resolve once and for all for extensions #3494, #3486, #3076
   - #3547, Update tiger geocoder to support TIGER 2016
            and to support both http and ftp.
+  - #3613, Segmentize geography using equal length segments
+           (Hugo Mercier of Oslandia)
 
  * Performance Enhancements *
 
@@ -57,8 +61,6 @@ PostGIS 2.3.0
            (Dan Baston)
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
-  - #3613, Segmentize geography using equal length segments
-           (Hugo Mercier of Oslandia)
 
 PostGIS 2.3.0beta1
 2016/09/06
