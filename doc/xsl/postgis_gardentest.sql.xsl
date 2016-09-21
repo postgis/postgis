@@ -11,7 +11,7 @@
 	<xsl:variable name='testversion'>2.3.0</xsl:variable>
 	<xsl:variable name='fnexclude14'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
-	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
+	<!--This is just a place holder to state functions not supported or tested separately -->
 
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
@@ -314,6 +314,14 @@ BEGIN;
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> geometry index: End Testing <xsl:value-of select="@ID" />';
 
+SELECT '<xsl:value-of select="$log_label" /> Geometry brin index: Start Testing <xsl:value-of select="@ID" />';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> brin index Geometry','CREATE brin index geometry', '<xsl:value-of select="@ID" />', clock_timestamp());
+BEGIN;
+	CREATE INDEX idx_pgis_geom_brin ON pgis_garden USING brin(the_geom);
+	<xsl:value-of select="$var_logupdatesql" />
+COMMIT;
+SELECT '<xsl:value-of select="$log_label" /> geometry brin index: End Testing <xsl:value-of select="@ID" />';
+
 
 INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
 VALUES('<xsl:value-of select="$log_label" /> insert data Geometry','insert data', '<xsl:value-of select="@ID" />', clock_timestamp(), '<xsl:call-template name="escapesinglequotes">
@@ -387,6 +395,14 @@ BEGIN;
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
 SELECT '<xsl:value-of select="$log_label" /> Geography index: End Testing <xsl:value-of select="@ID" />';
+
+SELECT '<xsl:value-of select="$log_label" /> Geography brin index: Start Testing <xsl:value-of select="@ID" />';
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start) VALUES('<xsl:value-of select="$log_label" /> brin index Geography','CREATE brin index geography', '<xsl:value-of select="@ID" />', clock_timestamp());
+BEGIN;
+	CREATE INDEX idx_pgis_geoggarden_geog_brin ON pgis_geoggarden USING brin(the_geog);
+	<xsl:value-of select="$var_logupdatesql" />
+COMMIT;
+SELECT '<xsl:value-of select="$log_label" /> Geography brin index: End Testing <xsl:value-of select="@ID" />';
 
 
 <!-- vacuum analyze can't be put in a commit so we can't completely tell if it completes if it doesn't crash -->
