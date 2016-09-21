@@ -1,3 +1,216 @@
+2016-09-20 21:01  Regina Obe <lr@pcorp.us>
+
+	* [r15124] postgis/postgis.sql.in: AddGeometryColumn should not be
+	  marked parallel safe
+	  closes #3636
+
+2016-09-19 05:21  Regina Obe <lr@pcorp.us>
+
+	* [r15122] Version.config, extensions/upgradeable_versions.mk: flip
+	  back to 2.3.0dev until release time
+
+2016-09-19 05:17  Regina Obe <lr@pcorp.us>
+
+	* [r15120] Version.config, extensions/upgradeable_versions.mk: flip
+	  switch to PostGIS 2.3.0rc1
+
+2016-09-19 04:54  Regina Obe <lr@pcorp.us>
+
+	* [r15118] doc/faq_raster.xml, doc/reference_constructor.xml,
+	  doc/reference_raster.xml: doc corrections from ruvyn for PostGIS
+	  2.3
+	  references #3581
+	  references #3580
+	  references #3586
+	  references #3575
+
+2016-09-19 04:00  Regina Obe <lr@pcorp.us>
+
+	* [r15117] raster/rt_pg/rtpostgis.sql.in: missed another schema
+	  qualify
+
+2016-09-19 03:42  Regina Obe <lr@pcorp.us>
+
+	* [r15116] raster/rt_pg/rtpostgis.sql.in: missed some schema
+	  qualify
+
+2016-09-18 23:41  Regina Obe <lr@pcorp.us>
+
+	* [r15114] raster/rt_pg/rtpostgis.sql.in: use ST_Union instead of
+	  ST_Collect to compute max extent
+	  References #3501 for PostGIS 2.3.0 trunk
+
+2016-09-16 09:16  Sandro Santilli <strk@kbt.io>
+
+	* [r15113] topology/postgis_topology.c: Early release memory used
+	  by SPI executed topology callback queries
+
+2016-09-14 16:04  Daniel Baston <dbaston@gmail.com>
+
+	* [r15109] liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/lwpoly.c,
+	  postgis/lwgeom_functions_analytic.c, postgis/postgis.sql.in,
+	  regress/tickets.sql, regress/tickets_expected: New method to
+	  approximate minimum bounding circle polygon without using
+	  ST_Buffer. (References #2841, #3620)
+
+2016-09-14 13:37  Daniel Baston <dbaston@gmail.com>
+
+	* [r15108] .gitignore: gitignore updates (ignore gcov output)
+
+2016-09-13 18:06  Daniel Baston <dbaston@gmail.com>
+
+	* [r15105] liblwgeom/liblwgeom.h.in,
+	  postgis/lwgeom_functions_basic.c, regress/tickets.sql,
+	  regress/tickets_expected: #3569, Incorrect coordinates returned
+	  by ST_CollectionHomogenize
+
+2016-09-13 16:55  Regina Obe <lr@pcorp.us>
+
+	* [r15104] regress/in_encodedpolyline.sql,
+	  regress/in_encodedpolyline_expected: Add ST_SnapToGrid so 32-bit
+	  and 64-bit answers agree
+	  References #3629 for PostGIS 2.3
+
+2016-09-13 08:38  Sandro Santilli <strk@kbt.io>
+
+	* [r15102] topology/sql/populate.sql.in: Fix DEBUG build of
+	  topology
+
+2016-09-12 18:00  Sandro Santilli <strk@kbt.io>
+
+	* [r15101] .editorconfig, regress/sfcgal/tickets_expected: Re-add
+	  accidentally removed trailing spaces in an _expected file
+	  
+	  Also tweak .editorconfig to avoid this accident in the future
+	  
+	  Fixes #3630
+
+2016-09-12 16:17  Sandro Santilli <strk@kbt.io>
+
+	* [r15100] raster/rt_pg/Makefile.in: Remove generated file on make
+	  clean
+
+2016-09-12 16:17  Sandro Santilli <strk@kbt.io>
+
+	* [r15099] raster/rt_pg/Makefile.in: Remove trailing spaces
+
+2016-09-12 16:01  Sandro Santilli <strk@kbt.io>
+
+	* [r15098] regress/estimatedextent_expected,
+	  regress/sfcgal/tickets_expected: Remove carriage returns from
+	  regression tests
+
+2016-09-12 16:01  Sandro Santilli <strk@kbt.io>
+
+	* [r15097] .gitignore: Ignore new generated files
+
+2016-09-12 08:48  Regina Obe <lr@pcorp.us>
+
+	* [r15096] NEWS, postgis/gserialized_estimate.c,
+	  regress/estimatedextent_expected,
+	  regress/sfcgal/tickets_expected: Revert ST_EstimatedExtent back
+	  to good ol'days when it returned WARNING instead of ERROR when no
+	  stats
+	  Closes #3396
+
+2016-09-09 21:19  Sandro Santilli <strk@kbt.io>
+
+	* [r15094] .drone.yml: Reduce data transfer on drone agent git
+	  fetch (--depth 20)
+
+2016-09-09 14:23  Sandro Santilli <strk@kbt.io>
+
+	* [r15092] regress/swapordinates.sql,
+	  regress/swapordinates_expected: Add test for ST_SwapOrdinate fix
+	  (#3628)
+
+2016-09-09 14:16  Sandro Santilli <strk@kbt.io>
+
+	* [r15089] raster/test/regress/rt_createoverview.sql,
+	  raster/test/regress/rt_createoverview_expected: Add complete test
+	  for RT_CreateOverview and schemas
+	  
+	  Test by hypostase
+	  See #3615
+
+2016-09-09 14:02  Sandro Santilli <strk@kbt.io>
+
+	* [r15088] postgis/lwgeom_functions_basic.c: Fix lack of support
+	  for capitalized-Y in SwapOrdinates
+	  
+	  Closes #3628
+
+2016-09-08 16:06  Sandro Santilli <strk@kbt.io>
+
+	* [r15085] topology/postgis_topology.c: Really fix callback reading
+	  Edge data in presence of unexpected NULLs
+
+2016-09-08 15:52  Sandro Santilli <strk@kbt.io>
+
+	* [r15083] topology/postgis_topology.c: Fix callback reading Edge
+	  data in presence of unexpected NULLs
+
+2016-09-07 18:21  Sandro Santilli <strk@kbt.io>
+
+	* [r15080] raster/test/regress/rt_createoverview_expected,
+	  regress/run_test.pl: Do not require expecting DISCARD ALL
+	  
+	  .. actually it may be a good idea to run it always after each
+	  test ..
+
+2016-09-07 18:21  Sandro Santilli <strk@kbt.io>
+
+	* [r15079] regress/run_test.pl: Style only: remove trailing
+	  blankspaces
+
+2016-09-07 18:15  Sandro Santilli <strk@kbt.io>
+
+	* [r15078] raster/rt_pg/rtpostgis.sql.in,
+	  raster/test/regress/rt_createoverview.sql,
+	  raster/test/regress/rt_createoverview_expected: Fix schema
+	  support in RT_CreateOveriew
+	  
+	  Patch by hypostase
+	  Closes #3615
+
+2016-09-07 17:45  Sandro Santilli <strk@kbt.io>
+
+	* [r15077] regress/in_geojson.sql, regress/in_geojson_expected,
+	  regress/tickets.sql, regress/tickets_expected: Fix regress tests
+	  for builds without JSON support
+
+2016-09-06 22:44  Daniel Baston <dbaston@gmail.com>
+
+	* [r15074] postgis/lwgeom_export.c,
+	  postgis/lwgeom_in_encoded_polyline.c,
+	  regress/in_encodedpolyline.sql,
+	  regress/in_encodedpolyline_expected,
+	  regress/out_geometry_expected, regress/tickets.sql,
+	  regress/tickets_expected: #3627, Encoded polyline functions
+	  ignore precision parameter
+
+2016-09-06 15:16  Regina Obe <lr@pcorp.us>
+
+	* [r15072] regress/run_test.pl: load_outdb related tests fix for
+	  @INC change in perl
+	  fix for PostGIS 2.3, patch from Sebastiaan Couwenberg for #3624
+
+2016-09-06 08:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15069] NEWS: Formatting (tab to spaces, consistent indenting)
+
+2016-09-06 06:36  Regina Obe <lr@pcorp.us>
+
+	* [r15064] Version.config, extensions/upgradeable_versions.mk: Bump
+	  trunk to rc1dev
+
+2016-09-06 04:05  Regina Obe <lr@pcorp.us>
+
+	* [r15062] ChangeLog, HOWTO_RELEASE, NEWS, README.postgis,
+	  Version.config, extensions/upgradeable_versions.mk: Prepare for
+	  PostGIS 2.3.0beta1 release
+
 2016-09-06 03:49  Regina Obe <lr@pcorp.us>
 
 	* [r15061] postgis/Makefile.in: Add postgis_drop_before and
