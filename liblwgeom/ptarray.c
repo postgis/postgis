@@ -986,9 +986,9 @@ ptarray_signed_area(const POINTARRAY *pa)
 	P1 = getPoint2d_cp(pa, 0);
 	P2 = getPoint2d_cp(pa, 1);
 	x0 = P1->x;
-	for ( i = 1; i < pa->npoints - 1; i++ )
+	for ( i = 2; i < pa->npoints; i++ )
 	{
-		P3 = getPoint2d_cp(pa, i+1);
+		P3 = getPoint2d_cp(pa, i);
 		x = P2->x - x0;
 		y1 = P3->y;
 		y2 = P1->y;
