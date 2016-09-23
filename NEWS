@@ -17,7 +17,9 @@ PostGIS 2.2.3
   - #3569, Incorrect coordinates returned by ST_CollectionHomogenize
            (Dan Baston)
   - #3602, perl as found by configure is not used 
-           in tiger extension, postgis_sfcgal, address_standardizer  
+           in tiger extension, postgis_sfcgal, address_standardizer
+  - #3604, pgcommon/Makefile.in orders CFLAGS leads to installed liblwgeom.h
+		 (Greg Troxel)
   - #3607, Fix inconsistency with multilinestring in
            ST_LocateBetweenElevations (Artur Zakirov)
   - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
