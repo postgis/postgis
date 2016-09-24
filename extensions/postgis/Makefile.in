@@ -77,7 +77,7 @@ sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis_for_extension.sql
 	$(PERL) -pe 's/BEGIN\;//g ; s/COMMIT\;//g' $< > $@
 
 sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl
-	../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
+	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
 sql_bits/rtpostgis_upgrade.sql: ../../raster/rt_pg/rtpostgis_upgrade_for_extension.sql 
 	$(PERL) -pe "s/BEGIN\;//g ; s/COMMIT\;//g; s/^(DROP .*)\;/SELECT postgis_extension_drop_if_exists('$(EXTENSION)', '\1');\n\1\;/" $< > $@
