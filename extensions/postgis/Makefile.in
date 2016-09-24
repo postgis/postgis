@@ -74,7 +74,7 @@ sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 
 sql_bits/spatial_ref_sys_config_dump.sql: ../../spatial_ref_sys.sql ../../utils/create_spatial_ref_sys_config_dump.pl
-	../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
+	$(PERL) ../../utils/create_spatial_ref_sys_config_dump.pl $< > $@
 
 # we need to also drop this temporary function from the extension
 # for casts that are being dropped we need to drop them 
