@@ -25,8 +25,8 @@ BEGIN
         RETURN NULL;
     END IF;
 
-	var_addr1 := to_number(in_addr1, '999999');
-	var_addr2 := to_number(in_addr2, '999999');
+	var_addr1 := to_number(COALESCE(NULLIF(trim(in_addr1),''),'0'), '999999');
+	var_addr2 := to_number(COALESCE(NULLIF(trim(in_addr2),''),'0'), '999999');
 
     IF geometrytype(in_road) = 'LINESTRING' THEN
       road := ST_Transform(in_road, utmzone(ST_StartPoint(in_road)) );
