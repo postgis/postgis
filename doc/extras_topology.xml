@@ -412,6 +412,73 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="Populate_Topology_Layer">
+			<refnamediv>
+				<refname>Populate_Topology_Layer</refname>
+
+				<refpurpose>Adds missing entries to topology.layer table by reading metadata from topo tables.</refpurpose>
+			</refnamediv>
+			
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>setof record <function>Populate_Topology_Layer</function></funcdef>
+					<paramdef></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Adds missing entries to the <varname>topology.layer</varname> table by inspecting topology constraints on tables.
+                This function is useful for fixing up entries in topology catalog after restores of schemas with topo data.</para>
+                <para>It returns the list of entries created. Returned columns are <varname>schema_name</varname>, <varname>table_name</varname>, <varname>feature_column</varname>.</para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.3.0</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT CreateTopology('strk_topo');
+CREATE SCHEMA strk;
+CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
+SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');
+-- this will return no records because this feature is already registered
+SELECT * 
+  FROM topology.Populate_Topology_Layer(); 
+
+-- let's rebuild
+TRUNCATE TABLE topology.layer;
+
+SELECT * 
+  FROM topology.Populate_Topology_Layer(); 
+  
+SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
+FROM topology.layer;
+				
+				</programlisting>
+				<screen> schema_name | table_name | feature_column
+-------------+------------+----------------
+ strk        | parcels    | topo
+(1 row)
+
+ topology_id | layer_id |  sn  |   tn    |  fc
+-------------+----------+------+---------+------
+           2 |        2 | strk | parcels | topo
+(1 row)</screen>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddTopoGeometryColumn"/></para>
+			</refsection>
+		</refentry>
 
 		<refentry id="TopologySummary">
 			<refnamediv>
