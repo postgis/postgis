@@ -7,7 +7,7 @@
 -- fifth are from the other.
 -- in_side Side of street -- either 'L', 'R' or if blank ignores side of road
 -- in_offset_m -- number of meters offset to the side
-CREATE OR REPLACE FUNCTION interpolate_from_address(given_address INTEGER, in_addr1 VARCHAR, in_addr2 VARCHAR, in_road GEOMETRY, 
+CREATE OR REPLACE FUNCTION interpolate_from_address(given_address INTEGER, in_addr1 VARCHAR, in_addr2 VARCHAR, in_road GEOMETRY,
 	in_side VARCHAR DEFAULT '',in_offset_m float DEFAULT 10) RETURNS GEOMETRY
 AS $_$
 DECLARE
@@ -24,9 +24,9 @@ BEGIN
     IF in_road IS NULL THEN
         RETURN NULL;
     END IF;
-    
-	var_addr1 := to_number(in_addr1, '999999');
-	var_addr2 := to_number(in_addr2, '999999');
+
+	var_addr1 := to_number( CASE WHEN in_addr1 ~ '^[0-9]+$' THEN in_addr1 ELSE '0' END, '999999');
+	var_addr2 := to_number( CASE WHEN in_addr2 ~ '^[0-9]+$' THEN in_addr2 ELSE '0' END, '999999');
 
     IF geometrytype(in_road) = 'LINESTRING' THEN
       road := ST_Transform(in_road, utmzone(ST_StartPoint(in_road)) );
@@ -54,18 +54,18 @@ BEGIN
     center_pt = ST_LineInterpolatePoint(road, part);
     IF in_side > '' AND in_offset_m > 0 THEN
     /** Compute point the point to the in_side of the geometry **/
-    /**Take into consideration non-straight so we consider azimuth 
-    	of the 2 points that straddle the center location**/ 
+    /**Take into consideration non-straight so we consider azimuth
+    	of the 2 points that straddle the center location**/
     	IF part = 0 THEN
     		az := ST_Azimuth (ST_StartPoint(road), ST_PointN(road,2));
     	ELSIF part = 1 THEN
     		az := ST_Azimuth (ST_PointN(road,ST_NPoints(road) - 1), ST_EndPoint(road));
-    	ELSE 
+    	ELSE
     		/** Find the largest nth point position that is before the center point
     			This will be the start of our azimuth calc **/
     		SELECT i INTO npos
-    			FROM generate_series(1,ST_NPoints(road)) As i 
-    					WHERE part > ST_LineLocatePoint(road,ST_PointN(road,i)) 
+    			FROM generate_series(1,ST_NPoints(road)) As i
+    					WHERE part > ST_LineLocatePoint(road,ST_PointN(road,i))
     					ORDER BY i DESC;
     		IF npos < ST_NPoints(road) THEN				
     			az := ST_Azimuth (ST_PointN(road,npos), ST_PointN(road, npos + 1));
@@ -92,7 +92,7 @@ BEGIN
     RETURN result;
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE COST 10;
--- needed to ban stupid warning about how we are using deprecated functions 
+-- needed to ban stupid warning about how we are using deprecated functions
 -- yada yada yada need this to work in 2.0 too bah
 ALTER FUNCTION interpolate_from_address(integer, character varying, character varying, geometry, character varying, double precision)
   SET client_min_messages='ERROR';

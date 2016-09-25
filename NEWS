@@ -1,5 +1,5 @@
 PostGIS 2.2.3
-2016/XX/XX
+2016/09/XX
 
  * Bug Fixes *
 
@@ -19,7 +19,7 @@ PostGIS 2.2.3
   - #3602, perl as found by configure is not used 
            in tiger extension, postgis_sfcgal, address_standardizer
   - #3604, pgcommon/Makefile.in orders CFLAGS leads to installed liblwgeom.h
-		 (Greg Troxel)
+          (Greg Troxel)
   - #3607, Fix inconsistency with multilinestring in
            ST_LocateBetweenElevations (Artur Zakirov)
   - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
@@ -30,6 +30,7 @@ PostGIS 2.2.3
            (Christian Quest / Dan Baston)
   - #3501 use ST_Union instead of ST_Collect to compute 
           raster max extent constraint
+  - #3640, interpolate_from_address sometimes results in "" invalid for numeric
   - #3641 tiger normalize, pagc_normalize integer out of range
   - Numerous documentation corrections from ruvyn
 
