@@ -880,6 +880,13 @@ SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geog
 
 SELECT '#2956', st_astwkb(null,0) is null;
 
+-- #2965 --
+CREATE TABLE test_analyze_crash (a integer not null, g geometry);
+INSERT INTO test_analyze_crash values (1, '0102000020E6100000010000006D1092A47FF33440AD4ECD9B00334A40');
+ANALYZE test_analyze_crash;
+SELECT '#2965', ST_AsText(g) FROM test_analyze_crash;
+DROP TABLE test_analyze_crash;
+
 -- #2996 --
 WITH
   input AS (SELECT 'SRID=4326;POLYGON((26426 65078,26531 65242,26075 65136,26096 65427,26426 65078))'::geometry AS geom),
