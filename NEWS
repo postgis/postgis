@@ -30,6 +30,7 @@ PostGIS 2.2.3
            (Christian Quest / Dan Baston)
   - #3501 use ST_Union instead of ST_Collect to compute 
           raster max extent constraint
+  - #3641 tiger normalize, pagc_normalize integer out of range
   - Numerous documentation corrections from ruvyn
 
 

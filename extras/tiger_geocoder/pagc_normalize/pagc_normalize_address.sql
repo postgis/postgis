@@ -31,7 +31,7 @@ BEGIN
    COALESCE(', ' || var_parse_rec.city,'') || COALESCE(', ' || var_parse_rec.state, '') || COALESCE(' ' || var_parse_rec.zip,'')  ) ;
  
  -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
-  result.address := to_number(substring(var_rec.house_num, '[0-9]+'), '99999999999');
+  result.address := to_number(substring(var_rec.house_num, '[0-9]+'), '99999999');
    --get rid of extraneous spaces before we return
   result.zip := COALESCE(var_rec.postcode,result.zip);
   result.streetName := trim(var_rec.name);
