@@ -906,6 +906,13 @@ SELECT '#2870', ST_Summary('Point(151.215289 -33.856885)'::geometry::bytea::geog
 
 SELECT '#2956', st_astwkb(null,0) is null;
 
+-- #2965 --
+CREATE TABLE test_analyze_crash (a integer not null, g geometry);
+INSERT INTO test_analyze_crash values (1, '0102000020E6100000010000006D1092A47FF33440AD4ECD9B00334A40');
+ANALYZE test_analyze_crash;
+SELECT '#2965', ST_AsText(g) FROM test_analyze_crash;
+DROP TABLE test_analyze_crash;
+
 -- #3119 --
 SELECT '#3119a', floor(ST_LengthSpheroid('SRID=4326;LINESTRING (-72.640965 42.11867, -72.6395 42.1187)', 'SPHEROID["GRS_1980",6378137,298.257222101]'));
 -- polygons are also handled
