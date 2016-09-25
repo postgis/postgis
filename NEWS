@@ -54,6 +54,8 @@ PostGIS 2.3.0
   - #3613, Segmentize geography using equal length segments
            (Hugo Mercier of Oslandia)
 
+ * Bug Fixes
+ - #2841, ST_MinimumBoundingCircle not covering original
  * Performance Enhancements *
 
   - #75, Enhancement to PIP short circuit (Dan Baston)
@@ -61,6 +63,7 @@ PostGIS 2.3.0
            (Dan Baston)
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
+  - Documentation updates from Mike Toews
 
 PostGIS 2.3.0beta1
 2016/09/06

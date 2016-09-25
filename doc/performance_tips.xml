@@ -142,17 +142,21 @@ VACUUM FULL ANALYZE mytable;</programlisting>
   <sect1 id="database_tuning_configuration">
     <title>Tuning your configuration</title>
 
-    <para>These tips are taken from Kevin Neufeld's presentation "Tips for the
-    PostGIS Power User" at the FOSS4G 2007 conference.  Depending on your
-    use of PostGIS (for example, static data and complex analysis vs frequently
-    updated data and lots of users) these changes can provide significant
-    speedups to your queries.</para>
+    <para>Tuning for PostGIS is much like tuning for any PostgreSQL workload.  The only additional note to keep in mind is that
+    geometries and rasters are heavy so memory related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
 
-    <para>For a more tips (and better formatting), the original presentation
-        is at
-        <ulink url="http://2007.foss4g.org/presentations/view.php?abstract_id=117">
-        http://2007.foss4g.org/presentations/view.php?abstract_id=117</ulink>.
-    </para>
+    <para>For general details about optimizing PostgreSQL, refer to <ulink url="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</ulink>.</para>
+    
+    <para>For PostgreSQL 9.4+ all these can be set at the server level without touching postgresql.conf or postgresql.auto.conf
+    by using the <code>ALTER SYSTEM..</code> command.</para>
+    <programlisting>ALTER SYSTEM SET work_mem = '256MB';
+-- this will force, non-startup configs to take effect for new connections
+SELECT pg_reload_conf();
+-- show current setting value
+-- use SHOW ALL to see all settings
+SHOW work_mem;</programlisting>
+
+  <para>In addition to these settings, PostGIS also has some custom settings which you can find listed in <xref linkend="PostGIS_GUC" />.</para>
 
       <sect2>
         <title>Startup</title>
@@ -162,43 +166,18 @@ VACUUM FULL ANALYZE mytable;</programlisting>
         </para>
 
         <para>
-          <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-wal.html#GUC-CHECKPOINT-SEGMENTS">checkpoint_segments</ulink>
-        </para>
-
-        <itemizedlist>
-          <listitem>
-            <para>
-              Maximum number of log file segments between automatic WAL checkpoints
-              (each segment is normally 16MB); default is 3
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              Set to at least 10 or 30 for databases with heavy write activity, or
-              more for large database loads. Another article on the topic worth reading  <ulink url="http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm">Greg Smith: Checkpoint and Background writer</ulink>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              Possibly store the xlog on a separate disk device
-            </para>
-          </listitem>
-        </itemizedlist>
-
-        <para>
            <ulink url="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</ulink>
         </para>
 
         <itemizedlist>
           <listitem>
             <para>
-              Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to partition)
+              Default: partition
             </para>
           </listitem>
           <listitem>
             <para>
-              This is generally used for table partitioning.  If you are running PostgreSQL versions below 8.4, set to "on" to ensure the query planner will optimize as desired.
-			  As of PostgreSQL 8.4, the default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
+              This is generally used for table partitioning. The default for this is set to "partition" which is ideal for PostgreSQL 8.4 and above since
 			  it will force the planner to only analyze tables for constraint consideration if they are in an inherited hierarchy
 			  and not pay the planner penalty otherwise.
             </para>
@@ -221,6 +200,28 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             </para>
           </listitem>
         </itemizedlist>
+        
+        
+       <para>
+          <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</ulink>
+          This setting is only available for PostgreSQL 9.4+.  For PostgreSQL 9.6+ this setting has additional importance in that it controls the
+          max number of processes you can have for parallel queries.
+        </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: 8
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Sets the maximum number of background processes that
+          the system can support. This parameter can only be set at
+          server start.
+            </para>
+          </listitem>
+        </itemizedlist>
       </sect2>
 
       <sect2>
@@ -233,7 +234,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
         <itemizedlist>
           <listitem>
             <para>
-              Default: 1MB
+              Default: 1-4MB
             </para>
           </listitem>
           <listitem>
@@ -250,7 +251,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             <para>
                 If you have lots of RAM and few developers:
                 <programlisting>
-                    SET work_mem TO 1200000;
+                    SET work_mem TO '256MB';;
                 </programlisting>
             </para>
           </listitem>
@@ -263,7 +264,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
         <itemizedlist>
           <listitem>
             <para>
-              Default: 16MB
+              Default: 16-64MB
             </para>
           </listitem>
           <listitem>
@@ -273,11 +274,40 @@ VACUUM FULL ANALYZE mytable;</programlisting>
           </listitem>
           <listitem>
             <para>
-              Recommend 32MB to 256MB on production servers w/lots of RAM, but depends
+              Recommend 32MB to 1GB on production servers w/lots of RAM, but depends
               on the # of concurrent users.  If you have lots of RAM and few developers:
                 <programlisting>
-                    SET maintainence_work_mem TO 1200000;
+                   SET maintenance_work_mem TO '1GB';
                 </programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>
+          <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</ulink>
+          This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.  
+          If set to higher than 0, then some queries such as those involving relation functions like <code>ST_Intersects</code> can use multiple processes and can run
+          more than twice as fast when doing so.  If you have a lot of processors to spare, you should change the value of this to as many processors as you have.
+          Also make sure to bump up <code>max_worker_processes</code> to at least as high as this number.
+        </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>
+              Default: 0
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              Sets the maximum number of workers that can be started
+          by a single <varname>Gather</varname> node.
+          Parallel workers are taken from the pool of processes
+          established by <varname>max_worker_processes</varname>.
+          Note that the requested number of workers may not
+          actually be available at run time. If this occurs, the
+          plan will run with fewer workers than expected, which may
+          be inefficient. Setting this value to 0, which is the
+          default, disables parallel query execution.
             </para>
           </listitem>
         </itemizedlist>
