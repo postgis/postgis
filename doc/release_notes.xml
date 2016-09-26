@@ -44,12 +44,12 @@
               <para>#3469, ST_MakeLine with MULTIPOINTs (Paul Norman)</para>
               <para>#3549, Support PgSQL 9.6 parallel query mode, as far as possible
                        (Paul Ramsey, Regina Obe)</para>
-              <para>#3557, Geometry function costs based on query stats (Paul Norman)
+              <para>#3557, Geometry function costs based on query stats (Paul Norman)</para>
               <para>#3591, Add support for BRIN indexes. PostgreSQL 9.4+ required.
                        (Giuseppe Broccolo of 2nd Quadrant, Julien Rouhaud
                         and Ronan Dunklau of Dalibo)</para>
               <para>#3496, Make postgis non-relocateable for extension install,
-                       schema qualify calls in functions (Regina Obe)</para>
+                       schema qualify calls in functions (Regina Obe)
                        Should resolve once and for all for extensions #3494, #3486, #3076</para>
               <para>#3547, Update tiger geocoder to support TIGER 2016
                        and to support both http and ftp.</para>
