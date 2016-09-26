@@ -1,5 +1,9 @@
+PostGIS 2.4.0
+2017/xx/xx
+
+
 PostGIS 2.3.0
-2016/XX/XX
+2016/09/26
 
  * Important / Breaking Changes *
 
@@ -64,7 +68,10 @@ PostGIS 2.3.0
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
   - Documentation updates from Mike Toews
-
+PostGIS 2.3.0rc1
+2016/09/19
+See PostGIS 2.3.0 section for details
+  
 PostGIS 2.3.0beta1
 2016/09/06
 See PostGIS 2.3.0 section for details
