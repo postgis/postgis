@@ -20,7 +20,7 @@ UPGRADEABLE_VERSIONS = \
 	2.2.0 \
 	2.2.1 \
 	2.2.2 \
-	2.3.0beta1 \
+	2.2.3 \
 	2.3.0rc1
 
 # This is to avoid forcing "check-installed-upgrades" as a default
