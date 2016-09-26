@@ -564,6 +564,20 @@ dnl Extract the linker and include flags
 XML2_LDFLAGS=`$XML2CONFIG --libs`
 XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
+AC_PATH_PROG([XCRUN], [xcrun])
+if test "x$XCRUN" = "x"; then
+	AC_MSG_RESULT([OSX XCode is OK])
+else
+      XCODE_VER=`$XCRUN --show-sdk-version`
+      if test $XCODE_VER = "10.12"; then
+              AC_MSG_RESULT([OSX XCode 10.12 is Not OK... hacking])
+              XML2_LDFLAGS=`$XML2CONFIG --exec-prefix=/usr --libs`
+      else
+              AC_MSG_RESULT([OSX XCode is OK])
+      fi
+fi
+
+
 dnl Extract the version
 POSTGIS_LIBXML2_VERSION=`$XML2CONFIG --version`
 
