@@ -114,7 +114,12 @@ _PG_fini(void)
 static void
 handleInterrupt(int sig)
 {
-  printf("Interrupt requested\n"); fflush(stdout);
+  /* NOTE: printf here would be dangerous, see
+   * https://trac.osgeo.org/postgis/ticket/3644
+   *
+   * TODO: block interrupts during execution, to fix the problem
+   */
+  /* printf("Interrupt requested\n"); fflush(stdout); */
 
 #if POSTGIS_GEOS_VERSION >= 34 
   GEOS_interruptRequest();

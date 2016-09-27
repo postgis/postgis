@@ -32,6 +32,7 @@ PostGIS 2.2.3
           raster max extent constraint
   - #3640, interpolate_from_address sometimes results in "" invalid for numeric
   - #3641 tiger normalize, pagc_normalize integer out of range
+  - #3644 Deadlock on interrupt
   - Numerous documentation corrections from ruvyn
 
 
