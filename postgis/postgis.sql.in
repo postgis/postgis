@@ -3742,23 +3742,23 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Extent(
+CREATE AGGREGATE ST_Extent(geometry) (
 	sfunc = ST_CombineBBox,
 #if POSTGIS_PGSQL_VERSION >= 96
   combinefunc = ST_CombineBBox,
+  parallel = safe,
 #endif
 	finalfunc = box2d,
-	basetype = geometry,
 	stype = box3d
 	);
 
 -- Availability: 2.0.0
-CREATE AGGREGATE ST_3DExtent(
+CREATE AGGREGATE ST_3DExtent(geometry) (
 	sfunc = ST_CombineBBox,
 #if POSTGIS_PGSQL_VERSION >= 96
   combinefunc = ST_CombineBBox,
+  parallel = safe,
 #endif
-	basetype = geometry,
 	stype = box3d
 	);
 
@@ -3769,12 +3769,12 @@ CREATE OR REPLACE FUNCTION ST_Collect(geom1 geometry, geom2 geometry)
 	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_MemCollect(
+CREATE AGGREGATE ST_MemCollect(geometry) (
 	sfunc = ST_collect,
 #if POSTGIS_PGSQL_VERSION >= 96
   combinefunc = ST_collect,
+  parallel = safe,
 #endif
-	basetype = geometry,
 	stype = geometry
 	);
 
@@ -3785,11 +3785,11 @@ CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL;
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_MemUnion (
-	basetype = geometry,
+CREATE AGGREGATE ST_MemUnion(geometry) (
 	sfunc = ST_Union,
 #if POSTGIS_PGSQL_VERSION >= 96
   combinefunc = ST_Union,
+  parallel = safe,
 #endif
 	stype = geometry
 	);
@@ -3878,10 +3878,12 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	LANGUAGE 'c';
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Accum (
+CREATE AGGREGATE ST_Accum(geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	basetype = geometry,
 	stype = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_geometry_accum_finalfn
 	);
 
@@ -3892,26 +3894,32 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Union (
-	basetype = geometry,
+CREATE AGGREGATE ST_Union(geometry) (
 	sfunc = pgis_geometry_accum_transfn,
 	stype = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_geometry_union_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Collect (
-	BASETYPE = geometry,
+CREATE AGGREGATE ST_Collect(geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_collect_finalfn
 	);
 
 -- Availability: 2.2
-CREATE AGGREGATE ST_ClusterIntersecting (
-	BASETYPE = geometry,
+CREATE AGGREGATE ST_ClusterIntersecting(geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_clusterintersecting_finalfn
 	);
 
@@ -3919,22 +3927,29 @@ CREATE AGGREGATE ST_ClusterIntersecting (
 CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_clusterwithin_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Polygonize (
-	BASETYPE = geometry,
+CREATE AGGREGATE ST_Polygonize(geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_polygonize_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_MakeLine (
-	BASETYPE = geometry,
+CREATE AGGREGATE ST_MakeLine(geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
