@@ -2,8 +2,9 @@ PostGIS 2.3.1
 2016/xx/xx
 
   * Bug Fixes
-  - #3643 PostGIS not building on latest OSX XCode
-  - #3644 Deadlock on interrupt
+  - #3643, PostGIS not building on latest OSX XCode
+  - #3644, Deadlock on interrupt
+  - #3652, Crash on Collection(MultiCurve())
 
 PostGIS 2.3.0
 2016/09/26
