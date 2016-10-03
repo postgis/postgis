@@ -428,6 +428,8 @@ lwcollection_stroke(const LWCOLLECTION *collection, uint32_t perQuad)
 		case CURVEPOLYTYPE:
 			geoms[i] = (LWGEOM *)lwcurvepoly_stroke((LWCURVEPOLY *)tmp, perQuad);
 			break;
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
 		case COLLECTIONTYPE:
 			geoms[i] = (LWGEOM *)lwcollection_stroke((LWCOLLECTION *)tmp, perQuad);
 			break;

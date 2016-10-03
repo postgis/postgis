@@ -28,11 +28,12 @@ PostGIS 2.2.3
            perl @INC fix (Sebastiaan Couwenberg)
   - #3627, Encoded polyline functions ignore precision parameter
            (Christian Quest / Dan Baston)
-  - #3501 use ST_Union instead of ST_Collect to compute 
+  - #3501, use ST_Union instead of ST_Collect to compute 
           raster max extent constraint
-  - #3640, interpolate_from_address sometimes results in "" invalid for numeric
-  - #3641 tiger normalize, pagc_normalize integer out of range
-  - #3644 Deadlock on interrupt
+  - #3640, Interpolate_from_address sometimes results in "" invalid for numeric
+  - #3641, Tiger normalize, pagc_normalize integer out of range
+  - #3644, Deadlock on interrupt
+  - #3542, Crash on Geometry(MultiCurve())
   - Numerous documentation corrections from ruvyn
 
 
