@@ -1511,7 +1511,7 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
 
 			<para>The following test requires no rules, gaz, or lex tables</para>
 			<programlisting>SELECT num, street, city, state, zip
- FROM parse_address('1 Devonshire Place, Boston, MA 02109');</programlisting>
+ FROM parse_address('1 Devonshire Place PH301, Boston, MA 02109');</programlisting>
 			<para>Output should be</para>
 			<screen> num |         street         |  city  | state |  zip
 -----+------------------------+--------+-------+-------
