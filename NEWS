@@ -39,7 +39,8 @@ PostGIS 2.2.3
   - #3644, Deadlock on interrupt
   - #3542, Crash on Geometry(MultiCurve())
   - Numerous documentation corrections from ruvyn
-
+  - #3652, Segmentation fault during operations on GEOMETRYCOLLECTION 
+     with MULTICURVE geometry inside
 
 PostGIS 2.2.2
 2016/03/22
