@@ -2,13 +2,53 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+    <sect1>
+      <title>Release 2.2.3</title>
+        <para>Release date: 2016/10/06</para>
+        <para>This is a bug fix and performance improvement release.</para>
+  		  <simplesect>
+  			  <title>Bug Fixes and Enhancements</title>
+            <para>3615, Fix schema support in RT_CreateOveriew (Cait Smith)</para>
+            <para>3628, Fix lack of support for capitalized-Y in SwapOrdinates</para>
+            <para>3524, Add interruptibility to geography brute-force distance 
+                       calculation</para>
+            <para>3522, Handle POINT and MULTIPOINT correctly in ST_Subdivide</para>
+            <para>3565, ST_SetPoint can crash backend</para>
+            <para>3571, Install desktop file and application icons 
+                       for shp2pgsql-gui (Sebastiaan Couwenberg)</para>
+            <para>3573, Operator &lt;&lt;-&gt;&gt; incorrectly calculates m distance</para>
+            <para>3579, Crash in LWGEOM2GEOS</para>
+            <para>3515, tiger_data not being backed up</para>
+            <para>3569, Incorrect coordinates returned by ST_CollectionHomogenize
+                       (Dan Baston)</para>
+            <para>3602, perl as found by configure is not used 
+                       in tiger extension, postgis_sfcgal, address_standardizer</para>
+            <para>3604, pgcommon/Makefile.in orders CFLAGS leads to installed liblwgeom.h
+                      (Greg Troxel)</para>
+            <para>3607, Fix inconsistency with multilinestring in
+                       ST_LocateBetweenElevations (Artur Zakirov)</para>
+            <para>3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)</para>
+            <para>3624, [raster] load_outdb related tests fail 
+                       for 2.2.2 &amp; 2.3.0-beta1 on Debian unstable
+                       perl @INC fix (Sebastiaan Couwenberg)</para>
+            <para>3627, Encoded polyline functions ignore precision parameter
+                       (Christian Quest / Dan Baston)</para>
+            <para>3501, use ST_Union instead of ST_Collect to compute 
+                      raster max extent constraint</para>
+            <para>3640, Interpolate_from_address sometimes results in "" invalid for numeric</para>
+            <para>3641, Tiger normalize, pagc_normalize integer out of range</para>
+            <para>3644, Deadlock on interrupt</para>
+            <para>3542, Crash on Geometry(MultiCurve())</para>
+            <para>Numerous documentation corrections from ruvyn</para>
+  		  </simplesect>
+    </sect1>
 
     <sect1>
       <title>Release 2.2.2</title>
         <para>Release date: 2016/03/22</para>
         <para>This is a bug fix and performance improvement release.</para>
   		  <simplesect>
-  			  <title>New Features</title>
+  			  <title>Bug Fixes and Enhancments</title>
           <para>#3463, Fix crash on face-collapsing edge change</para>
           <para>#3422, Improve ST_Split robustness on standard precision double systems (arm64, ppc64el, s390c, powerpc, ...)</para>
           <para>#3427, Update spatial_ref_sys to EPSG version 8.8</para>
