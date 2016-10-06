@@ -46,6 +46,11 @@ fi
 AC_SUBST([SQLPP])
 
 dnl
+dnl Silence warning: ar: 'u' modifier ignored since 'D' is the default
+dnl
+AC_SUBST(AR_FLAGS, [cr])
+
+dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
 dnl
 PICFLAGS="$lt_prog_compiler_pic"
