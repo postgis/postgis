@@ -19,3 +19,5 @@ pipeline:
     commands:
       - service postgresql start
       - make check
+      - make install
+      - utils/check_all_upgrades.sh 2.4.0dev
