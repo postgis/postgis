@@ -1,6 +1,10 @@
 PostGIS 2.2.4
 xxxx/xx/xx
 
+ * Bug Fixes *
+
+ - #3656, Fix upgrade of aggregates from 2.2 or lower version
+
 
 PostGIS 2.2.3
 2016/10/06
