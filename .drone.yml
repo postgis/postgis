@@ -1,5 +1,9 @@
 # See http://readme.drone.io/0.5/usage/overview
 
+env:
+  global:
+    - RUNTESTFLAGS=-v
+
 # See https://git.osgeo.org/gogs/postgis/postgis-docker
 test-image: &test-image docker.kbt.io/postgis/build-test:trisquel
 
