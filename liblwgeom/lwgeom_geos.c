@@ -967,7 +967,7 @@ lwgeom_clip_by_rect(const LWGEOM *geom1, double x0, double y0, double x1, double
 #if POSTGIS_GEOS_VERSION < 35
 	lwerror("The GEOS version this postgis binary "
 	        "was compiled against (%d) doesn't support "
-	        "'GEOSClipByRect' function (3.3.5+ required)",
+	        "'GEOSClipByRect' function (3.5.0+ required)",
 	        POSTGIS_GEOS_VERSION);
 	return NULL;
 #else /* POSTGIS_GEOS_VERSION >= 35 */
