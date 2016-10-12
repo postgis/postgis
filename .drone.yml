@@ -14,6 +14,7 @@ pipeline:
     recursive: false
   build:
     image: *test-image
+    pull: true
     commands:
       - ./autogen.sh
       - ./configure CFLAGS="-O0 -Wall"
