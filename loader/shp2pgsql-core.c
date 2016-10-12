@@ -248,7 +248,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 	{
 		/* Create a ptarray containing a single point */
 		POINTARRAY *pa = ptarray_construct_empty(state->has_z, state->has_m, 1);
-		
+
 		/* Generate the point */
 		point4d.x = obj->padfX[u];
 		point4d.y = obj->padfY[u];
@@ -294,7 +294,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 
 	/* Free all of the allocated items */
 	lwgeom_free(lwgeom);
-	
+
 	/* Return the string - everything ok */
 	*geometry = mem;
 
@@ -639,7 +639,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 	for (pi = 0; pi < polygon_total; pi++)
 	{
 		LWPOLY *lwpoly = lwpoly_construct_empty(state->from_srid, state->has_z, state->has_m);
-		
+
 		Ring *polyring;
 		int ring_index = 0;
 
@@ -856,8 +856,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		return SHPLOADERERR;
 	}
-	
-		
+
+
 	/* Open the column map if one was specified */
 	if (state->config->column_map_filename)
 	{
@@ -865,7 +865,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		                  &state->column_map, state->message, SHPLOADERMSGLEN);
 		if (!ret) return SHPLOADERERR;
 	}
-	
+
 	/* User hasn't altered the default encoding preference... */
 	if ( strcmp(state->config->encoding, ENCODING_DEFAULT) == 0 )
 	{
@@ -1023,7 +1023,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 			break;
 		}
-		
+
 		/* Force Z/M-handling if configured to do so */
 		switch(state->config->force_output)
 		{
@@ -1096,6 +1096,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->types[j] = type;
 		state->widths[j] = field_width;
 		state->precisions[j] = field_precision;
+		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width,
+field_precision);
 
 		if (state->config->encoding)
 		{
@@ -1121,7 +1123,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			strncpy(name, utf8str, MAXFIELDNAMELEN);
 			free(utf8str);
 		}
-		
+
 		/* If a column map file has been passed in, use this to create the postgresql field name from
 		   the dbf column name */
 		{
@@ -1192,7 +1194,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			if (state->config->forceint4 || (state->widths[j] >=5 && state->widths[j] < 10))
 			{
 				state->pgfieldtypes[j] = malloc(strlen("int4") + 1);
-				strcpy(state->pgfieldtypes[j], "int4");	
+				strcpy(state->pgfieldtypes[j], "int4");
 			}
 			else if (state->widths[j] < 5)
 			{
@@ -1208,6 +1210,8 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		case FTDouble:
 			/* Determine exact type based upon field width */
+			fprintf(stderr, "Field %s is an FTDouble with width %d and precision %d\n",
+					state->field_names[j], state->widths[j], state->precisions[j]);
 			if (state->widths[j] > 18)
 			{
 				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
@@ -1229,7 +1233,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
 			return SHPLOADERERR;
 		}
-		
+
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
 
@@ -1267,13 +1271,13 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	   for handling string resizing during append */
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
-	
+
 	/* Set the client encoding if required */
 	if (state->config->encoding)
 	{
 		stringbuffer_aprintf(sb, "SET CLIENT_ENCODING TO UTF8;\n");
 	}
-	
+
 	/* Use SQL-standard string escaping rather than PostgreSQL standard */
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
@@ -1344,7 +1348,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 
 			/* First output the raw field type string */
 			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
-			
+
 			/* Some types do have typmods though... */
 			if (!strcmp("varchar", state->pgfieldtypes[j]))
 				stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
@@ -1679,7 +1683,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	{
 		/* Force the locale to C */
 		char *oldlocale = setlocale(LC_NUMERIC, "C");
-		
+
 		/* Handle the case of a NULL shape */
 		if (obj->nVertices == 0)
 		{
@@ -1772,7 +1776,7 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 
 		/* Tidy up everything */
 		SHPDestroyObject(obj);
-		
+
 		setlocale(LC_NUMERIC, oldlocale);
 	}
 
@@ -1866,7 +1870,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
 	int i;
-	
+
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
@@ -1884,7 +1888,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 		{
 			for (i = 0; i < state->num_fields; i++)
 				free(state->pgfieldtypes[i]);
-			
+
 			free(state->pgfieldtypes);
 		}
 		if (state->types)
@@ -1898,7 +1902,7 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
-		
+
 		/* Free the state itself */
 		free(state);
 	}
