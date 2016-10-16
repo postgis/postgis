@@ -132,6 +132,7 @@
 #include <postgres.h> /* for palloc */
 #include <fmgr.h> /* for PG_MODULE_MAGIC */
 #include "utils/guc.h"
+#include "utils/memutils.h"
 
 #include "../../postgis_config.h"
 #include "lwgeom_pg.h"
@@ -150,6 +151,9 @@ PG_MODULE_MAGIC;
 
 /* Module load callback */
 void _PG_init(void);
+
+/* Module unload callback */
+void _PG_fini(void);
 
 #define RT_MSG_MAXLEN 256
 
@@ -243,6 +247,14 @@ rt_pg_debug(const char *fmt, va_list ap)
 static char *gdal_datapath = NULL;
 extern char *gdal_enabled_drivers;
 extern char enable_outdb_rasters;
+
+/* ---------------------------------------------------------------- */
+/*  Useful variables                                                */
+/* ---------------------------------------------------------------- */
+
+static char *env_postgis_gdal_enabled_drivers = NULL;
+static char *boot_postgis_gdal_enabled_drivers = NULL;
+static char *env_postgis_enable_outdb_rasters = NULL;
 
 /* postgis.gdal_datapath */
 static void
@@ -408,11 +420,14 @@ rtpg_assignHookEnableOutDBRasters(bool enable, void *extra) {
 void
 _PG_init(void) {
 
-	char *env_postgis_gdal_enabled_drivers = NULL;
-	char *boot_postgis_gdal_enabled_drivers = NULL;
-
-	char *env_postgis_enable_outdb_rasters = NULL;
 	bool boot_postgis_enable_outdb_rasters = false;
+	MemoryContext old_context;
+
+	/*
+	 * Change to context for memory allocation calls like palloc() in the
+	 * extension initialization routine
+	 */
+	old_context = MemoryContextSwitchTo(TopMemoryContext);
 
 	/*
 	 use POSTGIS_GDAL_ENABLED_DRIVERS to set the bootValue
@@ -543,8 +558,29 @@ _PG_init(void) {
 		);
 	}
 
-	/* free memory allocations */
+	/* Revert back to old context */
+	MemoryContextSwitchTo(old_context);
+}
+
+/* Module unload callback */
+void
+_PG_fini(void) {
+
+	MemoryContext old_context;
+
+	old_context = MemoryContextSwitchTo(TopMemoryContext);
+
+	/* Clean up */
+	pfree(env_postgis_gdal_enabled_drivers);
 	pfree(boot_postgis_gdal_enabled_drivers);
+	pfree(env_postgis_enable_outdb_rasters);
+
+	env_postgis_gdal_enabled_drivers = NULL;
+	boot_postgis_gdal_enabled_drivers = NULL;
+	env_postgis_enable_outdb_rasters = NULL;
+
+	/* Revert back to old context */
+	MemoryContextSwitchTo(old_context);
 }
 
 
