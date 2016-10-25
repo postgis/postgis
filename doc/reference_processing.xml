@@ -472,13 +472,10 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
 			input geometries. Output type can be a MULTI* or a
 			GEOMETRYCOLLECTION.</para>
 
-		<note><para>ST_Collect and ST_Union are often interchangeable.
-			ST_Collect is in general orders of magnitude faster than ST_Union
-			because it does not try to dissolve boundaries or validate that a constructed MultiPolgon doesn't
-			have overlapping regions. It merely rolls up
-			single geometries into MULTI and MULTI or mixed geometry types
-			into Geometry Collections. Unfortunately geometry collections are
-			not well-supported by GIS tools. To prevent ST_Collect from
+		<note><para>ST_Collect and ST_Union are often interchangeable except that ST_Collect will always return a GeometryCollection or MULTI geometry
+		and ST_Union may return single geometries when it dissolves boundaries.  ST_Union will also split linestrings at node intersections, whereas ST_Collect
+		will never split linestrings and in turn just return as MULTILINESTRING.
+			 To prevent ST_Collect from
 			returning a Geometry Collection when collecting MULTI geometries,
 			one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
 			MULTIs out to singles and then regroup them.</para></note>
@@ -492,9 +489,8 @@ SELECT ST_ClipByBox2D(the_geom, ST_MakeEnvelope(0,0,10,10)) FROM mytab;
 
 	  <refsection>
 		<title>Examples</title>
-		<para>Aggregate example (<ulink url="http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html">http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html</ulink>)</para>
-			<programlisting>SELECT stusps,
-	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom
+		<para>Aggregate example</para>
+			<programlisting>SELECT stusps, ST_Collect(f.the_geom) as singlegeom
 	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
 				FROM
 				somestatetable ) As f
