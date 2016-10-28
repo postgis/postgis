@@ -9,7 +9,7 @@ test-image: &test-image docker.kbt.io/postgis/build-test:trisquel
 
 pipeline:
   clone:
-    image: git
+    image: plugins/git
     depth: 20
     recursive: false
   build:
