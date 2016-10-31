@@ -5451,7 +5451,7 @@ $$
 	cavept geometry[];
 	seglength double precision;
 	var_tempgeom geometry;
-	scale_factor integer := 1;
+	scale_factor float := 1;
 	i integer;
 	
 	BEGIN
