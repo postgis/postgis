@@ -14,9 +14,6 @@ GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
  (https://gitlab.com/postgis/postgis/commits/svn-trunk)
 
-[![chat](https://img.shields.io/badge/chat-on%20freenode-brightgreen.svg)]
-(https://kiwiirc.com/client/irc.freenode.net/#postgis)
-
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
 
@@ -25,15 +22,23 @@ https://trac.osgeo.org/postgis/
 
 ## Official chat room:
 
-Use your preferred client, if configured:
+Official chat room is the #postgis channel on the
+[freenode](https://freenode.net) network.
+
+To partecipate, point your preferred
+[IRC client](https://en.wikipedia.org/wiki/Comparison_of_Internet_Relay_Chat_clients)
+to:
 
  irc://irc.freenode.net/#postgis
 
-Or try a web client like:
+Or try a web IRC client like:
  - [qwebirc@freenode](https://webchat.freenode.net/?channels=#postgis)
  - [KiwiIRC](https://kiwiirc.com/client/irc.freenode.net/#postgis)
 
+Or join via [matrix](https://matrix.to/#/#freenode_#postgis:matrix.org)
+
 ## Official source tarball releases
+
 http://postgis.net/source
 
 If you would like to contribute to this project, please refer to our
