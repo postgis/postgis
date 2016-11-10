@@ -949,6 +949,8 @@ double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, do
 	f = (sin(e->lat) - sin(s->lat) * cos(d)) / (sin(d) * cos(s->lat));
 	if ( FP_EQUALS(f, 1.0) )
 		heading = 0.0;
+	else if ( FP_EQUALS(f, -1.0) )
+		heading = M_PI;
 	else if ( fabs(f) > 1.0 )
 	{
 		LWDEBUGF(4, "f = %g", f);
