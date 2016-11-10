@@ -117,6 +117,10 @@ SELECT 'segmentize_geography', max(st_distance(d1.geom::geography, d2.geom::geog
 -- Check that st_segmentize creates segments on the geodesic path
 SELECT 'segmentize_geography2', st_dwithin(st_pointn(st_segmentize('linestring(1 47,-64 47)'::geography, 3000000)::geometry, 2), 'SRID=4326;POINT(-31.5 51.81)'::geometry, 0.01);
 
+-- #bug 3667
+SELECT 'segmentize_geography_3667', abs(ST_Length(geog) - ST_Length(ST_Segmentize(geog, 30000))) < 0.00001
+  FROM (SELECT ST_GeographyFromText('LINESTRING(38.769917 10.780694, 38.769917 9.106194)') As geog) AS f;
+
 -- Clean up spatial_ref_sys
 DELETE FROM spatial_ref_sys WHERE srid IN (4269,4326);
 
