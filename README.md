@@ -14,6 +14,9 @@ GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
  (https://gitlab.com/postgis/postgis/commits/svn-trunk)
 
+[![chat](https://img.shields.io/badge/chat-on%20freenode-brightgreen.svg)]
+(https://kiwiirc.com/client/irc.freenode.net/#postgis)
+
 This file is here to play nicely with modern code repository facilities.
 Actual readme is [here](README.postgis).
 
