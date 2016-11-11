@@ -12,7 +12,7 @@
  */
 
 Datum gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum
-		newval, bool isnull, int dims_wanted);
+		newval, bool isnull, int max_dims);
 
 /*
  * As for the GiST case, geographies are converted into GIDX before
@@ -60,13 +60,13 @@ geom4d_brin_inclusion_add_value(PG_FUNCTION_ARGS)
 
 Datum
 gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
-		bool isnull, int dims_wanted)
+		bool isnull, int max_dims)
 {
 	char gboxmem[GIDX_MAX_SIZE];
 	GIDX *gidx_geom, *gidx_key;
-	int dims_geom, i;
+	int dims_geom, dims_key, i;
 
-	Assert(dims_wanted <= GIDX_MAX_DIM);
+	Assert(max_dims <= GIDX_MAX_DIM);
 
 	/*
 	 * If the new value is null, we record that we saw it if it's the first
@@ -80,6 +80,14 @@ gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
 		column->bv_hasnulls = true;
 		PG_RETURN_BOOL(true);
 	}
+
+	/*
+	 * No need for further processing if the block range is already initialized
+	 * and is marked as containing unmergeable values.
+	 */
+	if (!column->bv_allnulls &&
+			DatumGetBool(column->bv_values[INCLUSION_UNMERGEABLE]))
+		PG_RETURN_BOOL(false);
 
 	/* create a new GIDX in stack memory, maximum dimensions */
 	gidx_geom = (GIDX *) gboxmem;
@@ -120,28 +128,24 @@ gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
 	if (column->bv_allnulls)
 	{
 		/*
-		 * We have to make sure we store a GIDX of wanted dimension. If the
-		 * original geometry has less dimensions, we zero them in the GIDX. If
-		 * the original geometry has more, we ignore them.
+		 * It's not safe to summarize geometries of different number of
+		 * dimensions in the same range.  We therefore fix the number of
+		 * dimension for this range by storing the bounding box of the first
+		 * geometry found as is, being careful not to store more dimension than
+		 * defined in the opclass.
 		 */
-		if (dims_geom != dims_wanted)
+		if (dims_geom > max_dims)
 		{
 			/*
-			 * This is safe to either enlarge or diminush the varsize because
-			 * the GIDX was created with the maximum number of dimension a GIDX
-			 * can contain
+			 * Diminush the varsize to only store the maximum number of
+			 * dimensions allowed by the opclass
 			 */
-			SET_VARSIZE(gidx_geom, VARHDRSZ + dims_wanted * 2 * sizeof(float));
-		}
-		/* zero the extra dimensions if we enlarged the GIDX */
-		for (i = dims_geom; i < dims_wanted; i++)
-		{
-			GIDX_SET_MIN(gidx_geom, i, 0);
-			GIDX_SET_MAX(gidx_geom, i, 0);
+			SET_VARSIZE(gidx_geom, VARHDRSZ + max_dims * 2 * sizeof(float));
+			dims_geom = max_dims;
 		}
 
 		column->bv_values[INCLUSION_UNION] = datumCopy((Datum) gidx_geom, false,
-				GIDX_SIZE(dims_wanted));
+				GIDX_SIZE(dims_geom));
 		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(false);
 		column->bv_values[INCLUSION_CONTAINS_EMPTY] = BoolGetDatum(false);
 		column->bv_allnulls = false;
@@ -149,12 +153,28 @@ gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
 	}
 
 	gidx_key = (GIDX *) column->bv_values[INCLUSION_UNION];
+	dims_key = GIDX_NDIMS(gidx_key);
 
 	/*
-	 * As we always store a GIDX of the wanted number of dimensions, we just
-	 * need adjust min and max
+	 * Mark the datum as unmergeable if its number of dimension is not the same
+	 * as the one stored in the key of the current range
 	 */
-	for ( i = 0; i < dims_wanted; i++ )
+	if (dims_key != dims_geom)
+	{
+		column->bv_values[INCLUSION_UNMERGEABLE] = BoolGetDatum(true);
+		PG_RETURN_BOOL(true);
+	}
+
+	/* Check if the stored bounding box already contains the geometry's one */
+	if (gidx_contains(gidx_key, gidx_geom))
+			PG_RETURN_BOOL(false);
+
+	/*
+	 * Otherwise, we need to enlarge the stored GIDX to make it contains the
+	 * current geometry.  As we store a GIDX with a fixed number of dimensions,
+	 * we just need adjust min and max
+	 */
+	for ( i = 0; i < dims_key; i++ )
 	{
 		/* Adjust minimums */
 		GIDX_SET_MIN(gidx_key, i,
@@ -164,5 +184,5 @@ gidx_brin_inclusion_add_value(BrinDesc *bdesc, BrinValues *column, Datum newval,
 				Max(GIDX_GET_MAX(gidx_key,i),GIDX_GET_MAX(gidx_geom,i)));
 	}
 
-	PG_RETURN_BOOL(false);
+	PG_RETURN_BOOL(true);
 }

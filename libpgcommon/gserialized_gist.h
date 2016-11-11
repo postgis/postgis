@@ -27,6 +27,17 @@ typedef struct
 #define GIDX_MAX_DIM 4
 
 
+/*
+ * This macro is based on PG_FREE_IF_COPY, except that it accepts two pointers.
+ * See PG_FREE_IF_COPY comment in src/include/fmgr.h in postgres source code
+ * for more details.
+ */
+#define POSTGIS_FREE_IF_COPY_P(ptrsrc, ptrori) \
+	do { \
+		if ((Pointer) (ptrsrc) != (Pointer) (ptrori)) \
+			pfree(ptrsrc); \
+	} while (0)
+
 /**********************************************************************
 **  BOX2DF structure.
 **
@@ -95,6 +106,8 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
 /* Remove the box from a disk serialization */
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
+bool box2df_contains(const BOX2DF *a, const BOX2DF *b);
+bool gidx_contains(GIDX *a, GIDX *b);
 int gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df);
 
 

@@ -1,7 +1,7 @@
 --- build a larger database
 \i regress_lots_of_points.sql
 
---- test some of the searching capabilities
+--- Test the various BRIN opclass with dataset containing 2D geometries
 
 CREATE OR REPLACE FUNCTION qnodes(q text) RETURNS text
 LANGUAGE 'plpgsql' AS
@@ -93,6 +93,81 @@ set enable_seqscan = off;
 
 SELECT 'scan_idx', qnodes('select * from test where the_geom &&& ST_MakePoint(0,0)');
  select num,ST_astext(the_geom) from test where the_geom &&& 'BOX3D(125 125,135 135)'::box3d order by num;
+
+DROP INDEX brin_4d;
+
+-- test adding rows and unsummarized ranges
+--
+
+-- 2D
+TRUNCATE TABLE test;
+INSERT INTO test select 1, st_makepoint(1, 1);
+CREATE INDEX brin_2d on test using brin (the_geom) WITH (pages_per_range = 1);
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(2, 3) i;
+
+set enable_indexscan = off;
+set enable_bitmapscan = on;
+set enable_seqscan = off;
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom && ''BOX(2.1 2.1, 3.1 3.1)''::box2d');
+ select '2d', count(*) from test where the_geom && 'BOX(2.1 2.1, 3.1 3.1)'::box2d;
+
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(4, 1000) i;
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom && ''BOX(900.1 900.1, 920.1 920.1)''::box2d');
+ select '2d', count(*) from test where the_geom && 'BOX(900.1 900.1, 920.1 920.1)'::box2d;
+
+SELECT 'summarize 2d', brin_summarize_new_values('brin_2d');
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom && ''BOX(900.1 900.1, 920.1 920.1)''::box2d');
+ select '2d', count(*) from test where the_geom && 'BOX(900.1 900.1, 920.1 920.1)'::box2d;
+
+DROP INDEX brin_2d;
+
+-- 3D
+TRUNCATE TABLE test;
+INSERT INTO test select 1, st_makepoint(1, 1);
+CREATE INDEX brin_3d on test using brin (the_geom brin_geometry_inclusion_ops_3d) WITH (pages_per_range = 1);
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(2, 3) i;
+
+set enable_indexscan = off;
+set enable_bitmapscan = on;
+set enable_seqscan = off;
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(2.1 2.1 2.1, 3.1 3.1 3.1)''::box3d');
+ select '3d', count(*) from test where the_geom &&& 'BOX3D(2.1 2.1 2.1, 3.1 3.1 3.1)'::box3d;
+
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(4, 1000) i;
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)''::box3d');
+ select '3d', count(*) from test where the_geom &&& 'BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)'::box3d;
+
+SELECT 'summarize 3d', brin_summarize_new_values('brin_3d');
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)''::box3d');
+ select '3d', count(*) from test where the_geom &&& 'BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)'::box3d;
+
+DROP INDEX brin_3d;
+
+-- 4D
+TRUNCATE TABLE test;
+INSERT INTO test select 1, st_makepoint(1, 1);
+CREATE INDEX brin_4d on test using brin (the_geom brin_geometry_inclusion_ops_4d) WITH (pages_per_range = 1);
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(2, 3) i;
+
+set enable_indexscan = off;
+set enable_bitmapscan = on;
+set enable_seqscan = off;
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(2.1 2.1 2.1, 3.1 3.1 3.1)''::box3d');
+ select '4d', count(*) from test where the_geom &&& 'BOX3D(2.1 2.1 2.1, 3.1 3.1 3.1)'::box3d;
+
+INSERT INTO test select i, st_makepoint(i, i) FROM generate_series(4, 1000) i;
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)''::box3d');
+ select '4d', count(*) from test where the_geom &&& 'BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)'::box3d;
+
+SELECT 'summarize 4d', brin_summarize_new_values('brin_4d');
+
+SELECT 'scan_idx', qnodes('select count(*) from test where the_geom &&& ''BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)''::box3d');
+ select '4d', count(*) from test where the_geom &&& 'BOX3D(900.1 900.1 900.1, 920.1 920.1 920.1)'::box3d;
 
 DROP INDEX brin_4d;
 

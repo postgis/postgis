@@ -291,7 +291,7 @@ static bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
 	return TRUE;
 }
 
-static bool box2df_contains(const BOX2DF *a, const BOX2DF *b)
+bool box2df_contains(const BOX2DF *a, const BOX2DF *b)
 {
 	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
 
@@ -595,10 +595,15 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 		if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 			return LW_FAILURE;
 		}
+		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 		result = box2df_from_gbox_p(&gbox, box2df);
 	}
+
+	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
 
 	if ( result == LW_SUCCESS )
 	{
