@@ -8,6 +8,8 @@ PostGIS 2.3.1
   - #3644, Deadlock on interrupt
   - #3652, Crash on Collection(MultiCurve())
   - #3656, Fix upgrade of aggregates from 2.2 or lower version
+  - #3665, Index corruption and memory leak in BRIN indexes
+    patch from Julien Rouhaud (Dalibo)
   - #3667, geography ST_Segmentize bug
     patch from Hugo Mercier (Oslandia)
 

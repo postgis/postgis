@@ -290,12 +290,17 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 		{
 			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
 			lwgeom_free(lwgeom);
+			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+			POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 			return LW_FAILURE;
 		}
 		lwgeom_free(lwgeom);
+		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
 		result = gidx_from_gbox_p(gbox, gidx);
 	}
-	
+
+	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
+
 	if ( result == LW_SUCCESS )
 	{
 		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));

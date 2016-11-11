@@ -378,7 +378,7 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 **
 ** Box(A) CONTAINS Box(B) IFF (pt(A)LL < pt(B)LL) && (pt(A)UR > pt(B)UR)
 */
-static bool gidx_contains(GIDX *a, GIDX *b)
+bool gidx_contains(GIDX *a, GIDX *b)
 {
 	int i, dims_a, dims_b;
 
