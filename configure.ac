@@ -570,18 +570,28 @@ dnl Extract the linker and include flags
 XML2_LDFLAGS=`$XML2CONFIG --libs`
 XML2_CPPFLAGS=`$XML2CONFIG --cflags`
 
-AC_PATH_PROG([XCRUN], [xcrun])
-if test "x$XCRUN" = "x"; then
-	AC_MSG_RESULT([OSX XCode is OK])
-else
-      XCODE_VER=`$XCRUN --show-sdk-version`
-      if test $XCODE_VER = "10.12"; then
-              AC_MSG_RESULT([OSX XCode 10.12 is Not OK... hacking])
-              XML2_LDFLAGS=`$XML2CONFIG --exec-prefix=/usr --libs`
-      else
-              AC_MSG_RESULT([OSX XCode is OK])
-      fi
-fi
+
+dnl
+dnl XCode in 10.12 supplies bad flags in xml2config resulting
+dnl in compile errors. For that one version, we force the prefix
+dnl to match where we know the libraries reside
+dnl
+case $host_os in
+    darwin*)
+        AC_PATH_PROG([XCRUN], [xcrun])
+        if test "x$XCRUN" = "x"; then
+        	AC_MSG_RESULT([using OSX XCode... yes])
+        else
+              XCODE_VER=`$XCRUN --show-sdk-version`
+              if test $XCODE_VER = "10.12"; then
+                      AC_MSG_RESULT([applying OSX XCode 10.12 libxml special case... yes])
+                      XML2_LDFLAGS=`$XML2CONFIG --exec-prefix=/usr --libs`
+              else
+                      AC_MSG_RESULT([using OSX XCode $XCODE_VER... yes])
+              fi
+        fi
+        ;;
+esac
 
 
 dnl Extract the version
