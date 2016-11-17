@@ -2510,7 +2510,11 @@ edgeid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
+				<para>
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="CreateTopology"/>,
+<xref linkend="spatial_ref_sys"/>
+        </para>
 			</refsection>
 		</refentry>
 
