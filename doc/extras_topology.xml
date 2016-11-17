@@ -2,7 +2,7 @@
 <chapter id="Topology">
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
-	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.keybit.net/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
+	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.kbt.io/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
 	<para>Vincent Picavet provides a good synopsis and overview of what is Topology, how is it used, and various FOSS4G tools that support it in <ulink url="https://github.com/Oslandia/presentations/blob/master/pgconf_eu_2012/pgconfeu2012_vincent_picavet_postgis_topology.pdf?raw=true">PostGIS Topology PGConf EU 2012</ulink>.</para>
     <para>An example of a topologically based GIS database is the <ulink url="https://www.census.gov/geo/maps-data/data/tiger.html">US Census Topologically Integrated Geographic Encoding and Referencing System (TIGER)</ulink> database. If you want to experiment with PostGIS topology and need some data, check out <xref linkend="Topology_Load_Tiger" />.</para>
 	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
@@ -412,15 +412,15 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="Populate_Topology_Layer">
 			<refnamediv>
 				<refname>Populate_Topology_Layer</refname>
 
 				<refpurpose>Adds missing entries to topology.layer table by reading metadata from topo tables.</refpurpose>
 			</refnamediv>
-			
-		
+
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -449,18 +449,18 @@ CREATE SCHEMA strk;
 CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');
 -- this will return no records because this feature is already registered
-SELECT * 
-  FROM topology.Populate_Topology_Layer(); 
+SELECT *
+  FROM topology.Populate_Topology_Layer();
 
 -- let's rebuild
 TRUNCATE TABLE topology.layer;
 
-SELECT * 
-  FROM topology.Populate_Topology_Layer(); 
-  
+SELECT *
+  FROM topology.Populate_Topology_Layer();
+
 SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
 FROM topology.layer;
-				
+
 				</programlisting>
 				<screen> schema_name | table_name | feature_column
 -------------+------------+----------------
@@ -2510,7 +2510,11 @@ edgeid
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="spatial_ref_sys"/></para>
+				<para>
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="CreateTopology"/>,
+<xref linkend="spatial_ref_sys"/>
+        </para>
 			</refsection>
 		</refentry>
 
