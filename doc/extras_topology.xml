@@ -412,15 +412,15 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
 				<para><xref linkend="AddTopoGeometryColumn"/></para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="Populate_Topology_Layer">
 			<refnamediv>
 				<refname>Populate_Topology_Layer</refname>
 
 				<refpurpose>Adds missing entries to topology.layer table by reading metadata from topo tables.</refpurpose>
 			</refnamediv>
-			
-		
+
+
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
@@ -449,18 +449,18 @@ CREATE SCHEMA strk;
 CREATE TABLE strk.parcels(gid serial, parcel_id varchar(20) PRIMARY KEY, address text);
 SELECT topology.AddTopoGeometryColumn('strk_topo', 'strk', 'parcels', 'topo', 'POLYGON');
 -- this will return no records because this feature is already registered
-SELECT * 
-  FROM topology.Populate_Topology_Layer(); 
+SELECT *
+  FROM topology.Populate_Topology_Layer();
 
 -- let's rebuild
 TRUNCATE TABLE topology.layer;
 
-SELECT * 
-  FROM topology.Populate_Topology_Layer(); 
-  
+SELECT *
+  FROM topology.Populate_Topology_Layer();
+
 SELECT topology_id,layer_id, schema_name As sn, table_name As tn, feature_column As fc
 FROM topology.layer;
-				
+
 				</programlisting>
 				<screen> schema_name | table_name | feature_column
 -------------+------------+----------------
