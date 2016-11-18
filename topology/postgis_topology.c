@@ -2736,10 +2736,14 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     appendStringInfoString(sql, "SELECT ");
     addEdgeFields(sql, fields, 0);
   }
-  hexbox = _box2d_to_hexwkb(box, topo->srid);
-  appendStringInfo(sql, " FROM \"%s\".edge WHERE geom && '%s'::geometry",
-                        topo->name, hexbox);
-  lwfree(hexbox);
+  appendStringInfo(sql, " FROM \"%s\".edge", topo->name, hexbox);
+
+  if ( box ) {
+    hexbox = _box2d_to_hexwkb(box, topo->srid);
+    appendStringInfo(sql, " WHERE geom && '%s'::geometry", hexbox);
+    lwfree(hexbox);
+  }
+
   if ( elems_requested == -1 ) {
     appendStringInfoString(sql, ")");
   } else if ( elems_requested > 0 ) {

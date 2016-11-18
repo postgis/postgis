@@ -457,7 +457,7 @@ typedef struct LWT_BE_CALLBACKS_T {
    * Get edges whose bounding box overlaps a given 2D bounding box
    *
    * @param topo the topology to act upon
-   * @param box the query box
+   * @param box the query box, to be considered infinite if NULL
    * @param numelems output parameter, gets number of elements found
    *                 if the return is not null, otherwise see @return
    *                 section for semantic.
