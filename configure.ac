@@ -574,15 +574,15 @@ case $host_os in
     darwin*)
         AC_PATH_PROG([XCRUN], [xcrun])
         if test "x$XCRUN" = "x"; then
-        	AC_MSG_RESULT([using OSX XCode... yes])
+        	AC_MSG_RESULT([using OSX XCode... no])
         else
-              XCODE_VER=`$XCRUN --show-sdk-version`
-              if test $XCODE_VER = "10.12"; then
-                      AC_MSG_RESULT([applying OSX XCode 10.12 libxml special case... yes])
-                      XML2_LDFLAGS=`$XML2CONFIG --exec-prefix=/usr --libs`
-              else
-                      AC_MSG_RESULT([using OSX XCode $XCODE_VER... yes])
-              fi
+            XCODE_VER=`$XCRUN --show-sdk-version`
+            if test $XCODE_VER = "10.12"; then
+                AC_MSG_RESULT([applying OSX XCode 10.12 libxml special case... yes])
+                XML2_LDFLAGS=`$XML2CONFIG --exec-prefix=/usr --libs`
+            else
+                AC_MSG_RESULT([using OSX XCode $XCODE_VER... yes])
+            fi
         fi
         ;;
 esac
