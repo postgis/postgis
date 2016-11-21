@@ -239,6 +239,8 @@ getPoint4d(const POINTARRAY *pa, int n)
  * will set point's m=NO_M_VALUE  if pa is 3d or 2d
  *
  * NOTE: this will modify the point4d pointed to by 'point'.
+ *
+ * @return 0 on error, 1 on success
  */
 int
 getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
@@ -252,6 +254,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("getPoint4d_p: point offset out of range");
+		return 0;
 	}
 #endif
 
@@ -288,6 +291,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	default:
 		lwerror("Unknown ZM flag ??");
+		return 0;
 	}
 	return 1;
 
