@@ -225,7 +225,10 @@ ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 		dims = 3;
 
 	if ( ! (sq = GEOSCoordSeq_create(pa->npoints, dims)) )
+	{
 		lwerror("Error creating GEOS Coordinate Sequence");
+		return NULL;
+	}
 
 	for ( i=0; i < pa->npoints; i++ )
 	{
