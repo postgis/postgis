@@ -503,7 +503,7 @@ const POINT3DZ*
 getPoint3dz_cp(const POINTARRAY *pa, int n)
 {
 	if ( ! pa ) return 0;
-	
+
 	if ( ! FLAGS_GET_Z(pa->flags) )
 	{
 		lwerror("getPoint3dz_cp: no Z coordinates in point array");
@@ -524,7 +524,7 @@ const POINT4D*
 getPoint4d_cp(const POINTARRAY *pa, int n)
 {
 	if ( ! pa ) return 0;
-	
+
 	if ( ! (FLAGS_GET_Z(pa->flags) && FLAGS_GET_Z(pa->flags)) )
 	{
 		lwerror("getPoint3dz_cp: no Z and M coordinates in point array");
