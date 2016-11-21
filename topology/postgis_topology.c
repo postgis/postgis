@@ -2736,7 +2736,7 @@ cb_getEdgeWithinBox2D ( const LWT_BE_TOPOLOGY* topo, const GBOX* box,
     appendStringInfoString(sql, "SELECT ");
     addEdgeFields(sql, fields, 0);
   }
-  appendStringInfo(sql, " FROM \"%s\".edge", topo->name, hexbox);
+  appendStringInfo(sql, " FROM \"%s\".edge", topo->name);
 
   if ( box ) {
     hexbox = _box2d_to_hexwkb(box, topo->srid);
