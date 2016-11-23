@@ -78,53 +78,6 @@ static char *lwgeomTypeName[] =
 };
 
 /*
- * Default lwnotice/lwerror handlers
- *
- * Since variadic functions cannot pass their parameters directly, we need
- * wrappers for these functions to convert the arguments into a va_list
- * structure.
- */
-
-void
-lwnotice(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-
-	/* Call the supplied function */
-	(*lwnotice_var)(fmt, ap);
-
-	va_end(ap);
-}
-
-void
-lwerror(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-
-	/* Call the supplied function */
-	(*lwerror_var)(fmt, ap);
-
-	va_end(ap);
-}
-
-void
-lwdebug(int level, const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-
-	/* Call the supplied function */
-	(*lwdebug_var)(level, fmt, ap);
-
-	va_end(ap);
-}
-
-/*
  * Default allocators
  *
  * We include some default allocators that use malloc/free/realloc
@@ -151,6 +104,14 @@ default_reallocator(void *mem, size_t size)
 	void *ret = realloc(mem, size);
 	return ret;
 }
+
+/*
+ * Default lwnotice/lwerror handlers
+ *
+ * Since variadic functions cannot pass their parameters directly, we need
+ * wrappers for these functions to convert the arguments into a va_list
+ * structure.
+ */
 
 static void
 default_noticereporter(const char *fmt, va_list ap)
@@ -211,6 +172,47 @@ lwgeom_set_debuglogger(lwdebuglogger debuglogger) {
 
 	if ( debuglogger ) lwdebug_var = debuglogger;
 }
+
+void
+lwnotice(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwnotice_var)(fmt, ap);
+
+	va_end(ap);
+}
+
+void
+lwerror(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwerror_var)(fmt, ap);
+
+	va_end(ap);
+}
+
+void
+lwdebug(int level, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwdebug_var)(level, fmt, ap);
+
+	va_end(ap);
+}
+
+
 
 const char*
 lwtype_name(uint8_t type)
@@ -391,7 +393,7 @@ clamp_srid(int srid)
       ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
 		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);
 	}
-	
+
 	return newsrid;
 }
 
