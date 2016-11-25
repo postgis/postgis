@@ -4,6 +4,8 @@ PostGIS 2.3.1
   * Bug Fixes
   - #1973, st_concavehull() returns sometimes empty geometry collection
            Fix from gde
+  - #3501, add raster constraint max extent exceeds array size limit
+        for large tables
   - #3643, PostGIS not building on latest OSX XCode
   - #3644, Deadlock on interrupt
   - #3652, Crash on Collection(MultiCurve())
