@@ -6,6 +6,8 @@ xxxx/xx/xx
  - #1973, st_concavehull() returns sometimes empty geometry collection
           Fix from gde
  - #3656, Fix upgrade of aggregates from 2.2 or lower version
+ - #3501, add raster constraint max extent exceeds array size limit
+        for large tables
  - #3659, Crash caused by raster GUC define after CREATE EXTENSION
      using wrong memory context. (manaeem)
 

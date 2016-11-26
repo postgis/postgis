@@ -7138,28 +7138,42 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		fqtn text;
 		cn name;
 		sql text;
-		attr text;
+		attr text; srid integer;
 	BEGIN
 		fqtn := '';
 		IF length($1) > 0 THEN
 			fqtn := quote_ident($1) || '.';
 		END IF;
 		fqtn := fqtn || quote_ident($2);
+		
+		sql := 'SELECT MAX(ST_SRID('
+				|| quote_ident($3)
+		|| ') ) FROM '
+				|| fqtn
+				|| ' HAVING COUNT(DISTINCT ST_SRID('
+				|| quote_ident($3)
+		|| ') ) = 1';
+		EXECUTE sql INTO srid;
 
 		cn := 'enforce_max_extent_' || $3;
 
-		sql := 'SELECT st_ashexewkb(st_envelope(st_union(st_envelope('
-			|| quote_ident($3)
-			|| ')))) FROM '
-			|| fqtn;
-		EXECUTE sql INTO attr;
-
-		sql := 'ALTER TABLE ' || fqtn
-			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (st_envelope('
-			|| quote_ident($3)
-			|| ') @ ''' || attr || '''::geometry)';
-		RETURN _add_raster_constraint(cn, sql);
+		IF srid > -1 THEN
+			sql := 'SELECT st_ashexewkb( st_setsrid( st_extent( st_envelope('
+				|| quote_ident($3)
+				|| ')), ' || srid || ')) FROM '
+				|| fqtn;
+			EXECUTE sql INTO attr;
+		
+			sql := 'ALTER TABLE ' || fqtn
+				|| ' ADD CONSTRAINT ' || quote_ident(cn)
+				|| ' CHECK ( st_envelope('
+				|| quote_ident($3)
+				|| ') @ ''' || attr || '''::geometry) ';
+			RETURN  _add_raster_constraint(cn, sql);
+		ELSE 
+			-- no valid srid therefore doesn't make sense to set extent
+			RETURN false;
+		END IF;
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
