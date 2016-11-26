@@ -1,5 +1,5 @@
 PostGIS 2.2.4
-xxxx/xx/xx
+2016/11/26
 
  * Bug Fixes *
 
@@ -7,7 +7,7 @@ xxxx/xx/xx
           Fix from gde
  - #3656, Fix upgrade of aggregates from 2.2 or lower version
  - #3501, add raster constraint max extent exceeds array size limit
-        for large tables
+        for large tables, change to use ST_Extent
  - #3659, Crash caused by raster GUC define after CREATE EXTENSION
      using wrong memory context. (manaeem)
 

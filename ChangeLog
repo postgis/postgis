@@ -1,3 +1,77 @@
+2016-11-26 18:54  Regina Obe <lr@pcorp.us>
+
+	* [r15254] NEWS, raster/rt_pg/rtpostgis.sql.in: add raster
+	  constraint max extent exceeds array size limit
+	  closes #3501 for 2.2.4
+
+2016-11-26 15:20  Regina Obe <lr@pcorp.us>
+
+	* [r15251] doc/reference_measure.xml: ST_Equals documentation does
+	  not describe current behavior
+	  closes #3566 for 2.2.4
+
+2016-11-26 15:00  Regina Obe <lr@pcorp.us>
+
+	* [r15248] doc/extras_topology.xml: Incorrect parameter name for
+	  CreateTopology
+	  closes #3509 for 2.2.4
+
+2016-10-31 15:35  Regina Obe <lr@pcorp.us>
+
+	* [r15221] NEWS, postgis/postgis.sql.in: st_concavehull() returns
+	  sometimes empty geometry collection
+	  closes #1973 for PostGIS 2.2
+
+2016-10-28 15:41  Sandro Santilli <strk@keybit.net>
+
+	* [r15217] .drone.yml: Update drone yml to 0.5 version
+	  
+	  See https://git.osgeo.org/gogs/sac/gogs-service/issues/14
+
+2016-10-16 05:36  Regina Obe <lr@pcorp.us>
+
+	* [r15210] NEWS, raster/rt_pg/rtpostgis.c: raster GUC -
+	  boot_postgis_gdal_enabled_drivers should use TopMemoryContext
+	  instead of CurrentMemoryContext
+	  Closes #3659 for 2.2 (PostGIS 2.2.4) patch provided by manaeem
+
+2016-10-10 20:24  Sandro Santilli <strk@keybit.net>
+
+	* [r15201] liblwgeom/lwgeom_geos.c: Fix typo in error message about
+	  ClipByBox availability
+
+2016-10-10 19:46  Sandro Santilli <strk@keybit.net>
+
+	* [r15199] .drone.yml: Be verbose in running tests
+
+2016-10-08 09:04  Sandro Santilli <strk@keybit.net>
+
+	* [r15193] .drone.yml, NEWS, postgis/postgis.sql.in,
+	  utils/check_all_upgrades.sh: Fix aggregates upgrade
+	  
+	  Fixes #3656 (aggregate upgrades)
+	  
+	  Enables automated ugprade testing
+
+2016-10-06 17:31  Sandro Santilli <strk@keybit.net>
+
+	* [r15181] doc/doxygen.cfg.in: Remove hard-coded version in Doxygen
+	  project name
+
+2016-10-06 15:53  Regina Obe <lr@pcorp.us>
+
+	* [r15176] NEWS: last patch fix was missing from news
+
+2016-10-06 15:34  Regina Obe <lr@pcorp.us>
+
+	* [r15173] NEWS, Version.config,
+	  extensions/upgradeable_versions.mk: bump to 2.2.4dev
+
+2016-10-06 13:37  Regina Obe <lr@pcorp.us>
+
+	* [r15171] ChangeLog, NEWS, Version.config, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: In prep for 2.2.3 release
+
 2016-10-03 20:20  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r15167] NEWS, liblwgeom/lwstroke.c: #3652, crash on
