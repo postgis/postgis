@@ -65,11 +65,27 @@ Release procedure
 - Update Version.config to drop the "dev" suffix
 - Add the "dev" suffixed version in extensions/upgradeable_versions.mk
   and ensure all the previous released minor versions are listed in it
+- Update the README.md to reflect new to be created buildbot badges
+	(this should only be needed for trunk release)
 - Commit all changes
-- Tag branch:  
+- If this is a minor or major release (no branch exists):
+	   $ base=http://svn.osgeo.org/postgis/
+	   $ rev=x.x
+	   $ svn copy -m "Branch $rev" $base/trunk $base/branches/$rev
+	   
+	   Go to: https://debbie.postgis.net and copy last branch version and make new job
+	   a) Replace PostGIS_* string params with new version
+	   b) Replace repository url with new branch repo url
+	   c) Update the PostGIS_trunk by updating the PostGIS_* string params
+	   d) create a new tagged branch job from latest tagged (and repeat a, b for this new tagged)
+	   
+	   Go to: ​https://trac.osgeo.org/postgis/ edit the matrix to reflect new branch
+	   
+- Tag branch:  (replace x.x and x.x.x with minor and micro version e.g 2.3, 2.3.1
    $ base=http://svn.osgeo.org/postgis/
-   $ rev=x.x.0
-   $ svn copy -m "Tagged release $rev" $base/trunk $base/tags/$rev
+   $ brev=x.x
+   $ rev=x.x.x
+   $ svn copy -m "Tagged release $rev" $base/branches/$brev $base/tags/$rev
 - Run: sh make_dist.sh $rev (or use debbie for this)
 - Build and test generated tarball (including extension upgrade)
 - Copy tarball to web site and edit downloads page
