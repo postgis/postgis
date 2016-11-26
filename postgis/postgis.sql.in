@@ -3744,25 +3744,27 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -- Availability: 1.2.2
 -- Changed: 2.2.0 to use non-deprecated ST_CombineBBox (r13535)
 -- Changed: 2.3.0 to support PostgreSQL 9.6
-CREATE AGGREGATE ST_Extent(
+-- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
+CREATE AGGREGATE ST_Extent(geometry) (
 	sfunc = ST_CombineBBox,
+  stype = box3d,
 #if POSTGIS_PGSQL_VERSION >= 96
-  combinefunc = ST_CombineBBox,
+	combinefunc = ST_CombineBBox,
+	parallel = safe,
 #endif
-	finalfunc = box2d,
-	basetype = geometry,
-	stype = box3d
+	finalfunc = box2d
 	);
 
 -- Availability: 2.0.0
 -- Changed: 2.2.0 to use non-deprecated ST_CombineBBox (r13535)
 -- Changed: 2.3.0 to support PostgreSQL 9.6
-CREATE AGGREGATE ST_3DExtent(
+-- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
+CREATE AGGREGATE ST_3DExtent(geometry)(
 	sfunc = ST_CombineBBox,
 #if POSTGIS_PGSQL_VERSION >= 96
-  combinefunc = ST_CombineBBox,
+	combinefunc = ST_CombineBBox,
+	parallel = safe,
 #endif
-	basetype = geometry,
 	stype = box3d
 	);
 
@@ -3774,12 +3776,13 @@ CREATE OR REPLACE FUNCTION ST_Collect(geom1 geometry, geom2 geometry)
 
 -- Availability: 1.2.2
 -- Changed: 2.3.0 to support PostgreSQL 9.6
-CREATE AGGREGATE ST_MemCollect(
+-- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
+CREATE AGGREGATE ST_MemCollect(geometry)(
 	sfunc = ST_collect,
 #if POSTGIS_PGSQL_VERSION >= 96
-  combinefunc = ST_collect,
+	combinefunc = ST_collect,
+	parallel = safe,
 #endif
-	basetype = geometry,
 	stype = geometry
 	);
 
@@ -3791,11 +3794,12 @@ CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 
 -- Availability: 1.2.2
 -- Changed: 2.3.0 to support PostgreSQL 9.6
-CREATE AGGREGATE ST_MemUnion (
-	basetype = geometry,
+-- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
+CREATE AGGREGATE ST_MemUnion(geometry) (
 	sfunc = ST_Union,
 #if POSTGIS_PGSQL_VERSION >= 96
-  combinefunc = ST_Union,
+	combinefunc = ST_Union,
+	parallel = safe,
 #endif
 	stype = geometry
 	);
