@@ -1,5 +1,5 @@
 PostGIS 2.3.1
-2016/xx/xx
+2016/11/2x
 
   * Bug Fixes
   - #1973, st_concavehull() returns sometimes empty geometry collection
@@ -8,6 +8,8 @@ PostGIS 2.3.1
         for large tables
   - #3643, PostGIS not building on latest OSX XCode
   - #3644, Deadlock on interrupt
+  - #3650, Mark ST_Extent, ST_3DExtent and ST_Mem* 
+        agg functions as parallel safe so they can be parallelized
   - #3652, Crash on Collection(MultiCurve())
   - #3656, Fix upgrade of aggregates from 2.2 or lower version
   - #3659, Crash caused by raster GUC define after CREATE EXTENSION
