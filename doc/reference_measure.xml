@@ -2621,11 +2621,12 @@ SELECT s.gid, s.school_name
 			points are the same).</para>
 
 		<important>
-		  <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
+        <para>Changed: 2.2.0 Returns true even for invalid geometries if they are binary equal</para>
 	  </refsection>
 
 	  <refsection>
