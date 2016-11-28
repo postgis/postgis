@@ -111,4 +111,6 @@ Release procedure
        This should automatically happen as a result of posting to PostGIS website since Planet PostGIS autotweets.
 - Update Trac and make old Milestone as completed
 - Push the revision number forward (see Versioning Scheme)
-- Remove the "dev" suffixed version from extensions/upgradeable_versions.mk
+- Add the newly released version to extensions/upgradeable_versions.mk and make sure all prior micros are present
+- Commit changes
+- Update version number on Debbie Jenkins branch job.
