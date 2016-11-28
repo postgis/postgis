@@ -1,3 +1,167 @@
+2016-11-26 21:49  Regina Obe <lr@pcorp.us>
+
+	* [r15260] HOWTO_RELEASE: Add build badges, trunk vs. branch
+	  release
+	  closes #3671 for PostGIS 2.3
+
+2016-11-26 19:54  Regina Obe <lr@pcorp.us>
+
+	* [r15256] NEWS, postgis/postgis.sql.in: Mark ST_Extent, ST_Mem*
+	  aggregate functions parallel safe
+	  closes #3650 for PostGIS 2.3.1
+
+2016-11-26 16:39  Regina Obe <lr@pcorp.us>
+
+	* [r15253] doc/reference_raster.xml: ST_DumpAsPolygons
+	  documentation confusing wrt no data value
+	  closes #3512 for PostGIS 2.3.1
+
+2016-11-26 15:19  Regina Obe <lr@pcorp.us>
+
+	* [r15250] doc/reference_measure.xml: ST_Equals documentation does
+	  not describe current behavior
+	  closes #3566 for 2.3.1
+
+2016-11-26 14:55  Regina Obe <lr@pcorp.us>
+
+	* [r15246] doc/extras_topology.xml: Incorrect parameter name for
+	  CreateTopology
+	  references #3509 for 2.3.1
+
+2016-11-25 01:05  Regina Obe <lr@pcorp.us>
+
+	* [r15245] NEWS, raster/rt_pg/rtpostgis.sql.in: add raster
+	  constraint max extent exceeds array size limit
+	  references #3501 for 2.3 (PostGIS 2.3.1)
+
+2016-11-21 15:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15238] configure.ac: Change MSG line
+
+2016-11-17 08:01  Sandro Santilli <strk@kbt.io>
+
+	* [r15235] doc/extras_topology.xml: Backport trunk changes in
+	  topology docs
+
+2016-11-15 23:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15231] configure.ac: OS guard 10.12 osx libxml fix
+
+2016-11-11 19:51  Regina Obe <lr@pcorp.us>
+
+	* [r15228] NEWS: add missing bug fix to list
+
+2016-11-11 19:42  Regina Obe <lr@pcorp.us>
+
+	* [r15227] NEWS, doc/using_postgis_dataman.xml,
+	  libpgcommon/gserialized_gist.c, libpgcommon/gserialized_gist.h,
+	  postgis/brin_2d.c, postgis/brin_nd.c,
+	  postgis/gserialized_gist_2d.c, postgis/gserialized_gist_nd.c,
+	  regress/regress_brin_index.sql,
+	  regress/regress_brin_index_3d.sql,
+	  regress/regress_brin_index_3d_expected,
+	  regress/regress_brin_index_expected: index corruption and memory
+	  leak in BRIN support
+	  Patch from Julien Rouhaud (Dalibo)
+	  closes #3665 for PostGIS 2.3.1
+
+2016-11-10 00:11  Regina Obe <lr@pcorp.us>
+
+	* [r15222] NEWS, liblwgeom/lwgeodetic.c, regress/geography.sql,
+	  regress/geography_expected: Bug in geography ST_Segmentize
+	  References #3667 for PostGIS 2.3.1
+	  Patch provided by Hugo Mercier (Oslandia)
+
+2016-10-30 22:30  Regina Obe <lr@pcorp.us>
+
+	* [r15220] NEWS, postgis/postgis.sql.in: st_concavehull() returns
+	  sometimes empty geometry collection
+	  references #1973 for PostGIS 2.3
+
+2016-10-28 15:41  Sandro Santilli <strk@kbt.io>
+
+	* [r15216] .drone.yml: Update drone yml to 0.5 version
+	  
+	  See https://git.osgeo.org/gogs/sac/gogs-service/issues/14
+
+2016-10-16 01:16  Regina Obe <lr@pcorp.us>
+
+	* [r15209] raster/rt_pg/rtpostgis.c: raster GUC -
+	  boot_postgis_gdal_enabled_drivers should use TopMemoryContext
+	  instead of CurrentMemoryContext
+	  References #3659 for 2.3 (PostGIS 2.3.4) patch provided by
+	  manaeem
+
+2016-10-10 20:24  Sandro Santilli <strk@kbt.io>
+
+	* [r15202] liblwgeom/lwgeom_geos.c: Fix typo in error message about
+	  ClipByBox availability
+
+2016-10-10 19:46  Sandro Santilli <strk@kbt.io>
+
+	* [r15198] .drone.yml: Be verbose in running tests
+
+2016-10-08 09:11  Sandro Santilli <strk@kbt.io>
+
+	* [r15194] README.md: Fix buildbot badges to point to 2.3 branch
+	  
+	  See #3657
+
+2016-10-07 20:17  Sandro Santilli <strk@kbt.io>
+
+	* [r15191] utils/check_all_upgrades.sh: Add missing upgrade checker
+
+2016-10-07 20:05  Sandro Santilli <strk@kbt.io>
+
+	* [r15190] .drone.yml, NEWS, postgis/postgis.sql.in: Fix aggregates
+	  upgrade
+	  
+	  Fixes #3656 (aggregate upgrades)
+	  
+	  Enables automated ugprade testing
+
+2016-10-06 17:31  Sandro Santilli <strk@kbt.io>
+
+	* [r15179] doc/doxygen.cfg.in: Remove hard-coded version in Doxygen
+	  project name
+
+2016-10-03 20:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15168] NEWS, liblwgeom/lwstroke.c: #3652, Crash on
+	  collection(multicurve())
+
+2016-09-27 22:55  Regina Obe <lr@pcorp.us>
+
+	* [r15160] README.postgis:
+
+2016-09-27 08:12  Sandro Santilli <strk@kbt.io>
+
+	* [r15157] NEWS, postgis/postgis_module.c: Do not call printf from
+	  interrupt handler, fixing deadlocks
+	  
+	  Closes #3644 for 2.3 branch
+
+2016-09-26 21:47  Regina Obe <lr@pcorp.us>
+
+	* [r15153] NEWS, configure.ac: PostGIS not building on latest OSX
+	  XCode
+	  References #3643 for PostGIS 2.3.1 (patch from pramsey)
+
+2016-09-26 05:45  Regina Obe <lr@pcorp.us>
+
+	* [r15148] Version.config, extensions/upgradeable_versions.mk: bump
+	  up version to 2.3.1dev
+
+2016-09-26 05:15  Regina Obe <lr@pcorp.us>
+
+	* [r15145] doc/release_notes.xml: fix typo in release notes
+
+2016-09-26 04:45  Regina Obe <lr@pcorp.us>
+
+	* [r15144] ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk: Get
+	  ready for PostGIS 2.3.0 launch
+
 2016-09-26 03:26  Regina Obe <lr@pcorp.us>
 
 	* [r15143] .: Branch 2.3 (trunk will become 2.4 after we are done)
