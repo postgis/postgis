@@ -92,7 +92,7 @@ Release procedure
 - Announce on e-mail 
     - postgis-users
     - postgis-devel
-    - pgsql-announce
+    - pgsql-announce (send note to david at fetter dot org to be included in Weekly news)
     - osgeo-discuss
 - Update web sites
     - PostGIS News
