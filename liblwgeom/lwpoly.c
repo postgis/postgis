@@ -94,6 +94,28 @@ lwpoly_construct_rectangle(char hasz, char hasm, POINT4D *p1, POINT4D *p2,
 	return lwpoly;
 }
 
+LWPOLY *
+lwpoly_construct_envelope(int srid, double x1, double y1, double x2, double y2)
+{
+	POINT4D p1, p2, p3, p4;
+	LWPOLY *poly;
+
+	p1.x = x1;
+	p1.y = y1;
+	p2.x = x1;
+	p2.y = y2;
+	p3.x = x2;
+	p3.y = y2;
+	p4.x = x2;
+	p4.y = y1;
+
+	poly = lwpoly_construct_rectangle(0, 0, &p1, &p2, &p3, &p4);
+	lwgeom_set_srid(lwpoly_as_lwgeom(poly), srid);
+	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
+
+	return poly;
+}
+
 LWPOLY*
 lwpoly_construct_circle(int srid, double x, double y, double radius, uint32_t segments_per_quarter, char exterior)
 {
