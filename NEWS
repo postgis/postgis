@@ -1,23 +1,29 @@
+PostGIS 2.3.2-dev
+2017/MM/DD
+
+  * Bug Fixes
+
 PostGIS 2.3.1
 2016/11/28
 
   * Bug Fixes
+
   - #1973, st_concavehull() returns sometimes empty geometry collection
-           Fix from gde
+           (gde)
   - #3501, add raster constraint max extent exceeds array size limit
-        for large tables
+           for large tables
   - #3643, PostGIS not building on latest OSX XCode
   - #3644, Deadlock on interrupt
-  - #3650, Mark ST_Extent, ST_3DExtent and ST_Mem* 
-        agg functions as parallel safe so they can be parallelized
+  - #3650, Mark ST_Extent, ST_3DExtent and ST_Mem*
+           agg functions as parallel safe so they can be parallelized
   - #3652, Crash on Collection(MultiCurve())
   - #3656, Fix upgrade of aggregates from 2.2 or lower version
   - #3659, Crash caused by raster GUC define after CREATE EXTENSION
-     using wrong memory context. (manaeem)
+           using wrong memory context. (manaeem)
   - #3665, Index corruption and memory leak in BRIN indexes
-    patch from Julien Rouhaud (Dalibo)
+           (Julien Rouhaud of Dalibo)
   - #3667, geography ST_Segmentize bug
-    patch from Hugo Mercier (Oslandia)
+           (Hugo Mercier of Oslandia)
 
 PostGIS 2.3.0
 2016/09/26
@@ -32,8 +38,6 @@ PostGIS 2.3.0
 
   - #3396, ST_EstimatedExtent, throw WARNING instead of ERROR
            (Regina Obe)
-
- * Deprecated signatures *
 
  * New Features *
 
@@ -76,7 +80,9 @@ PostGIS 2.3.0
            (Hugo Mercier of Oslandia)
 
  * Bug Fixes
- - #2841, ST_MinimumBoundingCircle not covering original
+
+  - #2841, ST_MinimumBoundingCircle not covering original
+
  * Performance Enhancements *
 
   - #75, Enhancement to PIP short circuit (Dan Baston)
@@ -85,10 +91,6 @@ PostGIS 2.3.0
   - #3400, Minor optimization of PIP routines (Dan Baston)
   - Make adding a line to topology interruptible (Sandro Santilli)
   - Documentation updates from Mike Toews
-
-PostGIS 2.3.0beta1
-2016/09/06
-See PostGIS 2.3.0 section for details
 
 PostGIS 2.2.2
 2016/03/22
