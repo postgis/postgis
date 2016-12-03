@@ -2529,8 +2529,9 @@ cb_getFaceContainingPoint( const LWT_BE_TOPOLOGY* topo, const LWPOINT* pt )
   }
   /* TODO: call GetFaceGeometry internally, avoiding the round-trip to sql */
   appendStringInfo(sql,
-                   "SELECT face_id FROM \"%s\".face "
-                   "WHERE mbr && $1 AND _ST_Contains("
+                   "WITH faces AS ( SELECT face_id FROM \"%s\".face "
+                   "WHERE mbr && $1 ORDER BY ST_Area(mbr) ASC ) "
+                   "SELECT face_id FROM faces WHERE _ST_Contains("
                    "topology.ST_GetFaceGeometry('%s', face_id), $1)"
                    " LIMIT 1",
                    topo->name, topo->name);
