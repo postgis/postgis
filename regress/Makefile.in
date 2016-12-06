@@ -167,6 +167,14 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 		regress_buffer_params
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
+        # GEOS-3.7 adds:
+        # ST_FrechetDistance, ST_Buffer(params)
+        TESTS += \
+                frechet \
+                regress_buffer_params
+endif
+
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	# GEOS-3.3 adds:
 	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,

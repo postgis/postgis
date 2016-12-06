@@ -3452,6 +3452,22 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry, 
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100; -- Guessed cost
 
+-- Requires GEOS >= 3.7.0
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry)
+       RETURNS FLOAT8
+       AS 'MODULE_PATHNAME', 'frechetdistance'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100; -- Guessed cost
+
+-- Requires GEOS >= 3.7.0
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry, float8)
+       RETURNS FLOAT8
+       AS 'MODULE_PATHNAME', 'frechetdistancedensify'
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+       COST 100; -- Guessed cost
+
 -- PostGIS equivalent function: difference(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry)
 	RETURNS geometry
