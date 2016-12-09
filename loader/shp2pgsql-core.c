@@ -1522,8 +1522,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
 
-	/* If we are reading the DBF only and the record has been marked deleted, return deleted record status */
-	if (state->config->readshape == 0 && DBFIsRecordDeleted(state->hDBFHandle, item))
+	/* Skip deleted records */
+	if (state->hDBFHandle && DBFIsRecordDeleted(state->hDBFHandle, item))
 	{
 		*strrecord = NULL;
 		return SHPLOADERRECDELETED;
