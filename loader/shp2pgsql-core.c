@@ -1096,8 +1096,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->types[j] = type;
 		state->widths[j] = field_width;
 		state->precisions[j] = field_precision;
-		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width,
-field_precision);
+/*		fprintf(stderr, "XXX %s width:%d prec:%d\n", name, field_width, field_precision); */
 
 		if (state->config->encoding)
 		{
