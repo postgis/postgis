@@ -378,6 +378,17 @@ EOF
 			last if /\;\s*$/;
 		}
 	}
+	
+	# Always output grant permissions (see ticket #3680)
+	if ( /^grant select\s+(\S+)\s*/i )
+	{
+		print;
+		while(<INPUT>)
+		{
+			print;
+			last if /\;\s*$/;
+		}
+	}
 
 	# Always output create ore replace rule 
 	if ( /^create or replace rule\s+(\S+)\s*/i )
