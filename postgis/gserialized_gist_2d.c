@@ -396,7 +396,6 @@ static bool box2df_overabove(const BOX2DF *a, const BOX2DF *b)
 
 /**
 * Calculate the centroid->centroid distance between the boxes.
-* We return the square distance to avoid a call to sqrt.
 */
 static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
 {
@@ -407,7 +406,6 @@ static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
     double b_y = (b->ymax + b->ymin) / 2.0;
 
     /* This "distance" is only used for comparisons, */
-    /* so for speed we drop contants and skip the sqrt step. */
     return sqrt((a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y));
 }
 
@@ -499,27 +497,27 @@ static inline double pt_distance(double ax, double ay, double bx, double by)
 */
 static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 {
-    /* Check for overlap */
-    if ( box2df_overlaps(a, b) )
-        return 0.0;
+	/* Check for overlap */
+	if ( box2df_overlaps(a, b) )
+		return 0.0;
 
-    if ( box2df_left(a, b) )
-    {
-        if ( box2df_above(a, b) )
+	if ( box2df_left(a, b) )
+	{
+		if ( box2df_above(a, b) )
 			return pt_distance(a->xmax, a->ymin, b->xmin, b->ymax);
 		if ( box2df_below(a, b) )
 			return pt_distance(a->xmax, a->ymax, b->xmin, b->ymin);
 		else
-			return b->xmin - a->xmax;
+			return (double)b->xmin - (double)a->xmax;
 	}
 	if ( box2df_right(a, b) )
 	{
-        if ( box2df_above(a, b) )
+		if ( box2df_above(a, b) )
 			return pt_distance(a->xmin, a->ymin, b->xmax, b->ymax);
 		if ( box2df_below(a, b) )
 			return pt_distance(a->xmin, a->ymax, b->xmax, b->ymin);
 		else
-			return a->xmin - b->xmax;
+			return (double)a->xmin - (double)b->xmax;
 	}
 	if ( box2df_above(a, b) )
 	{
@@ -528,7 +526,7 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 		if ( box2df_right(a, b) )
 			return pt_distance(a->xmin, a->ymin, b->xmax, b->ymax);
 		else
-			return a->ymin - b->ymax;
+			return (double)a->ymin - (double)b->ymax;
 	}
 	if ( box2df_below(a, b) )
 	{
@@ -537,9 +535,9 @@ static double box2df_distance(const BOX2DF *a, const BOX2DF *b)
 		if ( box2df_right(a, b) )
 			return pt_distance(a->xmin, a->ymax, b->xmax, b->ymin);
 		else
-			return b->ymin - a->ymax;
+			return (double)b->ymin - (double)a->ymax;
 	}
-	
+
 	return FLT_MAX;
 }
 
@@ -1202,7 +1200,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 	/* Box-style distance test */
 	if ( strategy == 14 ) /* operator <#> */
 	{
-		distance = (double)box2df_distance(entry_box, &query_box);
+		distance = box2df_distance(entry_box, &query_box);
 	}
 	/* True distance test (formerly centroid distance) */
 	else if ( strategy == 13 ) /* operator <-> */
@@ -1210,7 +1208,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 		/* In all cases, since we only have keys (boxes) we'll return */
 		/* the minimum possible distance, which is the box2df_distance */
 		/* and let the recheck sort things out in the case of leaves */
-		distance = (double)box2df_distance(entry_box, &query_box);
+		distance = box2df_distance(entry_box, &query_box);
 
 		if (GIST_LEAF(entry))
 			*recheck = true;
