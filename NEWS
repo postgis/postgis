@@ -3,6 +3,7 @@ PostGIS 2.3.2-dev
 
   * Bug Fixes
   
+  - #3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order
   - #3675, Relationship functions not using an index in some cases
   - #3680, PostGIS upgrade scripts missing GRANT for views
 
