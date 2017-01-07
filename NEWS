@@ -1,3 +1,10 @@
+PostGIS 2.2.5
+2017/MM/DD
+
+ * Bug Fixes *
+ - #3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order
+ - #3680, PostGIS upgrade scripts missing GRANT for views
+
 PostGIS 2.2.4
 2016/11/26
 
