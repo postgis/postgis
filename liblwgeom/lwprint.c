@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "liblwgeom_internal.h"
 
 /* Ensures the given lat and lon are in the "normal" range:
@@ -313,7 +314,7 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	if (min_digits > 0)
 	{
 		degrees = (long)degrees;
-		minutes = (val - degrees) * 60;
+		minutes = fmod(val * 10, 10) * 6;
 	}
 	if (sec_digits > 0)
 	{
