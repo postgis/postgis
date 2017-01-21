@@ -1236,6 +1236,20 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
+-- Availability: 2.4.0
+	CREATE OR REPLACE FUNCTION ST_IsCW(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_IsCW'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 10;
+
+-- Availability: 2.4.0
+	CREATE OR REPLACE FUNCTION ST_IsCCW(geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','ST_IsCCW'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 10;
+
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,spheroid)
 	RETURNS FLOAT8
@@ -1467,6 +1481,20 @@ CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_reverse'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1; -- reset cost, see #3675
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_ForceCW(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_clockwise_poly'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
+	COST 15;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_ForceCCW(geometry)
+	RETURNS geometry
+	AS $$ SELECT @extschema@.ST_Reverse(@extschema@.ST_ForceCW($1)) $$
+	LANGUAGE SQL IMMUTABLE STRICT _PARALLEL
+	COST 15;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
