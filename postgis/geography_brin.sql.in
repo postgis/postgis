@@ -1,0 +1,104 @@
+#if POSTGIS_PGSQL_VERSION > 94
+--------------------------------------------------------------------
+-- BRIN support for geographies                                   --
+--------------------------------------------------------------------
+
+--------------------------------
+-- the needed cross-operators --
+--------------------------------
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(gidx, geography)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_geog_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(gidx, gidx)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_gidx_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+
+-- logic to create missing brin operators
+-- note we can't use CREATE IF NOT EXISTS since not currently supported for operators or families
+-- an earlier 2.3+ might miss this if doing upgrade from < 9.5 to 9.5+
+-- so we need to include this always for 9.5+
+-- Intentionally not indenting DDL cause our uninstall process can't pick it up
+-- also not dollar quoting functions inside DO since gets tripped up by perl upgrade script parser
+DO  language 'plpgsql' $$
+BEGIN
+	-- add geography brin ops if missing and are running a newer than 9.4 --
+	-- use wildcard since if schema postgis is installed is not in search path, will have schema name in front
+	IF NOT EXISTS(SELECT 1 from pg_operator WHERE oprname = '&&' AND 
+		oprleft::regtype::text LIKE '%gidx' AND oprright::regtype::text LIKE '%geography' ) THEN
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG    = gidx,
+  RIGHTARG   = geography,
+  PROCEDURE  = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_geog(geography, gidx)
+RETURNS boolean
+AS 
+  'SELECT $2 OPERATOR(@extschema@.&&) $1;'
+ LANGUAGE SQL IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG    = geography,
+  RIGHTARG   = gidx,
+  PROCEDURE  = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+  LEFTARG   = gidx,
+  RIGHTARG  = gidx,
+  PROCEDURE = overlaps_geog,
+  COMMUTATOR = &&
+);
+
+--------------------------------
+-- the OpFamily               --
+--------------------------------
+
+-- Availability: 2.3.0
+CREATE OPERATOR FAMILY brin_geography_inclusion_ops USING brin;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION geog_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+        AS 'MODULE_PATHNAME','geog_brin_inclusion_add_value'
+        LANGUAGE 'c';
+
+-- Availability: 2.3.0
+CREATE OPERATOR CLASS brin_geography_inclusion_ops
+  DEFAULT FOR TYPE geography
+  USING brin
+  FAMILY brin_geography_inclusion_ops AS
+    OPERATOR      3        &&(geography, geography),
+    FUNCTION      1        brin_inclusion_opcinfo(internal) ,
+    FUNCTION      2        geog_brin_inclusion_add_value(internal, internal, internal, internal) ,
+    FUNCTION      3        brin_inclusion_consistent(internal, internal, internal) ,
+    FUNCTION      4        brin_inclusion_union(internal, internal, internal) ,
+  STORAGE gidx;
+
+ALTER OPERATOR FAMILY brin_geography_inclusion_ops USING brin ADD
+    OPERATOR      3         &&(gidx, geography),
+
+    OPERATOR      3         &&(geography, gidx),
+
+    OPERATOR      3         &&(gidx, gidx);
+
+    END IF;
+  
+END;
+$$;
+---------------------------------------------------------------
+-- END
+---------------------------------------------------------------
+#endif

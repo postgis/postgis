@@ -1,0 +1,336 @@
+#include "sqldefines.h"
+#if POSTGIS_PGSQL_VERSION > 94
+--------------------------------------------------------------------
+-- BRIN support start                                                --
+--------------------------------------------------------------------
+
+---------------------------------
+-- 2d operators                --
+---------------------------------
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION contains_2d(box2df, geometry)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_contains_box2df_geom_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION is_contained_2d(box2df, geometry)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_within_box2df_geom_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_2d(box2df, geometry)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_overlaps_box2df_geom_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_2d(box2df, box2df)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION contains_2d(box2df, box2df)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION is_contained_2d(box2df, box2df)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_contains_box2df_box2df_2d'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- logic to create missing brin operators
+-- note we can't use CREATE IF NOT EXISTS since not currently supported for operators or families
+-- an earlier 2.3+ might miss this if doing upgrade from < 9.5 to 9.5+
+-- so we need to include this always for 9.5+
+-- Intentionally not indenting DDL cause our uninstall process can't pick it up
+DO  language 'plpgsql' $$
+BEGIN
+	-- add geometry brin ops if missing and are running a newer than 9.4 --
+	-- use wildcard since if schema postgis is installed in is not in search path, will have schema name in front
+	IF NOT EXISTS(SELECT 1 from pg_operator WHERE oprname = '~' AND 
+		oprleft::regtype::text LIKE '%box2df' AND oprright::regtype::text LIKE '%geometry' ) THEN
+-- Availability: 2.3.0
+CREATE OPERATOR ~ (
+	LEFTARG    = box2df,
+	RIGHTARG   = geometry,
+	PROCEDURE  = contains_2d,
+	COMMUTATOR = @
+);
+	END IF;
+	
+	IF NOT EXISTS(SELECT 1 from pg_operator WHERE oprname = '@' AND 
+		oprleft::regtype::text LIKE '%box2df' AND oprright::regtype::text LIKE '%geometry' ) THEN
+
+-- Availability: 2.3.0
+CREATE OPERATOR @ (
+	LEFTARG    = box2df,
+	RIGHTARG   = geometry,
+	PROCEDURE  = is_contained_2d,
+	COMMUTATOR = ~
+);
+
+-- Availability: 2.3.0
+CREATE OPERATOR && (
+	LEFTARG    = box2df,
+	RIGHTARG   = geometry,
+	PROCEDURE  = overlaps_2d,
+	COMMUTATOR = &&
+);
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION contains_2d(geometry, box2df)
+RETURNS boolean
+AS 
+	'SELECT $2 OPERATOR(@extschema@.@) $1;'
+LANGUAGE SQL IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION is_contained_2d(geometry, box2df)
+RETURNS boolean
+AS
+	'SELECT $2 OPERATOR(@extschema@.~) $1;'
+LANGUAGE SQL IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_2d(geometry, box2df)
+RETURNS boolean
+AS 
+	'SELECT $2 OPERATOR(@extschema@.&&) $1;'
+LANGUAGE SQL IMMUTABLE STRICT;
+
+
+-- Availability: 2.3.0
+CREATE OPERATOR ~ (
+	LEFTARG = geometry,
+	RIGHTARG = box2df,
+	COMMUTATOR = @,
+	PROCEDURE  = contains_2d
+);
+-- Availability: 2.3.0
+CREATE OPERATOR @ (
+	LEFTARG = geometry,
+	RIGHTARG = box2df,
+	COMMUTATOR = ~,
+	PROCEDURE = is_contained_2d
+);
+-- Availability: 2.3.0		
+CREATE OPERATOR && (
+	LEFTARG    = geometry,
+	RIGHTARG   = box2df,
+	PROCEDURE  = overlaps_2d,
+	COMMUTATOR = &&
+);
+-- Availability: 2.3.0		
+CREATE OPERATOR && (
+	LEFTARG   = box2df,
+	RIGHTARG  = box2df,
+	PROCEDURE = overlaps_2d,
+	COMMUTATOR = &&
+);
+-- Availability: 2.3.0		
+CREATE OPERATOR @ (
+	LEFTARG   = box2df,
+	RIGHTARG  = box2df,
+	PROCEDURE = is_contained_2d,
+	COMMUTATOR = ~
+);
+-- Availability: 2.3.0		
+CREATE OPERATOR ~ (
+	LEFTARG   = box2df,
+	RIGHTARG  = box2df,
+	PROCEDURE = contains_2d,
+	COMMUTATOR = @
+);
+	END IF;
+	
+----------------------------
+-- nd operators           --
+----------------------------
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_nd(gidx, geometry)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_geom_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_nd(gidx, gidx)
+RETURNS boolean
+AS 'MODULE_PATHNAME','gserialized_gidx_gidx_overlaps'
+LANGUAGE 'c' IMMUTABLE STRICT;
+
+	IF NOT EXISTS(SELECT 1 from pg_operator WHERE oprname = '&&&' AND 
+		oprleft::regtype::text LIKE '%gidx' AND oprright::regtype::text LIKE '%geometry' ) THEN
+
+-- Availability: 2.3.0		
+CREATE OPERATOR &&& (
+	LEFTARG    = gidx,
+	RIGHTARG   = geometry,
+	PROCEDURE  = overlaps_nd,
+	COMMUTATOR = &&&
+);
+	
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION overlaps_nd(geometry, gidx)
+RETURNS boolean
+AS 
+	'SELECT $2 OPERATOR(@extschema@.&&&) $1;'
+LANGUAGE SQL IMMUTABLE STRICT;
+
+	
+-- Availability: 2.3.0
+CREATE OPERATOR &&& (
+	LEFTARG    = geometry,
+	RIGHTARG   = gidx,
+	PROCEDURE  = overlaps_nd,
+	COMMUTATOR = &&&
+);
+
+
+-- Availability: 2.3.0
+CREATE OPERATOR &&& (
+	LEFTARG   = gidx,
+	RIGHTARG  = gidx,
+	PROCEDURE = overlaps_nd,
+	COMMUTATOR = &&&
+);
+
+	END IF;
+	
+	------------------------------
+	-- Create operator families --
+	------------------------------
+	
+	-------------
+	-- 2D case --
+	-------------
+	IF NOT EXISTS(SELECT 1 FROM pg_opfamily WHERE opfname = 'brin_geometry_inclusion_ops_2d') THEN
+	
+CREATE OPERATOR FAMILY brin_geometry_inclusion_ops_2d USING brin;
+
+	END IF;
+	
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION geom2d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+	AS 'MODULE_PATHNAME','geom2d_brin_inclusion_add_value'
+	LANGUAGE 'c';
+	
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+	AS 'MODULE_PATHNAME','geom3d_brin_inclusion_add_value'
+	LANGUAGE 'c';
+	
+-- Availability: 2.3.0
+CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
+	AS 'MODULE_PATHNAME','geom4d_brin_inclusion_add_value'
+	LANGUAGE 'c';
+		
+	IF NOT EXISTS(SELECT 1 FROM pg_opclass WHERE opcname = 'brin_geometry_inclusion_ops_2d') THEN
+	
+-- Availability: 2.3.0
+CREATE OPERATOR CLASS brin_geometry_inclusion_ops_2d
+  DEFAULT FOR TYPE geometry
+  USING brin
+  FAMILY brin_geometry_inclusion_ops_2d AS
+    OPERATOR      3        &&(geometry, geometry),
+    OPERATOR      7        ~(geometry, geometry),
+    OPERATOR      8        @(geometry, geometry),
+    FUNCTION      1        brin_inclusion_opcinfo(internal) ,
+    FUNCTION      2        geom2d_brin_inclusion_add_value(internal, internal, internal, internal) ,
+    FUNCTION      3        brin_inclusion_consistent(internal, internal, internal) ,
+    FUNCTION      4        brin_inclusion_union(internal, internal, internal) ,
+  STORAGE box2df;
+
+ALTER OPERATOR FAMILY brin_geometry_inclusion_ops_2d USING brin ADD
+    OPERATOR      3         &&(box2df, geometry),
+    OPERATOR      7         ~(box2df, geometry),
+    OPERATOR      8         @(box2df, geometry),
+
+    OPERATOR      3         &&(geometry, box2df),
+    OPERATOR      7         ~(geometry, box2df),
+    OPERATOR      8         @(geometry, box2df),
+
+    OPERATOR      3         &&(box2df, box2df),
+    OPERATOR      7         ~(box2df, box2df),
+    OPERATOR      8         @(box2df, box2df);
+
+	END IF;
+	
+		-------------
+		-- 3D case --
+		-------------
+	IF NOT EXISTS(SELECT 1 FROM pg_opfamily WHERE opfname = 'brin_geometry_inclusion_ops_3d') THEN
+-- Availability: 2.3.0
+CREATE OPERATOR FAMILY brin_geometry_inclusion_ops_3d USING brin;
+
+	END IF;	
+	
+	IF NOT EXISTS(SELECT 1 FROM pg_opclass WHERE opcname = 'brin_geometry_inclusion_ops_3d') THEN
+	
+-- Availability: 2.3.0
+CREATE OPERATOR CLASS brin_geometry_inclusion_ops_3d
+  FOR TYPE geometry
+  USING brin
+  FAMILY brin_geometry_inclusion_ops_3d AS
+    OPERATOR      3        &&&(geometry, geometry),
+    FUNCTION      1        brin_inclusion_opcinfo(internal) ,
+    FUNCTION      2        geom3d_brin_inclusion_add_value(internal, internal, internal, internal) ,
+    FUNCTION      3        brin_inclusion_consistent(internal, internal, internal) ,
+    FUNCTION      4        brin_inclusion_union(internal, internal, internal) ,
+  STORAGE gidx;
+
+ALTER OPERATOR FAMILY brin_geometry_inclusion_ops_3d USING brin ADD
+    OPERATOR      3         &&&(gidx, geometry),
+
+    OPERATOR      3         &&&(geometry, gidx),
+
+    OPERATOR      3         &&&(gidx, gidx);
+	
+	END IF;
+	
+	
+		-------------
+		-- 4D case --
+		-------------
+	IF NOT EXISTS(SELECT 1 FROM pg_opfamily WHERE opfname = 'brin_geometry_inclusion_ops_4d') THEN
+	
+-- Availability: 2.3.0
+CREATE OPERATOR FAMILY brin_geometry_inclusion_ops_4d USING brin;
+
+-- Availability: 2.3.0
+CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d
+  FOR TYPE geometry
+  USING brin
+  FAMILY brin_geometry_inclusion_ops_4d AS
+    OPERATOR      3        &&&(geometry, geometry),
+    FUNCTION      1        brin_inclusion_opcinfo(internal) ,
+    FUNCTION      2        geom4d_brin_inclusion_add_value(internal, internal, internal, internal) ,
+    FUNCTION      3        brin_inclusion_consistent(internal, internal, internal) ,
+    FUNCTION      4        brin_inclusion_union(internal, internal, internal) ,
+  STORAGE gidx;
+
+ALTER OPERATOR FAMILY brin_geometry_inclusion_ops_4d USING brin ADD
+    OPERATOR      3         &&&(gidx, geometry),
+
+    OPERATOR      3         &&&(geometry, gidx),
+
+    OPERATOR      3         &&&(gidx, gidx);
+	
+	END IF;
+		
+---------------------------------------------------------------
+-- END
+---------------------------------------------------------------
+END;
+$$;
+
+-----------------------
+-- BRIN support end
+-----------------------
+#endif
