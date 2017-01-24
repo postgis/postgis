@@ -12,6 +12,7 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "c.h" /* for UINT64_FORMAT and uint64 */
 #include "utils/elog.h"
 #include "utils/memutils.h" /* for TopMemoryContext */
 #include "utils/array.h" /* for ArrayType */
@@ -1436,9 +1437,9 @@ cb_insertNodes( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %u rows, expected %d",
-            SPI_processed, numelems);
-	  return 0;
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
+      (uint64)SPI_processed, numelems);
+    return 0;
   }
 
   /* Set node_id (could skip this if none had it set to -1) */
@@ -1493,9 +1494,9 @@ cb_insertEdges( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertEdges query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %u rows, expected %d",
-            SPI_processed, numelems);
-	  return -1;
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
+            (uint64)SPI_processed, numelems);
+    return -1;
   }
 
   if ( needsEdgeIdReturn )
@@ -1551,9 +1552,9 @@ cb_insertFaces( const LWT_BE_TOPOLOGY* topo,
   if ( SPI_processed ) topo->be_data->data_changed = true;
   POSTGIS_DEBUGF(1, "cb_insertFaces query processed %d rows", SPI_processed);
   if ( SPI_processed != numelems ) {
-		cberror(topo->be_data, "processed %u rows, expected %d",
-            SPI_processed, numelems);
-	  return -1;
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected %d",
+            (uint64)SPI_processed, numelems);
+    return -1;
   }
 
   if ( needsFaceIdReturn )
@@ -1917,8 +1918,9 @@ cb_getNextEdgeId( const LWT_BE_TOPOLOGY* topo )
   if ( SPI_processed ) topo->be_data->data_changed = true;
 
   if ( SPI_processed != 1 ) {
-		cberror(topo->be_data, "processed %d rows, expected 1", SPI_processed);
-	  return -1;
+    cberror(topo->be_data, "processed " UINT64_FORMAT " rows, expected 1",
+            (uint64)SPI_processed);
+    return -1;
   }
 
   dat = SPI_getbinval( SPI_tuptable->vals[0],
