@@ -106,6 +106,8 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	int sec_dec_digits = 0;
 	int sec_piece = -1;
 
+	int round_pow = 0;
+
 	int format_length = ((NULL == format) ? 0 : strlen(format));
 
 	char * result;
@@ -313,8 +315,8 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 	degrees = val;
 	if (min_digits > 0)
 	{
-		degrees = (long)degrees;
-		minutes = fmod(val * 10, 10) * 6;
+		/* Break degrees to integer and use fraction for minutes */
+		minutes = modf(val, &degrees) * 60;
 	}
 	if (sec_digits > 0)
 	{
@@ -322,8 +324,17 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 		{
 			lwerror("Bad format, cannot include seconds (SS.SSS) without including minutes (MM.MMM).");
 		}
-		minutes = (long)minutes;
-		seconds = (val - (degrees + (minutes / 60))) * 3600;
+		seconds = modf(minutes, &minutes) * 60;
+		if (sec_piece >= 0)
+		{
+			/* See if the formatted seconds round up to 60. If so, increment minutes and reset seconds. */
+			round_pow = pow(10, sec_dec_digits);
+			if (floorf(seconds * round_pow) / round_pow >= 60)
+			{
+				minutes += 1;
+				seconds = 0;
+			}
+		}
 	}
 
 	/* Handle the compass direction.  If not using compass dir, display degrees as a positive/negative number. */
