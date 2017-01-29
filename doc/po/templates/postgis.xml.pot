@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2015-09-29 12:21+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -29,13 +29,21 @@ msgstr ""
 #. Tag: affiliation
 #: postgis.xml:138
 #, no-c-format
-msgid "<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</ulink></orgname> <address><city>Victoria</city> <state>British Columbia</state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></address>"
+msgid ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
 msgstr ""
 
 #. Tag: para
 #: postgis.xml:152
 #, no-c-format
-msgid "PostGIS is an extension to the PostgreSQL object-relational database system which allows GIS (Geographic Information Systems) objects to be stored in the database. PostGIS includes support for GiST-based R-Tree spatial indexes, and functions for analysis and processing of GIS objects."
+msgid ""
+"PostGIS is an extension to the PostgreSQL object-relational database system "
+"which allows GIS (Geographic Information Systems) objects to be stored in "
+"the database. PostGIS includes support for GiST-based R-Tree spatial "
+"indexes, and functions for analysis and processing of GIS objects."
 msgstr ""
 
 #. Tag: para
@@ -47,6 +55,10 @@ msgstr ""
 #. Tag: para
 #: postgis.xml:162
 #, no-c-format
-msgid "This work is licensed under a <ulink url=\"http://creativecommons.org/licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</ulink>. Feel free to use this material any way you like, but we ask that you attribute credit to the PostGIS Project and wherever possible, a link back to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
+msgid ""
+"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
+"ulink>. Feel free to use this material any way you like, but we ask that you "
+"attribute credit to the PostGIS Project and wherever possible, a link back "
+"to <ulink url=\"http://postgis.net\">http://postgis.net</ulink>."
 msgstr ""
-

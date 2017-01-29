@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2016-07-22 07:12+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -767,15 +767,15 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:211
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The function is not unique error happens if one of your arguments is a "
 "textual representation of a geometry instead of a geometry. In these cases, "
 "PostgreSQL marks the textual representation as an unknown type, which means "
 "it can fall into the st_intersects(raster, geometry) or st_intersects(raster,"
 "raster) thus resulting in a non-unique case since both functions can in "
-"theory support your request. To prevent this, you need to cast the geometry "
-"to a geometry."
+"theory support your request. To prevent this, you need to cast the textual "
+"representation of the geometry to a geometry."
 msgstr ""
 "사용자의 인수 가운데 하나가 도형이 아니라 도형의 문자형 표현식일 경우 "
 "'function is not unique' 오류가 발생합니다. 이런 경우 PostgreSQL은 문자형 표"

@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-15 12:15+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-25 11:23+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -229,7 +229,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:52
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
 "1 1, 0 1 0, 0 0 0)),\n"
@@ -242,18 +242,18 @@ msgid ""
 "                        POLYHEDRALSURFACE"
 msgstr ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
-"1 1, 0 1 0, 0 0 0)), \n"
+"1 1, 0 1 0, 0 0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )'));\n"
-"                        -- 結果\n"
+"                        -- 結果 --\n"
 "                        POLYHEDRALSURFACE"
 
 #. Tag: programlisting
 #: reference_accessor.xml:53
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT GeometryType(geom) as result\n"
 "  FROM\n"
@@ -277,16 +277,16 @@ msgid ""
 msgstr ""
 "SELECT GeometryType(geom) as result\n"
 "  FROM\n"
-"    (SELECT \n"
+"    (SELECT\n"
 "       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0, \n"
-"                0 0 1, \n"
-"                0 1 0, \n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
 "                0 0 0\n"
 "            )), ((\n"
-"                0 0 0, \n"
-"                0 1 0, \n"
-"                1 1 0, \n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
 "                0 0 0\n"
 "            ))\n"
 "            )')  AS geom\n"
@@ -399,7 +399,7 @@ msgstr "Enhanced: 2.1.0で三角対応が導入されました。"
 #: reference_accessor.xml:112
 #, no-c-format
 msgid "Linestring with boundary points overlaid"
-msgstr ""
+msgstr "境界ポイントを重ねたラインストリング"
 
 #. Tag: programlisting
 #: reference_accessor.xml:115
@@ -409,6 +409,9 @@ msgid ""
 "FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) "
 "As f;"
 msgstr ""
+"SELECT ST_Boundary(geom)\n"
+"FROM (SELECT 'LINESTRING(100 150,50 60, 70 80, 160 170)'::geometry As geom) "
+"As f;"
 
 #. Tag: screen
 #: reference_accessor.xml:116
@@ -417,12 +420,14 @@ msgid ""
 "-- ST_AsText output\n"
 "MULTIPOINT(100 150,160 170)"
 msgstr ""
+"-- ST_AsText 出力\n"
+"MULTIPOINT(100 150,160 170)"
 
 #. Tag: para
 #: reference_accessor.xml:124
 #, no-c-format
 msgid "polygon holes with boundary multilinestring"
-msgstr ""
+msgstr "境界マルチラインストリングを重ねたポリゴンの穴"
 
 #. Tag: programlisting
 #: reference_accessor.xml:127
@@ -435,6 +440,12 @@ msgid ""
 "        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) "
 "As f;"
 msgstr ""
+"SELECT ST_Boundary(geom)\n"
+"FROM (SELECT\n"
+"'POLYGON (( 10 130, 50 190, 110 190, 140 150, 150 80, 100 10, 20 40, 10 "
+"130 ),\n"
+"        ( 70 40, 100 50, 120 80, 80 110, 50 90, 70 40 ))'::geometry As geom) "
+"As f;"
 
 #. Tag: screen
 #: reference_accessor.xml:128
@@ -444,6 +455,9 @@ msgid ""
 "MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
 "        (70 40,100 50,120 80,80 110,50 90,70 40))"
 msgstr ""
+"-- ST_AsText 出力 --\n"
+"MULTILINESTRING((10 130,50 190,110 190,140 150,150 80,100 10,20 40,10 130),\n"
+"        (70 40,100 50,120 80,80 110,50 90,70 40))"
 
 #. Tag: programlisting
 #: reference_accessor.xml:136
@@ -511,6 +525,7 @@ msgstr ""
 msgid ""
 ", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ""
+", <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refname
 #: reference_accessor.xml:147
@@ -850,7 +865,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.15"
 
 #. Tag: programlisting
 #: reference_accessor.xml:333
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));\n"
 " st_astext\n"
@@ -912,7 +927,7 @@ msgstr ""
 "--------------------------------------------------------------\n"
 " POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))\n"
 "(1 row)\n"
-"        \n"
+"\n"
 "SELECT Box3D(geom), Box2D(geom), ST_AsText(ST_Envelope(geom)) As "
 "envelopewkt\n"
 "        FROM (SELECT 'POLYGON((0 0, 0 1000012333334.34545678, 1.0000001 1, "
@@ -1305,7 +1320,7 @@ msgstr "多面体サーフェス、TIN、三角形の例"
 
 #. Tag: programlisting
 #: reference_accessor.xml:514
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Polyhedral surface example\n"
 "-- Break a Polyhedral surface into its faces\n"
@@ -1324,15 +1339,15 @@ msgid ""
 " POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))"
 msgstr ""
 "-- 多面体サーフェスの例\n"
-"-- 多面体サーフェスをフェイスにする\n"
+"-- 多面体サーフェスをフェイスに分解します。\n"
 "SELECT ST_AsEWKT(ST_GeometryN(p_geom,3)) As geom_ewkt\n"
-"  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE( \n"
-"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  \n"
-"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  \n"
-"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  \n"
-"((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) \n"
+"  FROM (SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(\n"
+"((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1))\n"
 ")')  AS p_geom )  AS a;\n"
 "\n"
 "                geom_ewkt\n"
@@ -1341,7 +1356,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:516
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- TIN --\n"
 "SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
@@ -1365,24 +1380,24 @@ msgid ""
 "-------------------------------------\n"
 " TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
 msgstr ""
-"-- TIN --                \n"
+"-- TIN --\n"
 "SELECT ST_AsEWKT(ST_GeometryN(geom,2)) as wkt\n"
 "  FROM\n"
-"    (SELECT \n"
+"    (SELECT\n"
 "       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0, \n"
-"                0 0 1, \n"
-"                0 1 0, \n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
 "                0 0 0\n"
 "            )), ((\n"
-"                0 0 0, \n"
-"                0 1 0, \n"
-"                1 1 0, \n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
 "                0 0 0\n"
 "            ))\n"
 "            )')  AS geom\n"
 "    ) AS g;\n"
-"-- 結果 --\n"
+"-- 結果--\n"
 "                 wkt\n"
 "-------------------------------------\n"
 " TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
@@ -1458,7 +1473,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:558 reference_accessor.xml:560
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
 "1 1, 0 1 0, 0 0 0)),\n"
@@ -1471,18 +1486,18 @@ msgid ""
 "                        ST_PolyhedralSurface"
 msgstr ""
 "SELECT ST_GeometryType(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 "
-"1 1, 0 1 0, 0 0 0)), \n"
+"1 1, 0 1 0, 0 0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )'));\n"
-"                        -- 結果\n"
+"                        --結果 --\n"
 "                        ST_PolyhedralSurface"
 
 #. Tag: programlisting
 #: reference_accessor.xml:562
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeometryType(geom) as result\n"
 "  FROM\n"
@@ -1506,16 +1521,16 @@ msgid ""
 msgstr ""
 "SELECT ST_GeometryType(geom) as result\n"
 "  FROM\n"
-"    (SELECT \n"
+"    (SELECT\n"
 "       ST_GeomFromEWKT('TIN (((\n"
-"                0 0 0, \n"
-"                0 0 1, \n"
-"                0 1 0, \n"
+"                0 0 0,\n"
+"                0 0 1,\n"
+"                0 1 0,\n"
 "                0 0 0\n"
 "            )), ((\n"
-"                0 0 0, \n"
-"                0 1 0, \n"
-"                1 1 0, \n"
+"                0 0 0,\n"
+"                0 1 0,\n"
+"                1 1 0,\n"
 "                0 0 0\n"
 "            ))\n"
 "            )')  AS geom\n"
@@ -1740,7 +1755,7 @@ msgstr "多面体サーフェスの例"
 
 #. Tag: programlisting
 #: reference_accessor.xml:682
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- A cube --\n"
 "                SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 "
@@ -1770,10 +1785,10 @@ msgid ""
 msgstr ""
 "-- 立方体 --\n"
 "                SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 "
-"0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
+"0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )'));\n"
 "\n"
@@ -1782,12 +1797,12 @@ msgstr ""
 " t\n"
 "\n"
 "\n"
-" -- 立方体と同じですが側面の一つがありません --\n"
+" -- 立方体のようなものだけれども側面が一つ無いもの--\n"
 " SELECT ST_IsClosed(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
-"1, 0 1 0, 0 0 0)), \n"
+"1, 0 1 0, 0 0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)) )'));\n"
 "\n"
 " st_isclosed\n"
@@ -2329,6 +2344,8 @@ msgid ""
 "Neither OGC-SFS nor SQL-MM specifications include a flag argument for "
 "ST_IsValid. The flag is a PostGIS extension."
 msgstr ""
+"OGC-SFSもSQL-MMもST_IsValidでフラグ引数を含む仕様になっていません。フラグは"
+"PostGIS独自拡張です。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:953
@@ -2601,7 +2618,7 @@ msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要 "
 
 #. Tag: programlisting
 #: reference_accessor.xml:1069
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--First 3 Rejects from a successful quintuplet experiment\n"
 "SELECT gid, reason(ST_IsValidDetail(the_geom)), "
@@ -2642,9 +2659,9 @@ msgid ""
 "-------+--------+----------\n"
 " t     |        |"
 msgstr ""
-"-- 試験に成功した5つのレコードを除いた最初の3つのレコード\n"
+"-- 成功した五つの実験から不合格となったもののうち最初の三つ\n"
 "SELECT gid, reason(ST_IsValidDetail(the_geom)), "
-"ST_AsText(location(ST_IsValidDetail(the_geom))) as location \n"
+"ST_AsText(location(ST_IsValidDetail(the_geom))) as location\n"
 "FROM\n"
 "(SELECT ST_MakePolygon(ST_ExteriorRing(e.buff), ST_Accum(f.line)) As "
 "the_geom, gid\n"
@@ -2673,7 +2690,7 @@ msgstr ""
 " 5340 | Self-intersection | POINT(42 5)\n"
 " 5350 | Self-intersection | POINT(52 5)\n"
 "\n"
-"-- 単純なものの例\n"
+" -- 単純な例\n"
 "SELECT * FROM ST_IsValidDetail('LINESTRING(220227 150406,2220227 "
 "150407,222020 150410)');\n"
 "\n"
@@ -3052,10 +3069,9 @@ msgstr "ST_NumInteriorRings"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1291
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Return the number of interior rings of a polygon geometry."
-msgstr ""
-"ジオメトリ内のポリゴンの内環の数を返します。ST_NumInteriorRingsと同義です。"
+msgstr "ポリゴンジオメトリの内環の数を返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1296
@@ -3069,13 +3085,13 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1306
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the number of interior rings of a polygon geometry. Return NULL if "
 "the geometry is not a polygon."
 msgstr ""
-"ポリゴンのN番目の内環を返します。ジオメトリがポリゴンでないかNが範囲外の場合"
-"はNULLを返します。"
+"ポリゴンジオメトリの内環の数を返します。ジオメトリがポリゴンでない場合には、"
+"NULLを返します。"
 
 #. Tag: para
 #: reference_accessor.xml:1311
@@ -3085,13 +3101,13 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.2.5"
 
 #. Tag: para
 #: reference_accessor.xml:1312
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Changed: 2.0.0 - in prior versions it would allow passing a MULTIPOLYGON, "
 "returning the number of interior rings of first POLYGON."
 msgstr ""
-"Changed: 2.0.0 前の版では、マルチポリゴンの最初のポリゴンの内環の数を返しまし"
-"た。"
+"Changed: 2.0.0 - 以前の版では、MULTIPOLYGONを渡して最初のPOLYGONの内環の数を"
+"返すことができました。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1318
@@ -3196,7 +3212,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: ?"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1381
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
 "1, 0 1 0, 0 0 0)),\n"
@@ -3209,13 +3225,13 @@ msgid ""
 "                6"
 msgstr ""
 "SELECT ST_NumPatches(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 "
-"1, 0 1 0, 0 0 0)), \n"
+"1, 0 1 0, 0 0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )'));\n"
-"                -- 結果\n"
+"                -- 結果 --\n"
 "                6"
 
 #. Tag: refname
@@ -3336,7 +3352,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_accessor.xml:1477
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Extract the 2nd face of the polyhedral surface\n"
 "SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt\n"
@@ -3353,14 +3369,14 @@ msgid ""
 "---+-----------------------------------------\n"
 " POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))"
 msgstr ""
-"-- 多面体サーフェスの二つ目のフェイスを抽出\n"
+"-- 多面体サーフェスの2番目のフェイスを抽出\n"
 "SELECT ST_AsEWKT(ST_PatchN(geom, 2)) As geomewkt\n"
 "FROM (\n"
 "VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
-"0 0)), \n"
+"0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
 "0 0 1)) )')) ) As foo(geom);\n"
 "\n"
@@ -3386,14 +3402,15 @@ msgstr "ST_PointN"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1492
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the Nth point in the first LineString or circular LineString in the "
 "geometry. Negative values are counted backwards from the end of the "
 "LineString. Returns NULL if there is no linestring in the geometry."
 msgstr ""
-"ジオメトリの最初のラインストリングまたは曲線ストリングのN番目のポイントを返し"
-"ます。ラインストリングが存在しない場合はNULLを返します。"
+"ラインストリングまたは曲線ストリングのN番目の点を返します。負数はラインストリ"
+"ングの終端から逆方向に遡って数えます。ジオメトリにラインストリングが無い場合"
+"には、NULLを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1499
@@ -3409,26 +3426,28 @@ msgstr ""
 
 #. Tag: para
 #: reference_accessor.xml:1510
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Return the Nth point in a single linestring or circular linestring in the "
 "geometry. Negative values are counted backwards from the end of the "
 "LineString, so that -1 is the last point. Returns NULL if there is no "
 "linestring in the geometry."
 msgstr ""
-"ジオメトリの最初のラインストリングまたは曲線ストリングのN番目のポイントを返し"
-"ます。ラインストリングが存在しない場合はNULLを返します。"
+"ラインストリングまたは曲線ストリングのN番目の点を返します。負数はラインストリ"
+"ングの終端から逆方向に遡って数えます。-1は終端を指します。ジオメトリにライン"
+"ストリングが無い場合には、NULLを返します。"
 
 #. Tag: para
 #: reference_accessor.xml:1515
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Index is 1-based as for OGC specs since version 0.8.0. Backward indexing "
 "(negative index) is not in OGC Previous versions implemented this as 0-based "
 "instead."
 msgstr ""
-"OGC仕様のため0.8.0版からインデクスを1始まりにしています。これより前の版では0"
-"始まりになっています。"
+"OGC仕様のため0.8.0版からインデックスを1始まりにしています。これより前の版では"
+"0はじまりになっています。後方インデックス (負数インデックス)はOGC仕様ではあり"
+"ません。"
 
 #. Tag: para
 #: reference_accessor.xml:1521
@@ -3465,10 +3484,11 @@ msgstr ""
 #, no-c-format
 msgid "Changed: 2.3.0 : negative indexing available (-1 is last point)"
 msgstr ""
+"Changed: 2.3.0 : 負数インデックスが有効になりました (-1は終端を指します)"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1542
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Extract all POINTs from a LINESTRING\n"
 "SELECT ST_AsText(\n"
@@ -3501,7 +3521,7 @@ msgid ""
 "----------\n"
 "\"POINT Z (1 1 1)\""
 msgstr ""
-"-- ラインストリングの全てのポイントの抽出\n"
+"-- LINESTRINGから全てのPOINTを抽出\n"
 "SELECT ST_AsText(\n"
 "   ST_PointN(\n"
 "          column1,\n"
@@ -3516,25 +3536,33 @@ msgstr ""
 " POINT(2 2)\n"
 "(3 rows)\n"
 "\n"
-"-- 曲線ストリングの例\n"
+"-- CIRCULARSTRINGの例\n"
 "SELECT ST_AsText(ST_PointN(ST_GeomFromText('CIRCULARSTRING(1 2, 3 2, 1 "
 "2)'),2));\n"
 "\n"
 "st_astext\n"
 "----------\n"
-"POINT(3 2)"
+"POINT(3 2)\n"
+"\n"
+"SELECT st_astext(f)\n"
+"FROM ST_GeometryFromtext('LINESTRING(0 0 0, 1 1 1, 2 2 2)') as g\n"
+"        ,ST_PointN(g, -2) AS f -- 1 based index\n"
+"\n"
+"st_astext\n"
+"----------\n"
+"\"POINT Z (1 1 1)\""
 
 #. Tag: refname
 #: reference_accessor.xml:1554
 #, no-c-format
 msgid "ST_Points"
-msgstr ""
+msgstr "ST_Points"
 
 #. Tag: refpurpose
 #: reference_accessor.xml:1555
 #, no-c-format
 msgid "Returns a MultiPoint containing all of the coordinates of a geometry."
-msgstr ""
+msgstr "ジオメトリの全ての座標値からなるマルチポイントを返します。"
 
 #. Tag: funcprototype
 #: reference_accessor.xml:1561
@@ -3543,6 +3571,8 @@ msgid ""
 "<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
 "<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 msgstr ""
+"<funcdef>geometry <function>ST_Points</function></funcdef> <paramdef> "
+"<type>geometry</type> <parameter>geom</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_accessor.xml:1574
@@ -3553,18 +3583,22 @@ msgid ""
 "and end points of ring geometries. (If this behavior is undesired, "
 "duplicates may be removed using <xref linkend=\"ST_RemoveRepeatedPoints\"/>)."
 msgstr ""
+"ジオメトリの全ての座標値からなるマルチポイントを返します。入力ジオメトリの重"
+"複ポイントを削除せず、環ジオメトリの開始点と終了点も削除しません (この挙動を"
+"望まない場合には<xref linkend=\"ST_RemoveRepeatedPoints\"/>を使って消しま"
+"す)。"
 
 #. Tag: para
 #: reference_accessor.xml:1582
 #, no-c-format
 msgid "M and Z ordinates will be preserved if present."
-msgstr ""
+msgstr "M値とZ値は、存在する場合には保存されます。"
 
 #. Tag: para
 #: reference_accessor.xml:1589
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Availability: 2.3.0"
-msgstr "Availability: 2.2.0"
+msgstr "Availability: 2.3.0"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1596
@@ -3576,6 +3610,11 @@ msgid ""
 "--result\n"
 "MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)"
 msgstr ""
+"SELECT ST_AsText(ST_Points('POLYGON Z ((30 10 4,10 30 5,40 40 6, 30 "
+"10))'));\n"
+"\n"
+"-- 結果\n"
+"MULTIPOINT Z (30 10 4,10 30 5,40 40 6, 30 10 4)"
 
 #. Tag: refname
 #: reference_accessor.xml:1607
@@ -3860,11 +3899,11 @@ msgstr "Enhanced: 2.1.0 空間参照系を持つかを示すSフラグが追加�
 #: reference_accessor.xml:1743
 #, no-c-format
 msgid "Enhanced: 2.2.0 Added support for TIN and Curves"
-msgstr ""
+msgstr "Enhanced: 2.2.0 TINと曲線の対応が追加されました。"
 
 #. Tag: programlisting
 #: reference_accessor.xml:1749
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,\n"
 "        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) "
@@ -3892,7 +3931,7 @@ msgstr ""
 "=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,\n"
 "        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) "
 "geog;\n"
-"            geom             |          geog    \n"
+"            geom             |          geog\n"
 "-----------------------------+--------------------------\n"
 " LineString[B] with 2 points | Polygon[BGS] with 1 rings\n"
 "                             | ring 0 has 5 points\n"
@@ -4856,20 +4895,3 @@ msgstr ""
 ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_XMin\"/>, <xref "
 "linkend=\"ST_XMax\"/>, <xref linkend=\"ST_YMax\"/>, <xref linkend=\"ST_YMin"
 "\"/>, <xref linkend=\"ST_ZMax\"/>"
-
-#~ msgid ""
-#~ "Return the number of interior rings of the a polygon in the geometry. "
-#~ "This will work with POLYGON and return NULL for a MULTIPOLYGON type or "
-#~ "any other type"
-#~ msgstr ""
-#~ "ジオメトリのポリゴンの内環数を返します。この関数はポリゴンで動作します。マ"
-#~ "ルチポリゴンや、それ以外の場合には、NULLを返します。"
-
-#~ msgid ""
-#~ "Return the number of interior rings of the first polygon in the geometry. "
-#~ "This will work with both POLYGON and MULTIPOLYGON types but only looks at "
-#~ "the first polygon. Return NULL if there is no polygon in the geometry."
-#~ msgstr ""
-#~ "ジオメトリの最初のポリゴンの内環数を返します。この関数はポリゴンとマルチポ"
-#~ "リゴンの両方で動作しますが、最初のポリゴンしか見ません。ジオメトリにポリゴ"
-#~ "ンが存在しない場合はNULLを返します。"

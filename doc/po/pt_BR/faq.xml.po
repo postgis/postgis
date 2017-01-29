@@ -6,13 +6,14 @@
 # georgersilva <georger.silva@gmail.com>, 2013-2014
 # Marcelo Soares Souza <marcelo@juntadados.org>, 2014
 # Omar Fernando Pessoa <omar.pessoa@gmail.com>, 2013
+# Poliana Palhares <p.palhares@plamu.com.br>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2015-09-29 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-16 16:33+0000\n"
+"Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -314,13 +315,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:85
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- this should return no records if all your geom fields are filled in\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 msgstr ""
-"-- isto deve retornar zero registros se todos os seus campos geométricos "
-"estão preencidos \n"
+"-- isso deve retornar a zero registros  se todos seus campos geométricos "
+"estão preenchidos\n"
 "SELECT somefield FROM mytable WHERE geom IS NULL;"
 
 #. Tag: programlisting
@@ -358,6 +359,17 @@ msgid ""
 "analyzing raster data. Raster has its very own FAQ. Refer to <xref linkend="
 "\"RT_FAQ\"/> and <xref linkend=\"RT_reference\"/> for more details."
 msgstr ""
+"Você pode armazenar pontos, linhas, polígonos, multipontos, multilinhas, "
+"multipolígonos e coleções geométricas. No PostGIS 2.0 e além você também "
+"pode armazenar TINS e superfícies poliédricas no tipo básico de geometria. "
+"Esses dados estão especificados no Open GIS Well Known Text Format (com "
+"extensões Z,M e ZM). Há três tipos de dados que são suportados atualmente. A "
+"geometria OGC padrão que utiliza um sistema de coordenadas planas para "
+"medidas, o tipo de dados de geografia que utiliza o sistema geodésico de "
+"coordenadas, com cálculos na esfera ou esferoide. O mais novo membro da "
+"família PostGIS tipo espacial é o raster para armazenar e analisar os dados "
+"do raster. existe um FAQ próprio para o raster.  Disponível em <xref linkend="
+"\"RT_FAQ\"/> e <xref linkend=\"RT_reference\"/> para mais detalhes. "
 
 #. Tag: para
 #: faq.xml:110
@@ -386,6 +398,23 @@ msgid ""
 "benefits of each. Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> to "
 "see what is currently supported and what is not."
 msgstr ""
+"Resposta curta: geografia é um novo tipo de dados que suporta medições de "
+"distância de longo alcance, mas a maioria dos cálculos sobre ele estão "
+"atualmente mais lento do que são na geometria. Se você usar geografia -- "
+"você não precisará aprender muito sobre sistemas de coordenadas planar. "
+"Geografia é geralmente melhor se tudo o que importa é a medição de "
+"distâncias e comprimentos e você tem dados de todo o mundo. Tipo de dado "
+"geometria é um tipo mais antigo de dados que possui mais funções que o "
+"suportam, goza de maior apoio de ferramentas de terceiros, e as operações "
+"nele contidas são geralmente mais rápidas -- às vezes até 10 vezes mais "
+"rápido para geometrias maiores. Geometria é melhor se você se sentir "
+"confortável com sistemas de referência espacial ou se estiver lidando com "
+"dados localizados onde todos seus dados se encaixam em um único <link "
+"linkend=\"spatial_ref_sys\">Sistema Espacial de Referência (SRID)</link>, ou "
+"você precisará fazer muito processamento espacial. Nota: É bastante fácil de "
+"fazer conversões pontuais entre dois tipos para ganhar os benefícios de "
+"cada. Consulte <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> para ver o que "
+"é e não é suportado."
 
 #. Tag: para
 #: faq.xml:125
@@ -492,7 +521,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:166
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
@@ -501,10 +530,10 @@ msgid ""
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 msgstr ""
-"INSERT INTO gtest (ID, NAME, GEOM) \n"
+"INSERT INTO gtest (ID, NAME, GEOM)\n"
 "VALUES (\n"
-"  1, \n"
-"  'First Geometry', \n"
+"  1,\n"
+"  'First Geometry',\n"
 "  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)')\n"
 ");"
 
@@ -538,19 +567,16 @@ msgstr "O valor de retorno deve se parecer com algum assim:"
 
 #. Tag: programlisting
 #: faq.xml:177
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "id | name           | geom\n"
 "----+----------------+-----------------------------\n"
 "  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 msgstr ""
-"id | name | geom\n"
-"\n"
+"id | name           | geom\n"
 "----+----------------+-----------------------------\n"
-"\n"
-"1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) \n"
-"\n"
+"  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8)\n"
 "(1 row)"
 
 #. Tag: para
@@ -621,7 +647,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT id, the_geom\n"
 "FROM thetable\n"
@@ -629,12 +655,9 @@ msgid ""
 "  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 msgstr ""
 "SELECT id, the_geom\n"
-"\n"
-"FROM thetable \n"
-"\n"
-"WHERE \n"
-"\n"
-"ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
+"FROM thetable\n"
+"WHERE\n"
+"  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');"
 
 #. Tag: para
 #: faq.xml:216
@@ -874,13 +897,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: faq.xml:330
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT * FROM geotable\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 msgstr ""
 "SELECT * FROM geotable\n"
-"\n"
 "WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);"
 
 #. Tag: para

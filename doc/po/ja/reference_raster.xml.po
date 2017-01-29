@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-15 12:23+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
+"PO-Revision-Date: 2016-11-10 11:15+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -68,7 +68,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE dummy_rast(rid integer, rast raster);\n"
 "INSERT INTO dummy_rast(rid, rast)\n"
@@ -109,7 +109,7 @@ msgstr ""
 "INSERT INTO dummy_rast(rid, rast)\n"
 "VALUES (1,\n"
 "('01' -- little endian - リトルエンディアン (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version - 版 (uint16 0)\n"
 "||\n"
 "'0000' -- nBands - バンド数 (uint16 0)\n"
@@ -133,7 +133,7 @@ msgstr ""
 "'1400' -- height - 縦セル数 (uint16 20)\n"
 ")::raster\n"
 "),\n"
-"-- 5x5ピクセル、3バンド、8ビット符号なし整数、NODATA値=0\n"
+"-- Raster: 5 x 5 pixels, 3 bands, PT_8BUI pixel type, NODATA = 0\n"
 "(2,  ('01000003009A9999999999A93F9A9999999999A9BF000000E02B274A' ||\n"
 "'41000000007719564100000000000000000000000000000000FFFFFFFF050005000400FDFEFDFEFEFDFEFEFDF9FAFEF' "
 "||\n"
@@ -1122,24 +1122,23 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:568 reference_raster.xml:717 reference_raster.xml:793
-#: reference_raster.xml:859 reference_raster.xml:1513
-#: reference_raster.xml:1904 reference_raster.xml:2934
-#: reference_raster.xml:3091 reference_raster.xml:3134
-#: reference_raster.xml:3191 reference_raster.xml:4876
-#: reference_raster.xml:4939 reference_raster.xml:5134
-#: reference_raster.xml:5238 reference_raster.xml:5308
-#: reference_raster.xml:5530 reference_raster.xml:6003
-#: reference_raster.xml:7163 reference_raster.xml:7362
-#: reference_raster.xml:7626 reference_raster.xml:7745
-#: reference_raster.xml:7874 reference_raster.xml:7972
-#: reference_raster.xml:8060 reference_raster.xml:8144
-#: reference_raster.xml:8283 reference_raster.xml:8358
-#: reference_raster.xml:8445 reference_raster.xml:8568
-#: reference_raster.xml:8639 reference_raster.xml:8714
-#: reference_raster.xml:8800 reference_raster.xml:8896
-#: reference_raster.xml:9024 reference_raster.xml:9488
-#: reference_raster.xml:9739 reference_raster.xml:9811
-#: reference_raster.xml:10630
+#: reference_raster.xml:859 reference_raster.xml:1513 reference_raster.xml:1904
+#: reference_raster.xml:2934 reference_raster.xml:3091
+#: reference_raster.xml:3134 reference_raster.xml:3191
+#: reference_raster.xml:4876 reference_raster.xml:4939
+#: reference_raster.xml:5134 reference_raster.xml:5238
+#: reference_raster.xml:5308 reference_raster.xml:5530
+#: reference_raster.xml:6003 reference_raster.xml:7163
+#: reference_raster.xml:7362 reference_raster.xml:7626
+#: reference_raster.xml:7745 reference_raster.xml:7874
+#: reference_raster.xml:7972 reference_raster.xml:8060
+#: reference_raster.xml:8144 reference_raster.xml:8283
+#: reference_raster.xml:8358 reference_raster.xml:8445
+#: reference_raster.xml:8568 reference_raster.xml:8639
+#: reference_raster.xml:8714 reference_raster.xml:8800
+#: reference_raster.xml:8896 reference_raster.xml:9024
+#: reference_raster.xml:9488 reference_raster.xml:9739
+#: reference_raster.xml:9811 reference_raster.xml:10630
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
@@ -1152,7 +1151,7 @@ msgstr "例: カラムに対して全てのありえる制約をデータに基�
 
 #. Tag: programlisting
 #: reference_raster.xml:574
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE myrasters(rid SERIAL primary key, rast raster);\n"
 "INSERT INTO myrasters(rast)\n"
@@ -1183,12 +1182,12 @@ msgstr ""
 "SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);\n"
 "\n"
 "\n"
-"-- raster_columnビューに正しく登録されたかを確認します --\n"
+"-- verify if registered correctly in the raster_columns view --\n"
 "SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, "
 "pixel_types, nodata_values\n"
 "        FROM raster_columns\n"
 "        WHERE r_table_name = 'myrasters';\n"
-"        \n"
+"\n"
 " srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
 "pixel_types| nodata_values\n"
 "------+---------+---------+-------------+-------------+-----------"
@@ -1470,7 +1469,7 @@ msgstr "例"
 
 #. Tag: programlisting
 #: reference_raster.xml:722
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT DropRasterConstraints ('myrasters','rast');\n"
 "----RESULT output ---\n"
@@ -1493,12 +1492,12 @@ msgstr ""
 "-- 結果出力 --\n"
 "t\n"
 "\n"
-"-- raster_columnsでの変更を確認します --\n"
+"-- raster_columnsで変更を確認します --\n"
 "SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, "
 "pixel_types, nodata_values\n"
 "        FROM raster_columns\n"
 "        WHERE r_table_name = 'myrasters';\n"
-"        \n"
+"\n"
 " srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | "
 "pixel_types| nodata_values\n"
 "------+---------+---------+-------------+-------------+-----------"
@@ -1748,7 +1747,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:895
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT PostGIS_GDAL_Version();\n"
 "       postgis_gdal_version\n"
@@ -1756,7 +1755,7 @@ msgid ""
 " GDAL 1.11dev, released 2013/04/13"
 msgstr ""
 "SELECT PostGIS_GDAL_Version();\n"
-"       postgis_gdal_version        \n"
+"       postgis_gdal_version\n"
 "-----------------------------------\n"
 " GDAL 1.11dev, released 2013/04/13"
 
@@ -2076,7 +2075,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1020
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- raw xml output for creator options for GeoTiff --\n"
 "SELECT create_options\n"
@@ -2299,11 +2298,12 @@ msgstr ""
 "description=\"Force copy of overviews of source dataset (CreateCopy())\"/>\n"
 "</CreationOptionList>]]>\n"
 "\n"
+"-- GeoTIFF生成オプションのXMLをテーブルとして出力します --\n"
 "-- Output the create options XML column for GTiff as a table  --\n"
 "SELECT (xpath('@name', g.opt))[1]::text As oname,\n"
 "       (xpath('@type', g.opt))[1]::text As otype,\n"
 "       (xpath('@description', g.opt))[1]::text As descrip,\n"
-"       array_to_string(xpath('Value/text()', g.opt),', ') As vals \n"
+"       array_to_string(xpath('Value/text()', g.opt),', ') As vals\n"
 "FROM (SELECT unnest(xpath('/CreationOptionList/Option', create_options::"
 "xml)) As opt\n"
 "FROM  st_gdaldrivers()\n"
@@ -2311,7 +2311,7 @@ msgstr ""
 "\n"
 "       oname        |     otype     |                               "
 "descrip                                |                                   "
-"vals                                    \n"
+"vals\n"
 "--------------------+---------------"
 "+----------------------------------------------------------------------"
 "+---------------------------------------------------------------------------\n"
@@ -2319,33 +2319,33 @@ msgstr ""
 "|                                                                      | "
 "NONE, LZW, PACKBITS, JPEG, CCITTRLE, CCITTFAX3, CCITTFAX4, DEFLATE\n"
 " PREDICTOR          | int           | Predictor "
-"Type                                                       | \n"
+"Type                                                       |\n"
 " JPEG_QUALITY       | int           | JPEG quality "
-"1-100                                                   | \n"
+"1-100                                                   |\n"
 " ZLEVEL             | int           | DEFLATE compression level "
-"1-9                                        | \n"
+"1-9                                        |\n"
 " NBITS              | int           | BITS for sub-byte files (1-7), sub-"
-"uint16 (9-15), sub-uint32 (17-31) | \n"
+"uint16 (9-15), sub-uint32 (17-31) |\n"
 " INTERLEAVE         | string-select "
 "|                                                                      | "
 "BAND, PIXEL\n"
 " TILED              | boolean       | Switch to tiled "
-"format                                               | \n"
+"format                                               |\n"
 " TFW                | boolean       | Write out world "
-"file                                                 | \n"
+"file                                                 |\n"
 " RPB                | boolean       | Write out .RPB (RPC) "
-"file                                            | \n"
+"file                                            |\n"
 " BLOCKXSIZE         | int           | Tile "
-"Width                                                           | \n"
+"Width                                                           |\n"
 " BLOCKYSIZE         | int           | Tile/Strip "
-"Height                                                    | \n"
+"Height                                                    |\n"
 " PHOTOMETRIC        | string-select "
 "|                                                                      | "
 "MINISBLACK, MINISWHITE, PALETTE, RGB, CMYK, YCBCR, CIELAB, ICCLAB, ITULAB\n"
 " SPARSE_OK          | boolean       | Can newly created files have missing "
-"blocks?                         | \n"
+"blocks?                         |\n"
 " ALPHA              | boolean       | Mark first extrasample as being "
-"alpha                                | \n"
+"alpha                                |\n"
 " PROFILE            | string-select "
 "|                                                                      | "
 "GDALGeoTIFF, GeoTIFF, BASELINE\n"
@@ -2357,7 +2357,7 @@ msgstr ""
 " ENDIANNESS         | string-select | Force endianness of created file. For "
 "DEBUG purpose mostly           | NATIVE, INVERTED, LITTLE, BIG\n"
 " COPY_SRC_OVERVIEWS | boolean       | Force copy of overviews of source "
-"dataset (CreateCopy())             | \n"
+"dataset (CreateCopy())             |\n"
 "(19 rows)"
 
 #. Tag: para
@@ -2739,7 +2739,7 @@ msgstr "例: 単一バンド"
 
 #. Tag: programlisting
 #: reference_raster.xml:1236
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Add another band of type 8 bit unsigned integer with pixels initialized "
 "to 200\n"
@@ -2749,12 +2749,12 @@ msgid ""
 msgstr ""
 "-- 8ビット符号無し整数で初期値200のバンドを追加します\n"
 "UPDATE dummy_rast\n"
-"    SET rast = ST_AddBand(rast,'8BUI'::text,200)  \n"
+"    SET rast = ST_AddBand(rast,'8BUI'::text,200)\n"
 "WHERE rid = 1;"
 
 #. Tag: programlisting
 #: reference_raster.xml:1238
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 "
 "bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)\n"
@@ -2797,28 +2797,28 @@ msgstr ""
 "-- addbandargsを使用しています。\n"
 "INSERT INTO dummy_rast(rid,rast)\n"
 "    VALUES(10, ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, "
-"0), \n"
+"0),\n"
 "        ARRAY[\n"
 "                ROW(1, '1BB'::text, 0, NULL),\n"
 "                ROW(2, '4BUI'::text, 0, NULL)\n"
 "                        ]::addbandarg[]\n"
 "     )\n"
 "    );\n"
-"    \n"
-"-- 全てが正しいかを確認するためラスタバンドのメタデータを出力します --\n"
+"\n"
+"-- output meta data of raster bands to verify all is right --\n"
 "SELECT  (bmd).*\n"
-"FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd \n"
+"FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd\n"
 "    FROM dummy_rast WHERE rid = 10) AS foo;\n"
-" --result --   \n"
+" --result --\n"
 " pixeltype | nodatavalue | isoutdb | path\n"
 "-----------+----------------+-------------+---------+------\n"
 " 1BB       |             | f       |\n"
 " 4BUI      |             | f       |\n"
-" \n"
-" \n"
+"\n"
+"\n"
 "-- ラスタのメタデータの出力 --\n"
 "SELECT  (rmd).width, (rmd).height, (rmd).numbands\n"
-"FROM (SELECT ST_MetaData(rast) As rmd \n"
+"FROM (SELECT ST_MetaData(rast) As rmd\n"
 "    FROM dummy_rast WHERE rid = 10) AS foo;\n"
 "-- 結果 --\n"
 " upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy "
@@ -2836,7 +2836,7 @@ msgstr "例: 複数の新規バンド"
 
 #. Tag: programlisting
 #: reference_raster.xml:1244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        *\n"
@@ -2875,16 +2875,16 @@ msgstr ""
 "        ARRAY[]::integer[]\n"
 ");\n"
 "\n"
-" bandnum | pixeltype | nodatavalue | isoutdb | path \n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
 "---------+-----------+-------------+---------+------\n"
-"       1 | 8BUI      |           0 | f       | \n"
-"       2 | 32BF      |          -1 | f       | \n"
-"       3 | 32BUI     |          12 | f       | \n"
+"       1 | 8BUI      |           0 | f       |\n"
+"       2 | 32BF      |          -1 | f       |\n"
+"       3 | 32BUI     |          12 | f       |\n"
 "       4 | 16BUI     |           2 | f       |"
 
 #. Tag: programlisting
 #: reference_raster.xml:1246
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Aggregate the 1st band of a table of like rasters into a single raster\n"
 "-- with as many bands as there are test_types and as many rows (new rasters) "
@@ -2910,7 +2910,7 @@ msgstr ""
 "-- マウス好きの方へ: この例ではマウスは傷つきませんでした\n"
 "SELECT\n"
 "        mouse,\n"
-"        ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast \n"
+"        ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1) As rast\n"
 "FROM mice_studies\n"
 "GROUP BY mouse;"
 
@@ -2922,7 +2922,7 @@ msgstr "例: データベース外のバンド"
 
 #. Tag: programlisting
 #: reference_raster.xml:1251
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        *\n"
@@ -2952,7 +2952,7 @@ msgstr ""
 "        ARRAY[]::integer[]\n"
 ");\n"
 "\n"
-" bandnum | pixeltype | nodatavalue | isoutdb | path \n"
+" bandnum | pixeltype | nodatavalue | isoutdb | path\n"
 "---------+-----------+-------------+---------+------\n"
 "       1 | 8BUI      |             | t       | /home/raster/mytestraster."
 "tif\n"
@@ -3449,7 +3449,7 @@ msgstr "PostGISだけで描画したバッファの例"
 
 #. Tag: programlisting
 #: reference_raster.xml:1467
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- the bands map to RGB bands - the value (118,154,118) - teal  --\n"
 "SELECT ST_AsPNG(\n"
@@ -3465,7 +3465,7 @@ msgstr ""
 "        ST_AsRaster(\n"
 "                ST_Buffer(\n"
 "                        ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), "
-"10,'join=bevel'), \n"
+"10,'join=bevel'),\n"
 "                        200,200,ARRAY['8BUI', '8BUI', '8BUI'], "
 "ARRAY[118,154,118], ARRAY[0,0,0]));"
 
@@ -3563,7 +3563,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1519
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Make 2 new rasters: 1 containing band 1 of dummy, second containing band "
 "2 of dummy and then reclassified as a 2BUI\n"
@@ -3582,21 +3582,21 @@ msgstr ""
 "-- 二つの新しいラスタを生成します\n"
 "--   1 - ダミーラスタの1番バンド\n"
 "--   2 - ダミーラスタの3番バンドを生成して2BUIで再分類\n"
-"SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1, \n"
+"SELECT ST_NumBands(rast1) As numb1, ST_BandPixelType(rast1) As pix1,\n"
 " ST_NumBands(rast2) As numb2,  ST_BandPixelType(rast2) As pix2\n"
 "FROM (\n"
 "    SELECT ST_Band(rast) As rast1, ST_Reclass(ST_Band(rast,3), '100-200):1, "
 "[200-254:2', '2BUI') As rast2\n"
 "        FROM dummy_rast\n"
 "        WHERE rid = 2) As foo;\n"
-"        \n"
+"\n"
 " numb1 | pix1 | numb2 | pix2\n"
 "-------+------+-------+------\n"
 "     1 | 8BUI |     1 | 2BUI"
 
 #. Tag: programlisting
 #: reference_raster.xml:1521
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Return bands 2 and 3. Using array cast syntax\n"
 "SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands\n"
@@ -3614,14 +3614,14 @@ msgstr ""
 "-- 配列へのキャストを使って2番と3番バンドを返します\n"
 "SELECT ST_NumBands(ST_Band(rast, '{2,3}'::int[])) As num_bands\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "num_bands\n"
 "----------\n"
 "2\n"
-"    \n"
+"\n"
 "-- バンドの指定に配列を使って2番と3番バンドを返します\n"
 "SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "WHERE rid=2;"
 
 #. Tag: para
@@ -3644,7 +3644,7 @@ msgstr "sing_band"
 
 #. Tag: programlisting
 #: reference_raster.xml:1557
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Make a new raster with 2nd band of original and 1st band repeated twice,\n"
 "and another with just the third band\n"
@@ -3655,10 +3655,9 @@ msgid ""
 msgstr ""
 "-- 元画像の2番バンド、1番バンド、1番バンドでバンドを成すラスタと\n"
 "-- 3番バンドだけのラスタの生成\n"
-"and another with just the third band\n"
-"SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,  \n"
-"        ST_Band(rast, 3) As sing_band \n"
-"FROM samples.than_chunked \n"
+"SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,\n"
+"        ST_Band(rast, 3) As sing_band\n"
+"FROM samples.than_chunked\n"
 "WHERE rid=35;"
 
 #. Tag: para
@@ -3790,7 +3789,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1618
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "INSERT INTO dummy_rast(rid,rast)\n"
 "VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, "
@@ -3821,18 +3820,18 @@ msgstr ""
 "VALUES(3, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, "
 "4326) );\n"
 "\n"
-"-- 既存のラスタをテンプレートに使って新しいラスタを生成\n"
+"-- 既存のラスタをテンプレートに用いて新しいラスタを生成\n"
 "INSERT INTO dummy_rast(rid,rast)\n"
 "SELECT 4, ST_MakeEmptyRaster(rast)\n"
 "FROM dummy_rast WHERE rid = 3;\n"
 "\n"
 "-- 既存ラスタと生成したラスタのメタデータを出力\n"
 "SELECT rid, (md).*\n"
-"FROM (SELECT rid, ST_MetaData(rast) As md \n"
+"FROM (SELECT rid, ST_MetaData(rast) As md\n"
 "        FROM dummy_rast\n"
 "        WHERE rid IN(3,4)) As foo;\n"
-"        \n"
-"-- 出力 --\n"
+"\n"
+"-- output --\n"
 " rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
 "skewy | srid | numbands\n"
 "-----+------------+------------+-------+--------+------------+------------"
@@ -3947,6 +3946,11 @@ msgid ""
 "NODATA values. If raster band(s) do not have NODATA value(s) specified, one "
 "can be specified by setting <varname>nodataval</varname>."
 msgstr ""
+"<varname>padwithnodata</varname>がFALSEである場合には、ラスタの右端と下端のタ"
+"イルは、他のタイルと異なるピクセル範囲を持つことがあります。"
+"<varname>padwithnodata</varname>がTRUEの場合には、全てのタイルは同じピクセル"
+"範囲を持ち、端のタイルにNODATA値が詰められます。ラスタバンドにNODATA値が指定"
+"されていない場合には、<varname>nodataval</varname>で指定することができます。"
 
 #. Tag: para
 #: reference_raster.xml:1681
@@ -3960,7 +3964,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1692
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, "
@@ -4044,7 +4048,7 @@ msgstr ""
 "        ST_DumpValues(rast)\n"
 "FROM baz;\n"
 "\n"
-"              st_dumpvalues               \n"
+"              st_dumpvalues\n"
 "------------------------------------------\n"
 " (1,\"{{1,1,1},{1,1,1},{1,1,1}}\")\n"
 " (2,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
@@ -4068,7 +4072,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1694
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, "
@@ -4143,7 +4147,7 @@ msgstr ""
 "        ST_DumpValues(rast)\n"
 "FROM baz;\n"
 "\n"
-"              st_dumpvalues               \n"
+"              st_dumpvalues\n"
 "------------------------------------------\n"
 " (1,\"{{10,10,10},{10,10,10},{10,10,10}}\")\n"
 " (1,\"{{20,20,20},{20,20,20},{20,20,20}}\")\n"
@@ -4261,10 +4265,13 @@ msgid ""
 "assign the SRID from the GDAL raster. If <varname>srid</varname> is "
 "provided, the value provided will override any automatically assigned SRID."
 msgstr ""
+"<varname>srid</varname>がNULLの場合には、この関数は、GDALラスタから自動的に"
+"SRIDを設定しようとします。<varname>srid</varname>が与えられている場合には、与"
+"えられた値が自動的に設定したSRIDを上書きします。"
 
 #. Tag: programlisting
 #: reference_raster.xml:1793
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT "
@@ -4317,7 +4324,7 @@ msgstr ""
 "ORDER BY rid;\n"
 "\n"
 " rid |         metadata          |    stats1     |    stats2     |     "
-"stats3     \n"
+"stats3\n"
 "-----+---------------------------+---------------+---------------"
 "+----------------\n"
 "   1 | (0,0,2,2,1,-1,0,0,0,3)    | (4,4,1,0,1,1) | (4,8,2,0,2,2) | "
@@ -4390,7 +4397,7 @@ msgstr "<varname>GDAL</varname>:"
 
 #. Tag: programlisting
 #: reference_raster.xml:1833
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "scalex\n"
 "skewy\n"
@@ -4399,8 +4406,8 @@ msgid ""
 "upperleftx\n"
 "upperlefty"
 msgstr ""
-"scalex \n"
-"skewy \n"
+"scalex\n"
+"skewy\n"
 "skewx\n"
 "scaley\n"
 "upperleftx\n"
@@ -4414,7 +4421,7 @@ msgstr "<varname>ESRI</varname>:"
 
 #. Tag: programlisting
 #: reference_raster.xml:1835
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "scalex\n"
 "skewy\n"
@@ -4423,8 +4430,8 @@ msgid ""
 "upperleftx + scalex*0.5\n"
 "upperlefty + scaley*0.5"
 msgstr ""
-"scalex \n"
-"skewy \n"
+"scalex\n"
+"skewy\n"
 "skewx\n"
 "scaley\n"
 "upperleftx + scalex*0.5\n"
@@ -4552,7 +4559,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1910
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))\n"
 "st_isempty |\n"
@@ -4569,8 +4576,8 @@ msgstr ""
 "st_isempty |\n"
 "-----------+\n"
 "f          |\n"
-"                       \n"
-"                        \n"
+"\n"
+"\n"
 "SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))\n"
 "st_isempty |\n"
 "-----------+\n"
@@ -4642,7 +4649,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1953
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, "
 "'8BUI')) As rast_mem;\n"
@@ -4653,7 +4660,7 @@ msgid ""
 msgstr ""
 "SELECT ST_MemSize(ST_AsRaster(ST_Buffer(ST_Point(1,5),10,1000),150, 150, "
 "'8BUI')) As rast_mem;\n"
-"                \n"
+"\n"
 "                rast_mem\n"
 "                --------\n"
 "                22568"
@@ -4698,7 +4705,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:1989
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_MetaData(rast) As md\n"
@@ -4713,7 +4720,7 @@ msgid ""
 "   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 "
 "|                0 |     0 |    0 |        3"
 msgstr ""
-"SELECT rid, (foo.md).*  \n"
+"SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_MetaData(rast) As md\n"
 "FROM dummy_rast) As foo;\n"
 "\n"
@@ -4956,7 +4963,7 @@ msgstr "ピクセル高: j方向のピクセルサイズ"
 
 #. Tag: programlisting
 #: reference_raster.xml:2119
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,\n"
 "        ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) "
@@ -4974,7 +4981,7 @@ msgstr ""
 "As skewx,\n"
 "        ST_SkewY(rast) As skewy\n"
 "        FROM dummy_rast;\n"
-"        \n"
+"\n"
 "        rastwidth | pixwidth | scalex | scaley | skewx | skewy\n"
 "        -----------+----------+--------+--------+-------+----------\n"
 "        10 |        2 |      2 |      3 |     0 |        0\n"
@@ -4982,7 +4989,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2126
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,\n"
 "        ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) "
@@ -5003,7 +5010,7 @@ msgstr ""
 "        ST_SkewY(rast) As skewy\n"
 "        FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast\n"
 "        FROM dummy_rast) As skewed;\n"
-"        \n"
+"\n"
 "        rastwidth |     pixwidth      | scalex | scaley | skewx | skewy\n"
 "        -----------+-------------------+--------+--------+-------"
 "+----------\n"
@@ -5184,7 +5191,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- non-skewed raster\n"
 "SELECT\n"
@@ -5198,21 +5205,21 @@ msgid ""
 "   1 |        0.5 |      0.5 |       2.5 |        3.5\n"
 "   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95"
 msgstr ""
-"-- スキューのないラスタ\n"
+"-- スキューの無いラスタ\n"
 "SELECT\n"
 "        rid,\n"
 "        (ST_RasterToWorldCoord(rast,1, 1)).*,\n"
 "        (ST_RasterToWorldCoord(rast,2, 2)).*\n"
 "FROM dummy_rast\n"
 "\n"
-" rid | longitude  | latitude | longitude |  latitude  \n"
+" rid | longitude  | latitude | longitude |  latitude\n"
 "-----+------------+----------+-----------+------------\n"
 "   1 |        0.5 |      0.5 |       2.5 |        3.5\n"
 "   2 | 3427927.75 |  5793244 | 3427927.8 | 5793243.95"
 
 #. Tag: programlisting
 #: reference_raster.xml:2246
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- skewed raster\n"
 "SELECT\n"
@@ -5231,7 +5238,7 @@ msgid ""
 "   1 |        0.5 |      0.5 |     203.5 |       6.5\n"
 "   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9"
 msgstr ""
-"-- スキューのあるラスタ\n"
+"-- スキューの有るラスタ\n"
 "SELECT\n"
 "        rid,\n"
 "        (ST_RasterToWorldCoord(rast, 1, 1)).*,\n"
@@ -5243,7 +5250,7 @@ msgstr ""
 "        FROM dummy_rast\n"
 ") As foo\n"
 "\n"
-" rid | longitude  | latitude | longitude | latitude  \n"
+" rid | longitude  | latitude | longitude | latitude\n"
 "-----+------------+----------+-----------+-----------\n"
 "   1 |        0.5 |      0.5 |     203.5 |       6.5\n"
 "   2 | 3427927.75 |  5793244 | 3428128.8 | 5793243.9"
@@ -5333,7 +5340,7 @@ msgstr "Changed: 2.1.0 以前の版ではST_Raster2WorldCoordXと呼ばれてい
 
 #. Tag: programlisting
 #: reference_raster.xml:2303
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- non-skewed raster providing column is sufficient\n"
 "SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,\n"
@@ -5347,7 +5354,7 @@ msgid ""
 "   2 | 3427927.75 | 3427927.8 |   0.05"
 msgstr ""
 "-- スキューの無いラスタでは列を与えれば十分です\n"
-"SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord, \n"
+"SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord,\n"
 "        ST_RasterToWorldCoordX(rast,2) As x2coord,\n"
 "        ST_ScaleX(rast) As pixelx\n"
 "FROM dummy_rast;\n"
@@ -5359,7 +5366,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2305
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- for fun lets skew it\n"
 "SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,\n"
@@ -5374,7 +5381,7 @@ msgid ""
 "   2 | 3427927.75 | 3428128.8 |   0.05"
 msgstr ""
 "-- 面白半分にスキューさせてみましょう\n"
-"SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord, \n"
+"SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord,\n"
 "        ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,\n"
 "        ST_ScaleX(rast) As pixelx\n"
 "FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As "
@@ -5470,7 +5477,7 @@ msgstr "Changed: 2.1.0 以前の版ではST_Raster2WorldCoordYと呼ばれてい
 
 #. Tag: programlisting
 #: reference_raster.xml:2357
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- non-skewed raster providing row is sufficient\n"
 "SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,\n"
@@ -5484,7 +5491,7 @@ msgid ""
 "   2 | 5793244 | 5793243.9 |  -0.05"
 msgstr ""
 "-- スキューの無いラスタでは列を与えれば十分です\n"
-"SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord, \n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord,\n"
 "        ST_RasterToWorldCoordY(rast,3) As y2coord,\n"
 "        ST_ScaleY(rast) As pixely\n"
 "FROM dummy_rast;\n"
@@ -5496,7 +5503,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2359
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- for fun lets skew it\n"
 "SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,\n"
@@ -5510,7 +5517,7 @@ msgid ""
 "   2 | 5793244 | 5793344.4 |  -0.05"
 msgstr ""
 "-- 面白半分に回転させてみましょう\n"
-"SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord, \n"
+"SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord,\n"
 "        ST_RasterToWorldCoordY(rast,2,3) As y2coord,\n"
 "        ST_ScaleY(rast) As pixely\n"
 "FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;\n"
@@ -5566,7 +5573,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2395
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as "
 "rot FROM dummy_rast;\n"
@@ -5579,7 +5586,7 @@ msgstr ""
 "SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as "
 "rot FROM dummy_rast;\n"
 "\n"
-" rid |        rot \n"
+" rid |        rot\n"
 "-----+-------------------\n"
 "   1 | 0.785398163397448\n"
 "   2 | 0.785398163397448"
@@ -5627,7 +5634,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2430 reference_raster.xml:2466
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
@@ -5649,7 +5656,7 @@ msgid ""
 "                     : 3427927.7500000000\n"
 "                     : 5793244.0000000000"
 msgstr ""
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast;\n"
 "\n"
@@ -5815,7 +5822,7 @@ msgstr "<para>ラスタの中身の概要が文字列で返されます。</para
 
 #. Tag: programlisting
 #: reference_raster.xml:2537
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Summary(\n"
 "        ST_AddBand(\n"
@@ -5853,7 +5860,7 @@ msgstr ""
 "        )\n"
 ");\n"
 "\n"
-"                            st_summary                            \n"
+"                            st_summary\n"
 "------------------------------------------------------------------\n"
 " Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+\n"
 "     band 1 of pixtype 8BUI is in-db with NODATA value of 0      +\n"
@@ -6091,7 +6098,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2694
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        rid,\n"
@@ -6112,7 +6119,7 @@ msgstr ""
 "ST_SRID(rast)))).*\n"
 "FROM dummy_rast;\n"
 "\n"
-" rid | columnx |   rowy    | columnx |   rowy    \n"
+" rid | columnx |   rowy    | columnx |   rowy\n"
 "-----+---------+-----------+---------+-----------\n"
 "   1 | 1713964 |         7 | 1713964 |         7\n"
 "   2 |       2 | 115864471 |       2 | 115864471"
@@ -6199,7 +6206,7 @@ msgstr "Changed: 2.1.0 以前の版ではST_World2RasterCoordXと呼ばれてい
 
 #. Tag: programlisting
 #: reference_raster.xml:2751
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord,\n"
 "                ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw,\n"
@@ -6212,9 +6219,8 @@ msgid ""
 "   1 | 1713964 | 1713964 |  1713964\n"
 "   2 |       1 |       1 |        1"
 msgstr ""
-"SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord, \n"
-"                ST_WorldToRasterCoordX(rast,3427927.8,20.5) As "
-"xcoord_xwyw, \n"
+"SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord,\n"
+"                ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw,\n"
 "                ST_WorldToRasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 "
 "20.5)',ST_SRID(rast))) As ptxcoord\n"
 "FROM dummy_rast;\n"
@@ -6303,7 +6309,7 @@ msgstr "Changed: 2.1.0 以前の版ではST_World2RasterCoordYと呼ばれてい
 
 #. Tag: programlisting
 #: reference_raster.xml:2806
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord,\n"
 "                ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw,\n"
@@ -6316,9 +6322,8 @@ msgid ""
 "   1 |         7 |           7 |         7\n"
 "   2 | 115864471 |   115864471 | 115864471"
 msgstr ""
-"SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord, \n"
-"                ST_WorldToRasterCoordY(rast,3427927.8,20.5) As "
-"ycoord_xwyw, \n"
+"SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord,\n"
+"                ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw,\n"
 "                ST_WorldToRasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 "
 "20.5)',ST_SRID(rast))) As ptycoord\n"
 "FROM dummy_rast;\n"
@@ -6388,7 +6393,7 @@ msgstr "バンドにNODATA値が無い場合には、nodatavalueはNULLになり
 
 #. Tag: programlisting
 #: reference_raster.xml:2857
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_BandMetaData(rast,1) As md\n"
@@ -6398,7 +6403,7 @@ msgid ""
 "-----+-----------+----------------+-------------+---------+------\n"
 "   2 | 8BUI      |           0 | f       |"
 msgstr ""
-"SELECT rid, (foo.md).*  \n"
+"SELECT rid, (foo.md).*\n"
 " FROM (SELECT rid, ST_BandMetaData(rast,1) As md\n"
 "FROM dummy_rast WHERE rid=2) As foo;\n"
 "\n"
@@ -6450,7 +6455,7 @@ msgstr "指定されたバンドについてデータが無いことを表現す
 
 #. Tag: programlisting
 #: reference_raster.xml:2892
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_BandNoDataValue(rast,1) As bnval1,\n"
 "    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As "
@@ -6462,7 +6467,7 @@ msgid ""
 "--------+--------+--------\n"
 "      0 |      0 |      0"
 msgstr ""
-"SELECT ST_BandNoDataValue(rast,1) As bnval1, \n"
+"SELECT ST_BandNoDataValue(rast,1) As bnval1,\n"
 "    ST_BandNoDataValue(rast,2) As bnval2, ST_BandNoDataValue(rast,3) As "
 "bnval3\n"
 "FROM dummy_rast\n"
@@ -6539,7 +6544,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:2947
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Create dummy table with one raster column\n"
 "create table dummy_rast (rid integer, rast raster);\n"
@@ -6605,7 +6610,7 @@ msgstr ""
 "insert into dummy_rast values(1,\n"
 "(\n"
 "'01' -- little endian - リトルエンディアン (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version - 版 (uint16 0)\n"
 "||\n"
 "'0200' -- nBands - バンド数 (uint16 0)\n"
@@ -6640,7 +6645,7 @@ msgstr ""
 "||\n"
 "'0' -- hasnodatavalueをFALSEにする。\n"
 "||\n"
-"'5' -- 2番バンドのタイプ  (16BSI)\n"
+"'5' -- 2番バンドのタイプ (16BSI)\n"
 "||\n"
 "'0D00' -- NODATA値==13\n"
 "||\n"
@@ -6648,9 +6653,10 @@ msgstr ""
 ")::raster\n"
 ");\n"
 "\n"
-"select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- TRUEを期"
-"待\n"
-"select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- FALSEを期待"
+"select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected "
+"true\n"
+"select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected "
+"false"
 
 #. Tag: para
 #: reference_raster.xml:2953
@@ -6813,7 +6819,7 @@ msgstr "64BF - 64ビット浮動小数点数"
 
 #. Tag: programlisting
 #: reference_raster.xml:3060
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_BandPixelType(rast,1) As btype1,\n"
 "    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3\n"
@@ -6824,7 +6830,7 @@ msgid ""
 "--------+--------+--------\n"
 " 8BUI   | 8BUI   | 8BUI"
 msgstr ""
-"SELECT ST_BandPixelType(rast,1) As btype1, \n"
+"SELECT ST_BandPixelType(rast,1) As btype1,\n"
 "    ST_BandPixelType(rast,2) As btype2, ST_BandPixelType(rast,3) As btype3\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;\n"
@@ -6873,7 +6879,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3097
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2,\n"
 "ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands\n"
@@ -6884,8 +6890,8 @@ msgid ""
 "1 | t   | t   | t   |        0\n"
 "2 | f   | f   | t   |        3"
 msgstr ""
-"SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2, \n"
-"ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands \n"
+"SELECT rid, ST_HasNoBand(rast) As hb1, ST_HasNoBand(rast,2) as hb2,\n"
+"ST_HasNoBand(rast,4) as hb4, ST_NumBands(rast) As numbands\n"
 "FROM dummy_rast;\n"
 "\n"
 "rid | hb1 | hb2 | hb4 | numbands\n"
@@ -6940,7 +6946,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3140
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- get raster pixel polygon\n"
 "SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom\n"
@@ -6959,8 +6965,8 @@ msgid ""
 msgstr ""
 "-- ラスタピクセルのポリゴンを得ます\n"
 "SELECT i,j, ST_AsText(ST_PixelAsPolygon(foo.rast, i,j)) As b1pgeom\n"
-"FROM dummy_rast As foo \n"
-"        CROSS JOIN generate_series(1,2) As i \n"
+"FROM dummy_rast As foo\n"
+"        CROSS JOIN generate_series(1,2) As i\n"
 "        CROSS JOIN generate_series(1,1) As j\n"
 "WHERE rid=2;\n"
 "\n"
@@ -7066,7 +7072,7 @@ msgstr "Changed: 2.1.1 exclude_nodata_valueの挙動を変更しました。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3198
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- get raster pixel polygon\n"
 "SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom\n"
@@ -7093,11 +7099,11 @@ msgstr ""
 "SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom\n"
 "FROM (SELECT ST_PixelAsPolygons(\n"
 "                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, "
-"0, 0, 0.001, -0.001, 0.001, 0.001, 4269), \n"
-"                                                    '8BUI'::text, 1, 0), \n"
-"                                         2, 2, 10), \n"
+"0, 0, 0.001, -0.001, 0.001, 0.001, 4269),\n"
+"                                                    '8BUI'::text, 1, 0),\n"
+"                                         2, 2, 10),\n"
 "                             1, 1, NULL)\n"
-") gv \n"
+") gv\n"
 ") foo;\n"
 "\n"
 " x | y | val |                geom\n"
@@ -7161,7 +7167,7 @@ msgstr "<para>ピクセルの左上隅のポイントジオメトリを返しま
 
 #. Tag: programlisting
 #: reference_raster.xml:3241
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
@@ -7173,7 +7179,7 @@ msgstr ""
 "SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
 "\n"
-"   st_astext    \n"
+"   st_astext\n"
 "----------------\n"
 " POINT(0.5 0.5)"
 
@@ -7250,7 +7256,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3292
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* "
 "FROM dummy_rast WHERE rid = 2) foo;\n"
@@ -7286,7 +7292,7 @@ msgstr ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* "
 "FROM dummy_rast WHERE rid = 2) foo;\n"
 "\n"
-" x | y | val |          st_astext           \n"
+" x | y | val |          st_astext\n"
 "---+---+-----+------------------------------\n"
 " 1 | 1 | 253 | POINT(3427927.75 5793244)\n"
 " 2 | 1 | 254 | POINT(3427927.8 5793244)\n"
@@ -7346,7 +7352,7 @@ msgstr ""
 
 #. Tag: funcprototype
 #: reference_raster.xml:3318
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
@@ -7355,8 +7361,8 @@ msgid ""
 msgstr ""
 "<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef> "
 "<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef> "
-"<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>"
+"<paramdef><type>integer </type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>y</parameter></paramdef>"
 
 #. Tag: para
 #: reference_raster.xml:3329
@@ -7369,7 +7375,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3335
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
@@ -7381,7 +7387,7 @@ msgstr ""
 "SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = "
 "1;\n"
 "\n"
-"  st_astext   \n"
+"  st_astext\n"
 "--------------\n"
 " POINT(1.5 2)"
 
@@ -7446,7 +7452,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3386
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, "
 "1)).* FROM dummy_rast WHERE rid = 2) foo;\n"
@@ -7480,7 +7486,7 @@ msgid ""
 msgstr ""
 "SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, "
 "1)).* FROM dummy_rast WHERE rid = 2) foo;\n"
-" x | y | val |           st_astext            \n"
+" x | y | val |           st_astext\n"
 "---+---+-----+--------------------------------\n"
 " 1 | 1 | 253 | POINT(3427927.775 5793243.975)\n"
 " 2 | 1 | 254 | POINT(3427927.825 5793243.975)\n"
@@ -7546,7 +7552,7 @@ msgstr ""
 
 #. Tag: funcsynopsis
 #: reference_raster.xml:3410
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
@@ -7580,21 +7586,21 @@ msgstr ""
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
 "paramdef> <paramdef><type>geometry </type> <parameter>pt</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>x</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>y</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype> "
 "<funcprototype> <funcdef>double precision <function>ST_Value</function></"
 "funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>bandnum</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>columnx</parameter></"
-"paramdef> <paramdef><type>integer </type> <parameter>rowy</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>x</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>y</parameter></"
 "paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
 "<parameter>exclude_nodata_value=true</parameter></paramdef> </funcprototype>"
 
@@ -7624,7 +7630,7 @@ msgstr "Enhanced: 2.0.0 任意引数exclude_nodata_valueが追加されました
 
 #. Tag: programlisting
 #: reference_raster.xml:3453
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- get raster values at particular postgis geometry points\n"
 "-- the srid of your geometry should be same as for your raster\n"
@@ -7655,16 +7661,16 @@ msgstr ""
 " rid | b1pval | b2pval\n"
 "-----+--------+--------\n"
 "   2 |    252 |     79\n"
-"   \n"
-"   \n"
-"-- 実際のテーブルを使った一般的には架空の例\n"
+"\n"
+"\n"
+"-- 実際のテーブルを使った一般的な架空の例\n"
 "SELECT rid, ST_Value(rast, 3, sometable.geom) As b3pval\n"
 "FROM sometable\n"
 "WHERE ST_Intersects(rast,sometable.geom);"
 
 #. Tag: programlisting
 #: reference_raster.xml:3454
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,\n"
 "    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval\n"
@@ -7675,7 +7681,7 @@ msgid ""
 "-----+--------+--------+--------\n"
 "   2 |    253 |     78 |     70"
 msgstr ""
-"SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval, \n"
+"SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval,\n"
 "    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval\n"
 "FROM dummy_rast\n"
 "WHERE rid=2;\n"
@@ -7686,7 +7692,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3456
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--- Get all values in bands 1,2,3 of each pixel --\n"
 "SELECT x, y, ST_Value(rast, 1, x, y) As b1val,\n"
@@ -7708,7 +7714,7 @@ msgid ""
 " :"
 msgstr ""
 "-- 1番、2番、3番バンドの全ての値を得ます\n"
-"SELECT x, y, ST_Value(rast, 1, x, y) As b1val, \n"
+"SELECT x, y, ST_Value(rast, 1, x, y) As b1val,\n"
 "        ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
 "FROM dummy_rast CROSS JOIN\n"
 "generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y\n"
@@ -7728,7 +7734,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3458
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--- Get all values in bands 1,2,3 of each pixel same as above but returning "
 "the upper left point point of each pixel --\n"
@@ -7752,10 +7758,10 @@ msgstr ""
 "-- 上の例と同じに、1番、2番、3番バンドの全ての値を得ますが、\n"
 "-- ピクセル毎の左上隅のポイントを返します\n"
 "SELECT ST_AsText(ST_SetSRID(\n"
-"        ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x, \n"
-"                ST_UpperLeftY(rast) + ST_ScaleY(rast)*y), \n"
+"        ST_Point(ST_UpperLeftX(rast) + ST_ScaleX(rast)*x,\n"
+"                ST_UpperLeftY(rast) + ST_ScaleY(rast)*y),\n"
 "                ST_SRID(rast))) As uplpt\n"
-"    , ST_Value(rast, 1, x, y) As b1val, \n"
+"    , ST_Value(rast, 1, x, y) As b1val,\n"
 "        ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val\n"
 "FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
@@ -7770,7 +7776,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3459
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--- Get a polygon formed by union of all pixels\n"
 "        that fall in a particular value range and intersect particular "
@@ -7816,22 +7822,22 @@ msgid ""
 "5793243.85,\n"
 "3427927.95 5793243.85,3427927.95 5793243.8,3427927.95 5793243.75)))"
 msgstr ""
-"-- 指定した範囲内の値を持ち、指定したポリゴンにインタセクトする\n"
-"-- ピクセルの全てを結合することによって形成されるポリゴンを得ます\n"
+"-- 指定した範囲内の値を持ち、指定したポリゴンにインタセクトするピクセルの\n"
+"-- 全てを結合することによって形成されるポリゴンを得ます\n"
 "SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
 "FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
-"                ST_UpperLeftX(rast), ST_UpperLeftY(rast), \n"
+"                ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
 "                        ST_UpperLeftX(rast) + ST_ScaleX(rast),\n"
 "                        ST_UpperLeftY(rast) + ST_ScaleY(rast), 0\n"
 "                        ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
 "                ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
 "        FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y\n"
-"WHERE rid =  2 \n"
+"WHERE rid =  2\n"
 "        AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast)) As foo\n"
-"WHERE  \n"
+"WHERE\n"
 "        ST_Intersects(\n"
-"                pixpolyg, \n"
+"                pixpolyg,\n"
 "                ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
 "5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
 "                ) AND b2val != 254;\n"
@@ -7861,7 +7867,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3461
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--- Checking all the pixels of a large raster tile can take a long time.\n"
 "--- You can dramatically improve speed at some lose of precision by orders "
@@ -7905,22 +7911,23 @@ msgstr ""
 "-- generate_seriesの任意引数stepを使用してサンプリングすることで、\n"
 "-- 精度を大きく落としますが、劇的な速度改善が可能です。\n"
 "-- 次の例では、前の例と同じことをしていますが、\n"
-"-- 4(2x2)ピクセルごとに1度チェックを行い、4ピクセルの値として置いています。\n"
-"        \n"
+"-- 4 (2x2)ピクセルごとに1度チェックを行い、4ピクセルの値として置いていま"
+"す。\n"
+"\n"
 "SELECT ST_AsText(ST_Union(pixpolyg)) As shadow\n"
 "FROM (SELECT ST_Translate(ST_MakeEnvelope(\n"
-"                ST_UpperLeftX(rast), ST_UpperLeftY(rast), \n"
+"                ST_UpperLeftX(rast), ST_UpperLeftY(rast),\n"
 "                        ST_UpperLeftX(rast) + ST_ScaleX(rast)*2,\n"
 "                        ST_UpperLeftY(rast) + ST_ScaleY(rast)*2, 0\n"
 "                        ), ST_ScaleX(rast)*x, ST_ScaleY(rast)*y\n"
 "                ) As pixpolyg, ST_Value(rast, 2, x, y) As b2val\n"
 "        FROM dummy_rast CROSS JOIN\n"
 "generate_series(1,1000,2) As x CROSS JOIN generate_series(1,1000,2) As y\n"
-"WHERE rid =  2 \n"
+"WHERE rid =  2\n"
 "        AND x &lt;= ST_Width(rast)  AND y &lt;= ST_Height(rast)  ) As foo\n"
-"WHERE  \n"
+"WHERE\n"
 "        ST_Intersects(\n"
-"                pixpolyg, \n"
+"                pixpolyg,\n"
 "                ST_GeomFromText('POLYGON((3427928 5793244,3427927.75 "
 "5793243.75,3427928 5793243.75,3427928 5793244))',0)\n"
 "                ) AND b2val != 254;\n"
@@ -8069,7 +8076,7 @@ msgstr "ST_NearestValueはST_Valueと交換可能です。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3548
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- pixel 2x2 has value\n"
 "SELECT\n"
@@ -8133,13 +8140,13 @@ msgstr ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-" value | nearestvalue \n"
+" value | nearestvalue\n"
 "-------+--------------\n"
 "     1 |            1"
 
 #. Tag: programlisting
 #: reference_raster.xml:3550
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- pixel 2x3 is NODATA\n"
 "SELECT\n"
@@ -8203,7 +8210,7 @@ msgstr ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-" value | nearestvalue \n"
+" value | nearestvalue\n"
 "-------+--------------\n"
 "       |            1"
 
@@ -8349,7 +8356,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3640
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- pixel 2x2 has value\n"
 "SELECT\n"
@@ -8377,7 +8384,7 @@ msgid ""
 "---------------------------------\n"
 " {{NULL,1,1},{1,1,NULL},{1,1,1}}"
 msgstr ""
-"-- 2,2ピクセルは値を持っています\n"
+"-- 2,3ピクセルは値を持っています\n"
 "SELECT\n"
 "        ST_Neighborhood(rast, 2, 2, 1, 1)\n"
 "FROM (\n"
@@ -8399,13 +8406,13 @@ msgstr ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"         st_neighborhood         \n"
+"         st_neighborhood\n"
 "---------------------------------\n"
 " {{NULL,1,1},{1,1,NULL},{1,1,1}}"
 
 #. Tag: programlisting
 #: reference_raster.xml:3642
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- pixel 2x3 is NODATA\n"
 "SELECT\n"
@@ -8455,13 +8462,13 @@ msgstr ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"       st_neighborhood        \n"
+"       st_neighborhood\n"
 "------------------------------\n"
 " {{1,1,1},{1,NULL,1},{1,1,1}}"
 
 #. Tag: programlisting
 #: reference_raster.xml:3644
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- pixel 3x3 has value\n"
 "-- exclude_nodata_value = FALSE\n"
@@ -8489,7 +8496,7 @@ msgid ""
 "---------------------------\n"
 " {{1,0,1},{1,1,1},{0,1,1}}"
 msgstr ""
-"-- 3,3ピクセルは値を持っています\n"
+"-- 2,3ピクセルは値を持っています\n"
 "-- exclude_nodata_value = FALSE\n"
 "SELECT\n"
 "        ST_Neighborhood(rast, 3, 3, 1, 1, false)\n"
@@ -8511,7 +8518,7 @@ msgstr ""
 "                ) AS rast\n"
 ") AS foo\n"
 "\n"
-"      st_neighborhood      \n"
+"      st_neighborhood\n"
 "---------------------------\n"
 " {{1,0,1},{1,1,1},{0,1,1}}"
 
@@ -8886,7 +8893,7 @@ msgstr "例: 一つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3826
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -8932,7 +8939,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 1 | 1 | 1 |\n"
@@ -8962,7 +8969,7 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -8976,7 +8983,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3828
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9022,7 +9029,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 9 | 9 | 9 |\n"
@@ -9052,13 +9059,13 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   9\n"
 " 1 | 2 |   9\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -9066,7 +9073,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3830
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9114,7 +9121,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 9 | 9 | 9 |\n"
@@ -9146,13 +9153,13 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   9\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -9160,7 +9167,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3832
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9212,7 +9219,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "|   | 1 | 1 |          |   | 9 | 9 |\n"
@@ -9248,13 +9255,13 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
-" 1 | 1 |   \n"
+" 1 | 1 |\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   9\n"
 " 2 | 1 |   9\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   9\n"
 " 3 | 2 |   9\n"
@@ -9270,7 +9277,7 @@ msgstr "例: 二つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3839
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9316,7 +9323,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 1 | 1 | 1 |\n"
@@ -9346,7 +9353,7 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -9360,7 +9367,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3841
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "This example is like the previous one.  Instead of nosetvalue = -1, "
@@ -9411,7 +9418,8 @@ msgstr ""
 "/*\n"
 "この例は上の例と似ていますが、nosetvalueを-1でなくNULLにしています。\n"
 "\n"
-"ST_SetValues()は次のように書き換えます\n"
+"\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 1 | 1 | 1 |\n"
@@ -9441,7 +9449,7 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -9461,7 +9469,7 @@ msgstr "例: 三つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3848
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9506,7 +9514,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 1 | 1 | 1 |\n"
@@ -9535,7 +9543,7 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
@@ -9549,7 +9557,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3850
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "/*\n"
 "The ST_SetValues() does the following...\n"
@@ -9597,7 +9605,7 @@ msgid ""
 " 3 | 3 |   9"
 msgstr ""
 "/*\n"
-"ST_SetValues()は次のように書き換えます\n"
+"ST_SetValues()によって次のように書き換わります\n"
 "\n"
 "+ - + - + - +          + - + - + - +\n"
 "| 1 | 1 | 1 |          | 1 | 1 | 1 |\n"
@@ -9629,13 +9637,13 @@ msgstr ""
 ") foo\n"
 "ORDER BY 1, 2;\n"
 "\n"
-" x | y | val \n"
+" x | y | val\n"
 "---+---+-----\n"
 " 1 | 1 |   1\n"
 " 1 | 2 |   1\n"
 " 1 | 3 |   1\n"
 " 2 | 1 |   1\n"
-" 2 | 2 |    \n"
+" 2 | 2 |\n"
 " 2 | 3 |   9\n"
 " 3 | 1 |   1\n"
 " 3 | 2 |   9\n"
@@ -9649,7 +9657,7 @@ msgstr "例: 五つ目の形式"
 
 #. Tag: programlisting
 #: reference_raster.xml:3857
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, "
@@ -9701,7 +9709,7 @@ msgstr ""
 "ORDER BY rid, gid;\n"
 "\n"
 " rid | gid |                                                                "
-"st_dumpvalues                                                                \n"
+"st_dumpvalues\n"
 "-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   1 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},"
@@ -9726,7 +9734,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3860
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, "
@@ -9779,7 +9787,7 @@ msgstr ""
 "ORDER BY t1.rid, t2.gid, t3.gid;\n"
 "\n"
 " rid | gid | gid |                                                    "
-"st_dumpvalues                                                    \n"
+"st_dumpvalues\n"
 "-----+-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   1 |   2 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},"
@@ -9794,7 +9802,7 @@ msgstr "この例は前の例の逆です。"
 
 #. Tag: programlisting
 #: reference_raster.xml:3863
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, "
@@ -9847,7 +9855,7 @@ msgstr ""
 "ORDER BY t1.rid, t2.gid, t3.gid;\n"
 "\n"
 " rid | gid | gid |                                                    "
-"st_dumpvalues                                                    \n"
+"st_dumpvalues\n"
 "-----+-----+-----"
 "+---------------------------------------------------------------------------------------------------------------------\n"
 "   1 |   2 |   1 | (1,\"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},"
@@ -9916,7 +9924,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3928
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
@@ -9943,7 +9951,7 @@ msgstr ""
 "        (ST_DumpValues(rast)).*\n"
 "FROM foo;\n"
 "\n"
-" nband |                       valarray                       \n"
+" nband |                       valarray\n"
 "-------+------------------------------------------------------\n"
 "     1 | {{1,1,1},{1,1,1},{1,1,1}}\n"
 "     2 | {{3,3,3},{3,3,3},{3,3,3}}\n"
@@ -9952,7 +9960,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3930
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
@@ -9978,7 +9986,7 @@ msgstr ""
 "        (ST_DumpValues(rast, ARRAY[3, 1])).*\n"
 "FROM foo;\n"
 "\n"
-" nband |                       valarray                       \n"
+" nband |                       valarray\n"
 "-------+------------------------------------------------------\n"
 "     3 | {{NULL,NULL,NULL},{NULL,NULL,NULL},{NULL,NULL,NULL}}\n"
 "     1 | {{1,1,1},{1,1,1},{1,1,1}}\n"
@@ -10100,7 +10108,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4024
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        (pixels).*\n"
@@ -10184,7 +10192,7 @@ msgstr ""
 "                , 1, ARRAY[1, 255]) AS pixels\n"
 ") AS foo\n"
 "\n"
-" val | x | y \n"
+" val | x | y\n"
 "-----+---+---\n"
 "   1 | 1 | 2\n"
 "   1 | 1 | 3\n"
@@ -10314,7 +10322,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4087
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast\n"
@@ -10374,7 +10382,7 @@ msgstr ""
 "FROM foo\n"
 "\n"
 " rid |     upperleftx     |     upperlefty     | width | height | scalex | "
-"scaley | skewx | skewy | srid | numbands \n"
+"scaley | skewx | skewy | srid | numbands\n"
 "-----+--------------------+--------------------+-------+--------+--------"
 "+--------+-------+-------+------+----------\n"
 "   0 |                  0 |                  0 |     5 |      5 |      1 "
@@ -10434,7 +10442,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4121
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "  ST_ScaleX(rast1), ST_ScaleY(rast1), ST_SkewX(rast1), ST_SkewY(rast1),\n"
@@ -10451,9 +10459,9 @@ msgid ""
 " -0.0379843956429411 | -0.0379843956429411 | 0.0325143920078558 | "
 "0.0325143920078558 |      0.05 |     -0.05 |        0 |        0"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "  ST_ScaleX(rast1), ST_ScaleY(rast1), ST_SkewX(rast1), ST_SkewY(rast1),\n"
-"  ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2) \n"
+"  ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2)\n"
 "FROM (\n"
 "  SELECT ST_SetRotation(rast, 15) AS rast1, rast as rast2 FROM dummy_rast\n"
 ") AS foo;\n"
@@ -10545,7 +10553,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4169
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5)\n"
@@ -10560,7 +10568,7 @@ msgid ""
 "------+------+----------------------------------------------\n"
 "  1.5 |  1.5 | BOX(3427927.75 5793244 0, 3427935.25 5793251.5 0)"
 msgstr ""
-"UPDATE dummy_rast \n"
+"UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5)\n"
 "WHERE rid = 2;\n"
 "\n"
@@ -10575,7 +10583,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4170
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5, 0.55)\n"
@@ -10590,7 +10598,7 @@ msgid ""
 "------+------+--------------------------------------------\n"
 "  1.5 | 0.55 | BOX(3427927.75 5793244 0,3427935.25 5793247 0)"
 msgstr ""
-"UPDATE dummy_rast \n"
+"UPDATE dummy_rast\n"
 "        SET rast = ST_SetScale(rast, 1.5, 0.55)\n"
 "WHERE rid = 2;\n"
 "\n"
@@ -10662,7 +10670,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4212
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Example 1\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;\n"
@@ -10679,9 +10687,9 @@ msgid ""
 "                    : 0.5000000000\n"
 "                    : 0.5000000000"
 msgstr ""
-"-- 例 1\n"
+"-- 例1\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,1,2) WHERE rid = 1;\n"
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast WHERE rid = 1;\n"
 "\n"
@@ -10696,7 +10704,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4214
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Example 2 set both to same number:\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;\n"
@@ -10713,12 +10721,12 @@ msgid ""
 "                     : 0.5000000000\n"
 "                     : 0.5000000000"
 msgstr ""
-"-- 例2 同じ値の設定\n"
+"-- 例2 同じ値に設定\n"
 "UPDATE dummy_rast SET rast = ST_SetSkew(rast,0) WHERE rid = 1;\n"
-"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy, \n"
+"SELECT rid, ST_SkewX(rast) As skewx, ST_SkewY(rast) As skewy,\n"
 "    ST_GeoReference(rast) as georef\n"
 "FROM dummy_rast WHERE rid = 1;\n"
-"                        \n"
+"\n"
 " rid | skewx | skewy |    georef\n"
 "-----+-------+-------+--------------\n"
 "   1 |     0 |     0 | 2.0000000000\n"
@@ -10825,13 +10833,13 @@ msgstr "ラスタの左上隅の投影座標系のX値とY値を設定します�
 
 #. Tag: programlisting
 #: reference_raster.xml:4293
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_SetUpperLeft(rast,-71.01,42.37)\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;"
 msgstr ""
-"SELECT ST_SetUpperLeft(rast,-71.01,42.37)  \n"
+"SELECT ST_SetUpperLeft(rast,-71.01,42.37)\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;"
 
@@ -11020,7 +11028,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4386
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_Width(orig) AS orig_width,\n"
@@ -11049,7 +11057,7 @@ msgstr ""
 "        SELECT\n"
 "                rast AS orig,\n"
 "                ST_Resample(rast,100,100) AS reduce_100\n"
-"        FROM aerials.boston \n"
+"        FROM aerials.boston\n"
 "        WHERE ST_Intersects(rast,\n"
 "                ST_Transform(\n"
 "                        ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, "
@@ -11370,19 +11378,25 @@ msgstr "スキューを0.0から0.0015に再設定する簡単な例です。"
 #: reference_raster.xml:4519
 #, fuzzy, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster non-rotated\n"
+"SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
+"\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the reskewed raster raster rotation\n"
+"SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
+"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));\n"
+"\n"
+"-- result\n"
+"-0.982793723247329"
+msgstr ""
+"-- 回転前の元のラスタ\n"
 "SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
 "-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
 "\n"
-"-- the rescaled raster raster pixel size\n"
-"SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
-"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))"
-msgstr ""
-"-- 元のラスタのピクセルサイズ\n"
-"SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"                                        \n"
-"-- スキュー再設定したラスタのピクセルサイズ\n"
+"-- ST_Reskewを施したラスタの回転\n"
 "SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
 "0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))"
 
@@ -11545,19 +11559,24 @@ msgstr "ラスタをわずかに異なるグリッドにスナップさせる簡
 #: reference_raster.xml:4597
 #, fuzzy, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster upper left X\n"
+"SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the upper left of raster after snapping\n"
+"SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
+"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));\n"
+"\n"
+"--result\n"
+"-0.0008"
+msgstr ""
+"-- 元のラスタの左上隅のX値\n"
 "SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
 "-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
 "\n"
-"-- the rescaled raster raster pixel size\n"
-"SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
-"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))"
-msgstr ""
-"-- 元のラスタのピクセルサイズ\n"
-"SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"                                        \n"
-"-- スケール再設定を行ったラスタのピクセルサイズ\n"
+"-- スナップしたラスタの左上隅のX値\n"
 "SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
 "0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))"
 
@@ -11697,7 +11716,7 @@ msgstr "Availability: 2.1.0 GDAL 1.6.1以上が必要です。"
 
 #. Tag: programlisting
 #: reference_raster.xml:4672
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS(\n"
 "SELECT\n"
@@ -11748,7 +11767,7 @@ msgid ""
 msgstr ""
 "WITH foo AS(\n"
 "SELECT\n"
-"        1 AS rid, \n"
+"        1 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -11758,7 +11777,7 @@ msgstr ""
 "        , '50%', '500') AS rast\n"
 "UNION ALL\n"
 "SELECT\n"
-"        2 AS rid, \n"
+"        2 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -11768,7 +11787,7 @@ msgstr ""
 "        , 500, 100) AS rast\n"
 "UNION ALL\n"
 "SELECT\n"
-"        3 AS rid, \n"
+"        3 AS rid,\n"
 "        ST_Resize(\n"
 "                ST_AddBand(\n"
 "                        ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, "
@@ -11782,7 +11801,7 @@ msgstr ""
 "SELECT rid, (meta).* FROM bar\n"
 "\n"
 " rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | "
-"skewy | srid | numbands \n"
+"skewy | srid | numbands\n"
 "-----+------------+------------+-------+--------+--------+--------+-------"
 "+-------+------+----------\n"
 "   1 |          0 |          0 |   500 |    500 |      1 |     -1 |     0 "
@@ -11948,7 +11967,7 @@ msgstr "Enhanced: 2.1.0 ST_Tranfrorm(rast, alignto)の形式を追加しまし�
 
 #. Tag: programlisting
 #: reference_raster.xml:4752
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,\n"
 "  ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after\n"
@@ -11967,15 +11986,15 @@ msgid ""
 msgstr ""
 "SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,\n"
 "  ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after\n"
-"        FROM \n"
+"        FROM\n"
 "        ( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84\n"
 "  ,  ST_Transform(rast,4326, 'Bilinear') AS wgs_84_bilin\n"
-"                FROM aerials.o_2_boston \n"
+"                FROM aerials.o_2_boston\n"
 "                        WHERE ST_Intersects(rast,\n"
 "                                ST_Transform(ST_MakeEnvelope(-71.128, "
 "42.2392,-71.1277, 42.2397, 4326),26986) )\n"
 "                LIMIT 1) As foo;\n"
-"                                                \n"
+"\n"
 " w_before | w_after | h_before | h_after\n"
 "----------+---------+----------+---------\n"
 "      200 |     228 |      200 |     170"
@@ -12014,7 +12033,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4794
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, "
@@ -12102,7 +12121,7 @@ msgstr ""
 "        ST_SameAlignment(aligned) AS aligned\n"
 "FROM baz\n"
 "\n"
-" rast | not_aligned | aligned \n"
+" rast | not_aligned | aligned\n"
 "------+-------------+---------\n"
 " t    | f           | t"
 
@@ -12177,7 +12196,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4841
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- change just first band no data value\n"
 "UPDATE dummy_rast\n"
@@ -12202,24 +12221,26 @@ msgid ""
 "WHERE rid = 2;"
 msgstr ""
 "-- 1番バンドのNODATA値を変更します\n"
-"UPDATE dummy_rast \n"
-"        SET rast = ST_SetBandNoDataValue(rast,1, 254)  \n"
+"UPDATE dummy_rast\n"
+"        SET rast = ST_SetBandNoDataValue(rast,1, 254)\n"
 "WHERE rid = 2;\n"
 "\n"
 "-- 1番、2番、3番のNODATA値を変更します\n"
-"UPDATE dummy_rast \n"
-"        SET rast = \n"
+"UPDATE dummy_rast\n"
+"        SET rast =\n"
 "                ST_SetBandNoDataValue(\n"
 "                        ST_SetBandNoDataValue(\n"
 "                                ST_SetBandNoDataValue(\n"
 "                                        rast,1, 254)\n"
 "                                ,2,99),\n"
-"                                3,108)  \n"
+"                                3,108)\n"
 "                WHERE rid = 2;\n"
-"                \n"
-"-- NODATA値の設定を解除して、全てのピクセルが処理されるようにします\n"
-"UPDATE dummy_rast \n"
-"        SET rast = ST_SetBandNoDataValue(rast,1, NULL)  \n"
+"\n"
+"-- NODATA値の設定を解除して、処理関数が全てのピクセルを考慮するようにします\n"
+"-- wipe out the nodata value this will ensure all pixels are considered for "
+"all processing functions\n"
+"UPDATE dummy_rast\n"
+"        SET rast = ST_SetBandNoDataValue(rast,1, NULL)\n"
 "WHERE rid = 2;"
 
 #. Tag: refname
@@ -12264,7 +12285,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4882
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Create dummy table with one raster column\n"
 "create table dummy_rast (rid integer, rast raster);\n"
@@ -12338,7 +12359,7 @@ msgstr ""
 "insert into dummy_rast values(1,\n"
 "(\n"
 "'01' -- little endian - リトルエンディアン (uint8 ndr)\n"
-"|| \n"
+"||\n"
 "'0000' -- version - 版 (uint16 0)\n"
 "||\n"
 "'0200' -- nBands - バンド数 (uint16 0)\n"
@@ -12363,12 +12384,10 @@ msgstr ""
 "||\n"
 "'0100' -- height - 縦セル数 (uint16 1)\n"
 "||\n"
-"'0100' -- height (uint16 1)\n"
-"||\n"
 "'4' -- hasnodatavalueをTRUEにし、isnodata値を (TRUEにするべきところ)FALSEにす"
 "る\n"
 "||\n"
-"'2' -- 1番バンドのタイプ (4BUI) \n"
+"'2' -- 1番バンドのタイプ (4BUI)\n"
 "||\n"
 "'03' -- NODATA値==3\n"
 "||\n"
@@ -12376,7 +12395,7 @@ msgstr ""
 "||\n"
 "'0' -- hasnodatavalueをFALSEにする。\n"
 "||\n"
-"'5' -- 2番バンドのタイプ  (16BSI)\n"
+"'5' -- 2番バンドのタイプ (16BSI)\n"
 "||\n"
 "'0D00' -- NODATA値==13\n"
 "||\n"
@@ -12509,7 +12528,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4952
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--example will count all pixels not 249 and one will count all pixels.  --\n"
 "SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata,\n"
@@ -12520,11 +12539,11 @@ msgid ""
 "-----+----------------+----------------\n"
 "   2 |             23 |             25"
 msgstr ""
-"-- 249でないピクセルを数え上げと、全てのピクセルの数え上げを行います --\n"
-"SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata, \n"
+"-- 249でないピクセルの数え上げと、全てのピクセルの数え上げを行います --\n"
+"SELECT rid, ST_Count(ST_SetBandNoDataValue(rast,249)) As exclude_nodata,\n"
 "        ST_Count(ST_SetBandNoDataValue(rast,249),false) As include_nodata\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"                                    \n"
+"\n"
 "rid | exclude_nodata | include_nodata\n"
 "-----+----------------+----------------\n"
 "   2 |             23 |             25"
@@ -12627,7 +12646,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5013
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT\n"
@@ -12690,7 +12709,7 @@ msgstr ""
 "        ST_CountAgg(rast, 1, TRUE)\n"
 "FROM foo;\n"
 "\n"
-" st_countagg \n"
+" st_countagg\n"
 "-------------\n"
 "          20\n"
 "(1 row)"
@@ -12936,7 +12955,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5139
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT band, (stats).*\n"
 "FROM (SELECT rid, band, ST_Histogram(rast, band) As stats\n"
@@ -12965,7 +12984,7 @@ msgstr ""
 "FROM (SELECT rid, band, ST_Histogram(rast, band) As stats\n"
 "    FROM dummy_rast CROSS JOIN generate_series(1,3) As band\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 " band |  min  |  max  | count | percent\n"
 "------+-------+-------+-------+---------\n"
 "    1 |   249 |   250 |     2 |    0.08\n"
@@ -12992,7 +13011,7 @@ msgstr "例: ビン数を6で固定して2番バンドだけを計算"
 
 #. Tag: programlisting
 #: reference_raster.xml:5144
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT (stats).*\n"
 "FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats\n"
@@ -13028,9 +13047,9 @@ msgid ""
 msgstr ""
 "SELECT (stats).*\n"
 "FROM (SELECT rid, ST_Histogram(rast, 2,6) As stats\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 "    min     |    max     | count | percent\n"
 "------------+------------+-------+---------\n"
 "         78 | 107.333333 |     9 |    0.36\n"
@@ -13040,14 +13059,13 @@ msgstr ""
 " 195.333333 | 224.666667 |     1 |    0.04\n"
 " 224.666667 |        254 |     5 |     0.2\n"
 "(6 rows)\n"
-"    \n"
+"\n"
 "-- 前と同じですが、ビン毎のピクセル値の範囲を明示的に制御しています\n"
-"  \n"
 "SELECT (stats).*\n"
 "FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats\n"
-"    FROM dummy_rast \n"
+"    FROM dummy_rast\n"
 "     WHERE rid=2) As foo;\n"
-"     \n"
+"\n"
 "  min  |  max  | count | percent\n"
 "-------+-------+-------+----------\n"
 "    78 |  78.5 |     1 |     0.08\n"
@@ -13219,7 +13237,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5244
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;\n"
 "--Example will consider only pixels of band 1 that are not 249 and in named "
@@ -13249,22 +13267,22 @@ msgstr ""
 "FROM (SELECT ST_Quantile(rast, ARRAY[0.25,0.75]) As pvq\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvq).quantile;\n"
-"                                                                \n"
+"\n"
 " quantile | value\n"
 "----------+-------\n"
 "     0.25 |   253\n"
 "     0.75 |   254\n"
-"   \n"
+"\n"
 "SELECT ST_Quantile(rast, 0.75) As value\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "value\n"
 "------\n"
 "  254"
 
 #. Tag: programlisting
 #: reference_raster.xml:5245
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--real live example.  Quantile of all pixels in band 2 intersecting a "
 "geometry\n"
@@ -13302,17 +13320,17 @@ msgid ""
 "  15 |        1 |   255"
 msgstr ""
 "-- 実際の例です。2番バンドでジオメトリとインタセクトする部分の\n"
-"--   全てのピクセルの分位数を計算します。\n"
+"-- 全てのピクセルの分位数を計算します。\n"
 "SELECT rid, (ST_Quantile(rast,2)).* As pvc\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
 "            )\n"
 "ORDER BY value, quantile,rid\n"
 ";\n"
-"                                \n"
-"    \n"
+"\n"
+"\n"
 " rid | quantile | value\n"
 "-----+----------+-------\n"
 "   1 |        0 |     0\n"
@@ -13461,7 +13479,7 @@ msgstr "例: 単一ラスタタイル"
 
 #. Tag: programlisting
 #: reference_raster.xml:5320
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, band, (stats).*\n"
 "FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats\n"
@@ -13478,7 +13496,7 @@ msgstr ""
 "FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats\n"
 "    FROM dummy_rast CROSS JOIN generate_series(1,3) As band\n"
 "     WHERE rid=2) As foo;\n"
-"                                    \n"
+"\n"
 " rid | band | count | sum  |    mean    |  stddev   | min | max\n"
 "-----+------+-------+------+------------+-----------+-----+-----\n"
 "   2 |    1 |    23 | 5821 | 253.086957 |  1.248061 | 250 | 254\n"
@@ -13505,7 +13523,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5327
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH\n"
 "-- our features of interest\n"
@@ -13538,10 +13556,10 @@ msgid ""
 "         103 |        655 |        7 |      182 | 70.5038167938931\n"
 "         150 |        895 |        2 |      252 | 185.642458100559"
 msgstr ""
-"WITH \n"
+"WITH\n"
 "-- 対象地物\n"
 "   feat AS (SELECT gid As building_id, geom_26986 As geom FROM buildings AS "
-"b \n"
+"b\n"
 "    WHERE gid IN(100, 103,150)\n"
 "   ),\n"
 "-- ラスタタイルの2番バンドを建物の境界で切り取って\n"
@@ -13551,7 +13569,7 @@ msgstr ""
 "FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,2,geom)) As stats\n"
 "    FROM aerials.boston\n"
 "                INNER JOIN feat\n"
-"        ON ST_Intersects(feat.geom,rast) \n"
+"        ON ST_Intersects(feat.geom,rast)\n"
 " ) As foo\n"
 " )\n"
 "-- 最後に統計情報の概要を得ます\n"
@@ -13577,7 +13595,7 @@ msgstr "例:ラスタカバレッジ"
 
 #. Tag: programlisting
 #: reference_raster.xml:5332
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- stats for each band --\n"
 "SELECT band, (stats).*\n"
@@ -13607,20 +13625,20 @@ msgstr ""
 "SELECT band, (stats).*\n"
 "FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band) As stats\n"
 "    FROM generate_series(1,3) As band) As foo;\n"
-"                                    \n"
+"\n"
 " band |  count  |  sum   |       mean       |      stddev      | min | max\n"
 "------+---------+--------+------------------+------------------+-----+-----\n"
 "    1 | 8450000 | 725799 | 82.7064349112426 | 45.6800222638537 |   0 | 255\n"
 "    2 | 8450000 | 700487 | 81.4197705325444 | 44.2161184161765 |   0 | 255\n"
 "    3 | 8450000 | 575943 |  74.682739408284 | 44.2143885481407 |   0 | 255\n"
-"    \n"
+"\n"
 "-- テーブルの場合 -- サンプリング率を100%より低くすると早くなります\n"
 "-- 25%に設定して、速く答を得ています\n"
 "SELECT band, (stats).*\n"
 "FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As "
 "stats\n"
 "    FROM generate_series(1,3) As band) As foo;\n"
-"                                    \n"
+"\n"
 " band |  count  |  sum   |       mean       |      stddev      | min | max\n"
 "------+---------+--------+------------------+------------------+-----+-----\n"
 "    1 | 2112500 | 180686 | 82.6890480473373 | 45.6961043857248 |   0 | 255\n"
@@ -13717,7 +13735,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5392
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT\n"
@@ -13798,7 +13816,7 @@ msgstr ""
 "        FROM foo\n"
 ") bar;\n"
 "\n"
-" count |  round  | round  | round |  round  | round \n"
+" count |  round  | round  | round |  round  | round\n"
 "-------+---------+--------+-------+---------+-------\n"
 "    20 | -68.584 | -3.429 | 6.571 | -10.000 | 3.142\n"
 "(1 row)"
@@ -14061,7 +14079,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5536
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,249) WHERE rid=2;\n"
 "--Example will count only pixels of band 1 that are not 249. --\n"
@@ -14119,7 +14137,7 @@ msgstr ""
 "FROM (SELECT ST_ValueCount(rast) As pvc\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvc).value;\n"
-"                                                                \n"
+"\n"
 " value | count\n"
 "-------+-------\n"
 "   250 |     2\n"
@@ -14127,13 +14145,13 @@ msgstr ""
 "   252 |     2\n"
 "   253 |     6\n"
 "   254 |    12\n"
-"   \n"
+"\n"
 "-- この例では、1番バンドの、249を含む全てのピクセルを数えます\n"
 "SELECT (pvc).*\n"
 "FROM (SELECT ST_ValueCount(rast,1,false) As pvc\n"
 "    FROM dummy_rast WHERE rid=2) As foo\n"
 "    ORDER BY (pvc).value;\n"
-"                                    \n"
+"\n"
 " value | count\n"
 "-------+-------\n"
 "   249 |     2\n"
@@ -14142,7 +14160,7 @@ msgstr ""
 "   252 |     2\n"
 "   253 |     6\n"
 "   254 |    12\n"
-"   \n"
+"\n"
 "-- この例では、2番バンドの、NODATA値でない値を持つピクセルに限って数えます\n"
 "SELECT (pvc).*\n"
 "FROM (SELECT ST_ValueCount(rast,2) As pvc\n"
@@ -14163,7 +14181,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5537
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--real live example.  Count all the pixels in an aerial raster tile band 2 "
 "intersecting a geometry\n"
@@ -14190,16 +14208,16 @@ msgstr ""
 "-- 500を超えるピクセル数があるピクセルバンド値のみ返します。\n"
 "SELECT (pvc).value, SUM((pvc).count) As total\n"
 "FROM (SELECT ST_ValueCount(rast,2) As pvc\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
-"             ) \n"
+"             )\n"
 "        ) As foo\n"
 "    GROUP BY (pvc).value\n"
 "    HAVING SUM((pvc).count) > 500\n"
 "    ORDER BY (pvc).value;\n"
-"    \n"
+"\n"
 " value | total\n"
 "-------+-----\n"
 "    51 | 502\n"
@@ -14207,7 +14225,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:5539
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Just return count of pixels in each raster tile that have value of 100 of "
 "tiles that intersect  a specific geometry --\n"
@@ -14228,8 +14246,8 @@ msgstr ""
 "-- 指定したジオメトリとインタセクトするタイルの\n"
 "-- 値が100のピクセルをラスタタイルごとに数えて返します\n"
 "SELECT rid, ST_ValueCount(rast,2,100) As count\n"
-"    FROM o_4_boston \n"
-"        WHERE ST_Intersects(rast, \n"
+"    FROM o_4_boston\n"
+"        WHERE ST_Intersects(rast,\n"
 "            ST_GeomFromText('POLYGON((224486 892151,224486 892200,224706 "
 "892200,224706 892151,224486 892151))',26986)\n"
 "             ) ;\n"
@@ -14454,7 +14472,7 @@ msgstr "GTIFF出力の例"
 
 #. Tag: programlisting
 #: reference_raster.xml:5647
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg\n"
 "FROM dummy_rast WHERE rid=2;\n"
@@ -14469,8 +14487,8 @@ msgstr ""
 "FROM dummy_rast WHERE rid=2;\n"
 "\n"
 "-- GeoTIFFをJPEG、90%品質で圧縮して出力します\n"
-"SELECT ST_AsGDALRaster(rast, 'GTiff',  \n"
-"  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'], \n"
+"SELECT ST_AsGDALRaster(rast, 'GTiff',\n"
+"  ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'],\n"
 "  4269) As rasttiff\n"
 "FROM dummy_rast WHERE rid=2;"
 
@@ -14623,7 +14641,7 @@ msgstr "例: 出力"
 
 #. Tag: programlisting
 #: reference_raster.xml:5738
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- output first 3 bands 75% quality\n"
 "SELECT ST_AsJPEG(rast) As rastjpg\n"
@@ -14642,11 +14660,11 @@ msgstr ""
 "-- 前から3バンドを75%品質で出力\n"
 "SELECT ST_AsJPEG(rast) As rastjpg\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "-- 1番バンドのみ90%品質で出力\n"
 "SELECT ST_AsJPEG(rast,1,90) As rastjpg\n"
 "    FROM dummy_rast WHERE rid=2;\n"
-"    \n"
+"\n"
 "-- 前から3バンドを、2番を赤、1番を緑、3番を青とし、プログレッシブ、90%品質で"
 "出力します\n"
 "SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As "
@@ -14754,14 +14772,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:5800
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<varname>nbands</varname> is an array of bands to export (note that max is 4 "
 "for PNG) and the order of the bands is RGBA. e.g ARRAY[3,2,1] means map band "
 "3 to Red, band 2 to green and band 1 to blue"
 msgstr ""
-"<varname>nbands</varname> 出力バンドの配列 (PNGでは3要素が最大です)で、バンド"
-"の並び順はRGBです。たとえばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番"
+"<varname>nbands</varname> 出力バンドの配列 (PNGでは4要素が最大です)で、バンド"
+"の並び順はRGBAです。たとえばARRAY[3,2,1]は、3番バンドを赤、2番バンドを緑、1番"
 "バンドを青にそれぞれ対応させます。"
 
 #. Tag: para
@@ -15266,7 +15284,7 @@ msgstr "例: 全バンドの切り取り"
 
 #. Tag: programlisting
 #: reference_raster.xml:6103
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Clip all bands of an aerial tile by a 20 meter buffer.\n"
 "-- Only difference is we don't specify a specific band to clip\n"
@@ -15279,9 +15297,9 @@ msgid ""
 msgstr ""
 "-- 空中写真タイルの全バンドを20メートルバッファで切り取ります\n"
 "-- 違いは、全バンドの切り取りのため\n"
-"--   切り取り対象のバンドを指定しないことだけです\n"
+"-- 切り取り対象のバンドを指定しないことだけです\n"
 "SELECT ST_Clip(rast,\n"
-"          ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20), \n"
+"          ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20),\n"
 "          false\n"
 "        ) from aerials.boston\n"
 "WHERE rid = 4;"
@@ -15541,7 +15559,7 @@ msgstr "これは試行のためのがらくたテーブルです。"
 
 #. Tag: programlisting
 #: reference_raster.xml:6271
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- setup test raster table --\n"
 "DROP TABLE IF EXISTS funky_shapes;\n"
@@ -15581,7 +15599,7 @@ msgstr ""
 "SELECT\n"
 "        ST_Union(rast)\n"
 "FROM (\n"
-"        SELECT \n"
+"        SELECT\n"
 "                ST_AsRaster(\n"
 "                        ST_Rotate(\n"
 "                                ST_Buffer(\n"
@@ -15800,6 +15818,44 @@ msgid ""
 "parameter></paramdef> <paramdef choice=\"opt\"><type>double precision[] </"
 "type> <parameter>nodataval</parameter></paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>setof geomval <function>ST_Intersection</function></"
+"funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+"paramdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>band_num=1</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>setof geomval <function>ST_Intersection</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast</parameter></"
+"paramdef> <paramdef><type>geometry </type> <parameter>geom</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>setof geomval "
+"<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
+"type> <parameter>rast</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>band</parameter></paramdef> <paramdef><type>geometry </type> "
+"<parameter>geomin</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_Intersection</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef> "
+"<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef> "
+"<paramdef><type>double precision[] </type> <parameter>nodataval</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
+"type> <parameter>rast1</parameter></paramdef> <paramdef><type>raster </type> "
+"<parameter>rast2</parameter></paramdef> <paramdef choice=\"opt\"><type>text "
+"</type> <parameter>returnband</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>double precision[] </type> <parameter>nodataval</parameter></"
+"paramdef> </funcprototype> <funcprototype> <funcdef>raster "
+"<function>ST_Intersection</function></funcdef> <paramdef><type>raster </"
+"type> <parameter>rast1</parameter></paramdef> <paramdef><type>integer </"
+"type> <parameter>band1</parameter></paramdef> <paramdef><type>raster </type> "
+"<parameter>rast2</parameter></paramdef> <paramdef><type>integer </type> "
+"<parameter>band2</parameter></paramdef> <paramdef><type>double precision[] </"
+"type> <parameter>nodataval</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_Intersection</function></"
+"funcdef> <paramdef><type>raster </type> <parameter>rast1</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band1</parameter></"
+"paramdef> <paramdef><type>raster </type> <parameter>rast2</parameter></"
+"paramdef> <paramdef><type>integer </type> <parameter>band2</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>returnband</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>double precision[] </"
+"type> <parameter>nodataval</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:6459
@@ -15908,6 +15964,9 @@ msgid ""
 "need an intersection between a raster and geometry that returns a raster, "
 "refer to <xref linkend=\"RT_ST_Clip\"/>."
 msgstr ""
+"全ての形式で、バンド番号を指定していない場合には、1番と仮定します。ラスタとジ"
+"オメトリを引数にとり、ラスタを得たい場合には、<xref linkend=\"RT_ST_Clip\"/>"
+"を参照して下さい。"
 
 #. Tag: para
 #: reference_raster.xml:6488
@@ -15962,7 +16021,7 @@ msgstr "例: ジオメトリとラスタ -- ジオメトリと値を得る"
 
 #. Tag: programlisting
 #: reference_raster.xml:6513
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        foo.rid,\n"
@@ -16052,8 +16111,8 @@ msgstr ""
 "   2 |   2 | POINT(3427927.8 "
 "5793243.8)                                                                        "
 "| 253\n"
-"   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)           "
-"| 252\n"
+"   2 |   2 | LINESTRING(3427927.8 5793243.75,3427927.8 5793243.8)        | "
+"252\n"
 "   2 |   2 | MULTILINESTRING((3427927.8 5793243.8,3427927.8 5793243.75),...) "
 "| 250\n"
 "   2 |   3 | GEOMETRYCOLLECTION EMPTY"
@@ -16156,6 +16215,71 @@ msgid ""
 "\"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></"
 "paramdef> </funcprototype>"
 msgstr ""
+"<funcprototype> <funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></"
+"paramdef> <paramdef><type>regprocedure </type> <parameter>callbackfunc</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>raster </type> "
+"<parameter>customextent=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>distancex=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>distancey=0</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>text[] </type> "
+"<parameter>VARIADIC userargs=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer[] </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>extenttype=FIRST</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>raster </type> <parameter>customextent=NULL</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>distancex=0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>distancey=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
+"userargs=NULL</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>extenttype=FIRST</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>raster </type> <parameter>customextent=NULL</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>distancex=0</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>distancey=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>text[] </type> <parameter>VARIADIC "
+"userargs=NULL</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef> "
+"<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>raster </type> "
+"<parameter>customextent=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>distancex=0</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>distancey=0</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>text[] </type> "
+"<parameter>VARIADIC userargs=NULL</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>raster <function>ST_MapAlgebra</function></funcdef> "
+"<paramdef><type>nband</type> <parameter>integer</parameter></paramdef> "
+"<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></"
+"paramdef> <paramdef><type>float8[] </type> <parameter>mask</parameter></"
+"paramdef> <paramdef><type>boolean </type> <parameter>weighted</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>text </type> "
+"<parameter>pixeltype=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>raster </type> "
+"<parameter>customextent=NULL</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></"
+"paramdef> </funcprototype>"
 
 #. Tag: para
 #: reference_raster.xml:6609
@@ -16291,7 +16415,7 @@ msgstr ""
 #: reference_raster.xml:6652
 #, no-c-format
 msgid "mask"
-msgstr ""
+msgstr "mask"
 
 #. Tag: para
 #: reference_raster.xml:6654
@@ -16303,12 +16427,17 @@ msgid ""
 "weight is set to true, then the values, are used as multipliers to multiple "
 "the pixel value of that value in the neighborhood position."
 msgstr ""
+"N次元の数値配列 (行列)で、地図代数コールバック関数に渡すセルを決めるための"
+"フィルタに使われます。0は近隣セル値をNODATAとした扱うべきであることを示し、1"
+"はデータとして扱うべきであることをそれぞれ意味します。weightたTRUEに指定され"
+"いる場合には、この配列の値は、近隣セルのピクセル値に対して掛け算を行うための"
+"数になります。"
 
 #. Tag: term
 #: reference_raster.xml:6661
 #, no-c-format
 msgid "weighted"
-msgstr ""
+msgstr "weighted"
 
 #. Tag: para
 #: reference_raster.xml:6663
@@ -16318,6 +16447,8 @@ msgid ""
 "(multiplied by original value) or not (only applies to proto that takes a "
 "mask)."
 msgstr ""
+"マスク値に重みづけを施す (元の値に対して乗算を行う)か、施さない (マスク処理だ"
+"けを行う)かを示す真偽値です。"
 
 #. Tag: term
 #: reference_raster.xml:6670 reference_raster.xml:6995
@@ -16507,7 +16638,7 @@ msgstr ""
 #: reference_raster.xml:6751
 #, no-c-format
 msgid "Availability: 2.2.0: Ability to add a mask"
-msgstr ""
+msgstr "Availability: 2.2.0: マスクが追加されました。"
 
 #. Tag: para
 #: reference_raster.xml:6759 reference_raster.xml:6781
@@ -16737,7 +16868,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:6772
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH src AS (\n"
 "        SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, "
@@ -16838,7 +16969,7 @@ msgstr ""
 "                ) AS rast\n"
 "        FROM src t1\n"
 "        JOIN foo t2\n"
-"                ON t1.rid = t2.rid \n"
+"                ON t1.rid = t2.rid\n"
 ")\n"
 "SELECT\n"
 "        rid,\n"
@@ -16975,7 +17106,7 @@ msgstr ""
 #: reference_raster.xml:6794
 #, no-c-format
 msgid "Examples: Using Masks"
-msgstr ""
+msgstr "例: マスクの使用"
 
 #. Tag: programlisting
 #: reference_raster.xml:6795
@@ -17011,24 +17142,56 @@ msgid ""
 "    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast\n"
 "FROM foo;"
 msgstr ""
+"WITH foo AS (SELECT\n"
+"   ST_SetBandNoDataValue(\n"
+"ST_SetValue(ST_SetValue(ST_AsRaster(\n"
+"                ST_Buffer(\n"
+"                        ST_GeomFromText('LINESTRING(50 50,100 90,100 50)'), "
+"5,'join=bevel'),\n"
+"                        200,200,ARRAY['8BUI'], ARRAY[100], ARRAY[0]), "
+"ST_Buffer('POINT(70 70)'::geometry,10,'quad_segs=1') ,50),\n"
+"  'LINESTRING(20 20, 100 100, 150 98)'::geometry,1),0)  AS rast )\n"
+"SELECT 'original' AS title, rast\n"
+"FROM foo\n"
+"UNION ALL\n"
+"SELECT 'no mask mean value' AS title, "
+"ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::"
+"regprocedure) AS rast\n"
+"FROM foo\n"
+"UNION ALL\n"
+"SELECT 'mask only consider neighbors, exclude center' AS title, "
+"ST_MapAlgebra(rast,1,'ST_mean4ma(double precision[], int[], text[])'::"
+"regprocedure,\n"
+"    '{{1,1,1}, {1,0,1}, {1,1,1}}'::double precision[], false) As rast\n"
+"FROM foo\n"
+"\n"
+"UNION ALL\n"
+"SELECT 'mask weighted only consider neighbors, exclude center multi otehr "
+"pixel values by 2' AS title, ST_MapAlgebra(rast,1,'ST_mean4ma(double "
+"precision[], int[], text[])'::regprocedure,\n"
+"    '{{2,2,2}, {2,0,2}, {2,2,2}}'::double precision[], true) As rast\n"
+"FROM foo;"
 
 #. Tag: para
 #: reference_raster.xml:6809
 #, no-c-format
 msgid "original"
-msgstr ""
+msgstr "original"
 
 #. Tag: para
 #: reference_raster.xml:6823
 #, no-c-format
 msgid "no mask mean value (same as having all 1s in mask matrix)"
 msgstr ""
+"no mask mean value (マスクなし平均値) (マスク配列に全て1があるのと同じ)"
 
 #. Tag: para
 #: reference_raster.xml:6839
 #, no-c-format
 msgid "mask only consider neighbors, exclude center"
 msgstr ""
+"mask only consider neighbors, exclude center (近隣セルのみ注目し、中心セルを"
+"除くマスク)"
 
 #. Tag: para
 #: reference_raster.xml:6853
@@ -17037,6 +17200,8 @@ msgid ""
 "mask weighted only consider neighbors, exclude center multi other pixel "
 "values by 2"
 msgstr ""
+"mask weighted only consider neighbors, exclude center multi other pixel "
+"values by 2 (近隣のみ考慮に入れて中心を除き、2を掛けるウェイトマスク)"
 
 #. Tag: para
 #: reference_raster.xml:6870
@@ -17704,7 +17869,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7173
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;\n"
 "UPDATE dummy_rast SET\n"
@@ -17762,7 +17927,7 @@ msgstr ""
 "     252 |      2\n"
 "     253 |      3\n"
 "     254 |      3\n"
-"     \n"
+"\n"
 "SELECT\n"
 "        ST_BandPixelType(map_rast2) As b1pixtyp\n"
 "FROM dummy_rast\n"
@@ -17797,7 +17962,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7213
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_AddBand(\n"
@@ -17821,7 +17986,7 @@ msgstr ""
 "                                ST_MakeEmptyRaster(rast_view),\n"
 "                                ST_MapAlgebraExpr(rast_view,1,"
 "NULL,'tan([rast])*[rast]')\n"
-"                        ), \n"
+"                        ),\n"
 "                        ST_Band(rast_view,2)\n"
 "                ),\n"
 "                ST_Band(rast_view, 3) As rast_view_ma\n"
@@ -17953,7 +18118,7 @@ msgstr "例: 2バンドの共有と結合"
 
 #. Tag: programlisting
 #: reference_raster.xml:7369
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--Create a cool set of rasters --\n"
 "DROP TABLE IF EXISTS fun_shapes;\n"
@@ -17998,30 +18163,31 @@ msgid ""
 " fun_name = 'rand bubbles') As bub"
 msgstr ""
 "-- ラスタの集合の生成 --\n"
-"DROP TABLE IF EXISTS fun_shapes; \n"
+"DROP TABLE IF EXISTS fun_shapes;\n"
 "CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast "
 "raster);\n"
 "\n"
-"-- メートル単位のマサチューセッツ平面でボストンのまわりの形状を挿入 --\n"
+"-- 空間参照系をメートル単位のマサチューセッツ平面として、ボストンのまわりの形"
+"状を挿入 --\n"
 "INSERT INTO fun_shapes(fun_name, rast)\n"
 "VALUES ('ref', ST_AsRaster(ST_MakeEnvelope(235229, 899970, 237229, "
 "901930,26986),200,200,'8BUI',0,0));\n"
 "\n"
 "INSERT INTO fun_shapes(fun_name,rast)\n"
-"WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' ) \n"
+"WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' )\n"
 "SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, "
-"900930),26986), 1000), \n"
+"900930),26986), 1000),\n"
 "                        ref.rast,'8BUI', 10, 0) As rast\n"
 "FROM ref\n"
 "UNION ALL\n"
-"SELECT 'rand bubbles', \n"
-"                         ST_AsRaster( \n"
-"                         (SELECT ST_Collect(geom)\n"
+"SELECT 'rand bubbles',\n"
+"                        ST_AsRaster(\n"
+"                        (SELECT ST_Collect(geom)\n"
 "        FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, "
 "900930 + j*random()*100),26986), random()*20) As geom\n"
 "                        FROM generate_series(1,10) As i, "
 "generate_series(1,10) As j\n"
-"                        ) As foo ), ref.rast,'8BUI', 200, 0) \n"
+"                        ) As foo ), ref.rast,'8BUI', 200, 0)\n"
 "FROM ref;\n"
 "\n"
 "-- 共有と結合の生成 --\n"
@@ -18031,10 +18197,10 @@ msgstr ""
 "                ST_MapAlgebraExpr(\n"
 "                        area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', "
 "'[rast2.val]', '[rast1.val]') As unionrast\n"
-"FROM \n"
+"FROM\n"
 "  (SELECT rast FROM fun_shapes WHERE\n"
 " fun_name = 'area') As area\n"
-"CROSS JOIN  (SELECT rast \n"
+"CROSS JOIN  (SELECT rast\n"
 "FROM fun_shapes WHERE\n"
 " fun_name = 'rand bubbles') As bub"
 
@@ -18058,7 +18224,7 @@ msgstr "例: 別個のバンドとしてキャンバス上にラスタをオー�
 
 #. Tag: programlisting
 #: reference_raster.xml:7411
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- we use ST_AsPNG to render the image so all single band ones look grey --\n"
 "WITH mygeoms\n"
@@ -18163,7 +18329,7 @@ msgstr "例: 選択した区画の2メートル幅境界線を空中写真にオ
 
 #. Tag: programlisting
 #: reference_raster.xml:7482
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Create new 3 band raster composed of first 2 clipped bands, and overlay "
 "of 3rd band with our geometry\n"
@@ -18200,15 +18366,16 @@ msgid ""
 "FROM prunion;"
 msgstr ""
 "-- 前二つの切り取ったバンドと\n"
-"--   3番バンドにジオメトリをオーバレイしたバンドの\n"
-"--   3バンドのラスタを生成します\n"
+"-- 3番バンドにジオメトリをオーバレイしたバンドからなる\n"
+"-- 3バンドのラスタを生成します\n"
 "-- このクエリはWindows 64ビット版のPostGISで3.6秒かかりました\n"
 "WITH pr AS\n"
 "-- 演算の順序の注意: 全てのラスタを必要なピクセル範囲に切り抜いています\n"
 "(SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom\n"
 "        FROM aerials.o_2_boston AS r INNER JOIN\n"
-"-- あとでインタセクトできるように対象区画を結合して一つのジオメトリにします\n"
-"                (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom \n"
+"-- union our parcels of interest so they form a single geometry we can later "
+"intersect with\n"
+"                (SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom\n"
 "                  FROM landparcels WHERE pid IN('0303890000', '0303900000')) "
 "As g\n"
 "                ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))\n"
@@ -18221,9 +18388,10 @@ msgstr ""
 "ST_Union(rast,3)] ) As clipped,geom\n"
 "FROM pr\n"
 "GROUP BY geom)\n"
-"-- ラスタの破片が結合され、区画境界線のオーバレイも持った\n"
+"-- ラスタの破片を結合し、区画境界線のオーバレイも持った\n"
 "-- 最終のラスタを返します\n"
 "-- 最初の二つのバンドと3番バンド+ジオメトリの地図代数関数とを追加します\n"
+"\n"
 "SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])\n"
 "        , ST_MapAlgebraExpr(ST_Band(clipped,3), "
 "ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),\n"
@@ -18546,7 +18714,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7636
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;\n"
 "CREATE FUNCTION classify_fct(pixel float, pos integer[], variadic args "
@@ -18640,7 +18808,7 @@ msgstr ""
 "     252 |      2\n"
 "     253 |      3\n"
 "     254 |      3\n"
-"     \n"
+"\n"
 "SELECT ST_BandPixelType(map_rast2) As b1pixtyp\n"
 "FROM dummy_rast WHERE rid = 2;\n"
 "\n"
@@ -18650,7 +18818,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7664
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE FUNCTION rast_plus_tan(pixel float, pos integer[], variadic args "
 "text[])\n"
@@ -18694,7 +18862,7 @@ msgstr ""
 "                        ST_MakeEmptyRaster(rast_view),\n"
 "                        ST_MapAlgebraFct(rast_view,1,"
 "NULL,'rast_plus_tan(float,integer[],text[])'::regprocedure)\n"
-"                ), \n"
+"                ),\n"
 "                ST_Band(rast_view,2)\n"
 "        ),\n"
 "        ST_Band(rast_view, 3) As rast_view_ma\n"
@@ -18867,7 +19035,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:7734
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The fourst argument to the <varname>tworastuserfunc</varname> is a "
 "<type>variadic text</type> array. All trailing text arguments to any <xref "
@@ -18875,9 +19043,9 @@ msgid ""
 "<varname>tworastuserfunc</varname>, and are contained in the "
 "<varname>userargs</varname> argument."
 msgstr ""
-"<varname>tworastuserfunc</varname>の第3引数は <type>variadic text</type>配列"
-"です。どの<xref linkend=\"RT_ST_MapAlgebraFct2\"/>にもついてくる全ての文字列"
-"引数は、指定された<varname>tworastuserfunc</varname>に、そのまま渡されて、"
+"<varname>tworastuserfunc</varname>引数は <type>variadic text</type>配列です。"
+"どの<xref linkend=\"RT_ST_MapAlgebraFct2\"/>にもついてくる全ての文字列引数"
+"は、指定された<varname>tworastuserfunc</varname>に、そのまま渡されて、"
 "<varname>userargs</varname>引数内に入ります。"
 
 #. Tag: para
@@ -18893,7 +19061,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7750
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- define our user defined function --\n"
 "CREATE OR REPLACE FUNCTION raster_mapalgebra_union(\n"
@@ -18993,38 +19161,38 @@ msgstr ""
 "        END;\n"
 "        $$ LANGUAGE 'plpgsql' IMMUTABLE COST 1000;\n"
 "\n"
-"-- ラスタの試験テーブルを用意します\n"
+"-- ラスタの試験テーブルの用意\n"
 "DROP TABLE IF EXISTS map_shapes;\n"
 "CREATE TABLE map_shapes(rid serial PRIMARY KEY, rast raster, bnum integer, "
 "descrip text);\n"
 "INSERT INTO map_shapes(rast,bnum, descrip)\n"
-"WITH mygeoms \n"
+"WITH mygeoms\n"
 "    AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(90,90),30) As geom, 'circle' "
 "As descrip\n"
 "            UNION ALL\n"
-"            SELECT 3 AS bnum, \n"
+"            SELECT 3 AS bnum,\n"
 "                ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 "
 "50)'), 15) As geom, 'big road' As descrip\n"
 "            UNION ALL\n"
-"            SELECT 1 As bnum, \n"
+"            SELECT 1 As bnum,\n"
 "                ST_Translate(ST_Buffer(ST_GeomFromText('LINESTRING(60 50,150 "
 "150,150 50)'), 8,'join=bevel'), 10,-6) As geom, 'small road' As descrip\n"
 "            ),\n"
 "   -- ジオメトリと1対1に対応するキャンバスを定義\n"
 "   canvas\n"
-"    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250, \n"
-"        250, \n"
+"    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250,\n"
+"        250,\n"
 "        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0 ) , '8BUI'::"
 "text,0) As rast\n"
 "        FROM (SELECT ST_Extent(geom) As e,\n"
-"                    Max(ST_SRID(geom)) As srid \n"
-"                    from mygeoms \n"
+"                    Max(ST_SRID(geom)) As srid\n"
+"                    from mygeoms\n"
 "                    ) As foo\n"
 "            )\n"
 "-- キャンバスとアラインメントの合ったラスタを返します\n"
 "SELECT ST_AsRaster(m.geom, canvas.rast, '8BUI', 240) As rast, bnum, descrip\n"
 "                FROM mygeoms AS m CROSS JOIN canvas\n"
-"UNION ALL \n"
+"UNION ALL\n"
 "SELECT canvas.rast, 4, 'canvas'\n"
 "FROM canvas;\n"
 "\n"
@@ -19032,12 +19200,12 @@ msgstr ""
 "INSERT INTO map_shapes(rast,bnum,descrip)\n"
 "SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands "
 "overlay fct union (canvas)'\n"
-"        FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast, \n"
+"        FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast,\n"
 "                        'raster_mapalgebra_union(double precision, double "
 "precision, integer[], text[])'::regprocedure, '8BUI', 'FIRST')\n"
 "                FROM map_shapes As m1 CROSS JOIN map_shapes As m2\n"
-"                        WHERE m1.descrip = 'canvas' AND m2.descrip &lt;&gt; "
-"'canvas' ORDER BY m2.bnum) As rasts) As foo;"
+"        WHERE m1.descrip = 'canvas' AND m2.descrip &lt;&gt; 'canvas' ORDER "
+"BY m2.bnum) As rasts) As foo;"
 
 #. Tag: para
 #: reference_raster.xml:7763
@@ -19053,7 +19221,7 @@ msgstr "追加引数を取るユーザ定義関数"
 
 #. Tag: programlisting
 #: reference_raster.xml:7776
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE OR REPLACE FUNCTION raster_mapalgebra_userargs(\n"
 "        rast1 double precision,\n"
@@ -19117,15 +19285,13 @@ msgstr ""
 "                RETURN NULL;\n"
 "        END;\n"
 "        $$ LANGUAGE 'plpgsql' VOLATILE COST 1000;\n"
-"        \n"
+"\n"
 "SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,\n"
 "                        'raster_mapalgebra_userargs(double precision, double "
 "precision, integer[], text[])'::regprocedure,\n"
-"                                '8BUI', 'INTERSECT', "
-"'100','200','200','0') \n"
+"                                '8BUI', 'INTERSECT', '100','200','200','0')\n"
 "                FROM map_shapes As m1\n"
-"                        WHERE m1.descrip = 'map bands overlay fct union "
-"(canvas)';"
+"        WHERE m1.descrip = 'map bands overlay fct union (canvas)';"
 
 #. Tag: para
 #: reference_raster.xml:7784
@@ -19349,7 +19515,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7882
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "--\n"
 "-- A simple 'callback' user function that averages up all the values in a "
@@ -19389,8 +19555,8 @@ msgid ""
 "        limit 1;"
 msgstr ""
 "--\n"
-"-- 近傍の値の全てに関する平均を計算する\n"
-"--   単純なユーザ定義の「コールバック」関数です。\n"
+"-- 近傍の値の全てに関する平均を計算する、単純なユーザ定義の「コールバック」関"
+"数\n"
 "--\n"
 "CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, "
 "variadic args text[])\n"
@@ -19416,13 +19582,13 @@ msgstr ""
 "    END;\n"
 "    $$\n"
 "LANGUAGE 'plpgsql' IMMUTABLE COST 1000;\n"
-"    \n"
+"\n"
 "-- ラスタに対してX,Y軸でそれぞれ2ピクセル内の平均を計算するようにしています "
 "--\n"
 "SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,\n"
 "                'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', "
 "NULL) As nn_with_border\n"
-"        FROM katrinas_rescaled \n"
+"        FROM katrinas_rescaled\n"
 "        limit 1;"
 
 #. Tag: para
@@ -19550,7 +19716,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7978
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN reclass_rast raster;\n"
 "UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, "
@@ -19579,8 +19745,8 @@ msgstr ""
 "UPDATE dummy_rast SET reclass_rast = ST_Reclass(rast,2,'0-87:1-10, "
 "88-100:11-15, 101-254:0-0', '4BUI',0) WHERE rid = 2;\n"
 "\n"
-"SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval, \n"
-"    ST_Value(reclass_rast, 2, i, j) As reclassval, \n"
+"SELECT i as col, j as row, ST_Value(rast,2,i,j) As origval,\n"
+"    ST_Value(reclass_rast, 2, i, j) As reclassval,\n"
 "    ST_Value(reclass_rast, 2, i, j, false) As reclassval_include_nodata\n"
 "FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN "
 "generate_series(1,3) AS j\n"
@@ -19619,7 +19785,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7985
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE dummy_rast SET reclass_rast =\n"
 "    ST_Reclass(rast,\n"
@@ -19650,7 +19816,7 @@ msgid ""
 "  2 |   3 | 254 |   0 | 112 |   0 | 108 |   3\n"
 "  3 |   3 | 254 |   0 | 169 |   0 | 175 |   4"
 msgstr ""
-"UPDATE dummy_rast SET reclass_rast = \n"
+"UPDATE dummy_rast SET reclass_rast =\n"
 "    ST_Reclass(rast,\n"
 "        ROW(2,'0-87]:1-10, (87-100]:11-15, (101-254]:0-0', '4BUI',NULL)::"
 "reclassarg,\n"
@@ -19660,8 +19826,8 @@ msgstr ""
 "        ) WHERE rid = 2;\n"
 "\n"
 "SELECT i as col, j as row,ST_Value(rast,1,i,j) As ov1,  "
-"ST_Value(reclass_rast, 1, i, j) As rv1, \n"
-"    ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2, \n"
+"ST_Value(reclass_rast, 1, i, j) As rv1,\n"
+"    ST_Value(rast,2,i,j) As ov2, ST_Value(reclass_rast, 2, i, j) As rv2,\n"
 "    ST_Value(rast,3,i,j) As ov3, ST_Value(reclass_rast, 3, i, j) As rv3\n"
 "FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN "
 "generate_series(1,3) AS j\n"
@@ -19698,7 +19864,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7991
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "ALTER TABLE wind ADD COLUMN rast_view raster;\n"
 "UPDATE wind\n"
@@ -19713,17 +19879,16 @@ msgid ""
 "        );"
 msgstr ""
 "ALTER TABLE wind ADD COLUMN rast_view raster;\n"
-"UPDATE wind \n"
+"UPDATE wind\n"
 "        set rast_view = ST_AddBand( NULL,\n"
 "        ARRAY[\n"
-"                ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, "
-"'8BUI'::text,0),\n"
-"                ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, "
-"'8BUI'::text,0),  \n"
-"                ST_Reclass(rast,1,'0-32]:0,(32-100:100-255'::text, '8BUI'::"
-"text,0)\n"
-"                ]\n"
-"                );"
+"        ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, '8BUI'::"
+"text,0),\n"
+"        ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, '8BUI'::"
+"text,0),\n"
+"        ST_Reclass(rast,1,'0-32]:0,(32-100:100-255'::text, '8BUI'::text,0)\n"
+"        ]\n"
+"        );"
 
 #. Tag: para
 #: reference_raster.xml:7996
@@ -20073,7 +20238,7 @@ msgstr "Enhanced: 2.1.0 二つ目の形式の追加"
 
 #. Tag: programlisting
 #: reference_raster.xml:8151
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20088,13 +20253,13 @@ msgid ""
 "   2 |        3\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -20267,7 +20432,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:8290
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20282,13 +20447,13 @@ msgid ""
 "   2 |      254\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -20355,7 +20520,7 @@ msgstr "近隣のピクセル値の平均値を計算します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:8365
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20370,13 +20535,13 @@ msgid ""
 "   2 | 253.222229003906\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -20385,7 +20550,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:8372
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20400,13 +20565,13 @@ msgid ""
 "   2 | 253.222229003906\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "              ST_MapAlgebra(rast, 1, 'st_mean4ma(double precision[][][], "
 "integer[][], text[])'::regprocedure,'32BF', 'FIRST', NULL, 1, 1)\n"
 "       ,  2, 2)\n"
-"  FROM dummy_rast \n"
+"  FROM dummy_rast\n"
 "   WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -20471,7 +20636,7 @@ msgstr "近隣のピクセル値の最小値を計算します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:8452
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20486,13 +20651,13 @@ msgid ""
 "   2 |      250\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -20619,7 +20784,7 @@ msgstr "近隣のピクセル値の範囲を計算します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:8575
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20634,13 +20799,13 @@ msgid ""
 "   2 |        4\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -20696,7 +20861,7 @@ msgstr "近隣のピクセル値の標準偏差を計算します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:8646
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20711,13 +20876,13 @@ msgid ""
 "   2 | 1.30170822143555\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],"
 "text,text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid |     st_value\n"
 "-----+------------------\n"
@@ -20770,7 +20935,7 @@ msgstr "近隣のピクセル値の合計を計算します。"
 
 #. Tag: programlisting
 #: reference_raster.xml:8721
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "    rid,\n"
@@ -20785,13 +20950,13 @@ msgid ""
 "   2 |     2279\n"
 "(1 row)"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "    rid,\n"
 "    st_value(\n"
 "        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,"
 "text[])'::regprocedure, 'ignore', NULL), 2, 2\n"
-"    ) \n"
-"FROM dummy_rast \n"
+"    )\n"
+"FROM dummy_rast\n"
 "WHERE rid = 2;\n"
 " rid | st_value\n"
 "-----+----------\n"
@@ -20931,6 +21096,12 @@ msgid ""
 "wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS Field "
 "Guide - Aspect Images</ulink>."
 msgstr ""
+"傾斜角、傾斜方および陰影起伏に関する詳細情報については、<ulink url=\"http://"
+"webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade"
+"%20works\">ESRI - How hillshade works</ulink>および<ulink url=\"http://e2b."
+"erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
+"context=FieldGuide&amp;file=Aspect_Images.html\">ERDAS Field Guide - Aspect "
+"Images</ulink>を参照して下さい。"
 
 #. Tag: para
 #: reference_raster.xml:8801 reference_raster.xml:8897
@@ -20954,7 +21125,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:8807
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_SetValues(\n"
@@ -21000,8 +21171,8 @@ msgstr ""
 "        ST_DumpValues(ST_Aspect(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                                                                                                    st_dumpvalues                                                                   \n"
-"                                  \n"
+"                                                                                                    st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "----------------------------------\n"
 " (1,\"{{315,341.565063476562,0,18.4349479675293,45},"
@@ -21254,7 +21425,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:8904
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_SetValues(\n"
@@ -21301,8 +21472,8 @@ msgstr ""
 "        ST_DumpValues(ST_Hillshade(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                                                                                                                       st_dumpvalues                                                \n"
-"                                                                       \n"
+"                                                                                                                       st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "-----------------------------------------------------------------------\n"
 " (1,\"{{NULL,NULL,NULL,NULL,NULL},"
@@ -21550,6 +21721,12 @@ msgid ""
 "wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html\">ERDAS Field Guide "
 "- Slope Images</ulink>."
 msgstr ""
+"傾斜角、傾斜方および陰影起伏に関する詳細情報については、<ulink url=\"http://"
+"webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade"
+"%20works\">ESRI - How hillshade works</ulink>および<ulink url=\"http://e2b."
+"erdas.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?"
+"context=FieldGuide&amp;file=Slope_Images.html\">ERDAS Field Guide - Slope "
+"Images</ulink>を参照して下さい。"
 
 #. Tag: para
 #: reference_raster.xml:9025
@@ -21565,7 +21742,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9032
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_SetValues(\n"
@@ -21615,8 +21792,8 @@ msgstr ""
 "        ST_DumpValues(ST_Slope(rast, 1, '32BF'))\n"
 "FROM foo\n"
 "\n"
-"                            st_dumpvalues                                                                                                                                           \n"
-"                                                                     \n"
+"                            st_dumpvalues\n"
+"\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
 "---------------------------------------------------------------------\n"
@@ -21963,7 +22140,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- Note envelope and convexhull are more or less the same\n"
 "SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,\n"
@@ -21978,7 +22155,7 @@ msgid ""
 "0,20 60,0 60,0 0))"
 msgstr ""
 "-- ST_EnvelopeとST_ConvexHullはだいたい同じです\n"
-"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, \n"
+"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,\n"
 "        ST_AsText(ST_Envelope(rast)) As env\n"
 "FROM dummy_rast WHERE rid=1;\n"
 "\n"
@@ -21991,7 +22168,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9233
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- now we skew the raster\n"
 "-- note how the convex hull and envelope are now different\n"
@@ -22009,11 +22186,11 @@ msgid ""
 msgstr ""
 "-- ラスタをスキューします\n"
 "-- 凸包とエンベロープがどのくらい異なるかをみます\n"
-"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, \n"
+"SELECT ST_AsText(ST_ConvexHull(rast)) As convhull,\n"
 "        ST_AsText(ST_Envelope(rast)) As env\n"
-"FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast \n"
+"FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast\n"
 "        FROM dummy_rast WHERE rid=1) As foo;\n"
-"        \n"
+"\n"
 "                        convhull                        |                "
 "env\n"
 "--------------------------------------------------------"
@@ -22096,10 +22273,10 @@ msgstr "Availability: GDAL 1.7以上が必要です。"
 
 #. Tag: para
 #: reference_raster.xml:9276
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
-"be returned."
+"be returned except in the case of exclude_nodata_value=false."
 msgstr ""
 "バンドにNODATA値が設定されている場合には、NODATA値を持つピクセルは返りませ"
 "ん。"
@@ -22126,7 +22303,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9287
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT val, ST_AsText(geom) As geomwkt\n"
 "FROM (\n"
@@ -22156,7 +22333,7 @@ msgstr ""
 "SELECT val, ST_AsText(geom) As geomwkt\n"
 "FROM (\n"
 "SELECT (ST_DumpAsPolygons(rast)).*\n"
-"FROM dummy_rast \n"
+"FROM dummy_rast\n"
 "WHERE rid = 2\n"
 ") As foo\n"
 "WHERE val BETWEEN 249 and 251\n"
@@ -22167,16 +22344,16 @@ msgstr ""
 "+--------------------------------------------------------------------------\n"
 " 249 | POLYGON((3427927.95 5793243.95,3427927.95 5793243.85,3427928 "
 "5793243.85,\n"
-"                 3427928 5793243.95,3427927.95 5793243.95))\n"
+"                3427928 5793243.95,3427927.95 5793243.95))\n"
 " 250 | POLYGON((3427927.75 5793243.9,3427927.75 5793243.85,3427927.8 "
 "5793243.85,\n"
-"                 3427927.8 5793243.9,3427927.75 5793243.9))\n"
+"                3427927.8 5793243.9,3427927.75 5793243.9))\n"
 " 250 | POLYGON((3427927.8 5793243.8,3427927.8 5793243.75,3427927.85 "
 "5793243.75,\n"
-"                 3427927.85 5793243.8, 3427927.8 5793243.8))\n"
+"                3427927.85 5793243.8, 3427927.8 5793243.8))\n"
 " 251 | POLYGON((3427927.75 5793243.85,3427927.75 5793243.8,3427927.8 "
 "5793243.8,\n"
-"                 3427927.8 5793243.85,3427927.75 5793243.85))"
+"                3427927.8 5793243.85,3427927.75 5793243.85))"
 
 #. Tag: para
 #: reference_raster.xml:9292
@@ -22239,7 +22416,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9333
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT rid, ST_AsText(ST_Envelope(rast)) As envgeomwkt\n"
 "FROM dummy_rast;\n"
@@ -22257,7 +22434,7 @@ msgstr ""
 "-----+--------------------------------------------------------------------\n"
 "   1 | POLYGON((0 0,20 0,20 60,0 60,0 0))\n"
 "   2 | POLYGON((3427927 5793243,3427928 5793243,\n"
-"                   3427928 5793244,3427927 5793244, 3427927 5793243))"
+"                3427928 5793244,3427927 5793244, 3427927 5793243))"
 
 #. Tag: para
 #: reference_raster.xml:9338
@@ -22303,7 +22480,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9376
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT\n"
@@ -22394,8 +22571,7 @@ msgstr ""
 "FROM foo\n"
 "\n"
 "               hull               |                mhull                "
-"|               mhull_1               |               "
-"mhull_2               \n"
+"|               mhull_1               |               mhull_2\n"
 "----------------------------------+-------------------------------------"
 "+-------------------------------------"
 "+-------------------------------------\n"
@@ -22471,7 +22647,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9415
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- by default no data band value is 0 or not set, so polygon will return a "
 "square polygon\n"
@@ -22530,7 +22706,7 @@ msgid ""
 "5793243.9,3427927.9 5793243.9)))"
 msgstr ""
 "-- デフォルトではNODATA値は0になるか設定されていないので\n"
-"--   ポリゴンは四角形のポリゴンとなります\n"
+"--  ST_Polygon()は四角形のポリゴンを返します\n"
 "SELECT ST_AsText(ST_Polygon(rast)) As geomwkt\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;\n"
@@ -22539,16 +22715,16 @@ msgstr ""
 "--------------------------------------------\n"
 "MULTIPOLYGON(((3427927.75 5793244,3427928 5793244,3427928 "
 "5793243.75,3427927.75 5793243.75,3427927.75 5793244)))\n"
-"                 \n"
-"                 \n"
-"-- 1番バンドのNODATA値を変更します\n"
+"\n"
+"\n"
+"-- 1番目のバンドのNODATA値を変更します\n"
 "UPDATE dummy_rast SET rast = ST_SetBandNoDataValue(rast,1,254)\n"
 "WHERE rid = 2;\n"
 "SELECt rid, ST_BandNoDataValue(rast)\n"
 "from dummy_rast where rid = 2;\n"
 "\n"
-"-- ST_Polygonが、ピクセル値が254のピクセルを除外してマルチポリゴンを返しま"
-"す\n"
+"-- ST_Polygonはピクセル値254を除外してマルチポリゴンを返します\n"
+"\n"
 "SELECT ST_AsText(ST_Polygon(rast)) As geomwkt\n"
 "FROM dummy_rast\n"
 "WHERE rid = 2;\n"
@@ -23182,7 +23358,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9902
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- specified band numbers\n"
 "SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
@@ -23199,14 +23375,14 @@ msgstr ""
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;\n"
 "\n"
 "NOTICE:  The first raster provided has no bands\n"
-" rid | rid | st_contains \n"
+" rid | rid | st_contains\n"
 "-----+-----+-------------\n"
-"   1 |   1 | \n"
+"   1 |   1 |\n"
 "   1 |   2 | f"
 
 #. Tag: programlisting
 #: reference_raster.xml:9904
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- no band numbers specified\n"
 "SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 "
@@ -23219,7 +23395,7 @@ msgstr ""
 "-- バンド番号不指定\n"
 "SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;\n"
-" rid | rid | st_contains \n"
+" rid | rid | st_contains\n"
 "-----+-----+-------------\n"
 "   1 |   1 | t\n"
 "   1 |   2 | f"
@@ -23307,7 +23483,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:9989
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -23320,7 +23496,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_containsproperly \n"
+" rid | rid | st_containsproperly\n"
 "-----+-----+---------------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | f"
@@ -23396,7 +23572,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10070
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -23409,7 +23585,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_covers \n"
+" rid | rid | st_covers\n"
 "-----+-----+-----------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
@@ -23485,7 +23661,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10151
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -23498,7 +23674,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_coveredby \n"
+" rid | rid | st_coveredby\n"
 "-----+-----+--------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
@@ -23579,7 +23755,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10232
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- rid = 1 has no bands, hence the NOTICE and the NULL value for "
 "st_disjoint\n"
@@ -23593,19 +23769,19 @@ msgid ""
 "   2 |   2 | f"
 msgstr ""
 "-- rid=1のラスタはバンドを持っていないので、\n"
-"--   警告が出て、ST_DisjointでNULL値が出ます\n"
+"-- 警告が出て、ST_DisjointでNULL値が出ます\n"
 "SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast "
 "r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
 "NOTICE:  The second raster provided has no bands\n"
-" rid | rid | st_disjoint \n"
+" rid | rid | st_disjoint\n"
 "-----+-----+-------------\n"
-"   2 |   1 | \n"
+"   2 |   1 |\n"
 "   2 |   2 | f"
 
 #. Tag: programlisting
 #: reference_raster.xml:10234
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- this time, without specifying band numbers\n"
 "SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 "
@@ -23620,7 +23796,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_disjoint \n"
+" rid | rid | st_disjoint\n"
 "-----+-----+-------------\n"
 "   2 |   1 | t\n"
 "   2 |   2 | f"
@@ -23721,7 +23897,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10363
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- different bands of same raster\n"
 "SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;\n"
@@ -23733,7 +23909,7 @@ msgstr ""
 "-- 同じラスタの別のバンド\n"
 "SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;\n"
 "\n"
-" st_intersects \n"
+" st_intersects\n"
 "---------------\n"
 " t"
 
@@ -23812,7 +23988,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10445
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "-- comparing different bands of same raster\n"
 "SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;\n"
@@ -23821,10 +23997,10 @@ msgid ""
 "-------------\n"
 " f"
 msgstr ""
-"-- 同じラスタの別のバンド\n"
+"-- 同じラスタの別のバンドの比較\n"
 "SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;\n"
 "\n"
-" st_overlaps \n"
+" st_overlaps\n"
 "-------------\n"
 " f"
 
@@ -23897,7 +24073,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10525
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -23910,7 +24086,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_touches \n"
+" rid | rid | st_touches\n"
 "-----+-----+------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | f"
@@ -24135,7 +24311,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10681
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_SameAlignment(\n"
@@ -24164,7 +24340,7 @@ msgstr ""
 "        )\n"
 ";\n"
 "\n"
-" st_samealignment |            st_notsamealignmentreason            \n"
+" st_samealignment |            st_notsamealignmentreason\n"
 "------------------+-------------------------------------------------\n"
 " f                | The rasters have different scales on the X axis\n"
 "(1 row)"
@@ -24257,7 +24433,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10769
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -24270,7 +24446,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 "
 "CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_within \n"
+" rid | rid | st_within\n"
 "-----+-----+-----------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
@@ -24366,7 +24542,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10864
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -24379,7 +24555,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_dwithin \n"
+" rid | rid | st_dwithin\n"
 "-----+-----+------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"
@@ -24462,7 +24638,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:10957
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
@@ -24475,7 +24651,7 @@ msgstr ""
 "SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM "
 "dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;\n"
 "\n"
-" rid | rid | st_dfullywithin \n"
+" rid | rid | st_dfullywithin\n"
 "-----+-----+-----------------\n"
 "   2 |   1 | f\n"
 "   2 |   2 | t"

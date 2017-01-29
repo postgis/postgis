@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2016-07-22 09:24+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -65,14 +65,14 @@ msgstr ""
 #: reference_constructor.xml:897 reference_constructor.xml:956
 #: reference_constructor.xml:1024 reference_constructor.xml:1084
 #: reference_constructor.xml:1123 reference_constructor.xml:1180
-#: reference_constructor.xml:1255 reference_constructor.xml:1300
-#: reference_constructor.xml:1382 reference_constructor.xml:1425
-#: reference_constructor.xml:1467 reference_constructor.xml:1528
-#: reference_constructor.xml:1589 reference_constructor.xml:1643
-#: reference_constructor.xml:1694 reference_constructor.xml:1737
-#: reference_constructor.xml:1793 reference_constructor.xml:1842
-#: reference_constructor.xml:1896 reference_constructor.xml:1939
-#: reference_constructor.xml:1962
+#: reference_constructor.xml:1257 reference_constructor.xml:1302
+#: reference_constructor.xml:1384 reference_constructor.xml:1427
+#: reference_constructor.xml:1469 reference_constructor.xml:1530
+#: reference_constructor.xml:1591 reference_constructor.xml:1645
+#: reference_constructor.xml:1696 reference_constructor.xml:1739
+#: reference_constructor.xml:1795 reference_constructor.xml:1844
+#: reference_constructor.xml:1898 reference_constructor.xml:1941
+#: reference_constructor.xml:1964
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -103,8 +103,8 @@ msgstr ""
 #: reference_constructor.xml:36 reference_constructor.xml:88
 #: reference_constructor.xml:317 reference_constructor.xml:913
 #: reference_constructor.xml:981 reference_constructor.xml:1047
-#: reference_constructor.xml:1483 reference_constructor.xml:1605
-#: reference_constructor.xml:1907
+#: reference_constructor.xml:1485 reference_constructor.xml:1607
+#: reference_constructor.xml:1909
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2"
 msgstr "&sfs_compliant; s3.2.6.2"
@@ -126,11 +126,11 @@ msgstr "1.1.0 버전부터 사용할 수 있습니다. GEOS 2.1.0 이상 버전�
 #: reference_constructor.xml:860 reference_constructor.xml:920
 #: reference_constructor.xml:988 reference_constructor.xml:1052
 #: reference_constructor.xml:1092 reference_constructor.xml:1139
-#: reference_constructor.xml:1397 reference_constructor.xml:1432
-#: reference_constructor.xml:1490 reference_constructor.xml:1551
-#: reference_constructor.xml:1612 reference_constructor.xml:1706
-#: reference_constructor.xml:1761 reference_constructor.xml:1811
-#: reference_constructor.xml:1860 reference_constructor.xml:1912
+#: reference_constructor.xml:1399 reference_constructor.xml:1434
+#: reference_constructor.xml:1492 reference_constructor.xml:1553
+#: reference_constructor.xml:1614 reference_constructor.xml:1708
+#: reference_constructor.xml:1763 reference_constructor.xml:1813
+#: reference_constructor.xml:1862 reference_constructor.xml:1914
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -154,15 +154,15 @@ msgstr "작성중"
 #: reference_constructor.xml:829 reference_constructor.xml:867
 #: reference_constructor.xml:927 reference_constructor.xml:995
 #: reference_constructor.xml:1059 reference_constructor.xml:1099
-#: reference_constructor.xml:1146 reference_constructor.xml:1227
-#: reference_constructor.xml:1270 reference_constructor.xml:1334
-#: reference_constructor.xml:1401 reference_constructor.xml:1438
-#: reference_constructor.xml:1497 reference_constructor.xml:1558
-#: reference_constructor.xml:1619 reference_constructor.xml:1670
-#: reference_constructor.xml:1710 reference_constructor.xml:1765
-#: reference_constructor.xml:1818 reference_constructor.xml:1867
-#: reference_constructor.xml:1919 reference_constructor.xml:1943
-#: reference_constructor.xml:1966
+#: reference_constructor.xml:1146 reference_constructor.xml:1229
+#: reference_constructor.xml:1272 reference_constructor.xml:1336
+#: reference_constructor.xml:1403 reference_constructor.xml:1440
+#: reference_constructor.xml:1499 reference_constructor.xml:1560
+#: reference_constructor.xml:1621 reference_constructor.xml:1672
+#: reference_constructor.xml:1712 reference_constructor.xml:1767
+#: reference_constructor.xml:1820 reference_constructor.xml:1869
+#: reference_constructor.xml:1921 reference_constructor.xml:1945
+#: reference_constructor.xml:1968
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -290,7 +290,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:131 reference_constructor.xml:482
-#: reference_constructor.xml:1702
+#: reference_constructor.xml:1704
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
@@ -486,7 +486,7 @@ msgstr "SRID를 설정하지 않은 경우, 기본값으로 4326(WGS84 경위도
 #. Tag: para
 #: reference_constructor.xml:224 reference_constructor.xml:362
 #: reference_constructor.xml:410 reference_constructor.xml:727
-#: reference_constructor.xml:777 reference_constructor.xml:1807
+#: reference_constructor.xml:777 reference_constructor.xml:1809
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -651,9 +651,9 @@ msgstr ""
 "않은 경우, 기본값인 0을 씁니다."
 
 #. Tag: para
-#: reference_constructor.xml:308 reference_constructor.xml:1472
-#: reference_constructor.xml:1533 reference_constructor.xml:1594
-#: reference_constructor.xml:1902
+#: reference_constructor.xml:308 reference_constructor.xml:1474
+#: reference_constructor.xml:1535 reference_constructor.xml:1596
+#: reference_constructor.xml:1904
 #, no-c-format
 msgid "OGC SPEC 3.2.6.2 - option SRID is from the conformance suite"
 msgstr ""
@@ -694,7 +694,7 @@ msgstr ""
 "4))');"
 
 #. Tag: para
-#: reference_constructor.xml:333 reference_constructor.xml:1621
+#: reference_constructor.xml:333 reference_constructor.xml:1623
 #, no-c-format
 msgid ", <xref linkend=\"ST_SRID\"/>"
 msgstr ", <xref linkend=\"ST_SRID\"/>"
@@ -757,9 +757,9 @@ msgstr ""
 #: reference_constructor.xml:361 reference_constructor.xml:409
 #: reference_constructor.xml:539 reference_constructor.xml:598
 #: reference_constructor.xml:644 reference_constructor.xml:855
-#: reference_constructor.xml:1194 reference_constructor.xml:1312
-#: reference_constructor.xml:1392 reference_constructor.xml:1806
-#: reference_constructor.xml:1854
+#: reference_constructor.xml:1194 reference_constructor.xml:1314
+#: reference_constructor.xml:1394 reference_constructor.xml:1808
+#: reference_constructor.xml:1856
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -818,10 +818,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:375
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "In PostgreSQL 9.1+ - standard_conforming_strings is set to on by default, "
-"where as in past versions it was set to on. You can change defaults as "
+"where as in past versions it was set to off. You can change defaults as "
 "needed for a single query or at the database or server level. Below is how "
 "you would do it with standard_conforming_strings = on. In this case we "
 "escape the ' with standard ansi ', but slashes are not escaped"
@@ -1031,7 +1031,7 @@ msgid "ST_GeometryFromText"
 msgstr "ST_GeometryFromText"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:429 reference_constructor.xml:1951
+#: reference_constructor.xml:429 reference_constructor.xml:1953
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Text representation "
@@ -1059,7 +1059,7 @@ msgstr ""
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:446 reference_constructor.xml:1852
+#: reference_constructor.xml:446 reference_constructor.xml:1854
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
@@ -1785,7 +1785,7 @@ msgstr ""
 "반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:725 reference_constructor.xml:1756
+#: reference_constructor.xml:725 reference_constructor.xml:1758
 #, no-c-format
 msgid "&sfs_compliant; s3.2.6.2 - option SRID is from the conformance suite."
 msgstr ""
@@ -1920,7 +1920,7 @@ msgstr ""
 "합니다."
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:751 reference_constructor.xml:1778
+#: reference_constructor.xml:751 reference_constructor.xml:1780
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_GeomFromWKB</function></"
@@ -2447,7 +2447,7 @@ msgstr ""
 "010200000002000000000000000000F ... | t"
 
 #. Tag: para
-#: reference_constructor.xml:1061 reference_constructor.xml:1820
+#: reference_constructor.xml:1061 reference_constructor.xml:1822
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineFromWKB\"/>"
 msgstr ", <xref linkend=\"ST_LineFromWKB\"/>"
@@ -2658,7 +2658,21 @@ msgstr ""
 "합니다. 포인트 및 멀티포인트의 일반 노드는 제거되지 않습니다."
 
 #. Tag: para
-#: reference_constructor.xml:1195
+#: reference_constructor.xml:1196
+#, fuzzy, no-c-format
+msgid ""
+"Availability: 2.3.0 - Support for multipoint input elements was introduced"
+msgstr "2.0.0 버전부터 멀티포인트 구성 요소 입력을 지원하기 시작했습니다."
+
+#. Tag: para
+#: reference_constructor.xml:1197
+#, no-c-format
+msgid ""
+"Availability: 2.0.0 - Support for linestring input elements was introduced"
+msgstr "2.0.0 버전부터 라인스트링 구성 요소 입력을 지원하기 시작했습니다."
+
+#. Tag: para
+#: reference_constructor.xml:1198
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_MakeLine(geomarray) was introduced. ST_MakeLine "
@@ -2668,28 +2682,14 @@ msgstr ""
 "받을 수 있습니다. 더 많은 포인트를 더 빨리 처리하기 위해 ST_MakeLine 합산 함"
 "수를 개선했습니다."
 
-#. Tag: para
-#: reference_constructor.xml:1196
-#, no-c-format
-msgid ""
-"Availability: 2.0.0 - Support for linestring input elements was introduced"
-msgstr "2.0.0 버전부터 라인스트링 구성 요소 입력을 지원하기 시작했습니다."
-
-#. Tag: para
-#: reference_constructor.xml:1197
-#, no-c-format
-msgid ""
-"Availability: 2.0.0 - Support for multipoint input elements was introduced"
-msgstr "2.0.0 버전부터 멀티포인트 구성 요소 입력을 지원하기 시작했습니다."
-
 #. Tag: title
-#: reference_constructor.xml:1201
+#: reference_constructor.xml:1203
 #, no-c-format
 msgid "Examples: Spatial Aggregate version"
 msgstr "예시: 공간 합산 버전"
 
 #. Tag: para
-#: reference_constructor.xml:1202
+#: reference_constructor.xml:1204
 #, no-c-format
 msgid ""
 "This example takes a sequence of GPS points and creates one record for each "
@@ -2700,7 +2700,7 @@ msgstr ""
 "들로 이루어진 라인스트링인 GPS 이동 하나당 한 개의 레코드를 생성합니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1206
+#: reference_constructor.xml:1208
 #, no-c-format
 msgid ""
 "-- For pre-PostgreSQL 9.0 - this usually works,\n"
@@ -2721,7 +2721,7 @@ msgstr ""
 "        GROUP BY gps.gps_track;"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1208
+#: reference_constructor.xml:1210
 #, no-c-format
 msgid ""
 "-- If you are using PostgreSQL 9.0+\n"
@@ -2744,13 +2744,13 @@ msgstr ""
 "        GROUP BY gps.gps_track;"
 
 #. Tag: title
-#: reference_constructor.xml:1211
+#: reference_constructor.xml:1213
 #, no-c-format
 msgid "Examples: Non-Spatial Aggregate version"
 msgstr "예시: 비공간 합산 버전"
 
 #. Tag: para
-#: reference_constructor.xml:1213
+#: reference_constructor.xml:1215
 #, no-c-format
 msgid ""
 "First example is a simple one off line string composed of 2 points. The "
@@ -2762,7 +2762,7 @@ msgstr ""
 "는 3D 포인트 2개를 연결해서 3차원 공간에 라인을 한 번에 생성합니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1215
+#: reference_constructor.xml:1217
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));\n"
@@ -2792,13 +2792,13 @@ msgstr ""
 " LINESTRING(1 2 3,3 4 5)"
 
 #. Tag: title
-#: reference_constructor.xml:1219
+#: reference_constructor.xml:1221
 #, no-c-format
 msgid "Examples: Using Array version"
 msgstr "예시: 배열 버전 사용하기"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1221
+#: reference_constructor.xml:1223
 #, no-c-format
 msgid ""
 "SELECT ST_MakeLine(ARRAY(SELECT ST_Centroid(the_geom) FROM visit_locations "
@@ -2824,7 +2824,7 @@ msgstr ""
 "LINESTRING(1 2 3,3 4 5,6 6 6)"
 
 #. Tag: para
-#: reference_constructor.xml:1228
+#: reference_constructor.xml:1230
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref "
@@ -2834,13 +2834,13 @@ msgstr ""
 "linkend=\"ST_MakePoint\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1235
+#: reference_constructor.xml:1237
 #, no-c-format
 msgid "ST_MakeEnvelope"
 msgstr "ST_MakeEnvelope"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1237
+#: reference_constructor.xml:1239
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon formed from the given minimums and maximums. "
@@ -2850,7 +2850,7 @@ msgstr ""
 "로 지정된 SRS를 가지고 있어야 합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1243
+#: reference_constructor.xml:1245
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakeEnvelope</function></funcdef> "
@@ -2870,7 +2870,7 @@ msgstr ""
 "\"><type>integer </type> <parameter>srid=unknown</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1257
+#: reference_constructor.xml:1259
 #, no-c-format
 msgid ""
 "Creates a rectangular Polygon formed from the minima and maxima. by the "
@@ -2882,13 +2882,13 @@ msgstr ""
 "조 시스템을 쓴다고 가정합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1260
+#: reference_constructor.xml:1262
 #, no-c-format
 msgid "Availability: 1.5"
 msgstr "1.5 버전부터 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_constructor.xml:1261
+#: reference_constructor.xml:1263
 #, no-c-format
 msgid ""
 "Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was "
@@ -2898,13 +2898,13 @@ msgstr ""
 "수 있는 기능이 추가됐습니다."
 
 #. Tag: title
-#: reference_constructor.xml:1266
+#: reference_constructor.xml:1268
 #, no-c-format
 msgid "Example: Building a bounding box polygon"
 msgstr "예시: 경계 상자 폴리곤을 빌드하기"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1267
+#: reference_constructor.xml:1269
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MakeEnvelope(10, 10, 11, 11, 4326));\n"
@@ -2920,19 +2920,19 @@ msgstr ""
 "POLYGON((10 10, 10 11, 11 11, 11 10, 10 10))"
 
 #. Tag: para
-#: reference_constructor.xml:1271
+#: reference_constructor.xml:1273
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 msgstr ", <xref linkend=\"ST_MakeLine\"/>, <xref linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1277
+#: reference_constructor.xml:1279
 #, no-c-format
 msgid "ST_MakePolygon"
 msgstr "ST_MakePolygon"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1279
+#: reference_constructor.xml:1281
 #, no-c-format
 msgid ""
 "Creates a Polygon formed by the given shell. Input geometries must be closed "
@@ -2942,7 +2942,7 @@ msgstr ""
 "트링이어야 합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1285
+#: reference_constructor.xml:1287
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
@@ -2952,7 +2952,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>"
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1291
+#: reference_constructor.xml:1293
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePolygon</function></funcdef> "
@@ -2966,7 +2966,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1302
+#: reference_constructor.xml:1304
 #, no-c-format
 msgid ""
 "Creates a Polygon formed by the given shell. Input geometries must be closed "
@@ -2976,13 +2976,13 @@ msgstr ""
 "트링이어야 합니다. 두 가지 변종이 있습니다."
 
 #. Tag: para
-#: reference_constructor.xml:1304
+#: reference_constructor.xml:1306
 #, no-c-format
 msgid "Variant 1: Takes one closed linestring."
 msgstr "변종 1: 닫힌 라인스트링 하나를 입력받습니다."
 
 #. Tag: para
-#: reference_constructor.xml:1305
+#: reference_constructor.xml:1307
 #, no-c-format
 msgid ""
 "Variant 2: Creates a Polygon formed by the given shell and array of holes. "
@@ -2994,7 +2994,7 @@ msgstr ""
 "니다. 입력 도형은 닫힌 라인스트링이어야 합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1309
+#: reference_constructor.xml:1311
 #, no-c-format
 msgid ""
 "This function will not accept a MULTILINESTRING. Use <xref linkend="
@@ -3005,13 +3005,13 @@ msgstr ""
 "시오."
 
 #. Tag: title
-#: reference_constructor.xml:1316
+#: reference_constructor.xml:1318
 #, no-c-format
 msgid "Examples: Single closed LINESTRING"
 msgstr "예시: 단일 폐쇄형 라인스트링"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1317
+#: reference_constructor.xml:1319
 #, no-c-format
 msgid ""
 "--2d line\n"
@@ -3069,19 +3069,19 @@ msgstr ""
 "POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))"
 
 #. Tag: title
-#: reference_constructor.xml:1320
+#: reference_constructor.xml:1322
 #, no-c-format
 msgid "Examples: Outer shell with inner shells"
 msgstr "예시: 내곽 구조를 가진 외곽 구조"
 
 #. Tag: para
-#: reference_constructor.xml:1322
+#: reference_constructor.xml:1324
 #, no-c-format
 msgid "Build a donut with an ant hole"
 msgstr "개미 구멍을 가진 도넛을 빌드해봅시다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1323
+#: reference_constructor.xml:1325
 #, no-c-format
 msgid ""
 "SELECT ST_MakePolygon(\n"
@@ -3105,7 +3105,7 @@ msgstr ""
 "                As foo;"
 
 #. Tag: para
-#: reference_constructor.xml:1324
+#: reference_constructor.xml:1326
 #, no-c-format
 msgid ""
 "Build province boundaries with holes representing lakes in the province from "
@@ -3117,7 +3117,7 @@ msgstr ""
 "ST_Accum 함수를 사용합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1328
+#: reference_constructor.xml:1330
 #, no-c-format
 msgid ""
 "The CASE construct is used because feeding a null array into ST_MakePolygon "
@@ -3127,7 +3127,7 @@ msgstr ""
 "합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1330
+#: reference_constructor.xml:1332
 #, no-c-format
 msgid ""
 "A left join is used to guarantee we get all provinces back even if they have "
@@ -3137,7 +3137,7 @@ msgstr ""
 "니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1331
+#: reference_constructor.xml:1333
 #, no-c-format
 msgid ""
 "SELECT p.gid, p.province_name,\n"
@@ -3200,7 +3200,7 @@ msgstr ""
 "                provinces p;"
 
 #. Tag: para
-#: reference_constructor.xml:1335
+#: reference_constructor.xml:1337
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Accum\"/>, <xref linkend=\"ST_AddPoint\"/>, <xref "
@@ -3212,19 +3212,19 @@ msgstr ""
 "linkend=\"ST_LineMerge\"/>, <xref linkend=\"ST_BuildArea\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1349
+#: reference_constructor.xml:1351
 #, no-c-format
 msgid "ST_MakePoint"
 msgstr "ST_MakePoint"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1351
+#: reference_constructor.xml:1353
 #, no-c-format
 msgid "Creates a 2D,3DZ or 4D point geometry."
 msgstr "2D, 3DZ 또는 4D 포인트 도형을 생성합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1356
+#: reference_constructor.xml:1358
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -3236,7 +3236,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>y</parameter></paramdef>"
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1363
+#: reference_constructor.xml:1365
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -3250,7 +3250,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>z</parameter></paramdef>"
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1371
+#: reference_constructor.xml:1373
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePoint</function></funcdef> "
@@ -3266,7 +3266,7 @@ msgstr ""
 "<paramdef><type>double precision</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1384
+#: reference_constructor.xml:1386
 #, no-c-format
 msgid ""
 "Creates a 2D,3DZ or 4D point geometry (geometry with measure). "
@@ -3282,13 +3282,13 @@ msgstr ""
 "우, 더 쉽게 사용할 수 있습니다."
 
 #. Tag: para
-#: reference_constructor.xml:1390
+#: reference_constructor.xml:1392
 #, no-c-format
 msgid "Note x is longitude and y is latitude"
 msgstr "x가 경도이고 y가 위도라는 점을 주의하십시오."
 
 #. Tag: para
-#: reference_constructor.xml:1391
+#: reference_constructor.xml:1393
 #, no-c-format
 msgid ""
 "Use <xref linkend=\"ST_MakePointM\"/> if you need to make a point with x,y,m."
@@ -3297,7 +3297,7 @@ msgstr ""
 "\"/> 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1398
+#: reference_constructor.xml:1400
 #, no-c-format
 msgid ""
 "--Return point with unknown SRID\n"
@@ -3331,7 +3331,7 @@ msgstr ""
 "1.5"
 
 #. Tag: para
-#: reference_constructor.xml:1402
+#: reference_constructor.xml:1404
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_PointFromText\"/>, <xref linkend=\"ST_SetSRID\"/>, "
@@ -3341,19 +3341,19 @@ msgstr ""
 "<xref linkend=\"ST_MakePointM\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1408
+#: reference_constructor.xml:1410
 #, no-c-format
 msgid "ST_MakePointM"
 msgstr "ST_MakePointM"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1410
+#: reference_constructor.xml:1412
 #, no-c-format
 msgid "Creates a point geometry with an x y and m coordinate."
 msgstr "x, y, m 좌표를 가진 포인트 도형을 생성합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1415
+#: reference_constructor.xml:1417
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_MakePointM</function></funcdef> "
@@ -3367,19 +3367,19 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>m</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1427
+#: reference_constructor.xml:1429
 #, no-c-format
 msgid "Creates a point with x, y and measure coordinates."
 msgstr "x, y 좌표 및 단위를 가진 포인트를 생성합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1428
+#: reference_constructor.xml:1430
 #, no-c-format
 msgid "Note x is longitude and y is latitude."
 msgstr "x가 경도이고 y가 위도라는 점을 주의하십시오."
 
 #. Tag: para
-#: reference_constructor.xml:1433
+#: reference_constructor.xml:1435
 #, no-c-format
 msgid ""
 "We use ST_AsEWKT in these examples to show the text representation instead "
@@ -3389,7 +3389,7 @@ msgstr ""
 "지 못 하기 때문에 ST_AsText 대신 텍스트 표현식을 표출하기 위해서 입니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1435
+#: reference_constructor.xml:1437
 #, no-c-format
 msgid ""
 "--Return EWKT representation of point with unknown SRID\n"
@@ -3444,25 +3444,25 @@ msgstr ""
 "10"
 
 #. Tag: para
-#: reference_constructor.xml:1439
+#: reference_constructor.xml:1441
 #, no-c-format
 msgid ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 msgstr ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1445
+#: reference_constructor.xml:1447
 #, no-c-format
 msgid "ST_MLineFromText"
 msgstr "ST_MLineFromText"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1447
+#: reference_constructor.xml:1449
 #, no-c-format
 msgid "Return a specified ST_MultiLineString value from WKT representation."
 msgstr "WKT 표현식으로부터 지정된 ST_MultiLineString 값을 반환합니다."
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1451
+#: reference_constructor.xml:1453
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MLineFromText</function></"
@@ -3480,7 +3480,7 @@ msgstr ""
 "paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:1469
+#: reference_constructor.xml:1471
 #, no-c-format
 msgid ""
 "Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
@@ -3490,13 +3490,13 @@ msgstr ""
 "경우, 기본값인 0을 씁니다."
 
 #. Tag: para
-#: reference_constructor.xml:1475
+#: reference_constructor.xml:1477
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTILINESTRING"
 msgstr "WKT가 멀티라인스트링이 아닌 경우 null을 반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1478 reference_constructor.xml:1539
+#: reference_constructor.xml:1480 reference_constructor.xml:1541
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
@@ -3507,25 +3507,25 @@ msgstr ""
 "이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다."
 
 #. Tag: para
-#: reference_constructor.xml:1484
+#: reference_constructor.xml:1486
 #, no-c-format
 msgid "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 msgstr "&sqlmm_compliant;SQL-MM 3: 9.4.4"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1492
+#: reference_constructor.xml:1494
 #, no-c-format
 msgid "SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');"
 msgstr "SELECT ST_MLineFromText('MULTILINESTRING((1 2, 3 4), (4 5, 6 7))');"
 
 #. Tag: refname
-#: reference_constructor.xml:1505
+#: reference_constructor.xml:1507
 #, no-c-format
 msgid "ST_MPointFromText"
 msgstr "ST_MPointFromText"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1507 reference_constructor.xml:1877
+#: reference_constructor.xml:1509 reference_constructor.xml:1879
 #, no-c-format
 msgid ""
 "<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
@@ -3535,7 +3535,7 @@ msgstr ""
 "가 주어지지 않은 경우, 기본값인 0을 씁니다.</refpurpose>"
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1512
+#: reference_constructor.xml:1514
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MPointFromText</function></"
@@ -3553,7 +3553,7 @@ msgstr ""
 "type> <parameter>WKT</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:1530
+#: reference_constructor.xml:1532
 #, no-c-format
 msgid ""
 "<para>Makes a Geometry from WKT with the given SRID. If SRID is not give, it "
@@ -3563,25 +3563,25 @@ msgstr ""
 "지지 않은 경우, 기본값인 0을 씁니다.</para>"
 
 #. Tag: para
-#: reference_constructor.xml:1536
+#: reference_constructor.xml:1538
 #, no-c-format
 msgid "Returns null if the WKT is not a MULTIPOINT"
 msgstr "WKT가 멀티포인트가 아닌 경우 null을 반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1544
+#: reference_constructor.xml:1546
 #, no-c-format
 msgid "&sfs_compliant; 3.2.6.2"
 msgstr "&sfs_compliant; 3.2.6.2"
 
 #. Tag: para
-#: reference_constructor.xml:1545
+#: reference_constructor.xml:1547
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 9.2.4"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1553
+#: reference_constructor.xml:1555
 #, no-c-format
 msgid ""
 "SELECT ST_MPointFromText('MULTIPOINT(1 2, 3 4)');\n"
@@ -3593,13 +3593,13 @@ msgstr ""
 "4326);"
 
 #. Tag: refname
-#: reference_constructor.xml:1566
+#: reference_constructor.xml:1568
 #, no-c-format
 msgid "ST_MPolyFromText"
 msgstr "ST_MPolyFromText"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1568
+#: reference_constructor.xml:1570
 #, no-c-format
 msgid ""
 "Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
@@ -3609,7 +3609,7 @@ msgstr ""
 "않은 경우, 기본값인 0을 씁니다."
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1573
+#: reference_constructor.xml:1575
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_MPolyFromText</function></"
@@ -3627,7 +3627,7 @@ msgstr ""
 "paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:1591
+#: reference_constructor.xml:1593
 #, no-c-format
 msgid ""
 "Makes a MultiPolygon from WKT with the given SRID. If SRID is not give, it "
@@ -3637,13 +3637,13 @@ msgstr ""
 "않은 경우, 기본값인 0을 씁니다."
 
 #. Tag: para
-#: reference_constructor.xml:1597
+#: reference_constructor.xml:1599
 #, no-c-format
 msgid "Throws an error if the WKT is not a MULTIPOLYGON"
 msgstr "WKT가 멀티폴리곤이 아닌 경우 오류가 발생합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1600
+#: reference_constructor.xml:1602
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are multipolygons, don't "
@@ -3655,13 +3655,13 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_constructor.xml:1606
+#: reference_constructor.xml:1608
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 msgstr "&sqlmm_compliant; SQL-MM 3: 9.6.4"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1614
+#: reference_constructor.xml:1616
 #, no-c-format
 msgid ""
 "SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),"
@@ -3701,13 +3701,13 @@ msgstr ""
 "        -70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);"
 
 #. Tag: refname
-#: reference_constructor.xml:1627
+#: reference_constructor.xml:1629
 #, no-c-format
 msgid "ST_Point"
 msgstr "ST_Point"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1629
+#: reference_constructor.xml:1631
 #, no-c-format
 msgid ""
 "Returns an ST_Point with the given coordinate values. OGC alias for "
@@ -3717,7 +3717,7 @@ msgstr ""
 "니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1634
+#: reference_constructor.xml:1636
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Point</function></funcdef> "
@@ -3729,7 +3729,7 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1645
+#: reference_constructor.xml:1647
 #, no-c-format
 msgid ""
 "Returns an ST_Point with the given coordinate values. MM compliant alias for "
@@ -3739,31 +3739,31 @@ msgstr ""
 "ST_MakePoint와 동일한 함수입니다."
 
 #. Tag: para
-#: reference_constructor.xml:1648
+#: reference_constructor.xml:1650
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.2"
 
 #. Tag: title
-#: reference_constructor.xml:1654
+#: reference_constructor.xml:1656
 #, no-c-format
 msgid "Examples: Geometry"
 msgstr "예시: 도형"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1656
+#: reference_constructor.xml:1658
 #, no-c-format
 msgid "SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)"
 msgstr "SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)"
 
 #. Tag: title
-#: reference_constructor.xml:1660
+#: reference_constructor.xml:1662
 #, no-c-format
 msgid "Examples: Geography"
 msgstr "예시: 지리형"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1662
+#: reference_constructor.xml:1664
 #, no-c-format
 msgid ""
 "SELECT CAST(ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326) "
@@ -3773,7 +3773,7 @@ msgstr ""
 "As geography);"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1663
+#: reference_constructor.xml:1665
 #, no-c-format
 msgid ""
 "-- the :: is PostgreSQL short-hand for casting.\n"
@@ -3785,7 +3785,7 @@ msgstr ""
 "geography;"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1665
+#: reference_constructor.xml:1667
 #, no-c-format
 msgid ""
 "--If your point coordinates are in a different spatial reference from WGS-84 "
@@ -3803,7 +3803,7 @@ msgstr ""
 "geography;"
 
 #. Tag: para
-#: reference_constructor.xml:1672
+#: reference_constructor.xml:1674
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -3813,19 +3813,19 @@ msgstr ""
 "linkend=\"ST_Transform\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1678
+#: reference_constructor.xml:1680
 #, no-c-format
 msgid "ST_PointFromGeoHash"
 msgstr "ST_PointFromGeoHash"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1680
+#: reference_constructor.xml:1682
 #, no-c-format
 msgid "Return a point from a GeoHash string."
 msgstr "GeoHash 스트링으로부터 포인트를 반환합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1685
+#: reference_constructor.xml:1687
 #, no-c-format
 msgid ""
 "<funcdef>point <function>ST_PointFromGeoHash</function></funcdef> "
@@ -3839,7 +3839,7 @@ msgstr ""
 "<parameter>precision=full_precision_of_geohash</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1696
+#: reference_constructor.xml:1698
 #, no-c-format
 msgid ""
 "Return a point from a GeoHash string. The point represents the center point "
@@ -3849,7 +3849,7 @@ msgstr ""
 "니다."
 
 #. Tag: para
-#: reference_constructor.xml:1698
+#: reference_constructor.xml:1700
 #, no-c-format
 msgid ""
 "If no <varname>precision</varname> is specified ST_PointFromGeoHash returns "
@@ -3859,7 +3859,7 @@ msgstr ""
 "력 GeoHash 스트링의 전체 정확도를 기반으로 포인트를 반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1700
+#: reference_constructor.xml:1702
 #, no-c-format
 msgid ""
 "If <varname>precision</varname> is specified ST_PointFromGeoHash will use "
@@ -3869,7 +3869,7 @@ msgstr ""
 "서 나온 그만큼의 문자를 이용해서 포인트를 생성합니다."
 
 #. Tag: programlisting
-#: reference_constructor.xml:1707
+#: reference_constructor.xml:1709
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsText(ST_PointFromGeoHash('9qqj7nmxncgyy4d0dbxqz0'));\n"
@@ -3905,7 +3905,7 @@ msgstr ""
 "                ]]>"
 
 #. Tag: para
-#: reference_constructor.xml:1712
+#: reference_constructor.xml:1714
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Box2dFromGeoHash\"/>, <xref linkend=\"ST_GeomFromGeoHash"
@@ -3915,13 +3915,13 @@ msgstr ""
 "\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1718
+#: reference_constructor.xml:1720
 #, no-c-format
 msgid "ST_PointFromText"
 msgstr "ST_PointFromText"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1719
+#: reference_constructor.xml:1721
 #, no-c-format
 msgid ""
 "Makes a point Geometry from WKT with the given SRID. If SRID is not given, "
@@ -3931,7 +3931,7 @@ msgstr ""
 "지 않은 경우, 기본값인 0을 씁니다."
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1723
+#: reference_constructor.xml:1725
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_PointFromText</function></"
@@ -3949,7 +3949,7 @@ msgstr ""
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:1739
+#: reference_constructor.xml:1741
 #, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text "
@@ -3963,7 +3963,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: reference_constructor.xml:1745
+#: reference_constructor.xml:1747
 #, no-c-format
 msgid ""
 "There are 2 variants of ST_PointFromText function, the first takes no SRID "
@@ -3978,7 +3978,7 @@ msgstr ""
 "환합니다. spatial_ref_sys 테이블에 정의되어 있는 SRID여야 합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1752
+#: reference_constructor.xml:1754
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are points, don't use "
@@ -3995,13 +3995,13 @@ msgstr ""
 "일한 <xref linkend=\"ST_Point\"/> 함수를 이용하십시오."
 
 #. Tag: para
-#: reference_constructor.xml:1757
+#: reference_constructor.xml:1759
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.8"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1762
+#: reference_constructor.xml:1764
 #, no-c-format
 msgid ""
 "SELECT ST_PointFromText('POINT(-71.064544 42.28787)');\n"
@@ -4011,7 +4011,7 @@ msgstr ""
 "SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);"
 
 #. Tag: para
-#: reference_constructor.xml:1766
+#: reference_constructor.xml:1768
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MakePoint\"/>, <xref linkend=\"ST_Point\"/>, <xref "
@@ -4021,19 +4021,19 @@ msgstr ""
 "linkend=\"ST_SRID\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1772
+#: reference_constructor.xml:1774
 #, no-c-format
 msgid "ST_PointFromWKB"
 msgstr "ST_PointFromWKB"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1774
+#: reference_constructor.xml:1776
 #, no-c-format
 msgid "Makes a geometry from WKB with the given SRID"
 msgstr "주어진 SRID와 함께 WKB로부터 도형을 만듭니다."
 
 #. Tag: para
-#: reference_constructor.xml:1795
+#: reference_constructor.xml:1797
 #, no-c-format
 msgid ""
 "The <varname>ST_PointFromWKB</varname> function, takes a well-known binary "
@@ -4048,7 +4048,7 @@ msgstr ""
 "(Geometry Factory) 역할을 합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1801
+#: reference_constructor.xml:1803
 #, no-c-format
 msgid ""
 "If an SRID is not specified, it defaults to 0. <varname>NULL</varname> is "
@@ -4059,19 +4059,19 @@ msgstr ""
 "varname>가 포인트가 아닌 경우, <varname>NULL</varname>을 반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1804
+#: reference_constructor.xml:1806
 #, no-c-format
 msgid "&sfs_compliant; s3.2.7.2"
 msgstr "&sfs_compliant; s3.2.7.2"
 
 #. Tag: para
-#: reference_constructor.xml:1805
+#: reference_constructor.xml:1807
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 msgstr "&sqlmm_compliant; SQL-MM 3: 6.1.9"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1813
+#: reference_constructor.xml:1815
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4119,13 +4119,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_constructor.xml:1826
+#: reference_constructor.xml:1828
 #, no-c-format
 msgid "ST_Polygon"
 msgstr "ST_Polygon"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1828
+#: reference_constructor.xml:1830
 #, no-c-format
 msgid ""
 "<refpurpose>Returns a polygon built from the specified linestring and SRID.</"
@@ -4135,7 +4135,7 @@ msgstr ""
 "refpurpose>"
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1833
+#: reference_constructor.xml:1835
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Polygon</function></funcdef> "
@@ -4149,7 +4149,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1844
+#: reference_constructor.xml:1846
 #, no-c-format
 msgid ""
 "<para>Returns a polygon built from the specified linestring and SRID.</para>"
@@ -4157,7 +4157,7 @@ msgstr ""
 "<para>설정된 라인스트링과 SRID로부터 빌드된 폴리곤을 반환합니다.</para>"
 
 #. Tag: para
-#: reference_constructor.xml:1848
+#: reference_constructor.xml:1850
 #, no-c-format
 msgid ""
 "ST_Polygon is similar to first version oST_MakePolygon except it also sets "
@@ -4172,13 +4172,13 @@ msgstr ""
 "오."
 
 #. Tag: para
-#: reference_constructor.xml:1853
+#: reference_constructor.xml:1855
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.2"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.2"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1862
+#: reference_constructor.xml:1864
 #, no-c-format
 msgid ""
 "--a 2d polygon\n"
@@ -4210,7 +4210,7 @@ msgstr ""
 "SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))"
 
 #. Tag: para
-#: reference_constructor.xml:1869
+#: reference_constructor.xml:1871
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref "
@@ -4222,13 +4222,13 @@ msgstr ""
 "linkend=\"ST_MakePolygon\"/>"
 
 #. Tag: refname
-#: reference_constructor.xml:1875
+#: reference_constructor.xml:1877
 #, no-c-format
 msgid "ST_PolygonFromText"
 msgstr "ST_PolygonFromText"
 
 #. Tag: funcsynopsis
-#: reference_constructor.xml:1882
+#: reference_constructor.xml:1884
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_PolygonFromText</function></"
@@ -4246,7 +4246,7 @@ msgstr ""
 "<parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_constructor.xml:1898
+#: reference_constructor.xml:1900
 #, no-c-format
 msgid ""
 "Makes a Geometry from WKT with the given SRID. If SRID is not give, it "
@@ -4256,7 +4256,7 @@ msgstr ""
 "값인 0을 씁니다. 입력된 WKT가 폴리곤이 아닌 경우, null을 반환합니다."
 
 #. Tag: para
-#: reference_constructor.xml:1905
+#: reference_constructor.xml:1907
 #, no-c-format
 msgid ""
 "If you are absolutely sure all your WKT geometries are polygons, don't use "
@@ -4267,13 +4267,13 @@ msgstr ""
 "이 함수는 추가적인 유효성 검사 단계를 거치므로 ST_GeomFromText보다 느립니다."
 
 #. Tag: para
-#: reference_constructor.xml:1908
+#: reference_constructor.xml:1910
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 msgstr "&sqlmm_compliant; SQL-MM 3: 8.3.6"
 
 #. Tag: programlisting
-#: reference_constructor.xml:1914
+#: reference_constructor.xml:1916
 #, no-c-format
 msgid ""
 "SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 "
@@ -4307,13 +4307,13 @@ msgstr ""
 "t"
 
 #. Tag: refname
-#: reference_constructor.xml:1927
+#: reference_constructor.xml:1929
 #, no-c-format
 msgid "ST_WKBToSQL"
 msgstr "ST_WKBToSQL"
 
 #. Tag: refpurpose
-#: reference_constructor.xml:1928
+#: reference_constructor.xml:1930
 #, no-c-format
 msgid ""
 "Return a specified ST_Geometry value from Well-Known Binary representation "
@@ -4323,7 +4323,7 @@ msgstr ""
 "함수는 SRID를 입력받지 않는 ST_GeomFromWKB 함수와 동일합니다."
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1932
+#: reference_constructor.xml:1934
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WKBToSQL</function></funcdef> "
@@ -4333,19 +4333,19 @@ msgstr ""
 "<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1940
+#: reference_constructor.xml:1942
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.36"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.36"
 
 #. Tag: refname
-#: reference_constructor.xml:1950
+#: reference_constructor.xml:1952
 #, no-c-format
 msgid "ST_WKTToSQL"
 msgstr "ST_WKTToSQL"
 
 #. Tag: funcprototype
-#: reference_constructor.xml:1955
+#: reference_constructor.xml:1957
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WKTToSQL</function></funcdef> "
@@ -4355,7 +4355,7 @@ msgstr ""
 "<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>"
 
 #. Tag: para
-#: reference_constructor.xml:1963
+#: reference_constructor.xml:1965
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.34"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.34"

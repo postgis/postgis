@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# TERAMOTO Ikuhiro <yellow@affrc.go.jp>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-16 08:33+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-07 08:01+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -210,7 +211,7 @@ msgstr ""
 #: introduction.xml:92
 #, no-c-format
 msgid "Dan Baston"
-msgstr ""
+msgstr "Dan Baston"
 
 #. Tag: para
 #: introduction.xml:95
@@ -219,6 +220,8 @@ msgid ""
 "Geometry clustering function additions, other geometry algorithm "
 "enhancements, and general user support"
 msgstr ""
+"ジオメトリクラスタリング関数の追加、他のジオメトリアルゴリズムの強化、および"
+"全体のユーザ対応"
 
 #. Tag: term
 #: introduction.xml:100
@@ -373,7 +376,7 @@ msgstr "個人"
 
 #. Tag: para
 #: introduction.xml:180
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas "
 "Forø Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
@@ -395,12 +398,13 @@ msgstr ""
 "Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
 "Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
 "Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
-"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Kashif Rasul, Klaus "
-"Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, Maria Arias de "
-"Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, "
-"Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita Shulga, "
-"Norman Vine, Rafal Magda, Ralph Mason, Richard Greenwood, Silvio Grosso, "
-"Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, Vincent Picavet"
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
+"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
+"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
+"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
+"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
+"Vincent Picavet"
 
 #. Tag: term
 #: introduction.xml:244
@@ -434,6 +438,17 @@ msgid ""
 "Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
 "U.S Department of State (HIU), Zonar Systems"
 msgstr ""
+"アルファベット順: Arrival 3D, Associazione Italiana per l'Informazione "
+"Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
+"CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, "
+"Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
+"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
+"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
+"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
+"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
+"U.S Department of State (HIU), Zonar Systems"
 
 #. Tag: term
 #: introduction.xml:290
@@ -455,6 +470,15 @@ msgid ""
 "osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
 "thoughts and together we can make it happen."
 msgstr ""
+"クラウドファンディングキャンペーンは、PostGIS開発チームが走らせているキャン"
+"ペーンです。欲しくて仕方ない機能に資金を与えて、多数の人々にサービスを提供で"
+"きるようにするためのものです。それぞれのキャンペーンでは、特定の機能または機"
+"能の集合に焦点があてられます。それぞれのスポンサーは、必要な資金提供のうち少"
+"しだけを提供し、十分な人/組織の寄付で、たくさんの助けになる作業に支払う基金を"
+"持ちます。他の多くの人が寄付に協力してくれそうな機能に関するアイデアがありま"
+"したら、<ulink url=\"https://lists.osgeo.org/mailman/listinfo/postgis-users"
+"\">PostGIS newsgroup</ulink>に、その考えを投稿して下さい。一緒に実現できま"
+"す。"
 
 #. Tag: para
 #: introduction.xml:294

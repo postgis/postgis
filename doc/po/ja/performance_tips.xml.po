@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-01-19 06:37+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-07 09:31+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -157,14 +157,14 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT "
 "AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
 msgstr ""
 "SELECT "
-"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+"AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');\n"
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force2D(the_geom));"
 
 #. Tag: para
@@ -179,14 +179,14 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:66
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT geom_column\n"
 "FROM mytable\n"
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 msgstr ""
-"SELECT geom_column \n"
-"FROM mytable \n"
+"SELECT geom_column\n"
+"FROM mytable\n"
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
@@ -245,14 +245,14 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:93
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "HINT: You may be able to work around this by marking column \"the_geom\" NOT "
 "NULL."
 msgstr ""
-"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
+"lwgeom=# CLUSTER my_geom_index ON my_table;\n"
 "ERROR: cannot cluster when index access method does not handle null values\n"
 "(エラー: インデクスアクセスメソッドがNULL値を扱わない場合クラスタ化できませ"
 "ん)\n"
@@ -273,12 +273,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:98
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
 "ALTER TABLE"
 msgstr ""
-"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
 "ALTER TABLE"
 
 #. Tag: para
@@ -320,12 +320,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: performance_tips.xml:116
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 msgstr ""
-"UPDATE mytable SET the_geom = ST_Force2D(the_geom); \n"
+"UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
 "VACUUM FULL ANALYZE mytable;"
 
 #. Tag: para
@@ -372,107 +372,82 @@ msgstr "コンフィギュレーションのチューン"
 #: performance_tips.xml:138
 #, no-c-format
 msgid ""
-"These tips are taken from Kevin Neufeld's presentation \"Tips for the "
-"PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use of "
-"PostGIS (for example, static data and complex analysis vs frequently updated "
-"data and lots of users) these changes can provide significant speedups to "
-"your queries."
+"Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
+"additional note to keep in mind is that geometries and rasters are heavy so "
+"memory related optimizations generally have more of an impact on PostGIS "
+"than other types of PostgreSQL queries."
 msgstr ""
-"この技法は、FOSS4G 2007カンファレンスでのKevin Neufeldさんのプレゼンテーショ"
-"ン「PostGISパワーユーザのための技法 (Tips for the PostGIS Power User)」から得"
-"たものです。 PostGISの使用(たとえば、「静的データと複雑な解析」対「よくアップ"
-"デートされるデータと多数のユーザ」など)に依存して、これらの変更によって、クエ"
-"リがはっきり速度向上するようになります。"
 
 #. Tag: para
-#: performance_tips.xml:144
+#: performance_tips.xml:141
 #, no-c-format
 msgid ""
-"For a more tips (and better formatting), the original presentation is at "
-"<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117</ulink>."
+"For general details about optimizing PostgreSQL, refer to <ulink url="
+"\"https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server\">Tuning "
+"your PostgreSQL Server</ulink>."
 msgstr ""
-"詳細情報 (およびよりよい書式)については、オリジナルのプレゼンテーションが"
-"<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
-"abstract_id=117</ulink>にあります。"
+
+#. Tag: para
+#: performance_tips.xml:143
+#, no-c-format
+msgid ""
+"For PostgreSQL 9.4+ all these can be set at the server level without "
+"touching postgresql.conf or postgresql.auto.conf by using the <code>ALTER "
+"SYSTEM..</code> command."
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:145
+#, no-c-format
+msgid ""
+"ALTER SYSTEM SET work_mem = '256MB';\n"
+"-- this will force, non-startup configs to take effect for new connections\n"
+"SELECT pg_reload_conf();\n"
+"-- show current setting value\n"
+"-- use SHOW ALL to see all settings\n"
+"SHOW work_mem;"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:147
+#, no-c-format
+msgid ""
+"In addition to these settings, PostGIS also has some custom settings which "
+"you can find listed in <xref linkend=\"PostGIS_GUC\"/>."
+msgstr ""
 
 #. Tag: title
-#: performance_tips.xml:151
+#: performance_tips.xml:150
 #, no-c-format
 msgid "Startup"
 msgstr "起動時"
 
 #. Tag: para
-#: performance_tips.xml:153
+#: performance_tips.xml:152
 #, no-c-format
 msgid "These settings are configured in postgresql.conf:"
 msgstr "これらの設定はpostgresql.conf内にあります。"
 
 #. Tag: ulink
-#: performance_tips.xml:158
-#, no-c-format
-msgid "checkpoint_segments"
-msgstr "checkpoint_segments"
-
-#. Tag: para
-#: performance_tips.xml:163
-#, no-c-format
-msgid ""
-"Maximum number of log file segments between automatic WAL checkpoints (each "
-"segment is normally 16MB); default is 3"
-msgstr ""
-"自動WALチェックポイント間のログファイルのセグメント(1セグメントは通常16MB)の"
-"数です。デフォルトは3です。"
-
-#. Tag: para
-#: performance_tips.xml:169
-#, no-c-format
-msgid ""
-"Set to at least 10 or 30 for databases with heavy write activity, or more "
-"for large database loads. Another article on the topic worth reading <ulink "
-"url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm"
-"\">Greg Smith: Checkpoint and Background writer</ulink>"
-msgstr ""
-"書き込み処理が多いデータベースごとに少なくとも10から30を設定します。大きい"
-"データベース負荷がかかる場合は増やします。この話題に関する別の記事として、"
-"<ulink url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83."
-"htm\">Greg Smith: Checkpoint and Background writer</ulink>は読む価値がありま"
-"す。"
-
-#. Tag: para
-#: performance_tips.xml:175
-#, no-c-format
-msgid "Possibly store the xlog on a separate disk device"
-msgstr "できればxlogは別のディスク装置に保存します。"
-
-#. Tag: ulink
-#: performance_tips.xml:182
+#: performance_tips.xml:157
 #, no-c-format
 msgid "constraint_exclusion"
 msgstr "constraint_exclusion"
 
 #. Tag: para
-#: performance_tips.xml:187
-#, no-c-format
-msgid ""
-"Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
-"partition)"
-msgstr ""
-"デフォルト: off (PostgreSQL 8.4より前の場合。PostgreSQL 8.4以上はpartitionに"
-"設定)"
+#: performance_tips.xml:162
+#, fuzzy, no-c-format
+msgid "Default: partition"
+msgstr "デフォルト: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:192
-#, no-c-format
+#: performance_tips.xml:167
+#, fuzzy, no-c-format
 msgid ""
-"This is generally used for table partitioning. If you are running PostgreSQL "
-"versions below 8.4, set to \"on\" to ensure the query planner will optimize "
-"as desired. As of PostgreSQL 8.4, the default for this is set to \"partition"
-"\" which is ideal for PostgreSQL 8.4 and above since it will force the "
-"planner to only analyze tables for constraint consideration if they are in "
-"an inherited hierarchy and not pay the planner penalty otherwise."
+"This is generally used for table partitioning. The default for this is set "
+"to \"partition\" which is ideal for PostgreSQL 8.4 and above since it will "
+"force the planner to only analyze tables for constraint consideration if "
+"they are in an inherited hierarchy and not pay the planner penalty otherwise."
 msgstr ""
 "一般的にテーブルのパーティショニングに使われます。PostgreSQL 8.4より前を使用"
 "している場合、\"on\"にして、クエリプランナに対して求めるような最適化をさせま"
@@ -482,31 +457,59 @@ msgstr ""
 "上ではこれが理想的です。"
 
 #. Tag: ulink
-#: performance_tips.xml:202
+#: performance_tips.xml:176
 #, no-c-format
 msgid "shared_buffers"
 msgstr "shared_buffers"
 
 #. Tag: para
-#: performance_tips.xml:207
+#: performance_tips.xml:181
 #, no-c-format
 msgid "Default: ~32MB"
 msgstr "デフォルト: ~32MB"
 
 #. Tag: para
-#: performance_tips.xml:212
+#: performance_tips.xml:186
 #, no-c-format
 msgid "Set to about 1/3 to 3/4 of available RAM"
 msgstr "有効RAMの1/3から3/4程度にします。 "
 
+#. Tag: para
+#: performance_tips.xml:193
+#, fuzzy, no-c-format
+msgid ""
+"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-WORKER-PROCESSES\">max_worker_processes</ulink> This "
+"setting is only available for PostgreSQL 9.4+. For PostgreSQL 9.6+ this "
+"setting has additional importance in that it controls the max number of "
+"processes you can have for parallel queries."
+msgstr ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> (並べ替えや複雑なクエリに使われ"
+"るメモリ)"
+
+#. Tag: para
+#: performance_tips.xml:201
+#, fuzzy, no-c-format
+msgid "Default: 8"
+msgstr "デフォルト: 1MB"
+
+#. Tag: para
+#: performance_tips.xml:206
+#, no-c-format
+msgid ""
+"Sets the maximum number of background processes that the system can support. "
+"This parameter can only be set at server start."
+msgstr ""
+
 #. Tag: title
-#: performance_tips.xml:220
+#: performance_tips.xml:216
 #, no-c-format
 msgid "Runtime"
 msgstr "実行時"
 
 #. Tag: para
-#: performance_tips.xml:222
+#: performance_tips.xml:218
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -518,13 +521,13 @@ msgstr ""
 "るメモリ)"
 
 #. Tag: para
-#: performance_tips.xml:228
-#, no-c-format
-msgid "Default: 1MB"
+#: performance_tips.xml:224
+#, fuzzy, no-c-format
+msgid "Default: 1-4MB"
 msgstr "デフォルト: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:233
+#: performance_tips.xml:229
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr ""
@@ -532,7 +535,7 @@ msgstr ""
 "ように調整します。"
 
 #. Tag: para
-#: performance_tips.xml:238
+#: performance_tips.xml:234
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr ""
@@ -540,19 +543,19 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: performance_tips.xml:243
+#: performance_tips.xml:239
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr "たくさんのRAMを持ち、少数の開発者しかいない場合は次のようにします。"
 
 #. Tag: programlisting
-#: performance_tips.xml:245
-#, no-c-format
-msgid "SET work_mem TO 1200000;"
+#: performance_tips.xml:241
+#, fuzzy, no-c-format
+msgid "SET work_mem TO '256MB';;"
 msgstr "SET work_mem TO 1200000;"
 
 #. Tag: para
-#: performance_tips.xml:250
+#: performance_tips.xml:246
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -564,13 +567,13 @@ msgstr ""
 "(VACUUM, CREATE INDEX等で使われるメモリ)"
 
 #. Tag: para
-#: performance_tips.xml:256
-#, no-c-format
-msgid "Default: 16MB"
+#: performance_tips.xml:252
+#, fuzzy, no-c-format
+msgid "Default: 16-64MB"
 msgstr "デフォルト: 16MB "
 
 #. Tag: para
-#: performance_tips.xml:261
+#: performance_tips.xml:257
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
@@ -578,17 +581,108 @@ msgstr ""
 "ロックされます。"
 
 #. Tag: para
-#: performance_tips.xml:266
-#, no-c-format
+#: performance_tips.xml:262
+#, fuzzy, no-c-format
 msgid ""
-"Recommend 32MB to 256MB on production servers w/lots of RAM, but depends on "
+"Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
 "the # of concurrent users. If you have lots of RAM and few developers:"
 msgstr ""
 "本番サーバでは32MBから256MBが推奨ですが、同時接続ユーザ数に依存します。たくさ"
 "んのRAMを持ち、少数の開発者しかいない場合は次のようにします。"
 
 #. Tag: programlisting
-#: performance_tips.xml:269
-#, no-c-format
-msgid "SET maintainence_work_mem TO 1200000;"
+#: performance_tips.xml:265
+#, fuzzy, no-c-format
+msgid "SET maintenance_work_mem TO '1GB';"
 msgstr "SET maintainence_work_mem TO 1200000;"
+
+#. Tag: para
+#: performance_tips.xml:270
+#, no-c-format
+msgid ""
+"<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER"
+"\">max_parallel_workers_per_gather</ulink> This setting is only available "
+"for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS "
+"2.3+ supports parallel queries. If set to higher than 0, then some queries "
+"such as those involving relation functions like <code>ST_Intersects</code> "
+"can use multiple processes and can run more than twice as fast when doing "
+"so. If you have a lot of processors to spare, you should change the value of "
+"this to as many processors as you have. Also make sure to bump up "
+"<code>max_worker_processes</code> to at least as high as this number."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:280
+#, fuzzy, no-c-format
+msgid "Default: 0"
+msgstr "デフォルト: 1MB"
+
+#. Tag: para
+#: performance_tips.xml:285
+#, no-c-format
+msgid ""
+"Sets the maximum number of workers that can be started by a single "
+"<varname>Gather</varname> node. Parallel workers are taken from the pool of "
+"processes established by <varname>max_worker_processes</varname>. Note that "
+"the requested number of workers may not actually be available at run time. "
+"If this occurs, the plan will run with fewer workers than expected, which "
+"may be inefficient. Setting this value to 0, which is the default, disables "
+"parallel query execution."
+msgstr ""
+
+#~ msgid ""
+#~ "These tips are taken from Kevin Neufeld's presentation \"Tips for the "
+#~ "PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use "
+#~ "of PostGIS (for example, static data and complex analysis vs frequently "
+#~ "updated data and lots of users) these changes can provide significant "
+#~ "speedups to your queries."
+#~ msgstr ""
+#~ "この技法は、FOSS4G 2007カンファレンスでのKevin Neufeldさんのプレゼンテー"
+#~ "ション「PostGISパワーユーザのための技法 (Tips for the PostGIS Power "
+#~ "User)」から得たものです。 PostGISの使用(たとえば、「静的データと複雑な解"
+#~ "析」対「よくアップデートされるデータと多数のユーザ」など)に依存して、これ"
+#~ "らの変更によって、クエリがはっきり速度向上するようになります。"
+
+#~ msgid ""
+#~ "For a more tips (and better formatting), the original presentation is at "
+#~ "<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117</ulink>."
+#~ msgstr ""
+#~ "詳細情報 (およびよりよい書式)については、オリジナルのプレゼンテーションが"
+#~ "<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+#~ "abstract_id=117</ulink>にあります。"
+
+#~ msgid "checkpoint_segments"
+#~ msgstr "checkpoint_segments"
+
+#~ msgid ""
+#~ "Maximum number of log file segments between automatic WAL checkpoints "
+#~ "(each segment is normally 16MB); default is 3"
+#~ msgstr ""
+#~ "自動WALチェックポイント間のログファイルのセグメント(1セグメントは通常16MB)"
+#~ "の数です。デフォルトは3です。"
+
+#~ msgid ""
+#~ "Set to at least 10 or 30 for databases with heavy write activity, or more "
+#~ "for large database loads. Another article on the topic worth reading "
+#~ "<ulink url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-"
+#~ "bgw-83.htm\">Greg Smith: Checkpoint and Background writer</ulink>"
+#~ msgstr ""
+#~ "書き込み処理が多いデータベースごとに少なくとも10から30を設定します。大きい"
+#~ "データベース負荷がかかる場合は増やします。この話題に関する別の記事として、"
+#~ "<ulink url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-"
+#~ "bgw-83.htm\">Greg Smith: Checkpoint and Background writer</ulink>は読む価"
+#~ "値があります。"
+
+#~ msgid "Possibly store the xlog on a separate disk device"
+#~ msgstr "できればxlogは別のディスク装置に保存します。"
+
+#~ msgid ""
+#~ "Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
+#~ "partition)"
+#~ msgstr ""
+#~ "デフォルト: off (PostgreSQL 8.4より前の場合。PostgreSQL 8.4以上はpartition"
+#~ "に設定)"

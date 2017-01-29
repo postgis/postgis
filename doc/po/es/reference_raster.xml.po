@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
@@ -941,24 +941,23 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:568 reference_raster.xml:717 reference_raster.xml:793
-#: reference_raster.xml:859 reference_raster.xml:1513
-#: reference_raster.xml:1904 reference_raster.xml:2934
-#: reference_raster.xml:3091 reference_raster.xml:3134
-#: reference_raster.xml:3191 reference_raster.xml:4876
-#: reference_raster.xml:4939 reference_raster.xml:5134
-#: reference_raster.xml:5238 reference_raster.xml:5308
-#: reference_raster.xml:5530 reference_raster.xml:6003
-#: reference_raster.xml:7163 reference_raster.xml:7362
-#: reference_raster.xml:7626 reference_raster.xml:7745
-#: reference_raster.xml:7874 reference_raster.xml:7972
-#: reference_raster.xml:8060 reference_raster.xml:8144
-#: reference_raster.xml:8283 reference_raster.xml:8358
-#: reference_raster.xml:8445 reference_raster.xml:8568
-#: reference_raster.xml:8639 reference_raster.xml:8714
-#: reference_raster.xml:8800 reference_raster.xml:8896
-#: reference_raster.xml:9024 reference_raster.xml:9488
-#: reference_raster.xml:9739 reference_raster.xml:9811
-#: reference_raster.xml:10630
+#: reference_raster.xml:859 reference_raster.xml:1513 reference_raster.xml:1904
+#: reference_raster.xml:2934 reference_raster.xml:3091
+#: reference_raster.xml:3134 reference_raster.xml:3191
+#: reference_raster.xml:4876 reference_raster.xml:4939
+#: reference_raster.xml:5134 reference_raster.xml:5238
+#: reference_raster.xml:5308 reference_raster.xml:5530
+#: reference_raster.xml:6003 reference_raster.xml:7163
+#: reference_raster.xml:7362 reference_raster.xml:7626
+#: reference_raster.xml:7745 reference_raster.xml:7874
+#: reference_raster.xml:7972 reference_raster.xml:8060
+#: reference_raster.xml:8144 reference_raster.xml:8283
+#: reference_raster.xml:8358 reference_raster.xml:8445
+#: reference_raster.xml:8568 reference_raster.xml:8639
+#: reference_raster.xml:8714 reference_raster.xml:8800
+#: reference_raster.xml:8896 reference_raster.xml:9024
+#: reference_raster.xml:9488 reference_raster.xml:9739
+#: reference_raster.xml:9811 reference_raster.xml:10630
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
@@ -7830,13 +7829,19 @@ msgstr ""
 #: reference_raster.xml:4519
 #, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster non-rotated\n"
 "SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
 "\n"
-"-- the rescaled raster raster pixel size\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the reskewed raster raster rotation\n"
 "SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
-"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))"
+"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));\n"
+"\n"
+"-- result\n"
+"-0.982793723247329"
 msgstr ""
 
 #. Tag: para
@@ -7947,13 +7952,18 @@ msgstr ""
 #: reference_raster.xml:4597
 #, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster upper left X\n"
 "SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"\n"
-"-- the rescaled raster raster pixel size\n"
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the upper left of raster after snapping\n"
 "SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
-"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))"
+"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));\n"
+"\n"
+"--result\n"
+"-0.0008"
 msgstr ""
 
 #. Tag: para
@@ -15165,7 +15175,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
-"be returned."
+"be returned except in the case of exclude_nodata_value=false."
 msgstr ""
 
 #. Tag: para

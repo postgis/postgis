@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
 "PO-Revision-Date: 2016-07-23 02:29+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -1133,24 +1133,23 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:568 reference_raster.xml:717 reference_raster.xml:793
-#: reference_raster.xml:859 reference_raster.xml:1513
-#: reference_raster.xml:1904 reference_raster.xml:2934
-#: reference_raster.xml:3091 reference_raster.xml:3134
-#: reference_raster.xml:3191 reference_raster.xml:4876
-#: reference_raster.xml:4939 reference_raster.xml:5134
-#: reference_raster.xml:5238 reference_raster.xml:5308
-#: reference_raster.xml:5530 reference_raster.xml:6003
-#: reference_raster.xml:7163 reference_raster.xml:7362
-#: reference_raster.xml:7626 reference_raster.xml:7745
-#: reference_raster.xml:7874 reference_raster.xml:7972
-#: reference_raster.xml:8060 reference_raster.xml:8144
-#: reference_raster.xml:8283 reference_raster.xml:8358
-#: reference_raster.xml:8445 reference_raster.xml:8568
-#: reference_raster.xml:8639 reference_raster.xml:8714
-#: reference_raster.xml:8800 reference_raster.xml:8896
-#: reference_raster.xml:9024 reference_raster.xml:9488
-#: reference_raster.xml:9739 reference_raster.xml:9811
-#: reference_raster.xml:10630
+#: reference_raster.xml:859 reference_raster.xml:1513 reference_raster.xml:1904
+#: reference_raster.xml:2934 reference_raster.xml:3091
+#: reference_raster.xml:3134 reference_raster.xml:3191
+#: reference_raster.xml:4876 reference_raster.xml:4939
+#: reference_raster.xml:5134 reference_raster.xml:5238
+#: reference_raster.xml:5308 reference_raster.xml:5530
+#: reference_raster.xml:6003 reference_raster.xml:7163
+#: reference_raster.xml:7362 reference_raster.xml:7626
+#: reference_raster.xml:7745 reference_raster.xml:7874
+#: reference_raster.xml:7972 reference_raster.xml:8060
+#: reference_raster.xml:8144 reference_raster.xml:8283
+#: reference_raster.xml:8358 reference_raster.xml:8445
+#: reference_raster.xml:8568 reference_raster.xml:8639
+#: reference_raster.xml:8714 reference_raster.xml:8800
+#: reference_raster.xml:8896 reference_raster.xml:9024
+#: reference_raster.xml:9488 reference_raster.xml:9739
+#: reference_raster.xml:9811 reference_raster.xml:10630
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
@@ -11420,15 +11419,21 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:4519
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster non-rotated\n"
 "SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
 "\n"
-"-- the rescaled raster raster pixel size\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the reskewed raster raster rotation\n"
 "SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, "
-"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))"
+"0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));\n"
+"\n"
+"-- result\n"
+"-0.982793723247329"
 msgstr ""
 "-- 원본 래스터 기울기\n"
 "SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, "
@@ -11592,15 +11597,20 @@ msgstr "래스터를 약간 다른 그리드에 스냅시키는 단순한 예시
 
 #. Tag: programlisting
 #: reference_raster.xml:4597
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"-- the original raster pixel size\n"
+"-- the original raster upper left X\n"
 "SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
-"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0))\n"
-"\n"
-"-- the rescaled raster raster pixel size\n"
+"-0.001, 0, 0, 4269), '8BUI'::text, 1, 0));\n"
+"-- result\n"
+"0\n"
+"                                        \n"
+"-- the upper left of raster after snapping\n"
 "SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, "
-"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))"
+"0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));\n"
+"\n"
+"--result\n"
+"-0.0008"
 msgstr ""
 "-- 원본 래스터 밴드\n"
 "SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, "
@@ -22342,10 +22352,10 @@ msgstr "GDAL 1.7 이상 버전이 필요합니다."
 
 #. Tag: para
 #: reference_raster.xml:9276
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "If there is a no data value set for a band, pixels with that value will not "
-"be returned."
+"be returned except in the case of exclude_nodata_value=false."
 msgstr ""
 "밴드에 대해 설정된 NODATA 값이 있을 경우, 해당 값을 가진 픽셀은 반환되지 않습"
 "니다."

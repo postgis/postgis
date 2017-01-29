@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2016-02-15 12:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -148,17 +148,20 @@ msgstr ""
 
 #. Tag: programlisting
 #: installation.xml:24
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "createdb yourdatabase\n"
 "createlang plpgsql yourdatabase\n"
 "psql -d yourdatabase -f postgis.sql\n"
 "psql -d yourdatabase -f postgis_comments.sql\n"
 "psql -d yourdatabase -f spatial_ref_sys.sql\n"
-"psql -d yourdatabase -f rtpostgis.sql\n"
-"psql -d yourdatabase -f raster_comments.sql\n"
 "psql -d yourdatabase -f topology.sql\n"
 "psql -d yourdatabase -f topology_comments.sql\n"
+"\n"
+"-- only if you compiled with raster (GDAL)\n"
+"psql -d yourdatabase -f rtpostgis.sql\n"
+"psql -d yourdatabase -f raster_comments.sql\n"
+"\n"
 "--if you built with sfcgal support --\n"
 "psql -d yourdatabase -f sfcgal.sql\n"
 "psql -d yourdatabase -f sfcgal_comments.sql"
@@ -2827,11 +2830,101 @@ msgstr ""
 #. Tag: title
 #: installation.xml:769
 #, no-c-format
-msgid "Create a spatially-enabled database on PostgreSQL lower than 9.1"
-msgstr "PostgreSQL 9.1より前での空間データベースの作成"
+msgid "Creating a spatial database using EXTENSIONS"
+msgstr "エクステンションを使った空間データベースの生成"
 
 #. Tag: para
 #: installation.xml:771
+#, no-c-format
+msgid ""
+"If you are using PostgreSQL 9.1+ and have compiled and installed the "
+"extensions/ postgis modules, you can create a spatial database the new way."
+msgstr ""
+"PostgreSQL 9.1以上を使っていて、extensions/postgisモジュールをコンパイルとイ"
+"ンストールを行っている場合は、新しい方法で空間データベースを生成できます。"
+
+#. Tag: command
+#: installation.xml:777 installation.xml:812
+#, no-c-format
+msgid "createdb [yourdatabase]"
+msgstr "createdb [データベース名]"
+
+#. Tag: para
+#: installation.xml:780
+#, no-c-format
+msgid ""
+"The core postgis extension installs PostGIS geometry, geography, raster, "
+"spatial_ref_sys and all the functions and comments with a simple: "
+"<programlisting>CREATE EXTENSION postgis;</programlisting> command."
+msgstr ""
+"PostGISエクステンションの中核によって、ジオメトリ、ジオグラフィ、ラスタ、"
+"spatial_ref_sysおよび全ての関数とコメントがインストールされます。次のコマンド"
+"を実行するだけです。<programlisting>CREATE EXTENSION postgis;</"
+"programlisting>"
+
+#. Tag: command
+#: installation.xml:786
+#, no-c-format
+msgid "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis;\""
+msgstr "psql -d [データベース名] -c \"CREATE EXTENSION postgis;\""
+
+#. Tag: para
+#: installation.xml:789
+#, no-c-format
+msgid ""
+"Topology is packaged as a separate extension and installable with command:"
+msgstr ""
+"トポロジは別のエクステンションとして用意されています。次のコマンドでインス"
+"トールします。"
+
+#. Tag: command
+#: installation.xml:794
+#, no-c-format
+msgid "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis_topology;\""
+msgstr "psql -d [データベース名] -c \"CREATE EXTENSION postgis_topology;\""
+
+#. Tag: para
+#: installation.xml:797 installation.xml:892
+#, no-c-format
+msgid ""
+"If you plan to restore an old backup from prior versions in this new db, run:"
+msgstr ""
+"以前の版の古いバックアップを新しいデータベースにリストアする予定の場合には、"
+"次を実行します。"
+
+#. Tag: command
+#: installation.xml:798 installation.xml:893
+#, no-c-format
+msgid "psql -d [yourdatabase] -f legacy.sql"
+msgstr "psql -d [データベース名] -f legacy.sql"
+
+#. Tag: para
+#: installation.xml:800 installation.xml:897
+#, no-c-format
+msgid ""
+"You can later run <filename>uninstall_legacy.sql</filename> to get rid of "
+"the deprecated functions after you are done with restoring and cleanup."
+msgstr ""
+"リストアとクリーンアップを行った後で非推奨関数を消すために"
+"<filename>uninstall_legacy.sql</filename>を実行できます。"
+
+#. Tag: title
+#: installation.xml:804
+#, fuzzy, no-c-format
+msgid "Create a spatially-enabled database without using extensions"
+msgstr "空間データベースをテンプレートから生成する"
+
+#. Tag: para
+#: installation.xml:806
+#, no-c-format
+msgid ""
+"This is generally only needed if you built-PostGIS without raster support. "
+"Since raster functions are part of the postgis extension, extension support "
+"is not enabled if PostGIS is built without raster."
+msgstr ""
+
+#. Tag: para
+#: installation.xml:807
 #, no-c-format
 msgid ""
 "The first step in creating a PostGIS database is to create a simple "
@@ -2840,14 +2933,8 @@ msgstr ""
 "PostGISデータベースを作る最初のステップは、単純なPostgreSQLデータベースの作成"
 "です。"
 
-#. Tag: command
-#: installation.xml:777 installation.xml:874
-#, no-c-format
-msgid "createdb [yourdatabase]"
-msgstr "createdb [データベース名]"
-
 #. Tag: para
-#: installation.xml:780
+#: installation.xml:815
 #, no-c-format
 msgid ""
 "Many of the PostGIS functions are written in the PL/pgSQL procedural "
@@ -2861,13 +2948,13 @@ msgstr ""
 "します。PostgreSQL 8.4以上では、通常は既にインストールされています。"
 
 #. Tag: command
-#: installation.xml:788
+#: installation.xml:823
 #, no-c-format
 msgid "createlang plpgsql [yourdatabase]"
 msgstr "createlang plpgsql [データベース名]"
 
 #. Tag: para
-#: installation.xml:791
+#: installation.xml:826
 #, no-c-format
 msgid ""
 "Now load the PostGIS object and function definitions into your database by "
@@ -2880,13 +2967,13 @@ msgstr ""
 "<filename>[prefix]/share/contrib</filename>にあります)をロードします。"
 
 #. Tag: command
-#: installation.xml:799
+#: installation.xml:834
 #, no-c-format
 msgid "psql -d [yourdatabase] -f postgis.sql"
 msgstr "psql -d [データベース名] -f postgis.sql"
 
 #. Tag: para
-#: installation.xml:802
+#: installation.xml:837
 #, no-c-format
 msgid ""
 "For a complete set of EPSG coordinate system definition identifiers, you can "
@@ -2900,13 +2987,13 @@ msgstr ""
 "ます。"
 
 #. Tag: command
-#: installation.xml:810
+#: installation.xml:845
 #, no-c-format
 msgid "psql -d [yourdatabase] -f spatial_ref_sys.sql"
 msgstr "psql -d [データベース名] -f spatial_ref_sys.sql"
 
 #. Tag: para
-#: installation.xml:813
+#: installation.xml:848
 #, no-c-format
 msgid ""
 "If you wish to add comments to the PostGIS functions, the final step is to "
@@ -2921,25 +3008,25 @@ msgstr ""
 "す。"
 
 #. Tag: command
-#: installation.xml:821
+#: installation.xml:856
 #, no-c-format
 msgid "psql -d [yourdatabase] -f postgis_comments.sql"
 msgstr "psql -d [データベース名] -f postgis_comments.sql"
 
 #. Tag: para
-#: installation.xml:824
+#: installation.xml:859
 #, no-c-format
 msgid "Install raster support"
 msgstr "ラスタ機能をインストールします。"
 
 #. Tag: command
-#: installation.xml:829
+#: installation.xml:864
 #, no-c-format
 msgid "psql -d [yourdatabase] -f rtpostgis.sql"
 msgstr "psql -d [データベース名] -f rtpostgis.sql"
 
 #. Tag: para
-#: installation.xml:832
+#: installation.xml:867
 #, no-c-format
 msgid ""
 "Install raster support comments. This will provide quick help info for each "
@@ -2951,25 +3038,25 @@ msgstr ""
 "す。"
 
 #. Tag: command
-#: installation.xml:838
+#: installation.xml:873
 #, no-c-format
 msgid "psql -d [yourdatabase] -f raster_comments.sql"
 msgstr "psql -d [データベース名] -f raster_comments.sql"
 
 #. Tag: para
-#: installation.xml:840
+#: installation.xml:875
 #, no-c-format
 msgid "Install topology support"
 msgstr "トポロジ機能をインストールします。"
 
 #. Tag: command
-#: installation.xml:845
+#: installation.xml:880
 #, no-c-format
 msgid "psql -d [yourdatabase] -f topology/topology.sql"
 msgstr "psql -d [データベース名] -f topology/topology.sql"
 
 #. Tag: para
-#: installation.xml:848
+#: installation.xml:883
 #, no-c-format
 msgid ""
 "Install topology support comments. This will provide quick help info for "
@@ -2981,28 +3068,13 @@ msgstr ""
 "えます。"
 
 #. Tag: command
-#: installation.xml:854
+#: installation.xml:889
 #, no-c-format
 msgid "psql -d [yourdatabase] -f topology/topology_comments.sql"
 msgstr "psql -d [データベース名] -f topology/topology_comments.sql"
 
 #. Tag: para
-#: installation.xml:857 installation.xml:894
-#, no-c-format
-msgid ""
-"If you plan to restore an old backup from prior versions in this new db, run:"
-msgstr ""
-"以前の版の古いバックアップを新しいデータベースにリストアする予定の場合には、"
-"次を実行します。"
-
-#. Tag: command
-#: installation.xml:858 installation.xml:895
-#, no-c-format
-msgid "psql -d [yourdatabase] -f legacy.sql"
-msgstr "psql -d [データベース名] -f legacy.sql"
-
-#. Tag: para
-#: installation.xml:859
+#: installation.xml:894
 #, no-c-format
 msgid ""
 "There is an alternative <filename>legacy_minimal.sql</filename> you can run "
@@ -3015,66 +3087,6 @@ msgstr ""
 "に必要な最低限をインストールするには<filename>legacy_minimal.sql</filename>と"
 "いう選択肢があります。distance/length等のようなものを使うビューがあるなら、完"
 "全な<filename>legacy.sql</filename>が必要になります。"
-
-#. Tag: para
-#: installation.xml:862 installation.xml:897
-#, no-c-format
-msgid ""
-"You can later run <filename>uninstall_legacy.sql</filename> to get rid of "
-"the deprecated functions after you are done with restoring and cleanup."
-msgstr ""
-"リストアとクリーンアップを行った後で非推奨関数を消すために"
-"<filename>uninstall_legacy.sql</filename>を実行できます。"
-
-#. Tag: title
-#: installation.xml:866
-#, no-c-format
-msgid "Creating a spatial database using EXTENSIONS"
-msgstr "エクステンションを使った空間データベースの生成"
-
-#. Tag: para
-#: installation.xml:868
-#, no-c-format
-msgid ""
-"If you are using PostgreSQL 9.1+ and have compiled and installed the "
-"extensions/ postgis modules, you can create a spatial database the new way."
-msgstr ""
-"PostgreSQL 9.1以上を使っていて、extensions/postgisモジュールをコンパイルとイ"
-"ンストールを行っている場合は、新しい方法で空間データベースを生成できます。"
-
-#. Tag: para
-#: installation.xml:877
-#, no-c-format
-msgid ""
-"The core postgis extension installs PostGIS geometry, geography, raster, "
-"spatial_ref_sys and all the functions and comments with a simple: "
-"<programlisting>CREATE EXTENSION postgis;</programlisting> command."
-msgstr ""
-"PostGISエクステンションの中核によって、ジオメトリ、ジオグラフィ、ラスタ、"
-"spatial_ref_sysおよび全ての関数とコメントがインストールされます。次のコマンド"
-"を実行するだけです。<programlisting>CREATE EXTENSION postgis;</"
-"programlisting>"
-
-#. Tag: command
-#: installation.xml:883
-#, no-c-format
-msgid "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis;\""
-msgstr "psql -d [データベース名] -c \"CREATE EXTENSION postgis;\""
-
-#. Tag: para
-#: installation.xml:886
-#, no-c-format
-msgid ""
-"Topology is packaged as a separate extension and installable with command:"
-msgstr ""
-"トポロジは別のエクステンションとして用意されています。次のコマンドでインス"
-"トールします。"
-
-#. Tag: command
-#: installation.xml:891
-#, no-c-format
-msgid "psql -d [yourdatabase] -c \"CREATE EXTENSION postgis_topology;\""
-msgstr "psql -d [データベース名] -c \"CREATE EXTENSION postgis_topology;\""
 
 #. Tag: title
 #: installation.xml:900
@@ -3480,12 +3492,13 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:962
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Then run the <xref linkend=\"Loader_Generate_Nation_Script\"/> and <xref "
 "linkend=\"Loader_Generate_Script\"/> SQL functions make sure to use the name "
 "of your custom profile and copy the scripts to a .sh or .bat file. So for "
-"example to do the nation load and one state using our new profile we would:"
+"example to do the nation load and one state using our new profile, you can "
+"do this using psql:"
 msgstr ""
 "そして、SQL関数<xref linkend=\"Loader_Generate_Nation_Script\"/>と<xref "
 "linkend=\"Loader_Generate_Script\"/>を実行して、独自のプロファイルの名前を使"
@@ -3494,14 +3507,18 @@ msgstr ""
 
 #. Tag: programlisting
 #: installation.xml:963
-#, no-c-format
-msgid "SELECT Loader_Generate_Nation_Script('debbie');"
+#, fuzzy, no-c-format
+msgid ""
+"psql -c \"SELECT Loader_Generate_Nation_Script('debbie')\" -d geocoder -tA "
+"> /gisdata/nation_script_load.sh"
 msgstr "SELECT Loader_Generate_Nation_Script('debbie');"
 
 #. Tag: programlisting
 #: installation.xml:964
-#, no-c-format
-msgid "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');"
+#, fuzzy, no-c-format
+msgid ""
+"psql -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')\" -d geocoder "
+"-tA > /gisdata/ma_load.sh"
 msgstr "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');"
 
 #. Tag: para
@@ -3510,8 +3527,17 @@ msgstr "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie');"
 msgid "Run the generated commandline scripts."
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #: installation.xml:968
+#, no-c-format
+msgid ""
+"cd /gisdata\n"
+"sh nation_script_load.sh\n"
+"sh ma_load.sh"
+msgstr ""
+
+#. Tag: para
+#: installation.xml:970
 #, no-c-format
 msgid ""
 "After you are done loading all data or at a stopping point, it's a good idea "
@@ -3522,8 +3548,8 @@ msgstr ""
 "です。"
 
 #. Tag: programlisting
-#: installation.xml:969
-#, no-c-format
+#: installation.xml:971
+#, fuzzy, no-c-format
 msgid ""
 "SELECT install_missing_indexes();\n"
 "vacuum analyze verbose tiger.addr;\n"
@@ -3533,7 +3559,10 @@ msgid ""
 "vacuum analyze verbose tiger.place;\n"
 "vacuum analyze verbose tiger.cousub;\n"
 "vacuum analyze verbose tiger.county;\n"
-"vacuum analyze verbose tiger.state;"
+"vacuum analyze verbose tiger.state;\n"
+"vacuum analyze verbose tiger.zip_lookup_base;\n"
+"vacuum analyze verbose tiger.zip_state;\n"
+"vacuum analyze verbose tiger.zip_state_loc;"
 msgstr ""
 "SELECT install_missing_indexes();\n"
 "vacuum analyze verbose tiger.addr;\n"
@@ -3546,13 +3575,13 @@ msgstr ""
 "vacuum analyze verbose tiger.state;"
 
 #. Tag: title
-#: installation.xml:972
+#: installation.xml:974
 #, no-c-format
 msgid "Converting a Tiger Geocoder Regular Install to Extension Model"
 msgstr "Tigerジオコーダ通常インストールのエクステンションモデルへの変換"
 
 #. Tag: para
-#: installation.xml:973
+#: installation.xml:975
 #, no-c-format
 msgid ""
 "If you installed the tiger geocoder without using the extension model, you "
@@ -3562,7 +3591,7 @@ msgstr ""
 "次のようにして、エクステンションモデルに変換できます。"
 
 #. Tag: para
-#: installation.xml:975
+#: installation.xml:977
 #, no-c-format
 msgid ""
 "Follow instructions in <xref linkend=\"upgrade_tiger_geocoder\"/> for the "
@@ -3572,33 +3601,33 @@ msgstr ""
 "デルのアップグレードを行います。"
 
 #. Tag: para
-#: installation.xml:976
+#: installation.xml:978
 #, no-c-format
 msgid ""
 "Connect to your database with psql or pgAdmin and run the following command:"
 msgstr "psqlまたはpgAdminでデータベースに接続して、次のコマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:977
+#: installation.xml:979
 #, no-c-format
 msgid "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 msgstr "CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;"
 
 #. Tag: title
-#: installation.xml:984
+#: installation.xml:986
 #, no-c-format
 msgid "Tiger Geocoder Enabling your PostGIS database: Not Using Extensions"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンション不使用"
 
 #. Tag: para
-#: installation.xml:985
+#: installation.xml:987
 #, no-c-format
 msgid "First install PostGIS using the prior instructions."
 msgstr "まず、上述の手順でPostGISをインストールします。"
 
 #. Tag: para
-#: installation.xml:989 installation.xml:1049
+#: installation.xml:991 installation.xml:1051
 #, no-c-format
 msgid ""
 "If you don't have an extras folder, download <ulink url="
@@ -3608,19 +3637,19 @@ msgstr ""
 "\">&postgis_download_url;</ulink>をダウンロードします。"
 
 #. Tag: command
-#: installation.xml:994 installation.xml:1054
+#: installation.xml:996 installation.xml:1056
 #, no-c-format
 msgid "tar xvfz postgis-&last_release_version;.tar.gz"
 msgstr "tar xvfz postgis-&last_release_version;.tar.gz"
 
 #. Tag: command
-#: installation.xml:998
+#: installation.xml:1000
 #, no-c-format
 msgid "cd postgis-&last_release_version;/extras/tiger_geocoder"
 msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder"
 
 #. Tag: para
-#: installation.xml:1001
+#: installation.xml:1003
 #, no-c-format
 msgid ""
 "Edit the <filename>tiger_loader_2015.sql</filename> (or latest loader file "
@@ -3642,7 +3671,7 @@ msgstr ""
 "\"/>を実行した後に、生成されたスクリプトを編集しなければなりません。"
 
 #. Tag: para
-#: installation.xml:1003
+#: installation.xml:1005
 #, no-c-format
 msgid ""
 "If you are installing Tiger geocoder for the first time edit either the "
@@ -3657,7 +3686,7 @@ msgstr ""
 "定に変更したうえで、コマンドラインから対応するスクリプトを実行します。"
 
 #. Tag: para
-#: installation.xml:1007
+#: installation.xml:1009
 #, no-c-format
 msgid ""
 "Verify that you now have a <varname>tiger</varname> schema in your database "
@@ -3668,13 +3697,13 @@ msgstr ""
 "い場合は、次の行を参考に、コマンドを実行します。"
 
 #. Tag: programlisting
-#: installation.xml:1007
+#: installation.xml:1009
 #, no-c-format
 msgid "ALTER DATABASE geocoder SET search_path=public, tiger;"
 msgstr "ALTER DATABASE geocoder SET search_path=public, tiger;"
 
 #. Tag: para
-#: installation.xml:1008
+#: installation.xml:1010
 #, no-c-format
 msgid ""
 "The normalizing address functionality works more or less without any data "
@@ -3684,7 +3713,7 @@ msgstr ""
 "トを実行して次のように見えることを確認して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1009
+#: installation.xml:1011
 #, no-c-format
 msgid ""
 "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
@@ -3700,14 +3729,14 @@ msgstr ""
 "202 E Fremont St, Las Vegas, NV 89101"
 
 #. Tag: title
-#: installation.xml:1012
+#: installation.xml:1014
 #, no-c-format
 msgid "Using Address Standardizer Extension with Tiger geocoder"
 msgstr ""
 "TigerジオコーダをPostGISデータベースで有効にする: エクステンションを使用"
 
 #. Tag: para
-#: installation.xml:1013
+#: installation.xml:1015
 #, no-c-format
 msgid ""
 "One of the many complaints of folks is the address normalizer function <xref "
@@ -3728,7 +3757,7 @@ msgstr ""
 "ンストールします。"
 
 #. Tag: para
-#: installation.xml:1016
+#: installation.xml:1018
 #, no-c-format
 msgid ""
 "Once you install this extension in the same database as you have installed "
@@ -3753,13 +3782,13 @@ msgstr ""
 "改善のために追加や更新ができます。"
 
 #. Tag: title
-#: installation.xml:1019
+#: installation.xml:1021
 #, no-c-format
 msgid "Loading Tiger Data"
 msgstr "Tigerデータのロード"
 
 #. Tag: para
-#: installation.xml:1020
+#: installation.xml:1022
 #, no-c-format
 msgid ""
 "The instructions for loading data are available in a more detailed form in "
@@ -3770,7 +3799,7 @@ msgstr ""
 "filename>にあります。これは一般的な手順を示しています。"
 
 #. Tag: para
-#: installation.xml:1021
+#: installation.xml:1023
 #, no-c-format
 msgid ""
 "The load process downloads data from the census website for the respective "
@@ -3792,19 +3821,19 @@ msgstr ""
 "クエリを出すことができます。"
 
 #. Tag: para
-#: installation.xml:1023
+#: installation.xml:1025
 #, no-c-format
 msgid "In order to be able to load data you'll need the following tools:"
 msgstr "データのロードを可能にするためには次のツールが必要です。"
 
 #. Tag: para
-#: installation.xml:1025
+#: installation.xml:1027
 #, no-c-format
 msgid "A tool to unzip the zip files from census website."
 msgstr "センサスウェブサイトから取得するZIPファイルを展開するツール。"
 
 #. Tag: para
-#: installation.xml:1026
+#: installation.xml:1028
 #, no-c-format
 msgid ""
 "For Unix like systems: <varname>unzip</varname> executable which is usually "
@@ -3814,7 +3843,7 @@ msgstr ""
 "どのUnix系プラットフォームで既にインストールされています。"
 
 #. Tag: para
-#: installation.xml:1027
+#: installation.xml:1029
 #, no-c-format
 msgid ""
 "For Windows, 7-zip which is a free compress/uncompress tool you can download "
@@ -3824,7 +3853,7 @@ msgstr ""
 "org/</ulink>からダウンロードできる無償の圧縮解答ツールです。"
 
 #. Tag: para
-#: installation.xml:1029
+#: installation.xml:1031
 #, no-c-format
 msgid ""
 "<filename>shp2pgsql</filename> commandline which is installed by default "
@@ -3834,7 +3863,7 @@ msgstr ""
 "ンストールされます。"
 
 #. Tag: para
-#: installation.xml:1030
+#: installation.xml:1032
 #, no-c-format
 msgid ""
 "<filename>wget</filename> which is a web grabber tool usually installed on "
@@ -3844,7 +3873,7 @@ msgstr ""
 "トールされている、ウェブ取得ツールです。"
 
 #. Tag: para
-#: installation.xml:1031
+#: installation.xml:1033
 #, no-c-format
 msgid ""
 "If you are on windows, you can get pre-compiled binaries from <ulink url="
@@ -3856,7 +3885,7 @@ msgstr ""
 "wget.htm</ulink>から取得できます。"
 
 #. Tag: para
-#: installation.xml:1034
+#: installation.xml:1036
 #, no-c-format
 msgid ""
 "If you are upgrading from tiger_2010, you'll need to first generate and run "
@@ -3874,7 +3903,7 @@ msgstr ""
 "作で、(2010からの)アップグレードと、新しいインストールが行われます。"
 
 #. Tag: para
-#: installation.xml:1036
+#: installation.xml:1038
 #, no-c-format
 msgid ""
 "To load state data refer to <xref linkend=\"Loader_Generate_Script\"/> to "
@@ -3889,7 +3918,7 @@ msgstr ""
 "要なだけダウンロードできます。"
 
 #. Tag: para
-#: installation.xml:1039
+#: installation.xml:1041
 #, no-c-format
 msgid ""
 "After the states you desire have been loaded, make sure to run the: "
@@ -3901,7 +3930,7 @@ msgstr ""
 "programlisting>を実行するようにして下さい。"
 
 #. Tag: para
-#: installation.xml:1041
+#: installation.xml:1043
 #, no-c-format
 msgid ""
 "To test that things are working as they should, try to run a geocode on an "
@@ -3911,13 +3940,13 @@ msgstr ""
 "る州の中の住所についてジオコーダを実行してみます。"
 
 #. Tag: title
-#: installation.xml:1044
+#: installation.xml:1046
 #, no-c-format
 msgid "Upgrading your Tiger Geocoder Install"
 msgstr "Tigerジオコーダのアップグレード"
 
 #. Tag: para
-#: installation.xml:1045
+#: installation.xml:1047
 #, no-c-format
 msgid ""
 "If you have Tiger Geocoder packaged with 2.0+ already installed, you can "
@@ -3931,13 +3960,13 @@ msgstr ""
 "ジオコーダで動作します。"
 
 #. Tag: command
-#: installation.xml:1058
+#: installation.xml:1060
 #, no-c-format
 msgid "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 msgstr "cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011"
 
 #. Tag: para
-#: installation.xml:1061
+#: installation.xml:1063
 #, no-c-format
 msgid ""
 "Locate the <filename>upgrade_geocoder.bat</filename> script If you are on "
@@ -3949,7 +3978,7 @@ msgstr ""
 "を特定します。 PostGISデータベースの資格情報を持つように編集します。"
 
 #. Tag: para
-#: installation.xml:1064
+#: installation.xml:1066
 #, no-c-format
 msgid ""
 "If you are upgrading from 2010 or 2011, make sure to unremark out the loader "
@@ -3959,13 +3988,13 @@ msgstr ""
 "トアウトを消すと、2012データのロードのための最新のスクリプトを得ます。"
 
 #. Tag: para
-#: installation.xml:1065
+#: installation.xml:1067
 #, no-c-format
 msgid "Then run th corresponding script from the commandline."
 msgstr "対応するスクリプトをコマンドラインから実行します。"
 
 #. Tag: para
-#: installation.xml:1069
+#: installation.xml:1071
 #, no-c-format
 msgid ""
 "Next drop all nation tables and load up the new ones. Generate a drop script "
@@ -3977,19 +4006,19 @@ msgstr ""
 "テートメントを使った削除スクリプトを生成します。"
 
 #. Tag: programlisting
-#: installation.xml:1070
+#: installation.xml:1072
 #, no-c-format
 msgid "SELECT drop_nation_tables_generate_script();"
 msgstr "SELECT drop_nation_tables_generate_script();"
 
 #. Tag: para
-#: installation.xml:1071
+#: installation.xml:1073
 #, no-c-format
 msgid "Run the generated drop SQL statements."
 msgstr "生成した削除SQLステートメントを実行します。"
 
 #. Tag: para
-#: installation.xml:1072
+#: installation.xml:1074
 #, no-c-format
 msgid ""
 "Generate a nation load script with this SELECT statement as detailed in "
@@ -3999,31 +4028,31 @@ msgstr ""
 "ステートメントを使った削除スクリプトを生成します。"
 
 #. Tag: emphasis
-#: installation.xml:1073
+#: installation.xml:1075
 #, no-c-format
 msgid "For windows"
 msgstr "Windows向け"
 
 #. Tag: programlisting
-#: installation.xml:1074
+#: installation.xml:1076
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('windows');"
 msgstr "SELECT loader_generate_nation_script('windows');"
 
 #. Tag: emphasis
-#: installation.xml:1075
+#: installation.xml:1077
 #, no-c-format
 msgid "For unix/linux"
 msgstr "Unix/Linux向け"
 
 #. Tag: programlisting
-#: installation.xml:1076
+#: installation.xml:1078
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
 
 #. Tag: para
-#: installation.xml:1077
+#: installation.xml:1079
 #, no-c-format
 msgid ""
 "Refer to <xref linkend=\"tiger_geocoder_loading_data\"/> for instructions on "
@@ -4034,7 +4063,7 @@ msgstr ""
 "があります。"
 
 #. Tag: para
-#: installation.xml:1078
+#: installation.xml:1080
 #, no-c-format
 msgid ""
 "You can have a mix of 2010/2011 state tables and can upgrade each state "
@@ -4047,13 +4076,13 @@ msgstr ""
 "\"Drop_State_Tables_Generate_Script\"/>を使って、2010州テーブルを削除します。"
 
 #. Tag: title
-#: installation.xml:1084
+#: installation.xml:1086
 #, no-c-format
 msgid "Create a spatially-enabled database from a template"
 msgstr "空間データベースをテンプレートから生成する"
 
 #. Tag: para
-#: installation.xml:1086
+#: installation.xml:1088
 #, no-c-format
 msgid ""
 "Some packaged distributions of PostGIS (in particular the Win32 installers "
@@ -4074,37 +4103,37 @@ msgstr ""
 "ている必要があります。"
 
 #. Tag: para
-#: installation.xml:1097
+#: installation.xml:1099
 #, no-c-format
 msgid "From the shell:"
 msgstr "シェルからの実行は次の通りです。"
 
 #. Tag: programlisting
-#: installation.xml:1101
+#: installation.xml:1103
 #, no-c-format
 msgid "# createdb -T template_postgis my_spatial_db"
 msgstr "# createdb -T template_postgis my_spatial_db"
 
 #. Tag: para
-#: installation.xml:1103
+#: installation.xml:1105
 #, no-c-format
 msgid "From SQL:"
 msgstr "SQLからの実行は次の通りです。"
 
 #. Tag: programlisting
-#: installation.xml:1107
+#: installation.xml:1109
 #, no-c-format
 msgid "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
 msgstr "postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis"
 
 #. Tag: title
-#: installation.xml:1111
+#: installation.xml:1113
 #, no-c-format
 msgid "Upgrading"
 msgstr "アップグレード"
 
 #. Tag: para
-#: installation.xml:1113
+#: installation.xml:1115
 #, no-c-format
 msgid ""
 "Upgrading existing spatial databases can be tricky as it requires "
@@ -4114,7 +4143,7 @@ msgstr ""
 "換えや導入を必要とするとき、慎重を要することがあります。"
 
 #. Tag: para
-#: installation.xml:1118
+#: installation.xml:1120
 #, no-c-format
 msgid ""
 "Unfortunately not all definitions can be easily replaced in a live database, "
@@ -4124,7 +4153,7 @@ msgstr ""
 "ではないので、ダンプ/リロードが最善策となることがあります。"
 
 #. Tag: para
-#: installation.xml:1123
+#: installation.xml:1125
 #, no-c-format
 msgid ""
 "PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases, and "
@@ -4135,7 +4164,7 @@ msgstr ""
 "ています。"
 
 #. Tag: para
-#: installation.xml:1128
+#: installation.xml:1130
 #, no-c-format
 msgid ""
 "Before attempting to upgrade PostGIS, it is always worth to backup your "
@@ -4147,13 +4176,13 @@ msgstr ""
 "てダンプを常にリストアすることができます。"
 
 #. Tag: title
-#: installation.xml:1135
+#: installation.xml:1137
 #, no-c-format
 msgid "Soft upgrade"
 msgstr "ソフトアップグレード "
 
 #. Tag: para
-#: installation.xml:1137
+#: installation.xml:1139
 #, no-c-format
 msgid ""
 "If you installed your database using extensions, you'll need to upgrade "
@@ -4166,13 +4195,13 @@ msgstr ""
 "合は、SQLスクリプトでアップグレードすべきです。適切な方を参照して下さい。"
 
 #. Tag: title
-#: installation.xml:1140
+#: installation.xml:1142
 #, no-c-format
 msgid "Soft Upgrade Pre 9.1+ or without extensions"
 msgstr "9.1より前またはエクステンションを使わないソフトアップグレード"
 
 #. Tag: para
-#: installation.xml:1141
+#: installation.xml:1143
 #, no-c-format
 msgid ""
 "This section applies only to those who installed PostGIS not using "
@@ -4183,13 +4212,13 @@ msgstr ""
 "ンを使っていてこの方法を使うと、次のようなメッセージが現れます。"
 
 #. Tag: programlisting
-#: installation.xml:1142
+#: installation.xml:1144
 #, no-c-format
 msgid "can't drop ... because postgis extension depends on it"
 msgstr "can't drop ... because postgis extension depends on it"
 
 #. Tag: para
-#: installation.xml:1143
+#: installation.xml:1145
 #, no-c-format
 msgid ""
 "After compiling and installing (make install) you should find a "
@@ -4211,13 +4240,13 @@ msgstr ""
 "動したり、2.*からr7409以前に落とす場合は、ハードアップグレードして下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1147
+#: installation.xml:1149
 #, no-c-format
 msgid "psql -f postgis_upgrade.sql -d your_spatial_database"
 msgstr "psql -f postgis_upgrade.sql -d [データベース名]"
 
 #. Tag: para
-#: installation.xml:1149
+#: installation.xml:1151
 #, no-c-format
 msgid ""
 "The same procedure applies to raster and topology extensions, with upgrade "
@@ -4229,19 +4258,19 @@ msgstr ""
 "sql</filename>とになります。次のようにします。"
 
 #. Tag: programlisting
-#: installation.xml:1157
+#: installation.xml:1159
 #, no-c-format
 msgid "psql -f rtpostgis_upgrade.sql -d your_spatial_database"
 msgstr "psql -f rtpostgis_upgrade.sql -d [データベース名]"
 
 #. Tag: programlisting
-#: installation.xml:1158
+#: installation.xml:1160
 #, no-c-format
 msgid "psql -f topology_upgrade.sql -d your_spatial_database"
 msgstr "psql -f topology_upgrade.sql -d [データベース名]"
 
 #. Tag: para
-#: installation.xml:1161
+#: installation.xml:1163
 #, no-c-format
 msgid ""
 "If you can't find the <filename>postgis_upgrade*.sql</filename> specific for "
@@ -4253,7 +4282,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: installation.xml:1167
+#: installation.xml:1169
 #, no-c-format
 msgid ""
 "The <xref linkend=\"PostGIS_Full_Version\"/> function should inform you "
@@ -4265,13 +4294,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: installation.xml:1174
+#: installation.xml:1176
 #, no-c-format
 msgid "Soft Upgrade 9.1+ using extensions"
 msgstr "9.1以上でエクステンションを使ったソフトアップグレード"
 
 #. Tag: para
-#: installation.xml:1175
+#: installation.xml:1177
 #, no-c-format
 msgid ""
 "If you originally installed PostGIS with extensions, then you need to "
@@ -4283,7 +4312,7 @@ msgstr ""
 "プグレードはかなり楽です。"
 
 #. Tag: programlisting
-#: installation.xml:1176
+#: installation.xml:1178
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;\";\n"
@@ -4293,19 +4322,19 @@ msgstr ""
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;\";"
 
 #. Tag: para
-#: installation.xml:1177
+#: installation.xml:1179
 #, no-c-format
 msgid "If you get an error notice something like:"
 msgstr "次のようなエラー通知が表示されることがあります。"
 
 #. Tag: programlisting
-#: installation.xml:1178
+#: installation.xml:1180
 #, no-c-format
 msgid "No migration path defined for ... to &last_release_version;"
 msgstr "No migration path defined for ... to &last_release_version;"
 
 #. Tag: para
-#: installation.xml:1179
+#: installation.xml:1181
 #, no-c-format
 msgid ""
 "Then you'll need to backup your database, create a fresh one as described in "
@@ -4317,13 +4346,13 @@ msgstr ""
 "し、バックアップを新しいデータベースにリストアしなければなりません。"
 
 #. Tag: para
-#: installation.xml:1180
+#: installation.xml:1182
 #, no-c-format
 msgid "If you get a notice message like:"
 msgstr "次のようなメッセージを得ることがあります。"
 
 #. Tag: programlisting
-#: installation.xml:1181
+#: installation.xml:1183
 #, no-c-format
 msgid ""
 "Version \"&last_release_version;\" of extension \"postgis\" is already "
@@ -4333,7 +4362,7 @@ msgstr ""
 "installed"
 
 #. Tag: para
-#: installation.xml:1182
+#: installation.xml:1184
 #, no-c-format
 msgid ""
 "Then everything is already up to date and you can safely ignore it. "
@@ -4348,7 +4377,7 @@ msgstr ""
 "\"を削除する必要があります。"
 
 #. Tag: programlisting
-#: installation.xml:1188
+#: installation.xml:1190
 #, no-c-format
 msgid ""
 "ALTER EXTENSION postgis UPDATE TO \"&last_release_version;next\";\n"
@@ -4358,7 +4387,7 @@ msgstr ""
 "ALTER EXTENSION postgis_topology UPDATE TO \"&last_release_version;next\";"
 
 #. Tag: para
-#: installation.xml:1189
+#: installation.xml:1191
 #, no-c-format
 msgid ""
 "If you installed PostGIS originally without a version specified, you can "
@@ -4371,13 +4400,13 @@ msgstr ""
 "<code>CREATE EXTENSION postgis</code>だけで、リストアの間に最新版になります。"
 
 #. Tag: title
-#: installation.xml:1196
+#: installation.xml:1198
 #, no-c-format
 msgid "Hard upgrade"
 msgstr "ハードアップグレード"
 
 #. Tag: para
-#: installation.xml:1198
+#: installation.xml:1200
 #, no-c-format
 msgid ""
 "By HARD UPGRADE we mean full dump/reload of postgis-enabled databases. You "
@@ -4393,7 +4422,7 @@ msgstr ""
 "ロード (ハードアップグレード)の要否を記載しています。"
 
 #. Tag: para
-#: installation.xml:1207
+#: installation.xml:1209
 #, no-c-format
 msgid ""
 "The dump/reload process is assisted by the postgis_restore.pl script which "
@@ -4408,7 +4437,7 @@ msgstr ""
 "PostGISをインストールしたデータベースにリストアできます 。"
 
 #. Tag: para
-#: installation.xml:1216
+#: installation.xml:1218
 #, no-c-format
 msgid ""
 "Supplementary instructions for windows users are available at <ulink url="
@@ -4419,13 +4448,13 @@ msgstr ""
 "UsersWikiWinUpgrade\">Windows Hard upgrade</ulink>にあります。"
 
 #. Tag: para
-#: installation.xml:1219
+#: installation.xml:1221
 #, no-c-format
 msgid "The Procedure is as follows:"
 msgstr "手続きは次の通りです。 "
 
 #. Tag: para
-#: installation.xml:1227
+#: installation.xml:1229
 #, no-c-format
 msgid ""
 "Create a \"custom-format\" dump of the database you want to upgrade (let's "
@@ -4439,7 +4468,7 @@ msgstr ""
 "とができ、PostgreSQLのスーパーユーザである必要はありません。"
 
 #. Tag: programlisting
-#: installation.xml:1235
+#: installation.xml:1237
 #, no-c-format
 msgid ""
 "pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f \"/somepath/olddb."
@@ -4449,7 +4478,7 @@ msgstr ""
 "backup\" olddb"
 
 #. Tag: para
-#: installation.xml:1241
+#: installation.xml:1243
 #, no-c-format
 msgid ""
 "Do a fresh install of PostGIS in a new database -- we'll refer to this "
@@ -4463,7 +4492,7 @@ msgstr ""
 "\"create_new_db_extensions\"/>とを参照して下さい。"
 
 #. Tag: para
-#: installation.xml:1248
+#: installation.xml:1250
 #, no-c-format
 msgid ""
 "The spatial_ref_sys entries found in your dump will be restored, but they "
@@ -4478,7 +4507,7 @@ msgstr ""
 "にspaltial_ref_sys.sqlファイルをロードしないだけです。"
 
 #. Tag: para
-#: installation.xml:1258
+#: installation.xml:1260
 #, no-c-format
 msgid ""
 "If your database is really old or you know you've been using long deprecated "
@@ -4496,7 +4525,7 @@ msgstr ""
 "<filename>uninstall_legacy.sql</filename>で後から削除することができます。"
 
 #. Tag: para
-#: installation.xml:1274
+#: installation.xml:1276
 #, no-c-format
 msgid ""
 "Restore your backup into your fresh <varname>newdb</varname> database using "
@@ -4508,7 +4537,7 @@ msgstr ""
 "があります。これらのログを保存しておいて下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1282
+#: installation.xml:1284
 #, no-c-format
 msgid ""
 "perl utils/postgis_restore.pl \"/somepath/olddb.backup\" | psql -h localhost "
@@ -4518,13 +4547,13 @@ msgstr ""
 "-p 5432 -U postgres newdb 2> errors.txt"
 
 #. Tag: para
-#: installation.xml:1288
+#: installation.xml:1290
 #, no-c-format
 msgid "Errors may arise in the following cases:"
 msgstr "エラーは次の場合に起こりえます。"
 
 #. Tag: para
-#: installation.xml:1294
+#: installation.xml:1296
 #, no-c-format
 msgid ""
 "Some of your views or functions make use of deprecated PostGIS objects. In "
@@ -4544,7 +4573,7 @@ msgstr ""
 "れないでください。"
 
 #. Tag: para
-#: installation.xml:1306
+#: installation.xml:1308
 #, no-c-format
 msgid ""
 "Some custom records of spatial_ref_sys in dump file have an invalid SRID "
@@ -4558,7 +4587,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: installation.xml:1320
+#: installation.xml:1322
 #, no-c-format
 msgid ""
 "In order to fix this you should copy your custom SRS to a SRID with a valid "
@@ -4572,7 +4601,7 @@ msgstr ""
 "してチェック制約を再構築します。"
 
 #. Tag: programlisting
-#: installation.xml:1327
+#: installation.xml:1329
 #, no-c-format
 msgid ""
 "ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check "
@@ -4582,19 +4611,19 @@ msgstr ""
 "(srid &gt; 0 AND srid &lt; 999000 );"
 
 #. Tag: programlisting
-#: installation.xml:1329
+#: installation.xml:1331
 #, no-c-format
 msgid "ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));"
 msgstr "ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));"
 
 #. Tag: title
-#: installation.xml:1340
+#: installation.xml:1342
 #, no-c-format
 msgid "Common Problems during installation"
 msgstr "共通の問題"
 
 #. Tag: para
-#: installation.xml:1341
+#: installation.xml:1343
 #, no-c-format
 msgid ""
 "There are several things to check when your installation or upgrade doesn't "
@@ -4604,7 +4633,7 @@ msgstr ""
 "かあります。"
 
 #. Tag: para
-#: installation.xml:1348
+#: installation.xml:1350
 #, no-c-format
 msgid ""
 "Check that you have installed PostgreSQL &min_postgres_version; or newer, "
@@ -4627,13 +4656,13 @@ msgstr ""
 "エリを実行して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1361
+#: installation.xml:1363
 #, no-c-format
 msgid "SELECT version();"
 msgstr "SELECT version();"
 
 #. Tag: para
-#: installation.xml:1363
+#: installation.xml:1365
 #, no-c-format
 msgid ""
 "If you are running an RPM based distribution, you can check for the "
@@ -4645,7 +4674,7 @@ msgstr ""
 "<command>rpm -qa | grep postgresql</command>でチェックできます。"
 
 #. Tag: para
-#: installation.xml:1371
+#: installation.xml:1373
 #, no-c-format
 msgid ""
 "If your upgrade fails, make sure you are restoring into a database that "
@@ -4655,13 +4684,13 @@ msgstr ""
 "にリストアしているか確認して下さい。"
 
 #. Tag: programlisting
-#: installation.xml:1372
+#: installation.xml:1374
 #, no-c-format
 msgid "SELECT postgis_full_version();"
 msgstr "SELECT postgis_full_version();"
 
 #. Tag: para
-#: installation.xml:1376
+#: installation.xml:1378
 #, no-c-format
 msgid ""
 "Also check that configure has correctly detected the location and version of "
@@ -4671,7 +4700,7 @@ msgstr ""
 "ストール先を検出したかチェックして下さい。"
 
 #. Tag: para
-#: installation.xml:1383
+#: installation.xml:1385
 #, no-c-format
 msgid ""
 "The output from configure is used to generate the <filename>postgis_config."
@@ -4685,13 +4714,13 @@ msgstr ""
 "varname>変数が正しくセットされたかをチェックして下さい。"
 
 #. Tag: title
-#: installation.xml:1396
+#: installation.xml:1398
 #, no-c-format
 msgid "Loader/Dumper"
 msgstr "ローダ/ダンパ "
 
 #. Tag: para
-#: installation.xml:1398
+#: installation.xml:1400
 #, no-c-format
 msgid ""
 "The data loader and dumper are built and installed automatically as part of "
@@ -4701,7 +4730,7 @@ msgstr ""
 "トールされます。手動でビルド、インストールするには、次を実行します。"
 
 #. Tag: programlisting
-#: installation.xml:1403
+#: installation.xml:1405
 #, no-c-format
 msgid ""
 "# cd postgis-&last_release_version;/loader\n"
@@ -4713,7 +4742,7 @@ msgstr ""
 "# make install"
 
 #. Tag: para
-#: installation.xml:1405
+#: installation.xml:1407
 #, no-c-format
 msgid ""
 "The loader is called <filename>shp2pgsql</filename> and converts ESRI Shape "
@@ -4727,3 +4756,6 @@ msgstr ""
 "<filename>pgsql2shp</filename>と呼ばれ、PostGISのテーブル(またはクエリ)から"
 "ESRIシェープファイルに変換します。より詳しいドキュメントをご覧になるには、オ"
 "ンラインヘルプとマニュアルページをご覧ください。"
+
+#~ msgid "Create a spatially-enabled database on PostgreSQL lower than 9.1"
+#~ msgstr "PostgreSQL 9.1より前での空間データベースの作成"

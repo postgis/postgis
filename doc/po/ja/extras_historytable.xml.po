@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-01-20 02:15+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-07 07:54+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -78,7 +78,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_historytable.xml:16
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "history_id      | integer                     | not null default\n"
 " date_added      | timestamp without time zone | not null default now()\n"
@@ -88,9 +88,9 @@ msgid ""
 "\"current_user\"()\n"
 " current_version | text                        | not null"
 msgstr ""
-"history_id      | integer                     | not null default \n"
-" date_added      | timestamp (タイムゾーンなし) | not null default now()\n"
-" date_deleted    | timestamp  (タイムゾーンなし) | \n"
+"history_id      | integer                     | not null default\n"
+" date_added      | timestamp (タイムゾーンなし)| not null default now()\n"
+" date_deleted    | timestamp (タイムゾーンなし)|\n"
 " last_operation  | character varying(30)       | not null\n"
 " active_user     | character varying(90)       | not null default "
 "\"current_user\"()\n"
@@ -156,14 +156,14 @@ msgstr "ある過去の時点におけるroadsテーブルの状態を検索す�
 
 #. Tag: programlisting
 #: extras_historytable.xml:34
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT * FROM roads_history\n"
 "    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 msgstr ""
-"SELECT * FROM roads_history \n"
-"    WHERE date_added &lt; 'January 1, 2001' AND \n"
+"SELECT * FROM roads_history\n"
+"    WHERE date_added &lt; 'January 1, 2001' AND\n"
 "        ( date_deleted &gt;= 'January 1, 2001' OR date_deleted IS NULL );"
 
 #. Tag: refname
@@ -287,7 +287,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_historytable.xml:107
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
 "SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
@@ -312,19 +312,19 @@ msgid ""
 msgstr ""
 "CREATE TABLE roads(gid SERIAL PRIMARY KEY, road_name varchar(150));\n"
 "SELECT AddGeometryColumn('roads', 'geom', 26986, 'LINESTRING', 2);\n"
-"                                \n"
+"\n"
 "SELECT postgis_enable_history('public', 'roads', 'geom') As register_table;\n"
 "register_table\n"
 "--------------\n"
 "t\n"
 "\n"
-"INSERT INTO roads(road_name, geom) \n"
+"INSERT INTO roads(road_name, geom)\n"
 "  VALUES('Test Street', ST_GeomFromText('LINESTRING(231660.5 832170,231647 "
 "832202,231627.5 832250.5)',26986));\n"
 "\n"
 "-- トランザクションの詳細を確認--\n"
-"SELECT date_added, last_operation, current_version \n"
-"FROM roads_history \n"
+"SELECT date_added, last_operation, current_version\n"
+"FROM roads_history\n"
 "WHERE road_name = 'Test Street' ORDER BY date_added DESC;\n"
 "\n"
 "       date_added       | last_operation | current_version\n"

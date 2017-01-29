@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-15 12:20+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-07 08:13+0000\n"
+"Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
 "Language: ja\n"
@@ -189,6 +189,9 @@ msgid ""
 "rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML "
 "Javascript rendering library</ulink>."
 msgstr ""
+"PostGIS関数<xref linkend=\"ST_AsX3D\"/>を使って3次元イメージを生成し、<ulink "
+"url=\"http://www.x3dom.org\">X3Dom HTML Javascript redering library</ulink>を"
+"使ってHTMLでの描画を行います。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:89
@@ -540,7 +543,7 @@ msgstr "ミンコフスキー和実行後"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:422
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
 "FROM (SELECT\n"
@@ -568,10 +571,10 @@ msgid ""
 "65.8527096604838,30 59.9999999999999)))"
 msgstr ""
 "SELECT ST_MinkowskiSum(line, circle))\n"
-"FROM (SELECT \n"
+"FROM (SELECT\n"
 "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
 "    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 "
 "54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 "
@@ -609,7 +612,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:457
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_MinkowskiSum(mp, poly)\n"
 "FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,\n"
@@ -628,7 +631,7 @@ msgstr ""
 "   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n"
 "    ) As foo\n"
 "\n"
-"    \n"
+"\n"
 "-- wkt --\n"
 "MULTIPOLYGON(\n"
 "    ((70 115,100 135,175 175,225 225,70 115)),\n"
@@ -663,7 +666,7 @@ msgstr ""
 #: reference_sfcgal.xml:481
 #, no-c-format
 msgid "Return a geometry that is the shared portion between geom1 and geom2."
-msgstr ""
+msgstr "geom1とgeom2の間で共有される部分のジオメトリを返します。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:497 reference_sfcgal.xml:573 reference_sfcgal.xml:648
@@ -674,12 +677,16 @@ msgid ""
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2;"
 msgstr ""
+"SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2;"
 
 #. Tag: para
 #: reference_sfcgal.xml:503
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
-msgstr ""
+msgstr "元の3次元ジオメトリを重ねたもの。geom2は半透明で示しています。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:508
@@ -691,18 +698,23 @@ msgid ""
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DIntersection(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:514
 #, no-c-format
 msgid "Intersection of geom1 and geom2"
-msgstr ""
+msgstr "geom1とgeom2の共有部分"
 
 #. Tag: para
 #: reference_sfcgal.xml:523
 #, no-c-format
 msgid "3D linestrings and polygons"
-msgstr ""
+msgstr "3次元ラインストリングとポリゴン"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:524
@@ -736,7 +748,7 @@ msgstr "立方体 (閉じた多面体サーフェス)と3次元ポリゴン"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:527
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
 "                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
@@ -750,12 +762,12 @@ msgid ""
 msgstr ""
 "SELECT ST_AsText(ST_3DIntersection(\n"
 "                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, "
-"0 1 0, 0 0 0)), \n"
+"0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
-"0 0 1)) )'), \n"
+"0 0 1)) )'),\n"
 "        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
 
 #. Tag: screen
@@ -788,7 +800,7 @@ msgstr ""
 
 #. Tag: screen
 #: reference_sfcgal.xml:532
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
 "10,13.3333333333333 13.3333333333333 10)),\n"
@@ -820,30 +832,30 @@ msgid ""
 msgstr ""
 "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 "
 "10,13.3333333333333 13.3333333333333 10)),\n"
-"         ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 "
 "13.3333333333333 10,20 20 10)),\n"
-"         ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
-"         ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
+"        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 "
 "0,13.3333333333333 13.3333333333333 10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 "
 "13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 "
 "10,20 20 0)),\n"
-"         ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),"
-"((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 "
-"13.3333333333333 10)),\n"
-"         ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 "
+"13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 "
 "10)),\n"
-"         ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 "
+"10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 "
 "10,16.6666666666667 23.3333333333333 10)),\n"
-"         ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
-"         ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
+"        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 "
 "10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),"
 "((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
-"         ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 "
 "10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
-"         ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),"
 "((11 11 10,11 29 10,2 20 10,11 11 10)))"
 
 #. Tag: refname
@@ -874,14 +886,14 @@ msgstr ""
 #: reference_sfcgal.xml:557
 #, no-c-format
 msgid "Returns that part of geom1 that is not part of geom2."
-msgstr ""
+msgstr "geom2に含まれないgeom1の一部を返します"
 
 #. Tag: para
 #: reference_sfcgal.xml:579
 #, no-c-format
 msgid ""
 "Original 3D geometries overlaid. geom2 is the part that will be removed."
-msgstr ""
+msgstr "元の3次元ジオメトリを重ねたもの。geom2は削除部分にあたります。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:584
@@ -893,12 +905,17 @@ msgid ""
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DDifference(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:590
 #, no-c-format
 msgid "What's left after removing geom2"
-msgstr ""
+msgstr "geom2を削除した後に残るもの"
 
 #. Tag: para
 #: reference_sfcgal.xml:604
@@ -907,6 +924,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DUnion\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:614
@@ -936,7 +955,7 @@ msgstr ""
 #: reference_sfcgal.xml:654
 #, no-c-format
 msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
-msgstr ""
+msgstr "元の3次元ジオメトリを重ねたもの。geom2は半透明で示しています。"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:659
@@ -948,12 +967,17 @@ msgid ""
 "        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
 " 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 msgstr ""
+"SELECT ST_3DUnion(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
 
 #. Tag: para
 #: reference_sfcgal.xml:665
 #, no-c-format
 msgid "Union of geom1 and geom2"
-msgstr ""
+msgstr "geom1とgeom2の結合"
 
 #. Tag: para
 #: reference_sfcgal.xml:679
@@ -962,6 +986,8 @@ msgid ""
 ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
 "linkend=\"ST_3DDifference\"/>"
 msgstr ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DDifference\"/>"
 
 #. Tag: refname
 #: reference_sfcgal.xml:690
@@ -998,7 +1024,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:716
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_3DArea(geom) As cube_surface_area,\n"
 "        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
@@ -1013,15 +1039,15 @@ msgid ""
 "-------------------+--------------------\n"
 "                 6 |                  0"
 msgstr ""
-"SELECT ST_3DArea(geom) As cube_surface_area, \n"
+"SELECT ST_3DArea(geom) As cube_surface_area,\n"
 "        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_area | solid_surface_area\n"
 "-------------------+--------------------\n"
 "                 6 |                  0"
@@ -1074,7 +1100,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:758
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
 "0 0)),\n"
@@ -1085,10 +1111,10 @@ msgid ""
 "1, 0 1 1, 0 0 1)) )');"
 msgstr ""
 "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 "
-"0 0)), \n"
+"0 0)),\n"
 "                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 "
-"1, 0 0 1, 0 0 0)), \n"
-"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 "
 "1, 0 1 1, 0 0 1)) )');"
 
@@ -1100,7 +1126,7 @@ msgstr "元の立方体"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:769
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
 "1 1, 0 1 0, 0 0 0)),\n"
@@ -1111,10 +1137,10 @@ msgid ""
 "0 0 1)) )'));"
 msgstr ""
 "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 "
-"1 1, 0 1 0, 0 0 0)), \n"
+"1 1, 0 1 0, 0 0 0)),\n"
 "        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, "
-"0 0 0)), \n"
-"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+"0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
 "        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, "
 "0 0 1)) )'));"
 
@@ -1162,13 +1188,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:796
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
 "160, 120 190, 10 190 ))'::geometry);"
 msgstr ""
-"SELECT \n"
+"SELECT\n"
 "        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 "
 "160, 120 190, 10 190 ))'::geometry);"
 
@@ -1241,7 +1267,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:847
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT ST_Volume(geom) As cube_surface_vol,\n"
 "        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
@@ -1256,15 +1282,15 @@ msgid ""
 "------------------+-------------------\n"
 "                0 |                 1"
 msgstr ""
-"SELECT ST_Volume(geom) As cube_surface_vol, \n"
+"SELECT ST_Volume(geom) As cube_surface_vol,\n"
 "        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
-"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
-"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), \n"
-"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
-"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
-"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), \n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
 "    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
-"    \n"
+"\n"
 " cube_surface_vol | solid_surface_vol\n"
 "------------------+-------------------\n"
 "                0 |                 1"

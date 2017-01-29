@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:03+0000\n"
 "PO-Revision-Date: 2016-02-15 12:29+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -4291,7 +4291,7 @@ msgstr ""
 "ブル統計情報の収集をさせることが重要です。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:1939
+#: using_postgis_dataman.xml:1939 using_postgis_dataman.xml:2022
 #, no-c-format
 msgid ""
 "VACUUM ANALYZE [table_name] [(column_name)];\n"
@@ -4326,12 +4326,198 @@ msgstr ""
 
 #. Tag: title
 #: using_postgis_dataman.xml:1953
+#, fuzzy, no-c-format
+msgid "BRIN Indexes"
+msgstr "GiSTインデクス"
+
+#. Tag: para
+#: using_postgis_dataman.xml:1955
+#, no-c-format
+msgid ""
+"BRIN stands for \"Block Range Index\" and is a generic form of indexing that "
+"has been introduced in PostgreSQL 9.5. BRIN is a lossy kind of index, and "
+"its main usage is to provide a compromise for both read and write "
+"performance. Its primary goal is to handle very large tables for which some "
+"of the columns have some natural correlation with their physical location "
+"within the table. In addition to GIS indexing, BRIN is used to speed up "
+"searches on various kinds of regular or irregular data structures (integer, "
+"arrays etc)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1964
+#, fuzzy, no-c-format
+msgid ""
+"Once a GIS data table exceeds a few thousand rows, you will want to build an "
+"index to speed up spatial searches of the data (unless all your searches are "
+"based on attributes, in which case you'll want to build a normal index on "
+"the attribute fields). GiST indexes are really performant as long as their "
+"size doesn't exceed the amount of RAM available for the database, and as "
+"long as you can afford the storage size, and the penalty in write workload. "
+"Otherwise, BRIN index can be considered as an alternative."
+msgstr ""
+"ひとたびGISデータテーブルが数千行を超えたら、空間検索の速度向上のためインデク"
+"スを構築したくなるでしょう (これは属性検索でない場合です。属性でしたら通常の"
+"インデクスを属性フィールドに追加します)。"
+
+#. Tag: para
+#: using_postgis_dataman.xml:1973
+#, no-c-format
+msgid ""
+"The idea of a BRIN index is to store only the bouding box englobing all the "
+"geometries contained in all the rows in a set of table blocks, called a "
+"range. Obviously, this indexing method will only be efficient if the data is "
+"physically ordered in a way where the resulting bouding boxes for block "
+"ranges will be mutually exclusive. The resulting index will be really small, "
+"but will be less efficient than a GiST index in many cases."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1981
+#, no-c-format
+msgid ""
+"Building a BRIN index is way less intensive than building a GiST index. It's "
+"quite common to build a BRIN index in more than ten time less than a GiST "
+"index would have required. As a BRIN index only store one bouding box for "
+"one to many table blocks, it's pretty common to consume up to a thousand "
+"time less disk space for this kind of indexes."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1987
+#, no-c-format
+msgid ""
+"You can choose the number of blocks to summarize in a range. If you decrease "
+"this number, the index will be bigger but will probably help to get better "
+"performance."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1991
+#, fuzzy, no-c-format
+msgid ""
+"The syntax for building a BRIN index on a \"geometry\" column is as follows:"
+msgstr "GiSTインデクスをジオメトリカラムに追加するための文は次の通りです。"
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1994
+#, fuzzy, no-c-format
+msgid "CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] );"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム"
+"名] );"
+
+#. Tag: para
+#: using_postgis_dataman.xml:1995
+#, fuzzy, no-c-format
+msgid ""
+"The above syntax will always build a 2D-index. To get a 3d-dimensional "
+"index, you can create one using this syntax"
+msgstr ""
+"上の書式では常に2次元インデクスを構築します。PostGIS 2.0以上で対応しているn次"
+"元インデクスをジオメトリタイプで使うには、次の書式で生成できます。"
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1996
+#, fuzzy, no-c-format
+msgid ""
+"CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] "
+"brin_geometry_inclusion_ops_3d);"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム"
+"名] gist_geometry_ops_nd);"
+
+#. Tag: para
+#: using_postgis_dataman.xml:1997
+#, no-c-format
+msgid "You can also get a 4d-dimensional index using the 4d operator class"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1998
+#, fuzzy, no-c-format
+msgid ""
+"CREATE INDEX [indexname] ON [tablename] USING BRIN ([geometryfield] "
+"brin_geometry_inclusion_ops_4d);"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム"
+"名] gist_geometry_ops_nd);"
+
+#. Tag: para
+#: using_postgis_dataman.xml:1999
+#, no-c-format
+msgid ""
+"These above syntaxes will use the default number or block in a range, which "
+"is 128. To specify the number of blocks you want to summarise in a range, "
+"you can create one using this syntax"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2000
+#, fuzzy, no-c-format
+msgid ""
+"CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geometryfield] ) WITH "
+"(pages_per_range = [number]);"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム"
+"名] );"
+
+#. Tag: para
+#: using_postgis_dataman.xml:2001
+#, no-c-format
+msgid ""
+"Also, keep in mind that a BRIN index will only store one index value for a "
+"large number of rows. If your table stores geometries with a mixed number of "
+"dimensions, it's likely that the resulting index will have poor performance. "
+"You can avoid this drop of performance by choosing the operator class whith "
+"the least number of dimensions of the stored geometries"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2009
+#, fuzzy, no-c-format
+msgid ""
+"Also the \"geography\" datatype is supported for BRIN indexing. The syntax "
+"for building a BRIN index on a \"geography\" column is as follows:"
+msgstr "GiSTインデクスをジオメトリカラムに追加するための文は次の通りです。"
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2012
+#, fuzzy, no-c-format
+msgid ""
+"CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geographyfield] );"
+msgstr ""
+"CREATE INDEX [インデクス名] ON [テーブル名] USING GIST ( [ジオメトリカラム"
+"名] );"
+
+#. Tag: para
+#: using_postgis_dataman.xml:2013
+#, no-c-format
+msgid ""
+"The above syntax will always build a 2D-index for geospatial objetcs on the "
+"spheroid."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2015
+#, no-c-format
+msgid ""
+"Currently, just the \"inclusion support\" is considered here, meaning that "
+"just <varname>&amp;&amp;</varname>, <varname>~</varname> and <varname>@</"
+"varname> operators can be used for the 2D cases (both for \"geometry\" and "
+"for \"geography\"), and just the <varname>&amp;&amp;&amp;</varname> operator "
+"can be used for the 3D geometries. There is no support for kNN searches at "
+"the moment."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2026
 #, no-c-format
 msgid "Using Indexes"
 msgstr "インデクスを使う"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1955
+#: using_postgis_dataman.xml:2028
 #, no-c-format
 msgid ""
 "Ordinarily, indexes invisibly speed up data access: once the index is built, "
@@ -4348,7 +4534,7 @@ msgstr ""
 "ことがあります。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1962
+#: using_postgis_dataman.xml:2035
 #, no-c-format
 msgid ""
 "If you find your spatial indexes are not being used (or your attribute "
@@ -4358,7 +4544,7 @@ msgstr ""
 "されていない)場合、次の二つのことができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1968
+#: using_postgis_dataman.xml:2041
 #, no-c-format
 msgid ""
 "Firstly, make sure statistics are gathered about the number and "
@@ -4383,7 +4569,7 @@ msgstr ""
 "行します。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1982
+#: using_postgis_dataman.xml:2055
 #, no-c-format
 msgid ""
 "If vacuuming does not work, you can force the planner to use the index "
@@ -4403,7 +4589,7 @@ msgstr ""
 "を使用することを考えるべきです。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1992
+#: using_postgis_dataman.xml:2065
 #, no-c-format
 msgid ""
 "As of version 0.6, it should not be necessary to force the planner to use "
@@ -4413,7 +4599,7 @@ msgstr ""
 "使わせることは重要ではありません。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:1999
+#: using_postgis_dataman.xml:2072
 #, no-c-format
 msgid ""
 "If you find the planner wrong about the cost of sequential vs index scans "
@@ -4429,13 +4615,13 @@ msgstr ""
 "よりインデクススキャンを行う傾向になります。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2010
+#: using_postgis_dataman.xml:2083
 #, no-c-format
 msgid "Complex Queries"
 msgstr "複雑なクエリ"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2012
+#: using_postgis_dataman.xml:2085
 #, no-c-format
 msgid ""
 "The <emphasis>raison d'etre</emphasis> of spatial database functionality is "
@@ -4466,13 +4652,13 @@ msgstr ""
 "追加して下さい。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2026
+#: using_postgis_dataman.xml:2099
 #, no-c-format
 msgid "Taking Advantage of Indexes"
 msgstr "インデクスの利点を使う"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2028
+#: using_postgis_dataman.xml:2101
 #, no-c-format
 msgid ""
 "When constructing a query it is important to remember that only the bounding-"
@@ -4488,7 +4674,7 @@ msgstr ""
 "ブルでは本当に遅くなります。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2035
+#: using_postgis_dataman.xml:2108
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -4502,7 +4688,7 @@ msgstr ""
 "&lt; 100"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2037
+#: using_postgis_dataman.xml:2110
 #, no-c-format
 msgid ""
 "This query is selecting all the geometries in geom_table which are within "
@@ -4520,7 +4706,7 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2044
+#: using_postgis_dataman.xml:2117
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -4534,7 +4720,7 @@ msgstr ""
 "200100,312), 100)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2046
+#: using_postgis_dataman.xml:2119
 #, no-c-format
 msgid ""
 "This query selects the same geometries, but it does it in a more efficient "
@@ -4561,13 +4747,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2060
+#: using_postgis_dataman.xml:2133
 #, no-c-format
 msgid "Change in Behavior"
 msgstr "挙動の変更"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2062
+#: using_postgis_dataman.xml:2135
 #, no-c-format
 msgid ""
 "As of PostGIS 1.3.0, most of the Geometry Relationship Functions, with the "
@@ -4579,13 +4765,13 @@ msgstr ""
 "んでいます。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2069
+#: using_postgis_dataman.xml:2142
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr "空間SQLの例"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2071
+#: using_postgis_dataman.xml:2144
 #, no-c-format
 msgid ""
 "The examples in this section will make use of two tables, a table of linear "
@@ -4597,7 +4783,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2075
+#: using_postgis_dataman.xml:2148
 #, no-c-format
 msgid ""
 "Column      | Type              | Description\n"
@@ -4613,7 +4799,7 @@ msgstr ""
 "the_geom    | geometry          | Location Geometry (Linestring)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2077
+#: using_postgis_dataman.xml:2150
 #, no-c-format
 msgid ""
 "The table definition for the <varname>bc_municipality</varname> table is:"
@@ -4621,7 +4807,7 @@ msgstr ""
 "<varname>bc_municipality</varname>テーブルの定義については次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2080
+#: using_postgis_dataman.xml:2153
 #, no-c-format
 msgid ""
 "Column     | Type              | Description\n"
@@ -4639,19 +4825,19 @@ msgstr ""
 "the_geom   | geometry          | Location Geometry (Polygon)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2085
+#: using_postgis_dataman.xml:2158
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr "道路の総延長はkm表記でいくらになるでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2090
+#: using_postgis_dataman.xml:2163
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr "この問題は、次のようなとても単純なSQLで答えを得ることができます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2093
+#: using_postgis_dataman.xml:2166
 #, no-c-format
 msgid ""
 "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
@@ -4669,13 +4855,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2099
+#: using_postgis_dataman.xml:2172
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr "プリンスジョージ市の大きさはha表記でいくらになるでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2103
+#: using_postgis_dataman.xml:2176
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -4685,7 +4871,7 @@ msgstr ""
 "しています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2107
+#: using_postgis_dataman.xml:2180
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4709,13 +4895,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2113
+#: using_postgis_dataman.xml:2186
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr "県内で最も大きな面積となる自治体はどこでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2118
+#: using_postgis_dataman.xml:2191
 #, no-c-format
 msgid ""
 "This query brings a spatial measurement into the query condition. There are "
@@ -4725,7 +4911,7 @@ msgstr ""
 "の方法はいくつかありますが、最も効率的なのは次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2122
+#: using_postgis_dataman.xml:2195
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4755,7 +4941,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2124
+#: using_postgis_dataman.xml:2197
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -4773,13 +4959,13 @@ msgstr ""
 "を得ることができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2136
+#: using_postgis_dataman.xml:2209
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr "各自治体内に含まれる道路の総延長はいくらでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2141
+#: using_postgis_dataman.xml:2214
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", because we are bringing together "
@@ -4792,7 +4978,7 @@ msgstr ""
 "ンのやり方でなく空間インタラクション条件 (「含む」)を使っています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2147
+#: using_postgis_dataman.xml:2220
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4836,7 +5022,7 @@ msgstr ""
 "..."
 
 #. Tag: para
-#: using_postgis_dataman.xml:2149
+#: using_postgis_dataman.xml:2222
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -4849,13 +5035,13 @@ msgstr ""
 "(数百の道路で数千のレコード)の場合、応答はもっと早くなりえます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2158
+#: using_postgis_dataman.xml:2231
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr "プリンスジョージ市内の全ての道路からなるテーブルを作る"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2163
+#: using_postgis_dataman.xml:2236
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -4870,7 +5056,7 @@ msgstr ""
 "ターボのかかった空間結合みたいなもので、より確かな解析作業に便利です。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2170
+#: using_postgis_dataman.xml:2243
 #, no-c-format
 msgid ""
 "CREATE TABLE pg_roads as\n"
@@ -4894,13 +5080,13 @@ msgstr ""
 "WHERE  m.name = 'PRINCE GEORGE' AND ST_Intersects(r.the_geom, m.the_geom);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2176
+#: using_postgis_dataman.xml:2249
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr "ビクトリア州の「ダグラス通り」の長さはkm表記でいくらになるでしょう?"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2181
+#: using_postgis_dataman.xml:2254
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4930,13 +5116,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2187
+#: using_postgis_dataman.xml:2260
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr "穴を持つ自治体ポリゴンのうち最も大きいのはどれでしょう?"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2192
+#: using_postgis_dataman.xml:2265
 #, no-c-format
 msgid ""
 "SELECT gid, name, ST_Area(the_geom) AS area\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
 "PO-Revision-Date: 2016-07-20 07:15+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -340,10 +340,10 @@ msgstr ""
 #: extras_tigergeocoder.xml:274 extras_tigergeocoder.xml:319
 #: extras_tigergeocoder.xml:360 extras_tigergeocoder.xml:399
 #: extras_tigergeocoder.xml:444 extras_tigergeocoder.xml:502
-#: extras_tigergeocoder.xml:559 extras_tigergeocoder.xml:614
-#: extras_tigergeocoder.xml:659 extras_tigergeocoder.xml:738
-#: extras_tigergeocoder.xml:823 extras_tigergeocoder.xml:870
-#: extras_tigergeocoder.xml:942 extras_tigergeocoder.xml:1007
+#: extras_tigergeocoder.xml:563 extras_tigergeocoder.xml:618
+#: extras_tigergeocoder.xml:663 extras_tigergeocoder.xml:742
+#: extras_tigergeocoder.xml:827 extras_tigergeocoder.xml:874
+#: extras_tigergeocoder.xml:946 extras_tigergeocoder.xml:1011
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -378,8 +378,8 @@ msgstr ""
 #: extras_tigergeocoder.xml:79 extras_tigergeocoder.xml:163
 #: extras_tigergeocoder.xml:281 extras_tigergeocoder.xml:364
 #: extras_tigergeocoder.xml:407 extras_tigergeocoder.xml:462
-#: extras_tigergeocoder.xml:622 extras_tigergeocoder.xml:896
-#: extras_tigergeocoder.xml:968
+#: extras_tigergeocoder.xml:626 extras_tigergeocoder.xml:900
+#: extras_tigergeocoder.xml:972
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "2.0.0 버전부터 사용할 수 있습니다."
@@ -387,10 +387,10 @@ msgstr "2.0.0 버전부터 사용할 수 있습니다."
 #. Tag: title
 #: extras_tigergeocoder.xml:86 extras_tigergeocoder.xml:127
 #: extras_tigergeocoder.xml:170 extras_tigergeocoder.xml:414
-#: extras_tigergeocoder.xml:469 extras_tigergeocoder.xml:527
-#: extras_tigergeocoder.xml:582 extras_tigergeocoder.xml:629
-#: extras_tigergeocoder.xml:705 extras_tigergeocoder.xml:789
-#: extras_tigergeocoder.xml:833 extras_tigergeocoder.xml:901
+#: extras_tigergeocoder.xml:469 extras_tigergeocoder.xml:529
+#: extras_tigergeocoder.xml:586 extras_tigergeocoder.xml:633
+#: extras_tigergeocoder.xml:709 extras_tigergeocoder.xml:793
+#: extras_tigergeocoder.xml:837 extras_tigergeocoder.xml:905
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -474,11 +474,11 @@ msgstr ""
 #: extras_tigergeocoder.xml:177 extras_tigergeocoder.xml:244
 #: extras_tigergeocoder.xml:297 extras_tigergeocoder.xml:337
 #: extras_tigergeocoder.xml:377 extras_tigergeocoder.xml:421
-#: extras_tigergeocoder.xml:479 extras_tigergeocoder.xml:537
-#: extras_tigergeocoder.xml:591 extras_tigergeocoder.xml:636
-#: extras_tigergeocoder.xml:715 extras_tigergeocoder.xml:801
-#: extras_tigergeocoder.xml:844 extras_tigergeocoder.xml:916
-#: extras_tigergeocoder.xml:984 extras_tigergeocoder.xml:1024
+#: extras_tigergeocoder.xml:479 extras_tigergeocoder.xml:541
+#: extras_tigergeocoder.xml:595 extras_tigergeocoder.xml:640
+#: extras_tigergeocoder.xml:719 extras_tigergeocoder.xml:805
+#: extras_tigergeocoder.xml:848 extras_tigergeocoder.xml:920
+#: extras_tigergeocoder.xml:988 extras_tigergeocoder.xml:1028
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -538,8 +538,8 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:120 extras_tigergeocoder.xml:325
-#: extras_tigergeocoder.xml:576 extras_tigergeocoder.xml:747
-#: extras_tigergeocoder.xml:1011
+#: extras_tigergeocoder.xml:580 extras_tigergeocoder.xml:751
+#: extras_tigergeocoder.xml:1015
 #, no-c-format
 msgid "Availability: 2.1.0"
 msgstr "2.1.0 버전부터 사용할 수 있습니다."
@@ -1306,7 +1306,7 @@ msgstr ""
 "geocode_settings 테이블에는 사용자가 설정한 설정값만 저장합니다."
 
 #. Tag: title
-#: extras_tigergeocoder.xml:331 extras_tigergeocoder.xml:1017
+#: extras_tigergeocoder.xml:331 extras_tigergeocoder.xml:1021
 #, no-c-format
 msgid "Example return debugging setting"
 msgstr "예시: 디버깅 설정값 반환"
@@ -1541,7 +1541,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:453 extras_tigergeocoder.xml:511
-#: extras_tigergeocoder.xml:567
+#: extras_tigergeocoder.xml:571
 #, no-c-format
 msgid ""
 "<varname>loader_variables</varname> keeps track of various variables such as "
@@ -1564,7 +1564,7 @@ msgstr ""
 
 #. Tag: para
 #: extras_tigergeocoder.xml:459 extras_tigergeocoder.xml:517
-#: extras_tigergeocoder.xml:573
+#: extras_tigergeocoder.xml:577
 #, no-c-format
 msgid ""
 "<varname>loader_lookuptables</varname> each record defines a kind of table "
@@ -1689,7 +1689,7 @@ msgstr ""
 ":"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:472 extras_tigergeocoder.xml:530
+#: extras_tigergeocoder.xml:472 extras_tigergeocoder.xml:534
 #, no-c-format
 msgid "Generate sh script"
 msgstr ".sh 스크립트를 생성합니다."
@@ -1822,7 +1822,34 @@ msgstr ""
 "사 구역(tract), 블록 그룹(bg), 블록(tabblock) 테이블을 로드합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:528
+#: extras_tigergeocoder.xml:521
+#, no-c-format
+msgid ""
+"If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates "
+"long text. To fix, change <emphasis>File -&gt; Options -&gt; Query Tool -"
+"&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger "
+"than 50000 characters."
+msgstr ""
+
+#. Tag: para
+#: extras_tigergeocoder.xml:530
+#, no-c-format
+msgid ""
+"Using psql where gistest is your database and <filename>/gisdata/data_load."
+"sh</filename> is the file to create with the shell commands to run."
+msgstr ""
+
+#. Tag: programlisting
+#: extras_tigergeocoder.xml:531
+#, no-c-format
+msgid ""
+"<![CDATA[psql -U postgres -h localhost -d gistest -A -t \\\n"
+" -c \"SELECT Loader_Generate_Script(ARRAY['MA'], 'gistest')\" > /gisdata/"
+"data_load.sh;]]>"
+msgstr ""
+
+#. Tag: para
+#: extras_tigergeocoder.xml:532
 #, no-c-format
 msgid ""
 "Generate script to load up data for 2 states in Windows shell script format."
@@ -1831,17 +1858,15 @@ msgstr ""
 "성합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:529
-#, no-c-format
+#: extras_tigergeocoder.xml:533
+#, fuzzy, no-c-format
 msgid ""
 "SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;\n"
 "-- result --\n"
-"set STATEDIR=\"\\gisdata\\www2.census.gov\\geo\\pvs\\tiger2010st"
-"\\44_Rhode_Island\"\n"
 "set TMPDIR=\\gisdata\\temp\\\n"
 "set UNZIPTOOL=\"C:\\Program Files\\7-Zip\\7z.exe\"\n"
 "set WGETTOOL=\"C:\\wget\\wget.exe\"\n"
-"set PGBIN=C:\\Program Files\\PostgreSQL\\8.4\\bin\\\n"
+"set PGBIN=C:\\Program Files\\PostgreSQL\\9.4\\bin\\\n"
 "set PGPORT=5432\n"
 "set PGHOST=localhost\n"
 "set PGUSER=postgres\n"
@@ -1849,10 +1874,12 @@ msgid ""
 "set PGDATABASE=geocoder\n"
 "set PSQL=\"%PGBIN%psql\"\n"
 "set SHP2PGSQL=\"%PGBIN%shp2pgsql\"\n"
+"cd \\gisdata\n"
 "\n"
-"%WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-"
-"parent --relative --recursive --level=2 --accept=zip,txt --mirror --"
-"reject=html\n"
+"cd \\gisdata\n"
+"%WGETTOOL% ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-"
+"parent --relative --recursive --level=2 --accept=zip --mirror --reject=html\n"
+"cd \\gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE\n"
 ":\n"
 ":"
 msgstr ""
@@ -1879,24 +1906,29 @@ msgstr ""
 ":"
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:531
-#, no-c-format
+#: extras_tigergeocoder.xml:535
+#, fuzzy, no-c-format
 msgid ""
 "SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;\n"
 "-- result --\n"
-"STATEDIR=\"/gisdata/www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island\"\n"
 "TMPDIR=\"/gisdata/temp/\"\n"
 "UNZIPTOOL=unzip\n"
-"PGPORT=5432\n"
-"PGHOST=localhost\n"
-"PGUSER=postgres\n"
-"PGPASSWORD=yourpasswordhere\n"
-"PGDATABASE=geocoder\n"
-"PSQL=psql\n"
-"SHP2PGSQ=shp2pgsql\n"
+"WGETTOOL=\"/usr/bin/wget\"\n"
+"export PGBIN=/usr/lib/postgresql/9.4/bin\n"
+"export PGPORT=5432\n"
+"export PGHOST=localhost\n"
+"export PGUSER=postgres\n"
+"export PGPASSWORD=yourpasswordhere\n"
+"export PGDATABASE=geocoder\n"
+"PSQL=${PGBIN}/psql\n"
+"SHP2PGSQL=${PGBIN}/shp2pgsql\n"
+"cd /gisdata\n"
 "\n"
-"wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent "
-"--relative --recursive --level=2 --accept=zip,txt --mirror --reject=html\n"
+"cd /gisdata\n"
+"wget ftp://ftp2.census.gov/geo/tiger/TIGER2015/PLACE/tl_*_25_* --no-parent --"
+"relative --recursive --level=2 --accept=zip --mirror --reject=html\n"
+"cd /gisdata/ftp2.census.gov/geo/tiger/TIGER2015/PLACE\n"
+"rm -f ${TMPDIR}/*.*\n"
 ":\n"
 ":"
 msgstr ""
@@ -1918,14 +1950,20 @@ msgstr ""
 ":\n"
 ":"
 
+#. Tag: para
+#: extras_tigergeocoder.xml:542
+#, fuzzy, no-c-format
+msgid ", <xref linkend=\"Loader_Generate_Nation_Script\"/>"
+msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+
 #. Tag: refname
-#: extras_tigergeocoder.xml:544
+#: extras_tigergeocoder.xml:548
 #, no-c-format
 msgid "Loader_Generate_Nation_Script"
 msgstr "Loader_Generate_Nation_Script"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:546
+#: extras_tigergeocoder.xml:550
 #, no-c-format
 msgid ""
 "Generates a shell script for the specified platform that loads in the county "
@@ -1935,7 +1973,7 @@ msgstr ""
 "다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:551
+#: extras_tigergeocoder.xml:555
 #, no-c-format
 msgid ""
 "<funcdef>text <function>loader_generate_nation_script</function></funcdef> "
@@ -1945,7 +1983,7 @@ msgstr ""
 "<paramdef><type>text</type> <parameter>os</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:561
+#: extras_tigergeocoder.xml:565
 #, no-c-format
 msgid ""
 "Generates a shell script for the specified platform that loads in the "
@@ -1963,7 +2001,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:562
+#: extras_tigergeocoder.xml:566
 #, no-c-format
 msgid ""
 "It uses unzip on Linux (7-zip on Windows by default) and wget to do the "
@@ -1974,7 +2012,7 @@ msgstr ""
 "\"/> 를 이용합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:563
+#: extras_tigergeocoder.xml:567
 #, no-c-format
 msgid ""
 "It uses the following control tables <varname>tiger.loader_platform</"
@@ -1987,7 +2025,7 @@ msgstr ""
 "varname>, 그리고 <varname>tiger.loader_lookuptables</varname> 를 이용합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:570
+#: extras_tigergeocoder.xml:574
 #, no-c-format
 msgid ""
 "<varname>loader_platform</varname> profiles of various platforms and where "
@@ -1999,7 +2037,7 @@ msgstr ""
 "다. 더 많은 플랫폼을 추가할 수 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:577
+#: extras_tigergeocoder.xml:581
 #, no-c-format
 msgid ""
 "If you were running <varname>tiger_2010</varname> version and you want to "
@@ -2013,38 +2051,38 @@ msgstr ""
 "\"Drop_Nation_Tables_Generate_Script\"/> 를 생성하고 실행해야 할 것입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:583
+#: extras_tigergeocoder.xml:587
 #, no-c-format
 msgid "Generate script script to load nation data Windows."
 msgstr "윈도우 상에서 국가 데이터를 로드하기 위한 스크립트를 생성합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:584
+#: extras_tigergeocoder.xml:588
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('windows');"
 msgstr "SELECT loader_generate_nation_script('windows');"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:585
+#: extras_tigergeocoder.xml:589
 #, no-c-format
 msgid "Generate script to load up data for Linux/Unix systems."
 msgstr ""
 "리눅스/유닉스 시스템 상에서 데이터를 로드하기 위한 스크립트를 생성합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:586
+#: extras_tigergeocoder.xml:590
 #, no-c-format
 msgid "SELECT loader_generate_nation_script('sh');"
 msgstr "SELECT loader_generate_nation_script('sh');"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:598
+#: extras_tigergeocoder.xml:602
 #, no-c-format
 msgid "Missing_Indexes_Generate_Script"
 msgstr "Missing_Indexes_Generate_Script"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:600
+#: extras_tigergeocoder.xml:604
 #, no-c-format
 msgid ""
 "Finds all tables with key columns used in geocoder joins that are missing "
@@ -2056,7 +2094,7 @@ msgstr ""
 "을 출력합니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:606
+#: extras_tigergeocoder.xml:610
 #, no-c-format
 msgid ""
 "<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef> "
@@ -2066,7 +2104,7 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:616
+#: extras_tigergeocoder.xml:620
 #, no-c-format
 msgid ""
 "Finds all tables in <varname>tiger</varname> and <varname>tiger_data</"
@@ -2088,7 +2126,7 @@ msgstr ""
 "가지고 있다는 뜻입니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:630
+#: extras_tigergeocoder.xml:634
 #, no-c-format
 msgid ""
 "SELECT missing_indexes_generate_script();\n"
@@ -2132,19 +2170,19 @@ msgstr ""
 "btree(countyfp);"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:637
+#: extras_tigergeocoder.xml:641
 #, no-c-format
 msgid ", <xref linkend=\"Install_Missing_Indexes\"/>"
 msgstr ", <xref linkend=\"Install_Missing_Indexes\"/>"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:643
+#: extras_tigergeocoder.xml:647
 #, no-c-format
 msgid "Normalize_Address"
 msgstr "Normalize_Address"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:645
+#: extras_tigergeocoder.xml:649
 #, no-c-format
 msgid ""
 "Given a textual street address, returns a composite <varname>norm_addy</"
@@ -2159,7 +2197,7 @@ msgstr ""
 "(TIGER 인구조사 데이터는 필요없이) 작동할 것입니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:651
+#: extras_tigergeocoder.xml:655
 #, no-c-format
 msgid ""
 "<funcdef>norm_addy <function>normalize_address</function></funcdef> "
@@ -2169,7 +2207,7 @@ msgstr ""
 "<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:661 extras_tigergeocoder.xml:740
+#: extras_tigergeocoder.xml:665 extras_tigergeocoder.xml:744
 #, no-c-format
 msgid ""
 "Given a textual street address, returns a composite <varname>norm_addy</"
@@ -2185,7 +2223,7 @@ msgstr ""
 "하지 않습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:663
+#: extras_tigergeocoder.xml:667
 #, no-c-format
 msgid ""
 "This function just uses the various direction/state/suffix lookup tables "
@@ -2202,7 +2240,7 @@ msgstr ""
 "에 더 많은 약어 또는 대체 명칭들을 추가해야 할 필요가 있을 수도 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:665 extras_tigergeocoder.xml:744
+#: extras_tigergeocoder.xml:669 extras_tigergeocoder.xml:748
 #, no-c-format
 msgid ""
 "It uses various control lookup tables located in <varname>tiger</varname> "
@@ -2212,7 +2250,7 @@ msgstr ""
 "여러 제어 색인 테이블을 이용합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:666 extras_tigergeocoder.xml:745
+#: extras_tigergeocoder.xml:670 extras_tigergeocoder.xml:749
 #, no-c-format
 msgid ""
 "Fields in the <varname>norm_addy</varname> type object returned by this "
@@ -2224,7 +2262,7 @@ msgstr ""
 "택적인 필드를 나타냅니다:"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:667 extras_tigergeocoder.xml:749
+#: extras_tigergeocoder.xml:671 extras_tigergeocoder.xml:753
 #, no-c-format
 msgid ""
 "(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] "
@@ -2234,13 +2272,13 @@ msgstr ""
 "[internal] [location] [stateAbbrev] [zip]"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:670 extras_tigergeocoder.xml:755
+#: extras_tigergeocoder.xml:674 extras_tigergeocoder.xml:759
 #, no-c-format
 msgid "<varname>address</varname> is an integer: The street number"
 msgstr "<varname>address</varname> 는 정수형입니다: 도로 번지수입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:673 extras_tigergeocoder.xml:758
+#: extras_tigergeocoder.xml:677 extras_tigergeocoder.xml:762
 #, no-c-format
 msgid ""
 "<varname>predirAbbrev</varname> is varchar: Directional prefix of road such "
@@ -2252,13 +2290,13 @@ msgstr ""
 "을 이용해서 이 필드를 제어합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:676 extras_tigergeocoder.xml:761
+#: extras_tigergeocoder.xml:680 extras_tigergeocoder.xml:765
 #, no-c-format
 msgid "<varname>streetName</varname> varchar"
 msgstr "<varname>streetName</varname> 은 varchar형입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:679 extras_tigergeocoder.xml:764
+#: extras_tigergeocoder.xml:683 extras_tigergeocoder.xml:768
 #, no-c-format
 msgid ""
 "<varname>streetTypeAbbrev</varname> varchar abbreviated version of street "
@@ -2270,7 +2308,7 @@ msgstr ""
 "서 이 필드를 제어합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:682 extras_tigergeocoder.xml:767
+#: extras_tigergeocoder.xml:686 extras_tigergeocoder.xml:771
 #, no-c-format
 msgid ""
 "<varname>postdirAbbrev</varname> varchar abbreviated directional suffice of "
@@ -2282,7 +2320,7 @@ msgstr ""
 "varname> 테이블을 이용해서 이 필드를 제어합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:685 extras_tigergeocoder.xml:770
+#: extras_tigergeocoder.xml:689 extras_tigergeocoder.xml:774
 #, no-c-format
 msgid ""
 "<varname>internal</varname> varchar internal address such as an apartment or "
@@ -2292,7 +2330,7 @@ msgstr ""
 "같은 내부 주소입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:688 extras_tigergeocoder.xml:773
+#: extras_tigergeocoder.xml:692 extras_tigergeocoder.xml:777
 #, no-c-format
 msgid ""
 "<varname>location</varname> varchar usually a city or governing province."
@@ -2301,7 +2339,7 @@ msgstr ""
 "나타냅니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:691 extras_tigergeocoder.xml:776
+#: extras_tigergeocoder.xml:695 extras_tigergeocoder.xml:780
 #, no-c-format
 msgid ""
 "<varname>stateAbbrev</varname> varchar two character US State. e.g MA, NY, "
@@ -2312,14 +2350,14 @@ msgstr ""
 "서 이 필드를 제어합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:694 extras_tigergeocoder.xml:779
+#: extras_tigergeocoder.xml:698 extras_tigergeocoder.xml:783
 #, no-c-format
 msgid "<varname>zip</varname> varchar 5-digit zipcode. e.g. 02109."
 msgstr ""
 "<varname>zip</varname> 은 varchar형입니다. 02109 같은 다섯 자리 집코드입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:697 extras_tigergeocoder.xml:782
+#: extras_tigergeocoder.xml:701 extras_tigergeocoder.xml:786
 #, no-c-format
 msgid ""
 "<varname>parsed</varname> boolean - denotes if addess was formed from "
@@ -2331,7 +2369,7 @@ msgstr ""
 "드를 참으로 설정합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:706
+#: extras_tigergeocoder.xml:710
 #, no-c-format
 msgid ""
 "Output select fields. Use <xref linkend=\"Pprint_Addy\"/> if you want a "
@@ -2341,7 +2379,7 @@ msgstr ""
 "\"Pprint_Addy\"/> 함수를 이용하십시오."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:707
+#: extras_tigergeocoder.xml:711
 #, no-c-format
 msgid ""
 "SELECT address As orig, (g.na).streetname, (g.na).streettypeabbrev\n"
@@ -2375,19 +2413,19 @@ msgstr ""
 " 25 Wizard of Oz, Walaford, KS 99912323              | Wizard of Oz  |"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:716
+#: extras_tigergeocoder.xml:720
 #, no-c-format
 msgid ", <xref linkend=\"Pprint_Addy\"/>"
 msgstr ", <xref linkend=\"Pprint_Addy\"/>"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:722
+#: extras_tigergeocoder.xml:726
 #, no-c-format
 msgid "Pagc_Normalize_Address"
 msgstr "Pagc_Normalize_Address"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:724
+#: extras_tigergeocoder.xml:728
 #, no-c-format
 msgid ""
 "Given a textual street address, returns a composite <varname>norm_addy</"
@@ -2403,7 +2441,7 @@ msgstr ""
 "장 프로그램이 필요합니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:730
+#: extras_tigergeocoder.xml:734
 #, no-c-format
 msgid ""
 "<funcdef>norm_addy <function>pagc_normalize_address</function></funcdef> "
@@ -2413,7 +2451,7 @@ msgstr ""
 "<paramdef><type>varchar </type> <parameter>in_address</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:742
+#: extras_tigergeocoder.xml:746
 #, no-c-format
 msgid ""
 "This function just uses the various pagc_* lookup tables preloaded with the "
@@ -2430,7 +2468,7 @@ msgstr ""
 "또는 대체 명칭들을 추가해야 할 필요가 있을 수도 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:746
+#: extras_tigergeocoder.xml:750
 #, no-c-format
 msgid ""
 "There are slight variations in casing and formatting over the <xref linkend="
@@ -2440,13 +2478,13 @@ msgstr ""
 "른 변종들이 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:748
+#: extras_tigergeocoder.xml:752
 #, no-c-format
 msgid "&address_standardizer_required;"
 msgstr "&address_standardizer_required;"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:750
+#: extras_tigergeocoder.xml:754
 #, no-c-format
 msgid ""
 "The native standardaddr of address_standardizer extension is at this time a "
@@ -2458,19 +2496,19 @@ msgstr ""
 "됐기 때문입니다. standardaddr의 상응하는 필드들은 다음과 같습니다:"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:751
+#: extras_tigergeocoder.xml:755
 #, no-c-format
 msgid "house_num,predir, name, suftype, sufdir, unit, city, state, postcode"
 msgstr "house_num, predir, name, suftype, sufdir, unit, city, state, postcode"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:790
+#: extras_tigergeocoder.xml:794
 #, no-c-format
 msgid "Single call example"
 msgstr "단일 호출 예시"
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:791
+#: extras_tigergeocoder.xml:795
 #, no-c-format
 msgid ""
 "SELECT addy.*\n"
@@ -2498,7 +2536,7 @@ msgstr ""
 "SUITE 999 | SPRINGFIELD | CO          |     | t"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:793
+#: extras_tigergeocoder.xml:797
 #, no-c-format
 msgid ""
 "Batch call. There are currently speed issues with the way "
@@ -2520,7 +2558,7 @@ msgstr ""
 "다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:797
+#: extras_tigergeocoder.xml:801
 #, no-c-format
 msgid ""
 "WITH g AS (SELECT address, ROW((sa).house_num, (sa).predir, (sa).name\n"
@@ -2566,19 +2604,19 @@ msgstr ""
 " 950 Main Street, Worcester, MA 01610                | MAIN          | ST"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:802 extras_tigergeocoder.xml:918
+#: extras_tigergeocoder.xml:806 extras_tigergeocoder.xml:922
 #, no-c-format
 msgid ", <xref linkend=\"Geocode\"/>"
 msgstr ", <xref linkend=\"Geocode\"/>"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:808
+#: extras_tigergeocoder.xml:812
 #, no-c-format
 msgid "Pprint_Addy"
 msgstr "Pprint_Addy"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:810
+#: extras_tigergeocoder.xml:814
 #, no-c-format
 msgid ""
 "Given a <varname>norm_addy</varname> composite type object, returns a pretty "
@@ -2590,7 +2628,7 @@ msgstr ""
 "입니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:815
+#: extras_tigergeocoder.xml:819
 #, no-c-format
 msgid ""
 "<funcdef>varchar <function>pprint_addy</function></funcdef> "
@@ -2600,7 +2638,7 @@ msgstr ""
 "<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:825
+#: extras_tigergeocoder.xml:829
 #, no-c-format
 msgid ""
 "Given a <varname>norm_addy</varname> composite type object, returns a pretty "
@@ -2612,20 +2650,20 @@ msgstr ""
 "른 데이터는 불필요합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:826
+#: extras_tigergeocoder.xml:830
 #, no-c-format
 msgid "Usually used in conjunction with <xref linkend=\"Normalize_Address\"/>."
 msgstr ""
 "일반적으로 <xref linkend=\"Normalize_Address\"/> 함수와 결합해서 쓰입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:834
+#: extras_tigergeocoder.xml:838
 #, no-c-format
 msgid "Pretty print a single address"
 msgstr "단일 주소의 보기 좋은 인쇄용 출력"
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:835
+#: extras_tigergeocoder.xml:839
 #, no-c-format
 msgid ""
 "SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, "
@@ -2641,13 +2679,13 @@ msgstr ""
 " 202 E Fremont St, Las Vegas, NV 89101"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:837
+#: extras_tigergeocoder.xml:841
 #, no-c-format
 msgid "Pretty print address a table of addresses"
 msgstr "주소 테이블의 보기 좋은 인쇄용 출력"
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:838
+#: extras_tigergeocoder.xml:842
 #, no-c-format
 msgid ""
 "SELECT address As orig, pprint_addy(normalize_address(address)) As "
@@ -2689,13 +2727,13 @@ msgstr ""
 "Worcester, MA 01610"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:851
+#: extras_tigergeocoder.xml:855
 #, no-c-format
 msgid "Reverse_Geocode"
 msgstr "Reverse_Geocode"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:853
+#: extras_tigergeocoder.xml:857
 #, no-c-format
 msgid ""
 "Takes a geometry point in a known spatial ref sys and returns a record "
@@ -2708,7 +2746,7 @@ msgstr ""
 "include_strnum_range = true일 경우, 교차로에 있는 도로 범위를 포함합니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:858
+#: extras_tigergeocoder.xml:862
 #, no-c-format
 msgid ""
 "<funcdef>record <function>Reverse_Geocode</function></funcdef> "
@@ -2730,7 +2768,7 @@ msgstr ""
 "street</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:872
+#: extras_tigergeocoder.xml:876
 #, no-c-format
 msgid ""
 "Takes a geometry point in a known spatial ref and returns a record "
@@ -2748,7 +2786,7 @@ msgstr ""
 "맞는 편입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:875
+#: extras_tigergeocoder.xml:879
 #, no-c-format
 msgid ""
 "Why do we say theoretical instead of actual addresses. The Tiger data "
@@ -2773,7 +2811,7 @@ msgstr ""
 "문에 이 가정은 틀렸습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:880
+#: extras_tigergeocoder.xml:884
 #, no-c-format
 msgid ""
 "Note: Hmm this function relies on Tiger data. If you have not loaded data "
@@ -2784,13 +2822,13 @@ msgstr ""
 "터를 로드하지 않았을 경우, NULL로 채워진 레코드를 반환할 것입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:881
+#: extras_tigergeocoder.xml:885
 #, no-c-format
 msgid "Returned elements of the record are as follows:"
 msgstr "반환된 레코드를 구성하는 요소는 다음과 같습니다:"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:884
+#: extras_tigergeocoder.xml:888
 #, no-c-format
 msgid ""
 "<varname>intpt</varname> is an array of points: These are the center line "
@@ -2801,7 +2839,7 @@ msgstr ""
 "로 상의 중심선 포인트들입니다. 주소의 개수 만큼 많은 포인트들이 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:887
+#: extras_tigergeocoder.xml:891
 #, no-c-format
 msgid ""
 "<varname>addy</varname> is an array of norm_addy (normalized addresses): "
@@ -2817,7 +2855,7 @@ msgstr ""
 "소 1개만 있어야 합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:891
+#: extras_tigergeocoder.xml:895
 #, no-c-format
 msgid ""
 "<varname>street</varname> an array of varchar: These are cross streets (or "
@@ -2828,7 +2866,7 @@ msgstr ""
 "1개)입니다(교차하는 도로들 또는 포인트가 그 위에 투영된 도로입니다)."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:902
+#: extras_tigergeocoder.xml:906
 #, no-c-format
 msgid ""
 "Example of a point at the corner of two streets, but closest to one. This is "
@@ -2843,7 +2881,7 @@ msgstr ""
 "할 수 있다는 점에 주의하십시오. 도로 범위도 포함합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:904
+#: extras_tigergeocoder.xml:908
 #, no-c-format
 msgid ""
 "SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, "
@@ -2877,7 +2915,7 @@ msgstr ""
 "Massachusetts Ave,32 - 88 Vassar St"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:906
+#: extras_tigergeocoder.xml:910
 #, no-c-format
 msgid ""
 "Here we choose not to include the address ranges for the cross streets and "
@@ -2889,7 +2927,7 @@ msgstr ""
 "니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:908
+#: extras_tigergeocoder.xml:912
 #, no-c-format
 msgid ""
 "SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2,\n"
@@ -2921,7 +2959,7 @@ msgstr ""
 "Waltham St"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:910
+#: extras_tigergeocoder.xml:914
 #, no-c-format
 msgid ""
 "For this one we reuse our geocoded example from <xref linkend=\"Geocode\"/> "
@@ -2931,7 +2969,7 @@ msgstr ""
 "로가 최대한 2개만 교차하는 교차로에 있는 최선의 주소만을 반환하도록 합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:911
+#: extras_tigergeocoder.xml:915
 #, no-c-format
 msgid ""
 "SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1,\n"
@@ -2977,13 +3015,13 @@ msgstr ""
 "| 3 Maywood St, Worcester, MA 01603         | Main St         | Maywood Pl"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:924
+#: extras_tigergeocoder.xml:928
 #, no-c-format
 msgid "Topology_Load_Tiger"
 msgstr "Topology_Load_Tiger"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:926
+#: extras_tigergeocoder.xml:930
 #, no-c-format
 msgid ""
 "Loads a defined region of tiger data into a PostGIS Topology and "
@@ -2994,7 +3032,7 @@ msgstr ""
 "공간 참조 시스템으로 변환하고 지형의 정확도 허용 오차에 스냅시킵니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:932
+#: extras_tigergeocoder.xml:936
 #, no-c-format
 msgid ""
 "<funcdef>text <function>Topology_Load_Tiger</function></funcdef> "
@@ -3010,7 +3048,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:944
+#: extras_tigergeocoder.xml:948
 #, no-c-format
 msgid ""
 "Loads a defined region of tiger data into a PostGIS Topology. The faces, "
@@ -3028,7 +3066,7 @@ msgstr ""
 "게 함께 쓰일 수 있습니다. 처리 과정에 대한 요약 설명문을 반환합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:947
+#: extras_tigergeocoder.xml:951
 #, no-c-format
 msgid ""
 "This would be useful for example for redistricting data where you require "
@@ -3039,7 +3077,7 @@ msgstr ""
 "폴리곤들이 서로 중첩해서는 안 될 경우, 데이터를 제약하는 데 유용합니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:949
+#: extras_tigergeocoder.xml:953
 #, no-c-format
 msgid ""
 "This function relies on Tiger data as well as the installation of the "
@@ -3056,7 +3094,7 @@ msgstr ""
 "형 함수를 이용해서 지형을 생성하지 않았을 경우에도 오류를 발생시킬 것입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:951
+#: extras_tigergeocoder.xml:955
 #, no-c-format
 msgid ""
 "Most topology validation errors are a result of tolerance issues where after "
@@ -3069,13 +3107,13 @@ msgstr ""
 "황을 해결하려면 정확도를 높이거나 낮추는 편이 좋을 수도 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:953
+#: extras_tigergeocoder.xml:957
 #, no-c-format
 msgid "Required arguments:"
 msgstr "필수 인수:"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:956
+#: extras_tigergeocoder.xml:960
 #, no-c-format
 msgid ""
 "<varname>topo_name</varname> The name of an existing PostGIS topology to "
@@ -3085,7 +3123,7 @@ msgstr ""
 "다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:959
+#: extras_tigergeocoder.xml:963
 #, no-c-format
 msgid ""
 "<varname>region_type</varname> The type of bounding region. Currently only "
@@ -3100,7 +3138,7 @@ msgstr ""
 "블입니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:962
+#: extras_tigergeocoder.xml:966
 #, no-c-format
 msgid ""
 "<varname>region_id</varname> This is what TIGER calls the geoid. It is the "
@@ -3116,13 +3154,13 @@ msgstr ""
 "이블에 있는 <varname>cntyidfp</varname> 열입니다."
 
 #. Tag: title
-#: extras_tigergeocoder.xml:971
+#: extras_tigergeocoder.xml:975
 #, no-c-format
 msgid "Example: Boston, Massachusetts Topology"
 msgstr "예시: 매사추세츠 주 보스턴 시의 지형"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:972
+#: extras_tigergeocoder.xml:976
 #, no-c-format
 msgid ""
 "Create a topology for Boston, Massachusetts in Mass State Plane Feet (2249) "
@@ -3134,7 +3172,7 @@ msgstr ""
 "로드합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:974
+#: extras_tigergeocoder.xml:978
 #, no-c-format
 msgid ""
 "SELECT topology.CreateTopology('topo_boston', 2249, 0.25);\n"
@@ -3190,13 +3228,13 @@ msgstr ""
 "-------------------+----------+-----------"
 
 #. Tag: title
-#: extras_tigergeocoder.xml:978
+#: extras_tigergeocoder.xml:982
 #, no-c-format
 msgid "Example: Suffolk, Massachusetts Topology"
 msgstr "예시: 매사추세츠 주 서퍽 군의 지형"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:979
+#: extras_tigergeocoder.xml:983
 #, no-c-format
 msgid ""
 "Create a topology for Suffolk, Massachusetts in Mass State Plane Meters "
@@ -3208,7 +3246,7 @@ msgstr ""
 "드합니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:981
+#: extras_tigergeocoder.xml:985
 #, no-c-format
 msgid ""
 "SELECT topology.CreateTopology('topo_suffolk', 26986, 0.25);\n"
@@ -3272,7 +3310,7 @@ msgstr ""
 " edge crosses node | 81064553 |  85733413"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:985
+#: extras_tigergeocoder.xml:989
 #, no-c-format
 msgid ""
 ", <xref linkend=\"CreateTopoGeom\"/>, <xref linkend=\"TopologySummary\"/>, "
@@ -3282,19 +3320,19 @@ msgstr ""
 "<xref linkend=\"ValidateTopology\"/>"
 
 #. Tag: refname
-#: extras_tigergeocoder.xml:991
+#: extras_tigergeocoder.xml:995
 #, no-c-format
 msgid "Set_Geocode_Setting"
 msgstr "Set_Geocode_Setting"
 
 #. Tag: refpurpose
-#: extras_tigergeocoder.xml:993
+#: extras_tigergeocoder.xml:997
 #, no-c-format
 msgid "Sets a setting that affects behavior of geocoder functions."
 msgstr "지오코딩 도구 함수들의 습성에 영향을 미치는 설정값을 설정합니다."
 
 #. Tag: funcprototype
-#: extras_tigergeocoder.xml:998
+#: extras_tigergeocoder.xml:1002
 #, no-c-format
 msgid ""
 "<funcdef>text <function>Set_Geocode_Setting</function></funcdef> "
@@ -3306,7 +3344,7 @@ msgstr ""
 "<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>"
 
 #. Tag: para
-#: extras_tigergeocoder.xml:1009
+#: extras_tigergeocoder.xml:1013
 #, no-c-format
 msgid ""
 "Sets value of specific setting stored in <varname>tiger.geocode_settings</"
@@ -3320,7 +3358,7 @@ msgstr ""
 "\"Get_Geocode_Setting\"/> 에서 현재 설정값 목록을 볼 수 있습니다."
 
 #. Tag: para
-#: extras_tigergeocoder.xml:1018
+#: extras_tigergeocoder.xml:1022
 #, no-c-format
 msgid ""
 "If you run <xref linkend=\"Geocode\"/> when this function is true, the "
@@ -3330,7 +3368,7 @@ msgstr ""
 "소요 시간 및 쿼리를 출력할 것입니다."
 
 #. Tag: programlisting
-#: extras_tigergeocoder.xml:1019
+#: extras_tigergeocoder.xml:1023
 #, no-c-format
 msgid ""
 "SELECT set_geocode_setting('debug_geocode_address', 'true') As result;\n"

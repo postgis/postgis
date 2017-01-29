@@ -1,6 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# Flávio Veras <flaviove@gmail.com>, 2016
 # georgersilva <georger.silva@gmail.com>, 2014
 # georgersilva <georger.silva@gmail.com>, 2014
 # Marcelo Soares Souza <marcelo@juntadados.org>, 2014
@@ -8,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-16 08:33+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2016-11-12 17:46+0000\n"
+"Last-Translator: Flávio Veras <flaviove@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -223,7 +224,7 @@ msgstr ""
 #: introduction.xml:92
 #, no-c-format
 msgid "Dan Baston"
-msgstr ""
+msgstr "Dan Baston"
 
 #. Tag: para
 #: introduction.xml:95
@@ -232,6 +233,8 @@ msgid ""
 "Geometry clustering function additions, other geometry algorithm "
 "enhancements, and general user support"
 msgstr ""
+"Adições da função de agrupamento de geometria, outros aprimoramentos de "
+"algoritmos de geometria e suporte geral ao usuário"
 
 #. Tag: term
 #: introduction.xml:100
@@ -406,6 +409,19 @@ msgid ""
 "Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
 "Vincent Picavet"
 msgstr ""
+"Em ordem alfabética: Alex Bodnaru, Alex Mayrhofer, Andrea Peri, Andreas Forø "
+"Tollefsen, Andreas Neumann, Anne Ghisla, Barbara Phillipot, Ben Jubb, "
+"Bernhard Reiter, Brian Hamlin, Bruce Rindahl, Bruno Wolff III, Bryce L. "
+"Nordgren, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, David "
+"Techer, Eduin Carrillo, Even Rouault, Frank Warmerdam, George Silva, Gerald "
+"Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Ingvild Nystuen, "
+"Jason Smith, Jeff Adams, Jose Carlos Martinez Llari, Julien Rouhaud, Kashif "
+"Rasul, Klaus Foerster, Kris Jurka, Leo Hsu, Loic Dachary, Luca S. Percich, "
+"Maria Arias de Reyna, Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime "
+"van Noppen, Michael Fuhr, Mike Toews, Nathan Wagner, Nathaniel Clay, Nikita "
+"Shulga, Norman Vine, Rafal Magda, Ralph Mason, Rémi Cura, Richard Greenwood, "
+"Silvio Grosso, Steffen Macke, Stephen Frost, Tom van Tilburg, Vincent Mora, "
+"Vincent Picavet"
 
 #. Tag: term
 #: introduction.xml:244
@@ -439,6 +455,17 @@ msgid ""
 "Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
 "U.S Department of State (HIU), Zonar Systems"
 msgstr ""
+"Em ordem alfabética: Arrival 3D, Associazione Italiana per l'Informazione "
+"Geografica Libera (GFOSS.it), AusVet, Avencia, Azavea, Cadcorp, CampToCamp, "
+"CartoDB, City of Boston (DND), Clever Elephant Solutions, Cooperativa Alveo, "
+"Deimos Space, Faunalia, Geographic Data BC, Hunter Systems Group, Lidwala "
+"Consulting Engineers, LisaSoft, Logical Tracking &amp; Tracing International "
+"AG, Maponics, Michigan Tech Research Institute, Natural Resources Canada, "
+"Norwegian Forest and Landscape Institute, Boundless (former OpenGeo), OSGeo, "
+"Oslandia, Palantir Technologies, Paragon Corporation, R3 GIS, Refractions "
+"Research, Regione Toscana - SITA, Safe Software, Sirius Corporation plc, "
+"Stadt Uster, UC Davis Center for Vectorborne Diseases, University of Laval, "
+"U.S Department of State (HIU), Zonar Systems"
 
 #. Tag: term
 #: introduction.xml:290
@@ -460,6 +487,17 @@ msgid ""
 "osgeo.org/mailman/listinfo/postgis-users\">PostGIS newsgroup</ulink> your "
 "thoughts and together we can make it happen."
 msgstr ""
+"Crowd funding campaigns - Campanhas de financiamento de multidões são "
+"campanhas que executamos para obter os recursos que queremos para financiar "
+"um projeto por um grande número de pessoas. Cada campanha é especificamente "
+"focada em um recurso ou conjunto de recursos específicos. Cada patrocinador "
+"utiliza uma fração pequena do financiamento necessário e com o número "
+"suficiente de pessoas / organizações contribuindo, temos os fundos para "
+"pagar o trabalho que vai ajudar muitos. Se você tiver uma idéia de um "
+"recurso que você acha que muitos outros estariam dispostos a co-financiar, "
+"por favor, postar para o <ulink url=\"https://lists.osgeo.org/mailman/"
+"listinfo/postgis-users\">newsgroup PostGIS</ulink> suas ideias, e juntos "
+"podemos fazer isso acontecer."
 
 #. Tag: para
 #: introduction.xml:294
