@@ -3,26 +3,36 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.2.5</title>
+        <para>Release date: 2017/01/30</para>
+        <para>This is a bug fix and performance improvement release.</para>
+        <simplesect>
+            <title>Bug Fixes and Enhancements</title>
+            <para>3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order</para>
+            <para>3680, PostGIS upgrade scripts missing GRANT for views</para>
+        </simplesect>
+    </sect1>
+    <sect1>
       <title>Release 2.2.4</title>
         <para>Release date: 2016/11/26</para>
         <para>This is a bug fix and performance improvement release.</para>
-  		  <simplesect>
-  			  <title>Bug Fixes and Enhancements</title>
-						<para>1973, st_concavehull() returns sometimes empty geometry collection
-										Fix from gde</para>
-						<para>3656, Fix upgrade of aggregates from 2.2 or lower version</para>
-						<para>3501, add raster constraint max extent exceeds array size limit
-									for large tables, change to use ST_Extent</para>
-						<para>3659, Crash caused by raster GUC define after CREATE EXTENSION
-							 using wrong memory context. (manaeem)</para>
-  		  </simplesect>
+        <simplesect>
+            <title>Bug Fixes and Enhancements</title>
+            <para>1973, st_concavehull() returns sometimes empty geometry collection
+                            Fix from gde</para>
+            <para>3656, Fix upgrade of aggregates from 2.2 or lower version</para>
+            <para>3501, add raster constraint max extent exceeds array size limit
+                        for large tables, change to use ST_Extent</para>
+            <para>3659, Crash caused by raster GUC define after CREATE EXTENSION
+                 using wrong memory context. (manaeem)</para>
+        </simplesect>
     </sect1>
     <sect1>
       <title>Release 2.2.3</title>
         <para>Release date: 2016/10/06</para>
         <para>This is a bug fix and performance improvement release.</para>
-  		  <simplesect>
-  			  <title>Bug Fixes and Enhancements</title>
+        <simplesect>
+            <title>Bug Fixes and Enhancements</title>
             <para>3615, Fix schema support in RT_CreateOveriew (Cait Smith)</para>
             <para>3628, Fix lack of support for capitalized-Y in SwapOrdinates</para>
             <para>3524, Add interruptibility to geography brute-force distance 
@@ -55,7 +65,7 @@
             <para>3644, Deadlock on interrupt</para>
             <para>3542, Crash on Geometry(MultiCurve())</para>
             <para>Numerous documentation corrections from ruvyn</para>
-  		  </simplesect>
+        </simplesect>
     </sect1>
 
     <sect1>

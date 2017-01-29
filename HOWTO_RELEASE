@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-Date: 2015-10-08
+Date: 2017-01-30
 
 Versioning Scheme
 -----------------
@@ -25,7 +25,7 @@ to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 
 All POSTGIS_MICRO_VERSION that are in branch or trunk should end in dev.
 So for example if you just release 2.1.1, then the 2.1 branch should have
-POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.1.2dev.
+POSTGIS_MICRO_VERSION set to 2dev so that the full version is 2.2.5dev.
 
 *Liblwgeom*
 
@@ -63,8 +63,8 @@ Release procedure
 - Edit README.postgis and set release date and version.
 - Add release notes in doc/release_notes.xml
 - Update Version.config to drop the "dev" suffix
-- Add the "dev" suffixed version in extensions/upgradeable_versions.mk
-  and ensure all the previous released minor versions are listed in it
+- Ensure all the previous released micro versions are listed in 
+  in extensions/upgradeable_versions.mk
 - Commit all changes
 - Tag branch:  
    $ base=http://svn.osgeo.org/postgis/
@@ -72,6 +72,7 @@ Release procedure
    $ svn copy -m "Tagged release $rev" $base/branches/2.2 $base/tags/$rev
 - Run: sh make_dist.sh $rev (or use debbie for this)
 - Build and test generated tarball (including extension upgrade)
+- Update jenkins jobs to latest micro dev.
 - Copy tarball to web site and edit downloads page
 - Announce on e-mail 
     - postgis-users
@@ -89,7 +90,7 @@ Release procedure
        -- http://debbie.postgis.net:8080 (log in)
        Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
        and make appropriate edits and then just run.
-       Or just be lazy and bug Regina Obe do this.
+       Or just be lazy and bug Regina Obe to do this.
     - Freshmeat
     - Wikipedia
     - Twitter (we all love twitter don't we)

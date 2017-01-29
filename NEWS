@@ -1,5 +1,5 @@
 PostGIS 2.2.5
-2017/MM/DD
+2017/01/29
 
  * Bug Fixes *
  - #3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order

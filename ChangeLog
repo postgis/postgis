@@ -1,3 +1,28 @@
+2017-01-07 08:59  Regina Obe <lr@pcorp.us>
+
+	* [r15286] NEWS, postgis/gserialized_gist_2d.c,
+	  regress/knn_recheck.sql, regress/knn_recheck_expected: KNN
+	  recheck in 9.5+ fails with index returned tuples in wrong order
+	  closes #3418 for PostGIS 2.2
+	  add NEWS note for missing GRANT in upgrade
+	  references #3680
+
+2016-12-20 03:24  Regina Obe <lr@pcorp.us>
+
+	* [r15279] utils/postgis_proc_upgrade.pl: PostGIS upgrade scripts
+	  missing GRANT for views
+	  closes #3680 for PostGIS 2.2
+	  also correct strk's email
+
+2016-11-26 21:25  Regina Obe <lr@pcorp.us>
+
+	* [r15259] Version.config: Bump to 2.2.5dev
+
+2016-11-26 21:19  Regina Obe <lr@pcorp.us>
+
+	* [r15257] ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml: Prep for 2.2.4 release
+
 2016-11-26 18:54  Regina Obe <lr@pcorp.us>
 
 	* [r15254] NEWS, raster/rt_pg/rtpostgis.sql.in: add raster
