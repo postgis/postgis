@@ -3,6 +3,20 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.3.2</title>
+      <para>Release date: 2017/01/31</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order</para>
+          <para>#3675, Relationship functions not using an index in some cases</para>
+          <para>#3680, PostGIS upgrade scripts missing GRANT for views</para>
+          <para>#3683, Unable to update postgis after postgres pg_upgrade going from &lt; 9.5 to pg &gt; 9.4</para>
+          <para>#3688, ST_AsLatLonText: round minutes</para>
+      </simplesect>
+    </sect1>
+    
+    <sect1>
       <title>Release 2.3.1</title>
       <para>Release date: 2016/11/28</para>
       <para>This is a bug fix and performance improvement release.</para>

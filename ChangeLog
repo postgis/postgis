@@ -1,3 +1,82 @@
+2017-01-28 04:10  Regina Obe <lr@pcorp.us>
+
+	* [r15295] liblwgeom/lwprint.c: Fix for 32-bit lwprint to support
+	  ST_AsLatLonText
+	  References #3688 for PostGIS 2.3.2
+
+2017-01-25 23:42  Regina Obe <lr@pcorp.us>
+
+	* [r15293] extras/tiger_geocoder/tiger_loader_2016.sql: Turn off
+	  loading of tabblock by default. It's been broken since 2014
+	  References #3898 for PostGIS 2.3
+
+2017-01-22 07:44  Regina Obe <lr@pcorp.us>
+
+	* [r15291] postgis/geography.sql.in, postgis/geography_brin.sql.in,
+	  postgis/postgis.sql.in, postgis/postgis_brin.sql.in: Fix for
+	  pg_upgrade of pg < 9.5 + 2.3+, pg_upgrade and doing a postgis
+	  micro update to latest stable.
+	  closes #3683 for PostGIS 2.3
+
+2017-01-18 21:07  Sandro Santilli <strk@kbt.io>
+
+	* [r15289] NEWS, liblwgeom/cunit/cu_print.c, liblwgeom/lwprint.c:
+	  ST_AsLatLonText: round minutes [2.3 backport]
+	  
+	  Patch by Mike Toews, closes #3688
+
+2017-01-07 08:52  Regina Obe <lr@pcorp.us>
+
+	* [r15285] NEWS, postgis/gserialized_gist_2d.c,
+	  regress/knn_recheck.sql, regress/knn_recheck_expected: KNN
+	  recheck in 9.5+ fails with index returned tuples in wrong order
+	  references #3418 for PostGIS 2.3
+
+2017-01-06 10:31  Regina Obe <lr@pcorp.us>
+
+	* [r15282] NEWS: update news with latest 2 bug fixes
+
+2017-01-05 19:15  Regina Obe <lr@pcorp.us>
+
+	* [r15280] postgis/postgis.sql.in: Relationship functions not using
+	  an index in some cases
+	  Set cost back to 1 for functions that return a geometry
+	  A higher cost has the side-effect of making the planner
+	  think when used in conjunction with relate constructs like
+	  ST_Intersects
+	  it's cheaper to compute the geometry once rather
+	  than compute twice and break into an index and non-index call.
+	  References #3657 for PostGIS 2.3
+
+2016-12-20 03:22  Regina Obe <lr@pcorp.us>
+
+	* [r15278] utils/postgis_proc_upgrade.pl: PostGIS upgrade scripts
+	  missing GRANT for views
+	  references #3680 for PostGIS 2.3
+
+2016-12-03 22:32  Sandro Santilli <strk@kbt.io>
+
+	* [r15270] NEWS: Indent and style NEWS file
+
+2016-12-03 20:39  Regina Obe <lr@pcorp.us>
+
+	* [r15268] postgis/postgis.sql.in: Cost on ST_SetSRID is preventing
+	  index use with relation functions. Change from 10 to 1.
+	  References #3675 for PostGIS 2.3
+
+2016-11-28 15:10  Regina Obe <lr@pcorp.us>
+
+	* [r15265] HOWTO_RELEASE, Version.config,
+	  extensions/upgradeable_versions.mk: More minor corrections to
+	  HOW_TO_RELEASE, bump version to 2.3.2dev
+
+2016-11-28 14:49  Regina Obe <lr@pcorp.us>
+
+	* [r15263] ChangeLog, HOWTO_RELEASE, NEWS, README.postgis,
+	  Version.config, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: More corrections to
+	  HOWTO_RELEASE, prepare for PostGIS 2.3.1 release
+
 2016-11-26 21:49  Regina Obe <lr@pcorp.us>
 
 	* [r15260] HOWTO_RELEASE: Add build badges, trunk vs. branch

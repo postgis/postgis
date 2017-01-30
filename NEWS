@@ -1,11 +1,12 @@
-PostGIS 2.3.2-dev
-2017/MM/DD
+PostGIS 2.3.2
+2017/01/31
 
   * Bug Fixes
 
   - #3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order
   - #3675, Relationship functions not using an index in some cases
   - #3680, PostGIS upgrade scripts missing GRANT for views
+  - #3683, Unable to update postgis after postgres pg_upgrade going from < 9.5 to pg > 9.4
   - #3688, ST_AsLatLonText: round minutes
 
 PostGIS 2.3.1
