@@ -50,6 +50,9 @@ ifeq (@HAVE_BRIN@,yes)
 BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
+ifeq (@HAVE_PROTOBUF@,yes)
+PROTOBUF_OBJ=vector_tile.pb-c.o
+endif
 
 # SQL preprocessor
 SQLPP = @SQLPP@
@@ -96,7 +99,11 @@ PG_OBJS= \
 	geography_btree.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
-	geometry_inout.o
+	geometry_inout.o \
+	postgis_libprotobuf.o \
+	$(PROTOBUF_OBJ) \
+	mvt.o \
+	lwgeom_out_mvt.o \
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)
@@ -126,7 +133,9 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	postgis_upgrade.sql.in \
 	postgis_upgrade.sql \
 	sfcgal_upgrade.sql.in \
-	sfcgal_upgrade.sql 
+	sfcgal_upgrade.sql \
+	vector_tile.pb-c.c \
+	vector_tile.pb-c.h
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
@@ -169,6 +178,18 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 
 ../libpgcommon/libpgcommon.a:
 	$(MAKE) -C ../libpgcommon libpgcommon.a
+
+# Get protobuf-c compiler command
+PROTOCC=@PROTOCC@
+
+# Generate Mapbox Vector Tile encoder/decoder using protobuf-c compiler 
+vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
+	$(PROTOCC) --c_out=. $<
+
+ifeq (@HAVE_PROTOBUF@,yes)
+lwgeom_out_mvt.o: vector_tile.pb-c.h
+mvt.o: vector_tile.pb-c.h
+endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor
 # and adding the version number

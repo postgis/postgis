@@ -2861,6 +2861,7 @@ DECLARE
 	rast_scr_ver text;
 	topo_scr_ver text;
 	json_lib_ver text;
+	protobuf_lib_ver text;
 	sfcgal_lib_ver text;
 	sfcgal_scr_ver text;
 BEGIN
@@ -2868,6 +2869,7 @@ BEGIN
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
 	SELECT postgis_libjson_version() INTO json_lib_ver;
+	SELECT postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	BEGIN
 		SELECT postgis_gdal_version() INTO gdalver;
 	EXCEPTION
@@ -2955,6 +2957,10 @@ BEGIN
 
 	IF json_lib_ver IS NOT NULL THEN
 		fullver = fullver || ' LIBJSON="' || json_lib_ver || '"';
+	END IF;
+
+	IF protobuf_lib_ver IS NOT NULL THEN
+		fullver = fullver || ' LIBPROTOBUF="' || protobuf_lib_ver || '"';
 	END IF;
 
 	-- fullver = fullver || ' DBPROC="' || dbproc || '"';
@@ -4374,6 +4380,37 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 	RETURNS TEXT
 	AS $$ SELECT @extschema@.ST_AsGeoJson($2::@extschema@.geometry, $3::int4, $4::int4); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
+-----------------------------------------------------------------------
+-- Mapbox Vector Tile OUTPUT
+-- Availability: 2.4.0
+-----------------------------------------------------------------------
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, text, box2d, int4, int4, bool, text, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE c IMMUTABLE;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_finalfn'
+	LANGUAGE c IMMUTABLE;
+
+-- Availability: 2.4.0
+CREATE AGGREGATE ST_AsMVT(text, box2d, int4, int4, bool, text, anyelement)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
+	RETURNS text
+	AS 'MODULE_PATHNAME','postgis_libprotobuf_version'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)

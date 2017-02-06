@@ -22,6 +22,7 @@ POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 HAVE_JSON=@HAVE_JSON@
+HAVE_PROTOBUF=@HAVE_PROTOBUF@
 HAVE_SFCGAL=@HAVE_SFCGAL@
 HAVE_BRIN=@HAVE_BRIN@
 MINGWBUILD=@MINGWBUILD@
@@ -237,6 +238,13 @@ ifeq ($(HAVE_BRIN),yes)
 		regress_brin_index \
 		regress_brin_index_3d \
 		regress_brin_index_geography
+endif
+
+ifeq ($(HAVE_PROTOBUF),yes)
+	# protobuf-c adds:
+	# ST_AsMVT
+	TESTS += \
+		mvt
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)

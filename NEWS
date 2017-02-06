@@ -1,6 +1,9 @@
 PostGIS 2.4.0
 2017/xx/xx
 
+ * New Features *
+
+  - #3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)
 
 PostGIS 2.3.0
 2016/09/26

@@ -899,6 +899,69 @@ fi dnl }
 
 
 dnl ===========================================================================
+dnl Detect if protobuf-c installed
+dnl ===========================================================================
+
+CHECK_PROTOBUF=yes
+HAVE_PROTOBUF=no
+
+AC_ARG_WITH([protobuf],
+	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
+	[CHECK_PROTOBUF="$withval"], [])
+
+if test "$CHECK_PROTOBUF" != "no"; then dnl {
+
+AC_ARG_WITH([protobufdir],
+	[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],
+	[PROTOBUFDIR="$withval"], [PROTOBUFDIR=])
+
+if test ! "x$PROTOBUFDIR" = "x"; then
+	dnl Make sure that the directory exists
+	if test "x$PROTOBUFDIR" = "xyes"; then
+		AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/path/to])
+	else
+		AC_MSG_RESULT([Using user-specified protobuf-c directory: $PROTOBUFDIR])
+
+		dnl Add the include directory to PROTOBUF_CPPFLAGS
+		PROTOBUF_CPPFLAGS="-I$PROTOBUFDIR/include"
+		PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib"
+	fi
+fi
+
+dnl Check that we can find the protobuf/protobuf.h header file
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$PROTOBUF_CPPFLAGS"
+AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])	
+CPPFLAGS="$CPPFLAGS_SAVE"
+
+dnl Ensure we can link against libprotobuf-c
+LIBS_SAVE="$LIBS"
+LIBS="$PROTOBUF_LDFLAGS"
+AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [HAVE_PROTOBUF=yes; PROTOBUF_LDFLAGS="${PROTOBUF_LDFLAGS} -lprotobuf-c"], [HAVE_PROTOBUF=no])
+LIBS="$LIBS_SAVE"
+
+dnl Ensure libprotobuf-c is of minimum required version
+PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [HAVE_PROTOBUF=yes], [HAVE_PROTOBUF=no])
+
+if test "$HAVE_PROTOBUF" = "yes"; then
+	AC_PATH_PROG(PROTOCC, protoc-c)
+	if test "x$PROTOCC" = "x"; then
+	  AC_MSG_WARN([Protobuf compiler missing, disabling protobuf support.])
+	  HAVE_PROTOBUF=no
+	else
+	  AC_DEFINE([HAVE_LIBPROTOBUF], 1, [Define to 1 if libprotobuf-c is present])
+	fi
+fi
+
+AC_SUBST([PROTOBUF_CPPFLAGS])
+AC_SUBST([PROTOBUF_LDFLAGS])
+AC_SUBST([HAVE_PROTOBUF])
+
+fi dnl }
+
+
+
+dnl ===========================================================================
 dnl Detect GTK+2.0 for GUI
 dnl ===========================================================================
 
@@ -1051,10 +1114,10 @@ else
     AC_MSG_RESULT([ADDRESS_STANDARDIZER support: disabled])
 fi
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $PROTOBUF_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS $JSON_CPPFLAGS $PCRE_CPPFLAGS $CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $PROTOBUF_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS $PCRE_LDFLAGS $EXCLUDELIBS_LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1396,6 +1459,7 @@ AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
+AC_MSG_RESULT([  protobuf-c support:   ${HAVE_PROTOBUF}])
 AC_MSG_RESULT([  PCRE support:         ${HAVE_PCRE}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])

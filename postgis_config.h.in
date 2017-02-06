@@ -54,6 +54,9 @@
 /* Define to 1 if you have the `libiconvctl' function. */
 #undef HAVE_LIBICONVCTL
 
+/* Define to 1 if libprotobuf-c is present */
+#undef HAVE_LIBPROTOBUF
+
 /* Define to 1 if libjson is present */
 #undef HAVE_LIBJSON
 
