@@ -897,6 +897,15 @@ AC_SUBST([HAVE_JSON])
 fi dnl }
 
 
+dnl ===========================================================================
+dnl Detect if pkg-config installed
+dnl ===========================================================================
+# check for pkg-config
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test "$PKG_CONFIG" = "no"; then
+   AC_MSG_WARN([Cannot find pkg-config, make sure it is installed in your PATH])
+fi
+
 
 dnl ===========================================================================
 dnl Detect if protobuf-c installed
@@ -940,8 +949,13 @@ LIBS="$PROTOBUF_LDFLAGS"
 AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [HAVE_PROTOBUF=yes; PROTOBUF_LDFLAGS="${PROTOBUF_LDFLAGS} -lprotobuf-c"], [HAVE_PROTOBUF=no])
 LIBS="$LIBS_SAVE"
 
-dnl Ensure libprotobuf-c is of minimum required version
-PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [HAVE_PROTOBUF=yes], [HAVE_PROTOBUF=no])
+if test "$PKG_CONFIG" = "no"; then
+	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
+	HAVE_PROTOBUF=no
+else
+	dnl Ensure libprotobuf-c is of minimum required version
+	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [HAVE_PROTOBUF=yes], [HAVE_PROTOBUF=no])
+fi
 
 if test "$HAVE_PROTOBUF" = "yes"; then
 	AC_PATH_PROG(PROTOCC, protoc-c)
