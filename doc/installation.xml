@@ -206,6 +206,14 @@ psql -d yourdatabase -f sfcgal_comments.sql
 			</para>
 		</listitem>
 
+		<listitem>
+			<para>
+			  To enable ST_AsMVT protobuf-c library (for usage) and the protoc-c compiler (for building) are required.
+				Also, pgk-config is required to verify the correct minimum version of protobuf-c.
+				See <ulink url="https://github.com/protobuf-c/protobuf-c">protobuf-c</ulink>.
+			</para>
+		</listitem>
+
 	  <listitem>
 		<para>
 		 CUnit (<filename>CUnit</filename>). This is needed for regression testing. <ulink url="http://cunit.sourceforge.net/">http://cunit.sourceforge.net/</ulink>
