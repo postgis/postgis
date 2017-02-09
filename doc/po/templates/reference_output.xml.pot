@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-02-09 08:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -57,7 +57,7 @@ msgstr ""
 #: reference_output.xml:207 reference_output.xml:283 reference_output.xml:384
 #: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
 #: reference_output.xml:671 reference_output.xml:715 reference_output.xml:781
-#: reference_output.xml:828 reference_output.xml:950
+#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:1000
 #, no-c-format
 msgid "Description"
 msgstr ""
@@ -194,6 +194,7 @@ msgstr ""
 #: reference_output.xml:229 reference_output.xml:330 reference_output.xml:498
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
 #: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
+#: reference_output.xml:1020
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -2139,5 +2140,116 @@ msgid ""
 " st_geohash\n"
 "------------\n"
 " c0w3h\n"
+"                ]]>"
+msgstr ""
+
+#. Tag: refname
+#: reference_output.xml:980
+#, no-c-format
+msgid "ST_AsMVT"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_output.xml:982
+#, no-c-format
+msgid "Return a Mapbox Vector Tile representation of a set of rows."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:986
+#, no-c-format
+msgid ""
+"<funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>text "
+"</type> <parameter>name</parameter></paramdef> <paramdef><type>box2d </type> "
+"<parameter>bounds</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>extent</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>buffer</parameter></paramdef> <paramdef><type>bool </type> "
+"<parameter>clip_geom</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>geom_name</parameter></paramdef> <paramdef><type>anyelement </"
+"type> <parameter>row</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1002
+#, no-c-format
+msgid ""
+"Return a Mapbox Vector Tile representation (<ulink url=\"https://www.mapbox."
+"com/vector-tiles/specification/\">https://www.mapbox.com/vector-tiles/"
+"specification/</ulink>) of a set of rows corresponding to a Layer. Multiple "
+"calls can be concatenated to a tile with multiple Layers. Geometry will be "
+"automatically scaled from the geometric bounds to tile screen space and "
+"repeated coordinates thrown away. Other row data will be encoded as "
+"attributes without redundancy as described by the specification."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1008
+#, no-c-format
+msgid "<varname>name</varname> is the name of the Layer"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1009
+#, no-c-format
+msgid ""
+"<varname>bounds</varname> is the bounds of the tile in the coordinate system "
+"of the geometry field in the row data."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1010
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in screen space as defined by "
+"the specification. If NULL it will default to 4096."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1011
+#, no-c-format
+msgid ""
+"<varname>buffer</varname> is the buffer distance in screen space to "
+"optionally clip geometries. If NULL it will default to 0."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1012
+#, no-c-format
+msgid ""
+"<varname>clip_geom</varname> is a boolean to control if geometries should be "
+"clipped or encoded as is. If NULL it will default to true."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1013
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1014
+#, no-c-format
+msgid "<varname>row</varname> row data with at least a geometry column."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1016
+#, no-c-format
+msgid "Availability: 2.4.0"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_output.xml:1021
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsMVT('test', ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, "
+"4096)), 4096, 0, false, 'geom', q)\n"
+"FROM (SELECT 1 AS c1, ST_GeomFromText('POINT(25 17)') AS geom) AS q;\n"
+"                              st_asmvt                              \n"
+"--------------------------------------------------------------------\n"
+" \\x1a1e0a0474657374120c12020000180122040932de3f1a026331220220017802\n"
+"\n"
 "                ]]>"
 msgstr ""
