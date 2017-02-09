@@ -100,7 +100,7 @@ The optional third parameter (currently only applies to geometry) can either spe
 				<para>&sqlmm_compliant; SQL-MM 3: 5.1.17</para>
 
 				<note><para>People often make the mistake of using this function to try to do radius searches.  Creating a
-					buffer to to a radius search is slow and pointless.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
+					buffer to a radius search is slow and pointless.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
 			</refsection>
 
 			  <refsection>
