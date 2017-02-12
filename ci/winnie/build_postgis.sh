@@ -97,7 +97,7 @@ fi
 
 if [ -n "$SFCGAL_VER" ]; then
 	##hard code versions of cgal etc. for now
-	export CGAL_VER=4.2
+	export CGAL_VER=4.6.1
 	BOOST_VER=1.53.0
 	#BOOST_VER_WU=1_49_0
 	export BOOST_VER_WU=1_53_0

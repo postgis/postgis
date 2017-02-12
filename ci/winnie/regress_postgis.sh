@@ -58,6 +58,7 @@ PATH="${MINGPROJECTS}/xsltproc:${MINGPROJECTS}/gtkw${OS_BUILD}${GCC_TYPE}/bin:${
 
 #add protobuf
 export PATH="${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin:${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib:${PATH}"
+export PKG_CONFIG_PATH=${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/lib/pkgconfig;
 
 echo PATH AFTER: $PATH
 
