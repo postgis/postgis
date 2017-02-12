@@ -16,6 +16,9 @@
 #export GCC_TYPE=
 #export SFCGAL_VER=1.1.0
 #export PCRE_VER
+export PROTOBUF_VER=3.2.0
+export PROTOBUFC_VER=1.2.1
+
 if [[ "${GCC_TYPE}" == *gcc48* ]] ; then
 	export PROJECTS=/projects
 	export MINGPROJECTS=/projects
@@ -119,6 +122,9 @@ cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/
 cp ${MINGPROJECTS}/proj/rel-${PROJ_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 cp -p ${PROJECTS}/geos/rel-${GEOS_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 
+#for protobuf
+cp ${PROJECTS}/protobuf/rel-${PROTOBUF_VER}w${OS_BUILD}${GCC_TYPE}/bin/libprotobuf-c-*.dll $outdir/bin
+
 echo "POSTGIS: ${POSTGIS_MINOR_VER} r${POSTGIS_SVN_REVISION} http://postgis.net/source" > $verfile
 
 if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
@@ -151,6 +157,9 @@ if [ -n "$SFCGAL_VER"  ]; then
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui
 	# cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin/postgisgui
 fi;
+
+echo "PROTOBUF VERSION: ${PROTOBUF_VER} https://github.com/google/protobuf" >> $verfile
+echo "PROTOBUF-C VERSION: ${PROTOBUFC_VER} https://github.com/protobuf-c/protobuf-c"  >> $verfile
 #cp ${MINGPROJECTS}/libxml/rel-libxml2-2.7.8w${OS_BUILD}/bin/*.dll  $outdir/bin/
 cp ${PGPATHEDB}/bin/libxml2-2.dll   $outdir/bin/
 
