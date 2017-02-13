@@ -408,7 +408,7 @@ else
 	if test "x$PG_CONFIG" = "xyes"; then
 		AC_MSG_ERROR([you must specify a parameter to --with-pgconfig, e.g. --with-pgconfig=/path/to/pg_config])
 	else
-		if test -f $PG_CONFIG; then
+		if test -f "$PG_CONFIG"; then
 			AC_MSG_RESULT([Using user-specified pg_config file: $PG_CONFIG])
 		else
 			AC_MSG_ERROR([the user-specified pg_config file $PG_CONFIG does not exist])
@@ -425,7 +425,7 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl the postgresql-server-dev packages are installed :)
   dnl ===========================================================================
 
-  PGXS=`$PG_CONFIG --pgxs`
+  PGXS=`"$PG_CONFIG" --pgxs`
   if test "x$PGXS" = "x" -o ! -f "$PGXS"; then
     AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
   fi
@@ -435,15 +435,15 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Extract the version information from pg_config
   dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
   dnl the final version. This is to guard against user error...
-  PGSQL_FULL_VERSION=`$PG_CONFIG --version`
+  PGSQL_FULL_VERSION=`"$PG_CONFIG" --version`
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*devel.*/0/'`
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
-  PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
-  PGSQL_LIBDIR=`$PG_CONFIG --libdir`
-  PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
+  PGSQL_PKGLIBDIR=`"$PG_CONFIG" --pkglibdir`
+  PGSQL_LIBDIR=`"$PG_CONFIG" --libdir`
+  PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
   dnl Ensure that we are using PostgreSQL >= 9.2
@@ -459,14 +459,14 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS
 
   dnl Extract the linker and include flags for the frontend (for programs that use libpq)
-  PGSQL_FE_LDFLAGS=-L`$PG_CONFIG --libdir`" -lpq"
-  PGSQL_FE_CPPFLAGS=-I`$PG_CONFIG --includedir`
+  PGSQL_FE_LDFLAGS=-L`"$PG_CONFIG" --libdir`" -lpq"
+  PGSQL_FE_CPPFLAGS=-I`"$PG_CONFIG" --includedir`
 
   AC_SUBST([PGSQL_FE_LDFLAGS])
   AC_SUBST([PGSQL_FE_CPPFLAGS])
 
   dnl Extract the include flags for the backend (libpgcommon)
-  PGSRV_INC=`$PG_CONFIG --includedir-server`
+  PGSRV_INC=`"$PG_CONFIG" --includedir-server`
   PGSQL_BE_CPPFLAGS="-I${PGSRV_INC}"
   dnl Add $PGSRV_INC/port/win32 to MinGW build to pick up netdb.h
   case $host in
@@ -478,23 +478,23 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   AC_SUBST([PGSQL_BE_CPPFLAGS])
 
   dnl Extract the documentation and man page directories
-  PGSQL_DOCDIR=`$PG_CONFIG --docdir`
-  PGSQL_MANDIR=`$PG_CONFIG --mandir`
+  PGSQL_DOCDIR=`"$PG_CONFIG" --docdir`
+  PGSQL_MANDIR=`"$PG_CONFIG" --mandir`
 
   AC_SUBST([PGSQL_DOCDIR])
   AC_SUBST([PGSQL_MANDIR])
 
   dnl Extract the locale directory
-  PGSQL_LOCALEDIR=`$PG_CONFIG --localedir`
+  PGSQL_LOCALEDIR=`"$PG_CONFIG" --localedir`
   AC_DEFINE_UNQUOTED([PGSQL_LOCALEDIR], ["$PGSQL_LOCALEDIR"], [Location of PostgreSQL locale directory])
 
   dnl Extract the executable directory
-  PGSQL_BINDIR=`$PG_CONFIG --bindir`
+  PGSQL_BINDIR=`"$PG_CONFIG" --bindir`
 
   AC_SUBST([PGSQL_BINDIR])
 
   dnl Extract the share directory
-  PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
+  PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_SUBST([PGSQL_SHAREDIR])
 
