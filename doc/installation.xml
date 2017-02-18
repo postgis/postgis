@@ -1579,14 +1579,36 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
             <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
 the folder where the loader extracts the downloaded tiger data.</para></listitem>
-			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile and copy the scripts to a .sh or .bat file.  So for example to do the nation load and one state using our new profile, you can do this using psql:</para>
+			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" />  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
 					<programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA > /gisdata/nation_script_load.sh</programlisting>
-					<programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting>
 			</listitem>
+			
+			<listitem><para>Run the generated nation load commandline scripts.</para>
+				<programlisting>cd /gisdata
+sh nation_script_load.sh</programlisting>
+      </listitem>
+      
+      <listitem><para>After you are done running the nation script, you should have three tables in your <code>tiger_data</code> schema and they should be filled with data. Confirm you do by doing the following queries from psql or pgAdmin</para>
+				<programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
+<screen> count
+-------
+  3233
+(1 row)</screen>
+				<programlisting>SELECT count(*) FROM tiger_data.state_all;</programlisting>
+<screen>
+ count
+-------
+    56
+(1 row)
+</screen>
+      </listitem>
+			
+			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.  DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></listitem>
+			
+			<listitem><programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting></listitem>
 
 			<listitem><para>Run the generated commandline scripts.</para>
 				<programlisting>cd /gisdata
-sh nation_script_load.sh
 sh ma_load.sh</programlisting>
 			</listitem>
 			<listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
