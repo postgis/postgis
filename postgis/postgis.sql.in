@@ -4412,6 +4412,33 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 	AS 'MODULE_PATHNAME','postgis_libprotobuf_version'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+
+-----------------------------------------------------------------------
+-- GEOBUF OUTPUT
+-- Availability: 2.4.0
+-----------------------------------------------------------------------
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, text, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
+	LANGUAGE c IMMUTABLE;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_finalfn'
+	LANGUAGE c IMMUTABLE;
+
+-- Availability: 2.4.0
+CREATE AGGREGATE ST_AsGeobuf(text, anyelement)
+(
+	sfunc = pgis_asgeobuf_transfn,
+	stype = internal,
+	finalfunc = pgis_asgeobuf_finalfn
+);
+
+
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)
 ------------------------------------------------------------------------

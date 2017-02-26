@@ -3,6 +3,7 @@ PostGIS 2.4.0
 
  * New Features *
 
+  - #3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)
   - #3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)
 
 PostGIS 2.3.0

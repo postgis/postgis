@@ -242,9 +242,10 @@ endif
 
 ifeq ($(HAVE_PROTOBUF),yes)
 	# protobuf-c adds:
-	# ST_AsMVT
+	# ST_AsMVT, ST_AsGeobuf
 	TESTS += \
-		mvt
+		mvt \
+		geobuf
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)

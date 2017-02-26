@@ -1300,6 +1300,50 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_AsGeobuf">
+	  <refnamediv>
+		<refname>ST_AsGeobuf</refname>
+
+		<refpurpose>Return a Geobuf representation of a set of rows.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+			Return a Geobuf representation (<ulink url="https://github.com/mapbox/geobuf">https://github.com/mapbox/geobuf</ulink>) of a set of rows corresponding to a FeatureCollection.
+			Every input geometry is analyzed to determine maximum precision for optimal storage.
+			Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
+		</para>
+
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data.</para>
+		<para><varname>row</varname> row data with at least a geometry column.</para>
+
+		<para>Availability: 2.4.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[encode(ST_AsGeobuf('geom', q), 'base64')
+    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') as geom) AS q;
+ st_asgeobuf
+----------------------------------
+ GAAiEAoOCgwIBBoIAAAAAgIAAAE=
+
+		]]>
+		</programlisting>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_AsMVT">
 	  <refnamediv>
 		<refname>ST_AsMVT</refname>

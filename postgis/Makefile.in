@@ -51,7 +51,7 @@ BRIN_OBJ= brin_2d.o brin_nd.o brin_common.o
 endif
 
 ifeq (@HAVE_PROTOBUF@,yes)
-PROTOBUF_OBJ=vector_tile.pb-c.o
+PROTOBUF_OBJ=vector_tile.pb-c.o geobuf.pb-c.o
 endif
 
 # SQL preprocessor
@@ -104,6 +104,8 @@ PG_OBJS= \
 	$(PROTOBUF_OBJ) \
 	mvt.o \
 	lwgeom_out_mvt.o \
+	geobuf.o \
+	lwgeom_out_geobuf.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)
@@ -135,7 +137,9 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	sfcgal_upgrade.sql.in \
 	sfcgal_upgrade.sql \
 	vector_tile.pb-c.c \
-	vector_tile.pb-c.h
+	vector_tile.pb-c.h \
+	geobuf.pb-c.c \
+	geobuf.pb-c.h
 
 # PGXS information
 PG_CONFIG = @PG_CONFIG@
@@ -186,9 +190,15 @@ PROTOCC=@PROTOCC@
 vector_tile.pb-c.c vector_tile.pb-c.h: vector_tile.proto
 	$(PROTOCC) --c_out=. $<
 
+# Generate Geobuf encoder/decoder using protobuf-c compiler 
+geobuf.pb-c.c geobuf.pb-c.h: geobuf.proto
+	$(PROTOCC) --c_out=. $<
+
 ifeq (@HAVE_PROTOBUF@,yes)
 lwgeom_out_mvt.o: vector_tile.pb-c.h
 mvt.o: vector_tile.pb-c.h
+lwgeom_out_geobuf.o: geobuf.pb-c.h
+geobuf.o: geobuf.pb-c.h
 endif
 
 # Borrow the $libdir substitution from PGXS but customise by running the preprocessor

@@ -1,0 +1,66 @@
+option optimize_for = LITE_RUNTIME;
+
+message Data {
+    repeated string keys = 1; // global arrays of unique keys
+
+    optional uint32 dimensions = 2 [default = 2]; // max coordinate dimensions
+    optional uint32 precision = 3 [default = 6]; // number of digits after decimal point for coordinates
+
+    oneof data_type {
+        FeatureCollection feature_collection = 4;
+        Feature feature = 5;
+        Geometry geometry = 6;
+    }
+
+    message Feature {
+        required Geometry geometry = 1;
+
+        oneof id_type {
+            string id = 11;
+            sint64 int_id = 12;
+        }
+
+        repeated Value values = 13; // unique values
+        repeated uint32 properties = 14 [packed = true]; // pairs of key/value indexes
+        repeated uint32 custom_properties = 15 [packed = true]; // arbitrary properties
+    }
+
+    message Geometry {
+        required Type type = 1;
+
+        repeated uint32 lengths = 2 [packed = true]; // coordinate structure in lengths
+        repeated sint64 coords = 3 [packed = true]; // delta-encoded integer values
+        repeated Geometry geometries = 4;
+
+        repeated Value values = 13;
+        repeated uint32 custom_properties = 15 [packed = true];
+
+        enum Type {
+            POINT = 0;
+            MULTIPOINT = 1;
+            LINESTRING = 2;
+            MULTILINESTRING = 3;
+            POLYGON = 4;
+            MULTIPOLYGON = 5;
+            GEOMETRYCOLLECTION = 6;
+        }
+    }
+
+    message FeatureCollection {
+        repeated Feature features = 1;
+
+        repeated Value values = 13;
+        repeated uint32 custom_properties = 15 [packed = true];
+    }
+
+    message Value {
+        oneof value_type {
+            string string_value = 1;
+            double double_value = 2;
+            uint64 pos_int_value = 3;
+            uint64 neg_int_value = 4;
+            bool bool_value = 5;
+            string json_value = 6;
+        }
+    }
+}
