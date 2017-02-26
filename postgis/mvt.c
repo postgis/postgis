@@ -434,6 +434,25 @@ static void encode_values(struct mvt_agg_context *ctx)
 	tags[c*2+1] = kv->id; \
 }
 
+static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
+		Datum datum, uint32_t *tags, uint32_t c, uint32_t k) {
+	struct mvt_kv_string_value *kv;
+	Oid foutoid;
+	bool typisvarlena;
+	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
+	char *value = OidOutputFunctionCall(foutoid, datum);
+	size_t size = strlen(value);
+	HASH_FIND(hh, ctx->string_values_hash, &value, size, kv);
+	if (!kv) {
+		kv = palloc(sizeof(*kv));
+		kv->id = ctx->values_hash_i++;
+		kv->string_value = value;
+		HASH_ADD(hh, ctx->string_values_hash, string_value, size, kv);
+	}
+	tags[c*2] = k - 1;
+	tags[c*2+1] = kv->id;
+}
+
 static void parse_values(struct mvt_agg_context *ctx)
 {
 	uint32_t n_keys = ctx->layer->n_keys;
@@ -482,19 +501,14 @@ static void parse_values(struct mvt_agg_context *ctx)
 				double_values_hash, double_value,
 				DatumGetFloat8, sizeof(double));
 			break;
-		case NUMERICOID:
-			lwerror("parse_values: numeric type not supported");
-			break;
-		case VARCHAROID:
-		case CHAROID:
-		case BPCHAROID:
 		case TEXTOID:
 			MVT_PARSE_VALUE(char *, mvt_kv_string_value,
 				string_values_hash, string_value,
 				TextDatumGetCString, strlen(value));
 			break;
 		default:
-			continue;
+			parse_value_as_string(ctx, typoid, datum, tags, c, k);
+			break;
 		}
 		c++;
 	}
