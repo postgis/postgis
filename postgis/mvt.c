@@ -60,12 +60,6 @@ struct mvt_kv_double_value {
 	UT_hash_handle hh;
 };
 
-struct mvt_kv_int_value {
-	int64_t int_value;
-	uint32_t id;
-	UT_hash_handle hh;
-};
-
 struct mvt_kv_uint_value {
 	uint64_t uint_value;
 	uint32_t id;
@@ -405,8 +399,6 @@ static void encode_values(struct mvt_agg_context *ctx)
 		float_values_hash, has_float_value, float_value);
 	MVT_CREATE_VALUES(mvt_kv_double_value,
 		double_values_hash, has_double_value, double_value);
-	MVT_CREATE_VALUES(mvt_kv_int_value,
-		int_values_hash, has_int_value, int_value);
 	MVT_CREATE_VALUES(mvt_kv_uint_value,
 		uint_values_hash, has_uint_value, uint_value);
 	MVT_CREATE_VALUES(mvt_kv_sint_value,
@@ -418,11 +410,9 @@ static void encode_values(struct mvt_agg_context *ctx)
 	ctx->layer->values = values;
 }
 
-
-#define MVT_PARSE_VALUE(type, kvtype, hash, valuefield, datumfunc, size) \
+#define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
 { \
 	struct kvtype *kv; \
-	type value = datumfunc(datum); \
 	HASH_FIND(hh, ctx->hash, &value, size, kv); \
 	if (!kv) { \
 		kv = palloc(sizeof(*kv)); \
@@ -432,6 +422,26 @@ static void encode_values(struct mvt_agg_context *ctx)
 	} \
 	tags[c*2] = k - 1; \
 	tags[c*2+1] = kv->id; \
+}
+
+#define MVT_PARSE_DATUM(type, kvtype, hash, valuefield, datumfunc, size) \
+{ \
+	type value = datumfunc(datum); \
+	MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size); \
+}
+
+#define MVT_PARSE_INT_DATUM(type, datumfunc) \
+{ \
+	type value = datumfunc(datum); \
+	if (value >= 0) { \
+		MVT_PARSE_VALUE(value, mvt_kv_uint_value, \
+				uint_values_hash, uint_value, \
+				sizeof(uint64_t)) \
+	} else { \
+		MVT_PARSE_VALUE(value, mvt_kv_sint_value, \
+				sint_values_hash, sint_value, \
+				sizeof(int64_t)) \
+	} \
 }
 
 static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
@@ -472,37 +482,31 @@ static void parse_values(struct mvt_agg_context *ctx)
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		switch (typoid) {
 		case BOOLOID:
-			MVT_PARSE_VALUE(bool, mvt_kv_bool_value,
+			MVT_PARSE_DATUM(bool, mvt_kv_bool_value,
 				bool_values_hash, bool_value,
 				DatumGetBool, sizeof(bool));
 			break;
 		case INT2OID:
-			MVT_PARSE_VALUE(int16_t, mvt_kv_int_value,
-				int_values_hash, int_value,
-				DatumGetInt16, sizeof(int64_t));
+			MVT_PARSE_INT_DATUM(int16_t, DatumGetInt16);
 			break;
 		case INT4OID:
-			MVT_PARSE_VALUE(int32_t, mvt_kv_int_value,
-				int_values_hash, int_value,
-				DatumGetInt32, sizeof(int64_t));
+			MVT_PARSE_INT_DATUM(int32_t, DatumGetInt32);
 			break;
 		case INT8OID:
-			MVT_PARSE_VALUE(int64_t, mvt_kv_int_value,
-				int_values_hash, int_value,
-				DatumGetInt64, sizeof(int64_t));
+			MVT_PARSE_INT_DATUM(int64_t, DatumGetInt64);
 			break;
 		case FLOAT4OID:
-			MVT_PARSE_VALUE(float, mvt_kv_float_value,
+			MVT_PARSE_DATUM(float, mvt_kv_float_value,
 				float_values_hash, float_value,
 				DatumGetFloat4, sizeof(float));
 			break;
 		case FLOAT8OID:
-			MVT_PARSE_VALUE(double, mvt_kv_double_value,
+			MVT_PARSE_DATUM(double, mvt_kv_double_value,
 				double_values_hash, double_value,
 				DatumGetFloat8, sizeof(double));
 			break;
 		case TEXTOID:
-			MVT_PARSE_VALUE(char *, mvt_kv_string_value,
+			MVT_PARSE_DATUM(char *, mvt_kv_string_value,
 				string_values_hash, string_value,
 				TextDatumGetCString, strlen(value));
 			break;
