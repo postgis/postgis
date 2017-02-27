@@ -102,6 +102,15 @@
 			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
 			</listitem>
 		</varlistentry>
+        
+        <varlistentry>
+			<term>Björn Harrtell</term>
+
+			<listitem>
+			  <para>MapBox Vector Tile and GeoBuf functions. Gogs testing.</para>
+			</listitem>
+		</varlistentry>
+        
 
 		<varlistentry>
 			<term>Mateusz Loskot</term>
@@ -114,13 +123,6 @@
 			<term>Pierre Racine</term>
 			<listitem>
 			  <para>Raster overall architecture, prototyping, programming support</para>
-			</listitem>
-		</varlistentry>
-
-		<varlistentry>
-			<term>David Zwarg</term>
-			<listitem>
-			  <para>Raster development (mostly map algebra analytic functions)</para>
 			</listitem>
 		</varlistentry>
 	</variablelist>
@@ -167,6 +169,13 @@
 		<listitem>
 		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support. Shapefile GUI loader.</para>
 		</listitem>
+		</varlistentry>
+        
+        <varlistentry>
+			<term>David Zwarg</term>
+			<listitem>
+			  <para>Raster development (mostly map algebra analytic functions)</para>
+			</listitem>
 		</varlistentry>
 	</variablelist>
 </sect1>
