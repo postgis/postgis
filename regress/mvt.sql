@@ -64,10 +64,11 @@ SELECT 'TA6', encode(ST_AsMVT('test',
     ST_GeomFromText('POINT(25 17)') AS geom) AS q;
 
 -- unsupported input
-SELECT 'TU1';
-SELECT encode(ST_AsMVT('test',
-    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false, 'geom', NULL
-), 'base64');
+-- NOTE: disabled test as it's dependant on PostgreSQL error text that cannot be expected to be stable
+--SELECT 'TU1';
+--SELECT encode(ST_AsMVT('test',
+--    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false, 'geom', NULL
+--), 'base64');
 SELECT 'TU2';
 SELECT encode(ST_AsMVT('test',
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false, 'geom', 1

@@ -14,8 +14,6 @@ TA3|GhYKBHRlc3QSCBgBIgQJMt4/GgJjMXgC
 TA4|GjAKBHRlc3QSDBICAAAYASIECTLePxIMEgIAARgBIgQJMt4/GgJjMSICKAEiAigCeAI=
 TA5|GiwKBHRlc3QSDhIEAAABARgBIgQJMt4/GgJjMRoCYzIiAigBIgYKBGFiY2R4Ag==
 TA6|GigKBHRlc3QSDhIEAAABARgBIgQJMt4/GgJjMRoCYzIiAigBIgIwAXgC
-TU1
-ERROR:  could not determine polymorphic type because input has type "unknown"
 TU2
 ERROR:  pgis_asmvt_transfn: parameter row cannot be other than a rowtype
 TU3
