@@ -540,7 +540,7 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 	if (!datum)
 		lwerror("geobuf_agg_transfn: geometry column cannot be null");
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
-	lwgeom = lwgeom_from_gserialized(gs);
+	lwgeom = lwgeom_clone_deep(lwgeom_from_gserialized(gs));
 
 	feature = encode_feature(ctx);
 
