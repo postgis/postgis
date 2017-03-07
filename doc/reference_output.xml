@@ -1344,21 +1344,68 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_AsMVTGeom">
+	  <refnamediv>
+		<refname>ST_AsMVTGeom</refname>
+
+		<refpurpose>Transform a geometry into the coordinate space of a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink>.</refpurpose>
+	  </refnamediv>
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
+				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
+				<paramdef><type>int4 </type> <parameter>buffer</parameter></paramdef>
+				<paramdef><type>bool </type> <parameter>clip_geom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Transform a geometry into the coordinate space of a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> of a set of rows corresponding to a Layer.
+		Makes best effort to keep and even correct validity and might collapse geometry into a lower dimension in the process.
+		</para>
+
+		<para><varname>geom</varname> is the geometry to transform.</para>
+		<para><varname>bounds</varname> is the geometric bounds of the tile contents without buffer.</para>
+		<para><varname>extent</varname> is the tile extent in tile coordinate space as defined by the <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>. If NULL it will default to 4096.</para>
+		<para><varname>buffer</varname> is the buffer distance in tile coordinate space to optionally clip geometries. If NULL it will default to 0.</para>
+		<para><varname>clip_geom</varname> is a boolean to control if geometries should be clipped or encoded as is. If NULL it will default to true.</para>
+
+		<para>Availability: 2.4.0</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[SELECT ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+	4096, 0, false));
+                              st_astext
+--------------------------------------------------------------------
+ MULTIPOLYGON(((5 4096,10 4096,10 4091,5 4096)),((5 4096,0 4096,0 4101,5 4096)))
+
+		]]>
+		</programlisting>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_AsMVT">
 	  <refnamediv>
 		<refname>ST_AsMVT</refname>
 
-		<refpurpose>Return a Mapbox Vector Tile representation of a set of rows.</refpurpose>
+		<refpurpose>Return a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> representation of a set of rows.</refpurpose>
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
 				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
 				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
-				<paramdef><type>int4 </type> <parameter>buffer</parameter></paramdef>
-				<paramdef><type>bool </type> <parameter>clip_geom</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
 			</funcprototype>
@@ -1368,17 +1415,15 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return a Mapbox Vector Tile representation (<ulink url="https://www.mapbox.com/vector-tiles/specification/">https://www.mapbox.com/vector-tiles/specification/</ulink>) of a set of rows corresponding to a Layer.
+		<para>Return a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> representation of a set of rows corresponding to a Layer.
 		Multiple calls can be concatenated to a tile with multiple Layers.
-		Geometry will be automatically scaled from the geometric bounds to tile screen space and repeated coordinates thrown away.
-		Other row data will be encoded as attributes without redundancy as described by the specification.
+		Geometry is assumed to be in tile coordinate space and valid as per <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>.
+		Typically ST_AsMVTGeom can be used to transform geometry into tile coordinate space.
+		Other row data will be encoded as attributes.
 		</para>
 
 		<para><varname>name</varname> is the name of the Layer</para>
-		<para><varname>bounds</varname> is the bounds of the tile in the coordinate system of the geometry field in the row data.</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. If NULL it will default to 4096.</para>
-		<para><varname>buffer</varname> is the buffer distance in screen space to optionally clip geometries. If NULL it will default to 0.</para>
-		<para><varname>clip_geom</varname> is a boolean to control if geometries should be clipped or encoded as is. If NULL it will default to true.</para>
 		<para><varname>geom_name</varname> is the name of the geometry column in the row data.</para>
 		<para><varname>row</varname> row data with at least a geometry column.</para>
 
@@ -1387,11 +1432,12 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsMVT('test', ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false, 'geom', q)
-FROM (SELECT 1 AS c1, ST_GeomFromText('POINT(25 17)') AS geom) AS q;
-                              st_asmvt                              
+		<programlisting><![CDATA[SELECT ST_AsMVT('test', 4096, 'geom', q) FROM (SELECT 1 AS c1,
+    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
+                              st_asmvt
 --------------------------------------------------------------------
- \x1a1e0a0474657374120c12020000180122040932de3f1a026331220220017802
+ \x1a330a0474657374122112020000180322190946ec3f2214453b0a092832140f091d271a1e09091e13130f1a026331220228017802
 
 		]]>
 		</programlisting>

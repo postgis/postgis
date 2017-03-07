@@ -37,6 +37,7 @@
 #include "access/htup.h"
 #include "../postgis_config.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 #include "lwgeom_pg.h"
 #include "lwgeom_log.h"
 
@@ -45,20 +46,14 @@
 #include "vector_tile.pb-c.h"
 
 struct mvt_agg_context {
-	GBOX *bounds;
 	char *name;
 	uint32_t extent;
-	uint32_t buffer;
-	bool clip_geoms;
 	char *geom_name;
 	uint32_t geom_index;
-	LWGEOM *lwgeom;
 	HeapTupleHeader row;
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
 	size_t features_capacity;
-	double xres;
-	double yres;
 	struct mvt_kv_string_value *string_values_hash;
 	struct mvt_kv_float_value *float_values_hash;
 	struct mvt_kv_double_value *double_values_hash;
@@ -69,6 +64,7 @@ struct mvt_agg_context {
 	uint32_t values_hash_i;
 } ;
 
+LWGEOM *mvt_geom(LWGEOM *geom, GBOX *bounds, uint32_t extent, uint32_t buffer, bool clip_geom);
 void mvt_agg_init_context(struct mvt_agg_context *ctx);
 void mvt_agg_transfn(struct mvt_agg_context *ctx);
 uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx);

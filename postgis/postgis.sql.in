@@ -4387,7 +4387,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 -----------------------------------------------------------------------
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, text, box2d, int4, int4, bool, text, anyelement)
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, text, int4, text, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
 	LANGUAGE c IMMUTABLE;
@@ -4399,12 +4399,18 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	LANGUAGE c IMMUTABLE;
 
 -- Availability: 2.4.0
-CREATE AGGREGATE ST_AsMVT(text, box2d, int4, int4, bool, text, anyelement)
+CREATE AGGREGATE ST_AsMVT(text, int4, text, anyelement)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
 	finalfunc = pgis_asmvt_finalfn
 );
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4, buffer int4, clip_geom bool)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','ST_AsMVTGeom'
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()

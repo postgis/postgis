@@ -36,6 +36,35 @@
 #endif  /* HAVE_LIBPROTOBUF */
 
 /**
+ * Process input parameters to mvt_geom and returned serialized geometry
+ */
+PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
+Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	GSERIALIZED *geom_in, *geom_out;
+	GBOX *bounds;
+	int extent, buffer;
+	bool clip_geom;
+	if (PG_ARGISNULL(0))
+		lwerror("ST_AsMVTGeom: geom cannot be null");
+	geom_in = PG_GETARG_GSERIALIZED_P(0);
+	lwgeom_in = lwgeom_from_gserialized(geom_in);
+	if (PG_ARGISNULL(1))
+		lwerror("ST_AsMVTGeom: parameter bounds cannot be null");
+	bounds = (GBOX *) PG_GETARG_POINTER(1);
+	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
+	buffer = PG_ARGISNULL(3) ? 0 : PG_GETARG_INT32(3);
+	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
+	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
+	lwgeom_free(lwgeom_in);
+	geom_out = geometry_serialize(lwgeom_out);
+	lwgeom_free(lwgeom_out);
+	PG_FREE_IF_COPY(geom_in, 0);
+	PG_RETURN_POINTER(geom_out);
+}
+
+/**
  * Process input parameters and row data into state
  */
 PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
@@ -56,26 +85,26 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 		ctx = palloc(sizeof(*ctx));
 		if (PG_ARGISNULL(1))
 			lwerror("pgis_asmvt_transfn: parameter name cannot be null");
-		ctx->name = text_to_cstring(PG_GETARG_TEXT_P(1));
-		if (PG_ARGISNULL(2))
-			lwerror("pgis_asmvt_transfn: parameter bounds cannot be null");
-		ctx->bounds = (GBOX *) PG_GETARG_POINTER(2);
-		ctx->extent = PG_ARGISNULL(3) ? 4096 : PG_GETARG_INT32(3);
-		ctx->buffer = PG_ARGISNULL(4) ? 0 : PG_GETARG_INT32(4);
-		ctx->clip_geoms = PG_ARGISNULL(5) ? true : PG_GETARG_BOOL(5);
-		if (PG_ARGISNULL(6))
+		text *name = PG_GETARG_TEXT_P(1);
+		ctx->name = text_to_cstring(name);
+		PG_FREE_IF_COPY(name, 1);
+		ctx->extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
+		if (PG_ARGISNULL(3))
 			lwerror("pgis_asmvt_transfn: parameter geom_name cannot be null");
-		ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(6));
+		text *geom_name = PG_GETARG_TEXT_P(3);
+		ctx->geom_name = text_to_cstring(geom_name);
+		PG_FREE_IF_COPY(geom_name, 3);
 		mvt_agg_init_context(ctx);
 	} else {
 		ctx = (struct mvt_agg_context *) PG_GETARG_POINTER(0);
 	}
 
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 7)))
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 4)))
 		lwerror("pgis_asmvt_transfn: parameter row cannot be other than a rowtype");
-	ctx->row = PG_GETARG_HEAPTUPLEHEADER(7);
+	ctx->row = PG_GETARG_HEAPTUPLEHEADER(4);
 
 	mvt_agg_transfn(ctx);
+	PG_FREE_IF_COPY(ctx->row, 4);
 	PG_RETURN_POINTER(ctx);
 #endif
 }
