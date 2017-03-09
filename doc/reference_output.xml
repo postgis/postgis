@@ -1418,7 +1418,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		<para>Return a <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> representation of a set of rows corresponding to a Layer.
 		Multiple calls can be concatenated to a tile with multiple Layers.
 		Geometry is assumed to be in tile coordinate space and valid as per <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>.
-		Typically ST_AsMVTGeom can be used to transform geometry into tile coordinate space.
+		Typically <xref linkend="ST_AsMVTGeom" /> can be used to transform geometry into tile coordinate space.
 		Other row data will be encoded as attributes.
 		</para>
 
@@ -1442,6 +1442,13 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		]]>
 		</programlisting>
 	  </refsection>
+
+		<refsection>
+			<title>See Also</title>
+				<para>
+					<xref linkend="ST_AsMVTGeom" />
+				</para>
+		  </refsection>
 	</refentry>
 
   </sect1>
