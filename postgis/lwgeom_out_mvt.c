@@ -41,6 +41,10 @@
 PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
 Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
+#ifndef HAVE_LIBPROTOBUF
+	lwerror("Missing libprotobuf-c");
+	PG_RETURN_NULL();
+#else
 	LWGEOM *lwgeom_in, *lwgeom_out;
 	GSERIALIZED *geom_in, *geom_out;
 	GBOX *bounds;
@@ -62,6 +66,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);
 	PG_RETURN_POINTER(geom_out);
+#endif
 }
 
 /**
