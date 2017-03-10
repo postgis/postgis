@@ -17,7 +17,11 @@ select 'PG4', ST_AsText(ST_AsMVTGeom(
 	4096, 0, false));
 select 'PG5', ST_AsText(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),
-	ST_MakeBox2D(ST_Point(0, 0), ST_Point(1, 1)),
+	ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096*4096, 4096*4096)),
+	4096, 0, false));
+select 'PG6', ST_AsText(ST_AsMVTGeom(
+	ST_GeomFromText('POLYGON ((762780 6474467, 717821 6797045, 1052826 6797045, 762780 6474467))'),
+	ST_MakeBox2D(ST_Point(626172.135625, 6261721.35625), ST_Point(1252344.27125, 6887893.49188)),
 	4096, 0, false));
 
 -- geometry encoding tests

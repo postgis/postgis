@@ -444,55 +444,6 @@ static void parse_values(struct mvt_agg_context *ctx)
 	ctx->feature->tags = tags;
 }
 
-static void ptarray_mirror_y(POINTARRAY *pa, uint32_t extent)
-{
-	int i;
-	POINT2D *p;
-
-	for (i = 0; i < pa->npoints; i++) {
-		p = (POINT2D *) getPoint_internal(pa, i);
-		p->y = extent - p->y;
-	}
-}
-
-static void lwgeom_mirror_y(LWGEOM *in, uint32_t extent)
-{
-	LWCOLLECTION *col;
-	LWPOLY *poly;
-	int i;
-
-	if ( (!in) || lwgeom_is_empty(in) ) return;
-
-	switch (in->type) {
-	case POINTTYPE:
-		ptarray_mirror_y(lwgeom_as_lwpoint(in)->point, extent);
-		break;
-	case LINETYPE:
-		ptarray_mirror_y(lwgeom_as_lwline(in)->points, extent);
-		break;
-	case POLYGONTYPE:
-		poly = (LWPOLY *) in;
-		for (i=0; i<poly->nrings; i++)
-			ptarray_mirror_y(poly->rings[i], extent);
-		break;
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		col = (LWCOLLECTION *) in;
-		for (i=0; i<col->ngeoms; i++)
-			lwgeom_mirror_y(col->geoms[i], extent);
-		break;
-	default:
-		lwerror("lwgeom_mirror_y: unsupported geometry type: %s",
-		        lwtype_name(in->type));
-		return;
-	}
-
-	lwgeom_drop_bbox(in);
-	lwgeom_add_bbox(in);
-}
-
 /**
  * Transform a geometry into vector tile coordinate space.
  *
@@ -506,6 +457,8 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
 	double resy = height / extent;
+	double fx = extent / width;
+	double fy = -(extent / height);
 
 	if (width == 0 || height == 0)
 		lwerror("mvt_geom: bounds width or height cannot be 0");
@@ -529,13 +482,15 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 #endif
 	}
 
-	POINT4D factors;
-	factors.x = resx;
-	factors.y = resy;
-	factors.z = 1;
-	factors.m = 1;
+	AFFINE affine;
+	memset (&affine, 0, sizeof(affine));
+	affine.afac = fx;
+	affine.efac = fy;
+	affine.ifac = 1;
+	affine.xoff = -gbox->xmin * fx;
+	affine.yoff = -gbox->ymax * fy;
 
-	lwgeom_scale(lwgeom, &factors);
+	lwgeom_affine(lwgeom, &affine);
 
 	gridspec grid;
 	memset(&grid, 0, sizeof(gridspec));
@@ -550,7 +505,6 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		lwgeom_out = lwgeom_grid(lwgeom_centroid(lwgeom), &grid);
 
 	lwgeom_force_clockwise(lwgeom_out);
-	lwgeom_mirror_y(lwgeom_out, extent);
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
 
 	return lwgeom_out;
