@@ -1,3 +1,10 @@
+PostGIS 2.3.3dev
+YYYY/MM/DD
+
+  * Bug Fixes
+
+  - #3711, Azimuth error upon adding 2.5D edges to topology
+
 PostGIS 2.3.2
 2017/01/31
 
