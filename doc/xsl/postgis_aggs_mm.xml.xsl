@@ -481,13 +481,73 @@
 
 	   <sect1 id="NewFunctions">
 			<title>New, Enhanced or changed PostGIS Functions</title>
-			<note><para>PostGIS 2.3.0: PostgreSQL 9.6+ support for parallel queries.</para></note>
-			<note><para>PostGIS 2.3.0: PostgreSQL 9.4+ support for BRIN indexes. Refer to <xref linkend="brin_indexes" />.</para></note>
-			<note><para>PostGIS 2.3.0: Tiger Geocoder upgraded to work with TIGER 2016 data.</para></note>
+
+            <sect2 id="NewFunctions_2_4">
+				<title>PostGIS Functions new or enhanced in 2.3</title>
+				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
+				<para>Functions new in PostGIS 2.4</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				
+				
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Availability: 2.4')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+				
+				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.4.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry   -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				<!-- For each section if there is note about enhanced in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Enhanced: 2.4')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>	
+			</sect2>
+            
 			<sect2 id="NewFunctions_2_3">
 				<title>PostGIS Functions new or enhanced in 2.3</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
-
+                <note><para>PostGIS 2.3.0: PostgreSQL 9.6+ support for parallel queries.</para></note>
+                <note><para>PostGIS 2.3.0: PostGIS extension, all functions schema qualified to reduce issues in database restore.</para></note>
+                <note><para>PostGIS 2.3.0: PostgreSQL 9.4+ support for BRIN indexes. Refer to <xref linkend="brin_indexes" />.</para></note>
+                <note><para>PostGIS 2.3.0: Tiger Geocoder upgraded to work with TIGER 2016 data.</para></note>
 				<para>Functions new in PostGIS 2.3</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
