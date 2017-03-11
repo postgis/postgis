@@ -515,30 +515,8 @@
 					</xsl:for-each>
 				</itemizedlist>
 				
-				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.4.</para>
-				<itemizedlist>
-				<!-- Pull out the purpose section for each ref entry   -->
-					<xsl:for-each select='//refentry'>
-						<xsl:sort select="@id"/>
-						<xsl:variable name="refid">
-							<xsl:value-of select="@id" />
-						</xsl:variable>
-						
-						<xsl:variable name="refname">
-							<xsl:value-of select="refnamediv/refname" />
-						</xsl:variable>
-				<!-- For each section if there is note about enhanced in this version -->
-							<xsl:for-each select="refsection">
-								<xsl:for-each select="para | */para">
-									<xsl:choose>
-										<xsl:when test="contains(.,'Enhanced: 2.4')">
-											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:for-each>
-							</xsl:for-each>
-					</xsl:for-each>
-				</itemizedlist>	
+				<para>TODO: Enhance some functions in 2.4 so this space isn't empty.</para>
+				
 			</sect2>
             
 			<sect2 id="NewFunctions_2_3">
