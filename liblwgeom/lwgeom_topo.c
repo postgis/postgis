@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright (C) 2015 Sandro Santilli <strk@kbt.io>
+ * Copyright (C) 2015-2017 Sandro Santilli <strk@kbt.io>
  *
  **********************************************************************/
 
@@ -1465,11 +1465,11 @@ _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
     return -1;
   }
   if ( ! azimuth_pt_pt(fp, &pt, &(fee->myaz)) ) {
-    lwerror("error computing azimuth of first edgeend [%g %g,%g %g]",
+    lwerror("error computing azimuth of first edgeend [%.15g %.15g,%.15g %.15g]",
             fp->x, fp->y, pt.x, pt.y);
     return -2;
   }
-  LWDEBUGF(1, "azimuth of first edge end [%g %g,%g %g] is %g",
+  LWDEBUGF(1, "azimuth of first edge end [%.15g %.15g,%.15g %.15g] is %g",
             fp->x, fp->y, pt.x, pt.y, fee->myaz);
 
   /* Compute azimuth of second edge end */
@@ -1480,11 +1480,11 @@ _lwt_InitEdgeEndByLine(edgeend *fee, edgeend *lee, LWLINE *edge,
     return -1;
   }
   if ( ! azimuth_pt_pt(lp, &pt, &(lee->myaz)) ) {
-    lwerror("error computing azimuth of last edgeend [%g %g,%g %g]",
+    lwerror("error computing azimuth of last edgeend [%.15g %.15g,%.15g %.15g]",
             lp->x, lp->y, pt.x, pt.y);
     return -2;
   }
-  LWDEBUGF(1, "azimuth of last edge end [%g %g,%g %g] is %g",
+  LWDEBUGF(1, "azimuth of last edge end [%.15g %.15g,%.15g %.15g] is %g",
             lp->x, lp->y, pt.x, pt.y, lee->myaz);
 
   return 0;
@@ -1579,7 +1579,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         LWT_ELEMID id = edge->edge_id;
         _lwt_release_edges(edges, numedges);
         lwgeom_free(cleangeom);
-        lwerror("error computing azimuth of edge %d first edgeend [%g,%g-%g,%g]",
+        lwerror("error computing azimuth of edge %d first edgeend [%.15g %.15g,%.15g %.15g]",
                 id, p1.x, p1.y, p2.x, p2.y);
         return -1;
       }}
@@ -1635,7 +1635,7 @@ _lwt_FindAdjacentEdges( LWT_TOPOLOGY* topo, LWT_ELEMID node, edgeend *data,
         LWT_ELEMID id = edge->edge_id;
         _lwt_release_edges(edges, numedges);
         lwgeom_free(cleangeom);
-        lwerror("error computing azimuth of edge %d last edgeend [%g,%g-%g,%g]",
+        lwerror("error computing azimuth of edge %d last edgeend [%.15g %.15g,%.15g %.15g]",
                 id, p1.x, p1.y, p2.x, p2.y);
         return -1;
       }}
