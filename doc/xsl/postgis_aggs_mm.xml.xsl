@@ -483,7 +483,7 @@
 			<title>New, Enhanced or changed PostGIS Functions</title>
 
             <sect2 id="NewFunctions_2_4">
-				<title>PostGIS Functions new or enhanced in 2.3</title>
+				<title>PostGIS Functions new or enhanced in 2.4</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
 				<para>Functions new in PostGIS 2.4</para>
 				<itemizedlist>
