@@ -526,10 +526,10 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
-		  <term><command>--with-topology</command></term>
+		  <term><command>--without-topology</command></term>
 		  <listitem>
 			<para>
-			  Compile with topology support.  This will build the topology.sql file.  There is no corresponding library
+			  Disable topology support. There is no corresponding library
 			  as all logic needed for topology is in postgis-&last_release_version; library.
 			</para>
 		  </listitem>
@@ -1403,7 +1403,7 @@ All 2 tests passed.
 
 	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>
-  
+
     <sect1 id="create_new_db">
 	<title>Create a spatially-enabled database without using extensions</title>
 
@@ -1582,12 +1582,12 @@ the folder where the loader extracts the downloaded tiger data.</para></listitem
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" />  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
 					<programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA > /gisdata/nation_script_load.sh</programlisting>
 			</listitem>
-			
+
 			<listitem><para>Run the generated nation load commandline scripts.</para>
 				<programlisting>cd /gisdata
 sh nation_script_load.sh</programlisting>
       </listitem>
-      
+
       <listitem><para>After you are done running the nation script, you should have three tables in your <code>tiger_data</code> schema and they should be filled with data. Confirm you do by doing the following queries from psql or pgAdmin</para>
 				<programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
 <screen> count
@@ -1602,9 +1602,9 @@ sh nation_script_load.sh</programlisting>
 (1 row)
 </screen>
       </listitem>
-			
+
 			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.  DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></listitem>
-			
+
 			<listitem><programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting></listitem>
 
 			<listitem><para>Run the generated commandline scripts.</para>
