@@ -102,6 +102,7 @@ TESTS = \
 	minimum_bounding_circle \
 	normalize \
 	operators \
+	orientation \
 	out_geometry \
 	out_geography \
 	polygonize \

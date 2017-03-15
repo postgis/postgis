@@ -741,6 +741,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise, must be reversed */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -752,6 +753,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* clockwise, fine as is */
 	geom = lwgeom_from_wkt("POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_TRUE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -763,6 +765,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* counterclockwise shell (must be reversed), mixed-wise holes */
 	geom = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 4,4 2,2 2),(6 2,8 2,8 4,6 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
@@ -774,6 +777,7 @@ static void test_lwgeom_force_clockwise(void)
 
 	/* clockwise shell (fine), mixed-wise holes */
 	geom = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 4,8 2,6 2))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT_FALSE(lwgeom_is_clockwise(geom));
 	lwgeom_force_clockwise(geom);
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
