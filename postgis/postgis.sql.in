@@ -20,11 +20,10 @@
 
 #include "sqldefines.h"
 
-SET client_min_messages TO warning;
-
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 
 BEGIN;
+SET LOCAL client_min_messages TO warning;
 
 -- Check that no other postgis is installed
 DO $$
