@@ -507,6 +507,24 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	lwgeom_force_clockwise(lwgeom_out);
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
 
+	int type = lwgeom_out->type;
+	int i, extract_type = 1;
+	if (type == COLLECTIONTYPE) {
+		LWCOLLECTION *lwcoll = (LWCOLLECTION*) lwgeom_out;
+		for (i = 0; i < lwcoll->ngeoms; i++) {
+			LWGEOM *geom = lwcoll->geoms[i];
+			if (geom->type == POLYGONTYPE) {
+				extract_type = 3;
+				break;
+			} else if (geom->type == LINETYPE) {
+				extract_type = 2;
+			}
+		}
+		lwgeom_out = lwcollection_as_lwgeom(
+			lwcollection_extract(lwcoll, extract_type));
+		lwgeom_out = lwgeom_homogenize(lwgeom_out);
+	}
+
 	return lwgeom_out;
 }
 
