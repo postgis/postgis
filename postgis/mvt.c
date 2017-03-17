@@ -444,6 +444,19 @@ static void parse_values(struct mvt_agg_context *ctx)
 	ctx->feature->tags = tags;
 }
 
+int max_dim(LWCOLLECTION *lwcoll)
+{
+	int i, dim = 1;
+	for (i = 0; i < lwcoll->ngeoms; i++) {
+		uint8_t type = lwcoll->geoms[i]->type;
+		if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE)
+			return 3;
+		else if (type == LINETYPE || type == MULTILINETYPE)
+			dim = 2;
+	}
+	return dim;
+}
+
 /**
  * Transform a geometry into vector tile coordinate space.
  *
@@ -507,21 +520,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	lwgeom_force_clockwise(lwgeom_out);
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
 
-	int type = lwgeom_out->type;
-	int i, extract_type = 1;
-	if (type == COLLECTIONTYPE) {
+	if (lwgeom_out->type == COLLECTIONTYPE) {
 		LWCOLLECTION *lwcoll = (LWCOLLECTION*) lwgeom_out;
-		for (i = 0; i < lwcoll->ngeoms; i++) {
-			LWGEOM *geom = lwcoll->geoms[i];
-			if (geom->type == POLYGONTYPE) {
-				extract_type = 3;
-				break;
-			} else if (geom->type == LINETYPE) {
-				extract_type = 2;
-			}
-		}
 		lwgeom_out = lwcollection_as_lwgeom(
-			lwcollection_extract(lwcoll, extract_type));
+			lwcollection_extract(lwcoll, max_dim(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
 	}
 

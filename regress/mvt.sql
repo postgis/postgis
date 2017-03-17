@@ -31,7 +31,10 @@ select 'PG7', ST_AsText(ST_AsMVTGeom(
         -7797789.63692662 1417736.81850415,-7793160.38395328 1412417.61222784,-7792023.4539488 1411512.60791779))'),
         ST_MakeBox2D(ST_Point(-20037508.34, 20037508.34), ST_Point(20037508.34, -20037508.34)),
         4096, 10, true));
-
+select 'PG8', ST_AsText(ST_AsMVTGeom(
+    ST_GeomFromText('GEOMETRYCOLLECTION(MULTIPOLYGON (((0 0, 10 0, 10 5, 0 -5, 0 0))))'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),
+    4096, 0, false));
 
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (SELECT 1 AS c1,
