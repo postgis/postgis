@@ -872,6 +872,129 @@ FROM (SELECT ST_BuildArea(
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_IsPolygonCCW">
+		<refnamediv>
+			<refname>
+				ST_IsPolygonCCW
+			</refname>
+			<refpurpose>
+				Returns true if all exterior rings are oriented counter-clockwise and all interior rings are oriented clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						boolean
+						<function>ST_IsPolygonCCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Returns true for (Multi)Polygons that use a counter-clockwise 
+				orientation for their exterior ring, and a clockwise direction 
+				for all interior rings.
+			</para>
+
+			<para>
+				Returns true for all non-polygonal geometries.
+			</para>
+
+			<note>
+				<para>
+					If a polygonal geometry does not use reversed orientation
+					for interior rings (i.e., if one or more interior rings
+					are oriented in the same direction as an exterior ring)
+					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
+				</para>
+			</note>
+
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW" />,
+				<xref linkend="ST_ForcePolygonCCW" />,
+				<xref linkend="ST_IsPolygonCW" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="ST_IsPolygonCW">
+		<refnamediv>
+			<refname>
+				ST_IsPolygonCW
+			</refname>
+			<refpurpose>
+				Returns true if all exterior rings are oriented clockwise and all interior rings are oriented counter-clockwise.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>
+						boolean
+						<function>ST_IsPolygonCW</function>
+					</funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geom</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Returns true for (Multi)Polygons that use a clockwise 
+				orientation for their exterior ring, and a counter-clockwise direction 
+				for all interior rings.
+			</para>
+
+			<para>
+				Returns true for all non-polygonal geometries.
+			</para>
+
+			<note>
+				<para>
+					If a polygonal geometry does not use reversed orientation
+					for interior rings (i.e., if one or more interior rings
+					are oriented in the same direction as an exterior ring)
+					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
+				</para>
+			</note>
+
+			<para>&Z_support;</para>
+			<para>&M_support;</para>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="ST_ForcePolygonCW" />,
+				<xref linkend="ST_ForcePolygonCCW" />,
+				<xref linkend="ST_IsPolygonCW" />
+			</para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_IsClosed">
 	  <refnamediv>
 		<refname>ST_IsClosed</refname>

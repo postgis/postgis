@@ -109,6 +109,12 @@ lwtriangle_force_clockwise(LWTRIANGLE *triangle)
 		ptarray_reverse(triangle->points);
 }
 
+int
+lwtriangle_is_clockwise(LWTRIANGLE *triangle)
+{
+	return !ptarray_isccw(triangle->points);
+}
+
 void
 lwtriangle_reverse(LWTRIANGLE *triangle)
 {

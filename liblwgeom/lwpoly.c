@@ -284,6 +284,24 @@ lwpoly_force_clockwise(LWPOLY *poly)
 
 }
 
+int
+lwpoly_is_clockwise(LWPOLY *poly)
+{
+	int i;
+
+	if ( lwpoly_is_empty(poly) )
+		return LW_TRUE;
+
+	if ( ptarray_isccw(poly->rings[0]) )
+		return LW_FALSE;
+
+	for ( i = 1; i < poly->nrings; i++)
+		if ( !ptarray_isccw(poly->rings[i]) )
+			return LW_FALSE;
+
+	return LW_TRUE;
+}
+
 void
 lwpoly_release(LWPOLY *lwpoly)
 {

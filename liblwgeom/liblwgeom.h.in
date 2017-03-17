@@ -1218,6 +1218,9 @@ extern void lwgeom_force_clockwise(LWGEOM *lwgeom);
 extern void lwpoly_force_clockwise(LWPOLY *poly);
 extern void lwtriangle_force_clockwise(LWTRIANGLE *triangle);
 
+extern int lwgeom_is_clockwise(LWGEOM *lwgeom);
+extern int lwpoly_is_clockwise(LWPOLY *poly);
+extern int lwtriangle_is_clockwise(LWTRIANGLE *triangle);
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
 

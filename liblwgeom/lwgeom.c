@@ -59,6 +59,35 @@ lwgeom_force_clockwise(LWGEOM *lwgeom)
 	}
 }
 
+/** Check clockwise orientation on LWGEOM polygons **/
+int
+lwgeom_is_clockwise(LWGEOM *lwgeom)
+{
+	switch (lwgeom->type)
+	{
+		case POLYGONTYPE:
+			return lwpoly_is_clockwise((LWPOLY *)lwgeom);
+
+		case TRIANGLETYPE:
+			return lwtriangle_is_clockwise((LWTRIANGLE *)lwgeom);
+
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		{
+			int i;
+			LWCOLLECTION* coll = (LWCOLLECTION *)lwgeom;
+
+			for (i=0; i < coll->ngeoms; i++)
+				if (!lwgeom_is_clockwise(coll->geoms[i]))
+					return LW_FALSE;
+			return LW_TRUE;
+		}
+		default:
+			return LW_TRUE;
+		return LW_FALSE;
+	}
+}
+
 /** Reverse vertex order of LWGEOM **/
 void
 lwgeom_reverse(LWGEOM *lwgeom)
