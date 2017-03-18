@@ -282,7 +282,7 @@ static void encode_keys(struct mvt_agg_context *ctx)
 		keys[k++] = key;
 	}
 	if (!geom_name_found)
-		lwerror("encode_keys: no column with specificed geom_name found");
+		lwerror("encode_keys: no column '%s' found", ctx->geom_name);
 	ctx->layer->n_keys = k;
 	ctx->layer->keys = keys;
 	ReleaseTupleDesc(tupdesc);
@@ -365,7 +365,7 @@ static void encode_values(struct mvt_agg_context *ctx)
 }
 
 static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
-		Datum datum, uint32_t *tags, uint32_t c, uint32_t k)
+	Datum datum, uint32_t *tags, uint32_t c, uint32_t k)
 {
 	struct mvt_kv_string_value *kv;
 	Oid foutoid;
@@ -464,7 +464,7 @@ static int max_dim(LWCOLLECTION *lwcoll)
  * dimension.
  */
 LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer, 
-		 bool clip_geom)
+	bool clip_geom)
 {
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;

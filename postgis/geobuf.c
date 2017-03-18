@@ -30,7 +30,8 @@
 #define FEATURES_CAPACITY_INITIAL 50
 #define MAX_PRECISION 1e6
 
-static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom);
+static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
+	LWGEOM *lwgeom);
 
 static Data__Geometry *galloc(Data__Geometry__Type type) {
 	Data__Geometry *geometry;
@@ -82,7 +83,9 @@ static void set_int_value(Data__Value *value, int64 intval) {
 	}
 }
 
-static void encode_properties(struct geobuf_agg_context *ctx, Data__Feature *feature) {
+static void encode_properties(struct geobuf_agg_context *ctx,
+	Data__Feature *feature)
+{
 	uint32_t *properties;
 	Data__Value **values;
 	uint32_t i, k = 0, c = 0;
@@ -144,7 +147,9 @@ static void encode_properties(struct geobuf_agg_context *ctx, Data__Feature *fea
 	feature->properties = properties;
 }
 
-static int64_t *encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa, int64_t *coords, int len, int offset) {
+static int64_t *encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa,
+	int64_t *coords, int len, int offset)
+{
 	int i, c;
 	POINT4D pt;
 	int64_t sum[] = { 0, 0, 0, 0 };
@@ -152,7 +157,8 @@ static int64_t *encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa, in
 	if (offset == 0)
 		coords = palloc(sizeof (int64_t) * len * ctx->dimensions);
 	else
-		coords = repalloc(coords, sizeof (int64_t) * ((len * ctx->dimensions) + offset));
+		coords = repalloc(coords, sizeof (int64_t) *
+			((len * ctx->dimensions) + offset));
 
 	c = offset;
 	for (i = 0; i < len; i++) {
@@ -167,7 +173,9 @@ static int64_t *encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa, in
 	return coords;
 }
 
-static Data__Geometry *encode_point(struct geobuf_agg_context *ctx, LWPOINT *lwpoint) {
+static Data__Geometry *encode_point(struct geobuf_agg_context *ctx,
+	LWPOINT *lwpoint)
+{
 	int npoints;
 	Data__Geometry *geometry;
 	POINTARRAY *pa;
@@ -186,7 +194,9 @@ static Data__Geometry *encode_point(struct geobuf_agg_context *ctx, LWPOINT *lwp
 	return geometry;
 }
 
-static Data__Geometry *encode_mpoint(struct geobuf_agg_context *ctx, LWMPOINT *lwmpoint) {
+static Data__Geometry *encode_mpoint(struct geobuf_agg_context *ctx,
+	LWMPOINT *lwmpoint)
+{
 	int i, ngeoms;
 	POINTARRAY *pa;
 	Data__Geometry *geometry;
@@ -212,7 +222,9 @@ static Data__Geometry *encode_mpoint(struct geobuf_agg_context *ctx, LWMPOINT *l
 	return geometry;
 }
 
-static Data__Geometry *encode_line(struct geobuf_agg_context *ctx, LWLINE *lwline) {
+static Data__Geometry *encode_line(struct geobuf_agg_context *ctx,
+	LWLINE *lwline)
+{
 	POINTARRAY *pa;
 	Data__Geometry *geometry;
 
@@ -229,7 +241,9 @@ static Data__Geometry *encode_line(struct geobuf_agg_context *ctx, LWLINE *lwlin
 	return geometry;
 }
 
-static Data__Geometry *encode_mline(struct geobuf_agg_context *ctx, LWMLINE *lwmline) {
+static Data__Geometry *encode_mline(struct geobuf_agg_context *ctx,
+	LWMLINE *lwmline)
+{
 	int i, offset, ngeoms;
 	POINTARRAY *pa;
 	Data__Geometry *geometry;
@@ -264,7 +278,9 @@ static Data__Geometry *encode_mline(struct geobuf_agg_context *ctx, LWMLINE *lwm
 	return geometry;
 }
 
-static Data__Geometry *encode_poly(struct geobuf_agg_context *ctx, LWPOLY *lwpoly) {
+static Data__Geometry *encode_poly(struct geobuf_agg_context *ctx,
+	LWPOLY *lwpoly)
+{
 	int i, len, nrings, offset;
 	POINTARRAY *pa;
 	Data__Geometry *geometry;
@@ -300,7 +316,9 @@ static Data__Geometry *encode_poly(struct geobuf_agg_context *ctx, LWPOLY *lwpol
 	return geometry;
 }
 
-static Data__Geometry *encode_mpoly(struct geobuf_agg_context *ctx, LWMPOLY* lwmpoly) {
+static Data__Geometry *encode_mpoly(struct geobuf_agg_context *ctx,
+	LWMPOLY* lwmpoly)
+{
 	int i, j, c, len, offset, n_lengths, ngeoms, nrings;
 	POINTARRAY *pa;
 	Data__Geometry *geometry;
@@ -349,7 +367,9 @@ static Data__Geometry *encode_mpoly(struct geobuf_agg_context *ctx, LWMPOLY* lwm
 	return geometry;
 }
 
-static Data__Geometry *encode_collection(struct geobuf_agg_context *ctx, LWCOLLECTION* lwcollection) {
+static Data__Geometry *encode_collection(struct geobuf_agg_context *ctx,
+	LWCOLLECTION* lwcollection)
+{
 	int i, ngeoms;
 	Data__Geometry *geometry, **geometries;
 
@@ -373,7 +393,9 @@ static Data__Geometry *encode_collection(struct geobuf_agg_context *ctx, LWCOLLE
 	return geometry;
 }
 
-static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom) {
+static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
+	LWGEOM *lwgeom)
+{
 	int type = lwgeom->type;
 	switch (type)
 	{
@@ -398,12 +420,14 @@ static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx, LWGEOM *l
 	return NULL;
 }
 
-static void analyze_val(struct geobuf_agg_context *ctx, double val) {
+static void analyze_val(struct geobuf_agg_context *ctx, double val)
+{
 	if (ceil(val * ctx->e) / ctx->e != val && ctx->e < MAX_PRECISION)
 		ctx->e *= 10;
 }
 
-static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa) {
+static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa)
+{
 	int i;
 	POINT4D pt;
 	for (i = 0; i < pa->npoints; i++) {
@@ -417,7 +441,8 @@ static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa) {
 	}
 }
 
-static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom) {
+static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
+{
 	int i, type;
 	LWLINE *lwline;
 	LWPOLY *lwpoly;
@@ -449,7 +474,9 @@ static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom) {
 	}
 }
 
-static void analyze_geometry_flags(struct geobuf_agg_context *ctx, LWGEOM *lwgeom) {
+static void analyze_geometry_flags(struct geobuf_agg_context *ctx,
+	LWGEOM *lwgeom)
+{
 	if (!ctx->has_dimensions) {
 		if (FLAGS_GET_Z(lwgeom->flags) || FLAGS_GET_M(lwgeom->flags))
 			ctx->dimensions = 3;
@@ -461,10 +488,8 @@ static void analyze_geometry_flags(struct geobuf_agg_context *ctx, LWGEOM *lwgeo
 	}
 }
 
-/**
- *
- */
-static Data__Feature *encode_feature(struct geobuf_agg_context *ctx) {
+static Data__Feature *encode_feature(struct geobuf_agg_context *ctx)
+{
 	Data__Feature *feature;
 
 	feature = palloc (sizeof (Data__Feature));
@@ -573,20 +598,19 @@ uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 		data->has_dimensions = ctx->has_dimensions;
 		data->dimensions = ctx->dimensions;
 	}
-	lwdebug(3, "data->dimensions: %d", data->dimensions);
 
 	/* check and set precision if not default */
 	if (ctx->e > MAX_PRECISION)
 		ctx->e = MAX_PRECISION;
 	ctx->precision = ceil(log(ctx->e) / log(10));
-	lwdebug(3, "ctx->precision: %d", ctx->precision);
 	if (ctx->precision != 6) {
 		data->has_precision = 1;
 		data->precision = ctx->precision;
 	}
 
 	for (i = 0; i < fc->n_features; i++)
-		fc->features[i]->geometry = encode_geometry(ctx, ctx->lwgeoms[i]);
+		fc->features[i]->geometry = encode_geometry(ctx,
+			ctx->lwgeoms[i]);
 
 	size_t len = data__get_packed_size(data);
 	uint8_t *buf = palloc(sizeof(*buf) * (len + VARHDRSZ));
