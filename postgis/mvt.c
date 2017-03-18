@@ -444,7 +444,7 @@ static void parse_values(struct mvt_agg_context *ctx)
 	ctx->feature->tags = tags;
 }
 
-int max_dim(LWCOLLECTION *lwcoll)
+static int max_dim(LWCOLLECTION *lwcoll)
 {
 	int i, dim = 1;
 	for (i = 0; i < lwcoll->ngeoms; i++) {
