@@ -901,8 +901,8 @@ FROM (SELECT ST_BuildArea(
 			<title>Description</title>
 
 			<para>
-				Returns true if all polygonal components of the input geometry use a counter-clockwise 
-				orientation for their exterior ring, and a clockwise direction 
+				Returns true if all polygonal components of the input geometry use a counter-clockwise
+				orientation for their exterior ring, and a clockwise direction
 				for all interior rings.
 			</para>
 
@@ -912,17 +912,18 @@ FROM (SELECT ST_BuildArea(
 
 			<note>
 				<para>
-					If a polygonal geometry does not use reversed orientation
-					for interior rings (i.e., if one or more interior rings
-					are oriented in the same direction as an exterior ring)
-					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
+					Closed linestrings are not considered polygonal components,
+					so you would still get a true return by passing
+          a single closed linestring no matter its orientation.
 				</para>
 			</note>
 
 			<note>
 				<para>
-					This function does not consider closed linestrings as polygons,
-					and does not check their orientation.
+					If a polygonal geometry does not use reversed orientation
+					for interior rings (i.e., if one or more interior rings
+					are oriented in the same direction as an exterior ring)
+					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
 				</para>
 			</note>
 
@@ -970,8 +971,8 @@ FROM (SELECT ST_BuildArea(
 			<title>Description</title>
 
 			<para>
-				Returns true if all polygonal components of the input geometry use a clockwise 
-				orientation for their exterior ring, and a counter-clockwise direction 
+				Returns true if all polygonal components of the input geometry use a clockwise
+				orientation for their exterior ring, and a counter-clockwise direction
 				for all interior rings.
 			</para>
 
@@ -981,17 +982,18 @@ FROM (SELECT ST_BuildArea(
 
 			<note>
 				<para>
-					If a polygonal geometry does not use reversed orientation
-					for interior rings (i.e., if one or more interior rings
-					are oriented in the same direction as an exterior ring)
-					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
+					Closed linestrings are not considered polygonal components,
+					so you would still get a true return by passing
+          a single closed linestring no matter its orientation.
 				</para>
 			</note>
 
 			<note>
 				<para>
-					This function does not consider closed linestrings as polygons,
-					and does not check their orientation.
+					If a polygonal geometry does not use reversed orientation
+					for interior rings (i.e., if one or more interior rings
+					are oriented in the same direction as an exterior ring)
+					then both ST_IsPolygonCW and ST_IsPolygonCCW will return false.
 				</para>
 			</note>
 
