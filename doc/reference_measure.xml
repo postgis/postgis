@@ -870,7 +870,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 	<refsection>
 	  <title>Examples</title>
 
-	  <para>In each of the following illustrations, the blue dot represents
+	  <para>In each of the following illustrations, the green dot represents
 	  the centroid of the source geometry.</para>
 
 	  <informaltable>

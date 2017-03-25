@@ -1712,7 +1712,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 #: reference_measure.xml:665
 #, no-c-format
 msgid ""
-"In each of the following illustrations, the blue dot represents the centroid "
+"In each of the following illustrations, the green dot represents the centroid "
 "of the source geometry."
 msgstr ""
 "Em cada uma das ilustrações seguintes, o ponto azul representa o centroide "
