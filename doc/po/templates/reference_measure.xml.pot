@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-03-29 06:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1262,8 +1262,8 @@ msgstr ""
 #: reference_measure.xml:665
 #, no-c-format
 msgid ""
-"In each of the following illustrations, the blue dot represents the centroid "
-"of the source geometry."
+"In each of the following illustrations, the green dot represents the "
+"centroid of the source geometry."
 msgstr ""
 
 #. Tag: para

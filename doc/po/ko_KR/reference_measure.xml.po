@@ -1699,7 +1699,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 #: reference_measure.xml:665
 #, no-c-format
 msgid ""
-"In each of the following illustrations, the blue dot represents the centroid "
+"In each of the following illustrations, the green dot represents the centroid "
 "of the source geometry."
 msgstr "다음 그림들 각각에서, 파란색 점이 입력 도형의 중심점을 나타냅니다."
 
