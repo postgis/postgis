@@ -1089,7 +1089,7 @@ SELECT ST_AsText(
 		  <itemizedlist>
               <listitem>
                   <para>
-                      A "core" geometry, that is within <varname>eps</varname> distance of at least <varname>minpoints</varname> other input geometries, or
+                      A "core" geometry, that is within <varname>eps</varname> distance of at least <varname>minpoints</varname> input geometries (including itself) or
                   </para>
 			  </listitem>
 			  <listitem>
