@@ -14,7 +14,7 @@ FROM generate_series(0,3) i;
 
 
 INSERT INTO knn_recheck_geom(gid,geom)
-SELECT 600000 + ROW_NUMBER() OVER(ORDER BY gid) AS gid, ST_Translate(ST_Buffer(geom,8,15),100,300) As geom
+SELECT 600000 + ROW_NUMBER() OVER(ORDER BY gid) AS gid, ST_Translate(ST_Buffer(geom,8,15 ),100,300) As geom
 FROM knn_recheck_geom
 WHERE gid IN(1000, 10000, 2000,3000);
 
@@ -37,8 +37,8 @@ FROM knn_recheck_geom As a
 	LEFT JOIN 
 		LATERAL ( SELECT  gid, geom, a.geom <-> g.geom As knn_dist
 			FROM knn_recheck_geom As g WHERE a.gid <> g.gid ORDER BY a.geom <-> g.geom LIMIT 5) As b ON true
-	WHERE a.gid IN(1,500101,500003)
-ORDER BY a.gid, true_rn;
+	WHERE a.gid IN(1,500101)
+ORDER BY a.gid, true_rn, b.gid;
 
 -- create index and repeat
 CREATE INDEX idx_knn_recheck_geom_gist ON knn_recheck_geom USING gist(geom);
@@ -60,8 +60,8 @@ FROM knn_recheck_geom As a
 	LEFT JOIN 
 		LATERAL ( SELECT  gid, geom, a.geom <-> g.geom As knn_dist
 			FROM knn_recheck_geom As g WHERE a.gid <> g.gid ORDER BY a.geom <-> g.geom LIMIT 5) As b ON true
-	WHERE a.gid IN(1,500101,500003)
-ORDER BY a.gid, true_rn;
+	WHERE a.gid IN(1,500101)
+ORDER BY a.gid, true_rn, b.gid;
 
 DROP TABLE knn_recheck_geom;
 
@@ -102,7 +102,7 @@ SELECT '#3g' As t, a.gid,  ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
 FROM knn_recheck_geog As a 
-	WHERE a.gid IN(500000,500010,1000,2614)
+	WHERE a.gid IN(500000,500010,1000)
 ORDER BY a.gid;
 
 
@@ -121,11 +121,11 @@ SELECT '#2g' As t, gid, ST_Distance( 'LINESTRING(75 10, 75 12, 80 20)'::geograph
 FROM knn_recheck_geog
 ORDER BY 'LINESTRING(75 10, 75 12, 80 20)'::geography <-> geog LIMIT 5;
 
-SELECT '#3g' As t, a.gid,  ARRAY(SELECT  gid
+SELECT '#3g' As t, a.gid,  ARRAY(SELECT  g.gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY ST_Distance(a.geog, g.geog, false) LIMIT 5) = ARRAY(SELECT  gid
 			FROM knn_recheck_geog As g WHERE a.gid <> g.gid ORDER BY a.geog <-> g.geog LIMIT 5) As dist_order_agree
 FROM knn_recheck_geog As a 
-	WHERE a.gid IN(500000,500010,1000,2614)
+	WHERE a.gid IN(500000,500010,1000)
 ORDER BY a.gid;
 
 DROP TABLE knn_recheck_geog;
@@ -189,8 +189,8 @@ FROM knn_recheck_geom_nd As a
 	LEFT JOIN 
 		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
 			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
-	WHERE a.gid IN(1,500003,600001)
-ORDER BY a.gid, true_rn;
+	WHERE a.gid IN(1,600001)
+ORDER BY a.gid, true_rn, b.gid;
 
 -- create index and repeat
 CREATE INDEX idx_knn_recheck_geom_nd_gist ON knn_recheck_geom_nd USING gist(geom gist_geometry_ops_nd);
@@ -214,8 +214,8 @@ FROM knn_recheck_geom_nd As a
 	LEFT JOIN 
 		LATERAL ( SELECT  gid, geom, a.geom <<->> g.geom As knn_dist
 			FROM knn_recheck_geom_nd As g WHERE a.gid <> g.gid ORDER BY a.geom <<->> g.geom LIMIT 5) As b ON true
-	WHERE a.gid IN(1,500003,600001)
-ORDER BY a.gid, true_rn;
+	WHERE a.gid IN(1,600001)
+ORDER BY a.gid, true_rn, b.gid;
 
 
 DROP TABLE knn_recheck_geom_nd;
