@@ -5,8 +5,8 @@ Winnie:
  [![Build Status](https://debbie.postgis.net:444/buildStatus/icon?job=PostGIS_trunk)]
  (https://debbie.postgis.net:444/view/PostGIS/job/PostGIS_trunk/)
 Dronie:
- [![Build Status](https://drone.osgeo.kbt.io/api/badges/postgis/postgis/status.svg?branch=svn-trunk)]
- (https://drone.osgeo.kbt.io/postgis/postgis?branch=svn-trunk)
+ [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-trunk)]
+ (https://drone.osgeo.org/postgis/postgis?branch=svn-trunk)
 Travis:
  [![Build Status](https://secure.travis-ci.org/postgis/postgis.png)]
  (http://travis-ci.org/postgis/postgis)
