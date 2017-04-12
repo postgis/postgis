@@ -1649,23 +1649,6 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 }
 
 
-static void shuffle(void *array, size_t n, size_t size) {
-    char tmp[size];
-    char *arr = array;
-    size_t stride = size;
-
-    if (n > 1) {
-        size_t i;
-        for (i = 0; i < n - 1; ++i) {
-            size_t rnd = (size_t) rand();
-            size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
-
-            memcpy(tmp, arr + j * stride, size);
-            memcpy(arr + j * stride, arr + i * stride, size);
-            memcpy(arr + i * stride, tmp, size);
-        }
-    }
-}
 
 LWMPOINT*
 lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
@@ -1675,7 +1658,7 @@ lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
 	const LWGEOM *lwgeom = (LWGEOM*)lwpoly;
 	int sample_npoints, sample_sqrt, sample_width, sample_height;
 	double sample_cell_size;
-	int i, j;
+	int i, j, n;
 	int iterations = 0;
 	int npoints_generated = 0;
 	int npoints_tested = 0;
@@ -1687,6 +1670,10 @@ lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
 	int srid = lwgeom_get_srid(lwgeom);
 	int done = 0;
 	int *cells;
+	const size_t size = 2*sizeof(int);
+	char tmp[2*sizeof(int)];
+	const size_t stride = 2*sizeof(int);
+
 
 	if (lwgeom_get_type(lwgeom) != POLYGONTYPE)
 	{
@@ -1773,7 +1760,22 @@ lwpoly_to_points(const LWPOLY *lwpoly, int npoints)
 			cells[2*(i*sample_height+j)+1] = j;
 		}
 	}
-	shuffle(cells, sample_height*sample_width, 2*sizeof(int));
+
+	/* shuffle */
+	{
+		n = sample_height*sample_width;
+		if (n > 1) {
+			for (i = 0; i < n - 1; ++i) {
+				size_t rnd = (size_t) rand();
+				size_t j = i + rnd / (RAND_MAX / (n - i) + 1);
+
+				memcpy(tmp, (char *)cells + j * stride, size);
+				memcpy((char *)cells + j * stride, (char *)cells + i * stride, size);
+				memcpy((char *)cells + i * stride, tmp, size);
+			}
+		}
+	}
+
 
 	/* Start testing points */
 	while (npoints_generated < npoints)

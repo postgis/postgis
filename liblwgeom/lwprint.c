@@ -76,8 +76,8 @@ static void lwprint_normalize_latlon(double *lat, double *lon)
 static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char *neg_dir_symbol, const char * format)
 {
 	/* 3 numbers, 1 sign or compass dir, and 5 possible strings (degree signs, spaces, misc text, etc) between or around them.*/
-	static int NUM_PIECES = 9;
-	static int WORK_SIZE = 1024;
+#	define NUM_PIECES 9
+#	define WORK_SIZE 1024
 	char pieces[NUM_PIECES][WORK_SIZE];
 	int current_piece = 0;
 	int is_negative = 0;
