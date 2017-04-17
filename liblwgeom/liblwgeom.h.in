@@ -1967,6 +1967,12 @@ extern GSERIALIZED* gserialized_from_lwgeom(LWGEOM *geom, size_t *size);
 extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 
 /**
+ * Pull a #GBOX from the header of a #GSERIALIZED, if one is available.  If
+ * it is not, return LW_FAILURE.
+ */
+extern int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+
+/**
 * Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
 * it is not, calculate it from the geometry. If that doesn't work (null
 * or empty) return LW_FAILURE.
