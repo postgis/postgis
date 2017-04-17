@@ -120,6 +120,16 @@ AC_PROG_YACC
 AC_SUBST([LEX])
 AC_SUBST([YACC])
 
+if test "x$YACC" = "x"; then
+	dnl YACC was not found
+	AC_MSG_ERROR([Liblwgeom parsers require bison, byacc or yacc, which was not found within the current path])
+fi
+
+if test "x$LEX" = "x"; then
+	dnl LEX was not found
+	AC_MSG_ERROR([Liblwgeom parsers require flex or lex, which were not found within the current path])
+fi
+
 dnl
 dnl Search for OS-specific headers
 dnl
