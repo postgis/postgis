@@ -267,6 +267,7 @@ static TupleDesc get_tuple_desc(struct mvt_agg_context *ctx)
 
 static void encode_keys(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "encode_keys called");
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	int natts = tupdesc->natts;
 	char **keys = palloc(natts * sizeof(*keys));
@@ -296,6 +297,7 @@ static VectorTile__Tile__Value *create_value() {
 
 #define MVT_CREATE_VALUES(kvtype, hash, hasfield, valuefield) \
 { \
+	POSTGIS_DEBUG(2, "MVT_CREATE_VALUES called"); \
 	struct kvtype *kv; \
 	for (kv = ctx->hash; kv != NULL; kv=kv->hh.next) { \
 		VectorTile__Tile__Value *value = create_value(); \
@@ -307,6 +309,7 @@ static VectorTile__Tile__Value *create_value() {
 
 static void encode_values(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "encode_values called");
 	VectorTile__Tile__Value **values;
 	values = palloc(ctx->values_hash_i * sizeof(*values));
 	struct mvt_kv_string_value *kv;
@@ -326,6 +329,7 @@ static void encode_values(struct mvt_agg_context *ctx)
 	MVT_CREATE_VALUES(mvt_kv_bool_value,
 		bool_values_hash, has_bool_value, bool_value);
 
+	POSTGIS_DEBUGF(3, "encode_values n_values: %d", ctx->values_hash_i);
 	ctx->layer->n_values = ctx->values_hash_i;
 	ctx->layer->values = values;
 
@@ -339,10 +343,13 @@ static void encode_values(struct mvt_agg_context *ctx)
 
 #define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
 { \
+	POSTGIS_DEBUG(2, "MVT_PARSE_VALUE called"); \
 	struct kvtype *kv; \
 	HASH_FIND(hh, ctx->hash, &value, size, kv); \
 	if (!kv) { \
+		POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
 		kv = palloc(sizeof(*kv)); \
+		POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", ctx->values_hash_i); \
 		kv->id = ctx->values_hash_i++; \
 		kv->valuefield = value; \
 		HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
@@ -374,15 +381,19 @@ static void encode_values(struct mvt_agg_context *ctx)
 static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	Datum datum, uint32_t *tags, uint32_t c, uint32_t k)
 {
+	POSTGIS_DEBUG(2, "parse_value_as_string called");
 	struct mvt_kv_string_value *kv;
 	Oid foutoid;
 	bool typisvarlena;
 	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
 	char *value = OidOutputFunctionCall(foutoid, datum);
+	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
 	size_t size = strlen(value);
 	HASH_FIND(hh, ctx->string_values_hash, &value, size, kv);
 	if (!kv) {
+		POSTGIS_DEBUG(4, "parse_value_as_string value not found");
 		kv = palloc(sizeof(*kv));
+		POSTGIS_DEBUGF(4, "parse_value_as_string new hash key: %d", ctx->values_hash_i);
 		kv->id = ctx->values_hash_i++;
 		kv->string_value = value;
 		HASH_ADD(hh, ctx->string_values_hash, string_value, size, kv);
@@ -393,6 +404,7 @@ static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
 
 static void parse_values(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "parse_values called");
 	uint32_t n_keys = ctx->layer->n_keys;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	bool isnull;
@@ -400,13 +412,17 @@ static void parse_values(struct mvt_agg_context *ctx)
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	int natts = tupdesc->natts;
 
+	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
+
 	for (i = 0; i < natts; i++) {
 		if (i == ctx->geom_index)
 			continue;
 		k++;
 		Datum datum = GetAttributeByNum(ctx->row, i+1, &isnull);
-		if (isnull)
+		if (isnull) {
+			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
+		}
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		switch (typoid) {
 		case BOOLOID:
@@ -449,6 +465,8 @@ static void parse_values(struct mvt_agg_context *ctx)
 
 	ctx->feature->n_tags = c * 2;
 	ctx->feature->tags = tags;
+
+	POSTGIS_DEBUGF(3, "parse_values n_tags %d", ctx->feature->n_tags);
 }
 
 static int max_dim(LWCOLLECTION *lwcoll)
@@ -473,6 +491,7 @@ static int max_dim(LWCOLLECTION *lwcoll)
 LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
+	POSTGIS_DEBUG(2, "mvt_geom called");
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
@@ -542,6 +561,8 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
  */
 void mvt_agg_init_context(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "mvt_agg_init_context called");
+
 	VectorTile__Tile__Layer *layer;
 
 	if (ctx->extent == 0)
@@ -577,6 +598,8 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
  */
 void mvt_agg_transfn(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "mvt_agg_transfn called");
+
 	VectorTile__Tile__Layer *layer = ctx->layer;
 	VectorTile__Tile__Feature **features = layer->features;
 	if (layer->n_features >= ctx->features_capacity) {
@@ -584,6 +607,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 		layer->features = repalloc(layer->features, new_capacity *
 			sizeof(*layer->features));
 		ctx->features_capacity = new_capacity;
+		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %d", new_capacity);
 	}
 
 	VectorTile__Tile__Feature *feature = palloc(sizeof(*feature));
@@ -600,6 +624,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	GSERIALIZED *gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gs);
 
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d", layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
 	encode_geometry(ctx, lwgeom);
@@ -616,6 +641,8 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
  */
 uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx)
 {
+	POSTGIS_DEBUG(2, "mvt_agg_finalfn called");
+
 	encode_values(ctx);
 
 	VectorTile__Tile__Layer *layers[1];
