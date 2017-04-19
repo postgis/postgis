@@ -190,7 +190,7 @@ static void encode_mline(struct mvt_agg_context *ctx, LWMLINE *lwmline)
 		c += 2 + lwmline->geoms[i]->points->npoints * 2;
 	feature->geometry = palloc(sizeof(*feature->geometry) * c);
 	for (i = 0; i < lwmline->ngeoms; i++)
-		offset += encode_ptarray(ctx, MVT_LINE, 
+		offset += encode_ptarray(ctx, MVT_LINE,
 			lwmline->geoms[i]->points,
 			feature->geometry + offset, &px, &py);
 	feature->n_geometry = offset;
@@ -328,6 +328,13 @@ static void encode_values(struct mvt_agg_context *ctx)
 
 	ctx->layer->n_values = ctx->values_hash_i;
 	ctx->layer->values = values;
+
+	HASH_CLEAR(hh, ctx->string_values_hash);
+	HASH_CLEAR(hh, ctx->float_values_hash);
+	HASH_CLEAR(hh, ctx->double_values_hash);
+	HASH_CLEAR(hh, ctx->uint_values_hash);
+	HASH_CLEAR(hh, ctx->sint_values_hash);
+	HASH_CLEAR(hh, ctx->bool_values_hash);
 }
 
 #define MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size) \
@@ -463,7 +470,7 @@ static int max_dim(LWCOLLECTION *lwcoll)
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
  */
-LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer, 
+LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	double width = gbox->xmax - gbox->xmin;
@@ -533,7 +540,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 /**
  * Initialize aggregation context.
  */
-void mvt_agg_init_context(struct mvt_agg_context *ctx) 
+void mvt_agg_init_context(struct mvt_agg_context *ctx)
 {
 	VectorTile__Tile__Layer *layer;
 
@@ -544,7 +551,6 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
 	ctx->string_values_hash = NULL;
 	ctx->float_values_hash = NULL;
 	ctx->double_values_hash = NULL;
-	ctx->int_values_hash = NULL;
 	ctx->uint_values_hash = NULL;
 	ctx->sint_values_hash = NULL;
 	ctx->bool_values_hash = NULL;

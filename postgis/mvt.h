@@ -31,7 +31,7 @@
 #include "utils/array.h"
 #include "utils/typcache.h"
 #include "utils/lsyscache.h"
-#include "catalog/pg_type.h" 
+#include "catalog/pg_type.h"
 #include "executor/executor.h"
 #include "access/htup_details.h"
 #include "access/htup.h"
@@ -57,7 +57,6 @@ struct mvt_agg_context {
 	struct mvt_kv_string_value *string_values_hash;
 	struct mvt_kv_float_value *float_values_hash;
 	struct mvt_kv_double_value *double_values_hash;
-	struct mvt_kv_int_value *int_values_hash;
 	struct mvt_kv_uint_value *uint_values_hash;
 	struct mvt_kv_sint_value *sint_values_hash;
 	struct mvt_kv_bool_value *bool_values_hash;
