@@ -43,7 +43,7 @@ enum mvt_type {
 };
 
 struct mvt_kv_string_value {
-	const char *string_value;
+	char *string_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
