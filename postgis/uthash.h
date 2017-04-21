@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2016, Troy D. Hanson     http://troydhanson.github.com/uthash/
+Copyright (c) 2003-2017, Troy D. Hanson     http://troydhanson.github.com/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTHASH_H
 #define UTHASH_H
 
-#define UTHASH_VERSION 2.0.1
+#define UTHASH_VERSION 2.0.2
 
 #include <string.h>   /* memcmp,strlen */
 #include <stddef.h>   /* ptrdiff_t */
@@ -34,21 +34,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    As decltype is only available in newer compilers (VS2010 or gcc 4.3+
    when compiling c++ source) this code uses whatever method is needed
    or, for VS2008 where neither is available, uses casting workarounds. */
+#if !defined(DECLTYPE) && !defined(NO_DECLTYPE)
 #if defined(_MSC_VER)   /* MS compiler */
 #if _MSC_VER >= 1600 && defined(__cplusplus)  /* VS2010 or newer in C++ mode */
 #define DECLTYPE(x) (decltype(x))
 #else                   /* VS2008 or older (or VS2010 in C mode) */
 #define NO_DECLTYPE
-#define DECLTYPE(x)
 #endif
-#elif defined(__BORLANDC__) || defined(__LCC__) || defined(__WATCOMC__)
+#elif defined(__BORLANDC__) || defined(__ICCARM__) || defined(__LCC__) || defined(__WATCOMC__)
 #define NO_DECLTYPE
-#define DECLTYPE(x)
 #else                   /* GNU, Sun and other compilers */
 #define DECLTYPE(x) (__typeof(x))
 #endif
+#endif
 
 #ifdef NO_DECLTYPE
+#define DECLTYPE(x)
 #define DECLTYPE_ASSIGN(dst,src)                                                 \
 do {                                                                             \
   char **_da_dst = (char**)(&(dst));                                             \
@@ -230,6 +231,30 @@ do {                                                                            
   (head)->hh.tbl->tail = &((add)->hh);                                           \
 } while (0)
 
+#define HASH_AKBI_INNER_LOOP(hh,head,add,cmpfcn)                                 \
+do {                                                                             \
+  do {                                                                           \
+    if (cmpfcn(DECLTYPE(head)(_hs_iter), add) > 0)                               \
+      break;                                                                     \
+  } while ((_hs_iter = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->next));           \
+} while (0)
+
+#ifdef NO_DECLTYPE
+#undef HASH_AKBI_INNER_LOOP
+#define HASH_AKBI_INNER_LOOP(hh,head,add,cmpfcn)                                 \
+do {                                                                             \
+  char *_hs_saved_head = (char*)(head);                                          \
+  do {                                                                           \
+    DECLTYPE_ASSIGN(head, _hs_iter);                                             \
+    if (cmpfcn(head, add) > 0) {                                                 \
+      DECLTYPE_ASSIGN(head, _hs_saved_head);                                     \
+      break;                                                                     \
+    }                                                                            \
+    DECLTYPE_ASSIGN(head, _hs_saved_head);                                       \
+  } while ((_hs_iter = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->next));           \
+} while (0)
+#endif
+
 #define HASH_ADD_KEYPTR_BYHASHVALUE_INORDER(hh,head,keyptr,keylen_in,hashval,add,cmpfcn) \
 do {                                                                             \
   unsigned _ha_bkt;                                                              \
@@ -242,20 +267,17 @@ do {                                                                            
     (head) = (add);                                                              \
     HASH_MAKE_TABLE(hh, head);                                                   \
   } else {                                                                       \
-    struct UT_hash_handle *_hs_iter = &(head)->hh;                               \
+    void *_hs_iter = (head);                                                     \
     (add)->hh.tbl = (head)->hh.tbl;                                              \
-    do {                                                                         \
-      if (cmpfcn(DECLTYPE(head) ELMT_FROM_HH((head)->hh.tbl, _hs_iter), add) > 0) \
-        break;                                                                   \
-    } while ((_hs_iter = _hs_iter->next));                                       \
+    HASH_AKBI_INNER_LOOP(hh, head, add, cmpfcn);                                 \
     if (_hs_iter) {                                                              \
       (add)->hh.next = _hs_iter;                                                 \
-      if (((add)->hh.prev = _hs_iter->prev)) {                                   \
-        HH_FROM_ELMT((head)->hh.tbl, _hs_iter->prev)->next = (add);              \
+      if (((add)->hh.prev = HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev)) {     \
+        HH_FROM_ELMT((head)->hh.tbl, (add)->hh.prev)->next = (add);              \
       } else {                                                                   \
         (head) = (add);                                                          \
       }                                                                          \
-      _hs_iter->prev = (add);                                                    \
+      HH_FROM_ELMT((head)->hh.tbl, _hs_iter)->prev = (add);                      \
     } else {                                                                     \
       HASH_APPEND_LIST(hh, head, add);                                           \
     }                                                                            \
@@ -466,7 +488,8 @@ do {                                                                            
 #define HASH_EMIT_KEY(hh,head,keyptr,fieldlen)
 #endif
 
-/* default to Jenkin's hash unless overridden e.g. DHASH_FUNCTION=HASH_SAX */
+/* default to Jenkin's hash */
+
 #define HASH_FCN HASH_JEN
 
 /* The Bernstein hash function, used in Perl prior to v5.6. Note (x<<5+x)=x*33. */
