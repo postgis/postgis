@@ -79,13 +79,11 @@ regression testing was needed for testing curved string functionality that
 would elicit different responses from JTS vs GEOS compilations.  Since
 JTS is no longer supported, this may not be required anymore.
 
-
 Notes about running individual regression tests
 -----------------------------------------------
 
-The script regress/run_test.pl can called directly to run individual
+The script run_test.pl can be called directly to run individual
 regression tests. Run it without parameters for info about its usage.
 
-But it should be noted that tests run in a staged install that require
-running make -C regress/ staged-install to actually use the current
-local build. This is called automatically when using make test.
+Note that tests run in a staged install which is created by running
+make staged-install. This step is a part of the complete make check.
