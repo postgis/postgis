@@ -81,11 +81,17 @@ SELECT 'TA4', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (
     UNION
     SELECT 2 AS c1, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
-SELECT 'TA5', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (SELECT 
+SELECT 'TA5', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (SELECT
     ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom, 1 AS c1, 'abcd'::text AS c2) AS q;
 SELECT 'TA6', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (SELECT 1 AS c1, -1 AS c2,
     ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
+SELECT 'TA7', encode(ST_AsMVT('test', 4096, 'geom', q), 'base64') FROM (
+    SELECT 'test' AS c1, ST_AsMVTGeom(ST_GeomFromText('POINT(25 17)'),
+    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom
+    UNION
+    SELECT 'test' AS c1, ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
 
 -- unsupported input

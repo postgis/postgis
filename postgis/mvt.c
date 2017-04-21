@@ -43,7 +43,7 @@ enum mvt_type {
 };
 
 struct mvt_kv_string_value {
-	char *string_value;
+	const char *string_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
@@ -389,14 +389,14 @@ static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	char *value = OidOutputFunctionCall(foutoid, datum);
 	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
 	size_t size = strlen(value);
-	HASH_FIND(hh, ctx->string_values_hash, &value, size, kv);
+	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
 	if (!kv) {
 		POSTGIS_DEBUG(4, "parse_value_as_string value not found");
 		kv = palloc(sizeof(*kv));
 		POSTGIS_DEBUGF(4, "parse_value_as_string new hash key: %d", ctx->values_hash_i);
 		kv->id = ctx->values_hash_i++;
 		kv->string_value = value;
-		HASH_ADD(hh, ctx->string_values_hash, string_value, size, kv);
+		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value, size, kv);
 	}
 	tags[c*2] = k - 1;
 	tags[c*2+1] = kv->id;
@@ -448,11 +448,6 @@ static void parse_values(struct mvt_agg_context *ctx)
 			MVT_PARSE_DATUM(double, mvt_kv_double_value,
 				double_values_hash, double_value,
 				DatumGetFloat8, sizeof(double));
-			break;
-		case TEXTOID:
-			MVT_PARSE_DATUM(char *, mvt_kv_string_value,
-				string_values_hash, string_value,
-				TextDatumGetCString, strlen(value));
 			break;
 		default:
 			parse_value_as_string(ctx, typoid, datum, tags, c, k);
