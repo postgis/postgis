@@ -2317,7 +2317,7 @@ main(int argc, char **argv) {
 				sscanf(optarg, "%d", &config->srid);
 				sscanf(ptr, "%d", &config->out_srid);
 			} else {
-				config->srid = config->out_srid = atoi(optarg);
+				config->srid = atoi(optarg);
 			}
 		}
 		/* band index */
@@ -2648,13 +2648,9 @@ main(int argc, char **argv) {
 		}
 	}
 
-	if (config->srid != config->out_srid) {
+	if (config->srid != config->out_srid && config->out_srid != SRID_UNKNOWN) {
 		if (config->copy_statements) {
 			rterror(_("Invalid argument combination - cannot use -Y with -s FROM_SRID:TO_SRID"));
-			exit(1);
-		}
-		if (config->out_srid == SRID_UNKNOWN) {
-			rterror(_("Unknown target SRID is invalid when source SRID is given"));
 			exit(1);
 		}
 	}

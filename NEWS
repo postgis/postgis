@@ -4,6 +4,8 @@ YYYY/MM/DD
   * Bug Fixes
 
   - #3711, Azimuth error upon adding 2.5D edges to topology
+  - #3738, raster: Using -s without -Y in raster2pgsql transforms 
+           raster data instead of setting srid
 
 PostGIS 2.3.2
 2017/01/31
