@@ -1950,11 +1950,11 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 		return n;
 	}
 	
-	/* But don't go too far. 2^25 = 33M, that's enough subdivision */
-	/* Signal callers above that we depth'ed out with a negative */
-	/* return value */
+	/* But don't go too far. 2^50 ~= 10^15, that's enough subdivision */
+	/* Just add what's left */
 	if ( depth > maxdepth )
 	{
+		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
 		return 0;
 	}
 	
@@ -2001,15 +2001,17 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	clipped1 = lwgeom_clip_by_rect(geom, subbox1.xmin, subbox1.ymin, subbox1.xmax, subbox1.ymax);
 	clipped2 = lwgeom_clip_by_rect(geom, subbox2.xmin, subbox2.ymin, subbox2.xmax, subbox2.ymax);
 	
+	++depth;
+	
 	if ( clipped1 )
 	{
-		n += lwgeom_subdivide_recursive(clipped1, maxvertices, ++depth, col, &subbox1);
+		n += lwgeom_subdivide_recursive(clipped1, maxvertices, depth, col, &subbox1);
 		lwgeom_free(clipped1);
 	}
 
 	if ( clipped2 )
 	{
-		n += lwgeom_subdivide_recursive(clipped2, maxvertices, ++depth, col, &subbox2);
+		n += lwgeom_subdivide_recursive(clipped2, maxvertices, depth, col, &subbox2);
 		lwgeom_free(clipped2);
 	}
 	

@@ -24,3 +24,20 @@ FROM gs
 GROUP BY gs.full_area;
 
 SELECT '#3522', ST_AsText(ST_Subdivide(ST_GeomFromText('POINT(1 1)',4326),10));
+
+
+with inverted_geom as (
+    select ST_Difference(
+               ST_Expand('SRID=3857;POINT(0 0)' :: geometry, 20000000),
+               ST_Buffer(
+                   'SRID=3857;POINT(0 0)' :: geometry,
+                   1,
+                   1000
+               )
+           ) as geom
+)
+select 'https://github.com/postgis/postgis/pull/127', ST_Area(ST_Simplify(ST_Union(geom), 2))::numeric
+from (
+         select ST_Subdivide(geom) geom
+         from inverted_geom
+     ) z;
