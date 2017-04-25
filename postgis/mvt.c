@@ -619,7 +619,8 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	GSERIALIZED *gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gs);
 
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d", layer->n_features);
+	// TODO: find out why a POSTGIS_DEBUGF affects encoding/uthash (memory issue?)
+	//POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d", layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
 	encode_geometry(ctx, lwgeom);
