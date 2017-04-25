@@ -36,7 +36,7 @@ with inverted_geom as (
                )
            ) as geom
 )
-select 'https://github.com/postgis/postgis/pull/127', ST_Area(ST_Simplify(ST_Union(geom), 2))::numeric
+select '#3744', ST_Area(ST_Simplify(ST_Union(geom), 2))::numeric
 from (
          select ST_Subdivide(geom) geom
          from inverted_geom
