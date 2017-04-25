@@ -4,10 +4,13 @@ YYYY/MM/DD
   * Bug Fixes
 
   - #3711, Azimuth error upon adding 2.5D edges to topology
+  - #3726, PDF manual from dblatex renders fancy quotes for programlisting
+           (Mike Toews)
   - #3738, raster: Using -s without -Y in raster2pgsql transforms 
            raster data instead of setting srid
   - #3744, ST_Subdivide loses subparts of inverted geometries
            (Darafei Praliaskouski Komzpa)
+           
 
 PostGIS 2.3.2
 2017/01/31

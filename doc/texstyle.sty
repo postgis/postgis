@@ -1,0 +1,14 @@
+%%
+%% This style is derived from the manual
+%% http://dblatex.sourceforge.net/doc/manual/sec-custom-latex.html
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{texstyle}[2017/04/25 PostGIS DocBook Style]
+
+%% Just use the original package and pass the options
+\RequirePackageWithOptions{docbook}
+
+%% Make regular quotes within programlisting tags (#3726)
+\usepackage{listings}
+\lstset{upquote=true}
+
