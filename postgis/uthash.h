@@ -80,13 +80,13 @@ typedef unsigned char uint8_t;
 #endif
 
 #ifndef uthash_fatal
-#define uthash_fatal(msg) exit(-1)        /* fatal error (out of memory,etc) */
+#define uthash_fatal(msg) lwerror("uthash: fatal error (out of memory,etc)")
 #endif
 #ifndef uthash_malloc
-#define uthash_malloc(sz) malloc(sz)      /* malloc fcn                      */
+#define uthash_malloc(sz) palloc(sz)      /* malloc fcn                      */
 #endif
 #ifndef uthash_free
-#define uthash_free(ptr,sz) free(ptr)     /* free fcn                        */
+#define uthash_free(ptr,sz) pfree(ptr)     /* free fcn                        */
 #endif
 #ifndef uthash_strlen
 #define uthash_strlen(s) strlen(s)

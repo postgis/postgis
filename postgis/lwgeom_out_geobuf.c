@@ -49,12 +49,11 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 	lwerror("Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
-	MemoryContext aggcontext;
+	MemoryContext aggcontext, oldcxt = NULL;
 	struct geobuf_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
-		lwerror("pgis_asmvt_transfn: called in non-aggregate context");
-	MemoryContextSwitchTo(aggcontext);
+		aggcontext = CurrentMemoryContext;
 
 	if (PG_ARGISNULL(0)) {
 		ctx = palloc(sizeof(*ctx));
@@ -63,6 +62,7 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 		ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(1));
 		geobuf_agg_init_context(ctx);
 	} else {
+		oldcxt = MemoryContextSwitchTo(aggcontext);
 		ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
 	}
 
@@ -71,6 +71,10 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(2);
 
 	geobuf_agg_transfn(ctx);
+
+	if (oldcxt)
+		MemoryContextSwitchTo(oldcxt);
+
 	PG_RETURN_POINTER(ctx);
 #endif
 }
