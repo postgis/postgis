@@ -368,11 +368,13 @@ static void encode_values(struct mvt_agg_context *ctx)
 { \
 	type value = datumfunc(datum); \
 	if (value >= 0) { \
-		MVT_PARSE_VALUE(value, mvt_kv_uint_value, \
+		uint64_t cvalue = value; \
+		MVT_PARSE_VALUE(cvalue, mvt_kv_uint_value, \
 				uint_values_hash, uint_value, \
 				sizeof(uint64_t)) \
 	} else { \
-		MVT_PARSE_VALUE(value, mvt_kv_sint_value, \
+		int64_t cvalue = value; \
+		MVT_PARSE_VALUE(cvalue, mvt_kv_sint_value, \
 				sint_values_hash, sint_value, \
 				sizeof(int64_t)) \
 	} \
