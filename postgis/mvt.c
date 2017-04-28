@@ -73,7 +73,7 @@ struct mvt_kv_sint_value {
 };
 
 struct mvt_kv_bool_value {
-	bool bool_value;
+	protobuf_c_boolean bool_value;
 	uint32_t id;
 	UT_hash_handle hh;
 };
@@ -274,7 +274,9 @@ static void encode_keys(struct mvt_agg_context *ctx)
 	uint32_t i, k = 0;
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
-		char *key = tupdesc->attrs[i]->attname.data;
+		char *tkey = tupdesc->attrs[i]->attname.data;
+		char *key = palloc(sizeof(*tkey));
+		strcpy(key, tkey);
 		if (strcmp(key, ctx->geom_name) == 0) {
 			ctx->geom_index = i;
 			geom_name_found = 1;
@@ -428,9 +430,9 @@ static void parse_values(struct mvt_agg_context *ctx)
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		switch (typoid) {
 		case BOOLOID:
-			MVT_PARSE_DATUM(bool, mvt_kv_bool_value,
+			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,
 				bool_values_hash, bool_value,
-				DatumGetBool, sizeof(bool));
+				DatumGetBool, sizeof(protobuf_c_boolean));
 			break;
 		case INT2OID:
 			MVT_PARSE_INT_DATUM(int16_t, DatumGetInt16);
