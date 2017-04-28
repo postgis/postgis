@@ -57,7 +57,9 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 	uint32_t i, k = 0;
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
-		char *key = tupdesc->attrs[i]->attname.data;
+		char *tkey = tupdesc->attrs[i]->attname.data;
+		char *key = palloc(sizeof(*tkey));
+		strcpy(key, tkey);
 		if (strcmp(key, ctx->geom_name) == 0) {
 			ctx->geom_index = i;
 			geom_name_found = true;
@@ -96,15 +98,13 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 
 	for (i = 0; i < natts; i++) {
 		Data__Value *value;
-		char *type, *string_value, *key;
+		char *type, *string_value;
 		Datum datum;
 		bool isnull;
 
 		if (i == ctx->geom_index)
 			continue;
 		k++;
-
-		key = tupdesc->attrs[i]->attname.data;
 
 		value = palloc (sizeof (*value));
 		data__value__init(value);
