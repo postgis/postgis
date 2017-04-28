@@ -497,6 +497,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	double resy = height / extent;
 	double fx = extent / width;
 	double fy = -(extent / height);
+	double buffer_map_xunits = resx * buffer;
+	double buffer_map_yunits = resy * buffer;
+	const GBOX *ggbox = lwgeom_get_bbox(lwgeom);
 
 	if (width == 0 || height == 0)
 		lwerror("mvt_geom: bounds width or height cannot be 0");
@@ -505,19 +508,28 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		lwerror("mvt_geom: extent cannot be 0");
 
 	if (clip_geom) {
-		double buffer_map_xunits = resx * buffer;
-		double buffer_map_yunits = resy * buffer;
-		double x0 = gbox->xmin - buffer_map_xunits;
-		double y0 = gbox->ymin - buffer_map_yunits;
-		double x1 = gbox->xmax + buffer_map_xunits;
-		double y1 = gbox->ymax + buffer_map_yunits;
+		GBOX *bgbox = gbox_copy(gbox);
+		gbox_expand(bgbox, buffer_map_xunits);
+		if (!gbox_overlaps_2d(ggbox, bgbox)) {
+			POSTGIS_DEBUG(3, "mvt_geom: geometry outside clip box");
+			return NULL;
+		}
+		if (!gbox_contains_2d(bgbox, ggbox)) {
+			double x0 = bgbox->xmin;
+			double y0 = bgbox->ymin;
+			double x1 = bgbox->xmax;
+			double y1 = bgbox->ymax;
 #if POSTGIS_GEOS_VERSION < 35
-		LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
-		lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
-		lwpoly_free(lwenv);
+			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
+			lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
+			lwpoly_free(lwenv);
 #else
-		lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
 #endif
+			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
+			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+				return NULL;
+		}
 	}
 
 	AFFINE affine;
@@ -551,6 +563,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 			lwcollection_extract(lwcoll, max_dim(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
 	}
+
+	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+		return NULL;
 
 	return lwgeom_out;
 }

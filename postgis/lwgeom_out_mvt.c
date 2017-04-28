@@ -62,6 +62,8 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
 	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
 	lwgeom_free(lwgeom_in);
+	if (lwgeom_out == NULL)
+		PG_RETURN_NULL();
 	geom_out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(geom_in, 0);
