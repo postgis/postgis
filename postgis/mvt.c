@@ -468,17 +468,17 @@ static void parse_values(struct mvt_agg_context *ctx)
 	POSTGIS_DEBUGF(3, "parse_values n_tags %d", ctx->feature->n_tags);
 }
 
-static int max_dim(LWCOLLECTION *lwcoll)
+static int max_type(LWCOLLECTION *lwcoll)
 {
-	int i, dim = 1;
+	int i, max = POINTTYPE;
 	for (i = 0; i < lwcoll->ngeoms; i++) {
 		uint8_t type = lwcoll->geoms[i]->type;
 		if (type == POLYGONTYPE || type == MULTIPOLYGONTYPE)
-			return 3;
+			return POLYGONTYPE;
 		else if (type == LINETYPE || type == MULTILINETYPE)
-			dim = 2;
+			max = LINETYPE;
 	}
-	return dim;
+	return max;
 }
 
 /**
@@ -551,20 +551,21 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 
 	LWGEOM *lwgeom_out = lwgeom_grid(lwgeom, &grid);
 
-	if (lwgeom_out == NULL)
-		lwgeom_out = lwgeom_grid(lwgeom_centroid(lwgeom), &grid);
+	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
+		return NULL;
 
 	lwgeom_force_clockwise(lwgeom_out);
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
 
 	if (lwgeom_out->type == COLLECTIONTYPE) {
-		LWCOLLECTION *lwcoll = (LWCOLLECTION*) lwgeom_out;
+		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
 		lwgeom_out = lwcollection_as_lwgeom(
-			lwcollection_extract(lwcoll, max_dim(lwcoll)));
-		lwgeom_out = lwgeom_homogenize(lwgeom_out);
+			lwcollection_extract(lwcoll, max_type(lwcoll)));
+		//lwgeom_out = lwgeom_homogenize(lwgeom_out);
+		// TODO: might not be valid here... may want to union?
 	}
 
-	if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
 	return lwgeom_out;
