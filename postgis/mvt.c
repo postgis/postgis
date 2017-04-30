@@ -561,7 +561,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
 		lwgeom_out = lwcollection_as_lwgeom(
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
-		//lwgeom_out = lwgeom_homogenize(lwgeom_out);
+		lwgeom_out = lwgeom_homogenize(lwgeom_out);
 		// TODO: might not be valid here... may want to union?
 	}
 
