@@ -554,15 +554,16 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	lwgeom_force_clockwise(lwgeom_out);
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
+	lwgeom_force_clockwise(lwgeom_out);
 
 	if (lwgeom_out->type == COLLECTIONTYPE) {
 		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
 		lwgeom_out = lwcollection_as_lwgeom(
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
-		// TODO: might not be valid here... may want to union?
+		lwgeom_out = lwgeom_make_valid(lwgeom_out);
+		lwgeom_force_clockwise(lwgeom_out);
 	}
 
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
