@@ -4094,7 +4094,7 @@ CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 @ $2 AND @extschema@._ST_CoveredBy($1,$2)'
+	AS 'SELECT $1 OPERATOR(@extschema@.@) $2 AND @extschema@._ST_CoveredBy($1,$2)'
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Availability: 1.2.2

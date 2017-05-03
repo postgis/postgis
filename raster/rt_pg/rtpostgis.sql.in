@@ -5718,7 +5718,7 @@ CREATE OR REPLACE FUNCTION raster_same(raster, raster)
 
 CREATE OR REPLACE FUNCTION raster_contained(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry @ $2::geometry'
+    AS 'select $1::geometry OPERATOR(@extschema@.@) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
@@ -5742,7 +5742,7 @@ CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry @ $2'
+    AS 'select $1::geometry OPERATOR(@extschema@.@) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
@@ -5756,13 +5756,13 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
-    AS 'select $1 ~ $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.~) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
     RETURNS bool
-    AS 'select $1 @ $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.@) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
