@@ -42,6 +42,12 @@ enum mvt_type {
 	MVT_RING = 3
 };
 
+struct mvt_kv_key {
+	char *name;
+	uint32_t id;
+	UT_hash_handle hh;
+};
+
 struct mvt_kv_string_value {
 	char *string_value;
 	uint32_t id;
@@ -265,15 +271,38 @@ static TupleDesc get_tuple_desc(struct mvt_agg_context *ctx)
 	return tupdesc;
 }
 
-static void encode_keys(struct mvt_agg_context *ctx)
+static uint32_t get_key_index(struct mvt_agg_context *ctx, char *name)
 {
-	POSTGIS_DEBUG(2, "encode_keys called");
+	struct mvt_kv_key *kv;
+	size_t size = strlen(name);
+	HASH_FIND(hh, ctx->keys_hash, name, size, kv);
+	if (!kv)
+		return -1;
+	return kv->id;
+}
+
+static uint32_t add_key(struct mvt_agg_context *ctx, char *name)
+{
+	struct mvt_kv_key *kv;
+	kv = palloc(sizeof(*kv));
+	size_t size = strlen(name);
+	kv->id = ctx->keys_hash_i++;
+	kv->name = name;
+	HASH_ADD_KEYPTR(hh, ctx->keys_hash, name, size, kv);
+	return kv->id;
+}
+
+static void parse_column_keys(struct mvt_agg_context *ctx)
+{
+	POSTGIS_DEBUG(2, "parse_column_keys called");
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	int natts = tupdesc->natts;
-	char **keys = palloc(natts * sizeof(*keys));
-	uint32_t i, k = 0;
+	uint32_t i;
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
+		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		if (typoid == JSONBOID)
+			continue;
 		char *tkey = tupdesc->attrs[i]->attname.data;
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
@@ -282,13 +311,24 @@ static void encode_keys(struct mvt_agg_context *ctx)
 			geom_name_found = 1;
 			continue;
 		}
-		keys[k++] = key;
+		add_key(ctx, key);
 	}
 	if (!geom_name_found)
-		lwerror("encode_keys: no column '%s' found", ctx->geom_name);
-	ctx->layer->n_keys = k;
-	ctx->layer->keys = keys;
+		lwerror("parse_column_keys: no column '%s' found", ctx->geom_name);
 	ReleaseTupleDesc(tupdesc);
+}
+
+static void encode_keys(struct mvt_agg_context *ctx) {
+	struct mvt_kv_key *kv;
+	size_t n_keys = ctx->keys_hash_i;
+	char **keys = palloc(n_keys * sizeof(*keys));
+	for (kv = ctx->keys_hash; kv != NULL; kv=kv->hh.next) {
+		keys[kv->id] = kv->name;
+	}
+	ctx->layer->n_keys = n_keys;
+	ctx->layer->keys = keys;
+
+	HASH_CLEAR(hh, ctx->keys_hash);
 }
 
 static VectorTile__Tile__Value *create_value() {
@@ -351,24 +391,18 @@ static void encode_values(struct mvt_agg_context *ctx)
 	if (!kv) { \
 		POSTGIS_DEBUG(4, "MVT_PARSE_VALUE value not found"); \
 		kv = palloc(sizeof(*kv)); \
-		POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", ctx->values_hash_i); \
+		POSTGIS_DEBUGF(4, "MVT_PARSE_VALUE new hash key: %d", \
+			ctx->values_hash_i); \
 		kv->id = ctx->values_hash_i++; \
 		kv->valuefield = value; \
 		HASH_ADD(hh, ctx->hash, valuefield, size, kv); \
 	} \
-	tags[c*2] = k - 1; \
-	tags[c*2+1] = kv->id; \
+	tags[ctx->c*2] = k; \
+	tags[ctx->c*2+1] = kv->id; \
 }
 
-#define MVT_PARSE_DATUM(type, kvtype, hash, valuefield, datumfunc, size) \
+#define MVT_PARSE_INT_VALUE(value) \
 { \
-	type value = datumfunc(datum); \
-	MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size); \
-}
-
-#define MVT_PARSE_INT_DATUM(type, datumfunc) \
-{ \
-	type value = datumfunc(datum); \
 	if (value >= 0) { \
 		uint64_t cvalue = value; \
 		MVT_PARSE_VALUE(cvalue, mvt_kv_uint_value, \
@@ -382,8 +416,41 @@ static void encode_values(struct mvt_agg_context *ctx)
 	} \
 }
 
-static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
-	Datum datum, uint32_t *tags, uint32_t c, uint32_t k)
+#define MVT_PARSE_DATUM(type, kvtype, hash, valuefield, datumfunc, size) \
+{ \
+	type value = datumfunc(datum); \
+	MVT_PARSE_VALUE(value, kvtype, hash, valuefield, size); \
+}
+
+#define MVT_PARSE_INT_DATUM(type, datumfunc) \
+{ \
+	type value = datumfunc(datum); \
+	MVT_PARSE_INT_VALUE(value); \
+}
+
+static void add_value_as_string(struct mvt_agg_context *ctx,
+	char *value, uint32_t *tags, uint32_t k)
+{
+	POSTGIS_DEBUG(2, "add_value_as_string called");
+	struct mvt_kv_string_value *kv;
+	size_t size = strlen(value);
+	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
+	if (!kv) {
+		POSTGIS_DEBUG(4, "add_value_as_string value not found");
+		kv = palloc(sizeof(*kv));
+		POSTGIS_DEBUGF(4, "add_value_as_string new hash key: %d",
+			ctx->values_hash_i);
+		kv->id = ctx->values_hash_i++;
+		kv->string_value = value;
+		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value,
+			size, kv);
+	}
+	tags[ctx->c*2] = k;
+	tags[ctx->c*2+1] = kv->id;
+}
+
+static void parse_datum_as_string(struct mvt_agg_context *ctx, Oid typoid,
+	Datum datum, uint32_t *tags, uint32_t k)
 {
 	POSTGIS_DEBUG(2, "parse_value_as_string called");
 	struct mvt_kv_string_value *kv;
@@ -392,42 +459,104 @@ static void parse_value_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	getTypeOutputInfo(typoid, &foutoid, &typisvarlena);
 	char *value = OidOutputFunctionCall(foutoid, datum);
 	POSTGIS_DEBUGF(4, "parse_value_as_string value: %s", value);
-	size_t size = strlen(value);
-	HASH_FIND(hh, ctx->string_values_hash, value, size, kv);
-	if (!kv) {
-		POSTGIS_DEBUG(4, "parse_value_as_string value not found");
-		kv = palloc(sizeof(*kv));
-		POSTGIS_DEBUGF(4, "parse_value_as_string new hash key: %d", ctx->values_hash_i);
-		kv->id = ctx->values_hash_i++;
-		kv->string_value = value;
-		HASH_ADD_KEYPTR(hh, ctx->string_values_hash, kv->string_value, size, kv);
+	add_value_as_string(ctx, value, tags, k);
+}
+
+static uint32_t *parse_jsonb(struct mvt_agg_context *ctx, Jsonb *jb,
+	uint32_t *tags)
+{
+	JsonbIterator *it;
+	JsonbValue v;
+	bool skipNested = false;
+	JsonbIteratorToken r;
+	uint32_t k;
+
+	if (!JB_ROOT_IS_OBJECT(jb))
+		return tags;
+
+	it = JsonbIteratorInit(&jb->root);
+
+	while ((r = JsonbIteratorNext(&it, &v, skipNested)) != WJB_DONE) {
+		skipNested = true;
+
+		if (r == WJB_KEY && v.type != jbvNull) {
+			char *key;
+			key = palloc(v.val.string.len + 1 * sizeof(char));
+			memcpy(key, v.val.string.val, v.val.string.len);
+			key[v.val.string.len] = '\0';
+
+			k = get_key_index(ctx, key);
+			if (k == -1) {
+				uint32_t newSize = ctx->keys_hash_i + 1;
+				tags = repalloc(tags, newSize * 2 * sizeof(*tags));
+				k = add_key(ctx, key);
+			}
+
+			r = JsonbIteratorNext(&it, &v, skipNested);
+
+			if (v.type == jbvString) {
+				char *value;
+				value = palloc(v.val.string.len + 1 * sizeof(char));
+				memcpy(value, v.val.string.val, v.val.string.len);
+				value[v.val.string.len] = '\0';
+				add_value_as_string(ctx, value, tags, k);
+				ctx->c++;
+			} else if (v.type == jbvBool) {
+				MVT_PARSE_VALUE(v.val.boolean, mvt_kv_bool_value,
+					bool_values_hash, bool_value, sizeof(protobuf_c_boolean));
+				ctx->c++;
+			} else if (v.type == jbvNumeric) {
+				char *str;
+				str = DatumGetCString(DirectFunctionCall1(numeric_out,
+					PointerGetDatum(v.val.numeric)));
+				double d = strtod(str, NULL);
+				long l = strtol(str, NULL, 10);
+				if ((long) d != l) {
+					MVT_PARSE_VALUE(d, mvt_kv_double_value, double_values_hash,
+						double_value, sizeof(double));
+				} else {
+					MVT_PARSE_INT_VALUE(l);
+				}
+				ctx->c++;
+			}
+		}
 	}
-	tags[c*2] = k - 1;
-	tags[c*2+1] = kv->id;
+
+	return tags;
 }
 
 static void parse_values(struct mvt_agg_context *ctx)
 {
 	POSTGIS_DEBUG(2, "parse_values called");
-	uint32_t n_keys = ctx->layer->n_keys;
+	uint32_t n_keys = ctx->keys_hash_i;
 	uint32_t *tags = palloc(n_keys * 2 * sizeof(*tags));
 	bool isnull;
-	uint32_t i, k = 0, c = 0;
+	uint32_t i, k;
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	int natts = tupdesc->natts;
+	ctx->c = 0;
 
 	POSTGIS_DEBUGF(3, "parse_values natts: %d", natts);
 
 	for (i = 0; i < natts; i++) {
 		if (i == ctx->geom_index)
 			continue;
-		k++;
+
+		char *key = tupdesc->attrs[i]->attname.data;
 		Datum datum = GetAttributeByNum(ctx->row, i+1, &isnull);
+		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		k = get_key_index(ctx, key);
+		if (k == -1 && typoid != JSONBOID)
+			lwerror("parse_values: unexpectedly could not find parsed key name",
+				key);
 		if (isnull) {
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
 		}
-		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		if (typoid == JSONBOID) {
+			tags = parse_jsonb(ctx, DatumGetJsonb(datum), tags);
+			continue;
+		}
 		switch (typoid) {
 		case BOOLOID:
 			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,
@@ -454,20 +583,19 @@ static void parse_values(struct mvt_agg_context *ctx)
 				DatumGetFloat8, sizeof(double));
 			break;
 		default:
-			parse_value_as_string(ctx, typoid, datum, tags, c, k);
+			parse_datum_as_string(ctx, typoid, datum, tags, k);
 			break;
 		}
-		c++;
+		ctx->c++;
 	}
 
 	ReleaseTupleDesc(tupdesc);
 
-	ctx->feature->n_tags = c * 2;
+	ctx->feature->n_tags = ctx->c * 2;
 	ctx->feature->tags = tags;
 
 	POSTGIS_DEBUGF(3, "parse_values n_tags %d", ctx->feature->n_tags);
 }
-
 static int max_type(LWCOLLECTION *lwcoll)
 {
 	int i, max = POINTTYPE;
@@ -585,6 +713,7 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
 		lwerror("mvt_agg_init_context: extent cannot be 0");
 
 	ctx->features_capacity = FEATURES_CAPACITY_INITIAL;
+	ctx->keys_hash = NULL;
 	ctx->string_values_hash = NULL;
 	ctx->float_values_hash = NULL;
 	ctx->double_values_hash = NULL;
@@ -592,6 +721,7 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
 	ctx->sint_values_hash = NULL;
 	ctx->bool_values_hash = NULL;
 	ctx->values_hash_i = 0;
+	ctx->keys_hash_i = 0;
 
 	layer = palloc(sizeof(*layer));
 	vector_tile__tile__layer__init(layer);
@@ -631,7 +761,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 
 	ctx->feature = feature;
 	if (layer->n_features == 0)
-		encode_keys(ctx);
+		parse_column_keys(ctx);
 
 	bool isnull;
 	Datum datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
@@ -640,7 +770,8 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	GSERIALIZED *gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gs);
 
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d", layer->n_features);
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d",
+		layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
 	encode_geometry(ctx, lwgeom);
@@ -659,6 +790,7 @@ uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx)
 {
 	POSTGIS_DEBUG(2, "mvt_agg_finalfn called");
 
+	encode_keys(ctx);
 	encode_values(ctx);
 
 	VectorTile__Tile__Layer *layers[1];

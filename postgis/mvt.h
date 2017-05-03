@@ -31,6 +31,7 @@
 #include "utils/array.h"
 #include "utils/typcache.h"
 #include "utils/lsyscache.h"
+#include "utils/jsonb.h"
 #include "catalog/pg_type.h"
 #include "executor/executor.h"
 #include "access/htup_details.h"
@@ -54,6 +55,7 @@ struct mvt_agg_context {
 	VectorTile__Tile__Feature *feature;
 	VectorTile__Tile__Layer *layer;
 	size_t features_capacity;
+	struct mvt_kv_key *keys_hash;
 	struct mvt_kv_string_value *string_values_hash;
 	struct mvt_kv_float_value *float_values_hash;
 	struct mvt_kv_double_value *double_values_hash;
@@ -61,6 +63,8 @@ struct mvt_agg_context {
 	struct mvt_kv_sint_value *sint_values_hash;
 	struct mvt_kv_bool_value *bool_values_hash;
 	uint32_t values_hash_i;
+	uint32_t keys_hash_i;
+	uint32_t c;
 } ;
 
 LWGEOM *mvt_geom(LWGEOM *geom, GBOX *bounds, uint32_t extent, uint32_t buffer,
