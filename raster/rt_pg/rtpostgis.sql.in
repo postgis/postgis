@@ -5718,7 +5718,7 @@ CREATE OR REPLACE FUNCTION raster_same(raster, raster)
 
 CREATE OR REPLACE FUNCTION raster_contained(raster, raster)
     RETURNS bool
-    AS 'select $1::geometry @ $2::geometry'
+    AS 'select $1::geometry OPERATOR(@extschema@.@) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
@@ -5742,7 +5742,7 @@ CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION raster_contained_by_geometry(raster, geometry)
     RETURNS bool
-    AS 'select $1::geometry @ $2'
+    AS 'select $1::geometry OPERATOR(@extschema@.@) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
@@ -5756,13 +5756,13 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
-    AS 'select $1 ~ $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.~) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.5
 CREATE OR REPLACE FUNCTION geometry_contained_by_raster(geometry, raster)
     RETURNS bool
-    AS 'select $1 @ $2::geometry'
+    AS 'select $1 OPERATOR(@extschema@.@) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
@@ -7146,34 +7146,28 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 		END IF;
 		fqtn := fqtn || quote_ident($2);
 
-		sql := 'SELECT MAX(@extschema@.ST_SRID('
+		sql := 'SELECT @extschema@.ST_SRID('
             || quote_ident($3)
-      || ') ) FROM '
+      || ') FROM '
             || fqtn
-            || ' HAVING COUNT(DISTINCT @extschema@.ST_SRID('
-            || quote_ident($3)
-      || ') ) = 1';
+            || ' LIMIT 1;';
     EXECUTE sql INTO srid;
     
 		cn := 'enforce_max_extent_' || $3;
 
-		IF srid > -1 THEN
-      sql := 'SELECT @extschema@.st_ashexewkb( @extschema@.st_setsrid( @extschema@.st_extent( @extschema@.st_envelope('
-        || quote_ident($3)
-        || ')), ' || srid || ')) FROM '
-        || fqtn;
-      EXECUTE sql INTO attr;
-  
-      sql := 'ALTER TABLE ' || fqtn
-        || ' ADD CONSTRAINT ' || quote_ident(cn)
-        || ' CHECK ( @extschema@.st_envelope('
-        || quote_ident($3)
-        || ') @ ''' || attr || '''::geometry) ';
-      RETURN  @extschema@._add_raster_constraint(cn, sql);
-    ELSE 
-      -- no valid srid therefore doesn't make sense to set extent
-      RETURN false;
-    END IF;
+		sql := 'SELECT @extschema@.st_ashexewkb( @extschema@.st_setsrid( @extschema@.st_extent( @extschema@.st_envelope('
+			|| quote_ident($3)
+			|| ')), ' || srid || ')) FROM '
+			|| fqtn;
+		EXECUTE sql INTO attr;
+
+		-- NOTE: I put NOT VALID to prevent the costly step of validating the constraint
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK ( @extschema@.st_envelope('
+			|| quote_ident($3)
+			|| ') @ ''' || attr || '''::geometry) NOT VALID';
+		RETURN  @extschema@._add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 9000;
