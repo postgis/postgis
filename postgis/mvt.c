@@ -26,6 +26,10 @@
 
 #ifdef HAVE_LIBPROTOBUF
 
+#if POSTGIS_PGSQL_VERSION >= 94
+#include "utils/jsonb.h"
+#endif
+
 #include "uthash.h"
 
 #define FEATURES_CAPACITY_INITIAL 50
@@ -301,8 +305,10 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+#if POSTGIS_PGSQL_VERSION >= 94
 		if (typoid == JSONBOID)
 			continue;
+#endif
 		char *tkey = tupdesc->attrs[i]->attname.data;
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
@@ -462,6 +468,7 @@ static void parse_datum_as_string(struct mvt_agg_context *ctx, Oid typoid,
 	add_value_as_string(ctx, value, tags, k);
 }
 
+#if POSTGIS_PGSQL_VERSION >= 94
 static uint32_t *parse_jsonb(struct mvt_agg_context *ctx, Jsonb *jb,
 	uint32_t *tags)
 {
@@ -524,6 +531,7 @@ static uint32_t *parse_jsonb(struct mvt_agg_context *ctx, Jsonb *jb,
 
 	return tags;
 }
+#endif
 
 static void parse_values(struct mvt_agg_context *ctx)
 {
@@ -546,17 +554,23 @@ static void parse_values(struct mvt_agg_context *ctx)
 		Datum datum = GetAttributeByNum(ctx->row, i+1, &isnull);
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		k = get_key_index(ctx, key);
-		if (k == -1 && typoid != JSONBOID)
-			lwerror("parse_values: unexpectedly could not find parsed key name",
-				key);
 		if (isnull) {
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
 			continue;
 		}
+#if POSTGIS_PGSQL_VERSION >= 94
+		if (k == -1 && typoid != JSONBOID)
+#else
+		if (k == -1)
+#endif
+			lwerror("parse_values: unexpectedly could not find parsed key name",
+				key);
+#if POSTGIS_PGSQL_VERSION >= 94
 		if (typoid == JSONBOID) {
 			tags = parse_jsonb(ctx, DatumGetJsonb(datum), tags);
 			continue;
 		}
+#endif
 		switch (typoid) {
 		case BOOLOID:
 			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,

@@ -247,6 +247,10 @@ ifeq ($(HAVE_PROTOBUF),yes)
 	TESTS += \
 		mvt \
 		geobuf
+ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 94),1)
+	TESTS += \
+		mvt_jsonb
+endif
 endif
 
 ifeq ($(HAVE_SFCGAL),yes)

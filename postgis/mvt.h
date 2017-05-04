@@ -31,7 +31,6 @@
 #include "utils/array.h"
 #include "utils/typcache.h"
 #include "utils/lsyscache.h"
-#include "utils/jsonb.h"
 #include "catalog/pg_type.h"
 #include "executor/executor.h"
 #include "access/htup_details.h"
@@ -65,7 +64,7 @@ struct mvt_agg_context {
 	uint32_t values_hash_i;
 	uint32_t keys_hash_i;
 	uint32_t c;
-} ;
+};
 
 LWGEOM *mvt_geom(LWGEOM *geom, GBOX *bounds, uint32_t extent, uint32_t buffer,
 	bool clip_geom);
