@@ -1422,6 +1422,11 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		Other row data will be encoded as attributes.
 		</para>
 
+		<para>The <ulink url="https://www.mapbox.com/vector-tiles/">Mapbox Vector Tile</ulink> format can store features with a different
+		set of attributes per feature. To make use of this feature supply a JSONB column in the row data containing Json objects one level
+		deep. The keys and values in the object will be parsed into feature attributes.
+		</para>
+
 		<para><varname>name</varname> is the name of the Layer</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. If NULL it will default to 4096.</para>
 		<para><varname>geom_name</varname> is the name of the geometry column in the row data.</para>
