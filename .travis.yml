@@ -14,6 +14,7 @@ before_install:
       build-essential autoconf libtool libcunit1-dev
       xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
+      libsfcgal-dev libprotobuf-c-dev
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
