@@ -6,7 +6,7 @@ addons:
   postgresql: "9.6"
 
 before_install:
-  - sudo add-apt-repository ppa:nextgis/ppa
+  - sudo add-apt-repository --yes ppa:nextgis/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -y --no-install-recommends
       postgresql-9.6 postgresql-server-dev-9.6
