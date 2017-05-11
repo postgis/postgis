@@ -1281,7 +1281,7 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 ** Function to pack floats of different realms
 ** This function serves to pack bit flags inside float type
 ** Resulted value represent can be from four different "realms"
-** Every value from realm 3 is greater than any value from realms 2,1 and 0.
+** Every value from realm 3 is greater than any value from realms 2, 1 and 0.
 ** Every value from realm 2 is less than every value from realm 3 and greater
 ** than any value from realm 1 and 0, and so on. Values from the same realm
 ** loose two bits of precision. This technique is possible due to floating
@@ -1308,7 +1308,6 @@ static float pack_float(const float value, const int realm)
 /*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
 ** Calculate the change in volume of the old entry once the new entry is added.
-** TODO: Re-evaluate this in light of R*Tree penalty approaches.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_penalty_2d);
 Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
@@ -1317,7 +1316,7 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
 	BOX2DF *gbox_index_orig, *gbox_index_new;
-	float size_union, size_orig;
+	float size_union, size_orig, edge_union, edge_orig;
 
 	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
 
