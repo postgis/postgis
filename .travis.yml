@@ -14,7 +14,8 @@ before_install:
       build-essential autoconf libtool libcunit1-dev
       xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal-dev libprotobuf-c0-dev
+      libsfcgal1 libsfcgal-dev 
+      libprotobuf-c0-dev
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
@@ -27,11 +28,11 @@ dist: trusty
 script:
   - ./configure
   - make
-  - make check
-  - make check RUNTESTFLAGS='--dumprestore'
+  - sudo make check
+  - sudo make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - make installcheck
-  - make installcheck RUNTESTFLAGS='--dumprestore'
+  - sudo make installcheck
+  - sudo make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
