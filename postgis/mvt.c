@@ -633,7 +633,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	POSTGIS_DEBUG(2, "mvt_geom called");
-	LWGEOM *lwgeom_out;
+	LWGEOM *lwgeom_out = NULL;
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
