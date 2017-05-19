@@ -2985,6 +2985,10 @@ SELECT s.gid, s.school_name
 		<important>
 		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
+        
+        <important>
+            <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
+ 		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>
