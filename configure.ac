@@ -436,9 +436,18 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
   dnl the final version. This is to guard against user error...
   PGSQL_FULL_VERSION=`"$PG_CONFIG" --version`
+
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
-  PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
-  PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*devel.*/0/'`
+  PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
+  
+  if test $PGSQL_MAJOR_VERSION -gt 9; then
+  	dnl ================================================================== 
+  	dnl Starting with PostgreSQL 10, major is the new minor
+  	dnl This is to prevent things like 10.31 ranking higher than 11.0
+  	dnl===================================================================
+  	PGSQL_MINOR_VERSION=0
+  fi
+
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
   PGSQL_PKGLIBDIR=`"$PG_CONFIG" --pkglibdir`
