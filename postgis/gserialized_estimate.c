@@ -817,29 +817,50 @@ nd_increment(ND_IBOX *ibox, int ndims, int *counter)
 static ND_STATS*
 pg_nd_stats_from_tuple(HeapTuple stats_tuple, int mode)
 {
-  int stats_kind = STATISTIC_KIND_ND;
-  int rv, nvalues;
-	float4 *floatptr;
+	int stats_kind = STATISTIC_KIND_ND;
+	int rv;
 	ND_STATS *nd_stats;
 
-  /* If we're in 2D mode, set the kind appropriately */
-  if ( mode == 2 ) stats_kind = STATISTIC_KIND_2D;
+	/* If we're in 2D mode, set the kind appropriately */
+	if ( mode == 2 ) stats_kind = STATISTIC_KIND_2D;
 
   /* Then read the geom status histogram from that */
-  rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
-                        NULL, NULL, NULL, &floatptr, &nvalues);
-  if ( ! rv ) {
-    POSTGIS_DEBUGF(2,
-            "no slot of kind %d in stats tuple", stats_kind);
-    return NULL;
-  }
+  
+#if POSTGIS_PGSQL_VERSION < 100
+	float4 *floatptr;
+	int nvalues;
 	
-  /* Clone the stats here so we can release the attstatsslot immediately */
-  nd_stats = palloc(sizeof(float) * nvalues);
-  memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
-
-  /* Clean up */
-  free_attstatsslot(0, NULL, 0, floatptr, nvalues);
+	rv = get_attstatsslot(stats_tuple, 0, 0, stats_kind, InvalidOid,
+						NULL, NULL, NULL, &floatptr, &nvalues);
+	
+	if ( ! rv ) {
+		POSTGIS_DEBUGF(2,
+				"no slot of kind %d in stats tuple", stats_kind);
+		return NULL;
+	}
+		
+	/* Clone the stats here so we can release the attstatsslot immediately */
+	nd_stats = palloc(sizeof(float) * nvalues);
+	memcpy(nd_stats, floatptr, sizeof(float) * nvalues);
+	
+	/* Clean up */
+	free_attstatsslot(0, NULL, 0, floatptr, nvalues);
+#else /**10 or higher **/
+	AttStatsSlot sslot;
+	rv = get_attstatsslot(&sslot,stats_tuple, stats_kind, InvalidOid,
+						 ATTSTATSSLOT_NUMBERS);
+	if ( ! rv ) {
+		POSTGIS_DEBUGF(2,
+				"no slot of kind %d in stats tuple", stats_kind);
+		return NULL;
+	}
+	
+	/* Clone the stats here so we can release the attstatsslot immediately */
+	nd_stats = palloc(sizeof(float) * sslot.nnumbers);
+	memcpy(nd_stats,  sslot.numbers, sizeof(float) * sslot.nnumbers);
+	
+	free_attstatsslot(&sslot);
+#endif
 
   return nd_stats;
 }
