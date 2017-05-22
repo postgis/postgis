@@ -2623,18 +2623,9 @@ The current implementation supports only vertices as the discrete locations. Thi
 
 			<paramdef><type>geometry </type>
 			<parameter>g2</parameter></paramdef>
-		  </funcprototype>
-		  <funcprototype>
-			<funcdef>float <function>ST_FrechetDistance</function></funcdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g1</parameter></paramdef>
-
-			<paramdef><type>geometry </type>
-			<parameter>g2</parameter></paramdef>
 
 			<paramdef><type>float</type>
-			<parameter>densifyFrac</parameter></paramdef>
+			<parameter>densifyFrac = -1</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2645,7 +2636,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		<para>Implements algorithm for computing the Fréchet distance restricted to discrete points for both geometries, based on <ulink url="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet Distance</ulink>.
 		The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves. Therefore it is often better than the Hausdorff distance. </para>
 		<para>
-When densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+When the optional densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
 		</para>
 
 		<note>

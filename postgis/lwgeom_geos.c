@@ -100,7 +100,6 @@ Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
 Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
 Datum frechetdistance(PG_FUNCTION_ARGS);
-Datum frechetdistancedensify(PG_FUNCTION_ARGS);
 Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
@@ -282,74 +281,14 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 }
 
 /**
- *  @brief Compute the Frechet distance thanks to the corresponding GEOS function
+ *  @brief Compute the Frechet distance with optional densification thanks to the corresponding GEOS function
  *  @example frechetdistance {@link #frechetdistance} - SELECT st_frechetdistance(
- *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
- *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry);
- */
-
-PG_FUNCTION_INFO_V1(frechetdistance);
-Datum frechetdistance(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
-	GEOSGeometry *g1;
-	GEOSGeometry *g2;
-	double result;
-	int retcode;
-
-	POSTGIS_DEBUG(2, "frechet_distance called");
-
-	geom1 = PG_GETARG_GSERIALIZED_P(0);
-	geom2 = PG_GETARG_GSERIALIZED_P(1);
-
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
-		PG_RETURN_NULL();
-
-	initGEOS(lwpgnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
-		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
-		PG_RETURN_NULL();
-	}
-
-	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
-	if ( 0 == g2 )   /* exception thrown */
-	{
-		HANDLE_GEOS_ERROR("Second argument geometry could not be converted to GEOS");
-		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL();
-	}
-
-	retcode = GEOSFrechetDistance(g1, g2, &result);
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-
-	if (retcode == 0)
-	{
-		HANDLE_GEOS_ERROR("GEOSFrechetDistance");
-		PG_RETURN_NULL(); /*never get here */
-	}
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	PG_RETURN_FLOAT8(result);
-}
-
-
-
-/**
- *  @brief Compute the Frechet distance with densification thanks to the corresponding GEOS function
- *  @example frechetdistancedensify {@link #frechetdistancedensify} - SELECT st_frechetdistancedensify(
  *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
  *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
  */
  
-PG_FUNCTION_INFO_V1(frechetdistancedensify);
-Datum frechetdistancedensify(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(frechetdistance);
+Datum frechetdistance(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -383,13 +322,21 @@ Datum frechetdistancedensify(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	retcode = GEOSFrechetDistanceDensify(g1, g2, densifyFrac, &result);
+	if (densifyFrac <= 0.0)
+	{
+		retcode = GEOSFrechetDistance(g1, g2, &result);
+	}
+	else
+	{
+		retcode = GEOSFrechetDistanceDensify(g1, g2, densifyFrac, &result);
+	}
+
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
  
 	if (retcode == 0)
 	{
-		HANDLE_GEOS_ERROR("GEOSFrechetDistanceDensify");
+		HANDLE_GEOS_ERROR("GEOSFrechetDistance");
 		PG_RETURN_NULL(); /*never get here */
 	}
  
