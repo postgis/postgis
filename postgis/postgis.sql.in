@@ -3456,7 +3456,7 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry, 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry, float8 default -1)
        RETURNS FLOAT8
-       AS 'MODULE_PATHNAME', 'frechetdistance'
+       AS 'MODULE_PATHNAME', 'ST_FrechetDistance'
        LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100; -- Guessed cost
 

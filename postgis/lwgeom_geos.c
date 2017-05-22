@@ -99,7 +99,7 @@ Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
 Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
-Datum frechetdistance(PG_FUNCTION_ARGS);
+Datum ST_FrechetDistance(PG_FUNCTION_ARGS);
 Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
@@ -282,13 +282,13 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 
 /**
  *  @brief Compute the Frechet distance with optional densification thanks to the corresponding GEOS function
- *  @example frechetdistance {@link #frechetdistance} - SELECT st_frechetdistance(
+ *  @example ST_FrechetDistance {@link #frechetdistance} - SELECT ST_FrechetDistance(
  *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
  *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
  */
  
-PG_FUNCTION_INFO_V1(frechetdistance);
-Datum frechetdistance(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_FrechetDistance);
+Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 37
 
