@@ -8,6 +8,7 @@ PostGIS 2.4.0
   - #3689, Add orientation checking and forcing functions (Dan Baston)
   - #3753, Gist penalty speed improvements for 2d and nd points
            (Darafei Praliaskouski)
+  - #3677, ST_FrechetDistance (Shinichi Sugiyama)
   
  * Bug Fixes *
   - #3682, Boolean (FTLogical) should be 1 byte not 2 bytes

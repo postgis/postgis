@@ -2598,6 +2598,82 @@ The current implementation supports only vertices as the discrete locations. Thi
 			</programlisting>
 
 	  </refsection>
+          <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="ST_FrechetDistance" /></para>
+          </refsection>
+	</refentry>
+
+	<refentry id="ST_FrechetDistance">
+	  <refnamediv>
+		<refname>ST_FrechetDistance</refname>
+
+		<refpurpose>Returns the Fréchet distance between two geometries. This is a measure of similarity between curves that takes into account the location
+		and ordering of the points along the curves.  Units are in the units of the spatial reference system of the geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_FrechetDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>float</type>
+			<parameter>densifyFrac = -1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Implements algorithm for computing the Fréchet distance restricted to discrete points for both geometries, based on <ulink url="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet Distance</ulink>.
+		The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves. Therefore it is often better than the Hausdorff distance. </para>
+		<para>
+When the optional densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+
+		<note>
+			<para>
+The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.
+			</para>
+		</note>
+		<note>
+			<para>
+The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments. 
+			</para>
+		</note>
+		<para>Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<programlisting>postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry);
+ st_frechetdistance
+--------------------
+   70.7106781186548
+(1 row)
+			</programlisting>
+			<programlisting>SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry, 0.5);
+ st_frechetdistance
+--------------------
+                 50
+(1 row)
+			</programlisting>
+
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_HausdorffDistance" /></para>
+	  </refsection>
 	</refentry>
 
 <refentry id="ST_MaxDistance">
