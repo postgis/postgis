@@ -160,10 +160,10 @@ SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 # so that no prefix is included. This allows us to relocate to a temporary
 # directory for regression testing.
 ifeq ($(REGRESS),1)
-        bindir=/bin
-        pkglibdir=/lib
-        datadir=/share
-        datamoduledir=contrib/postgis
+	bindir=/bin
+	pkglibdir=/lib
+	datadir=/share
+	datamoduledir=contrib/postgis
 endif
 
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying

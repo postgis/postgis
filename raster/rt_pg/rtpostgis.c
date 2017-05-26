@@ -500,9 +500,7 @@ _PG_init(void) {
 			NULL, /* bootValue */
 			PGC_SUSET, /* GucContext context */
 			0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
 			NULL, /* GucStringCheckHook check_hook */
-#endif
 			rtpg_assignHookGDALDataPath, /* GucStringAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
@@ -525,9 +523,7 @@ _PG_init(void) {
 			boot_postgis_gdal_enabled_drivers, /* bootValue */
 			PGC_SUSET, /* GucContext context */
 			0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
 			NULL, /* GucStringCheckHook check_hook */
-#endif
 			rtpg_assignHookGDALEnabledDrivers, /* GucStringAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);
@@ -550,9 +546,7 @@ _PG_init(void) {
 			boot_postgis_enable_outdb_rasters, /* bootValue */
 			PGC_SUSET, /* GucContext context */
 			0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
 			NULL, /* GucStringCheckHook check_hook */
-#endif
 			rtpg_assignHookEnableOutDBRasters, /* GucBoolAssignHook assign_hook */
 			NULL  /* GucShowHook show_hook */
 		);

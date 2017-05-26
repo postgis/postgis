@@ -33,11 +33,8 @@
 #include "lwgeom_rtree.h"
 #include "lwgeom_functions_analytic.h"
 
-#if POSTGIS_PGSQL_VERSION >= 93
+
 #include "access/htup_details.h"
-#else
-#include "access/htup.h"
-#endif
 
 /***********************************************************************
  * Simple Douglas-Peucker line simplification.

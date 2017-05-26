@@ -35,11 +35,8 @@
 #include "utils/lsyscache.h"
 #include "utils/numeric.h"
 
-#if POSTGIS_PGSQL_VERSION >= 93
 #include "access/htup_details.h"
-#else
-#include "access/htup.h"
-#endif
+
 
 /* PostGIS */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */

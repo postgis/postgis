@@ -966,6 +966,13 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           <listitem>
             <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
+          
+          <listitem>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
+          </listitem>
+          <listitem>
+            <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R. Parsing of this is better using <xref linkend="Pagc_Normalize_Address" /> function.  Availability: PostGIS 2.4.0.</para>
+          </listitem>
         </orderedlist>
 
       </refsection>
@@ -999,7 +1006,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
       </refsection>
     </refentry>
 
-        <refentry id="Pagc_Normalize_Address">
+    <refentry id="Pagc_Normalize_Address">
       <refnamediv>
         <refname>Pagc_Normalize_Address</refname>
 
@@ -1062,6 +1069,12 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           </listitem>
           <listitem>
             <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+          </listitem>
+          <listitem>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability PostGIS 2.4.0.</para>
+          </listitem>
+          <listitem>
+            <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R or 12 1/2.  Availability PostGIS 2.4.0.</para>
           </listitem>
         </orderedlist>
 

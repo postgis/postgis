@@ -145,27 +145,23 @@ TESTS = \
 	wkt \
 	wmsservers
 
-ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 91),1)
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) "<"  95),1)
 	# Index supported KNN only available in PostgreSQL 9.1 and higher
 	# For 9.5 and higher, use the recheck suite instead
 	TESTS += knn
 endif
-endif
 
 ifeq ($(shell expr $(POSTGIS_PGSQL_VERSION) ">=" 95),1)
 	# Index supported KNN recheck only available in PostgreSQL 9.5 and higher
 	TESTS += knn_recheck \
-           temporal_knn
+			temporal_knn
 endif
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
-	# GEOS-3.3 adds:
-	# ST_HausdorffDistance, ST_Buffer(params)
-	TESTS += \
-		hausdorff \
-		regress_buffer_params
-endif
+
+TESTS += \
+	hausdorff \
+	regress_buffer_params
+
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 	# GEOS-3.7 adds:
@@ -174,21 +170,21 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 37),1)
 		frechet
 endif
 
-ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
-	# GEOS-3.3 adds:
-	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
-	# ST_Snap, ST_UnaryUnion, ST_MakeClean
-	TESTS += \
-		offsetcurve \
-		relatematch \
-		isvaliddetail \
-		sharedpaths \
-		snap \
-		node \
-		unaryunion \
-		clean \
-		relate_bnr
-endif
+
+# GEOS-3.3 adds:
+# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
+# ST_Snap, ST_UnaryUnion, ST_MakeClean
+TESTS += \
+	offsetcurve \
+	relatematch \
+	isvaliddetail \
+	sharedpaths \
+	snap \
+	node \
+	unaryunion \
+	clean \
+	relate_bnr
+
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
 	# GEOS-3.4 adds:
