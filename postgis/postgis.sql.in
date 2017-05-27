@@ -5433,7 +5433,8 @@ LANGUAGE 'sql' STABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
 -- Changed: 2.1.8 significant performance improvement for constraint based columns
--- Changed: 2.2.0 get rid of scheman, table, column cast to improve performance
+-- Changed: 2.2.0 get rid of schema, table, column cast to improve performance
+-- Changed: 2.4.0 List also Parent partitioned tables
 CREATE OR REPLACE VIEW geometry_columns AS
  SELECT current_database()::character varying(256) AS f_table_catalog,
     n.nspname AS f_table_schema,
@@ -5467,7 +5468,7 @@ CREATE OR REPLACE VIEW geometry_columns AS
           WHERE s.consrc ~~* '%srid(% = %'::text
 
 ) sr ON sr.connamespace = n.oid AND sr.conrelid = c.oid AND (a.attnum = ANY (sr.conkey))
-  WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char"]))
+  WHERE (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"]))
   AND NOT c.relname = 'raster_columns'::name AND t.typname = 'geometry'::name
   AND NOT pg_is_other_temp_schema(c.relnamespace) AND has_table_privilege(c.oid, 'SELECT'::text);
 
