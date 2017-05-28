@@ -25,6 +25,10 @@ indent_style = space
 [liblwgeom/lwgeom_topo.{c,h}]
 indent_style = space
 
+# topology SQL files want space indentation
+[topology/**.{sql,sql.in}]
+indent_style = space
+
 # Makefiles want tab indentation
 [{Makefile.in,Makefile,GNUmakefile.in}]
 indent_style = tab
