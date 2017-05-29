@@ -37,6 +37,10 @@ indent_style = space
 [postgis/sfcgal.sql.in]
 indent_style = space
 
+# .h.in files want space indentation
+[*.h.in]
+indent_style = space
+
 # Makefiles want tab indentation
 [{Makefile.in,Makefile,GNUmakefile.in}]
 indent_style = tab
