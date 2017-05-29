@@ -17,6 +17,10 @@ trim_trailing_whitespace = false
 [*.{c,h}]
 indent_style = tab
 
+# SQL files want tab indentation
+[*.{sql,sql.in}]
+indent_style = tab
+
 # topology C files want space indentation
 [topology/*.{c,h}]
 indent_style = space
@@ -27,6 +31,10 @@ indent_style = space
 
 # topology SQL files want space indentation
 [topology/**.{sql,sql.in}]
+indent_style = space
+
+# postgis/sfcgal.sql.in wants space indentation
+[postgis/sfcgal.sql.in]
 indent_style = space
 
 # Makefiles want tab indentation
