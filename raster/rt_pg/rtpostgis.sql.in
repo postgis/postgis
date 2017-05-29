@@ -848,6 +848,7 @@ CREATE OR REPLACE FUNCTION _st_countagg_transfn(
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.2.0
+-- Changed: Mark parallel safe
 CREATE AGGREGATE st_countagg(raster, boolean) (
 	SFUNC = _st_countagg_transfn,
 	STYPE = agg_count,
@@ -1963,7 +1964,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 				-- per band pixel type check
 				num_bands := st_numbands($1);
 				FOR i IN 1..num_bands LOOP
-					IF st_bandpixeltype($1, i) != '8BUI' THEN
+					IF @extschema@.ST_BandPixelType($1, i) != '8BUI' THEN
 						RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI.  JPEG compression can only be used with the 8BUI pixel type.', i;
 					END IF;
 				END LOOP;
@@ -1991,7 +1992,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 					-- per band pixel type check
 					num_bands := st_numbands($1);
 					FOR i IN 1..num_bands LOOP
-						IF st_bandpixeltype($1, i) != '1BB' THEN
+						IF @extschema@.ST_BandPixelType($1, i) != '1BB' THEN
 							RAISE EXCEPTION 'The pixel type of band % in the raster is not 1BB.  CCITT compression can only be used with the 1BB pixel type.', i;
 						END IF;
 					END LOOP;
@@ -2046,7 +2047,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 
 		-- JPEG only supports 8BUI pixeltype
 		FOR i IN 1..num_bands LOOP
-			IF st_bandpixeltype(rast, i) != '8BUI' THEN
+			IF @extschema@.ST_BandPixelType(rast, i) != '8BUI' THEN
 				RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.', i;
 			END IF;
 		END LOOP;
@@ -2125,7 +2126,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 
 		-- PNG only supports 8BUI and 16BUI pixeltype
 		FOR i IN 1..num_bands LOOP
-			pt = st_bandpixeltype(rast, i);
+			pt = @extschema@.ST_BandPixelType(rast, i);
 			IF pt != '8BUI' AND pt != '16BUI' THEN
 				RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI or 16BUI.  The PNG format can only be used with 8BUI and 16BUI pixel types.', i;
 			END IF;
@@ -2691,7 +2692,7 @@ CREATE OR REPLACE FUNCTION st_resize(
 -- One Raster ST_MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodataval can be NULL
--- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
+-- or pixeltype can not be determined (could be ST_BandPixelType(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, band integer, pixeltype text,
         expression text, nodataval double precision DEFAULT NULL)
     RETURNS raster
@@ -2699,7 +2700,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, band integer, pixeltyp
     LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- This function can not be STRICT, because nodataval can be NULL
--- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
+-- or pixeltype can not be determined (could be ST_BandPixelType(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expression text,
         nodataval double precision DEFAULT NULL)
     RETURNS raster
@@ -4758,7 +4759,7 @@ CREATE OR REPLACE FUNCTION st_bandpath(rast raster, band integer DEFAULT 1)
     AS 'MODULE_PATHNAME','RASTER_getBandPath'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION st_bandpixeltype(rast raster, band integer DEFAULT 1)
+CREATE OR REPLACE FUNCTION ST_BandPixelType(rast raster, band integer DEFAULT 1)
     RETURNS text
     AS 'MODULE_PATHNAME','RASTER_getBandPixelTypeName'
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
@@ -4808,7 +4809,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, excl
         y float8;
         gtype text;
     BEGIN
-        gtype := @extschema@.ST_geometrytype(pt);
+        gtype := @extschema@.ST_GeometryType(pt);
         IF ( gtype != 'ST_Point' ) THEN
             RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
         END IF;
@@ -4850,7 +4851,7 @@ CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	AS 'MODULE_PATHNAME', 'RASTER_pixelOfValue'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION st_pixelofvalue(
+CREATE OR REPLACE FUNCTION ST_PixelofValue(
 	rast raster,
 	search double precision[],
 	exclude_nodata_value boolean DEFAULT TRUE,
@@ -4859,7 +4860,7 @@ CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	OUT y integer
 )
 	RETURNS SETOF record
-	AS $$ SELECT val, x, y FROM @extschema@.ST_pixelofvalue($1, 1, $2, $3) $$
+	AS $$ SELECT val, x, y FROM @extschema@.ST_PixelOfValue($1, 1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_pixelofvalue(
@@ -4871,7 +4872,7 @@ CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	OUT y integer
 )
 	RETURNS SETOF record
-	AS $$ SELECT x, y FROM @extschema@.ST_pixelofvalue($1, $2, ARRAY[$3], $4) $$
+	AS $$ SELECT x, y FROM @extschema@.ST_PixelofValue($1, $2, ARRAY[$3], $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_pixelofvalue(
@@ -4882,7 +4883,7 @@ CREATE OR REPLACE FUNCTION st_pixelofvalue(
 	OUT y integer
 )
 	RETURNS SETOF record
-	AS $$ SELECT x, y FROM @extschema@.ST_pixelofvalue($1, 1, ARRAY[$2], $3) $$
+	AS $$ SELECT x, y FROM @extschema@.ST_PixelOfValue($1, 1, ARRAY[$2], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -5112,7 +5113,7 @@ CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 
 -----------------------------------------------------------------------
 -- ST_SetValues (set one or more pixels to a one or more values)
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_setvalues(
+CREATE OR REPLACE FUNCTION _ST_SetValues(
 	rast raster, nband integer,
 	x integer, y integer,
 	newvalueset double precision[][],
@@ -5125,7 +5126,7 @@ CREATE OR REPLACE FUNCTION _st_setvalues(
 	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION ST_SetValues(
 	rast raster, nband integer,
 	x integer, y integer,
 	newvalueset double precision[][],
@@ -5136,7 +5137,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	AS $$ SELECT @extschema@._ST_setvalues($1, $2, $3, $4, $5, $6, FALSE, NULL, $7) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION ST_SetValues(
 	rast raster, nband integer,
 	x integer, y integer,
 	newvalueset double precision[][],
@@ -5148,7 +5149,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION ST_SetValues(
 	rast raster, nband integer,
 	x integer, y integer,
 	width integer, height integer,
@@ -5168,7 +5169,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION ST_SetValues(
 	rast raster,
 	x integer, y integer,
 	width integer, height integer,
@@ -5188,7 +5189,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION ST_SetValues(
 	rast raster, nband integer,
 	geomvalset geomval[],
 	keepnodata boolean DEFAULT FALSE
@@ -5202,19 +5203,19 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 -----------------------------------------------------------------------
 
 -- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
+CREATE OR REPLACE FUNCTION ST_SetValue(rast raster, band integer, x integer, y integer, newvalue float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setPixelValue'
     LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
+CREATE OR REPLACE FUNCTION ST_SetValue(rast raster, x integer, y integer, newvalue float8)
     RETURNS raster
-    AS $$ SELECT @extschema@.ST_setvalue($1, 1, $2, $3, $4) $$
+    AS $$ SELECT @extschema@.ST_SetValue($1, 1, $2, $3, $4) $$
     LANGUAGE 'sql';
 
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalue(
+CREATE OR REPLACE FUNCTION ST_SetValue(
 	rast raster, nband integer,
 	geom geometry, newvalue double precision
 )
@@ -5223,7 +5224,7 @@ CREATE OR REPLACE FUNCTION st_setvalue(
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalue(
+CREATE OR REPLACE FUNCTION ST_SetValue(
 	rast raster,
 	geom geometry, newvalue double precision
 )
@@ -6334,19 +6335,19 @@ CREATE OR REPLACE FUNCTION st_within(rast1 raster, rast2 raster)
 -- ST_DWithin(raster, raster)
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION _st_dwithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+CREATE OR REPLACE FUNCTION _ST_DWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_dwithin'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1000;
 
-CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+CREATE OR REPLACE FUNCTION ST_DWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
 	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dwithin(st_convexhull($1), st_convexhull($3), $5) ELSE @extschema@._ST_dwithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
-CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, rast2 raster, distance double precision)
+CREATE OR REPLACE FUNCTION ST_DWithin(rast1 raster, rast2 raster, distance double precision)
 	RETURNS boolean
 	AS $$ SELECT @extschema@.st_dwithin($1, NULL::integer, $2, NULL::integer, $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
@@ -6356,21 +6357,21 @@ CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, rast2 raster, distance doubl
 -- ST_DFullyWithin(raster, raster)
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION _st_dfullywithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+CREATE OR REPLACE FUNCTION _ST_DFullyWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_dfullywithin'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 1000;
 
-CREATE OR REPLACE FUNCTION st_dfullywithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+CREATE OR REPLACE FUNCTION ST_DFullyWithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_dfullywithin(st_convexhull($1), st_convexhull($3), $5) ELSE @extschema@._ST_dfullywithin($1, $2, $3, $4, $5) END $$
+	AS $$ SELECT $1::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($3), $5) AND $3::geometry OPERATOR(@extschema@.&&) @extschema@.ST_Expand(@extschema@.ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@._ST_DFullyWithin(@extschema@.ST_ConvexHull($1), @extschema@.ST_Convexhull($3), $5) ELSE @extschema@._ST_DFullyWithin($1, $2, $3, $4, $5) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
-CREATE OR REPLACE FUNCTION st_dfullywithin(rast1 raster, rast2 raster, distance double precision)
+CREATE OR REPLACE FUNCTION ST_DFullyWithin(rast1 raster, rast2 raster, distance double precision)
 	RETURNS boolean
-	AS $$ SELECT st_dfullywithin($1, NULL::integer, $2, NULL::integer, $3) $$
+	AS $$ SELECT @extschema@.ST_DFullyWithin($1, NULL::integer, $2, NULL::integer, $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6380,13 +6381,13 @@ CREATE OR REPLACE FUNCTION st_dfullywithin(rast1 raster, rast2 raster, distance 
 
 CREATE OR REPLACE FUNCTION st_disjoint(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_disjoint(st_convexhull($1), st_convexhull($3)) ELSE NOT @extschema@._ST_intersects($1, $2, $3, $4) END $$
+	AS $$ SELECT CASE WHEN $2 IS NULL OR $4 IS NULL THEN @extschema@.ST_Disjoint(@extschema@.ST_ConvexHull($1), @extschema@.ST_ConvexHull($3)) ELSE NOT @extschema@._ST_intersects($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
-CREATE OR REPLACE FUNCTION st_disjoint(rast1 raster, rast2 raster)
+CREATE OR REPLACE FUNCTION ST_Disjoint(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT st_disjoint($1, NULL::integer, $2, NULL::integer) $$
+	AS $$ SELECT @extschema@.ST_Disjoint($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL
 	COST 1000;
 
@@ -6394,7 +6395,7 @@ CREATE OR REPLACE FUNCTION st_disjoint(rast1 raster, rast2 raster)
 -- ST_Intersection(geometry, raster) in geometry-space
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band integer DEFAULT 1)
+CREATE OR REPLACE FUNCTION ST_Intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
 	DECLARE
 		intersects boolean := FALSE;
@@ -6431,18 +6432,18 @@ CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band in
 
 CREATE OR REPLACE FUNCTION st_intersection(rast raster, band integer, geomin geometry)
 	RETURNS SETOF geomval AS
-	$$ SELECT st_intersection($3, $1, $2) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT @extschema@.ST_Intersection($3, $1, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
-CREATE OR REPLACE FUNCTION st_intersection(rast raster, geomin geometry)
+CREATE OR REPLACE FUNCTION ST_Intersection(rast raster, geomin geometry)
 	RETURNS SETOF geomval AS
-	$$ SELECT st_intersection($2, $1, 1) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT @extschema@.ST_Intersection($2, $1, 1) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Intersection(raster, raster)
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_intersection(
+CREATE OR REPLACE FUNCTION ST_Intersection(
 	rast1 raster, band1 int,
 	rast2 raster, band2 int,
 	returnband text DEFAULT 'BOTH',
@@ -6460,23 +6461,23 @@ CREATE OR REPLACE FUNCTION st_intersection(
 			RAISE EXCEPTION 'The two rasters do not have the same SRID';
 		END IF;
 
-		newnodata1 := coalesce(nodataval[1], ST_BandNodataValue(rast1, band1), ST_MinPossibleValue(ST_BandPixelType(rast1, band1)));
-		newnodata2 := coalesce(nodataval[2], ST_BandNodataValue(rast2, band2), ST_MinPossibleValue(ST_BandPixelType(rast2, band2)));
+		newnodata1 := coalesce(nodataval[1], ST_BandNodataValue(rast1, band1), ST_MinPossibleValue(@extschema@.ST_BandPixelType(rast1, band1)));
+		newnodata2 := coalesce(nodataval[2], ST_BandNodataValue(rast2, band2), ST_MinPossibleValue(@extschema@.ST_BandPixelType(rast2, band2)));
 		
 		_returnband := upper(returnband);
 
 		rtn := NULL;
 		CASE
 			WHEN _returnband = 'BAND1' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
-				rtn := ST_SetBandNodataValue(rtn, 1, newnodata1);
+				rtn := @extschema@.ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', @extschema@.ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
+				rtn := @extschema@.ST_SetBandNodataValue(rtn, 1, newnodata1);
 			WHEN _returnband = 'BAND2' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2);
-				rtn := ST_SetBandNodataValue(rtn, 1, newnodata2);
+				rtn := @extschema@.ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', @extschema@.ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2);
+				rtn := @extschema@.ST_SetBandNodataValue(rtn, 1, newnodata2);
 			WHEN _returnband = 'BOTH' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
+				rtn := @extschema@.ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', @extschema@.ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
 				rtn := ST_SetBandNodataValue(rtn, 1, newnodata1);
-				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2));
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', @extschema@.ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2));
 				rtn := ST_SetBandNodataValue(rtn, 2, newnodata2);
 			ELSE
 				RAISE EXCEPTION 'Unknown value provided for returnband: %', returnband;
@@ -6575,9 +6576,13 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, unionarg[])
 	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -- Availability: 2.1.0
+-- Changed: 2.4.0 mark parallel safe
 CREATE AGGREGATE st_union(raster, unionarg[]) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = _st_union_finalfn
 );
 
@@ -6588,9 +6593,13 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 changed definition
+-- Changed: 2.4.0 mark parallel safe
 CREATE AGGREGATE st_union(raster, integer, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = _st_union_finalfn
 );
 
@@ -6601,9 +6610,13 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer)
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 changed definition
+-- Changed: 2.4.0 mark parallel safe
 CREATE AGGREGATE st_union(raster, integer) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = _st_union_finalfn
 );
 
@@ -6614,9 +6627,13 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster)
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 changed definition
+-- Changed: 2.4.0 mark parallel safe
 CREATE AGGREGATE st_union(raster) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = _st_union_finalfn
 );
 
@@ -6627,9 +6644,13 @@ CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, text)
 
 -- Availability: 2.0.0
 -- Changed: 2.1.0 changed definition
+-- Changed: 2.4.0 mark parallel safe
 CREATE AGGREGATE st_union(raster, text) (
 	SFUNC = _st_union_transfn,
 	STYPE = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = _st_union_finalfn
 );
 
