@@ -8,7 +8,7 @@ Dronie:
  [![Build Status](https://drone.osgeo.org/api/badges/postgis/postgis/status.svg?branch=svn-trunk)]
  (https://drone.osgeo.org/postgis/postgis?branch=svn-trunk)
 Travis:
- [![Build Status](https://secure.travis-ci.org/postgis/postgis.png)]
+ [![Build Status](https://secure.travis-ci.org/postgis/postgis.svg)]
  (http://travis-ci.org/postgis/postgis)
 GitLab-CI:
  [![Gitlab-CI](https://gitlab.com/postgis/postgis/badges/svn-trunk/build.svg)]
