@@ -64,6 +64,7 @@ usage()
 	printf(_( "  -X <tablespace> Specify the tablespace for the table's indexes.\n"
                   "      This applies to the primary key, and the spatial index if\n"
                   "      the -I flag is used.\n" ));
+	printf(_( "  --  End of options. Use this for unusual file names starting with '-' \n" ));
 	printf(_( "  -?  Display this help screen.\n" ));
 	printf( "\n" );
 	printf(_( "  An argument of `--' disables further option processing.\n" ));
