@@ -244,7 +244,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "People often make the mistake of using this function to try to do radius "
-"searches. Creating a buffer to to a radius search is slow and pointless. Use "
+"searches. Creating a buffer to a radius search is slow and pointless. Use "
 "<xref linkend=\"ST_DWithin\"/> instead."
 msgstr ""
 
