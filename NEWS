@@ -6,14 +6,14 @@ PostGIS 2.3.3dev
   - #3711, Azimuth error upon adding 2.5D edges to topology
   - #3726, PDF manual from dblatex renders fancy quotes for programlisting
            (Mike Toews)
-  - #3738, raster: Using -s without -Y in raster2pgsql transforms 
+  - #3738, raster: Using -s without -Y in raster2pgsql transforms
            raster data instead of setting srid
   - #3744, ST_Subdivide loses subparts of inverted geometries
            (Darafei Praliaskouski Komzpa)
-  - #3750, @ and ~ operator not always schema qualified in geometry 
+  - #3750, @ and ~ operator not always schema qualified in geometry
            and raster functions. Causes restore issues.
            (Shane StClair of Axiom Data Science)
-           
+
 
 PostGIS 2.3.2
 2017/01/31
@@ -314,7 +314,7 @@ PostGIS 2.2.0
            max extent constraint
   - #3018, GROUP BY geography sometimes returns duplicate rows
   - #3020, ST_AddBand out-db bug where height using width value
-  - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3084, shp2pgsql - illegal number format when specific system locale set
   - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
   - #3086, ST_DumpValues() crashes backend on cleanup with invalid
            band indexes

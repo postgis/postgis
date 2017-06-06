@@ -15,7 +15,7 @@
           <para>#3688, ST_AsLatLonText: round minutes</para>
       </simplesect>
     </sect1>
-    
+
     <sect1>
       <title>Release 2.3.1</title>
       <para>Release date: 2016/11/28</para>
@@ -28,7 +28,7 @@
                 for large tables</para>
           <para>#3643, PostGIS not building on latest OSX XCode</para>
           <para>#3644, Deadlock on interrupt</para>
-          <para>#3650, Mark ST_Extent, ST_3DExtent and ST_Mem* 
+          <para>#3650, Mark ST_Extent, ST_3DExtent and ST_Mem*
                 agg functions as parallel safe so they can be parallelized</para>
           <para>#3652, Crash on Collection(MultiCurve())</para>
           <para>#3656, Fix upgrade of aggregates from 2.2 or lower version</para>
@@ -40,21 +40,21 @@
             patch from Hugo Mercier (Oslandia)</para>
       </simplesect>
     </sect1>
-      
+
     <sect1>
       <title>Release 2.3.0</title>
         <para>Release date: 2016/09/26</para>
         <para>This is a new feature release, with new functions, improved performance, all relevant bug fixes from PostGIS 2.2.3,and other goodies.</para>
-        
+
       <simplesect>
         <title>Important / Breaking Changes</title>
           <para>#3466, Casting from box3d to geometry now returns a 3D
-                   geometry (Julien Rouhaud of Dalibo)</para>     
+                   geometry (Julien Rouhaud of Dalibo)</para>
           <para>#3396, ST_EstimatedExtent, throw WARNING instead of ERROR
                    (Regina Obe)</para>
       </simplesect>
-      
-      
+
+
       <simplesect>
           <title>New Features</title>
             <para>Add support for custom TOC in postgis_restore.pl
@@ -68,7 +68,7 @@
             <para>#1758, ST_Normalize (Sandro Santilli)</para>
             <para>#2236, shp2pgsql -d now emits "DROP TABLE IF EXISTS"</para>
             <para>#2259, ST_VoronoiPolygons and ST_VoronoiLines (Dan Baston)</para>
-            <para>#2841 and #2996, ST_MinimumBoundingRadius and new ST_MinimumBoundingCircle 
+            <para>#2841 and #2996, ST_MinimumBoundingRadius and new ST_MinimumBoundingCircle
                      implementation using Welzl's algorithm (Dan Baston)</para>
             <para>#2991, Enable ST_Transform to use PROJ.4 text (Mike Toews)</para>
             <para>#3059, Allow passing per-dimension parameters in ST_Expand (Dan Baston)</para>
@@ -95,7 +95,7 @@
             <para>#3613, Segmentize geography using equal length segments
                      (Hugo Mercier of Oslandia)</para>
       </simplesect>
-      
+
       <simplesect>
           <title>Bug Fixes</title>
              <para>All relevant bug fixes from PostGIS 2.2.3</para>
@@ -103,7 +103,7 @@
              <para>#3604, pgcommon/Makefile.in orders CFLAGS incorrectly leading to
                      wrong liblwgeom.h (Greg Troxel)</para>
       </simplesect>
-      
+
       <simplesect>
           <title>Performance Enhancements</title>
             <para>#75, Enhancement to PIP short circuit (Dan Baston)</para>
@@ -113,9 +113,9 @@
             <para>Make adding a line to topology interruptible (Sandro Santilli)</para>
             <para>Documentation updates from Mike Toews</para>
       </simplesect>
-    
+
     </sect1>
-   
+
    <sect1>
       <title>Release 2.2.2</title>
         <para>Release date: 2016/03/22</para>
@@ -136,7 +136,7 @@
           <para>#3426, failing POINT EMPTY tests on fun architectures</para>
         </simplesect>
     </sect1>
-    
+
      <sect1>
   <title>Release 2.2.1</title>
       <para>Release date: 2016/01/06</para>
@@ -260,7 +260,7 @@
         <title>Bug Fixes</title>
         <para>#3159, do not force a bbox cache on ST_Affine</para>
         <para>#3018, GROUP BY geography sometimes returns duplicate rows</para>
-        <para>#3048, shp2pgsql - illegal number format when specific system locale set</para>
+        <para>#3084, shp2pgsql - illegal number format when specific system locale set</para>
         <para>#3094, Malformed GeoJSON inputs crash backend</para>
         <para>#3104, st_asgml introduces random characters in ID field</para>
         <para>#3155, Remove liblwgeom.h on make uninstall</para>
