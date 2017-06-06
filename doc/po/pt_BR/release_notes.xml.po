@@ -1473,7 +1473,7 @@ msgstr "#3048, Acelera simplificação de geometria (J.Santana @ CartoDB)"
 #. Tag: para
 #: release_notes.xml:253
 #, no-c-format
-msgid "#3050, Speep up geometry type reading (J.Santana @ CartoDB)"
+msgid "#3050, Speed up geometry type reading (J.Santana @ CartoDB)"
 msgstr "#3050, Acelera o leitor de tipo de geometria (J.Santana @ CartoDB)"
 
 #. Tag: para

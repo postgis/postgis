@@ -250,7 +250,7 @@
         <title>Enhancements</title>
         <para>#3000, Ensure edge splitting and healing algorithms use indexes</para>
         <para>#3048, Speed up geometry simplification (J.Santana @ CartoDB)</para>
-        <para>#3050, Speep up geometry type reading (J.Santana @ CartoDB)</para>
+        <para>#3050, Speed up geometry type reading (J.Santana @ CartoDB)</para>
       </simplesect>
       <simplesect>
         <title>Bug Fixes</title>
