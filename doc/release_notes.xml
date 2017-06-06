@@ -212,7 +212,7 @@
         <title>Bug Fixes</title>
         <para>#3159, do not force a bbox cache on ST_Affine</para>
         <para>#3018, GROUP BY geography sometimes returns duplicate rows</para>
-        <para>#3048, shp2pgsql - illegal number format when specific system locale set</para>
+        <para>#3084, shp2pgsql - illegal number format when specific system locale set</para>
         <para>#3094, Malformed GeoJSON inputs crash backend</para>
         <para>#3104, st_asgml introduces random characters in ID field</para>
         <para>#3155, Remove liblwgeom.h on make uninstall</para>
