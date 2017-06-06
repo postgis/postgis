@@ -920,7 +920,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:158
 #, no-c-format
-msgid "#3050, Speep up geometry type reading (J.Santana @ CartoDB)"
+msgid "#3050, Speed up geometry type reading (J.Santana @ CartoDB)"
 msgstr ""
 
 #. Tag: para
