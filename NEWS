@@ -9,10 +9,10 @@ PostGIS 2.4.0
   - #3753, Gist penalty speed improvements for 2d and nd points
            (Darafei Praliaskouski)
   - #3677, ST_FrechetDistance (Shinichi Sugiyama)
-  
+
  * Bug Fixes *
   - #3682, Boolean (FTLogical) should be 1 byte not 2 bytes
-  
+
 
 PostGIS 2.3.0
 2016/09/26
@@ -288,7 +288,7 @@ PostGIS 2.2.0
            max extent constraint
   - #3018, GROUP BY geography sometimes returns duplicate rows
   - #3020, ST_AddBand out-db bug where height using width value
-  - #3048, shp2pgsql - illegal number format when specific system locale set
+  - #3084, shp2pgsql - illegal number format when specific system locale set
   - #3061, Allow duplicate points in JSON, GML, GML ST_GeomFrom* functions
   - #3086, ST_DumpValues() crashes backend on cleanup with invalid
            band indexes
