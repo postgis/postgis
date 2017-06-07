@@ -122,7 +122,7 @@ CREATE OR REPLACE FUNCTION st_envelope(raster)
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.0.0
--- Changed: 2.1.4 raised cost 
+-- Changed: 2.1.4 raised cost
 CREATE OR REPLACE FUNCTION st_convexhull(raster)
     RETURNS geometry
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
@@ -256,7 +256,7 @@ CREATE OR REPLACE FUNCTION st_summary(rast raster)
 		msg := msg || 'and extent of ' || extent;
 
 		IF
-			round(metadata.skewx::numeric, 10) <> round(0::numeric, 10) OR 
+			round(metadata.skewx::numeric, 10) <> round(0::numeric, 10) OR
 			round(metadata.skewy::numeric, 10) <> round(0::numeric, 10)
 		THEN
 			msg := 'Skewed ' || overlay(msg placing 'r' from 1 for 1);
@@ -373,7 +373,7 @@ CREATE OR REPLACE FUNCTION st_addband(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_copyBand'
-	LANGUAGE 'c' IMMUTABLE _PARALLEL; 
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_addband(
 	torast raster,
@@ -569,7 +569,7 @@ CREATE OR REPLACE FUNCTION _st_summarystats(
 	sample_percent double precision DEFAULT 1
 )
 	RETURNS summarystats
-	AS $$ 
+	AS $$
 	DECLARE
 		stats summarystats;
 	BEGIN
@@ -1795,7 +1795,7 @@ CREATE OR REPLACE FUNCTION st_colormap(
 					_colormap := '
 100%   0
   0% 254
-  nv 255 
+  nv 255
 					';
 				WHEN 'pseudocolor' THEN
 					_colormap := '
@@ -2081,19 +2081,19 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 			options := array_append(options, 'QUALITY=' || quality2);
 		END IF;
 
-		RETURN st_asjpeg(st_band($1, $2), options);
+		RETURN @extschema@.st_asjpeg(st_band($1, $2), options);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -- Cannot be strict as "options" can be NULL
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
-	AS $$ SELECT st_asjpeg(st_band($1, $2), $3) $$
+	AS $$ SELECT @extschema@.st_asjpeg(st_band($1, $2), $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, quality int)
 	RETURNS bytea
-	AS $$ SELECT st_asjpeg($1, ARRAY[$2], $3) $$
+	AS $$ SELECT @extschema@.st_asjpeg($1, ARRAY[$2], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -2118,8 +2118,8 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 		-- PNG allows 1, 3 or 4 bands
 		IF num_bands <> 1 AND num_bands <> 3 AND num_bands <> 4 THEN
 			RAISE NOTICE 'The PNG format only permits one, three or four bands.  The first band will be used.';
-			rast2 := st_band($1, ARRAY[1]);
-			num_bands := st_numbands(rast2);
+			rast2 := @extschema@.st_band($1, ARRAY[1]);
+			num_bands := @extschema@.st_numbands(rast2);
 		ELSE
 			rast2 := rast;
 		END IF;
@@ -2132,14 +2132,14 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 			END IF;
 		END LOOP;
 
-		RETURN st_asgdalraster(rast2, 'PNG', $2, NULL);
+		RETURN @extschema@.st_asgdalraster(rast2, 'PNG', $2, NULL);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 -- Cannot be strict as "options" can be NULL
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
-	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
+	AS $$ SELECT @extschema@.st_aspng(st_band($1, $2), $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
@@ -2161,18 +2161,18 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 			options := array_append(options, 'ZLEVEL=' || compression2);
 		END IF;
 
-		RETURN st_aspng(st_band($1, $2), options);
+		RETURN @extschema@.st_aspng(st_band($1, $2), options);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
-	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
+	AS $$ SELECT @extschema@.st_aspng(st_band($1, $2), $3) $$
 	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	RETURNS bytea
-	AS $$ SELECT st_aspng($1, ARRAY[$2], $3) $$
+	AS $$ SELECT @extschema@.st_aspng($1, ARRAY[$2], $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
@@ -2193,7 +2193,7 @@ CREATE OR REPLACE FUNCTION _st_asraster(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_asRaster'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2207,7 +2207,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, $2, $3, NULL, NULL, $6, $7, $8, NULL, NULL, $4, $5, $9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2221,7 +2221,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, $2, $3, NULL, NULL, $4, $5, $6, $7, $8, NULL, NULL,	$9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2235,7 +2235,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, NULL, NULL, $2, $3, $6, $7, $8, NULL, NULL, $4, $5, $9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2249,7 +2249,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, NULL, NULL, $2, $3, $4, $5, $6, $7, $8, NULL, NULL,	$9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2263,7 +2263,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, $2, $3, NULL, NULL, ARRAY[$6]::text[], ARRAY[$7]::double precision[], ARRAY[$8]::double precision[], NULL, NULL, $4, $5, $9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2277,7 +2277,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, $2, $3, NULL, NULL, ARRAY[$4]::text[], ARRAY[$5]::double precision[], ARRAY[$6]::double precision[], $7, $8, NULL, NULL, $9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2291,7 +2291,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, NULL, NULL, $2, $3, ARRAY[$6]::text[], ARRAY[$7]::double precision[], ARRAY[$8]::double precision[], NULL, NULL, $4, $5, $9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2305,7 +2305,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_asraster($1, NULL, NULL, $2, $3, ARRAY[$4]::text[], ARRAY[$5]::double precision[], ARRAY[$6]::double precision[], $7, $8, NULL, NULL,$9, $10, $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2343,7 +2343,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 
 		RETURN @extschema@._ST_asraster(g, scale_x, scale_y, NULL, NULL, $3, $4, $5, NULL, NULL, ul_x, ul_y, skew_x, skew_y, $6);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -2355,7 +2355,7 @@ CREATE OR REPLACE FUNCTION st_asraster(
 )
 	RETURNS raster
 	AS $$ SELECT  @extschema@.ST_AsRaster($1, $2, ARRAY[$3]::text[], ARRAY[$4]::double precision[], ARRAY[$5]::double precision[], $6) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_GDALWarp
@@ -2373,7 +2373,7 @@ CREATE OR REPLACE FUNCTION _ST_gdalwarp(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_GDALWarp'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Resample
@@ -2387,7 +2387,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $8,	$9, NULL, $2, $3, $4, $5, $6, $7) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -2398,7 +2398,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $8,	$9, NULL, NULL, NULL, $4, $5, $6, $7, $2, $3) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -2442,7 +2442,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 
 		RETURN @extschema@._ST_gdalwarp($1, $3, $4, NULL, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy, _dimx, _dimy);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -2452,8 +2452,8 @@ CREATE OR REPLACE FUNCTION st_resample(
 	maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT st_resample($1, $2, $4, $5, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	AS $$ SELECT @extschema@.st_resample($1, $2, $4, $5, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Transform
@@ -2461,20 +2461,20 @@ CREATE OR REPLACE FUNCTION st_resample(
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $3, $4, $2, $5, $6) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $5, $6, $2, $3, $4) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $4, $5, $2, $3, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_transform(
-	rast raster, 
+	rast raster,
 	alignto raster,
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
@@ -2493,7 +2493,7 @@ CREATE OR REPLACE FUNCTION st_transform(
 
 		RETURN @extschema@._ST_gdalwarp($1, $3, $4, _srid, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy, NULL, NULL);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Rescale
@@ -2501,12 +2501,12 @@ CREATE OR REPLACE FUNCTION st_transform(
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT  @extschema@._ST_GdalWarp($1, $4, $5, NULL, $2, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT  @extschema@._ST_GdalWarp($1, $3, $4, NULL, $2, $2) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Reskew
@@ -2514,12 +2514,12 @@ CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, alg
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewx double precision, skewy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_GdalWarp($1, $4, $5, NULL, 0, 0, NULL, NULL, $2, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewxy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_GdalWarp($1, $3, $4, NULL, 0, 0, NULL, NULL, $2, $2) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_SnapToGrid
@@ -2532,7 +2532,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_GdalWarp($1, $4, $5, NULL, $6, $7, $2, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(
 	rast raster,
@@ -2542,7 +2542,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $6, $7, NULL, $4, $5, $2, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(
 	rast raster,
@@ -2552,7 +2552,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $5, $6, NULL, $4, $4, $2, $3) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Resize
@@ -2637,7 +2637,7 @@ CREATE OR REPLACE FUNCTION st_resize(
 			whi[1], whi[2]
 		);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_resize(
 	rast raster,
@@ -2646,7 +2646,7 @@ CREATE OR REPLACE FUNCTION st_resize(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_gdalwarp($1, $4, $5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, abs($2), abs($3)) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_resize(
 	rast raster,
@@ -2686,7 +2686,7 @@ CREATE OR REPLACE FUNCTION st_resize(
 			_width, _height
 		);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 
 -----------------------------------------------------------------------
 -- One Raster ST_MapAlgebra
@@ -2705,7 +2705,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expres
         nodataval double precision DEFAULT NULL)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebraexpr($1, 1, $2, $3, $4) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- All arguments supplied, use the C implementation.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
@@ -2719,48 +2719,48 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, $2, $3, $4, NULL) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 2: missing pixeltype; default to pixeltype of rast
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, $2, NULL, $3, VARIADIC $4) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 3: missing pixeltype and user args; default to pixeltype of rast
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, $2, NULL, $3, NULL) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 4: missing band; default to band 1
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, $2, $3, VARIADIC $4) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 5: missing band and user args; default to band 1
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, $2, $3, NULL) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 6: missing band, and pixeltype; default to band 1, pixeltype of rast.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure,
         variadic args text[])
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, NULL, $2, VARIADIC $3) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variant 7: missing band, pixeltype, and user args; default to band 1, pixeltype of rast.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, NULL, $2, NULL) $$
-    LANGUAGE 'sql';
+    LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Two Raster ST_MapAlgebra
@@ -2775,7 +2775,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast1 raster,
@@ -2787,7 +2787,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster, band1 integer,
@@ -2798,7 +2798,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster,
@@ -2809,7 +2809,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_mapalgebrafct($1, 1, $2, 1, $3, $4, $5, VARIADIC $6) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- Neighborhood single raster map algebra
@@ -3003,7 +3003,7 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebra'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 
 
@@ -3017,7 +3017,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5,NULL::double precision [],NULL::boolean, VARIADIC $8) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband int[],
@@ -3053,7 +3053,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 
 		RETURN @extschema@._ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9);
 	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband int,
@@ -3065,7 +3065,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6,NULL::double precision [],NULL::boolean, VARIADIC $9) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast1 raster, nband1 int,
@@ -3078,7 +3078,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8,NULL::double precision [],NULL::boolean, VARIADIC $11) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband int,
@@ -3091,7 +3091,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	RETURNS raster
 	AS $$
 	select @extschema@._ST_mapalgebra(ARRAY[ROW($1,$2)]::rastbandarg[],$3,$6,NULL::integer,NULL::integer,$7,$8,$4,$5,VARIADIC $9)
-	$$ LANGUAGE 'sql' STABLE;
+	$$ LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- 1 or 2-Raster ST_MapAlgebra with expressions
@@ -3106,7 +3106,7 @@ CREATE OR REPLACE FUNCTION _st_mapalgebra(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebraExpr'
-	LANGUAGE 'c' STABLE;
+	LANGUAGE 'c' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband integer,
@@ -3115,7 +3115,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_mapalgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $4, $3, 'FIRST', $5::text) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster,
@@ -3124,7 +3124,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_mapalgebra($1, 1, $2, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast1 raster, band1 integer,
@@ -3136,7 +3136,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@._ST_mapalgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $7, $8, $9, $10) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast1 raster,
@@ -3148,7 +3148,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT @extschema@.ST_mapalgebra($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_MapAlgebra callback functions
@@ -4372,7 +4372,7 @@ CREATE OR REPLACE FUNCTION _st_tpi4ma(value double precision[][][], pos integer[
 
 		mean := (Z1 + Z2 + Z3 + Z4 + Z6 + Z7 + Z8 + Z9)/8;
 		tpi := Z5-mean;
-		
+
 		return tpi;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
@@ -4654,8 +4654,8 @@ CREATE OR REPLACE FUNCTION _st_tri4ma(value double precision[][][], pos integer[
 		Z9 := _value[z][3][3];
 
 		tri := ( abs(Z1 - Z5 ) + abs( Z2 - Z5 ) + abs( Z3 - Z5 ) + abs( Z4 - Z5 ) + abs( Z6 - Z5 ) + abs( Z7 - Z5 ) + abs( Z8 - Z5 ) + abs ( Z9 - Z5 )) / 8;
-		
-		return tri;  
+
+		return tri;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
 
@@ -4977,7 +4977,7 @@ CREATE OR REPLACE FUNCTION st_setrotation(rast raster, rotation float8)
     LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_setgeotransform(rast raster,
-    imag double precision, 
+    imag double precision,
     jmag double precision,
     theta_i double precision,
     theta_ij double precision,
@@ -5397,7 +5397,7 @@ CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 
 ---------------------------------------------------------------------------------
 -- ST_WorldToRasterCoordX(rast raster, pt geometry)
--- Returns the pixel column and row covering the provided point geometry. 
+-- Returns the pixel column and row covering the provided point geometry.
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_worldtorastercoord(
@@ -5752,7 +5752,7 @@ CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry OPERATOR(@extschema@.&&) $2'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-    
+
 -- geometry/raster functions
 
 -- Availability: 2.0.0
@@ -5772,7 +5772,7 @@ CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
     AS 'select $1 OPERATOR(@extschema@.&&) $2::geometry'
     LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
-    
+
 ------------------------------------------------------------------------------
 --  GiST index OPERATORs
 ------------------------------------------------------------------------------
@@ -6057,7 +6057,7 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 		-- edge tile
 
 		-- edge tile may have same size as inner tile
-		IF 
+		IF
 			(_rastmeta.width = tilewidth) AND
 			(_rastmeta.height = tileheight)
 		THEN
@@ -6463,7 +6463,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(
 
 		newnodata1 := coalesce(nodataval[1], ST_BandNodataValue(rast1, band1), ST_MinPossibleValue(@extschema@.ST_BandPixelType(rast1, band1)));
 		newnodata2 := coalesce(nodataval[2], ST_BandNodataValue(rast2, band2), ST_MinPossibleValue(@extschema@.ST_BandPixelType(rast2, band2)));
-		
+
 		_returnband := upper(returnband);
 
 		rtn := NULL;
@@ -6496,7 +6496,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, $2, $3, $4, $5, ARRAY[$6, $6]) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
@@ -6505,7 +6505,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', $5) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
@@ -6514,7 +6514,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', ARRAY[$5, $5]) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -- Variants without band number
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -6525,7 +6525,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, 1, $2, 1, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster,
@@ -6535,7 +6535,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, 1, $2, 1, $3, ARRAY[$4, $4]) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster,
@@ -6544,7 +6544,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', $3) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster,
@@ -6553,7 +6553,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', ARRAY[$3, $3]) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE _PARALLEL;
 
 -----------------------------------------------------------------------
 -- ST_Union aggregate
@@ -6988,10 +6988,10 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rastta
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND a.attnum = ANY (s.conkey)
-		AND s.consrc LIKE '%st_scale' || $4 || '(% = %') 
+		AND s.consrc LIKE '%st_scale' || $4 || '(% = %')
 -- if it is a comma separated list of two numbers then need to use round
-   SELECT CASE WHEN split_part(c.val,',', 2) > '' 
-        THEN round( split_part(c.val, ',',1)::numeric, split_part(c.val,',',2)::integer )::float8 
+   SELECT CASE WHEN split_part(c.val,',', 2) > ''
+        THEN round( split_part(c.val, ',',1)::numeric, split_part(c.val,',',2)::integer )::float8
         ELSE c.val::float8 END
         FROM c;
 	$$ LANGUAGE sql STABLE STRICT
@@ -7174,7 +7174,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
             || fqtn
             || ' LIMIT 1;';
     EXECUTE sql INTO srid;
-    
+
 		cn := 'enforce_max_extent_' || $3;
 
 		sql := 'SELECT @extschema@.st_ashexewkb( @extschema@.st_setsrid( @extschema@.st_extent( @extschema@.st_envelope('
@@ -7323,7 +7323,7 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 			AND s.conexclop[1] = op.oid
 			AND op.oprname = '=';
 
-		RETURN  @extschema@._drop_raster_constraint($1, $2, cn); 
+		RETURN  @extschema@._drop_raster_constraint($1, $2, cn);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
@@ -7609,7 +7609,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
 	RETURNS numeric[] AS
 	$$ SELECT array_agg(round(nodatavalue::numeric, 10))::numeric[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
@@ -7696,7 +7696,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rastt
 CREATE OR REPLACE FUNCTION _raster_constraint_out_db(rast raster)
 	RETURNS boolean[] AS
 	$$ SELECT array_agg(isoutdb)::boolean[] FROM @extschema@.ST_BandMetaData($1, ARRAY[]::int[]); $$
-	LANGUAGE 'sql' STABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS $$
