@@ -1388,15 +1388,24 @@ constraints enforced.
 
 				<para>Availability: 2.2.0</para>
 			</refsection>
-      <refsection>
-        <title>See Also</title>
-        <para>
-  <xref linkend="RT_Retile"/>,
-  <xref linkend="RT_AddOverviewConstraints"/>,
-  <xref linkend="RT_AddRasterConstraints"/>,
-  <xref linkend="RT_Raster_Overviews"/>
-        </para>
-      </refsection>
+
+			<refsection><title>Example</title>
+				<para>Output to generally better quality but slower to product format</para>
+				<programlisting>SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2, 'Lanczos');</programlisting>
+
+				<para>Output to faster to process default nearest neighbor</para>
+				<programlisting>SELECT ST_CreateOverview('mydata.mytable'::regclass, 'rast', 2);</programlisting>
+			</refsection>
+
+			<refsection>
+			<title>See Also</title>
+			<para>
+		<xref linkend="RT_Retile"/>,
+		<xref linkend="RT_AddOverviewConstraints"/>,
+		<xref linkend="RT_AddRasterConstraints"/>,
+		<xref linkend="RT_Raster_Overviews"/>
+			</para>
+			</refsection>
 		</refentry>
   </sect1>
 
@@ -6428,7 +6437,7 @@ SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 
 
 -- result
 0
-					
+
 -- the reskewed raster raster rotation
 SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015));
 
@@ -6515,7 +6524,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0));
 -- result
 0
-					
+
 -- the upper left of raster after snapping
 SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002));
 
@@ -8064,16 +8073,36 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 			</refsection>
 
+
 			<refsection>
-				<title>JPEG Output Examples</title>
+				<title>JPEG Output Example, multiple tiles as single raster</title>
 
-					<programlisting>SELECT ST_AsGDALRaster(rast, 'JPEG') As rastjpg
-FROM dummy_rast WHERE rid=1;
+				<programlisting><![CDATA[SELECT ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50']) As rastjpg
+FROM dummy_rast
+WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);]]></programlisting>
 
-SELECT ST_AsGDALRaster(rast, 'JPEG', ARRAY['QUALITY=50']) As rastjpg
-FROM dummy_rast WHERE rid=2;
-				</programlisting>
+			</refsection>
 
+
+			<refsection><title>Using PostgreSQL Large Object Support to export raster</title>
+				<para>One way to export raster into another format is using <ulink url="https://www.postgresql.org/docs/current/static/lo-funcs.html">PostgreSQL large object export functions</ulink>.
+				We'lll repeat the prior example but also exporting.  Note for this you'll need to have super user access to db since it uses server side lo functions.
+				It will also export to path on server network.  If you need export locally,
+				use the psql equivalent lo_ functions which export to the local file system insteado fo the server file system.</para>
+				<programlisting><![CDATA[DROP TABLE IF EXISTS tmp_out ;
+
+CREATE TABLE tmp_out AS
+SELECT lo_from_bytea(0,
+       ST_AsGDALRaster(ST_Union(rast), 'JPEG', ARRAY['QUALITY=50'])
+        ) AS loid
+  FROM dummy_rast
+WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);
+
+SELECT lo_export(loid, '/tmp/dummy.jpg')
+   FROM tmp_out;
+
+SELECT lo_unlink(loid)
+  FROM tmp_out;]]></programlisting>
 			</refsection>
 
 			<refsection>
