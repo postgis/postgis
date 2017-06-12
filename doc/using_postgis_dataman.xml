@@ -90,7 +90,7 @@ geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 	  SRID information.</para>
 
 	  <para>Examples of the text representations (EWKT) of the extended
-	  spatial objects of the features are as follows. The * ones are new in this version of PostGIS:</para>
+	  spatial objects of the features are as follows.</para>
 
 	  <itemizedlist>
 		<listitem>
