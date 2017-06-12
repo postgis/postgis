@@ -805,7 +805,7 @@ SELECT populate_geometry_columns('myschema.my_special_pois'::regclass);
 -- set new optional  use_typmod argument to false
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
-<para>Although the old-constraint based method is still supported, a constraint-based geomentry column used directly
+<para>Although the old-constraint based method is still supported, a constraint-based geometry column used directly
 in a view, will not register correctly in geometry_columns, as will a typmod one.
 In this example we define a column using typmod and another using constraints.</para>
 <programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY
