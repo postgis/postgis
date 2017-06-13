@@ -265,7 +265,7 @@ static void test_ptarray_locate_point(void)
 	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.5);
 	CU_ASSERT_EQUAL(dist, 0.0);
-	CU_ASSERT_EQUAL(l.m, 10.0);	
+	CU_ASSERT_EQUAL(l.m, 10.0);
 
 	lwline_free(line);
 
@@ -337,7 +337,7 @@ static void test_ptarray_signed_area()
 	//printf("%g\n",area);
 	CU_ASSERT_DOUBLE_EQUAL(area, -4.0, 0.0000001);
 	lwline_free(line);
-	
+
 }
 
 
@@ -357,9 +357,9 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
+	lwfree(str);
 	*/
-	
+
 	in = lwgeom_from_text("CIRCULARSTRING(-1 0,0 1,0 -1)");
 	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
@@ -370,7 +370,7 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
+	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,-1 -1))");
 	out = lwgeom_stroke(in,8);
@@ -382,7 +382,7 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,-1 -1))");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
+	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0 1,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-1 -3,1 -3),(1 -3,5 5))");
 	out = lwgeom_stroke(in,8);
@@ -394,7 +394,7 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((-3 -3,-1 0),CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),(0 -1,0 -1.5,0 -2),CIRCULARSTRING(0 -2,-0.70710678 -3.7071068,1 -3),(1 -3,5 5))");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
+	lwfree(str);
 
 	in = lwgeom_from_text("COMPOUNDCURVE(CIRCULARSTRING(-1 0,0 1,0 -1),CIRCULARSTRING(0 -1,-1 -2,1 -2))");
 	out = lwgeom_stroke(in,8);
@@ -406,8 +406,8 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE(CIRCULARSTRING(-1 0,0.70710678 0.70710678,0 -1),CIRCULARSTRING(0 -1,-0.70710678 -2.7071068,1 -2))");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
-	
+	lwfree(str);
+
 	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
 	out = lwgeom_stroke(in,8);
 	lwgeom_free(in);
@@ -418,8 +418,8 @@ static void test_ptarray_unstroke()
 	lwgeom_free(in);
 	lwgeom_free(out);
 	// printf("%s\n", str);
-	lwfree(str);		
-	
+	lwfree(str);
+
 	// See http://trac.osgeo.org/postgis/ticket/2425
 	// and http://trac.osgeo.org/postgis/ticket/2420
 	in = lwgeom_from_text("LINESTRING(0 0,10 0,10 10,0 10,0 0)");
@@ -428,7 +428,7 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,10 0,10 10,0 10,0 0)");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);	
+	lwfree(str);
 
 	in = lwgeom_from_text("LINESTRING(10 10,0 10,0 0,10 0)");
 	out = lwgeom_unstroke(in);
@@ -456,7 +456,7 @@ static void test_ptarray_unstroke()
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,1 1)");
 	lwgeom_free(in);
 	lwgeom_free(out);
-	lwfree(str);		
+	lwfree(str);
 
 }
 
@@ -468,7 +468,7 @@ static void test_ptarray_contains_point()
 	POINTARRAY *pa;
 	POINT2D pt;
 	int rv;
-	
+
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)"));
 	pa = lwline->points;
 
@@ -477,7 +477,7 @@ static void test_ptarray_contains_point()
 	pt.y = 0.5;
 	rv = ptarray_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);
-	
+
 	/* Point on left edge of square */
 	pt.x = 0;
 	pt.y = 0.5;
@@ -519,11 +519,11 @@ static void test_ptarray_contains_point()
 	pt.y = 0.5;
 	rv = ptarray_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
-	
+
 	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 1 1, 2 0, 0 0)"));
 	pa = lwline->points;
-	
+
 	/* Point outside grazing top of triangle */
 	pt.x = 0;
 	pt.y = 1;
@@ -567,30 +567,30 @@ static void test_ptarrayarc_contains_point()
 	pt.y = 0;
 	rv = ptarrayarc_contains_point(pa, &pt);
 	CU_ASSERT_EQUAL(rv, LW_INSIDE);
-	
+
 	/* Point in left lobe */
 	pt.x = -1.1;
 	pt.y = 0.1;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point on boundary of left lobe */
 	pt.x = -1;
 	pt.y = 0;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point on boundary vertex */
 	pt.x = -1;
 	pt.y = 1;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/* Point outside */
 	pt.x = -1.5;
 	pt.y = 1.5;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/*** Two-edge ring made up of semi-circles (really, a circle) ***/
 	lwline_free(lwline);
@@ -601,37 +601,37 @@ static void test_ptarrayarc_contains_point()
 	pt.x = -1.5;
 	pt.y = 1.5;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point more outside */
 	pt.x = 2.5;
 	pt.y = 1.5;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point more outside */
 	pt.x = 2.5;
 	pt.y = 2.5;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point inside at middle */
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point inside offset from middle */
 	pt.x = 0.01;
 	pt.y = 0.01;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point on edge vertex */
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/*** Two-edge ring, closed ***/
 	lwline_free(lwline);
@@ -642,7 +642,7 @@ static void test_ptarrayarc_contains_point()
 	pt.x = 20;
 	pt.y = 4;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/*** One-edge ring, closed circle ***/
 	lwline_free(lwline);
@@ -653,19 +653,19 @@ static void test_ptarrayarc_contains_point()
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point outside */
 	pt.x = 0;
 	pt.y = 2;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point on boundary */
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarrayarc_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/*** Overshort ring ***/
 	lwline_free(lwline);
