@@ -18,7 +18,7 @@
  *
  **********************************************************************
  *
- * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  **********************************************************************/
 
@@ -136,20 +136,20 @@ lwcircle_stroke(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, uint32_
 	/* Matched start/end points imply circle */
 	if ( p1->x == p3->x && p1->y == p3->y )
 		is_circle = LW_TRUE;
-	
+
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
 	if ( (radius < 0.0 || p2_side == 0) && ! is_circle )
 	    return NULL;
-		
+
 	/* The side of the p1/p3 line that p2 falls on dictates the sweep
 	   direction from p1 to p3. */
 	if ( p2_side == -1 )
 		clockwise = LW_TRUE;
 	else
 		clockwise = LW_FALSE;
-		
+
 	increment = fabs(M_PI_2 / perQuad);
-	
+
 	/* Angles of each point that defines the arc section */
 	a1 = atan2(p1->y - center.y, p1->x - center.x);
 	a2 = atan2(p2->y - center.y, p2->x - center.x);
@@ -174,7 +174,7 @@ lwcircle_stroke(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, uint32_
 		if ( a2 < a1 )
 			a2 += 2.0 * M_PI;
 	}
-	
+
 	/* Override angles for circle case */
 	if( is_circle )
 	{
@@ -183,7 +183,7 @@ lwcircle_stroke(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, uint32_
 		increment = fabs(increment);
 		clockwise = LW_FALSE;
 	}
-	
+
 	/* Initialize point array */
 	pa = ptarray_construct_empty(1, 1, 32);
 
@@ -196,7 +196,7 @@ lwcircle_stroke(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, uint32_
 		pt.z = interpolate_arc(angle, a1, a2, a3, p1->z, p2->z, p3->z);
 		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
 		ptarray_append_point(pa, &pt, LW_FALSE);
-	}	
+	}
 	return pa;
 }
 
@@ -247,7 +247,7 @@ lwcircstring_stroke(const LWCIRCSTRING *icurve, uint32_t perQuad)
 	}
 	getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
 	ptarray_append_point(ptarray, &p1, LW_TRUE);
-		
+
 	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
 }
@@ -530,7 +530,7 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 	b_distance = distance2d_pt_pt(tb, &center);
 	diff = fabs(radius - b_distance);
 	LWDEBUGF(4, "circle_radius=%g, b_distance=%g, diff=%g, percentage=%g", radius, b_distance, diff, diff/radius);
-	
+
 	/* Is the point b on the circle? */
 	if ( diff < EPSILON_SQLMM )
 	{
@@ -565,7 +565,7 @@ linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 	for( i = start; i < end + 2; i++ )
 	{
 		getPoint4d_p(pa, i, &p);
-		ptarray_set_point4d(pao, j++, &p);	
+		ptarray_set_point4d(pao, j++, &p);
 	}
 	return lwline_as_lwgeom(lwline_construct(srid, NULL, pao));
 }
@@ -573,16 +573,16 @@ linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 static LWGEOM*
 circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
 {
-	
+
 	POINT4D p0, p1, p2;
 	POINTARRAY *pao = ptarray_construct(ptarray_has_z(pa), ptarray_has_m(pa), 3);
 	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
 	getPoint4d_p(pa, start, &p0);
-	ptarray_set_point4d(pao, 0, &p0);	
+	ptarray_set_point4d(pao, 0, &p0);
 	getPoint4d_p(pa, (start+end+1)/2, &p1);
-	ptarray_set_point4d(pao, 1, &p1);	
+	ptarray_set_point4d(pao, 1, &p1);
 	getPoint4d_p(pa, end+1, &p2);
-	ptarray_set_point4d(pao, 2, &p2);	
+	ptarray_set_point4d(pao, 2, &p2);
 	return lwcircstring_as_lwgeom(lwcircstring_construct(srid, NULL, pao));
 }
 
@@ -619,19 +619,19 @@ pta_unstroke(const POINTARRAY *points, int type, int srid)
 	/* Null on empty input? */
 	if ( points->npoints == 0 )
 		return NULL;
-	
+
 	/* We can't desegmentize anything shorter than four points */
 	if ( points->npoints < 4 )
 	{
 		/* Return a linestring here*/
 		lwerror("pta_unstroke needs implementation for npoints < 4");
 	}
-	
+
 	/* Allocate our result array of vertices that are part of arcs */
 	num_edges = points->npoints - 1;
 	edges_in_arcs = lwalloc(num_edges + 1);
 	memset(edges_in_arcs, 0, num_edges + 1);
-	
+
 	/* We make a candidate arc of the first two edges, */
 	/* And then see if the next edge follows it */
 	while( i < num_edges-2 )
@@ -711,7 +711,7 @@ pta_unstroke(const POINTARRAY *points, int type, int srid)
 			i = i+1;
 		}
 	}
-	
+
 #if POSTGIS_DEBUG_LEVEL > 3
 	{
 		char *edgestr = lwalloc(num_edges+1);
@@ -746,7 +746,7 @@ pta_unstroke(const POINTARRAY *points, int type, int srid)
 	/* Roll out last item */
 	end = num_edges - 1;
 	lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
-	
+
 	/* Strip down to singleton if only one entry */
 	if ( outcol->ngeoms == 1 )
 	{
