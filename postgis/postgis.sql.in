@@ -5572,15 +5572,38 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --
 -- SQL-MM
 --
+-- ST_CurveToLine(Geometry geometry, Tolerance float8, ToleranceType integer, Flags integer)
+--
+-- Converts a given geometry to a linear geometry.  Each curveed
+-- geometry or segment is converted into a linear approximation using
+-- the given tolerance.
+--
+-- Semantic of tolerance depends on the `toltype` argument, which can be:
+--    0: Tolerance is number of segments per quadrant
+--    1: Tolerance is max distance between curve and line
+--    2: Tolerance is max angle between radii defining line vertices
+--
+-- Supported flags:
+--    1: Symmetric output (result in same vertices when inverting the curve)
+--
+-- Availability: 2.4.0
+--
+CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8, toltype integer, flags integer)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CurveToLine'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+--
+-- SQL-MM
+--
 -- ST_CurveToLine(Geometry geometry, SegmentsPerQuarter integer)
 --
 -- Converts a given geometry to a linear geometry.  Each curveed
 -- geometry or segment is converted into a linear approximation using
 -- the given number of segments per quarter circle.
+--
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry, integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_curve_segmentize'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	RETURNS geometry AS 'SELECT ST_CurveToLine($1, $2::float8, 0, 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 --
 -- SQL-MM
 --
@@ -5590,7 +5613,7 @@ CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry, integer)
 -- geometry or segment is converted into a linear approximation using
 -- the default value of 32 segments per quarter circle
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry)
-	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32)'
+	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32::integer)'
 	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
 
 CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)

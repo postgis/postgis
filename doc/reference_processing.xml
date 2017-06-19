@@ -845,6 +845,13 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
@@ -852,9 +859,44 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 		<title>Description</title>
 
 		<para>Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+
 		<para>Converts a given geometry to a linear geometry.
-		Each curved geometry or segment is converted into a linear approximation using the default value of 32 segments per quarter circle</para>
+		Each curved geometry or segment is converted into a linear
+approximation using the given `tolerance` and options (32 segments per
+quadrant and no options by default).</para>
+
+    <para>
+The 'tolerance_type' argument determines interpretation of the
+`tolerance` argument. It can take the following values:
+      <itemizedlist>
+        <listitem>
+          <para>0 (default): Tolerance is max segments per quadrant.</para>
+        </listitem>
+        <listitem>
+          <para>1: Tolerance is max-deviation of line from curve, in source units.</para>
+        </listitem>
+        <listitem>
+          <para>2: Tolerance is max-angle, in radians, between generating radii.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+The 'flags' argument is a bitfield. 0 by default.
+Supported bits are:
+      <itemizedlist>
+        <listitem>
+          <para>1: Symmetric (orientation idependent) output.</para>
+        </listitem>
+        <listitem>
+          <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
 		<para>Availability: 1.2.2?</para>
+    <para>Changed: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
+
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
 		<para>&Z_support;</para>
@@ -920,6 +962,18 @@ st_astext
  LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
  220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
  220197.12195122 150425.12195122,220227 150406)
+
+-- Ensure approximated line is no further than 20 units away from
+-- original curve, and make the result direction-neutral
+SELECT ST_AsText(ST_CurveToLine(
+ 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
+	20, -- Tolerance
+	1, -- Above is max distance between curve and line
+	1  -- Symmetric flag
+));
+st_astext
+-------------------------------------------------------------------------------------------
+ LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 -1.1331077795296e-13,200 0)
 
 
 		</programlisting>

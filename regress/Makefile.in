@@ -83,6 +83,7 @@ TESTS = \
 	cluster \
 	concave_hull\
 	ctors \
+	curvetoline \
 	dump \
 	dumppoints \
 	empty \
