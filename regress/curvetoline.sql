@@ -48,5 +48,17 @@ SELECT 'semicircle3.sym.ret', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
 	2, -- Above is max angle between generating radii
 	3  -- Symmetric and RetainAngle flags
 ), 2));
+SELECT 'multiarch1', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
+ 'CIRCULARSTRING(0 0,100 -100,200 0,400 200,600 0)'::geometry,
+	radians(45), -- Tolerance
+	2, -- Above is max angle between generating radii
+	3  -- Symmetric and RetainAngle flags
+), 2));
+SELECT 'multiarch1.maxerr20.sym', ST_AsText(ST_SnapToGrid(ST_CurveToLine(
+ 'CIRCULARSTRING(0 0,100 -100,200 0,400 200,600 0)'::geometry,
+	20, -- Tolerance
+	1, -- Above is max distance between curve and line
+	1  -- Symmetric
+), 2));
 
 
