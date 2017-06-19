@@ -3,6 +3,8 @@ PostGIS 2.4.0
 
  * New Features *
 
+  - #3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)
+  - #2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)
   - #3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)
   - #3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)
   - #3689, Add orientation checking and forcing functions (Dan Baston)
