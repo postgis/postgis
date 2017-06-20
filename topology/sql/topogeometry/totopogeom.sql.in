@@ -139,7 +139,6 @@ DECLARE
   tolerance FLOAT8;
   alayer INT;
   atopology TEXT;
-  var_dims integer;
 BEGIN
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -240,19 +239,13 @@ BEGIN
     FROM (SELECT (ST_Dump(ageom)).geom) as f
     WHERE NOT ST_IsEmpty(geom)
   LOOP
-    -- NOTE: storing this as a constant 
-    -- because the CASE WHEN in PostgreSQL 10 refuses to short-circuit 
-    -- when CASE contains set returning functions and the CASE boolean is not a constant
-    -- TODO: this feels a little dirty to assume so may need a revisit in near future
-    var_dims = rec.dims;
-    FOR rec2 IN SELECT CASE var_dims
-       WHEN 0 THEN
-         topology.topogeo_addPoint(atopology, rec.geom, tolerance)
-       WHEN 1 THEN
-         topology.topogeo_addLineString(atopology, rec.geom, tolerance)
-       WHEN 2 THEN
-         topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
-       END as primitive
+    FOR rec2 IN SELECT primitive
+                  FROM
+                  (SELECT topology.topogeo_addPoint(atopology, rec.geom, tolerance)  WHERE rec.dims = 0
+                    UNION ALL
+                  SELECT topology.topogeo_addLineString(atopology, rec.geom, tolerance)  WHERE rec.dims = 1
+                    UNION ALL
+                  SELECT topology.topogeo_addPolygon(atopology, rec.geom, tolerance)  WHERE rec.dims = 2 ) AS f(primitive)
     LOOP
       elem := ARRAY[rec.dims+1, rec2.primitive]::text;
       IF elems @> ARRAY[elem] THEN
