@@ -236,16 +236,24 @@ BEGIN
   -- definition by splitting
   FOR rec IN SELECT id(tg), alayer as lyr,
     geom, ST_Dimension(geom) as dims
-    FROM (SELECT (ST_Dump(ageom)).geom) as f
+    FROM (SELECT gd.geom FROM ST_Dump(ageom) AS gd ) as f
     WHERE NOT ST_IsEmpty(geom)
   LOOP
+    -- NOTE: Switched from using case to this because of PG 10 behavior change
+    -- Using a UNION ALL only one will be processed because of the WHERE
+    -- Since the WHERE clause will be processed first
     FOR rec2 IN SELECT primitive
-                  FROM
-                  (SELECT topology.topogeo_addPoint(atopology, rec.geom, tolerance)  WHERE rec.dims = 0
-                    UNION ALL
-                  SELECT topology.topogeo_addLineString(atopology, rec.geom, tolerance)  WHERE rec.dims = 1
-                    UNION ALL
-                  SELECT topology.topogeo_addPolygon(atopology, rec.geom, tolerance)  WHERE rec.dims = 2 ) AS f(primitive)
+          FROM
+            (
+              SELECT topology.topogeo_addPoint(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 0
+              UNION ALL
+              SELECT topology.topogeo_addLineString(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 1
+              UNION ALL
+              SELECT topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
+                WHERE rec.dims = 2
+            ) AS f(primitive)
     LOOP
       elem := ARRAY[rec.dims+1, rec2.primitive]::text;
       IF elems @> ARRAY[elem] THEN
