@@ -235,9 +235,9 @@ BEGIN
   -- as possible so that each element can further edit the
   -- definition by splitting
   FOR rec IN SELECT id(tg), alayer as lyr,
-    geom, ST_Dimension(geom) as dims
-    FROM (SELECT gd.geom FROM ST_Dump(ageom) AS gd ) as f
-    WHERE NOT ST_IsEmpty(geom)
+    geom, ST_Dimension(gd.geom) as dims
+    FROM ST_Dump(ageom) AS gd
+    WHERE NOT ST_IsEmpty(gd.geom)
   LOOP
     -- NOTE: Switched from using case to this because of PG 10 behavior change
     -- Using a UNION ALL only one will be processed because of the WHERE
