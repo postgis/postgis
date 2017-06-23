@@ -345,9 +345,20 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
-	if  ( empty1 != empty2 )
+	if  ( empty1 || empty2 )
 	{
-		PG_RETURN_BOOL(FALSE);
+		if  ( empty1 && empty2 )
+		{
+			PG_RETURN_INT32(1);
+		}
+		else if ( empty1 )
+		{
+			PG_RETURN_INT32(-1);
+		}
+		else
+		{
+			PG_RETURN_INT32(1);
+		}
 	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
