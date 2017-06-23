@@ -15,6 +15,7 @@ PostGIS 2.3.3dev
            (Shane StClair of Axiom Data Science)
   - #3682, Strange fieldlength in result of pgsql2shp
   - #3701, Escape double quotes issue in pgsql2shp
+  - #3704, ST_AsX3D crashes on empty geometry
 
 
 PostGIS 2.3.2
