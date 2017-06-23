@@ -13,6 +13,8 @@ PostGIS 2.3.3dev
   - #3750, @ and ~ operator not always schema qualified in geometry
            and raster functions. Causes restore issues.
            (Shane StClair of Axiom Data Science)
+  - #3682, Strange fieldlength in result of pgsql2shp
+  - #3701, Escape double quotes issue in pgsql2shp
 
 
 PostGIS 2.3.2

@@ -1,7 +1,7 @@
 /**********************************************************************
  *
  * PostGIS - Spatial Types for PostgreSQL
- * http://www.postgis.org
+ * http://postgis.net
  *
  * Copyright (C) 2001-2003 Refractions Research Inc.
  *
@@ -15,6 +15,7 @@
  * Original Author: Jeff Lounsbury <jeffloun@refractions.net>
  * Contributions by: Sandro Santilli <strk@keybit.bet>
  * Enhanced by: Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ * Enhanced by: Regina Obe <lr@pcorp.us>
  *
  **********************************************************************/
 
@@ -882,14 +883,14 @@ getTableInfo(SHPDUMPERSTATE *state)
 		if (state->schema)
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->schema) + strlen(state->table));
-	
+
 			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\".\"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
 			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->schema, state->table, state->geo_col_name);
 		}
 		else
 		{
 			query = malloc(150 + 4 * strlen(state->geo_col_name) + strlen(state->table));
-	
+
 			sprintf(query, "SELECT count(\"%s\"), max(ST_zmflag(\"%s\"::geometry)), geometrytype(\"%s\"::geometry) FROM \"%s\" GROUP BY geometrytype(\"%s\"::geometry)",
 			state->geo_col_name, state->geo_col_name, state->geo_col_name, state->table, state->geo_col_name);
 		}
@@ -900,7 +901,7 @@ getTableInfo(SHPDUMPERSTATE *state)
 		if (state->schema)
 		{
 			query = malloc(40 + strlen(state->schema) + strlen(state->table));
-			
+
 			sprintf(query, "SELECT count(1) FROM \"%s\".\"%s\"", state->schema, state->table);
 		}
 		else
@@ -973,7 +974,7 @@ getTableInfo(SHPDUMPERSTATE *state)
 					typemismatch = 1;
 				else
 					typefound = MULTILINETYPE;
-				break;					
+				break;
 
 			case MULTIPOLYGONTYPE:
 				if (typefound != MULTIPOLYGONTYPE && typefound != POLYGONTYPE)
@@ -1043,11 +1044,11 @@ getTableInfo(SHPDUMPERSTATE *state)
 			case 'z':
 				state->outshptype = SHPT_POINTZ;
 				break;
-	
+
 			case 'm':
 				state->outshptype = SHPT_POINTM;
 				break;
-	
+
 			default:
 				state->outshptype = SHPT_POINT;
 			}
@@ -1059,11 +1060,11 @@ getTableInfo(SHPDUMPERSTATE *state)
 			case 'z':
 				state->outshptype = SHPT_MULTIPOINTZ;
 				break;
-	
+
 			case 'm':
 				state->outshptype = SHPT_MULTIPOINTM;
 				break;
-	
+
 			default:
 				state->outshptype = SHPT_MULTIPOINT;
 			}
@@ -1076,11 +1077,11 @@ getTableInfo(SHPDUMPERSTATE *state)
 			case 'z':
 				state->outshptype = SHPT_ARCZ;
 				break;
-	
+
 			case 'm':
 				state->outshptype = SHPT_ARCM;
 				break;
-	
+
 			default:
 				state->outshptype = SHPT_ARC;
 			}
@@ -1093,11 +1094,11 @@ getTableInfo(SHPDUMPERSTATE *state)
 			case 'z':
 				state->outshptype = SHPT_POLYGONZ;
 				break;
-	
+
 			case 'm':
 				state->outshptype = SHPT_POLYGONM;
 				break;
-	
+
 			default:
 				state->outshptype = SHPT_POLYGON;
 			}
@@ -1167,7 +1168,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->pgfieldnames = NULL;
 	state->big_endian = is_bigendian();
 	colmap_init(&state->column_map);
-	
+
 	return state;
 }
 
@@ -1177,7 +1178,7 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 {
 	char *connstring;
 	int connlen;
-	
+
 	connlen = 64 +
 		(conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
 		(conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
@@ -1205,7 +1206,7 @@ ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
 	}
 
 	if (conn->password)
-	{	
+	{
 		strcat(connstring, " password='");
 		strcat(connstring, conn->password);
 		strcat(connstring, "'");
@@ -1265,7 +1266,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 		snprintf(state->message, SHPDUMPERMSGLEN, "%s", PQresultErrorMessage(res));
 		PQclear(res);
 		free(connstring);
-		return SHPDUMPERERR;		
+		return SHPDUMPERERR;
 	}
 
 	tmpvalue = PQgetvalue(res, 0, 0);
@@ -1280,7 +1281,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geometry oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		free(connstring);
-		return SHPDUMPERERR;		
+		return SHPDUMPERERR;
 	}
 
 	if (PQntuples(res) > 0)
@@ -1305,7 +1306,7 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Error looking up geography oid: %s"), PQresultErrorMessage(res));
 		PQclear(res);
 		free(connstring);
-		return SHPDUMPERERR;		
+		return SHPDUMPERERR;
 	}
 
 	if (PQntuples(res) > 0)
@@ -1341,7 +1342,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		                  &state->column_map, state->message, SHPDUMPERMSGLEN);
 		if (!ret) return SHPDUMPERERR;
 	}
-		
+
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
@@ -1434,7 +1435,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	{
 		state->dbf = DBFCreateEx(state->shp_file, "UTF-8");
 	}
-		
+
 	if (!state->dbf)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("Could not create dbf file %s"), state->shp_file);
@@ -1485,7 +1486,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 				if (!state->config->geo_col_name || !strcmp(state->config->geo_col_name, pgfieldname))
 				{
 					dbffieldtype = 9;
-	
+
 					state->geo_col_name = strdup(pgfieldname);
 				}
 			}
@@ -1534,7 +1535,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			  dbffieldname[10] = '\0';
 			}
 		}
-			
+
 		/*
 		 * make sure the fields all have unique names,
 		 */
@@ -1629,7 +1630,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		else if (pgfieldtype == 16)
 		{
 			dbffieldtype = FTLogical;
-			dbffieldsize = 2;
+			dbffieldsize = 1;
 			dbffielddecs = 0;
 		}
 
@@ -1748,14 +1749,14 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 				snprintf(buf, 256, _("Warning: values of field '%s' exceeding maximum dbf field width (%d) "
 					"will be truncated.\n"), dbffieldname, MAX_DBF_FIELD_SIZE);
 				strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
-				dbffieldsize = MAX_DBF_FIELD_SIZE;				
+				dbffieldsize = MAX_DBF_FIELD_SIZE;
 
 				ret = SHPDUMPERWARN;
 			}
 		}
 
 		LWDEBUGF(3, "DBF FIELD_NAME: %s, SIZE: %d\n", dbffieldname, dbffieldsize);
-	
+
 		if (dbffieldtype != 9)
 		{
 			/* Add the field to the DBF file */
@@ -1765,14 +1766,14 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 				return SHPDUMPERERR;
 			}
-	
+
 			/* Add the field information to our field arrays */
 			state->dbffieldnames[state->fieldcount] = dbffieldname;
 			state->dbffieldtypes[state->fieldcount] = dbffieldtype;
 			state->pgfieldnames[state->fieldcount] = pgfieldname;
 			state->pgfieldlens[state->fieldcount] = pgfieldlen;
 			state->pgfieldtypmods[state->fieldcount] = pgtypmod;
-			
+
 			state->fieldcount++;
 		}
 	}
@@ -1804,7 +1805,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 
 			state->shp = NULL;
-			
+
 			ret = SHPDUMPERWARN;
 		}
 	}
@@ -1819,16 +1820,17 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			return SHPDUMPERERR;
 		}
 	}
-	
+
 
 	/* Now we have the complete list of fieldnames, let's generate the SQL query. First let's make sure
 	   we reserve enough space for tables with lots of columns */
 	j = 0;
+	/*TODO: this really should be rewritten to use stringbuffer */
 	for (i = 0; i < state->fieldcount; i++)
-		j += strlen(state->pgfieldnames[i] + 2);	/* Add 2 for leading and trailing quotes */
-	
+		j += strlen( state->pgfieldnames[i]) + 10;	/*add extra space for the quotes to quote identify and any embedded quotes that may need escaping */
+
 	state->main_scan_query = malloc(1024 + j);
-	
+
 	sprintf(state->main_scan_query, "DECLARE cur ");
 	if (state->config->binary)
 		strcat(state->main_scan_query, "BINARY ");
@@ -1840,11 +1842,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* Comma-separated column names */
 		if (i > 0)
 			strcat(state->main_scan_query, ",");
-			
+
 		if (state->config->binary)
-			sprintf(buf, "\"%s\"::text", state->pgfieldnames[i]);
+			sprintf(buf, "%s::text", quote_identifier(state->pgfieldnames[i]) ) ;
 		else
-			sprintf(buf, "\"%s\"", state->pgfieldnames[i]);
+			sprintf(buf, "%s", quote_identifier(state->pgfieldnames[i]) );
 
 		strcat(state->main_scan_query, buf);
 	}
@@ -1855,29 +1857,29 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* If this is the (only) column, no need for the initial comma */
 		if (state->fieldcount > 0)
 			strcat(state->main_scan_query, ",");
-		
+
 		if (state->big_endian)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'XDR') AS _geoX", state->geo_col_name);
+				sprintf(buf, "ST_asEWKB(ST_SetSRID(%s::geometry, 0), 'XDR') AS _geoX", quote_identifier(state->geo_col_name) );
 			}
 			else
 			{
-				sprintf(buf, "asbinary(\"%s\"::geometry, 'XDR') AS _geoX",
-					state->geo_col_name);
+				sprintf(buf, "asbinary(%s::geometry, 'XDR') AS _geoX",
+					quote_identifier(state->geo_col_name) );
 			}
 		}
 		else /* little_endian */
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "ST_AsEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'NDR') AS _geoX", state->geo_col_name);
+				sprintf(buf, "ST_AsEWKB(ST_SetSRID(%s::geometry, 0), 'NDR') AS _geoX", quote_identifier(state->geo_col_name) ) ;
 			}
 			else
 			{
-				sprintf(buf, "asbinary(\"%s\"::geometry, 'NDR') AS _geoX",
-					state->geo_col_name);
+				sprintf(buf, "asbinary(%s::geometry, 'NDR') AS _geoX",
+					quote_identifier(state->geo_col_name) );
 			}
 		}
 
@@ -2081,43 +2083,43 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 				PQclear(state->fetchres);
 				return SHPDUMPERERR;
 			}
-	
+
 			/* Call the relevant method depending upon the geometry type */
 			LWDEBUGF(4, "geomtype: %s\n", lwtype_name(lwgeom->type));
-	
+
 			switch (lwgeom->type)
 			{
 			case POINTTYPE:
 				obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
 				break;
-	
+
 			case MULTIPOINTTYPE:
 				obj = create_multipoint(state, lwgeom_as_lwmpoint(lwgeom));
 				break;
-	
+
 			case POLYGONTYPE:
 				obj = create_polygon(state, lwgeom_as_lwpoly(lwgeom));
 				break;
-	
+
 			case MULTIPOLYGONTYPE:
 				obj = create_multipolygon(state, lwgeom_as_lwmpoly(lwgeom));
 				break;
-	
+
 			case LINETYPE:
 				obj = create_linestring(state, lwgeom_as_lwline(lwgeom));
 				break;
-	
+
 			case MULTILINETYPE:
 				obj = create_multilinestring(state, lwgeom_as_lwmline(lwgeom));
 				break;
-	
+
 			default:
 				snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%d) for record %d"), lwgeom->type, state->currow);
 				PQclear(state->fetchres);
 				SHPDestroyObject(obj);
 				return SHPDUMPERERR;
 			}
-	
+
 			/* Free both the original and geometries */
 			lwgeom_free(lwgeom);
 
@@ -2165,7 +2167,7 @@ ShpDumperCloseTable(SHPDUMPERSTATE *state)
 
 	/* If a geo column is present, generate the projection file */
 	if (state->geo_col_name)
-		ret = projFileCreate(state);	
+		ret = projFileCreate(state);
 
 	/* Close the DBF and SHP files */
 	if (state->dbf)
@@ -2202,16 +2204,16 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 				free(state->dbffieldnames[i]);
 			free(state->dbffieldnames);
 		}
-		
+
 		if (state->dbffieldtypes)
 			free(state->dbffieldtypes);
-		
+
 		if (state->pgfieldnames)
 			free(state->pgfieldnames);
 
 		/* Free any column map fieldnames if specified */
 		colmap_clean(&state->column_map);
-		
+
 		/* Free other names */
 		if (state->table)
 			free(state->table);
@@ -2223,4 +2225,29 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 		/* Free the state itself */
 		free(state);
 	}
+}
+
+/*
+ * quote_identifier()
+ *		Properly double-quote a SQL identifier.
+ *  Copied from PostgreSQL pg_upgrade/util.c
+ */
+char *
+quote_identifier(const char *s)
+{
+	char	   *result = malloc(strlen(s) * 2 + 3);
+	char	   *r = result;
+
+	*r++ = '"';
+	while (*s)
+	{
+		if (*s == '"')
+			*r++ = *s;
+		*r++ = *s;
+		s++;
+	}
+	*r++ = '"';
+	*r++ = '\0';
+
+	return result;
 }
