@@ -3,6 +3,7 @@ PostGIS 2.3.3dev
 
   * Bug Fixes
 
+  - #3777, GROUP BY anomaly with empty geometries
   - #3711, Azimuth error upon adding 2.5D edges to topology
   - #3726, PDF manual from dblatex renders fancy quotes for programlisting
            (Mike Toews)
