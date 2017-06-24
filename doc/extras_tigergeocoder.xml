@@ -390,7 +390,7 @@ Total query runtime: 245 ms.
             <paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
             <paramdef choice="opt"><type>text </type> <parameter> in_city</parameter></paramdef>
             <paramdef choice="opt"><type>text </type> <parameter> in_zip</parameter></paramdef>
-            <paramdef choice="opt"><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+            <paramdef choice="opt"><type>integer </type> <parameter>num_results=10</parameter></paramdef>
             <paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
             <paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
             <paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
@@ -732,7 +732,7 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
           </listitem>
         </orderedlist>
         <para>Availability: 2.0.0 to support Tiger 2010 structured data and load census tract (tract), block groups (bg), and blocks (tabblocks) tables .</para>
-        <note><para>If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates long text.  To fix, change 
+        <note><para>If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates long text.  To fix, change
          <emphasis>File -&gt; Options -&gt; Query Tool -&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger than 50000 characters.</para></note>
 
 
