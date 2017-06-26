@@ -327,7 +327,7 @@ lwcircstring_linearize(const LWCIRCSTRING *icurve, double tol,
 		ret = lwarc_linearize(ptarray, &p1, &p2, &p3, tol, tolerance_type, flags);
 		if ( ret > 0 )
 		{
-			LWDEBUGF(3, "lwcircstring_linearize: generated %d points", tmp->npoints);
+			LWDEBUGF(3, "lwcircstring_linearize: generated %d points", ptarray->npoints);
 		}
 		else if ( ret == 0 )
 		{
