@@ -20,6 +20,8 @@
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
 
+/* #define SKIP_TEST_RETAIN_ANGLE 1 */
+
 
 static LWGEOM* lwgeom_from_text(const char *str)
 {
@@ -108,21 +110,25 @@ static void test_lwcurve_linearize(void)
 	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,74 96,126 96,170 70,196 26,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+
 	/* 3 segment per quadrant - symmetric */
 	out = lwcurve_linearize(in, 3, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
 	str = lwgeom_to_text(out, 2);
 	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,70 96,116 98,158 80,190 46,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+
+#ifndef SKIP_TEST_RETAIN_ANGLE
 	/* 3 segment per quadrant - symmetric/retain_angle */
 	out = lwcurve_linearize(in, 3, toltype,
 		LW_LINEARIZE_FLAG_SYMMETRIC |
 		LW_LINEARIZE_FLAG_RETAIN_ANGLE
 	);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,62 92,114 100,160 80,192 38,200 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(30 70,40 80,86 100,138 92,180 60,200 14,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+#endif /* SKIP_TEST_RETAIN_ANGLE */
 
 	lwgeom_free(in);
 
@@ -170,13 +176,34 @@ static void test_lwcurve_linearize(void)
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,50 86,150 86,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+
+#ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 20 units of difference, symmetric/retain angle */
 	out = lwcurve_linearize(in, 20, toltype,
 		LW_LINEARIZE_FLAG_SYMMETRIC |
 		LW_LINEARIZE_FLAG_RETAIN_ANGLE
 	);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,40 80,160 80,200 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,4 28,100 100,196 28,200 0)");
+	lwfree(str);
+	lwgeom_free(out);
+#endif /* SKIP_TEST_RETAIN_ANGLE */
+
+	lwgeom_free(in);
+
+	/*
+	 * Clockwise ~90 degrees south-west to north-west quadrants
+	 * starting at ~22 degrees west of vertical line
+	 *
+	 * See https://trac.osgeo.org/postgis/ticket/3772
+	 */
+	toltype = LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION;
+	in = lwgeom_from_text("CIRCULARSTRING(71.96 -65.64,22.2 -18.52,20 50)");
+
+	/* 4 units of max deviation - symmetric */
+	out = lwcurve_linearize(in, 4, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(72 -66,34 -38,16 4,20 50)");
 	lwfree(str);
 	lwgeom_free(out);
 
@@ -227,15 +254,18 @@ static void test_lwcurve_linearize(void)
 	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,50 86,150 86,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+
+#ifndef SKIP_TEST_RETAIN_ANGLE
 	/* Maximum of 70 degrees, symmetric/retain angle */
 	out = lwcurve_linearize(in, 70 * M_PI / 180, toltype,
 		LW_LINEARIZE_FLAG_SYMMETRIC |
 		LW_LINEARIZE_FLAG_RETAIN_ANGLE
 	);
 	str = lwgeom_to_text(out, 2);
-	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,42 82,158 82,200 0)");
+	ASSERT_STRING_EQUAL(str, "LINESTRING(0 0,6 34,100 100,194 34,200 0)");
 	lwfree(str);
 	lwgeom_free(out);
+#endif /* SKIP_TEST_RETAIN_ANGLE */
 
 	lwgeom_free(in);
 

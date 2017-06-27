@@ -31,7 +31,7 @@
 
 #include "liblwgeom_internal.h"
 
-/* #define POSTGIS_DEBUG_LEVEL 4 */
+/*#define POSTGIS_DEBUG_LEVEL 3*/
 
 #include "lwgeom_log.h"
 
@@ -147,6 +147,7 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUG(2, "lwarc_linearize called.");
 
 	radius = lw_arc_center(t1, t2, t3, &center);
+	LWDEBUGF(2, " center is POINT(%.15g %.15g) - radius:%g", center.x, center.y, radius);
 	p2_side = lw_segment_side(t1, t3, t2);
 
 	/* Matched start/end points imply circle */
@@ -179,7 +180,7 @@ lwarc_linearize(POINTARRAY *to,
 			return -1;
 		}
 		increment = fabs(M_PI_2 / perQuad);
-		LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g", perQuad, increment);
+		LWDEBUGF(2, "lwarc_linearize: perQuad:%d, increment:%g (%g degrees)", perQuad, increment, increment*180/M_PI);
 
 	}}
 	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION )
@@ -192,7 +193,7 @@ lwarc_linearize(POINTARRAY *to,
 		}
 		halfAngle = acos( -tol / radius + 1 );
 		increment = 2 * halfAngle;
-		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g", tol, radius, halfAngle, increment);
+		LWDEBUGF(2, "lwarc_linearize: maxDiff:%g, radius:%g, halfAngle:%g, increment:%g (%g degrees)", tol, radius, halfAngle, increment, increment*180/M_PI);
 	}}
 	else if ( tolerance_type == LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE )
 	{
@@ -214,42 +215,47 @@ lwarc_linearize(POINTARRAY *to,
 	a2 = atan2(p2->y - center.y, p2->x - center.x);
 	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
+	LWDEBUGF(2, "lwarc_linearize A1:%g A2:%g A3:%g",
+		a1*180/M_PI, a2*180/M_PI, a3*180/M_PI);
+
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
-	{
+	{{
+		/* Calculate total arc angle, in radians */
+		double angle = a1 - a3;
+		if ( angle < 0 ) angle += M_PI * 2;
+		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
+			         angle * 180 / M_PI);
 		if ( flags & LW_LINEARIZE_FLAG_RETAIN_ANGLE )
 		{{
-			/* Total arc angle, in radians */
-			double angle = a3 - a1;
 			/* Number of steps */
-			int steps = floor(angle / increment);
+			int steps = trunc(angle / increment);
 			/* Angle reminder */
 			double angle_reminder = angle - ( increment * steps );
 			angle_shift = angle_reminder / 2.0;
 
-			LWDEBUGF(2, "lwarc_linearize SYMMETRIC/RETAIN_ANGLE operation requested - "
-			         "A:%g - LINESTRING(%g %g,%g %g,%g %g) - R:%g",
-			         angle, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-			         angle_reminder);
+			LWDEBUGF(2, "lwarc_linearize RETAIN_ANGLE operation requested - "
+			         "total angle %g, steps %d, increment %g, reminder %g",
+			         angle * 180 / M_PI, steps, increment * 180 / M_PI,
+			         angle_reminder * 180 / M_PI);
 		}}
 		else
 		{{
-			/* Total arc angle, in radians */
-			double angle = fabs(a3 - a1);
 			/* Number of segments in output */
 			int segs = ceil(angle / increment);
 			/* Tweak increment to be regular for all the arc */
 			increment = angle/segs;
 
 			LWDEBUGF(2, "lwarc_linearize SYMMETRIC operation requested - "
-							"A:%g - LINESTRING(%g %g,%g %g,%g %g) - S:%d - I:%g",
-							angle, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
-							segs, increment);
+							"total angle %g degrees - LINESTRING(%g %g,%g %g,%g %g) - S:%d -   I:%g",
+							angle*180/M_PI, p1->x, p1->y, center.x, center.y, p3->x, p3->y,
+							segs, increment*180/M_PI);
 		}}
-	}
+	}}
 
 	/* p2 on left side => clockwise sweep */
 	if ( clockwise )
 	{
+		LWDEBUG(2, " Clockwise sweep");
 		increment *= -1;
 		angle_shift *= -1;
 		/* Adjust a3 down so we can decrement from a1 to a3 cleanly */
@@ -261,6 +267,7 @@ lwarc_linearize(POINTARRAY *to,
 	/* p2 on right side => counter-clockwise sweep */
 	else
 	{
+		LWDEBUG(2, " Counterclockwise sweep");
 		/* Adjust a3 up so we can increment from a1 to a3 cleanly */
 		if ( a3 < a1 )
 			a3 += 2.0 * M_PI;
@@ -277,11 +284,18 @@ lwarc_linearize(POINTARRAY *to,
 		clockwise = LW_FALSE;
 	}
 
+	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
+		angle_shift * 180/M_PI, increment * 180/M_PI);
+
 	/* Sweep from a1 to a3 */
 	ptarray_append_point(pa, p1, LW_FALSE);
 	++points_added;
-	for ( angle = a1 + increment - angle_shift; clockwise ? angle > a3 : angle < a3; angle += increment )
+	if ( angle_shift ) angle_shift -= increment;
+	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
+		a1, a1 * 180 / M_PI, a3, a3 * 180 / M_PI, increment, angle_shift, clockwise);
+	for ( angle = a1 + increment + angle_shift; clockwise ? angle > a3 : angle < a3; angle += increment )
 	{
+		LWDEBUGF(2, " SA: %g ( %g deg )", angle, angle*180/M_PI);
 		pt.x = center.x + radius * cos(angle);
 		pt.y = center.y + radius * sin(angle);
 		pt.z = interpolate_arc(angle, a1, a2, a3, p1->z, p2->z, p3->z);
