@@ -221,7 +221,7 @@ lwarc_linearize(POINTARRAY *to,
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
 	{{
 		/* Calculate total arc angle, in radians */
-		double angle = a1 - a3;
+		double angle = clockwise ? a1 - a3 : a3 - a1;
 		if ( angle < 0 ) angle += M_PI * 2;
 		LWDEBUGF(2, "lwarc_linearize SYMMETRIC requested - total angle %g deg",
 			         angle * 180 / M_PI);

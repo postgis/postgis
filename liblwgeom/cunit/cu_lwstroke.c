@@ -207,6 +207,22 @@ static void test_lwcurve_linearize(void)
 	lwfree(str);
 	lwgeom_free(out);
 
+	/*
+	 * Clockwise ~90 degrees north-west to south-west quadrants
+	 * starting at ~22 degrees west of vertical line
+	 *
+	 * See https://trac.osgeo.org/postgis/ticket/3772
+	 */
+	toltype = LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION;
+	in = lwgeom_from_text("CIRCULARSTRING(20 50,22.2 -18.52,71.96 -65.64)");
+
+	/* 4 units of max deviation - symmetric */
+	out = lwcurve_linearize(in, 4, toltype, LW_LINEARIZE_FLAG_SYMMETRIC);
+	str = lwgeom_to_text(out, 2);
+	ASSERT_STRING_EQUAL(str, "LINESTRING(20 50,16 4,34 -38,72 -66)");
+	lwfree(str);
+	lwgeom_free(out);
+
 	lwgeom_free(in);
 
 	/***********************************************************
