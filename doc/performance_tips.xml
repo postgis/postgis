@@ -8,7 +8,7 @@
     <sect2>
       <title>Problem description</title>
 
-      <para>Current PostgreSQL versions (including 8.0) suffer from a query
+      <para>Current PostgreSQL versions (including 9.6) suffer from a query
       optimizer weakness regarding TOAST tables. TOAST tables are a kind of
       "extension room" used to store large (in the sense of data size) values
       that do not fit into normal data pages (like long texts, images or
@@ -17,7 +17,7 @@
       information).</para>
 
       <para>The problem appears if you happen to have a table with rather
-      large geometries, but not too much rows of them (like a table containing
+      large geometries, but not too manyrows of them (like a table containing
       the boundaries of all European countries in high resolution). Then the
       table itself is small, but it uses lots of TOAST space. In our example
       case, the table itself had about 80 rows and used only 3 data pages, but
@@ -26,17 +26,19 @@
       <para>Now issue a query where you use the geometry operator &amp;&amp;
       to search for a bounding box that matches only very few of those rows.
       Now the query optimizer sees that the table has only 3 pages and 80
-      rows. He estimates that a sequential scan on such a small table is much
-      faster than using an index. And so he decides to ignore the GIST index.
+      rows. It estimates that a sequential scan on such a small table is much
+      faster than using an index. And so it decides to ignore the GIST index.
       Usually, this estimation is correct. But in our case, the &amp;&amp;
       operator has to fetch every geometry from disk to compare the bounding
       boxes, thus reading all TOAST pages, too.</para>
 
-      <para>To see whether your suffer from this bug, use the "EXPLAIN
+      <para>To see whether your suffer from this issue, use the "EXPLAIN
       ANALYZE" postgresql command. For more information and the technical
       details, you can read the thread on the postgres performance mailing
       list:
-      http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</para>
+      <ulink url="http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</ulink></para>
+
+      <para>and newer thread on PostGIS <ulink url="https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html">https://lists.osgeo.org/pipermail/postgis-devel/2017-June/026209.html</ulink></para>
     </sect2>
 
     <sect2>
@@ -146,7 +148,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
     geometries and rasters are heavy so memory related optimizations generally have more of an impact on PostGIS than other types of PostgreSQL queries.</para>
 
     <para>For general details about optimizing PostgreSQL, refer to <ulink url="https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server">Tuning your PostgreSQL Server</ulink>.</para>
-    
+
     <para>For PostgreSQL 9.4+ all these can be set at the server level without touching postgresql.conf or postgresql.auto.conf
     by using the <code>ALTER SYSTEM..</code> command.</para>
     <programlisting>ALTER SYSTEM SET work_mem = '256MB';
@@ -191,17 +193,17 @@ SHOW work_mem;</programlisting>
         <itemizedlist>
           <listitem>
             <para>
-              Default: ~32MB
+              Default: ~128MB in PostgreSQL 9.6
             </para>
           </listitem>
           <listitem>
             <para>
-              Set to about 1/3 to 3/4 of available RAM
+              Set to about 25% to 40% of available RAM.  On windows you may not be able to set as high.
             </para>
           </listitem>
         </itemizedlist>
-        
-        
+
+
        <para>
           <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-WORKER-PROCESSES">max_worker_processes</ulink>
           This setting is only available for PostgreSQL 9.4+.  For PostgreSQL 9.6+ this setting has additional importance in that it controls the
@@ -251,7 +253,7 @@ SHOW work_mem;</programlisting>
             <para>
                 If you have lots of RAM and few developers:
                 <programlisting>
-                    SET work_mem TO '256MB';;
+                    SET work_mem TO '256MB';
                 </programlisting>
             </para>
           </listitem>
@@ -282,10 +284,10 @@ SHOW work_mem;</programlisting>
             </para>
           </listitem>
         </itemizedlist>
-        
+
         <para>
           <ulink url="https://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PARALLEL-WORKERS-PER-GATHER">max_parallel_workers_per_gather</ulink>
-          This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.  
+          This setting is only available for PostgreSQL 9.6+ and will only affect PostGIS 2.3+, since only PostGIS 2.3+ supports parallel queries.
           If set to higher than 0, then some queries such as those involving relation functions like <code>ST_Intersects</code> can use multiple processes and can run
           more than twice as fast when doing so.  If you have a lot of processors to spare, you should change the value of this to as many processors as you have.
           Also make sure to bump up <code>max_worker_processes</code> to at least as high as this number.
