@@ -748,16 +748,17 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', 0, 'GEOMETRY', 3 );</programlis
 
 	<sect2 id="Manual_Register_Spatial_Column">
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
-		<para>The AddGeometryColumn() approach creates a geometry column and also registers the new
-		column in the geometry_columns table.  If your software utilizes geometry_columns, then
-		any geometry columns you need to query by must be registered in this view.
+		<para>The AddGeometryColumn() approach creates a geometry column of specified type.
+		This  type and dimension are queryable from the <varname>geometry_columns</varname> view.
 		Starting with PostGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered.</para>
-		<para>However they may be registered as a generic geometry column if the column was not defined as a specific type during creation.</para>
+		<para>If your geometry columns were created as generic in a table or view and no constraints applied, they will not have a dimension, type or srid in geometry_columns views, but will still be listed.</para>
 
 		<para>Two of the cases
 		where this may happen, but you can't use
-		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For these cases, you can correct the registration in the geometry_columns table
-		by constraining the column.  Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.</para>
+		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For bulk insert case, you can correct the registration in the geometry_columns table
+		by constraining the column or doing an alter table.  For views, you could expose using a CAST operation.
+		Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.
+		Also views that have no spatial function applied to the geometry will register the same as the underlying table geometry column.</para>
 
 		<programlisting>--Lets say you have a view created like this
 CREATE VIEW  public.vwmytablemercator AS
