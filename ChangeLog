@@ -1,3 +1,218 @@
+2017-06-30 20:43  Regina Obe <lr@pcorp.us>
+
+	* [r15469] doc/performance_tips.xml, doc/using_postgis_dataman.xml:
+	  Bring performance tips section up to newer versions
+	  Closes #3746 for PostGIS 2.3 (branch)
+
+2017-06-24 06:18  Regina Obe <lr@pcorp.us>
+
+	* [r15463] .travis.yml: try to fix travis gdal related build error
+
+2017-06-24 05:36  Regina Obe <lr@pcorp.us>
+
+	* [r15460] doc/installation.xml: fix typo
+
+2017-06-24 05:36  Regina Obe <lr@pcorp.us>
+
+	* [r15459] doc/installation.xml: Specify highest version of
+	  PostgreSQL supported.
+	  References #3762 for PostGIS 2.3.3
+
+2017-06-24 05:31  Regina Obe <lr@pcorp.us>
+
+	* [r15458] doc/extras_tigergeocoder.xml: change doco for
+	  Geocode_Intersection to agree with function definition.
+	  Closes #3717 for PostGIS 2.3.3
+
+2017-06-24 04:58  Regina Obe <lr@pcorp.us>
+
+	* [r15457] NEWS, raster/rt_pg/rtpg_mapalgebra.c: Change ST_Clip
+	  from Error to Notice when ST_Clip can compute no band
+	  Closest #3730 for PostGIS 2.3.3
+
+2017-06-24 04:33  Regina Obe <lr@pcorp.us>
+
+	* [r15454] doc/reference_processing.xml: Update 3D example and put
+	  a note about function may return the same geometry.
+	  References #3702 for PostGIS 2.4 (trunk)
+
+2017-06-24 04:06  Regina Obe <lr@pcorp.us>
+
+	* [r15452] doc/xsl/postgis_gardentest.sql.xsl: Increase LIMIT
+	  clause on tests so can more readily catch issues like #3704.
+
+2017-06-23 22:57  Sandro Santilli <strk@kbt.io>
+
+	* [r15451] postgis/lwgeom_btree.c, regress/operators.sql,
+	  regress/operators_expected: Fix lwgeom_cmp return code
+	  
+	  Closes #3777 once again (for 2.3 branch)
+
+2017-06-23 15:07  Sandro Santilli <strk@kbt.io>
+
+	* [r15449] topology/postgis_topology.c: Fix compiler warnings about
+	  printf-like formats
+	  
+	  This was already fixed in trunk
+
+2017-06-23 14:58  Sandro Santilli <strk@kbt.io>
+
+	* [r15448] NEWS, postgis/lwgeom_btree.c, regress/operators.sql,
+	  regress/operators_expected: Fix handling of EMPTY geometries in
+	  btree operator
+	  
+	  Includes regress test
+	  
+	  Closes #3777 for 2.3 branch
+
+2017-06-23 06:15  Regina Obe <lr@pcorp.us>
+
+	* [r15445] NEWS, liblwgeom/lwout_x3d.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_AsX3D handle empty geometries
+	  Closes #3704 for PostGIS 2.3.3
+
+2017-06-23 05:55  Regina Obe <lr@pcorp.us>
+
+	* [r15443] regress/dumper/realtable-pre.sql: Backport test sql
+	  script missed in last commit
+	  References #3682 for 2.3.3
+	  References #3701 for 2.3.3
+
+2017-06-23 05:19  Regina Obe <lr@pcorp.us>
+
+	* [r15442] NEWS, loader/pgsql2shp-core.c, loader/pgsql2shp-core.h,
+	  regress/dumper/realtable_expected.dbf: Backport fixes for
+	  pgsql2shp for Boolean field length and quote escaping
+	  Includes tests for both
+	  Closes #3682
+	  Closes #3701
+
+2017-06-19 20:37  Sandro Santilli <strk@kbt.io>
+
+	* [r15437] postgis/Makefile.in: Avoid ever-growing postgis
+	  extension upgrade scripts
+	  
+	  Fixes #3775 for 2.3 branch
+
+2017-06-19 20:37  Sandro Santilli <strk@kbt.io>
+
+	* [r15436] postgis/Makefile.in: Style only change: remove trailing
+	  blanks
+
+2017-06-06 12:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15421] NEWS, doc/po/de_DE/release_notes.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/fr/release_notes.xml.po,
+	  doc/po/it_IT/release_notes.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/pl/release_notes.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/templates/release_notes.xml.pot, doc/release_notes.xml:
+	  Speep up -> Speed up
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993598/
+
+2017-06-06 12:22  Sandro Santilli <strk@kbt.io>
+
+	* [r15418] NEWS, doc/release_notes.xml: shp2pgsql locale fixes are
+	  #3084, not #3048
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993584/
+
+2017-05-04 18:01  Sandro Santilli <strk@kbt.io>
+
+	* [r15388] .drone.yml: Set RUNTESTFLAGS env variable locally
+	  
+	  global env doesn't seem to work with Drone
+
+2017-05-03 03:50  Regina Obe <lr@pcorp.us>
+
+	* [r15383] NEWS, postgis/postgis.sql.in,
+	  raster/rt_pg/rtpostgis.sql.in: @ operator not schema qualified
+	  and ~ not schema qualified in some places
+	  apply patch with adjustments. Patch provided by Shane StClair
+	  (Axiom Data Science)
+	  Closes #3750 for PostGIS 2.3.3
+
+2017-04-25 08:20  Regina Obe <lr@pcorp.us>
+
+	* [r15368] regress/subdivide.sql, regress/subdivide_expected:
+	  revise ST_Subdivide regress to use ticket instead of github pull
+	  request
+	  References #3744 for PostGIS 2.3
+
+2017-04-25 06:02  Regina Obe <lr@pcorp.us>
+
+	* [r15365] NEWS, doc/Makefile.in, doc/texstyle.sty: PDF manual from
+	  dblatex renders fancy quotes for programlisting
+	  Change to use regular quotes
+	  patch from Mike Toews
+	  References #3726 for PostGIS 2.3
+
+2017-04-24 20:42  Regina Obe <lr@pcorp.us>
+
+	* [r15364] NEWS, liblwgeom/lwgeom.c, regress/subdivide.sql,
+	  regress/subdivide_expected: ST_Subdivide loses subparts of
+	  inverted geometries patch from Darafei Praliaskouski (Komzpa)
+	  Closes #3744 for PostGIS 2.3
+	  changed area regress to cast to numeric so doesn't return
+	  scientific notation on windows
+
+2017-04-23 20:34  Regina Obe <lr@pcorp.us>
+
+	* [r15362] NEWS, raster/loader/raster2pgsql.c: Get rid of logic
+	  that set out_srid to same as input srid and change to not try to
+	  transform when out_srid is unknown.
+	  Closes #3738 for PostGIS 2.3
+
+2017-04-12 13:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15352] README.md: Fix drone build badge url
+	  
+	  [ci skip]
+
+2017-04-08 12:25  Regina Obe <lr@pcorp.us>
+
+	* [r15348] regress/knn_recheck.sql, regress/knn_recheck_expected:
+	  Get rid of knn tests where multiple records have the same
+	  distances
+	  references #3649 for 2.3
+
+2017-04-04 17:40  Daniel Baston <dbaston@gmail.com>
+
+	* [r15346] doc/reference_measure.xml: Fix error in docs for
+	  ST_ClusterDBSCAN
+
+2017-03-11 16:23  Sandro Santilli <strk@kbt.io>
+
+	* [r15331] NEWS, liblwgeom/lwgeom_topo.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected_newsnap,
+	  topology/test/regress/topogeo_addlinestring_expected_oldsnap: Fix
+	  azimuth computation for 2.5D edge ends
+	  
+	  The change disreguard vertical movemements of the edge and
+	  computes
+	  azimuth of the first segment getting away from the node.
+	  
+	  Includes automated testcase
+	  
+	  Closes #3711 (in 2.3 branch)
+
+2017-01-31 05:05  Regina Obe <lr@pcorp.us>
+
+	* [r15303] Version.config, extensions/upgradeable_versions.mk: Bump
+	  to next dev revision
+
+2017-01-30 05:59  Regina Obe <lr@pcorp.us>
+
+	* [r15301] ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk: Prep
+	  for PostGIS 2.3.2 release
+
 2017-01-28 04:10  Regina Obe <lr@pcorp.us>
 
 	* [r15295] liblwgeom/lwprint.c: Fix for 32-bit lwprint to support
