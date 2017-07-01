@@ -1,5 +1,5 @@
-PostGIS 2.3.3dev
-2017/MM/DD
+PostGIS 2.3.3
+2017/07/01
 
   * Bug Fixes
 
@@ -14,10 +14,10 @@ PostGIS 2.3.3dev
   - #3750, @ and ~ operator not always schema qualified in geometry
            and raster functions. Causes restore issues.
            (Shane StClair of Axiom Data Science)
-  - #3682, Strange fieldlength in result of pgsql2shp
+  - #3682, Strange fieldlength for boolean in result of pgsql2shp
   - #3701, Escape double quotes issue in pgsql2shp
   - #3704, ST_AsX3D crashes on empty geometry
-  - #3730, Change ST_Clip from Error to Notice when ST_Clip can compute no band
+  - #3730, Change ST_Clip from Error to Notice when ST_Clip can't compute a band
 
 
 PostGIS 2.3.2

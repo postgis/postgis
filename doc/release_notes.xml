@@ -3,6 +3,30 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
     <sect1>
+      <title>Release 2.3.3</title>
+      <para>Release date: 2017/07/01</para>
+      <para>This is a bug fix and performance improvement release.</para>
+      <simplesect>
+        <title>Bug Fixes and Enhancements</title>
+          <para>#3777, GROUP BY anomaly with empty geometries</para>
+          <para>#3711, Azimuth error upon adding 2.5D edges to topology</para>
+          <para>#3726, PDF manual from dblatex renders fancy quotes for programlisting
+                  (Mike Toews)</para>
+          <para>#3738, raster: Using -s without -Y in raster2pgsql transforms
+                  raster data instead of setting srid</para>
+          <para>#3744, ST_Subdivide loses subparts of inverted geometries
+                  (Darafei Praliaskouski Komzpa)</para>
+          <para>#3750, @ and ~ operator not always schema qualified in geometry
+                  and raster functions. Causes restore issues.
+                  (Shane StClair of Axiom Data Science)</para>
+          <para>#3682, Strange fieldlength for boolean in result of pgsql2shp</para>
+          <para>#3701, Escape double quotes issue in pgsql2shp</para>
+          <para>#3704, ST_AsX3D crashes on empty geometry</para>
+          <para>#3730, Change ST_Clip from Error to Notice when ST_Clip can't compute a band</para>
+      </simplesect>
+    </sect1>
+
+    <sect1>
       <title>Release 2.3.2</title>
       <para>Release date: 2017/01/31</para>
       <para>This is a bug fix and performance improvement release.</para>
