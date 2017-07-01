@@ -15,7 +15,60 @@ PostGIS 2.4.0
  * Bug Fixes *
   - #3682, Boolean (FTLogical) should be 1 byte not 2 bytes
 
+PostGIS 2.3.3
+2017/07/01
 
+  * Bug Fixes
+
+  - #3777, GROUP BY anomaly with empty geometries
+  - #3711, Azimuth error upon adding 2.5D edges to topology
+  - #3726, PDF manual from dblatex renders fancy quotes for programlisting
+           (Mike Toews)
+  - #3738, raster: Using -s without -Y in raster2pgsql transforms
+           raster data instead of setting srid
+  - #3744, ST_Subdivide loses subparts of inverted geometries
+           (Darafei Praliaskouski Komzpa)
+  - #3750, @ and ~ operator not always schema qualified in geometry
+           and raster functions. Causes restore issues.
+           (Shane StClair of Axiom Data Science)
+  - #3682, Strange fieldlength for boolean in result of pgsql2shp
+  - #3701, Escape double quotes issue in pgsql2shp
+  - #3704, ST_AsX3D crashes on empty geometry
+  - #3730, Change ST_Clip from Error to Notice when ST_Clip can't compute a band
+
+
+PostGIS 2.3.2
+2017/01/31
+
+  * Bug Fixes
+
+  - #3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order
+  - #3675, Relationship functions not using an index in some cases
+  - #3680, PostGIS upgrade scripts missing GRANT for views
+  - #3683, Unable to update postgis after postgres pg_upgrade going from < 9.5 to pg > 9.4
+  - #3688, ST_AsLatLonText: round minutes
+
+PostGIS 2.3.1
+2016/11/28
+
+  * Bug Fixes
+
+  - #1973, st_concavehull() returns sometimes empty geometry collection
+           (gde)
+  - #3501, add raster constraint max extent exceeds array size limit
+           for large tables
+  - #3643, PostGIS not building on latest OSX XCode
+  - #3644, Deadlock on interrupt
+  - #3650, Mark ST_Extent, ST_3DExtent and ST_Mem*
+           agg functions as parallel safe so they can be parallelized
+  - #3652, Crash on Collection(MultiCurve())
+  - #3656, Fix upgrade of aggregates from 2.2 or lower version
+  - #3659, Crash caused by raster GUC define after CREATE EXTENSION
+           using wrong memory context. (manaeem)
+  - #3665, Index corruption and memory leak in BRIN indexes
+           (Julien Rouhaud of Dalibo)
+  - #3667, geography ST_Segmentize bug
+           (Hugo Mercier of Oslandia)
 PostGIS 2.3.0
 2016/09/26
 
