@@ -1156,6 +1156,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	/* Set any state defaults */
 	state->conn = NULL;
 	state->outtype = 's';
+	state->outshptype = 0;
 	state->geom_oid = 0;
 	state->geog_oid = 0;
 	state->schema = NULL;
@@ -1167,6 +1168,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->dbffieldtypes = NULL;
 	state->pgfieldnames = NULL;
 	state->big_endian = is_bigendian();
+	state->message[0] = '\0';
 	colmap_init(&state->column_map);
 
 	return state;
@@ -1557,9 +1559,13 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* Issue warning if column has been renamed */
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
+			if ( snprintf(buf, 256, _("Warning, field %s renamed to %s\n"),
+							 pgfieldname, dbffieldname) >= 256 )
+			{
+				buf[255] = '\0';
+			}
 			/* Note: we concatenate all warnings from the main loop as this is useful information */
-			snprintf(buf, 256, _("Warning, field %s renamed to %s\n"), pgfieldname, dbffieldname);
-			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
+			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message) - 1);
 
 			ret = SHPDUMPERWARN;
 		}
