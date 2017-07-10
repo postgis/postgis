@@ -1558,7 +1558,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		/* Issue warning if column has been renamed */
 		if (strcasecmp(dbffieldname, pgfieldname))
 		{
-			snprintf(buf, 256, _("Warning, field %s renamed to %s\n"), pgfieldname, dbffieldname);
+			if ( snprintf(buf, 256, _("Warning, field %s renamed to %s\n"),
+							 pgfieldname, dbffieldname) >= 256 )
+			{
+				buf[255] = '\0';
+			}
 			/* Note: we concatenate all warnings from the main loop as this is useful information */
 			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message) - 1);
 
