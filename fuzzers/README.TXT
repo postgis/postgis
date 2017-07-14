@@ -17,7 +17,7 @@ https://bugs.chromium.org/p/oss-fuzz/issues/list?q=postgis
     $ /tmp/wkt_import_fuzzer a_file_name
 
 - Run locally OSS Fuzz:
-    $ git clone https://github.com/google/oss-fuzz.git
+    $ git clone --depth=1  https://github.com/google/oss-fuzz.git
     $ cd oss-fuzz
     $ python infra/helper.py build_image postgis
 
