@@ -679,6 +679,13 @@ ptarray_clone(const POINTARRAY *in)
 int
 ptarray_is_closed(const POINTARRAY *in)
 {
+	if (!in)
+	{
+		lwerror("ptarray_is_closed: called with null point array");
+		return 0;
+	}
+	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ptarray_point_size(in));
 }
 
@@ -686,13 +693,27 @@ ptarray_is_closed(const POINTARRAY *in)
 int
 ptarray_is_closed_2d(const POINTARRAY *in)
 {
-	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D));
+	if (!in)
+	{
+		lwerror("ptarray_is_closed_2d: called with null point array");
+		return 0;
+	}
+	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+
+	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D) );
 }
 
 int
 ptarray_is_closed_3d(const POINTARRAY *in)
 {
-	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D));
+	if (!in)
+	{
+		lwerror("ptarray_is_closed_3d: called with null point array");
+		return 0;
+	}
+	if (in->npoints <= 1 ) return in->npoints; /* single-point are closed, empty not closed */
+
+	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D) );
 }
 
 int
