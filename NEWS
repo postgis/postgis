@@ -3,6 +3,8 @@ PostGIS 2.4.0
 
  * New Features *
 
+  - #3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps
+           (Roger Crew)
   - #3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)
   - #2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)
   - #3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)
