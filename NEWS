@@ -5,6 +5,7 @@ PostGIS 2.3.4
 
   - #3782, Memory leak in lwline_from_wkb_state (Even Rouault)
   - #3101, Fix buffer overflow in pgsql2shp (Sandro Santilli)
+  - #3786, ptarray null and heap issues on is_closed
 
 
 PostGIS 2.3.3
