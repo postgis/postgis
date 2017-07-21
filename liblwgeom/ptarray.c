@@ -1496,7 +1496,7 @@ ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance,
 }
 
 POINTARRAY *
-ptarray_remove_repeated_points(const POINTARRAY *in, double tolerance)
+ptarray_remove_repeated_points( POINTARRAY *in, double tolerance)
 {
 	return ptarray_remove_repeated_points_minpoints(in, tolerance, 2);
 }
