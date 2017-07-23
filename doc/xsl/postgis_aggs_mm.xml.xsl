@@ -48,6 +48,7 @@
 		<sect1 id="PostGIS_Window_Functions">
 			<title>PostGIS Window Functions</title>
 			<para>The functions given below are spatial window functions provided with PostGIS that can be used just like any other sql window function such as row_numer(), lead(), lag(). All these require an SQL OVER() clause.</para>
+            <xsl:if test="//funcprototype[contains(paramdef/type,' winset')]">
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 			<xsl:for-each select='//refentry'>
@@ -72,6 +73,7 @@
 				</xsl:for-each>
 			</xsl:for-each>
 			</itemizedlist>
+            </xsl:if>
 		</sect1>
 
 		<sect1 id="PostGIS_SQLMM_Functions">
