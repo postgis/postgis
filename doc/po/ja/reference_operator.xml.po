@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
-"PO-Revision-Date: 2016-11-25 11:33+0000\n"
+"PO-Revision-Date: 2017-04-26 02:01+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
 "ja/)\n"
@@ -232,33 +232,34 @@ msgstr ""
 #: reference_operator.xml:85
 #, no-c-format
 msgid "&amp;&amp;(geometry,box2df)"
-msgstr ""
+msgstr "&amp;&amp;(geometry,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:87
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a geometry's (cached) 2D bounding box "
 "intersects a 2D float precision bounding box (BOX2DF)."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"ジオメトリの (キャッシュされている)2次元バウンディングボックスが単精度浮動小"
+"数点数による2次元バウンディングボックスとインタセクトする場合に"
+"<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:92
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>box2df</type> <parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+"<type>box2df</type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:113
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
 "if the cached 2D bounding box of geometry A intersects the 2D bounding box "
@@ -266,9 +267,11 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
-"<varname>&amp;&amp;</varname>演算子は、Aの2次元バウンディングボックスがBの2次"
-"元バウンディングボックスとインタセクトする場合に<varname>TRUE</varname>を返し"
-"ます。"
+"<varname>&amp;&amp;</varname>演算子は、ジオメトリAのキャッシュされた2次元バウ"
+"ンディングボックスが、2次元バウンディングボックスBとインタセクトする場合に、"
+"<varname>TRUE</varname>を返します。単精度浮動小数点数によるバウンディングボッ"
+"クスを使います。Bが倍精度浮動小数点数を使うbox2dである場合には、単精度浮動小"
+"数点数によるバウンディングボックス (BOX2DF)に変換されることになります。"
 
 #. Tag: para
 #: reference_operator.xml:115 reference_operator.xml:176
@@ -280,6 +283,8 @@ msgid ""
 "This operand is intended to be used internally by BRIN indexes, more than by "
 "users."
 msgstr ""
+"この被演算子は、ユーザが使うためというよりも内部でBRINインデックスに使うため"
+"に導入されました。"
 
 #. Tag: para
 #: reference_operator.xml:118 reference_operator.xml:179
@@ -288,11 +293,13 @@ msgstr ""
 #: reference_operator.xml:1012 reference_operator.xml:1073
 #: reference_operator.xml:1134 reference_operator.xml:1359
 #: reference_operator.xml:1420 reference_operator.xml:1481
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Availability: 2.3.0 support for Block Range INdexes (BRIN) was introduced. "
 "Requires PostgreSQL 9.5+."
-msgstr "Availability: 1.5.0 ジオグラフィ対応が導入されました。"
+msgstr ""
+"Availability: 2.3.0 BRIN (Block Range INdexes)が導入されました。PostgreSQL "
+"9.5以上が必要です。"
 
 #. Tag: programlisting
 #: reference_operator.xml:126
@@ -306,6 +313,13 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakePoint(1,1) &amp;&amp; ST_MakeBox2D(ST_MakePoint(0,0), "
+"ST_MakePoint(2,2)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:132 reference_operator.xml:193
@@ -318,38 +332,45 @@ msgid ""
 "\"is_contained_box2df_geometry\"/>, <xref linkend="
 "\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_box2df\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:146
 #, no-c-format
 msgid "&amp;&amp;(box2df,geometry)"
-msgstr ""
+msgstr "&amp;&amp;(box2df,geometry)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) intersects a geometry's (cached) 2D bounding box."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"単精度浮動小数点数による2次元バウンディングボックスがジオメトリの (キャッシュ"
+"されている)2次元バウンディングボックスとインタセクトする場合に<varname>TRUE</"
+"varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:153
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
 "<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:174
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
 "if the 2D bounding box A intersects the cached 2D bounding box of geometry "
@@ -357,11 +378,11 @@ msgid ""
 "box2d, it will be internally converted to a float precision 2D bounding box "
 "(BOX2DF)"
 msgstr ""
-"<varname>&amp;&lt;</varname>演算子は、AのバウンディングボックスがBのバウン"
-"ディングボックスをオーバラップするか、Bのバウンディングボックスの左にある場合"
-"に<varname>TRUE</varname>を返します。条件についてより詳細に言うと、Bのバウン"
-"ディングボックスをオーバラップするかBのバウンディングボックスの右に*ない*場合"
-"です。"
+"<varname>&amp;&amp;</varname>演算子は、2次元バウンディングボックスAが、ジオメ"
+"トリBのキャッシュされた2次元バウンディングボックスとインタセクトする場合に、"
+"<varname>TRUE</varname>を返します。単精度浮動小数点数によるバウンディングボッ"
+"クスを使います。Aが倍精度浮動小数点数を使うbox2dである場合には、単精度浮動小"
+"数点数によるバウンディングボックス (BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:187
@@ -375,49 +396,56 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
+"ST_MakePoint(1,1) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_operator.xml:207
 #, no-c-format
 msgid "&amp;&amp;(box2df,box2df)"
-msgstr ""
+msgstr "&amp;&amp;(box2df,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:209
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if two 2D float precision bounding boxes "
 "(BOX2DF) intersect each other."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"二つの単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)が相互にイ"
+"ンタセクトする場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:214
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
 "<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>box2df </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+"<funcdef>boolean <function>&amp;&amp;</function></funcdef> <paramdef> "
+"<type>box2df </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>box2df </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:235
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
 "if two 2D bounding boxes A and B intersect each other, using float "
 "precision. This means that if A (or B) is a (double precision) box2d, it "
 "will be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>&amp;&lt;</varname>演算子は、AのバウンディングボックスがBのバウン"
-"ディングボックスをオーバラップするか、Bのバウンディングボックスの左にある場合"
-"に<varname>TRUE</varname>を返します。条件についてより詳細に言うと、Bのバウン"
-"ディングボックスをオーバラップするかBのバウンディングボックスの右に*ない*場合"
-"です。"
+"<varname>&amp;&amp;</varname>演算子は、2次元バウンディングボックスAとBが相互"
+"にインタセクトする場合に、<varname>TRUE</varname>を返します。単精度浮動小数点"
+"数によるバウンディングボックスを使います。AまたはBが倍精度浮動小数点数を使う"
+"box2dである場合には、バウンディングボックス (BOX2DF)に変換されることになりま"
+"す。"
 
 #. Tag: para
 #: reference_operator.xml:237 reference_operator.xml:360
@@ -427,6 +455,8 @@ msgid ""
 "This operator is intended to be used internally by BRIN indexes, more than "
 "by users."
 msgstr ""
+"この演算子は、ユーザが使うためというよりも内部でBRINインデックスに使うために"
+"導入されました。"
 
 #. Tag: programlisting
 #: reference_operator.xml:248
@@ -440,10 +470,17 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) &amp;&amp; "
+"ST_MakeBox2D(ST_MakePoint(1,1), ST_MakePoint(3,3)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:254
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
 "\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
@@ -452,9 +489,12 @@ msgid ""
 "\"is_contained_box2df_geometry\"/>, <xref linkend="
 "\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"contains_geometry_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/"
+">, <xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:268
@@ -598,23 +638,24 @@ msgstr ""
 
 #. Tag: refname
 #: reference_operator.xml:330
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&amp;&amp;&amp;(geometry,gidx)"
-msgstr "&amp;&amp;&amp;"
+msgstr "&amp;&amp;&amp;(geometry,gidx)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:332
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a geometry's (cached) n-D bounding box "
 "intersects a n-D float precision bounding box (GIDX)."
 msgstr ""
-"Aのn次元バウンディングボックスがBのn次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"ジオメトリの (キャッシュされている)n次元バウンディングボックスが単精度浮動小"
+"数点数によるn次元バウンディングボックス (GIDX)とインタセクトする場合に"
+"<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:337
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
@@ -622,11 +663,11 @@ msgid ""
 msgstr ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
 "<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+"<type>gidx </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:358
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
 "varname> if the cached n-D bounding box of geometry A intersects the n-D "
@@ -634,9 +675,12 @@ msgid ""
 "precision) box3d, it will be internally converted to a float precision 3D "
 "bounding box (GIDX)"
 msgstr ""
-"<varname>&amp;&amp;&amp;</varname>演算子は、Aのn次元バウンディングボックスがB"
-"のn次元バウンディングボックスとインタセクトする場合に<varname>TRUE</varname>"
-"を返します。"
+"<varname>&amp;&amp;&amp;</varname>演算子は、ジオメトリAのキャッシュされたn次"
+"元バウンディングボックスが、n次元バウンディングボックスBとインタセクトする場"
+"合に、<varname>TRUE</varname>を返します。単精度浮動小数点数によるバウンディン"
+"グボックスを使います。Bが倍精度浮動小数点数を使うbox3dである場合には、単精度"
+"浮動小数点数による3次元バウンディングボックス (GIDX)に変換されることになりま"
+"す。"
 
 #. Tag: programlisting
 #: reference_operator.xml:373
@@ -650,44 +694,52 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakePoint(1,1,1) &amp;&amp;&amp; ST_3DMakeBox(ST_MakePoint(0,0,0), "
+"ST_MakePoint(2,2,2)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:379 reference_operator.xml:436
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
-msgstr ", <xref linkend=\"geometry_overlaps\"/>"
+msgstr ", <xref linkend=\"overlaps_nd_gidx_gidx\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:387
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&amp;&amp;&amp;(gidx,geometry)"
-msgstr "&amp;&amp;&amp;"
+msgstr "&amp;&amp;&amp;(gidx,geometry)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:389
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a n-D float precision bounding box (GIDX) "
 "intersects a geometry's (cached) n-D bounding box."
 msgstr ""
-"Aのn次元バウンディングボックスがBのn次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"単精度浮動小数点数によるn次元バウンディングボックス (GIDX)がジオメトリの "
+"(キャッシュされている)n次元バウンディングボックスとインタセクトする場合に"
+"<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:394
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
 "<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>geometry </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:415
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
 "varname> if the n-D bounding box A intersects the cached n-D bounding box of "
@@ -695,9 +747,12 @@ msgid ""
 "precision) box3d, it will be internally converted to a float precision 3D "
 "bounding box (GIDX)"
 msgstr ""
-"<varname>&amp;&amp;&amp;</varname>演算子は、Aのn次元バウンディングボックスがB"
-"のn次元バウンディングボックスとインタセクトする場合に<varname>TRUE</varname>"
-"を返します。"
+"<varname>&amp;&amp;&amp;</varname>演算子は、n次元バウンディングボックスAが、"
+"ジオメトリBのキャッシュされたn次元バウンディングボックスとインタセクトする場"
+"合に、<varname>TRUE</varname>を返します。単精度浮動小数点数によるバウンディン"
+"グボックスを使います。Aが倍精度浮動小数点数を使うbox3dである場合には、単精度"
+"浮動小数点数による3次元バウンディングボックス (GIDX)に変換されることになりま"
+"す。"
 
 #. Tag: programlisting
 #: reference_operator.xml:430
@@ -711,47 +766,56 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;"
+"&amp; ST_MakePoint(1,1,1) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: refname
 #: reference_operator.xml:444
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "&amp;&amp;&amp;(gidx,gidx)"
-msgstr "&amp;&amp;&amp;"
+msgstr "&amp;&amp;&amp;(gidx,gidx)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:446
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if two n-D float precision bounding boxes "
 "(GIDX) intersect each other."
 msgstr ""
-"Aのn次元バウンディングボックスがBのn次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"二つの単精度浮動小数点数によるn次元バウンディングボックス (GIDX)が相互にイン"
+"タセクトする場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:451
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
 "<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
 "<type>gidx </type> <parameter>B</parameter> </paramdef>"
 msgstr ""
 "<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
-"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
-"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+"<type>gidx </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>gidx </type> <parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:472
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
 "varname> if two n-D bounding boxes A and B intersect each other, using float "
 "precision. This means that if A (or B) is a (double precision) box3d, it "
 "will be internally converted to a float precision 3D bounding box (GIDX)"
 msgstr ""
-"<varname>&amp;&amp;&amp;</varname>演算子は、Aのn次元バウンディングボックスがB"
-"のn次元バウンディングボックスとインタセクトする場合に<varname>TRUE</varname>"
-"を返します。"
+"<varname>&amp;&amp;&amp;</varname>演算子は、n次元バウンディングボックスAとBが"
+"相互にインタセクトする場合に、<varname>TRUE</varname>を返します。単精度浮動小"
+"数点数によるバウンディングボックスを使います。AまたはBが倍精度浮動小数点数を"
+"使うbox3dである場合には、単精度浮動小数点数による3次元バウンディングボックス "
+"(GIDX)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:487
@@ -765,12 +829,19 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_3DMakeBox(ST_MakePoint(0,0,0), ST_MakePoint(2,2,2)) &amp;&amp;"
+"&amp; ST_3DMakeBox(ST_MakePoint(1,1,1), ST_MakePoint(3,3,3)) AS overlaps;\n"
+"\n"
+" overlaps\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:493
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
-msgstr ", <xref linkend=\"geometry_overlaps\"/>"
+msgstr ", <xref linkend=\"overlaps_nd_gidx_geometry\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:501
@@ -1549,30 +1620,30 @@ msgstr ", <xref linkend=\"geometry_overlaps\"/>"
 #: reference_operator.xml:979
 #, no-c-format
 msgid "@(geometry,box2df)"
-msgstr ""
+msgstr "@(geometry,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:981
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a geometry's 2D bounding box is contained "
 "into a 2D float precision bounding box (BOX2DF)."
 msgstr ""
-"AのバウンディングボックスがBのバウンディングボックスと同じ場合に"
-"<varname>TRUE</varname>を返します。倍精度浮動小数点数のバウンディングボックス"
-"を使います。"
+"ジオメトリの2次元バウンディングボックスが単精度浮動小数点数による2次元バウン"
+"ディングボックス (BOX2DF)に包含される場合に<varname>TRUE</varname>を返しま"
+"す。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:986
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
 "</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
 "<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1007
@@ -1583,6 +1654,11 @@ msgid ""
 "precision. This means that if B is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
+"<varname>@</varname>演算子は、ジオメトリAの2次元バウンディングボックスが、2次"
+"元バウンディングボックスBに包含される場合に、<varname>TRUE</varname>を返しま"
+"す。単精度浮動小数点数によるバウンディングボックスを使います。Bが倍精度浮動小"
+"数点数を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボック"
+"ス (BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1020
@@ -1596,10 +1672,17 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) @ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1026
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
 "\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
@@ -1607,52 +1690,54 @@ msgid ""
 "\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
 ">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_box2df_geometry\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1040
 #, no-c-format
 msgid "@(box2df,geometry)"
-msgstr ""
+msgstr "@(box2df,geometry)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1042
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) is contained into a geometry's 2D bounding box."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)がジオメトリの2次"
+"元バウンディングボックスに包含される場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:1047
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
 "type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1068
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D "
 "bounding box A is contained into the B geometry's 2D bounding box, using "
 "float precision. This means that if B is a (double precision) box2d, it will "
 "be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>&amp;&lt;</varname>演算子は、AのバウンディングボックスがBのバウン"
-"ディングボックスをオーバラップするか、Bのバウンディングボックスの左にある場合"
-"に<varname>TRUE</varname>を返します。条件についてより詳細に言うと、Bのバウン"
-"ディングボックスをオーバラップするかBのバウンディングボックスの右に*ない*場合"
-"です。"
+"<varname>@</varname>演算子は、2次元バウンディングボックスAが、ジオメトリBの2"
+"次元バウンディングボックスに包含される場合に、<varname>TRUE</varname>を返しま"
+"す。単精度浮動小数点数によるバウンディングボックスを使います。Aが倍精度浮動小"
+"数点数を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボック"
+"ス (BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1081
@@ -1666,10 +1751,17 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
+"ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1087
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
 "\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
@@ -1677,53 +1769,54 @@ msgid ""
 "\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
 ">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1101
 #, no-c-format
 msgid "@(box2df,box2df)"
-msgstr ""
+msgstr "@(box2df,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1103
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) is contained into another 2D float precision bounding box."
 msgstr ""
-"AのバウンディングボックスがBのバウンディングボックスと同じ場合に"
-"<varname>TRUE</varname>を返します。倍精度浮動小数点数のバウンディングボックス"
-"を使います。"
+"二つの単精度浮動小数点数によるn次元バウンディングボックス (GIDX)の一方がもう"
+"一方を包含する場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:1108
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
 "type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1129
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>@</varname> operator returns <varname>TRUE</varname> if the 2D "
 "bounding box A is contained into the 2D bounding box B, using float "
 "precision. This means that if A (or B) is a (double precision) box2d, it "
 "will be internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>&amp;&lt;</varname>演算子は、AのバウンディングボックスがBのバウン"
-"ディングボックスをオーバラップするか、Bのバウンディングボックスの左にある場合"
-"に<varname>TRUE</varname>を返します。条件についてより詳細に言うと、Bのバウン"
-"ディングボックスをオーバラップするかBのバウンディングボックスの右に*ない*場合"
-"です。"
+"<varname>@</varname>演算子は、2次元バウンディングボックスAが2次元バウンディン"
+"グボックスBに包含される場合には、<varname>TRUE</varname>を返します。単精度浮"
+"動小数点数によるバウンディングボックスを使います。AまたはBが倍精度浮動小数点"
+"数を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボックス "
+"(BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1142
@@ -1737,10 +1830,17 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) @ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) AS is_contained;\n"
+"\n"
+" is_contained\n"
+"--------------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1148
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
 "\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
@@ -1748,9 +1848,11 @@ msgid ""
 "\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
 ">, <xref linkend=\"is_contained_box2df_geometry\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"contains_box2df_box2df\"/>, <xref linkend=\"is_contained_geometry_box2df\"/"
+">, <xref linkend=\"is_contained_box2df_geometry\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1162
@@ -2005,44 +2107,45 @@ msgstr ""
 #: reference_operator.xml:1326
 #, no-c-format
 msgid "~(geometry,box2df)"
-msgstr ""
+msgstr "~(geometry,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1328
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a geometry's 2D bonding box contains a 2D "
 "float precision bounding box (GIDX)."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"ジオメトリの (キャッシュされている)2次元バウンディングボックスが単精度浮動小"
+"数点数によるn次元バウンディングボックス (GIDX)を包含する場合に<varname>TRUE</"
+"varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:1333
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
 "</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
 "<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1354
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
 "bounding box of a geometry A contains the 2D bounding box B, using float "
 "precision. This means that if B is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>|&amp;&gt;</varname>演算子は、AのバウンディングボックスがBのバウン"
-"ディングボックスをオーバラップするか、Bのバウンディングボックスの上にある場合"
-"に<varname>TRUE</varname>を返します。条件についてより詳細に言うと、Bのバウン"
-"ディングボックスをオーバラップするかBのバウンディングボックスの下に*ない*場合"
-"です。"
+"<varname>~</varname>演算子は、ジオメトリAの2次元バウンディングボックスが、2次"
+"元バウンディングボックスBを包含する場合に、<varname>TRUE</varname>を返しま"
+"す。単精度浮動小数点数によるバウンディングボックスを使います。Bが倍精度浮動小"
+"数点数を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボック"
+"ス (BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1367
@@ -2056,6 +2159,13 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(1 1)'), 10) ~ "
+"ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(2,2)) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1373
@@ -2068,46 +2178,56 @@ msgid ""
 "\"is_contained_box2df_geometry\"/>, <xref linkend="
 "\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_box2df_geometry\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1387
 #, no-c-format
 msgid "~(box2df,geometry)"
-msgstr ""
+msgstr "~(box2df,geometry)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1389
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) contains a geometry's 2D bonding box."
 msgstr ""
-"Aの2次元バウンディングボックスがBの2次元バウンディングボックスとインタセクト"
-"する場合に<varname>TRUE</varname>を返します。"
+"単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)をジオメトリの "
+"(キャッシュされている)2次元バウンディングボックスが包含する場合に"
+"<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:1394
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
 "type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1415
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
 "bounding box A contains the B geometry's bounding box, using float "
 "precision. This means that if A is a (double precision) box2d, it will be "
 "internally converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>@</varname>演算子は、AのバウンダリボックスがBのバウンダリボックス"
-"に、完全に含まれている場合に<varname>TRUE</varname>を返します。"
+"<varname>~</varname>演算子は、2次元バウンディングボックスAが、ジオメトリBの2"
+"次元バウンディングボックスを包含する場合に、<varname>TRUE</varname>を返しま"
+"す。単精度浮動小数点数によるバウンディングボックスを使います。Aが倍精度浮動小"
+"数点数を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボック"
+"ス (BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1428
@@ -2121,6 +2241,13 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
+"ST_Buffer(ST_GeomFromText('POINT(2 2)'), 1) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1434
@@ -2133,47 +2260,55 @@ msgid ""
 "\"is_contained_box2df_geometry\"/>, <xref linkend="
 "\"is_contained_box2df_box2df\"/>"
 msgstr ""
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_box2df\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1448
 #, no-c-format
 msgid "~(box2df,box2df)"
-msgstr ""
+msgstr "~(box2df,box2df)"
 
 #. Tag: refpurpose
 #: reference_operator.xml:1450
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if a 2D float precision bounding box "
 "(BOX2DF) contains another 2D float precision bounding box (BOX2DF)."
 msgstr ""
-"AのバウンディングボックスがBのバウンディングボックスと同じ場合に"
-"<varname>TRUE</varname>を返します。倍精度浮動小数点数のバウンディングボックス"
-"を使います。"
+"二つの単精度浮動小数点数による2次元バウンディングボックス (BOX2DF)の一方がも"
+"う一方を包含する場合に<varname>TRUE</varname>を返します。"
 
 #. Tag: funcprototype
 #: reference_operator.xml:1455
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
 "type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
 "<parameter>B</parameter> </paramdef>"
 msgstr ""
-"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
-"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
-"type> <parameter>B</parameter> </paramdef>"
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>box2df </"
+"type> <parameter>A</parameter> </paramdef> <paramdef> <type>box2df </type> "
+"<parameter>B</parameter> </paramdef>"
 
 #. Tag: para
 #: reference_operator.xml:1476
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <varname>~</varname> operator returns <varname>TRUE</varname> if the 2D "
 "bounding box A contains the 2D bounding box B, using float precision. This "
 "means that if A is a (double precision) box2d, it will be internally "
 "converted to a float precision 2D bounding box (BOX2DF)"
 msgstr ""
-"<varname>@</varname>演算子は、AのバウンダリボックスがBのバウンダリボックス"
-"に、完全に含まれている場合に<varname>TRUE</varname>を返します。"
+"<varname>~</varname>演算子は、2次元バウンディングボックスAが、2次元バウンディ"
+"ングボックスBを包含する場合に、<varname>TRUE</varname>を返します。単精度浮動"
+"小数点数によるバウンディングボックスを使います。AまたはBが倍精度浮動小数点数"
+"を使うbox2dである場合には、単精度浮動小数点数によるバウンディングボックス "
+"(BOX2DF)に変換されることになります。"
 
 #. Tag: programlisting
 #: reference_operator.xml:1489
@@ -2187,10 +2322,17 @@ msgid ""
 " t\n"
 "(1 row)"
 msgstr ""
+"SELECT ST_MakeBox2D(ST_MakePoint(0,0), ST_MakePoint(5,5)) ~ "
+"ST_MakeBox2D(ST_MakePoint(2,2), ST_MakePoint(3,3)) AS contains;\n"
+"\n"
+" contains\n"
+"----------\n"
+" t\n"
+"(1 row)"
 
 #. Tag: para
 #: reference_operator.xml:1495
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 ", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
 "\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
@@ -2199,9 +2341,12 @@ msgid ""
 "\"is_contained_box2df_geometry\"/>, <xref linkend="
 "\"is_contained_box2df_box2df\"/>"
 msgstr ""
-", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
-"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
-"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+", <xref linkend=\"overlaps_box2df_geometry\"/>, <xref linkend="
+"\"overlaps_box2df_box2df\"/>, <xref linkend=\"contains_geometry_box2df\"/>, "
+"<xref linkend=\"contains_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_geometry_box2df\"/>, <xref linkend="
+"\"is_contained_box2df_geometry\"/>, <xref linkend="
+"\"is_contained_box2df_box2df\"/>"
 
 #. Tag: refname
 #: reference_operator.xml:1509
