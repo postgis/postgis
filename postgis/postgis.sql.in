@@ -2888,22 +2888,22 @@ DECLARE
 	sfcgal_lib_ver text;
 	sfcgal_scr_ver text;
 BEGIN
-	SELECT postgis_lib_version() INTO libver;
-	SELECT postgis_proj_version() INTO projver;
-	SELECT postgis_geos_version() INTO geosver;
-	SELECT postgis_libjson_version() INTO json_lib_ver;
-	SELECT postgis_libprotobuf_version() INTO protobuf_lib_ver;
+	SELECT @extschema@.postgis_lib_version() INTO libver;
+	SELECT @extschema@.postgis_proj_version() INTO projver;
+	SELECT @extschema@.postgis_geos_version() INTO geosver;
+	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
+	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	BEGIN
-		SELECT postgis_gdal_version() INTO gdalver;
+		SELECT @extschema@.postgis_gdal_version() INTO gdalver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			gdalver := NULL;
 			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	BEGIN
-		SELECT postgis_sfcgal_version() INTO sfcgalver;
+		SELECT @extschema@.postgis_sfcgal_version() INTO sfcgalver;
     BEGIN
-      SELECT postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
+      SELECT @extschema@.postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
     EXCEPTION
       WHEN undefined_function THEN
         sfcgal_scr_ver := 'missing';
@@ -2912,11 +2912,11 @@ BEGIN
 		WHEN undefined_function THEN
 			sfcgalver := NULL;
 	END;
-	SELECT postgis_liblwgeom_version() INTO liblwgeomver;
-	SELECT postgis_libxml_version() INTO libxmlver;
-	SELECT postgis_scripts_installed() INTO dbproc;
-	SELECT postgis_scripts_released() INTO relproc;
-	select postgis_svn_version() INTO svnver;
+	SELECT @extschema@.postgis_liblwgeom_version() INTO liblwgeomver;
+	SELECT @extschema@.postgis_libxml_version() INTO libxmlver;
+	SELECT @extschema@.postgis_scripts_installed() INTO dbproc;
+	SELECT @extschema@.postgis_scripts_released() INTO relproc;
+	select @extschema@.postgis_svn_version() INTO svnver;
 	BEGIN
 		SELECT topology.postgis_topology_scripts_installed() INTO topo_scr_ver;
 	EXCEPTION
@@ -2938,7 +2938,7 @@ BEGIN
 	END;
 
 	BEGIN
-		SELECT postgis_raster_lib_version() INTO rast_lib_ver;
+		SELECT @extschema@.postgis_raster_lib_version() INTO rast_lib_ver;
 	EXCEPTION
 		WHEN undefined_function THEN
 			rast_lib_ver := NULL;
