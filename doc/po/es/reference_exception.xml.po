@@ -1,15 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
-"PO-Revision-Date: 2013-11-27 13:48+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
-"language/es/)\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-07-21 13:20+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
+"Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
+"es/)\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 #: reference_exception.xml:3
 #, no-c-format
 msgid "Exceptional Functions"
-msgstr ""
+msgstr "Funciones Excepcionales"
 
 #. Tag: para
 #: reference_exception.xml:4
@@ -30,18 +31,22 @@ msgid ""
 "data is corrupted in someway. They are used for troubleshooting corruption "
 "and also fixing things that should under normal circumstances, never happen."
 msgstr ""
+"Estas funciones raramente se utilizan las funciones que sólo se deben "
+"utilizar si sus datos están dañados de alguna manera. Se utilizan para "
+"solucionar problemas de la corrupción y también arreglar cosas que en "
+"circunstancias normales, nunca sucedan."
 
 #. Tag: refname
 #: reference_exception.xml:9
 #, no-c-format
 msgid "PostGIS_AddBBox"
-msgstr ""
+msgstr "PostGIS_AddBBox"
 
 #. Tag: refpurpose
 #: reference_exception.xml:11
 #, no-c-format
 msgid "Add bounding box to the geometry."
-msgstr ""
+msgstr "Agregue el cuadro delimitador a la geometría."
 
 #. Tag: funcprototype
 #: reference_exception.xml:16
@@ -50,13 +55,15 @@ msgid ""
 "<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>PostGIS_AddBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: title
 #: reference_exception.xml:24 reference_exception.xml:70
 #: reference_exception.xml:119
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_exception.xml:26
@@ -65,6 +72,9 @@ msgid ""
 "Add bounding box to the geometry. This would make bounding box based queries "
 "faster, but will increase the size of the geometry."
 msgstr ""
+"Agregue el cuadro delimitador a la geometría. Esto haría que las consultas "
+"basadas en cuadros delimitadores se agilizaran, pero aumentarían el tamaño "
+"de la geometría."
 
 #. Tag: para
 #: reference_exception.xml:31
@@ -75,20 +85,25 @@ msgid ""
 "you have an old install that is lacking bounding boxes. Then you need to "
 "drop the old and readd."
 msgstr ""
+"Los cuadros delimitadores se agregan automáticamente a las geometrías por lo "
+"que en general esto no es necesario a menos que el cuadro de delimitación "
+"generado de alguna manera se corrompe o se tiene una instalación antigua que "
+"carece de cuadros delimitadores. Entonces usted necesita eliminar el viejo y "
+"reagregar."
 
 #. Tag: para
 #: reference_exception.xml:35 reference_exception.xml:83
 #: reference_exception.xml:124
 #, no-c-format
 msgid "&curve_support;"
-msgstr ""
+msgstr "&curve_support;"
 
 #. Tag: title
 #: reference_exception.xml:40 reference_exception.xml:88
 #: reference_exception.xml:129
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: programlisting
 #: reference_exception.xml:42
@@ -98,31 +113,34 @@ msgid ""
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
 " WHERE PostGIS_HasBBox(the_geom) = false;"
 msgstr ""
+"UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE PostGIS_HasBBox(the_geom) = false;"
 
 #. Tag: title
 #: reference_exception.xml:47 reference_exception.xml:95
 #: reference_exception.xml:136
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Ver también"
 
 #. Tag: para
 #: reference_exception.xml:49
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>"
 
 #. Tag: refname
 #: reference_exception.xml:55
 #, no-c-format
 msgid "PostGIS_DropBBox"
-msgstr ""
+msgstr "PostGIS_DropBBox"
 
 #. Tag: refpurpose
 #: reference_exception.xml:57
 #, no-c-format
 msgid "Drop the bounding box cache from the geometry."
-msgstr ""
+msgstr "Elimina el caché de cuadro delimitador de la geometría."
 
 #. Tag: funcprototype
 #: reference_exception.xml:62
@@ -131,6 +149,8 @@ msgid ""
 "<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>geometry <function>PostGIS_DropBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:72
@@ -142,6 +162,12 @@ msgid ""
 "when your ST_Intersects and other relation queries leave out geometries that "
 "rightfully should return true."
 msgstr ""
+"Elimina el caché de cuadro delimitador de la geometría. Esto reduce el "
+"tamaño de la geometría, pero hace más lentas las consultas basadas en el "
+"cuadro delimitador. También se utiliza para eliminar un cuadro delimitador "
+"corrupto. Un signo tale-tell de un cuadro delimitador dañado en caché es "
+"cuando su ST_Intersects y otras consultas de relación dejan fuera las "
+"geometrías que legítimamente deben devolver true."
 
 #. Tag: para
 #: reference_exception.xml:77
@@ -156,6 +182,16 @@ msgid ""
 "version without a dump reload will not correct already corrupted boxes. So "
 "one can manually correct using below and readd the bbox or do a dump reload."
 msgstr ""
+"Los cuadros delimitadores se agregan automáticamente a las geometrías y "
+"mejoran la velocidad de las consultas, por lo que en general esto no es "
+"necesario a menos que el cuadro delimitador generado de alguna manera se "
+"corrompa o tenga una instalación antigua que carezca de cuadros "
+"delimitadores. Entonces usted necesita eliminar el viejo y reagregar. Este "
+"tipo de corrupción se ha observado en la serie 8.3-8.3.6, por la cual las "
+"bboxes cacheadas no siempre se recalcularon cuando una geometría cambió y la "
+"actualización a una versión más reciente sin una recarga de volcado no "
+"corregirá las cajas ya corruptas. También uno puede corregir manualmente "
+"usando bajar y reagregar el Bbox o hace una recarga de la descarga."
 
 #. Tag: programlisting
 #: reference_exception.xml:90
@@ -174,24 +210,40 @@ msgid ""
 " SET the_geom =  PostGIS_AddBBox(the_geom)\n"
 " WHERE Not PostGIS_HasBBOX(the_geom);"
 msgstr ""
+"-- Este ejemplo elimina cuadros delimitadores donde el cuadro almacenado en "
+"caché no es correcto\n"
+"                        -- Lo fuerza a ST_AsBinary antes de aplicar Box2D "
+"fuerza un nuevo cálculo de la caja, y Box2D aplicado a la geometría de la "
+"tabla siempre\n"
+"                        -- Devuelve el cuadro delimitador almacenado en "
+"caché.\n"
+"                        UPDATE sometable\n"
+" SET the_geom =  PostGIS_DropBBox(the_geom)\n"
+" WHERE Not (Box2D(ST_AsBinary(the_geom)) = Box2D(the_geom));\n"
+"\n"
+"        UPDATE sometable\n"
+" SET the_geom =  PostGIS_AddBBox(the_geom)\n"
+" WHERE Not PostGIS_HasBBOX(the_geom);"
 
 #. Tag: para
 #: reference_exception.xml:97
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_HasBBox\"/>, <xref linkend=\"Box2D\"/>"
 
 #. Tag: refname
 #: reference_exception.xml:104
 #, no-c-format
 msgid "PostGIS_HasBBox"
-msgstr ""
+msgstr "PostGIS_HasBBox"
 
 #. Tag: refpurpose
 #: reference_exception.xml:106
 #, no-c-format
 msgid "Returns TRUE if the bbox of this geometry is cached, FALSE otherwise."
 msgstr ""
+"Devuelve TRUE si el bbox de la geometría está almacenado en caché, FALSE de "
+"lo contrario."
 
 #. Tag: funcprototype
 #: reference_exception.xml:111
@@ -200,6 +252,8 @@ msgid ""
 "<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 msgstr ""
+"<funcdef>boolean <function>PostGIS_HasBBox</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
 #: reference_exception.xml:121
@@ -209,6 +263,9 @@ msgid ""
 "<xref linkend=\"PostGIS_AddBBox\"/> and <xref linkend=\"PostGIS_DropBBox\"/> "
 "to control caching."
 msgstr ""
+"Devuelve TRUE si el bbox de la geometría está almacenado en caché, FALSE de "
+"lo contrario. Utilice <xref linkend=\"PostGIS_AddBBox\"/> y <xref linkend="
+"\"PostGIS_DropBBox\"/> para controlar el almacenamiento en caché."
 
 #. Tag: programlisting
 #: reference_exception.xml:131
@@ -217,9 +274,11 @@ msgid ""
 "SELECT the_geom\n"
 "FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
 msgstr ""
+"SELECT the_geom\n"
+"FROM sometable WHERE PostGIS_HasBBox(the_geom) = false;"
 
 #. Tag: para
 #: reference_exception.xml:138
 #, no-c-format
 msgid ", <xref linkend=\"PostGIS_DropBBox\"/>"
-msgstr ""
+msgstr ", <xref linkend=\"PostGIS_DropBBox\"/>"

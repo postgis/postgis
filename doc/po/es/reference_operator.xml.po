@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2017-05-31 15:56+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -20,13 +21,13 @@ msgstr ""
 #: reference_operator.xml:3
 #, no-c-format
 msgid "Operators"
-msgstr ""
+msgstr "Operadores"
 
 #. Tag: refname
 #: reference_operator.xml:6
 #, no-c-format
 msgid "&amp;&amp;"
-msgstr ""
+msgstr "&amp;&amp;"
 
 #. Tag: refpurpose
 #: reference_operator.xml:8
@@ -68,7 +69,7 @@ msgstr ""
 #: reference_operator.xml:1874
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_operator.xml:52
@@ -149,7 +150,7 @@ msgstr ""
 #: reference_operator.xml:1712 reference_operator.xml:1769
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: programlisting
 #: reference_operator.xml:66
@@ -189,7 +190,7 @@ msgstr ""
 #: reference_operator.xml:1892
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Ver también"
 
 #. Tag: para
 #: reference_operator.xml:73
@@ -433,7 +434,7 @@ msgstr ""
 #: reference_operator.xml:301
 #, no-c-format
 msgid "Availability: 2.0.0"
-msgstr ""
+msgstr "Disponibilidad: 2.0.0"
 
 #. Tag: para
 #: reference_operator.xml:304 reference_operator.xml:366

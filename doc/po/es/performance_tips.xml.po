@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-07-17 15:51+0000\n"
 "PO-Revision-Date: 2014-02-17 16:29+0000\n"
 "Last-Translator: David Martinez Morata\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -37,9 +37,9 @@ msgstr "Descripcion del problema"
 
 #. Tag: para
 #: performance_tips.xml:11
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Current PostgreSQL versions (including 8.0) suffer from a query optimizer "
+"Current PostgreSQL versions (including 9.6) suffer from a query optimizer "
 "weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
 "\" used to store large (in the sense of data size) values that do not fit "
 "into normal data pages (like long texts, images or complex geometries with "
@@ -58,10 +58,10 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:19
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The problem appears if you happen to have a table with rather large "
-"geometries, but not too much rows of them (like a table containing the "
+"geometries, but not too manyrows of them (like a table containing the "
 "boundaries of all European countries in high resolution). Then the table "
 "itself is small, but it uses lots of TOAST space. In our example case, the "
 "table itself had about 80 rows and used only 3 data pages, but the TOAST "
@@ -76,13 +76,13 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Now issue a query where you use the geometry operator &amp;&amp; to search "
 "for a bounding box that matches only very few of those rows. Now the query "
-"optimizer sees that the table has only 3 pages and 80 rows. He estimates "
+"optimizer sees that the table has only 3 pages and 80 rows. It estimates "
 "that a sequential scan on such a small table is much faster than using an "
-"index. And so he decides to ignore the GIST index. Usually, this estimation "
+"index. And so it decides to ignore the GIST index. Usually, this estimation "
 "is correct. But in our case, the &amp;&amp; operator has to fetch every "
 "geometry from disk to compare the bounding boxes, thus reading all TOAST "
 "pages, too."
@@ -98,26 +98,37 @@ msgstr ""
 
 #. Tag: para
 #: performance_tips.xml:35
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"To see whether your suffer from this bug, use the \"EXPLAIN ANALYZE\" "
+"To see whether your suffer from this issue, use the \"EXPLAIN ANALYZE\" "
 "postgresql command. For more information and the technical details, you can "
-"read the thread on the postgres performance mailing list: http://archives."
-"postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"read the thread on the postgres performance mailing list: <ulink url="
+"\"http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php"
+"\">http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</"
+"ulink>"
 msgstr ""
 "Para comprobar si padeces de este error, utiliza el comando \"EXPLAIN ANALYZE"
 "\" postgresql. Para obtener más información y los detalles técnicos, puedes "
 "leer el hilo en la lista de correo de rendimiento postgres: http://archives."
 "postgresql.org/pgsql-performance/2005-02/msg00030.php"
 
+#. Tag: para
+#: performance_tips.xml:41
+#, no-c-format
+msgid ""
+"and newer thread on PostGIS <ulink url=\"https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html\">https://lists.osgeo.org/pipermail/"
+"postgis-devel/2017-June/026209.html</ulink>"
+msgstr ""
+
 #. Tag: title
-#: performance_tips.xml:43
+#: performance_tips.xml:45
 #, no-c-format
 msgid "Workarounds"
 msgstr "Soluciones provisionales"
 
 #. Tag: para
-#: performance_tips.xml:45
+#: performance_tips.xml:47
 #, no-c-format
 msgid ""
 "The PostgreSQL people are trying to solve this issue by making the query "
@@ -128,7 +139,7 @@ msgstr ""
 "soluciones provisionales:"
 
 #. Tag: para
-#: performance_tips.xml:48
+#: performance_tips.xml:50
 #, no-c-format
 msgid ""
 "The first workaround is to force the query planner to use the index. Send "
@@ -148,7 +159,7 @@ msgstr ""
 "después de la consulta."
 
 #. Tag: para
-#: performance_tips.xml:56
+#: performance_tips.xml:58
 #, no-c-format
 msgid ""
 "The second workaround is to make the sequential scan as fast as the query "
@@ -162,7 +173,7 @@ msgstr ""
 "nuestro ejemplo, los comandos son:"
 
 #. Tag: programlisting
-#: performance_tips.xml:61
+#: performance_tips.xml:63
 #, fuzzy, no-c-format
 msgid ""
 "SELECT "
@@ -174,7 +185,7 @@ msgstr ""
 "UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
 
 #. Tag: para
-#: performance_tips.xml:63
+#: performance_tips.xml:65
 #, no-c-format
 msgid ""
 "Now change your query to use the &amp;&amp; operator against bbox instead of "
@@ -184,7 +195,7 @@ msgstr ""
 "bbox en vez de geom_column, así:"
 
 #. Tag: programlisting
-#: performance_tips.xml:66
+#: performance_tips.xml:68
 #, fuzzy, no-c-format
 msgid ""
 "SELECT geom_column\n"
@@ -196,7 +207,7 @@ msgstr ""
 "WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
 
 #. Tag: para
-#: performance_tips.xml:68
+#: performance_tips.xml:70
 #, no-c-format
 msgid ""
 "Of course, if you change or add rows to mytable, you have to keep the bbox "
@@ -211,13 +222,13 @@ msgstr ""
 "siguiente después de cada modificación."
 
 #. Tag: title
-#: performance_tips.xml:77
+#: performance_tips.xml:79
 #, no-c-format
 msgid "CLUSTERing on geometry indices"
 msgstr "CLUSTERing o indices geométricos"
 
 #. Tag: para
-#: performance_tips.xml:79
+#: performance_tips.xml:81
 #, no-c-format
 msgid ""
 "For tables that are mostly read-only, and where a single index is used for "
@@ -243,7 +254,7 @@ msgstr ""
 "este tema.)"
 
 #. Tag: para
-#: performance_tips.xml:89
+#: performance_tips.xml:91
 #, no-c-format
 msgid ""
 "However, currently PostgreSQL does not allow clustering on PostGIS GIST "
@@ -255,7 +266,7 @@ msgstr ""
 "tendrás el siguiente mensaje de error:"
 
 #. Tag: programlisting
-#: performance_tips.xml:93
+#: performance_tips.xml:95
 #, fuzzy, no-c-format
 msgid ""
 "lwgeom=# CLUSTER my_geom_index ON my_table;\n"
@@ -269,7 +280,7 @@ msgstr ""
 "NULL."
 
 #. Tag: para
-#: performance_tips.xml:95
+#: performance_tips.xml:97
 #, no-c-format
 msgid ""
 "As the HINT message tells you, one can work around this deficiency by adding "
@@ -279,7 +290,7 @@ msgstr ""
 "una restricción \"not null\" a la tabla:"
 
 #. Tag: programlisting
-#: performance_tips.xml:98
+#: performance_tips.xml:100
 #, fuzzy, no-c-format
 msgid ""
 "lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;\n"
@@ -289,7 +300,7 @@ msgstr ""
 "ALTER TABLE"
 
 #. Tag: para
-#: performance_tips.xml:100
+#: performance_tips.xml:102
 #, no-c-format
 msgid ""
 "Of course, this will not work if you in fact need NULL values in your "
@@ -303,13 +314,13 @@ msgstr ""
 "CHECK (geómetra is not nulo);\" no funcionara."
 
 #. Tag: title
-#: performance_tips.xml:107
+#: performance_tips.xml:109
 #, no-c-format
 msgid "Avoiding dimension conversion"
 msgstr "Evitar la conversión de dimensión"
 
 #. Tag: para
-#: performance_tips.xml:109
+#: performance_tips.xml:111
 #, fuzzy, no-c-format
 msgid ""
 "Sometimes, you happen to have 3D or 4D data in your table, but always access "
@@ -328,7 +339,7 @@ msgstr ""
 "dimensiones adicionales de una vez por todas:"
 
 #. Tag: programlisting
-#: performance_tips.xml:116
+#: performance_tips.xml:118
 #, fuzzy, no-c-format
 msgid ""
 "UPDATE mytable SET the_geom = ST_Force2D(the_geom);\n"
@@ -338,7 +349,7 @@ msgstr ""
 "VACUUM FULL ANALYZE mytable;"
 
 #. Tag: para
-#: performance_tips.xml:118
+#: performance_tips.xml:120
 #, no-c-format
 msgid ""
 "Note that if you added your geometry column using AddGeometryColumn() "
@@ -353,7 +364,7 @@ msgstr ""
 "después."
 
 #. Tag: para
-#: performance_tips.xml:124
+#: performance_tips.xml:126
 #, no-c-format
 msgid ""
 "In case of large tables, it may be wise to divide this UPDATE into smaller "
@@ -374,13 +385,13 @@ msgstr ""
 "están en 2D."
 
 #. Tag: title
-#: performance_tips.xml:136
+#: performance_tips.xml:138
 #, no-c-format
 msgid "Tuning your configuration"
 msgstr "Ajusta tu configuración"
 
 #. Tag: para
-#: performance_tips.xml:138
+#: performance_tips.xml:140
 #, no-c-format
 msgid ""
 "Tuning for PostGIS is much like tuning for any PostgreSQL workload. The only "
@@ -390,7 +401,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:141
+#: performance_tips.xml:143
 #, no-c-format
 msgid ""
 "For general details about optimizing PostgreSQL, refer to <ulink url="
@@ -399,7 +410,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:143
+#: performance_tips.xml:145
 #, no-c-format
 msgid ""
 "For PostgreSQL 9.4+ all these can be set at the server level without "
@@ -408,7 +419,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: performance_tips.xml:145
+#: performance_tips.xml:147
 #, no-c-format
 msgid ""
 "ALTER SYSTEM SET work_mem = '256MB';\n"
@@ -420,7 +431,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:147
+#: performance_tips.xml:149
 #, no-c-format
 msgid ""
 "In addition to these settings, PostGIS also has some custom settings which "
@@ -428,31 +439,31 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: performance_tips.xml:150
+#: performance_tips.xml:152
 #, no-c-format
 msgid "Startup"
 msgstr "Puesta en marcha"
 
 #. Tag: para
-#: performance_tips.xml:152
+#: performance_tips.xml:154
 #, no-c-format
 msgid "These settings are configured in postgresql.conf:"
 msgstr "Estas opciones se configuran en postgresql.conf:"
 
 #. Tag: ulink
-#: performance_tips.xml:157
+#: performance_tips.xml:159
 #, no-c-format
 msgid "constraint_exclusion"
 msgstr "constraint_exclusion"
 
 #. Tag: para
-#: performance_tips.xml:162
+#: performance_tips.xml:164
 #, fuzzy, no-c-format
 msgid "Default: partition"
 msgstr "Por defecto: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:167
+#: performance_tips.xml:169
 #, fuzzy, no-c-format
 msgid ""
 "This is generally used for table partitioning. The default for this is set "
@@ -470,25 +481,27 @@ msgstr ""
 "manera ."
 
 #. Tag: ulink
-#: performance_tips.xml:176
+#: performance_tips.xml:178
 #, no-c-format
 msgid "shared_buffers"
 msgstr "shared_buffers"
 
 #. Tag: para
-#: performance_tips.xml:181
+#: performance_tips.xml:183
 #, no-c-format
-msgid "Default: ~32MB"
-msgstr "Por defecto: ~32MB"
+msgid "Default: ~128MB in PostgreSQL 9.6"
+msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:186
+#: performance_tips.xml:188
 #, no-c-format
-msgid "Set to about 1/3 to 3/4 of available RAM"
-msgstr "Cambialo a un valor entre 1/3 a 3/4 de la memoria RAM disponible."
+msgid ""
+"Set to about 25% to 40% of available RAM. On windows you may not be able to "
+"set as high."
+msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:193
+#: performance_tips.xml:195
 #, fuzzy, no-c-format
 msgid ""
 "<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
@@ -502,13 +515,13 @@ msgstr ""
 "operaciones cortas y consultas complejas)"
 
 #. Tag: para
-#: performance_tips.xml:201
+#: performance_tips.xml:203
 #, fuzzy, no-c-format
 msgid "Default: 8"
 msgstr "Por defecto: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:206
+#: performance_tips.xml:208
 #, no-c-format
 msgid ""
 "Sets the maximum number of background processes that the system can support. "
@@ -516,13 +529,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: performance_tips.xml:216
+#: performance_tips.xml:218
 #, no-c-format
 msgid "Runtime"
 msgstr "Runtime"
 
 #. Tag: para
-#: performance_tips.xml:218
+#: performance_tips.xml:220
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -534,37 +547,37 @@ msgstr ""
 "operaciones cortas y consultas complejas)"
 
 #. Tag: para
-#: performance_tips.xml:224
+#: performance_tips.xml:226
 #, fuzzy, no-c-format
 msgid "Default: 1-4MB"
 msgstr "Por defecto: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:229
+#: performance_tips.xml:231
 #, no-c-format
 msgid "Adjust up for large dbs, complex queries, lots of RAM"
 msgstr "Ajuste para bases de datos grandes, consultas complejas, mucha RAM"
 
 #. Tag: para
-#: performance_tips.xml:234
+#: performance_tips.xml:236
 #, no-c-format
 msgid "Adjust down for many concurrent users or low RAM."
 msgstr "Ajuste para muchos usuarios concurrentes o menos RAM"
 
 #. Tag: para
-#: performance_tips.xml:239
+#: performance_tips.xml:241
 #, no-c-format
 msgid "If you have lots of RAM and few developers:"
 msgstr "Si tienes mucha RAM y algunos desarrolladores:"
 
 #. Tag: programlisting
-#: performance_tips.xml:241
+#: performance_tips.xml:243
 #, fuzzy, no-c-format
-msgid "SET work_mem TO '256MB';;"
+msgid "SET work_mem TO '256MB';"
 msgstr "SET work_mem TO 1200000;"
 
 #. Tag: para
-#: performance_tips.xml:246
+#: performance_tips.xml:248
 #, no-c-format
 msgid ""
 "<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
@@ -576,13 +589,13 @@ msgstr ""
 "(utilizado en operaciones de VACUUM, CREATE INDEX, etc.)"
 
 #. Tag: para
-#: performance_tips.xml:252
+#: performance_tips.xml:254
 #, fuzzy, no-c-format
 msgid "Default: 16-64MB"
 msgstr "Por defecto: 16MB"
 
 #. Tag: para
-#: performance_tips.xml:257
+#: performance_tips.xml:259
 #, no-c-format
 msgid "Generally too low - ties up I/O, locks objects while swapping memory"
 msgstr ""
@@ -590,7 +603,7 @@ msgstr ""
 "intercambio"
 
 #. Tag: para
-#: performance_tips.xml:262
+#: performance_tips.xml:264
 #, fuzzy, no-c-format
 msgid ""
 "Recommend 32MB to 1GB on production servers w/lots of RAM, but depends on "
@@ -601,13 +614,13 @@ msgstr ""
 "y algunos desarrolladores:"
 
 #. Tag: programlisting
-#: performance_tips.xml:265
+#: performance_tips.xml:267
 #, fuzzy, no-c-format
 msgid "SET maintenance_work_mem TO '1GB';"
 msgstr "SET maintainence_work_mem TO 1200000;"
 
 #. Tag: para
-#: performance_tips.xml:270
+#: performance_tips.xml:272
 #, no-c-format
 msgid ""
 "<ulink url=\"https://www.postgresql.org/docs/current/static/runtime-config-"
@@ -623,13 +636,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: performance_tips.xml:280
+#: performance_tips.xml:282
 #, fuzzy, no-c-format
 msgid "Default: 0"
 msgstr "Por defecto: 1MB"
 
 #. Tag: para
-#: performance_tips.xml:285
+#: performance_tips.xml:287
 #, no-c-format
 msgid ""
 "Sets the maximum number of workers that can be started by a single "
@@ -640,6 +653,12 @@ msgid ""
 "may be inefficient. Setting this value to 0, which is the default, disables "
 "parallel query execution."
 msgstr ""
+
+#~ msgid "Default: ~32MB"
+#~ msgstr "Por defecto: ~32MB"
+
+#~ msgid "Set to about 1/3 to 3/4 of available RAM"
+#~ msgstr "Cambialo a un valor entre 1/3 a 3/4 de la memoria RAM disponible."
 
 #~ msgid ""
 #~ "These tips are taken from Kevin Neufeld's presentation \"Tips for the "
