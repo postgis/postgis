@@ -519,7 +519,38 @@
 				</itemizedlist>
                 </xsl:if>
 
-				<para>TODO: Enhance some functions in 2.4 so this space isn't empty.</para>
+				<xsl:if test="//para[contains(text(),'Enhanced: 2.4')]">
+				<para>Functions enhanced in PostGIS 2.4</para>
+				<para>Most aggregates now marked as parallel safe</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Enhanced: 2.4')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+                </xsl:if>
 
 			</sect2>
 
