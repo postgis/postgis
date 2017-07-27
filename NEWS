@@ -14,9 +14,6 @@ PostGIS 2.4.0
            (Darafei Praliaskouski)
   - #3677, ST_FrechetDistance (Shinichi Sugiyama)
 
- * Bug Fixes *
-  - #3682, Boolean (FTLogical) should be 1 byte not 2 bytes
-
 PostGIS 2.3.3
 2017/07/01
 
