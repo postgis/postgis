@@ -24,6 +24,18 @@ SELECT tiger.SetSearchPathForInstall('tiger');
 ALTER TABLE state_lookup ADD COLUMN statefp char(2);
 UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0') WHERE statefp IS NULL;
 ALTER TABLE state_lookup ADD CONSTRAINT state_lookup_statefp_key UNIQUE(statefp);
+
+-- these introduced in PostGIS 2.4
+DO language plpgsql
+$$
+    BEGIN
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar;
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE address_alphanumeric varchar;
+    EXCEPTION
+        WHEN others THEN  -- ignore the error probably cause it already exists
+    END;
+$$;
+
 CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 CREATE INDEX tiger_place_the_geom_gist ON place USING gist(the_geom);

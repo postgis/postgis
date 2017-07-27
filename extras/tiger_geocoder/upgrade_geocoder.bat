@@ -3,8 +3,8 @@ set PGHOST=localhost
 set PGUSER=postgres
 set PGPASSWORD=yourpasswordhere
 set THEDB=geocoder
-set PGBIN=C:\Program Files\PostgreSQL\9.4\bin
-set PGCONTRIB=C:\Program Files\PostgreSQL\9.4\share\contrib
+set PGBIN=C:\Program Files\PostgreSQL\9.6\bin
+set PGCONTRIB=C:\Program Files\PostgreSQL\9.6\share\contrib
 
 "%PGBIN%\psql"  -d "%THEDB%" -f "upgrade_geocode.sql"
 

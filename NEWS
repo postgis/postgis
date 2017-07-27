@@ -14,6 +14,13 @@ PostGIS 2.4.0
            (Darafei Praliaskouski)
   - #3677, ST_FrechetDistance (Shinichi Sugiyama)
 
+* Enhancements *
+  - #3747, Add zip4 and address_alphanumeric as attributes
+           to norm_addy tiger_geocoder type.
+  - #3748, address_standardizer lookup tables update
+           so pagc_normalize_address better standardizes abbreviations
+
+
 PostGIS 2.3.3
 2017/07/01
 
