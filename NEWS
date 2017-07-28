@@ -1,13 +1,14 @@
 PostGIS 2.3.4
 2017/xx/xx
 
-  * Bug Fixes
+  * Bug Fixes and Enhancements
 
   - #3782, Memory leak in lwline_from_wkb_state (Even Rouault)
   - #3101, Fix buffer overflow in pgsql2shp (Sandro Santilli)
   - #3786, ptarray null and heap issues on is_closed
   - #3795, Solaris build issues due to missing isfinite define
            (Julian Schauder)
+  - #3792, mark all 3D related including SFCGAL as parallel safe
 
 
 PostGIS 2.3.3
