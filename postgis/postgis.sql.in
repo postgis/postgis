@@ -5496,67 +5496,67 @@ CREATE OR REPLACE RULE geometry_columns_delete AS
 CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'distance3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION ST_3DMaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_maxdistance3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION ST_3DClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_closestpoint3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1; -- reset cost, see #3675
 
 CREATE OR REPLACE FUNCTION ST_3DShortestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_shortestline3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1; -- reset cost, see #3675
 
 CREATE OR REPLACE FUNCTION ST_3DLongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_longestline3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 1; -- reset cost, see #3675
 
 CREATE OR REPLACE FUNCTION _ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dwithin3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_dfullywithin3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($2,$3) AND $2 OPERATOR(@extschema@.&&) @extschema@.ST_Expand($1,$3) AND @extschema@._ST_3DDFullyWithin($1, $2, $3)'
-	LANGUAGE 'sql' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','intersects3d'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
 	AS 'SELECT $1 OPERATOR(@extschema@.&&) $2 AND @extschema@._ST_3DIntersects($1, $2)'
-	LANGUAGE 'sql' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL
 	COST 100;
 
 
@@ -5567,7 +5567,7 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 5;
 --
 -- SQL-MM
@@ -5630,7 +5630,7 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_same'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT  _PARALLEL
 	COST 100;
 
 -- Availability: 1.3.0
@@ -5639,7 +5639,7 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geome
 	AS $$
 	SELECT $1 OPERATOR(@extschema@.~=) $2 AND @extschema@._ST_OrderingEquals($1, $2)
 	$$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
@@ -5940,13 +5940,13 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asX3D'
-	LANGUAGE 'c' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
 
 -- ST_AsX3D(geom, precision, options)
 CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS TEXT
 	AS $$SELECT @extschema@._ST_AsX3D(3,$1,$2,$3,'');$$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE  _PARALLEL;
 
 -- make views and spatial_ref_sys public viewable --
 GRANT SELECT ON TABLE geography_columns TO public;
