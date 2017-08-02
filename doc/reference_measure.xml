@@ -1118,12 +1118,57 @@ SELECT ST_AsText(
     <refsection>
       <title>Examples</title>
       <para>
-          Assigning a cluster number to each parcel point:
+          Assigning a cluster number to each polygon within 50 meters of each other.  Require at least 2 polygons per cluster
       </para>
-		    <programlisting>
-SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) over () AS cid
-FROM parcels;
-</programlisting>
+	<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+				  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_clusterdbscan01.png" />
+							  </imageobject>
+							  <caption><para>within 50 meters at least 2 per cluster. singletons have NULL for cid</para></caption>
+							</mediaobject>
+						  </informalfigure>
+  <programlisting>SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
+FROM boston_polys
+WHERE name > '' AND building > ''
+	AND ST_DWithin(geom,
+        ST_Transform(
+            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
+           500);</programlisting>
+						  </para></entry>
+
+						<entry><para><screen><![CDATA[                name                 | bucket
+-------------------------------------+--------
+ Manulife Tower                      |      0
+ Park Lane Seaport I                 |      0
+ Park Lane Seaport II                |      0
+ Renaissance Boston Waterfront Hotel |      0
+ Seaport Boston Hotel                |      0
+ Seaport Hotel & World Trade Center  |      0
+ Waterside Place                     |      0
+ World Trade Center East             |      0
+ 100 Northern Avenue                 |      1
+ 100 Pier 4                          |      1
+ The Institute of Contemporary Art   |      1
+ 101 Seaport                         |      2
+ District Hall                       |      2
+ One Marina Park Drive               |      2
+ Twenty Two Liberty                  |      2
+ Vertex                              |      2
+ Vertex                              |      2
+ Watermark Seaport                   |      2
+ Blue Hills Bank Pavilion            |   NULL
+ World Trade Center West             |   NULL
+(20 rows)]]></screen></para>
+				</entry>
+					  </row>
+				</tbody>
+				</tgroup>
+			</informaltable>
 
 
         <para>
@@ -1139,7 +1184,7 @@ GROUP BY cid;
 
     <refsection>
 		  <title>See Also</title>
-          <para>
+          <para><xref linkend="ST_DWithin"/>,
               <xref linkend="ST_ClusterKMeans"/>,
               <xref linkend="ST_ClusterIntersecting"/>,
               <xref linkend="ST_ClusterWithin"/>
@@ -2646,7 +2691,7 @@ The current implementation supports only vertices as the discrete locations. Thi
 		</note>
 		<note>
 			<para>
-The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments. 
+The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments.
 			</para>
 		</note>
 		<para>Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
@@ -3061,7 +3106,7 @@ SELECT s.gid, s.school_name
 		<important>
 		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
-        
+
         <important>
             <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
  		</important>
