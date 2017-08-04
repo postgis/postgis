@@ -3,6 +3,7 @@ PostGIS 2.4.0
 
  * New Features *
 
+  - #2951, ST_Centroid for geography (Danny Götte)
   - #3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps
            (Roger Crew)
   - #3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)

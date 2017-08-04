@@ -97,6 +97,7 @@ PG_OBJS= \
 	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \
+	geography_centroid.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
 	geometry_inout.o \

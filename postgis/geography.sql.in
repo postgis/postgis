@@ -835,13 +835,24 @@ CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
 	RETURNS int4
 	AS 'MODULE_PATHNAME', 'LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-	
+
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
 	RETURNS geography
 	AS 'MODULE_PATHNAME', 'LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
-  
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_centroid'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Centroid(text)
+	RETURNS geometry AS
+	$$ SELECT ST_Centroid($1::@extschema@.geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL;
+
 -----------------------------------------------------------------------------
-
-

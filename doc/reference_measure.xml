@@ -830,12 +830,21 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 
 	<refsynopsisdiv>
 	  <funcsynopsis>
-		<funcprototype>
-		  <funcdef>geometry <function>ST_Centroid</function></funcdef>
+          <funcprototype>
+  		  <funcdef>geometry <function>ST_Centroid</function></funcdef>
 
-		  <paramdef><type>geometry </type>
-		  <parameter>g1</parameter></paramdef>
-		</funcprototype>
+  		  <paramdef><type>geometry </type>
+  		  <parameter>g1</parameter></paramdef>
+  		</funcprototype>
+            <funcprototype>
+                <funcdef>geography <function>ST_Centroid</function></funcdef>
+
+                <paramdef><type>geography </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type>
+                <parameter>use_spheroid=true</parameter></paramdef>
+	</funcprototype>
+
 	  </funcsynopsis>
 	</refsynopsisdiv>
 
@@ -858,6 +867,8 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 	  then same than for  <varname>LINESTRING</varname>
 	  </para>
 	  <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
+
+      <para>Availability: 2.4.0 support for geography was introduced.</para>
 
 	  <para>The centroid is equal to the centroid of the set of component
 	  Geometries of highest dimension (since the lower-dimension geometries
