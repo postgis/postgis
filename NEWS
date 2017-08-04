@@ -9,6 +9,8 @@ PostGIS 2.3.4
   - #3795, Solaris build issues due to missing isfinite define
            (Julian Schauder)
   - #3792, mark all 3D related including SFCGAL as parallel safe
+  - #3800, shp2pgql-gui allow export of foreign tables, materialized views,
+           and partitioned tables
 
 
 PostGIS 2.3.3
