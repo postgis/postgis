@@ -1,3 +1,43 @@
+2017-08-05 16:58  Regina Obe <lr@pcorp.us>
+
+	* [r15531] .travis.yml: switch travis back not using sudo (root
+	  doesn't exist).
+	  Try forcing precise (July 18 default of travis switched to trusty
+	  which is around when we started having problems).
+
+2017-08-05 16:49  Regina Obe <lr@pcorp.us>
+
+	* [r15530] .travis.yml: try to fix travis check failures by sudoing
+	  more stuff.
+	  References #3801 for PostGIS 2.4.0
+
+2017-08-05 16:39  Regina Obe <lr@pcorp.us>
+
+	* [r15529] configure.ac: Change warning from GEOS 3.5.0 (that was
+	  too low already since we had functions in 2.3 that need GEOS
+	  3.6), to GEOS 3.7.0.
+	  Closes #3802 for PostGIS 2.4.0
+
+2017-08-05 16:22  Regina Obe <lr@pcorp.us>
+
+	* [r15528] .drone.yml, regress/run_test.pl: Fix dump/restore test
+	  (arguments out of order)
+	  Closes #3801 for PostGIS 2.4.0
+	  Turn off interrupt tests on dronie, too many false failures
+
+2017-08-05 15:57  Regina Obe <lr@pcorp.us>
+
+	* [r15527] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Prepping for releast of
+	  PostGIS 2.4.0alpha
+
+2017-08-05 11:40  Regina Obe <lr@pcorp.us>
+
+	* [r15526] postgis/geography_centroid.c,
+	  regress/geography_centroid_expected: ST_Centroid for geography
+	  fix uninitialized points issue
+	  References #2951
+
 2017-08-05 11:18  Regina Obe <lr@pcorp.us>
 
 	* [r15525] doc/reference_editor.xml: Clarify description of ST_Snap

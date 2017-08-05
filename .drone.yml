@@ -21,4 +21,4 @@ pipeline:
       - service postgresql start
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh 2.4.0dev
+      - utils/check_all_upgrades.sh 2.4.0alpha
