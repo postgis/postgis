@@ -309,7 +309,7 @@ LWPOINT* geography_centroid_from_mpoly(const LWMPOLY* mpoly, bool use_spheroid, 
 	uint32_t i, ir, ip;
     for (ip = 0; ip < mpoly->ngeoms; ip++) {
 		for (ir = 0; ir < mpoly->geoms[ip]->nrings; ir++) {
-        	size += mpoly->geoms[ip]->rings[ir]->npoints;
+        	size += mpoly->geoms[ip]->rings[ir]->npoints - 1;
 		}
     }
 
