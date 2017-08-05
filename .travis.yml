@@ -16,17 +16,18 @@ before_install:
   - ./autogen.sh
 
 language: c
+dist: precise
 
 compiler: gcc
 
 script:
   - ./configure
   - make
-  - sudo make check
-  - sudo make check RUNTESTFLAGS='--dumprestore'
+  - make check
+  - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - sudo make installcheck
-  - sudo make installcheck RUNTESTFLAGS='--dumprestore'
+  - make installcheck
+  - make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
