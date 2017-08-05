@@ -1533,7 +1533,7 @@ sub dump_restore
 
 	print "Dumping and restoring database '${DB}'\n";
 
-  $rv = system("pg_dump -Fc ${DB} -f ${DBDUMP} >> $REGRESS_LOG 2>&1");
+  $rv = system("pg_dump -Fc -f${DBDUMP} ${DB} >> $REGRESS_LOG 2>&1");
   if ( $rv ) {
     fail("Could not dump ${DB}", $REGRESS_LOG);
 		die;
