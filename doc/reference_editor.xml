@@ -1732,6 +1732,8 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
  Snaps the vertices and segments of a geometry
  another Geometry's vertices.
  A snap distance tolerance is used to control where snapping is performed.
+  The result geometry is the input geometry with the vertices snapped.
+	If no snapping occurs then the input geometry is returned unchanged.
 		</para>
 		<para>
  Snapping one geometry to another can improve
