@@ -439,9 +439,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
 
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
   PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
-  
+
   if test $PGSQL_MAJOR_VERSION -gt 9; then
-  	dnl ================================================================== 
+  	dnl ==================================================================
   	dnl Starting with PostgreSQL 10, major is the new minor
   	dnl This is to prevent things like 10.31 ranking higher than 11.0
   	dnl===================================================================
@@ -949,7 +949,7 @@ fi
 dnl Check that we can find the protobuf/protobuf.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$PROTOBUF_CPPFLAGS"
-AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])	
+AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libprotobuf-c
@@ -1519,12 +1519,12 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30500; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
 AC_MSG_WARN([  PostGIS we recommend you build using ])
-AC_MSG_WARN([  GEOS 3.5.0 or higher. You can download ])
+AC_MSG_WARN([  GEOS 3.7.0 or higher. You can download ])
 AC_MSG_WARN([  the latest versions from ])
 AC_MSG_WARN([  http://trac.osgeo.org/geos ])
 AC_MSG_WARN()
