@@ -16,4 +16,3 @@ REM "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2016.sql"
 cd regress
 REM "%PGBIN%\psql"  -d "%THEDB%" -t -f regress.sql
 pause
-
