@@ -420,49 +420,49 @@ CREATE OPERATOR CLASS btree_geometry_ops
 CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4)
 	RETURNS float8
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_distance_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4)
 	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_compress_2d(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME','gserialized_gist_compress_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_penalty_2d(internal,internal,internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_picksplit_2d(internal, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_union_2d(bytea, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_union_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_same_2d(geom1 geometry, geom2 geometry, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_same_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 
 -----------------------------------------------------------------------------
@@ -755,43 +755,43 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4)
 	RETURNS bool
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME','gserialized_gist_compress'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -847,7 +847,7 @@ CREATE OPERATOR |=| (
 CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,int4)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'gserialized_gist_distance'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 
 -- Availability: 2.0.0
@@ -1235,14 +1235,14 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 CREATE OR REPLACE FUNCTION ST_IsPolygonCW(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','ST_IsPolygonCW'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_IsPolygonCCW(geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME','ST_IsPolygonCCW'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 10;
 
 -- Availability: 2.0.0
@@ -1502,7 +1502,7 @@ CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
-	LANGUAGE 'c' VOLATILE STRICT
+	LANGUAGE 'c' VOLATILE STRICT _PARALLEL
 	COST 10;
 
 -- Availability: 2.3.0
@@ -1740,7 +1740,7 @@ CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
 CREATE OR REPLACE FUNCTION ST_ClusterDBSCAN (geometry, eps float8, minpoints int)
 	RETURNS int
 	AS 'MODULE_PATHNAME', 'ST_ClusterDBSCAN'
-	LANGUAGE 'c' IMMUTABLE STRICT WINDOW;
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW _PARALLEL;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
@@ -1854,7 +1854,7 @@ CREATE TYPE geometry_dump AS (
 CREATE OR REPLACE FUNCTION ST_Dump(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
 -- Availability: 1.2.2
@@ -1863,99 +1863,6 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
------------------------------------------------------------------------
--- _ST_DumpPoints()
------------------------------------------------------------------------
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_DumpPoints(the_geom geometry, cur_path integer[]) RETURNS SETOF geometry_dump AS $$
-DECLARE
-  tmp geometry_dump;
-  tmp2 geometry_dump;
-  nb_points integer;
-  nb_geom integer;
-  i integer;
-  j integer;
-  g geometry;
-
-BEGIN
-
-  -- RAISE DEBUG '%,%', cur_path, @extschema@.ST_GeometryType(the_geom);
-
-  -- Special case collections : iterate and return the DumpPoints of the geometries
-
-  IF (@extschema@.ST_IsCollection(the_geom)) THEN
-
-    i = 1;
-    FOR tmp2 IN SELECT (@extschema@.ST_Dump(the_geom)).* LOOP
-
-      FOR tmp IN SELECT * FROM @extschema@._ST_DumpPoints(tmp2.geom, cur_path || tmp2.path) LOOP
-	    RETURN NEXT tmp;
-      END LOOP;
-      i = i + 1;
-
-    END LOOP;
-
-    RETURN;
-  END IF;
-
-
-  -- Special case (POLYGON) : return the points of the rings of a polygon
-  IF (@extschema@.ST_GeometryType(the_geom) = 'ST_Polygon') THEN
-
-    FOR tmp IN SELECT * FROM @extschema@._ST_DumpPoints(@extschema@.ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
-      RETURN NEXT tmp;
-    END LOOP;
-
-    j := @extschema@.ST_NumInteriorRings(the_geom);
-    FOR i IN 1..j LOOP
-        FOR tmp IN SELECT * FROM @extschema@._ST_DumpPoints(@extschema@.ST_InteriorRingN(the_geom, i), cur_path || ARRAY[i+1]) LOOP
-          RETURN NEXT tmp;
-        END LOOP;
-    END LOOP;
-
-    RETURN;
-  END IF;
-
-  -- Special case (TRIANGLE) : return the points of the external rings of a TRIANGLE
-  IF (@extschema@.ST_GeometryType(the_geom) = 'ST_Triangle') THEN
-
-    FOR tmp IN SELECT * FROM @extschema@._ST_DumpPoints(@extschema@.ST_ExteriorRing(the_geom), cur_path || ARRAY[1]) LOOP
-      RETURN NEXT tmp;
-    END LOOP;
-
-    RETURN;
-  END IF;
-
-
-  -- Special case (POINT) : return the point
-  IF (@extschema@.ST_GeometryType(the_geom) = 'ST_Point') THEN
-
-    tmp.path = cur_path || ARRAY[1];
-    tmp.geom = the_geom;
-
-    RETURN NEXT tmp;
-    RETURN;
-
-  END IF;
-
-
-  -- Use ST_NumPoints rather than ST_NPoints to have a NULL value if the_geom isn't
-  -- a LINESTRING, CIRCULARSTRING.
-  SELECT @extschema@.ST_NumPoints(the_geom) INTO nb_points;
-
-  -- This should never happen
-  IF (nb_points IS NULL) THEN
-    RAISE EXCEPTION 'Unexpected error while dumping geometry %', @extschema@.ST_AsText(the_geom);
-  END IF;
-
-  FOR i IN 1..nb_points LOOP
-    tmp.path = cur_path || ARRAY[i];
-    tmp.geom := @extschema@.ST_PointN(the_geom, i);
-    RETURN NEXT tmp;
-  END LOOP;
-
-END
-$$ LANGUAGE plpgsql;
 
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
@@ -1966,7 +1873,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
        	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dumppoints'
-	LANGUAGE 'c' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
 	COST 100;
 
 
@@ -2015,7 +1922,7 @@ DECLARE
 	gc_is_valid boolean;
 
 BEGIN
-	SELECT count(*) INTO oldcount FROM geometry_columns;
+	SELECT count(*) INTO oldcount FROM @extschema@.geometry_columns;
 	inserted := 0;
 
 	-- Count the number of geometry columns in all tables and views
@@ -2050,7 +1957,7 @@ BEGIN
 		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns'
 	LOOP
 
-		inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
+		inserted := inserted + @extschema@.populate_geometry_columns(gcs.oid, use_typmod);
 	END LOOP;
 
 	IF oldcount > inserted THEN
@@ -2333,7 +2240,7 @@ BEGIN
 	     sql := 'ALTER TABLE ' ||
             quote_ident(real_schema) || '.' || quote_ident(table_name)
             || ' ADD COLUMN ' || quote_ident(column_name) ||
-            ' geometry(' || postgis_type_name(new_type, new_dim) || ', ' || new_srid::text || ')';
+            ' geometry(' || @extschema@.postgis_type_name(new_type, new_dim) || ', ' || new_srid::text || ')';
         RAISE DEBUG '%', sql;
 	ELSE
         sql := 'ALTER TABLE ' ||
@@ -2399,7 +2306,7 @@ CREATE OR REPLACE FUNCTION AddGeometryColumn(schema_name varchar,table_name varc
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('',$1,$2,$3,$4,$5,$6,$7) into ret;
+	SELECT @extschema@.AddGeometryColumn('',$1,$2,$3,$4,$5,$6,$7) into ret;
 	RETURN ret;
 END;
 $$
@@ -2417,7 +2324,7 @@ CREATE OR REPLACE FUNCTION AddGeometryColumn(table_name varchar,column_name varc
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('','',$1,$2,$3,$4,$5, $6) into ret;
+	SELECT @extschema@.AddGeometryColumn('','',$1,$2,$3,$4,$5, $6) into ret;
 	RETURN ret;
 END;
 $$
@@ -2465,7 +2372,7 @@ BEGIN
 
 	-- Find out if the column is in the geometry_columns table
 	okay = false;
-	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+	FOR myrec IN SELECT * from @extschema@.geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
 		okay := true;
 	END LOOP;
 	IF (okay <> true) THEN
@@ -2500,7 +2407,7 @@ $$
 DECLARE
 	ret text;
 BEGIN
-	SELECT DropGeometryColumn('',$1,$2,$3) into ret;
+	SELECT @extschema@.DropGeometryColumn('',$1,$2,$3) into ret;
 	RETURN ret;
 END;
 $$
@@ -2522,7 +2429,7 @@ $$
 DECLARE
 	ret text;
 BEGIN
-	SELECT DropGeometryColumn('','',$1,$2) into ret;
+	SELECT @extschema@.DropGeometryColumn('','',$1,$2) into ret;
 	RETURN ret;
 END;
 $$
@@ -2574,7 +2481,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION DropGeometryTable(schema_name varchar, table_name varchar) RETURNS text AS
-$$ SELECT DropGeometryTable('',$1,$2) $$
+$$ SELECT @extschema@.DropGeometryTable('',$1,$2) $$
 LANGUAGE 'sql' VOLATILE STRICT;
 
 -----------------------------------------------------------------------
@@ -2587,7 +2494,7 @@ LANGUAGE 'sql' VOLATILE STRICT;
 --
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION DropGeometryTable(table_name varchar) RETURNS text AS
-$$ SELECT DropGeometryTable('','',$1) $$
+$$ SELECT @extschema@.DropGeometryTable('','',$1) $$
 LANGUAGE 'sql' VOLATILE STRICT;
 
 -----------------------------------------------------------------------
@@ -2633,7 +2540,7 @@ BEGIN
 
 	-- Ensure that column_name is in geometry_columns
 	okay = false;
-	FOR myrec IN SELECT type, coord_dimension FROM geometry_columns WHERE f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+	FOR myrec IN SELECT type, coord_dimension FROM @extschema@.geometry_columns WHERE f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
 		okay := true;
 	END LOOP;
 	IF (NOT okay) THEN
@@ -2683,7 +2590,7 @@ BEGIN
         -- We are using postgis_type_name to lookup the new name
         -- (in case Paul changes his mind and flips geometry_columns to return old upper case name)
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) ||
-        ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
+        ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || @extschema@.postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING @extschema@.ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
     END IF;
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
@@ -2702,7 +2609,7 @@ CREATE OR REPLACE FUNCTION UpdateGeometrySRID(varchar,varchar,varchar,integer)
 DECLARE
 	ret  text;
 BEGIN
-	SELECT UpdateGeometrySRID('',$1,$2,$3,$4) into ret;
+	SELECT @extschema@.UpdateGeometrySRID('',$1,$2,$3,$4) into ret;
 	RETURN ret;
 END;
 $$
@@ -2718,7 +2625,7 @@ CREATE OR REPLACE FUNCTION UpdateGeometrySRID(varchar,varchar,integer)
 DECLARE
 	ret  text;
 BEGIN
-	SELECT UpdateGeometrySRID('','',$1,$2,$3) into ret;
+	SELECT @extschema@.UpdateGeometrySRID('','',$1,$2,$3) into ret;
 	RETURN ret;
 END;
 $$
@@ -2743,7 +2650,7 @@ BEGIN
 	 tabl = substr(tabl,length(schem)+2);
 	END IF;
 
-	select SRID into sr from geometry_columns where (f_table_schema = schem or schem = '') and f_table_name = tabl and f_geometry_column = $3;
+	select SRID into sr from @extschema@.geometry_columns where (f_table_schema = schem or schem = '') and f_table_name = tabl and f_geometry_column = $3;
 	IF NOT FOUND THEN
 	   RAISE EXCEPTION 'find_srid() - could not find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase mismatch?';
 	END IF;
@@ -2759,7 +2666,7 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
 CREATE OR REPLACE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
 $$
 BEGIN
-	RETURN proj4text::text FROM spatial_ref_sys WHERE srid= $1;
+	RETURN proj4text::text FROM @extschema@.spatial_ref_sys WHERE srid= $1;
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT _PARALLEL;
@@ -2792,20 +2699,20 @@ CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
   RETURNS geometry AS
-'SELECT postgis_transform_geometry($1, proj4text, $2, 0)
+'SELECT @extschema@.postgis_transform_geometry($1, proj4text, $2, 0)
 FROM spatial_ref_sys WHERE srid=@extschema@.ST_SRID($1);'
   LANGUAGE sql IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj text)
   RETURNS geometry AS
-'SELECT postgis_transform_geometry($1, $2, $3, 0)'
+'SELECT @extschema@.postgis_transform_geometry($1, $2, $3, 0)'
   LANGUAGE sql IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
   RETURNS geometry AS
-'SELECT postgis_transform_geometry($1, $2, proj4text, $3)
+'SELECT @extschema@.postgis_transform_geometry($1, $2, proj4text, $3)
 FROM spatial_ref_sys WHERE srid=$3;'
   LANGUAGE sql IMMUTABLE STRICT _PARALLEL;
 
@@ -3784,7 +3691,7 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -- Changed: 2.3.1 to support PostgreSQL 9.6 parallel safe
 CREATE AGGREGATE ST_Extent(geometry) (
 	sfunc = ST_CombineBBox,
-  stype = box3d,
+	stype = box3d,
 #if POSTGIS_PGSQL_VERSION >= 96
 	combinefunc = ST_CombineBBox,
 	parallel = safe,
@@ -3868,67 +3775,70 @@ CREATE TYPE pgis_abs (
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
 	RETURNS pgis_abs
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8)
 	RETURNS pgis_abs
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.3
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry, float8, int)
 	RETURNS pgis_abs
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(pgis_abs)
 	RETURNS geometry[]
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME'
-	LANGUAGE 'c';
+	LANGUAGE 'c' _PARALLEL;
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Accum (
+-- Changed: 2.4.0 marked parallel safe
+CREATE AGGREGATE ST_Accum (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
-	basetype = geometry,
 	stype = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_geometry_accum_finalfn
 	);
 
@@ -3939,49 +3849,68 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Union (
-	basetype = geometry,
+-- Changed 2.4.0: marked parallel safe
+CREATE AGGREGATE ST_Union (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
 	stype = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_geometry_union_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Collect (
-	BASETYPE = geometry,
+-- Changed 2.4.0: marked parallel safe
+CREATE AGGREGATE ST_Collect (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_collect_finalfn
 	);
 
 -- Availability: 2.2
-CREATE AGGREGATE ST_ClusterIntersecting (
-	BASETYPE = geometry,
+-- Changed 2.4.0: marked parallel safe
+CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_clusterintersecting_finalfn
 	);
 
 -- Availability: 2.2
+-- Changed 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_clusterwithin_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_Polygonize (
-	BASETYPE = geometry,
+-- Changed 2.4.0: marked parallel safe
+CREATE AGGREGATE ST_Polygonize (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_polygonize_finalfn
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_MakeLine (
-	BASETYPE = geometry,
+-- Changed 2.4.0: marked parallel safe
+CREATE AGGREGATE ST_MakeLine (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
@@ -4421,19 +4350,22 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, text, int4, text, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
-	LANGUAGE c IMMUTABLE;
+	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_finalfn'
-	LANGUAGE c IMMUTABLE;
+	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsMVT(text, int4, text, anyelement)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_asmvt_finalfn
 );
 
@@ -4447,7 +4379,7 @@ CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4
 CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 	RETURNS text
 	AS 'MODULE_PATHNAME','postgis_libprotobuf_version'
-	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 
 -----------------------------------------------------------------------
@@ -4459,19 +4391,22 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, text, anyelement)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
-	LANGUAGE c IMMUTABLE;
+	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_finalfn'
-	LANGUAGE c IMMUTABLE;
+	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsGeobuf(text, anyelement)
 (
 	sfunc = pgis_asgeobuf_transfn,
 	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
 	finalfunc = pgis_asgeobuf_finalfn
 );
 
@@ -4695,7 +4630,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''POINT''
+	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1, $2)) = ''POINT''
 	THEN @extschema@.ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
@@ -4705,7 +4640,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(@extschema@.ST_GeomFromText($1)) = ''LINESTRING''
+	SELECT CASE WHEN @extschema@.geometrytype(@extschema@.ST_GeomFromText($1)) = ''LINESTRING''
 	THEN @extschema@.ST_GeomFromText($1)
 	ELSE NULL END
 	'
@@ -5269,7 +5204,7 @@ CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	AS $$
 	select @extschema@.ST_distance( @extschema@.geography($1), @extschema@.geography($2),false)
 	$$
-	LANGUAGE 'sql' IMMUTABLE STRICT
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
 	COST 300;
 
 -- Availability: 1.2.2
@@ -5279,7 +5214,7 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geom1 geometry, geom2 geometry)
   $$ SELECT @extschema@._postgis_deprecate('ST_Distance_Sphere', 'ST_DistanceSphere', '2.2.0');
     SELECT @extschema@.ST_DistanceSphere($1,$2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT
+	LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL
 	COST 300;
 
 ---------------------------------------------------------------
@@ -5376,7 +5311,7 @@ $$
 		WHERE (upper(old_name) = upper($1) OR upper(new_name) = upper($1))
 			AND coord_dimension = $2;
 $$
-LANGUAGE 'sql' IMMUTABLE STRICT COST 200;
+LANGUAGE 'sql' IMMUTABLE STRICT _PARALLEL COST 200;
 
 -- Availability: 2.0.0
 -- Deprecation in 2.2.0
