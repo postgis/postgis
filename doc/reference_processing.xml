@@ -895,7 +895,7 @@ Supported bits are:
     </para>
 
 		<para>Availability: 1.2.2?</para>
-    <para>Changed: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
+    <para>Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
