@@ -7982,7 +7982,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 		<refentry id="RT_ST_AsBinary">
 			<refnamediv>
 				<refname>ST_AsBinary</refname>
-				<refpurpose>Return the Well-Known Binary (WKB) representation of the raster without SRID meta data.</refpurpose>
+				<refpurpose>Return the Well-Known Binary (WKB) representation of the raster.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -8000,6 +8000,7 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 
 				<para>
 					Returns the Binary representation of the raster. If <varname>outasin</varname> is TRUE, out-db bands are treated as in-db.
+					Refer to raster/doc/RFC2-WellKnownBinaryFormat located in the PostGIS source folder for details of the representation.
 				</para>
 
 				<para>
