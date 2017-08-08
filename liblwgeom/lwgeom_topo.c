@@ -4997,7 +4997,7 @@ _lwt_minTolerance( LWGEOM *g )
 }
 
 #define _LWT_MINTOLERANCE( topo, geom ) ( \
-  topo->precision ?  topo->precision : _lwt_minTolerance(geom) )
+  topo->precision >= 0 ? topo->precision : _lwt_minTolerance(geom) )
 
 typedef struct scored_pointer_t {
   void *ptr;
@@ -5030,7 +5030,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
   scored_pointer *sorted;
 
   /* Get tolerance, if 0 was given */
-  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, pt );
+  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, pt );
 
   LWDEBUGG(1, pt, "Adding point");
 
@@ -5077,7 +5077,7 @@ lwt_AddPoint(LWT_TOPOLOGY* topo, LWPOINT* point, double tol)
       LWGEOM *g = lwpoint_as_lwgeom(n->geom);
       double dist = lwgeom_mindistance2d(g, pt);
       /* TODO: move this check in the previous sort scan ... */
-      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      if ( dist && dist >= tol ) continue; /* must be closer than tolerated */
       if ( ! id || dist < mindist )
       {
         id = n->node_id;
@@ -5634,7 +5634,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
   *nedges = -1; /* error condition, by default */
 
   /* Get tolerance, if 0 was given */
-  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
+  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)line );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
   LWDEBUGF(1, "Input line has srid=%d", line->srid);
 
@@ -5680,7 +5680,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       LWGEOM *g = lwline_as_lwgeom(e->geom);
       LWDEBUGF(2, "Computing distance from edge %d having %d points", i, e->geom->points->npoints);
       double dist = lwgeom_mindistance2d(g, noded);
-      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      if ( dist && dist >= tol ) continue; /* must be closer than tolerated */
       nearby[nn++] = g;
     }
     LWDEBUGF(2, "Found %d lines closer than tolerance (%g)", nn, tol);
@@ -5754,7 +5754,7 @@ lwt_AddLine(LWT_TOPOLOGY* topo, LWLINE* line, double tol, int* nedges)
       LWT_ISO_NODE *n = &(nodes[i]);
       LWGEOM *g = lwpoint_as_lwgeom(n->geom);
       double dist = lwgeom_mindistance2d(g, noded);
-      if ( dist >= tol ) continue; /* must be closer than tolerated */
+      if ( dist && dist >= tol ) continue; /* must be closer than tolerated */
       nearby[nn++] = g;
     }
     if ( nn )
@@ -5885,7 +5885,7 @@ lwt_AddPolygon(LWT_TOPOLOGY* topo, LWPOLY* poly, double tol, int* nfaces)
   GEOSGeometry *polyg;
 
   /* Get tolerance, if 0 was given */
-  if ( ! tol ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
+  if ( tol == -1 ) tol = _LWT_MINTOLERANCE( topo, (LWGEOM*)poly );
   LWDEBUGF(1, "Working tolerance:%.15g", tol);
 
   /* Add each ring as an edge */
