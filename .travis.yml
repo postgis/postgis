@@ -13,8 +13,7 @@ before_install:
       postgresql-9.6 postgresql-server-dev-9.6
       libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev  
-      libgdal-dev 
+      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev libgdal-dev 
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
@@ -31,8 +30,8 @@ script:
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - sudo make installcheck
-  - sudo make installcheck RUNTESTFLAGS='--dumprestore'
+  - make installcheck
+  - make installcheck RUNTESTFLAGS='--dumprestore'
 
 notifications:
   email: false
