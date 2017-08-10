@@ -16,13 +16,13 @@ before_install:
   - ./autogen.sh
 
 language: c
-dist: precise
 
 compiler: gcc
 
 script:
   - ./configure
   - make
+  - chmod 755 /home/travis
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
