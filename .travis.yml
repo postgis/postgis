@@ -11,11 +11,9 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y --no-install-recommends
       postgresql-9.6 postgresql-server-dev-9.6
-      build-essential autoconf libtool libcunit1-dev
-      xsltproc docbook-xsl docbook-mathml dblatex
+      libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
-      libsfcgal1 libsfcgal-dev libopenscenegraph100v5
-      libprotobuf-c0-dev
+      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
