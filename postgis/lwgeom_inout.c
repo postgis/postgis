@@ -49,9 +49,9 @@
 #include "geography.h" /* for lwgeom_valid_typmod */
 #include "lwgeom_transform.h"
 
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h"
-#endif
+
 
 void elog_ERROR(const char* string);
 

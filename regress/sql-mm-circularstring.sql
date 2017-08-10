@@ -233,4 +233,3 @@ SELECT 'npoints_is_five', ST_NumPoints(ST_GeomFromEWKT('CIRCULARSTRING(0 0,2 0, 
 
 -- See http://trac.osgeo.org/postgis/ticket/2410
 SELECT 'straight_curve', ST_AsText(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(0 0,1 0,2 0,3 0,4 0)')));
-

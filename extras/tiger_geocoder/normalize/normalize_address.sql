@@ -96,6 +96,9 @@ BEGIN
   -- Assume that the address begins with a digit, and extract it from
   -- the input string.
   addressString := substring(rawInput from E'^([0-9].*?)[ ,/.]');
+  
+  -- try to pull full street number including non-digits like 1R
+  result.address_alphanumeric := substring(rawInput from E'^([0-9a-zA-Z].*?)[ ,/.]');
 
   IF debug_flag THEN
     raise notice '% addressString: %', clock_timestamp(), addressString;
@@ -111,7 +114,12 @@ BEGIN
     zipString := COALESCE(substring(rawInput from ws || '([0-9]{5})-[0-9]{0,4}$'),
                 substring(rawInput from ws || '([0-9]{2,5})$'),
                 substring(rawInput from ws || '([0-9]{6,14})$'));
+                
+    result.zip4 := COALESCE(substring(rawInput from ws || '[0-9]{5}-([0-9]{0,4})$'),substring(rawInput from ws || '[0-9]{5}([0-9]{0,4})$'));
 
+    IF debug_flag THEN
+        raise notice '% zip4: %', clock_timestamp(), result.zip4;
+    END IF;
      -- Check if all we got was a zipcode, of either form
     IF zipString IS NULL THEN
       zipString := substring(rawInput from '^([0-9]{5})$');

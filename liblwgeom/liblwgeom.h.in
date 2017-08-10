@@ -2158,12 +2158,79 @@ extern uint8_t* lwgeom_to_twkb(const LWGEOM *geom, uint8_t variant, int8_t preci
 extern uint8_t* lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant, int8_t precision_xy, int8_t precision_z, int8_t precision_m, size_t *twkb_size);
 
 /*******************************************************************************
- * SQLMM internal functions - TODO: Move into separate header files
+ * SQLMM internal functions
  ******************************************************************************/
 
 int lwgeom_has_arc(const LWGEOM *geom);
 LWGEOM *lwgeom_stroke(const LWGEOM *geom, uint32_t perQuad);
 LWGEOM *lwgeom_unstroke(const LWGEOM *geom);
+
+/**
+ * Semantic of the `tolerance` argument passed to
+ * lwcurve_linearize
+ */
+typedef enum {
+	/**
+	 * Tolerance expresses the number of segments to use
+	 * for each quarter of circle (quadrant). Must be
+	 * an integer.
+	 */
+	LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD = 0,
+	/**
+	 * Tolerance expresses the maximum distance between
+	 * an arbitrary point on the curve and the closest
+	 * point to it on the resulting approximation, in
+	 * cartesian units.
+	 */
+	LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION = 1,
+	/**
+	 * Tolerance expresses the maximum angle between
+	 * the radii generating approximation line vertices,
+	 * given in radiuses. A value of 1 would result
+	 * in an approximation of a semicircle composed by
+	 * 180 segments
+	 */
+	LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE = 2
+} LW_LINEARIZE_TOLERANCE_TYPE;
+
+typedef enum {
+  /**
+   * Symmetric linearization means that the output
+   * vertices would be the same no matter the order
+   * of the points defining the input curve.
+   */
+	LW_LINEARIZE_FLAG_SYMMETRIC = 1 << 0,
+
+  /**
+   * Retain angle instructs the engine to try its best
+   * to retain the requested angle between generating
+   * radii (where angle can be given explicitly with
+   * LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE or implicitly
+   * with LW_LINEARIZE_TOLERANCE_TYPE_SEGS_PER_QUAD or
+   * LW_LINEARIZE_TOLERANCE_TYPE_MAX_DEVIATION).
+   *
+   * It only makes sense with LW_LINEARIZE_FLAG_SYMMETRIC
+   * which would otherwise reduce the angle as needed to
+   * keep it constant among all radiis so that all
+   * segments are of the same length.
+   *
+   * When this flag is set, the first and last generating
+   * angles (and thus the first and last segments) may
+   * instead be smaller (shorter) than the others.
+   *
+   */
+	LW_LINEARIZE_FLAG_RETAIN_ANGLE = 1 << 1
+} LW_LINEARIZE_FLAGS;
+
+/**
+ * @param geom input geometry
+ * @param tol tolerance, semantic driven by tolerance_type
+ * @param tolerance_type see LW_LINEARIZE_TOLERANCE_TYPE
+ * @param flags bitwise OR of operational flags, see LW_LINEARIZE_FLAGS
+ *
+ * @return a newly allocated LWGEOM
+ */
+extern LWGEOM* lwcurve_linearize(const LWGEOM *geom, double tol, LW_LINEARIZE_TOLERANCE_TYPE type, int flags);
 
 /*******************************************************************************
  * GEOS proxy functions on LWGEOM

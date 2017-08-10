@@ -61,6 +61,15 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 {
 	int type = geom->type;
 
+	/* Empty string for empties */
+	if( lwgeom_is_empty(geom) )
+	{
+		char *ret = NULL;
+		ret = lwalloc(1);
+		ret[0] = '\0';
+		return ret;
+	}
+
 	switch (type)
 	{
 	case POINTTYPE:
@@ -156,7 +165,7 @@ asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	size_t defidlen = strlen(defid);
 
 	size = pointArray_X3Dsize(line->points, precision)*2;
-	
+
 	if ( X3D_USE_GEOCOORDS(opts) ) {
 			size += (
 	            sizeof("<LineSet vertexCount=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' /></LineSet>")  + defidlen
@@ -394,7 +403,7 @@ asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 		size = sizeof("<PointSet><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' /></PointSet>");
 	else
 		size = sizeof("<PointSet><Coordinate point='' /></PointSet>") + defidlen;
-	
+
 
 	/* if ( srs ) size += strlen(srs) + sizeof(" srsName=.."); */
 
@@ -525,7 +534,7 @@ asx3d3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts,
 
 	if ( X3D_USE_GEOCOORDS(opts) ) size = sizeof("<IndexedFaceSet convex='false' coordIndex=''><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='' />") + defidlen;
 	else size = sizeof("<IndexedFaceSet convex='false' coordIndex=''><Coordinate point='' />") + defidlen;
-	
+
 
 	for (i=0; i<psur->ngeoms; i++)
 	{
@@ -658,7 +667,7 @@ asx3d3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
 
 	if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
 	else ptr += sprintf(ptr, "'><Coordinate point='");
-	
+
 	for (i=0; i<tin->ngeoms; i++)
 	{
 		ptr += asx3d3_triangle_buf(tin->geoms[i], 0, ptr, precision,
@@ -781,12 +790,12 @@ asx3d3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
 		else if ( subgeom->type == TINTYPE )
 		{
 			ptr += asx3d3_tin_buf((LWTIN*)subgeom, srs, ptr, precision, opts,  defid);
-			
+
 		}
 		else if ( subgeom->type == POLYHEDRALSURFACETYPE )
 		{
 			ptr += asx3d3_psurface_buf((LWPSURFACE*)subgeom, srs, ptr, precision, opts,  defid);
-			
+
 		}
 		else if ( lwgeom_is_collection(subgeom) )
 		{
@@ -862,7 +871,7 @@ pointArray_toX3D3(POINTARRAY *pa, char *output, int precision, int opts, int is_
 
 				if ( i )
 					ptr += sprintf(ptr, " ");
-					
+
 				if ( ( opts & LW_X3D_FLIP_XY) )
 					ptr += sprintf(ptr, "%s %s", y, x);
 				else

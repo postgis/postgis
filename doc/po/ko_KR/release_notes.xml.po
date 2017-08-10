@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:03+0000\n"
+"POT-Creation-Date: 2017-07-17 15:51+0000\n"
 "PO-Revision-Date: 2016-02-16 08:34+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -1199,7 +1199,7 @@ msgstr ""
 #: release_notes.xml:224
 #, no-c-format
 msgid ""
-"#3048, shp2pgsql - illegal number format when specific system locale set"
+"#3084, shp2pgsql - illegal number format when specific system locale set"
 msgstr ""
 
 #. Tag: para
@@ -1284,7 +1284,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:253
 #, no-c-format
-msgid "#3050, Speep up geometry type reading (J.Santana @ CartoDB)"
+msgid "#3050, Speed up geometry type reading (J.Santana @ CartoDB)"
 msgstr ""
 
 #. Tag: para

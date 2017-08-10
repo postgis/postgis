@@ -9,7 +9,7 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
- * Maintainer: Paul Ramsey <pramsey@opengeo.org>
+ * Maintainer: Paul Ramsey <pramsey@cleverelephant.ca>
  *
  **********************************************************************/
 

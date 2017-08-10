@@ -53,6 +53,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	GBOX box1;
 	GBOX box2;
+	bool empty1, empty2;
 
 	POSTGIS_DEBUG(2, "lwgeom_lt called");
 
@@ -60,13 +61,18 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
 	POSTGIS_DEBUG(3, "lwgeom_lt getbox2d_p passed");
+
+	if  ( empty1 != empty2 )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -102,16 +108,22 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	GBOX box1;
 	GBOX box2;
+	bool empty1, empty2;
 
 	POSTGIS_DEBUG(2, "lwgeom_le called");
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+
+	if  ( empty1 != empty2 )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -168,9 +180,10 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 
 	gbox_init(&box1);
 	gbox_init(&box2);
-	
+
 	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
 	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
+
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
@@ -198,16 +211,22 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	GBOX box1;
 	GBOX box2;
+	bool empty1, empty2;
 
 	POSTGIS_DEBUG(2, "lwgeom_ge called");
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+
+	if  ( empty1 != empty2 )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -255,16 +274,22 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	GBOX box1;
 	GBOX box2;
+	bool empty1, empty2;
 
 	POSTGIS_DEBUG(2, "lwgeom_gt called");
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+
+	if  ( empty1 != empty2 )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{
@@ -308,16 +333,33 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom2 = PG_GETARG_GSERIALIZED_P(1);
 	GBOX box1;
 	GBOX box2;
+	bool empty1, empty2;
 
 	POSTGIS_DEBUG(2, "lwgeom_cmp called");
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	gserialized_get_gbox_p(geom1, &box1);
-	gserialized_get_gbox_p(geom2, &box2);
+	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
+	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+
+	if  ( empty1 || empty2 )
+	{
+		if  ( empty1 && empty2 )
+		{
+			PG_RETURN_INT32(1);
+		}
+		else if ( empty1 )
+		{
+			PG_RETURN_INT32(-1);
+		}
+		else
+		{
+			PG_RETURN_INT32(1);
+		}
+	}
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) )
 	{

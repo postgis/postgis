@@ -520,7 +520,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	int num;
 	int *maskDims;
 	int x,y;
-	
+
 
 	int i = 0;
 	int noerr = 0;
@@ -662,7 +662,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			rtpg_nmapalgebra_arg_destroy(arg);
 			PG_RETURN_NULL();
 		}
-	
+
 		maskDims = ARR_DIMS(maskArray);
 
 		if (maskDims[0] % 2 == 0 || maskDims[1] % 2 == 0) {
@@ -670,7 +670,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			rtpg_nmapalgebra_arg_destroy(arg);
 			PG_RETURN_NULL();
 		}
-	
+
 		deconstruct_array(
 			maskArray,
 			etype,
@@ -742,7 +742,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	noerr = 1;
-	
+
 	/* all rasters are empty, return empty raster */
 	if (allempty == arg->numraster) {
 		elog(NOTICE, "All input rasters are empty. Returning empty raster");
@@ -836,11 +836,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
 
 		/* prep function call data */
-#if POSTGIS_PGSQL_VERSION > 90
 		InitFunctionCallInfoData(arg->callback.ufc_info, &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, InvalidOid, NULL, NULL);
-#else
-		InitFunctionCallInfoData(arg->callback.ufc_info, &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, NULL, NULL);
-#endif
+
 		memset(arg->callback.ufc_info.argnull, FALSE, sizeof(bool) * arg->callback.ufl_info.fn_nargs);
 
 		/* userargs (7) */
@@ -2858,7 +2855,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 		) {
 			rt_raster_destroy(_raster);
 		}
-			
+
 		for (j = 0; j < iwr->bandarg[i].numraster; j++) {
 			if (iwr->bandarg[i].raster[j] == NULL)
 				continue;
@@ -3398,7 +3395,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 				rt_raster_destroy(_raster);
 				rt_raster_destroy(rtn);
 				PG_FREE_IF_COPY(pgraster, 0);
-				elog(ERROR, "RASTER_clip: Could not get band from working raster");
+				elog(NOTICE, "RASTER_clip: Could not get band from working raster");
 				PG_RETURN_NULL();
 			}
 
@@ -4275,7 +4272,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 						/* get the band stats */
 						if (arg->bandstats == NULL) {
 							POSTGIS_RT_DEBUG(4, "Getting band stats");
-							
+
 							arg->bandstats = rt_band_get_summary_stats(arg->band, 1, 1, 0, NULL, NULL, NULL);
 							if (arg->bandstats == NULL) {
 								pfree(_element);
@@ -5330,11 +5327,8 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     }
 
     /* prep function call data */
-#if POSTGIS_PGSQL_VERSION <= 90
-    InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL);
-#else
     InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
-#endif
+
     memset(cbdata.argnull, FALSE, sizeof(bool) * cbinfo.fn_nargs);
 
     /* check that the function isn't strict if the args are null. */

@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -216,6 +217,14 @@ static float box2df_size(const BOX2DF *a)
 	return result;
 }
 
+static float box2df_edge(const BOX2DF *a)
+{
+	if ( a == NULL )
+		return (float)0.0;
+
+	return ((a->xmax) - (a->xmin)) + ((a->ymax) - (a->ymin));
+}
+
 static float box2df_union_size(const BOX2DF *a, const BOX2DF *b)
 {
 	float result;
@@ -242,6 +251,32 @@ static float box2df_union_size(const BOX2DF *a, const BOX2DF *b)
 	return result;
 }
 
+
+static float box2df_union_edge(const BOX2DF *a, const BOX2DF *b)
+{
+	float result;
+
+	POSTGIS_DEBUG(5,"entered function");
+
+	if ( a == NULL && b == NULL )
+	{
+		elog(ERROR, "box2df_union_edge received two null arguments");
+		return 0.0;
+	}
+	
+	if ( a == NULL )
+		return box2df_edge(b);
+
+	if ( b == NULL )
+		return box2df_edge(a);
+
+	result = (Max(a->xmax,b->xmax) - Min(a->xmin,b->xmin)) +
+ 	         (Max(a->ymax,b->ymax) - Min(a->ymin,b->ymin));
+
+	POSTGIS_DEBUGF(5, "union edge of %s and %s is %.8g", box2df_to_string(a), box2df_to_string(b), result);
+
+	return result;
+}
 
 /* Convert a double-based GBOX into a float-based BOX2DF,
    ensuring the float box is larger than the double box */
@@ -1243,9 +1278,36 @@ Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
 }
 
 /*
+** Function to pack floats of different realms
+** This function serves to pack bit flags inside float type
+** Resulted value represent can be from four different "realms"
+** Every value from realm 3 is greater than any value from realms 2, 1 and 0.
+** Every value from realm 2 is less than every value from realm 3 and greater
+** than any value from realm 1 and 0, and so on. Values from the same realm
+** loose two bits of precision. This technique is possible due to floating
+** point numbers specification according to IEEE 754: exponent bits are highest
+** (excluding sign bits, but here penalty is always positive). If float a is
+** greater than float b, integer A with same bit representation as a is greater
+** than integer B with same bits as b.
+*/
+static float pack_float(const float value, const int realm)
+{
+  union {
+    float f;
+    struct { unsigned value:31, sign:1; } vbits;
+    struct { unsigned value:29, realm:2, sign:1; } rbits;
+  } a;
+
+  a.f = value;
+  a.rbits.value = a.vbits.value >> 2;
+  a.rbits.realm = realm;
+
+  return a.f;
+}
+
+/*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
 ** Calculate the change in volume of the old entry once the new entry is added.
-** TODO: Re-evaluate this in light of R*Tree penalty approaches.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_penalty_2d);
 Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
@@ -1254,7 +1316,7 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
 	BOX2DF *gbox_index_orig, *gbox_index_new;
-	float size_union, size_orig;
+	float size_union, size_orig, edge_union, edge_orig;
 
 	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
 
@@ -1273,6 +1335,37 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS)
 	size_union = box2df_union_size(gbox_index_orig, gbox_index_new);
 	size_orig = box2df_size(gbox_index_orig);
 	*result = size_union - size_orig;
+	
+	/* REALM 0: No extension is required, volume is zero, return edge */
+ 	/* REALM 1: No extension is required, return nonzero area */
+ 	/* REALM 2: Area extension is zero, return nonzero edge extension */
+ 	/* REALM 3: Area extension is nonzero, return it */
+ 
+ 	if( *result == 0 )
+ 	{
+		if (size_orig > 0) 
+		{
+			*result = pack_float(size_orig, 1); /* REALM 1 */ 
+		}
+		else 
+		{
+			edge_union = box2df_union_edge(gbox_index_orig, gbox_index_new);
+			edge_orig = box2df_edge(gbox_index_orig);
+ 			*result = edge_union - edge_orig;
+ 			if( *result == 0 )
+	 		{
+	 			*result = pack_float(edge_orig, 0); /* REALM 0 */
+ 			}
+ 			else
+ 			{
+ 				*result = pack_float(*result, 2); /* REALM 2 */
+ 			}
+		}
+ 	}
+ 	else
+ 	{
+ 		*result = pack_float(*result, 3); /* REALM 3 */
+ 	}
 
 	POSTGIS_DEBUGF(4, "[GIST] 'penalty', union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 

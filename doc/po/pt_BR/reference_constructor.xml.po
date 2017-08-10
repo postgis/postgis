@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-07-17 15:51+0000\n"
 "PO-Revision-Date: 2016-11-28 18:35+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -626,10 +626,10 @@ msgstr "ST_GeomCollFromText"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:282
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Makes a collection Geometry from collection WKT with the given SRID. If SRID "
-"is not give, it defaults to 0."
+"is not given, it defaults to 0."
 msgstr ""
 "Faz uma coleção geométrica de uma coleção WKT com a SRID dada. Se ela não "
 "for dada, leva a 0. "
@@ -654,10 +654,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:305
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Makes a collection Geometry from the Well-Known-Text (WKT) representation "
-"with the given SRID. If SRID is not give, it defaults to 0."
+"with the given SRID. If SRID is not given, it defaults to 0."
 msgstr ""
 "Faz uma coleção geométrica de uma representação bem conhecida de texto (WKT) "
 "com a SRID dada. Se ela não for dada, leva a 0. "
@@ -2206,9 +2206,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:899
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Makes a Geometry from WKT with the given SRID. If SRID is not give, it "
+"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0. If WKT passed in is not a LINESTRING, then null is returned."
 msgstr ""
 "Faz uma geometria de uma WKT  com o SRID dado. Se o SRID não for dado, isso "
@@ -3514,10 +3514,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1471
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Makes a Geometry from Well-Known-Text (WKT) with the given SRID. If SRID is "
-"not give, it defaults to 0."
+"not given, it defaults to 0."
 msgstr ""
 "Faz uma geometria a partir de um texto bem conhecido (WKT) com o SRID dado. "
 "Se o SRID não for dado, isso leva a 0."
@@ -3560,10 +3560,10 @@ msgstr "ST_MPointFromText"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:1509 reference_constructor.xml:1879
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is not "
-"give, it defaults to 0.</refpurpose>"
+"given, it defaults to 0.</refpurpose>"
 msgstr ""
 "<refpurpose>Faz uma geometria de WKT com o SRID dado. Se o SRID não for "
 "dado, isso leva a 0.</refpurpose>"
@@ -3588,10 +3588,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1532
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<para>Makes a Geometry from WKT with the given SRID. If SRID is not give, it "
-"defaults to 0.</para>"
+"<para>Makes a Geometry from WKT with the given SRID. If SRID is not given, "
+"it defaults to 0.</para>"
 msgstr ""
 "<para>Faz uma geometria de WKT com o SRID dado. Se o SRID não for dado, isso "
 "leva a 0.</para>"
@@ -3634,10 +3634,10 @@ msgstr "ST_MPolyFromText"
 
 #. Tag: refpurpose
 #: reference_constructor.xml:1570
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is not "
-"give, it defaults to 0."
+"given, it defaults to 0."
 msgstr ""
 "Faz um MultiPolígono de WKT com o SRID dado. Se o SRID não for dado, isso "
 "leva a 0."
@@ -3662,9 +3662,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1593
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Makes a MultiPolygon from WKT with the given SRID. If SRID is not give, it "
+"Makes a MultiPolygon from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0."
 msgstr ""
 "Faz um MultiPolígono de WKT com o SRID dado. Se o SRID não for dado, isso "
@@ -3985,10 +3985,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1741
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text "
-"representation. If SRID is not give, it defaults to unknown (currently 0). "
+"representation. If SRID is not given, it defaults to unknown (currently 0). "
 "If geometry is not a WKT point representation, returns null. If completely "
 "invalid WKT, then throws an error."
 msgstr ""
@@ -4286,9 +4286,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1900
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Makes a Geometry from WKT with the given SRID. If SRID is not give, it "
+"Makes a Geometry from WKT with the given SRID. If SRID is not given, it "
 "defaults to 0. Returns null if WKT is not a polygon."
 msgstr ""
 "Faz uma geometria de um WKT com o SRID dado. Se o SRID não for dado, isso "

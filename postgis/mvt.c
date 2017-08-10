@@ -633,6 +633,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	POSTGIS_DEBUG(2, "mvt_geom called");
+	LWGEOM *lwgeom_out = NULL;
 	double width = gbox->xmax - gbox->xmin;
 	double height = gbox->ymax - gbox->ymin;
 	double resx = width / extent;
@@ -663,16 +664,19 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 			double y1 = bgbox->ymax;
 #if POSTGIS_GEOS_VERSION < 35
 			LWPOLY *lwenv = lwpoly_construct_envelope(0, x0, y0, x1, y1);
-			lwgeom = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
+			lwgeom_out = lwgeom_intersection(lwgeom, lwpoly_as_lwgeom(lwenv));
 			lwpoly_free(lwenv);
 #else
-			lwgeom = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
+			lwgeom_out = lwgeom_clip_by_rect(lwgeom, x0, y0, x1, y1);
 #endif
 			POSTGIS_DEBUG(3, "mvt_geom: no geometry after clip");
-			if (lwgeom == NULL || lwgeom_is_empty(lwgeom))
+			if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 				return NULL;
 		}
 	}
+
+	if (lwgeom_out == NULL)
+		lwgeom_out = lwgeom_clone_deep(lwgeom);
 
 	AFFINE affine;
 	memset (&affine, 0, sizeof(affine));
@@ -682,7 +686,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	affine.xoff = -gbox->xmin * fx;
 	affine.yoff = -gbox->ymax * fy;
 
-	lwgeom_affine(lwgeom, &affine);
+	lwgeom_affine(lwgeom_out, &affine);
 
 	gridspec grid;
 	memset(&grid, 0, sizeof(gridspec));
@@ -691,7 +695,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	grid.xsize = 1;
 	grid.ysize = 1;
 
-	LWGEOM *lwgeom_out = lwgeom_grid(lwgeom, &grid);
+	lwgeom_out = lwgeom_grid(lwgeom_out, &grid);
 
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;

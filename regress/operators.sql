@@ -140,4 +140,24 @@ WITH v(i,g) AS ( VALUES
 SELECT 'ndovm2', array_agg(i) FROM v WHERE g &&& 'POINTZ(0 0 1)'::geometry
 ORDER BY 1;
 
-
+-- GROUP BY on empty
+SELECT '#3777', ST_AsText(geom), count(*) FROM (
+SELECT 'POINT(0 0)'::geometry geom UNION ALL
+SELECT 'POINT(0 0)'::geometry UNION ALL
+SELECT 'POINT(0 0)'::geometry UNION ALL
+SELECT 'POINT(0 1)'::geometry UNION ALL
+SELECT 'LINESTRING(0 0,0 1)'::geometry UNION ALL
+SELECT 'GEOMETRYCOLLECTION EMPTY'::geometry UNION ALL
+SELECT 'POINT EMPTY'::geometry
+) foo
+GROUP BY geom ORDER BY 2;
+SELECT '#3777.1', ST_AsText(geom), count(*) FROM (
+SELECT 'POINT(0 0)'::geometry geom UNION ALL
+SELECT 'POINT(0 0)'::geometry UNION ALL
+SELECT 'POINT EMPTY'::geometry UNION ALL
+SELECT 'POINT(0 0)'::geometry UNION ALL
+SELECT 'POINT(0 1)'::geometry UNION ALL
+SELECT 'LINESTRING(0 0,0 1)'::geometry UNION ALL
+SELECT 'GEOMETRYCOLLECTION EMPTY'::geometry geom
+) foo
+GROUP BY geom ORDER BY 2;

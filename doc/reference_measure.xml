@@ -830,12 +830,21 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 
 	<refsynopsisdiv>
 	  <funcsynopsis>
-		<funcprototype>
-		  <funcdef>geometry <function>ST_Centroid</function></funcdef>
+          <funcprototype>
+  		  <funcdef>geometry <function>ST_Centroid</function></funcdef>
 
-		  <paramdef><type>geometry </type>
-		  <parameter>g1</parameter></paramdef>
-		</funcprototype>
+  		  <paramdef><type>geometry </type>
+  		  <parameter>g1</parameter></paramdef>
+  		</funcprototype>
+            <funcprototype>
+                <funcdef>geography <function>ST_Centroid</function></funcdef>
+
+                <paramdef><type>geography </type>
+                <parameter>g1</parameter></paramdef>
+                <paramdef choice="opt"><type>boolean </type>
+                <parameter>use_spheroid=true</parameter></paramdef>
+	</funcprototype>
+
 	  </funcsynopsis>
 	</refsynopsisdiv>
 
@@ -858,6 +867,8 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 	  then same than for  <varname>LINESTRING</varname>
 	  </para>
 	  <para>New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and <varname>COMPOUNDCURVE</varname> (using CurveToLine)</para>
+
+      <para>Availability: 2.4.0 support for geography was introduced.</para>
 
 	  <para>The centroid is equal to the centroid of the set of component
 	  Geometries of highest dimension (since the lower-dimension geometries
@@ -1118,12 +1129,57 @@ SELECT ST_AsText(
     <refsection>
       <title>Examples</title>
       <para>
-          Assigning a cluster number to each parcel point:
+          Assigning a cluster number to each polygon within 50 meters of each other.  Require at least 2 polygons per cluster
       </para>
-		    <programlisting>
-SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) over () AS cid
-FROM parcels;
-</programlisting>
+	<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+				  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_clusterdbscan01.png" />
+							  </imageobject>
+							  <caption><para>within 50 meters at least 2 per cluster. singletons have NULL for cid</para></caption>
+							</mediaobject>
+						  </informalfigure>
+  <programlisting>SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS cid
+FROM boston_polys
+WHERE name > '' AND building > ''
+	AND ST_DWithin(geom,
+        ST_Transform(
+            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),
+           500);</programlisting>
+						  </para></entry>
+
+						<entry><para><screen><![CDATA[                name                 | bucket
+-------------------------------------+--------
+ Manulife Tower                      |      0
+ Park Lane Seaport I                 |      0
+ Park Lane Seaport II                |      0
+ Renaissance Boston Waterfront Hotel |      0
+ Seaport Boston Hotel                |      0
+ Seaport Hotel & World Trade Center  |      0
+ Waterside Place                     |      0
+ World Trade Center East             |      0
+ 100 Northern Avenue                 |      1
+ 100 Pier 4                          |      1
+ The Institute of Contemporary Art   |      1
+ 101 Seaport                         |      2
+ District Hall                       |      2
+ One Marina Park Drive               |      2
+ Twenty Two Liberty                  |      2
+ Vertex                              |      2
+ Vertex                              |      2
+ Watermark Seaport                   |      2
+ Blue Hills Bank Pavilion            |   NULL
+ World Trade Center West             |   NULL
+(20 rows)]]></screen></para>
+				</entry>
+					  </row>
+				</tbody>
+				</tgroup>
+			</informaltable>
 
 
         <para>
@@ -1139,7 +1195,7 @@ GROUP BY cid;
 
     <refsection>
 		  <title>See Also</title>
-          <para>
+          <para><xref linkend="ST_DWithin"/>,
               <xref linkend="ST_ClusterKMeans"/>,
               <xref linkend="ST_ClusterIntersecting"/>,
               <xref linkend="ST_ClusterWithin"/>
@@ -2598,6 +2654,82 @@ The current implementation supports only vertices as the discrete locations. Thi
 			</programlisting>
 
 	  </refsection>
+          <refsection>
+                <title>See Also</title>
+
+                <para><xref linkend="ST_FrechetDistance" /></para>
+          </refsection>
+	</refentry>
+
+	<refentry id="ST_FrechetDistance">
+	  <refnamediv>
+		<refname>ST_FrechetDistance</refname>
+
+		<refpurpose>Returns the Fréchet distance between two geometries. This is a measure of similarity between curves that takes into account the location
+		and ordering of the points along the curves.  Units are in the units of the spatial reference system of the geometries.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_FrechetDistance</function></funcdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g1</parameter></paramdef>
+
+			<paramdef><type>geometry </type>
+			<parameter>g2</parameter></paramdef>
+
+			<paramdef><type>float</type>
+			<parameter>densifyFrac = -1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Implements algorithm for computing the Fréchet distance restricted to discrete points for both geometries, based on <ulink url="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet Distance</ulink>.
+		The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves. Therefore it is often better than the Hausdorff distance. </para>
+		<para>
+When the optional densifyFrac is specified, this function performs a segment densification before computing the discrete Fréchet distance. The densifyFrac parameter sets the fraction by which to densify each segment. Each segment will be split into a number of equal-length subsegments, whose fraction of the total length is closest to the given fraction.
+		</para>
+
+		<note>
+			<para>
+The current implementation supports only vertices as the discrete locations. This could be extended to allow an arbitrary density of points to be used.
+			</para>
+		</note>
+		<note>
+			<para>
+The smaller densifyFrac we specify, the more acurate Fréchet distance we get. But, the computation time and the memory usage increase with the square of the number of subsegments.
+			</para>
+		</note>
+		<para>Availability: 2.4.0 - requires GEOS &gt;= 3.7.0</para>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+			<programlisting>postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry);
+ st_frechetdistance
+--------------------
+   70.7106781186548
+(1 row)
+			</programlisting>
+			<programlisting>SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING (0 0, 50 50, 100 0)'::geometry, 0.5);
+ st_frechetdistance
+--------------------
+                 50
+(1 row)
+			</programlisting>
+
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_HausdorffDistance" /></para>
+	  </refsection>
 	</refentry>
 
 <refentry id="ST_MaxDistance">
@@ -2985,6 +3117,10 @@ SELECT s.gid, s.school_name
 		<important>
 		  <para>This function will return false if either geometry is invalid except in the case where they are binary equal.</para>
 		</important>
+
+        <important>
+            <para>Do not call with a GEOMETRYCOLLECTION as an argument.</para>
+ 		</important>
 
 		<para>&sfs_compliant; s2.1.1.2</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.24</para>

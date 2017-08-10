@@ -2,6 +2,7 @@
 #
 # Translators:
 # Dauro Lima Sobrinho <daurolima@gmail.com>, 2014
+# georgersilva <georger.silva@gmail.com>, 2017
 # Poliana Palhares <p.palhares@plamu.com.br>, 2016
 # www.iis-rio.org <felipe.b4rros@gmail.com>, 2014
 msgid ""
@@ -9,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:03+0000\n"
-"PO-Revision-Date: 2016-12-19 16:36+0000\n"
-"Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
+"PO-Revision-Date: 2017-01-31 20:27+0000\n"
+"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -96,7 +97,7 @@ msgid ""
 msgstr ""
 "A versão mais antiga dessa ferramenta era um phyton script. O executável "
 "substituiu o phyton script. Se você continuar achando necessário os exemplos "
-"phyton script, um pode ser encontrado em: ulink url=\"http://trac.osgeo.org/"
+"phyton script, um pode ser encontrado em: <ulink url=\"http://trac.osgeo.org/"
 "gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster Driver Usage</ulink>. "
 "Por favor, note que o raster2pgsql python script  pode não funcionar com "
 "versões futuras do raster PostGIS e não ser mais suportada."

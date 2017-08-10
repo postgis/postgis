@@ -28,8 +28,9 @@ dist: trusty
 script:
   - ./configure
   - make
-  - sudo make check
-  - sudo make check RUNTESTFLAGS='--dumprestore'
+  - chmod 755 /home/travis
+  - make check
+  - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
   - sudo make installcheck
   - sudo make installcheck RUNTESTFLAGS='--dumprestore'

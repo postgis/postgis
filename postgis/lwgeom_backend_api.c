@@ -146,9 +146,7 @@ void lwgeom_init_backend()
 				(char *)lwgeom_backends[0].name, /* bootValue */
 				PGC_USERSET, /* GucContext context */
 				0, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
 				NULL, /* GucStringCheckHook check_hook */
-#endif
 				lwgeom_backend_switch, /* GucStringAssignHook assign_hook */
 				NULL  /* GucShowHook show_hook */
 				);

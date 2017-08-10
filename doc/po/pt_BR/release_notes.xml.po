@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:03+0000\n"
+"POT-Creation-Date: 2017-07-17 15:51+0000\n"
 "PO-Revision-Date: 2017-01-02 19:52+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1381,9 +1381,9 @@ msgstr "#3018, GROUP BY geografia algumas vezes retorna linhas duplicadas "
 
 #. Tag: para
 #: release_notes.xml:224
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"#3048, shp2pgsql - illegal number format when specific system locale set"
+"#3084, shp2pgsql - illegal number format when specific system locale set"
 msgstr ""
 "#3048, shp2pgsql - formato de número ilegal quando sistema de localização é "
 "especificado"
@@ -1473,7 +1473,7 @@ msgstr "#3048, Acelera simplificação de geometria (J.Santana @ CartoDB)"
 #. Tag: para
 #: release_notes.xml:253
 #, no-c-format
-msgid "#3050, Speep up geometry type reading (J.Santana @ CartoDB)"
+msgid "#3050, Speed up geometry type reading (J.Santana @ CartoDB)"
 msgstr "#3050, Acelera o leitor de tipo de geometria (J.Santana @ CartoDB)"
 
 #. Tag: para

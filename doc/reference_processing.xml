@@ -845,16 +845,58 @@ POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))
 			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
 			<paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>tolerance_type</parameter></paramdef>
+			<paramdef><type>integer</type> <parameter>flags</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		<para>Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+		<para>Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+
 		<para>Converts a given geometry to a linear geometry.
-		Each curved geometry or segment is converted into a linear approximation using the default value of 32 segments per quarter circle</para>
+		Each curved geometry or segment is converted into a linear
+approximation using the given `tolerance` and options (32 segments per
+quadrant and no options by default).</para>
+
+    <para>
+The 'tolerance_type' argument determines interpretation of the
+`tolerance` argument. It can take the following values:
+      <itemizedlist>
+        <listitem>
+          <para>0 (default): Tolerance is max segments per quadrant.</para>
+        </listitem>
+        <listitem>
+          <para>1: Tolerance is max-deviation of line from curve, in source units.</para>
+        </listitem>
+        <listitem>
+          <para>2: Tolerance is max-angle, in radians, between generating radii.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+The 'flags' argument is a bitfield. 0 by default.
+Supported bits are:
+      <itemizedlist>
+        <listitem>
+          <para>1: Symmetric (orientation idependent) output.</para>
+        </listitem>
+        <listitem>
+          <para>2: Retain angle, avoids reducing angles (segment lengths) when producing symmetric output. Has no effect when Symmetric flag is off.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
 		<para>Availability: 1.2.2?</para>
+    <para>Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and for symmetric output.</para>
+
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.7</para>
 		<para>&Z_support;</para>
@@ -920,6 +962,18 @@ st_astext
  LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
  220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
  220197.12195122 150425.12195122,220227 150406)
+
+-- Ensure approximated line is no further than 20 units away from
+-- original curve, and make the result direction-neutral
+SELECT ST_AsText(ST_CurveToLine(
+ 'CIRCULARSTRING(0 0,100 -100,200 0)'::geometry,
+	20, -- Tolerance
+	1, -- Above is max distance between curve and line
+	1  -- Symmetric flag
+));
+st_astext
+-------------------------------------------------------------------------------------------
+ LINESTRING(0 0,50 -86.6025403784438,150 -86.6025403784439,200 -1.1331077795296e-13,200 0)
 
 
 		</programlisting>
@@ -1858,8 +1912,8 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 	  <refsection>
 		<title>Description</title>
 
-		<para>Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
-
+		<para>Converts plain LINESTRING/POLYGON to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+		<note><para>If the input LINESTRING/POLYGON is not curved enough to clearly represent a curve, the function will return the same input geometry.</para></note>
 		<para>Availability: 1.2.2?</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
@@ -1867,9 +1921,9 @@ from  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') A
 
 
 	  <refsection>
-		<title>Examples: 2D</title>
+		<title>Examples</title>
 
-		<programlisting>
+		<programlisting> -- 2D Example
 SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
 	FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
 
@@ -1883,15 +1937,20 @@ CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4
                                                                     |  -0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
                                                                     |  -1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
                                                                     |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))
+
 --3D example
-SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4, 7 8 4, 9 10 4)')));
+SELECT ST_AsText(ST_LineToCurve(geom)) As curved, ST_AsText(geom) AS not_curved
+FROM (SELECT ST_Translate(ST_Force3D(ST_Boundary(ST_Buffer(ST_Point(1,3), 2,2))),0,0,3) AS geom) AS foo;
 
-			 st_asewkt
-------------------------------------
- CIRCULARSTRING(1 2 3,5 6 4,9 10 4)
-
-		</programlisting>
-	  </refsection>
+                        curved                        |               not_curved
+------------------------------------------------------+---------------------------------------------------------------------
+ CIRCULARSTRING Z (3 3 3,-1 2.99999999999999 3,3 3 3) | LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,
+                                                      |	-0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,
+                                                      | -0.414213562373101 4.41421356237309 3,
+                                                      |	0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)
+(1 row)
+</programlisting>
+	</refsection>
 
 
 

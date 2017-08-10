@@ -19,6 +19,7 @@
  **********************************************************************
  *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright 2017 Darafei Praliaskouski <me@komzpa.net>
  *
  **********************************************************************/
 
@@ -229,6 +230,22 @@ static float gidx_volume(GIDX *a)
 	return result;
 }
 
+/* Calculate the edge of the GIDX */
+static float gidx_edge(GIDX *a)
+{
+	float result;
+	int i;
+	if ( a == NULL || gidx_is_unknown(a) )
+	{
+		return 0.0;
+	}
+	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
+	for ( i = 1; i < GIDX_NDIMS(a); i++ )
+		result += (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
+	POSTGIS_DEBUGF(5, "calculated edge of %s as %.8g", gidx_to_string(a), result);
+	return result;
+}
+
 /* Ensure the first argument has the higher dimensionality. */
 static void gidx_dimensionality_check(GIDX **a, GIDX **b)
 {		
@@ -288,6 +305,58 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 	}
 
 	POSTGIS_DEBUGF(5, "volume( %s union %s ) = %.12g", gidx_to_string(a), gidx_to_string(b), result);
+
+	return result;
+}
+
+/* Calculate the edge of the union of the boxes. Avoids creating an intermediate box. */
+static float gidx_union_edge(GIDX *a, GIDX *b)
+{
+	float result;
+	int i;
+	int ndims_a, ndims_b;
+
+	POSTGIS_DEBUG(5,"entered function");
+
+	if ( a == NULL && b == NULL )
+	{
+		elog(ERROR, "gidx_union_edge received two null arguments");
+		return 0.0;
+	}
+
+	if ( a == NULL || gidx_is_unknown(a) )
+		return gidx_volume(b);
+
+	if ( b == NULL || gidx_is_unknown(b) )
+		return gidx_volume(a);
+
+	if ( gidx_is_unknown(a) && gidx_is_unknown(b) )
+	{
+		return 0.0;
+	}
+
+	/* Ensure 'a' has the most dimensions. */
+	gidx_dimensionality_check(&a, &b);
+
+	ndims_a = GIDX_NDIMS(a);
+	ndims_b = GIDX_NDIMS(b);
+
+	/* Initialize with maximal length of first dimension. */
+	result = Max(GIDX_GET_MAX(a,0),GIDX_GET_MAX(b,0)) - Min(GIDX_GET_MIN(a,0),GIDX_GET_MIN(b,0));
+
+	/* Add maximal length of remaining dimensions. */
+	for ( i = 1; i < ndims_b; i++ )
+	{
+		result += (Max(GIDX_GET_MAX(a,i),GIDX_GET_MAX(b,i)) - Min(GIDX_GET_MIN(a,i),GIDX_GET_MIN(b,i)));
+	}
+
+	/* Add in dimensions of higher dimensional box. */
+	for ( i = ndims_b; i < ndims_a; i++ )
+	{
+		result += (GIDX_GET_MAX(a,i) - GIDX_GET_MIN(a,i));
+	}
+
+	POSTGIS_DEBUGF(5, "edge( %s union %s ) = %.12g", gidx_to_string(a), gidx_to_string(b), result);
 
 	return result;
 }
@@ -1238,11 +1307,37 @@ Datum gserialized_gist_consistent(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+/*
+** Function to pack floats of different realms
+** This function serves to pack bit flags inside float type
+** Resulted value represent can be from four different "realms"
+** Every value from realm 3 is greater than any value from realms 2, 1 and 0.
+** Every value from realm 2 is less than every value from realm 3 and greater
+** than any value from realm 1 and 0, and so on. Values from the same realm
+** loose two bits of precision. This technique is possible due to floating
+** point numbers specification according to IEEE 754: exponent bits are highest
+** (excluding sign bits, but here penalty is always positive). If float a is
+** greater than float b, integer A with same bit representation as a is greater
+** than integer B with same bits as b.
+*/
+static float pack_float(const float value, const int realm)
+{
+  union {
+    float f;
+    struct { unsigned value:31, sign:1; } vbits;
+    struct { unsigned value:29, realm:2, sign:1; } rbits;
+  } a;
+
+  a.f = value;
+  a.rbits.value = a.vbits.value >> 2;
+  a.rbits.realm = realm;
+
+  return a.f;
+}
 
 /*
 ** GiST support function. Calculate the "penalty" cost of adding this entry into an existing entry.
 ** Calculate the change in volume of the old entry once the new entry is added.
-** TODO: Re-evaluate this in light of R*Tree penalty approaches.
 */
 PG_FUNCTION_INFO_V1(gserialized_gist_penalty);
 Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
@@ -1251,7 +1346,7 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 	GISTENTRY *newentry = (GISTENTRY*) PG_GETARG_POINTER(1);
 	float *result = (float*) PG_GETARG_POINTER(2);
 	GIDX *gbox_index_orig, *gbox_index_new;
-	float size_union, size_orig;
+	float size_union, size_orig, edge_union, edge_orig;
 
 	POSTGIS_DEBUG(4, "[GIST] 'penalty' function called");
 
@@ -1271,19 +1366,37 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
 	size_orig = gidx_volume(gbox_index_orig);
 	*result = size_union - size_orig;
 
-	/* All things being equal, we prefer to expand small boxes rather than large boxes.
-	   NOTE: This code seemed to be causing badly balanced trees to be built
-	   and therefore has been commented out. Not sure why it didn't work,
-	   but it didn't.
-	if( FP_IS_ZERO(*result) )
-		if( FP_IS_ZERO(size_orig) )
-			*result = 0.0;
-		else
-			*result = 1.0 - (1.0/(1.0 + size_orig));
-	else
-		*result += 1.0;
-	*/
-
+	/* REALM 0: No extension is required, volume is zero, return edge */
+ 	/* REALM 1: No extension is required, return nonzero area */
+ 	/* REALM 2: Area extension is zero, return nonzero edge extension */
+ 	/* REALM 3: Area extension is nonzero, return it */
+ 
+ 	if( *result == 0 )
+ 	{
+		if (size_orig > 0) 
+		{
+			*result = pack_float(size_orig, 1); /* REALM 1 */ 
+		}
+		else 
+		{
+			edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
+			edge_orig = gidx_edge(gbox_index_orig);
+ 			*result = edge_union - edge_orig;
+ 			if( *result == 0 )
+	 		{
+	 			*result = pack_float(edge_orig, 0); /* REALM 0 */
+ 			}
+ 			else
+ 			{
+ 				*result = pack_float(*result, 2); /* REALM 2 */
+ 			}
+		}
+ 	}
+ 	else
+ 	{
+ 		*result = pack_float(*result, 3); /* REALM 3 */
+ 	}
+	
 	POSTGIS_DEBUGF(4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 
 	PG_RETURN_POINTER(result);

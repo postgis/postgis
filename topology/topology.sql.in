@@ -192,6 +192,7 @@
 
 
 CREATE SCHEMA topology;
+COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
 
 -- Doing everything outside of a transaction helps
 -- upgrading in the best case.

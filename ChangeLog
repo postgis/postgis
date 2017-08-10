@@ -1,3 +1,1898 @@
+2017-08-05 16:58  Regina Obe <lr@pcorp.us>
+
+	* [r15531] .travis.yml: switch travis back not using sudo (root
+	  doesn't exist).
+	  Try forcing precise (July 18 default of travis switched to trusty
+	  which is around when we started having problems).
+
+2017-08-05 16:49  Regina Obe <lr@pcorp.us>
+
+	* [r15530] .travis.yml: try to fix travis check failures by sudoing
+	  more stuff.
+	  References #3801 for PostGIS 2.4.0
+
+2017-08-05 16:39  Regina Obe <lr@pcorp.us>
+
+	* [r15529] configure.ac: Change warning from GEOS 3.5.0 (that was
+	  too low already since we had functions in 2.3 that need GEOS
+	  3.6), to GEOS 3.7.0.
+	  Closes #3802 for PostGIS 2.4.0
+
+2017-08-05 16:22  Regina Obe <lr@pcorp.us>
+
+	* [r15528] .drone.yml, regress/run_test.pl: Fix dump/restore test
+	  (arguments out of order)
+	  Closes #3801 for PostGIS 2.4.0
+	  Turn off interrupt tests on dronie, too many false failures
+
+2017-08-05 15:57  Regina Obe <lr@pcorp.us>
+
+	* [r15527] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Prepping for releast of
+	  PostGIS 2.4.0alpha
+
+2017-08-05 11:40  Regina Obe <lr@pcorp.us>
+
+	* [r15526] postgis/geography_centroid.c,
+	  regress/geography_centroid_expected: ST_Centroid for geography
+	  fix uninitialized points issue
+	  References #2951
+
+2017-08-05 11:18  Regina Obe <lr@pcorp.us>
+
+	* [r15525] doc/reference_editor.xml: Clarify description of ST_Snap
+	  that it is the newly snapped input geometry and will return input
+	  geometry unchanged if no snapping.
+
+2017-08-04 22:44  Regina Obe <lr@pcorp.us>
+
+	* [r15521] loader/shp2pgsql-core.c, loader/shp2pgsql-gui.c: Fix
+	  email addresses and credit stuff. shp2pgsql-gui Add support for
+	  exporting materialized views, foreign tables, and partitioned
+	  tables
+	  References #3800 for PostGIS 2.4 (trunk
+
+2017-08-04 16:24  Regina Obe <lr@pcorp.us>
+
+	* [r15520] regress/geography_centroid.sql,
+	  regress/geography_centroid_expected: Missed test commit for
+	  ST_Centroid geography support
+	  References #2951
+
+2017-08-04 16:23  Regina Obe <lr@pcorp.us>
+
+	* [r15519] postgis/geography_centroid.c: missed file commit for
+	  ST_Centroid Geography support
+	  references #2951
+
+2017-08-04 15:46  Regina Obe <lr@pcorp.us>
+
+	* [r15518] NEWS, doc/reference_measure.xml, postgis/Makefile.in,
+	  postgis/geography.sql.in: ST_Centroid for geography (Danny Götte)
+	  References #2951
+
+2017-08-03 05:11  Regina Obe <lr@pcorp.us>
+
+	* [r15517] doc/html/images/st_clusterdbscan01.png: make image a
+	  little smaller
+
+2017-08-02 21:45  Regina Obe <lr@pcorp.us>
+
+	* [r15516] doc/html/images/st_clusterdbscan01.png,
+	  doc/reference_measure.xml: Add a graphical example for
+	  ST_ClusterDBScan
+
+2017-07-29 15:46  Regina Obe <lr@pcorp.us>
+
+	* [r15515] fuzzers/wkt_import_fuzzer.dict: OSS FUZZ Items must be
+	  surrounded by double quote. See
+	  ​https://github.com/google/oss-fuzz/issues/746
+	  patch from Even Rouault
+	  Closes #3797
+
+2017-07-28 04:06  Regina Obe <lr@pcorp.us>
+
+	* [r15513] postgis/postgis.sql.in, postgis/sfcgal.sql.in: Mark 3D
+	  functions and some other missed functions as parallel safe.
+	  References #3792 for PostGIS 2.4 (trunk)
+
+2017-07-28 03:24  Regina Obe <lr@pcorp.us>
+
+	* [r15512] extras/tiger_geocoder/regress/normalize_address_regress:
+	  Update normalize output to reflect new fields.
+	  References #3747
+
+2017-07-27 19:19  Regina Obe <lr@pcorp.us>
+
+	* [r15510] postgis/gserialized_estimate.c: Solaris build issues due
+	  to missing isfinite define
+	  Patch from Julian Schauder
+	  References #3795 for PostGIS 2.4 (trunk)
+
+2017-07-27 17:45  Regina Obe <lr@pcorp.us>
+
+	* [r15509]
+	  extensions/postgis_tiger_geocoder/sql_bits/upgrade_before.sql.in:
+	  add missing file missed in last commit
+	  References #3747
+
+2017-07-27 16:19  Regina Obe <lr@pcorp.us>
+
+	* [r15508] NEWS, doc/extras_tigergeocoder.xml,
+	  extensions/postgis_tiger_geocoder/Makefile.in,
+	  extensions/postgis_tiger_geocoder/sql_bits/norm_addy_create.sql.in,
+	  extensions/postgis_tiger_geocoder/sql_bits/norm_addy_upgrade.sql.in,
+	  extras/tiger_geocoder/create_geocode.sql,
+	  extras/tiger_geocoder/normalize/normalize_address.sql,
+	  extras/tiger_geocoder/normalize/pprint_addy.sql,
+	  extras/tiger_geocoder/pagc_normalize/pagc_normalize_address.sql,
+	  extras/tiger_geocoder/pagc_normalize/pagc_tables.sql,
+	  extras/tiger_geocoder/regress/normalize_address_regress,
+	  extras/tiger_geocoder/regress/pagc_normalize_address_regress,
+	  extras/tiger_geocoder/regress/regress.sql,
+	  extras/tiger_geocoder/upgrade_geocode.sql,
+	  extras/tiger_geocoder/upgrade_geocoder.bat: Geocoder
+	  enhancements, add zip4 and address_alphanumeric, adjustments to
+	  pagc matching
+	  Closes #3747
+	  Closes #3748
+
+2017-07-27 08:05  Sandro Santilli <strk@kbt.io>
+
+	* [r15507] NEWS: Drop bugfix NEWS entry from 2.4.0 section (it's
+	  already in 2.3.3)
+
+2017-07-26 06:10  Regina Obe <lr@pcorp.us>
+
+	* [r15506] doc/release_notes.xml, doc/xsl/postgis_aggs_mm.xml.xsl:
+	  Add enhanced section for 2.4 and backport 2.3.1-2.3.3 release
+	  notes
+
+2017-07-24 00:25  Regina Obe <lr@pcorp.us>
+
+	* [r15505] doc/po/es/extras_address_standardizer.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq.xml.po,
+	  doc/po/es/faq_raster.xml.po, doc/po/es/installation.xml.po,
+	  doc/po/es/introduction.xml.po, doc/po/es/performance_tips.xml.po,
+	  doc/po/es/postgis.xml.po, doc/po/es/reference_accessor.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_exception.xml.po,
+	  doc/po/es/reference_guc.xml.po, doc/po/es/reference_lrs.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_misc.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_sfcgal.xml.po,
+	  doc/po/es/release_notes.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po: update es po files from
+	  transifex
+	  References #3793
+
+2017-07-23 23:09  Regina Obe <lr@pcorp.us>
+
+	* [r15504] doc/po/fr/extras_topology.xml.po,
+	  doc/po/fr/installation.xml.po, doc/po/fr/introduction.xml.po,
+	  doc/po/fr/performance_tips.xml.po, doc/po/fr/postgis.xml.po,
+	  doc/po/fr/reference_accessor.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/release_notes.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po: update fr po files from
+	  transifex
+	  References #3793
+
+2017-07-23 20:49  Regina Obe <lr@pcorp.us>
+
+	* [r15503] doc/xsl/postgis_aggs_mm.xml.xsl: put in safeguard for
+	  PostGIS windows functions. Italians decided they needed to
+	  translate the term winset which made this section itemizedlist
+	  empty and invalid for pdf.
+	  
+	  References #3794 for PostGIS 2.4 (trunk)
+
+2017-07-23 20:08  Regina Obe <lr@pcorp.us>
+
+	* [r15502] doc/xsl/postgis_aggs_mm.xml.xsl: Put in safeguards
+	  around availability, changes, enhances so if no match, then
+	  doesn't break xml and latex validation
+
+2017-07-23 18:33  Regina Obe <lr@pcorp.us>
+
+	* [r15501] doc/Makefile.in: specify absolute path to texstyle.sty
+	  references #3794 for PostGIS 2.4
+
+2017-07-23 09:23  Regina Obe <lr@pcorp.us>
+
+	* [r15500] doc/texstyle.sty: get rid of utf8 see if resolves pdf
+	  compile error
+
+2017-07-23 09:21  Regina Obe <lr@pcorp.us>
+
+	* [r15499] doc/texstyle.sty: remove other packages just added, but
+	  keep utf8 one.
+
+2017-07-23 09:06  Regina Obe <lr@pcorp.us>
+
+	* [r15498] doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po,
+	  doc/po/pt_BR/performance_tips.xml.po,
+	  doc/po/pt_BR/postgis.xml.po, doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po: update po files from
+	  transifex and fix po typos causing compile failure for pt_BR
+	  References #3793 for trunk (PostGIS 2.4)
+
+2017-07-23 08:14  Regina Obe <lr@pcorp.us>
+
+	* [r15497] postgis/postgis.sql.in: Schema qualify function calls in
+	  postgis_full_version
+
+2017-07-23 07:02  Regina Obe <lr@pcorp.us>
+
+	* [r15496] doc/texstyle.sty: try adding utf8 package (take out
+	  CJKutf8 for now), may add back. To try to fix korean/japanese pdf
+	  building
+
+2017-07-23 06:38  Regina Obe <lr@pcorp.us>
+
+	* [r15495] doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/introduction.xml.po,
+	  doc/po/ko_KR/performance_tips.xml.po,
+	  doc/po/ko_KR/postgis.xml.po,
+	  doc/po/ko_KR/reference_accessor.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po: Fix errors in po for ko_KR so
+	  html can build.
+	  References #3793
+
+2017-07-23 05:43  Regina Obe <lr@pcorp.us>
+
+	* [r15494] doc/texstyle.sty: try to fix Japanese, Korean, Chinese
+	  PDF generation by adding CJK support library (already installed
+	  on debbie)
+
+2017-07-23 05:09  Regina Obe <lr@pcorp.us>
+
+	* [r15493] doc/po/ja/extras_topology.xml.po,
+	  doc/po/ja/installation.xml.po, doc/po/ja/introduction.xml.po,
+	  doc/po/ja/performance_tips.xml.po, doc/po/ja/postgis.xml.po,
+	  doc/po/ja/reference_accessor.xml.po,
+	  doc/po/ja/reference_constructor.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po: update po files from
+	  transifex plus patches to fix compile issues
+
+2017-07-17 14:38  Sandro Santilli <strk@kbt.io>
+
+	* [r15488] NEWS, utils/postgis_restore.pl.in: Allow
+	  postgis_restore.pl to work on directory-style (-Fd) dumps
+	  
+	  Patch by Roger Crew
+	  Closes #3788
+
+2017-07-17 04:45  Regina Obe <lr@pcorp.us>
+
+	* [r15487] liblwgeom/ptarray.c: Credit to OSS-Fuzz
+	  https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=2590
+	  
+	  References #3786 for PostGIS 2.4/trunk
+
+2017-07-17 01:36  Regina Obe <lr@pcorp.us>
+
+	* [r15486] fuzzers/build_google_oss_fuzzers.sh,
+	  fuzzers/build_seed_corpus.sh: mark sh scripts as executable
+
+2017-07-14 06:08  Regina Obe <lr@pcorp.us>
+
+	* [r15485] fuzzers/README.TXT: minor edit add a depth=1
+
+2017-07-10 20:06  Regina Obe <lr@pcorp.us>
+
+	* [r15484] fuzzers, fuzzers/Makefile, fuzzers/README.TXT,
+	  fuzzers/build_google_oss_fuzzers.sh,
+	  fuzzers/build_seed_corpus.sh, fuzzers/fuzzingengine.c,
+	  fuzzers/wkb_import_fuzzer.cpp, fuzzers/wkb_import_fuzzer.options,
+	  fuzzers/wkt_import_fuzzer.cpp, fuzzers/wkt_import_fuzzer.dict,
+	  fuzzers/wkt_import_fuzzer.options: Commit Fuzzers for liblwgeom
+	  wkb OSS FUZZ testing
+	  Fuzzers contributed by Even Rouault
+	  References #3783 for PostGIS 2.4 (trunk)
+
+2017-07-10 17:51  Sandro Santilli <strk@kbt.io>
+
+	* [r15482] loader/pgsql2shp-core.c: Initialize another variable
+	  
+	  otherwise used uninitialized when dumping 0-rows tables or
+	  queries
+
+2017-07-10 17:51  Sandro Santilli <strk@kbt.io>
+
+	* [r15481] loader/pgsql2shp-core.c: Check return from an sprintf
+	  
+	  Would be dangerous with field names > 256 characters..
+
+2017-07-10 17:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15480] loader/pgsql2shp-core.c: Fix buffer overflow and use of
+	  uninitialized value
+	  
+	  See #3101 (for trunk)
+
+2017-07-09 14:14  Regina Obe <lr@pcorp.us>
+
+	* [r15478] liblwgeom/lwin_wkb.c: Memory leak in
+	  lwline_from_wkb_state
+	  References #3782 for PostGIS 2.4 (trunk)
+	  Patch provided by Even Rouault
+
+2017-07-06 20:39  Regina Obe <lr@pcorp.us>
+
+	* [r15476] ci/winnie/package_postgis.sh: missing copying
+	  libintl-8.dll needed for the VC++ 32-bit builds for postgis-gui
+
+2017-07-05 08:00  Regina Obe <lr@pcorp.us>
+
+	* [r15475] ci/winnie/regress_postgis.sh: turn off interrupt tests
+	  on winnie. Causing 32-bit to fail.
+
+2017-07-01 04:01  Regina Obe <lr@pcorp.us>
+
+	* [r15471] NEWS, extensions/upgradeable_versions.mk: Update news to
+	  include 2.3 and add missing upgrade paths
+
+2017-06-30 18:33  Regina Obe <lr@pcorp.us>
+
+	* [r15468] doc/performance_tips.xml, doc/using_postgis_dataman.xml:
+	  Bring performance tips section up to newer versions
+	  References #3746 for PostGIS 2.4 (trunk)
+
+2017-06-28 08:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15467] doc/reference_constructor.xml: Fixed some typos in docs
+	  (give -> given)
+	  
+	  Patch by Sergey Fedoseev <fedoseev.sergey@gmail.com>
+
+2017-06-28 08:03  Sandro Santilli <strk@kbt.io>
+
+	* [r15466] liblwgeom/cunit/cu_lwstroke.c, liblwgeom/lwstroke.c:
+	  lwarc_linearize: fix total angle computation for ccw arcs
+
+2017-06-27 12:37  Sandro Santilli <strk@kbt.io>
+
+	* [r15465] liblwgeom/cunit/cu_lwstroke.c, liblwgeom/lwstroke.c,
+	  regress/curvetoline_expected: Fix angle reminder computation
+	  
+	  Closes #3772 again (see comment:6)
+	  Add specific testcase
+
+2017-06-26 20:56  Sandro Santilli <strk@kbt.io>
+
+	* [r15464] liblwgeom/lwstroke.c: Fix debug build
+
+2017-06-24 04:57  Regina Obe <lr@pcorp.us>
+
+	* [r15456] raster/rt_pg/rtpg_mapalgebra.c: Change ST_Clip from
+	  Error to Notice when ST_Clip can compute no band
+	  References #3730 for PostGIS 2.4
+
+2017-06-24 04:34  Regina Obe <lr@pcorp.us>
+
+	* [r15455] doc/reference_processing.xml: Update 3D example and put
+	  a note about function may return the same geometry.
+	  References #3702 for PostGIS 2.4 (trunk)
+	  Last commit was for PostGIS 2.3.3 (mistakenly noted as 2.4)
+	  Closes #3702
+
+2017-06-24 04:08  Regina Obe <lr@pcorp.us>
+
+	* [r15453] doc/xsl/postgis_gardentest.sql.xsl: Increase LIMIT
+	  clause on tests so can more readily catch issues like #3704.
+
+2017-06-23 22:16  Sandro Santilli <strk@kbt.io>
+
+	* [r15450] postgis/lwgeom_btree.c, regress/operators.sql,
+	  regress/operators_expected: Fix lwgeom_cmp return code
+	  
+	  See #3777
+
+2017-06-23 14:47  Sandro Santilli <strk@kbt.io>
+
+	* [r15447] postgis/lwgeom_btree.c, regress/operators.sql,
+	  regress/operators_expected: Fix handling of EMPTY geometries in
+	  btree operator
+	  
+	  Includes regress test
+	  
+	  See #3777
+
+2017-06-23 11:40  Sandro Santilli <strk@kbt.io>
+
+	* [r15446] README.md: Fix markdown of build badges
+	  
+	  For some reason GitHub doesn't like newlines :/
+	  
+	  NOTE: Gogs and GitLab are both happy with the previous syntax...
+
+2017-06-23 06:00  Regina Obe <lr@pcorp.us>
+
+	* [r15444] liblwgeom/lwout_x3d.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_AsX3D handle empty geometries
+	  References #3704 for PostGIS 2.4 (trunk)
+
+2017-06-23 05:13  Regina Obe <lr@pcorp.us>
+
+	* [r15441] loader/pgsql2shp-core.c, loader/pgsql2shp-core.h,
+	  regress/dumper/realtable-pre.sql,
+	  regress/dumper/realtable_expected.dbf: Escape double quotes issue
+	  in pgsql2shp
+	  Include test for boolean and quotes
+	  References #3701 for PostGIS 2.4 (trunk)
+
+2017-06-21 11:23  Regina Obe <lr@pcorp.us>
+
+	* [r15440] topology/sql/topogeometry/totopogeom.sql.in:
+	  simplification per strk's request. I undersimplified on last
+	  commit.
+
+2017-06-20 23:29  Regina Obe <lr@pcorp.us>
+
+	* [r15439] topology/sql/topogeometry/totopogeom.sql.in: Clean up of
+	  formatting of r15406.
+	  Add some explanation of change from CASE to UNION ALL
+	  change SELECT ST_Dump to FROM ST_Dump per strk's suggestion
+	  References #3764
+	  For more details refer to
+	  https://www.postgresql.org/message-id/000001d2d5de%24d8d66170%248a832450%24%40pcorp.us
+	  and commit that I think introduced the original problem -
+	  https://www.postgresql.org/message-id/E1cTy4K-00085H-5v@gemulon.postgresql.org
+
+2017-06-20 22:16  Regina Obe <lr@pcorp.us>
+
+	* [r15438] topology/sql/topogeometry/totopogeom.sql.in: refix for
+	  PostgreSQL 10 changed CASE WHEN set returning behavior
+	  Don't use CASE using UNION ALL instead with a WHERE that when
+	  resolves to false skips the output call.
+	  Closes #3764 for PostGIS 2.4 (trunk)
+
+2017-06-19 20:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15435] postgis/Makefile.in: Avoid ever-growing postgis
+	  extension upgrade scripts
+	  
+	  Fixes #3775
+
+2017-06-19 20:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15434] postgis/Makefile.in: Style only change: remove trailing
+	  spaces
+
+2017-06-19 16:10  Sandro Santilli <strk@kbt.io>
+
+	* [r15433] regress/curvetoline.sql, regress/curvetoline_expected:
+	  It's multi-arc, not multi-arch (typo)
+
+2017-06-19 16:08  Sandro Santilli <strk@kbt.io>
+
+	* [r15432] NEWS: Add NEWS items about new ST_CurveToLine signature
+
+2017-06-19 16:07  Sandro Santilli <strk@kbt.io>
+
+	* [r15431] regress/curvetoline.sql, regress/curvetoline_expected:
+	  Add test for multi-arch curve
+	  
+	  It shows how MaxError configuration for ST_CurveToLine is useful
+	  as it results in different number of segments per quadrant based
+	  on radius of each arc...
+
+2017-06-19 16:06  Sandro Santilli <strk@kbt.io>
+
+	* [r15430] doc/reference_processing.xml,
+	  liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_lwstroke.c,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/liblwgeom_internal.h, liblwgeom/lwstroke.c,
+	  postgis/lwgeom_sqlmm.c, postgis/postgis.sql.in,
+	  regress/Makefile.in, regress/curvetoline.sql,
+	  regress/curvetoline_expected, regress/sql-mm-circularstring.sql:
+	  Implement extended ST_CurveToLine signature
+	  
+	  Adds lwcurve_linearize function at liblwgeom level.
+	  Turns lwgeom_stroke into a wrapper, keept it for backward
+	  compatibility.
+	  Reduces allocations in linearization procedures.
+	  
+	  Implements SYMMETRIC and RETAIN_ANGLE flags.
+	  Implements MAX_DEVIATION, MAX_ANGLE and SEGS_PER_QUADRANT
+	  configs.
+	  
+	  Includes unit and SQL tests.
+	  Includes documentation.
+	  
+	  Closes #2464 (maxError configuration is MAX_DEVIATION)
+	  Closes #3772 (balanced output is SYMMETRIC and RETAIN_ANGLE
+	  flags)
+	  
+	  Document the new ST_CurveToLine signature
+
+2017-06-13 13:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15429] liblwgeom/cunit/cu_ptarray.c: Style only change: remove
+	  trailing blanks
+
+2017-06-13 13:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15428] liblwgeom/lwstroke.c: Style-only change: remove trailing
+	  blanks
+
+2017-06-12 15:17  Sandro Santilli <strk@kbt.io>
+
+	* [r15427] doc/using_postgis_dataman.xml: geomentry -> geometry
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/using_postgis_datamanxmlpot/19191543/
+
+2017-06-12 13:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15426] doc/using_postgis_dataman.xml: Remove confusing
+	  statement
+	  
+	  As reported by Andreas Schild in
+	  https://www.transifex.com/postgis/postgis/translate/#de/using_postgis_datamanxmlpot/19191379/
+
+2017-06-09 15:23  Regina Obe <lr@pcorp.us>
+
+	* [r15425] doc/reference_raster.xml: example for ST_CreateOverview
+	  and more examples for ST_GDALFromRaster that shows how to use to
+	  output to filesystem.
+
+2017-06-07 07:43  Regina Obe <lr@pcorp.us>
+
+	* [r15424] raster/rt_pg/rtpostgis.sql.in: Mark functions that are
+	  currently stable or volatile (or missing parallel) as immutable
+	  parallel that should have been immutable parallel. First pass
+	  More cleanup of missed schema qualification.
+	  References #3769
+
+2017-06-07 03:33  Regina Obe <lr@pcorp.us>
+
+	* [r15423] extensions/address_standardizer/Makefile.in: have
+	  formatting conform to editorconfig. Fix clean logic, wasn't
+	  deleting all files in sql folder before.
+
+2017-06-06 12:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15420] NEWS, doc/po/de_DE/release_notes.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/fr/release_notes.xml.po,
+	  doc/po/it_IT/release_notes.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/pl/release_notes.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/templates/release_notes.xml.pot, doc/release_notes.xml:
+	  Speep up -> Speed up
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993598/
+
+2017-06-06 12:18  Sandro Santilli <strk@kbt.io>
+
+	* [r15417] NEWS, doc/release_notes.xml: shp2pgsql locale fixes are
+	  #3084, not #3048
+	  
+	  Thanks Andreas Schild via
+	  https://www.transifex.com/postgis/postgis/translate/#de/release_notesxmlpot/74993584/
+
+2017-05-31 15:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15415] README.md: Use SVG format for Travis badge
+
+2017-05-29 18:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15414] .editorconfig: It looks like .h.in files use spaces
+	  indent
+
+2017-05-29 18:16  Sandro Santilli <strk@kbt.io>
+
+	* [r15413] .editorconfig: Request tab indentation by default for
+	  SQL files
+	  
+	  Still keep sfcgal.sql and topology SQL files with spaces, to
+	  reflect the current state.
+	  
+	  See #3767
+
+2017-05-29 18:07  Regina Obe <lr@pcorp.us>
+
+	* [r15412] raster/rt_pg/rtpostgis.sql.in: Mark all raster aggregate
+	  functions as parallel safe.
+	  Also more schema qualification, still a lot not schema qualified
+	  flip ST_Intersection to be immutable parallel safe
+	  references #3752 for PostGIS 2.4 (trunk)
+
+2017-05-28 20:48  Sandro Santilli <strk@kbt.io>
+
+	* [r15411] .gitignore: Ignore generated geobuffer sources
+
+2017-05-28 20:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15410] .editorconfig: Topology SQL files want space indent
+	  
+	  See #3767
+
+2017-05-27 17:07  Regina Obe <lr@pcorp.us>
+
+	* [r15409] postgis/geography.sql.in, postgis/postgis.sql.in,
+	  raster/rt_pg/rtpostgis.sql.in: List parent partition tables and
+	  have geography_view only list things like tables (exclude helper
+	  types)
+	  Closes #3766
+
+2017-05-27 16:40  Regina Obe <lr@pcorp.us>
+
+	* [r15408] topology/sql/topogeometry/totopogeom.sql.in: replace
+	  tabs with spaces from last commit
+
+2017-05-27 13:34  Regina Obe <lr@pcorp.us>
+
+	* [r15407] doc/xsl/postgis_gardentest.sql.xsl,
+	  doc/xsl/raster_gardentest.sql.xsl: Change log table name
+
+2017-05-26 19:35  Regina Obe <lr@pcorp.us>
+
+	* [r15406] topology/sql/topogeometry/totopogeom.sql.in,
+	  topology/test/regress/copytopology.sql,
+	  topology/test/regress/copytopology_expected: Fix topology
+	  PostgreSQL 10 regress errors
+	  Change CASE WHEN SRF to use constant
+	  Evidentally they also removed a bunch of columns from sequence
+	  table struct
+	  I'm guessing has to do with intro of IDENTITY column type, so had
+	  to revise copytopology regress
+	  Closes #3764
+
+2017-05-26 06:25  Regina Obe <lr@pcorp.us>
+
+	* [r15405] raster/test/regress/rt_union.sql,
+	  raster/test/regress/rt_union_expected: Revise rt_union test so
+	  passes equally on PostgreSQL 10 and lower. Lower calls SRF for
+	  each column, triggering the same error notice multiple times,
+	  PostgreSQL 10 called SRF only once. Revised syntax so old
+	  versions call SRF only once.
+	  
+	  Closes #3763 for trunk PostGIS 2.4.0
+
+2017-05-26 04:41  Regina Obe <lr@pcorp.us>
+
+	* [r15404] raster/rt_pg/rtpostgis.sql.in: Revise to use substring
+	  function instead of regexp_matches.
+	  This fixes most of the raster regress issues noted in #3759 and
+	  Closes #3760 for PostGIS 2.4.0 (trunk)
+
+2017-05-26 04:05  Regina Obe <lr@pcorp.us>
+
+	* [r15403] doc/extras_tigergeocoder.xml: revert previous change to
+	  this file accidentally committed for #3761
+	  But this is a work in progress for different item, not ready for
+	  commit.
+
+2017-05-26 04:03  Regina Obe <lr@pcorp.us>
+
+	* [r15402] configure.ac, doc/extras_tigergeocoder.xml,
+	  doc/postgis.xml, postgis/Makefile.in, postgis/lwgeom_accum.c,
+	  postgis/lwgeom_backend_api.c, postgis/lwgeom_dumppoints.c,
+	  postgis/lwgeom_functions_analytic.c, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_inout.c, postgis/postgis.sql.in,
+	  postgis/postgis_module.c, raster/rt_pg/rtpg_band_properties.c,
+	  raster/rt_pg/rtpg_gdal.c, raster/rt_pg/rtpg_mapalgebra.c,
+	  raster/rt_pg/rtpg_pixel.c, raster/rt_pg/rtpg_raster_properties.c,
+	  raster/rt_pg/rtpg_statistics.c, raster/rt_pg/rtpostgis.c,
+	  regress/Makefile.in: Get rid of all if def needed for versions of
+	  PostgreSQL lower than 9.3 and GEOS 3.3
+	  Document dropping support for PostgreSQL 9.2
+	  Note didn't change postgis/gserialized_estimate.c which also has
+	  an ifdef (leaving that for pramsey)
+	  References #3761 for PostGIS 2.4
+
+2017-05-24 18:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15401] postgis/gserialized_estimate.c,
+	  regress/regress_selectivity.sql: #3758, regression failure on
+	  stats. Add test data as static COPY,
+	  not dynamic generation, since change in generate_series caused
+	  probs
+
+2017-05-23 04:39  Regina Obe <lr@pcorp.us>
+
+	* [r15400] NEWS, doc/reference_measure.xml, postgis/lwgeom_geos.c,
+	  postgis/postgis.sql.in, regress/Makefile.in, regress/frechet.sql,
+	  regress/frechet_expected, utils/postgis_restore.pl.in: New
+	  function ST_FrechetDistance (patch from Shinichi Sugiyama)
+	  Closes #3677
+	  Closes https://github.com/postgis/postgis/pull/120
+
+2017-05-22 16:36  Sandro Santilli <strk@kbt.io>
+
+	* [r15399] topology/topology.sql.in: Add comment to topology schema
+
+2017-05-21 03:15  Regina Obe <lr@pcorp.us>
+
+	* [r15398] postgis/gserialized_estimate.c: PostgreSQL 10 beta1
+	  fails compile in gserialized_estimate
+	  Revise to use new api for get_attstatsslot function for
+	  PostgreSQL >= 10
+	  References #3758
+
+2017-05-20 17:49  Regina Obe <lr@pcorp.us>
+
+	* [r15397] configure.ac: Revise the PGVERSION numbering scheme so
+	  also works for PostgreSQL 10beta1 and for all future PostgreSQL
+	  after 10
+	  Note previous patch put in did not consider the case of when
+	  10.11 comes, that would end up ranking higher than 11.0 (110 vs.
+	  1011).
+	  So we need to totally disregard the minor version for PostgreSQL
+	  >= 10
+	  Closes #3614
+
+2017-05-19 01:59  Regina Obe <lr@pcorp.us>
+
+	* [r15396] doc/installation.xml: Fix mismatch between actual and
+	  documented output
+	  Closes https://github.com/postgis/postgis/pull/118
+
+2017-05-19 01:54  Regina Obe <lr@pcorp.us>
+
+	* [r15395] doc/reference_measure.xml: Note about ST_Equals does not
+	  support geometry collection
+	  Closes pull reguest - https://github.com/postgis/postgis/pull/131
+	  from lb1c
+
+2017-05-17 18:18  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15394] postgis/mvt.c: ST_AsMVT Forgot to initialize to NULL
+
+2017-05-17 17:52  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15393] postgis/mvt.c: ST_AsMVT avoid mutating the input LWGEOM
+
+2017-05-11 23:44  Regina Obe <lr@pcorp.us>
+
+	* [r15392] NEWS, postgis/gserialized_gist_2d.c,
+	  postgis/gserialized_gist_nd.c: Gist penalty speed improvement for
+	  2d and nd points
+	  References #3753 for PostGIS 2.4.0
+
+2017-05-11 18:17  Regina Obe <lr@pcorp.us>
+
+	* [r15391] .travis.yml: try to add libgdal1h dependency in attempt
+	  to fix libgdal-dev install issue on travis
+
+2017-05-04 20:22  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15390] doc/reference_output.xml: ST_AsMVT Document JSONB
+	  support
+	  References #3749
+
+2017-05-04 18:40  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15389] postgis/mvt.c, regress/mvt_expected: ST_AsMVT Normalize
+	  output to make sure it will be identical regardless of GEOS
+	  version
+	  References #3749
+
+2017-05-04 17:15  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15387] postgis/mvt.c, postgis/mvt.h, regress/Makefile.in,
+	  regress/mvt.sql, regress/mvt_expected, regress/mvt_jsonb.sql,
+	  regress/mvt_jsonb_expected: ST_AsMVT JSONB support and regression
+	  tests conditional on PG >= 94
+	  Fixes #3749
+
+2017-05-04 05:07  Sandro Santilli <strk@kbt.io>
+
+	* [r15386] .drone.yml: Use local RUNTESTFLAGS env variable (global
+	  doesn't seem to work)
+
+2017-05-03 22:32  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15385] postgis/mvt.c, postgis/mvt.h, regress/mvt.sql,
+	  regress/mvt_expected: ST_AsMVT parse JSONB into keys/values
+	  References #3749
+
+2017-05-03 13:38  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15384] postgis/mvt.c, regress/mvt_expected: ST_AsMVT make sure
+	  valid/clockwise even after collection extraction
+
+2017-05-03 03:12  Regina Obe <lr@pcorp.us>
+
+	* [r15382] postgis/postgis.sql.in, raster/rt_pg/rtpostgis.sql.in: @
+	  operator not schema qualified and ~ not schema qualified in some
+	  places
+	  apply patch with adjustments. Patch provided by Shane StClair
+	  (Axiom Data Science)
+	  References #3750 for trunk PostGIS 2.4.0
+
+2017-05-01 02:39  Regina Obe <lr@pcorp.us>
+
+	* [r15381] NEWS, loader/pgsql2shp-core.c: Boolean (FTLogical)
+	  should be 1 byte not 2 bytes
+	  closes #3682 for PostGIS 2.4.0 (trunk)
+
+2017-04-30 21:36  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15380] postgis/mvt.c, regress/mvt_expected: Readd homogenize
+	  and expect empty output on collapsed polygon
+
+2017-04-30 21:36  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15379] postgis/mvt.c: Fix check for empty or null geometry and
+	  more strict precision reducing
+
+2017-04-28 21:07  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15378] postgis/lwgeom_out_mvt.c, postgis/mvt.c,
+	  regress/mvt.sql, regress/mvt_expected: Rework ST_AsMVTGeom
+	  clipping logic
+	  Closes #3740
+
+2017-04-28 17:27  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15377] postgis/geobuf.c, postgis/mvt.c: Fix wrong char *
+	  allocation size
+
+2017-04-28 16:16  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15376] postgis/geobuf.c: Make copy of string that will be
+	  deallocated and remove unused code
+
+2017-04-28 16:10  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15375] postgis/mvt.c: Make copy of string that will be
+	  deallocated and make bool type clear
+
+2017-04-26 20:43  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15374] postgis/lwgeom_out_geobuf.c, postgis/lwgeom_out_mvt.c:
+	  Revert MemoryContext refactor
+
+2017-04-26 03:39  Regina Obe <lr@pcorp.us>
+
+	* [r15373] astyle, doc/texstyle.sty: Revert committ of astyle and
+	  commit the intended textstyle.sty
+	  References #3726 for PostGIS 2.4 trunk
+
+2017-04-25 21:39  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15372] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Cast smaller integer types to the destination type
+	  Fixes #3741 and #3742
+
+2017-04-25 21:14  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15371] regress/mvt.sql, regress/mvt_expected: Comment out
+	  failing test for out of tree investigation
+
+2017-04-25 21:10  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15370] postgis/lwgeom_out_geobuf.c, postgis/lwgeom_out_mvt.c,
+	  postgis/mvt.c, postgis/uthash.h: Restore debug log and improve
+	  memory context/allocations
+
+2017-04-25 20:53  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15369] postgis/mvt.c, regress/mvt_expected: Comment out a debug
+	  logging causing suspicious test fail
+
+2017-04-25 07:08  Regina Obe <lr@pcorp.us>
+
+	* [r15367] regress/subdivide.sql, regress/subdivide_expected:
+	  revise ST_Subdivide regress to use ticket instead of github pull
+	  request
+	  References #3744
+
+2017-04-25 07:02  Regina Obe <lr@pcorp.us>
+
+	* [r15366] astyle, doc/Makefile.in: PDF manual from dblatex renders
+	  fancy quotes for programlisting
+	  Change to use regular quotes
+	  patch from Mike Toews
+	  Closes #3726 for PostGIS 2.4 (trunk)
+
+2017-04-24 18:01  Regina Obe <lr@pcorp.us>
+
+	* [r15363] liblwgeom/lwgeom.c, regress/subdivide.sql,
+	  regress/subdivide_expected: ST_Subdivide loses subparts of
+	  inverted geometries patch from Darafei Praliaskouski (Komzpa)
+	  References #3744
+	  changed area regress to cast to numeric so doesn't return
+	  scientific notation on windows
+
+2017-04-23 20:21  Regina Obe <lr@pcorp.us>
+
+	* [r15361] raster/loader/raster2pgsql.c: Get rid of logic that set
+	  out_srid to same as input srid and change to not try to transform
+	  when out_srid is unknown.
+	  References #3738 for PostGIS 2.4 trunk
+
+2017-04-21 19:40  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15360] regress/README: Fix mistakes and some rewording
+
+2017-04-21 17:21  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15359] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Expand tests to verify redundant value encoding fix
+	  Closes #3741
+
+2017-04-21 16:58  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15358] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Fix ST_AsMVT string value encoding redundancy
+	  References #3741
+
+2017-04-21 16:38  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15357] regress/README: Add docs about running regression tests
+	  individually
+
+2017-04-21 16:32  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15356] postgis/uthash.h: Upgrade uthash 2.0.1 -> 2.0.2
+
+2017-04-19 19:39  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15355] postgis/mvt.c: Add logging statements
+
+2017-04-19 17:43  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15354] postgis/mvt.c, postgis/mvt.h: Clear hash tables after
+	  usage
+
+2017-04-12 13:34  Sandro Santilli <strk@kbt.io>
+
+	* [r15351] README.md: Update drone url
+
+2017-04-12 13:33  Sandro Santilli <strk@kbt.io>
+
+	* [r15350] liblwgeom/lwgeom_geos.c, liblwgeom/lwprint.c,
+	  postgis/lwgeom_ogc.c: fix variable length arrays
+
+2017-04-08 12:25  Regina Obe <lr@pcorp.us>
+
+	* [r15349] regress/knn_recheck.sql, regress/knn_recheck_expected:
+	  Get rid of knn tests where multiple records have the same
+	  distances
+	  closes #3649 for 2.4
+
+2017-04-07 08:28  Regina Obe <lr@pcorp.us>
+
+	* [r15347] libpgcommon/gserialized_gist.h: Add <float.h> include so
+	  PostGIS can compile against PostgreSQL 10
+	  Closes #3721
+
+2017-04-04 17:38  Daniel Baston <dbaston@gmail.com>
+
+	* [r15345] doc/reference_measure.xml: Fix error in docs for
+	  ST_ClusterDBSCAN
+
+2017-03-29 06:32  Sandro Santilli <strk@kbt.io>
+
+	* [r15344] doc/po/de_DE/reference_measure.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_output.xml.pot: Run "make update-pot"
+
+2017-03-29 06:32  Sandro Santilli <strk@kbt.io>
+
+	* [r15343] doc/reference_measure.xml: Fix documentation of centroid
+	  examples.
+	  
+	  Patch by Jackie Leng <jccleng@gmail.com> via
+	  https://github.com/postgis/postgis/pull/126
+
+2017-03-24 20:51  Sandro Santilli <strk@kbt.io>
+
+	* [r15342] extensions/postgis/Makefile.in,
+	  extensions/postgis_sfcgal/Makefile.in: Avoid a few bashisms
+	  resulting in invalid SQL files
+	  
+	  An echo that's supposed to output a backslash works with bash,
+	  but not
+	  in dash. Use printf, instead.
+	  
+	  Patch by: Markus Wanner <markus@bluegap.ch>
+
+2017-03-20 15:59  Sandro Santilli <strk@kbt.io>
+
+	* [r15341] doc/reference_accessor.xml: Clarify behavior of
+	  ST_IsPolygon{CW,CCW} with closed linestrings
+
+2017-03-20 13:24  Daniel Baston <dbaston@gmail.com>
+
+	* [r15340] doc/reference_accessor.xml: ST_IsPolygonCW doc
+	  clarifications
+
+2017-03-18 11:59  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15339] postgis/geobuf.c, postgis/mvt.c, postgis/mvt.h: Clean up
+	  C style
+
+2017-03-18 11:59  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15338] postgis/mvt.c: Add missing static modifier
+
+2017-03-17 20:52  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15337] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Also consider multi variants when extracting from collections
+
+2017-03-17 00:28  Daniel Baston <dbaston@gmail.com>
+
+	* [r15336] NEWS, doc/reference_accessor.xml,
+	  doc/reference_editor.xml, liblwgeom/cunit/cu_libgeom.c,
+	  liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom.c, liblwgeom/lwpoly.c,
+	  liblwgeom/lwtriangle.c, postgis/lwgeom_functions_analytic.c,
+	  postgis/postgis.sql.in, regress/Makefile.in,
+	  regress/orientation.sql, regress/orientation_expected: #3589,
+	  Orientation checking and forcing fuctions
+
+2017-03-16 13:08  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15335] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Only keep the highest dimension geometry for collections
+
+2017-03-15 15:10  Daniel Baston <dbaston@gmail.com>
+
+	* [r15334] postgis/postgis.sql.in, raster/rt_pg/rtpostgis.sql.in:
+	  Avoid making session-level changes to client_min_messages on
+	  install
+
+2017-03-12 11:12  Sandro Santilli <strk@kbt.io>
+
+	* [r15333] doc/extras_topology.xml, doc/installation.xml: Topology
+	  is enable by default since PostGIS-2.0 (2012)
+
+2017-03-12 08:40  Regina Obe <lr@pcorp.us>
+
+	* [r15332] doc/xsl/postgis_aggs_mm.xml.xsl: Fix 2.4 title
+
+2017-03-11 16:21  Sandro Santilli <strk@kbt.io>
+
+	* [r15330] liblwgeom/lwgeom_topo.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected_newsnap,
+	  topology/test/regress/topogeo_addlinestring_expected_oldsnap: Fix
+	  azimuth computation for 2.5D edge ends
+	  
+	  The change disreguard vertical movemements of the edge and
+	  computes
+	  azimuth of the first segment getting away from the node.
+	  
+	  Includes automated testcase
+	  
+	  See #3711
+
+2017-03-11 14:33  Sandro Santilli <strk@kbt.io>
+
+	* [r15329] liblwgeom/lwgeom_topo.c: Print more digits in debugging
+	  outputs about azimuth computation
+
+2017-03-11 06:21  Regina Obe <lr@pcorp.us>
+
+	* [r15328] doc/xsl/postgis_aggs_mm.xml.xsl: take out 2.4 enhanced
+	  functions section, bah we've enhanced nothing and docbook doesn't
+	  like empty enhancement lists.
+
+2017-03-11 06:06  Regina Obe <lr@pcorp.us>
+
+	* [r15327] doc/xsl/postgis_aggs_mm.xml.xsl: Add what's new in 2.4
+	  section to docs
+
+2017-03-10 21:54  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15326] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Fix for incorrect scale/translate in ST_AsMVTGeom
+
+2017-03-10 20:17  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15325] postgis/lwgeom_out_mvt.c: Add missing guard when
+	  libprotobuf-c is not available
+
+2017-03-09 11:30  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15324] doc/reference_output.xml: Improve ST_AsMVT documentation
+
+2017-03-07 20:32  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15323] doc/reference_output.xml, postgis/lwgeom_out_mvt.c,
+	  postgis/mvt.c, postgis/mvt.h, postgis/postgis.sql.in,
+	  regress/mvt.sql, regress/mvt_expected: Reworked ST_AsMVT and new
+	  ST_AsMVTGeom implementation
+	  References #3712
+
+2017-03-06 20:40  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15322] postgis/geobuf.c: Use PG_DETOAST_DATUM_COPY instead of
+	  clone deep
+	  References #3720
+
+2017-03-05 11:58  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15321] postgis/geobuf.c: Clone LWGEOM in aggregation step
+	  References #3720
+
+2017-02-28 20:39  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15320] regress/mvt.sql, regress/mvt_expected: Disable test that
+	  is too PG version specific
+	  Fixes #3722
+
+2017-02-27 13:58  Regina Obe <lr@pcorp.us>
+
+	* [r15319] doc/introduction.xml: Add Björn Harrtell to core
+	  contributors list and move David Zwarg to past
+
+2017-02-27 09:34  Sandro Santilli <strk@kbt.io>
+
+	* [r15318] authors.git, authors.svn: Add Bjorn reference in authors
+	  files
+
+2017-02-26 18:16  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15317] NEWS, doc/reference_output.xml, postgis/Makefile.in,
+	  postgis/geobuf.LICENSE, postgis/geobuf.c, postgis/geobuf.h,
+	  postgis/geobuf.proto, postgis/lwgeom_out_geobuf.c,
+	  postgis/postgis.sql.in, regress/Makefile.in, regress/geobuf.sql,
+	  regress/geobuf_expected: Geobuf output support via ST_AsGeobuf
+	  Closes #3599
+
+2017-02-26 16:42  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15316] postgis/mvt.c, regress/mvt.sql, regress/mvt_expected:
+	  Improved integer encoding for ST_AsMVT
+	  Closes #3714
+
+2017-02-26 16:23  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15315] postgis/mvt.c: Better numeric/string value handling for
+	  ST_AsMVT
+	  Closes #3710
+
+2017-02-18 17:34  Regina Obe <lr@pcorp.us>
+
+	* [r15314] doc/installation.xml: Clarify that nation script must be
+	  run first before any states loaded
+	  references #3699
+
+2017-02-13 09:35  Sandro Santilli <strk@kbt.io>
+
+	* [r15313] configure.ac: Fix mishandling of spaces in "configure
+	  --with-pgconfig" path
+	  
+	  It is quite common to have spaces in installation path names
+	  on Windows, but this will cause trouble with the --with-pgconfig
+	  configure option.
+	  Fix by adding double quotes throughout.
+	  
+	  Patch by Laurenz Albe <laurenz.albe@wien.gv.at>
+	  via https://github.com/postgis/postgis/pull/125
+
+2017-02-12 19:31  Regina Obe <lr@pcorp.us>
+
+	* [r15312] ci/winnie/build_postgis.sh,
+	  ci/winnie/regress_postgis.sh: forgot pkg_config_path and reverted
+	  CGAL version change
+	  references #3661
+
+2017-02-12 19:15  Regina Obe <lr@pcorp.us>
+
+	* [r15311] ci/winnie/build_postgis.sh,
+	  ci/winnie/package_postgis.sh, ci/winnie/regress_postgis.sh: Logic
+	  for winnie to build and package with protobuf-c support
+	  references #3661
+
+2017-02-09 08:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15310] doc/po/templates/installation.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot: Update gettext
+	  templates (make update-pot)
+
+2017-02-09 08:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15309] doc/reference_processing.xml: Fix typo
+	  
+	  Thanks Anton Bobov (https://github.com/postgis/postgis/pull/124)
+
+2017-02-08 13:25  Sandro Santilli <strk@kbt.io>
+
+	* [r15308] doc/installation.xml: Add notes about dependency
+	  requirements for ST_AsMVT
+	  
+	  Patch by Björn Harrtell <bjorn@wololo.org>
+
+2017-02-07 21:42  Sandro Santilli <strk@kbt.io>
+
+	* [r15307] configure.ac: Add check for pkg-config
+	  
+	  Patch by Björn Harrtell
+	  
+	  References #3661
+
+2017-02-06 16:33  Sandro Santilli <strk@kbt.io>
+
+	* [r15304] NEWS, configure.ac, doc/reference_output.xml,
+	  postgis/Makefile.in, postgis/lwgeom_out_mvt.c, postgis/mvt.c,
+	  postgis/mvt.h, postgis/postgis.sql.in,
+	  postgis/postgis_libprotobuf.c, postgis/uthash.h,
+	  postgis/vector_tile.LICENSE, postgis/vector_tile.proto,
+	  postgis_config.h.in, regress/Makefile.in, regress/mvt.sql,
+	  regress/mvt_expected: Mapbox vector tile output support via
+	  ST_AsMVT
+	  
+	  Implementation by Björn Harrtell / CARTO
+	  
+	  References #3661
+
+2017-01-29 22:20  Sandro Santilli <strk@kbt.io>
+
+	* [r15300] doc/po/de_DE/extras_tigergeocoder.xml.po,
+	  doc/po/de_DE/extras_topology.xml.po,
+	  doc/po/de_DE/faq_raster.xml.po, doc/po/de_DE/installation.xml.po,
+	  doc/po/de_DE/performance_tips.xml.po,
+	  doc/po/de_DE/reference_constructor.xml.po,
+	  doc/po/de_DE/reference_editor.xml.po,
+	  doc/po/de_DE/reference_measure.xml.po,
+	  doc/po/de_DE/reference_operator.xml.po,
+	  doc/po/de_DE/reference_processing.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/de_DE/release_notes.xml.po,
+	  doc/po/de_DE/using_postgis_dataman.xml.po,
+	  doc/po/es/extras.xml.po, doc/po/es/extras_historytable.xml.po,
+	  doc/po/es/extras_tigergeocoder.xml.po,
+	  doc/po/es/extras_topology.xml.po, doc/po/es/faq_raster.xml.po,
+	  doc/po/es/installation.xml.po, doc/po/es/performance_tips.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_editor.xml.po,
+	  doc/po/es/reference_measure.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_processing.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/es/reference_temporal.xml.po,
+	  doc/po/es/release_notes.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po,
+	  doc/po/fr/extras_tigergeocoder.xml.po,
+	  doc/po/fr/extras_topology.xml.po, doc/po/fr/faq.xml.po,
+	  doc/po/fr/faq_raster.xml.po, doc/po/fr/installation.xml.po,
+	  doc/po/fr/performance_tips.xml.po,
+	  doc/po/fr/reference_constructor.xml.po,
+	  doc/po/fr/reference_editor.xml.po,
+	  doc/po/fr/reference_measure.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_processing.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/release_notes.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po,
+	  doc/po/it_IT/extras_tigergeocoder.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po,
+	  doc/po/it_IT/faq_raster.xml.po, doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/performance_tips.xml.po,
+	  doc/po/it_IT/reference_constructor.xml.po,
+	  doc/po/it_IT/reference_editor.xml.po,
+	  doc/po/it_IT/reference_measure.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_processing.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/release_notes.xml.po,
+	  doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/ja/extras_address_standardizer.xml.po,
+	  doc/po/ja/extras_historytable.xml.po,
+	  doc/po/ja/extras_tigergeocoder.xml.po,
+	  doc/po/ja/extras_topology.xml.po, doc/po/ja/faq.xml.po,
+	  doc/po/ja/faq_raster.xml.po, doc/po/ja/installation.xml.po,
+	  doc/po/ja/introduction.xml.po, doc/po/ja/performance_tips.xml.po,
+	  doc/po/ja/reference_accessor.xml.po,
+	  doc/po/ja/reference_constructor.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_management.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_misc.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/reference_sfcgal.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/ja/using_raster_dataman.xml.po,
+	  doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/ko_KR/faq_raster.xml.po, doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/performance_tips.xml.po,
+	  doc/po/ko_KR/reference_constructor.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po,
+	  doc/po/pl/extras_tigergeocoder.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/faq_raster.xml.po,
+	  doc/po/pl/installation.xml.po, doc/po/pl/performance_tips.xml.po,
+	  doc/po/pl/reference_constructor.xml.po,
+	  doc/po/pl/reference_editor.xml.po,
+	  doc/po/pl/reference_measure.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_processing.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/release_notes.xml.po,
+	  doc/po/pl/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/extras_address_standardizer.xml.po,
+	  doc/po/pt_BR/extras_historytable.xml.po,
+	  doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po, doc/po/pt_BR/faq.xml.po,
+	  doc/po/pt_BR/faq_raster.xml.po, doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/introduction.xml.po,
+	  doc/po/pt_BR/performance_tips.xml.po,
+	  doc/po/pt_BR/reference.xml.po,
+	  doc/po/pt_BR/reference_accessor.xml.po,
+	  doc/po/pt_BR/reference_constructor.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_guc.xml.po,
+	  doc/po/pt_BR/reference_lrs.xml.po,
+	  doc/po/pt_BR/reference_management.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_misc.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/reference_sfcgal.xml.po,
+	  doc/po/pt_BR/reference_temporal.xml.po,
+	  doc/po/pt_BR/reference_transaction.xml.po,
+	  doc/po/pt_BR/reference_type.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/pt_BR/using_postgis_app.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_raster_dataman.xml.po,
+	  doc/po/templates/extras.xml.pot,
+	  doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/extras_historytable.xml.pot,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/faq.xml.pot,
+	  doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/introduction.xml.pot,
+	  doc/po/templates/performance_tips.xml.pot,
+	  doc/po/templates/postgis.xml.pot,
+	  doc/po/templates/reference.xml.pot,
+	  doc/po/templates/reference_accessor.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_exception.xml.pot,
+	  doc/po/templates/reference_guc.xml.pot,
+	  doc/po/templates/reference_lrs.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_misc.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/reference_sfcgal.xml.pot,
+	  doc/po/templates/reference_temporal.xml.pot,
+	  doc/po/templates/reference_transaction.xml.pot,
+	  doc/po/templates/reference_type.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/reporting.xml.pot,
+	  doc/po/templates/using_postgis_app.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot,
+	  doc/po/templates/using_raster_dataman.xml.pot: Pull translation
+	  files from transifex
+
+2017-01-28 08:30  Regina Obe <lr@pcorp.us>
+
+	* [r15296] liblwgeom/lwprint.c: Fix for 32-bit lwprint to support
+	  ST_AsLatLonText
+	  Closes #3688 for PostGIS 2.4 (trunk)
+
+2017-01-25 23:46  Regina Obe <lr@pcorp.us>
+
+	* [r15294] extras/tiger_geocoder/tiger_loader_2016.sql: Turn off
+	  loading of tabblock by default. It's been broken since 2014 and
+	  not used by the geocoder
+	  References #3698 for PostGIS 2.4
+
+2017-01-24 16:37  Sandro Santilli <strk@kbt.io>
+
+	* [r15292] topology/postgis_topology.c: Fix build warnings in
+	  PostgreSQL-9.6 based builds
+	  
+	  Closes #3696
+	  
+	  NOTE: SPI_processed datatype changed from 32 to 64 bit stsarting
+	  with PostgreSQL 9.6
+
+2017-01-22 05:46  Regina Obe <lr@pcorp.us>
+
+	* [r15290] postgis/geography.sql.in, postgis/geography_brin.sql.in,
+	  postgis/postgis.sql.in, postgis/postgis_brin.sql.in: Fix for
+	  pg_upgrade of pg < 9.5 + 2.3+, pg_upgrade and doing a postgis
+	  micro update to latest stable.
+	  References #3683 for PostGIS 2.4 (trunk)
+
+2017-01-18 20:58  Sandro Santilli <strk@kbt.io>
+
+	* [r15288] liblwgeom/cunit/cu_print.c, liblwgeom/lwprint.c:
+	  ST_AsLatLonText: round minutes
+	  
+	  Patch by Mike Toews, see #3688
+
+2017-01-18 13:18  Sandro Santilli <strk@kbt.io>
+
+	* [r15287] NEWS: Add missing blank line
+
+2017-01-07 08:45  Regina Obe <lr@pcorp.us>
+
+	* [r15284] regress/knn_recheck.sql, regress/knn_recheck_expected:
+	  Add regress check for ERROR: index returned tuples in wrong order
+	  references #3418
+
+2017-01-06 16:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15283] postgis/gserialized_gist_2d.c: #3418, KNN recheck in 9.5
+	  fails with index returned tuples in wrong order
+	  
+	  While we store float boxes, it is important to carry out
+	  *comparisons*
+	  of those boxes in double space, so we can capture small
+	  differences.
+	  This works well because the boxes are "overdetermined", they are
+	  slightly
+	  larger than they need to be. The bug in this case was caused by a
+	  case
+	  where the distance calculation between two boxes was carried out
+	  in float
+	  space and as a result the distance got slightly overdetermined,
+	  ending
+	  up larger than the actual distance between the objects
+	  themselves.
+
+2017-01-05 19:51  Regina Obe <lr@pcorp.us>
+
+	* [r15281] postgis/postgis.sql.in: Relationship functions not using
+	  an index in some cases
+	  Set cost back to 1 for functions that return a geometry
+	  A higher cost has the side-effect of making the planner
+	  think when used in conjunction with relate constructs like
+	  ST_Intersects
+	  it's cheaper to compute the geometry once rather
+	  than compute twice and break into an index and non-index call.
+	  References #3675 for PostGIS 2.4
+
+2016-12-20 00:08  Regina Obe <lr@pcorp.us>
+
+	* [r15277] extensions/upgradeable_versions.mk: Add PostGIS 2.3.1 as
+	  a target
+
+2016-12-20 00:07  Regina Obe <lr@pcorp.us>
+
+	* [r15276] utils/postgis_proc_upgrade.pl: PostGIS upgrade scripts
+	  missing GRANT for views
+	  references #3680 for trunk (PostGIS 2.4)
+
+2016-12-16 18:55  Sandro Santilli <strk@kbt.io>
+
+	* [r15275] topology/test/perf/TopoGeo_addLinestring.sql: Fully
+	  qualify performance test script
+	  
+	  ... helps running it from single-mode postgres
+
+2016-12-10 09:33  Sandro Santilli <strk@kbt.io>
+
+	* [r15274] topology/postgis_topology.c: Use a cached prepared
+	  statement for loading topology records
+
+2016-12-10 09:33  Sandro Santilli <strk@kbt.io>
+
+	* [r15273] topology/test/perf,
+	  topology/test/perf/TopoGeo_addLinestring.sql: Add simple
+	  performance tester for TopoGeo_addLinestring
+
+2016-12-09 17:10  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15272] loader/shp2pgsql-core.c: Comment out what appears to be
+	  an old debugging line
+
+2016-12-09 17:09  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15271] loader/dbfopen.c, loader/shp2pgsql-core.c: #3645, do not
+	  load logically deleted records from shape files
+
+2016-12-03 22:05  Sandro Santilli <strk@kbt.io>
+
+	* [r15269] topology/postgis_topology.c: 4x speed improvement in
+	  GetFaceByPoint
+	  
+	  Implies a speedup in topology loading too, whereas the
+	  face-containing-point callback is used twice per added line.
+
+2016-12-03 20:36  Regina Obe <lr@pcorp.us>
+
+	* [r15267] postgis/postgis.sql.in: Cost on ST_SetSRID is preventing
+	  index use with relation functions. Change from 10 to 1.
+	  References #3675 for PostGIS 2.4
+
+2016-12-02 08:06  Sandro Santilli <strk@kbt.io>
+
+	* [r15266] liblwgeom/liblwgeom.h.in, liblwgeom/lwpoly.c,
+	  postgis/lwgeom_functions_basic.c: Refactor logic for
+	  ST_MakeEnvelope to be reusable in liblwgeom
+	  
+	  Patch by Björn Harrtell via
+	  https://git.osgeo.org/gogs/postgis/postgis/pulls/8
+
+2016-11-28 00:41  Regina Obe <lr@pcorp.us>
+
+	* [r15262] HOWTO_RELEASE: minor update
+
+2016-11-26 21:51  Regina Obe <lr@pcorp.us>
+
+	* [r15261] HOWTO_RELEASE: Add build badges, trunk vs. branch
+	  release
+	  references #3671 for PostGIS 2.4 (trunk)
+
+2016-11-26 19:23  Regina Obe <lr@pcorp.us>
+
+	* [r15255] postgis/postgis.sql.in: Mark ST_Extent, ST_Mem*
+	  aggregate functions parallel safe
+	  references #3650 for PostGIS 2.4 (trunk)
+
+2016-11-26 16:39  Regina Obe <lr@pcorp.us>
+
+	* [r15252] doc/reference_raster.xml: ST_DumpAsPolygons
+	  documentation confusing wrt no data value
+	  references #3512 for PostGIS 2.4 (trunk)
+
+2016-11-26 15:18  Regina Obe <lr@pcorp.us>
+
+	* [r15249] doc/reference_measure.xml: ST_Equals documentation does
+	  not describe current behavior
+	  closes #3566 for 2.4.0 (trunk)
+
+2016-11-26 14:59  Regina Obe <lr@pcorp.us>
+
+	* [r15247] doc/extras_topology.xml: Incorrect parameter name for
+	  CreateTopology
+	  references #3509 for 2.4.0 (trunk)
+
+2016-11-23 07:34  Sandro Santilli <strk@kbt.io>
+
+	* [r15244] liblwgeom/lwutil.c: Reorganize code to make comments
+	  have more sense
+
+2016-11-22 06:58  Regina Obe <lr@pcorp.us>
+
+	* [r15243] raster/rt_pg/rtpostgis.sql.in: add raster constraint max
+	  extent exceeds array size limit
+	  references #3501 for trunk (PostGIS 2.4)
+
+2016-11-21 15:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15242] liblwgeom/lwgeom_api.c, liblwgeom/lwgeom_geos.c: Remove
+	  trailing blankspaces
+
+2016-11-21 15:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15241] liblwgeom/lwgeom_geos.c: Do not continue execution of
+	  ptarray_to_GEOSCoordSeq on error
+
+2016-11-21 15:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15240] liblwgeom/lwgeom_api.c: Do not continue execution of
+	  getPoint4d_p on error
+
+2016-11-21 15:24  Sandro Santilli <strk@kbt.io>
+
+	* [r15239] topology/postgis_topology.c: Fix too many arguments
+	  warning introduced with r15236
+
+2016-11-21 15:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15237] configure.ac: Change MSG line
+
+2016-11-18 11:22  Sandro Santilli <strk@kbt.io>
+
+	* [r15236] liblwgeom/liblwgeom_topo.h, topology/postgis_topology.c:
+	  Allow passing NULL box to getEdgeWithinBox2D
+
+2016-11-17 07:57  Sandro Santilli <strk@kbt.io>
+
+	* [r15234] doc/extras_topology.xml: Update topology slide deck url
+
+2016-11-17 07:57  Sandro Santilli <strk@kbt.io>
+
+	* [r15233] doc/extras_topology.xml: Remove trailing whitespaces
+
+2016-11-17 07:56  Sandro Santilli <strk@kbt.io>
+
+	* [r15232] doc/extras_topology.xml: Add TopoGeo_AddLineString in
+	  the "See Also" section of AddEdge
+
+2016-11-15 22:53  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15230] configure.ac: Make OSX 10.12 libxml handler invisible to
+	  other platforms and less scary for othres
+
+2016-11-13 13:53  Sandro Santilli <strk@kbt.io>
+
+	* [r15229] .editorconfig: Topology files want space indent
+
+2016-11-11 19:35  Regina Obe <lr@pcorp.us>
+
+	* [r15226] doc/using_postgis_dataman.xml,
+	  libpgcommon/gserialized_gist.c, libpgcommon/gserialized_gist.h,
+	  postgis/brin_2d.c, postgis/brin_nd.c,
+	  postgis/gserialized_gist_2d.c, postgis/gserialized_gist_nd.c,
+	  regress/regress_brin_index.sql,
+	  regress/regress_brin_index_3d.sql,
+	  regress/regress_brin_index_3d_expected,
+	  regress/regress_brin_index_expected: Bugs in BRIN support
+	  Patch from Julien Rouhaud (Dalibo)
+	  references #3665 for PostGIS 2.4 (trunk)
+
+2016-11-10 19:07  Sandro Santilli <strk@kbt.io>
+
+	* [r15225] README.md: Remove IRC badge, adding a link to matrix
+	  bridge to chat section
+
+2016-11-10 18:46  Sandro Santilli <strk@kbt.io>
+
+	* [r15224] README.md: Add IRC badge
+
+2016-11-10 04:07  Regina Obe <lr@pcorp.us>
+
+	* [r15223] liblwgeom/lwgeodetic.c, regress/geography.sql,
+	  regress/geography_expected: Bug in geography ST_Segmentize
+	  Closes #3667 for PostGIS 2.4.0 (trunk)
+	  Patch provided by Hugo Mercier (Oslandia)
+
+2016-10-30 22:24  Regina Obe <lr@pcorp.us>
+
+	* [r15219] postgis/postgis.sql.in: st_concavehull() returns
+	  sometimes empty geometry collection
+	  references #1973 for PostGIS 2.4 (trunk)
+
+2016-10-28 15:40  Sandro Santilli <strk@kbt.io>
+
+	* [r15215] .drone.yml: Update drone yml to 0.5 version
+	  
+	  See https://git.osgeo.org/gogs/sac/gogs-service/issues/14
+
+2016-10-25 18:38  Regina Obe <lr@pcorp.us>
+
+	* [r15214] doc/reference_processing.xml: get rid of invalid link
+	  and obsolete statements about ST_Collect
+
+2016-10-19 08:26  Sandro Santilli <strk@kbt.io>
+
+	* [r15212] configure.ac: Add another path to search docbook xsl
+	  into
+	  
+	  The added path is /usr/share/xml/docbook/stylesheet/docbook-xsl
+	  which is the target of /usr/share/xml/docbook/stylesheet/nwalsh
+	  being a symlink on Ubuntu 16.04
+
+2016-10-15 21:16  Regina Obe <lr@pcorp.us>
+
+	* [r15208] raster/rt_pg/rtpostgis.c: raster GUC -
+	  boot_postgis_gdal_enabled_drivers should use TopMemoryContext
+	  instead of CurrentMemoryContext
+	  References #3659 for trunk (PostGIS 2.4)
+
+2016-10-12 19:12  Sandro Santilli <strk@kbt.io>
+
+	* [r15207] .drone.yml: Force pull of build-test image upon pipeline
+	  start
+
+2016-10-12 19:11  Sandro Santilli <strk@kbt.io>
+
+	* [r15206] loader/shp2pgsql-core.c: Remove trailing spaces
+
+2016-10-10 20:25  Sandro Santilli <strk@kbt.io>
+
+	* [r15203] liblwgeom/lwgeom_geos.c: Fix typo in error message about
+	  ClipByBox availability
+
+2016-10-10 19:43  Sandro Santilli <strk@kbt.io>
+
+	* [r15197] .drone.yml: Be verbose in running tests
+
+2016-10-07 20:00  Sandro Santilli <strk@kbt.io>
+
+	* [r15189] postgis/postgis.sql.in: Mark changed aggregates
+	  
+	  Fixes #3656 (aggregate upgrades)
+
+2016-10-07 19:49  Sandro Santilli <strk@kbt.io>
+
+	* [r15188] utils/check_all_upgrades.sh: Properly signal check
+	  errors, stopping on first error
+
+2016-10-07 19:30  Sandro Santilli <strk@kbt.io>
+
+	* [r15187] .drone.yml: Add upgrade step
+
+2016-10-07 15:43  Sandro Santilli <strk@kbt.io>
+
+	* [r15185] utils/check_all_upgrades.sh: Add script to check all
+	  upgrade paths
+
+2016-10-06 17:31  Sandro Santilli <strk@kbt.io>
+
+	* [r15180] doc/doxygen.cfg.in: Remove hard-coded version in Doxygen
+	  project name
+
+2016-10-06 10:43  Sandro Santilli <strk@kbt.io>
+
+	* [r15170] configure.ac: Silence warning: ar: 'u' modifier ignored
+	  since 'D' is the default
+	  
+	  See https://bugzilla.redhat.com/show_bug.cgi?id=1155273#c12
+
+2016-10-03 20:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15169] liblwgeom/lwstroke.c: #3652, crash on
+	  collection(multicurve())
+
+2016-09-27 22:56  Regina Obe <lr@pcorp.us>
+
+	* [r15161] README.postgis: correct readme. We don't support
+	  PostgreSQL 9.1 anymore (we probably will also drop 9.2 support
+	  before 2.4 is released.)
+
+2016-09-27 08:04  Sandro Santilli <strk@kbt.io>
+
+	* [r15156] postgis/postgis_module.c: Do not call printf from
+	  interrupt handler, fixing deadlocks
+	  
+	  Closes #3644
+
+2016-09-26 22:02  Regina Obe <lr@pcorp.us>
+
+	* [r15155] configure.ac: PostGIS not building on latest OSX XCode
+	  Closes #3643 for PostGIS 2.4.0 (patch from pramsey)
+
+2016-09-26 05:40  Regina Obe <lr@pcorp.us>
+
+	* [r15147] NEWS, Version.config, doc/release_notes.xml,
+	  extensions/upgradeable_versions.mk: bump up to 2.4
+
+2016-09-25 09:19  Regina Obe <lr@pcorp.us>
+
+	* [r15140] doc/extras_topology.xml: Document
+	  populate_topology_layer
+	  closes #3462
+
+2016-09-25 07:32  Regina Obe <lr@pcorp.us>
+
+	* [r15139] NEWS, doc/performance_tips.xml: Bring Tuning section up
+	  to date, by incorporating some of Mike Toews changes
+	  Add mention of configs to enable parallel queries
+	  Get rid of broken link to Kevin Neufeld's old press and replace
+	  with PostgreSQL wiki
+	  Closes #3452
+
+2016-09-25 06:10  Regina Obe <lr@pcorp.us>
+
+	* [r15138] regress/tickets.sql, regress/tickets_expected: Test to
+	  trap FreeBSD crash on small tables.
+	  References #2985 for PostGIS 2.3.0
+
+2016-09-25 03:41  Regina Obe <lr@pcorp.us>
+
+	* [r15136] extras/tiger_geocoder/normalize/normalize_address.sql,
+	  extras/tiger_geocoder/pagc_normalize/pagc_normalize_address.sql:
+	  tiger normalize, pagc_normalize integer out of range
+	  references #3641 for PostGIS 2.3.0
+
+2016-09-24 06:46  Regina Obe <lr@pcorp.us>
+
+	* [r15134] extensions/postgis/Makefile.in:
+	  ../../utils/create_spatial_ref_sys_config_dump.pl: not found on
+	  FreeBSD Add $PERL (my freebsd doesn't work without it
+
+2016-09-24 06:31  Regina Obe <lr@pcorp.us>
+
+	* [r15133]
+	  extras/tiger_geocoder/geocode/interpolate_from_address.sql: fix
+	  numeric in interpolate_from_address
+	  References #3640 for PostGIS 2.3.0 (trunk) better fix
+
+2016-09-24 04:11  Regina Obe <lr@pcorp.us>
+
+	* [r15132]
+	  extras/tiger_geocoder/geocode/interpolate_from_address.sql: fix
+	  numeric in interpolate_from_address
+	  References #3640 for PostGIS 2.3.0 (trunk)
+
+2016-09-23 17:38  Sandro Santilli <strk@kbt.io>
+
+	* [r15131] liblwgeom/ptarray.c: Simplify loop / make more readable
+
+2016-09-22 16:10  Sandro Santilli <strk@kbt.io>
+
+	* [r15129] topology/test/regress/getfacebypoint.sql,
+	  topology/test/regress/getfacebypoint_expected: Fix test for
+	  getFaceByPoint to not rely on invalid topology
+	  
+	  Closes #3632
+
+2016-09-21 22:21  Daniel Baston <dbaston@gmail.com>
+
+	* [r15128] NEWS: NEWS updates
+
+2016-09-21 20:11  Regina Obe <lr@pcorp.us>
+
+	* [r15127] doc/xsl/postgis_gardentest.sql.xsl: Amend garden tests
+	  to test BRIN indexes for geometry and geography
+	  closes #3619
+
+2016-09-21 19:44  Regina Obe <lr@pcorp.us>
+
+	* [r15126] raster/rt_pg/rtpostgis.sql.in: mark more raster
+	  functions parallel safe
+	  references #3556
+
+2016-09-21 15:58  Regina Obe <lr@pcorp.us>
+
+	* [r15125] ChangeLog: forgot to update ChangeLog on RC1, too late
+	  but lets bring it up to date a bit.
+
 2016-09-20 21:01  Regina Obe <lr@pcorp.us>
 
 	* [r15124] postgis/postgis.sql.in: AddGeometryColumn should not be

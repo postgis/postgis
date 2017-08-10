@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.4.0beta1
-:Date: 2016-09-06
+:Version: 2.4.0alpha
+:Date: 2017-08-05
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -31,7 +31,7 @@ Directory structure::
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 9.2 and above.
+PostGIS is compatible with PostgreSQL 9.3 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
@@ -43,7 +43,7 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.3.0 or higher 
+* GEOS (Required, Version 3.3.0 or higher
   - 3.4+ is strongly recommended and needed for full features):
 
   The GEOS library provides support for exact topological tests such as
@@ -77,10 +77,10 @@ this to work.
 
 * GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended)
 
-  GDAL (http://gdal.org) is *required* if you want to compile PostGIS 
+  GDAL (http://gdal.org) is *required* if you want to compile PostGIS
   with raster or extension support. To compile without raster support you
   must ``./configure --without-raster`` (also disables extension)
-  
+
 * CGAL 4.1+ and SFCGAL (Optional) needed for advanced 3D support
 
   https://github.com/Oslandia/SFCGAL
@@ -176,11 +176,11 @@ You can change them using ``./configure`` switches. See CONFIGURATION section.
 CREATING NEW SPATIAL DATABASES
 ------------------------------
 
-PostGIS support must be enabled for each database that requires its usage. 
+PostGIS support must be enabled for each database that requires its usage.
 Enabling spatial functionality requires a PostgreSQL super-user.
 
     CREATE EXTENSION postgis;
-  
+
 
 UPGRADING EXISTING SPATIAL DATABASES
 ------------------------------------
@@ -188,7 +188,7 @@ UPGRADING EXISTING SPATIAL DATABASES
 Upgrade PostGIS using the "ALTER EXTENSION" facility.
 
   ALTER EXTENSION postgis UPDATE TO '2.2.0';
-  
+
 
 USAGE
 -----

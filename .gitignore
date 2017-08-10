@@ -95,6 +95,8 @@ macros/ltversion.m4
 *.o
 postgis_config.h
 postgis/Makefile
+postgis/geobuf.pb-c.c
+postgis/geobuf.pb-c.h
 postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy.sql
@@ -108,6 +110,8 @@ postgis/sfcgal_upgrade.sql*
 postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_postgis.sql
+postgis/vector_tile.pb-c.c
+postgis/vector_tile.pb-c.h
 raster/loader/Makefile
 raster/loader/raster2pgsql
 raster/Makefile
