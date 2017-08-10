@@ -22,10 +22,10 @@ compiler: gcc
 script:
   - ./configure
   - make
+  - find /home/travis -type d -exec chmod 755 {} \;
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - find /home/travis -type d -exec chmod 755 {} \;
   - make installcheck
   - make installcheck RUNTESTFLAGS='--dumprestore'
 
