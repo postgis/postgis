@@ -25,6 +25,7 @@ script:
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
+  - ls -lR /home
   - make installcheck
   - make installcheck RUNTESTFLAGS='--dumprestore'
 
