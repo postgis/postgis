@@ -3,12 +3,12 @@ env:
     - RUNTESTFLAGS=-v
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.5"
 
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y
-      postgresql-9.4 postgresql-server-dev-9.4
+      postgresql-9.5 postgresql-server-dev-9.5
       build-essential autoconf libtool libcunit1-dev
       xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal1h libgdal-dev libgeos-dev libjson0-dev
@@ -25,7 +25,6 @@ script:
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install
-  - ls -lR /home
   - make installcheck
   - make installcheck RUNTESTFLAGS='--dumprestore'
 
