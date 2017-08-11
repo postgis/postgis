@@ -33,9 +33,9 @@
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
-#if POSTGIS_PGSQL_VERSION > 92
+
 #include "access/htup_details.h"
-#endif
+
 
 #include "liblwgeom.h"
 

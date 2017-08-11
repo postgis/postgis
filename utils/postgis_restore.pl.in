@@ -83,12 +83,14 @@ while (@ARGV && $ARGV[0] =~ /^-/) {
 die $usage if (@ARGV < 1);
 
 my $dumpfile = $ARGV[0];
-my $manifest = $dumpfile . ".lst";
+my $manifest = $dumpfile;
+$manifest =~ s/\/$//; # strip trailing slash
+$manifest .= ".lst";
 my $hasTopology = 0;
 
 die "$me:\tUnable to find 'pg_dump' on the path.\n" if ! `pg_dump --version`;
 die "$me:\tUnable to find 'pg_restore' on the path.\n" if ! `pg_restore --version`;
-die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -f $dumpfile;
+die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -r $dumpfile;
 
 print STDERR "Converting $dumpfile to ASCII on stdout...\n";
 
@@ -899,6 +901,10 @@ COMMENT FUNCTION st_force_3dz(geometry)
 COMMENT FUNCTION st_force_4d(geometry)
 COMMENT FUNCTION st_force_collection(geometry)
 COMMENT FUNCTION st_forcerhr(geometry)
+COMMENT FUNCTION st_frechetdistance(geom1 geometry,geom2 geometry)
+COMMENT FUNCTION st_frechetdistance(geom1 geometry,geom2 geometry,double precision)
+COMMENT FUNCTION st_frechetdistance(geometry,geometry)
+COMMENT FUNCTION st_frechetdistance(geometry,geometry,double precision)
 COMMENT FUNCTION st_gdaldrivers(OUTidxinteger,OUTshort_nametext,OUTlong_nametext,OUTcreate_optionstext)
 COMMENT FUNCTION st_geogfromtext(text)
 COMMENT FUNCTION st_geogfromwkb(bytea)

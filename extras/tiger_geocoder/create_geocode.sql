@@ -2,7 +2,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.net
 --
--- Copyright (C) 2010, 2011 Regina Obe and Leo Hsu
+-- Copyright (C) 2010-2017 Regina Obe and Leo Hsu
 -- Copyright (C) 2008 Stephen Frost (et al)
 -- reintegrated back into PostGIS code base from Steven's git (http://www.snowman.net/git/tiger_geocoder/)
 -- Copyright Refractions Research
@@ -23,7 +23,7 @@ BEGIN;
 -- Type used to pass around a normalized address between functions
 -- This is s bit dangerous since it could potentially drop peoples tables
 -- TODO: put in logic to check if any tables have norm_addy and don't drop if they do
-DROP TYPE IF EXISTS norm_addy CASCADE;
+DROP TYPE IF EXISTS norm_addy;
 CREATE TYPE norm_addy AS (
     address INTEGER,
     preDirAbbrev VARCHAR,
@@ -34,7 +34,7 @@ CREATE TYPE norm_addy AS (
     location VARCHAR,
     stateAbbrev VARCHAR,
     zip VARCHAR,
-    parsed BOOLEAN);
+    parsed BOOLEAN, zip4 varchar, address_alphanumeric varchar);
 
 -- System/General helper functions
 \i utility/utmzone.sql

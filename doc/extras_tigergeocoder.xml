@@ -732,7 +732,7 @@ for z in *.zip; do $UNZIPTOOL -o -d $TMPDIR $z; done
           </listitem>
         </orderedlist>
         <para>Availability: 2.0.0 to support Tiger 2010 structured data and load census tract (tract), block groups (bg), and blocks (tabblocks) tables .</para>
-        <note><para>If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates long text.  To fix, change 
+        <note><para>If you are using pgAdmin 3, be warned that by default pgAdmin 3 truncates long text.  To fix, change
          <emphasis>File -&gt; Options -&gt; Query Tool -&gt; Query Editor - &gt; Max. characters per column</emphasis> to larger than 50000 characters.</para></note>
 
 
@@ -934,7 +934,8 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
          You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
         <para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
         <para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-        <para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
+        <para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip] [parsed] [zip4] [address_alphanumeric]</para>
+        <para>Enhanced: 2.4.0 norm_addy object includes additional fields zip4 and address_alphanumeric.</para>
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
@@ -965,6 +966,12 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           </listitem>
           <listitem>
             <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+          </listitem>
+          <listitem>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
+          </listitem>
+          <listitem>
+            <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R. Parsing of this is better using <xref linkend="Pagc_Normalize_Address" /> function.  Availability: PostGIS 2.4.0.</para>
           </listitem>
         </orderedlist>
 
@@ -1032,6 +1039,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
         <para>The native standardaddr of address_standardizer extension is at this time a bit richer than norm_addy since its designed to support international addresses (including country).  standardaddr equivalent fields are:</para>
         <para>house_num,predir, name, suftype, sufdir, unit, city, state, postcode</para>
 
+        <para>Enhanced: 2.4.0 norm_addy object includes additional fields zip4 and address_alphanumeric.</para>
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
@@ -1062,6 +1070,12 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
           </listitem>
           <listitem>
             <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
+          </listitem>
+          <listitem>
+            <para><varname>zip4</varname> last 4 digits of a 9 digit zip code. Availability: PostGIS 2.4.0.</para>
+          </listitem>
+          <listitem>
+            <para><varname>address_alphanumeric</varname> Full street number even if it has alpha characters like 17R. Parsing of this is better using <xref linkend="Pagc_Normalize_Address" /> function.  Availability: PostGIS 2.4.0.</para>
           </listitem>
         </orderedlist>
 

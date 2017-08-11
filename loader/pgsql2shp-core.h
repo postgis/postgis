@@ -23,9 +23,12 @@
 #include <iconv.h>
 
 #include "libpq-fe.h"
+
 #include "shapefil.h"
 #include "shpcommon.h"
 #include "getopt.h"
+
+
 
 #define P2S_RCSID "$Id$"
 
@@ -84,7 +87,7 @@ typedef struct shp_dumper_config
 
 	/* Name of the column map file if specified */
 	char *column_map_filename;
-	
+
 } SHPDUMPERCONFIG;
 
 
@@ -99,7 +102,7 @@ typedef struct shp_dumper_state
 
 	/* Database connection being used */
 	PGconn *conn;
-	
+
 	/* Version of PostGIS being used */
 	int pgis_major_version;
 
@@ -132,10 +135,10 @@ typedef struct shp_dumper_state
 
 	/* PostgreSQL column lengths for all non-spatial fields */
 	int *pgfieldlens;
-	
+
 	/* PostgreSQL column typmods for all non-spatial fields */
 	int *pgfieldtypmods;
-	
+
 	/* Number of non-spatial fields in DBF output file */
 	int fieldcount;
 
@@ -199,3 +202,4 @@ int ShpDumperGetRecordCount(SHPDUMPERSTATE *state);
 int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state);
 int ShpDumperCloseTable(SHPDUMPERSTATE *state);
 void ShpDumperDestroy(SHPDUMPERSTATE *state);
+char *quote_identifier(const char *s);

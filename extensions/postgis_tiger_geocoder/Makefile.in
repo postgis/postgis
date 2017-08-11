@@ -93,6 +93,7 @@ sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTV
 # to create schema by setting schema to tiger_geocoder in control
 #also remove tiger_data from extension if it is part of it
 sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/utility/set_search_path.sql \
+  sql_bits/upgrade_before.sql.in \
   	../../extras/tiger_geocoder/geocode_settings.sql \
   ../../extras/tiger_geocoder/tiger_loader_2016.sql \
 	../../extras/tiger_geocoder/utility/utmzone.sql \

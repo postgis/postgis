@@ -3,16 +3,17 @@ env:
     - RUNTESTFLAGS=-v
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
 
 before_install:
+  - sudo add-apt-repository --yes ppa:ubuntugis/ppa
+  - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
-  - sudo apt-get install -y
-      postgresql-9.4 postgresql-server-dev-9.4
-      build-essential autoconf libtool libcunit1-dev
-      xsltproc docbook-xsl docbook-mathml dblatex
+  - sudo apt-get install -y --no-install-recommends
+      postgresql-9.6 postgresql-server-dev-9.6
+      libcunit1-dev xsltproc docbook-xsl docbook-mathml dblatex
       libproj-dev libgdal-dev libgeos-dev libjson0-dev
-      libgdal1h
+      libsfcgal1 libsfcgal-dev libprotobuf-c0-dev libgdal-dev 
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
@@ -20,9 +21,12 @@ language: c
 
 compiler: gcc
 
+dist: trusty
+
 script:
   - ./configure
   - make
+  - chmod 755 /home/travis
   - make check
   - make check RUNTESTFLAGS='--dumprestore'
   - sudo make install

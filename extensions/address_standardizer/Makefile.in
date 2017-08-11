@@ -67,43 +67,43 @@ sql/%.sql: %.sql.in
 	mkdir -p sql
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/${EXTENSION}-${MINORVERSION}'g" > $@
-	
+
 sql/address_standardizer--@POSTGIS_LIB_VERSION@.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
 	cat $^ > $@
-	
+
 sql/address_standardizer.sql: sql/address_standardizer_types.sql \
     sql/address_standardizer_functions.sql
 	cat $^ > $@
-	
+
 sql/address_standardizer--1.0--$(EXTVERSION).sql:  sql/address_standardizer_functions.sql
 	cat $^ > $@
-	
+
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/address_standardizer_functions.sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/address_standardizer_functions.sql
-	cat $^ > $@		
-	
+	cat $^ > $@
+
 # build us data extension
 sql/$(EXTENSION)_data_us--$(EXTVERSION).sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
 	mkdir -p sql
 	cat $^ > $@
-	
+
 sql/$(EXTENSION)_data_us.sql: us_lex.sql us_gaz.sql us_rules.sql sql_bits/address_standardizer_data_us_mark_editable_objects.sql.in
 	mkdir -p sql
 	cat $^ > $@
-	
+
 # upgrade logic for us data extension (to go to next cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)--$(EXTVERSION)next.sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
 	cat $^ > $@
 
 # upgrade logic for us data extension (to go to original round-robin yoyo cludge for dev upgrading)
 sql/$(EXTENSION)_data_us--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)_data_us--$(EXTVERSION).sql
-	cat $^ > $@	
-	
+	cat $^ > $@
+
 mk-st-regexp: mk-st-regexp.pl
 	$(PERL) -c mk-st-regexp.pl
 	rm -f mk-st-regexp
@@ -162,8 +162,9 @@ tokenize.o: tokenize.c pagc_api.h
 
 std_pg_hash.o: std_pg_hash.c std_pg_hash.h pagc_api.h pagc_std_api.h
 
-#only extension files	
+#only extension files
 DATA += $(wildcard sql/*--*.sql)
+EXTRA_CLEAN += sql/*.sql
 EXTRA_CLEAN += $(wildcard expected/*--*.out)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql *.a *.so *.dll

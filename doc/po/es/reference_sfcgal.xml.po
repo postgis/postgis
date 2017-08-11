@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2015-09-29 12:24+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-05-29 14:56+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -33,6 +34,10 @@ msgid ""
 "<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>. To load "
 "the functions create extension postgis_sfcgal."
 msgstr ""
+"Las instrucciones de instalación de la biblioteca se pueden encontrar en la "
+"página principal de SFCGAL <ulink url=\"http://www.sfcgal.org\">http://"
+"www.sfcgal.org</ulink>. Para cargar las funciones crear la extensión "
+"postgis_sfcgal."
 
 #. Tag: para
 #: reference_sfcgal.xml:13
@@ -83,7 +88,7 @@ msgstr ""
 #: reference_sfcgal.xml:903
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_sfcgal.xml:42 reference_sfcgal.xml:74 reference_sfcgal.xml:167
@@ -91,7 +96,7 @@ msgstr ""
 #: reference_sfcgal.xml:482 reference_sfcgal.xml:707 reference_sfcgal.xml:745
 #, no-c-format
 msgid "Availability: 2.1.0"
-msgstr ""
+msgstr "Disponibilidad: 2.1.0"
 
 #. Tag: para
 #: reference_sfcgal.xml:43 reference_sfcgal.xml:75 reference_sfcgal.xml:168
@@ -112,7 +117,7 @@ msgstr ""
 #: reference_sfcgal.xml:838 reference_sfcgal.xml:879 reference_sfcgal.xml:907
 #, no-c-format
 msgid "&Z_support;"
-msgstr ""
+msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:45 reference_sfcgal.xml:77 reference_sfcgal.xml:170
@@ -122,7 +127,7 @@ msgstr ""
 #: reference_sfcgal.xml:880 reference_sfcgal.xml:908
 #, no-c-format
 msgid "&P_support;"
-msgstr ""
+msgstr "&P_support;"
 
 #. Tag: para
 #: reference_sfcgal.xml:46 reference_sfcgal.xml:78 reference_sfcgal.xml:171
@@ -132,13 +137,13 @@ msgstr ""
 #: reference_sfcgal.xml:881 reference_sfcgal.xml:909
 #, no-c-format
 msgid "&T_support;"
-msgstr ""
+msgstr "&T_support;"
 
 #. Tag: refname
 #: reference_sfcgal.xml:54
 #, no-c-format
 msgid "ST_Extrude"
-msgstr ""
+msgstr "ST_Extrude"
 
 #. Tag: refpurpose
 #: reference_sfcgal.xml:56
@@ -163,7 +168,7 @@ msgstr ""
 #: reference_sfcgal.xml:641 reference_sfcgal.xml:714 reference_sfcgal.xml:752
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: para
 #: reference_sfcgal.xml:82 reference_sfcgal.xml:491 reference_sfcgal.xml:567
@@ -234,7 +239,7 @@ msgstr ""
 #: reference_sfcgal.xml:677 reference_sfcgal.xml:720 reference_sfcgal.xml:851
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Ver también"
 
 #. Tag: refname
 #: reference_sfcgal.xml:150
@@ -311,7 +316,7 @@ msgstr ""
 #: reference_sfcgal.xml:836 reference_sfcgal.xml:877 reference_sfcgal.xml:905
 #, no-c-format
 msgid "Availability: 2.2.0"
-msgstr ""
+msgstr "Disponibilidad: 2.2.0"
 
 #. Tag: programlisting
 #: reference_sfcgal.xml:241
@@ -1015,7 +1020,7 @@ msgstr ""
 #: reference_sfcgal.xml:844
 #, no-c-format
 msgid "Example"
-msgstr ""
+msgstr "Ejemplo"
 
 #. Tag: para
 #: reference_sfcgal.xml:845

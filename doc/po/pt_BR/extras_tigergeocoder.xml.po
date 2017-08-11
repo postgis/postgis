@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
-# georgersilva <georger.silva@gmail.com>, 2016
+# georgersilva <georger.silva@gmail.com>, 2016-2017
 # Marcelo Soares Souza <marcelo@juntadados.org>, 2014
 # Poliana Palhares <p.palhares@plamu.com.br>, 2016
 # Thiago lima santos leão <th1agol1ma12@gmail.com>, 2013
@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-01-28 07:02+0000\n"
-"PO-Revision-Date: 2016-12-06 19:33+0000\n"
-"Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
+"PO-Revision-Date: 2017-01-31 20:15+0000\n"
+"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
 "language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -1876,7 +1876,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:533
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;\n"
 "-- result --\n"
@@ -1900,31 +1900,10 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
-"SELECT loader_generate_script(ARRAY['MA','RI'], 'windows') AS result;\n"
-"-- result --\n"
-"set STATEDIR=\"\\gisdata\\www2.census.gov\\geo\\pvs\\tiger2010st"
-"\\44_Rhode_Island\"\n"
-"set TMPDIR=\\gisdata\\temp\\\n"
-"set UNZIPTOOL=\"C:\\Program Files\\7-Zip\\7z.exe\"\n"
-"set WGETTOOL=\"C:\\wget\\wget.exe\"\n"
-"set PGBIN=C:\\Program Files\\PostgreSQL\\8.4\\bin\\\n"
-"set PGPORT=5432\n"
-"set PGHOST=localhost\n"
-"set PGUSER=postgres\n"
-"set PGPASSWORD=yourpasswordhere\n"
-"set PGDATABASE=geocoder\n"
-"set PSQL=\"%PGBIN%psql\"\n"
-"set SHP2PGSQL=\"%PGBIN%shp2pgsql\"\n"
-"\n"
-"%WGETTOOL% http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-"
-"parent --relative --recursive --level=2 --accept=zip,txt --mirror --"
-"reject=html\n"
-":\n"
-":"
 
 #. Tag: programlisting
 #: extras_tigergeocoder.xml:535
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;\n"
 "-- result --\n"
@@ -1949,29 +1928,12 @@ msgid ""
 ":\n"
 ":"
 msgstr ""
-"SELECT loader_generate_script(ARRAY['MA','RI'], 'sh') AS result;\n"
-"-- result --\n"
-"STATEDIR=\"/gisdata/www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island\"\n"
-"TMPDIR=\"/gisdata/temp/\"\n"
-"UNZIPTOOL=unzip\n"
-"PGPORT=5432\n"
-"PGHOST=localhost\n"
-"PGUSER=postgres\n"
-"PGPASSWORD=yourpasswordhere\n"
-"PGDATABASE=geocoder\n"
-"PSQL=psql\n"
-"SHP2PGSQ=shp2pgsql\n"
-"\n"
-"wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent "
-"--relative --recursive --level=2 --accept=zip,txt --mirror --reject=html\n"
-":\n"
-":"
 
 #. Tag: para
 #: extras_tigergeocoder.xml:542
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ", <xref linkend=\"Loader_Generate_Nation_Script\"/>"
-msgstr ", <xref linkend=\"Missing_Indexes_Generate_Script\"/>"
+msgstr ""
 
 #. Tag: refname
 #: extras_tigergeocoder.xml:548
@@ -2036,7 +1998,7 @@ msgid ""
 "loader_lookuptables</varname> to control the process and different OS shell "
 "syntax variations."
 msgstr ""
-"Utiliza as seguintes tables de controle: varname>tiger.loader_platform</"
+"Utiliza as seguintes tables de controle: <varname>tiger.loader_platform</"
 "varname>, <varname>tiger.loader_variables</varname>, e <varname>tiger."
 "loader_lookuptables</varname> para controlar o processo e diferentes "
 "variações de sintaxe OS shell."

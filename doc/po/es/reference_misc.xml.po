@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 #
 # Translators:
+# nramire1 nramire1 <nramire1@yahoo.com.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
-"PO-Revision-Date: 2016-02-16 08:34+0000\n"
-"Last-Translator: georgersilva <georger.silva@gmail.com>\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-05-31 16:03+0000\n"
+"Last-Translator: nramire1 nramire1 <nramire1@yahoo.com.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/postgis/postgis/language/"
 "es/)\n"
 "Language: es\n"
@@ -26,7 +27,7 @@ msgstr ""
 #: reference_misc.xml:7
 #, no-c-format
 msgid "ST_Accum"
-msgstr ""
+msgstr "ST_Accum"
 
 #. Tag: refpurpose
 #: reference_misc.xml:9
@@ -50,7 +51,7 @@ msgstr ""
 #: reference_misc.xml:528
 #, no-c-format
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #. Tag: para
 #: reference_misc.xml:24
@@ -104,7 +105,7 @@ msgstr ""
 #: reference_misc.xml:542
 #, no-c-format
 msgid "Examples"
-msgstr ""
+msgstr "Ejemplos"
 
 #. Tag: programlisting
 #: reference_misc.xml:36
@@ -141,7 +142,7 @@ msgstr ""
 #: reference_misc.xml:549
 #, no-c-format
 msgid "See Also"
-msgstr ""
+msgstr "Ver también"
 
 #. Tag: refname
 #: reference_misc.xml:49
@@ -251,7 +252,7 @@ msgstr ""
 #: reference_misc.xml:133
 #, no-c-format
 msgid "ST_EstimatedExtent"
-msgstr ""
+msgstr "ST_EstimatedExtent"
 
 #. Tag: refpurpose
 #: reference_misc.xml:135
@@ -322,7 +323,7 @@ msgstr ""
 #: reference_misc.xml:194
 #, no-c-format
 msgid "Availability: 1.0.0"
-msgstr ""
+msgstr "Disponibilidad: 1.0.0"
 
 #. Tag: para
 #: reference_misc.xml:195
@@ -347,7 +348,7 @@ msgstr ""
 #: reference_misc.xml:216
 #, no-c-format
 msgid "ST_Expand"
-msgstr ""
+msgstr "ST_Expand"
 
 #. Tag: refpurpose
 #: reference_misc.xml:217
@@ -504,7 +505,7 @@ msgstr ""
 #: reference_misc.xml:313
 #, no-c-format
 msgid "ST_Extent"
-msgstr ""
+msgstr "ST_Extent"
 
 #. Tag: refpurpose
 #: reference_misc.xml:314
@@ -569,7 +570,7 @@ msgstr ""
 #: reference_misc.xml:344
 #, no-c-format
 msgid "Availability: 1.4.0"
-msgstr ""
+msgstr "Disponibilidad: 1.4.0"
 
 #. Tag: para
 #: reference_misc.xml:355
@@ -622,7 +623,7 @@ msgstr ""
 #: reference_misc.xml:367
 #, no-c-format
 msgid "ST_3DExtent"
-msgstr ""
+msgstr "ST_3DExtent"
 
 #. Tag: refpurpose
 #: reference_misc.xml:368
@@ -703,7 +704,7 @@ msgstr ""
 #: reference_misc.xml:415
 #, no-c-format
 msgid "Find_SRID"
-msgstr ""
+msgstr "Find_SRID"
 
 #. Tag: refpurpose
 #: reference_misc.xml:417
@@ -750,7 +751,7 @@ msgstr ""
 #: reference_misc.xml:461
 #, no-c-format
 msgid "ST_MemSize"
-msgstr ""
+msgstr "ST_MemSize"
 
 #. Tag: refpurpose
 #: reference_misc.xml:463
@@ -855,7 +856,7 @@ msgstr ""
 #: reference_misc.xml:510
 #, no-c-format
 msgid "ST_PointInsideCircle"
-msgstr ""
+msgstr "ST_PointInsideCircle"
 
 #. Tag: refpurpose
 #: reference_misc.xml:512
@@ -895,7 +896,7 @@ msgstr ""
 #: reference_misc.xml:536
 #, no-c-format
 msgid "Availability: 1.2"
-msgstr ""
+msgstr "Disponibilidad: 1.2"
 
 #. Tag: para
 #: reference_misc.xml:537

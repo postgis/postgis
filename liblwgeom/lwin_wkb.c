@@ -441,7 +441,10 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 	POINTARRAY *pa = ptarray_from_wkb_state(s);
 
 	if( pa == NULL || pa->npoints == 0 )
+	{
+		ptarray_free(pa);
 		return lwline_construct_empty(s->srid, s->has_z, s->has_m);
+	}
 
 	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{

@@ -94,12 +94,13 @@ cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}/bin/*.dll  $outdir/bin/postgi
 # it seems 9.2 and 9.3 doesn't come with its own libiconv good grief
 # and trying to use their libiconv2.dll makes shp2pgsql crash
 if [[ "$PG_VER" == *9.2* || "$PG_VER" == *9.3* ]]; then
-	cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin 
+	cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/*.dll  $outdir/bin
 fi;
-cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui 
-#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui 
+cp ${PGPATHEDB}/bin/libpq.dll  $outdir/bin/postgisgui
+#cp ${PGPATHEDB}/bin/libiconv2.dll  $outdir/bin/postgisgui
 cp ${MINGPROJECTS}/rel-libiconv-1.13.1w${OS_BUILD}${GCC_TYPE}/bin/libicon*.dll $outdir/bin/postgisgui
-cp ${PGPATHEDB}/bin/libintl.dll $outdir/bin/postgisgui 
+cp ${PGPATHEDB}/bin/libintl*.dll $outdir/bin/postgisgui
+
 cp ${PGPATHEDB}/bin/ssleay32.dll $outdir/bin/postgisgui
 cp ${PGPATHEDB}/bin/libeay32.dll $outdir/bin/postgisgui
 
@@ -131,7 +132,7 @@ if [ "$POSTGIS_MAJOR_VERSION" == "2" ] ; then
   ## only copy gdal components if 2+.  1.5 doesn't have raster support
   cp -p ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
   cp -rp  ${PROJECTS}/gdal/rel-${GDAL_VER}w${OS_BUILD}${GCC_TYPE}/share/gdal $outdir/gdal-data
-  
+
   if [ "$POSTGIS_MINOR_VERSION" > "0" ] ; then
     ## only copy pagc standardizer components for 2.1+
     cp -p ${PROJECTS}/pcre/rel-${PCRE_VER}w${OS_BUILD}${GCC_TYPE}/bin/libpcre-1*.dll $outdir/bin
@@ -151,7 +152,7 @@ if [ -n "$SFCGAL_VER"  ]; then
 	echo "Boost VERSION: ${BOOST_VER} http://www.boost.org" >> $verfile
 	echo "GMP VERSION: ${GMP_VER} https://gmplib.org" >> $verfile
 	echo "MPFR VERSION: ${MPFR_VER} http://www.mpfr.org" >> $verfile
-	
+
 	cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin
 	cp -p ${PROJECTS}/CGAL/rel-sfcgal-${SFCGAL_VER}w${OS_BUILD}${GCC_TYPE}/lib/*.dll $outdir/bin
 	# cp -p ${PROJECTS}/CGAL/rel-cgal-${CGAL_VER}w${OS_BUILD}${GCC_TYPE}/bin/*.dll $outdir/bin/postgisgui

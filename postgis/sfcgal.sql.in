@@ -32,70 +32,70 @@ CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
 CREATE OR REPLACE FUNCTION ST_3DIntersection(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_intersection3D'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_3DDifference(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_difference3D'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
        
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_3DUnion(geom1 geometry, geom2 geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_union3D'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
        
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Tesselate(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_tesselate'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
        
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_3DArea(geometry)
        RETURNS FLOAT8
        AS 'MODULE_PATHNAME','sfcgal_area3D'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.1.0       
 CREATE OR REPLACE FUNCTION ST_Extrude(geometry, float8, float8, float8)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_extrude'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.1.0       
 CREATE OR REPLACE FUNCTION ST_ForceLHR(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_force_lhr'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
        
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
        RETURNS INT4
        AS 'MODULE_PATHNAME','sfcgal_orientation'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_minkowski_sum'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_StraightSkeleton(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_straight_skeleton'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.2.0
@@ -126,34 +126,35 @@ CREATE OR REPLACE FUNCTION ST_ApproximateMedialAxis(geometry)
        AS 'MODULE_PATHNAME','sfcgal_approximate_medial_axis'
        LANGUAGE 'c'
 #endif // POSTGIS_SFCGAL_VERSION >= 12
-       IMMUTABLE STRICT COST 100;
+       IMMUTABLE STRICT  _PARALLEL 
+       COST 100;
 
 -- Availability: 2.2.0       
 CREATE OR REPLACE FUNCTION ST_IsPlanar(geometry)
        RETURNS boolean
        AS 'MODULE_PATHNAME','sfcgal_is_planar'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_Volume(geometry)
        RETURNS FLOAT8
        AS 'MODULE_PATHNAME','sfcgal_volume'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_MakeSolid(geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_make_solid'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_IsSolid(geometry)
        RETURNS boolean
        AS 'MODULE_PATHNAME','sfcgal_is_solid'
-       LANGUAGE 'c' IMMUTABLE STRICT
+       LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL
        COST 100;
 
 COMMIT;

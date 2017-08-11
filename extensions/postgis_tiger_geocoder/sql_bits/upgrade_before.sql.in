@@ -1,0 +1,10 @@
+-- these introduced in PostGIS 2.4
+DO language plpgsql
+$$
+    BEGIN
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE zip4 varchar;
+        ALTER TYPE tiger.norm_addy ADD ATTRIBUTE address_alphanumeric varchar;
+    EXCEPTION
+        WHEN others THEN  -- ignore the error probably cause it already exists
+    END;
+$$;

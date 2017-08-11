@@ -436,9 +436,18 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
   dnl the final version. This is to guard against user error...
   PGSQL_FULL_VERSION=`"$PG_CONFIG" --version`
+
   PGSQL_MAJOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^0-9]]*\([[0-9]]*\).*/\1/'`
-  PGSQL_MINOR_VERSION=`echo $PGSQL_FULL_VERSION | sed 's/[[^\.]]*\.\([[0-9]]*\).*/\1/'`
-  PGSQL_MINOR_VERSION=`echo $PGSQL_MINOR_VERSION | sed 's/.*devel.*/0/'`
+  PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[^0-9]]*\([[0-9]]\)\.\([[0-9]]\).*/\2/'`
+
+  if test $PGSQL_MAJOR_VERSION -gt 9; then
+  	dnl ==================================================================
+  	dnl Starting with PostgreSQL 10, major is the new minor
+  	dnl This is to prevent things like 10.31 ranking higher than 11.0
+  	dnl===================================================================
+  	PGSQL_MINOR_VERSION=0
+  fi
+
   POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
   PGSQL_PKGLIBDIR=`"$PG_CONFIG" --pkglibdir`
@@ -446,9 +455,9 @@ if test "x$LIBLWGEOM_ONLY" = "xno"; then
   PGSQL_SHAREDIR=`"$PG_CONFIG" --sharedir`
 
   AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-  dnl Ensure that we are using PostgreSQL >= 9.2
-  if test $POSTGIS_PGSQL_VERSION -lt 92; then
-    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.2])
+  dnl Ensure that we are using PostgreSQL >= 9.3
+  if test $POSTGIS_PGSQL_VERSION -lt 93; then
+    AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.3])
   fi
 
   HAVE_BRIN=no
@@ -940,7 +949,7 @@ fi
 dnl Check that we can find the protobuf/protobuf.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$PROTOBUF_CPPFLAGS"
-AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])	
+AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libprotobuf-c
@@ -1510,12 +1519,12 @@ AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
-if test "$GEOS_NUMERIC_VERSION" -lt 30500; then
+if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
 AC_MSG_WARN([  PostGIS we recommend you build using ])
-AC_MSG_WARN([  GEOS 3.5.0 or higher. You can download ])
+AC_MSG_WARN([  GEOS 3.7.0 or higher. You can download ])
 AC_MSG_WARN([  the latest versions from ])
 AC_MSG_WARN([  http://trac.osgeo.org/geos ])
 AC_MSG_WARN()

@@ -79,9 +79,7 @@ _PG_init(void)
     0, /* bootValue */
     PGC_SUSET, /* GucContext context */
     GUC_UNIT_MS, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
     NULL, /* GucStringCheckHook check_hook */
-#endif
     NULL, /* GucStringAssignHook assign_hook */
     NULL  /* GucShowHook show_hook */
    );
@@ -97,9 +95,7 @@ _PG_init(void)
     "Welcome to PostGIS " POSTGIS_VERSION, /* bootValue */
     PGC_SUSET, /* GucContext context */
     GUC_UNIT_MS, /* int flags */
-#if POSTGIS_PGSQL_VERSION >= 91
     NULL, /* GucStringCheckHook check_hook */
-#endif
     NULL, /* GucStringAssignHook assign_hook */
     NULL  /* GucShowHook show_hook */
    );

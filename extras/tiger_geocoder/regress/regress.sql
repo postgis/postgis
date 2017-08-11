@@ -1,4 +1,4 @@
-\a
+\a \pset null ''
 --SET seq_page_cost='1000';
 SELECT set_geocode_setting('debug_reverse_geocode', 'false');
 SELECT set_geocode_setting('debug_geocode_address', 'false');

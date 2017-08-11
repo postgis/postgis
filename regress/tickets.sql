@@ -27,7 +27,7 @@ SELECT '#2', ST_AsText(ST_Union(g)) FROM
 SELECT '#11', ST_Distance (a.g, ST_Intersection(b.g, a.g)) AS distance
 FROM (SELECT '01020000000200000050E8303FC2E85141B017CFC05A825541000000E0C0E85141000000205C825541'::geometry AS g) a,
 	 (SELECT 'LINESTRING(4694792.35840419 5638508.89950758,4694793.20840419 5638506.34950758)'::geometry AS g) b;
-	
+
 -- #21 --
 SELECT '#21', ST_AsEWKT(ST_Locate_Along_Measure(g, 4566)) FROM
 ( VALUES
@@ -205,7 +205,7 @@ SELECT '#263', ST_AsEWKT(geometry(geography(pt.the_geom))) As wkt,
 	 As pca,
 	ST_Covers(geometry(geography(poly.the_geom)),
 		geometry(geography(pt.the_geom))) As gm_to_gg_gm_pca
-	
+
 FROM (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((-119.5434 34.9438,-119.5437 34.9445,-119.5452 34.9442,-119.5434 34.9438))') As the_geom)
 	As poly
     CROSS JOIN
@@ -1011,6 +1011,9 @@ SELECT '#3620b', ST_AsText(ST_MinimumBoundingCircle('LINESTRING (2 8, 2 8)'));
 -- #3627
 SELECT '#3627a', ST_AsEncodedPolyline('SRID=4326;LINESTRING(-0.250691 49.283048,-0.250633 49.283376,-0.250502 49.283972,-0.251245 49.284028,-0.251938 49.284232,-0.251938 49.2842)', 6);
 SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline(geom, 7), 7)) FROM (VALUES ('SRID=4326;LINESTRING (0 0, 1 1)')) AS v (geom);
+
+-- #3704
+SELECT '#3704', ST_AsX3D('LINESTRING EMPTY') = '';
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
