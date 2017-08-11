@@ -217,8 +217,8 @@ lwarc_linearize(POINTARRAY *to,
 	a2 = atan2(p2->y - center.y, p2->x - center.x);
 	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
-	LWDEBUGF(2, "lwarc_linearize A1:%g A2:%g A3:%g",
-		a1*180/M_PI, a2*180/M_PI, a3*180/M_PI);
+	LWDEBUGF(2, "lwarc_linearize A1:%g (%g) A2:%g (%g) A3:%g (%g)",
+		a1, a1*180/M_PI, a2, a2*180/M_PI, a3, a3*180/M_PI);
 
 	if ( flags & LW_LINEARIZE_FLAG_SYMMETRIC )
 	{{
