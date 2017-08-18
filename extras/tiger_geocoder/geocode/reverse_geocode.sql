@@ -1,6 +1,6 @@
  /***
  *
- * Copyright (C) 2011-2014 Regina Obe and Leo Hsu (Paragon Corporation)
+ * Copyright (C) 2011-2017 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
@@ -68,7 +68,7 @@ BEGIN
 	IF var_zip > '' THEN
 	      var_addy.zip := var_zip ;
 	END IF;
-	
+
 	var_stmt := 'SELECT z.name  FROM place As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
 	EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 	IF var_place > '' THEN
@@ -91,7 +91,7 @@ BEGIN
 		-- We don't have any data for this county
 		RETURN;
 	END IF;
-	
+
 	var_addy.stateAbbrev = var_stusps;
 
 	-- Find the street edges that this point is closest to with tolerance of 0.005 but only consider the edge if the point is contained in the right or left face
@@ -121,7 +121,7 @@ BEGIN
 				FROM e LEFT JOIN addr As a ON (a.statefp = ' || quote_literal(var_state) || '  AND e.tlid = a.tlid and e.eside = a.side)
 				)
 		SELECT *
-		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.predirabrv, foo.streetname, foo.streettypeabbrev, foo.zip,  foo.center_pt,
+		FROM (SELECT DISTINCT ON(tlid,side)  foo.fullname, foo.predirabrv, foo.streetname, foo.sufdirabrv, foo.streettypeabbrev, foo.zip,  foo.center_pt,
 			  side, to_number(CASE WHEN trim(fromhn) ~ ''^[0-9]+$'' THEN fromhn ELSE NULL END,''99999999'')  As fromhn, to_number(CASE WHEN trim(tohn) ~ ''^[0-9]+$'' THEN tohn ELSE NULL END,''99999999'') As tohn,
 			  ST_GeometryN(ST_Multi(line),1) As line, dist
 		FROM
@@ -133,11 +133,11 @@ BEGIN
 			    WHERE featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid)
 				ORDER BY dist LIMIT 50 ) As foo
 				ORDER BY foo.tlid, foo.side, ';
-				
+
 	    -- for numbered street/road use var_rating_highway to determine whether to prefer numbered or not (0 no pref, 1 prefer numbered, 2 prefer named)
 		var_stmt := var_stmt || ' CASE $1 WHEN 0 THEN 0  WHEN 1 THEN CASE WHEN foo.fullname ~ ''[0-9]+'' THEN 0 ELSE 1 END ELSE CASE WHEN foo.fullname > '''' AND NOT (foo.fullname ~ ''[0-9]+'') THEN 0 ELSE 1 END END ';
 		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY f.dist, CASE WHEN fullname > '''' THEN 0 ELSE 1 END '; --don't bother penalizing for distance if less than 20 meters
-				
+
 	IF var_debug = true THEN
 	    RAISE NOTICE 'Statement 1: %', replace(var_stmt, '$1', var_rating_highway::text);
 	END IF;
@@ -156,6 +156,7 @@ BEGIN
             var_addy.streetname = var_redge.streetname;
             var_addy.streettypeabbrev := var_redge.streettypeabbrev;
             var_addy.predirabbrev := var_redge.predirabrv;
+			var_addy.postDirAbbrev := var_redge.sufdirabrv;
         END IF;
 
         IF ST_Intersects(var_redge.line, var_primary_line) THEN
@@ -210,12 +211,13 @@ BEGIN
 					var_addy_alt.streetname := var_addy.streetname;
 					var_addy_alt.streettypeabbrev := var_addy.streettypeabbrev;
                     var_addy_alt.predirabbrev := var_addy.predirabbrev;
+					var_addy_alt.postDirAbbrev := var_addy.sufdirabrv;
 					addy[array_upper(addy,1) - 1 ] := var_addy_alt;
 					IF var_debug THEN
 						RAISE NOTICE 'Replaced with : %, %', var_addy_alt, clock_timestamp();
 					END IF;
 				END IF;
-				
+
 				IF var_debug THEN
 					RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
 					RAISE NOTICE 'Final addresses: %, %', addy, clock_timestamp();
