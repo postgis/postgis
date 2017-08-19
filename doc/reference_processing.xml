@@ -2560,7 +2560,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 	  <refnamediv>
 		<refname>ST_RemoveRepeatedPoints</refname>
 		<refpurpose>Returns a version of the given geometry with
-				duplicated points removed.</refpurpose>
+				consecutive duplicated points removed.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -2575,7 +2575,7 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 
 	  <refsection>
 		<title>Description</title>
-		<para>Returns a version of the given geometry with
+		<para>Returns a version of the given geometry with consecutive
 				duplicated points removed. Will actually do something only with
 				(multi)lines, (multi)polygons and multipoints but you can safely call it with
 				any kind of geometry. Since simplification occurs on a
