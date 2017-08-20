@@ -2441,7 +2441,7 @@ FROM (SELECT
 		<title>See Also</title>
 
 		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_DistanceSphere"/>, <xref linkend="ST_Distance_Spheroid"/>,
-		<xref linkend="ST_MaxDistance" />, <xref linkend="ST_HausdorffDistance" />,  <xref linkend="ST_FreschetDistance" />, <xref linkend="ST_Transform" /></para>
+		<xref linkend="ST_MaxDistance" />, <xref linkend="ST_HausdorffDistance" />,  <xref linkend="ST_FrechetDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
