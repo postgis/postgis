@@ -2321,11 +2321,15 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	appropriate indexes are in place to provide good performance. The SRID of 312 used in these
 	examples is purely for demonstration.  You should be using a REAL SRID listed in the the spatial_ref_sys table
 	and one that matches the projection of your data.  If your data has no spatial reference system
-	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.
-	If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
-	or a good location
-	on Mars to transport the human race in the event of a nuclear holocaust,
-	then simply leave out the SRID or make one up and insert it in the <varname>spatial_ref_sys</varname> table.</para>
+	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.</para>
+	<para>If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
+	or the floorplan of a not yet built amusement park then that's fine.  If the location of the amusement park has been planned however, then it would make
+	sense to use a suitable planar coordinate system for that location if nothing more than to ensure the amusement part is not trespassing on already existing
+	structures.</para>
+	<para>Even in the case where you are planning a Mars expedition to transport the human race in the event of a nuclear holocaust
+and you want to map out the Mars planet for rehabitation,  you can use a non-earthly coordinate system such as <ulink url="http://spatialreference.org/ref/iau2000/mars-2000/">Mars 2000</ulink>
+ make one up and insert it in the <varname>spatial_ref_sys</varname> table.  Though this Mars coordinate system is a non-planar one (it's in degrees spheroidal),
+ you can use it with the geography type to have your length and proximity measurements in meters instead of degrees.</para>
 
 	<sect2>
 	  <title>Taking Advantage of Indexes</title>
