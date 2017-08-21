@@ -1962,6 +1962,72 @@ WHERE rid=35;
 			</refsection>
 		</refentry>
 
+        <refentry id="RT_ST_MakeEmptyCoverage">
+                  <refnamediv>
+                    <refname>ST_MakeEmptyCoverage</refname>
+                    <refpurpose>Cover georeferenced area with a grid of empty raster tiles.</refpurpose>
+                  </refnamediv>
+
+                  <refsynopsisdiv>
+                    <funcsynopsis>
+                      <funcprototype>
+                        <funcdef>raster <function>ST_MakeEmptyCoverage</function></funcdef>
+                        <paramdef><type>integer </type> <parameter>tilewidth</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>tileheight</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+                        <paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>upperleftx</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>upperlefty</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>skewx</parameter></paramdef>
+                        <paramdef><type>double precision </type> <parameter>skewy</parameter></paramdef>
+                        <paramdef choice="opt"><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
+                      </funcprototype>
+                    </funcsynopsis>
+                  </refsynopsisdiv>
+
+                  <refsection>
+                    <title>Description</title>
+
+                    <para>Create a set of raster tiles with <xref linkend="RT_ST_MakeEmptyRaster" />. Grid dimension is <varname>width</varname> &amp; <varname>height</varname>. Tile dimension is <varname>tilewidth</varname> &amp; <varname>tileheight</varname>. The covered georeferenced area is from upper left corner (<varname>upperleftx</varname>, <varname>upperlefty</varname>) to lower right corner (<varname>upperleftx</varname>  <varname>width</varname> * <varname>scalex</varname>, <varname>upperlefty</varname>  <varname>height</varname> * <varname>scaley</varname>).</para>
+
+                    <para>Availability: 2.4.0 </para>
+                  </refsection>
+
+                  <refsection>
+                    <title>Examples Basic</title>
+                    <para>Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner (22, 77) to lower right corner (55, 33).</para>
+                    <programlisting><![CDATA[SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;
+
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+-------------------------------------------------------------------------------------
+         22 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      30.25 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+       38.5 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      46.75 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+         22 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      30.25 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+       38.5 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      46.75 |         22 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+         22 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      30.25 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+       38.5 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      46.75 |         11 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+         22 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      30.25 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+       38.5 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
+      46.75 |          0 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0]]></programlisting>
+                  </refsection>
+
+                  <refsection>
+                    <title>See Also</title>
+                    <para>
+                      <xref linkend="RT_ST_MakeEmptyRaster" />
+                    </para>
+                  </refsection>
+        </refentry>
+
 		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>

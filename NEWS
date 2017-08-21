@@ -14,8 +14,9 @@ PostGIS 2.4.0
   - #3753, Gist penalty speed improvements for 2d and nd points
            (Darafei Praliaskouski)
   - #3677, ST_FrechetDistance (Shinichi Sugiyama)
-  - Most aggregates (raster and geometry), 
+  - Most aggregates (raster and geometry),
     and all stable / immutable (raster and geometry) marked as parallel safe
+  - #2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)
 
 * Enhancements *
 

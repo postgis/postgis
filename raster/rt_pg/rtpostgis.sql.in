@@ -8836,6 +8836,61 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT 0)
+    RETURNS SETOF RASTER AS $$
+    DECLARE
+        ulx double precision;  -- upper left x of raster
+        uly double precision;  -- upper left y of raster
+        rw int;                -- raster width (may change at edges)
+        rh int;                -- raster height (may change at edges)
+        x int;                 -- x index of coverage
+        y int;                 -- y index of coverage
+        template raster;       -- an empty template raster, where each cell
+                               -- represents a tile in the coverage
+        minY double precision;
+        maxX double precision;
+    BEGIN
+        template := @extschema@.ST_MakeEmptyRaster(
+            ceil(width::float8/tilewidth)::int,
+            ceil(height::float8/tileheight)::int,
+            upperleftx,
+            upperlefty,
+            tilewidth * scalex,
+            tileheight * scaley,
+            tileheight * skewx,
+            tilewidth * skewy,
+            srid
+        );
+
+        FOR y IN 1..st_height(template) LOOP
+            maxX := @extschema@.ST_RasterToWorldCoordX(template, 1, y) + width * scalex;
+            FOR x IN 1..st_width(template) LOOP
+                minY := @extschema@.ST_RasterToWorldCoordY(template, x, 1) + height * scaley;
+                uly := @extschema@.ST_RasterToWorldCoordY(template, x, y);
+                IF uly + (tileheight * scaley) < minY THEN
+                    --raise notice 'uly, minY: %, %', uly, minY;
+                    rh := ceil((minY - uly)/scaleY)::int;
+                ELSE
+                    rh := tileheight;
+                END IF;
+
+                ulx := @extschema@.ST_RasterToWorldCoordX(template, x, y);
+                IF ulx + (tilewidth * scalex) > maxX THEN
+                    --raise notice 'ulx, maxX: %, %', ulx, maxX;
+                    rw := ceil((maxX - ulx)/scaleX)::int;
+                ELSE
+                    rw := tilewidth;
+                END IF;
+
+                RETURN NEXT @extschema@.ST_MakeEmptyRaster(rw, rh, ulx, uly, scalex, scaley, skewx, skewy, srid);
+            END LOOP;
+        END LOOP;
+    END;
+    $$ LANGUAGE 'plpgsql' IMMUTABLE _PARALLEL;
+
+
 -------------------------------------------------------------------
 --  Debugging
 -------------------------------------------------------------------
