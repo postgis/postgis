@@ -65,7 +65,7 @@ lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
 
 	result->type = CIRCSTRINGTYPE;
-	
+
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
@@ -98,7 +98,7 @@ lwcircstring_release(LWCIRCSTRING *lwcirc)
 void lwcircstring_free(LWCIRCSTRING *curve)
 {
 	if ( ! curve ) return;
-	
+
 	if ( curve->bbox )
 		lwfree(curve->bbox);
 	if ( curve->points )
@@ -188,7 +188,7 @@ lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 		ptr += ptsize;
 	}
 	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, npoints, newpoints);
-	
+
 	return lwcircstring_construct(srid, NULL, pa);
 }
 
@@ -223,7 +223,7 @@ lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 	}
 
 	pa = ptarray_construct_reference_data(zmflag&2, zmflag&1, mpoint->ngeoms, newpoints);
-	
+
 	LWDEBUGF(3, "lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 
 	return lwcircstring_construct(srid, NULL, pa);
@@ -289,7 +289,7 @@ double lwcircstring_length_2d(const LWCIRCSTRING *circ)
 {
 	if ( lwcircstring_is_empty(circ) )
 		return 0.0;
-	
+
 	return ptarray_arc_length_2d(circ->points);
 }
 
