@@ -2000,7 +2000,7 @@ WHERE rid=35;
                     <para>Create 16 tiles in a 4x4 grid to cover the WGS84 area from upper left corner (22, 77) to lower right corner (55, 33).</para>
                     <programlisting><![CDATA[SELECT (ST_MetaData(tile)).* FROM ST_MakeEmptyCoverage(1, 1, 4, 4, 22, 33, (55 - 22)/(4)::float, (33 - 77)/(4)::float, 0., 0., 4326) tile;
 
- upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+ upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 -------------------------------------------------------------------------------------
          22 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
       30.25 |         33 |     1 |      1 |   8.25 |    -11 |     0 |     0 | 4326 |        0
@@ -4429,8 +4429,9 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 
 			<refsection>
 				<title>Examples</title>
-				<programlisting>
-SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;
+				<programlisting> --LATERAL syntax requires PostgreSQL 9.3+
+SELECT x, y, val, ST_AsText(geom)
+	FROM (SELECT dp.* FROM dummy_rast, LATERAL ST_PixelAsCentroids(rast, 1) AS dp WHERE rid = 2) foo;
  x | y | val |           st_astext
 ---+---+-----+--------------------------------
  1 | 1 | 253 | POINT(3427927.775 5793243.975)
@@ -12918,11 +12919,11 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 
 			  <refsection>
 					<title>Examples</title>
-					<programlisting>
+					<programlisting> -- this syntax requires PostgreSQL 9.3+
 SELECT val, ST_AsText(geom) As geomwkt
 FROM (
-SELECT (ST_DumpAsPolygons(rast)).*
-FROM dummy_rast
+SELECT dp.*
+FROM dummy_rast, LATERAL ST_DumpAsPolygons(rast) AS dp
 WHERE rid = 2
 ) As foo
 WHERE val BETWEEN 249 and 251
