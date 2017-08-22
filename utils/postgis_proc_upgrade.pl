@@ -18,7 +18,7 @@
 # in postgis.sql
 #
 # In addition, the transaction contains
-# a check for Major postgis_lib_version() 
+# a check for Major postgis_lib_version()
 # to match the one contained in lwpostgis.sql
 #
 # This never happens by just running make install
@@ -41,7 +41,7 @@ use warnings;
 # TODO: move configuration outside of code
 #
 my $objs = {
- 	"102" => { 
+ 	"102" => {
 		"aggregates" => {
 			"st_extent(geometry)" => 1,
 			"st_memcollect(geometry)" => 1,
@@ -53,18 +53,18 @@ my $objs = {
 			"st_makeline(geometry)" => 1
 		}
 	},
- 	"105" => { 
+ 	"105" => {
 		"views" => {
 			"geography_columns" => 1
 		},
 	},
- 	"200" => { 
+ 	"200" => {
 		"aggregates" => {
 			"st_3dextent(geometry)" => 1,
       "topology.topoelementarray_agg(topology.topoelement)" => 1
 		}
 	},
- 	"201" => { 
+ 	"201" => {
 		"aggregates" => {
 			"st_samealignment(raster)" => 1,
 			"st_union(raster,unionarg[])" => 1,
@@ -74,7 +74,7 @@ my $objs = {
 			"st_union(raster,text)" => 1
 		}
 	},
- 	"202" => { 
+ 	"202" => {
 		"aggregates" => {
 			"st_summarystatsagg(raster,integer,boolean,double precision)" => 1,
 			"st_summarystatsagg(raster,boolean,double precision)" => 1,
@@ -101,6 +101,7 @@ sub find_last_updated
 sub parse_last_updated
 {
   my $comment = shift;
+	print STDERR "COMMENT: $comment\n";
   if ( $comment =~ m/.*(?:Availability|Changed|Updated):\s([^\.])\.([^.]*)/s ) {
     return $1*100 + $2;
   }
@@ -139,7 +140,7 @@ die "Unable to open input SQL file $sql_file\n"
 	if ( ! -f $sql_file );
 
 #
-# Search the SQL file for the target version number (the 
+# Search the SQL file for the target version number (the
 # version we are upgrading *to*.
 #
 open( INPUT, $sql_file ) || die "Couldn't open file: $sql_file\n";
@@ -162,7 +163,7 @@ while(<INPUT>)
         $soname = $1;
 	}
 }
-close(INPUT); 
+close(INPUT);
 
 die "Unable to locate target new version number in $sql_file\n"
  	if( ! $version_to );
@@ -170,7 +171,7 @@ die "Unable to locate target new version number in $sql_file\n"
 if ( $version_to =~ /(\d+)\.(\d+)\..*/ )
 {
 	$version_to = $1 . "." . $2;
-	$version_to_num = 100 * $1 + $2; 
+	$version_to_num = 100 * $1 + $2;
 }
 else
 {
@@ -201,7 +202,7 @@ while(<DATA>)
 }
 
 #
-# Go through the SQL file and strip out objects that cannot be 
+# Go through the SQL file and strip out objects that cannot be
 # applied to an existing, loaded database: types and operators
 # and operator classes that have already been defined.
 #
@@ -283,7 +284,7 @@ EOF
 		my $type1 = $1;
 		my $type2 = $2;
 		my $def = $_;
-    unless (/;$/) { 
+    unless (/;$/) {
       while(<INPUT>) {
         $def .= $_;
         last if /;$/;
@@ -335,7 +336,7 @@ END
 \$postgis_proc_upgrade\$;
 EOF
 	}
-	
+
 	# This code handles operators by creating them if we are doing a major upgrade
 	if ( /^create operator\s+(\S+)\s*\(/i )
 	{
@@ -378,7 +379,7 @@ EOF
 			last if /\;\s*$/;
 		}
 	}
-	
+
 	# Always output grant permissions (see ticket #3680)
 	if ( /^grant select\s+(\S+)\s*/i )
 	{
@@ -390,7 +391,7 @@ EOF
 		}
 	}
 
-	# Always output create ore replace rule 
+	# Always output create ore replace rule
 	if ( /^create or replace rule\s+(\S+)\s*/i )
 	{
 		print;
@@ -551,7 +552,7 @@ BEGIN
 	-- Next releases will still be ok as
 	-- postgis_lib_version() and MODULE_scripts_installed()
 	-- would both return actual PostGIS release number.
-	-- 
+	--
 	BEGIN
 		SELECT into old_scripts MODULE_lib_version();
 	EXCEPTION WHEN OTHERS THEN
@@ -591,4 +592,4 @@ CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
     as version_from_isdev
   FROM versions
 ;
- 
+
