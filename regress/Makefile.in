@@ -123,6 +123,7 @@ TESTS = \
 	relate \
 	remove_repeated_points \
 	removepoint \
+	reverse \
 	setpoint \
 	simplify \
 	simplifyvw \

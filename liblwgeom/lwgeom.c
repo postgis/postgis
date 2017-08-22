@@ -106,11 +106,18 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	case TRIANGLETYPE:
 		lwtriangle_reverse((LWTRIANGLE *)lwgeom);
 		return;
+	case CIRCSTRINGTYPE:
+		lwcircstring_reverse((LWCIRCSTRING *)lwgeom);
+		return;
+	case MULTICURVETYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case MULTISURFACETYPE:
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
+	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
 		col = (LWCOLLECTION *)lwgeom;
 		for (i=0; i<col->ngeoms; i++)
 			lwgeom_reverse(col->geoms[i]);

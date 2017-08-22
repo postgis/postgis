@@ -341,6 +341,11 @@ LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
 GBOX *gbox_clone(const GBOX *gbox);
 
 /*
+ * Reverse
+ */
+extern void lwcircstring_reverse(LWCIRCSTRING *curve);
+
+/*
 * Startpoint
 */
 int lwpoly_startpoint(const LWPOLY* lwpoly, POINT4D* pt);

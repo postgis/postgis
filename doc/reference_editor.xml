@@ -1120,6 +1120,10 @@ UPDATE sometable
 		<title>Description</title>
 
 		<para>Can be used on any geometry and reverses the order of the vertexes.</para>
+
+		<para>Enhanced: 2.4.0 support for curves was introduced.</para>
+		<para>&Z_support;</para>
+		<para>&P_support;</para>
 	  </refsection>
 
 	  <refsection>
