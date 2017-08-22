@@ -27,6 +27,9 @@ PostGIS 2.4.0
   - #3748, address_standardizer lookup tables update
            so pagc_normalize_address better standardizes abbreviations
 
+* Breaking Changes *
+  - #3810, GEOS 3.5.0 or above minimum required to compile
+
 
 PostGIS 2.4.0alpha
 2017/08/05
