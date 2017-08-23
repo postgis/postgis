@@ -26,6 +26,8 @@ PostGIS 2.4.0
            to norm_addy tiger_geocoder type.
   - #3748, address_standardizer lookup tables update
            so pagc_normalize_address better standardizes abbreviations
+  - #3647, better handling of noding in ST_Node using GEOSNode
+          (Wouter Geraedts)
 
 * Breaking Changes *
   - #3810, GEOS 3.5.0 or above minimum required to compile

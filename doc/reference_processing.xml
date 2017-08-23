@@ -2293,16 +2293,20 @@ while preserving all of the input ones.
 Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
 lines. This is fixed with GEOS 3.3.2 or higher.
 		</para></note>
+		<note><para>
+Changed: 2.4.0 this function uses GEOSNode internally instead of GEOSUnaryUnion.
+This may cause the resulting linestrings to have a different order and direction compared to Postgis &lt; 2.4.
+		</para></note>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
-SELECT ST_AsEWKT(
+SELECT ST_AsText(
 		ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
 	) As  output;
 output
 -----------
-MULTILINESTRING((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))
+MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))
 		</programlisting>
 	  </refsection>
 
