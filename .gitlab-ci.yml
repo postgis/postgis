@@ -1,5 +1,6 @@
 test:
   script:
+    - apt-get update && apt-get install python-software-properties
     - add-apt-repository --yes ppa:ubuntugis/ppa
     - add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
     - apt-get update -qq && apt-get install -y
