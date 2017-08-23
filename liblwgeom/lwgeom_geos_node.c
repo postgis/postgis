@@ -129,7 +129,7 @@ extern LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
 LWGEOM*
 lwgeom_node(const LWGEOM* lwgeom_in)
 {
-	GEOSGeometry *g1, *gu, *gm;
+	GEOSGeometry *g1, *gn, *gm;
 	LWGEOM *ep, *lines;
 	LWCOLLECTION *col, *tc;
 	int pn, ln, np, nl;
@@ -153,18 +153,16 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 		return NULL;
 	}
 
-	/* Unary union input to fully node */
-	gu = GEOSUnaryUnion(g1);
+	gn = GEOSNode(g1);
 	GEOSGeom_destroy(g1);
-	if ( ! gu ) {
+	if ( ! gn ) {
 		lwgeom_free(ep);
 		lwerror("GEOSUnaryUnion: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	/* Linemerge (in case of overlaps) */
-	gm = GEOSLineMerge(gu);
-	GEOSGeom_destroy(gu);
+	gm = GEOSLineMerge(gn);
+	GEOSGeom_destroy(gn);
 	if ( ! gm ) {
 		lwgeom_free(ep);
 		lwerror("GEOSLineMerge: %s", lwgeom_geos_errmsg);

@@ -14,3 +14,8 @@ select 't2', st_asewkt(st_node(
 select 't3', st_asewkt(st_node(
 'SRID=10;LINESTRING(0 0, 10 10, 0 10, 10 0)'
 ));
+
+-- Node two overlapping 3d lines, from documentation
+select 't4', st_asewkt(st_node(
+'SRID=10;LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'
+));
