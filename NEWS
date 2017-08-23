@@ -30,7 +30,7 @@ PostGIS 2.4.0
           (Wouter Geraedts)
 
 * Breaking Changes *
-  - #3810, GEOS 3.5.0 or above minimum required to compile
+  - #3810, GEOS 3.4.0 or above minimum required to compile
 
 
 PostGIS 2.4.0alpha
