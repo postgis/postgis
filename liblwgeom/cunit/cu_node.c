@@ -44,7 +44,7 @@ static void test_lwgeom_node(void)
 	out = lwgeom_node(in);
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
-	CU_ASSERT_STRING_EQUAL("LINESTRING(0 0,5 5,10 0,11 0,12 0,20 0,22 0)", tmp);
+	CU_ASSERT_STRING_EQUAL("MULTILINESTRING((0 0,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0))", tmp);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 
 	wkt = "MULTILINESTRING((0 0,5 5,10 0, 11 0, 20 0),(22 0, 12 0, 10 0),(0 5, 5 0))";
@@ -53,7 +53,7 @@ static void test_lwgeom_node(void)
 	tmp = lwgeom_to_ewkt(out);
 	/* printf("%s\n", tmp); */
 	CU_ASSERT_STRING_EQUAL(
-"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0,11 0,12 0,20 0,22 0),(2.5 2.5,5 0))",
+"MULTILINESTRING((0 0,2.5 2.5),(0 5,2.5 2.5),(2.5 2.5,5 5,10 0),(10 0,11 0,12 0,20 0),(20 0,22 0),(2.5 2.5,5 0))",
 		tmp);
 	lwfree(tmp); lwgeom_free(out); lwgeom_free(in);
 }
