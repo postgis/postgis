@@ -1,7 +1,7 @@
 test:
   script:
-    - sudo add-apt-repository --yes ppa:ubuntugis/ppa
-    - sudo add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
+    - add-apt-repository --yes ppa:ubuntugis/ppa
+    - add-apt-repository --yes ppa:ubuntugis/ubuntugis-unstable
     - apt-get update -qq && apt-get install -y
         postgresql-9.5 postgresql-server-dev-9.5
         build-essential autoconf libtool libcunit1-dev
