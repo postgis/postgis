@@ -3849,7 +3849,7 @@ CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
 -- Availability: 1.2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_Union (geometry) (
 	sfunc = pgis_geometry_accum_transfn,
 	stype = pgis_abs,
@@ -3860,7 +3860,7 @@ CREATE AGGREGATE ST_Union (geometry) (
 	);
 
 -- Availability: 1.2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_Collect (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
@@ -3871,7 +3871,7 @@ CREATE AGGREGATE ST_Collect (geometry) (
 	);
 
 -- Availability: 2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0: marked parallel safe
 CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
@@ -3882,7 +3882,7 @@ CREATE AGGREGATE ST_ClusterIntersecting (geometry) (
 	);
 
 -- Availability: 2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
@@ -3893,7 +3893,7 @@ CREATE AGGREGATE ST_ClusterWithin (geometry, float8) (
 	);
 
 -- Availability: 1.2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_Polygonize (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
@@ -3904,7 +3904,7 @@ CREATE AGGREGATE ST_Polygonize (geometry) (
 	);
 
 -- Availability: 1.2.2
--- Changed 2.4.0: marked parallel safe
+-- Changed: 2.4.0 marked parallel safe
 CREATE AGGREGATE ST_MakeLine (geometry) (
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
