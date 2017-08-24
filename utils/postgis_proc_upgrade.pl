@@ -34,69 +34,10 @@ use strict;
 use warnings;
 
 #
-# Conditionally upgraded types and operators. Only include these
-# if the major numbers in version_from are less than the version_to
-# number.
+# Conditionally upgraded types and operators based
+# on their last updated version and the version of
+# the target database
 #
-# TODO: move configuration outside of code
-#
-my $objs = {
- 	"102" => {
-		"aggregates" => {
-			"st_extent(geometry)" => 1,
-			"st_memcollect(geometry)" => 1,
-			"st_memunion(geometry)" => 1,
-			"st_accum(geometry)" => 1,
-			"st_union(geometry)" => 1,
-			"st_collect(geometry)" => 1,
-			"st_polygonize(geometry)" => 1,
-			"st_makeline(geometry)" => 1
-		}
-	},
- 	"105" => {
-		"views" => {
-			"geography_columns" => 1
-		},
-	},
- 	"200" => {
-		"aggregates" => {
-			"st_3dextent(geometry)" => 1,
-      "topology.topoelementarray_agg(topology.topoelement)" => 1
-		}
-	},
- 	"201" => {
-		"aggregates" => {
-			"st_samealignment(raster)" => 1,
-			"st_union(raster,unionarg[])" => 1,
-			"st_union(raster,integer,text)" => 1,
-			"st_union(raster,integer)" => 1,
-			"st_union(raster)" => 1,
-			"st_union(raster,text)" => 1
-		}
-	},
- 	"202" => {
-		"aggregates" => {
-			"st_summarystatsagg(raster,integer,boolean,double precision)" => 1,
-			"st_summarystatsagg(raster,boolean,double precision)" => 1,
-			"st_summarystatsagg(raster,integer)" => 1,
-			"st_countagg(raster,integer,boolean,double precision)" => 1,
-			"st_countagg(raster,integer,boolean)" => 1,
-			"st_countagg(raster,boolean)" => 1
-		}
-	}
-};
-
-sub find_last_updated
-{
-  my $type = shift;
-  my $sig = shift;
-  for my $ver ( sort { $b cmp $a } keys %$objs ) {
-    if ( $objs->{$ver}->{$type}->{$sig} ) {
-      return $ver;
-    }
-  }
-  return 0;
-}
 
 sub parse_last_updated
 {
@@ -245,8 +186,7 @@ while(<INPUT>)
 
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for type '${newtype}'\n";
-      $last_updated = find_last_updated("types", $newtype);
+      die "ERROR: no last updated info for type '${newtype}'\n";
     }
     my $missing = parse_missing($comment);
     print "-- Type ${newtype} -- LastUpdated: ${last_updated}\n";
@@ -316,8 +256,7 @@ EOF
     #print "-- Checking comment $comment\n";
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for aggregate '${aggsig}'\n";
-      $last_updated = find_last_updated("aggregates", $aggsig);
+      die "ERROR: no last updated info for aggregate '${aggsig}'\n";
     }
     print "-- Aggregate ${aggsig} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
@@ -352,8 +291,7 @@ EOF
 
     my $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for operator '${opsig}'\n";
-      $last_updated = find_last_updated("operators", $opsig);
+      die "WARNING: no last updated info for operator '${opsig}'\n";
     }
     print "-- Operator ${opsig} -- LastUpdated: ${last_updated}\n";
       print <<"EOF";
@@ -416,8 +354,7 @@ EOF
 
 	my $last_updated = parse_last_updated($comment);
 	if ( ! $last_updated ) {
-		print STDERR "WARNING: no last updated info for operator family '${opfname}'\n";
-		$last_updated = find_last_updated("opfamilies", $opfsig);
+		die "WARNING: no last updated info for operator family '${opfname}'\n";
 	}
 	print "-- Operator family ${opfsig} -- LastUpdated: ${last_updated}\n";
 	print <<"EOF";
@@ -482,8 +419,7 @@ EOF
 
     $last_updated = parse_last_updated($comment);
     if ( ! $last_updated ) {
-      print STDERR "WARNING: no last updated info for operator class '${opclassname}'\n";
-      $last_updated = find_last_updated("opclasses", $opclassname);
+      die "WARNING: no last updated info for operator class '${opclassname}'\n";
     }
     print "-- Operator class ${opclassname} -- LastUpdated: ${last_updated}\n";
     print <<"EOF";
