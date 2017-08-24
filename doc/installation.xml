@@ -1536,8 +1536,9 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
   <sect1 id="loading_extras_tiger_geocoder">
 	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
 
-	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/README</filename> </para>
-	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
+	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution. If you are missing the tiger geocoder extension or want a newer version than what your install comes with, then use
+	the <filename>share/extension/postgis_tiger_geocoder.*</filename> files from the packages in <ulink url="http://postgis.net/windows_downloads/">Windows Unreleased Versions</ulink> section for your version of PostgreSQL.
+	Although these packages are for windows, the postgis_tiger_geocoder extension files will work on any OS since the extension is an SQL/plpgsql only extension.</para>
 	<sect2 id="install_tiger_geocoder_extension">
 		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>
 		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
@@ -1603,7 +1604,7 @@ sh nation_script_load.sh</programlisting>
 </screen>
       </listitem>
 
-			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock</varname> are not loaded. Thse tables are not used by the geocoder but are used by folks for population statistics.
+			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock</varname> are not loaded. These tables are not used by the geocoder but are used by folks for population statistics.
 			 If you wish to load them as part of your state loads, run the following statement to enable them.</para>
 				<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
 				<para>Alternatively you can load just these tables after loading state data using the <xref linkend="Loader_Generate_Census_Script" /></para></listitem>
