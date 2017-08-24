@@ -12,6 +12,7 @@ PostGIS 2.3.4
   - #3800, shp2pgql-gui allow export of foreign tables, materialized views,
            and partitioned tables
   - #3806, Reverse geocoder missing suffix direction when present
+  - #3698, loading census tabblock is broken
 
 
 PostGIS 2.3.3

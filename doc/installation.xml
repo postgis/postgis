@@ -1528,8 +1528,10 @@ but you can download the latest at: <ulink url="http://www.pcre.org">http://www.
   <sect1 id="loading_extras_tiger_geocoder">
 	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
 
-	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/README</filename> </para>
-	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
+	<para>Extras like Tiger geocoder may not be packaged in your PostGIS distribution. If you are missing the tiger geocoder extension or want a newer version than what your install comes with, then use
+	the <filename>share/extension/postgis_tiger_geocoder.*</filename> files from the packages in <ulink url="http://postgis.net/windows_downloads/">Windows Unreleased Versions</ulink> section for your version of PostgreSQL.
+	Although these packages are for windows, the postgis_tiger_geocoder extension files will work on any OS since the extension is an SQL/plpgsql only extension.</para>
+
 	<sect2 id="install_tiger_geocoder_extension">
 		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>
 		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1+, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
@@ -1571,14 +1573,41 @@ SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep,
 where the tiger files will be downloaded to and processed.  If you are not happy with having the folder on the root of the server, or simply want to change to a different folder for staging, then edit the field <varname>staging_fold</varname> in the <varname>tiger.loader_variables</varname> table.</para></listitem>
             <listitem><para>Create a folder called temp in the <filename>gisdata</filename> folder or whereever you designated the <varname>staging_fold</varname> to be.  This will be
 the folder where the loader extracts the downloaded tiger data.</para></listitem>
-			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile and copy the scripts to a .sh or .bat file.  So for example to do the nation load and one state using our new profile, you can do this using psql:</para>
+			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" />  SQL function make sure to use the name of your custom profile and copy the script to a .sh or .bat file.  So for example to build  the nation load:</para>
 					<programlisting>psql -c "SELECT Loader_Generate_Nation_Script('debbie')" -d geocoder -tA > /gisdata/nation_script_load.sh</programlisting>
-					<programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting>
 			</listitem>
+
+			<listitem><para>Run the generated nation load commandline scripts.</para>
+				<programlisting>cd /gisdata
+sh nation_script_load.sh</programlisting>
+      </listitem>
+
+      <listitem><para>After you are done running the nation script, you should have three tables in your <code>tiger_data</code> schema and they should be filled with data. Confirm you do by doing the following queries from psql or pgAdmin</para>
+				<programlisting>SELECT count(*) FROM tiger_data.county_all;</programlisting>
+<screen> count
+-------
+  3233
+(1 row)</screen>
+				<programlisting>SELECT count(*) FROM tiger_data.state_all;</programlisting>
+<screen>
+ count
+-------
+    56
+(1 row)
+</screen>
+      </listitem>
+
+			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock</varname> are not loaded. These tables are not used by the geocoder but are used by folks for population statistics.
+			 If you wish to load them as part of your state loads, run the following statement to enable them.</para>
+				<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
+				<para>Alternatively you can load just these tables after loading state data using the <xref linkend="Loader_Generate_Census_Script" /></para></listitem>
+
+			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.</para><warning><para>DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></warning></listitem>
+
+			<listitem><programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting></listitem>
 
 			<listitem><para>Run the generated commandline scripts.</para>
 				<programlisting>cd /gisdata
-sh nation_script_load.sh
 sh ma_load.sh</programlisting>
 			</listitem>
 			<listitem><para>After you are done loading all data or at a stopping point, it's a good idea to analyze all the tiger tables to update the stats (include inherited stats)</para>
