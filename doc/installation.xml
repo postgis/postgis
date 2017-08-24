@@ -1603,7 +1603,12 @@ sh nation_script_load.sh</programlisting>
 </screen>
       </listitem>
 
-			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.  DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></listitem>
+			<listitem><para>By default the tables corresponding to <varname>bg</varname>, <varname>tract</varname>, <varname>tabblock</varname> are not loaded. Thse tables are not used by the geocoder but are used by folks for population statistics.
+			 If you wish to load them as part of your state loads, run the following statement to enable them.</para>
+				<programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
+				<para>Alternatively you can load just these tables after loading state data using the <xref linkend="Loader_Generate_Census_Script" /></para></listitem>
+
+			<listitem><para>For each state you want to load data for, generate a state script <xref linkend="Loader_Generate_Script" />.</para><warning><para>DO NOT Generate the state script until you have already loaded the nation data, because the state script utilizes county list loaded by nation script.</para></warning></listitem>
 
 			<listitem><programlisting>psql -c "SELECT Loader_Generate_Script(ARRAY['MA'], 'debbie')" -d geocoder -tA > /gisdata/ma_load.sh</programlisting></listitem>
 

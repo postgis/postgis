@@ -512,6 +512,12 @@ false
         <title>Description</title>
 
         <para>Given a geometry will return the census tract location of that geometry. NAD 83 long lat is assumed if no spatial ref sys is specified.</para>
+        <note><para>This function uses the census <varname>tract</varname> whic is not loaded by default.  If you have already loaded your state table, you can load tract
+        as well as bg, and tabblock using the <xref linkend="Loader_Generate_Census_Script" /> script.</para>
+        <para>If you have not loaded your state data yet and want these additional tables loaded, do the following</para>
+        <programlisting>UPDATE tiger.loader_lookuptables SET load = true WHERE load = false AND lookup_name IN('tract', 'bg', 'tabblock');</programlisting>
+        <para>then they will be included by the <xref linkend="Loader_Generate_Script" />.</para>
+        </note>
 
         <para>Availability: 2.0.0</para>
 
