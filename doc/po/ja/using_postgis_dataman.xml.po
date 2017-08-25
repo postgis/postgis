@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-07-17 15:51+0000\n"
+"POT-Creation-Date: 2017-08-25 03:29+0000\n"
 "PO-Revision-Date: 2016-02-15 12:29+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -4623,7 +4623,7 @@ msgstr "複雑なクエリ"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2086
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <emphasis>raison d'etre</emphasis> of spatial database functionality is "
 "performing queries inside the database which would ordinarily require "
@@ -4633,12 +4633,7 @@ msgid ""
 "is purely for demonstration. You should be using a REAL SRID listed in the "
 "the spatial_ref_sys table and one that matches the projection of your data. "
 "If your data has no spatial reference system specified, you should be "
-"THINKING very thoughtfully why it doesn't and maybe it should. If your "
-"reason is because you are modeling something that doesn't have a geographic "
-"spatial reference system defined such as the internals of a molecule or a "
-"good location on Mars to transport the human race in the event of a nuclear "
-"holocaust, then simply leave out the SRID or make one up and insert it in "
-"the <varname>spatial_ref_sys</varname> table."
+"THINKING very thoughtfully why it doesn't and maybe it should."
 msgstr ""
 "空間データベース機能の<emphasis>レゾンデートル</emphasis>は、通常はデスクトッ"
 "プGISに求める機能を、データベース内部のクエリで実現してすることです。PostGIS"
@@ -4652,14 +4647,42 @@ msgstr ""
 "にSRIDを無視するか、一つ作成して<varname>spatial_ref_sys</varname>テーブルに"
 "追加して下さい。"
 
+#. Tag: para
+#: using_postgis_dataman.xml:2094
+#, no-c-format
+msgid ""
+"If your reason is because you are modeling something that doesn't have a "
+"geographic spatial reference system defined such as the internals of a "
+"molecule or the floorplan of a not yet built amusement park then that's "
+"fine. If the location of the amusement park has been planned however, then "
+"it would make sense to use a suitable planar coordinate system for that "
+"location if nothing more than to ensure the amusement part is not "
+"trespassing on already existing structures."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2098
+#, no-c-format
+msgid ""
+"Even in the case where you are planning a Mars expedition to transport the "
+"human race in the event of a nuclear holocaust and you want to map out the "
+"Mars planet for rehabitation, you can use a non-earthly coordinate system "
+"such as <ulink url=\"http://spatialreference.org/ref/iau2000/mars-2000/"
+"\">Mars 2000</ulink> make one up and insert it in the "
+"<varname>spatial_ref_sys</varname> table. Though this Mars coordinate system "
+"is a non-planar one (it's in degrees spheroidal), you can use it with the "
+"geography type to have your length and proximity measurements in meters "
+"instead of degrees."
+msgstr ""
+
 #. Tag: title
-#: using_postgis_dataman.xml:2100
+#: using_postgis_dataman.xml:2104
 #, no-c-format
 msgid "Taking Advantage of Indexes"
 msgstr "インデクスの利点を使う"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2102
+#: using_postgis_dataman.xml:2106
 #, no-c-format
 msgid ""
 "When constructing a query it is important to remember that only the bounding-"
@@ -4675,7 +4698,7 @@ msgstr ""
 "ブルでは本当に遅くなります。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2109
+#: using_postgis_dataman.xml:2113
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -4689,7 +4712,7 @@ msgstr ""
 "&lt; 100"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2111
+#: using_postgis_dataman.xml:2115
 #, no-c-format
 msgid ""
 "This query is selecting all the geometries in geom_table which are within "
@@ -4707,7 +4730,7 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2118
+#: using_postgis_dataman.xml:2122
 #, no-c-format
 msgid ""
 "SELECT the_geom\n"
@@ -4721,7 +4744,7 @@ msgstr ""
 "200100,312), 100)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2120
+#: using_postgis_dataman.xml:2124
 #, no-c-format
 msgid ""
 "This query selects the same geometries, but it does it in a more efficient "
@@ -4748,13 +4771,13 @@ msgstr ""
 "す。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2134
+#: using_postgis_dataman.xml:2138
 #, no-c-format
 msgid "Change in Behavior"
 msgstr "挙動の変更"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2136
+#: using_postgis_dataman.xml:2140
 #, no-c-format
 msgid ""
 "As of PostGIS 1.3.0, most of the Geometry Relationship Functions, with the "
@@ -4766,13 +4789,13 @@ msgstr ""
 "んでいます。"
 
 #. Tag: title
-#: using_postgis_dataman.xml:2143
+#: using_postgis_dataman.xml:2147
 #, no-c-format
 msgid "Examples of Spatial SQL"
 msgstr "空間SQLの例"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2145
+#: using_postgis_dataman.xml:2149
 #, no-c-format
 msgid ""
 "The examples in this section will make use of two tables, a table of linear "
@@ -4784,7 +4807,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2149
+#: using_postgis_dataman.xml:2153
 #, no-c-format
 msgid ""
 "Column      | Type              | Description\n"
@@ -4800,7 +4823,7 @@ msgstr ""
 "the_geom    | geometry          | Location Geometry (Linestring)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2151
+#: using_postgis_dataman.xml:2155
 #, no-c-format
 msgid ""
 "The table definition for the <varname>bc_municipality</varname> table is:"
@@ -4808,7 +4831,7 @@ msgstr ""
 "<varname>bc_municipality</varname>テーブルの定義については次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2154
+#: using_postgis_dataman.xml:2158
 #, no-c-format
 msgid ""
 "Column     | Type              | Description\n"
@@ -4826,19 +4849,19 @@ msgstr ""
 "the_geom   | geometry          | Location Geometry (Polygon)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2159
+#: using_postgis_dataman.xml:2163
 #, no-c-format
 msgid "What is the total length of all roads, expressed in kilometers?"
 msgstr "道路の総延長はkm表記でいくらになるでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2164
+#: using_postgis_dataman.xml:2168
 #, no-c-format
 msgid "You can answer this question with a very simple piece of SQL:"
 msgstr "この問題は、次のようなとても単純なSQLで答えを得ることができます。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2167
+#: using_postgis_dataman.xml:2171
 #, no-c-format
 msgid ""
 "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
@@ -4856,13 +4879,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2173
+#: using_postgis_dataman.xml:2177
 #, no-c-format
 msgid "How large is the city of Prince George, in hectares?"
 msgstr "プリンスジョージ市の大きさはha表記でいくらになるでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2177
+#: using_postgis_dataman.xml:2181
 #, no-c-format
 msgid ""
 "This query combines an attribute condition (on the municipality name) with a "
@@ -4872,7 +4895,7 @@ msgstr ""
 "しています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2181
+#: using_postgis_dataman.xml:2185
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4896,13 +4919,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2187
+#: using_postgis_dataman.xml:2191
 #, no-c-format
 msgid "What is the largest municipality in the province, by area?"
 msgstr "県内で最も大きな面積となる自治体はどこでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2192
+#: using_postgis_dataman.xml:2196
 #, no-c-format
 msgid ""
 "This query brings a spatial measurement into the query condition. There are "
@@ -4912,7 +4935,7 @@ msgstr ""
 "の方法はいくつかありますが、最も効率的なのは次の通りです。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2196
+#: using_postgis_dataman.xml:2200
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -4942,7 +4965,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2198
+#: using_postgis_dataman.xml:2202
 #, no-c-format
 msgid ""
 "Note that in order to answer this query we have to calculate the area of "
@@ -4960,13 +4983,13 @@ msgstr ""
 "を得ることができます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2210
+#: using_postgis_dataman.xml:2214
 #, no-c-format
 msgid "What is the length of roads fully contained within each municipality?"
 msgstr "各自治体内に含まれる道路の総延長はいくらでしょう?"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2215
+#: using_postgis_dataman.xml:2219
 #, no-c-format
 msgid ""
 "This is an example of a \"spatial join\", because we are bringing together "
@@ -4979,7 +5002,7 @@ msgstr ""
 "ンのやり方でなく空間インタラクション条件 (「含む」)を使っています。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2221
+#: using_postgis_dataman.xml:2225
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -5023,7 +5046,7 @@ msgstr ""
 "..."
 
 #. Tag: para
-#: using_postgis_dataman.xml:2223
+#: using_postgis_dataman.xml:2227
 #, no-c-format
 msgid ""
 "This query takes a while, because every road in the table is summarized into "
@@ -5036,13 +5059,13 @@ msgstr ""
 "(数百の道路で数千のレコード)の場合、応答はもっと早くなりえます。"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2232
+#: using_postgis_dataman.xml:2236
 #, no-c-format
 msgid "Create a new table with all the roads within the city of Prince George."
 msgstr "プリンスジョージ市内の全ての道路からなるテーブルを作る"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2237
+#: using_postgis_dataman.xml:2241
 #, no-c-format
 msgid ""
 "This is an example of an \"overlay\", which takes in two tables and outputs "
@@ -5057,7 +5080,7 @@ msgstr ""
 "ターボのかかった空間結合みたいなもので、より確かな解析作業に便利です。"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2244
+#: using_postgis_dataman.xml:2248
 #, no-c-format
 msgid ""
 "CREATE TABLE pg_roads as\n"
@@ -5081,13 +5104,13 @@ msgstr ""
 "WHERE  m.name = 'PRINCE GEORGE' AND ST_Intersects(r.the_geom, m.the_geom);"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2250
+#: using_postgis_dataman.xml:2254
 #, no-c-format
 msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
 msgstr "ビクトリア州の「ダグラス通り」の長さはkm表記でいくらになるでしょう?"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2255
+#: using_postgis_dataman.xml:2259
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -5117,13 +5140,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: using_postgis_dataman.xml:2261
+#: using_postgis_dataman.xml:2265
 #, no-c-format
 msgid "What is the largest municipality polygon that has a hole?"
 msgstr "穴を持つ自治体ポリゴンのうち最も大きいのはどれでしょう?"
 
 #. Tag: programlisting
-#: using_postgis_dataman.xml:2266
+#: using_postgis_dataman.xml:2270
 #, no-c-format
 msgid ""
 "SELECT gid, name, ST_Area(the_geom) AS area\n"

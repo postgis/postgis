@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-07-17 15:51+0000\n"
+"POT-Creation-Date: 2017-08-25 03:28+0000\n"
 "PO-Revision-Date: 2016-11-25 09:22+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -112,15 +112,15 @@ msgstr ""
 #: reference_processing.xml:1332 reference_processing.xml:1391
 #: reference_processing.xml:1438 reference_processing.xml:1492
 #: reference_processing.xml:1534 reference_processing.xml:1586
-#: reference_processing.xml:1640 reference_processing.xml:1794
-#: reference_processing.xml:1832 reference_processing.xml:1906
-#: reference_processing.xml:1960 reference_processing.xml:2016
-#: reference_processing.xml:2067 reference_processing.xml:2109
-#: reference_processing.xml:2151 reference_processing.xml:2207
-#: reference_processing.xml:2333 reference_processing.xml:2417
-#: reference_processing.xml:2500 reference_processing.xml:2555
-#: reference_processing.xml:2624 reference_processing.xml:2692
-#: reference_processing.xml:2782
+#: reference_processing.xml:1644 reference_processing.xml:1798
+#: reference_processing.xml:1836 reference_processing.xml:1910
+#: reference_processing.xml:1964 reference_processing.xml:2020
+#: reference_processing.xml:2071 reference_processing.xml:2113
+#: reference_processing.xml:2155 reference_processing.xml:2211
+#: reference_processing.xml:2337 reference_processing.xml:2421
+#: reference_processing.xml:2504 reference_processing.xml:2559
+#: reference_processing.xml:2628 reference_processing.xml:2696
+#: reference_processing.xml:2786
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -211,7 +211,7 @@ msgstr ""
 "(文字列の場合)を、次に示す操作として指定することができます。"
 
 #. Tag: para
-#: reference_processing.xml:80 reference_processing.xml:1663
+#: reference_processing.xml:80 reference_processing.xml:1667
 #, no-c-format
 msgid ""
 "'quad_segs=#' : number of segments used to approximate a quarter circle "
@@ -281,8 +281,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:98 reference_processing.xml:323
-#: reference_processing.xml:1680 reference_processing.xml:2076
-#: reference_processing.xml:2575
+#: reference_processing.xml:1684 reference_processing.xml:2080
+#: reference_processing.xml:2579
 #, no-c-format
 msgid "Performed by the GEOS module."
 msgstr "GEOSモジュールで実現しています。"
@@ -290,7 +290,7 @@ msgstr "GEOSモジュールで実現しています。"
 #. Tag: para
 #: reference_processing.xml:99 reference_processing.xml:602
 #: reference_processing.xml:851 reference_processing.xml:1250
-#: reference_processing.xml:2344 reference_processing.xml:2584
+#: reference_processing.xml:2348 reference_processing.xml:2588
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.3"
 msgstr "&sfs_compliant; s2.1.1.3"
@@ -321,14 +321,14 @@ msgstr ""
 #: reference_processing.xml:1062 reference_processing.xml:1153
 #: reference_processing.xml:1254 reference_processing.xml:1301
 #: reference_processing.xml:1407 reference_processing.xml:1458
-#: reference_processing.xml:1504 reference_processing.xml:1603
-#: reference_processing.xml:1689 reference_processing.xml:1927
-#: reference_processing.xml:1985 reference_processing.xml:2038
-#: reference_processing.xml:2082 reference_processing.xml:2122
-#: reference_processing.xml:2178 reference_processing.xml:2230
-#: reference_processing.xml:2352 reference_processing.xml:2436
-#: reference_processing.xml:2591 reference_processing.xml:2718
-#: reference_processing.xml:2808
+#: reference_processing.xml:1504 reference_processing.xml:1607
+#: reference_processing.xml:1693 reference_processing.xml:1931
+#: reference_processing.xml:1989 reference_processing.xml:2042
+#: reference_processing.xml:2086 reference_processing.xml:2126
+#: reference_processing.xml:2182 reference_processing.xml:2234
+#: reference_processing.xml:2356 reference_processing.xml:2440
+#: reference_processing.xml:2595 reference_processing.xml:2722
+#: reference_processing.xml:2812
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -563,16 +563,16 @@ msgstr ""
 #: reference_processing.xml:1310 reference_processing.xml:1364
 #: reference_processing.xml:1414 reference_processing.xml:1453
 #: reference_processing.xml:1471 reference_processing.xml:1499
-#: reference_processing.xml:1558 reference_processing.xml:1609
-#: reference_processing.xml:1771 reference_processing.xml:1810
-#: reference_processing.xml:1880 reference_processing.xml:1934
-#: reference_processing.xml:1992 reference_processing.xml:2043
-#: reference_processing.xml:2087 reference_processing.xml:2127
-#: reference_processing.xml:2185 reference_processing.xml:2301
-#: reference_processing.xml:2393 reference_processing.xml:2471
-#: reference_processing.xml:2523 reference_processing.xml:2598
-#: reference_processing.xml:2652 reference_processing.xml:2743
-#: reference_processing.xml:2861
+#: reference_processing.xml:1558 reference_processing.xml:1613
+#: reference_processing.xml:1775 reference_processing.xml:1814
+#: reference_processing.xml:1884 reference_processing.xml:1938
+#: reference_processing.xml:1996 reference_processing.xml:2047
+#: reference_processing.xml:2091 reference_processing.xml:2131
+#: reference_processing.xml:2189 reference_processing.xml:2305
+#: reference_processing.xml:2397 reference_processing.xml:2475
+#: reference_processing.xml:2527 reference_processing.xml:2602
+#: reference_processing.xml:2656 reference_processing.xml:2747
+#: reference_processing.xml:2865
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -766,7 +766,7 @@ msgstr ""
 "ません。"
 
 #. Tag: para
-#: reference_processing.xml:324 reference_processing.xml:2429
+#: reference_processing.xml:324 reference_processing.xml:2433
 #, no-c-format
 msgid "Requires GEOS 3.5.0+"
 msgstr "GEOS 3.5.0以上が必要です。"
@@ -911,9 +911,9 @@ msgstr ""
 #: reference_processing.xml:1057 reference_processing.xml:1098
 #: reference_processing.xml:1295 reference_processing.xml:1359
 #: reference_processing.xml:1402 reference_processing.xml:1593
-#: reference_processing.xml:1806 reference_processing.xml:1918
-#: reference_processing.xml:1976 reference_processing.xml:2510
-#: reference_processing.xml:2644
+#: reference_processing.xml:1810 reference_processing.xml:1922
+#: reference_processing.xml:1980 reference_processing.xml:2514
+#: reference_processing.xml:2648
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -931,7 +931,7 @@ msgstr ""
 "これに対応していません。"
 
 #. Tag: para
-#: reference_processing.xml:403 reference_processing.xml:2592
+#: reference_processing.xml:403 reference_processing.xml:2596
 #, no-c-format
 msgid "Aggregate example"
 msgstr "集約関数版の例"
@@ -954,7 +954,7 @@ msgstr ""
 "GROUP BY stusps"
 
 #. Tag: para
-#: reference_processing.xml:405 reference_processing.xml:2594
+#: reference_processing.xml:405 reference_processing.xml:2598
 #, no-c-format
 msgid "Non-Aggregate example"
 msgstr "非集約関数の例"
@@ -1148,7 +1148,7 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:452 reference_processing.xml:600
 #: reference_processing.xml:847 reference_processing.xml:1245
-#: reference_processing.xml:2340
+#: reference_processing.xml:2344
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr "GEOSモジュールによって実現しています。"
@@ -1225,7 +1225,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:468 reference_processing.xml:1096
-#: reference_processing.xml:2218
+#: reference_processing.xml:2222
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr "Availability: 2.0.0"
@@ -1598,9 +1598,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:660
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. "
+"Converts a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. "
 "Useful for outputting to devices that can't support CIRCULARSTRING geometry "
 "types"
 msgstr ""
@@ -1675,7 +1675,7 @@ msgstr "Availability: 1.2.2?"
 #: reference_processing.xml:697
 #, no-c-format
 msgid ""
-"Changed: 2.4.0 added support for max-deviation and max-angle tolerance, and "
+"Enhanced: 2.4.0 added support for max-deviation and max-angle tolerance, and "
 "for symmetric output."
 msgstr ""
 
@@ -1694,7 +1694,7 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 7.1.7"
 #. Tag: para
 #: reference_processing.xml:702 reference_processing.xml:941
 #: reference_processing.xml:996 reference_processing.xml:1097
-#: reference_processing.xml:1296 reference_processing.xml:2509
+#: reference_processing.xml:1296 reference_processing.xml:2513
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -1971,7 +1971,7 @@ msgstr "Availability: 2.1.0 - GEOS 3.4.0以上が必要です。"
 #. Tag: para
 #: reference_processing.xml:754 reference_processing.xml:943
 #: reference_processing.xml:998 reference_processing.xml:1101
-#: reference_processing.xml:1922 reference_processing.xml:2513
+#: reference_processing.xml:1926 reference_processing.xml:2517
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -2200,7 +2200,7 @@ msgid "Note - order matters. B - A will always return a portion of B"
 msgstr "順序の問題に注意が必要です。B-Aでは常にBの部分が返ります。"
 
 #. Tag: para
-#: reference_processing.xml:849 reference_processing.xml:2342
+#: reference_processing.xml:849 reference_processing.xml:2346
 #, no-c-format
 msgid "Do not call with a GeometryCollection as an argument"
 msgstr "ジオメトリコレクションを引数として呼ばないでください。"
@@ -2212,7 +2212,7 @@ msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.20"
 
 #. Tag: para
-#: reference_processing.xml:853 reference_processing.xml:2346
+#: reference_processing.xml:853 reference_processing.xml:2350
 #, no-c-format
 msgid ""
 "&Z_support; However it seems to only consider x y when doing the difference "
@@ -2363,8 +2363,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_processing.xml:942 reference_processing.xml:997
-#: reference_processing.xml:1100 reference_processing.xml:1805
-#: reference_processing.xml:1921 reference_processing.xml:2512
+#: reference_processing.xml:1100 reference_processing.xml:1809
+#: reference_processing.xml:1925 reference_processing.xml:2516
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
@@ -3147,13 +3147,13 @@ msgid "Returns a version of the given geometry with X and Y axis flipped."
 msgstr "与えられたジオメトリのX軸とY軸とを入れ替えたものを返します。"
 
 #. Tag: para
-#: reference_processing.xml:1099 reference_processing.xml:2511
+#: reference_processing.xml:1099 reference_processing.xml:2515
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
 
 #. Tag: title
-#: reference_processing.xml:1105 reference_processing.xml:2517
+#: reference_processing.xml:1105 reference_processing.xml:2521
 #, no-c-format
 msgid "Example"
 msgstr "例"
@@ -3215,7 +3215,7 @@ msgstr ""
 "点を生成します。"
 
 #. Tag: para
-#: reference_processing.xml:1149 reference_processing.xml:1974
+#: reference_processing.xml:1149 reference_processing.xml:1978
 #, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "Availability: 2.3.0"
@@ -4245,7 +4245,7 @@ msgstr ""
 "ラインストリングは保存されます。"
 
 #. Tag: para
-#: reference_processing.xml:1595 reference_processing.xml:2646
+#: reference_processing.xml:1595 reference_processing.xml:2650
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
 msgstr "Availability: 2.0.0 - GEOS 3.3.0以上が必要 "
@@ -4260,17 +4260,26 @@ msgstr ""
 "GEOS 3.3.1までのバグのため、この関数は自己インタセクトするラインのノード作成"
 "に失敗します。GEOS 3.3.2以上で訂正されています。"
 
-#. Tag: programlisting
-#: reference_processing.xml:1604
+#. Tag: para
+#: reference_processing.xml:1601
 #, no-c-format
 msgid ""
-"SELECT ST_AsEWKT(\n"
+"Changed: 2.4.0 this function uses GEOSNode internally instead of "
+"GEOSUnaryUnion. This may cause the resulting linestrings to have a different "
+"order and direction compared to Postgis &lt; 2.4."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1608
+#, fuzzy, no-c-format
+msgid ""
+"SELECT ST_AsText(\n"
 "                ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::"
 "geometry)\n"
 "        ) As  output;\n"
 "output\n"
 "-----------\n"
-"MULTILINESTRING((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 "
+"MULTILINESTRING Z ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 "
 "4.5,10 0 3))"
 msgstr ""
 "SELECT ST_AsEWKT(\n"
@@ -4283,13 +4292,13 @@ msgstr ""
 "4.5,10 0 3))"
 
 #. Tag: refname
-#: reference_processing.xml:1619
+#: reference_processing.xml:1623
 #, no-c-format
 msgid "ST_OffsetCurve"
 msgstr "ST_OffsetCurve"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1621
+#: reference_processing.xml:1625
 #, no-c-format
 msgid ""
 "Return an offset line at a given distance and side from an input line. "
@@ -4299,7 +4308,7 @@ msgstr ""
 "線を引く際に使えます。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:1629
+#: reference_processing.xml:1633
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> "
@@ -4315,7 +4324,7 @@ msgstr ""
 "<parameter>style_parameters=''</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1642
+#: reference_processing.xml:1646
 #, no-c-format
 msgid ""
 "Return an offset line at a given distance and side from an input line. All "
@@ -4326,7 +4335,7 @@ msgstr ""
 "リの全てのポイントは、入力ジオメトリより与えられた距離以上には離れません。"
 
 #. Tag: para
-#: reference_processing.xml:1648
+#: reference_processing.xml:1652
 #, no-c-format
 msgid ""
 "For positive distance the offset will be at the left side of the input line "
@@ -4337,14 +4346,14 @@ msgstr ""
 "には、右側にずらし、逆方向のラインになります。"
 
 #. Tag: para
-#: reference_processing.xml:1654
+#: reference_processing.xml:1658
 #, no-c-format
 msgid ""
 "Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3"
 msgstr "Availability: 2.0 - GEOS 3.2以上、GEOS 3.3以上で改善されました。"
 
 #. Tag: para
-#: reference_processing.xml:1658
+#: reference_processing.xml:1662
 #, no-c-format
 msgid ""
 "The optional third parameter allows specifying a list of blank-separated "
@@ -4354,7 +4363,7 @@ msgstr ""
 "操作をすることができます。"
 
 #. Tag: para
-#: reference_processing.xml:1666
+#: reference_processing.xml:1670
 #, no-c-format
 msgid ""
 "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is "
@@ -4364,7 +4373,7 @@ msgstr ""
 "\")。'miter'も'mitre'の同義語として受け付けます。"
 
 #. Tag: para
-#: reference_processing.xml:1669
+#: reference_processing.xml:1673
 #, no-c-format
 msgid ""
 "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). "
@@ -4374,20 +4383,20 @@ msgstr ""
 "影響が出ます)。'miter_limit'も'mitre_limit'の同義語として受け付けます。"
 
 #. Tag: para
-#: reference_processing.xml:1674
+#: reference_processing.xml:1678
 #, no-c-format
 msgid ""
 "Units of distance are measured in units of the spatial reference system."
 msgstr "距離の単位は空間参照系の単位です。"
 
 #. Tag: para
-#: reference_processing.xml:1678
+#: reference_processing.xml:1682
 #, no-c-format
 msgid "The inputs can only be LINESTRINGS."
 msgstr "入力はLINESTRINGのみ可能です。"
 
 #. Tag: para
-#: reference_processing.xml:1682
+#: reference_processing.xml:1686
 #, no-c-format
 msgid ""
 "This function ignores the third dimension (z) and will always give a 2-d "
@@ -4397,13 +4406,13 @@ msgstr ""
 "の結果を返します。"
 
 #. Tag: para
-#: reference_processing.xml:1690
+#: reference_processing.xml:1694
 #, no-c-format
 msgid "Compute an open buffer around roads"
 msgstr "道路の周りの開いたバッファの算出"
 
 #. Tag: programlisting
-#: reference_processing.xml:1691
+#: reference_processing.xml:1695
 #, no-c-format
 msgid ""
 "SELECT ST_Union(\n"
@@ -4419,13 +4428,13 @@ msgstr ""
 "FROM someroadstable;"
 
 #. Tag: para
-#: reference_processing.xml:1701
+#: reference_processing.xml:1705
 #, no-c-format
 msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
 msgstr "15, 'quad_segs=4 join=round' 元のラインと15単位ずらしたライン。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1705
+#: reference_processing.xml:1709
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -4453,13 +4462,13 @@ msgstr ""
 "        2.14180701233067 12.2597485145237,1 18,1 195)"
 
 #. Tag: para
-#: reference_processing.xml:1712
+#: reference_processing.xml:1716
 #, no-c-format
 msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
 msgstr "-15, 'quad_segs=4 join=round' 元のラインと-15単位ずらしたライン。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1716
+#: reference_processing.xml:1720
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
@@ -4483,7 +4492,7 @@ msgstr ""
 "LINESTRING(31 195,31 31,164 31)"
 
 #. Tag: para
-#: reference_processing.xml:1725
+#: reference_processing.xml:1729
 #, no-c-format
 msgid ""
 "double-offset to get more curvy, note the first reverses direction, so -30 + "
@@ -4493,7 +4502,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1728
+#: reference_processing.xml:1732
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
@@ -4523,7 +4532,7 @@ msgstr ""
 "32.1418070123307 40.2597485145237,31 46,31 195)"
 
 #. Tag: para
-#: reference_processing.xml:1735
+#: reference_processing.xml:1739
 #, no-c-format
 msgid ""
 "double-offset to get more curvy,combined with regular offset 15 to get "
@@ -4533,7 +4542,7 @@ msgstr ""
 "ます。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1738
+#: reference_processing.xml:1742
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -4575,13 +4584,13 @@ msgstr ""
 "32.1418070123307 40.2597485145237,31 46,31 195))"
 
 #. Tag: para
-#: reference_processing.xml:1747
+#: reference_processing.xml:1751
 #, no-c-format
 msgid "15, 'quad_segs=4 join=bevel' shown with original line"
 msgstr "15, 'quad_segs=4 join=bevel' と元のライン"
 
 #. Tag: programlisting
-#: reference_processing.xml:1750
+#: reference_processing.xml:1754
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
@@ -4605,14 +4614,14 @@ msgstr ""
 "        5.39339828220179 7.39339828220179,1 18,1 195)"
 
 #. Tag: para
-#: reference_processing.xml:1758
+#: reference_processing.xml:1762
 #, no-c-format
 msgid "15,-15 collected, join=mitre mitre_limit=2.1"
 msgstr ""
 "join=mitre mitre_limit=2.1で、15ずらしたものと-15ずらしたものとを集めたもの。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1761
+#: reference_processing.xml:1765
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Collect(\n"
@@ -4642,19 +4651,19 @@ msgstr ""
 "        (31 195,31 31,164 31))"
 
 #. Tag: refname
-#: reference_processing.xml:1778
+#: reference_processing.xml:1782
 #, no-c-format
 msgid "ST_RemoveRepeatedPoints"
 msgstr "ST_RemoveRepeatedPoints"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1779
+#: reference_processing.xml:1783
 #, no-c-format
 msgid "Returns a version of the given geometry with duplicated points removed."
 msgstr "入力ジオメトリから重複ポイントを除いたものを返します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:1785
+#: reference_processing.xml:1789
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> "
@@ -4668,7 +4677,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1795
+#: reference_processing.xml:1799
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with duplicated points removed. Will "
@@ -4683,7 +4692,7 @@ msgstr ""
 "の関数を呼ぶことができます。"
 
 #. Tag: para
-#: reference_processing.xml:1801
+#: reference_processing.xml:1805
 #, no-c-format
 msgid ""
 "If the tolerance parameter is provided, vertices within the tolerance of one "
@@ -4693,20 +4702,20 @@ msgstr ""
 "ら、「同じ」と考えます。"
 
 #. Tag: para
-#: reference_processing.xml:1804 reference_processing.xml:2118
-#: reference_processing.xml:2174 reference_processing.xml:2508
+#: reference_processing.xml:1808 reference_processing.xml:2122
+#: reference_processing.xml:2178 reference_processing.xml:2512
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Availability: 2.2.0"
 
 #. Tag: refname
-#: reference_processing.xml:1817
+#: reference_processing.xml:1821
 #, no-c-format
 msgid "ST_SharedPaths"
 msgstr "ST_SharedPaths"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1818
+#: reference_processing.xml:1822
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input linestrings/"
@@ -4716,7 +4725,7 @@ msgstr ""
 "す。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:1823
+#: reference_processing.xml:1827
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SharedPaths</function></funcdef> "
@@ -4728,7 +4737,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>lineal2</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1833
+#: reference_processing.xml:1837
 #, no-c-format
 msgid ""
 "Returns a collection containing paths shared by the two input geometries. "
@@ -4741,25 +4750,25 @@ msgstr ""
 "パス自体は一つ目のジオメトリの方向をもとにします。"
 
 #. Tag: para
-#: reference_processing.xml:1838
+#: reference_processing.xml:1842
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
 msgstr "Availability: 2.0.0 GEOS 3.3.0以降が必要です。"
 
 #. Tag: title
-#: reference_processing.xml:1841
+#: reference_processing.xml:1845
 #, no-c-format
 msgid "Examples: Finding shared paths"
 msgstr "例: 共有パスの探索"
 
 #. Tag: para
-#: reference_processing.xml:1851
+#: reference_processing.xml:1855
 #, no-c-format
 msgid "A multilinestring and a linestring"
 msgstr "マルチラインストリングとラインストリング"
 
 #. Tag: para
-#: reference_processing.xml:1862
+#: reference_processing.xml:1866
 #, no-c-format
 msgid ""
 "The shared path of multilinestring and linestring overlaid with original "
@@ -4767,7 +4776,7 @@ msgid ""
 msgstr "マルチラインストリングとラインストリングとの共有パスと元のジオメトリ。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1865
+#: reference_processing.xml:1869
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -4801,7 +4810,7 @@ msgstr ""
 " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
 
 #. Tag: programlisting
-#: reference_processing.xml:1871
+#: reference_processing.xml:1875
 #, no-c-format
 msgid ""
 "-- same example but linestring orientation flipped\n"
@@ -4833,7 +4842,7 @@ msgstr ""
 "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
 
 #. Tag: para
-#: reference_processing.xml:1881
+#: reference_processing.xml:1885
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
@@ -4841,20 +4850,20 @@ msgstr ""
 ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:1891
+#: reference_processing.xml:1895
 #, no-c-format
 msgid "ST_ShiftLongitude"
 msgstr "ST_ShiftLongitude"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1893
+#: reference_processing.xml:1897
 #, no-c-format
 msgid "Toggle geometry coordinates between -180..180 and 0..360 ranges."
 msgstr ""
 "ジオメトリの座標値を-180度から180度の範囲と0度から360度の範囲に揃えます。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:1898
+#: reference_processing.xml:1902
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ShiftLongitude</function></funcdef> "
@@ -4864,7 +4873,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1908
+#: reference_processing.xml:1912
 #, no-c-format
 msgid ""
 "Reads every point/vertex in every component of every feature in a geometry, "
@@ -4876,13 +4885,13 @@ msgstr ""
 "にあるデータです。"
 
 #. Tag: para
-#: reference_processing.xml:1912
+#: reference_processing.xml:1916
 #, no-c-format
 msgid "This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)"
 msgstr "これは4326 (WGS84経度緯度)のような経度緯度でのみ使えます。"
 
 #. Tag: para
-#: reference_processing.xml:1914
+#: reference_processing.xml:1918
 #, no-c-format
 msgid ""
 "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with "
@@ -4892,19 +4901,19 @@ msgstr ""
 "MULTIPOINTでも動作します。"
 
 #. Tag: para
-#: reference_processing.xml:1919
+#: reference_processing.xml:1923
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
 msgstr "Enhanced: 2.0.0 多面体サーフェス対応とTIN対応が導入されました。"
 
 #. Tag: para
-#: reference_processing.xml:1920
+#: reference_processing.xml:1924
 #, no-c-format
 msgid "NOTE: this function was renamed from \"ST_Shift_Longitude\" in 2.2.0"
 msgstr "ご注意: この関数は2.0.0で\"ST_Shift_Longitude\"から名称変更しました。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1929
+#: reference_processing.xml:1933
 #, no-c-format
 msgid ""
 "--3d points\n"
@@ -4942,19 +4951,19 @@ msgstr ""
 "LINESTRING(241.42 38.38,241.8 38.45)"
 
 #. Tag: refname
-#: reference_processing.xml:1943
+#: reference_processing.xml:1947
 #, no-c-format
 msgid "ST_WrapX"
 msgstr "ST_WrapX"
 
 #. Tag: refpurpose
-#: reference_processing.xml:1945
+#: reference_processing.xml:1949
 #, no-c-format
 msgid "Wrap a geometry around an X value."
 msgstr "ジオメトリをX値で回り込ませます。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:1950
+#: reference_processing.xml:1954
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_WrapX</function></funcdef> "
@@ -4968,7 +4977,7 @@ msgstr ""
 "<paramdef><type>float8 </type> <parameter>move</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:1962
+#: reference_processing.xml:1966
 #, no-c-format
 msgid ""
 "This function splits the input geometries and then moves every resulting "
@@ -4981,7 +4990,7 @@ msgstr ""
 "数)に全ての要素が落ちるように移動させ、最後に再結合します。"
 
 #. Tag: para
-#: reference_processing.xml:1969
+#: reference_processing.xml:1973
 #, no-c-format
 msgid ""
 "This is useful to \"recenter\" long-lat input to have features of interest "
@@ -4991,7 +5000,7 @@ msgstr ""
 "うにするのに使えます。"
 
 #. Tag: programlisting
-#: reference_processing.xml:1987
+#: reference_processing.xml:1991
 #, no-c-format
 msgid ""
 "-- Move all components of the given geometries whose bounding box\n"
@@ -5013,13 +5022,13 @@ msgstr ""
 "select ST_WrapX(the_geom, -30, 360);"
 
 #. Tag: refname
-#: reference_processing.xml:1999
+#: reference_processing.xml:2003
 #, no-c-format
 msgid "ST_Simplify"
 msgstr "ST_Simplify"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2000
+#: reference_processing.xml:2004
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -5029,7 +5038,7 @@ msgstr ""
 "ムを使用します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2006
+#: reference_processing.xml:2010
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Simplify</function></funcdef> "
@@ -5045,7 +5054,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2017
+#: reference_processing.xml:2021
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -5060,7 +5069,7 @@ msgstr ""
 "われるので、ジオメトリコレクションでこの関数を呼ぶことができます。"
 
 #. Tag: para
-#: reference_processing.xml:2024
+#: reference_processing.xml:2028
 #, no-c-format
 msgid ""
 "The \"preserve collapsed\" flag will retain objects that would otherwise be "
@@ -5076,8 +5085,8 @@ msgstr ""
 "から消えることを避けるのに使えます。"
 
 #. Tag: para
-#: reference_processing.xml:2030 reference_processing.xml:2114
-#: reference_processing.xml:2169
+#: reference_processing.xml:2034 reference_processing.xml:2118
+#: reference_processing.xml:2173
 #, no-c-format
 msgid ""
 "Note that returned geometry might lose its simplicity (see <xref linkend="
@@ -5087,8 +5096,8 @@ msgstr ""
 "あります。"
 
 #. Tag: para
-#: reference_processing.xml:2032 reference_processing.xml:2116
-#: reference_processing.xml:2171
+#: reference_processing.xml:2036 reference_processing.xml:2120
+#: reference_processing.xml:2175
 #, no-c-format
 msgid ""
 "Note topology may not be preserved and may result in invalid geometries. Use "
@@ -5099,19 +5108,19 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_processing.xml:2034
+#: reference_processing.xml:2038
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "Availability: 1.2.2"
 
 #. Tag: para
-#: reference_processing.xml:2039
+#: reference_processing.xml:2043
 #, no-c-format
 msgid "A circle simplified too much becomes a triangle, medium an octagon,"
 msgstr "簡略化をやりすぎて三角形になった円、八角形になった円です。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2040
+#: reference_processing.xml:2044
 #, no-c-format
 msgid ""
 "SELECT ST_Npoints(the_geom) As np_before, "
@@ -5145,7 +5154,7 @@ msgstr ""
 "|             4 | t"
 
 #. Tag: para
-#: reference_processing.xml:2044
+#: reference_processing.xml:2048
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>, Topology <xref linkend="
@@ -5155,13 +5164,13 @@ msgstr ""
 "\"TP_ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2050
+#: reference_processing.xml:2054
 #, no-c-format
 msgid "ST_SimplifyPreserveTopology"
 msgstr "ST_SimplifyPreserveTopology"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2051
+#: reference_processing.xml:2055
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -5172,7 +5181,7 @@ msgstr ""
 "ムを使用します。不正な派生ジオメトリ (特にポリゴン)の生成を回避します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2058
+#: reference_processing.xml:2062
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef> "
@@ -5184,7 +5193,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2068
+#: reference_processing.xml:2072
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Douglas-"
@@ -5201,19 +5210,19 @@ msgstr ""
 "メトリコレクションでこの関数を呼ぶことができます。"
 
 #. Tag: para
-#: reference_processing.xml:2077
+#: reference_processing.xml:2081
 #, no-c-format
 msgid "Requires GEOS 3.0.0+"
 msgstr "GEOS 3.0.0以上が必要です。"
 
 #. Tag: para
-#: reference_processing.xml:2078
+#: reference_processing.xml:2082
 #, no-c-format
 msgid "Availability: 1.3.3"
 msgstr "Availability: 1.3.3"
 
 #. Tag: para
-#: reference_processing.xml:2083
+#: reference_processing.xml:2087
 #, no-c-format
 msgid ""
 "Same example as Simplify, but we see Preserve Topology prevents "
@@ -5223,7 +5232,7 @@ msgstr ""
 "でも四角形になります。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2084
+#: reference_processing.xml:2088
 #, no-c-format
 msgid ""
 "SELECT ST_Npoints(the_geom) As np_before, "
@@ -5261,13 +5270,13 @@ msgstr ""
 "|             5 |                 5"
 
 #. Tag: refname
-#: reference_processing.xml:2094
+#: reference_processing.xml:2098
 #, no-c-format
 msgid "ST_SimplifyVW"
 msgstr "ST_SimplifyVW"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2095
+#: reference_processing.xml:2099
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Visvalingam-"
@@ -5277,7 +5286,7 @@ msgstr ""
 "トリを返します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2100
+#: reference_processing.xml:2104
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SimplifyVW</function></funcdef> "
@@ -5289,7 +5298,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2110
+#: reference_processing.xml:2114
 #, no-c-format
 msgid ""
 "Returns a \"simplified\" version of the given geometry using the Visvalingam-"
@@ -5306,20 +5315,20 @@ msgstr ""
 "ことができます。"
 
 #. Tag: para
-#: reference_processing.xml:2117
+#: reference_processing.xml:2121
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the result."
 msgstr "この関数は3次元を扱います。第3次元は結果に影響を与えます。"
 
 #. Tag: para
-#: reference_processing.xml:2123
+#: reference_processing.xml:2127
 #, no-c-format
 msgid "A LineString is simplified with a minimum area threshold of 30."
 msgstr "ラインストリングを最小範囲のしきい値を30で簡略化しています。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2124
+#: reference_processing.xml:2128
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_SimplifyVW(geom,30)) simplified\n"
@@ -5339,7 +5348,7 @@ msgstr ""
 "LINESTRING(5 2,7 25,10 10)"
 
 #. Tag: para
-#: reference_processing.xml:2128
+#: reference_processing.xml:2132
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Simplify\"/>, <xref linkend="
@@ -5351,13 +5360,13 @@ msgstr ""
 ">"
 
 #. Tag: refname
-#: reference_processing.xml:2133
+#: reference_processing.xml:2137
 #, no-c-format
 msgid "ST_SetEffectiveArea"
 msgstr "ST_SetEffectiveArea"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2134
+#: reference_processing.xml:2138
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, storing the value in the M "
@@ -5368,7 +5377,7 @@ msgstr ""
 "すると、単純化したジオメトリを生成できます。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2141
+#: reference_processing.xml:2145
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetEffectiveArea</function></funcdef> "
@@ -5382,7 +5391,7 @@ msgstr ""
 "<paramdef><type>integer</type> <parameter>set_area = 1</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2152
+#: reference_processing.xml:2156
 #, no-c-format
 msgid ""
 "Sets the effective area for each vertex, using the Visvalingam-Whyatt "
@@ -5396,7 +5405,7 @@ msgstr ""
 "値以上の有効範囲となる頂点だけで構築されるジオメトリを返します。"
 
 #. Tag: para
-#: reference_processing.xml:2157
+#: reference_processing.xml:2161
 #, no-c-format
 msgid ""
 "This function can be used for server-side simplification when a threshold is "
@@ -5410,7 +5419,7 @@ msgstr ""
 "持っています。"
 
 #. Tag: para
-#: reference_processing.xml:2160
+#: reference_processing.xml:2164
 #, no-c-format
 msgid ""
 "Will actually do something only with (multi)lines and (multi)polygons but "
@@ -5423,13 +5432,13 @@ msgstr ""
 "メトリコレクションでこの関数を呼ぶことができます。"
 
 #. Tag: para
-#: reference_processing.xml:2172
+#: reference_processing.xml:2176
 #, no-c-format
 msgid "The output geometry will lose all previous information in the M-values"
 msgstr "出力ジオメトリは、入力時に持っていたM値の情報の全てを失います。"
 
 #. Tag: para
-#: reference_processing.xml:2173
+#: reference_processing.xml:2177
 #, no-c-format
 msgid ""
 "This function handles 3D and the third dimension will affect the effective "
@@ -5437,7 +5446,7 @@ msgid ""
 msgstr "この関数は3次元を扱います。第3次元は結果に影響を与えます。"
 
 #. Tag: para
-#: reference_processing.xml:2179
+#: reference_processing.xml:2183
 #, no-c-format
 msgid ""
 "Calculating the effective area of a LineString. Because we use a threshold "
@@ -5447,7 +5456,7 @@ msgstr ""
 "全ての頂点が返ります。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2182
+#: reference_processing.xml:2186
 #, no-c-format
 msgid ""
 "select ST_AsText(ST_SetEffectiveArea(geom)) all_pts, "
@@ -5473,19 +5482,19 @@ msgstr ""
 "10 3.40282346638529e+38)"
 
 #. Tag: refname
-#: reference_processing.xml:2192
+#: reference_processing.xml:2196
 #, no-c-format
 msgid "ST_Split"
 msgstr "ST_Split"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2193
+#: reference_processing.xml:2197
 #, no-c-format
 msgid "Returns a collection of geometries resulting by splitting a geometry."
 msgstr "ジオメトリを分割したジオメトリのコレクションを返します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2198
+#: reference_processing.xml:2202
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Split</function></funcdef> "
@@ -5497,7 +5506,7 @@ msgstr ""
 "<paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2208
+#: reference_processing.xml:2212
 #, no-c-format
 msgid ""
 "The function supports splitting a line by (multi)point, (multi)line or "
@@ -5508,7 +5517,7 @@ msgstr ""
 "分割に対応しています。返されるジオメトリは常にコレクションです。"
 
 #. Tag: para
-#: reference_processing.xml:2212
+#: reference_processing.xml:2216
 #, no-c-format
 msgid ""
 "Think of this function as the opposite of ST_Union. Theoretically applying "
@@ -5519,7 +5528,7 @@ msgstr ""
 "ST_Unionを適用すると、常に元のジオメトリが得られます。"
 
 #. Tag: para
-#: reference_processing.xml:2219
+#: reference_processing.xml:2223
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 support for splitting a line by a multiline, a multipoint or "
@@ -5529,7 +5538,7 @@ msgstr ""
 "分割に対応しました。"
 
 #. Tag: para
-#: reference_processing.xml:2221
+#: reference_processing.xml:2225
 #, no-c-format
 msgid ""
 "To improve the robustness of ST_Split it may be convenient to <xref linkend="
@@ -5547,7 +5556,7 @@ msgstr ""
 "ticket/2192\">#2192</ulink>を参照して下さい)。"
 
 #. Tag: para
-#: reference_processing.xml:2223
+#: reference_processing.xml:2227
 #, no-c-format
 msgid ""
 "When a (multi)polygon is passed as as the blade, its linear component (the "
@@ -5556,25 +5565,25 @@ msgstr ""
 "(MULTI)ポリゴンを刃として渡すと、線要素 (境界)が入力の分割に使われます。"
 
 #. Tag: para
-#: reference_processing.xml:2231
+#: reference_processing.xml:2235
 #, no-c-format
 msgid "Polygon Cut by Line"
 msgstr "ラインに切られるポリゴン"
 
 #. Tag: para
-#: reference_processing.xml:2243 reference_processing.xml:2277
+#: reference_processing.xml:2247 reference_processing.xml:2281
 #, no-c-format
 msgid "Before Split"
 msgstr "分割前"
 
 #. Tag: para
-#: reference_processing.xml:2255 reference_processing.xml:2289
+#: reference_processing.xml:2259 reference_processing.xml:2293
 #, no-c-format
 msgid "After split"
 msgstr "分割後"
 
 #. Tag: programlisting
-#: reference_processing.xml:2264
+#: reference_processing.xml:2268
 #, no-c-format
 msgid ""
 "-- this creates a geometry collection consisting of the 2 halves of the "
@@ -5627,13 +5636,13 @@ msgstr ""
 "62.2214883490198,53.8060233744357 ..))"
 
 #. Tag: para
-#: reference_processing.xml:2265
+#: reference_processing.xml:2269
 #, no-c-format
 msgid "Multilinestring Cut by point"
 msgstr "ポイントで切られるマルチラインストリング"
 
 #. Tag: programlisting
-#: reference_processing.xml:2298
+#: reference_processing.xml:2302
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
@@ -5667,7 +5676,7 @@ msgstr ""
 ")"
 
 #. Tag: para
-#: reference_processing.xml:2302
+#: reference_processing.xml:2306
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Dump\"/>, <xref "
@@ -5679,13 +5688,13 @@ msgstr ""
 "\"ST_Subdivide\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2315
+#: reference_processing.xml:2319
 #, no-c-format
 msgid "ST_SymDifference"
 msgstr "ST_SymDifference"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2317
+#: reference_processing.xml:2321
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the portions of A and B that do not "
@@ -5696,7 +5705,7 @@ msgstr ""
 "れるのは、ST_SymDifference(A,B) = ST_SymDifference(B,A) となるからです。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2324
+#: reference_processing.xml:2328
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SymDifference</function></funcdef> "
@@ -5708,7 +5717,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2335
+#: reference_processing.xml:2339
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the portions of A and B that do not "
@@ -5721,25 +5730,25 @@ msgstr ""
 "ST_Union(geomA,geomB) - ST_Intersection(A,B)と見ることができます。"
 
 #. Tag: para
-#: reference_processing.xml:2345
+#: reference_processing.xml:2349
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.21"
 
 #. Tag: para
-#: reference_processing.xml:2365
+#: reference_processing.xml:2369
 #, no-c-format
 msgid "The original linestrings shown together"
 msgstr "二つある元のラインストリングの両方"
 
 #. Tag: para
-#: reference_processing.xml:2377
+#: reference_processing.xml:2381
 #, no-c-format
 msgid "The symmetric difference of the two linestrings"
 msgstr "二つのラインストリングの対称差"
 
 #. Tag: programlisting
-#: reference_processing.xml:2386
+#: reference_processing.xml:2390
 #, no-c-format
 msgid ""
 "--Safe for 2d - symmetric difference of 2 linestrings\n"
@@ -5767,7 +5776,7 @@ msgstr ""
 "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
 
 #. Tag: programlisting
-#: reference_processing.xml:2388
+#: reference_processing.xml:2392
 #, no-c-format
 msgid ""
 "--When used in 3d doesn't quite do the right thing\n"
@@ -5789,19 +5798,19 @@ msgstr ""
 "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
 
 #. Tag: para
-#: reference_processing.xml:2395
+#: reference_processing.xml:2399
 #, no-c-format
 msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2402
+#: reference_processing.xml:2406
 #, no-c-format
 msgid "ST_Subdivide"
 msgstr "ST_Subdivide"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2403
+#: reference_processing.xml:2407
 #, no-c-format
 msgid ""
 "Returns a set of geometry where no geometry in the set has more than the "
@@ -5809,7 +5818,7 @@ msgid ""
 msgstr "指定した数より多い頂点を持たないジオメトリの集合を返します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2408
+#: reference_processing.xml:2412
 #, no-c-format
 msgid ""
 "<funcdef>setof geometry <function>ST_Subdivide</function></funcdef> "
@@ -5823,7 +5832,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2419
+#: reference_processing.xml:2423
 #, no-c-format
 msgid ""
 "Turns a single geometry into a set in which each element has fewer than the "
@@ -5842,19 +5851,19 @@ msgstr ""
 "すると、エラーが投げられます。"
 
 #. Tag: para
-#: reference_processing.xml:2428
+#: reference_processing.xml:2432
 #, no-c-format
 msgid "Clipping performed by the GEOS module."
 msgstr "切り抜きはGEOSモジュールを使っています。"
 
 #. Tag: para
-#: reference_processing.xml:2431
+#: reference_processing.xml:2435
 #, no-c-format
 msgid "Availability: 2.2.0 requires GEOS &gt;= 3.5.0."
 msgstr "Availability: 2.2.0 GEOS 3.5.0以上が必要です。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2437
+#: reference_processing.xml:2441
 #, no-c-format
 msgid ""
 "-- Create a new subdivided table suitable for joining to the original\n"
@@ -5868,13 +5877,13 @@ msgstr ""
 "FROM original_geoms;"
 
 #. Tag: para
-#: reference_processing.xml:2448
+#: reference_processing.xml:2452
 #, no-c-format
 msgid "Subdivide max 10 vertices"
 msgstr "最大10頂点での分割"
 
 #. Tag: programlisting
-#: reference_processing.xml:2451
+#: reference_processing.xml:2455
 #, no-c-format
 msgid ""
 "SELECT row_number() OVER() As rn, ST_AsText(geom) As wkt\n"
@@ -5894,7 +5903,7 @@ msgstr ""
 "As f(geom);"
 
 #. Tag: screen
-#: reference_processing.xml:2452
+#: reference_processing.xml:2456
 #, no-c-format
 msgid ""
 "rn |                          wkt\n"
@@ -5940,7 +5949,7 @@ msgstr ""
 " 98.000000000001,106.000000000001 98.000000000001))"
 
 #. Tag: para
-#: reference_processing.xml:2461
+#: reference_processing.xml:2465
 #, no-c-format
 msgid ""
 "Useful in conjunction with ST_Segmentize to create additional vertices that "
@@ -5948,7 +5957,7 @@ msgid ""
 msgstr "分割に使うことができる頂点の追加にST_Segmentizeを併用します"
 
 #. Tag: programlisting
-#: reference_processing.xml:2464
+#: reference_processing.xml:2468
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_SubDivide(ST_Segmentize('LINESTRING(0 0, 100 100, 150 "
@@ -5958,7 +5967,7 @@ msgstr ""
 "150)'::geometry,10),8));"
 
 #. Tag: screen
-#: reference_processing.xml:2465
+#: reference_processing.xml:2469
 #, no-c-format
 msgid ""
 "LINESTRING(0 0,7.07106781186547 7.07106781186547,14.1421356237309 "
@@ -5998,7 +6007,7 @@ msgstr ""
 "149.999999999998)"
 
 #. Tag: para
-#: reference_processing.xml:2472
+#: reference_processing.xml:2476
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClipByBox2D\"/>, <xref linkend=\"ST_Segmentize\"/>, "
@@ -6008,13 +6017,13 @@ msgstr ""
 "<xref linkend=\"ST_Split\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2483
+#: reference_processing.xml:2487
 #, no-c-format
 msgid "ST_SwapOrdinates"
 msgstr "ST_SwapOrdinates"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2484
+#: reference_processing.xml:2488
 #, no-c-format
 msgid ""
 "Returns a version of the given geometry with given ordinate values swapped."
@@ -6023,7 +6032,7 @@ msgstr ""
 "す。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2491
+#: reference_processing.xml:2495
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SwapOrdinates</function></funcdef> "
@@ -6035,7 +6044,7 @@ msgstr ""
 "<paramdef><type>cstring</type> <parameter>ords</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2501
+#: reference_processing.xml:2505
 #, no-c-format
 msgid "Returns a version of the given geometry with given ordinates swapped."
 msgstr ""
@@ -6043,7 +6052,7 @@ msgstr ""
 "す。"
 
 #. Tag: para
-#: reference_processing.xml:2504
+#: reference_processing.xml:2508
 #, no-c-format
 msgid ""
 "The <varname>ords</varname> parameter is a 2-characters string naming the "
@@ -6053,7 +6062,7 @@ msgstr ""
 "標名はx, y, z, mが有効です。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2518
+#: reference_processing.xml:2522
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -6088,20 +6097,20 @@ msgstr ""
 "                 ]]>"
 
 #. Tag: refname
-#: reference_processing.xml:2531
+#: reference_processing.xml:2535
 #, no-c-format
 msgid "ST_Union"
 msgstr "ST_Union"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2532
+#: reference_processing.xml:2536
 #, no-c-format
 msgid ""
 "Returns a geometry that represents the point set union of the Geometries."
 msgstr "ジオメトリの結合の点集合を表現するジオメトリを返します。"
 
 #. Tag: funcsynopsis
-#: reference_processing.xml:2537
+#: reference_processing.xml:2541
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> "
@@ -6125,7 +6134,7 @@ msgstr ""
 "</funcprototype>"
 
 #. Tag: para
-#: reference_processing.xml:2556
+#: reference_processing.xml:2560
 #, no-c-format
 msgid ""
 "Output type can be a MULTI*, single geometry, or Geometry Collection. Comes "
@@ -6140,7 +6149,7 @@ msgstr ""
 "インタセクトしている領域の無い単一のST_Geometryを返すものです。"
 
 #. Tag: para
-#: reference_processing.xml:2560
+#: reference_processing.xml:2564
 #, no-c-format
 msgid ""
 "Aggregate version: This function returns a MULTI geometry or NON-MULTI "
@@ -6155,7 +6164,7 @@ msgstr ""
 "を無視することを意味します。"
 
 #. Tag: para
-#: reference_processing.xml:2566
+#: reference_processing.xml:2570
 #, no-c-format
 msgid ""
 "Non-Aggregate version: This function returns a geometry being a union of two "
@@ -6167,7 +6176,7 @@ msgstr ""
 "NULLを返します。"
 
 #. Tag: para
-#: reference_processing.xml:2570
+#: reference_processing.xml:2574
 #, no-c-format
 msgid ""
 "ST_Collect and ST_Union are often interchangeable. ST_Union is in general "
@@ -6180,7 +6189,7 @@ msgstr ""
 "め、一般的にST_Collectよりも桁違いに遅く動きます。"
 
 #. Tag: para
-#: reference_processing.xml:2576
+#: reference_processing.xml:2580
 #, no-c-format
 msgid ""
 "NOTE: this function was formerly called GeomUnion(), which was renamed from "
@@ -6190,7 +6199,7 @@ msgstr ""
 "した。UNIONはSQLの予約語であるためです。"
 
 #. Tag: para
-#: reference_processing.xml:2579
+#: reference_processing.xml:2583
 #, no-c-format
 msgid ""
 "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was "
@@ -6208,13 +6217,13 @@ msgstr ""
 "ゴリズムを使います。"
 
 #. Tag: para
-#: reference_processing.xml:2585
+#: reference_processing.xml:2589
 #, no-c-format
 msgid "Aggregate version is not explicitly defined in OGC SPEC."
 msgstr "集約関数版は、OGC仕様に明示的に定義されていません。"
 
 #. Tag: para
-#: reference_processing.xml:2586
+#: reference_processing.xml:2590
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are "
@@ -6224,7 +6233,7 @@ msgstr ""
 "す。"
 
 #. Tag: programlisting
-#: reference_processing.xml:2593
+#: reference_processing.xml:2597
 #, no-c-format
 msgid ""
 "SELECT stusps,\n"
@@ -6238,7 +6247,7 @@ msgstr ""
 "GROUP BY stusps"
 
 #. Tag: programlisting
-#: reference_processing.xml:2595
+#: reference_processing.xml:2599
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
@@ -6358,19 +6367,19 @@ msgstr ""
 "MULTILINESTRING((3 4,4 5),(1 2,3 4))"
 
 #. Tag: refname
-#: reference_processing.xml:2608
+#: reference_processing.xml:2612
 #, no-c-format
 msgid "ST_UnaryUnion"
 msgstr "ST_UnaryUnion"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2610
+#: reference_processing.xml:2614
 #, no-c-format
 msgid "Like ST_Union, but working at the geometry component level."
 msgstr "ST_Unionに似ていますが、ジオメトリ要素レベルで動作します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2615
+#: reference_processing.xml:2619
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> "
@@ -6380,7 +6389,7 @@ msgstr ""
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2626
+#: reference_processing.xml:2630
 #, no-c-format
 msgid ""
 "Unlike ST_Union, ST_UnaryUnion does dissolve boundaries between components "
@@ -6395,7 +6404,7 @@ msgstr ""
 "なマルチポリゴンを得ることはできません。"
 
 #. Tag: para
-#: reference_processing.xml:2636
+#: reference_processing.xml:2640
 #, no-c-format
 msgid ""
 "You may use this function to node a set of linestrings. You may mix "
@@ -6409,7 +6418,7 @@ msgstr ""
 "することができます。"
 
 #. Tag: para
-#: reference_processing.xml:2654
+#: reference_processing.xml:2658
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_MemUnion\"/>, <xref linkend=\"ST_Collect\"/>, <xref "
@@ -6419,13 +6428,13 @@ msgstr ""
 "linkend=\"ST_Node\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2665
+#: reference_processing.xml:2669
 #, fuzzy, no-c-format
 msgid "ST_VoronoiLines"
 msgstr "ST_Voronoi"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2667
+#: reference_processing.xml:2671
 #, fuzzy, no-c-format
 msgid ""
 "Returns the boundaries between the cells of the Voronoi diagram constructed "
@@ -6433,7 +6442,7 @@ msgid ""
 msgstr "ジオメトリの頂点からボロノイ図を計算します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2672
+#: reference_processing.xml:2676
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiLines</function></funcdef> <paramdef> "
@@ -6450,7 +6459,7 @@ msgstr ""
 "parameter> <type>boolean</type> </paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2694
+#: reference_processing.xml:2698
 #, fuzzy, no-c-format
 msgid ""
 "ST_VoronoiLines computes a two-dimensional <ulink url=\"https://en.wikipedia."
@@ -6464,13 +6473,13 @@ msgstr ""
 "ロープを包含するポリゴンのジオメトリコレクションです。"
 
 #. Tag: para
-#: reference_processing.xml:2699 reference_processing.xml:2789
+#: reference_processing.xml:2703 reference_processing.xml:2793
 #, no-c-format
 msgid "Optional parameters:"
 msgstr "任意パラメータ:"
 
 #. Tag: para
-#: reference_processing.xml:2703 reference_processing.xml:2793
+#: reference_processing.xml:2707 reference_processing.xml:2797
 #, no-c-format
 msgid ""
 "'tolerance' : The distance within which vertices will be considered "
@@ -6481,7 +6490,7 @@ msgstr ""
 "で、アルゴリズムのロバスト性が改善します。デフォルトは0.0です。"
 
 #. Tag: para
-#: reference_processing.xml:2706 reference_processing.xml:2796
+#: reference_processing.xml:2710 reference_processing.xml:2800
 #, fuzzy, no-c-format
 msgid ""
 "'extend_to' : If a geometry is supplied as the \"extend_to\" parameter, the "
@@ -6494,19 +6503,19 @@ msgstr ""
 "フォルトより小さい場合には使われません。デフォルトはNULLです。"
 
 #. Tag: para
-#: reference_processing.xml:2713 reference_processing.xml:2803
+#: reference_processing.xml:2717 reference_processing.xml:2807
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.5.0."
 msgstr "Availability: 2.3.0 - GEOS 3.5.0以上が必要です。"
 
 #. Tag: para
-#: reference_processing.xml:2728
+#: reference_processing.xml:2732
 #, fuzzy, no-c-format
 msgid "Voronoi lines with tolerance of 30 units"
 msgstr "許容範囲を30単位としたボロノイ図"
 
 #. Tag: programlisting
-#: reference_processing.xml:2731 reference_processing.xml:2849
+#: reference_processing.xml:2735 reference_processing.xml:2853
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_VoronoiLines(geom, 30) As geom\n"
@@ -6518,7 +6527,7 @@ msgstr ""
 "As geom ) As g;"
 
 #. Tag: screen
-#: reference_processing.xml:2732 reference_processing.xml:2850
+#: reference_processing.xml:2736 reference_processing.xml:2854
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -6532,20 +6541,20 @@ msgstr ""
 "-45.7142857142858,36.8181818181818 92.2727272727273))"
 
 #. Tag: para
-#: reference_processing.xml:2745
+#: reference_processing.xml:2749
 #, fuzzy, no-c-format
 msgid ""
 ", <xref linkend=\"ST_VoronoiPolygons\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
 
 #. Tag: refname
-#: reference_processing.xml:2755
+#: reference_processing.xml:2759
 #, fuzzy, no-c-format
 msgid "ST_VoronoiPolygons"
 msgstr "ST_Voronoi"
 
 #. Tag: refpurpose
-#: reference_processing.xml:2757
+#: reference_processing.xml:2761
 #, fuzzy, no-c-format
 msgid ""
 "Returns the cells of the Voronoi diagram constructed from the vertices of a "
@@ -6553,7 +6562,7 @@ msgid ""
 msgstr "ジオメトリの頂点からボロノイ図を計算します。"
 
 #. Tag: funcprototype
-#: reference_processing.xml:2762
+#: reference_processing.xml:2766
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_VoronoiPolygons</function></funcdef> "
@@ -6570,7 +6579,7 @@ msgstr ""
 "parameter> <type>boolean</type> </paramdef>"
 
 #. Tag: para
-#: reference_processing.xml:2784
+#: reference_processing.xml:2788
 #, fuzzy, no-c-format
 msgid ""
 "ST_VoronoiPolygons computes a two-dimensional <ulink url=\"https://en."
@@ -6585,13 +6594,13 @@ msgstr ""
 "ロープを包含するポリゴンのジオメトリコレクションです。"
 
 #. Tag: para
-#: reference_processing.xml:2819
+#: reference_processing.xml:2823
 #, fuzzy, no-c-format
 msgid "Points overlaid on top of Voronoi diagram"
 msgstr "ボロノイ図の上にポイントを重ねて表示"
 
 #. Tag: programlisting
-#: reference_processing.xml:2822
+#: reference_processing.xml:2826
 #, fuzzy, no-c-format
 msgid ""
 "SELECT\n"
@@ -6605,7 +6614,7 @@ msgstr ""
 "As geom ) As g;"
 
 #. Tag: screen
-#: reference_processing.xml:2823
+#: reference_processing.xml:2827
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -6635,13 +6644,13 @@ msgstr ""
 "270)))"
 
 #. Tag: para
-#: reference_processing.xml:2833
+#: reference_processing.xml:2837
 #, no-c-format
 msgid "Voronoi with tolerance of 30 units"
 msgstr "許容範囲を30単位としたボロノイ図"
 
 #. Tag: programlisting
-#: reference_processing.xml:2836
+#: reference_processing.xml:2840
 #, fuzzy, no-c-format
 msgid ""
 "SELECT ST_VoronoiPolygons(geom, 30) As geom\n"
@@ -6653,7 +6662,7 @@ msgstr ""
 "As geom ) As g;"
 
 #. Tag: screen
-#: reference_processing.xml:2837
+#: reference_processing.xml:2841
 #, no-c-format
 msgid ""
 "-- ST_AsText output\n"
@@ -6679,13 +6688,13 @@ msgstr ""
 "270)))"
 
 #. Tag: para
-#: reference_processing.xml:2846
+#: reference_processing.xml:2850
 #, fuzzy, no-c-format
 msgid "Voronoi with tolerance of 30 units as MultiLineString"
 msgstr "許容範囲を30単位とした、マルチラインストリングのボロノイ図"
 
 #. Tag: para
-#: reference_processing.xml:2863
+#: reference_processing.xml:2867
 #, fuzzy, no-c-format
 msgid ", <xref linkend=\"ST_VoronoiLines\"/>, <xref linkend=\"ST_Collect\"/>"
 msgstr ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"

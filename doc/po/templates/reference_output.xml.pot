@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-08-24 19:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -196,7 +196,7 @@ msgstr ""
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
 #: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
 #: reference_output.xml:1010 reference_output.xml:1051
-#: reference_output.xml:1093
+#: reference_output.xml:1098
 #, no-c-format
 msgid "Examples"
 msgstr ""
@@ -243,7 +243,7 @@ msgstr ""
 #: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
 #: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
 #: reference_output.xml:745 reference_output.xml:804 reference_output.xml:972
-#: reference_output.xml:1098
+#: reference_output.xml:1103
 #, no-c-format
 msgid "See Also"
 msgstr ""
@@ -2179,7 +2179,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1003 reference_output.xml:1086
+#: reference_output.xml:1003 reference_output.xml:1091
 #, no-c-format
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
@@ -2187,14 +2187,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1004 reference_output.xml:1087
+#: reference_output.xml:1004 reference_output.xml:1092
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
 msgstr ""
 
 #. Tag: para
 #: reference_output.xml:1006 reference_output.xml:1047
-#: reference_output.xml:1089
+#: reference_output.xml:1094
 #, no-c-format
 msgid "Availability: 2.4.0"
 msgstr ""
@@ -2346,11 +2346,22 @@ msgstr ""
 #. Tag: para
 #: reference_output.xml:1084
 #, no-c-format
+msgid ""
+"The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
+"ulink> format can store features with a different set of attributes per "
+"feature. To make use of this feature supply a JSONB column in the row data "
+"containing Json objects one level deep. The keys and values in the object "
+"will be parsed into feature attributes."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1089
+#, no-c-format
 msgid "<varname>name</varname> is the name of the Layer"
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1085
+#: reference_output.xml:1090
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in screen space as defined by "
@@ -2358,7 +2369,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1094
+#: reference_output.xml:1099
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsMVT('test', 4096, 'geom', q) FROM (SELECT 1 AS c1,\n"
