@@ -701,7 +701,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		return NULL;
 
 	lwgeom_out = lwgeom_make_valid(lwgeom_out);
-	lwgeom_force_clockwise(lwgeom_out);
+	if (lwgeom_out->type == POLYGONTYPE ||
+		lwgeom_out->type == MULTIPOLYGONTYPE) {
+		lwgeom_force_clockwise(lwgeom_out);
+	}
 
 	if (lwgeom_out->type == COLLECTIONTYPE) {
 		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
@@ -709,13 +712,16 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
 		lwgeom_out = lwgeom_make_valid(lwgeom_out);
-		lwgeom_force_clockwise(lwgeom_out);
+		if (lwgeom_out->type == POLYGONTYPE ||
+			lwgeom_out->type == MULTIPOLYGONTYPE) {
+			lwgeom_force_clockwise(lwgeom_out);
+		}
 	}
 
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	return lwgeom_normalize(lwgeom_out);
+	return lwgeom_out;
 }
 
 /**
