@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-08-24 19:57+0000\n"
 "PO-Revision-Date: 2016-11-17 20:01+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -69,13 +69,13 @@ msgstr ""
 #: reference_editor.xml:465 reference_editor.xml:509 reference_editor.xml:538
 #: reference_editor.xml:595 reference_editor.xml:640 reference_editor.xml:682
 #: reference_editor.xml:733 reference_editor.xml:775 reference_editor.xml:810
-#: reference_editor.xml:854 reference_editor.xml:887 reference_editor.xml:931
-#: reference_editor.xml:980 reference_editor.xml:1027 reference_editor.xml:1076
-#: reference_editor.xml:1143 reference_editor.xml:1208
-#: reference_editor.xml:1250 reference_editor.xml:1294
-#: reference_editor.xml:1371 reference_editor.xml:1449
-#: reference_editor.xml:1606 reference_editor.xml:1712
-#: reference_editor.xml:1764
+#: reference_editor.xml:854 reference_editor.xml:887 reference_editor.xml:935
+#: reference_editor.xml:984 reference_editor.xml:1031 reference_editor.xml:1080
+#: reference_editor.xml:1147 reference_editor.xml:1212
+#: reference_editor.xml:1254 reference_editor.xml:1298
+#: reference_editor.xml:1375 reference_editor.xml:1453
+#: reference_editor.xml:1612 reference_editor.xml:1718
+#: reference_editor.xml:1770
 #, no-c-format
 msgid "Description"
 msgstr "Descrição"
@@ -93,7 +93,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_editor.xml:34 reference_editor.xml:647 reference_editor.xml:857
-#: reference_editor.xml:1255
+#: reference_editor.xml:1259
 #, no-c-format
 msgid "Availability: 1.1.0"
 msgstr "Disponibilitade: 1.1.0"
@@ -103,11 +103,11 @@ msgstr "Disponibilitade: 1.1.0"
 #: reference_editor.xml:200 reference_editor.xml:242 reference_editor.xml:324
 #: reference_editor.xml:377 reference_editor.xml:418 reference_editor.xml:473
 #: reference_editor.xml:514 reference_editor.xml:553 reference_editor.xml:604
-#: reference_editor.xml:858 reference_editor.xml:940 reference_editor.xml:990
-#: reference_editor.xml:1038 reference_editor.xml:1089
-#: reference_editor.xml:1163 reference_editor.xml:1258
-#: reference_editor.xml:1402 reference_editor.xml:1720
-#: reference_editor.xml:1777
+#: reference_editor.xml:858 reference_editor.xml:892 reference_editor.xml:944
+#: reference_editor.xml:994 reference_editor.xml:1042 reference_editor.xml:1093
+#: reference_editor.xml:1167 reference_editor.xml:1262
+#: reference_editor.xml:1406 reference_editor.xml:1726
+#: reference_editor.xml:1783
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -118,13 +118,13 @@ msgstr "&Z_support;"
 #: reference_editor.xml:330 reference_editor.xml:424 reference_editor.xml:558
 #: reference_editor.xml:610 reference_editor.xml:652 reference_editor.xml:704
 #: reference_editor.xml:748 reference_editor.xml:783 reference_editor.xml:826
-#: reference_editor.xml:862 reference_editor.xml:893 reference_editor.xml:949
-#: reference_editor.xml:996 reference_editor.xml:1045 reference_editor.xml:1097
-#: reference_editor.xml:1171 reference_editor.xml:1223
-#: reference_editor.xml:1262 reference_editor.xml:1310
-#: reference_editor.xml:1407 reference_editor.xml:1483
-#: reference_editor.xml:1646 reference_editor.xml:1725
-#: reference_editor.xml:1783
+#: reference_editor.xml:862 reference_editor.xml:897 reference_editor.xml:953
+#: reference_editor.xml:1000 reference_editor.xml:1049
+#: reference_editor.xml:1101 reference_editor.xml:1175
+#: reference_editor.xml:1227 reference_editor.xml:1266
+#: reference_editor.xml:1314 reference_editor.xml:1411
+#: reference_editor.xml:1489 reference_editor.xml:1652
+#: reference_editor.xml:1731 reference_editor.xml:1789
 #, no-c-format
 msgid "Examples"
 msgstr "Exemplos"
@@ -178,12 +178,12 @@ msgstr ""
 #: reference_editor.xml:478 reference_editor.xml:564 reference_editor.xml:616
 #: reference_editor.xml:657 reference_editor.xml:709 reference_editor.xml:753
 #: reference_editor.xml:788 reference_editor.xml:831 reference_editor.xml:866
-#: reference_editor.xml:956 reference_editor.xml:1003 reference_editor.xml:1052
-#: reference_editor.xml:1104 reference_editor.xml:1178
-#: reference_editor.xml:1228 reference_editor.xml:1266
-#: reference_editor.xml:1318 reference_editor.xml:1414
-#: reference_editor.xml:1558 reference_editor.xml:1680
-#: reference_editor.xml:1738 reference_editor.xml:1790
+#: reference_editor.xml:960 reference_editor.xml:1007 reference_editor.xml:1056
+#: reference_editor.xml:1108 reference_editor.xml:1182
+#: reference_editor.xml:1232 reference_editor.xml:1270
+#: reference_editor.xml:1322 reference_editor.xml:1418
+#: reference_editor.xml:1564 reference_editor.xml:1686
+#: reference_editor.xml:1744 reference_editor.xml:1796
 #, no-c-format
 msgid "See Also"
 msgstr "Veja também"
@@ -321,9 +321,9 @@ msgstr ""
 "z' = z </programlisting> Esse método é um subcaso do caso 3D acima."
 
 #. Tag: para
-#: reference_editor.xml:104 reference_editor.xml:937 reference_editor.xml:987
-#: reference_editor.xml:1035 reference_editor.xml:1084
-#: reference_editor.xml:1160
+#: reference_editor.xml:104 reference_editor.xml:941 reference_editor.xml:991
+#: reference_editor.xml:1039 reference_editor.xml:1088
+#: reference_editor.xml:1164
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was "
@@ -341,9 +341,9 @@ msgstr ""
 "1.2.2."
 
 #. Tag: para
-#: reference_editor.xml:106 reference_editor.xml:1087 reference_editor.xml:1156
-#: reference_editor.xml:1635 reference_editor.xml:1717
-#: reference_editor.xml:1773
+#: reference_editor.xml:106 reference_editor.xml:1091 reference_editor.xml:1160
+#: reference_editor.xml:1641 reference_editor.xml:1723
+#: reference_editor.xml:1779
 #, no-c-format
 msgid ""
 "Prior to 1.3.4, this function crashes if used with geometries that contain "
@@ -355,17 +355,17 @@ msgstr ""
 #. Tag: para
 #: reference_editor.xml:108 reference_editor.xml:156 reference_editor.xml:198
 #: reference_editor.xml:241 reference_editor.xml:417 reference_editor.xml:511
-#: reference_editor.xml:554 reference_editor.xml:942 reference_editor.xml:989
-#: reference_editor.xml:1037 reference_editor.xml:1091
-#: reference_editor.xml:1162 reference_editor.xml:1641
+#: reference_editor.xml:554 reference_editor.xml:893 reference_editor.xml:946
+#: reference_editor.xml:993 reference_editor.xml:1041 reference_editor.xml:1095
+#: reference_editor.xml:1166 reference_editor.xml:1647
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
-#: reference_editor.xml:109 reference_editor.xml:512 reference_editor.xml:943
-#: reference_editor.xml:991 reference_editor.xml:1039 reference_editor.xml:1092
-#: reference_editor.xml:1165
+#: reference_editor.xml:109 reference_editor.xml:512 reference_editor.xml:947
+#: reference_editor.xml:995 reference_editor.xml:1043 reference_editor.xml:1096
+#: reference_editor.xml:1169
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -374,9 +374,9 @@ msgstr "&T_support;"
 #: reference_editor.xml:111 reference_editor.xml:155 reference_editor.xml:199
 #: reference_editor.xml:243 reference_editor.xml:284 reference_editor.xml:325
 #: reference_editor.xml:419 reference_editor.xml:513 reference_editor.xml:606
-#: reference_editor.xml:941 reference_editor.xml:1090 reference_editor.xml:1164
-#: reference_editor.xml:1306 reference_editor.xml:1640
-#: reference_editor.xml:1721 reference_editor.xml:1778
+#: reference_editor.xml:945 reference_editor.xml:1094 reference_editor.xml:1168
+#: reference_editor.xml:1310 reference_editor.xml:1646
+#: reference_editor.xml:1727 reference_editor.xml:1784
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -477,7 +477,7 @@ msgstr ""
 
 #. Tag: para
 #: reference_editor.xml:153 reference_editor.xml:196 reference_editor.xml:239
-#: reference_editor.xml:413 reference_editor.xml:552 reference_editor.xml:1637
+#: reference_editor.xml:413 reference_editor.xml:552 reference_editor.xml:1643
 #, no-c-format
 msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
 msgstr "Melhorias: 2.0.0 suporte a superfícies polihédricas foi introduzido."
@@ -883,7 +883,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:378 reference_editor.xml:474 reference_editor.xml:1166
+#: reference_editor.xml:378 reference_editor.xml:474 reference_editor.xml:1170
 #, no-c-format
 msgid "&M_support;"
 msgstr "&M_support;"
@@ -1789,8 +1789,14 @@ msgstr ""
 msgid "Can be used on any geometry and reverses the order of the vertexes."
 msgstr "Pode ser usado em qualquer geometria e reverte a ordem dos vértices."
 
+#. Tag: para
+#: reference_editor.xml:891
+#, fuzzy, no-c-format
+msgid "Enhanced: 2.4.0 support for curves was introduced."
+msgstr "Melhorias: 2.1.0 suporte para geografia foi introduzido."
+
 #. Tag: programlisting
-#: reference_editor.xml:894
+#: reference_editor.xml:898
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(the_geom) as line, ST_AsText(ST_Reverse(the_geom)) As "
@@ -1814,20 +1820,20 @@ msgstr ""
 "LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)"
 
 #. Tag: refname
-#: reference_editor.xml:900
+#: reference_editor.xml:904
 #, no-c-format
 msgid "ST_Rotate"
 msgstr "ST_Rotate"
 
 #. Tag: refpurpose
-#: reference_editor.xml:902
+#: reference_editor.xml:906
 #, no-c-format
 msgid "Rotate a geometry rotRadians counter-clockwise about an origin."
 msgstr ""
 "Rotaciona uma geometria em rotRadians em sentido anti-horário de sua origem."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:906
+#: reference_editor.xml:910
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Rotate</function></funcdef> "
@@ -1859,7 +1865,7 @@ msgstr ""
 "<parameter>pointOrigin</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:933
+#: reference_editor.xml:937
 #, no-c-format
 msgid ""
 "Rotates geometry rotRadians counter-clockwise about the origin. The rotation "
@@ -1873,7 +1879,7 @@ msgstr ""
 "origem POINT(0 0)."
 
 #. Tag: para
-#: reference_editor.xml:938
+#: reference_editor.xml:942
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 additional parameters for specifying the origin of rotation "
@@ -1883,7 +1889,7 @@ msgstr ""
 "rotação adicionados."
 
 #. Tag: para
-#: reference_editor.xml:939
+#: reference_editor.xml:943
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2"
 msgstr ""
@@ -1891,7 +1897,7 @@ msgstr ""
 "1.2.2."
 
 #. Tag: programlisting
-#: reference_editor.xml:951
+#: reference_editor.xml:955
 #, no-c-format
 msgid ""
 "--Rotate 180 degrees\n"
@@ -1943,7 +1949,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_editor.xml:958
+#: reference_editor.xml:962
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>, <xref "
@@ -1953,19 +1959,19 @@ msgstr ""
 "linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:964
+#: reference_editor.xml:968
 #, no-c-format
 msgid "ST_RotateX"
 msgstr "ST_RotateX"
 
 #. Tag: refpurpose
-#: reference_editor.xml:966
+#: reference_editor.xml:970
 #, no-c-format
 msgid "Rotate a geometry rotRadians about the X axis."
 msgstr "Rotaciona uma geometria rotRadians em cima do eixo X."
 
 #. Tag: funcprototype
-#: reference_editor.xml:971
+#: reference_editor.xml:975
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RotateX</function></funcdef> "
@@ -1977,13 +1983,13 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:982
+#: reference_editor.xml:986
 #, no-c-format
 msgid "Rotate a geometry geomA - rotRadians about the X axis."
 msgstr "Rotaciona uma geometria geomA - rotRadians sobre o eixo X."
 
 #. Tag: para
-#: reference_editor.xml:984
+#: reference_editor.xml:988
 #, no-c-format
 msgid ""
 "<code>ST_RotateX(geomA, rotRadians)</code> is short-hand for "
@@ -1995,7 +2001,7 @@ msgstr ""
 "sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>."
 
 #. Tag: para
-#: reference_editor.xml:988
+#: reference_editor.xml:992
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2"
 msgstr ""
@@ -2003,7 +2009,7 @@ msgstr ""
 "1.2.2."
 
 #. Tag: programlisting
-#: reference_editor.xml:998
+#: reference_editor.xml:1002
 #, no-c-format
 msgid ""
 "--Rotate a line 90 degrees along x-axis\n"
@@ -2021,25 +2027,25 @@ msgstr ""
 " LINESTRING(1 -3 2,1 -1 1)"
 
 #. Tag: para
-#: reference_editor.xml:1005
+#: reference_editor.xml:1009
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ", <xref linkend=\"ST_RotateY\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1011
+#: reference_editor.xml:1015
 #, no-c-format
 msgid "ST_RotateY"
 msgstr "ST_RotateY"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1013
+#: reference_editor.xml:1017
 #, no-c-format
 msgid "Rotate a geometry rotRadians about the Y axis."
 msgstr "Rotaciona uma geometria rotRadians em cima do eixo Y."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1018
+#: reference_editor.xml:1022
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RotateY</function></funcdef> "
@@ -2051,13 +2057,13 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1029
+#: reference_editor.xml:1033
 #, no-c-format
 msgid "Rotate a geometry geomA - rotRadians about the y axis."
 msgstr "Rotaciona uma geometria geomA - rotRadians sobre o eixo Y."
 
 #. Tag: para
-#: reference_editor.xml:1031
+#: reference_editor.xml:1035
 #, no-c-format
 msgid ""
 "<code>ST_RotateY(geomA, rotRadians)</code> is short-hand for "
@@ -2069,7 +2075,7 @@ msgstr ""
 "sin(rotRadians), 0, cos(rotRadians), 0, 0, 0)</code>."
 
 #. Tag: para
-#: reference_editor.xml:1034
+#: reference_editor.xml:1038
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2"
 msgstr ""
@@ -2077,7 +2083,7 @@ msgstr ""
 "1.2.2."
 
 #. Tag: programlisting
-#: reference_editor.xml:1047
+#: reference_editor.xml:1051
 #, no-c-format
 msgid ""
 "--Rotate a line 90 degrees along y-axis\n"
@@ -2095,25 +2101,25 @@ msgstr ""
 " LINESTRING(3 2 -1,1 1 -1)"
 
 #. Tag: para
-#: reference_editor.xml:1054
+#: reference_editor.xml:1058
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
 msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateZ\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1060
+#: reference_editor.xml:1064
 #, no-c-format
 msgid "ST_RotateZ"
 msgstr "ST_RotateZ"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1062
+#: reference_editor.xml:1066
 #, no-c-format
 msgid "Rotate a geometry rotRadians about the Z axis."
 msgstr "Rotaciona uma geometria rotRadians em cima do eixo Z."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1067
+#: reference_editor.xml:1071
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_RotateZ</function></funcdef> "
@@ -2125,19 +2131,19 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1078
+#: reference_editor.xml:1082
 #, no-c-format
 msgid "Rotate a geometry geomA - rotRadians about the Z axis."
 msgstr "Rotaciona uma geometria geomA - rotRadians sobre o eixo Z."
 
 #. Tag: para
-#: reference_editor.xml:1080
+#: reference_editor.xml:1084
 #, no-c-format
 msgid "This is a synonym for ST_Rotate"
 msgstr "Esta função é um sinônimo para ST_Rotate"
 
 #. Tag: para
-#: reference_editor.xml:1081
+#: reference_editor.xml:1085
 #, no-c-format
 msgid ""
 "<code>ST_RotateZ(geomA, rotRadians)</code> is short-hand for <code>SELECT "
@@ -2149,7 +2155,7 @@ msgstr ""
 "cos(rotRadians), 0, 0, 0, 1, 0, 0, 0)</code>."
 
 #. Tag: para
-#: reference_editor.xml:1086
+#: reference_editor.xml:1090
 #, no-c-format
 msgid "Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2"
 msgstr ""
@@ -2157,7 +2163,7 @@ msgstr ""
 "1.2.2."
 
 #. Tag: programlisting
-#: reference_editor.xml:1099
+#: reference_editor.xml:1103
 #, no-c-format
 msgid ""
 "--Rotate a line 90 degrees along z-axis\n"
@@ -2195,25 +2201,25 @@ msgstr ""
 "234,-569.12132034356 231.87867965644,-567 237))"
 
 #. Tag: para
-#: reference_editor.xml:1106
+#: reference_editor.xml:1110
 #, no-c-format
 msgid ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
 msgstr ", <xref linkend=\"ST_RotateX\"/>, <xref linkend=\"ST_RotateY\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1112
+#: reference_editor.xml:1116
 #, no-c-format
 msgid "ST_Scale"
 msgstr "ST_Scale"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1114
+#: reference_editor.xml:1118
 #, no-c-format
 msgid "Scale a geometry by given factors."
 msgstr "Escala uma geometria pelos fatores dados."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1118
+#: reference_editor.xml:1122
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Scale</function></funcdef> "
@@ -2245,7 +2251,7 @@ msgstr ""
 "<parameter>fator</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1145
+#: reference_editor.xml:1149
 #, no-c-format
 msgid ""
 "Scales the geometry to a new size by multiplying the ordinates with the "
@@ -2255,7 +2261,7 @@ msgstr ""
 "parâmetros correspondentes do coeficiente."
 
 #. Tag: para
-#: reference_editor.xml:1149
+#: reference_editor.xml:1153
 #, no-c-format
 msgid ""
 "The version taking a geometry as the <varname>factor</varname> parameter "
@@ -2270,13 +2276,13 @@ msgstr ""
 "correspondente."
 
 #. Tag: para
-#: reference_editor.xml:1159 reference_editor.xml:1776
+#: reference_editor.xml:1163 reference_editor.xml:1782
 #, no-c-format
 msgid "Availability: 1.1.0."
 msgstr "Disponibilidade: 1.1.0"
 
 #. Tag: para
-#: reference_editor.xml:1161
+#: reference_editor.xml:1165
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 support for scaling all dimension (geometry parameter) was "
@@ -2286,7 +2292,7 @@ msgstr ""
 "geometria) foi introduzido."
 
 #. Tag: programlisting
-#: reference_editor.xml:1173
+#: reference_editor.xml:1177
 #, no-c-format
 msgid ""
 "--Version 1: scale X, Y, Z\n"
@@ -2332,19 +2338,19 @@ msgstr ""
 " LINESTRING(0.5 1.5 6 -4,0.5 0.75 2 -1)"
 
 #. Tag: para
-#: reference_editor.xml:1180
+#: reference_editor.xml:1184
 #, no-c-format
 msgid ", <xref linkend=\"ST_TransScale\"/>"
 msgstr ", <xref linkend=\"ST_TransScale\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1186
+#: reference_editor.xml:1190
 #, no-c-format
 msgid "ST_Segmentize"
 msgstr "ST_Segmentize"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1188
+#: reference_editor.xml:1192
 #, no-c-format
 msgid ""
 "Return a modified geometry/geography having no segment longer than the given "
@@ -2354,7 +2360,7 @@ msgstr ""
 "a distância dada."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1193
+#: reference_editor.xml:1197
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Segmentize</function></"
@@ -2374,7 +2380,7 @@ msgstr ""
 "<parameter>max_segment_length</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1210
+#: reference_editor.xml:1214
 #, no-c-format
 msgid ""
 "Returns a modified geometry having no segment longer than the given "
@@ -2388,25 +2394,25 @@ msgstr ""
 "de referência espacial. Para geografia, unidades estão em metros."
 
 #. Tag: para
-#: reference_editor.xml:1213 reference_editor.xml:1719
+#: reference_editor.xml:1217 reference_editor.xml:1725
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr "Disponibilidade: 1.2.2"
 
 #. Tag: para
-#: reference_editor.xml:1214
+#: reference_editor.xml:1218
 #, no-c-format
 msgid "Enhanced: 2.3.0 Segmentize geography now uses equal length segments"
 msgstr ""
 
 #. Tag: para
-#: reference_editor.xml:1215
+#: reference_editor.xml:1219
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for geography was introduced."
 msgstr "Melhorias: 2.1.0 suporte para geografia foi introduzido."
 
 #. Tag: para
-#: reference_editor.xml:1216
+#: reference_editor.xml:1220
 #, no-c-format
 msgid ""
 "Changed: 2.1.0 As a result of the introduction of geography support: The "
@@ -2424,7 +2430,7 @@ msgstr ""
 "2, 3 4)'::geometry,0.5);</code>"
 
 #. Tag: para
-#: reference_editor.xml:1218
+#: reference_editor.xml:1222
 #, no-c-format
 msgid ""
 "This will only increase segments. It will not lengthen segments shorter than "
@@ -2434,7 +2440,7 @@ msgstr ""
 "comprimento máximo"
 
 #. Tag: programlisting
-#: reference_editor.xml:1225
+#: reference_editor.xml:1229
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Segmentize(\n"
@@ -2480,19 +2486,19 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_editor.xml:1235
+#: reference_editor.xml:1239
 #, no-c-format
 msgid "ST_SetPoint"
 msgstr "ST_SetPoint"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1236
+#: reference_editor.xml:1240
 #, no-c-format
 msgid "Replace point of a linestring with a given point."
 msgstr "Substitui ponto de uma linestring com um dado ponto."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1240
+#: reference_editor.xml:1244
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetPoint</function></funcdef> "
@@ -2508,7 +2514,7 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1252
+#: reference_editor.xml:1256
 #, no-c-format
 msgid ""
 "Replace point N of linestring with given point. Index is 0-based.Negative "
@@ -2522,13 +2528,13 @@ msgstr ""
 "vértice se move. "
 
 #. Tag: para
-#: reference_editor.xml:1256
+#: reference_editor.xml:1260
 #, no-c-format
 msgid "Updated 2.3.0 : negative indexing"
 msgstr "Atualizado 2.3.0: indexing negativo"
 
 #. Tag: programlisting
-#: reference_editor.xml:1263
+#: reference_editor.xml:1267
 #, no-c-format
 msgid ""
 "--Change first point in line string from -1 3 to -1 1\n"
@@ -2578,7 +2584,7 @@ msgstr ""
 "LINESTRING(0 0,1 1,0 0,3 3,4 4)"
 
 #. Tag: para
-#: reference_editor.xml:1267
+#: reference_editor.xml:1271
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_NPoints\"/>, <xref linkend=\"ST_NumPoints\"/>, <xref "
@@ -2588,19 +2594,19 @@ msgstr ""
 "linkend=\"ST_PointN\"/>, <xref linkend=\"ST_RemovePoint\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1273
+#: reference_editor.xml:1277
 #, no-c-format
 msgid "ST_SetSRID"
 msgstr "ST_SetSRID"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1275
+#: reference_editor.xml:1279
 #, no-c-format
 msgid "Set the SRID on a geometry to a particular integer value."
 msgstr "Configure SRID em uma geometria para um valor inteiro específico. "
 
 #. Tag: funcprototype
-#: reference_editor.xml:1281
+#: reference_editor.xml:1285
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_SetSRID</function></funcdef> "
@@ -2612,7 +2618,7 @@ msgstr ""
 "<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1296
+#: reference_editor.xml:1300
 #, no-c-format
 msgid ""
 "Sets the SRID on a geometry to a particular integer value. Useful in "
@@ -2622,7 +2628,7 @@ msgstr ""
 "construir caixas seguras para pequisas. "
 
 #. Tag: para
-#: reference_editor.xml:1300
+#: reference_editor.xml:1304
 #, no-c-format
 msgid ""
 "This function does not transform the geometry coordinates in any way - it "
@@ -2636,19 +2642,19 @@ msgstr ""
 "\"/> se você quiser transformar a geometria em uma nova projeção. "
 
 #. Tag: para
-#: reference_editor.xml:1305
+#: reference_editor.xml:1309
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr "&sfs_compliant;"
 
 #. Tag: para
-#: reference_editor.xml:1311
+#: reference_editor.xml:1315
 #, no-c-format
 msgid "-- Mark a point as WGS 84 long lat --"
 msgstr "-- Marque um ponto como WGS 84 extensa latitude --"
 
 #. Tag: programlisting
-#: reference_editor.xml:1312
+#: reference_editor.xml:1316
 #, no-c-format
 msgid ""
 "SELECT ST_SetSRID(ST_Point(-123.365556, 48.428611),4326) As wgs84long_lat;\n"
@@ -2660,7 +2666,7 @@ msgstr ""
 "SRID=4326;POINT(-123.365556 48.428611)"
 
 #. Tag: para
-#: reference_editor.xml:1313
+#: reference_editor.xml:1317
 #, no-c-format
 msgid ""
 "-- Mark a point as WGS 84 long lat and then transform to web mercator "
@@ -2670,7 +2676,7 @@ msgstr ""
 "mercator web (Mercator Esférico) --"
 
 #. Tag: programlisting
-#: reference_editor.xml:1314
+#: reference_editor.xml:1318
 #, no-c-format
 msgid ""
 "SELECT ST_Transform(ST_SetSRID(ST_Point(-123.365556, 48.428611),4326),3785) "
@@ -2684,7 +2690,7 @@ msgstr ""
 "SRID=3785;POINT(-13732990.8753491 6178458.96425423)"
 
 #. Tag: para
-#: reference_editor.xml:1320
+#: reference_editor.xml:1324
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_Point\"/>, <xref linkend="
@@ -2696,19 +2702,19 @@ msgstr ""
 "\"UpdateGeometrySRID\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1327
+#: reference_editor.xml:1331
 #, no-c-format
 msgid "ST_SnapToGrid"
 msgstr "ST_SnapToGrid"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1329
+#: reference_editor.xml:1333
 #, no-c-format
 msgid "Snap all points of the input geometry to a regular grid."
 msgstr "Rompe todos os pontos da geometria de entrada para uma rede regular."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1335
+#: reference_editor.xml:1339
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_SnapToGrid</function></"
@@ -2758,7 +2764,7 @@ msgstr ""
 "<parameter>sizeM</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1373
+#: reference_editor.xml:1377
 #, no-c-format
 msgid ""
 "Variant 1,2,3: Snap all points of the input geometry to the grid defined by "
@@ -2775,7 +2781,7 @@ msgstr ""
 "precisão. "
 
 #. Tag: para
-#: reference_editor.xml:1381
+#: reference_editor.xml:1385
 #, no-c-format
 msgid ""
 "Variant 4: Introduced 1.1.0 - Snap all points of the input geometry to the "
@@ -2788,7 +2794,7 @@ msgstr ""
 "que você não quer romper para uma rede."
 
 #. Tag: para
-#: reference_editor.xml:1387
+#: reference_editor.xml:1391
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -2798,7 +2804,7 @@ msgstr ""
 "\"ST_IsSimple\"/>)."
 
 #. Tag: para
-#: reference_editor.xml:1392
+#: reference_editor.xml:1396
 #, no-c-format
 msgid ""
 "Before release 1.1.0 this function always returned a 2d geometry. Starting "
@@ -2812,19 +2818,19 @@ msgstr ""
 "segundo argumento de geometria para definir todas as dimensões de rede.  "
 
 #. Tag: para
-#: reference_editor.xml:1399
+#: reference_editor.xml:1403
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "Disponibilidade: 1.0.0RC1"
 
 #. Tag: para
-#: reference_editor.xml:1400
+#: reference_editor.xml:1404
 #, no-c-format
 msgid "Availability: 1.1.0 - Z and M support"
 msgstr "Disponibilidade: 1.1.0 - suporte a Z e M"
 
 #. Tag: programlisting
-#: reference_editor.xml:1409
+#: reference_editor.xml:1413
 #, no-c-format
 msgid ""
 "--Snap your geometries to a precision grid of 10^-3\n"
@@ -2898,7 +2904,7 @@ msgstr ""
 " LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)"
 
 #. Tag: para
-#: reference_editor.xml:1416
+#: reference_editor.xml:1420
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_AsText\"/>, <xref "
@@ -2910,13 +2916,13 @@ msgstr ""
 "linkend=\"ST_Simplify\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1429
+#: reference_editor.xml:1433
 #, no-c-format
 msgid "ST_Snap"
 msgstr "ST_Snap"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1431
+#: reference_editor.xml:1435
 #, no-c-format
 msgid ""
 "Snap segments and vertices of input geometry to vertices of a reference "
@@ -2926,7 +2932,7 @@ msgstr ""
 "geometria de referência."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1439
+#: reference_editor.xml:1443
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_Snap</function></funcdef> "
@@ -2940,17 +2946,19 @@ msgstr ""
 "<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1451
-#, no-c-format
+#: reference_editor.xml:1455
+#, fuzzy, no-c-format
 msgid ""
 "Snaps the vertices and segments of a geometry another Geometry's vertices. A "
-"snap distance tolerance is used to control where snapping is performed."
+"snap distance tolerance is used to control where snapping is performed. The "
+"result geometry is the input geometry with the vertices snapped. If no "
+"snapping occurs then the input geometry is returned unchanged."
 msgstr ""
 "Rompe os vértices e segmentos de uma geometria outros vértices de geometria. "
 "Uma distância de tolerância é usada para controlar onde é representada."
 
 #. Tag: para
-#: reference_editor.xml:1456
+#: reference_editor.xml:1462
 #, no-c-format
 msgid ""
 "Snapping one geometry to another can improve robustness for overlay "
@@ -2962,7 +2970,7 @@ msgstr ""
 "durante o sinal e cálculo de intersecção). "
 
 #. Tag: para
-#: reference_editor.xml:1463
+#: reference_editor.xml:1469
 #, no-c-format
 msgid ""
 "Too much snapping can result in invalid topology being created, so the "
@@ -2976,7 +2984,7 @@ msgstr ""
 "rompimentos potencialmente omitidos. "
 
 #. Tag: para
-#: reference_editor.xml:1472
+#: reference_editor.xml:1478
 #, no-c-format
 msgid ""
 "The returned geometry might lose its simplicity (see <xref linkend="
@@ -2986,13 +2994,13 @@ msgstr ""
 "\"ST_IsSimple\"/>) e validade (veja <xref linkend=\"ST_IsValid\"/>)."
 
 #. Tag: para
-#: reference_editor.xml:1479
+#: reference_editor.xml:1485
 #, no-c-format
 msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
 msgstr "Disponibilidade: 2.0.0. requer GEOS &gt;=3.3.0"
 
 #. Tag: para
-#: reference_editor.xml:1496
+#: reference_editor.xml:1502
 #, no-c-format
 msgid "A multipolygon shown with a linestring (before any snapping)"
 msgstr ""
@@ -3000,7 +3008,7 @@ msgstr ""
 "rompimento)"
 
 #. Tag: para
-#: reference_editor.xml:1507
+#: reference_editor.xml:1513
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.01 of distance. The new "
@@ -3010,7 +3018,7 @@ msgstr ""
 "distância. O novo multi polígono é mostrado com linestring de referência"
 
 #. Tag: programlisting
-#: reference_editor.xml:1511
+#: reference_editor.xml:1517
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Snap(poly,line, ST_Distance(poly,line)*1.01)) AS "
@@ -3046,7 +3054,7 @@ msgstr ""
 " (51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1518
+#: reference_editor.xml:1524
 #, no-c-format
 msgid ""
 "A multipolygon snapped to linestring to tolerance: 1.25 of distance. The new "
@@ -3056,7 +3064,7 @@ msgstr ""
 "distância. O novo multi polígono é mostrado com linestring de referência"
 
 #. Tag: programlisting
-#: reference_editor.xml:1522
+#: reference_editor.xml:1528
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3094,7 +3102,7 @@ msgstr ""
 "(51 150,101 150,76 175,51 150)),((151 100,151 200,176 175,151 100)))"
 
 #. Tag: para
-#: reference_editor.xml:1531
+#: reference_editor.xml:1537
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.01 of "
@@ -3104,7 +3112,7 @@ msgstr ""
 "distância. As nova linestring é mostrada com multi polígono de referência "
 
 #. Tag: programlisting
-#: reference_editor.xml:1535
+#: reference_editor.xml:1541
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3138,7 +3146,7 @@ msgstr ""
 " LINESTRING(5 107,26 125,54 84,101 100)"
 
 #. Tag: para
-#: reference_editor.xml:1543
+#: reference_editor.xml:1549
 #, no-c-format
 msgid ""
 "The linestring snapped to the original multipolygon at tolerance 1.25 of "
@@ -3148,7 +3156,7 @@ msgstr ""
 "distância. A nova linestring é mostrada com multi polígono de referência"
 
 #. Tag: programlisting
-#: reference_editor.xml:1547
+#: reference_editor.xml:1553
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -3180,13 +3188,13 @@ msgstr ""
 "LINESTRING(26 125,54 84,101 100)"
 
 #. Tag: refname
-#: reference_editor.xml:1568
+#: reference_editor.xml:1574
 #, no-c-format
 msgid "ST_Transform"
 msgstr "ST_Transform"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1570
+#: reference_editor.xml:1576
 #, no-c-format
 msgid ""
 "Return a new geometry with its coordinates transformed to a different "
@@ -3196,7 +3204,7 @@ msgstr ""
 "referências espaciais."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1575
+#: reference_editor.xml:1581
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Transform</function></"
@@ -3234,7 +3242,7 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1608
+#: reference_editor.xml:1614
 #, no-c-format
 msgid ""
 "Returns a new geometry with its coordinates transformed to a different "
@@ -3262,7 +3270,7 @@ msgstr ""
 "devem ter uma SRID definida."
 
 #. Tag: para
-#: reference_editor.xml:1622
+#: reference_editor.xml:1628
 #, no-c-format
 msgid ""
 "ST_Transform is often confused with ST_SetSRID(). ST_Transform actually "
@@ -3276,7 +3284,7 @@ msgstr ""
 "geometria."
 
 #. Tag: para
-#: reference_editor.xml:1627
+#: reference_editor.xml:1633
 #, no-c-format
 msgid ""
 "Requires PostGIS be compiled with Proj support. Use <xref linkend="
@@ -3286,7 +3294,7 @@ msgstr ""
 "\"PostGIS_Full_Version\"/> para confirmar que você o suporte proj compilado. "
 
 #. Tag: para
-#: reference_editor.xml:1631
+#: reference_editor.xml:1637
 #, no-c-format
 msgid ""
 "If using more than one transformation, it is useful to have a functional "
@@ -3296,26 +3304,26 @@ msgstr ""
 "transformações comumente usadas para ter vantagem do uso index."
 
 #. Tag: para
-#: reference_editor.xml:1638
+#: reference_editor.xml:1644
 #, no-c-format
 msgid "Enhanced: 2.3.0 support for direct PROJ.4 text was introduced."
 msgstr "Melhorias: 2.3.0 suporte para texto direto PROJ.4 foi introduzido."
 
 #. Tag: para
-#: reference_editor.xml:1639
+#: reference_editor.xml:1645
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.6"
 
 #. Tag: para
-#: reference_editor.xml:1647
+#: reference_editor.xml:1653
 #, no-c-format
 msgid "Change Massachusetts state plane US feet geometry to WGS 84 long lat"
 msgstr ""
 "Alterar a geometria do estado plano de Massachusetts EUA para WGS 84 long lat"
 
 #. Tag: programlisting
-#: reference_editor.xml:1648
+#: reference_editor.xml:1654
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 "
@@ -3371,7 +3379,7 @@ msgstr ""
 " -71.1775825927231 42.3902893647987 3,-71.1776848522251 42.3902896512902 4)"
 
 #. Tag: para
-#: reference_editor.xml:1649
+#: reference_editor.xml:1655
 #, no-c-format
 msgid ""
 "Example of creating a partial functional index. For tables where you are not "
@@ -3385,7 +3393,7 @@ msgstr ""
 "menor e mais eficiente."
 
 #. Tag: programlisting
-#: reference_editor.xml:1651
+#: reference_editor.xml:1657
 #, no-c-format
 msgid ""
 "CREATE INDEX idx_the_geom_26986_parcels\n"
@@ -3401,7 +3409,7 @@ msgstr ""
 "  WHERE the_geom IS NOT NULL;"
 
 #. Tag: para
-#: reference_editor.xml:1653
+#: reference_editor.xml:1659
 #, no-c-format
 msgid ""
 "Examples of using PROJ.4 text to transform with custom spatial references."
@@ -3410,7 +3418,7 @@ msgstr ""
 "personalizadas."
 
 #. Tag: programlisting
-#: reference_editor.xml:1654
+#: reference_editor.xml:1660
 #, no-c-format
 msgid ""
 "-- Find intersection of two polygons near the North pole, using a custom "
@@ -3456,13 +3464,13 @@ msgstr ""
 "74.053793645338))"
 
 #. Tag: title
-#: reference_editor.xml:1658
+#: reference_editor.xml:1664
 #, no-c-format
 msgid "Configuring transformation behaviour"
 msgstr "Configurando comportamento de transformação"
 
 #. Tag: para
-#: reference_editor.xml:1659
+#: reference_editor.xml:1665
 #, no-c-format
 msgid ""
 "Sometimes coordinate transformation involving a grid-shift can fail, for "
@@ -3485,7 +3493,7 @@ msgstr ""
 "table."
 
 #. Tag: para
-#: reference_editor.xml:1669
+#: reference_editor.xml:1675
 #, no-c-format
 msgid ""
 "For example, the proj4text parameter +datum=NAD87 is a shorthand form for "
@@ -3495,13 +3503,13 @@ msgstr ""
 "para os parâmetros  +nadgrids seguintes:"
 
 #. Tag: programlisting
-#: reference_editor.xml:1670
+#: reference_editor.xml:1676
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat"
 
 #. Tag: para
-#: reference_editor.xml:1671
+#: reference_editor.xml:1677
 #, no-c-format
 msgid ""
 "The @ prefix means no error is reported if the files are not present, but if "
@@ -3513,7 +3521,7 @@ msgstr ""
 "(encontrado ou sobreposto) então um erro é o problema."
 
 #. Tag: para
-#: reference_editor.xml:1672
+#: reference_editor.xml:1678
 #, no-c-format
 msgid ""
 "If, conversely, you wanted to ensure that at least the standard files were "
@@ -3525,13 +3533,13 @@ msgstr ""
 "sem atingir uma transformação nula é empregada, você poderia usar:"
 
 #. Tag: programlisting
-#: reference_editor.xml:1673
+#: reference_editor.xml:1679
 #, no-c-format
 msgid "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 msgstr "+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null"
 
 #. Tag: para
-#: reference_editor.xml:1674
+#: reference_editor.xml:1680
 #, no-c-format
 msgid ""
 "The null grid shift file is a valid grid shift file covering the whole world "
@@ -3546,7 +3554,7 @@ msgstr ""
 "utilizar o seguinte: "
 
 #. Tag: programlisting
-#: reference_editor.xml:1675
+#: reference_editor.xml:1681
 #, no-c-format
 msgid ""
 "UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 "
@@ -3558,7 +3566,7 @@ msgstr ""
 "= 4267;"
 
 #. Tag: para
-#: reference_editor.xml:1682
+#: reference_editor.xml:1688
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref "
@@ -3568,19 +3576,19 @@ msgstr ""
 "linkend=\"UpdateGeometrySRID\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1688
+#: reference_editor.xml:1694
 #, no-c-format
 msgid "ST_Translate"
 msgstr "ST_Translate"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1690
+#: reference_editor.xml:1696
 #, no-c-format
 msgid "Translate a geometry by given offsets."
 msgstr "Translação de uma geometria pelos dados deslocamentos."
 
 #. Tag: funcsynopsis
-#: reference_editor.xml:1694
+#: reference_editor.xml:1700
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>geometry <function>ST_Translate</function></"
@@ -3606,7 +3614,7 @@ msgstr ""
 "<parameter>deltaz</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_editor.xml:1714
+#: reference_editor.xml:1720
 #, no-c-format
 msgid ""
 "Returns a new geometry whose coordinates are translated delta x,delta y,"
@@ -3618,13 +3626,13 @@ msgstr ""
 "referência espacial (SRID) para essa geometria. "
 
 #. Tag: para
-#: reference_editor.xml:1726
+#: reference_editor.xml:1732
 #, no-c-format
 msgid "Move a point 1 degree longitude"
 msgstr "Move um ponto 1 grau de latitude"
 
 #. Tag: programlisting
-#: reference_editor.xml:1727
+#: reference_editor.xml:1733
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 "
@@ -3642,13 +3650,13 @@ msgstr ""
 "        POINT(-70.01 42.37)"
 
 #. Tag: para
-#: reference_editor.xml:1728
+#: reference_editor.xml:1734
 #, no-c-format
 msgid "Move a linestring 1 degree longitude and 1/2 degree latitude"
 msgstr "Move uma linestring 1 grau de longitude e 1/2 grau latitude"
 
 #. Tag: programlisting
-#: reference_editor.xml:1729
+#: reference_editor.xml:1735
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 "
@@ -3664,13 +3672,13 @@ msgstr ""
 "        LINESTRING(-70.01 42.87,-70.11 42.88)"
 
 #. Tag: para
-#: reference_editor.xml:1730
+#: reference_editor.xml:1736
 #, no-c-format
 msgid "Move a 3d point"
 msgstr "Move um ponto 3d"
 
 #. Tag: programlisting
-#: reference_editor.xml:1731
+#: reference_editor.xml:1737
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));\n"
@@ -3684,13 +3692,13 @@ msgstr ""
 "        POINT(5 12 3)"
 
 #. Tag: para
-#: reference_editor.xml:1732
+#: reference_editor.xml:1738
 #, no-c-format
 msgid "Move a curve and a point"
 msgstr "Move uma curva e um ponto"
 
 #. Tag: programlisting
-#: reference_editor.xml:1733
+#: reference_editor.xml:1739
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Translate(ST_Collect('CURVEPOLYGON(CIRCULARSTRING(4 "
@@ -3708,25 +3716,25 @@ msgstr ""
 "7.1213,7 9,9 11,5 5)),POINT(2 5))"
 
 #. Tag: para
-#: reference_editor.xml:1739
+#: reference_editor.xml:1745
 #, no-c-format
 msgid ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 msgstr ", <xref linkend=\"ST_AsText\"/>, <xref linkend=\"ST_GeomFromText\"/>"
 
 #. Tag: refname
-#: reference_editor.xml:1745
+#: reference_editor.xml:1751
 #, no-c-format
 msgid "ST_TransScale"
 msgstr "ST_TransScale"
 
 #. Tag: refpurpose
-#: reference_editor.xml:1747
+#: reference_editor.xml:1753
 #, no-c-format
 msgid "Translate a geometry by given factors and offsets."
 msgstr "Translada uma geometria dando coeficientes e deslocamentos."
 
 #. Tag: funcprototype
-#: reference_editor.xml:1752
+#: reference_editor.xml:1758
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_TransScale</function></funcdef> "
@@ -3744,7 +3752,7 @@ msgstr ""
 "<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>"
 
 #. Tag: para
-#: reference_editor.xml:1766
+#: reference_editor.xml:1772
 #, no-c-format
 msgid ""
 "Translates the geometry using the deltaX and deltaY args, then scales it "
@@ -3754,7 +3762,7 @@ msgstr ""
 "utilizando o XFactor, YFactor args, trabalhando somente com 2D."
 
 #. Tag: para
-#: reference_editor.xml:1769
+#: reference_editor.xml:1775
 #, no-c-format
 msgid ""
 "<code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code> is short-"
@@ -3766,7 +3774,7 @@ msgstr ""
 "deltaX*XFactor, deltaY*YFactor, 0)</code>."
 
 #. Tag: programlisting
-#: reference_editor.xml:1785
+#: reference_editor.xml:1791
 #, no-c-format
 msgid ""
 "SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), "
@@ -3802,7 +3810,7 @@ msgstr ""
 "2264,698.636038969321 2284.48528137424,714 2276))"
 
 #. Tag: para
-#: reference_editor.xml:1792
+#: reference_editor.xml:1798
 #, no-c-format
 msgid ", <xref linkend=\"ST_Translate\"/>"
 msgstr ", <xref linkend=\"ST_Translate\"/>"
