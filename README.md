@@ -30,7 +30,7 @@ Or try a web IRC client like:
  - [qwebirc@freenode](https://webchat.freenode.net/?channels=#postgis)
  - [KiwiIRC](https://kiwiirc.com/client/irc.freenode.net/#postgis)
 
-Or join via [matrix](https://matrix.to/#/#freenode_#postgis:matrix.org)
+Or join via [matrix](https://matrix.to/#/#postgis:matrix.org)
 
 ## Official source tarball releases
 
