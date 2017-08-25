@@ -721,7 +721,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	return lwgeom_out;
+	return lwgeom_normalize(lwgeom_out);
 }
 
 /**
