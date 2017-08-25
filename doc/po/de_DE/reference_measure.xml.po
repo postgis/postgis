@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-08-24 19:57+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/postgis/postgis/"
@@ -50,29 +50,29 @@ msgstr ""
 #: reference_measure.xml:198 reference_measure.xml:255
 #: reference_measure.xml:313 reference_measure.xml:383
 #: reference_measure.xml:430 reference_measure.xml:503
-#: reference_measure.xml:563 reference_measure.xml:635
-#: reference_measure.xml:755 reference_measure.xml:831
-#: reference_measure.xml:913 reference_measure.xml:958
-#: reference_measure.xml:1035 reference_measure.xml:1079
-#: reference_measure.xml:1232 reference_measure.xml:1313
-#: reference_measure.xml:1396 reference_measure.xml:1456
-#: reference_measure.xml:1622 reference_measure.xml:1757
-#: reference_measure.xml:1835 reference_measure.xml:1887
-#: reference_measure.xml:1961 reference_measure.xml:2023
-#: reference_measure.xml:2078 reference_measure.xml:2125
-#: reference_measure.xml:2173 reference_measure.xml:2227
-#: reference_measure.xml:2309 reference_measure.xml:2373
-#: reference_measure.xml:2467 reference_measure.xml:2534
-#: reference_measure.xml:2594 reference_measure.xml:2661
-#: reference_measure.xml:2715 reference_measure.xml:2748
-#: reference_measure.xml:2793 reference_measure.xml:2844
-#: reference_measure.xml:2898 reference_measure.xml:2986
-#: reference_measure.xml:3029 reference_measure.xml:3120
-#: reference_measure.xml:3171 reference_measure.xml:3208
-#: reference_measure.xml:3250 reference_measure.xml:3297
-#: reference_measure.xml:3356 reference_measure.xml:3422
-#: reference_measure.xml:3465 reference_measure.xml:3544
-#: reference_measure.xml:3692
+#: reference_measure.xml:563 reference_measure.xml:644
+#: reference_measure.xml:766 reference_measure.xml:842
+#: reference_measure.xml:944 reference_measure.xml:989
+#: reference_measure.xml:1066 reference_measure.xml:1110
+#: reference_measure.xml:1263 reference_measure.xml:1344
+#: reference_measure.xml:1427 reference_measure.xml:1487
+#: reference_measure.xml:1653 reference_measure.xml:1788
+#: reference_measure.xml:1866 reference_measure.xml:1919
+#: reference_measure.xml:1993 reference_measure.xml:2055
+#: reference_measure.xml:2122 reference_measure.xml:2176
+#: reference_measure.xml:2223 reference_measure.xml:2271
+#: reference_measure.xml:2325 reference_measure.xml:2407
+#: reference_measure.xml:2471 reference_measure.xml:2569
+#: reference_measure.xml:2636 reference_measure.xml:2696
+#: reference_measure.xml:2763 reference_measure.xml:2817
+#: reference_measure.xml:2850 reference_measure.xml:2895
+#: reference_measure.xml:2946 reference_measure.xml:3000
+#: reference_measure.xml:3088 reference_measure.xml:3131
+#: reference_measure.xml:3222 reference_measure.xml:3273
+#: reference_measure.xml:3310 reference_measure.xml:3352
+#: reference_measure.xml:3399 reference_measure.xml:3458
+#: reference_measure.xml:3524 reference_measure.xml:3567
+#: reference_measure.xml:3646 reference_measure.xml:3794
 #, no-c-format
 msgid "Description"
 msgstr "Beschreibung"
@@ -90,10 +90,10 @@ msgstr ""
 #: reference_measure.xml:32 reference_measure.xml:98 reference_measure.xml:151
 #: reference_measure.xml:213 reference_measure.xml:270
 #: reference_measure.xml:323 reference_measure.xml:388
-#: reference_measure.xml:444 reference_measure.xml:2486
-#: reference_measure.xml:2539 reference_measure.xml:2752
-#: reference_measure.xml:2807 reference_measure.xml:3212
-#: reference_measure.xml:3258
+#: reference_measure.xml:444 reference_measure.xml:2588
+#: reference_measure.xml:2641 reference_measure.xml:2854
+#: reference_measure.xml:2909 reference_measure.xml:3314
+#: reference_measure.xml:3360
 #, no-c-format
 msgid "&Z_support;"
 msgstr ""
@@ -111,7 +111,7 @@ msgstr ""
 #: reference_measure.xml:35 reference_measure.xml:104 reference_measure.xml:156
 #: reference_measure.xml:212 reference_measure.xml:262
 #: reference_measure.xml:321 reference_measure.xml:392
-#: reference_measure.xml:442 reference_measure.xml:3303
+#: reference_measure.xml:442 reference_measure.xml:3405
 #, no-c-format
 msgid "Availability: 2.0.0"
 msgstr ""
@@ -130,25 +130,25 @@ msgstr ""
 #: reference_measure.xml:220 reference_measure.xml:329
 #: reference_measure.xml:397 reference_measure.xml:450
 #: reference_measure.xml:521 reference_measure.xml:579
-#: reference_measure.xml:663 reference_measure.xml:765
-#: reference_measure.xml:872 reference_measure.xml:921
-#: reference_measure.xml:969 reference_measure.xml:1043
-#: reference_measure.xml:1118 reference_measure.xml:1271
-#: reference_measure.xml:1350 reference_measure.xml:1425
-#: reference_measure.xml:1522 reference_measure.xml:1657
-#: reference_measure.xml:1780 reference_measure.xml:1928
-#: reference_measure.xml:1973 reference_measure.xml:2048
-#: reference_measure.xml:2090 reference_measure.xml:2139
-#: reference_measure.xml:2188 reference_measure.xml:2245
-#: reference_measure.xml:2343 reference_measure.xml:2393
-#: reference_measure.xml:2489 reference_measure.xml:2545
-#: reference_measure.xml:2758 reference_measure.xml:2811
-#: reference_measure.xml:2860 reference_measure.xml:2908
-#: reference_measure.xml:3001 reference_measure.xml:3051
-#: reference_measure.xml:3218 reference_measure.xml:3262
-#: reference_measure.xml:3392 reference_measure.xml:3432
-#: reference_measure.xml:3481 reference_measure.xml:3594
-#: reference_measure.xml:3726
+#: reference_measure.xml:674 reference_measure.xml:776
+#: reference_measure.xml:883 reference_measure.xml:952
+#: reference_measure.xml:1000 reference_measure.xml:1074
+#: reference_measure.xml:1149 reference_measure.xml:1302
+#: reference_measure.xml:1381 reference_measure.xml:1456
+#: reference_measure.xml:1553 reference_measure.xml:1688
+#: reference_measure.xml:1811 reference_measure.xml:1960
+#: reference_measure.xml:2005 reference_measure.xml:2080
+#: reference_measure.xml:2145 reference_measure.xml:2188
+#: reference_measure.xml:2237 reference_measure.xml:2286
+#: reference_measure.xml:2343 reference_measure.xml:2441
+#: reference_measure.xml:2495 reference_measure.xml:2591
+#: reference_measure.xml:2647 reference_measure.xml:2860
+#: reference_measure.xml:2913 reference_measure.xml:2962
+#: reference_measure.xml:3010 reference_measure.xml:3103
+#: reference_measure.xml:3153 reference_measure.xml:3320
+#: reference_measure.xml:3364 reference_measure.xml:3494
+#: reference_measure.xml:3534 reference_measure.xml:3583
+#: reference_measure.xml:3696 reference_measure.xml:3828
 #, no-c-format
 msgid "Examples"
 msgstr "Beispiele"
@@ -229,27 +229,28 @@ msgstr ""
 #: reference_measure.xml:225 reference_measure.xml:286
 #: reference_measure.xml:355 reference_measure.xml:403
 #: reference_measure.xml:476 reference_measure.xml:537
-#: reference_measure.xml:610 reference_measure.xml:726
-#: reference_measure.xml:800 reference_measure.xml:886
-#: reference_measure.xml:925 reference_measure.xml:1008
-#: reference_measure.xml:1047 reference_measure.xml:1205
-#: reference_measure.xml:1276 reference_measure.xml:1358
-#: reference_measure.xml:1430 reference_measure.xml:1727
-#: reference_measure.xml:1786 reference_measure.xml:1865
-#: reference_measure.xml:1934 reference_measure.xml:1978
-#: reference_measure.xml:2098 reference_measure.xml:2146
-#: reference_measure.xml:2195 reference_measure.xml:2250
-#: reference_measure.xml:2348 reference_measure.xml:2399
-#: reference_measure.xml:2510 reference_measure.xml:2552
-#: reference_measure.xml:2637 reference_measure.xml:2692
-#: reference_measure.xml:2724 reference_measure.xml:2767
-#: reference_measure.xml:2818 reference_measure.xml:2867
-#: reference_measure.xml:2961 reference_measure.xml:3006
-#: reference_measure.xml:3093 reference_measure.xml:3148
-#: reference_measure.xml:3184 reference_measure.xml:3225
-#: reference_measure.xml:3268 reference_measure.xml:3314
-#: reference_measure.xml:3398 reference_measure.xml:3438
-#: reference_measure.xml:3515 reference_measure.xml:3737
+#: reference_measure.xml:610 reference_measure.xml:737
+#: reference_measure.xml:811 reference_measure.xml:917
+#: reference_measure.xml:956 reference_measure.xml:1039
+#: reference_measure.xml:1078 reference_measure.xml:1236
+#: reference_measure.xml:1307 reference_measure.xml:1389
+#: reference_measure.xml:1461 reference_measure.xml:1758
+#: reference_measure.xml:1817 reference_measure.xml:1896
+#: reference_measure.xml:1966 reference_measure.xml:2010
+#: reference_measure.xml:2090 reference_measure.xml:2151
+#: reference_measure.xml:2196 reference_measure.xml:2244
+#: reference_measure.xml:2293 reference_measure.xml:2348
+#: reference_measure.xml:2446 reference_measure.xml:2501
+#: reference_measure.xml:2612 reference_measure.xml:2654
+#: reference_measure.xml:2739 reference_measure.xml:2794
+#: reference_measure.xml:2826 reference_measure.xml:2869
+#: reference_measure.xml:2920 reference_measure.xml:2969
+#: reference_measure.xml:3063 reference_measure.xml:3108
+#: reference_measure.xml:3195 reference_measure.xml:3250
+#: reference_measure.xml:3286 reference_measure.xml:3327
+#: reference_measure.xml:3370 reference_measure.xml:3416
+#: reference_measure.xml:3500 reference_measure.xml:3540
+#: reference_measure.xml:3617 reference_measure.xml:3839
 #, no-c-format
 msgid "See Also"
 msgstr "Siehe auch"
@@ -301,8 +302,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:102 reference_measure.xml:274
-#: reference_measure.xml:517 reference_measure.xml:1844
-#: reference_measure.xml:2626 reference_measure.xml:2677
+#: reference_measure.xml:517 reference_measure.xml:1875
+#: reference_measure.xml:2728 reference_measure.xml:2779
 #, no-c-format
 msgid "&sfcgal_enhanced;"
 msgstr ""
@@ -475,8 +476,8 @@ msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:207 reference_measure.xml:264
-#: reference_measure.xml:1512 reference_measure.xml:2236
-#: reference_measure.xml:2322 reference_measure.xml:2610
+#: reference_measure.xml:1543 reference_measure.xml:2334
+#: reference_measure.xml:2420 reference_measure.xml:2712
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -536,7 +537,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:256 reference_measure.xml:2597
+#: reference_measure.xml:256 reference_measure.xml:2699
 #, no-c-format
 msgid ""
 "Overlaps, Touches, Within all imply spatial intersection. If any of the "
@@ -568,8 +569,8 @@ msgid "&sqlmm_compliant; SQL-MM 3: ?"
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:278 reference_measure.xml:2629
-#: reference_measure.xml:2681
+#: reference_measure.xml:278 reference_measure.xml:2731
+#: reference_measure.xml:2783
 #, no-c-format
 msgid "Geometry Examples"
 msgstr ""
@@ -946,7 +947,7 @@ msgid "Enhanced: 2.0.0 - support for 2D polyhedral surfaces was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:511 reference_measure.xml:1849
+#: reference_measure.xml:511 reference_measure.xml:1880
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0 - measurement on spheroid performed with GeographicLib for "
@@ -955,8 +956,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:512 reference_measure.xml:658
-#: reference_measure.xml:1841 reference_measure.xml:2336
+#: reference_measure.xml:512 reference_measure.xml:669
+#: reference_measure.xml:1872 reference_measure.xml:2434
 #, no-c-format
 msgid "&sfs_compliant;"
 msgstr ""
@@ -1211,16 +1212,20 @@ msgstr ""
 msgid "Returns the geometric center of a geometry."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_measure.xml:625
+#. Tag: funcsynopsis
+#: reference_measure.xml:624
 #, no-c-format
 msgid ""
-"<funcdef>geometry <function>ST_Centroid</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+"<funcprototype> <funcdef>geometry <function>ST_Centroid</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>geography <function>ST_Centroid</"
+"function></funcdef> <paramdef><type>geography </type> <parameter>g1</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> "
+"<parameter>use_spheroid=true</parameter></paramdef> </funcprototype>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:637
+#: reference_measure.xml:646
 #, no-c-format
 msgid ""
 "Computes the geometric center of a geometry, or equivalently, the center of "
@@ -1238,7 +1243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:652
+#: reference_measure.xml:661
 #, no-c-format
 msgid ""
 "New in 2.3.0 : support <varname>CIRCULARSTRING</varname> and "
@@ -1246,7 +1251,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:654
+#: reference_measure.xml:663
+#, no-c-format
+msgid "Availability: 2.4.0 support for geography was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:665
 #, no-c-format
 msgid ""
 "The centroid is equal to the centroid of the set of component Geometries of "
@@ -1255,45 +1266,45 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:659
+#: reference_measure.xml:670
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.4, 9.5.5"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:665
+#: reference_measure.xml:676
 #, no-c-format
 msgid ""
-"In each of the following illustrations, the green dot represents the centroid "
-"of the source geometry."
-msgstr ""
-
-#. Tag: para
-#: reference_measure.xml:678
-#, no-c-format
-msgid "Centroid of a <varname>MULTIPOINT</varname>"
+"In each of the following illustrations, the green dot represents the "
+"centroid of the source geometry."
 msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:689
 #, no-c-format
-msgid "Centroid of a <varname>LINESTRING</varname>"
+msgid "Centroid of a <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:702
+#: reference_measure.xml:700
 #, no-c-format
-msgid "Centroid of a <varname>POLYGON</varname>"
+msgid "Centroid of a <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
 #: reference_measure.xml:713
 #, no-c-format
+msgid "Centroid of a <varname>POLYGON</varname>"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:724
+#, no-c-format
 msgid "Centroid of a <varname>GEOMETRYCOLLECTION</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:722
+#: reference_measure.xml:733
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 "
@@ -1318,13 +1329,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:734
+#: reference_measure.xml:745
 #, no-c-format
 msgid "ST_ClosestPoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:736
+#: reference_measure.xml:747
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the 2-dimensional point on g1 that is closest to g2. "
@@ -1332,7 +1343,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:742
+#: reference_measure.xml:753
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ClosestPoint</function></funcdef> "
@@ -1341,7 +1352,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:757
+#: reference_measure.xml:768
 #, no-c-format
 msgid ""
 "<para>Returns the 2-dimensional point on g1 that is closest to g2. This is "
@@ -1349,7 +1360,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:760
+#: reference_measure.xml:771
 #, no-c-format
 msgid ""
 "If you have a 3D Geometry, you may prefer to use <xref linkend="
@@ -1357,15 +1368,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:761 reference_measure.xml:2087
-#: reference_measure.xml:2241 reference_measure.xml:2903
-#: reference_measure.xml:3477
+#: reference_measure.xml:772 reference_measure.xml:2185
+#: reference_measure.xml:2339 reference_measure.xml:3005
+#: reference_measure.xml:3579
 #, no-c-format
 msgid "Availability: 1.5.0"
 msgstr "Verfügbarkeit: 1.5.0"
 
 #. Tag: para
-#: reference_measure.xml:775
+#: reference_measure.xml:786
 #, no-c-format
 msgid ""
 "Closest between point and linestring is the point itself, but closest point "
@@ -1373,7 +1384,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:779
+#: reference_measure.xml:790
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_ClosestPoint(pt,line)) AS cp_pt_line,\n"
@@ -1390,13 +1401,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:787
+#: reference_measure.xml:798
 #, no-c-format
 msgid "closest point on polygon A to polygon B"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:790
+#: reference_measure.xml:801
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -1413,7 +1424,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:802
+#: reference_measure.xml:813
 #, no-c-format
 msgid ""
 ",<xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
@@ -1421,13 +1432,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:808
+#: reference_measure.xml:819
 #, no-c-format
 msgid "ST_ClusterDBSCAN"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:810
+#: reference_measure.xml:821
 #, no-c-format
 msgid ""
 "Windowing function that returns integer id for the cluster each input "
@@ -1436,7 +1447,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:815
+#: reference_measure.xml:826
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterDBSCAN</function></funcdef> "
@@ -1447,7 +1458,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:833
+#: reference_measure.xml:844
 #, no-c-format
 msgid ""
 "Returns cluster number for each input geometry, based on a 2D implementation "
@@ -1460,21 +1471,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:840
+#: reference_measure.xml:851
 #, no-c-format
 msgid "An input geometry will be added to a cluster if it is either:"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:844
+#: reference_measure.xml:855
 #, no-c-format
 msgid ""
 "A \"core\" geometry, that is within <varname>eps</varname> distance of at "
-"least <varname>minpoints</varname> other input geometries, or"
+"least <varname>minpoints</varname> input geometries (including itself) or"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:849
+#: reference_measure.xml:860
 #, no-c-format
 msgid ""
 "A \"border\" geometry, that is within <varname>eps</varname> distance of a "
@@ -1482,7 +1493,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:856
+#: reference_measure.xml:867
 #, no-c-format
 msgid ""
 "Note that border geometries may be within <varname>eps</varname> distance of "
@@ -1497,7 +1508,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:864
+#: reference_measure.xml:875
 #, no-c-format
 msgid ""
 "Input geometries that do not meet the criteria to join any other cluster "
@@ -1505,28 +1516,70 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:868 reference_measure.xml:965
+#: reference_measure.xml:879 reference_measure.xml:996
 #, fuzzy, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS"
 msgstr "Verfügbarkeit: 1.5.0"
 
 #. Tag: para
-#: reference_measure.xml:873
-#, no-c-format
-msgid "Assigning a cluster number to each parcel point:"
-msgstr ""
-
-#. Tag: programlisting
-#: reference_measure.xml:876
+#: reference_measure.xml:884
 #, no-c-format
 msgid ""
-"SELECT parcel_id, ST_ClusterDBSCAN(geom, eps := 0.5, minpoints := 5) over () "
-"AS cid\n"
-"FROM parcels;"
+"Assigning a cluster number to each polygon within 50 meters of each other. "
+"Require at least 2 polygons per cluster"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:879
+#: reference_measure.xml:896
+#, no-c-format
+msgid "within 50 meters at least 2 per cluster. singletons have NULL for cid"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_measure.xml:899
+#, no-c-format
+msgid ""
+"SELECT name, ST_ClusterDBSCAN(geom, eps := 50, minpoints := 2) over () AS "
+"cid\n"
+"FROM boston_polys\n"
+"WHERE name > '' AND building > ''\n"
+"        AND ST_DWithin(geom,\n"
+"        ST_Transform(\n"
+"            ST_GeomFromText('POINT(-71.04054 42.35141)', 4326), 26986),\n"
+"           500);"
+msgstr ""
+
+#. Tag: screen
+#: reference_measure.xml:902
+#, no-c-format
+msgid ""
+"<![CDATA[                name                 | bucket\n"
+"-------------------------------------+--------\n"
+" Manulife Tower                      |      0\n"
+" Park Lane Seaport I                 |      0\n"
+" Park Lane Seaport II                |      0\n"
+" Renaissance Boston Waterfront Hotel |      0\n"
+" Seaport Boston Hotel                |      0\n"
+" Seaport Hotel & World Trade Center  |      0\n"
+" Waterside Place                     |      0\n"
+" World Trade Center East             |      0\n"
+" 100 Northern Avenue                 |      1\n"
+" 100 Pier 4                          |      1\n"
+" The Institute of Contemporary Art   |      1\n"
+" 101 Seaport                         |      2\n"
+" District Hall                       |      2\n"
+" One Marina Park Drive               |      2\n"
+" Twenty Two Liberty                  |      2\n"
+" Vertex                              |      2\n"
+" Vertex                              |      2\n"
+" Watermark Seaport                   |      2\n"
+" Blue Hills Bank Pavilion            |   NULL\n"
+" World Trade Center West             |   NULL\n"
+"(20 rows)]]>"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:910
 #, no-c-format
 msgid ""
 "Combining parcels with the same cluster number into a single geometry. This "
@@ -1534,7 +1587,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:882
+#: reference_measure.xml:913
 #, no-c-format
 msgid ""
 "SELECT cid, ST_Collect(geom) AS cluster_geom, array_agg(parcel_id) AS "
@@ -1546,21 +1599,21 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:887
+#: reference_measure.xml:918
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
-"\"ST_ClusterWithin\"/>"
+", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
+"\"ST_ClusterIntersecting\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:898
+#: reference_measure.xml:929
 #, no-c-format
 msgid "ST_ClusterIntersecting"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:900
+#: reference_measure.xml:931
 #, no-c-format
 msgid ""
 "Aggregate. Returns an array with the connected components of a set of "
@@ -1568,7 +1621,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:905
+#: reference_measure.xml:936
 #, no-c-format
 msgid ""
 "<funcdef>geometry[] <function>ST_ClusterIntersecting</function></funcdef> "
@@ -1576,7 +1629,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:915
+#: reference_measure.xml:946
 #, no-c-format
 msgid ""
 "ST_ClusterIntersecting is an aggregate function that returns an array of "
@@ -1585,13 +1638,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:917 reference_measure.xml:1039
+#: reference_measure.xml:948 reference_measure.xml:1070
 #, fuzzy, no-c-format
 msgid "Availability: 2.2.0 - requires GEOS"
 msgstr "Verfügbarkeit: 1.5.0"
 
 #. Tag: programlisting
-#: reference_measure.xml:922
+#: reference_measure.xml:953
 #, no-c-format
 msgid ""
 "WITH testdata AS\n"
@@ -1614,20 +1667,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:926
+#: reference_measure.xml:957
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend=\"ST_ClusterWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:938
+#: reference_measure.xml:969
 #, no-c-format
 msgid "ST_ClusterKMeans"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:940
+#: reference_measure.xml:971
 #, no-c-format
 msgid ""
 "Windowing function that returns integer id for the cluster each input "
@@ -1635,7 +1688,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:945
+#: reference_measure.xml:976
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_ClusterKMeans</function></funcdef> "
@@ -1645,7 +1698,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:960
+#: reference_measure.xml:991
 #, no-c-format
 msgid ""
 "Returns 2D distance based <ulink url=\"https://en.wikipedia.org/wiki/K-"
@@ -1655,13 +1708,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:970
+#: reference_measure.xml:1001
 #, no-c-format
 msgid "Generate dummy set of parcels for examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:971
+#: reference_measure.xml:1002
 #, no-c-format
 msgid ""
 "CREATE TABLE parcels AS\n"
@@ -1675,19 +1728,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:983
+#: reference_measure.xml:1014
 #, no-c-format
 msgid "Original Parcels"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:993
+#: reference_measure.xml:1024
 #, no-c-format
 msgid "Parcels color-coded by cluster number (cid)"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:996
+#: reference_measure.xml:1027
 #, no-c-format
 msgid ""
 "SELECT ST_ClusterKMeans(geom, 5) OVER() AS cid, parcel_id, geom\n"
@@ -1706,7 +1759,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1003
+#: reference_measure.xml:1034
 #, no-c-format
 msgid ""
 "-- Partitioning parcel clusters by type\n"
@@ -1727,7 +1780,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1009
+#: reference_measure.xml:1040
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterIntersecting\"/>, <xref linkend="
@@ -1735,13 +1788,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1019
+#: reference_measure.xml:1050
 #, no-c-format
 msgid "ST_ClusterWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1021
+#: reference_measure.xml:1052
 #, no-c-format
 msgid ""
 "Aggregate. Returns an array of GeometryCollections, where each "
@@ -1750,7 +1803,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1026
+#: reference_measure.xml:1057
 #, no-c-format
 msgid ""
 "<funcdef>geometry[] <function>ST_ClusterWithin</function></funcdef> "
@@ -1759,7 +1812,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1037
+#: reference_measure.xml:1068
 #, no-c-format
 msgid ""
 "ST_ClusterWithin is an aggregate function that returns an array of "
@@ -1768,7 +1821,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1044
+#: reference_measure.xml:1075
 #, no-c-format
 msgid ""
 "WITH testdata AS\n"
@@ -1791,7 +1844,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1048
+#: reference_measure.xml:1079
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ClusterKMeans\"/>, <xref linkend="
@@ -1799,13 +1852,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1059
+#: reference_measure.xml:1090
 #, no-c-format
 msgid "ST_Contains"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1061
+#: reference_measure.xml:1092
 #, no-c-format
 msgid ""
 "Returns true if and only if no points of B lie in the exterior of A, and at "
@@ -1813,7 +1866,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1066
+#: reference_measure.xml:1097
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Contains</function></funcdef> "
@@ -1822,7 +1875,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1081
+#: reference_measure.xml:1112
 #, no-c-format
 msgid ""
 "Geometry A contains Geometry B if and only if no points of B lie in the "
@@ -1834,7 +1887,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1085
+#: reference_measure.xml:1116
 #, no-c-format
 msgid ""
 "Returns TRUE if geometry B is completely inside geometry A. For this "
@@ -1846,16 +1899,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1090 reference_measure.xml:1318
-#: reference_measure.xml:1401 reference_measure.xml:1766
-#: reference_measure.xml:3034 reference_measure.xml:3382
-#: reference_measure.xml:3699
+#: reference_measure.xml:1121 reference_measure.xml:1349
+#: reference_measure.xml:1432 reference_measure.xml:1797
+#: reference_measure.xml:3136 reference_measure.xml:3484
+#: reference_measure.xml:3801
 #, no-c-format
 msgid "Performed by the GEOS module"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1091 reference_measure.xml:2605
+#: reference_measure.xml:1122 reference_measure.xml:2707
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Enhancement to PIP short-circuit extended to support "
@@ -1863,18 +1916,18 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1094 reference_measure.xml:1256
-#: reference_measure.xml:1321 reference_measure.xml:1404
-#: reference_measure.xml:1508 reference_measure.xml:1763
-#: reference_measure.xml:3580 reference_measure.xml:3704
+#: reference_measure.xml:1125 reference_measure.xml:1287
+#: reference_measure.xml:1352 reference_measure.xml:1435
+#: reference_measure.xml:1539 reference_measure.xml:1794
+#: reference_measure.xml:3682 reference_measure.xml:3806
 #, no-c-format
 msgid "Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1098 reference_measure.xml:1260
-#: reference_measure.xml:1329 reference_measure.xml:1408
-#: reference_measure.xml:3708
+#: reference_measure.xml:1129 reference_measure.xml:1291
+#: reference_measure.xml:1360 reference_measure.xml:1439
+#: reference_measure.xml:3810
 #, no-c-format
 msgid ""
 "Do not use this function with invalid geometries. You will get unexpected "
@@ -1882,7 +1935,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1101
+#: reference_measure.xml:1132
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -1891,10 +1944,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1106 reference_measure.xml:1341
-#: reference_measure.xml:1416 reference_measure.xml:1772
-#: reference_measure.xml:2619 reference_measure.xml:3043
-#: reference_measure.xml:3716
+#: reference_measure.xml:1137 reference_measure.xml:1372
+#: reference_measure.xml:1447 reference_measure.xml:1803
+#: reference_measure.xml:2721 reference_measure.xml:3145
+#: reference_measure.xml:3818
 #, no-c-format
 msgid ""
 "NOTE: this is the \"allowable\" version that returns a boolean, not an "
@@ -1902,7 +1955,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1109
+#: reference_measure.xml:1140
 #, no-c-format
 msgid ""
 "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - same as within(geometry B, geometry "
@@ -1910,14 +1963,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1111
+#: reference_measure.xml:1142
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.31"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1113 reference_measure.xml:1345
-#: reference_measure.xml:1420
+#: reference_measure.xml:1144 reference_measure.xml:1376
+#: reference_measure.xml:1451
 #, no-c-format
 msgid ""
 "There are certain subtleties to ST_Contains and ST_Within that are not "
@@ -1927,7 +1980,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1120
+#: reference_measure.xml:1151
 #, no-c-format
 msgid ""
 "The <function>ST_Contains</function> predicate returns <varname>TRUE</"
@@ -1935,33 +1988,33 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1132
+#: reference_measure.xml:1163
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1142 reference_measure.xml:3658
+#: reference_measure.xml:1173 reference_measure.xml:3760
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POINT</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1153 reference_measure.xml:1193
-#: reference_measure.xml:3627
+#: reference_measure.xml:1184 reference_measure.xml:1224
+#: reference_measure.xml:3729
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1163 reference_measure.xml:3080
-#: reference_measure.xml:3607 reference_measure.xml:3617
+#: reference_measure.xml:1194 reference_measure.xml:3182
+#: reference_measure.xml:3709 reference_measure.xml:3719
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1171
+#: reference_measure.xml:1202
 #, no-c-format
 msgid ""
 "The <function>ST_Contains</function> predicate returns <varname>FALSE</"
@@ -1969,13 +2022,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1183
+#: reference_measure.xml:1214
 #, no-c-format
 msgid "<varname>POLYGON</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1201
+#: reference_measure.xml:1232
 #, no-c-format
 msgid ""
 "-- A circle within a circle\n"
@@ -2016,7 +2069,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1206
+#: reference_measure.xml:1237
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ContainsProperly\"/>, <xref linkend=\"ST_Covers\"/>, "
@@ -2025,13 +2078,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1212
+#: reference_measure.xml:1243
 #, no-c-format
 msgid "ST_ContainsProperly"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1214
+#: reference_measure.xml:1245
 #, no-c-format
 msgid ""
 "Returns true if B intersects the interior of A but not the boundary (or "
@@ -2039,7 +2092,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1219
+#: reference_measure.xml:1250
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_ContainsProperly</function></funcdef> "
@@ -2048,7 +2101,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1234
+#: reference_measure.xml:1265
 #, no-c-format
 msgid ""
 "Returns true if B intersects the interior of A but not the boundary (or "
@@ -2056,13 +2109,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1236
+#: reference_measure.xml:1267
 #, no-c-format
 msgid "A does not contain properly itself, but does contain itself."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1237
+#: reference_measure.xml:1268
 #, no-c-format
 msgid ""
 "Every point of the other geometry is a point of this geometry's interior. "
@@ -2071,7 +2124,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1241
+#: reference_measure.xml:1272
 #, no-c-format
 msgid ""
 "From JTS docs slightly reworded: The advantage to using this predicate over "
@@ -2081,7 +2134,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1243
+#: reference_measure.xml:1274
 #, no-c-format
 msgid ""
 "An example use case for this predicate is computing the intersections of a "
@@ -2092,13 +2145,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1253
+#: reference_measure.xml:1284
 #, no-c-format
 msgid "Availability: 1.4.0 - requires GEOS &gt;= 3.1.0."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1263
+#: reference_measure.xml:1294
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -2107,7 +2160,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1272
+#: reference_measure.xml:1303
 #, no-c-format
 msgid ""
 "--a circle within a circle\n"
@@ -2149,7 +2202,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1277
+#: reference_measure.xml:1308
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Boundary\"/>, <xref linkend=\"ST_Contains\"/>, <xref "
@@ -2158,19 +2211,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1283
+#: reference_measure.xml:1314
 #, no-c-format
 msgid "ST_Covers"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1285
+#: reference_measure.xml:1316
 #, no-c-format
 msgid "Returns 1 (TRUE) if no point in Geometry B is outside Geometry A"
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:1290
+#: reference_measure.xml:1321
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Covers</function></funcdef> "
@@ -2183,7 +2236,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1315
+#: reference_measure.xml:1346
 #, no-c-format
 msgid ""
 "Returns 1 (TRUE) if no point in Geometry/Geography B is outside Geometry/"
@@ -2191,13 +2244,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1325
+#: reference_measure.xml:1356
 #, no-c-format
 msgid "For geography only Polygon covers point is supported."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1332
+#: reference_measure.xml:1363
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -2206,7 +2259,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1337 reference_measure.xml:3701
+#: reference_measure.xml:1368 reference_measure.xml:3803
 #, no-c-format
 msgid ""
 "Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to "
@@ -2215,31 +2268,31 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1338
+#: reference_measure.xml:1369
 #, no-c-format
 msgid "Availability: 1.5 - support for geography was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1339 reference_measure.xml:1410
+#: reference_measure.xml:1370 reference_measure.xml:1441
 #, no-c-format
 msgid "Availability: 1.2.2 - requires GEOS &gt;= 3.0"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1344 reference_measure.xml:1419
+#: reference_measure.xml:1375 reference_measure.xml:1450
 #, no-c-format
 msgid "Not an OGC standard, but Oracle has it too."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1351
+#: reference_measure.xml:1382
 #, no-c-format
 msgid "Geometry example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1352
+#: reference_measure.xml:1383
 #, no-c-format
 msgid ""
 "--a circle covering a circle\n"
@@ -2257,13 +2310,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1353
+#: reference_measure.xml:1384
 #, no-c-format
 msgid "Geeography Example"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1354
+#: reference_measure.xml:1385
 #, no-c-format
 msgid ""
 "-- a point with a 300 meter buffer compared to a point, a point and its 10 "
@@ -2281,19 +2334,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1359
+#: reference_measure.xml:1390
 #, no-c-format
 msgid ", <xref linkend=\"ST_CoveredBy\"/>, <xref linkend=\"ST_Within\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1365
+#: reference_measure.xml:1396
 #, no-c-format
 msgid "ST_CoveredBy"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1367
+#: reference_measure.xml:1398
 #, no-c-format
 msgid ""
 "<refpurpose>Returns 1 (TRUE) if no point in Geometry/Geography A is outside "
@@ -2301,7 +2354,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:1372
+#: reference_measure.xml:1403
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_CoveredBy</function></funcdef> "
@@ -2314,7 +2367,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1398
+#: reference_measure.xml:1429
 #, no-c-format
 msgid ""
 "<para>Returns 1 (TRUE) if no point in Geometry/Geography A is outside "
@@ -2322,7 +2375,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1411
+#: reference_measure.xml:1442
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -2331,7 +2384,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1426
+#: reference_measure.xml:1457
 #, no-c-format
 msgid ""
 "--a circle coveredby a circle\n"
@@ -2350,7 +2403,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1431
+#: reference_measure.xml:1462
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Covers\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref "
@@ -2358,13 +2411,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1437
+#: reference_measure.xml:1468
 #, no-c-format
 msgid "ST_Crosses"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1439
+#: reference_measure.xml:1470
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the supplied geometries have some, but "
@@ -2372,7 +2425,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1445
+#: reference_measure.xml:1476
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Crosses</function></funcdef> "
@@ -2381,7 +2434,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1458
+#: reference_measure.xml:1489
 #, no-c-format
 msgid ""
 "<function>ST_Crosses</function> takes two geometry objects and returns "
@@ -2395,13 +2448,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1467
+#: reference_measure.xml:1498
 #, no-c-format
 msgid "In mathematical terms, this is expressed as:"
 msgstr ""
 
 #. Tag: remark
-#: reference_measure.xml:1469
+#: reference_measure.xml:1500
 #, no-c-format
 msgid ""
 "TODO: Insert appropriate MathML markup here or use a gif. Simple HTML markup "
@@ -2409,13 +2462,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1480
+#: reference_measure.xml:1511
 #, no-c-format
 msgid "The DE-9IM Intersection Matrix for the two geometries is:"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1484
+#: reference_measure.xml:1515
 #, no-c-format
 msgid ""
 "<markup>T*T******</markup> (for Point/Line, Point/Area, and Line/Area "
@@ -2423,7 +2476,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1489
+#: reference_measure.xml:1520
 #, no-c-format
 msgid ""
 "<markup>T*****T**</markup> (for Line/Point, Area/Point, and Area/Line "
@@ -2431,19 +2484,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1494
+#: reference_measure.xml:1525
 #, no-c-format
 msgid "<markup>0********</markup> (for Line/Line situations)"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1498
+#: reference_measure.xml:1529
 #, no-c-format
 msgid "For any other combination of dimensions this predicate returns false."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1501
+#: reference_measure.xml:1532
 #, no-c-format
 msgid ""
 "The OpenGIS Simple Features Specification defines this predicate only for "
@@ -2453,50 +2506,50 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1517
+#: reference_measure.xml:1548
 #, no-c-format
 msgid "&sfs_compliant; s2.1.13.3"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1518
+#: reference_measure.xml:1549
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.29"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1524 reference_measure.xml:3052
+#: reference_measure.xml:1555 reference_measure.xml:3154
 #, no-c-format
 msgid "The following illustrations all return <varname>TRUE</varname>."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1536
+#: reference_measure.xml:1567
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1546
+#: reference_measure.xml:1577
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1558
+#: reference_measure.xml:1589
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>POLYGON</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1568 reference_measure.xml:3072
-#: reference_measure.xml:3638 reference_measure.xml:3648
+#: reference_measure.xml:1599 reference_measure.xml:3174
+#: reference_measure.xml:3740 reference_measure.xml:3750
 #, no-c-format
 msgid "<varname>LINESTRING</varname> / <varname>LINESTRING</varname>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1576
+#: reference_measure.xml:1607
 #, no-c-format
 msgid ""
 "Consider a situation where a user has two tables: a table of roads and a "
@@ -2504,7 +2557,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1584
+#: reference_measure.xml:1615
 #, no-c-format
 msgid ""
 "CREATE TABLE roads (\n"
@@ -2515,7 +2568,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1588
+#: reference_measure.xml:1619
 #, no-c-format
 msgid ""
 "CREATE TABLE highways (\n"
@@ -2526,14 +2579,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1595
+#: reference_measure.xml:1626
 #, no-c-format
 msgid ""
 "To determine a list of roads that cross a highway, use a query similiar to:"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1599
+#: reference_measure.xml:1630
 #, no-c-format
 msgid ""
 "SELECT roads.id\n"
@@ -2542,13 +2595,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1606
+#: reference_measure.xml:1637
 #, no-c-format
 msgid "ST_LineCrossingDirection"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1608
+#: reference_measure.xml:1639
 #, no-c-format
 msgid ""
 "Given 2 linestrings, returns a number between -3 and 3 denoting what kind of "
@@ -2556,7 +2609,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1613
+#: reference_measure.xml:1644
 #, no-c-format
 msgid ""
 "<funcdef>integer <function>ST_LineCrossingDirection</function></funcdef> "
@@ -2566,7 +2619,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1624
+#: reference_measure.xml:1655
 #, no-c-format
 msgid ""
 "Given 2 linestrings, returns a number between -3 and 3 denoting what kind of "
@@ -2575,61 +2628,61 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1625
+#: reference_measure.xml:1656
 #, no-c-format
 msgid "Definition of integer constants is as follows:"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1628
+#: reference_measure.xml:1659
 #, no-c-format
 msgid "0: LINE NO CROSS"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1631
+#: reference_measure.xml:1662
 #, no-c-format
 msgid "-1: LINE CROSS LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1634
+#: reference_measure.xml:1665
 #, no-c-format
 msgid "1: LINE CROSS RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1637
+#: reference_measure.xml:1668
 #, no-c-format
 msgid "-2: LINE MULTICROSS END LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1640
+#: reference_measure.xml:1671
 #, no-c-format
 msgid "2: LINE MULTICROSS END RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1643
+#: reference_measure.xml:1674
 #, no-c-format
 msgid "-3: LINE MULTICROSS END SAME FIRST LEFT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1646
+#: reference_measure.xml:1677
 #, no-c-format
 msgid "3: LINE MULTICROSS END SAME FIRST RIGHT"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1650
+#: reference_measure.xml:1681
 #, no-c-format
 msgid "Availability: 1.4"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1668
+#: reference_measure.xml:1699
 #, no-c-format
 msgid ""
 "Line 1 (green), Line 2 ball is start point, triangle are end points. Query "
@@ -2637,7 +2690,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1672
+#: reference_measure.xml:1703
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
@@ -2654,8 +2707,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1682 reference_measure.xml:1696
-#: reference_measure.xml:1710
+#: reference_measure.xml:1713 reference_measure.xml:1727
+#: reference_measure.xml:1741
 #, no-c-format
 msgid ""
 "Line 1 (green), Line 2 (blue) ball is start point, triangle are end points. "
@@ -2663,7 +2716,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1686
+#: reference_measure.xml:1717
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
@@ -2681,7 +2734,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1700
+#: reference_measure.xml:1731
 #, no-c-format
 msgid ""
 "SELECT\n"
@@ -2699,7 +2752,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1714
+#: reference_measure.xml:1745
 #, no-c-format
 msgid ""
 "SELECT ST_LineCrossingDirection(foo.line1, foo.line2) As l1_cross_l2 ,\n"
@@ -2716,7 +2769,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1722
+#: reference_measure.xml:1753
 #, no-c-format
 msgid ""
 "SELECT s1.gid, s2.gid, ST_LineCrossingDirection(s1.the_geom, s2.the_geom)\n"
@@ -2726,13 +2779,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1735
+#: reference_measure.xml:1766
 #, no-c-format
 msgid "ST_Disjoint"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1737
+#: reference_measure.xml:1768
 #, no-c-format
 msgid ""
 "Returns TRUE if the Geometries do not \"spatially intersect\" - if they do "
@@ -2740,7 +2793,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1743
+#: reference_measure.xml:1774
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Disjoint</function></funcdef> <paramdef> "
@@ -2749,7 +2802,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1758
+#: reference_measure.xml:1789
 #, no-c-format
 msgid ""
 "Overlaps, Touches, Within all imply geometries are not spatially disjoint. "
@@ -2758,25 +2811,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1768
+#: reference_measure.xml:1799
 #, no-c-format
 msgid "This function call does not use indexes"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1775
+#: reference_measure.xml:1806
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - a.Relate(b, 'FF*FF****')"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1777
+#: reference_measure.xml:1808
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.26"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1782
+#: reference_measure.xml:1813
 #, no-c-format
 msgid ""
 "SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::"
@@ -2794,19 +2847,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1787
+#: reference_measure.xml:1818
 #, no-c-format
 msgid "<para>ST_Intersects</para>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1793
+#: reference_measure.xml:1824
 #, no-c-format
 msgid "ST_Distance"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1795
+#: reference_measure.xml:1826
 #, no-c-format
 msgid ""
 "For geometry type Returns the 2D Cartesian distance between two geometries "
@@ -2815,7 +2868,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:1799
+#: reference_measure.xml:1830
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Distance</function></funcdef> "
@@ -2832,7 +2885,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1837
+#: reference_measure.xml:1868
 #, no-c-format
 msgid ""
 "For geometry type returns the minimum 2D Cartesian distance between two "
@@ -2843,19 +2896,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1842
+#: reference_measure.xml:1873
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.23"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1843 reference_measure.xml:2540
+#: reference_measure.xml:1874 reference_measure.xml:2642
 #, no-c-format
 msgid "&curve_support;"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1846
+#: reference_measure.xml:1877
 #, no-c-format
 msgid ""
 "Availability: 1.5.0 geography support was introduced in 1.5. Speed "
@@ -2863,7 +2916,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1847
+#: reference_measure.xml:1878
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://"
@@ -2872,19 +2925,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1848
+#: reference_measure.xml:1879
 #, no-c-format
 msgid "Enhanced: 2.1.0 - support for curved geometries was introduced."
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:1853
+#: reference_measure.xml:1884
 #, no-c-format
 msgid "Basic Geometry Examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1855
+#: reference_measure.xml:1886
 #, no-c-format
 msgid ""
 "--Geometry example - units in planar degrees 4326 is WGS 84 long lat "
@@ -2925,14 +2978,14 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:1858 reference_measure.xml:2633
-#: reference_measure.xml:2687
+#: reference_measure.xml:1889 reference_measure.xml:2735
+#: reference_measure.xml:2789
 #, no-c-format
 msgid "Geography Examples"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1859
+#: reference_measure.xml:1890
 #, no-c-format
 msgid ""
 "-- same as geometry example but note units in meters - use sphere for "
@@ -2951,22 +3004,23 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1867
+#: reference_measure.xml:1898
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_DistanceSphere\"/>, "
 "<xref linkend=\"ST_Distance_Spheroid\"/>, <xref linkend=\"ST_MaxDistance\"/"
-">, <xref linkend=\"ST_Transform\"/>"
+">, <xref linkend=\"ST_HausdorffDistance\"/>, <xref linkend="
+"\"ST_FrechetDistance\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1873
+#: reference_measure.xml:1905
 #, no-c-format
 msgid "ST_MinimumClearance"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1874
+#: reference_measure.xml:1906
 #, no-c-format
 msgid ""
 "Returns the minimum clearance of a geometry, a measure of a geometry's "
@@ -2974,7 +3028,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1879
+#: reference_measure.xml:1911
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_MinimumClearance</function></funcdef> "
@@ -2982,7 +3036,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1889
+#: reference_measure.xml:1921
 #, no-c-format
 msgid ""
 "It is not uncommon to have a geometry that, while meeting the criteria for "
@@ -2994,7 +3048,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1896
+#: reference_measure.xml:1928
 #, no-c-format
 msgid ""
 "A geometry's \"minimum clearance\" is the smallest distance by which a "
@@ -3004,7 +3058,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1902
+#: reference_measure.xml:1934
 #, no-c-format
 msgid ""
 "If a geometry has a minimum clearance of <varname>e</varname>, it can be "
@@ -3012,7 +3066,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1906
+#: reference_measure.xml:1938
 #, no-c-format
 msgid ""
 "No two distinct vertices in the geometry are separated by less than "
@@ -3020,7 +3074,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1911
+#: reference_measure.xml:1943
 #, no-c-format
 msgid ""
 "No vertex is closer than <varname>e</varname> to a line segement of which it "
@@ -3028,7 +3082,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1918
+#: reference_measure.xml:1950
 #, no-c-format
 msgid ""
 "If no minimum clearance exists for a geometry (for example, a single point, "
@@ -3037,13 +3091,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1923 reference_measure.xml:1968
+#: reference_measure.xml:1955 reference_measure.xml:2000
 #, no-c-format
 msgid "Availability: 2.3.0 - requires GEOS &gt;= 3.6.0"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1929
+#: reference_measure.xml:1961
 #, no-c-format
 msgid ""
 "SELECT ST_MinimumClearance('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))');\n"
@@ -3053,20 +3107,20 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1944
+#: reference_measure.xml:1976
 #, no-c-format
 msgid "ST_MinimumClearanceLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1945
+#: reference_measure.xml:1977
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:1950
+#: reference_measure.xml:1982
 #, no-c-format
 msgid ""
 "<funcdef>Geometry <function>ST_MinimumClearanceLine</function></funcdef> "
@@ -3074,7 +3128,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:1963
+#: reference_measure.xml:1995
 #, no-c-format
 msgid ""
 "Returns the two-point LineString spanning a geometry's minimum clearance. If "
@@ -3083,7 +3137,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:1974
+#: reference_measure.xml:2006
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_MinimumClearanceLine('POLYGON ((0 0, 1 0, 1 1, 0.5 "
@@ -3094,13 +3148,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:1990
+#: reference_measure.xml:2022
 #, no-c-format
 msgid "ST_HausdorffDistance"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:1992
+#: reference_measure.xml:2024
 #, no-c-format
 msgid ""
 "Returns the Hausdorff distance between two geometries. Basically a measure "
@@ -3109,7 +3163,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:1997
+#: reference_measure.xml:2029
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_HausdorffDistance</function></"
@@ -3123,7 +3177,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2025
+#: reference_measure.xml:2057
 #, no-c-format
 msgid ""
 "Implements algorithm for computing a distance metric which can be thought of "
@@ -3137,7 +3191,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2028
+#: reference_measure.xml:2060
 #, no-c-format
 msgid ""
 "When densifyFrac is specified, this function performs a segment "
@@ -3148,7 +3202,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2033
+#: reference_measure.xml:2065 reference_measure.xml:2131
 #, no-c-format
 msgid ""
 "The current implementation supports only vertices as the discrete locations. "
@@ -3156,7 +3210,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2038
+#: reference_measure.xml:2070
 #, no-c-format
 msgid ""
 "This algorithm is NOT equivalent to the standard Hausdorff distance. "
@@ -3167,13 +3221,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2043
+#: reference_measure.xml:2075
 #, no-c-format
 msgid "Availability: 1.5.0 - requires GEOS &gt;= 3.2.0"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2049
+#: reference_measure.xml:2081
 #, no-c-format
 msgid ""
 "For each building, find the parcel that best represents it. First we require "
@@ -3183,7 +3237,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2051
+#: reference_measure.xml:2083
 #, no-c-format
 msgid ""
 "SELECT DISTINCT ON(buildings.gid) buildings.gid, parcels.parcel_id\n"
@@ -3194,7 +3248,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2053
+#: reference_measure.xml:2085
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_HausdorffDistance(\n"
@@ -3207,7 +3261,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2054
+#: reference_measure.xml:2086
 #, no-c-format
 msgid ""
 "postgis=# SELECT st_hausdorffdistance('LINESTRING (130 0, 0 0, 0 150)'::"
@@ -3219,13 +3273,103 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2061
+#: reference_measure.xml:2098
+#, no-c-format
+msgid "ST_FrechetDistance"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_measure.xml:2100
+#, no-c-format
+msgid ""
+"Returns the Fréchet distance between two geometries. This is a measure of "
+"similarity between curves that takes into account the location and ordering "
+"of the points along the curves. Units are in the units of the spatial "
+"reference system of the geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_measure.xml:2106
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_FrechetDistance</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>g2</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>densifyFrac = -1</parameter></"
+"paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:2124
+#, no-c-format
+msgid ""
+"Implements algorithm for computing the Fréchet distance restricted to "
+"discrete points for both geometries, based on <ulink url=\"http://www.kr."
+"tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf\">Computing Discrete "
+"Fréchet Distance</ulink>. The Fréchet distance is a measure of similarity "
+"between curves that takes into account the location and ordering of the "
+"points along the curves. Therefore it is often better than the Hausdorff "
+"distance."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:2126
+#, no-c-format
+msgid ""
+"When the optional densifyFrac is specified, this function performs a segment "
+"densification before computing the discrete Fréchet distance. The "
+"densifyFrac parameter sets the fraction by which to densify each segment. "
+"Each segment will be split into a number of equal-length subsegments, whose "
+"fraction of the total length is closest to the given fraction."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:2136
+#, no-c-format
+msgid ""
+"The smaller densifyFrac we specify, the more acurate Fréchet distance we "
+"get. But, the computation time and the memory usage increase with the square "
+"of the number of subsegments."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:2140
+#, fuzzy, no-c-format
+msgid "Availability: 2.4.0 - requires GEOS &gt;= 3.7.0"
+msgstr "Verfügbarkeit: 1.5.0"
+
+#. Tag: programlisting
+#: reference_measure.xml:2146
+#, no-c-format
+msgid ""
+"postgres=# SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, "
+"'LINESTRING (0 0, 50 50, 100 0)'::geometry);\n"
+" st_frechetdistance\n"
+"--------------------\n"
+"   70.7106781186548\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_measure.xml:2147
+#, no-c-format
+msgid ""
+"SELECT st_frechetdistance('LINESTRING (0 0, 100 0)'::geometry, 'LINESTRING "
+"(0 0, 50 50, 100 0)'::geometry, 0.5);\n"
+" st_frechetdistance\n"
+"--------------------\n"
+"                 50\n"
+"(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_measure.xml:2159
 #, no-c-format
 msgid "ST_MaxDistance"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2063
+#: reference_measure.xml:2161
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional largest distance between two geometries in "
@@ -3233,7 +3377,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2069
+#: reference_measure.xml:2167
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_MaxDistance</function></funcdef> "
@@ -3242,7 +3386,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2082
+#: reference_measure.xml:2180
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional maximum distance between two geometries in "
@@ -3252,13 +3396,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2092
+#: reference_measure.xml:2190
 #, no-c-format
 msgid "Basic furthest distance the point is to any part of the line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2093
+#: reference_measure.xml:2191
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_MaxDistance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 "
@@ -3277,20 +3421,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2099
+#: reference_measure.xml:2197
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_DFullyWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2105
+#: reference_measure.xml:2203
 #, no-c-format
 msgid "ST_DistanceSphere"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2107
+#: reference_measure.xml:2205
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries. Uses a "
@@ -3300,7 +3444,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2116
+#: reference_measure.xml:2214
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_DistanceSphere</function></funcdef> "
@@ -3310,7 +3454,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2127
+#: reference_measure.xml:2225
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat points. Uses a "
@@ -3320,7 +3464,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2133 reference_measure.xml:2182
+#: reference_measure.xml:2231 reference_measure.xml:2280
 #, no-c-format
 msgid ""
 "Availability: 1.5 - support for other geometry types besides points was "
@@ -3328,14 +3472,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2134
+#: reference_measure.xml:2232
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Sphere"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2141
+#: reference_measure.xml:2239
 #, no-c-format
 msgid ""
 "SELECT round(CAST(ST_DistanceSphere(ST_Centroid(the_geom), "
@@ -3360,19 +3504,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2148
+#: reference_measure.xml:2246
 #, no-c-format
 msgid ", <xref linkend=\"ST_Distance_Spheroid\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2154
+#: reference_measure.xml:2252
 #, no-c-format
 msgid "ST_DistanceSpheroid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2156
+#: reference_measure.xml:2254
 #, no-c-format
 msgid ""
 "Returns the minimum distance between two lon/lat geometries given a "
@@ -3380,7 +3524,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2163
+#: reference_measure.xml:2261
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_DistanceSpheroid</function></funcdef> "
@@ -3391,7 +3535,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2175
+#: reference_measure.xml:2273
 #, no-c-format
 msgid ""
 "Returns minimum distance in meters between two lon/lat geometries given a "
@@ -3401,7 +3545,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2179
+#: reference_measure.xml:2277
 #, no-c-format
 msgid ""
 "This function currently does not look at the SRID of a geometry and will "
@@ -3410,14 +3554,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2183
+#: reference_measure.xml:2281
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Distance_Spheroid"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2190
+#: reference_measure.xml:2288
 #, no-c-format
 msgid ""
 "SELECT round(CAST(\n"
@@ -3440,19 +3584,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2197
+#: reference_measure.xml:2295
 #, no-c-format
 msgid ", <xref linkend=\"ST_DistanceSphere\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2203
+#: reference_measure.xml:2301
 #, no-c-format
 msgid "ST_DFullyWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2205
+#: reference_measure.xml:2303
 #, no-c-format
 msgid ""
 "Returns true if all of the geometries are within the specified distance of "
@@ -3460,7 +3604,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2211
+#: reference_measure.xml:2309
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_DFullyWithin</function></funcdef> "
@@ -3471,7 +3615,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2229
+#: reference_measure.xml:2327
 #, no-c-format
 msgid ""
 "Returns true if the geometries is fully within the specified distance of one "
@@ -3482,7 +3626,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2246
+#: reference_measure.xml:2344
 #, no-c-format
 msgid ""
 "postgis=# SELECT ST_DFullyWithin(geom_a, geom_b, 10) as DFullyWithin10, "
@@ -3498,19 +3642,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2252
+#: reference_measure.xml:2350
 #, no-c-format
 msgid ", <xref linkend=\"ST_DWithin\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2258
+#: reference_measure.xml:2356
 #, no-c-format
 msgid "ST_DWithin"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2260
+#: reference_measure.xml:2358
 #, no-c-format
 msgid ""
 "Returns true if the geometries are within the specified distance of one "
@@ -3521,7 +3665,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:2266
+#: reference_measure.xml:2364
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_DWithin</function></funcdef> "
@@ -3542,7 +3686,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2311
+#: reference_measure.xml:2409
 #, no-c-format
 msgid ""
 "Returns true if the geometries are within the specified distance of one "
@@ -3550,7 +3694,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2313
+#: reference_measure.xml:2411
 #, no-c-format
 msgid ""
 "For Geometries: The distance is specified in units defined by the spatial "
@@ -3560,7 +3704,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2318
+#: reference_measure.xml:2416
 #, no-c-format
 msgid ""
 "For geography units are in meters and measurement is defaulted to "
@@ -3569,7 +3713,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2328
+#: reference_measure.xml:2426
 #, no-c-format
 msgid ""
 "Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and "
@@ -3580,19 +3724,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2334
+#: reference_measure.xml:2432
 #, no-c-format
 msgid "Use ST_3DDWithin if you have 3D geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2337
+#: reference_measure.xml:2435
 #, no-c-format
 msgid "Availability: 1.5.0 support for geography was introduced"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2338
+#: reference_measure.xml:2436
 #, no-c-format
 msgid ""
 "Enhanced: 2.1.0 improved speed for geography. See <ulink url=\"http://blog."
@@ -3601,13 +3745,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2339
+#: reference_measure.xml:2437
 #, no-c-format
 msgid "Enhanced: 2.1.0 support for curved geometries was introduced."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2344
+#: reference_measure.xml:2442
 #, no-c-format
 msgid ""
 "--Find the nearest hospital to each school\n"
@@ -3635,19 +3779,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2350
+#: reference_measure.xml:2448
 #, no-c-format
 msgid ", <xref linkend=\"ST_Expand\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2356
+#: reference_measure.xml:2454
 #, no-c-format
 msgid "ST_Equals"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2358
+#: reference_measure.xml:2456
 #, no-c-format
 msgid ""
 "Returns true if the given geometries represent the same geometry. "
@@ -3655,7 +3799,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2364
+#: reference_measure.xml:2462
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Equals</function></funcdef> "
@@ -3664,7 +3808,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2375
+#: reference_measure.xml:2473
 #, no-c-format
 msgid ""
 "Returns TRUE if the given Geometries are \"spatially equal\". Use this for a "
@@ -3677,7 +3821,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2384
+#: reference_measure.xml:2482
 #, no-c-format
 msgid ""
 "This function will return false if either geometry is invalid except in the "
@@ -3685,19 +3829,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2387
+#: reference_measure.xml:2486
+#, no-c-format
+msgid "Do not call with a GEOMETRYCOLLECTION as an argument."
+msgstr ""
+
+#. Tag: para
+#: reference_measure.xml:2489
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2388
+#: reference_measure.xml:2490
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.24"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2389
+#: reference_measure.xml:2491
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 Returns true even for invalid geometries if they are binary "
@@ -3705,7 +3855,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2395
+#: reference_measure.xml:2497
 #, no-c-format
 msgid ""
 "SELECT ST_Equals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
@@ -3724,7 +3874,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2401
+#: reference_measure.xml:2503
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Reverse\"/>, "
@@ -3732,19 +3882,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2408
+#: reference_measure.xml:2510
 #, no-c-format
 msgid "ST_GeometricMedian"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2412
+#: reference_measure.xml:2514
 #, no-c-format
 msgid "Returns the geometric median of a MultiPoint."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2419
+#: reference_measure.xml:2521
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function> ST_GeometricMedian </function> </funcdef> "
@@ -3756,7 +3906,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2469
+#: reference_measure.xml:2571
 #, no-c-format
 msgid ""
 "Computes the approximate geometric median of a MultiPoint geometry using the "
@@ -3772,13 +3922,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2485
+#: reference_measure.xml:2587
 #, fuzzy, no-c-format
 msgid "Availability: 2.3.0"
 msgstr "Verfügbarkeit: 1.5.0"
 
 #. Tag: para
-#: reference_measure.xml:2498
+#: reference_measure.xml:2600
 #, no-c-format
 msgid ""
 "Comparison of the centroid (turquoise point) and geometric median (red "
@@ -3786,7 +3936,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2506
+#: reference_measure.xml:2608
 #, no-c-format
 msgid ""
 "WITH test AS (\n"
@@ -3802,13 +3952,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2519
+#: reference_measure.xml:2621
 #, no-c-format
 msgid "ST_HasArc"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2521
+#: reference_measure.xml:2623
 #, no-c-format
 msgid ""
 "<refpurpose>Returns true if a geometry or geometry collection contains a "
@@ -3816,7 +3966,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2526
+#: reference_measure.xml:2628
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_HasArc</function></funcdef> "
@@ -3824,7 +3974,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2536
+#: reference_measure.xml:2638
 #, no-c-format
 msgid ""
 "<para>Returns true if a geometry or geometry collection contains a circular "
@@ -3832,13 +3982,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2538
+#: reference_measure.xml:2640
 #, no-c-format
 msgid "Availability: 1.2.3?"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2547
+#: reference_measure.xml:2649
 #, no-c-format
 msgid ""
 "SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 "
@@ -3849,19 +3999,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2554
+#: reference_measure.xml:2656
 #, no-c-format
 msgid ", <xref linkend=\"ST_LineToCurve\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2560
+#: reference_measure.xml:2662
 #, no-c-format
 msgid "<refname>ST_Intersects</refname>"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2562
+#: reference_measure.xml:2664
 #, no-c-format
 msgid ""
 "Returns TRUE if the Geometries/Geography \"spatially intersect in 2D\" - "
@@ -3871,7 +4021,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:2568
+#: reference_measure.xml:2670
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Intersects</function></"
@@ -3884,7 +4034,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2595
+#: reference_measure.xml:2697
 #, no-c-format
 msgid ""
 "If a geometry or geography shares any portion of space then they intersect. "
@@ -3893,7 +4043,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2602
+#: reference_measure.xml:2704
 #, no-c-format
 msgid ""
 "Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument for "
@@ -3902,19 +4052,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2607
+#: reference_measure.xml:2709
 #, no-c-format
 msgid "Performed by the GEOS module (for geometry), geography is native"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2608
+#: reference_measure.xml:2710
 #, no-c-format
 msgid "Availability: 1.5 support for geography was introduced."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2615
+#: reference_measure.xml:2717
 #, no-c-format
 msgid ""
 "For geography, this function has a distance tolerance of about 0.00001 "
@@ -3922,7 +4072,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2622
+#: reference_measure.xml:2724
 #, no-c-format
 msgid ""
 "&sfs_compliant; s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt; Not "
@@ -3930,13 +4080,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2625
+#: reference_measure.xml:2727
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.27"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2630
+#: reference_measure.xml:2732
 #, no-c-format
 msgid ""
 "SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::"
@@ -3954,7 +4104,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2634
+#: reference_measure.xml:2736
 #, no-c-format
 msgid ""
 "SELECT ST_Intersects(\n"
@@ -3970,19 +4120,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2638
+#: reference_measure.xml:2740
 #, no-c-format
 msgid ", <xref linkend=\"ST_Disjoint\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2643
+#: reference_measure.xml:2745
 #, no-c-format
 msgid "ST_Length"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2645
+#: reference_measure.xml:2747
 #, no-c-format
 msgid ""
 "Returns the 2D length of the geometry if it is a LineString or "
@@ -3991,7 +4141,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:2648
+#: reference_measure.xml:2750
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Length</function></funcdef> "
@@ -4004,7 +4154,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2663
+#: reference_measure.xml:2765
 #, no-c-format
 msgid ""
 "For geometry: Returns the 2D Cartesian length of the geometry if it is a "
@@ -4015,7 +4165,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2666
+#: reference_measure.xml:2768
 #, no-c-format
 msgid ""
 "For geography types, the calculations are performed using the inverse "
@@ -4026,7 +4176,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2670
+#: reference_measure.xml:2772
 #, no-c-format
 msgid ""
 "Currently for geometry this is an alias for ST_Length2D, but this may change "
@@ -4034,7 +4184,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2671
+#: reference_measure.xml:2773
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/"
@@ -4045,7 +4195,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2673
+#: reference_measure.xml:2775
 #, no-c-format
 msgid ""
 "For geography measurement defaults spheroid measurement. To use the faster "
@@ -4053,25 +4203,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2674 reference_measure.xml:3131
+#: reference_measure.xml:2776 reference_measure.xml:3233
 #, no-c-format
 msgid "&sfs_compliant; s2.1.5.1"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2675
+#: reference_measure.xml:2777
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2676
+#: reference_measure.xml:2778
 #, no-c-format
 msgid "Availability: 1.5.0 geography support was introduced in 1.5."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2682
+#: reference_measure.xml:2784
 #, no-c-format
 msgid ""
 "Return length in feet for line string. Note this is in feet because "
@@ -4079,7 +4229,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2684
+#: reference_measure.xml:2786
 #, no-c-format
 msgid ""
 "SELECT ST_Length(ST_GeomFromText('LINESTRING(743238 2967416,743238 "
@@ -4104,13 +4254,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2688
+#: reference_measure.xml:2790
 #, no-c-format
 msgid "Return length of WGS 84 geography line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2689
+#: reference_measure.xml:2791
 #, no-c-format
 msgid ""
 "-- default calculation is using a sphere rather than spheroid\n"
@@ -4126,7 +4276,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2693
+#: reference_measure.xml:2795
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_Length_Spheroid\"/"
@@ -4134,13 +4284,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2699
+#: reference_measure.xml:2801
 #, no-c-format
 msgid "ST_Length2D"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2701
+#: reference_measure.xml:2803
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the 2-dimensional length of the geometry if it is a "
@@ -4149,7 +4299,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2707
+#: reference_measure.xml:2809
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Length2D</function></funcdef> "
@@ -4158,7 +4308,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2717
+#: reference_measure.xml:2819
 #, no-c-format
 msgid ""
 "<para>Returns the 2-dimensional length of the geometry if it is a linestring "
@@ -4166,19 +4316,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2726
+#: reference_measure.xml:2828
 #, no-c-format
 msgid ", <xref linkend=\"ST_3DLength\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2732
+#: reference_measure.xml:2834
 #, no-c-format
 msgid "ST_3DLength"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2734
+#: reference_measure.xml:2836
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional or 2-dimensional length of the geometry if it is a "
@@ -4186,7 +4336,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2740
+#: reference_measure.xml:2842
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DLength</function></funcdef> "
@@ -4195,7 +4345,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2750
+#: reference_measure.xml:2852
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional or 2-dimensional length of the geometry if it is a "
@@ -4204,13 +4354,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2753
+#: reference_measure.xml:2855
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Length3D"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2760
+#: reference_measure.xml:2862
 #, no-c-format
 msgid ""
 "Return length in feet for a 3D cable. Note this is in feet because EPSG:2249 "
@@ -4218,7 +4368,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2762
+#: reference_measure.xml:2864
 #, no-c-format
 msgid ""
 "SELECT ST_3DLength(ST_GeomFromText('LINESTRING(743238 2967416 1,743238 "
@@ -4230,19 +4380,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2769
+#: reference_measure.xml:2871
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length2D\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2775
+#: reference_measure.xml:2877
 #, no-c-format
 msgid "ST_LengthSpheroid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2777
+#: reference_measure.xml:2879
 #, no-c-format
 msgid ""
 "Calculates the 2D or 3D length/perimeter of a geometry on an ellipsoid. This "
@@ -4251,7 +4401,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2784
+#: reference_measure.xml:2886
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_LengthSpheroid</function></funcdef> "
@@ -4261,7 +4411,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2795
+#: reference_measure.xml:2897
 #, no-c-format
 msgid ""
 "Calculates the length/perimeter of a geometry on an ellipsoid. This is "
@@ -4271,26 +4421,26 @@ msgid ""
 msgstr ""
 
 #. Tag: literallayout
-#: reference_measure.xml:2801 reference_measure.xml:2852
+#: reference_measure.xml:2903 reference_measure.xml:2954
 #, no-c-format
 msgid ""
 "SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]"
 msgstr ""
 
 #. Tag: literallayout
-#: reference_measure.xml:2803 reference_measure.xml:2854
+#: reference_measure.xml:2905 reference_measure.xml:2956
 #, no-c-format
 msgid "SPHEROID[\"GRS_1980\",6378137,298.257222101]"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2805
+#: reference_measure.xml:2907
 #, no-c-format
 msgid "Availability: 1.2.2"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2806
+#: reference_measure.xml:2908
 #, no-c-format
 msgid ""
 "Changed: 2.2.0 In prior versions this used to be called ST_Length_Spheroid "
@@ -4298,7 +4448,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2813
+#: reference_measure.xml:2915
 #, no-c-format
 msgid ""
 "SELECT ST_LengthSpheroid( geometry_column,\n"
@@ -4333,19 +4483,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2820
+#: reference_measure.xml:2922
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2826
+#: reference_measure.xml:2928
 #, no-c-format
 msgid "ST_Length2D_Spheroid"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2828
+#: reference_measure.xml:2930
 #, no-c-format
 msgid ""
 "Calculates the 2D length/perimeter of a geometry on an ellipsoid. This is "
@@ -4354,7 +4504,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2835
+#: reference_measure.xml:2937
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Length2D_Spheroid</function></funcdef> "
@@ -4364,7 +4514,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2846
+#: reference_measure.xml:2948
 #, no-c-format
 msgid ""
 "Calculates the 2D length/perimeter of a geometry on an ellipsoid. This is "
@@ -4374,7 +4524,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2855
+#: reference_measure.xml:2957
 #, no-c-format
 msgid ""
 "This is much like <xref linkend=\"ST_Length_Spheroid\"/> except it will "
@@ -4382,7 +4532,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2862
+#: reference_measure.xml:2964
 #, no-c-format
 msgid ""
 "SELECT ST_Length2D_Spheroid( geometry_column,\n"
@@ -4417,19 +4567,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2869
+#: reference_measure.xml:2971
 #, no-c-format
 msgid ", <xref linkend=\"ST_Length_Spheroid\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2875
+#: reference_measure.xml:2977
 #, no-c-format
 msgid "ST_LongestLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2877
+#: reference_measure.xml:2979
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional longest line points of two geometries. The "
@@ -4440,7 +4590,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2885
+#: reference_measure.xml:2987
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_LongestLine</function></funcdef> "
@@ -4449,20 +4599,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2900
+#: reference_measure.xml:3002
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional longest line between the points of two geometries."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2918
+#: reference_measure.xml:3020
 #, no-c-format
 msgid "Longest line between point and line"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2921
+#: reference_measure.xml:3023
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -4477,13 +4627,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2929
+#: reference_measure.xml:3031
 #, no-c-format
 msgid "longest line between polygon and polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2932
+#: reference_measure.xml:3034
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -4500,7 +4650,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2948
+#: reference_measure.xml:3050
 #, no-c-format
 msgid ""
 "longest straight distance to travel from one part of an elegant city to the "
@@ -4508,7 +4658,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:2952
+#: reference_measure.xml:3054
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_LongestLine(c.the_geom, c.the_geom)) As llinewkt,\n"
@@ -4527,20 +4677,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2963
+#: reference_measure.xml:3065
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_LongestLine\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:2969
+#: reference_measure.xml:3071
 #, no-c-format
 msgid "ST_OrderingEquals"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:2971
+#: reference_measure.xml:3073
 #, no-c-format
 msgid ""
 "Returns true if the given geometries represent the same geometry and points "
@@ -4548,7 +4698,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:2977
+#: reference_measure.xml:3079
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_OrderingEquals</function></funcdef> "
@@ -4557,7 +4707,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2988
+#: reference_measure.xml:3090
 #, no-c-format
 msgid ""
 "ST_OrderingEquals compares two geometries and returns t (TRUE) if the "
@@ -4566,7 +4716,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2993
+#: reference_measure.xml:3095
 #, no-c-format
 msgid ""
 "This function is implemented as per the ArcSDE SQL specification rather than "
@@ -4575,13 +4725,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:2997
+#: reference_measure.xml:3099
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.43"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3003
+#: reference_measure.xml:3105
 #, no-c-format
 msgid ""
 "SELECT ST_OrderingEquals(ST_GeomFromText('LINESTRING(0 0, 10 10)'),\n"
@@ -4608,19 +4758,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3007
+#: reference_measure.xml:3109
 #, no-c-format
 msgid ", <xref linkend=\"ST_Reverse\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3013
+#: reference_measure.xml:3115
 #, no-c-format
 msgid "ST_Overlaps"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3015
+#: reference_measure.xml:3117
 #, no-c-format
 msgid ""
 "Returns TRUE if the Geometries share space, are of the same dimension, but "
@@ -4628,7 +4778,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3020
+#: reference_measure.xml:3122
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Overlaps</function></funcdef> "
@@ -4637,7 +4787,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3031
+#: reference_measure.xml:3133
 #, no-c-format
 msgid ""
 "Returns TRUE if the Geometries \"spatially overlap\". By that we mean they "
@@ -4645,14 +4795,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3036 reference_measure.xml:3364
-#: reference_measure.xml:3378
+#: reference_measure.xml:3138 reference_measure.xml:3466
+#: reference_measure.xml:3480
 #, no-c-format
 msgid "Do not call with a GeometryCollection as an argument"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3038
+#: reference_measure.xml:3140
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -4661,26 +4811,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3046 reference_measure.xml:3384
-#: reference_measure.xml:3589
+#: reference_measure.xml:3148 reference_measure.xml:3486
+#: reference_measure.xml:3691
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3047
+#: reference_measure.xml:3149
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.32"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3063
+#: reference_measure.xml:3165
 #, no-c-format
 msgid "<varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname>"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3087
+#: reference_measure.xml:3189
 #, no-c-format
 msgid ""
 "--a point on a line is contained by the line and is of a lower dimension, "
@@ -4739,7 +4889,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3095
+#: reference_measure.xml:3197
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Dimension\"/>, <xref "
@@ -4747,13 +4897,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3100
+#: reference_measure.xml:3202
 #, no-c-format
 msgid "ST_Perimeter"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3102
+#: reference_measure.xml:3204
 #, no-c-format
 msgid ""
 "Return the length measurement of the boundary of an ST_Surface or "
@@ -4762,7 +4912,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:3106
+#: reference_measure.xml:3208
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>float <function>ST_Perimeter</function></funcdef> "
@@ -4774,7 +4924,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3122
+#: reference_measure.xml:3224
 #, no-c-format
 msgid ""
 "Returns the 2D perimeter of the geometry/geography if it is a ST_Surface, "
@@ -4785,7 +4935,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3125
+#: reference_measure.xml:3227
 #, no-c-format
 msgid ""
 "For geography types, the calculations are performed using the inverse "
@@ -4796,7 +4946,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3129
+#: reference_measure.xml:3231
 #, no-c-format
 msgid ""
 "Currently this is an alias for ST_Perimeter2D, but this may change to "
@@ -4804,25 +4954,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3132
+#: reference_measure.xml:3234
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 8.1.3, 9.5.4"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3133
+#: reference_measure.xml:3235
 #, no-c-format
 msgid "Availability 2.0.0: Support for geography was introduced"
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:3137
+#: reference_measure.xml:3239
 #, no-c-format
 msgid "Examples: Geometry"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3138
+#: reference_measure.xml:3240
 #, no-c-format
 msgid ""
 "Return perimeter in feet for Polygon and MultiPolygon. Note this is in feet "
@@ -4830,7 +4980,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3140
+#: reference_measure.xml:3242
 #, no-c-format
 msgid ""
 "SELECT ST_Perimeter(ST_GeomFromText('POLYGON((743238 2967416,743238 "
@@ -4860,13 +5010,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:3143
+#: reference_measure.xml:3245
 #, no-c-format
 msgid "Examples: Geography"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3144
+#: reference_measure.xml:3246
 #, no-c-format
 msgid ""
 "Return perimeter in meters and feet for Polygon and MultiPolygon. Note this "
@@ -4874,7 +5024,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3145
+#: reference_measure.xml:3247
 #, no-c-format
 msgid ""
 "SELECT  ST_Perimeter(geog) As per_meters, ST_Perimeter(geog)/0.3048 As "
@@ -4912,19 +5062,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3149
+#: reference_measure.xml:3251
 #, no-c-format
 msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_Length\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3155
+#: reference_measure.xml:3257
 #, no-c-format
 msgid "ST_Perimeter2D"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3157
+#: reference_measure.xml:3259
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional perimeter of the geometry, if it is a polygon or "
@@ -4932,7 +5082,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3163
+#: reference_measure.xml:3265
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_Perimeter2D</function></funcdef> "
@@ -4940,7 +5090,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3173
+#: reference_measure.xml:3275
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional perimeter of the geometry, if it is a polygon or "
@@ -4948,7 +5098,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3178
+#: reference_measure.xml:3280
 #, no-c-format
 msgid ""
 "This is currently an alias for ST_Perimeter. In future versions ST_Perimeter "
@@ -4957,13 +5107,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3192
+#: reference_measure.xml:3294
 #, no-c-format
 msgid "ST_3DPerimeter"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3194
+#: reference_measure.xml:3296
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional perimeter of the geometry, if it is a polygon or "
@@ -4971,7 +5121,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3200
+#: reference_measure.xml:3302
 #, no-c-format
 msgid ""
 "<funcdef>float <function>ST_3DPerimeter</function></funcdef> "
@@ -4979,7 +5129,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3210
+#: reference_measure.xml:3312
 #, no-c-format
 msgid ""
 "Returns the 3-dimensional perimeter of the geometry, if it is a polygon or "
@@ -4988,13 +5138,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3213
+#: reference_measure.xml:3315
 #, no-c-format
 msgid "Changed: 2.0.0 In prior versions this used to be called ST_Perimeter3D"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3219
+#: reference_measure.xml:3321
 #, no-c-format
 msgid ""
 "Perimeter of a slightly elevated polygon in the air in Massachusetts state "
@@ -5002,7 +5152,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3220
+#: reference_measure.xml:3322
 #, no-c-format
 msgid ""
 "SELECT ST_3DPerimeter(the_geom), ST_Perimeter2d(the_geom), "
@@ -5017,25 +5167,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3227
+#: reference_measure.xml:3329
 #, no-c-format
 msgid ", <xref linkend=\"ST_Perimeter\"/>, <xref linkend=\"ST_Perimeter2D\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3233
+#: reference_measure.xml:3335
 #, no-c-format
 msgid "ST_PointOnSurface"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3235
+#: reference_measure.xml:3337
 #, no-c-format
 msgid "Returns a <varname>POINT</varname> guaranteed to lie on the surface."
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3240
+#: reference_measure.xml:3342
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_PointOnSurface</function></funcdef> "
@@ -5043,19 +5193,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3252
+#: reference_measure.xml:3354
 #, no-c-format
 msgid "Returns a <varname>POINT</varname> guaranteed to intersect a surface."
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3254
+#: reference_measure.xml:3356
 #, no-c-format
 msgid "&sfs_compliant; s3.2.14.2 // s3.2.18.2"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3255
+#: reference_measure.xml:3357
 #, no-c-format
 msgid ""
 "&sqlmm_compliant; SQL-MM 3: 8.1.5, 9.5.6. According to the specs, "
@@ -5067,7 +5217,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3264
+#: reference_measure.xml:3366
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));\n"
@@ -5098,19 +5248,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3270
+#: reference_measure.xml:3372
 #, no-c-format
 msgid ", <xref linkend=\"ST_Point_Inside_Circle\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3276
+#: reference_measure.xml:3378
 #, no-c-format
 msgid "ST_Project"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3278
+#: reference_measure.xml:3380
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> projected from a start point using a "
@@ -5118,7 +5268,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3283
+#: reference_measure.xml:3385
 #, no-c-format
 msgid ""
 "<funcdef>geography <function>ST_Project</function></funcdef> "
@@ -5128,7 +5278,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3299
+#: reference_measure.xml:3401
 #, no-c-format
 msgid ""
 "Returns a <varname>POINT</varname> projected along a geodesic from a start "
@@ -5137,7 +5287,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3300
+#: reference_measure.xml:3402
 #, no-c-format
 msgid ""
 "The azimuth is sometimes called the heading or the bearing in navigation. It "
@@ -5147,13 +5297,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3301
+#: reference_measure.xml:3403
 #, no-c-format
 msgid "The distance is given in meters."
 msgstr ""
 
 #. Tag: title
-#: reference_measure.xml:3308
+#: reference_measure.xml:3410
 #, no-c-format
 msgid ""
 "Example: Using degrees - projected point 100,000 meters and bearing 45 "
@@ -5161,7 +5311,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3310
+#: reference_measure.xml:3412
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, "
@@ -5174,7 +5324,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3316
+#: reference_measure.xml:3418
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <ulink url=\"http://www.postgresql.org/"
@@ -5183,13 +5333,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3322
+#: reference_measure.xml:3424
 #, no-c-format
 msgid "ST_Relate"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3324
+#: reference_measure.xml:3426
 #, no-c-format
 msgid ""
 "Returns true if this Geometry is spatially related to anotherGeometry, by "
@@ -5200,7 +5350,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_measure.xml:3332
+#: reference_measure.xml:3434
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>boolean <function>ST_Relate</function></funcdef> "
@@ -5219,7 +5369,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3358
+#: reference_measure.xml:3460
 #, no-c-format
 msgid ""
 "Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if "
@@ -5230,7 +5380,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3363
+#: reference_measure.xml:3465
 #, no-c-format
 msgid ""
 "This is especially useful for testing compound checks of intersection, "
@@ -5238,7 +5388,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3366
+#: reference_measure.xml:3468
 #, no-c-format
 msgid ""
 "This is the \"allowable\" version that returns a boolean, not an integer. "
@@ -5246,7 +5396,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3369
+#: reference_measure.xml:3471
 #, no-c-format
 msgid ""
 "This DOES NOT automagically include an index call. The reason for that is "
@@ -5255,14 +5405,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3374
+#: reference_measure.xml:3476
 #, no-c-format
 msgid ""
 "Version 2: Takes geomA and geomB and returns the <xref linkend=\"DE-9IM\"/>"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3376
+#: reference_measure.xml:3478
 #, no-c-format
 msgid ""
 "Version 3: same as version 2, but allows to specify a boundary node rule (1:"
@@ -5270,19 +5420,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3380
+#: reference_measure.xml:3482
 #, no-c-format
 msgid "not in OGC spec, but implied. see s2.1.13.2"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3385
+#: reference_measure.xml:3487
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.25"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3386
+#: reference_measure.xml:3488
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 - added support for specifying boundary node rule (requires "
@@ -5290,7 +5440,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3393
+#: reference_measure.xml:3495
 #, no-c-format
 msgid ""
 "--Find all compounds that intersect and not touch a poly (interior "
@@ -5328,7 +5478,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3400
+#: reference_measure.xml:3502
 #, no-c-format
 msgid ""
 ", <xref linkend=\"DE-9IM\"/>, <xref linkend=\"ST_Disjoint\"/>, <xref linkend="
@@ -5336,13 +5486,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3406
+#: reference_measure.xml:3508
 #, no-c-format
 msgid "ST_RelateMatch"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3408
+#: reference_measure.xml:3510
 #, no-c-format
 msgid ""
 "Returns true if intersectionMattrixPattern1 implies "
@@ -5350,7 +5500,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3413
+#: reference_measure.xml:3515
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_RelateMatch</function></funcdef> "
@@ -5360,7 +5510,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3424
+#: reference_measure.xml:3526
 #, no-c-format
 msgid ""
 "Takes intersectionMatrix and intersectionMatrixPattern and Returns true if "
@@ -5369,13 +5519,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3427
+#: reference_measure.xml:3529
 #, no-c-format
 msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3433
+#: reference_measure.xml:3535
 #, no-c-format
 msgid ""
 "SELECT ST_RelateMatch('101202FFF', 'TTTTTTFFF') ;\n"
@@ -5398,25 +5548,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3439
+#: reference_measure.xml:3541
 #, no-c-format
 msgid ", <xref linkend=\"ST_Relate\"/>"
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3445
+#: reference_measure.xml:3547
 #, no-c-format
 msgid "ST_ShortestLine"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3447
+#: reference_measure.xml:3549
 #, no-c-format
 msgid "Returns the 2-dimensional shortest line between two geometries"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3452
+#: reference_measure.xml:3554
 #, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_ShortestLine</function></funcdef> "
@@ -5425,7 +5575,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3467
+#: reference_measure.xml:3569
 #, no-c-format
 msgid ""
 "Returns the 2-dimensional shortest line between two geometries. The function "
@@ -5440,13 +5590,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3491
+#: reference_measure.xml:3593
 #, no-c-format
 msgid "Shortest line between point and linestring"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3494
+#: reference_measure.xml:3596
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -5461,13 +5611,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3502
+#: reference_measure.xml:3604
 #, no-c-format
 msgid "shortest line between polygon and polygon"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3505
+#: reference_measure.xml:3607
 #, no-c-format
 msgid ""
 "SELECT ST_AsText(\n"
@@ -5483,7 +5633,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3517
+#: reference_measure.xml:3619
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
@@ -5491,13 +5641,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3523
+#: reference_measure.xml:3625
 #, no-c-format
 msgid "ST_Touches"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3525
+#: reference_measure.xml:3627
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the geometries have at least one point in "
@@ -5505,7 +5655,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3531
+#: reference_measure.xml:3633
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Touches</function></funcdef> "
@@ -5514,7 +5664,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3546
+#: reference_measure.xml:3648
 #, no-c-format
 msgid ""
 "Returns <varname>TRUE</varname> if the only points in common between "
@@ -5526,37 +5676,37 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3553
+#: reference_measure.xml:3655
 #, no-c-format
 msgid "In mathematical terms, this predicate is expressed as:"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3563
+#: reference_measure.xml:3665
 #, no-c-format
 msgid "The allowable DE-9IM Intersection Matrices for the two geometries are:"
 msgstr ""
 
 #. Tag: markup
-#: reference_measure.xml:3567
+#: reference_measure.xml:3669
 #, no-c-format
 msgid "FT*******"
 msgstr ""
 
 #. Tag: markup
-#: reference_measure.xml:3571
+#: reference_measure.xml:3673
 #, no-c-format
 msgid "F**T*****"
 msgstr ""
 
 #. Tag: markup
-#: reference_measure.xml:3575
+#: reference_measure.xml:3677
 #, no-c-format
 msgid "F***T****"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3584
+#: reference_measure.xml:3686
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -5565,13 +5715,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3590
+#: reference_measure.xml:3692
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.28"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3596
+#: reference_measure.xml:3698
 #, no-c-format
 msgid ""
 "The <function>ST_Touches</function> predicate returns <varname>TRUE</"
@@ -5579,7 +5729,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3666
+#: reference_measure.xml:3768
 #, no-c-format
 msgid ""
 "SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::"
@@ -5598,19 +5748,19 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_measure.xml:3672
+#: reference_measure.xml:3774
 #, no-c-format
 msgid "ST_Within"
 msgstr ""
 
 #. Tag: refpurpose
-#: reference_measure.xml:3674
+#: reference_measure.xml:3776
 #, no-c-format
 msgid "Returns true if the geometry A is completely inside geometry B"
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_measure.xml:3679
+#: reference_measure.xml:3781
 #, no-c-format
 msgid ""
 "<funcdef>boolean <function>ST_Within</function></funcdef> "
@@ -5619,7 +5769,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3694
+#: reference_measure.xml:3796
 #, no-c-format
 msgid ""
 "Returns TRUE if geometry A is completely inside geometry B. For this "
@@ -5630,7 +5780,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3711
+#: reference_measure.xml:3813
 #, no-c-format
 msgid ""
 "This function call will automatically include a bounding box comparison that "
@@ -5639,19 +5789,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3719
+#: reference_measure.xml:3821
 #, no-c-format
 msgid "&sfs_compliant; s2.1.1.2 // s2.1.13.3 - a.Relate(b, 'T*F**F***')"
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3722
+#: reference_measure.xml:3824
 #, no-c-format
 msgid "&sqlmm_compliant; SQL-MM 3: 5.1.30"
 msgstr ""
 
 #. Tag: programlisting
-#: reference_measure.xml:3727
+#: reference_measure.xml:3829
 #, no-c-format
 msgid ""
 "--a circle within a circle\n"
@@ -5675,7 +5825,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_measure.xml:3738
+#: reference_measure.xml:3840
 #, no-c-format
 msgid ", <xref linkend=\"ST_Equals\"/>, <xref linkend=\"ST_IsValid\"/>"
 msgstr ""
