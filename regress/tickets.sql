@@ -1015,5 +1015,8 @@ SELECT '#3627b', ST_Equals(geom, ST_LineFromEncodedPolyline(ST_AsEncodedPolyline
 -- #3704
 SELECT '#3704', ST_AsX3D('LINESTRING EMPTY') = '';
 
+-- #3709
+select '#3709', ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, 100000, 20)::geometry, 0.0001) = ST_SnapToGrid(ST_Project('SRID=4326;POINT(1 1)'::geography, -100000, 20+pi())::geometry, 0.0001);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
