@@ -4344,6 +4344,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			<para>The distance is given in meters.</para>
 
 			<para>Availability: 2.0.0</para>
+			<para>Enhanced: 2.4.0 Allow negative distance and non-normalized azimuth.</para>
 
 		  </refsection>
 

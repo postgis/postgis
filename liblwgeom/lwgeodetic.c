@@ -2009,18 +2009,20 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	double x, y;
 	POINTARRAY *pa;
 	LWPOINT *lwp;
-
-	/* Check the azimuth validity, convert to radians */
-	if ( azimuth < -2.0 * M_PI || azimuth > 2.0 * M_PI )
-	{
-		lwerror("Azimuth must be between -2PI and 2PI");
-		return NULL;
+	
+	/* Normalize distance to be positive*/
+	if ( distance < 0.0 ) {
+		distance = -distance;
+		azimuth += M_PI;
 	}
+	
+	/* Normalize azimuth */
+	azimuth -= 2.0 * M_PI * floor(azimuth / (2.0 * M_PI));
 
 	/* Check the distance validity */
-	if ( distance < 0.0 || distance > (M_PI * spheroid->radius) )
+	if ( distance > (M_PI * spheroid->radius) )
 	{
-		lwerror("Distance must be between 0 and %g", M_PI * spheroid->radius);
+		lwerror("Distance must not be greater than %g", M_PI * spheroid->radius);
 		return NULL;
 	}
 		

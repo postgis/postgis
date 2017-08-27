@@ -18,6 +18,7 @@ PostGIS 2.4.0
   - Most aggregates (raster and geometry),
     and all stable / immutable (raster and geometry) marked as parallel safe
   - #2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)
+  - #3709, Allow signed distance for ST_Project (Darafei Praliaskouski)
 
 * Enhancements *
 
