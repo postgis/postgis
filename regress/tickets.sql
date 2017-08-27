@@ -940,7 +940,7 @@ pts as (
 )
 select '#3399' as t, n, count(*) from
 g, pts
-where st_contains(g.geom, pts.geom)
+where st_intersects(g.geom, pts.geom)
 group by n
 ORDER BY n;
 
