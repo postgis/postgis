@@ -92,7 +92,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					</varlistentry>
 					<varlistentry><term>ruralroute</term>
 						<listitem>
-							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</emphasis> in <code>RR 7</code>.</para>
+							<para>is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</emphasis> in <code>RR 7</code>.</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry><term>extra</term>
@@ -445,7 +445,7 @@ into includes in the future for easier maintenance.</para></listitem>
 					</varlistentry>
 					<varlistentry><term>BOXH</term>
 						<listitem>
-							<para>i(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
+							<para>(token number <code>14</code>): The <emphasis role="bold">BOX</emphasis> in <code>BOX 3B</code></para>
 						</listitem>
 					</varlistentry>
 					<varlistentry><term>BOXT</term>
@@ -526,7 +526,7 @@ into includes in the future for easier maintenance.</para></listitem>
 			</refnamediv>
 			<refsection>
 				<title>Description</title>
-				<para>A gaz (short for gazeteer) table is used to classify place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
+				<para>A gaz (short for gazeteer) table is used to standardize place names and associate that input with <xref linkend="rule_input_tokens" /> and (b) standardized representations. For example if you are in US, you may load these with State Names and associated abbreviations.</para>
 
 				<para>A gaz table has at least the following columns in the table. You may add more columns if you wish for your own purposes.</para>
 					<variablelist>
@@ -585,7 +585,7 @@ into includes in the future for easier maintenance.</para></listitem>
 		<refsection>
 			<title>Description</title>
 
-			<para>Returns takes as input an address, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
+			<para>Returns takes an address as input, and returns a record output consisting of fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, <emphasis>street2</emphasis>,
 			<emphasis>address1</emphasis>, <emphasis>city</emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, <emphasis>zipplus</emphasis>, <emphasis>country</emphasis>.</para>
 
 			<!-- use this format if new function -->
