@@ -28,6 +28,8 @@ PostGIS 2.4.0
            so pagc_normalize_address better standardizes abbreviations
   - #3647, better handling of noding in ST_Node using GEOSNode
           (Wouter Geraedts)
+  - #3684, Update to EPSG register v9
+          (Even Rouault)
 
 * Breaking Changes *
   - #3810, GEOS 3.4.0 or above minimum required to compile
