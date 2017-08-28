@@ -2772,6 +2772,15 @@ CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_scripts_pgsql_version() RETURNS text
+	AS _POSTGIS_SQL_SELECT_POSTGIS_PGSQL_VERSION
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION postgis_pgsql_version() RETURNS text
+AS $$
+	select regexp_replace(version(), 'PostgreSQL ([^.]*)\.([^\.]*).* on .*', E'\\1\\2');
+$$ LANGUAGE 'sql' STABLE;
+
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
@@ -2794,12 +2803,16 @@ DECLARE
 	protobuf_lib_ver text;
 	sfcgal_lib_ver text;
 	sfcgal_scr_ver text;
+	pgsql_scr_ver text;
+	pgsql_ver text;
 BEGIN
 	SELECT @extschema@.postgis_lib_version() INTO libver;
 	SELECT @extschema@.postgis_proj_version() INTO projver;
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
+	SELECT @extschema@.postgis_scripts_pgsql_version() INTO pgsql_scr_ver;
+	SELECT @extschema@.postgis_pgsql_version() INTO pgsql_ver;
 	BEGIN
 		SELECT @extschema@.postgis_gdal_version() INTO gdalver;
 	EXCEPTION
@@ -2898,6 +2911,10 @@ BEGIN
 
 	IF dbproc != relproc THEN
 		fullver = fullver || ' (core procs from "' || dbproc || '" need upgrade)';
+	END IF;
+
+	IF pgsql_scr_ver != pgsql_ver THEN
+		fullver = fullver || ' (procs built against PostgreSQL "' || pgsql_scr_ver || '" need upgrade)';
 	END IF;
 
 	IF topo_scr_ver IS NOT NULL THEN
