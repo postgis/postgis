@@ -36,6 +36,10 @@ PostGIS 2.4.0
 
 * Breaking Changes *
   - #3810, GEOS 3.4.0 or above minimum required to compile
+  - Most aggregates now marked as parallel safe,
+    which means most aggs have to be dropped / recreated.
+    If you have views that utilize PostGIS aggs,
+    you'll need to drop before upgrade and recreate after upgrade
 
 
 PostGIS 2.4.0alpha
