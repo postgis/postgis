@@ -1754,10 +1754,6 @@ ST_Point      | t          | t              | f           | f
 		</important>
 
 		<important>
-		  <para>For geography only Polygon covers point is supported.</para>
-		</important>
-
-		<important>
 		  <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
 		</important>
 
@@ -1766,6 +1762,7 @@ ST_Point      | t          | t              | f           | f
 			the geometries. To avoid index use, use the function
 			_ST_Covers.</para>
 
+        <para>Enhanced: 2.4.0 Support for polygon in polygon and line in polygon added for geography type</para>
 		<para>Enhanced: 2.3.0 Enhancement to PIP short-circuit for geometry extended to support MultiPoints with few points. Prior versions only supported point in polygon.</para>
 		<para>Availability: 1.5 - support for geography was introduced. </para>
 		<para>Availability: 1.2.2 - requires GEOS &gt;= 3.0</para>

@@ -742,14 +742,6 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	type1 = gserialized_get_type(g1);
 	type2 = gserialized_get_type(g2);
 
-	/* Right now we only handle points and polygons */
-	if ( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
-	         (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
-	{
-		elog(ERROR, "geography_covers: only POLYGON and POINT types are currently supported");
-		PG_RETURN_NULL();
-	}
-
 	/* Construct our working geometries */
 	lwgeom1 = lwgeom_from_gserialized(g1);
 	lwgeom2 = lwgeom_from_gserialized(g2);

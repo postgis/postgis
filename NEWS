@@ -19,6 +19,8 @@ PostGIS 2.4.0
     and all stable / immutable (raster and geometry) marked as parallel safe
   - #2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)
   - #3709, Allow signed distance for ST_Project (Darafei Praliaskouski)
+  - #524, Covers support for Polygon-on-polygon, line on line, point on line,
+          point on point for geography (Danny Götte)
 
 * Enhancements *
 

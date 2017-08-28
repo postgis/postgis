@@ -2317,18 +2317,19 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	int type1, type2;
 	GBOX gbox1, gbox2;
 	gbox1.flags = gbox2.flags = 0;
-		
+
 	assert(lwgeom1);
 	assert(lwgeom2);
 
 	type1 = lwgeom1->type;
 	type2 = lwgeom2->type;
 
-	/* Currently a restricted implementation */
-	if ( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
-	         (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
+	/* dim(geom2) > dim(geom1) always returns false (because geom2 is bigger) */
+	if ( (type1 == POINTTYPE && type2 == LINETYPE)
+		|| (type1 == POINTTYPE && type2 == POLYGONTYPE)
+		|| (type1 == LINETYPE && type2 == POLYGONTYPE) )
 	{
-		lwerror("lwgeom_covers_lwgeom_sphere: only POLYGON covers POINT tests are currently supported");
+		LWDEBUG(4, "dimension of geom2 is bigger than geom1");
 		return LW_FALSE;
 	}
 
@@ -2351,6 +2352,26 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 		POINT2D pt_to_test;
 		getPoint2d_p(((LWPOINT*)lwgeom2)->point, 0, &pt_to_test);
 		return lwpoly_covers_point2d((LWPOLY*)lwgeom1, &pt_to_test);
+	}
+	else if ( type1 == POLYGONTYPE && type2 == LINETYPE)
+	{
+		return lwpoly_covers_lwline((LWPOLY*)lwgeom1, (LWLINE*)lwgeom2);
+	}
+	else if ( type1 == POLYGONTYPE && type2 == POLYGONTYPE)
+	{
+		return lwpoly_covers_lwpoly((LWPOLY*)lwgeom1, (LWPOLY*)lwgeom2);
+	}
+	else if ( type1 == LINETYPE && type2 == POINTTYPE)
+	{
+		return lwline_covers_lwpoint((LWLINE*)lwgeom1, (LWPOINT*)lwgeom2);
+	}
+	else if ( type1 == LINETYPE && type2 == LINETYPE)
+	{
+		return lwline_covers_lwline((LWLINE*)lwgeom1, (LWLINE*)lwgeom2);
+	}
+	else if ( type1 == POINTTYPE && type2 == POINTTYPE)
+	{
+		return lwpoint_same((LWPOINT*)lwgeom1, (LWPOINT*)lwgeom2);
 	}
 
 	/* If any of the first argument parts covers the second argument, it's true */
@@ -2466,6 +2487,279 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	return LW_TRUE;
 }
 
+/**
+ * Given a polygon1 check if all points of polygon2 are inside polygon1 and no
+ * intersections of the polygon edges occur.
+ * return LW_TRUE if polygon is inside or on edge of polygon.
+ */
+int lwpoly_covers_lwpoly(const LWPOLY *poly1, const LWPOLY *poly2)
+{
+	int i;
+
+	/* Nulls and empties don't contain anything! */
+	if ( ! poly1 || lwgeom_is_empty((LWGEOM*)poly1) )
+	{
+		LWDEBUG(4,"returning false, geometry1 is empty or null");
+		return LW_FALSE;
+	}
+
+	/* Nulls and empties don't contain anything! */
+	if ( ! poly2 || lwgeom_is_empty((LWGEOM*)poly2) )
+	{
+		LWDEBUG(4,"returning false, geometry2 is empty or null");
+		return LW_FALSE;
+	}
+
+	/* check if all vertices of poly2 are inside poly1 */
+	for (i = 0; i < poly2->nrings; i++)
+	{
+
+		/* every other ring is a hole, check if point is inside the actual polygon */
+		if ( i % 2 == 0)
+		{
+			if (LW_FALSE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
+			{
+				LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+				return LW_FALSE;
+			}
+		}
+		else
+		{
+			if (LW_TRUE == lwpoly_covers_pointarray(poly1, poly2->rings[i]))
+			{
+				LWDEBUG(4,"returning false, geometry2 has point inside a hole of geometry1");
+				return LW_FALSE;
+			}
+		}
+	}
+
+	/* check for any edge intersections, so nothing is partially outside of poly1 */
+	for (i = 0; i < poly2->nrings; i++)
+	{
+		if (LW_TRUE == lwpoly_intersects_line(poly1, poly2->rings[i]))
+		{
+			LWDEBUG(4,"returning false, geometry2 is partially outside of geometry1");
+			return LW_FALSE;
+		}
+	}
+
+	/* no abort condition found, so the poly2 should be completly inside poly1 */
+	return LW_TRUE;
+}
+
+/**
+ *
+ */
+int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line)
+{
+   /* Nulls and empties don't contain anything! */
+   if ( ! poly || lwgeom_is_empty((LWGEOM*)poly) )
+   {
+	   LWDEBUG(4,"returning false, geometry1 is empty or null");
+	   return LW_FALSE;
+   }
+
+   /* Nulls and empties don't contain anything! */
+   if ( ! line || lwgeom_is_empty((LWGEOM*)line) )
+   {
+	   LWDEBUG(4,"returning false, geometry2 is empty or null");
+	   return LW_FALSE;
+   }
+
+   if (LW_FALSE == lwpoly_covers_pointarray(poly, line->points))
+   {
+	   LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+	   return LW_FALSE;
+   }
+
+   /* check for any edge intersections, so nothing is partially outside of poly1 */
+   if (LW_TRUE == lwpoly_intersects_line(poly, line->points))
+   {
+	   LWDEBUG(4,"returning false, geometry2 is partially outside of geometry1");
+	   return LW_FALSE;
+   }
+
+   /* no abort condition found, so the poly2 should be completly inside poly1 */
+   return LW_TRUE;
+}
+
+/**
+ * return LW_TRUE if all points are inside the polygon
+ */
+int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta)
+{
+	int i;
+	for (i = 0; i < pta->npoints; i++) {
+		const POINT2D* pt_to_test = getPoint2d_cp(pta, i);
+
+		if ( LW_FALSE == lwpoly_covers_point2d(lwpoly, pt_to_test) ) {
+			LWDEBUG(4,"returning false, geometry2 has point outside of geometry1");
+			return LW_FALSE;
+		}
+	}
+
+	return LW_TRUE;
+}
+
+/**
+ * Checks if any edges of lwpoly intersect with the line formed by the pointarray
+ * return LW_TRUE if any intersection beetween the given polygon and the line
+ */
+int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line)
+{
+	int i, j, k;
+	POINT3D pa1, pa2, pb1, pb2;
+	for (i = 0; i < lwpoly->nrings; i++)
+	{
+		for (j = 0; j < lwpoly->rings[i]->npoints - 1; j++)
+		{
+			const POINT2D* a1 = getPoint2d_cp(lwpoly->rings[i], j);
+			const POINT2D* a2 = getPoint2d_cp(lwpoly->rings[i], j+1);
+
+			/* Set up our stab line */
+			ll2cart(a1, &pa1);
+			ll2cart(a2, &pa2);
+
+			for (k = 0; k < line->npoints - 1; k++)
+			{
+				const POINT2D* b1 = getPoint2d_cp(line, k);
+				const POINT2D* b2 = getPoint2d_cp(line, k+1);
+
+				/* Set up our stab line */
+				ll2cart(b1, &pb1);
+				ll2cart(b2, &pb2);
+
+				int inter = edge_intersects(&pa1, &pa2, &pb1, &pb2);
+
+				/* ignore same edges */
+				if (inter & PIR_INTERSECTS
+					&& !(inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR) )
+				{
+					return LW_TRUE;
+				}
+			}
+		}
+	}
+
+	return LW_FALSE;
+}
+
+/**
+ * return LW_TRUE if any of the line segments covers the point
+ */
+int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint)
+{
+	int i;
+	GEOGRAPHIC_POINT p;
+	GEOGRAPHIC_EDGE e;
+
+	for ( i = 0; i < lwline->points->npoints - 1; i++)
+	{
+		const POINT2D* a1 = getPoint2d_cp(lwline->points, i);
+		const POINT2D* a2 = getPoint2d_cp(lwline->points, i+1);
+
+		geographic_point_init(a1->x, a1->y, &(e.start));
+		geographic_point_init(a2->x, a2->y, &(e.end));
+
+		geographic_point_init(lwpoint_get_x(lwpoint), lwpoint_get_y(lwpoint), &p);
+
+		if ( edge_contains_point(&e, &p) ) {
+			return LW_TRUE;
+		}
+	}
+
+	return LW_FALSE;
+}
+
+/**
+ * Check if first and last point of line2 are covered by line1 and then each
+ * point in between has to be one line1 in the exact same order
+ * return LW_TRUE if all edge points of line2 are on line1
+ */
+int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2)
+{
+	int i, j;
+	GEOGRAPHIC_EDGE e1, e2;
+	GEOGRAPHIC_POINT p1, p2;
+	int start = LW_FALSE;
+	int changed = LW_FALSE;
+
+	/* first point on line */
+	if ( ! lwline_covers_lwpoint(lwline1, lwline_get_lwpoint(lwline2, 0)))
+	{
+		LWDEBUG(4,"returning false, first point of line2 is not covered by line1");
+		return LW_FALSE;
+	}
+
+	/* last point on line */
+	if ( ! lwline_covers_lwpoint(lwline1, lwline_get_lwpoint(lwline2, lwline2->points->npoints - 1)))
+	{
+		LWDEBUG(4,"returning false, last point of line2 is not covered by line1");
+		return LW_FALSE;
+	}
+
+	j = 0;
+	i = 0;
+	while (i < lwline1->points->npoints - 1 && j < lwline2->points->npoints - 1)
+	{
+		changed = LW_FALSE;
+		const POINT2D* a1 = getPoint2d_cp(lwline1->points, i);
+		const POINT2D* a2 = getPoint2d_cp(lwline1->points, i+1);
+		const POINT2D* b1 = getPoint2d_cp(lwline2->points, j);
+		const POINT2D* b2 = getPoint2d_cp(lwline2->points, j+1);
+
+		geographic_point_init(a1->x, a1->y, &(e1.start));
+		geographic_point_init(a2->x, a2->y, &(e1.end));
+		geographic_point_init(b1->x, b1->y, &p2);
+
+		/* we already know, that the last point is on line1, so we're done */
+		if ( j == lwline2->points->npoints - 1)
+		{
+			return LW_TRUE;
+		}
+		else if (start == LW_TRUE)
+		{
+			/* point is on current line1 edge, check next point in line2 */
+			if ( edge_contains_point(&e1, &p2)) {
+				j++;
+				changed = LW_TRUE;
+			}
+
+			geographic_point_init(a1->x, a1->y, &(e2.start));
+			geographic_point_init(a2->x, b2->y, &(e2.end));
+			geographic_point_init(a1->x, a1->y, &p1);
+
+			/* point is on current line2 edge, check next point in line1 */
+			if ( edge_contains_point(&e2, &p1)) {
+				i++;
+				changed = LW_TRUE;
+			}
+
+			/* no edge progressed -> point left one line */
+			if ( changed == LW_FALSE )
+			{
+				LWDEBUG(4,"returning false, found point not covered by both lines");
+				return LW_FALSE;
+			}
+			else
+			{
+				continue;
+			}
+		}
+
+		/* find first edge to cover line2 */
+		if (edge_contains_point(&e1, &p2))
+		{
+			start = LW_TRUE;
+		}
+
+		/* next line1 edge */
+		i++;
+	}
+
+	/* no uncovered point found */
+	return LW_TRUE;
+}
 
 /**
 * This function can only be used on LWGEOM that is built on top of

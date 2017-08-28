@@ -119,6 +119,12 @@ double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
 int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test);
+int lwpoly_covers_lwpoly(const LWPOLY *lwpoly1, const LWPOLY *lwpoly2);
+int lwpoly_covers_pointarray(const LWPOLY* lwpoly, const POINTARRAY* pta);
+int lwpoly_covers_lwline(const LWPOLY *poly, const LWLINE *line);
+int lwline_covers_lwline(const LWLINE* lwline1, const LWLINE* lwline2);
+int lwline_covers_lwpoint(const LWLINE* lwline, const LWPOINT* lwpoint);
+int lwpoly_intersects_line(const LWPOLY* lwpoly, const POINTARRAY* line);
 void lwpoly_pt_outside(const LWPOLY *poly, POINT2D *pt_outside);
 int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 double ptarray_area_sphere(const POINTARRAY *pa);
