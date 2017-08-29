@@ -2,7 +2,8 @@ PostGIS 2.4.0
 2017/09/xx
 
  * New Features *
-
+  - #3822, Have postgis_full_version() also show and check version of
+           PostgreSQL the scripts were built against (Sandro Santilli)
   - #2411, curves support in ST_Reverse (Sandro Santilli)
   - #2951, ST_Centroid for geography (Danny Götte)
   - #3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps

@@ -2877,6 +2877,10 @@ BEGIN
 		fullver = fullver || ' (liblwgeom version mismatch: "' || liblwgeomver || '")';
 	END IF;
 
+	fullver = fullver || ' PGSQL="' || pgsql_scr_ver || '"';
+	IF pgsql_scr_ver != pgsql_ver THEN
+		fullver = fullver || ' (procs need upgrade for use with "' || pgsql_ver || '")';
+	END IF;
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
@@ -2911,10 +2915,6 @@ BEGIN
 
 	IF dbproc != relproc THEN
 		fullver = fullver || ' (core procs from "' || dbproc || '" need upgrade)';
-	END IF;
-
-	IF pgsql_scr_ver != pgsql_ver THEN
-		fullver = fullver || ' (procs built against PostgreSQL "' || pgsql_scr_ver || '" need upgrade)';
 	END IF;
 
 	IF topo_scr_ver IS NOT NULL THEN
