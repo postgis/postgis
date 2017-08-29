@@ -629,7 +629,7 @@ static int max_type(LWCOLLECTION *lwcoll)
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
  */
-LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
+ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	POSTGIS_DEBUG(2, "mvt_geom called");
@@ -679,7 +679,7 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		lwgeom_out = lwgeom_clone_deep(lwgeom);
 
 	AFFINE affine;
-	memset (&affine, 0, sizeof(affine));
+	memset(&affine, 0, sizeof(affine));
 	affine.afac = fx;
 	affine.efac = fy;
 	affine.ifac = 1;
@@ -700,11 +700,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	if (lwgeom_out->type != POINTTYPE && lwgeom_out->type != MULTIPOINTTYPE)
-		lwgeom_out = lwgeom_make_valid(lwgeom_out);
-
 	if (lwgeom_out->type == POLYGONTYPE ||
 		lwgeom_out->type == MULTIPOLYGONTYPE) {
+		lwgeom_out = lwgeom_make_valid(lwgeom_out);
 		lwgeom_force_clockwise(lwgeom_out);
 	}
 
@@ -713,9 +711,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 		lwgeom_out = lwcollection_as_lwgeom(
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
-		lwgeom_out = lwgeom_make_valid(lwgeom_out);
 		if (lwgeom_out->type == POLYGONTYPE ||
 			lwgeom_out->type == MULTIPOLYGONTYPE) {
+			lwgeom_out = lwgeom_make_valid(lwgeom_out);
 			lwgeom_force_clockwise(lwgeom_out);
 		}
 	}
