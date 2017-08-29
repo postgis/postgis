@@ -700,7 +700,9 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
-	lwgeom_out = lwgeom_make_valid(lwgeom_out);
+	if (lwgeom_out->type != POINTTYPE && lwgeom_out->type != MULTIPOINTTYPE)
+		lwgeom_out = lwgeom_make_valid(lwgeom_out);
+
 	if (lwgeom_out->type == POLYGONTYPE ||
 		lwgeom_out->type == MULTIPOLYGONTYPE) {
 		lwgeom_force_clockwise(lwgeom_out);
