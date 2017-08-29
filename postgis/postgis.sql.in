@@ -2772,11 +2772,11 @@ CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION postgis_scripts_pgsql_version() RETURNS text
+CREATE OR REPLACE FUNCTION _postgis_scripts_pgsql_version() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_PGSQL_VERSION
 	LANGUAGE 'sql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION postgis_pgsql_version() RETURNS text
+CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
 	select regexp_replace(version(), 'PostgreSQL ([^.]*)\.([^\.]*).* on .*', E'\\1\\2');
 $$ LANGUAGE 'sql' STABLE;
@@ -2811,8 +2811,8 @@ BEGIN
 	SELECT @extschema@.postgis_geos_version() INTO geosver;
 	SELECT @extschema@.postgis_libjson_version() INTO json_lib_ver;
 	SELECT @extschema@.postgis_libprotobuf_version() INTO protobuf_lib_ver;
-	SELECT @extschema@.postgis_scripts_pgsql_version() INTO pgsql_scr_ver;
-	SELECT @extschema@.postgis_pgsql_version() INTO pgsql_ver;
+	SELECT @extschema@._postgis_scripts_pgsql_version() INTO pgsql_scr_ver;
+	SELECT @extschema@._postgis_pgsql_version() INTO pgsql_ver;
 	BEGIN
 		SELECT @extschema@.postgis_gdal_version() INTO gdalver;
 	EXCEPTION
