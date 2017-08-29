@@ -629,7 +629,7 @@ static int max_type(LWCOLLECTION *lwcoll)
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
  */
- LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
+LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	POSTGIS_DEBUG(2, "mvt_geom called");
