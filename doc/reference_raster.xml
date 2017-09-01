@@ -1990,8 +1990,8 @@ WHERE rid=35;
                   <refsection>
                     <title>Description</title>
 
-                    <para>Create a set of raster tiles with <xref linkend="RT_ST_MakeEmptyRaster" />. Grid dimension is <varname>width</varname> &amp; <varname>height</varname>. Tile dimension is <varname>tilewidth</varname> &amp; <varname>tileheight</varname>. The covered georeferenced area is from upper left corner (<varname>upperleftx</varname>, <varname>upperlefty</varname>) to lower right corner (<varname>upperleftx</varname>  <varname>width</varname> * <varname>scalex</varname>, <varname>upperlefty</varname>  <varname>height</varname> * <varname>scaley</varname>).</para>
-
+                    <para>Create a set of raster tiles with <xref linkend="RT_ST_MakeEmptyRaster" />. Grid dimension is <varname>width</varname> &amp; <varname>height</varname>. Tile dimension is <varname>tilewidth</varname> &amp; <varname>tileheight</varname>. The covered georeferenced area is from upper left corner (<varname>upperleftx</varname>, <varname>upperlefty</varname>) to lower right corner (<varname>upperleftx</varname> + <varname>width</varname> * <varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</varname> * <varname>scaley</varname>).</para>
+					<note><para>Note that scaley is generally negative for rasters and scalex is generally positive. So lower right corner will have a lower y value and higher x value than the upper left corner.</para></note>
                     <para>Availability: 2.4.0 </para>
                   </refsection>
 

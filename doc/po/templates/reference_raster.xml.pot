@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-24 19:58+0000\n"
+"POT-Creation-Date: 2017-09-01 05:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -2702,9 +2702,18 @@ msgid ""
 "Tile dimension is <varname>tilewidth</varname> &amp; <varname>tileheight</"
 "varname>. The covered georeferenced area is from upper left corner "
 "(<varname>upperleftx</varname>, <varname>upperlefty</varname>) to lower "
-"right corner (<varname>upperleftx</varname> <varname>width</varname> * "
-"<varname>scalex</varname>, <varname>upperlefty</varname> <varname>height</"
+"right corner (<varname>upperleftx</varname> + <varname>width</varname> * "
+"<varname>scalex</varname>, <varname>upperlefty</varname> + <varname>height</"
 "varname> * <varname>scaley</varname>)."
+msgstr ""
+
+#. Tag: para
+#: reference_raster.xml:1605
+#, no-c-format
+msgid ""
+"Note that scaley is generally negative for rasters and scalex is generally "
+"positive. So lower right corner will have a lower y value and higher x value "
+"than the upper left corner."
 msgstr ""
 
 #. Tag: para
