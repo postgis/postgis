@@ -36,12 +36,16 @@ PostGIS 2.4.0
           (Even Rouault)
 
 * Breaking Changes *
+  - Dropped support for PostgreSQL 9.2.
   - #3810, GEOS 3.4.0 or above minimum required to compile
   - Most aggregates now marked as parallel safe,
     which means most aggs have to be dropped / recreated.
     If you have views that utilize PostGIS aggs,
     you'll need to drop before upgrade and recreate after upgrade
 
+PostGIS 2.4.0beta1
+2017/09/02
+See PostGIS 2.4.0 section for details
 
 PostGIS 2.4.0alpha
 2017/08/05

@@ -127,8 +127,8 @@ psql -d yourdatabase -f sfcgal_comments.sql
 
 	  <listitem>
 		<para>
-		  Proj4 reprojection library, version 4.6.0 or greater. The Proj4
-		  library is used to provide coordinate reprojection support within
+		  Proj4 reprojection library, version 4.6.0 or greater. Proj4 4.9 or above is needed to take advantage of improved geodetic.
+			The Proj4 library is used to provide coordinate reprojection support within
 		  PostGIS. Proj4 is available for download from
 		  <ulink url="http://trac.osgeo.org/proj/">
 			http://trac.osgeo.org/proj/
@@ -604,7 +604,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		databases later, run the command which requires docbook.  The postgis_comments.sql and other
 		package comments files raster_comments.sql, topology_comments.sql are
 			also packaged in the tar.gz distribution in the doc folder so no need to make comments
-			if installing from the tar ball.
+			if installing from the tar ball.  Comments are also included as part of the CREATE EXTENSION install.
 	  </para>
 
 	  <para>

@@ -2,6 +2,57 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+    <sect1>
+        <title>Release 2.4.0</title>
+        <para>Release date: 2017/09/xx</para>
+        <para>This is a new feature release, with new functions, improved performance,
+            all relevant bug fixes from PostGIS 2.3.3,and other goodies.</para>
+
+        <simplesect><title>New Features</title>
+<para>#3822, Have postgis_full_version() also show and check version of
+           PostgreSQL the scripts were built against (Sandro Santilli)</para>
+<para>#2411, curves support in ST_Reverse (Sandro Santilli)</para>
+<para>#2951, ST_Centroid for geography (Danny Götte)</para>
+<para>#3788, Allow postgis_restore.pl to work on directory-style (-Fd) dumps
+           (Roger Crew)</para>
+<para>#3772, Direction agnostic ST_CurveToLine output (Sandro Santilli / KKGeo)</para>
+<para>#2464, ST_CurveToLine with MaxError tolerance (Sandro Santilli / KKGeo)</para>
+<para>#3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)</para>
+<para>#3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)</para>
+<para>#3689, Add orientation checking and forcing functions (Dan Baston)</para>
+<para>#3753, Gist penalty speed improvements for 2d and nd points
+           (Darafei Praliaskouski)</para>
+<para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
+ <para>Most aggregates (raster and geometry),
+    and all stable / immutable (raster and geometry) marked as parallel safe</para>
+<para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
+<para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
+<para>#524, Covers support for Polygon-on-polygon, line on line,
+          point on line for geography (Danny Götte)</para>
+        </simplesect>
+
+        <simplesect><title>Enhancements</title>
+  <para>Support for PostgreSQL 10</para>
+<para>#3747, Add zip4 and address_alphanumeric as attributes
+           to norm_addy tiger_geocoder type.</para>
+<para>#3748, address_standardizer tiger lookup tables update
+           so pagc_normalize_address better standardizes abbreviations</para>
+<para>#3647, better handling of noding in ST_Node using GEOSNode
+          (Wouter Geraedts)</para>
+<para>#3684, Update to EPSG register v9
+          (Even Rouault)</para>
+        </simplesect>
+
+        <simplesect><title>Breaking Changes</title>
+  <para>Dropped support for PostgreSQL 9.2.</para>
+  <para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
+  <para>Most aggregates now marked as parallel safe,
+    which means most aggs have to be dropped / recreated.
+    If you have views that utilize PostGIS aggs (except for ST_Union),
+    you'll need to drop before upgrade and recreate after upgrade</para>
+        </simplesect>
+    </sect1>
     <sect1>
       <title>Release 2.3.3</title>
       <para>Release date: 2017/07/01</para>

@@ -1,3 +1,505 @@
+2017-09-01 13:58  Regina Obe <lr@pcorp.us>
+
+	* [r15611] doc/reference_processing.xml: Note that ST_Intersection
+	  drops M
+	  References #3826 for PostGIS 2.4.0
+
+2017-09-01 05:43  Regina Obe <lr@pcorp.us>
+
+	* [r15610] doc/po/templates/extras_address_standardizer.xml.pot,
+	  doc/po/templates/reference_management.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/reference_raster.xml: Fix typo in formula for
+	  ST_MakeEmptyCoverage flagged by Andreas Schild
+	  References #3824
+	  Update out of date pots
+
+2017-08-30 00:25  Regina Obe <lr@pcorp.us>
+
+	* [r15609] postgis/postgis.sql.in, postgis/postgis_drop_after.sql:
+	  Don't drop st_union when updating postgis extension to 2.4
+	  Closes #3821 for PostGIS 2.4.0
+
+2017-08-29 19:50  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15608] postgis/mvt.c: ST_AsMVTGeom fix unintentional white
+	  space change
+
+2017-08-29 19:43  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15607] postgis/mvt.c: ST_AsMVTGeom only attempt to correct
+	  Polygons (other types should be fine)
+
+2017-08-29 19:09  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15606] postgis/mvt.c: ST_AsGeom optimize POINT case
+
+2017-08-29 16:58  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15605] postgis/mvt.c, regress/mvt.sql: ST_AsMVTGeom move
+	  normalize to test logic
+	  Closes #3819
+
+2017-08-29 07:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15604] postgis/postgis.sql.in: Make postgis_pgsql version
+	  functions "internal"
+	  
+	  ... they are really only meant to be used by
+	  postgis_full_version()
+	  
+	  Closes #3822 again (as internal functions don't need
+	  documentation)
+
+2017-08-29 07:27  Sandro Santilli <strk@kbt.io>
+
+	* [r15603] NEWS, postgis/postgis.sql.in: Always show PGSQL version
+	  scripts were built against
+	  
+	  also add a missing NEWS item
+
+2017-08-28 20:29  Sandro Santilli <strk@kbt.io>
+
+	* [r15602] postgis/postgis.sql.in, postgis/sqldefines.h.in: Add
+	  check for PostgreSQL version compatibility in
+	  postgis_full_version
+	  
+	  Adds postgis_scripts_pgsql_version() and postgis_pgsql_version()
+	  internal functions, each returning an encoded version number,
+	  and has postgis_full_version() compare running vs. build-time
+	  used
+	  
+	  Fixes #3822 (untested)
+
+2017-08-28 15:20  Regina Obe <lr@pcorp.us>
+
+	* [r15601] NEWS: note that the drop and recreate of views is a
+	  breaking change
+	  References #3821
+
+2017-08-28 02:13  Regina Obe <lr@pcorp.us>
+
+	* [r15600] NEWS: Minor correction to NEWS for #524
+	  point on point is not new
+
+2017-08-28 01:53  Regina Obe <lr@pcorp.us>
+
+	* [r15599] NEWS, doc/reference_measure.xml, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h, postgis/geography_measurement.c,
+	  regress/geography_covers.sql, regress/geography_covers_expected:
+	  Covers support for Polygon-on-polygon, line on line, point on
+	  line, point on point for geography
+	  Patch from Danny Götte
+	  Closes #524
+
+2017-08-27 15:17  Regina Obe <lr@pcorp.us>
+
+	* [r15598] NEWS, doc/reference_measure.xml, liblwgeom/lwgeodetic.c,
+	  regress/tickets.sql, regress/tickets_expected: Allow signed
+	  distance for ST_Project (Darafei Praliaskouski)
+	  Closes https://github.com/postgis/postgis/pull/138
+	  Closes #3709
+
+2017-08-27 07:02  Regina Obe <lr@pcorp.us>
+
+	* [r15597] NEWS, spatial_ref_sys.sql: Update to EPSG registry v9
+	  Closes #3684
+
+2017-08-27 06:51  Regina Obe <lr@pcorp.us>
+
+	* [r15596] regress/tickets.sql: ST_GeneratePoints check to use
+	  ST_Intersects instead of ST_Contains
+	  Minimize failures when point falls on the boundary.
+	  Closes #3765 for PostGIS 2.4.0
+
+2017-08-27 06:32  Regina Obe <lr@pcorp.us>
+
+	* [r15595] doc/extras_address_standardizer.xml: Corrections from
+	  ruvyn
+	  Closes #3592 for PostGIS 2.4.0
+
+2017-08-27 06:02  Regina Obe <lr@pcorp.us>
+
+	* [r15594] doc/reference_management.xml: document
+	  postgis_liblwgeom_version
+	  Closes #3310
+
+2017-08-25 21:54  Sandro Santilli <strk@kbt.io>
+
+	* [r15593] README.md: Update matrix link to plumbed room
+
+2017-08-25 21:40  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15592] regress/mvt_expected: ST_AsMVTGeom fix regression tests
+	  References #3819
+
+2017-08-25 21:34  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15591] postgis/mvt.c: ST_AsMVTGeom keep the last step normalize
+	  for platform consistency
+	  References #3819
+
+2017-08-25 21:27  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15590] postgis/mvt.c, regress/mvt_expected: ST_AsMVTGeom only
+	  force CW for polys and do not normalize
+	  Closes #3819
+
+2017-08-25 06:10  Regina Obe <lr@pcorp.us>
+
+	* [r15589] doc/po/de_DE/extras_tigergeocoder.xml.po,
+	  doc/po/de_DE/extras_topology.xml.po,
+	  doc/po/de_DE/installation.xml.po,
+	  doc/po/de_DE/introduction.xml.po,
+	  doc/po/de_DE/performance_tips.xml.po,
+	  doc/po/de_DE/reference_accessor.xml.po,
+	  doc/po/de_DE/reference_constructor.xml.po,
+	  doc/po/de_DE/reference_editor.xml.po,
+	  doc/po/de_DE/reference_measure.xml.po,
+	  doc/po/de_DE/reference_output.xml.po,
+	  doc/po/de_DE/reference_processing.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/de_DE/release_notes.xml.po,
+	  doc/po/de_DE/using_postgis_dataman.xml.po: update German po with
+	  merge from transifex
+
+2017-08-25 06:07  Regina Obe <lr@pcorp.us>
+
+	* [r15588] doc/po/pt_BR/extras_tigergeocoder.xml.po,
+	  doc/po/pt_BR/installation.xml.po, doc/po/pt_BR/postgis.xml.po,
+	  doc/po/pt_BR/reference_editor.xml.po,
+	  doc/po/pt_BR/reference_measure.xml.po,
+	  doc/po/pt_BR/reference_processing.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po: Update pt_BR po from
+	  transifex
+
+2017-08-25 05:52  Regina Obe <lr@pcorp.us>
+
+	* [r15587] doc/po/ko_KR/extras_tigergeocoder.xml.po,
+	  doc/po/ko_KR/installation.xml.po, doc/po/ko_KR/postgis.xml.po,
+	  doc/po/ko_KR/reference_editor.xml.po,
+	  doc/po/ko_KR/reference_measure.xml.po,
+	  doc/po/ko_KR/reference_processing.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po: update from transifex
+	  Korean docs
+
+2017-08-25 05:44  Regina Obe <lr@pcorp.us>
+
+	* [r15586] doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/ja/extras_tigergeocoder.xml.po,
+	  doc/po/ja/installation.xml.po, doc/po/ja/postgis.xml.po,
+	  doc/po/ja/reference_editor.xml.po,
+	  doc/po/ja/reference_measure.xml.po,
+	  doc/po/ja/reference_processing.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/templates/extras_tigergeocoder.xml.pot,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/performance_tips.xml.pot,
+	  doc/po/templates/reference_constructor.xml.pot,
+	  doc/po/templates/reference_editor.xml.pot,
+	  doc/po/templates/reference_measure.xml.pot,
+	  doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/reference_processing.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot: update pots,
+	  update japan translation from transifex (fixed parse issue in
+	  japan reference_raster.xml.po)
+
+2017-08-24 16:53  Regina Obe <lr@pcorp.us>
+
+	* [r15584] doc/installation.xml: update instructions on where to
+	  get postgis tiger extension files if not present in install or
+	  need newer.
+
+2017-08-24 14:52  Regina Obe <lr@pcorp.us>
+
+	* [r15583] liblwgeom/lwunionfind.c: Fix uninitialized last_old_id
+	  Closes #3817
+
+2017-08-24 08:58  Sandro Santilli <strk@kbt.io>
+
+	* [r15582] utils/postgis_proc_upgrade.pl: Remove hard-coded object
+	  last update info
+	  
+	  Make lack of last update info in sql file a fatal error.
+	  Makes the script more generic (could probably be reused by
+	  any extension)
+
+2017-08-24 08:45  Sandro Santilli <strk@kbt.io>
+
+	* [r15581] utils/postgis_proc_upgrade.pl: Remove accidentally
+	  committed debug line
+
+2017-08-24 03:56  Regina Obe <lr@pcorp.us>
+
+	* [r15580] doc/extras_tigergeocoder.xml, doc/installation.xml,
+	  extras/tiger_geocoder/tiger_loader_2016.sql: Fix census tabblock
+	  download and document process for including it.
+	  Reference #3698 for PostGIS 2.4.0
+	  Change site of census
+	  Reference #3816 for PostGIS 2.4.0
+
+2017-08-23 23:56  Regina Obe <lr@pcorp.us>
+
+	* [r15578] postgis/postgis.sql.in: Revise comment format of some
+	  aggregates so that postgis upgrade script generator picks them up
+	  Closes #3812
+
+2017-08-23 17:17  Regina Obe <lr@pcorp.us>
+
+	* [r15577] .gitlab-ci.yml, NEWS, configure.ac,
+	  doc/installation.xml: Revert changes done for gitlab upgrade
+	  References #3813
+	  
+	  Make GEOS 3.4 the new minimum
+	  Closes #3810
+
+2017-08-23 16:54  Regina Obe <lr@pcorp.us>
+
+	* [r15576] .gitlab-ci.yml: attempt 5
+	  references Try to upgrade gitlab to newer PostgreSQL / GEOS (add
+	  install software-properties-common )
+	  References #3813
+
+2017-08-23 16:49  Regina Obe <lr@pcorp.us>
+
+	* [r15575] .gitlab-ci.yml: attempt 4
+	  references Try to upgrade gitlab to newer PostgreSQL / GEOS (add
+	  a -y to force install of apt repo tools)
+	  References #3813
+
+2017-08-23 16:43  Regina Obe <lr@pcorp.us>
+
+	* [r15574] .gitlab-ci.yml: attempt 3
+	  references Try to upgrade gitlab to newer PostgreSQL / GEOS
+	  (install add repo tools)
+	  References #3813
+
+2017-08-23 16:31  Regina Obe <lr@pcorp.us>
+
+	* [r15573] .gitlab-ci.yml: Try to upgrade gitlab to newer
+	  PostgreSQL / GEOS (get rid of sudo)
+	  References #3813
+
+2017-08-23 16:27  Regina Obe <lr@pcorp.us>
+
+	* [r15572] .gitlab-ci.yml: Try to upgrade gitlab to newer
+	  PostgreSQL and GEOS using alternative repo.
+	  References #3813
+
+2017-08-23 16:16  Regina Obe <lr@pcorp.us>
+
+	* [r15571] NEWS, doc/reference_processing.xml,
+	  liblwgeom/cunit/cu_node.c, liblwgeom/lwgeom_geos_node.c,
+	  regress/node.sql, regress/node_expected: Reduce likeliness of
+	  non-noded intersections when using ST_Node
+	  Patch contributed by Wouter Geraedts (with minor adjustments to
+	  the doc)
+	  Closes #3647
+	  Closes ​https://github.com/postgis/postgis/pull/136
+
+2017-08-23 03:55  Regina Obe <lr@pcorp.us>
+
+	* [r15570] extras/tiger_geocoder/census_loader.sql: remove obsolete
+	  file the functions in this file are included in
+	  tiger_loader_2016.sql already
+
+2017-08-22 23:13  Regina Obe <lr@pcorp.us>
+
+	* [r15569] NEWS, configure.ac, doc/installation.xml: Make GEOS
+	  3.5.0 the minimum required
+	  Closes #3810
+
+2017-08-22 23:09  Sandro Santilli <strk@kbt.io>
+
+	* [r15568] utils/postgis_proc_upgrade.pl: Style only change: remove
+	  spurious blanks
+
+2017-08-22 14:43  Regina Obe <lr@pcorp.us>
+
+	* [r15567] doc/reference_raster.xml: update to use more efficient
+	  lateral syntax
+
+2017-08-22 12:39  Sandro Santilli <strk@kbt.io>
+
+	* [r15566] NEWS, doc/reference_editor.xml,
+	  liblwgeom/liblwgeom_internal.h, liblwgeom/lwgeom.c,
+	  regress/Makefile.in, regress/reverse.sql,
+	  regress/reverse_expected: Add support for curves in
+	  lwgeom_reverse/ST_Reverse
+	  
+	  Includes tests
+	  Closes #2411
+
+2017-08-22 12:38  Sandro Santilli <strk@kbt.io>
+
+	* [r15565] liblwgeom/lwcircstring.c, liblwgeom/lwgeom.c: [style
+	  only] remove trailing blanks
+
+2017-08-21 17:15  Sandro Santilli <strk@kbt.io>
+
+	* [r15564] extensions/upgradeable_versions.mk: Drop
+	  check-installed-upgrades Makefile rule
+	  
+	  You can use utils/check_all_upgrades.sh for this
+
+2017-08-21 03:48  Regina Obe <lr@pcorp.us>
+
+	* [r15563] NEWS: In light of fact postgresql according to Stephen
+	  Frost is planning to release mid-September,
+	  I've stamped the 09 september in there.
+	  I think we can beat them to release
+
+2017-08-21 02:06  Regina Obe <lr@pcorp.us>
+
+	* [r15562] NEWS, doc/reference_raster.xml,
+	  raster/rt_pg/rtpostgis.sql.in, raster/test/regress/Makefile.in,
+	  raster/test/regress/rt_makeemptycoverage.sql,
+	  raster/test/regress/rt_makeemptycoverage_expected:
+	  ST_MakeEmptyCoverage (David Zwarg, ainomieli)
+	  Closes #2249 for PostGIS 2.4.0
+
+2017-08-20 14:43  Regina Obe <lr@pcorp.us>
+
+	* [r15561] doc/using_postgis_dataman.xml: Update that yes indeed
+	  there are martian projectsions and you can even use them with
+	  geography to get measurements in meters instead of degrees.
+	  Closes #3637
+
+2017-08-20 13:01  Regina Obe <lr@pcorp.us>
+
+	* [r15560] doc/reference_measure.xml: redo of last commit
+
+2017-08-20 12:35  Regina Obe <lr@pcorp.us>
+
+	* [r15559] doc/reference_measure.xml: Fix typo in last commit for
+	  ST_FreschetDistance link
+
+2017-08-20 06:34  Regina Obe <lr@pcorp.us>
+
+	* [r15558] doc/reference_measure.xml: Add reference to
+	  ST_HausdorffDistance and ST_FrechetDistance to ST_Distance
+	  function.
+	  per Gary Turner
+	  https://lists.osgeo.org/pipermail/postgis-users/2017-August/042322.html
+
+2017-08-19 16:39  Daniel Baston <dbaston@gmail.com>
+
+	* [r15556] doc/reference_processing.xml: Remove note about
+	  consecutive points. Not the case when called w/MultiPoints.
+
+2017-08-19 16:20  Daniel Baston <dbaston@gmail.com>
+
+	* [r15555] doc/reference_processing.xml: Clarify docs wrt purpose
+	  of ST_RemoveRepeatedPoints
+
+2017-08-18 03:53  Regina Obe <lr@pcorp.us>
+
+	* [r15553] extras/tiger_geocoder/geocode/reverse_geocode.sql,
+	  extras/tiger_geocoder/regress/reverse_geocode_regress,
+	  extras/tiger_geocoder/regress/reverse_geocode_regress.sql:
+	  Reverse geocoder missing street suffix direction.
+	  References #3806 for PostGIS 2.4.0
+
+2017-08-11 16:38  Sandro Santilli <strk@kbt.io>
+
+	* [r15552] liblwgeom/lwstroke.c: Add more debug outputs
+
+2017-08-11 07:28  Sandro Santilli <strk@kbt.io>
+
+	* [r15551] liblwgeom/lwstroke.c: Ensure local POSTGIS_DEBUG_LEVEL
+	  define is effective, when set
+
+2017-08-10 21:08  Regina Obe <lr@pcorp.us>
+
+	* [r15550] .travis.yml: Patch from Darafei Praliaskouski to include
+	  compile with protobuf and sfcgal
+	  Closes https://github.com/postgis/postgis/pull/130
+
+2017-08-10 10:29  Regina Obe <lr@pcorp.us>
+
+	* [r15549] .travis.yml: upgrade travis to PostgreSQL 9.6
+	  Closes https://github.com/postgis/postgis/pull/135
+
+2017-08-10 09:55  Regina Obe <lr@pcorp.us>
+
+	* [r15548] .travis.yml: change back to using the default travis ci
+	  - trusty from precise
+	  Put in place permissions to fix make check error
+	  Closes #3803 for PostGIS 2.4
+
+2017-08-08 19:40  Regina Obe <lr@pcorp.us>
+
+	* [r15545] .gitattributes,
+	  extras/tiger_geocoder/create_geocode.bat,
+	  extras/tiger_geocoder/upgrade_geocoder.bat: Get rid of CRLF
+	  settings on both svnprop and gitattributes. Causing mirroring
+	  issues
+
+2017-08-08 19:08  Sandro Santilli <strk@kbt.io>
+
+	* [r15544] doc/reference_processing.xml: Typo Converst -> Converts
+	  
+	  Thanks Andreas Schild (via Transifex)
+
+2017-08-08 15:23  Regina Obe <lr@pcorp.us>
+
+	* [r15542] doc/reference_raster.xml: Doc patch from Even Rouault
+	  References #3804 for PostGIS 2.4.0
+
+2017-08-07 21:12  Regina Obe <lr@pcorp.us>
+
+	* [r15541] extras/tiger_geocoder/upgrade_geocoder.bat: adds
+	  trailing white space.
+
+2017-08-07 20:40  Regina Obe <lr@pcorp.us>
+
+	* [r15540] NEWS, doc/reference_processing.xml,
+	  doc/xsl/postgis_aggs_mm.xml.xsl: update of news items
+
+2017-08-07 20:23  Sandro Santilli <strk@kbt.io>
+
+	* [r15539] extras/tiger_geocoder/upgrade_geocoder.bat: Add
+	  carriage-returns to line endings
+
+2017-08-07 20:23  Sandro Santilli <strk@kbt.io>
+
+	* [r15538] .editorconfig: Request crlf for .bat files
+
+2017-08-07 06:32  Regina Obe <lr@pcorp.us>
+
+	* [r15537] postgis/postgis.sql.in: Mark all aggregate and window
+	  functions as parallel safe, mark more regular functions parallel
+	  safe, schema qualify more missing spots
+	  References #3751 for PostGIS 2.4 (trunk)
+
+2017-08-07 05:09  Regina Obe <lr@pcorp.us>
+
+	* [r15536] raster/rt_pg/rtpostgis.sql.in: Mark all raster
+	  aggregates as parallel safe.
+
+2017-08-06 21:37  Sandro Santilli <strk@kbt.io>
+
+	* [r15535] NEWS: Formatting
+
+2017-08-05 18:52  Regina Obe <lr@pcorp.us>
+
+	* [r15534] Version.config, extensions/upgradeable_versions.mk: flip
+	  version number back to 2.4.0dev
+
+2017-08-05 17:19  Regina Obe <lr@pcorp.us>
+
+	* [r15532] .drone.yml, ChangeLog: update ChangeLog once again set
+	  dronie to check 2.4.0alpha upgrade
+
 2017-08-05 16:58  Regina Obe <lr@pcorp.us>
 
 	* [r15531] .travis.yml: switch travis back not using sudo (root
