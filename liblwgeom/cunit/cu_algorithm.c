@@ -1105,7 +1105,7 @@ static void test_point_density(void)
 static void test_lwpoly_construct_circle(void)
 {
 	LWPOLY* p;
-	GBOX* g;
+	const GBOX* g;
 	const int srid = 4326;
 	const int segments_per_quad = 17;
 	const int x = 10;
@@ -1115,7 +1115,7 @@ static void test_lwpoly_construct_circle(void)
 	/* With normal arguments you should get something circle-y */
 	p = lwpoly_construct_circle(srid, x, y, r, segments_per_quad, LW_TRUE);
 
-	ASSERT_INT_EQUAL(lwgeom_count_vertices(p), segments_per_quad * 4 + 1);
+	ASSERT_INT_EQUAL(lwgeom_count_vertices(lwpoly_as_lwgeom(p)), segments_per_quad * 4 + 1);
 	ASSERT_INT_EQUAL(lwgeom_get_srid(lwpoly_as_lwgeom(p)), srid)
 
 	g = lwgeom_get_bbox(lwpoly_as_lwgeom(p));
@@ -1124,7 +1124,7 @@ static void test_lwpoly_construct_circle(void)
 	CU_ASSERT_DOUBLE_EQUAL(g->ymin, y-r, 0.1);
 	CU_ASSERT_DOUBLE_EQUAL(g->ymax, y+r, 0.1);
 
-	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(p), M_PI*5*5, 0.1);
+	CU_ASSERT_DOUBLE_EQUAL(lwgeom_area(lwpoly_as_lwgeom(p)), M_PI*5*5, 0.1);
 
 	lwpoly_free(p);
 
