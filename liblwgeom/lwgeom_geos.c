@@ -458,7 +458,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom, int autofix)
 			g = LWGEOM2GEOS(lwc->geoms[i], 0);
 			if ( ! g )
 			{
-				while (i) GEOSGeom_destroy(geoms[--i]);
+				while (j) GEOSGeom_destroy(geoms[--j]);
 				free(geoms);
 				return NULL;
 			}
