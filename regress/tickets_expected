@@ -296,6 +296,8 @@ ERROR:  invalid KML representation
 #3470|t
 #3470b|50
 #3569|BOX(1 2,3 4)
+#3578a|0
+#3578b|0
 #3579|f|t
 #3620a|POINT(3 7)
 #3620b|POINT(2 8)

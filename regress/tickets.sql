@@ -980,6 +980,10 @@ WITH clustr AS (
     SELECT '#3569', ST_CollectionHomogenize(geom)::box2d
     FROM clustr;
 
+-- #3578
+SELECT '#3578a', ST_NumInteriorRings('POLYGON EMPTY');
+SELECT '#3578b', ST_NumInteriorRings('CURVEPOLYGON EMPTY');
+
 -- #3579
 with
         params as (

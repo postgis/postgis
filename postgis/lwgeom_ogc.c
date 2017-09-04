@@ -413,19 +413,32 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-	LWPOLY *poly = NULL;
-	LWCURVEPOLY *curvepoly = NULL;
+
 	int result = -1;
 
 	if ( lwgeom->type == POLYGONTYPE )
 	{
-		poly = lwgeom_as_lwpoly(lwgeom);
-		result = poly->nrings - 1;
+		if (lwgeom_is_empty(lwgeom))
+		{
+			result = 0;
+		}
+		else
+		{
+			const LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
+			result = poly->nrings - 1;
+		}
 	}
 	else if ( lwgeom->type == CURVEPOLYTYPE )
 	{
-		curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
-		result = curvepoly->nrings - 1;
+		if (lwgeom_is_empty(lwgeom))
+		{
+			result = 0;
+		}
+		else
+		{
+			const LWCURVEPOLY *curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
+			result = curvepoly->nrings - 1;
+		}
 	}
 	
 	lwgeom_free(lwgeom);
