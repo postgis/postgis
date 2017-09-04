@@ -206,6 +206,7 @@ static void test_lwcurve_linearize(void)
 	ASSERT_STRING_EQUAL(str, "LINESTRING(72 -66,34 -38,16 4,20 50)");
 	lwfree(str);
 	lwgeom_free(out);
+	lwgeom_free(in);
 
 	/*
 	 * Clockwise ~90 degrees north-west to south-west quadrants
