@@ -2512,17 +2512,19 @@ Datum LWGEOM_angle(PG_FUNCTION_ARGS)
 		
 		if ( ! getPoint2d_p(lwpoint->point, 0, &points[i]) )
 		{ 
+			/* // can't free serialized geom, it might be needed by lw
 			for (j=0;j<n_args;j++)
-				PG_FREE_IF_COPY(seri_geoms[j], j);
+				PG_FREE_IF_COPY(seri_geoms[j], j); */
 			lwpgerror("Error extracting point");
 			PG_RETURN_NULL();
 		}
 		/* lwfree(geom_unser);don't do, lw may rely on this memory
 		lwpoint_free(lwpoint); dont do , this memory is needed ! */ 
 	}
+	/* // can't free serialized geom, it might be needed by lw
 	for (j=0;j<n_args;j++)
-		PG_FREE_IF_COPY(seri_geoms[j], j);
-
+		PG_FREE_IF_COPY(seri_geoms[j], j); */
+	
 	/* compute azimuth for the 2 pairs of points
 	 * note that angle is not defined identically for 3 points or 4 points*/ 
 	if (n_args == 3)
