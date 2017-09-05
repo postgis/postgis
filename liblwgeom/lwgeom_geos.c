@@ -387,7 +387,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 			g = LWGEOM2GEOS(lwc->geoms[i]);
 			if ( ! g )
 			{
-				while (i) GEOSGeom_destroy(geoms[--i]);
+				while (j) GEOSGeom_destroy(geoms[--j]);
 				free(geoms);
 				return NULL;
 			}
