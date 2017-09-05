@@ -52,7 +52,7 @@
 
 #include <assert.h>
 
-#if POSTGIS_PGSQL_VERSION >= 1000
+#if POSTGIS_PGSQL_VERSION >= 100
 #include <float.h>
 #endif
 

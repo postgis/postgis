@@ -22,7 +22,7 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"
 
-#if POSTGIS_PGSQL_VERSION >= 1000
+#if POSTGIS_PGSQL_VERSION >= 100
 #include <float.h>
 #endif
 
