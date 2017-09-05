@@ -22,6 +22,10 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h"
 
+#if POSTGIS_PGSQL_VERSION >= 100
+#include <float.h>
+#endif
+
 #define FLAGS_NDIMS_GIDX(f) ( FLAGS_GET_GEODETIC(f) ? 3 : \
                               FLAGS_GET_M(f) ? 4 : \
                               FLAGS_GET_Z(f) ? 3 : 2 )

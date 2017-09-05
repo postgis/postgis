@@ -52,6 +52,9 @@
 
 #include <assert.h>
 
+#if POSTGIS_PGSQL_VERSION >= 100
+#include <float.h>
+#endif
 
 /* Fall back to older finite() if necessary */
 #ifndef HAVE_ISFINITE
