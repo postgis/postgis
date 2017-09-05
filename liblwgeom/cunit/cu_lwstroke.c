@@ -50,7 +50,7 @@ static char* lwgeom_to_text(const LWGEOM *geom, int prec)
 static void test_lwcurve_linearize(void)
 {
 	LWGEOM *in;
-	LWGEOM *out;
+	LWGEOM *out, *out2;
 	char *str;
 	int toltype;
 
@@ -286,8 +286,36 @@ static void test_lwcurve_linearize(void)
 
 	lwgeom_free(in);
 
-}
+	/***********************************************************
+	 *
+	 *  Direction neutrality
+	 *
+	 ***********************************************************/
 
+	in = lwgeom_from_text("CIRCULARSTRING(71.96 -65.64,22.2 -18.52,20 50)");
+	out = lwcurve_linearize(in, M_PI/4.0,
+													 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
+													 LW_LINEARIZE_FLAG_SYMMETRIC);
+	lwgeom_reverse(in);
+	out2 = lwcurve_linearize(in, M_PI/4.0,
+													 LW_LINEARIZE_TOLERANCE_TYPE_MAX_ANGLE,
+													 LW_LINEARIZE_FLAG_SYMMETRIC);
+	lwgeom_reverse(out2);
+	if ( ! lwgeom_same(out, out2) )
+	{
+		fprintf(stderr, "linearization is not direction neutral:\n");
+		str = lwgeom_to_wkt(out, WKT_ISO, 18, NULL);
+		fprintf(stderr, "OUT1: %s\n", str);
+		lwfree(str);
+		str = lwgeom_to_wkt(out2, WKT_ISO, 18, NULL);
+		fprintf(stderr, "OUT2: %s\n", str);
+		lwfree(str);
+	}
+	CU_ASSERT( lwgeom_same(out, out2) );
+	lwgeom_free(out2);
+	lwgeom_free(out);
+	lwgeom_free(in);
+}
 
 /*
 ** Used by the test harness to register the tests in this file.

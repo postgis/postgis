@@ -114,6 +114,8 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 /**
  * Segmentize an arc
  *
+ * Does not add the final vertex
+ *
  * @param to POINTARRAY to append segmentized vertices to
  * @param p1 first point defining the arc
  * @param p2 second point defining the arc
@@ -124,6 +126,7 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
  *
  * @return number of points appended (0 if collinear),
  *         or -1 on error (lwerror would be called).
+ *
  */
 static int
 lwarc_linearize(POINTARRAY *to,
@@ -145,12 +148,26 @@ lwarc_linearize(POINTARRAY *to,
 	POINTARRAY *pa = to;
 	int is_circle = LW_FALSE;
 	int points_added = 0;
+	int reverse = 0;
 
 	LWDEBUG(2, "lwarc_linearize called.");
 
+	p2_side = lw_segment_side(t1, t3, t2);
+
+	/* Force counterclockwise scan if SYMMETRIC operation is requsested */
+	if ( p2_side == -1 && flags & LW_LINEARIZE_FLAG_SYMMETRIC )
+	{
+		/* swap p1-p3 */
+		t1 = (POINT2D*)p3;
+		t3 = (POINT2D*)p1;
+		p1 = (POINT4D*)t1;
+		p3 = (POINT4D*)t3;
+		p2_side = 1;
+		reverse = 1;
+	}
+
 	radius = lw_arc_center(t1, t2, t3, &center);
 	LWDEBUGF(2, " center is POINT(%.15g %.15g) - radius:%g", center.x, center.y, radius);
-	p2_side = lw_segment_side(t1, t3, t2);
 
 	/* Matched start/end points imply circle */
 	if ( p1->x == p3->x && p1->y == p3->y )
@@ -289,8 +306,16 @@ lwarc_linearize(POINTARRAY *to,
 	LWDEBUGF(2, "lwarc_linearize angle_shift:%g, increment:%g",
 		angle_shift * 180/M_PI, increment * 180/M_PI);
 
+	if ( reverse ) {{
+		const int capacity = 8; /* TODO: compute exactly ? */
+		pa = ptarray_construct_empty(ptarray_has_z(to), ptarray_has_m(to), capacity);
+	}}
+
 	/* Sweep from a1 to a3 */
-	ptarray_append_point(pa, p1, LW_FALSE);
+	if ( ! reverse )
+	{
+		ptarray_append_point(pa, p1, LW_FALSE);
+	}
 	++points_added;
 	if ( angle_shift ) angle_shift -= increment;
 	LWDEBUGF(2, "a1:%g (%g deg), a3:%g (%g deg), inc:%g, shi:%g, cw:%d",
@@ -306,6 +331,17 @@ lwarc_linearize(POINTARRAY *to,
 		++points_added;
 		angle_shift = 0;
 	}
+
+	if ( reverse ) {{
+		int i;
+		ptarray_append_point(to, p3, LW_FALSE);
+		for ( i=pa->npoints; i>0; i-- ) {
+			getPoint4d_p(pa, i-1, &pt);
+			ptarray_append_point(to, &pt, LW_FALSE);
+		}
+		ptarray_free(pa);
+	}}
+
 	return points_added;
 }
 
