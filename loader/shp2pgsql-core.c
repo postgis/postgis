@@ -1172,38 +1172,36 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			}
 		}
 
-		state->field_names[j] = malloc(strlen(name) + 1);
-		strcpy(state->field_names[j], name);
+		state->field_names[j] = strdup(name);
 
 		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
 		switch (state->types[j])
 		{
 		case FTString:
-			state->pgfieldtypes[j] = malloc(strlen("varchar") + 1);
-			strcpy(state->pgfieldtypes[j], "varchar");
+			state->pgfieldtypes[j] = strdup("varchar");
 			break;
 
 		case FTDate:
-			state->pgfieldtypes[j] = malloc(strlen("date") + 1);
-			strcpy(state->pgfieldtypes[j], "date");
+			state->pgfieldtypes[j] = strdup("date");
 			break;
 
 		case FTInteger:
 			/* Determine exact type based upon field width */
 			if (state->config->forceint4 || (state->widths[j] >=5 && state->widths[j] < 10))
 			{
-				state->pgfieldtypes[j] = malloc(strlen("int4") + 1);
-				strcpy(state->pgfieldtypes[j], "int4");
+				state->pgfieldtypes[j] = strdup("int4");
+			}
+			else if (state->widths[j] >=10 && state->widths[j] < 19)
+			{
+				state->pgfieldtypes[j] = strdup("int8");
 			}
 			else if (state->widths[j] < 5)
 			{
-				state->pgfieldtypes[j] = malloc(strlen("int2") + 1);
-				strcpy(state->pgfieldtypes[j], "int2");
+				state->pgfieldtypes[j] = strdup("int2");
 			}
 			else
 			{
-				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
-				strcpy(state->pgfieldtypes[j], "numeric");
+				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			break;
 
@@ -1213,19 +1211,16 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 					state->field_names[j], state->widths[j], state->precisions[j]);
 			if (state->widths[j] > 18)
 			{
-				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
-				strcpy(state->pgfieldtypes[j], "numeric");
+				state->pgfieldtypes[j] = strdup("numeric");
 			}
 			else
 			{
-				state->pgfieldtypes[j] = malloc(strlen("float8") + 1);
-				strcpy(state->pgfieldtypes[j], "float8");
+				state->pgfieldtypes[j] = strdup("float8");
 			}
 			break;
 
 		case FTLogical:
-			state->pgfieldtypes[j] = malloc(strlen("boolean") + 1);
-			strcpy(state->pgfieldtypes[j], "boolean");
+			state->pgfieldtypes[j] = strdup("boolean");
 			break;
 
 		default:
