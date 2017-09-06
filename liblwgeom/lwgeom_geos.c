@@ -1882,6 +1882,7 @@ lwmpoly_to_points(const LWMPOLY *lwmpoly, int npoints)
 				}
 				/* Just free the shell, leave the underlying lwpoints alone, as they
 				   are now owed by the returning multipoint */
+				lwfree(sub_mpt->geoms);
 				lwgeom_release((LWGEOM*)sub_mpt);
 			}
 		}
