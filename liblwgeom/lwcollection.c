@@ -362,6 +362,8 @@ void lwcollection_free(LWCOLLECTION *col)
 /**
 * Takes a potentially heterogeneous collection and returns a homogeneous
 * collection consisting only of the specified type.
+* WARNING: the output will contain references to geometries in the input, 
+* so the result must be carefully released, not freed.
 */
 LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 {
@@ -429,6 +431,10 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 				geomlist[geomlistlen] = tmpcol->geoms[j];
 				geomlistlen++;
 			}
+			if (tmpcol->geoms)
+				lwfree(tmpcol->geoms);
+			if (tmpcol->bbox)
+				lwfree(tmpcol->bbox);
 			lwfree(tmpcol);
 		}
 	}
