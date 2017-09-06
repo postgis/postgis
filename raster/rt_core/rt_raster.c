@@ -1963,7 +1963,7 @@ rt_raster_to_gdal_mem(
 			RASTER_DEBUGF(4, "rt_raster_to_gdal_mem: szDatapointer is %p",
 				pszDataPointer);
 
-			if (strnicmp(pszDataPointer, "0x", 2) == 0)
+			if (strncasecmp(pszDataPointer, "0x", 2) == 0)
 				sprintf(szGDALOption, "DATAPOINTER=%s", pszDataPointer);
 			else
 				sprintf(szGDALOption, "DATAPOINTER=0x%s", pszDataPointer);
