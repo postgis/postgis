@@ -14,7 +14,7 @@
 /* standardizer headers */
 #undef DEBUG
 //#define DEBUG 1
-
+#include "../../postgis_config.h"
 #include "pagc_api.h"
 #include "pagc_std_api.h"
 #include "std_pg_hash.h"
@@ -96,7 +96,13 @@ static void StdCacheInit(MemoryContext context);
 static void StdCacheReset(MemoryContext context);
 static void StdCacheDelete(MemoryContext context);
 static bool StdCacheIsEmpty(MemoryContext context);
+
+#if POSTGIS_PGSQL_VERSION >= 96
+static void StdCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals);
+#else
 static void StdCacheStats(MemoryContext context, int level);
+#endif
+
 #ifdef MEMORY_CONTEXT_CHECKING
 static void StdCacheCheck(MemoryContext context);
 #endif
@@ -180,19 +186,28 @@ StdCacheIsEmpty(MemoryContext context)
 }
 
 
+#if POSTGIS_PGSQL_VERSION >= 96
+static void
+StdCacheStats(MemoryContext context, int level, bool print, MemoryContextCounters *totals)
+{
+    // another required function
+    fprintf(stderr, "%s: STANDARDIZER context\n", context->name);
+}
+#else
 static void
 StdCacheStats(MemoryContext context, int level)
 {
     // another required function
     fprintf(stderr, "%s: STANDARDIZER context\n", context->name);
 }
+#endif
 
 
 #ifdef MEMORY_CONTEXT_CHECKING
 static void
 StdCacheCheck(MemoryContext context)
 {
-    // NOP - another reuired function
+    // NOP - another required function
 }
 #endif
 
