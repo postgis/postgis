@@ -23,3 +23,9 @@ SELECT 12, ST_SRID(ST_RemoveRepeatedPoints('SRID=3;LINESTRING(0 0, 0 0, 0 0, 0 0
 SELECT 13, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(0 0, 1 0, 2 0, 3 0, 4 0)',1.5));
 SELECT 14, ST_AsText(ST_RemoveRepeatedPoints('LINESTRING(10 0,10 9,10 10)', 2));
 
+-- #3670
+SELECT 15, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry));
+SELECT 16, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 2 2)'::geometry,0.1));
+SELECT 17, ST_AsText(ST_RemoveRepeatedPoints('MULTIPOINT(0 0, 0 0, 1 1, 4 4)'::geometry,2));
+
+

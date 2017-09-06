@@ -94,28 +94,31 @@ lwmpoint_remove_repeated_points(const LWMPOINT *mpoint, double tolerance)
 	uint32_t nnewgeoms;
 	uint32_t i, j;
 	LWGEOM **newgeoms;
-
+	LWGEOM *lwpt1, *lwpt2;
+	
 	newgeoms = lwalloc(sizeof(LWGEOM *)*mpoint->ngeoms);
 	nnewgeoms = 0;
 	for (i=0; i<mpoint->ngeoms; ++i)
 	{
+		lwpt1 = (LWGEOM*)mpoint->geoms[i];
 		/* Brute force, may be optimized by building an index */
 		int seen=0;
 		for (j=0; j<nnewgeoms; ++j)
 		{
-			if ( lwpoint_same((LWPOINT*)newgeoms[j],
-			                  (LWPOINT*)mpoint->geoms[i]) )
+			lwpt2 = (LWGEOM*)newgeoms[j];
+			if ( lwgeom_mindistance2d(lwpt1, lwpt2) <= tolerance )
 			{
 				seen=1;
 				break;
 			}
 		}
 		if ( seen ) continue;
-		newgeoms[nnewgeoms++] = (LWGEOM*)lwpoint_clone(mpoint->geoms[i]);
+		newgeoms[nnewgeoms++] = lwgeom_clone_deep(lwpt1);
 	}
 
 	return (LWGEOM*)lwcollection_construct(mpoint->type,
-	                                       mpoint->srid, mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
+	                                       mpoint->srid, 
+										   mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
 	                                       nnewgeoms, newgeoms);
 
 }
