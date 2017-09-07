@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-08-24 19:57+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/postgis/postgis/"
@@ -72,7 +72,8 @@ msgstr ""
 #: reference_output.xml:207 reference_output.xml:283 reference_output.xml:384
 #: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
 #: reference_output.xml:671 reference_output.xml:715 reference_output.xml:781
-#: reference_output.xml:828 reference_output.xml:950
+#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:995
+#: reference_output.xml:1035 reference_output.xml:1075
 #, no-c-format
 msgid "Description"
 msgstr "Descrizione"
@@ -209,6 +210,8 @@ msgstr "&Z_support;"
 #: reference_output.xml:229 reference_output.xml:330 reference_output.xml:498
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
 #: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
+#: reference_output.xml:1010 reference_output.xml:1051
+#: reference_output.xml:1098
 #, no-c-format
 msgid "Examples"
 msgstr "Esempi"
@@ -281,6 +284,7 @@ msgstr ""
 #: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
 #: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
 #: reference_output.xml:745 reference_output.xml:804 reference_output.xml:972
+#: reference_output.xml:1103
 #, no-c-format
 msgid "See Also"
 msgstr "Si veda anche"
@@ -2505,3 +2509,256 @@ msgstr ""
 "------------\n"
 " c0w3h\n"
 "                ]]>"
+
+#. Tag: refname
+#: reference_output.xml:980
+#, fuzzy, no-c-format
+msgid "ST_AsGeobuf"
+msgstr "ST_AsGeoJSON"
+
+#. Tag: refpurpose
+#: reference_output.xml:982
+#, no-c-format
+msgid "Return a Geobuf representation of a set of rows."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:986
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
+"<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
+"<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
+msgstr ""
+"<funcdef>text <function>ST_GeoHash</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:997
+#, no-c-format
+msgid ""
+"Return a Geobuf representation (<ulink url=\"https://github.com/mapbox/geobuf"
+"\">https://github.com/mapbox/geobuf</ulink>) of a set of rows corresponding "
+"to a FeatureCollection. Every input geometry is analyzed to determine "
+"maximum precision for optimal storage. Note that Geobuf in its current form "
+"cannot be streamed so the full output will be assembled in memory."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1003 reference_output.xml:1091
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1004 reference_output.xml:1092
+#, no-c-format
+msgid "<varname>row</varname> row data with at least a geometry column."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1006 reference_output.xml:1047
+#: reference_output.xml:1094
+#, fuzzy, no-c-format
+msgid "Availability: 2.4.0"
+msgstr "Disponibilità: 1.4.0"
+
+#. Tag: programlisting
+#: reference_output.xml:1011
+#, no-c-format
+msgid ""
+"<![CDATA[encode(ST_AsGeobuf('geom', q), 'base64')\n"
+"    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') as geom) "
+"AS q;\n"
+" st_asgeobuf\n"
+"----------------------------------\n"
+" GAAiEAoOCgwIBBoIAAAAAgIAAAE=\n"
+"\n"
+"                ]]>"
+msgstr ""
+
+#. Tag: refname
+#: reference_output.xml:1017
+#, fuzzy, no-c-format
+msgid "ST_AsMVTGeom"
+msgstr "ST_AsSVG"
+
+#. Tag: refpurpose
+#: reference_output.xml:1019
+#, no-c-format
+msgid ""
+"Transform a geometry into the coordinate space of a <ulink url=\"https://www."
+"mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink>."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:1023
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
+"<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
+"<paramdef><type>int4 </type> <parameter>buffer</parameter></paramdef> "
+"<paramdef><type>bool </type> <parameter>clip_geom</parameter></paramdef>"
+msgstr ""
+"<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>text <function>ST_AsHEXEWKB</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
+"parameter></paramdef> </funcprototype>"
+
+#. Tag: para
+#: reference_output.xml:1037
+#, no-c-format
+msgid ""
+"Transform a geometry into the coordinate space of a <ulink url=\"https://www."
+"mapbox.com/vector-tiles/\">Mapbox Vector Tile</ulink> of a set of rows "
+"corresponding to a Layer. Makes best effort to keep and even correct "
+"validity and might collapse geometry into a lower dimension in the process."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1041
+#, no-c-format
+msgid "<varname>geom</varname> is the geometry to transform."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1042
+#, no-c-format
+msgid ""
+"<varname>bounds</varname> is the geometric bounds of the tile contents "
+"without buffer."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1043
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in tile coordinate space as "
+"defined by the <ulink url=\"https://www.mapbox.com/vector-tiles/"
+"specification/\">specification</ulink>. If NULL it will default to 4096."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1044
+#, no-c-format
+msgid ""
+"<varname>buffer</varname> is the buffer distance in tile coordinate space to "
+"optionally clip geometries. If NULL it will default to 0."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1045
+#, no-c-format
+msgid ""
+"<varname>clip_geom</varname> is a boolean to control if geometries should be "
+"clipped or encoded as is. If NULL it will default to true."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_output.xml:1052
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsText(ST_AsMVTGeom(\n"
+"        ST_GeomFromText('POLYGON ((0 0, 10 0, 10 5, 0 -5, 0 0))'),\n"
+"        ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)),\n"
+"        4096, 0, false));\n"
+"                              st_astext\n"
+"--------------------------------------------------------------------\n"
+" MULTIPOLYGON(((5 4096,10 4096,10 4091,5 4096)),((5 4096,0 4096,0 4101,5 "
+"4096)))\n"
+"\n"
+"                ]]>"
+msgstr ""
+
+#. Tag: refname
+#: reference_output.xml:1058
+#, fuzzy, no-c-format
+msgid "ST_AsMVT"
+msgstr "ST_AsGML"
+
+#. Tag: refpurpose
+#: reference_output.xml:1060
+#, no-c-format
+msgid ""
+"Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
+"Tile</ulink> representation of a set of rows."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_output.xml:1064
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>text "
+"</type> <parameter>name</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>extent</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>geom_name</parameter></paramdef> <paramdef><type>anyelement </"
+"type> <parameter>row</parameter></paramdef>"
+msgstr ""
+"<funcdef>text <function>ST_AsX3D</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
+
+#. Tag: para
+#: reference_output.xml:1077
+#, no-c-format
+msgid ""
+"Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
+"Tile</ulink> representation of a set of rows corresponding to a Layer. "
+"Multiple calls can be concatenated to a tile with multiple Layers. Geometry "
+"is assumed to be in tile coordinate space and valid as per <ulink url="
+"\"https://www.mapbox.com/vector-tiles/specification/\">specification</"
+"ulink>. Typically <xref linkend=\"ST_AsMVTGeom\"/> can be used to transform "
+"geometry into tile coordinate space. Other row data will be encoded as "
+"attributes."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1084
+#, no-c-format
+msgid ""
+"The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
+"ulink> format can store features with a different set of attributes per "
+"feature. To make use of this feature supply a JSONB column in the row data "
+"containing Json objects one level deep. The keys and values in the object "
+"will be parsed into feature attributes."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1089
+#, no-c-format
+msgid "<varname>name</varname> is the name of the Layer"
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1090
+#, no-c-format
+msgid ""
+"<varname>extent</varname> is the tile extent in screen space as defined by "
+"the specification. If NULL it will default to 4096."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_output.xml:1099
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_AsMVT('test', 4096, 'geom', q) FROM (SELECT 1 AS c1,\n"
+"    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 "
+"10), (20 30, 35 35, 30 20, 20 30))'),\n"
+"    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS "
+"geom) AS q;\n"
+"                              st_asmvt\n"
+"--------------------------------------------------------------------\n"
+" \\x1a330a0474657374122112020000180322190946ec3f2214453b0a092832140f091d271a1e09091e13130f1a026331220228017802\n"
+"\n"
+"                ]]>"
+msgstr ""
