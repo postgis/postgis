@@ -683,7 +683,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	ptarray_append_point(dpa, &p, LW_FALSE);
 	x = y = z = false;
 
-	return ptarray_clone_deep(dpa);
+	return dpa; /* ptarray_clone_deep(dpa); */
 }
 
 
@@ -750,7 +750,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 
     ptarray_append_point(dpa, &pt, LW_FALSE);
 
-	return ptarray_clone_deep(dpa);
+	return dpa; /* ptarray_clone_deep(dpa); */
 }
 
 
@@ -817,7 +817,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 	xmlFree(gmlposlist);
 
-	return ptarray_clone_deep(dpa);
+	return dpa; /* ptarray_clone_deep(dpa); */
 }
 
 
