@@ -85,6 +85,7 @@ Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
+	uint8_t *buf;
 	struct geobuf_agg_context *ctx;
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
@@ -93,7 +94,7 @@ Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
-	uint8_t *buf = geobuf_agg_finalfn(ctx);
+	buf = geobuf_agg_finalfn(ctx);
 	PG_RETURN_BYTEA_P(buf);
 #endif
 }
