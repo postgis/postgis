@@ -57,7 +57,11 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 	uint32_t i, k = 0;
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
+#if POSTGIS_PGSQL_VERSION < 110
 		char *tkey = tupdesc->attrs[i]->attname.data;
+#else
+		char *tkey = tupdesc->attrs[i].attname.data;
+#endif
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
 		if (strcmp(key, ctx->geom_name) == 0) {
@@ -113,7 +117,11 @@ static void encode_properties(struct geobuf_agg_context *ctx,
 		datum = GetAttributeByNum(ctx->row, i + 1, &isnull);
 		if (isnull)
 			continue;
+#if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+#else
+		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
+#endif
 		if (strcmp(type, "int2") == 0) {
 			set_int_value(value, DatumGetInt16(datum));
 		} else if (strcmp(type, "int4") == 0) {

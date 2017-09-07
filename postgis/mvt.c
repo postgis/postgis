@@ -304,12 +304,17 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 	uint32_t i;
 	bool geom_name_found = false;
 	for (i = 0; i < natts; i++) {
+#if POSTGIS_PGSQL_VERSION < 110		
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+		char *tkey = tupdesc->attrs[i]->attname.data;
+#else
+		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
+		char *tkey = tupdesc->attrs[i].attname.data;
+#endif
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (typoid == JSONBOID)
 			continue;
 #endif
-		char *tkey = tupdesc->attrs[i]->attname.data;
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
 		if (strcmp(key, ctx->geom_name) == 0) {
@@ -550,9 +555,14 @@ static void parse_values(struct mvt_agg_context *ctx)
 		if (i == ctx->geom_index)
 			continue;
 
+#if POSTGIS_PGSQL_VERSION < 110		
 		char *key = tupdesc->attrs[i]->attname.data;
-		Datum datum = GetAttributeByNum(ctx->row, i+1, &isnull);
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
+#else
+		char *key = tupdesc->attrs[i].attname.data;
+		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
+#endif
+		Datum datum = GetAttributeByNum(ctx->row, i+1, &isnull);
 		k = get_key_index(ctx, key);
 		if (isnull) {
 			POSTGIS_DEBUG(3, "parse_values isnull detected");
