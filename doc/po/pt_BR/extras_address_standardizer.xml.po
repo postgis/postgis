@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-08-30 03:58+0000\n"
 "PO-Revision-Date: 2016-11-16 19:49+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -373,9 +373,9 @@ msgstr "rota rural"
 
 #. Tag: para
 #: extras_address_standardizer.xml:95
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>8</"
+"is text (token number <code>8</code>): RURAL ROUTE . Example <emphasis>7</"
 "emphasis> in <code>RR 7</code>."
 msgstr ""
 "é um texto (número token <code>8</code>): ROTA RURAL . Exemplo <emphasis>8</"
@@ -1254,9 +1254,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:448
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"i(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
+"(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
 "in <code>BOX 3B</code>"
 msgstr ""
 "i(token number <code>14</code>): The <emphasis role=\"bold\">BOX</emphasis> "
@@ -1439,9 +1439,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:529
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"A gaz (short for gazeteer) table is used to classify place names and "
+"A gaz (short for gazeteer) table is used to standardize place names and "
 "associate that input with <xref linkend=\"rule_input_tokens\"/> and (b) "
 "standardized representations. For example if you are in US, you may load "
 "these with State Names and associated abbreviations."
@@ -1500,9 +1500,9 @@ msgstr ""
 
 #. Tag: para
 #: extras_address_standardizer.xml:588
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Returns takes as input an address, and returns a record output consisting of "
+"Returns takes an address as input, and returns a record output consisting of "
 "fields <emphasis>num</emphasis>, <emphasis>street</emphasis>, "
 "<emphasis>street2</emphasis>, <emphasis>address1</emphasis>, <emphasis>city</"
 "emphasis>, <emphasis>state</emphasis>, <emphasis>zip</emphasis>, "

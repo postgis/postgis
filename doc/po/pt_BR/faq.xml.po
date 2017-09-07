@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
 "PO-Revision-Date: 2016-11-16 16:33+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1009,12 +1009,12 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:383
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Almost certainly not. As an example, consider Oracle database running on "
-"Linux. Linux is GPL, Oracle is not, does Oracle running on Linux have to be "
-"distributed using the GPL? No. So your software can use a PostgreSQL/PostGIS "
-"database as much as it wants and be under any license you like."
+"Linux. Linux is GPL, Oracle is not: does Oracle running on Linux have to be "
+"distributed using the GPL? No. Similarly your software can use a PostgreSQL/"
+"PostGIS database as much as it wants and be under any license you like."
 msgstr ""
 "Com certeza não. Como exemplo, considere uma base de dados Oracle rodando no "
 "Linux. Linux é GPL. Oracle não, com o Oracle rodando no Linux tenho que "
@@ -1024,15 +1024,16 @@ msgstr ""
 
 #. Tag: para
 #: faq.xml:384
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The only exception would be if you made changes to the PostGIS source code, "
-"and distributed your changed version of PostGIS. In that case you would have "
-"to share the code of your changed PostGIS (but not the code of applications "
-"running on top of it). Even in this limited case, you would still only have "
-"to distribute source code to people you distributed binaries to. The GPL "
-"does not require that you <emphasis>publish</emphasis> your source code, "
-"only that you share it with people you give binaries to."
+"and <emphasis>distributed your changed version</emphasis> of PostGIS. In "
+"that case you would have to share the code of your changed PostGIS (but not "
+"the code of applications running on top of it). Even in this limited case, "
+"you would still only have to distribute source code to people you "
+"distributed binaries to. The GPL does not require that you "
+"<emphasis>publish</emphasis> your source code, only that you share it with "
+"people you give binaries to."
 msgstr ""
 "A única exceção seria se você fizer mudanças no código fonte do PostGIS, e "
 "distribuir a versão da sua mudança do PostGIS. Neste caso você teria que "
@@ -1041,3 +1042,13 @@ msgstr ""
 "que distribuir o código fonte para pessoas que também distribuem binários. A "
 "GPL não exige que você <emphasis>publique</emphasis> seu código fonte, "
 "apenas que compartilhe com pessoas que distribuem binários também."
+
+#. Tag: para
+#: faq.xml:385
+#, no-c-format
+msgid ""
+"The above remains true even if you use PostGIS in conjunction with the "
+"optional CGAL-enabled functions. Portions of CGAL are GPL, but so is all of "
+"PostGIS already: using CGAL does not make PostGIS any more GPL than it was "
+"to start with."
+msgstr ""

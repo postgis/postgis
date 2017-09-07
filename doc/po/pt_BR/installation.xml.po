@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-24 19:57+0000\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
 "PO-Revision-Date: 2016-11-22 17:46+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -393,12 +393,13 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:98
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Proj4 reprojection library, version 4.6.0 or greater. The Proj4 library is "
-"used to provide coordinate reprojection support within PostGIS. Proj4 is "
-"available for download from <ulink url=\"http://trac.osgeo.org/proj/\"> "
-"http://trac.osgeo.org/proj/ </ulink> ."
+"Proj4 reprojection library, version 4.6.0 or greater. Proj4 4.9 or above is "
+"needed to take advantage of improved geodetic. The Proj4 library is used to "
+"provide coordinate reprojection support within PostGIS. Proj4 is available "
+"for download from <ulink url=\"http://trac.osgeo.org/proj/\"> http://trac."
+"osgeo.org/proj/ </ulink> ."
 msgstr ""
 "Biblioteca de reprojeção Proj4, versão 4.6.0 ou superior. A biblioteca Proj4 "
 "é utilizada para fornecer suporte a reprojeção de coordenadas dentro do "
@@ -1148,14 +1149,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:569
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "As of PostGIS v1.4.0, all the functions have comments generated from the "
 "documentation. If you wish to install these comments into your spatial "
 "databases later, run the command which requires docbook. The "
 "postgis_comments.sql and other package comments files raster_comments.sql, "
 "topology_comments.sql are also packaged in the tar.gz distribution in the "
-"doc folder so no need to make comments if installing from the tar ball."
+"doc folder so no need to make comments if installing from the tar ball. "
+"Comments are also included as part of the CREATE EXTENSION install."
 msgstr ""
 "Bem como PostGIS v1.4.0, todas as funções têm comentários gerados a partir "
 "da documentação. Se desejar instalar esses comentários nas suas geodatabases "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-08-30 03:58+0000\n"
 "PO-Revision-Date: 2016-11-23 16:29+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -108,11 +108,11 @@ msgstr ""
 #: reference_management.xml:92 reference_management.xml:188
 #: reference_management.xml:254 reference_management.xml:298
 #: reference_management.xml:344 reference_management.xml:386
-#: reference_management.xml:427 reference_management.xml:458
+#: reference_management.xml:427 reference_management.xml:468
 #: reference_management.xml:499 reference_management.xml:540
-#: reference_management.xml:583 reference_management.xml:631
-#: reference_management.xml:677 reference_management.xml:726
-#: reference_management.xml:863
+#: reference_management.xml:581 reference_management.xml:624
+#: reference_management.xml:672 reference_management.xml:718
+#: reference_management.xml:767 reference_management.xml:904
 #, no-c-format
 msgid "Description"
 msgstr "Descrição"
@@ -197,14 +197,14 @@ msgstr "&sfs_compliant;"
 
 #. Tag: para
 #: reference_management.xml:118 reference_management.xml:195
-#: reference_management.xml:869
+#: reference_management.xml:910
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
 
 #. Tag: para
 #: reference_management.xml:119 reference_management.xml:196
-#: reference_management.xml:870
+#: reference_management.xml:911
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
@@ -222,12 +222,12 @@ msgstr ""
 #. Tag: title
 #: reference_management.xml:124 reference_management.xml:203
 #: reference_management.xml:267 reference_management.xml:306
-#: reference_management.xml:351 reference_management.xml:393
-#: reference_management.xml:433 reference_management.xml:464
-#: reference_management.xml:506 reference_management.xml:548
-#: reference_management.xml:600 reference_management.xml:646
-#: reference_management.xml:683 reference_management.xml:784
-#: reference_management.xml:873
+#: reference_management.xml:351 reference_management.xml:392
+#: reference_management.xml:434 reference_management.xml:474
+#: reference_management.xml:505 reference_management.xml:547
+#: reference_management.xml:589 reference_management.xml:641
+#: reference_management.xml:687 reference_management.xml:724
+#: reference_management.xml:825 reference_management.xml:914
 #, no-c-format
 msgid "Examples"
 msgstr "Exemplos"
@@ -369,11 +369,11 @@ msgstr ""
 #. Tag: title
 #: reference_management.xml:130 reference_management.xml:208
 #: reference_management.xml:272 reference_management.xml:312
-#: reference_management.xml:357 reference_management.xml:399
-#: reference_management.xml:470 reference_management.xml:512
-#: reference_management.xml:554 reference_management.xml:606
-#: reference_management.xml:652 reference_management.xml:689
-#: reference_management.xml:886
+#: reference_management.xml:357 reference_management.xml:398
+#: reference_management.xml:440 reference_management.xml:511
+#: reference_management.xml:553 reference_management.xml:595
+#: reference_management.xml:647 reference_management.xml:693
+#: reference_management.xml:730 reference_management.xml:927
 #, no-c-format
 msgid "See Also"
 msgstr "Veja também"
@@ -708,7 +708,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:359
+#: reference_management.xml:359 reference_management.xml:400
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
@@ -721,18 +721,68 @@ msgstr ""
 
 #. Tag: refname
 #: reference_management.xml:369
+#, fuzzy, no-c-format
+msgid "PostGIS_Liblwgeom_Version"
+msgstr "PostGIS_Lib_Version"
+
+#. Tag: refpurpose
+#: reference_management.xml:371
+#, fuzzy, no-c-format
+msgid ""
+"Returns the version number of the liblwgeom library. This should match the "
+"version of PostGIS."
+msgstr "Retorna à versão da biblioteca libxml2."
+
+#. Tag: funcprototype
+#: reference_management.xml:377
+#, fuzzy, no-c-format
+msgid ""
+"<funcdef>text <function>PostGIS_Liblwgeom_Version</function></funcdef> "
+"<paramdef></paramdef>"
+msgstr ""
+"<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
+"paramdef>"
+
+#. Tag: para
+#: reference_management.xml:388
+#, fuzzy, no-c-format
+msgid "Returns the version number of the liblwgeom library/"
+msgstr "Retorna à versão da biblioteca libxml2."
+
+#. Tag: programlisting
+#: reference_management.xml:394
+#, fuzzy, no-c-format
+msgid ""
+"SELECT PostGIS_Liblwgeom_Version();\n"
+"postgis_liblwgeom_version\n"
+"--------------------------\n"
+"2.3.3 r15473\n"
+"(1 row)"
+msgstr ""
+"SELECT PostGIS_Lib_Version();\n"
+"\n"
+"postgis_lib_version\n"
+"\n"
+"---------------------\n"
+"\n"
+"1.3.3\n"
+"\n"
+"(1 row)"
+
+#. Tag: refname
+#: reference_management.xml:410
 #, no-c-format
 msgid "PostGIS_LibXML_Version"
 msgstr "PostGIS_LibXML_Version"
 
 #. Tag: refpurpose
-#: reference_management.xml:371
+#: reference_management.xml:412
 #, no-c-format
 msgid "Returns the version number of the libxml2 library."
 msgstr "Retorna à versão da biblioteca libxml2."
 
 #. Tag: funcprototype
-#: reference_management.xml:377
+#: reference_management.xml:418
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> "
@@ -742,19 +792,19 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:388
+#: reference_management.xml:429
 #, no-c-format
 msgid "Returns the version number of the LibXML2 library."
 msgstr "Retorna à versão da biblioteca LibXML2."
 
 #. Tag: para
-#: reference_management.xml:389
+#: reference_management.xml:430
 #, no-c-format
 msgid "Availability: 1.5"
 msgstr "Disponibilidade: 1.5"
 
 #. Tag: programlisting
-#: reference_management.xml:395
+#: reference_management.xml:436
 #, no-c-format
 msgid ""
 "SELECT PostGIS_LibXML_Version();\n"
@@ -774,7 +824,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:401
+#: reference_management.xml:442
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend="
@@ -786,19 +836,19 @@ msgstr ""
 "linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:411
+#: reference_management.xml:452
 #, no-c-format
 msgid "PostGIS_Lib_Build_Date"
 msgstr "PostGIS_Lib_Build_Date"
 
 #. Tag: refpurpose
-#: reference_management.xml:413
+#: reference_management.xml:454
 #, no-c-format
 msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 msgstr "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:418
+#: reference_management.xml:459
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> "
@@ -808,13 +858,13 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:429
+#: reference_management.xml:470
 #, no-c-format
 msgid "<para>Returns build date of the PostGIS library.</para>"
 msgstr "<para>Returns build date of the PostGIS library.</para>"
 
 #. Tag: programlisting
-#: reference_management.xml:435
+#: reference_management.xml:476
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Lib_Build_Date();\n"
@@ -834,13 +884,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_management.xml:441
+#: reference_management.xml:482
 #, no-c-format
 msgid "PostGIS_Lib_Version"
 msgstr "PostGIS_Lib_Version"
 
 #. Tag: refpurpose
-#: reference_management.xml:443
+#: reference_management.xml:484
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
@@ -848,7 +898,7 @@ msgstr ""
 "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:449
+#: reference_management.xml:490
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></"
@@ -858,13 +908,13 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_management.xml:460
+#: reference_management.xml:501
 #, no-c-format
 msgid "<para>Returns the version number of the PostGIS library.</para>"
 msgstr "<para>Returns the version number of the PostGIS library.</para>"
 
 #. Tag: programlisting
-#: reference_management.xml:466
+#: reference_management.xml:507
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Lib_Version();\n"
@@ -884,7 +934,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:472
+#: reference_management.xml:513
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
@@ -896,19 +946,19 @@ msgstr ""
 "<xref linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:482
+#: reference_management.xml:523
 #, no-c-format
 msgid "PostGIS_PROJ_Version"
 msgstr "PostGIS_PROJ_Version"
 
 #. Tag: refpurpose
-#: reference_management.xml:484
+#: reference_management.xml:525
 #, no-c-format
 msgid "Returns the version number of the PROJ4 library."
 msgstr "Retorna à versão da biblioteca do PROJ4.  "
 
 #. Tag: funcprototype
-#: reference_management.xml:490
+#: reference_management.xml:531
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> "
@@ -918,7 +968,7 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:501
+#: reference_management.xml:542
 #, no-c-format
 msgid ""
 "Returns the version number of the PROJ4 library, or <varname>NULL</varname> "
@@ -928,7 +978,7 @@ msgstr ""
 "PROJ4 não estiver ativado. "
 
 #. Tag: programlisting
-#: reference_management.xml:508
+#: reference_management.xml:549
 #, no-c-format
 msgid ""
 "SELECT PostGIS_PROJ_Version();\n"
@@ -948,7 +998,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:514 reference_management.xml:556
+#: reference_management.xml:555 reference_management.xml:597
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
@@ -960,19 +1010,19 @@ msgstr ""
 "linkend=\"PostGIS_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:524
+#: reference_management.xml:565
 #, no-c-format
 msgid "PostGIS_Scripts_Build_Date"
 msgstr "PostGIS_Scripts_Build_Date"
 
 #. Tag: refpurpose
-#: reference_management.xml:526
+#: reference_management.xml:567
 #, no-c-format
 msgid "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
 msgstr "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:531
+#: reference_management.xml:572
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> "
@@ -982,19 +1032,19 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:542
+#: reference_management.xml:583
 #, no-c-format
 msgid "<para>Returns build date of the PostGIS scripts.</para>"
 msgstr "<para>Returns build date of the PostGIS scripts.</para>"
 
 #. Tag: para
-#: reference_management.xml:544
+#: reference_management.xml:585
 #, no-c-format
 msgid "Availability: 1.0.0RC1"
 msgstr "Disponibilidade: 1.0.0RC1"
 
 #. Tag: programlisting
-#: reference_management.xml:550
+#: reference_management.xml:591
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Scripts_Build_Date();\n"
@@ -1014,13 +1064,13 @@ msgstr ""
 "(1 row)"
 
 #. Tag: refname
-#: reference_management.xml:566
+#: reference_management.xml:607
 #, no-c-format
 msgid "PostGIS_Scripts_Installed"
 msgstr "PostGIS_Scripts_Installed"
 
 #. Tag: refpurpose
-#: reference_management.xml:568
+#: reference_management.xml:609
 #, no-c-format
 msgid ""
 "<refpurpose>Returns version of the postgis scripts installed in this "
@@ -1030,7 +1080,7 @@ msgstr ""
 "de dados.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:574
+#: reference_management.xml:615
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> "
@@ -1040,7 +1090,7 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:585
+#: reference_management.xml:626
 #, no-c-format
 msgid ""
 "<para>Returns version of the postgis scripts installed in this database.</"
@@ -1050,7 +1100,7 @@ msgstr ""
 "dados.</para>"
 
 #. Tag: para
-#: reference_management.xml:589
+#: reference_management.xml:630
 #, no-c-format
 msgid ""
 "If the output of this function doesn't match the output of <xref linkend="
@@ -1064,13 +1114,13 @@ msgstr ""
 "\">Upgrading</link> para mais informação."
 
 #. Tag: para
-#: reference_management.xml:596 reference_management.xml:642
+#: reference_management.xml:637 reference_management.xml:683
 #, no-c-format
 msgid "Availability: 0.9.0"
 msgstr "Disponibilidade: 0.9.0"
 
 #. Tag: programlisting
-#: reference_management.xml:602
+#: reference_management.xml:643
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Scripts_Installed();\n"
@@ -1090,7 +1140,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:608
+#: reference_management.xml:649
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend="
@@ -1100,13 +1150,13 @@ msgstr ""
 "\"PostGIS_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:614
+#: reference_management.xml:655
 #, no-c-format
 msgid "PostGIS_Scripts_Released"
 msgstr "PostGIS_Scripts_Released"
 
 #. Tag: refpurpose
-#: reference_management.xml:616
+#: reference_management.xml:657
 #, no-c-format
 msgid ""
 "<refpurpose>Returns the version number of the postgis.sql script released "
@@ -1116,7 +1166,7 @@ msgstr ""
 "instalado.</refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:622
+#: reference_management.xml:663
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> "
@@ -1126,7 +1176,7 @@ msgstr ""
 "<paramdef></paramdef>"
 
 #. Tag: para
-#: reference_management.xml:633
+#: reference_management.xml:674
 #, no-c-format
 msgid ""
 "<para>Returns the version number of the postgis.sql script released with the "
@@ -1136,7 +1186,7 @@ msgstr ""
 "</para>"
 
 #. Tag: para
-#: reference_management.xml:637
+#: reference_management.xml:678
 #, no-c-format
 msgid ""
 "Starting with version 1.1.0 this function returns the same value of <xref "
@@ -1146,7 +1196,7 @@ msgstr ""
 "linkend=\"PostGIS_Lib_Version\"/>. Manteve para compatibilidade atrasada."
 
 #. Tag: programlisting
-#: reference_management.xml:648
+#: reference_management.xml:689
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Scripts_Released();\n"
@@ -1166,7 +1216,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:654
+#: reference_management.xml:695
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend="
@@ -1176,13 +1226,13 @@ msgstr ""
 "\"PostGIS_Lib_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:660
+#: reference_management.xml:701
 #, no-c-format
 msgid "PostGIS_Version"
 msgstr "PostGIS_Version"
 
 #. Tag: refpurpose
-#: reference_management.xml:662
+#: reference_management.xml:703
 #, no-c-format
 msgid ""
 "<refpurpose>Returns PostGIS version number and compile-time options.</"
@@ -1192,7 +1242,7 @@ msgstr ""
 "refpurpose>"
 
 #. Tag: funcprototype
-#: reference_management.xml:668
+#: reference_management.xml:709
 #, no-c-format
 msgid ""
 "<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></"
@@ -1202,13 +1252,13 @@ msgstr ""
 "paramdef>"
 
 #. Tag: para
-#: reference_management.xml:679
+#: reference_management.xml:720
 #, no-c-format
 msgid "<para>Returns PostGIS version number and compile-time options.</para>"
 msgstr "<para>Retorna a versão do PostGIS e compila opções de tempo.</para>"
 
 #. Tag: programlisting
-#: reference_management.xml:685
+#: reference_management.xml:726
 #, no-c-format
 msgid ""
 "SELECT PostGIS_Version();\n"
@@ -1228,7 +1278,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_management.xml:691
+#: reference_management.xml:732
 #, no-c-format
 msgid ""
 ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend="
@@ -1240,13 +1290,13 @@ msgstr ""
 "linkend=\"PostGIS_PROJ_Version\"/>"
 
 #. Tag: refname
-#: reference_management.xml:701
+#: reference_management.xml:742
 #, no-c-format
 msgid "Populate_Geometry_Columns"
 msgstr "Populate_Geometry_Columns"
 
 #. Tag: refpurpose
-#: reference_management.xml:703
+#: reference_management.xml:744
 #, no-c-format
 msgid ""
 "Ensures geometry columns are defined with type modifiers or have appropriate "
@@ -1263,7 +1313,7 @@ msgstr ""
 "<varname>use_typmod=false</varname>"
 
 #. Tag: funcsynopsis
-#: reference_management.xml:709
+#: reference_management.xml:750
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>Populate_Geometry_Columns</"
@@ -1283,7 +1333,7 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_management.xml:728
+#: reference_management.xml:769
 #, no-c-format
 msgid ""
 "Ensures geometry columns have appropriate type modifiers or spatial "
@@ -1295,7 +1345,7 @@ msgstr ""
 "corretamente na table <varname>geometry_columns</varname>."
 
 #. Tag: para
-#: reference_management.xml:730
+#: reference_management.xml:771
 #, no-c-format
 msgid ""
 "For backwards compatibility and for spatial needs such as table inheritance "
@@ -1317,7 +1367,7 @@ msgstr ""
 "tem, pelo menos, três obstáculos: "
 
 #. Tag: para
-#: reference_management.xml:738
+#: reference_management.xml:779
 #, no-c-format
 msgid ""
 "<varname>enforce_dims_the_geom</varname> - ensures every geometry has the "
@@ -1327,7 +1377,7 @@ msgstr ""
 "a mesma dimensão (veja <xref linkend=\"ST_NDims\"/>)"
 
 #. Tag: para
-#: reference_management.xml:744
+#: reference_management.xml:785
 #, no-c-format
 msgid ""
 "<varname>enforce_geotype_the_geom</varname> - ensures every geometry is of "
@@ -1337,7 +1387,7 @@ msgstr ""
 "seja do mesmo tipo (veja <xref linkend=\"GeometryType\"/>)"
 
 #. Tag: para
-#: reference_management.xml:750
+#: reference_management.xml:791
 #, no-c-format
 msgid ""
 "<varname>enforce_srid_the_geom</varname> - ensures every geometry is in the "
@@ -1347,7 +1397,7 @@ msgstr ""
 "a mesma projeção (veja <xref linkend=\"ST_SRID\"/>)"
 
 #. Tag: para
-#: reference_management.xml:756
+#: reference_management.xml:797
 #, no-c-format
 msgid ""
 "If a table <varname>oid</varname> is provided, this function tries to "
@@ -1363,7 +1413,7 @@ msgstr ""
 "exceção é pega e uma notificação de erro surge, descrevendo o problema."
 
 #. Tag: para
-#: reference_management.xml:763
+#: reference_management.xml:804
 #, no-c-format
 msgid ""
 "If the <varname>oid</varname> of a view is provided, as with a table oid, "
@@ -1379,7 +1429,7 @@ msgstr ""
 "obstáculos."
 
 #. Tag: para
-#: reference_management.xml:769
+#: reference_management.xml:810
 #, no-c-format
 msgid ""
 "The parameterless variant is a simple wrapper for the parameterized variant "
@@ -1401,13 +1451,13 @@ msgstr ""
 "<varname>geometry_columns</varname>."
 
 #. Tag: para
-#: reference_management.xml:777
+#: reference_management.xml:818
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Disponibilidade: 1.4.0"
 
 #. Tag: para
-#: reference_management.xml:778
+#: reference_management.xml:819
 #, no-c-format
 msgid ""
 "Changed: 2.0.0 By default, now uses type modifiers instead of check "
@@ -1421,7 +1471,7 @@ msgstr ""
 "<varname>use_typmod</varname> e configurá-lo para falso."
 
 #. Tag: para
-#: reference_management.xml:780
+#: reference_management.xml:821
 #, no-c-format
 msgid ""
 "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was "
@@ -1433,7 +1483,7 @@ msgstr ""
 "modificadores de tipo ou com verificação de restrições. "
 
 #. Tag: programlisting
-#: reference_management.xml:786
+#: reference_management.xml:827
 #, no-c-format
 msgid ""
 "CREATE TABLE public.myspatial_table(gid serial, geom geometry);\n"
@@ -1481,7 +1531,7 @@ msgstr ""
 " geom   | geometry(LineString,4326) |"
 
 #. Tag: programlisting
-#: reference_management.xml:788
+#: reference_management.xml:829
 #, no-c-format
 msgid ""
 "-- This will change the geometry columns to use constraints if they are not "
@@ -1537,13 +1587,13 @@ msgstr ""
 "    \"enforce_srid_geom\" CHECK (st_srid(geom) = 4326)"
 
 #. Tag: refname
-#: reference_management.xml:803
+#: reference_management.xml:844
 #, no-c-format
 msgid "UpdateGeometrySRID"
 msgstr "UpdateGeometrySRID"
 
 #. Tag: refpurpose
-#: reference_management.xml:805
+#: reference_management.xml:846
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, geometry_columns "
@@ -1557,7 +1607,7 @@ msgstr ""
 "definição de tipo, ela será alterada."
 
 #. Tag: funcsynopsis
-#: reference_management.xml:811
+#: reference_management.xml:852
 #, no-c-format
 msgid ""
 "<funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></"
@@ -1597,7 +1647,7 @@ msgstr ""
 "</type> <parameter>srid</parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_management.xml:865
+#: reference_management.xml:906
 #, no-c-format
 msgid ""
 "Updates the SRID of all features in a geometry column, updating constraints "
@@ -1610,7 +1660,7 @@ msgstr ""
 "fornecido."
 
 #. Tag: para
-#: reference_management.xml:874
+#: reference_management.xml:915
 #, no-c-format
 msgid ""
 "This will change the srid of the roads table to 4326 from whatever it was "
@@ -1620,19 +1670,19 @@ msgstr ""
 "tenha sido antes"
 
 #. Tag: programlisting
-#: reference_management.xml:875
+#: reference_management.xml:916
 #, no-c-format
 msgid "SELECT UpdateGeometrySRID('roads','geom',4326);"
 msgstr "SELECT UpdateGeometrySRID('roads','geom',4326);"
 
 #. Tag: para
-#: reference_management.xml:877
+#: reference_management.xml:918
 #, no-c-format
 msgid "The prior example is equivalent to this DDL statement"
 msgstr "O exemplo anterior é equivalente a esta declaração DDL"
 
 #. Tag: programlisting
-#: reference_management.xml:878
+#: reference_management.xml:919
 #, no-c-format
 msgid ""
 "ALTER TABLE roads\n"
@@ -1644,7 +1694,7 @@ msgstr ""
 "    USING ST_SetSRID(geom,4326);"
 
 #. Tag: para
-#: reference_management.xml:880
+#: reference_management.xml:921
 #, no-c-format
 msgid ""
 "If you got the projection wrong (or brought it in as unknown) in load and "
@@ -1658,7 +1708,7 @@ msgstr ""
 "PostGIS."
 
 #. Tag: programlisting
-#: reference_management.xml:883
+#: reference_management.xml:924
 #, no-c-format
 msgid ""
 "ALTER TABLE roads\n"
@@ -1670,7 +1720,7 @@ msgstr ""
 "ST_Transform(ST_SetSRID(geom,4326),3857) ;"
 
 #. Tag: para
-#: reference_management.xml:888
+#: reference_management.xml:929
 #, no-c-format
 msgid ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
 msgstr ", <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>"
