@@ -46,20 +46,20 @@ PG_FUNCTION_INFO_V1(pgis_asgeobuf_transfn);
 Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	lwerror("Missing libprotobuf-c");
+	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext;
 	struct geobuf_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
-		lwerror("pgis_asmvt_transfn: called in non-aggregate context");
+		elog(ERROR, "pgis_asmvt_transfn: called in non-aggregate context");
 	MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
 		ctx = palloc(sizeof(*ctx));
 		if (PG_ARGISNULL(1))
-			lwerror("pgis_asgeobuf_transfn: parameter geom_name cannot be null");
+			elog(ERROR, "pgis_asgeobuf_transfn: parameter geom_name cannot be null");
 		ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(1));
 		geobuf_agg_init_context(ctx);
 	} else {
@@ -67,7 +67,7 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 2)))
-		lwerror("pgis_asgeobuf_transfn: parameter row cannot be other than a rowtype");
+		elog(ERROR, "pgis_asgeobuf_transfn: parameter row cannot be other than a rowtype");
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(2);
 
 	geobuf_agg_transfn(ctx);
@@ -82,12 +82,12 @@ PG_FUNCTION_INFO_V1(pgis_asgeobuf_finalfn);
 Datum pgis_asgeobuf_finalfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	lwerror("Missing libprotobuf-c");
+	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	struct geobuf_agg_context *ctx;
 	if (!AggCheckCallContext(fcinfo, NULL))
-		lwerror("pgis_asmvt_finalfn called in non-aggregate context");
+		elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();

@@ -262,7 +262,7 @@ static void encode_geometry(struct mvt_agg_context *ctx, LWGEOM *lwgeom)
 		return encode_mline(ctx, (LWMLINE*)lwgeom);
 	case MULTIPOLYGONTYPE:
 		return encode_mpoly(ctx, (LWMPOLY*)lwgeom);
-	default: lwerror("encode_geometry: '%s' geometry type not supported",
+	default: elog(ERROR, "encode_geometry: '%s' geometry type not supported",
 		lwtype_name(type));
 	}
 }
@@ -325,7 +325,7 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 		add_key(ctx, key);
 	}
 	if (!geom_name_found)
-		lwerror("parse_column_keys: no column '%s' found", ctx->geom_name);
+		elog(ERROR, "parse_column_keys: no column '%s' found", ctx->geom_name);
 	ReleaseTupleDesc(tupdesc);
 }
 
@@ -570,17 +570,16 @@ static void parse_values(struct mvt_agg_context *ctx)
 		}
 #if POSTGIS_PGSQL_VERSION >= 94
 		if (k == -1 && typoid != JSONBOID)
-#else
-		if (k == -1)
-#endif
-			lwerror("parse_values: unexpectedly could not find parsed key name",
-				key);
-#if POSTGIS_PGSQL_VERSION >= 94
+			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 		if (typoid == JSONBOID) {
 			tags = parse_jsonb(ctx, DatumGetJsonb(datum), tags);
 			continue;
 		}
+#else
+		if (k == -1)
+			elog(ERROR, "parse_values: unexpectedly could not find parsed key name '%s'", key);
 #endif
+
 		switch (typoid) {
 		case BOOLOID:
 			MVT_PARSE_DATUM(protobuf_c_boolean, mvt_kv_bool_value,
@@ -655,10 +654,10 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	const GBOX *ggbox = lwgeom_get_bbox(lwgeom);
 
 	if (width == 0 || height == 0)
-		lwerror("mvt_geom: bounds width or height cannot be 0");
+		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
 
 	if (extent == 0)
-		lwerror("mvt_geom: extent cannot be 0");
+		elog(ERROR, "mvt_geom: extent cannot be 0");
 
 	if (clip_geom) {
 		GBOX *bgbox = gbox_copy(gbox);
@@ -744,7 +743,7 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
 	VectorTile__Tile__Layer *layer;
 
 	if (ctx->extent == 0)
-		lwerror("mvt_agg_init_context: extent cannot be 0");
+		elog(ERROR, "mvt_agg_init_context: extent cannot be 0");
 
 	ctx->features_capacity = FEATURES_CAPACITY_INITIAL;
 	ctx->keys_hash = NULL;
@@ -800,7 +799,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	bool isnull;
 	Datum datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (!datum)
-		lwerror("mvt_agg_transfn: geometry column cannot be null");
+		elog(ERROR, "mvt_agg_transfn: geometry column cannot be null");
 	GSERIALIZED *gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(gs);
 

@@ -42,7 +42,7 @@ PG_FUNCTION_INFO_V1(ST_AsMVTGeom);
 Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	lwerror("Missing libprotobuf-c");
+	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	LWGEOM *lwgeom_in, *lwgeom_out;
@@ -51,11 +51,11 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	int extent, buffer;
 	bool clip_geom;
 	if (PG_ARGISNULL(0))
-		lwerror("ST_AsMVTGeom: geom cannot be null");
+		elog(ERROR, "ST_AsMVTGeom: geom cannot be null");
 	geom_in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 	if (PG_ARGISNULL(1))
-		lwerror("ST_AsMVTGeom: parameter bounds cannot be null");
+		elog(ERROR, "ST_AsMVTGeom: parameter bounds cannot be null");
 	bounds = (GBOX *) PG_GETARG_POINTER(1);
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 	buffer = PG_ARGISNULL(3) ? 0 : PG_GETARG_INT32(3);
@@ -78,26 +78,26 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_transfn);
 Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	lwerror("Missing libprotobuf-c");
+	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	MemoryContext aggcontext;
 	struct mvt_agg_context *ctx;
 
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
-		lwerror("pgis_asmvt_transfn: called in non-aggregate context");
+		elog(ERROR, "pgis_asmvt_transfn: called in non-aggregate context");
 	MemoryContextSwitchTo(aggcontext);
 
 	if (PG_ARGISNULL(0)) {
 		ctx = palloc(sizeof(*ctx));
 		if (PG_ARGISNULL(1))
-			lwerror("pgis_asmvt_transfn: parameter name cannot be null");
+			elog(ERROR, "pgis_asmvt_transfn: parameter name cannot be null");
 		text *name = PG_GETARG_TEXT_P(1);
 		ctx->name = text_to_cstring(name);
 		PG_FREE_IF_COPY(name, 1);
 		ctx->extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
 		if (PG_ARGISNULL(3))
-			lwerror("pgis_asmvt_transfn: parameter geom_name cannot be null");
+			elog(ERROR, "pgis_asmvt_transfn: parameter geom_name cannot be null");
 		text *geom_name = PG_GETARG_TEXT_P(3);
 		ctx->geom_name = text_to_cstring(geom_name);
 		PG_FREE_IF_COPY(geom_name, 3);
@@ -107,7 +107,7 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 	}
 
 	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 4)))
-		lwerror("pgis_asmvt_transfn: parameter row cannot be other than a rowtype");
+		elog(ERROR, "pgis_asmvt_transfn: parameter row cannot be other than a rowtype");
 	ctx->row = PG_GETARG_HEAPTUPLEHEADER(4);
 
 	mvt_agg_transfn(ctx);
@@ -123,12 +123,12 @@ PG_FUNCTION_INFO_V1(pgis_asmvt_finalfn);
 Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 {
 #ifndef HAVE_LIBPROTOBUF
-	lwerror("Missing libprotobuf-c");
+	elog(ERROR, "Missing libprotobuf-c");
 	PG_RETURN_NULL();
 #else
 	struct mvt_agg_context *ctx;
 	if (!AggCheckCallContext(fcinfo, NULL))
-		lwerror("pgis_asmvt_finalfn called in non-aggregate context");
+		elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();

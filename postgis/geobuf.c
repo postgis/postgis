@@ -72,7 +72,7 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 		keys[k++] = key;
 	}
 	if (!geom_name_found)
-		lwerror("encode_keys: no column with specificed geom_name found");
+		elog(ERROR, "encode_keys: no column with specificed geom_name found");
 	ctx->data->n_keys = k;
 	ctx->data->keys = keys;
 	ReleaseTupleDesc(tupdesc);
@@ -422,7 +422,7 @@ static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
 	case COLLECTIONTYPE:
 		return encode_collection(ctx, (LWCOLLECTION*)lwgeom);
 	default:
-		lwerror("encode_geometry: '%s' geometry type not supported",
+		elog(ERROR, "encode_geometry: '%s' geometry type not supported",
 				lwtype_name(type));
 	}
 	return NULL;
@@ -477,7 +477,7 @@ static void analyze_geometry(struct geobuf_agg_context *ctx, LWGEOM *lwgeom)
 			analyze_geometry(ctx, lwcollection->geoms[i]);
 		break;
 	default:
-		lwerror("analyze_geometry: '%s' geometry type not supported",
+		elog(ERROR, "analyze_geometry: '%s' geometry type not supported",
 			lwtype_name(type));
 	}
 }
@@ -571,7 +571,7 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
 	if (!datum)
-		lwerror("geobuf_agg_transfn: geometry column cannot be null");
+		elog(ERROR, "geobuf_agg_transfn: geometry column cannot be null");
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
 	lwgeom = lwgeom_from_gserialized(gs);
 

@@ -734,7 +734,7 @@ Datum sfcgal_is_solid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 	if (! lwgeom)
 	{
-		lwerror("sfcgal_is_solid: Unable to deserialize input");
+		elog(ERROR, "sfcgal_is_solid: Unable to deserialize input");
 	}
         result = FLAGS_GET_SOLID( lwgeom->flags );
 
@@ -752,7 +752,7 @@ Datum sfcgal_make_solid(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(input, 0);
 	if (! lwgeom)
 	{
-		lwerror("sfcgal_make_solid: Unable to deserialize input");
+		elog(ERROR, "sfcgal_make_solid: Unable to deserialize input");
 	}
 
         FLAGS_SET_SOLID( lwgeom->flags, 1);
