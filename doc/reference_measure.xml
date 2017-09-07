@@ -855,7 +855,7 @@ SELECT degrees(ST_Azimuth(ST_Point(25, 45), ST_Point(75, 100))) AS degA_B,
 			</para>
 			<para>ST_Angle(P1,P2,P3) = ST_Angle(P2,P1,P2,P3)</para> 
 			<para>Result is in radian and can be converted to degrees using a built-in PostgreSQL function degrees(), as shown in the example.</para> 
-			<para>Availability: 2.3.0</para> 
+			<para>Availability: 2.5.0</para> 
 		</refsection>
 
 		<refsection>
