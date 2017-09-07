@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-25 03:28+0000\n"
+"POT-Creation-Date: 2017-09-07 07:22+0000\n"
 "PO-Revision-Date: 2016-02-15 12:14+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -373,12 +373,13 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:98
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Proj4 reprojection library, version 4.6.0 or greater. The Proj4 library is "
-"used to provide coordinate reprojection support within PostGIS. Proj4 is "
-"available for download from <ulink url=\"http://trac.osgeo.org/proj/\"> "
-"http://trac.osgeo.org/proj/ </ulink> ."
+"Proj4 reprojection library, version 4.6.0 or greater. Proj4 4.9 or above is "
+"needed to take advantage of improved geodetic. The Proj4 library is used to "
+"provide coordinate reprojection support within PostGIS. Proj4 is available "
+"for download from <ulink url=\"http://trac.osgeo.org/proj/\"> http://trac."
+"osgeo.org/proj/ </ulink> ."
 msgstr ""
 "投影変換ライブラリ Proj4 の 4.6.0版以上。Proj4ライブラリは、PostGISの座標系投"
 "影変換機能に使われます。Proj4は、<ulink url=\"http://trac.osgeo.org/proj/"
@@ -1109,14 +1110,15 @@ msgstr ""
 
 #. Tag: para
 #: installation.xml:569
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "As of PostGIS v1.4.0, all the functions have comments generated from the "
 "documentation. If you wish to install these comments into your spatial "
 "databases later, run the command which requires docbook. The "
 "postgis_comments.sql and other package comments files raster_comments.sql, "
 "topology_comments.sql are also packaged in the tar.gz distribution in the "
-"doc folder so no need to make comments if installing from the tar ball."
+"doc folder so no need to make comments if installing from the tar ball. "
+"Comments are also included as part of the CREATE EXTENSION install."
 msgstr ""
 "PostGIS 1.4.0版からは、全ての関数に文書から生成されるコメントが付きます。これ"
 "らのコメントを後からインストールするには、次のコマンドを実行しますが、docbook"
