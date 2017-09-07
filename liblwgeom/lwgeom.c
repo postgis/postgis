@@ -1991,7 +1991,7 @@ lwgeom_subdivide_recursive(const LWGEOM *geom, int maxvertices, int depth, LWCOL
 	if ( depth > maxdepth )
 	{
 		lwcollection_add_lwgeom(col, lwgeom_clone_deep(geom));
-		return 0;
+		return 1;
 	}
 
 	nvertices = lwgeom_count_vertices(geom);
