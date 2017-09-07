@@ -119,7 +119,7 @@ default_noticereporter(const char *fmt, va_list ap)
 	char msg[LW_MSG_MAXLEN+1];
 	vsnprintf (msg, LW_MSG_MAXLEN, fmt, ap);
 	msg[LW_MSG_MAXLEN]='\0';
-	printf("%s\n", msg);
+	fprintf(stderr, "%s\n", msg);
 }
 
 static void
@@ -134,11 +134,11 @@ default_debuglogger(int level, const char *fmt, va_list ap)
 			msg[i] = ' ';
 		vsnprintf(msg+i, LW_MSG_MAXLEN-i, fmt, ap);
 		msg[LW_MSG_MAXLEN]='\0';
-		printf("%s\n", msg);
+		fprintf(stderr, "%s\n", msg);
 	}
 }
 
-static void
+static void 
 default_errorreporter(const char *fmt, va_list ap)
 {
 	char msg[LW_MSG_MAXLEN+1];
