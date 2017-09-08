@@ -245,7 +245,6 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	uint8_t *ptr;
 	int zmflag;
 
-#if PARANOIA_LEVEL > 0
 	if ( ! pa ) 
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
@@ -254,10 +253,9 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
-#endif
 
 	LWDEBUG(4, "getPoint4d_p called.");
 
@@ -338,7 +336,6 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
 	uint8_t *ptr;
 
-#if PARANOIA_LEVEL > 0
 	if ( ! pa ) 
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
@@ -347,10 +344,9 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
-#endif
 
 	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
 	         FLAGS_NDIMS(pa->flags), pa->npoints);
@@ -393,7 +389,6 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	uint8_t *ptr;
 	int zmflag;
 
-#if PARANOIA_LEVEL > 0
 	if ( ! pa ) 
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
@@ -402,10 +397,9 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
-#endif
 
 	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
 	         n, FLAGS_NDIMS(pa->flags), pa->npoints);
@@ -473,7 +467,6 @@ getPoint2d(const POINTARRAY *pa, int n)
 int
 getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
-#if PARANOIA_LEVEL > 0
 	if ( ! pa ) 
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
@@ -482,10 +475,9 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		lwnotice("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
-#endif
 
 	/* this does x,y */
 	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
