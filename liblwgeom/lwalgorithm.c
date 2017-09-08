@@ -795,6 +795,19 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		{
 			lonmaxadjust = -1 * lonwidth / 2.0;
 		}
+		if ( lonminadjust || lonmaxadjust )
+		{
+			lonmin += lonminadjust;
+			lonmax += lonmaxadjust;
+			/* Each adjustment cycle corresponds to 2 bits of storage in the
+			** geohash.	*/
+			precision++;
+		}
+		else
+		{
+			break;
+		}
+		
 		if ( miny > latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
@@ -804,15 +817,13 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 			latmaxadjust = -1 * latwidth / 2.0;
 		}
 		/* Only adjust if adjustments are legal (we haven't crossed any edges). */
-		if ( (lonminadjust || lonmaxadjust) && (latminadjust || latmaxadjust ) )
+		if ( latminadjust || latmaxadjust )
 		{
 			latmin += latminadjust;
-			lonmin += lonminadjust;
 			latmax += latmaxadjust;
-			lonmax += lonmaxadjust;
 			/* Each adjustment cycle corresponds to 2 bits of storage in the
 			** geohash.	*/
-			precision += 2;
+			precision++;
 		}
 		else
 		{

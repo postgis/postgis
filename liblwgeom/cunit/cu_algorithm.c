@@ -788,7 +788,7 @@ static void test_geohash(void)
 	lwline = (LWLINE*)lwgeom_from_wkt("LINESTRING(23.0 23.0,23.001 23.001)", LW_PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwline,0);
 	//printf("geohash %s\n",geohash);
-	CU_ASSERT_STRING_EQUAL(geohash, "ss06g7");
+	CU_ASSERT_STRING_EQUAL(geohash, "ss06g7h");
 	lwline_free(lwline);
 	lwfree(geohash);
 
