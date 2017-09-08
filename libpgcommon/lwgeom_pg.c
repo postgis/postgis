@@ -29,8 +29,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define PARANOIA_LEVEL 1
-
 #define PGC_ERRMSG_MAXLEN 256
 
 /**

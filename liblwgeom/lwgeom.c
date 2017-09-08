@@ -1516,11 +1516,6 @@ void lwgeom_swap_ordinates(LWGEOM *in, LWORD o1, LWORD o2)
 	LWPOLY *poly;
 	int i;
 
-#if PARANOIA_LEVEL > 0
-  assert(o1 < 4);
-  assert(o2 < 4);
-#endif
-
 	if ( (!in) || lwgeom_is_empty(in) ) return;
 
   /* TODO: check for lwgeom NOT having the specified dimension ? */

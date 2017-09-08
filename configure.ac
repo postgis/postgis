@@ -857,7 +857,7 @@ AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
 	[CHECK_JSON="$withval"], [])
 
-if test "$CHECK_JSON" != "no"; then dnl {
+if test "$CHECK_JSON" != "no"; then 
 
 AC_ARG_WITH([jsondir],
 	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
@@ -903,7 +903,7 @@ AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
 AC_SUBST([HAVE_JSON])
 
-fi dnl }
+fi 
 
 
 dnl ===========================================================================
@@ -927,61 +927,75 @@ AC_ARG_WITH([protobuf],
 	[AS_HELP_STRING([--without-protobuf], [build without protobuf-c support])],
 	[CHECK_PROTOBUF="$withval"], [])
 
-if test "$CHECK_PROTOBUF" != "no"; then dnl {
+dnl User didn't turn off protobuf support so...
+if test "$CHECK_PROTOBUF" != "no"; then 
 
-AC_ARG_WITH([protobufdir],
-	[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],
-	[PROTOBUFDIR="$withval"], [PROTOBUFDIR=])
+    AC_ARG_WITH([protobufdir],
+    	[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],
+    	[PROTOBUFDIR="$withval"], [PROTOBUFDIR=])
 
-if test ! "x$PROTOBUFDIR" = "x"; then
-	dnl Make sure that the directory exists
-	if test "x$PROTOBUFDIR" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/path/to])
-	else
-		AC_MSG_RESULT([Using user-specified protobuf-c directory: $PROTOBUFDIR])
+    dnl User specified the directory to find protobuf in, check that and
+    dnl fail if it doesn't work
+    if test ! "x$PROTOBUFDIR" = "x"; then
+    	dnl Make sure that the directory exists
+    	if test "x$PROTOBUFDIR" = "xyes"; then
+    		AC_MSG_ERROR([you must specify a parameter to --with-protobufdir, e.g. --with-protobufdir=/path/to])
+    	else
+    		AC_MSG_RESULT([Using user-specified protobuf-c directory: $PROTOBUFDIR])
 
-		dnl Add the include directory to PROTOBUF_CPPFLAGS
-		PROTOBUF_CPPFLAGS="-I$PROTOBUFDIR/include"
-		PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib"
-	fi
+    		dnl Add the include directory to PROTOBUF_CPPFLAGS
+    		PROTOBUF_CPPFLAGS="-I$PROTOBUFDIR/include"
+    		PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib"
+    	fi
+        
+        dnl Check that we can find the protobuf/protobuf.h header file
+        CPPFLAGS_SAVE="$CPPFLAGS"
+        CPPFLAGS="$PROTOBUF_CPPFLAGS"
+        AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [], 
+		    AC_MSG_ERROR([unable to find $PROTOBUFDIR/include/protobuf-c/protobuf-c.h])
+        )
+        CPPFLAGS="$CPPFLAGS_SAVE"
+
+        dnl Ensure we can link against libprotobuf-c
+        LIBS_SAVE="$LIBS"
+        LIBS="$PROTOBUF_LDFLAGS"
+        AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [], 
+            AC_MSG_ERROR([unable to link protobuf-c from $PROTOBUFDIR/lib])
+        )
+        HAVE_PROTOBUF=yes
+        PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib -lprotobuf-c"
+        LIBS="$LIBS_SAVE"
+
+    dnl No user-specified protobuf dir, try to find one using pkg-config  
+    else
+        if test "$PKG_CONFIG" = "no"; then
+        	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
+        	HAVE_PROTOBUF=no
+        else
+        	dnl Ensure libprotobuf-c is of minimum required version
+        	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
+                    HAVE_PROTOBUF=yes; 
+                    PROTOBUF_CPPFLAGS=$PROTOBUFC_CFLAGS;
+                    PROTOBUF_LDFLAGS=$PROTOBUFC_LIBS
+                ], 
+                [HAVE_PROTOBUF=no])
+        fi
+    fi
+
+    if test "$HAVE_PROTOBUF" = "yes"; then
+    	AC_PATH_PROG(PROTOCC, protoc-c)
+    	if test "x$PROTOCC" = "x"; then
+    	  AC_MSG_WARN([Protobuf compiler missing, disabling protobuf support.])
+    	  HAVE_PROTOBUF=no
+    	else
+    	  AC_DEFINE([HAVE_LIBPROTOBUF], [1], [Define to 1 if libprotobuf-c is present])
+    	fi
+    fi
+
+    AC_SUBST([PROTOBUF_CPPFLAGS])
+    AC_SUBST([PROTOBUF_LDFLAGS])
+    AC_SUBST([HAVE_PROTOBUF])
 fi
-
-dnl Check that we can find the protobuf/protobuf.h header file
-CPPFLAGS_SAVE="$CPPFLAGS"
-CPPFLAGS="$PROTOBUF_CPPFLAGS"
-AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [HAVE_PROTOBUF=yes], [])
-CPPFLAGS="$CPPFLAGS_SAVE"
-
-dnl Ensure we can link against libprotobuf-c
-LIBS_SAVE="$LIBS"
-LIBS="$PROTOBUF_LDFLAGS"
-AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [HAVE_PROTOBUF=yes; PROTOBUF_LDFLAGS="${PROTOBUF_LDFLAGS} -lprotobuf-c"], [HAVE_PROTOBUF=no])
-LIBS="$LIBS_SAVE"
-
-if test "$PKG_CONFIG" = "no"; then
-	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
-	HAVE_PROTOBUF=no
-else
-	dnl Ensure libprotobuf-c is of minimum required version
-	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [HAVE_PROTOBUF=yes], [HAVE_PROTOBUF=no])
-fi
-
-if test "$HAVE_PROTOBUF" = "yes"; then
-	AC_PATH_PROG(PROTOCC, protoc-c)
-	if test "x$PROTOCC" = "x"; then
-	  AC_MSG_WARN([Protobuf compiler missing, disabling protobuf support.])
-	  HAVE_PROTOBUF=no
-	else
-	  AC_DEFINE([HAVE_LIBPROTOBUF], 1, [Define to 1 if libprotobuf-c is present])
-	fi
-fi
-
-AC_SUBST([PROTOBUF_CPPFLAGS])
-AC_SUBST([PROTOBUF_LDFLAGS])
-AC_SUBST([HAVE_PROTOBUF])
-
-fi dnl }
-
 
 
 dnl ===========================================================================
@@ -1019,24 +1033,20 @@ AC_SUBST([IGE_MAC_LIBS])
 
 
 dnl ===========================================================================
-dnl Allow the user to enable debugging with --enable-debug
-dnl
-dnl Currently we default to debug level 4. See DEBUG for more information.
-dnl
-
-AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debugging messages]),
-	[POSTGIS_DEBUG_LEVEL=4], [POSTGIS_DEBUG_LEVEL=0])
-
-AC_DEFINE_UNQUOTED([POSTGIS_DEBUG_LEVEL], [$POSTGIS_DEBUG_LEVEL], [PostGIS library debug level (0=disabled)])
-
-dnl ===========================================================================
-dnl Allow the user to enable GEOS profiling with --enable-profile
+dnl Allow the developer to turn on expensive checks and debugging flags
+dnl with --enable-debug
 dnl
 
-AC_ARG_ENABLE([profile], AC_HELP_STRING([--enable-profile], [Enable GEOS profiling messages]),
-	[POSTGIS_PROFILE=1], [POSTGIS_PROFILE=0])
+AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable debugging code and flags]),
+	[ENABLE_DEBUG=1], [ENABLE_DEBUG=0])
 
-AC_DEFINE_UNQUOTED([POSTGIS_PROFILE], [$POSTGIS_PROFILE], [Enable GEOS profiling (0=disabled)])
+if test $ENABLE_DEBUG -eq 1; then
+    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [10], [Enable use of memory checks])
+    CFLAGS="$CFLAGS -g"
+else
+    AC_DEFINE_UNQUOTED([PARANOIA_LEVEL], [0], [Disable use of memory checks])
+fi
+
 
 dnl ===========================================================================
 dnl Define version macros

@@ -32,11 +32,6 @@
 #include <assert.h>
 #include "../postgis_svn_revision.h"
 
-/*
- * Lower this to reduce integrity checks
- */
-#define PARANOIA_LEVEL 1
-
 const char *
 lwgeom_version()
 {

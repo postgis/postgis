@@ -419,7 +419,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 	}
 
 #if PARANOIA_LEVEL > 0
-	if ( GEOSGeometryTypeId(polygons) != COLLECTIONTYPE )
+	if ( GEOSGeomTypeId(polygons) != COLLECTIONTYPE )
 	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);

@@ -1247,7 +1247,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
    * We should now have a collection
    */
 #if PARANOIA_LEVEL > 0
-  if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
+  if ( GEOSGeomTypeId(geos_result) != COLLECTIONTYPE )
   {
     GEOSGeom_destroy(geos_result);
     lwerror("Unexpected return from GEOSpolygonize");
