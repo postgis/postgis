@@ -58,17 +58,18 @@ Datum pgis_asgeobuf_transfn(PG_FUNCTION_ARGS)
 
 	if (PG_ARGISNULL(0)) {
 		ctx = palloc(sizeof(*ctx));
-		if (PG_ARGISNULL(1))
-			elog(ERROR, "pgis_asgeobuf_transfn: parameter geom_name cannot be null");
-		ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(1));
+
+		ctx->geom_name = NULL;
+		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(2));
 		geobuf_agg_init_context(ctx);
 	} else {
 		ctx = (struct geobuf_agg_context *) PG_GETARG_POINTER(0);
 	}
 
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 2)))
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
 		elog(ERROR, "pgis_asgeobuf_transfn: parameter row cannot be other than a rowtype");
-	ctx->row = PG_GETARG_HEAPTUPLEHEADER(2);
+	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
 	geobuf_agg_transfn(ctx);
 	PG_RETURN_POINTER(ctx);

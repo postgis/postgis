@@ -4368,7 +4368,25 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 -----------------------------------------------------------------------
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, text, int4, text, anyelement)
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE c IMMUTABLE _PARALLEL;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE c IMMUTABLE _PARALLEL;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
+	LANGUAGE c IMMUTABLE _PARALLEL;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asmvt_transfn'
 	LANGUAGE c IMMUTABLE _PARALLEL;
@@ -4380,7 +4398,7 @@ CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
-CREATE AGGREGATE ST_AsMVT(text, int4, text, anyelement)
+CREATE AGGREGATE ST_AsMVT(anyelement)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
@@ -4391,7 +4409,40 @@ CREATE AGGREGATE ST_AsMVT(text, int4, text, anyelement)
 );
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4, buffer int4, clip_geom bool)
+CREATE AGGREGATE ST_AsMVT(anyelement, text)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 2.4.0
+CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 2.4.0
+CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
+(
+	sfunc = pgis_asmvt_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
+	finalfunc = pgis_asmvt_finalfn
+);
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4 default 4096, buffer int4 default 0, clip_geom bool default true)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_AsMVTGeom'
 	LANGUAGE 'c' IMMUTABLE  _PARALLEL;
@@ -4409,7 +4460,13 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 -----------------------------------------------------------------------
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, text, anyelement)
+CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
+	LANGUAGE c IMMUTABLE _PARALLEL;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement, text)
 	RETURNS internal
 	AS 'MODULE_PATHNAME', 'pgis_asgeobuf_transfn'
 	LANGUAGE c IMMUTABLE _PARALLEL;
@@ -4421,7 +4478,18 @@ CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
 	LANGUAGE c IMMUTABLE _PARALLEL;
 
 -- Availability: 2.4.0
-CREATE AGGREGATE ST_AsGeobuf(text, anyelement)
+CREATE AGGREGATE ST_AsGeobuf(anyelement)
+(
+	sfunc = pgis_asgeobuf_transfn,
+	stype = internal,
+#if POSTGIS_PGSQL_VERSION >= 96
+	parallel = safe,
+#endif
+	finalfunc = pgis_asgeobuf_finalfn
+);
+
+-- Availability: 2.4.0
+CREATE AGGREGATE ST_AsGeobuf(anyelement, text)
 (
 	sfunc = pgis_asgeobuf_transfn,
 	stype = internal,

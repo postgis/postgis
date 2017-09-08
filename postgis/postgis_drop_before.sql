@@ -50,7 +50,7 @@ BEGIN
 		DROP FUNCTION IF EXISTS gserialized_gist_sel_nd(internal, oid, internal, int4) ;
 		ALTER FUNCTION geography_gist_selectivity(internal, oid, internal, int4) RENAME TO gserialized_gist_sel_nd;
 	END IF;
-	
+
 	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprjoin::text = 'geography_gist_join_selectivity') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
 		DROP FUNCTION IF EXISTS gserialized_gist_joinsel_nd(internal, oid, internal, smallint) ;
@@ -66,5 +66,12 @@ DROP FUNCTION IF EXISTS ST_AsLatLonText(geometry, text);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8);
 DROP FUNCTION IF EXISTS ST_AsTWKB(geometry,int4,int8,boolean);
+
+-- Old signatures for protobuf related functions improved in 2.4.0 RC/final
+DROP AGGREGATE IF EXISTS ST_AsMVT(text, int4, text, anyelement);
+DROP FUNCTION IF EXISTS ST_AsMVTGeom(geom geometry, bounds box2d, extent int4, buffer int4, clip_geom bool);
+DROP AGGREGATE IF EXISTS ST_AsGeobuf(text, anyelement);
+DROP FUNCTION IF EXISTS pgis_asgeobuf_transfn(internal, text, anyelement);
+DROP FUNCTION IF EXISTS pgis_asmvt_transfn(internal, text, int4, text, anyelement);
 
 DROP VIEW IF EXISTS geometry_columns; -- removed cast 2.2.0 so need to recreate

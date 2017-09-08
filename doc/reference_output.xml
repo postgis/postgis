@@ -1308,10 +1308,14 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
+		<funcprototype>
+				<funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
+				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+			</funcprototype>
 			<funcprototype>
 				<funcdef>bytea <function>ST_AsGeobuf</function></funcdef>
-				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1325,7 +1329,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
 		</para>
 
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 		<para><varname>row</varname> row data with at least a geometry column.</para>
 
 		<para>Availability: 2.4.0</para>
@@ -1356,9 +1360,9 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
-				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
-				<paramdef><type>int4 </type> <parameter>buffer</parameter></paramdef>
-				<paramdef><type>bool </type> <parameter>clip_geom</parameter></paramdef>
+				<paramdef choice="opt"><type>int4 </type> <parameter>extent=4096</parameter></paramdef>
+				<paramdef choice="opt"><type>int4 </type> <parameter>buffer=0</parameter></paramdef>
+				<paramdef choice="opt"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1402,12 +1406,27 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 	  </refnamediv>
 	  <refsynopsisdiv>
 		<funcsynopsis>
+		<funcprototype>
+				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
+				<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef>
+			</funcprototype>
 			<funcprototype>
 				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
+				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
+				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
 				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
-				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1427,10 +1446,10 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		deep. The keys and values in the object will be parsed into feature attributes.
 		</para>
 
-		<para><varname>name</varname> is the name of the Layer</para>
+	  <para><varname>row</varname> row data with at least a geometry column.</para>
+		<para><varname>name</varname> is the name of the Layer. If NULL it will use the string "default".</para>
 		<para><varname>extent</varname> is the tile extent in screen space as defined by the specification. If NULL it will default to 4096.</para>
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data.</para>
-		<para><varname>row</varname> row data with at least a geometry column.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
 		<para>Availability: 2.4.0</para>
 	  </refsection>

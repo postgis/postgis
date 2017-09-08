@@ -32,6 +32,7 @@
 #include "utils/typcache.h"
 #include "utils/lsyscache.h"
 #include "catalog/pg_type.h"
+#include "catalog/namespace.h"
 #include "executor/executor.h"
 #include "access/htup_details.h"
 #include "access/htup.h"

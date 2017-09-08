@@ -301,10 +301,10 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 	TupleDesc tupdesc = get_tuple_desc(ctx);
 	int natts = tupdesc->natts;
 	uint32_t i;
-	bool geom_name_found = false;
+	bool geom_found = false;
 	POSTGIS_DEBUG(2, "parse_column_keys called");
 	for (i = 0; i < natts; i++) {
-#if POSTGIS_PGSQL_VERSION < 110		
+#if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		char *tkey = tupdesc->attrs[i]->attname.data;
 #else
@@ -317,32 +317,41 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 #endif
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
-		if (strcmp(key, ctx->geom_name) == 0) {
-			ctx->geom_index = i;
-			geom_name_found = 1;
-			continue;
+		if (ctx->geom_name == NULL) {
+			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
+		} else {
+			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
 		}
 		add_key(ctx, key);
 	}
-	if (!geom_name_found)
-		elog(ERROR, "parse_column_keys: no column '%s' found", ctx->geom_name);
+	if (!geom_found)
+		elog(ERROR, "parse_column_keys: no geometry column found");
 	ReleaseTupleDesc(tupdesc);
 }
 
-static void encode_keys(struct mvt_agg_context *ctx) {
+static void encode_keys(struct mvt_agg_context *ctx)
+{
 	struct mvt_kv_key *kv;
 	size_t n_keys = ctx->keys_hash_i;
 	char **keys = palloc(n_keys * sizeof(*keys));
-	for (kv = ctx->keys_hash; kv != NULL; kv=kv->hh.next) {
+	for (kv = ctx->keys_hash; kv != NULL; kv=kv->hh.next)
 		keys[kv->id] = kv->name;
-	}
 	ctx->layer->n_keys = n_keys;
 	ctx->layer->keys = keys;
 
 	HASH_CLEAR(hh, ctx->keys_hash);
 }
 
-static VectorTile__Tile__Value *create_value() {
+static VectorTile__Tile__Value *create_value()
+{
 	VectorTile__Tile__Value *value = palloc(sizeof(*value));
 	vector_tile__tile__value__init(value);
 	return value;
@@ -560,7 +569,7 @@ static void parse_values(struct mvt_agg_context *ctx)
 		if (i == ctx->geom_index)
 			continue;
 
-#if POSTGIS_PGSQL_VERSION < 110		
+#if POSTGIS_PGSQL_VERSION < 110
 		key = tupdesc->attrs[i]->attname.data;
 		typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 #else

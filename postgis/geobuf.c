@@ -55,24 +55,34 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 	int natts = tupdesc->natts;
 	char **keys = palloc(natts * sizeof(*keys));
 	uint32_t i, k = 0;
-	bool geom_name_found = false;
+	bool geom_found = false;
 	for (i = 0; i < natts; i++) {
 #if POSTGIS_PGSQL_VERSION < 110
+		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
 		char *tkey = tupdesc->attrs[i]->attname.data;
 #else
+		Oid typoid = getBaseType(tupdesc->attrs[i].atttypid);
 		char *tkey = tupdesc->attrs[i].attname.data;
 #endif
 		char *key = palloc(strlen(tkey) + 1);
 		strcpy(key, tkey);
-		if (strcmp(key, ctx->geom_name) == 0) {
-			ctx->geom_index = i;
-			geom_name_found = true;
-			continue;
+		if (ctx->geom_name == NULL) {
+			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
+		} else {
+			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
+				ctx->geom_index = i;
+				geom_found = 1;
+				continue;
+			}
 		}
 		keys[k++] = key;
 	}
-	if (!geom_name_found)
-		elog(ERROR, "encode_keys: no column with specificed geom_name found");
+	if (!geom_found)
+		elog(ERROR, "encode_keys: no geometry column found");
 	ctx->data->n_keys = k;
 	ctx->data->keys = keys;
 	ReleaseTupleDesc(tupdesc);
@@ -617,8 +627,7 @@ uint8_t *geobuf_agg_finalfn(struct geobuf_agg_context *ctx)
 	}
 
 	for (i = 0; i < fc->n_features; i++)
-		fc->features[i]->geometry = encode_geometry(ctx,
-			ctx->lwgeoms[i]);
+		fc->features[i]->geometry = encode_geometry(ctx, ctx->lwgeoms[i]);
 
 	size_t len = data__get_packed_size(data);
 	uint8_t *buf = palloc(sizeof(*buf) * (len + VARHDRSZ));

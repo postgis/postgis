@@ -90,28 +90,26 @@ Datum pgis_asmvt_transfn(PG_FUNCTION_ARGS)
 
 	if (PG_ARGISNULL(0)) {
 		ctx = palloc(sizeof(*ctx));
-		if (PG_ARGISNULL(1))
-			elog(ERROR, "pgis_asmvt_transfn: parameter name cannot be null");
-		text *name = PG_GETARG_TEXT_P(1);
-		ctx->name = text_to_cstring(name);
-		PG_FREE_IF_COPY(name, 1);
-		ctx->extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
-		if (PG_ARGISNULL(3))
-			elog(ERROR, "pgis_asmvt_transfn: parameter geom_name cannot be null");
-		text *geom_name = PG_GETARG_TEXT_P(3);
-		ctx->geom_name = text_to_cstring(geom_name);
-		PG_FREE_IF_COPY(geom_name, 3);
+		ctx->name = "default";
+		if (PG_NARGS() > 2 && !PG_ARGISNULL(2))
+			ctx->name = text_to_cstring(PG_GETARG_TEXT_P(2));
+		ctx->extent = 4096;
+		if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
+			ctx->extent = PG_GETARG_INT32(3);
+		ctx->geom_name = NULL;
+		if (PG_NARGS() > 4 && !PG_ARGISNULL(4))
+			ctx->geom_name = text_to_cstring(PG_GETARG_TEXT_P(4));
 		mvt_agg_init_context(ctx);
 	} else {
 		ctx = (struct mvt_agg_context *) PG_GETARG_POINTER(0);
 	}
 
-	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 4)))
+	if (!type_is_rowtype(get_fn_expr_argtype(fcinfo->flinfo, 1)))
 		elog(ERROR, "pgis_asmvt_transfn: parameter row cannot be other than a rowtype");
-	ctx->row = PG_GETARG_HEAPTUPLEHEADER(4);
+	ctx->row = PG_GETARG_HEAPTUPLEHEADER(1);
 
 	mvt_agg_transfn(ctx);
-	PG_FREE_IF_COPY(ctx->row, 4);
+	PG_FREE_IF_COPY(ctx->row, 1);
 	PG_RETURN_POINTER(ctx);
 #endif
 }
