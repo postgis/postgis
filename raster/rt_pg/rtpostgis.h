@@ -28,6 +28,14 @@
 #ifndef RTPOSTGIS_H_INCLUDED
 #define RTPOSTGIS_H_INCLUDED
 
+/* Quiet build noise by stripping duplicate MACRO defns */
+/* coming from include files */
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+
 #include "librtcore.h"
 
 /* Debugging macros */
