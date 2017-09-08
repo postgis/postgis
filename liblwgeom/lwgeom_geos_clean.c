@@ -964,7 +964,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 			GEOSGeom_destroy(pd);
 			if ( loss )
 			{
-				lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
+				lwnotice("%s [%d] Vertices lost in LWGEOM_GEOS_makeValid", __FILE__, __LINE__);
 				/* return NULL */
 			}
 	}

@@ -160,7 +160,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 		return;
 	}
 
-	ptarray_to_wkt_sb(line->points, sb, precision, variant);
+    ptarray_to_wkt_sb(line->points, sb, precision, variant);
 }
 
 /*

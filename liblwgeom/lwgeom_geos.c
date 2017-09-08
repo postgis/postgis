@@ -1250,7 +1250,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
   if ( GEOSGeomTypeId(geos_result) != COLLECTIONTYPE )
   {
     GEOSGeom_destroy(geos_result);
-    lwerror("Unexpected return from GEOSpolygonize");
+    lwerror("%s [%d] Unexpected return from GEOSpolygonize", __FILE__, __LINE__);
     return 0;
   }
 #endif
@@ -1431,7 +1431,7 @@ lwgeom_buildarea(const LWGEOM *geom)
 #if PARANOIA_LEVEL > 0
 	if ( geom_out == NULL )
 	{
-		lwerror("serialization error");
+		lwerror("%s [%s] serialization error", __FILE__, __LINE__);
 		return NULL;
 	}
 

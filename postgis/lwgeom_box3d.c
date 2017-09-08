@@ -170,9 +170,7 @@ Datum BOX3D_to_BOX2D(PG_FUNCTION_ARGS)
 static void
 box3d_to_box_p(BOX3D *box, BOX *out)
 {
-#if PARANOIA_LEVEL > 0
-	if (box == NULL) return;
-#endif
+	if ( ! box ) return;
 
 	out->low.x = box->xmin;
 	out->low.y = box->ymin;

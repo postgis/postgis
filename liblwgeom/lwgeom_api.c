@@ -246,11 +246,15 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	int zmflag;
 
 #if PARANOIA_LEVEL > 0
-	if ( ! pa ) lwerror("getPoint4d_p: NULL pointarray");
+	if ( ! pa ) 
+	{
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
+	}
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("getPoint4d_p: point offset out of range");
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
 		return 0;
 	}
 #endif
@@ -335,12 +339,16 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 	uint8_t *ptr;
 
 #if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
+	if ( ! pa ) 
+	{
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
+	}
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		LWDEBUGF(4, "%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; /*error */
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
 	}
 #endif
 
@@ -386,12 +394,16 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	int zmflag;
 
 #if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
+	if ( ! pa ) 
+	{
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
+	}
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; /*error */
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
 	}
 #endif
 
@@ -462,12 +474,16 @@ int
 getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
 #if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
+	if ( ! pa ) 
+	{
+		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
+		return 0;
+	}
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwerror("getPoint2d_p: point offset out of range");
-		return 0; /*error */
+		lwerror("%s [%d] called with n=%d and npoints=%d", __FILE__, __LINE__, n, pa->npoints);
+		return 0;
 	}
 #endif
 

@@ -564,14 +564,15 @@ ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 #if PARANOIA_LEVEL > 0
 	if ( which > pa->npoints-1 )
 	{
-		lwerror("ptarray_removePoint: offset (%d) out of range (%d..%d)",
+		lwerror("%s [%d] offset (%d) out of range (%d..%d)", __FILE__, __LINE__,
 		        which, 0, pa->npoints-1);
 		return NULL;
 	}
 
 	if ( pa->npoints < 3 )
 	{
-		lwerror("ptarray_removePointe: can't remove a point from a 2-vertex POINTARRAY");
+		lwerror("%s [%d] can't remove a point from a 2-vertex POINTARRAY", __FILE__, __LINE__);
+		return NULL;
 	}
 #endif
 
@@ -1706,7 +1707,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 #if PARANOIA_LEVEL > 0
 	if ( pa == NULL )
 	{
-		lwerror("getPoint got NULL pointarray");
+		lwerror("%s [%d] got NULL pointarray", __FILE__, __LINE__);
 		return NULL;
 	}
 
@@ -1716,7 +1717,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 	     ( n > pa->npoints ) ||
 	     ( n >= pa->maxpoints ) )
 	{
-		lwerror("getPoint_internal called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)",n,pa->npoints,pa->maxpoints);
+		lwerror("%s [%d] called outside of ptarray range (n=%d, pa.npoints=%d, pa.maxpoints=%d)", __FILE__, __LINE__, n, pa->npoints, pa->maxpoints);
 		return NULL; /*error */
 	}
 #endif
