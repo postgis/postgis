@@ -243,7 +243,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if ( ! pa ) 
+	if ( ! pa )
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
@@ -334,7 +334,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
 	uint8_t *ptr;
 
-	if ( ! pa ) 
+	if ( ! pa )
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
@@ -387,7 +387,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	uint8_t *ptr;
 	int zmflag;
 
-	if ( ! pa ) 
+	if ( ! pa )
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;
@@ -465,7 +465,7 @@ getPoint2d(const POINTARRAY *pa, int n)
 int
 getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
-	if ( ! pa ) 
+	if ( ! pa )
 	{
 		lwerror("%s [%d] NULL POINTARRAY input", __FILE__, __LINE__);
 		return 0;

@@ -195,7 +195,7 @@ lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p)
 void lwpoint_free(LWPOINT *pt)
 {
 	if ( ! pt ) return;
-	
+
 	if ( pt->bbox )
 		lwfree(pt->bbox);
 	if ( pt->point )
@@ -254,7 +254,7 @@ lwpoint_force_dims(const LWPOINT *point, int hasz, int hasm)
 {
 	POINTARRAY *pdims = NULL;
 	LWPOINT *pointout;
-	
+
 	/* Return 2D empty */
 	if( lwpoint_is_empty(point) )
 	{
