@@ -23,9 +23,11 @@ PostGIS 2.4.0
   - #524, Covers support for Polygon-on-polygon, line on line,
           point on line for geography (Danny Götte)
 
-* Enhancements *
+* Enhancements and Fixes*
 
   - Support for PostgreSQL 10
+  - Preliminary support for PostgreSQL 11
+  - #3645, Avoid loading logically deleted records from shapefiles
   - #3747, Add zip4 and address_alphanumeric as attributes
            to norm_addy tiger_geocoder type.
   - #3748, address_standardizer lookup tables update
@@ -34,6 +36,10 @@ PostGIS 2.4.0
           (Wouter Geraedts)
   - #3684, Update to EPSG register v9
           (Even Rouault)
+  - #3830, fix initialization of incompatible type (>=9.6) address_standardizer
+  - #3662, make shp2pgsql work in debug mode by sendig debug to stderr
+  - #3405, memory leak in lwgeom_to_points
+  - #3832, support wide integer fields as int8 in shp2pgsql
 
 * Breaking Changes *
   - Dropped support for PostgreSQL 9.2.
@@ -42,6 +48,7 @@ PostGIS 2.4.0
     which means most aggs have to be dropped / recreated.
     If you have views that utilize PostGIS aggs,
     you'll need to drop before upgrade and recreate after upgrade
+  - #3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL
 
 PostGIS 2.4.0beta1
 2017/09/02
