@@ -1329,16 +1329,16 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 			Note that Geobuf in its current form cannot be streamed so the full output will be assembled in memory.
 		</para>
 
-		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 		<para><varname>row</varname> row data with at least a geometry column.</para>
+		<para><varname>geom_name</varname> is the name of the geometry column in the row data. If NULL it will default to the first found geometry column.</para>
 
 		<para>Availability: 2.4.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[encode(ST_AsGeobuf('geom', q), 'base64')
-    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') as geom) AS q;
+		<programlisting><![CDATA[SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')
+    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) AS q;
  st_asgeobuf
 ----------------------------------
  GAAiEAoOCgwIBBoIAAAAAgIAAAE=
@@ -1456,7 +1456,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting><![CDATA[SELECT ST_AsMVT('test', 4096, 'geom', q) FROM (SELECT 1 AS c1,
+		<programlisting><![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,
     ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS geom) AS q;
                               st_asmvt
