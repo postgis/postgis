@@ -58,7 +58,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 		elog(ERROR, "ST_AsMVTGeom: parameter bounds cannot be null");
 	bounds = (GBOX *) PG_GETARG_POINTER(1);
 	extent = PG_ARGISNULL(2) ? 4096 : PG_GETARG_INT32(2);
-	buffer = PG_ARGISNULL(3) ? 0 : PG_GETARG_INT32(3);
+	buffer = PG_ARGISNULL(3) ? 256 : PG_GETARG_INT32(3);
 	clip_geom = PG_ARGISNULL(4) ? true : PG_GETARG_BOOL(4);
 	lwgeom_out = mvt_geom(lwgeom_in, bounds, extent, buffer, clip_geom);
 	lwgeom_free(lwgeom_in);

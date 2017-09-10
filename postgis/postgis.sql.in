@@ -4442,7 +4442,7 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
 );
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4 default 4096, buffer int4 default 0, clip_geom bool default true)
+CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4 default 4096, buffer int4 default 256, clip_geom bool default true)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','ST_AsMVTGeom'
 	LANGUAGE 'c' IMMUTABLE  _PARALLEL;

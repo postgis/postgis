@@ -1361,7 +1361,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
 				<paramdef choice="opt"><type>int4 </type> <parameter>extent=4096</parameter></paramdef>
-				<paramdef choice="opt"><type>int4 </type> <parameter>buffer=0</parameter></paramdef>
+				<paramdef choice="opt"><type>int4 </type> <parameter>buffer=256</parameter></paramdef>
 				<paramdef choice="opt"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -1377,7 +1377,7 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		<para><varname>geom</varname> is the geometry to transform.</para>
 		<para><varname>bounds</varname> is the geometric bounds of the tile contents without buffer.</para>
 		<para><varname>extent</varname> is the tile extent in tile coordinate space as defined by the <ulink url="https://www.mapbox.com/vector-tiles/specification/">specification</ulink>. If NULL it will default to 4096.</para>
-		<para><varname>buffer</varname> is the buffer distance in tile coordinate space to optionally clip geometries. If NULL it will default to 0.</para>
+		<para><varname>buffer</varname> is the buffer distance in tile coordinate space to optionally clip geometries. If NULL it will default to 256.</para>
 		<para><varname>clip_geom</varname> is a boolean to control if geometries should be clipped or encoded as is. If NULL it will default to true.</para>
 
 		<para>Availability: 2.4.0</para>
