@@ -92,10 +92,10 @@ static void encode_keys(struct geobuf_agg_context *ctx)
 static void set_int_value(Data__Value *value, int64 intval) {
 	if (intval >= 0) {
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_POS_INT_VALUE;
-		value->pos_int_value = intval;
+		value->pos_int_value = (uint64_t) intval;
 	} else {
 		value->value_type_case = DATA__VALUE__VALUE_TYPE_NEG_INT_VALUE;
-		value->neg_int_value = labs(intval);
+		value->neg_int_value = (uint64_t) labs(intval);
 	}
 }
 
@@ -181,12 +181,12 @@ static int64_t *encode_coords(struct geobuf_agg_context *ctx, POINTARRAY *pa,
 	c = offset;
 	for (i = 0; i < len; i++) {
 		getPoint4d_p(pa, i, &pt);
-		sum[0] += coords[c++] = ceil(pt.x * ctx->e) - sum[0];
-		sum[1] += coords[c++] = ceil(pt.y * ctx->e) - sum[1];
+		sum[0] += coords[c++] = (int64_t) (ceil(pt.x * ctx->e) - sum[0]);
+		sum[1] += coords[c++] = (int64_t) (ceil(pt.y * ctx->e) - sum[1]);
 		if (ctx->dimensions == 3)
-			sum[2] += coords[c++] = ceil(pt.z * ctx->e) - sum[2];
+			sum[2] += coords[c++] = (int64_t) (ceil(pt.z * ctx->e) - sum[2]);
 		else if (ctx->dimensions == 4)
-			sum[3] += coords[c++] = ceil(pt.m * ctx->e) - sum[3];
+			sum[3] += coords[c++] = (int64_t) (ceil(pt.m * ctx->e) - sum[3]);
 	}
 	return coords;
 }
