@@ -857,7 +857,7 @@ AC_ARG_WITH([json],
 	[AS_HELP_STRING([--without-json], [build without json-c support])],
 	[CHECK_JSON="$withval"], [])
 
-if test "$CHECK_JSON" != "no"; then 
+if test "$CHECK_JSON" != "no"; then
 
 AC_ARG_WITH([jsondir],
 	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
@@ -903,7 +903,7 @@ AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
 AC_SUBST([HAVE_JSON])
 
-fi 
+fi
 
 
 dnl ===========================================================================
@@ -928,7 +928,7 @@ AC_ARG_WITH([protobuf],
 	[CHECK_PROTOBUF="$withval"], [])
 
 dnl User didn't turn off protobuf support so...
-if test "$CHECK_PROTOBUF" != "no"; then 
+if test "$CHECK_PROTOBUF" != "no"; then
 
     AC_ARG_WITH([protobufdir],
     	[AS_HELP_STRING([--with-protobufdir=PATH], [specify the protobuf-c installation directory])],
@@ -947,11 +947,11 @@ if test "$CHECK_PROTOBUF" != "no"; then
     		PROTOBUF_CPPFLAGS="-I$PROTOBUFDIR/include"
     		PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib"
     	fi
-        
+
         dnl Check that we can find the protobuf/protobuf.h header file
         CPPFLAGS_SAVE="$CPPFLAGS"
         CPPFLAGS="$PROTOBUF_CPPFLAGS"
-        AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [], 
+        AC_CHECK_HEADER([protobuf-c/protobuf-c.h], [],
 		    AC_MSG_ERROR([unable to find $PROTOBUFDIR/include/protobuf-c/protobuf-c.h])
         )
         CPPFLAGS="$CPPFLAGS_SAVE"
@@ -959,14 +959,14 @@ if test "$CHECK_PROTOBUF" != "no"; then
         dnl Ensure we can link against libprotobuf-c
         LIBS_SAVE="$LIBS"
         LIBS="$PROTOBUF_LDFLAGS"
-        AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [], 
+        AC_CHECK_LIB([protobuf-c], [protobuf_c_message_check], [],
             AC_MSG_ERROR([unable to link protobuf-c from $PROTOBUFDIR/lib])
         )
         HAVE_PROTOBUF=yes
         PROTOBUF_LDFLAGS="-L$PROTOBUFDIR/lib -lprotobuf-c"
         LIBS="$LIBS_SAVE"
 
-    dnl No user-specified protobuf dir, try to find one using pkg-config  
+    dnl No user-specified protobuf dir, try to find one using pkg-config
     else
         if test "$PKG_CONFIG" = "no"; then
         	AC_MSG_WARN([Cannot find pkg-config, disabling protobuf support.])
@@ -974,10 +974,10 @@ if test "$CHECK_PROTOBUF" != "no"; then
         else
         	dnl Ensure libprotobuf-c is of minimum required version
         	PKG_CHECK_MODULES([PROTOBUFC], [libprotobuf-c >= 1.1.0], [
-                    HAVE_PROTOBUF=yes; 
+                    HAVE_PROTOBUF=yes;
                     PROTOBUF_CPPFLAGS=$PROTOBUFC_CFLAGS;
                     PROTOBUF_LDFLAGS=$PROTOBUFC_LIBS
-                ], 
+                ],
                 [HAVE_PROTOBUF=no])
         fi
     fi
@@ -1533,9 +1533,10 @@ if test "$GEOS_NUMERIC_VERSION" -lt 30700; then
 AC_MSG_WARN([ --------- GEOS VERSION WARNING ------------ ])
 AC_MSG_WARN([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_WARN([  To take advantage of all the features of ])
-AC_MSG_WARN([  PostGIS we recommend you build using ])
-AC_MSG_WARN([  GEOS 3.7.0 or higher. You can download ])
-AC_MSG_WARN([  the latest versions from ])
+AC_MSG_WARN([  this PostGIS version requires GEOS 3.7.0 or higher which is not out yet.])
+AC_MSG_WARN([  To take advantage of most of the features of this PostGIS])
+AC_MSG_WARN([  we recommend GEOS 3.6 or higher])
+AC_MSG_WARN([  You can download the latest versions from ])
 AC_MSG_WARN([  http://trac.osgeo.org/geos ])
 AC_MSG_WARN()
 fi
