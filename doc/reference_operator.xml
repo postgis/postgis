@@ -1474,7 +1474,7 @@ FROM
 			<title>Description</title>
 
 			<para>The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-			is strictly to the right of the bounding box of geometry B.</para>
+			is strictly above the bounding box of geometry B.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.</para></note>
