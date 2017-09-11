@@ -10,9 +10,10 @@ pipeline:
     recursive: false
   build:
     image: *test-image
+    pull: true
     commands:
       - ./autogen.sh
-      - ./configure CFLAGS="-O0 -Wall"
+      - ./configure CFLAGS="-O0 -Wall" --without-interrupt-tests
       - make
   check:
     image: *test-image
@@ -20,4 +21,5 @@ pipeline:
       - service postgresql start
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh 2.4.0dev
+      - utils/check_all_upgrades.sh \
+        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
