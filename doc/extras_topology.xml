@@ -1283,7 +1283,7 @@ Updates all existing joined edges and relationships accordingly.
 		            </para>
 
                 <para>
-Refuses to remove an edge partecipating in the definition of an
+Refuses to remove an edge participating in the definition of an
 existing TopoGeometry.
 Refuses to heal two faces if any TopoGeometry is defined by only
 one of them (and not the other).
@@ -1621,7 +1621,7 @@ Updates all existing joined edges and relationships accordingly.
 			<refnamediv>
 				<refname>ST_MoveIsoNode</refname>
 
-				<refpurpose>Moves an isolated node in a topology from one point to another.  If new <varname>apoint</varname> geometry exists as a node an error is thrown. REturns description of move.</refpurpose>
+				<refpurpose>Moves an isolated node in a topology from one point to another.  If new <varname>apoint</varname> geometry exists as a node an error is thrown. Returns description of move.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -2715,7 +2715,7 @@ faceid
 
 			<refsection>
 				<title>Examples: Form from existing edges</title>
-				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>.</para>
+				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>).</para>
 				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
 
 			</refsection>

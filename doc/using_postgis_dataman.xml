@@ -2240,7 +2240,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
           syntax for building a BRIN index on a "geography" column is as follows:</para>
 
           <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING BRIN ( [geographyfield] ); </programlisting></para>
-          <para>The above syntax will always build a 2D-index for geospatial objetcs on the spheroid. </para>
+          <para>The above syntax will always build a 2D-index for geospatial objects on the spheroid. </para>
 
           <para>Currently, just the "inclusion support" is considered here, meaning
           that just <varname>&amp;&amp;</varname>, <varname>~</varname> and

@@ -244,7 +244,7 @@ SELECT ST_Buffer(
 
 <programlisting>--A buffered point approximates a circle
 -- A buffered point forcing approximation of (see diagram)
--- 2 points per circle is poly with 8 sides (see diagram)
+-- 2 points per quarter circle is poly with 8 sides (see diagram)
 SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,
 ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;
 
@@ -1810,7 +1810,7 @@ Returns a geometry that represents the shared portion of geomA and geomB.
 			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
 		  </important>
 
-	  	<warning><para>This function will drop the M coorindate values if present.</para></warning>
+	  	<warning><para>This function will drop the M coordinate values if present.</para></warning>
 
 		  <warning><para>If working with 3D geometries, you may want to use SFGCAL based <xref linkend="ST_3DIntersection" /> which does a proper 3D intersection for 3D geometries.  Although this function works with Z-coordinate, it does an averaging of Z-Coordinate values when <code>postgis.backend=geos</code>. <code>postgis.backend=sfcgal</code>, it will return a 2D geometry regardless ignoring the Z-Coordinate. Refer to <xref linkend="postgis_backend" /> for details.</para></warning>
 

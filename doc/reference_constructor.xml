@@ -1478,11 +1478,11 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		</para>
 
 		<para>&Z_support;</para>
-	
+
 		<para>Availability: 2.3.0 -  Support for multipoint input elements was introduced</para>
 		<para>Availability: 2.0.0 -  Support for linestring input elements was introduced</para>
 		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
-	
+
 		</refsection>
 
 		<refsection>
@@ -2315,7 +2315,7 @@ SELECT
 
 		<!-- optionally mention that this function uses indexes if appropriate -->
 		<note>
-		  <para>ST_Polygon is similar to first version oST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
+		  <para>ST_Polygon is similar to first version of ST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
 			so use LineMerge to merge multilines.  Also does not create polygons with holes.  Use ST_MakePolygon for that.</para>
 		</note>
 

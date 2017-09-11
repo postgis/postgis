@@ -588,7 +588,7 @@ VALUES (1,
 			<listitem><para><varname>num_bands</varname> number of bands</para></listitem>
 			<listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
 			<listitem><para><varname>regular_blocking</varname> sets spatially unique (no two rasters can be spatially the same) and coverage tile (raster is aligned to a coverage) constraints</para></listitem>
-			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meaning any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></para></listitem>
+			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meaning any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" />.</para></listitem>
 			<listitem><para><varname>srid</varname> ensures all have same srid</para></listitem>
 			<listitem><para>More -- any listed as inputs into the above functions</para></listitem>
 		</itemizedlist>
@@ -6214,7 +6214,7 @@ FROM dummy_rast WHERE rid = 1;
 		<refentry id="RT_ST_SetUpperLeft">
 			<refnamediv>
 				<refname>ST_SetUpperLeft</refname>
-				<refpurpose>Sets the value of the upper left corner of the pixel to projected X and Y coordinates.</refpurpose>
+				<refpurpose>Sets the value of the upper left corner of the pixel of the raster to projected X and Y coordinates.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -6231,7 +6231,7 @@ FROM dummy_rast WHERE rid = 1;
 			<refsection>
 				<title>Description</title>
 
-				<para>Set the value of the upper left corner of raster to the projected X coordinates</para>
+				<para>Set the value of the upper left corner of raster to the projected X and Y coordinates</para>
 				</refsection>
 
 				<refsection>
