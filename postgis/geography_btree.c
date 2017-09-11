@@ -47,11 +47,77 @@ Datum geography_cmp(PG_FUNCTION_ARGS);
 ** geocentric bounding box. We don't divide by two
 ** because we're only using the values for comparison.
 */
-static void geography_gidx_center(GIDX *gidx, POINT3D *p)
+static void geography_gidx_center(const GIDX *gidx, POINT3D *p)
 {
 	p->x = GIDX_GET_MIN(gidx, 0) + GIDX_GET_MAX(gidx, 0);
 	p->y = GIDX_GET_MIN(gidx, 1) + GIDX_GET_MAX(gidx, 1);
 	p->z = GIDX_GET_MIN(gidx, 2) + GIDX_GET_MAX(gidx, 2);
+}
+
+static int geography_cmp_internal(const GSERIALIZED *g1, const GSERIALIZED *g2)
+{
+	int cmp, have_box1, have_box2;
+	int g1_is_empty = gserialized_is_empty(g1);
+	int g2_is_empty = gserialized_is_empty(g2);
+	size_t sz1 = SIZE_GET(g1->size);
+	size_t sz2 = SIZE_GET(g2->size);
+	size_t sz = sz1 < sz2 ? sz1 : sz2;
+
+	/* Put aside some stack memory and use it for GIDX pointers. */
+	char gboxmem1[GIDX_MAX_SIZE];
+	char gboxmem2[GIDX_MAX_SIZE];
+	GIDX *gbox1 = (GIDX*)gboxmem1;
+	GIDX *gbox2 = (GIDX*)gboxmem2;
+	POINT3D p1, p2;
+
+	/* Empty == Empty */
+	if (g1_is_empty && g2_is_empty)
+		return 0;
+	
+	/* Empty < Non-empty */
+	if (g1_is_empty)
+		return -1;
+	
+	/* Non-empty > Empty */
+	if (g2_is_empty)
+		return 1;
+
+	/* Return equality for perfect equality only */
+	cmp = memcmp(g1, g2, sz);
+	if ( sz1 == sz2 && cmp == 0 )
+		return 0;
+	
+	/* Must be able to build box for each argument */
+	/* (ie, not empty geometry) */
+	have_box1 = gserialized_get_gidx_p(g1, gbox1);
+	have_box2 = gserialized_get_gidx_p(g2, gbox2);
+	if ( ! (have_box1 && have_box2) )
+	{
+		lwerror("%s [%d] unable to calculate boxes of geographies", __FILE__, __LINE__);
+	}
+
+	/* Order geographies more or less left-to-right */
+	/* using the centroids, and preferring the X axis */
+	geography_gidx_center(gbox1, &p1);
+	geography_gidx_center(gbox2, &p2);
+
+	if  ( ! FP_EQUALS(p1.x, p2.x) )
+		return p1.x < p2.x ? -1 : 1;
+
+	if  ( ! FP_EQUALS(p1.y, p2.y) )
+		return p1.y < p2.y ? -1 : 1;
+
+	if  ( ! FP_EQUALS(p1.z, p2.z) )
+		return p1.z < p2.z ? -1 : 1;
+
+	/* Geographies that are the "same in centroid" */
+	/* but didn't pass the exact equality test */
+	/* First order smallest-first */
+	if (sz1 != sz2)
+		return sz1 < sz2 ? -1 : 1;
+	/* Then just order on the memcmp return */
+	else
+		return cmp;
 }
 
 /*
@@ -61,27 +127,13 @@ static void geography_gidx_center(GIDX *gidx, POINT3D *p)
 PG_FUNCTION_INFO_V1(geography_lt);
 Datum geography_lt(PG_FUNCTION_ARGS)
 {
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if ( p1.x < p2.x || p1.y < p2.y || p1.z < p2.z )
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = geography_cmp_internal(g1, g2);
+	if (cmp < 0)
 		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
+	else
+		PG_RETURN_BOOL(FALSE);	
 }
 
 /*
@@ -91,27 +143,13 @@ Datum geography_lt(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_le);
 Datum geography_le(PG_FUNCTION_ARGS)
 {
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if ( p1.x <= p2.x || p1.y <= p2.y || p1.z <= p2.z )
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = geography_cmp_internal(g1, g2);
+	if (cmp <= 0)
 		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
+	else
+		PG_RETURN_BOOL(FALSE);	
 }
 
 /*
@@ -121,27 +159,13 @@ Datum geography_le(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_gt);
 Datum geography_gt(PG_FUNCTION_ARGS)
 {
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if ( p1.x > p2.x && p1.y > p2.y && p1.z > p2.z )
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = geography_cmp_internal(g1, g2);
+	if (cmp > 0)
 		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
+	else
+		PG_RETURN_BOOL(FALSE);	
 }
 
 /*
@@ -151,27 +175,41 @@ Datum geography_gt(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_ge);
 Datum geography_ge(PG_FUNCTION_ARGS)
 {
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if ( p1.x >= p2.x && p1.y >= p2.y && p1.z >= p2.z )
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = geography_cmp_internal(g1, g2);
+	if (cmp >= 0)
 		PG_RETURN_BOOL(TRUE);
+	else
+		PG_RETURN_BOOL(FALSE);	
+}
 
-	PG_RETURN_BOOL(FALSE);
+/*
+** BTree support function. Based on two geographies return true if
+** they are "equal" and false otherwise.
+*/
+PG_FUNCTION_INFO_V1(geography_eq);
+Datum geography_eq(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	int cmp = geography_cmp_internal(g1, g2);
+	if (cmp == 0)
+		PG_RETURN_BOOL(TRUE);
+	else
+		PG_RETURN_BOOL(FALSE);	
+}
+
+/*
+** BTree support function. Based on two geographies return true if
+** they are "equal" and false otherwise.
+*/
+PG_FUNCTION_INFO_V1(geography_cmp);
+Datum geography_cmp(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = PG_GETARG_GSERIALIZED_P(0);
+	GSERIALIZED *g2 = PG_GETARG_GSERIALIZED_P(1);
+	PG_RETURN_INT32(geography_cmp_internal(g1, g2));
 }
 
 
@@ -208,88 +246,4 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 }
 #endif
 
-/*
-** BTree support function. Based on two geographies return true if
-** they are "equal" and false otherwise.
-*/
-PG_FUNCTION_INFO_V1(geography_eq);
-Datum geography_eq(PG_FUNCTION_ARGS)
-{
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	     ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) && FP_EQUALS(p1.z, p2.z) )
-		PG_RETURN_BOOL(TRUE);
-
-	PG_RETURN_BOOL(FALSE);
-
-}
-
-/*
-** BTree support function. Based on two geographies return true if
-** they are "equal" and false otherwise.
-*/
-PG_FUNCTION_INFO_V1(geography_cmp);
-Datum geography_cmp(PG_FUNCTION_ARGS)
-{
-	/* Put aside some stack memory and use it for GIDX pointers. */
-	char gboxmem1[GIDX_MAX_SIZE];
-	char gboxmem2[GIDX_MAX_SIZE];
-	GIDX *gbox1 = (GIDX*)gboxmem1;
-	GIDX *gbox2 = (GIDX*)gboxmem2;
-	POINT3D p1, p2;
-
-	/* Must be able to build box for each argument (ie, not empty geometry) */
-	if ( ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(0), gbox1) ||
-	        ! gserialized_datum_get_gidx_p(PG_GETARG_DATUM(1), gbox2) )
-	{
-		PG_RETURN_BOOL(FALSE);
-	}
-
-	geography_gidx_center(gbox1, &p1);
-	geography_gidx_center(gbox2, &p2);
-
-	if  ( ! FP_EQUALS(p1.x, p2.x) )
-	{
-		if  (p1.x < p2.x)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	if  ( ! FP_EQUALS(p1.y, p2.y) )
-	{
-		if  (p1.y < p2.y)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	if  ( ! FP_EQUALS(p1.z, p2.z) )
-	{
-		if  (p1.z < p2.z)
-		{
-			PG_RETURN_INT32(-1);
-		}
-		PG_RETURN_INT32(1);
-	}
-
-	PG_RETURN_INT32(0);
-}
 

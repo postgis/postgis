@@ -97,7 +97,7 @@ typedef float _gidx_float_array[sizeof(float) * 2 * 4];
 int gserialized_datum_get_gidx_p(Datum gserialized_datum, GIDX *gidx);
 
 /* Pull out the gidx bounding box from an already de-toasted geography */
-int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx);
+int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx);
 /* Copy a new bounding box into an existing gserialized */
 GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
 

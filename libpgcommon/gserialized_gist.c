@@ -316,7 +316,7 @@ gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
 ** full geography and return the box based on that. If no box is available,
 ** return LW_FAILURE, otherwise LW_SUCCESS.
 */
-int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
+int gserialized_get_gidx_p(const GSERIALIZED *g, GIDX *gidx)
 {
 	int result = LW_SUCCESS;
 
