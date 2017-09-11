@@ -72,7 +72,10 @@ static int geography_cmp_internal(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 	/* Empty == Empty */
 	if (g1_is_empty && g2_is_empty)
-		return 0;
+    {
+        /* Actually make it so that POINT EMPTY < LINESTRING EMPTY */
+		return gserialized_get_type(g1) < gserialized_get_type(g2) ? -1 : 1;
+    }
 	
 	/* Empty < Non-empty */
 	if (g1_is_empty)
