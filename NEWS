@@ -40,6 +40,7 @@ PostGIS 2.4.0
   - #3662, make shp2pgsql work in debug mode by sendig debug to stderr
   - #3405, memory leak in lwgeom_to_points
   - #3832, support wide integer fields as int8 in shp2pgsql
+  - #3841, deterministic sorting support for empty geometries in btree geography
 
 * Breaking Changes *
   - Dropped support for PostgreSQL 9.2.
