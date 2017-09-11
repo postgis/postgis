@@ -784,6 +784,8 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->precisions = NULL;
 	state->col_names = NULL;
 	state->field_names = NULL;
+	state->num_fields = NULL;
+	state->pgfieldtypes = NULL;
 
 	state->from_srid = config->shp_sr_id;
 	state->to_srid = config->sr_id;
@@ -1075,6 +1077,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 	/* Get the field information from the DBF */
 	state->num_fields = DBFGetFieldCount(state->hDBFHandle);
+
 	state->num_records = DBFGetRecordCount(state->hDBFHandle);
 
 	/* Allocate storage for field information */
@@ -1864,7 +1867,6 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
 	int i;
-
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
