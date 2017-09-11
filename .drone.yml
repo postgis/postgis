@@ -21,4 +21,4 @@ pipeline:
       - service postgresql start
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh 2.4.0alpha
+      - utils/check_all_upgrades.sh `grep POSTGIS_MAJOR_VERSION Version.config | cut -d= -f2`.`grep ^POSTGIS_MINOR_VERSION Version.config | cut -d= -f2`.`grep ^POSTGIS_MICRO_VERSION Version.config | cut -d= -f2`
