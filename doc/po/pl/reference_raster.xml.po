@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-01 05:38+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -908,7 +908,8 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<varname>same_alignment</varname> ensures they all have same alignment "
-"meaning any two tiles you compare will return true for. Refer to"
+"meaning any two tiles you compare will return true for. Refer to <xref "
+"linkend=\"RT_ST_SameAlignment\"/>."
 msgstr ""
 
 #. Tag: para
@@ -7580,8 +7581,8 @@ msgstr ""
 #: reference_raster.xml:4326
 #, no-c-format
 msgid ""
-"Sets the value of the upper left corner of the pixel to projected X and Y "
-"coordinates."
+"Sets the value of the upper left corner of the pixel of the raster to "
+"projected X and Y coordinates."
 msgstr ""
 
 #. Tag: funcprototype
@@ -7598,7 +7599,7 @@ msgstr ""
 #: reference_raster.xml:4343
 #, no-c-format
 msgid ""
-"Set the value of the upper left corner of raster to the projected X "
+"Set the value of the upper left corner of raster to the projected X and Y "
 "coordinates"
 msgstr ""
 

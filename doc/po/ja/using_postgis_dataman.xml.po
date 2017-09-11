@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-25 03:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-02-15 12:29+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -4493,11 +4493,13 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:2014
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The above syntax will always build a 2D-index for geospatial objetcs on the "
+"The above syntax will always build a 2D-index for geospatial objects on the "
 "spheroid."
 msgstr ""
+"上の書式では常に2次元インデクスを構築します。PostGIS 2.0以上で対応しているn次"
+"元インデクスをジオメトリタイプで使うには、次の書式で生成できます。"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2016

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-24 19:58+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-12-27 19:04+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -4595,11 +4595,14 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:2014
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The above syntax will always build a 2D-index for geospatial objetcs on the "
+"The above syntax will always build a 2D-index for geospatial objects on the "
 "spheroid."
 msgstr ""
+"A sintaxe acima sempre irá construir um índice 2D. Para obter o índice n-"
+"dimensional suportado no PostGIS 2.0+ para a geometria, você pode criar um "
+"usando esta sintaxe. "
 
 #. Tag: para
 #: using_postgis_dataman.xml:2016

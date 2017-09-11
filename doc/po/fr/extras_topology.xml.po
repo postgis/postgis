@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2015-09-29 12:23+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: French (http://www.transifex.com/postgis/postgis/language/"
@@ -2022,10 +2022,10 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: extras_topology.xml:1166 extras_topology.xml:1234
+#: extras_topology.xml:1166
 #, no-c-format
 msgid ""
-"Refuses to remove an edge partecipating in the definition of an existing "
+"Refuses to remove an edge participating in the definition of an existing "
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
@@ -2081,6 +2081,15 @@ msgid ""
 "keeps the face on the right, to be symmetric with ST_AddEdgeModFace also "
 "keeping it. Returns the id of the face remaining in place of the removed "
 "edge."
+msgstr ""
+
+#. Tag: para
+#: extras_topology.xml:1234
+#, no-c-format
+msgid ""
+"Refuses to remove an edge partecipating in the definition of an existing "
+"TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
+"only one of them (and not the other)."
 msgstr ""
 
 #. Tag: para
@@ -2345,7 +2354,7 @@ msgstr ""
 msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
-"REturns description of move."
+"Returns description of move."
 msgstr ""
 
 #. Tag: funcprototype
@@ -3779,7 +3788,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
-"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>."
+"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
 
 #. Tag: programlisting

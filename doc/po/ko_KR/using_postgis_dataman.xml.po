@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-25 03:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-07-22 07:09+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -4527,11 +4527,13 @@ msgstr ""
 
 #. Tag: para
 #: using_postgis_dataman.xml:2014
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The above syntax will always build a 2D-index for geospatial objetcs on the "
+"The above syntax will always build a 2D-index for geospatial objects on the "
 "spheroid."
 msgstr ""
+"이 문법은 항상 2D 인덱스를 빌드할 것입니다. 해당 도형 유형에 PostGIS 2.0 이"
+"상 버전이 지원하는 n차원 인덱스를 얻으려면, 다음 문법으로 생성할 수 있습니다:"
 
 #. Tag: para
 #: using_postgis_dataman.xml:2016

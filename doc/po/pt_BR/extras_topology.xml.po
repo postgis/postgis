@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-12-12 17:27+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -2398,10 +2398,10 @@ msgstr ""
 "universal dentro da face no outro lado). "
 
 #. Tag: para
-#: extras_topology.xml:1166 extras_topology.xml:1234
-#, no-c-format
+#: extras_topology.xml:1166
+#, fuzzy, no-c-format
 msgid ""
-"Refuses to remove an edge partecipating in the definition of an existing "
+"Refuses to remove an edge participating in the definition of an existing "
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
@@ -2472,6 +2472,18 @@ msgstr ""
 "preferencialmente, a face que está na direita, para ser simétrico com a "
 "ST_AddEdgeModFace, também mantendo-a. Retorna a id da face remanescente no "
 "lugar do limite removido. "
+
+#. Tag: para
+#: extras_topology.xml:1234
+#, no-c-format
+msgid ""
+"Refuses to remove an edge partecipating in the definition of an existing "
+"TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
+"only one of them (and not the other)."
+msgstr ""
+"Recusa remover um limite que participa da definição de uma TopoGeometria. "
+"Recusa fechar duas faces se qualquer TopoGeometria estiver definida por "
+"apenas uma delas (e não a outra). "
 
 #. Tag: para
 #: extras_topology.xml:1249
@@ -2792,11 +2804,11 @@ msgstr "ST_MoveIsoNode"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1489
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
-"REturns description of move."
+"Returns description of move."
 msgstr ""
 "Move um nó isolado em uma topologia de um ponto para outro. Se nova "
 "<varname>apoint</varname> geometria existe como um nó, um erro é lançado. "
@@ -4586,10 +4598,10 @@ msgstr "Exemplos: Formados de bordas existentes"
 
 #. Tag: para
 #: extras_topology.xml:2429
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
-"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>."
+"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
 "Cria uma topogeometria no esquema ri_topopara camada 2 (nosso ri_roads), de "
 "tipo (2) LINHA, para a primeira borda (nó carregamos em "

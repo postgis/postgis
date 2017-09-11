@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-11-11 05:48+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -2357,10 +2357,10 @@ msgstr ""
 "イスにユニバースが侵入します)場合には、フェイスは生成されません。"
 
 #. Tag: para
-#: extras_topology.xml:1166 extras_topology.xml:1234
-#, no-c-format
+#: extras_topology.xml:1166
+#, fuzzy, no-c-format
 msgid ""
-"Refuses to remove an edge partecipating in the definition of an existing "
+"Refuses to remove an edge participating in the definition of an existing "
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
@@ -2431,6 +2431,18 @@ msgstr ""
 "間をとるため、一つを削除して、もう一つを編集します。ST_AddEdgeModFaceと対称と"
 "なるよう、右側のフェイスを優先して保持します。削除対象エッジの代わりに残存す"
 "るフェイスの識別番号を返します。"
+
+#. Tag: para
+#: extras_topology.xml:1234
+#, no-c-format
+msgid ""
+"Refuses to remove an edge partecipating in the definition of an existing "
+"TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
+"only one of them (and not the other)."
+msgstr ""
+"既存のTopoGeometryの定義に入り込んでいるエッジは削除を拒絶されます。"
+"TopoGeometryが二つのフェイスのうちひとつだけで定義されている (かつ他方は定義"
+"に使われていない)場合、二つのフェイスの修復は拒絶されます。"
 
 #. Tag: para
 #: extras_topology.xml:1249
@@ -2751,11 +2763,11 @@ msgstr "ST_MoveIsoNode"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1489
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
-"REturns description of move."
+"Returns description of move."
 msgstr ""
 "トポロジ内の孤立ノードを別の位置に移動させます。新しい<varname>apoint</"
 "varname>ジオメトリがノードとして存在しているなら、エラーが投げられます。移動"
@@ -4529,10 +4541,10 @@ msgstr "例: 既存エッジからの形成"
 
 #. Tag: para
 #: extras_topology.xml:2429
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
-"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>."
+"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
 "ラインタイプ (整数値で2)の、layer_idが2のレイヤ (ri_roads)があるri_topoスキー"
 "マ内で最初のエッジ (<varname>ST_CreateTopoGeo</varname>でロードしてあります)"

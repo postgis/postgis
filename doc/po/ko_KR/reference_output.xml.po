@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-07-17 15:51+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-07-22 23:59+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -74,8 +74,8 @@ msgstr ""
 #: reference_output.xml:207 reference_output.xml:283 reference_output.xml:384
 #: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
 #: reference_output.xml:671 reference_output.xml:715 reference_output.xml:781
-#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:995
-#: reference_output.xml:1035 reference_output.xml:1075
+#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:999
+#: reference_output.xml:1039 reference_output.xml:1094
 #, no-c-format
 msgid "Description"
 msgstr "설명"
@@ -237,8 +237,8 @@ msgstr "&Z_support;"
 #: reference_output.xml:229 reference_output.xml:330 reference_output.xml:498
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
 #: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
-#: reference_output.xml:1010 reference_output.xml:1051
-#: reference_output.xml:1098
+#: reference_output.xml:1014 reference_output.xml:1055
+#: reference_output.xml:1117
 #, no-c-format
 msgid "Examples"
 msgstr "예시"
@@ -311,7 +311,7 @@ msgstr ""
 #: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
 #: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
 #: reference_output.xml:745 reference_output.xml:804 reference_output.xml:972
-#: reference_output.xml:1103
+#: reference_output.xml:1122
 #, no-c-format
 msgid "See Also"
 msgstr "참고"
@@ -2936,20 +2936,26 @@ msgstr "ST_AsGeoJSON"
 msgid "Return a Geobuf representation of a set of rows."
 msgstr "도형의 GeoHash 표현식을 반환합니다."
 
-#. Tag: funcprototype
-#: reference_output.xml:986
+#. Tag: funcsynopsis
+#: reference_output.xml:985
 #, fuzzy, no-c-format
 msgid ""
-"<funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
-"<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
-"<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
+"<funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
+"<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsGeobuf</"
+"function></funcdef> <paramdef><type>anyelement </type> <parameter>row</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>geom_name</"
+"parameter></paramdef> </funcprototype>"
 msgstr ""
-"<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
-"<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+"<funcprototype> <funcdef>bytea <function>ST_AsEWKB</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsEWKB</"
+"function></funcdef> <paramdef><type>geometry </type> <parameter>g1</"
+"parameter></paramdef> <paramdef><type>text </type><parameter>NDR_or_XDR</"
+"parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:997
+#: reference_output.xml:1001
 #, no-c-format
 msgid ""
 "Return a Geobuf representation (<ulink url=\"https://github.com/mapbox/geobuf"
@@ -2960,32 +2966,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1003 reference_output.xml:1091
-#, no-c-format
-msgid ""
-"<varname>geom_name</varname> is the name of the geometry column in the row "
-"data."
-msgstr ""
-
-#. Tag: para
-#: reference_output.xml:1004 reference_output.xml:1092
+#: reference_output.xml:1007 reference_output.xml:1108
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1006 reference_output.xml:1047
-#: reference_output.xml:1094
+#: reference_output.xml:1008 reference_output.xml:1111
+#, no-c-format
+msgid ""
+"<varname>geom_name</varname> is the name of the geometry column in the row "
+"data. If NULL it will default to the first found geometry column."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1010 reference_output.xml:1051
+#: reference_output.xml:1113
 #, fuzzy, no-c-format
 msgid "Availability: 2.4.0"
 msgstr "2.2.0 버전부터 사용할 수 있습니다."
 
 #. Tag: programlisting
-#: reference_output.xml:1011
+#: reference_output.xml:1015
 #, no-c-format
 msgid ""
-"<![CDATA[encode(ST_AsGeobuf('geom', q), 'base64')\n"
-"    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') as geom) "
+"<![CDATA[SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')\n"
+"    FROM (SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))') AS geom) "
 "AS q;\n"
 " st_asgeobuf\n"
 "----------------------------------\n"
@@ -2995,13 +3001,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_output.xml:1017
+#: reference_output.xml:1021
 #, fuzzy, no-c-format
 msgid "ST_AsMVTGeom"
 msgstr "ST_AsSVG"
 
 #. Tag: refpurpose
-#: reference_output.xml:1019
+#: reference_output.xml:1023
 #, no-c-format
 msgid ""
 "Transform a geometry into the coordinate space of a <ulink url=\"https://www."
@@ -3009,15 +3015,16 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_output.xml:1023
+#: reference_output.xml:1027
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>buffer</parameter></paramdef> "
-"<paramdef><type>bool </type> <parameter>clip_geom</parameter></paramdef>"
+"<paramdef choice=\"opt\"><type>int4 </type> <parameter>extent=4096</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
+"<parameter>buffer=256</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>"
 msgstr ""
 "<funcprototype> <funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -3027,7 +3034,7 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:1037
+#: reference_output.xml:1041
 #, no-c-format
 msgid ""
 "Transform a geometry into the coordinate space of a <ulink url=\"https://www."
@@ -3037,13 +3044,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1041
+#: reference_output.xml:1045
 #, no-c-format
 msgid "<varname>geom</varname> is the geometry to transform."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1042
+#: reference_output.xml:1046
 #, no-c-format
 msgid ""
 "<varname>bounds</varname> is the geometric bounds of the tile contents "
@@ -3051,7 +3058,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1043
+#: reference_output.xml:1047
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in tile coordinate space as "
@@ -3060,15 +3067,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1044
+#: reference_output.xml:1048
 #, no-c-format
 msgid ""
 "<varname>buffer</varname> is the buffer distance in tile coordinate space to "
-"optionally clip geometries. If NULL it will default to 0."
+"optionally clip geometries. If NULL it will default to 256."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1045
+#: reference_output.xml:1049
 #, no-c-format
 msgid ""
 "<varname>clip_geom</varname> is a boolean to control if geometries should be "
@@ -3076,7 +3083,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1052
+#: reference_output.xml:1056
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsText(ST_AsMVTGeom(\n"
@@ -3092,37 +3099,64 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_output.xml:1058
+#: reference_output.xml:1062
 #, fuzzy, no-c-format
 msgid "ST_AsMVT"
 msgstr "ST_AsGML"
 
 #. Tag: refpurpose
-#: reference_output.xml:1060
+#: reference_output.xml:1064
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
 "Tile</ulink> representation of a set of rows."
 msgstr ""
 
-#. Tag: funcprototype
-#: reference_output.xml:1064
+#. Tag: funcsynopsis
+#: reference_output.xml:1067
 #, fuzzy, no-c-format
 msgid ""
-"<funcdef>bytea <function>ST_AsMVT</function></funcdef> <paramdef><type>text "
-"</type> <parameter>name</parameter></paramdef> <paramdef><type>int4 </type> "
-"<parameter>extent</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>geom_name</parameter></paramdef> <paramdef><type>anyelement </"
-"type> <parameter>row</parameter></paramdef>"
+"<funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> "
+"<paramdef><type>anyelement set </type> <parameter>row</parameter></paramdef> "
+"</funcprototype> <funcprototype> <funcdef>bytea <function>ST_AsMVT</"
+"function></funcdef> <paramdef><type>anyelement </type> <parameter>row</"
+"parameter></paramdef> <paramdef><type>text </type> <parameter>name</"
+"parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
+"<function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> "
+"<parameter>row</parameter></paramdef> <paramdef><type>text </type> "
+"<parameter>name</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>extent</parameter></paramdef> </funcprototype> <funcprototype> "
+"<funcdef>bytea <function>ST_AsMVT</function></funcdef> "
+"<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
+"<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
+"<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
+"funcprototype>"
 msgstr ""
-"<funcdef>text <function>ST_AsX3D</function></funcdef> "
-"<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>geography </type> <parameter>geog</parameter></paramdef> "
+"<paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> </funcprototype> "
+"<funcprototype> <funcdef>text <function>ST_AsKML</function></funcdef> "
+"<paramdef><type>integer </type> <parameter>version</parameter></paramdef> "
+"<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
+"\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </"
+"funcprototype> <funcprototype> <funcdef>text <function>ST_AsKML</function></"
+"funcdef> <paramdef><type>integer </type> <parameter>version</parameter></"
+"paramdef> <paramdef><type>geography </type> <parameter>geog</parameter></"
+"paramdef> <paramdef choice=\"opt\"><type>integer </type> "
+"<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice=\"opt"
+"\"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef> </"
+"funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:1077
+#: reference_output.xml:1096
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
@@ -3136,7 +3170,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1084
+#: reference_output.xml:1103
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
@@ -3147,13 +3181,15 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1089
+#: reference_output.xml:1109
 #, no-c-format
-msgid "<varname>name</varname> is the name of the Layer"
+msgid ""
+"<varname>name</varname> is the name of the Layer. If NULL it will use the "
+"string \"default\"."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1090
+#: reference_output.xml:1110
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in screen space as defined by "
@@ -3161,17 +3197,41 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1099
+#: reference_output.xml:1118
 #, no-c-format
 msgid ""
-"<![CDATA[SELECT ST_AsMVT('test', 4096, 'geom', q) FROM (SELECT 1 AS c1,\n"
+"<![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,\n"
 "    ST_AsMVTGeom(ST_GeomFromText('POLYGON ((35 10, 45 45, 15 40, 10 20, 35 "
 "10), (20 30, 35 35, 30 20, 20 30))'),\n"
 "    ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false) AS "
 "geom) AS q;\n"
 "                              st_asmvt\n"
 "--------------------------------------------------------------------\n"
-" \\x1a330a0474657374122112020000180322190946ec3f2214453b0a092832140f091d271a1e09091e13130f1a026331220228017802\n"
+" \\x1a320a0474657374121d12020000180322150946ec3f1a14453b0a09280f091413121e09091e0f1a026331220228012880207802\n"
 "\n"
 "                ]]>"
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "<funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
+#~ "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
+#~ "<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>text <function>ST_AsLatLonText</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef> "
+#~ "<paramdef><type>text </type> <parameter>format=''</parameter></paramdef>"
+
+#, fuzzy
+#~ msgid ""
+#~ "<funcdef>bytea <function>ST_AsMVT</function></funcdef> "
+#~ "<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
+#~ "<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
+#~ "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> "
+#~ "<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>"
+#~ msgstr ""
+#~ "<funcdef>text <function>ST_AsX3D</function></funcdef> "
+#~ "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
+#~ "<paramdef choice=\"opt\"><type>integer </type> "
+#~ "<parameter>maxdecimaldigits=15</parameter></paramdef> <paramdef choice="
+#~ "\"opt\"><type>integer </type> <parameter>options=0</parameter></paramdef>"

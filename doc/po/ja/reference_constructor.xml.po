@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-07-17 15:51+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-11-25 11:24+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -4143,9 +4143,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_constructor.xml:1850
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"ST_Polygon is similar to first version oST_MakePolygon except it also sets "
+"ST_Polygon is similar to first version of ST_MakePolygon except it also sets "
 "the spatial ref sys (SRID) of the polygon. Will not work with "
 "MULTILINESTRINGS so use LineMerge to merge multilines. Also does not create "
 "polygons with holes. Use ST_MakePolygon for that."

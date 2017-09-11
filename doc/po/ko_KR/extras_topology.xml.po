@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-03-29 06:29+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-07-22 08:48+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -2351,10 +2351,10 @@ msgstr ""
 "생성할 수 없습니다."
 
 #. Tag: para
-#: extras_topology.xml:1166 extras_topology.xml:1234
-#, no-c-format
+#: extras_topology.xml:1166
+#, fuzzy, no-c-format
 msgid ""
-"Refuses to remove an edge partecipating in the definition of an existing "
+"Refuses to remove an edge participating in the definition of an existing "
 "TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
 "only one of them (and not the other)."
 msgstr ""
@@ -2425,6 +2425,18 @@ msgstr ""
 "쪽에 있는 표면을 유지합니다. 역시 오른쪽의 표면을 유지하는 ST_AddEdgeModFace "
 "함수와 대칭을 이루기 위해서입니다. 제거한 경계선의 위치에 남아 있는 표면의 ID"
 "를 반환합니다."
+
+#. Tag: para
+#: extras_topology.xml:1234
+#, no-c-format
+msgid ""
+"Refuses to remove an edge partecipating in the definition of an existing "
+"TopoGeometry. Refuses to heal two faces if any TopoGeometry is defined by "
+"only one of them (and not the other)."
+msgstr ""
+"기존 TopoGeometry를 정의하는 데 쓰이는 경계선을 제거하지 않습니다. 두 표면 가"
+"운데 하나만 (다른 하나가 정의하는 TopoGeometry는 없으며) 어떤 TopoGeometry를 "
+"정의하는 경우 두 표면을 합치지 않습니다."
 
 #. Tag: para
 #: extras_topology.xml:1249
@@ -2741,11 +2753,11 @@ msgstr "ST_MoveIsoNode"
 
 #. Tag: refpurpose
 #: extras_topology.xml:1489
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Moves an isolated node in a topology from one point to another. If new "
 "<varname>apoint</varname> geometry exists as a node an error is thrown. "
-"REturns description of move."
+"Returns description of move."
 msgstr ""
 "지형 안에 있는 고립된 노드를 어떤 위치에서 다른 위치로 이동합니다. 새 "
 "<varname>apoint</varname> 도형의 위치에 노드가 존재할 경우 오류가 발생합니"
@@ -4520,10 +4532,10 @@ msgstr "예시: 기존 경계선으로부터 형성"
 
 #. Tag: para
 #: extras_topology.xml:2429
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) "
-"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>."
+"LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>)."
 msgstr ""
 "(<varname>ST_CreateTopoGeo</varname> 에 로드한) 레이어 2(예시의 ri_roads)의 "
 "type (2) 라인의 첫 번째 경계선을 대상으로 ri_topo 스키마에 TopoGeometry를 생"

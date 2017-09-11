@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2016-11-29 18:23+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1871,14 +1871,14 @@ msgstr ""
 
 #. Tag: para
 #: reference_operator.xml:1251
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
-"the bounding box of geometry A is strictly to the right of the bounding box "
-"of geometry B."
+"the bounding box of geometry A is strictly above the bounding box of "
+"geometry B."
 msgstr ""
-"O operador <varname>|&gt;&gt;</varname> retorna <varname>VERDADE</varname> "
-"se a caixa limitadora  da geometria A está estritamente à direita da caixa "
+"O operador <varname>&lt;&lt;|</varname> retorna <varname>VERDADE</varname> "
+"se a caixa limitadora  da geometria A está estritamente à esquerda da caixa "
 "limitadora da geometria B. "
 
 #. Tag: programlisting
@@ -2992,3 +2992,12 @@ msgstr ""
 #, no-c-format
 msgid ", <xref linkend=\"geometry_distance_box\"/>"
 msgstr ", <xref linkend=\"geometry_distance_box\"/>"
+
+#~ msgid ""
+#~ "The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> "
+#~ "if the bounding box of geometry A is strictly to the right of the "
+#~ "bounding box of geometry B."
+#~ msgstr ""
+#~ "O operador <varname>|&gt;&gt;</varname> retorna <varname>VERDADE</"
+#~ "varname> se a caixa limitadora  da geometria A está estritamente à "
+#~ "direita da caixa limitadora da geometria B. "

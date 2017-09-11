@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-07 07:22+0000\n"
+"POT-Creation-Date: 2017-09-11 22:04+0000\n"
 "PO-Revision-Date: 2015-09-29 12:24+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -401,7 +401,7 @@ msgstr ""
 msgid ""
 "--A buffered point approximates a circle\n"
 "-- A buffered point forcing approximation of (see diagram)\n"
-"-- 2 points per circle is poly with 8 sides (see diagram)\n"
+"-- 2 points per quarter circle is poly with 8 sides (see diagram)\n"
 "SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As "
 "promisingcircle_pcount,\n"
 "ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As "
@@ -2439,7 +2439,7 @@ msgstr ""
 #. Tag: para
 #: reference_processing.xml:1243
 #, no-c-format
-msgid "This function will drop the M coorindate values if present."
+msgid "This function will drop the M coordinate values if present."
 msgstr ""
 
 #. Tag: para
