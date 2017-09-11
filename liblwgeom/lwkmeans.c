@@ -93,6 +93,10 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	assert(ngeoms>0);
 	assert(geoms);
 	
+    /* Initialize our static structs */
+    memset(&config, 0, sizeof(kmeans_config));
+    memset(&result, 0, sizeof(kmeans_result));
+    
 	if (ngeoms<k)
 	{
 		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
@@ -100,11 +104,13 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 
 	/* We'll hold the temporary centroid objects here */
 	centroids = lwalloc(sizeof(LWGEOM*) * ngeoms);
+	memset(centroids, 0, sizeof(LWGEOM*) * ngeoms);
 
 	/* The vector of cluster means. We have to allocate a */
 	/* chunk of memory for these because we'll be mutating them */
 	/* in the kmeans algorithm */
 	centers_raw = lwalloc(sizeof(POINT2D) * k);
+	memset(centers_raw, 0, sizeof(POINT2D) * k);
 
 	/* K-means configuration setup */
 	config.objs = lwalloc(sizeof(Pointer) * ngeoms);
@@ -170,6 +176,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	dx = (max.x - min.x)/k;
 	dy = (max.y - min.y)/k;
 	seen = lwalloc(sizeof(int)*config.k);
+	memset(seen, 0, sizeof(int)*config.k);
 	for (i = 0; i < k; i++)
 	{
 		int closest;
