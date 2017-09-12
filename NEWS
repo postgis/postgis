@@ -50,6 +50,7 @@ PostGIS 2.4.0
     If you have views that utilize PostGIS aggs,
     you'll need to drop before upgrade and recreate after upgrade
   - #3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL
+  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0 when ST_DumpPoints got reimplemented in C
 
 PostGIS 2.4.0beta1
 2017/09/02
