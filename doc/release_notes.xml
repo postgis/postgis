@@ -7,7 +7,7 @@
         <title>Release 2.4.0</title>
         <para>Release date: 2017/09/xx</para>
         <para>This is a new feature release, with new functions, improved performance,
-            all relevant bug fixes from PostGIS 2.3.3,and other goodies.</para>
+            all relevant bug fixes from PostGIS 2.3.4dev,and other goodies.</para>
 
         <simplesect><title>New Features</title>
 <para>#3822, Have postgis_full_version() also show and check version of
@@ -24,7 +24,7 @@
 <para>#3753, Gist penalty speed improvements for 2d and nd points
            (Darafei Praliaskouski)</para>
 <para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
- <para>Most aggregates (raster and geometry),
+<para>Most aggregates (raster and geometry),
     and all stable / immutable (raster and geometry) marked as parallel safe</para>
 <para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
 <para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
@@ -32,25 +32,35 @@
           point on line for geography (Danny Götte)</para>
         </simplesect>
 
-        <simplesect><title>Enhancements</title>
-  <para>Support for PostgreSQL 10</para>
+        <simplesect><title>Enhancements and Fixes</title>
+ <para>Support for PostgreSQL 10</para>
+<para>Preliminary support for PostgreSQL 11</para>
+<para>#3645, Avoid loading logically deleted records from shapefiles</para>
 <para>#3747, Add zip4 and address_alphanumeric as attributes
            to norm_addy tiger_geocoder type.</para>
-<para>#3748, address_standardizer tiger lookup tables update
+<para>#3748, address_standardizer lookup tables update
            so pagc_normalize_address better standardizes abbreviations</para>
 <para>#3647, better handling of noding in ST_Node using GEOSNode
           (Wouter Geraedts)</para>
 <para>#3684, Update to EPSG register v9
           (Even Rouault)</para>
+<para>#3830, fix initialization of incompatible type (>=9.6) address_standardizer</para>
+<para>#3662, make shp2pgsql work in debug mode by sendig debug to stderr</para>
+<para>#3405, memory leak in lwgeom_to_points</para>
+<para>#3832, support wide integer fields as int8 in shp2pgsql</para>
+<para>#3841, deterministic sorting support for empty geometries in btree geography</para>
         </simplesect>
 
         <simplesect><title>Breaking Changes</title>
-  <para>Dropped support for PostgreSQL 9.2.</para>
-  <para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
-  <para>Most aggregates now marked as parallel safe,
+<para>Dropped support for PostgreSQL 9.2.</para>
+<para>#3810, GEOS 3.4.0 or above minimum required to compile</para>
+<para>Most aggregates now marked as parallel safe,
     which means most aggs have to be dropped / recreated.
-    If you have views that utilize PostGIS aggs (except for ST_Union),
+    If you have views that utilize PostGIS aggs,
     you'll need to drop before upgrade and recreate after upgrade</para>
+<para>#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL</para>
+<para>_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
+    when ST_DumpPoints got reimplemented in C</para>
         </simplesect>
     </sect1>
     <sect1>
