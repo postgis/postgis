@@ -13,14 +13,14 @@ PostGIS 2.4.0
   - #3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)
   - #3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)
   - #3689, Add orientation checking and forcing functions (Dan Baston)
-  - #3753, Gist penalty speed improvements for 2d and nd points
-           (Darafei Praliaskouski)
+  - #3753, Gist penalty speed improvements for 2D and ND points
+           (Darafei Praliaskouski, Andrey Borodin)
   - #3677, ST_FrechetDistance (Shinichi Sugiyama)
   - Most aggregates (raster and geometry),
     and all stable / immutable (raster and geometry) marked as parallel safe
   - #2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)
   - #3709, Allow signed distance for ST_Project (Darafei Praliaskouski)
-  - #524, Covers support for Polygon-on-polygon, line on line,
+  - #524, Covers support for polygon on polygon, line on line,
           point on line for geography (Danny Götte)
 
 * Enhancements and Fixes*
@@ -39,12 +39,13 @@ PostGIS 2.4.0
           (Wouter Geraedts)
   - #3684, Update to EPSG register v9
           (Even Rouault)
-  - #3830, fix initialization of incompatible type (>=9.6) address_standardizer
-  - #3662, make shp2pgsql work in debug mode by sendig debug to stderr
-  - #3405, memory leak in lwgeom_to_points
-  - #3832, support wide integer fields as int8 in shp2pgsql
-  - #3841, deterministic sorting support for empty geometries in btree geography
-  - #3844, make = operator a strict equality test, and < > to rough "spatial sorting"
+  - #3830, Fix initialization of incompatible type (>=9.6) address_standardizer
+  - #3662, Make shp2pgsql work in debug mode by sendig debug to stderr
+  - #3405, Fixed memory leak in lwgeom_to_points
+  - #3832, Support wide integer fields as int8 in shp2pgsql
+  - #3841, Deterministic sorting support for empty geometries in btree geography
+  - #3844, Make = operator a strict equality test, and < > to rough "spatial sorting"          
+
 
 * Breaking Changes *
   - Dropped support for PostgreSQL 9.2.
@@ -56,6 +57,12 @@ PostGIS 2.4.0
   - #3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL
   - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
     when ST_DumpPoints got reimplemented in C
+  - B-Tree index operators < = > changed to provide better spatial locality on sorting 
+    and have expected behavior on GROUP BY.
+    If you have btree index for geometry or geography, you need to REINDEX it, or review
+    if it was created by accident and needs to be replaced with GiST index.
+    If your code relies on old left-to-right box compare ordering, 
+    update it to use << >> operators
 
 PostGIS 2.4.0beta1
 2017/09/02
@@ -78,7 +85,7 @@ PostGIS 2.3.3
   - #3738, raster: Using -s without -Y in raster2pgsql transforms
            raster data instead of setting srid
   - #3744, ST_Subdivide loses subparts of inverted geometries
-           (Darafei Praliaskouski Komzpa)
+           (Darafei Praliaskouski)
   - #3750, @ and ~ operator not always schema qualified in geometry
            and raster functions. Causes restore issues.
            (Shane StClair of Axiom Data Science)
