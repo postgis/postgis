@@ -5041,7 +5041,7 @@ FROM (
 
 			<refsection>
 				<title>Description</title>
-				<para>Returns modified raster resulting from setting the specified pixels' values to new value for the designed band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
+				<para>Returns modified raster resulting from setting the specified pixels' values to new value for the designated band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
 				</para>
 
 				<para>Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is a wrapper around the geomval[] variant of ST_SetValues()</para>
@@ -6570,7 +6570,7 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 
 				<para><varname>gridx</varname> and <varname>gridy</varname> define any arbitrary pixel corner of the new grid. This is not necessarily the upper left corner of the new raster and it does not have to be inside or on the edge of the new raster extent.</para>
 
-				<para>You can optionnal define the pixel size of the new grid with <varname>scalex</varname> and <varname>scaley</varname>.</para>
+				<para>You can optionally define the pixel size of the new grid with <varname>scalex</varname> and <varname>scaley</varname>.</para>
 				<para>The extent of the new raster will encompass the extent of the provided raster.</para>
 
 				<para>A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified.</para>

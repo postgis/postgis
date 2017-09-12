@@ -33,7 +33,10 @@
         </simplesect>
 
         <simplesect><title>Enhancements and Fixes</title>
- <para>Support for PostgreSQL 10</para>
+<para>Many corrections to docs and several translations almost complete.
+    Andreas Schild who provided many corrections to core docs.
+    PostGIS Japanese translation team first to reach completion of translation.</para>
+<para>Support for PostgreSQL 10</para>
 <para>Preliminary support for PostgreSQL 11</para>
 <para>#3645, Avoid loading logically deleted records from shapefiles</para>
 <para>#3747, Add zip4 and address_alphanumeric as attributes

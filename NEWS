@@ -24,6 +24,9 @@ PostGIS 2.4.0
           point on line for geography (Danny Götte)
 
 * Enhancements and Fixes*
+  - Many corrections to docs and several translations almost complete.
+    Andreas Schild who provided many corrections to core docs.
+    PostGIS Japanese translation team first to reach completion of translation.
 
   - Support for PostgreSQL 10
   - Preliminary support for PostgreSQL 11
