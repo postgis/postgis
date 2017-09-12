@@ -15,8 +15,8 @@ FROM ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40,
 		) As geom;
 		
 SELECT
-	'ST_ConcaveHull Lines 0.80', ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.80) ) = geom As encloses_geom,
+	'ST_ConcaveHull Lines 0.80', ST_Within(geom,ST_ConcaveHull(
+		geom, 0.80) ) As encloses_geom,
 		(ST_Area(ST_ConvexHull(geom))
 		- ST_Area(ST_ConcaveHull(geom, 0.80))) < (0.80 * ST_Area(ST_ConvexHull(geom) ) ) As reached_target
 
@@ -31,8 +31,8 @@ FROM ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,
 
 -- test holes vs. no holes - holes should still enclose but have smaller area than no holes --
 SELECT
-	'ST_ConcaveHull Lines 0.80 holes', ST_Intersection(geom,ST_ConcaveHull(
-		geom, 0.80, true) ) = geom As encloses_geom,
+	'ST_ConcaveHull Lines 0.80 holes', ST_Within(geom,ST_ConcaveHull(
+		geom, 0.80, true) ) As encloses_geom,
 		ST_Area(ST_ConcaveHull(geom, 0.80, true)) < ST_Area(ST_ConcaveHull(geom, 0.80)) As reached_target
 
 FROM ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,
