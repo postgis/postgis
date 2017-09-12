@@ -44,6 +44,7 @@ PostGIS 2.4.0
   - #3405, memory leak in lwgeom_to_points
   - #3832, support wide integer fields as int8 in shp2pgsql
   - #3841, deterministic sorting support for empty geometries in btree geography
+  - #3844, make = operator a strict equality test, and < > to rough "spatial sorting"
 
 * Breaking Changes *
   - Dropped support for PostgreSQL 9.2.
