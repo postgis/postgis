@@ -25,6 +25,7 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+#include "lwgeodetic.h"
 
 /***********************************************************************
 * GSERIALIZED metadata utility functions.
@@ -64,6 +65,16 @@ uint32_t gserialized_max_header_size(void)
 {
 	/* read GSERIALIZED size + max bbox according gbox_serialized_size (2 + Z + M) + 1 int for type */
 	return sizeof(GSERIALIZED) + 8 * sizeof(float) + sizeof(int);
+}
+
+uint32_t gserialized_header_size(const GSERIALIZED *gser)
+{
+	uint32_t sz = 8; /* varsize (4) + srid(3) + flags (1) */
+
+	if (gserialized_has_bbox(gser)) 
+		sz += gbox_serialized_size(gser->flags);
+
+	return sz;
 }
 
 uint32_t gserialized_get_type(const GSERIALIZED *s)
@@ -167,6 +178,185 @@ int gserialized_is_empty(const GSERIALIZED *g)
 char* gserialized_to_string(const GSERIALIZED *g)
 {
 	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
+}
+
+/* Unfortunately including advanced instructions is something that
+only helps a small sliver of users who can build their own 
+knowing the target system they will be running on. Packagers
+have to aim for the lowest common demoninator. So this is 
+dead code for the forseeable future. */
+#define HAVE_PDEP 0
+#if HAVE_PDEP
+/* http://www.joshbarczak.com/blog/?p=454 */
+static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
+{
+    uint64_t x = u1;
+    uint64_t y = u2;
+    uint64_t x_mask = 0x5555555555555555;
+    uint64_t y_mask = 0xAAAAAAAAAAAAAAAA;
+    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask);
+}
+
+static uint64_t uint32_interleave_3(uint32_t u1, uint32_t u2, uint32_t u3)
+{
+    /* only look at the first 21 bits */
+    uint64_t x = u1 & 0x1FFFFF;
+    uint64_t y = u2 & 0x1FFFFF;
+    uint64_t z = u3 & 0x1FFFFF;
+    uint64_t x_mask = 0x9249249249249249;
+    uint64_t y_mask = 0x2492492492492492;
+    uint64_t z_mask = 0x4924924924924924;
+    return _pdep_u64(x, x_mask) | _pdep_u64(y, y_mask) | _pdep_u64(z, z_mask);
+}
+
+#else
+static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
+{
+    uint64_t x = u1;
+    uint64_t y = u2;
+    int i;
+
+    static uint64_t B[5] = 
+    { 
+        0x5555555555555555, 
+        0x3333333333333333, 
+        0x0F0F0F0F0F0F0F0F, 
+        0x00FF00FF00FF00FF, 
+        0x0000FFFF0000FFFF 
+    };
+    static uint64_t S[5] = { 1, 2, 4, 8, 16 };
+
+    for ( i = 4; i >= 0; i-- )
+    {
+        x = (x | (x << S[i])) & B[i];
+        y = (y | (y << S[i])) & B[i];
+    }
+
+    return x | (y << 1);
+}
+#endif
+
+
+uint64_t gbox_get_sortable_hash(const GBOX *g)
+{
+	uint32_t ux, uy;
+	float fx, fy;
+
+	/* 
+	* Since in theory the bitwise representation of an IEEE
+	* float is sortable (exponents come before mantissa, etc)
+	* we just copy the bits directly into an int and then
+	* interleave those ints.
+	*/
+	if ( FLAGS_GET_GEODETIC(g->flags) )
+	{
+		GEOGRAPHIC_POINT gpt;
+		POINT3D p;
+		p.x = (g->xmax + g->xmin) / 2.0;
+		p.y = (g->ymax + g->ymin) / 2.0;
+		p.z = (g->zmax + g->zmin) / 2.0;
+		normalize(&p);
+		cart2geog(&p, &gpt);
+		fx = gpt.lon;
+		fy = gpt.lat;
+		memcpy(&ux, &fx, sizeof(uint32_t));
+		memcpy(&uy, &fy, sizeof(uint32_t));
+	}
+	else
+	{
+		fx = (g->xmax + g->xmin) / 2.0;
+		fy = (g->ymax + g->ymin) / 2.0;
+		memcpy(&ux, &fx, sizeof(uint32_t));
+		memcpy(&uy, &fy, sizeof(uint32_t));
+	}
+	return uint32_interleave_2(ux, uy);
+}
+
+int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
+{
+	int g1_is_empty, g2_is_empty, cmp;
+	GBOX box1, box2;
+	size_t sz1 = SIZE_GET(g1->size);
+	size_t sz2 = SIZE_GET(g2->size);
+	size_t hsz1 = gserialized_header_size(g1);
+	size_t hsz2 = gserialized_header_size(g2);
+
+	uint8_t *b1 = (uint8_t*)g1 + hsz1;
+	uint8_t *b2 = (uint8_t*)g2 + hsz2;
+	size_t bsz1 = sz1 - hsz1;
+	size_t bsz2 = sz2 - hsz2;
+	size_t bsz = bsz1 < bsz2 ? bsz1 : bsz2;
+	
+	uint64_t hash1, hash2;
+	int32_t srid1 = gserialized_get_srid(g1);
+	int32_t srid2 = gserialized_get_srid(g2);
+	
+	g1_is_empty = (gserialized_get_gbox_p(g1, &box1) == LW_FAILURE);
+	g2_is_empty = (gserialized_get_gbox_p(g2, &box2) == LW_FAILURE);
+	
+	/* Empty == Empty */
+	if (g1_is_empty && g2_is_empty)
+    {
+        /* POINT EMPTY == POINT EMPTY */
+        /* POINT EMPTY < LINESTRING EMPTY */
+        uint32_t t1 = gserialized_get_type(g1);
+        uint32_t t2 = gserialized_get_type(g2);
+		return t1 == t2 ? 0 : (t1 < t2 ? -1 : 1);
+    }
+	
+	/* Empty < Non-empty */
+	if (g1_is_empty)
+		return -1;
+	
+	/* Non-empty > Empty */
+	if (g2_is_empty)
+		return 1;
+
+	/* Return equality for perfect equality only */
+	cmp = memcmp(b1, b2, bsz);
+	if ( bsz1 == bsz2 && srid1 == srid2 && cmp == 0 )
+		return 0;
+	
+	/* using the centroids, and preferring the X axis */
+	hash1 = gbox_get_sortable_hash(&box1);
+	hash2 = gbox_get_sortable_hash(&box2);
+
+	if ( hash1 > hash2 )
+		return 1;
+	else if ( hash1 < hash2 ) 
+		return -1;
+	
+	/* What, the hashes are equal? OK... sort on the */
+	/* box minima */
+	if (box1.xmin < box2.xmin)
+		return -1;
+	else if (box1.xmin > box2.xmin)
+		return 1;
+
+	if (box1.ymin < box2.ymin)
+		return -1;
+	else if (box1.ymin > box2.ymin)
+		return 1;
+
+	/* Still equal? OK... sort on the box maxima */
+	if (box1.xmax < box2.xmax)
+		return -1;
+	else if (box1.xmax > box2.xmax)
+		return 1;
+
+	if (box1.ymax < box2.ymax)
+		return -1;
+	else if (box1.ymax > box2.ymax)
+		return 1;
+
+	/* How about object size? Sort on that... */
+	if (hsz1 < hsz2)
+		return -1;
+	else if (hsz1 > hsz2)
+		return 1;
+	
+	/* Well, they aren't memcmp equal, so we'll sort on the memcmp */
+	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
 }
 
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)

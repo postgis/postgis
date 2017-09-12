@@ -141,23 +141,26 @@ SELECT 'ndovm2', array_agg(i) FROM v WHERE g &&& 'POINTZ(0 0 1)'::geometry
 ORDER BY 1;
 
 -- GROUP BY on empty
-SELECT '#3777', ST_AsText(geom), count(*) FROM (
-SELECT 'POINT(0 0)'::geometry geom UNION ALL
-SELECT 'POINT(0 0)'::geometry UNION ALL
-SELECT 'POINT(0 0)'::geometry UNION ALL
-SELECT 'POINT(0 1)'::geometry UNION ALL
-SELECT 'LINESTRING(0 0,0 1)'::geometry UNION ALL
-SELECT 'GEOMETRYCOLLECTION EMPTY'::geometry UNION ALL
-SELECT 'POINT EMPTY'::geometry
-) foo
+SELECT '#3777', ST_AsText(geom), count(*) 
+FROM (VALUES 
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 1)'::geometry),
+    ('LINESTRING(0 0,0 1)'::geometry),
+    ('GEOMETRYCOLLECTION EMPTY'::geometry),
+    ('POINT EMPTY'::geometry)
+) AS f(geom)
 GROUP BY geom ORDER BY 2;
-SELECT '#3777.1', ST_AsText(geom), count(*) FROM (
-SELECT 'POINT(0 0)'::geometry geom UNION ALL
-SELECT 'POINT(0 0)'::geometry UNION ALL
-SELECT 'POINT EMPTY'::geometry UNION ALL
-SELECT 'POINT(0 0)'::geometry UNION ALL
-SELECT 'POINT(0 1)'::geometry UNION ALL
-SELECT 'LINESTRING(0 0,0 1)'::geometry UNION ALL
-SELECT 'GEOMETRYCOLLECTION EMPTY'::geometry geom
-) foo
+
+SELECT '#3777.1', ST_AsText(geom), count(*) 
+FROM (VALUES
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT EMPTY'::geometry),
+    ('POINT(0 0)'::geometry),
+    ('POINT(0 1)'::geometry),
+    ('LINESTRING(0 0,0 1)'::geometry),
+    ('GEOMETRYCOLLECTION EMPTY'::geometry)
+) AS f(geom)
 GROUP BY geom ORDER BY 2;

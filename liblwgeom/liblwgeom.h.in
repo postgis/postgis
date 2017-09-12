@@ -651,6 +651,12 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 extern uint32_t gserialized_max_header_size(void);
 
 /**
+* Returns the size in bytes of the header, from the start of the 
+* object up to the type number.
+*/
+extern uint32_t gserialized_header_size(const GSERIALIZED *gser);
+
+/**
 * Extract the SRID from the serialized form (it is packed into
 * three bytes so this is a handy function).
 */
@@ -701,6 +707,16 @@ extern int gserialized_get_zm(const GSERIALIZED *gser);
 */
 extern int gserialized_ndims(const GSERIALIZED *gser);
 
+/**
+* Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
+* g2 and 0 if g1 and g2 are the "same". Equality is evaluated
+* with a memcmp and size check. So it is possible that two 
+* identical objects where one lacks a bounding box could be 
+* evaluated as non-equal initially. Greater and less than
+* are evaluated by calculating a sortable key from the center 
+* point of the object bounds.
+*/
+extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
 
 /**
 * Call this function to drop BBOX and SRID
@@ -1940,6 +1956,12 @@ extern void gbox_float_round(GBOX *gbox);
 * Return false if any of the dimensions is NaN or infinite
 */
 extern int gbox_is_valid(const GBOX *gbox);
+
+/**
+* Return a sortable key based on the center point of the
+* GBOX.
+*/
+extern uint64_t gbox_get_sortable_hash(const GBOX *g);
 
 /**
 * Utility function to get type number from string. For example, a string 'POINTZ'
