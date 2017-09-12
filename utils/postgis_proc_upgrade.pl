@@ -523,7 +523,7 @@ CREATE TEMPORARY TABLE _postgis_upgrade_info AS WITH versions AS (
   substring(installed from '([0-9]*)\.')::int * 100 +
   substring(installed from '[0-9]*\.([0-9]*)\.')::int
     as version_from_num,
-  position('dev' in  installed)::bool
+  installed ~ 'dev|alpha|beta'
     as version_from_isdev
   FROM versions
 ;
