@@ -6,9 +6,6 @@
     <sect1>
         <title>Release 2.4.0</title>
         <para>Release date: 2017/09/xx</para>
-        <para>This is a new feature release, with new functions, improved performance,
-            all relevant bug fixes from PostGIS 2.3.4dev,and other goodies.</para>
-
         <simplesect><title>New Features</title>
 <para>#3822, Have postgis_full_version() also show and check version of
            PostgreSQL the scripts were built against (Sandro Santilli)</para>
@@ -21,14 +18,14 @@
 <para>#3599, Geobuf output support via ST_AsGeobuf (Björn Harrtell)</para>
 <para>#3661, Mapbox vector tile output support via ST_AsMVT (Björn Harrtell / CartoDB)</para>
 <para>#3689, Add orientation checking and forcing functions (Dan Baston)</para>
-<para>#3753, Gist penalty speed improvements for 2d and nd points
-           (Darafei Praliaskouski)</para>
+<para>#3753, Gist penalty speed improvements for 2D and ND points
+           (Darafei Praliaskouski, Andrey Borodin)</para>
 <para>#3677, ST_FrechetDistance (Shinichi Sugiyama)</para>
 <para>Most aggregates (raster and geometry),
     and all stable / immutable (raster and geometry) marked as parallel safe</para>
 <para>#2249, ST_MakeEmptyCoverage for raster (David Zwarg, ainomieli)</para>
 <para>#3709, Allow signed distance for ST_Project (Darafei Praliaskouski)</para>
-<para>#524, Covers support for Polygon-on-polygon, line on line,
+<para>#524, Covers support for polygon on polygon, line on line,
           point on line for geography (Danny Götte)</para>
         </simplesect>
 
@@ -36,6 +33,7 @@
 <para>Many corrections to docs and several translations almost complete.
     Andreas Schild who provided many corrections to core docs.
     PostGIS Japanese translation team first to reach completion of translation.</para>
+
 <para>Support for PostgreSQL 10</para>
 <para>Preliminary support for PostgreSQL 11</para>
 <para>#3645, Avoid loading logically deleted records from shapefiles</para>
@@ -47,11 +45,12 @@
           (Wouter Geraedts)</para>
 <para>#3684, Update to EPSG register v9
           (Even Rouault)</para>
-<para>#3830, fix initialization of incompatible type (>=9.6) address_standardizer</para>
-<para>#3662, make shp2pgsql work in debug mode by sendig debug to stderr</para>
-<para>#3405, memory leak in lwgeom_to_points</para>
-<para>#3832, support wide integer fields as int8 in shp2pgsql</para>
-<para>#3841, deterministic sorting support for empty geometries in btree geography</para>
+<para>#3830, Fix initialization of incompatible type (>=9.6) address_standardizer</para>
+<para>#3662, Make shp2pgsql work in debug mode by sendig debug to stderr</para>
+<para>#3405, Fixed memory leak in lwgeom_to_points</para>
+<para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
+<para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
+<para>#3844, Make = operator a strict equality test, and &lt; &gt; to rough "spatial sorting"</para>
         </simplesect>
 
         <simplesect><title>Breaking Changes</title>
@@ -64,6 +63,12 @@
 <para>#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL</para>
 <para>_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
     when ST_DumpPoints got reimplemented in C</para>
+<para>B-Tree index operators &lt; = &gt; changed to provide better spatial locality on sorting
+    and have expected behavior on GROUP BY.
+    If you have btree index for geometry or geography, you need to REINDEX it, or review
+    if it was created by accident and needs to be replaced with GiST index.
+    If your code relies on old left-to-right box compare ordering,
+    update it to use &lt;&lt; &gt;&gt; operators.</para>
         </simplesect>
     </sect1>
     <sect1>
