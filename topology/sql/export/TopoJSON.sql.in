@@ -161,7 +161,7 @@ _edges AS (
 ),
 _leftmost_non_dangling_edge AS (
   SELECT e.* FROM _edges e WHERE e.lf != e.rf
-  ORDER BY ST_XMin(geom) LIMIT 1
+  ORDER BY ST_XMin(geom), ST_YMin(geom) LIMIT 1
 ),
 _edgepath AS (
   SELECT
