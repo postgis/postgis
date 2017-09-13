@@ -1693,6 +1693,55 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 		</refentry>
 	</sect1>
 
+		<refentry id="ST_RemoveIsoEdge">
+			<refnamediv>
+				<refname>ST_RemoveIsoEdge</refname>
+
+				<refpurpose>Removes an isolated edge and returns description of action. If the edge is not isolated, then an exception is thrown.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>ST_RemoveIsoEdge</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+                <title>Description</title>
+
+                <para>Removes an isolated edge and returns description of action. If the edge is not isolated, then an exception is thrown.</para>
+
+
+                <!-- use this format if new function -->
+                <para>Availability: 1.? </para>
+	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X+1.3.3</para>
+			</refsection>
+
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- Remove an isolated node with no face  --
+SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
+         result
+-------------------------
+ Isolated node 7 removed
+</programlisting>
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AddIsoNode"/></para>
+			</refsection>
+		</refentry>
+	</sect1>
+
+
 	<sect1 id="Topology_Accessors">
 	  <title>Topology Accessors</title>
         <refentry id="GetEdgeByPoint">
