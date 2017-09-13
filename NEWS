@@ -1,3 +1,20 @@
+PostGIS 2.4.0rc1
+2017/09/13
+Note possible breaking changes since 2.4.0 beta1 release are:
+* Breaking Changes *
+  - B-Tree index operators < = > changed to provide better spatial locality on sorting
+    and have expected behavior on GROUP BY.
+    If you have btree index for geometry or geography, you need to REINDEX it, or review
+    if it was created by accident and needs to be replaced with GiST index.
+    If your code relies on old left-to-right box compare ordering,
+    update it to use << >> operators.
+  - ST_AsMVT aggregate now overloaded and arg order changed.
+    Check your code if you are already using this function.
+  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
+    when ST_DumpPoints got reimplemented in C
+
+See PostGIS 2.4.0 section for details of new features and fixes in this release
+
 PostGIS 2.4.0
 2017/09/xx
 
@@ -44,7 +61,7 @@ PostGIS 2.4.0
   - #3405, Fixed memory leak in lwgeom_to_points
   - #3832, Support wide integer fields as int8 in shp2pgsql
   - #3841, Deterministic sorting support for empty geometries in btree geography
-  - #3844, Make = operator a strict equality test, and < > to rough "spatial sorting"          
+  - #3844, Make = operator a strict equality test, and < > to rough "spatial sorting"
 
 
 * Breaking Changes *
@@ -57,11 +74,11 @@ PostGIS 2.4.0
   - #3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL
   - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
     when ST_DumpPoints got reimplemented in C
-  - B-Tree index operators < = > changed to provide better spatial locality on sorting 
+  - B-Tree index operators < = > changed to provide better spatial locality on sorting
     and have expected behavior on GROUP BY.
     If you have btree index for geometry or geography, you need to REINDEX it, or review
     if it was created by accident and needs to be replaced with GiST index.
-    If your code relies on old left-to-right box compare ordering, 
+    If your code relies on old left-to-right box compare ordering,
     update it to use << >> operators
 
 PostGIS 2.4.0beta1
