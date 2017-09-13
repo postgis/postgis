@@ -317,7 +317,9 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	if ( bsz1 == bsz2 && srid1 == srid2 && cmp == 0 )
 		return 0;
 	
-	/* using the centroids, and preferring the X axis */
+	/* Using the centroids, calculate somewhat sortable */
+    /* hash key. The key doesn't provide good locality over */
+    /* the +/- boundary, but otherwise is pretty OK */
 	hash1 = gbox_get_sortable_hash(&box1);
 	hash2 = gbox_get_sortable_hash(&box2);
 
@@ -349,13 +351,13 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 	else if (box1.ymax > box2.ymax)
 		return 1;
 
-	/* How about object size? Sort on that... */
+	/* Geeze! How about object size? Sort on that... */
 	if (hsz1 < hsz2)
 		return -1;
 	else if (hsz1 > hsz2)
 		return 1;
 	
-	/* Well, they aren't memcmp equal, so we'll sort on the memcmp */
+	/* OK fine, we'll sort on the memcmp just to be done with this */
 	return cmp == 0 ? 0 : (cmp > 0 ? 1 : -1);
 }
 
