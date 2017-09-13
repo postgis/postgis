@@ -231,8 +231,12 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   }
 
   /* we're dynamically querying geometry type here */
+#if POSTGIS_PGSQL_VERSION < 110
   topo->geometryOID = SPI_tuptable->tupdesc->attrs[3]->atttypid;
-
+#else
+  topo->geometryOID = SPI_tuptable->tupdesc->attrs[3].atttypid;
+#endif
+	 
   POSTGIS_DEBUGF(1, "cb_loadTopologyByName: topo '%s' has "
                     "id %d, srid %d, precision %g",
              name, topo->id, topo->srid, topo->precision);
