@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-08-24 19:58+0000\n"
+"POT-Creation-Date: 2017-09-13 02:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -3604,7 +3604,7 @@ msgstr ""
 #: using_postgis_dataman.xml:2014
 #, no-c-format
 msgid ""
-"The above syntax will always build a 2D-index for geospatial objetcs on the "
+"The above syntax will always build a 2D-index for geospatial objects on the "
 "spheroid."
 msgstr ""
 

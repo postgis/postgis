@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"POT-Creation-Date: 2017-09-13 02:45+0000\n"
 "PO-Revision-Date: 2016-07-23 02:29+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -8860,10 +8860,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3762
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns modified raster resulting from setting the specified pixels' values "
-"to new value for the designed band given the raster's row and column or a "
+"to new value for the designated band given the raster's row and column or a "
 "geometry. If no band is specified, then band 1 is assumed."
 msgstr ""
 "래스터의 columnx, rowy 또는 도형으로 지정된 픽셀 위치의 밴드에 대해, 지정된 "
@@ -11792,9 +11792,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:4636
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"You can optionnal define the pixel size of the new grid with "
+"You can optionally define the pixel size of the new grid with "
 "<varname>scalex</varname> and <varname>scaley</varname>."
 msgstr ""
 "선택적으로, <varname>scalex</varname> 와 <varname>scaley</varname> 를 써서 "

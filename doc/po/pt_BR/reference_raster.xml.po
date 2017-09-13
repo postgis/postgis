@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"POT-Creation-Date: 2017-09-13 02:45+0000\n"
 "PO-Revision-Date: 2017-01-05 16:34+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -8922,10 +8922,10 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:3762
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Returns modified raster resulting from setting the specified pixels' values "
-"to new value for the designed band given the raster's row and column or a "
+"to new value for the designated band given the raster's row and column or a "
 "geometry. If no band is specified, then band 1 is assumed."
 msgstr ""
 "Retorna o raster modificado resultante dos valores especificados do pixel "
@@ -11878,9 +11878,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:4636
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"You can optionnal define the pixel size of the new grid with "
+"You can optionally define the pixel size of the new grid with "
 "<varname>scalex</varname> and <varname>scaley</varname>."
 msgstr ""
 "Você pode, opcionalmente, definir o tamanho da nova grade com "
