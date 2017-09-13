@@ -918,7 +918,8 @@ FROM
 		  <refnamediv>
 			<refname>&#61;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses double precision bounding box.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if the coordinates and coordinate order geometry/geography A
+			are the same as the coordinates and coordinate order of geometry/geography B.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -971,14 +972,17 @@ FROM
 			  <para>Only geometry/geography that are exactly equal in all respects,
           with the same coordinates, in the same order, are considered
           equal by this operator. For "spatial equality", that ignores
-          things like coordinate order, and can detect features that 
-          cover the same spatial area with different representations,  
-          use <xref linkend="ST_OrderingEquals" /> 
+          things like coordinate order, and can detect features that
+          cover the same spatial area with different representations,
+          use <xref linkend="ST_OrderingEquals" />
           or <xref linkend="ST_Equals" /></para>
 			</note>
 
 			<caution><para>This operand will NOT make use of any indexes that may be available on the
 				geometries. For an index assisted exact equality test, combine &#61; with &amp;&amp;.</para></caution>
+
+
+			<para>Changed: 2.4.0, in prior versions this was bounding box equality not a geometric equality. If you need bounding box equality, use <xref linkend="ST_Geometry_Same" /> instead.</para>
 
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
@@ -991,7 +995,7 @@ FROM
 			<programlisting>SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::geometry;
  ?column?
 ----------
- t
+ f
 (1 row)
 
 SELECT ST_AsText(column1)
@@ -1010,10 +1014,11 @@ FROM ( VALUES
 	('LINESTRING(0 0, 1 1)'::geometry),
 	('LINESTRING(1 1, 0 0)'::geometry)) AS foo
 GROUP BY column1;
-	  st_astext
+      st_astext
 ---------------------
  LINESTRING(0 0,1 1)
-(1 row)
+ LINESTRING(1 1,0 0)
+(2 rows)
 
 -- In versions prior to 2.0, this used to return true --
  SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
@@ -1027,7 +1032,7 @@ f
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />
+			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_Same" />
 			<!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
 		  </refsection>
 		</refentry>
@@ -1820,8 +1825,7 @@ FROM
 			  which behavior your database has. To find out which behavior
 			  your database has you can run the query below.
 				To check for true equality use <xref linkend="ST_OrderingEquals" /> or <xref
-			  linkend="ST_Equals" /> and to check for bounding box equality <xref linkend="ST_Geometry_EQ" />;
-			  operator is a safer option.</para>
+			  linkend="ST_Equals" />.</para>
 			  </warning>
 		  </refsection>
 
@@ -1834,7 +1838,6 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 -----------------+
           t    |
 			</programlisting>
-			<para>The above can be used to test if you have the new or old behavior of ~= operator.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
