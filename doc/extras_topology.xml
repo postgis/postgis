@@ -1713,7 +1713,6 @@ SELECT topology.ST_RemoveIsoNode('ma_topo',  7 ) As result;
 				<para><xref linkend="ST_AddIsoNode"/></para>
 			</refsection>
 		</refentry>
-	</sect1>
 
 		<refentry id="ST_RemoveIsoEdge">
 			<refnamediv>
