@@ -50,7 +50,7 @@ This structure holds a minheap tree that is used to keep track of what points th
 When elliminating points the neighbor points has its effective area affected and the minheap helps to resort efficient.
 */
 typedef struct
-{		
+{
 	int maxSize;
 	int usedSize;
 	areanode **key_array;

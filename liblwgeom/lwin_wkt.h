@@ -36,7 +36,7 @@ typedef struct
 	double y;
 	double z;
 	double m;
-}	
+}
 POINT;
 
 /*

@@ -829,7 +829,7 @@ rt_bandstats rt_band_get_summary_stats(
 	int exclude_nodata_value, double sample, int inc_vals,
 	uint64_t *cK, double *cM, double *cQ
 );
-	
+
 /**
  * Count the distribution of data
  *

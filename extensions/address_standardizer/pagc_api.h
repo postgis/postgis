@@ -977,7 +977,7 @@ int extract_house(const char *, int) ;
 /*-- <revision date='2012-08-30'> Use check_macro </revision> --*/
 int read_unstandardized(SCHEMA *, DS_Handle, DS_Entity_t, int *, int *, int *, char *, CHECK_MACRO* , char *, char **, DS_Field_t *, int *, ERR_PARAM *) ;
 
-/* -- makebeta.c -- */	
+/* -- makebeta.c -- */
 int init_standardized_table(SCHEMA *, ERR_PARAM *) ;
 int soundex_street_words(char *, char **) ;
 /* 2008-08-01 : add stand_alt_macro flag for alternate city names */
@@ -1243,7 +1243,7 @@ macros for converting and verifying pagc_client args
 
 #define INTEGER_AS_BYTES( PTR_VAL ) \
 	* ( ( int * ) ( PTR_VAL ) )
-	
+
 #define DOUBLE_AS_BYTES( PTR_VAL ) \
 	*( ( double * ) ( PTR_VAL ) )
 

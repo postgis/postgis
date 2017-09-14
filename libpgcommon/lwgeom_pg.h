@@ -49,7 +49,7 @@ void pg_install_lwgeom_handlers(void);
         } while (0);
 
 #else /* POSTGIS_DEBUG_LEVEL */
-	
+
 /* Empty prototype that can be optimised away by the compiler for non-debug builds */
 #define POSTGIS_DEBUG(level, msg) \
         ((void) 0)

@@ -38,8 +38,8 @@ typedef struct
 {
 	size_t capacity;
 	uint8_t *buf_start;
-	uint8_t *writecursor;	
-	uint8_t *readcursor;	
+	uint8_t *writecursor;
+	uint8_t *readcursor;
 }
 bytebuffer_t;
 
