@@ -5695,7 +5695,7 @@ ORDER BY t1.rid, t2.gid, t3.gid;
 
 				<programlisting>
 WITH foo AS (
-	SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, 0) AS rast
+	SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
 )
 SELECT
 	(ST_DumpValues(rast)).*
@@ -5711,7 +5711,7 @@ FROM foo;
 
 				<programlisting>
 WITH foo AS (
-	SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, 0) AS rast
+	SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, '16BSI', 0, 0) AS rast
 )
 SELECT
 	(ST_DumpValues(rast, ARRAY[3, 1])).*
@@ -8101,7 +8101,7 @@ SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 		<refentry id="RT_ST_AsGDALRaster">
 			<refnamediv>
 				<refname>ST_AsGDALRaster</refname>
-				<refpurpose>Return the raster tile in the designated GDAL Raster format.  Raster formats are one of those supported by your compiled library. Use ST_GDALRasters() to get a list of formats supported by your library.</refpurpose>
+				<refpurpose>Return the raster tile in the designated GDAL Raster format.  Raster formats are one of those supported by your compiled library. Use ST_GDALDrivers() to get a list of formats supported by your library.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -9407,7 +9407,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 							<term>distancex</term>
 							<listitem>
 								<para>
-									The distance in pixels from the reference cell. So width of resulting matrix would be <code>2*distancex + 1</code>.If not specified only the reference cell is considered (neighborhood of 0).
+									The distance in pixels from the reference cell in x direction. So width of resulting matrix would be <code>2*distancex + 1</code>.If not specified only the reference cell is considered (neighborhood of 0).
 								</para>
 							</listitem>
 						</varlistentry>
@@ -9964,11 +9964,11 @@ FROM foo;
 
 					<programlisting>
 WITH foo AS (
-	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), '32BF', 1, -1) AS rast
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), '32BF'::text, 1, -1) AS rast
 )
 SELECT
 	ST_MapAlgebra(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast.val])')
-FROM foo
+FROM foo;
 					</programlisting>
 				</refsection>
 
@@ -9977,8 +9977,8 @@ FROM foo
 
 					<programlisting>
 WITH foo AS (
-	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
-	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI'::text, 100, 0) AS rast UNION ALL
+	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI'::text, 300, 0) AS rast
 )
 SELECT
 	ST_MapAlgebra(
@@ -9989,7 +9989,7 @@ SELECT
 FROM foo t1
 CROSS JOIN foo t2
 WHERE t1.rid = 1
-	AND t2.rid = 2
+	AND t2.rid = 2;
 					</programlisting>
 				</refsection>
 
@@ -10062,7 +10062,7 @@ WHERE t1.rid = 1
 					<para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
 					<programlisting>
 ALTER TABLE dummy_rast ADD COLUMN map_rast raster;
-UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,NULL,'mod([rast],2)') WHERE rid = 2;
+UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,NULL,'mod([rast]::numeric,2)') WHERE rid = 2;
 
 SELECT
 	ST_Value(rast,1,i,j) As origval,
@@ -10088,7 +10088,7 @@ WHERE rid = 2;
 					<para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to be 0.</para>
 					<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
 UPDATE dummy_rast SET
-	map_rast2 = ST_MapAlgebraExpr(rast,'2BUI','CASE WHEN [rast] BETWEEN 100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 and 254 THEN 3 ELSE 0 END', '0')
+	map_rast2 = ST_MapAlgebraExpr(rast,'2BUI'::text,'CASE WHEN [rast] BETWEEN 100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 and 254 THEN 3 ELSE 0 END'::text, '0')
 WHERE rid = 2;
 
 SELECT DISTINCT
@@ -10130,7 +10130,7 @@ WHERE rid = 2;
 														<imagedata fileref="images/st_mapalgebraexpr01.png" />
 													</imageobject>
 													<caption>
-														<para>original (column rast-view)</para>
+														<para>original (column rast_view)</para>
 													</caption>
 												</mediaobject>
 											</informalfigure>
@@ -10166,8 +10166,8 @@ SELECT
 			),
 			ST_Band(rast_view,2)
 		),
-		ST_Band(rast_view, 3) As rast_view_ma
-	)
+		ST_Band(rast_view, 3)
+	)  As rast_view_ma
 FROM wind
 WHERE rid=167;
 					</programlisting>
