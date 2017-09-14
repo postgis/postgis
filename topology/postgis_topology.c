@@ -170,21 +170,19 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   static SPIPlanPtr plan = NULL;
 
   // prepare
-  if ( ! plan ) {
-    sql = "SELECT id,srid,precision,null::geometry"
-                          " FROM topology.topology "
-                          "WHERE name = $1::varchar";
-    argtypes[0] = CSTRINGOID;
-    plan = SPI_prepare(sql, 1, argtypes);
-    if ( ! plan )
-    {
-      cberror(be, "unexpected return (%d) from query preparation: %s",
-              SPI_result, sql);
-      return NULL;
-    }
-    SPI_keepplan(plan);
-    // SPI_freeplan to free, eventually
+  sql = "SELECT id,srid,precision,null::geometry"
+                        " FROM topology.topology "
+                        "WHERE name = $1::varchar";
+  argtypes[0] = CSTRINGOID;
+  plan = SPI_prepare(sql, 1, argtypes);
+  if ( ! plan )
+  {
+    cberror(be, "unexpected return (%d) from query preparation: %s",
+            SPI_result, sql);
+    return NULL;
   }
+  SPI_keepplan(plan);
+  // SPI_freeplan to free, eventually
 
   // execute
   values[0] = CStringGetDatum(name);
