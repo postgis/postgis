@@ -6,7 +6,7 @@
 # -- postgis-x.y.0dev-r#####.tar.gz
 # sh make_dist.sh
 #
-# -- postgis-1.1.0.tar.gz 
+# -- postgis-1.1.0.tar.gz
 # sh make_dist.sh 1.1.0
 #
 # -- postgis-2.2.tar.gz  (from a branch)
@@ -82,8 +82,7 @@ else
   #cd -
 fi
 
-echo "Removing ignore files, make_dist.sh and HOWTO_RELEASE"
-find "$outdir" -name .\*ignore -exec rm -v {} \;
+echo "Removing make_dist.sh and HOWTO_RELEASE"
 rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 
 # generating configure script and configuring
@@ -92,8 +91,8 @@ owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure ${CONFIGURE_ARGS}
-# generating postgis_svn_revision.h for >= 2.0.0 tags 
-if test -f utils/svn_repo_revision.pl; then 
+# generating postgis_svn_revision.h for >= 2.0.0 tags
+if test -f utils/svn_repo_revision.pl; then
 	echo "Generating postgis_svn_revision.h"
 	perl utils/svn_repo_revision.pl $svnurl
 fi
