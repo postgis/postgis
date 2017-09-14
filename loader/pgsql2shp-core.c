@@ -831,6 +831,8 @@ projFileCreate(SHPDUMPERSTATE *state)
 				fp = fopen( pszFullname, "wb" );
 				if ( fp == NULL )
 				{
+					free(pszFullname);
+					free(query);
 					return 0;
 				}
 				result = fputs (srtext,fp);
@@ -1812,7 +1814,10 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			*/
 			dbffieldsize = getMaxFieldSize(state->conn, state->schema, state->table, pgfieldname);
 			if (dbffieldsize == -1)
+			{
+				free(dbffieldname);
 				return 0;
+			}
 
 			if (!dbffieldsize)
 				dbffieldsize = 32;
@@ -2160,6 +2165,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			{
 				snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d"), state->currow);
 				PQclear(state->fetchres);
+				free(hexewkb);
 				return SHPDUMPERERR;
 			}
 	
