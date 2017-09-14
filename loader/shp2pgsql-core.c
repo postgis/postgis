@@ -703,6 +703,9 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 
 	if ( !mem )
 	{
+		/* Free the linked list of rings */
+		ReleasePolygons(Outer, polygon_total);
+
 		snprintf(state->message, SHPLOADERMSGLEN, "unable to write geometry");
 		return SHPLOADERERR;
 	}
@@ -1614,10 +1617,10 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 			default:
 				snprintf(state->message, SHPLOADERMSGLEN, _("Error: field %d has invalid or unknown field type (%d)"), i, state->types[i]);
 
+				/* clean up and return err */
 				SHPDestroyObject(obj);
 				stringbuffer_destroy(sbwarn);
 				stringbuffer_destroy(sb);
-
 				return SHPLOADERERR;
 			}
 
@@ -1639,6 +1642,10 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					if ( rv == UTF8_BAD_RESULT )
 						free(utf8str);
 
+					/* clean up and return err */
+					SHPDestroyObject(obj);
+					stringbuffer_destroy(sbwarn);
+					stringbuffer_destroy(sb);
 					return SHPLOADERERR;
 				}
 				strncpy(val, utf8str, MAXVALUELEN);
