@@ -169,22 +169,24 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   Oid argtypes[1];
   static SPIPlanPtr plan = NULL;
 
-  // prepare
-  sql = "SELECT id,srid,precision,null::geometry"
-                        " FROM topology.topology "
-                        "WHERE name = $1::varchar";
   argtypes[0] = CSTRINGOID;
-  plan = SPI_prepare(sql, 1, argtypes);
-  if ( ! plan )
+  if ( ! plan ) /* prepare on first call */
   {
-    cberror(be, "unexpected return (%d) from query preparation: %s",
-            SPI_result, sql);
-    return NULL;
+    sql = "SELECT id,srid,precision,null::geometry"
+                          " FROM topology.topology "
+                          "WHERE name = $1::varchar";
+    plan = SPI_prepare(sql, 1, argtypes);
+    if ( ! plan )
+    {
+      cberror(be, "unexpected return (%d) from query preparation: %s",
+              SPI_result, sql);
+      return NULL;
+    }
+    SPI_keepplan(plan);
+    /* SPI_freeplan to free, eventually */
   }
-  SPI_keepplan(plan);
-  // SPI_freeplan to free, eventually
 
-  // execute
+  /* execute */
   values[0] = CStringGetDatum(name);
   spi_result = SPI_execute_plan(plan, values, NULL, !be->data_changed, 1);
   MemoryContextSwitchTo( oldcontext ); /* switch back */
@@ -194,7 +196,6 @@ cb_loadTopologyByName(const LWT_BE_DATA* be, const char *name)
   }
   if ( ! SPI_processed )
   {
-		//cberror(be, "no topology named '%s' was found", name);
     if ( be->topoLoadFailMessageFlavor == 1 ) {
       cberror(be, "No topology with name \"%s\" in topology.topology", name);
     } else {
