@@ -511,7 +511,7 @@ static void
 init_rastinfo(RASTERINFO *info) {
 	info->srid = SRID_UNKNOWN;
 	info->srs = NULL;
-	memset(info->dim, 0, sizeof(double) * 2);
+	memset(info->dim, 0, sizeof(uint32_t) * 2);
 	info->nband_count = 0;
 	info->nband = NULL;
 	info->gdalbandtype = NULL;

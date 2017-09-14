@@ -152,6 +152,18 @@ RULES *rules_init( ERR_PARAM *err_p ) {
     if ( !initialize_link( err_p ,
                            o_l ,
                            EPSILON ) ) {
+
+       /* Cleanup allocated resources */
+       FREE_AND_NULL(o_l);
+       FREE_AND_NULL(k_s);
+       FREE_AND_NULL(r_p);
+
+       PAGC_DESTROY_2D_ARRAY(rules -> Trie,NODE,MAXINSYM);
+       rules -> Trie = NULL;
+
+       rules_free(rules);
+       FREE_AND_NULL(rules);
+
        return NULL ;
     }
 
