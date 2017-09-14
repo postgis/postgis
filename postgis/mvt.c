@@ -631,7 +631,7 @@ static void parse_values(struct mvt_agg_context *ctx)
 	ctx->feature->n_tags = ctx->c * 2;
 	ctx->feature->tags = tags;
 
-	POSTGIS_DEBUGF(3, "parse_values n_tags %d", ctx->feature->n_tags);
+	POSTGIS_DEBUGF(3, "parse_values n_tags %zd", ctx->feature->n_tags);
 }
 static int max_type(LWCOLLECTION *lwcoll)
 {
@@ -805,7 +805,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 		layer->features = repalloc(layer->features, new_capacity *
 			sizeof(*layer->features));
 		ctx->features_capacity = new_capacity;
-		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %d", new_capacity);
+		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
 
 	feature = palloc(sizeof(*feature));
@@ -821,7 +821,7 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	lwgeom = lwgeom_from_gserialized(gs);
 
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %d",
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd",
 		layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
