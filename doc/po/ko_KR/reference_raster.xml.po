@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-13 02:45+0000\n"
+"POT-Creation-Date: 2017-09-14 18:44+0000\n"
 "PO-Revision-Date: 2016-07-23 02:29+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -10180,12 +10180,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3984
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
-"0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, "
-"0) AS rast\n"
+"0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, "
+"'16BSI', 0, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        (ST_DumpValues(rast)).*\n"
@@ -10216,12 +10216,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3986
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
-"0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, "
-"0) AS rast\n"
+"0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, "
+"'16BSI', 0, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        (ST_DumpValues(rast, ARRAY[3, 1])).*\n"
@@ -14638,10 +14638,10 @@ msgstr "ST_AsGDALRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5654
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Return the raster tile in the designated GDAL Raster format. Raster formats "
-"are one of those supported by your compiled library. Use ST_GDALRasters() to "
+"are one of those supported by your compiled library. Use ST_GDALDrivers() to "
 "get a list of formats supported by your library."
 msgstr ""
 "래스터 타일을 지정한 GDAL 래스터 형식으로 반환합니다. 래스터 형식이란 사용자"
@@ -16829,11 +16829,11 @@ msgstr "distancex"
 
 #. Tag: para
 #: reference_raster.xml:6769
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The distance in pixels from the reference cell. So width of resulting matrix "
-"would be <code>2*distancex + 1</code>.If not specified only the reference "
-"cell is considered (neighborhood of 0)."
+"The distance in pixels from the reference cell in x direction. So width of "
+"resulting matrix would be <code>2*distancex + 1</code>.If not specified only "
+"the reference cell is considered (neighborhood of 0)."
 msgstr ""
 "참조 셀에서 나온 픽셀 단위의 거리입니다. 따라서 결과 매트릭스의 너비는 "
 "<code>2*distancex + 1</code> 일 것입니다. 따로 설정하지 않으면 참조 셀만 (이"
@@ -17934,16 +17934,16 @@ msgstr "예시: 변종 1 및 2"
 
 #. Tag: programlisting
 #: reference_raster.xml:7161
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), "
-"'32BF', 1, -1) AS rast\n"
+"'32BF'::text, 1, -1) AS rast\n"
 ")\n"
 "SELECT\n"
 "        ST_MapAlgebra(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast."
 "val])')\n"
-"FROM foo"
+"FROM foo;"
 msgstr ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), "
@@ -17962,16 +17962,16 @@ msgstr "예시: 변종 3 및 4"
 
 #. Tag: programlisting
 #: reference_raster.xml:7167
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, "
 "ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, "
-"0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION "
-"ALL\n"
+"0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI'::text, 100, 0) AS rast "
+"UNION ALL\n"
 "        SELECT 2 AS rid, "
 "ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, "
-"0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast\n"
+"0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI'::text, 300, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        ST_MapAlgebra(\n"
@@ -17982,7 +17982,7 @@ msgid ""
 "FROM foo t1\n"
 "CROSS JOIN foo t2\n"
 "WHERE t1.rid = 1\n"
-"        AND t2.rid = 2"
+"        AND t2.rid = 2;"
 msgstr ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, "
@@ -18113,11 +18113,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7237
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast raster;\n"
-"UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,"
-"NULL,'mod([rast],2)') WHERE rid = 2;\n"
+"UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,NULL,'mod([rast]::"
+"numeric,2)') WHERE rid = 2;\n"
 "\n"
 "SELECT\n"
 "        ST_Value(rast,1,i,j) As origval,\n"
@@ -18175,13 +18175,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7240
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;\n"
 "UPDATE dummy_rast SET\n"
-"        map_rast2 = ST_MapAlgebraExpr(rast,'2BUI','CASE WHEN [rast] BETWEEN "
-"100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 and 254 "
-"THEN 3 ELSE 0 END', '0')\n"
+"        map_rast2 = ST_MapAlgebraExpr(rast,'2BUI'::text,'CASE WHEN [rast] "
+"BETWEEN 100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 "
+"and 254 THEN 3 ELSE 0 END'::text, '0')\n"
 "WHERE rid = 2;\n"
 "\n"
 "SELECT DISTINCT\n"
@@ -18244,9 +18244,9 @@ msgstr ""
 " 2BUI"
 
 #. Tag: para
-#: reference_raster.xml:7254 reference_raster.xml:7714
-#, no-c-format
-msgid "original (column rast-view)"
+#: reference_raster.xml:7254
+#, fuzzy, no-c-format
+msgid "original (column rast_view)"
 msgstr "원본(rast-view 열)"
 
 #. Tag: para
@@ -18268,7 +18268,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7280
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_AddBand(\n"
@@ -18280,8 +18280,8 @@ msgid ""
 "                        ),\n"
 "                        ST_Band(rast_view,2)\n"
 "                ),\n"
-"                ST_Band(rast_view, 3) As rast_view_ma\n"
-"        )\n"
+"                ST_Band(rast_view, 3)\n"
+"        )  As rast_view_ma\n"
 "FROM wind\n"
 "WHERE rid=167;"
 msgstr ""
@@ -19127,6 +19127,12 @@ msgstr ""
 " b1pixtyp\n"
 "----------\n"
 " 2BUI"
+
+#. Tag: para
+#: reference_raster.xml:7714
+#, no-c-format
+msgid "original (column rast-view)"
+msgstr "원본(rast-view 열)"
 
 #. Tag: programlisting
 #: reference_raster.xml:7731
