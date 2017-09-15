@@ -1,2 +1,2 @@
-DOCSUFFIX=-de_DE
+DOCSUFFIX=-de
 include ../Makefile.local
