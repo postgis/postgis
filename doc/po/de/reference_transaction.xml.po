@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017
 msgid ""
@@ -232,7 +232,7 @@ msgid ""
 "Drops meta table called <varname>authorization_table</varname> and a view "
 "called <varname>authorized_tables</varname> and all triggers called "
 "<varname>checkauthtrigger</varname>"
-msgstr "Löscht die Metadatentabelle mit der Bezeichnung <varname>authorization_table und den View mit der Bezeichnung <varname>authorized_tables</varname>, sowie alle Trigger mit der Bezeichnung <varname>checkauthtrigger</varname>"
+msgstr "Löscht die Metadatentabelle mit der Bezeichnung <varname>authorization_table</varname> und den View mit der Bezeichnung <varname>authorized_tables</varname>, sowie alle Trigger mit der Bezeichnung <varname>checkauthtrigger</varname>"
 
 #. Tag: programlisting
 #: reference_transaction.xml:146
@@ -334,7 +334,7 @@ msgid ""
 "Set lock/authorization for specific row in table &lt;authid&gt; is a text "
 "value, &lt;expires&gt; is a timestamp defaulting to now()+1hour. Returns 1 "
 "if lock has been assigned, 0 otherwise (already locked by other auth)"
-msgstr "Setzt einen Lock/eine Autorisierung für eine bestimmte Zeile in der Tabelle &lt;authid&gt; . &lt;authid&gt; ist ein Text, &lt;expires&gt ist ein Zeitstempel mit dem Standardwert now()+1hour. Gibt 1 aus, wenn ein Lock zugewiesen wurde, ansonsten 0 (bereits über eine andere Authentifizierung gesperrt)"
+msgstr "Setzt einen Lock/eine Autorisierung für eine bestimmte Zeile in der Tabelle &lt;authid&gt; . &lt;authid&gt; ist ein Text, &lt;expires&gt; ist ein Zeitstempel mit dem Standardwert now()+1hour. Gibt 1 aus, wenn ein Lock zugewiesen wurde, ansonsten 0 (bereits über eine andere Authentifizierung gesperrt)"
 
 #. Tag: programlisting
 #: reference_transaction.xml:255

@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017
 # Andreas Schild <schildandreas1@gmail.com>, 2015
@@ -503,7 +503,7 @@ msgid ""
 "url=\"http://subversion.apache.org/\"> svn </ulink> repository <ulink "
 "url=\"http://svn.osgeo.org/postgis/trunk/\"> "
 "http://svn.osgeo.org/postgis/trunk/ </ulink> ."
-msgstr "Alternativ kann der Quellcode auch von url=\"http://subversion.apache.org/\"> svn </ulink> repository <ulink url=\"http://svn.osgeo.org/postgis/trunk/\"> http://svn.osgeo.org/postgis/trunk/ </ulink> bezogen werden."
+msgstr "Alternativ kann der Quellcode auch von <ulink url=\"http://subversion.apache.org/\"> svn </ulink> repository <ulink url=\"http://svn.osgeo.org/postgis/trunk/\">http://svn.osgeo.org/postgis/trunk/</ulink> bezogen werden."
 
 #. Tag: programlisting
 #: installation.xml:257

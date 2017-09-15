@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# 
+#
 # Translators:
 # Andreas Schild <andreas.schild@bfw.gv.at>, 2017
 msgid ""
@@ -1089,7 +1089,7 @@ msgstr "ST_ConvexHull"
 msgid ""
 "<refpurpose>The convex hull of a geometry represents the minimum convex "
 "geometry that encloses all geometries within the set.</refpurpose>"
-msgstr "1"
+msgstr ""
 
 #. Tag: funcprototype
 #: reference_processing.xml:575
@@ -2994,7 +2994,7 @@ msgstr "Verfügbarkeit: 2.0.0 - benötigt GEOS &gt;= 3.3.0."
 msgid ""
 "Due to a bug in GEOS up to 3.3.1 this function fails to node self-"
 "intersecting lines. This is fixed with GEOS 3.3.2 or higher."
-msgstr "Aufgrund eines Fehlers in GEOS < 3.3.1 versagt diese Funktion bei der Knotenberechnung von selbstüberschneidenden Linien. Dies wurde mit GEOS 3.3.2 und höher behoben."
+msgstr "Aufgrund eines Fehlers in GEOS &lt; 3.3.1 versagt diese Funktion bei der Knotenberechnung von selbstüberschneidenden Linien. Dies wurde mit GEOS 3.3.2 und höher behoben."
 
 #. Tag: para
 #: reference_processing.xml:1603
@@ -3453,7 +3453,7 @@ msgid ""
 "Reads every point/vertex in every component of every feature in a geometry, "
 "and if the longitude coordinate is &lt;0, adds 360 to it. The result would "
 "be a 0-360 version of the data to be plotted in a 180 centric map"
-msgstr "Liest jeden Punkt/Knoten jeder Featurekomponente einer Geometrie, und wenn die Längenkoordinate <0 ist wird 360 hinzugezählt. Das Ergebnis ist eine 0-360 Grad Version der Daten, die auf einer bei 180 Grad zentrierten Karte dargestellt werden kann."
+msgstr "Liest jeden Punkt/Knoten jeder Featurekomponente einer Geometrie, und wenn die Längenkoordinate &lt;0 ist wird 360 hinzugezählt. Das Ergebnis ist eine 0-360 Grad Version der Daten, die auf einer bei 180 Grad zentrierten Karte dargestellt werden kann."
 
 #. Tag: para
 #: reference_processing.xml:1918
