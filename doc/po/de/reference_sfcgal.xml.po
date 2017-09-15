@@ -1,0 +1,1057 @@
+# SOME DESCRIPTIVE TITLE.
+# 
+# Translators:
+# Andreas Schild <andreas.schild@bfw.gv.at>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: PostGIS\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"PO-Revision-Date: 2017-06-04 10:51+0000\n"
+"Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
+"Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Tag: para
+#: reference_sfcgal.xml:5
+#, no-c-format
+msgid ""
+"SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D"
+" functions. For robustness, geometry coordinates have an exact rational "
+"number representation."
+msgstr "SFCGAL ist ein C++ Adapter für CGAL, welches fortgeschrittene Funktionen in 2D und in 3D zur Verfügung stellt. Aus Gründen der Robustheit liegen die geometrischen Koordinaten in einer fehlerfreien rationalen Zahlendarstellung vor."
+
+#. Tag: para
+#: reference_sfcgal.xml:9
+#, no-c-format
+msgid ""
+"Installation instructions of the library can be found on SFCGAL home page "
+"<ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>. To load "
+"the functions create extension postgis_sfcgal."
+msgstr "Eine Anleitung zur Installation der Bibliothek finden Sie auf der SFCGAL Homepage <ulink url=\"http://www.sfcgal.org\">http://www.sfcgal.org</ulink>. Um die Funktionen zu laden, müssen Sie die Anweisung \"CREATE EXTENSION postgis_sfscal;\" ausführen."
+
+#. Tag: para
+#: reference_sfcgal.xml:13
+#, no-c-format
+msgid ""
+"Some SFCGAL functions replace standard ones (ST_Intersects, ST_Intersection,"
+" ST_Difference, ST_Union, ST_Area and ST_Distance), to switch between "
+"standard functions and SFCGAL function use: <programlisting>SET "
+"postgis.backend = sfcgal;</programlisting> and"
+msgstr "Einige SFCGAL Funktionen ersetzen die herkömmlichen Funktionen  (ST_Intersects, ST_Intersection, ST_Difference, ST_Union, ST_Area and ST_Distance).  Um zwischen den herkömmlichen und den SFCGAL Funktionen umzuschalten benutzen Sie bitte: <programlisting>SET postgis.backend = sfcgal;</programlisting> und"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:17
+#, no-c-format
+msgid "SET postgis.backend = geos;"
+msgstr "SET postgis.backend = geos;"
+
+#. Tag: title
+#: reference_sfcgal.xml:22
+#, no-c-format
+msgid "SFCGAL Functions"
+msgstr "SFCGAL Funktionen"
+
+#. Tag: refname
+#: reference_sfcgal.xml:25
+#, no-c-format
+msgid "postgis_sfcgal_version"
+msgstr "postgis_sfcgal_version"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:27
+#, no-c-format
+msgid "Returns the version of SFCGAL in use"
+msgstr "Gibt die verwendete Version von SFCGAL aus"
+
+#. Tag: funcdef
+#: reference_sfcgal.xml:33
+#, no-c-format
+msgid "text <function>postgis_sfcgal_version</function>"
+msgstr "text <function>postgis_sfcgal_version</function>"
+
+#. Tag: title
+#: reference_sfcgal.xml:40 reference_sfcgal.xml:72 reference_sfcgal.xml:165
+#: reference_sfcgal.xml:224 reference_sfcgal.xml:288 reference_sfcgal.xml:317
+#: reference_sfcgal.xml:346 reference_sfcgal.xml:375 reference_sfcgal.xml:480
+#: reference_sfcgal.xml:556 reference_sfcgal.xml:630 reference_sfcgal.xml:705
+#: reference_sfcgal.xml:743 reference_sfcgal.xml:834 reference_sfcgal.xml:875
+#: reference_sfcgal.xml:903
+#, no-c-format
+msgid "Description"
+msgstr "Beschreibung"
+
+#. Tag: para
+#: reference_sfcgal.xml:42 reference_sfcgal.xml:74 reference_sfcgal.xml:167
+#: reference_sfcgal.xml:321 reference_sfcgal.xml:348 reference_sfcgal.xml:384
+#: reference_sfcgal.xml:482 reference_sfcgal.xml:707 reference_sfcgal.xml:745
+#, no-c-format
+msgid "Availability: 2.1.0"
+msgstr "Verfügbarkeit: 2.1.0"
+
+#. Tag: para
+#: reference_sfcgal.xml:43 reference_sfcgal.xml:75 reference_sfcgal.xml:168
+#: reference_sfcgal.xml:234 reference_sfcgal.xml:291 reference_sfcgal.xml:322
+#: reference_sfcgal.xml:349 reference_sfcgal.xml:385 reference_sfcgal.xml:483
+#: reference_sfcgal.xml:559 reference_sfcgal.xml:634 reference_sfcgal.xml:708
+#: reference_sfcgal.xml:746 reference_sfcgal.xml:837 reference_sfcgal.xml:878
+#: reference_sfcgal.xml:906
+#, no-c-format
+msgid "&sfcgal_required;"
+msgstr "&sfcgal_required;"
+
+#. Tag: para
+#: reference_sfcgal.xml:44 reference_sfcgal.xml:76 reference_sfcgal.xml:169
+#: reference_sfcgal.xml:235 reference_sfcgal.xml:292 reference_sfcgal.xml:323
+#: reference_sfcgal.xml:350 reference_sfcgal.xml:484 reference_sfcgal.xml:560
+#: reference_sfcgal.xml:635 reference_sfcgal.xml:709 reference_sfcgal.xml:747
+#: reference_sfcgal.xml:838 reference_sfcgal.xml:879 reference_sfcgal.xml:907
+#, no-c-format
+msgid "&Z_support;"
+msgstr "&Z_support;"
+
+#. Tag: para
+#: reference_sfcgal.xml:45 reference_sfcgal.xml:77 reference_sfcgal.xml:170
+#: reference_sfcgal.xml:236 reference_sfcgal.xml:293 reference_sfcgal.xml:351
+#: reference_sfcgal.xml:485 reference_sfcgal.xml:561 reference_sfcgal.xml:636
+#: reference_sfcgal.xml:710 reference_sfcgal.xml:748 reference_sfcgal.xml:839
+#: reference_sfcgal.xml:880 reference_sfcgal.xml:908
+#, no-c-format
+msgid "&P_support;"
+msgstr "&P_support;"
+
+#. Tag: para
+#: reference_sfcgal.xml:46 reference_sfcgal.xml:78 reference_sfcgal.xml:171
+#: reference_sfcgal.xml:237 reference_sfcgal.xml:294 reference_sfcgal.xml:352
+#: reference_sfcgal.xml:486 reference_sfcgal.xml:562 reference_sfcgal.xml:637
+#: reference_sfcgal.xml:711 reference_sfcgal.xml:749 reference_sfcgal.xml:840
+#: reference_sfcgal.xml:881 reference_sfcgal.xml:909
+#, no-c-format
+msgid "&T_support;"
+msgstr "&T_support;"
+
+#. Tag: refname
+#: reference_sfcgal.xml:54
+#, no-c-format
+msgid "ST_Extrude"
+msgstr "ST_Extrude"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:56
+#, no-c-format
+msgid "Extrude a surface to a related volume"
+msgstr "Weitet eine Oberfläche auf ein entsprechendes Volumen aus"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:61
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Extrude</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>x</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>y</parameter></paramdef> "
+"<paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_Extrude</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef> <paramdef><type>float</type> <parameter>x</parameter></paramdef> <paramdef><type>float</type> <parameter>y</parameter></paramdef> <paramdef><type>float</type> <parameter>z</parameter></paramdef>"
+
+#. Tag: title
+#: reference_sfcgal.xml:81 reference_sfcgal.xml:174 reference_sfcgal.xml:240
+#: reference_sfcgal.xml:388 reference_sfcgal.xml:490 reference_sfcgal.xml:566
+#: reference_sfcgal.xml:641 reference_sfcgal.xml:714 reference_sfcgal.xml:752
+#, no-c-format
+msgid "Examples"
+msgstr "Beispiele"
+
+#. Tag: para
+#: reference_sfcgal.xml:82 reference_sfcgal.xml:491 reference_sfcgal.xml:567
+#: reference_sfcgal.xml:642
+#, no-c-format
+msgid ""
+"3D images were generated using PostGIS <xref linkend=\"ST_AsX3D\"/> and "
+"rendering in HTML using <ulink url=\"http://www.x3dom.org\">X3Dom HTML "
+"Javascript rendering library</ulink>."
+msgstr "Die 3D Bilder sind mit PostGIS <xref linkend=\"ST_AsX3D\"/> erzeugt und das Rendern in HTML mit <ulink url=\"http://www.x3dom.org\">X3Dom HTML Javascript rendering library</ulink>."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:89
+#, no-c-format
+msgid ""
+"SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+"  50, 'quad_segs=2'),0,0,30);"
+msgstr "SELECT ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n  50, 'quad_segs=2'),0,0,30);"
+
+#. Tag: para
+#: reference_sfcgal.xml:95
+#, no-c-format
+msgid "Original octagon formed from buffering point"
+msgstr "Ursprüngliches Achteck aus einem gepufferten Punkt gebildet"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:100
+#, no-c-format
+msgid ""
+"ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30);"
+msgstr "ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n 50, 'quad_segs=2'),0,0,30);"
+
+#. Tag: para
+#: reference_sfcgal.xml:106
+#, no-c-format
+msgid "Hexagon extruded 30 units along Z produces a PolyhedralSurfaceZ"
+msgstr "Ein Achteck, um 30 Einheiten entlang der Z Achse ausgeweitet, ergibt ein PolyhedralSurfaceZ"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:114
+#, no-c-format
+msgid "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
+msgstr "SELECT ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)')"
+
+#. Tag: para
+#: reference_sfcgal.xml:120
+#, no-c-format
+msgid "Original linestring"
+msgstr "Ursprünglicher Linienzug"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:125
+#, no-c-format
+msgid ""
+"SELECT ST_Extrude(\n"
+" ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
+msgstr "SELECT ST_Extrude(\n ST_GeomFromText('LINESTRING(50 50, 100 90, 95 150)'),0,0,10));"
+
+#. Tag: para
+#: reference_sfcgal.xml:131
+#, no-c-format
+msgid "LineString Extruded along Z produces a PolyhedralSurfaceZ"
+msgstr "Ein Linienzug, entlang der Z Achse ausgeweitet, ergibt ein PolyhedralSurfaceZ"
+
+#. Tag: title
+#: reference_sfcgal.xml:141 reference_sfcgal.xml:263 reference_sfcgal.xml:602
+#: reference_sfcgal.xml:677 reference_sfcgal.xml:720 reference_sfcgal.xml:851
+#, no-c-format
+msgid "See Also"
+msgstr "Siehe auch"
+
+#. Tag: refname
+#: reference_sfcgal.xml:150
+#, no-c-format
+msgid "ST_StraightSkeleton"
+msgstr "ST_StraightSkeleton"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:152
+#, no-c-format
+msgid "Compute a straight skeleton from a geometry"
+msgstr "Berechnet aus einer Geometrie ein \"Gerippe\" aus Geraden."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:157
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_StraightSkeleton</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:175
+#, no-c-format
+msgid ""
+"SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 "
+"10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
+msgstr "SELECT ST_StraightSkeleton(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
+
+#. Tag: para
+#: reference_sfcgal.xml:186 reference_sfcgal.xml:791
+#, no-c-format
+msgid "Original polygon"
+msgstr "Ursprüngliches Polygon"
+
+#. Tag: para
+#: reference_sfcgal.xml:195
+#, no-c-format
+msgid "Straight Skeleton of polygon"
+msgstr "Das \"Gerippe\" des Polygons"
+
+#. Tag: refname
+#: reference_sfcgal.xml:209
+#, no-c-format
+msgid "ST_ApproximateMedialAxis"
+msgstr "ST_ApproximateMedialAxis"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:211
+#, no-c-format
+msgid "Compute the approximate medial axis of an areal geometry."
+msgstr "Errechnet die genäherte Mediale Achse einer Flächengeometrie."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:216
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_ApproximateMedialAxis</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:226
+#, no-c-format
+msgid ""
+"Return an approximate medial axis for the areal input based on its straight "
+"skeleton. Uses an SFCGAL specific API when built against a capable version "
+"(1.2.0+). Otherwise the function is just a wrapper around "
+"ST_StraightSkeleton (slower case)."
+msgstr "Gibt die genäherte mediale Achse einer Flächeneingabe als eine Art Gerippe an Geraden zurück. Wenn mit einer geeigneten Version (1.2.0+) kompiliert wurde, wird die SFCGAL-eigene API ausgeführt. Sonst verhält sich die Funktion nur wie ein Adapter für ST_StraightSkeleton (langsamerer Fall)."
+
+#. Tag: para
+#: reference_sfcgal.xml:233 reference_sfcgal.xml:558 reference_sfcgal.xml:633
+#: reference_sfcgal.xml:836 reference_sfcgal.xml:877 reference_sfcgal.xml:905
+#, no-c-format
+msgid "Availability: 2.2.0"
+msgstr "Verfügbarkeit: 2.2.0"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:241
+#, no-c-format
+msgid ""
+"SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190,"
+" 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
+msgstr "SELECT ST_ApproximateMedialAxis(ST_GeomFromText('POLYGON (( 190 190, 10 190, 10 10, 190 10, 190 20, 160 30, 60 30, 60 130, 190 140, 190 190 ))'));"
+
+#. Tag: para
+#: reference_sfcgal.xml:252
+#, no-c-format
+msgid "A polygon and its approximate medial axis"
+msgstr "Ein Polygon und dessen angenäherte mediale Achse"
+
+#. Tag: refname
+#: reference_sfcgal.xml:273
+#, no-c-format
+msgid "ST_IsPlanar"
+msgstr "ST_IsPlanar"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:275
+#, no-c-format
+msgid "Check if a surface is or not planar"
+msgstr "Überprüft ob es sich um eine ebene Oberfläche handelt oder nicht"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:280
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>ST_IsPlanar</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>boolean <function>ST_IsPlanar</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:290
+#, no-c-format
+msgid ""
+"Availability: 2.2.0: This was documented in 2.1.0 but got accidentally left "
+"out in 2.1 release."
+msgstr "Verfügbarkeit: 2.2.0: Wurde zwar für 2.1.0 dokumentiert, aber unabsichtlich in der Version 2.1 weggelassen."
+
+#. Tag: refname
+#: reference_sfcgal.xml:302
+#, no-c-format
+msgid "ST_Orientation"
+msgstr "ST_Orientation"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:304
+#, no-c-format
+msgid "Determine surface orientation"
+msgstr "Bestimmt die Ausrichtung der Fläche"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:309
+#, no-c-format
+msgid ""
+"<funcdef>integer <function>ST_Orientation</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>integer <function>ST_Orientation</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:319
+#, no-c-format
+msgid ""
+"The function only applies to polygons. It returns -1 if the polygon is "
+"counterclockwise oriented and 1 if the polygon is clockwise oriented."
+msgstr "Die Funktion ist nur auf Polygone anwendbar. Sie gibt -1 zurück, wenn das Polygon gegen den Uhrzeigersinn ausgerichttet ist und 1, wenn das Polygon im Uhrzeigersinn ausgerichtet ist."
+
+#. Tag: refname
+#: reference_sfcgal.xml:331
+#, no-c-format
+msgid "ST_ForceLHR"
+msgstr "ST_ForceLHR"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:333
+#, no-c-format
+msgid "Force LHR orientation"
+msgstr "Erzwingt LHR Orientierung"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:338
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_ForceLHR</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_ForceLHR</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:359
+#, no-c-format
+msgid "ST_MinkowskiSum"
+msgstr "ST_MinkowskiSum"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:361
+#, no-c-format
+msgid "Performs Minkowski sum"
+msgstr "Berechnet die Minkowski-Summe"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:366
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_MinkowskiSum</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:377
+#, no-c-format
+msgid ""
+"This function performs a 2D minkowski sum of a point, line or polygon with a"
+" polygon."
+msgstr "Diese Funktion errechnet die Minkowski-Summe eines Punktes, einer Linie oder eines Polygons mit einem Polygon in 2D."
+
+#. Tag: para
+#: reference_sfcgal.xml:378
+#, no-c-format
+msgid ""
+"A minkowski sum of two geometries A and B is the set of all points that are "
+"the sum of any point in A and B. Minkowski sums are often used in motion "
+"planning and computer-aided design. More details on <ulink "
+"url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski"
+" addition</ulink>."
+msgstr "Die Minkowski-Summe zweier Geometrien A und B ist die Menge aller Punkte, die die Summe aller Punkte von A und B sind. Minkowski-Summen werden häufig zur Planung von Bewegungsabläufen und im CAD-Bereich eingesetzt. Weitere Einzelheiten finden Sie unter <ulink url=\"https://en.wikipedia.org/wiki/Minkowski_addition\">Wikipedia Minkowski addition</ulink>."
+
+#. Tag: para
+#: reference_sfcgal.xml:379
+#, no-c-format
+msgid ""
+"The first parameter can be any 2D geometry (point, linestring, polygon). If "
+"a 3D geometry is passed, it will be converted to 2D by forcing Z to 0, "
+"leading to possible cases of invalidity. The second parameter must be a 2D "
+"polygon."
+msgstr "Der erste Parameter kann irgendeine 2D-Geometrie (Punkt, Linienzug, Polygon) sein. Wenn eine 3D-Geometrie eingegeben wird, so wird diese in 2D umgewandelt, indem Z auf 0 gesetzt wird. Dies kann zu ungültigen Spezialfällen führen. Der zweite Parameter muss ein 2D-Polygon sein."
+
+#. Tag: para
+#: reference_sfcgal.xml:381
+#, no-c-format
+msgid ""
+"Implementation utilizes <ulink "
+"url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL 2D "
+"Minkowskisum</ulink>."
+msgstr "Die Umsetzung nützt <ulink url=\"http://doc.cgal.org/latest/Minkowski_sum_2/\">CGAL 2D Minkowskisum</ulink>."
+
+#. Tag: para
+#: reference_sfcgal.xml:389
+#, no-c-format
+msgid ""
+"Minkowski Sum of Linestring and circle polygon where Linestring cuts thru "
+"the circle"
+msgstr "Die Minkowski-Summe eines LineString's, der ein Kreispolygon schneidet"
+
+#. Tag: para
+#: reference_sfcgal.xml:401 reference_sfcgal.xml:436
+#, no-c-format
+msgid "Before Summing"
+msgstr "Vor dem Aufsummieren"
+
+#. Tag: para
+#: reference_sfcgal.xml:413
+#, no-c-format
+msgid "After summing"
+msgstr "Nach dem Aufsummieren"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:422
+#, no-c-format
+msgid ""
+"SELECT ST_MinkowskiSum(line, circle))\n"
+"FROM (SELECT\n"
+"    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n"
+"    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n"
+"\n"
+"-- wkt --\n"
+"MULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,\n"
+"161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))"
+msgstr "SELECT ST_MinkowskiSum(line, circle))\nFROM (SELECT\n    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(100, 100)) As line,\n    ST_Buffer(ST_GeomFromText('POINT(50 50)'), 30) As circle) As foo;\n\n-- wkt --\nMULTIPOLYGON(((30 59.9999999999999,30.5764415879031 54.1472903395161,32.2836140246614 48.5194970290472,35.0559116309237 43.3328930094119,38.7867965644036 38.7867965644035,43.332893009412 35.0559116309236,48.5194970290474 32.2836140246614,54.1472903395162 30.5764415879031,60.0000000000001 30,65.8527096604839 30.5764415879031,71.4805029709527 32.2836140246614,76.6671069905881 35.0559116309237,81.2132034355964 38.7867965644036,171.213203435596 128.786796564404,174.944088369076 133.332893009412,177.716385975339 138.519497029047,179.423558412097 144.147290339516,180 150,179.423558412097 155.852709660484,177.716385975339 161.480502970953,174.944088369076 166.667106990588,171.213203435596 171.213203435596,166.667106990588 174.944088369076,\n161.480502970953 177.716385975339,155.852709660484 179.423558412097,150 180,144.147290339516 179.423558412097,138.519497029047 177.716385975339,133.332893009412 174.944088369076,128.786796564403 171.213203435596,38.7867965644035 81.2132034355963,35.0559116309236 76.667106990588,32.2836140246614 71.4805029709526,30.5764415879031 65.8527096604838,30 59.9999999999999)))"
+
+#. Tag: para
+#: reference_sfcgal.xml:424
+#, no-c-format
+msgid "Minkowski Sum of a polygon and multipoint"
+msgstr "Minkowski Summe von einem Polygon mit einem MultiPoint"
+
+#. Tag: para
+#: reference_sfcgal.xml:448
+#, no-c-format
+msgid ""
+"After summing: polygon is duplicated and translated to position of points"
+msgstr "Nach der Aufsummierung: das Polygon ist dupliziert und in Punktlagen übersetzt"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:457
+#, no-c-format
+msgid ""
+"SELECT ST_MinkowskiSum(mp, poly)\n"
+"FROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,\n"
+"   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n"
+"    ) As foo\n"
+"\n"
+"\n"
+"-- wkt --\n"
+"MULTIPOLYGON(\n"
+"    ((70 115,100 135,175 175,225 225,70 115)),\n"
+"    ((120 65,150 85,225 125,275 175,120 65))\n"
+"    )"
+msgstr "SELECT ST_MinkowskiSum(mp, poly)\nFROM (SELECT 'MULTIPOINT(25 50,70 25)'::geometry As mp,\n   'POLYGON((130 150, 20 40, 50 60, 125 100, 130 150))'::geometry As poly\n    ) As foo\n\n\n-- wkt --\nMULTIPOLYGON(\n    ((70 115,100 135,175 175,225 225,70 115)),\n    ((120 65,150 85,225 125,275 175,120 65))\n    )"
+
+#. Tag: refname
+#: reference_sfcgal.xml:464
+#, no-c-format
+msgid "ST_3DIntersection"
+msgstr "ST_3DIntersection"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:466
+#, no-c-format
+msgid "Perform 3D intersection"
+msgstr "Führt eine Verschneidung in 3D aus"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:471
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DIntersection</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_3DIntersection</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:481
+#, no-c-format
+msgid "Return a geometry that is the shared portion between geom1 and geom2."
+msgstr "Gibt die Schnittmenge von geom1 und geom2 als Geometrie zurück."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:497 reference_sfcgal.xml:573 reference_sfcgal.xml:648
+#, no-c-format
+msgid ""
+"SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2;"
+msgstr "SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n 50, 'quad_segs=2'),0,0,30) AS geom1,\n        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n 50, 'quad_segs=1'),0,0,30) AS geom2;"
+
+#. Tag: para
+#: reference_sfcgal.xml:503
+#, no-c-format
+msgid "Original 3D geometries overlaid. geom2 is shown semi-transparent"
+msgstr "Ursprüngliche 3D-Geometrien überlagert. geom2 wird halbtransparent angezeigt"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:508
+#, no-c-format
+msgid ""
+"SELECT ST_3DIntersection(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+msgstr "SELECT ST_3DIntersection(geom1,geom2)\nFROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n 50, 'quad_segs=2'),0,0,30) AS geom1,\n        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+
+#. Tag: para
+#: reference_sfcgal.xml:514
+#, no-c-format
+msgid "Intersection of geom1 and geom2"
+msgstr "Schnittmenge von geom1 und geom2"
+
+#. Tag: para
+#: reference_sfcgal.xml:523
+#, no-c-format
+msgid "3D linestrings and polygons"
+msgstr "Linienzüge und Polygone in 3D"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:524
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt\n"
+"FROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring\n"
+" CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;\n"
+"\n"
+"              wkt\n"
+"--------------------------------\n"
+" LINESTRING Z (1 1 8,0.5 0.5 8)"
+msgstr "SELECT ST_AsText(ST_3DIntersection(linestring, polygon)) As wkt\nFROM  ST_GeomFromText('LINESTRING Z (2 2 6,1.5 1.5 7,1 1 8,0.5 0.5 8,0 0 10)') AS linestring\n CROSS JOIN ST_GeomFromText('POLYGON((0 0 8, 0 1 8, 1 1 8, 1 0 8, 0 0 8))') AS polygon;\n\n              wkt\n--------------------------------\n LINESTRING Z (1 1 8,0.5 0.5 8)"
+
+#. Tag: para
+#: reference_sfcgal.xml:526
+#, no-c-format
+msgid "Cube (closed Polyhedral Surface) and Polygon Z"
+msgstr "Würfel (geschlossene polyedrische Oberfläche) und Polygon Z"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:527
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_3DIntersection(\n"
+"                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),\n"
+"        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
+msgstr "SELECT ST_AsText(ST_3DIntersection(\n                ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'),\n        'POLYGON Z ((0 0 0, 0 0 0.5, 0 0.5 0.5, 0 0.5 0, 0 0 0))'::geometry))"
+
+#. Tag: screen
+#: reference_sfcgal.xml:528
+#, no-c-format
+msgid ""
+"TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 "
+"0)))"
+msgstr "TIN Z (((0 0 0,0 0 0.5,0 0.5 0.5,0 0 0)),((0 0.5 0,0 0 0,0 0.5 0.5,0 0.5 0)))"
+
+#. Tag: para
+#: reference_sfcgal.xml:530
+#, no-c-format
+msgid ""
+"Intersection of 2 solids that result in volumetric intersection is also a "
+"solid (ST_Dimension returns 3)"
+msgstr "Die Verschneidung von 2 Solids, die sich volumetrisch überschneiden, ist ebenfalls ein Solid (ST_Dimension liefert 3)"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:531
+#, no-c-format
+msgid ""
+"SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),\n"
+" ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
+msgstr "SELECT ST_AsText(ST_3DIntersection( ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),0,0,30),\n ST_Extrude(ST_Buffer('POINT(10 20)'::geometry,10,1),2,0,10) ));"
+
+#. Tag: screen
+#: reference_sfcgal.xml:532
+#, no-c-format
+msgid ""
+"POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),\n"
+"        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),\n"
+"        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n"
+"        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),\n"
+"        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),\n"
+"        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),\n"
+"        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),\n"
+"        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n"
+"        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n"
+"        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n"
+"        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))"
+msgstr "POLYHEDRALSURFACE Z (((13.3333333333333 13.3333333333333 10,20 20 0,20 20 10,13.3333333333333 13.3333333333333 10)),\n        ((20 20 10,16.6666666666667 23.3333333333333 10,13.3333333333333 13.3333333333333 10,20 20 10)),\n        ((20 20 0,16.6666666666667 23.3333333333333 10,20 20 10,20 20 0)),\n        ((13.3333333333333 13.3333333333333 10,10 10 0,20 20 0,13.3333333333333 13.3333333333333 10)),\n        ((16.6666666666667 23.3333333333333 10,12 28 10,13.3333333333333 13.3333333333333 10,16.6666666666667 23.3333333333333 10)),\n        ((20 20 0,9.99999999999995 30 0,16.6666666666667 23.3333333333333 10,20 20 0)),\n        ((10 10 0,9.99999999999995 30 0,20 20 0,10 10 0)),((13.3333333333333 13.3333333333333 10,12 12 10,10 10 0,13.3333333333333 13.3333333333333 10)),\n        ((12 28 10,12 12 10,13.3333333333333 13.3333333333333 10,12 28 10)),\n        ((16.6666666666667 23.3333333333333 10,9.99999999999995 30 0,12 28 10,16.6666666666667 23.3333333333333 10)),\n        ((10 10 0,0 20 0,9.99999999999995 30 0,10 10 0)),\n        ((12 12 10,11 11 10,10 10 0,12 12 10)),((12 28 10,11 11 10,12 12 10,12 28 10)),\n        ((9.99999999999995 30 0,11 29 10,12 28 10,9.99999999999995 30 0)),((0 20 0,2 20 10,9.99999999999995 30 0,0 20 0)),\n        ((10 10 0,2 20 10,0 20 0,10 10 0)),((11 11 10,2 20 10,10 10 0,11 11 10)),((12 28 10,11 29 10,11 11 10,12 28 10)),\n        ((9.99999999999995 30 0,2 20 10,11 29 10,9.99999999999995 30 0)),((11 11 10,11 29 10,2 20 10,11 11 10)))"
+
+#. Tag: refname
+#: reference_sfcgal.xml:540
+#, no-c-format
+msgid "ST_3DDifference"
+msgstr "ST_3DDifference"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:542
+#, no-c-format
+msgid "Perform 3D difference"
+msgstr "Errechnet die Differenzmenge in 3D"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:547
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DDifference</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_3DDifference</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:557
+#, no-c-format
+msgid "Returns that part of geom1 that is not part of geom2."
+msgstr "Gibt jenen Teil von geom1 zurück, der nicht Teil von geom2 ist."
+
+#. Tag: para
+#: reference_sfcgal.xml:579
+#, no-c-format
+msgid ""
+"Original 3D geometries overlaid. geom2 is the part that will be removed."
+msgstr "Ursprüngliche 3D-Geometrien überlagert. geom2 ist jener Teil der nicht entfernt wird."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:584
+#, no-c-format
+msgid ""
+"SELECT ST_3DDifference(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+msgstr "SELECT ST_3DDifference(geom1,geom2)\nFROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n 50, 'quad_segs=2'),0,0,30) AS geom1,\n        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+
+#. Tag: para
+#: reference_sfcgal.xml:590
+#, no-c-format
+msgid "What's left after removing geom2"
+msgstr "Was bleibt zurück nachdem geom2 entfernt wurde"
+
+#. Tag: para
+#: reference_sfcgal.xml:604
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DUnion\"/>"
+msgstr ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref linkend=\"ST_3DUnion\"/>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:614
+#, no-c-format
+msgid "ST_3DUnion"
+msgstr "ST_3DUnion"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:616
+#, no-c-format
+msgid "Perform 3D union"
+msgstr "Führt eine Vereinigung/Union in 3D aus"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:621
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_3DUnion</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> "
+"<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_3DUnion</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:654
+#, no-c-format
+msgid "Original 3D geometries overlaid. geom2 is the one with transparency."
+msgstr "Überlagerung der ursprünglichen Geometrien in 3D. geom2 ist transparent dargestellt."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:659
+#, no-c-format
+msgid ""
+"SELECT ST_3DUnion(geom1,geom2)\n"
+"FROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n"
+" 50, 'quad_segs=2'),0,0,30) AS geom1,\n"
+"        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n"
+" 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+msgstr "SELECT ST_3DUnion(geom1,geom2)\nFROM ( SELECT ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(100 90)'),\n 50, 'quad_segs=2'),0,0,30) AS geom1,\n        ST_Extrude(ST_Buffer(ST_GeomFromText('POINT(80 80)'),\n 50, 'quad_segs=1'),0,0,30) AS geom2 ) As t;"
+
+#. Tag: para
+#: reference_sfcgal.xml:665
+#, no-c-format
+msgid "Union of geom1 and geom2"
+msgstr "Vereinigung von geom1 und geom2"
+
+#. Tag: para
+#: reference_sfcgal.xml:679
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref "
+"linkend=\"ST_3DDifference\"/>"
+msgstr ", <xref linkend=\"ST_AsX3D\"/>, <xref linkend=\"ST_3DIntersection\"/> <xref linkend=\"ST_3DDifference\"/>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:690
+#, no-c-format
+msgid "ST_3DArea"
+msgstr "ST_3DArea"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:692
+#, no-c-format
+msgid "Computes area of 3D surface geometries. Will return 0 for solids."
+msgstr "Berechnet die Fläche von 3D-Oberflächengeometrien. Gibt 0 für Solids zurück."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:697
+#, no-c-format
+msgid ""
+"<funcdef>float<function>ST_3DArea</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr "<funcdef>float<function>ST_3DArea</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:715
+#, no-c-format
+msgid ""
+"Note: By default a PolyhedralSurface built from WKT is a surface geometry, "
+"not solid. It therefore has surface area. Once converted to a solid, no "
+"area."
+msgstr "Anmerkung: Standardmäßig ist ein aus WKT erzeugtes PolyhedralSurface eine Oberflächengeometrie und kein Solid. Es hat daher eine Flächenausdehnung. In ein Solid umgewandelt, keine Fläche."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:716
+#, no-c-format
+msgid ""
+"SELECT ST_3DArea(geom) As cube_surface_area,\n"
+"        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
+"\n"
+" cube_surface_area | solid_surface_area\n"
+"-------------------+--------------------\n"
+"                 6 |                  0"
+msgstr "SELECT ST_3DArea(geom) As cube_surface_area,\n        ST_3DArea(ST_MakeSolid(geom)) As solid_surface_area\n  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n\n cube_surface_area | solid_surface_area\n-------------------+--------------------\n                 6 |                  0"
+
+#. Tag: para
+#: reference_sfcgal.xml:722
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref "
+"linkend=\"ST_Area\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>, <xref linkend=\"ST_Area\"/>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:728
+#, no-c-format
+msgid "ST_Tesselate"
+msgstr "ST_Tesselate"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:730
+#, no-c-format
+msgid ""
+"Perform surface Tesselation of a polygon or polyhedralsurface and returns as"
+" a TIN or collection of TINS"
+msgstr "Erzeugt ein Oberflächen-Mosaik aus einem Polygon oder einer polyedrischen Oberfläche und gibt dieses als TIN oder als TIN-Kollektion zurück"
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:735
+#, no-c-format
+msgid ""
+"<funcdef>geometry <function>ST_Tesselate</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr "<funcdef>geometry <function>ST_Tesselate</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+
+#. Tag: para
+#: reference_sfcgal.xml:744
+#, no-c-format
+msgid ""
+"Takes as input a surface such a MULTI(POLYGON) or POLYHEDRALSURFACE and "
+"returns a TIN representation via the process of tesselation using triangles."
+msgstr "Nimmt als Eingabe eine Fläche, wie ein Multi(Polygon) oder eine polyedrische Oberfläche, und gibt, mittels Mosaikierung in Dreiecke, eine TIN-Darstellung der Geometrie zurück."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:758
+#, no-c-format
+msgid ""
+"SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');"
+msgstr "SELECT ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n                ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n                ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n                ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )');"
+
+#. Tag: para
+#: reference_sfcgal.xml:764
+#, no-c-format
+msgid "Original Cube"
+msgstr "Ursprünglicher Würfel"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:769
+#, no-c-format
+msgid ""
+"SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));"
+msgstr "SELECT ST_Tesselate(ST_GeomFromText('POLYHEDRALSURFACE Z( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n        ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n        ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n        ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'));"
+
+#. Tag: para
+#: reference_sfcgal.xml:770
+#, no-c-format
+msgid "ST_AsText output:"
+msgstr "ST_AsText Ausgabe:"
+
+#. Tag: screen
+#: reference_sfcgal.xml:771
+#, no-c-format
+msgid ""
+"TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),\n"
+"        ((0 0 0,0 1 0,1 1 0,0 0 0)),\n"
+"        ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),\n"
+"        ((0 0 1,0 0 0,1 0 0,0 0 1)),\n"
+"        ((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),\n"
+"        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),\n"
+"        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))"
+msgstr "TIN Z (((0 0 0,0 0 1,0 1 1,0 0 0)),((0 1 0,0 0 0,0 1 1,0 1 0)),\n        ((0 0 0,0 1 0,1 1 0,0 0 0)),\n        ((1 0 0,0 0 0,1 1 0,1 0 0)),((0 0 1,1 0 0,1 0 1,0 0 1)),\n        ((0 0 1,0 0 0,1 0 0,0 0 1)),\n        ((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 0,1 1 0,1 0 1,1 0 0)),\n        ((0 1 0,0 1 1,1 1 1,0 1 0)),((1 1 0,0 1 0,1 1 1,1 1 0)),\n        ((0 1 1,1 0 1,1 1 1,0 1 1)),((0 1 1,0 0 1,1 0 1,0 1 1)))"
+
+#. Tag: para
+#: reference_sfcgal.xml:777
+#, no-c-format
+msgid "Tesselated Cube with triangles colored"
+msgstr "Mosaikierter Würfel mit eingefärbten Dreiecken"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:785
+#, no-c-format
+msgid ""
+"SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, "
+"10 190 ))'::geometry;"
+msgstr "SELECT 'POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry;"
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:796
+#, no-c-format
+msgid ""
+"SELECT\n"
+"        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);"
+msgstr "SELECT\n        ST_Tesselate('POLYGON (( 10 190, 10 70, 80 70, 80 130, 50 160, 120 160, 120 190, 10 190 ))'::geometry);"
+
+#. Tag: para
+#: reference_sfcgal.xml:798
+#, no-c-format
+msgid "ST_AsText output"
+msgstr "ST_AsText Ausgabe"
+
+#. Tag: screen
+#: reference_sfcgal.xml:799
+#, no-c-format
+msgid ""
+"TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),\n"
+"         ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),\n"
+" ((120 190,10 190,50 160,120 190)))"
+msgstr "TIN(((80 130,50 160,80 70,80 130)),((50 160,10 190,10 70,50 160)),\n         ((80 70,50 160,10 70,80 70)),((120 160,120 190,50 160,120 160)),\n ((120 190,10 190,50 160,120 190)))"
+
+#. Tag: para
+#: reference_sfcgal.xml:805
+#, no-c-format
+msgid "Tesselated Polygon"
+msgstr "Mosaikiertes Polygon"
+
+#. Tag: refname
+#: reference_sfcgal.xml:819
+#, no-c-format
+msgid "ST_Volume"
+msgstr "ST_Volume"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:821
+#, no-c-format
+msgid ""
+"Computes the volume of a 3D solid. If applied to surface (even closed) "
+"geometries will return 0."
+msgstr "Berechnet das Volumen eines 3D-Solids. Auf Oberflächengeometrien (auch auf geschlossene) angewandt wird 0 zurückgegeben."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:826
+#, no-c-format
+msgid ""
+"<funcdef>float <function>ST_Volume</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr "<funcdef>float <function>ST_Volume</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+
+#. Tag: title
+#: reference_sfcgal.xml:844
+#, no-c-format
+msgid "Example"
+msgstr "Beispiel"
+
+#. Tag: para
+#: reference_sfcgal.xml:845
+#, no-c-format
+msgid ""
+"When closed surfaces are created with WKT, they are treated as areal rather "
+"than solid. To make them solid, you need to use <xref "
+"linkend=\"ST_MakeSolid\"/>. Areal geometries have no volume. Here is an "
+"example to demonstrate."
+msgstr "Wenn geschlossene Oberflächen über WKT erzeugt werden, so werden diese wie eine Flächen und nicht wie ein Solid behandelt. Um sie in ein Solid umzuwandeln, müssen Sie <xref linkend=\"ST_MakeSolid\"/> verwenden. Flächeneometrien besitzen kein Volumen. Das folgende Beispiel demonstriert dies."
+
+#. Tag: programlisting
+#: reference_sfcgal.xml:847
+#, no-c-format
+msgid ""
+"SELECT ST_Volume(geom) As cube_surface_vol,\n"
+"        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n"
+"  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n"
+"    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n"
+"    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n"
+"    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n"
+"    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n"
+"    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n"
+"\n"
+" cube_surface_vol | solid_surface_vol\n"
+"------------------+-------------------\n"
+"                0 |                 1"
+msgstr "SELECT ST_Volume(geom) As cube_surface_vol,\n        ST_Volume(ST_MakeSolid(geom)) As solid_surface_vol\n  FROM (SELECT 'POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),\n    ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),\n    ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),\n    ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),\n    ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),\n    ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )'::geometry) As f(geom);\n\n cube_surface_vol | solid_surface_vol\n------------------+-------------------\n                0 |                 1"
+
+#. Tag: para
+#: reference_sfcgal.xml:853
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+msgstr ", <xref linkend=\"ST_MakeSolid\"/>, <xref linkend=\"ST_IsSolid\"/>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:860
+#, no-c-format
+msgid "ST_MakeSolid"
+msgstr "ST_MakeSolid"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:862
+#, no-c-format
+msgid ""
+"Cast the geometry into a solid. No check is performed. To obtain a valid "
+"solid, the input geometry must be a closed Polyhedral Surface or a closed "
+"TIN."
+msgstr "Wandelt die Geometrie in ein Solid um. Es wird keine Überprüfung durchgeführt. Um ein gültiges Solid zu erhalten muss die eingegebene Geometrie entweder eine geschlossene polyedrische Oberfläche oder ein geschlossenes TIN sein."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:867
+#, no-c-format
+msgid ""
+"<funcdef>geometry<function>ST_MakeSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr "<funcdef>geometry<function>ST_MakeSolid</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+
+#. Tag: refname
+#: reference_sfcgal.xml:888
+#, no-c-format
+msgid "ST_IsSolid"
+msgstr "ST_IsSolid"
+
+#. Tag: refpurpose
+#: reference_sfcgal.xml:890
+#, no-c-format
+msgid "Test if the geometry is a solid. No validity check is performed."
+msgstr "Überprüft ob die Geometrie ein Solid ist. Es wird keine Plausibilitätsprüfung durchgeführt."
+
+#. Tag: funcprototype
+#: reference_sfcgal.xml:895
+#, no-c-format
+msgid ""
+"<funcdef>boolean<function>ST_IsSolid</function></funcdef> "
+"<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
+msgstr "<funcdef>boolean<function>ST_IsSolid</function></funcdef> <paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>"
