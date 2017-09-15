@@ -68,39 +68,35 @@ lwcompound_is_closed(const LWCOMPOUND *compound)
 
 double lwcompound_length(const LWCOMPOUND *comp)
 {
-	double length = 0.0;
-	LWLINE *line;
-	if ( lwgeom_is_empty((LWGEOM*)comp) )
-		return 0.0;
-	line = lwcompound_stroke(comp, 32);
-	length = lwline_length(line);
-	lwline_free(line);
-	return length;
+	return lwcompound_length_2d(comp);
 }
 
 double lwcompound_length_2d(const LWCOMPOUND *comp)
 {
+	int i;
 	double length = 0.0;
 	LWLINE *line;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
-	line = lwcompound_stroke(comp, 32);
-	length = lwline_length_2d(line);
-	lwline_free(line);
+
+	for (i = 0; i < comp->ngeoms; i++)
+	{
+		length += lwgeom_length_2d(comp->geoms[i]);
+	}
 	return length;
 }
 
 int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 {
 	LWCOLLECTION *col = (LWCOLLECTION*)comp;
-	
+
 	/* Empty things can't continuously join up with other things */
 	if ( lwgeom_is_empty(geom) )
 	{
 		LWDEBUG(4, "Got an empty component for a compound curve!");
 		return LW_FAILURE;
 	}
-	
+
 	if( col->ngeoms > 0 )
 	{
 		POINT4D last, first;
@@ -111,15 +107,15 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 
 		getPoint4d_p(newline->points, 0, &first);
 		getPoint4d_p(prevline->points, prevline->points->npoints-1, &last);
-		
+
 		if ( !(FP_EQUALS(first.x,last.x) && FP_EQUALS(first.y,last.y)) )
 		{
 			LWDEBUG(4, "Components don't join up end-to-end!");
-			LWDEBUGF(4, "first pt (%g %g %g %g) last pt (%g %g %g %g)", first.x, first.y, first.z, first.m, last.x, last.y, last.z, last.m);			
+			LWDEBUGF(4, "first pt (%g %g %g %g) last pt (%g %g %g %g)", first.x, first.y, first.z, first.m, last.x, last.y, last.z, last.m);
 			return LW_FAILURE;
 		}
 	}
-	
+
 	col = lwcollection_add_lwgeom(col, geom);
 	return LW_SUCCESS;
 }
@@ -181,7 +177,7 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 			}
 			if ( comp->ngeoms == 1 )
 			{
-				return ptarrayarc_contains_point(lwcirc->points, pt); 				
+				return ptarrayarc_contains_point(lwcirc->points, pt);
 			}
 			else
 			{
@@ -200,10 +196,10 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 	/* Outside */
 	if (wn == 0)
 		return LW_OUTSIDE;
-	
+
 	/* Inside */
 	return LW_INSIDE;
-}	
+}
 
 LWCOMPOUND *
 lwcompound_construct_from_lwline(const LWLINE *lwline)
@@ -222,14 +218,14 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
 	int npoints = 0;
 	if ( lwgeom_is_empty((LWGEOM*)lwcmp) )
 		return NULL;
-	
+
 	npoints = lwgeom_count_vertices((LWGEOM*)lwcmp);
 	if ( where < 0 || where >= npoints )
 	{
 		lwerror("%s: index %d is not in range of number of vertices (%d) in input", __func__, where, npoints);
 		return NULL;
 	}
-	
+
 	for ( i = 0; i < lwcmp->ngeoms; i++ )
 	{
 		LWGEOM* part = lwcmp->geoms[i];
@@ -244,7 +240,7 @@ lwcompound_get_lwpoint(const LWCOMPOUND *lwcmp, int where)
 		}
 	}
 
-	return NULL;	
+	return NULL;
 }
 
 
@@ -263,14 +259,14 @@ lwcompound_get_endpoint(const LWCOMPOUND *lwcmp)
 	{
 		return NULL;
 	}
-	
+
 	lwline = (LWLINE*)(lwcmp->geoms[lwcmp->ngeoms-1]);
 
 	if ( (!lwline) || (!lwline->points) || (lwline->points->npoints < 1) )
 	{
 		return NULL;
 	}
-	
+
 	return lwline_get_lwpoint(lwline, lwline->points->npoints-1);
 }
 
