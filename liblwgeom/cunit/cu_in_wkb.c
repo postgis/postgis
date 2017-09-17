@@ -66,7 +66,7 @@ static void cu_wkb_in(char *wkt)
 	uint8_t *wkb_a, *wkb_b;
 	size_t wkb_size_a, wkb_size_b;
 	/* int i; char *hex; */
-	
+
 	if ( hex_a ) free(hex_a);
 	if ( hex_b ) free(hex_b);
 
@@ -81,7 +81,7 @@ static void cu_wkb_in(char *wkt)
 
 	/* Get the geom */
 	g_a = pr.geom;
-	
+
 	/* Turn geom into WKB */
 	wkb_a = lwgeom_to_wkb(g_a, WKB_NDR | WKB_EXTENDED, &wkb_size_a);
 
@@ -110,7 +110,7 @@ static void test_wkb_in_point(void)
 
 	cu_wkb_in("SRID=4;POINTM(1 1 1)");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
-	
+
 	cu_wkb_in("POINT EMPTY");
 	CU_ASSERT_STRING_EQUAL(hex_a, hex_b);
 

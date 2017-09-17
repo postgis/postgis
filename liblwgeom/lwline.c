@@ -47,7 +47,7 @@ lwline_construct(int srid, GBOX *bbox, POINTARRAY *points)
 	LWDEBUG(2, "lwline_construct called.");
 
 	result->type = LINETYPE;
-	
+
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
 
@@ -76,7 +76,7 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 void lwline_free (LWLINE  *line)
 {
 	if ( ! line ) return;
-	
+
 	if ( line->bbox )
 		lwfree(line->bbox);
 	if ( line->points )
@@ -187,7 +187,7 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 	 * ngeoms should be a guess about how many points we have in input.
 	 * It's an underestimate for lines and multipoints */
 	pa = ptarray_construct_empty(hasz, hasm, ngeoms);
-	
+
 	for ( i=0; i < ngeoms; i++ )
 	{
 		LWGEOM *g = geoms[i];
@@ -231,7 +231,7 @@ lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
 		ptarray_free(pa);
 		line = lwline_construct_empty(srid, hasz, hasm);
 	}
-	
+
 	return line;
 }
 
@@ -265,7 +265,7 @@ lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 	}
 
 	pa = ptarray_construct_empty(hasz, hasm, npoints);
-	
+
 	for ( i=0; i < npoints; i++ )
 	{
 		if ( ! lwpoint_is_empty(points[i]) )
@@ -279,7 +279,7 @@ lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 		line = lwline_construct(srid, NULL, pa);
 	else
 		line = lwline_construct_empty(srid, hasz, hasm);
-	
+
 	return line;
 }
 
@@ -310,7 +310,7 @@ lwline_from_lwmpoint(int srid, const LWMPOINT *mpoint)
 		getPoint4d_p(mpoint->geoms[i]->point, 0, &pt);
 		ptarray_set_point4d(pa, i, &pt);
 	}
-	
+
 	LWDEBUGF(3, "lwline_from_lwmpoint: constructed pointarray for %d points", mpoint->ngeoms);
 
 	return lwline_construct(srid, NULL, pa);
@@ -341,7 +341,7 @@ lwline_get_lwpoint(const LWLINE *line, int where)
 int
 lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 {
-	POINT4D pt;	
+	POINT4D pt;
 	getPoint4d_p(point->point, 0, &pt);
 
 	if ( ptarray_insert_point(line->points, &pt, where) != LW_SUCCESS )
@@ -353,7 +353,7 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 		lwgeom_drop_bbox(lwline_as_lwgeom(line));
 		lwgeom_add_bbox(lwline_as_lwgeom(line));
 	}
-	
+
 	return LW_SUCCESS;
 }
 
@@ -507,14 +507,14 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm)
 {
 	POINTARRAY *pdims = NULL;
 	LWLINE *lineout;
-	
+
 	/* Return 2D empty */
 	if( lwline_is_empty(line) )
 	{
 		lineout = lwline_construct_empty(line->srid, hasz, hasm);
 	}
 	else
-	{	
+	{
 		pdims = ptarray_force_dims(line->points, hasz, hasm);
 		lineout = lwline_construct(line->srid, NULL, pdims);
 	}
@@ -560,7 +560,7 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist, int preserve_collapsed
 		if ( preserve_collapsed )
 		{
 			POINT4D pt;
-			getPoint4d_p(pa, 0, &pt);		
+			getPoint4d_p(pa, 0, &pt);
 			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 		/* Return null for collapse */

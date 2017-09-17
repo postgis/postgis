@@ -210,9 +210,9 @@ GSERIALIZED* postgis_valid_typmod(GSERIALIZED *gser, int32_t typmod)
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 		            errmsg("Geometry has M dimension but column does not" )));
 	}
-	
+
 	return gser;
-	
+
 }
 
 
@@ -303,7 +303,7 @@ Datum geography_typmod_in(PG_FUNCTION_ARGS)
 	int srid = TYPMOD_GET_SRID(typmod);
 	/* Check the SRID is legal (geographic coordinates) */
 	srid_is_latlong(fcinfo, srid);
-	
+
 	PG_RETURN_INT32(typmod);
 }
 

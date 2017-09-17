@@ -283,7 +283,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
  *      'LINESTRING (0 0, 50 200, 100 0, 150 200, 200 0)'::geometry,
  *      'LINESTRING (0 200, 200 150, 0 100, 200 50, 0 0)'::geometry, 0.5);
  */
- 
+
 PG_FUNCTION_INFO_V1(ST_FrechetDistance);
 Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 {
@@ -303,23 +303,23 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 	double densifyFrac;
 	double result;
 	int retcode;
-  
+
 	geom1 = PG_GETARG_GSERIALIZED_P(0);
 	geom2 = PG_GETARG_GSERIALIZED_P(1);
 	densifyFrac = PG_GETARG_FLOAT8(2);
- 
+
 	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_NULL();
- 
+
 	initGEOS(lwpgnotice, lwgeom_geos_error);
- 
+
 	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
 		HANDLE_GEOS_ERROR("First argument geometry could not be converted to GEOS");
 		PG_RETURN_NULL();
 	}
- 
+
 	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	if ( 0 == g2 )   /* exception thrown at construction */
 	{
@@ -339,16 +339,16 @@ Datum ST_FrechetDistance(PG_FUNCTION_ARGS)
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
- 
+
 	if (retcode == 0)
 	{
 		HANDLE_GEOS_ERROR("GEOSFrechetDistance");
 		PG_RETURN_NULL(); /*never get here */
 	}
- 
+
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
- 
+
 	PG_RETURN_FLOAT8(result);
 
 #endif /* POSTGIS_GEOS_VERSION >= 37 */
@@ -393,12 +393,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 	array = PG_GETARG_ARRAYTYPE_P(0);
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-	
+
 	/* Empty array? Null return */
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Quick scan for nulls */
-#if POSTGIS_PGSQL_VERSION >= 95	
+#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
 #else
 	iterator = array_create_iterator(array, 0);
@@ -408,20 +408,20 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		/* Skip null array items */
 		if ( isnull )
 			continue;
-		
+
 		count++;
 	}
 	array_free_iterator(iterator);
-	
-	
+
+
 	/* All-nulls? Return null */
 	if ( count == 0 )
 		PG_RETURN_NULL();
-	
+
 	/* One geom, good geom? Return it */
 	if ( count == 1 && nelems == 1 )
 		PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
-	
+
 	/* Ok, we really need GEOS now ;) */
 	initGEOS(lwpgnotice, lwgeom_geos_error);
 
@@ -435,7 +435,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	** We need to convert the array of GSERIALIZED into a GEOS collection.
 	** First make an array of GEOS geometries.
 	*/
-#if POSTGIS_PGSQL_VERSION >= 95	
+#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
 #else
 	iterator = array_create_iterator(array, 0);
@@ -447,7 +447,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		/* Skip null array items */
 		if ( isnull )
 			continue;
-		
+
 		gser_in = (GSERIALIZED *)DatumGetPointer(value);
 
 		/* Check for SRID mismatch in array elements */
@@ -1052,17 +1052,17 @@ Datum ST_GeneratePoints(PG_FUNCTION_ARGS)
 
 	gser_input = PG_GETARG_GSERIALIZED_P(0);
 	npoints = DatumGetInt32(DirectFunctionCall1(numeric_int4, PG_GETARG_DATUM(1)));
-	
+
 	/* Smartasses get nothing back */
 	if (npoints < 0)
 		PG_RETURN_NULL();
-	
+
 	/* Types get checked in the code, we'll keep things small out there */
 	lwgeom_input = lwgeom_from_gserialized(gser_input);
 	lwgeom_result = (LWGEOM*)lwgeom_to_points(lwgeom_input, npoints);
 	lwgeom_free(lwgeom_input);
 	PG_FREE_IF_COPY(gser_input, 0);
-	
+
 	/* Return null as null */
 	if (!lwgeom_result)
 		PG_RETURN_NULL();
@@ -1127,7 +1127,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 	lwgeom_input = lwgeom_from_gserialized(gser_input);
 	if ( ! lwgeom_input )
 		lwpgerror("ST_OffsetCurve: lwgeom_from_gserialized returned NULL");
-	
+
 	/* For empty inputs, just echo them back */
 	if ( lwgeom_is_empty(lwgeom_input) )
 		PG_RETURN_POINTER(gser_input);
@@ -1363,7 +1363,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 		lwpoint_free(lwp);
 		PG_RETURN_POINTER(result);
 	}
-	
+
 	type = gserialized_get_type(geom) ;
 	/* Converting curve geometry to linestring if necessary*/
 	if(type == CIRCSTRINGTYPE || type == COMPOUNDTYPE )
@@ -1374,7 +1374,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 		lwgeom_free(igeom);
 		if (linear_geom == NULL)
 			PG_RETURN_NULL();
-		
+
 		geom = geometry_serialize(linear_geom);
 		lwgeom_free(linear_geom);
 	}
@@ -1482,7 +1482,7 @@ Datum ST_ClipByBox2d(PG_FUNCTION_ARGS)
 	result = geometry_serialize(lwresult) ;
 	lwgeom_free(lwresult) ;
 	PG_RETURN_POINTER(result);
-	
+
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 
@@ -1833,7 +1833,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		GSERIALIZED* gpoint = is_point(geom1) ? geom1 : geom2;
 		RTREE_POLY_CACHE* cache = GetRtreeCache(fcinfo, gpoly);
 		int retval;
-	
+
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 		if (gserialized_get_type(gpoint) == POINTTYPE)
 		{
@@ -1845,7 +1845,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		}
 		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
 		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 			int found_completely_inside = LW_FALSE;
 
@@ -2225,7 +2225,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		}
 		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
 		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 
 			retval = LW_TRUE;
@@ -2415,7 +2415,7 @@ Datum geos_intersects(PG_FUNCTION_ARGS)
 		}
 		else if (gserialized_get_type(gpoint) == MULTIPOINTTYPE)
 		{
-			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));	
+			LWMPOINT* mpoint = lwgeom_as_lwmpoint(lwgeom_from_gserialized(gpoint));
 			uint32_t i;
 
 			retval = LW_FALSE;
@@ -2978,7 +2978,7 @@ uint32_t array_nelems_not_null(ArrayType* array) {
     bool isnull;
     uint32_t nelems_not_null = 0;
 
-#if POSTGIS_PGSQL_VERSION >= 95	
+#if POSTGIS_PGSQL_VERSION >= 95
 	iterator = array_create_iterator(array, 0, NULL);
 #else
 	iterator = array_create_iterator(array, 0);
@@ -3101,7 +3101,7 @@ GEOSGeometry** ARRAY2GEOS(ArrayType* array, uint32_t nelems, int* is3d, int* sri
 			}
 			return NULL;
 		}
-       	
+
         i++;
 	}
 
@@ -3614,7 +3614,7 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 #else /* POSTGIS_GEOS_VERSION >= 35 */
 	GSERIALIZED* input;
 	GSERIALIZED* clip;
-	GSERIALIZED* result;	
+	GSERIALIZED* result;
 	LWGEOM* lwgeom_input;
 	LWGEOM* lwgeom_result;
 	double tolerance;
@@ -3648,7 +3648,7 @@ Datum ST_Voronoi(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	return_polygons = PG_GETARG_BOOL(3);
-	
+
 	/* Read our clipping envelope, if applicable. */
 	custom_clip_envelope = !PG_ARGISNULL(1);
 	if (custom_clip_envelope) {

@@ -1239,7 +1239,7 @@ static void test_band_get_pixel_line() {
 	CU_ASSERT_EQUAL(nvals, maxX);
 	CU_ASSERT_EQUAL(((int8_t *) vals)[3], 3);
 	rtdealloc(vals);
-	
+
 	err = rt_band_get_pixel_line(band, 4, 4, maxX, &vals, &nvals);
 	CU_ASSERT_EQUAL(err, ES_NONE);
 	CU_ASSERT_EQUAL(nvals, 1);

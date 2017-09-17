@@ -452,7 +452,7 @@ rt_util_envelope_to_lwpoly(
 	}
 
 	pts = rings[0];
-	
+
 	/* Upper-left corner (first and last points) */
 	p4d.x = env.MinX;
 	p4d.y = env.MaxY;

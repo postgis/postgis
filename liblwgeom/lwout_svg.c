@@ -65,7 +65,7 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 		ret[0] = '\0';
 		return ret;
 	}
-	
+
 	switch (type)
 	{
 	case POINTTYPE:
@@ -597,7 +597,7 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 	trim_trailing_zeros(sy);
 
 	ptr += sprintf(ptr,"%s %s l", sx, sy);
-	
+
 	/* accum */
 	accum_x = x;
 	accum_y = y;
@@ -608,12 +608,12 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 		// lpt = pt;
 
 		pt = getPoint2d_cp(pa, i);
-		
+
 		x = round(pt->x*f)/f;
 		y = round(pt->y*f)/f;
 		dx = x - accum_x;
 		dy = y - accum_y;
-		
+
 		if (fabs(dx) < OUT_MAX_DOUBLE)
 			sprintf(sx, "%.*f", precision, dx);
 		else
@@ -628,7 +628,7 @@ pointArray_svg_rel(POINTARRAY *pa, char *output, int close_ring, int precision)
 			sprintf(sy, "%g",
 			        fabs(dy) ? dy * -1: dy);
 		trim_trailing_zeros(sy);
-		
+
 		accum_x += dx;
 		accum_y += dy;
 

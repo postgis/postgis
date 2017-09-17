@@ -72,7 +72,7 @@ lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly)
 int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 {
 	int i;
-	
+
 	/* Can't do anything with NULLs */
 	if( ! poly || ! ring )
 	{
@@ -94,7 +94,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 		return LW_FAILURE;
 	}
 
-		
+
 	/* In case this is a truly empty, make some initial space  */
 	if ( poly->rings == NULL )
 	{
@@ -123,7 +123,7 @@ int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring)
 	/* Add the ring and increment the ring count */
 	poly->rings[poly->nrings] = (LWGEOM*)ring;
 	poly->nrings++;
-	return LW_SUCCESS;	
+	return LW_SUCCESS;
 }
 
 /**

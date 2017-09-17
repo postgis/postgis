@@ -51,7 +51,7 @@ circ_tree_free(CIRC_NODE* node)
 {
 	int i;
 	if ( ! node ) return;
-	
+
 	for ( i = 0; i < node->num_nodes; i++ )
 		circ_tree_free(node->nodes[i]);
 
@@ -78,7 +78,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	geographic_point_init(p2->x, p2->y, &g2);
 
 	LWDEBUGF(3,"edge #%d (%g %g, %g %g)", i, p1->x, p1->y, p2->x, p2->y);
-	
+
 	diameter = sphere_distance(&g1, &g2);
 
 	/* Zero length edge, doesn't get a node */
@@ -89,7 +89,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node = lwalloc(sizeof(CIRC_NODE));
 	node->p1 = p1;
 	node->p2 = p2;
-	
+
 	/* Convert ends to X/Y/Z, sum, and normalize to get mid-point */
 	geog2cart(&g1, &q1);
 	geog2cart(&g2, &q2);
@@ -110,7 +110,7 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	node->pt_outside.x = 0.0;
 	node->pt_outside.y = 0.0;
 	node->geom_type = 0;
-	
+
 	return node;
 }
 
@@ -174,7 +174,7 @@ circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 	/* Catch sphere_direction when it barfs */
 	if ( isnan(dir) )
 		return LW_FAILURE;
-	
+
 	/* Center of new circle is projection from start point, using offset distance*/
 	return sphere_project(c1, offset, dir, center);
 }
@@ -192,12 +192,12 @@ circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 	POINT3D p1, p2;
 	POINT3D p1p2, pc;
 	double proportion = offset/distance;
-	
+
 	LWDEBUG(4,"calculating cartesian center");
-	
+
 	geog2cart(c1, &p1);
 	geog2cart(c2, &p2);
-	
+
 	/* Difference between p2 and p1 */
 	p1p2.x = p2.x - p1.x;
 	p1p2.y = p2.y - p1.y;
@@ -207,16 +207,16 @@ circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 	p1p2.x *= proportion;
 	p1p2.y *= proportion;
 	p1p2.z *= proportion;
-	
+
 	/* Add difference to p1 to get approximate center point */
 	pc.x = p1.x + p1p2.x;
 	pc.y = p1.y + p1p2.y;
 	pc.z = p1.z + p1p2.z;
 	normalize(&pc);
-	
+
 	/* Convert center point to geographics */
 	cart2geog(&pc, center);
-	
+
 	return LW_SUCCESS;
 }
 
@@ -239,18 +239,18 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	/* Can't do anything w/ empty input */
 	if ( num_nodes < 1 )
 		return node;
-	
+
 	/* Initialize calculation with values of the first circle */
 	new_center = c[0]->center;
 	new_radius = c[0]->radius;
 	new_geom_type = c[0]->geom_type;
-	
+
 	/* Merge each remaining circle into the new circle */
 	for ( i = 1; i < num_nodes; i++ )
 	{
 		c1 = new_center;
 		r1 = new_radius;
-		
+
 		dist = sphere_distance(&c1, &(c[i]->center));
 		ri = c[i]->radius;
 
@@ -270,7 +270,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 			}
 			else
 			{
-				new_geom_type = lwtype_get_collectiontype(new_geom_type);				
+				new_geom_type = lwtype_get_collectiontype(new_geom_type);
 			}
 		}
 		/* If we can't add next feature to this collection cleanly, promote again to anonymous collection */
@@ -281,7 +281,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 
 
 		LWDEBUGF(3, "distance between new (%g %g) and %i (%g %g) is %g", c1.lon, c1.lat, i, c[i]->center.lon, c[i]->center.lat, dist);
-		
+
 		if ( FP_EQUALS(dist, 0) )
 		{
 			LWDEBUG(3, "  distance between centers is zero");
@@ -306,19 +306,19 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 			}
 		}
 		else
-		{	
+		{
 			LWDEBUG(3, "  calculating new center");
 			/* New circle diameter */
 			D = dist + r1 + ri;
 			LWDEBUGF(3,"    D is %g", D);
-			
+
 			/* New radius */
 			new_radius = D / 2.0;
-			
+
 			/* Distance from cn1 center to the new center */
 			offset1 = ri + (D - (2.0*r1 + 2.0*ri)) / 2.0;
 			LWDEBUGF(3,"    offset1 is %g", offset1);
-			
+
 			/* Sometimes the sphere_direction function fails... this causes the center calculation */
 			/* to fail too. In that case, we're going to fall back ot a cartesian calculation, which */
 			/* is less exact, so we also have to pad the radius by (hack alert) an arbitrary amount */
@@ -329,9 +329,9 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 				new_radius *= 1.1;
 			}
 		}
-		LWDEBUGF(3, " new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
+		LWDEBUGF(3, " new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);
 	}
-	
+
 	node = lwalloc(sizeof(CIRC_NODE));
 	node->p1 = NULL;
 	node->p2 = NULL;
@@ -361,11 +361,11 @@ circ_tree_new(const POINTARRAY* pa)
 	/* Can't do anything with no points */
 	if ( pa->npoints < 1 )
 		return NULL;
-		
+
 	/* Special handling for a single point */
 	if ( pa->npoints == 1 )
 		return circ_node_leaf_point_new(pa);
-		
+
 	/* First create a flat list of nodes, one per edge. */
 	num_edges = pa->npoints - 1;
 	nodes = lwalloc(sizeof(CIRC_NODE*) * pa->npoints);
@@ -376,7 +376,7 @@ circ_tree_new(const POINTARRAY* pa)
 		if ( node ) /* Not zero length? */
 			nodes[j++] = node;
 	}
-	
+
 	/* Special case: only zero-length edges. Make a point node. */
 	if ( j == 0 ) {
 		lwfree(nodes);
@@ -426,11 +426,11 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 				inodes = lwalloc(sizeof(CIRC_NODE*)*CIRC_NODE_SIZE);
 
 			inodes[inode_num] = nodes[j];
-			
+
 			if ( inode_num == CIRC_NODE_SIZE-1 )
 				nodes[num_parents++] = circ_node_internal_new(inodes, CIRC_NODE_SIZE);
 		}
-		
+
 		/* Clean up any remaining nodes... */
 		if ( inode_num == 0 )
 		{
@@ -443,11 +443,11 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 			/* Merge spare nodes */
 			nodes[num_parents++] = circ_node_internal_new(inodes, inode_num+1);
 		}
-		
-		num_children = num_parents;	
+
+		num_children = num_parents;
 		num_parents = 0;
 	}
-	
+
 	/* Return a reference to the head of the tree */
 	return nodes[0];
 }
@@ -484,27 +484,27 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	POINT3D S1, S2, E1, E2;
 	double d;
 	int i, c;
-	
+
 	/* Construct a stabline edge from our "inside" to our known outside point */
 	geographic_point_init(pt->x, pt->y, &(stab_edge.start));
 	geographic_point_init(pt_outside->x, pt_outside->y, &(stab_edge.end));
 	geog2cart(&(stab_edge.start), &S1);
 	geog2cart(&(stab_edge.end), &S2);
-	
+
 	LWDEBUG(3, "entered");
-	
+
 	/*
 	* If the stabline doesn't cross within the radius of a node, there's no
 	* way it can cross.
 	*/
-		
+
 	LWDEBUGF(3, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
 	LWDEBUGF(3, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
 	if ( FP_LTEQ(d, node->radius) )
 	{
 		LWDEBUGF(3,"entering this branch (%p)", node);
-		
+
 		/* Return the crossing number of this leaf */
 		if ( circ_node_is_leaf(node) )
 		{
@@ -514,9 +514,9 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 			geographic_point_init(node->p2->x, node->p2->y, &(edge.end));
 			geog2cart(&(edge.start), &E1);
 			geog2cart(&(edge.end), &E2);
-			
+
 			inter = edge_intersects(&S1, &S2, &E1, &E2);
-			
+
 			if ( inter & PIR_INTERSECTS )
 			{
 				LWDEBUG(3," got stab line edge_intersection with this edge!");
@@ -552,7 +552,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	{
 		LWDEBUGF(3,"skipping this branch (%p)", node);
 	}
-	
+
 	return 0;
 }
 
@@ -562,10 +562,10 @@ circ_node_min_distance(const CIRC_NODE* n1, const CIRC_NODE* n2)
 	double d = sphere_distance(&(n1->center), &(n2->center));
 	double r1 = n1->radius;
 	double r2 = n2->radius;
-	
+
 	if ( d < r1 + r2 )
 		return 0.0;
-		
+
 	return d - r1 - r2;
 }
 
@@ -585,7 +585,7 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	/* the actual spheroid distance is larger than the sphere distance */
 	/* causing the return value to be larger than the threshold value */
 	double threshold_radians = 0.95 * threshold / spheroid->radius;
-	
+
 	circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
 
 	/* Spherical case */
@@ -595,34 +595,34 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	}
 	else
 	{
-		return spheroid_distance(&closest1, &closest2, spheroid);		
+		return spheroid_distance(&closest1, &closest2, spheroid);
 	}
 }
 
 static double
 circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2)
-{	
+{
 	double max;
 	double d, d_min;
 	int i;
-	
+
 	LWDEBUGF(4, "entered, min_dist=%.8g max_dist=%.8g, type1=%d, type2=%d", *min_dist, *max_dist, n1->geom_type, n2->geom_type);
 /*
 	circ_tree_print(n1, 0);
 	circ_tree_print(n2, 0);
 */
-	
+
 	/* Short circuit if we've already hit the minimum */
 	if( *min_dist < threshold || *min_dist == 0.0 )
 		return *min_dist;
-	
+
 	/* If your minimum is greater than anyone's maximum, you can't hold the winner */
 	if( circ_node_min_distance(n1, n2) > *max_dist )
 	{
-		LWDEBUGF(4, "pruning pair %p, %p", n1, n2);		
+		LWDEBUGF(4, "pruning pair %p, %p", n1, n2);
 		return FLT_MAX;
 	}
-	
+
 	/* If your maximum is a new low, we'll use that as our new global tolerance */
 	max = circ_node_max_distance(n1, n2);
 	LWDEBUGF(5, "max %.8g", max);
@@ -643,7 +643,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			geographic_point_init(pt.x, pt.y, closest1);
 			geographic_point_init(pt.x, pt.y, closest2);
 			return *min_dist;
-		}			
+		}
 	}
 	/* Polygon on one side, primitive type on the other. Check for point-in-polygon */
 	/* short circuit. */
@@ -659,15 +659,15 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			geographic_point_init(pt.x, pt.y, closest2);
 			*min_dist = 0.0;
 			return *min_dist;
-		}		
+		}
 	}
-	
+
 	/* Both leaf nodes, do a real distance calculation */
 	if( circ_node_is_leaf(n1) && circ_node_is_leaf(n2) )
 	{
 		double d;
 		GEOGRAPHIC_POINT close1, close2;
-		LWDEBUGF(4, "testing leaf pair [%d], [%d]", n1->edge_num, n2->edge_num);		
+		LWDEBUGF(4, "testing leaf pair [%d], [%d]", n1->edge_num, n2->edge_num);
 		/* One of the nodes is a point */
 		if ( n1->p1 == n1->p2 || n2->p1 == n2->p2 )
 		{
@@ -681,7 +681,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 				geographic_point_init(n2->p1->x, n2->p1->y, &gp2);
 				close1 = gp1; close2 = gp2;
 				d = sphere_distance(&gp1, &gp2);
-			}				
+			}
 			/* Node 1 is a point */
 			else if ( n1->p1 == n1->p2 )
 			{
@@ -700,7 +700,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 				close1 = gp1;
 				d = edge_distance_to_point(&e, &gp1, &close2);
 			}
-			LWDEBUGF(4, "  got distance %g", d);		
+			LWDEBUGF(4, "  got distance %g", d);
 		}
 		/* Both nodes are edges */
 		else
@@ -726,7 +726,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			{
 				d = edge_distance_to_edge(&e1, &e2, &close1, &close2);
 			}
-			LWDEBUGF(4, "edge_distance_to_edge returned %g", d);		
+			LWDEBUGF(4, "edge_distance_to_edge returned %g", d);
 		}
 		if ( d < *min_dist )
 		{
@@ -737,7 +737,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		return d;
 	}
 	else
-	{	
+	{
 		d_min = FLT_MAX;
 		/* Drive the recursion into the COLLECTION types first so we end up with */
 		/* pairings of primitive geometries that can be forced into the point-in-polygon */
@@ -778,7 +778,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		{
 			/* Never get here */
 		}
-		
+
 		return d_min;
 	}
 }
@@ -803,14 +803,14 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
   		if ( node->geom_type )
   		{
   			printf(" %s", lwtype_name(node->geom_type));
-  		}		
+  		}
   		if ( node->geom_type == POLYGONTYPE )
   		{
   			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
-  		}				
+  		}
   		printf("\n");
-		
-	}	
+
+	}
 	else
 	{
 		printf("%*s C(%.5g %.5g) R(%.5g)",
@@ -825,7 +825,7 @@ void circ_tree_print(const CIRC_NODE* node, int depth)
   		if ( node->geom_type == POLYGONTYPE )
   		{
   			printf(" O(%.5g %.5g)", node->pt_outside.x, node->pt_outside.y);
-  		}		
+  		}
 		printf("\n");
 	}
 	for ( i = 0; i < node->num_nodes; i++ )
@@ -864,7 +864,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	/* One ring? Handle it like a line. */
 	if ( lwpoly->nrings == 1 )
 	{
-		node = circ_tree_new(lwpoly->rings[0]);			
+		node = circ_tree_new(lwpoly->rings[0]);
 	}
 	else
 	{
@@ -888,7 +888,7 @@ lwpoly_calculate_circ_tree(const LWPOLY* lwpoly)
 	/* selectively when doing distance calculations */
 	node->geom_type = lwgeom_get_type((LWGEOM*)lwpoly);
 	lwpoly_pt_outside(lwpoly, &(node->pt_outside));
-	
+
 	return node;
 }
 
@@ -901,8 +901,8 @@ lwcollection_calculate_circ_tree(const LWCOLLECTION* lwcol)
 
 	/* One geometry? Done! */
 	if ( lwcol->ngeoms == 1 )
-		return lwgeom_calculate_circ_tree(lwcol->geoms[0]);	
-	
+		return lwgeom_calculate_circ_tree(lwcol->geoms[0]);
+
 	/* Calculate a tree for each sub-geometry*/
 	nodes = lwalloc(lwcol->ngeoms * sizeof(CIRC_NODE*));
 	for ( i = 0; i < lwcol->ngeoms; i++ )
@@ -926,7 +926,7 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
 {
 	if ( lwgeom_is_empty(lwgeom) )
 		return NULL;
-		
+
 	switch ( lwgeom->type )
 	{
 		case POINTTYPE:
@@ -944,5 +944,5 @@ lwgeom_calculate_circ_tree(const LWGEOM* lwgeom)
 			lwerror("Unable to calculate spherical index tree for type %s", lwtype_name(lwgeom->type));
 			return NULL;
 	}
-	
+
 }

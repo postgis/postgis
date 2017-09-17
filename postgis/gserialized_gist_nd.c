@@ -180,7 +180,7 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 	/* Can't merge an unknown into any thing */
 	if( gidx_is_unknown(b_new) )
 		return;
-		
+
 	/* Merge of unknown and known is known */
 	if( gidx_is_unknown(*b_union) )
 	{
@@ -248,7 +248,7 @@ static float gidx_edge(GIDX *a)
 
 /* Ensure the first argument has the higher dimensionality. */
 static void gidx_dimensionality_check(GIDX **a, GIDX **b)
-{		
+{
 	if ( GIDX_NDIMS(*a) < GIDX_NDIMS(*b) )
 	{
 		GIDX *tmp = *b;
@@ -379,7 +379,7 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 	{
 		return 0.0;
 	}
-		
+
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
 
@@ -419,7 +419,7 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 	int i;
 	int ndims_b;
 	POSTGIS_DEBUG(5, "entered function");
-	
+
 	if ( (a == NULL) || (b == NULL) ) return FALSE;
 
 	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
@@ -767,7 +767,7 @@ static double gidx_distance_m(const GIDX *a, const GIDX *b)
       assert( bmin > amax );
       d = bmin - amax;
     }
-	
+
 	return d;
 }
 #endif /* POSTGIS_PGSQL_VERSION >= 96 */
@@ -788,7 +788,7 @@ gserialized_expand(GSERIALIZED *g, double distance)
 	{
 		return g;
 	}
-	
+
 	gidx_expand(gidx, fdistance);
 
 	return gserialized_set_gidx(g, gidx);
@@ -858,7 +858,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 	{
 		double m1, m2;
 		int usebox = false;
-		
+
 		if ( lwgeom_get_type(lw1) == POINTTYPE )
 		{
 			POINT4D p;
@@ -875,7 +875,7 @@ Datum gserialized_distance_nd(PG_FUNCTION_ARGS)
 		{
 			usebox = true;
 		}
-		
+
 		if ( lwgeom_get_type(lw2) == POINTTYPE )
 		{
 			POINT4D p;
@@ -1095,7 +1095,7 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	GIDX *bbox_out = (GIDX*)gidxmem;
 	int result = LW_SUCCESS;
 	int i;
-	
+
 	POSTGIS_DEBUG(4, "[GIST] 'compress' function called");
 
 	/*
@@ -1240,7 +1240,7 @@ static inline bool gserialized_gist_consistent_internal(GIDX *key, GIDX *query, 
 		break;
 	default:
 		retval = FALSE;
-	}	
+	}
 
 	return (retval);
 }
@@ -1370,14 +1370,14 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
  	/* REALM 1: No extension is required, return nonzero area */
  	/* REALM 2: Area extension is zero, return nonzero edge extension */
  	/* REALM 3: Area extension is nonzero, return it */
- 
+
  	if( *result == 0 )
  	{
-		if (size_orig > 0) 
+		if (size_orig > 0)
 		{
-			*result = pack_float(size_orig, 1); /* REALM 1 */ 
+			*result = pack_float(size_orig, 1); /* REALM 1 */
 		}
-		else 
+		else
 		{
 			edge_union = gidx_union_edge(gbox_index_orig, gbox_index_new);
 			edge_orig = gidx_edge(gbox_index_orig);
@@ -1396,7 +1396,7 @@ Datum gserialized_gist_penalty(PG_FUNCTION_ARGS)
  	{
  		*result = pack_float(*result, 3); /* REALM 3 */
  	}
-	
+
 	POSTGIS_DEBUGF(4, "[GIST] union size (%.12f), original size (%.12f), penalty (%.12f)", size_union, size_orig, *result);
 
 	PG_RETURN_POINTER(result);
@@ -1492,7 +1492,7 @@ Datum gserialized_gist_geog_distance(PG_FUNCTION_ARGS)
 		*recheck = true;
 	}
 #endif
-			
+
 	/* Get the entry box */
 	entry_box = (GIDX*)DatumGetPointer(entry->key);
 
@@ -1535,7 +1535,7 @@ Datum gserialized_gist_distance(PG_FUNCTION_ARGS)
 #if POSTGIS_PGSQL_VERSION >= 95
 	bool *recheck = (bool *) PG_GETARG_POINTER(4);
 #endif
-	
+
 	double distance;
 
 	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");

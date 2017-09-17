@@ -420,7 +420,7 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 
 	if ( rv == LW_FAILURE )
 		PG_RETURN_NULL();
-		
+
 	result = box3d_from_gbox(&gbox);
 	result->srid = lwgeom->srid;
 
@@ -554,7 +554,7 @@ Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
 
 	if (!box1 && !box0)
 		PG_RETURN_NULL();
-	
+
 	result = palloc(sizeof(BOX3D));
 	result->xmax = Max(box0->xmax, box1->xmax);
 	result->ymax = Max(box0->ymax, box1->ymax);
@@ -563,7 +563,7 @@ Datum BOX3D_combine_BOX3D(PG_FUNCTION_ARGS)
 	result->ymin = Min(box0->ymin, box1->ymin);
 	result->zmin = Min(box0->zmin, box1->zmin);
 	result->srid = box0->srid;
-	
+
 	PG_RETURN_POINTER(result);
 }
 

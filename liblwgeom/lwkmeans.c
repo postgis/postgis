@@ -92,11 +92,11 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 	assert(k>0);
 	assert(ngeoms>0);
 	assert(geoms);
-	
+
     /* Initialize our static structs */
     memset(&config, 0, sizeof(kmeans_config));
     memset(&result, 0, sizeof(kmeans_result));
-    
+
 	if (ngeoms<k)
 	{
 		lwerror("%s: number of geometries is less than the number of clusters requested", __func__);
@@ -189,7 +189,7 @@ lwgeom_cluster_2d_kmeans(const LWGEOM **geoms, int ngeoms, int k)
 
 		/* Find the data point closest to the calculated point */
 		closest = lwkmeans_pt_closest(config.objs, config.num_objs, &p);
-		
+
 		/* If something is terrible wrong w/ data, cannot find a closest */
 		if (closest < 0)
 			lwerror("unable to calculate cluster seed points, too many NULLs or empties?");

@@ -88,15 +88,15 @@ uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 	uint8_t *buf = NULL;
 	register uint8_t h1, h2;
 	int i;
-	
+
 	if( hexsize % 2 )
 		lwerror("Invalid hex string, length (%d) has to be a multiple of two!", hexsize);
 
 	buf = lwalloc(hexsize/2);
-	
+
 	if( ! buf )
 		lwerror("Unable to allocate memory buffer.");
-		
+
 	for( i = 0; i < hexsize/2; i++ )
 	{
 		h1 = hex2char[(int)hexbuf[2*i]];
@@ -136,9 +136,9 @@ static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 {
 	uint32_t wkb_simple_type;
-	
+
 	LWDEBUG(4, "Entered function");
-	
+
 	s->has_z = LW_FALSE;
 	s->has_m = LW_FALSE;
 	s->has_srid = LW_FALSE;
@@ -151,12 +151,12 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		if( wkb_type & WKBSRIDFLAG ) s->has_srid = LW_TRUE;
 		LWDEBUGF(4, "Extended type: has_z=%d has_m=%d has_srid=%d", s->has_z, s->has_m, s->has_srid);
 	}
-	
+
 	/* Mask off the flags */
 	wkb_type = wkb_type & 0x0FFFFFFF;
 	/* Strip out just the type number (1-12) from the ISO number (eg 3001-3012) */
 	wkb_simple_type = wkb_type % 1000;
-	
+
 	/* Extract the Z/M information from ISO style numbers */
 	if( wkb_type >= 3000 && wkb_type < 4000 )
 	{
@@ -219,7 +219,7 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_TRIANGLE_TYPE:
 			s->lwtype = TRIANGLETYPE;
 			break;
-		
+
 		/* PostGIS 1.5 emits 13, 14 for CurvePolygon, MultiCurve */
 		/* These numbers aren't SQL/MM (numbers currently only */
 		/* go up to 12. We can handle the old data here (for now??) */
@@ -230,10 +230,10 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_SURFACE_TYPE:
 			s->lwtype = MULTICURVETYPE;
 			break;
-		
+
 		default: /* Error! */
 			lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
-			break;	
+			break;
 	}
 
 	LWDEBUGF(4,"Got lwtype %s (%u)", lwtype_name(s->lwtype), s->lwtype);
@@ -252,11 +252,11 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 
 	wkb_parse_state_check(s, WKB_BYTE_SIZE);
 	LWDEBUG(4, "Passed state check");
-	
+
 	char_value = s->pos[0];
 	LWDEBUGF(4, "Read byte value: %x", char_value);
 	s->pos += WKB_BYTE_SIZE;
-	
+
 	return char_value;
 }
 
@@ -269,15 +269,15 @@ static uint32_t integer_from_wkb_state(wkb_parse_state *s)
 	uint32_t i = 0;
 
 	wkb_parse_state_check(s, WKB_INT_SIZE);
-	
+
 	memcpy(&i, s->pos, WKB_INT_SIZE);
-	
+
 	/* Swap? Copy into a stack-allocated integer. */
 	if( s->swap_bytes )
 	{
 		int j = 0;
 		uint8_t tmp;
-		
+
 		for( j = 0; j < WKB_INT_SIZE/2; j++ )
 		{
 			tmp = ((uint8_t*)(&i))[j];
@@ -307,7 +307,7 @@ static double double_from_wkb_state(wkb_parse_state *s)
 	{
 		int i = 0;
 		uint8_t tmp;
-		
+
 		for( i = 0; i < WKB_DOUBLE_SIZE/2; i++ )
 		{
 			tmp = ((uint8_t*)(&d))[i];
@@ -348,7 +348,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 
 	/* Does the data we want to read exist? */
 	wkb_parse_state_check(s, pa_size);
-	
+
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
@@ -414,7 +414,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 			dlist[i] = double_from_wkb_state(s);
 		}
 	}
-	
+
 	/* Check for POINT(NaN NaN) ==> POINT EMPTY */
 	pt = getPoint2d_cp(pa, 0);
 	if ( isnan(pt->x) && isnan(pt->y) )
@@ -483,7 +483,7 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
-	return lwcircstring_construct(s->srid, NULL, pa);	
+	return lwcircstring_construct(s->srid, NULL, pa);
 }
 
 /**
@@ -501,7 +501,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 	LWPOLY *poly = lwpoly_construct_empty(s->srid, s->has_z, s->has_m);
 
 	LWDEBUGF(4,"Polygon has %d rings", nrings);
-	
+
 	/* Empty polygon? */
 	if( nrings == 0 )
 		return poly;
@@ -527,7 +527,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 			return NULL;
 		}
-		
+
 		/* Add ring to polygon */
 		if ( lwpoly_add_ring(poly, pa) == LW_FAILURE )
 		{
@@ -561,7 +561,7 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	if ( nrings != 1 )
 		lwerror("Triangle has wrong number of rings: %d", nrings);
 
-	/* There's only one ring, we hope? */	
+	/* There's only one ring, we hope? */
 	pa = ptarray_from_wkb_state(s);
 
 	/* If there's no points, return an empty triangle. */
@@ -591,8 +591,8 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	/* Empty TRIANGLE starts w/ empty POINTARRAY, free it first */
 	if (tri->points)
 		ptarray_free(tri->points);
-	
-	tri->points = pa;	
+
+	tri->points = pa;
 	return tri;
 }
 
@@ -605,7 +605,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 	LWCURVEPOLY *cp = lwcurvepoly_construct_empty(s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
-	
+
 	/* Empty collection? */
 	if ( ngeoms == 0 )
 		return cp;
@@ -616,7 +616,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 		if ( lwcurvepoly_add_ring(cp, geom) == LW_FAILURE )
 			lwerror("Unable to add geometry (%p) to curvepoly (%p)", geom, cp);
 	}
-	
+
 	return cp;
 }
 
@@ -637,7 +637,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 	int i;
 
 	LWDEBUGF(4,"Collection has %d components", ngeoms);
-	
+
 	/* Empty collection? */
 	if ( ngeoms == 0 )
 		return col;
@@ -655,7 +655,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 			return NULL;
 		}
 	}
-	
+
 	return col;
 }
 
@@ -671,9 +671,9 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
 	char wkb_little_endian;
 	uint32_t wkb_type;
-	
+
 	LWDEBUG(4,"Entered function");
-	
+
 	/* Fail when handed incorrect starting byte */
 	wkb_little_endian = byte_from_wkb_state(s);
 	if( wkb_little_endian != 1 && wkb_little_endian != 0 )
@@ -700,7 +700,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	wkb_type = integer_from_wkb_state(s);
 	LWDEBUGF(4,"Got WKB type number: 0x%X", wkb_type);
 	lwtype_from_wkb_state(s, wkb_type);
-	
+
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
 	{
@@ -708,7 +708,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 		/* TODO: warn on explicit UNKNOWN srid ? */
 		LWDEBUGF(4,"Got SRID: %u", s->srid);
 	}
-	
+
 	/* Do the right thing */
 	switch( s->lwtype )
 	{
@@ -749,7 +749,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Return value to keep compiler happy. */
 	return NULL;
-	
+
 }
 
 /* TODO add check for SRID consistency */
@@ -766,7 +766,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check)
 {
 	wkb_parse_state s;
-	
+
 	/* Initialize the state appropriately */
 	s.wkb = wkb;
 	s.wkb_size = wkb_size;
@@ -778,7 +778,7 @@ LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char ch
 	s.has_m = LW_FALSE;
 	s.has_srid = LW_FALSE;
 	s.pos = wkb;
-	
+
 	/* Hand the check catch-all values */
 	if ( check & LW_PARSER_CHECK_NONE )
 		s.check = 0;
@@ -793,16 +793,16 @@ LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check)
 	int hexwkb_len;
 	uint8_t *wkb;
 	LWGEOM *lwgeom;
-	
-	if ( ! hexwkb )	
+
+	if ( ! hexwkb )
 	{
 		lwerror("lwgeom_from_hexwkb: null input");
 		return NULL;
 	}
-	
+
 	hexwkb_len = strlen(hexwkb);
 	wkb = bytes_from_hexbytes(hexwkb, hexwkb_len);
 	lwgeom = lwgeom_from_wkb(wkb, hexwkb_len/2, check);
 	lwfree(wkb);
-	return lwgeom;	
+	return lwgeom;
 }

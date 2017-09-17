@@ -113,7 +113,7 @@ void lwmline_free(LWMLINE *mline)
 {
 	int i;
 	if ( ! mline ) return;
-	
+
 	if ( mline->bbox )
 		lwfree(mline->bbox);
 

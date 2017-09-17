@@ -62,13 +62,13 @@ Datum BOX2D_in(PG_FUNCTION_ARGS)
 	double tmp;
 	GBOX box;
 	int i;
-	
+
 	gbox_init(&box);
 
 	for(i = 0; str[i]; i++) {
 	  str[i] = tolower(str[i]);
 	}
-	
+
 	nitems = sscanf(str,"box(%lf %lf,%lf %lf)", &box.xmin, &box.ymin, &box.xmax, &box.ymax);
 	if (nitems != 4)
 	{
@@ -126,7 +126,7 @@ Datum LWGEOM_to_BOX2D(PG_FUNCTION_ARGS)
 	/* Cannot calculate box? */
 	if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
 		PG_RETURN_NULL();
-		
+
 	/* Strip out higher dimensions */
 	FLAGS_SET_Z(gbox.flags, 0);
 	FLAGS_SET_M(gbox.flags, 0);

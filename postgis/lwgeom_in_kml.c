@@ -435,10 +435,10 @@ static LWGEOM* parse_kml_polygon(xmlNodePtr xnode, bool *hasz)
 			outer_rings++;
 		}
 	}
-	
+
 	if (outer_rings != 1)
 		lwpgerror("invalid KML representation");
-		
+
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
 

@@ -46,7 +46,7 @@ lwtriangle_construct(int srid, GBOX *bbox, POINTARRAY *points)
 
 	result->flags = points->flags;
 	FLAGS_SET_BBOX(result->flags, bbox?1:0);
-	
+
 	result->srid = srid;
 	result->points = points;
 	result->bbox = bbox;
@@ -69,13 +69,13 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 void lwtriangle_free(LWTRIANGLE  *triangle)
 {
 	if ( ! triangle ) return;
-	
+
 	if (triangle->bbox)
 		lwfree(triangle->bbox);
-		
+
 	if (triangle->points)
 		ptarray_free(triangle->points);
-		
+
 	lwfree(triangle);
 }
 

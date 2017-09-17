@@ -341,7 +341,7 @@ void lwcollection_free(LWCOLLECTION *col)
 {
 	int i;
 	if ( ! col ) return;
-	
+
 	if ( col->bbox )
 	{
 		lwfree(col->bbox);
@@ -363,7 +363,7 @@ void lwcollection_free(LWCOLLECTION *col)
 /**
 * Takes a potentially heterogeneous collection and returns a homogeneous
 * collection consisting only of the specified type.
-* WARNING: the output will contain references to geometries in the input, 
+* WARNING: the output will contain references to geometries in the input,
 * so the result must be carefully released, not freed.
 */
 LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
@@ -478,7 +478,7 @@ LWCOLLECTION*
 lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 {
 	LWCOLLECTION *colout;
-	
+
 	/* Return 2D empty */
 	if( lwcollection_is_empty(col) )
 	{
@@ -581,7 +581,7 @@ lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt)
 {
 	if ( col->ngeoms < 1 )
 		return LW_FAILURE;
-		
+
 	return lwgeom_startpoint(col->geoms[0], pt);
 }
 
@@ -590,7 +590,7 @@ LWCOLLECTION* lwcollection_grid(const LWCOLLECTION *coll, const gridspec *grid)
 {
 	uint32_t i;
 	LWCOLLECTION *newcoll;
-	
+
 	newcoll = lwcollection_construct_empty(coll->type, coll->srid, lwgeom_has_z((LWGEOM*)coll), lwgeom_has_m((LWGEOM*)coll));
 
 	for (i=0; i<coll->ngeoms; i++)

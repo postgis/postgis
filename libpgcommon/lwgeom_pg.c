@@ -39,11 +39,11 @@ cstring2text(const char *cstring)
 {
 	text *output;
 	size_t sz;
-	
+
 	/* Guard against null input */
 	if( !cstring )
 		return NULL;
-		
+
 	sz = strlen(cstring);
 	output = palloc(sz + VARHDRSZ);
 	if ( ! output )
@@ -195,7 +195,7 @@ pg_debug(int level, const char *fmt, va_list ap)
 	if ( level >= 0 && level <= 5 )
 		ereport(pglevel[level], (errmsg_internal("%s", errmsg)));
 	else
-		ereport(DEBUG5, (errmsg_internal("%s", errmsg)));		
+		ereport(DEBUG5, (errmsg_internal("%s", errmsg)));
 }
 
 void
@@ -345,15 +345,15 @@ postgis_guc_find_option(const char *name)
 		 GetNumConfigOptions(),
 		 sizeof(struct config_generic *),
 		 postgis_guc_var_compare);
-	
+
 	/* Found nothing? Good */
 	if ( ! res ) return 0;
-	
+
 	/* Hm, you found something, but maybe it's just a placeholder? */
 	/* We'll consider a placehold a "not found" */
 	if ( (*res)->flags & GUC_CUSTOM_PLACEHOLDER )
 		return 0;
-		
+
 	return 1;
 }
 

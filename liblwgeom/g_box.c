@@ -65,7 +65,7 @@ BOX3D* box3d_from_gbox(const GBOX *gbox)
 {
 	BOX3D *b;
 	assert(gbox);
-	
+
 	b = lwalloc(sizeof(BOX3D));
 
 	b->xmin = gbox->xmin;
@@ -84,7 +84,7 @@ BOX3D* box3d_from_gbox(const GBOX *gbox)
 	}
 
 	b->srid = SRID_UNKNOWN;
- 	return b;	
+ 	return b;
 }
 
 /* TODO to be removed */
@@ -92,7 +92,7 @@ GBOX* box3d_to_gbox(const BOX3D *b3d)
 {
 	GBOX *b;
 	assert(b3d);
-	
+
 	b = lwalloc(sizeof(GBOX));
 
 	b->xmin = b3d->xmin;
@@ -158,7 +158,7 @@ int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 		memcpy(gout, g1, sizeof(GBOX));
 		return LW_TRUE;
 	}
-	
+
 	gout->flags = g1->flags;
 
 	gout->xmin = FP_MIN(g1->xmin, g2->xmin);
@@ -166,7 +166,7 @@ int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 
 	gout->ymin = FP_MIN(g1->ymin, g2->ymin);
 	gout->ymax = FP_MAX(g1->ymax, g2->ymax);
-	
+
 	gout->zmin = FP_MIN(g1->zmin, g2->zmin);
 	gout->zmax = FP_MAX(g1->zmax, g2->zmax);
 
@@ -212,12 +212,12 @@ int gbox_is_valid(const GBOX *gbox)
 	if ( ! isfinite(gbox->xmin) || isnan(gbox->xmin) ||
 	     ! isfinite(gbox->xmax) || isnan(gbox->xmax) )
 		return LW_FALSE;
-		
+
 	/* Y */
 	if ( ! isfinite(gbox->ymin) || isnan(gbox->ymin) ||
 	     ! isfinite(gbox->ymax) || isnan(gbox->ymax) )
 		return LW_FALSE;
-		
+
 	/* Z */
 	if ( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
 	{
@@ -233,8 +233,8 @@ int gbox_is_valid(const GBOX *gbox)
 		     ! isfinite(gbox->mmax) || isnan(gbox->mmax) )
 			return LW_FALSE;
 	}
-	
-	return LW_TRUE;		
+
+	return LW_TRUE;
 }
 
 int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
@@ -311,23 +311,23 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;
 		else
-			return LW_TRUE;		
+			return LW_TRUE;
 	}
-		
+
 	/* If both geodetic or both have Z, check Z */
 	if ( FLAGS_GET_Z(g1->flags) && FLAGS_GET_Z(g2->flags) )
 	{
 		if ( g1->zmax < g2->zmin || g1->zmin > g2->zmax )
 			return LW_FALSE;
 	}
-	
+
 	/* If both have M, check M */
 	if ( FLAGS_GET_M(g1->flags) && FLAGS_GET_M(g2->flags) )
 	{
 		if ( g1->mmax < g2->mmin || g1->mmin > g2->mmax )
 			return LW_FALSE;
 	}
-	
+
 	return LW_TRUE;
 }
 
@@ -343,7 +343,7 @@ gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
 	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
 		return LW_FALSE;
-		
+
 	return LW_TRUE;
 }
 

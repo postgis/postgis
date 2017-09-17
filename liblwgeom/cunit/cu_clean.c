@@ -38,7 +38,7 @@
     CU_ASSERT(1); \
   } \
 } while (0)
-	
+
 static void test_lwgeom_make_valid(void)
 {
 	LWGEOM *gin, *gout, *gexp;

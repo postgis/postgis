@@ -160,12 +160,12 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;
 	global_parser_result.parser_check_flags = parser_check_flags;
-		
+
 	wkt_lexer_init(wktstr); /* Lexer ready */
 	parse_rv = wkt_yyparse(); /* Run the parse */
 	LWDEBUGF(4,"wkt_yyparse returned %d", parse_rv);
 	wkt_lexer_close(); /* Clean up lexer */
-	
+
 	/* A non-zero parser return is an error. */
 	if ( parse_rv != 0 )
 	{
@@ -180,13 +180,13 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 		            global_parser_result.errlocation,
 		            global_parser_result.errcode,
 		            global_parser_result.message);
-		
+
 		/* Copy the global values into the return pointer */
 		*parser_result = global_parser_result;
                 wkt_yylex_destroy();
 		return LW_FAILURE;
 	}
-	
+
 	/* Copy the global value into the return pointer */
 	*parser_result = global_parser_result;
         wkt_yylex_destroy();

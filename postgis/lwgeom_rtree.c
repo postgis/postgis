@@ -192,13 +192,13 @@ RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
 	getPoint4d_p(pa, startPoint, &tmp);
 	value1 = tmp.y;
 	ptarray_append_point(npa,&tmp,LW_TRUE);
-	
+
 	getPoint4d_p(pa, startPoint+1, &tmp);
 	value2 = tmp.y;
 	ptarray_append_point(npa,&tmp,LW_TRUE);
 
 	line = lwline_construct(SRID_UNKNOWN, NULL, npa);
-	
+
 	parent = lwalloc(sizeof(RTREE_NODE));
 	parent->interval = RTreeCreateInterval(value1, value2);
 	parent->segment = line;
@@ -321,7 +321,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 	int nrings;
 	RTreeGeomCache* rtree_cache = (RTreeGeomCache*)cache;
 	RTREE_POLY_CACHE* currentCache;
-	
+
 	if ( ! cache )
 		return LW_FAILURE;
 
@@ -330,7 +330,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 		lwpgerror("RTreeBuilder asked to build index where one already exists.");
 		return LW_FAILURE;
 	}
-	
+
 	if (lwgeom->type == MULTIPOLYGONTYPE)
 	{
 		POSTGIS_DEBUG(2, "RTreeBuilder MULTIPOLYGON");
@@ -387,7 +387,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 		lwpgerror("RTreeBuilder got asked to build index on non-polygon");
 		return LW_FAILURE;
 	}
-	return LW_SUCCESS;	
+	return LW_SUCCESS;
 }
 
 /**
@@ -398,10 +398,10 @@ static int
 RTreeFreer(GeomCache* cache)
 {
 	RTreeGeomCache* rtree_cache = (RTreeGeomCache*)cache;
-	
+
 	if ( ! cache )
 		return LW_FAILURE;
-	
+
 	if ( rtree_cache->index )
 	{
 		RTreeCacheClear(rtree_cache->index);

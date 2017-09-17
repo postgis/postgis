@@ -130,7 +130,7 @@ Datum ST_LocateBetween(PG_FUNCTION_ARGS)
 	}
 
 	line_in = lwgeom_from_gserialized(geom_in);
-	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);
 	lwgeom_free(line_in);
 	PG_FREE_IF_COPY(geom_in, 0);
 
@@ -165,7 +165,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	}
 
 	line_in = lwgeom_from_gserialized(geom_in);
-	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);
 	lwgeom_free(line_in);
 	PG_FREE_IF_COPY(geom_in, 0);
 
@@ -206,10 +206,10 @@ Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
 		elog(ERROR,"ST_InterpolatePoint only accepts geometries that have an M dimension");
 		PG_RETURN_NULL();
 	}
-	
+
 	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(gser_point));
 	lwline = lwgeom_from_gserialized(gser_line);
-	
+
 	PG_RETURN_FLOAT8(lwgeom_interpolate_point(lwline, lwpoint));
 }
 
@@ -717,7 +717,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 		lwpgerror("locate_between_m: 2nd arg must be bigger then 1st arg");
 		PG_RETURN_NULL();
 	}
-	
+
 	/*
 	 * Return error if input doesn't have a measure
 	 */

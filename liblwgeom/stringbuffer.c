@@ -123,7 +123,7 @@ stringbuffer_lastchar(stringbuffer_t *s)
 {
 	if( s->str_end == s->str_start )
 		return 0;
-	
+
 	return *(s->str_end - 1);
 }
 
@@ -269,10 +269,10 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 {
 	char *ptr = s->str_end;
 	int dist = 0;
-	
+
 	/* Roll backwards until we hit a non-space. */
 	while( ptr > s->str_start )
-	{	
+	{
 		ptr--;
 		if( (*ptr == ' ') || (*ptr == '\t') )
 		{
@@ -287,7 +287,7 @@ stringbuffer_trim_trailing_white(stringbuffer_t *s)
 			return dist;
 		}
 	}
-	return dist;	
+	return dist;
 }
 
 /**
@@ -306,13 +306,13 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 	char *ptr = s->str_end;
 	char *decimal_ptr = NULL;
 	int dist;
-	
+
 	if ( s->str_end - s->str_start < 2)
 		return 0;
 
 	/* Roll backwards to find the decimal for this number */
 	while( ptr > s->str_start )
-	{	
+	{
 		ptr--;
 		if ( *ptr == '.' )
 		{
@@ -328,9 +328,9 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 	/* No decimal? Nothing to trim! */
 	if ( ! decimal_ptr )
 		return 0;
-	
+
 	ptr = s->str_end;
-	
+
 	/* Roll backwards again, with the decimal as stop point, trimming contiguous zeroes */
 	while( ptr >= decimal_ptr )
 	{
@@ -340,7 +340,7 @@ stringbuffer_trim_trailing_zeroes(stringbuffer_t *s)
 		else
 			break;
 	}
-	
+
 	/* Huh, we get anywhere. Must not have trimmed anything. */
 	if ( ptr == s->str_end )
 		return 0;

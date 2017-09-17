@@ -93,7 +93,7 @@ static void test_misc_count_vertices(void)
 	geom = lwgeom_from_wkt("CURVEPOLYGON((0 0,1 0,0 1,0 0),CIRCULARSTRING(0 0,1 0,1 1,1 0,0 0))", LW_PARSER_CHECK_NONE);
 	count = lwgeom_count_vertices(geom);
 	CU_ASSERT_EQUAL(count,9);
-	lwgeom_free(geom);	
+	lwgeom_free(geom);
 }
 
 static void test_misc_area(void)
@@ -103,7 +103,7 @@ static void test_misc_area(void)
 
 	geom = lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_ALL);
 	area = lwgeom_area(geom);
-	CU_ASSERT_DOUBLE_EQUAL(area, 0.0, 0.0001);	
+	CU_ASSERT_DOUBLE_EQUAL(area, 0.0, 0.0001);
 	lwgeom_free(geom);
 }
 
@@ -115,7 +115,7 @@ static void test_misc_wkb(void)
 	CU_ASSERT_STRING_EQUAL(str, "CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))");
 	lwfree(str);
 	lwgeom_free(geom);
-		
+
 }
 
 
@@ -126,7 +126,7 @@ static void test_grid(void)
 	LWGEOM *geom = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
 	LWGEOM *geomgrid;
 	char *str;
-	
+
 	grid.ipx = grid.ipy = 0;
 	grid.xsize = grid.ysize = 20;
 
@@ -135,7 +135,7 @@ static void test_grid(void)
 	CU_ASSERT_STRING_EQUAL(str, "MULTIPOLYGON EMPTY");
 	lwfree(str);
 	lwgeom_free(geom);
-	lwgeom_free(geomgrid);		
+	lwgeom_free(geomgrid);
 }
 
 static void test_clone(void)
@@ -143,7 +143,7 @@ static void test_clone(void)
 	static char *wkt = "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0))),POINT(1 1),LINESTRING(2 3,4 5))";
 	LWGEOM *geom1 = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_ALL);
 	LWGEOM *geom2;
-	
+
 	/* Free in "backwards" order */
 	geom2 = lwgeom_clone(geom1);
 	lwgeom_free(geom1);

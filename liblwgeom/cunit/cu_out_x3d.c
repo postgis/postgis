@@ -108,7 +108,7 @@ static void out_x3d3_test_geoms(void)
 	    "MULTIPOINT(0 1,2 3,4 5)",
 	    "<Polypoint2D  point='0 1 2 3 4 5 ' />",
 	    NULL, 0, 0);
-	
+
 	/* 3D MultiPoint */
 	do_x3d3_test(
 	    "MULTIPOINT Z(0 1 1,2 3 4,4 5 5)",
@@ -125,7 +125,7 @@ static void out_x3d3_test_geoms(void)
 	    "MULTIPOLYGON(((0 1 1,2 3 1,4 5 1,0 1 1)),((6 7 1,8 9 1,10 11 1,6 7 1)))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 -1 3 4 5'><Coordinate point='0 1 1 2 3 1 4 5 1 6 7 1 8 9 1 10 11 1 ' /></IndexedFaceSet>",
 	    NULL, 0, 0);
-	
+
 	/* PolyhedralSurface */
 	do_x3d3_test(
 	    "POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )",
@@ -163,13 +163,13 @@ static void out_x3d3_test_option(void)
 	    "POINT(3.1111111111111 1.1111111111111 2.11111111111111)",
 	    "1 3 2",
 	    NULL, 0, 1);
-		
+
 	/* geocoordinate long,lat*/
 	do_x3d3_test(
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",
 	    "<IndexedFaceSet  convex='false' coordIndex='0 1 2 3 4 5 6 7'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"longitude_first\"' point='15 10 3 13.536 6.464 3 10 5 3 6.464 6.464 3 5 10 3 6.464 13.536 3 10 15 3 13.536 13.536 3 ' /></IndexedFaceSet>",
 	    NULL, 3, 2);
-		
+
 	/* geocoordinate lat long*/
 	do_x3d3_test(
 	    "SRID=4326;POLYGON((15 10 3,13.536 6.464 3,10 5 3,6.464 6.464 3,5 10 3,6.464 13.536 3,10 15 3,13.536 13.536 3,15 10 3))",

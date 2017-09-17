@@ -52,16 +52,16 @@ lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix)
 
 	sb = stringbuffer_create();
 	rv = lwgeom_to_kml2_sb(geom, precision, prefix, sb);
-	
+
 	if ( rv == LW_FAILURE )
 	{
 		stringbuffer_destroy(sb);
 		return NULL;
 	}
-	
+
 	kml = stringbuffer_getstringcopy(sb);
 	stringbuffer_destroy(sb);
-	
+
 	return kml;
 }
 
@@ -97,7 +97,7 @@ ptarray_to_kml2_sb(const POINTARRAY *pa, int precision, stringbuffer_t *sb)
 	int dims = FLAGS_GET_Z(pa->flags) ? 3 : 2;
 	POINT4D pt;
 	double *d;
-	
+
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		getPoint4d_p(pa, i, &pt);
@@ -142,7 +142,7 @@ lwline_to_kml2_sb(const LWLINE *line, int precision, const char *prefix, stringb
 	if ( ptarray_to_kml2_sb(line->points, precision, sb) == LW_FAILURE ) return LW_FAILURE;
 	/* Close linestring */
 	if ( stringbuffer_aprintf(sb, "</%scoordinates></%sLineString>", prefix, prefix) < 0 ) return LW_FAILURE;
-	
+
 	return LW_SUCCESS;
 }
 
@@ -150,7 +150,7 @@ static int
 lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	int i, rv;
-	
+
 	/* Open polygon */
 	if ( stringbuffer_aprintf(sb, "<%sPolygon>", prefix) < 0 ) return LW_FAILURE;
 	for ( i = 0; i < poly->nrings; i++ )
@@ -159,17 +159,17 @@ lwpoly_to_kml2_sb(const LWPOLY *poly, int precision, const char *prefix, stringb
 		if( i )
 			rv = stringbuffer_aprintf(sb, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 		else
-			rv = stringbuffer_aprintf(sb, "<%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);		
+			rv = stringbuffer_aprintf(sb, "<%souterBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
 		if ( rv < 0 ) return LW_FAILURE;
-		
+
 		/* Coordinate array */
 		if ( ptarray_to_kml2_sb(poly->rings[i], precision, sb) == LW_FAILURE ) return LW_FAILURE;
-		
+
 		/* Inner or outer ring closing tags */
 		if( i )
 			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
 		else
-			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);		
+			rv = stringbuffer_aprintf(sb, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
 		if ( rv < 0 ) return LW_FAILURE;
 	}
 	/* Close polygon */
@@ -182,13 +182,13 @@ static int
 lwcollection_to_kml2_sb(const LWCOLLECTION *col, int precision, const char *prefix, stringbuffer_t *sb)
 {
 	int i, rv;
-		
+
 	/* Open geometry */
 	if ( stringbuffer_aprintf(sb, "<%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		rv = lwgeom_to_kml2_sb(col->geoms[i], precision, prefix, sb);
-		if ( rv == LW_FAILURE ) return LW_FAILURE;		
+		if ( rv == LW_FAILURE ) return LW_FAILURE;
 	}
 	/* Close geometry */
 	if ( stringbuffer_aprintf(sb, "</%sMultiGeometry>", prefix) < 0 ) return LW_FAILURE;

@@ -197,7 +197,7 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	lwgeom_free(g);
-	
+
 	/* Inf = 0x7FF0000000000000 */
 	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
 	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */
@@ -214,14 +214,14 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
 	CU_ASSERT(isinf(b.ymax));
 	lwgeom_free(g);
-	
+
 	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
 	/* NaN should show up in bbox for "SRID=4326;POINT(0 NaN)" */
 	g = lwgeom_from_hexwkb("0101000020E86400000000000000000000000000000000F8FF", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT(isnan(b.ymax));
-	lwgeom_free(g);	
-	
+	lwgeom_free(g);
+
 }
 
 static void test_gbox_serialized_size(void)
@@ -314,7 +314,7 @@ static void test_gserialized_is_empty(void)
 		const char* wkt;
 		int isempty;
 	};
-	
+
 	struct gserialized_empty_cases cases[] = {
 		{ "POINT EMPTY", 1 },
 		{ "POINT(1 1)", 0 },
@@ -333,7 +333,7 @@ static void test_gserialized_is_empty(void)
 		{ "GEOMETRYCOLLECTION(POLYGON EMPTY,GEOMETRYCOLLECTION(POINT EMPTY),MULTILINESTRING(EMPTY,EMPTY),POINT EMPTY)", 1 },
 		{ NULL, 0 }
 	};
-	
+
 	while( cases[i].wkt )
 	{
 		// i = 11;
@@ -347,7 +347,7 @@ static void test_gserialized_is_empty(void)
 		i++;
 	}
 }
-	
+
 
 static void test_geometry_type_from_string(void)
 {
@@ -518,9 +518,9 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 		xmax = g->bbox->xmax;
 		ymax = g->bbox->ymax;
 	}
-	
+
 	g = lwgeom_flip_coordinates(g);
-	
+
 	if ( testbox )
 	{
 		CU_ASSERT_DOUBLE_EQUAL(g->bbox->xmax, ymax, 0.00001);
@@ -659,14 +659,14 @@ static void test_f2d(void)
 	double d = 1000000.123456789123456789;
 	float f;
 	double e;
-	
+
 	f = next_float_down(d);
-	d = next_float_down(f);	
+	d = next_float_down(f);
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
-	
+
 	e = (double)f;
 	CU_ASSERT_DOUBLE_EQUAL(f,e, 0.0000001);
-	
+
 	f = next_float_down(d);
 	d = next_float_down(f);
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
@@ -793,7 +793,7 @@ static void test_lwgeom_force_clockwise(void)
 	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	geom2 = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
 	lwgeom_force_clockwise(geom2);
-	
+
 	/** use same check instead of strcmp to account
 	  for difference in endianness **/
 	CU_ASSERT( lwgeom_same(geom, geom2) );
@@ -1004,7 +1004,7 @@ static void test_lwline_from_lwmpoint(void)
 	line = lwline_from_lwmpoint(SRID_DEFAULT, mpoint);
 	CU_ASSERT_EQUAL(line->points->npoints, mpoint->ngeoms);
 	CU_ASSERT_DOUBLE_EQUAL(lwline_length_2d(line), 4.0, 0.000001);
-	
+
 	lwline_free(line);
 	lwmpoint_free(mpoint);
 }

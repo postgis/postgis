@@ -307,7 +307,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 {
 	PrepGeomCache* prepcache = (PrepGeomCache*)cache;
 	PrepGeomHashEntry* pghe;
-	
+
 	/*
 	* First time through? allocate the global hash.
 	*/
@@ -327,9 +327,9 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		pghe.context = prepcache->context_callback;
 		pghe.geom = 0;
 		pghe.prepared_geom = 0;
-		AddPrepGeomHashEntry( pghe );		
+		AddPrepGeomHashEntry( pghe );
 	}
-	
+
 	/*
 	* Hum, we shouldn't be asked to build a new cache on top of
 	* an existing one. Error.
@@ -349,13 +349,13 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	 */
 	if (lwgeom_get_type(lwgeom) == POINTTYPE || lwgeom_get_type(lwgeom) == MULTIPOINTTYPE)
 		return LW_FAILURE;
-	
+
 	prepcache->geom = LWGEOM2GEOS( lwgeom , 0);
 	if ( ! prepcache->geom ) return LW_FAILURE;
 	prepcache->prepared_geom = GEOSPrepare( prepcache->geom );
 	if ( ! prepcache->prepared_geom ) return LW_FAILURE;
 	prepcache->argnum = cache->argnum;
-	
+
 	/*
 	* In order to find the objects we need to destroy, we keep
 	* extra references in a global hash object.
@@ -366,7 +366,7 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 		lwpgerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
-	
+
 	pghe->geom = prepcache->geom;
 	pghe->prepared_geom = prepcache->prepared_geom;
 
@@ -414,7 +414,7 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	prepcache->argnum = 0;
 	prepcache->prepared_geom = 0;
 	prepcache->geom	= 0;
-	
+
 	return LW_SUCCESS;
 }
 

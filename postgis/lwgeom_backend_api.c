@@ -122,7 +122,7 @@ void lwgeom_init_backend()
 	/* can skip GUC definition in this case, so we just return. */
 	static const char *guc_name = "postgis.backend";
 	// const char *guc_installed = GetConfigOption(guc_name, TRUE, FALSE);
-		
+
 	/* Uh oh, this GUC name already exists. Ordinarily we could just go on */
 	/* our way, but the way the postgis.backend works is by using the "assign" */
 	/* callback to change which backend is in use by flipping a global variable */
@@ -228,7 +228,7 @@ Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
     LWGEOM *lwgeom2 = lwgeom_from_gserialized(geom2);
 
 	error_if_srid_mismatch(lwgeom1->srid, lwgeom2->srid);
-	
+
     mindist = lwgeom_mindistance3d_tolerance(lwgeom1,lwgeom2,0.0);
 
     PG_FREE_IF_COPY(geom1, 0);

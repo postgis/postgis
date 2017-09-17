@@ -369,18 +369,18 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		*/
 		gser = PG_GETARG_GSERIALIZED_P(0);
 		geom = lwgeom_from_gserialized(gser);
-		
+
 		/*
 		* Get the max vertices value
 		*/
 		if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
 			maxvertices = PG_GETARG_INT32(1);
-		
+
 		/*
 		* Compute the subdivision of the geometry
 		*/
 		col = lwgeom_subdivide(geom, maxvertices);
-		
+
 		if ( ! col )
 			SRF_RETURN_DONE(funcctx);
 
@@ -412,7 +412,7 @@ Datum ST_Subdivide(PG_FUNCTION_ARGS)
 		/* do when there is no more left */
 		SRF_RETURN_DONE(funcctx);
 	}
-	
+
 #endif /* POSTGIS_GEOS_VERSION >= 35 */
 }
 

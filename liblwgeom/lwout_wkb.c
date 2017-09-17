@@ -66,12 +66,12 @@ static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uint8_t variant)
 	   We force that behavior with the WKB_NO_SRID flag */
 	if ( variant & WKB_NO_SRID )
 		return LW_FALSE;
-		
+
 	/* We can only add an SRID if the geometry has one, and the
-	   WKB form is extended */	
+	   WKB form is extended */
 	if ( (variant & WKB_EXTENDED) && lwgeom_has_srid(geom) )
 		return LW_TRUE;
-		
+
 	/* Everything else doesn't get an SRID */
 	return LW_FALSE;
 }
@@ -301,7 +301,7 @@ static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 	if ( geom->type == POINTTYPE )
 	{
 		const LWPOINT *pt = (LWPOINT*)geom;
-		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);		
+		size += WKB_DOUBLE_SIZE * FLAGS_NDIMS(pt->point->flags);
 	}
 	/* num-elements */
 	else
@@ -343,7 +343,7 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 		/* Set nrings/npoints/ngeoms to zero */
 		buf = integer_to_wkb_buf(0, buf, variant);
 	}
-	
+
 	return buf;
 }
 
@@ -524,17 +524,17 @@ static uint8_t* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uint8_t *buf, uint8
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
-	
+
 	/* Set the geometry type */
 	buf = integer_to_wkb_buf(lwgeom_wkb_type((LWGEOM*)tri, variant), buf, variant);
-	
+
 	/* Set the optional SRID for extended variant */
 	if ( lwgeom_wkb_needs_srid((LWGEOM*)tri, variant) )
 		buf = integer_to_wkb_buf(tri->srid, buf, variant);
 
 	/* Set the number of rings (only one, it's a triangle, buddy) */
 	buf = integer_to_wkb_buf(1, buf, variant);
-	
+
 	/* Write that ring */
 	buf = ptarray_to_wkb_buf(tri->points, buf, variant);
 
@@ -549,7 +549,7 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
 	int i = 0;
-	
+
 	/* Only process empty at this level in the EXTENDED case */
 	if ( (variant & WKB_EXTENDED) && lwgeom_is_empty((LWGEOM*)poly) )
 		return empty_to_wkb_size((LWGEOM*)poly, variant);

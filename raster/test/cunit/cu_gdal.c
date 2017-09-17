@@ -266,7 +266,7 @@ static void test_gdal_polygonize() {
 	/* Third test: NODATA value = 2.8 */
 #ifdef GDALFPOLYGONIZE
 	rt = fillRasterToPolygonize(1, 2.8);
-#else	
+#else
 	rt = fillRasterToPolygonize(1, 3.0);
 #endif
 
@@ -320,7 +320,7 @@ static void test_gdal_polygonize() {
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
-	
+
 	/*
 	for (i = 0; i < nPols; i++) {
 		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);

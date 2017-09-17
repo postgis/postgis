@@ -79,7 +79,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	/* Can't simplify points! */
 	if ( type == POINTTYPE || type == MULTIPOINTTYPE )
 		PG_RETURN_POINTER(geom);
-		
+
 	in = lwgeom_from_gserialized(geom);
 
 	out = lwgeom_simplify(in, dist, preserve_collapsed);
@@ -128,7 +128,7 @@ Datum LWGEOM_SetEffectiveArea(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-	
+
 /***********************************************************************
  * --strk@kbt.io;
  ***********************************************************************/
@@ -196,7 +196,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 		opa = ptarray_construct(lwgeom_has_z(geom), lwgeom_has_m(geom), 1);
 		ptarray_set_point4d(opa, 0, &pt);
-		
+
 		point = lwpoint_construct(line->srid, NULL, opa);
 		PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
 	}
@@ -334,7 +334,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	{
 		PG_RETURN_POINTER(in_geom);
 	}
-	
+
 	/* Return input geometry if input grid is meaningless */
 	if ( grid.xsize==0 && grid.ysize==0 && grid.zsize==0 && grid.msize==0 )
 	{
@@ -417,7 +417,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 #if POSTGIS_DEBUG_LEVEL >= 4
 	grid_print(&grid);
 #endif
-	
+
 	/* Return input geometry if input grid is meaningless */
 	if ( grid.xsize==0 && grid.ysize==0 && grid.zsize==0 && grid.msize==0 )
 	{
@@ -1277,7 +1277,7 @@ Datum ST_GeometricMedian(PG_FUNCTION_ARGS)
 	}
 
 	result = geometry_serialize(lwpoint_as_lwgeom(lwresult));
-	
+
 	PG_RETURN_POINTER(result);
 }
 

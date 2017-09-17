@@ -136,10 +136,10 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	int a2_side, clockwise;
 	double a1, a3;
 	double angle;
-	
+
 	if ( lw_arc_is_pt(A1, A2, A3) )
 		return 0.0;
-	
+
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
@@ -149,12 +149,12 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
         double dy = A1->y - A3->y;
 		return sqrt(dx*dx + dy*dy);
 	}
-	
+
 	/* Closed circle! Return the circumference! */
 	circumference_A = M_PI * 2 * radius_A;
 	if ( p2d_same(A1, A3) )
 		return circumference_A;
-	
+
 	/* Determine the orientation of the arc */
 	a2_side = lw_segment_side(A1, A3, A2);
 
@@ -164,7 +164,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 		clockwise = LW_TRUE;
 	else
 		clockwise = LW_FALSE;
-		
+
 	/* Angles of each point that defines the arc section */
 	a1 = atan2(A1->y - C.y, A1->x - C.x);
 	a3 = atan2(A3->y - C.y, A3->x - C.x);
@@ -182,7 +182,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 		if ( a3 > a1 )
 			angle = a3 - a1;
 		else
-			angle = 2*M_PI + a3 - a1; 			
+			angle = 2*M_PI + a3 - a1;
 	}
 
 	/* Length as proportion of circumference */
@@ -195,29 +195,29 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 	double radius_A;
 	double side_Q, side_A2;
 	double d;
-	
+
 	side_Q = lw_segment_side(A1, A3, Q);
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 	side_A2 = lw_segment_side(A1, A3, A2);
-	
+
 	/* Linear case */
 	if ( radius_A < 0 )
 		return side_Q;
-		
+
 	d = distance2d_pt_pt(Q, &C);
-	
+
 	/* Q is on the arc boundary */
 	if ( d == radius_A && side_Q == side_A2 )
-	{	
+	{
 		return 0;
 	}
-	
+
 	/* Q on A1-A3 line, so its on opposite side to A2 */
 	if ( side_Q == 0 )
 	{
 		return -1 * side_A2;
 	}
-	
+
 	/*
 	* Q is inside the arc boundary, so it's not on the side we
 	* might think from examining only the end points
@@ -226,7 +226,7 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 	{
 		side_Q *= -1;
 	}
-	
+
 	return side_Q;
 }
 
@@ -238,7 +238,7 @@ int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const P
 * point is coincident with either end point, they are taken as colinear.
 */
 double
-lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)	
+lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
 {
 	POINT2D c;
 	double cx, cy, cr;
@@ -807,7 +807,7 @@ int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 		{
 			break;
 		}
-		
+
 		if ( miny > latmin + latwidth / 2.0 )
 		{
 			latminadjust = latwidth / 2.0;
@@ -859,7 +859,7 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	gbox_init(&gbox);
 	gbox_init(&gbox_bounds);
 
-	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);	
+	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);
 	if ( result == LW_FAILURE ) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */

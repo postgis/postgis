@@ -67,7 +67,7 @@ static void test_sqlmm(void)
 		     POLYGONTYPE);
 
 	do_type_test("CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (0 0 2 5,1 1 2 6,1 0 2 5), (1 0 2 3,0 1 2 2), (0 1 2 2,30 1 2 2), CIRCULARSTRING (30 1 2 2,12 1 2 6,1 10 2 5, 1 10 3 5, 0 0 2 5)))",
-		     POLYGONTYPE);	
+		     POLYGONTYPE);
 
 	do_type_test("MULTISURFACE (CURVEPOLYGON (CIRCULARSTRING (-2 0, -1 -1, 0 0, 1 -1, 2 0, 0 2, -2 0), (-1 0, 0 0.5, 1 0, 0 1, -1 0)), ((7 8, 10 10, 6 14, 4 11, 7 8)))",
 		     MULTIPOLYGONTYPE);

@@ -59,7 +59,7 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 		   the GeoJSON expects a cartesian bounding box */
 		lwgeom_calculate_gbox_cartesian(geom, &tmp);
 		bbox = &tmp;
-	}		
+	}
 
 	switch (type)
 	{

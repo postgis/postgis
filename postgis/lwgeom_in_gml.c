@@ -644,7 +644,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 
 	/* HasZ?, !HasM, 1 Point */
 	dpa = ptarray_construct_empty(1, 0, 1);
-	
+
 	x = y = z = false;
 	for (xyz = xnode->children ; xyz != NULL ; xyz = xyz->next)
 	{
@@ -966,7 +966,7 @@ static LWGEOM* parse_gml_line(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (xnode->children == NULL)
 		return lwline_as_lwgeom(lwline_construct_empty(*root_srid, 0, 0));
-		
+
 	pa = parse_gml_data(xnode->children, hasz, root_srid);
 	if (pa->npoints < 2) gml_lwpgerror("invalid GML representation", 36);
 
@@ -1113,10 +1113,10 @@ static LWGEOM* parse_gml_linearring(xmlNodePtr xnode, bool *hasz, int *root_srid
 
 	if (srs.reverse_axis)
 		ppa[0] = ptarray_flip_coordinates(ppa[0]);
-	
+
 	if (srs.srid != *root_srid && *root_srid != SRID_UNKNOWN)
 		gml_reproject_pa(ppa[0], srs.srid, *root_srid);
-		
+
 	geom = (LWGEOM *) lwpoly_construct(*root_srid, NULL, 1, ppa);
 
 	return geom;
@@ -1170,7 +1170,7 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	/* Found an <exterior> or <outerBoundaryIs> but no rings?!? We're outa here! */
 	if ( ! ppa )
-		gml_lwpgerror("invalid GML representation", 43);	
+		gml_lwpgerror("invalid GML representation", 43);
 
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{

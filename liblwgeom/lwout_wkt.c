@@ -590,7 +590,7 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 		/* We don't want type strings on our subgeoms */
 		lwpoly_to_wkt_sb(psurf->geoms[i], sb, precision, variant | WKT_NO_TYPE );
 	}
-	stringbuffer_append(sb, ")");	
+	stringbuffer_append(sb, ")");
 }
 
 

@@ -141,13 +141,13 @@ gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox)
 {
 	char gboxmem[GIDX_MAX_SIZE];
 	GIDX *gidx = (GIDX*)gboxmem;
-	
+
 	if( LW_FAILURE == gserialized_datum_get_gidx_p(gsdatum, gidx) )
 		return LW_FAILURE;
-		
+
 	gbox->flags = gserialized_datum_get_flags(gsdatum);
 	gbox_from_gidx(gidx, gbox, gbox->flags);
-	
+
 	return LW_SUCCESS;
 }
 

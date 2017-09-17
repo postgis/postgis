@@ -84,7 +84,7 @@ Datum ST_ClusterDBSCAN(PG_FUNCTION_ARGS)
 {
 	WindowObject win_obj = PG_WINDOW_OBJECT();
 	uint32_t row = WinGetCurrentPosition(win_obj);
-	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);	
+	uint32_t ngeoms = WinGetPartitionRowCount(win_obj);
 	dbscan_context* context = WinGetPartitionLocalMemory(win_obj, sizeof(dbscan_context) + ngeoms * sizeof(dbscan_cluster_result));
 
 	if (row == 0) /* beginning of the partition; do all of the work now */

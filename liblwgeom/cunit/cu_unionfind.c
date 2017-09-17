@@ -113,7 +113,7 @@ static void test_unionfind_path_compression(void)
 static void test_unionfind_collapse_cluster_ids(void)
 {
 	UNIONFIND* uf = UF_create(10);
-	
+
 	uf->clusters[0] = 8;
 	uf->clusters[1] = 5;
 	uf->clusters[2] = 5;
@@ -153,7 +153,7 @@ static void test_unionfind_collapse_cluster_ids(void)
 	collapsed_ids = UF_get_collapsed_cluster_ids(uf, is_in_cluster);
 	int i;
 	for (i = 0; i < uf->N; i++)
-	{ 
+	{
 		if (is_in_cluster[i])
 			ASSERT_INT_EQUAL(expected_collapsed_ids2[i], collapsed_ids[i]);
 	}

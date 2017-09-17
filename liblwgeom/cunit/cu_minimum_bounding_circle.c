@@ -69,7 +69,7 @@ static void test_empty(void)
 
 	LWBOUNDINGCIRCLE* result = lwgeom_calculate_mbc(input);
 	CU_ASSERT_TRUE(result == NULL);
-	
+
 	lwgeom_free(input);
 }
 

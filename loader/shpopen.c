@@ -625,7 +625,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
                  "Record count in .shp header is %d, which seems\n"
                  "unreasonable.  Assuming header is corrupt.",
                  psSHP->nRecords );
-        psSHP->sHooks.Error( szError );				
+        psSHP->sHooks.Error( szError );
         psSHP->sHooks.FClose( psSHP->fpSHP );
         psSHP->sHooks.FClose( psSHP->fpSHX );
         free( psSHP );
@@ -1168,7 +1168,7 @@ SHPCreateSimpleObject( int nSHPType, int nVertices,
 
 int SHPAPI_CALL
 SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
-		
+
 {
     unsigned int	       	nRecordOffset, nRecordSize=0;
     int i;
@@ -1351,7 +1351,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 
         if( bBigEndian ) SwapWord( 4, &nPoints );
         ByteCopy( &nPoints, pabyRec + 44, 4 );
-	
+
         for( i = 0; i < psObject->nVertices; i++ )
         {
             ByteCopy( psObject->padfX + i, pabyRec + 48 + i*16, 8 );

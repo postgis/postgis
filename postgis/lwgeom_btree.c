@@ -55,7 +55,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	if (cmp < 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_le);
@@ -67,7 +67,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	if (cmp == 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_eq);
@@ -79,7 +79,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	if (cmp == 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_ge);
@@ -91,7 +91,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	if (cmp >= 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_gt);
@@ -103,7 +103,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	if (cmp > 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 PG_FUNCTION_INFO_V1(lwgeom_cmp);

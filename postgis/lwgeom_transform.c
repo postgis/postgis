@@ -81,7 +81,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		elog(ERROR,"Failure reading projections from spatial_ref_sys.");
 		PG_RETURN_NULL();
 	}
-	
+
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_transform(lwgeom, input_pj, output_pj);
@@ -147,7 +147,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		/* pfree(input_proj4); */
 		pfree(output_proj4);
 		pfree(geom);
-		
+
 		elog(ERROR,
 		    "transform_geom: could not parse proj4 string '%s' %s",
 		    input_proj4, pj_errstr);

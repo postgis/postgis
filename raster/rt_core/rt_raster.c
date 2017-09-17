@@ -686,7 +686,7 @@ rt_errorstate rt_raster_get_inverse_geotransform_matrix(
 		rt_raster_get_geotransform_matrix(raster, _gt);
 	else
 		memcpy(_gt, gt, sizeof(double) * 6);
-	
+
 	if (!GDALInvGeoTransform(_gt, igt)) {
 		rterror("rt_raster_get_inverse_geotransform_matrix: Could not compute inverse geotransform matrix");
 		return ES_ERROR;
@@ -1288,7 +1288,7 @@ rt_raster_compute_skewed_raster(
 				raster->width--;
 			else
 				raster->height--;
-			
+
 			/* construct sgeom from raster */
 			if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
 				rterror("rt_raster_compute_skewed_raster: Could not build skewed extent's geometry for minimizing dimensions");

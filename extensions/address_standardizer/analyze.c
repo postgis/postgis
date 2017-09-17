@@ -377,7 +377,7 @@ static void delete_stz( STZ_PARAM *__stz_info__ , int request_stz )
 	/* ----------------------------------------------------------
 		move the rest of the list down to eliminate the duplicate.
 		The replacement entry will become the new, requested stz
-		
+
 		if there are, for instance, n stz pointers active, stz_list_size
 		will be n. So the ordinal n-1 is the last active stz. In this
 		function, after the first instruction, n will point to the last
@@ -1058,12 +1058,12 @@ static STZ * copy_stz(STAND_PARAM *__stand_param__ ,double current_score)
 	/* -- Increase the list size only if it isn't full. If it is full, take
 		the score of the last on the list (which we're going to knock off the
 		list) as the new cutoff -- */
-	
+
 	if (__stz_info__->stz_list_size != MAX_STZ)
 	{
 		__stz_info__->stz_list_size++ ;
 	}
-	
+
 	/* -- Get the pointer of the last on the list if the list is full (to be
       knocked off, or one beyond the previous last item (with undefined
       content) if the list isn't full. -- */
@@ -1121,26 +1121,26 @@ calls analyze.c (copy_best)
 =======================================================================*/
 static void save_current_composition(STAND_PARAM *__stand_param__,SEG *__segments__, int depth, SYMB *__best_output__ , DEF **__best_defs__)
 {
-	
+
 	int lex_pos ;
 	SEG *__seg__ ;
 	int *__sym_sel__ = __stand_param__->cur_sym_sel ;
-	
+
 	/*-- <remarks> Get the definitions selected from save_defs - needed for outputing
 		the lexemes. Different definitions may give a different
 		standardization for the same input - the letter W may be standardized
 		as W if a SINGLE or WEST if a DIRECT </remarks> --*/
-	
+
 	/* -- use the whole target -- */
 	for ( lex_pos = FIRST_LEX_POS ; lex_pos < __stand_param__->LexNum ; lex_pos++ )
 	{
 		__best_defs__[lex_pos] = __stand_param__->def_array[lex_pos][__sym_sel__[lex_pos]] ;
 	}
 	__best_defs__[lex_pos] = NULL ;
-	
+
 	/*-- <remarks> Segments go backwards (right to left) , but the content for
       each segment goes left to right </remarks> --*/
-	
+
 	for ( __seg__ = __segments__ + depth, lex_pos = FIRST_LEX_POS ; __seg__ >= __segments__ ; __seg__-- )
 	{
 		SYMB *__sym_ptr__ ;
@@ -1166,11 +1166,11 @@ static int copy_best( STAND_PARAM *__stand_param__ , int *__sym_sel__ , SYMB out
 {
 	int lex_pos ;
 	int *__orig_pos__ = __stand_param__->orig_str_pos ;
-	
+
 	/*-- <remarks> <code>orig_pos</code> has the (multiple) LEXEME positions to which the
       (single) output symbol corresponds - so we add that symbol to each of
       the positions </remarks> --*/
-	
+
 	int next_target_pos = __orig_pos__[beg] + 1 ;
 	for ( lex_pos = beg ; __orig_pos__[lex_pos] < next_target_pos ; lex_pos ++ )
 	{

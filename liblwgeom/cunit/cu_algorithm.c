@@ -109,7 +109,7 @@ static void test_lw_arc_center(void)
 	CU_ASSERT_DOUBLE_EQUAL(d1, 0.0046097720751, 0.0001);
 	CU_ASSERT_DOUBLE_EQUAL(c1.x, 2047538.599, 0.001);
 	CU_ASSERT_DOUBLE_EQUAL(c1.y, 7268770.4395, 0.001);
-	
+
 	// printf("lw_arc_center: (%12.12g, %12.12g) %12.12g\n", c1.x, c1.y, d1);
 }
 
@@ -910,7 +910,7 @@ static void test_geohash_point_as_int(void)
 	unsigned int gh;
 	POINT2D p;
 	unsigned long long rs;
-	
+
 	p.x = 50; p.y = 35;
 	gh = geohash_point_as_int(&p);
 	rs = 3440103613;
@@ -962,7 +962,7 @@ static void test_lwgeom_simplify(void)
 		CU_ASSERT_EQUAL(l, NULL);
 		lwgeom_free(g);
 		lwgeom_free(l);
-		
+
 		/* Not simplifiable */
 		g = lwgeom_from_wkt("LINESTRING(0 0, 50 1.00001, 100 0)", LW_PARSER_CHECK_NONE);
 		l = lwgeom_simplify(g, 1.0, LW_FALSE);
@@ -1011,7 +1011,7 @@ static void do_median_test(char* input, char* expected)
 
 	LWPOINT* result = lwgeom_median(g, FP_TOLERANCE / 10.0, 1000, LW_TRUE);
 	int passed = LW_TRUE;
-	
+
 	lwpoint_getPoint3dz_p(result, &actual_pt);
 	lwpoint_getPoint3dz_p(expected_result, &expected_pt);
 

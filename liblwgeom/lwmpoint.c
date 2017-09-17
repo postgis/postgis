@@ -55,16 +55,16 @@ lwmpoint_construct(int srid, const POINTARRAY *pa)
 	int hasz = ptarray_has_z(pa);
 	int hasm = ptarray_has_m(pa);
 	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(MULTIPOINTTYPE, srid, hasz, hasm);
-	
+
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		LWPOINT *lwp;
 		POINT4D p;
-		getPoint4d_p(pa, i, &p);		
+		getPoint4d_p(pa, i, &p);
 		lwp = lwpoint_make(srid, hasz, hasm, &p);
 		lwmpoint_add_lwpoint(ret, lwp);
 	}
-	
+
 	return ret;
 }
 
@@ -74,7 +74,7 @@ void lwmpoint_free(LWMPOINT *mpt)
 	int i;
 
 	if ( ! mpt ) return;
-	
+
 	if ( mpt->bbox )
 		lwfree(mpt->bbox);
 
@@ -95,7 +95,7 @@ lwmpoint_remove_repeated_points(const LWMPOINT *mpoint, double tolerance)
 	uint32_t i, j;
 	LWGEOM **newgeoms;
 	LWGEOM *lwpt1, *lwpt2;
-	
+
 	newgeoms = lwalloc(sizeof(LWGEOM *)*mpoint->ngeoms);
 	nnewgeoms = 0;
 	for (i=0; i<mpoint->ngeoms; ++i)
@@ -117,7 +117,7 @@ lwmpoint_remove_repeated_points(const LWMPOINT *mpoint, double tolerance)
 	}
 
 	return (LWGEOM*)lwcollection_construct(mpoint->type,
-	                                       mpoint->srid, 
+	                                       mpoint->srid,
 										   mpoint->bbox ? gbox_copy(mpoint->bbox) : NULL,
 	                                       nnewgeoms, newgeoms);
 

@@ -584,7 +584,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 		bandindex = -1;
 	else
 		bandindex = PG_GETARG_INT32(1);
-	
+
 	if (bandindex < 1) {
 		elog(NOTICE, "Invalid band index (must use 1-based). Value not set. Returning original raster");
 		skipset = TRUE;
@@ -2156,7 +2156,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		/* error */
 		if (count < 0) {
 			elog(NOTICE, "Could not get the pixel's neighborhood for band at index %d", bandindex);
-			
+
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);

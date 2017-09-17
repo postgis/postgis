@@ -72,9 +72,9 @@ GetGenericCacheCollection(FunctionCallInfoData* fcinfo)
 		memset(cache, 0, sizeof(GenericCacheCollection));
 		fcinfo->flinfo->fn_extra = cache;
 	}
-	return cache;		
+	return cache;
 }
-	
+
 
 /**
 * Get the Proj4 entry from the generic cache if one exists.
@@ -85,7 +85,7 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 {
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	PROJ4PortalCache* cache = (PROJ4PortalCache*)(generic_cache->entry[PROJ_CACHE_ENTRY]);
-	
+
 	if ( ! cache )
 	{
 		/* Allocate in the upper context */
@@ -129,12 +129,12 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	const GSERIALIZED *geom;
 	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
 	int entry_number = cache_methods->entry_number;
-	
+
 	Assert(entry_number >= 0);
 	Assert(entry_number < NUM_CACHE_ENTRIES);
-	
+
 	cache = (GeomCache*)(generic_cache->entry[entry_number]);
-	
+
 	if ( ! cache )
 	{
 		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
@@ -144,7 +144,7 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 		/* Store the pointer in GenericCache */
 		cache->type = entry_number;
 		generic_cache->entry[entry_number] = (GenericCache*)cache;
-	}	
+	}
 
 	/* Cache hit on the first argument */
 	if ( g1 &&

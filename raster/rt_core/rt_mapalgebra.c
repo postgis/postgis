@@ -1071,7 +1071,7 @@ rt_raster_iterator(
 			}
 		case ET_LAST:
 			if (i < 0) i = itrcount - 1;
-			
+
 			/* input raster is null, return NULL */
 			if (_param->raster[i] == NULL) {
 				RASTER_DEBUGF(3, "returning NULL as %s raster is NULL and extent type is ET_%s",
@@ -1148,7 +1148,7 @@ rt_raster_iterator(
 
 		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
-		
+
 		return ES_ERROR;
 	}
 
@@ -1239,7 +1239,7 @@ rt_raster_iterator(
 					_param->band.isnodata[i]
 				) {
 					RASTER_DEBUG(4, "empty raster, band does not exist or band is NODATA. using empty values and NODATA");
-					
+
 					x = _x;
 					y = _y;
 
@@ -1366,7 +1366,7 @@ rt_raster_iterator(
 					return ES_ERROR;
 				}
 			}
-	
+
 			/* callback */
 			RASTER_DEBUG(4, "calling callback function");
 			value = 0;

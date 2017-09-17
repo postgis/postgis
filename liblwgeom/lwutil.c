@@ -138,7 +138,7 @@ default_debuglogger(int level, const char *fmt, va_list ap)
 	}
 }
 
-static void 
+static void
 default_errorreporter(const char *fmt, va_list ap)
 {
 	char msg[LW_MSG_MAXLEN+1];

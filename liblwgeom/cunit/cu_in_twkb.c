@@ -66,7 +66,7 @@ static void cu_twkb_in(char *wkt)
 		printf("POSITION: %d\n", pr.errlocation);
 		exit(0);
 	}
-	
+
 	/* Get the geom */
 	g_a = pr.geom;
 

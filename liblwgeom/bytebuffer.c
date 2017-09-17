@@ -76,7 +76,7 @@ bytebuffer_destroy(bytebuffer_t *s)
 {
 	LWDEBUG(2,"Entered bytebuffer_destroy");
 	LWDEBUGF(4,"The buffer has used %d bytes",bytebuffer_getlength(s));
-	
+
 	if ( s->buf_start )
 	{
 		LWDEBUGF(4,"let's free buf_start %p",s->buf_start);
@@ -85,7 +85,7 @@ bytebuffer_destroy(bytebuffer_t *s)
 	}
 	if ( s )
 	{
-		lwfree(s);		
+		lwfree(s);
 		LWDEBUG(4,"bytebuffer_t is freed");
 	}
 	return;
@@ -143,8 +143,8 @@ bytebuffer_makeroom(bytebuffer_t *s, size_t size_to_add)
 */
 void
 bytebuffer_append_byte(bytebuffer_t *s, const uint8_t val)
-{	
-	LWDEBUGF(2,"Entered bytebuffer_append_byte with value %d", val);	
+{
+	LWDEBUGF(2,"Entered bytebuffer_append_byte with value %d", val);
 	bytebuffer_makeroom(s, 1);
 	*(s->writecursor)=val;
 	s->writecursor += 1;
@@ -157,8 +157,8 @@ bytebuffer_append_byte(bytebuffer_t *s, const uint8_t val)
 */
 void
 bytebuffer_append_bulk(bytebuffer_t *s, void * start, size_t size)
-{	
-	LWDEBUGF(2,"bytebuffer_append_bulk with size %d",size);	
+{
+	LWDEBUGF(2,"bytebuffer_append_bulk with size %d",size);
 	bytebuffer_makeroom(s, size);
 	memcpy(s->writecursor, start, size);
 	s->writecursor += size;
@@ -170,8 +170,8 @@ bytebuffer_append_bulk(bytebuffer_t *s, void * start, size_t size)
 */
 void
 bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from )
-{	
-	LWDEBUG(2,"bytebuffer_append_bytebuffer");	
+{
+	LWDEBUG(2,"bytebuffer_append_bytebuffer");
 	size_t size = bytebuffer_getlength(write_from);
 	bytebuffer_makeroom(write_to, size);
 	memcpy(write_to->writecursor, write_from->buf_start, size);
@@ -185,7 +185,7 @@ bytebuffer_append_bytebuffer(bytebuffer_t *write_to,bytebuffer_t *write_from )
 */
 void
 bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
-{	
+{
 	size_t size;
 	bytebuffer_makeroom(b, 8);
 	size = varint_s64_encode_buf(val, b->writecursor);
@@ -198,7 +198,7 @@ bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
 */
 void
 bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
-{	
+{
 	size_t size;
 	bytebuffer_makeroom(b, 8);
 	size = varint_u64_encode_buf(val, b->writecursor);
@@ -213,8 +213,8 @@ bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
 void
 bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 {
-	LWDEBUGF(2,"Entered bytebuffer_append_int with value %d, swap = %d", val, swap);	
-	
+	LWDEBUGF(2,"Entered bytebuffer_append_int with value %d, swap = %d", val, swap);
+
 	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
 	char *iptr = (char*)(&val);
 	int i = 0;
@@ -223,12 +223,12 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 	{
 		lwerror("Machine int size is not %d bytes!", WKB_INT_SIZE);
 	}
-	
+
 	bytebuffer_makeroom(buf, WKB_INT_SIZE);
 	/* Machine/request arch mismatch, so flip byte order */
 	if ( swap)
 	{
-		LWDEBUG(4,"Ok, let's do the swaping thing");	
+		LWDEBUG(4,"Ok, let's do the swaping thing");
 		for ( i = 0; i < WKB_INT_SIZE; i++ )
 		{
 			*(buf->writecursor) = iptr[WKB_INT_SIZE - 1 - i];
@@ -238,11 +238,11 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 	/* If machine arch and requested arch match, don't flip byte order */
 	else
 	{
-		LWDEBUG(4,"Ok, let's do the memcopying thing");		
+		LWDEBUG(4,"Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, iptr, WKB_INT_SIZE);
 		buf->writecursor += WKB_INT_SIZE;
 	}
-	
+
 	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
 	return;
 
@@ -258,8 +258,8 @@ bytebuffer_append_int(bytebuffer_t *buf, const int val, int swap)
 void
 bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
 {
-	LWDEBUGF(2,"Entered bytebuffer_append_double with value %lf swap = %d", val, swap);	
-	
+	LWDEBUGF(2,"Entered bytebuffer_append_double with value %lf swap = %d", val, swap);
+
 	LWDEBUGF(4,"buf_start = %p and write_cursor=%p", buf->buf_start,buf->writecursor);
 	char *dptr = (char*)(&val);
 	int i = 0;
@@ -270,11 +270,11 @@ bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
 	}
 
 	bytebuffer_makeroom(buf, WKB_DOUBLE_SIZE);
-	
+
 	/* Machine/request arch mismatch, so flip byte order */
 	if ( swap )
 	{
-		LWDEBUG(4,"Ok, let's do the swapping thing");		
+		LWDEBUG(4,"Ok, let's do the swapping thing");
 		for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
 		{
 			*(buf->writecursor) = dptr[WKB_DOUBLE_SIZE - 1 - i];
@@ -284,12 +284,12 @@ bytebuffer_append_double(bytebuffer_t *buf, const double val, int swap)
 	/* If machine arch and requested arch match, don't flip byte order */
 	else
 	{
-		LWDEBUG(4,"Ok, let's do the memcopying thing");			
+		LWDEBUG(4,"Ok, let's do the memcopying thing");
 		memcpy(buf->writecursor, dptr, WKB_DOUBLE_SIZE);
 		buf->writecursor += WKB_DOUBLE_SIZE;
 	}
-	
-	LWDEBUG(4,"Return from bytebuffer_append_double");		
+
+	LWDEBUG(4,"Return from bytebuffer_append_double");
 	return;
 
 }
@@ -311,7 +311,7 @@ bytebuffer_read_varint(bytebuffer_t *b)
 */
 uint64_t
 bytebuffer_read_uvarint(bytebuffer_t *b)
-{	
+{
 	size_t size;
 	uint64_t val = varint_u64_decode(b->readcursor, b->buf_start + b->capacity, &size);
 	b->readcursor += size;
@@ -341,7 +341,7 @@ bytebuffer_merge(bytebuffer_t **buff_array, int nbuffers)
 	{
 		total_size += bytebuffer_getlength(buff_array[i]);
 	}
-		
+
 	bytebuffer_t *res = bytebuffer_create_with_size(total_size);
 	for ( i = 0; i < nbuffers; i++)
 	{

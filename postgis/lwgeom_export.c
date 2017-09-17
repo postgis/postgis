@@ -200,7 +200,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	size_t len;
 	char *gml_id_buf, *prefix_buf;
 	text *prefix_text, *gml_id_text;
-	
+
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -364,9 +364,9 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
-	
+
 	if( ! kml )
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 
 	result = cstring2text(kml);
 	lwfree(kml);
@@ -415,7 +415,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	/* Get the geometry */
 	if ( PG_ARGISNULL(0) )
 		PG_RETURN_NULL();
-	
+
 	geom = PG_GETARG_GSERIALIZED_P(0);
 
 	/* Retrieve precision if any (default is max) */
@@ -445,10 +445,10 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 			{
 				if ( option & 2 )
 					srs = getSRSbySRID(srid, true);
-			
+
 				if ( option & 4 )
 					srs = getSRSbySRID(srid, false);
-			
+
 				if ( !srs )
 				{
 					elog(ERROR,
@@ -562,8 +562,8 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	/* retrieve option */
 	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
 		option = PG_GETARG_INT32(3);
-		
-	
+
+
 
 	/* retrieve defid */
 	if (PG_NARGS() >4 && !PG_ARGISNULL(4))
@@ -591,7 +591,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
-	
+
 	if (option & LW_X3D_USE_GEOCOORDS) {
 		if (srid != 4326) {
 			PG_FREE_IF_COPY(geom, 0);
@@ -601,7 +601,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 	}
-	
+
 
 	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);
 
@@ -636,7 +636,7 @@ Datum LWGEOM_asEncodedPolyline(PG_FUNCTION_ARGS)
 	}
 	lwgeom = lwgeom_from_gserialized(geom);
 	PG_FREE_IF_COPY(geom, 0);
-	
+
 	if (PG_NARGS() > 1 && !PG_ARGISNULL(1))
 	{
 		precision = PG_GETARG_INT32(1);

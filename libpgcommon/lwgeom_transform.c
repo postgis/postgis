@@ -429,7 +429,7 @@ static char* GetProj4String(int srid)
 			int yzone = zone / 20;
 			double lat_0 = 30.0 * (yzone - 3) + 15.0;
 			double lon_0 = 0.0;
-			
+
 			/* The number of xzones is variable depending on yzone */
 			if  ( yzone == 2 || yzone == 3 )
 				lon_0 = 30.0 * (xzone - 6) + 15.0;
@@ -439,7 +439,7 @@ static char* GetProj4String(int srid)
 				lon_0 = 90.0 * (xzone - 2) + 45.0;
 			else
 				lwerror("Unknown yzone encountered!");
-			
+
 			snprintf(proj_str, maxproj4len, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
@@ -511,7 +511,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
 		if ( ! pj_errstr )
 			pj_errstr = "";
-		
+
 		elog(ERROR,
 		    "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
 		    proj_str, pj_errstr);
@@ -781,11 +781,11 @@ srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precisi
 	projPJ pj2;
 
 	srs_precision sp;
-	
+
 	sp.precision_xy = precision;
 	sp.precision_z = precision;
 	sp.precision_m = precision;
-	
+
 	if ( srid == SRID_UNKNOWN )
 		return sp;
 
@@ -797,6 +797,6 @@ srs_precision srid_axis_precision(FunctionCallInfo fcinfo, int srid, int precisi
 		sp.precision_xy += 5;
 		return sp;
 	}
-	
+
 	return sp;
 }

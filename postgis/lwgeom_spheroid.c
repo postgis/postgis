@@ -519,7 +519,7 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	/* Get #LWGEOM structures */
 	lwgeom1 = lwgeom_from_gserialized(geom1);
 	lwgeom2 = lwgeom_from_gserialized(geom2);
-	
+
 	/* We are going to be calculating geodetic distances */
 	lwgeom_set_geodetic(lwgeom1, LW_TRUE);
 	lwgeom_set_geodetic(lwgeom2, LW_TRUE);

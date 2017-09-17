@@ -26,12 +26,12 @@ static void test_bytebuffer_append(void)
 	bytebuffer_t *bb1;
 	int64_t res;
 	bb1 = bytebuffer_create_with_size(2);
-	
+
 	bytebuffer_append_varint(bb1,(int64_t) -12345);
 
-	
+
 	bytebuffer_reset_reading(bb1);
-	
+
 	res= bytebuffer_read_varint(bb1);
 
 	CU_ASSERT_EQUAL(res, -12345);

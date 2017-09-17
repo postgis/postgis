@@ -76,7 +76,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	/* Get the geojson stream */
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	
+
 	geojson_input = PG_GETARG_TEXT_P(0);
 	geojson = text2cstring(geojson_input);
 

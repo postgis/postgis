@@ -103,7 +103,7 @@ Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format");
 		PG_RETURN_NULL();
 	}
-	
+
 #if POSTGIS_DEBUG_LEVEL > 3
 	{
 		GDALDriverH hdrv = GDALGetDatasetDriver(hdsSrc);
@@ -198,7 +198,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		formattext = PG_GETARG_TEXT_P(1);
 		format = text_to_cstring(formattext);
 	}
-		
+
 	POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 1 (format) is %s", format);
 
 	/* process options */

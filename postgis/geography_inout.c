@@ -173,7 +173,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 
 	/* Error on any SRID != default */
 	srid_is_latlong(fcinfo, lwgeom->srid);
-	
+
 	/* Convert to gserialized */
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 
@@ -440,7 +440,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	}
 
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
-	
+
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 0);
 
@@ -539,11 +539,11 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	GSERIALIZED *g_ser = NULL;
 	text *wkt_text = PG_GETARG_TEXT_P(0);
-	
+
 	/* Extract the cstring from the varlena */
 	char *wkt = text2cstring(wkt_text);
 
-	/* Pass the cstring to the input parser, and magic occurs! */	
+	/* Pass the cstring to the input parser, and magic occurs! */
 	if ( lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE )
 		PG_PARSER_ERROR(lwg_parser_result);
 
@@ -571,13 +571,13 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 	size_t wkb_size = VARSIZE(wkb_bytea);
 	uint8_t *wkb = (uint8_t*)VARDATA(wkb_bytea);
 	LWGEOM *lwgeom = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
-	
+
 	if ( ! lwgeom )
 		lwpgerror("Unable to parse WKB");
 
 	/* Error on any SRID != default */
 	srid_is_latlong(fcinfo, lwgeom->srid);
- 		
+
 	gser = gserialized_geography_from_lwgeom(lwgeom, -1);
 	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(gser);
@@ -616,8 +616,8 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	/* force recalculate of box by dropping */
 	lwgeom_drop_bbox(lwgeom);
 
-	lwgeom_set_geodetic(lwgeom, true);	
-	/* We are trusting geography_serialize will add a box if needed */	
+	lwgeom_set_geodetic(lwgeom, true);
+	/* We are trusting geography_serialize will add a box if needed */
 	g_ser = geography_serialize(lwgeom);
 
 
@@ -637,7 +637,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(g_ser);
 
 	/* Recalculate the boxes after re-setting the geodetic bit */
-	lwgeom_set_geodetic(lwgeom, false);	
+	lwgeom_set_geodetic(lwgeom, false);
 	lwgeom_drop_bbox(lwgeom);
 	lwgeom_add_bbox(lwgeom);
 

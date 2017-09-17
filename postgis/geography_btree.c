@@ -67,7 +67,7 @@ Datum geography_lt(PG_FUNCTION_ARGS)
 	if (cmp < 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -83,7 +83,7 @@ Datum geography_le(PG_FUNCTION_ARGS)
 	if (cmp <= 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -99,7 +99,7 @@ Datum geography_gt(PG_FUNCTION_ARGS)
 	if (cmp > 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -115,7 +115,7 @@ Datum geography_ge(PG_FUNCTION_ARGS)
 	if (cmp >= 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 /*
@@ -131,7 +131,7 @@ Datum geography_eq(PG_FUNCTION_ARGS)
 	if (cmp == 0)
 		PG_RETURN_BOOL(TRUE);
 	else
-		PG_RETURN_BOOL(FALSE);	
+		PG_RETURN_BOOL(FALSE);
 }
 
 /*

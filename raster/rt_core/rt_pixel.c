@@ -315,7 +315,7 @@ rt_errorstate rt_pixel_set_to_array(
 	    rterror("rt_pixel_set_array: mask dimensions %d x %d do not match given dims %d x %d", mask->dimx, mask->dimy,  dim[0],  dim[1]);
 	    return ES_ERROR;
 	  }
-	
+
 	  if (mask->values == NULL || mask->nodata == NULL) {
 	    rterror("rt_pixel_set_array: Invalid mask");
 	    return ES_ERROR;
@@ -356,7 +356,7 @@ rt_errorstate rt_pixel_set_to_array(
 
 			rtdealloc(values);
 			rtdealloc(nodatas);
-			
+
 			return ES_ERROR;
 		}
 

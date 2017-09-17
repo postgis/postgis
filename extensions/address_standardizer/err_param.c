@@ -148,7 +148,7 @@ int empty_errors( ERR_PARAM *err_p ,
                   char *err_dest ) {
 
    ERR_REC *err_mem ;
-	
+
    if ( err_p == NULL ) {
       return FALSE ;
    }

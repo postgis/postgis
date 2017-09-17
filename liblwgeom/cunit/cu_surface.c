@@ -251,7 +251,7 @@ void polyhedralsurface_parse(void)
 	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", tmp);
 	lwfree(tmp);
 	lwgeom_free(geom);
-	
+
 	/* 3DM */
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);

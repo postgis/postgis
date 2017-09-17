@@ -404,12 +404,12 @@ static void test_pixel_set_to_array(){
 	CU_ASSERT_DOUBLE_EQUAL(val,1,.01);
 
 	/* set up mask */
-	
+
 	mask = (rt_mask) rtalloc(sizeof(struct rt_mask_t) );
 	CU_ASSERT(mask != NULL);
 	mask->values = rtalloc(sizeof(double*)*maskY);
 	mask->nodata = rtalloc(sizeof(int*)*maskY);
-	
+
 	for( i = 0; i < maskY;  i++) {
 	  mask->values[i] = rtalloc(sizeof(double) *maskX);
 	  mask->nodata[i] = rtalloc(sizeof(int) *maskX);
@@ -449,7 +449,7 @@ static void test_pixel_set_to_array(){
 		&nodata,
 		&dimx, &dimy
 	);
-				
+
 
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
@@ -464,7 +464,7 @@ static void test_pixel_set_to_array(){
 
 	rtdealloc(nodata);
 	rtdealloc(value);
-	
+
 	/* set mask to 1 */
 
 	for(y = 0; y < maskY; y++) {
@@ -497,7 +497,7 @@ static void test_pixel_set_to_array(){
 		&nodata,
 		&dimx, &dimy
 	);
-				
+
 
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
@@ -545,7 +545,7 @@ static void test_pixel_set_to_array(){
 		&nodata,
 		&dimx, &dimy
 	);
-				
+
 
        rtdealloc(npixels);
        CU_ASSERT_EQUAL(rtn, ES_NONE);
@@ -570,10 +570,10 @@ static void test_pixel_set_to_array(){
 	rtdealloc(mask->values);
 	rtdealloc(mask->nodata);
 	rtdealloc(mask);
-	
+
 	if (rtn)
 	  rtdealloc(npixels);
-	
+
        cu_free_raster(rast);
 
 }

@@ -54,7 +54,7 @@ _rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
 
 	width = rt_band_get_width(band);
 	height = rt_band_get_height(band);
-		
+
 	/* top */
 	for (y = 0; y < height; y++) {
 		for (offset = 0; offset < 3; offset++) {
@@ -225,7 +225,7 @@ rt_errorstate rt_raster_get_perimeter(
 	}
 	else
 		nband = -1;
-	
+
 	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband);
 
 	_nband = rtalloc(sizeof(uint16_t) * numband);
@@ -1102,7 +1102,7 @@ rt_raster_gdal_polygonize(
 		OGR_Fld_Destroy(hFldDfn);
 		OGR_DS_DeleteLayer(memdatasource, 0);
 		OGRReleaseDataSource(memdatasource);
-		
+
 		return NULL;
 	}
 
