@@ -10882,7 +10882,7 @@ WHERE rid=167;
 					<para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(double precision, double precision, integer[], text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
 					</para>
 
-					<para>The fourst argument to the <varname>tworastuserfunc</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>tworastuserfunc</varname>, and are contained in the <varname>userargs</varname> argument.
+					<para>The fourth argument to the <varname>tworastuserfunc</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>tworastuserfunc</varname>, and are contained in the <varname>userargs</varname> argument.
 					</para>
 
 					<note>
@@ -12676,7 +12676,7 @@ GROUP BY t1.rast;
 				<refsection>
 					<title>Description</title>
 
-					<para>Calculates the Topographic Position Index, which is defined as the folcal mean with radius of one minus the center cell.</para>
+					<para>Calculates the Topographic Position Index, which is defined as the focal mean with radius of one minus the center cell.</para>
 
 			    <note>
 			  <para>This function only supports a focalmean radius of one.</para>
