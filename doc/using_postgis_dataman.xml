@@ -212,7 +212,7 @@ geometry
 		  the circle.  To chain arcs together, the last point of the previous
 		  arc becomes the first point of the next arc, just like in
 		  LINESTRING.  This means that a valid circular string must have an
-		  odd number of points greated than 1.</para>
+		  odd number of points greater than 1.</para>
 		</listitem>
 
 		<listitem>
