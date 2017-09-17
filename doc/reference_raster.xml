@@ -8156,7 +8156,7 @@ WHERE rast && ST_MakeEnvelope(10, 10, 11, 11);]]></programlisting>
 				<para>One way to export raster into another format is using <ulink url="https://www.postgresql.org/docs/current/static/lo-funcs.html">PostgreSQL large object export functions</ulink>.
 				We'lll repeat the prior example but also exporting.  Note for this you'll need to have super user access to db since it uses server side lo functions.
 				It will also export to path on server network.  If you need export locally,
-				use the psql equivalent lo_ functions which export to the local file system insteado fo the server file system.</para>
+				use the psql equivalent lo_ functions which export to the local file system instead of the server file system.</para>
 				<programlisting><![CDATA[DROP TABLE IF EXISTS tmp_out ;
 
 CREATE TABLE tmp_out AS
