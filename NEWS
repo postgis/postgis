@@ -16,6 +16,7 @@ PostGIS 2.3.4
   - #3698, loading census tabblock is broken
   - #3839, loader tests sometimes crash because of variables not initialized
             also reenable cunit loader tess to always run.
+  - #3774, Trigonometric length for CompoundCurves
 
 
 PostGIS 2.3.3
