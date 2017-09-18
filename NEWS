@@ -35,6 +35,7 @@ PostGIS 2.1.9
   - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
   - #3644, Deadlock on interrupt
   - #3774, Trigonometric length for CompoundCurves
+  - #3731, Crash on very small table of homogenous data
 
 
 PostGIS 2.1.8
