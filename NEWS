@@ -17,6 +17,7 @@ PostGIS 2.3.4
   - #3839, loader tests sometimes crash because of variables not initialized
             also reenable cunit loader tess to always run.
   - #3774, Trigonometric length for CompoundCurves
+  - #3731, Crash on very small table of homogenous data
 
 
 PostGIS 2.3.3
