@@ -33,7 +33,8 @@ PostGIS 2.1.9
   - #3607, Fix inconsistency with multilinestring in
            ST_LocateBetweenElevations (Artur Zakirov)
   - #3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)
-  - #3644 Deadlock on interrupt
+  - #3644, Deadlock on interrupt
+  - #3774, Trigonometric length for CompoundCurves
 
 
 PostGIS 2.1.8
