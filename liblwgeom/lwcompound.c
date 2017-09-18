@@ -75,7 +75,6 @@ double lwcompound_length_2d(const LWCOMPOUND *comp)
 {
 	int i;
 	double length = 0.0;
-	LWLINE *line;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
 
