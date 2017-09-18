@@ -209,7 +209,7 @@ psql -d yourdatabase -f sfcgal_comments.sql
 		<listitem>
 			<para>
 			  To enable ST_AsMVT protobuf-c library (for usage) and the protoc-c compiler (for building) are required.
-				Also, pgk-config is required to verify the correct minimum version of protobuf-c.
+				Also, pkg-config is required to verify the correct minimum version of protobuf-c.
 				See <ulink url="https://github.com/protobuf-c/protobuf-c">protobuf-c</ulink>.
 			</para>
 		</listitem>

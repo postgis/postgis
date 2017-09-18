@@ -61,9 +61,9 @@ this to work.
 
 * GNU gettext
 
-   The loader, and hence PostGIS, requires GNU gettext 0.14 or higher
-   for translation support
-   (typically in libc on GNU/Linux, in which case 0.17 is required).
+  The loader, and hence PostGIS, requires GNU gettext 0.14 or higher
+  for translation support
+  (typically in libc on GNU/Linux, in which case 0.17 is required).
 
 * JSON-C (Optional, Version 0.9 or higher)
 
@@ -71,7 +71,7 @@ this to work.
 
     http://github.com/json-c/json-c/wiki
 
-  You can get it installed in apt-based systems using::
+  You can get it installed in apt-based systems using:
 
     apt-get install libjson0-dev
 
@@ -85,6 +85,17 @@ this to work.
 
   https://github.com/Oslandia/SFCGAL
 
+* protobuf-c (Optional, Version 1.1.0 or higher)
+
+  The protobuf-c library and compiler is required for ST_AsMVT and
+  ST_AsGeobuf output. Also, pkg-config is required to verify the correct
+  minimum version of protobuf-c.
+
+    https://github.com/protobuf-c/protobuf-c
+
+  To get packages on apt-based systems:
+
+    apt-get install libprotobuf-c-dev protobuf-c-compiler
 
 CONFIGURATION
 -------------
@@ -122,6 +133,9 @@ you must provide the ``--without-raster`` option.
 
 If you want to compile PostGIS *without* Topology support,
 you must provide the ``--without-topology`` option.
+
+If you want to compile PostGIS *without* Protobuf formats support,
+you must provide the ``--without-protobuf`` option.
 
 PostGIS will be compiled with sfcgal support if it is found.
 You can explicitly state the location with --with-sfcgal=path/to/sfcgal
