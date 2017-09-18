@@ -55,25 +55,20 @@ lwcompound_is_closed(const LWCOMPOUND *compound)
 
 double lwcompound_length(const LWCOMPOUND *comp)
 {
-	double length = 0.0;
-	LWLINE *line;
-	if ( lwgeom_is_empty((LWGEOM*)comp) )
-		return 0.0;
-	line = lwcompound_stroke(comp, 32);
-	length = lwline_length(line);
-	lwline_free(line);
-	return length;
+	return lwcompound_length_2d(comp);
 }
 
 double lwcompound_length_2d(const LWCOMPOUND *comp)
 {
+	int i;
 	double length = 0.0;
-	LWLINE *line;
 	if ( lwgeom_is_empty((LWGEOM*)comp) )
 		return 0.0;
-	line = lwcompound_stroke(comp, 32);
-	length = lwline_length_2d(line);
-	lwline_free(line);
+
+	for (i = 0; i < comp->ngeoms; i++)
+	{
+		length += lwgeom_length_2d(comp->geoms[i]);
+	}
 	return length;
 }
 
