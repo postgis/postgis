@@ -5,19 +5,36 @@
 
     <sect1>
       <title>Release 2.1.9</title>
-      <para>Release date: 2015-XX-XX</para>
+      <para>Release date: 2017-09-19</para>
       <para>This is a critical bug fix release.</para>
       <simplesect>
         <title>Bug Fixes</title>
-        <para>#3198, ST_AddEdgeModFace docs report wrong side of new face</para>
-        <para>#3196, do not let DropTopology drop non-topology schemes</para>
-        <para>#3222, Fix uninitialized stddev in stats computation</para>
+        <para>#2232, avoid accumulated error in SVG rounding</para>
         <para>#2283, Import nested holey multipolygons correctly</para>
+        <para>#3222, Fix uninitialized stddev in stats computation</para>
+        <para>#3196, do not let DropTopology drop non-topology schemes</para>
+        <para>#3198, ST_AddEdgeModFace docs report wrong side of new face</para>
         <para>#3245, Ensure lwgeom/geos returns are fully owned</para>
-        <para>#3281, Do not export liblwgeom symbols from the PostgreSQL module</para>
         <para>#3280, Fix topology import of almost collinear linestrings</para>
-        <para>#3355, Fix geography ST_Segmentize() does not add geodetic box.
-                    ST_Intersects and other relationship functions always return false as result.</para>
+        <para>#3281, Do not export liblwgeom symbols from the PostgreSQL module</para>
+        <para>#3351, Set endnodes isolation on ST_RemoveIsoEdge</para>
+        <para>#3355, Fix geography ST_Segmentize() does not add geodetic box ST_Intersects and other relationship functions always return false as result.</para>
+        <para>#3359, Fix toTopoGeom loss of low-id primitives from TopoGeometry definition</para>
+        <para>#3375, crash in repeated point removal for collection(point)</para>
+        <para>#3378, Fix handling of hierarchical TopoGeometries with of multiple topologies</para>
+        <para>#3389, Buffer overflow in lwgeom_to_geojson</para>
+        <para>#3393, ST_Area NaN for some polygons</para>
+        <para>#3436, memory handling mistake in ptarray_clone_deep </para>
+        <para>#3461, ST_GeomFromKML crashes Postgres when there are innerBoundaryIs and no outerBoundaryIs</para>
+        <para>#3429, upgrading to 2.2 or 2.3 can cause crash/hang on some platforms</para>
+        <para>#3565, ST_SetPoint can crash backend</para>
+        <para>#3579, Crash in LWGEOM2GEOS</para>
+        <para>#3583, Crash in ST_GeomFromGeoJSON on malformed multipolygon</para>
+        <para>#3607, Fix inconsistency with multilinestring in ST_LocateBetweenElevations (Artur Zakirov)</para>
+        <para>#3608, Fix crash passing -W UTF-8 to shp2pgsql (Matt Amos)</para>
+        <para>#3644, Deadlock on interrupt</para>
+        <para>#3774, Trigonometric length for CompoundCurves</para>
+        <para>#3731, Crash on very small table of homogenous data  </para>                  
       </simplesect>
     </sect1>
 	

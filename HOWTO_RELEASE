@@ -51,7 +51,7 @@ Release procedure
    (remove the "dev" suffix)
 - Commit all your changes
 - Tag the release:
-   $ base=http://svn.osgeo.org/postgis/
+   $ base=https://svn.osgeo.org/postgis/
    $ rev=2.1.PATCH
    $ svn copy -m "Tagged release $rev" $base/branches/2.1 $base/tags/$rev
 - Run: sh make_dist.sh $rev
