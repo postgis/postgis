@@ -30,6 +30,11 @@
 /***********************************************************************
 * GSERIALIZED metadata utility functions.
 */
+/* handle missaligned uint32_t data */
+static inline uint32_t gserialized_get_uint32_t(const uint8_t *loc)
+{
+	return *((uint32_t*)loc);
+}
 
 int gserialized_has_bbox(const GSERIALIZED *gser)
 {
@@ -1209,7 +1214,7 @@ static LWPOINT* lwpoint_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_fla
 	point->flags = g_flags;
 
 	data_ptr += 4; /* Skip past the type. */
-	npoints = lw_get_uint32_t(data_ptr); /* Zero => empty geometry */
+	npoints = gserialized_get_uint32_t(data_ptr); /* Zero => empty geometry */
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
@@ -1240,7 +1245,7 @@ static LWLINE* lwline_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 	line->flags = g_flags;
 
 	data_ptr += 4; /* Skip past the type. */
-	npoints = lw_get_uint32_t(data_ptr); /* Zero => empty geometry */
+	npoints = gserialized_get_uint32_t(data_ptr); /* Zero => empty geometry */
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
@@ -1274,7 +1279,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 	poly->flags = g_flags;
 
 	data_ptr += 4; /* Skip past the polygontype. */
-	nrings = lw_get_uint32_t(data_ptr); /* Zero => empty geometry */
+	nrings = gserialized_get_uint32_t(data_ptr); /* Zero => empty geometry */
 	poly->nrings = nrings;
 	LWDEBUGF(4, "nrings = %d", nrings);
 	data_ptr += 4; /* Skip past the nrings. */
@@ -1297,7 +1302,7 @@ static LWPOLY* lwpoly_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags
 		uint32_t npoints = 0;
 
 		/* Read in the number of points. */
-		npoints = lw_get_uint32_t(data_ptr);
+		npoints = gserialized_get_uint32_t(data_ptr);
 		data_ptr += 4;
 
 		/* Make a point array for the ring, and move the ordinate pointer past the ring ordinates. */
@@ -1327,7 +1332,7 @@ static LWTRIANGLE* lwtriangle_from_gserialized_buffer(uint8_t *data_ptr, uint8_t
 	triangle->flags = g_flags;
 
 	data_ptr += 4; /* Skip past the type. */
-	npoints = lw_get_uint32_t(data_ptr); /* Zero => empty geometry */
+	npoints = gserialized_get_uint32_t(data_ptr); /* Zero => empty geometry */
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
@@ -1358,7 +1363,7 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uint8_t *data_ptr, uin
 	circstring->flags = g_flags;
 
 	data_ptr += 4; /* Skip past the circstringtype. */
-	npoints = lw_get_uint32_t(data_ptr); /* Zero => empty geometry */
+	npoints = gserialized_get_uint32_t(data_ptr); /* Zero => empty geometry */
 	data_ptr += 4; /* Skip past the npoints. */
 
 	if ( npoints > 0 )
@@ -1384,7 +1389,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 
 	assert(data_ptr);
 
-	type = lw_get_uint32_t(data_ptr);
+	type = gserialized_get_uint32_t(data_ptr);
 	data_ptr += 4; /* Skip past the type. */
 
 	collection = (LWCOLLECTION*)lwalloc(sizeof(LWCOLLECTION));
@@ -1393,7 +1398,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 	collection->type = type;
 	collection->flags = g_flags;
 
-	ngeoms = lw_get_uint32_t(data_ptr);
+	ngeoms = gserialized_get_uint32_t(data_ptr);
 	collection->ngeoms = ngeoms; /* Zero => empty geometry */
 	data_ptr += 4; /* Skip past the ngeoms. */
 
@@ -1407,7 +1412,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 
 	for ( i = 0; i < ngeoms; i++ )
 	{
-		uint32_t subtype = lw_get_uint32_t(data_ptr);
+		uint32_t subtype = gserialized_get_uint32_t(data_ptr);
 		size_t subsize = 0;
 
 		if ( ! lwcollection_allows_subtype(type, subtype) )
@@ -1432,7 +1437,7 @@ LWGEOM* lwgeom_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags, size_
 
 	assert(data_ptr);
 
-	type = lw_get_uint32_t(data_ptr);
+	type = gserialized_get_uint32_t(data_ptr);
 
 	LWDEBUGF(2, "Got type %d (%s), hasz=%d hasm=%d geodetic=%d hasbox=%d", type, lwtype_name(type),
 		FLAGS_GET_Z(g_flags), FLAGS_GET_M(g_flags), FLAGS_GET_GEODETIC(g_flags), FLAGS_GET_BBOX(g_flags));

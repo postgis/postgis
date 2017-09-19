@@ -187,12 +187,6 @@ int lwpoly_count_vertices(LWPOLY *poly);
 int lwcollection_count_vertices(LWCOLLECTION *col);
 
 /*
-* Read from byte buffer
-*/
-extern uint32_t lw_get_uint32_t(const uint8_t *loc);
-extern int32_t lw_get_int32_t(const uint8_t *loc);
-
-/*
 * DP simplification
 */
 

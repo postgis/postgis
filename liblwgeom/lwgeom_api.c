@@ -578,33 +578,6 @@ ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 }
 
 
-
-
-/*****************************************************************************
- * Basic sub-geometry types
- *****************************************************************************/
-
-/* handle missaligned uint32_t32 data */
-uint32_t
-lw_get_uint32_t(const uint8_t *loc)
-{
-	uint32_t result;
-
-	memcpy(&result, loc, sizeof(uint32_t));
-	return result;
-}
-
-/* handle missaligned signed int32_t data */
-int32_t
-lw_get_int32_t(const uint8_t *loc)
-{
-	int32_t result;
-
-	memcpy(&result,loc, sizeof(int32_t));
-	return result;
-}
-
-
 /************************************************
  * debugging routines
  ************************************************/
