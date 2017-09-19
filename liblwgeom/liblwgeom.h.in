@@ -651,7 +651,7 @@ extern uint32_t gserialized_get_type(const GSERIALIZED *g);
 extern uint32_t gserialized_max_header_size(void);
 
 /**
-* Returns the size in bytes of the header, from the start of the 
+* Returns the size in bytes of the header, from the start of the
 * object up to the type number.
 */
 extern uint32_t gserialized_header_size(const GSERIALIZED *gser);
@@ -710,10 +710,10 @@ extern int gserialized_ndims(const GSERIALIZED *gser);
 /**
 * Return -1 if g1 is "less than" g2, 1 if g1 is "greater than"
 * g2 and 0 if g1 and g2 are the "same". Equality is evaluated
-* with a memcmp and size check. So it is possible that two 
-* identical objects where one lacks a bounding box could be 
+* with a memcmp and size check. So it is possible that two
+* identical objects where one lacks a bounding box could be
 * evaluated as non-equal initially. Greater and less than
-* are evaluated by calculating a sortable key from the center 
+* are evaluated by calculating a sortable key from the center
 * point of the object bounds.
 */
 extern int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2);
@@ -1165,8 +1165,6 @@ extern void printLWTIN(LWTIN *tin);
 
 extern float  next_float_down(double d);
 extern float  next_float_up(double d);
-extern double next_double_down(float d);
-extern double next_double_up(float d);
 
 /* general utilities 2D */
 extern double  distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);

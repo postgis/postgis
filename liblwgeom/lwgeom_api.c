@@ -47,115 +47,15 @@ lwgeom_version()
 }
 
 
-/**********************************************************************
- * BOX routines
- *
- * returns the float thats very close to the input, but <=
- *  handles the funny differences in float4 and float8 reps.
- **********************************************************************/
-
-typedef union
-{
-	float value;
-	uint32_t word;
-} ieee_float_shape_type;
-
-#define GET_FLOAT_WORD(i,d)			\
-	do {					\
-		ieee_float_shape_type gf_u;	\
-		gf_u.value = (d);		\
-		(i) = gf_u.word;		\
-	} while (0)
-
-
-#define SET_FLOAT_WORD(d,i)			\
-	do {					\
-		ieee_float_shape_type sf_u;	\
-		sf_u.word = (i);		\
-		(d) = sf_u.value;		\
-	} while (0)
-
-
-/*
- * Returns the next smaller or next larger float
- * from x (in direction of y).
- */
-static float
-nextafterf_custom(float x, float y)
-{
-	int hx,hy,ix,iy;
-
-	GET_FLOAT_WORD(hx,x);
-	GET_FLOAT_WORD(hy,y);
-	ix = hx&0x7fffffff;             /* |x| */
-	iy = hy&0x7fffffff;             /* |y| */
-
-	if ((ix>0x7f800000) ||   /* x is nan */
-	        (iy>0x7f800000))     /* y is nan */
-		return x+y;
-	if (x==y) return y;              /* x=y, return y */
-	if (ix==0)
-	{
-		/* x == 0 */
-		SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
-		y = x*x;
-		if (y==x) return y;
-		else return x;   /* raise underflow flag */
-	}
-	if (hx>=0)
-	{
-		/* x > 0 */
-		if (hx>hy)
-		{
-			/* x > y, x -= ulp */
-			hx -= 1;
-		}
-		else
-		{
-			/* x < y, x += ulp */
-			hx += 1;
-		}
-	}
-	else
-	{
-		/* x < 0 */
-		if (hy>=0||hx>hy)
-		{
-			/* x < y, x -= ulp */
-			hx -= 1;
-		}
-		else
-		{
-			/* x > y, x += ulp */
-			hx += 1;
-		}
-	}
-	hy = hx&0x7f800000;
-	if (hy>=0x7f800000) return x+x;  /* overflow  */
-	if (hy<0x00800000)
-	{
-		/* underflow */
-		y = x*x;
-		if (y!=x)
-		{
-			/* raise underflow flag */
-			SET_FLOAT_WORD(y,hx);
-			return y;
-		}
-	}
-	SET_FLOAT_WORD(x,hx);
-	return x;
-}
-
-
-float next_float_down(double d)
+inline float
+next_float_down(double d)
 {
 	float result  = d;
 
-	if ( ((double) result) <=d)
+	if ( ((double)result) <=d )
 		return result;
 
-	return nextafterf_custom(result, result - 1000000);
+	return nextafterf(result, -1*FLT_MAX);
 
 }
 
@@ -163,47 +63,18 @@ float next_float_down(double d)
  * Returns the float thats very close to the input, but >=.
  * handles the funny differences in float4 and float8 reps.
  */
-float
+inline float
 next_float_up(double d)
 {
 	float result  = d;
 
-	if ( ((double) result) >=d)
+	if ( ((double)result) >=d )
 		return result;
 
-	return nextafterf_custom(result, result + 1000000);
+	return nextafterf(result, FLT_MAX);
 }
 
 
-/*
- * Returns the double thats very close to the input, but <.
- * handles the funny differences in float4 and float8 reps.
- */
-double
-next_double_down(float d)
-{
-	double result  = d;
-
-	if ( result < d)
-		return result;
-
-	return nextafterf_custom(result, result - 1000000);
-}
-
-/*
- * Returns the double thats very close to the input, but >
- * handles the funny differences in float4 and float8 reps.
- */
-double
-next_double_up(float d)
-{
-	double result  = d;
-
-	if ( result > d)
-		return result;
-
-	return nextafterf_custom(result, result + 1000000);
-}
 
 
 /************************************************************************
