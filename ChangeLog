@@ -1,3 +1,531 @@
+2017-09-18 21:59  pramsey
+
+	* NEWS: News item (references #3731)
+
+2017-09-18 14:45  pramsey
+
+	* NEWS: Added news entry (references #3774)
+
+2017-09-18 13:30  pramsey
+
+	* liblwgeom/lwcompound.c: Trig length calculation for compoundcurve
+	  (references #3774)
+
+2017-09-14 22:59  pramsey
+
+	* postgis/gserialized_estimate.c: #3731, backend crash on zero size
+	  stats histogram
+
+2017-09-14 14:07  pramsey
+
+	* loader/dbfopen.c, loader/pgsql2shp-core.c,
+	  loader/shp2pgsql-core.c, raster/loader/raster2pgsql.c: #3847,
+	  coverity fixes for 2.1
+
+2017-09-13 20:31  pramsey
+
+	* doc/extras_topology.xml: Fix misplaced section end
+
+2017-09-13 20:21  pramsey
+
+	* doc/extras_topology.xml: #3249, #2352, document ST_RemoveIsoEdge
+
+2017-09-11 16:41  strk
+
+	* .drone.yml: [drone] disable interrupt test, add upgrade test
+
+2017-09-05 16:57  pramsey
+
+	* liblwgeom/cunit/cu_geos.c, liblwgeom/lwgeom_geos.c: #3829
+	  Segfault in LWGEOM2GEOS
+
+2016-10-28 15:42  strk
+
+	* .drone.yml: Update drone yml to 0.5 version
+	  
+	  See https://git.osgeo.org/gogs/sac/gogs-service/issues/14
+
+2016-10-10 19:47  strk
+
+	* .drone.yml: Be verbose in running tests
+
+2016-10-06 17:32  strk
+
+	* doc/doxygen.cfg.in: Remove hard-coded version in Doxygen project
+	  name
+
+2016-09-27 08:23  strk
+
+	* NEWS, postgis/postgis_module.c: Do not call printf from interrupt
+	  handler, fixing deadlocks
+	  
+	  Closes #3644 for 2.1 branch
+
+2016-08-05 14:55  strk
+
+	* NEWS, loader/shp2pgsql-cli.c: Allocate memory for encoding
+	  argument, so it can be safely freed later.
+	  
+	  Fixes #3608 for 2.1 branch
+	  
+	  Patch by Matt Amos <zerebubuth@gmail.com>
+
+2016-08-05 14:12  strk
+
+	* NEWS, liblwgeom/lwlinearreferencing.c, regress/regress_lrs.sql,
+	  regress/regress_lrs_expected: Fix inconsistency with
+	  multilinestring in ST_LocateBetweenElevations()
+	  
+	  Closes #3607
+	  Includes testcase
+	  
+	  Patch by Artur Zakirov <a.zakirov@postgrespro.ru>
+
+2016-07-21 18:10  strk
+
+	* .drone.yml: Update drone config from trunk
+
+2016-07-21 17:44  strk
+
+	* .drone.yml: Use -O0 for test builds, add reference to
+	  postgis-docker
+	  
+	  Removing the optimization flag reduces build time from ~40s to
+	  ~30s
+
+2016-07-21 16:14  strk
+
+	* configure.ac: Fix detectino of ability to build comments
+
+2016-07-21 13:55  strk
+
+	* .drone.yml: Split build and check steps
+
+2016-07-21 12:19  strk
+
+	* configure.ac: Reduce expected requirements for building comments
+	  and pdf docs
+	  
+	  See https://drone.osgeo.kbt.io/postgis/postgis/25
+
+2016-07-21 11:54  strk
+
+	* .drone.yml: Avoid the unstable "wait"
+
+2016-07-21 11:35  strk
+
+	* .drone.yml: Add drone config
+
+2016-07-05 10:22  strk
+
+	* .gitlab-ci.yml: apt-get update && install on the same line
+	  
+	  This avoids attempts to install outdated packages due to cached
+	  steps
+
+2016-06-26 03:11  pramsey
+
+	* regress/tickets_expected: Remove COPY from expected
+
+2016-06-17 22:19  pramsey
+
+	* NEWS, liblwgeom/lwin_geojson.c, regress/tickets.sql,
+	  regress/tickets_expected: #3583, geojson crash on malformed
+	  multipolygon
+
+2016-06-15 21:12  pramsey
+
+	* NEWS, liblwgeom/lwgeom_geos.c, regress/tickets.sql,
+	  regress/tickets_expected: #3579, crash in LWGEOM2GEOS
+
+2016-05-25 17:28  pramsey
+
+	* NEWS, postgis/lwgeom_functions_basic.c, regress/tickets.sql,
+	  regress/tickets_expected: #3565, st_setpoint crashes database
+
+2016-05-01 16:50  dbaston
+
+	* install-sh: revert unwanted install-sh change in last commit
+
+2016-05-01 16:23  dbaston
+
+	* doc/reference_measure.xml, install-sh: #3119, Wrong documented
+	  behavior for ST_LengthSpheroid
+
+2016-04-27 12:12  dbaston
+
+	* doc/reference_raster.xml: #3218, ST_PixelAsCentroid documentation
+	  has incorrect names
+
+2016-04-27 12:07  dbaston
+
+	* doc/reference_raster.xml: #3217, ST_Value documentation has
+	  incorrect parameter names
+
+2016-04-11 18:37  pramsey
+
+	* spatial_ref_sys.sql: #1851, spatial_ref_sys entries for
+	  Pulkovo_1942_58 to_wgs84 entries
+
+2016-02-26 14:36  pramsey
+
+	* NEWS: #3429, news update
+
+2016-02-26 11:37  pramsey
+
+	* raster/loader/raster2pgsql.c, raster/rt_core/rt_api.c,
+	  raster/rt_core/rt_api.h, raster/rt_pg/rt_pg.c,
+	  raster/test/cunit/cu_tester.c: Expunge rt_init_allocators (#3429)
+
+2016-02-23 17:01  pramsey
+
+	* NEWS, postgis/lwgeom_in_kml.c: #3461, ST_GeomFromKML crashes
+	  Postgres when there are innerBoundaryIs and no outerBoundaryIs
+
+2016-01-29 08:08  strk
+
+	* doc/extras_topology.xml: Fix return type of AddTopoGeometryColumn
+	  in documentation
+
+2016-01-19 17:07  pramsey
+
+	* NEWS, liblwgeom/ptarray.c: #3436, memory handling mistake in
+	  ptarray_clone_deep
+
+2016-01-15 17:29  strk
+
+	* doc/extras_tigergeocoder.xml: Typo
+
+2016-01-11 13:53  pramsey
+
+	* postgis/lwgeom_backend_api.c: #3054, build warning on GUC change
+	  for PgSQL 9.0
+
+2015-12-22 15:50  dbaston
+
+	* NEWS: Add NEWS items and sort
+
+2015-12-14 13:10  dbaston
+
+	* liblwgeom/cunit/cu_geodetic.c, liblwgeom/lwgeodetic.c: #3393,
+	  ST_Area NaN on some polygons
+
+2015-12-04 00:07  dbaston
+
+	* liblwgeom/lwout_geojson.c: #3389, buffer overflow in
+	  lwgeom_to_geojson
+
+2015-12-03 18:47  strk
+
+	* doc/reference_editor.xml: Corrected return type of ST_ForceRHR in
+	  docs.
+	  
+	  Patch by Sergey Fedoseev <fedoseev.sergey@gmail.com>
+	  
+	  Closes https://github.com/postgis/postgis/pull/78
+
+2015-11-30 16:30  pramsey
+
+	* NEWS, liblwgeom/lwout_svg.c: #2232, avoid accumulated error in
+	  SVG rounding
+
+2015-11-26 09:13  strk
+
+	* NEWS, topology/topology.sql.in: Fix handling of hierarchical topo
+	  layers with multiple topologies
+	  
+	  Different layers with same id in different topologies confused
+	  GetTopoGeomElements and AddTopoGeometryColumn.
+	  
+	  See #3378
+
+2015-11-25 21:45  pramsey
+
+	* NEWS, liblwgeom/lwgeom.c, regress/tickets.sql,
+	  regress/tickets_expected: #3375, repeated points crash
+
+2015-11-25 20:12  pramsey
+
+	* liblwgeom/cunit/cu_algorithm.c, liblwgeom/lwalgorithm.c: #3099,
+	  fix to arc center calculation from tiipponen
+
+2015-11-20 09:49  strk
+
+	* regress/run_test.pl: Allow existance of databases including name
+	  of target test db
+	  
+	  .. otherwise you get a weird "database postgis_reg already
+	  exists"
+	  when only having a database like "postgis_reg_22" (for example)
+	  ..
+
+2015-11-16 16:29  strk
+
+	* liblwgeom/cunit/cu_in_wkt.c: Show actual location of wkt test
+
+2015-11-16 14:43  strk
+
+	* .gitlab-ci.yml: Install flex and bison
+	  
+	  For some reason these seem to be needed by gitlab-ci build
+
+2015-11-16 14:01  strk
+
+	* .gitlab-ci.yml: 2.1 branch has no "installcheck" rule
+
+2015-11-16 12:05  strk
+
+	* .gitlab-ci.yml: Add gitlab-ci configuration
+
+2015-11-07 10:28  strk
+
+	* NEWS, topology/sql/topogeometry/totopogeom.sql.in,
+	  topology/test/regress/totopogeom.sql,
+	  topology/test/regress/totopogeom_expected: Fix toTopoGeom loss of
+	  low-id primitives from TopoGeometry definition
+	  
+	  Affects toTopoGeom on including edge with id=2 and face with id=3
+	  Includes tests.
+	  Fixes #3359
+
+2015-11-06 11:11  strk
+
+	* authors.git, authors.svn: Update authors emails from trunk
+
+2015-11-02 07:46  robe
+
+	* NEWS, doc/release_notes.xml: update release notes (include
+	  references #3355)
+
+2015-11-02 07:34  robe
+
+	* postgis/geography_measurement.c: ST_Segmentize does not add
+	  geography box
+	  ST_Intersects fails as result
+	  fix for PostGIS 2.1
+	  closes #3355
+
+2015-10-29 09:53  strk
+
+	* .travis.yml: Send travis activity notices to #postgis-activity
+	  
+	  See
+	  https://lists.osgeo.org/pipermail/postgis-devel/2015-October/025436.html
+
+2015-10-29 09:53  strk
+
+	* .travis.yml: Remove carriage returns from .travis.yml
+
+2015-10-29 08:37  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in, topology/test/regress/sqlmm.sql,
+	  topology/test/regress/sqlmm_expected: Set edge endpoints as
+	  isolated on ST_RemoveIsoEdge
+	  
+	  See #3351
+
+2015-10-24 22:13  robe
+
+	* extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql: closes
+	  #3347 force order of staged insert columns to be in table column
+	  order
+
+2015-10-22 15:55  pramsey
+
+	* postgis/gserialized_typmod.c: #3342, ignoring M in typmod output
+
+2015-10-05 20:20  pramsey
+
+	* doc/reference_processing.xml, doc/xsl/postgis_aggs_mm.xml.xsl:
+	  #2916, 'curvepolygons', not 'curvedpolygons'
+
+2015-09-30 10:57  strk
+
+	* NEWS: Add item for almost-collinear linestring topology import
+	  (#3280)
+
+2015-09-30 10:54  strk
+
+	* NEWS: Add item about export symbols (#3281)
+
+2015-09-30 10:51  strk
+
+	* topology/sql/populate.sql.in,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected_newsnap,
+	  topology/test/regress/topogeo_addlinestring_expected_oldsnap:
+	  Improve robustness of adding points to topology (#3280)
+	  
+	  When multiple edges are within tolerance from the added point,
+	  give preference to snapping to the one which contains a point
+	  projected to it.
+
+2015-09-30 10:51  strk
+
+	* configure.ac: Do not export library symbols from the PostgreSQL
+	  module
+	  
+	  Makes it easy for other modules to use dynamically linked
+	  liblwgeom.
+	  See #3281.
+
+2015-09-30 10:51  strk
+
+	* regress/regress_sfcgal.sql, regress/regress_sfcgal_expected:
+	  Avoid -0 in output
+	  
+	  Fixes test run with SFCGAL 1.2.0.
+	  See #3171
+
+2015-09-09 13:19  strk
+
+	* doc/extras_topology.xml: Fix docs for topology.intersects (#2593)
+
+2015-08-29 16:33  strk
+
+	* topology/test/regress/topogeo_addlinestring.sql: Add SRID to
+	  TopoGeo_AddLinestring tests
+
+2015-08-29 16:18  strk
+
+	* topology/test/regress/st_modedgesplit.sql,
+	  topology/test/regress/st_newedgessplit.sql: Add SRID to test for
+	  edge split
+
+2015-08-26 14:11  strk
+
+	* topology/test/regress/st_getfaceedges.sql,
+	  topology/test/regress/st_getfaceedges_expected: Add test for
+	  #3265 (ST_GetFaceEdges issue)
+	  
+	  Succeeds in 2.1 branch
+
+2015-08-24 03:24  robe
+
+	* extras/tiger_geocoder/tiger_2011/tiger_loader_2013.sql: #2336
+	  FIPS 20 causes wildcard expansion to wget all files
+
+2015-08-20 20:15  nicklas
+
+	* liblwgeom/measures3d.c: Fix typo causing wrong answer in 3d-calc
+	  in some situations branch 2.1 #3251
+
+2015-08-20 19:31  robe
+
+	* extras/tiger_geocoder/tiger_2011/utility/levenshtein_ignore_case.sql:
+	  #3161: treat nulls as blank text for rating purposes (
+	  geocode_intersection returns a null rating for a specific
+	  intersection)
+
+2015-08-19 16:51  strk
+
+	* NEWS: Add note about #3245 fix
+
+2015-08-19 16:50  strk
+
+	* liblwgeom/lwgeom_geos.c, liblwgeom/lwgeom_geos_split.c: Always
+	  return a fully owned object to lwgeom/geos function callers
+	  
+	  See #3245
+
+2015-08-18 13:39  pramsey
+
+	* NEWS, loader/shp2pgsql-core.c: #2283, shp2pgsql may be parsing
+	  shp's multipolygon incorrectly
+
+2015-08-18 12:58  strk
+
+	* doc/extras_topology.xml: Correct exception info about
+	  GetFaceByPoint and GetEdgeByPoint (#3241)
+
+2015-08-18 12:02  strk
+
+	* topology/test/regress/getfacebypoint.sql,
+	  topology/test/regress/getfacebypoint_expected: Add labels for
+	  getFaceByNode tests
+	  
+	  Makes it easier to know which test failed
+
+2015-08-18 09:15  strk
+
+	* doc/extras_topology.xml: See Also GetFaceByPoint in
+	  GetNodeByPoint and GetEdgeByPoint docs
+
+2015-08-11 20:19  robe
+
+	* postgis/postgis.sql.in: #3236 get rid of STRICT on
+	  ST_OrderingEquals -- preventing spatial index from being used.
+
+2015-08-07 16:21  strk
+
+	* topology/test/regress/sqlmm.sql,
+	  topology/test/regress/sqlmm_expected: Enhance test for
+	  ST_MoveIsoNode
+	  
+	  Test edge crossing and valid move
+
+2015-08-06 17:05  strk
+
+	* topology/test/regress/sqlmm.sql,
+	  topology/test/regress/sqlmm_expected: Fix test to really remove
+	  an isolated node
+	  
+	  Prior to this, only the non-isolated ones were attempted to be
+	  removed (only testing the failure case)
+
+2015-07-31 17:20  strk
+
+	* NEWS, postgis/gserialized_estimate.c: Fix uninitialized stddev in
+	  stats computation (#3222)
+	  
+	  Patch by Daniel Baston
+
+2015-07-23 16:29  pramsey
+
+	* doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/templates/using_postgis_dataman.xml.pot: Sp(?)
+
+2015-07-20 17:12  strk
+
+	* NEWS, topology/test/regress/addtopogeometrycolumn.sql,
+	  topology/test/regress/addtopogeometrycolumn_expected,
+	  topology/test/regress/createtopology.sql,
+	  topology/test/regress/createtopology_expected,
+	  topology/test/regress/droptopology.sql,
+	  topology/test/regress/droptopology_expected,
+	  topology/topology.sql.in: Handle invalid topology names (#3196)
+	  
+	  Updates regressions for changes.
+	  
+	  Patch by Mike Toews <mwtoews@gmail.com>
+
+2015-07-13 15:50  pramsey
+
+	* liblwgeom/measures3d.h, liblwgeom/stringbuffer.h,
+	  loader/safileio.c, raster/loader/raster2pgsql.c,
+	  raster/rt_core/rt_api.c: Quiet Clang warnings
+
+2015-07-09 10:14  strk
+
+	* doc/extras_topology.xml: Tag <para> can be within <note>, not
+	  viceversa (oops)
+
+2015-07-09 10:09  strk
+
+	* NEWS, doc/extras_topology.xml: Clarify ST_AddEdgeModFace docs
+	  about new face side (#3198)
+
+2015-07-08 17:24  pramsey
+
+	* NEWS, Version.config: Push versions forward for 2.1.9dev
+
+2015-07-07 13:49  pramsey
+
+	* ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml, extensions/upgradeable_versions.mk:
+	  Prepare for 2.1.8
+
 2015-07-04 05:48  robe
 
 	* doc/reference_sfcgal.xml: #3116: SFCGAL add documentation for
