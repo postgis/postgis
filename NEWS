@@ -57,7 +57,7 @@ PostGIS 2.4.0
   - #3684, Update to EPSG register v9
           (Even Rouault)
   - #3830, Fix initialization of incompatible type (>=9.6) address_standardizer
-  - #3662, Make shp2pgsql work in debug mode by sendig debug to stderr
+  - #3662, Make shp2pgsql work in debug mode by sending debug to stderr
   - #3405, Fixed memory leak in lwgeom_to_points
   - #3832, Support wide integer fields as int8 in shp2pgsql
   - #3841, Deterministic sorting support for empty geometries in btree geography

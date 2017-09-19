@@ -9359,7 +9359,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 							<term>mask</term>
 							<listitem>
 								<para>
-									An n-dimenional array (matrix) of numbers used to filter what cells get passed to map algebra call-back function. 0 means a neighbor cell value should be treated as no-data and 1 means value should be treated as data.  If weight is set to true, then the values, are used as multipliers to multiple the pixel value of that value in the neighborhood position.
+									An n-dimensional array (matrix) of numbers used to filter what cells get passed to map algebra call-back function. 0 means a neighbor cell value should be treated as no-data and 1 means value should be treated as data.  If weight is set to true, then the values, are used as multipliers to multiple the pixel value of that value in the neighborhood position.
 								</para>
 							</listitem>
 						</varlistentry>
@@ -11388,7 +11388,7 @@ UPDATE wind
 					<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 
                     <note>
-                      <para>In order for rasters to be unioned, they most all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
+                      <para>In order for rasters to be unioned, they must all have the same alignment.  Use <xref linkend="RT_ST_SameAlignment" /> and <xref linkend="RT_ST_NotSameAlignmentReason" /> for more details and help. One way to fix alignment issues is to use <xref linkend="RT_ST_Resample" /> and use the same reference raster for alignment.</para>
                     </note>
 
 					<para>Availability: 2.0.0 </para>

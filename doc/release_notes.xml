@@ -46,7 +46,7 @@
 <para>#3684, Update to EPSG register v9
           (Even Rouault)</para>
 <para>#3830, Fix initialization of incompatible type (>=9.6) address_standardizer</para>
-<para>#3662, Make shp2pgsql work in debug mode by sendig debug to stderr</para>
+<para>#3662, Make shp2pgsql work in debug mode by sending debug to stderr</para>
 <para>#3405, Fixed memory leak in lwgeom_to_points</para>
 <para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
 <para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
