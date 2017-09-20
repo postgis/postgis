@@ -5870,8 +5870,10 @@ $$
 					var_tempgeom := @extschema@.ST_ForceSFS(@extschema@.ST_Intersection(var_tempgeom, var_convhull));
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
-					ELSE
+					ELSIF @extschema@.ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
 						var_param_geom := @extschema@.ST_MakePolygon(@extschema@.ST_ExteriorRing(var_tempgeom));
+					ELSE
+						var_param_geom := @extschema@.ST_ConvexHull(var_param_geom);
 					END IF;
 					return var_param_geom;
 				ELSIF @extschema@.ST_IsValid(var_tempgeom) THEN
