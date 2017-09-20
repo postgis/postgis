@@ -5,6 +5,8 @@ PostGIS 2.2.6
   - #3786, ptarray null and heap issues on is_closed
   - #3774, Trigonometric length for CompoundCurves
   - #3731, Crash on very small table of homogenous data
+  - #2836, Receiving ERROR: ExteriorRing: geom is
+           not a polygon with ST_ConcaveHull
 
 
 PostGIS 2.2.5

@@ -5578,8 +5578,10 @@ $$
 					var_tempgeom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
-					ELSE
+					ELSIF ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
 						var_param_geom := ST_MakePolygon(ST_ExteriorRing(var_tempgeom));
+					ELSE
+						var_param_geom := ST_ConvexHull(var_tempgeom);
 					END IF;
 					return var_param_geom;
 				ELSIF ST_IsValid(var_tempgeom) THEN
