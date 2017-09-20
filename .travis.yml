@@ -1,7 +1,6 @@
 ---
 env:
   global:
-    - PGUSER=postgres
     - RUNTESTFLAGS=-v
 before_install:
   - rm .travis.yml
@@ -14,6 +13,13 @@ before_install:
 language: c
 compiler:
   - gcc
+script:
+  - ./configure
+  - make
+  - find /home/travis -type d -exec chmod 755 {} \;
+  - make check
+  - sudo make install
+  - make installcheck
 notifications:
   email: false
   irc:
