@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-13 02:45+0000\n"
+"POT-Creation-Date: 2017-09-19 15:47+0000\n"
 "PO-Revision-Date: 2016-02-16 08:34+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/postgis/postgis/language/"
@@ -225,7 +225,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:49
 #, no-c-format
-msgid "#3662, Make shp2pgsql work in debug mode by sendig debug to stderr"
+msgid "#3662, Make shp2pgsql work in debug mode by sending debug to stderr"
 msgstr ""
 
 #. Tag: para

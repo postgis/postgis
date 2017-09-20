@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"POT-Creation-Date: 2017-09-19 15:47+0000\n"
 "PO-Revision-Date: 2014-10-15 16:44+0000\n"
 "Last-Translator: Sandro Santilli <strk@kbt.io>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/postgis-1/"
@@ -473,7 +473,7 @@ msgstr "CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)"
 
 #. Tag: para
 #: using_postgis_dataman.xml:188
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "The CIRCULARSTRING is the basic curve type, similar to a LINESTRING in the "
 "linear world. A single segment required three points, the start and end "
@@ -482,7 +482,7 @@ msgid ""
 "this case the second point MUST be the center of the arc, ie the opposite "
 "side of the circle. To chain arcs together, the last point of the previous "
 "arc becomes the first point of the next arc, just like in LINESTRING. This "
-"means that a valid circular string must have an odd number of points greated "
+"means that a valid circular string must have an odd number of points greater "
 "than 1."
 msgstr ""
 "CIRCULARSTRING es el tipo básico de curva, similar a LINESTRING en el mundo "

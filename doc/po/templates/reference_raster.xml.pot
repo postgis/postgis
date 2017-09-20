@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-17 01:52+0000\n"
+"POT-Creation-Date: 2017-09-19 15:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -11334,7 +11334,7 @@ msgstr ""
 #: reference_raster.xml:6721
 #, no-c-format
 msgid ""
-"An n-dimenional array (matrix) of numbers used to filter what cells get "
+"An n-dimensional array (matrix) of numbers used to filter what cells get "
 "passed to map algebra call-back function. 0 means a neighbor cell value "
 "should be treated as no-data and 1 means value should be treated as data. If "
 "weight is set to true, then the values, are used as multipliers to multiple "
@@ -13079,7 +13079,7 @@ msgstr ""
 #: reference_raster.xml:7801
 #, no-c-format
 msgid ""
-"The fourst argument to the <varname>tworastuserfunc</varname> is a "
+"The fourth argument to the <varname>tworastuserfunc</varname> is a "
 "<type>variadic text</type> array. All trailing text arguments to any <xref "
 "linkend=\"RT_ST_MapAlgebraFct2\"/> call are passed through to the specified "
 "<varname>tworastuserfunc</varname>, and are contained in the "
@@ -13732,7 +13732,7 @@ msgstr ""
 #: reference_raster.xml:8124
 #, no-c-format
 msgid ""
-"In order for rasters to be unioned, they most all have the same alignment. "
+"In order for rasters to be unioned, they must all have the same alignment. "
 "Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref linkend="
 "\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One way to fix "
 "alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and use the "
@@ -15088,7 +15088,7 @@ msgstr ""
 #: reference_raster.xml:9145
 #, no-c-format
 msgid ""
-"Calculates the Topographic Position Index, which is defined as the folcal "
+"Calculates the Topographic Position Index, which is defined as the focal "
 "mean with radius of one minus the center cell."
 msgstr ""
 

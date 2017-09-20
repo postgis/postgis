@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-13 02:45+0000\n"
+"POT-Creation-Date: 2017-09-19 15:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -222,7 +222,7 @@ msgstr ""
 #. Tag: para
 #: release_notes.xml:49
 #, no-c-format
-msgid "#3662, Make shp2pgsql work in debug mode by sendig debug to stderr"
+msgid "#3662, Make shp2pgsql work in debug mode by sending debug to stderr"
 msgstr ""
 
 #. Tag: para

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2017-09-13 02:45+0000\n"
-"PO-Revision-Date: 2017-09-14 16:50+0000\n"
+"PO-Revision-Date: 2017-09-19 14:59+0000\n"
 "Last-Translator: Andreas Schild <andreas.schild@bfw.gv.at>\n"
 "Language-Team: German (http://www.transifex.com/postgis/postgis/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr "Neue Funktionalität"
 msgid ""
 "#3822, Have postgis_full_version() also show and check version of PostgreSQL"
 " the scripts were built against (Sandro Santilli)"
-msgstr ""
+msgstr "#3822, postgis_full_version() geändert, so dass jetzt auch die Version von PostgreSQL angezeigt und überprüft wird, an der die Skripte ausgeführt wurden (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:12
@@ -192,7 +192,7 @@ msgstr ""
 msgid ""
 "#3747, Add zip4 and address_alphanumeric as attributes to norm_addy "
 "tiger_geocoder type."
-msgstr ""
+msgstr "#3747, der Datentyp \"norm_addy tiger_geocoder\" wurde um die Attribute \"zip4\" und \"address_alphanumeric\" erweitert."
 
 #. Tag: para
 #: release_notes.xml:42
@@ -200,45 +200,45 @@ msgstr ""
 msgid ""
 "#3748, address_standardizer lookup tables update so pagc_normalize_address "
 "better standardizes abbreviations"
-msgstr ""
+msgstr "#3748, address_standardizer Lookup-Tabellen aktualisiert, damit \"pagc_normalize_address\" die Abkürzungen besser normiert"
 
 #. Tag: para
 #: release_notes.xml:44
 #, no-c-format
 msgid ""
 "#3647, better handling of noding in ST_Node using GEOSNode (Wouter Geraedts)"
-msgstr ""
+msgstr "#3647, verbesserte Knotenberechnung in ST_Node durch die Verwendung von GEOSNode (Wouter Geraedts)"
 
 #. Tag: para
 #: release_notes.xml:46
 #, no-c-format
 msgid "#3684, Update to EPSG register v9 (Even Rouault)"
-msgstr ""
+msgstr "#3684, Aktualisierung auf das EPSG Register v9 (Even Rouault)"
 
 #. Tag: para
 #: release_notes.xml:48
 #, no-c-format
 msgid ""
 "#3830, Fix initialization of incompatible type (>=9.6) address_standardizer"
-msgstr ""
+msgstr "#3830, Initialisierung des inkompatiblen Datentyps (>=9.6) \"address_standardizer\" fixiert"
 
 #. Tag: para
 #: release_notes.xml:49
 #, no-c-format
-msgid "#3662, Make shp2pgsql work in debug mode by sendig debug to stderr"
-msgstr ""
+msgid "#3662, Make shp2pgsql work in debug mode by sending debug to stderr"
+msgstr "#3662, shp2pgsql ergänzt, so dass im Modus \"debug\" Fehlermeldungen an stderr ausgegeben werden"
 
 #. Tag: para
 #: release_notes.xml:50
 #, no-c-format
 msgid "#3405, Fixed memory leak in lwgeom_to_points"
-msgstr ""
+msgstr "#3405, Speicherleck in \"lwgeom_to_points\" fixiert"
 
 #. Tag: para
 #: release_notes.xml:51
 #, no-c-format
 msgid "#3832, Support wide integer fields as int8 in shp2pgsql"
-msgstr ""
+msgstr "#3832, \"shp2pgsql\" unterstützt jetzt breite Ganzzahlfelder mit dem Datentyp \"int8\""
 
 #. Tag: para
 #: release_notes.xml:52
@@ -259,7 +259,7 @@ msgstr ""
 #: release_notes.xml:56
 #, no-c-format
 msgid "Breaking Changes"
-msgstr ""
+msgstr "Wichtige Änderungen"
 
 #. Tag: para
 #: release_notes.xml:57
@@ -271,7 +271,7 @@ msgstr "Unterstützung für PostgreSQL 9.2. eingestellt."
 #: release_notes.xml:58
 #, no-c-format
 msgid "#3810, GEOS 3.4.0 or above minimum required to compile"
-msgstr ""
+msgstr "#3810, GEOS 3.4.0 oder höher zum kompilieren erforderlich"
 
 #. Tag: para
 #: release_notes.xml:59
@@ -287,7 +287,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "#3578, ST_NumInteriorRings(POLYGON EMPTY) now returns 0 instead of NULL"
-msgstr ""
+msgstr "#3578, ST_NumInteriorRings(POLYGON EMPTY) gibt nun 0 anstatt NULL zurück"
 
 #. Tag: para
 #: release_notes.xml:64
@@ -295,7 +295,7 @@ msgstr ""
 msgid ""
 "_ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0 when "
 "ST_DumpPoints got reimplemented in C"
-msgstr ""
+msgstr "_ST_DumpPoints entfernt, da es ab PostGIS 2.1.0 - wo ST_DumpPoints in C neu implementiert wurde - nicht länger benötigt wird"
 
 #. Tag: para
 #: release_notes.xml:66
@@ -339,7 +339,7 @@ msgstr "Fehlerbehebung und Verbesserungen"
 #: release_notes.xml:80
 #, no-c-format
 msgid "#3777, GROUP BY anomaly with empty geometries"
-msgstr ""
+msgstr "#3777, Unregelmäßigkeiten mit einer leeren Geometrie bei GROUP BY "
 
 #. Tag: para
 #: release_notes.xml:81
@@ -361,7 +361,7 @@ msgstr ""
 msgid ""
 "#3738, raster: Using -s without -Y in raster2pgsql transforms raster data "
 "instead of setting srid"
-msgstr ""
+msgstr "#3738, Raster: die Verwendung von -s ohne -Y in \"raster2pgsql\" transformiert den Raster anstatt die SRID zu setzen"
 
 #. Tag: para
 #: release_notes.xml:86
@@ -369,7 +369,7 @@ msgstr ""
 msgid ""
 "#3744, ST_Subdivide loses subparts of inverted geometries (Darafei "
 "Praliaskouski Komzpa)"
-msgstr ""
+msgstr "#3744, ST_Subdivide verliert Komponenten der invertierten Geometrie (Darafei Praliaskouski Komzpa)"
 
 #. Tag: para
 #: release_notes.xml:88
@@ -383,57 +383,57 @@ msgstr ""
 #: release_notes.xml:91
 #, no-c-format
 msgid "#3682, Strange fieldlength for boolean in result of pgsql2shp"
-msgstr ""
+msgstr "#3682, Eigenartige Feldlänge der booleschen Variablen im Ergebnis von pgsql2shp"
 
 #. Tag: para
 #: release_notes.xml:92
 #, no-c-format
 msgid "#3701, Escape double quotes issue in pgsql2shp"
-msgstr ""
+msgstr "#3701, Behebung der Probleme mit doppelten Anführungszeichen in pgsql2shp"
 
 #. Tag: para
 #: release_notes.xml:93
 #, no-c-format
 msgid "#3704, ST_AsX3D crashes on empty geometry"
-msgstr ""
+msgstr "#3704, ST_AsX3D stürzt mit einer leeren Geometrie ab"
 
 #. Tag: para
 #: release_notes.xml:94
 #, no-c-format
 msgid ""
 "#3730, Change ST_Clip from Error to Notice when ST_Clip can't compute a band"
-msgstr ""
+msgstr "#3730, Änderung von \"Error\" auf \"Notice\", wenn ST_Clip ein Band nicht berechnen kann"
 
 #. Tag: title
 #: release_notes.xml:99
 #, no-c-format
 msgid "Release 2.3.2"
-msgstr ""
+msgstr "Release 2.3.2"
 
 #. Tag: para
 #: release_notes.xml:100
 #, no-c-format
 msgid "Release date: 2017/01/31"
-msgstr ""
+msgstr "Freigabedatum: 2017/01/31"
 
 #. Tag: para
 #: release_notes.xml:104
 #, no-c-format
 msgid ""
 "#3418, KNN recheck in 9.5+ fails with index returned tuples in wrong order"
-msgstr ""
+msgstr "#3418, Erneute Überprüfung von KNN in 9.5+ scheitert mit einem falsch sortierten Index für die zurückgegebenen Tuple"
 
 #. Tag: para
 #: release_notes.xml:105
 #, no-c-format
 msgid "#3675, Relationship functions not using an index in some cases"
-msgstr ""
+msgstr "#3675, Funktionen für Lagevergleiche nützen in einigen Fällen den Index nicht"
 
 #. Tag: para
 #: release_notes.xml:106
 #, no-c-format
 msgid "#3680, PostGIS upgrade scripts missing GRANT for views"
-msgstr ""
+msgstr "#3680, Bei den PostGIS Upgrade-Skripts fehlt GRANT für die Views"
 
 #. Tag: para
 #: release_notes.xml:107
@@ -441,25 +441,25 @@ msgstr ""
 msgid ""
 "#3683, Unable to update postgis after postgres pg_upgrade going from &lt; "
 "9.5 to pg &gt; 9.4"
-msgstr ""
+msgstr "#3683, PostGIS kann nach einem PostgreSQL \"pg_upgrade\" von &lt; 9.5 to pg &gt; 9.4 nicht mehr aktualisiert werden"
 
 #. Tag: para
 #: release_notes.xml:108
 #, no-c-format
 msgid "#3688, ST_AsLatLonText: round minutes"
-msgstr ""
+msgstr "#3688, ST_AsLatLonText: rundet Minuten"
 
 #. Tag: title
 #: release_notes.xml:113
 #, no-c-format
 msgid "Release 2.3.1"
-msgstr ""
+msgstr "Release 2.3.1"
 
 #. Tag: para
 #: release_notes.xml:114
 #, no-c-format
 msgid "Release date: 2016/11/28"
-msgstr ""
+msgstr "Freigabedatum: 2006/11/28"
 
 #. Tag: para
 #: release_notes.xml:118
@@ -481,13 +481,13 @@ msgstr ""
 #: release_notes.xml:122
 #, no-c-format
 msgid "#3643, PostGIS not building on latest OSX XCode"
-msgstr ""
+msgstr "#3643, PostGIS kompiliert auf neuesten OSX XCode nicht"
 
 #. Tag: para
 #: release_notes.xml:123
 #, no-c-format
 msgid "#3644, Deadlock on interrupt"
-msgstr ""
+msgstr "#3644, Deadlock bei \"interrupt_relate\""
 
 #. Tag: para
 #: release_notes.xml:124
@@ -495,19 +495,19 @@ msgstr ""
 msgid ""
 "#3650, Mark ST_Extent, ST_3DExtent and ST_Mem* agg functions as parallel "
 "safe so they can be parallelized"
-msgstr ""
+msgstr "#3650, ST_Extent, ST_3DExtent and ST_Mem* Aggregatfunktionen als \"parallel safe\" gekennzeichnet und dadurch parallele Verarbeitung ermöglicht"
 
 #. Tag: para
 #: release_notes.xml:126
 #, no-c-format
 msgid "#3652, Crash on Collection(MultiCurve())"
-msgstr ""
+msgstr "#3652, Collection(MultiCurve()) stürzt ab"
 
 #. Tag: para
 #: release_notes.xml:127
 #, no-c-format
 msgid "#3656, Fix upgrade of aggregates from 2.2 or lower version"
-msgstr ""
+msgstr "#3656, Upgrade von Aggregaten in 2.2 oder niedrigeren Versionen fixiert"
 
 #. Tag: para
 #: release_notes.xml:128
@@ -523,25 +523,25 @@ msgstr ""
 msgid ""
 "#3665, Index corruption and memory leak in BRIN indexes patch from Julien "
 "Rouhaud (Dalibo)"
-msgstr ""
+msgstr "#3665, beschädigter Index and Speicherleck bei BRIN Indizes; Patch von Julien Rouhaud (Dalibo)"
 
 #. Tag: para
 #: release_notes.xml:132
 #, no-c-format
 msgid "#3667, geography ST_Segmentize bug patch from Hugo Mercier (Oslandia)"
-msgstr ""
+msgstr "#3667, Programmfehler in ST_Segmentize mit geographischem Datentyp; Patch von Hugo Mercier (Oslandia)"
 
 #. Tag: title
 #: release_notes.xml:137
 #, no-c-format
 msgid "Release 2.3.0"
-msgstr ""
+msgstr "Release 2.3.0"
 
 #. Tag: para
 #: release_notes.xml:138
 #, no-c-format
 msgid "Release date: 2016/09/26"
-msgstr ""
+msgstr "Freigabedatum: 2016/09/26"
 
 #. Tag: para
 #: release_notes.xml:139
@@ -549,7 +549,7 @@ msgstr ""
 msgid ""
 "This is a new feature release, with new functions, improved performance, all"
 " relevant bug fixes from PostGIS 2.2.3,and other goodies."
-msgstr ""
+msgstr "Dies ist eine neue Feature-Release, mit neuen Funktionen, verbesserter Rechenleistung, allen behobenen Bugs von PostGIS 2.2.3 und anderen nützlichen Dingen."
 
 #. Tag: title
 #: release_notes.xml:142 release_notes.xml:578 release_notes.xml:1047
@@ -563,13 +563,13 @@ msgstr "Wichtige Änderungen"
 msgid ""
 "#3466, Casting from box3d to geometry now returns a 3D geometry (Julien "
 "Rouhaud of Dalibo)"
-msgstr ""
+msgstr "#3466, Typumwandlung von Box3D in den geometrischen Datentyp gibt nun eine 3D-Geometrie zurück (Julien Rouhaud of Dalibo)"
 
 #. Tag: para
 #: release_notes.xml:145
 #, no-c-format
 msgid "#3396, ST_EstimatedExtent, throw WARNING instead of ERROR (Regina Obe)"
-msgstr ""
+msgstr "#3396, ST_EstimatedExtent, gab eine WARNUNG anstatt einer FEHLERMELDUNG aus (Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:152
@@ -583,49 +583,49 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Add support for negative indexing in ST_PointN and ST_SetPoint (Rémi Cura)"
-msgstr ""
+msgstr "Unterstützung von negativen Indizes in ST_PointN und ST_SetPoint (Rémi Cura)"
 
 #. Tag: para
 #: release_notes.xml:156
 #, no-c-format
 msgid "Add parameters for geography ST_Buffer (Thomas Bonfort)"
-msgstr ""
+msgstr "Parameter zu ST_Buffer mit dem geographischen Datentyp hinzugefügt (Thomas Bonfort)"
 
 #. Tag: para
 #: release_notes.xml:157
 #, no-c-format
 msgid "TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)"
-msgstr ""
+msgstr "TopoGeom_addElement, TopoGeom_remElement (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:158
 #, no-c-format
 msgid "populate_topology_layer (Sandro Santilli)"
-msgstr ""
+msgstr "populate_topology_layer (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:159
 #, no-c-format
 msgid "#454, ST_WrapX and lwgeom_wrapx (Sandro Santilli)"
-msgstr ""
+msgstr "#454, ST_WrapX und lwgeom_wrapx (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:160
 #, no-c-format
 msgid "#1758, ST_Normalize (Sandro Santilli)"
-msgstr ""
+msgstr "#1758, ST_Normalize (Sandro Santilli)"
 
 #. Tag: para
 #: release_notes.xml:161
 #, no-c-format
 msgid "#2236, shp2pgsql -d now emits \"DROP TABLE IF EXISTS\""
-msgstr ""
+msgstr "#2236, shp2pgsql -d sendet nun \"DROP TABLE IF EXISTS\""
 
 #. Tag: para
 #: release_notes.xml:162
 #, no-c-format
 msgid "#2259, ST_VoronoiPolygons and ST_VoronoiLines (Dan Baston)"
-msgstr ""
+msgstr "#2259, ST_VoronoiPolygons und ST_VoronoiLines (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:163
@@ -633,7 +633,7 @@ msgstr ""
 msgid ""
 "#2841 and #2996, ST_MinimumBoundingRadius and new ST_MinimumBoundingCircle "
 "implementation using Welzl's algorithm (Dan Baston)"
-msgstr ""
+msgstr "#2841 und #2996, ST_MinimumBoundingRadius und die neue Implementierung von ST_MinimumBoundingCircle verwendet den Algorithmus von Welzl (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:165
@@ -652,19 +652,19 @@ msgstr ""
 #: release_notes.xml:167
 #, no-c-format
 msgid "#3339, ST_GeneratePoints (Paul Ramsey)"
-msgstr ""
+msgstr "#3339, ST_GeneratePoints (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:168
 #, no-c-format
 msgid "#3362, ST_ClusterDBSCAN (Dan Baston)"
-msgstr ""
+msgstr "#3362, ST_ClusterDBSCAN (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:169
 #, no-c-format
 msgid "#3364, ST_GeometricMedian (Dan Baston)"
-msgstr ""
+msgstr "#3364, ST_GeometricMedian (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:170
@@ -672,31 +672,31 @@ msgstr ""
 msgid ""
 "#3391, Add table inheritance support in ST_EstimatedExtent (Alessandro "
 "Pasotti)"
-msgstr ""
+msgstr "#3391, ST_EstimatedExtent unterstüzt Tabellenvererbung (Alessandro Pasotti)"
 
 #. Tag: para
 #: release_notes.xml:172
 #, no-c-format
 msgid "#3424, ST_MinimumClearance (Dan Baston)"
-msgstr ""
+msgstr "#3424, ST_MinimumClearance (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:173
 #, no-c-format
 msgid "#3428, ST_Points (Dan Baston)"
-msgstr ""
+msgstr "#3428, ST_Points (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:174
 #, no-c-format
 msgid "#3465, ST_ClusterKMeans (Paul Ramsey)"
-msgstr ""
+msgstr "#3465, ST_ClusterKMeans (Paul Ramsey)"
 
 #. Tag: para
 #: release_notes.xml:175
 #, no-c-format
 msgid "#3469, ST_MakeLine with MULTIPOINTs (Paul Norman)"
-msgstr ""
+msgstr "#3469, ST_MakeLine mit MULTIPOINTs (Paul Norman)"
 
 #. Tag: para
 #: release_notes.xml:176
@@ -704,7 +704,7 @@ msgstr ""
 msgid ""
 "#3549, Support PgSQL 9.6 parallel query mode, as far as possible (Paul "
 "Ramsey, Regina Obe)"
-msgstr ""
+msgstr "#3549, Unterstützung für parallele Abfragen in PgSQL 9.6, so weit wie möglich (Paul Ramsey, Regina Obe)"
 
 #. Tag: para
 #: release_notes.xml:178
@@ -718,7 +718,7 @@ msgstr ""
 msgid ""
 "#3591, Add support for BRIN indexes. PostgreSQL 9.4+ required. (Giuseppe "
 "Broccolo of 2nd Quadrant, Julien Rouhaud and Ronan Dunklau of Dalibo)"
-msgstr ""
+msgstr "#3591, Unterstützung für BRIN Indizes hinzugefügt. PostgreSQL 9.4+ notwendig. (Giuseppe Broccolo von 2nd Quadrant, Julien Rouhaud und Ronan Dunklau von Dalibo)"
 
 #. Tag: para
 #: release_notes.xml:182
@@ -735,7 +735,7 @@ msgstr ""
 msgid ""
 "#3547, Update tiger geocoder to support TIGER 2016 and to support both http "
 "and ftp."
-msgstr ""
+msgstr "#3547, Aktualisierung des Tiger-Geokodierer um TIGER 2016 und sowohl http als auch ftp zu unterstützen."
 
 #. Tag: para
 #: release_notes.xml:187
@@ -761,13 +761,13 @@ msgstr "Bugfixes"
 #: release_notes.xml:193
 #, no-c-format
 msgid "All relevant bug fixes from PostGIS 2.2.3"
-msgstr ""
+msgstr "Alle relevanten Bugfixes von PostGIS 2.2.3"
 
 #. Tag: para
 #: release_notes.xml:194
 #, no-c-format
 msgid "#2841, ST_MinimumBoundingCircle not covering original"
-msgstr ""
+msgstr "#2841, ST_MinimumBoundingCircle deckt das Original nicht ab"
 
 #. Tag: para
 #: release_notes.xml:195
@@ -787,7 +787,7 @@ msgstr "Verbesserung der Rechenleistung"
 #: release_notes.xml:201
 #, no-c-format
 msgid "#75, Enhancement to PIP short circuit (Dan Baston)"
-msgstr ""
+msgstr "#75, Verbesserung von PIP Kurzschlussauswertung (Dan Baston)"
 
 #. Tag: para
 #: release_notes.xml:202
@@ -813,19 +813,19 @@ msgstr ""
 #: release_notes.xml:206
 #, no-c-format
 msgid "Documentation updates from Mike Toews"
-msgstr ""
+msgstr "Aktualisierung der Dokumentation durch Mike Toews"
 
 #. Tag: title
 #: release_notes.xml:212
 #, no-c-format
 msgid "Release 2.2.2"
-msgstr ""
+msgstr "Release 2.2.2"
 
 #. Tag: para
 #: release_notes.xml:213
 #, no-c-format
 msgid "Release date: 2016/03/22"
-msgstr ""
+msgstr "Freigabedatum: 2016/03/22"
 
 #. Tag: para
 #: release_notes.xml:217
@@ -851,7 +851,7 @@ msgstr ""
 #: release_notes.xml:220
 #, no-c-format
 msgid "#3433, ST_ClusterIntersecting incorrect for MultiPoints"
-msgstr ""
+msgstr "#3433, ST_ClusterIntersecting fehlerhaft bei MultiPoints"
 
 #. Tag: para
 #: release_notes.xml:221
@@ -869,7 +869,7 @@ msgstr ""
 #: release_notes.xml:223
 #, no-c-format
 msgid "#3437, ST_Intersects incorrect for MultiPoints"
-msgstr ""
+msgstr "#3437, ST_Intersects fehlerhaft bei MultiPoints"
 
 #. Tag: para
 #: release_notes.xml:224
@@ -890,7 +890,7 @@ msgstr ""
 #: release_notes.xml:226
 #, no-c-format
 msgid "#3460, ST_ClusterWithin 'Tolerance not defined' error after upgrade"
-msgstr ""
+msgstr "#3460, ST_ClusterWithin gibt nach Upgrade den Fehler 'Tolerance not defined' aus"
 
 #. Tag: para
 #: release_notes.xml:227
@@ -2175,7 +2175,7 @@ msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2903\"><ulink "
 "url=\"http://trac.osgeo.org/postgis/ticket/2903\">#2903</ulink></ulink>, "
 "Unable to compile on FreeBSD"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2903\"><ulink url=\"http://trac.osgeo.org/postgis/ticket/2903\">#2903</ulink></ulink>, Kann auf FreeBSD nicht kompiliert werden"
 
 #. Tag: para
 #: release_notes.xml:466
@@ -2440,7 +2440,7 @@ msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2648\">#2648</ulink>, 
 msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2654\">#2654</ulink>, Drop"
 " deprecated calls from topology"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2654\">#2654</ulink>, Überholte Aufrufe von \"topology\" eingestellt"
 
 #. Tag: para
 #: release_notes.xml:532
@@ -2543,7 +2543,7 @@ msgstr ""
 msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2454\">#2454</ulink>, Fix "
 "behavior of ST_PixelAsXXX functions regarding exclude_nodata_value parameter"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2454\">#2454</ulink>, Verhaltensweise der Funktionen \"ST_PixelAsXXX\" in Bezug auf den Parameter \"exclude_nodata_value\" fixiert"
 
 #. Tag: para
 #: release_notes.xml:556
@@ -2879,7 +2879,7 @@ msgstr ""
 msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/1293\">#1293</ulink>, "
 "ST_Resize(raster) to resize rasters based upon width/height"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/1293\">#1293</ulink>, ST_Resize(raster) um die Rastergröße über width/height ändern zu können"
 
 #. Tag: para
 #: release_notes.xml:638
@@ -3343,7 +3343,7 @@ msgstr ""
 msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2148\">#2148</ulink>, "
 "Addition of coverage_tile constraint for raster"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2148\">#2148</ulink>, Constraint \"coverage_tile\" für Raster hinzugefügt"
 
 #. Tag: para
 #: release_notes.xml:725
@@ -3351,7 +3351,7 @@ msgstr ""
 msgid ""
 "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2149\">#2149</ulink>, "
 "Addition of spatially_unique constraint for raster"
-msgstr ""
+msgstr "<ulink url=\"http://trac.osgeo.org/postgis/ticket/2148\">#2149</ulink>, Constraint \"spatially_unique\" für Raster hinzugefügt"
 
 #. Tag: para
 #: release_notes.xml:726
@@ -3367,7 +3367,7 @@ msgstr ""
 msgid ""
 "ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional parameter "
 "to interpolate NODATA pixels before running the operation."
-msgstr ""
+msgstr "Neuer, optionaler Parameter für ST_HillShade(), ST_Aspect() und ST_Slope() zur Interpolation von NODATA Pixel vor der Operation."
 
 #. Tag: para
 #: release_notes.xml:731
@@ -3387,7 +3387,7 @@ msgstr ""
 #: release_notes.xml:734
 #, no-c-format
 msgid "Additional default values for parameters of ST_Aspect and ST_HillShade"
-msgstr ""
+msgstr "Zusätzliche Standardwerte für die Parameter von ST_Aspect und ST_HillShade"
 
 #. Tag: para
 #: release_notes.xml:735

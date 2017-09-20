@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-13 02:45+0000\n"
+"POT-Creation-Date: 2017-09-19 15:47+0000\n"
 "PO-Revision-Date: 2017-01-05 16:34+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -10245,12 +10245,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3984
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
-"0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, "
-"0) AS rast\n"
+"0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, "
+"'16BSI', 0, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        (ST_DumpValues(rast)).*\n"
@@ -10281,12 +10281,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:3986
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, "
-"0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 3, -9999), 3, '16BSI', 0, "
-"0) AS rast\n"
+"0, 1, -1, 0, 0, 0), 1, '8BUI'::text, 1, 0), 2, '32BF'::text, 3, -9999), 3, "
+"'16BSI', 0, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        (ST_DumpValues(rast, ARRAY[3, 1])).*\n"
@@ -14729,10 +14729,10 @@ msgstr "ST_AsGDALRaster"
 
 #. Tag: refpurpose
 #: reference_raster.xml:5654
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Return the raster tile in the designated GDAL Raster format. Raster formats "
-"are one of those supported by your compiled library. Use ST_GDALRasters() to "
+"are one of those supported by your compiled library. Use ST_GDALDrivers() to "
 "get a list of formats supported by your library."
 msgstr ""
 "Retorna a tile raster no formato GDAL designado. Os formatos rasters são um "
@@ -14835,7 +14835,7 @@ msgid ""
 "exporting. Note for this you'll need to have super user access to db since "
 "it uses server side lo functions. It will also export to path on server "
 "network. If you need export locally, use the psql equivalent lo_ functions "
-"which export to the local file system insteado fo the server file system."
+"which export to the local file system instead of the server file system."
 msgstr ""
 
 #. Tag: programlisting
@@ -16835,9 +16835,9 @@ msgstr "mask"
 
 #. Tag: para
 #: reference_raster.xml:6721
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"An n-dimenional array (matrix) of numbers used to filter what cells get "
+"An n-dimensional array (matrix) of numbers used to filter what cells get "
 "passed to map algebra call-back function. 0 means a neighbor cell value "
 "should be treated as no-data and 1 means value should be treated as data. If "
 "weight is set to true, then the values, are used as multipliers to multiple "
@@ -16944,11 +16944,11 @@ msgstr "distancex"
 
 #. Tag: para
 #: reference_raster.xml:6769
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The distance in pixels from the reference cell. So width of resulting matrix "
-"would be <code>2*distancex + 1</code>.If not specified only the reference "
-"cell is considered (neighborhood of 0)."
+"The distance in pixels from the reference cell in x direction. So width of "
+"resulting matrix would be <code>2*distancex + 1</code>.If not specified only "
+"the reference cell is considered (neighborhood of 0)."
 msgstr ""
 "A distância em pixeis da célula de referência. A largura da matriz "
 "resultante seria <code>2*distancex + 1</code>. Se não especificada, apenas a "
@@ -18054,16 +18054,16 @@ msgstr "Exemplos: Variantes 1 e 2"
 
 #. Tag: programlisting
 #: reference_raster.xml:7161
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), "
-"'32BF', 1, -1) AS rast\n"
+"'32BF'::text, 1, -1) AS rast\n"
 ")\n"
 "SELECT\n"
 "        ST_MapAlgebra(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast."
 "val])')\n"
-"FROM foo"
+"FROM foo;"
 msgstr ""
 "WITH foo AS (\n"
 "        SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), "
@@ -18082,16 +18082,16 @@ msgstr "Exemplos: Variantes 3 e 4"
 
 #. Tag: programlisting
 #: reference_raster.xml:7167
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, "
 "ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, "
-"0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION "
-"ALL\n"
+"0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI'::text, 100, 0) AS rast "
+"UNION ALL\n"
 "        SELECT 2 AS rid, "
 "ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, "
-"0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast\n"
+"0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI'::text, 300, 0) AS rast\n"
 ")\n"
 "SELECT\n"
 "        ST_MapAlgebra(\n"
@@ -18102,7 +18102,7 @@ msgid ""
 "FROM foo t1\n"
 "CROSS JOIN foo t2\n"
 "WHERE t1.rid = 1\n"
-"        AND t2.rid = 2"
+"        AND t2.rid = 2;"
 msgstr ""
 "WITH foo AS (\n"
 "        SELECT 1 AS rid, "
@@ -18234,11 +18234,11 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7237
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast raster;\n"
-"UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,"
-"NULL,'mod([rast],2)') WHERE rid = 2;\n"
+"UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,NULL,'mod([rast]::"
+"numeric,2)') WHERE rid = 2;\n"
 "\n"
 "SELECT\n"
 "        ST_Value(rast,1,i,j) As origval,\n"
@@ -18296,13 +18296,13 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7240
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;\n"
 "UPDATE dummy_rast SET\n"
-"        map_rast2 = ST_MapAlgebraExpr(rast,'2BUI','CASE WHEN [rast] BETWEEN "
-"100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 and 254 "
-"THEN 3 ELSE 0 END', '0')\n"
+"        map_rast2 = ST_MapAlgebraExpr(rast,'2BUI'::text,'CASE WHEN [rast] "
+"BETWEEN 100 and 250 THEN 1 WHEN [rast] = 252 THEN 2 WHEN [rast] BETWEEN 253 "
+"and 254 THEN 3 ELSE 0 END'::text, '0')\n"
 "WHERE rid = 2;\n"
 "\n"
 "SELECT DISTINCT\n"
@@ -18365,9 +18365,9 @@ msgstr ""
 " 2BUI"
 
 #. Tag: para
-#: reference_raster.xml:7254 reference_raster.xml:7714
-#, no-c-format
-msgid "original (column rast-view)"
+#: reference_raster.xml:7254
+#, fuzzy, no-c-format
+msgid "original (column rast_view)"
 msgstr "original (column rast-view)"
 
 #. Tag: para
@@ -18389,7 +18389,7 @@ msgstr ""
 
 #. Tag: programlisting
 #: reference_raster.xml:7280
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "SELECT\n"
 "        ST_AddBand(\n"
@@ -18401,8 +18401,8 @@ msgid ""
 "                        ),\n"
 "                        ST_Band(rast_view,2)\n"
 "                ),\n"
-"                ST_Band(rast_view, 3) As rast_view_ma\n"
-"        )\n"
+"                ST_Band(rast_view, 3)\n"
+"        )  As rast_view_ma\n"
 "FROM wind\n"
 "WHERE rid=167;"
 msgstr ""
@@ -19253,6 +19253,12 @@ msgstr ""
 "----------\n"
 " 2BUI"
 
+#. Tag: para
+#: reference_raster.xml:7714
+#, no-c-format
+msgid "original (column rast-view)"
+msgstr "original (column rast-view)"
+
 #. Tag: programlisting
 #: reference_raster.xml:7731
 #, no-c-format
@@ -19477,9 +19483,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:7801
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The fourst argument to the <varname>tworastuserfunc</varname> is a "
+"The fourth argument to the <varname>tworastuserfunc</varname> is a "
 "<type>variadic text</type> array. All trailing text arguments to any <xref "
 "linkend=\"RT_ST_MapAlgebraFct2\"/> call are passed through to the specified "
 "<varname>tworastuserfunc</varname>, and are contained in the "
@@ -20451,9 +20457,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:8124
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"In order for rasters to be unioned, they most all have the same alignment. "
+"In order for rasters to be unioned, they must all have the same alignment. "
 "Use <xref linkend=\"RT_ST_SameAlignment\"/> and <xref linkend="
 "\"RT_ST_NotSameAlignmentReason\"/> for more details and help. One way to fix "
 "alignment issues is to use <xref linkend=\"RT_ST_Resample\"/> and use the "
@@ -22399,9 +22405,9 @@ msgstr ""
 
 #. Tag: para
 #: reference_raster.xml:9145
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Calculates the Topographic Position Index, which is defined as the folcal "
+"Calculates the Topographic Position Index, which is defined as the focal "
 "mean with radius of one minus the center cell."
 msgstr ""
 "Calcula o índice de posição topográfica, o qual é definido como o central "
