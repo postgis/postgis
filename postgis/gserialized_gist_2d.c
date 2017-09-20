@@ -589,22 +589,20 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	GSERIALIZED *gpart;
 	uint8_t flags;
 	int result = LW_SUCCESS;
+	int gpart_is_slice = FALSE;
 
 	POSTGIS_DEBUG(4, "entered function");
 
 	/*
-	** The most info we need is the 8 bytes of serialized header plus the
-	** of floats necessary to hold the bounding box.
+	** Because geometry is declared as "storage = main" anything large
+	** enough to take serious advantage of PG_DETOAST_DATUM_SLICE will have
+	** already been compressed, which means the entire object will be
+	** fetched and decompressed before a slice is taken, thus removing
+	** any efficiencies gained from slicing. We need to move to
+	** "storage = external" and implement our own geometry compressor
+	** before we can take advantage of sliced retrieval.
 	*/
-	if (VARATT_IS_EXTENDED(gsdatum))
-	{
-		gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 8 + sizeof(BOX2DF));
-	}
-	else
-	{
-		gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-	}
-
+	gpart = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
 	flags = gpart->flags;
 
 	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
@@ -621,27 +619,21 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 	{
 		/* No, we need to calculate it from the full object. */
 		GBOX gbox;
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-
 		gbox_init(&gbox);
 
-		if (gserialized_get_gbox_p(g, &gbox) == LW_FAILURE)
+		result = gserialized_get_gbox_p(gpart, &gbox);
+		if ( result == LW_SUCCESS )
 		{
-			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
-			POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-			POSTGIS_FREE_IF_COPY_P(g, gsdatum);
-			return LW_FAILURE;
+			result = box2df_from_gbox_p(&gbox, box2df);
 		}
-		POSTGIS_FREE_IF_COPY_P(g, gsdatum);
-		result = box2df_from_gbox_p(&gbox, box2df);
+		else
+		{
+			POSTGIS_DEBUG(4, "could not calculate bbox");
+		}
 	}
 
 	POSTGIS_FREE_IF_COPY_P(gpart, gsdatum);
-
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got box2df %s", box2df_to_string(box2df));
-	}
+	POSTGIS_DEBUGF(4, "result = %d, got box2df %s", result, result == LW_SUCCESS ? box2df_to_string(box2df) : "NONE");
 
 	return result;
 }
