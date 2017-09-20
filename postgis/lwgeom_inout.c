@@ -507,15 +507,12 @@ Datum TWKBFromLWGEOM(PG_FUNCTION_ARGS)
 	/* Create TWKB binary string */
 	lwgeom = lwgeom_from_gserialized(geom);
 	twkb = lwgeom_to_twkb(lwgeom, variant, sp.precision_xy, sp.precision_z, sp.precision_m, &twkb_size);
-	lwgeom_free(lwgeom);
 
 	/* Prepare the PgSQL text return type */
 	result = palloc(twkb_size + VARHDRSZ);
 	memcpy(VARDATA(result), twkb, twkb_size);
 	SET_VARSIZE(result, twkb_size + VARHDRSZ);
 
-	pfree(twkb);
-	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_BYTEA_P(result);
 }
 

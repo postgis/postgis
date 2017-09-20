@@ -409,12 +409,16 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 	int i, is_empty, has_z, has_m, ndims;
 	size_t bbox_size = 0, optional_precision_byte = 0;
 	uint8_t flag = 0, type_prec = 0;
+	bytebuffer_t header_bytebuffer, geom_bytebuffer;
 
 	TWKB_STATE child_state;
 	memset(&child_state, 0, sizeof(TWKB_STATE));
-	child_state.header_buf = bytebuffer_create_with_size(16);
-	child_state.geom_buf = bytebuffer_create_with_size(64);
+	child_state.header_buf = &header_bytebuffer;
+	child_state.geom_buf = &geom_bytebuffer;
 	child_state.idlist = parent_state->idlist;
+
+	bytebuffer_init_with_size(child_state.header_buf, 16);
+	bytebuffer_init_with_size(child_state.geom_buf, 64);
 
 	/* Read dimensionality from input */
 	has_z = lwgeom_has_z(geom);
@@ -499,8 +503,8 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 			bytebuffer_append_byte(child_state.header_buf, 0);
 
 		bytebuffer_append_bytebuffer(parent_state->geom_buf, child_state.header_buf);
-		bytebuffer_destroy(child_state.header_buf);
-		bytebuffer_destroy(child_state.geom_buf);
+		bytebuffer_destroy_buffer(child_state.header_buf);
+		bytebuffer_destroy_buffer(child_state.geom_buf);
 		return 0;
 	}
 
@@ -546,8 +550,8 @@ static int lwgeom_write_to_buffer(const LWGEOM *geom, TWKB_GLOBALS *globals, TWK
 	bytebuffer_append_bytebuffer(parent_state->geom_buf,child_state.header_buf);
 	bytebuffer_append_bytebuffer(parent_state->geom_buf,child_state.geom_buf);
 
-	bytebuffer_destroy(child_state.header_buf);
-	bytebuffer_destroy(child_state.geom_buf);
+	bytebuffer_destroy_buffer(child_state.header_buf);
+	bytebuffer_destroy_buffer(child_state.geom_buf);
 	return 0;
 }
 
@@ -566,6 +570,7 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant,
 
 	TWKB_GLOBALS tg;
 	TWKB_STATE ts;
+	bytebuffer_t geom_bytebuffer;
 
 	uint8_t *twkb;
 
@@ -592,14 +597,12 @@ lwgeom_to_twkb_with_idlist(const LWGEOM *geom, int64_t *idlist, uint8_t variant,
 
 	ts.idlist = idlist;
 	ts.header_buf = NULL;
-	ts.geom_buf = bytebuffer_create();
+	ts.geom_buf = &geom_bytebuffer;
+	bytebuffer_init_with_size(ts.geom_buf, 512);
 	lwgeom_write_to_buffer(geom, &tg, &ts);
 
-	if ( twkb_size )
-		*twkb_size = bytebuffer_getlength(ts.geom_buf);
-
-	twkb = ts.geom_buf->buf_start;
-	lwfree(ts.geom_buf);
+	twkb = bytebuffer_get_buffer_copy(ts.geom_buf, twkb_size);
+	bytebuffer_destroy_buffer(ts.geom_buf);
 	return twkb;
 }
 
