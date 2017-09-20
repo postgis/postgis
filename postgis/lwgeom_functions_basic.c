@@ -2632,15 +2632,21 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P_COPY(0);
+	GSERIALIZED *g_in = PG_GETARG_GSERIALIZED_P(0);
+	int type = gserialized_get_type(g_in);
 	GSERIALIZED *g_out;
-	LWGEOM *lwgeom_in = lwgeom_from_gserialized(g_in);
+	LWGEOM *lwgeom_in = NULL;
 	LWGEOM *lwgeom_out = NULL;
 	double tolerance = 0.0;
+
+	/* Don't even start to think about points */
+	if ( type == POINTTYPE )
+		PG_RETURN_POINTER(g_in);
 
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
 		tolerance = PG_GETARG_FLOAT8(1);
 
+	lwgeom_in = lwgeom_from_gserialized(g_in);
 	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in, tolerance);
 	g_out = geometry_serialize(lwgeom_out);
 
