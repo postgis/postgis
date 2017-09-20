@@ -18,6 +18,8 @@ PostGIS 2.3.4
             also reenable cunit loader tess to always run.
   - #3774, Trigonometric length for CompoundCurves
   - #3731, Crash on very small table of homogenous data
+  - #2836, Receiving ERROR: ExteriorRing: geom is
+           not a polygon with ST_ConcaveHull
 
 
 PostGIS 2.3.3
