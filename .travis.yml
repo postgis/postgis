@@ -11,7 +11,7 @@ before_install:
       postgresql-9.4 postgresql-server-dev-9.4
       build-essential autoconf libtool libcunit1-dev
       xsltproc docbook-xsl docbook-mathml dblatex
-      libproj-dev libgdal-dev libgdal1h libgeos-dev libjson0-dev
+      libproj-dev libgdal-dev libgeos-dev libjson0-dev
   - dpkg -l | grep postgresql
   - ./autogen.sh
 
@@ -22,6 +22,7 @@ compiler: gcc
 script:
   - ./configure
   - make
+  - find /home/travis -type d -exec chmod 755 {} \;
   - make check
   - sudo make install
   - make installcheck
