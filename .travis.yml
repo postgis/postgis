@@ -19,7 +19,7 @@ script:
   - find /home/travis -type d -exec chmod 755 {} \;
   - make check
   - sudo make install
-  - make installcheck
+  - make check RUNTESTFLAGS=--extensions
 notifications:
   email: false
   irc:
