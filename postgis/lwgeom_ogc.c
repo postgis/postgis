@@ -341,7 +341,6 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	     (type != CURVEPOLYTYPE) &&
 	     (type != TRIANGLETYPE))
 	{
-		elog(ERROR, "ExteriorRing: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
 
@@ -354,7 +353,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 		                              lwgeom_has_m(lwgeom));
 		result = geometry_serialize(lwline_as_lwgeom(line));
 	}
-	else if ( lwgeom->type == POLYGONTYPE )
+	else if ( type == POLYGONTYPE )
 	{
 		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 
@@ -374,7 +373,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 		lwgeom_release((LWGEOM *)line);
 	}
-	else if ( lwgeom->type == TRIANGLETYPE )
+	else if ( type == TRIANGLETYPE )
 	{
 		LWTRIANGLE *triangle = lwgeom_as_lwtriangle(lwgeom);
 
@@ -412,33 +411,26 @@ PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = PG_GETARG_GSERIALIZED_P(0);
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-
+	int type = gserialized_get_type(geom);
+	LWGEOM *lwgeom;
 	int result = -1;
 
-	if ( lwgeom->type == POLYGONTYPE )
+	if ( (type != POLYGONTYPE) &&
+	     (type != CURVEPOLYTYPE) &&
+	     (type != TRIANGLETYPE))
 	{
-		if (lwgeom_is_empty(lwgeom))
-		{
-			result = 0;
-		}
-		else
-		{
-			const LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
-			result = poly->nrings - 1;
-		}
+		PG_RETURN_NULL();
 	}
-	else if ( lwgeom->type == CURVEPOLYTYPE )
+
+	lwgeom = lwgeom_from_gserialized(geom);
+	if ( lwgeom_is_empty(lwgeom) )
 	{
-		if (lwgeom_is_empty(lwgeom))
-		{
-			result = 0;
-		}
-		else
-		{
-			const LWCURVEPOLY *curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
-			result = curvepoly->nrings - 1;
-		}
+		result = 0;
+	}
+	else
+	{
+		const LWPOLY *poly = (LWPOLY*)lwgeom;
+		result = poly->nrings - 1;
 	}
 
 	lwgeom_free(lwgeom);
@@ -470,12 +462,11 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	GBOX *bbox = NULL;
 	int type;
 
-	POSTGIS_DEBUG(2, "LWGEOM_interierringn_polygon called.");
+	POSTGIS_DEBUG(2, "LWGEOM_interiorringn_polygon called.");
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
 	{
-		/* elog(ERROR, "InteriorRingN: ring number is 1-based"); */
 		PG_RETURN_NULL(); /* index out of range */
 	}
 
@@ -484,7 +475,6 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	if ( (type != POLYGONTYPE) && (type != CURVEPOLYTYPE) )
 	{
-		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
