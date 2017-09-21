@@ -652,7 +652,7 @@ static int max_type(LWCOLLECTION *lwcoll)
  * Makes best effort to keep validity. Might collapse geometry into lower
  * dimension.
  */
-LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
+LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32_t buffer,
 	bool clip_geom)
 {
 	AFFINE affine;
@@ -666,9 +666,14 @@ LWGEOM *mvt_geom(LWGEOM *lwgeom, GBOX *gbox, uint32_t extent, uint32_t buffer,
 	double fy = -(extent / height);
 	double buffer_map_xunits = resx * buffer;
 	double buffer_map_yunits = resy * buffer;
-	const GBOX *ggbox = lwgeom_get_bbox(lwgeom);
+	const GBOX *ggbox;
 	POSTGIS_DEBUG(2, "mvt_geom called");
 
+	/* Short circuit out on EMPTY */
+	if (lwgeom_is_empty(lwgeom))
+		return NULL;
+
+	ggbox = lwgeom_get_bbox(lwgeom);
 	if (width == 0 || height == 0)
 		elog(ERROR, "mvt_geom: bounds width or height cannot be 0");
 

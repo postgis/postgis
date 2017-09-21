@@ -51,7 +51,7 @@ Datum ST_AsMVTGeom(PG_FUNCTION_ARGS)
 	int extent, buffer;
 	bool clip_geom;
 	if (PG_ARGISNULL(0))
-		elog(ERROR, "ST_AsMVTGeom: geom cannot be null");
+		PG_RETURN_NULL();
 	geom_in = PG_GETARG_GSERIALIZED_P(0);
 	lwgeom_in = lwgeom_from_gserialized(geom_in);
 	if (PG_ARGISNULL(1))

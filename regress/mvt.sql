@@ -39,6 +39,9 @@ select 'PG9', ST_AsText(ST_Normalize(ST_AsMVTGeom(
 	ST_GeomFromText('POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))'),
 	ST_MakeBox2D(ST_Point(0, 0), ST_Point(5, 5)),
 	4096, 0, true)));
+SELECT 'PG10', ST_AsText(ST_AsMVTGeom(
+	'POINT EMPTY'::geometry,
+	'BOX(0 0,2 2)'::box2d));
 
 -- geometry encoding tests
 SELECT 'TG1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1,
