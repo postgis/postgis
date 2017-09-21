@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -859,7 +859,7 @@ msgstr ""
 #: reference_misc.xml:512
 #, no-c-format
 msgid ""
-"Is the point geometry insert circle defined by center_x, center_y, radius"
+"Is the point geometry inside the circle defined by center_x, center_y, radius"
 msgstr ""
 
 #. Tag: funcprototype
