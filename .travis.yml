@@ -1,19 +1,30 @@
 ---
 env:
   global:
-    - PGUSER=postgres
     - RUNTESTFLAGS=-v
+addons:
+  postgresql: "9.4"
+  
 before_install:
-  - rm .travis.yml
-  - sudo apt-get update
-  - apt-cache search libgdal
-  - sudo apt-get install -q build-essential flex autoconf libtool gfortran postgresql-server-dev-9.1 xsltproc libjson0-dev libproj-dev dblatex xsltproc libcunit1-dev libcunit1 docbook-xsl docbook-mathml libgdal-dev libgeos-dev
-  - git config --global user.name "PostGIS Travis CI"
-  - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
+  - sudo apt-get update -qq
+  - sudo apt-get install -y
+      postgresql-9.4 postgresql-server-dev-9.4
+      build-essential autoconf libtool libcunit1-dev
+      xsltproc docbook-xsl docbook-mathml dblatex
+      libproj-dev libgdal-dev libgeos-dev libjson0-dev
+  - dpkg -l | grep postgresql
   - ./autogen.sh
 language: c
+
 compiler:
   - gcc
+  
+script:
+  - ./configure
+  - make
+  - find /home/travis -type d -exec chmod 755 {} \;
+  - sudo make install
+  - make check RUNTESTFLAGS=-v
 notifications:
   email: false
   irc:
