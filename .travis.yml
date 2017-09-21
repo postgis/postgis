@@ -2,6 +2,7 @@
 env:
   global:
     - RUNTESTFLAGS=-v
+    - PGUSER=postgres
 addons:
   postgresql: "9.1"
 before_install:
