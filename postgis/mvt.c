@@ -302,7 +302,9 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 	int natts = tupdesc->natts;
 	uint32_t i;
 	bool geom_found = false;
+	char *key;
 	POSTGIS_DEBUG(2, "parse_column_keys called");
+
 	for (i = 0; i < natts; i++) {
 #if POSTGIS_PGSQL_VERSION < 110
 		Oid typoid = getBaseType(tupdesc->attrs[i]->atttypid);
@@ -315,18 +317,17 @@ static void parse_column_keys(struct mvt_agg_context *ctx)
 		if (typoid == JSONBOID)
 			continue;
 #endif
-		char *key = palloc(strlen(tkey) + 1);
-		strcpy(key, tkey);
+		key = pstrdup(tkey);
 		if (ctx->geom_name == NULL) {
 			if (!geom_found && typoid == TypenameGetTypid("geometry")) {
 				ctx->geom_index = i;
-				geom_found = 1;
+				geom_found = true;
 				continue;
 			}
 		} else {
 			if (!geom_found && strcmp(key, ctx->geom_name) == 0) {
 				ctx->geom_index = i;
-				geom_found = 1;
+				geom_found = true;
 				continue;
 			}
 		}
@@ -796,7 +797,7 @@ void mvt_agg_init_context(struct mvt_agg_context *ctx)
  */
 void mvt_agg_transfn(struct mvt_agg_context *ctx)
 {
-	bool isnull;
+	bool isnull = false;
 	Datum datum;
 	GSERIALIZED *gs;
 	LWGEOM *lwgeom;
@@ -813,21 +814,28 @@ void mvt_agg_transfn(struct mvt_agg_context *ctx)
 		POSTGIS_DEBUGF(3, "mvt_agg_transfn new_capacity: %zd", new_capacity);
 	}
 
-	feature = palloc(sizeof(*feature));
-	vector_tile__tile__feature__init(feature);
-
-	ctx->feature = feature;
 	if (layer->n_features == 0)
 		parse_column_keys(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
-	if (!datum)
-		elog(ERROR, "mvt_agg_transfn: geometry column cannot be null");
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn ctx->geom_index: %d", ctx->geom_index);
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn isnull: %u", isnull);
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn datum: %lu", datum);
+	if (isnull) /* Skip rows that have null geometry */
+	{
+		POSTGIS_DEBUG(3, "mvt_agg_transfn got null geom");
+		return;
+	}
+
+	feature = palloc(sizeof(*feature));
+	vector_tile__tile__feature__init(feature);
+
+	ctx->feature = feature;
+
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM(datum);
 	lwgeom = lwgeom_from_gserialized(gs);
 
-	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd",
-		layer->n_features);
+	POSTGIS_DEBUGF(3, "mvt_agg_transfn encoded feature count: %zd", layer->n_features);
 	layer->features[layer->n_features++] = feature;
 
 	encode_geometry(ctx, lwgeom);
@@ -850,6 +858,15 @@ uint8_t *mvt_agg_finalfn(struct mvt_agg_context *ctx)
 	uint8_t *buf;
 
 	POSTGIS_DEBUG(2, "mvt_agg_finalfn called");
+	POSTGIS_DEBUGF(2, "mvt_agg_finalfn n_features == %zd", ctx->layer->n_features);
+
+	/* Zero features => empty bytea output */
+	if (ctx->layer->n_features == 0)
+	{
+		buf = palloc(VARHDRSZ);
+		SET_VARSIZE(buf, VARHDRSZ);
+		return buf;
+	}
 
 	encode_keys(ctx);
 	encode_values(ctx);

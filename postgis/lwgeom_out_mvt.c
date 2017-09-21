@@ -125,12 +125,16 @@ Datum pgis_asmvt_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else
 	struct mvt_agg_context *ctx;
-	uint8_t *buf;
+	bytea *buf;
 	if (!AggCheckCallContext(fcinfo, NULL))
 		elog(ERROR, "pgis_asmvt_finalfn called in non-aggregate context");
 
 	if (PG_ARGISNULL(0))
-		PG_RETURN_NULL();
+	{
+		bytea *emptybuf = palloc(VARHDRSZ);
+		SET_VARSIZE(emptybuf, VARHDRSZ);
+		PG_RETURN_BYTEA_P(emptybuf);
+	}
 
 	ctx = (struct mvt_agg_context *) PG_GETARG_POINTER(0);
 	buf = mvt_agg_finalfn(ctx);

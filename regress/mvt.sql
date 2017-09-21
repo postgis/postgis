@@ -112,6 +112,23 @@ SELECT 'TA8', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (
     UNION
     SELECT 2::int AS c1, ST_Normalize(ST_AsMVTGeom(ST_GeomFromText('POINT(26 18)'),
     ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096)), 4096, 0, false)) AS geom) AS q;
+SELECT 'TA9', length(ST_AsMVT(q))
+FROM (
+	SELECT 1 AS c1, -1 AS c2,
+    ST_Normalize(ST_AsMVTGeom(
+		'POINT(25 17)'::geometry,
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(4, 4))
+	)) AS geom
+) AS q;
+SELECT 'TA10', length(ST_AsMVT(q))
+FROM (
+	SELECT 1 AS c1, -1 AS c2,
+    ST_Normalize(ST_AsMVTGeom(
+		'POINT(25 17)'::geometry,
+		ST_MakeBox2D(ST_Point(0, 0), ST_Point(48, 48))
+	)) AS geom
+) AS q;
+
 
 -- default values tests
 SELECT 'D1', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64') FROM (SELECT 1 AS c1, 'abcd'::text AS c2,
@@ -141,6 +158,5 @@ select 'D7', ST_AsText(ST_Normalize(ST_AsMVTGeom(
 -- unsupported input
 SELECT 'TU2';
 SELECT encode(ST_AsMVT(1, 'test', 4096, 'geom'), 'base64');
-SELECT 'TU3';
-SELECT encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
+SELECT 'TU3', encode(ST_AsMVT(q, 'test', 4096, 'geom'), 'base64')
     FROM (SELECT NULL::integer AS c1, NULL AS geom) AS q;
