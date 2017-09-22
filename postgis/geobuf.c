@@ -560,7 +560,7 @@ void geobuf_agg_init_context(struct geobuf_agg_context *ctx)
 void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 {
 	LWGEOM *lwgeom;
-	bool isnull;
+	bool isnull = false;
 	Datum datum;
 	Data__FeatureCollection *fc = ctx->data->feature_collection;
 	Data__Feature **features = fc->features;
@@ -580,8 +580,9 @@ void geobuf_agg_transfn(struct geobuf_agg_context *ctx)
 		encode_keys(ctx);
 
 	datum = GetAttributeByNum(ctx->row, ctx->geom_index + 1, &isnull);
-	if (!datum)
-		elog(ERROR, "geobuf_agg_transfn: geometry column cannot be null");
+	if (isnull)
+		return;
+
 	gs = (GSERIALIZED *) PG_DETOAST_DATUM_COPY(datum);
 	lwgeom = lwgeom_from_gserialized(gs);
 
