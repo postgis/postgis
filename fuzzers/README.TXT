@@ -1,4 +1,4 @@
-This directory contain fuzzer main functions and scripts for the
+This directory contains fuzzer main functions and scripts for the
 Google OSS Fuzz project: https://github.com/google/oss-fuzz/
 
 The main build scripts are in:
@@ -12,7 +12,7 @@ https://bugs.chromium.org/p/oss-fuzz/issues/list?q=postgis
     $ make dummyfuzzers
   They are created in /tmp/*_fuzzer as well as with the
   /tmp/*_fuzzer_seed_corpus.zip files
-  
+
   Run one:
     $ /tmp/wkt_import_fuzzer a_file_name
 
