@@ -32,6 +32,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
+	<xsl:variable name='var_geom_name'>the_geom</xsl:variable>
 	<xsl:variable name='var_logtable'>postgis_garden_log24</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp()
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
@@ -658,17 +659,32 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="(contains(parameter,'geomjson'))">
 						<xsl:text>ST_AsGeoJSON(foo1.the_geom)</xsl:text>
 					</xsl:when>
+					<xsl:when test="contains(parameter, 'geom_name')">
+						'<xsl:value-of select="$var_geom_name" />'
+					</xsl:when>
+
+					<xsl:when test="contains(parameter, 'bounds')">
+						ST_MakeBox2D(ST_Point(0, 0), ST_Point(4096, 4096))
+					</xsl:when>
+
+
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set') or contains(type,'geometry winset') ) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
+
 					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) = '1' )">
 						<xsl:text>geography(foo1.the_geom)</xsl:text>
 					</xsl:when>
+
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
 						<xsl:text>foo2.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="type = 'geography' or type = 'geography '">
 						<xsl:text>geography(foo2.the_geom)</xsl:text>
+					</xsl:when>
+
+					<xsl:when test="contains(type, 'bigint[]')">
+						<xsl:text>ARRAY[ST_XMin(foo1.the_geom)::bigint]</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]') and count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1'">
 						ARRAY[foo1.the_geom]
@@ -685,9 +701,15 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'EWKB')">
 						<xsl:text>ST_AsEWKB(foo1.the_geom)</xsl:text>
 					</xsl:when>
+
+					<xsl:when test="contains(parameter, 'twkb')">
+						<xsl:text>ST_AsTWKB(foo1.the_geom)</xsl:text>
+					</xsl:when>
+
 					<xsl:when test="contains(type, 'bytea')">
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
 					</xsl:when>
+
 					<xsl:when test="contains(parameter, 'Frac') or contains(parameter, 'frac') or contains(parameter, 'percent')">
 						<xsl:value-of select="$var_frac" />
 					</xsl:when>
@@ -700,7 +722,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type, 'integer') and position() = 2">
 						<xsl:value-of select="$var_integer1" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'integer')">
+					<xsl:when test="contains(type, 'integer') or contains(type, 'int4')">
 						<xsl:value-of select="$var_integer2" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'text')">
