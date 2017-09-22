@@ -26,6 +26,7 @@
 	<xsl:variable name='var_gj_version'>1</xsl:variable> <!-- GeoJSON version -->
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
+	<xsl:variable name='var_row'>foo1</xsl:variable>
 	<xsl:variable name='var_buffer_style'>'quad_segs=1 endcap=square join=mitre mitre_limit=1.1'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
@@ -490,7 +491,7 @@ SELECT '<xsl:value-of select="$log_label" /> Geography: End Testing';
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
 
-				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea')]) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')]) + count(paramdef/parameter[contains(text(),'geomjson')]) + count(paramdef/parameter[contains(text(),'geomkml')])" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'geography') or contains(text(),'box') or contains(text(), 'bytea') or contains(text(),'anyelement')] ) + count(paramdef/parameter[contains(text(),'WKT')]) + count(paramdef/parameter[contains(text(),'geomgml')]) + count(paramdef/parameter[contains(text(),'geomjson')]) + count(paramdef/parameter[contains(text(),'geomkml')])" /></xsl:variable>
 				<xsl:variable name='numparamgeogs'><xsl:value-of select="count(paramdef/type[contains(text(),'geography')] )" /></xsl:variable>
 				<xsl:variable name='log_label'><xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)</xsl:variable>
 
@@ -626,6 +627,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'distance')">
 						<xsl:value-of select="$var_distance" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'row')">
+						<xsl:value-of select="$var_row" />
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'srid')">
 						<xsl:value-of select="$var_srid" />
