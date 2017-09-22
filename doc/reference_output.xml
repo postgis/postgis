@@ -1360,9 +1360,9 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef>
-				<paramdef choice="opt"><type>int4 </type> <parameter>extent=4096</parameter></paramdef>
-				<paramdef choice="opt"><type>int4 </type> <parameter>buffer=256</parameter></paramdef>
-				<paramdef choice="opt"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>extent=4096</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>buffer=256</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -1419,13 +1419,13 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
 				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>bytea <function>ST_AsMVT</function></funcdef>
 				<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>name</parameter></paramdef>
-				<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>extent</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -1445,6 +1445,10 @@ SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 		set of attributes per feature. To make use of this feature supply a JSONB column in the row data containing Json objects one level
 		deep. The keys and values in the object will be parsed into feature attributes.
 		</para>
+
+		<important>
+			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in the row. However you can use <xref linkend="ST_AsMVTGeom" /> to prep a geometry collection for inclusion.</para>
+		</important>
 
 	  <para><varname>row</varname> row data with at least a geometry column.</para>
 		<para><varname>name</varname> is the name of the Layer. If NULL it will use the string "default".</para>
