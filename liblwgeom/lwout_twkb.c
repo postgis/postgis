@@ -211,7 +211,7 @@ static int ptarray_to_twkb_buf(const POINTARRAY *pa, TWKB_GLOBALS *globals, TWKB
 		bytebuffer_append_bytebuffer(ts->geom_buf, b_p);
 
 		/* Clear our temporary buffer */
-		lwfree(b.buf_start);
+		bytebuffer_destroy_buffer(&b);
 	}
 	else
 	{

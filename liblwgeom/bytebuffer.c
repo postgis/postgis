@@ -104,7 +104,10 @@ void
 bytebuffer_destroy_buffer(bytebuffer_t *s)
 {
 	if ( s->buf_start != s->buf_static )
+	{
 		lwfree(s->buf_start);
+		s->buf_start = NULL;
+	}
 
 	return;
 }
