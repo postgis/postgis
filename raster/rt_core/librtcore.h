@@ -114,18 +114,6 @@
 #endif
 #endif
 
-/* if we are in Unix define stricmp to be strcasecmp and strnicmp to */
-/* be strncasecmp. I'm not sure if all Unices have these, but Linux */
-/* does. */
-#if defined(UNIX)
-#if !defined(HAVE_STRICMP)
-#define stricmp     strcasecmp
-#endif
-#if !defined(HAVE_STRNICMP)
-#define strnicmp    strncasecmp
-#endif
-#endif
-
 #include <stdio.h> /* for printf, sprintf */
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
