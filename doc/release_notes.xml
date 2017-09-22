@@ -51,6 +51,7 @@
 <para>#3832, Support wide integer fields as int8 in shp2pgsql</para>
 <para>#3841, Deterministic sorting support for empty geometries in btree geography</para>
 <para>#3844, Make = operator a strict equality test, and &lt; &gt; to rough "spatial sorting"</para>
+<para>#3855, ST_AsTWKB memory and speed improvements</para>
         </simplesect>
 
         <simplesect><title>Breaking Changes</title>

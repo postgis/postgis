@@ -62,6 +62,7 @@ PostGIS 2.4.0
   - #3832, Support wide integer fields as int8 in shp2pgsql
   - #3841, Deterministic sorting support for empty geometries in btree geography
   - #3844, Make = operator a strict equality test, and < > to rough "spatial sorting"
+  - #3855, ST_AsTWKB memory and speed improvements
 
 
 * Breaking Changes *

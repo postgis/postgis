@@ -1019,6 +1019,7 @@ F000000000000000000000000000000000000000000000000');
 			  <para>The format specification is available online at <ulink url="https://github.com/TWKB/Specification">https://github.com/TWKB/Specification</ulink>, and code for building a JavaScript client can be found at <ulink url="https://github.com/TWKB/twkb.js">https://github.com/TWKB/twkb.js</ulink>.</para>
 			</note>
 
+			<para>Enhanced: 2.4.0 memory and speed improvements.</para>
 			<para>Availability: 2.2.0</para>
 		  </refsection>
 
