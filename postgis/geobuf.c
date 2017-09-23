@@ -440,7 +440,8 @@ static Data__Geometry *encode_geometry(struct geobuf_agg_context *ctx,
 
 static void analyze_val(struct geobuf_agg_context *ctx, double val)
 {
-	if (ceil(val * ctx->e) / ctx->e != val && ctx->e < MAX_PRECISION)
+	if (fabs((round(val * ctx->e) / ctx->e) - val) >= EPSILON &&
+		ctx->e < MAX_PRECISION)
 		ctx->e *= 10;
 }
 
@@ -454,7 +455,7 @@ static void analyze_pa(struct geobuf_agg_context *ctx, POINTARRAY *pa)
 		analyze_val(ctx, pt.y);
 		if (ctx->dimensions == 3)
 			analyze_val(ctx, pt.z);
-		else if (ctx->dimensions == 4)
+		if (ctx->dimensions == 4)
 			analyze_val(ctx, pt.m);
 	}
 }
