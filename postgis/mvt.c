@@ -706,40 +706,44 @@ LWGEOM *mvt_geom(const LWGEOM *lwgeom, const GBOX *gbox, uint32_t extent, uint32
 		}
 	}
 
+	/* if no clip output deep clone original to avoid mutation */
 	if (lwgeom_out == NULL)
 		lwgeom_out = lwgeom_clone_deep(lwgeom);
 
+	/* transform to tile coordinate space */
 	memset(&affine, 0, sizeof(affine));
 	affine.afac = fx;
 	affine.efac = fy;
 	affine.ifac = 1;
 	affine.xoff = -gbox->xmin * fx;
 	affine.yoff = -gbox->ymax * fy;
-
 	lwgeom_affine(lwgeom_out, &affine);
 
+	/* snap to integer precision, removing duplicate points */
 	memset(&grid, 0, sizeof(gridspec));
 	grid.ipx = 0;
 	grid.ipy = 0;
 	grid.xsize = 1;
 	grid.ysize = 1;
-
 	lwgeom_out = lwgeom_grid(lwgeom_out, &grid);
 
 	if (lwgeom_out == NULL || lwgeom_is_empty(lwgeom_out))
 		return NULL;
 
+	/* if polygon(s) make valid and force clockwise as per MVT spec */
 	if (lwgeom_out->type == POLYGONTYPE ||
 		lwgeom_out->type == MULTIPOLYGONTYPE) {
 		lwgeom_out = lwgeom_make_valid(lwgeom_out);
 		lwgeom_force_clockwise(lwgeom_out);
 	}
 
+	/* if geometry collection extract highest dimensional geometry type */
 	if (lwgeom_out->type == COLLECTIONTYPE) {
 		LWCOLLECTION *lwcoll = lwgeom_as_lwcollection(lwgeom_out);
 		lwgeom_out = lwcollection_as_lwgeom(
 			lwcollection_extract(lwcoll, max_type(lwcoll)));
 		lwgeom_out = lwgeom_homogenize(lwgeom_out);
+		/* if polygon(s) make valid and force clockwise as per MVT spec */
 		if (lwgeom_out->type == POLYGONTYPE ||
 			lwgeom_out->type == MULTIPOLYGONTYPE) {
 			lwgeom_out = lwgeom_make_valid(lwgeom_out);
