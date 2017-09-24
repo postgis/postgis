@@ -1,6 +1,6 @@
 PostGIS 2.4.0rc2
 2017/09/24
-* Fixes and Enhancments since PostGIS 2.4.0rc1 *
+* Fixes and Enhancements since PostGIS 2.4.0rc1 *
   - Numerous fixes to ST_AsMVT, ST_AsGeoBuf
   - ST_AsTWKB speed and memory performance enhancments
   - ST_RepeatedPoints speed improvements
