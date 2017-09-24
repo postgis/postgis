@@ -1,3 +1,527 @@
+2017-09-24 06:50  Regina Obe <lr@pcorp.us>
+
+	* [r15805] doc/po/es/faq_raster.xml.po,
+	  doc/po/es/reference_constructor.xml.po,
+	  doc/po/es/reference_misc.xml.po,
+	  doc/po/es/reference_output.xml.po,
+	  doc/po/es/release_notes.xml.po, doc/po/fr/faq_raster.xml.po,
+	  doc/po/fr/reference_misc.xml.po,
+	  doc/po/fr/reference_output.xml.po,
+	  doc/po/fr/release_notes.xml.po, doc/po/it_IT/faq_raster.xml.po,
+	  doc/po/it_IT/reference_misc.xml.po,
+	  doc/po/it_IT/reference_output.xml.po,
+	  doc/po/it_IT/release_notes.xml.po, doc/po/ja/faq_raster.xml.po,
+	  doc/po/ja/reference_misc.xml.po,
+	  doc/po/ja/reference_output.xml.po,
+	  doc/po/ja/release_notes.xml.po, doc/po/ko_KR/faq_raster.xml.po,
+	  doc/po/ko_KR/reference_misc.xml.po,
+	  doc/po/ko_KR/reference_output.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po, doc/po/pl/faq_raster.xml.po,
+	  doc/po/pl/reference_misc.xml.po,
+	  doc/po/pl/reference_output.xml.po,
+	  doc/po/pl/release_notes.xml.po, doc/po/pt_BR/faq_raster.xml.po,
+	  doc/po/pt_BR/reference_misc.xml.po,
+	  doc/po/pt_BR/reference_output.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po: update pos
+
+2017-09-24 06:09  Regina Obe <lr@pcorp.us>
+
+	* [r15804] doc/po/ja/reference_processing.xml.po: manually pulled
+	  from transifex. For some reason this file won't naturally pull
+	  down and merge so generates invalid psql comments
+
+2017-09-24 02:44  Regina Obe <lr@pcorp.us>
+
+	* [r15803] doc/po/templates/reference_output.xml.pot,
+	  doc/po/templates/release_notes.xml.pot: update template
+
+2017-09-23 18:35  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15802] postgis/geobuf.c: ST_AsGeobuf fix double comparison
+	  References #3840
+
+2017-09-23 13:31  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15801] postgis/mvt.c: ST_AsMVTGeom document internals of
+	  transform step
+
+2017-09-22 21:04  Regina Obe <lr@pcorp.us>
+
+	* [r15800] doc/reference_output.xml,
+	  doc/xsl/postgis_gardentest.sql.xsl: fixins for crash testing
+	  twkb, ST_GeomFromTWKB, and MVT functions.
+	  Add reference link to ST_GeomFromTWKB to ST_AsTWKB
+
+2017-09-22 19:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15799] regress/twkb.sql, regress/twkb_expected: Add twkb large
+	  geometry test
+
+2017-09-22 19:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15798] liblwgeom/bytebuffer.c, liblwgeom/lwout_twkb.c: Fix
+	  crash on larger geometries, caused by direct freeing
+	  of bytebuffer internals
+
+2017-09-22 19:06  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15797] postgis/geobuf.c: Make ST_AsGeoBuf more resiliant when
+	  fed rows including NULL geometry (Closes #3861)
+
+2017-09-22 19:06  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15796] raster/rt_core/librtcore.h: Remove unused strnicmp macro
+	  test (Closes #3862)
+
+2017-09-22 15:25  Regina Obe <lr@pcorp.us>
+
+	* [r15795] NEWS, doc/reference_output.xml, doc/release_notes.xml:
+	  Note twkb improvements in docs.
+	  Closes #3855
+
+2017-09-22 14:03  Regina Obe <lr@pcorp.us>
+
+	* [r15794] doc/reference_output.xml: Use ansi standard names for
+	  arg types for ST_AsMVT and ST_AsMVTGeom to be consistent with
+	  rest of docs. Note that ST_AsMVT should not be used with geometry
+	  collection directly, but a geometry collection can be converted
+	  to suitable form with ST_AsMVTGeom.
+	  More adjustments to support garden testing ST_AsMVT and
+	  ST_AsMVTGeom
+	  Closes #3858
+
+2017-09-22 12:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15793] fuzzers/README.TXT: small doco spelling
+
+2017-09-22 12:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15792] postgis/lwgeom_out_mvt.c: Fix warning
+
+2017-09-22 06:34  Regina Obe <lr@pcorp.us>
+
+	* [r15791] doc/xsl/postgis_gardentest.sql.xsl: revise garden tests
+	  so can exercise anyelement now can generate tests for ST_AsMVT
+
+2017-09-21 23:19  Regina Obe <lr@pcorp.us>
+
+	* [r15790] doc/po/templates/faq_raster.xml.pot,
+	  doc/po/templates/reference_misc.xml.pot: Fixes from Andreas
+	  Schild via Transifex
+
+2017-09-21 22:39  Regina Obe <lr@pcorp.us>
+
+	* [r15789] doc/faq_raster.xml, doc/reference_misc.xml: Fixes from
+	  Andreas Schild via Transifex
+
+2017-09-21 22:11  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15788] postgis/lwgeom_out_mvt.c, postgis/mvt.c,
+	  regress/mvt.sql, regress/mvt_expected: Make ST_AsMVT tolerant of
+	  NULL input and return '':bytea
+	  (zero length bytea) when provided with only null inputs, or no
+	  inputs. (References #3857)
+
+2017-09-21 18:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15786] postgis/lwgeom_out_mvt.c, postgis/mvt.c, postgis/mvt.h,
+	  regress/mvt.sql, regress/mvt_expected: ST_AsMVTGeom return NULL
+	  on EMPTY geometry (References #3857)
+
+2017-09-21 13:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15785] postgis/lwgeom_ogc.c: Harmonize behavior of ExteriorRing
+	  / InteriorRingN
+	  and NumInteriorRings on returning NULL on bad input
+	  instead of errors, matching the doco
+	  (Closes #3261)
+
+2017-09-20 19:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15780] liblwgeom/bytebuffer.c, liblwgeom/bytebuffer.h,
+	  liblwgeom/lwout_twkb.c, postgis/lwgeom_inout.c: Improve TWKT
+	  performance by avoiding lots of allocations
+	  on the heap. (Closes #3855)
+
+2017-09-20 19:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15779] postgis/lwgeom_functions_basic.c: Short circuit
+	  ST_RepeatedPoints right away on point inputs (Closes #3854)
+
+2017-09-20 15:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15778] liblwgeom/g_serialized.c, postgis/gserialized_gist_2d.c:
+	  Remove slicing logic from bounding box reader and
+	  note why inline with the code so it can be done "right"
+	  in a larger re-work of serialization (postgis 3) that
+	  supports postgis-side compression. (Closes #3853)
+
+2017-09-20 00:12  Regina Obe <lr@pcorp.us>
+
+	* [r15775] postgis/postgis.sql.in: ST_ConcaveHull fix for
+	  EXtenriorRing is not a polygon
+	  References #2836 for PostGIS 2.4.0
+
+2017-09-20 00:04  Regina Obe <lr@pcorp.us>
+
+	* [r15774] doc/po/de/release_notes.xml.po,
+	  doc/po/de_DE/installation.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/de_DE/release_notes.xml.po,
+	  doc/po/de_DE/using_postgis_dataman.xml.po,
+	  doc/po/es/installation.xml.po, doc/po/es/reference_raster.xml.po,
+	  doc/po/es/release_notes.xml.po,
+	  doc/po/es/using_postgis_dataman.xml.po,
+	  doc/po/fr/installation.xml.po, doc/po/fr/reference_raster.xml.po,
+	  doc/po/fr/release_notes.xml.po,
+	  doc/po/fr/using_postgis_dataman.xml.po,
+	  doc/po/it_IT/installation.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/it_IT/release_notes.xml.po,
+	  doc/po/it_IT/using_postgis_dataman.xml.po,
+	  doc/po/ja/installation.xml.po, doc/po/ja/reference_raster.xml.po,
+	  doc/po/ja/release_notes.xml.po,
+	  doc/po/ja/using_postgis_dataman.xml.po,
+	  doc/po/ko_KR/installation.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/ko_KR/release_notes.xml.po,
+	  doc/po/ko_KR/using_postgis_dataman.xml.po,
+	  doc/po/pl/extras_topology.xml.po, doc/po/pl/installation.xml.po,
+	  doc/po/pl/reference_operator.xml.po,
+	  doc/po/pl/reference_raster.xml.po,
+	  doc/po/pl/release_notes.xml.po,
+	  doc/po/pl/using_postgis_dataman.xml.po,
+	  doc/po/pt_BR/extras_topology.xml.po,
+	  doc/po/pt_BR/installation.xml.po,
+	  doc/po/pt_BR/reference_operator.xml.po,
+	  doc/po/pt_BR/reference_raster.xml.po,
+	  doc/po/pt_BR/release_notes.xml.po,
+	  doc/po/pt_BR/using_postgis_dataman.xml.po,
+	  doc/po/templates/installation.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot,
+	  doc/po/templates/release_notes.xml.pot,
+	  doc/po/templates/using_postgis_dataman.xml.pot: po and pot
+	  updates
+
+2017-09-19 21:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15772] liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom_api.c,
+	  regress/lwgeom_regress_expected: Remove the local hacks for float
+	  rounding and go
+	  with system level functions, that are hopefully
+	  more optimized. Also, this seems to provide more
+	  correct results than the old code!
+	  (Closes #3852)
+
+2017-09-19 15:36  Regina Obe <lr@pcorp.us>
+
+	* [r15766] NEWS, doc/reference_raster.xml, doc/release_notes.xml:
+	  typo and grammar corrections from Andreas Schild
+
+2017-09-19 13:35  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15765] liblwgeom/g_serialized.c,
+	  liblwgeom/liblwgeom_internal.h, liblwgeom/lwgeom_api.c: Strip
+	  memcpy from int32 access in gserialized,
+	  and remove the now-unused functions that support
+	  that operation from the overall internal API.
+	  (Closes #3850)
+
+2017-09-18 13:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15755] regress/tickets.sql, regress/tickets_expected: Add
+	  regression test for trigonometric length calculation
+	  for compoundcurve (references #3774)
+
+2017-09-18 12:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15754] liblwgeom/lwcompound.c: Remove unused declaration of
+	  LWLINE
+
+2017-09-18 07:32  Björn Harrtell <bjorn@wololo.org>
+
+	* [r15753] README.postgis, doc/installation.xml: Add notes on
+	  optional protobuf-c dependency and some formatting fixes
+
+2017-09-17 23:41  Regina Obe <lr@pcorp.us>
+
+	* [r15752] doc/using_postgis_dataman.xml: typo
+
+2017-09-17 20:59  Sandro Santilli <strk@kbt.io>
+
+	* [r15751] GNUmakefile.in: Fix check-no-trailing-blanks to check
+	  for .c, not .cpp files
+
+2017-09-17 20:59  Sandro Santilli <strk@kbt.io>
+
+	* [r15750] extensions/address_standardizer/analyze.c,
+	  extensions/address_standardizer/err_param.c,
+	  liblwgeom/bytebuffer.c, liblwgeom/cunit/cu_algorithm.c,
+	  liblwgeom/cunit/cu_bytebuffer.c, liblwgeom/cunit/cu_clean.c,
+	  liblwgeom/cunit/cu_effectivearea.c,
+	  liblwgeom/cunit/cu_force_sfs.c, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_geos.c, liblwgeom/cunit/cu_geos_cluster.c,
+	  liblwgeom/cunit/cu_in_twkb.c, liblwgeom/cunit/cu_in_wkb.c,
+	  liblwgeom/cunit/cu_libgeom.c, liblwgeom/cunit/cu_measures.c,
+	  liblwgeom/cunit/cu_minimum_bounding_circle.c,
+	  liblwgeom/cunit/cu_misc.c, liblwgeom/cunit/cu_out_twkb.c,
+	  liblwgeom/cunit/cu_out_wkb.c, liblwgeom/cunit/cu_out_x3d.c,
+	  liblwgeom/cunit/cu_surface.c, liblwgeom/cunit/cu_tree.c,
+	  liblwgeom/cunit/cu_unionfind.c, liblwgeom/cunit/cu_varint.c,
+	  liblwgeom/effectivearea.c, liblwgeom/g_box.c,
+	  liblwgeom/g_serialized.c, liblwgeom/lwalgorithm.c,
+	  liblwgeom/lwcollection.c, liblwgeom/lwcurvepoly.c,
+	  liblwgeom/lwgeodetic.c, liblwgeom/lwgeodetic_tree.c,
+	  liblwgeom/lwgeom_geos_cluster.c, liblwgeom/lwhomogenize.c,
+	  liblwgeom/lwin_geojson.c, liblwgeom/lwin_wkb.c,
+	  liblwgeom/lwin_wkt.c, liblwgeom/lwin_wkt_lex.c,
+	  liblwgeom/lwin_wkt_parse.c, liblwgeom/lwkmeans.c,
+	  liblwgeom/lwline.c, liblwgeom/lwmline.c, liblwgeom/lwmpoint.c,
+	  liblwgeom/lwout_geojson.c, liblwgeom/lwout_kml.c,
+	  liblwgeom/lwout_svg.c, liblwgeom/lwout_twkb.c,
+	  liblwgeom/lwout_wkb.c, liblwgeom/lwout_wkt.c, liblwgeom/lwpoly.c,
+	  liblwgeom/lwtriangle.c, liblwgeom/lwutil.c,
+	  liblwgeom/measures3d.c, liblwgeom/stringbuffer.c,
+	  liblwgeom/varint.c, libpgcommon/gserialized_gist.c,
+	  libpgcommon/lwgeom_cache.c, libpgcommon/lwgeom_pg.c,
+	  libpgcommon/lwgeom_transform.c, loader/cunit/cu_pgsql2shp.c,
+	  loader/cunit/cu_shp2pgsql.c, loader/shpopen.c,
+	  postgis/geography_btree.c, postgis/geography_inout.c,
+	  postgis/geography_measurement.c,
+	  postgis/geography_measurement_trees.c, postgis/geometry_inout.c,
+	  postgis/gserialized_estimate.c, postgis/gserialized_gist_2d.c,
+	  postgis/gserialized_gist_nd.c, postgis/gserialized_typmod.c,
+	  postgis/lwgeom_backend_api.c, postgis/lwgeom_box.c,
+	  postgis/lwgeom_box3d.c, postgis/lwgeom_btree.c,
+	  postgis/lwgeom_dump.c, postgis/lwgeom_dumppoints.c,
+	  postgis/lwgeom_export.c, postgis/lwgeom_functions_analytic.c,
+	  postgis/lwgeom_functions_lrs.c, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_geos_prepared.c, postgis/lwgeom_in_geojson.c,
+	  postgis/lwgeom_in_gml.c, postgis/lwgeom_in_kml.c,
+	  postgis/lwgeom_inout.c, postgis/lwgeom_ogc.c,
+	  postgis/lwgeom_rtree.c, postgis/lwgeom_sfcgal.c,
+	  postgis/lwgeom_spheroid.c, postgis/lwgeom_transform.c,
+	  postgis/lwgeom_window.c, raster/rt_core/rt_geometry.c,
+	  raster/rt_core/rt_mapalgebra.c, raster/rt_core/rt_pixel.c,
+	  raster/rt_core/rt_raster.c, raster/rt_core/rt_util.c,
+	  raster/rt_pg/rtpg_gdal.c, raster/rt_pg/rtpg_pixel.c,
+	  raster/test/cunit/cu_band_basics.c,
+	  raster/test/cunit/cu_band_misc.c, raster/test/cunit/cu_gdal.c:
+	  Remove trailing blanks from .c files
+
+2017-09-17 16:58  Regina Obe <lr@pcorp.us>
+
+	* [r15749] doc/reference_raster.xml: typo corrections from Andreas
+	  Schild via transifex
+
+2017-09-17 02:24  Regina Obe <lr@pcorp.us>
+
+	* [r15748] doc/po/templates/reference_raster.xml.pot: typo
+	  corrections from Andreas Schild via transifex
+
+2017-09-17 01:40  Regina Obe <lr@pcorp.us>
+
+	* [r15747] doc/reference_raster.xml: typo corrections from Andreas
+	  Schild via transifex
+
+2017-09-15 14:19  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15746] liblwgeom/lwcompound.c: #3774, compute length of
+	  compound on arcs
+
+2017-09-15 05:36  Regina Obe <lr@pcorp.us>
+
+	* [r15745] doc/po/de/installation.xml.po,
+	  doc/po/de/reference_processing.xml.po,
+	  doc/po/de/reference_transaction.xml.po: fix parse errors in
+	  German de
+	  Closes #3849 for PostGIS 2.4.0
+
+2017-09-15 04:24  Regina Obe <lr@pcorp.us>
+
+	* [r15744] doc/po/de/Makefile, doc/po/de_DE/Makefile: make de_DE
+	  suffix be de_DE (we might just scrap de_DE at some point.)
+	  Add make file for de and make suffix -de.
+	  References #3848 for PostGIS 2.4.0
+
+2017-09-15 04:00  Regina Obe <lr@pcorp.us>
+
+	* [r15743] doc/po/de, doc/po/de/extras.xml.po,
+	  doc/po/de/extras_address_standardizer.xml.po,
+	  doc/po/de/extras_historytable.xml.po,
+	  doc/po/de/extras_tigergeocoder.xml.po,
+	  doc/po/de/extras_topology.xml.po, doc/po/de/faq.xml.po,
+	  doc/po/de/faq_raster.xml.po, doc/po/de/installation.xml.po,
+	  doc/po/de/introduction.xml.po, doc/po/de/performance_tips.xml.po,
+	  doc/po/de/postgis.xml.po, doc/po/de/reference.xml.po,
+	  doc/po/de/reference_accessor.xml.po,
+	  doc/po/de/reference_constructor.xml.po,
+	  doc/po/de/reference_editor.xml.po,
+	  doc/po/de/reference_exception.xml.po,
+	  doc/po/de/reference_guc.xml.po, doc/po/de/reference_lrs.xml.po,
+	  doc/po/de/reference_management.xml.po,
+	  doc/po/de/reference_measure.xml.po,
+	  doc/po/de/reference_misc.xml.po,
+	  doc/po/de/reference_operator.xml.po,
+	  doc/po/de/reference_output.xml.po,
+	  doc/po/de/reference_processing.xml.po,
+	  doc/po/de/reference_raster.xml.po,
+	  doc/po/de/reference_sfcgal.xml.po,
+	  doc/po/de/reference_temporal.xml.po,
+	  doc/po/de/reference_transaction.xml.po,
+	  doc/po/de/reference_type.xml.po, doc/po/de/release_notes.xml.po,
+	  doc/po/de/reporting.xml.po, doc/po/de/using_postgis_app.xml.po,
+	  doc/po/de/using_postgis_dataman.xml.po,
+	  doc/po/de/using_raster_dataman.xml.po: add de which is further
+	  ahead than de_DE
+	  References #3848
+
+2017-09-14 22:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15739] postgis/gserialized_estimate.c: #3731, backend crash on
+	  stats object with zero-size histogram
+
+2017-09-14 22:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15738] postgis/mvt.c: Quiet printf warnings in mvt size_t debug
+	  messages
+
+2017-09-14 18:57  Regina Obe <lr@pcorp.us>
+
+	* [r15737] doc/po/de_DE/extras_topology.xml.po,
+	  doc/po/de_DE/reference_operator.xml.po,
+	  doc/po/de_DE/reference_raster.xml.po,
+	  doc/po/es/extras_topology.xml.po,
+	  doc/po/es/reference_operator.xml.po,
+	  doc/po/es/reference_raster.xml.po,
+	  doc/po/fr/extras_topology.xml.po,
+	  doc/po/fr/reference_operator.xml.po,
+	  doc/po/fr/reference_raster.xml.po,
+	  doc/po/it_IT/extras_topology.xml.po,
+	  doc/po/it_IT/reference_operator.xml.po,
+	  doc/po/it_IT/reference_raster.xml.po,
+	  doc/po/ja/extras_topology.xml.po,
+	  doc/po/ja/reference_operator.xml.po,
+	  doc/po/ja/reference_raster.xml.po,
+	  doc/po/ko_KR/extras_topology.xml.po,
+	  doc/po/ko_KR/reference_operator.xml.po,
+	  doc/po/ko_KR/reference_raster.xml.po,
+	  doc/po/templates/extras_topology.xml.pot,
+	  doc/po/templates/reference_operator.xml.pot,
+	  doc/po/templates/reference_raster.xml.pot: update pos and pots
+
+2017-09-14 18:35  Regina Obe <lr@pcorp.us>
+
+	* [r15736] doc/reference_raster.xml: numerous corrections from
+	  Andreas Schild on transifex
+
+2017-09-14 17:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15735] .editorconfig: Match spacing in the topology.c file
+
+2017-09-14 16:32  Regina Obe <lr@pcorp.us>
+
+	* [r15734] HOWTO_RELEASE: update to reflect website is now
+	  versioned on git
+
+2017-09-14 15:57  Sandro Santilli <strk@kbt.io>
+
+	* [r15733] make_dist.sh: Include .gitignore in release (used by
+	  `make check`)
+
+2017-09-14 15:57  Sandro Santilli <strk@kbt.io>
+
+	* [r15732] GNUmakefile.in: Add check-no-trailing-blanks Makefile
+	  rule and run on `make check`
+	  
+	  Only checks .h and .c files, and skip those in .gitignore
+
+2017-09-14 15:56  Sandro Santilli <strk@kbt.io>
+
+	* [r15731] extensions/address_standardizer/pagc_api.h,
+	  liblwgeom/bytebuffer.h, liblwgeom/effectivearea.h,
+	  liblwgeom/lwin_wkt.h, liblwgeom/lwtree.h,
+	  liblwgeom/lwunionfind.h, libpgcommon/lwgeom_pg.h,
+	  loader/shp2pgsql-core.h, raster/rt_core/librtcore.h: Remove
+	  trailing blanks
+
+2017-09-14 15:36  Sandro Santilli <strk@kbt.io>
+
+	* [r15730] .editorconfig: liblwgeom/lwgeom_log.h uses spaces, write
+	  in stone !
+
+2017-09-14 15:31  Sandro Santilli <strk@kbt.io>
+
+	* [r15729] .editorconfig: liblwgeom/box2d.c has space indenting,
+	  institutionalize it !
+
+2017-09-14 14:30  Sandro Santilli <strk@kbt.io>
+
+	* [r15728] topology/postgis_topology.c: Only prepare statements on
+	  first run
+
+2017-09-14 13:56  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15723] extensions/address_standardizer/gamma.c,
+	  topology/postgis_topology.c: #3847, coverity fixes in topology
+	  and address standardizer
+
+2017-09-14 13:52  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15722] loader/dbfopen.c, loader/pgsql2shp-core.c,
+	  loader/shp2pgsql-core.c, raster/loader/raster2pgsql.c: #3847,
+	  coverity fixes around the loaders
+
+2017-09-13 21:51  Regina Obe <lr@pcorp.us>
+
+	* [r15721] doc/reference_operator.xml: update docs to reflect =
+	  operator changed in 2.4.0. correct the examples to exhibit new
+	  behavior. Put a note in ~= which means what = used to mean
+	  References #3844 for PostGIS 2.4.0
+
+2017-09-13 20:30  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15717] doc/extras_topology.xml: Fix misplaced section end
+
+2017-09-13 20:20  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15713] doc/extras_topology.xml: #2352, #3249, ST_RemoveIsoEdge
+	  is not documented
+
+2017-09-13 20:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15712] doc/reference_operator.xml: #3844 Update docs to match
+	  new = operator behaviour
+
+2017-09-13 17:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r15711] liblwgeom/g_serialized.c: Fix comments up on cmp() func
+
+2017-09-13 14:42  Sandro Santilli <strk@kbt.io>
+
+	* [r15710] topology/sql/export/TopoJSON.sql.in,
+	  topology/test/regress/topojson_expected: Fix TopoJSON expected
+	  output
+	  
+	  It looks like behavior is still not the same as it was before
+	  the btree operators change...
+
+2017-09-13 13:09  Sandro Santilli <strk@kbt.io>
+
+	* [r15708] topology/sql/export/TopoJSON.sql.in,
+	  topology/test/regress/topojson_expected: Restore leftmost edge
+	  finding in TopoJSON output
+
+2017-09-13 05:04  Regina Obe <lr@pcorp.us>
+
+	* [r15707] Version.config, extensions/upgradeable_versions.mk: flip
+	  version back to 2.4.0dev
+
+2017-09-13 04:00  Regina Obe <lr@pcorp.us>
+
+	* [r15705] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Prepping for rc1 release
+
 2017-09-13 03:44  Regina Obe <lr@pcorp.us>
 
 	* [r15704] doc/po/de_DE/reference_raster.xml.po,
