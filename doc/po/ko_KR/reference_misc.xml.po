@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2016-07-04 13:02+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: 2016-07-22 10:00+0000\n"
 "Last-Translator: Kwon.Yongchan <ruvyn@naver.com>\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/postgis/postgis/"
@@ -1159,9 +1159,9 @@ msgstr "ST_PointInsideCircle"
 
 #. Tag: refpurpose
 #: reference_misc.xml:512
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Is the point geometry insert circle defined by center_x, center_y, radius"
+"Is the point geometry inside the circle defined by center_x, center_y, radius"
 msgstr ""
 "center_x, center_y, radius로 정의되는 원 내부에 들어가는 포인트 도형입니다."
 

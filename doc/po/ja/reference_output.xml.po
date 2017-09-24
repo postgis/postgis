@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-09-11 22:04+0000\n"
+"POT-Creation-Date: 2017-09-24 02:38+0000\n"
 "PO-Revision-Date: 2016-11-14 04:11+0000\n"
 "Last-Translator: TERAMOTO Ikuhiro <yellow@affrc.go.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/postgis/postgis/language/"
@@ -73,8 +73,8 @@ msgstr ""
 #: reference_output.xml:207 reference_output.xml:283 reference_output.xml:384
 #: reference_output.xml:485 reference_output.xml:541 reference_output.xml:599
 #: reference_output.xml:671 reference_output.xml:715 reference_output.xml:781
-#: reference_output.xml:828 reference_output.xml:950 reference_output.xml:999
-#: reference_output.xml:1039 reference_output.xml:1094
+#: reference_output.xml:829 reference_output.xml:951 reference_output.xml:1000
+#: reference_output.xml:1040 reference_output.xml:1095
 #, no-c-format
 msgid "Description"
 msgstr "説明"
@@ -201,21 +201,21 @@ msgstr "&sqlmm_compliant; SQL-MM 3: 5.1.37"
 
 #. Tag: para
 #: reference_output.xml:63 reference_output.xml:168 reference_output.xml:222
-#: reference_output.xml:494 reference_output.xml:733 reference_output.xml:964
+#: reference_output.xml:494 reference_output.xml:733 reference_output.xml:965
 #, no-c-format
 msgid "&curve_support;"
 msgstr "&curve_support;"
 
 #. Tag: para
 #: reference_output.xml:64 reference_output.xml:169 reference_output.xml:223
-#: reference_output.xml:435 reference_output.xml:907
+#: reference_output.xml:435 reference_output.xml:908
 #, no-c-format
 msgid "&P_support;"
 msgstr "&P_support;"
 
 #. Tag: para
 #: reference_output.xml:65 reference_output.xml:170 reference_output.xml:224
-#: reference_output.xml:436 reference_output.xml:910
+#: reference_output.xml:436 reference_output.xml:911
 #, no-c-format
 msgid "&T_support;"
 msgstr "&T_support;"
@@ -223,7 +223,7 @@ msgstr "&T_support;"
 #. Tag: para
 #: reference_output.xml:66 reference_output.xml:167 reference_output.xml:221
 #: reference_output.xml:326 reference_output.xml:434 reference_output.xml:493
-#: reference_output.xml:568 reference_output.xml:905
+#: reference_output.xml:568 reference_output.xml:906
 #, no-c-format
 msgid "&Z_support;"
 msgstr "&Z_support;"
@@ -232,9 +232,9 @@ msgstr "&Z_support;"
 #: reference_output.xml:71 reference_output.xml:115 reference_output.xml:175
 #: reference_output.xml:229 reference_output.xml:330 reference_output.xml:498
 #: reference_output.xml:572 reference_output.xml:628 reference_output.xml:690
-#: reference_output.xml:738 reference_output.xml:795 reference_output.xml:968
-#: reference_output.xml:1014 reference_output.xml:1055
-#: reference_output.xml:1117
+#: reference_output.xml:738 reference_output.xml:796 reference_output.xml:969
+#: reference_output.xml:1015 reference_output.xml:1056
+#: reference_output.xml:1122
 #, no-c-format
 msgid "Examples"
 msgstr "例"
@@ -306,8 +306,8 @@ msgstr ""
 #. Tag: title
 #: reference_output.xml:79 reference_output.xml:128 reference_output.xml:183
 #: reference_output.xml:236 reference_output.xml:454 reference_output.xml:576
-#: reference_output.xml:745 reference_output.xml:804 reference_output.xml:972
-#: reference_output.xml:1122
+#: reference_output.xml:745 reference_output.xml:805 reference_output.xml:973
+#: reference_output.xml:1127
 #, no-c-format
 msgid "See Also"
 msgstr "関連情報"
@@ -359,7 +359,7 @@ msgstr ""
 "です。"
 
 #. Tag: para
-#: reference_output.xml:111 reference_output.xml:790
+#: reference_output.xml:111 reference_output.xml:791
 #, no-c-format
 msgid "Availability: 2.2.0"
 msgstr "Availability: 2.2.0"
@@ -2060,7 +2060,7 @@ msgstr ""
 "(1 row)"
 
 #. Tag: para
-#: reference_output.xml:747 reference_output.xml:805
+#: reference_output.xml:747
 #, no-c-format
 msgid ""
 ", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
@@ -2203,8 +2203,14 @@ msgstr ""
 "するプログラムは<ulink url=\"https://github.com/TWKB/twkb.js\">https://"
 "github.com/TWKB/twkb.js</ulink>にあります。"
 
+#. Tag: para
+#: reference_output.xml:790
+#, no-c-format
+msgid "Enhanced: 2.4.0 memory and speed improvements."
+msgstr ""
+
 #. Tag: programlisting
-#: reference_output.xml:796
+#: reference_output.xml:797
 #, no-c-format
 msgid ""
 "SELECT ST_AsTWKB('LINESTRING(1 1,5 5)'::geometry);\n"
@@ -2218,7 +2224,7 @@ msgstr ""
 "\\x02000202020808"
 
 #. Tag: para
-#: reference_output.xml:797
+#: reference_output.xml:798
 #, no-c-format
 msgid ""
 "To create an aggregate TWKB object including identifiers aggregate the "
@@ -2230,7 +2236,7 @@ msgstr ""
 "でいます。"
 
 #. Tag: programlisting
-#: reference_output.xml:799
+#: reference_output.xml:800
 #, no-c-format
 msgid ""
 "SELECT ST_AsTWKB(array_agg(geom), array_agg(gid)) FROM mytable;\n"
@@ -2243,14 +2249,24 @@ msgstr ""
 "--------------------------------------------\n"
 "\\x040402020400000202"
 
+#. Tag: para
+#: reference_output.xml:806
+#, fuzzy, no-c-format
+msgid ""
+", <xref linkend=\"ST_AsBinary\"/>, <xref linkend=\"ST_AsEWKB\"/>, <xref "
+"linkend=\"ST_AsEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>"
+msgstr ""
+", <xref linkend=\"ST_AsEWKB\"/>, <xref linkend=\"ST_AsEWKT\"/>, <xref "
+"linkend=\"ST_GeomFromText\"/>"
+
 #. Tag: refname
-#: reference_output.xml:811
+#: reference_output.xml:812
 #, no-c-format
 msgid "ST_AsX3D"
 msgstr "ST_AsX3D"
 
 #. Tag: refpurpose
-#: reference_output.xml:813
+#: reference_output.xml:814
 #, no-c-format
 msgid ""
 "Returns a Geometry in X3D xml node element format: ISO-IEC-19776-1.2-"
@@ -2260,7 +2276,7 @@ msgstr ""
 "す。"
 
 #. Tag: funcprototype
-#: reference_output.xml:818
+#: reference_output.xml:819
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_AsX3D</function></funcdef> "
@@ -2276,7 +2292,7 @@ msgstr ""
 "\"><type>integer </type> <parameter>options=0</parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:830
+#: reference_output.xml:831
 #, no-c-format
 msgid ""
 "Returns a geometry as an X3D xml formatted node element <ulink url=\"http://"
@@ -2290,7 +2306,7 @@ msgstr ""
 "場合には、デフォルトは15です。"
 
 #. Tag: para
-#: reference_output.xml:832
+#: reference_output.xml:833
 #, no-c-format
 msgid ""
 "There are various options for translating PostGIS geometries to X3D since "
@@ -2309,13 +2325,13 @@ msgstr ""
 "グチケットを出して下さい。"
 
 #. Tag: para
-#: reference_output.xml:834
+#: reference_output.xml:835
 #, no-c-format
 msgid "Below is how we currently map PostGIS 2D/3D types to X3D types"
 msgstr "次に現時点のPostGIS 2次元/3次元型からX3D型への対応付けを示します。"
 
 #. Tag: para
-#: reference_output.xml:837
+#: reference_output.xml:838
 #, no-c-format
 msgid ""
 "The 'options' argument is a bitfield. For PostGIS 2.2+, this is used to "
@@ -2331,7 +2347,7 @@ msgstr ""
 "でしょう。"
 
 #. Tag: para
-#: reference_output.xml:841
+#: reference_output.xml:842
 #, no-c-format
 msgid ""
 "0: X/Y in database order (e.g. long/lat = X,Y is standard database order), "
@@ -2341,7 +2357,7 @@ msgstr ""
 "す。非空間座標 (一般的な古いCoordinate要素です)です。"
 
 #. Tag: para
-#: reference_output.xml:845
+#: reference_output.xml:846
 #, no-c-format
 msgid ""
 "1: Flip X and Y. If used in conjunction with the GeoCoordinate option "
@@ -2352,7 +2368,7 @@ msgstr ""
 "\"latitude_first\" (緯度が先)となり、座標が同じように反対になります。"
 
 #. Tag: para
-#: reference_output.xml:849
+#: reference_output.xml:850
 #, no-c-format
 msgid ""
 "2: Output coordinates in GeoSpatial GeoCoordinates. This option will throw "
@@ -2376,121 +2392,121 @@ msgstr ""
 "code>とします。"
 
 #. Tag: entry
-#: reference_output.xml:859
+#: reference_output.xml:860
 #, no-c-format
 msgid "PostGIS Type"
 msgstr "PostGISタイプ"
 
 #. Tag: entry
-#: reference_output.xml:860
+#: reference_output.xml:861
 #, no-c-format
 msgid "2D X3D Type"
 msgstr "2次元X3Dタイプ"
 
 #. Tag: entry
-#: reference_output.xml:861
+#: reference_output.xml:862
 #, no-c-format
 msgid "3D X3D Type"
 msgstr "3次元X3Dタイプ"
 
 #. Tag: entry
-#: reference_output.xml:866
+#: reference_output.xml:867
 #, no-c-format
 msgid "LINESTRING"
 msgstr "LINESTRING"
 
 #. Tag: entry
-#: reference_output.xml:867 reference_output.xml:872
+#: reference_output.xml:868 reference_output.xml:873
 #, no-c-format
 msgid "not yet implemented - will be PolyLine2D"
 msgstr "未実装 - PolyLine2Dの予定"
 
 #. Tag: entry
-#: reference_output.xml:868
+#: reference_output.xml:869
 #, no-c-format
 msgid "LineSet"
 msgstr "LineSet"
 
 #. Tag: entry
-#: reference_output.xml:871
+#: reference_output.xml:872
 #, no-c-format
 msgid "MULTILINESTRING"
 msgstr "MULTILINESTRING"
 
 #. Tag: entry
-#: reference_output.xml:873
+#: reference_output.xml:874
 #, no-c-format
 msgid "IndexedLineSet"
 msgstr "IndexedLineSet"
 
 #. Tag: entry
-#: reference_output.xml:876
+#: reference_output.xml:877
 #, no-c-format
 msgid "MULTIPOINT"
 msgstr "MULTIPOINT"
 
 #. Tag: entry
-#: reference_output.xml:877
+#: reference_output.xml:878
 #, no-c-format
 msgid "Polypoint2D"
 msgstr "Polypoint2D"
 
 #. Tag: entry
-#: reference_output.xml:878
+#: reference_output.xml:879
 #, no-c-format
 msgid "PointSet"
 msgstr "PointSet"
 
 #. Tag: entry
-#: reference_output.xml:881
+#: reference_output.xml:882
 #, no-c-format
 msgid "POINT"
 msgstr "POINT"
 
 #. Tag: entry
-#: reference_output.xml:882 reference_output.xml:883
+#: reference_output.xml:883 reference_output.xml:884
 #, no-c-format
 msgid "outputs the space delimited coordinates"
 msgstr "空白区切り座標値を出力"
 
 #. Tag: entry
-#: reference_output.xml:886
+#: reference_output.xml:887
 #, no-c-format
 msgid "(MULTI) POLYGON, POLYHEDRALSURFACE"
 msgstr "(MULTI) POLYGON, POLYHEDRALSURFACE"
 
 #. Tag: entry
-#: reference_output.xml:887
+#: reference_output.xml:888
 #, no-c-format
 msgid "Invalid X3D markup"
 msgstr "不正なX3Dマークアップ"
 
 #. Tag: entry
-#: reference_output.xml:888
+#: reference_output.xml:889
 #, no-c-format
 msgid "IndexedFaceSet (inner rings currently output as another faceset)"
 msgstr "IndexedFaceSet (内環は現在は他のfacesetとして出力)"
 
 #. Tag: entry
-#: reference_output.xml:891
+#: reference_output.xml:892
 #, no-c-format
 msgid "<entry>TIN</entry>"
 msgstr "<entry>TIN</entry>"
 
 #. Tag: entry
-#: reference_output.xml:892
+#: reference_output.xml:893
 #, no-c-format
 msgid "TriangleSet2D (Not Yet Implemented)"
 msgstr "TriangleSet2D (未実装)"
 
 #. Tag: entry
-#: reference_output.xml:893
+#: reference_output.xml:894
 #, no-c-format
 msgid "IndexedTriangleSet"
 msgstr "IndexedTriangleSet"
 
 #. Tag: para
-#: reference_output.xml:898
+#: reference_output.xml:899
 #, no-c-format
 msgid ""
 "2D geometry support not yet complete. Inner rings currently just drawn as "
@@ -2500,7 +2516,7 @@ msgstr ""
 "画されるだけです。作業中です。"
 
 #. Tag: para
-#: reference_output.xml:899
+#: reference_output.xml:900
 #, no-c-format
 msgid ""
 "Lots of advancements happening in 3D space particularly with <ulink url="
@@ -2512,7 +2528,7 @@ msgstr ""
 "よって、よく進展しています。"
 
 #. Tag: para
-#: reference_output.xml:900
+#: reference_output.xml:901
 #, no-c-format
 msgid ""
 "There is also a nice open source X3D viewer you can use to view rendered "
@@ -2526,7 +2542,7 @@ msgstr ""
 "ジオメトリを見るためのパッケージであるFreeWRL_Launcherを使います。"
 
 #. Tag: para
-#: reference_output.xml:901
+#: reference_output.xml:902
 #, no-c-format
 msgid ""
 "Also check out <ulink url=\"https://github.com/robe2/postgis_x3d_viewer"
@@ -2540,13 +2556,13 @@ msgstr ""
 "てみて下さい。"
 
 #. Tag: para
-#: reference_output.xml:902
+#: reference_output.xml:903
 #, no-c-format
 msgid "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
 msgstr "Availability: 2.0.0: ISO-IEC-19776-1.2-X3DEncodings-XML"
 
 #. Tag: para
-#: reference_output.xml:903
+#: reference_output.xml:904
 #, no-c-format
 msgid ""
 "Enhanced: 2.2.0: Support for GeoCoordinates and axis (x/y, long/lat) "
@@ -2556,7 +2572,7 @@ msgstr ""
 "細はoptionsを見て下さい。"
 
 #. Tag: title
-#: reference_output.xml:915
+#: reference_output.xml:916
 #, no-c-format
 msgid ""
 "Example: Create a fully functional X3D document - This will generate a cube "
@@ -2566,7 +2582,7 @@ msgstr ""
 "立方体を生成しています。"
 
 #. Tag: programlisting
-#: reference_output.xml:916
+#: reference_output.xml:917
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -2660,13 +2676,13 @@ msgstr ""
 "</X3D>]]>"
 
 #. Tag: title
-#: reference_output.xml:919
+#: reference_output.xml:920
 #, no-c-format
 msgid "Example: An Octagon elevated 3 Units and decimal precision of 6"
 msgstr "例: 高さ3単位で精度が6桁の八角柱"
 
 #. Tag: programlisting
-#: reference_output.xml:920
+#: reference_output.xml:921
 #, no-c-format
 msgid ""
 "SELECT ST_AsX3D(\n"
@@ -2698,13 +2714,13 @@ msgstr ""
 "</IndexedFaceSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:923
+#: reference_output.xml:924
 #, no-c-format
 msgid "Example: TIN"
 msgstr "例: TIN"
 
 #. Tag: programlisting
-#: reference_output.xml:924
+#: reference_output.xml:925
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(ST_GeomFromEWKT('TIN (((\n"
@@ -2744,13 +2760,13 @@ msgstr ""
 "0 1 0 1 0 0 0 0 0 1 0 1 1 0'/></IndexedTriangleSet>]]>"
 
 #. Tag: title
-#: reference_output.xml:927
+#: reference_output.xml:928
 #, no-c-format
 msgid "Example: Closed multilinestring (the boundary of a polygon with holes)"
 msgstr "例: 閉じたラインストリング (穴のあるポリゴンの境界)"
 
 #. Tag: programlisting
-#: reference_output.xml:928
+#: reference_output.xml:929
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsX3D(\n"
@@ -2786,19 +2802,19 @@ msgstr ""
 " </IndexedLineSet>]]>"
 
 #. Tag: refname
-#: reference_output.xml:934
+#: reference_output.xml:935
 #, no-c-format
 msgid "ST_GeoHash"
 msgstr "ST_GeoHash"
 
 #. Tag: refpurpose
-#: reference_output.xml:936
+#: reference_output.xml:937
 #, no-c-format
 msgid "Return a GeoHash representation of the geometry."
 msgstr "ジオメトリのGeoHash表現を返します。"
 
 #. Tag: funcprototype
-#: reference_output.xml:941
+#: reference_output.xml:942
 #, no-c-format
 msgid ""
 "<funcdef>text <function>ST_GeoHash</function></funcdef> "
@@ -2812,7 +2828,7 @@ msgstr ""
 "<parameter>maxchars=full_precision_of_point</parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:952
+#: reference_output.xml:953
 #, no-c-format
 msgid ""
 "Return a GeoHash representation (<ulink url=\"http://en.wikipedia.org/wiki/"
@@ -2828,7 +2844,7 @@ msgstr ""
 "られます。"
 
 #. Tag: para
-#: reference_output.xml:954
+#: reference_output.xml:955
 #, no-c-format
 msgid ""
 "If no <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -2848,7 +2864,7 @@ msgstr ""
 "れます。GeoHashが含むボックスは常に入力フィーチャーを含むようにしています。"
 
 #. Tag: para
-#: reference_output.xml:956
+#: reference_output.xml:957
 #, no-c-format
 msgid ""
 "If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash "
@@ -2861,13 +2877,13 @@ msgstr ""
 "以外では、計算の開始点はジオメトリのバウンディングボックスの中心となります。"
 
 #. Tag: para
-#: reference_output.xml:958
+#: reference_output.xml:959
 #, no-c-format
 msgid "Availability: 1.4.0"
 msgstr "Availability: 1.4.0"
 
 #. Tag: para
-#: reference_output.xml:961
+#: reference_output.xml:962
 #, no-c-format
 msgid ""
 "ST_GeoHash will not work with geometries that are not in geographic (lon/"
@@ -2875,7 +2891,7 @@ msgid ""
 msgstr "ST_GeoHashはジオグラフィ (経度緯度)座標系では動作しません。"
 
 #. Tag: programlisting
-#: reference_output.xml:969
+#: reference_output.xml:970
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));\n"
@@ -2905,19 +2921,19 @@ msgstr ""
 "                ]]>"
 
 #. Tag: refname
-#: reference_output.xml:980
+#: reference_output.xml:981
 #, fuzzy, no-c-format
 msgid "ST_AsGeobuf"
 msgstr "ST_AsGeoJSON"
 
 #. Tag: refpurpose
-#: reference_output.xml:982
+#: reference_output.xml:983
 #, fuzzy, no-c-format
 msgid "Return a Geobuf representation of a set of rows."
 msgstr "ジオメトリのGeoHash表現を返します。"
 
 #. Tag: funcsynopsis
-#: reference_output.xml:985
+#: reference_output.xml:986
 #, fuzzy, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsGeobuf</function></funcdef> "
@@ -2935,7 +2951,7 @@ msgstr ""
 "parameter></paramdef> </funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:1001
+#: reference_output.xml:1002
 #, no-c-format
 msgid ""
 "Return a Geobuf representation (<ulink url=\"https://github.com/mapbox/geobuf"
@@ -2946,13 +2962,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1007 reference_output.xml:1108
+#: reference_output.xml:1008 reference_output.xml:1113
 #, no-c-format
 msgid "<varname>row</varname> row data with at least a geometry column."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1008 reference_output.xml:1111
+#: reference_output.xml:1009 reference_output.xml:1116
 #, no-c-format
 msgid ""
 "<varname>geom_name</varname> is the name of the geometry column in the row "
@@ -2960,14 +2976,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1010 reference_output.xml:1051
-#: reference_output.xml:1113
+#: reference_output.xml:1011 reference_output.xml:1052
+#: reference_output.xml:1118
 #, fuzzy, no-c-format
 msgid "Availability: 2.4.0"
 msgstr "Availability: 2.2.0"
 
 #. Tag: programlisting
-#: reference_output.xml:1015
+#: reference_output.xml:1016
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT encode(ST_AsGeobuf(q, 'geom'), 'base64')\n"
@@ -2981,13 +2997,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_output.xml:1021
+#: reference_output.xml:1022
 #, fuzzy, no-c-format
 msgid "ST_AsMVTGeom"
 msgstr "ST_AsSVG"
 
 #. Tag: refpurpose
-#: reference_output.xml:1023
+#: reference_output.xml:1024
 #, no-c-format
 msgid ""
 "Transform a geometry into the coordinate space of a <ulink url=\"https://www."
@@ -2995,16 +3011,16 @@ msgid ""
 msgstr ""
 
 #. Tag: funcprototype
-#: reference_output.xml:1027
+#: reference_output.xml:1028
 #, fuzzy, no-c-format
 msgid ""
 "<funcdef>geometry <function>ST_AsMVTGeom</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef> "
 "<paramdef><type>box2d </type> <parameter>bounds</parameter></paramdef> "
-"<paramdef choice=\"opt\"><type>int4 </type> <parameter>extent=4096</"
-"parameter></paramdef> <paramdef choice=\"opt\"><type>int4 </type> "
+"<paramdef choice=\"opt\"><type>integer </type> <parameter>extent=4096</"
+"parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> "
 "<parameter>buffer=256</parameter></paramdef> <paramdef choice=\"opt"
-"\"><type>bool </type> <parameter>clip_geom=true</parameter></paramdef>"
+"\"><type>boolean </type> <parameter>clip_geom=true</parameter></paramdef>"
 msgstr ""
 "<funcdef>text <function>ST_AsHEXEWKB</function></funcdef> "
 "<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> "
@@ -3014,7 +3030,7 @@ msgstr ""
 "parameter></paramdef>"
 
 #. Tag: para
-#: reference_output.xml:1041
+#: reference_output.xml:1042
 #, no-c-format
 msgid ""
 "Transform a geometry into the coordinate space of a <ulink url=\"https://www."
@@ -3024,13 +3040,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1045
+#: reference_output.xml:1046
 #, no-c-format
 msgid "<varname>geom</varname> is the geometry to transform."
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1046
+#: reference_output.xml:1047
 #, no-c-format
 msgid ""
 "<varname>bounds</varname> is the geometric bounds of the tile contents "
@@ -3038,7 +3054,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1047
+#: reference_output.xml:1048
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in tile coordinate space as "
@@ -3047,7 +3063,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1048
+#: reference_output.xml:1049
 #, no-c-format
 msgid ""
 "<varname>buffer</varname> is the buffer distance in tile coordinate space to "
@@ -3055,7 +3071,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1049
+#: reference_output.xml:1050
 #, no-c-format
 msgid ""
 "<varname>clip_geom</varname> is a boolean to control if geometries should be "
@@ -3063,7 +3079,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1056
+#: reference_output.xml:1057
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsText(ST_AsMVTGeom(\n"
@@ -3079,13 +3095,13 @@ msgid ""
 msgstr ""
 
 #. Tag: refname
-#: reference_output.xml:1062
+#: reference_output.xml:1063
 #, fuzzy, no-c-format
 msgid "ST_AsMVT"
 msgstr "ST_AsGML"
 
 #. Tag: refpurpose
-#: reference_output.xml:1064
+#: reference_output.xml:1065
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
@@ -3093,7 +3109,7 @@ msgid ""
 msgstr ""
 
 #. Tag: funcsynopsis
-#: reference_output.xml:1067
+#: reference_output.xml:1068
 #, fuzzy, no-c-format
 msgid ""
 "<funcprototype> <funcdef>bytea <function>ST_AsMVT</function></funcdef> "
@@ -3104,12 +3120,12 @@ msgid ""
 "parameter></paramdef> </funcprototype> <funcprototype> <funcdef>bytea "
 "<function>ST_AsMVT</function></funcdef> <paramdef><type>anyelement </type> "
 "<parameter>row</parameter></paramdef> <paramdef><type>text </type> "
-"<parameter>name</parameter></paramdef> <paramdef><type>int4 </type> "
+"<parameter>name</parameter></paramdef> <paramdef><type>integer </type> "
 "<parameter>extent</parameter></paramdef> </funcprototype> <funcprototype> "
 "<funcdef>bytea <function>ST_AsMVT</function></funcdef> "
 "<paramdef><type>anyelement </type> <parameter>row</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>name</parameter></paramdef> "
-"<paramdef><type>int4 </type> <parameter>extent</parameter></paramdef> "
+"<paramdef><type>integer </type> <parameter>extent</parameter></paramdef> "
 "<paramdef><type>text </type> <parameter>geom_name</parameter></paramdef> </"
 "funcprototype>"
 msgstr ""
@@ -3136,7 +3152,7 @@ msgstr ""
 "funcprototype>"
 
 #. Tag: para
-#: reference_output.xml:1096
+#: reference_output.xml:1097
 #, no-c-format
 msgid ""
 "Return a <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector "
@@ -3150,7 +3166,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1103
+#: reference_output.xml:1104
 #, no-c-format
 msgid ""
 "The <ulink url=\"https://www.mapbox.com/vector-tiles/\">Mapbox Vector Tile</"
@@ -3161,7 +3177,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1109
+#: reference_output.xml:1110
+#, no-c-format
+msgid ""
+"Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an element in "
+"the row. However you can use <xref linkend=\"ST_AsMVTGeom\"/> to prep a "
+"geometry collection for inclusion."
+msgstr ""
+
+#. Tag: para
+#: reference_output.xml:1114
 #, no-c-format
 msgid ""
 "<varname>name</varname> is the name of the Layer. If NULL it will use the "
@@ -3169,7 +3194,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: reference_output.xml:1110
+#: reference_output.xml:1115
 #, no-c-format
 msgid ""
 "<varname>extent</varname> is the tile extent in screen space as defined by "
@@ -3177,7 +3202,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: reference_output.xml:1118
+#: reference_output.xml:1123
 #, no-c-format
 msgid ""
 "<![CDATA[SELECT ST_AsMVT(q, 'test', 4096, 'geom') FROM (SELECT 1 AS c1,\n"

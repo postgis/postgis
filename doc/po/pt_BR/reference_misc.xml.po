@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: 2016-11-29 16:29+0000\n"
 "Last-Translator: Poliana Palhares <p.palhares@plamu.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -1177,9 +1177,9 @@ msgstr "ST_PointInsideCircle"
 
 #. Tag: refpurpose
 #: reference_misc.xml:512
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"Is the point geometry insert circle defined by center_x, center_y, radius"
+"Is the point geometry inside the circle defined by center_x, center_y, radius"
 msgstr "É o ponto inserido no círculo defino por center_x, center_y, raio"
 
 #. Tag: funcprototype

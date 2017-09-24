@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PostGIS\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2017-01-28 07:02+0000\n"
+"POT-Creation-Date: 2017-09-21 22:52+0000\n"
 "PO-Revision-Date: 2017-01-31 20:08+0000\n"
 "Last-Translator: georgersilva <georger.silva@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/postgis/postgis/"
@@ -124,10 +124,10 @@ msgstr ""
 
 #. Tag: para
 #: faq_raster.xml:43
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Here is a review from a PostGIS Raster user <ulink url=\"http://"
-"fuzzytolerance.info/blog/2010/10/25/2010-10-26-postgis-raster-ftw/\">PostGIS "
+"fuzzytolerance.info/blog/2010/10/26/2010-10-26-postgis-raster-ftw/\">PostGIS "
 "raster applied to land classification urban forestry</ulink>"
 msgstr ""
 "Aqui está um comentário de um usuário PostGIS Raster <ulink url=\"http://"
