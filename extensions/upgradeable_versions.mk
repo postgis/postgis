@@ -29,4 +29,5 @@ UPGRADEABLE_VERSIONS = \
 	2.3.3 \
 	2.4.0alpha \
 	2.4.0beta1 \
-	2.4.0rc1
+	2.4.0rc1 \
+	2.4.0dev
