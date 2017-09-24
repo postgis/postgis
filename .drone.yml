@@ -21,5 +21,3 @@ pipeline:
       - service postgresql start
       - make check RUNTESTFLAGS=-v
       - make install
-      - utils/check_all_upgrades.sh \
-        `grep '^POSTGIS_' Version.config | cut -d= -f2 | paste -sd '.'`
