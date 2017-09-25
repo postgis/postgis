@@ -20,6 +20,7 @@ PostGIS 2.3.4
   - #3731, Crash on very small table of homogenous data
   - #2836, Receiving ERROR: ExteriorRing: geom is
            not a polygon with ST_ConcaveHull
+  - #3781, Not-quite curved CurvePolygon rejected by ST_Contains
 
 
 PostGIS 2.3.3
