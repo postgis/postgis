@@ -71,6 +71,8 @@ lwgeom_has_arc(const LWGEOM *geom)
 	case TINTYPE:
 		return LW_FALSE;
 	case CIRCSTRINGTYPE:
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
 		return LW_TRUE;
 	/* It's a collection that MAY contain an arc */
 	default:
