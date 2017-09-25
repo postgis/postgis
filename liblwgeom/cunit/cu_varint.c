@@ -198,6 +198,9 @@ static void do_test_s64_roundtrip(int64_t i64_in)
 
 static void test_varint_roundtrip(void)
 {
+
+	do_test_u64_roundtrip(0xFFFFFFFFFFFFFFFF);
+
 	int i;
 	for ( i = 0; i < 1024; i += 63 )
 	{
