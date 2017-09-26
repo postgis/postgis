@@ -140,7 +140,7 @@ main(int argc, char **argv)
 			/* Schema qualified table name */
 			char *strptr = argv[pgis_optind];
 			char *chrptr = strchr(strptr, '.');
-			
+
 				/* OK, this is a schema-qualified table name... */
       if (chrptr)
       {
@@ -217,7 +217,7 @@ main(int argc, char **argv)
 		{
 			fprintf(stderr, "%s\n", state->message);
 			fflush(stderr);
-	
+
 			if (ret == SHPDUMPERERR)
 				exit(1);
 		}
