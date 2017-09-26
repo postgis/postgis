@@ -42,7 +42,7 @@ check-no-trailing-blanks:
 		grep -v lwin_wkt_lex.c | \
 		grep -v lwin_wkt_parse | \
 		if test -f .gitignore; then grep -vf .gitignore; else cat; fi | \
-		xargs grep -Pn '[\t ]$$'
+		xargs grep -n '[[:space:]]$$'
 
 installcheck:
 	RUNTESTFLAGS="$(RUNTESTFLAGS) --extension" $(MAKE) check
