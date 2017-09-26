@@ -199,7 +199,7 @@ void
 bytebuffer_append_varint(bytebuffer_t *b, const int64_t val)
 {	
 	size_t size;
-	bytebuffer_makeroom(b, 8);
+	bytebuffer_makeroom(b, 16);
 	size = varint_s64_encode_buf(val, b->writecursor);
 	b->writecursor += size;
 	return;
@@ -212,7 +212,7 @@ void
 bytebuffer_append_uvarint(bytebuffer_t *b, const uint64_t val)
 {	
 	size_t size;
-	bytebuffer_makeroom(b, 8);
+	bytebuffer_makeroom(b, 16);
 	size = varint_u64_encode_buf(val, b->writecursor);
 	b->writecursor += size;
 	return;
