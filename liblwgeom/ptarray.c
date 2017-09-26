@@ -344,7 +344,7 @@ ptarray_reverse(POINTARRAY *pa)
 {
 	/* TODO change this to double array operations once point array is double aligned */
 	POINT4D pbuf;
-	uint32_t i;
+	int i;
 	int ptsize = ptarray_point_size(pa);
 	int last = pa->npoints-1;
 	int mid = pa->npoints/2;
@@ -1427,63 +1427,82 @@ ptarray_longitude_shift(POINTARRAY *pa)
  * removed. Equality test on all dimensions of input.
  *
  * Always returns a newly allocated object.
- *
  */
 POINTARRAY *
 ptarray_remove_repeated_points_minpoints(const POINTARRAY *in, double tolerance, int minpoints)
 {
-	POINTARRAY* out;
-	size_t ptsize;
-	size_t ipn, opn;
-	const POINT2D *last_point, *this_point;
+	POINTARRAY *out;
+	size_t ptsize = ptarray_point_size(in);
+	int has_z = FLAGS_GET_Z(in->flags);
+	int has_m = FLAGS_GET_M(in->flags);
+	int ipn = 1, opn = 1;
+	const POINT2D *prev_point, *this_point;
+	uint8_t *p1, *p2;
 	double tolsq = tolerance * tolerance;
-
-	if ( minpoints < 1 ) minpoints = 1;
 
 	LWDEBUGF(3, "%s called", __func__);
 
 	/* Single or zero point arrays can't have duplicates */
 	if ( in->npoints < 3 ) return ptarray_clone_deep(in);
 
-	ptsize = ptarray_point_size(in);
+	/* Condition minpoints */
+	if ( minpoints < 1 ) minpoints = 1;
 
-	LWDEBUGF(3, " ptsize: %d", ptsize);
+	/* Allocate enough output space for all points */
+	out = ptarray_construct(has_z, has_m, in->npoints);
 
-	/* Allocate enough space for all points */
-	out = ptarray_construct(FLAGS_GET_Z(in->flags),
-	                        FLAGS_GET_M(in->flags), in->npoints);
-
-	/* Now fill up the actual points (NOTE: could be optimized) */
-
-	opn=1;
 	/* Keep the first point */
-	memcpy(getPoint_internal(out, 0), getPoint_internal(in, 0), ptsize);
-	last_point = getPoint2d_cp(in, 0);
+	p1 = getPoint_internal(out, 0);
+	p2 = getPoint_internal(in, 0);
+	memcpy(p1, p2, ptsize);
+
+	/* Now fill up the actual points */
+	prev_point = getPoint2d_cp(in, 0);
 	LWDEBUGF(3, " first point copied, out points: %d", opn);
-	for ( ipn = 1; ipn < in->npoints; ++ipn)
+	for ( ipn = 1; ipn < in->npoints; ipn++ )
 	{
 		this_point = getPoint2d_cp(in, ipn);
-		if ( ipn < in->npoints-minpoints+1 || opn >= minpoints ) /* need extra points to hit minponts */
-		{
-			if (
-				(tolerance == 0 && memcmp(getPoint_internal(in, ipn-1), getPoint_internal(in, ipn), ptsize) == 0) || /* exact dupe */
-				(tolerance > 0.0 && distance2d_sqr_pt_pt(last_point, this_point) <= tolsq) /* within the removal tolerance */
-			) continue;
-		}
 
 		/*
-		 * The point is different (see above) from the previous,
-		 * so we add it to output
-		 */
-		memcpy(getPoint_internal(out, opn++), getPoint_internal(in, ipn), ptsize);
-		last_point = this_point;
-		LWDEBUGF(3, " Point %d differs from point %d. Out points: %d", ipn, ipn-1, opn);
+		* If number of points left > number of points we need
+		* then it's still OK to drop dupes
+		*/
+		if ( in->npoints - ipn > minpoints - opn )
+		{
+			if (tolerance > 0.0)
+			{
+				/* within the removal tolerance? */
+				double dsq = distance2d_sqr_pt_pt(prev_point, this_point);
+				if (dsq <= tolsq)
+					/* then skip it */
+					continue;
+			}
+			else
+			{
+				/* exact duplicate? */
+				p1 = getPoint_internal(in, ipn-1);
+				p2 = getPoint_internal(in, ipn);
+				if (memcmp(p1, p2, ptsize) == 0)
+					/* then skip it */
+					continue;
+			}
+		}
+		/*
+		* The point is different (see above) from
+		* the previous point, so add it to output
+		*/
+		p1 = getPoint_internal(out, opn++);
+		p2 = getPoint_internal(in, ipn);
+		memcpy(p1, p2, ptsize);
+
+		prev_point = this_point;
 	}
+
 	/* Keep the last point */
-	if ( memcmp(last_point, getPoint_internal(in, ipn-1), ptsize) != 0 )
-	{
-		memcpy(getPoint_internal(out, opn-1), getPoint_internal(in, ipn-1), ptsize);
-	}
+	p1 = getPoint_internal(out, opn-1); /* Last output point */
+	p2 = getPoint_internal(in, ipn-1); /* Last input point */
+	if ( memcmp(p1, p2, ptsize) != 0 )
+		memcpy(p1, p2, ptsize);
 
 	LWDEBUGF(3, " in:%d out:%d", out->npoints, opn);
 	out->npoints = opn;
