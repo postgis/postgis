@@ -576,12 +576,6 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
-	if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed(pa) )
-	{
-		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
-		return NULL;
-	}
-
 	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_is_closed_z(pa) )
 	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
