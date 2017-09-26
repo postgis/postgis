@@ -342,23 +342,23 @@ void ptarray_free(POINTARRAY *pa)
 void
 ptarray_reverse(POINTARRAY *pa)
 {
-	/* TODO change this to double array operations once point array is double aligned */
-	POINT4D pbuf;
 	int i;
-	int ptsize = ptarray_point_size(pa);
 	int last = pa->npoints-1;
 	int mid = pa->npoints/2;
 
-	for (i=0; i<mid; i++)
+	double *d = (double*)(pa->serialized_pointlist);
+	int j;
+	int ndims = FLAGS_NDIMS(pa->flags);
+	for (i = 0; i < mid; i++)
 	{
-		uint8_t *from, *to;
-		from = getPoint_internal(pa, i);
-		to = getPoint_internal(pa, (last-i));
-		memcpy((uint8_t *)&pbuf, to, ptsize);
-		memcpy(to, from, ptsize);
-		memcpy(from, (uint8_t *)&pbuf, ptsize);
+		for (j = 0; j < ndims; j++)
+		{
+			double buf;
+			buf = d[i*ndims+j];
+			d[i*ndims+j] = d[(last-i)*ndims+j];
+			d[(last-i)*ndims+j] = buf;
+		}
 	}
-
 }
 
 
@@ -1818,27 +1818,23 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 void
 ptarray_scale(POINTARRAY *pa, const POINT4D *fact)
 {
-  int i;
-  POINT4D p4d;
-
-  LWDEBUG(3, "ptarray_scale start");
-
-  for (i=0; i<pa->npoints; ++i)
-  {
-    getPoint4d_p(pa, i, &p4d);
-    p4d.x *= fact->x;
-    p4d.y *= fact->y;
-    p4d.z *= fact->z;
-    p4d.m *= fact->m;
-    ptarray_set_point4d(pa, i, &p4d);
-  }
-
-  LWDEBUG(3, "ptarray_scale end");
-
+	int i;
+	POINT4D p4d;
+	LWDEBUG(3, "ptarray_scale start");
+	for (i=0; i<pa->npoints; i++)
+	{
+		getPoint4d_p(pa, i, &p4d);
+		p4d.x *= fact->x;
+		p4d.y *= fact->y;
+		p4d.z *= fact->z;
+		p4d.m *= fact->m;
+		ptarray_set_point4d(pa, i, &p4d);
+	}
+	LWDEBUG(3, "ptarray_scale end");
 }
 
 int
-ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt)
+ptarray_startpoint(const POINTARRAY *pa, POINT4D *pt)
 {
 	return getPoint4d_p(pa, 0, pt);
 }
