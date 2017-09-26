@@ -447,7 +447,7 @@ LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
 	}
 
 	/* Triangles need closure. */
-	if( ! ptarray_is_closed(pa) )
+	if( ! ptarray_is_closed_z(pa) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
