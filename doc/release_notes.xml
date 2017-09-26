@@ -5,7 +5,7 @@
 
     <sect1>
         <title>Release 2.4.0</title>
-        <para>Release date: 2017/09/xx</para>
+        <para>Release date: 2017/09/29</para>
         <simplesect><title>New Features</title>
 <para>#3822, Have postgis_full_version() also show and check version of
            PostgreSQL the scripts were built against (Sandro Santilli)</para>

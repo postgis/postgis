@@ -1,3 +1,13 @@
+PostGIS 2.4.0rc3
+2017/09/25
+* Fixes and Enhancements since PostGIS 2.4.0rc2 *
+  - #3781 st_contains cannot handle curvepolygon / compoundcurve
+    consisting of only straight lines
+  - #3866 server crashing from large values in ST_AsTWKB
+
+See PostGIS 2.4.0 section for details of
+new features and enhancements in this release.
+
 PostGIS 2.4.0rc2
 2017/09/24
 * Fixes and Enhancements since PostGIS 2.4.0rc1 *
@@ -27,7 +37,7 @@ Note possible breaking changes since 2.4.0 beta1 release are:
 See PostGIS 2.4.0 section for details of new features and fixes in this release
 
 PostGIS 2.4.0
-2017/09/xx
+2017/09/29
 
  * New Features *
   - #3822, Have postgis_full_version() also show and check version of
