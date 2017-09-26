@@ -1229,7 +1229,7 @@ add_raster_constraints(
 		(regular_blocking ? "TRUE" : "FALSE"),
 		(max_extent ? "TRUE" : "FALSE")
 	);
-	
+
 	if (_schema != NULL)
 		rtdealloc(_schema);
 	rtdealloc(_table);
@@ -1330,7 +1330,7 @@ add_overview_constraints(
 		_column,
 		factor
 	);
-	
+
 	if (_ovschema != NULL)
 		rtdealloc(_ovschema);
 	rtdealloc(_ovtable);
@@ -2281,7 +2281,7 @@ main(int argc, char **argv) {
 	char *tmp = NULL;
 
 	rt_init_allocators();
-	
+
 #ifdef USE_NLS
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
