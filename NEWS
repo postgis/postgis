@@ -1,9 +1,12 @@
 PostGIS 2.4.0rc3
-2017/09/25
+2017/09/26
 * Fixes and Enhancements since PostGIS 2.4.0rc2 *
   - #3781 st_contains cannot handle curvepolygon / compoundcurve
     consisting of only straight lines
   - #3866 server crashing from large values in ST_AsTWKB
+  - #3818 Allow triangles unclosed in M to be WKT parsed
+  - several packaging changes regarding checking trailing blanks
+
 
 See PostGIS 2.4.0 section for details of
 new features and enhancements in this release.
