@@ -1,5 +1,5 @@
 PostGIS 2.4.0rc3
-2017/09/26
+2017/09/27
 * Fixes and Enhancements since PostGIS 2.4.0rc2 *
   - #3781 st_contains cannot handle curvepolygon / compoundcurve
     consisting of only straight lines
