@@ -384,7 +384,7 @@ static void test_tree_circ_distance_threshold(void)
 void tree_suite_setup(void);
 void tree_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Internal Spatial Trees", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("spatial_trees", NULL, NULL);
 	PG_ADD_TEST(suite, test_tree_circ_create);
 	PG_ADD_TEST(suite, test_tree_circ_pip);
 	PG_ADD_TEST(suite, test_tree_circ_pip2);

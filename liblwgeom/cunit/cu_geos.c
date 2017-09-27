@@ -130,7 +130,7 @@ static void test_geos_subdivide(void)
 void geos_suite_setup(void);
 void geos_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("GEOS", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("geos", NULL, NULL);
 	PG_ADD_TEST(suite, test_geos_noop);
 	PG_ADD_TEST(suite, test_geos_subdivide);
 	PG_ADD_TEST(suite, test_geos_linemerge);

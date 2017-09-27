@@ -165,7 +165,7 @@ static void test_unionfind_collapse_cluster_ids(void)
 void unionfind_suite_setup(void);
 void unionfind_suite_setup(void)
 {
-	CU_pSuite suite = CU_add_suite("Clustering Union-Find", NULL, NULL);
+	CU_pSuite suite = CU_add_suite("clustering_unionfind", NULL, NULL);
 	PG_ADD_TEST(suite, test_unionfind_create);
 	PG_ADD_TEST(suite, test_unionfind_union);
 	PG_ADD_TEST(suite, test_unionfind_ordered_by_cluster);
