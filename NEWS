@@ -1,46 +1,5 @@
-PostGIS 2.4.0rc3
-2017/09/27
-* Fixes and Enhancements since PostGIS 2.4.0rc2 *
-  - #3781 st_contains cannot handle curvepolygon / compoundcurve
-    consisting of only straight lines
-  - #3866 server crashing from large values in ST_AsTWKB
-  - #3818 Allow triangles unclosed in M to be WKT parsed
-  - several packaging changes regarding checking trailing blanks
-
-
-See PostGIS 2.4.0 section for details of
-new features and enhancements in this release.
-
-PostGIS 2.4.0rc2
-2017/09/24
-* Fixes and Enhancements since PostGIS 2.4.0rc1 *
-  - Numerous fixes to ST_AsMVT, ST_AsGeoBuf
-  - ST_AsTWKB speed and memory performance enhancments
-  - ST_RepeatedPoints speed improvements
-  - ST_ConcaveHull bug fix
-
-See PostGIS 2.4.0 section for details of
-new features and enhancements in this release.
-
-PostGIS 2.4.0rc1
-2017/09/13
-Note possible breaking changes since 2.4.0 beta1 release are:
-* Breaking Changes *
-  - B-Tree index operators < = > changed to provide better spatial locality on sorting
-    and have expected behavior on GROUP BY.
-    If you have btree index for geometry or geography, you need to REINDEX it, or review
-    if it was created by accident and needs to be replaced with GiST index.
-    If your code relies on old left-to-right box compare ordering,
-    update it to use << >> operators.
-  - ST_AsMVT aggregate now overloaded and arg order changed.
-    Check your code if you are already using this function.
-  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
-    when ST_DumpPoints got reimplemented in C
-
-See PostGIS 2.4.0 section for details of new features and fixes in this release
-
 PostGIS 2.4.0
-2017/09/29
+2017/09/30
 
  * New Features *
   - #3822, Have postgis_full_version() also show and check version of
@@ -105,6 +64,48 @@ PostGIS 2.4.0
     if it was created by accident and needs to be replaced with GiST index.
     If your code relies on old left-to-right box compare ordering,
     update it to use << >> operators
+
+PostGIS 2.4.0rc3
+2017/09/27
+* Fixes and Enhancements since PostGIS 2.4.0rc2 *
+  - #3781 st_contains cannot handle curvepolygon / compoundcurve
+    consisting of only straight lines
+  - #3866 server crashing from large values in ST_AsTWKB
+  - #3818 Allow triangles unclosed in M to be WKT parsed
+  - several packaging changes regarding checking trailing blanks
+
+
+See PostGIS 2.4.0 section for details of
+new features and enhancements in this release.
+
+PostGIS 2.4.0rc2
+2017/09/24
+* Fixes and Enhancements since PostGIS 2.4.0rc1 *
+  - Numerous fixes to ST_AsMVT, ST_AsGeoBuf
+  - ST_AsTWKB speed and memory performance enhancments
+  - ST_RepeatedPoints speed improvements
+  - ST_ConcaveHull bug fix
+
+See PostGIS 2.4.0 section for details of
+new features and enhancements in this release.
+
+PostGIS 2.4.0rc1
+2017/09/13
+Note possible breaking changes since 2.4.0 beta1 release are:
+* Breaking Changes *
+  - B-Tree index operators < = > changed to provide better spatial locality on sorting
+    and have expected behavior on GROUP BY.
+    If you have btree index for geometry or geography, you need to REINDEX it, or review
+    if it was created by accident and needs to be replaced with GiST index.
+    If your code relies on old left-to-right box compare ordering,
+    update it to use << >> operators.
+  - ST_AsMVT aggregate now overloaded and arg order changed.
+    Check your code if you are already using this function.
+  - _ST_DumpPoints removed, was no longer needed after PostGIS 2.1.0
+    when ST_DumpPoints got reimplemented in C
+
+See PostGIS 2.4.0 section for details of new features and fixes in this release
+
 
 PostGIS 2.4.0beta1
 2017/09/02
