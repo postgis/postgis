@@ -1,8 +1,8 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.4.0rc3
-:Date: 2017-09-25
+:Version: 2.4.0
+:Date: 2017-09-30
 :Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
@@ -43,12 +43,13 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.3.0 or higher
-  - 3.4+ is strongly recommended and needed for full features):
+* GEOS (Required, Version 3.4 or higher)
+  - 3.6+ is strongly recommended to expose most GEOS features
+  - 3.7+ is needed just for the ST_FrechetDistance function
 
   The GEOS library provides support for exact topological tests such as
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as
-  ST_Intersection(), ST_Union() and ST_Buffer(). GEOS 3.4+ is recommended.
+  ST_Intersection(), ST_Union() and ST_Buffer().
 
     http://trac.osgeo.org/geos/
 
