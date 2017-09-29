@@ -3120,6 +3120,12 @@ CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
 
+-- Availability: 2.5.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(geometry, float8, repeat boolean DEFAULT true)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT _PARALLEL;
+
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0
 CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)

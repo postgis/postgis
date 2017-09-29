@@ -91,6 +91,7 @@ IMAGES= \
 	../images/st_linecrossingdirection03.png \
 	../images/st_linecrossingdirection04.png \
 	../images/st_line_interpolate_point01.png \
+	../images/st_line_interpolate_points01.png \
 	../images/st_line_substring01.png \
 	../images/st_longestline01.png \
 	../images/st_longestline02.png \
