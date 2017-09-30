@@ -36,7 +36,7 @@ PostGIS is compatible with PostgreSQL 9.6 and above.
 You *must* have the full PostgreSQL - including server headers - installed for
 this to work.
 
-* PROJ4 (Required, Version 4.6.0 or higher):
+* PROJ4 (Required, Version 4.9.0 or higher):
 
   The PROJ4 catographic projection library is required if you want to use the
   ST_Transform() function to reproject features within the database.
