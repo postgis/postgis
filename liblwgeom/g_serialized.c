@@ -245,7 +245,7 @@ uint64_t gbox_get_sortable_hash(const GBOX *g)
 {
 	union floatuint {
 		uint32_t u;
-		float f
+		float f;
 	} x, y;
 
 	/*
