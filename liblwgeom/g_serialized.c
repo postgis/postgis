@@ -243,14 +243,11 @@ static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 
 uint64_t gbox_get_sortable_hash(const GBOX *g)
 {
-	union x {
+
+	union floatuint {
 		uint32_t u;
-		float f
-	};
-	union y {
-		uint32_t u;
-		float f
-	};
+		float f;
+	} x, y;
 
 	/*
 	* Since in theory the bitwise representation of an IEEE
@@ -272,7 +269,7 @@ uint64_t gbox_get_sortable_hash(const GBOX *g)
 	}
 	else
 	{
-		/* 
+		/*
 		* Here we'd like to get two ordinates from 4 in the box.
 		* Since it's just a sortable bit representation we can omit division from (A+B)/2.
 		* All it should do is subtract 1 from exponent anyways.
