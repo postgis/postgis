@@ -243,8 +243,14 @@ static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 
 uint64_t gbox_get_sortable_hash(const GBOX *g)
 {
-	uint32_t ux, uy;
-	float fx, fy;
+	union x {
+		uint32_t u;
+		float f
+	};
+	union y {
+		uint32_t u;
+		float f
+	};
 
 	/*
 	* Since in theory the bitwise representation of an IEEE
@@ -261,19 +267,20 @@ uint64_t gbox_get_sortable_hash(const GBOX *g)
 		p.z = (g->zmax + g->zmin) / 2.0;
 		normalize(&p);
 		cart2geog(&p, &gpt);
-		fx = gpt.lon;
-		fy = gpt.lat;
-		memcpy(&ux, &fx, sizeof(uint32_t));
-		memcpy(&uy, &fy, sizeof(uint32_t));
+		x.f = gpt.lon;
+		y.f = gpt.lat;
 	}
 	else
 	{
-		fx = (g->xmax + g->xmin) / 2.0;
-		fy = (g->ymax + g->ymin) / 2.0;
-		memcpy(&ux, &fx, sizeof(uint32_t));
-		memcpy(&uy, &fy, sizeof(uint32_t));
+		/* 
+		* Here we'd like to get two ordinates from 4 in the box.
+		* Since it's just a sortable bit representation we can omit division from (A+B)/2.
+		* All it should do is subtract 1 from exponent anyways.
+		*/
+		x.f = g->xmax + g->xmin;
+		y.f = g->ymax + g->ymin;
 	}
-	return uint32_interleave_2(ux, uy);
+	return uint32_interleave_2(x.u, y.u);
 }
 
 int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
@@ -300,13 +307,13 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 
 	/* Empty == Empty */
 	if (g1_is_empty && g2_is_empty)
-    {
-        /* POINT EMPTY == POINT EMPTY */
-        /* POINT EMPTY < LINESTRING EMPTY */
-        uint32_t t1 = gserialized_get_type(g1);
-        uint32_t t2 = gserialized_get_type(g2);
+	{
+		/* POINT EMPTY == POINT EMPTY */
+		/* POINT EMPTY < LINESTRING EMPTY */
+		uint32_t t1 = gserialized_get_type(g1);
+		uint32_t t2 = gserialized_get_type(g2);
 		return t1 == t2 ? 0 : (t1 < t2 ? -1 : 1);
-    }
+	}
 
 	/* Empty < Non-empty */
 	if (g1_is_empty)
@@ -322,8 +329,8 @@ int gserialized_cmp(const GSERIALIZED *g1, const GSERIALIZED *g2)
 		return 0;
 
 	/* Using the centroids, calculate somewhat sortable */
-    /* hash key. The key doesn't provide good locality over */
-    /* the +/- boundary, but otherwise is pretty OK */
+	/* hash key. The key doesn't provide good locality over */
+	/* the +/- boundary, but otherwise is pretty OK */
 	hash1 = gbox_get_sortable_hash(&box1);
 	hash2 = gbox_get_sortable_hash(&box2);
 
