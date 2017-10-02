@@ -24,6 +24,7 @@ PostGIS 2.3.4
   - #3818, Triangles unclosed in M should be parseable
   - #3866, Rare crash generating TWKB with large coordinate values
   - #3869, Fix build with "gold" linker
+  - #3845, Gracefully handle short-measure issue
 
 
 PostGIS 2.3.3

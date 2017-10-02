@@ -50,14 +50,15 @@ segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offs
 			*pn = *p1;
 			return LW_TRUE;
 		}
-		/* If the points are different we can out.
-		   Correct behavior is probably an mprop of 0.5? */
-		lwerror("Zero measure-length line encountered!");
-		return LW_FALSE;
+		/* If the points are different we split the difference */
+		mprop = 0.5;
+	}
+	else
+	{
+		mprop = (m - m1) / (m2 - m1);
 	}
 
 	/* M is in range, new point to be generated. */
-	mprop = (m - m1) / (m2 - m1);
 	pn->x = p1->x + (p2->x - p1->x) * mprop;
 	pn->y = p1->y + (p2->y - p1->y) * mprop;
 	pn->z = p1->z + (p2->z - p1->z) * mprop;
