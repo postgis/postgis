@@ -268,7 +268,7 @@ uint64_t gbox_get_sortable_hash(const GBOX *g)
 	}
 	else
 	{
-		/* 
+		/*
 		* Here we'd like to get two ordinates from 4 in the box.
 		* Since it's just a sortable bit representation we can omit division from (A+B)/2.
 		* All it should do is subtract 1 from exponent anyways.
