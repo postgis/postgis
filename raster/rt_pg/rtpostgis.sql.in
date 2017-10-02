@@ -8899,7 +8899,7 @@ CREATE OR REPLACE FUNCTION st_makeemptycoverage(tilewidth int, tileheight int, w
 CREATE OR REPLACE FUNCTION postgis_noop(raster)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'RASTER_noop'
-	LANGUAGE 'c' VOLATILE STRICT;
+	LANGUAGE 'c' STABLE STRICT;
 
 
 -------------------------------------------------------------------
