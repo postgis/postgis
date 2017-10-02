@@ -244,13 +244,13 @@ static uint64_t uint32_interleave_2(uint32_t u1, uint32_t u2)
 uint64_t gbox_get_sortable_hash(const GBOX *g)
 {
 	union x {
-		uint32_t u,
+		uint32_t u;
 		float f
-	}
+	};
 	union y {
-		uint32_t u,
+		uint32_t u;
 		float f
-	}
+	};
 
 	/*
 	* Since in theory the bitwise representation of an IEEE
