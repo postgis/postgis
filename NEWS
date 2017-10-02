@@ -4,6 +4,7 @@ YYYY/MM/DD
  * Bug fixes *
   - #3864, Fix memory leaks in BTREE operators
   - #3869, Fix build with "gold" linker
+  - #3845, Gracefully handle short-measure issue
 
 PostGIS 2.4.0
 2017/09/30
