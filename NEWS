@@ -23,6 +23,7 @@ PostGIS 2.3.4
   - #3781, Not-quite curved CurvePolygon rejected by ST_Contains
   - #3818, Triangles unclosed in M should be parseable
   - #3866, Rare crash generating TWKB with large coordinate values
+  - #3869, Fix build with "gold" linker
 
 
 PostGIS 2.3.3
